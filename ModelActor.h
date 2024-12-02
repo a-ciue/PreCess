@@ -29,7 +29,7 @@ private:
     //! @param block_ids 
     void merge_blocks(std::vector<int> block_ids);
     void merge_groups(std::vector<int> group_ids);
-    void update_patch(int patch_id, std::vector<std::array<double, 3>> points, std::vector<std::array<int, 3>> triangles);
+    void update_patch(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
 
     //Model* model_;
     vtkRenderer* face_renderer_ {};

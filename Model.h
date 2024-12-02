@@ -14,16 +14,7 @@ typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
 
 class ModelActor;
 
-class Patch {
-public:
-    Patch(MeshLib::CTMesh* pmesh, int patch_id);
-    int id();
-    int face_global_id(int local_id);
-    const std::vector<int[3]> get_triangles();
-    int vertex_global_id(int local_id);
-    const std::vector<double[3]> get_points();
-
-private:
+struct Patch {
     // patch id
     int id_;
     // 全局id
@@ -49,7 +40,7 @@ struct Group {
 //! @brief Model主要负责处理模型数据
 class Model {
 public:
-    //! @brief 根据给定CTMesh构造
+    //! @brief 根据给定CTMesh构造patches, blocks, groups
     Model(std::unique_ptr<MeshLib::CTMesh> pMesh);
     ~Model();
 
