@@ -1,0 +1,51 @@
+﻿{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "windows-base",
+      "description": "面向具有 Visual Studio 开发环境的 Windows。",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_PREFIX_PATH": "D:\\dev\\Qt\\6.8.0\\msvc2022_64;D:\\dev\\3rdparty\\vtk-v9.3.1\\install"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "environment": {
+        "PATH": "$penv{PATH};D:\\dev\\Qt\\6.8.0\\msvc2022_64\\bin;D:\\dev\\3rdparty\\vtk-v9.3.1\\install\\bin"
+      }
+    },
+    {
+      "name": "x64-debug",
+      "displayName": "x64 Debug",
+      "description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(Debug)",
+      "inherits": "windows-base",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_FLAGS": "-DQT_QML_DEBUG"
+      },
+      "environment": {
+        "QML_DEBUG_ARGS": "-qmljsdebugger=file:{0de82aa2-0ca8-45f0-bac8-91b4cff7bd7c},block",
+        "QML_IMPORT_TRACE": "1"
+      }
+    },
+    {
+      "name": "x64-release",
+      "displayName": "x64 Release",
+      "description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(RelWithDebInfo)",
+      "inherits": "windows-base",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ]
+}
