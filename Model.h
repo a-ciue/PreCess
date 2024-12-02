@@ -1,4 +1,4 @@
-#include <memory>
+ï»¿#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -17,13 +17,13 @@ class ModelActor;
 struct Patch {
     // patch id
     int id_;
-    // È«¾Öid
+    // å…¨å±€id
     std::vector<int> faceIDs_;
-    // Èı½ÇĞÎµÄ¾Ö²¿idË÷Òı
+    // ä¸‰è§’å½¢çš„å±€éƒ¨idç´¢å¼•
     std::vector<int[3]> faceTriangles_;
-    // È«¾Öid
+    // å…¨å±€id
     std::vector<int> vertexIDs_;
-    // ×ø±ê
+    // åæ ‡
     std::vector<double[3]> vertexPoints_;
 };
 
@@ -37,32 +37,32 @@ struct Group {
     int id;
 };
 
-//! @brief ModelÖ÷Òª¸ºÔğ´¦ÀíÄ£ĞÍÊı¾İ
+//! @brief Modelä¸»è¦è´Ÿè´£å¤„ç†æ¨¡å‹æ•°æ®
 class Model {
 public:
-    //! @brief ¸ù¾İ¸ø¶¨CTMesh¹¹Ôìpatches, blocks, groups
+    //! @brief æ ¹æ®ç»™å®šCTMeshæ„é€ patches, blocks, groups
     Model(std::unique_ptr<MeshLib::CTMesh> pMesh);
     ~Model();
 
-    //! @brief ¸ù¾İ¸ø¶¨idÕÒµ½meshµÄface£¬½øĞĞÃæ·Ö¸î
-    //! @param patch_id ÃæËùÔÚµÄpatch
-    //! @param face_id ÔÚ¸ÃpatchÉÏµÄface id
+    //! @brief æ ¹æ®ç»™å®šidæ‰¾åˆ°meshçš„faceï¼Œè¿›è¡Œé¢åˆ†å‰²
+    //! @param patch_id é¢æ‰€åœ¨çš„patch
+    //! @param face_id åœ¨è¯¥patchä¸Šçš„face id
     void split_face(int patch_id, int face_id);
-    //! @brief ¸ù¾İ¸ø¶¨idÕÒµ½meshµÄedge£¬½øĞĞ±ß·Ö¸î
-    //! @param patch_id ±ßËùÔÚµÄpatch
-    //! @param face_id ÔÚ¸ÃpatchÉÏµÄ±ßµÄ¶Ëµãid
+    //! @brief æ ¹æ®ç»™å®šidæ‰¾åˆ°meshçš„edgeï¼Œè¿›è¡Œè¾¹åˆ†å‰²
+    //! @param patch_id è¾¹æ‰€åœ¨çš„patch
+    //! @param face_id åœ¨è¯¥patchä¸Šçš„è¾¹çš„ç«¯ç‚¹id
     void split_edge(int patch_id, std::pair<int, int> edge_v_ids);
 
-    //! @brief ºÏ²¢¸ø¶¨block£¬²¢¸üĞÂblock actor£¬ÒÀÀµModelActor
+    //! @brief åˆå¹¶ç»™å®šblockï¼Œå¹¶æ›´æ–°block actorï¼Œä¾èµ–ModelActor
     //! @param block_ids
     void merge_blocks(std::vector<int> block_ids);
-    //! @brief ºÏ²¢¸ø¶¨group£¬²¢¸üĞÂgroup actor£¬ÒÀÀµModelActor
+    //! @brief åˆå¹¶ç»™å®šgroupï¼Œå¹¶æ›´æ–°group actorï¼Œä¾èµ–ModelActor
     //! @param group_ids
     void merge_groups(std::vector<int> group_ids);
 
-    //! @brief remeshÖ¸¶¨block£¬ÒÀÀµMeshIO
+    //! @brief remeshæŒ‡å®šblockï¼Œä¾èµ–MeshIO
     void remesh_block(int block_id);
-    //! @brief remeshÖ¸¶¨group£¬ÒÀÀµMeshIO
+    //! @brief remeshæŒ‡å®šgroupï¼Œä¾èµ–MeshIO
     void remesh_group(int group_id);
 
     int face_patch_id(int face_id);
@@ -76,7 +76,7 @@ public:
     ModelActor& actor();
 
 private:
-    //! @brief ¸ù¾İmesh¸üĞÂpatches£¬ĞèÒª±£Ö¤patch ID²»·¢Éú±ä»¯
+    //! @brief æ ¹æ®meshæ›´æ–°patchesï¼Œéœ€è¦ä¿è¯patch IDä¸å‘ç”Ÿå˜åŒ–
     void update_patches_and_actors();
     void update_patch_and_actor(int patch_id);
     const std::vector<int[3]>& patch_face_triangles(int patch_id);

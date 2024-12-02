@@ -1,4 +1,4 @@
-#include <unordered_map>
+ï»¿#include <unordered_map>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkSmartPointer.h>
 
@@ -48,7 +48,7 @@ private:
     std::unordered_map<vtkActor*, int>* actorMap;
     vtkNew<vtkNamedColors> colors;
 
-    // ¼ÇÂ¼ÒÑÑ¡actorµÄÊıÁ¿
+    // è®°å½•å·²é€‰actorçš„æ•°é‡
     int numPickedActors = 0;
 
     void UnselectActor(vtkSmartPointer<vtkActor> actor);
@@ -74,7 +74,7 @@ private:
     std::unordered_map<vtkActor*, int>* actorMap;
     vtkNew<vtkNamedColors> colors;
 
-    // ¼ÇÂ¼ÒÑÑ¡actorµÄÊıÁ¿
+    // è®°å½•å·²é€‰actorçš„æ•°é‡
     int numPickedActors = 0;
 
     void UnselectActor(vtkSmartPointer<vtkActor> actor);

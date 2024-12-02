@@ -1,6 +1,8 @@
-#include <filesystem>
+﻿#include <filesystem>
 #include <memory>
 #include <vector>
+
+class vtkNamedColors;
 
 namespace MeshLib {
 template <typename V, typename E, typename F, typename H>
@@ -18,6 +20,8 @@ public:
     static std::unique_ptr<MeshLib::CTMesh> mesh_from_spline(std::filesystem::path spline_dir);
     static std::unique_ptr<MeshLib::CTMesh> remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh, std::vector<int> patch_ids);
 
-private:
     static vtkMinimalStandardRandomSequence randomSequence;
+    static vtkNamedColors colors;
+
+private:
 }

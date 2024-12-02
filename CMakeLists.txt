@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+锘縞make_minimum_required(VERSION 3.14)
 
 set(MYNAME triangulation)
 
@@ -26,7 +26,7 @@ message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
 qt_standard_project_setup()
 
 qt_add_executable(${MYNAME} main.cpp)
-# 设置编译完成的组件在 qrc:/qt/qml
+# 璁剧疆缂栬瘧瀹屾垚鐨勭粍浠跺湪 qrc:/qt/qml
 qt_policy(SET QTP0001 NEW)
 #qt_add_qml_module(${MYNAME}
 #    URI fileLoader

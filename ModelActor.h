@@ -1,4 +1,4 @@
-#ifndef MODELACTOR_H
+ï»¿#ifndef MODELACTOR_H
 #define MODELACTOR_H
 #include <unordered_map>
 #include <vector>
@@ -10,7 +10,7 @@ class vtkPolyData;
 class Model;
 
 class Model;
-//! @brief ¸ºÔğ¹ÜÀíModelµÄActor
+//! @brief è´Ÿè´£ç®¡ç†Modelçš„Actor
 class ModelActor {
     friend class Model;
 
@@ -23,15 +23,17 @@ private:
     ModelActor() = default;
     ~ModelActor();
 
-	//void set_model(Model* model);
+    //void set_model(Model* model);
 
-    //! @brief ºÏ²¢¸ø¶¨idµÄblockµÄActor
+    //! @brief åˆå¹¶ç»™å®šidçš„blockçš„Actor
     //! @param block_ids 
     void merge_blocks(std::vector<int> block_ids);
     void merge_groups(std::vector<int> group_ids);
-    void update_patch(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
+    void update_patch(int patch_id, const std::vector<double[3]>& points, const std::vector<int[3]>& triangles);
+    void update_block(int block_id);
+    void update_group(int group_id);
 
-    //Model* model_;
+    Model* model_;
     vtkRenderer* face_renderer_ {};
     vtkRenderer* block_renderer_ {};
     vtkRenderer* group_renderer_ {};
