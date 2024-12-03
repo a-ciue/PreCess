@@ -27,7 +27,7 @@
 //     model_ = model;
 // }
 
-void ModelActor::merge_blocks(std::vector<int> block_ids, int father_block)
+void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
 {
     assert(group_actors_.find(father_block) != group_actors_.end());
 
@@ -43,10 +43,10 @@ void ModelActor::merge_blocks(std::vector<int> block_ids, int father_block)
         }
     }
 
-    _update_block(father_block);
+    update_block(father_block, father_block_patches);
 }
 
-void ModelActor::merge_groups(std::vector<int> group_ids, int father_group)
+void ModelActor::merge_groups(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks)
 {
     assert(group_actors_.find(father_group) != group_actors_.end());
 
@@ -62,7 +62,7 @@ void ModelActor::merge_groups(std::vector<int> group_ids, int father_group)
         }
     }
 
-    _update_block(father_group);
+    update_block(father_group, father_group_blocks);
 }
 
 void ModelActor::update_patch(int patch_id, const std::vector<double[3]>& points, const std::vector<int[3]>& triangles)
@@ -102,26 +102,26 @@ void ModelActor::update_patch(int patch_id, const std::vector<double[3]>& points
     patch_actor->GetProperty()->SetSpecularPower(30.0);
 }
 
-void ModelActor::_update_block(int block_id)
+void ModelActor::update_block(int block_id, const std::unordered_set<int>& block_patches)
 {
-    const std::vector<int>& patch_ids = model_->block_patch_ids(block_id);
-    std::vector<vtkActor*> actors(patch_ids.size());
-    for (int i = 0; i < actors.size(); i++) {
-        actors[i] = patch_actors_[patch_ids[i]];
+    std::vector<vtkActor*> patch_actors;
+    patch_actors.reserve(block_patches.size());
+    for (int patch_id : block_patches) {
+        patch_actors.push_back(patch_actors_[patch_id]);
     }
 
-    _merge_actors(block_actors_[block_id], actors);
+    _merge_actors(block_actors_[block_id], patch_actors);
 }
 
-void ModelActor::_update_group(int group_id)
+void ModelActor::update_group(int group_id, const std::unordered_set<int>& group_blocks)
 {
-    const std::vector<int>& block_ids = model_->group_block_ids(group_id);
-    std::vector<vtkActor*> actors(block_ids.size());
-    for (int i = 0; i < actors.size(); i++) {
-        actors[i] = block_actors_[block_ids[i]];
+    std::vector<vtkActor*> block_actors;
+    block_actors.reserve(group_blocks.size());
+    for (int block_id : group_blocks) {
+        block_actors.push_back(block_actors[block_id]);
     }
 
-    _merge_actors(group_actors_[group_id], actors);
+    _merge_actors(group_actors_[group_id], block_actors);
 }
 
 void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActor*>& actors)

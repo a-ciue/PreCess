@@ -18,7 +18,7 @@ class vtkMinimalStandardRandomSequence;
 class ModelUtil {
 public:
     static std::unique_ptr<MeshLib::CTMesh> mesh_from_spline(std::filesystem::path spline_dir);
-    static std::unique_ptr<MeshLib::CTMesh> remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh, std::vector<int> patch_ids);
+    static std::unique_ptr<MeshLib::CTMesh> remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh, const std::vector<int>& patch_ids);
 
     static vtkMinimalStandardRandomSequence randomSequence;
     static vtkNamedColors colors;

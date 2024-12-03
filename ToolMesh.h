@@ -124,7 +124,7 @@ public:
   ~CToolFace(){};
   void _to_string();
   void _from_string();
-  int &get_g() { return m_g; };
+  int &get_g() { return m_g; }
 
 private:
   int m_g;
