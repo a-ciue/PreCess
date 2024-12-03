@@ -4,3 +4,11 @@
 
 /.vs
 /out/build/x64-debug
+.*
+./build/
+
+
+/MeshLib/.DS_Store
+/build
+/modules
+/modules.zip

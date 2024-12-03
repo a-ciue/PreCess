@@ -1,6 +1,8 @@
 ﻿#include <filesystem>
 #include <memory>
 #include <vector>
+#include <stdio.h>
+#include <stdlib.h>
 
 class vtkNamedColors;
 
@@ -24,4 +26,5 @@ public:
     static vtkNamedColors colors;
 
 private:
-}
+    std::string cmdPopen(const std::string& cmdLine);
+};
