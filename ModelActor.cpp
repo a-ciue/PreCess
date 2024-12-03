@@ -12,6 +12,7 @@
 
 #include "ModelUtil.h"
 #include "Style.h"
+#include <vtkAppendPolyData.h>
 
 //! @brief 完成三个renderer的初始化，其中patch_actors_可以由model_->update_patches_and_actors帮助更新
 //! @param model
@@ -26,9 +27,46 @@
 //     model_ = model;
 // }
 
+void ModelActor::merge_blocks(std::vector<int> block_ids, int father_block)
+{
+    assert(group_actors_.find(father_block) != group_actors_.end());
+
+    for (int erase_id : block_ids) {
+        if (erase_id != father_block) {
+            vtkActor* erase_actor = block_actors_[erase_id];
+            // 删除被合并block actor
+            if (block_renderer_) {
+                block_renderer_->RemoveActor(erase_actor);
+            }
+            block_actors_.erase(erase_id);
+            block_actor_id_.erase(erase_actor);
+        }
+    }
+
+    _update_block(father_block);
+}
+
+void ModelActor::merge_groups(std::vector<int> group_ids, int father_group)
+{
+    assert(group_actors_.find(father_group) != group_actors_.end());
+
+    for (int erase_id : group_ids) {
+        if (erase_id != father_group) {
+            // 删除被合并block actor
+            vtkActor* erase_actor = group_actors_[erase_id];
+            if (group_renderer_) {
+                group_renderer_->RemoveActor(erase_actor);
+            }
+            group_actors_.erase(erase_id);
+            group_actor_id_.erase(erase_actor);
+        }
+    }
+
+    _update_block(father_group);
+}
+
 void ModelActor::update_patch(int patch_id, const std::vector<double[3]>& points, const std::vector<int[3]>& triangles)
 {
-    assert(points.size() == triangles.size());
     vtkActor* patch_actor = patch_actors_[patch_id];
 
     // vtkPolyData
@@ -64,18 +102,131 @@ void ModelActor::update_patch(int patch_id, const std::vector<double[3]>& points
     patch_actor->GetProperty()->SetSpecularPower(30.0);
 }
 
-void ModelActor::update_block(int block_id)
+void ModelActor::_update_block(int block_id)
 {
     const std::vector<int>& patch_ids = model_->block_patch_ids(block_id);
-
-    for (int patch_id : patch_ids)
-    {
-        vtkActor* patch_actor = patch_actors_[patch_id];
-        patch_actor->GetMapper()->GetInput()
+    std::vector<vtkActor*> actors(patch_ids.size());
+    for (int i = 0; i < actors.size(); i++) {
+        actors[i] = patch_actors_[patch_ids[i]];
     }
 
-    if (block_renderer_)
-    {
-
-    }
+    _merge_actors(block_actors_[block_id], actors);
 }
+
+void ModelActor::_update_group(int group_id)
+{
+    const std::vector<int>& block_ids = model_->group_block_ids(group_id);
+    std::vector<vtkActor*> actors(block_ids.size());
+    for (int i = 0; i < actors.size(); i++) {
+        actors[i] = block_actors_[block_ids[i]];
+    }
+
+    _merge_actors(group_actors_[group_id], actors);
+}
+
+void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActor*>& actors)
+{
+    // Append PolyData
+    vtkNew<vtkAppendPolyData> append_data;
+    for (vtkActor* actor : actors) {
+        vtkPolyDataMapper* mapper = vtkPolyDataMapper::SafeDownCast(actor->GetMapper());
+        vtkPolyData* data = mapper->GetInput();
+
+        append_data->AddInputData(data);
+    }
+    append_data->Update();
+
+    // Mapper & Actor
+    vtkNew<vtkPolyDataMapper> father_mapper;
+    father_mapper->SetInputConnection(append_data->GetOutputPort());
+    father_actor->SetMapper(father_mapper);
+
+    double r = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
+           g = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
+           b = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6);
+
+    father_actor->GetProperty()->SetDiffuseColor(r, g, b);
+    father_actor->GetProperty()->SetDiffuse(0.8);
+    father_actor->GetProperty()->SetSpecular(0.5);
+    father_actor->GetProperty()->SetSpecularColor(
+        ModelUtil::colors.GetColor3d("White").GetData());
+    father_actor->GetProperty()->SetSpecularPower(30.0);
+}
+
+// old
+// void ModelActor::update_block(int block_id)
+//{
+//    vtkActor* block_actor = block_actors_[block_id];
+//    const std::vector<int>& patch_ids = model_->block_patch_ids(block_id);
+//
+//    // Append PolyData
+//    vtkNew<vtkAppendPolyData> append_data;
+//    for (int patch_id : patch_ids) {
+//        vtkActor* patch_actor = patch_actors_[patch_id];
+//        vtkPolyDataMapper* patch_mapper = vtkPolyDataMapper::SafeDownCast(patch_actor->GetMapper());
+//        vtkPolyData* patch_data = patch_mapper->GetInput();
+//
+//        append_data->AddInputData(patch_data);
+//    }
+//    append_data->Update();
+//
+//    // Mapper & Actor
+//    vtkNew<vtkPolyDataMapper> block_mapper;
+//    block_mapper->SetInputConnection(append_data->GetOutputPort());
+//    block_actor->SetMapper(block_mapper);
+//
+//    double r = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           g = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           b = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6);
+//
+//    block_actor->GetProperty()->SetDiffuseColor(r, g, b);
+//    block_actor->GetProperty()->SetDiffuse(0.8);
+//    block_actor->GetProperty()->SetSpecular(0.5);
+//    block_actor->GetProperty()->SetSpecularColor(
+//        ModelUtil::colors.GetColor3d("White").GetData());
+//    block_actor->GetProperty()->SetSpecularPower(30.0);
+//
+//    // ？
+//    if (block_renderer_) {
+//    }
+//}
+//
+// old
+// void ModelActor::update_group(int group_id)
+//{
+//    vtkActor* group_actor = group_actors_[group_id];
+//    const std::vector<int>& block_ids = model_->group_block_ids(group_id);
+//
+//    // Append PolyDataOutput
+//    vtkNew<vtkAppendPolyData> append_data;
+//    for (int block_id : block_ids) {
+//        vtkActor* block_actor = patch_actors_[block_id];
+//        vtkPolyDataMapper* block_mapper = vtkPolyDataMapper::SafeDownCast(block_actor->GetMapper());
+//        vtkAlgorithmOutput* block_data = block_mapper->GetInputConnection(0,0);
+//
+//        append_data->AddInputConnection(block_data);
+//    }
+//    append_data->Update();
+//
+//    // Mapper & Actor
+//    vtkNew<vtkPolyDataMapper> group_mapper;
+//    group_mapper->SetInputConnection(append_data->GetOutputPort());
+//    group_actor->SetMapper(group_mapper);
+//
+//    double r = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           g = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           b = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6);
+//
+//    group_actor->GetProperty()->SetDiffuseColor(r, g, b);
+//    group_actor->GetProperty()->SetDiffuse(0.8);
+//    group_actor->GetProperty()->SetSpecular(0.5);
+//    group_actor->GetProperty()->SetSpecularColor(
+//        ModelUtil::colors.GetColor3d("White").GetData());
+//    group_actor->GetProperty()->SetSpecularPower(30.0);
+//
+//    // ？
+//    if (group_renderer_) {
+//    }
+//
+//}
+//
