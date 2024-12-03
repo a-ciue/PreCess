@@ -27,6 +27,98 @@
 //     model_ = model;
 // }
 
+void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
+{
+    ActorMap* mode_actors {};
+    switch (mode) {
+    case RenderMode::Face: {
+        face_renderer_ = renderer;
+        mode_actors = &block_actors_;
+        break;
+    }
+    case RenderMode::Block: {
+        block_renderer_ = renderer;
+        mode_actors = &block_actors_;
+        break;
+    }
+    case RenderMode::Group: {
+        group_renderer_ = renderer;
+        mode_actors = &group_actors_;
+        break;
+    }
+    default:
+        break;
+    }
+
+    for (auto&& [_, actor] : *mode_actors)
+    {
+        renderer->AddActor(actor);
+    }
+}
+
+int ModelActor::block_actor_id(vtkActor* actor)
+{
+    return block_actor_id_[actor];
+}
+
+int ModelActor::group_actor_id(vtkActor* actor)
+{
+    return group_actor_id_[actor];
+}
+
+ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
+    const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
+    const std::unordered_map<int, std::unique_ptr<Group>>& groups)
+{
+    for (auto&& [_, patch] : patches) {
+        update_patch(patch->id_, patch->vertexPoints_, patch->faceTriangles_);
+    }
+
+    for (auto&& [_, block] : blocks) {
+        update_block(block->id, block->patchIDs);
+    }
+
+    for (auto&& [block_id, block_actor] : block_actors_) {
+        block_actor_id_[block_actor] = block_id;
+    }
+
+    for (auto&& [_, group] : groups) {
+        update_group(group->id, group->blockIDs);
+    }
+
+    for (auto&& [group_id, group_actor] : group_actors_) {
+        block_actor_id_[group_actor] = group_id;
+    }
+}
+
+ModelActor::~ModelActor()
+{
+    if (face_renderer_)
+    {
+        //ActorMap& face_actors = *mode_actors_[RenderMode::Face];
+        for (auto&& [_, actor] : block_actors_)
+        {
+            face_renderer_->RemoveActor(actor);
+        }
+    }
+    if (block_renderer_)
+    {
+        //ActorMap& block_actors = *mode_actors_[RenderMode::Block];
+        for (auto&& [_, actor] : block_actors_)
+        {
+            block_renderer_->RemoveActor(actor);
+        }
+    }
+    if (group_renderer_)
+    {
+        //ActorMap& group_actors = *mode_actors_[RenderMode::Group];
+        for (auto&& [_, actor] : group_actors_)
+        {
+            group_renderer_->RemoveActor(actor);
+        }
+    }
+}
+
 void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
 {
     assert(group_actors_.find(father_block) != group_actors_.end());
@@ -107,6 +199,7 @@ void ModelActor::update_block(int block_id, const std::unordered_set<int>& block
     std::vector<vtkActor*> patch_actors;
     patch_actors.reserve(block_patches.size());
     for (int patch_id : block_patches) {
+        assert(patch_actors_.count(patch_id));
         patch_actors.push_back(patch_actors_[patch_id]);
     }
 
@@ -118,6 +211,7 @@ void ModelActor::update_group(int group_id, const std::unordered_set<int>& group
     std::vector<vtkActor*> block_actors;
     block_actors.reserve(group_blocks.size());
     for (int block_id : group_blocks) {
+        assert(patch_actors_.count(block_id));
         block_actors.push_back(block_actors[block_id]);
     }
 
