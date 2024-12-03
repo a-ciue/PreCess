@@ -15,18 +15,17 @@ public:
         vtkInteractorStyleTrackballCamera);
 
     virtual ~MouseInterActorHighLightActor() { }
-    virtual void OnLeftButtonDown() override;
-    virtual void OnKeyPress() override;
+    virtual void OnLeftButtonUp() override;
 
-    void SetDefaultRenderer(vtkRenderer*) override;
-    void set_model(Model* model);
+    void OnCommitMergeBlocks();
+    void OnCommitMergeGroups();
+
+    void SetModel(Model* model);
+    void SetSelector(std::unique_ptr<ActorSelectorHighlight> selector);
 
 private:
     Model* model;
-    ActorSelectorHighlight selector_;
-
-    void UnselectActor(vtkSmartPointer<vtkActor> actor);
-    void SelectActor(vtkSmartPointer<vtkActor> actor);
+    std::unique_ptr<ActorSelectorHighlight> selector_;
 };
 
 class MouseInteractorHighLightFace : public vtkInteractorStyleTrackballCamera {
@@ -36,23 +35,16 @@ public:
         vtkInteractorStyleTrackballCamera);
 
     virtual ~MouseInteractorHighLightFace() { }
-    virtual void OnLeftButtonDown() override;
-    virtual void OnKeyPress() override;
-    void SetActorMap(std::unordered_map<vtkActor*, int>* actorMap);
-    void SetPatchList(MeshLib::PatchList* Mesh);
+    virtual void OnLeftButtonUp() override;
+
+	void OnCommitSplitFace();
+
+    void SetModel(Model* model);
+    void SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector);
 
 private:
-    vtkSmartPointer<vtkActor> pickedActors[2];
-    vtkSmartPointer<vtkProperty> savedProperties[2];
-    MeshLib::PatchList* Mesh;
-    std::unordered_map<vtkActor*, int>* actorMap;
-    vtkNew<vtkNamedColors> colors;
-
-    // 记录已选actor的数量
-    int numPickedActors = 0;
-
-    void UnselectActor(vtkSmartPointer<vtkActor> actor);
-    void SelectActor(vtkSmartPointer<vtkActor> actor);
+    Model* model;
+    std::unique_ptr<SingleFaceSelectorHighlight> selector_;
 };
 
 class MouseInteractorHighLightEdge : public vtkInteractorStyleTrackballCamera {
@@ -62,21 +54,14 @@ public:
         vtkInteractorStyleTrackballCamera);
 
     virtual ~MouseInteractorHighLightEdge() { }
-    virtual void OnLeftButtonDown() override;
-    virtual void OnKeyPress() override;
-    void SetActorMap(std::unordered_map<vtkActor*, int>* actorMap);
-    void SetPatchList(MeshLib::PatchList* Mesh);
+    virtual void OnLeftButtonUp() override;
+
+	void OnCommitSplitEdge();
+
+    void SetModel(Model* model);
+    void SetSelector(std::unique_ptr<SingleEdgeSelectorHighlight> selector);
 
 private:
-    vtkSmartPointer<vtkActor> pickedActors[2];
-    vtkSmartPointer<vtkProperty> savedProperties[2];
-    MeshLib::PatchList* Mesh;
-    std::unordered_map<vtkActor*, int>* actorMap;
-    vtkNew<vtkNamedColors> colors;
-
-    // 记录已选actor的数量
-    int numPickedActors = 0;
-
-    void UnselectActor(vtkSmartPointer<vtkActor> actor);
-    void SelectActor(vtkSmartPointer<vtkActor> actor);
+    Model* model;
+    std::unique_ptr<SingleEdgeSelectorHighlight> selector_;
 };
