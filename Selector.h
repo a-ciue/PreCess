@@ -41,7 +41,7 @@ private:
     //! @brief 取消高亮，修改回原来属性
     static void _cancel_highlight(Actor &selection);
     //! @brief 判断是否已经被选中
-    static bool _is_selected(const vtkActor* new_actor, const std::vector<Actor>& selections);
+    static std::optional<size_t> std:: _is_selected(const vtkActor* new_actor, const std::vector<Actor>& selections);
 };
 
 class SingleFaceSelectorHighlight {

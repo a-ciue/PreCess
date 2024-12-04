@@ -78,6 +78,7 @@ public:
 private:
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
     void update_patches(const std::vector<int>& patch_ids);
+    void update_patches(const std::unordered_set<int>& patch_ids);
 
     //! @brief 更新指定patch的actor
     void update_actors(const std::vector<int>& patch_ids);
