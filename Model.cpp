@@ -11,7 +11,6 @@
 #include "ModelUtil.h"
 
 #include <stdexcept>  // 用于抛出异常
-#include <iostream>   // 调试输出
 
 
 Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
@@ -22,25 +21,29 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
     }
 
     // 提取所有 patch_id
-    std::vector<int> patch_ids;
+    std::unordered_set<int> patch_ids;
+    //std::vector<int> patch_ids_vector;
     for (auto& face : mesh_->faces()) {
 
-        patch_ids.push_back(face->get_g());
+        //patch_ids_vector.push_back(face->get_g());
+        patch_ids.insert(face->get_g());
     }
 
     // 更新 patches_
     update_patches(patch_ids);
 
     // 初始化 blocks_
-    /*
+
     for (const auto& [patch_id, patch_ptr] : patches_) {
-        int block_id = generate_block_id(patch_id); // 根据 patch_id 生成 block_id。这里的generate_block_id(int)是伪代码
+        //int block_id = generate_block_id(patch_id);  根据 patch_id 生成 block_id。这里的generate_block_id(int)是伪代码
+        //可以先block_id = patch_id
+        int block_id = patch_id;
         if (blocks_.find(block_id) == blocks_.end()) {
             blocks_[block_id] = std::make_unique<Block>();
             blocks_[block_id]->id = block_id;
         }
         blocks_[block_id]->patchIDs.insert(patch_id);
-    }*/
+    }
 
     // 初始化 groups_
     /*
@@ -89,7 +92,9 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
     }
 
     // 更新 ModelActor
-    actor_->update_block(target_block_id, target_block->patchIDs); // 假设 ModelActor 有更新 block 的方法
+    // 更新目标 block 的 patchIDs
+    // 调用 ModelActor 的 merge_blocks 函数更新 Actor
+    actor_->merge_blocks(block_ids, block_ids[0], target_block->patchIDs);
 }
 
 
@@ -126,7 +131,8 @@ void Model::merge_groups(const std::vector<int>& group_ids) {
     }
 
     // 更新 ModelActor
-    actor_->update_group(target_group_id, target_group->blockIDs); // 假设 ModelActor 有更新 group 的方法
+    //actor_->update_group(target_group_id, target_group->blockIDs); // 假设 ModelActor 有更新 group 的方法
+    actor_->merge_groups(group_ids, group_ids[0], target_group->blockIDs);
 }
 
 
