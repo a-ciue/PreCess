@@ -24,6 +24,14 @@ public:
         Block,
         Group
     };
+
+    ModelActor(
+            const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
+            const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
+            const std::unordered_map<int, std::unique_ptr<Group>>& groups);
+    //! @brief 从renderer中解除对应actor的绑定
+    ~ModelActor();
+
     void bind_renderer(vtkRenderer* renderer, RenderMode mode);
     // void set_model(Model* model);
 
@@ -31,12 +39,6 @@ public:
     int group_actor_id(vtkActor* actor);
 
 private:
-    ModelActor(
-        const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
-        const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
-        const std::unordered_map<int, std::unique_ptr<Group>>& groups);
-    //! @brief 从renderer中解除对应actor的绑定
-    ~ModelActor();
 
     //! @brief 合并给定id的block的Actor，并删除被合并的Actor
     //! @param block_ids 要合并的block

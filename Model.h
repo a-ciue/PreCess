@@ -20,13 +20,15 @@ struct Patch {
     // 全局id
     std::vector<int> faceIDs_;
     // 三角形的局部id索引
-    std::vector<int[3]> faceTriangles_;
+    std::vector <std::array<int, 3>> faceTriangles_;
+    //std::vector<int[3]> faceTriangles_;
+
     // 全局id
     std::vector<int> vertexIDs_;
     // 坐标
-    std::vector<double[3]> vertexPoints_;
+    std::vector <std::array<double, 3>> vertexPoints_;
+    //std::vector<double[3]> vertexPoints_;
 };
-
 struct Block {
     std::unordered_set<int> patchIDs;
     int id;
