@@ -5,10 +5,10 @@
 #include <vector>
 #include <vtkActor.h>
 #include <vtkCellData.h>
-#include <vtkIdType.h>
+#include <vtkCellPicker.h>
 #include <vtkMapper.h>
 #include <vtkNew.h>
-#include <vtkOriginalCellIds.h>
+#include <vtkDataSetMapper.h>
 #include <vtkPropPicker.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
@@ -17,19 +17,19 @@
 
 namespace Selector {
     std::optional<std::pair<vtkActor*, int>> pick_cell(double posx, double posy, vtkRenderer* renderer) {
-        vtkNew<vtkPropPicker> picker;
-        // 设置拾取位置
-        picker->Pick(posx, posy, 0, renderer);
+        //vtkNew<vtkPropPicker> actorpicker;
+        vtkNew<vtkCellPicker> cellpicker;
+        cellpicker->Pick(posx, posy, 0, renderer);
 
-        
-        vtkActor* actor = picker->GetActor();
+
+        vtkActor* actor = cellpicker->GetActor();
         if (!actor) {
-           
+
             return std::nullopt;
         }
+        vtkNew<vtkCellPicker> cellpicker;
 
-        
-        vtkIdType cellId = picker->GetCellId();
+        vtkIdType cellId = cellpicker->GetCellId();
 
         // 如果cellId为-1，表示没有拾取到单元格
         if (cellId == -1) {
@@ -37,11 +37,19 @@ namespace Selector {
         }
 
         // 在Actor中的位置
-        int localCellIndex = actor->GetMapper()->GetInput()->GetCellData()->GetArray("vtkOriginalCellIds")->GetTuple1(cellId);
+        int localCellIndex = cellpicker->GetCellId();
+
 
         // 返回actor和单元格的索引
         return std::make_pair(actor, localCellIndex);
     }
+}
+
+ActorSelectorHighlight::ActorSelectorHighlight(vtkRenderer* renderer)
+{
+    renderer_ = renderer;
+
+}
 
 void ActorSelectorHighlight::clear() {
     // 取消高亮所有选中的actor
