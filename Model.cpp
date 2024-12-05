@@ -278,3 +278,36 @@ void Model::update_actors(const std::vector<int>& patch_ids)
         actor_->update_group(group_id, groups_[group_id]->blockIDs);
     }
 }
+
+
+// 优化 update_patches 的实现，减少网格遍历次数
+
+void Model::update_patches(const std::vector<int>& patch_ids) {
+    // 使用 unordered_set 来处理 patch_ids 的快速查找
+    std::unordered_set<int> patch_id_set(patch_ids.begin(), patch_ids.end());
+
+    // 调用重载函数
+    update_patches(patch_id_set);
+}
+
+void Model::update_patches(const std::unordered_set<int>& patch_ids) {
+    // 直接使用给定的 patch_ids 集合进行查找
+
+    // 遍历 mesh 中的面并更新对应的 patch
+    for (auto& face : mesh_->faces()) {
+        int face_patch_id = face->get_g();
+        if (patch_ids.find(face_patch_id) != patch_ids.end()) {
+            auto& patch = patches_[face_patch_id];
+            if (!patch) {
+                patch = std::make_unique<Patch>();
+                patch->id_ = face_patch_id;
+            }
+            patch->faceIDs_.push_back(face->id());
+            // 更新顶点信息
+            for (auto vertex : face->vertices()) {
+                patch->vertexIDs_.push_back(vertex->id());
+                patch->vertexPoints_.push_back(vertex->point());
+            }
+        }
+    }
+}
