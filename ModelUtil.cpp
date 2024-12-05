@@ -1,54 +1,75 @@
 ﻿#include "ModelUtil.h"
+#include "ToolMesh.h"
 
-std::unique_ptr<MeshLib::CTMesh> ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
+std::unique_ptr<MeshLib::CTMesh>
+ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
 
-   // cmd = Spline2Tri_BaseGen_Command.bat spline_dir output 60 
-    std::string cmd = "Spline2Tri_BaseGen_Command.bat " + spline_dir.string() + " output 60";
-    cmdPopen(cmd);
+  std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
+  cmdPopen(mkdir_cmd);
 
-    std::filesystem::path output_dir = "output.m";
+  // cmd = Spline2Tri_BaseGen_Command.bat spline_dir output 60
+  std::string cmd =
+      "Spline2Tri_BaseGen_Command.bat " + spline_dir.string() + " temp 60";
+  cmdPopen(cmd);
 
+  std::string stitch_cmd = "./Bin/MeshStitching.exe ./Data/PatchedMesh/ "
+                           "./Data/PatchedMesh/temp_BadPatches.txt"
+                           "./Data/temp.m";
+  cmdPopen(stitch_cmd);
 
-    std::unique_ptr<MeshLib::CTMesh> mesh = std::make_unique<MeshLib::CTMesh>();
-    mesh->read_mesh(output_dir.string());
+  std::filesystem::path output_dir = "./Data/temp.m";
+
+  std::unique_ptr<MeshLib::CTMesh> mesh = std::make_unique<MeshLib::CTMesh>();
+  mesh->read_m(output_dir.string().c_str());
+  return mesh;
 }
 
+static std::unique_ptr<MeshLib::CTMesh>
+remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
+               const std::vector<int> &patch_ids) {
 
-static std::unique_ptr<MeshLib::CTMesh> remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh, const std::vector<int>& patch_ids){
-    // eg: ./Bin/TestCCGL.exe -yamabe_flow_poly_annulus_single ./Data/PatchedMesh/airplane_115.m ./Data/PatchedMesh/airplane_115.uv.m
-    //call ./Bin/CDT_QT_Normal_Remesh.exe -MetricRemesh ./Data/PatchedMesh/airplane_115.uv.m ./Data/PatchedMesh/airplane_115.m 240 60 25 1 3 1 1 0
-    // airplane_115 is the name of the mesh
-    // patch_ids is [240 60 25 1 3 1 1 0]
+  remove("./Data/PatchedMesh/");
+  std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
+  cmdPopen(mkdir_cmd);
+  mesh->write_m("./Data/temp.m");
 
-    mesh->write_m("temp.m");
+  for (auto patch_id : patch_ids) {
+    std::string patch_cmd =
+        "./Bin/TestCCGL.exe -yamabe_flow_poly_annulus_single "
+        "./Data/PatchedMesh/temp_" +
+        std::to_string(patch_id) + ".m ./Data/PatchedMesh/temp_" +
+        std::to_string(patch_id) + ".uv.m";
+    cmdPopen(patch_cmd);
 
-    std::string cmd1 = "./Bin/TestCCGL.exe -yamabe_flow_poly_annulus_single temp.m temp.uv.m";
+    std::string remesh_cmd =
+        "./Bin/TestCCGL.exe -MetricRemesh ./Data/PatchedMesh/temp_" +
+        std::to_string(patch_id) + ".uv.m ./Data/PatchedMesh/temp_" +
+        std::to_string(patch_id) + ".m 240 60 25 1 3 1 1 0";
+    cmdPopen(remesh_cmd);
 
-    std::string cmd = "./Bin/CDT_QT_Normal_Remesh.exe -MetricRemesh temp.uv.m temp.m ";
+    std::string stitch_cmd = "./Bin/MeshStitching.exe ./Data/PatchedMesh/ "
+                             "./Data/PatchedMesh/temp_BadPatches.txt"
+                             "./Data/temp.m";
+    cmdPopen(stitch_cmd);
+  }
 
-    for (int i = 0; i < patch_ids.size(); i++) {
-        cmd += std::to_string(patch_ids[i]) + " ";
-    }
-
-    cmdPopen(cmd1);
-    cmdPopen(cmd);
-
-
+  std::unique_ptr<MeshLib::CTMesh> patched_mesh =
+      std::make_unique<MeshLib::CTMesh>();
+  patched_mesh->read_m("./Data/PatchedMesh/temp.m");
 }
 
-
-std::string cmdPopen(const std::string& cmdLine) {
-    char buffer[1024] = { '\0' };
-    FILE* pf = NULL;
-    pf = _popen(cmdLine.c_str(), "r");
-    if (NULL == pf) {
-        printf("open pipe failed\n");
-        return std::string("");
-    }
-    std::string ret;
-    while (fgets(buffer, sizeof(buffer), pf)) {
-        ret += buffer;
-    }
-    _pclose(pf);
-    return ret;
+std::string cmdPopen(const std::string &cmdLine) {
+  char buffer[1024] = {'\0'};
+  FILE *pf = NULL;
+  pf = _popen(cmdLine.c_str(), "r");
+  if (NULL == pf) {
+    printf("open pipe failed\n");
+    return std::string("");
+  }
+  std::string ret;
+  while (fgets(buffer, sizeof(buffer), pf)) {
+    ret += buffer;
+  }
+  _pclose(pf);
+  return ret;
 }
