@@ -36,9 +36,9 @@ public:
     void bind_renderer(vtkRenderer* renderer, RenderMode mode);
     // void set_model(Model* model);
 
-    //std::optional<int> block_actor_id(vtkActor* actor);
-    //std::optional<int> group_actor_id(vtkActor* actor);
-    std::optional<int> patch_actor_id(vtkActor* actor);
+    int block_actor_id(vtkActor* actor);
+    int group_actor_id(vtkActor* actor);
+    int patch_actor_id(vtkActor* actor);
 
 private:
     //! @brief 合并给定id的block的Actor，并删除被合并的Actor

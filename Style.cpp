@@ -1,33 +1,30 @@
 ﻿#include "Style.h"
+#include <vtkRenderWindowInteractor.h>
+#include "Model.h"
 
-MouseInterActorHighLightActor* MouseInterActorHighLightActor::New()
-{
-    return new MouseInterActorHighLightActor;
-}
-
-void MouseInterActorHighLightActor::OnLeftButtonUp()
+void MouseInteractorHighLightActor::OnLeftButtonUp()
 {
     if (selector_ != nullptr)
     {
-        double pos[2];
+        int pos[2];
         this->GetInteractor()->GetEventPosition(pos);
         selector_->select(pos[0], pos[1]);
     }
     vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
 }
 
-void MouseInterActorHighLightActor::SetModel(Model* model)
+void MouseInteractorHighLightActor::SetModel(Model* model)
 {
-    model = model;
+    model_ = model;
 }
 
-void MouseInterActorHighLightActor::SetSelector(std::unique_ptr<ActorSelectorHighlight> selector)
+void MouseInteractorHighLightActor::SetSelector(std::unique_ptr<ActorSelectorHighlight> selector)
 {
     selector_ = std::move(selector);
 }
 
 
-void MouseInterActorHighLightActor::OnCommitMergeBlocks()
+void MouseInteractorHighLightActor::OnCommitMergeBlocks()
 {
     if (selector_ != nullptr)
     {
@@ -35,13 +32,13 @@ void MouseInterActorHighLightActor::OnCommitMergeBlocks()
         std::vector<int> block_ids;
         for (auto actor : actors)
         {
-            block_ids.push_back(model->actor().block_actor_id(actor));
+            block_ids.push_back(model_->actor().block_actor_id(actor));
         }
-        model->merge_blocks(block_ids);
+        model_->merge_blocks(block_ids);
     }
 }
 
-void MouseInterActorHighLightActor::OnCommitMergeGroups()
+void MouseInteractorHighLightActor::OnCommitMergeGroups()
 {
     if (selector_ != nullptr)
     {
@@ -49,9 +46,9 @@ void MouseInterActorHighLightActor::OnCommitMergeGroups()
         std::vector<int> group_ids;
         for (auto actor : actors)
         {
-            group_ids.push_back(model->actor().group_actor_id(actor));
+            group_ids.push_back(model_->actor().group_actor_id(actor));
         }
-        model->merge_groups(group_ids);
+        model_->merge_groups(group_ids);
     }
 }
 
@@ -59,7 +56,7 @@ void MouseInteractorHighLightFace::OnLeftButtonUp()
 {
     if (selector_ != nullptr)
     {
-        double pos[2];
+        int pos[2];
         this->GetInteractor()->GetEventPosition(pos);
         selector_->select(pos[0], pos[1]);
     }
@@ -68,7 +65,7 @@ void MouseInteractorHighLightFace::OnLeftButtonUp()
 
 void MouseInteractorHighLightFace::SetModel(Model* model)
 {
-    model = model;
+    model_ = model;
 }
 
 void MouseInteractorHighLightFace::SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector)
@@ -83,7 +80,8 @@ void MouseInteractorHighLightFace::OnCommitSplitFace()
         auto selected_face = selector_->get();
         if (selected_face.has_value())
         {
-            model->split_face(selected_face->actor, selected_face->local_id);
+            int patch_id = model_->actor().patch_actor_id(selected_face->patch_actor);
+            model_->split_face(patch_id, selected_face->local_id);
         }
     }
 }
@@ -92,7 +90,7 @@ void MouseInteractorHighLightEdge::OnLeftButtonUp()
 {
     if (selector_ != nullptr)
     {
-        double pos[2];
+        int pos[2];
         this->GetInteractor()->GetEventPosition(pos);
         selector_->select(pos[0], pos[1]);
     }
@@ -101,7 +99,7 @@ void MouseInteractorHighLightEdge::OnLeftButtonUp()
 
 void MouseInteractorHighLightEdge::SetModel(Model* model)
 {
-    model = model;
+    model_ = model;
 }
 
 
@@ -118,7 +116,8 @@ void MouseInteractorHighLightEdge::OnCommitSplitEdge()
         auto selected_edge = selector_->get();
         if (selected_edge.has_value())
         {
-            model->split_edge(selected_edge->actor, selected_edge->v_local_id);
+            int patch_id = model_->actor().patch_actor_id(selected_edge->actor);
+            model_->split_edge(patch_id, selected_edge->v_local_id);
         }
     }
 }

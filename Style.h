@@ -1,6 +1,7 @@
 ﻿#include <unordered_map>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkSmartPointer.h>
+#include <vtkObjectFactory.h>
 
 #include "Selector.h"
 
@@ -8,13 +9,14 @@ class vtkProperty;
 class vtkNamedColors;
 class Model;
 
-class MouseInterActorHighLightActor : public vtkInteractorStyleTrackballCamera {
+namespace {
+class MouseInteractorHighLightActor : public vtkInteractorStyleTrackballCamera {
 public:
-    static MouseInterActorHighLightActor* New();
-    vtkTypeMacro(MouseInterActorHighLightActor,
+    static MouseInteractorHighLightActor* New();
+    vtkTypeMacro(MouseInteractorHighLightActor,
         vtkInteractorStyleTrackballCamera);
 
-    virtual ~MouseInterActorHighLightActor() { }
+    virtual ~MouseInteractorHighLightActor() { }
     virtual void OnLeftButtonUp() override;
 
     void OnCommitMergeBlocks();
@@ -24,9 +26,10 @@ public:
     void SetSelector(std::unique_ptr<ActorSelectorHighlight> selector);
 
 private:
-    Model* model;
+    Model* model_;
     std::unique_ptr<ActorSelectorHighlight> selector_;
 };
+vtkStandardNewMacro(MouseInteractorHighLightActor);
 
 class MouseInteractorHighLightFace : public vtkInteractorStyleTrackballCamera {
 public:
@@ -37,15 +40,16 @@ public:
     virtual ~MouseInteractorHighLightFace() { }
     virtual void OnLeftButtonUp() override;
 
-	void OnCommitSplitFace();
+    void OnCommitSplitFace();
 
     void SetModel(Model* model);
     void SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector);
 
 private:
-    Model* model;
+    Model* model_;
     std::unique_ptr<SingleFaceSelectorHighlight> selector_;
 };
+vtkStandardNewMacro(MouseInteractorHighLightFace);
 
 class MouseInteractorHighLightEdge : public vtkInteractorStyleTrackballCamera {
 public:
@@ -56,12 +60,14 @@ public:
     virtual ~MouseInteractorHighLightEdge() { }
     virtual void OnLeftButtonUp() override;
 
-	void OnCommitSplitEdge();
+    void OnCommitSplitEdge();
 
     void SetModel(Model* model);
     void SetSelector(std::unique_ptr<SingleEdgeSelectorHighlight> selector);
 
 private:
-    Model* model;
+    Model* model_;
     std::unique_ptr<SingleEdgeSelectorHighlight> selector_;
 };
+vtkStandardNewMacro(MouseInteractorHighLightEdge);
+}
