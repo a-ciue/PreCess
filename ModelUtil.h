@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <memory>
 #include <vector>
-#include <unordered_map>
 
 class vtkNamedColors;
 

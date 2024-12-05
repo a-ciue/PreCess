@@ -1,6 +1,7 @@
 ﻿#include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include "ModelActor.h"
 
 namespace MeshLib {
 template <typename V, typename E, typename F, typename H>
@@ -11,8 +12,6 @@ class CToolFace;
 class CToolHalfEdge;
 typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
 }
-
-class ModelActor;
 
 struct Patch {
     // patch id
@@ -44,7 +43,6 @@ class Model {
 public:
     //! @brief 根据给定CTMesh构造update_patches, blocks_, groups_，actor_构造函数
     Model(std::unique_ptr<MeshLib::CTMesh> mesh);
-    ~Model();
 
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch

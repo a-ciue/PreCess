@@ -262,3 +262,19 @@ ModelActor& Model::actor() {
     // 返回 actor 的引用
     return *actor_;
 }
+void Model::update_actors(const std::vector<int>& patch_ids)
+{
+    std::unordered_set<int> block_ids, group_ids;
+    for (int patch_id : patch_ids) {
+        block_ids.insert(patch_block_id(patch_id));
+        actor_->update_patch(patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
+    }
+    for (int block_id : block_ids) {
+        group_ids.insert(block_group_id(block_id));
+        actor_->update_block(block_id, blocks_[block_id]->patchIDs);
+    }
+    for (int group_id : group_ids)
+    {
+        actor_->update_group(group_id, groups_[group_id]->blockIDs);
+    }
+}

@@ -14,8 +14,6 @@
 #include "Style.h"
 #include <vtkAppendPolyData.h>
 
-//! @brief 完成三个renderer的初始化，其中patch_actors_可以由model_->update_patches_and_actors帮助更新
-//! @param model
 // ModelActor::ModelActor(Model* model)
 //     : model_(model)
 //{
@@ -33,7 +31,7 @@ void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
     switch (mode) {
     case RenderMode::Face: {
         face_renderer_ = renderer;
-        mode_actors = &block_actors_;
+        mode_actors = &patch_actors_;
         break;
     }
     case RenderMode::Block: {
@@ -46,25 +44,36 @@ void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
         mode_actors = &group_actors_;
         break;
     }
-    default:
-        break;
     }
 
-    for (auto&& [_, actor] : *mode_actors)
-    {
+    for (auto&& [_, actor] : *mode_actors) {
         renderer->AddActor(actor);
     }
 }
 
-int ModelActor::block_actor_id(vtkActor* actor)
+std::optional<int> ModelActor::patch_actor_id(vtkActor* actor)
 {
-    return block_actor_id_[actor];
+    if (patch_actor_id_.count(actor)) {
+        return patch_actor_id_[actor];
+    }
+    return std::nullopt;
 }
 
-int ModelActor::group_actor_id(vtkActor* actor)
-{
-    return group_actor_id_[actor];
-}
+//std::optional<int> ModelActor::block_actor_id(vtkActor* actor)
+//{
+//    if (block_actor_id_.count(actor)) {
+//        return block_actor_id_[actor];
+//    }
+//    return std::nullopt;
+//}
+//
+//std::optional<int> ModelActor::group_actor_id(vtkActor* actor)
+//{
+//    if (block_actor_id_.count(actor)) {
+//        return group_actor_id_[actor];
+//    }
+//    return std::nullopt;
+//}
 
 ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
     const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
@@ -72,6 +81,10 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 {
     for (auto&& [_, patch] : patches) {
         update_patch(patch->id_, patch->vertexPoints_, patch->faceTriangles_);
+    }
+
+    for (auto&& [patch_id, patch_actor] : patch_actors_) {
+        patch_actor_id_[patch_actor] = patch_id;
     }
 
     for (auto&& [_, block] : blocks) {
@@ -87,33 +100,27 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
     }
 
     for (auto&& [group_id, group_actor] : group_actors_) {
-        block_actor_id_[group_actor] = group_id;
+        group_actor_id_[group_actor] = group_id;
     }
 }
 
 ModelActor::~ModelActor()
 {
-    if (face_renderer_)
-    {
-        //ActorMap& face_actors = *mode_actors_[RenderMode::Face];
-        for (auto&& [_, actor] : block_actors_)
-        {
+    if (face_renderer_) {
+        // ActorMap& face_actors = *mode_actors_[RenderMode::Face];
+        for (auto&& [_, actor] : patch_actors_) {
             face_renderer_->RemoveActor(actor);
         }
     }
-    if (block_renderer_)
-    {
-        //ActorMap& block_actors = *mode_actors_[RenderMode::Block];
-        for (auto&& [_, actor] : block_actors_)
-        {
+    if (block_renderer_) {
+        // ActorMap& block_actors = *mode_actors_[RenderMode::Block];
+        for (auto&& [_, actor] : block_actors_) {
             block_renderer_->RemoveActor(actor);
         }
     }
-    if (group_renderer_)
-    {
-        //ActorMap& group_actors = *mode_actors_[RenderMode::Group];
-        for (auto&& [_, actor] : group_actors_)
-        {
+    if (group_renderer_) {
+        // ActorMap& group_actors = *mode_actors_[RenderMode::Group];
+        for (auto&& [_, actor] : group_actors_) {
             group_renderer_->RemoveActor(actor);
         }
     }
@@ -157,18 +164,18 @@ void ModelActor::merge_groups(const std::vector<int>& group_ids, int father_grou
     update_block(father_group, father_group_blocks);
 }
 
-void ModelActor::update_patch(int patch_id, const std::vector<double[3]>& points, const std::vector<int[3]>& triangles)
+void ModelActor::update_patch(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles)
 {
     vtkActor* patch_actor = patch_actors_[patch_id];
 
     // vtkPolyData
     vtkSmartPointer<vtkPoints> points_data = vtkSmartPointer<vtkPoints>::New();
-    for (const double(&point)[3] : points) {
-        points_data->InsertNextPoint(point);
+    for (const std::array<double, 3>& point : points) {
+        points_data->InsertNextPoint(point.data());
     }
 
     vtkSmartPointer<vtkCellArray> triangles_data = vtkSmartPointer<vtkCellArray>::New();
-    for (const int(&triangle)[3] : triangles) {
+    for (const std::array<int, 3>& triangle : triangles) {
         vtkIdType triangle_idxs[3] { triangle[0], triangle[1], triangle[2] };
         triangles_data->InsertNextCell(3, triangle_idxs);
     }

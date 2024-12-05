@@ -1,5 +1,6 @@
 ﻿#ifndef MODELACTOR_H
 #define MODELACTOR_H
+#include <optional>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -26,20 +27,20 @@ public:
     };
 
     ModelActor(
-            const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
-            const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
-            const std::unordered_map<int, std::unique_ptr<Group>>& groups);
+        const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
+        const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
+        const std::unordered_map<int, std::unique_ptr<Group>>& groups);
     //! @brief 从renderer中解除对应actor的绑定
     ~ModelActor();
 
     void bind_renderer(vtkRenderer* renderer, RenderMode mode);
     // void set_model(Model* model);
 
-    int block_actor_id(vtkActor* actor);
-    int group_actor_id(vtkActor* actor);
+    //std::optional<int> block_actor_id(vtkActor* actor);
+    //std::optional<int> group_actor_id(vtkActor* actor);
+    std::optional<int> patch_actor_id(vtkActor* actor);
 
 private:
-
     //! @brief 合并给定id的block的Actor，并删除被合并的Actor
     //! @param block_ids 要合并的block
     //! @param father_block 留下的block
@@ -55,7 +56,7 @@ private:
     //! @param patch_id 要更新的patch
     //! @param points 坐标数据
     //! @param triangles 三角形索引数组
-    void update_patch(int patch_id, const std::vector<double[3]>& points, const std::vector<int[3]>& triangles);
+    void update_patch(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
     //! @brief 更新指定block的actor的mapper
     void update_block(int block_id, const std::unordered_set<int>& block_patches);
     //! @brief 更新指定group的actor的mapper
@@ -71,6 +72,7 @@ private:
     vtkRenderer* block_renderer_ {};
     vtkRenderer* group_renderer_ {};
     ActorMap patch_actors_;
+    std::unordered_map<vtkActor*, int> patch_actor_id_;
     ActorMap block_actors_;
     std::unordered_map<vtkActor*, int> block_actor_id_;
     ActorMap group_actors_;

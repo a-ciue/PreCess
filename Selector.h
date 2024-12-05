@@ -48,7 +48,7 @@ class SingleFaceSelectorHighlight {
 public:
     struct SelectedFace {
         //! @brief 面所在的actor，借由actor可以找到全局id
-        vtkActor* actor;
+        vtkActor* patch_actor;
         //! @brief 面局部索引id
         int local_id;
     };
