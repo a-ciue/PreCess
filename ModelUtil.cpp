@@ -56,6 +56,7 @@ ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
   std::unique_ptr<MeshLib::CTMesh> patched_mesh =
       std::make_unique<MeshLib::CTMesh>();
   patched_mesh->read_m("./Data/PatchedMesh/temp.m");
+  return patched_mesh;
 }
 
 std::string cmdPopen(const std::string &cmdLine) {

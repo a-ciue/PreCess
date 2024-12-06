@@ -13,6 +13,11 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkPoints.h>
+#include <vtkPolyDataMapper.h>
 
 
 namespace Selector {
@@ -20,14 +25,13 @@ namespace Selector {
         //vtkNew<vtkPropPicker> actorpicker;
         vtkNew<vtkCellPicker> cellpicker;
         cellpicker->Pick(posx, posy, 0, renderer);
-
+        
 
         vtkActor* actor = cellpicker->GetActor();
         if (!actor) {
 
             return std::nullopt;
         }
-        vtkNew<vtkCellPicker> cellpicker;
 
         vtkIdType cellId = cellpicker->GetCellId();
 
@@ -164,8 +168,49 @@ void SingleFaceSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMa
 
 bool SingleFaceSelectorHighlight::_is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection) {
    
-    if (selection && selection->actor == new_face.actor && selection->local_id == new_face.local_id) {
+    if (selection && selection->patch_actor == new_face.patch_actor && selection->local_id == new_face.local_id) {
         return true;
     }
+    return false;
+}
+
+SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer, Model* model)
+{
+}
+
+SingleEdgeSelectorHighlight::~SingleEdgeSelectorHighlight()
+{
+}
+
+std::optional<SingleEdgeSelectorHighlight::SelectedEdge> SingleEdgeSelectorHighlight::get()
+{
+    return std::optional<SelectedEdge>();
+}
+
+void SingleEdgeSelectorHighlight::clear()
+{
+}
+
+void SingleEdgeSelectorHighlight::select(double posx, double posy)
+{
+    vtkActor* actor;
+    static_cast<vtkPolyDataMapper*>(actor->GetMapper())->GetInput();
+    double pPos[3]{};
+    vtkNew<vtkCellPicker> picker;
+    picker->Pick(posx, posy, 0, renderer_);
+    picker->GetPCoords(pPos);
+    pPos[2] = 1 - pPos[1] - pPos[0];
+    if (picker->GetCellId() != -1)
+    {
+
+    }
+}
+
+void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper)
+{
+}
+
+bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, Model* model)
+{
     return false;
 }

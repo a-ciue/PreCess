@@ -19,6 +19,7 @@ find_package(VTK REQUIRED COMPONENTS
     RenderingFreeType
     RenderingGL2PSOpenGL2
     RenderingOpenGL2
+    IOGeometry
 )
 
 find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Core Quick)
