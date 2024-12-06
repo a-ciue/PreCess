@@ -24,11 +24,11 @@ ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
   return mesh;
 }
 
-static std::unique_ptr<MeshLib::CTMesh>
-remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
+std::unique_ptr<MeshLib::CTMesh>
+ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
                const std::vector<int> &patch_ids) {
 
-  remove("./Data/PatchedMesh/");
+  std::filesystem::remove("./Data/PatchedMesh/");
   std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
   cmdPopen(mkdir_cmd);
   mesh->write_m("./Data/temp.m");
@@ -72,4 +72,24 @@ std::string cmdPopen(const std::string &cmdLine) {
   }
   _pclose(pf);
   return ret;
+}
+
+void ModelUtil::_attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::CToolHalfEdge* he1,
+	MeshLib::CToolEdge* e)
+{
+    if (he0 == NULL) {
+        e->halfedge(0) = he1;
+        e->halfedge(1) = NULL;
+    } else if (he1 == NULL) {
+        e->halfedge(0) = he0;
+        e->halfedge(1) = NULL;
+    } else {
+        e->halfedge(0) = he0;
+        e->halfedge(1) = he1;
+    }
+
+    if (he0 != NULL)
+        he0->edge() = e;
+    if (he1 != NULL)
+        he1->edge() = e;
 }

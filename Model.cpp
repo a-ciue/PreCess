@@ -46,20 +46,65 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
     }
 
     // 初始化 groups_
-    /*
     for (const auto& [block_id, block_ptr] : blocks_) {
-        int group_id = generate_group_id(block_id); // 根据 block_id 生成 group_id。这里的generate_group_id(int)是伪代码
+        //int group_id = generate_group_id(block_id); // 根据 block_id 生成 group_id。这里的generate_group_id(int)是伪代码
+        int group_id = block_id;
         if (groups_.find(group_id) == groups_.end()) {
             groups_[group_id] = std::make_unique<Group>();
             groups_[group_id]->id = group_id;
         }
         groups_[group_id]->blockIDs.insert(block_id);
-    }*/
+    }
 
     // 初始化 ModelActor
     actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
 }
 
+void Model::split_face(int patch_id, int face_id)
+{
+    int face_gid = patches_[patch_id]->faceIDs_[face_id];
+    MeshLib::CToolFace* face = mesh_->idFace(face_gid);
+
+    ModelUtil::split_face(face, mesh_.get());
+
+    update_actors({ patch_id });
+}
+
+void Model::split_edge(int patch_id, std::array<int, 2> edge_v_ids)
+{
+    std::vector<int>& vids = patches_[patch_id]->vertexIDs_;
+    std::array<int, 2> edge_v_gid { vids[edge_v_ids[0]], vids[edge_v_ids[1]] };
+    MeshLib::CToolVertex *v1 = mesh_->idVertex(edge_v_gid[0]),
+                         *v2 = mesh_->idVertex(edge_v_gid[1]);
+
+    MeshLib::CToolEdge* edge {};
+    for (MeshLib::CTMesh::VertexEdgeIterator ei(v1); !ei.end(); ei++)
+    {
+        MeshLib::CToolEdge* ce = *ei;
+	    if (mesh_->edgeVertex1(ce) == v2 || mesh_->edgeVertex2(ce) == v2)
+	    {
+            edge = ce;
+		    break;
+	    }
+    }
+
+    if (!edge)
+    {
+        throw std::runtime_error("invalid vertex id pair");
+    }
+    ModelUtil::split_edge(edge, mesh_.get());
+
+    std::vector<int> patch_ids {};
+    MeshLib::CToolHalfEdge* he1 = mesh_->edgeHalfedge(edge, 0);
+    patch_ids.push_back(mesh_->halfedgeFace(he1)->get_g());
+    if (MeshLib::CToolHalfEdge* he2 = mesh_->edgeHalfedge(edge, 1);
+        he2 && mesh_->halfedgeFace(he2)->get_g() != patch_ids.front())
+    // 被切分edge两侧不同属一个patch
+    {
+        patch_ids.push_back(mesh_->halfedgeFace(he2)->get_g());
+    }
+    update_actors(patch_ids);
+}
 
 void Model::merge_blocks(const std::vector<int>& block_ids) {
     if (block_ids.empty()) {
@@ -304,9 +349,11 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids) {
             }
             patch->faceIDs_.push_back(face->id());
             // 更新顶点信息
-            for (auto vertex : face->vertices()) {
+           for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); vi++) {
+                auto vertex = *vi;
                 patch->vertexIDs_.push_back(vertex->id());
-                patch->vertexPoints_.push_back(vertex->point());
+                CPoint& vp = vertex->point();
+                patch->vertexPoints_.emplace_back(std::array{ vp[0], vp[1], vp[2] });
             }
         }
     }

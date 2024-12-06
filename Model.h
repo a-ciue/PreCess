@@ -1,6 +1,7 @@
 ﻿#include <memory>
 #include <unordered_map>
 #include <unordered_set>
+#include <array>
 #include "ModelActor.h"
 
 namespace MeshLib {
@@ -51,7 +52,7 @@ public:
     //! @brief 根据给定id找到mesh的edge，进行边分割
     //! @param patch_id 边所在的patch
     //! @param face_id 在该patch上的边的端点id
-    void split_edge(int patch_id, std::pair<int, int> edge_v_ids);
+    void split_edge(int patch_id, std::array<int, 2> edge_v_ids);
 
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids

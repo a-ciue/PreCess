@@ -51,29 +51,29 @@ void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
     }
 }
 
-std::optional<int> ModelActor::patch_actor_id(vtkActor* actor)
+int ModelActor::patch_actor_id(vtkActor* actor)
 {
     if (patch_actor_id_.count(actor)) {
         return patch_actor_id_[actor];
     }
-    return std::nullopt;
+    throw std::runtime_error("patch actor not valid");
 }
 
-//std::optional<int> ModelActor::block_actor_id(vtkActor* actor)
-//{
-//    if (block_actor_id_.count(actor)) {
-//        return block_actor_id_[actor];
-//    }
-//    return std::nullopt;
-//}
-//
-//std::optional<int> ModelActor::group_actor_id(vtkActor* actor)
-//{
-//    if (block_actor_id_.count(actor)) {
-//        return group_actor_id_[actor];
-//    }
-//    return std::nullopt;
-//}
+int ModelActor::block_actor_id(vtkActor* actor)
+{
+    if (block_actor_id_.count(actor)) {
+        return block_actor_id_[actor];
+    }
+    throw std::runtime_error("block actor not valid");
+}
+
+int ModelActor::group_actor_id(vtkActor* actor)
+{
+    if (block_actor_id_.count(actor)) {
+        return group_actor_id_[actor];
+    }
+    throw std::runtime_error("group actor not valid");
+}
 
 ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
     const std::unordered_map<int, std::unique_ptr<Block>>& blocks,

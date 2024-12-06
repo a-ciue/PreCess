@@ -45,5 +45,6 @@ public:
 
 private:
     static std::string cmdPopen(const std::string& cmdLine);
+    static void _attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::CToolHalfEdge* he1, MeshLib::CToolEdge* e);
 };
 #endif // MODELUTIL_H
