@@ -28,13 +28,13 @@ qt_standard_project_setup()
 qt_add_executable(${MYNAME} main.cpp)
 # 设置编译完成的组件在 qrc:/qt/qml
 qt_policy(SET QTP0001 NEW)
-#qt_add_qml_module(${MYNAME}
-#    URI fileLoader
-#    QML_FILES
-#        Main.qml
-#    SOURCES
-#        presenter.h MyVTKItem.h MyVtkItem.cpp
-#)
+qt_add_qml_module(${MYNAME}
+    URI fileLoader
+    QML_FILES
+        Main.qml
+    SOURCES
+        presenter.h MyVTKItem.h MyVtkItem.cpp
+)
 
 add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp)
 
