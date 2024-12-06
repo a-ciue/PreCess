@@ -177,9 +177,13 @@ template <typename V, typename E, typename F, typename H>
 class CToolMesh : public CBaseMesh<V, E, F, H> {
 public:
   typedef V CVertex;
+  using V = CVertex;
   typedef E CEdge;
+  using E = CEdge;
   typedef F CFace;
+  using F = CFace;
   typedef H CHalfEdge;
+  using H = CHalfEdge;
 
   typedef CBoundary<V, E, F, H> CBoundary;
   typedef CLoop<V, E, F, H> CLoop;
