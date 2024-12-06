@@ -17,9 +17,12 @@
 #include <vtkSphereSource.h>
 #include <vtkOBJReader.h>
 
+#include "Model.h"
+#include "Style.h"
+
 struct MyVtkItem : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    //Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     QML_ELEMENT
 public:
     MyVtkItem();                              //槽函数，改变边框重置相机
@@ -28,30 +31,44 @@ public:
         static Data* New();
         vtkTypeMacro(Data, vtkObject);
 
-        vtkNew<vtkActor> actor;               //以下是用模板构建各种图形（或者控制等）的类
-        vtkNew<vtkRenderer> renderer;
-        vtkNew<vtkConeSource> cone;
-        vtkNew<vtkSphereSource> sphere;
-        vtkNew<vtkCapsuleSource> capsule;
-        vtkNew<vtkPolyDataMapper> mapper;
+        //vtkNew<vtkActor> actor;               //以下是用模板构建各种图形（或者控制等）的类
+        // 0 face_renderer, 1 block_renderer, 2 group_renderer
+        vtkNew<vtkRenderer> renderer[3];
+        vtkRenderer* curRenderer {};
+
+        std::unique_ptr<Model> model;
+        vtkNew<MouseInteractorHighLightActor> blockStyle;
+        vtkNew<MouseInteractorHighLightActor> groupStyle;
+        vtkNew<MouseInteractorHighLightFace> faceStyle;
+        vtkNew<MouseInteractorHighLightEdge> edgeStyle;
+        vtkInteractorStyleTrackballCamera* curStyle{};
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
     void destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData) override;
 
     void resetCamera();
-    void dispatchChangedSource();
-    Q_INVOKABLE void readFile(QUrl path);                   //读取文档部分
+    //void dispatchChangedSource();
+
+    Q_INVOKABLE void readSpline(QUrl spline_path);
+    Q_INVOKABLE void writeMesh(QUrl spline_path);
+    Q_INVOKABLE void changeRenderer(QString renderMode);
+    Q_INVOKABLE void bindStyle(QString function);
+    Q_INVOKABLE void unbindStyle(QString function);
+    Q_INVOKABLE void commitChange(QString function);
+
+    
 
     // Q_PROPERTY(QString file READ file WRITE setFile NOTIFY fileChanged)
-    QString source() const { return _source; }
-    void setSource(QString v);
+    //QString source() const { return _source; }
+    //void setSource(QString v);
 
     bool event(QEvent* ev) override;
 
 signals:
-    void sourceChanged(QString);
-    void clicked();
+    //void sourceChanged(QString);
+    void splineLoadFailed(QString);
+    void clicked(qreal x, qreal y);
 
 private:
     QString _source;

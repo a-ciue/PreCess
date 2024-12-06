@@ -1,22 +1,32 @@
-﻿#include <array>
-#include "ModelUtil.h"
+﻿#include "ModelUtil.h"
 #include "ToolMesh.h"
 #include "FaceSplitter.h"
+
+#include <array>
+#include <vtkMinimalStandardRandomSequence.h>
+#include <vtkNamedColors.h>
+#include <filesystem>
+
+vtkNew<vtkMinimalStandardRandomSequence> ModelUtil::randomSequence;
+vtkNew<vtkNamedColors> ModelUtil::colors;
 
 std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
 
-  std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
-  cmdPopen(mkdir_cmd);
+  //std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
+  //cmdPopen(mkdir_cmd);
+    std::filesystem::remove_all("./Data/PatchedMesh");
+    std::filesystem::create_directories("./Data/PatchedMesh");
+    std::filesystem::copy_file(spline_dir, ".\\Data\\PatchedMesh\\temp.stp");
 
   // cmd = Spline2Tri_BaseGen_Command.bat spline_dir output 60
   std::string cmd =
-      "Spline2Tri_BaseGen_Command.bat " + spline_dir.string() + " temp 60";
+      "Spline2Tri_BaseGen_Command.bat " ".\\Data\\PatchedMesh\\temp.stp" " .\\Data\\PatchedMesh\\temp 60";
   cmdPopen(cmd);
 
-  std::string stitch_cmd = "./Bin/MeshStitching.exe ./Data/PatchedMesh/ "
-                           "./Data/PatchedMesh/temp_BadPatches.txt"
-                           "./Data/temp.m";
+  std::string stitch_cmd = ".\\Bin\\MeshStitching.exe .\\Data\\PatchedMesh\\ "
+                           ".\\Data\\PatchedMesh\\temp_BadPatches.txt "
+                           ".\\Data\\temp.m";
   cmdPopen(stitch_cmd);
 
   std::filesystem::path output_dir = "./Data/temp.m";

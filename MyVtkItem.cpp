@@ -1,4 +1,6 @@
 #include "MyVtkItem.h"
+#include "ModelUtil.h"
+#include "ToolMesh.h"
 
 MyVtkItem::MyVtkItem()
 {
@@ -10,43 +12,23 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
 {
     vtkNew<Data> vtk;
 
-    vtk->actor->SetMapper(vtk->mapper);
-
-    vtk->renderer->AddActor(vtk->actor);
-    vtk->renderer->SetBackground(0.5, 0.5, 0.7);
-    vtk->renderer->SetBackground2(0.7, 0.7, 0.7);
-    vtk->renderer->SetGradientBackground(true);
-
-    renderWindow->AddRenderer(vtk->renderer);
-
-    // Remember: QML can delete our underlying QSGNode (which calls this method) at any time.
-    // We have to re-synchronize our Qt properties with our VTK properties at any time.
-    // To this end we've added a "force" parameter to our Qt property setter which is set true
-    // here in initializeVtk but is defaulted false whenever QML (or other C++ code) invokes it.
-    //
-    // To see QML randomly delete our QSGNode, split horizontally, then split vertically and then
-    // unsplit the smallest top-most view and observe the console output.
-    //
-    // You'll see something like:
-    //
-    // clang-format off
-    //qml: constructed ItemDelegate(0x1f8d43946a0, "viewBase 0") SplitView_QMLTYPE_1_QML_5(0x1f8d4395660, "splitView 0")
-    //qml: constructed ItemDelegate(0x1f8d4395780, "itemBase 0")
-    //qml: constructed ItemDelegate(0x1f8d4395c00, "itemBase 1")
-    //qml: constructed ItemDelegate(0x1f8d4394e80, "viewBase 1") SplitView_QMLTYPE_1_QML_5(0x1f8d4394fa0, "splitView 1")
-    //qml: constructed ItemDelegate(0x1f8d43950c0, "itemBase 2")
-    //qml: destructed ItemDelegate(0x1f8d4395780, "itemBase 0") SplitView_QMLTYPE_1_QML_5(0x1f8d4394fa0, "splitView 1")
-    //qml: destructed ItemDelegate(0x1f8d4394e80, "viewBase 1") SplitView_QMLTYPE_1_QML_5(0x1f8d4395660, "splitView 0")
-    // clang-format on
-    //
-    //    Notice that there are 2 (two) 'destructed' messages but you only unsplit once!!
-    //    QML deleted both "small" QSGNodes and then created a new QSGNode to fill the empty column.
-    dispatchChangedSource();
-
     // Note:  It is okay to store some non-graphical VTK objects in the QQuickVTKItem instead of the
     // vtkUserData but ONLY if they are accessed from the qml-render-thread. (i.e. only in the
     // initializeVTK, destroyingVTK or dispatch_async methods)
-    vtk->renderer->GetActiveCamera()->DeepCopy(_camera);
+    // vtk->renderer->GetActiveCamera()->DeepCopy(_camera);
+    for (int i = 0; i < 3; i++) {
+        vtk->renderer[i]->SetBackground(0.5, 0.5, 0.7);
+        vtk->renderer[i]->SetBackground2(0.7, 0.7, 0.7);
+        vtk->renderer[i]->SetGradientBackground(true);
+    }
+    vtk->blockStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[1]));
+    vtk->blockStyle->SetDefaultRenderer(vtk->renderer[1]);
+    vtk->groupStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[2]));
+    vtk->groupStyle->SetDefaultRenderer(vtk->renderer[2]);
+    vtk->faceStyle->SetSelector(std::make_unique<SingleFaceSelectorHighlight>(vtk->renderer[0]));
+    vtk->faceStyle->SetDefaultRenderer(vtk->renderer[0]);
+    vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer[0], vtk->model.get()));
+    vtk->edgeStyle->SetDefaultRenderer(vtk->renderer[0]);
 
     return vtk;
 }
@@ -54,26 +36,30 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
 void MyVtkItem::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
-    _camera->DeepCopy(vtk->renderer->GetActiveCamera());
+    if (vtk->curRenderer) {
+        _camera->DeepCopy(vtk->curRenderer->GetActiveCamera());
+    }
 }
 
 void MyVtkItem::resetCamera()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         auto* vtk = Data::SafeDownCast(userData);
-        vtk->renderer->ResetCamera();
+        if (vtk->curRenderer) {
+            vtk->curRenderer->ResetCamera();
+        }
         scheduleRender();
     });
 }
 
-void MyVtkItem::setSource(QString v)
-{
-    if (_source != v) {
-        _source = v;
-        dispatchChangedSource();
-        emit sourceChanged(v);
-    }
-}
+// void MyVtkItem::setSource(QString v)
+//{
+//     if (_source != v) {
+//         _source = v;
+//         dispatchChangedSource();
+//         emit sourceChanged(v);
+//     }
+// }
 
 bool MyVtkItem::event(QEvent* ev)
 {
@@ -97,8 +83,10 @@ bool MyVtkItem::event(QEvent* ev)
     case QEvent::MouseButtonRelease: {
         if (!_click)
             return QQuickVTKItem::event(ev);
-        else
-            emit clicked();
+        else {
+            auto e = static_cast<QMouseEvent*>(ev);
+            emit clicked(e->position().x(), e->position().y());
+        }
         break;
     }
     default:
@@ -108,32 +96,88 @@ bool MyVtkItem::event(QEvent* ev)
     return true;
 }
 
-void MyVtkItem::dispatchChangedSource()
+// void MyVtkItem::dispatchChangedSource()
+//{
+//     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+//         auto* vtk = Data::SafeDownCast(userData);
+//         // clang-format off
+//           vtk->mapper->SetInputConnection(
+//                 _source == "Cone"    ? vtk->cone->GetOutputPort()
+//               : _source == "Sphere"  ? vtk->sphere->GetOutputPort()
+//               : _source == "Capsule" ? vtk->capsule->GetOutputPort()
+//               : (qWarning() << Q_FUNC_INFO << "YIKES!! Unknown source:'" << _source << "'", nullptr));
+//         // clang-format on
+//
+//         resetCamera();
+//     });
+// }
+
+void MyVtkItem::readSpline(QUrl spline_path)
 {
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([this, spline_path](vtkRenderWindow* renderWindow, vtkUserData userData) {
         auto* vtk = Data::SafeDownCast(userData);
-        // clang-format off
-          vtk->mapper->SetInputConnection(
-                _source == "Cone"    ? vtk->cone->GetOutputPort()
-              : _source == "Sphere"  ? vtk->sphere->GetOutputPort()
-              : _source == "Capsule" ? vtk->capsule->GetOutputPort()
-              : (qWarning() << Q_FUNC_INFO << "YIKES!! Unknown source:'" << _source << "'", nullptr));
-        // clang-format on
+        auto&& mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toLatin1().data());
+
+        if (!mesh)
+            emit splineLoadFailed(tr("fail to load spline file."));
+
+        vtk->model = std::make_unique<Model>(std::move(mesh));
+
+        vtk->model->actor().bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
+        vtk->model->actor().bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
+        vtk->model->actor().bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
 
         resetCamera();
     });
 }
 
-void MyVtkItem::readFile(QUrl path) {
-    dispatch_async([this, path](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        auto* vtk = Data::SafeDownCast(userData);
-        vtkNew<vtkOBJReader> reader;
-        reader->SetFileName(path.toLocalFile().toLatin1().data());
-        reader->Update();
-        vtk->mapper->SetInputConnection(reader->GetOutputPort());
+void MyVtkItem::writeMesh(QUrl spline_path)
+{
+}
+
+void MyVtkItem::changeRenderer(QString renderMode)
+{
+    dispatch_async([this, renderMode](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->curRenderer) {
+            renderWindow->RemoveRenderer(vtk->curRenderer);
+        }
+
+        if (renderMode == "Face") {
+            vtk->curRenderer = vtk->renderer[0];
+        } else if (renderMode == "Block") {
+            vtk->curRenderer = vtk->renderer[1];
+        } else if (renderMode == "Group") {
+            vtk->curRenderer = vtk->renderer[2];
+        } else {
+            std::cerr << "invalid renderMode in MyVtkItem::changeRenderer" << std::endl;
+            return;
+        }
+
+        renderWindow->AddRenderer(vtk->curRenderer);
 
         resetCamera();
     });
+}
+
+void MyVtkItem::bindStyle(QString function)
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+		renderWindow->GetInteractor()->SetInteractorStyle(vtk->blockStyle);
+
+        resetCamera();
+    });
+}
+
+void MyVtkItem::unbindStyle(QString function)
+{
+}
+
+void MyVtkItem::commitChange(QString function)
+{
 }
 
 vtkStandardNewMacro(MyVtkItem::Data);

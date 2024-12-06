@@ -161,7 +161,19 @@ class CToolHalfEdge : public CHalfEdge {
 public:
   CToolHalfEdge(){};
   ~CToolHalfEdge(){};
-  double &angle() { return m_angle; };
+  double &angle() { return m_angle; }
+  bool is_in_same_face(CToolHalfEdge* he)
+{
+    CToolHalfEdge* cur_he = this;
+    do {
+        if (cur_he == he) {
+            break;
+        }
+        cur_he = static_cast<CToolHalfEdge*>(cur_he->he_next());
+    } while (cur_he != this);
+
+    return cur_he == he;
+}
   void _to_string();
 
 protected:
@@ -176,14 +188,14 @@ inline void CToolHalfEdge::_to_string() {
 template <typename V, typename E, typename F, typename H>
 class CToolMesh : public CBaseMesh<V, E, F, H> {
 public:
-  typedef V CVertex;
-  using V = CVertex;
-  typedef E CEdge;
-  using E = CEdge;
-  typedef F CFace;
-  using F = CFace;
-  typedef H CHalfEdge;
-  using H = CHalfEdge;
+  typedef V V;
+  using CVertex = V;
+  typedef E E;
+  using CEdge = E;
+  typedef F F;
+  using CFace = F;
+  typedef H H;
+  using CHalfEdge = H;
 
   typedef CBoundary<V, E, F, H> CBoundary;
   typedef CLoop<V, E, F, H> CLoop;
@@ -198,7 +210,12 @@ public:
   typedef FaceHalfedgeIterator<V, E, F, H> FaceHalfedgeIterator;
   typedef VertexOutHalfedgeIterator<V, E, F, H> VertexOutHalfedgeIterator;
   typedef VertexInHalfedgeIterator<V, E, F, H> VertexInHalfedgeIterator;
-  typedef FaceEdgeIterator<V, E, F, H> FaceEdgeIterator;
+  typedef FaceEdgeIterator<V, E, F, H> FaceEdgeIterator; 
+	
+  std::map<int, F*> map_face()
+  {
+    return this->m_map_face;
+  }
 };
 
 typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;

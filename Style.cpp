@@ -2,15 +2,21 @@
 #include <vtkRenderWindowInteractor.h>
 #include "Model.h"
 
+vtkStandardNewMacro(MouseInteractorHighLightActor);
 void MouseInteractorHighLightActor::OnLeftButtonUp()
 {
     if (selector_ != nullptr)
     {
         int pos[2];
         this->GetInteractor()->GetEventPosition(pos);
-        selector_->select(pos[0], pos[1]);
+        OnSelect(pos[0], pos[1]);
     }
     vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+}
+
+void MouseInteractorHighLightActor::OnSelect(double posx, double posy)
+{
+    selector_->select(posx, posy);
 }
 
 void MouseInteractorHighLightActor::SetModel(Model* model)
@@ -52,6 +58,7 @@ void MouseInteractorHighLightActor::OnCommitMergeGroups()
     }
 }
 
+vtkStandardNewMacro(MouseInteractorHighLightFace);
 void MouseInteractorHighLightFace::OnLeftButtonUp()
 {
     if (selector_ != nullptr)
@@ -86,6 +93,7 @@ void MouseInteractorHighLightFace::OnCommitSplitFace()
     }
 }
 
+vtkStandardNewMacro(MouseInteractorHighLightEdge);
 void MouseInteractorHighLightEdge::OnLeftButtonUp()
 {
     if (selector_ != nullptr)

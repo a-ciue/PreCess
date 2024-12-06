@@ -9,7 +9,6 @@ class vtkProperty;
 class vtkNamedColors;
 class Model;
 
-namespace {
 class MouseInteractorHighLightActor : public vtkInteractorStyleTrackballCamera {
 public:
     static MouseInteractorHighLightActor* New();
@@ -17,8 +16,9 @@ public:
         vtkInteractorStyleTrackballCamera);
 
     virtual ~MouseInteractorHighLightActor() { }
-    virtual void OnLeftButtonUp() override;
+    void OnLeftButtonUp() override;
 
+    void OnSelect(double posx, double posy);
     void OnCommitMergeBlocks();
     void OnCommitMergeGroups();
 
@@ -29,7 +29,6 @@ private:
     Model* model_;
     std::unique_ptr<ActorSelectorHighlight> selector_;
 };
-vtkStandardNewMacro(MouseInteractorHighLightActor);
 
 class MouseInteractorHighLightFace : public vtkInteractorStyleTrackballCamera {
 public:
@@ -49,7 +48,6 @@ private:
     Model* model_;
     std::unique_ptr<SingleFaceSelectorHighlight> selector_;
 };
-vtkStandardNewMacro(MouseInteractorHighLightFace);
 
 class MouseInteractorHighLightEdge : public vtkInteractorStyleTrackballCamera {
 public:
@@ -69,5 +67,3 @@ private:
     Model* model_;
     std::unique_ptr<SingleEdgeSelectorHighlight> selector_;
 };
-vtkStandardNewMacro(MouseInteractorHighLightEdge);
-}

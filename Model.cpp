@@ -348,12 +348,16 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids) {
                 patch->id_ = face_patch_id;
             }
             patch->faceIDs_.push_back(face->id());
+
+            patch->faceTriangles_.emplace_back();
             // 更新顶点信息
+            int i = 0;
            for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); vi++) {
                 auto vertex = *vi;
+                patch->faceTriangles_.back()[i++] = patch->vertexIDs_.size();
                 patch->vertexIDs_.push_back(vertex->id());
                 CPoint& vp = vertex->point();
-                patch->vertexPoints_.emplace_back(std::array{ vp[0], vp[1], vp[2] });
+                patch->vertexPoints_.emplace_back(std::array { vp[0], vp[1], vp[2] });
             }
         }
     }

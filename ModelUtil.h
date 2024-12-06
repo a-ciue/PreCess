@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <memory>
 #include <vector>
+#include <vtkNew.h>
 
 class vtkNamedColors;
 
@@ -40,8 +41,8 @@ public:
     //! @return 新添加的点，可以调整该点坐标
     static MeshLib::CToolVertex* split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh);
 
-    static vtkMinimalStandardRandomSequence randomSequence;
-    static vtkNamedColors colors;
+    static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
+    static vtkNew<vtkNamedColors> colors;
 
 private:
     static std::string cmdPopen(const std::string& cmdLine);
