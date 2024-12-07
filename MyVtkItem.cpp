@@ -210,7 +210,7 @@ void MyVtkItem::unbindStyle()
         Data* vtk = Data::SafeDownCast(userData);
 
         vtk->curStyle->ClearSelections();
-        //renderWindow->GetInteractor()->SetInteractorStyle(nullptr);
+        renderWindow->GetInteractor()->SetInteractorStyle(vtkNew<vtkInteractorStyleTrackballCamera>());
         vtk->curStyle = nullptr;
     });
 }
@@ -232,6 +232,13 @@ void MyVtkItem::commitBlockRemesh()
 
 void MyVtkItem::commitGroupMerge()
 {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->groupStyle->OnCommitMergeGroups();
+
+        resetCamera();
+    });
 }
 
 void MyVtkItem::commitGroupRemesh()
@@ -240,6 +247,13 @@ void MyVtkItem::commitGroupRemesh()
 
 void MyVtkItem::commitFaceCut()
 {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->faceStyle->OnCommitSplitFace();
+
+        resetCamera();
+    });
 }
 
 void MyVtkItem::commitEdgeCut()

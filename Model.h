@@ -32,6 +32,7 @@ struct Patch {
 struct Block {
     std::unordered_set<int> patchIDs;
     int id;
+    int groupID;
 };
 
 struct Group {

@@ -112,7 +112,7 @@ std::optional<size_t> ActorSelectorHighlight::_is_selected(const vtkActor* new_a
 
 SingleFaceSelectorHighlight::SingleFaceSelectorHighlight(vtkRenderer* renderer)
     : renderer_(renderer) {
-    
+    selectedActor_ = vtkSmartPointer<vtkActor>::New();
     renderer_->AddActor(selectedActor_);
 }
 
@@ -128,7 +128,7 @@ std::optional<SingleFaceSelectorHighlight::SelectedFace> SingleFaceSelectorHighl
 
 void SingleFaceSelectorHighlight::clear() {
     // 清空selection取消高亮
-    _cancel_highlight(selectedMapper_);
+    _cancel_highlight(selectedActor_, renderer_);
     selection_ = std::nullopt;
 }
 
@@ -142,7 +142,7 @@ void SingleFaceSelectorHighlight::select(double posx, double posy) {
 
         if (_is_selected(new_face, selection_)) {
            
-            _cancel_highlight(selectedMapper_);
+            _cancel_highlight(selectedActor_, renderer_);
             selection_ = std::nullopt;
         }
         else {
@@ -171,21 +171,24 @@ void SingleFaceSelectorHighlight::select(double posx, double posy) {
             vtkNew<vtkUnstructuredGrid> selected;
             selected->ShallowCopy(extractSelection->GetOutput());            
 
-            selectedMapper_->SetInputData(selected);
-            selectedActor_->SetMapper(selectedMapper_);
+            vtkNew<vtkDataSetMapper> selectedMapper;
+            selectedMapper->SetInputData(selected);
+            selectedActor_->SetMapper(selectedMapper);
             selectedActor_->GetProperty()->EdgeVisibilityOn();
             selectedActor_->GetProperty()->SetColor(1.0, 0.1, 0.1);
         }
     }
     else {
-        _cancel_highlight(selectedMapper_);
+        _cancel_highlight(selectedActor_, renderer_);
         selection_ = std::nullopt;
     }
 }
 
-void SingleFaceSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper) {
+void SingleFaceSelectorHighlight::_cancel_highlight(vtkSmartPointer<vtkActor>& selectedActor, vtkRenderer* renderer) {
     // 取消高亮,清空mapper
-    selectedMapper->SetInputData(nullptr);
+    renderer->RemoveActor(selectedActor);
+    selectedActor = vtkSmartPointer<vtkActor>::New();
+    renderer->AddActor(selectedActor);
 }
 
 bool SingleFaceSelectorHighlight::_is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection) {

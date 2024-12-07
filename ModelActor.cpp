@@ -69,7 +69,7 @@ int ModelActor::block_actor_id(vtkActor* actor)
 
 int ModelActor::group_actor_id(vtkActor* actor)
 {
-    if (block_actor_id_.count(actor)) {
+    if (group_actor_id_.count(actor)) {
         return group_actor_id_[actor];
     }
     throw std::runtime_error("group actor not valid");
@@ -128,7 +128,7 @@ ModelActor::~ModelActor()
 
 void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
 {
-    assert(group_actors_.find(father_block) != group_actors_.end());
+    assert(block_actors_.count(father_block));
 
     for (int erase_id : block_ids) {
         if (erase_id != father_block) {
@@ -161,12 +161,16 @@ void ModelActor::merge_groups(const std::vector<int>& group_ids, int father_grou
         }
     }
 
-    update_block(father_group, father_group_blocks);
+    update_group(father_group, father_group_blocks);
 }
 
 void ModelActor::update_patch(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles)
 {
-    vtkActor* patch_actor = patch_actors_[patch_id];
+	if (!patch_actors_.count(patch_id))
+	{
+        patch_actors_[patch_id] = vtkSmartPointer<vtkActor>::New();
+	}
+    vtkSmartPointer<vtkActor> patch_actor = patch_actors_[patch_id];
 
     // vtkPolyData
     vtkSmartPointer<vtkPoints> points_data = vtkSmartPointer<vtkPoints>::New();
@@ -203,6 +207,11 @@ void ModelActor::update_patch(int patch_id, const std::vector<std::array<double,
 
 void ModelActor::update_block(int block_id, const std::unordered_set<int>& block_patches)
 {
+	if (!block_actors_.count(block_id))
+	{
+        block_actors_[block_id] = vtkSmartPointer<vtkActor>::New();
+	}
+
     std::vector<vtkActor*> patch_actors;
     patch_actors.reserve(block_patches.size());
     for (int patch_id : block_patches) {
@@ -215,6 +224,18 @@ void ModelActor::update_block(int block_id, const std::unordered_set<int>& block
 
 void ModelActor::update_group(int group_id, const std::unordered_set<int>& group_blocks)
 {
+	if (!group_actors_.count(group_id))
+	{
+        group_actors_[group_id] = vtkSmartPointer<vtkActor>::New();
+	}
+	if (group_blocks.empty())
+	{
+        group_renderer_->RemoveActor(group_actors_[group_id]);
+        group_actor_id_.erase(group_actors_[group_id]);
+        group_actors_.erase(group_id);
+        return;
+	}
+
     std::vector<vtkActor*> block_actors;
     block_actors.reserve(group_blocks.size());
     for (int block_id : group_blocks) {

@@ -65,7 +65,7 @@ private:
     //! @brief 将给定的actors合并到father_actor中
     static void _merge_actors(vtkActor* father_actor, const std::vector<vtkActor*>& actors);
 
-    using ActorMap = std::unordered_map<int, vtkNew<vtkActor>>;
+    using ActorMap = std::unordered_map<int, vtkSmartPointer<vtkActor>>;
 
     // Model* model_;
     vtkRenderer* face_renderer_ {};

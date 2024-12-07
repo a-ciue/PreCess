@@ -15,6 +15,8 @@
 #include "MeshLib/Mesh/iterators.h"
 #include "MeshLib/Parser/parser.h"
 
+#include <unordered_map>
+
 using namespace std;
 
 namespace MeshLib {
@@ -27,12 +29,14 @@ public:
 
   bool &fixed() { return m_fixed; };
   bool &is_edge() { return edge; };
+  int &father() { return m_father; };
   CPoint &rgb() { return m_rgb; };
   CPoint &normal() { return m_normal; };
 
 protected:
   bool m_fixed;
   bool edge;
+  int m_father;
   CPoint m_rgb;
   CPoint m_normal;
 };
@@ -67,6 +71,17 @@ inline void CToolVertex::_to_string() {
       m_string += " ";
     }
     m_string += iss3.str();
+  }
+  if (1) {
+      CParser parser3(m_string);
+      parser3._removeToken("father");
+      parser3._toString(m_string);
+      std::stringstream iss3;
+      iss3 << "father=(" << m_father << ")";
+      if (m_string.length() > 0) {
+          m_string += " ";
+      }
+      m_string += iss3.str();
   }
 }
 
@@ -210,15 +225,73 @@ public:
   typedef FaceHalfedgeIterator<V, E, F, H> FaceHalfedgeIterator;
   typedef VertexOutHalfedgeIterator<V, E, F, H> VertexOutHalfedgeIterator;
   typedef VertexInHalfedgeIterator<V, E, F, H> VertexInHalfedgeIterator;
-  typedef FaceEdgeIterator<V, E, F, H> FaceEdgeIterator; 
+  typedef FaceEdgeIterator<V, E, F, H> FaceEdgeIterator;
 	
   std::map<int, F*> map_face()
   {
-    return this->m_map_face;
+      return this->m_map_face;
   }
+	void Patch_Write(int id);
 };
 
+
 typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
+
+
+
+template<typename V, typename E, typename F, typename H>
+inline void CToolMesh<V, E, F, H>::Patch_Write(int id)
+{
+	for (MeshVertexIterator viter(this); !viter.end(); viter++)
+	{
+		CVertex* v = *viter;
+		v->father() = 0;
+	}
+	for (MeshFaceIterator fiter(this); !fiter.end(); fiter++)
+	{
+		CFace* f = *fiter;
+		if(f->get_g() == id)
+		{
+			for (FaceVertexIterator fviter(f); !fviter.end(); fviter++)
+			{
+				CVertex* v = *fviter;
+				v->father() = v->id();
+			}
+		}
+	}
+    std::unordered_map<int, int> father_to_id;
+
+    // file writer
+	std::string file_name = "patch_" + std::to_string(id) + ".m";
+	std::ofstream out(file_name);
+
+    int vid = 1;
+    for (MeshVertexIterator viter(this); !viter.end(); viter++)
+    {
+		if ((*viter)->father() == 0) continue;
+        CVertex* v = *viter;
+        father_to_id[v->father()] = vid;
+        out << "Vertex " << vid << " " << v->point()[0] << " " << v->point()[1] << " " << v->point()[2] <<"{ father = ( "<<v->father()<<" )}" << std::endl;
+        vid++;
+    }
+	vid = 1;
+	for (MeshFaceIterator fiter(this); !fiter.end(); fiter++)
+	{
+		if ((*fiter)->get_g() != id) continue;
+		CFace* f = *fiter;
+		if (f->get_g() == id)
+		{
+			out << "Face " << vid++;
+			for (FaceVertexIterator fviter(f); !fviter.end(); fviter++)
+			{
+				CVertex* v = *fviter;
+				out << " " << father_to_id[v->father()];
+			}
+			out << std::endl;
+		}
+	}
+	out.close();
+}
 
 } // namespace MeshLib
 

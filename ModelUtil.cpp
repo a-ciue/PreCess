@@ -40,7 +40,7 @@ std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
                const std::vector<int> &patch_ids) {
 
-  std::filesystem::remove("./Data/PatchedMesh/");
+  std::filesystem::remove_all("./Data/PatchedMesh/");
   std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
   cmdPopen(mkdir_cmd);
   mesh->write_m("./Data/temp.m");

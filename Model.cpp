@@ -41,6 +41,7 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
         if (blocks_.find(block_id) == blocks_.end()) {
             blocks_[block_id] = std::make_unique<Block>();
             blocks_[block_id]->id = block_id;
+            blocks_[block_id]->groupID = block_id;
         }
         blocks_[block_id]->patchIDs.insert(patch_id);
     }
@@ -65,8 +66,18 @@ void Model::split_face(int patch_id, int face_id)
     int face_gid = patches_[patch_id]->faceIDs_[face_id];
     MeshLib::CToolFace* face = mesh_->idFace(face_gid);
 
-    ModelUtil::split_face(face, mesh_.get());
+    CPoint mid;
+    int i = 0;
+    for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); vi++)
+    {
+        mid += vi.value()->point();
+        ++i;
+    }
+    mid /= i;
 
+    ModelUtil::split_face(face, mesh_.get())->point() = mid;
+
+    update_patches(std::vector{ patch_id });
     update_actors({ patch_id });
 }
 
@@ -123,6 +134,7 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
     auto& target_block = blocks_[target_block_id];
 
     // 合并其他 block 的内容到目标 block
+    std::unordered_set<int> modified_groups;
     for (size_t i = 1; i < block_ids.size(); ++i) {
         int id = block_ids[i];
         auto& block_to_merge = blocks_[id];
@@ -130,6 +142,14 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
         // 合并 patchIDs
         for (int patch_id : block_to_merge->patchIDs) {
             target_block->patchIDs.insert(patch_id);
+        }
+
+        // 维护groups_，删除后面这些在group的信息
+        modified_groups.insert(block_to_merge->groupID);
+        Group& group = *groups_[block_to_merge->groupID];
+        group.blockIDs.erase(block_to_merge->id);
+        if (group.blockIDs.empty()) {
+            groups_.erase(block_to_merge->groupID);
         }
 
         // 删除已合并的 block
@@ -140,6 +160,14 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
     // 更新目标 block 的 patchIDs
     // 调用 ModelActor 的 merge_blocks 函数更新 Actor
     actor_->merge_blocks(block_ids, block_ids[0], target_block->patchIDs);
+    actor_->update_group(target_block->groupID, groups_[target_block->groupID]->blockIDs);
+    for (int modified_group : modified_groups) {
+        if (groups_.count(modified_group)) {
+            actor_->update_group(modified_group, groups_[modified_group]->blockIDs);
+        } else {
+            actor_->update_group(modified_group, {});
+        }
+    }
 }
 
 
@@ -169,6 +197,7 @@ void Model::merge_groups(const std::vector<int>& group_ids) {
         // 合并 blockIDs
         for (int block_id : group_to_merge->blockIDs) {
             target_group->blockIDs.insert(block_id);
+            blocks_[block_id]->groupID = target_group_id;
         }
 
         // 删除已合并的 group
@@ -337,6 +366,10 @@ void Model::update_patches(const std::vector<int>& patch_ids) {
 
 void Model::update_patches(const std::unordered_set<int>& patch_ids) {
     // 直接使用给定的 patch_ids 集合进行查找
+    for (int patch_id : patch_ids)
+    {
+        patches_.erase(patch_id);
+    }
 
     // 遍历 mesh 中的面并更新对应的 patch
     for (auto& face : mesh_->faces()) {

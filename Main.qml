@@ -159,7 +159,7 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight
                     visible:edgeCutButton.checked
                     onClicked:{
-                        myItem.commitChange
+                        myItem.commitEdgeCut()
                         edgeCutButton.toggle()
                     }
                 }
@@ -169,6 +169,7 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight
                     visible:faceCutButton.checked
                     onClicked:{
+                        myItem.commitFaceCut()
                         faceCutButton.toggle()
                     }
                 }
@@ -206,6 +207,7 @@ ApplicationWindow {
                     visible:integrateBlockButton.checked
                     Layout.alignment: Qt.AlignRight
                     onClicked:{
+                        myItem.commitBlockRemesh()
                         integrateBlockButton.toggle()
                     }
                 }
@@ -233,6 +235,7 @@ ApplicationWindow {
                     visible:integrateGroupButton.checked
                     Layout.alignment: Qt.AlignRight
                     onClicked:{
+                        myItem.commitGroupMerge()
                         integrateGroupButton.toggle()
                     }
                 }

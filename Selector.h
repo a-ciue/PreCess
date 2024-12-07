@@ -31,7 +31,7 @@ public:
 private:
     struct Actor
     {
-        vtkActor* actor;
+        vtkSmartPointer<vtkActor> actor;
         vtkSmartPointer<vtkProperty> backup_property;
     };
     //! @brief 存储选中的actor和每个actor原本的颜色渲染设置，用于取消高亮
@@ -65,14 +65,13 @@ public:
 
 private:
     //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
+    static void _cancel_highlight(vtkSmartPointer<vtkActor>& selectedActor, vtkRenderer* renderer);
     //! @brief 判断是否已经被选中
     static bool _is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection);
 
     vtkRenderer* renderer_;
     std::optional<SelectedFace> selection_;
-    vtkNew<vtkDataSetMapper> selectedMapper_;
-    vtkNew<vtkActor> selectedActor_;
+    vtkSmartPointer<vtkActor> selectedActor_;
 };
 
 class SingleEdgeSelectorHighlight {
