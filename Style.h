@@ -1,7 +1,7 @@
 ﻿#include <unordered_map>
 #include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkSmartPointer.h>
 #include <vtkObjectFactory.h>
+#include <vtkSmartPointer.h>
 
 #include "Selector.h"
 
@@ -9,7 +9,13 @@ class vtkProperty;
 class vtkNamedColors;
 class Model;
 
-class MouseInteractorHighLightActor : public vtkInteractorStyleTrackballCamera {
+class vtkInteractorStyleWithClick : public vtkInteractorStyleTrackballCamera {
+public:
+    virtual void SetClick() = 0;
+    virtual void ClearSelections() = 0;
+};
+
+class MouseInteractorHighLightActor : public vtkInteractorStyleWithClick {
 public:
     static MouseInteractorHighLightActor* New();
     vtkTypeMacro(MouseInteractorHighLightActor,
@@ -23,14 +29,17 @@ public:
     void OnCommitMergeGroups();
 
     void SetModel(Model* model);
+    void SetClick() override;
+    void ClearSelections() override;
     void SetSelector(std::unique_ptr<ActorSelectorHighlight> selector);
 
 private:
     Model* model_;
+    bool click_ {};
     std::unique_ptr<ActorSelectorHighlight> selector_;
 };
 
-class MouseInteractorHighLightFace : public vtkInteractorStyleTrackballCamera {
+class MouseInteractorHighLightFace : public vtkInteractorStyleWithClick {
 public:
     static MouseInteractorHighLightFace* New();
     vtkTypeMacro(MouseInteractorHighLightFace,
@@ -42,14 +51,17 @@ public:
     void OnCommitSplitFace();
 
     void SetModel(Model* model);
+    void SetClick() override;
+    void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector);
 
 private:
     Model* model_;
+    bool click_ {};
     std::unique_ptr<SingleFaceSelectorHighlight> selector_;
 };
 
-class MouseInteractorHighLightEdge : public vtkInteractorStyleTrackballCamera {
+class MouseInteractorHighLightEdge : public vtkInteractorStyleWithClick {
 public:
     static MouseInteractorHighLightEdge* New();
     vtkTypeMacro(MouseInteractorHighLightEdge,
@@ -61,9 +73,12 @@ public:
     void OnCommitSplitEdge();
 
     void SetModel(Model* model);
+    void SetClick() override;
+    void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleEdgeSelectorHighlight> selector);
 
 private:
     Model* model_;
+    bool click_ {};
     std::unique_ptr<SingleEdgeSelectorHighlight> selector_;
 };

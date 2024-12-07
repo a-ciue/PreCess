@@ -37,11 +37,12 @@ public:
         vtkRenderer* curRenderer {};
 
         std::unique_ptr<Model> model;
-        vtkNew<MouseInteractorHighLightActor> blockStyle;
-        vtkNew<MouseInteractorHighLightActor> groupStyle;
         vtkNew<MouseInteractorHighLightFace> faceStyle;
         vtkNew<MouseInteractorHighLightEdge> edgeStyle;
-        vtkInteractorStyleTrackballCamera* curStyle{};
+        vtkNew<MouseInteractorHighLightActor> blockStyle;
+        vtkNew<MouseInteractorHighLightActor> groupStyle;
+        vtkInteractorStyleWithClick* styles[4] {};
+        vtkInteractorStyleWithClick* curStyle{};
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -54,10 +55,16 @@ public:
     Q_INVOKABLE void writeMesh(QUrl spline_path);
     Q_INVOKABLE void changeRenderer(QString renderMode);
     Q_INVOKABLE void bindStyle(QString function);
-    Q_INVOKABLE void unbindStyle(QString function);
-    Q_INVOKABLE void commitChange(QString function);
+    Q_INVOKABLE void unbindStyle();
+    //Q_INVOKABLE void commitChange(QString function);
+    Q_INVOKABLE void commitBlockMerge();
+    Q_INVOKABLE void commitBlockRemesh();
+    Q_INVOKABLE void commitGroupMerge();
+    Q_INVOKABLE void commitGroupRemesh();
+    Q_INVOKABLE void commitFaceCut();
+    Q_INVOKABLE void commitEdgeCut();
 
-    
+    Q_SLOT void setClick();
 
     // Q_PROPERTY(QString file READ file WRITE setFile NOTIFY fileChanged)
     //QString source() const { return _source; }
@@ -68,7 +75,7 @@ public:
 signals:
     //void sourceChanged(QString);
     void splineLoadFailed(QString);
-    void clicked(qreal x, qreal y);
+    void clicked();
 
 private:
     QString _source;

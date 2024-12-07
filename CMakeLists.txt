@@ -13,6 +13,7 @@ find_package(VTK REQUIRED COMPONENTS
     GUISupportQtQuick
     FiltersHybrid
     FiltersSources
+    FiltersExtraction
     InteractionStyle
     RenderingContextOpenGL2
     RenderingCore

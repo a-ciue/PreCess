@@ -127,26 +127,27 @@ ApplicationWindow {
                 spacing: 3
                 ButtonGroup {
                     id: face_group
+                    onCheckStateChanged: {
+                        if(checkState == Qt.Unchecked)
+                            myItem.unbindStyle();
+                    }
                 }
 
                 Button{
                     id:edgeCutButton
                     text: "Cut Edge"
-                    /*onClicked:{
-
-                }*/
                     ButtonGroup.group: face_group
                     onClicked: toggle()
+                    onCheckedChanged: if (checked) myItem.bindStyle("Edge")
                 }
                 Button{
                     id:faceCutButton
                     text: "Cut Face"
-                    /*onClicked:{
-
-                }*/
                     ButtonGroup.group: face_group
                     onClicked: toggle()
-                    onCheckedChanged: console.log("button ", text, ", onCheckedChanged checked: ", checked)
+                    onCheckedChanged: {
+                        if (checked) myItem.bindStyle("Face")
+                    }
                 }
                 Item {
                   Layout.fillWidth: true
@@ -158,6 +159,7 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight
                     visible:edgeCutButton.checked
                     onClicked:{
+                        myItem.commitChange
                         edgeCutButton.toggle()
                     }
                 }
@@ -184,12 +186,23 @@ ApplicationWindow {
                         toggle()
                     }
                     onCheckedChanged: {
-                        if (checked) myItem.bindStyle("")
+                        if (checked) myItem.bindStyle("Block");
+                        else myItem.unbindStyle();
                     }
                 }
                 Button{
-                    id:patchModeConfirm
-                    text: "confirm"
+                    id:patchMergeConfirm
+                    text: "合并"
+                    visible:integrateBlockButton.checked
+                    Layout.alignment: Qt.AlignRight
+                    onClicked:{
+                        myItem.commitBlockMerge()
+                        integrateBlockButton.toggle()
+                    }
+                }
+                Button{
+                    id:patchRemeshConfirm
+                    text: "重网格"
                     visible:integrateBlockButton.checked
                     Layout.alignment: Qt.AlignRight
                     onClicked:{
@@ -208,6 +221,10 @@ ApplicationWindow {
                     text:qsTr("Integrate Group")
                     onClicked:{
                         toggle()
+                    }
+                    onCheckedChanged: {
+                        if (checked) myItem.bindStyle("Group");
+                        else myItem.unbindStyle();
                     }
                 }
                 Button{

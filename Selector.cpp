@@ -18,7 +18,9 @@
 #include <vtkPolyData.h>
 #include <vtkPoints.h>
 #include <vtkPolyDataMapper.h>
-
+#include <vtkSelectionNode.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkExtractSelection.h>
 
 namespace Selector {
     std::optional<std::pair<vtkActor*, int>> pick_cell(double posx, double posy, vtkRenderer* renderer) {
@@ -74,20 +76,18 @@ std::vector<vtkActor*> ActorSelectorHighlight::get() {
 
 void ActorSelectorHighlight::select(double posx, double posy) {
     // 找到actor，高亮
-    auto result = Selector::pick_cell(posx, posy, renderer_);
-    if (result) {
-        vtkActor* new_actor = result->first;
-        int local_cell_index = result->second;
+    vtkNew<vtkPropPicker> picker;
+    picker->Pick(posx, posy, 0, renderer_);
+    if (picker->GetActor()) {
+        vtkActor* new_actor = picker->GetActor();
 
-       
         std::optional<size_t> selected_index = _is_selected(new_actor, selections_);
         if (selected_index) {
             _cancel_highlight(selections_[*selected_index]);
             selections_.erase(selections_.begin() + *selected_index);
-        }
-        else {
-            // 
-            selections_.emplace_back(Actor{ new_actor, vtkSmartPointer<vtkProperty>::New() });
+        } else {
+            //
+            selections_.emplace_back(Actor { new_actor, vtkSmartPointer<vtkProperty>::New() });
             selections_.back().backup_property->DeepCopy(new_actor->GetProperty());
             new_actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
         }
@@ -148,14 +148,36 @@ void SingleFaceSelectorHighlight::select(double posx, double posy) {
         else {
             // 选中新的face
             selection_ = new_face;
-            selectedMapper_->SetInputData(new_actor->GetMapper()->GetInput());
+
+            vtkNew<vtkIdTypeArray> ids;
+            ids->SetNumberOfComponents(1);
+            ids->InsertNextValue(new_face.local_id);
+
+            vtkNew<vtkSelectionNode> selectionNode;
+            selectionNode->SetFieldType(vtkSelectionNode::CELL);
+            selectionNode->SetContentType(vtkSelectionNode::INDICES);
+            selectionNode->SetSelectionList(ids);
+
+            vtkNew<vtkSelection> selection;
+            selection->AddNode(selectionNode);
+
+            vtkPolyDataMapper* patch_polydata = vtkPolyDataMapper::SafeDownCast(new_face.patch_actor->GetMapper()); 
+            vtkNew<vtkExtractSelection> extractSelection;
+            extractSelection->SetInputData(0, patch_polydata->GetInput());
+            extractSelection->SetInputData(1, selection);
+            extractSelection->Update();
+
+            // In selection
+            vtkNew<vtkUnstructuredGrid> selected;
+            selected->ShallowCopy(extractSelection->GetOutput());            
+
+            selectedMapper_->SetInputData(selected);
             selectedActor_->SetMapper(selectedMapper_);
-            selectedActor_->GetProperty()->SetColor(1.0, 0.0, 0.0);
-            
+            selectedActor_->GetProperty()->EdgeVisibilityOn();
+            selectedActor_->GetProperty()->SetColor(1.0, 0.1, 0.1);
         }
     }
     else {
-        
         _cancel_highlight(selectedMapper_);
         selection_ = std::nullopt;
     }

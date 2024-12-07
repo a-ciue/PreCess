@@ -21,6 +21,12 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
         vtk->renderer[i]->SetBackground2(0.7, 0.7, 0.7);
         vtk->renderer[i]->SetGradientBackground(true);
     }
+
+    vtk->styles[0] = vtk->faceStyle;
+    vtk->styles[1] = vtk->edgeStyle;
+    vtk->styles[2] = vtk->blockStyle;
+    vtk->styles[3] = vtk->groupStyle;
+
     vtk->blockStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[1]));
     vtk->blockStyle->SetDefaultRenderer(vtk->renderer[1]);
     vtk->groupStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[2]));
@@ -83,10 +89,11 @@ bool MyVtkItem::event(QEvent* ev)
     case QEvent::MouseButtonRelease: {
         if (!_click)
             return QQuickVTKItem::event(ev);
-        else {
-            auto e = static_cast<QMouseEvent*>(ev);
-            emit clicked(e->position().x(), e->position().y());
-        }
+
+        setClick();
+        auto e = static_cast<QMouseEvent*>(ev);
+        emit clicked();
+        return QQuickVTKItem::event(ev);
         break;
     }
     default:
@@ -127,6 +134,11 @@ void MyVtkItem::readSpline(QUrl spline_path)
         vtk->model->actor().bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
         vtk->model->actor().bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
 
+        vtk->faceStyle->SetModel(vtk->model.get());
+        vtk->edgeStyle->SetModel(vtk->model.get());
+        vtk->blockStyle->SetModel(vtk->model.get());
+        vtk->groupStyle->SetModel(vtk->model.get());
+
         resetCamera();
     });
 }
@@ -137,23 +149,26 @@ void MyVtkItem::writeMesh(QUrl spline_path)
 
 void MyVtkItem::changeRenderer(QString renderMode)
 {
-    dispatch_async([this, renderMode](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    int renderIdx = 0;
+    if (renderMode == "Face") {
+        renderIdx = 0;
+    } else if (renderMode == "Block") {
+        renderIdx = 1;
+    } else if (renderMode == "Group") {
+        renderIdx = 2;
+    } else {
+        std::cerr << "invalid renderMode in MyVtkItem::changeRenderer" << std::endl;
+        return;
+    }
+
+    dispatch_async([this, renderIdx](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
         if (vtk->curRenderer) {
             renderWindow->RemoveRenderer(vtk->curRenderer);
         }
 
-        if (renderMode == "Face") {
-            vtk->curRenderer = vtk->renderer[0];
-        } else if (renderMode == "Block") {
-            vtk->curRenderer = vtk->renderer[1];
-        } else if (renderMode == "Group") {
-            vtk->curRenderer = vtk->renderer[2];
-        } else {
-            std::cerr << "invalid renderMode in MyVtkItem::changeRenderer" << std::endl;
-            return;
-        }
+        vtk->curRenderer = vtk->renderer[renderIdx];
 
         renderWindow->AddRenderer(vtk->curRenderer);
 
@@ -162,22 +177,84 @@ void MyVtkItem::changeRenderer(QString renderMode)
 }
 
 void MyVtkItem::bindStyle(QString function)
+{ 
+	int styleIdx {};
+    if (function == "Face")
+	{
+        styleIdx = 0;
+    } else if (function == "Edge")
+    {
+        styleIdx = 1;
+    } else if (function == "Block")
+    {
+        styleIdx = 2;
+    } else if (function == "Group")
+    {
+        styleIdx = 3;
+    } else {
+        std::cerr << "invalid Style in MyVtkItem::bindStyle" << std::endl;
+        return;
+    }
+
+    dispatch_async([styleIdx](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        renderWindow->GetInteractor()->SetInteractorStyle(vtk->styles[styleIdx]);
+        vtk->curStyle = vtk->styles[styleIdx];
+    });
+}
+
+void MyVtkItem::unbindStyle()
+{
+    dispatch_async([](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->curStyle->ClearSelections();
+        //renderWindow->GetInteractor()->SetInteractorStyle(nullptr);
+        vtk->curStyle = nullptr;
+    });
+}
+
+void MyVtkItem::commitBlockMerge()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-		renderWindow->GetInteractor()->SetInteractorStyle(vtk->blockStyle);
+        vtk->blockStyle->OnCommitMergeBlocks();
 
         resetCamera();
     });
 }
 
-void MyVtkItem::unbindStyle(QString function)
+void MyVtkItem::commitBlockRemesh()
 {
 }
 
-void MyVtkItem::commitChange(QString function)
+void MyVtkItem::commitGroupMerge()
 {
+}
+
+void MyVtkItem::commitGroupRemesh()
+{
+}
+
+void MyVtkItem::commitFaceCut()
+{
+}
+
+void MyVtkItem::commitEdgeCut()
+{
+}
+
+void MyVtkItem::setClick()
+{
+    dispatch_async([](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->curStyle) {
+            vtk->curStyle->SetClick();
+        }
+    });
 }
 
 vtkStandardNewMacro(MyVtkItem::Data);

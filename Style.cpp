@@ -5,8 +5,9 @@
 vtkStandardNewMacro(MouseInteractorHighLightActor);
 void MouseInteractorHighLightActor::OnLeftButtonUp()
 {
-    if (selector_ != nullptr)
+    if (selector_ != nullptr && click_)
     {
+        click_ = false;
         int pos[2];
         this->GetInteractor()->GetEventPosition(pos);
         OnSelect(pos[0], pos[1]);
@@ -22,6 +23,16 @@ void MouseInteractorHighLightActor::OnSelect(double posx, double posy)
 void MouseInteractorHighLightActor::SetModel(Model* model)
 {
     model_ = model;
+}
+
+void MouseInteractorHighLightActor::SetClick()
+{
+    click_ = true;
+}
+
+void MouseInteractorHighLightActor::ClearSelections()
+{
+    selector_->clear();
 }
 
 void MouseInteractorHighLightActor::SetSelector(std::unique_ptr<ActorSelectorHighlight> selector)
@@ -61,8 +72,9 @@ void MouseInteractorHighLightActor::OnCommitMergeGroups()
 vtkStandardNewMacro(MouseInteractorHighLightFace);
 void MouseInteractorHighLightFace::OnLeftButtonUp()
 {
-    if (selector_ != nullptr)
+    if (selector_ != nullptr && click_)
     {
+        click_ = false;
         int pos[2];
         this->GetInteractor()->GetEventPosition(pos);
         selector_->select(pos[0], pos[1]);
@@ -73,6 +85,16 @@ void MouseInteractorHighLightFace::OnLeftButtonUp()
 void MouseInteractorHighLightFace::SetModel(Model* model)
 {
     model_ = model;
+}
+
+void MouseInteractorHighLightFace::SetClick()
+{
+    click_ = true;
+}
+
+void MouseInteractorHighLightFace::ClearSelections()
+{
+    selector_->clear();
 }
 
 void MouseInteractorHighLightFace::SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector)
@@ -96,8 +118,9 @@ void MouseInteractorHighLightFace::OnCommitSplitFace()
 vtkStandardNewMacro(MouseInteractorHighLightEdge);
 void MouseInteractorHighLightEdge::OnLeftButtonUp()
 {
-    if (selector_ != nullptr)
+    if (selector_ != nullptr && click_)
     {
+        click_ = false;
         int pos[2];
         this->GetInteractor()->GetEventPosition(pos);
         selector_->select(pos[0], pos[1]);
@@ -108,6 +131,16 @@ void MouseInteractorHighLightEdge::OnLeftButtonUp()
 void MouseInteractorHighLightEdge::SetModel(Model* model)
 {
     model_ = model;
+}
+
+void MouseInteractorHighLightEdge::SetClick()
+{
+    click_ = true;
+}
+
+void MouseInteractorHighLightEdge::ClearSelections()
+{
+    selector_->clear();
 }
 
 
