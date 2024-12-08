@@ -257,6 +257,13 @@ void MyVtkItem::commitGroupMerge()
 
 void MyVtkItem::commitGroupRemesh()
 {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->groupStyle->OnCommitRemeshGroups();
+
+        resetCamera();
+    });
 }
 
 void MyVtkItem::commitFaceCut()

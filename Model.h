@@ -65,9 +65,9 @@ public:
     void merge_groups(const std::vector<int>& group_ids);
 
     //! @brief remesh指定block，依赖MeshUtil、update_patches、update_actors
-    void remesh_block(int block_id);
+    void remesh_block(const std::vector<int>& block_ids);
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
-    void remesh_group(int group_id);
+    void remesh_group(const std::vector<int>& group_id);
 
     int face_patch_id(int face_id);
     const std::vector<int>& patch_face_ids(int patch_id);

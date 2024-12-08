@@ -248,11 +248,21 @@ ApplicationWindow {
                 }
                 Button{
                     id:groupModeConfirm
-                    text: "confirm"
+                    text: "合并"
                     visible:integrateGroupButton.checked
                     Layout.alignment: Qt.AlignRight
                     onClicked:{
                         myItem.commitGroupMerge()
+                        integrateGroupButton.toggle()
+                    }
+                }
+                Button{
+                    id:groupRemeshConfirm
+                    text: "重网格"
+                    visible:integrateGroupButton.checked
+                    Layout.alignment: Qt.AlignRight
+                    onClicked:{
+                        myItem.commitGroupRemesh()
                         integrateGroupButton.toggle()
                     }
                 }

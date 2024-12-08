@@ -219,17 +219,19 @@ void Model::merge_groups(const std::vector<int>& group_ids) {
 
 
 
-void Model::remesh_block(int block_id) {
+void Model::remesh_block(const std::vector<int>& block_ids) {
     // 验证 block_id 是否有效
-    if (blocks_.find(block_id) == blocks_.end()) {
-        throw std::runtime_error("Block ID not found: " + std::to_string(block_id));
+    std::unordered_set<int> patch_ids_set;
+    for (int block_id : block_ids) {
+        if (blocks_.find(block_id) == blocks_.end()) {
+            throw std::runtime_error("Block ID not found in group: " + std::to_string(block_id));
+        }
+        auto& block = blocks_[block_id];
+        patch_ids_set.insert(block->patchIDs.begin(), block->patchIDs.end());
     }
 
-    // 获取指定 block
-    auto& block = blocks_[block_id];
-
-    // 将 block 的所有 patch_id 收集为一个向量
-    std::vector<int> patch_ids(block->patchIDs.begin(), block->patchIDs.end());
+    // 将 patch_ids_set 转换为 vector
+    std::vector<int> patch_ids(patch_ids_set.begin(), patch_ids_set.end());
 
     // 调用 ModelUtil::remesh_patches 方法对 patch 重新网格化
     mesh_ = ModelUtil::remesh_patches(std::move(mesh_), patch_ids);
@@ -241,23 +243,26 @@ void Model::remesh_block(int block_id) {
     update_actors(patch_ids);
 }
 
-void Model::remesh_group(int group_id) {
-    // 验证 group_id 是否有效
-    if (groups_.find(group_id) == groups_.end()) {
-        throw std::runtime_error("Group ID not found: " + std::to_string(group_id));
-    }
-
-    // 获取指定 group
-    auto& group = groups_[group_id];
-
+void Model::remesh_group(const std::vector<int>& group_ids) {
     // 收集所有 patch_ids
     std::unordered_set<int> patch_ids_set;
-    for (int block_id : group->blockIDs) {
-        if (blocks_.find(block_id) == blocks_.end()) {
-            throw std::runtime_error("Block ID not found in group: " + std::to_string(block_id));
+    for (int group_id : group_ids)
+    {
+        // 验证 group_id 是否有效
+        if (groups_.find(group_id) == groups_.end()) {
+            throw std::runtime_error("Group ID not found: " + std::to_string(group_id));
         }
-        auto& block = blocks_[block_id];
-        patch_ids_set.insert(block->patchIDs.begin(), block->patchIDs.end());
+	    
+        // 获取指定 group
+        auto& group = groups_[group_id];
+
+        for (int block_id : group->blockIDs) {
+            if (blocks_.find(block_id) == blocks_.end()) {
+                throw std::runtime_error("Block ID not found in group: " + std::to_string(block_id));
+            }
+            auto& block = blocks_[block_id];
+            patch_ids_set.insert(block->patchIDs.begin(), block->patchIDs.end());
+        }
     }
 
     // 将 patch_ids_set 转换为 vector

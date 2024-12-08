@@ -231,7 +231,7 @@ public:
   {
       return this->m_map_face;
   }
-	void Patch_Write(int id);
+  void Patch_Write(int id, const std::string& path_prefix);
 };
 
 
@@ -240,7 +240,7 @@ typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
 
 
 template<typename V, typename E, typename F, typename H>
-inline void CToolMesh<V, E, F, H>::Patch_Write(int id)
+inline void CToolMesh<V, E, F, H>::Patch_Write(int id, const std::string &path_prefix)
 {
 	for (MeshVertexIterator viter(this); !viter.end(); viter++)
 	{
@@ -262,7 +262,7 @@ inline void CToolMesh<V, E, F, H>::Patch_Write(int id)
     std::unordered_map<int, int> father_to_id;
 
     // file writer
-	std::string file_name = "patch_" + std::to_string(id) + ".m";
+    std::string file_name = path_prefix + "_" + std::to_string(id) + ".m";
 	std::ofstream out(file_name);
 
     int vid = 1;
@@ -287,7 +287,7 @@ inline void CToolMesh<V, E, F, H>::Patch_Write(int id)
 				CVertex* v = *fviter;
 				out << " " << father_to_id[v->father()];
 			}
-			out << std::endl;
+			out << " {g=(" << f->get_g() << ")}"<<std::endl;
 		}
 	}
 	out.close();

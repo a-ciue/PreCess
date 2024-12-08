@@ -23,7 +23,6 @@ ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
   std::string cmd =
       "Spline2Tri_BaseGen_Command.bat " ".\\Data\\PatchedMesh\\temp.stp" " .\\Data\\PatchedMesh\\temp 60";
   cmdPopen(cmd);
-  RemoveReverse(".\\Data\\PatchedMesh\\temp_BadPatches.txt");
 
   std::string stitch_cmd = ".\\Bin\\MeshStitching.exe .\\Data\\PatchedMesh\\ "
                            ".\\Data\\PatchedMesh\\temp_BadPatches.txt "
@@ -40,35 +39,41 @@ ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
 std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
                const std::vector<int> &patch_ids) {
+  RemoveReverse(".\\Data\\PatchedMesh\\temp_BadPatches.txt");
 
-  std::filesystem::remove_all("./Data/PatchedMesh/");
-  std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
-  cmdPopen(mkdir_cmd);
-  mesh->write_m("./Data/temp.m");
+  std::unordered_set<int> all_patches;
+  for (MeshLib::CTMesh::MeshFaceIterator fi(mesh.get()); !fi.end(); fi++)
+  {
+      all_patches.insert(fi.value()->get_g());
+  }
+  for (int patch : all_patches)
+  {
+      mesh->Patch_Write(patch, ".\\Data\\PatchedMesh\\temp");
+  }
 
   for (auto patch_id : patch_ids) {
     std::string patch_cmd =
-        "./Bin/TestCCGL.exe -yamabe_flow_poly_annulus_single "
-        "./Data/PatchedMesh/temp_" +
-        std::to_string(patch_id) + ".m ./Data/PatchedMesh/temp_" +
+        ".\\Bin\\TestCCGL.exe -yamabe_flow_poly_annulus_single "
+        ".\\Data\\PatchedMesh\\temp_" +
+        std::to_string(patch_id) + ".m .\\Data\\PatchedMesh\\temp_" +
         std::to_string(patch_id) + ".uv.m";
     cmdPopen(patch_cmd);
 
     std::string remesh_cmd =
-        "./Bin/TestCCGL.exe -MetricRemesh ./Data/PatchedMesh/temp_" +
-        std::to_string(patch_id) + ".uv.m ./Data/PatchedMesh/temp_" +
+        ".\\Bin\\CDT_QT_Normal_Remesh.exe -MetricRemesh .\\Data\\PatchedMesh\\temp_" +
+        std::to_string(patch_id) + ".uv.m .\\Data\\PatchedMesh\\temp_" +
         std::to_string(patch_id) + ".m 240 60 25 1 3 1 1 0";
     cmdPopen(remesh_cmd);
 
-    std::string stitch_cmd = "./Bin/MeshStitching.exe ./Data/PatchedMesh/ "
-                             "./Data/PatchedMesh/temp_BadPatches.txt"
-                             "./Data/temp.m";
+    std::string stitch_cmd = ".\\Bin\\MeshStitching.exe .\\Data\\PatchedMesh\\ "
+                             ".\\Data\\PatchedMesh\\temp_BadPatches.txt "
+                             ".\\Data\\temp.m";
     cmdPopen(stitch_cmd);
   }
 
   std::unique_ptr<MeshLib::CTMesh> patched_mesh =
       std::make_unique<MeshLib::CTMesh>();
-  patched_mesh->read_m("./Data/PatchedMesh/temp.m");
+  patched_mesh->read_m("./Data/temp.m");
   return patched_mesh;
 }
 

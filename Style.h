@@ -26,7 +26,9 @@ public:
 
     void OnSelect(double posx, double posy);
     void OnCommitMergeBlocks();
+    void OnCommitRemeshBlocks();
     void OnCommitMergeGroups();
+    void OnCommitRemeshGroups();
 
     void SetModel(Model* model);
     void SetClick() override;

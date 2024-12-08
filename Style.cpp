@@ -55,6 +55,20 @@ void MouseInteractorHighLightActor::OnCommitMergeBlocks()
     }
 }
 
+void MouseInteractorHighLightActor::OnCommitRemeshBlocks()
+{
+    if (selector_ != nullptr)
+    {
+        auto actors = selector_->get();
+        std::vector<int> block_ids;
+        for (auto actor : actors)
+        {
+            block_ids.push_back(model_->actor().block_actor_id(actor));
+        }
+        model_->remesh_block(block_ids);
+    }
+}
+
 void MouseInteractorHighLightActor::OnCommitMergeGroups()
 {
     if (selector_ != nullptr)
@@ -66,6 +80,20 @@ void MouseInteractorHighLightActor::OnCommitMergeGroups()
             group_ids.push_back(model_->actor().group_actor_id(actor));
         }
         model_->merge_groups(group_ids);
+    }
+}
+
+void MouseInteractorHighLightActor::OnCommitRemeshGroups()
+{
+    if (selector_ != nullptr)
+    {
+        auto actors = selector_->get();
+        std::vector<int> group_ids;
+        for (auto actor : actors)
+        {
+            group_ids.push_back(model_->actor().group_actor_id(actor));
+        }
+        model_->remesh_group(group_ids);
     }
 }
 
