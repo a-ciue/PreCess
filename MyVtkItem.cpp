@@ -143,8 +143,15 @@ void MyVtkItem::readSpline(QUrl spline_path)
     });
 }
 
-void MyVtkItem::writeMesh(QUrl spline_path)
+void MyVtkItem::writeMesh(QUrl target_mesh)
 {
+    std::filesystem::path mesh_path = target_mesh.toLocalFile().toLatin1().data();
+    
+    dispatch_async([mesh_path](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->model->write_mesh(mesh_path);
+    });
 }
 
 void MyVtkItem::changeRenderer(QString renderMode)
@@ -228,6 +235,13 @@ void MyVtkItem::commitBlockMerge()
 
 void MyVtkItem::commitBlockRemesh()
 {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->blockStyle->OnCommitRemeshBlocks();
+
+        resetCamera();
+    });
 }
 
 void MyVtkItem::commitGroupMerge()
