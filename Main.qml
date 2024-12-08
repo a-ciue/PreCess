@@ -16,6 +16,23 @@ ApplicationWindow {
         id: header
         RowLayout {
             anchors.fill: parent
+
+            FileDialog {
+                id: splineDialog
+                nameFilters: ["STP File (*.stp)"]
+                onAccepted: {
+                    myItem.readSpline(selectedFile);
+                }
+            }
+            FileDialog {
+                id: saveDialog
+                nameFilters: ["OBJ File (*.obj)"]
+                fileMode: FileDialog.SaveFile
+                onAccepted: {
+                    myItem.writeMesh(selectedFile);
+                }
+            }
+
             RowLayout {
                 spacing: 3
                 ToolButton{
@@ -32,7 +49,7 @@ ApplicationWindow {
                         }
                         MenuItem{
                             text: "导出网格"
-                            onClicked: fileDialog.open()
+                            onClicked: saveDialog.open()
                         }
                     }
                 }
@@ -244,13 +261,6 @@ ApplicationWindow {
     }
 
 
-    FileDialog {
-        id: splineDialog
-        nameFilters: ["STP File (*.stp)"]
-        onAccepted: {
-            myItem.readSpline(selectedFile);
-        }
-    }
 
     Rectangle {
         //anchors.top:stacklayout.bottom

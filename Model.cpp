@@ -61,6 +61,12 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
     actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
 }
 
+void Model::write_mesh(const std::filesystem::path& mesh_path)
+{
+
+    mesh_->write_obj(mesh_path.string().c_str());
+}
+
 void Model::split_face(int patch_id, int face_id)
 {
     int face_gid = patches_[patch_id]->faceIDs_[face_id];

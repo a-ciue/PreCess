@@ -46,6 +46,8 @@ public:
     //! @brief 根据给定CTMesh构造update_patches, blocks_, groups_，actor_构造函数
     Model(std::unique_ptr<MeshLib::CTMesh> mesh);
 
+    void write_mesh(const std::filesystem::path& mesh_path);
+
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch
     //! @param face_id 在该patch上的face id
