@@ -23,6 +23,7 @@ ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
   std::string cmd =
       "Spline2Tri_BaseGen_Command.bat " ".\\Data\\PatchedMesh\\temp.stp" " .\\Data\\PatchedMesh\\temp 60";
   cmdPopen(cmd);
+  RemoveReverse(".\\Data\\PatchedMesh\\temp_BadPatches.txt");
 
   std::string stitch_cmd = ".\\Bin\\MeshStitching.exe .\\Data\\PatchedMesh\\ "
                            ".\\Data\\PatchedMesh\\temp_BadPatches.txt "
@@ -405,4 +406,22 @@ void ModelUtil::_attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::C
         he0->edge() = e;
     if (he1 != NULL)
         he1->edge() = e;
+}
+
+void ModelUtil::RemoveReverse(std::string filename)
+{
+    std::ifstream file(filename);
+    std::string line;
+    std::string newFileName = filename + ".tmp";
+    std::ofstream newFile(newFileName);
+    while (std::getline(file, line)) {
+        if (line.find("reverse") != std::string::npos) {
+            line.replace(line.find("reverse"), 7, "");
+        }
+        newFile << line << std::endl;
+    }
+    file.close();
+    newFile.close();
+    std::remove(filename.c_str());
+    std::rename(newFileName.c_str(), filename.c_str());
 }
