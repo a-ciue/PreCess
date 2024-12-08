@@ -120,6 +120,7 @@ void Model::split_edge(int patch_id, std::array<int, 2> edge_v_ids)
     {
         patch_ids.push_back(mesh_->halfedgeFace(he2)->get_g());
     }
+    update_patches(patch_ids);
     update_actors(patch_ids);
 }
 

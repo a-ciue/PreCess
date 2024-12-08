@@ -206,6 +206,8 @@ void MyVtkItem::bindStyle(QString function)
     dispatch_async([styleIdx](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
+        if (vtk->curStyle)
+            vtk->curStyle->ClearSelections();
         renderWindow->GetInteractor()->SetInteractorStyle(vtk->styles[styleIdx]);
         vtk->curStyle = vtk->styles[styleIdx];
     });
@@ -216,7 +218,8 @@ void MyVtkItem::unbindStyle()
     dispatch_async([](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        vtk->curStyle->ClearSelections();
+        if (vtk->curStyle)
+            vtk->curStyle->ClearSelections();
         renderWindow->GetInteractor()->SetInteractorStyle(vtkNew<vtkInteractorStyleTrackballCamera>());
         vtk->curStyle = nullptr;
     });
@@ -273,12 +276,19 @@ void MyVtkItem::commitFaceCut()
 
         vtk->faceStyle->OnCommitSplitFace();
 
-        resetCamera();
+        //resetCamera();
     });
 }
 
 void MyVtkItem::commitEdgeCut()
 {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->edgeStyle->OnCommitSplitEdge();
+
+        //resetCamera();
+    });
 }
 
 void MyVtkItem::setClick()

@@ -351,29 +351,33 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
 //    }
 //    return pV;
 //}
-MeshLib::CToolVertex* ModelUtil::split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh) {
+void ModelUtil::split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh) {
     using namespace MeshLib;
     using V = MeshLib::CTMesh::CVertex;
     using H = MeshLib::CTMesh::CHalfEdge;
 
     bool notBoundary = edge->halfedge(1);
+    CPoint mid = (mesh->edgeVertex1(edge)->point() + mesh->edgeVertex2(edge)->point()) / 2;
+
     MeshLib::CFaceSplitter<MeshLib::CTMesh> splitter(mesh);
     V* midv = splitter.split_edge(mesh->edgeHalfedge(edge, 0));
+    midv->point() = mid;
 
 	std::array<H*, 2> vins {};
     vins[0] = mesh->vertexHalfedge(midv);
     vins[1] = mesh->halfedgeNext(mesh->halfedgeNext(vins[0]));
+    int g = mesh->halfedgeFace(vins[0])->get_g();
     std::pair p = splitter.create_edge(midv, vins[0], mesh->halfedgeTarget(vins[1]), vins[1]);
-    p.second->get_g() = mesh->halfedgeFace(vins[0])->get_g();
+    p.second->get_g() = g;
 
     if (notBoundary)
     {
         vins[0] = mesh->vertexNextCcwInHalfEdge(vins[0]);
         vins[1] = mesh->halfedgeNext(mesh->halfedgeNext(vins[0]));
+        g = mesh->halfedgeFace(vins[0])->get_g();
         p = splitter.create_edge(midv, vins[0], mesh->halfedgeTarget(vins[1]), vins[1]);
-        p.second->get_g() = mesh->halfedgeFace(vins[0])->get_g();
+        p.second->get_g() = g;
     }
-    return midv;
 }
 
 std::string ModelUtil::cmdPopen(const std::string& cmdLine)

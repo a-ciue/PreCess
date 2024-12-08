@@ -39,7 +39,7 @@ public:
     //! @param edge 待切分的边
     //! @param mesh 边所在网格
     //! @return 新添加的点，可以调整该点坐标
-    static MeshLib::CToolVertex* split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh);
+    static void split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh);
 
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;

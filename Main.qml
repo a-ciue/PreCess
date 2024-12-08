@@ -72,6 +72,7 @@ ApplicationWindow {
                     property string renderMode: "Face"
                     rightPadding: 8
                     checkable: true
+                    checked: true
                     onClicked: stacklayout.currentIndex = 0
                     ButtonGroup.group: renderGroup
                 }

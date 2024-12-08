@@ -28,6 +28,9 @@
 #include <vtkPolyDataMapper.h>
 
 #include <vtkAppendPolyData.h>
+
+#include "ModelUtil.h"
+
 namespace Selector {
     std::optional<std::pair<vtkActor*, int>> pick_cell(double posx, double posy, vtkRenderer* renderer) {
         //vtkNew<vtkPropPicker> actorpicker;
@@ -207,7 +210,7 @@ bool SingleFaceSelectorHighlight::_is_selected(SelectedFace new_face, const std:
 
 SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer, Model* model) : renderer_(renderer)
 {
-    
+    selectedActor_ = vtkSmartPointer<vtkActor>::New();
     renderer_->AddActor(selectedActor_);
     model_ = model;
 }
@@ -219,108 +222,91 @@ SingleEdgeSelectorHighlight::~SingleEdgeSelectorHighlight()
 
 std::optional<SingleEdgeSelectorHighlight::SelectedEdge> SingleEdgeSelectorHighlight::get()
 {
-    return std::optional<SelectedEdge>();
+    return selection_;
 }
 
 void SingleEdgeSelectorHighlight::clear()
 {
-    _cancel_highlight(selectedMapper_ ,renderer_);
+    _cancel_highlight(selectedMapper_ ,selectedActor_);
     selection_ = std::nullopt;
 }
 
 void SingleEdgeSelectorHighlight::select(double posx, double posy)
 {
-    
-    auto result = Selector::pick_cell(posx, posy, renderer_);
-    if (result) {
-        vtkActor* new_actor = result->first;
-        int local_id = result->second;
-        double pPos[3]{};
-        vtkNew<vtkCellPicker> picker;
-        picker->Pick(posx, posy, 0, renderer_);
+    vtkNew<vtkCellPicker> picker;
+    picker->Pick(posx, posy, 0, renderer_);
+
+    if (picker->GetCellId() != -1) {
+        vtkActor* picked_actor = picker->GetActor();
+        double pPos[3] {};
         picker->GetPCoords(pPos);
         pPos[2] = 1 - pPos[1] - pPos[0];
-        double position1[3]{};
-        double position2[3]{};
+
+        std::array<double, 3> position1 {};
+        std::array<double, 3> position2 {};
         vtkNew<vtkLine> line0;
         vtkNew<vtkPoints> points;
         vtkNew<vtkCellArray> lines;
-        vtkNew<vtkActor> lineActor;
-        vtkNew<vtkNamedColors> colors;
         vtkSmartPointer<vtkPolyData> data;
-        vtkPolyDataMapper* mapper = vtkPolyDataMapper::SafeDownCast(new_actor->GetMapper());
+        vtkPolyDataMapper* mapper = vtkPolyDataMapper::SafeDownCast(picked_actor->GetMapper());
         data = mapper->GetInput();
         vtkIdType* cellpid = data->GetCell(picker->GetCellId())->GetPointIds()->GetPointer(0);
 
-        if (picker->GetCellId() != -1)
-        {
-            /**/if (pPos[1] < pPos[0] && pPos[1] < pPos[2])
-            {
-                data->GetPoint(cellpid[0], position1);
-                data->GetPoint(cellpid[1], position2);
-            }
-            else if (pPos[2] < pPos[0] && pPos[2] < pPos[1])
-            {
-                data->GetPoint(cellpid[1], position1);
-                data->GetPoint(cellpid[2], position2);
-            }
-            else if (pPos[0] < pPos[1] && pPos[0] < pPos[2])
-            {
-                data->GetPoint(cellpid[0], position1);
-                data->GetPoint(cellpid[2], position2);
-            }
-            line0->GetPointIds()->SetId(0, 0);
-            line0->GetPointIds()->SetId(1, 1);
-            lines->InsertNextCell(line0);
-
-            vtkNew<vtkPolyData> polydata;
-            polydata->SetPoints(points);
-            polydata->SetLines(lines);
-            selectedMapper_->SetInputData(polydata);
-            selectedMapper_->Update(); // 更新映射器
-
-            // 创建一个演员来显示这些线段
-
-            lineActor->SetMapper(selectedMapper_);
-            lineActor->GetProperty()->SetColor(colors->GetColor3d("black").GetData());
-            lineActor->GetProperty()->SetLineWidth(5); // 设置
-            SelectedEdge new_edge_ = { lineActor, *cellpid };
-
-                if(_is_selected(new_edge_, selection_, model_))
-                {
-                    _cancel_highlight(selectedMapper_, renderer_);
-                    selection_ = std::nullopt;
-                }
-                else
-                {
-                    this->renderer_->AddActor(lineActor);
-                }
-
-            
+        SelectedEdge picked_edge;
+        picked_edge.actor = picked_actor;
+        /**/ if (pPos[1] < pPos[0] && pPos[1] < pPos[2]) {
+            picked_edge.v_local_id[0] = cellpid[0];
+            picked_edge.v_local_id[1] = cellpid[1];
+        } else if (pPos[2] < pPos[0] && pPos[2] < pPos[1]) {
+            picked_edge.v_local_id[0] = cellpid[1];
+            picked_edge.v_local_id[1] = cellpid[2];
+        } else if (pPos[0] < pPos[1] && pPos[0] < pPos[2]) {
+            picked_edge.v_local_id[0] = cellpid[0];
+            picked_edge.v_local_id[1] = cellpid[2];
         }
-        
-        else if (picker->GetCellId() == -1)
-        {
-            _cancel_highlight(selectedMapper_, renderer_);
+        data->GetPoint(picked_edge.v_local_id[0], position1.data());
+        data->GetPoint(picked_edge.v_local_id[1], position2.data());
+        points->InsertNextPoint(position1.data());
+        points->InsertNextPoint(position2.data());
+		
+        line0->GetPointIds()->SetId(0, 0);
+        line0->GetPointIds()->SetId(1, 1);
+        lines->InsertNextCell(line0);
+
+        vtkNew<vtkPolyData> polydata;
+        polydata->SetPoints(points);
+        polydata->SetLines(lines);
+        selectedMapper_->SetInputData(polydata);
+        selectedMapper_->Update(); // 更新映射器
+
+        // 创建一个演员来显示这些线段
+
+        selectedActor_->SetMapper(selectedMapper_);
+        selectedActor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("black").GetData());
+        selectedActor_->GetProperty()->SetLineWidth(5); // 设置
+
+        if (_is_selected(picked_edge, selection_, model_)) {
+            _cancel_highlight(selectedMapper_, selectedActor_);
             selection_ = std::nullopt;
         }
-
+        else
+        {
+            selection_ = picked_edge;
+        }
     }
-    else {
-        _cancel_highlight(selectedMapper_, renderer_);
+
+    else if (picker->GetCellId() == -1) {
+        // 没选到
+        _cancel_highlight(selectedMapper_, selectedActor_);
         selection_ = std::nullopt;
     }
-  
 }
 
-void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper, vtkRenderer* renderer)
+void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper, vtkActor* selectedActor)
 {
-    vtkNew<vtkActor> lineActor;
-    lineActor->SetMapper(selectedMapper);
-    renderer->RemoveActor(lineActor);
-    selectedMapper = vtkNew<vtkDataSetMapper>::vtkNew();
-    lineActor->SetMapper(selectedMapper);
-    renderer->AddActor(lineActor);
+    vtkNew<vtkPolyData> empty;
+    selectedMapper->SetInputData(empty);
+    selectedActor->SetMapper(selectedMapper);
 }
 
 bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, Model* model)
