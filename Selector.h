@@ -67,7 +67,7 @@ private:
     //！@brief 取消高亮，清空mapper
     static void _cancel_highlight(vtkSmartPointer<vtkActor>& selectedActor, vtkRenderer* renderer);
     //! @brief 判断是否已经被选中
-    static bool _is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection);
+    static bool _is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection, vtkActor* selectedActor);
 
     vtkRenderer* renderer_;
     std::optional<SelectedFace> selection_;
@@ -97,7 +97,7 @@ private:
     //！@brief 取消高亮，清空mapper
     static void _cancel_highlight(vtkDataSetMapper* selectedMapper, vtkActor* selectedActor);
     //! @brief 判断是否已经被选中
-    static bool _is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, Model* model);
+    static bool _is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor);
 
     vtkRenderer* renderer_;
     Model* model_;

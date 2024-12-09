@@ -149,7 +149,7 @@ void SingleFaceSelectorHighlight::select(double posx, double posy) {
         int local_id = result->second;
         SelectedFace new_face = { new_actor, local_id };
 
-        if (_is_selected(new_face, selection_)) {
+        if (_is_selected(new_face, selection_, selectedActor_)) {
            
             _cancel_highlight(selectedActor_, renderer_);
             selection_ = std::nullopt;
@@ -200,9 +200,14 @@ void SingleFaceSelectorHighlight::_cancel_highlight(vtkSmartPointer<vtkActor>& s
     renderer->AddActor(selectedActor);
 }
 
-bool SingleFaceSelectorHighlight::_is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection) {
+bool SingleFaceSelectorHighlight::_is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection, vtkActor* selectedActor) {
+    // 选中网格或选中选择actor
+    // if 选中选择actor
+    //   return true
+    // else 选中网格
+    //   return 选中单元一致
    
-    if (selection && selection->patch_actor == new_face.patch_actor && selection->local_id == new_face.local_id) {
+    if (new_face.patch_actor == selectedActor || selection && selection->patch_actor == new_face.patch_actor && selection->local_id == new_face.local_id) {
         return true;
     }
     return false;
@@ -285,7 +290,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         selectedActor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("black").GetData());
         selectedActor_->GetProperty()->SetLineWidth(5); // 设置
 
-        if (_is_selected(picked_edge, selection_, model_)) {
+        if (_is_selected(picked_edge, selection_, selectedActor_)) {
             _cancel_highlight(selectedMapper_, selectedActor_);
             selection_ = std::nullopt;
         }
@@ -309,9 +314,10 @@ void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMa
     selectedActor->SetMapper(selectedMapper);
 }
 
-bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, Model* model)
+bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor)
 {
-    if (selection && selection->actor == new_edge.actor&& selection->v_local_id == new_edge.v_local_id) {
+    // 选中了selectedActor 或 选中的边是selection
+    if (new_edge.actor == selectedActor || selection && selection->actor == new_edge.actor && selection->v_local_id == new_edge.v_local_id) {
         return true;
     }
     return false;
