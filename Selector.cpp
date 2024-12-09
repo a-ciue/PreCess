@@ -317,6 +317,7 @@ void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMa
 bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor)
 {
     // 选中了selectedActor 或 选中的边是selection
+    // TODO: 目前判断边相同使用的是polydata内的边点id相同，只能判断单侧边相同
     if (new_edge.actor == selectedActor || selection && selection->actor == new_edge.actor && selection->v_local_id == new_edge.v_local_id) {
         return true;
     }

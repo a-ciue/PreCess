@@ -39,7 +39,7 @@ ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
 std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
                const std::vector<int> &patch_ids) {
-  RemoveReverse(".\\Data\\PatchedMesh\\temp_BadPatches.txt");
+  AddReverse(".\\Data\\PatchedMesh\\temp_BadPatches.txt");
 
   std::unordered_set<int> all_patches;
   for (MeshLib::CTMesh::MeshFaceIterator fi(mesh.get()); !fi.end(); fi++)
@@ -417,15 +417,15 @@ void ModelUtil::_attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::C
         he1->edge() = e;
 }
 
-void ModelUtil::RemoveReverse(std::string filename)
+void ModelUtil::AddReverse(std::string filename)
 {
     std::ifstream file(filename);
     std::string line;
     std::string newFileName = filename + ".tmp";
     std::ofstream newFile(newFileName);
     while (std::getline(file, line)) {
-        if (line.find("reverse") != std::string::npos) {
-            line.replace(line.find("reverse"), 7, "");
+        if (line.find("reverse") == std::string::npos) {
+            line += " reverse";
         }
         newFile << line << std::endl;
     }

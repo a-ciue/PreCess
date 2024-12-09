@@ -62,8 +62,8 @@ ApplicationWindow {
                 ButtonGroup {
                     id: renderGroup
                     onCheckedButtonChanged: {
-                        console.log("renderGroup checkedButton changed")
-                        myItem.changeRenderer(checkedButton.renderMode);
+                        myItem.unbindStyle()
+                        myItem.changeRenderer(checkedButton.renderMode)
                     }
                 }
                 Button {
@@ -209,24 +209,25 @@ ApplicationWindow {
                         else myItem.unbindStyle();
                     }
                 }
-                Button{
-                    id:patchMergeConfirm
-                    text: "合并"
-                    visible:integrateBlockButton.checked
+                RowLayout {
                     Layout.alignment: Qt.AlignRight
-                    onClicked:{
-                        myItem.commitBlockMerge()
-                        integrateBlockButton.toggle()
+                    Button{
+                        id:patchMergeConfirm
+                        text: "合并"
+                        visible:integrateBlockButton.checked
+                        onClicked:{
+                            myItem.commitBlockMerge()
+                            integrateBlockButton.toggle()
+                        }
                     }
-                }
-                Button{
-                    id:patchRemeshConfirm
-                    text: "重网格"
-                    visible:integrateBlockButton.checked
-                    Layout.alignment: Qt.AlignRight
-                    onClicked:{
-                        myItem.commitBlockRemesh()
-                        integrateBlockButton.toggle()
+                    Button{
+                        id:patchRemeshConfirm
+                        text: "重网格"
+                        visible:integrateBlockButton.checked
+                        onClicked:{
+                            myItem.commitBlockRemesh()
+                            integrateBlockButton.toggle()
+                        }
                     }
                 }
             }
@@ -247,24 +248,25 @@ ApplicationWindow {
                         else myItem.unbindStyle();
                     }
                 }
-                Button{
-                    id:groupModeConfirm
-                    text: "合并"
-                    visible:integrateGroupButton.checked
+                RowLayout {
                     Layout.alignment: Qt.AlignRight
-                    onClicked:{
-                        myItem.commitGroupMerge()
-                        integrateGroupButton.toggle()
+                    Button{
+                        id:groupModeConfirm
+                        text: "合并"
+                        visible:integrateGroupButton.checked
+                        onClicked:{
+                            myItem.commitGroupMerge()
+                            integrateGroupButton.toggle()
+                        }
                     }
-                }
-                Button{
-                    id:groupRemeshConfirm
-                    text: "重网格"
-                    visible:integrateGroupButton.checked
-                    Layout.alignment: Qt.AlignRight
-                    onClicked:{
-                        myItem.commitGroupRemesh()
-                        integrateGroupButton.toggle()
+                    Button{
+                        id:groupRemeshConfirm
+                        text: "重网格"
+                        visible:integrateGroupButton.checked
+                        onClicked:{
+                            myItem.commitGroupRemesh()
+                            integrateGroupButton.toggle()
+                        }
                     }
                 }
             }
