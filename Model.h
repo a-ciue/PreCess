@@ -46,7 +46,10 @@ public:
     //! @brief 根据给定CTMesh构造update_patches, blocks_, groups_，actor_构造函数
     Model(std::unique_ptr<MeshLib::CTMesh> mesh);
 
-    void write_mesh(const std::filesystem::path& mesh_path);
+    //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
+    //! @param mesh_path 输出文件路径
+    //! @param mode 选定输出模式
+    void write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode);
 
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch

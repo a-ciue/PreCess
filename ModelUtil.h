@@ -1,6 +1,7 @@
 ﻿#ifndef MODELUTIL_H
 #define MODELUTIL_H
 #include <filesystem>
+#include <functional>
 #include <memory>
 #include <vector>
 #include <vtkNew.h>
@@ -29,6 +30,12 @@ public:
     //! @param patch_ids 需要重网格的patch
     //! @return 重网格完毕后拼接完毕的完整网格
     static std::unique_ptr<MeshLib::CTMesh> remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh, const std::vector<int>& patch_ids);
+
+    //! @brief 写obj文件，除了网格的连接信息意外，还要包括给定的分组信息
+    //! @param mesh 待写的网格
+    //! @param target_dir 目标路径
+    //! @param gid 分组id函数，传入patch_id返回group_id
+    static void write_group_obj(MeshLib::CTMesh* mesh, const std::filesystem::path& target_dir, std::function<int(int)> gid);
 
     //! @brief 三分三角形，返回中间添加的点，注意维护m_g在内的新面属性
     //! @param face 待切分的三角形

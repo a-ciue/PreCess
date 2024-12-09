@@ -25,11 +25,27 @@ ApplicationWindow {
                 }
             }
             FileDialog {
-                id: saveDialog
+                id: saveFaceDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    myItem.writeMesh(selectedFile);
+                    myItem.writeMesh(selectedFile, "Face");
+                }
+            }
+            FileDialog {
+                id: saveBlockDialog
+                nameFilters: ["OBJ File (*.obj)"]
+                fileMode: FileDialog.SaveFile
+                onAccepted: {
+                    myItem.writeMesh(selectedFile, "Block");
+                }
+            }
+            FileDialog {
+                id: saveGroupDialog
+                nameFilters: ["OBJ File (*.obj)"]
+                fileMode: FileDialog.SaveFile
+                onAccepted: {
+                    myItem.writeMesh(selectedFile, "Group");
                 }
             }
 
@@ -47,9 +63,21 @@ ApplicationWindow {
                             text: "指定样条剖分"
                             onClicked: splineDialog.open()
                         }
-                        MenuItem{
-                            text: "导出网格"
-                            onClicked: saveDialog.open()
+
+                        Menu {
+                            title: "导出..."
+                            MenuItem{
+                                text: "网格"
+                                onClicked: saveFaceDialog.open()
+                            }
+                            MenuItem{
+                                text: "网格（带分块信息）"
+                                onClicked: saveBlockDialog.open()
+                            }
+                            MenuItem{
+                                text: "网格（带分组信息）"
+                                onClicked: saveGroupDialog.open()
+                            }
                         }
                     }
                 }
@@ -136,9 +164,6 @@ ApplicationWindow {
         Item{
             id:face_mode
             anchors.fill: parent
-            ButtonGroup{
-                buttons:row1.children
-            }
             RowLayout{
                 id:row1
                 anchors.fill: parent

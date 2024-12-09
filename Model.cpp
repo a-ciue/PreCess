@@ -61,10 +61,33 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
     actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
 }
 
-void Model::write_mesh(const std::filesystem::path& mesh_path)
+void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode)
 {
+    std::function<int(int)> gid{};
 
-    mesh_->write_obj(mesh_path.string().c_str());
+    switch (mode) {
+    case ModelActor::RenderMode::Face:
+        {
+        gid = [](int patch_id) {
+            return 1;
+        };
+        break;
+    }
+    case ModelActor::RenderMode::Block: {
+        gid = [this](int patch_id) {
+            return blocks_[patch_id]->id;
+        };
+        break;
+    }
+    case ModelActor::RenderMode::Group: {
+        gid = [this](int patch_id) {
+            return groups_[patch_id]->id;
+        };
+        break;
+    }
+    }
+
+    ModelUtil::write_group_obj(mesh_.get(), mesh_path, gid);
 }
 
 void Model::split_face(int patch_id, int face_id)

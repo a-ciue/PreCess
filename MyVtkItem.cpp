@@ -143,14 +143,26 @@ void MyVtkItem::readSpline(QUrl spline_path)
     });
 }
 
-void MyVtkItem::writeMesh(QUrl target_mesh)
+void MyVtkItem::writeMesh(QUrl target_mesh, QString renderMode)
 {
+    ModelActor::RenderMode mode {};
+    if (renderMode == "Face") {
+        mode = ModelActor::RenderMode::Face;
+    } else if (renderMode == "Block") {
+        mode = ModelActor::RenderMode::Block;
+    } else if (renderMode == "Group") {
+        mode = ModelActor::RenderMode::Group;
+    } else {
+        std::cerr << "invalid renderMode in MyVtkItem::changeEdgeRenderer" << std::endl;
+        return;
+    }
+
     std::filesystem::path mesh_path = target_mesh.toLocalFile().toLatin1().data();
     
-    dispatch_async([mesh_path](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([mesh_path, mode](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        vtk->model->write_mesh(mesh_path);
+        vtk->model->write_mesh(mesh_path, mode);
     });
 }
 
