@@ -225,6 +225,27 @@ void MyVtkItem::unbindStyle()
     });
 }
 
+void MyVtkItem::changeEdgeRender(QString renderMode, bool render)
+{
+    ModelActor::RenderMode mode {};
+    if (renderMode == "Face") {
+        mode = ModelActor::RenderMode::Face;
+    } else if (renderMode == "Block") {
+        mode = ModelActor::RenderMode::Block;
+    } else if (renderMode == "Group") {
+        mode = ModelActor::RenderMode::Group;
+    } else {
+        std::cerr << "invalid renderMode in MyVtkItem::changeEdgeRenderer" << std::endl;
+        return;
+    }
+
+    dispatch_async([this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->model->actor().render_edge(mode, render);
+    });
+}
+
 void MyVtkItem::commitBlockMerge()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {

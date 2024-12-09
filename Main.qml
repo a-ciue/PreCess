@@ -143,6 +143,20 @@ ApplicationWindow {
                 id:row1
                 anchors.fill: parent
                 spacing: 3
+
+                Button{
+                    id:edgeRenderFace
+                    text: "边渲染"
+                    onClicked: toggle()
+                    onCheckedChanged: myItem.changeEdgeRender("Face", checked)
+                }
+
+                Rectangle {
+                    color: "black"
+                    Layout.preferredWidth: 1
+                    Layout.fillHeight: true
+                }
+
                 ButtonGroup {
                     id: face_group
                     onCheckStateChanged: {
@@ -199,6 +213,18 @@ ApplicationWindow {
             RowLayout{
                 anchors.fill: parent
                 Button{
+                    id:edgeRenderBlock
+                    text: "边渲染"
+                    onClicked: toggle()
+                    onCheckedChanged: myItem.changeEdgeRender("Block", checked)
+                }
+                Rectangle {
+                    color: "black"
+                    Layout.preferredWidth: 1
+                    Layout.fillHeight: true
+                }
+
+                Button{
                     id:integrateBlockButton
                     text: "Integrate Block"
                     onClicked:{
@@ -237,6 +263,18 @@ ApplicationWindow {
             anchors.fill: parent
             RowLayout{
                 anchors.fill: parent
+                Button{
+                    id:edgeRenderGroup
+                    text: "边渲染"
+                    onClicked: toggle()
+                    onCheckedChanged: myItem.changeEdgeRender("Group", checked)
+                }
+                Rectangle {
+                    color: "black"
+                    Layout.preferredWidth: 1
+                    Layout.fillHeight: true
+                }
+
                 Button{
                     id:integrateGroupButton
                     text:qsTr("Integrate Group")

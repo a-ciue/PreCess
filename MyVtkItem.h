@@ -56,6 +56,7 @@ public:
     Q_INVOKABLE void changeRenderer(QString renderMode);
     Q_INVOKABLE void bindStyle(QString function);
     Q_INVOKABLE void unbindStyle();
+    Q_INVOKABLE void changeEdgeRender(QString renderMode, bool render);
     //Q_INVOKABLE void commitChange(QString function);
     Q_INVOKABLE void commitBlockMerge();
     Q_INVOKABLE void commitBlockRemesh();

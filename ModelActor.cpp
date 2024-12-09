@@ -46,8 +46,35 @@ void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
     }
     }
 
+    bool edge_render = edge_visibility[mode];
     for (auto&& [_, actor] : *mode_actors) {
         renderer->AddActor(actor);
+        actor->GetProperty()->SetEdgeVisibility(edge_render);
+    }
+}
+
+void ModelActor::render_edge(RenderMode mode, bool render)
+{
+    edge_visibility[mode] = render;
+
+    ActorMap* mode_actors {};
+    switch (mode) {
+    case RenderMode::Face: {
+        mode_actors = &patch_actors_;
+        break;
+    }
+    case RenderMode::Block: {
+        mode_actors = &block_actors_;
+        break;
+    }
+    case RenderMode::Group: {
+        mode_actors = &group_actors_;
+        break;
+    }
+    }
+
+    for (auto&& [_, actor] : *mode_actors) {
+        actor->GetProperty()->SetEdgeVisibility(render);
     }
 }
 
@@ -102,6 +129,10 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
     for (auto&& [group_id, group_actor] : group_actors_) {
         group_actor_id_[group_actor] = group_id;
     }
+
+    edge_visibility[RenderMode::Face] = false;
+    edge_visibility[RenderMode::Block] = false;
+    edge_visibility[RenderMode::Group] = false;
 }
 
 ModelActor::~ModelActor()

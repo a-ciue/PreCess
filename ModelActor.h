@@ -34,7 +34,10 @@ public:
     ~ModelActor();
 
     void bind_renderer(vtkRenderer* renderer, RenderMode mode);
-    // void set_model(Model* model);
+    //! @brief 设置某个renderer是否渲染边
+    //! @param mode 选择该mode对应renderer
+    //! @param render 是否渲染
+    void render_edge(RenderMode mode, bool render);
 
     int block_actor_id(vtkActor* actor);
     int group_actor_id(vtkActor* actor);
@@ -77,6 +80,8 @@ private:
     std::unordered_map<vtkActor*, int> block_actor_id_;
     ActorMap group_actors_;
     std::unordered_map<vtkActor*, int> group_actor_id_;
+
+    std::unordered_map<RenderMode, bool> edge_visibility;
 };
 
 #endif // MODELACTOR_H
