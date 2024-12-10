@@ -77,6 +77,48 @@ ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
   return patched_mesh;
 }
 
+//! @brief 写obj文件，除了网格的连接信息意外，还要包括给定的分组信息
+//! @param mesh 待写的网格
+//! @param target_dir 目标路径
+//! @param gid 分组id函数，传入patch_id返回group_id
+void ModelUtil::write_group_obj(MeshLib::CTMesh* mesh, const std::filesystem::path& target_dir, std::function<int(int)> gid)
+{
+    int i = 1;
+    for (MeshLib::CTMesh::MeshVertexIterator vi(mesh); !vi.end(); vi++) {
+        MeshLib::CTMesh::CVertex* v = *vi;
+        v->id() = i++;
+    }
+	std::ofstream obj(target_dir);
+	for (MeshLib::CTMesh::MeshVertexIterator vi(mesh); !vi.end(); vi++) {
+		MeshLib::CTMesh::CVertex* v = *vi;
+		obj << "v " << v->point()[0] << " " << v->point()[1] << " " << v->point()[2] << std::endl;
+	}
+    std::unordered_map<int, std::vector<std::vector<int>>> groupMap;
+	for (MeshLib::CTMesh::MeshFaceIterator fi(mesh); !fi.end(); fi++) {
+		MeshLib::CTMesh::CFace* f = *fi;
+		int group = gid(f->get_g());
+		std::vector<int> face;
+		for (MeshLib::CTMesh::FaceVertexIterator fvi(f); !fvi.end(); fvi++) {
+			MeshLib::CTMesh::CVertex* v = *fvi;
+			face.push_back(v->id());
+		}
+		groupMap[group].push_back(face);
+	}
+
+    for (auto& group : groupMap) {
+        obj << "g " << group.first << std::endl;
+        for (auto& face : group.second) {
+            obj << "f";
+            for (auto& v : face) {
+                obj << " " << v;
+            }
+            obj << std::endl;
+        }
+    }
+	
+	obj.close();
+}
+
 MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::CTMesh* mesh)
 {
     using namespace MeshLib;
