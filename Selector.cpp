@@ -105,7 +105,8 @@ void ActorSelectorHighlight::select(double posx, double posy) {
 
 void ActorSelectorHighlight::_cancel_highlight(Actor& selection) {
     // 取消高亮，修改回原来属性
-    selection.actor->SetProperty(selection.backup_property);
+    //selection.actor->SetProperty(selection.backup_property);
+    selection.actor->GetProperty()->SetColor(selection.backup_property->GetColor());
 }
 
 std::optional<size_t> ActorSelectorHighlight::_is_selected(const vtkActor* new_actor, const std::vector<Actor>& selections) {

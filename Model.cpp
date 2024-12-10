@@ -38,6 +38,8 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
         //int block_id = generate_block_id(patch_id);  根据 patch_id 生成 block_id。这里的generate_block_id(int)是伪代码
         //可以先block_id = patch_id
         int block_id = patch_id;
+        patches_[patch_id]->blockID = block_id;
+
         if (blocks_.find(block_id) == blocks_.end()) {
             blocks_[block_id] = std::make_unique<Block>();
             blocks_[block_id]->id = block_id;
@@ -75,13 +77,13 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
     }
     case ModelActor::RenderMode::Block: {
         gid = [this](int patch_id) {
-            return blocks_[patch_id]->id;
+            return blocks_[patches_[patch_id]->blockID]->id;
         };
         break;
     }
     case ModelActor::RenderMode::Group: {
         gid = [this](int patch_id) {
-            return groups_[patch_id]->id;
+            return groups_[blocks_[patches_[patch_id]->blockID]->groupID]->id;
         };
         break;
     }
@@ -172,6 +174,7 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
         // 合并 patchIDs
         for (int patch_id : block_to_merge->patchIDs) {
             target_block->patchIDs.insert(patch_id);
+            patches_[patch_id]->blockID = target_block_id;
         }
 
         // 维护groups_，删除后面这些在group的信息

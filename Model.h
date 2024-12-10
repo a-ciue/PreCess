@@ -17,6 +17,7 @@ typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
 struct Patch {
     // patch id
     int id_;
+    int blockID;
     // 全局id
     std::vector<int> faceIDs_;
     // 三角形的局部id索引

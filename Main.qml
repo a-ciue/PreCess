@@ -10,7 +10,7 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 640
-    title: qsTr("Hello World")
+    title: qsTr("三角剖分交互程序")
 
     header: ToolBar {
         id: header
@@ -53,7 +53,7 @@ ApplicationWindow {
                 spacing: 3
                 ToolButton{
                     id:fileButton
-                    text:"File"
+                    text:"文件"
                     Layout.preferredWidth: 40
                     onClicked:menu.open()
                     Menu{
@@ -96,7 +96,7 @@ ApplicationWindow {
                 }
                 Button {
                     id: btn1
-                    text: "Face"
+                    text: "面模式"
                     property string renderMode: "Face"
                     rightPadding: 8
                     checkable: true
@@ -106,7 +106,7 @@ ApplicationWindow {
                 }
                 Button {
                     id: btn2
-                    text: "Block"
+                    text: "块模式"
                     property string renderMode: "Block"
                     checkable: true
                     onClicked: stacklayout.currentIndex = 1
@@ -114,7 +114,7 @@ ApplicationWindow {
                 }
                 Button {
                     id: btn3
-                    text: "Group"
+                    text: "组模式"
                     property string renderMode: "Group"
                     checkable: true
                     onClicked: stacklayout.currentIndex = 2
@@ -122,7 +122,7 @@ ApplicationWindow {
                 }
 
                 Component.onCompleted: {
-                    let width = Math.max(btn1.width, btn2.width, btn3.width)
+                    let width = 1.5*Math.max(btn1.width, btn2.width, btn3.width)
                     btn1.Layout.preferredWidth = width
                     btn2.Layout.preferredWidth = width
                     btn3.Layout.preferredWidth = width
@@ -192,14 +192,14 @@ ApplicationWindow {
 
                 Button{
                     id:edgeCutButton
-                    text: "Cut Edge"
+                    text: "切分边"
                     ButtonGroup.group: face_group
                     onClicked: toggle()
                     onCheckedChanged: if (checked) myItem.bindStyle("Edge")
                 }
                 Button{
                     id:faceCutButton
-                    text: "Cut Face"
+                    text: "切分面"
                     ButtonGroup.group: face_group
                     onClicked: toggle()
                     onCheckedChanged: {
@@ -212,7 +212,7 @@ ApplicationWindow {
                 }
                 Button{
                     id:edgeCutConfirm
-                    text: "confirm"
+                    text: "确认"
                     Layout.alignment: Qt.AlignRight
                     visible:edgeCutButton.checked
                     onClicked:{
@@ -222,7 +222,7 @@ ApplicationWindow {
                 }
                 Button{
                     id:faceCutConfirm
-                    text: "confirm"
+                    text: "确认"
                     Layout.alignment: Qt.AlignRight
                     visible:faceCutButton.checked
                     onClicked:{
@@ -237,35 +237,38 @@ ApplicationWindow {
             anchors.fill: parent
             RowLayout{
                 anchors.fill: parent
-                Button{
-                    id:edgeRenderBlock
-                    text: "边渲染"
-                    onClicked: toggle()
-                    onCheckedChanged: myItem.changeEdgeRender("Block", checked)
-                }
-                Rectangle {
-                    color: "black"
-                    Layout.preferredWidth: 1
-                    Layout.fillHeight: true
-                }
-
-                Button{
-                    id:integrateBlockButton
-                    text: "Integrate Block"
-                    onClicked:{
-                        toggle()
+                RowLayout {
+                    Layout.alignment: Qt.AlignLeft
+                    Button{
+                        id:edgeRenderBlock
+                        text: "边渲染"
+                        onClicked: toggle()
+                        onCheckedChanged: myItem.changeEdgeRender("Block", checked)
                     }
-                    onCheckedChanged: {
-                        if (checked) myItem.bindStyle("Block");
-                        else myItem.unbindStyle();
+                    Rectangle {
+                        color: "black"
+                        Layout.preferredWidth: 1
+                        Layout.fillHeight: true
+                    }
+
+                    Button{
+                        id:integrateBlockButton
+                        text: "选择块"
+                        onClicked:{
+                            toggle()
+                        }
+                        onCheckedChanged: {
+                            if (checked) myItem.bindStyle("Block");
+                            else myItem.unbindStyle();
+                        }
                     }
                 }
                 RowLayout {
                     Layout.alignment: Qt.AlignRight
+                    visible:integrateBlockButton.checked
                     Button{
                         id:patchMergeConfirm
                         text: "合并"
-                        visible:integrateBlockButton.checked
                         onClicked:{
                             myItem.commitBlockMerge()
                             integrateBlockButton.toggle()
@@ -274,7 +277,6 @@ ApplicationWindow {
                     Button{
                         id:patchRemeshConfirm
                         text: "重网格"
-                        visible:integrateBlockButton.checked
                         onClicked:{
                             myItem.commitBlockRemesh()
                             integrateBlockButton.toggle()
@@ -288,35 +290,38 @@ ApplicationWindow {
             anchors.fill: parent
             RowLayout{
                 anchors.fill: parent
-                Button{
-                    id:edgeRenderGroup
-                    text: "边渲染"
-                    onClicked: toggle()
-                    onCheckedChanged: myItem.changeEdgeRender("Group", checked)
-                }
-                Rectangle {
-                    color: "black"
-                    Layout.preferredWidth: 1
-                    Layout.fillHeight: true
-                }
-
-                Button{
-                    id:integrateGroupButton
-                    text:qsTr("Integrate Group")
-                    onClicked:{
-                        toggle()
+                RowLayout {
+                    Layout.alignment: Qt.AlignLeft
+                    Button{
+                        id:edgeRenderGroup
+                        text: "边渲染"
+                        onClicked: toggle()
+                        onCheckedChanged: myItem.changeEdgeRender("Group", checked)
                     }
-                    onCheckedChanged: {
-                        if (checked) myItem.bindStyle("Group");
-                        else myItem.unbindStyle();
+                    Rectangle {
+                        color: "black"
+                        Layout.preferredWidth: 1
+                        Layout.fillHeight: true
+                    }
+
+                    Button{
+                        id:integrateGroupButton
+                        text:qsTr("选择组")
+                        onClicked:{
+                            toggle()
+                        }
+                        onCheckedChanged: {
+                            if (checked) myItem.bindStyle("Group");
+                            else myItem.unbindStyle();
+                        }
                     }
                 }
                 RowLayout {
                     Layout.alignment: Qt.AlignRight
+                    visible:integrateGroupButton.checked
                     Button{
                         id:groupModeConfirm
                         text: "合并"
-                        visible:integrateGroupButton.checked
                         onClicked:{
                             myItem.commitGroupMerge()
                             integrateGroupButton.toggle()
@@ -325,7 +330,6 @@ ApplicationWindow {
                     Button{
                         id:groupRemeshConfirm
                         text: "重网格"
-                        visible:integrateGroupButton.checked
                         onClicked:{
                             myItem.commitGroupRemesh()
                             integrateGroupButton.toggle()
@@ -348,8 +352,7 @@ ApplicationWindow {
         //height: 600
         border {
             id: border
-            width: 5;
-            color: dsv.focused === item ? "goldenrod" : "steelblue"
+            width: 5
         }
         radius: 5
         color: "magenta"
