@@ -254,7 +254,8 @@ void MyVtkItem::changeEdgeRender(QString renderMode, bool render)
     dispatch_async([this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        vtk->model->actor().render_edge(mode, render);
+        if (vtk->model)
+            vtk->model->actor().render_edge(mode, render);
     });
 }
 
