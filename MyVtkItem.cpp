@@ -123,7 +123,7 @@ void MyVtkItem::readSpline(QUrl spline_path)
 {
     dispatch_async([this, spline_path](vtkRenderWindow* renderWindow, vtkUserData userData) {
         auto* vtk = Data::SafeDownCast(userData);
-        auto&& mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toLatin1().data());
+        auto&& mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
 
         if (!mesh)
             emit splineLoadFailed(tr("fail to load spline file."));
@@ -157,7 +157,7 @@ void MyVtkItem::writeMesh(QUrl target_mesh, QString renderMode)
         return;
     }
 
-    std::filesystem::path mesh_path = target_mesh.toLocalFile().toLatin1().data();
+    std::filesystem::path mesh_path = target_mesh.toLocalFile().toStdU16String();
     
     dispatch_async([mesh_path, mode](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);

@@ -62,6 +62,7 @@ target_compile_definitions(${MYNAME} PRIVATE
     "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
 )
 
+include(InstallRequiredSystemLibraries)
 install(TARGETS ${MYNAME}
     BUNDLE DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
