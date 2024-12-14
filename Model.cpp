@@ -403,6 +403,53 @@ void Model::update_patches(const std::vector<int>& patch_ids) {
 }
 
 void Model::update_patches(const std::unordered_set<int>& patch_ids) {
+    // 删除指定的 Patch 数据
+    for (int patch_id : patch_ids) {
+        patches_.erase(patch_id);
+    }
+
+    // 遍历 mesh 中的面并更新对应的 Patch
+    for (auto& face : mesh_->faces()) {
+        int face_patch_id = face->get_g();
+        if (patch_ids.find(face_patch_id) != patch_ids.end()) {
+            auto& patch = patches_[face_patch_id];
+            if (!patch) {
+                patch = std::make_unique<Patch>();
+                patch->id_ = face_patch_id;
+            }
+            patch->faceIDs_.push_back(face->id());
+
+            // 初始化三角形索引
+            std::array<int, 3> triangle{};
+            int i = 0;
+
+            // 使用集合去重顶点
+            std::unordered_map<int, int> vertex_id_map;  // 用于存储唯一顶点 ID 的索引
+
+            // 遍历当前面的顶点
+            for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); ++vi) {
+                auto vertex = *vi;
+
+                // 如果顶点未被记录，添加到映射和 Patch 数据
+                if (vertex_id_map.find(vertex->id()) == vertex_id_map.end()) {
+                    vertex_id_map[vertex->id()] = patch->vertexIDs_.size();
+                    patch->vertexIDs_.push_back(vertex->id());
+
+                    // 插入顶点坐标
+                    CPoint& vp = vertex->point();  // 假设 CPoint 支持以下访问方式
+                    patch->vertexPoints_.emplace_back(std::array<double, 3>{vp[0], vp[1], vp[2]});
+                }
+
+                // 设置三角形索引
+                triangle[i++] = vertex_id_map[vertex->id()];
+            }
+
+            // 添加三角形索引
+            patch->faceTriangles_.push_back(triangle);
+        }
+    }
+}
+/*void Model::update_patches(const std::unordered_set<int>& patch_ids) {
     // 直接使用给定的 patch_ids 集合进行查找
     for (int patch_id : patch_ids)
     {
@@ -432,4 +479,4 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids) {
             }
         }
     }
-}
+}*/
