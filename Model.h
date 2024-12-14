@@ -2,6 +2,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <array>
+#include <qstring.h>
+
 #include "ModelActor.h"
 
 namespace MeshLib {
@@ -50,7 +52,8 @@ public:
     //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
     //! @param mesh_path 输出文件路径
     //! @param mode 选定输出模式
-    void write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode);
+    //! @param extension 输出文件拓展名
+    void write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension);
 
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch

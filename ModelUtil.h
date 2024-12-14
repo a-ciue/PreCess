@@ -37,6 +37,12 @@ public:
     //! @param gid 分组id函数，传入patch_id返回group_id
     static void write_group_obj(MeshLib::CTMesh* mesh, const std::filesystem::path& target_dir, std::function<int(int)> gid);
 
+    //! @brief 写inp文件，除了网格的连接信息意外，还要包括给定的分组信息
+    //! @param mesh 待写的网格
+    //! @param target_dir 目标路径
+    //! @param gid 分组id函数，传入patch_id返回group_id
+    static void write_group_inp(MeshLib::CTMesh* mesh, const std::filesystem::path& target_dir, std::function<int(int)> gid);
+    
     //! @brief 三分三角形，返回中间添加的点，注意维护m_g在内的新面属性
     //! @param face 待切分的三角形
     //! @param mesh 三角形所在的网格

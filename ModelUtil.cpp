@@ -119,6 +119,42 @@ void ModelUtil::write_group_obj(MeshLib::CTMesh* mesh, const std::filesystem::pa
 	obj.close();
 }
 
+void ModelUtil::write_group_inp(MeshLib::CTMesh* mesh, const std::filesystem::path& target_dir,
+	std::function<int(int)> gid)
+{
+    std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> groupMap;
+	for (MeshLib::CTMesh::MeshFaceIterator fi(mesh); !fi.end(); fi++) {
+		MeshLib::CTMesh::CFace* f = *fi;
+		int group = gid(f->get_g());
+		groupMap[group].push_back(f);
+	}
+
+    // 输出
+	std::ofstream inp(target_dir);
+
+    for (auto&& [group_id, _] : groupMap) {
+        inp << "*PART, Name=Part_" << group_id << '\n';
+    }
+    inp << "*NODE\n";
+	for (MeshLib::CTMesh::MeshVertexIterator vi(mesh); !vi.end(); vi++) {
+		MeshLib::CTMesh::CVertex* v = *vi;
+        inp << v->id() << ',' << v->point()[0] << ',' << v->point()[1] << ',' << v->point()[2] << '\n';
+	}
+    for (auto&& [group_id, group_faces] : groupMap) {
+        inp << "*ELEMENT,TYPE=S3,ELSET=Part_" << group_id << '\n';
+        for (auto&& face : group_faces) {
+            inp << face->id();
+		    for (MeshLib::CTMesh::FaceVertexIterator fvi(face); !fvi.end(); fvi++) {
+			    MeshLib::CTMesh::CVertex* v = *fvi;
+                inp << ',' << v->id();
+		    }
+            inp << '\n';
+        }
+    }
+	
+	inp.close();
+}
+
 MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::CTMesh* mesh)
 {
     using namespace MeshLib;

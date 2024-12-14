@@ -63,7 +63,7 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
     actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
 }
 
-void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode)
+void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension)
 {
     std::function<int(int)> gid{};
 
@@ -89,7 +89,12 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
     }
     }
 
-    ModelUtil::write_group_obj(mesh_.get(), mesh_path, gid);
+    if (extension == "obj")
+        ModelUtil::write_group_obj(mesh_.get(), mesh_path, gid);
+    else if (extension == "inp")
+        ModelUtil::write_group_inp(mesh_.get(), mesh_path, gid);
+    else
+        assert(false, "不支持的文件类型");
 }
 
 void Model::split_face(int patch_id, int face_id)

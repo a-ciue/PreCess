@@ -143,7 +143,7 @@ void MyVtkItem::readSpline(QUrl spline_path)
     });
 }
 
-void MyVtkItem::writeMesh(QUrl target_mesh, QString renderMode)
+void MyVtkItem::writeMesh(QUrl target_mesh, QString renderMode, QString extension)
 {
     ModelActor::RenderMode mode {};
     if (renderMode == "Face") {
@@ -159,10 +159,10 @@ void MyVtkItem::writeMesh(QUrl target_mesh, QString renderMode)
 
     std::filesystem::path mesh_path = target_mesh.toLocalFile().toStdU16String();
     
-    dispatch_async([mesh_path, mode](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([mesh_path, mode, extension](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        vtk->model->write_mesh(mesh_path, mode);
+        vtk->model->write_mesh(mesh_path, mode, extension);
     });
 }
 
