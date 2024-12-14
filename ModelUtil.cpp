@@ -179,6 +179,7 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
     }
 
     CVertex* pV = mesh->createVertex(++m_vertex_id);
+    mesh->map_vert()[pV->id()] = pV;
 
     CVertex* v[3];
     CHalfEdge* h[3];
@@ -201,6 +202,7 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
     f->id() = ++m_face_id;
     f->get_g() = face->get_g();
     mesh->faces().push_back(f);
+    mesh->map_face()[f->id()] = f;
 
     // create halfedges
     tHalfEdge hes[3];
@@ -226,6 +228,7 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
     f->id() = ++m_face_id;
     f->get_g() = face->get_g();
     mesh->faces().push_back(f);
+    mesh->map_face()[f->id()] = f;
 
     // create halfedges
     tHalfEdge hes2[3];
