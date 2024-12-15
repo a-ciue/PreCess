@@ -125,8 +125,39 @@ void MyVtkItem::readSpline(QUrl spline_path)
         auto* vtk = Data::SafeDownCast(userData);
         auto&& mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
 
-        if (!mesh)
+        if (!mesh || mesh->numFaces() == 0) {
             emit splineLoadFailed(tr("fail to load spline file."));
+            std::cerr << "导入文件错误: " << spline_path.toLocalFile().toStdU16String().c_str() << std::endl;
+            return;
+        }
+
+        vtk->model = std::make_unique<Model>(std::move(mesh));
+
+        vtk->model->actor().bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
+        vtk->model->actor().bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
+        vtk->model->actor().bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
+
+        vtk->faceStyle->SetModel(vtk->model.get());
+        vtk->edgeStyle->SetModel(vtk->model.get());
+        vtk->blockStyle->SetModel(vtk->model.get());
+        vtk->groupStyle->SetModel(vtk->model.get());
+
+        resetCamera();
+    });
+}
+
+void MyVtkItem::readMesh(QUrl target_mesh)
+{
+    dispatch_async([this, target_mesh](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        auto* vtk = Data::SafeDownCast(userData);
+        auto mesh = ModelUtil::read_obj_with_groups(target_mesh.toLocalFile().toStdU16String());
+
+        if (!mesh || mesh->numFaces() == 0)
+        {
+            emit splineLoadFailed(tr("fail to load spline file."));
+            std::cerr << "导入文件错误: " << target_mesh.toLocalFile().toStdU16String().c_str() << std::endl;
+            return;	
+        }
 
         vtk->model = std::make_unique<Model>(std::move(mesh));
 
