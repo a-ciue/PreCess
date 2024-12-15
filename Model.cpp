@@ -408,35 +408,44 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids) {
         patches_.erase(patch_id);
     }
 
-    // 遍历 mesh 中的面并更新对应的 Patch
+    // 分组面片：按 Patch ID 将面片分组
+    std::unordered_map<int, std::vector<MeshLib::CTMesh::Face*>> patch_faces;
     for (auto& face : mesh_->faces()) {
         int face_patch_id = face->get_g();
         if (patch_ids.find(face_patch_id) != patch_ids.end()) {
-            auto& patch = patches_[face_patch_id];
-            if (!patch) {
-                patch = std::make_unique<Patch>();
-                patch->id_ = face_patch_id;
-            }
-            patch->faceIDs_.push_back(face->id());
+            patch_faces[face_patch_id].push_back(face);
+        }
+    }
 
-            // 初始化三角形索引
+    // 遍历每个 Patch 的面片组
+    for (const auto& [patch_id, faces] : patch_faces) {
+        // 初始化 Patch
+        auto& patch = patches_[patch_id];
+        if (!patch) {
+            patch = std::make_unique<Patch>();
+            patch->id_ = patch_id;
+        }
+
+        // 追踪 Patch 内部的顶点
+        std::unordered_map<int, int> vertex_id_map;  // 全局顶点 ID 到 Patch 内局部索引的映射
+
+        // 遍历面片，更新 Patch 的顶点和三角形信息
+        for (auto* face : faces) {
+            // 添加当前面的三角形
             std::array<int, 3> triangle{};
             int i = 0;
 
-            // 使用集合去重顶点
-            std::unordered_map<int, int> vertex_id_map;  // 用于存储唯一顶点 ID 的索引
-
-            // 遍历当前面的顶点
+            // 遍历面的顶点
             for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); ++vi) {
                 auto vertex = *vi;
 
-                // 如果顶点未被记录，添加到映射和 Patch 数据
+                // 如果顶点未被记录，添加到 Patch 的顶点列表
                 if (vertex_id_map.find(vertex->id()) == vertex_id_map.end()) {
                     vertex_id_map[vertex->id()] = patch->vertexIDs_.size();
                     patch->vertexIDs_.push_back(vertex->id());
 
                     // 插入顶点坐标
-                    CPoint& vp = vertex->point();  // 假设 CPoint 支持以下访问方式
+                    CPoint& vp = vertex->point();
                     patch->vertexPoints_.emplace_back(std::array<double, 3>{vp[0], vp[1], vp[2]});
                 }
 
@@ -444,8 +453,9 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids) {
                 triangle[i++] = vertex_id_map[vertex->id()];
             }
 
-            // 添加三角形索引
+            // 添加三角形到 Patch 的索引列表
             patch->faceTriangles_.push_back(triangle);
+            patch->faceIDs_.push_back(face->id());
         }
     }
 }
