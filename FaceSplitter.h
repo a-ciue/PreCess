@@ -26,28 +26,28 @@ public:
     ~CFaceSplitter() {};
 
     /*
-     * �������ڴ����㣬���ش����ĵ��ָ��
+     * 在网格内创建点，返回创建的点的指针
      */
     V* create_vertex();
     /*
-     * �ָ���he���ڵ�edge��
-     * �з�֮ǰhe��va��vb���зֺ�he��va��vc��he_nxt��vc��vb��ά��������ݽṹ������vc
+     * 分割传入的he所在的edge。
+     * 切分之前he从va到vb，切分后he从va到vc，he_nxt从vc到vb。维护半边数据结构，返回vc
      */
     V* split_edge(H* he);
     /*
-     * ����һ���ߴ�v0��v1�����ش�v0��v1�İ�ߣ�ͬʱ��֤ά��������ݽṹ
-     * �÷���1������������������з֣��ֳ������� 2���������������ڴ���һ��������������һ���㣬ֻ�轫�������Ӧ��he��nullptr
+     * 创建一条边从v0到v1，返回从v0到v1的半边，同时保证维护半边数据结构
+     * 用法：1、可以用来对面进行切分，分成两个面 2、可以用来在面内创建一条边连接起任意一个点，只需将孤立点对应的he置nullptr
      */
     std::pair<H*, F*> create_edge(V* v0, H* he_inv0, V* v1, H* he_inv1);
-    //! �������Ľ��㣬�ڰ������ָ����λ��ͬ���ĵ��������������з֡�
-    //! ע�⣺����������ά��vertex�ĳ�Ա����
-    //! \return ���ĵ��ָ��
-    //! \param phes_in: ������飬ָ�����ָ����ͷָ��λ�á���߶�����ͬһ���ϣ����ָ��Ķ����ʾ�ָ��
+    //! 在面中心建点，在半边数组指定的位置同中心点相连对所在面切分。
+    //! 注意：函数不负责维护vertex的成员函数
+    //! \return 中心点的指针
+    //! \param phes_in: 半边数组，指定待分割的面和分割点位置。半边都需在同一面上，半边指向的顶点表示分割点
     V* slice_face(vector<H*> phes_in);
-    //! ɾ�������ıߣ������������һ��
-    //! ����������Ҫ�ϲ�����󣬱���phe_del���ڵ���
-    //! \return �ϲ������ָ��
-    //! \param phe_del: ���ָ�룬ָ����ɾ���ı�
+    //! 删除给定的边，把两个面合在一起。
+    //! 对于两个需要合并面对象，保留phe_del所在的面
+    //! \return 合并后的面指针
+    //! \param phe_del: 半边指针，指代待删除的边
     F* merge_face(H* phe_del);
 
 protected:
@@ -139,7 +139,7 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
     E* e = m_pMesh->createEdge(v0, v1);
     array<F*, 2> fs {};
     array<H*, 2> e_hes {
-        // e_hes[i]���v[i]
+        // e_hes[i]起点v[i]
         new H, // v0->v1
         new H // v1->v0
     };
@@ -206,11 +206,11 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
 template <typename M>
 typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
 {
-    // ����phes_in��˳��ɸѡͬ��İ�ߣ�����˳ʱ������
-    unordered_set<H*> phes_next_set(phes_in.begin(), phes_in.end()); // ��һ����ߵ�������
-    assert(phes_next_set.size() == phes_in.size()); // ����Ҳ��Ҫ�����ظ����
+    // 调整phes_in的顺序，筛选同面的半边，并按顺时针排列
+    unordered_set<H*> phes_next_set(phes_in.begin(), phes_in.end()); // 下一个半边的搜索域
+    assert(phes_next_set.size() == phes_in.size()); // 尽量也不要出现重复情况
 
-    // ��begin��ʼ����˳ʱ�뷽�����setԪ�أ����뵽vector��
+    // 从begin开始，按顺时针方向遍历set元素，加入到vector中
     int n = phes_next_set.size();
     H* phe_cur = *(phes_next_set.begin());
     for (int i = 0; i < n; i++) {
@@ -222,7 +222,7 @@ typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
             phe_next = m_pMesh->halfedgePrev(phe_next);
         } while (phe_cur != phe_next && !phes_next_set.count(phe_next));
 
-        // ����ǹ��������
+        // 处理非共面半边情况
         assert(phe_cur != phe_next || !phes_next_set.size());
         if (phe_cur == phe_next) {
             break;
@@ -230,12 +230,12 @@ typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
 
         phe_cur = phe_next;
     }
-    assert(phes_next_set.size() == 0); // ������ͬ��İ�ߴ���ú���
+    assert(phes_next_set.size() == 0); // 不允许不同面的半边传入该函数
 
     n -= phes_next_set.size();
     phes_in.resize(n);
 
-    // ���е㡢���ϵĵ���е㴴������
+    // 加中点、边上的点和中点创建连线
     V* pv_centroid = create_vertex();
     pv_centroid->boundary() = false;
     H* phe_in_centroid = nullptr;
@@ -251,21 +251,21 @@ template <typename M>
 typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 {
     // TODO
-    // �ϲ�����
-    // ��ȡ������ɾ���İ��
+    // 合并操作
+    // 获取即将被删除的半边
     H* to_be_deleted_hes[2];
     to_be_deleted_hes[0] = phe_del;
     to_be_deleted_hes[1] = m_pMesh->halfedgeSym(to_be_deleted_hes[0]);
 
-    // ��ȡ������ɾ���ı�
+    // 获取即将被删除的边
     E* to_be_deleted_e = m_pMesh->halfedgeEdge(to_be_deleted_hes[0]);
 
-    // �޸�����
-    // ���ǰ������
+    // 修改拓扑
+    // 半边前后拓扑
     H* h_left_1 = m_pMesh->halfedgePrev(to_be_deleted_hes[1]);
     H* h_right_1 = m_pMesh->halfedgeNext(to_be_deleted_hes[0]);
 
-    // �޸İ������
+    // 修改半边拓扑
     h_left_1->he_next() = h_right_1;
     h_right_1->he_prev() = h_left_1;
     h_right_1->source() = h_left_1->target();
@@ -278,7 +278,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     h_left_2->source() = h_right_2->target();
 
-    // ������߹�����
+    // 调整半边归属面
     F* f = m_pMesh->halfedgeFace(h_right_2);
     f->halfedge() = h_right_2;
     h_left_1->face() = f;
@@ -286,7 +286,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     assert(h_left_1->he_prev() == h_left_2);
 
-    // ����vertex�İ�ߣ�ָ��һ����ȷ��ߣ�������ֿ�ָ��
+    // 调整vertex的半边，指向一个明确半边，避免出现空指针
     V* v_left_1 = m_pMesh->halfedgeTarget(h_left_1);
 
     V* v_left_2 = m_pMesh->halfedgeSource(h_left_2);
@@ -294,7 +294,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
     v_left_1->halfedge() = h_left_1;
     v_left_2->halfedge() = h_right_2;
 
-    // ɾ���桢��ߡ���
+    // 删除面、半边、边
     F* f_left = m_pMesh->halfedgeFace(to_be_deleted_hes[1]);
 
     typename std::map<int, F*>::iterator fiter = m_pMesh->map_face().find(f_left->id());
@@ -304,7 +304,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     m_pMesh->faces().remove(f_left);
 
-    // �˴�ɾȥvertex��>edges()�е�edge
+    // 此处删去vertex—>edges()中的edge
     v_left_1->edges().remove(to_be_deleted_e);
     v_left_2->edges().remove(to_be_deleted_e);
 
