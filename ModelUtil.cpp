@@ -426,8 +426,7 @@ std::string ModelUtil::cmdPopen(const std::string& cmdLine)
 {
     char buffer[1024] = { '\0' };
   FILE *pf = NULL;
-  //pf = _popen(cmdLine.c_str(), "r");
-    pf = popen(cmdLine.c_str(), "r");
+  pf = _popen(cmdLine.c_str(), "r");
   if (NULL == pf) {
     printf("open pipe failed\n");
     return std::string("");
@@ -436,8 +435,7 @@ std::string ModelUtil::cmdPopen(const std::string& cmdLine)
   while (fgets(buffer, sizeof(buffer), pf)) {
     ret += buffer;
   }
-  //_pclose(pf); mac上没有，使用标准函数
-  pclose(pf);
+  _pclose(pf);
 
   return ret;
 }
@@ -489,7 +487,7 @@ std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::file
     // 第一次读取：加载网格几何信息
     auto mesh = std::make_unique<MeshLib::CTMesh>();
     // 调用 CTMesh 的 read_obj 成员函数读取网格
-    mesh->read_obj(obj_file.c_str());
+    mesh->read_obj(obj_file.generic_u8string().c_str());
     // 第二次读取：解析分组信息并更新面片的 m_g 属性
     std::ifstream obj_stream(obj_file);
     if (!obj_stream.is_open()) {
