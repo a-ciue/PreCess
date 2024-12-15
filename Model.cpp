@@ -409,7 +409,7 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids) {
     }
 
     // 分组面片：按 Patch ID 将面片分组
-    std::unordered_map<int, std::vector<MeshLib::CTMesh::Face*>> patch_faces;
+    std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> patch_faces;
     for (auto& face : mesh_->faces()) {
         int face_patch_id = face->get_g();
         if (patch_ids.find(face_patch_id) != patch_ids.end()) {
