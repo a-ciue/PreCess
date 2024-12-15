@@ -25,6 +25,13 @@ ApplicationWindow {
                 }
             }
             FileDialog {
+                id: openPatchDialog
+                nameFilters: ["OBJ File (*.obj)"]
+                onAccepted: {
+                    myItem.readMesh(selectedFile);
+                }
+            }
+            FileDialog {
                 id: saveFaceDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 fileMode: FileDialog.SaveFile
@@ -62,6 +69,11 @@ ApplicationWindow {
                         MenuItem{
                             text: "指定样条剖分"
                             onClicked: splineDialog.open()
+                        }
+
+                        MenuItem {
+                            text: "导入"
+                            onClicked: openPatchDialog.open()
                         }
 
                         Menu {

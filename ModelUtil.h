@@ -48,6 +48,12 @@ public:
     //! @return 新添加的点，可以调整该点坐标
     static void split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh);
 
+    //! @brief 从.obj文件读取网格模型并解析分组信息
+    //! @param obj_file 输入的.obj文件路径
+    //! @return 加载并解析完成的网格对象
+    static std::unique_ptr<MeshLib::CTMesh> read_obj_with_groups(const std::filesystem::path& obj_file);
+    //static std::unique_ptr<MeshLib::CTMesh> read_obj(const std::filesystem::path& obj_file);
+
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 

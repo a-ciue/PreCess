@@ -26,32 +26,32 @@ public:
     ~CFaceSplitter() {};
 
     /*
-     * ÔÚÍø¸ñÄÚ´´½¨µã£¬·µ»Ø´´½¨µÄµãµÄÖ¸Õë
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½Ö¸ï¿½ï¿½
      */
     V* create_vertex();
     /*
-     * ·Ö¸î´«ÈëµÄheËùÔÚµÄedge¡£
-     * ÇÐ·ÖÖ®Ç°he´Óvaµ½vb£¬ÇÐ·Öºóhe´Óvaµ½vc£¬he_nxt´Óvcµ½vb¡£Î¬»¤°ë±ßÊý¾Ý½á¹¹£¬·µ»Øvc
+     * ï¿½Ö¸î´«ï¿½ï¿½ï¿½heï¿½ï¿½ï¿½Úµï¿½edgeï¿½ï¿½
+     * ï¿½Ð·ï¿½Ö®Ç°heï¿½ï¿½vaï¿½ï¿½vbï¿½ï¿½ï¿½Ð·Öºï¿½heï¿½ï¿½vaï¿½ï¿½vcï¿½ï¿½he_nxtï¿½ï¿½vcï¿½ï¿½vbï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vc
      */
     V* split_edge(H* he);
     /*
-     * ´´½¨Ò»Ìõ±ß´Óv0µ½v1£¬·µ»Ø´Óv0µ½v1µÄ°ë±ß£¬Í¬Ê±±£Ö¤Î¬»¤°ë±ßÊý¾Ý½á¹¹
-     * ÓÃ·¨£º1¡¢¿ÉÒÔÓÃÀ´¶ÔÃæ½øÐÐÇÐ·Ö£¬·Ö³ÉÁ½¸öÃæ 2¡¢¿ÉÒÔÓÃÀ´ÔÚÃæÄÚ´´½¨Ò»Ìõ±ßÁ¬½ÓÆðÈÎÒâÒ»¸öµã£¬Ö»Ðè½«¹ÂÁ¢µã¶ÔÓ¦µÄheÖÃnullptr
+     * ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ß´ï¿½v0ï¿½ï¿½v1ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½v0ï¿½ï¿½v1ï¿½Ä°ï¿½ß£ï¿½Í¬Ê±ï¿½ï¿½Ö¤Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹
+     * ï¿½Ã·ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·Ö£ï¿½ï¿½Ö³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ã£¬Ö»ï¿½è½«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½heï¿½ï¿½nullptr
      */
     std::pair<H*, F*> create_edge(V* v0, H* he_inv0, V* v1, H* he_inv1);
-    //! ÔÚÃæÖÐÐÄ½¨µã£¬ÔÚ°ë±ßÊý×éÖ¸¶¨µÄÎ»ÖÃÍ¬ÖÐÐÄµãÏàÁ¬¶ÔËùÔÚÃæÇÐ·Ö¡£
-    //! ×¢Òâ£ºº¯Êý²»¸ºÔðÎ¬»¤vertexµÄ³ÉÔ±º¯Êý
-    //! \return ÖÐÐÄµãµÄÖ¸Õë
-    //! \param phes_in: °ë±ßÊý×é£¬Ö¸¶¨´ý·Ö¸îµÄÃæºÍ·Ö¸îµãÎ»ÖÃ¡£°ë±ß¶¼ÐèÔÚÍ¬Ò»ÃæÉÏ£¬°ë±ßÖ¸ÏòµÄ¶¥µã±íÊ¾·Ö¸îµã
+    //! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ã£¬ï¿½Ú°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½Í¬ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·Ö¡ï¿½
+    //! ×¢ï¿½â£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½vertexï¿½Ä³ï¿½Ô±ï¿½ï¿½ï¿½ï¿½
+    //! \return ï¿½ï¿½ï¿½Äµï¿½ï¿½Ö¸ï¿½ï¿½
+    //! \param phes_in: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¬Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½Í·Ö¸ï¿½ï¿½Î»ï¿½Ã¡ï¿½ï¿½ï¿½ß¶ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½Ï£ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ö¸ï¿½ï¿½
     V* slice_face(vector<H*> phes_in);
-    //! É¾³ý¸ø¶¨µÄ±ß£¬°ÑÁ½¸öÃæºÏÔÚÒ»Æð¡£
-    //! ¶ÔÓÚÁ½¸öÐèÒªºÏ²¢Ãæ¶ÔÏó£¬±£Áôphe_delËùÔÚµÄÃæ
-    //! \return ºÏ²¢ºóµÄÃæÖ¸Õë
-    //! \param phe_del: °ë±ßÖ¸Õë£¬Ö¸´ú´ýÉ¾³ýµÄ±ß
+    //! É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä±ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+    //! ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬±ï¿½ï¿½ï¿½phe_delï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½
+    //! \return ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+    //! \param phe_del: ï¿½ï¿½ï¿½Ö¸ï¿½ë£¬Ö¸ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä±ï¿½
     F* merge_face(H* phe_del);
 
 protected:
-    typename M* m_pMesh;
+    M* m_pMesh;
 
     int m_maxVid {};
     int m_maxFid {};
@@ -139,7 +139,7 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
     E* e = m_pMesh->createEdge(v0, v1);
     array<F*, 2> fs {};
     array<H*, 2> e_hes {
-        // e_hes[i]Æðµãv[i]
+        // e_hes[i]ï¿½ï¿½ï¿½v[i]
         new H, // v0->v1
         new H // v1->v0
     };
@@ -206,11 +206,11 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
 template <typename M>
 typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
 {
-    // µ÷Õûphes_inµÄË³Ðò£¬É¸Ñ¡Í¬ÃæµÄ°ë±ß£¬²¢°´Ë³Ê±ÕëÅÅÁÐ
-    unordered_set<H*> phes_next_set(phes_in.begin(), phes_in.end()); // ÏÂÒ»¸ö°ë±ßµÄËÑË÷Óò
-    assert(phes_next_set.size() == phes_in.size()); // ¾¡Á¿Ò²²»Òª³öÏÖÖØ¸´Çé¿ö
+    // ï¿½ï¿½ï¿½ï¿½phes_inï¿½ï¿½Ë³ï¿½ï¿½É¸Ñ¡Í¬ï¿½ï¿½Ä°ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½Ë³Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    unordered_set<H*> phes_next_set(phes_in.begin(), phes_in.end()); // ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    assert(phes_next_set.size() == phes_in.size()); // ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½
 
-    // ´Óbegin¿ªÊ¼£¬°´Ë³Ê±Õë·½Ïò±éÀúsetÔªËØ£¬¼ÓÈëµ½vectorÖÐ
+    // ï¿½ï¿½beginï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ë³Ê±ï¿½ë·½ï¿½ï¿½ï¿½ï¿½ï¿½setÔªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ëµ½vectorï¿½ï¿½
     int n = phes_next_set.size();
     H* phe_cur = *(phes_next_set.begin());
     for (int i = 0; i < n; i++) {
@@ -222,7 +222,7 @@ typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
             phe_next = m_pMesh->halfedgePrev(phe_next);
         } while (phe_cur != phe_next && !phes_next_set.count(phe_next));
 
-        // ´¦Àí·Ç¹²Ãæ°ë±ßÇé¿ö
+        // ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         assert(phe_cur != phe_next || !phes_next_set.size());
         if (phe_cur == phe_next) {
             break;
@@ -230,12 +230,12 @@ typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
 
         phe_cur = phe_next;
     }
-    assert(phes_next_set.size() == 0); // ²»ÔÊÐí²»Í¬ÃæµÄ°ë±ß´«Èë¸Ãº¯Êý
+    assert(phes_next_set.size() == 0); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½Ä°ï¿½ß´ï¿½ï¿½ï¿½Ãºï¿½ï¿½ï¿½
 
     n -= phes_next_set.size();
     phes_in.resize(n);
 
-    // ¼ÓÖÐµã¡¢±ßÉÏµÄµãºÍÖÐµã´´½¨Á¬Ïß
+    // ï¿½ï¿½ï¿½Ðµã¡¢ï¿½ï¿½ï¿½ÏµÄµï¿½ï¿½ï¿½Ðµã´´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     V* pv_centroid = create_vertex();
     pv_centroid->boundary() = false;
     H* phe_in_centroid = nullptr;
@@ -251,21 +251,21 @@ template <typename M>
 typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 {
     // TODO
-    // ºÏ²¢²Ù×÷
-    // »ñÈ¡¼´½«±»É¾³ýµÄ°ë±ß
+    // ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä°ï¿½ï¿½
     H* to_be_deleted_hes[2];
     to_be_deleted_hes[0] = phe_del;
     to_be_deleted_hes[1] = m_pMesh->halfedgeSym(to_be_deleted_hes[0]);
 
-    // »ñÈ¡¼´½«±»É¾³ýµÄ±ß
+    // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½Ä±ï¿½
     E* to_be_deleted_e = m_pMesh->halfedgeEdge(to_be_deleted_hes[0]);
 
-    // ÐÞ¸ÄÍØÆË
-    // °ë±ßÇ°ºóÍØÆË
+    // ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     H* h_left_1 = m_pMesh->halfedgePrev(to_be_deleted_hes[1]);
     H* h_right_1 = m_pMesh->halfedgeNext(to_be_deleted_hes[0]);
 
-    // ÐÞ¸Ä°ë±ßÍØÆË
+    // ï¿½Þ¸Ä°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     h_left_1->he_next() = h_right_1;
     h_right_1->he_prev() = h_left_1;
     h_right_1->source() = h_left_1->target();
@@ -278,7 +278,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     h_left_2->source() = h_right_2->target();
 
-    // µ÷Õû°ë±ß¹éÊôÃæ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¹ï¿½ï¿½ï¿½ï¿½ï¿½
     F* f = m_pMesh->halfedgeFace(h_right_2);
     f->halfedge() = h_right_2;
     h_left_1->face() = f;
@@ -286,7 +286,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     assert(h_left_1->he_prev() == h_left_2);
 
-    // µ÷ÕûvertexµÄ°ë±ß£¬Ö¸ÏòÒ»¸öÃ÷È·°ë±ß£¬±ÜÃâ³öÏÖ¿ÕÖ¸Õë
+    // ï¿½ï¿½ï¿½ï¿½vertexï¿½Ä°ï¿½ß£ï¿½Ö¸ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¿ï¿½Ö¸ï¿½ï¿½
     V* v_left_1 = m_pMesh->halfedgeTarget(h_left_1);
 
     V* v_left_2 = m_pMesh->halfedgeSource(h_left_2);
@@ -294,7 +294,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
     v_left_1->halfedge() = h_left_1;
     v_left_2->halfedge() = h_right_2;
 
-    // É¾³ýÃæ¡¢°ë±ß¡¢±ß
+    // É¾ï¿½ï¿½ï¿½æ¡¢ï¿½ï¿½ß¡ï¿½ï¿½ï¿½
     F* f_left = m_pMesh->halfedgeFace(to_be_deleted_hes[1]);
 
     typename std::map<int, F*>::iterator fiter = m_pMesh->map_face().find(f_left->id());
@@ -304,7 +304,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     m_pMesh->faces().remove(f_left);
 
-    // ´Ë´¦É¾È¥vertex¡ª>edges()ÖÐµÄedge
+    // ï¿½Ë´ï¿½É¾È¥vertexï¿½ï¿½>edges()ï¿½Ðµï¿½edge
     v_left_1->edges().remove(to_be_deleted_e);
     v_left_2->edges().remove(to_be_deleted_e);
 

@@ -200,16 +200,16 @@ inline void CToolHalfEdge::_to_string() {
   // m_string = a;
 }
 
-template <typename V, typename E, typename F, typename H>
-class CToolMesh : public CBaseMesh<V, E, F, H> {
+template <typename TV, typename TE, typename TF, typename TH>
+class CToolMesh : public CBaseMesh<TV, TE, TF, TH> {
 public:
-  typedef V V;
+  typedef TV V;
   using CVertex = V;
-  typedef E E;
+  typedef TE E;
   using CEdge = E;
-  typedef F F;
+  typedef TF F;
   using CFace = F;
-  typedef H H;
+  typedef TH H;
   using CHalfEdge = H;
 
   typedef CBoundary<V, E, F, H> CBoundary;
