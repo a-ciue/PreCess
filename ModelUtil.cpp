@@ -487,7 +487,7 @@ std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::file
     // 第一次读取：加载网格几何信息
     auto mesh = std::make_unique<MeshLib::CTMesh>();
     // 调用 CTMesh 的 read_obj 成员函数读取网格
-    mesh->read_obj(obj_file.generic_u8string().c_str());
+    mesh->read_obj(obj_file.string().c_str());
     // 第二次读取：解析分组信息并更新面片的 m_g 属性
     std::ifstream obj_stream(obj_file);
     if (!obj_stream.is_open()) {
