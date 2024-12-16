@@ -53,7 +53,7 @@ public:
 
     Q_INVOKABLE void readSpline(QUrl spline_path);
     Q_INVOKABLE void readMesh(QUrl target_mesh);
-    Q_INVOKABLE void writeMesh(QUrl target_mesh, QString renderMode);
+    Q_INVOKABLE void writeMesh(QUrl target_mesh, QString renderMode, QString extension);
     Q_INVOKABLE void changeRenderer(QString renderMode);
     Q_INVOKABLE void bindStyle(QString function);
     Q_INVOKABLE void unbindStyle();

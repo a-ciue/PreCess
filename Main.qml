@@ -33,26 +33,26 @@ ApplicationWindow {
             }
             FileDialog {
                 id: saveFaceDialog
-                nameFilters: ["OBJ File (*.obj)"]
+                nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    myItem.writeMesh(selectedFile, "Face");
+                    myItem.writeMesh(selectedFile, "Face", selectedNameFilter.extensions[0]);
                 }
             }
             FileDialog {
                 id: saveBlockDialog
-                nameFilters: ["OBJ File (*.obj)"]
+                nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    myItem.writeMesh(selectedFile, "Block");
+                    myItem.writeMesh(selectedFile, "Block", selectedNameFilter.extensions[0]);
                 }
             }
             FileDialog {
                 id: saveGroupDialog
-                nameFilters: ["OBJ File (*.obj)"]
+                nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    myItem.writeMesh(selectedFile, "Group");
+                    myItem.writeMesh(selectedFile, "Group", selectedNameFilter.extensions[0]);
                 }
             }
 

@@ -71,13 +71,15 @@ CFaceSplitter<M>::CFaceSplitter(M* pMesh)
 template <typename M>
 typename M::V* CFaceSplitter<M>::create_vertex()
 {
-    return m_pMesh->createVertex(++m_maxVid);
+    typename M::V* pv = m_pMesh->createVertex(++m_maxVid);
+    m_pMesh->map_vert()[pv->id()] = pv;
+    return pv;
 }
 
 template <typename M>
 typename M::V* CFaceSplitter<M>::split_edge(H* he)
 {
-    array<V*, 3> vs { m_pMesh->halfedgeSource(he), m_pMesh->createVertex(++m_maxVid), m_pMesh->halfedgeTarget(he) };
+    array<V*, 3> vs { m_pMesh->halfedgeSource(he), create_vertex(), m_pMesh->halfedgeTarget(he) };
     array<H*, 4> hes {
         he, // he
         m_pMesh->halfedgeSym(he), // he_sym
