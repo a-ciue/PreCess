@@ -475,6 +475,7 @@ std::string ModelUtil::cmdPopen(const std::string& cmdLine)
     ret += buffer;
   }
   _pclose(pf);
+
   return ret;
 }
 
@@ -515,3 +516,90 @@ void ModelUtil::AddReverse(std::string filename)
     std::remove(filename.c_str());
     std::rename(newFileName.c_str(), filename.c_str());
 }
+
+
+std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::filesystem::path& obj_file) {
+    if (!std::filesystem::exists(obj_file)) {
+        throw std::runtime_error("OBJ file does not exist: " + obj_file.string());
+    }
+
+    // 第一次读取：加载网格几何信息
+    auto mesh = std::make_unique<MeshLib::CTMesh>();
+    // 调用 CTMesh 的 read_obj 成员函数读取网格
+    mesh->read_obj(obj_file.string().c_str());
+    // 第二次读取：解析分组信息并更新面片的 m_g 属性
+    std::ifstream obj_stream(obj_file);
+    if (!obj_stream.is_open()) {
+        throw std::runtime_error("Failed to open OBJ file for reading groups: " + obj_file.string());
+    }
+
+    if (!mesh) {
+        throw std::runtime_error("Failed to load mesh geometry from OBJ file.");
+    }
+
+    std::string line;
+    int current_group_id = -1; // 当前分组的 ID
+    // 获取面片集合并进行迭代
+    auto& face_list = mesh->faces();
+    auto face_iter = face_list.begin();
+
+    while (std::getline(obj_stream, line)) {
+        std::istringstream line_stream(line);
+        std::string prefix;
+        line_stream >> prefix;
+
+        // 处理 g 标签
+        if (prefix == "g") {
+            std::string group_name;
+            line_stream >> group_name;
+
+            // 为每个分组分配唯一的 ID
+            current_group_id++;
+            std::cout << "Group: " << group_name << " -> ID: " << current_group_id << std::endl;
+        }
+            // 处理面信息
+        else if (prefix == "f" && face_iter != mesh->faces().end()) {
+            // 为当前面设置分组 ID
+            auto face = *face_iter;
+            //face->set_g(current_group_id);  // 假设 `set_g` 更新 m_g 属性
+            face->get_g() = current_group_id;
+            ++face_iter;
+        }
+    }
+
+    // 检查是否所有面都被分组
+    if (face_iter != mesh->faces().end()) {
+        throw std::runtime_error("Mismatch between OBJ face count and mesh faces.");
+    }
+
+    std::cout << "Finished reading OBJ file with groups. Total groups: " << (current_group_id + 1) << std::endl;
+    return mesh;
+}
+//std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj(const std::filesystem::path& obj_file){
+//    auto mesh = std::make_unique<MeshLib::CTMesh>();
+//
+//    // 简单示例：加载几何点和面信息（具体实现取决于您的数据结构）
+//    std::ifstream input(obj_file);
+//    if (!input) {
+//        throw std::runtime_error("Failed to open OBJ file.");
+//    }
+//
+//    std::string line;
+//    while (std::getline(input, line)) {
+//        std::istringstream ss(line);
+//        std::string prefix;
+//        ss >> prefix;
+//
+//        if (prefix == "v") {
+//            double x, y, z;
+//            ss >> x >> y >> z;
+//            // 添加顶点到网格中
+//        } else if (prefix == "f") {
+//            int v1, v2, v3;
+//            ss >> v1 >> v2 >> v3;
+//            // 添加面到网格中
+//        }
+//    }
+//
+//    return mesh;
+//}

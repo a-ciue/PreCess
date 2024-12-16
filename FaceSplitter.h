@@ -26,32 +26,32 @@ public:
     ~CFaceSplitter() {};
 
     /*
-     * ÔÚÍø¸ñÄÚ´´½¨µã£¬·µ»Ø´´½¨µÄµãµÄÖ¸Õë
+     * åœ¨ç½‘æ ¼å†…åˆ›å»ºç‚¹ï¼Œè¿”å›åˆ›å»ºçš„ç‚¹çš„æŒ‡é’ˆ
      */
     V* create_vertex();
     /*
-     * ·Ö¸î´«ÈëµÄheËùÔÚµÄedge¡£
-     * ÇĞ·ÖÖ®Ç°he´Óvaµ½vb£¬ÇĞ·Öºóhe´Óvaµ½vc£¬he_nxt´Óvcµ½vb¡£Î¬»¤°ë±ßÊı¾İ½á¹¹£¬·µ»Øvc
+     * åˆ†å‰²ä¼ å…¥çš„heæ‰€åœ¨çš„edgeã€‚
+     * åˆ‡åˆ†ä¹‹å‰heä»vaåˆ°vbï¼Œåˆ‡åˆ†åheä»vaåˆ°vcï¼Œhe_nxtä»vcåˆ°vbã€‚ç»´æŠ¤åŠè¾¹æ•°æ®ç»“æ„ï¼Œè¿”å›vc
      */
     V* split_edge(H* he);
     /*
-     * ´´½¨Ò»Ìõ±ß´Óv0µ½v1£¬·µ»Ø´Óv0µ½v1µÄ°ë±ß£¬Í¬Ê±±£Ö¤Î¬»¤°ë±ßÊı¾İ½á¹¹
-     * ÓÃ·¨£º1¡¢¿ÉÒÔÓÃÀ´¶ÔÃæ½øĞĞÇĞ·Ö£¬·Ö³ÉÁ½¸öÃæ 2¡¢¿ÉÒÔÓÃÀ´ÔÚÃæÄÚ´´½¨Ò»Ìõ±ßÁ¬½ÓÆğÈÎÒâÒ»¸öµã£¬Ö»Ğè½«¹ÂÁ¢µã¶ÔÓ¦µÄheÖÃnullptr
+     * åˆ›å»ºä¸€æ¡è¾¹ä»v0åˆ°v1ï¼Œè¿”å›ä»v0åˆ°v1çš„åŠè¾¹ï¼ŒåŒæ—¶ä¿è¯ç»´æŠ¤åŠè¾¹æ•°æ®ç»“æ„
+     * ç”¨æ³•ï¼š1ã€å¯ä»¥ç”¨æ¥å¯¹é¢è¿›è¡Œåˆ‡åˆ†ï¼Œåˆ†æˆä¸¤ä¸ªé¢ 2ã€å¯ä»¥ç”¨æ¥åœ¨é¢å†…åˆ›å»ºä¸€æ¡è¾¹è¿æ¥èµ·ä»»æ„ä¸€ä¸ªç‚¹ï¼Œåªéœ€å°†å­¤ç«‹ç‚¹å¯¹åº”çš„heç½®nullptr
      */
     std::pair<H*, F*> create_edge(V* v0, H* he_inv0, V* v1, H* he_inv1);
-    //! ÔÚÃæÖĞĞÄ½¨µã£¬ÔÚ°ë±ßÊı×éÖ¸¶¨µÄÎ»ÖÃÍ¬ÖĞĞÄµãÏàÁ¬¶ÔËùÔÚÃæÇĞ·Ö¡£
-    //! ×¢Òâ£ºº¯Êı²»¸ºÔğÎ¬»¤vertexµÄ³ÉÔ±º¯Êı
-    //! \return ÖĞĞÄµãµÄÖ¸Õë
-    //! \param phes_in: °ë±ßÊı×é£¬Ö¸¶¨´ı·Ö¸îµÄÃæºÍ·Ö¸îµãÎ»ÖÃ¡£°ë±ß¶¼ĞèÔÚÍ¬Ò»ÃæÉÏ£¬°ë±ßÖ¸ÏòµÄ¶¥µã±íÊ¾·Ö¸îµã
+    //! åœ¨é¢ä¸­å¿ƒå»ºç‚¹ï¼Œåœ¨åŠè¾¹æ•°ç»„æŒ‡å®šçš„ä½ç½®åŒä¸­å¿ƒç‚¹ç›¸è¿å¯¹æ‰€åœ¨é¢åˆ‡åˆ†ã€‚
+    //! æ³¨æ„ï¼šå‡½æ•°ä¸è´Ÿè´£ç»´æŠ¤vertexçš„æˆå‘˜å‡½æ•°
+    //! \return ä¸­å¿ƒç‚¹çš„æŒ‡é’ˆ
+    //! \param phes_in: åŠè¾¹æ•°ç»„ï¼ŒæŒ‡å®šå¾…åˆ†å‰²çš„é¢å’Œåˆ†å‰²ç‚¹ä½ç½®ã€‚åŠè¾¹éƒ½éœ€åœ¨åŒä¸€é¢ä¸Šï¼ŒåŠè¾¹æŒ‡å‘çš„é¡¶ç‚¹è¡¨ç¤ºåˆ†å‰²ç‚¹
     V* slice_face(vector<H*> phes_in);
-    //! É¾³ı¸ø¶¨µÄ±ß£¬°ÑÁ½¸öÃæºÏÔÚÒ»Æğ¡£
-    //! ¶ÔÓÚÁ½¸öĞèÒªºÏ²¢Ãæ¶ÔÏó£¬±£Áôphe_delËùÔÚµÄÃæ
-    //! \return ºÏ²¢ºóµÄÃæÖ¸Õë
-    //! \param phe_del: °ë±ßÖ¸Õë£¬Ö¸´ú´ıÉ¾³ıµÄ±ß
+    //! åˆ é™¤ç»™å®šçš„è¾¹ï¼ŒæŠŠä¸¤ä¸ªé¢åˆåœ¨ä¸€èµ·ã€‚
+    //! å¯¹äºä¸¤ä¸ªéœ€è¦åˆå¹¶é¢å¯¹è±¡ï¼Œä¿ç•™phe_delæ‰€åœ¨çš„é¢
+    //! \return åˆå¹¶åçš„é¢æŒ‡é’ˆ
+    //! \param phe_del: åŠè¾¹æŒ‡é’ˆï¼ŒæŒ‡ä»£å¾…åˆ é™¤çš„è¾¹
     F* merge_face(H* phe_del);
 
 protected:
-    typename M* m_pMesh;
+    M* m_pMesh;
 
     int m_maxVid {};
     int m_maxFid {};
@@ -141,7 +141,7 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
     E* e = m_pMesh->createEdge(v0, v1);
     array<F*, 2> fs {};
     array<H*, 2> e_hes {
-        // e_hes[i]Æğµãv[i]
+        // e_hes[i]èµ·ç‚¹v[i]
         new H, // v0->v1
         new H // v1->v0
     };
@@ -208,11 +208,11 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
 template <typename M>
 typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
 {
-    // µ÷Õûphes_inµÄË³Ğò£¬É¸Ñ¡Í¬ÃæµÄ°ë±ß£¬²¢°´Ë³Ê±ÕëÅÅÁĞ
-    unordered_set<H*> phes_next_set(phes_in.begin(), phes_in.end()); // ÏÂÒ»¸ö°ë±ßµÄËÑË÷Óò
-    assert(phes_next_set.size() == phes_in.size()); // ¾¡Á¿Ò²²»Òª³öÏÖÖØ¸´Çé¿ö
+    // è°ƒæ•´phes_inçš„é¡ºåºï¼Œç­›é€‰åŒé¢çš„åŠè¾¹ï¼Œå¹¶æŒ‰é¡ºæ—¶é’ˆæ’åˆ—
+    unordered_set<H*> phes_next_set(phes_in.begin(), phes_in.end()); // ä¸‹ä¸€ä¸ªåŠè¾¹çš„æœç´¢åŸŸ
+    assert(phes_next_set.size() == phes_in.size()); // å°½é‡ä¹Ÿä¸è¦å‡ºç°é‡å¤æƒ…å†µ
 
-    // ´Óbegin¿ªÊ¼£¬°´Ë³Ê±Õë·½Ïò±éÀúsetÔªËØ£¬¼ÓÈëµ½vectorÖĞ
+    // ä»beginå¼€å§‹ï¼ŒæŒ‰é¡ºæ—¶é’ˆæ–¹å‘éå†setå…ƒç´ ï¼ŒåŠ å…¥åˆ°vectorä¸­
     int n = phes_next_set.size();
     H* phe_cur = *(phes_next_set.begin());
     for (int i = 0; i < n; i++) {
@@ -224,7 +224,7 @@ typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
             phe_next = m_pMesh->halfedgePrev(phe_next);
         } while (phe_cur != phe_next && !phes_next_set.count(phe_next));
 
-        // ´¦Àí·Ç¹²Ãæ°ë±ßÇé¿ö
+        // å¤„ç†éå…±é¢åŠè¾¹æƒ…å†µ
         assert(phe_cur != phe_next || !phes_next_set.size());
         if (phe_cur == phe_next) {
             break;
@@ -232,12 +232,12 @@ typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
 
         phe_cur = phe_next;
     }
-    assert(phes_next_set.size() == 0); // ²»ÔÊĞí²»Í¬ÃæµÄ°ë±ß´«Èë¸Ãº¯Êı
+    assert(phes_next_set.size() == 0); // ä¸å…è®¸ä¸åŒé¢çš„åŠè¾¹ä¼ å…¥è¯¥å‡½æ•°
 
     n -= phes_next_set.size();
     phes_in.resize(n);
 
-    // ¼ÓÖĞµã¡¢±ßÉÏµÄµãºÍÖĞµã´´½¨Á¬Ïß
+    // åŠ ä¸­ç‚¹ã€è¾¹ä¸Šçš„ç‚¹å’Œä¸­ç‚¹åˆ›å»ºè¿çº¿
     V* pv_centroid = create_vertex();
     pv_centroid->boundary() = false;
     H* phe_in_centroid = nullptr;
@@ -253,21 +253,21 @@ template <typename M>
 typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 {
     // TODO
-    // ºÏ²¢²Ù×÷
-    // »ñÈ¡¼´½«±»É¾³ıµÄ°ë±ß
+    // åˆå¹¶æ“ä½œ
+    // è·å–å³å°†è¢«åˆ é™¤çš„åŠè¾¹
     H* to_be_deleted_hes[2];
     to_be_deleted_hes[0] = phe_del;
     to_be_deleted_hes[1] = m_pMesh->halfedgeSym(to_be_deleted_hes[0]);
 
-    // »ñÈ¡¼´½«±»É¾³ıµÄ±ß
+    // è·å–å³å°†è¢«åˆ é™¤çš„è¾¹
     E* to_be_deleted_e = m_pMesh->halfedgeEdge(to_be_deleted_hes[0]);
 
-    // ĞŞ¸ÄÍØÆË
-    // °ë±ßÇ°ºóÍØÆË
+    // ä¿®æ”¹æ‹“æ‰‘
+    // åŠè¾¹å‰åæ‹“æ‰‘
     H* h_left_1 = m_pMesh->halfedgePrev(to_be_deleted_hes[1]);
     H* h_right_1 = m_pMesh->halfedgeNext(to_be_deleted_hes[0]);
 
-    // ĞŞ¸Ä°ë±ßÍØÆË
+    // ä¿®æ”¹åŠè¾¹æ‹“æ‰‘
     h_left_1->he_next() = h_right_1;
     h_right_1->he_prev() = h_left_1;
     h_right_1->source() = h_left_1->target();
@@ -280,7 +280,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     h_left_2->source() = h_right_2->target();
 
-    // µ÷Õû°ë±ß¹éÊôÃæ
+    // è°ƒæ•´åŠè¾¹å½’å±é¢
     F* f = m_pMesh->halfedgeFace(h_right_2);
     f->halfedge() = h_right_2;
     h_left_1->face() = f;
@@ -288,7 +288,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     assert(h_left_1->he_prev() == h_left_2);
 
-    // µ÷ÕûvertexµÄ°ë±ß£¬Ö¸ÏòÒ»¸öÃ÷È·°ë±ß£¬±ÜÃâ³öÏÖ¿ÕÖ¸Õë
+    // è°ƒæ•´vertexçš„åŠè¾¹ï¼ŒæŒ‡å‘ä¸€ä¸ªæ˜ç¡®åŠè¾¹ï¼Œé¿å…å‡ºç°ç©ºæŒ‡é’ˆ
     V* v_left_1 = m_pMesh->halfedgeTarget(h_left_1);
 
     V* v_left_2 = m_pMesh->halfedgeSource(h_left_2);
@@ -296,7 +296,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
     v_left_1->halfedge() = h_left_1;
     v_left_2->halfedge() = h_right_2;
 
-    // É¾³ıÃæ¡¢°ë±ß¡¢±ß
+    // åˆ é™¤é¢ã€åŠè¾¹ã€è¾¹
     F* f_left = m_pMesh->halfedgeFace(to_be_deleted_hes[1]);
 
     typename std::map<int, F*>::iterator fiter = m_pMesh->map_face().find(f_left->id());
@@ -306,7 +306,7 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     m_pMesh->faces().remove(f_left);
 
-    // ´Ë´¦É¾È¥vertex¡ª>edges()ÖĞµÄedge
+    // æ­¤å¤„åˆ å»vertexâ€”>edges()ä¸­çš„edge
     v_left_1->edges().remove(to_be_deleted_e);
     v_left_2->edges().remove(to_be_deleted_e);
 
