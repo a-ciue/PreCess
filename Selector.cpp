@@ -274,7 +274,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         data->GetPoint(picked_edge.v_local_id[1], position2.data());
         points->InsertNextPoint(position1.data());
         points->InsertNextPoint(position2.data());
-		
+        
         line0->GetPointIds()->SetId(0, 0);
         line0->GetPointIds()->SetId(1, 1);
         lines->InsertNextCell(line0);
@@ -317,10 +317,15 @@ void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMa
 
 bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor)
 {
-    // 选中了selectedActor 或 选中的边是selection
-    // TODO: 目前判断边相同使用的是polydata内的边点id相同，只能判断单侧边相同
-    if (new_edge.actor == selectedActor || selection && selection->actor == new_edge.actor && selection->v_local_id == new_edge.v_local_id) {
+    if (new_edge.actor == selectedActor)
+        // 选中了selectedActor
         return true;
+    if (selection && selection->actor == new_edge.actor) {
+        // 选中的边点id，交换意义下对应相同
+        const std::array<int, 2>& selected1 = selection->v_local_id;
+        const std::array<int, 2>& selected2 = new_edge.v_local_id;
+        return selected1[0] == selected2[0] && selected1[1] == selected2[1]
+            || selected1[0] == selected2[1] && selected1[1] == selected2[0];
     }
     return false;
 }
