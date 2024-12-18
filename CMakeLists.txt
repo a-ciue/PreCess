@@ -7,6 +7,8 @@ project(${MYNAME} VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(ENABLE_TEST "是否启用测试")
+
 find_package(VTK REQUIRED COMPONENTS
     CommonColor
     CommonCore
@@ -80,3 +82,7 @@ qt_generate_deploy_qml_app_script(
     OUTPUT_SCRIPT deploy_script
 )
 install(SCRIPT ${deploy_script})
+
+if(ENABLE_TEST)
+add_subdirectory(test)
+endif()
