@@ -60,7 +60,8 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
     }
 
     // 初始化 ModelActor
-    actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
+    //actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
+    emit modelInited(std::make_unique<ModelActor>(patches_, blocks_, groups_));
 }
 
 void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension)
@@ -197,13 +198,17 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
     // 更新 ModelActor
     // 更新目标 block 的 patchIDs
     // 调用 ModelActor 的 merge_blocks 函数更新 Actor
-    actor_->merge_blocks(block_ids, block_ids[0], target_block->patchIDs);
-    actor_->update_group(target_block->groupID, groups_[target_block->groupID]->blockIDs);
+    //actor_->merge_blocks(block_ids, block_ids[0], target_block->patchIDs);
+    emit blocksMerged(block_ids, block_ids[0], target_block->patchIDs);
+    //actor_->update_group(target_block->groupID, groups_[target_block->groupID]->blockIDs);
+    emit groupUpdated(target_block->groupID, groups_[target_block->groupID]->blockIDs);
     for (int modified_group : modified_groups) {
         if (groups_.count(modified_group)) {
-            actor_->update_group(modified_group, groups_[modified_group]->blockIDs);
+            //actor_->update_group(modified_group, groups_[modified_group]->blockIDs);
+            emit groupUpdated(modified_group, groups_[modified_group]->blockIDs);
         } else {
-            actor_->update_group(modified_group, {});
+            //actor_->update_group(modified_group, {});
+            emit groupUpdated(modified_group, {});
         }
     }
 }
@@ -243,8 +248,8 @@ void Model::merge_groups(const std::vector<int>& group_ids) {
     }
 
     // 更新 ModelActor
-    //actor_->update_group(target_group_id, target_group->blockIDs); // 假设 ModelActor 有更新 group 的方法
-    actor_->merge_groups(group_ids, group_ids[0], target_group->blockIDs);
+    //actor_->merge_groups(group_ids, group_ids[0], target_group->blockIDs);
+    emit groupMerged(group_ids, group_ids[0], target_group->blockIDs);
 }
 
 
@@ -370,29 +375,23 @@ int Model::block_group_id(int patch_id) {
     throw std::runtime_error("Block ID not found in any group.");
 }
 
-ModelActor& Model::actor() {
-    // 检查 actor_ 是否有效
-    if (!actor_) {
-        throw std::runtime_error("ModelActor is not initialized.");
-    }
-
-    // 返回 actor 的引用
-    return *actor_;
-}
 void Model::update_actors(const std::vector<int>& patch_ids)
 {
     std::unordered_set<int> block_ids, group_ids;
     for (int patch_id : patch_ids) {
         block_ids.insert(patch_block_id(patch_id));
-        actor_->update_patch(patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
+        //actor_->update_patch(patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
+        emit patchUpdated(patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
     }
     for (int block_id : block_ids) {
         group_ids.insert(block_group_id(block_id));
-        actor_->update_block(block_id, blocks_[block_id]->patchIDs);
+        //actor_->update_block(block_id, blocks_[block_id]->patchIDs);
+        emit blockUpdated(block_id, blocks_[block_id]->patchIDs);
     }
     for (int group_id : group_ids)
     {
-        actor_->update_group(group_id, groups_[group_id]->blockIDs);
+        //actor_->update_group(group_id, groups_[group_id]->blockIDs);
+        emit groupUpdated(group_id, groups_[group_id]->blockIDs);
     }
 }
 

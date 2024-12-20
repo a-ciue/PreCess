@@ -2,6 +2,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <array>
+#include <QObject>
+#include <qqmlintegration.h>
 #include <qstring.h>
 
 #include "ModelActor.h"
@@ -44,8 +46,11 @@ struct Group {
 };
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
-class Model {
+class Model :public QObject {
 public:
+    Q_OBJECT
+    QML_ELEMENT
+
     //! @brief 根据给定CTMesh构造update_patches, blocks_, groups_，actor_构造函数
     Model(std::unique_ptr<MeshLib::CTMesh> mesh);
 
@@ -84,7 +89,14 @@ public:
     int block_group_id(int patch_id);
     //const std::vector<int>& group_block_ids(int group_id);
 
-    ModelActor& actor();
+signals:
+    void modelInited(std::unique_ptr<ModelActor> actor);
+    void patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
+    void blockUpdated(int block_id, const std::unordered_set<int>& block_patches);
+    void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);
+
+    void blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches);
+    void groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
 
 private:
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
@@ -102,6 +114,4 @@ private:
     PatchMap patches_;
     BlockMap blocks_;
     GroupMap groups_;
-
-    std::unique_ptr<ModelActor> actor_;
 };
