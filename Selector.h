@@ -83,7 +83,7 @@ public:
         std::array<int, 2> v_local_id;
     };
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    SingleEdgeSelectorHighlight(vtkRenderer* renderer, Model* model);
+    SingleEdgeSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
     ~SingleEdgeSelectorHighlight();
     //! @brief 获取当前选择的边

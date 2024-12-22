@@ -90,7 +90,9 @@ public:
     //const std::vector<int>& group_block_ids(int group_id);
 
 signals:
-    void modelInited(std::unique_ptr<ModelActor> actor);
+    void modelInited(const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
+        const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
+        const std::unordered_map<int, std::unique_ptr<Group>>& groups);
     void patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
     void blockUpdated(int block_id, const std::unordered_set<int>& block_patches);
     void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);

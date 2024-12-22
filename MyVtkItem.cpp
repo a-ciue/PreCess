@@ -33,7 +33,7 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
     vtk->groupStyle->SetDefaultRenderer(vtk->renderer[2]);
     vtk->faceStyle->SetSelector(std::make_unique<SingleFaceSelectorHighlight>(vtk->renderer[0]));
     vtk->faceStyle->SetDefaultRenderer(vtk->renderer[0]);
-    vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer[0], vtk->model.get()));
+    vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer[0]));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer[0]);
 
     return vtk;
@@ -57,15 +57,6 @@ void MyVtkItem::resetCamera()
         scheduleRender();
     });
 }
-
-// void MyVtkItem::setSource(QString v)
-//{
-//     if (_source != v) {
-//         _source = v;
-//         dispatchChangedSource();
-//         emit sourceChanged(v);
-//     }
-// }
 
 bool MyVtkItem::event(QEvent* ev)
 {
@@ -103,98 +94,64 @@ bool MyVtkItem::event(QEvent* ev)
     return true;
 }
 
-// void MyVtkItem::dispatchChangedSource()
-//{
-//     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
-//         auto* vtk = Data::SafeDownCast(userData);
-//         // clang-format off
-//           vtk->mapper->SetInputConnection(
-//                 _source == "Cone"    ? vtk->cone->GetOutputPort()
-//               : _source == "Sphere"  ? vtk->sphere->GetOutputPort()
-//               : _source == "Capsule" ? vtk->capsule->GetOutputPort()
-//               : (qWarning() << Q_FUNC_INFO << "YIKES!! Unknown source:'" << _source << "'", nullptr));
-//         // clang-format on
-//
-//         resetCamera();
-//     });
-// }
-
-void MyVtkItem::readSpline(QUrl spline_path)
+void MyVtkItem::onModelInited(std::unique_ptr<ModelActor> model)
 {
-    dispatch_async([this, spline_path](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        auto* vtk = Data::SafeDownCast(userData);
-        auto&& mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
-
-        if (!mesh || mesh->numFaces() == 0) {
-            emit splineLoadFailed(tr("fail to load spline file."));
-            std::cerr << "导入文件错误: " << spline_path.toLocalFile().toStdU16String().c_str() << std::endl;
-            return;
-        }
-
-        vtk->model = std::make_unique<Model>(std::move(mesh));
-
-        vtk->model->actor().bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
-        vtk->model->actor().bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
-        vtk->model->actor().bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
-
-        vtk->faceStyle->SetModel(vtk->model.get());
-        vtk->edgeStyle->SetModel(vtk->model.get());
-        vtk->blockStyle->SetModel(vtk->model.get());
-        vtk->groupStyle->SetModel(vtk->model.get());
-
-        resetCamera();
-    });
-}
-
-void MyVtkItem::readMesh(QUrl target_mesh)
-{
-    dispatch_async([this, target_mesh](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        auto* vtk = Data::SafeDownCast(userData);
-        auto mesh = ModelUtil::read_obj_with_groups(target_mesh.toLocalFile().toStdU16String());
-
-        if (!mesh || mesh->numFaces() == 0)
-        {
-            emit splineLoadFailed(tr("fail to load spline file."));
-            std::cerr << "导入文件错误: " << target_mesh.toLocalFile().toStdU16String().c_str() << std::endl;
-            return;	
-        }
-
-        vtk->model = std::make_unique<Model>(std::move(mesh));
-
-        vtk->model->actor().bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
-        vtk->model->actor().bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
-        vtk->model->actor().bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
-
-        vtk->faceStyle->SetModel(vtk->model.get());
-        vtk->edgeStyle->SetModel(vtk->model.get());
-        vtk->blockStyle->SetModel(vtk->model.get());
-        vtk->groupStyle->SetModel(vtk->model.get());
-
-        resetCamera();
-    });
-}
-
-void MyVtkItem::writeMesh(QUrl target_mesh, QString renderMode, QString extension)
-{
-    ModelActor::RenderMode mode {};
-    if (renderMode == "Face") {
-        mode = ModelActor::RenderMode::Face;
-    } else if (renderMode == "Block") {
-        mode = ModelActor::RenderMode::Block;
-    } else if (renderMode == "Group") {
-        mode = ModelActor::RenderMode::Group;
-    } else {
-        std::cerr << "invalid renderMode in MyVtkItem::changeEdgeRenderer" << std::endl;
-        return;
-    }
-
-    std::filesystem::path mesh_path = target_mesh.toLocalFile().toStdU16String();
-    
-    dispatch_async([mesh_path, mode, extension](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([model_ = std::move(model), this](vtkRenderWindow* renderWindow, vtkUserData userData)mutable ->void {
         Data* vtk = Data::SafeDownCast(userData);
+        actor = std::move(model_);
 
-        vtk->model->write_mesh(mesh_path, mode, extension);
-    });
+        actor->bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
+        actor->bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
+        actor->bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
+        });
+    
+}
+
+void MyVtkItem::blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
+{
+    
+    dispatch_async([block_ids, father_block, father_block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+        actor->merge_blocks(block_ids, father_block, father_block_patches);
+        });
+    
+}
+
+void MyVtkItem::groupUpdated(int group_id, const std::unordered_set<int>& group_blocks)
+{
+    dispatch_async([group_id, group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+        actor->update_group(group_id, group_blocks);
+        });
+}
+
+void MyVtkItem::groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks)
+{
+    dispatch_async([group_ids, father_group, father_group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+        actor->merge_groups(group_ids, father_group, father_group_blocks);
+        });
+}
+
+void MyVtkItem::patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles)
+{
+    dispatch_async([patch_id, points, triangles, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+        actor->update_patch(patch_id, points, triangles);
+        });
+}
+
+void MyVtkItem::blockUpdated(int block_id, const std::unordered_set<int>& block_patches)
+{
+    dispatch_async([block_id, block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+        actor->update_block(block_id, block_patches);;
+        });
+}
+
+std::vector<int> MyVtkItem::selectedIDs()
+{
+    return curStyle->GetSelectedIDs(actor.get());
 }
 
 void MyVtkItem::changeRenderer(QString renderMode)
@@ -246,25 +203,25 @@ void MyVtkItem::bindStyle(QString function)
         return;
     }
 
-    dispatch_async([styleIdx](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([styleIdx, this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (vtk->curStyle)
-            vtk->curStyle->ClearSelections();
+        if (curStyle)
+            curStyle->ClearSelections();
         renderWindow->GetInteractor()->SetInteractorStyle(vtk->styles[styleIdx]);
-        vtk->curStyle = vtk->styles[styleIdx];
+        curStyle = vtk->styles[styleIdx];
     });
 }
 
 void MyVtkItem::unbindStyle()
 {
-    dispatch_async([](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (vtk->curStyle)
-            vtk->curStyle->ClearSelections();
+        if (curStyle)
+            curStyle->ClearSelections();
         renderWindow->GetInteractor()->SetInteractorStyle(vtkNew<vtkInteractorStyleTrackballCamera>());
-        vtk->curStyle = nullptr;
+        curStyle = nullptr;
     });
 }
 
@@ -285,84 +242,18 @@ void MyVtkItem::changeEdgeRender(QString renderMode, bool render)
     dispatch_async([this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (vtk->model)
-            vtk->model->actor().render_edge(mode, render);
-    });
-}
-
-void MyVtkItem::commitBlockMerge()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        vtk->blockStyle->OnCommitMergeBlocks();
-
-        resetCamera();
-    });
-}
-
-void MyVtkItem::commitBlockRemesh()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        vtk->blockStyle->OnCommitRemeshBlocks();
-
-        resetCamera();
-    });
-}
-
-void MyVtkItem::commitGroupMerge()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        vtk->groupStyle->OnCommitMergeGroups();
-
-        resetCamera();
-    });
-}
-
-void MyVtkItem::commitGroupRemesh()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        vtk->groupStyle->OnCommitRemeshGroups();
-
-        resetCamera();
-    });
-}
-
-void MyVtkItem::commitFaceCut()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        vtk->faceStyle->OnCommitSplitFace();
-
-        //resetCamera();
-    });
-}
-
-void MyVtkItem::commitEdgeCut()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        vtk->edgeStyle->OnCommitSplitEdge();
-
-        //resetCamera();
+        if (actor)
+            actor->render_edge(mode, render);
     });
 }
 
 void MyVtkItem::setClick()
 {
-    dispatch_async([](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (vtk->curStyle) {
-            vtk->curStyle->SetClick();
+        if (curStyle) {
+            curStyle->SetClick();
         }
     });
 }

@@ -22,7 +22,7 @@
 
 struct MyVtkItem : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
-    //Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(std::vector<int> selectedIDs READ selectedIDs NOTIFY selectedChanged)
     QML_ELEMENT
 public:
     MyVtkItem();                              //槽函数，改变边框重置相机
@@ -36,13 +36,11 @@ public:
         vtkNew<vtkRenderer> renderer[3];
         vtkRenderer* curRenderer {};
 
-        std::unique_ptr<Model> model;
         vtkNew<MouseInteractorHighLightFace> faceStyle;
         vtkNew<MouseInteractorHighLightEdge> edgeStyle;
         vtkNew<MouseInteractorHighLightActor> blockStyle;
         vtkNew<MouseInteractorHighLightActor> groupStyle;
         vtkInteractorStyleWithClick* styles[4] {};
-        vtkInteractorStyleWithClick* curStyle{};
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -51,6 +49,8 @@ public:
     void resetCamera();
     //void dispatchChangedSource();
 
+    std::vector<int> selectedIDs();
+
     Q_INVOKABLE void readSpline(QUrl spline_path);
     Q_INVOKABLE void readMesh(QUrl target_mesh);
     Q_INVOKABLE void writeMesh(QUrl target_mesh, QString renderMode, QString extension);
@@ -58,13 +58,12 @@ public:
     Q_INVOKABLE void bindStyle(QString function);
     Q_INVOKABLE void unbindStyle();
     Q_INVOKABLE void changeEdgeRender(QString renderMode, bool render);
-    //Q_INVOKABLE void commitChange(QString function);
-    Q_INVOKABLE void commitBlockMerge();
-    Q_INVOKABLE void commitBlockRemesh();
-    Q_INVOKABLE void commitGroupMerge();
-    Q_INVOKABLE void commitGroupRemesh();
-    Q_INVOKABLE void commitFaceCut();
-    Q_INVOKABLE void commitEdgeCut();
+    Q_INVOKABLE void onModelInited(std::unique_ptr<ModelActor> model);
+    Q_INVOKABLE void blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches);
+    Q_INVOKABLE void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);
+    Q_INVOKABLE void groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
+    Q_INVOKABLE void patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
+    Q_INVOKABLE void blockUpdated(int block_id, const std::unordered_set<int>& block_patches);
 
     Q_SLOT void setClick();
 
@@ -78,9 +77,10 @@ signals:
     //void sourceChanged(QString);
     void splineLoadFailed(QString);
     void clicked();
-
+ 
 private:
-    QString _source;
     vtkNew<vtkCamera> _camera;
+    vtkInteractorStyleWithClick* curStyle{};
+    std::unique_ptr<ModelActor> actor;
     QScopedPointer<QMouseEvent> _click;
 };

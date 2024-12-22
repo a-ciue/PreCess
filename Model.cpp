@@ -61,7 +61,7 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
 
     // 初始化 ModelActor
     //actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
-    emit modelInited(std::make_unique<ModelActor>(patches_, blocks_, groups_));
+    emit modelInited(patches_, blocks_, groups_);
 }
 
 void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension)
