@@ -140,25 +140,6 @@ ApplicationWindow {
                     btn3.Layout.preferredWidth = width
                 }
             }
-            //      Item {
-            //        Layout.fillWidth: true
-            //        Layout.fillHeight: true
-            //      }
-            //      Rectangle {
-            //        color: "black"
-            //        Layout.preferredWidth: 1
-            //        Layout.fillHeight: true
-            //      }
-            //      Text {
-            //        Layout.leftMargin: 10
-            //        text: "vtkSource:"
-            //      }
-            //      ComboBox {
-            //        id: sources
-            //        Layout.fillHeight: true
-            //        Layout.preferredWidth: childrenRect.width
-            //        model: Presenter.sources
-            //      }
         }
     }
 
@@ -173,208 +154,143 @@ ApplicationWindow {
         anchors.right: parent.right
         height: 25
 
-        Item{
-            id:face_mode
-            anchors.fill: parent
-            RowLayout{
-                id:row1
-                anchors.fill: parent
-                spacing: 3
-
-                Button{
-                    id:edgeRenderFace
-                    text: "边渲染"
-                    onClicked: toggle()
-                    onCheckedChanged: myItem.changeEdgeRender("Face", checked)
+        SelectingBar{
+            id:facemode
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            modeButtonModel:ListModel{
+                ListElement{
+                    name:"切分边"
                 }
-
-                Rectangle {
-                    color: "black"
-                    Layout.preferredWidth: 1
-                    Layout.fillHeight: true
+                ListElement{
+                    name:"切分面"
                 }
-
-                ButtonGroup {
-                    id: face_group
-                    onCheckStateChanged: {
-                        if(checkState == Qt.Unchecked)
-                            myItem.unbindStyle();
+            }
+            confirmButtonModel:ListModel{
+                ListElement{
+                    name:"确认"
+                }
+                ListElement{
+                    name:"确认"
+                }
+            }
+            onButtonFunction:{
+                if(modeOrConfirm === 0){
+                    if(index === 0){
+                        myItem.bindStyle("Edge")
                     }
-                }
-
-                Button{
-                    id:edgeCutButton
-                    text: "切分边"
-                    ButtonGroup.group: face_group
-                    onClicked: toggle()
-                    onCheckedChanged: if (checked) myItem.bindStyle("Edge")
-                }
-                Button{
-                    id:faceCutButton
-                    text: "切分面"
-                    ButtonGroup.group: face_group
-                    onClicked: toggle()
-                    onCheckedChanged: {
-                        if (checked) myItem.bindStyle("Face")
+                    if(index === 1){
+                        myItem.bindStyle("Face")
                     }
-                }
-                Item {
-                  Layout.fillWidth: true
-                  Layout.fillHeight: true
-                }
-                Button{
-                    id:edgeCutConfirm
-                    text: "确认"
-                    Layout.alignment: Qt.AlignRight
-                    visible:edgeCutButton.checked
-                    onClicked:{
+                }else{
+                    if(index === 0){
                         myItem.commitEdgeCut()
-                        edgeCutButton.toggle()
                     }
-                }
-                Button{
-                    id:faceCutConfirm
-                    text: "确认"
-                    Layout.alignment: Qt.AlignRight
-                    visible:faceCutButton.checked
-                    onClicked:{
+                    if(index === 1){
                         myItem.commitFaceCut()
-                        faceCutButton.toggle()
                     }
                 }
             }
-        }
-        Item{
-            id:patch_mode
-            anchors.fill: parent
-            RowLayout{
-                anchors.fill: parent
-                RowLayout {
-                    Layout.alignment: Qt.AlignLeft
-                    Button{
-                        id:edgeRenderBlock
-                        text: "边渲染"
-                        onClicked: toggle()
-                        onCheckedChanged: myItem.changeEdgeRender("Block", checked)
-                    }
-                    Rectangle {
-                        color: "black"
-                        Layout.preferredWidth: 1
-                        Layout.fillHeight: true
-                    }
-
-                    Button{
-                        id:integrateBlockButton
-                        text: "选择块"
-                        onClicked:{
-                            toggle()
-                        }
-                        onCheckedChanged: {
-                            if (checked) myItem.bindStyle("Block");
-                            else myItem.unbindStyle();
-                        }
-                    }
-                }
-                RowLayout {
-                    Layout.alignment: Qt.AlignRight
-                    visible:integrateBlockButton.checked
-                    Button{
-                        id:patchMergeConfirm
-                        text: "合并"
-                        onClicked:{
-                            myItem.commitBlockMerge()
-                            integrateBlockButton.toggle()
-                        }
-                    }
-                    Button{
-                        id:patchRemeshConfirm
-                        text: "重网格"
-                        onClicked:{
-                            myItem.commitBlockRemesh()
-                            integrateBlockButton.toggle()
-                        }
-                    }
-                }
+            onButtonGroupFunction:{
+                myItem.unbindStyle()
+            }
+            onChangeEdgeRender:{
+                myItem.changeEdgeRender("Face", check)
             }
         }
-        Item{
-            id:group_mode
-            anchors.fill: parent
-            RowLayout{
-                anchors.fill: parent
-                RowLayout {
-                    Layout.alignment: Qt.AlignLeft
-                    Button{
-                        id:edgeRenderGroup
-                        text: "边渲染"
-                        onClicked: toggle()
-                        onCheckedChanged: myItem.changeEdgeRender("Group", checked)
-                    }
-                    Rectangle {
-                        color: "black"
-                        Layout.preferredWidth: 1
-                        Layout.fillHeight: true
-                    }
 
-                    Button{
-                        id:integrateGroupButton
-                        text:qsTr("选择组")
-                        onClicked:{
-                            toggle()
-                        }
-                        onCheckedChanged: {
-                            if (checked) myItem.bindStyle("Group");
-                            else myItem.unbindStyle();
-                        }
-                    }
+        SelectingBar{
+            id:patchmode
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            modeButtonModel:ListModel{
+                ListElement{
+                    name:"块合并"
                 }
-                RowLayout {
-                    Layout.alignment: Qt.AlignRight
-                    visible:integrateGroupButton.checked
-                    Button{
-                        id:groupModeConfirm
-                        text: "合并"
-                        onClicked:{
-                            myItem.commitGroupMerge()
-                            integrateGroupButton.toggle()
-                        }
-                    }
-                    Button{
-                        id:groupRemeshConfirm
-                        text: "重网格"
-                        onClicked:{
-                            myItem.commitGroupRemesh()
-                            integrateGroupButton.toggle()
-                        }
-                    }
+                ListElement{
+                    name:"块重网格"
                 }
+            }
+            confirmButtonModel:ListModel{
+                ListElement{
+                    name:"确认"
+                }
+                ListElement{
+                    name:"确认"
+                }
+            }
+            onButtonFunction:{
+                if(modeOrConfirm === 0){
+                    if(index === 0) { myItem.bindStyle("Block")}
+                    else { myItem.bindStyle("Block")}
+                }else{
+                    if(index === 0) { myItem.commitBlockMerge()}
+                    else { myItem.commitGroupRemesh()}
+                }
+            }
+            onButtonGroupFunction:{
+                myItem.unbindStyle()
+            }
+            onChangeEdgeRender:{
+                myItem.changeEdgeRender("Block", check)
+            }
+        }
+
+
+        SelectingBar{
+            id:groupmode
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            modeButtonModel:ListModel{
+                ListElement{
+                    name:"组合并"
+                }
+                ListElement{
+                    name:"组重网格"
+                }
+            }
+            confirmButtonModel:ListModel{
+                ListElement{
+                    name:"确认"
+                }
+                ListElement{
+                    name:"确认"
+                }
+            }
+            onButtonFunction:{
+                if(modeOrConfirm === 0){
+                    if(index === 0) { myItem.bindStyle("Group")}
+                    else{ myItem.bindStyle("Group")}
+                }else{
+                    if(index === 0) { myItem.commitGroupMerge()}
+                    else{ myItem.commitGroupRemesh()}
+                }
+            }
+            onButtonGroupFunction:{
+                myItem.unbindStyle()
+            }
+            onChangeEdgeRender:{
+                myItem.changeEdgeRender("Group", check)
             }
         }
     }
 
-
-
     Rectangle {
-        //anchors.top:stacklayout.bottom
         anchors.bottom:parent.bottom
         anchors.top:stacklayout.bottom
         anchors.left:parent.left
         anchors.right:parent.right
-        //Layout.fillWidth:true
-        //height: 600
         border {
             id: border
             width: 5
         }
         radius: 5
         color: "magenta"
-        //anchors.fill: parent
 
         MyVtkItem {
             id: myItem
             anchors.fill: parent
             anchors.margins: border.width
-            //        source: sources.currentText
         }
     }
 }
