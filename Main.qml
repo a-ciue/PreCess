@@ -12,6 +12,8 @@ ApplicationWindow {
     height: 640
     title: qsTr("三角剖分交互程序")
 
+    required property ModelManager modelManager
+
     header: ToolBar {
         id: header
         RowLayout {
@@ -21,14 +23,14 @@ ApplicationWindow {
                 id: splineDialog
                 nameFilters: ["STP File (*.stp)"]
                 onAccepted: {
-                    myItem.readSpline(selectedFile);
+                    modelManager.readSpline(selectedFile);
                 }
             }
             FileDialog {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-                    myItem.readMesh(selectedFile);
+                    modelManager.readMesh(selectedFile);
                 }
             }
             FileDialog {
@@ -376,5 +378,6 @@ ApplicationWindow {
             anchors.margins: border.width
             //        source: sources.currentText
         }
+        Component.onCompleted: modelManager.vtkItem = myItem
     }
 }

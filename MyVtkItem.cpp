@@ -94,15 +94,19 @@ bool MyVtkItem::event(QEvent* ev)
     return true;
 }
 
-void MyVtkItem::onModelInited(std::unique_ptr<ModelActor> model)
+void MyVtkItem::onModelInited(const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
+        const std::unordered_map<int, std::unique_ptr<Group>>* groups)
 {
-    dispatch_async([model_ = std::move(model), this](vtkRenderWindow* renderWindow, vtkUserData userData)mutable ->void {
+    dispatch_async([patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
         Data* vtk = Data::SafeDownCast(userData);
-        actor = std::move(model_);
+        actor = std::make_unique<ModelActor>(*patches, *blocks, *groups);
 
         actor->bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
         actor->bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
         actor->bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
+
+        resetCamera();
         });
     
 }

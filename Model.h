@@ -1,4 +1,6 @@
-﻿#include <memory>
+﻿#ifndef MODEL_H
+#define MODEL_H
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <array>
@@ -47,12 +49,14 @@ struct Group {
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 class Model :public QObject {
-public:
     Q_OBJECT
     QML_ELEMENT
 
+public:
     //! @brief 根据给定CTMesh构造update_patches, blocks_, groups_，actor_构造函数
     Model(std::unique_ptr<MeshLib::CTMesh> mesh);
+
+    void refreshVtk();
 
     //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
     //! @param mesh_path 输出文件路径
@@ -90,9 +94,9 @@ public:
     //const std::vector<int>& group_block_ids(int group_id);
 
 signals:
-    void modelInited(const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
-        const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
-        const std::unordered_map<int, std::unique_ptr<Group>>& groups);
+    void modelInited(const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
+        const std::unordered_map<int, std::unique_ptr<Group>>* groups);
     void patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
     void blockUpdated(int block_id, const std::unordered_set<int>& block_patches);
     void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);
@@ -117,3 +121,4 @@ private:
     BlockMap blocks_;
     GroupMap groups_;
 };
+#endif // MODEL_H

@@ -1,3 +1,5 @@
+#ifndef MYVTKITEM_H
+#define MYVTKITEM_H
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
@@ -20,18 +22,18 @@
 #include "Model.h"
 #include "Style.h"
 
-struct MyVtkItem : QQuickVTKItem {            //½á¹¹Ìå¼Ì³ĞQQuickVTKItem
+struct MyVtkItem : QQuickVTKItem {            //ç»“æ„ä½“ç»§æ‰¿QQuickVTKItem
     Q_OBJECT
     Q_PROPERTY(std::vector<int> selectedIDs READ selectedIDs NOTIFY selectedChanged)
     QML_ELEMENT
 public:
-    MyVtkItem();                              //²Ûº¯Êı£¬¸Ä±ä±ß¿òÖØÖÃÏà»ú
+    MyVtkItem();                              //æ§½å‡½æ•°ï¼Œæ”¹å˜è¾¹æ¡†é‡ç½®ç›¸æœº
 
-    struct Data : vtkObject {                 //½á¹¹Ìå¼Ì³ĞvtkObject
+    struct Data : vtkObject {                 //ç»“æ„ä½“ç»§æ‰¿vtkObject
         static Data* New();
         vtkTypeMacro(Data, vtkObject);
 
-        //vtkNew<vtkActor> actor;               //ÒÔÏÂÊÇÓÃÄ£°å¹¹½¨¸÷ÖÖÍ¼ĞÎ£¨»òÕß¿ØÖÆµÈ£©µÄÀà
+        //vtkNew<vtkActor> actor;               //ä»¥ä¸‹æ˜¯ç”¨æ¨¡æ¿æ„å»ºå„ç§å›¾å½¢ï¼ˆæˆ–è€…æ§åˆ¶ç­‰ï¼‰çš„ç±»
         // 0 face_renderer, 1 block_renderer, 2 group_renderer
         vtkNew<vtkRenderer> renderer[3];
         vtkRenderer* curRenderer {};
@@ -51,14 +53,13 @@ public:
 
     std::vector<int> selectedIDs();
 
-    Q_INVOKABLE void readSpline(QUrl spline_path);
-    Q_INVOKABLE void readMesh(QUrl target_mesh);
-    Q_INVOKABLE void writeMesh(QUrl target_mesh, QString renderMode, QString extension);
     Q_INVOKABLE void changeRenderer(QString renderMode);
     Q_INVOKABLE void bindStyle(QString function);
     Q_INVOKABLE void unbindStyle();
     Q_INVOKABLE void changeEdgeRender(QString renderMode, bool render);
-    Q_INVOKABLE void onModelInited(std::unique_ptr<ModelActor> model);
+    Q_INVOKABLE void onModelInited(const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
+        const std::unordered_map<int, std::unique_ptr<Group>>* groups);
     Q_INVOKABLE void blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches);
     Q_INVOKABLE void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);
     Q_INVOKABLE void groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
@@ -74,8 +75,7 @@ public:
     bool event(QEvent* ev) override;
 
 signals:
-    //void sourceChanged(QString);
-    void splineLoadFailed(QString);
+    void selectedChanged();
     void clicked();
  
 private:
@@ -84,3 +84,4 @@ private:
     std::unique_ptr<ModelActor> actor;
     QScopedPointer<QMouseEvent> _click;
 };
+#endif // MYVTKITEM_H

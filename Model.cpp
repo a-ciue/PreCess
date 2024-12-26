@@ -61,7 +61,12 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
 
     // 初始化 ModelActor
     //actor_ = std::make_unique<ModelActor>(patches_, blocks_, groups_);
-    emit modelInited(patches_, blocks_, groups_);
+    //emit modelInited(&patches_, &blocks_, &groups_);
+}
+
+void Model::refreshVtk()
+{
+    emit modelInited(&patches_, &blocks_, &groups_);
 }
 
 void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension)
@@ -95,7 +100,8 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
     else if (extension == "inp")
         ModelUtil::write_group_inp(mesh_.get(), mesh_path, gid);
     else
-        assert(false, "不支持的文件类型");
+        //"不支持的文件类型"
+        assert(false);
 }
 
 void Model::split_face(int patch_id, int face_id)

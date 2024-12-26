@@ -95,8 +95,7 @@ int ModelActor::patch_global_fid(int patch_id, int local_fid)
 int ModelActor::patch_global_vid(int patch_id, int local_vid)
 {
     std::vector<int>& vids = patches_.at(patch_id)->vertexIDs_;
-    std::array<int, 2> edge_v_gid{ vids[0], vids[1] };
-    return edge_v_gid[0];
+    return vids[local_vid];
 }
 
 int ModelActor::block_actor_id(vtkActor* actor)

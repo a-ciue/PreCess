@@ -1,4 +1,6 @@
-﻿#include <unordered_map>
+﻿#ifndef STYLE_H
+#define STYLE_H
+#include <unordered_map>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkObjectFactory.h>
 #include <vtkSmartPointer.h>
@@ -79,3 +81,4 @@ private:
     bool click_ {};
     std::unique_ptr<SingleEdgeSelectorHighlight> selector_;
 };
+#endif // STYLE_H
