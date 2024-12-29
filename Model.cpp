@@ -106,7 +106,8 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
 
 void Model::split_face(int patch_id, int face_id)
 {
-    int face_gid = patches_[patch_id]->faceIDs_[face_id];
+    //int face_gid = patches_[patch_id]->faceIDs_[face_id];
+    int face_gid = face_id;
     MeshLib::CToolFace* face = mesh_->idFace(face_gid);
 
     CPoint mid;
@@ -124,10 +125,11 @@ void Model::split_face(int patch_id, int face_id)
     update_actors({ patch_id });
 }
 
-void Model::split_edge(int patch_id, std::array<int, 2> edge_v_ids)
+void Model::split_edge(int patch_id, int edge_v_id1, int edge_v_id2)
 {
     std::vector<int>& vids = patches_[patch_id]->vertexIDs_;
-    std::array<int, 2> edge_v_gid { vids[edge_v_ids[0]], vids[edge_v_ids[1]] };
+    //std::array<int, 2> edge_v_gid { vids[edge_v_ids[0]], vids[edge_v_ids[1]] };
+    std::array<int, 2> edge_v_gid { edge_v_id1, edge_v_id2 };
     MeshLib::CToolVertex *v1 = mesh_->idVertex(edge_v_gid[0]),
                          *v2 = mesh_->idVertex(edge_v_gid[1]);
 

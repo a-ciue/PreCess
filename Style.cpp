@@ -1,6 +1,7 @@
 ﻿#include "Style.h"
 #include <vtkRenderWindowInteractor.h>
 #include "ModelActor.h"
+#include "MyVtkItem.h"
 
 vtkStandardNewMacro(MouseInteractorHighLightActor);
 void MouseInteractorHighLightActor::OnLeftButtonUp()
@@ -32,32 +33,56 @@ void MouseInteractorHighLightActor::ClearSelections()
     selector_->clear();
 }
 
-std::vector<int> MouseInteractorHighLightActor::GetSelectedIDs(ModelActor* mActor)
+std::vector<int> MouseInteractorHighLightActor::GetSelectedIDs(ModelActor* mActor, SelectMode mode)
 {
     auto actors = selector_->get();
-    std::vector<int> block_ids;
+    std::vector<int> ids;
+
+    int (ModelActor::*actor_id)(vtkActor*) {};
+    if (mode == SelectMode::Group)
+    {
+        actor_id = &ModelActor::group_actor_id;
+    } else if (mode == SelectMode::Block) {
+        actor_id = &ModelActor::block_actor_id;
+    } else {
+        assert(false);
+    }
+
     for (vtkActor* actor : actors)
     {
-        block_ids.push_back(mActor->block_actor_id(actor));
+        ids.push_back((mActor->*actor_id)(actor));
     }
-    return block_ids;
+    return ids;
 }
-std::vector<int> MouseInteractorHighLightFace::GetSelectedIDs(ModelActor* mActor)
+std::vector<int> MouseInteractorHighLightFace::GetSelectedIDs(ModelActor* mActor, SelectMode mode)
 {
     auto actors = selector_->get();
     std::vector<int> face_ids;
-    int paches_id = mActor->block_actor_id(actors->patch_actor);
-    face_ids.push_back(mActor->patch_global_fid(paches_id,actors->local_id));
+    if (actors)
+    {
+        face_ids.reserve(2);
+
+        int patch_id = mActor->patch_actor_id(actors->patch_actor);
+        face_ids.push_back(patch_id);
+        face_ids.push_back(mActor->patch_global_fid(patch_id,actors->local_id));
+    }
     
     return face_ids;
 }
-std::vector<int> MouseInteractorHighLightEdge::GetSelectedIDs(ModelActor* mActor)
+std::vector<int> MouseInteractorHighLightEdge::GetSelectedIDs(ModelActor* mActor, SelectMode mode)
 {
     auto actors = selector_->get();
     std::vector<int> point_ids;
-    int paches_id = mActor->block_actor_id(actors->actor);
-    point_ids.push_back(mActor->patch_global_vid(paches_id,actors->v_local_id[0]));
-    point_ids.push_back(mActor->patch_global_vid(paches_id, actors->v_local_id[1]));
+
+    if (actors)
+    {
+        point_ids.reserve(3);
+
+        int patch_id = mActor->patch_actor_id(actors->actor);
+        point_ids.push_back(patch_id);
+        point_ids.push_back(mActor->patch_global_vid(patch_id,actors->v_local_id[0]));
+        point_ids.push_back(mActor->patch_global_vid(patch_id, actors->v_local_id[1]));
+    }
 
     return point_ids;
 }

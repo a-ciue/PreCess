@@ -22,6 +22,8 @@
 #include "Model.h"
 #include "Style.h"
 
+enum class SelectMode { Group, Block, Face, Edge };
+
 struct MyVtkItem : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
     Q_PROPERTY(std::vector<int> selectedIDs READ selectedIDs NOTIFY selectedChanged)
@@ -37,6 +39,7 @@ public:
         // 0 face_renderer, 1 block_renderer, 2 group_renderer
         vtkNew<vtkRenderer> renderer[3];
         vtkRenderer* curRenderer {};
+        std::unique_ptr<ModelActor> actor;
 
         vtkNew<MouseInteractorHighLightFace> faceStyle;
         vtkNew<MouseInteractorHighLightEdge> edgeStyle;
@@ -48,7 +51,7 @@ public:
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
     void destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData) override;
 
-    void resetCamera();
+    Q_INVOKABLE void resetCamera();
     //void dispatchChangedSource();
 
     std::vector<int> selectedIDs();
@@ -80,8 +83,9 @@ signals:
  
 private:
     vtkNew<vtkCamera> _camera;
-    vtkInteractorStyleWithClick* curStyle{};
-    std::unique_ptr<ModelActor> actor;
+    vtkInteractorStyleWithClick* cur_style_{};
+    ModelActor* cur_actor_{};
+    SelectMode select_mode_{};
     QScopedPointer<QMouseEvent> _click;
 };
 #endif // MYVTKITEM_H

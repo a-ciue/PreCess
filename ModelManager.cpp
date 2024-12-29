@@ -1,7 +1,10 @@
 #include "ModelManager.h"
 #include "ModelUtil.h"
-
 #include "ToolMesh.h"
+
+#include "MyVtkItem.h"
+#include <QObject>
+#include <filesystem>
 
 MyVtkItem* ModelManager::vtkItem()
 {

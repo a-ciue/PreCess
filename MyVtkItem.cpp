@@ -36,6 +36,8 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer[0]));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer[0]);
 
+    cur_actor_ = vtk->actor.get();
+
     return vtk;
 }
 
@@ -100,11 +102,12 @@ void MyVtkItem::onModelInited(const std::unordered_map<int, std::unique_ptr<Patc
 {
     dispatch_async([patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
         Data* vtk = Data::SafeDownCast(userData);
-        actor = std::make_unique<ModelActor>(*patches, *blocks, *groups);
+        vtk->actor = std::make_unique<ModelActor>(*patches, *blocks, *groups);
+        cur_actor_ = vtk->actor.get();
 
-        actor->bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
-        actor->bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
-        actor->bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
+        vtk->actor->bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
+        vtk->actor->bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
+        vtk->actor->bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
 
         resetCamera();
         });
@@ -116,7 +119,7 @@ void MyVtkItem::blocksMerged(const std::vector<int>& block_ids, int father_block
     
     dispatch_async([block_ids, father_block, father_block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        actor->merge_blocks(block_ids, father_block, father_block_patches);
+        vtk->actor->merge_blocks(block_ids, father_block, father_block_patches);
         });
     
 }
@@ -125,7 +128,7 @@ void MyVtkItem::groupUpdated(int group_id, const std::unordered_set<int>& group_
 {
     dispatch_async([group_id, group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        actor->update_group(group_id, group_blocks);
+        vtk->actor->update_group(group_id, group_blocks);
         });
 }
 
@@ -133,7 +136,7 @@ void MyVtkItem::groupMerged(const std::vector<int>& group_ids, int father_group,
 {
     dispatch_async([group_ids, father_group, father_group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        actor->merge_groups(group_ids, father_group, father_group_blocks);
+        vtk->actor->merge_groups(group_ids, father_group, father_group_blocks);
         });
 }
 
@@ -141,7 +144,7 @@ void MyVtkItem::patchUpdated(int patch_id, const std::vector<std::array<double, 
 {
     dispatch_async([patch_id, points, triangles, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        actor->update_patch(patch_id, points, triangles);
+        vtk->actor->update_patch(patch_id, points, triangles);
         });
 }
 
@@ -149,13 +152,17 @@ void MyVtkItem::blockUpdated(int block_id, const std::unordered_set<int>& block_
 {
     dispatch_async([block_id, block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        actor->update_block(block_id, block_patches);;
+        vtk->actor->update_block(block_id, block_patches);;
         });
 }
 
 std::vector<int> MyVtkItem::selectedIDs()
 {
-    return curStyle->GetSelectedIDs(actor.get());
+	if (cur_style_)
+	{
+        return cur_style_->GetSelectedIDs(cur_actor_, select_mode_);
+	}
+    return {};
 }
 
 void MyVtkItem::changeRenderer(QString renderMode)
@@ -192,15 +199,19 @@ void MyVtkItem::bindStyle(QString function)
 	int styleIdx {};
     if (function == "Face")
 	{
+        select_mode_ = SelectMode::Face;
         styleIdx = 0;
     } else if (function == "Edge")
     {
+        select_mode_ = SelectMode::Edge;
         styleIdx = 1;
     } else if (function == "Block")
     {
+        select_mode_ = SelectMode::Block;
         styleIdx = 2;
     } else if (function == "Group")
     {
+        select_mode_ = SelectMode::Group;
         styleIdx = 3;
     } else {
         std::cerr << "invalid Style in MyVtkItem::bindStyle" << std::endl;
@@ -210,10 +221,10 @@ void MyVtkItem::bindStyle(QString function)
     dispatch_async([styleIdx, this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (curStyle)
-            curStyle->ClearSelections();
+        if (cur_style_)
+            cur_style_->ClearSelections();
         renderWindow->GetInteractor()->SetInteractorStyle(vtk->styles[styleIdx]);
-        curStyle = vtk->styles[styleIdx];
+        cur_style_ = vtk->styles[styleIdx];
     });
 }
 
@@ -222,10 +233,10 @@ void MyVtkItem::unbindStyle()
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (curStyle)
-            curStyle->ClearSelections();
+        if (cur_style_)
+            cur_style_->ClearSelections();
         renderWindow->GetInteractor()->SetInteractorStyle(vtkNew<vtkInteractorStyleTrackballCamera>());
-        curStyle = nullptr;
+        cur_style_ = nullptr;
     });
 }
 
@@ -246,8 +257,8 @@ void MyVtkItem::changeEdgeRender(QString renderMode, bool render)
     dispatch_async([this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (actor)
-            actor->render_edge(mode, render);
+        if (vtk->actor)
+            vtk->actor->render_edge(mode, render);
     });
 }
 
@@ -256,8 +267,8 @@ void MyVtkItem::setClick()
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (curStyle) {
-            curStyle->SetClick();
+        if (cur_style_) {
+            cur_style_->SetClick();
         }
     });
 }

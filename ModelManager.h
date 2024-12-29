@@ -11,9 +11,10 @@ class ModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(MyVtkItem* vtkItem READ vtkItem WRITE setVtkItem)
+    Q_PROPERTY(Model* model READ model)
 
 public:
-    Model* getModel() {
+    Model* model() {
         return model_.get();
     }
     MyVtkItem* vtkItem();

@@ -67,23 +67,24 @@ public:
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch
     //! @param face_id 在该patch上的face id
-    void split_face(int patch_id, int face_id);
+    Q_INVOKABLE void split_face(int patch_id, int face_id);
     //! @brief 根据给定id找到mesh的edge，进行边分割
     //! @param patch_id 边所在的patch
-    //! @param face_id 在该patch上的边的端点id
-    void split_edge(int patch_id, std::array<int, 2> edge_v_ids);
+    //! @param edge_v_id1 其中一个边点id
+    //! @param edge_v_id2 另一个边点id
+    Q_INVOKABLE void split_edge(int patch_id, int edge_v_id1, int edge_v_id2);
 
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
-    void merge_blocks(const std::vector<int>& block_ids);
+    Q_INVOKABLE void merge_blocks(const std::vector<int>& block_ids);
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
-    void merge_groups(const std::vector<int>& group_ids);
+    Q_INVOKABLE void merge_groups(const std::vector<int>& group_ids);
 
     //! @brief remesh指定block，依赖MeshUtil、update_patches、update_actors
-    void remesh_block(const std::vector<int>& block_ids);
+    Q_INVOKABLE void remesh_block(const std::vector<int>& block_ids);
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
-    void remesh_group(const std::vector<int>& group_id);
+    Q_INVOKABLE void remesh_group(const std::vector<int>& group_id);
 
     int face_patch_id(int face_id);
     const std::vector<int>& patch_face_ids(int patch_id);
