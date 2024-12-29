@@ -43,7 +43,9 @@ public:
     int group_actor_id(vtkActor* actor);
     int patch_actor_id(vtkActor* actor);
 
-private:
+    int patch_global_fid(int patch_id, int local_fid);
+    int patch_global_vid(int patch_id, int local_vid);
+
     //! @brief 合并给定id的block的Actor，并删除被合并的Actor
     //! @param block_ids 要合并的block
     //! @param father_block 留下的block
@@ -65,12 +67,15 @@ private:
     //! @brief 更新指定group的actor的mapper
     void update_group(int group_id, const std::unordered_set<int>& group_blocks);
 
+private:
     //! @brief 将给定的actors合并到father_actor中
     static void _merge_actors(vtkActor* father_actor, const std::vector<vtkActor*>& actors);
 
     using ActorMap = std::unordered_map<int, vtkSmartPointer<vtkActor>>;
 
     // Model* model_;
+    const std::unordered_map<int, std::unique_ptr<Patch>>& patches_;
+
     vtkRenderer* face_renderer_ {};
     vtkRenderer* block_renderer_ {};
     vtkRenderer* group_renderer_ {};

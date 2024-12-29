@@ -214,11 +214,10 @@ bool SingleFaceSelectorHighlight::_is_selected(SelectedFace new_face, const std:
     return false;
 }
 
-SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer, Model* model) : renderer_(renderer)
+SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer) : renderer_(renderer)
 {
     selectedActor_ = vtkSmartPointer<vtkActor>::New();
     renderer_->AddActor(selectedActor_);
-    model_ = model;
 }
 
 SingleEdgeSelectorHighlight::~SingleEdgeSelectorHighlight()
