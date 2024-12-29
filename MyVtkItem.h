@@ -86,6 +86,6 @@ private:
     vtkInteractorStyleWithClick* cur_style_{};
     ModelActor* cur_actor_{};
     SelectMode select_mode_{};
-    QScopedPointer<QMouseEvent> _click;
+    std::unique_ptr<QMouseEvent> _click;
 };
 #endif // MYVTKITEM_H

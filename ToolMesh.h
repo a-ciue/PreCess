@@ -161,14 +161,18 @@ inline void CToolFace::_to_string() {
 inline void CToolFace::_from_string() {
   CParser parser(m_string);
 
-  for (std::list<CToken *>::iterator iter = parser.tokens().begin();
-       iter != parser.tokens().end(); ++iter) {
-    CToken *token = *iter;
-    if (token->m_key == "g") {
-      int g;
-      sscanf(token->m_value.c_str(), "(%d)", &g);
-      m_g = g;
-    }
+  for (std::list<CToken*>::iterator iter = parser.tokens().begin();
+		iter != parser.tokens().end(); ++iter) {
+      CToken* token = *iter;
+      if (token->m_key == "g") {
+          int g {};
+          
+          std::stringstream ss(token->m_value);
+          char _{};
+          ss >> std::ws >> _ >> g;
+          //sscanf(token->m_value.c_str(), "(%d)", &g);
+          m_g = g;
+      }
   }
 }
 

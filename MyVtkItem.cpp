@@ -74,7 +74,7 @@ bool MyVtkItem::event(QEvent* ev)
 
         auto e = static_cast<QMouseEvent*>(ev);
         if ((_click->position() - e->position()).manhattanLength() > 5) {
-            QQuickVTKItem::event(QScopedPointer<QMouseEvent>(_click.take()).get());
+            QQuickVTKItem::event(QScopedPointer<QMouseEvent>(_click.release()).get());
             return QQuickVTKItem::event(e);
         }
         break;
