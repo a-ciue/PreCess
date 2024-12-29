@@ -1,18 +1,22 @@
-﻿#include <unordered_map>
+﻿#ifndef STYLE_H
+#define STYLE_H
+#include <unordered_map>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkObjectFactory.h>
 #include <vtkSmartPointer.h>
 
 #include "Selector.h"
 
+enum class SelectMode;
 class vtkProperty;
 class vtkNamedColors;
-class Model;
+class ModelActor;
 
 class vtkInteractorStyleWithClick : public vtkInteractorStyleTrackballCamera {
 public:
     virtual void SetClick() = 0;
     virtual void ClearSelections() = 0;
+    virtual std::vector<int> GetSelectedIDs(ModelActor* mActor, SelectMode  mode) = 0;
 };
 
 class MouseInteractorHighLightActor : public vtkInteractorStyleWithClick {
@@ -25,18 +29,14 @@ public:
     void OnLeftButtonUp() override;
 
     void OnSelect(double posx, double posy);
-    void OnCommitMergeBlocks();
-    void OnCommitRemeshBlocks();
-    void OnCommitMergeGroups();
-    void OnCommitRemeshGroups();
 
-    void SetModel(Model* model);
     void SetClick() override;
     void ClearSelections() override;
-    void SetSelector(std::unique_ptr<ActorSelectorHighlight> selector);
+    std::vector<int> GetSelectedIDs(ModelActor* mActor, SelectMode mode) override;
 
+    void SetSelector(std::unique_ptr<ActorSelectorHighlight> selector);
+    
 private:
-    Model* model_;
     bool click_ {};
     std::unique_ptr<ActorSelectorHighlight> selector_;
 };
@@ -50,15 +50,14 @@ public:
     virtual ~MouseInteractorHighLightFace() { }
     virtual void OnLeftButtonUp() override;
 
-    void OnCommitSplitFace();
-
-    void SetModel(Model* model);
+    
     void SetClick() override;
     void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector);
+    std::vector<int> GetSelectedIDs(ModelActor* mActor, SelectMode mode) override;
 
 private:
-    Model* model_;
+   
     bool click_ {};
     std::unique_ptr<SingleFaceSelectorHighlight> selector_;
 };
@@ -72,15 +71,15 @@ public:
     virtual ~MouseInteractorHighLightEdge() { }
     virtual void OnLeftButtonUp() override;
 
-    void OnCommitSplitEdge();
+    
 
-    void SetModel(Model* model);
     void SetClick() override;
     void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleEdgeSelectorHighlight> selector);
-
+    std::vector<int> GetSelectedIDs(ModelActor* mActor, SelectMode mode) override;
 private:
-    Model* model_;
+    
     bool click_ {};
     std::unique_ptr<SingleEdgeSelectorHighlight> selector_;
 };
+#endif // STYLE_H

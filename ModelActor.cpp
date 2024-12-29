@@ -86,6 +86,18 @@ int ModelActor::patch_actor_id(vtkActor* actor)
     throw std::runtime_error("patch actor not valid");
 }
 
+int ModelActor::patch_global_fid(int patch_id, int local_fid)
+{
+    int face_gid = patches_.at(patch_id)->faceIDs_[local_fid];
+    return face_gid;
+}
+
+int ModelActor::patch_global_vid(int patch_id, int local_vid)
+{
+    std::vector<int>& vids = patches_.at(patch_id)->vertexIDs_;
+    return vids[local_vid];
+}
+
 int ModelActor::block_actor_id(vtkActor* actor)
 {
     if (block_actor_id_.count(actor)) {
@@ -105,6 +117,7 @@ int ModelActor::group_actor_id(vtkActor* actor)
 ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
     const std::unordered_map<int, std::unique_ptr<Block>>& blocks,
     const std::unordered_map<int, std::unique_ptr<Group>>& groups)
+    : patches_(patches)
 {
     for (auto&& [_, patch] : patches) {
         update_patch(patch->id_, patch->vertexPoints_, patch->faceTriangles_);

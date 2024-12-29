@@ -12,6 +12,8 @@ ApplicationWindow {
     height: 640
     title: qsTr("三角剖分交互程序")
 
+    required property ModelManager modelManager
+
     header: ToolBar {
         id: header
         RowLayout {
@@ -21,14 +23,14 @@ ApplicationWindow {
                 id: splineDialog
                 nameFilters: ["STP File (*.stp)"]
                 onAccepted: {
-                    myItem.readSpline(selectedFile);
+                    modelManager.readSpline(selectedFile);
                 }
             }
             FileDialog {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-                    myItem.readMesh(selectedFile);
+                    modelManager.readMesh(selectedFile);
                 }
             }
             FileDialog {
@@ -36,7 +38,7 @@ ApplicationWindow {
                 nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    myItem.writeMesh(selectedFile, "Face", selectedNameFilter.extensions[0]);
+                    modelManager.writeMesh(selectedFile, "Face", selectedNameFilter.extensions[0]);
                 }
             }
             FileDialog {
@@ -44,7 +46,7 @@ ApplicationWindow {
                 nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    myItem.writeMesh(selectedFile, "Block", selectedNameFilter.extensions[0]);
+                    modelManager.writeMesh(selectedFile, "Block", selectedNameFilter.extensions[0]);
                 }
             }
             FileDialog {
@@ -52,7 +54,7 @@ ApplicationWindow {
                 nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    myItem.writeMesh(selectedFile, "Group", selectedNameFilter.extensions[0]);
+                    modelManager.writeMesh(selectedFile, "Group", selectedNameFilter.extensions[0]);
                 }
             }
 
@@ -228,8 +230,11 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight
                     visible:edgeCutButton.checked
                     onClicked:{
-                        myItem.commitEdgeCut()
-                        edgeCutButton.toggle()
+                        let ids = myItem.selectedIDs;
+                        if (ids.length !== 0) {
+                            modelManager.model.split_edge(ids[0], ids[1], ids[2])
+                            edgeCutButton.toggle()
+                        }
                     }
                 }
                 Button{
@@ -238,8 +243,11 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignRight
                     visible:faceCutButton.checked
                     onClicked:{
-                        myItem.commitFaceCut()
-                        faceCutButton.toggle()
+                        let ids = myItem.selectedIDs;
+                        if (ids.length !== 0) {
+                            modelManager.model.split_face(ids[0], ids[1])
+                            faceCutButton.toggle()
+                        }
                     }
                 }
             }
@@ -282,7 +290,8 @@ ApplicationWindow {
                         id:patchMergeConfirm
                         text: "合并"
                         onClicked:{
-                            myItem.commitBlockMerge()
+                            modelManager.model.merge_blocks(myItem.selectedIDs)
+                            myItem.resetCamera()
                             integrateBlockButton.toggle()
                         }
                     }
@@ -290,7 +299,8 @@ ApplicationWindow {
                         id:patchRemeshConfirm
                         text: "重网格"
                         onClicked:{
-                            myItem.commitBlockRemesh()
+                            modelManager.model.remesh_block(myItem.selectedIDs)
+                            myItem.resetCamera()
                             integrateBlockButton.toggle()
                         }
                     }
@@ -335,7 +345,8 @@ ApplicationWindow {
                         id:groupModeConfirm
                         text: "合并"
                         onClicked:{
-                            myItem.commitGroupMerge()
+                            modelManager.model.merge_groups(myItem.selectedIDs)
+                            myItem.resetCamera()
                             integrateGroupButton.toggle()
                         }
                     }
@@ -343,7 +354,8 @@ ApplicationWindow {
                         id:groupRemeshConfirm
                         text: "重网格"
                         onClicked:{
-                            myItem.commitGroupRemesh()
+                            modelManager.model.remesh_group(myItem.selectedIDs)
+                            myItem.resetCamera()
                             integrateGroupButton.toggle()
                         }
                     }
@@ -376,5 +388,6 @@ ApplicationWindow {
             anchors.margins: border.width
             //        source: sources.currentText
         }
+        Component.onCompleted: modelManager.vtkItem = myItem
     }
 }
