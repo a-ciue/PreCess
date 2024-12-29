@@ -1,4 +1,4 @@
-﻿#include "Style.h"
+#include "Style.h"
 #include <vtkRenderWindowInteractor.h>
 #include "ModelActor.h"
 #include "MyVtkItem.h"

@@ -1,4 +1,4 @@
-﻿#include "ModelUtil.h"
+#include "ModelUtil.h"
 #include "ToolMesh.h"
 #include "FaceSplitter.h"
 

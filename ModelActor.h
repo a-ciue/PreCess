@@ -1,4 +1,4 @@
-﻿#ifndef MODELACTOR_H
+#ifndef MODELACTOR_H
 #define MODELACTOR_H
 #include <optional>
 #include <unordered_map>

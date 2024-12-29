@@ -1,4 +1,4 @@
-﻿#include <array>
+#include <array>
 #include <optional>
 #include <vector>
 #include <vtkNew.h>

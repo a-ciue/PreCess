@@ -1,4 +1,4 @@
-﻿#ifndef MODELUTIL_H
+#ifndef MODELUTIL_H
 #define MODELUTIL_H
 #include <filesystem>
 #include <functional>

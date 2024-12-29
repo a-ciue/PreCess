@@ -1,4 +1,4 @@
-﻿#include <QtQml/QQmlApplicationEngine>
+#include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 
 #include <QtQuick/QQuickWindow>

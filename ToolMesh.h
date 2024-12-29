@@ -1,4 +1,4 @@
-﻿#ifndef _TOOL_MESH_H_
+#ifndef _TOOL_MESH_H_
 #define _TOOL_MESH_H_
 
 #include <map>

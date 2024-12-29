@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Model构造函数中需要调用ModelActor的构造函数和析构函数
  * 行17：In template: calling a private destructor of class 'ModelActor'
  * 行57：In template: calling a private constructor of class 'ModelActor'

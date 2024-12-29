@@ -1,4 +1,4 @@
-﻿#include "ModelActor.h"
+#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>

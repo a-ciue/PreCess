@@ -1,4 +1,4 @@
-﻿#ifndef STYLE_H
+#ifndef STYLE_H
 #define STYLE_H
 #include <unordered_map>
 #include <vtkInteractorStyleTrackballCamera.h>

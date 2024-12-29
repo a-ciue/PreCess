@@ -1,4 +1,4 @@
-﻿#include "Selector.h"
+#include "Selector.h"
 #include <array>
 #include <optional>
 #include <utility>

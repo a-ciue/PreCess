@@ -1,20 +1,20 @@
 /*!
 *      \file Quat.h
 *      \brief Quaternion
-*	   \author David Gu  //Ò²¾ÍÊÇ¹ËÀÏÊ¦£¡
-*      \date 10/07/2010  //¾ÃÔ¶
+*	   \author David Gu  //ä¹Ÿå°±æ˜¯é¡¾è€å¸ˆï¼
+*      \date 10/07/2010  //ä¹…è¿œ
 *
 */
 
-#ifndef _QUAT_H_  //ÕâÁ½ĞĞÄ¬ÈÏ¼ÓÉÏ£¬»¹ÓĞ½áÎ²´¦µÄendif£¬×¢ÒâÃüÃû
+#ifndef _QUAT_H_  //è¿™ä¸¤è¡Œé»˜è®¤åŠ ä¸Šï¼Œè¿˜æœ‰ç»“å°¾å¤„çš„endifï¼Œæ³¨æ„å‘½å
 #define _QUAT_H_
 
 #include <math.h>
 #include "Point.h"
 
-typedef double mat44[4][4];     //ÕâÀïµÄÓï·¨²»ÊÇºÜÃ÷°×
+typedef double mat44[4][4];     //è¿™é‡Œçš„è¯­æ³•ä¸æ˜¯å¾ˆæ˜ç™½
 
-namespace MeshLib  //ÕâÀïµÄÓï·¨²»ÊÇºÜÃ÷°×
+namespace MeshLib  //è¿™é‡Œçš„è¯­æ³•ä¸æ˜¯å¾ˆæ˜ç™½
 {
 
 /*!
@@ -49,7 +49,7 @@ public:
   */
 
   
-  CQrot( const CQrot & q )   //³£ÒıÓÃ±£»¤ÁË²ÎÊıµÄÖµ£¬Ê¹Æä²»»á±»¸Ä±ä
+  CQrot( const CQrot & q )   //å¸¸å¼•ç”¨ä¿æŠ¤äº†å‚æ•°çš„å€¼ï¼Œä½¿å…¶ä¸ä¼šè¢«æ”¹å˜
   {
     m_w =  q.m_w;
     m_x =  q.m_x;
@@ -61,27 +61,27 @@ public:
   *	\param q a quaternion
   */
 
-  /*operator ÊÇC++µÄÒ»¸ö¹Ø¼ü×Ö£¬ËüºÍÔËËã·û£¨Èç = £©Ò»ÆğÊ¹ÓÃ£¬±íÊ¾Ò»¸öÔËËã·ûÖØÔØº¯Êı
-      ÔÚÀí½âÊ±¿É½«operatorºÍÔËËã·û£¨Èçoperator = £©ÊÓÎªÒ»¸öº¯ÊıÃû¡£*/
-	CQrot & operator=(const CQrot & q) //×÷ÓÃÊÇÊ²Ã´£¿
+  /*operator æ˜¯C++çš„ä¸€ä¸ªå…³é”®å­—ï¼Œå®ƒå’Œè¿ç®—ç¬¦ï¼ˆå¦‚ = ï¼‰ä¸€èµ·ä½¿ç”¨ï¼Œè¡¨ç¤ºä¸€ä¸ªè¿ç®—ç¬¦é‡è½½å‡½æ•°
+      åœ¨ç†è§£æ—¶å¯å°†operatorå’Œè¿ç®—ç¬¦ï¼ˆå¦‚operator = ï¼‰è§†ä¸ºä¸€ä¸ªå‡½æ•°åã€‚*/
+	CQrot & operator=(const CQrot & q) //ä½œç”¨æ˜¯ä»€ä¹ˆï¼Ÿ
   {
       m_w = q.m_w;
       m_x  = q.m_x;
       m_y  = q.m_y;
       m_z  = q.m_z;
-      return *this;   //Óï·¨£¿
+      return *this;   //è¯­æ³•ï¼Ÿ
   }
 
-  /*! CQrot destructor  //Îö¹¹º¯Êı
+  /*! CQrot destructor  //ææ„å‡½æ•°
   */
-  ~CQrot(){};  //~ ^ÔÚc++ÖĞµÄ×÷ÓÃ
+  ~CQrot(){};  //~ ^åœ¨c++ä¸­çš„ä½œç”¨
   
   /*! power of quaternion
   *	\param p power
   * \return quoternion power p
   */
 
-  CQrot& operator^(double p)  //^µÄÒâÒå
+  CQrot& operator^(double p)  //^çš„æ„ä¹‰
  {
   normalize();
   double theta = 2 * acos( m_w );
