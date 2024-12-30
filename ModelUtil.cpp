@@ -39,7 +39,8 @@ ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
 std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
                const std::vector<int> &patch_ids) {
-  AddReverse(".\\Data\\PatchedMesh\\temp_BadPatches.txt");
+  std::filesystem::create_directories("./Data/PatchedMesh");
+  make_bad_patches(patch_ids, ".\\Data\\PatchedMesh\\temp_BadPatches.txt");
 
   std::unordered_set<int> all_patches;
   for (MeshLib::CTMesh::MeshFaceIterator fi(mesh.get()); !fi.end(); fi++)
@@ -499,24 +500,16 @@ void ModelUtil::_attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::C
         he1->edge() = e;
 }
 
-void ModelUtil::AddReverse(std::string filename)
+void ModelUtil::make_bad_patches(const std::vector<int>& patch_ids, std::string filename)
 {
-    std::ifstream file(filename);
-    std::string line;
-    std::string newFileName = filename + ".tmp";
-    std::ofstream newFile(newFileName);
-    while (std::getline(file, line)) {
-        if (line.find("reverse") == std::string::npos) {
-            line += " reverse";
-        }
-        newFile << line << std::endl;
+    std::ofstream file(filename);
+
+    for (int patch_id : patch_ids)
+    {
+        file << "BadPatch temp_" << patch_id << ".m reverse\n";
     }
     file.close();
-    newFile.close();
-    std::remove(filename.c_str());
-    std::rename(newFileName.c_str(), filename.c_str());
 }
-
 
 std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::filesystem::path& obj_file) {
     if (!std::filesystem::exists(obj_file)) {
