@@ -1,45 +1,23 @@
-﻿#include <memory>
-#include <unordered_map>
-#include <unordered_set>
+﻿#include <TDocStd_Document.hxx>
+#include <TDF_Label.hxx>
+#include <TDataStd_RealArray.hxx>
+#include <TDataStd_IntegerArray.hxx>
+
+#include <memory>
 #include <array>
 #include "ModelActor.h"
 
+#include <unordered_set>
+
 namespace MeshLib {
-template <typename V, typename E, typename F, typename H>
-class CToolMesh;
-class CToolVertex;
-class CToolEdge;
-class CToolFace;
-class CToolHalfEdge;
-typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
+    template <typename V, typename E, typename F, typename H>
+    class CToolMesh;
+    class CToolVertex;
+    class CToolEdge;
+    class CToolFace;
+    class CToolHalfEdge;
+    typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
 }
-
-struct Patch {
-    // patch id
-    int id_;
-    int blockID;
-    // 全局id
-    std::vector<int> faceIDs_;
-    // 三角形的局部id索引
-    std::vector <std::array<int, 3>> faceTriangles_;
-    //std::vector<int[3]> faceTriangles_;
-
-    // 全局id
-    std::vector<int> vertexIDs_;
-    // 坐标
-    std::vector <std::array<double, 3>> vertexPoints_;
-    //std::vector<double[3]> vertexPoints_;
-};
-struct Block {
-    std::unordered_set<int> patchIDs;
-    int id;
-    int groupID;
-};
-
-struct Group {
-    std::unordered_set<int> blockIDs;
-    int id;
-};
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 class Model {
@@ -58,7 +36,7 @@ public:
     void split_face(int patch_id, int face_id);
     //! @brief 根据给定id找到mesh的edge，进行边分割
     //! @param patch_id 边所在的patch
-    //! @param face_id 在该patch上的边的端点id
+    //! @param edge_v_ids 在该patch上的边的端点id
     void split_edge(int patch_id, std::array<int, 2> edge_v_ids);
 
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
@@ -74,12 +52,10 @@ public:
     void remesh_group(const std::vector<int>& group_id);
 
     int face_patch_id(int face_id);
-    const std::vector<int>& patch_face_ids(int patch_id);
-    const std::vector<int>& patch_vertex_ids(int patch_id);
+    std::vector<int> patch_face_ids(int patch_id);
+    std::vector<int> patch_vertex_ids(int patch_id);
     int patch_block_id(int patch_id);
-    //const std::vector<int>& block_patch_ids(int block_id);
     int block_group_id(int patch_id);
-    //const std::vector<int>& group_block_ids(int group_id);
 
     ModelActor& actor();
 
@@ -91,14 +67,136 @@ private:
     //! @brief 更新指定patch的actor
     void update_actors(const std::vector<int>& patch_ids);
 
-    using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
-    using BlockMap = std::unordered_map<int, std::unique_ptr<Block>>;
-    using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
+    //! @brief 访问标签数据
+    TDF_Label GetPatchLabel(int patchID);
+    TDF_Label GetBlockLabel(int blockID);
+    TDF_Label GetGroupLabel(int groupID);
+
+    // OCAF 文档存储
+    Handle(TDocStd_Document) doc;
+
+    // 标签根节点
+    TDF_Label patches_label;
+    TDF_Label blocks_label;
+    TDF_Label groups_label;
 
     std::unique_ptr<MeshLib::CTMesh> mesh_;
-    PatchMap patches_;
-    BlockMap blocks_;
-    GroupMap groups_;
-
     std::unique_ptr<ModelActor> actor_;
 };
+
+//#include <TDocStd_Document.hxx>
+//#include <TDF_Label.hxx>
+//#include <TDataStd_RealArray.hxx>
+//#include <TDataStd_IntegerArray.hxx>
+//
+//#include <memory>
+//#include <unordered_map>
+//#include <unordered_set>
+//#include <array>
+//#include "ModelActor.h"
+//
+//namespace MeshLib {
+//template <typename V, typename E, typename F, typename H>
+//class CToolMesh;
+//class CToolVertex;
+//class CToolEdge;
+//class CToolFace;
+//class CToolHalfEdge;
+//typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
+//}
+//
+//struct Patch {
+//    // patch id
+//    int id_;
+//    int blockID;
+//    // 全局id
+//    std::vector<int> faceIDs_;
+//    // 三角形的局部id索引
+//    std::vector <std::array<int, 3>> faceTriangles_;
+//    //std::vector<int[3]> faceTriangles_;
+//
+//    // 全局id
+//    std::vector<int> vertexIDs_;
+//    // 坐标
+//    std::vector <std::array<double, 3>> vertexPoints_;
+//    //std::vector<double[3]> vertexPoints_;
+//};
+//struct Block {
+//    std::unordered_set<int> patchIDs;
+//    int id;
+//    int groupID;
+//};
+//
+//struct Group {
+//    std::unordered_set<int> blockIDs;
+//    int id;
+//};
+//
+////! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
+//class Model {
+//public:
+//    //! @brief 根据给定CTMesh构造update_patches, blocks_, groups_，actor_构造函数
+//    Model(std::unique_ptr<MeshLib::CTMesh> mesh);
+//
+//    //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
+//    //! @param mesh_path 输出文件路径
+//    //! @param mode 选定输出模式
+//    void write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode);
+//
+//    //! @brief 根据给定id找到mesh的face，进行面分割
+//    //! @param patch_id 面所在的patch
+//    //! @param face_id 在该patch上的face id
+//    void split_face(int patch_id, int face_id);
+//    //! @brief 根据给定id找到mesh的edge，进行边分割
+//    //! @param patch_id 边所在的patch
+//    //! @param face_id 在该patch上的边的端点id
+//    void split_edge(int patch_id, std::array<int, 2> edge_v_ids);
+//
+//    //! @brief 合并给定block，并更新block actor，依赖ModelActor
+//    //! @param block_ids
+//    void merge_blocks(const std::vector<int>& block_ids);
+//    //! @brief 合并给定group，并更新group actor，依赖ModelActor
+//    //! @param group_ids
+//    void merge_groups(const std::vector<int>& group_ids);
+//
+//    //! @brief remesh指定block，依赖MeshUtil、update_patches、update_actors
+//    void remesh_block(const std::vector<int>& block_ids);
+//    //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
+//    void remesh_group(const std::vector<int>& group_id);
+//
+//    int face_patch_id(int face_id);
+//    const std::vector<int>& patch_face_ids(int patch_id);
+//    const std::vector<int>& patch_vertex_ids(int patch_id);
+//    int patch_block_id(int patch_id);
+//    //const std::vector<int>& block_patch_ids(int block_id);
+//    int block_group_id(int patch_id);
+//    //const std::vector<int>& group_block_ids(int group_id);
+//
+//    ModelActor& actor();
+//
+//private:
+//    //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
+//    void update_patches(const std::vector<int>& patch_ids);
+//    void update_patches(const std::unordered_set<int>& patch_ids);
+//
+//    //! @brief 更新指定patch的actor
+//    void update_actors(const std::vector<int>& patch_ids);
+//
+//    //新增方法：访问标签数据
+//    TDF_Label GetPatchLabel(int patchID);
+//    TDF_Label GetBlockLabel(int blockID);
+//    TDF_Label GetGroupLabel(int groupID);
+//    //ocaf文档存储
+//    Handle(TDocStd_Document) doc;
+//
+//    using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
+//    using BlockMap = std::unordered_map<int, std::unique_ptr<Block>>;
+//    using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
+//
+//    std::unique_ptr<MeshLib::CTMesh> mesh_;
+//    PatchMap patches_;
+//    BlockMap blocks_;
+//    GroupMap groups_;
+//
+//    std::unique_ptr<ModelActor> actor_;
+//};
