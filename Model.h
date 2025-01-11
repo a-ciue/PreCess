@@ -22,8 +22,8 @@ typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
 
 struct Patch {
     // patch id
-    int id_;
-    int blockID;
+    int id_ { -1 };
+    int blockID { -1 };
     // 全局id
     std::vector<int> faceIDs_;
     // 三角形的局部id索引
@@ -107,8 +107,8 @@ signals:
 
 private:
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
-    void update_patches(const std::vector<int>& patch_ids);
-    void update_patches(const std::unordered_set<int>& patch_ids);
+    void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);
+    void update_patches(const std::unordered_set<int>& patch_ids, bool new_patch = true);
 
     //! @brief 更新指定patch的actor
     void update_actors(const std::vector<int>& patch_ids);

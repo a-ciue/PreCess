@@ -24,6 +24,10 @@ void ModelManager::readSpline(QUrl spline_path)
         //emit splineLoadFailed(tr("fail to load spline file."));
         qDebug() << "导入文件错误: " << spline_path;
     }
+
+    model_ = std::make_unique<Model>(std::move(mesh));
+    connectVtk();
+    model_->refreshVtk();
 }
 
 void ModelManager::readMesh(QUrl target_mesh)

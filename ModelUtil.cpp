@@ -40,7 +40,7 @@ std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
                const std::vector<int> &patch_ids) {
   std::filesystem::create_directories("./Data/PatchedMesh");
-  make_bad_patches(patch_ids, ".\\Data\\PatchedMesh\\temp_BadPatches.txt");
+  make_bad_patches(mesh.get(), ".\\Data\\PatchedMesh\\temp_BadPatches.txt");
 
   std::unordered_set<int> all_patches;
   for (MeshLib::CTMesh::MeshFaceIterator fi(mesh.get()); !fi.end(); fi++)
@@ -66,11 +66,12 @@ ModelUtil::remesh_patches(std::unique_ptr<MeshLib::CTMesh> mesh,
         std::to_string(patch_id) + ".m 240 60 25 1 3 1 1 0";
     cmdPopen(remesh_cmd);
 
-    std::string stitch_cmd = ".\\Bin\\MeshStitching.exe .\\Data\\PatchedMesh\\ "
-                             ".\\Data\\PatchedMesh\\temp_BadPatches.txt "
-                             ".\\Data\\temp.m";
-    cmdPopen(stitch_cmd);
   }
+
+  std::string stitch_cmd = ".\\Bin\\MeshStitching.exe .\\Data\\PatchedMesh\\ "
+                            ".\\Data\\PatchedMesh\\temp_BadPatches.txt "
+                            ".\\Data\\temp.m";
+  cmdPopen(stitch_cmd);
 
   std::unique_ptr<MeshLib::CTMesh> patched_mesh =
       std::make_unique<MeshLib::CTMesh>();
@@ -500,9 +501,15 @@ void ModelUtil::_attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::C
         he1->edge() = e;
 }
 
-void ModelUtil::make_bad_patches(const std::vector<int>& patch_ids, std::string filename)
+void ModelUtil::make_bad_patches(MeshLib::CTMesh* mesh, std::string filename)
 {
     std::ofstream file(filename);
+
+    std::unordered_set<int> patch_ids;
+    for (MeshLib::CTMesh::MeshFaceIterator fi(mesh); !fi.end(); fi++)
+    {
+        patch_ids.insert(fi.value()->get_g());
+    }
 
     for (int patch_id : patch_ids)
     {
@@ -547,8 +554,8 @@ std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::file
             line_stream >> group_name;
 
             // 为每个分组分配唯一的 ID
-            current_group_id++;
-            std::cout << "Group: " << group_name << " -> ID: " << current_group_id << std::endl;
+            current_group_id = std::stoi(group_name);
+            std::cout << "Patch: " << group_name << " -> ID: " << current_group_id << std::endl;
         }
             // 处理面信息
         else if (prefix == "f" && face_iter != mesh->faces().end()) {

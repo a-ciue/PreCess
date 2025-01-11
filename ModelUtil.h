@@ -66,6 +66,6 @@ public:
 private:
     static std::string cmdPopen(const std::string& cmdLine);
     static void _attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::CToolHalfEdge* he1, MeshLib::CToolEdge* e);
-	static void make_bad_patches(const std::vector<int> &patch_ids, std::string filename);
+	static void make_bad_patches(MeshLib::CTMesh* mesh, std::string filename);
 };
 #endif // MODELUTIL_H

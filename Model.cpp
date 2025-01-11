@@ -121,13 +121,13 @@ void Model::split_face(int patch_id, int face_id)
 
     ModelUtil::split_face(face, mesh_.get())->point() = mid;
 
-    update_patches(std::vector{ patch_id });
+    update_patches(std::vector{ patch_id }, false);
     update_actors({ patch_id });
 }
 
 void Model::split_edge(int patch_id, int edge_v_id1, int edge_v_id2)
 {
-    std::vector<int>& vids = patches_[patch_id]->vertexIDs_;
+    std::vector<int>& vids = patches_.at(patch_id)->vertexIDs_;
     //std::array<int, 2> edge_v_gid { vids[edge_v_ids[0]], vids[edge_v_ids[1]] };
     std::array<int, 2> edge_v_gid { edge_v_id1, edge_v_id2 };
     MeshLib::CToolVertex *v1 = mesh_->idVertex(edge_v_gid[0]),
@@ -159,7 +159,7 @@ void Model::split_edge(int patch_id, int edge_v_id1, int edge_v_id2)
     {
         patch_ids.push_back(mesh_->halfedgeFace(he2)->get_g());
     }
-    update_patches(patch_ids);
+    update_patches(patch_ids, false);
     update_actors(patch_ids);
 }
 
@@ -282,10 +282,20 @@ void Model::remesh_block(const std::vector<int>& block_ids) {
     mesh_ = ModelUtil::remesh_patches(std::move(mesh_), patch_ids);
 
     // 更新所有相关的 patches
-    update_patches(patch_ids);
+    //update_patches(patch_ids, false);
+
+    // 更新所有patches
+    std::vector<int> all_patch_ids;
+    for (auto& face : mesh_->faces()) {
+        all_patch_ids.push_back(face->get_g());
+    }
+
+    // 更新 patches_
+    update_patches(all_patch_ids);
 
     // 更新所有相关的 actors
-    update_actors(patch_ids);
+    //update_actors(patch_ids);
+    refreshVtk();
 }
 
 void Model::remesh_group(const std::vector<int>& group_ids) {
@@ -316,11 +326,21 @@ void Model::remesh_group(const std::vector<int>& group_ids) {
     // 调用 ModelUtil::remesh_patches 方法对这些 patch 进行重新网格化
     mesh_ = ModelUtil::remesh_patches(std::move(mesh_), patch_ids);
 
+    // 更新所有patches
+    std::vector<int> all_patch_ids;
+    for (auto& face : mesh_->faces()) {
+        all_patch_ids.push_back(face->get_g());
+    }
+
     // 更新所有相关的 patches
-    update_patches(patch_ids);
+    //update_patches(patch_ids, false);
+
+    // 更新 patches_
+    update_patches(all_patch_ids);
 
     // 更新所有相关的 actors
-    update_actors(patch_ids);
+    //update_actors(patch_ids);
+    refreshVtk();
 }
 
 
@@ -406,17 +426,21 @@ void Model::update_actors(const std::vector<int>& patch_ids)
 
 // 优化 update_patches 的实现，减少网格遍历次数
 
-void Model::update_patches(const std::vector<int>& patch_ids) {
+void Model::update_patches(const std::vector<int>& patch_ids, bool new_patch) {
     // 使用 unordered_set 来处理 patch_ids 的快速查找
     std::unordered_set<int> patch_id_set(patch_ids.begin(), patch_ids.end());
 
     // 调用重载函数
-    update_patches(patch_id_set);
+    update_patches(patch_id_set, new_patch);
 }
 
-void Model::update_patches(const std::unordered_set<int>& patch_ids) {
+void Model::update_patches(const std::unordered_set<int>& patch_ids, bool new_patch) {
     // 删除指定的 Patch 数据
     for (int patch_id : patch_ids) {
+        if (!new_patch && !patches_.count(patch_id))
+        {
+            throw exception(("patch not found" + std::to_string(patch_id)).c_str());
+        }
         patches_.erase(patch_id);
     }
 
