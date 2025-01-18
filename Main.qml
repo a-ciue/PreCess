@@ -186,10 +186,16 @@ ApplicationWindow {
                     }
                 }else{
                     if(index === 0){
-                        myItem.commitEdgeCut()
+                        let ids = myItem.selectedIDs;
+                        if (ids.length !== 0) {
+                            modelManager.model.split_edge(ids[0], ids[1], ids[2])
+                        }
                     }
                     if(index === 1){
-                        myItem.commitFaceCut()
+                        let ids = myItem.selectedIDs;
+                        if (ids.length !== 0) {
+                            modelManager.model.split_face(ids[0], ids[1])
+                        }
                     }
                 }
             }
@@ -226,8 +232,15 @@ ApplicationWindow {
                     if(index === 0) { myItem.bindStyle("Block")}
                     else { myItem.bindStyle("Block")}
                 }else{
-                    if(index === 0) { myItem.commitBlockMerge()}
-                    else { myItem.commitGroupRemesh()}
+                    if(index === 0) 
+                    { 
+                        modelManager.model.merge_blocks(myItem.selectedIDs)
+                        myItem.resetCamera()
+                    }
+                    else { 
+                          modelManager.model.remesh_block(myItem.selectedIDs)
+                          myItem.resetCamera()
+                    }
                 }
             }
             onButtonGroupFunction:{
@@ -261,11 +274,19 @@ ApplicationWindow {
             }
             onButtonFunction:{
                 if(modeOrConfirm === 0){
-                    if(index === 0) { myItem.bindStyle("Group")}
+                    if(index === 0){ 
+                        myItem.bindStyle("Group")
+                    }
                     else{ myItem.bindStyle("Group")}
                 }else{
-                    if(index === 0) { myItem.commitGroupMerge()}
-                    else{ myItem.commitGroupRemesh()}
+                    if(index === 0){
+                        modelManager.model.merge_groups(myItem.selectedIDs)
+                        myItem.resetCamera()
+                    }
+                    else{
+                        modelManager.model.remesh_group(myItem.selectedIDs)
+                        myItem.resetCamera()
+                    }
                 }
             }
             onButtonGroupFunction:{

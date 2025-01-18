@@ -15,3 +15,15 @@
 /out
 /install*
 *.zip
+/triangulation/x64/Debug/triangulation.tlog
+/triangulation/x64/Debug/CMakeCXXCompilerId.obj
+/triangulation/x64/Debug/mocs_compilation.obj
+/triangulation/x64/Debug/qrc_qmake_fileLoader.obj
+/triangulation/x64/Debug/qrc_triangulation_raw_qml_0.obj
+/triangulation/x64/Debug/triangulation.log
+/triangulation/x64/Debug/vc143.idb
+/triangulation/x64/Debug/vc143.pdb
+/triangulation.sln
+/triangulation.vcxproj
+/triangulation.vcxproj.filters
+/triangulation.vcxproj.user
