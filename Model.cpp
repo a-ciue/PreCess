@@ -435,16 +435,22 @@ void Model::update_patches(const std::vector<int>& patch_ids, bool new_patch) {
 }
 
 void Model::update_patches(const std::unordered_set<int>& patch_ids, bool new_patch) {
-    // 删除指定的 Patch 数据
+    // 删除指定的 Patch 数据，但保持Patch所在的BlockID
+    std::unordered_map<int, int> blockIDs;
     for (int patch_id : patch_ids) {
         if (!new_patch && !patches_.count(patch_id))
         {
             throw exception(("patch not found" + std::to_string(patch_id)).c_str());
         }
-        patches_.erase(patch_id);
+
+        if (patches_.count(patch_id))
+        {
+            blockIDs[patch_id] = patches_[patch_id]->blockID;
+            patches_.erase(patch_id);
+        }
     }
 
-    // 分组面片：按 Patch ID 将面片分组
+    // 分组面片：按 Patch ID 将面片分组，取patch_ids包括的patch
     std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> patch_faces;
     for (auto& face : mesh_->faces()) {
         int face_patch_id = face->get_g();
@@ -460,6 +466,12 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids, bool new_pa
         if (!patch) {
             patch = std::make_unique<Patch>();
             patch->id_ = patch_id;
+
+            // 赋patch->blockID，从blockIDs取出
+            if (!blockIDs.count(patch_id))
+                blockIDs[patch_id] = -1;
+            patch->blockID = blockIDs[patch_id];
+            blockIDs.erase(patch_id);
         }
 
         // 追踪 Patch 内部的顶点
