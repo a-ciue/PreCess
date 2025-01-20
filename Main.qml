@@ -23,7 +23,20 @@ ApplicationWindow {
                 id: splineDialog
                 nameFilters: ["STP File (*.stp)"]
                 onAccepted: {
-                    modelManager.readSpline(selectedFile);
+                    var dialog = Qt.createQmlObject('import QtQuick.Controls; Dialog { }', splineDialog);
+                    dialog.title = "设置剖分全局尺寸";
+                    var textField = Qt.createQmlObject('import QtQuick; import QtQuick.Controls; TextField { validator: IntValidator{} }', dialog);
+                    dialog.contentItem = textField;
+                    dialog.visible = true;
+                    dialog.standardButtons = Dialog.Ok | Dialog.Cancel
+                    dialog.accepted.connect(function() {
+                        var input = parseFloat(textField.text);
+                        if (!isNaN(input)) {
+                            modelManager.readSpline(selectedFile, input);
+                        } else {
+                            console.log("Invalid input");
+                        }
+                    });
                 }
             }
             FileDialog {

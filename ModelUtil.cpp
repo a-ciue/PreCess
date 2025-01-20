@@ -11,7 +11,7 @@ vtkNew<vtkMinimalStandardRandomSequence> ModelUtil::randomSequence;
 vtkNew<vtkNamedColors> ModelUtil::colors;
 
 std::unique_ptr<MeshLib::CTMesh>
-ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
+ModelUtil::mesh_from_spline(std::filesystem::path spline_dir, double size) {
 
   //std::string mkdir_cmd = "mkdir ./Data/PatchedMesh";
   //cmdPopen(mkdir_cmd);

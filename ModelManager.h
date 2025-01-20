@@ -20,7 +20,7 @@ public:
     MyVtkItem* vtkItem();
     void setVtkItem(MyVtkItem* item);
 
-    Q_INVOKABLE void readSpline(QUrl spline_path);
+    Q_INVOKABLE void readSpline(QUrl spline_path, double size);
     Q_INVOKABLE void readMesh(QUrl target_mesh);
     Q_INVOKABLE void writeMesh(QUrl target_mesh, QString renderMode, QString extension);
 

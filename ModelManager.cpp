@@ -17,9 +17,9 @@ void ModelManager::setVtkItem(MyVtkItem* item)
     connectVtk();
 }
 
-void ModelManager::readSpline(QUrl spline_path)
+void ModelManager::readSpline(QUrl spline_path, double size)
 {
-    auto mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
+    auto mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String(), size);
     if (!mesh || mesh->numFaces() == 0) {
         //emit splineLoadFailed(tr("fail to load spline file."));
         qDebug() << "导入文件错误: " << spline_path;
