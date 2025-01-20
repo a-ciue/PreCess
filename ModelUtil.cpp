@@ -21,7 +21,7 @@ ModelUtil::mesh_from_spline(std::filesystem::path spline_dir, double size) {
 
   // cmd = Spline2Tri_BaseGen_Command.bat spline_dir output 60
   std::string cmd =
-      "Spline2Tri_BaseGen_Command.bat " ".\\Data\\PatchedMesh\\temp.stp" " .\\Data\\PatchedMesh\\temp 60";
+      "Spline2Tri_BaseGen_Command.bat " ".\\Data\\PatchedMesh\\temp.stp" " .\\Data\\PatchedMesh\\temp " + std::to_string(size);
   cmdPopen(cmd);
 
   std::string stitch_cmd = ".\\Bin\\MeshStitching.exe .\\Data\\PatchedMesh\\ "
@@ -90,22 +90,22 @@ void ModelUtil::write_group_obj(MeshLib::CTMesh* mesh, const std::filesystem::pa
         MeshLib::CTMesh::CVertex* v = *vi;
         v->id() = i++;
     }
-	std::ofstream obj(target_dir);
-	for (MeshLib::CTMesh::MeshVertexIterator vi(mesh); !vi.end(); vi++) {
-		MeshLib::CTMesh::CVertex* v = *vi;
-		obj << "v " << v->point()[0] << " " << v->point()[1] << " " << v->point()[2] << std::endl;
-	}
+    std::ofstream obj(target_dir);
+    for (MeshLib::CTMesh::MeshVertexIterator vi(mesh); !vi.end(); vi++) {
+        MeshLib::CTMesh::CVertex* v = *vi;
+        obj << "v " << v->point()[0] << " " << v->point()[1] << " " << v->point()[2] << std::endl;
+    }
     std::unordered_map<int, std::vector<std::vector<int>>> groupMap;
-	for (MeshLib::CTMesh::MeshFaceIterator fi(mesh); !fi.end(); fi++) {
-		MeshLib::CTMesh::CFace* f = *fi;
-		int group = gid(f->get_g());
-		std::vector<int> face;
-		for (MeshLib::CTMesh::FaceVertexIterator fvi(f); !fvi.end(); fvi++) {
-			MeshLib::CTMesh::CVertex* v = *fvi;
-			face.push_back(v->id());
-		}
-		groupMap[group].push_back(face);
-	}
+    for (MeshLib::CTMesh::MeshFaceIterator fi(mesh); !fi.end(); fi++) {
+        MeshLib::CTMesh::CFace* f = *fi;
+        int group = gid(f->get_g());
+        std::vector<int> face;
+        for (MeshLib::CTMesh::FaceVertexIterator fvi(f); !fvi.end(); fvi++) {
+            MeshLib::CTMesh::CVertex* v = *fvi;
+            face.push_back(v->id());
+        }
+        groupMap[group].push_back(face);
+    }
 
     for (auto& group : groupMap) {
         obj << "g " << group.first << std::endl;
@@ -117,44 +117,44 @@ void ModelUtil::write_group_obj(MeshLib::CTMesh* mesh, const std::filesystem::pa
             obj << std::endl;
         }
     }
-	
-	obj.close();
+    
+    obj.close();
 }
 
 void ModelUtil::write_group_inp(MeshLib::CTMesh* mesh, const std::filesystem::path& target_dir,
-	std::function<int(int)> gid)
+    std::function<int(int)> gid)
 {
     std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> groupMap;
-	for (MeshLib::CTMesh::MeshFaceIterator fi(mesh); !fi.end(); fi++) {
-		MeshLib::CTMesh::CFace* f = *fi;
-		int group = gid(f->get_g());
-		groupMap[group].push_back(f);
-	}
+    for (MeshLib::CTMesh::MeshFaceIterator fi(mesh); !fi.end(); fi++) {
+        MeshLib::CTMesh::CFace* f = *fi;
+        int group = gid(f->get_g());
+        groupMap[group].push_back(f);
+    }
 
     // 输出
-	std::ofstream inp(target_dir);
+    std::ofstream inp(target_dir);
 
     for (auto&& [group_id, _] : groupMap) {
         inp << "*PART, Name=Part_" << group_id << '\n';
     }
     inp << "*NODE\n";
-	for (MeshLib::CTMesh::MeshVertexIterator vi(mesh); !vi.end(); vi++) {
-		MeshLib::CTMesh::CVertex* v = *vi;
+    for (MeshLib::CTMesh::MeshVertexIterator vi(mesh); !vi.end(); vi++) {
+        MeshLib::CTMesh::CVertex* v = *vi;
         inp << v->id() << ',' << v->point()[0] << ',' << v->point()[1] << ',' << v->point()[2] << '\n';
-	}
+    }
     for (auto&& [group_id, group_faces] : groupMap) {
         inp << "*ELEMENT,TYPE=S3,ELSET=Part_" << group_id << '\n';
         for (auto&& face : group_faces) {
             inp << face->id();
-		    for (MeshLib::CTMesh::FaceVertexIterator fvi(face); !fvi.end(); fvi++) {
-			    MeshLib::CTMesh::CVertex* v = *fvi;
+            for (MeshLib::CTMesh::FaceVertexIterator fvi(face); !fvi.end(); fvi++) {
+                MeshLib::CTMesh::CVertex* v = *fvi;
                 inp << ',' << v->id();
-		    }
+            }
             inp << '\n';
         }
     }
-	
-	inp.close();
+    
+    inp.close();
 }
 
 MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::CTMesh* mesh)
@@ -446,7 +446,7 @@ void ModelUtil::split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh) {
     V* midv = splitter.split_edge(mesh->edgeHalfedge(edge, 0));
     midv->point() = mid;
 
-	std::array<H*, 2> vins {};
+    std::array<H*, 2> vins {};
     vins[0] = mesh->vertexHalfedge(midv);
     vins[1] = mesh->halfedgeNext(mesh->halfedgeNext(vins[0]));
     int g = mesh->halfedgeFace(vins[0])->get_g();
@@ -482,7 +482,7 @@ std::string ModelUtil::cmdPopen(const std::string& cmdLine)
 }
 
 void ModelUtil::_attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::CToolHalfEdge* he1,
-	MeshLib::CToolEdge* e)
+    MeshLib::CToolEdge* e)
 {
     if (he0 == NULL) {
         e->halfedge(0) = he1;
