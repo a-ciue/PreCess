@@ -25,7 +25,7 @@ ApplicationWindow {
                 onAccepted: {
                     var dialog = Qt.createQmlObject('import QtQuick.Controls; Dialog { }', splineDialog);
                     dialog.title = "设置剖分全局尺寸";
-                    var textField = Qt.createQmlObject('import QtQuick; import QtQuick.Controls; TextField { validator: IntValidator{} }', dialog);
+                    var textField = Qt.createQmlObject('import QtQuick; import QtQuick.Controls; TextField { validator: IntValidator{}\n text:"60" }', dialog);
                     dialog.contentItem = textField;
                     dialog.visible = true;
                     dialog.standardButtons = Dialog.Ok | Dialog.Cancel
