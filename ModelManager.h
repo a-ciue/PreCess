@@ -14,23 +14,38 @@ class ModelManager : public QObject {
     Q_PROPERTY(Model* model READ model)
 
 public:
-    Model* model() {
-        return model_.get();
-    }
-    MyVtkItem* vtkItem();
-    void setVtkItem(MyVtkItem* item);
+    //构造函数
+    explicit ModelManager(QObject* parent = nullptr) : QObject(parent) {}
 
-    Q_INVOKABLE void readSpline(QUrl spline_path);
-    Q_INVOKABLE void readMesh(QUrl target_mesh);
-    Q_INVOKABLE void writeMesh(QUrl target_mesh, QString renderMode, QString extension);
+    Model* model(const QString& modelName) {
+        auto it = models_.find(modelName);
+        if (it != models_.end()) {
+            return it->second.get();
+        }
+        return nullptr; // 如果找不到模型，返回空指针
+    }
+
+    MyVtkItem* vtkItem();
+    void setVtkItem(const QString& modelName, MyVtkItem* item);
+
+    //多模型管理功能
+    Q_INVOKABLE void addModel(const QString& modelName, std::unique_ptr<Model> model);
+    Q_INVOKABLE void removeModel(const QString& modelName);
+    Q_INVOKABLE Model* getModel(const QString& modelName) const;
+
+    Q_INVOKABLE void readSpline(const QString& modelName, QUrl spline_path);
+    Q_INVOKABLE void readMesh(const QString& modelName, QUrl target_mesh);
+    Q_INVOKABLE void writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension);
 
 signals:
     void splineLoadFailed(QString message);
 
 private:
-    std::unique_ptr<Model> model_;
+    //std::unique_ptr<Model> model_;
+    //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
+    std::unordered_map<QString, std::unique_ptr<Model>> models_; 
     MyVtkItem* vtk_item_{};
 
-    void connectVtk();
+    void connectVtk(const QString& modelName);
 };
 #endif // MODELMANAGER_H
