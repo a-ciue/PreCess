@@ -24,6 +24,10 @@ struct Patch {
     // patch id
     int id_ { -1 };
     int blockID { -1 };
+
+    // 新增的父节点id字段
+    int father_id{ -1 }; // 默认值为-1，表示没有父节点
+
     // 全局id
     std::vector<int> faceIDs_;
     // 三角形的局部id索引
@@ -112,6 +116,9 @@ private:
 
     //! @brief 更新指定patch的actor
     void update_actors(const std::vector<int>& patch_ids);
+
+    //! @brief 更新指定patch的father id
+    void update_father_id(int patch_id, int father_id);
 
     using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
     using BlockMap = std::unordered_map<int, std::unique_ptr<Block>>;

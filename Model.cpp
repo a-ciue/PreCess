@@ -1,3 +1,4 @@
+#include "Model.h"
 /*
  * Model构造函数中需要调用ModelActor的构造函数和析构函数
  * 行17：In template: calling a private destructor of class 'ModelActor'
@@ -35,8 +36,6 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
     // 初始化 blocks_
 
     for (const auto& [patch_id, patch_ptr] : patches_) {
-        //int block_id = generate_block_id(patch_id);  根据 patch_id 生成 block_id。这里的generate_block_id(int)是伪代码
-        //可以先block_id = patch_id
         int block_id = patch_id;
         patches_[patch_id]->blockID = block_id;
 
@@ -50,7 +49,6 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
 
     // 初始化 groups_
     for (const auto& [block_id, block_ptr] : blocks_) {
-        //int group_id = generate_group_id(block_id); // 根据 block_id 生成 group_id。这里的generate_group_id(int)是伪代码
         int group_id = block_id;
         if (groups_.find(group_id) == groups_.end()) {
             groups_[group_id] = std::make_unique<Group>();
@@ -119,8 +117,17 @@ void Model::split_face(int patch_id, int face_id)
     }
     mid /= i;
 
+    // 记录父节点信息
+    int father_id = patches_.at(patch_id)->father_id;
+
+    std::vector<int> affected_patch_ids = { patch_id };
+    // 执行面切分操作
     ModelUtil::split_face(face, mesh_.get())->point() = mid;
 
+    // 更新父节点信息
+    for (int pid : affected_patch_ids) {
+        update_father_id(pid, father_id);
+    }
     update_patches(std::vector{ patch_id }, false);
     update_actors({ patch_id });
 }
@@ -148,6 +155,10 @@ void Model::split_edge(int patch_id, int edge_v_id1, int edge_v_id2)
     {
         throw std::runtime_error("invalid vertex id pair");
     }
+
+    // 记录父节点信息
+    int father_id = patches_.at(patch_id)->father_id;
+
     ModelUtil::split_edge(edge, mesh_.get());
 
     std::vector<int> patch_ids {};
@@ -159,6 +170,12 @@ void Model::split_edge(int patch_id, int edge_v_id1, int edge_v_id2)
     {
         patch_ids.push_back(mesh_->halfedgeFace(he2)->get_g());
     }
+
+    // 更新涉及的patch的father_id
+    for (int pid : patch_ids) {
+        update_father_id(pid, father_id);
+    }
+
     update_patches(patch_ids, false);
     update_actors(patch_ids);
 }
@@ -179,6 +196,10 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
     int target_block_id = block_ids[0];
     auto& target_block = blocks_[target_block_id];
 
+    // 获取目标块的father_id
+    int father_id = patches_[target_block->patchIDs.begin() != target_block->patchIDs.end() ?
+        *(target_block->patchIDs.begin()) : 0]->father_id; // 从第一个patch获取father_id
+
     // 合并其他 block 的内容到目标 block
     std::unordered_set<int> modified_groups;
     for (size_t i = 1; i < block_ids.size(); ++i) {
@@ -189,6 +210,9 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
         for (int patch_id : block_to_merge->patchIDs) {
             target_block->patchIDs.insert(patch_id);
             patches_[patch_id]->blockID = target_block_id;
+        
+            // 更新父节点信息
+            update_father_id(patch_id, father_id); // 更新每个patch的father_id
         }
 
         // 维护groups_，删除后面这些在group的信息
@@ -423,6 +447,11 @@ void Model::update_actors(const std::vector<int>& patch_ids)
     }
 }
 
+void Model::update_father_id(int patch_id, int father_id) {
+    // 记录父节点id与子节点patch的映射
+    auto& patch = patches_[patch_id];
+    patch->father_id = father_id;
+}
 
 // 优化 update_patches 的实现，减少网格遍历次数
 
