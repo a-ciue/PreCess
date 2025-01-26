@@ -37,10 +37,10 @@ public:
 
         //vtkNew<vtkActor> actor;               //以下是用模板构建各种图形（或者控制等）的类
         // 0 face_renderer, 1 block_renderer, 2 group_renderer
-        vtkNew<vtkRenderer> renderer[3];
-        vtkRenderer* curRenderer {};
-        std::unique_ptr<ModelActor> actor;
-
+        vtkNew<vtkRenderer> renderer;
+        //vtkRenderer* curRenderer {};
+        
+        std::unordered_map<QString, std::unique_ptr<ModelActor>> actor_;
         vtkNew<MouseInteractorHighLightFace> faceStyle;
         vtkNew<MouseInteractorHighLightEdge> edgeStyle;
         vtkNew<MouseInteractorHighLightActor> blockStyle;
@@ -55,19 +55,21 @@ public:
     //void dispatchChangedSource();
 
     std::vector<int> selectedIDs();
-
+    int renderMode_;
+    
     Q_INVOKABLE void changeRenderer(QString renderMode);
+    Q_INVOKABLE void changeRenderMode(int renderMode);
     Q_INVOKABLE void bindStyle(QString function);
     Q_INVOKABLE void unbindStyle();
-    Q_INVOKABLE void changeEdgeRender(QString renderMode, bool render);
-    Q_INVOKABLE void onModelInited(const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+    Q_INVOKABLE void changeEdgeRender(QString model_name,QString renderMode, bool render);
+    void onModelInited(QString model_name,const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
         const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
         const std::unordered_map<int, std::unique_ptr<Group>>* groups);
-    Q_INVOKABLE void blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches);
-    Q_INVOKABLE void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);
-    Q_INVOKABLE void groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
-    Q_INVOKABLE void patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
-    Q_INVOKABLE void blockUpdated(int block_id, const std::unordered_set<int>& block_patches);
+    Q_INVOKABLE void blocksMerged(QString model_name, const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches);
+    Q_INVOKABLE void groupUpdated(QString model_name, int group_id, const std::unordered_set<int>& group_blocks);
+    Q_INVOKABLE void groupMerged(QString model_name, const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
+    Q_INVOKABLE void patchUpdated(QString model_name, int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
+    Q_INVOKABLE void blockUpdated(QString model_name, int block_id, const std::unordered_set<int>& block_patches);
 
     Q_SLOT void setClick();
 

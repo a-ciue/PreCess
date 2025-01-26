@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <vector>
 #include <vtkNew.h>
+#include <vtkAssembly.h>
 
 struct Group;
 struct Block;
@@ -46,6 +47,10 @@ public:
     int patch_global_fid(int patch_id, int local_fid);
     int patch_global_vid(int patch_id, int local_vid);
 
+    vtkNew<vtkAssembly> face_assembly_;
+    vtkNew<vtkAssembly> block_assembly_;
+    vtkNew<vtkAssembly> group_assembly_;
+
     //! @brief 合并给定id的block的Actor，并删除被合并的Actor
     //! @param block_ids 要合并的block
     //! @param father_block 留下的block
@@ -66,6 +71,7 @@ public:
     void update_block(int block_id, const std::unordered_set<int>& block_patches);
     //! @brief 更新指定group的actor的mapper
     void update_group(int group_id, const std::unordered_set<int>& group_blocks);
+    void update_assembly();
 
 private:
     //! @brief 将给定的actors合并到father_actor中
@@ -76,9 +82,10 @@ private:
     // Model* model_;
     const std::unordered_map<int, std::unique_ptr<Patch>>& patches_;
 
-    vtkRenderer* face_renderer_ {};
-    vtkRenderer* block_renderer_ {};
-    vtkRenderer* group_renderer_ {};
+    //vtkRenderer* face_renderer_ {};
+    //vtkRenderer* block_renderer_ {};
+    //vtkRenderer* group_renderer_ {};
+
     ActorMap patch_actors_;
     std::unordered_map<vtkActor*, int> patch_actor_id_;
     ActorMap block_actors_;

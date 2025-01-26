@@ -121,12 +121,20 @@ void ModelManager::connectVtk(const QString& modelName)
         return;
     }
 
-    connect(model, &Model::patchUpdated, vtk_item_, &MyVtkItem::patchUpdated);
-    connect(model, &Model::blockUpdated, vtk_item_, &MyVtkItem::blockUpdated);
-    connect(model, &Model::blocksMerged, vtk_item_, &MyVtkItem::blocksMerged);
-    connect(model, &Model::groupUpdated, vtk_item_, &MyVtkItem::groupUpdated);
-    connect(model, &Model::groupMerged, vtk_item_, &MyVtkItem::groupMerged);
-    connect(model, &Model::modelInited, vtk_item_, &MyVtkItem::onModelInited);
+    connect(model, &Model::patchUpdated, [this,modelName](int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles) {
+        vtk_item_->patchUpdated(modelName, patch_id, points, triangles); });
+    connect(model, &Model::blockUpdated, [this, modelName](int block_id, const std::unordered_set<int>& block_patches) {
+        vtk_item_->blockUpdated(modelName, block_id, block_patches); });
+    connect(model, &Model::blocksMerged, [this, modelName](const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches) {
+        vtk_item_->blocksMerged(modelName, block_ids, father_block, father_block_patches); });
+    connect(model, &Model::groupUpdated, [this, modelName](int group_id, const std::unordered_set<int>& group_blocks) {
+        vtk_item_->groupUpdated(modelName, group_id, group_blocks); } );
+    connect(model, &Model::groupMerged, [this, modelName](const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks) {
+        vtk_item_->groupMerged(modelName, group_ids, father_group, father_group_blocks); });
+    connect(model, &Model::modelInited, [this, modelName](const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
+        const std::unordered_map<int, std::unique_ptr<Group>>* groups) 
+        {vtk_item_->onModelInited(modelName, patches, blocks, groups); });
 
 }
 

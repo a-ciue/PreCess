@@ -1,4 +1,5 @@
 #include "ModelActor.h"
+#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -9,7 +10,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-
+#include <vtkAssembly.h>
 #include "ModelUtil.h"
 #include "Style.h"
 #include <vtkAppendPolyData.h>
@@ -25,7 +26,7 @@
 //     model_ = model;
 // }
 
-void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
+/*void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
 {
     ActorMap* mode_actors {};
     switch (mode) {
@@ -51,7 +52,7 @@ void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
         renderer->AddActor(actor);
         actor->GetProperty()->SetEdgeVisibility(edge_render);
     }
-}
+}*/
 
 void ModelActor::render_edge(RenderMode mode, bool render)
 {
@@ -125,6 +126,7 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 
     for (auto&& [patch_id, patch_actor] : patch_actors_) {
         patch_actor_id_[patch_actor] = patch_id;
+        this->face_assembly_->AddPart(patch_actor);
     }
 
     for (auto&& [_, block] : blocks) {
@@ -133,6 +135,7 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 
     for (auto&& [block_id, block_actor] : block_actors_) {
         block_actor_id_[block_actor] = block_id;
+        this->face_assembly_->AddPart(block_actor);
     }
 
     for (auto&& [_, group] : groups) {
@@ -141,6 +144,7 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 
     for (auto&& [group_id, group_actor] : group_actors_) {
         group_actor_id_[group_actor] = group_id;
+        this->face_assembly_->AddPart(group_actor);
     }
 
     edge_visibility[RenderMode::Face] = false;
@@ -150,23 +154,17 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 
 ModelActor::~ModelActor()
 {
-    if (face_renderer_) {
+    if (1) {
         // ActorMap& face_actors = *mode_actors_[RenderMode::Face];
-        for (auto&& [_, actor] : patch_actors_) {
-            face_renderer_->RemoveActor(actor);
-        }
+        face_assembly_->Delete();
     }
-    if (block_renderer_) {
+    if (1) {
         // ActorMap& block_actors = *mode_actors_[RenderMode::Block];
-        for (auto&& [_, actor] : block_actors_) {
-            block_renderer_->RemoveActor(actor);
-        }
+        block_assembly_->Delete();
     }
-    if (group_renderer_) {
+    if (1) {
         // ActorMap& group_actors = *mode_actors_[RenderMode::Group];
-        for (auto&& [_, actor] : group_actors_) {
-            group_renderer_->RemoveActor(actor);
-        }
+        group_assembly_->Delete();
     }
 }
 
@@ -178,8 +176,8 @@ void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_bloc
         if (erase_id != father_block) {
             vtkActor* erase_actor = block_actors_[erase_id];
             // 删除被合并block actor
-            if (block_renderer_) {
-                block_renderer_->RemoveActor(erase_actor);
+            if (1) {
+                block_assembly_->RemovePart(erase_actor);
             }
             block_actors_.erase(erase_id);
             block_actor_id_.erase(erase_actor);
@@ -197,8 +195,8 @@ void ModelActor::merge_groups(const std::vector<int>& group_ids, int father_grou
         if (erase_id != father_group) {
             // 删除被合并block actor
             vtkActor* erase_actor = group_actors_[erase_id];
-            if (group_renderer_) {
-                group_renderer_->RemoveActor(erase_actor);
+            if (1) {
+                group_assembly_->RemovePart(erase_actor);
             }
             group_actors_.erase(erase_id);
             group_actor_id_.erase(erase_actor);
@@ -274,7 +272,7 @@ void ModelActor::update_group(int group_id, const std::unordered_set<int>& group
 	}
 	if (group_blocks.empty())
 	{
-        group_renderer_->RemoveActor(group_actors_[group_id]);
+        group_assembly_->RemovePart(group_actors_[group_id]);
         group_actor_id_.erase(group_actors_[group_id]);
         group_actors_.erase(group_id);
         return;
@@ -288,6 +286,11 @@ void ModelActor::update_group(int group_id, const std::unordered_set<int>& group
     }
 
     _merge_actors(group_actors_[group_id], block_actors);
+}
+
+void ModelActor::update_assembly()
+{
+
 }
 
 void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActor*>& actors)

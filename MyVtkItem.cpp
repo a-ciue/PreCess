@@ -16,11 +16,11 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
     // vtkUserData but ONLY if they are accessed from the qml-render-thread. (i.e. only in the
     // initializeVTK, destroyingVTK or dispatch_async methods)
     // vtk->renderer->GetActiveCamera()->DeepCopy(_camera);
-    for (int i = 0; i < 3; i++) {
-        vtk->renderer[i]->SetBackground(0.5, 0.5, 0.7);
-        vtk->renderer[i]->SetBackground2(0.7, 0.7, 0.7);
-        vtk->renderer[i]->SetGradientBackground(true);
-    }
+
+        vtk->renderer->SetBackground(0.5, 0.5, 0.7);
+        vtk->renderer->SetBackground2(0.7, 0.7, 0.7);
+        vtk->renderer->SetGradientBackground(true);
+    
 
     vtk->styles[0] = vtk->faceStyle;
     vtk->styles[1] = vtk->edgeStyle;
@@ -28,15 +28,14 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
     vtk->styles[3] = vtk->groupStyle;
 
     vtk->blockStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[1]));
-    vtk->blockStyle->SetDefaultRenderer(vtk->renderer[1]);
+    vtk->blockStyle->SetDefaultRenderer(vtk->renderer);
     vtk->groupStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[2]));
-    vtk->groupStyle->SetDefaultRenderer(vtk->renderer[2]);
+    vtk->groupStyle->SetDefaultRenderer(vtk->renderer);
     vtk->faceStyle->SetSelector(std::make_unique<SingleFaceSelectorHighlight>(vtk->renderer[0]));
-    vtk->faceStyle->SetDefaultRenderer(vtk->renderer[0]);
+    vtk->faceStyle->SetDefaultRenderer(vtk->renderer);
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer[0]));
-    vtk->edgeStyle->SetDefaultRenderer(vtk->renderer[0]);
+    vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);
 
-    cur_actor_ = vtk->actor.get();
 
     return vtk;
 }
@@ -44,8 +43,8 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
 void MyVtkItem::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
-    if (vtk->curRenderer) {
-        _camera->DeepCopy(vtk->curRenderer->GetActiveCamera());
+    if (vtk->renderer) {
+        _camera->DeepCopy(vtk->renderer->GetActiveCamera());
     }
 }
 
@@ -53,8 +52,8 @@ void MyVtkItem::resetCamera()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         auto* vtk = Data::SafeDownCast(userData);
-        if (vtk->curRenderer) {
-            vtk->curRenderer->ResetCamera();
+        if (vtk->renderer) {
+            vtk->renderer->ResetCamera();
         }
         scheduleRender();
     });
@@ -96,63 +95,62 @@ bool MyVtkItem::event(QEvent* ev)
     return true;
 }
 
-void MyVtkItem::onModelInited(const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+void MyVtkItem::onModelInited(QString model_name,const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
         const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
         const std::unordered_map<int, std::unique_ptr<Group>>* groups)
 {
-    dispatch_async([patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
+    dispatch_async([model_name,patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->actor = std::make_unique<ModelActor>(*patches, *blocks, *groups);
-        cur_actor_ = vtk->actor.get();
+        vtk->actor_[model_name] = std::make_unique<ModelActor>(*patches, *blocks, *groups);
 
-        vtk->actor->bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
-        vtk->actor->bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
-        vtk->actor->bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);
+        /*vtk->actor_[model_name]->bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
+        vtk->actor_[model_name]->bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
+        vtk->actor_[model_name]->bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);*/
 
         resetCamera();
         });
     
 }
 
-void MyVtkItem::blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
+void MyVtkItem::blocksMerged(QString model_name,const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
 {
     
-    dispatch_async([block_ids, father_block, father_block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_name,block_ids, father_block, father_block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->actor->merge_blocks(block_ids, father_block, father_block_patches);
+        vtk->actor_[model_name]->merge_blocks(block_ids, father_block, father_block_patches);
         });
     
 }
 
-void MyVtkItem::groupUpdated(int group_id, const std::unordered_set<int>& group_blocks)
+void MyVtkItem::groupUpdated(QString model_name ,int group_id, const std::unordered_set<int>& group_blocks)
 {
-    dispatch_async([group_id, group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_name,group_id, group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->actor->update_group(group_id, group_blocks);
+        vtk->actor_[model_name]->update_group(group_id, group_blocks);
         });
 }
 
-void MyVtkItem::groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks)
+void MyVtkItem::groupMerged(QString model_name,const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks)
 {
-    dispatch_async([group_ids, father_group, father_group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_name,group_ids, father_group, father_group_blocks, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->actor->merge_groups(group_ids, father_group, father_group_blocks);
+        vtk->actor_[model_name]->merge_groups(group_ids, father_group, father_group_blocks);
         });
 }
 
-void MyVtkItem::patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles)
+void MyVtkItem::patchUpdated(QString model_name,int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles)
 {
-    dispatch_async([patch_id, points, triangles, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_name,patch_id, points, triangles, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->actor->update_patch(patch_id, points, triangles);
+        vtk->actor_[model_name]->update_patch(patch_id, points, triangles);
         });
 }
 
-void MyVtkItem::blockUpdated(int block_id, const std::unordered_set<int>& block_patches)
+void MyVtkItem::blockUpdated(QString model_name,int block_id, const std::unordered_set<int>& block_patches)
 {
-    dispatch_async([block_id, block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_name,block_id, block_patches, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->actor->update_block(block_id, block_patches);;
+        vtk->actor_[model_name]->update_block(block_id, block_patches);;
         });
 }
 
@@ -165,33 +163,59 @@ std::vector<int> MyVtkItem::selectedIDs()
     return {};
 }
 
-void MyVtkItem::changeRenderer(QString renderMode)
+
+Q_INVOKABLE void MyVtkItem::changeRenderer(QString renderMode)
 {
-    int renderIdx = 0;
     if (renderMode == "Face") {
-        renderIdx = 0;
-    } else if (renderMode == "Block") {
-        renderIdx = 1;
-    } else if (renderMode == "Group") {
-        renderIdx = 2;
-    } else {
+        this->renderMode_ = 0;
+    }
+    else if (renderMode == "Block") {
+        this->renderMode_ = 1;
+    }
+    else if (renderMode == "Group") {
+        this->renderMode_ = 2;
+    }
+    else {
         std::cerr << "invalid renderMode in MyVtkItem::changeRenderer" << std::endl;
         return;
     }
+    return Q_INVOKABLE void();
+}
 
-    dispatch_async([this, renderIdx](vtkRenderWindow* renderWindow, vtkUserData userData) {
+Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
+{
+    dispatch_async([renderMode,this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-
-        if (vtk->curRenderer) {
-            renderWindow->RemoveRenderer(vtk->curRenderer);
+        if (renderMode == 0)
+        {
+            for (auto&& [modelName, modelActor] : vtk->actor_)
+            {
+                modelActor->face_assembly_->SetVisibility(1);
+                modelActor->block_assembly_->SetVisibility(0);
+                modelActor->group_assembly_->SetVisibility(0);
+            }
         }
+        else if (renderMode == 1)
+        {
+            for (auto&& [modelName, modelActor] : vtk->actor_)
+            {
+                modelActor->face_assembly_->SetVisibility(0);
+                modelActor->block_assembly_->SetVisibility(1);
+                modelActor->group_assembly_->SetVisibility(0);
+            }
 
-        vtk->curRenderer = vtk->renderer[renderIdx];
-
-        renderWindow->AddRenderer(vtk->curRenderer);
-
-        resetCamera();
-    });
+        }
+        else if (renderMode == 2)
+        {
+            for (auto&& [modelName, modelActor] : vtk->actor_)
+            {
+                modelActor->face_assembly_->SetVisibility(0);
+                modelActor->block_assembly_->SetVisibility(0);
+                modelActor->group_assembly_->SetVisibility(1);
+            }
+        }
+        });
+    return Q_INVOKABLE void();
 }
 
 void MyVtkItem::bindStyle(QString function)
@@ -240,7 +264,7 @@ void MyVtkItem::unbindStyle()
     });
 }
 
-void MyVtkItem::changeEdgeRender(QString renderMode, bool render)
+void MyVtkItem::changeEdgeRender(QString model_name, QString renderMode, bool render)
 {
     ModelActor::RenderMode mode {};
     if (renderMode == "Face") {
@@ -254,11 +278,11 @@ void MyVtkItem::changeEdgeRender(QString renderMode, bool render)
         return;
     }
 
-    dispatch_async([this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([model_name,this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (vtk->actor)
-            vtk->actor->render_edge(mode, render);
+        if (vtk->actor_[model_name])
+            vtk->actor_[model_name]->render_edge(mode, render);
     });
 }
 
