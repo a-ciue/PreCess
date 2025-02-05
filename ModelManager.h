@@ -11,13 +11,13 @@ class ModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(MyVtkItem* vtkItem READ vtkItem WRITE setVtkItem)
-    Q_PROPERTY(Model* model READ model)
+    
 
 public:
     //构造函数
     explicit ModelManager(QObject* parent = nullptr) : QObject(parent) {}
 
-    Model* model(const QString& modelName) {
+    Q_INVOKABLE Model* model(const QString& modelName) {
         auto it = models_.find(modelName);
         if (it != models_.end()) {
             return it->second.get();
@@ -26,10 +26,10 @@ public:
     }
 
     MyVtkItem* vtkItem();
-    void setVtkItem(const QString& modelName, MyVtkItem* item);
+    void setVtkItem(MyVtkItem* item);
 
     //多模型管理功能
-    Q_INVOKABLE void addModel(const QString& modelName, std::unique_ptr<Model> model);
+    void addModel(const QString& modelName, std::unique_ptr<Model> model);
     Q_INVOKABLE void removeModel(const QString& modelName);
     Q_INVOKABLE Model* getModel(const QString& modelName) const;
 

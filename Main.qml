@@ -30,7 +30,7 @@ ApplicationWindow {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-                    modelManager.readMesh(selectedFile);
+                    modelManager.readMesh("a",selectedFile);
                 }
             }
             FileDialog {

@@ -27,13 +27,13 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
     vtk->styles[2] = vtk->blockStyle;
     vtk->styles[3] = vtk->groupStyle;
 
-    vtk->blockStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[1]));
+    vtk->blockStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer));
     vtk->blockStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->groupStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer[2]));
+    vtk->groupStyle->SetSelector(std::make_unique<ActorSelectorHighlight>(vtk->renderer));
     vtk->groupStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->faceStyle->SetSelector(std::make_unique<SingleFaceSelectorHighlight>(vtk->renderer[0]));
+    vtk->faceStyle->SetSelector(std::make_unique<SingleFaceSelectorHighlight>(vtk->renderer));
     vtk->faceStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer[0]));
+    vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);
 
 

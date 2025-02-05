@@ -11,10 +11,10 @@ MyVtkItem* ModelManager::vtkItem()
     return vtk_item_;
 }
 
-void ModelManager::setVtkItem(const QString& modelName, MyVtkItem* item)
+void ModelManager::setVtkItem(MyVtkItem* item)
 {
     vtk_item_ = item;
-    connectVtk(modelName);
+    
 }
 
 // 添加模型
