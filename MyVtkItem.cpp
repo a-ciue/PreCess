@@ -103,9 +103,7 @@ void MyVtkItem::onModelInited(QString model_name,const std::unordered_map<int, s
         Data* vtk = Data::SafeDownCast(userData);
         vtk->actor_[model_name] = std::make_unique<ModelActor>(*patches, *blocks, *groups);
 
-        /*vtk->actor_[model_name]->bind_renderer(vtk->renderer[0], ModelActor::RenderMode::Face);
-        vtk->actor_[model_name]->bind_renderer(vtk->renderer[1], ModelActor::RenderMode::Block);
-        vtk->actor_[model_name]->bind_renderer(vtk->renderer[2], ModelActor::RenderMode::Group);*/
+        vtk->actor_[model_name]->bind_renderer(vtk->renderer);
 
         resetCamera();
         });
@@ -179,6 +177,14 @@ Q_INVOKABLE void MyVtkItem::changeRenderer(QString renderMode)
         std::cerr << "invalid renderMode in MyVtkItem::changeRenderer" << std::endl;
         return;
     }
+
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        renderWindow->AddRenderer(vtk->renderer);
+
+        resetCamera();
+        });
     return Q_INVOKABLE void();
 }
 

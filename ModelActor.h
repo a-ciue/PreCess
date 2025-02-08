@@ -34,7 +34,7 @@ public:
     //! @brief 从renderer中解除对应actor的绑定
     ~ModelActor();
 
-    void bind_renderer(vtkRenderer* renderer, RenderMode mode);
+    void bind_renderer(vtkRenderer* renderer);
     //! @brief 设置某个renderer是否渲染边
     //! @param mode 选择该mode对应renderer
     //! @param render 是否渲染

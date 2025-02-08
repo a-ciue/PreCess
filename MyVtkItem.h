@@ -55,7 +55,7 @@ public:
     //void dispatchChangedSource();
 
     std::vector<int> selectedIDs();
-    int renderMode_;
+    int renderMode_=0;
     
     Q_INVOKABLE void changeRenderer(QString renderMode);
     Q_INVOKABLE void changeRenderMode(int renderMode);

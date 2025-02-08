@@ -68,21 +68,21 @@ void ModelManager::readSpline(const QString& modelName, QUrl spline_path)
 
 void ModelManager::readMesh(const QString& modelName, QUrl target_mesh)
 {
-    auto model = getModel(modelName);
-    if (!model) {
-        qDebug() << "未找到指定的模型: " << modelName;
-        return;
-    }
-
     auto mesh = ModelUtil::read_obj_with_groups(target_mesh.toLocalFile().toStdU16String());
 
     if (!mesh || mesh->numFaces() == 0) {
         //emit splineLoadFailed(tr("fail to load spline file."));
         qDebug() << "导入文件错误: " << target_mesh;
     }
-
     // 重新分配 std::unique_ptr<Model>，并更新模型数据
     models_[modelName] = std::make_unique<Model>(std::move(mesh));
+
+    auto model = getModel(modelName);
+    if (!model) {
+        qDebug() << "未找到指定的模型: " << modelName;
+        return;
+    }
+
     // 使用 get() 获取裸指针，并调用相应方法
     Model* rawModel = models_[modelName].get();
     connectVtk(modelName);

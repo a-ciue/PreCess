@@ -1,5 +1,6 @@
 #include "ModelActor.h"
 #include "ModelActor.h"
+#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -135,7 +136,7 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 
     for (auto&& [block_id, block_actor] : block_actors_) {
         block_actor_id_[block_actor] = block_id;
-        this->face_assembly_->AddPart(block_actor);
+        this->block_assembly_->AddPart(block_actor);
     }
 
     for (auto&& [_, group] : groups) {
@@ -144,7 +145,7 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 
     for (auto&& [group_id, group_actor] : group_actors_) {
         group_actor_id_[group_actor] = group_id;
-        this->face_assembly_->AddPart(group_actor);
+        this->group_assembly_->AddPart(group_actor);
     }
 
     edge_visibility[RenderMode::Face] = false;
@@ -154,7 +155,7 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
 
 ModelActor::~ModelActor()
 {
-    if (1) {
+    /*if (1) {
         // ActorMap& face_actors = *mode_actors_[RenderMode::Face];
         face_assembly_->Delete();
     }
@@ -165,7 +166,14 @@ ModelActor::~ModelActor()
     if (1) {
         // ActorMap& group_actors = *mode_actors_[RenderMode::Group];
         group_assembly_->Delete();
-    }
+    }*/
+}
+
+void ModelActor::bind_renderer(vtkRenderer* renderer)
+{
+    renderer->AddActor(face_assembly_);
+    renderer->AddActor(block_assembly_);
+    renderer->AddActor(group_assembly_);
 }
 
 void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
