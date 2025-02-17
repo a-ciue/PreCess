@@ -37,7 +37,8 @@ std::vector<int> MouseInteractorHighLightActor::GetSelectedIDs(ModelActor* mActo
 {
     auto actors = selector_->get();
     std::vector<int> ids;
-
+    vtkPropAssembly* assembly_ = selector_->getAssembly();
+    
     int (ModelActor::*actor_id)(vtkActor*) {};
     if (mode == SelectMode::Group)
     {
@@ -73,7 +74,7 @@ std::vector<int> MouseInteractorHighLightEdge::GetSelectedIDs(ModelActor* mActor
 {
     auto actors = selector_->get();
     std::vector<int> point_ids;
-
+    
     if (actors)
     {
         point_ids.reserve(3);

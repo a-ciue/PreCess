@@ -1,6 +1,7 @@
 #include "ModelActor.h"
 #include "ModelActor.h"
 #include "ModelActor.h"
+#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -12,6 +13,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkAssembly.h>
+#include <vtkPropAssembly.h>
 #include "ModelUtil.h"
 #include "Style.h"
 #include <vtkAppendPolyData.h>
@@ -78,6 +80,14 @@ void ModelActor::render_edge(RenderMode mode, bool render)
     for (auto&& [_, actor] : *mode_actors) {
         actor->GetProperty()->SetEdgeVisibility(render);
     }
+}
+
+ModelActor* ModelActor::getModelActor(vtkPropAssembly* assembly)
+{
+    if (!assembly) return nullptr;
+    auto it = assembly_to_model_actor_map_.find(assembly);
+    return (it != assembly_to_model_actor_map_.end()) ? it->second : nullptr;
+    
 }
 
 int ModelActor::patch_actor_id(vtkActor* actor)
@@ -151,6 +161,10 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
     edge_visibility[RenderMode::Face] = false;
     edge_visibility[RenderMode::Block] = false;
     edge_visibility[RenderMode::Group] = false;
+
+    assembly_to_model_actor_map_[face_assembly_] = this;
+    assembly_to_model_actor_map_[block_assembly_] = this;
+    assembly_to_model_actor_map_[group_assembly_] = this;
 }
 
 ModelActor::~ModelActor()

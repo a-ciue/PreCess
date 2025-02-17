@@ -194,30 +194,43 @@ Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
         Data* vtk = Data::SafeDownCast(userData);
         if (renderMode == 0)
         {
+            bindStyle("Face");
             for (auto&& [modelName, modelActor] : vtk->actor_)
             {
                 modelActor->face_assembly_->SetVisibility(1);
+                modelActor->face_assembly_->PickableOn();
                 modelActor->block_assembly_->SetVisibility(0);
+                modelActor->block_assembly_->PickableOff();
                 modelActor->group_assembly_->SetVisibility(0);
+                modelActor->group_assembly_->PickableOff();
             }
         }
         else if (renderMode == 1)
         {
+            bindStyle("Block");
             for (auto&& [modelName, modelActor] : vtk->actor_)
             {
+                cout << "block" << endl;
                 modelActor->face_assembly_->SetVisibility(0);
+                modelActor->face_assembly_->PickableOff();
                 modelActor->block_assembly_->SetVisibility(1);
+                modelActor->block_assembly_->PickableOn();
                 modelActor->group_assembly_->SetVisibility(0);
+                modelActor->group_assembly_->PickableOff();
             }
 
         }
         else if (renderMode == 2)
         {
+            bindStyle("Group");
             for (auto&& [modelName, modelActor] : vtk->actor_)
             {
                 modelActor->face_assembly_->SetVisibility(0);
+                modelActor->face_assembly_->PickableOff();
                 modelActor->block_assembly_->SetVisibility(0);
+                modelActor->block_assembly_->PickableOff();
                 modelActor->group_assembly_->SetVisibility(1);
+                modelActor->group_assembly_->PickableOn();
             }
         }
         });

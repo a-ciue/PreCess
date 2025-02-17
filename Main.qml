@@ -30,7 +30,8 @@ ApplicationWindow {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-                    modelManager.readMesh("a",selectedFile);
+
+                    modelManager.readMesh("a" ,selectedFile);
                 }
             }
             FileDialog {
@@ -115,7 +116,9 @@ ApplicationWindow {
                     rightPadding: 8
                     checkable: true
                     checked: true
-                    onClicked: stacklayout.currentIndex = 0
+                    onClicked: {stacklayout.currentIndex = 0
+                                 myItem.changeRenderMode(0)}
+                                
                     ButtonGroup.group: renderGroup
                 }
                 Button {
@@ -123,7 +126,8 @@ ApplicationWindow {
                     text: "块模式"
                     property string renderMode: "Block"
                     checkable: true
-                    onClicked: stacklayout.currentIndex = 1
+                    onClicked: {stacklayout.currentIndex = 1
+                                myItem.changeRenderMode(1)}
                     ButtonGroup.group: renderGroup
                 }
                 Button {
@@ -131,7 +135,8 @@ ApplicationWindow {
                     text: "组模式"
                     property string renderMode: "Group"
                     checkable: true
-                    onClicked: stacklayout.currentIndex = 2
+                    onClicked: {stacklayout.currentIndex = 2
+                                myItem.changeRenderMode(2)}
                     ButtonGroup.group: renderGroup
                 }
 
@@ -203,7 +208,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("Face", check)
+                myItem.changeEdgeRender("a","Face", check)
             }
         }
 
