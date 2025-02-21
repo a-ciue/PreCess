@@ -215,9 +215,10 @@ Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
                 //modelActor->block_assembly_->PickableOff();
                 //modelActor->group_assembly_->SetVisibility(0);
                 //modelActor->group_assembly_->PickableOff();
+                vtk->renderer->AddActor(modelActor->face_assembly_);
                 vtk->renderer->RemoveActor(modelActor->group_assembly_);
                 vtk->renderer->RemoveActor(modelActor->block_assembly_);
-                vtk->renderer->AddActor(modelActor->face_assembly_);
+                
             }
         }
         else if (renderMode == 1)
@@ -232,6 +233,12 @@ Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
                 modelActor->block_assembly_->PickableOn();
                 modelActor->group_assembly_->SetVisibility(0);
                 modelActor->group_assembly_->PickableOff();*/
+                std::vector<vtkActor*> select =modelActor->get_remove_actor();
+                for (auto& actor_ : select)
+                {
+                    vtk->renderer->RemoveActor(actor_);
+                }
+
                 vtk->renderer->RemoveActor(modelActor->face_assembly_);
                 vtk->renderer->RemoveActor(modelActor->group_assembly_);
                 vtk->renderer->AddActor(modelActor->block_assembly_);
@@ -249,6 +256,11 @@ Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
                 modelActor->block_assembly_->PickableOff();
                 modelActor->group_assembly_->SetVisibility(1);
                 modelActor->group_assembly_->PickableOn();*/
+                std::vector<vtkActor*> select = modelActor->get_remove_actor();
+                for (auto& actor_ : select)
+                {
+                    vtk->renderer->RemoveActor(actor_);
+                }
                 vtk->renderer->RemoveActor(modelActor->face_assembly_);
                 vtk->renderer->RemoveActor(modelActor->block_assembly_);
                 vtk->renderer->AddActor(modelActor->group_assembly_);

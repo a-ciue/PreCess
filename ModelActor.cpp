@@ -2,6 +2,7 @@
 #include "ModelActor.h"
 #include "ModelActor.h"
 #include "ModelActor.h"
+#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -200,6 +201,7 @@ void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_bloc
             // 删除被合并block actor
             if (1) {
                 block_assembly_->RemovePart(erase_actor);
+                selections_.push_back(erase_actor);
             }
             block_actors_.erase(erase_id);
             block_actor_id_.erase(erase_actor);
@@ -218,7 +220,9 @@ void ModelActor::merge_groups(const std::vector<int>& group_ids, int father_grou
             // 删除被合并block actor
             vtkActor* erase_actor = group_actors_[erase_id];
             if (1) {
+
                 group_assembly_->RemovePart(erase_actor);
+                selections_.push_back(erase_actor);
             }
             group_actors_.erase(erase_id);
             group_actor_id_.erase(erase_actor);
@@ -284,6 +288,7 @@ void ModelActor::update_block(int block_id, const std::unordered_set<int>& block
     }
 
     _merge_actors(block_actors_[block_id], patch_actors);
+    selections_.push_back(block_actors_[block_id]);
     block_assembly_->AddPart(block_actors_[block_id]);
 
 }
@@ -310,13 +315,18 @@ void ModelActor::update_group(int group_id, const std::unordered_set<int>& group
     }
 
     _merge_actors(group_actors_[group_id], block_actors);
-    group_assembly_->RemovePart(group_actors_[group_id]);
+    selections_.push_back(group_actors_[group_id]);
     group_assembly_->AddPart(group_actors_[group_id]);
 }
 
 void ModelActor::update_assembly()
 {
 
+}
+
+std::vector<vtkActor*> ModelActor::get_remove_actor()
+{
+    return selections_;
 }
 
 void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActor*>& actors)
@@ -346,6 +356,7 @@ void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActo
     father_actor->GetProperty()->SetSpecularColor(
         ModelUtil::colors->GetColor3d("White").GetData());
     father_actor->GetProperty()->SetSpecularPower(30.0);
+
 
 }
 

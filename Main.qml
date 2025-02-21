@@ -252,7 +252,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("Block", check)
+                myItem.changeEdgeRender("a","Block", check)
             }
         }
 
@@ -298,7 +298,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("Group", check)
+                myItem.changeEdgeRender("a","Group", check)
             }
         }
     }

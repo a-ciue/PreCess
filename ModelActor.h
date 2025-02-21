@@ -73,6 +73,7 @@ public:
     //! @brief 更新指定group的actor的mapper
     void update_group(int group_id, const std::unordered_set<int>& group_blocks);
     void update_assembly();
+    std::vector<vtkActor*> get_remove_actor();
 
 private:
     //! @brief 将给定的actors合并到father_actor中
@@ -93,9 +94,10 @@ private:
     std::unordered_map<vtkActor*, int> block_actor_id_;
     ActorMap group_actors_;
     std::unordered_map<vtkActor*, int> group_actor_id_;
-
+    
     std::unordered_map<RenderMode, bool> edge_visibility;
     std::unordered_map<vtkPropAssembly*, ModelActor*> assembly_to_model_actor_map_;
+    std::vector<vtkActor*> selections_;
 };
 
 #endif // MODELACTOR_H
