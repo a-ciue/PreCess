@@ -12,7 +12,7 @@
         "CMAKE_C_COMPILER": "cl.exe",
         "CMAKE_CXX_COMPILER": "cl.exe",
         "ENABLE_TEST": false,
-        "CMAKE_PREFIX_PATH": "D:\\dev\\Qt\\6.8.0\\msvc2022_64;D:\\dev\\3rdparty\\vtk-v9.4.0\\install"
+        "CMAKE_PREFIX_PATH": "C:\\Qt\\6.8.0\\msvc2022_64;D:\\VTK\\vtk-9.4.0\\install"
       },
       "condition": {
         "type": "equals",
@@ -20,7 +20,7 @@
         "rhs": "Windows"
       },
       "environment": {
-        "PATH": "$penv{PATH};D:\\dev\\Qt\\6.8.0\\msvc2022_64\\bin;D:\\dev\\3rdparty\\vtk-v9.4.0\\install\\bin"
+        "PATH": "$penv{PATH};C:\\Qt\\6.8.0\\msvc2022_64\\bin;D:\\VTK\\vtk-9.4.0\\install\\bin"
       }
     },
     {
@@ -53,7 +53,12 @@
       "displayName": "x64 RelWithDebInfo",
       "description": "使用 Visual Studio 开发环境定向到 Windows (64 位)。(RelWithDebInfo)",
       "inherits": "windows-base",
-      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } 
-    }
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_PREFIX_PATH": "C:\\Qt\\6.8.0\\msvc2022_64;D:\\VTK\\VTK-9.4.0\\install-RelWithDebInfo"
+      },
+      "environment": {
+        "PATH": "$penv{PATH};C:\\Qt\\6.8.0\\msvc2022_64\\bin;D:\\VTK\\VTK-9.4.0\\install-RelWithDebInfo\\bin" }
+      }
   ]
 }

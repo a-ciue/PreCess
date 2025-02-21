@@ -1,0 +1,32 @@
+import QtQuick 2.15
+import QtQuick.Controls
+
+Row{
+    id:root
+    function changePropertyEnabled(){
+        selectModeComboBox.enabled = !selectModeComboBox.enabled
+    }
+    signal selectorButtonClicked(int type)
+    ComboBox{
+        id: selectModeComboBox
+        // Layout.preferredWidth: 30
+        enabled: false
+        model:ListModel{
+            ListElement{text: "边"}
+            ListElement{text: "面"}
+        }
+    }
+    Button{
+        id: selectClearButton
+        text: "清除选择"
+        onClicked:{
+            root.selectorButtonClicked(0)
+        }
+    }
+    Button{
+        text: "确认"
+        onClicked:{
+            root.selectorButtonClicked(1)
+        }
+    }
+}

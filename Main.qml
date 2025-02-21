@@ -5,10 +5,12 @@ import QtQuick.Layouts 1.15
 import QtQuick.Dialogs
 import QtQuick.Controls 6.7
 
+import fileLoader
+
 
 ApplicationWindow {
     visible: true
-    width: 640
+    width: 800
     height: 640
     title: qsTr("三角剖分交互程序")
 
@@ -19,6 +21,9 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
 
+            QSelection{
+                id: selection
+            }
             FileDialog {
                 id: splineDialog
                 nameFilters: ["STP File (*.stp)"]
@@ -31,6 +36,7 @@ ApplicationWindow {
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
                     modelManager.readMesh(selectedFile);
+                    console.log("对象调用 selection.size(): ",selection.size())
                 }
             }
             FileDialog {
@@ -298,10 +304,68 @@ ApplicationWindow {
         }
     }
 
+    Rectangle{
+        id:devider
+        height:1
+        color: "black"
+        anchors.top: stacklayout.bottom
+        anchors.left: parent.left
+        anchors.right: myItemRectangle.left
+    }
+
+    ObjectList{
+        id:objectList
+        anchors.top: devider.bottom
+        anchors.left: parent.left
+        anchors.right: myItemRectangle.left
+        //anchors.bottom: sideBar.top
+        width: 160
+        height: 200
+        objectModel:ListModel{
+            id: objectInitializeModel
+            ListElement{name: "对象甲"}
+            ListElement{name: "对象乙"}
+            ListElement{name: "对象丙"}
+            ListElement{name: "对象丁"}
+        }
+        onButtonPressed:{
+            if(type === 1){
+                /*此处是点击对象列表“隐藏”按钮后执行的函数*/
+                //console.log("对象"+index+"已被隐藏")
+            }
+            if(type === 2){
+                /*此处是电机对象列表“删除”按钮后执行的函数*/
+                console.log("对象"+index+"已被删除")
+                objectInitializeModel.remove(index,1)
+            }
+        }
+    }
+
+    SideBar{
+        id: sideBar
+        anchors.top: objectList.bottom
+        anchors.left: parent.left
+        anchors.right: myItemRectangle.left
+        anchors.bottom: parent.bottom
+        width: 160
+        m:ListModel{
+            ListElement{type: 2; name: "属性甲"; content: "55"}
+            ListElement{type: 2; name: "属性乙"; content: "43"}
+            ListElement{type: 1; name: "属性丙"; content: 1}
+            ListElement{type: 0; name: "属性丁"; content: "无"}
+            ListElement{type: 3; name: "选择器"; content: "无"}
+        }
+        onSelectModeChanged:{
+            selector.changePropertyEnabled()
+            //console.log("信号被接收")
+        }
+    }
+
     Rectangle {
+        id: myItemRectangle
         anchors.bottom:parent.bottom
         anchors.top:stacklayout.bottom
-        anchors.left:parent.left
+        anchors.left:objectList.right
         anchors.right:parent.right
         border {
             id: border
@@ -316,5 +380,34 @@ ApplicationWindow {
             anchors.margins: border.width
         }
         Component.onCompleted: modelManager.vtkItem = myItem
+
+        Selector{
+            id:selector
+            anchors.top:  myItem.top
+            anchors.left: myItem.left
+            anchors.topMargin: 10
+            anchors.leftMargin: 10
+            onSelectorButtonClicked:{
+                if(type === 0){
+                    console.log("点击清除按钮")
+                    /*此处是点击选择器清除按钮之后执行的函数*/
+                }
+                if(type === 1){
+                    console.log("点击确认按钮")
+                    /*此处是点击选择器的确认按钮之后执行的函数*/
+                    /*下面是我写的测试函数，可删，Selection.h中的initialize()函数是我赋值用的，可删，ids(i)是输出第i个id的，或许有用*/
+                    selection.initialize()
+                    var i
+                    for(i = 0;i<selection.size();i++){
+                        console.log(selection.ids(i))
+                    }
+
+                    if(selection.type() === Element.Face){
+                        console.log("Face已被接收到")
+                    }
+
+                }
+            }
+        }
     }
 }

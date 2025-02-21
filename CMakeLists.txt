@@ -35,9 +35,9 @@ qt_policy(SET QTP0001 NEW)
 qt_add_qml_module(${MYNAME}
     URI fileLoader
     QML_FILES
-        Main.qml SelectingBar.qml
+        Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml
     SOURCES
-        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp
+        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
 )
 
 add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp)
