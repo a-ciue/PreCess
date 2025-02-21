@@ -66,6 +66,7 @@ public:
     void clear();
     //! @brief 找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
     void select(double posx, double posy);
+    vtkPropAssembly* getAssembly();
 
 private:
     //！@brief 取消高亮，清空mapper
@@ -76,6 +77,7 @@ private:
     vtkRenderer* renderer_;
     std::optional<SelectedFace> selection_;
     //vtkPropAssembly faceAssembly;
+    vtkPropAssembly* faceassembly;
     vtkSmartPointer<vtkActor> selectedActor_;
 };
 
@@ -97,6 +99,7 @@ public:
     void clear();
     //! @brief 找到坐标下的edge并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
     void select(double posx, double posy);
+    vtkPropAssembly* getAssembly();
 
 private:
     //！@brief 取消高亮，清空mapper
@@ -108,6 +111,7 @@ private:
     Model* model_;
     std::optional<SelectedEdge> selection_;
     //vtkPropAssembly edgeAssembly;
+    vtkPropAssembly* edgeassembly;
     vtkNew<vtkDataSetMapper> selectedMapper_;
     vtkSmartPointer<vtkActor> selectedActor_;
 };

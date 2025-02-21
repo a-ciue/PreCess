@@ -97,33 +97,34 @@ std::vector<vtkActor*> ActorSelectorHighlight::get() {
 vtkPropAssembly* ActorSelectorHighlight::getAssembly()
 {
     vtkPropAssembly* backassembly = actorassembly;
-    return actorassembly;
+    return backassembly;
 
 }
 
 void ActorSelectorHighlight::select(double posx, double posy) {
     // 找到actor，高亮
     vtkNew<vtkCellPicker> picker;
+    //vtkNew<vtkCellPicker> picker2;
     picker->Pick(posx, posy, 0, renderer_);
-    
-    if (picker->GetCellId() != -1) {
+    //picker2->Pick(posx, posy, 0, renderer_);
+    if (picker->GetPropAssembly() != nullptr) {
         vtkProp* pickedprop = picker->GetPropAssembly();
         actorassembly = picker->GetPropAssembly();
         vtkAssemblyPath* path = picker->GetPath();
+        double *a=picker->GetPickPosition();
+        cout << a[0]<<"   "<< a[1] << "   " << a[2] << endl;
         vtkActor* new_actor = vtkActor::SafeDownCast(path->GetLastNode()->GetViewProp());
-        cout << "111" << endl;
         std::optional<size_t> selected_index = _is_selected(new_actor, selections_);
         if (selected_index) {
             _cancel_highlight(selections_[*selected_index]);
             selections_.erase(selections_.begin() + *selected_index);
-            cout << "222" << endl;
         } else {
             //
             selections_.emplace_back(Actor { new_actor, vtkSmartPointer<vtkProperty>::New() });
             selections_.back().backup_property->DeepCopy(new_actor->GetProperty());
             new_actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
             renderer_->AddActor(new_actor);
-            cout << "333" << endl;
+
         }
     }
 }
@@ -161,6 +162,13 @@ std::optional<SingleFaceSelectorHighlight::SelectedFace> SingleFaceSelectorHighl
     return selection_;
 }
 
+vtkPropAssembly* SingleFaceSelectorHighlight::getAssembly()
+{
+    vtkPropAssembly* backassembly = faceassembly;
+    return backassembly;
+
+}
+
 void SingleFaceSelectorHighlight::clear() {
     // 清空selection取消高亮
     _cancel_highlight(selectedActor_, renderer_);
@@ -170,6 +178,14 @@ void SingleFaceSelectorHighlight::clear() {
 void SingleFaceSelectorHighlight::select(double posx, double posy) {
     // 找到face并存储
     auto result = Selector::pick_cell(posx, posy, renderer_);
+    vtkNew<vtkCellPicker> picker;
+    picker->Pick(posx, posy, 0, renderer_);
+
+    if (picker->GetCellId() != -1) {
+        vtkProp* pickedprop = picker->GetPropAssembly();
+        faceassembly = picker->GetPropAssembly();
+    }
+
     if (result) {
         vtkActor* new_actor = result->first;
         int local_id = result->second;
@@ -255,6 +271,13 @@ std::optional<SingleEdgeSelectorHighlight::SelectedEdge> SingleEdgeSelectorHighl
     return selection_;
 }
 
+vtkPropAssembly* SingleEdgeSelectorHighlight::getAssembly()
+{
+    vtkPropAssembly* backassembly = edgeassembly;
+    return backassembly;
+
+}
+
 void SingleEdgeSelectorHighlight::clear()
 {
     _cancel_highlight(selectedMapper_ ,selectedActor_);
@@ -268,7 +291,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
     vtkProp* pickedprop = picker->GetPropAssembly();
 
     if (picker->GetCellId() != -1) {
-        vtkPropAssembly* picked_assembly = picker->GetPropAssembly();
+        edgeassembly = picker->GetPropAssembly();
         vtkAssemblyPath* path = picker->GetPath();
         std::cout << "some Prop: " << vtkActor::SafeDownCast(path->GetLastNode()->GetViewProp()) << std::endl;
         vtkActor* picked_actor= vtkActor::SafeDownCast(path->GetLastNode()->GetViewProp());

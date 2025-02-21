@@ -36,6 +36,7 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);
 
+    this->data_= vtk.GetPointer();
 
     return vtk;
 }
@@ -154,11 +155,22 @@ void MyVtkItem::blockUpdated(QString model_name,int block_id, const std::unorder
 
 std::vector<int> MyVtkItem::selectedIDs()
 {
-	if (cur_style_)
+    
+        if (this->cur_style_)
 	{
-        return cur_style_->GetSelectedIDs(cur_actor_, select_mode_);
+            std::vector<ModelActor*> actors;
+            int index = 0;
+        // ±éÀú unordered_map
+        for (const auto& pair : data_->actor_ )
+        {
+            // pair.second ÊÇ std::unique_ptr<ModelActor>
+            actors.push_back(pair.second.get());
+        }
+
+        return cur_style_->GetSelectedIDs(actors, select_mode_);
 	}
-    return {};
+       
+	
 }
 
 
@@ -197,12 +209,15 @@ Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
             bindStyle("Face");
             for (auto&& [modelName, modelActor] : vtk->actor_)
             {
-                modelActor->face_assembly_->SetVisibility(1);
-                modelActor->face_assembly_->PickableOn();
-                modelActor->block_assembly_->SetVisibility(0);
-                modelActor->block_assembly_->PickableOff();
-                modelActor->group_assembly_->SetVisibility(0);
-                modelActor->group_assembly_->PickableOff();
+                //modelActor->face_assembly_->SetVisibility(1);
+                //modelActor->face_assembly_->PickableOn();
+                //modelActor->block_assembly_->SetVisibility(0);
+                //modelActor->block_assembly_->PickableOff();
+                //modelActor->group_assembly_->SetVisibility(0);
+                //modelActor->group_assembly_->PickableOff();
+                vtk->renderer->RemoveActor(modelActor->group_assembly_);
+                vtk->renderer->RemoveActor(modelActor->block_assembly_);
+                vtk->renderer->AddActor(modelActor->face_assembly_);
             }
         }
         else if (renderMode == 1)
@@ -210,13 +225,16 @@ Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
             bindStyle("Block");
             for (auto&& [modelName, modelActor] : vtk->actor_)
             {
-                cout << "block" << endl;
+                /*cout << "block" << endl;
                 modelActor->face_assembly_->SetVisibility(0);
                 modelActor->face_assembly_->PickableOff();
                 modelActor->block_assembly_->SetVisibility(1);
                 modelActor->block_assembly_->PickableOn();
                 modelActor->group_assembly_->SetVisibility(0);
-                modelActor->group_assembly_->PickableOff();
+                modelActor->group_assembly_->PickableOff();*/
+                vtk->renderer->RemoveActor(modelActor->face_assembly_);
+                vtk->renderer->RemoveActor(modelActor->group_assembly_);
+                vtk->renderer->AddActor(modelActor->block_assembly_);
             }
 
         }
@@ -225,12 +243,15 @@ Q_INVOKABLE void MyVtkItem::changeRenderMode(int renderMode)
             bindStyle("Group");
             for (auto&& [modelName, modelActor] : vtk->actor_)
             {
-                modelActor->face_assembly_->SetVisibility(0);
+                /*modelActor->face_assembly_->SetVisibility(0);
                 modelActor->face_assembly_->PickableOff();
                 modelActor->block_assembly_->SetVisibility(0);
                 modelActor->block_assembly_->PickableOff();
                 modelActor->group_assembly_->SetVisibility(1);
-                modelActor->group_assembly_->PickableOn();
+                modelActor->group_assembly_->PickableOn();*/
+                vtk->renderer->RemoveActor(modelActor->face_assembly_);
+                vtk->renderer->RemoveActor(modelActor->block_assembly_);
+                vtk->renderer->AddActor(modelActor->group_assembly_);
             }
         }
         });

@@ -89,5 +89,6 @@ private:
     ModelActor* cur_actor_{};
     SelectMode select_mode_{};
     std::unique_ptr<QMouseEvent> _click;
-};
+    const Data* data_{};
+ };
 #endif // MYVTKITEM_H

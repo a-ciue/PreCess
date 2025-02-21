@@ -185,9 +185,9 @@ ModelActor::~ModelActor()
 
 void ModelActor::bind_renderer(vtkRenderer* renderer)
 {
-    renderer->AddActor(face_assembly_);
-    renderer->AddActor(block_assembly_);
-    renderer->AddActor(group_assembly_);
+    //renderer->AddActor(face_assembly_);
+    //renderer->AddActor(block_assembly_);
+    //renderer->AddActor(group_assembly_);
 }
 
 void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
@@ -284,6 +284,8 @@ void ModelActor::update_block(int block_id, const std::unordered_set<int>& block
     }
 
     _merge_actors(block_actors_[block_id], patch_actors);
+    block_assembly_->AddPart(block_actors_[block_id]);
+
 }
 
 void ModelActor::update_group(int group_id, const std::unordered_set<int>& group_blocks)
@@ -308,6 +310,8 @@ void ModelActor::update_group(int group_id, const std::unordered_set<int>& group
     }
 
     _merge_actors(group_actors_[group_id], block_actors);
+    group_assembly_->RemovePart(group_actors_[group_id]);
+    group_assembly_->AddPart(group_actors_[group_id]);
 }
 
 void ModelActor::update_assembly()
@@ -342,6 +346,7 @@ void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActo
     father_actor->GetProperty()->SetSpecularColor(
         ModelUtil::colors->GetColor3d("White").GetData());
     father_actor->GetProperty()->SetSpecularPower(30.0);
+
 }
 
 // old
