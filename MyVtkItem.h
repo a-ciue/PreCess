@@ -21,12 +21,12 @@
 
 #include "Model.h"
 #include "Style.h"
-
+#include "Selection.h"
 enum class SelectMode { Group, Block, Face, Edge };
 
 struct MyVtkItem : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
-    Q_PROPERTY(std::vector<int> selectedIDs READ selectedIDs NOTIFY selectedChanged)
+    Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     QML_ELEMENT
 public:
     MyVtkItem();                              //槽函数，改变边框重置相机
@@ -54,7 +54,7 @@ public:
     Q_INVOKABLE void resetCamera();
     //void dispatchChangedSource();
 
-    std::vector<int> selectedIDs();
+    QSelection* selectedIDs();
     int renderMode_=0;
     
     Q_INVOKABLE void changeRenderer(QString renderMode);

@@ -193,13 +193,13 @@ ApplicationWindow {
                     if(index === 0){
                         let ids = myItem.selectedIDs;
                         if (ids.length !== 0) {
-                            modelManager.model("a").split_edge(ids[0], ids[1], ids[2])
+                            modelManager.model("a").split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
                         }
                     }
                     if(index === 1){
                         let ids = myItem.selectedIDs;
                         if (ids.length !== 0) {
-                            modelManager.model("a").split_face(ids[0], ids[1])
+                            modelManager.model("a").split_face(ids.ids(0), ids.ids(1))
                         }
                     }
                 }
@@ -239,11 +239,11 @@ ApplicationWindow {
                 }else{
                     if(index === 0) 
                     { 
-                        modelManager.model("a").merge_blocks(myItem.selectedIDs)
+                        modelManager.model("a").merge_blocks(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                     else { 
-                          modelManager.model("a").remesh_block(myItem.selectedIDs)
+                          modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
                           myItem.resetCamera()
                     }
                 }
@@ -285,11 +285,11 @@ ApplicationWindow {
                     else{ myItem.bindStyle("Group")}
                 }else{
                     if(index === 0){
-                        modelManager.model("a").merge_groups(myItem.selectedIDs)
+                        modelManager.model("a").merge_groups(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                     else{
-                        modelManager.model("a").remesh_group(myItem.selectedIDs)
+                        modelManager.model("a").remesh_group(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                 }

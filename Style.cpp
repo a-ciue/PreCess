@@ -33,17 +33,21 @@ void MouseInteractorHighLightActor::ClearSelections()
     selector_->clear();
 }
 
-std::vector<int> MouseInteractorHighLightActor::GetSelectedIDs(const std::vector<ModelActor*>& mActors, SelectMode mode)
+std::unique_ptr<Selection> MouseInteractorHighLightActor::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode)
 {
     auto actors = selector_->get();
-    std::vector<int> ids;
+    std::unique_ptr<Selection> selection = std::make_unique<Selection>();
+    //std::vector<int> ids;
     vtkPropAssembly* assembly_ = selector_->getAssembly();
     ModelActor* modelactor_;
-    for (ModelActor* actor : mActors) 
+
+    for (const auto& pair : mActors)
     {
-        modelactor_=actor->getModelActor(assembly_);
+        modelactor_= pair.second.get()->getModelActor(assembly_);
+
         if (modelactor_ != NULL)
         {
+            selection->model_name = pair.first;
             break;
         }
     }
@@ -61,60 +65,66 @@ std::vector<int> MouseInteractorHighLightActor::GetSelectedIDs(const std::vector
 
     for (vtkActor* actor : actors)
     {
-        ids.push_back((modelactor_->*actor_id)(actor));
+        selection->ids.push_back((modelactor_->*actor_id)(actor));
     }
-    return ids;
+    return selection;
 }
-std::vector<int> MouseInteractorHighLightFace::GetSelectedIDs(const std::vector<ModelActor*>& mActors, SelectMode mode)
+std::unique_ptr<Selection> MouseInteractorHighLightFace::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode)
 {
     auto actors = selector_->get();
-    std::vector<int> face_ids;
+    std::unique_ptr<Selection> selection = std::make_unique<Selection>();
+    //std::vector<int> face_ids;
     vtkPropAssembly* assembly_ = selector_->getAssembly();
     ModelActor* modelactor_;
-    for (ModelActor* actor : mActors)
+    for (const auto& pair : mActors)
     {
-        modelactor_ = actor->getModelActor(assembly_);
+        modelactor_ = pair.second.get()->getModelActor(assembly_);
+
         if (modelactor_ != NULL)
         {
+            selection->model_name = pair.first;
             break;
         }
     }
     if (actors)
     {
-        face_ids.reserve(2);
+        selection->ids.reserve(2);
 
         int patch_id = modelactor_->patch_actor_id(actors->patch_actor);
-        face_ids.push_back(patch_id);
-        face_ids.push_back(modelactor_->patch_global_fid(patch_id,actors->local_id));
+        selection->ids.push_back(patch_id);
+        selection->ids.push_back(modelactor_->patch_global_fid(patch_id,actors->local_id));
     }
     
-    return face_ids;
+    return selection;
 }
-std::vector<int> MouseInteractorHighLightEdge::GetSelectedIDs(const std::vector<ModelActor*>& mActors, SelectMode mode)
+std::unique_ptr<Selection> MouseInteractorHighLightEdge::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode)
 {
     auto actors = selector_->get();
-    std::vector<int> point_ids;
+    std::unique_ptr<Selection> selection=std::make_unique<Selection>();
+    //std::vector<int> point_ids;
     vtkPropAssembly* assembly_ = selector_->getAssembly();
     ModelActor* modelactor_;
-    for (ModelActor* actor : mActors)
+    for (const auto& pair : mActors)
     {
-        modelactor_ = actor->getModelActor(assembly_);
+        modelactor_ = pair.second.get()->getModelActor(assembly_);
+
         if (modelactor_ != NULL)
         {
+            selection->model_name = pair.first;
             break;
         }
     }
     if (actors)
     {
-        point_ids.reserve(3);
+        selection->ids.reserve(3);
 
         int patch_id = modelactor_->patch_actor_id(actors->actor);
-        point_ids.push_back(patch_id);
-        point_ids.push_back(modelactor_->patch_global_vid(patch_id,actors->v_local_id[0]));
-        point_ids.push_back(modelactor_->patch_global_vid(patch_id, actors->v_local_id[1]));
+        selection->ids.push_back(patch_id);
+        selection->ids.push_back(modelactor_->patch_global_vid(patch_id,actors->v_local_id[0]));
+        selection->ids.push_back(modelactor_->patch_global_vid(patch_id, actors->v_local_id[1]));
     }
 
-    return point_ids;
+    return selection;
 }
 
 void MouseInteractorHighLightActor::SetSelector(std::unique_ptr<ActorSelectorHighlight> selector)

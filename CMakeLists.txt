@@ -37,7 +37,7 @@ qt_add_qml_module(${MYNAME}
     QML_FILES
         Main.qml SelectingBar.qml
     SOURCES
-        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp
+        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
 )
 
 add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp)

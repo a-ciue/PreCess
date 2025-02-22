@@ -4,7 +4,7 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkObjectFactory.h>
 #include <vtkSmartPointer.h>
-
+#include "Selection.h"
 #include "Selector.h"
 
 enum class SelectMode;
@@ -16,7 +16,7 @@ class vtkInteractorStyleWithClick : public vtkInteractorStyleTrackballCamera {
 public:
     virtual void SetClick() = 0;
     virtual void ClearSelections() = 0;
-    virtual std::vector<int> GetSelectedIDs(const std::vector<ModelActor*> &mActors, SelectMode  mode) = 0;
+    virtual std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode  mode) = 0;
 };
 
 class MouseInteractorHighLightActor : public vtkInteractorStyleWithClick {
@@ -32,7 +32,7 @@ public:
 
     void SetClick() override;
     void ClearSelections() override;
-    std::vector<int> GetSelectedIDs(const std::vector<ModelActor*>& mActors, SelectMode mode) override;
+    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
 
     void SetSelector(std::unique_ptr<ActorSelectorHighlight> selector);
     
@@ -54,7 +54,7 @@ public:
     void SetClick() override;
     void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector);
-    std::vector<int> GetSelectedIDs(const std::vector<ModelActor*>& mActors, SelectMode mode) override;
+    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
 
 private:
    
@@ -76,7 +76,7 @@ public:
     void SetClick() override;
     void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleEdgeSelectorHighlight> selector);
-    std::vector<int> GetSelectedIDs(const std::vector<ModelActor*>& mActors, SelectMode mode) override;
+    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
 private:
     
     bool click_ {};

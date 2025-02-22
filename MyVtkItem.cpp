@@ -153,21 +153,24 @@ void MyVtkItem::blockUpdated(QString model_name,int block_id, const std::unorder
         });
 }
 
-std::vector<int> MyVtkItem::selectedIDs()
+QSelection* MyVtkItem::selectedIDs()
 {
     
         if (this->cur_style_)
 	{
-            std::vector<ModelActor*> actors;
+           /* std::vector<ModelActor*> actors;
             int index = 0;
         // ±éÀú unordered_map
         for (const auto& pair : data_->actor_ )
         {
             // pair.second ÊÇ std::unique_ptr<ModelActor>
             actors.push_back(pair.second.get());
-        }
+        }*/
+        std::unique_ptr<Selection> data(std::move(cur_style_->GetSelectedIDs(data_->actor_, select_mode_)));
 
-        return cur_style_->GetSelectedIDs(actors, select_mode_);
+        QSelection* selection=new QSelection(std::move(data));
+        QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
+        return selection;
 	}
        
 	
