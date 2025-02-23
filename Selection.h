@@ -7,7 +7,7 @@
 //! @brief Element在QML中暴露了枚举Element::Type，在QML中以Element.Face获取枚举值
 class Element : public QObject {
     Q_OBJECT
-    QML_ELEMENT
+        QML_ELEMENT
 public:
     enum Type {
         Face,
@@ -26,6 +26,7 @@ struct Selection {
     std::vector<int> ids;
     //! @brief 选择对象的类型
     Element::Type type;
+    QString model_name;
 };
 
 /**
@@ -33,32 +34,32 @@ struct Selection {
  */
 class QSelection : public QObject
 {
-	Q_OBJECT
-    QML_ELEMENT
+    Q_OBJECT
+        QML_ELEMENT
 
 public:
     QSelection() {}
     QSelection(std::unique_ptr<Selection> data)
         : _data(std::move(data)) {}
 
-	/**
-	 * 存入
-	 * @param data 待存入的数据
-	 */
-	void set(std::unique_ptr<Selection> data) { _data = std::move(data); }
-	/**
-	 * 取出
-	 * @return 存储的Selection对象
-	 */
-	std::unique_ptr<Selection> move() { return std::move(_data); }
+    /**
+     * 存入
+     * @param data 待存入的数据
+     */
+    void set(std::unique_ptr<Selection> data) { _data = std::move(data); }
+    /**
+     * 取出
+     * @return 存储的Selection对象
+     */
+    std::unique_ptr<Selection> move() { return std::move(_data); }
 
     /**
      * @brief 获取该选择的数组大小
      * @return 存储数组大小
      */
-    Q_INVOKABLE size_t size() { 
+    Q_INVOKABLE size_t size() {
         if (_data) {
-            return _data->ids.size(); 
+            return _data->ids.size();
         }
         return 0;
     }
@@ -73,7 +74,7 @@ public:
     Q_INVOKABLE void initialize() {
         std::unique_ptr<Selection> temp = std::make_unique<Selection>();
         temp->type = Element::Face;
-        for(int i = 0;i<10;i++){
+        for (int i = 0; i < 10; i++) {
             temp->ids.push_back(i);
         }
         _data = std::move(temp);

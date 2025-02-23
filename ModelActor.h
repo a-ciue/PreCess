@@ -5,6 +5,8 @@
 #include <unordered_set>
 #include <vector>
 #include <vtkNew.h>
+#include <vtkAssembly.h>
+#include <vtkPropAssembly.h>
 
 struct Group;
 struct Block;
@@ -33,18 +35,22 @@ public:
     //! @brief 从renderer中解除对应actor的绑定
     ~ModelActor();
 
-    void bind_renderer(vtkRenderer* renderer, RenderMode mode);
+    void bind_renderer(vtkRenderer* renderer);
     //! @brief 设置某个renderer是否渲染边
     //! @param mode 选择该mode对应renderer
     //! @param render 是否渲染
     void render_edge(RenderMode mode, bool render);
-
+    ModelActor* getModelActor(vtkPropAssembly* assembly);
     int block_actor_id(vtkActor* actor);
     int group_actor_id(vtkActor* actor);
     int patch_actor_id(vtkActor* actor);
 
     int patch_global_fid(int patch_id, int local_fid);
     int patch_global_vid(int patch_id, int local_vid);
+
+    vtkNew<vtkPropAssembly> face_assembly_;
+    vtkNew<vtkPropAssembly> block_assembly_;
+    vtkNew<vtkPropAssembly> group_assembly_;
 
     //! @brief 合并给定id的block的Actor，并删除被合并的Actor
     //! @param block_ids 要合并的block
@@ -66,6 +72,8 @@ public:
     void update_block(int block_id, const std::unordered_set<int>& block_patches);
     //! @brief 更新指定group的actor的mapper
     void update_group(int group_id, const std::unordered_set<int>& group_blocks);
+    void update_assembly();
+    std::vector<vtkActor*> get_remove_actor();
 
 private:
     //! @brief 将给定的actors合并到father_actor中
@@ -76,17 +84,20 @@ private:
     // Model* model_;
     const std::unordered_map<int, std::unique_ptr<Patch>>& patches_;
 
-    vtkRenderer* face_renderer_ {};
-    vtkRenderer* block_renderer_ {};
-    vtkRenderer* group_renderer_ {};
+    //vtkRenderer* face_renderer_ {};
+    //vtkRenderer* block_renderer_ {};
+    //vtkRenderer* group_renderer_ {};
+
     ActorMap patch_actors_;
     std::unordered_map<vtkActor*, int> patch_actor_id_;
     ActorMap block_actors_;
     std::unordered_map<vtkActor*, int> block_actor_id_;
     ActorMap group_actors_;
     std::unordered_map<vtkActor*, int> group_actor_id_;
-
+    
     std::unordered_map<RenderMode, bool> edge_visibility;
+    std::unordered_map<vtkPropAssembly*, ModelActor*> assembly_to_model_actor_map_;
+    std::vector<vtkActor*> selections_;
 };
 
 #endif // MODELACTOR_H

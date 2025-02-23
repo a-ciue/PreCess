@@ -35,8 +35,8 @@ ApplicationWindow {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-                    modelManager.readMesh(selectedFile);
-                    console.log("对象调用 selection.size(): ",selection.size())
+
+                    modelManager.readMesh("a" ,selectedFile);
                 }
             }
             FileDialog {
@@ -121,7 +121,9 @@ ApplicationWindow {
                     rightPadding: 8
                     checkable: true
                     checked: true
-                    onClicked: stacklayout.currentIndex = 0
+                    onClicked: {stacklayout.currentIndex = 0
+                                 myItem.changeRenderMode(0)}
+                                
                     ButtonGroup.group: renderGroup
                 }
                 Button {
@@ -129,7 +131,8 @@ ApplicationWindow {
                     text: "块模式"
                     property string renderMode: "Block"
                     checkable: true
-                    onClicked: stacklayout.currentIndex = 1
+                    onClicked: {stacklayout.currentIndex = 1
+                                myItem.changeRenderMode(1)}
                     ButtonGroup.group: renderGroup
                 }
                 Button {
@@ -137,7 +140,8 @@ ApplicationWindow {
                     text: "组模式"
                     property string renderMode: "Group"
                     checkable: true
-                    onClicked: stacklayout.currentIndex = 2
+                    onClicked: {stacklayout.currentIndex = 2
+                                myItem.changeRenderMode(2)}
                     ButtonGroup.group: renderGroup
                 }
 
@@ -194,13 +198,13 @@ ApplicationWindow {
                     if(index === 0){
                         let ids = myItem.selectedIDs;
                         if (ids.length !== 0) {
-                            modelManager.model.split_edge(ids[0], ids[1], ids[2])
+                            modelManager.model("a").split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
                         }
                     }
                     if(index === 1){
                         let ids = myItem.selectedIDs;
                         if (ids.length !== 0) {
-                            modelManager.model.split_face(ids[0], ids[1])
+                            modelManager.model("a").split_face(ids.ids(0), ids.ids(1))
                         }
                     }
                 }
@@ -209,7 +213,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("Face", check)
+                myItem.changeEdgeRender("a","Face", check)
             }
         }
 
@@ -240,11 +244,11 @@ ApplicationWindow {
                 }else{
                     if(index === 0) 
                     { 
-                        modelManager.model.merge_blocks(myItem.selectedIDs)
+                        modelManager.model("a").merge_blocks(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                     else { 
-                          modelManager.model.remesh_block(myItem.selectedIDs)
+                          modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
                           myItem.resetCamera()
                     }
                 }
@@ -253,7 +257,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("Block", check)
+                myItem.changeEdgeRender("a","Block", check)
             }
         }
 
@@ -286,11 +290,11 @@ ApplicationWindow {
                     else{ myItem.bindStyle("Group")}
                 }else{
                     if(index === 0){
-                        modelManager.model.merge_groups(myItem.selectedIDs)
+                        modelManager.model("a").merge_groups(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                     else{
-                        modelManager.model.remesh_group(myItem.selectedIDs)
+                        modelManager.model("a").remesh_group(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                 }
@@ -299,7 +303,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("Group", check)
+                myItem.changeEdgeRender("a","Group", check)
             }
         }
     }
