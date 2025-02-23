@@ -14,7 +14,7 @@ class ModelManager : public QObject {
     
 
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     explicit ModelManager(QObject* parent = nullptr) : QObject(parent) {}
 
     Q_INVOKABLE Model* model(const QString& modelName) {
@@ -22,13 +22,13 @@ public:
         if (it != models_.end()) {
             return it->second.get();
         }
-        return nullptr; // Èç¹ûÕÒ²»µ½Ä£ĞÍ£¬·µ»Ø¿ÕÖ¸Õë
+        return nullptr; // å¦‚æœæ‰¾ä¸åˆ°æ¨¡å‹ï¼Œè¿”å›ç©ºæŒ‡é’ˆ
     }
 
     MyVtkItem* vtkItem();
     void setVtkItem(MyVtkItem* item);
 
-    //¶àÄ£ĞÍ¹ÜÀí¹¦ÄÜ
+    //å¤šæ¨¡å‹ç®¡ç†åŠŸèƒ½
     void addModel(const QString& modelName, std::unique_ptr<Model> model);
     Q_INVOKABLE void removeModel(const QString& modelName);
     Q_INVOKABLE Model* getModel(const QString& modelName) const;
@@ -42,7 +42,7 @@ signals:
 
 private:
     //std::unique_ptr<Model> model_;
-    //Ê¹ÓÃunordered_mapÌæ´úÔ­unique_ptrÓÃÓÚÂú×ã´æ´¢¶àÄ£ĞÍµÄÒªÇó
+    //ä½¿ç”¨unordered_mapæ›¿ä»£åŸunique_ptrç”¨äºæ»¡è¶³å­˜å‚¨å¤šæ¨¡å‹çš„è¦æ±‚
     std::unordered_map<QString, std::unique_ptr<Model>> models_; 
     MyVtkItem* vtk_item_{};
 

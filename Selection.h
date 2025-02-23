@@ -4,7 +4,7 @@
 #include <qqmlintegration.h>
 #include <vector>
 
-//! @brief ElementÔÚQMLÖĞ±©Â¶ÁËÃ¶¾ÙElement::Type£¬ÔÚQMLÖĞÒÔElement.Face»ñÈ¡Ã¶¾ÙÖµ
+//! @brief Elementåœ¨QMLä¸­æš´éœ²äº†æšä¸¾Element::Typeï¼Œåœ¨QMLä¸­ä»¥Element.Faceè·å–æšä¸¾å€¼
 class Element : public QObject {
     Q_OBJECT
         QML_ELEMENT
@@ -20,17 +20,17 @@ public:
     Q_ENUM(Type)
 };
 
-//! @brief ´æ´¢Ñ¡ÔñµÄ¶ÔÏó
+//! @brief å­˜å‚¨é€‰æ‹©çš„å¯¹è±¡
 struct Selection {
-    //! @brief Ñ¡Ôñ¶ÔÏóµÄidĞòÁĞ
+    //! @brief é€‰æ‹©å¯¹è±¡çš„idåºåˆ—
     std::vector<int> ids;
-    //! @brief Ñ¡Ôñ¶ÔÏóµÄÀàĞÍ
+    //! @brief é€‰æ‹©å¯¹è±¡çš„ç±»å‹
     Element::Type type;
     QString model_name;
 };
 
 /**
- * @brief SelectionÀàµÄQML½»»¥½Ó¿Ú¡£Selection¿ÉÒÔ´æÓÚQSelectionÖĞ£¬¾Í¿ÉÒÔÔÚQML´úÂëÖĞ½øĞĞ½»»¥¡£C++ÖĞÊ¹ÓÃnewÀ´´´½¨¶ÔÏó£¬QMLÖĞÎªÖ»¶Á¶ÔÏó
+ * @brief Selectionç±»çš„QMLäº¤äº’æ¥å£ã€‚Selectionå¯ä»¥å­˜äºQSelectionä¸­ï¼Œå°±å¯ä»¥åœ¨QMLä»£ç ä¸­è¿›è¡Œäº¤äº’ã€‚C++ä¸­ä½¿ç”¨newæ¥åˆ›å»ºå¯¹è±¡ï¼ŒQMLä¸­ä¸ºåªè¯»å¯¹è±¡
  */
 class QSelection : public QObject
 {
@@ -47,19 +47,19 @@ public:
     }
 
     /**
-     * ´æÈë
-     * @param data ´ı´æÈëµÄÊı¾İ
+     * å­˜å…¥
+     * @param data å¾…å­˜å…¥çš„æ•°æ®
      */
     void set(std::unique_ptr<Selection> data) { _data = std::move(data); }
     /**
-     * È¡³ö
-     * @return ´æ´¢µÄSelection¶ÔÏó
+     * å–å‡º
+     * @return å­˜å‚¨çš„Selectionå¯¹è±¡
      */
     std::unique_ptr<Selection> move() { return std::move(_data); }
 
     /**
-     * @brief »ñÈ¡¸ÃÑ¡ÔñµÄÊı×é´óĞ¡
-     * @return ´æ´¢Êı×é´óĞ¡
+     * @brief è·å–è¯¥é€‰æ‹©çš„æ•°ç»„å¤§å°
+     * @return å­˜å‚¨æ•°ç»„å¤§å°
      */
     Q_INVOKABLE size_t size() {
         if (_data) {
@@ -68,12 +68,12 @@ public:
         return 0;
     }
     /**
-     * @brief »ñÈ¡Ñ¡ÖĞÊı¾İµÄÀàĞÍÃ¶¾ÙÖµ
-     * @return ÀàĞÍÃ¶¾ÙÖµ
+     * @brief è·å–é€‰ä¸­æ•°æ®çš„ç±»å‹æšä¸¾å€¼
+     * @return ç±»å‹æšä¸¾å€¼
      */
     Q_INVOKABLE Element::Type type() { return _data->type; }
     /**
-     * @brief ³õÊ¼»¯Ò»¸öSelectionÊı¾İ
+     * @brief åˆå§‹åŒ–ä¸€ä¸ªSelectionæ•°æ®
      */
     Q_INVOKABLE void initialize() {
         std::unique_ptr<Selection> temp = std::make_unique<Selection>();
@@ -84,9 +84,9 @@ public:
         _data = std::move(temp);
     }
     /**
-     * @brief ids ·µ»ØÑ¡Ôñ¶ÔÏóµÄidÖµ±íµÄµÚi¸öÔªËØ
-     * @param i   ÏëÒª·µ»ØµÚ¼¸¸öÔªËØ
-     * @return    intÀà
+     * @brief ids è¿”å›é€‰æ‹©å¯¹è±¡çš„idå€¼è¡¨çš„ç¬¬iä¸ªå…ƒç´ 
+     * @param i   æƒ³è¦è¿”å›ç¬¬å‡ ä¸ªå…ƒç´ 
+     * @return    intç±»
      */
     Q_INVOKABLE int ids(int i) {
         return _data->ids[i];
