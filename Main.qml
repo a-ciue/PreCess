@@ -7,7 +7,6 @@ import QtQuick.Controls 6.7
 
 import fileLoader
 
-
 ApplicationWindow {
     visible: true
     width: 800
@@ -21,9 +20,6 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
 
-            QSelection{
-                id: selection
-            }
             FileDialog {
                 id: splineDialog
                 nameFilters: ["STP File (*.stp)"]
@@ -197,13 +193,13 @@ ApplicationWindow {
                 }else{
                     if(index === 0){
                         let ids = myItem.selectedIDs;
-                        if (ids.length !== 0) {
+                        if (ids.size() !== 0) {
                             modelManager.model("a").split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
                         }
                     }
                     if(index === 1){
                         let ids = myItem.selectedIDs;
-                        if (ids.length !== 0) {
+                        if (ids.size() !== 0) {
                             modelManager.model("a").split_face(ids.ids(0), ids.ids(1))
                         }
                     }
@@ -357,9 +353,9 @@ ApplicationWindow {
             ListElement{type: 2; name: "属性乙"; content: "43"}
             ListElement{type: 1; name: "属性丙"; content: 1}
             ListElement{type: 0; name: "属性丁"; content: "无"}
-            ListElement{type: 3; name: "选择器"; content: "无"}
+            ListElement{type: 3; name: "选择器"; content: "无"}//可能会有多个选择器的需求，因此需要动态构造多个选择器
         }
-        onSelectModeChanged:{
+        onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
             selector.changePropertyEnabled()
             //console.log("信号被接收")
         }
@@ -400,7 +396,7 @@ ApplicationWindow {
                     console.log("点击确认按钮")
                     /*此处是点击选择器的确认按钮之后执行的函数*/
                     /*下面是我写的测试函数，可删，Selection.h中的initialize()函数是我赋值用的，可删，ids(i)是输出第i个id的，或许有用*/
-                    selection.initialize()
+                    /*selection.initialize()
                     var i
                     for(i = 0;i<selection.size();i++){
                         console.log(selection.ids(i))
@@ -408,8 +404,7 @@ ApplicationWindow {
 
                     if(selection.type() === Element.Face){
                         console.log("Face已被接收到")
-                    }
-
+                    }*/            
                 }
             }
         }
