@@ -22,7 +22,12 @@ void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> mod
     if (models_.find(modelName) != models_.end()) {
         throw std::runtime_error("Model with the given name already exists.");
     }
+
+    // 将模型添加到模型管理器
     models_[modelName] = std::move(model);
+
+    // 发出信号，通知视图层更新
+    emit modelAdded(modelName);
 }
 
 // 删除模型
@@ -31,8 +36,29 @@ void ModelManager::removeModel(const QString& modelName) {
     if (it == models_.end()) {
         throw std::runtime_error("Model with the given name does not exist.");
     }
+
+    // 删除模型
     models_.erase(it);
+
+    // 发出信号，通知视图层更新
+    emit modelRemoved(modelName);
 }
+//// 添加模型
+//void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> model) {
+//    if (models_.find(modelName) != models_.end()) {
+//        throw std::runtime_error("Model with the given name already exists.");
+//    }
+//    models_[modelName] = std::move(model);
+//}
+//
+//// 删除模型
+//void ModelManager::removeModel(const QString& modelName) {
+//    auto it = models_.find(modelName);
+//    if (it == models_.end()) {
+//        throw std::runtime_error("Model with the given name does not exist.");
+//    }
+//    models_.erase(it);
+//}
 
 // 获取模型
 Model* ModelManager::getModel(const QString& modelName) const {

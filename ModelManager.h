@@ -39,6 +39,8 @@ public:
 
 signals:
     void splineLoadFailed(QString message);
+    void modelAdded(const QString& modelName);
+    void modelRemoved(const QString& modelName);
 
 private:
     //std::unique_ptr<Model> model_;

@@ -117,8 +117,7 @@ ApplicationWindow {
                     rightPadding: 8
                     checkable: true
                     checked: true
-                    onClicked: {stacklayout.currentIndex = 0
-                                 myItem.changeRenderMode(0)}
+                    onClicked: stacklayout.currentIndex = 0
                                 
                     ButtonGroup.group: renderGroup
                 }
@@ -127,8 +126,7 @@ ApplicationWindow {
                     text: "块模式"
                     property string renderMode: "Block"
                     checkable: true
-                    onClicked: {stacklayout.currentIndex = 1
-                                myItem.changeRenderMode(1)}
+                    onClicked: stacklayout.currentIndex = 1
                     ButtonGroup.group: renderGroup
                 }
                 Button {
@@ -136,8 +134,7 @@ ApplicationWindow {
                     text: "组模式"
                     property string renderMode: "Group"
                     checkable: true
-                    onClicked: {stacklayout.currentIndex = 2
-                                myItem.changeRenderMode(2)}
+                    onClicked: stacklayout.currentIndex = 2
                     ButtonGroup.group: renderGroup
                 }
 

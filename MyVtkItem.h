@@ -70,7 +70,9 @@ public:
     Q_INVOKABLE void groupMerged(QString model_name, const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
     Q_INVOKABLE void patchUpdated(QString model_name, int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
     Q_INVOKABLE void blockUpdated(QString model_name, int block_id, const std::unordered_set<int>& block_patches);
-
+    Q_INVOKABLE void deleteModel(QString model_name);
+    Q_INVOKABLE void renameModel(QString old_name, QString new_name);
+    Q_INVOKABLE void setVisibility(QString model_name, bool visibility);
     Q_SLOT void setClick();
 
     // Q_PROPERTY(QString file READ file WRITE setFile NOTIFY fileChanged)
