@@ -174,21 +174,31 @@ ApplicationWindow {
                     name:"切分面"
                 }
             }
-            confirmButtonModel:ListModel{
+            /*confirmButtonModel:ListModel{
                 ListElement{
                     name:"确认"
                 }
                 ListElement{
                     name:"确认"
                 }
-            }
+            }*/
             onButtonFunction:{
                 if(modeOrConfirm === 0){
                     if(index === 0){
-                        myItem.bindStyle("Edge")
+                        // myItem.bindStyle("Edge")
+                        let ids = myItem.selectedIDs;
+                        if (ids.size() !== 0) {
+                            modelManager.model("a").split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
+                        }
+                        selector.clearSelection("Edge")
                     }
                     if(index === 1){
-                        myItem.bindStyle("Face")
+                        // myItem.bindStyle("Face")
+                        let ids = myItem.selectedIDs;
+                        if (ids.size() !== 0) {
+                            modelManager.model("a").split_face(ids.ids(0), ids.ids(1))
+                        }
+                        selector.clearSelection("Face")
                     }
                 }else{
                     if(index === 0){
@@ -225,18 +235,28 @@ ApplicationWindow {
                     name:"块重网格"
                 }
             }
-            confirmButtonModel:ListModel{
+            /*confirmButtonModel:ListModel{
                 ListElement{
                     name:"确认"
                 }
                 ListElement{
                     name:"确认"
                 }
-            }
+            }*/
             onButtonFunction:{
                 if(modeOrConfirm === 0){
-                    if(index === 0) { myItem.bindStyle("Block")}
-                    else { myItem.bindStyle("Block")}
+                    if(index === 0) {
+                        // myItem.bindStyle("Block")
+                        modelManager.model("a").merge_blocks(myItem.selectedIDs.data.ids)
+                        myItem.resetCamera()
+                        selector.clearSelection("Block")
+                    }
+                    else {
+                        // myItem.bindStyle("Block")
+                        modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
+                        myItem.resetCamera()
+                        selector.clearSelection("Block")
+                    }
                 }else{
                     if(index === 0) 
                     { 
@@ -244,8 +264,8 @@ ApplicationWindow {
                         myItem.resetCamera()
                     }
                     else { 
-                          modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
-                          myItem.resetCamera()
+                        modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
+                        myItem.resetCamera()
                     }
                 }
             }
@@ -270,20 +290,29 @@ ApplicationWindow {
                     name:"组重网格"
                 }
             }
-            confirmButtonModel:ListModel{
+            /*confirmButtonModel:ListModel{
                 ListElement{
                     name:"确认"
                 }
                 ListElement{
                     name:"确认"
                 }
-            }
+            }*/
             onButtonFunction:{
                 if(modeOrConfirm === 0){
                     if(index === 0){ 
-                        myItem.bindStyle("Group")
+                        // myItem.bindStyle("Group")
+                        modelManager.model("a").merge_groups(myItem.selectedIDs.data.ids)
+                        myItem.resetCamera()
+                        selector.clearSelection("Group")
                     }
-                    else{ myItem.bindStyle("Group")}
+                    else{
+                        // myItem.bindStyle("Group")
+                        modelManager.model("a").remesh_group(myItem.selectedIDs.data.ids)
+                        myItem.resetCamera()
+                        myItem.unbindStyle()
+                        selector.clearSelection("Group")
+                    }
                 }else{
                     if(index === 0){
                         modelManager.model("a").merge_groups(myItem.selectedIDs.data.ids)
@@ -357,6 +386,7 @@ ApplicationWindow {
         }
         onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
             selector.changePropertyEnabled()
+            selector.comboBoxSelectionChanged()
             //console.log("信号被接收")
         }
     }
@@ -387,6 +417,7 @@ ApplicationWindow {
             anchors.left: myItem.left
             anchors.topMargin: 10
             anchors.leftMargin: 10
+            property var selector_ids
             onSelectorButtonClicked:{
                 if(type === 0){
                     console.log("点击清除按钮")
@@ -394,6 +425,7 @@ ApplicationWindow {
                 }
                 if(type === 1){
                     console.log("点击确认按钮")
+                    selector_ids = myItem.selectedIDs;
                     /*此处是点击选择器的确认按钮之后执行的函数*/
                     /*下面是我写的测试函数，可删，Selection.h中的initialize()函数是我赋值用的，可删，ids(i)是输出第i个id的，或许有用*/
                     /*selection.initialize()
@@ -407,6 +439,37 @@ ApplicationWindow {
                     }*/            
                 }
             }
+
+            function clearSelection(selectType){
+                myItem.unbindStyle()
+                myItem.bindStyle(selectType)
+            }
+
+            function bindFunction(selectType){
+                if(selectType === "边"){
+                    myItem.bindStyle("Edge")
+                    console.log("绑定边")
+                }
+                if(selectType === "面"){
+                    myItem.bindStyle("Face")
+                    console.log("绑定面")
+                }
+                if(selectType === "块"){
+                    myItem.bindStyle("Block")
+                    console.log("绑定块")
+                }
+                if(selectType === "组"){
+                    myItem.bindStyle("Group")
+                    console.log("绑定组")
+                }
+            }
+            onComboBoxSelectionChanged:{
+                bindFunction(comboBoxSelectedString)
+            }
+
+            // Component.onCompleted:{
+            //     connect(selector, comboBoxSelectionChanged, selector, bindFunction(selector.comboBoxSelectedString))
+            // }
         }
     }
 }

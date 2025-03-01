@@ -47,19 +47,21 @@ Item{
             id: modeButton
             delegate: Button{
                 text: name
-                ButtonGroup.group: modeButtonGroup
+                //ButtonGroup.group: modeButtonGroup
                 required property string name
                 required property int index
                 function getIndex(){ return index }
                 function getchecked(){ return checked }
 
                 onClicked: {
-                    toggle()
+                    // toggle()
+                    buttonFunction(index,0)
+
                 }
-                onCheckedChanged: {
-                    modeButtonClicked(this, getchecked())
-                    if (checked) buttonFunction(index,0 )
-                }
+                // onCheckedChanged: {
+                //     modeButtonClicked(this, getchecked())
+                //     if (checked) buttonFunction(index,0 )
+                // }
 
                 Component.onCompleted:{
                     modeButtonClicked(this,getchecked())

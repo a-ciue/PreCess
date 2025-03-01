@@ -7,6 +7,7 @@ Row{
         selectModeComboBox.enabled = !selectModeComboBox.enabled
     }
     signal selectorButtonClicked(int type)
+    signal comboBoxSelectionChanged
     ComboBox{
         id: selectModeComboBox
         // Layout.preferredWidth: 30
@@ -14,7 +15,10 @@ Row{
         model:ListModel{
             ListElement{text: "边"}
             ListElement{text: "面"}
+            ListElement{text: "块"}
+            ListElement{text: "组"}
         }
+        onCurrentTextChanged: comboBoxSelectionChanged()
     }
     Button{
         id: selectClearButton
@@ -29,4 +33,5 @@ Row{
             root.selectorButtonClicked(1)
         }
     }
+    property alias comboBoxSelectedString: selectModeComboBox.currentText
 }
