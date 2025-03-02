@@ -157,6 +157,7 @@ Q_INVOKABLE void MyVtkItem::deleteModel(QString model_name)
 {
     dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
+
         vtk->actor_.erase(model_name);
         });
 }

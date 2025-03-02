@@ -369,9 +369,16 @@ ApplicationWindow {
             }
             if(type === 2){
                 /*此处是电机对象列表“删除”按钮后执行的函数*/
-                console.log("对象"+index+"已被删除")
-                objectInitializeModel.remove(index,1)
+                //console.log("对象"+index+"已被删除")
+                //objectInitializeModel.remove(index,1)
             }
+        }
+        Component.onCompleted: {
+            modelManager.modelAdded.connect(objectList.addItem)
+            modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
+            modelManager.modelNameChanged.connect((modelName)=>{objectList.renameItem(modelName)})
+            objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
+            objectList.changeModelVisibility.connect(myItem.setVisibility)
         }
     }
 
@@ -417,7 +424,10 @@ ApplicationWindow {
             anchors.fill: parent
             anchors.margins: border.width
         }
-        Component.onCompleted: modelManager.vtkItem = myItem
+        Component.onCompleted: {
+            modelManager.vtkItem = myItem
+            modelManager.removeModel.connect(myItem.deleteModel)
+        }
 
         Selector{
             id:selector
