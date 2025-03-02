@@ -167,14 +167,14 @@ Q_INVOKABLE void MyVtkItem::renameModel(QString old_name, QString new_name)
         Data* vtk = Data::SafeDownCast(userData);
         auto it = vtk->actor_.find(old_name);
         if (it != vtk->actor_.end()) {
-            // ´ÓÓ³ÉäÖĞÒÆ³ı¾É¼ü
+            // ä»æ˜ å°„ä¸­ç§»é™¤æ—§é”®
             vtk->actor_.erase(it);
 
-            // ÖØĞÂ²åÈëĞÂµÄ¼üÖµ¶Ô
+            // é‡æ–°æ’å…¥æ–°çš„é”®å€¼å¯¹
             vtk->actor_.emplace(new_name, std::move(it->second));
         }
         else {
-            // ¾É¼ü²»´æÔÚ£¬¿ÉÒÔÅ×³öÒì³£»ò´¦Àí´íÎó
+            // æ—§é”®ä¸å­˜åœ¨ï¼Œå¯ä»¥æŠ›å‡ºå¼‚å¸¸æˆ–å¤„ç†é”™è¯¯
             throw std::runtime_error("Old key does not exist");
         }
         });
@@ -198,10 +198,10 @@ QSelection* MyVtkItem::selectedIDs()
     {
         /* std::vector<ModelActor*> actors;
          int index = 0;
-     // ±éÀú unordered_map
+     // éå† unordered_map
      for (const auto& pair : data_->actor_ )
      {
-         // pair.second ÊÇ std::unique_ptr<ModelActor>
+         // pair.second æ˜¯ std::unique_ptr<ModelActor>
          actors.push_back(pair.second.get());
      }*/
         std::unique_ptr<Selection> data(std::move(cur_style_->GetSelectedIDs(data_->actor_, select_mode_)));
