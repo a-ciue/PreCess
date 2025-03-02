@@ -32,7 +32,7 @@ ApplicationWindow {
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
 
-                    modelManager.readMesh("a" ,selectedFile);
+                    modelManager.readMesh(selectedFile);
                 }
             }
             FileDialog {

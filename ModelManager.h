@@ -33,8 +33,8 @@ public:
     Q_INVOKABLE void removeModel(const QString& modelName);
     Q_INVOKABLE Model* getModel(const QString& modelName) const;
 
-    Q_INVOKABLE void readSpline(const QString& modelName, QUrl spline_path);
-    Q_INVOKABLE void readMesh(const QString& modelName, QUrl target_mesh);
+    Q_INVOKABLE void readSpline(QUrl spline_path);
+    Q_INVOKABLE void readMesh(QUrl target_mesh);
     Q_INVOKABLE void writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension);
 
     Q_INVOKABLE void reName(const QString& oldName, const QString& newName);
@@ -52,7 +52,5 @@ private:
     //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
     std::unordered_map<QString, std::unique_ptr<Model>> models_; 
     MyVtkItem* vtk_item_{};
-
-    void connectVtk(const QString& modelName);
 };
 #endif // MODELMANAGER_H
