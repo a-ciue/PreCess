@@ -426,7 +426,8 @@ ApplicationWindow {
         }
         Component.onCompleted: {
             modelManager.vtkItem = myItem
-            modelManager.removeModel.connect(myItem.deleteModel)
+            modelManager.modelRemoved.connect((modelName)=>
+            myItem.deleteModel(modelName))
         }
 
         Selector{
