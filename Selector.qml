@@ -8,10 +8,11 @@ Row{
     }
     signal selectorButtonClicked(int type)
     signal comboBoxSelectionChanged
+    property QSelection selection
     ComboBox{
         id: selectModeComboBox
         // Layout.preferredWidth: 30
-        enabled: false
+        //enabled: true
         model:ListModel{
             ListElement{text: "边"}
             ListElement{text: "面"}

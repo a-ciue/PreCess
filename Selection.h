@@ -10,12 +10,12 @@ class Element : public QObject {
         QML_ELEMENT
 public:
     enum Type {
+        None,
         Face,
         Edge,
         Vertex,
         Block,
         Group
-
     };
     Q_ENUM(Type)
 };

@@ -184,18 +184,26 @@ ApplicationWindow {
                     if(index === 0){
                         // myItem.bindStyle("Edge")
                         let ids = myItem.selectedIDs;
-                        if (ids.size() !== 0) {
+                        //if(ids.type() !== Element.Edge){console.log("ids的类型不是Element.Edge")}
+                        console.log(ids.type())
+                        if (ids.size() !== 0 /*&& ids.type() === Element.Edge*/) {
                             modelManager.model("a").split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
+                        }else{
+                            console.log("未选中对象或选中对象不是边")
                         }
-                        selector.clearSelection("Edge")
+
+                        selector.clearSelection()
                     }
                     if(index === 1){
                         // myItem.bindStyle("Face")
                         let ids = myItem.selectedIDs;
-                        if (ids.size() !== 0) {
+                        if (ids.size() !== 0 /*&& ids.type() === Element.Face*/) {
                             modelManager.model("a").split_face(ids.ids(0), ids.ids(1))
+                        }else{
+                            console.log("未选中对象或选中对象不是面")
                         }
-                        selector.clearSelection("Face")
+
+                        selector.clearSelection()
                     }
                 }else{
                     if(index === 0){
@@ -246,13 +254,13 @@ ApplicationWindow {
                         // myItem.bindStyle("Block")
                         modelManager.model("a").merge_blocks(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
-                        selector.clearSelection("Block")
+                        selector.clearSelection()
                     }
                     else {
                         // myItem.bindStyle("Block")
                         modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
-                        selector.clearSelection("Block")
+                        selector.clearSelection()
                     }
                 }else{
                     if(index === 0) 
@@ -299,16 +307,16 @@ ApplicationWindow {
                 if(modeOrConfirm === 0){
                     if(index === 0){ 
                         // myItem.bindStyle("Group")
-                        modelManager.model("a").merge_groups(myItem.selectedIDs.data.ids)
+                        modelManager.model("a").merge_groups(myItem.selectedIDs.data().ids)
                         myItem.resetCamera()
-                        selector.clearSelection("Group")
+                        selector.clearSelection()
                     }
                     else{
                         // myItem.bindStyle("Group")
-                        modelManager.model("a").remesh_group(myItem.selectedIDs.data.ids)
+                        modelManager.model("a").remesh_group(myItem.selectedIDs.data().ids)
                         myItem.resetCamera()
                         myItem.unbindStyle()
-                        selector.clearSelection("Group")
+                        selector.clearSelection()
                     }
                 }else{
                     if(index === 0){
@@ -386,6 +394,9 @@ ApplicationWindow {
             selector.comboBoxSelectionChanged()
             //console.log("信号被接收")
         }
+        // Component.onCompleted: {
+        //     selector.comboBoxSelectionChanged()
+        // }
     }
 
     Rectangle {
@@ -422,7 +433,7 @@ ApplicationWindow {
                 }
                 if(type === 1){
                     console.log("点击确认按钮")
-                    selector_ids = myItem.selectedIDs;
+                    selection = myItem.selectedIDs;
                     /*此处是点击选择器的确认按钮之后执行的函数*/
                     /*下面是我写的测试函数，可删，Selection.h中的initialize()函数是我赋值用的，可删，ids(i)是输出第i个id的，或许有用*/
                     /*selection.initialize()
@@ -437,9 +448,12 @@ ApplicationWindow {
                 }
             }
 
-            function clearSelection(selectType){
+            function clearSelection(){
                 myItem.unbindStyle()
-                myItem.bindStyle(selectType)
+                if(comboBoxSelectedString === "边"){myItem.bindStyle("Edge")}
+                if(comboBoxSelectedString === "面"){myItem.bindStyle("Face")}
+                if(comboBoxSelectedString === "块"){myItem.bindStyle("Block")}
+                if(comboBoxSelectedString === "组"){myItem.bindStyle("Group")}
             }
 
             function bindFunction(selectType){
@@ -464,9 +478,9 @@ ApplicationWindow {
                 bindFunction(comboBoxSelectedString)
             }
 
-            // Component.onCompleted:{
-            //     connect(selector, comboBoxSelectionChanged, selector, bindFunction(selector.comboBoxSelectedString))
-            // }
+            Component.onCompleted:{
+                selector.comboBoxSelectionChanged()
+            }
         }
     }
 }

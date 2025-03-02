@@ -214,7 +214,7 @@ Item{
                 id: selectStartButton
                 text: "开始选择"
                 onClicked:{
-                    root.selectModeChanged()
+                    //root.selectModeChanged()
                 }
             }
 
