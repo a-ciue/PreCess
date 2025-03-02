@@ -64,7 +64,7 @@ Model::Model(std::unique_ptr<MeshLib::CTMesh> mesh)
 
 void Model::refreshVtk()
 {
-    emit modelInited(&patches_, &blocks_, &groups_);
+    emit modelInited(getModelName(), &patches_, &blocks_, &groups_);
 }
 
 void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension)
@@ -231,16 +231,16 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
     // 更新目标 block 的 patchIDs
     // 调用 ModelActor 的 merge_blocks 函数更新 Actor
     //actor_->merge_blocks(block_ids, block_ids[0], target_block->patchIDs);
-    emit blocksMerged(block_ids, block_ids[0], target_block->patchIDs);
+    emit blocksMerged(getModelName(), block_ids, block_ids[0], target_block->patchIDs);
     //actor_->update_group(target_block->groupID, groups_[target_block->groupID]->blockIDs);
-    emit groupUpdated(target_block->groupID, groups_[target_block->groupID]->blockIDs);
+    emit groupUpdated(getModelName(), target_block->groupID, groups_[target_block->groupID]->blockIDs);
     for (int modified_group : modified_groups) {
         if (groups_.count(modified_group)) {
             //actor_->update_group(modified_group, groups_[modified_group]->blockIDs);
-            emit groupUpdated(modified_group, groups_[modified_group]->blockIDs);
+            emit groupUpdated(getModelName(), modified_group, groups_[modified_group]->blockIDs);
         } else {
             //actor_->update_group(modified_group, {});
-            emit groupUpdated(modified_group, {});
+            emit groupUpdated(getModelName(), modified_group, {});
         }
     }
 }
@@ -281,7 +281,7 @@ void Model::merge_groups(const std::vector<int>& group_ids) {
 
     // 更新 ModelActor
     //actor_->merge_groups(group_ids, group_ids[0], target_group->blockIDs);
-    emit groupMerged(group_ids, group_ids[0], target_group->blockIDs);
+    emit groupMerged(getModelName(), group_ids, group_ids[0], target_group->blockIDs);
 }
 
 
@@ -433,17 +433,17 @@ void Model::update_actors(const std::vector<int>& patch_ids)
     for (int patch_id : patch_ids) {
         block_ids.insert(patch_block_id(patch_id));
         //actor_->update_patch(patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
-        emit patchUpdated(patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
+        emit patchUpdated(getModelName(), patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
     }
     for (int block_id : block_ids) {
         group_ids.insert(block_group_id(block_id));
         //actor_->update_block(block_id, blocks_[block_id]->patchIDs);
-        emit blockUpdated(block_id, blocks_[block_id]->patchIDs);
+        emit blockUpdated(getModelName(), block_id, blocks_[block_id]->patchIDs);
     }
     for (int group_id : group_ids)
     {
         //actor_->update_group(group_id, groups_[group_id]->blockIDs);
-        emit groupUpdated(group_id, groups_[group_id]->blockIDs);
+        emit groupUpdated(getModelName(), group_id, groups_[group_id]->blockIDs);
     }
 }
 
@@ -536,6 +536,7 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids, bool new_pa
         }
     }
 }
+
 /*void Model::update_patches(const std::unordered_set<int>& patch_ids) {
     // 直接使用给定的 patch_ids 集合进行查找
     for (int patch_id : patch_ids)

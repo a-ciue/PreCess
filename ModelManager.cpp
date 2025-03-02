@@ -18,15 +18,55 @@ void ModelManager::setVtkItem(MyVtkItem* item)
 }
 
 // 添加模型
-void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> model) {
+//void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> model) {
+//    if (models_.find(modelName) != models_.end()) {
+//        throw std::runtime_error("Model with the given name already exists.");
+//    }
+//    models_[modelName] = std::move(model);
+//}
+void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> model)
+{
     if (models_.find(modelName) != models_.end()) {
         throw std::runtime_error("Model with the given name already exists.");
     }
 
-    // 将模型添加到模型管理器
+    // 为模型设置名称
+    model->setModelName(modelName);
     models_[modelName] = std::move(model);
 
-    // 发出信号，通知视图层更新
+    Model* rawModel = models_[modelName].get();
+    if (!rawModel || !vtk_item_) {
+        qDebug() << "模型或 VTK 项不存在:" << modelName;
+        return;
+    }
+
+    // 使用 SIGNAL/SLOT 机制连接 Model 的信号到 MyVtkItem 的槽（这里信号参数均已增加 modelName）
+    connect(rawModel, SIGNAL(patchUpdated(const QString&, int, const std::vector<std::array<double, 3>>&, const std::vector<std::array<int, 3>>&)),
+        vtk_item_, SLOT(patchUpdated(const QString&, int, const std::vector<std::array<double, 3>>&, const std::vector<std::array<int, 3>>&)));
+
+    connect(rawModel, SIGNAL(blockUpdated(const QString&, int, const std::unordered_set<int>&)),
+        vtk_item_, SLOT(blockUpdated(const QString&, int, const std::unordered_set<int>&)));
+
+    connect(rawModel, SIGNAL(blocksMerged(const QString&, const std::vector<int>&, int, const std::unordered_set<int>&)),
+        vtk_item_, SLOT(blocksMerged(const QString&, const std::vector<int>&, int, const std::unordered_set<int>&)));
+
+    connect(rawModel, SIGNAL(groupUpdated(const QString&, int, const std::unordered_set<int>&)),
+        vtk_item_, SLOT(groupUpdated(const QString&, int, const std::unordered_set<int>&)));
+
+    connect(rawModel, SIGNAL(groupMerged(const QString&, const std::vector<int>&, int, const std::unordered_set<int>&)),
+        vtk_item_, SLOT(groupMerged(const QString&, const std::vector<int>&, int, const std::unordered_set<int>&)));
+
+    connect(rawModel, SIGNAL(modelInited(const QString&, const std::unordered_map<int, std::unique_ptr<Patch>>*,
+        const std::unordered_map<int, std::unique_ptr<Block>>*,
+        const std::unordered_map<int, std::unique_ptr<Group>>*)),
+        vtk_item_, SLOT(onModelInited(const QString&, const std::unordered_map<int, std::unique_ptr<Patch>>*,
+            const std::unordered_map<int, std::unique_ptr<Block>>*,
+            const std::unordered_map<int, std::unique_ptr<Group>>*)));
+
+    // 调用模型刷新接口，确保 VTK 数据更新
+    rawModel->refreshVtk();
+
+    // 发射添加模型的信号（需要在 ModelManager.h 中声明信号 modelAdded(const QString&)）
     emit modelAdded(modelName);
 }
 
@@ -36,29 +76,10 @@ void ModelManager::removeModel(const QString& modelName) {
     if (it == models_.end()) {
         throw std::runtime_error("Model with the given name does not exist.");
     }
-
-    // 删除模型
     models_.erase(it);
-
-    // 发出信号，通知视图层更新
+    // 发射删除模型信号
     emit modelRemoved(modelName);
 }
-//// 添加模型
-//void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> model) {
-//    if (models_.find(modelName) != models_.end()) {
-//        throw std::runtime_error("Model with the given name already exists.");
-//    }
-//    models_[modelName] = std::move(model);
-//}
-//
-//// 删除模型
-//void ModelManager::removeModel(const QString& modelName) {
-//    auto it = models_.find(modelName);
-//    if (it == models_.end()) {
-//        throw std::runtime_error("Model with the given name does not exist.");
-//    }
-//    models_.erase(it);
-//}
 
 // 获取模型
 Model* ModelManager::getModel(const QString& modelName) const {
@@ -139,6 +160,29 @@ void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString
     model->write_mesh(mesh_path, mode, extension);
 }
 
+Q_INVOKABLE void ModelManager::reName(const QString& oldName, const QString& newName){
+        // 使用 find() 检查旧名称是否存在
+        auto it_old = models_.find(oldName);
+        if (it_old == models_.end()) {
+            qDebug() << "模型不存在：" << oldName;
+            return;
+        }
+        // 使用 find() 检查新名称是否已经被占用
+        if (models_.find(newName) != models_.end()) {
+            qDebug() << "新名称已存在：" << newName;
+            return;
+        }
+
+        // 转移模型对象，并更新映射
+        auto modelPtr = std::move(it_old->second);
+        models_.erase(it_old);
+        models_[newName] = std::move(modelPtr);
+
+        // 发射信号通知名称已更新
+        emit modelNameChanged(oldName, newName);
+    }
+
+
 void ModelManager::connectVtk(const QString& modelName)
 {
     auto model = getModel(modelName);
@@ -147,6 +191,7 @@ void ModelManager::connectVtk(const QString& modelName)
         return;
     }
 
+    // 传model指针或引用进lambda表达式、model内添加model_name成员，由model_name成员获取该模型的名字
     connect(model, &Model::patchUpdated, [this,modelName](int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles) {
         vtk_item_->patchUpdated(modelName, patch_id, points, triangles); });
     connect(model, &Model::blockUpdated, [this, modelName](int block_id, const std::unordered_set<int>& block_patches) {

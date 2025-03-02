@@ -37,10 +37,15 @@ public:
     Q_INVOKABLE void readMesh(const QString& modelName, QUrl target_mesh);
     Q_INVOKABLE void writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension);
 
+    Q_INVOKABLE void reName(const QString& oldName, const QString& newName);
+
+
 signals:
     void splineLoadFailed(QString message);
+    void modelNameChanged(const QString& oldName, const QString& newName);
     void modelAdded(const QString& modelName);
     void modelRemoved(const QString& modelName);
+
 
 private:
     //std::unique_ptr<Model> model_;
