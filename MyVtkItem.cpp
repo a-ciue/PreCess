@@ -35,7 +35,7 @@ QQuickVTKItem::vtkUserData MyVtkItem::initializeVTK(vtkRenderWindow* renderWindo
     vtk->faceStyle->SetDefaultRenderer(vtk->renderer);
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);
-
+    renderWindow->AddRenderer(vtk->renderer);
     this->data_= vtk.GetPointer();
 
     return vtk;
@@ -153,6 +153,44 @@ void MyVtkItem::blockUpdated(QString model_name,int block_id, const std::unorder
         });
 }
 
+Q_INVOKABLE void MyVtkItem::deleteModel(QString model_name)
+{
+    dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+        vtk->actor_.erase(model_name);
+        });
+}
+
+Q_INVOKABLE void MyVtkItem::renameModel(QString old_name, QString new_name)
+{
+    dispatch_async([old_name,new_name,this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+        auto it = vtk->actor_.find(old_name);
+        if (it != vtk->actor_.end()) {
+            // 从映射中移除旧键
+            vtk->actor_.erase(it);
+
+            // 重新插入新的键值对
+            vtk->actor_.emplace(new_name, std::move(it->second));
+        }
+        else {
+            // 旧键不存在，可以抛出异常或处理错误
+            throw std::runtime_error("Old key does not exist");
+        }
+        });
+}
+
+Q_INVOKABLE void MyVtkItem::setVisibility(QString model_name, bool visibility)
+{
+    dispatch_async([model_name,visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->actor_[model_name]->face_assembly_->SetVisibility(visibility);
+        vtk->actor_[model_name]->block_assembly_->SetVisibility(visibility);
+        vtk->actor_[model_name]->group_assembly_->SetVisibility(visibility);
+        });
+}
+
 QSelection* MyVtkItem::selectedIDs()
 {
 
@@ -195,7 +233,68 @@ Q_INVOKABLE void MyVtkItem::changeRenderer(QString renderMode)
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        renderWindow->AddRenderer(vtk->renderer);
+        if (renderMode_ == 0)
+        {
+            bindStyle("Face");
+            for (auto&& [modelName, modelActor] : vtk->actor_)
+            {
+                //modelActor->face_assembly_->SetVisibility(1);
+                //modelActor->face_assembly_->PickableOn();
+                //modelActor->block_assembly_->SetVisibility(0);
+                //modelActor->block_assembly_->PickableOff();
+                //modelActor->group_assembly_->SetVisibility(0);
+                //modelActor->group_assembly_->PickableOff();
+                vtk->renderer->AddActor(modelActor->face_assembly_);
+                vtk->renderer->RemoveActor(modelActor->group_assembly_);
+                vtk->renderer->RemoveActor(modelActor->block_assembly_);
+
+            }
+        }
+        else if (renderMode_ == 1)
+        {
+            bindStyle("Block");
+            for (auto&& [modelName, modelActor] : vtk->actor_)
+            {
+                /*cout << "block" << endl;
+                modelActor->face_assembly_->SetVisibility(0);
+                modelActor->face_assembly_->PickableOff();
+                modelActor->block_assembly_->SetVisibility(1);
+                modelActor->block_assembly_->PickableOn();
+                modelActor->group_assembly_->SetVisibility(0);
+                modelActor->group_assembly_->PickableOff();*/
+                std::vector<vtkActor*> select = modelActor->get_remove_actor();
+                for (auto& actor_ : select)
+                {
+                    vtk->renderer->RemoveActor(actor_);
+                }
+
+                vtk->renderer->RemoveActor(modelActor->face_assembly_);
+                vtk->renderer->RemoveActor(modelActor->group_assembly_);
+                vtk->renderer->AddActor(modelActor->block_assembly_);
+            }
+
+        }
+        else if (renderMode_ == 2)
+        {
+            bindStyle("Group");
+            for (auto&& [modelName, modelActor] : vtk->actor_)
+            {
+                /*modelActor->face_assembly_->SetVisibility(0);
+                modelActor->face_assembly_->PickableOff();
+                modelActor->block_assembly_->SetVisibility(0);
+                modelActor->block_assembly_->PickableOff();
+                modelActor->group_assembly_->SetVisibility(1);
+                modelActor->group_assembly_->PickableOn();*/
+                std::vector<vtkActor*> select = modelActor->get_remove_actor();
+                for (auto& actor_ : select)
+                {
+                    vtk->renderer->RemoveActor(actor_);
+                }
+                vtk->renderer->RemoveActor(modelActor->face_assembly_);
+                vtk->renderer->RemoveActor(modelActor->block_assembly_);
+                vtk->renderer->AddActor(modelActor->group_assembly_);
+            }
+        }
 
         resetCamera();
         });

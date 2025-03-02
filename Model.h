@@ -98,16 +98,41 @@ public:
     int block_group_id(int patch_id);
     //const std::vector<int>& group_block_ids(int group_id);
 
+    QString getModelName() const { return model_name; }
+    void setModelName(const QString& name) { model_name = name; }
+
 signals:
-    void modelInited(const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+    //void modelInited(const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+    //    const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
+    //    const std::unordered_map<int, std::unique_ptr<Group>>* groups);
+    //void patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
+    //void blockUpdated(int block_id, const std::unordered_set<int>& block_patches);
+    //void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);
+
+    //void blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches);
+    //void groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
+    void modelInited(const QString& modelName,
+        const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
         const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
         const std::unordered_map<int, std::unique_ptr<Group>>* groups);
-    void patchUpdated(int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles);
-    void blockUpdated(int block_id, const std::unordered_set<int>& block_patches);
-    void groupUpdated(int group_id, const std::unordered_set<int>& group_blocks);
 
-    void blocksMerged(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches);
-    void groupMerged(const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks);
+    void patchUpdated(const QString& modelName, int patch_id,
+        const std::vector<std::array<double, 3>>& points,
+        const std::vector<std::array<int, 3>>& triangles);
+
+    void blockUpdated(const QString& modelName, int block_id,
+        const std::unordered_set<int>& block_patches);
+
+    void groupUpdated(const QString& modelName, int group_id,
+        const std::unordered_set<int>& group_blocks);
+
+    void blocksMerged(const QString& modelName, const std::vector<int>& block_ids,
+        int father_block,
+        const std::unordered_set<int>& father_block_patches);
+
+    void groupMerged(const QString& modelName, const std::vector<int>& group_ids,
+        int father_group,
+        const std::unordered_set<int>& father_group_blocks);
 
 private:
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
@@ -125,6 +150,7 @@ private:
     using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
 
     std::unique_ptr<MeshLib::CTMesh> mesh_;
+    QString model_name;
     PatchMap patches_;
     BlockMap blocks_;
     GroupMap groups_;
