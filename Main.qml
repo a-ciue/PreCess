@@ -187,7 +187,7 @@ ApplicationWindow {
                         //if(ids.type() !== Element.Edge){console.log("ids的类型不是Element.Edge")}
                         console.log(ids.type())
                         if (ids.size() !== 0 /*&& ids.type() === Element.Edge*/) {
-                            modelManager.model("a").split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
+                            modelManager.model(ids.getName()).split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
                         }else{
                             console.log("未选中对象或选中对象不是边")
                         }
@@ -198,7 +198,7 @@ ApplicationWindow {
                         // myItem.bindStyle("Face")
                         let ids = myItem.selectedIDs;
                         if (ids.size() !== 0 /*&& ids.type() === Element.Face*/) {
-                            modelManager.model("a").split_face(ids.ids(0), ids.ids(1))
+                            modelManager.model(ids.getName()).split_face(ids.ids(0), ids.ids(1))
                         }else{
                             console.log("未选中对象或选中对象不是面")
                         }
@@ -224,7 +224,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("a","Face", check)
+                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Face", check)
             }
         }
 
@@ -470,19 +470,19 @@ ApplicationWindow {
             function bindFunction(selectType){
                 if(selectType === "边"){
                     myItem.bindStyle("Edge")
-                    console.log("绑定边")
+                    //console.log("绑定边")
                 }
                 if(selectType === "面"){
                     myItem.bindStyle("Face")
-                    console.log("绑定面")
+                    //console.log("绑定面")
                 }
                 if(selectType === "块"){
                     myItem.bindStyle("Block")
-                    console.log("绑定块")
+                    //console.log("绑定块")
                 }
                 if(selectType === "组"){
                     myItem.bindStyle("Group")
-                    console.log("绑定组")
+                    //console.log("绑定组")
                 }
             }
             onComboBoxSelectionChanged:{

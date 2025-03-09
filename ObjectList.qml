@@ -18,8 +18,8 @@ Item {
                 id:visibilityButton
                 text: "隐藏"
                 onClicked:{
-                    root.buttonPressed(index,1)
-                    changeModelVisibility(name)
+                    //root.buttonPressed(index,1)
+                    changeModelVisibility(name, !checked)
                 }
                 checkable: true
             }
@@ -27,7 +27,7 @@ Item {
                 id:deleteButton
                 text: "删除"
                 onClicked:{
-                    root.buttonPressed(index,2)
+                    //root.buttonPressed(index,2)
                     removeModel(name)
                     console.log("buttonDelName: ", name)
                 }

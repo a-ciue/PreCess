@@ -87,6 +87,13 @@ public:
     Q_INVOKABLE int ids(int i) {
         return _data->ids[i];
     }
+    /**
+     * @brief getName 返回选中对象的模型名
+     * @return QString类
+     */
+    Q_INVOKABLE QString getName(){
+        return _data->model_name;
+    }
 
 private:
     std::unique_ptr<Selection> _data;
