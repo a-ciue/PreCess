@@ -1,3 +1,8 @@
+/**
+ * @file QSelectingBar.qml
+ * @brief 功能选择栏，用户选择使用功能的交互界面，提供一栏功能按钮
+ */
+
 import QtQuick
 import QtQuick.Controls 6.7
 import QtQuick.Layouts
@@ -16,13 +21,6 @@ Item{
     RowLayout{
         anchors.fill: parent
         spacing: 3
-        ButtonGroup{
-            id:modeButtonGroup
-            onCheckStateChanged: {
-                if(checkState == Qt.Unchecked)
-                    buttonGroupFunction()
-            }
-        }
 
         Button{
             id:edgeRenderGroup
@@ -38,35 +36,22 @@ Item{
             Layout.fillHeight: true
         }
 
-        // Item{
-        //     Layout.preferredWidth:10
-        //     Layout.fillHeight: true
-        // }
-
         Repeater{
             id: modeButton
             delegate: Button{
                 text: name
-                //ButtonGroup.group: modeButtonGroup
                 required property string name
                 required property int index
                 function getIndex(){ return index }
                 function getchecked(){ return checked }
 
                 onClicked: {
-                    // toggle()
                     buttonFunction(index,0)
-
                 }
-                // onCheckedChanged: {
-                //     modeButtonClicked(this, getchecked())
-                //     if (checked) buttonFunction(index,0 )
-                // }
 
                 Component.onCompleted:{
                     modeButtonClicked(this,getchecked())
                 }
-                
             }
         }
         Item{
@@ -97,7 +82,8 @@ Item{
         confirmButton.itemAt(a.getIndex()).visible = ischecked
     }
 
-    //通过为两个model添加别名使之能被外界分别赋值
+    /** type:var 选择按钮的model数据构造 */
     property alias modeButtonModel :modeButton.model
+    /** type:var 确认按钮的model数据构造 */
     property alias confirmButtonModel :confirmButton.model
 }

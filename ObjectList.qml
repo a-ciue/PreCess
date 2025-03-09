@@ -1,3 +1,8 @@
+/**
+ * @file QObjectList.qml
+ * @brief 对象列表，用列表方式显示当前加载的模型并提供删除、隐藏和重命名功能
+ */
+
 import QtQuick 2.15
 import QtQuick.Controls
 
@@ -9,6 +14,9 @@ Item {
     signal renameModel(string modelName)
     signal changeModelVisibility(string modelName,bool visibility)
     property var idxMap: ({})
+    /**
+     * @brief 对象显示列表，每行由两个按钮，一个文本和一个图标组成
+     */
     ListView{
         id: objectListView
         anchors.fill: parent
@@ -43,17 +51,30 @@ Item {
             }
         }
     }
-    // do
+    /**
+     * @brief 为列表添加一行模型信息
+     * @param modelName 模型名字
+     */
     function addItem(modelName){
         objectModel.append({"name":modelName})
         idxMap[modelName] = objectModel.count - 1
         console.log("addIdx", idxMap[modelName])
     }
+    /**
+     * @brief 删除一行模型信息
+     * @param modelName 模型名字
+     */
     function removeItem(modelName){
         console.log("remove: ", modelName)
         objectModel.remove(idxMap[modelName])
         delete idxMap[modelName]
     }
+    /**
+     * @brief 重命名一行模型信息的名字
+     * @param oldName 模型的旧名
+     * @param newName 模型的新名
+     */
     //function renameItem(oldName, newName){}
+    /** type:var 对象列表的model数据构造 */
     property alias objectModel: objectListView.model
 }

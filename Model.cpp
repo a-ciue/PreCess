@@ -1,11 +1,18 @@
-#include "Model.h"
-/*
- * Model构造函数中需要调用ModelActor的构造函数和析构函数
- * 行17：In template: calling a private destructor of class 'ModelActor'
- * 行57：In template: calling a private constructor of class 'ModelActor'
- * 目前ModelActor的构造、析构函数仍为private
- * 一个解决方法：将ModelActor的构造、析构函数设置为public
-*/
+/**
+ * @file Model.cpp
+ * @brief 实现 Model 类的核心功能，用于管理和操作网格数据
+ *
+ * 该文件包含 Model 类的实现，提供网格数据的存储、更新和操作功能，包括：
+ * - 读取和写入网格数据
+ * - 面和边的分割
+ * - 块和组的合并
+ * - 重新网格化功能
+ * - 维护与 ModelActor 及 VTK 组件的交互
+ *
+ * @author 徐昊阳 haoyangxu06@gmail.com
+ * @date 2025/3/8
+ */
+
 #include "Model.h"
 #include "ModelActor.h"
 #include "ToolMesh.h"
@@ -102,8 +109,13 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
         assert(false);
 }
 
-void Model::split_face(int patch_id, int face_id)
+void Model::split_face(QSelection* selection)
 {
+    // 从 selection 中取出 Selection 对象
+    auto sel = selection->move();
+    // 假定 sel->ids[0] 为 patch_id，sel->ids[1] 为 face_id
+    int patch_id = sel->ids[0];
+    int face_id = sel->ids[1];
     //int face_gid = patches_[patch_id]->faceIDs_[face_id];
     int face_gid = face_id;
     MeshLib::CToolFace* face = mesh_->idFace(face_gid);
@@ -132,8 +144,13 @@ void Model::split_face(int patch_id, int face_id)
     update_actors({ patch_id });
 }
 
-void Model::split_edge(int patch_id, int edge_v_id1, int edge_v_id2)
+void Model::split_edge(QSelection* selection)
 {
+    auto sel = selection->move();
+    // 假定 sel->ids[0] 为 patch_id，sel->ids[1] 为 edge_v_id1，sel->ids[2] 为 edge_v_id2
+    int patch_id = sel->ids[0];
+    int edge_v_id1 = sel->ids[1];
+    int edge_v_id2 = sel->ids[2];
     std::vector<int>& vids = patches_.at(patch_id)->vertexIDs_;
     //std::array<int, 2> edge_v_gid { vids[edge_v_ids[0]], vids[edge_v_ids[1]] };
     std::array<int, 2> edge_v_gid { edge_v_id1, edge_v_id2 };
@@ -180,7 +197,9 @@ void Model::split_edge(int patch_id, int edge_v_id1, int edge_v_id2)
     update_actors(patch_ids);
 }
 
-void Model::merge_blocks(const std::vector<int>& block_ids) {
+void Model::merge_blocks(QSelection* selection) {
+    auto sel = selection->move();
+    const std::vector<int>& block_ids = sel->ids;
     if (block_ids.empty()) {
         throw std::invalid_argument("block_ids cannot be empty.");
     }
@@ -248,7 +267,9 @@ void Model::merge_blocks(const std::vector<int>& block_ids) {
 
 
 
-void Model::merge_groups(const std::vector<int>& group_ids) {
+void Model::merge_groups(QSelection* selection) {
+    auto sel = selection->move();
+    const std::vector<int>& group_ids = sel->ids;
     if (group_ids.empty()) {
         throw std::invalid_argument("group_ids cannot be empty.");
     }
@@ -288,7 +309,9 @@ void Model::merge_groups(const std::vector<int>& group_ids) {
 
 
 
-void Model::remesh_block(const std::vector<int>& block_ids) {
+void Model::remesh_block(QSelection* selection) {
+    auto sel = selection->move();
+    const std::vector<int>& block_ids = sel->ids;
     // 验证 block_id 是否有效
     std::unordered_set<int> patch_ids_set;
     for (int block_id : block_ids) {
@@ -322,7 +345,9 @@ void Model::remesh_block(const std::vector<int>& block_ids) {
     refreshVtk();
 }
 
-void Model::remesh_group(const std::vector<int>& group_ids) {
+void Model::remesh_group(QSelection* selection) {
+    auto sel = selection->move();
+    const std::vector<int>& group_ids = sel->ids;
     // 收集所有 patch_ids
     std::unordered_set<int> patch_ids_set;
     for (int group_id : group_ids)
