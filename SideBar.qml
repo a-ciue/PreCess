@@ -1,3 +1,8 @@
+/**
+ * @file QSideBar.qml
+ * @brief 侧边栏，执行复杂算法时提供参数的交互界面
+ */
+
 import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -194,6 +199,7 @@ Item{
         RowLayout{
             // id: root
             spacing: 5
+            /** type:string */
             property alias name: nametext.text
             property alias parameter1: selectedItems.text
             property var value: selectedItems.text
@@ -220,6 +226,6 @@ Item{
 
         }
     }
-
+    /** type:var 侧边栏的model数据构造 */
     property alias m: parameterList.model       //对main.qml的属性接口
 }
