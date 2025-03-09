@@ -1,3 +1,13 @@
+/**
+ * @file Main.qml
+ * @brief 程序的交互主界面
+ *
+ * @sa QObjectList.qml
+ * @sa QSelectingBar.qml
+ * @sa QSelector.qml
+ * @sa QSideBar.qml
+ */
+
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
@@ -209,13 +219,13 @@ ApplicationWindow {
                     if(index === 0){
                         let ids = myItem.selectedIDs;
                         if (ids.size() !== 0) {
-                            modelManager.model("a").split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
+                            modelManager.model(ids.getName()).split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
                         }
                     }
                     if(index === 1){
                         let ids = myItem.selectedIDs;
                         if (ids.size() !== 0) {
-                            modelManager.model("a").split_face(ids.ids(0), ids.ids(1))
+                            modelManager.model(ids.getName()).split_face(ids.ids(0), ids.ids(1))
                         }
                     }
                 }
@@ -252,24 +262,24 @@ ApplicationWindow {
                 if(modeOrConfirm === 0){
                     if(index === 0) {
                         // myItem.bindStyle("Block")
-                        modelManager.model("a").merge_blocks(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                         selector.clearSelection()
                     }
                     else {
                         // myItem.bindStyle("Block")
-                        modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).remesh_block(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                         selector.clearSelection()
                     }
                 }else{
                     if(index === 0) 
                     { 
-                        modelManager.model("a").merge_blocks(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                     else { 
-                        modelManager.model("a").remesh_block(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).remesh_block(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                 }
@@ -278,7 +288,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("a","Block", check)
+                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Block", check)
             }
         }
 
@@ -307,24 +317,24 @@ ApplicationWindow {
                 if(modeOrConfirm === 0){
                     if(index === 0){ 
                         // myItem.bindStyle("Group")
-                        modelManager.model("a").merge_groups(myItem.selectedIDs.data().ids)
+                        modelManager.model(myItem.selectedIDs.getName()).merge_groups(myItem.selectedIDs.data().ids)
                         myItem.resetCamera()
                         selector.clearSelection()
                     }
                     else{
                         // myItem.bindStyle("Group")
-                        modelManager.model("a").remesh_group(myItem.selectedIDs.data().ids)
+                        modelManager.model(myItem.selectedIDs.getName()).remesh_group(myItem.selectedIDs.data().ids)
                         myItem.resetCamera()
                         myItem.unbindStyle()
                         selector.clearSelection()
                     }
                 }else{
                     if(index === 0){
-                        modelManager.model("a").merge_groups(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).merge_groups(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                     else{
-                        modelManager.model("a").remesh_group(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).remesh_group(myItem.selectedIDs.data.ids)
                         myItem.resetCamera()
                     }
                 }
@@ -333,7 +343,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender("a","Group", check)
+                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Group", check)
             }
         }
     }
@@ -426,8 +436,8 @@ ApplicationWindow {
         }
         Component.onCompleted: {
             modelManager.vtkItem = myItem
-            modelManager.modelRemoved.connect((modelName)=>
-            myItem.deleteModel(modelName))
+            modelManager.modelRemoved.connect(myItem.deleteModel)
+        }
         }
 
         Selector{
