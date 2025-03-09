@@ -1,3 +1,15 @@
+/**
+ * @file ModelManager.cpp
+ * @brief 实现 ModelManager 类，用于管理多个网格模型
+ *
+ * 该文件包含 ModelManager 类的实现，提供多模型管理功能，包括：
+ * - 添加、删除和获取模型
+ * - 处理网格的读取与写入
+ * - 维护与 VTK 组件的交互
+ *
+ * @author 徐昊阳 haoyangxu06@gmail.com
+ * @date 2025/3/8
+ */
 #include "ModelManager.h"
 #include "ModelUtil.h"
 #include "ToolMesh.h"
@@ -135,7 +147,7 @@ void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString
     model->write_mesh(mesh_path, mode, extension);
 }
 
-Q_INVOKABLE void ModelManager::reName(const QString& oldName, const QString& newName){
+Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString& newName){
         // 使用 find() 检查旧名称是否存在
         auto it_old = models_.find(oldName);
         if (it_old == models_.end()) {

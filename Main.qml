@@ -197,7 +197,7 @@ ApplicationWindow {
                         //if(ids.type() !== Element.Edge){console.log("ids的类型不是Element.Edge")}
                         console.log(ids.type())
                         if (ids.size() !== 0 /*&& ids.type() === Element.Edge*/) {
-                            modelManager.model(ids.getName()).split_edge(ids.ids(0), ids.ids(1), ids.ids(2))
+                            modelManager.model(ids.getName()).split_edge(ids)
                         }else{
                             console.log("未选中对象或选中对象不是边")
                         }
@@ -208,7 +208,7 @@ ApplicationWindow {
                         // myItem.bindStyle("Face")
                         let ids = myItem.selectedIDs;
                         if (ids.size() !== 0 /*&& ids.type() === Element.Face*/) {
-                            modelManager.model(ids.getName()).split_face(ids.ids(0), ids.ids(1))
+                            modelManager.model(ids.getName()).split_face(ids)
                         }else{
                             console.log("未选中对象或选中对象不是面")
                         }
@@ -437,7 +437,6 @@ ApplicationWindow {
         Component.onCompleted: {
             modelManager.vtkItem = myItem
             modelManager.modelRemoved.connect(myItem.deleteModel)
-        }
         }
 
         Selector{
