@@ -48,9 +48,7 @@ public:
     int patch_global_fid(int patch_id, int local_fid);
     int patch_global_vid(int patch_id, int local_vid);
 
-    vtkNew<vtkPropAssembly> face_assembly_;
-    vtkNew<vtkPropAssembly> block_assembly_;
-    vtkNew<vtkPropAssembly> group_assembly_;
+
 
     //! @brief 合并给定id的block的Actor，并删除被合并的Actor
     //! @param block_ids 要合并的block
@@ -72,7 +70,14 @@ public:
     void update_block(int block_id, const std::unordered_set<int>& block_patches);
     //! @brief 更新指定group的actor的mapper
     void update_group(int group_id, const std::unordered_set<int>& group_blocks);
-    void update_assembly();
+    /**
+     * @brief 切换渲染模式时在renderer中改变渲染的assembly
+     *
+     * 加入该渲染模式下的assembly并在renderer中remove掉其他assembly
+     * @param renderMode 渲染模式
+     */
+    void change_mode(std::string renderMode);
+    void set_visibility(bool visibility);
     std::vector<vtkActor*> get_remove_actor();
 
 private:
@@ -86,7 +91,13 @@ private:
 
     //vtkRenderer* face_renderer_ {};
     //vtkRenderer* block_renderer_ {};
-    //vtkRenderer* group_renderer_ {};
+    //vtkRenderer* group_renderer_ {};  
+     
+    vtkNew<vtkPropAssembly> face_assembly_;
+    vtkNew<vtkPropAssembly> block_assembly_;
+    vtkNew<vtkPropAssembly> group_assembly_;
+
+    vtkRenderer* renderer_;
 
     ActorMap patch_actors_;
     std::unordered_map<vtkActor*, int> patch_actor_id_;
@@ -96,7 +107,6 @@ private:
     std::unordered_map<vtkActor*, int> group_actor_id_;
     
     std::unordered_map<RenderMode, bool> edge_visibility;
-    std::unordered_map<vtkPropAssembly*, ModelActor*> assembly_to_model_actor_map_;
     std::vector<vtkActor*> selections_;
 };
 

@@ -114,8 +114,8 @@ void Model::split_face(QSelection* selection)
     // 从 selection 中取出 Selection 对象
     auto sel = selection->move();
     // 假定 sel->ids[0] 为 patch_id，sel->ids[1] 为 face_id
-    int patch_id = sel->ids[0];
-    int face_id = sel->ids[1];
+    int face_id = sel->ids[0];
+    int patch_id = mesh_->idFace(face_id)->get_g();
     //int face_gid = patches_[patch_id]->faceIDs_[face_id];
     int face_gid = face_id;
     MeshLib::CToolFace* face = mesh_->idFace(face_gid);
@@ -148,10 +148,10 @@ void Model::split_edge(QSelection* selection)
 {
     auto sel = selection->move();
     // 假定 sel->ids[0] 为 patch_id，sel->ids[1] 为 edge_v_id1，sel->ids[2] 为 edge_v_id2
-    int patch_id = sel->ids[0];
-    int edge_v_id1 = sel->ids[1];
-    int edge_v_id2 = sel->ids[2];
-    std::vector<int>& vids = patches_.at(patch_id)->vertexIDs_;
+    //int patch_id = sel->ids[0];
+    int edge_v_id1 = sel->ids[0];
+    int edge_v_id2 = sel->ids[1];
+    //std::vector<int>& vids = patches_.at(patch_id)->vertexIDs_;
     //std::array<int, 2> edge_v_gid { vids[edge_v_ids[0]], vids[edge_v_ids[1]] };
     std::array<int, 2> edge_v_gid { edge_v_id1, edge_v_id2 };
     MeshLib::CToolVertex *v1 = mesh_->idVertex(edge_v_gid[0]),
@@ -174,7 +174,7 @@ void Model::split_edge(QSelection* selection)
     }
 
     // 记录父节点信息
-    int father_id = patches_.at(patch_id)->father_id;
+    //int father_id = patches_.at(patch_id)->father_id;
 
     ModelUtil::split_edge(edge, mesh_.get());
 
@@ -189,9 +189,9 @@ void Model::split_edge(QSelection* selection)
     }
 
     // 更新涉及的patch的father_id
-    for (int pid : patch_ids) {
-        update_father_id(pid, father_id);
-    }
+    //for (int pid : patch_ids) {
+    //    update_father_id(pid, father_id);
+    //}
 
     update_patches(patch_ids, false);
     update_actors(patch_ids);

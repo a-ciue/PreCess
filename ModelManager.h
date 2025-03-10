@@ -25,7 +25,7 @@
 class ModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(MyVtkItem* vtkItem READ vtkItem WRITE setVtkItem)
+    Q_PROPERTY(QRenderWindow* vtkItem READ vtkItem WRITE setVtkItem)
     
 
 public:
@@ -57,14 +57,14 @@ public:
      *
      * @return MyVtkItem* 指向当前 VTK 组件的指针
      */
-    MyVtkItem* vtkItem();
+    QRenderWindow* vtkItem();
 
     /**
      * @brief 设置 VTK 组件
      *
      * @param item 需要关联的 VTK 组件
      */
-    void setVtkItem(MyVtkItem* item);
+    void setVtkItem(QRenderWindow* item);
 
     /**
      * @brief 添加一个模型
@@ -157,6 +157,6 @@ private:
     //std::unique_ptr<Model> model_;
     //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
     std::unordered_map<QString, std::unique_ptr<Model>> models_; 
-    MyVtkItem* vtk_item_{};
+    QRenderWindow* vtk_item_{};
 };
 #endif // MODELMANAGER_H

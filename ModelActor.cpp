@@ -1,8 +1,4 @@
 #include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -86,8 +82,20 @@ void ModelActor::render_edge(RenderMode mode, bool render)
 ModelActor* ModelActor::getModelActor(vtkPropAssembly* assembly)
 {
     if (!assembly) return nullptr;
-    auto it = assembly_to_model_actor_map_.find(assembly);
-    return (it != assembly_to_model_actor_map_.end()) ? it->second : nullptr;
+    if (assembly == face_assembly_)
+    {
+        return this;
+    }
+    if (assembly == block_assembly_)
+    {
+        return this;
+    }
+    if (assembly == group_assembly_)
+    {
+        return this;
+    }
+    
+    return nullptr;
     
 }
 
@@ -163,32 +171,19 @@ ModelActor::ModelActor(const std::unordered_map<int, std::unique_ptr<Patch>>& pa
     edge_visibility[RenderMode::Block] = false;
     edge_visibility[RenderMode::Group] = false;
 
-    assembly_to_model_actor_map_[face_assembly_] = this;
-    assembly_to_model_actor_map_[block_assembly_] = this;
-    assembly_to_model_actor_map_[group_assembly_] = this;
 }
 
 ModelActor::~ModelActor()
 {
-    /*if (1) {
-        // ActorMap& face_actors = *mode_actors_[RenderMode::Face];
-        face_assembly_->Delete();
-    }
-    if (1) {
-        // ActorMap& block_actors = *mode_actors_[RenderMode::Block];
-        block_assembly_->Delete();
-    }
-    if (1) {
-        // ActorMap& group_actors = *mode_actors_[RenderMode::Group];
-        group_assembly_->Delete();
-    }*/
+    this->renderer_->RemoveActor(this->face_assembly_);
+    this->renderer_->RemoveActor(this->block_assembly_);
+    this->renderer_->RemoveActor(this->group_assembly_);
+
 }
 
 void ModelActor::bind_renderer(vtkRenderer* renderer)
 {
-    //renderer->AddActor(face_assembly_);
-    //renderer->AddActor(block_assembly_);
-    //renderer->AddActor(group_assembly_);
+    this->renderer_ = renderer;
 }
 
 void ModelActor::merge_blocks(const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
@@ -319,10 +314,40 @@ void ModelActor::update_group(int group_id, const std::unordered_set<int>& group
     group_assembly_->AddPart(group_actors_[group_id]);
 }
 
-void ModelActor::update_assembly()
-{
 
+void ModelActor::change_mode(std::string renderMode)
+{
+    if (renderMode == "Face") {
+        renderer_->AddActor(face_assembly_);
+        renderer_->RemoveActor(block_assembly_);
+        renderer_->RemoveActor(group_assembly_);
+    }
+    else if (renderMode == "Block") {
+        renderer_->RemoveActor(face_assembly_);
+        renderer_->AddActor(block_assembly_);
+        renderer_->RemoveActor(group_assembly_);
+    }
+    else if (renderMode == "Group") {
+        renderer_->RemoveActor(face_assembly_);
+        renderer_->RemoveActor(block_assembly_);
+        renderer_->AddActor(group_assembly_);
+    }
+    else {
+        std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
+        return;
+    }
 }
+
+void ModelActor::set_visibility(bool visibility)
+{
+     this->face_assembly_->SetVisibility(visibility);
+    this->block_assembly_->SetVisibility(visibility);
+    this->group_assembly_->SetVisibility(visibility);
+}
+
+
+
+
 
 std::vector<vtkActor*> ModelActor::get_remove_actor()
 {

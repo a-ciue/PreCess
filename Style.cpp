@@ -93,7 +93,6 @@ std::unique_ptr<Selection> MouseInteractorHighLightFace::GetSelectedIDs(const st
         selection->ids.reserve(2);
 
         int patch_id = modelactor_->patch_actor_id(actors->patch_actor);
-        selection->ids.push_back(patch_id);
         selection->ids.push_back(modelactor_->patch_global_fid(patch_id,actors->local_id));
         selection->type = Element::Type::Face;
     }
@@ -122,7 +121,6 @@ std::unique_ptr<Selection> MouseInteractorHighLightEdge::GetSelectedIDs(const st
         selection->ids.reserve(3);
 
         int patch_id = modelactor_->patch_actor_id(actors->actor);
-        selection->ids.push_back(patch_id);
         selection->ids.push_back(modelactor_->patch_global_vid(patch_id,actors->v_local_id[0]));
         selection->ids.push_back(modelactor_->patch_global_vid(patch_id, actors->v_local_id[1]));
         selection->type = Element::Type::Edge;

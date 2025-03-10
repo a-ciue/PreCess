@@ -1,3 +1,9 @@
+/**
+* @file：Selector.h
+* @brief：渲染窗口中的选择和高亮操作
+* @author：付轩宇 email 982531420@qq.com
+
+*/
 #include <array>
 #include <optional>
 #include <vector>
@@ -27,6 +33,7 @@ public:
     void clear();
     //! @brief 获取当前选中的actors
     std::vector<vtkActor*> get();
+    //! @brief 获取当前选中的assembly
     vtkPropAssembly* getAssembly();
   
     //! @brief 找到该坐标下的actor，并高亮该actor；若选中已选actor要取消选中和高亮

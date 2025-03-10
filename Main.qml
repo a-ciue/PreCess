@@ -262,24 +262,24 @@ ApplicationWindow {
                 if(modeOrConfirm === 0){
                     if(index === 0) {
                         // myItem.bindStyle("Block")
-                        modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs)
                         myItem.resetCamera()
                         selector.clearSelection()
                     }
                     else {
                         // myItem.bindStyle("Block")
-                        modelManager.model(myItem.selectedIDs.getName()).remesh_block(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).remesh_block(myItem.selectedIDs)
                         myItem.resetCamera()
                         selector.clearSelection()
                     }
                 }else{
                     if(index === 0) 
                     { 
-                        modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs)
                         myItem.resetCamera()
                     }
                     else { 
-                        modelManager.model(myItem.selectedIDs.getName()).remesh_block(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).remesh_block(myItem.selectedIDs)
                         myItem.resetCamera()
                     }
                 }
@@ -330,11 +330,11 @@ ApplicationWindow {
                     }
                 }else{
                     if(index === 0){
-                        modelManager.model(myItem.selectedIDs.getName()).merge_groups(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).merge_groups(myItem.selectedIDs)
                         myItem.resetCamera()
                     }
                     else{
-                        modelManager.model(myItem.selectedIDs.getName()).remesh_group(myItem.selectedIDs.data.ids)
+                        modelManager.model(myItem.selectedIDs.getName()).remesh_group(myItem.selectedIDs)
                         myItem.resetCamera()
                     }
                 }
@@ -429,7 +429,7 @@ ApplicationWindow {
         radius: 5
         color: "magenta"
 
-        MyVtkItem {
+        QRenderWindow {
             id: myItem
             anchors.fill: parent
             anchors.margins: border.width
