@@ -1,7 +1,7 @@
 /**
-* @file£ºStyle.h
-* @brief£ºäÖÈ¾´°¿ÚÖĞµÄ½»»¥²Ù×÷
-* @author£º¸¶ĞùÓî 982531420@qq.com
+* @fileï¼šStyle.h
+* @briefï¼šæ¸²æŸ“çª—å£ä¸­çš„äº¤äº’æ“ä½œ
+* @authorï¼šä»˜è½©å®‡ 982531420@qq.com
 
 */
 #ifndef STYLE_H
@@ -23,10 +23,10 @@ public:
     virtual void SetClick() = 0;
     virtual void ClearSelections() = 0;
     /*
-    * @brief Ğéº¯Êı»ñÈ¡Ñ¡ÖĞactorid
+    * @brief è™šå‡½æ•°è·å–é€‰ä¸­actorid
     *
-    * @param[in] mActors ËùÓĞÄ£ĞÍÓëÄ£ĞÍÃûµÄÓ³Éä
-    * @param[in] mode µ±Ç°µÄÑ¡ÔñÄ£Ê½
+    * @param[in] mActors æ‰€æœ‰æ¨¡å‹ä¸æ¨¡å‹åçš„æ˜ å°„
+    * @param[in] mode å½“å‰çš„é€‰æ‹©æ¨¡å¼
 
     */
     virtual std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode  mode) = 0;
@@ -41,7 +41,7 @@ public:
     virtual ~MouseInteractorHighLightActor() { }
     void OnLeftButtonUp() override;
     /*
-    * @brief µ÷ÓÃselect
+    * @brief è°ƒç”¨select
     
 
     */
@@ -50,11 +50,11 @@ public:
     void SetClick() override;
     void ClearSelections() override;
     /*
-    * @brief »ñÈ¡Ñ¡ÖĞµÄSelection
+    * @brief è·å–é€‰ä¸­çš„Selection
     *
-    * ÅĞ¶ÏÑ¡ÖĞµÄ¶ÔÏóËùÊôµÄÄ£ĞÍ£¬½«È«¾ÖID×ª»¯ÎªModelActorÖĞµÄ¾Ö²¿ID£¬²¢´æÈëSelection
-    * @param[in] mActors ËùÓĞÄ£ĞÍÓëÄ£ĞÍÃûµÄÓ³Éä
-    * @param[in] mode µ±Ç°µÄÑ¡ÔñÄ£Ê½
+    * åˆ¤æ–­é€‰ä¸­çš„å¯¹è±¡æ‰€å±çš„æ¨¡å‹ï¼Œå°†å…¨å±€IDè½¬åŒ–ä¸ºModelActorä¸­çš„å±€éƒ¨IDï¼Œå¹¶å­˜å…¥Selection
+    * @param[in] mActors æ‰€æœ‰æ¨¡å‹ä¸æ¨¡å‹åçš„æ˜ å°„
+    * @param[in] mode å½“å‰çš„é€‰æ‹©æ¨¡å¼
 
     */
     std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
@@ -80,11 +80,11 @@ public:
     void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleFaceSelectorHighlight> selector);
     /*
-   * @brief »ñÈ¡Ñ¡ÖĞµÄSelection
+   * @brief è·å–é€‰ä¸­çš„Selection
    *
-   * ÅĞ¶ÏÑ¡ÖĞµÄ¶ÔÏóËùÊôµÄÄ£ĞÍ£¬½«È«¾ÖID×ª»¯ÎªModelActorÖĞµÄ¾Ö²¿ID£¬²¢´æÈëSelection
-   * @param[in] mActors ËùÓĞÄ£ĞÍÓëÄ£ĞÍÃûµÄÓ³Éä
-   * @param[in] mode µ±Ç°µÄÑ¡ÔñÄ£Ê½
+   * åˆ¤æ–­é€‰ä¸­çš„å¯¹è±¡æ‰€å±çš„æ¨¡å‹ï¼Œå°†å…¨å±€IDè½¬åŒ–ä¸ºModelActorä¸­çš„å±€éƒ¨IDï¼Œå¹¶å­˜å…¥Selection
+   * @param[in] mActors æ‰€æœ‰æ¨¡å‹ä¸æ¨¡å‹åçš„æ˜ å°„
+   * @param[in] mode å½“å‰çš„é€‰æ‹©æ¨¡å¼
 
    */
     std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
@@ -110,11 +110,11 @@ public:
     void ClearSelections() override;
     void SetSelector(std::unique_ptr<SingleEdgeSelectorHighlight> selector);
     /*
-   * @brief »ñÈ¡Ñ¡ÖĞµÄSelection
+   * @brief è·å–é€‰ä¸­çš„Selection
    *
-   * ÅĞ¶ÏÑ¡ÖĞµÄ¶ÔÏóËùÊôµÄÄ£ĞÍ£¬½«È«¾ÖID×ª»¯ÎªModelActorÖĞµÄ¾Ö²¿ID£¬²¢´æÈëSelection
-   * @param[in] mActors ËùÓĞÄ£ĞÍÓëÄ£ĞÍÃûµÄÓ³Éä
-   * @param[in] mode µ±Ç°µÄÑ¡ÔñÄ£Ê½
+   * åˆ¤æ–­é€‰ä¸­çš„å¯¹è±¡æ‰€å±çš„æ¨¡å‹ï¼Œå°†å…¨å±€IDè½¬åŒ–ä¸ºModelActorä¸­çš„å±€éƒ¨IDï¼Œå¹¶å­˜å…¥Selection
+   * @param[in] mActors æ‰€æœ‰æ¨¡å‹ä¸æ¨¡å‹åçš„æ˜ å°„
+   * @param[in] mode å½“å‰çš„é€‰æ‹©æ¨¡å¼
 
    */
     std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
