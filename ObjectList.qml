@@ -11,7 +11,7 @@ Item {
     signal buttonPressed(int index,int type)
     // call Model
     signal removeModel(string modelName)
-    signal renameModel(string modelName)
+    signal renameModel(string oldName, string newName)
     signal changeModelVisibility(string modelName,bool visibility)
     property var idxMap: ({})
     /**
@@ -40,9 +40,21 @@ Item {
                     console.log("buttonDelName: ", name)
                 }
             }
-            Text{
+            TextInput{
                 id:objectName
+                width: 80
+                property string savedName
                 text: name
+                Component.onCompleted: {
+                    savedName = text
+                }
+                onEditingFinished: {
+                    if(text !== savedName){
+                        renameModel(savedName, text)
+                        console.log("模型名变更",savedName," -> ",text)
+                        savedName = text
+                    }
+                }
             }
             Rectangle{
                 width:10

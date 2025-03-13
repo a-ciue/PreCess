@@ -195,7 +195,7 @@ ApplicationWindow {
                         // myItem.bindStyle("Edge")
                         let ids = myItem.selectedIDs;
                         //if(ids.type() !== Element.Edge){console.log("ids的类型不是Element.Edge")}
-                        console.log(ids.type())
+                        console.log("选中的模型名为：", ids.getName())
                         if (ids.size() !== 0 /*&& ids.type() === Element.Edge*/) {
                             modelManager.model(ids.getName()).split_edge(ids)
                         }else{
@@ -207,6 +207,7 @@ ApplicationWindow {
                     if(index === 1){
                         // myItem.bindStyle("Face")
                         let ids = myItem.selectedIDs;
+                        console.log("选中的模型名为：", ids.getName())
                         if (ids.size() !== 0 /*&& ids.type() === Element.Face*/) {
                             modelManager.model(ids.getName()).split_face(ids)
                         }else{
@@ -367,10 +368,6 @@ ApplicationWindow {
         height: 200
         objectModel:ListModel{
             id: objectInitializeModel
-            ListElement{name: "对象甲"}
-            ListElement{name: "对象乙"}
-            ListElement{name: "对象丙"}
-            ListElement{name: "对象丁"}
         }
         onButtonPressed:{
             if(type === 1){
@@ -386,7 +383,9 @@ ApplicationWindow {
         Component.onCompleted: {
             modelManager.modelAdded.connect(objectList.addItem)
             modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            modelManager.modelNameChanged.connect((modelName)=>{objectList.renameItem(modelName)})
+            //modelManager.modelNameChanged.connect((modelName)=>{objectList.renameItem(modelName)})
+            objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
+            objectList.renameModel.connect(()=>{myItem.bindstyle("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
             objectList.changeModelVisibility.connect(myItem.setVisibility)
         }
