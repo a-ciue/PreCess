@@ -52,6 +52,7 @@ Item {
                     if(text !== savedName){
                         renameModel(savedName, text)
                         console.log("模型名变更",savedName," -> ",text)
+                        renameItem(savedName, text)
                         savedName = text
                     }
                 }
@@ -83,10 +84,16 @@ Item {
     }
     /**
      * @brief 重命名一行模型信息的名字
+     *
+     * 将对象列表的构造model用idxMap里存的序数更新，之后在将idxMap里的模型名更新，最后将idxMap里的旧数据删除，因为是无序键值对所以无需考虑顺序
      * @param oldName 模型的旧名
      * @param newName 模型的新名
      */
-    //function renameItem(oldName, newName){}
+    function renameItem(oldName, newName){
+        objectModel.setProperty(idxMap[oldName],"name",newName)
+        idxMap[newName] = idxMap[oldName]
+        delete idxMap[oldName]
+    }
     /** type:var 对象列表的model数据构造 */
     property alias objectModel: objectListView.model
 }
