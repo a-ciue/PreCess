@@ -168,10 +168,19 @@ Q_INVOKABLE void QRenderWindow::renameModel(QString old_name, QString new_name)
         auto it = vtk->actor_.find(old_name);
         if (it != vtk->actor_.end()) {
             // 从映射中移除旧键
-            vtk->actor_.erase(it);
+            //vtk->actor_.erase(it);
 
             // 重新插入新的键值对
-            vtk->actor_.emplace(new_name, std::move(it->second));
+            //vtk->actor_.emplace(new_name, std::move(it->second));
+            
+            // 1. 先将 it->second 移动到一个临时变量
+            auto actorTemp = std::move(it->second);
+
+            // 2. 再从 map 中删除旧的键
+            vtk->actor_.erase(it);
+
+            // 3. 重新插入新的键值对
+            vtk->actor_.emplace(new_name, std::move(actorTemp));
         }
         else {
             // 旧键不存在，可以抛出异常或处理错误

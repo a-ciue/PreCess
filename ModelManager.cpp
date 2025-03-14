@@ -18,6 +18,7 @@
 #include <QObject>
 #include <filesystem>
 
+#include <iostream>
 QRenderWindow* ModelManager::vtkItem()
 {
     return vtk_item_;
@@ -70,7 +71,7 @@ void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> mod
 
     connect(rawModel, &Model::modelInited,
         vtk_item_, &QRenderWindow::onModelInited);
-
+    
     // 调用模型刷新接口，确保 VTK 数据更新
     rawModel->refreshVtk();
 
@@ -160,8 +161,11 @@ Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString
             return;
         }
 
-        // 转移模型对象，并更新映射
         auto modelPtr = std::move(it_old->second);
+        // 更新Model类的model_name成员变量
+        modelPtr->setModelName(newName);
+
+        // 转移模型对象，并更新映射
         models_.erase(it_old);
         models_[newName] = std::move(modelPtr);
 

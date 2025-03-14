@@ -383,7 +383,7 @@ ApplicationWindow {
         Component.onCompleted: {
             modelManager.modelAdded.connect(objectList.addItem)
             modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            //modelManager.modelNameChanged.connect((modelName)=>{objectList.renameItem(modelName)})
+            modelManager.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
             objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
             objectList.renameModel.connect(()=>{myItem.bindstyle("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
