@@ -4,21 +4,21 @@
  *
  * 该文件包含 ModelManager 类的实现，提供多模型管理功能，包括：
  * - 添加、删除和获取模型
- * - 处理网格的读取与写入
  * - 维护与 VTK 组件的交互
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
- * @date 2025/3/8
+ * @date 2025/3/20
  */
 #include "ModelManager.h"
 #include "ModelUtil.h"
 #include "ToolMesh.h"
+#include "ModelManager.h"
+#include "FileHandler.h"
 
 #include "MyVtkItem.h"
 #include <QObject>
 #include <filesystem>
 
-#include <iostream>
 QRenderWindow* ModelManager::vtkItem()
 {
     return vtk_item_;
@@ -102,26 +102,23 @@ Model* ModelManager::getModel(const QString& modelName) const {
 
 void ModelManager::readSpline(QUrl spline_path)
 {
-    auto mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
-    if (!mesh || mesh->numFaces() == 0) {
-        //emit splineLoadFailed(tr("fail to load spline file."));
+    auto model = FileHandler::instance().readSpline(spline_path);
+    if (!model) {
         qDebug() << "导入文件错误: " << spline_path;
+        emit splineLoadFailed(QStringLiteral("导入样条文件失败: ") + spline_path.toString());
+        return;
     }
-
-    // 重新分配 std::unique_ptr<Model>，并更新模型数据
-    addModel(spline_path.fileName(), std::make_unique<Model>(std::move(mesh)));
+    addModel(spline_path.fileName(), std::move(model));
 }
 
 void ModelManager::readMesh(QUrl target_mesh)
 {
-    auto mesh = ModelUtil::read_obj_with_groups(target_mesh.toLocalFile().toStdU16String());
-
-    if (!mesh || mesh->numFaces() == 0) {
-        //emit splineLoadFailed(tr("fail to load spline file."));
+    auto model = FileHandler::instance().readMesh(target_mesh);
+    if (!model) {
         qDebug() << "导入文件错误: " << target_mesh;
+        return;
     }
-    // 重新分配 std::unique_ptr<Model>，并更新模型数据
-    addModel(target_mesh.fileName(), std::make_unique<Model>(std::move(mesh)));
+    addModel(target_mesh.fileName(), std::move(model));
 }
 
 void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension)
@@ -131,21 +128,7 @@ void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString
         qDebug() << "未找到指定的模型: " << modelName;
         return;
     }
-
-    ModelActor::RenderMode mode {};
-    if (renderMode == "Face") {
-        mode = ModelActor::RenderMode::Face;
-    } else if (renderMode == "Block") {
-        mode = ModelActor::RenderMode::Block;
-    } else if (renderMode == "Group") {
-        mode = ModelActor::RenderMode::Group;
-    } else {
-        std::cerr << "invalid renderMode in QRenderWindow::changeEdgeRenderer" << std::endl;
-        return;
-    }
-
-    std::filesystem::path mesh_path = target_mesh.toLocalFile().toStdU16String();
-    model->write_mesh(mesh_path, mode, extension);
+    FileHandler::instance().writeMesh(model, target_mesh.toLocalFile(), renderMode, extension);
 }
 
 Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString& newName){
