@@ -12,7 +12,6 @@
 #include "ModelManager.h"
 #include "ModelUtil.h"
 #include "ToolMesh.h"
-#include "ModelManager.h"
 #include "FileHandler.h"
 
 #include "MyVtkItem.h"
@@ -102,33 +101,33 @@ Model* ModelManager::getModel(const QString& modelName) const {
 
 void ModelManager::readSpline(QUrl spline_path)
 {
-    auto model = FileHandler::instance().readSpline(spline_path);
-    if (!model) {
+    auto mesh = FileHandler::instance().readSpline(spline_path);
+    if (!mesh) {
         qDebug() << "导入文件错误: " << spline_path;
         emit splineLoadFailed(QStringLiteral("导入样条文件失败: ") + spline_path.toString());
         return;
     }
-    addModel(spline_path.fileName(), std::move(model));
+    addModel(spline_path.fileName(), std::move(mesh));
 }
 
 void ModelManager::readMesh(QUrl target_mesh)
 {
-    auto model = FileHandler::instance().readMesh(target_mesh);
-    if (!model) {
+    auto mesh = FileHandler::instance().readMesh(target_mesh);
+    if (!mesh) {
         qDebug() << "导入文件错误: " << target_mesh;
         return;
     }
-    addModel(target_mesh.fileName(), std::move(model));
+    addModel(target_mesh.fileName(), std::move(mesh));
 }
 
 void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension)
 {
-    auto model = getModel(modelName);
+    auto mesh = getModel(modelName);
     if (!model) {
         qDebug() << "未找到指定的模型: " << modelName;
         return;
     }
-    FileHandler::instance().writeMesh(model, target_mesh.toLocalFile(), renderMode, extension);
+    FileHandler::instance().writeMesh(mesh, target_mesh.toLocalFile(), renderMode, extension);
 }
 
 Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString& newName){

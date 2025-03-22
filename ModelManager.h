@@ -8,12 +8,10 @@
  * @author 徐昊阳 haoyangxu06@gmail.com
  * @date 2025/3/20
  */
-
 #ifndef MODELMANAGER_H
 #define MODELMANAGER_H
 #include "Model.h"
 #include "MyVtkItem.h"
-
 #include <qqmlregistration.h>
 #include <QQmlContext>
 #include <QObject>
