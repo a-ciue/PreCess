@@ -123,7 +123,7 @@ void ModelManager::readMesh(QUrl target_mesh)
 void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension)
 {
     auto mesh = getModel(modelName);
-    if (!model) {
+    if (!mesh) {
         qDebug() << "未找到指定的模型: " << modelName;
         return;
     }
