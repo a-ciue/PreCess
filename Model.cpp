@@ -494,7 +494,8 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids, bool new_pa
     for (int patch_id : patch_ids) {
         if (!new_patch && !patches_.count(patch_id))
         {
-            throw exception(("patch not found" + std::to_string(patch_id)).c_str());
+            //throw exception(("patch not found" + std::to_string(patch_id)).c_str());
+            throw std::runtime_error("patch not found" + std::to_string(patch_id));
         }
 
         if (patches_.count(patch_id))

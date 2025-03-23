@@ -21,6 +21,7 @@
 
 #include "ModelActor.h"
 #include "Selection.h"
+#include "ToolMesh.h"
 
 namespace MeshLib {
 template <typename V, typename E, typename F, typename H>
