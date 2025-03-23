@@ -1,10 +1,10 @@
 /**
  * @file FileHandler.cpp
- * @brief ÊµÏÖ FileHandler Àà£¬ÓÃÓÚ¹ÜÀíËùÓĞÓëÎÄ¼ş IO Ïà¹ØµÄ²Ù×÷
+ * @brief å®ç° FileHandler ç±»ï¼Œç”¨äºç®¡ç†æ‰€æœ‰ä¸æ–‡ä»¶ IO ç›¸å…³çš„æ“ä½œ
  *
- * ¸ÃÎÄ¼ş°üº¬ FileHandler ÀàµÄÊµÏÖ£¬Ìá¹©¶ÁÈ¡ÑùÌõÎÄ¼ş¡¢¶ÁÈ¡Íø¸ñÎÄ¼şÒÔ¼°½«Ä£ĞÍÊı¾İĞ´³öµ½ÎÄ¼şµÄ¹¦ÄÜ¡£
+ * è¯¥æ–‡ä»¶åŒ…å« FileHandler ç±»çš„å®ç°ï¼Œæä¾›è¯»å–æ ·æ¡æ–‡ä»¶ã€è¯»å–ç½‘æ ¼æ–‡ä»¶ä»¥åŠå°†æ¨¡å‹æ•°æ®å†™å‡ºåˆ°æ–‡ä»¶çš„åŠŸèƒ½ã€‚
  *
- * @author Ğìê»Ñô haoyangxu06@gmail.com
+ * @author å¾æ˜Šé˜³ haoyangxu06@gmail.com
  * @date 2025/3/22
  */
 #include "FileHandler.h"
@@ -18,7 +18,7 @@ std::unique_ptr<Model> FileHandler::readSpline(const QUrl& spline_path)
 {
     auto mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
     if (!mesh || mesh->numFaces() == 0) {
-        qDebug() << "µ¼ÈëÑùÌõÎÄ¼ş´íÎó:" << spline_path;
+        qDebug() << "å¯¼å…¥æ ·æ¡æ–‡ä»¶é”™è¯¯:" << spline_path;
         return nullptr;
     }
     return std::make_unique<Model>(std::move(mesh));
@@ -28,7 +28,7 @@ std::unique_ptr<Model> FileHandler::readMesh(const QUrl& mesh_path)
 {
     auto mesh = ModelUtil::read_obj_with_groups(mesh_path.toLocalFile().toStdU16String());
     if (!mesh || mesh->numFaces() == 0) {
-        qDebug() << "µ¼ÈëÍø¸ñÎÄ¼ş´íÎó:" << mesh_path;
+        qDebug() << "å¯¼å…¥ç½‘æ ¼æ–‡ä»¶é”™è¯¯:" << mesh_path;
         return nullptr;
     }
     return std::make_unique<Model>(std::move(mesh));
@@ -52,7 +52,7 @@ bool FileHandler::writeMesh(Model* model, const QString& targetPath, const QStri
         mode = ModelActor::RenderMode::Group;
     }
     else {
-        qDebug() << "writeMesh: ÎŞĞ§µÄ renderMode:" << renderMode;
+        qDebug() << "writeMesh: æ— æ•ˆçš„ renderMode:" << renderMode;
         return false;
     }
 

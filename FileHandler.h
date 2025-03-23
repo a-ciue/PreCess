@@ -1,12 +1,12 @@
 /**
  * @file FileHandler.h
- * @brief ÉùÃ÷ FileHandler Àà£¬ÓÃÓÚ´¦ÀíËùÓĞÓëÎÄ¼ş IO Ïà¹ØµÄ²Ù×÷
+ * @brief å£°æ˜ FileHandler ç±»ï¼Œç”¨äºå¤„ç†æ‰€æœ‰ä¸æ–‡ä»¶ IO ç›¸å…³çš„æ“ä½œ
  *
- * FileHandler ÊÇÒ»¸öµ¥ÀıÀà£¬¸ºÔğ¶ÁÈ¡ÑùÌõÎÄ¼şºÍÍø¸ñÎÄ¼ş£¬
- * ½«ÎÄ¼şÊı¾İ×ª»»Îª Model ¶ÔÏó£¬²¢Ö§³Ö½« Model Êı¾İĞ´³öµ½ÎÄ¼şÖĞ¡£
- * ¸ÃÀà·â×°ÁËÎÄ¼ş²Ù×÷ºÍÊı¾İ×ª»»µÄ¾ßÌåÊµÏÖ£¬´Ó¶øÊµÏÖÓëÄ£ĞÍ¹ÜÀíµÄ³¹µ×½âñî¡£
+ * FileHandler æ˜¯ä¸€ä¸ªå•ä¾‹ç±»ï¼Œè´Ÿè´£è¯»å–æ ·æ¡æ–‡ä»¶å’Œç½‘æ ¼æ–‡ä»¶ï¼Œ
+ * å°†æ–‡ä»¶æ•°æ®è½¬æ¢ä¸º Model å¯¹è±¡ï¼Œå¹¶æ”¯æŒå°† Model æ•°æ®å†™å‡ºåˆ°æ–‡ä»¶ä¸­ã€‚
+ * è¯¥ç±»å°è£…äº†æ–‡ä»¶æ“ä½œå’Œæ•°æ®è½¬æ¢çš„å…·ä½“å®ç°ï¼Œä»è€Œå®ç°ä¸æ¨¡å‹ç®¡ç†çš„å½»åº•è§£è€¦ã€‚
  *
- * @author Ğìê»Ñô haoyangxu06@gmail.com
+ * @author å¾æ˜Šé˜³ haoyangxu06@gmail.com
  * @date 2025/3/22
  */
 #ifndef FILEHANDLER_H
@@ -19,12 +19,12 @@
 #include "ToolMesh.h"
 
 /**
- * @brief FileHandler µ¥ÀıÀà
+ * @brief FileHandler å•ä¾‹ç±»
  *
- * ¸ºÔğËùÓĞÓëÎÄ¼ş IO Ïà¹ØµÄ²Ù×÷£¬°üÀ¨£º
- * - ¶ÁÈ¡ÑùÌõÎÄ¼ş²¢×ª»»Îª Model ¶ÔÏó
- * - ¶ÁÈ¡Íø¸ñÎÄ¼ş²¢×ª»»Îª Model ¶ÔÏó
- * - ½« Model Êı¾İĞ´³öµ½ÎÄ¼ş
+ * è´Ÿè´£æ‰€æœ‰ä¸æ–‡ä»¶ IO ç›¸å…³çš„æ“ä½œï¼ŒåŒ…æ‹¬ï¼š
+ * - è¯»å–æ ·æ¡æ–‡ä»¶å¹¶è½¬æ¢ä¸º Model å¯¹è±¡
+ * - è¯»å–ç½‘æ ¼æ–‡ä»¶å¹¶è½¬æ¢ä¸º Model å¯¹è±¡
+ * - å°† Model æ•°æ®å†™å‡ºåˆ°æ–‡ä»¶
  */
 class FileHandler {
 public:
@@ -34,31 +34,31 @@ public:
     }
 
     /**
-     * @brief ¶ÁÈ¡ÑùÌõÎÄ¼ş²¢Éú³É Model ¶ÔÏó
-     * @param spline_path ÑùÌõÎÄ¼şµÄ URL Â·¾¶
-     * @return ³É¹¦Ê±·µ»Ø std::unique_ptr<Model>£¬Ê§°Ü·µ»Ø nullptr
+     * @brief è¯»å–æ ·æ¡æ–‡ä»¶å¹¶ç”Ÿæˆ Model å¯¹è±¡
+     * @param spline_path æ ·æ¡æ–‡ä»¶çš„ URL è·¯å¾„
+     * @return æˆåŠŸæ—¶è¿”å› std::unique_ptr<Model>ï¼Œå¤±è´¥è¿”å› nullptr
      */
     std::unique_ptr<Model> readSpline(const QUrl& spline_path);
 
     /**
-     * @brief ¶ÁÈ¡Íø¸ñÎÄ¼ş²¢Éú³É Model ¶ÔÏó
-     * @param mesh_path Íø¸ñÎÄ¼şµÄ URL Â·¾¶
-     * @return ³É¹¦Ê±·µ»Ø std::unique_ptr<Model>£¬Ê§°Ü·µ»Ø nullptr
+     * @brief è¯»å–ç½‘æ ¼æ–‡ä»¶å¹¶ç”Ÿæˆ Model å¯¹è±¡
+     * @param mesh_path ç½‘æ ¼æ–‡ä»¶çš„ URL è·¯å¾„
+     * @return æˆåŠŸæ—¶è¿”å› std::unique_ptr<Model>ï¼Œå¤±è´¥è¿”å› nullptr
      */
     std::unique_ptr<Model> readMesh(const QUrl& mesh_path);
 
     /**
-     * @brief ½« Model Êı¾İĞ´ÈëÎÄ¼ş
-     * @param model Ö¸Ïò Model ¶ÔÏóµÄÖ¸Õë
-     * @param targetPath Êä³öÎÄ¼şµÄÂ·¾¶
-     * @param renderMode äÖÈ¾Ä£Ê½£¨"Face", "Block", "Group"£©
-     * @param extension Êä³öÎÄ¼şµÄÀ©Õ¹Ãû
-     * @return ³É¹¦·µ»Ø true£¬Ê§°Ü·µ»Ø false
+     * @brief å°† Model æ•°æ®å†™å…¥æ–‡ä»¶
+     * @param model æŒ‡å‘ Model å¯¹è±¡çš„æŒ‡é’ˆ
+     * @param targetPath è¾“å‡ºæ–‡ä»¶çš„è·¯å¾„
+     * @param renderMode æ¸²æŸ“æ¨¡å¼ï¼ˆ"Face", "Block", "Group"ï¼‰
+     * @param extension è¾“å‡ºæ–‡ä»¶çš„æ‰©å±•å
+     * @return æˆåŠŸè¿”å› trueï¼Œå¤±è´¥è¿”å› false
      */
     bool writeMesh(Model* model, const QString& targetPath, const QString& renderMode, const QString& extension);
 
 private:
-    // ½ûÖ¹Íâ²¿¹¹ÔìºÍ¿½±´
+    // ç¦æ­¢å¤–éƒ¨æ„é€ å’Œæ‹·è´
     FileHandler() = default;
     ~FileHandler() = default;
     FileHandler(const FileHandler&) = delete;
