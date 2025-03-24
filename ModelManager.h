@@ -4,6 +4,7 @@
  *
  * ModelManager 仅负责管理模型（添加、删除、查询、重命名）以及与 VTK 组件的交互。
  * 与文件 IO、样条转换相关的功能已全部移至 FileHandler。
+ * 但原接口仍然使用。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
  * @date 2025/3/20
@@ -26,7 +27,7 @@ class ModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(QRenderWindow* vtkItem READ vtkItem WRITE setVtkItem)
-    
+
 
 public:
     /**
