@@ -10,8 +10,6 @@
  * @date 2025/3/20
  */
 #include "ModelManager.h"
-#include "ModelUtil.h"
-#include "ToolMesh.h"
 #include "FileHandler.h"
 
 #include "MyVtkItem.h"
