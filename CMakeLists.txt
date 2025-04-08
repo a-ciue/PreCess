@@ -38,10 +38,12 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
+        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h FileHandler.h FileHandler.cpp ModelQuery.h ModelQuery.cpp
 )
 
-add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp)
+add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp ModelQuery.h ModelQuery.cpp)
+
+add_library(modelPart STATIC Model.h Model.cpp ModelManager.h ModelManager.cpp FileHandler.h FileHandler.cpp)
 
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )
 
@@ -113,7 +115,7 @@ install(SCRIPT ${deploy_script})
 # 5) 使用 fixup_bundle 将所有依赖“收拢”进 .app，并修正引用路径（仅在 macOS 下执行）
 if(APPLE)
   set(APP_BUNDLE_EXECUTABLE "${CMAKE_INSTALL_PREFIX}/${MYNAME}.app/Contents/MacOS/${MYNAME}")
-  
+
   install(CODE "
     include(BundleUtilities)
     # 使用 $ENV{DESTDIR} 拼接最终路径
@@ -129,5 +131,6 @@ endif()
 
 
 if(ENABLE_TEST)
+    enable_testing()
     add_subdirectory(test)
 endif()
