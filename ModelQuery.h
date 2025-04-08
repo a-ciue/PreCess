@@ -1,128 +1,128 @@
-#pragma once
+ï»¿#pragma once
 
 #include <QObject>
 #include <QVariant>
 #include <QtGlobal>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <QQmlEngine>  // Ìá¹© QML ÔªËØµ¼³öºê (Qt6)
+#include <QQmlEngine>  // æä¾› QML å…ƒç´ å¯¼å‡ºå® (Qt6)
 #endif
 
-// Ç°ÏòÉùÃ÷ Model Àà
+// å‰å‘å£°æ˜ Model ç±»
 class Model;
 
 /**
- * ModelQuery Àà·â×°ÁË Model µÄËùÓĞ²éÑ¯²Ù×÷£¨CQRS ²éÑ¯²¿·Ö£©¡£
- * Í¨¹ı½«²éÑ¯Âß¼­´Ó Model µÄÃüÁî²Ù×÷ÖĞ·ÖÀë£¬ÊµÏÖ¶ÁĞ´·ÖÀë¡£
- * ³õÊ¼°æ±¾½«ËùÓĞ²éÑ¯½Ó¿Ú¼¯ÖĞÔÚ´ËÀàÖĞ£¬½«À´¿É°´ĞèÏ¸·ÖÎª PatchQuery¡¢BlockQuery µÈ¡£
- * ModelQuery ¿ÉÒÔ·ÃÎÊ Model µÄË½ÓĞÊı¾İ£¨Model ½«ÆäÉùÃ÷ÎªÓÑÔªÀà£©£¬ÒÔ»ñÈ¡ËùĞèĞÅÏ¢¡£
- * ²éÑ¯·½·¨Í¨¹ı Q_INVOKABLE ±©Â¶¸ø QML£¬·µ»Ø QVariant/QVariantMap/QVariantList ½á¹û¡£
+ * ModelQuery ç±»å°è£…äº† Model çš„æ‰€æœ‰æŸ¥è¯¢æ“ä½œï¼ˆCQRS æŸ¥è¯¢éƒ¨åˆ†ï¼‰ã€‚
+ * é€šè¿‡å°†æŸ¥è¯¢é€»è¾‘ä» Model çš„å‘½ä»¤æ“ä½œä¸­åˆ†ç¦»ï¼Œå®ç°è¯»å†™åˆ†ç¦»ã€‚
+ * åˆå§‹ç‰ˆæœ¬å°†æ‰€æœ‰æŸ¥è¯¢æ¥å£é›†ä¸­åœ¨æ­¤ç±»ä¸­ï¼Œå°†æ¥å¯æŒ‰éœ€ç»†åˆ†ä¸º PatchQueryã€BlockQuery ç­‰ã€‚
+ * ModelQuery å¯ä»¥è®¿é—® Model çš„ç§æœ‰æ•°æ®ï¼ˆModel å°†å…¶å£°æ˜ä¸ºå‹å…ƒç±»ï¼‰ï¼Œä»¥è·å–æ‰€éœ€ä¿¡æ¯ã€‚
+ * æŸ¥è¯¢æ–¹æ³•é€šè¿‡ Q_INVOKABLE æš´éœ²ç»™ QMLï¼Œè¿”å› QVariant/QVariantMap/QVariantList ç»“æœã€‚
  */
 class ModelQuery : public QObject {
     Q_OBJECT
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        QML_ELEMENT  // Qt6+: µ¼³öÎª QML ¿ÉÓÃÀàĞÍ£¨Qt5 ÇëÊ¹ÓÃ qmlRegisterType£©
+        QML_ELEMENT  // Qt6+: å¯¼å‡ºä¸º QML å¯ç”¨ç±»å‹ï¼ˆQt5 è¯·ä½¿ç”¨ qmlRegisterTypeï¼‰
 #endif
 
 public:
     /**
-     * @brief ¹¹Ôìº¯Êı
-     * @param model Ö¸Ïò¹ØÁªµÄ Model ÊµÀı£¬¸Ã²éÑ¯¶ÔÏó½«¶ÁÈ¡ÆäÄÚ²¿Êı¾İ
-     * @param parent ¸¸¶ÔÏó£¨Ä¬ÈÏ nullptr£©£¬½¨ÒéÉèÖÃÎª Model ÒÔ±ãÄÚ´æ×Ô¶¯¹ÜÀí
+     * @brief æ„é€ å‡½æ•°
+     * @param model æŒ‡å‘å…³è”çš„ Model å®ä¾‹ï¼Œè¯¥æŸ¥è¯¢å¯¹è±¡å°†è¯»å–å…¶å†…éƒ¨æ•°æ®
+     * @param parent çˆ¶å¯¹è±¡ï¼ˆé»˜è®¤ nullptrï¼‰ï¼Œå»ºè®®è®¾ç½®ä¸º Model ä»¥ä¾¿å†…å­˜è‡ªåŠ¨ç®¡ç†
      */
     explicit ModelQuery(Model* model, QObject* parent = nullptr);
 
     /**
-     * @brief »ñÈ¡Ö¸¶¨ Patch µÄÏêÏ¸ĞÅÏ¢
-     * ·µ»ØµÄ QVariantMap °üº¬µÄ¼ü£º
-     * - "id": patch µÄ id
-     * - "blockID": ËùÊô block µÄ id
-     * - "father_id": ¸¸½Úµã id
-     * - "faceIDs": °üº¬¸Ã patch µÄÃæ id ÁĞ±í (QVariantList)
-     * - "faceTriangles": Ã¿¸öÃæÈı½ÇĞÎµÄ¶¥µãË÷Òı (QVariantList£¬Ã¿¸öÔªËØÒ²ÊÇ QList)
-     * - "vertexIDs": °üº¬µÄ¶¥µã id ÁĞ±í (QVariantList)
-     * - "vertexPoints": ¶ÔÓ¦¶¥µãµÄ×ø±ê (QVariantList£¬Ã¿¸öÔªËØÎª°üº¬ 3 ¸ö double ÖµµÄ QList)
+     * @brief è·å–æŒ‡å®š Patch çš„è¯¦ç»†ä¿¡æ¯
+     * è¿”å›çš„ QVariantMap åŒ…å«çš„é”®ï¼š
+     * - "id": patch çš„ id
+     * - "blockID": æ‰€å± block çš„ id
+     * - "father_id": çˆ¶èŠ‚ç‚¹ id
+     * - "faceIDs": åŒ…å«è¯¥ patch çš„é¢ id åˆ—è¡¨ (QVariantList)
+     * - "faceTriangles": æ¯ä¸ªé¢ä¸‰è§’å½¢çš„é¡¶ç‚¹ç´¢å¼• (QVariantListï¼Œæ¯ä¸ªå…ƒç´ ä¹Ÿæ˜¯ QList)
+     * - "vertexIDs": åŒ…å«çš„é¡¶ç‚¹ id åˆ—è¡¨ (QVariantList)
+     * - "vertexPoints": å¯¹åº”é¡¶ç‚¹çš„åæ ‡ (QVariantListï¼Œæ¯ä¸ªå…ƒç´ ä¸ºåŒ…å« 3 ä¸ª double å€¼çš„ QList)
      *
-     * Èç¹ûÎ´ÄÜÕÒµ½Ö¸¶¨ patch£¬Ôò·µ»Ø°üº¬ error ĞÅÏ¢µÄ QVariantMap¡£
-     * @param patchId Patch µÄ±êÊ¶·û
-     * @return °üº¬ Patch ÏêÏ¸ĞÅÏ¢µÄ QVariantMap
+     * å¦‚æœæœªèƒ½æ‰¾åˆ°æŒ‡å®š patchï¼Œåˆ™è¿”å›åŒ…å« error ä¿¡æ¯çš„ QVariantMapã€‚
+     * @param patchId Patch çš„æ ‡è¯†ç¬¦
+     * @return åŒ…å« Patch è¯¦ç»†ä¿¡æ¯çš„ QVariantMap
      */
     Q_INVOKABLE QVariantMap getPatchInfo(int patchId) const;
 
     /**
-     * @brief »ñÈ¡ËùÓĞ Block µÄÁĞ±íĞÅÏ¢
+     * @brief è·å–æ‰€æœ‰ Block çš„åˆ—è¡¨ä¿¡æ¯
      *
-     * ±éÀú m_model->blocks_£¬½«Ã¿¸ö Block ÄÚµÄĞÅÏ¢×ª»»Îª QVariantMap£¬
-     * ²¢½«ËùÓĞ Block µÄĞÅÏ¢´æÈë QVariantList ·µ»Ø¡£
+     * éå† m_model->blocks_ï¼Œå°†æ¯ä¸ª Block å†…çš„ä¿¡æ¯è½¬æ¢ä¸º QVariantMapï¼Œ
+     * å¹¶å°†æ‰€æœ‰ Block çš„ä¿¡æ¯å­˜å…¥ QVariantList è¿”å›ã€‚
      *
      * @details
-     * Ã¿¸ö Block ²úÉúµÄ QVariantMap °üº¬ÒÔÏÂ¼ü£º
-     * - "id": Block µÄ id
-     * - "groupID": ËùÊô group µÄ id
-     * - "patchIDs": °üº¬µÄ Patch id ÁĞ±í (QVariantList)
+     * æ¯ä¸ª Block äº§ç”Ÿçš„ QVariantMap åŒ…å«ä»¥ä¸‹é”®ï¼š
+     * - "id": Block çš„ id
+     * - "groupID": æ‰€å± group çš„ id
+     * - "patchIDs": åŒ…å«çš„ Patch id åˆ—è¡¨ (QVariantList)
      *
-     * @return °üº¬¶à¸ö Block ÏêÏ¸ĞÅÏ¢µÄ QVariantList£¬Ã¿¸öÔªËØÎª QVariantMap
+     * @return åŒ…å«å¤šä¸ª Block è¯¦ç»†ä¿¡æ¯çš„ QVariantListï¼Œæ¯ä¸ªå…ƒç´ ä¸º QVariantMap
      */
     Q_INVOKABLE QVariantList getBlockList() const;
 
     /**
-     * @brief »ñÈ¡ËùÓĞ Patch µÄ ID ÁĞ±í
-     * @return °üº¬ËùÓĞ Patch ±êÊ¶·ûµÄ QVariantList
+     * @brief è·å–æ‰€æœ‰ Patch çš„ ID åˆ—è¡¨
+     * @return åŒ…å«æ‰€æœ‰ Patch æ ‡è¯†ç¬¦çš„ QVariantList
      */
     Q_INVOKABLE QVariantList getPatchIds() const;
 
     /**
-     * @brief »ñÈ¡ËùÓĞ Block µÄ ID ÁĞ±í
-     * @return °üº¬ËùÓĞ Block ±êÊ¶·ûµÄ QVariantList
+     * @brief è·å–æ‰€æœ‰ Block çš„ ID åˆ—è¡¨
+     * @return åŒ…å«æ‰€æœ‰ Block æ ‡è¯†ç¬¦çš„ QVariantList
      */
     Q_INVOKABLE QVariantList getBlockIds() const;
 
     /**
-     * @brief »ñÈ¡ËùÓĞ Group µÄ ID ÁĞ±í
-     * @return °üº¬ËùÓĞ Group ±êÊ¶·ûµÄ QVariantList
+     * @brief è·å–æ‰€æœ‰ Group çš„ ID åˆ—è¡¨
+     * @return åŒ…å«æ‰€æœ‰ Group æ ‡è¯†ç¬¦çš„ QVariantList
      */
     Q_INVOKABLE QVariantList getGroupIds() const;
 
     /**
-     * @brief ¸ù¾İ¸ø¶¨ Face ID »ñÈ¡ËùÔÚ Patch µÄÏêÏ¸ĞÅÏ¢
-     * @param faceId Face µÄ±êÊ¶·û
-     * @return °üº¬ËùÔÚ Patch ÏêÏ¸ĞÅÏ¢µÄ QVariantMap£¬Èç¹ûÎŞĞ§Ôò°üº¬ error ĞÅÏ¢
+     * @brief æ ¹æ®ç»™å®š Face ID è·å–æ‰€åœ¨ Patch çš„è¯¦ç»†ä¿¡æ¯
+     * @param faceId Face çš„æ ‡è¯†ç¬¦
+     * @return åŒ…å«æ‰€åœ¨ Patch è¯¦ç»†ä¿¡æ¯çš„ QVariantMapï¼Œå¦‚æœæ— æ•ˆåˆ™åŒ…å« error ä¿¡æ¯
      */
     Q_INVOKABLE QVariantMap getPatchInfoByFaceId(int faceId) const;
 
     /**
-     * @brief »ñÈ¡Ö¸¶¨ Block µÄÏêÏ¸ĞÅÏ¢
-     * @param blockId Block µÄ±êÊ¶·û
-     * @return °üº¬ Block ÏêÏ¸ĞÅÏ¢µÄ QVariantMap£¬Èç¹ûÎŞĞ§Ôò°üº¬ error ĞÅÏ¢
+     * @brief è·å–æŒ‡å®š Block çš„è¯¦ç»†ä¿¡æ¯
+     * @param blockId Block çš„æ ‡è¯†ç¬¦
+     * @return åŒ…å« Block è¯¦ç»†ä¿¡æ¯çš„ QVariantMapï¼Œå¦‚æœæ— æ•ˆåˆ™åŒ…å« error ä¿¡æ¯
      */
     Q_INVOKABLE QVariantMap getBlockInfo(int blockId) const;
 
     /**
-     * @brief »ñÈ¡Ö¸¶¨ Group µÄÏêÏ¸ĞÅÏ¢
-     * @param groupId Group µÄ±êÊ¶·û
-     * @return °üº¬ Group ÏêÏ¸ĞÅÏ¢µÄ QVariantMap£¬Èç¹ûÎŞĞ§Ôò°üº¬ error ĞÅÏ¢
+     * @brief è·å–æŒ‡å®š Group çš„è¯¦ç»†ä¿¡æ¯
+     * @param groupId Group çš„æ ‡è¯†ç¬¦
+     * @return åŒ…å« Group è¯¦ç»†ä¿¡æ¯çš„ QVariantMapï¼Œå¦‚æœæ— æ•ˆåˆ™åŒ…å« error ä¿¡æ¯
      */
     Q_INVOKABLE QVariantMap getGroupInfo(int groupId) const;
 
     /**
-     * @brief ¸ù¾İÖ¸¶¨Ìõ¼ş²éÑ¯Âú×ãÌõ¼şµÄ Patch ÁĞ±í
+     * @brief æ ¹æ®æŒ‡å®šæ¡ä»¶æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„ Patch åˆ—è¡¨
      *
-     * Ö§³ÖÌõ¼ş¼üÀıÈç£º"minVertexCount"£¨×îÉÙ¶¥µãÊıÁ¿£©ºÍ "maxFaceCount"£¨×î¶àÃæÊı£©¡£
+     * æ”¯æŒæ¡ä»¶é”®ä¾‹å¦‚ï¼š"minVertexCount"ï¼ˆæœ€å°‘é¡¶ç‚¹æ•°é‡ï¼‰å’Œ "maxFaceCount"ï¼ˆæœ€å¤šé¢æ•°ï¼‰ã€‚
      *
-     * @param conditions ²éÑ¯Ìõ¼ş¹¹³ÉµÄ QVariantMap
-     * @return ·ûºÏÌõ¼şµÄ Patch ÏêÏ¸ĞÅÏ¢ÁĞ±í£¬Ã¿¸öÔªËØÎª QVariantMap
+     * @param conditions æŸ¥è¯¢æ¡ä»¶æ„æˆçš„ QVariantMap
+     * @return ç¬¦åˆæ¡ä»¶çš„ Patch è¯¦ç»†ä¿¡æ¯åˆ—è¡¨ï¼Œæ¯ä¸ªå…ƒç´ ä¸º QVariantMap
      */
     Q_INVOKABLE QVariantList queryPatchesByCondition(const QVariantMap& conditions) const;
 
     /**
-     * @brief »ñÈ¡Ö¸¶¨¶¥µãµÄÏêÏ¸ĞÅÏ¢
+     * @brief è·å–æŒ‡å®šé¡¶ç‚¹çš„è¯¦ç»†ä¿¡æ¯
      *
-     * ÓÉÓÚ¶¥µãĞÅÏ¢·ÖÉ¢ÓÚ¸÷ Patch ÖĞ£¬·µ»ØµÚÒ»´ÎÕÒµ½µÄÆ¥ÅäĞÅÏ¢¡£
+     * ç”±äºé¡¶ç‚¹ä¿¡æ¯åˆ†æ•£äºå„ Patch ä¸­ï¼Œè¿”å›ç¬¬ä¸€æ¬¡æ‰¾åˆ°çš„åŒ¹é…ä¿¡æ¯ã€‚
      *
-     * @param vertexId ¶¥µãµÄ±êÊ¶·û
-     * @return °üº¬¶¥µãÏêÏ¸ĞÅÏ¢µÄ QVariantMap£¬Èç vertexId¡¢×ø±ê¡¢ËùÔÚ Patch µÈ£»Èç¹ûÎ´ÕÒµ½Ôò°üº¬ error ĞÅÏ¢
+     * @param vertexId é¡¶ç‚¹çš„æ ‡è¯†ç¬¦
+     * @return åŒ…å«é¡¶ç‚¹è¯¦ç»†ä¿¡æ¯çš„ QVariantMapï¼Œå¦‚ vertexIdã€åæ ‡ã€æ‰€åœ¨ Patch ç­‰ï¼›å¦‚æœæœªæ‰¾åˆ°åˆ™åŒ…å« error ä¿¡æ¯
      */
     Q_INVOKABLE QVariantMap getVertexInfo(int vertexId) const;
 
 private:
-    Model* m_model;  ///< ¹ØÁªµÄ Model ÊµÀı£¬ÓÃÓÚ·ÃÎÊÆäÊı¾İ
+    Model* m_model;  ///< å…³è”çš„ Model å®ä¾‹ï¼Œç”¨äºè®¿é—®å…¶æ•°æ®
 };

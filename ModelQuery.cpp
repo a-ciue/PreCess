@@ -1,4 +1,4 @@
-#include "ModelQuery.h"
+ï»¿#include "ModelQuery.h"
 #include "Model.h"
 #include <QVariantMap>
 #include <QVariantList>
@@ -9,7 +9,7 @@
 ModelQuery::ModelQuery(Model* model, QObject* parent)
     : QObject(parent), m_model(model)
 {
-    // ³õÊ¼»¯Ê±±£´æ¹ØÁªµÄ Model Ö¸Õë
+    // åˆå§‹åŒ–æ—¶ä¿å­˜å…³è”çš„ Model æŒ‡é’ˆ
 }
 
 QVariantMap ModelQuery::getPatchInfo(int patchId) const {
@@ -24,14 +24,14 @@ QVariantMap ModelQuery::getPatchInfo(int patchId) const {
     info["blockID"] = patch->blockID;
     info["father_id"] = patch->father_id;
 
-    // ×ª»» faceIDs_
+    // è½¬æ¢ faceIDs_
     QVariantList faceIDsList;
     for (int faceId : patch->faceIDs_) {
         faceIDsList.append(faceId);
     }
     info["faceIDs"] = faceIDsList;
 
-    // ×ª»» faceTriangles_£¨Ã¿¸öÎª std::array<int,3>£©
+    // è½¬æ¢ faceTriangles_ï¼ˆæ¯ä¸ªä¸º std::array<int,3>ï¼‰
     QVariantList trianglesList;
     for (const auto& triangle : patch->faceTriangles_) {
         QVariantList tri;
@@ -42,14 +42,14 @@ QVariantMap ModelQuery::getPatchInfo(int patchId) const {
     }
     info["faceTriangles"] = trianglesList;
 
-    // ×ª»» vertexIDs_
+    // è½¬æ¢ vertexIDs_
     QVariantList vertexIDsList;
     for (int vid : patch->vertexIDs_) {
         vertexIDsList.append(vid);
     }
     info["vertexIDs"] = vertexIDsList;
 
-    // ×ª»» vertexPoints_£¨Ã¿¸öÎª std::array<double,3>£©
+    // è½¬æ¢ vertexPoints_ï¼ˆæ¯ä¸ªä¸º std::array<double,3>ï¼‰
     QVariantList vertexPointsList;
     for (const auto& point : patch->vertexPoints_) {
         QVariantList pt;
@@ -71,7 +71,7 @@ QVariantList ModelQuery::getBlockList() const {
         blockMap["id"] = block->id;
         blockMap["groupID"] = block->groupID;
 
-        // ×ª»» patchIDs£¨unordered_set<int>£©
+        // è½¬æ¢ patchIDsï¼ˆunordered_set<int>ï¼‰
         QVariantList patchIDs;
         for (int pid : block->patchIDs) {
             patchIDs.append(pid);
@@ -109,7 +109,7 @@ QVariantList ModelQuery::getGroupIds() const {
 QVariantMap ModelQuery::getPatchInfoByFaceId(int faceId) const {
     QVariantMap info;
     try {
-        // ÀûÓÃ Model ÖĞÒÑÓĞµÄ face_patch_id ·½·¨
+        // åˆ©ç”¨ Model ä¸­å·²æœ‰çš„ face_patch_id æ–¹æ³•
         int patchId = m_model->face_patch_id(faceId);
         info = getPatchInfo(patchId);
     }
@@ -158,7 +158,7 @@ QVariantMap ModelQuery::getGroupInfo(int groupId) const {
 
 QVariantList ModelQuery::queryPatchesByCondition(const QVariantMap& conditions) const {
     QVariantList results;
-    // Ö§³ÖÌõ¼ş£ºminVertexCount, maxFaceCount
+    // æ”¯æŒæ¡ä»¶ï¼šminVertexCount, maxFaceCount
     int minVertexCount = conditions.contains("minVertexCount") ? conditions.value("minVertexCount").toInt() : 0;
     int maxFaceCount = conditions.contains("maxFaceCount") ? conditions.value("maxFaceCount").toInt() : std::numeric_limits<int>::max();
 
@@ -176,7 +176,7 @@ QVariantList ModelQuery::queryPatchesByCondition(const QVariantMap& conditions) 
 QVariantMap ModelQuery::getVertexInfo(int vertexId) const {
     QVariantMap info;
     bool found = false;
-    // ±éÀúËùÓĞ Patch ²éÕÒ¸Ã¶¥µã
+    // éå†æ‰€æœ‰ Patch æŸ¥æ‰¾è¯¥é¡¶ç‚¹
     for (const auto& pair : m_model->patches_) {
         const auto& patch = pair.second;
         const auto& vertexIDs = patch->vertexIDs_;
