@@ -92,6 +92,7 @@ struct Group {
 class Model :public QObject {
     Q_OBJECT
     QML_ELEMENT
+    Q_PROPERTY(ModelQuery* query READ query CONSTANT)  // 将查询对象作为只读属性暴露给 QML
 
 public:
     /**
@@ -116,6 +117,8 @@ public:
     //! @param extension 输出文件拓展名
     void write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension);
 
+    ModelQuery* query() const;  //!< 获取该 Model 实例的查询对象指针
+    
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch
     //! @param face_id 在该patch上的face id
@@ -299,5 +302,8 @@ private:
     PatchMap patches_;
     BlockMap blocks_;
     GroupMap groups_;
+
+    ModelQuery* m_query;              //!< 每个 Model 实例包含一个关联的查询对象
+    friend class ModelQuery;          //!< 声明 ModelQuery 为友元，以允许其访问 Model 私有数据
 };
 #endif // MODEL_H

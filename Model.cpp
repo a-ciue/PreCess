@@ -17,6 +17,7 @@
 #include "ModelActor.h"
 #include "ToolMesh.h"
 #include "ModelUtil.h"
+#include "ModelQuery.h"
 
 #include <stdexcept>  // 用于抛出异常
 
@@ -107,6 +108,11 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
     else
         //"不支持的文件类型"
         assert(false);
+}
+
+ModelQuery* Model::query() const
+{
+    return m_query;
 }
 
 void Model::split_face(QSelection* selection)
