@@ -43,7 +43,7 @@ qt_add_qml_module(${MYNAME}
 
 add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp ModelQuery.h ModelQuery.cpp)
 
-add_library(modelPart STATIC Model.h Model.cpp ModelManager.h ModelManager.cpp FileHandler.h FileHandler.cpp)
+add_library(modelPart STATIC Model.h Model.cpp ModelManager.h ModelManager.cpp FileHandler.h FileHandler.cpp ModelQuery.h ModelQuery.cpp)
 
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )
 
