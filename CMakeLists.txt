@@ -7,6 +7,11 @@ project(${MYNAME} VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# —— 1. 启用 Qt 的自动 moc/uic/rcc ——
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+
 option(ENABLE_TEST "是否启用测试")
 
 find_package(VTK REQUIRED COMPONENTS
@@ -38,12 +43,17 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h FileHandler.h FileHandler.cpp ModelQuery.h ModelQuery.cpp
+        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
 )
 
 add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp ModelQuery.h ModelQuery.cpp)
 
-add_library(modelPart STATIC Model.h Model.cpp ModelManager.h ModelManager.cpp FileHandler.h FileHandler.cpp ModelQuery.h ModelQuery.cpp)
+add_library(modelPart STATIC Model.h Model.cpp ModelManager.h ModelManager.cpp FileHandler.h FileHandler.cpp ModelQuery.h ModelQuery.cpp Selection.h)
+
+# 3a) moc 生成的头文件都放在 build 目录下，需要加进 include path
+target_include_directories(modelPart PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+# 3b) 把 Qt::Core 链接给所有含 Q_OBJECT 的库
+target_link_libraries(modelPart PRIVATE Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Quick)
 
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )
 
