@@ -17,6 +17,7 @@
 #include "ModelActor.h"
 #include "ToolMesh.h"
 #include "ModelUtil.h"
+#include "ModelQuery.h"
 
 #include <stdexcept>  // 用于抛出异常
 
@@ -107,6 +108,11 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
     else
         //"不支持的文件类型"
         assert(false);
+}
+
+ModelQuery* Model::query() const
+{
+    return m_query;
 }
 
 void Model::split_face(QSelection* selection)
@@ -264,9 +270,6 @@ void Model::merge_blocks(QSelection* selection) {
     }
 }
 
-
-
-
 void Model::merge_groups(QSelection* selection) {
     auto sel = selection->move();
     const std::vector<int>& group_ids = sel->ids;
@@ -304,10 +307,6 @@ void Model::merge_groups(QSelection* selection) {
     //actor_->merge_groups(group_ids, group_ids[0], target_group->blockIDs);
     emit groupMerged(getModelName(), group_ids, group_ids[0], target_group->blockIDs);
 }
-
-
-
-
 
 void Model::remesh_block(QSelection* selection) {
     auto sel = selection->move();
@@ -391,7 +390,6 @@ void Model::remesh_group(QSelection* selection) {
     //update_actors(patch_ids);
     refreshVtk();
 }
-
 
 int Model::face_patch_id(int face_id) {
     // 遍历所有 patches
@@ -494,7 +492,8 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids, bool new_pa
     for (int patch_id : patch_ids) {
         if (!new_patch && !patches_.count(patch_id))
         {
-            throw exception(("patch not found" + std::to_string(patch_id)).c_str());
+            //throw exception(("patch not found" + std::to_string(patch_id)).c_str());
+            throw std::runtime_error("patch not found" + std::to_string(patch_id));
         }
 
         if (patches_.count(patch_id))
@@ -561,35 +560,3 @@ void Model::update_patches(const std::unordered_set<int>& patch_ids, bool new_pa
         }
     }
 }
-
-/*void Model::update_patches(const std::unordered_set<int>& patch_ids) {
-    // 直接使用给定的 patch_ids 集合进行查找
-    for (int patch_id : patch_ids)
-    {
-        patches_.erase(patch_id);
-    }
-
-    // 遍历 mesh 中的面并更新对应的 patch
-    for (auto& face : mesh_->faces()) {
-        int face_patch_id = face->get_g();
-        if (patch_ids.find(face_patch_id) != patch_ids.end()) {
-            auto& patch = patches_[face_patch_id];
-            if (!patch) {
-                patch = std::make_unique<Patch>();
-                patch->id_ = face_patch_id;
-            }
-            patch->faceIDs_.push_back(face->id());
-
-            patch->faceTriangles_.emplace_back();
-            // 更新顶点信息
-            int i = 0;
-           for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); vi++) {
-                auto vertex = *vi;
-                patch->faceTriangles_.back()[i++] = patch->vertexIDs_.size();
-                patch->vertexIDs_.push_back(vertex->id());
-                CPoint& vp = vertex->point();
-                patch->vertexPoints_.emplace_back(std::array { vp[0], vp[1], vp[2] });
-            }
-        }
-    }
-}*/

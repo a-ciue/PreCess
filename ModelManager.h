@@ -2,11 +2,12 @@
  * @file ModelManager.h
  * @brief 负责管理多个模型实例的类
  *
- * ModelManager 负责管理多个 Model 实例，并提供添加、删除、查询模型的功能。
- * 同时，它维护与 VTK 组件（MyVtkItem）的关联，以支持网格的可视化操作。
+ * ModelManager 仅负责管理模型（添加、删除、查询、重命名）以及与 VTK 组件的交互。
+ * 与文件 IO、样条转换相关的功能已全部移至 FileHandler。
+ * 但原接口仍然使用。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
- * @date 2025/3/8
+ * @date 2025/3/20
  */
 #ifndef MODELMANAGER_H
 #define MODELMANAGER_H
@@ -26,7 +27,7 @@ class ModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(QRenderWindow* vtkItem READ vtkItem WRITE setVtkItem)
-    
+
 
 public:
     /**
