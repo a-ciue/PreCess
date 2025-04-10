@@ -48,13 +48,32 @@ qt_add_qml_module(${MYNAME}
 
 add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp ModelQuery.h ModelQuery.cpp)
 
-add_library(modelPart STATIC Model.h Model.cpp ModelManager.h ModelManager.cpp FileHandler.h FileHandler.cpp ModelQuery.h ModelQuery.cpp Selection.h)
+add_library(modelPart STATIC
+        Model.h Model.cpp
+        ModelManager.h ModelManager.cpp
+        FileHandler.h FileHandler.cpp
+        ModelQuery.h ModelQuery.cpp
+        Selection.h
+        MyVtkItem.h MyVtkItem.cpp)
 
-# 3a) moc 生成的头文件都放在 build 目录下，需要加进 include path
-target_include_directories(modelPart PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-# 3b) 把 Qt::Core 链接给所有含 Q_OBJECT 的库
-target_link_libraries(modelPart PRIVATE Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Quick)
+# 让 modelPart 自己也能看到 VTK 和 Qt 的头文件
+target_include_directories(modelPart
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}   # 项目根目录
+        ${CMAKE_CURRENT_BINARY_DIR}   # moc/autogen 目录
+        ${VTK_INCLUDE_DIRS}           # VTK 自带 include
+)
 
+# 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
+target_link_libraries(modelPart
+        PUBLIC
+        Qt${VTK_QT_VERSION}::Core
+        Qt${VTK_QT_VERSION}::Quick
+        ${VTK_LIBRARIES}
+)
+
+# VTK 模块自动初始化
+vtk_module_autoinit(TARGETS modelPart MODULES ${VTK_LIBRARIES})
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )
 
 target_link_libraries(vtkPart PRIVATE ${VTK_LIBRARIES})
