@@ -52,11 +52,14 @@ QVariantMap ModelQuery::getPatchInfo(int patchId) const {
     // 转换 vertexPoints_（每个为 std::array<double,3>）
     QVariantList vertexPointsList;
     for (const auto& point : patch->vertexPoints_) {
-        QVariantList pt;
+        QVariantList pt; // 子列表
         for (int j = 0; j < 3; ++j) {
-            pt.append(point[j]);
-        }
-        vertexPointsList.append(pt);
+            double coord = point[j]; // 显式提取坐标值
+            pt.append(coord); // 添加坐标到子列表
+       }
+
+        // 关键修复：使用 append 添加整个子列表，显式转换为 QVariant
+        vertexPointsList.append(QVariant(pt));
     }
     info["vertexPoints"] = vertexPointsList;
 
@@ -77,7 +80,7 @@ QVariantList ModelQuery::getBlockList() const {
             patchIDs.append(pid);
         }
         blockMap["patchIDs"] = patchIDs;
-        list.append(blockMap);
+        list.append(QVariant(blockMap));
     }
     return list;
 }

@@ -22,6 +22,7 @@
 #include "ModelActor.h"
 #include "Selection.h"
 #include "ToolMesh.h"
+#include "ModelQuery.h"
 
 namespace MeshLib {
 template <typename V, typename E, typename F, typename H>
@@ -305,5 +306,6 @@ private:
 
     ModelQuery* m_query;              //!< 每个 Model 实例包含一个关联的查询对象
     friend class ModelQuery;          //!< 声明 ModelQuery 为友元，以允许其访问 Model 私有数据
+    friend class TestModel;           //!< 声明 TestModel 为友元，用于GoogleTest
 };
 #endif // MODEL_H
