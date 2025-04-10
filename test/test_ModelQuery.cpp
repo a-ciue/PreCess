@@ -5,8 +5,6 @@
 #include "gtest/gtest.h"
 #include "TestModel.h"
 #include "ModelQuery.h"
-#include <QVariantMap>
-#include <QVariantList>
 #include <QVariant>
 
 // 辅助函数：创建 dummy Patch 对象
@@ -20,7 +18,11 @@ std::unique_ptr<Patch> createDummyPatch(int patchId) {
     patch->faceIDs_ = { patchId * 10, patchId * 10 + 1 };
     patch->faceTriangles_ = { { patchId, patchId + 1, patchId + 2 } };
     patch->vertexIDs_ = { patchId * 100, patchId * 100 + 1, patchId * 100 + 2 };
-    patch->vertexPoints_ = { {1.1, 2.2, 3.3}, {4.4, 5.5, 6.6}, {7.7, 8.8, 9.9} };
+    patch->vertexPoints_ = {
+            std::array<double,3>{1.1, 2.2, 3.3},
+            std::array<double,3>{4.4, 5.5, 6.6},
+            std::array<double,3>{7.7, 8.8, 9.9}
+    };
     return patch;
 }
 
@@ -52,7 +54,7 @@ protected:
         for (int i = 1; i <= 3; ++i) {
             patches[i] = createDummyPatch(i);
         }
-        testModel->setPatches(patches);
+        testModel->setPatches(std::move(patches));
 
         // 设置 dummy blocks，假设每个 block 对应同 id 的 patch
         std::unordered_map<int, std::unique_ptr<Block>> blocks;
@@ -60,7 +62,7 @@ protected:
             std::unordered_set<int> pids = { i };
             blocks[i] = createDummyBlock(i, pids);
         }
-        testModel->setBlocks(blocks);
+        testModel->setBlocks(std::move(blocks));
 
         // 设置 dummy groups，假设每个 group对应同 id 的 block
         std::unordered_map<int, std::unique_ptr<Group>> groups;
@@ -68,7 +70,7 @@ protected:
             std::unordered_set<int> bids = { i };
             groups[i] = createDummyGroup(i, bids);
         }
-        testModel->setGroups(groups);
+        testModel->setGroups(std::move(groups));
 
         // 创建 ModelQuery 对象
         query = new ModelQuery(testModel.get(), nullptr);
@@ -98,6 +100,10 @@ TEST_F(ModelQueryTest, GetPatchInfoValid) {
     // 检查 vertexPoints（每个点为 QList<double>）
     QVariantList vertexPoints = patchInfo.value("vertexPoints").toList();
     ASSERT_EQ(vertexPoints.size(), 3);
+    for (const auto& pointVariant : vertexPoints) {
+        QVariantList point = pointVariant.toList();
+        ASSERT_EQ(point.size(), 3); // 每个子列表应有3个坐标值
+    }
     // 可以进一步验证每个点的数值
 }
 
@@ -113,7 +119,12 @@ TEST_F(ModelQueryTest, GetBlockList) {
     EXPECT_EQ(blockList.size(), 3);
     // 验证第一个 block 的 id 是否正确
     QVariantMap block0 = blockList.at(0).toMap();
-    EXPECT_EQ(block0.value("id").toInt(), 1);
+    EXPECT_EQ(block0.value("id").toInt(), 3);
+    QVariantMap block1 = blockList.at(1).toMap();
+    EXPECT_EQ(block1.value("id").toInt(), 2);
+    QVariantMap block2 = blockList.at(2).toMap();
+    EXPECT_EQ(block2.value("id").toInt(), 1);
+
 }
 
 TEST_F(ModelQueryTest, GetPatchIds) {
