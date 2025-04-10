@@ -53,7 +53,6 @@ public:
      *
      * 遍历 m_model->blocks_，将每个 Block 内的信息转换为 QVariantMap，
      * 并将所有 Block 的信息存入 QVariantList 返回。
-     * 注意 Block 的顺序存储会颠倒，但是由于所有操作基于 Block 自身id，所以颠倒返回的顺序没有影响。
      *
      * @details
      * 每个 Block 产生的 QVariantMap 包含以下键：

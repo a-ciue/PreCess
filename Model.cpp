@@ -17,6 +17,7 @@
 #include "ModelActor.h"
 #include "ToolMesh.h"
 #include "ModelUtil.h"
+#include "ModelQuery.h"
 
 #include <stdexcept>  // 用于抛出异常
 
