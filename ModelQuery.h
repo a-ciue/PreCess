@@ -1,4 +1,16 @@
-﻿#pragma once
+﻿/**
+ * @file ModelQuery.h
+ * @brief 封装 Model 查询操作接口，支持对网格数据进行各种查询
+ *
+ * ModelQuery 类提供了一系列接口用于从 Model 中查询网格数据，
+ * 包括 Patch、Block、Group 和 Vertex 等信息的读取。通过将查询逻辑从 Model 的命令操作中分离，
+ * 实现了读写分离。该类通过 Q_INVOKABLE 方法暴露给 QML 层使用，返回的结果以 QVariantMap 或 QVariantList 形式呈现，
+ * 便于前端快速获得并展示数据。
+ *
+ * @author 徐昊阳 haoyangxu06@gmail.com
+ * @date 2025/4/11
+ */
+#pragma once
 
 #include <QObject>
 #include <QVariant>
@@ -11,11 +23,11 @@
 class Model;
 
 /**
- * ModelQuery 类封装了 Model 的所有查询操作（CQRS 查询部分）。
- * 通过将查询逻辑从 Model 的命令操作中分离，实现读写分离。
- * 初始版本将所有查询接口集中在此类中，将来可按需细分为 PatchQuery、BlockQuery 等。
- * ModelQuery 可以访问 Model 的私有数据（Model 将其声明为友元类），以获取所需信息。
- * 查询方法通过 Q_INVOKABLE 暴露给 QML，返回 QVariant/QVariantMap/QVariantList 结果。
+ * @brief ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）
+ *
+ * 通过将查询逻辑与 Model 的命令操作分离，ModelQuery 实现了读写分离，专注于数据的查询。
+ * 该类可以直接访问 Model 的私有数据（因为 Model 声明其为友元类），
+ * 并以 Q_INVOKABLE 方法暴露各个查询接口给 QML 使用。
  */
 class ModelQuery : public QObject {
     Q_OBJECT
@@ -26,8 +38,11 @@ class ModelQuery : public QObject {
 public:
     /**
      * @brief 构造函数
-     * @param model 指向关联的 Model 实例，该查询对象将读取其内部数据
-     * @param parent 父对象（默认 nullptr），建议设置为 Model 以便内存自动管理
+     *
+     * 根据传入的 Model 实例指针构造 ModelQuery 对象，用于执行各项数据查询操作。
+     *
+     * @param model 指向关联的 Model 实例，该查询对象将访问其内部数据
+     * @param parent 父对象（默认值为 nullptr），建议设置为 Model 以便自动管理内存
      */
     explicit ModelQuery(Model* model, QObject* parent = nullptr);
 
@@ -43,6 +58,7 @@ public:
      * - "vertexPoints": 对应顶点的坐标 (QVariantList，每个元素为包含 3 个 double 值的 QList)
      *
      * 如果未能找到指定 patch，则返回包含 error 信息的 QVariantMap。
+     *
      * @param patchId Patch 的标识符
      * @return 包含 Patch 详细信息的 QVariantMap
      */
@@ -73,6 +89,10 @@ public:
 
     /**
      * @brief 获取所有 Block 的 ID 列表
+     *
+     * 遍历 Model 中所有 Patch，将每个 Patch 的标识符提取出来，
+     * 并存入 QVariantList 返回。
+     *
      * @return 包含所有 Block 标识符的 QVariantList
      */
     Q_INVOKABLE QVariantList getBlockIds() const;

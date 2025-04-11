@@ -1,6 +1,6 @@
 ﻿#include "ModelQuery.h"
 #include "Model.h"
-#include <QVariantMap>
+
 #include <QVariantList>
 #include <QString>
 #include <stdexcept>
