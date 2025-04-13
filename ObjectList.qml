@@ -13,7 +13,9 @@ Item {
     signal removeModel(string modelName)
     signal renameModel(string oldName, string newName)
     signal changeModelVisibility(string modelName,bool visibility)
+    signal selectionChanged(string modelName)
     property var idxMap: ({})
+    property string selectedModelName: ""  // 存储当前选中的模型名
     /**
      * @brief 对象显示列表，每行由两个按钮，一个文本和一个图标组成
      */
@@ -45,6 +47,20 @@ Item {
                 width: 80
                 property string savedName
                 text: name
+                font.bold: root.selectedModelName === name  // 根据选中状态设置粗体
+                
+                MouseArea {
+                    anchors.fill: parent
+                    onDoubleClicked: {
+                        if (root.selectedModelName === name) {
+                            root.selectedModelName = ""  // 取消选中
+                        } else {
+                            root.selectedModelName = name  // 选中当前行
+                        }
+                        root.selectionChanged(root.selectedModelName)  // 发送信号
+                    }
+                }
+                
                 Component.onCompleted: {
                     savedName = text
                 }
