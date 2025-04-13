@@ -139,20 +139,11 @@ ApplicationWindow {
                     onClicked: stacklayout.currentIndex = 1
                     ButtonGroup.group: renderGroup
                 }
-                Button {
-                    id: btn3
-                    text: "组模式"
-                    property string renderMode: "Group"
-                    checkable: true
-                    onClicked: stacklayout.currentIndex = 2
-                    ButtonGroup.group: renderGroup
-                }
 
                 Component.onCompleted: {
-                    let width = 1.5*Math.max(btn1.width, btn2.width, btn3.width)
+                    let width = 1.5*Math.max(btn1.width, btn2.width)
                     btn1.Layout.preferredWidth = width
                     btn2.Layout.preferredWidth = width
-                    btn3.Layout.preferredWidth = width
                 }
             }
         }
@@ -445,6 +436,8 @@ ApplicationWindow {
             anchors.topMargin: 10
             anchors.leftMargin: 10
             property var selector_ids
+            enabled: objectList.selectedModelName !== ""  // 绑定到objectList的选中状态
+            
             onSelectorButtonClicked:{
                 if(type === 0){
                     console.log("点击清除按钮")
@@ -472,7 +465,6 @@ ApplicationWindow {
                 if(comboBoxSelectedString === "边"){myItem.bindStyle("Edge")}
                 if(comboBoxSelectedString === "面"){myItem.bindStyle("Face")}
                 if(comboBoxSelectedString === "块"){myItem.bindStyle("Block")}
-                if(comboBoxSelectedString === "组"){myItem.bindStyle("Group")}
             }
 
             function bindFunction(selectType){
@@ -487,10 +479,6 @@ ApplicationWindow {
                 if(selectType === "块"){
                     myItem.bindStyle("Block")
                     //console.log("绑定块")
-                }
-                if(selectType === "组"){
-                    myItem.bindStyle("Group")
-                    //console.log("绑定组")
                 }
             }
             onComboBoxSelectionChanged:{

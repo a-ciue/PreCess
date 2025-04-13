@@ -23,10 +23,11 @@ Item{
         spacing: 3
 
         Button{
-            id:edgeRenderGroup
+            id: edgeRenderGroup
             text: "边渲染"
-            onClicked:{
-                toggle()
+            checkable: true
+            enabled: selector.enabled
+            onClicked: {
                 changeEdgeRender(checked)
             }
         }
