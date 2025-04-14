@@ -147,7 +147,7 @@ void vtkInteractorStyleWithClick::OnLeftButtonUp()
 //    return selection;
 //}
 //
-//void MouseInteractorHighLightActor::SetSelector(std::unique_ptr<ActorSelectorHighlight> selector)
+//void MouseInteractorHighLightActor::SetSelector(std::unique_ptr<BlockSelectorHighlight> selector)
 //{
 //    selector_ = std::move(selector);
 //}

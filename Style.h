@@ -13,7 +13,7 @@
 #include "Selection.h"
 #include "Selector.h"
 #include "SelectManager.h"
-enum class SelectMode;
+
 class vtkProperty;
 class vtkNamedColors;
 class ModelActor;
@@ -56,11 +56,11 @@ private:
 //    */
 //    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
 //
-//    void SetSelector(std::unique_ptr<ActorSelectorHighlight> selector);
+//    void SetSelector(std::unique_ptr<BlockSelectorHighlight> selector);
 //    
 //private:
 //    bool click_ {};
-//    std::unique_ptr<ActorSelectorHighlight> selector_;
+//    std::unique_ptr<BlockSelectorHighlight> selector_;
 //};
 //
 //class MouseInteractorHighLightFace : public vtkInteractorStyleWithClick {

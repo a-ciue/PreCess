@@ -40,7 +40,7 @@ qt_add_qml_module(${MYNAME}
         MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
 )
 
-add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp "SelectManager.h" "SelectManager.cpp")
+add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp "SelectManager.h" "SelectManager.cpp" "Core.h")
 
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )
 
