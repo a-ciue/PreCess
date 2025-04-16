@@ -8,6 +8,12 @@
 #include "ModelActor.h"
 #include "ModelActor.h"
 #include "ModelActor.h"
+#include "ModelActor.h"
+#include "ModelActor.h"
+#include "ModelActor.h"
+#include "ModelActor.h"
+#include "ModelActor.h"
+#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -28,6 +34,27 @@
 #include <vtkTriangle.h>
 #include <vtkMultiBlockDataSet.h>
 using Index = int;
+
+Index ModelData::model_face_id(vtkIdType face_id)
+{
+
+    return this->model_face_id_[face_id];
+}
+
+Index ModelData::model_point_id(vtkIdType point_id)
+{
+    return this->model_point_id_[point_id];
+}
+
+Index ModelData::model_block_id(vtkIdType block_id)
+{
+    for (const auto& block : this->model_blocks_.BlockDatas_) {
+        if (block.vtk_id_ == block_id) {
+            return block.model_id_;
+        }
+    } 
+}
+
 
 ModelActor::ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode render_mode)
 {
@@ -97,6 +124,21 @@ void ModelActor::setRenderMode(RenderMode render_mode)
 void ModelActor::addPickList(vtkPropCollection* pick_list)
 {
     pick_list->AddItem(this->actor_);
+}
+
+Index ModelActor::get_model_face_id(vtkIdType face_id)
+{
+    return this->model_data_.model_face_id(face_id);
+}
+
+Index ModelActor::get_model_point_id(vtkIdType point_id)
+{
+    return this->model_data_.model_point_id(point_id);
+}
+
+Index ModelActor::get_model_block_id(vtkIdType block_id)
+{
+    return this->model_data_.model_block_id(block_id);
 }
 
 void ModelActor::createBlockMapper(ModelData model_data)

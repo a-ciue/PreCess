@@ -32,7 +32,7 @@ struct ModelData {
     std::vector<vtkIdType[3]> vtk_triangles_;
     std::vector<double[3]> vtk_points_;
     std::vector<Index> model_face_id_;
-    std::vector<Index> model_point_id;
+    std::vector<Index> model_point_id_;
     BlockDatas model_blocks_;
 
     Index model_face_id(vtkIdType face_id);
@@ -64,6 +64,9 @@ public:
 
     void addPickList(vtkPropCollection* pick_list);
 
+    Index get_model_face_id(vtkIdType face_id);
+    Index get_model_point_id(vtkIdType point_id);
+    Index get_model_block_id(vtkIdType block_id);
 
 private:
     RenderMode render_mode_;
