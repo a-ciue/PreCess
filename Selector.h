@@ -47,7 +47,7 @@ public:
     //! @brief 清空selections并取消高亮
     void clear();
     //! @brief 获取当前选中的actors
-    std::vector<vtkIdType> get();
+    SelectionVtk get();
     //! @brief 找到该坐标下的actor，并高亮该actor；若选中已选actor要取消选中和高亮
     void select(double posx, double posy,vtkRenderer* renderer);
 
@@ -83,7 +83,7 @@ public:
     //! @brief 将actor从renderer中删除
     ~SingleFaceSelectorHighlight();
     //! @brief 返回当前选择的面
-    std::optional<vtkIdType> get();
+    SelectionVtk get();
     //! @brief 清空selection并取消高亮，即清空mapper
     void clear();
     //! @brief 找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
@@ -116,7 +116,7 @@ public:
     //! @brief 将actor从renderer中删除
     ~SingleEdgeSelectorHighlight();
     //! @brief 获取当前选择的边
-    std::optional<SelectedEdge> get();
+    SelectionVtk get();
     //! @brief 清空selection并取消高亮，即清空mapper
     void clear();
     //! @brief 找到坐标下的edge并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()

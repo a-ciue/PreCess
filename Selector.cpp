@@ -41,7 +41,7 @@
 #include <vtkCompositeDataDisplayAttributes.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
-
+#include "Selection.h"
 
 BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer* renderer)
 {
@@ -56,12 +56,13 @@ void BlockSelectorHighlight::clear() {
     selections_.clear();
 }
 
-std::vector<vtkIdType> BlockSelectorHighlight::get() {
-    std::vector<vtkIdType> blocks;
+SelectionVtk BlockSelectorHighlight::get() {
+    SelectionVtk back_selection;
+    back_selection.type = Element::Block;
     for (const auto& selection : selections_) {
-        blocks.push_back(selection.block_id-1);
+        back_selection.ids.push_back(selection.block_id - 1);  
     }
-    return blocks;
+    return back_selection;
 }
 
 void BlockSelectorHighlight::select(double posx, double posy, vtkRenderer* renderer) {
@@ -123,9 +124,14 @@ SingleFaceSelectorHighlight::~SingleFaceSelectorHighlight()
     selection_ = std::nullopt;
 }
 
-std::optional<vtkIdType> SingleFaceSelectorHighlight::get()
+SelectionVtk SingleFaceSelectorHighlight::get()
 {
-    return selection_;;
+    SelectionVtk back_selection;
+    back_selection.type = Element::Face;
+    if (selection_.has_value()) {
+        back_selection.ids.push_back(selection_.value());
+    }
+    return back_selection;
 }
 
 void SingleFaceSelectorHighlight::clear()
@@ -211,9 +217,17 @@ void SingleEdgeSelectorHighlight::clear()
     selection_ = std::nullopt;
 }
 
-std::optional<SingleEdgeSelectorHighlight::SelectedEdge> SingleEdgeSelectorHighlight::get()
+SelectionVtk SingleEdgeSelectorHighlight::get()
 {
-    return selection_;
+    SelectionVtk back_selection;
+    back_selection.type = Element::Edge;
+
+    if (selection_.has_value()) {
+        back_selection.ids.push_back(this->selection_->v_local_id[0]);
+        back_selection.ids.push_back(this->selection_->v_local_id[1]);
+    }
+
+    return back_selection;
 }
 
 void SingleEdgeSelectorHighlight::select(double posx, double posy)
