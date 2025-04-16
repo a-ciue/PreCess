@@ -3,7 +3,7 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <vector>
-
+using Index = int;
 //! @brief Element在QML中暴露了枚举Element::Type，在QML中以Element.Face获取枚举值
 class Element : public QObject {
     Q_OBJECT

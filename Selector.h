@@ -42,7 +42,7 @@ public:
 
 class BlockSelectorHighlight : public SelectorHighlight {
 public:
-    BlockSelectorHighlight(vtkMapper* selection_mapper);
+    BlockSelectorHighlight(vtkRenderer* renderer);
     ~BlockSelectorHighlight() { clear(); }
     //! @brief 清空selections并取消高亮
     void clear();
@@ -63,46 +63,44 @@ private:
         double backup_color[3]{};
     };
     std::vector<Block> selections_;
-    //! @brief 取消高亮，修改回原来属性
-    vtkMapper* mapper_;
+    vtkRenderer* renderer_;
+    vtkCompositePolyDataMapper* mapper_;
     vtkPropCollection* collection;
-    static void _cancel_highlight(Block &selection);
-    //! @brief 判断是否已经被选中
+    void _cancel_highlight(Block &selection);
     static std::optional<size_t> _is_selected(const vtkIdType block_id, const std::vector<Block>& selections);
-
 };
 
 class SingleFaceSelectorHighlight : public SelectorHighlight {
 public:
-    struct SelectedFace {
-        //! @brief 面所在的actor，借由actor可以找到全局id
-        vtkActor* patch_actor;
-        //! @brief 面局部索引id
-        int local_id;
-    };
+    //struct SelectedFace {
+    //    //! @brief 面所在的actor，借由actor可以找到全局id
+    //    vtkIdType face_id;
+    //    //! @brief 面局部索引id
+    //    int local_id;
+    //};
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    SingleFaceSelectorHighlight(vtkMapper* selection_mapper);
+    SingleFaceSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
     ~SingleFaceSelectorHighlight();
     //! @brief 返回当前选择的面
-    std::optional<SelectedFace> get();
+    std::optional<vtkIdType> get();
     //! @brief 清空selection并取消高亮，即清空mapper
     void clear();
     //! @brief 找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
     void select(double posx, double posy, vtkRenderer* renderer);
-    vtkPropAssembly* getAssembly();
+    
 
 private:
     //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkSmartPointer<vtkActor>& selectedActor, vtkRenderer* renderer);
+    void _cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer);
     //! @brief 判断是否已经被选中
-    static bool _is_selected(SelectedFace new_face, const std::optional<SelectedFace>& selection, vtkActor* selectedActor);
+    static bool _is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection);
 
+    void set_highlight_actor();
     vtkRenderer* renderer_;
-    std::optional<SelectedFace> selection_;
-    //vtkPropAssembly faceAssembly;
+    std::optional<vtkIdType> selection_;
+    vtkNew<vtkActor> highlight_actor_;
     vtkNew<vtkMapper> mapper_;
-    vtkSmartPointer<vtkActor> selectedActor_;
 };
 
 class SingleEdgeSelectorHighlight : public SelectorHighlight {
@@ -114,7 +112,7 @@ public:
         std::array<int, 2> v_local_id;
     };
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    SingleEdgeSelectorHighlight(vtkMapper* selection_mapper);
+    SingleEdgeSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
     ~SingleEdgeSelectorHighlight();
     //! @brief 获取当前选择的边
@@ -123,7 +121,6 @@ public:
     void clear();
     //! @brief 找到坐标下的edge并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
     void select(double posx, double posy);
-    vtkPropAssembly* getAssembly();
 
 private:
     //！@brief 取消高亮，清空mapper

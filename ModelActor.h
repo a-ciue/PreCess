@@ -18,6 +18,16 @@ class vtkPolyData;
 class Model;
 using Index = int;
 
+struct BlockDatas {
+    std::vector<BlockData> BlockDatas_;
+};
+
+struct BlockData {
+    std::vector<vtkIdType> faces_;
+    vtkIdType vtk_id_;
+    Index model_id_;
+};
+
 struct ModelData {
     std::vector<vtkIdType[3]> vtk_triangles_;
     std::vector<double[3]> vtk_points_;
@@ -30,15 +40,9 @@ struct ModelData {
     Index model_block_id(vtkIdType block_id);
 };
 
-struct BlockDatas {
-    std::vector<BlockData> BlockDatas_;
-};
 
-struct BlockData {
-    std::vector<vtkIdType> faces_;
-    vtkIdType vtk_id_;
-    Index model_id_;
-};
+
+
 
 class Model;
 
