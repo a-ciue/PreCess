@@ -1,3 +1,5 @@
+#ifndef SELECTMANAGER_H
+#define SELECTMANAGER_H
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -23,7 +25,7 @@ enum SelectMode {
 };
 class SelectManager {
 
-
+public:
 	void bindRenderer(vtkRenderer* renderer);
 
 	void select(double posx, double posy);
@@ -40,3 +42,4 @@ private:
 	vtkRenderer* renderer_;
 	std::unique_ptr<SelectorHighlight> selector_;
 };
+#endif
