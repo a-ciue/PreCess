@@ -1,4 +1,7 @@
 #include "Selector.h"
+#include "Selector.h"
+#include "Selector.h"
+#include "Selector.h"
 #include <array>
 #include <optional>
 #include <utility>
@@ -60,10 +63,14 @@ SelectionVtk BlockSelectorHighlight::get() {
     return back_selection;
 }
 
-void BlockSelectorHighlight::select(double posx, double posy, vtkRenderer* renderer) {
+void BlockSelectorHighlight::select(double posx, double posy) {
     vtkNew<vtkCellPicker> picker;
-    picker->AddPickList(this->collection->GetLastProp());
-    picker->Pick(posx, posy,0,renderer);
+    collection_->InitTraversal();
+    for (vtkProp* actor{}; actor = collection_->GetNextProp(); )
+    {
+        picker->AddPickList(actor);
+    }
+    picker->Pick(posx, posy,0,this->renderer_);
     vtkProp* pickedProp = picker->GetViewProp();
     if (pickedProp) {
         std::cout << "Picked an object!" << std::endl;
@@ -94,6 +101,11 @@ void BlockSelectorHighlight::select(double posx, double posy, vtkRenderer* rende
     else {
         std::cout << "No object picked!" << std::endl;
     }
+}
+
+vtkPropCollection* BlockSelectorHighlight::getPickList()
+{
+    return this->collection_;
 }
 
 void BlockSelectorHighlight::_cancel_highlight(Block& selection) {
@@ -137,9 +149,14 @@ void SingleFaceSelectorHighlight::clear()
     selection_ = std::nullopt;
 }
 
-void SingleFaceSelectorHighlight::select(double posx, double posy, vtkRenderer* renderer)
+void SingleFaceSelectorHighlight::select(double posx, double posy)
 {
     vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+    collection_->InitTraversal();
+    for (vtkProp* actor{}; actor = collection_->GetNextProp();  )
+    {
+        picker->AddPickList(actor);
+    }
     picker->Pick(posx, posy, 0, this->renderer_);
 
     vtkIdType cellId = picker->GetCellId();
@@ -173,6 +190,11 @@ void SingleFaceSelectorHighlight::select(double posx, double posy, vtkRenderer* 
     // 添加到渲染器中
     renderer_->AddActor(highlight_actor_);
     renderer_->Render();
+}
+
+vtkPropCollection* SingleFaceSelectorHighlight::getPickList()
+{
+    return this->collection_;
 }
 
 void SingleFaceSelectorHighlight::_cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer)
@@ -230,6 +252,11 @@ SelectionVtk SingleEdgeSelectorHighlight::get()
 void SingleEdgeSelectorHighlight::select(double posx, double posy)
 {
     vtkNew<vtkCellPicker> picker;
+    collection_->InitTraversal();
+    for (vtkProp* actor{}; actor = collection_->GetNextProp(); )
+    {
+        picker->AddPickList(actor);
+    }
     picker->Pick(posx, posy, 0, renderer_);
 
     if (picker->GetCellId() != -1) {
@@ -316,6 +343,11 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         _cancel_highlight(selectedMapper_, selectedActor_);
         selection_ = std::nullopt;
     }
+}
+
+vtkPropCollection* SingleEdgeSelectorHighlight::getPickList()
+{
+    return this->collection_;
 }
 
 void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper, vtkActor* selectedActor)

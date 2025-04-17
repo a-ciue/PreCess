@@ -47,12 +47,12 @@ public:
     BlockSelectorHighlight(vtkRenderer* renderer);
     ~BlockSelectorHighlight() { clear(); }
     //! @brief 清空selections并取消高亮
-    void clear();
+    void clear()override;
     //! @brief 获取当前选中的actors
-    SelectionVtk get();
+    SelectionVtk get()override;
     //! @brief 找到该坐标下的actor，并高亮该actor；若选中已选actor要取消选中和高亮
-    void select(double posx, double posy,vtkRenderer* renderer);
-
+    void select(double posx, double posy) override;
+    vtkPropCollection* getPickList()override;
 private:
     /* struct Actor
     {
@@ -67,7 +67,7 @@ private:
     std::vector<Block> selections_;
     vtkRenderer* renderer_;
     vtkCompositePolyDataMapper* mapper_;
-    vtkPropCollection* collection;
+    vtkNew<vtkPropCollection> collection_;
     void _cancel_highlight(Block &selection);
     static std::optional<size_t> _is_selected(const vtkIdType block_id, const std::vector<Block>& selections);
 };
@@ -85,11 +85,12 @@ public:
     //! @brief 将actor从renderer中删除
     ~SingleFaceSelectorHighlight();
     //! @brief 返回当前选择的面
-    SelectionVtk get();
+    SelectionVtk get()override;
     //! @brief 清空selection并取消高亮，即清空mapper
-    void clear();
+    void clear()override;
     //! @brief 找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
-    void select(double posx, double posy, vtkRenderer* renderer);
+    void select(double posx, double posy) override;
+    vtkPropCollection* getPickList()override;
     
 
 private:
@@ -103,6 +104,7 @@ private:
     std::optional<vtkIdType> selection_;
     vtkNew<vtkActor> highlight_actor_;
     vtkNew<vtkMapper> mapper_;
+    vtkNew<vtkPropCollection> collection_;
 };
 
 class SingleEdgeSelectorHighlight : public SelectorHighlight {
@@ -118,11 +120,12 @@ public:
     //! @brief 将actor从renderer中删除
     ~SingleEdgeSelectorHighlight();
     //! @brief 获取当前选择的边
-    SelectionVtk get();
+    SelectionVtk get()override;
     //! @brief 清空selection并取消高亮，即清空mapper
-    void clear();
+    void clear()override;
     //! @brief 找到坐标下的edge并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
-    void select(double posx, double posy);
+    void select(double posx, double posy)override;
+    vtkPropCollection* getPickList()override;
 
 private:
     //！@brief 取消高亮，清空mapper
@@ -131,11 +134,11 @@ private:
     static bool _is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor);
 
     vtkRenderer* renderer_;
-    Model* model_;
     std::optional<SelectedEdge> selection_;
     //vtkPropAssembly edgeAssembly;
     vtkNew<vtkMapper> mapper_;
     vtkNew<vtkDataSetMapper> selectedMapper_;
     vtkSmartPointer<vtkActor> selectedActor_;
+    vtkNew<vtkPropCollection> collection_;
 };
 #endif
