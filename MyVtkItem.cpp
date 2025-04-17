@@ -193,8 +193,11 @@ Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
     dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
-        selectManager_->setSelectActor(vtk->models_[model_name].get());
 
+        if (vtk->models_.count(model_name))
+            selectManager_->setSelectActor(vtk->models_[model_name].get());
+        else
+            selectManager_->setSelectActor(nullptr);
         });
     return Q_INVOKABLE void();
 }

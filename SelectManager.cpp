@@ -36,7 +36,10 @@ void SelectManager::setSelectActor(ModelActor* model_actor_)
 {
 	this->cur_model_actor_ = model_actor_;
 	this->selector_->getPickList()->RemoveAllItems();
-	this->cur_model_actor_->addPickList(this->selector_->getPickList());
+	if (model_actor_)
+	{
+		this->cur_model_actor_->addPickList(this->selector_->getPickList());
+	}
 }
 
 void SelectManager::setSelectMode(SelectMode select_mode)
