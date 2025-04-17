@@ -1,5 +1,6 @@
 #include "Style.h"
 #include "Style.h"
+#include "Style.h"
 #include <vtkRenderWindowInteractor.h>
 #include "ModelActor.h"
 #include "MyVtkItem.h"
@@ -8,6 +9,11 @@
 void vtkInteractorStyleWithClick::SetClick()
 {
 	click_ = true;
+}
+
+SelectManager vtkInteractorStyleWithClick::get_SelectManager()
+{
+	return this->selectManager_;
 }
 
 void vtkInteractorStyleWithClick::OnLeftButtonUp()

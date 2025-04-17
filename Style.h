@@ -13,19 +13,25 @@
 #include "Selection.h"
 #include "Selector.h"
 #include "SelectManager.h"
-
+#include <iostream>
+#include <optional>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 class vtkProperty;
 class vtkNamedColors;
 class ModelActor;
 
 class vtkInteractorStyleWithClick : public vtkInteractorStyleTrackballCamera {
-public:
-    void SetClick();
-    void OnLeftButtonUp() override;
 
+   public:
+    void SetClick();
+    SelectManager get_SelectManager();
+    void OnLeftButtonUp() override;
+     
 private:    
     bool click_ {};
-    SelectManager selecManager_;
+    SelectManager selectManager_;
 
 };
 
