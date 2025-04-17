@@ -23,8 +23,9 @@ class vtkNamedColors;
 class ModelActor;
 
 class QRenderWindowStyle : public vtkInteractorStyleTrackballCamera {
-
-   public:
+public:
+	static QRenderWindowStyle* New();
+    vtkTypeMacro(QRenderWindowStyle, vtkInteractorStyleTrackballCamera);
     void SetClick();
     void SetSelectManager(SelectManager* select_manager);
     void OnLeftButtonUp() override;

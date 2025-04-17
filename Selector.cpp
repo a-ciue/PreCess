@@ -227,12 +227,12 @@ SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer) 
 
 SingleEdgeSelectorHighlight::~SingleEdgeSelectorHighlight()
 {
-    renderer_->RemoveActor(selectedActor_);
+    renderer_->RemoveActor(selected_actor_);
 }
 
 void SingleEdgeSelectorHighlight::clear()
 {
-    _cancel_highlight(selectedMapper_, selectedActor_);
+    _cancel_highlight(selected_mapper_, selected_actor_);
     selection_ = std::nullopt;
 }
 
@@ -319,17 +319,17 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         vtkNew<vtkPolyData> polydata;
         polydata->SetPoints(points);
         polydata->SetLines(lines);
-        selectedMapper_->SetInputData(polydata);
-        selectedMapper_->Update(); // 更新映射器
+        selected_mapper_->SetInputData(polydata);
+        selected_mapper_->Update(); // 更新映射器
 
         // 创建一个演员来显示这些线段
 
-        selectedActor_->SetMapper(selectedMapper_);
-        selectedActor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("black").GetData());
-        selectedActor_->GetProperty()->SetLineWidth(5); // 设置
+        selected_actor_->SetMapper(selected_mapper_);
+        selected_actor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("black").GetData());
+        selected_actor_->GetProperty()->SetLineWidth(5); // 设置
 
-        if (_is_selected(picked_edge, selection_, selectedActor_)) {
-            _cancel_highlight(selectedMapper_, selectedActor_);
+        if (_is_selected(picked_edge, selection_, selected_actor_)) {
+            _cancel_highlight(selected_mapper_, selected_actor_);
             selection_ = std::nullopt;
         }
         else
@@ -340,7 +340,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
 
     else if (picker->GetCellId() == -1) {
         // 没选到
-        _cancel_highlight(selectedMapper_, selectedActor_);
+        _cancel_highlight(selected_mapper_, selected_actor_);
         selection_ = std::nullopt;
     }
 }

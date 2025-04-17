@@ -30,8 +30,8 @@ struct BlockData {
 };
 
 struct ModelData {
-    std::vector<vtkIdType[3]> vtk_triangles_;
-    std::vector<double[3]> vtk_points_;
+    std::vector<std::array<vtkIdType, 3>> vtk_triangles_;
+    std::vector<std::array<double, 3>> vtk_points_;
     std::vector<Index> model_face_id_;
     std::vector<Index> model_point_id_;
     BlockDatas model_blocks_;
@@ -76,7 +76,7 @@ private:
 
     vtkNew<vtkActor> actor_;
     vtkRenderer* renderer_;
-    vtkNew<vtkMapper> mapper_;
+    vtkNew<vtkPolyDataMapper> mapper_;
     //Face mapper
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(ModelData model_data);

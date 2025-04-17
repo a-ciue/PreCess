@@ -3,6 +3,7 @@
 #include "ModelActor.h"
 #include "MyVtkItem.h"
 
+vtkStandardNewMacro(QRenderWindowStyle);
 
 void QRenderWindowStyle::SetClick()
 {

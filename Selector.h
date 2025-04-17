@@ -103,7 +103,7 @@ private:
     vtkRenderer* renderer_;
     std::optional<vtkIdType> selection_;
     vtkNew<vtkActor> highlight_actor_;
-    vtkNew<vtkMapper> mapper_;
+    vtkNew<vtkPolyDataMapper> mapper_;
     vtkNew<vtkPropCollection> collection_;
 };
 
@@ -136,9 +136,9 @@ private:
     vtkRenderer* renderer_;
     std::optional<SelectedEdge> selection_;
     //vtkPropAssembly edgeAssembly;
-    vtkNew<vtkMapper> mapper_;
-    vtkNew<vtkDataSetMapper> selectedMapper_;
-    vtkSmartPointer<vtkActor> selectedActor_;
+    vtkNew<vtkPolyDataMapper> mapper_;
+    vtkNew<vtkDataSetMapper> selected_mapper_;
+    vtkSmartPointer<vtkActor> selected_actor_;
     vtkNew<vtkPropCollection> collection_;
 };
 #endif
