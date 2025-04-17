@@ -13,7 +13,6 @@
 #include "Selection.h"
 #include "Selector.h"
 #include "Model.h"
-#include "Style.h"
 #include "Selection.h"
 #include "ModelActor.h"
 #include "Core.h"
