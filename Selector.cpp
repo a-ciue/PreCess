@@ -1,9 +1,4 @@
 #include "Selector.h"
-#include "Selector.h"
-#include "Selector.h"
-#include "Selector.h"
-#include "Selector.h"
-#include "Selector.h"
 #include <array>
 #include <optional>
 #include <utility>
@@ -49,7 +44,7 @@ BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer* renderer)
 }
 
 void BlockSelectorHighlight::clear() {
-    // È¡Ïû¸ßÁÁËùÓĞÑ¡ÖĞµÄactor
+    // å–æ¶ˆé«˜äº®æ‰€æœ‰é€‰ä¸­çš„actor
     for (auto& selection : selections_) {
         _cancel_highlight(selection);
     }
@@ -77,11 +72,11 @@ void BlockSelectorHighlight::select(double posx, double posy, vtkRenderer* rende
 
         vtkActor* actor = vtkActor::SafeDownCast(pickedProp);
         vtkProperty* actorProperty = actor->GetProperty();
-        vtkMapper* getmapper = actor->GetMapper();
-        if (!getmapper->IsA("vtkCompositePolyDataMapper")) { return; }
+        vtkMapper* getMapper = actor->GetMapper();
+        if (!getMapper->IsA("vtkCompositePolyDataMapper")) { return; }
         
-        // if µã»÷µ½compositePolyDataMapper
-        this->mapper_ = vtkCompositePolyDataMapper::SafeDownCast(getmapper);
+        // if ç‚¹å‡»åˆ°compositePolyDataMapper
+        this->mapper_ = vtkCompositePolyDataMapper::SafeDownCast(getMapper);
 
         std::optional<size_t> selected_index = _is_selected(picker->GetFlatBlockIndex(), selections_);
         if (selected_index) {
@@ -89,8 +84,10 @@ void BlockSelectorHighlight::select(double posx, double posy, vtkRenderer* rende
             selections_.erase(selections_.begin() + *selected_index);
         }
         else {
-            selections_.emplace_back(picker->GetFlatBlockIndex());
-            actorProperty->GetColor(selections_.back().backup_color);
+			
+            selections_.emplace_back();
+            selections_.back().block_id = picker->GetFlatBlockIndex();
+			actorProperty->GetColor(selections_.back().backup_color);
             mapper_->SetBlockColor(picker->GetFlatBlockIndex(), 1, 1, 0);          
         }
     }
@@ -107,7 +104,7 @@ std::optional<size_t> BlockSelectorHighlight::_is_selected(const vtkIdType block
 
     for (size_t i = 0; i < selections.size(); ++i) {
         if (selections[i].block_id == block_id) {
-            // Èç¹ûÕÒµ½,·µ»Ø¸Ã actor µÄË÷Òı
+            // å¦‚æœæ‰¾åˆ°,è¿”å›è¯¥ actor çš„ç´¢å¼•
             return i;
         }
     }
@@ -151,15 +148,15 @@ void SingleFaceSelectorHighlight::select(double posx, double posy, vtkRenderer* 
         return ;
     }
     if (_is_selected(cellId, selection_)) {
-        // ÔÙ´Îµã»÷È¡ÏûÑ¡ÖĞ
+        // å†æ¬¡ç‚¹å‡»å–æ¶ˆé€‰ä¸­
         clear();
         return;
     }
 
-    // ¸üĞÂÑ¡ÖĞ
+    // æ›´æ–°é€‰ä¸­
     selection_ = cellId;
 
-    // ´´½¨Ò»¸öÖ»°üº¬¸ÃÃæµÄ polydata ÓÃÓÚ¸ßÁÁ
+    // åˆ›å»ºä¸€ä¸ªåªåŒ…å«è¯¥é¢çš„ polydata ç”¨äºé«˜äº®
     vtkSmartPointer<vtkPolyData> input = vtkPolyData::SafeDownCast(picker->GetDataSet());
     if (!input) return;
 
@@ -173,7 +170,7 @@ void SingleFaceSelectorHighlight::select(double posx, double posy, vtkRenderer* 
     this->mapper_->SetInputDataObject(single_face);
 
     set_highlight_actor();
-    // Ìí¼Óµ½äÖÈ¾Æ÷ÖĞ
+    // æ·»åŠ åˆ°æ¸²æŸ“å™¨ä¸­
     renderer_->AddActor(highlight_actor_);
     renderer_->Render();
 }
@@ -194,11 +191,11 @@ void SingleFaceSelectorHighlight::set_highlight_actor()
     mapper_->ScalarVisibilityOff();
     
     this->highlight_actor_->SetMapper(mapper_);
-    this->highlight_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0);  // ºìÉ«¸ßÁÁ
+    this->highlight_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0);  // çº¢è‰²é«˜äº®
     this->highlight_actor_->GetProperty()->SetLineWidth(2.0);
     this->highlight_actor_->GetProperty()->EdgeVisibilityOn();
     this->highlight_actor_->GetProperty()->SetEdgeColor(1.0, 0.0, 0.0);
-    this->highlight_actor_->PickableOff();  // ·ÀÖ¹×Ô¼º±»Ñ¡ÖĞ
+    this->highlight_actor_->PickableOff();  // é˜²æ­¢è‡ªå·±è¢«é€‰ä¸­
     
 }
 
@@ -239,18 +236,18 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         vtkActor* pickedActor = picker->GetActor();
         if (!pickedActor) return;
 
-        // »ñÈ¡ mapper µÄÊäÈëÊı¾İ£¨¼ÙÉèÊÇ vtkPolyData£©
+        // è·å– mapper çš„è¾“å…¥æ•°æ®ï¼ˆå‡è®¾æ˜¯ vtkPolyDataï¼‰
         vtkPolyData* polyData = vtkPolyData::SafeDownCast(pickedActor->GetMapper()->GetInput());
         if (!polyData) return;
 
-        // »ñÈ¡Ñ¡ÖĞµÄÈı½ÇĞÎµÄ CellId
+        // è·å–é€‰ä¸­çš„ä¸‰è§’å½¢çš„ CellId
         vtkIdType pickedCellId = picker->GetCellId();
 
-        // »ñÈ¡Õâ¸öÈı½ÇĞÎµÄ¶¥µã ID
+        // è·å–è¿™ä¸ªä¸‰è§’å½¢çš„é¡¶ç‚¹ ID
         vtkCell* cell = polyData->GetCell(pickedCellId);
         vtkIdList* pointIds = cell->GetPointIds();
 
-        // È¡³öÈı½ÇĞÎµÄÈı¸ö¶¥µãË÷Òı
+        // å–å‡ºä¸‰è§’å½¢çš„ä¸‰ä¸ªé¡¶ç‚¹ç´¢å¼•
         vtkIdType v0 = pointIds->GetId(0);
         vtkIdType v1 = pointIds->GetId(1);
         vtkIdType v2 = pointIds->GetId(2);
@@ -296,13 +293,13 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         polydata->SetPoints(points);
         polydata->SetLines(lines);
         selectedMapper_->SetInputData(polydata);
-        selectedMapper_->Update(); // ¸üĞÂÓ³ÉäÆ÷
+        selectedMapper_->Update(); // æ›´æ–°æ˜ å°„å™¨
 
-        // ´´½¨Ò»¸öÑİÔ±À´ÏÔÊ¾ÕâĞ©Ïß¶Î
+        // åˆ›å»ºä¸€ä¸ªæ¼”å‘˜æ¥æ˜¾ç¤ºè¿™äº›çº¿æ®µ
 
         selectedActor_->SetMapper(selectedMapper_);
         selectedActor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("black").GetData());
-        selectedActor_->GetProperty()->SetLineWidth(5); // ÉèÖÃ
+        selectedActor_->GetProperty()->SetLineWidth(5); // è®¾ç½®
 
         if (_is_selected(picked_edge, selection_, selectedActor_)) {
             _cancel_highlight(selectedMapper_, selectedActor_);
@@ -315,7 +312,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
     }
 
     else if (picker->GetCellId() == -1) {
-        // Ã»Ñ¡µ½
+        // æ²¡é€‰åˆ°
         _cancel_highlight(selectedMapper_, selectedActor_);
         selection_ = std::nullopt;
     }
@@ -331,10 +328,10 @@ void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMa
 bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor)
 {
     if (new_edge.actor == selectedActor)
-        // Ñ¡ÖĞÁËselectedActor
+        // é€‰ä¸­äº†selectedActor
         return true;
     if (selection && selection->actor == new_edge.actor) {
-        // Ñ¡ÖĞµÄ±ßµãid£¬½»»»ÒâÒåÏÂ¶ÔÓ¦ÏàÍ¬
+        // é€‰ä¸­çš„è¾¹ç‚¹idï¼Œäº¤æ¢æ„ä¹‰ä¸‹å¯¹åº”ç›¸åŒ
         const std::array<int, 2>& selected1 = selection->v_local_id;
         const std::array<int, 2>& selected2 = new_edge.v_local_id;
         return selected1[0] == selected2[0] && selected1[1] == selected2[1]

@@ -54,23 +54,9 @@ void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> mod
     }
 
     // 使用 SIGNAL/SLOT 机制连接 Model 的信号到 QRenderWindow 的槽（这里信号参数均已增加 modelName）
-    connect(rawModel, &Model::patchUpdated,
-        vtk_item_, &QRenderWindow::patchUpdated);
 
-    connect(rawModel, &Model::blockUpdated,
-        vtk_item_, &QRenderWindow::blockUpdated);
-
-    connect(rawModel, &Model::blocksMerged,
-        vtk_item_, &QRenderWindow::blocksMerged);
-
-    connect(rawModel, &Model::groupUpdated,
-        vtk_item_, &QRenderWindow::groupUpdated);
-
-    connect(rawModel, &Model::groupMerged,
-        vtk_item_, &QRenderWindow::groupMerged);
-
-    connect(rawModel, &Model::modelInited,
-        vtk_item_, &QRenderWindow::onModelInited);
+    /*connect(rawModel, &Model::modelInited,
+        vtk_item_, &QRenderWindow::onModelInited);*/
     
     // 调用模型刷新接口，确保 VTK 数据更新
     rawModel->refreshVtk();
@@ -137,8 +123,8 @@ void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString
         mode = ModelActor::RenderMode::Face;
     } else if (renderMode == "Block") {
         mode = ModelActor::RenderMode::Block;
-    } else if (renderMode == "Group") {
-        mode = ModelActor::RenderMode::Group;
+    /*} else if (renderMode == "Group") {
+        mode = ModelActor::RenderMode::Group;*/
     } else {
         std::cerr << "invalid renderMode in QRenderWindow::changeEdgeRenderer" << std::endl;
         return;

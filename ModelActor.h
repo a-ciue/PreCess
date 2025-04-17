@@ -9,6 +9,7 @@
 #include <vtkPropAssembly.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
+struct BlockData;
 struct Group;
 struct Block;
 struct Patch;
@@ -51,7 +52,6 @@ public:
     enum class RenderMode {
         Face,
         Block,
-        Group,
     };
 
     ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode render_mode);
@@ -77,6 +77,7 @@ private:
     vtkNew<vtkActor> actor_;
     vtkRenderer* renderer_;
     vtkNew<vtkMapper> mapper_;
+    //Face mapper
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(ModelData model_data);
 };

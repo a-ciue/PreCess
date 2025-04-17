@@ -92,12 +92,6 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
         };
         break;
     }
-    case ModelActor::RenderMode::Group: {
-        gid = [this](int patch_id) {
-            return groups_[blocks_[patches_[patch_id]->blockID]->groupID]->id;
-        };
-        break;
-    }
     }
 
     if (extension == "obj")

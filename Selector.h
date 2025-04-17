@@ -4,6 +4,8 @@
 * @author：付轩宇 email 982531420@qq.com
 
 */
+#ifndef SELECTOR_H
+#define SELECTOR_H
 #include <array>
 #include <optional>
 #include <vector>
@@ -136,3 +138,4 @@ private:
     vtkNew<vtkDataSetMapper> selectedMapper_;
     vtkSmartPointer<vtkActor> selectedActor_;
 };
+#endif

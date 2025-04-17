@@ -21,14 +21,6 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkTriangle.h>
 #include <vtkMultiBlockDataSet.h>
-using Index = int;
-
-enum SelectMode {
-	None,
-	Face,
-	Edge,
-	Block,
-};
 
 void SelectManager::bindRenderer(vtkRenderer* renderer)
 {

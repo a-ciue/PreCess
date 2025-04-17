@@ -1,19 +1,4 @@
 #include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
-#include "ModelActor.h"
 #include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -179,8 +164,9 @@ void ModelActor::createBlockMapper(ModelData model_data)
 
         // 放入 MultiBlock 中
         multiblock->SetBlock(static_cast<unsigned int>(block_index), grid);
-}
+    }
 
+}
 
 //void ModelActor::render_edge(RenderMode mode, bool render)
 //{

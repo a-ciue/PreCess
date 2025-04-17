@@ -1,22 +1,20 @@
 #include "Style.h"
-#include "Style.h"
-#include "Style.h"
 #include <vtkRenderWindowInteractor.h>
 #include "ModelActor.h"
 #include "MyVtkItem.h"
 
 
-void vtkInteractorStyleWithClick::SetClick()
+void QRenderWindowStyle::SetClick()
 {
 	click_ = true;
 }
 
-SelectManager vtkInteractorStyleWithClick::get_SelectManager()
+void QRenderWindowStyle::SetSelectManager(SelectManager* select_manager)
 {
-	return this->selectManager_;
+	this->select_manager_ = select_manager;
 }
 
-void vtkInteractorStyleWithClick::OnLeftButtonUp()
+void QRenderWindowStyle::OnLeftButtonUp()
 {
 	if (click_) {
 		click_ = false;

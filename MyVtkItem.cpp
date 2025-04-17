@@ -35,7 +35,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->faceStyle->SetDefaultRenderer(vtk->renderer);
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);*/
-    this->selectManager_ = std::make_unique<SelectManager>(vtk->style_->get_SelectManager());
+    vtk->style_->SetSelectManager(this->selectManager_);
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_= vtk.GetPointer();
 

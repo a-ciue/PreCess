@@ -22,16 +22,16 @@ class vtkProperty;
 class vtkNamedColors;
 class ModelActor;
 
-class vtkInteractorStyleWithClick : public vtkInteractorStyleTrackballCamera {
+class QRenderWindowStyle : public vtkInteractorStyleTrackballCamera {
 
    public:
     void SetClick();
-    SelectManager get_SelectManager();
+    void SetSelectManager(SelectManager* select_manager);
     void OnLeftButtonUp() override;
      
 private:    
     bool click_ {};
-    SelectManager selectManager_;
+    SelectManager* select_manager_{};
 
 };
 

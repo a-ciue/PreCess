@@ -32,7 +32,7 @@
 #include "Selection.h"
 #include "ModelActor.h"
 #include "SelectManager.h"
-enum class SelectMode { Group, Block, Face, Edge }; 
+#include "Core.h" 
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
@@ -49,7 +49,7 @@ public:
         vtkNew<vtkRenderer> renderer_;
 
         std::unordered_map<QString, std::unique_ptr<ModelActor>> models_;
-        vtkNew<vtkInteractorStyleWithClick> style_;
+        vtkNew<QRenderWindowStyle> style_;
 
 
     };
@@ -61,15 +61,59 @@ public:
     //void dispatchChangedSource();
 
     QSelection* selectedIDs();
+	/**
+     * @brief 选择模型
+     * @param select_mode 
+     */
     Q_INVOKABLE void setSelectModel(QString model_name);
+
+	 /**
+     * @brief 改变选择模式
+     * @param select_mode
+     */
     Q_INVOKABLE void setSelectMode(SelectMode select_mode);
+   
+    /**
+     * @brief 清空Selection
+     * @param select_mode
+     */
     Q_INVOKABLE void clearSelection();
 
+
+
+
+
+    /**
+     * @brief 改变渲染模式
+     * @param select_mode
+     */
     Q_INVOKABLE void setRenderMode(ModelActor::RenderMode render_mode);
+
+    /**
+     * @brief 边渲染
+     * @param select_mode
+     */
     Q_INVOKABLE void setEdgeRender(bool is_render);
+
+    /**
+     * @brief 改变可见性
+     * @param select_mode
+     */
     Q_INVOKABLE void setVisibility(QString model_name, bool visibility);
+
+    /**
+     * @brief 传入modeldata
+     * @param select_mode
+     */
     Q_INVOKABLE void setModelData(QString model_name, ModelData model_data);
-    
+
+
+
+
+
+
+
+
     Q_INVOKABLE void createModel(QString model_name);
     Q_INVOKABLE void renameModel(QString old_name, QString new_name);
     Q_INVOKABLE void deleteModel(QString mode_name);
@@ -101,10 +145,10 @@ private:
 
     vtkNew<vtkCamera> _camera;
     
-    std::unique_ptr <SelectManager> selectManager_;
+    SelectManager* selectManager_;
     ModelActor* cur_actor_{};
     QString cur_actor_name_;
-    vtkInteractorStyleWithClick* cur_style_{};
+    QRenderWindowStyle* cur_style_{};
 
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_{};
