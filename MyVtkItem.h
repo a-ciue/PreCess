@@ -71,7 +71,7 @@ public:
      * @brief 改变选择模式
      * @param select_mode
      */
-    Q_INVOKABLE void setSelectMode(SelectMode select_mode);
+    Q_INVOKABLE void setSelectMode(QString select_mode);
    
     /**
      * @brief 清空Selection

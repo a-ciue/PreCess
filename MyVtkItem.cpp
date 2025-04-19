@@ -202,13 +202,30 @@ Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
     return Q_INVOKABLE void();
 }
 
-Q_INVOKABLE void QRenderWindow::setSelectMode(SelectMode select_mode)
+Q_INVOKABLE void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        
-        select_mode_ = select_mode;
-        selectManager_->setSelectMode(select_mode_);        
+        if (select_mode=="Face")
+        {
+	        select_mode_ = SelectMode::Face;
+			selectManager_->setSelectMode(select_mode_); 
+        }
+        else if (select_mode == "Block")
+        {
+            select_mode_ = SelectMode::Block;
+            selectManager_->setSelectMode(select_mode_);
+        }
+        else if (select_mode == "Edge")
+        {
+            select_mode_ = SelectMode::Edge;
+            selectManager_->setSelectMode(select_mode_);
+        }
+        else
+        {
+            select_mode_ = SelectMode::None;
+            std::cout << "select_mode is  wrong!" << endl;
+        }
         });
     return Q_INVOKABLE void();
 }
