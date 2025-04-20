@@ -209,7 +209,7 @@ signals:
      */
     void modelInited(const QString& modelName,
         const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
-        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
+        const std::unordered_map<int, std::unique_ptr<struct Block>>* blocks,
         const std::unordered_map<int, std::unique_ptr<Group>>* groups);
 
     /**
@@ -290,7 +290,7 @@ private:
     void update_father_id(int patch_id, int father_id);
 
     using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
-    using BlockMap = std::unordered_map<int, std::unique_ptr<Block>>;
+    using BlockMap = std::unordered_map<int, std::unique_ptr<struct Block>>;
     using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
 
     std::unique_ptr<MeshLib::CTMesh> mesh_;

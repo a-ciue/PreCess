@@ -105,7 +105,7 @@ public:
      * @brief 传入modeldata
      * @param select_mode
      */
-    Q_INVOKABLE void setModelData(QString model_name, ModelData model_data);
+    Q_INVOKABLE void setModelData(QString model_name, const ModelData& model_data);
 
 
 

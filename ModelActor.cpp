@@ -54,7 +54,7 @@ ModelActor::~ModelActor()
 
 }
 
-void ModelActor::loadModelData(ModelData model_data)
+void ModelActor::loadModelData(const ModelData& model_data)
 {
 	this->model_data_ = model_data;
 

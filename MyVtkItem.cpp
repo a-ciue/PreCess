@@ -157,7 +157,7 @@ Q_INVOKABLE void QRenderWindow::setVisibility(QString model_name, bool visibilit
         });
 }
 
-Q_INVOKABLE void QRenderWindow::setModelData(QString model_name, ModelData model_data)
+Q_INVOKABLE void QRenderWindow::setModelData(QString model_name, const ModelData& model_data)
 {
     dispatch_async([model_name, model_data, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);

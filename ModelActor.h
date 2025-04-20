@@ -57,7 +57,7 @@ public:
     ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode render_mode);
     ~ModelActor();
 
-    void loadModelData(ModelData model_data);
+    void loadModelData(const ModelData& model_data);
     void setVisibility(bool visibility);
     void setRenderEdge(bool is_render);
     void setRenderMode(RenderMode render_mode);
