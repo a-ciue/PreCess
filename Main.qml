@@ -41,7 +41,6 @@ ApplicationWindow {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-
                     modelManager.readMesh(selectedFile);
                 }
             }
@@ -116,8 +115,8 @@ ApplicationWindow {
                 ButtonGroup {
                     id: renderGroup
                     onCheckedButtonChanged: {
-                        myItem.unbindStyle()
-                        myItem.changeRenderer(checkedButton.renderMode)
+                        //myItem.unbindStyle()
+                        myItem.setRenderMode(checkedButton.renderMode)
                     }
                 }
                 Button {
@@ -126,7 +125,7 @@ ApplicationWindow {
                     property string renderMode: "Face"
                     rightPadding: 8
                     checkable: true
-                    checked: true
+                    //checked: true
                     onClicked: stacklayout.currentIndex = 0
                                 
                     ButtonGroup.group: renderGroup
@@ -285,7 +284,7 @@ ApplicationWindow {
         }
 
 
-        SelectingBar{
+        /*SelectingBar{
             id:groupmode
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -297,14 +296,14 @@ ApplicationWindow {
                     name:"组重网格"
                 }
             }
-            /*confirmButtonModel:ListModel{
+            confirmButtonModel:ListModel{
                 ListElement{
                     name:"确认"
                 }
                 ListElement{
                     name:"确认"
                 }
-            }*/
+            }
             onButtonFunction:{
                 if(modeOrConfirm === 0){
                     if(index === 0){ 
@@ -337,7 +336,7 @@ ApplicationWindow {
             onChangeEdgeRender:{
                 myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Group", check)
             }
-        }
+        }*/
     }
 
     Rectangle{
@@ -376,7 +375,7 @@ ApplicationWindow {
             modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
             modelManager.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
             objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
-            objectList.renameModel.connect(()=>{myItem.bindstyle("Edge")})
+            objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
             objectList.changeModelVisibility.connect(myItem.setVisibility)
         }
@@ -460,24 +459,25 @@ ApplicationWindow {
                 }
             }
 
-            function clearSelection(){
-                myItem.unbindStyle()
-                if(comboBoxSelectedString === "边"){myItem.bindStyle("Edge")}
-                if(comboBoxSelectedString === "面"){myItem.bindStyle("Face")}
-                if(comboBoxSelectedString === "块"){myItem.bindStyle("Block")}
+            function clearSelection(){    //清除选择的原理是解绑再重新绑定
+                // myItem.unbindStyle()
+                // if(comboBoxSelectedString === "边"){myItem.bindStyle("Edge")}
+                // if(comboBoxSelectedString === "面"){myItem.bindStyle("Face")}
+                // if(comboBoxSelectedString === "块"){myItem.bindStyle("Block")}
+                myItem.clearSelection()
             }
 
             function bindFunction(selectType){
                 if(selectType === "边"){
-                    myItem.bindStyle("Edge")
+                    myItem.setSelectMode("Edge")
                     //console.log("绑定边")
                 }
                 if(selectType === "面"){
-                    myItem.bindStyle("Face")
+                    myItem.setSelectMode("Face")
                     //console.log("绑定面")
                 }
                 if(selectType === "块"){
-                    myItem.bindStyle("Block")
+                    myItem.setSelectMode("Block")
                     //console.log("绑定块")
                 }
             }
