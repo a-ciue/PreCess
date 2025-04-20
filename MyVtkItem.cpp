@@ -6,6 +6,8 @@ QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
+    selectManager_ = std::make_unique<SelectManager>();
+    
 }
 
 QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderWindow)
@@ -35,7 +37,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->faceStyle->SetDefaultRenderer(vtk->renderer);
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);*/
-    vtk->style_->SetSelectManager(this->selectManager_);
+    vtk->style_->SetSelectManager(this->selectManager_.get());
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_= vtk.GetPointer();
 
@@ -168,24 +170,11 @@ Q_INVOKABLE void QRenderWindow::setModelData(QString model_name, ModelData model
 
 QSelection* QRenderWindow::selectedIDs()
 {
-
-    if (this->cur_style_)
-    {
-        /* std::vector<ModelActor*> actors;
-         int index = 0;
-     // 遍历 unordered_map
-     for (const auto& pair : data_->actor_ )
-     {
-         // pair.second 是 std::unique_ptr<ModelActor>
-         actors.push_back(pair.second.get());
-     }*/
-        std::unique_ptr<Selection> data(std::move(this->selectManager_->getSelection()));
-        data->model_name = this->cur_actor_name_;
-        QSelection* selection = new QSelection(std::move(data));
-        QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
-        return selection;
-    }
-    return nullptr;
+    std::unique_ptr<Selection> data(std::move(this->selectManager_->getSelection()));
+    data->model_name = this->cur_actor_name_;
+    QSelection* selection = new QSelection(std::move(data));
+    QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
+    return selection;
 }
 
 Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
@@ -202,12 +191,23 @@ Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
     return Q_INVOKABLE void();
 }
 
-Q_INVOKABLE void QRenderWindow::setSelectMode(SelectMode select_mode)
+Q_INVOKABLE void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         
-        select_mode_ = select_mode;
+        if(select_mode == "Face"){
+            select_mode_ = SelectMode::Face;
+        }
+        else if(select_mode == "Edge"){
+            select_mode_ = SelectMode::Edge;
+        }
+        else if(select_mode == "Block"){
+            select_mode_ = SelectMode::Block;
+        }
+        else{
+            select_mode_ = SelectMode::None;
+        }
         selectManager_->setSelectMode(select_mode_);        
         });
     return Q_INVOKABLE void();
@@ -267,10 +267,7 @@ void QRenderWindow::setClick()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
-
-        if (cur_style_) {
-            cur_style_->SetClick();
-        }
+        vtk->style_->SetClick();
     });
 }
 

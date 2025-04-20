@@ -21,6 +21,7 @@ void QRenderWindowStyle::OnLeftButtonUp()
 		click_ = false;
 		int pos[2];
 		this->GetInteractor()->GetEventPosition(pos);
+		select_manager_->select(pos[0], pos[1]);
 	}
 		
 	vtkInteractorStyleTrackballCamera::OnLeftButtonUp();

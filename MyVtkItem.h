@@ -71,7 +71,7 @@ public:
      * @brief 改变选择模式
      * @param select_mode
      */
-    Q_INVOKABLE void setSelectMode(SelectMode select_mode);
+    Q_INVOKABLE void setSelectMode(QString select_mode);
    
     /**
      * @brief 清空Selection
@@ -145,10 +145,9 @@ private:
 
     vtkNew<vtkCamera> _camera;
     
-    SelectManager* selectManager_;
+    std::unique_ptr<SelectManager> selectManager_;
     ModelActor* cur_actor_{};
     QString cur_actor_name_;
-    QRenderWindowStyle* cur_style_{};
 
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_{};

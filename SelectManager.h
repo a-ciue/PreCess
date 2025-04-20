@@ -42,7 +42,7 @@ private:
 	ModelActor*	cur_model_actor_;
 	SelectMode	select_mode_;
 	vtkNew<vtkActor> selection_actor_;
-	vtkNew<vtkMapper> selection_mapper_;
+	vtkNew<vtkPolyDataMapper> selection_mapper_;
 	vtkRenderer* renderer_;
 	std::unique_ptr<SelectorHighlight> selector_;
 };
