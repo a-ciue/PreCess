@@ -446,6 +446,48 @@ int Model::block_group_id(int patch_id) {
     throw std::runtime_error("Block ID not found in any group.");
 }
 
+ModelData Model::getModelData()
+{
+    // 构造 ModelData
+    ModelData modelData;
+
+    // 添加所有顶点和三角形
+    int offset{};
+    for (const auto& [patch_id, patch] : patches_) {
+        // 添加顶点和模型顶点ID
+        for (size_t i = 0; i < patch->vertexPoints_.size(); ++i) {
+            modelData.vtk_points_.push_back(patch->vertexPoints_[i]);
+            modelData.model_point_id_.push_back(patch->vertexIDs_[i]);
+        }
+
+        // 添加三角形和模型面ID
+        for (size_t i = 0; i < patch->faceTriangles_.size(); ++i) {
+            array<vtkIdType, 3> arr;
+            arr[0] = patch->faceTriangles_[i][0] + offset;
+            arr[1] = patch->faceTriangles_[i][1] + offset;
+            arr[2] = patch->faceTriangles_[i][2] + offset;
+            modelData.vtk_triangles_.push_back(arr);
+            modelData.model_face_id_.push_back(patch->faceIDs_[i]);
+        }
+        offset += patch->vertexPoints_.size();
+    }
+
+    // 添加所有块
+    BlockDatas blockDatas;
+    for (const auto& [block_id, block] : blocks_) {
+        BlockData blockData;
+        blockData.model_id_ = block_id;
+        // 添加该块中所有的patch
+        for (const auto& patch_id : block->patchIDs) {
+            blockData.faces_.push_back(patch_id);
+        }
+        blockDatas.BlockDatas_.push_back(blockData);
+    }
+    modelData.model_blocks_ = blockDatas;
+
+    return modelData;
+}
+
 void Model::update_actors(const std::vector<int>& patch_ids)
 {
     std::unordered_set<int> block_ids, group_ids;

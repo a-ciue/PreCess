@@ -17,7 +17,7 @@ void QRenderWindowStyle::SetSelectManager(SelectManager* select_manager)
 
 void QRenderWindowStyle::OnLeftButtonUp()
 {
-	if (click_) {
+	if (click_ && select_manager_) {
 		click_ = false;
 		int pos[2];
 		this->GetInteractor()->GetEventPosition(pos);

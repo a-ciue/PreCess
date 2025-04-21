@@ -196,6 +196,8 @@ public:
      */
     void setModelName(const QString& name) { model_name = name; }
 
+    ModelData getModelData();
+
 signals:
     /**
      * @brief 当模型初始化完成时触发

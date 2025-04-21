@@ -58,137 +58,46 @@ void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> mod
 
     connect(rawModel, &Model::patchUpdated,[this](const QString& modelName, int patch_id,
                                                   const std::vector<std::array<double, 3>>& points,
-                                                  const std::vector<std::array<int, 3>>& triangles){
-        // 获取模型
-        Model* model = getModel(modelName);
-        if (!model || !vtk_item_) {
-            qDebug() << "模型或 VTK 项不存在:" << modelName;
-            return;
-        }
+                                                  const std::vector<std::array<int, 3>>& triangles)
+    {
+            // 获取模型
+            Model* model = getModel(modelName);
+            if (!model || !vtk_item_) {
+                qDebug() << "模型或 VTK 项不存在:" << modelName;
+                return;
+            }
 
-        // 构造 ModelData
-        ModelData modelData;
-        modelData.vtk_points_ = points;
-//        modelData.vtk_triangles_ = triangles;
-        
-        // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-        vtk_item_->setModelData(modelName, modelData);
+            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
+            vtk_item_->setModelData(modelName, model->getModelData());
     });
 
     connect(rawModel, &Model::blockUpdated,[this](const QString& modelName, int block_id,
-                                                  const std::unordered_set<int>& block_patches){
-        // 获取模型
-        Model* model = getModel(modelName);
-        if (!model || !vtk_item_) {
-            qDebug() << "模型或 VTK 项不存在:" << modelName;
-            return;
-        }
+                                                  const std::unordered_set<int>& block_patches)
+    {
+            // 获取模型
+            Model* model = getModel(modelName);
+            if (!model || !vtk_item_) {
+                qDebug() << "模型或 VTK 项不存在:" << modelName;
+                return;
+            }
 
-        // 构造 ModelData
-        ModelData modelData;
-        
-        // 添加 block 到 model_blocks_
-        BlockData blockData;
-        blockData.model_id_ = block_id;
-        // 将 block_patches 转换为 faces_ 向量
-        for (const auto& patch_id : block_patches) {
-            blockData.faces_.push_back(patch_id);
-        }
-        
-        BlockDatas blockDatas;
-        blockDatas.BlockDatas_.push_back(blockData);
-        modelData.model_blocks_ = blockDatas;
-        
-        // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-        vtk_item_->setModelData(modelName, modelData);
+            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
+            vtk_item_->setModelData(modelName, model->getModelData());
     });
 
     connect(rawModel, &Model::blocksMerged,[this](const QString& modelName, const std::vector<int>& block_ids,
                                                   int father_block,
-                                                  const std::unordered_set<int>& father_block_patches){
-        // 获取模型
-        Model* model = getModel(modelName);
-        if (!model || !vtk_item_) {
-            qDebug() << "模型或 VTK 项不存在:" << modelName;
-            return;
-        }
+                                                  const std::unordered_set<int>& father_block_patches)
+    {
+            // 获取模型
+            Model* model = getModel(modelName);
+            if (!model || !vtk_item_) {
+                qDebug() << "模型或 VTK 项不存在:" << modelName;
+                return;
+            }
 
-        // 构造 ModelData
-        ModelData modelData;
-        
-        // 添加合并后的 block 到 model_blocks_
-        BlockData blockData;
-        blockData.model_id_ = father_block;
-        // 将 father_block_patches 转换为 faces_ 向量
-        for (const auto& patch_id : father_block_patches) {
-            blockData.faces_.push_back(patch_id);
-        }
-        
-        BlockDatas blockDatas;
-        blockDatas.BlockDatas_.push_back(blockData);
-        modelData.model_blocks_ = blockDatas;
-        
-        // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-        vtk_item_->setModelData(modelName, modelData);
-    });
-
-    connect(rawModel, &Model::groupUpdated,[this](const QString& modelName, int group_id,
-                                                  const std::unordered_set<int>& group_blocks){
-        // 获取模型
-        Model* model = getModel(modelName);
-        if (!model || !vtk_item_) {
-            qDebug() << "模型或 VTK 项不存在:" << modelName;
-            return;
-        }
-
-        // 构造 ModelData
-        ModelData modelData;
-        
-        // 添加 group 对应的 blocks 到 model_blocks_
-        BlockDatas blockDatas;
-        // 为每个 block 创建一个 BlockData 并添加到 blockDatas
-        for (const auto& block_id : group_blocks) {
-            BlockData blockData;
-            blockData.model_id_ = block_id;
-            // 获取 block 对应的 patches 并添加到 faces_
-            // 注意：这里我们只设置了 model_id_，具体的 faces_ 数据需要从 model 中获取，
-            // 但由于 model 的接口不完全清楚，这里只设置 model_id_
-            blockDatas.BlockDatas_.push_back(blockData);
-        }
-        modelData.model_blocks_ = blockDatas;
-        
-        // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-        vtk_item_->setModelData(modelName, modelData);
-    });
-
-    connect(rawModel, &Model::groupMerged,[this](const QString& modelName, const std::vector<int>& group_ids,
-                                                 int father_group,
-                                                 const std::unordered_set<int>& father_group_blocks){
-        // 获取模型
-        Model* model = getModel(modelName);
-        if (!model || !vtk_item_) {
-            qDebug() << "模型或 VTK 项不存在:" << modelName;
-            return;
-        }
-
-        // 构造 ModelData
-        ModelData modelData;
-        
-        // 添加合并后的 group 对应的 blocks 到 model_blocks_
-        BlockDatas blockDatas;
-        // 为每个 block 创建一个 BlockData 并添加到 blockDatas
-        for (const auto& block_id : father_group_blocks) {
-            BlockData blockData;
-            blockData.model_id_ = block_id;
-            // 获取 block 对应的 patches 并添加到 faces_
-            // 注意：这里我们只设置了 model_id_，具体的 faces_ 数据需要从 model 中获取，
-            // 但由于 model 的接口不完全清楚，这里只设置 model_id_
-            blockDatas.BlockDatas_.push_back(blockData);
-        }
-        modelData.model_blocks_ = blockDatas;
-        
-        // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-        vtk_item_->setModelData(modelName, modelData);
+            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
+            vtk_item_->setModelData(modelName, model->getModelData());
     });
 
     connect(rawModel, &Model::modelInited,this,
@@ -204,52 +113,14 @@ void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> mod
                 return;
             }
 
-            // 构造 ModelData
-            ModelData modelData;
-            
-            // 添加所有顶点和三角形
-            int offset{};
-            for (const auto& [patch_id, patch] : *patches) {
-                // 添加顶点和模型顶点ID
-                for (size_t i = 0; i < patch->vertexPoints_.size(); ++i) {
-                    modelData.vtk_points_.push_back(patch->vertexPoints_[i]);
-                    modelData.model_point_id_.push_back(patch->vertexIDs_[i]);
-                }
-
-                // 添加三角形和模型面ID
-                for (size_t i = 0; i < patch->faceTriangles_.size(); ++i) {
-                    array<vtkIdType, 3> arr;
-                    arr[0] = patch->faceTriangles_[i][0] + offset;
-                    arr[1] = patch->faceTriangles_[i][1] + offset;
-                    arr[2] = patch->faceTriangles_[i][2] + offset;
-                    modelData.vtk_triangles_.push_back(arr);
-                    modelData.model_face_id_.push_back(patch->faceIDs_[i]);
-                }
-                offset += patch->vertexPoints_.size();
-            }
-            
-            // 添加所有块
-            BlockDatas blockDatas;
-            for (const auto& [block_id, block] : *blocks) {
-                BlockData blockData;
-                blockData.model_id_ = block_id;
-                // 添加该块中所有的patch
-                for (const auto& patch_id : block->patchIDs) {
-                    blockData.faces_.push_back(patch_id);
-                }
-                blockDatas.BlockDatas_.push_back(blockData);
-            }
-            modelData.model_blocks_ = blockDatas;
-            
             // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-            vtk_item_->setModelData(modelName, modelData);
+            vtk_item_->setModelData(modelName, model->getModelData());
         });
+
+    emit modelAdded(modelName);
 
     // 调用模型刷新接口，确保 VTK 数据更新
     rawModel->refreshVtk();
-
-    // 发射添加模型的信号（需要在 ModelManager.h 中声明信号 modelAdded(const QString&)）
-    emit modelAdded(modelName);
 }
 
 // 删除模型

@@ -38,6 +38,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);*/
     vtk->style_->SetSelectManager(this->selectManager_.get());
+    vtk->style_->SetDefaultRenderer(vtk->renderer_);
+    renderWindow->GetInteractor()->SetInteractorStyle(vtk->style_);
+
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_= vtk.GetPointer();
 
@@ -111,12 +114,12 @@ Q_INVOKABLE void QRenderWindow::deleteModel(QString model_name)
 
 Q_INVOKABLE void QRenderWindow::createModel(QString model_name)
 {
-    dispatch_async([model_name,this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
-                Data* vtk = Data::SafeDownCast(userData);
-                vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
-                resetCamera();
-                });
-    return Q_INVOKABLE void();
+    //dispatch_async([model_name,this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
+    //            Data* vtk = Data::SafeDownCast(userData);
+    //            vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
+    //            resetCamera();
+    //            });
+    //return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void QRenderWindow::renameModel(QString old_name, QString new_name)
@@ -161,9 +164,11 @@ Q_INVOKABLE void QRenderWindow::setModelData(QString model_name, const ModelData
 {
     dispatch_async([model_name, model_data, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-
+        if (!vtk->models_.count(model_name))
+			vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
         vtk->models_[model_name]->loadModelData(model_data);
-
+        vtk->models_[model_name]->setRenderMode(renderMode_);
+        resetCamera();
         });
     return Q_INVOKABLE void();
 }
