@@ -260,6 +260,8 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
     }
     picker->Pick(posx, posy, 0, renderer_);
 
+	// 获取选中的三角形的 CellId
+	vtkIdType pickedCellId = picker->GetCellId();
     if (picker->GetCellId() != -1) {
         vtkActor* pickedActor = picker->GetActor();
         if (!pickedActor) return;
@@ -267,9 +269,6 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         // 获取 mapper 的输入数据（假设是 vtkPolyData）
         vtkPolyData* polyData = vtkPolyData::SafeDownCast(pickedActor->GetMapper()->GetInput());
         if (!polyData) return;
-
-        // 获取选中的三角形的 CellId
-        vtkIdType pickedCellId = picker->GetCellId();
 
         // 获取这个三角形的顶点 ID
         vtkCell* cell = polyData->GetCell(pickedCellId);
@@ -326,7 +325,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         // 创建一个演员来显示这些线段
 
         selected_actor_->SetMapper(selected_mapper_);
-        selected_actor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("black").GetData());
+        selected_actor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("red").GetData());
         selected_actor_->GetProperty()->SetLineWidth(5); // 设置
 
         if (_is_selected(picked_edge, selection_, selected_actor_)) {
@@ -336,6 +335,8 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         else
         {
             selection_ = picked_edge;
+            renderer_->AddActor(selected_actor_);
+            renderer_->Render();
         }
     }
 

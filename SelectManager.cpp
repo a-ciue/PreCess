@@ -50,15 +50,25 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 	this->select_mode_=select_mode;
 	if (this->select_mode_ == SelectMode::Face)
 	{
+		if (this->selector_)
+		{
+			this->selector_->clear();
+		}
 		this->selector_ = std::make_unique<SingleFaceSelectorHighlight>(this->renderer_);
 	}
 	else if (this->select_mode_ == SelectMode::Block)
 	{
-		this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
+		if (this->selector_)
+		{
+			this->selector_->clear();
+		}		this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
 	}
 	else if (this->select_mode_ == SelectMode::Edge)
 	{
-		this->selector_ = std::make_unique<SingleEdgeSelectorHighlight>(this->renderer_);
+		if (this->selector_)
+		{
+			this->selector_->clear();
+		}		this->selector_ = std::make_unique<SingleEdgeSelectorHighlight>(this->renderer_);
 	}
 	else
 	{
