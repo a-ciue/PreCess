@@ -37,11 +37,14 @@ void SelectManager::select(double posx, double posy)
 
 void SelectManager::setSelectActor(ModelActor* model_actor_)
 {
-	this->cur_model_actor_ = model_actor_;
-	this->selector_->getPickList()->RemoveAllItems();
-	if (model_actor_)
-	{
-		this->cur_model_actor_->addPickList(this->selector_->getPickList());
+	//assert(this->selector_);
+	if (this->selector_) {
+		this->cur_model_actor_ = model_actor_;
+		this->selector_->getPickList()->RemoveAllItems();
+		if (model_actor_)
+		{
+			this->cur_model_actor_->addPickList(this->selector_->getPickList());
+		}
 	}
 }
 

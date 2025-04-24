@@ -125,7 +125,7 @@ ApplicationWindow {
                     property string renderMode: "Face"
                     rightPadding: 8
                     checkable: true
-                    //checked: true
+                    checked: true
                     onClicked: stacklayout.currentIndex = 0
                                 
                     ButtonGroup.group: renderGroup
@@ -378,6 +378,7 @@ ApplicationWindow {
             //objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
             objectList.changeModelVisibility.connect(myItem.setVisibility)
+            objectList.selectionChanged.connect((selectedModelName)=>{myItem.setSelectModel(selectedModelName)})
         }
     }
 
