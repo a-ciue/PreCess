@@ -222,6 +222,7 @@ void SingleFaceSelectorHighlight::set_highlight_actor()
 }
 
 SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer) {
+    this->selected_actor_ = vtkSmartPointer<vtkActor>::New();
     this->renderer_ = renderer;
 }
 

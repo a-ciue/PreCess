@@ -29,7 +29,10 @@ void SelectManager::bindRenderer(vtkRenderer* renderer)
 
 void SelectManager::select(double posx, double posy)
 {
-	this->selector_->select(posx, posy);
+	if (this->selector_) {
+		assert(this->select_mode_ != SelectMode::None);
+		this->selector_->select(posx, posy);
+	}
 }
 
 void SelectManager::setSelectActor(ModelActor* model_actor_)
@@ -55,11 +58,15 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 	}
 	else if (this->select_mode_ == SelectMode::Edge)
 	{
-		this->selector_ = std::make_unique<SingleFaceSelectorHighlight>(this->renderer_);
+		this->selector_ = std::make_unique<SingleEdgeSelectorHighlight>(this->renderer_);
 	}
 	else
 	{
-		this->selector_->clear();
+		assert(this->select_mode_ == SelectMode::None);
+		if (this->selector_) {
+			this->selector_->clear();
+		}
+		this->selector_ = nullptr;
 	}
 }
 

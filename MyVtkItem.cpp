@@ -7,7 +7,6 @@ QRenderWindow::QRenderWindow()
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
     selectManager_ = std::make_unique<SelectManager>();
-    
 }
 
 QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderWindow)
@@ -38,6 +37,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
     vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);*/
     vtk->style_->SetSelectManager(this->selectManager_.get());
+    selectManager_->bindRenderer(vtk->renderer_);
     vtk->style_->SetDefaultRenderer(vtk->renderer_);
     renderWindow->GetInteractor()->SetInteractorStyle(vtk->style_);
 

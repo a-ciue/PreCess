@@ -375,7 +375,7 @@ ApplicationWindow {
             modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
             modelManager.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
             objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
-            objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
+            //objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
             objectList.changeModelVisibility.connect(myItem.setVisibility)
         }
@@ -459,26 +459,22 @@ ApplicationWindow {
                 }
             }
 
-            function clearSelection(){    //清除选择的原理是解绑再重新绑定
-                // myItem.unbindStyle()
-                // if(comboBoxSelectedString === "边"){myItem.bindStyle("Edge")}
-                // if(comboBoxSelectedString === "面"){myItem.bindStyle("Face")}
-                // if(comboBoxSelectedString === "块"){myItem.bindStyle("Block")}
+            function clearSelection(){
                 myItem.clearSelection()
             }
 
             function bindFunction(selectType){
+                if(selectType === "..."){
+                    myItem.setSelectMode("None")
+                }
                 if(selectType === "边"){
                     myItem.setSelectMode("Edge")
-                    //console.log("绑定边")
                 }
                 if(selectType === "面"){
                     myItem.setSelectMode("Face")
-                    //console.log("绑定面")
                 }
                 if(selectType === "块"){
                     myItem.setSelectMode("Block")
-                    //console.log("绑定块")
                 }
             }
             onComboBoxSelectionChanged:{
