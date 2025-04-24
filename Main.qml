@@ -126,8 +126,10 @@ ApplicationWindow {
                     rightPadding: 8
                     checkable: true
                     checked: true
-                    onClicked: stacklayout.currentIndex = 0
-                                
+                    onClicked: {
+                        stacklayout.currentIndex = 0
+                        myItem.setRenderMode("Face")
+                    }          
                     ButtonGroup.group: renderGroup
                 }
                 Button {
@@ -135,7 +137,10 @@ ApplicationWindow {
                     text: "块模式"
                     property string renderMode: "Block"
                     checkable: true
-                    onClicked: stacklayout.currentIndex = 1
+                    onClicked: {
+                        stacklayout.currentIndex = 1
+                        myItem.setRenderMode("Block")
+                    }
                     ButtonGroup.group: renderGroup
                 }
 
