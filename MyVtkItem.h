@@ -87,7 +87,7 @@ public:
      * @brief 改变渲染模式
      * @param select_mode
      */
-    Q_INVOKABLE void setRenderMode(ModelActor::RenderMode render_mode);
+    Q_INVOKABLE void setRenderMode(QString render_mode);
 
     /**
      * @brief 边渲染

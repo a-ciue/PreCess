@@ -189,7 +189,7 @@ void SingleFaceSelectorHighlight::select(double posx, double posy)
     set_highlight_actor();
     // 添加到渲染器中
     renderer_->AddActor(highlight_actor_);
-    renderer_->Render();
+    //renderer_->Render();
 }
 
 vtkPropCollection* SingleFaceSelectorHighlight::getPickList()
@@ -200,7 +200,7 @@ vtkPropCollection* SingleFaceSelectorHighlight::getPickList()
 void SingleFaceSelectorHighlight::_cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer)
 {
     this->renderer_->RemoveActor(this->highlight_actor_);
-    renderer->Render();
+    //renderer->Render();
 }
 
 bool SingleFaceSelectorHighlight::_is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection)
@@ -336,7 +336,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         {
             selection_ = picked_edge;
             renderer_->AddActor(selected_actor_);
-            renderer_->Render();
+            //renderer_->Render();
         }
     }
 
