@@ -7,6 +7,7 @@ QRenderWindow::QRenderWindow()
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
     selectManager_ = std::make_unique<SelectManager>();
+    edge_render_ = false;
 }
 
 QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderWindow)
@@ -154,9 +155,8 @@ Q_INVOKABLE void QRenderWindow::setVisibility(QString model_name, bool visibilit
 {
     dispatch_async([model_name,visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-
+        selectManager_->clearSelection();
         vtk->models_[model_name]->setVisibility(visibility);
-        
         });
 }
 

@@ -230,7 +230,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Face", check)
+                myItem.setEdgeRender(check)
             }
         }
 
@@ -284,7 +284,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Block", check)
+                myItem.setEdgeRender(check)
             }
         }
 

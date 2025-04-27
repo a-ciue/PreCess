@@ -85,7 +85,9 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 
 void SelectManager::clearSelection()
 {
-	this->selector_->clear();
+	if (this->selector_) {
+		this->selector_->clear();
+	}
 }
 
 std::unique_ptr<Selection> SelectManager::getSelection()

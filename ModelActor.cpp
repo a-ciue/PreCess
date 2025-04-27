@@ -51,7 +51,10 @@ ModelActor::ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode re
 
 ModelActor::~ModelActor()
 {
-
+    if (this->renderer_)
+    {
+        renderer_->RemoveActor(this->actor_);
+    }
 }
 
 void ModelActor::loadModelData(const ModelData& model_data)
