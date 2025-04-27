@@ -224,13 +224,27 @@ Q_INVOKABLE void QRenderWindow::clearSelection()
     return Q_INVOKABLE void();
 }
 
-Q_INVOKABLE void QRenderWindow::setRenderMode(ModelActor::RenderMode render_mode)
+Q_INVOKABLE void QRenderWindow::setRenderMode(QString render_mode)
 {
+
     dispatch_async([render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        for (auto&& [modelName, modelActor] : vtk->models_) {
-            modelActor->setRenderMode(render_mode);
+        if (render_mode == "Face") {
+            this->renderMode_ = ModelActor::RenderMode::Face;
+            for (auto&& [modelName, modelActor] : vtk->models_) {
+                modelActor->setRenderMode(this->renderMode_);
+            }
         }
+        else if (render_mode == "Block") {
+            this->renderMode_ = ModelActor::RenderMode::Block;
+            for (auto&& [modelName, modelActor] : vtk->models_) {
+                modelActor->setRenderMode(this->renderMode_);
+            }
+        }
+        else {
+            std::cout << "rendermode error!" << endl;
+        }
+        
         });
     return Q_INVOKABLE void();
 }
