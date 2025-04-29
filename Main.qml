@@ -42,6 +42,7 @@ ApplicationWindow {
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
                     modelManager.readMesh(selectedFile);
+                    myItem.resetCamera()
                 }
             }
             FileDialog {
