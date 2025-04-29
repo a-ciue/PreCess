@@ -18,6 +18,9 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkTriangle.h>
 #include <vtkMultiBlockDataSet.h>
+#include <vtkUnsignedCharArray.h>  
+#include <vtkCellData.h>           
+#include <cstdlib>                 
 using Index = int;
 
 Index ModelData::model_face_id(vtkIdType face_id)
@@ -145,6 +148,14 @@ void ModelActor::createBlockMapper(ModelData model_data)
         auto cells = vtkSmartPointer<vtkCellArray>::New();
         auto grid = vtkSmartPointer<vtkPolyData>::New();
 
+        auto colors = vtkSmartPointer<vtkUnsignedCharArray>::New();     // 🔼 新增：创建颜色数组
+        colors->SetNumberOfComponents(3);                                // 🔼 新增：3 通道 RGB
+        colors->SetName("BlockColors");                                  // 🔼 新增：可选名称
+
+        unsigned char r = static_cast<unsigned char>(rand() % 256);
+        unsigned char g = static_cast<unsigned char>(rand() % 256);
+        unsigned char b = static_cast<unsigned char>(rand() % 256);
+
         for (vtkIdType face_id : block.faces_) {
             const auto& tri = model_data.vtk_triangles_[face_id];
 
@@ -165,15 +176,21 @@ void ModelActor::createBlockMapper(ModelData model_data)
             }
             cells->InsertNextCell(triangle);
             //cells->InsertNextCell(triangle->GetCellType(), triangle->GetPointIds());
+            colors->InsertNextTypedTuple(std::array<unsigned char, 3>{r, g, b}.data());  // 🔼 新增：给每个 cell 加颜色
         }
 
         grid->SetPoints(points);
         grid->SetPolys(cells);
+
+        grid->GetCellData()->SetScalars(colors);  // 🔼 新增：把颜色设置进 CellData
         // 放入 MultiBlock 中
         multiblock->SetBlock(static_cast<unsigned int>(block_index), grid);
         
     }
 	this->block_mapper_->SetInputDataObject(multiblock);
+
+    this->block_mapper_->SetScalarModeToUseCellData();  // 🔼 新增：启用使用 CellData 的颜色
+    this->block_mapper_->ScalarVisibilityOn();          // 🔼 新增：启用颜色显示
 }
 
 //void ModelActor::render_edge(RenderMode mode, bool render)
