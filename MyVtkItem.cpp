@@ -168,7 +168,6 @@ Q_INVOKABLE void QRenderWindow::setModelData(QString model_name, const ModelData
 			vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
         vtk->models_[model_name]->loadModelData(model_data);
         vtk->models_[model_name]->setRenderMode(renderMode_);
-        resetCamera();
         });
     return Q_INVOKABLE void();
 }
@@ -187,7 +186,7 @@ Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
     dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
-
+        this->cur_actor_name_ = model_name;
         if (vtk->models_.count(model_name))
             selectManager_->setSelectActor(vtk->models_[model_name].get());
         else
