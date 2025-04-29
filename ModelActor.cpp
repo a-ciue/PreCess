@@ -33,11 +33,7 @@ Index ModelData::model_point_id(vtkIdType point_id)
 
 Index ModelData::model_block_id(vtkIdType block_id)
 {
-    for (const auto& block : this->model_blocks_.BlockDatas_) {
-        if (block.vtk_id_ == block_id) {
-            return block.model_id_;
-        }
-    } 
+    return this->model_blocks_.block_datas[block_id].model_id_;
 }
 
 
@@ -60,16 +56,22 @@ ModelActor::~ModelActor()
 void ModelActor::loadModelData(const ModelData& model_data)
 {
 	this->model_data_ = model_data;
-
+	vtkIdType point_id=0;
     vtkSmartPointer<vtkPoints> points_data = vtkSmartPointer<vtkPoints>::New();
     for (const auto&point : this->model_data_.vtk_points_) {
+        
         points_data->InsertNextPoint(point[0], point[1], point[2]);
+        this->model_data_.model_point_id_.push_back(point_id++);
+        /*cout << point_id <<"          " ;
+        cout << this->model_data_.model_point_id_[point_id]<<endl;*/
     }
 
     vtkSmartPointer<vtkCellArray> triangles_data = vtkSmartPointer<vtkCellArray>::New();
     for (const auto&triangle : this->model_data_.vtk_triangles_) {
+        Index triangle_idx=0;
         vtkIdType triangle_idxs[3]{ triangle[0], triangle[1], triangle[2] };
         triangles_data->InsertNextCell(3, triangle_idxs);
+        this->model_data_.model_face_id_.push_back(triangle_idx++);
     }
     auto polyData = vtkSmartPointer<vtkPolyData>::New();
 
@@ -134,13 +136,14 @@ void ModelActor::createBlockMapper(ModelData model_data)
     auto multiblock = vtkSmartPointer<vtkMultiBlockDataSet>::New();
 
     // 遍历每个 Block，生成一个 vtkUnstructuredGrid
-    for (size_t block_index = 0; block_index < model_data.model_blocks_.BlockDatas_.size(); ++block_index) {
-        const auto& block = model_data.model_blocks_.BlockDatas_[block_index];
+    for (size_t block_index = 0; block_index < model_data.model_blocks_.block_datas.size(); ++block_index) {
+        const auto& block = model_data.model_blocks_.block_datas[block_index];
 
         // 全局 -> 局部 点ID映射
         std::map<vtkIdType, vtkIdType> global_to_local;
         auto points = vtkSmartPointer<vtkPoints>::New();
-        auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
+        auto cells = vtkSmartPointer<vtkCellArray>::New();
+        auto grid = vtkSmartPointer<vtkPolyData>::New();
 
         for (vtkIdType face_id : block.faces_) {
             const auto& tri = model_data.vtk_triangles_[face_id];
@@ -158,17 +161,19 @@ void ModelActor::createBlockMapper(ModelData model_data)
                 }
 
                 triangle->GetPointIds()->SetId(i, global_to_local[global_id]);
-            }
 
-            grid->InsertNextCell(triangle->GetCellType(), triangle->GetPointIds());
+            }
+            cells->InsertNextCell(triangle);
+            //cells->InsertNextCell(triangle->GetCellType(), triangle->GetPointIds());
         }
 
         grid->SetPoints(points);
-
+        grid->SetPolys(cells);
         // 放入 MultiBlock 中
         multiblock->SetBlock(static_cast<unsigned int>(block_index), grid);
+        
     }
-
+	this->block_mapper_->SetInputDataObject(multiblock);
 }
 
 //void ModelActor::render_edge(RenderMode mode, bool render)

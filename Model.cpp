@@ -453,12 +453,12 @@ ModelData Model::getModelData()
 
     // 添加所有顶点和三角形
     int offset{};
+    unordered_map<int, vector<int>> patch_vtk_face_ids;
     for (const auto& [patch_id, patch] : patches_) {
         // 添加顶点和模型顶点ID
-        for (size_t i = 0; i < patch->vertexPoints_.size(); ++i) {
-            modelData.vtk_points_.push_back(patch->vertexPoints_[i]);
-            modelData.model_point_id_.push_back(patch->vertexIDs_[i]);
-        }
+        modelData.vtk_points_.insert(modelData.vtk_points_.end(), patch->vertexPoints_.begin(), patch->vertexPoints_.end());
+        modelData.model_point_id_.insert(modelData.model_point_id_.end(), patch->vertexIDs_.begin(), patch->vertexIDs_.end());
+        modelData.model_face_id_.insert(modelData.model_face_id_.end(), patch->faceIDs_.begin(), patch->faceIDs_.end());
 
         // 添加三角形和模型面ID
         for (size_t i = 0; i < patch->faceTriangles_.size(); ++i) {
@@ -467,7 +467,7 @@ ModelData Model::getModelData()
             arr[1] = patch->faceTriangles_[i][1] + offset;
             arr[2] = patch->faceTriangles_[i][2] + offset;
             modelData.vtk_triangles_.push_back(arr);
-            modelData.model_face_id_.push_back(patch->faceIDs_[i]);
+            patch_vtk_face_ids[patch_id].push_back(modelData.vtk_triangles_.size() - 1);
         }
         offset += patch->vertexPoints_.size();
     }
@@ -479,9 +479,13 @@ ModelData Model::getModelData()
         blockData.model_id_ = block_id;
         // 添加该块中所有的patch
         for (const auto& patch_id : block->patchIDs) {
-            blockData.faces_.push_back(patch_id);
+            vector<int>& vtk_face_ids = patch_vtk_face_ids[patch_id];
+            for (int vtk_face_id : vtk_face_ids)
+            {
+                blockData.faces_.push_back(vtk_face_id);
+            }
         }
-        blockDatas.BlockDatas_.push_back(blockData);
+        blockDatas.block_datas.push_back(blockData);
     }
     modelData.model_blocks_ = blockDatas;
 

@@ -20,12 +20,11 @@ class Model;
 using Index = int;
 
 struct BlockDatas {
-    std::vector<BlockData> BlockDatas_;
+    std::vector<BlockData> block_datas;
 };
 
 struct BlockData {
     std::vector<vtkIdType> faces_;
-    vtkIdType vtk_id_;
     Index model_id_;
 };
 
@@ -35,6 +34,7 @@ struct ModelData {
     std::vector<Index> model_face_id_;
     std::vector<Index> model_point_id_;
     BlockDatas model_blocks_;
+
 
     Index model_face_id(vtkIdType face_id);
     Index model_point_id(vtkIdType point_id);
