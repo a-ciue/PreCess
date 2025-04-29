@@ -38,14 +38,18 @@ void SelectManager::select(double posx, double posy)
 void SelectManager::setSelectActor(ModelActor* model_actor_)
 {
 	//assert(this->selector_);
-	if (this->selector_) {
-		this->cur_model_actor_ = model_actor_;
+
+	this->cur_model_actor_ = model_actor_;
+	if (this->selector_)
+	{
 		this->selector_->getPickList()->RemoveAllItems();
 		if (model_actor_)
 		{
 			this->cur_model_actor_->addPickList(this->selector_->getPickList());
 		}
 	}
+		
+	
 }
 
 void SelectManager::setSelectMode(SelectMode select_mode)
@@ -58,13 +62,24 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 			this->selector_->clear();
 		}
 		this->selector_ = std::make_unique<SingleFaceSelectorHighlight>(this->renderer_);
+		this->selector_->getPickList()->RemoveAllItems();
+		if (this->cur_model_actor_)
+		{
+			this->cur_model_actor_->addPickList(this->selector_->getPickList());
+		}
 	}
 	else if (this->select_mode_ == SelectMode::Block)
 	{
 		if (this->selector_)
 		{
 			this->selector_->clear();
-		}		this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
+		}
+		this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
+		this->selector_->getPickList()->RemoveAllItems();
+		if (this->cur_model_actor_)
+		{
+			this->cur_model_actor_->addPickList(this->selector_->getPickList());
+		}
 	}
 	else if (this->select_mode_ == SelectMode::Edge)
 	{
@@ -72,6 +87,11 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 		{
 			this->selector_->clear();
 		}		this->selector_ = std::make_unique<SingleEdgeSelectorHighlight>(this->renderer_);
+		this->selector_->getPickList()->RemoveAllItems();
+		if (this->cur_model_actor_)
+		{
+			this->cur_model_actor_->addPickList(this->selector_->getPickList());
+		}
 	}
 	else
 	{
@@ -95,19 +115,19 @@ std::unique_ptr<Selection> SelectManager::getSelection()
 	std::unique_ptr<Selection> selection = std::make_unique<Selection>();
 
 	if (this->select_mode_ == SelectMode::Face) {
-		for (const auto& id : selection->ids) {
+		for (const auto& id : this->selector_->get().ids) {
 			selection->ids.push_back(this->cur_model_actor_->get_model_face_id(id));
 		}
 		selection->type = Element::Face;
 	}
 	else if (this->select_mode_ == SelectMode::Block) {
-		for (const auto& id : selection->ids) {
+		for (const auto& id : this->selector_->get().ids) {
 			selection->ids.push_back(this->cur_model_actor_->get_model_block_id(id));
 		}
 		selection->type = Element::Block;
 	}
 	else if (this->select_mode_ == SelectMode::Edge) {
-		for(const auto & id : selection->ids) {
+		for(const auto& id : this->selector_->get().ids) {
 			selection->ids.push_back(this->cur_model_actor_->get_model_point_id(id));
 		}
 		selection->type = Element::Edge;
