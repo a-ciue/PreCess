@@ -27,7 +27,7 @@
 #include <vtkSphereSource.h>
 #include <vtkOBJReader.h>
 
-#include "Model.h"
+#include "ModelData.h"
 #include "Style.h"
 #include "Selection.h"
 #include "ModelActor.h"

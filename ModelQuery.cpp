@@ -1,15 +1,16 @@
 ﻿#include "ModelQuery.h"
-#include "Model.h"
 
 #include <QVariantList>
 #include <QString>
 #include <stdexcept>
 #include <limits>
 
-ModelQuery::ModelQuery(Model* model, QObject* parent)
-    : QObject(parent), m_model(model)
-{
-    // 初始化时保存关联的 Model 指针
+ModelQuery::ModelQuery(ModelManager* mgr, const QString& modelName, QObject* parent)
+        : QObject(parent), m_manager(mgr), modelName_(modelName) {
+    auto it = m_manager->models_.find(modelName_);
+    if (it != m_manager->models_.end()) {
+        m_model = it->second.get();
+    }
 }
 
 QVariantMap ModelQuery::getPatchInfo(int patchId) const {
@@ -112,7 +113,7 @@ QVariantList ModelQuery::getGroupIds() const {
 QVariantMap ModelQuery::getPatchInfoByFaceId(int faceId) const {
     QVariantMap info;
     try {
-        // 利用 Model 中已有的 face_patch_id 方法
+        // 利用 ModelData 中已有的 face_patch_id 方法
         int patchId = m_model->face_patch_id(faceId);
         info = getPatchInfo(patchId);
     }

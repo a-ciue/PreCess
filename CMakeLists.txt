@@ -46,15 +46,29 @@ qt_add_qml_module(${MYNAME}
         MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
 )
 
-add_library(vtkPart STATIC Model.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp ModelQuery.h ModelQuery.cpp)
+add_library(vtkPart STATIC ModelData.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp ModelQuery.h ModelQuery.cpp
+        ModelBridge.h
+        ModelOperator.h
+        ModelObserver.h)
 
 add_library(modelPart STATIC
-        Model.h Model.cpp
+        ModelData.h ModelData.cpp
         ModelManager.h ModelManager.cpp
         FileHandler.h FileHandler.cpp
         ModelQuery.h ModelQuery.cpp
         Selection.h
-        MyVtkItem.h MyVtkItem.cpp)
+        MyVtkItem.h MyVtkItem.cpp
+        command/ICommand.h
+        command/SplitFaceCommand.h
+        command/SplitFaceCommand.cpp
+        command/MergeBlocksCommand.h
+        command/MergeBlocksCommand.cpp
+        command/LoadSplineCommand.h
+        command/LoadSplineCommand.cpp
+        command/CommandDispatcher.h
+        command/CommandDispatcher.cpp
+        ModelOperator.h
+        ModelObserver.h)
 
 # 让 modelPart 自己也能看到 VTK 和 Qt 的头文件
 target_include_directories(modelPart
@@ -84,6 +98,11 @@ target_link_libraries(${MYNAME}
         Qt${VTK_QT_VERSION}::Quick
         ${VTK_LIBRARIES}
 )
+
+add_subdirectory(command)
+
+# 将 commands 库链接到主程序
+target_link_libraries(${MYNAME} PRIVATE commands)
 
 # - Prevent the creation of a console window on Windows.
 # - Create an application bundle on macOS.

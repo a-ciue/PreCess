@@ -14,30 +14,30 @@
 #include <filesystem>
 #include <QDebug>
 
-std::unique_ptr<Model> FileHandler::readSpline(const QUrl& spline_path)
+std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
 {
     auto mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
     if (!mesh || mesh->numFaces() == 0) {
         qDebug() << "导入样条文件错误:" << spline_path;
         return nullptr;
     }
-    return std::make_unique<Model>(std::move(mesh));
+    return std::make_unique<ModelData>(std::move(mesh));
 }
 
-std::unique_ptr<Model> FileHandler::readMesh(const QUrl& mesh_path)
+std::unique_ptr<ModelData> FileHandler::readMesh(const QUrl& mesh_path)
 {
     auto mesh = ModelUtil::read_obj_with_groups(mesh_path.toLocalFile().toStdU16String());
     if (!mesh || mesh->numFaces() == 0) {
         qDebug() << "导入网格文件错误:" << mesh_path;
         return nullptr;
     }
-    return std::make_unique<Model>(std::move(mesh));
+    return std::make_unique<ModelData>(std::move(mesh));
 }
 
-bool FileHandler::writeMesh(Model* model, const QString& targetPath, const QString& renderMode, const QString& extension)
+bool FileHandler::writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode, const QString& extension)
 {
     if (!model) {
-        qDebug() << "writeMesh: Model is null";
+        qDebug() << "writeMesh: ModelData is null";
         return false;
     }
 

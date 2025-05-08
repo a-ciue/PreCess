@@ -1,0 +1,21 @@
+//
+// Created by 徐昊阳 on 4/12/25.
+//
+// command/MergeBlocksCommand.h
+#pragma once
+#include "ICommand.h"
+class ModelData;
+class QSelection;
+
+/**
+ * MergeBlocksCommand：将多个块合并到第一个块的命令
+ */
+class MergeBlocksCommand : public ICommand {
+public:
+    MergeBlocksCommand(ModelData* model, QSelection* selection);
+    void execute() override;
+    void undo() override;
+private:
+    ModelData* model_;
+    QSelection* selection_;
+};

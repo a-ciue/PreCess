@@ -1,8 +1,8 @@
 /**
- * @file Model.h
+ * @file ModelData.h
  * @brief 负责管理和操作网格模型数据的核心类
  *
- * Model 类用于存储和处理网格模型数据，包括面（Patch）、块（Block）和组（Group）的管理。
+ * ModelData 类用于存储和处理网格模型数据，包括面（Patch）、块（Block）和组（Group）的管理。
  * 它提供了一系列函数用于网格操作，如网格划分、合并和重划分等，同时维护与 ModelActor 之间的关联，
  * 以便进行可视化和渲染。
  *
@@ -59,6 +59,10 @@ struct Patch {
     // 坐标
     std::vector <std::array<double, 3>> vertexPoints_;
     //std::vector<double[3]> vertexPoints_;
+
+    // 构造函数
+    Patch() = default;
+    Patch(int id, int block) : id_(id), blockID(block) {}
 };
 
 /**
@@ -82,28 +86,33 @@ struct Group {
     int id;
 };
 
+using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
+using BlockMap = std::unordered_map<int, std::unique_ptr<Block>>;
+using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
+
+class ModelQuery;
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 /**
 *@brief 负责管理和操作网格模型数据的核心类
 *
-* Model 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。
+* ModelData 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。
 * 该类提供了网格划分、合并、重划分等功能，并维护与 ModelActor 之间的关联，
 * 以便进行可视化和渲染。
 */
-class Model :public QObject {
+class ModelData : public QObject {
     Q_OBJECT
     QML_ELEMENT
     Q_PROPERTY(ModelQuery* query READ query CONSTANT)  // 将查询对象作为只读属性暴露给 QML
 
 public:
     /**
-     * @brief 构造 Model 对象
+     * @brief 构造 ModelData 对象
      *
      * 该构造函数基于传入的 CTMesh 对象初始化模型的 patches、blocks、groups 以及 ModelActor。
      *
      * @param mesh 指向 CTMesh 的智能指针，表示网格数据
      */
-    Model(std::unique_ptr<MeshLib::CTMesh> mesh);
+    ModelData(std::unique_ptr<MeshLib::CTMesh> mesh);
 
     /**
      * @brief 刷新 VTK 渲染数据
@@ -118,7 +127,7 @@ public:
     //! @param extension 输出文件拓展名
     void write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension);
 
-    ModelQuery* query() const;  //!< 获取该 Model 实例的查询对象指针
+    ModelQuery* query() const;  //!< 获取该 ModelData 实例的查询对象指针
     
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch
@@ -200,6 +209,12 @@ public:
      * @param name 要设置的模型名称
      */
     void setModelName(const QString& name) { model_name = name; }
+
+    // 只读访问接口
+    const MeshLib::CTMesh* mesh() const;
+    const PatchMap& patches() const;
+    const BlockMap& blocks() const;
+    const GroupMap& groups() const;
 
 signals:
     /**
@@ -283,7 +298,8 @@ signals:
         int father_group,
         const std::unordered_set<int>& father_group_blocks);
 
-private:
+
+
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
     void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);
     void update_patches(const std::unordered_set<int>& patch_ids, bool new_patch = true);
@@ -294,9 +310,8 @@ private:
     //! @brief 更新指定patch的father id
     void update_father_id(int patch_id, int father_id);
 
-    using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
-    using BlockMap = std::unordered_map<int, std::unique_ptr<Block>>;
-    using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
+private:
+
 
     std::unique_ptr<MeshLib::CTMesh> mesh_;
     QString model_name;
@@ -304,8 +319,8 @@ private:
     BlockMap blocks_;
     GroupMap groups_;
 
-    ModelQuery* m_query;              //!< 每个 Model 实例包含一个关联的查询对象
-    friend class ModelQuery;          //!< 声明 ModelQuery 为友元，以允许其访问 Model 私有数据
+    ModelQuery* m_query;              //!< 每个 ModelData 实例包含一个关联的查询对象
+    friend class ModelQuery;          //!< 声明 ModelQuery 为友元，以允许其访问 ModelData 私有数据
     friend class TestModel;           //!< 声明 TestModel 为友元，用于GoogleTest
 };
 #endif // MODEL_H

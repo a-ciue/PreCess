@@ -16,7 +16,7 @@ add_executable(
 )
 
 target_include_directories(hello_test PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/..     # 保证可以找到 Model.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/..     # 保证可以找到 ModelData.h
         ${VTK_INCLUDE_DIRS}                 # 加上 VTK 的 include
 )
 

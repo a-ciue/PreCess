@@ -14,12 +14,12 @@ struct Patch;
 class vtkActor;
 class vtkRenderer;
 class vtkPolyData;
-class Model;
+class ModelData;
 
-class Model;
+class ModelData;
 //! @brief 负责管理Model的Actor
 class ModelActor {
-    friend class Model;
+    friend class ModelData;
 
 public:
     enum class RenderMode {
@@ -86,7 +86,7 @@ private:
 
     using ActorMap = std::unordered_map<int, vtkSmartPointer<vtkActor>>;
 
-    // Model* model_;
+    // ModelData* model_;
     const std::unordered_map<int, std::unique_ptr<Patch>>& patches_;
 
     //vtkRenderer* face_renderer_ {};

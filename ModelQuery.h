@@ -1,9 +1,9 @@
 ﻿/**
  * @file ModelQuery.h
- * @brief 封装 Model 查询操作接口，支持对网格数据进行各种查询
+ * @brief 封装 ModelData 查询操作接口，支持对网格数据进行各种查询
  *
- * ModelQuery 类提供了一系列接口用于从 Model 中查询网格数据，
- * 包括 Patch、Block、Group 和 Vertex 等信息的读取。通过将查询逻辑从 Model 的命令操作中分离，
+ * ModelQuery 类提供了一系列接口用于从 ModelData 中查询网格数据，
+ * 包括 Patch、Block、Group 和 Vertex 等信息的读取。通过将查询逻辑从 ModelData 的命令操作中分离，
  * 实现了读写分离。该类通过 Q_INVOKABLE 方法暴露给 QML 层使用，返回的结果以 QVariantMap 或 QVariantList 形式呈现，
  * 便于前端快速获得并展示数据。
  *
@@ -19,14 +19,17 @@
 #include <QQmlEngine>  // 提供 QML 元素导出宏 (Qt6)
 #endif
 
-// 前向声明 Model 类
-class Model;
+#include "ModelManager.h"
+
+// 前向声明 ModelData 类
+class ModelData;
+class ModelManager;
 
 /**
  * @brief ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）
  *
- * 通过将查询逻辑与 Model 的命令操作分离，ModelQuery 实现了读写分离，专注于数据的查询。
- * 该类可以直接访问 Model 的私有数据（因为 Model 声明其为友元类），
+ * 通过将查询逻辑与 ModelData 的命令操作分离，ModelQuery 实现了读写分离，专注于数据的查询。
+ * 该类可以直接访问 ModelData 的私有数据（因为 ModelData 声明其为友元类），
  * 并以 Q_INVOKABLE 方法暴露各个查询接口给 QML 使用。
  */
 class ModelQuery : public QObject {
@@ -39,13 +42,11 @@ public:
     /**
      * @brief 构造函数
      *
-     * 根据传入的 Model 实例指针构造 ModelQuery 对象，用于执行各项数据查询操作。
-     *
-     * @param model 指向关联的 Model 实例，该查询对象将访问其内部数据
-     * @param parent 父对象（默认值为 nullptr），建议设置为 Model 以便自动管理内存
+     * @param mgr 指向 ModelManager 实例，用于管理并查找多个 ModelData
+     * @param modelName 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param parent 父 QObject（默认为 nullptr），可用于 Qt 对象树内存管理
      */
-    explicit ModelQuery(Model* model, QObject* parent = nullptr);
-
+    explicit ModelQuery(ModelManager* mgr, const QString& modelName, QObject* parent = nullptr);
     /**
      * @brief 获取指定 Patch 的详细信息
      * 返回的 QVariantMap 包含的键：
@@ -90,7 +91,7 @@ public:
     /**
      * @brief 获取所有 Block 的 ID 列表
      *
-     * 遍历 Model 中所有 Patch，将每个 Patch 的标识符提取出来，
+     * 遍历 ModelData 中所有 Patch，将每个 Patch 的标识符提取出来，
      * 并存入 QVariantList 返回。
      *
      * @return 包含所有 Block 标识符的 QVariantList
@@ -145,5 +146,7 @@ public:
     Q_INVOKABLE QVariantMap getVertexInfo(int vertexId) const;
 
 private:
-    Model* m_model;  ///< 关联的 Model 实例，用于访问其数据
+    ModelData* m_model;  ///< 关联的 ModelData 实例，用于访问其数据
+    ModelManager* m_manager;
+    QString modelName_;
 };

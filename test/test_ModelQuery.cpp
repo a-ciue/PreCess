@@ -5,6 +5,7 @@
 #include "gtest/gtest.h"
 #include "TestModel.h"
 #include "ModelQuery.h"
+#include "ModelManager.h"
 #include <QVariant>
 
 // 辅助函数：创建 dummy Patch 对象
@@ -46,9 +47,8 @@ std::unique_ptr<Group> createDummyGroup(int groupId, const std::unordered_set<in
 class ModelQueryTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // 创建测试专用的 Model 对象
-        testModel = std::make_unique<TestModel>();
-
+        // 创建测试专用的 TestModel 实例并配置数据
+        auto testModel = std::make_unique<TestModel>();
         // 设置 dummy patches
         std::unordered_map<int, std::unique_ptr<Patch>> patches;
         for (int i = 1; i <= 3; ++i) {
@@ -56,7 +56,7 @@ protected:
         }
         testModel->setPatches(std::move(patches));
 
-        // 设置 dummy blocks，假设每个 block 对应同 id 的 patch
+        // 设置 dummy blocks
         std::unordered_map<int, std::unique_ptr<Block>> blocks;
         for (int i = 1; i <= 3; ++i) {
             std::unordered_set<int> pids = { i };
@@ -64,7 +64,7 @@ protected:
         }
         testModel->setBlocks(std::move(blocks));
 
-        // 设置 dummy groups，假设每个 group对应同 id 的 block
+        // 设置 dummy groups
         std::unordered_map<int, std::unique_ptr<Group>> groups;
         for (int i = 1; i <= 3; ++i) {
             std::unordered_set<int> bids = { i };
@@ -72,15 +72,16 @@ protected:
         }
         testModel->setGroups(std::move(groups));
 
-        // 创建 ModelQuery 对象
-        query = new ModelQuery(testModel.get(), nullptr);
+        // 将 TestModel 注册到 ModelManager，并创建 ModelQuery
+        manager_.addModel("dummy", std::move(testModel));
+        query = new ModelQuery(&manager_, "dummy", nullptr);
     }
 
     void TearDown() override {
         delete query;
     }
 
-    std::unique_ptr<TestModel> testModel;
+    ModelManager manager_;
     ModelQuery* query;
 };
 

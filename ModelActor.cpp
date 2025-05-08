@@ -1,5 +1,5 @@
 #include "ModelActor.h"
-#include "Model.h"
+#include "ModelData.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -15,13 +15,13 @@
 #include "Style.h"
 #include <vtkAppendPolyData.h>
 
-// ModelActor::ModelActor(Model* model)
+// ModelActor::ModelActor(ModelData* model)
 //     : model_(model)
 //{
 //     model_->update_patches();
 // }
 
-// void ModelActor::set_model(Model* model)
+// void ModelActor::set_model(ModelData* model)
 //{
 //     model_ = model;
 // }
