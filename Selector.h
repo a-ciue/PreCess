@@ -52,6 +52,8 @@ public:
     SelectionVtk get()override;
     //! @brief 找到该坐标下的actor，并高亮该actor；若选中已选actor要取消选中和高亮
     void select(double posx, double posy) override;
+    void highlightBlockByCellColor(vtkCompositePolyDataMapper* mapper, unsigned int block_index,
+        unsigned char r, unsigned char g, unsigned char b);
     vtkPropCollection* getPickList()override;
 private:
     /* struct Actor
