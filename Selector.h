@@ -18,7 +18,6 @@ template <typename T>
 class vtkSmartPointer;
 class vtkDataSetMapper;
 class vtkActor;
-class ModelData;
 
 namespace Selector {
 //! @brief 在renderer中选择在(posx, posy)坐标的actor
@@ -115,7 +114,6 @@ private:
     static bool _is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor);
 
     vtkRenderer* renderer_;
-    ModelData* model_;
     std::optional<SelectedEdge> selection_;
     //vtkPropAssembly edgeAssembly;
     vtkPropAssembly* edgeassembly;

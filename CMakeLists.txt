@@ -7,10 +7,6 @@ project(${MYNAME} VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# —— 1. 启用 Qt 的自动 moc/uic/rcc ——
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
 
 option(ENABLE_TEST "是否启用测试")
 
@@ -46,48 +42,31 @@ qt_add_qml_module(${MYNAME}
         MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
 )
 
-add_library(vtkPart STATIC ModelData.cpp ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp ModelQuery.h ModelQuery.cpp
-        ModelBridge.h
-        ModelOperator.h
-        ModelObserver.h)
+add_library(vtkPart STATIC ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp)
 
 add_library(modelPart STATIC
-        ModelData.h ModelData.cpp
-        ModelManager.h ModelManager.cpp
-        FileHandler.h FileHandler.cpp
-        ModelQuery.h ModelQuery.cpp
-        Selection.h
-        MyVtkItem.h MyVtkItem.cpp
-        command/ICommand.h
-        command/SplitFaceCommand.h
+        ModelData.cpp
+        ModelManager.cpp
+        FileHandler.cpp
+        ModelQuery.cpp
         command/SplitFaceCommand.cpp
-        command/MergeBlocksCommand.h
         command/MergeBlocksCommand.cpp
-        command/LoadSplineCommand.h
-        command/LoadSplineCommand.cpp
-        command/CommandDispatcher.h
-        command/CommandDispatcher.cpp
-        ModelOperator.h
-        ModelObserver.h)
+        command/LoadSplineCommand.cpp)
 
 # 让 modelPart 自己也能看到 VTK 和 Qt 的头文件
 target_include_directories(modelPart
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}   # 项目根目录
-        ${CMAKE_CURRENT_BINARY_DIR}   # moc/autogen 目录
-        ${VTK_INCLUDE_DIRS}           # VTK 自带 include
 )
 
 # 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
 target_link_libraries(modelPart
-        PUBLIC
+        PRIVATE
         Qt${VTK_QT_VERSION}::Core
         Qt${VTK_QT_VERSION}::Quick
-        ${VTK_LIBRARIES}
 )
 
 # VTK 模块自动初始化
-vtk_module_autoinit(TARGETS modelPart MODULES ${VTK_LIBRARIES})
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )
 
 target_link_libraries(vtkPart PRIVATE ${VTK_LIBRARIES})
@@ -98,11 +77,6 @@ target_link_libraries(${MYNAME}
         Qt${VTK_QT_VERSION}::Quick
         ${VTK_LIBRARIES}
 )
-
-add_subdirectory(command)
-
-# 将 commands 库链接到主程序
-target_link_libraries(${MYNAME} PRIVATE commands)
 
 # - Prevent the creation of a console window on Windows.
 # - Create an application bundle on macOS.
@@ -129,21 +103,6 @@ install(
         RUNTIME_DEPENDENCIES
         DIRECTORIES
         $<TARGET_FILE_DIR:VTK::CommonCore>
-        $<TARGET_FILE_DIR:VTK::GUISupportQtQuick>
-        $<TARGET_FILE_DIR:VTK::FiltersHybrid>
-        $<TARGET_FILE_DIR:VTK::FiltersSources>
-        $<TARGET_FILE_DIR:VTK::FiltersExtraction>
-        $<TARGET_FILE_DIR:VTK::RenderingOpenGL2>
-        $<TARGET_FILE_DIR:VTK::InteractionStyle>
-        $<TARGET_FILE_DIR:VTK::RenderingContextOpenGL2>
-        $<TARGET_FILE_DIR:VTK::RenderingFreeType>
-        $<TARGET_FILE_DIR:VTK::RenderingGL2PSOpenGL2>
-        $<TARGET_FILE_DIR:VTK::IOGeometry>
-        $<TARGET_FILE_DIR:VTK::CommonColor>
-        $<TARGET_FILE_DIR:VTK::InteractionStyle>
-        $<TARGET_FILE_DIR:VTK::RenderingCore>
-        $<TARGET_FILE_DIR:VTK::RenderingFreeType>
-
         # Qt 库所在目录
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Quick>

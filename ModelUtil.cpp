@@ -3,12 +3,7 @@
 #include "FaceSplitter.h"
 
 #include <array>
-#include <vtkMinimalStandardRandomSequence.h>
-#include <vtkNamedColors.h>
 #include <filesystem>
-
-vtkNew<vtkMinimalStandardRandomSequence> ModelUtil::randomSequence;
-vtkNew<vtkNamedColors> ModelUtil::colors;
 
 std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {

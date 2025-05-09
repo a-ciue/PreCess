@@ -225,13 +225,13 @@ QSelection* QRenderWindow::selectedIDs()
 Q_INVOKABLE void QRenderWindow::changeRenderer(QString renderMode)
 {
     if (renderMode == "Face") {
-        this->renderMode_ = ModelActor::RenderMode::Face;
+        this->renderMode_ = RenderMode::Face;
     }
     else if (renderMode == "Block") {
-        this->renderMode_ = ModelActor::RenderMode::Block;
+        this->renderMode_ = RenderMode::Block;
     }
     else if (renderMode == "Group") {
-        this->renderMode_ = ModelActor::RenderMode::Group;
+        this->renderMode_ = RenderMode::Group;
     }
     else {
         std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
@@ -241,7 +241,7 @@ Q_INVOKABLE void QRenderWindow::changeRenderer(QString renderMode)
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (this->renderMode_ == ModelActor::RenderMode::Face)
+        if (this->renderMode_ == RenderMode::Face)
         {
             bindStyle("Face");
             for (auto&& [modelName, modelActor] : vtk->actor_)
@@ -255,7 +255,7 @@ Q_INVOKABLE void QRenderWindow::changeRenderer(QString renderMode)
 
             }
         }
-        else if (this->renderMode_ == ModelActor::RenderMode::Block)
+        else if (this->renderMode_ == RenderMode::Block)
         {
             bindStyle("Block");
             for (auto&& [modelName, modelActor] : vtk->actor_)
@@ -277,7 +277,7 @@ Q_INVOKABLE void QRenderWindow::changeRenderer(QString renderMode)
             }
 
         }
-        else if (this->renderMode_ == ModelActor::RenderMode::Group)
+        else if (this->renderMode_ == RenderMode::Group)
         {
             bindStyle("Group");
             for (auto&& [modelName, modelActor] : vtk->actor_)
@@ -351,13 +351,13 @@ void QRenderWindow::unbindStyle()
 
 void QRenderWindow::changeEdgeRender(QString model_name, QString renderMode, bool render)
 {
-    ModelActor::RenderMode mode {};
+    RenderMode mode {};
     if (renderMode == "Face") {
-        mode = ModelActor::RenderMode::Face;
+        mode = RenderMode::Face;
     } else if (renderMode == "Block") {
-        mode = ModelActor::RenderMode::Block;
+        mode = RenderMode::Block;
     } else if (renderMode == "Group") {
-        mode = ModelActor::RenderMode::Group;
+        mode = RenderMode::Group;
     } else {
         std::cerr << "invalid renderMode in QRenderWindow::changeEdgeRenderer" << std::endl;
         return;

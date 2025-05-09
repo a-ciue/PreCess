@@ -27,7 +27,6 @@
 #include <vtkSphereSource.h>
 #include <vtkOBJReader.h>
 
-#include "ModelData.h"
 #include "Style.h"
 #include "Selection.h"
 #include "ModelActor.h"
@@ -198,6 +197,6 @@ private:
     SelectMode select_mode_ {};
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_{};
-    ModelActor::RenderMode renderMode_{};
+    RenderMode renderMode_{};
  };
 #endif // MYVTKITEM_H

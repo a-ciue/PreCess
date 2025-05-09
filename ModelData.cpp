@@ -14,7 +14,6 @@
  */
 
 #include "ModelData.h"
-#include "ModelActor.h"
 #include "ToolMesh.h"
 #include "ModelUtil.h"
 
@@ -74,25 +73,25 @@ void ModelData::refreshVtk()
     emit modelInited(getModelName(), &patches_, &blocks_, &groups_);
 }
 
-void ModelData::write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension)
+void ModelData::write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString &extension)
 {
     std::function<int(int)> gid{};
 
     switch (mode) {
-    case ModelActor::RenderMode::Face:
+    case RenderMode::Face:
         {
         gid = [](int patch_id) {
             return 1;
         };
         break;
     }
-    case ModelActor::RenderMode::Block: {
+    case RenderMode::Block: {
         gid = [this](int patch_id) {
             return blocks_[patches_[patch_id]->blockID]->id;
         };
         break;
     }
-    case ModelActor::RenderMode::Group: {
+    case RenderMode::Group: {
         gid = [this](int patch_id) {
             return groups_[blocks_[patches_[patch_id]->blockID]->groupID]->id;
         };
@@ -107,11 +106,6 @@ void ModelData::write_mesh(const std::filesystem::path& mesh_path, ModelActor::R
     else
         //"不支持的文件类型"
         assert(false);
-}
-
-ModelQuery* ModelData::query() const
-{
-    return m_query;
 }
 
 void ModelData::split_face(QSelection* selection)

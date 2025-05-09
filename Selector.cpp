@@ -32,7 +32,7 @@
 #include <vtkAssemblyNode.h>
 #include <vtkAppendPolyData.h>
 
-#include "ModelUtil.h"
+#include "ModelActor.h"
 
 namespace Selector {
     std::optional<std::pair<vtkActor*, int>> pick_cell(double posx, double posy, vtkRenderer* renderer) {
@@ -339,7 +339,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         // 创建一个演员来显示这些线段
 
         selectedActor_->SetMapper(selectedMapper_);
-        selectedActor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("black").GetData());
+        selectedActor_->GetProperty()->SetColor(ModelActor::colors->GetColor3d("black").GetData());
         selectedActor_->GetProperty()->SetLineWidth(5); // 设置
 
         if (_is_selected(picked_edge, selection_, selectedActor_)) {

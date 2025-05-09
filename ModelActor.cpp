@@ -1,5 +1,4 @@
 #include "ModelActor.h"
-#include "ModelData.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -13,18 +12,11 @@
 #include <vtkPropAssembly.h>
 #include "ModelUtil.h"
 #include "Style.h"
+#include "Core.h"
 #include <vtkAppendPolyData.h>
 
-// ModelActor::ModelActor(ModelData* model)
-//     : model_(model)
-//{
-//     model_->update_patches();
-// }
-
-// void ModelActor::set_model(ModelData* model)
-//{
-//     model_ = model;
-// }
+vtkNew<vtkMinimalStandardRandomSequence> ModelActor::randomSequence;
+vtkNew<vtkNamedColors> ModelActor::colors;
 
 /*void ModelActor::bind_renderer(vtkRenderer* renderer, RenderMode mode)
 {
@@ -256,15 +248,15 @@ void ModelActor::update_patch(int patch_id, const std::vector<std::array<double,
     mapper->SetInputData(vtkData);
     patch_actor->SetMapper(mapper);
 
-    double r = ModelUtil::randomSequence->GetNextRangeValue(0.1, 0.6),
-           g = ModelUtil::randomSequence->GetNextRangeValue(0.1, 0.6),
-           b = ModelUtil::randomSequence->GetNextRangeValue(0.1, 0.6);
+    double r = ModelActor::randomSequence->GetNextRangeValue(0.1, 0.6),
+           g = ModelActor::randomSequence->GetNextRangeValue(0.1, 0.6),
+           b = ModelActor::randomSequence->GetNextRangeValue(0.1, 0.6);
 
     patch_actor->GetProperty()->SetDiffuseColor(r, g, b);
     patch_actor->GetProperty()->SetDiffuse(0.8);
     patch_actor->GetProperty()->SetSpecular(0.5);
     patch_actor->GetProperty()->SetSpecularColor(
-        ModelUtil::colors->GetColor3d("White").GetData());
+        ModelActor::colors->GetColor3d("White").GetData());
     patch_actor->GetProperty()->SetSpecularPower(30.0);
 }
 
@@ -371,15 +363,15 @@ void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActo
     father_mapper->SetInputConnection(append_data->GetOutputPort());
     father_actor->SetMapper(father_mapper);
 
-    double r = ModelUtil::randomSequence->GetNextRangeValue(0.1, 0.6),
-           g = ModelUtil::randomSequence->GetNextRangeValue(0.1, 0.6),
-           b = ModelUtil::randomSequence->GetNextRangeValue(0.1, 0.6);
+    double r = ModelActor::randomSequence->GetNextRangeValue(0.1, 0.6),
+           g = ModelActor::randomSequence->GetNextRangeValue(0.1, 0.6),
+           b = ModelActor::randomSequence->GetNextRangeValue(0.1, 0.6);
 
     father_actor->GetProperty()->SetDiffuseColor(r, g, b);
     father_actor->GetProperty()->SetDiffuse(0.8);
     father_actor->GetProperty()->SetSpecular(0.5);
     father_actor->GetProperty()->SetSpecularColor(
-        ModelUtil::colors->GetColor3d("White").GetData());
+        ModelActor::colors->GetColor3d("White").GetData());
     father_actor->GetProperty()->SetSpecularPower(30.0);
 
 
@@ -407,15 +399,15 @@ void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActo
 //    block_mapper->SetInputConnection(append_data->GetOutputPort());
 //    block_actor->SetMapper(block_mapper);
 //
-//    double r = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
-//           g = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
-//           b = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6);
+//    double r = ModelActor::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           g = ModelActor::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           b = ModelActor::randomSequence.GetNextRangeValue(0.1, 0.6);
 //
 //    block_actor->GetProperty()->SetDiffuseColor(r, g, b);
 //    block_actor->GetProperty()->SetDiffuse(0.8);
 //    block_actor->GetProperty()->SetSpecular(0.5);
 //    block_actor->GetProperty()->SetSpecularColor(
-//        ModelUtil::colors.GetColor3d("White").GetData());
+//        ModelActor::colors.GetColor3d("White").GetData());
 //    block_actor->GetProperty()->SetSpecularPower(30.0);
 //
 //    // ？
@@ -445,15 +437,15 @@ void ModelActor::_merge_actors(vtkActor* father_actor, const std::vector<vtkActo
 //    group_mapper->SetInputConnection(append_data->GetOutputPort());
 //    group_actor->SetMapper(group_mapper);
 //
-//    double r = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
-//           g = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6),
-//           b = ModelUtil::randomSequence.GetNextRangeValue(0.1, 0.6);
+//    double r = ModelActor::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           g = ModelActor::randomSequence.GetNextRangeValue(0.1, 0.6),
+//           b = ModelActor::randomSequence.GetNextRangeValue(0.1, 0.6);
 //
 //    group_actor->GetProperty()->SetDiffuseColor(r, g, b);
 //    group_actor->GetProperty()->SetDiffuse(0.8);
 //    group_actor->GetProperty()->SetSpecular(0.5);
 //    group_actor->GetProperty()->SetSpecularColor(
-//        ModelUtil::colors.GetColor3d("White").GetData());
+//        ModelActor::colors.GetColor3d("White").GetData());
 //    group_actor->GetProperty()->SetSpecularPower(30.0);
 //
 //    // ？

@@ -9,7 +9,7 @@
  */
 #include "FileHandler.h"
 #include "ModelUtil.h"
-#include "ModelActor.h"
+#include "Core.h"
 
 #include <filesystem>
 #include <QDebug>
@@ -41,15 +41,15 @@ bool FileHandler::writeMesh(ModelData* model, const QString& targetPath, const Q
         return false;
     }
 
-    ModelActor::RenderMode mode{};
+    RenderMode mode{};
     if (renderMode == "Face") {
-        mode = ModelActor::RenderMode::Face;
+        mode = RenderMode::Face;
     }
     else if (renderMode == "Block") {
-        mode = ModelActor::RenderMode::Block;
+        mode = RenderMode::Block;
     }
     else if (renderMode == "Group") {
-        mode = ModelActor::RenderMode::Group;
+        mode = RenderMode::Group;
     }
     else {
         qDebug() << "writeMesh: 无效的 renderMode:" << renderMode;

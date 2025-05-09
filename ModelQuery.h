@@ -15,15 +15,12 @@
 #include <QObject>
 #include <QVariant>
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <QQmlEngine>  // 提供 QML 元素导出宏 (Qt6)
-#endif
 
 #include "ModelManager.h"
 
 // 前向声明 ModelData 类
 class ModelData;
-class ModelManager;
 
 /**
  * @brief ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）
@@ -34,9 +31,7 @@ class ModelManager;
  */
 class ModelQuery : public QObject {
     Q_OBJECT
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        QML_ELEMENT  // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
-#endif
+    QML_ELEMENT  // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
 
 public:
     /**

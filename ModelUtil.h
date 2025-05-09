@@ -4,7 +4,6 @@
 #include <functional>
 #include <memory>
 #include <vector>
-#include <vtkNew.h>
 
 class vtkNamedColors;
 
@@ -59,9 +58,6 @@ public:
     //! @return 加载并解析完成的网格对象
     static std::unique_ptr<MeshLib::CTMesh> read_obj_with_groups(const std::filesystem::path& obj_file);
     //static std::unique_ptr<MeshLib::CTMesh> read_obj(const std::filesystem::path& obj_file);
-
-    static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
-    static vtkNew<vtkNamedColors> colors;
 
 private:
     static std::string cmdPopen(const std::string& cmdLine);

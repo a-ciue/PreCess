@@ -1,5 +1,5 @@
-#ifndef MODELACTOR_H
-#define MODELACTOR_H
+#ifndef MODEL_ACTOR_H
+#define MODEL_ACTOR_H
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -7,6 +7,9 @@
 #include <vtkNew.h>
 #include <vtkAssembly.h>
 #include <vtkPropAssembly.h>
+#include <vtkMinimalStandardRandomSequence.h>
+#include <vtkNamedColors.h>
+#include "Core.h"
 
 struct Group;
 struct Block;
@@ -14,19 +17,12 @@ struct Patch;
 class vtkActor;
 class vtkRenderer;
 class vtkPolyData;
-class ModelData;
 
-class ModelData;
 //! @brief 负责管理Model的Actor
 class ModelActor {
-    friend class ModelData;
-
 public:
-    enum class RenderMode {
-        Face,
-        Block,
-        Group
-    };
+    static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
+    static vtkNew<vtkNamedColors> colors;
 
     ModelActor(
         const std::unordered_map<int, std::unique_ptr<Patch>>& patches,
@@ -86,7 +82,6 @@ private:
 
     using ActorMap = std::unordered_map<int, vtkSmartPointer<vtkActor>>;
 
-    // ModelData* model_;
     const std::unordered_map<int, std::unique_ptr<Patch>>& patches_;
 
     //vtkRenderer* face_renderer_ {};
@@ -110,4 +105,4 @@ private:
     std::vector<vtkActor*> selections_;
 };
 
-#endif // MODELACTOR_H
+#endif // MODEL_ACTOR_H
