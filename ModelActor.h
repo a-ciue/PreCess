@@ -79,7 +79,7 @@ private:
     vtkNew<vtkPolyDataMapper> mapper_;
     //Face mapper
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
-    void createBlockMapper(ModelData model_data);
+    void createBlockMapper(const ModelData& model_data);
 };
 
 

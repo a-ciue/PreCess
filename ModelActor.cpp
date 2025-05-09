@@ -134,7 +134,7 @@ Index ModelActor::get_model_block_id(vtkIdType block_id)
     return this->model_data_.model_block_id(block_id);
 }
 
-void ModelActor::createBlockMapper(ModelData model_data)
+void ModelActor::createBlockMapper(const ModelData& model_data)
 {
     auto multiblock = vtkSmartPointer<vtkMultiBlockDataSet>::New();
 
