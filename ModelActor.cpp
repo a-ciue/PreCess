@@ -137,61 +137,65 @@ Index ModelActor::get_model_block_id(vtkIdType block_id)
 void ModelActor::createBlockMapper(const ModelData& model_data)
 {
     auto multiblock = vtkSmartPointer<vtkMultiBlockDataSet>::New();
+    const auto& blocks = model_data.model_blocks_.block_datas;
 
-    // 遍历每个 Block，生成一个 vtkUnstructuredGrid
-    for (size_t block_index = 0; block_index < model_data.model_blocks_.block_datas.size(); ++block_index) {
-        const auto& block = model_data.model_blocks_.block_datas[block_index];
+    for (size_t block_index = 0; block_index < blocks.size(); ++block_index) {
+        const auto& block = blocks[block_index];
 
-        // 全局 -> 局部 点ID映射
-        std::map<vtkIdType, vtkIdType> global_to_local;
+        std::unordered_map<vtkIdType, vtkIdType> global_to_local;
         auto points = vtkSmartPointer<vtkPoints>::New();
         auto cells = vtkSmartPointer<vtkCellArray>::New();
         auto grid = vtkSmartPointer<vtkPolyData>::New();
 
-        auto colors = vtkSmartPointer<vtkUnsignedCharArray>::New();     // 🔼 新增：创建颜色数组
-        colors->SetNumberOfComponents(3);                                // 🔼 新增：3 通道 RGB
-        colors->SetName("BlockColors");                                  // 🔼 新增：可选名称
+        auto colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+        colors->SetNumberOfComponents(3);
+        colors->SetName("BlockColors");
 
-        unsigned char r = static_cast<unsigned char>(rand() % 256);
-        unsigned char g = static_cast<unsigned char>(rand() % 256);
-        unsigned char b = static_cast<unsigned char>(rand() % 256);
+        // 为该 block 随机生成颜色
+        const std::array<unsigned char, 3> rgb = {
+            static_cast<unsigned char>(rand() % 256),
+            static_cast<unsigned char>(rand() % 256),
+            static_cast<unsigned char>(rand() % 256)
+        };
+
+        vtkIdType local_id = 0;
+        points->Allocate(static_cast<vtkIdType>(block.faces_.size() * 3));  // 预分配，粗略估计
+        cells->AllocateEstimate(block.faces_.size(), 3);                     // 预估每个 cell 是三角形
 
         for (vtkIdType face_id : block.faces_) {
             const auto& tri = model_data.vtk_triangles_[face_id];
+            vtkIdType tri_pts[3];
 
-            auto triangle = vtkSmartPointer<vtkTriangle>::New();
             for (int i = 0; i < 3; ++i) {
                 vtkIdType global_id = tri[i];
-
-                // 映射到局部点集中
-                if (global_to_local.find(global_id) == global_to_local.end()) {
-                    vtkIdType local_id = points->GetNumberOfPoints();
+                auto iter = global_to_local.find(global_id);
+                if (iter == global_to_local.end()) {
                     const auto& pt = model_data.vtk_points_[global_id];
-                    points->InsertNextPoint(pt[0], pt[1], pt[2]);
+                    points->InsertPoint(local_id, pt.data());
                     global_to_local[global_id] = local_id;
+                    tri_pts[i] = local_id++;
                 }
-
-                triangle->GetPointIds()->SetId(i, global_to_local[global_id]);
-
+                else {
+                    tri_pts[i] = iter->second;
+                }
             }
-            cells->InsertNextCell(triangle);
-            //cells->InsertNextCell(triangle->GetCellType(), triangle->GetPointIds());
-            colors->InsertNextTypedTuple(std::array<unsigned char, 3>{r, g, b}.data());  // 🔼 新增：给每个 cell 加颜色
+
+            cells->InsertNextCell(3, tri_pts);
+            colors->InsertNextTypedTuple(rgb.data());
         }
 
         grid->SetPoints(points);
         grid->SetPolys(cells);
+        grid->GetCellData()->SetScalars(colors);
 
-        grid->GetCellData()->SetScalars(colors);  // 🔼 新增：把颜色设置进 CellData
-        // 放入 MultiBlock 中
         multiblock->SetBlock(static_cast<unsigned int>(block_index), grid);
-        
     }
-	this->block_mapper_->SetInputDataObject(multiblock);
 
-    this->block_mapper_->SetScalarModeToUseCellData();  // 🔼 新增：启用使用 CellData 的颜色
-    this->block_mapper_->ScalarVisibilityOn();          // 🔼 新增：启用颜色显示
+    this->block_mapper_->SetInputDataObject(multiblock);
+    this->block_mapper_->SetScalarModeToUseCellData();
+    this->block_mapper_->ScalarVisibilityOn();
 }
+
 
 //void ModelActor::render_edge(RenderMode mode, bool render)
 //{
