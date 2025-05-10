@@ -30,12 +30,14 @@
 #include "Style.h"
 #include "Selection.h"
 #include "ModelActor.h"
+#include "ModelQuery.h"
 
 enum class SelectMode { Group, Block, Face, Edge }; 
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
+    Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
     QML_ELEMENT
 public:
     QRenderWindow();                              //槽函数，改变边框重置相机
@@ -64,7 +66,7 @@ public:
     //void dispatchChangedSource();
 
     QSelection* selectedIDs();
-    
+    void setModelQuery(QModelQuery* query);
 
     /*
     * @brief 切换渲染模式
@@ -98,9 +100,7 @@ public:
     * @param[in] groups 模型层group数据
 
     */
-    void onModelInited(QString model_name,const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
-        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
-        const std::unordered_map<int, std::unique_ptr<Group>>* groups);
+    Q_INVOKABLE void onModelInited(QString model_name);
     /*
     * @brief 合并块操作
     *
@@ -198,5 +198,6 @@ private:
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_{};
     RenderMode renderMode_{};
+    QModelQuery* model_query_ {};
  };
 #endif // MYVTKITEM_H

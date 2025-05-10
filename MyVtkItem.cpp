@@ -96,19 +96,19 @@ bool QRenderWindow::event(QEvent* ev)
     return true;
 }
 
-void QRenderWindow::onModelInited(QString model_name,const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
-        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
-        const std::unordered_map<int, std::unique_ptr<Group>>* groups)
+void QRenderWindow::onModelInited(QString model_name)
 {
-    dispatch_async([model_name,patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
-        Data* vtk = Data::SafeDownCast(userData);
-        vtk->actor_[model_name] = std::make_unique<ModelActor>(*patches, *blocks, *groups);
+    auto&& [patches, blocks, groups] = model_query_->getMeshData(model_name);
+    if (patches) {
+        dispatch_async([model_name, patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+            Data* vtk = Data::SafeDownCast(userData);
+            vtk->actor_[model_name] = std::make_unique<ModelActor>(*patches, *blocks, *groups);
 
-        vtk->actor_[model_name]->bind_renderer(vtk->renderer);
+            vtk->actor_[model_name]->bind_renderer(vtk->renderer);
 
-        resetCamera();
+            resetCamera();
         });
-    
+    }
 }
 
 void QRenderWindow::blocksMerged(QString model_name,const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches)
@@ -221,6 +221,11 @@ QSelection* QRenderWindow::selectedIDs()
     return nullptr;
 }
 
+void QRenderWindow::setModelQuery(QModelQuery* query)
+{
+    assert(query != nullptr);
+	model_query_ = query; 
+}
 
 Q_INVOKABLE void QRenderWindow::changeRenderer(QString renderMode)
 {

@@ -1,4 +1,5 @@
 #include "ModelActor.h"
+#include "ModelData.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>

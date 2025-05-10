@@ -68,11 +68,6 @@ ModelData::ModelData(std::unique_ptr<MeshLib::CTMesh> mesh)
     //emit modelInited(&patches_, &blocks_, &groups_);
 }
 
-void ModelData::refreshVtk()
-{
-    emit modelInited(getModelName(), &patches_, &blocks_, &groups_);
-}
-
 void ModelData::write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString &extension)
 {
     std::function<int(int)> gid{};
@@ -248,19 +243,15 @@ void ModelData::merge_blocks(QSelection* selection) {
     // 更新 ModelActor
     // 更新目标 block 的 patchIDs
     // 调用 ModelActor 的 merge_blocks 函数更新 Actor
-    //actor_->merge_blocks(block_ids, block_ids[0], target_block->patchIDs);
-    emit blocksMerged(getModelName(), block_ids, block_ids[0], target_block->patchIDs);
-    //actor_->update_group(target_block->groupID, groups_[target_block->groupID]->blockIDs);
-    emit groupUpdated(getModelName(), target_block->groupID, groups_[target_block->groupID]->blockIDs);
-    for (int modified_group : modified_groups) {
-        if (groups_.count(modified_group)) {
-            //actor_->update_group(modified_group, groups_[modified_group]->blockIDs);
-            emit groupUpdated(getModelName(), modified_group, groups_[modified_group]->blockIDs);
-        } else {
-            //actor_->update_group(modified_group, {});
-            emit groupUpdated(getModelName(), modified_group, {});
-        }
-    }
+    //emit blocksMerged(getModelName(), block_ids, block_ids[0], target_block->patchIDs);
+    //emit groupUpdated(getModelName(), target_block->groupID, groups_[target_block->groupID]->blockIDs);
+    //for (int modified_group : modified_groups) {
+    //    if (groups_.count(modified_group)) {
+    //        emit groupUpdated(getModelName(), modified_group, groups_[modified_group]->blockIDs);
+    //    } else {
+    //        emit groupUpdated(getModelName(), modified_group, {});
+    //    }
+    //}
 }
 
 void ModelData::merge_groups(QSelection* selection) {
@@ -297,8 +288,7 @@ void ModelData::merge_groups(QSelection* selection) {
     }
 
     // 更新 ModelActor
-    //actor_->merge_groups(group_ids, group_ids[0], target_group->blockIDs);
-    emit groupMerged(getModelName(), group_ids, group_ids[0], target_group->blockIDs);
+    //emit groupMerged(getModelName(), group_ids, group_ids[0], target_group->blockIDs);
 }
 
 void ModelData::remesh_block(QSelection* selection) {
@@ -331,10 +321,6 @@ void ModelData::remesh_block(QSelection* selection) {
 
     // 更新 patches_
     update_patches(all_patch_ids);
-
-    // 更新所有相关的 actors
-    //update_actors(patch_ids);
-    refreshVtk();
 }
 
 void ModelData::remesh_group(QSelection* selection) {
@@ -378,10 +364,6 @@ void ModelData::remesh_group(QSelection* selection) {
 
     // 更新 patches_
     update_patches(all_patch_ids);
-
-    // 更新所有相关的 actors
-    //update_actors(patch_ids);
-    refreshVtk();
 }
 
 int ModelData::face_patch_id(int face_id) {
@@ -448,19 +430,16 @@ void ModelData::update_actors(const std::vector<int>& patch_ids)
     std::unordered_set<int> block_ids, group_ids;
     for (int patch_id : patch_ids) {
         block_ids.insert(patch_block_id(patch_id));
-        //actor_->update_patch(patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
-        emit patchUpdated(getModelName(), patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
+        //emit patchUpdated(getModelName(), patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
     }
     for (int block_id : block_ids) {
         group_ids.insert(block_group_id(block_id));
-        //actor_->update_block(block_id, blocks_[block_id]->patchIDs);
-        emit blockUpdated(getModelName(), block_id, blocks_[block_id]->patchIDs);
+        //emit blockUpdated(getModelName(), block_id, blocks_[block_id]->patchIDs);
     }
-    for (int group_id : group_ids)
-    {
-        //actor_->update_group(group_id, groups_[group_id]->blockIDs);
-        emit groupUpdated(getModelName(), group_id, groups_[group_id]->blockIDs);
-    }
+    //for (int group_id : group_ids)
+    //{
+    //    emit groupUpdated(getModelName(), group_id, groups_[group_id]->blockIDs);
+    //}
 }
 
 void ModelData::update_father_id(int patch_id, int father_id) {

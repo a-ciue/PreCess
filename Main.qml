@@ -23,7 +23,9 @@ ApplicationWindow {
     height: 640
     title: qsTr("三角剖分交互程序")
 
+    required property QModelObserver modelObserver
     required property ModelManager modelManager
+    required property QModelQuery modelQuery
 
     header: ToolBar {
         id: header
@@ -381,9 +383,11 @@ ApplicationWindow {
             }
         }
         Component.onCompleted: {
-            modelManager.modelAdded.connect(objectList.addItem)
-            modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            modelManager.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
+            modelObserver.modelAdded.connect(objectList.addItem)
+            modelObserver.modelAdded.connect(myItem.onModelInited)
+
+            modelObserver.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
+            modelObserver.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
             objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
             objectList.renameModel.connect(()=>{myItem.bindstyle("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
@@ -432,6 +436,7 @@ ApplicationWindow {
             id: myItem
             anchors.fill: parent
             anchors.margins: border.width
+            query: modelQuery
         }
         Component.onCompleted: {
             modelManager.vtkItem = myItem

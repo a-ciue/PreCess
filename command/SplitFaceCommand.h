@@ -4,7 +4,7 @@
 // command/SplitFaceCommand.h
 #pragma once
 #include "ICommand.h"
-class ModelData;
+#include "ModelOperator.h"
 class QSelection;
 
 /**
@@ -12,10 +12,10 @@ class QSelection;
  */
 class SplitFaceCommand : public ICommand {
 public:
-    SplitFaceCommand(ModelData* model, QSelection* selection);
+    SplitFaceCommand(ModelOperator* model_op, QSelection* selection);
     void execute() override;
     void undo() override;
 private:
-    ModelData* model_;
+    ModelOperator* model_op_;
     QSelection* selection_;
 };

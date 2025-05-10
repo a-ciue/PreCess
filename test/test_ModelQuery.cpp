@@ -72,9 +72,9 @@ protected:
         }
         testModel->setGroups(std::move(groups));
 
-        // 将 TestModel 注册到 ModelManager，并创建 ModelQuery
-        manager_.addModel("dummy", std::move(testModel));
-        query = new ModelQuery(&manager_, "dummy", nullptr);
+        // 将 TestModel 注册到 ModelManager，并创建 QModelQuery
+        manager_.addModel(model_name_, std::move(testModel));
+        query = new QModelQuery(&manager_, nullptr);
     }
 
     void TearDown() override {
@@ -82,12 +82,13 @@ protected:
     }
 
     ModelManager manager_;
-    ModelQuery* query;
+    QModelQuery* query;
+    const QString model_name_{"dummy"};
 };
 
 TEST_F(ModelQueryTest, GetPatchInfoValid) {
     // 测试 getPatchInfo 接口，使用已填充的数据 patch id = 1
-    QVariantMap patchInfo = query->getPatchInfo(1);
+    QVariantMap patchInfo = query->getPatchInfo(model_name_, 1);
     EXPECT_EQ(patchInfo.value("id").toInt(), 1);
     EXPECT_EQ(patchInfo.value("blockID").toInt(), 1);
     EXPECT_EQ(patchInfo.value("father_id").toInt(), 101);
@@ -110,14 +111,14 @@ TEST_F(ModelQueryTest, GetPatchInfoValid) {
 
 TEST_F(ModelQueryTest, GetPatchInfoInvalid) {
     // 对不存在的 patchId 调用 getPatchInfo，检查 error 字段是否返回
-    QVariantMap patchInfo = query->getPatchInfo(999);
+    QVariantMap patchInfo = query->getPatchInfo(model_name_, 999);
     EXPECT_TRUE(patchInfo.contains("error"));
 }
 
 TEST_F(ModelQueryTest, GetBlockList) {
-    QVariantList blockList = query->getBlockList();
+    QVariantList blockList = query->getBlockList(model_name_);
     // 预期有3个 block
-    EXPECT_EQ(blockList.size(), 3);
+	EXPECT_EQ(blockList.size(), 3);
     // 验证第一个 block 的 id 是否正确
     QVariantMap block0 = blockList.at(0).toMap();
     EXPECT_EQ(block0.value("id").toInt(), 3);
@@ -125,11 +126,10 @@ TEST_F(ModelQueryTest, GetBlockList) {
     EXPECT_EQ(block1.value("id").toInt(), 2);
     QVariantMap block2 = blockList.at(2).toMap();
     EXPECT_EQ(block2.value("id").toInt(), 1);
-
 }
 
 TEST_F(ModelQueryTest, GetPatchIds) {
-    QVariantList patchIds = query->getPatchIds();
+    QVariantList patchIds = query->getPatchIds(model_name_);
     EXPECT_EQ(patchIds.size(), 3);
     // 验证包含 1, 2, 3
     std::set<int> idSet;
@@ -139,7 +139,7 @@ TEST_F(ModelQueryTest, GetPatchIds) {
 }
 
 TEST_F(ModelQueryTest, GetBlockIds) {
-    QVariantList blockIds = query->getBlockIds();
+    QVariantList blockIds = query->getBlockIds(model_name_);
     EXPECT_EQ(blockIds.size(), 3);
     std::set<int> idSet;
     for (const QVariant &v : blockIds)
@@ -148,7 +148,7 @@ TEST_F(ModelQueryTest, GetBlockIds) {
 }
 
 TEST_F(ModelQueryTest, GetGroupIds) {
-    QVariantList groupIds = query->getGroupIds();
+    QVariantList groupIds = query->getGroupIds(model_name_);
     EXPECT_EQ(groupIds.size(), 3);
     std::set<int> idSet;
     for (const QVariant &v : groupIds)
@@ -158,12 +158,12 @@ TEST_F(ModelQueryTest, GetGroupIds) {
 
 TEST_F(ModelQueryTest, GetPatchInfoByFaceIdValid) {
     // 假设 dummy patch 1 包含 faceIDs {10, 11}，因此查询 faceId = 10 应返回 patch1 的数据
-    QVariantMap patchInfo = query->getPatchInfoByFaceId(10);
+    QVariantMap patchInfo = query->getPatchInfoByFaceId(model_name_, 10);
     EXPECT_EQ(patchInfo.value("id").toInt(), 1);
 }
 
 TEST_F(ModelQueryTest, GetBlockInfoValid) {
-    QVariantMap blockInfo = query->getBlockInfo(2);
+    QVariantMap blockInfo = query->getBlockInfo(model_name_, 2);
     EXPECT_EQ(blockInfo.value("id").toInt(), 2);
     EXPECT_EQ(blockInfo.value("groupID").toInt(), 202);
     // 检查 patchIDs 列表应包含 2
@@ -173,7 +173,7 @@ TEST_F(ModelQueryTest, GetBlockInfoValid) {
 }
 
 TEST_F(ModelQueryTest, GetGroupInfoValid) {
-    QVariantMap groupInfo = query->getGroupInfo(3);
+    QVariantMap groupInfo = query->getGroupInfo(model_name_, 3);
     EXPECT_EQ(groupInfo.value("id").toInt(), 3);
     QVariantList blockIDs = groupInfo.value("blockIDs").toList();
     EXPECT_EQ(blockIDs.size(), 1);
@@ -185,20 +185,20 @@ TEST_F(ModelQueryTest, QueryPatchesByCondition) {
     QVariantMap conditions;
     conditions.insert("minVertexCount", 3);
     conditions.insert("maxFaceCount", 3);
-    QVariantList result = query->queryPatchesByCondition(conditions);
+    QVariantList result = query->queryPatchesByCondition(model_name_, conditions);
     // 在 dummy 数据中，所有 patch 的 vertex 数量均为3且 face 数量为2，
     // 因此符合 face count <= 3 的条件，预期全部3个 patch 返回
-    EXPECT_EQ(result.size(), 3);
+	EXPECT_EQ(result.size(), 3);
 }
 
 TEST_F(ModelQueryTest, GetVertexInfoValid) {
     // 测试：在 dummy patch1 中，vertexIDs 包含 100,101,102；我们查询 101 应返回 patch1 的数据
-    QVariantMap vertexInfo = query->getVertexInfo(101);
+    QVariantMap vertexInfo = query->getVertexInfo(model_name_, 101);
     EXPECT_EQ(vertexInfo.value("vertexId").toInt(), 101);
     EXPECT_EQ(vertexInfo.value("patchId").toInt(), 1);
 }
 
 TEST_F(ModelQueryTest, GetVertexInfoInvalid) {
-    QVariantMap vertexInfo = query->getVertexInfo(99999);
+    QVariantMap vertexInfo = query->getVertexInfo(model_name_, 99999);
     EXPECT_TRUE(vertexInfo.contains("error"));
 }

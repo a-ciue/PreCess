@@ -16,9 +16,10 @@
 #include <QQmlContext>
 #include <QObject>
 
+#include "ModelOperator.h"
+
 class QModelObserver;  // 前向声明模型观察者类
-class ModelOperator;   // 前向声明 ModelOperator 类
-class ModelQuery;      // 前向声明 ModelQuery 类
+class QModelQuery;      // 前向声明 QModelQuery 类
 
  /**
   * @brief 负责管理多个 ModelData 实例的类
@@ -37,23 +38,7 @@ public:
      * @param parent 父对象，默认为 nullptr
     * @param observer 模型观察者对象，用于捕获模型事件（默认 nullptr）
      */
-    explicit ModelManager(QObject* parent = nullptr, QModelObserver* observer = nullptr) : QObject(parent), m_observer(observer) {}
-
-    /**
-     * @brief 获取指定名称的模型
-     *
-     * 在管理的模型中查找对应名称的 ModelData 实例。
-     *
-     * @param modelName 要查找的模型名称
-     * @return ModelData* 若找到模型，则返回指针；否则返回 nullptr
-     */
-    Q_INVOKABLE ModelData* model(const QString& modelName) {
-        auto it = models_.find(modelName);
-        if (it != models_.end()) {
-            return it->second.get();
-        }
-        return nullptr; // 如果找不到模型，返回空指针
-    }
+    explicit ModelManager(QObject* parent = nullptr, QModelObserver* observer = nullptr) : QObject(parent), observer_(observer) {}
 
     /**
      * @brief 添加一个模型
@@ -119,47 +104,14 @@ public:
      * @param modelName 模型名称
      * @return 对应模型名称的 ModelOperator 对象指针
      */
-    ModelOperator* getModelOperator(const QString& modelName);
-
-
-signals:
-    /**
-     * @brief 样条曲线加载失败信号
-     *
-     * @param message 失败信息
-     */
-    void splineLoadFailed(QString message);
-
-    /**
-     * @brief 模型名称变更信号
-     *
-     * @param oldName 旧模型名称
-     * @param newName 新模型名称
-     */
-    void modelNameChanged(const QString& oldName, const QString& newName);
-    
-    /**
-     * @brief 新模型添加信号
-     *
-     * @param modelName 添加的模型名称
-     */
-    void modelAdded(const QString& modelName);
-    
-    /**
-     * @brief 模型移除信号
-     *
-     * @param modelName 移除的模型名称
-     */
-    void modelRemoved(const QString& modelName);
-
+    Q_INVOKABLE ModelOperator* getModelOperator(const QString& modelName);
 
 private:
     //std::unique_ptr<ModelData> model_;
     //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
     std::unordered_map<QString, std::unique_ptr<ModelData>> models_;
-    QModelObserver* m_observer;                     //!< 全局模型观察者，用于捕获模型事件
+    QModelObserver* observer_;                     //!< 全局模型观察者，用于捕获模型事件
 
-    friend class ModelQuery;
-    ModelQuery* m_query;
+    friend class QModelQuery;
 };
 #endif // MODEL_MANAGER_H

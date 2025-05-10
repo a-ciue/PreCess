@@ -14,6 +14,7 @@
 
 #include <QObject>
 #include <filesystem>
+#include <QtQml/QQmlApplicationEngine>
 
 // 添加模型
 void ModelManager::addModel(const QString& modelName, std::unique_ptr<ModelData> model)
@@ -32,11 +33,8 @@ void ModelManager::addModel(const QString& modelName, std::unique_ptr<ModelData>
         return;
     }
 
-    // 调用模型刷新接口，确保 VTK 数据更新
-    rawModel->refreshVtk();
-
     // 发射添加模型的信号（需要在 ModelManager.h 中声明信号 modelAdded(const QString&)）
-    emit modelAdded(modelName);
+    observer_->notifyModelAdded(modelName);
 }
 
 // 删除模型
@@ -47,7 +45,7 @@ void ModelManager::removeModel(const QString& modelName) {
     }
     models_.erase(it);
     // 发射删除模型信号
-    emit modelRemoved(modelName);
+    observer_->notifyModelRemoved(modelName);
 }
 
 // 获取模型
@@ -65,7 +63,7 @@ void ModelManager::readSpline(QUrl spline_path)
     auto mesh = FileHandler::instance().readSpline(spline_path);
     if (!mesh) {
         qDebug() << "导入文件错误: " << spline_path;
-        emit splineLoadFailed(QStringLiteral("导入样条文件失败: ") + spline_path.toString());
+        observer_->notifySplineLoadFailed(QStringLiteral("导入样条文件失败: ") + spline_path.toString());
         return;
     }
     addModel(spline_path.fileName(), std::move(mesh));
@@ -113,8 +111,20 @@ Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString
         models_[newName] = std::move(modelPtr);
 
         // 发射信号通知名称已更新
-        emit modelNameChanged(oldName, newName);
+        observer_->notifyModelNameChanged(oldName, newName);
     }
+
+ModelOperator* ModelManager::getModelOperator(const QString& modelName)
+{
+    auto it = models_.find(modelName);
+    if (it != models_.end()) {
+        ModelData* model = it->second.get();
+        ModelOperator* model_op = new ModelOperator(model, observer_);
+        QJSEngine::setObjectOwnership(model_op, QJSEngine::JavaScriptOwnership);
+        return model_op;
+    }
+    return nullptr; // 如果找不到模型，返回空指针
+}
 
 
 //void ModelManager::connectVtk(const QString& modelName)

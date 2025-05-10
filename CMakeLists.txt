@@ -39,16 +39,16 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h
+        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h ModelOperator.h ModelOperator.cpp ModelObserver.h ModelQuery.cpp
 )
 
 add_library(vtkPart STATIC ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp)
 
 add_library(modelPart STATIC
         ModelData.cpp
-        ModelManager.cpp
+        # ModelManager.cpp
         FileHandler.cpp
-        ModelQuery.cpp
+        # ModelQuery.cpp
         command/SplitFaceCommand.cpp
         command/MergeBlocksCommand.cpp
         command/LoadSplineCommand.cpp)
@@ -73,6 +73,7 @@ target_link_libraries(vtkPart PRIVATE ${VTK_LIBRARIES})
 target_link_libraries(${MYNAME}
         PRIVATE
         vtkPart
+        modelPart
         Qt${VTK_QT_VERSION}::Core
         Qt${VTK_QT_VERSION}::Quick
         ${VTK_LIBRARIES}

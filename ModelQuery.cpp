@@ -1,22 +1,35 @@
-﻿#include "ModelQuery.h"
+#include "ModelQuery.h"
 
 #include <QVariantList>
 #include <QString>
 #include <stdexcept>
 #include <limits>
 
-ModelQuery::ModelQuery(ModelManager* mgr, const QString& modelName, QObject* parent)
-        : QObject(parent), m_manager(mgr), modelName_(modelName) {
-    auto it = m_manager->models_.find(modelName_);
+QModelQuery::Data QModelQuery::getMeshData(const QString& model_name)
+{
+    Data data{};
+    auto it = m_manager->models_.find(model_name);
     if (it != m_manager->models_.end()) {
-        m_model = it->second.get();
+        data.patches = &it->second->patches_;
+        data.blocks = &it->second->blocks_;
+        data.group = &it->second->groups_;
     }
+    return data;
 }
 
-QVariantMap ModelQuery::getPatchInfo(int patchId) const {
+QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
+        : QObject(parent), m_manager(mgr) {
+}
+
+QVariantMap QModelQuery::getPatchInfo(const QString& model_name, int patchId) const {
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        return {};
+    }
+
     QVariantMap info;
-    auto it = m_model->patches_.find(patchId);
-    if (it == m_model->patches_.end()) {
+    auto it = model->patches_.find(patchId);
+    if (it == model->patches_.end()) {
         info["error"] = QString("Patch %1 not found").arg(patchId);
         return info;
     }
@@ -67,9 +80,14 @@ QVariantMap ModelQuery::getPatchInfo(int patchId) const {
     return info;
 }
 
-QVariantList ModelQuery::getBlockList() const {
+QVariantList QModelQuery::getBlockList(const QString& model_name) const
+{
     QVariantList list;
-    for (const auto& pair : m_model->blocks_) {
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        return list;
+    }
+    for (const auto& pair : model->blocks_) {
         const auto& block = pair.second;
         QVariantMap blockMap;
         blockMap["id"] = block->id;
@@ -86,36 +104,57 @@ QVariantList ModelQuery::getBlockList() const {
     return list;
 }
 
-QVariantList ModelQuery::getPatchIds() const {
+QVariantList QModelQuery::getPatchIds(const QString& model_name) const
+{
     QVariantList list;
-    for (const auto& pair : m_model->patches_) {
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        return list;
+    }
+    for (const auto& pair : model->patches_) {
         list.append(pair.first);
     }
     return list;
 }
 
-QVariantList ModelQuery::getBlockIds() const {
+QVariantList QModelQuery::getBlockIds(const QString& model_name) const
+{
     QVariantList list;
-    for (const auto& pair : m_model->blocks_) {
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        return list;
+    }
+    for (const auto& pair : model->blocks_) {
         list.append(pair.first);
     }
     return list;
 }
 
-QVariantList ModelQuery::getGroupIds() const {
+QVariantList QModelQuery::getGroupIds(const QString& model_name) const
+{
     QVariantList list;
-    for (const auto& pair : m_model->groups_) {
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        return list;
+    }
+    for (const auto& pair : model->groups_) {
         list.append(pair.first);
     }
     return list;
 }
 
-QVariantMap ModelQuery::getPatchInfoByFaceId(int faceId) const {
+QVariantMap QModelQuery::getPatchInfoByFaceId(const QString& model_name, int faceId) const
+{
     QVariantMap info;
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        info["error"] = QString("Model not found");
+        return info;
+    }
     try {
         // 利用 ModelData 中已有的 face_patch_id 方法
-        int patchId = m_model->face_patch_id(faceId);
-        info = getPatchInfo(patchId);
+        int patchId = model->face_patch_id(faceId);
+        info = getPatchInfo(model_name, patchId);
     }
     catch (const std::exception& ex) {
         info["error"] = QString("No patch found for face %1: %2")
@@ -125,10 +164,16 @@ QVariantMap ModelQuery::getPatchInfoByFaceId(int faceId) const {
     return info;
 }
 
-QVariantMap ModelQuery::getBlockInfo(int blockId) const {
+QVariantMap QModelQuery::getBlockInfo(const QString& model_name, int blockId) const
+{
     QVariantMap info;
-    auto it = m_model->blocks_.find(blockId);
-    if (it == m_model->blocks_.end()) {
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        info["error"] = QString("Model not found");
+        return info;
+    }
+    auto it = model->blocks_.find(blockId);
+    if (it == model->blocks_.end()) {
         info["error"] = QString("Block %1 not found").arg(blockId);
         return info;
     }
@@ -143,10 +188,16 @@ QVariantMap ModelQuery::getBlockInfo(int blockId) const {
     return info;
 }
 
-QVariantMap ModelQuery::getGroupInfo(int groupId) const {
+QVariantMap QModelQuery::getGroupInfo(const QString& model_name, int groupId) const
+{
     QVariantMap info;
-    auto it = m_model->groups_.find(groupId);
-    if (it == m_model->groups_.end()) {
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        info["error"] = QString("Model not found");
+        return info;
+    }
+    auto it = model->groups_.find(groupId);
+    if (it == model->groups_.end()) {
         info["error"] = QString("Group %1 not found").arg(groupId);
         return info;
     }
@@ -160,28 +211,40 @@ QVariantMap ModelQuery::getGroupInfo(int groupId) const {
     return info;
 }
 
-QVariantList ModelQuery::queryPatchesByCondition(const QVariantMap& conditions) const {
+QVariantList QModelQuery::queryPatchesByCondition(const QString& model_name, const QVariantMap& conditions) const
+{
     QVariantList results;
-    // 支持条件：minVertexCount, maxFaceCount
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        return results;
+    }
+    
     int minVertexCount = conditions.contains("minVertexCount") ? conditions.value("minVertexCount").toInt() : 0;
     int maxFaceCount = conditions.contains("maxFaceCount") ? conditions.value("maxFaceCount").toInt() : std::numeric_limits<int>::max();
 
-    for (const auto& pair : m_model->patches_) {
+    for (const auto& pair : model->patches_) {
         const auto& patch = pair.second;
         int vertexCount = static_cast<int>(patch->vertexIDs_.size());
         int faceCount = static_cast<int>(patch->faceIDs_.size());
         if (vertexCount >= minVertexCount && faceCount <= maxFaceCount) {
-            results.append(getPatchInfo(pair.first));
+            results.append(getPatchInfo(model_name, pair.first));
         }
     }
     return results;
 }
 
-QVariantMap ModelQuery::getVertexInfo(int vertexId) const {
+QVariantMap QModelQuery::getVertexInfo(const QString& model_name, int vertexId) const
+{
     QVariantMap info;
+    ModelData* model = m_manager->getModel(model_name);
+    if (!model) {
+        info["error"] = QString("Model not found");
+        return info;
+    }
+
     bool found = false;
     // 遍历所有 Patch 查找该顶点
-    for (const auto& pair : m_model->patches_) {
+    for (const auto& pair : model->patches_) {
         const auto& patch = pair.second;
         const auto& vertexIDs = patch->vertexIDs_;
         const auto& vertexPoints = patch->vertexPoints_;
@@ -204,4 +267,13 @@ QVariantMap ModelQuery::getVertexInfo(int vertexId) const {
         info["error"] = QString("Vertex %1 not found").arg(vertexId);
     }
     return info;
+}
+
+ModelData* QModelQuery::getModelData(const QString& model_name) const
+{
+    auto it = m_manager->models_.find(model_name);
+    if (it != m_manager->models_.end()) {
+        return it->second.get();
+    }
+    return nullptr;
 }
