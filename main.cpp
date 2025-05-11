@@ -12,9 +12,9 @@
 #include "ModelManager.h"
 #include "ModelObserver.h"
 #include "ModelQuery.h"
-#include "command/QCommandCatalog.h"
-#include "command/CommandDispatcher.h"
-#include "command/SplitFaceCommand.h"
+#include "commands/QCommandCatalog.h"
+#include "commands/CommandDispatcher.h"
+#include "commands/SplitFaceCommand.h"
 
 int main(int argc, char* argv[])
 {

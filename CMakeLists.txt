@@ -50,7 +50,7 @@ add_library(modelPart STATIC
         # ModelManager.cpp
         FileHandler.cpp
         # ModelQuery.cpp
-        command/SplitFaceCommand.cpp
+        commands/SplitFaceCommand.cpp
         # command/MergeBlocksCommand.cpp
         # command/LoadSplineCommand.cpp
 )
@@ -92,7 +92,7 @@ target_compile_definitions(${MYNAME} PRIVATE
         "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
 )
 
-add_subdirectory(command)
+add_subdirectory(commands)
 target_link_libraries(${MYNAME} PRIVATE commandsplugin)
 
 # 2) 安装 .app 到指定前缀下
