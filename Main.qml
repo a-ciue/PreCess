@@ -41,8 +41,8 @@ ApplicationWindow {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-
                     modelManager.readMesh(selectedFile);
+                    myItem.resetCamera()
                 }
             }
             FileDialog {
@@ -116,8 +116,8 @@ ApplicationWindow {
                 ButtonGroup {
                     id: renderGroup
                     onCheckedButtonChanged: {
-                        myItem.unbindStyle()
-                        myItem.changeRenderer(checkedButton.renderMode)
+                        //myItem.unbindStyle()
+                        myItem.setRenderMode(checkedButton.renderMode)
                     }
                 }
                 Button {
@@ -226,7 +226,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Face", check)
+                myItem.setEdgeRender(check)
             }
         }
 
@@ -280,12 +280,12 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Block", check)
+                myItem.setEdgeRender(check)
             }
         }
 
 
-        SelectingBar{
+        /*SelectingBar{
             id:groupmode
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -297,14 +297,14 @@ ApplicationWindow {
                     name:"组重网格"
                 }
             }
-            /*confirmButtonModel:ListModel{
+            confirmButtonModel:ListModel{
                 ListElement{
                     name:"确认"
                 }
                 ListElement{
                     name:"确认"
                 }
-            }*/
+            }
             onButtonFunction:{
                 if(modeOrConfirm === 0){
                     if(index === 0){ 
@@ -337,7 +337,7 @@ ApplicationWindow {
             onChangeEdgeRender:{
                 myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Group", check)
             }
-        }
+        }*/
     }
 
     Rectangle{
@@ -376,9 +376,10 @@ ApplicationWindow {
             modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
             modelManager.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
             objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
-            objectList.renameModel.connect(()=>{myItem.bindstyle("Edge")})
+            //objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
             objectList.changeModelVisibility.connect(myItem.setVisibility)
+            objectList.selectionChanged.connect((selectedModelName)=>{myItem.setSelectModel(selectedModelName)})
         }
     }
 
@@ -461,24 +462,21 @@ ApplicationWindow {
             }
 
             function clearSelection(){
-                myItem.unbindStyle()
-                if(comboBoxSelectedString === "边"){myItem.bindStyle("Edge")}
-                if(comboBoxSelectedString === "面"){myItem.bindStyle("Face")}
-                if(comboBoxSelectedString === "块"){myItem.bindStyle("Block")}
+                myItem.clearSelection()
             }
 
             function bindFunction(selectType){
+                if(selectType === "..."){
+                    myItem.setSelectMode("None")
+                }
                 if(selectType === "边"){
-                    myItem.bindStyle("Edge")
-                    //console.log("绑定边")
+                    myItem.setSelectMode("Edge")
                 }
                 if(selectType === "面"){
-                    myItem.bindStyle("Face")
-                    //console.log("绑定面")
+                    myItem.setSelectMode("Face")
                 }
                 if(selectType === "块"){
-                    myItem.bindStyle("Block")
-                    //console.log("绑定块")
+                    myItem.setSelectMode("Block")
                 }
             }
             onComboBoxSelectionChanged:{

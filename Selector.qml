@@ -18,6 +18,7 @@ Row{
         id: selectModeComboBox
         enabled: root.enabled
         model:ListModel{
+            ListElement{text: "..."}
             ListElement{text: "边"}
             ListElement{text: "面"}
             ListElement{text: "块"}

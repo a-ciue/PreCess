@@ -17,6 +17,7 @@
 #include "MyVtkItem.h"
 #include <QObject>
 #include <filesystem>
+#include <stdexcept>
 
 #include <iostream>
 QRenderWindow* ModelManager::vtkItem()
@@ -27,7 +28,7 @@ QRenderWindow* ModelManager::vtkItem()
 void ModelManager::setVtkItem(QRenderWindow* item)
 {
     vtk_item_ = item;
-    
+
 }
 
 // 添加模型
@@ -54,29 +55,72 @@ void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> mod
     }
 
     // 使用 SIGNAL/SLOT 机制连接 Model 的信号到 QRenderWindow 的槽（这里信号参数均已增加 modelName）
-    connect(rawModel, &Model::patchUpdated,
-        vtk_item_, &QRenderWindow::patchUpdated);
 
-    connect(rawModel, &Model::blockUpdated,
-        vtk_item_, &QRenderWindow::blockUpdated);
+    connect(rawModel, &Model::patchUpdated,[this](const QString& modelName, int patch_id,
+                                                  const std::vector<std::array<double, 3>>& points,
+                                                  const std::vector<std::array<int, 3>>& triangles)
+    {
+            // 获取模型
+            Model* model = getModel(modelName);
+            if (!model || !vtk_item_) {
+                qDebug() << "模型或 VTK 项不存在:" << modelName;
+                return;
+            }
 
-    connect(rawModel, &Model::blocksMerged,
-        vtk_item_, &QRenderWindow::blocksMerged);
+            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
+            vtk_item_->setModelData(modelName, model->getModelData());
+    });
 
-    connect(rawModel, &Model::groupUpdated,
-        vtk_item_, &QRenderWindow::groupUpdated);
+    connect(rawModel, &Model::blockUpdated,[this](const QString& modelName, int block_id,
+                                                  const std::unordered_set<int>& block_patches)
+    {
+            // 获取模型
+            Model* model = getModel(modelName);
+            if (!model || !vtk_item_) {
+                qDebug() << "模型或 VTK 项不存在:" << modelName;
+                return;
+            }
 
-    connect(rawModel, &Model::groupMerged,
-        vtk_item_, &QRenderWindow::groupMerged);
+            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
+            vtk_item_->setModelData(modelName, model->getModelData());
+    });
 
-    connect(rawModel, &Model::modelInited,
-        vtk_item_, &QRenderWindow::onModelInited);
-    
+    connect(rawModel, &Model::blocksMerged,[this](const QString& modelName, const std::vector<int>& block_ids,
+                                                  int father_block,
+                                                  const std::unordered_set<int>& father_block_patches)
+    {
+            // 获取模型
+            Model* model = getModel(modelName);
+            if (!model || !vtk_item_) {
+                qDebug() << "模型或 VTK 项不存在:" << modelName;
+                return;
+            }
+
+            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
+            vtk_item_->setModelData(modelName, model->getModelData());
+    });
+
+    connect(rawModel, &Model::modelInited,this,
+            [this](const QString& modelName,
+                    const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+                    const std::unordered_map<int, std::unique_ptr<struct Block>>* blocks,
+                    const std::unordered_map<int, std::unique_ptr<Group>>* groups)
+        {
+            // 获取模型
+            Model* model = getModel(modelName);
+            if (!model || !vtk_item_) {
+                qDebug() << "模型或 VTK 项不存在:" << modelName;
+                return;
+            }
+
+            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
+            vtk_item_->setModelData(modelName, model->getModelData());
+        });
+
+    emit modelAdded(modelName);
+
     // 调用模型刷新接口，确保 VTK 数据更新
     rawModel->refreshVtk();
-
-    // 发射添加模型的信号（需要在 ModelManager.h 中声明信号 modelAdded(const QString&)）
-    emit modelAdded(modelName);
 }
 
 // 删除模型
@@ -137,8 +181,8 @@ void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString
         mode = ModelActor::RenderMode::Face;
     } else if (renderMode == "Block") {
         mode = ModelActor::RenderMode::Block;
-    } else if (renderMode == "Group") {
-        mode = ModelActor::RenderMode::Group;
+    /*} else if (renderMode == "Group") {
+        mode = ModelActor::RenderMode::Group;*/
     } else {
         std::cerr << "invalid renderMode in QRenderWindow::changeEdgeRenderer" << std::endl;
         return;

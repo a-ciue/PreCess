@@ -92,12 +92,6 @@ void Model::write_mesh(const std::filesystem::path& mesh_path, ModelActor::Rende
         };
         break;
     }
-    case ModelActor::RenderMode::Group: {
-        gid = [this](int patch_id) {
-            return groups_[blocks_[patches_[patch_id]->blockID]->groupID]->id;
-        };
-        break;
-    }
     }
 
     if (extension == "obj")
@@ -450,6 +444,52 @@ int Model::block_group_id(int patch_id) {
 
     // 如果找不到 block_id，抛出异常
     throw std::runtime_error("Block ID not found in any group.");
+}
+
+ModelData Model::getModelData()
+{
+    // 构造 ModelData
+    ModelData modelData;
+
+    // 添加所有顶点和三角形
+    int offset{};
+    unordered_map<int, vector<int>> patch_vtk_face_ids;
+    for (const auto& [patch_id, patch] : patches_) {
+        // 添加顶点和模型顶点ID
+        modelData.vtk_points_.insert(modelData.vtk_points_.end(), patch->vertexPoints_.begin(), patch->vertexPoints_.end());
+        modelData.model_point_id_.insert(modelData.model_point_id_.end(), patch->vertexIDs_.begin(), patch->vertexIDs_.end());
+        modelData.model_face_id_.insert(modelData.model_face_id_.end(), patch->faceIDs_.begin(), patch->faceIDs_.end());
+
+        // 添加三角形和模型面ID
+        for (size_t i = 0; i < patch->faceTriangles_.size(); ++i) {
+            array<vtkIdType, 3> arr;
+            arr[0] = patch->faceTriangles_[i][0] + offset;
+            arr[1] = patch->faceTriangles_[i][1] + offset;
+            arr[2] = patch->faceTriangles_[i][2] + offset;
+            modelData.vtk_triangles_.push_back(arr);
+            patch_vtk_face_ids[patch_id].push_back(modelData.vtk_triangles_.size() - 1);
+        }
+        offset += patch->vertexPoints_.size();
+    }
+
+    // 添加所有块
+    BlockDatas blockDatas;
+    for (const auto& [block_id, block] : blocks_) {
+        BlockData blockData;
+        blockData.model_id_ = block_id;
+        // 添加该块中所有的patch
+        for (const auto& patch_id : block->patchIDs) {
+            vector<int>& vtk_face_ids = patch_vtk_face_ids[patch_id];
+            for (int vtk_face_id : vtk_face_ids)
+            {
+                blockData.faces_.push_back(vtk_face_id);
+            }
+        }
+        blockDatas.block_datas.push_back(blockData);
+    }
+    modelData.model_blocks_ = blockDatas;
+
+    return modelData;
 }
 
 void Model::update_actors(const std::vector<int>& patch_ids)

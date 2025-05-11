@@ -157,7 +157,7 @@ Item{
                 horizontalAlignment: TextInput.AlignHCenter
                 //verticalAlignment: TextInput.AlignVCenter
                 onTextChanged:{
-                    console.log(height,width)
+                    console.log(height,width,"TextInput的height和width")
                 }
             }
         }

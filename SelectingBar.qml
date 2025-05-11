@@ -51,7 +51,7 @@ Item{
                 }
 
                 Component.onCompleted:{
-                    modeButtonClicked(this,getchecked())
+                    //modeButtonClicked(this,getchecked())
                 }
             }
         }
@@ -80,7 +80,7 @@ Item{
         }
     }
     onModeButtonClicked:(a, ischecked)=>{
-        confirmButton.itemAt(a.getIndex()).visible = ischecked
+        //confirmButton.itemAt(a.getIndex()).visible = ischecked
     }
 
     /** type:var 选择按钮的model数据构造 */
