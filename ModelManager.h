@@ -104,7 +104,7 @@ public:
      * @param modelName 模型名称
      * @return 对应模型名称的 ModelOperator 对象指针
      */
-    Q_INVOKABLE ModelOperator* getModelOperator(const QString& modelName);
+    std::optional<ModelOperator> getModelOperator(const QString& modelName);
 
 private:
     //std::unique_ptr<ModelData> model_;

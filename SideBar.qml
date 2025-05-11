@@ -8,9 +8,20 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs 6.3
 
+import fileLoader
+import commands
+
 Item{
     id: root
+    required property CommandDispatcher commandDispatcher
+    property QCommand curCommand
+    property string curModel
+    required property QSelection curSelection // temp
     signal selectModeChanged
+
+    onCurCommandChanged: {
+        parameterList.model = curCommand.arg_types
+    }
     Button{
         id: commitButton
         text: "commit"
@@ -22,6 +33,12 @@ Item{
             for(var i in parameterList.loadedItems){
                 console.log(parameterList.loadedItems[i].value)
             }
+
+            //selec = new QSelection()
+            curSelection.initialize()
+            //commitButton.sel.initialize()
+
+            commandDispatcher.runCommand(curCommand, curModel, [curSelection])
         }
     }
     Item{
@@ -40,6 +57,9 @@ Item{
                 spacing: 5
                 property var loadedItems: ({})
                 delegate:Loader{
+                    required property int type
+                    required property string name
+                    required property string content
                     sourceComponent:{
                         if(type === 0){           //文件
                             return fileComponent

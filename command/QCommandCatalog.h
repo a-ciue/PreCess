@@ -2,17 +2,16 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QList>
-
-class QCommand;
+#include "QCommand.h"
 
 /**
- * @brief QCommandCatalog 类负责命令的注册与管理
+ * @brief QCommandCatalog 命令列表储存命令，负责命令的注册与管理
  *
  * QCommandCatalog 保存所有可用的命令（QCommand 对象），并提供接口将命令列表暴露给 QML 层。
  * 通过该类，可以在程序初始化时注册各种命令，然后在 QML 中获取命令列表用于展示和触发执行。
  */
 class QCommandCatalog : public QObject {
-Q_OBJECT
+    Q_OBJECT
     QML_ELEMENT
 public:
     /**
@@ -40,10 +39,10 @@ public:
      *
      * 返回一个命令对象列表，可用于在 QML 中显示所有可用命令。
      */
-    Q_INVOKABLE QList<QObject*> qmlCommands() const {
+    Q_INVOKABLE QList<QCommand*> qmlCommands() const {
         return m_commands;
     }
 
 private:
-    QList<QObject*> m_commands;   //!< 已注册的命令对象列表
+    QList<QCommand*> m_commands;   //!< 已注册的命令对象列表
 };

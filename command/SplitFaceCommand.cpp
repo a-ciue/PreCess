@@ -3,12 +3,12 @@
 //
 // command/SplitFaceCommand.cpp
 #include "SplitFaceCommand.h"
-#include "ModelData.h"
-#include "Selection.h"
-#include "ModelUtil.h"
+#include "../ModelData.h"
+#include "../Selection.h"
+#include "../ModelUtil.h"
 #include <stdexcept>
 
-SplitFaceCommand::SplitFaceCommand(ModelOperator* model_op, QSelection* selection)
+SplitFaceCommand::SplitFaceCommand(ModelOperator model_op, QSelection* selection)
         : model_op_(model_op), selection_(selection) { }
 
 void SplitFaceCommand::execute() {
@@ -41,9 +41,29 @@ void SplitFaceCommand::execute() {
     //model_->update_patches(std::vector<int>{patch_id}, false);
     //model_->update_actors({patch_id});
 
-    model_op_->split_face(selection_);
+    model_op_.split_face(selection_);
 }
 
 void SplitFaceCommand::undo() {
     // TODO: 实现撤销逻辑（例如删除新顶点、恢复原面结构）
+}
+
+void SplitFaceCommand::redo()
+{
+}
+
+QList<ArgTypeObject*> SplitFaceCommand::getArgsModel()
+{
+    QList<ArgTypeObject*> model;
+    // 添加一个面选择器
+    model.append(new ArgTypeObject(3, "选择面", "无"));
+
+    return model;
+}
+
+unique_ptr<SplitFaceCommand> SplitFaceCommand::create(ModelOperator model_op, const QVariantList& list)
+{
+    // 根据传入的参数创建 SplitFaceCommand 对象
+    return std::make_unique<SplitFaceCommand>(model_op, list.at(0).value<QSelection*>());
+
 }

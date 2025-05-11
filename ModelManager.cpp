@@ -114,16 +114,14 @@ Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString
         observer_->notifyModelNameChanged(oldName, newName);
     }
 
-ModelOperator* ModelManager::getModelOperator(const QString& modelName)
+std::optional<ModelOperator> ModelManager::getModelOperator(const QString& modelName)
 {
     auto it = models_.find(modelName);
     if (it != models_.end()) {
         ModelData* model = it->second.get();
-        ModelOperator* model_op = new ModelOperator(model, observer_);
-        QJSEngine::setObjectOwnership(model_op, QJSEngine::JavaScriptOwnership);
-        return model_op;
+        return ModelOperator(model, observer_);
     }
-    return nullptr; // 如果找不到模型，返回空指针
+    return {}; // 如果找不到模型，返回空指针
 }
 
 

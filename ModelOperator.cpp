@@ -4,37 +4,38 @@
 
 void ModelOperator::write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString& extension)
 {
-    m_model->write_mesh(mesh_path, mode, extension);
+    model_->write_mesh(mesh_path, mode, extension);
 }
 
 void ModelOperator::split_face(QSelection* selection)
 {
-    m_model->split_face(selection);
+    model_->split_face(selection);
+    observer_->notifyModelChanged(model_->getModelName());
 }
 
 void ModelOperator::split_edge(QSelection* selection)
 {
-    m_model->split_edge(selection);
+    model_->split_edge(selection);
 }
 
 void ModelOperator::merge_blocks(QSelection* selection)
 {
-    m_model->merge_blocks(selection);
+    model_->merge_blocks(selection);
 }
 
 void ModelOperator::merge_groups(QSelection* selection)
 {
-    m_model->merge_groups(selection);
+    model_->merge_groups(selection);
 }
 
 void ModelOperator::remesh_block(QSelection* selection)
 {
-    m_model->remesh_block(selection);
+    model_->remesh_block(selection);
 }
 
 void ModelOperator::remesh_group(QSelection* selection)
 {
-    m_model->remesh_group(selection);
+    model_->remesh_group(selection);
 }
 
 

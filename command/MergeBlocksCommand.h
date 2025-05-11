@@ -12,10 +12,11 @@ class QSelection;
  */
 class MergeBlocksCommand : public ICommand {
 public:
-    MergeBlocksCommand(ModelData* model, QSelection* selection);
+    MergeBlocksCommand(ModelOperator model_op, QSelection* selection);
     void execute() override;
     void undo() override;
+    void redo() override;
 private:
-    ModelData* model_;
+    ModelOperator model_op_;
     QSelection* selection_;
 };

@@ -9,43 +9,36 @@
 #include <vector>
 #include <memory>
 #include "ICommand.h"
-// 修改：使用 ModelBridge 而非 ModelManager
-#include "ModelBridge.h"
 #include "QCommand.h"
 #include <QVariant>
+
+#include "../ModelManager.h"
 
 class QSelection;
 
 /**
- * CommandDispatcher：命令调度器，向 QML 暴露所有命令入口
+ * CommandDispatcher：命令调度器，负责命令的执行
  * 通过 ModelBridge 获取数据上下文(ModelData)供各命令调用，
  * 数据操作逻辑全部在各具体命令类中实现
  */
 class CommandDispatcher : public QObject {
-Q_OBJECT
-    // 注：这里保留 QML_ELEMENT，如果需要，可改为手动注册
+	Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(ModelBridge* modelBridge READ modelBridge WRITE setModelBridge NOTIFY modelBridgeChanged)
 public:
-    explicit CommandDispatcher(QObject* parent = nullptr);
+    explicit CommandDispatcher(ModelManager* manager, QObject* parent = nullptr);
 
-    ModelBridge* modelBridge() const;
-    void setModelBridge(ModelBridge* bridge);
-
-    Q_INVOKABLE void runCommand(QCommand* cmd, const QString& modelName, const QVariantList& args);
-    Q_INVOKABLE void splitFace(const QString& modelName, QSelection* sel);
-    Q_INVOKABLE void mergeBlocks(const QString& modelName, QSelection* sel);
+    Q_INVOKABLE void runCommand(QCommand* cmd, const QString& model_name, const QVariantList& args);
+    Q_INVOKABLE void splitFace(const QString& model_name, QSelection* sel);
+    //Q_INVOKABLE void mergeBlocks(const QString& model_name, QSelection* sel);
     //Q_INVOKABLE void renameModel(const QString& oldName, const QString& newName);
-    Q_INVOKABLE void loadSpline(const QUrl& path);
+    //Q_INVOKABLE void loadSpline(const QUrl& path);
     Q_INVOKABLE void undo();
     Q_INVOKABLE void redo();
 
 signals:
-    //void modelChanged(const QString& modelName);
-    void modelChanged();
 
 private:
     // 修改：使用 ModelBridge 代替原来 ModelManager
-    ModelBridge* m_modelBridge = nullptr;
+    ModelManager* model_manager_{};
     std::vector<std::unique_ptr<ICommand>> m_history;
 };

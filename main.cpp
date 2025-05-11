@@ -12,6 +12,9 @@
 #include "ModelManager.h"
 #include "ModelObserver.h"
 #include "ModelQuery.h"
+#include "command/QCommandCatalog.h"
+#include "command/CommandDispatcher.h"
+#include "command/SplitFaceCommand.h"
 
 int main(int argc, char* argv[])
 {
@@ -20,12 +23,20 @@ int main(int argc, char* argv[])
     ModelManager manager(nullptr, &observer);
     QModelQuery query(&manager, nullptr);
 
+    QCommandCatalog catalog;
+    catalog.addCommand(new QCommand("切分面", SplitFaceCommand::create, SplitFaceCommand::getArgsModel()));
+    CommandDispatcher dispatcher(&manager);
+
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    engine.setInitialProperties({ { "modelManager", QVariant::fromValue(&manager) },
+    engine.setInitialProperties({
+        { "modelManager", QVariant::fromValue(&manager) },
         { "modelObserver", QVariant::fromValue(&observer) },
-        { "modelQuery", QVariant::fromValue(&query) } });
+        { "modelQuery", QVariant::fromValue(&query) },
+        { "commandCatalog", QVariant::fromValue(&catalog) },
+        { "commandDispatcher", QVariant::fromValue(&dispatcher) },
+    });
     engine.loadFromModule("fileLoader", "Main");
     if (engine.rootObjects().isEmpty())
         return -1;

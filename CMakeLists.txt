@@ -26,7 +26,7 @@ find_package(VTK REQUIRED COMPONENTS
         IOGeometry
 )
 
-find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Core Quick)
+find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick)
 message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
 qt_standard_project_setup()
 
@@ -37,21 +37,23 @@ qt_policy(SET QTP0001 NEW)
 qt_add_qml_module(${MYNAME}
         URI fileLoader
         QML_FILES
-        Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml
+        Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml CommandMenu.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h ModelOperator.h ModelOperator.cpp ModelObserver.h ModelQuery.cpp
+        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h ModelObserver.h ModelQuery.cpp 
 )
 
 add_library(vtkPart STATIC ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp)
 
 add_library(modelPart STATIC
         ModelData.cpp
+        ModelOperator.cpp 
         # ModelManager.cpp
         FileHandler.cpp
         # ModelQuery.cpp
         command/SplitFaceCommand.cpp
-        command/MergeBlocksCommand.cpp
-        command/LoadSplineCommand.cpp)
+        # command/MergeBlocksCommand.cpp
+        # command/LoadSplineCommand.cpp
+)
 
 # 让 modelPart 自己也能看到 VTK 和 Qt 的头文件
 target_include_directories(modelPart
@@ -62,7 +64,7 @@ target_include_directories(modelPart
 # 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
 target_link_libraries(modelPart
         PRIVATE
-        Qt${VTK_QT_VERSION}::Core
+        Qt${VTK_QT_VERSION}::Gui
         Qt${VTK_QT_VERSION}::Quick
 )
 
@@ -90,8 +92,11 @@ target_compile_definitions(${MYNAME} PRIVATE
         "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
 )
 
-include(InstallRequiredSystemLibraries)
+add_subdirectory(command)
+target_link_libraries(${MYNAME} PRIVATE commandsplugin)
+
 # 2) 安装 .app 到指定前缀下
+include(InstallRequiredSystemLibraries)
 install(TARGETS ${MYNAME}
     BUNDLE DESTINATION .          # 放在 install/ 目录下
     FRAMEWORK DESTINATION Frameworks

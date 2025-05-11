@@ -218,6 +218,7 @@ QSelection* QRenderWindow::selectedIDs()
         QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
         return selection;
     }
+    return new QSelection();
     return nullptr;
 }
 

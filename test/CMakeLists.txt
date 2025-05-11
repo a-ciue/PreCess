@@ -13,6 +13,7 @@ add_executable(
   hello_test.cc
         TestModel.h
         test_ModelQuery.cpp
+        ../ModelManager.cpp
 )
 
 target_include_directories(hello_test PRIVATE

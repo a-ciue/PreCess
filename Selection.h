@@ -74,7 +74,7 @@ public:
     Q_INVOKABLE void initialize() {
         std::unique_ptr<Selection> temp = std::make_unique<Selection>();
         temp->type = Element::Face;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i < 2; i++) {
             temp->ids.push_back(i);
         }
         _data = std::move(temp);

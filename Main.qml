@@ -16,16 +16,21 @@ import QtQuick.Dialogs
 import QtQuick.Controls 6.7
 
 import fileLoader
+import commands
 
 ApplicationWindow {
+    id: root
     visible: true
     width: 800
     height: 640
     title: qsTr("三角剖分交互程序")
 
+    property string curModel: "cube.obj"
     required property QModelObserver modelObserver
     required property ModelManager modelManager
     required property QModelQuery modelQuery
+    required property QCommandCatalog commandCatalog
+    required property CommandDispatcher commandDispatcher
 
     header: ToolBar {
         id: header
@@ -109,6 +114,13 @@ ApplicationWindow {
                         }
                     }
                 }
+
+                Button {
+                    id: commandButton
+                    text: qsTr("命令")
+                    onClicked: commandMenu.popup()
+                }
+
                 Rectangle {
                     color: "black"
                     Layout.preferredWidth: 1
@@ -156,6 +168,13 @@ ApplicationWindow {
                     btn2.Layout.preferredWidth = width
                     btn3.Layout.preferredWidth = width
                 }
+            }
+
+            CommandMenu {
+                id: commandMenu
+                commands: commandCatalog.qmlCommands()
+                sideBar: sideBar
+                commandDispatcher: root.commandDispatcher
             }
         }
     }
@@ -237,7 +256,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Face", check)
+                myItem.changeEdgeRender(curModel,"Face", check)
             }
         }
 
@@ -385,6 +404,7 @@ ApplicationWindow {
         Component.onCompleted: {
             modelObserver.modelAdded.connect(objectList.addItem)
             modelObserver.modelAdded.connect(myItem.onModelInited)
+            modelObserver.modelChanged.connect(myItem.onModelInited)
 
             modelObserver.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
             modelObserver.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
@@ -397,6 +417,9 @@ ApplicationWindow {
 
     SideBar{
         id: sideBar
+        commandDispatcher: root.commandDispatcher
+        curModel: root.curModel
+        curSelection: myItem.selectedIDs
         anchors.top: objectList.bottom
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
