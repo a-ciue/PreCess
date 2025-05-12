@@ -4,138 +4,53 @@
  *
  * 该文件包含 ModelManager 类的实现，提供多模型管理功能，包括：
  * - 添加、删除和获取模型
- * - 处理网格的读取与写入
  * - 维护与 VTK 组件的交互
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
- * @date 2025/3/8
+ * @date 2025/3/20
  */
 #include "ModelManager.h"
-#include "ModelUtil.h"
-#include "ToolMesh.h"
+#include "FileHandler.h"
 
-#include "MyVtkItem.h"
 #include <QObject>
 #include <filesystem>
+#include <QtQml/QQmlApplicationEngine>
 #include <stdexcept>
 
-#include <iostream>
-QRenderWindow* ModelManager::vtkItem()
-{
-    return vtk_item_;
-}
-
-void ModelManager::setVtkItem(QRenderWindow* item)
-{
-    vtk_item_ = item;
-
-}
-
 // 添加模型
-//void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> model) {
-//    if (models_.find(modelName) != models_.end()) {
-//        throw std::runtime_error("Model with the given name already exists.");
-//    }
-//    models_[modelName] = std::move(model);
-//}
-void ModelManager::addModel(const QString& modelName, std::unique_ptr<Model> model)
+void ModelManager::addModel(const QString& modelName, std::unique_ptr<ModelData> model)
 {
     if (models_.find(modelName) != models_.end()) {
-        throw std::runtime_error("Model with the given name already exists.");
+        throw std::runtime_error("ModelData with the given name already exists.");
     }
 
     // 为模型设置名称
     model->setModelName(modelName);
     models_[modelName] = std::move(model);
 
-    Model* rawModel = models_[modelName].get();
-    if (!rawModel || !vtk_item_) {
+    ModelData* rawModel = models_[modelName].get();
+    if (!rawModel) {
         qDebug() << "模型或 VTK 项不存在:" << modelName;
         return;
     }
 
-    // 使用 SIGNAL/SLOT 机制连接 Model 的信号到 QRenderWindow 的槽（这里信号参数均已增加 modelName）
-
-    connect(rawModel, &Model::patchUpdated,[this](const QString& modelName, int patch_id,
-                                                  const std::vector<std::array<double, 3>>& points,
-                                                  const std::vector<std::array<int, 3>>& triangles)
-    {
-            // 获取模型
-            Model* model = getModel(modelName);
-            if (!model || !vtk_item_) {
-                qDebug() << "模型或 VTK 项不存在:" << modelName;
-                return;
-            }
-
-            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-            vtk_item_->setModelData(modelName, model->getModelData());
-    });
-
-    connect(rawModel, &Model::blockUpdated,[this](const QString& modelName, int block_id,
-                                                  const std::unordered_set<int>& block_patches)
-    {
-            // 获取模型
-            Model* model = getModel(modelName);
-            if (!model || !vtk_item_) {
-                qDebug() << "模型或 VTK 项不存在:" << modelName;
-                return;
-            }
-
-            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-            vtk_item_->setModelData(modelName, model->getModelData());
-    });
-
-    connect(rawModel, &Model::blocksMerged,[this](const QString& modelName, const std::vector<int>& block_ids,
-                                                  int father_block,
-                                                  const std::unordered_set<int>& father_block_patches)
-    {
-            // 获取模型
-            Model* model = getModel(modelName);
-            if (!model || !vtk_item_) {
-                qDebug() << "模型或 VTK 项不存在:" << modelName;
-                return;
-            }
-
-            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-            vtk_item_->setModelData(modelName, model->getModelData());
-    });
-
-    connect(rawModel, &Model::modelInited,this,
-            [this](const QString& modelName,
-                    const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
-                    const std::unordered_map<int, std::unique_ptr<struct Block>>* blocks,
-                    const std::unordered_map<int, std::unique_ptr<Group>>* groups)
-        {
-            // 获取模型
-            Model* model = getModel(modelName);
-            if (!model || !vtk_item_) {
-                qDebug() << "模型或 VTK 项不存在:" << modelName;
-                return;
-            }
-
-            // 调用 vtk_item_ 的 setModelData 方法以更新 VTK 渲染
-            vtk_item_->setModelData(modelName, model->getModelData());
-        });
-
-    emit modelAdded(modelName);
-
-    // 调用模型刷新接口，确保 VTK 数据更新
-    rawModel->refreshVtk();
+    // 发射添加模型的信号（需要在 ModelManager.h 中声明信号 modelAdded(const QString&)）
+    observer_->notifyModelAdded(modelName);
 }
 
 // 删除模型
 void ModelManager::removeModel(const QString& modelName) {
     auto it = models_.find(modelName);
     if (it == models_.end()) {
-        throw std::runtime_error("Model with the given name does not exist.");
+        throw std::runtime_error("ModelData with the given name does not exist.");
     }
     models_.erase(it);
     // 发射删除模型信号
-    emit modelRemoved(modelName);
+    observer_->notifyModelRemoved(modelName);
 }
 
 // 获取模型
-Model* ModelManager::getModel(const QString& modelName) const {
+ModelData* ModelManager::getModel(const QString& modelName) const {
     auto it = models_.find(modelName);
     if (it == models_.end()) {
         return nullptr; // 模型不存在时返回空指针
@@ -146,50 +61,33 @@ Model* ModelManager::getModel(const QString& modelName) const {
 
 void ModelManager::readSpline(QUrl spline_path)
 {
-    auto mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
-    if (!mesh || mesh->numFaces() == 0) {
-        //emit splineLoadFailed(tr("fail to load spline file."));
+    auto mesh = FileHandler::instance().readSpline(spline_path);
+    if (!mesh) {
         qDebug() << "导入文件错误: " << spline_path;
+        observer_->notifySplineLoadFailed(QStringLiteral("导入样条文件失败: ") + spline_path.toString());
+        return;
     }
-
-    // 重新分配 std::unique_ptr<Model>，并更新模型数据
-    addModel(spline_path.fileName(), std::make_unique<Model>(std::move(mesh)));
+    addModel(spline_path.fileName(), std::move(mesh));
 }
 
 void ModelManager::readMesh(QUrl target_mesh)
 {
-    auto mesh = ModelUtil::read_obj_with_groups(target_mesh.toLocalFile().toStdU16String());
-
-    if (!mesh || mesh->numFaces() == 0) {
-        //emit splineLoadFailed(tr("fail to load spline file."));
+    auto mesh = FileHandler::instance().readMesh(target_mesh);
+    if (!mesh) {
         qDebug() << "导入文件错误: " << target_mesh;
+        return;
     }
-    // 重新分配 std::unique_ptr<Model>，并更新模型数据
-    addModel(target_mesh.fileName(), std::make_unique<Model>(std::move(mesh)));
+    addModel(target_mesh.fileName(), std::move(mesh));
 }
 
 void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension)
 {
-    auto model = getModel(modelName);
-    if (!model) {
+    auto mesh = getModel(modelName);
+    if (!mesh) {
         qDebug() << "未找到指定的模型: " << modelName;
         return;
     }
-
-    ModelActor::RenderMode mode {};
-    if (renderMode == "Face") {
-        mode = ModelActor::RenderMode::Face;
-    } else if (renderMode == "Block") {
-        mode = ModelActor::RenderMode::Block;
-    /*} else if (renderMode == "Group") {
-        mode = ModelActor::RenderMode::Group;*/
-    } else {
-        std::cerr << "invalid renderMode in QRenderWindow::changeEdgeRenderer" << std::endl;
-        return;
-    }
-
-    std::filesystem::path mesh_path = target_mesh.toLocalFile().toStdU16String();
-    model->write_mesh(mesh_path, mode, extension);
+    FileHandler::instance().writeMesh(mesh, target_mesh.toLocalFile(), renderMode, extension);
 }
 
 Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString& newName){
@@ -214,8 +112,18 @@ Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString
         models_[newName] = std::move(modelPtr);
 
         // 发射信号通知名称已更新
-        emit modelNameChanged(oldName, newName);
+        observer_->notifyModelNameChanged(oldName, newName);
     }
+
+std::optional<ModelOperator> ModelManager::getModelOperator(const QString& modelName)
+{
+    auto it = models_.find(modelName);
+    if (it != models_.end()) {
+        ModelData* model = it->second.get();
+        return ModelOperator(model, observer_);
+    }
+    return {}; // 如果找不到模型，返回空指针
+}
 
 
 //void ModelManager::connectVtk(const QString& modelName)
@@ -227,17 +135,17 @@ Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString
 //    }
 //
 //    // 传model指针或引用进lambda表达式、model内添加model_name成员，由model_name成员获取该模型的名字
-//    connect(model, &Model::patchUpdated, [this,modelName](int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles) {
+//    connect(model, &ModelData::patchUpdated, [this,modelName](int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles) {
 //        vtk_item_->patchUpdated(modelName, patch_id, points, triangles); });
-//    connect(model, &Model::blockUpdated, [this, modelName](int block_id, const std::unordered_set<int>& block_patches) {
+//    connect(model, &ModelData::blockUpdated, [this, modelName](int block_id, const std::unordered_set<int>& block_patches) {
 //        vtk_item_->blockUpdated(modelName, block_id, block_patches); });
-//    connect(model, &Model::blocksMerged, [this, modelName](const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches) {
+//    connect(model, &ModelData::blocksMerged, [this, modelName](const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches) {
 //        vtk_item_->blocksMerged(modelName, block_ids, father_block, father_block_patches); });
-//    connect(model, &Model::groupUpdated, [this, modelName](int group_id, const std::unordered_set<int>& group_blocks) {
+//    connect(model, &ModelData::groupUpdated, [this, modelName](int group_id, const std::unordered_set<int>& group_blocks) {
 //        vtk_item_->groupUpdated(modelName, group_id, group_blocks); } );
-//    connect(model, &Model::groupMerged, [this, modelName](const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks) {
+//    connect(model, &ModelData::groupMerged, [this, modelName](const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks) {
 //        vtk_item_->groupMerged(modelName, group_ids, father_group, father_group_blocks); });
-//    connect(model, &Model::modelInited, [this, modelName](const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+//    connect(model, &ModelData::modelInited, [this, modelName](const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
 //        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
 //        const std::unordered_map<int, std::unique_ptr<Group>>* groups) 
 //        {vtk_item_->onModelInited(modelName, patches, blocks, groups); });
@@ -252,17 +160,17 @@ Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString
 //    }
 //
 //    // 传model指针或引用进lambda表达式、model内添加model_name成员，由model_name成员获取该模型的名字
-//    connect(model, &Model::patchUpdated, [this,modelName](int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles) {
+//    connect(model, &ModelData::patchUpdated, [this,modelName](int patch_id, const std::vector<std::array<double, 3>>& points, const std::vector<std::array<int, 3>>& triangles) {
 //        vtk_item_->patchUpdated(modelName, patch_id, points, triangles); });
-//    connect(model, &Model::blockUpdated, [this, modelName](int block_id, const std::unordered_set<int>& block_patches) {
+//    connect(model, &ModelData::blockUpdated, [this, modelName](int block_id, const std::unordered_set<int>& block_patches) {
 //        vtk_item_->blockUpdated(modelName, block_id, block_patches); });
-//    connect(model, &Model::blocksMerged, [this, modelName](const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches) {
+//    connect(model, &ModelData::blocksMerged, [this, modelName](const std::vector<int>& block_ids, int father_block, const std::unordered_set<int>& father_block_patches) {
 //        vtk_item_->blocksMerged(modelName, block_ids, father_block, father_block_patches); });
-//    connect(model, &Model::groupUpdated, [this, modelName](int group_id, const std::unordered_set<int>& group_blocks) {
+//    connect(model, &ModelData::groupUpdated, [this, modelName](int group_id, const std::unordered_set<int>& group_blocks) {
 //        vtk_item_->groupUpdated(modelName, group_id, group_blocks); } );
-//    connect(model, &Model::groupMerged, [this, modelName](const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks) {
+//    connect(model, &ModelData::groupMerged, [this, modelName](const std::vector<int>& group_ids, int father_group, const std::unordered_set<int>& father_group_blocks) {
 //        vtk_item_->groupMerged(modelName, group_ids, father_group, father_group_blocks); });
-//    connect(model, &Model::modelInited, [this, modelName](const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
+//    connect(model, &ModelData::modelInited, [this, modelName](const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
 //        const std::unordered_map<int, std::unique_ptr<Block>>* blocks,
 //        const std::unordered_map<int, std::unique_ptr<Group>>* groups) 
 //        {vtk_item_->onModelInited(modelName, patches, blocks, groups); });

@@ -1,6 +1,5 @@
 #include "SelectManager.h"
 #include "ModelActor.h"
-#include "Model.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -133,7 +132,8 @@ std::unique_ptr<Selection> SelectManager::getSelection()
 		selection->type = Element::Edge;
 	}
 	else {
-		this->selector_->clear();
+		if (this->selector_)
+			this->selector_->clear();
 		return nullptr;
 	}
 

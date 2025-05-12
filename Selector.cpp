@@ -39,6 +39,7 @@
 #include <vtkCompositeDataDisplayAttributes.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
+#include "ModelActor.h"
 #include "Selection.h"
 
 BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer* renderer)
@@ -409,7 +410,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         // 创建一个演员来显示这些线段
 
         selected_actor_->SetMapper(selected_mapper_);
-        selected_actor_->GetProperty()->SetColor(ModelUtil::colors->GetColor3d("red").GetData());
+        selected_actor_->GetProperty()->SetColor(ModelActor::colors->GetColor3d("red").GetData());
         selected_actor_->GetProperty()->SetLineWidth(5); // 设置
 
         if (_is_selected(picked_edge, selection_, selected_actor_)) {
@@ -457,4 +458,3 @@ bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std:
     }
     return false;
 }
-

@@ -16,14 +16,21 @@ import QtQuick.Dialogs
 import QtQuick.Controls 6.7
 
 import fileLoader
+import model
+import commands
 
 ApplicationWindow {
+    id: root
     visible: true
     width: 800
     height: 640
     title: qsTr("三角剖分交互程序")
 
+    required property QModelObserver modelObserver
     required property ModelManager modelManager
+    required property QModelQuery modelQuery
+    required property QCommandCatalog commandCatalog
+    required property CommandDispatcher commandDispatcher
 
     header: ToolBar {
         id: header
@@ -107,6 +114,11 @@ ApplicationWindow {
                         }
                     }
                 }
+                Button {
+                    id: commandButton
+                    text: qsTr("命令")
+                    onClicked: commandMenu.popup()
+                }
                 Rectangle {
                     color: "black"
                     Layout.preferredWidth: 1
@@ -145,6 +157,13 @@ ApplicationWindow {
                     btn1.Layout.preferredWidth = width
                     btn2.Layout.preferredWidth = width
                 }
+            }
+
+            CommandMenu {
+                id: commandMenu
+                commands: commandCatalog.qmlCommands()
+                sideBar: sideBar
+                commandDispatcher: root.commandDispatcher
             }
         }
     }
@@ -372,9 +391,12 @@ ApplicationWindow {
             }
         }
         Component.onCompleted: {
-            modelManager.modelAdded.connect(objectList.addItem)
-            modelManager.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            modelManager.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
+            modelObserver.modelAdded.connect(objectList.addItem)
+            modelObserver.modelAdded.connect(myItem.onModelChanged)
+            modelObserver.modelChanged.connect(myItem.onModelChanged)
+
+            modelObserver.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
+            modelObserver.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
             objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
             //objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
@@ -385,6 +407,9 @@ ApplicationWindow {
 
     SideBar{
         id: sideBar
+        commandDispatcher: root.commandDispatcher
+        curModel: objectList.selectedModelName
+        curSelection: selector.selection
         anchors.top: objectList.bottom
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
@@ -424,6 +449,7 @@ ApplicationWindow {
             id: myItem
             anchors.fill: parent
             anchors.margins: border.width
+            query: modelQuery
         }
         Component.onCompleted: {
             modelManager.vtkItem = myItem
@@ -436,7 +462,7 @@ ApplicationWindow {
             anchors.left: myItem.left
             anchors.topMargin: 10
             anchors.leftMargin: 10
-            property var selector_ids
+            property QSelection selection
             enabled: objectList.selectedModelName !== ""  // 绑定到objectList的选中状态
             
             onSelectorButtonClicked:{

@@ -3,12 +3,7 @@
 #include "FaceSplitter.h"
 
 #include <array>
-#include <vtkMinimalStandardRandomSequence.h>
-#include <vtkNamedColors.h>
 #include <filesystem>
-
-vtkNew<vtkMinimalStandardRandomSequence> ModelUtil::randomSequence;
-vtkNew<vtkNamedColors> ModelUtil::colors;
 
 std::unique_ptr<MeshLib::CTMesh>
 ModelUtil::mesh_from_spline(std::filesystem::path spline_dir) {
@@ -117,7 +112,7 @@ void ModelUtil::write_group_obj(MeshLib::CTMesh* mesh, const std::filesystem::pa
             obj << std::endl;
         }
     }
-	
+
 	obj.close();
 }
 
@@ -153,7 +148,7 @@ void ModelUtil::write_group_inp(MeshLib::CTMesh* mesh, const std::filesystem::pa
             inp << '\n';
         }
     }
-	
+
 	inp.close();
 }
 
@@ -466,19 +461,28 @@ void ModelUtil::split_edge(MeshLib::CToolEdge* edge, MeshLib::CTMesh* mesh) {
 std::string ModelUtil::cmdPopen(const std::string& cmdLine)
 {
     char buffer[1024] = { '\0' };
-  FILE *pf = NULL;
-  pf = _popen(cmdLine.c_str(), "r");
-  if (NULL == pf) {
-    printf("open pipe failed\n");
-    return std::string("");
-  }
-  std::string ret;
-  while (fgets(buffer, sizeof(buffer), pf)) {
-    ret += buffer;
-  }
-  _pclose(pf);
-
-  return ret;
+//  FILE *pf = NULL;
+//  pf = _popen(cmdLine.c_str(), "r");
+    #ifdef _WIN32
+        FILE* pf = _popen(cmdLine.c_str(), "r");
+    #else
+        FILE* pf = popen(cmdLine.c_str(), "r");
+    #endif
+    if (NULL == pf) {
+        printf("open pipe failed\n");
+        return std::string("");
+    }
+    std::string ret;
+    while (fgets(buffer, sizeof(buffer), pf)) {
+        ret += buffer;
+    }
+    #ifdef _WIN32
+        _pclose(pf);
+    #else
+        pclose(pf);
+    #endif
+  //_pclose(pf);
+    return ret;
 }
 
 void ModelUtil::_attach_halfedge_to_edge(MeshLib::CToolHalfEdge* he0, MeshLib::CToolHalfEdge* he1,

@@ -9,7 +9,7 @@ import QtQuick.Controls
 Item {
     id: root
     signal buttonPressed(int index,int type)
-    // call Model
+    // call ModelData
     signal removeModel(string modelName)
     signal renameModel(string oldName, string newName)
     signal changeModelVisibility(string modelName,bool visibility)

@@ -2,69 +2,43 @@
  * @file ModelManager.h
  * @brief 负责管理多个模型实例的类
  *
- * ModelManager 负责管理多个 Model 实例，并提供添加、删除、查询模型的功能。
- * 同时，它维护与 VTK 组件（MyVtkItem）的关联，以支持网格的可视化操作。
+ * ModelManager 仅负责管理模型（添加、删除、查询、重命名）以及模型事件的发送。
+ * 与文件 IO、样条转换相关的功能已全部移至 FileHandler。
+ * 但原接口仍然使用。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
- * @date 2025/3/8
+ * @date 2025/3/20
  */
-#ifndef MODELMANAGER_H
-#define MODELMANAGER_H
-#include "Model.h"
-#include "MyVtkItem.h"
+#ifndef MODEL_MANAGER_H
+#define MODEL_MANAGER_H
+#include "ModelData.h"
 #include <qqmlregistration.h>
 #include <QQmlContext>
 #include <QObject>
 
+#include "ModelOperator.h"
+
+class QModelObserver;  // 前向声明模型观察者类
+class QModelQuery;      // 前向声明 QModelQuery 类
+
  /**
-  * @brief 负责管理多个 Model 实例的类
+  * @brief 负责管理多个 ModelData 实例的类
   *
-  * ModelManager 允许动态添加、删除和查找模型，并提供与 VTK 组件的交互接口，
+  * ModelManager 允许动态添加、删除和查找模型，通过Observer模式发送模型事件。
   * 使得 QML 层能够访问和控制网格数据。
   */
 class ModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(QRenderWindow* vtkItem READ vtkItem WRITE setVtkItem)
-    
 
 public:
     /**
      * @brief 构造 ModelManager 对象
      *
      * @param parent 父对象，默认为 nullptr
+    * @param observer 模型观察者对象，用于捕获模型事件（默认 nullptr）
      */
-    explicit ModelManager(QObject* parent = nullptr) : QObject(parent) {}
-
-    /**
-     * @brief 获取指定名称的模型
-     *
-     * 在管理的模型中查找对应名称的 Model 实例。
-     *
-     * @param modelName 要查找的模型名称
-     * @return Model* 若找到模型，则返回指针；否则返回 nullptr
-     */
-    Q_INVOKABLE Model* model(const QString& modelName) {
-        auto it = models_.find(modelName);
-        if (it != models_.end()) {
-            return it->second.get();
-        }
-        return nullptr; // 如果找不到模型，返回空指针
-    }
-
-    /**
-     * @brief 获取当前 VTK 组件
-     *
-     * @return MyVtkItem* 指向当前 VTK 组件的指针
-     */
-    QRenderWindow* vtkItem();
-
-    /**
-     * @brief 设置 VTK 组件
-     *
-     * @param item 需要关联的 VTK 组件
-     */
-    void setVtkItem(QRenderWindow* item);
+    explicit ModelManager(QObject* parent = nullptr, QModelObserver* observer = nullptr) : QObject(parent), observer_(observer) {}
 
     /**
      * @brief 添加一个模型
@@ -72,7 +46,7 @@ public:
      * @param modelName 新模型的名称
      * @param model 需要添加的模型对象
      */
-    void addModel(const QString& modelName, std::unique_ptr<Model> model);
+    void addModel(const QString& modelName, std::unique_ptr<ModelData> model);
     
     /**
      * @brief 移除指定名称的模型
@@ -81,13 +55,6 @@ public:
      */
     Q_INVOKABLE void removeModel(const QString& modelName);
 
-    /**
-     * @brief 获取指定名称的模型
-     *
-     * @param modelName 要查找的模型名称
-     * @return Model* 若找到模型，则返回指针；否则返回 nullptr
-     */
-    Q_INVOKABLE Model* getModel(const QString& modelName) const;
 
     /**
      * @brief 读取样条曲线数据
@@ -121,42 +88,24 @@ public:
      */
     Q_INVOKABLE void renameModel(const QString& oldName, const QString& newName);
 
-
-signals:
     /**
-     * @brief 样条曲线加载失败信号
+     * @brief 获取指定模型的操作接口对象
      *
-     * @param message 失败信息
-     */
-    void splineLoadFailed(QString message);
-
-    /**
-     * @brief 模型名称变更信号
+     * 如果对应模型的 ModelOperator 不存在，则创建并返回新的 ModelOperator。
+     * ModelOperator 封装模型数据的操作接口，用于执行命令等操作。
      *
-     * @param oldName 旧模型名称
-     * @param newName 新模型名称
+     * @param modelName 模型名称
+     * @return 对应模型名称的 ModelOperator 对象指针
      */
-    void modelNameChanged(const QString& oldName, const QString& newName);
-    
-    /**
-     * @brief 新模型添加信号
-     *
-     * @param modelName 添加的模型名称
-     */
-    void modelAdded(const QString& modelName);
-    
-    /**
-     * @brief 模型移除信号
-     *
-     * @param modelName 移除的模型名称
-     */
-    void modelRemoved(const QString& modelName);
-
+    std::optional<ModelOperator> getModelOperator(const QString& modelName);
 
 private:
-    //std::unique_ptr<Model> model_;
+    ModelData* getModel(const QString& modelName) const;
+
     //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
-    std::unordered_map<QString, std::unique_ptr<Model>> models_; 
-    QRenderWindow* vtk_item_{};
+    std::unordered_map<QString, std::unique_ptr<ModelData>> models_;
+    QModelObserver* observer_;                     //!< 全局模型观察者，用于捕获模型事件
+
+    friend class QModelQuery;
 };
-#endif // MODELMANAGER_H
+#endif // MODEL_MANAGER_H

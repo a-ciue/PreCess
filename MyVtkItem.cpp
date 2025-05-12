@@ -113,14 +113,20 @@ Q_INVOKABLE void QRenderWindow::deleteModel(QString model_name)
         });
 }
 
-Q_INVOKABLE void QRenderWindow::createModel(QString model_name)
+Q_INVOKABLE void QRenderWindow::onModelChanged(QString model_name)
 {
-    //dispatch_async([model_name,this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
-    //            Data* vtk = Data::SafeDownCast(userData);
-    //            vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
-    //            resetCamera();
-    //            });
-    //return Q_INVOKABLE void();
+    dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        std::optional model_data = model_query_->getModelData(model_name);
+        if (model_data)
+        {
+            if (!vtk->models_.count(model_name))
+                vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
+            vtk->models_[model_name]->loadModelData(*model_data);
+            vtk->models_[model_name]->setRenderMode(renderMode_);
+        }
+    });
 }
 
 Q_INVOKABLE void QRenderWindow::renameModel(QString old_name, QString new_name)
@@ -160,18 +166,6 @@ Q_INVOKABLE void QRenderWindow::setVisibility(QString model_name, bool visibilit
         });
 }
 
-Q_INVOKABLE void QRenderWindow::setModelData(QString model_name, const ModelData& model_data)
-{
-    dispatch_async([model_name, model_data, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
-        Data* vtk = Data::SafeDownCast(userData);
-        if (!vtk->models_.count(model_name))
-			vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
-        vtk->models_[model_name]->loadModelData(model_data);
-        vtk->models_[model_name]->setRenderMode(renderMode_);
-        });
-    return Q_INVOKABLE void();
-}
-
 QSelection* QRenderWindow::selectedIDs()
 {
     std::unique_ptr<Selection> data(std::move(this->selectManager_->getSelection()));
@@ -179,6 +173,12 @@ QSelection* QRenderWindow::selectedIDs()
     QSelection* selection = new QSelection(std::move(data));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
+}
+
+void QRenderWindow::setModelQuery(QModelQuery* query)
+{
+    assert(query != nullptr);
+    model_query_ = query;
 }
 
 Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
@@ -192,7 +192,6 @@ Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
         else
             selectManager_->setSelectActor(nullptr);
         });
-    return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void QRenderWindow::setSelectMode(QString select_mode)
@@ -214,13 +213,11 @@ Q_INVOKABLE void QRenderWindow::setSelectMode(QString select_mode)
         }
         selectManager_->setSelectMode(select_mode_);        
         });
-    return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void QRenderWindow::clearSelection()
 {
     this->selectManager_->clearSelection();
-    return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void QRenderWindow::setRenderMode(QString render_mode)
@@ -229,13 +226,13 @@ Q_INVOKABLE void QRenderWindow::setRenderMode(QString render_mode)
     dispatch_async([render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         if (render_mode == "Face") {
-            this->renderMode_ = ModelActor::RenderMode::Face;
+            this->renderMode_ = RenderMode::Face;
             for (auto&& [modelName, modelActor] : vtk->models_) {
                 modelActor->setRenderMode(this->renderMode_);
             }
         }
         else if (render_mode == "Block") {
-            this->renderMode_ = ModelActor::RenderMode::Block;
+            this->renderMode_ = RenderMode::Block;
             for (auto&& [modelName, modelActor] : vtk->models_) {
                 modelActor->setRenderMode(this->renderMode_);
             }
@@ -245,7 +242,6 @@ Q_INVOKABLE void QRenderWindow::setRenderMode(QString render_mode)
         }
         
         });
-    return Q_INVOKABLE void();
 }
 
 Q_INVOKABLE void QRenderWindow::setEdgeRender(bool is_render)

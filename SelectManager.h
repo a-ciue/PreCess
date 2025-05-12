@@ -12,8 +12,6 @@
 
 #include "Selection.h"
 #include "Selector.h"
-#include "Model.h"
-#include "Selection.h"
 #include "ModelActor.h"
 #include "Core.h"
 

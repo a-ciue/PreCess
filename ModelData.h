@@ -1,8 +1,8 @@
 /**
- * @file Model.h
+ * @file ModelData.h
  * @brief 负责管理和操作网格模型数据的核心类
  *
- * Model 类用于存储和处理网格模型数据，包括面（Patch）、块（Block）和组（Group）的管理。
+ * ModelData 类用于存储和处理网格模型数据，包括面（Patch）、块（Block）和组（Group）的管理。
  * 它提供了一系列函数用于网格操作，如网格划分、合并和重划分等，同时维护与 ModelActor 之间的关联，
  * 以便进行可视化和渲染。
  *
@@ -15,12 +15,11 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <array>
-#include <QObject>
-#include <qqmlintegration.h>
 #include <qstring.h>
 
-#include "ModelActor.h"
 #include "Selection.h"
+#include "ToolMesh.h"
+#include "Core.h"
 
 namespace MeshLib {
 template <typename V, typename E, typename F, typename H>
@@ -57,6 +56,10 @@ struct Patch {
     // 坐标
     std::vector <std::array<double, 3>> vertexPoints_;
     //std::vector<double[3]> vertexPoints_;
+
+    // 构造函数
+    Patch() = default;
+    Patch(int id, int block) : id_(id), blockID(block) {}
 };
 
 /**
@@ -84,62 +87,58 @@ struct Group {
 /**
 *@brief 负责管理和操作网格模型数据的核心类
 *
-* Model 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。
+* ModelData 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。
 * 该类提供了网格划分、合并、重划分等功能，并维护与 ModelActor 之间的关联，
 * 以便进行可视化和渲染。
 */
-class Model :public QObject {
-    Q_OBJECT
-    QML_ELEMENT
-
+class ModelData {
 public:
     /**
-     * @brief 构造 Model 对象
+     * @brief 构造 ModelData 对象
      *
      * 该构造函数基于传入的 CTMesh 对象初始化模型的 patches、blocks、groups 以及 ModelActor。
      *
      * @param mesh 指向 CTMesh 的智能指针，表示网格数据
      */
-    Model(std::unique_ptr<MeshLib::CTMesh> mesh);
+    ModelData(std::unique_ptr<MeshLib::CTMesh> mesh);
 
-    /**
-     * @brief 刷新 VTK 渲染数据
-     *
-     * 该函数用于刷新 VTK 相关数据，使模型的可视化状态与当前数据保持同步。
-     */
-    void refreshVtk();
+private:
+    using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
+    using BlockMap = std::unordered_map<int, std::unique_ptr<struct Block>>;
+    using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
 
     //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
     //! @param mesh_path 输出文件路径
     //! @param mode 选定输出模式
     //! @param extension 输出文件拓展名
-    void write_mesh(const std::filesystem::path& mesh_path, ModelActor::RenderMode mode, const QString &extension);
+    void write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString &extension);
 
+    
     //! @brief 根据给定id找到mesh的face，进行面分割
     //! @param patch_id 面所在的patch
     //! @param face_id 在该patch上的face id
-    Q_INVOKABLE void split_face(QSelection* selection);
+    void split_face(QSelection* selection);
 
     //! @brief 根据给定id找到mesh的edge，进行边分割
     //! @param patch_id 边所在的patch
     //! @param edge_v_id1 其中一个边点id
     //! @param edge_v_id2 另一个边点id
-    Q_INVOKABLE void split_edge(QSelection* selection);
+    void split_edge(QSelection* selection);
     
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
-    Q_INVOKABLE void merge_blocks(QSelection* selection);
+    void merge_blocks(QSelection* selection);
 
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
-    Q_INVOKABLE void merge_groups(QSelection* selection);
+    void merge_groups(QSelection* selection);
     
     //! @brief remesh指定block，依赖MeshUtil、update_patches、update_actors
-    Q_INVOKABLE void remesh_block(QSelection* selection);
+    void remesh_block(QSelection* selection);
 
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
-    Q_INVOKABLE void remesh_group(QSelection* selection);
-    
+    void remesh_group(QSelection* selection);
+
     /**
      * @brief 获取指定面 (face) 所属的 patch ID
      *
@@ -196,91 +195,12 @@ public:
      */
     void setModelName(const QString& name) { model_name = name; }
 
-    ModelData getModelData();
-
-signals:
     /**
-     * @brief 当模型初始化完成时触发
-     *
-     * 该信号在模型数据加载完成后被触发，通知外部组件模型的基本数据已经准备就绪。
-     *
-     * @param modelName 模型的名称
-     * @param patches 模型中的 Patch 数据指针
-     * @param blocks 模型中的 Block 数据指针
-     * @param groups 模型中的 Group 数据指针
+     * @brief 获取渲染模型需要的数据
+     * @return 模型数据
      */
-    void modelInited(const QString& modelName,
-        const std::unordered_map<int, std::unique_ptr<Patch>>* patches,
-        const std::unordered_map<int, std::unique_ptr<struct Block>>* blocks,
-        const std::unordered_map<int, std::unique_ptr<Group>>* groups);
+    ModelDataVtk getModelData();
 
-    /**
-     * @brief 当 Patch 更新时触发
-     *
-     * 该信号用于通知外部组件某个 Patch 的顶点坐标或三角形索引发生了变化。
-     *
-     * @param modelName 模型的名称
-     * @param patch_id 发生变化的 Patch ID
-     * @param points Patch 内顶点的新坐标
-     * @param triangles Patch 内三角形的新索引
-     */
-    void patchUpdated(const QString& modelName, int patch_id,
-        const std::vector<std::array<double, 3>>& points,
-        const std::vector<std::array<int, 3>>& triangles);
-
-    /**
-     * @brief 当 Block 更新时触发
-     *
-     * 该信号用于通知外部组件某个 Block 发生了变化，例如其包含的 Patch 发生调整。
-     *
-     * @param modelName 模型的名称
-     * @param block_id 发生变化的 Block ID
-     * @param block_patches Block 内包含的 Patch ID 集合
-     */
-    void blockUpdated(const QString& modelName, int block_id,
-        const std::unordered_set<int>& block_patches);
-
-    /**
-     * @brief 当 Group 更新时触发
-     *
-     * 该信号用于通知外部组件某个 Group 发生了变化，例如其包含的 Block 发生调整。
-     *
-     * @param modelName 模型的名称
-     * @param group_id 发生变化的 Group ID
-     * @param group_blocks Group 内包含的 Block ID 集合
-     */
-    void groupUpdated(const QString& modelName, int group_id,
-        const std::unordered_set<int>& group_blocks);
-
-    /**
-     * @brief 当多个 Block 被合并时触发
-     *
-     * 该信号用于通知外部组件多个 Block 发生合并，并提供合并后的 Block 信息。
-     *
-     * @param modelName 模型的名称
-     * @param block_ids 参与合并的 Block ID 列表
-     * @param father_block 合并后的 Block ID
-     * @param father_block_patches 合并后 Block 内包含的 Patch ID 集合
-     */
-    void blocksMerged(const QString& modelName, const std::vector<int>& block_ids,
-        int father_block,
-        const std::unordered_set<int>& father_block_patches);
-
-    /**
-     * @brief 当多个 Group 被合并时触发
-     *
-     * 该信号用于通知外部组件多个 Group 发生合并，并提供合并后的 Group 信息。
-     *
-     * @param modelName 模型的名称
-     * @param group_ids 参与合并的 Group ID 列表
-     * @param father_group 合并后的 Group ID
-     * @param father_group_blocks 合并后 Group 内包含的 Block ID 集合
-     */
-    void groupMerged(const QString& modelName, const std::vector<int>& group_ids,
-        int father_group,
-        const std::unordered_set<int>& father_group_blocks);
-
-private:
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
     void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);
     void update_patches(const std::unordered_set<int>& patch_ids, bool new_patch = true);
@@ -291,14 +211,16 @@ private:
     //! @brief 更新指定patch的father id
     void update_father_id(int patch_id, int father_id);
 
-    using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
-    using BlockMap = std::unordered_map<int, std::unique_ptr<struct Block>>;
-    using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
-
     std::unique_ptr<MeshLib::CTMesh> mesh_;
     QString model_name;
     PatchMap patches_;
     BlockMap blocks_;
     GroupMap groups_;
+
+    friend class QModelQuery;          //!< 声明 QModelQuery 为友元，以允许其访问 ModelData 私有数据
+    friend class TestModel;           //!< 声明 TestModel 为友元，用于GoogleTest
+    friend class ModelOperator;    //!< 声明 ModelOperator 为友元，以允许其访问 ModelData 私有数据
+    friend class FileHandler; //!< 声明 FileHandler 为友元，以允许其访问 ModelData 私有数据
+    friend class ModelManager; //!< 声明 ModelManager 为友元，以允许其访问 ModelData 私有数据
 };
 #endif // MODEL_H

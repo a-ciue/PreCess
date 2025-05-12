@@ -25,7 +25,6 @@ template <typename T>
 class vtkSmartPointer;
 class vtkDataSetMapper;
 class vtkActor;
-class Model;
 
 using SelectionVtk = Selection;
 //namespace Selector {

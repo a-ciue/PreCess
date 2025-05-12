@@ -10,17 +10,35 @@
 #include <QQuickVTKItem.h>
 
 #include "ModelManager.h"
+#include "ModelObserver.h"
+#include "ModelQuery.h"
+#include "commands/QCommandCatalog.h"
+#include "commands/CommandDispatcher.h"
+#include "commands/SplitFaceCommand.h"
+#include <QtQml/QQmlExtensionPlugin>
+Q_IMPORT_QML_PLUGIN(modelPlugin)
 
 int main(int argc, char* argv[])
 {
     QQuickVTKItem::setGraphicsApi();
-    ModelManager manager;
+    QModelObserver observer;
+    ModelManager manager(nullptr, &observer);
+    QModelQuery query(&manager, nullptr);
+
+    QCommandCatalog catalog;
+    catalog.addCommand(new QCommand("切分面", SplitFaceCommand::create, SplitFaceCommand::getArgsModel()));
+    CommandDispatcher dispatcher(&manager);
 
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    engine.setInitialProperties({ { "modelManager", QVariant::fromValue(&manager) } });
-    //engine.load(QUrl(QStringLiteral("qrc:/qt/qml/fileLoader/main.qml")));
+    engine.setInitialProperties({
+        { "modelManager", QVariant::fromValue(&manager) },
+        { "modelObserver", QVariant::fromValue(&observer) },
+        { "modelQuery", QVariant::fromValue(&query) },
+        { "commandCatalog", QVariant::fromValue(&catalog) },
+        { "commandDispatcher", QVariant::fromValue(&dispatcher) },
+    });
     engine.loadFromModule("fileLoader", "Main");
     if (engine.rootObjects().isEmpty())
         return -1;
