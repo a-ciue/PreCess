@@ -15,6 +15,8 @@
 #include "commands/QCommandCatalog.h"
 #include "commands/CommandDispatcher.h"
 #include "commands/SplitFaceCommand.h"
+#include <QtQml/QQmlExtensionPlugin>
+Q_IMPORT_QML_PLUGIN(modelPlugin)
 
 int main(int argc, char* argv[])
 {

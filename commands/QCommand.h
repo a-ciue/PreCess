@@ -2,11 +2,9 @@
 #include <QObject>
 #include <qqmlintegration.h>
 #include <QString>
-#include <QStandardItemModel>
 #include <QVariant>
 #include <functional>
 #include <memory>
-#include <qqmlregistration.h>
 
 #include "ArgTypeObject.h"
 #include "ICommand.h"

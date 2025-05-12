@@ -16,6 +16,7 @@ import QtQuick.Dialogs
 import QtQuick.Controls 6.7
 
 import fileLoader
+import model
 import commands
 
 ApplicationWindow {

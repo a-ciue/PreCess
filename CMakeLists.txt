@@ -39,18 +39,26 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml CommandMenu.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp ModelManager.h ModelManager.cpp Selection.h ModelObserver.h ModelQuery.cpp 
+        MyVTKItem.h MyVtkItem.cpp Selection.h
 )
 
-add_library(vtkPart STATIC ModelActor.cpp ModelUtil.cpp Selector.cpp Style.cpp FileHandler.cpp)
+qt_add_library(modelQml STATIC)
+qt_add_qml_module(modelQml 
+    URI model
+    SOURCES
+        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp 
+)
+
+add_library(vtkPart STATIC ModelActor.cpp Selector.cpp Style.cpp)
 
 add_library(modelPart STATIC
         ModelData.cpp
         ModelOperator.cpp 
-        # ModelManager.cpp
+        # ModelManager.cpp 
+        ModelUtil.cpp
         FileHandler.cpp
         # ModelQuery.cpp
-        commands/SplitFaceCommand.cpp
+        # commands/SplitFaceCommand.cpp
         # command/MergeBlocksCommand.cpp
         # command/LoadSplineCommand.cpp
 )
@@ -68,6 +76,9 @@ target_link_libraries(modelPart
         Qt${VTK_QT_VERSION}::Quick
 )
 
+add_subdirectory(commands)
+target_link_libraries(modelQml PRIVATE modelPart commandsplugin)
+
 # VTK 模块自动初始化
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )
 
@@ -75,7 +86,7 @@ target_link_libraries(vtkPart PRIVATE ${VTK_LIBRARIES})
 target_link_libraries(${MYNAME}
         PRIVATE
         vtkPart
-        modelPart
+        modelQmlplugin
         Qt${VTK_QT_VERSION}::Core
         Qt${VTK_QT_VERSION}::Quick
         ${VTK_LIBRARIES}
@@ -91,9 +102,6 @@ set_target_properties(${MYNAME} PROPERTIES
 target_compile_definitions(${MYNAME} PRIVATE
         "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
 )
-
-add_subdirectory(commands)
-target_link_libraries(${MYNAME} PRIVATE commandsplugin)
 
 # 2) 安装 .app 到指定前缀下
 include(InstallRequiredSystemLibraries)
