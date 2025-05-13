@@ -205,7 +205,7 @@ ApplicationWindow {
                         // myItem.bindStyle("Edge")
                         let ids = myItem.selectedIDs;
                         //if(ids.type() !== Element.Edge){console.log("ids的类型不是Element.Edge")}
-                        console.log("选中的模型名为：", ids.getName())
+                        console.log("选中的模型名为：",modelQuery.getModelName(ids.getModelId()))
                         if (ids.size() !== 0 /*&& ids.type() === Element.Edge*/) {
                             modelManager.model(ids.getName()).split_edge(ids)
                         }else{
@@ -217,9 +217,9 @@ ApplicationWindow {
                     if(index === 1){
                         // myItem.bindStyle("Face")
                         let ids = myItem.selectedIDs;
-                        console.log("选中的模型名为：", ids.getName())
+                        console.log("选中的模型名为：", modelQuery.getModelName(ids.getModelId()))
                         if (ids.size() !== 0 /*&& ids.type() === Element.Face*/) {
-                            modelManager.model(ids.getName()).split_face(ids)
+                            commandDispatcher.runCommand(commandCatalog.pathCommand("faceMode.splitFace"), ids.getModelId(), [ids])
                         }else{
                             console.log("未选中对象或选中对象不是面")
                         }
@@ -396,7 +396,7 @@ ApplicationWindow {
             modelObserver.modelChanged.connect(myItem.onModelChanged)
 
             modelObserver.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            modelObserver.modelNameChanged.connect((oldName,newName)=>{myItem.renameModel(oldName,newName)})
+            modelObserver.modelRemoved.connect(myItem.deleteModel)
             objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
             //objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})

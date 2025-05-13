@@ -10,7 +10,7 @@ void ModelOperator::write_mesh(const std::filesystem::path& mesh_path, RenderMod
 void ModelOperator::split_face(QSelection* selection)
 {
     model_->split_face(selection);
-    observer_->notifyModelChanged(model_->getModelName());
+    observer_->notifyModelChanged(model_->getId());
 }
 
 void ModelOperator::split_edge(QSelection* selection)

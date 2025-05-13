@@ -43,17 +43,17 @@ public:
     /**
      * @brief 添加一个模型
      *
-     * @param modelName 新模型的名称
+     * @param model_name 新模型的名称
      * @param model 需要添加的模型对象
      */
-    void addModel(const QString& modelName, std::unique_ptr<ModelData> model);
+    void addModel(const QString& model_name, std::unique_ptr<ModelData> model);
     
     /**
      * @brief 移除指定名称的模型
      *
-     * @param modelName 要移除的模型名称
+     * @param model_id 需要移除的模型 ID
      */
-    Q_INVOKABLE void removeModel(const QString& modelName);
+    Q_INVOKABLE void removeModel(Index model_id);
 
 
     /**
@@ -75,18 +75,18 @@ public:
      *
      * @param modelName 需要导出的模型名称
      * @param target_mesh 输出文件的路径
-     * @param renderMode 选择的渲染模式
+     * @param render_mode 选择的渲染模式
      * @param extension 输出文件的扩展名
      */
-    Q_INVOKABLE void writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension);
+    Q_INVOKABLE void writeMesh(Index model_id, QUrl target_mesh, const QString& render_mode, const QString& extension);
 
     /**
      * @brief 重命名模型
      *
-     * @param oldName 旧名称
-     * @param newName 新名称
+     * @param model_id 模型 ID
+     * @param new_name 新名称
      */
-    Q_INVOKABLE void renameModel(const QString& oldName, const QString& newName);
+    Q_INVOKABLE void renameModel(Index model_id, const QString& new_name);
 
     /**
      * @brief 获取指定模型的操作接口对象
@@ -94,16 +94,17 @@ public:
      * 如果对应模型的 ModelOperator 不存在，则创建并返回新的 ModelOperator。
      * ModelOperator 封装模型数据的操作接口，用于执行命令等操作。
      *
-     * @param modelName 模型名称
+     * @param model_id 模型 ID
      * @return 对应模型名称的 ModelOperator 对象指针
      */
-    std::optional<ModelOperator> getModelOperator(const QString& modelName);
+    std::optional<ModelOperator> getModelOperator(Index model_id);
 
 private:
-    ModelData* getModel(const QString& modelName) const;
+    ModelData* getModel(Index model_id) const;
 
     //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
-    std::unordered_map<QString, std::unique_ptr<ModelData>> models_;
+    std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
+    Index max_index_ { -1 }; //!< 最大索引值，用于唯一标识模型
     QModelObserver* observer_;                     //!< 全局模型观察者，用于捕获模型事件
 
     friend class QModelQuery;

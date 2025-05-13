@@ -18,40 +18,35 @@
 #include <stdexcept>
 
 // 添加模型
-void ModelManager::addModel(const QString& modelName, std::unique_ptr<ModelData> model)
+void ModelManager::addModel(const QString& model_name, std::unique_ptr<ModelData> model)
 {
-    if (models_.find(modelName) != models_.end()) {
-        throw std::runtime_error("ModelData with the given name already exists.");
-    }
-
-    // 为模型设置名称
-    model->setModelName(modelName);
-    models_[modelName] = std::move(model);
-
-    ModelData* rawModel = models_[modelName].get();
-    if (!rawModel) {
-        qDebug() << "模型或 VTK 项不存在:" << modelName;
+    if (!model) {
+        qDebug() << "模型或 VTK 项不存在:" << model_name;
         return;
     }
 
-    // 发射添加模型的信号（需要在 ModelManager.h 中声明信号 modelAdded(const QString&)）
-    observer_->notifyModelAdded(modelName);
+    Index model_id = ++max_index_;
+    model->setModelName(model_name);
+    model->id_ = model_id;
+    models_[model_id] = std::move(model);
+
+    observer_->notifyModelAdded(max_index_);
 }
 
 // 删除模型
-void ModelManager::removeModel(const QString& modelName) {
-    auto it = models_.find(modelName);
+void ModelManager::removeModel(Index model_id) {
+    auto it = models_.find(model_id);
     if (it == models_.end()) {
         throw std::runtime_error("ModelData with the given name does not exist.");
     }
     models_.erase(it);
     // 发射删除模型信号
-    observer_->notifyModelRemoved(modelName);
+    observer_->notifyModelRemoved(model_id);
 }
 
 // 获取模型
-ModelData* ModelManager::getModel(const QString& modelName) const {
-    auto it = models_.find(modelName);
+ModelData* ModelManager::getModel(Index model_id) const {
+    auto it = models_.find(model_id);
     if (it == models_.end()) {
         return nullptr; // 模型不存在时返回空指针
     }
@@ -80,47 +75,34 @@ void ModelManager::readMesh(QUrl target_mesh)
     addModel(target_mesh.fileName(), std::move(mesh));
 }
 
-void ModelManager::writeMesh(const QString& modelName, QUrl target_mesh, QString renderMode, QString extension)
+void ModelManager::writeMesh(Index model_id, QUrl target_mesh, const QString& render_mode, const QString& extension)
 {
-    auto mesh = getModel(modelName);
+    auto mesh = getModel(model_id);
     if (!mesh) {
-        qDebug() << "未找到指定的模型: " << modelName;
+        qDebug() << "未找到指定的模型: " << model_id;
         return;
     }
-    FileHandler::instance().writeMesh(mesh, target_mesh.toLocalFile(), renderMode, extension);
+    FileHandler::instance().writeMesh(mesh, target_mesh.toLocalFile(), render_mode, extension);
 }
 
-Q_INVOKABLE void ModelManager::renameModel(const QString& oldName, const QString& newName){
-        // 使用 find() 检查旧名称是否存在
-        auto it_old = models_.find(oldName);
-        if (it_old == models_.end()) {
-            qDebug() << "模型不存在：" << oldName;
-            return;
-        }
-        // 使用 find() 检查新名称是否已经被占用
-        if (models_.find(newName) != models_.end()) {
-            qDebug() << "新名称已存在：" << newName;
-            return;
-        }
-
-        auto modelPtr = std::move(it_old->second);
-        // 更新Model类的model_name成员变量
-        modelPtr->setModelName(newName);
-
-        // 转移模型对象，并更新映射
-        models_.erase(it_old);
-        models_[newName] = std::move(modelPtr);
-
-        // 发射信号通知名称已更新
-        observer_->notifyModelNameChanged(oldName, newName);
-    }
-
-std::optional<ModelOperator> ModelManager::getModelOperator(const QString& modelName)
+void ModelManager::renameModel(Index model_id, const QString& new_name)
 {
-    auto it = models_.find(modelName);
-    if (it != models_.end()) {
-        ModelData* model = it->second.get();
-        return ModelOperator(model, observer_);
+	if (!models_.count(model_id))
+	{
+        qDebug() << "模型不存在: " << model_id;
+        return;
+	}
+        models_[model_id]->setModelName(new_name);
+
+    // 发射信号通知名称已更新
+    observer_->notifyModelNameChanged(model_id, new_name);
+}
+
+std::optional<ModelOperator> ModelManager::getModelOperator(Index model_id)
+{
+    ModelData* mesh = getModel(model_id);
+    if (mesh) {
+        return ModelOperator(mesh, observer_);
     }
     return {}; // 如果找不到模型，返回空指针
 }

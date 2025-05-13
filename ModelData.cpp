@@ -435,7 +435,7 @@ ModelDataVtk ModelData::getModelData()
 
         // 添加三角形和模型面ID
         for (size_t i = 0; i < patch->faceTriangles_.size(); ++i) {
-            array<IndexVtk, 3> arr;
+            array<Index, 3> arr;
             arr[0] = patch->faceTriangles_[i][0] + offset;
             arr[1] = patch->faceTriangles_[i][1] + offset;
             arr[2] = patch->faceTriangles_[i][2] + offset;

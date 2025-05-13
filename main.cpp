@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     QModelQuery query(&manager, nullptr);
 
     QCommandCatalog catalog;
-    catalog.addCommand(new QCommand("切分面", SplitFaceCommand::create, SplitFaceCommand::getArgsModel()));
+    catalog.addCommand(new QCommand("切分面", "faceMode.splitFace", SplitFaceCommand::create, SplitFaceCommand::getArgsModel()));
     CommandDispatcher dispatcher(&manager);
 
     QGuiApplication app(argc, argv);

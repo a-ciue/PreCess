@@ -26,7 +26,7 @@ class IModelQuery {
 public:
     virtual ~IModelQuery() = default;
 
-    virtual std::optional<ModelDataVtk> getModelData(const QString& model_name) = 0;
+    virtual std::optional<ModelDataVtk> getModelData(Index model_id) = 0;
 };
 
 /**
@@ -49,7 +49,9 @@ public:
      */
     explicit QModelQuery(ModelManager* mgr, QObject* parent = nullptr);
 
-    std::optional<ModelDataVtk> getModelData(const QString& model_name) override;
+    std::optional<ModelDataVtk> getModelData(Index model_id) override;
+
+    Q_INVOKABLE QString getModelName(Index model_id) const;
 
     /**
      * @brief 获取指定 Patch 的详细信息
@@ -64,11 +66,11 @@ public:
      *
      * 如果未能找到指定 patch，则返回包含 error 信息的 QVariantMap。
      *
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID 在 ModelManager 中定位对应的 ModelData
      * @param patchId Patch 的标识符
      * @return 包含 Patch 详细信息的 QVariantMap
      */
-    Q_INVOKABLE QVariantMap getPatchInfo(const QString& model_name, int patchId) const;
+    Q_INVOKABLE QVariantMap getPatchInfo(Index model_id, int patchId) const;
 
     /**
      * @brief 获取所有 Block 的列表信息
@@ -83,17 +85,17 @@ public:
      * - "groupID": 所属 group 的 id
      * - "patchIDs": 包含的 Patch id 列表 (QVariantList)
      *
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID 在 ModelManager 中定位对应的 ModelData
      * @return 包含多个 Block 详细信息的 QVariantList，每个元素为 QVariantMap
      */
-    Q_INVOKABLE QVariantList getBlockList(const QString& model_name) const;
+    Q_INVOKABLE QVariantList getBlockList(Index model_id) const;
 
     /**
      * @brief 获取所有 Patch 的 ID 列表
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID 在 ModelManager 中定位对应的 ModelData
      * @return 包含所有 Patch 标识符的 QVariantList
      */
-    Q_INVOKABLE QVariantList getPatchIds(const QString& model_name) const;
+    Q_INVOKABLE QVariantList getPatchIds(Index model_id) const;
 
     /**
      * @brief 获取所有 Block 的 ID 列表
@@ -101,63 +103,63 @@ public:
      * 遍历 ModelData 中所有 Patch，将每个 Patch 的标识符提取出来，
      * 并存入 QVariantList 返回。
      *
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID 在 ModelManager 中定位对应的 ModelData
      * @return 包含所有 Block 标识符的 QVariantList
      */
-    Q_INVOKABLE QVariantList getBlockIds(const QString& model_name) const;
+    Q_INVOKABLE QVariantList getBlockIds(Index model_id) const;
 
     /**
      * @brief 获取所有 Group 的 ID 列表
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
      * @return 包含所有 Group 标识符的 QVariantList
      */
-    Q_INVOKABLE QVariantList getGroupIds(const QString& model_name) const;
+    Q_INVOKABLE QVariantList getGroupIds(Index model_id) const;
 
     /**
      * @brief 根据给定 Face ID 获取所在 Patch 的详细信息
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
      * @param faceId Face 的标识符
      * @return 包含所在 Patch 详细信息的 QVariantMap，如果无效则包含 error 信息
      */
-    Q_INVOKABLE QVariantMap getPatchInfoByFaceId(const QString& model_name, int faceId) const;
+    Q_INVOKABLE QVariantMap getPatchInfoByFaceId(Index model_id, int faceId) const;
 
     /**
      * @brief 获取指定 Block 的详细信息
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
      * @param blockId Block 的标识符
      * @return 包含 Block 详细信息的 QVariantMap，如果无效则包含 error 信息
      */
-    Q_INVOKABLE QVariantMap getBlockInfo(const QString& model_name, int blockId) const;
+    Q_INVOKABLE QVariantMap getBlockInfo(Index model_id, int blockId) const;
 
     /**
      * @brief 获取指定 Group 的详细信息
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
      * @param groupId Group 的标识符
      * @return 包含 Group 详细信息的 QVariantMap，如果无效则包含 error 信息
      */
-    Q_INVOKABLE QVariantMap getGroupInfo(const QString& model_name, int groupId) const;
+    Q_INVOKABLE QVariantMap getGroupInfo(Index model_id, int groupId) const;
 
     /**
      * @brief 根据指定条件查询满足条件的 Patch 列表
      *
      * 支持条件键例如："minVertexCount"（最少顶点数量）和 "maxFaceCount"（最多面数）。
      *
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
      * @param conditions 查询条件构成的 QVariantMap
      * @return 符合条件的 Patch 详细信息列表，每个元素为 QVariantMap
      */
-    Q_INVOKABLE QVariantList queryPatchesByCondition(const QString& model_name, const QVariantMap& conditions) const;
+    Q_INVOKABLE QVariantList queryPatchesByCondition(Index model_id, const QVariantMap& conditions) const;
 
     /**
      * @brief 获取指定顶点的详细信息
      *
      * 由于顶点信息分散于各 Patch 中，返回第一次找到的匹配信息。
      *
-     * @param model_name 具体要查询的模型名称，通过此名称在 ModelManager 中定位对应的 ModelData
+     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
      * @param vertexId 顶点的标识符
      * @return 包含顶点详细信息的 QVariantMap，如 vertexId、坐标、所在 Patch 等；如果未找到则包含 error 信息
      */
-    Q_INVOKABLE QVariantMap getVertexInfo(const QString& model_name, int vertexId) const;
+    Q_INVOKABLE QVariantMap getVertexInfo(Index model_id, int vertexId) const;
 
 private:
     ModelManager* m_manager;

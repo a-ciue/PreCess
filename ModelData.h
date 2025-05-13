@@ -181,19 +181,22 @@ private:
     int block_group_id(int patch_id);
     //const std::vector<int>& group_block_ids(int group_id);
 
+
+    Index getId() const { return id_; }
+
     /**
      * @brief 获取模型名称
      *
      * @return QString 当前模型的名称
      */
-    QString getModelName() const { return model_name; }
+    QString getModelName() const { return model_name_; }
 
     /**
      * @brief 设置模型名称
      *
      * @param name 要设置的模型名称
      */
-    void setModelName(const QString& name) { model_name = name; }
+    void setModelName(const QString& name) { model_name_ = name; }
 
     /**
      * @brief 获取渲染模型需要的数据
@@ -212,7 +215,8 @@ private:
     void update_father_id(int patch_id, int father_id);
 
     std::unique_ptr<MeshLib::CTMesh> mesh_;
-    QString model_name;
+    QString model_name_;
+    Index id_ { -1 }; //!< 模型的唯一标识符
     PatchMap patches_;
     BlockMap blocks_;
     GroupMap groups_;

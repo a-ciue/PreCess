@@ -28,12 +28,13 @@ public:
     /**
      * @brief 构造 QCommand 对象
      * @param name 命令名称（用于在界面显示）
+     * @param path 命令路径（用于在 QML 中按路径获取命令）
      * @param factory 命令对应的工厂函数，用于创建具体 ICommand 对象
      * @param arg_types 命令参数类型描述模型（可选），用于描述该命令所需参数
      * @param parent 父对象，默认为 nullptr
      */
-    QCommand(const QString& name, CommandFactory factory, QList<ArgTypeObject*> arg_types, QObject* parent = nullptr)
-            : QObject(parent), name_(name), factory_(factory), arg_types_(arg_types)
+    QCommand(const QString& name, const QString& path, CommandFactory factory, QList<ArgTypeObject*> arg_types, QObject* parent = nullptr)
+            : QObject(parent), name_(name), path_(path), factory_(factory), arg_types_(arg_types)
     {
     }
 
@@ -42,6 +43,12 @@ public:
      * @return 命令名称字符串
      */
     Q_INVOKABLE QString name() const { return name_; }
+
+    /**
+     * @brief 获取命令路径
+     * @return 命令路径字符串
+     */
+    Q_INVOKABLE QString path() const { return path_; }
 
     /**
      * @brief 获取命令参数类型模型
@@ -63,7 +70,8 @@ public:
     }
 
 private:
-    QString name_;                                 //!< 命令名称，用于在 QML 中显示
-    CommandFactory factory_;                       //!< 用于创建具体命令的工厂函数
-    QList<ArgTypeObject*> arg_types_;              //!< 命令参数类型描述模型指针
+    QString name_;                       //!< 命令名称，用于在 QML 中显示
+    QString path_;                       //!< 命令路径，可以在 QML 中按路径获取命令
+    CommandFactory factory_;             //!< 用于创建具体命令的工厂函数
+    QList<ArgTypeObject*> arg_types_;    //!< 命令参数类型描述模型指针
 };

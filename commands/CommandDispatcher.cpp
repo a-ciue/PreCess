@@ -16,21 +16,25 @@
 CommandDispatcher::CommandDispatcher(ModelManager* manager, QObject* parent)
         : QObject(parent), model_manager_(manager) { }
 
-void CommandDispatcher::runCommand(QCommand* cmd, const QString& model_name, const QVariantList& args)
+void CommandDispatcher::runCommand(QCommand* cmd, Index model_id, const QVariantList& args)
 {
     if (!model_manager_) {
         qWarning() << "未设置 ModelManager";
         return;
     }
+    if (!cmd) {
+        qWarning() << "未设置 QCommand";
+        return;
+    }
+
     // 通过 ModelBridge 获取对应的 ModelData
-    std::optional model_operator = model_manager_->getModelOperator(model_name);
+    std::optional model_operator = model_manager_->getModelOperator(model_id);
     if (!model_operator) {
-        qWarning() << "未找到模型: " << model_name;
+        qWarning() << "未找到模型: " << model_id;
         return;
     }
     // 使用 ModelData 指针传递给具体命令类
-    auto command = cmd->create(*model_operator, args);
-    if (command)
+    if (auto command = cmd->create(*model_operator, args))
     {
         command->execute();
         m_history.push_back(std::move(command));
@@ -41,15 +45,15 @@ void CommandDispatcher::runCommand(QCommand* cmd, const QString& model_name, con
     }
 }
 
-void CommandDispatcher::splitFace(const QString& model_name, QSelection* sel) {
+void CommandDispatcher::splitFace(Index model_id, QSelection* sel) {
     if (!model_manager_) {
         qWarning() << "未设置 ModelBridge";
         return;
     }
     // 通过 ModelBridge 获取对应的 ModelData
-    std::optional model_operator = model_manager_->getModelOperator(model_name);
+    std::optional model_operator = model_manager_->getModelOperator(model_id);
     if (!model_operator) {
-        qWarning() << "未找到模型: " << model_name;
+        qWarning() << "未找到模型: " << model_id;
         return;
     }
     // 使用 ModelData 指针传递给具体命令类

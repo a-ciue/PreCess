@@ -26,11 +26,41 @@ public:
      *
      * 将一个命令注册到目录中。该函数会设置命令对象的父对象为当前 QCommandCatalog，以便统一管理其生命周期。
      */
-    void addCommand(QCommand* cmd) {
-        if (cmd) {
-            cmd->setParent(this);
-            m_commands.append(cmd);
+    void addCommand(QCommand* cmd)
+    {
+        if (!cmd)
+            return;
+
+        if (const QString& path = cmd->path(); !path.isEmpty())
+        {
+            // 检查命令名称是否已存在
+            if (command_map_.count(path)) {
+                qWarning() << "命令名称已存在，无法注册:" << path;
+            }
+            else
+            {
+                command_map_[path] = cmd;
+            }
         }
+
+        cmd->setParent(this);
+        commands_.append(cmd);
+    }
+
+    /**
+     * @brief 根据命令路径获取对应的命令对象
+     *
+     * 通过命令路径查找并返回对应的命令对象。
+     * @param path 命令路径
+     * @return 指向对应 QCommand 对象的指针，如果不存在则返回 nullptr
+     */
+    Q_INVOKABLE QCommand* pathCommand(const QString& path)
+    {
+        auto it = command_map_.find(path);
+        if (it != command_map_.end()) {
+            return it->second;
+        }
+        return nullptr;
     }
 
     /**
@@ -40,9 +70,10 @@ public:
      * 返回一个命令对象列表，可用于在 QML 中显示所有可用命令。
      */
     Q_INVOKABLE QList<QCommand*> qmlCommands() const {
-        return m_commands;
+        return commands_;
     }
 
 private:
-    QList<QCommand*> m_commands;   //!< 已注册的命令对象列表
+    QList<QCommand*> commands_;   //!< 已注册的命令对象列表
+    std::unordered_map<QString, QCommand*> command_map_; //!< 命令名称与命令对象的映射
 };

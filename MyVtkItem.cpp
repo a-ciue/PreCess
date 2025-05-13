@@ -104,72 +104,48 @@ bool QRenderWindow::event(QEvent* ev)
 }
 
 
-
-Q_INVOKABLE void QRenderWindow::deleteModel(QString model_name)
+void QRenderWindow::deleteModel(Index model_id)
 {
-    dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->models_.erase(model_name);
+        vtk->models_.erase(model_id);
         });
 }
 
-Q_INVOKABLE void QRenderWindow::onModelChanged(QString model_name)
+void QRenderWindow::onModelChanged(Index model_id)
 {
-    dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
-        std::optional model_data = model_query_->getModelData(model_name);
+        std::optional model_data = model_query_->getModelData(model_id);
         if (model_data)
         {
-            if (!vtk->models_.count(model_name))
-                vtk->models_[model_name] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
-            vtk->models_[model_name]->loadModelData(*model_data);
-            vtk->models_[model_name]->setRenderMode(renderMode_);
+            if (!vtk->models_.count(model_id))
+                vtk->models_[model_id] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
+            vtk->models_[model_id]->loadModelData(*model_data);
+            vtk->models_[model_id]->setRenderMode(renderMode_);
         }
     });
 }
 
-Q_INVOKABLE void QRenderWindow::renameModel(QString old_name, QString new_name)
+void QRenderWindow::setVisibility(Index model_id, bool visibility)
 {
-    dispatch_async([old_name,new_name,this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
-        Data* vtk = Data::SafeDownCast(userData);
-        auto it = vtk->models_.find(old_name);
-        if (it != vtk->models_.end()) {
-            // 从映射中移除旧键
-            //vtk->actor_.erase(it);
-
-            // 重新插入新的键值对
-            //vtk->actor_.emplace(new_name, std::move(it->second));
-            
-            // 1. 先将 it->second 移动到一个临时变量
-            auto actorTemp = std::move(it->second);
-
-            // 2. 再从 map 中删除旧的键
-            vtk->models_.erase(it);
-
-            // 3. 重新插入新的键值对
-            vtk->models_.emplace(new_name, std::move(actorTemp));
-        }
-        else {
-            // 旧键不存在，可以抛出异常或处理错误
-            throw std::runtime_error("Old key does not exist");
-        }
-        });
-}
-
-Q_INVOKABLE void QRenderWindow::setVisibility(QString model_name, bool visibility)
-{
-    dispatch_async([model_name,visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_id,visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->clearSelection();
-        vtk->models_[model_name]->setVisibility(visibility);
+        vtk->models_[model_id]->setVisibility(visibility);
         });
 }
 
 QSelection* QRenderWindow::selectedIDs()
 {
-    std::unique_ptr<Selection> data(std::move(this->selectManager_->getSelection()));
-    data->model_name = this->cur_actor_name_;
+    std::unique_ptr<Selection> data(this->selectManager_->getSelection());
+    if (!data)
+    {
+        return nullptr;
+    }
+
+    data->model_id= this->cur_actor_id_;
     QSelection* selection = new QSelection(std::move(data));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
@@ -181,20 +157,20 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
-Q_INVOKABLE void QRenderWindow::setSelectModel(QString model_name)
+void QRenderWindow::setSelectModel(Index model_id)
 {
-    dispatch_async([model_name, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
-        this->cur_actor_name_ = model_name;
-        if (vtk->models_.count(model_name))
-            selectManager_->setSelectActor(vtk->models_[model_name].get());
+        this->cur_actor_id_ = model_id;
+        if (vtk->models_.count(model_id))
+            selectManager_->setSelectActor(vtk->models_[model_id].get());
         else
             selectManager_->setSelectActor(nullptr);
         });
 }
 
-Q_INVOKABLE void QRenderWindow::setSelectMode(QString select_mode)
+void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
@@ -215,12 +191,12 @@ Q_INVOKABLE void QRenderWindow::setSelectMode(QString select_mode)
         });
 }
 
-Q_INVOKABLE void QRenderWindow::clearSelection()
+void QRenderWindow::clearSelection()
 {
     this->selectManager_->clearSelection();
 }
 
-Q_INVOKABLE void QRenderWindow::setRenderMode(QString render_mode)
+void QRenderWindow::setRenderMode(QString render_mode)
 {
 
     dispatch_async([render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
@@ -244,7 +220,7 @@ Q_INVOKABLE void QRenderWindow::setRenderMode(QString render_mode)
         });
 }
 
-Q_INVOKABLE void QRenderWindow::setEdgeRender(bool is_render)
+void QRenderWindow::setEdgeRender(bool is_render)
 {
     dispatch_async([is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
@@ -252,7 +228,6 @@ Q_INVOKABLE void QRenderWindow::setEdgeRender(bool is_render)
             modelActor->setRenderEdge(is_render);
         }
         });
-    return Q_INVOKABLE void();
 }
 
 //void QRenderWindow::changeEdgeRender(QString model_name, QString renderMode, bool render)

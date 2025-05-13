@@ -49,7 +49,7 @@ public:
 
         vtkNew<vtkRenderer> renderer_;
 
-        std::unordered_map<QString, std::unique_ptr<ModelActor>> models_;
+        std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;
         vtkNew<QRenderWindowStyle> style_;
 
 
@@ -68,7 +68,7 @@ public:
      * @brief 选择模型
      * @param select_mode 
      */
-    Q_INVOKABLE void setSelectModel(QString model_name);
+    Q_INVOKABLE void setSelectModel(Index model_id);
 
 	 /**
      * @brief 改变选择模式
@@ -99,12 +99,11 @@ public:
      * @brief 改变可见性
      * @param select_mode
      */
-    Q_INVOKABLE void setVisibility(QString model_name, bool visibility);
+    Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
 
 
-    Q_INVOKABLE void onModelChanged(QString model_name);
-    Q_INVOKABLE void renameModel(QString old_name, QString new_name);
-    Q_INVOKABLE void deleteModel(QString mode_name);
+    Q_INVOKABLE void onModelChanged(Index model_id);
+    Q_INVOKABLE void deleteModel(Index mode_id);
 
     Q_SLOT void setClick();
 
@@ -127,7 +126,7 @@ private:
     
     std::unique_ptr<SelectManager> selectManager_;
     ModelActor* cur_actor_{};
-    QString cur_actor_name_;
+    Index cur_actor_id_;
 
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_{};

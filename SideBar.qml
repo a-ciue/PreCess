@@ -15,7 +15,7 @@ Item{
     id: root
     required property CommandDispatcher commandDispatcher
     property QCommand curCommand
-    property string curModel
+    property int curModel
     required property QSelection curSelection // temp
     signal selectModeChanged
 

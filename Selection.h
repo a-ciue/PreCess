@@ -26,7 +26,7 @@ struct Selection {
     std::vector<int> ids;
     //! @brief 选择对象的类型
     Element::Type type;
-    QString model_name;
+    Index model_id;
 };
 
 /**
@@ -40,26 +40,26 @@ class QSelection : public QObject
 public:
     QSelection() {}
     QSelection(std::unique_ptr<Selection> data)
-        : _data(std::move(data)) {}
+        : data_(std::move(data)) {}
 
     /**
      * 存入
      * @param data 待存入的数据
      */
-    void set(std::unique_ptr<Selection> data) { _data = std::move(data); }
+    void set(std::unique_ptr<Selection> data) { data_ = std::move(data); }
     /**
      * 取出
      * @return 存储的Selection对象
      */
-    std::unique_ptr<Selection> move() { return std::move(_data); }
+    std::unique_ptr<Selection> move() { return std::move(data_); }
 
     /**
      * @brief 获取该选择的数组大小
      * @return 存储数组大小
      */
     Q_INVOKABLE size_t size() {
-        if (_data) {
-            return _data->ids.size();
+        if (data_) {
+            return data_->ids.size();
         }
         return 0;
     }
@@ -67,7 +67,7 @@ public:
      * @brief 获取选中数据的类型枚举值
      * @return 类型枚举值
      */
-    Q_INVOKABLE Element::Type type() { return _data->type; }
+    Q_INVOKABLE Element::Type type() { return data_->type; }
     /**
      * @brief 初始化一个Selection数据
      */
@@ -77,7 +77,7 @@ public:
         for (int i = 1; i < 2; i++) {
             temp->ids.push_back(i);
         }
-        _data = std::move(temp);
+        data_ = std::move(temp);
     }
     /**
      * @brief ids 返回选择对象的id值表的第i个元素
@@ -85,18 +85,18 @@ public:
      * @return    int类
      */
     Q_INVOKABLE int ids(int i) {
-        return _data->ids[i];
+        return data_->ids[i];
     }
     /**
-     * @brief getName 返回选中对象的模型名
-     * @return QString类
+     * @brief 返回选中对象的模型 ID
+     * @return 模型id
      */
-    Q_INVOKABLE QString getName(){
-        return _data->model_name;
+    Q_INVOKABLE Index getModelId(){
+        return data_->model_id;
     }
 
 private:
-    std::unique_ptr<Selection> _data;
+    std::unique_ptr<Selection> data_;
 };
 
 #endif // SELECTION_H
