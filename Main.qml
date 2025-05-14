@@ -379,19 +379,8 @@ ApplicationWindow {
         objectModel:ListModel{
             id: objectInitializeModel
         }
-        onButtonPressed:{
-            if(type === 1){
-                /*此处是点击对象列表“隐藏”按钮后执行的函数*/
-                //console.log("对象"+index+"已被隐藏")
-            }
-            if(type === 2){
-                /*此处是电机对象列表“删除”按钮后执行的函数*/
-                //console.log("对象"+index+"已被删除")
-                //objectInitializeModel.remove(index,1)
-            }
-        }
         Component.onCompleted: {
-            modelObserver.modelAdded.connect(objectList.addItem)
+            modelObserver.modelAdded.connect((model_id)=>objectList.addItem(model_id,modelQuery.getModelName(model_id)))
             modelObserver.modelAdded.connect(myItem.onModelChanged)
             modelObserver.modelChanged.connect(myItem.onModelChanged)
 
@@ -401,7 +390,7 @@ ApplicationWindow {
             //objectList.renameModel.connect(()=>{myItem.setSelectMode("Edge")})
             objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
             objectList.changeModelVisibility.connect(myItem.setVisibility)
-            objectList.selectionChanged.connect((selectedModelName)=>{myItem.setSelectModel(selectedModelName)})
+            objectList.selectionChanged.connect((selectedModel_id)=>{myItem.setSelectModel(selectedModel_id)})
         }
     }
 

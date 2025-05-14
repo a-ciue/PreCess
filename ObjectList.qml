@@ -8,14 +8,12 @@ import QtQuick.Controls
 
 Item {
     id: root
-    signal buttonPressed(int index,int type)
-    // call ModelData
-    signal removeModel(string modelName)
+    signal removeModel(string model_id)
     signal renameModel(string oldName, string newName)
-    signal changeModelVisibility(string modelName,bool visibility)
+    signal changeModelVisibility(string model_id,bool visibility)
     signal selectionChanged(string modelName)
     property var idxMap: ({})
-    property string selectedModelName: ""  // 存储当前选中的模型名
+    property var selectedModel_id: "-1"  // 存储当前选中的模型名
     /**
      * @brief 对象显示列表，每行由两个按钮，一个文本和一个图标组成
      */
@@ -28,8 +26,7 @@ Item {
                 id:visibilityButton
                 text: "隐藏"
                 onClicked:{
-                    //root.buttonPressed(index,1)
-                    changeModelVisibility(name, !checked)
+                    changeModelVisibility(savedId, !checked)
                 }
                 checkable: true
             }
@@ -37,33 +34,33 @@ Item {
                 id:deleteButton
                 text: "删除"
                 onClicked:{
-                    //root.buttonPressed(index,2)
-                    removeModel(name)
+                    removeModel(savedId)
                     console.log("buttonDelName: ", name)
                 }
             }
             TextInput{
                 id:objectName
                 width: 80
-                property string savedName
                 text: name
-                font.bold: root.selectedModelName === name  // 根据选中状态设置粗体
+                font.bold: {
+                    console.log(savedId, root.selectedModel_id,root.selectedModel_id === savedId)
+                    return root.selectedModel_id === savedId  // 根据选中状态设置粗体
+                }
                 
                 MouseArea {
                     anchors.fill: parent
                     onDoubleClicked: {
-                        if (root.selectedModelName === name) {
-                            root.selectedModelName = ""  // 取消选中
+                        if (root.selectedModel_id === savedId) {
+                            root.selectedModel_id = "-1"  // 取消选中
                         } else {
-                            root.selectedModelName = name  // 选中当前行
+                            root.selectedModel_id = savedId  // 选中当前行
                         }
-                        root.selectionChanged(root.selectedModelName)  // 发送信号
+                        root.selectionChanged(root.selectedModel_id)  // 发送信号
+                        console.log("双击触发")
+                        //console.log(savedId, root.selectedModel_id,root.selectedModel_id === savedId)
                     }
                 }
                 
-                Component.onCompleted: {
-                    savedName = text
-                }
                 onEditingFinished: {
                     if(text !== savedName){
                         renameModel(savedName, text)
@@ -84,19 +81,19 @@ Item {
      * @brief 为列表添加一行模型信息
      * @param modelName 模型名字
      */
-    function addItem(modelName){
-        objectModel.append({"name":modelName})
-        idxMap[modelName] = objectModel.count - 1
-        console.log("addIdx", idxMap[modelName])
+    function addItem(model_id,modelName){
+        objectModel.append({name:modelName,savedId:model_id})
+        idxMap[model_id] = objectModel.count - 1
+        console.log("addIdx", idxMap[model_id])
     }
     /**
      * @brief 删除一行模型信息
      * @param modelName 模型名字
      */
-    function removeItem(modelName){
-        console.log("remove: ", modelName)
-        objectModel.remove(idxMap[modelName])
-        delete idxMap[modelName]
+    function removeItem(model_id){
+        console.log("remove: ", model_id)
+        objectModel.remove(idxMap[model_id])
+        delete idxMap[model_id]
     }
     /**
      * @brief 重命名一行模型信息的名字
