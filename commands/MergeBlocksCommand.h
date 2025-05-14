@@ -4,7 +4,8 @@
 // command/MergeBlocksCommand.h
 #pragma once
 #include "ICommand.h"
-class vtkModelData;
+#include "../ModelOperator.h"
+#include "ArgTypeObject.h"
 class QSelection;
 
 /**
@@ -16,6 +17,9 @@ public:
     void execute() override;
     void undo() override;
     void redo() override;
+
+    static QList<ArgTypeObject*> getArgsModel();
+    static unique_ptr<MergeBlocksCommand> create(ModelOperator model_op, const QVariantList& list);
 private:
     ModelOperator model_op_;
     QSelection* selection_;

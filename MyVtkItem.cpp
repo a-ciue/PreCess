@@ -194,7 +194,9 @@ void QRenderWindow::setSelectMode(QString select_mode)
 
 void QRenderWindow::clearSelection()
 {
-    this->selectManager_->clearSelection();
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        this->selectManager_->clearSelection();
+    });
 }
 
 void QRenderWindow::setRenderMode(QString render_mode)
@@ -202,6 +204,7 @@ void QRenderWindow::setRenderMode(QString render_mode)
 
     dispatch_async([render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
+        this->selectManager_->clearSelection();
         if (render_mode == "Face") {
             this->renderMode_ = RenderMode::Face;
             for (auto&& [modelName, modelActor] : vtk->models_) {
@@ -215,7 +218,7 @@ void QRenderWindow::setRenderMode(QString render_mode)
             }
         }
         else {
-            std::cout << "rendermode error!" << endl;
+            qWarning() << "render mode error!";
         }
         
         });
@@ -225,6 +228,7 @@ void QRenderWindow::setEdgeRender(bool is_render)
 {
     dispatch_async([is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
+        this->edge_render_ = is_render;
         for (auto&& [modelName, modelActor] : vtk->models_) {
             modelActor->setRenderEdge(is_render);
         }

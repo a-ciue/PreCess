@@ -15,7 +15,10 @@
 #include "commands/QCommandCatalog.h"
 #include "commands/CommandDispatcher.h"
 #include "commands/SplitFaceCommand.h"
+#include "commands/SplitEdgeCommand.h"
+#include "commands/MergeBlocksCommand.h"
 #include <QtQml/QQmlExtensionPlugin>
+
 Q_IMPORT_QML_PLUGIN(modelPlugin)
 
 int main(int argc, char* argv[])
@@ -27,6 +30,8 @@ int main(int argc, char* argv[])
 
     QCommandCatalog catalog;
     catalog.addCommand(new QCommand("切分面", "faceMode.splitFace", SplitFaceCommand::create, SplitFaceCommand::getArgsModel()));
+    catalog.addCommand(new QCommand("切分边", "faceMode.splitEdge", SplitEdgeCommand::create, SplitEdgeCommand::getArgsModel()));
+    catalog.addCommand(new QCommand("合并块", "blockMode.mergeBlocks", MergeBlocksCommand::create, MergeBlocksCommand::getArgsModel()));
     CommandDispatcher dispatcher(&manager);
 
     QGuiApplication app(argc, argv);

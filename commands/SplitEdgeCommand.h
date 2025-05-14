@@ -1,7 +1,6 @@
 //
-// Created by 徐昊阳 on 4/12/25.
+// Created by 张家僮 on 5/14/25.
 //
-// command/SplitFaceCommand.h
 #pragma once
 #include "ICommand.h"
 #include "../ModelOperator.h"
@@ -11,15 +10,15 @@ class QSelection;
 /**
  * SplitFaceCommand：拆分选中面的命令
  */
-class SplitFaceCommand : public ICommand {
+class SplitEdgeCommand : public ICommand {
 public:
-    SplitFaceCommand(ModelOperator model_op, QSelection* selection);
+    SplitEdgeCommand(ModelOperator model_op, QSelection* selection);
     void execute() override;
     void undo() override;
     void redo() override;
 
     static QList<ArgTypeObject*> getArgsModel();
-    static unique_ptr<SplitFaceCommand> create(ModelOperator model_op, const QVariantList& list);
+    static unique_ptr<SplitEdgeCommand> create(ModelOperator model_op, const QVariantList& list);
 
 private:
     ModelOperator model_op_;

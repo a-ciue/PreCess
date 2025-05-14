@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.14)
 
 qt_add_library(commands STATIC
         SplitFaceCommand.cpp
-        # MergeBlocksCommand.cpp
+        SplitEdgeCommand.cpp
+        MergeBlocksCommand.cpp
         # LoadSplineCommand.cpp
         CommandDispatcher.cpp
 )

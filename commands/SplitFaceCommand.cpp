@@ -3,10 +3,7 @@
 //
 // command/SplitFaceCommand.cpp
 #include "SplitFaceCommand.h"
-#include "../ModelData.h"
-#include "../Selection.h"
-#include "../ModelUtil.h"
-#include <stdexcept>
+#include <QVariantList>
 
 SplitFaceCommand::SplitFaceCommand(ModelOperator model_op, QSelection* selection)
         : model_op_(model_op), selection_(selection) { }

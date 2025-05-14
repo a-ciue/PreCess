@@ -16,26 +16,31 @@ void ModelOperator::split_face(QSelection* selection)
 void ModelOperator::split_edge(QSelection* selection)
 {
     model_->split_edge(selection);
+    observer_->notifyModelChanged(model_->getId());
 }
 
 void ModelOperator::merge_blocks(QSelection* selection)
 {
     model_->merge_blocks(selection);
+    observer_->notifyModelChanged(model_->getId());
 }
 
 void ModelOperator::merge_groups(QSelection* selection)
 {
     model_->merge_groups(selection);
+    observer_->notifyModelChanged(model_->getId());
 }
 
 void ModelOperator::remesh_block(QSelection* selection)
 {
     model_->remesh_block(selection);
+    observer_->notifyModelChanged(model_->getId());
 }
 
 void ModelOperator::remesh_group(QSelection* selection)
 {
     model_->remesh_group(selection);
+    observer_->notifyModelChanged(model_->getId());
 }
 
 

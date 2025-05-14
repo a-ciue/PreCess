@@ -1,7 +1,4 @@
 #include "Selector.h"
-#include "Selector.h"
-#include "Selector.h"
-#include "Selector.h"
 #include <array>
 #include <optional>
 #include <utility>
@@ -20,21 +17,12 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
-#include <vtkPoints.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkSelectionNode.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkExtractSelection.h>
 #include <vtkLine.h>
-#include <vtkPolyData.h>
-#include <vtkPoints.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkPropAssembly.h>
-#include <vtkAssembly.h>
 #include <vtkAssemblyPath.h>
-#include <vtkAssemblyNode.h>
 #include <vtkAppendPolyData.h>
-#include <vtkMapper.h>
 #include "ModelUtil.h"
 #include <vtkCompositeDataDisplayAttributes.h>
 #include <vtkMultiBlockDataSet.h>
@@ -59,7 +47,7 @@ SelectionVtk BlockSelectorHighlight::get() {
     SelectionVtk back_selection;
     back_selection.type = Element::Block;
     for (const auto& selection : selections_) {
-        back_selection.ids.push_back(selection.block_id - 1);  
+        back_selection.ids.push_back(selection.block_id);  
     }
     return back_selection;
 }

@@ -207,7 +207,7 @@ ApplicationWindow {
                         //if(ids.type() !== Element.Edge){console.log("ids的类型不是Element.Edge")}
                         console.log("选中的模型名为：",modelQuery.getModelName(ids.getModelId()))
                         if (ids.size() !== 0 /*&& ids.type() === Element.Edge*/) {
-                            modelManager.model(ids.getName()).split_edge(ids)
+                            commandDispatcher.runCommand(commandCatalog.pathCommand("faceMode.splitEdge"), ids.getModelId(), [ids])
                         }else{
                             console.log("未选中对象或选中对象不是边")
                         }
@@ -273,7 +273,8 @@ ApplicationWindow {
                 if(modeOrConfirm === 0){
                     if(index === 0) {
                         // myItem.bindStyle("Block")
-                        modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs)
+                        let ids = myItem.selectedIDs
+                        commandDispatcher.runCommand(commandCatalog.pathCommand("blockMode.mergeBlocks"), ids.getModelId(), [ids])
                         myItem.resetCamera()
                         selector.clearSelection()
                     }
