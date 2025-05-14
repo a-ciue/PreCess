@@ -41,6 +41,7 @@ void SelectManager::setSelectActor(ModelActor* model_actor_)
 	this->cur_model_actor_ = model_actor_;
 	if (this->selector_)
 	{
+		this->selector_->clear();
 		this->selector_->getPickList()->RemoveAllItems();
 		if (model_actor_)
 		{

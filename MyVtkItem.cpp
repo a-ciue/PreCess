@@ -109,6 +109,7 @@ void QRenderWindow::deleteModel(Index model_id)
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->models_.erase(model_id);
+        this->selectManager_->clearSelection();
         });
 }
 
