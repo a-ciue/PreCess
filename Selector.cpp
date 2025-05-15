@@ -54,6 +54,7 @@ SelectionVtk BlockSelectorHighlight::get() {
 
 void BlockSelectorHighlight::select(double posx, double posy) {
     vtkNew<vtkCellPicker> picker;
+    picker->PickFromListOn();
     collection_->InitTraversal();
     for (vtkProp* actor{}; actor = collection_->GetNextProp();) {
         picker->AddPickList(actor);
@@ -225,6 +226,7 @@ void SingleFaceSelectorHighlight::clear()
 void SingleFaceSelectorHighlight::select(double posx, double posy)
 {
     vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+    picker->PickFromListOn();
     collection_->InitTraversal();
     for (vtkProp* actor{}; actor = collection_->GetNextProp();  )
     {
@@ -326,6 +328,7 @@ SelectionVtk SingleEdgeSelectorHighlight::get()
 void SingleEdgeSelectorHighlight::select(double posx, double posy)
 {
     vtkNew<vtkCellPicker> picker;
+    picker->PickFromListOn();
     collection_->InitTraversal();
     for (vtkProp* actor{}; actor = collection_->GetNextProp(); )
     {
