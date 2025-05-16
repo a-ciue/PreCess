@@ -64,6 +64,9 @@ public:
     QSelection* selectedIDs();
     void setModelQuery(QModelQuery* query);
 
+    bool getIsEdgeRender(const QRenderWindow::Data* data_, Index model_id);
+
+
 	/**
      * @brief 选择模型
      * @param select_mode 

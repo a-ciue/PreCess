@@ -1,4 +1,5 @@
 #include "ModelActor.h"
+#include "ModelActor.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -100,6 +101,11 @@ void ModelActor::setRenderMode(RenderMode render_mode)
         std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
         return;
     }
+}
+
+bool ModelActor::getIsEdgeRender()
+{
+    return this->edge_render_;
 }
 
 void ModelActor::addPickList(vtkPropCollection* pick_list)

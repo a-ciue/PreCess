@@ -158,6 +158,11 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
+bool QRenderWindow::getIsEdgeRender(const QRenderWindow::Data* data_, Index model_id)
+{
+    return data_->models_.at(model_id)->getIsEdgeRender();
+}
+
 void QRenderWindow::setSelectModel(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {

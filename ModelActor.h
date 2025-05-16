@@ -35,8 +35,9 @@ public:
     void setRenderEdge(bool is_render);
     void setRenderMode(RenderMode render_mode);
 
+    bool getIsEdgeRender();
     void addPickList(vtkPropCollection* pick_list);
-
+    
     Index get_model_face_id(vtkIdType face_id);
     Index get_model_point_id(vtkIdType point_id);
     Index get_model_block_id(vtkIdType block_id);
