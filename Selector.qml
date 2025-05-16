@@ -9,14 +9,14 @@ import QtQuick.Controls
 Row{
     id:root
 
-    signal selectorButtonClicked(int type)
+    signal clearButtonClicked
+    signal confirmButtonClicked
     signal comboBoxSelectionChanged
     property QSelection selection
-    property bool enabled: true
+    property bool enabled: false
     
     ComboBox{
         id: selectModeComboBox
-        enabled: root.enabled
         model:ListModel{
             ListElement{text: "..."}
             ListElement{text: "边"}
@@ -28,18 +28,17 @@ Row{
     }
     Button{
         id: selectClearButton
-        enabled: root.enabled
         text: "清除选择"
         onClicked:{
-            root.selectorButtonClicked(0)
+            root.clearButtonClicked()
         }
         opacity: root.enabled ? 1.0 : 0.5
     }
     Button{
-        enabled: root.enabled
+        visible: root.enabled
         text: "确认"
         onClicked:{
-            root.selectorButtonClicked(1)
+            root.confirmButtonClicked()
         }
         opacity: root.enabled ? 1.0 : 0.5
     }

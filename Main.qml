@@ -32,6 +32,8 @@ ApplicationWindow {
     required property QCommandCatalog commandCatalog
     required property CommandDispatcher commandDispatcher
 
+    property bool edgeRenderCheck: false
+
     header: ToolBar {
         id: header
         RowLayout {
@@ -128,7 +130,6 @@ ApplicationWindow {
                 ButtonGroup {
                     id: renderGroup
                     onCheckedButtonChanged: {
-                        //myItem.unbindStyle()
                         myItem.setRenderMode(checkedButton.renderMode)
                     }
                 }
@@ -245,7 +246,9 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.setEdgeRender(check)
+                root.edgeRenderCheck = !root.edgeRenderCheck
+                myItem.setEdgeRender(root.edgeRenderCheck)
+
             }
         }
 
@@ -300,7 +303,8 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                myItem.setEdgeRender(check)
+                root.edgeRenderCheck = !root.edgeRenderCheck
+                myItem.setEdgeRender(root.edgeRenderCheck)
             }
         }
 
@@ -398,7 +402,7 @@ ApplicationWindow {
     SideBar{
         id: sideBar
         commandDispatcher: root.commandDispatcher
-        curModel: objectList.selectedModelName
+        curModel: objectList.selectedModel_id
         curSelection: selector.selection
         anchors.top: objectList.bottom
         anchors.left: parent.left
@@ -413,9 +417,10 @@ ApplicationWindow {
             ListElement{type: 3; name: "选择器"; content: "无"}//可能会有多个选择器的需求，因此需要动态构造多个选择器
         }
         onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
-            selector.changePropertyEnabled()
-            selector.comboBoxSelectionChanged()
+            //selector.changePropertyEnabled()
+            //selector.comboBoxSelectionChanged()
             //console.log("信号被接收")
+            selector.changeEnable()
         }
         // Component.onCompleted: {
         //     selector.comboBoxSelectionChanged()
@@ -441,10 +446,6 @@ ApplicationWindow {
             anchors.margins: border.width
             query: modelQuery
         }
-        Component.onCompleted: {
-            modelManager.vtkItem = myItem
-            modelManager.modelRemoved.connect(myItem.deleteModel)
-        }
 
         Selector{
             id:selector
@@ -455,26 +456,8 @@ ApplicationWindow {
             property QSelection selection
             enabled: objectList.selectedModelName !== ""  // 绑定到objectList的选中状态
             
-            onSelectorButtonClicked:{
-                if(type === 0){
-                    console.log("点击清除按钮")
-                    /*此处是点击选择器清除按钮之后执行的函数*/
-                }
-                if(type === 1){
-                    console.log("点击确认按钮")
-                    selection = myItem.selectedIDs;
-                    /*此处是点击选择器的确认按钮之后执行的函数*/
-                    /*下面是我写的测试函数，可删，Selection.h中的initialize()函数是我赋值用的，可删，ids(i)是输出第i个id的，或许有用*/
-                    /*selection.initialize()
-                    var i
-                    for(i = 0;i<selection.size();i++){
-                        console.log(selection.ids(i))
-                    }
-
-                    if(selection.type() === Element.Face){
-                        console.log("Face已被接收到")
-                    }*/            
-                }
+            onClearButtonClicked:{
+                clearSelection()
             }
 
             function clearSelection(){
@@ -495,6 +478,9 @@ ApplicationWindow {
                     myItem.setSelectMode("Block")
                 }
             }
+
+            function changeEnable(){}
+                
             onComboBoxSelectionChanged:{
                 bindFunction(comboBoxSelectedString)
             }

@@ -12,7 +12,7 @@ Item{
     signal modeButtonClicked(Button a,bool ischecked)
     signal buttonFunction(int index,int modeOrConfirm)
     signal buttonGroupFunction
-    signal changeEdgeRender(bool check)
+    signal changeEdgeRender()
 
     function resetChecked(){
         modeButtonGroup.checkState = Qt.Unchecked
@@ -25,10 +25,9 @@ Item{
         Button{
             id: edgeRenderGroup
             text: "边渲染"
-            checkable: true
-            enabled: selector.enabled
+            checked:edgeRenderCheck
             onClicked: {
-                changeEdgeRender(checked)
+                changeEdgeRender()
             }
         }
         Rectangle {
