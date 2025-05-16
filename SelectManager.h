@@ -37,7 +37,7 @@ public:
 	std::unique_ptr<Selection>	getSelection();
 
 private:
-	ModelActor*	cur_model_actor_;
+	const ModelActor* cur_model_actor_{};
 	SelectMode	select_mode_;
 	vtkNew<vtkActor> selection_actor_;
 	vtkNew<vtkPolyDataMapper> selection_mapper_;

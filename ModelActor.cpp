@@ -108,22 +108,22 @@ bool ModelActor::getIsEdgeRender()
     return this->edge_render_;
 }
 
-void ModelActor::addPickList(vtkPropCollection* pick_list)
+void ModelActor::addPickList(vtkPropCollection* pick_list) const
 {
     pick_list->AddItem(this->actor_);
 }
 
-Index ModelActor::get_model_face_id(vtkIdType face_id)
+Index ModelActor::get_model_face_id(vtkIdType face_id) const
 {
     return this->model_data_.model_face_id(face_id);
 }
 
-Index ModelActor::get_model_point_id(vtkIdType point_id)
+Index ModelActor::get_model_point_id(vtkIdType point_id) const
 {
     return this->model_data_.model_point_id(point_id);
 }
 
-Index ModelActor::get_model_block_id(vtkIdType block_id)
+Index ModelActor::get_model_block_id(vtkIdType block_id) const
 {
     return this->model_data_.model_block_id(block_id);
 }

@@ -34,16 +34,16 @@ struct ModelDataVtk {
     BlockDatas model_blocks_;
 
 
-    Index model_face_id(Index face_id)
+    Index model_face_id(Index face_id) const
 {
 
     return this->model_face_id_[face_id];
 }
-    Index model_point_id(Index point_id)
+    Index model_point_id(Index point_id) const
 {
     return this->model_point_id_[point_id];
 }
-    Index model_block_id(Index block_id)
+    Index model_block_id(Index block_id) const
 {
     return this->model_blocks_.block_datas[block_id].model_id_;
 }
