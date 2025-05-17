@@ -46,6 +46,6 @@ private:
 	std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;
 	bool edge_render_;
 	ModelRenderMode render_mode_;
-	vtkRenderer* renderer_
+	vtkRenderer* renderer_;
 };
 #endif

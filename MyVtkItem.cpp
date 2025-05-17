@@ -22,21 +22,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         vtk->renderer_->SetBackground(0.5, 0.5, 0.7);
         vtk->renderer_->SetBackground2(0.7, 0.7, 0.7);
         vtk->renderer_->SetGradientBackground(true);
-    
-        /*vtk->style_
-    vtk->styles[0] = vtk->faceStyle;
-    vtk->styles[1] = vtk->edgeStyle;
-    vtk->styles[2] = vtk->blockStyle;
-    vtk->styles[3] = vtk->groupStyle;
 
-    vtk->blockStyle->SetSelector(std::make_unique<BlockSelectorHighlight>(vtk->renderer));
-    vtk->blockStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->groupStyle->SetSelector(std::make_unique<BlockSelectorHighlight>(vtk->renderer));
-    vtk->groupStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->faceStyle->SetSelector(std::make_unique<SingleFaceSelectorHighlight>(vtk->renderer));
-    vtk->faceStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
-    vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);*/
     vtk->style_->SetSelectManager(this->selectManager_.get());
     selectManager_->bindRenderer(vtk->renderer_);
     vtk->style_->SetDefaultRenderer(vtk->renderer_);
@@ -110,7 +96,8 @@ void QRenderWindow::deleteModel(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->models_.erase(model_id);
+        this->model_actor_manager_->deleteModel(model_id);
+        this->spline_actor_manager_->deleteModel(model_id);
         this->selectManager_->clearSelection();
         });
 }
@@ -241,28 +228,6 @@ void QRenderWindow::setEdgeRender(bool is_render)
         }
         });
 }
-
-//void QRenderWindow::changeEdgeRender(QString model_name, QString renderMode, bool render)
-//{
-//    ModelActor::RenderMode mode {};
-//    if (renderMode == "Face") {
-//        mode = ModelActor::RenderMode::Face;
-//    } else if (renderMode == "Block") {
-//        mode = ModelActor::RenderMode::Block;
-//    } else if (renderMode == "Group") {
-//        mode = ModelActor::RenderMode::Group;
-//    } else {
-//        std::cerr << "invalid renderMode in QRenderWindow::changeEdgeRenderer" << std::endl;
-//        return;
-//    }
-//
-//    dispatch_async([model_name,this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
-//        Data* vtk = Data::SafeDownCast(userData);
-//
-//        if (vtk->actor_[model_name])
-//            vtk->actor_[model_name]->render_edge(mode, render);
-//    });
-//}
 
 void QRenderWindow::setClick()
 {
