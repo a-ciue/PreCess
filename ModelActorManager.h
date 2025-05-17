@@ -32,19 +32,20 @@ class vtkPolyData;
 class Model;
 
 
-class ModelActorManager 
+class ModelActorManager :QObject
 {
 public:
 	ModelActor* getModelActor(Index model_id);
 	void deleteModel(Index model_id);
 	void loadModel(Index model_id, ModelDataVtk model_data, vtkRenderer* renderer);
 
-	void setVisibility(bool visibility );
-	void setRenderMode(Index model_id, ModelRenderMode render_mode);
-	void setRenderEdge(Index model_id, bool is_render);
+	Q_INVOKABLE void setVisibility(bool visibility);
+	Q_INVOKABLE void setRenderMode(Index model_id, ModelRenderMode render_mode);
+	Q_INVOKABLE void setRenderEdge(Index model_id, bool is_render);
 private:
 	std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;
 	bool edge_render_;
 	ModelRenderMode render_mode_;
-}
+	vtkRenderer* renderer_
+};
 #endif
