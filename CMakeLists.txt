@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 option(ENABLE_TEST "是否启用测试")
+find_package(OpenCASCADE REQUIRED)
 
 find_package(VTK REQUIRED COMPONENTS
         CommonColor
@@ -39,7 +40,7 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml CommandMenu.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp Selection.h
+        MyVTKItem.h MyVtkItem.cpp Selection.h ModelActorManager.h SplineActorManager.h
 )
 
 qt_add_library(modelQml STATIC)
@@ -48,7 +49,7 @@ qt_add_qml_module(modelQml
     SOURCES
         ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp 
 )
-add_library(vtkPart STATIC ModelActor.cpp Selector.cpp Style.cpp SelectManager.cpp)
+add_library(vtkPart STATIC ModelActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp)
 
 
 add_library(modelPart STATIC
@@ -67,6 +68,11 @@ add_library(modelPart STATIC
 target_include_directories(modelPart
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}   # 项目根目录
+)
+target_link_libraries(vtkPart
+    PRIVATE
+    TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
+    ${VTK_LIBRARIES}
 )
 
 # 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
