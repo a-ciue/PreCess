@@ -56,4 +56,9 @@ struct ModelDataVtk {
     return this->model_blocks_.block_datas[block_id].model_id_;
 }
 };
+
+struct SplineDataVtk
+{
+    Index id;
+};
 #endif // CORE_H
