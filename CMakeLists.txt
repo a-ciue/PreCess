@@ -74,6 +74,11 @@ target_link_libraries(vtkPart
     TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
     ${VTK_LIBRARIES}
 )
+target_link_libraries(${MYNAME}
+    PRIVATE
+    TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
+    ${VTK_LIBRARIES}
+)
 
 # 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
 target_link_libraries(modelPart
@@ -81,6 +86,7 @@ target_link_libraries(modelPart
         Qt${VTK_QT_VERSION}::Gui
         Qt${VTK_QT_VERSION}::Quick
 )
+
 
 add_subdirectory(commands)
 target_link_libraries(modelQml PRIVATE modelPart commandsplugin)
