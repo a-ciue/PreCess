@@ -33,6 +33,8 @@
 #include "SelectManager.h"
 #include "Core.h" 
 #include "ModelQuery.h"
+#include "ModelActorManager.h"
+#include "SplineActorManager.h"
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
@@ -49,7 +51,7 @@ public:
 
         vtkNew<vtkRenderer> renderer_;
 
-        std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;
+        /*std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;*/
         vtkNew<QRenderWindowStyle> style_;
 
 
@@ -121,6 +123,9 @@ signals:
     void clicked();
  
 private:
+    std::unique_ptr<ModelActorManager> model_actor_manager_;
+    std::unique_ptr<SplineActorManager> spline_actor_manager_;
+
     bool edge_render_;
     ModelRenderMode renderMode_{};
     SelectMode select_mode_ {};
