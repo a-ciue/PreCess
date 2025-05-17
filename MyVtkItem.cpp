@@ -148,9 +148,9 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
-bool QRenderWindow::getIsEdgeRender(const QRenderWindow::Data* data_, Index model_id)
+bool QRenderWindow::getIsEdgeRender(Index model_id)
 {
-    return data_->models_.at(model_id)->getIsEdgeRender();
+    return this->model_actor_manager_->getIsEdgeRender(model_id);
 }
 
 void QRenderWindow::setSelectModel(Index model_id)
@@ -159,7 +159,7 @@ void QRenderWindow::setSelectModel(Index model_id)
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
         this->cur_actor_id_ = model_id;
-        if (this->model_actor_manager_->getcount(model_id))
+        if (this->model_actor_manager_->getCount(model_id))
             selectManager_->setSelectActor(this->model_actor_manager_->getModelActor(model_id));
         else
             selectManager_->setSelectActor(nullptr);

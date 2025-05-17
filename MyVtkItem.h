@@ -66,7 +66,7 @@ public:
     QSelection* selectedIDs();
     void setModelQuery(QModelQuery* query);
 
-    bool getIsEdgeRender(const QRenderWindow::Data* data_, Index model_id);
+    bool getIsEdgeRender(Index model_id);
 
 
 	/**
