@@ -68,19 +68,19 @@ ModelData::ModelData(std::unique_ptr<MeshLib::CTMesh> mesh)
     //emit modelInited(&patches_, &blocks_, &groups_);
 }
 
-void ModelData::write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString &extension)
+void ModelData::write_mesh(const std::filesystem::path& mesh_path, ModelRenderMode mode, const QString &extension)
 {
     std::function<int(int)> gid{};
 
     switch (mode) {
-    case RenderMode::Face:
+    case ModelRenderMode::Face:
         {
         gid = [](int patch_id) {
             return 1;
         };
         break;
     }
-    case RenderMode::Block: {
+    case ModelRenderMode::Block: {
         gid = [this](int patch_id) {
             return blocks_[patches_[patch_id]->blockID]->id;
         };

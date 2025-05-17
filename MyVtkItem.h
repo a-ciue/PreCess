@@ -122,7 +122,7 @@ signals:
  
 private:
     bool edge_render_;
-    RenderMode renderMode_{};
+    ModelRenderMode renderMode_{};
     SelectMode select_mode_ {};
 
     vtkNew<vtkCamera> _camera;

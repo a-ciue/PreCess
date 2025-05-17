@@ -41,15 +41,15 @@ bool FileHandler::writeMesh(ModelData* model, const QString& targetPath, const Q
         return false;
     }
 
-    RenderMode mode{};
+    ModelRenderMode mode{};
     if (renderMode == "Face") {
-        mode = RenderMode::Face;
+        mode = ModelRenderMode::Face;
     }
     else if (renderMode == "Block") {
-        mode = RenderMode::Block;
+        mode = ModelRenderMode::Block;
     }
     else if (renderMode == "Group") {
-        mode = RenderMode::Group;
+        mode = ModelRenderMode::Group;
     }
     else {
         qDebug() << "writeMesh: 无效的 renderMode:" << renderMode;

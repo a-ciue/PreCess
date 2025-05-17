@@ -27,13 +27,13 @@ public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode render_mode);
+    ModelActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode);
     ~ModelActor();
 
     void loadModelData(const ModelDataVtk& model_data);
     void setVisibility(bool visibility);
     void setRenderEdge(bool is_render);
-    void setRenderMode(RenderMode render_mode);
+    void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
     void addPickList(vtkPropCollection* pick_list) const;
@@ -43,7 +43,7 @@ public:
     Index get_model_block_id(vtkIdType block_id) const;
 
 private:
-    RenderMode render_mode_;
+    ModelRenderMode render_mode_;
     bool edge_render_;
     bool visibility_;
     ModelDataVtk model_data_;

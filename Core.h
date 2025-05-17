@@ -3,7 +3,7 @@
 #include <vector>
 #include <array>
 
-enum class RenderMode {
+enum class ModelRenderMode {
     Face,
     Block,
     Group

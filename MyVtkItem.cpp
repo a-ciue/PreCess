@@ -211,13 +211,13 @@ void QRenderWindow::setRenderMode(QString render_mode)
         Data* vtk = Data::SafeDownCast(userData);
         this->selectManager_->clearSelection();
         if (render_mode == "Face") {
-            this->renderMode_ = RenderMode::Face;
+            this->renderMode_ = ModelRenderMode::Face;
             for (auto&& [modelName, modelActor] : vtk->models_) {
                 modelActor->setRenderMode(this->renderMode_);
             }
         }
         else if (render_mode == "Block") {
-            this->renderMode_ = RenderMode::Block;
+            this->renderMode_ = ModelRenderMode::Block;
             for (auto&& [modelName, modelActor] : vtk->models_) {
                 modelActor->setRenderMode(this->renderMode_);
             }

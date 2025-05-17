@@ -29,7 +29,7 @@ vtkNew<vtkNamedColors> ModelActor::colors;
 
 
 
-ModelActor::ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode render_mode)
+ModelActor::ModelActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode)
 {
     this->renderer_ = renderer;
     this->setRenderEdge(is_edge_render);
@@ -86,14 +86,14 @@ void ModelActor::setRenderEdge(bool is_render)
     this->actor_->GetProperty()->SetEdgeVisibility(is_render);
 }
 
-void ModelActor::setRenderMode(RenderMode render_mode)
+void ModelActor::setRenderMode(ModelRenderMode render_mode)
 {
     this->render_mode_ = render_mode;
-    if (render_mode_ == RenderMode::Face) {
+    if (render_mode_ == ModelRenderMode::Face) {
         this->actor_->SetMapper(this->mapper_);
         this->renderer_->AddActor(this->actor_);
     }
-    else if (render_mode_ == RenderMode::Block) {
+    else if (render_mode_ == ModelRenderMode::Block) {
         this->actor_->SetMapper(this->block_mapper_);
         this->renderer_->AddActor(this->actor_);
     }

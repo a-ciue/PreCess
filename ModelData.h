@@ -111,7 +111,7 @@ private:
     //! @param mesh_path 输出文件路径
     //! @param mode 选定输出模式
     //! @param extension 输出文件拓展名
-    void write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString &extension);
+    void write_mesh(const std::filesystem::path& mesh_path, ModelRenderMode mode, const QString &extension);
 
     
     //! @brief 根据给定id找到mesh的face，进行面分割
