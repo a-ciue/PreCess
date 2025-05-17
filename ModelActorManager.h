@@ -42,6 +42,8 @@ public:
 	void setVisibility(Index model_id, bool visibility);
 	Q_INVOKABLE void setRenderMode(Index model_id, ModelRenderMode render_mode);
 	Q_INVOKABLE void setRenderEdge(Index model_id, bool is_render);
+
+	bool getcount(Index model_id);
 private:
 	std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;
 	bool edge_render_;

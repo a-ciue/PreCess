@@ -1,4 +1,5 @@
 #include "ModelActorManager.h"
+#include "ModelActorManager.h"
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -80,4 +81,9 @@ void ModelActorManager::setRenderMode(Index model_id, ModelRenderMode render_mod
 void ModelActorManager::setRenderEdge(Index model_id, bool is_render)
 {
     this->models_[model_id]->setRenderEdge(is_render);
+}
+
+bool ModelActorManager::getcount(Index model_id)
+{
+    return this->models_.count(model_id);
 }

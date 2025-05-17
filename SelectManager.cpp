@@ -34,7 +34,7 @@ void SelectManager::select(double posx, double posy)
 	}
 }
 
-void SelectManager::setSelectActor(ModelActor* model_actor_)
+void SelectManager::setSelectActor(const ModelActor* model_actor_)
 {
 	//assert(this->selector_);
 

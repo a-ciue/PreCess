@@ -27,7 +27,7 @@ public:
 	 */
 	void select(double posx, double posy);
 
-	void setSelectActor(ModelActor* model_actor_);
+	void setSelectActor(const ModelActor* model_actor_);
 	/**
 	 * @brief 传入选择模型
 	 * @param select_mode 

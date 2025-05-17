@@ -159,8 +159,8 @@ void QRenderWindow::setSelectModel(Index model_id)
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
         this->cur_actor_id_ = model_id;
-        if (vtk->models_.count(model_id))
-            selectManager_->setSelectActor(vtk->models_[model_id].get());
+        if (this->model_actor_manager_->getcount(model_id))
+            selectManager_->setSelectActor(this->model_actor_manager_->getModelActor(model_id));
         else
             selectManager_->setSelectActor(nullptr);
         });
