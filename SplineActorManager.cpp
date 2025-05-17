@@ -60,7 +60,7 @@ void SplineActorManager::loadSpline(Index model_id, SplineDataVtk spline_data)
 
 }
 
-void SplineActorManager::setVisibility(bool visibility)
+void SplineActorManager::setVisibility(Index model_id, bool visibility)
 {
 	this->models_[model_id]->setVisibility(visibility);
 }

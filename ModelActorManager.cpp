@@ -67,7 +67,7 @@ void ModelActorManager::loadModel(Index model_id, ModelDataVtk model_data, vtkRe
     }
 }
 
-void ModelActorManager::setVisibility(bool visibility)
+void ModelActorManager::setVisibility(Index model_id, bool visibility)
 {
     this->models_[model_id]->setVisibility(visibility);
 }

@@ -39,7 +39,7 @@ public:
 	void deleteModel(Index model_id);
 	void loadModel(Index model_id, ModelDataVtk model_data, vtkRenderer* renderer);
 
-	Q_INVOKABLE void setVisibility(bool visibility);
+	void setVisibility(Index model_id, bool visibility);
 	Q_INVOKABLE void setRenderMode(Index model_id, ModelRenderMode render_mode);
 	Q_INVOKABLE void setRenderEdge(Index model_id, bool is_render);
 private:

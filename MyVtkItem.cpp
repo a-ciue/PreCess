@@ -123,7 +123,8 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
     dispatch_async([model_id,visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->clearSelection();
-        vtk->models_[model_id]->setVisibility(visibility);
+        this->model_actor_manager_->setVisibility(model_id, visibility);
+        this->spline_actor_manager_->setVisibility(model_id, visibility);
         });
 }
 

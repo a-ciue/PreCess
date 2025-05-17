@@ -49,7 +49,7 @@ public:
 	void deleteModel(Index model_id);
 	void loadSpline(Index model_id, SplineDataVtk spline_data);
 
-	void setVisibility(bool visibility);
+	void setVisibility(Index model_id, bool visibility);
 	Q_INVOKABLE void setRenderMode(Index model_id, SplineRenderMode render_mode);
 
 private:
