@@ -8,6 +8,14 @@ enum class ModelRenderMode {
     Block,
     Group
 };
+
+enum class SplineRenderMode
+{
+    Face,
+    Block,
+    Group
+};
+
 enum class SelectMode {
 	None,
     Face,
