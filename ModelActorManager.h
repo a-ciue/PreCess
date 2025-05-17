@@ -35,7 +35,7 @@ class Model;
 class ModelActorManager :QObject
 {
 public:
-	ModelActor* getModelActor(Index model_id);
+	const ModelActor* getModelActor(Index model_id);
 	void deleteModel(Index model_id);
 	void loadModel(Index model_id, ModelDataVtk model_data, vtkRenderer* renderer);
 

@@ -46,7 +46,7 @@
 #include <cstdlib>    
 #include <iostream>
 
-ModelActor* ModelActorManager::getModelActor(Index model_id)
+const ModelActor* ModelActorManager::getModelActor(Index model_id)
 {
 	return this->models_.at[model_id];
 }
