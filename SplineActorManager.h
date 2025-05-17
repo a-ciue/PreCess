@@ -42,7 +42,7 @@
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
-class SplineActorManager 
+class SplineActorManager :QObject
 {
 public:
 	const SplineActor* getSplineActor(Index model_id);
