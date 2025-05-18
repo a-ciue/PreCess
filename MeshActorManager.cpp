@@ -55,10 +55,10 @@ void MeshActorManager::deleteModel(Index model_id)
 	this->models_.erase(model_id);
 }
 
-void MeshActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
+void MeshActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render)
 {
         if (!this->models_.count(model_id))
-            this->models_[model_id] = std::make_unique<MeshActor>(renderer, this->edge_render_, this->render_mode_);
+            this->models_[model_id] = std::make_unique<MeshActor>(renderer, edge_render, render_mode);
         this->models_[model_id]->loadModelData(model_data);
         this->models_[model_id]->setRenderMode(render_mode);
 }

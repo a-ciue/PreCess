@@ -37,7 +37,7 @@ class MeshActorManager
 public:
 	const MeshActor* getModelActor(Index model_id);
 	void deleteModel(Index model_id);
-	void loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode);
+	void loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render);
 
 	void setVisibility(Index model_id, bool visibility);
 	void setRenderMode(Index model_id, ModelRenderMode render_mode);
@@ -47,8 +47,6 @@ public:
 	bool getIsEdgeRender(Index model_id);
 private:
 	std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;
-	bool edge_render_;
-	ModelRenderMode render_mode_;
 	vtkRenderer* renderer_;
 };
 #endif
