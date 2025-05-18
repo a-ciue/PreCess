@@ -92,13 +92,13 @@ public:
      * @brief 改变渲染模式
      * @param select_mode
      */
-    Q_INVOKABLE void setRenderMode(QString render_mode);
+    Q_INVOKABLE void setRenderMode(Index model_id, QString render_mode);
 
     /**
      * @brief 边渲染
      * @param select_mode
      */
-    Q_INVOKABLE void setEdgeRender(bool is_render);
+    Q_INVOKABLE void setEdgeRender(Index model_id, bool is_render);
 
     /**
      * @brief 改变可见性
@@ -107,7 +107,7 @@ public:
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
 
 
-    Q_INVOKABLE void onModelChanged(Index model_id);
+    Q_INVOKABLE void onModelChanged(Index model_id, bool is_render);
     Q_INVOKABLE void deleteModel(Index mode_id);
 
     Q_SLOT void setClick();
@@ -123,7 +123,7 @@ signals:
     void clicked();
  
 private:
-    std::unique_ptr<MeshActorManager> model_actor_manager_;
+    std::unique_ptr<MeshActorManager> mesh_actor_manager_;
     std::unique_ptr<SplineActorManager> spline_actor_manager_;
 
     bool edge_render_;
