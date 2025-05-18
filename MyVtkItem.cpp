@@ -30,7 +30,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_= vtk.GetPointer();
-    this->model_actor_manager_ = std::make_unique<ModelActorManager>();
+    this->model_actor_manager_ = std::make_unique<MeshActorManager>();
     this->spline_actor_manager_ = std::make_unique<SplineActorManager>();
 
     return vtk;

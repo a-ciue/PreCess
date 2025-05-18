@@ -123,7 +123,7 @@ signals:
     void clicked();
  
 private:
-    std::unique_ptr<ModelActorManager> model_actor_manager_;
+    std::unique_ptr<MeshActorManager> model_actor_manager_;
     std::unique_ptr<SplineActorManager> spline_actor_manager_;
 
     bool edge_render_;

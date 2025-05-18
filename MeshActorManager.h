@@ -32,7 +32,7 @@ class vtkPolyData;
 class Model;
 
 
-class ModelActorManager
+class MeshActorManager
 {
 public:
 	const MeshActor* getModelActor(Index model_id);

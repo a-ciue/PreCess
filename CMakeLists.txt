@@ -49,7 +49,7 @@ qt_add_qml_module(modelQml
     SOURCES
         ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp 
 )
-add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp ModelActorManager.cpp SplineActorManager.cpp)
+add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp MeshActorManager.cpp SplineActorManager.cpp)
 
 
 add_library(modelPart STATIC

@@ -45,17 +45,17 @@
 #include <cstdlib>    
 #include <iostream>
 
-const MeshActor* ModelActorManager::getModelActor(Index model_id)
+const MeshActor* MeshActorManager::getModelActor(Index model_id)
 {
 	return this->models_.at(model_id).get();
 }
 
-void ModelActorManager::deleteModel(Index model_id)
+void MeshActorManager::deleteModel(Index model_id)
 {
 	this->models_.erase(model_id);
 }
 
-void ModelActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
+void MeshActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
 {
         if (!this->models_.count(model_id))
             this->models_[model_id] = std::make_unique<MeshActor>(renderer, this->edge_render_, this->render_mode_);
@@ -63,27 +63,27 @@ void ModelActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRen
         this->models_[model_id]->setRenderMode(render_mode);
 }
 
-void ModelActorManager::setVisibility(Index model_id, bool visibility)
+void MeshActorManager::setVisibility(Index model_id, bool visibility)
 {
     this->models_[model_id]->setVisibility(visibility);
 }
 
-void ModelActorManager::setRenderMode(Index model_id, ModelRenderMode render_mode)
+void MeshActorManager::setRenderMode(Index model_id, ModelRenderMode render_mode)
 {
     this->models_[model_id]->setRenderMode(render_mode);
 }
 
-void ModelActorManager::setRenderEdge(Index model_id, bool is_render)
+void MeshActorManager::setRenderEdge(Index model_id, bool is_render)
 {
     this->models_[model_id]->setRenderEdge(is_render);
 }
 
-bool ModelActorManager::getCount(Index model_id)
+bool MeshActorManager::getCount(Index model_id)
 {
     return this->models_.count(model_id);
 }
 
-bool ModelActorManager::getIsEdgeRender(Index model_id)
+bool MeshActorManager::getIsEdgeRender(Index model_id)
 {
     return this->models_[model_id]->getIsEdgeRender();
 }
