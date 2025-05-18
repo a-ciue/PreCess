@@ -72,6 +72,7 @@ void MeshActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRend
 
 void MeshActorManager::setVisibility(Index model_id, bool visibility)
 {
+    if (this->models_.count(model_id))
     this->models_[model_id]->setVisibility(visibility);
 }
 

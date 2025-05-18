@@ -69,6 +69,7 @@ void SplineActorManager::loadSpline(Index model_id, TopoDS_Shape shape)
 
 void SplineActorManager::setVisibility(Index model_id, bool visibility)
 {
+	if (this->models_.count(model_id))
 	this->models_[model_id]->setVisibility(visibility);
 }
 
