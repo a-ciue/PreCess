@@ -37,7 +37,7 @@ class ModelActorManager :QObject
 public:
 	const ModelActor* getModelActor(Index model_id);
 	void deleteModel(Index model_id);
-	void loadModel(Index model_id, ModelDataVtk model_data, vtkRenderer* renderer);
+	void loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer);
 
 	void setVisibility(Index model_id, bool visibility);
 	Q_INVOKABLE void setRenderMode(Index model_id, ModelRenderMode render_mode);

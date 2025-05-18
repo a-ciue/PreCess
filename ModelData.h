@@ -202,7 +202,7 @@ private:
      * @brief 获取渲染模型需要的数据
      * @return 模型数据
      */
-    ModelDataVtk getModelData();
+    MeshDataVtk getModelData();
 
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
     void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);

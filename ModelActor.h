@@ -30,7 +30,7 @@ public:
     ModelActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode);
     ~ModelActor();
 
-    void loadModelData(const ModelDataVtk& model_data);
+    void loadModelData(const MeshDataVtk& model_data);
     void setVisibility(bool visibility);
     void setRenderEdge(bool is_render);
     void setRenderMode(ModelRenderMode render_mode);
@@ -46,14 +46,14 @@ private:
     ModelRenderMode render_mode_;
     bool edge_render_;
     bool visibility_;
-    ModelDataVtk model_data_;
+    MeshDataVtk model_data_;
 
     vtkNew<vtkActor> actor_;
     vtkRenderer* renderer_;
     vtkNew<vtkPolyDataMapper> mapper_;
     //Face mapper
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
-    void createBlockMapper(const ModelDataVtk& model_data);
+    void createBlockMapper(const MeshDataVtk& model_data);
 };
 
 

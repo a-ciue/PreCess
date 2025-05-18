@@ -45,7 +45,7 @@ ModelActor::~ModelActor()
     }
 }
 
-void ModelActor::loadModelData(const ModelDataVtk& model_data)
+void ModelActor::loadModelData(const MeshDataVtk& model_data)
 {
 	this->model_data_ = model_data;
 	vtkIdType point_id=0;
@@ -128,7 +128,7 @@ Index ModelActor::get_model_block_id(vtkIdType block_id) const
     return this->model_data_.model_block_id(block_id);
 }
 
-void ModelActor::createBlockMapper(const ModelDataVtk& model_data)
+void ModelActor::createBlockMapper(const MeshDataVtk& model_data)
 {
     auto multiblock = vtkSmartPointer<vtkMultiBlockDataSet>::New();
     const auto& blocks = model_data.model_blocks_.block_datas;

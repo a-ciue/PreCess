@@ -419,10 +419,10 @@ int ModelData::block_group_id(int patch_id) {
     throw std::runtime_error("Block ID not found in any group.");
 }
 
-ModelDataVtk ModelData::getModelData()
+MeshDataVtk ModelData::getModelData()
 {
     // 构造 ModelData
-    ModelDataVtk modelData;
+    MeshDataVtk modelData;
 
     // 添加所有顶点和三角形
     int offset{};

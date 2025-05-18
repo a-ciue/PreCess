@@ -5,9 +5,9 @@
 #include <stdexcept>
 #include <limits>
 
-std::optional<ModelDataVtk> QModelQuery::getModelData(Index model_id)
+std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
 {
-    std::optional<ModelDataVtk> model_data {};
+    std::optional<MeshDataVtk> model_data {};
     ModelData* model = m_manager->getModel(model_id);
     if (model)
     {

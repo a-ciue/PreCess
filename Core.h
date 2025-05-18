@@ -34,7 +34,7 @@ struct BlockDatas {
     std::vector<BlockData> block_datas;
 };
 
-struct ModelDataVtk {
+struct MeshDataVtk {
     std::vector<std::array<Index, 3>> vtk_triangles_;
     std::vector<std::array<double, 3>> vtk_points_;
     std::vector<Index> model_face_id_;
