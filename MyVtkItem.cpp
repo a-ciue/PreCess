@@ -111,7 +111,7 @@ void QRenderWindow::onModelChanged(Index model_id)
         if (model_data)
         {
             if (!vtk->models_.count(model_id))
-                vtk->models_[model_id] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
+                vtk->models_[model_id] = std::make_unique<MeshActor>(vtk->renderer_, edge_render_, renderMode_);
             vtk->models_[model_id]->loadModelData(*model_data);
             vtk->models_[model_id]->setRenderMode(renderMode_);
         }
@@ -246,7 +246,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //{
 //    dispatch_async([model_name,patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
 //        Data* vtk = Data::SafeDownCast(userData);
-//        vtk->actor_[model_name] = std::make_unique<ModelActor>(*patches, *blocks, *groups);
+//        vtk->actor_[model_name] = std::make_unique<MeshActor>(*patches, *blocks, *groups);
 //
 //        vtk->actor_[model_name]->bind_renderer(vtk->renderer);
 //
@@ -299,13 +299,13 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //Q_INVOKABLE void QRenderWindow::changeRenderer(QString renderMode)
 //{
 //    if (renderMode == "Face") {
-//        this->renderMode_ = ModelActor::RenderMode::Face;
+//        this->renderMode_ = MeshActor::RenderMode::Face;
 //    }
 //    else if (renderMode == "Block") {
-//        this->renderMode_ = ModelActor::RenderMode::Block;
+//        this->renderMode_ = MeshActor::RenderMode::Block;
 //    }
 //    else if (renderMode == "Group") {
-//        this->renderMode_ = ModelActor::RenderMode::Group;
+//        this->renderMode_ = MeshActor::RenderMode::Group;
 //    }
 //    else {
 //        std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
@@ -315,7 +315,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
 //        Data* vtk = Data::SafeDownCast(userData);
 //
-//        if (this->renderMode_ == ModelActor::RenderMode::Face)
+//        if (this->renderMode_ == MeshActor::RenderMode::Face)
 //        {
 //            bindStyle("Face");
 //            for (auto&& [modelName, modelActor] : vtk->actor_)
@@ -329,7 +329,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //
 //            }
 //        }
-//        else if (this->renderMode_ == ModelActor::RenderMode::Block)
+//        else if (this->renderMode_ == MeshActor::RenderMode::Block)
 //        {
 //            bindStyle("Block");
 //            for (auto&& [modelName, modelActor] : vtk->actor_)
@@ -351,7 +351,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //            }
 //
 //        }
-//        else if (this->renderMode_ == ModelActor::RenderMode::Group)
+//        else if (this->renderMode_ == MeshActor::RenderMode::Group)
 //        {
 //            bindStyle("Group");
 //            for (auto&& [modelName, modelActor] : vtk->actor_)

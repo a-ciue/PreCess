@@ -3,7 +3,7 @@
  * @brief 负责管理和操作网格模型数据的核心类
  *
  * ModelData 类用于存储和处理网格模型数据，包括面（Patch）、块（Block）和组（Group）的管理。
- * 它提供了一系列函数用于网格操作，如网格划分、合并和重划分等，同时维护与 ModelActor 之间的关联，
+ * 它提供了一系列函数用于网格操作，如网格划分、合并和重划分等，同时维护与 MeshActor 之间的关联，
  * 以便进行可视化和渲染。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
@@ -88,7 +88,7 @@ struct Group {
 *@brief 负责管理和操作网格模型数据的核心类
 *
 * ModelData 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。
-* 该类提供了网格划分、合并、重划分等功能，并维护与 ModelActor 之间的关联，
+* 该类提供了网格划分、合并、重划分等功能，并维护与 MeshActor 之间的关联，
 * 以便进行可视化和渲染。
 */
 class ModelData {
@@ -96,7 +96,7 @@ public:
     /**
      * @brief 构造 ModelData 对象
      *
-     * 该构造函数基于传入的 CTMesh 对象初始化模型的 patches、blocks、groups 以及 ModelActor。
+     * 该构造函数基于传入的 CTMesh 对象初始化模型的 patches、blocks、groups 以及 MeshActor。
      *
      * @param mesh 指向 CTMesh 的智能指针，表示网格数据
      */

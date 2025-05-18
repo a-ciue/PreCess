@@ -1,5 +1,5 @@
-#ifndef MODEL_ACTOR_H
-#define MODEL_ACTOR_H
+#ifndef MESH_ACTOR_H
+#define MESH_ACTOR_H
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -22,13 +22,13 @@ class vtkPolyData;
 class Model;
 
 //! @brief 负责管理Model的Actor
-class ModelActor {
+class MeshActor {
 public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    ModelActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode);
-    ~ModelActor();
+    MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode);
+    ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
     void setVisibility(bool visibility);

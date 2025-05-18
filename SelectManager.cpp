@@ -1,5 +1,5 @@
 #include "SelectManager.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -34,7 +34,7 @@ void SelectManager::select(double posx, double posy)
 	}
 }
 
-void SelectManager::setSelectActor(const ModelActor* model_actor_)
+void SelectManager::setSelectActor(const MeshActor* model_actor_)
 {
 	//assert(this->selector_);
 

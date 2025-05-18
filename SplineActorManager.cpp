@@ -24,7 +24,6 @@
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include "Core.h"
-#include "ModelActor.h"
 #include "SplineActor.h"
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
@@ -47,7 +46,7 @@
 
 const SplineActor* SplineActorManager::getSplineActor(Index model_id)
 {
-	return this->models_.at[model_id];
+	return this->models_.at(model_id).get();
 }
 
 void SplineActorManager::deleteModel(Index model_id)

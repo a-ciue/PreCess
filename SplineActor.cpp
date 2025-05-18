@@ -8,7 +8,7 @@
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include "Core.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <iostream>

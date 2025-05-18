@@ -1,6 +1,6 @@
 #include "Style.h"
 #include <vtkRenderWindowInteractor.h>
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include "MyVtkItem.h"
 
 vtkStandardNewMacro(QRenderWindowStyle);
@@ -57,13 +57,13 @@ void QRenderWindowStyle::OnLeftButtonUp()
 //    selector_->clear();
 //}
 //
-//std::unique_ptr<Selection> MouseInteractorHighLightActor::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode)
+//std::unique_ptr<Selection> MouseInteractorHighLightActor::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<MeshActor>>& mActors, SelectMode mode)
 //{
 //    auto actors = selector_->get();
 //    std::unique_ptr<Selection> selection = std::make_unique<Selection>();
 //    //std::vector<int> ids;
 //    vtkPropAssembly* assembly_ = selector_->getAssembly();
-//    ModelActor* modelactor_;
+//    MeshActor* modelactor_;
 //
 //    for (const auto& pair : mActors)
 //    {
@@ -77,13 +77,13 @@ void QRenderWindowStyle::OnLeftButtonUp()
 //    }
 //
 //
-//    int (ModelActor::*actor_id)(vtkActor*) {};
+//    int (MeshActor::*actor_id)(vtkActor*) {};
 //    if (mode == SelectMode::Group)
 //    {
-//        actor_id = &ModelActor::group_actor_id;
+//        actor_id = &MeshActor::group_actor_id;
 //        selection->type = Element::Type::Group;
 //    } else if (mode == SelectMode::Block) {
-//        actor_id = &ModelActor::block_actor_id;
+//        actor_id = &MeshActor::block_actor_id;
 //        selection->type = Element::Type::Block;
 //    } else {
 //        assert(false);
@@ -95,13 +95,13 @@ void QRenderWindowStyle::OnLeftButtonUp()
 //    }
 //    return selection;
 //}
-//std::unique_ptr<Selection> MouseInteractorHighLightFace::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode)
+//std::unique_ptr<Selection> MouseInteractorHighLightFace::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<MeshActor>>& mActors, SelectMode mode)
 //{
 //    auto actors = selector_->get();
 //    std::unique_ptr<Selection> selection = std::make_unique<Selection>();
 //    //std::vector<int> face_ids;
 //    vtkPropAssembly* assembly_ = selector_->getAssembly();
-//    ModelActor* modelactor_;
+//    MeshActor* modelactor_;
 //    for (const auto& pair : mActors)
 //    {
 //        modelactor_ = pair.second.get()->getModelActor(assembly_);
@@ -123,13 +123,13 @@ void QRenderWindowStyle::OnLeftButtonUp()
 //    
 //    return selection;
 //}
-//std::unique_ptr<Selection> MouseInteractorHighLightEdge::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode)
+//std::unique_ptr<Selection> MouseInteractorHighLightEdge::GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<MeshActor>>& mActors, SelectMode mode)
 //{
 //    auto actors = selector_->get();
 //    std::unique_ptr<Selection> selection=std::make_unique<Selection>();
 //    //std::vector<int> point_ids;
 //    vtkPropAssembly* assembly_ = selector_->getAssembly();
-//    ModelActor* modelactor_;
+//    MeshActor* modelactor_;
 //    for (const auto& pair : mActors)
 //    {
 //        modelactor_ = pair.second.get()->getModelActor(assembly_);

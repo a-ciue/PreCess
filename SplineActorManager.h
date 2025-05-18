@@ -16,12 +16,12 @@
 #include <iostream>
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <vtkNew.h>
+#include "MeshActor.h"
 #include <vtkAssembly.h>
 #include <vtkPropAssembly.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include "Core.h"
-#include "ModelActor.h"
 #include "SplineActor.h"
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>

@@ -10,7 +10,7 @@
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include "Core.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <iostream>
@@ -35,9 +35,9 @@ class Model;
 class ModelActorManager :QObject
 {
 public:
-	const ModelActor* getModelActor(Index model_id);
+	const MeshActor* getModelActor(Index model_id);
 	void deleteModel(Index model_id);
-	void loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer);
+	void loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode);
 
 	void setVisibility(Index model_id, bool visibility);
 	Q_INVOKABLE void setRenderMode(Index model_id, ModelRenderMode render_mode);
@@ -46,7 +46,7 @@ public:
 	bool getCount(Index model_id);
 	bool getIsEdgeRender(Index model_id);
 private:
-	std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;
+	std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;
 	bool edge_render_;
 	ModelRenderMode render_mode_;
 	vtkRenderer* renderer_;

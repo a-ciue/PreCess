@@ -40,7 +40,7 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml CommandMenu.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp Selection.h ModelActorManager.h SplineActorManager.h
+        MyVTKItem.h MyVtkItem.cpp Selection.h 
 )
 
 qt_add_library(modelQml STATIC)
@@ -49,7 +49,7 @@ qt_add_qml_module(modelQml
     SOURCES
         ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp 
 )
-add_library(vtkPart STATIC ModelActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp)
+add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp ModelActorManager.cpp SplineActorManager.cpp)
 
 
 add_library(modelPart STATIC

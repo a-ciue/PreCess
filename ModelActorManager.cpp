@@ -1,6 +1,4 @@
-#include "ModelActorManager.h"
-#include "ModelActorManager.h"
-#include "ModelActorManager.h"
+#include "MeshActorManager.h"
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -11,7 +9,7 @@
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include "Core.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <iostream>
@@ -22,8 +20,7 @@
 #include <vtkOBJReader.h>
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
-#include "ModelActor.h"
-#include "ModelActor.h"
+
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -48,9 +45,9 @@
 #include <cstdlib>    
 #include <iostream>
 
-const ModelActor* ModelActorManager::getModelActor(Index model_id)
+const MeshActor* ModelActorManager::getModelActor(Index model_id)
 {
-	return this->models_.at[model_id];
+	return this->models_.at(model_id).get();
 }
 
 void ModelActorManager::deleteModel(Index model_id)
@@ -58,15 +55,12 @@ void ModelActorManager::deleteModel(Index model_id)
 	this->models_.erase(model_id);
 }
 
-void ModelActorManager::loadModel(Index model_id, ModelDataVtk model_data, vtkRenderer* renderer)
+void ModelActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
 {
-    if (model_data)
-    {
         if (!this->models_.count(model_id))
-            this->models_[model_id] = std::make_unique<ModelActor>(renderer, this->edge_render_, this->render_mode_);
-        this->models_[model_id]->loadModelData(*model_data);
-        this->models_[model_id]->setRenderMode(renderMode_);
-    }
+            this->models_[model_id] = std::make_unique<MeshActor>(renderer, this->edge_render_, this->render_mode_);
+        this->models_[model_id]->loadModelData(model_data);
+        this->models_[model_id]->setRenderMode(render_mode);
 }
 
 void ModelActorManager::setVisibility(Index model_id, bool visibility)

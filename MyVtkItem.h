@@ -29,11 +29,11 @@
 
 #include "Style.h"
 #include "Selection.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include "SelectManager.h"
 #include "Core.h" 
 #include "ModelQuery.h"
-#include "ModelActorManager.h"
+#include "MeshActorManager.h"
 #include "SplineActorManager.h"
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
@@ -51,7 +51,7 @@ public:
 
         vtkNew<vtkRenderer> renderer_;
 
-        /*std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;*/
+        /*std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;*/
         vtkNew<QRenderWindowStyle> style_;
 
 
@@ -133,7 +133,7 @@ private:
     vtkNew<vtkCamera> _camera;
     
     std::unique_ptr<SelectManager> selectManager_;
-    ModelActor* cur_actor_{};
+    MeshActor* cur_actor_{};
     Index cur_actor_id_;
 
     std::unique_ptr<QMouseEvent> _click;
