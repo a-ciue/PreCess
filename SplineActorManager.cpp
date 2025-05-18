@@ -60,9 +60,11 @@ void SplineActorManager::deleteModel(Index model_id)
 	this->models_.erase(model_id);
 }
 
-void SplineActorManager::loadSpline(Index model_id, SplineDataVtk spline_data)
+void SplineActorManager::loadSpline(Index model_id, TopoDS_Shape shape)
 {
-
+	if (!this->models_.count(model_id))
+		this->models_[model_id] = std::make_unique<SplineActor>(this->renderer_,SplineRenderMode::Face);
+	this->models_[model_id]->loadShape(shape);
 }
 
 void SplineActorManager::setVisibility(Index model_id, bool visibility)
