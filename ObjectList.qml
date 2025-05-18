@@ -109,4 +109,5 @@ Item {
     }
     /** type:var 对象列表的model数据构造 */
     property alias objectModel: objectListView.model
+    property alias curModelId: root.selectedModel_id
 }

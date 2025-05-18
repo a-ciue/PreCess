@@ -130,7 +130,7 @@ ApplicationWindow {
                 ButtonGroup {
                     id: renderGroup
                     onCheckedButtonChanged: {
-                        myItem.setRenderMode(checkedButton.renderMode)
+                        myItem.setRenderMode(objectList.curModelId,checkedButton.renderMode)
                     }
                 }
                 Button {
@@ -247,7 +247,7 @@ ApplicationWindow {
             }
             onChangeEdgeRender:{
                 root.edgeRenderCheck = !root.edgeRenderCheck
-                myItem.setEdgeRender(root.edgeRenderCheck)
+                myItem.setEdgeRender(objectList.curModelId,root.edgeRenderCheck)
 
             }
         }
@@ -304,7 +304,7 @@ ApplicationWindow {
             }
             onChangeEdgeRender:{
                 root.edgeRenderCheck = !root.edgeRenderCheck
-                myItem.setEdgeRender(root.edgeRenderCheck)
+                myItem.setEdgeRender(objectList.curModelId,root.edgeRenderCheck)
             }
         }
 
