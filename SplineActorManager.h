@@ -54,8 +54,6 @@ public:
 
 private:
 	std::unordered_map <Index, std::unique_ptr<SplineActor>> models_;
-	bool edge_render_;
-	SplineRenderMode render_mode_;
 	vtkRenderer* renderer_;
 };
 
