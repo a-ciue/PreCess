@@ -107,7 +107,7 @@ public:
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
 
 
-    Q_INVOKABLE void onModelChanged(Index model_id, bool is_render);
+    Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void deleteModel(Index mode_id);
 
     Q_SLOT void setClick();
