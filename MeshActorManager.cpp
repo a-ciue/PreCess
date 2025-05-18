@@ -78,11 +78,13 @@ void MeshActorManager::setVisibility(Index model_id, bool visibility)
 
 void MeshActorManager::setRenderMode(Index model_id, ModelRenderMode render_mode)
 {
+    if (this->models_.count(model_id))
     this->models_[model_id]->setRenderMode(render_mode);
 }
 
 void MeshActorManager::setRenderEdge(Index model_id, bool is_render)
 {
+    if (this->models_.count(model_id))
     this->models_[model_id]->setRenderEdge(is_render);
 }
 
@@ -93,5 +95,6 @@ bool MeshActorManager::getCount(Index model_id)
 
 bool MeshActorManager::getIsEdgeRender(Index model_id)
 {
+    if (this->models_.count(model_id))
     return this->models_[model_id]->getIsEdgeRender();
 }

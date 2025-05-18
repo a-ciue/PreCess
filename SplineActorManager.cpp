@@ -75,6 +75,7 @@ void SplineActorManager::setVisibility(Index model_id, bool visibility)
 
 Q_INVOKABLE void SplineActorManager::setRenderMode(Index model_id, SplineRenderMode render_mode)
 {
+	if (this->models_.count(model_id))
 	this->models_[model_id]->setRenderMode(render_mode);
 	
 }
