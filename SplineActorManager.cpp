@@ -3,6 +3,7 @@
 #include "SplineActorManager.h"
 #include "SplineActorManager.h"
 #include "SplineActorManager.h"
+#include "SplineActorManager.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -43,6 +44,11 @@
 #include <vtkOBJReader.h>
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
+
+void SplineActorManager::bindRender(vtkRenderer* renderer)
+{
+	this->renderer_ = renderer;
+}
 
 const SplineActor* SplineActorManager::getSplineActor(Index model_id)
 {

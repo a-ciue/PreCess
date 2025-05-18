@@ -45,6 +45,7 @@
 class SplineActorManager
 {
 public:
+	void bindRender(vtkRenderer* renderer);
 	const SplineActor* getSplineActor(Index model_id);
 	void deleteModel(Index model_id);
 	void loadSpline(Index model_id, SplineDataVtk spline_data);

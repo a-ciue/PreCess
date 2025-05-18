@@ -1,4 +1,6 @@
 #include "MeshActorManager.h"
+#include "MeshActorManager.h"
+#include "MeshActorManager.h"
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -53,6 +55,11 @@ const MeshActor* MeshActorManager::getModelActor(Index model_id)
 void MeshActorManager::deleteModel(Index model_id)
 {
 	this->models_.erase(model_id);
+}
+
+void MeshActorManager::bindRender(vtkRenderer* renderer)
+{
+    this->renderer_ = renderer;
 }
 
 void MeshActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render)
