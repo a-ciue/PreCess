@@ -42,7 +42,7 @@
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
-class SplineActorManager :QObject
+class SplineActorManager
 {
 public:
 	const SplineActor* getSplineActor(Index model_id);
@@ -50,7 +50,7 @@ public:
 	void loadSpline(Index model_id, SplineDataVtk spline_data);
 
 	void setVisibility(Index model_id, bool visibility);
-	Q_INVOKABLE void setRenderMode(Index model_id, SplineRenderMode render_mode);
+	void setRenderMode(Index model_id, SplineRenderMode render_mode);
 
 private:
 	std::unordered_map <Index, std::unique_ptr<SplineActor>> models_;

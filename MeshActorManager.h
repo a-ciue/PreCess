@@ -32,7 +32,7 @@ class vtkPolyData;
 class Model;
 
 
-class ModelActorManager :QObject
+class ModelActorManager
 {
 public:
 	const MeshActor* getModelActor(Index model_id);
@@ -40,8 +40,8 @@ public:
 	void loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode);
 
 	void setVisibility(Index model_id, bool visibility);
-	Q_INVOKABLE void setRenderMode(Index model_id, ModelRenderMode render_mode);
-	Q_INVOKABLE void setRenderEdge(Index model_id, bool is_render);
+	void setRenderMode(Index model_id, ModelRenderMode render_mode);
+	void setRenderEdge(Index model_id, bool is_render);
 
 	bool getCount(Index model_id);
 	bool getIsEdgeRender(Index model_id);
