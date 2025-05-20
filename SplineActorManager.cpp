@@ -52,11 +52,13 @@ void SplineActorManager::bindRender(vtkRenderer* renderer)
 
 const SplineActor* SplineActorManager::getSplineActor(Index model_id)
 {
+	if (!this->models_.count(model_id))
 	return this->models_.at(model_id).get();
 }
 
 void SplineActorManager::deleteModel(Index model_id)
 {
+	if (!this->models_.count(model_id))
 	this->models_.erase(model_id);
 }
 

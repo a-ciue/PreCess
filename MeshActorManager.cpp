@@ -49,11 +49,13 @@
 
 const MeshActor* MeshActorManager::getModelActor(Index model_id)
 {
+    if (!this->models_.count(model_id))
 	return this->models_.at(model_id).get();
 }
 
 void MeshActorManager::deleteModel(Index model_id)
 {
+    if (!this->models_.count(model_id))
 	this->models_.erase(model_id);
 }
 
@@ -64,10 +66,10 @@ void MeshActorManager::bindRender(vtkRenderer* renderer)
 
 void MeshActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render)
 {
-        if (!this->models_.count(model_id))
-            this->models_[model_id] = std::make_unique<MeshActor>(renderer, edge_render, render_mode);
-        this->models_[model_id]->loadModelData(model_data);
-        this->models_[model_id]->setRenderMode(render_mode);
+	if (!this->models_.count(model_id))
+		this->models_[model_id] = std::make_unique<MeshActor>(renderer, edge_render, render_mode);
+	this->models_[model_id]->loadModelData(model_data);
+	this->models_[model_id]->setRenderMode(render_mode);
 }
 
 void MeshActorManager::setVisibility(Index model_id, bool visibility)
