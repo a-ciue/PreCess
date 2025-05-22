@@ -171,6 +171,12 @@ bool QRenderWindow::getIsEdgeRender(Index model_id)
     return this->mesh_actor_manager_->getIsEdgeRender(model_id);
 }
 
+QString QRenderWindow::getMeshRenderMode(Index model_id)
+{
+    this->mesh_actor_manager_->getMeshRenderMode(model_id);
+    return QString();
+}
+
 void QRenderWindow::setSelectModel(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {

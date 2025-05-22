@@ -46,6 +46,7 @@ public:
 
 	bool getCount(Index model_id);
 	bool getIsEdgeRender(Index model_id);
+	ModelRenderMode getMeshRenderMode(Index model_id);
 private:
 	std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;
 	vtkRenderer* renderer_;

@@ -1,5 +1,6 @@
 #include "MeshActor.h"
 #include "MeshActor.h"
+#include "MeshActor.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -106,6 +107,11 @@ void MeshActor::setRenderMode(ModelRenderMode render_mode)
 bool MeshActor::getIsEdgeRender()
 {
     return this->edge_render_;
+}
+
+ModelRenderMode MeshActor::getMeshRenderMode()
+{
+    return this->render_mode_;
 }
 
 void MeshActor::addPickList(vtkPropCollection* pick_list) const

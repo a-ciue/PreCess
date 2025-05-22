@@ -1,6 +1,7 @@
 #include "MeshActorManager.h"
 #include "MeshActorManager.h"
 #include "MeshActorManager.h"
+#include "MeshActorManager.h"
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -99,4 +100,9 @@ bool MeshActorManager::getIsEdgeRender(Index model_id)
 {
     if (this->models_.count(model_id))
     return this->models_[model_id]->getIsEdgeRender();
+}
+
+ModelRenderMode MeshActorManager::getMeshRenderMode(Index model_id)
+{
+    return this->models_[model_id]->getMeshRenderMode();
 }

@@ -36,6 +36,7 @@ public:
     void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
+    ModelRenderMode getMeshRenderMode();
     void addPickList(vtkPropCollection* pick_list) const;
     
     Index get_model_face_id(vtkIdType face_id) const;

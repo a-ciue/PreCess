@@ -67,7 +67,8 @@ public:
     void setModelQuery(QModelQuery* query);
 
     bool getIsEdgeRender(Index model_id);
-
+    QString getMeshRenderMode(Index model_id);
+    QString getSplineRenderMode(Index model_id);
 
 	/**
      * @brief 选择模型
