@@ -173,8 +173,16 @@ bool QRenderWindow::getIsEdgeRender(Index model_id)
 
 QString QRenderWindow::getMeshRenderMode(Index model_id)
 {
-    this->mesh_actor_manager_->getMeshRenderMode(model_id);
-    return QString();
+    if (this->mesh_actor_manager_->getMeshRenderMode(model_id)==ModelRenderMode::Face) {
+        return "face";
+    }
+    else if(this->mesh_actor_manager_->getMeshRenderMode(model_id) == ModelRenderMode::Block) {
+        return "block";
+    }
+    else
+    {
+        std::cout << "get meshrendermode error" << std::endl;
+    }
 }
 
 void QRenderWindow::setSelectModel(Index model_id)
