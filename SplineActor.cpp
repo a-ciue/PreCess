@@ -31,14 +31,6 @@ SplineActor::SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode)
     this->render_mode_ = render_mode;
 }
 
-SplineActor::~SplineActor()
-{
-    if (this->renderer_)
-    {
-        renderer_->RemoveActor(this->actor_);
-    }
-}
-
 void SplineActor::loadShape(const TopoDS_Shape& shape)
 {
     this->shape_ = shape_;

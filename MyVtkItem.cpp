@@ -43,6 +43,7 @@ void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData use
     auto* vtk = Data::SafeDownCast(userData);
     if (vtk->renderer_) {
         _camera->DeepCopy(vtk->renderer_->GetActiveCamera());
+        vtk->renderer_->RemoveAllViewProps();
     }
 }
 

@@ -31,7 +31,6 @@ class SplineActor {
 
 public:
 	SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode);
-	~SplineActor();
 
 	void loadShape(const TopoDS_Shape &shape);
 	void setVisibility(bool visibility);
