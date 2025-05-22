@@ -4,6 +4,8 @@
 #include "SplineActorManager.h"
 #include "SplineActorManager.h"
 #include "SplineActorManager.h"
+#include "SplineActorManager.h"
+#include "SplineActorManager.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -54,6 +56,18 @@ const SplineActor* SplineActorManager::getSplineActor(Index model_id)
 {
 	if (!this->models_.count(model_id))
 	return this->models_.at(model_id).get();
+}
+
+SplineRenderMode SplineActorManager::getSplineRenderMode(Index model_id)
+{
+	if (!this->models_.count(model_id))
+	return this->models_[model_id]->getSplineRenderMode();
+}
+
+bool SplineActorManager::getIsEdgeRender(Index model_id)
+{
+	if (!this->models_.count(model_id))
+	return  this->models_[model_id]->getIsEdgeRender();
 }
 
 void SplineActorManager::deleteModel(Index model_id)

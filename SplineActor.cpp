@@ -1,4 +1,6 @@
 #include "SplineActor.h"
+#include "SplineActor.h"
+#include "SplineActor.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -29,6 +31,16 @@ SplineActor::SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode)
 {
     this->renderer_ = renderer;
     this->render_mode_ = render_mode;
+}
+
+SplineRenderMode SplineActor::getSplineRenderMode()
+{
+    return this->render_mode_;
+}
+
+bool SplineActor::getIsEdgeRender()
+{
+    return this->edge_render;
 }
 
 void SplineActor::loadShape(const TopoDS_Shape& shape)

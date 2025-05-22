@@ -181,8 +181,24 @@ QString QRenderWindow::getMeshRenderMode(Index model_id)
     }
     else
     {
-        std::cout << "get meshrendermode error" << std::endl;
+        std::cout << "get mesh render mode error" << std::endl;
+        return "None";
     }
+}
+
+QString QRenderWindow::getSplineRenderMode(Index model_id)
+{
+    if (this->spline_actor_manager_->getSplineRenderMode(model_id) == SplineRenderMode::Face) {
+        return "face";
+    }
+    else if (this->spline_actor_manager_->getSplineRenderMode(model_id) == SplineRenderMode::Block) {
+        return "Block";
+    }
+    else
+	{
+        std::cout << "get spline render mode error" << std::endl;
+        return "None";
+	}
 }
 
 void QRenderWindow::setSelectModel(Index model_id)

@@ -104,5 +104,6 @@ bool MeshActorManager::getIsEdgeRender(Index model_id)
 
 ModelRenderMode MeshActorManager::getMeshRenderMode(Index model_id)
 {
+    if (!this->models_.count(model_id))
     return this->models_[model_id]->getMeshRenderMode();
 }

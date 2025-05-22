@@ -46,7 +46,11 @@ class SplineActorManager
 {
 public:
 	void bindRender(vtkRenderer* renderer);
+
 	const SplineActor* getSplineActor(Index model_id);
+	SplineRenderMode getSplineRenderMode(Index model_id);
+	bool getIsEdgeRender(Index model_id);
+
 	void deleteModel(Index model_id);
 	void loadSpline(Index model_id, TopoDS_Shape shape);
 
