@@ -66,9 +66,13 @@ public:
     QSelection* selectedIDs();
     void setModelQuery(QModelQuery* query);
 
+    bool getMeshIsEdgeRender(Index model_id);
+    bool getSplineIsEdgeRender(Index model_id);
     bool getIsEdgeRender(Index model_id);
+
     QString getMeshRenderMode(Index model_id);
     QString getSplineRenderMode(Index model_id);
+    QString getRenderMode(Index model_id);
 
 	/**
      * @brief 选择模型

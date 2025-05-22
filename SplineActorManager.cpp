@@ -6,6 +6,7 @@
 #include "SplineActorManager.h"
 #include "SplineActorManager.h"
 #include "SplineActorManager.h"
+#include "SplineActorManager.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -68,6 +69,11 @@ bool SplineActorManager::getIsEdgeRender(Index model_id)
 {
 	if (!this->models_.count(model_id))
 	return  this->models_[model_id]->getIsEdgeRender();
+}
+
+bool SplineActorManager::getCount(Index model_id)
+{
+	return this->models_.count(model_id);
 }
 
 void SplineActorManager::deleteModel(Index model_id)

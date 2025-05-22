@@ -166,9 +166,32 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
-bool QRenderWindow::getIsEdgeRender(Index model_id)
+bool QRenderWindow::getMeshIsEdgeRender(Index model_id)
 {
     return this->mesh_actor_manager_->getIsEdgeRender(model_id);
+}
+
+bool QRenderWindow::getSplineIsEdgeRender(Index model_id)
+{
+    return this->spline_actor_manager_->getIsEdgeRender(model_id);
+}
+
+bool QRenderWindow::getIsEdgeRender(Index model_id)
+{
+    if (this->mesh_actor_manager_->getCount(model_id))
+    {
+        return this->getMeshIsEdgeRender(model_id);
+    }
+    else if (this->spline_actor_manager_->getCount(model_id))
+    {
+        return this->getSplineIsEdgeRender(model_id);
+    }
+    else
+    {
+        std::cout << "get is edge render mode error" << std::endl;
+        return 0;
+    }
+    
 }
 
 QString QRenderWindow::getMeshRenderMode(Index model_id)
@@ -199,6 +222,24 @@ QString QRenderWindow::getSplineRenderMode(Index model_id)
         std::cout << "get spline render mode error" << std::endl;
         return "None";
 	}
+}
+
+QString QRenderWindow::getRenderMode(Index model_id)
+{
+    if (this->mesh_actor_manager_->getCount(model_id))
+    {
+        return this->getMeshRenderMode(model_id);
+    }
+    else if (this->spline_actor_manager_->getCount(model_id))
+    {
+        return this->getSplineRenderMode(model_id);
+    }
+    else
+    {
+        std::cout << "get render mode error" << std::endl;
+        return "None";
+    }
+
 }
 
 void QRenderWindow::setSelectModel(Index model_id)
