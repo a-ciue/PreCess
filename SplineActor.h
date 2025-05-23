@@ -31,6 +31,7 @@ class SplineActor {
 
 public:
 	SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode);
+	~SplineActor();
 
 	SplineRenderMode getSplineRenderMode();
 	bool getIsEdgeRender();

@@ -78,7 +78,6 @@ bool SplineActorManager::getCount(Index model_id)
 
 void SplineActorManager::deleteModel(Index model_id)
 {
-	if (!this->models_.count(model_id))
 	this->models_.erase(model_id);
 }
 

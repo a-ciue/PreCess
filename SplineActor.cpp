@@ -1,6 +1,7 @@
 #include "SplineActor.h"
 #include "SplineActor.h"
 #include "SplineActor.h"
+#include "SplineActor.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -31,6 +32,14 @@ SplineActor::SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode)
 {
     this->renderer_ = renderer;
     this->render_mode_ = render_mode;
+}
+
+SplineActor::~SplineActor()
+{
+    if (this->renderer_)
+    {
+        renderer_->RemoveActor(this->actor_);
+    }
 }
 
 SplineRenderMode SplineActor::getSplineRenderMode()
