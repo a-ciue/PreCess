@@ -20,7 +20,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
-
+#include <vtkCameraOrientationWidget.h>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
@@ -53,6 +53,8 @@ public:
 
         /*std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;*/
         vtkNew<QRenderWindowStyle> style_;
+        vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
+
 
 
     };
