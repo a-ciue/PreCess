@@ -13,31 +13,84 @@
 
 #include <filesystem>
 #include <QDebug>
+#include <QFileInfo>
+
+#include <STEPControl_Reader.hxx>
+#include <IGESControl_Reader.hxx>
+#include <TopoDS_Shape.hxx>
+
+std::unique_ptr<ModelData> FileHandler::read(const QUrl& path)
+{
+    const QString ext = QFileInfo(path.toLocalFile()).suffix().toLower();
+    if (ext == "obj" || ext == "stl" || ext == "ply")          // 你支持的网格格式
+        return readMesh(path);
+    else if (ext == "step" || ext == "stp" || ext == "iges" || ext == "igs")
+        return readSpline(path);
+    else {
+        qDebug() << "read: 不支持的文件扩展名:" << ext;
+        return nullptr;
+    }
+}
 
 std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
 {
-    auto mesh = ModelUtil::mesh_from_spline(spline_path.toLocalFile().toStdU16String());
-    if (!mesh || mesh->numFaces() == 0) {
-        qDebug() << "导入样条文件错误:" << spline_path;
+    const QString ext = QFileInfo(spline_path.toLocalFile()).suffix().toLower();
+    TopoDS_Shape shape;
+
+    if (ext == "step" || ext == "stp") {
+        STEPControl_Reader reader;
+        IFSelect_ReturnStatus stat = reader.ReadFile(
+                spline_path.toLocalFile().toStdString().c_str());
+        if (stat != IFSelect_RetDone) {
+            qDebug() << "STEP 读取失败:" << spline_path;
+            return nullptr;
+        }
+        reader.TransferRoots();
+        shape = reader.OneShape();
+    }
+    else {        // iges / igs
+        IGESControl_Reader reader;
+        IFSelect_ReturnStatus stat = reader.ReadFile(
+                spline_path.toLocalFile().toStdString().c_str());
+        if (stat != IFSelect_RetDone) {
+            qDebug() << "IGES 读取失败:" << spline_path;
+            return nullptr;
+        }
+        reader.TransferRoots();
+        shape = reader.OneShape();
+    }
+
+    if (shape.IsNull()) {
+        qDebug() << "样条文件为空:" << spline_path;
         return nullptr;
     }
-    return std::make_unique<ModelData>(std::move(mesh));
+
+    SplineData sd;
+    sd.rootShape  = shape;
+    sd.sourcePath = spline_path.toLocalFile();
+
+    return std::make_unique<ModelData>( std::move(sd) );
 }
 
 std::unique_ptr<ModelData> FileHandler::readMesh(const QUrl& mesh_path)
 {
-    auto mesh = ModelUtil::read_obj_with_groups(mesh_path.toLocalFile().toStdU16String());
-    if (!mesh || mesh->numFaces() == 0) {
+    using MeshPtr = std::unique_ptr<MeshLib::CTMesh>;
+
+    MeshPtr rawMesh = ModelUtil::read_obj_with_groups(
+            mesh_path.toLocalFile().toStdU16String());
+
+    if (!rawMesh || rawMesh->numFaces() == 0) {
         qDebug() << "导入网格文件错误:" << mesh_path;
         return nullptr;
     }
-    return std::make_unique<ModelData>(std::move(mesh));
+    MeshData md{std::move(rawMesh)}; // 调 MeshData 构造完成 patch/block/group
+    return std::make_unique<ModelData>(std::move(md));
 }
 
 bool FileHandler::writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode, const QString& extension)
 {
-    if (!model) {
-        qDebug() << "writeMesh: ModelData is null";
+    if (!model || !model->isMesh()) {
+        qDebug() << "writeMesh: ModelData 空，或非 Mesh 类型";
         return false;
     }
 

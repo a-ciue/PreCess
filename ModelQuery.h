@@ -18,6 +18,8 @@
 #include <QQmlEngine>  // 提供 QML 元素导出宏 (Qt6)
 
 #include "ModelManager.h"
+#include "MeshData.h"
+#include "SplineData.h"
 
 // 前向声明 ModelData 类
 class ModelData;

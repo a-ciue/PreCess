@@ -15,6 +15,6 @@ qt_add_qml_module(commands
         QCommandCatalog.h QCommand.h CommandDispatcher.h CommandDispatcher.cpp ArgTypeObject.h
 )
 
-target_link_libraries(commands PRIVATE Qt6::Gui)
+target_link_libraries(commands PRIVATE Qt6::Gui ${OpenCASCADE_LIBRARIES})
 #target_link_libraries(commands PRIVATE modelPart)  # 与 ModelData/ModelManager 库关联
 #target_include_directories(commands PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,12 +1,13 @@
 /**
  * @file ModelData.h
+ *
  * @brief 负责管理和操作网格模型数据的核心类
  *
  * ModelData 类用于存储和处理网格模型数据，包括面（Patch）、块（Block）和组（Group）的管理。
  * 它提供了一系列函数用于网格操作，如网格划分、合并和重划分等，同时维护与 MeshActor 之间的关联，
  * 以便进行可视化和渲染。
  *
- * @author 徐昊阳 haoyangxu06@gmail.com
+ * @author 徐昊阳 haoyangxu06\@gmail.com
  * @date 2025/3/8
  */
 #ifndef MODEL_H
@@ -14,74 +15,10 @@
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
-#include <array>
-#include <qstring.h>
 
+#include "MeshData.h"
+#include "SplineData.h"
 #include "Selection.h"
-#include "ToolMesh.h"
-#include "Core.h"
-
-namespace MeshLib {
-template <typename V, typename E, typename F, typename H>
-class CToolMesh;
-class CToolVertex;
-class CToolEdge;
-class CToolFace;
-class CToolHalfEdge;
-typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
-}
-
-/**
- * @brief 表示网格中的一个 Patch
- *
- * Patch 由多个三角形面组成，并包含其在全局网格中的 ID 信息
- * 同时Patch为模型的自身属性，不随相关操作而更改
- */
-struct Patch {
-    // patch id
-    int id_ { -1 };
-    int blockID { -1 };
-
-    // 新增的父节点id字段
-    int father_id{ -1 }; // 默认值为-1，表示没有父节点
-
-    // 全局id
-    std::vector<int> faceIDs_;
-    // 三角形的局部id索引
-    std::vector <std::array<int, 3>> faceTriangles_;
-    //std::vector<int[3]> faceTriangles_;
-
-    // 全局id
-    std::vector<int> vertexIDs_;
-    // 坐标
-    std::vector <std::array<double, 3>> vertexPoints_;
-    //std::vector<double[3]> vertexPoints_;
-
-    // 构造函数
-    Patch() = default;
-    Patch(int id, int block) : id_(id), blockID(block) {}
-};
-
-/**
- * @brief 表示网格中的一个 Block（块）
- *
- * Block 由多个 Patch 组成，具有唯一 ID，并归属于某个 Group。
- */
-struct Block {
-    std::unordered_set<int> patchIDs;
-    int id;
-    int groupID;
-};
-
-/**
- * @brief 表示网格中的一个 Block（块）
- *
- * Block 由多个 Patch 组成，具有唯一 ID，并归属于某个 Group。
- */
-struct Group {
-    std::unordered_set<int> blockIDs;
-    int id;
-};
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 /**
@@ -93,19 +30,31 @@ struct Group {
 */
 class ModelData {
 public:
-    /**
-     * @brief 构造 ModelData 对象
-     *
-     * 该构造函数基于传入的 CTMesh 对象初始化模型的 patches、blocks、groups 以及 MeshActor。
-     *
-     * @param mesh 指向 CTMesh 的智能指针，表示网格数据
-     */
-    ModelData(std::unique_ptr<MeshLib::CTMesh> mesh);
+    enum class Type { Mesh, Spline };
+
+    /* ============ 构造（仅声明） ============ */
+    explicit ModelData(MeshData mesh);
+    explicit ModelData(SplineData spline);
+
+    /* ============ 类型查询 ============ */
+    Type type() const;
+    bool isMesh()   const;
+    bool isSpline() const;
+
+    /* ============ 访问器 ============ */
+    MeshData&       mesh();
+    const MeshData& mesh() const;
+
+    SplineData&       spline();
+    const SplineData& spline() const;
+
+    /* ============ 通用 visit （模板，必须放头文件） ============ */
+    template<typename Visitor>
+    decltype(auto) visit(Visitor&& v) {
+        return std::visit(std::forward<Visitor>(v), data_);
+    }
 
 private:
-    using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
-    using BlockMap = std::unordered_map<int, std::unique_ptr<struct Block>>;
-    using GroupMap = std::unordered_map<int, std::unique_ptr<Group>>;
 
     //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
     //! @param mesh_path 输出文件路径
@@ -182,21 +131,40 @@ private:
     //const std::vector<int>& group_block_ids(int group_id);
 
 
-    Index getId() const { return id_; }
+    Index getId() const {
+        if (type_ == Type::Mesh){
+            return std::get<MeshData>(data_).id_;
+        }
+    }
 
     /**
      * @brief 获取模型名称
      *
      * @return QString 当前模型的名称
      */
-    QString getModelName() const { return model_name_; }
+    //QString getModelName() const { return model_name_; }
+    QString getModelName() const{
+        switch(type_) {
+            case Type::Mesh:
+                return std::get<MeshData>(data_).model_name_;       // MeshData.id
+            case Type::Spline:
+                return std::get<SplineData>(data_).model_name_;     // 假设你在 SplineData 里也有 id
+        }
+        throw std::logic_error("Unknown model type");
+    }
 
     /**
      * @brief 设置模型名称
      *
      * @param name 要设置的模型名称
      */
-    void setModelName(const QString& name) { model_name_ = name; }
+    //void setModelName(const QString& name) { model_name_ = name; }
+    void setModelName(const QString& name){
+        if (isMesh())
+            mesh().model_name_ = name;
+        else
+            spline().model_name_ = name;
+    }
 
     /**
      * @brief 获取渲染模型需要的数据
@@ -214,12 +182,8 @@ private:
     //! @brief 更新指定patch的father id
     void update_father_id(int patch_id, int father_id);
 
-    std::unique_ptr<MeshLib::CTMesh> mesh_;
-    QString model_name_;
-    Index id_ { -1 }; //!< 模型的唯一标识符
-    PatchMap patches_;
-    BlockMap blocks_;
-    GroupMap groups_;
+    Type                                   type_;
+    std::variant<MeshData, SplineData>     data_;
 
     friend class QModelQuery;          //!< 声明 QModelQuery 为友元，以允许其访问 ModelData 私有数据
     friend class TestModel;           //!< 声明 TestModel 为友元，用于GoogleTest

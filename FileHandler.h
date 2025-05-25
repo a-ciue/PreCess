@@ -33,6 +33,7 @@ public:
         return instance;
     }
 
+    std::unique_ptr<ModelData> read(const QUrl& path);
     /**
      * @brief 读取样条文件并生成 ModelData 对象
      * @param spline_path 样条文件的 URL 路径
