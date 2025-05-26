@@ -55,19 +55,25 @@ void SplineActorManager::bindRender(vtkRenderer* renderer)
 
 const SplineActor* SplineActorManager::getSplineActor(Index model_id)
 {
-	if (!this->models_.count(model_id))
-	return this->models_.at(model_id).get();
+	if (this->models_.count(model_id))
+		return this->models_.at(model_id).get();
+	else
+	{
+		std::cout << "SplineActorManager getSplineActor error" << std::endl;
+		return nullptr;
+	}
+	
 }
 
 SplineRenderMode SplineActorManager::getSplineRenderMode(Index model_id)
 {
-	if (!this->models_.count(model_id))
+	if (this->models_.count(model_id))
 	return this->models_[model_id]->getSplineRenderMode();
 }
 
 bool SplineActorManager::getIsEdgeRender(Index model_id)
 {
-	if (!this->models_.count(model_id))
+	if (this->models_.count(model_id))
 	return  this->models_[model_id]->getIsEdgeRender();
 }
 

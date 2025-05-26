@@ -50,8 +50,15 @@
 
 const MeshActor* MeshActorManager::getModelActor(Index model_id)
 {
-    if (!this->models_.count(model_id))
-	return this->models_.at(model_id).get();
+    if (this->models_.count(model_id))
+        return this->models_.at(model_id).get();
+    else
+    {
+        std::cout << "MeshActorManager getModelActor error" << std::endl;
+	    return nullptr;
+    }
+        
+
 }
 
 void MeshActorManager::deleteModel(Index model_id)
@@ -103,6 +110,6 @@ bool MeshActorManager::getIsEdgeRender(Index model_id)
 
 ModelRenderMode MeshActorManager::getMeshRenderMode(Index model_id)
 {
-    if (!this->models_.count(model_id))
+    if (this->models_.count(model_id))
     return this->models_[model_id]->getMeshRenderMode();
 }
