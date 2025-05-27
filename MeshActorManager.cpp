@@ -63,6 +63,7 @@ const MeshActor* MeshActorManager::getModelActor(Index model_id)
 
 void MeshActorManager::deleteModel(Index model_id)
 {
+    this->models_[model_id]->deleteMeshActor();
 	this->models_.erase(model_id);
 }
 

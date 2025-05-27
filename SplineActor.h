@@ -31,12 +31,13 @@ class SplineActor {
 
 public:
 	SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode);
-	~SplineActor();
 
 	SplineRenderMode getSplineRenderMode();
 	bool getIsEdgeRender();
 
 	void loadShape(const TopoDS_Shape &shape);
+	void deleteSplineActor();
+
 	void setVisibility(bool visibility);
 	void setRenderMode(SplineRenderMode render_mode);
 

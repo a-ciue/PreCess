@@ -28,9 +28,10 @@ public:
     static vtkNew<vtkNamedColors> colors;
 
     MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode);
-    ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
+    void deleteMeshActor();
+
     void setVisibility(bool visibility);
     void setRenderEdge(bool is_render);
     void setRenderMode(ModelRenderMode render_mode);

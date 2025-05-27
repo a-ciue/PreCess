@@ -38,14 +38,6 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode
 
 }
 
-MeshActor::~MeshActor()
-{
-    if (this->renderer_)
-    {
-        renderer_->RemoveActor(this->actor_);
-    }
-}
-
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
 	this->model_data_ = model_data;
@@ -75,6 +67,14 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     createBlockMapper(this->model_data_);
 
 
+}
+
+void MeshActor::deleteMeshActor()
+{
+    if (this->renderer_)
+    {
+        renderer_->RemoveActor(this->actor_);
+    }
 }
 
 void MeshActor::setVisibility(bool visibility)
