@@ -93,8 +93,7 @@ bool QRenderWindow::event(QEvent* ev)
     default:
         break;
     }
-    ev->accept();
-    return true;
+    return QQuickVTKItem::event(ev);
 }
 
 
