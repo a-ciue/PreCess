@@ -45,6 +45,10 @@ qt_add_qml_module(${MYNAME}
 )
 
 qt_add_library(modelQml STATIC)
+target_link_libraries(modelQml 
+    PRIVATE
+    ${OpenCASCADE_LIBRARIES}
+)                    
 qt_add_qml_module(modelQml 
     URI model
     SOURCES
@@ -144,6 +148,7 @@ install(
         RUNTIME_DEPENDENCIES
         DIRECTORIES
         $<TARGET_FILE_DIR:VTK::CommonCore>
+        #$<TARGET_FILE_DIR:TKernal>
         # Qt 库所在目录
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Quick>

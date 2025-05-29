@@ -24,7 +24,7 @@ void ModelManager::addModel(const QString& model_name, std::unique_ptr<ModelData
         qDebug() << "模型或 VTK 项不存在:" << model_name;
         return;
     }
-
+    
     Index model_id = ++max_index_;
     model->setModelName(model_name);
     model->id_ = model_id;

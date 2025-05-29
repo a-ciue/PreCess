@@ -85,6 +85,6 @@ struct MeshData {
     // ctor 声明
     explicit MeshData(std::unique_ptr<MeshLib::CTMesh> mesh);
     // 优化 update_patches 的实现，减少网格遍历次数
-    void update_patches(const std::vector<int>& patch_ids, bool new_patch);
-    void update_patches(const std::unordered_set<int>& patch_ids, bool new_patch);
+    void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);
+    void update_patches(const std::unordered_set<int>& patch_ids, bool new_patch = true);
 };

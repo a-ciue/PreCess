@@ -22,6 +22,7 @@
 std::unique_ptr<ModelData> FileHandler::read(const QUrl& path)
 {
     const QString ext = QFileInfo(path.toLocalFile()).suffix().toLower();
+    qDebug() << "[FileHandler] read() extension =" << ext;   // ← 新增
     if (ext == "obj" || ext == "stl" || ext == "ply")          // 你支持的网格格式
         return readMesh(path);
     else if (ext == "step" || ext == "stp" || ext == "iges" || ext == "igs")

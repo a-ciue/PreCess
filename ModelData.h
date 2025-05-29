@@ -38,15 +38,15 @@ public:
 
     /* ============ 类型查询 ============ */
     Type type() const;
-    bool isMesh()   const;
-    bool isSpline() const;
+    bool isMesh()   const noexcept;
+    bool isSpline() const noexcept;
 
     /* ============ 访问器 ============ */
-    MeshData&       mesh();
-    const MeshData& mesh() const;
+    MeshData* asMeshData() noexcept;
+    const MeshData* asMeshData() const noexcept;
 
-    SplineData&       spline();
-    const SplineData& spline() const;
+    SplineData* asSplineData() noexcept;
+    const SplineData* asSplineData() const noexcept;
 
     /* ============ 通用 visit （模板，必须放头文件） ============ */
     template<typename Visitor>
@@ -161,9 +161,9 @@ private:
     //void setModelName(const QString& name) { model_name_ = name; }
     void setModelName(const QString& name){
         if (isMesh())
-            mesh().model_name_ = name;
+            asMeshData()->model_name_ = name;
         else
-            spline().model_name_ = name;
+            asSplineData()->model_name_ = name;
     }
 
     /**
@@ -184,6 +184,8 @@ private:
 
     Type                                   type_;
     std::variant<MeshData, SplineData>     data_;
+
+    Index id_{ -1 }; //!< 模型的唯一标识符
 
     friend class QModelQuery;          //!< 声明 QModelQuery 为友元，以允许其访问 ModelData 私有数据
     friend class TestModel;           //!< 声明 TestModel 为友元，用于GoogleTest

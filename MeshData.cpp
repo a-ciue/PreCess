@@ -16,7 +16,7 @@ MeshData::MeshData(std::unique_ptr<MeshLib::CTMesh> mesh)
     }
 
     // 更新 patches_
-    update_patches(patch_ids, false);
+    update_patches(patch_ids);
 
     // 初始化 blocks_
     for (const auto& [patch_id, patch_ptr] : patches_) {
