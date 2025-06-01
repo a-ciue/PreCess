@@ -12,6 +12,7 @@
 #include "QCommand.h"
 #include <QVariant>
 
+#include "../ModelImporter.h"
 #include "../ModelManager.h"
 
 class QSelection;
@@ -41,4 +42,5 @@ private:
     // 修改：使用 ModelBridge 代替原来 ModelManager
     ModelManager* model_manager_{};
     std::vector<std::unique_ptr<ICommand>> m_history;
+    ModelImporter importer_;
 };

@@ -62,5 +62,14 @@
         "PATH": "$penv{PATH};E:\\3rdParts\\Qt\\6.9.0\\msvc2022_64\\bin;E:\\3rdParts\\VTK-9.4.2\\install-RelWithDebInfo\\bin"
       }
     }
+    {
+      "name": "vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "cmake-build-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "/Users/xuhaoyang/CLionProjects/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+      }
   ]
 }
