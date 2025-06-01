@@ -52,7 +52,7 @@ target_link_libraries(modelQml
 qt_add_qml_module(modelQml 
     URI model
     SOURCES
-        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp 
+        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp QModelManager.h QModelManager.cpp
 )
 add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp MeshActorManager.cpp SplineActorManager.cpp
         MeshData.h
@@ -69,6 +69,7 @@ add_library(modelPart STATIC
         MeshData.h
         SplineData.h
         MeshData.cpp
+        ModelImporter.cpp
         # ModelQuery.cpp
         # commands/SplitFaceCommand.cpp
         # command/MergeBlocksCommand.cpp
@@ -104,6 +105,7 @@ target_link_libraries(modelPart
         PRIVATE
         Qt${VTK_QT_VERSION}::Gui
         Qt${VTK_QT_VERSION}::Quick
+        Qt${VTK_QT_VERSION}::Core
 )
 
 

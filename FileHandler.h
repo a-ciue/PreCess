@@ -18,14 +18,14 @@
 #include "ModelData.h"
 #include "ToolMesh.h"
 
-/**
- * @brief FileHandler 单例类
- *
- * 负责所有与文件 IO 相关的操作，包括：
- * - 读取样条文件并转换为 ModelData 对象
- * - 读取网格文件并转换为 ModelData 对象
- * - 将 ModelData 数据写出到文件
- */
+ /**
+  * @brief FileHandler 单例类
+  *
+  * 负责所有与文件 IO 相关的操作，包括：
+  * - 读取样条文件并转换为 ModelData 对象
+  * - 读取网格文件并转换为 ModelData 对象
+  * - 将 ModelData 数据写出到文件
+  */
 class FileHandler {
 public:
     static FileHandler& instance() {

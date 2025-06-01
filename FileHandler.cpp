@@ -44,8 +44,8 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
                 spline_path.toLocalFile().toStdString().c_str());
         if (stat != IFSelect_RetDone) {
             qDebug() << "STEP 读取失败:" << spline_path;
-            return nullptr;
-        }
+        return nullptr;
+    }
         reader.TransferRoots();
         shape = reader.OneShape();
     }
