@@ -457,6 +457,16 @@ MeshDataVtk ModelData::getModelData()
     return modelData;
 }
 
+std::optional<SplineDataVtk> ModelData::getSplineData()
+{
+    const auto* md = asSplineData();
+    if (md) {
+        SplineDataVtk modelData{ md->rootShape };
+        return modelData;
+    }
+    return nullopt;
+}
+
 void ModelData::update_actors(const std::vector<int>& patch_ids)
 {
     std::unordered_set<int> block_ids, group_ids;

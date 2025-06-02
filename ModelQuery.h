@@ -53,7 +53,11 @@ public:
 
     std::optional<MeshDataVtk> getModelData(Index model_id) override;
 
+    std::optional<SplineDataVtk> getSplineData(Index model_id) ;
+
     Q_INVOKABLE QString getModelName(Index model_id) const;
+
+    int getModelType(Index model_id) const;
 
     /**
      * @brief 获取指定 Patch 的详细信息

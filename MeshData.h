@@ -81,7 +81,6 @@ struct MeshData {
     GroupMap groups_;
 
     QString model_name_;
-    Index id_ { -1 }; //!< 模型的唯一标识符
     // ctor 声明
     explicit MeshData(std::unique_ptr<MeshLib::CTMesh> mesh);
     // 优化 update_patches 的实现，减少网格遍历次数

@@ -9,9 +9,19 @@ std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
 {
     std::optional<MeshDataVtk> model_data {};
     ModelData* model = m_manager->getModel(model_id);
-    if (model)
-    {
+    if (model->isMesh()){
         model_data = model->getModelData();
+    }
+    return model_data;
+}
+
+std::optional<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
+{
+    std::optional<SplineDataVtk> model_data{};
+    ModelData* model = m_manager->getModel(model_id);
+    if (model->isSpline())
+    {
+        model_data = model->getSplineData();
     }
     return model_data;
 }
@@ -24,6 +34,16 @@ QString QModelQuery::getModelName(Index model_id) const
         return QString();
     }
     return model->getModelName();
+}
+
+//判断模型类型：mesh返回0，spline返回1，未知返回-1
+int QModelQuery::getModelType(Index model_id) const
+{
+    if (m_manager->models_[model_id]->isMesh())
+        return 0;
+    if (m_manager->models_[model_id]->isSpline())
+        return 1;
+    return -1;
 }
 
 QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)

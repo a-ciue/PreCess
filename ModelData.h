@@ -133,7 +133,7 @@ private:
 
     Index getId() const {
         if (type_ == Type::Mesh){
-            return std::get<MeshData>(data_).id_;
+            return id_;
         }
     }
 
@@ -171,6 +171,8 @@ private:
      * @return 模型数据
      */
     MeshDataVtk getModelData();
+
+    std::optional<SplineDataVtk> getSplineData();
 
     //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
     void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);

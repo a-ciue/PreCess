@@ -2,6 +2,7 @@
 #define CORE_H
 #include <vector>
 #include <array>
+#include <TopoDS_Shape.hxx>
 
 enum class ModelRenderMode {
     Face,
@@ -59,6 +60,6 @@ struct MeshDataVtk {
 
 struct SplineDataVtk
 {
-    Index id;
+    TopoDS_Shape shape;
 };
 #endif // CORE_H
