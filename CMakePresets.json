@@ -12,7 +12,8 @@
         "CMAKE_C_COMPILER": "cl.exe",
         "CMAKE_CXX_COMPILER": "cl.exe",
         "ENABLE_TEST": false,
-        "CMAKE_PREFIX_PATH": "C:\\Qt\\6.8.0\\msvc2022_64;D:\\VTK\\vtk-9.4.0\\install"
+        "CMAKE_PREFIX_PATH": "E:\\3rdParts\\Qt\\6.9.0\\msvc2022_64;E:\\3rdParts\\VTK-9.4.2\\install;E:\\3rdParts\\OCCT",
+        "CMAKE_INSTALL_SYSTEM_RUNTIME_DEPENDENCY_SEARCH_PATHS": "E:\\3rdParts\\OCCT\\win64\\vc14\\bin"
       },
       "condition": {
         "type": "equals",
@@ -20,7 +21,7 @@
         "rhs": "Windows"
       },
       "environment": {
-        "PATH": "$penv{PATH};C:\\Qt\\6.8.0\\msvc2022_64\\bin;D:\\VTK\\vtk-9.4.0\\install\\bin"
+        "PATH": "$penv{PATH};E:\\3rdParts\\Qt\\6.9.0\\msvc2022_64\\bin;E:\\3rdParts\\VTK-9.4.2\\install\\bin;E:\\3rdParts\\OCCT\\win64\\vc14\\bind;E:\\3rdParts\\occt_vc14-64-pch-combined-with-debug\\3rdparty-vc14-64\\freetype-2.13.3-x64\\bin"
       }
     },
     {
@@ -55,10 +56,20 @@
       "inherits": "windows-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "CMAKE_PREFIX_PATH": "C:\\Qt\\6.8.0\\msvc2022_64;D:\\VTK\\VTK-9.4.0\\install-RelWithDebInfo"
+        "CMAKE_PREFIX_PATH": "E:\\3rdParts\\Qt\\6.9.0\\msvc2022_64;E:\\3rdParts\\VTK-9.4.2\\install-RelWithDebInfo"
       },
       "environment": {
-        "PATH": "$penv{PATH};C:\\Qt\\6.8.0\\msvc2022_64\\bin;D:\\VTK\\VTK-9.4.0\\install-RelWithDebInfo\\bin" }
+        "PATH": "$penv{PATH};E:\\3rdParts\\Qt\\6.9.0\\msvc2022_64\\bin;E:\\3rdParts\\VTK-9.4.2\\install-RelWithDebInfo\\bin"
+      }
+    }
+    {
+      "name": "vcpkg",
+      "generator": "Ninja",
+      "binaryDir": "cmake-build-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "/Users/xuhaoyang/CLionProjects/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
       }
   ]
 }

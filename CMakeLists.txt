@@ -45,12 +45,19 @@ qt_add_qml_module(${MYNAME}
 )
 
 qt_add_library(modelQml STATIC)
+target_link_libraries(modelQml 
+    PRIVATE
+    ${OpenCASCADE_LIBRARIES}
+)                    
 qt_add_qml_module(modelQml 
     URI model
     SOURCES
-        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp 
+        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp QModelManager.h QModelManager.cpp
 )
-add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp MeshActorManager.cpp SplineActorManager.cpp)
+add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp MeshActorManager.cpp SplineActorManager.cpp
+        MeshData.h
+        SplineData.h
+        MeshData.cpp)
 
 
 add_library(modelPart STATIC
@@ -59,6 +66,10 @@ add_library(modelPart STATIC
         # ModelManager.cpp 
         ModelUtil.cpp
         FileHandler.cpp
+        MeshData.h
+        SplineData.h
+        MeshData.cpp
+        ModelImporter.cpp
         # ModelQuery.cpp
         # commands/SplitFaceCommand.cpp
         # command/MergeBlocksCommand.cpp
@@ -69,6 +80,14 @@ add_library(modelPart STATIC
 target_include_directories(modelPart
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}   # 项目根目录
+)
+target_link_libraries(modelPart
+        PRIVATE
+        ${OpenCASCADE_LIBRARIES}      # OCCT 的库列表
+)
+target_link_libraries(vtkPart
+        PRIVATE
+        ${OpenCASCADE_LIBRARIES}
 )
 target_link_libraries(vtkPart
     PRIVATE
@@ -86,6 +105,7 @@ target_link_libraries(modelPart
         PRIVATE
         Qt${VTK_QT_VERSION}::Gui
         Qt${VTK_QT_VERSION}::Quick
+        Qt${VTK_QT_VERSION}::Core
 )
 
 
@@ -130,6 +150,7 @@ install(
         RUNTIME_DEPENDENCIES
         DIRECTORIES
         $<TARGET_FILE_DIR:VTK::CommonCore>
+        #$<TARGET_FILE_DIR:TKernal>
         # Qt 库所在目录
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Quick>
