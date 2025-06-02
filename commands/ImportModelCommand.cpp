@@ -1,14 +1,14 @@
 #include "ImportModelCommand.h"
 
-// ¶¨Òå execute£¬×¢ÒâÕâÀï **²»´ø override**£¬Ö»Ğ´º¯ÊıÌå
+// å®šä¹‰ executeï¼Œæ³¨æ„è¿™é‡Œ **ä¸å¸¦ override**ï¼Œåªå†™å‡½æ•°ä½“
 void ImportModelCommand::execute() {
-    // µ÷ÓÃ ModelImporter£¬½«ÎÄ¼şÕæÕıµ¼Èë£¬·µ»ØÒ»¸ö ModelOperator
+    // è°ƒç”¨ ModelImporterï¼Œå°†æ–‡ä»¶çœŸæ­£å¯¼å…¥ï¼Œè¿”å›ä¸€ä¸ª ModelOperator
     op_ = importer_.import(path_);
 }
 
-// ¿ÕÊµÏÖ
+// ç©ºå®ç°
 void ImportModelCommand::undo() {
-    // Èç¹ûÎ´À´ĞèÒª³·Ïú£¬¿ÉÒÔÔÚÕâÀïµ÷ÓÃ ModelManager::removeModel(...)
+    // å¦‚æœæœªæ¥éœ€è¦æ’¤é”€ï¼Œå¯ä»¥åœ¨è¿™é‡Œè°ƒç”¨ ModelManager::removeModel(...)
 }
 
 void ImportModelCommand::redo() {

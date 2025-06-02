@@ -2,24 +2,24 @@
 #include "ModelManager.h"
 #include "ModelImporter.h"
 #include "ModelObserver.h"
-// #include "QModelOperatorWrapper.h"   // ÈôÔİ²»±©Â¶°ü×°Æ÷£¬¿É×¢ÊÍ
+// #include "QModelOperatorWrapper.h"   // è‹¥æš‚ä¸æš´éœ²åŒ…è£…å™¨ï¼Œå¯æ³¨é‡Š
 
 QModelManager::QModelManager(QObject* parent)
     : QObject(parent)
 {
-    // 1) ĞÂ½¨Ò»¸ö QModelObserver£¨ÎŞ²Î¹¹Ôì£©
+    // 1) æ–°å»ºä¸€ä¸ª QModelObserverï¼ˆæ— å‚æ„é€ ï¼‰
     observer_ = new QModelObserver();
 
-    // 2) ÓÃÁ½¸ö²ÎÊıµ÷ÓÃ ModelManager µÄ¹¹Ôìº¯Êı
+    // 2) ç”¨ä¸¤ä¸ªå‚æ•°è°ƒç”¨ ModelManager çš„æ„é€ å‡½æ•°
     core_ = std::make_unique<ModelManager>(
         /*parent=*/nullptr,
         /*observer=*/observer_
     );
 
-    // 3) ĞÂ½¨ ModelImporter£¬½« core_ ´«¹ıÈ¥
+    // 3) æ–°å»º ModelImporterï¼Œå°† core_ ä¼ è¿‡å»
     importer_ = std::make_unique<ModelImporter>(*core_);
 
-    // 4) °Ñ observer_ ÀïµÄĞÅºÅ×ª·¢¸ø QML
+    // 4) æŠŠ observer_ é‡Œçš„ä¿¡å·è½¬å‘ç»™ QML
     connect(observer_, &QModelObserver::modelAdded, this, &QModelManager::modelAdded);
     connect(observer_, &QModelObserver::modelRemoved, this, &QModelManager::modelRemoved);
     connect(observer_, &QModelObserver::modelChanged, this, &QModelManager::modelUpdated);
@@ -34,7 +34,7 @@ void QModelManager::importModel(const QUrl& url)
         emit modelAdded(op.getId());
     }
     else {
-        qWarning() << "QModelManager::importModel µ¼ÈëÊ§°Ü: " << url;
+        qWarning() << "QModelManager::importModel å¯¼å…¥å¤±è´¥: " << url;
     }
 }
 
@@ -50,8 +50,8 @@ QObject* QModelManager::getOperator(int id)
     if (!maybeOp)
         return nullptr;
 
-    // ÔİÊ±²»×ö°ü×°Æ÷£¬Ö±½Ó·µ»Ø nullptr
+    // æš‚æ—¶ä¸åšåŒ…è£…å™¨ï¼Œç›´æ¥è¿”å› nullptr
     return nullptr;
-    // Èç¹ûÒÔºóÒª QML ²Ù×÷ ModelOperator£¬ÇëÆôÓÃÏÂÃæÕâĞĞ²¢ÊµÏÖ°ü×°Æ÷£º
+    // å¦‚æœä»¥åè¦ QML æ“ä½œ ModelOperatorï¼Œè¯·å¯ç”¨ä¸‹é¢è¿™è¡Œå¹¶å®ç°åŒ…è£…å™¨ï¼š
     // return new QModelOperatorWrapper(std::move(*maybeOp), this);
 }

@@ -9,7 +9,7 @@
 class ModelImporter {
 public:
     explicit ModelImporter(ModelManager& mgr) : mgr_(mgr) {}
-    std::optional<ModelOperator> import(const QUrl & url);   // 自动分发
+    std::optional<ModelOperator> import(const QUrl & url);   // 鑷姩鍒嗗彂
 private:
     ModelManager& mgr_;
 };

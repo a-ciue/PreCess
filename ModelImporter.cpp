@@ -1,7 +1,7 @@
 // ModelImporter.cpp
-#include "ModelImporter.h"      // 声明 ModelImporter
-#include "FileHandler.h"        // 调用 readMesh/readSpline
-#include <QFileInfo>            // 用来取后缀
+#include "ModelImporter.h"      // 澹版槑 ModelImporter
+#include "FileHandler.h"        // 璋冪敤 readMesh/readSpline
+#include <QFileInfo>            // 鐢ㄦ潵鍙栧悗缂�
 #include <optional>             // for std::nullopt and std::optional
 std::optional<ModelOperator> ModelImporter::import(const QUrl & url) {
     const QString ext = QFileInfo(url.toLocalFile()).suffix().toLower();

@@ -1,28 +1,28 @@
 #pragma once
 
-#include <optional>            // Ò»¶¨Òª°üº¬ <optional>£¬·ñÔòÕÒ²»µ½ std::optional
+#include <optional>            // ä¸€å®šè¦åŒ…å« <optional>ï¼Œå¦åˆ™æ‰¾ä¸åˆ° std::optional
 #include <QUrl>
 #include "ICommand.h"
-#include "../ModelImporter.h"  // ¸ù¾İÄãµÄÄ¿Â¼½á¹¹£¬ÕâÀï¼ÙÉè ModelImporter.h ÔÚÉÏÒ»¼¶
+#include "../ModelImporter.h"  // æ ¹æ®ä½ çš„ç›®å½•ç»“æ„ï¼Œè¿™é‡Œå‡è®¾ ModelImporter.h åœ¨ä¸Šä¸€çº§
 
 /**
- * ImportModelCommand: ¸ºÔğ½«µ¼Èë²Ù×÷·â×°Îª ICommand£¬
- * ÔÚ execute() Ê±µ÷ÓÃ ModelImporter::import(...)¡£
- * undo() Ä¿Ç°Áô¿Õ£¬ºóĞøĞèÒª³·Ïú¹¦ÄÜÔÙ²¹³ä¡£
+ * ImportModelCommand: è´Ÿè´£å°†å¯¼å…¥æ“ä½œå°è£…ä¸º ICommandï¼Œ
+ * åœ¨ execute() æ—¶è°ƒç”¨ ModelImporter::import(...)ã€‚
+ * undo() ç›®å‰ç•™ç©ºï¼Œåç»­éœ€è¦æ’¤é”€åŠŸèƒ½å†è¡¥å……ã€‚
  */
 class ImportModelCommand : public ICommand {
 public:
-    // ¹¹Ôìº¯Êı£º´«Èë ModelImporter µÄÒıÓÃ£¬ÒÔ¼°´ıµ¼ÈëÎÄ¼şµÄ URL
+    // æ„é€ å‡½æ•°ï¼šä¼ å…¥ ModelImporter çš„å¼•ç”¨ï¼Œä»¥åŠå¾…å¯¼å…¥æ–‡ä»¶çš„ URL
     explicit ImportModelCommand(ModelImporter& importer, const QUrl& path)
         : importer_(importer), path_(path) {}
 
-    // Èç¹ûĞèÒªÔÚÇ°¶ËÄÃµ½ĞÂ½¨µÄ ModelOperator£¬¿ÉÍ¨¹ı result() ·ÃÎÊ
+    // å¦‚æœéœ€è¦åœ¨å‰ç«¯æ‹¿åˆ°æ–°å»ºçš„ ModelOperatorï¼Œå¯é€šè¿‡ result() è®¿é—®
     std::optional<ModelOperator> result() const { return op_; }
 
-    // ICommand ½Ó¿Ú£ºÖ´ĞĞµ¼Èë
+    // ICommand æ¥å£ï¼šæ‰§è¡Œå¯¼å…¥
     void execute() override;
 
-    // ICommand ½Ó¿Ú£º³·Ïú£¨Ôİ²»Ö§³Ö£©
+    // ICommand æ¥å£ï¼šæ’¤é”€ï¼ˆæš‚ä¸æ”¯æŒï¼‰
     void undo() override;
 
     void redo() override;         
@@ -30,5 +30,5 @@ public:
 private:
     ModelImporter& importer_;
     QUrl                                   path_;
-    std::optional<ModelOperator>           op_;  // ±£´æµ¼ÈëµÃµ½µÄ ModelOperator
+    std::optional<ModelOperator>           op_;  // ä¿å­˜å¯¼å…¥å¾—åˆ°çš„ ModelOperator
 };
