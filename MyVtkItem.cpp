@@ -112,28 +112,26 @@ void QRenderWindow::onModelChanged(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (model_id == 0)
-        {
-            STEPControl_Reader reader;
-
-            // 读取 STEP 文件
-            IFSelect_ReturnStatus status = reader.ReadFile("../airplane.stp");
-            if (status != IFSelect_RetDone) {
-                std::cout << "Error: Cannot read the STEP file." << std::endl;
-            }
-
-            // 转换
-            reader.TransferRoots();
-            TopoDS_Shape shape = reader.OneShape();
-            this->spline_actor_manager_->loadSpline(0, shape);
-        }
-        else
+        int type = this->model_query_->getModelType(model_id);
+        if (this->model_query_->getModelType(model_id)==0)
         {
             std::optional model_data = model_query_->getModelData(model_id);
             if (model_data)
             {
                 this->mesh_actor_manager_->loadModel(model_id, *model_data, vtk->renderer_, this->renderMode_, 1);
             }
+        }
+        else if (this->model_query_->getModelType(model_id) == 1)
+        {
+	        std::optional spline_data = model_query_->getSplineData(model_id);
+            if (spline_data)
+            {
+                this->spline_actor_manager_->loadSpline(0, *spline_data);
+            }
+        }
+        else
+        {
+            std::cout << "load model error" << std::endl;
         }
 
         });

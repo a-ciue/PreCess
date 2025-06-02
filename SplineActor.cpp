@@ -45,10 +45,10 @@ bool SplineActor::getIsEdgeRender()
     return this->edge_render;
 }
 
-void SplineActor::loadShape(const TopoDS_Shape& shape)
+void SplineActor::loadShape(const SplineDataVtk& spline_data)
 {
-    this->shape_ = shape_;
-    IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(shape);
+    this->spline_data_ = spline_data;
+    IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(spline_data.shape);
     vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
     DS->SetShape(aShapeImpl);
 

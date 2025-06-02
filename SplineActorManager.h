@@ -53,7 +53,7 @@ public:
 	bool getCount(Index model_id);
 
 	void deleteModel(Index model_id);
-	void loadSpline(Index model_id, TopoDS_Shape shape);
+	void loadSpline(Index model_id, const SplineDataVtk& spline_data);
 
 	void setVisibility(Index model_id, bool visibility);
 	void setRenderMode(Index model_id, SplineRenderMode render_mode);

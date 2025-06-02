@@ -35,7 +35,7 @@ public:
 	SplineRenderMode getSplineRenderMode();
 	bool getIsEdgeRender();
 
-	void loadShape(const TopoDS_Shape &shape);
+	void loadShape(const SplineDataVtk& spline_data);
 	void deleteSplineActor();
 
 	void setVisibility(bool visibility);
@@ -45,7 +45,7 @@ private:
 	SplineRenderMode render_mode_;
 	bool edge_render;
 	bool visibility_;
-	TopoDS_Shape shape_;
+	SplineDataVtk spline_data_;
 
 	vtkNew<vtkActor> actor_;
 	vtkNew<vtkPolyDataMapper> mapper_;
