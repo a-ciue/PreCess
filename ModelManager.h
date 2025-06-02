@@ -21,12 +21,12 @@
 class QModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
 
- /**
-  * @brief 负责管理多个 ModelData 实例的类
-  *
-  * ModelManager 允许动态添加、删除和查找模型，通过Observer模式发送模型事件。
-  * 使得 QML 层能够访问和控制网格数据。
-  */
+/**
+ * @brief 负责管理多个 ModelData 实例的类
+ *
+ * ModelManager 允许动态添加、删除和查找模型，通过Observer模式发送模型事件。
+ * 使得 QML 层能够访问和控制网格数据。
+ */
 class ModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -46,39 +46,14 @@ public:
      * @param model_name 新模型的名称
      * @param model 需要添加的模型对象
      */
-    void addModel(const QString& model_name, std::unique_ptr<ModelData> model);
-    
+    Index addModel(std::unique_ptr<ModelData> model);
+
     /**
      * @brief 移除指定名称的模型
      *
      * @param model_id 需要移除的模型 ID
      */
-    Q_INVOKABLE void removeModel(Index model_id);
-
-
-    /**
-     * @brief 读取样条曲线数据
-     *
-     * @param spline_path 样条曲线文件的路径
-     */
-    Q_INVOKABLE void readSpline(QUrl spline_path);
-
-    /**
-     * @brief 读取网格数据
-     *
-     * @param target_mesh 网格文件的路径
-     */
-    Q_INVOKABLE void readMesh(QUrl target_mesh);
-
-    /**
-     * @brief 输出网格数据
-     *
-     * @param modelName 需要导出的模型名称
-     * @param target_mesh 输出文件的路径
-     * @param render_mode 选择的渲染模式
-     * @param extension 输出文件的扩展名
-     */
-    Q_INVOKABLE void writeMesh(Index model_id, QUrl target_mesh, const QString& render_mode, const QString& extension);
+    void removeModel(Index model_id);
 
     /**
      * @brief 重命名模型
@@ -86,7 +61,7 @@ public:
      * @param model_id 模型 ID
      * @param new_name 新名称
      */
-    Q_INVOKABLE void renameModel(Index model_id, const QString& new_name);
+    void renameModel(Index model_id, const QString& new_name);
 
     /**
      * @brief 获取指定模型的操作接口对象
@@ -97,15 +72,15 @@ public:
      * @param model_id 模型 ID
      * @return 对应模型名称的 ModelOperator 对象指针
      */
-    std::optional<ModelOperator> getModelOperator(Index model_id);
+    std::optional<ModelOperator> getModelOperator(Index model_id) const;
 
 private:
     ModelData* getModel(Index model_id) const;
 
     //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
-    Index max_index_ { -1 }; //!< 最大索引值，用于唯一标识模型
-    QModelObserver* observer_;                     //!< 全局模型观察者，用于捕获模型事件
+    Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
+    QModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
 
     friend class QModelQuery;
 };

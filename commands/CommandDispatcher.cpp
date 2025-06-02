@@ -14,7 +14,7 @@
 #include "../ModelManager.h"
 
 CommandDispatcher::CommandDispatcher(ModelManager* manager, QObject* parent)
-        : QObject(parent), model_manager_(manager) { }
+        : QObject(parent), model_manager_(manager), importer_(*manager) { }
 
 void CommandDispatcher::runCommand(QCommand* cmd, Index model_id, const QVariantList& args)
 {

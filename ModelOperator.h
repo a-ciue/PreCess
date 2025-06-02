@@ -65,6 +65,8 @@ public:
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
     void remesh_group(QSelection* selection);
 
+    int getId() const { return model_->id_; }
+
 private:
     ModelData* model_;              //!< 被操作的模型数据指针
     QModelObserver* observer_;     //!< 模型观察者指针，用于通知外部变化（可为 nullptr）
