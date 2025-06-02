@@ -27,7 +27,7 @@ ApplicationWindow {
     title: qsTr("三角剖分交互程序")
 
     required property QModelObserver modelObserver
-    required property ModelManager modelManager
+    required property QModelManager modelManager
     required property QModelQuery modelQuery
     required property QCommandCatalog commandCatalog
     required property CommandDispatcher commandDispatcher
@@ -50,7 +50,7 @@ ApplicationWindow {
                 id: openPatchDialog
                 nameFilters: ["OBJ File (*.obj)"]
                 onAccepted: {
-                    modelManager.readMesh(selectedFile);
+                    modelManager.importModel(selectedFile);
                     myItem.resetCamera()
                 }
             }

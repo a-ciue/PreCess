@@ -15,6 +15,8 @@ public:
     Q_INVOKABLE void importModel(const QUrl& url);
     Q_INVOKABLE void removeModel(int id);
     Q_INVOKABLE QObject* getOperator(int id);
+    ModelManager* getModelManager();
+    QModelObserver* getModelObserver();
 
 signals:
     void modelAdded(int id);
@@ -26,5 +28,5 @@ signals:
 private:
     std::unique_ptr<ModelManager>  core_;
     std::unique_ptr<ModelImporter> importer_;
-    QModelObserver*                observer_;
+    std::unique_ptr<QModelObserver> observer_; 
 };

@@ -8,23 +8,16 @@ QModelManager::QModelManager(QObject* parent)
     : QObject(parent)
 {
     // 1) 新建一个 QModelObserver（无参构造）
-    observer_ = new QModelObserver();
+    observer_ = std::make_unique<QModelObserver>();
 
     // 2) 用两个参数调用 ModelManager 的构造函数
     core_ = std::make_unique<ModelManager>(
         /*parent=*/nullptr,
-        /*observer=*/observer_
+        /*observer=*/observer_.get()
     );
 
     // 3) 新建 ModelImporter，将 core_ 传过去
     importer_ = std::make_unique<ModelImporter>(*core_);
-
-    // 4) 把 observer_ 里的信号转发给 QML
-    connect(observer_, &QModelObserver::modelAdded, this, &QModelManager::modelAdded);
-    connect(observer_, &QModelObserver::modelRemoved, this, &QModelManager::modelRemoved);
-    connect(observer_, &QModelObserver::modelChanged, this, &QModelManager::modelUpdated);
-    connect(observer_, &QModelObserver::modelNameChanged, this, &QModelManager::modelNameChanged);
-    connect(observer_, &QModelObserver::splineLoadFailed, this, &QModelManager::splineLoadFailed);
 }
 
 void QModelManager::importModel(const QUrl& url)
@@ -54,4 +47,14 @@ QObject* QModelManager::getOperator(int id)
     return nullptr;
     // 如果以后要 QML 操作 ModelOperator，请启用下面这行并实现包装器：
     // return new QModelOperatorWrapper(std::move(*maybeOp), this);
+}
+
+ModelManager* QModelManager::getModelManager()
+{
+    return core_.get();
+}
+
+QModelObserver* QModelManager::getModelObserver()
+{
+    return observer_.get();
 }
