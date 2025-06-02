@@ -35,6 +35,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     this->spline_actor_manager_ = std::make_unique<SplineActorManager>();
     this->spline_actor_manager_ ->bindRender(vtk->renderer_);
 
+    vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
     vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor());// 设置坐标系控件大小（占屏幕比例）
     vtk->orientationWidget->On();
