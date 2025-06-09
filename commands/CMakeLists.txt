@@ -8,12 +8,13 @@ qt_add_library(commands STATIC
         # LoadSplineCommand.cpp
         ImportModelCommand.cpp
         CommandDispatcher.cpp
+        TrianglulationCommand.cpp
 )
 qt_add_qml_module(commands
     URI commands
     VERSION 1.0
     SOURCES
-        QCommandCatalog.h QCommand.h CommandDispatcher.h CommandDispatcher.cpp ArgTypeObject.h ImportModelCommand.h    
+        QCommandCatalog.h QCommand.h CommandDispatcher.h CommandDispatcher.cpp ArgTypeObject.h ImportModelCommand.h 
 )
 
 target_link_libraries(commands PRIVATE Qt6::Gui ${OpenCASCADE_LIBRARIES})

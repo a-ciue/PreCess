@@ -34,7 +34,7 @@ void CommandDispatcher::runCommand(QCommand* cmd, Index model_id, const QVariant
         return;
     }
     // 使用 ModelData 指针传递给具体命令类
-    if (auto command = cmd->create(*model_operator, args))
+    if (auto command = cmd->create(*model_operator, importer_,args))
     {
         command->execute();
         m_history.push_back(std::move(command));
@@ -61,33 +61,6 @@ void CommandDispatcher::splitFace(Index model_id, QSelection* sel) {
     cmd->execute();
     m_history.push_back(std::move(cmd));
 }
-
-//void CommandDispatcher::mergeBlocks(const QString& model_name, QSelection* sel) {
-//    if (!model_manager_) {
-//        qWarning() << "未设置 ModelBridge";
-//        return;
-//    }
-//    std::optional model_operator = model_manager_->getModelOperator(model_name);
-//    if (!model_operator) {
-//        qWarning() << "未找到模型: " << model_name;
-//        return;
-//    }
-//    auto cmd = std::make_unique<MergeBlocksCommand>(*model_operator, sel);
-//    cmd->execute();
-//    m_history.push_back(std::move(cmd));
-//}
-//
-//void CommandDispatcher::loadSpline(const QUrl& path) {
-//    if (!model_manager_) {
-//        qWarning() << "未设置 ModelBridge";
-//        return;
-//    }
-//    // 此处假设 loadSpline 命令需要在 ModelBridge 管理下创建新 ModelData
-//    auto dataPtr = model_manager_->getData();
-//    auto cmd = std::make_unique<LoadSplineCommand>(dataPtr.get(), path);
-//    cmd->execute();
-//    m_history.push_back(std::move(cmd));
-//}
 
 void CommandDispatcher::undo() {
     if (m_history.empty()) {

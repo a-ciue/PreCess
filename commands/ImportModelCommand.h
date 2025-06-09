@@ -4,6 +4,7 @@
 #include <QUrl>
 #include "ICommand.h"
 #include "../ModelImporter.h"  // 根据你的目录结构，这里假设 ModelImporter.h 在上一级
+#include <filesystem>
 
 /**
  * ImportModelCommand: 负责将导入操作封装为 ICommand，
@@ -13,8 +14,8 @@
 class ImportModelCommand : public ICommand {
 public:
     // 构造函数：传入 ModelImporter 的引用，以及待导入文件的 URL
-    explicit ImportModelCommand(ModelImporter& importer, const QUrl& path)
-        : importer_(importer), path_(path) {}
+    explicit ImportModelCommand(ModelOperator model_op, ModelImporter& importer, const QUrl& path)
+        : importer_(importer), path_(path.path().toStdU32String()) {}
 
     // 如果需要在前端拿到新建的 ModelOperator，可通过 result() 访问
     std::optional<ModelOperator> result() const { return op_; }
@@ -29,6 +30,6 @@ public:
 
 private:
     ModelImporter& importer_;
-    QUrl                                   path_;
+    std::filesystem::path                                   path_;
     std::optional<ModelOperator>           op_;  // 保存导入得到的 ModelOperator
 };

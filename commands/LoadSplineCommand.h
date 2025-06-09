@@ -6,6 +6,7 @@
 #include "ICommand.h"
 #include <QUrl>
 #include <QString>
+#include "../ModelImporter.h"
 class ModelManager;
 
 /**
@@ -13,7 +14,7 @@ class ModelManager;
  */
 class LoadSplineCommand : public ICommand {
 public:
-    LoadSplineCommand(ModelManager* mgr, const QUrl& path);
+    LoadSplineCommand(ModelManager* mgr, ModelImporter& importer, const QUrl& path);
     void execute() override;
     void undo() override;
 private:

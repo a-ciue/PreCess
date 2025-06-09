@@ -48,7 +48,7 @@ ApplicationWindow {
             }
             FileDialog {
                 id: openPatchDialog
-                nameFilters: ["OBJ File (*.obj)"]
+                nameFilters: ["OBJ File (*.obj)", "STP File (*.stp)"]
                 onAccepted: {
                     modelManager.importModel(selectedFile);
                     myItem.resetCamera()
@@ -458,6 +458,10 @@ ApplicationWindow {
             
             onClearButtonClicked:{
                 clearSelection()
+            }
+
+            onConfirmButtonClicked: {
+                selection = myItem.selectedIDs
             }
 
             function clearSelection(){

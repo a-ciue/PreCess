@@ -50,6 +50,12 @@ void ModelData::write_mesh(const std::filesystem::path& mesh_path, ModelRenderMo
     std::function<int(int)> gid{};
     auto* md = asMeshData();
 
+    if (!md)
+    {
+        std::cerr << "call write mesh but not a mesh\n";
+        return;
+    }
+
     switch (mode) {
     case ModelRenderMode::Face:
         {

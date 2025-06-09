@@ -76,41 +76,6 @@ public:
         return commands_;
     }
 
-    void registerImportModel(ModelImporter& importer)
-    {
-        // 1) 准备一个 QList<ArgTypeObject*>，手动 new 一个 ArgTypeObject
-        //    这里我们把 type=0，当作“任意字符串/URL”来处理，name="模型路径"，content=""(默认值)
-        QList<ArgTypeObject*> argTypes;
-        argTypes.append(new ArgTypeObject(
-            /* type = */ 0,
-            /* name = */ QStringLiteral("模型路径"),
-            /* content = */ QString(),
-            /* parent = */ this   // 让 catalog 拥有这个对象，生命周期自动托管
-        ));
-
-        // 2) 用这个 QList<ArgTypeObject*> 构造 QCommand
-        auto importCmd = new QCommand(
-            /* name */  QStringLiteral("Import Model"),
-            /* path */  QStringLiteral("file/import"),
-            /* factory lambda */
-            [&importer](ModelOperator /*unused*/, const QVariantList& args) -> std::unique_ptr<ICommand>
-            {
-                if (args.isEmpty()) {
-                    qWarning() << "importModel: 需要传一个参数 (URL)";
-                    return nullptr;
-                }
-                // 由于我们把“模型路径”当作字符串来传，这里先用 toString() 取出
-                const QString pathStr = args.at(0).toString();
-                const QUrl   path = QUrl::fromUserInput(pathStr);
-                return std::make_unique<ImportModelCommand>(importer, path);
-            },
-            /* arg_types */ argTypes,
-            /* parent */ this
-        );
-
-        addCommand(importCmd);
-    }
-
 private:
     QList<QCommand*> commands_;   //!< 已注册的命令对象列表
     std::unordered_map<QString, QCommand*> command_map_; //!< 命令名称与命令对象的映射

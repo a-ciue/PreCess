@@ -79,7 +79,7 @@ QList<ArgTypeObject*> MergeBlocksCommand::getArgsModel()
     return model;
 }
 
-unique_ptr<MergeBlocksCommand> MergeBlocksCommand::create(ModelOperator model_op, const QVariantList& list)
+unique_ptr<MergeBlocksCommand> MergeBlocksCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
 {
     // 根据传入的参数创建 SplitFaceCommand 对象
     return std::make_unique<MergeBlocksCommand>(model_op, list.at(0).value<QSelection*>());

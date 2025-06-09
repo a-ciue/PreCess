@@ -8,8 +8,11 @@
 
 #include "ArgTypeObject.h"
 #include "ICommand.h"
+#include "../ModelImporter.h"
 
 #include "../ModelOperator.h"
+
+class ModelImporter;
 
 /**
  * @brief 对应一个ICommand派生类，用于在QML中展示命令和需要的参数
@@ -23,7 +26,7 @@ Q_OBJECT
 Q_PROPERTY(QList<ArgTypeObject*> arg_types MEMBER arg_types_ READ getArgTypes)
 public:
     /// 定义命令工厂函数类型：传入 ModelOperator 和参数列表，返回命令对象智能指针
-    using CommandFactory = std::function<std::unique_ptr<ICommand>(ModelOperator, const QVariantList&)>;
+    using CommandFactory = std::function<std::unique_ptr<ICommand>(ModelOperator, ModelImporter&, const QVariantList&)>;
 
     /**
      * @brief 构造 QCommand 对象
@@ -65,8 +68,8 @@ public:
      * @param args 命令执行所需的参数列表
      * @return 包含具体命令对象的智能指针，如果创建失败则返回 nullptr
      */
-    std::unique_ptr<ICommand> create(ModelOperator modelOp, const QVariantList& args) {
-        return factory_ ? factory_(modelOp, args) : nullptr;
+    std::unique_ptr<ICommand> create(ModelOperator modelOp, ModelImporter& importer, const QVariantList& args) {
+        return factory_ ? factory_(modelOp, importer, args) : nullptr;
     }
 
 private:

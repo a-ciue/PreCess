@@ -17,6 +17,7 @@
 
 #include <STEPControl_Reader.hxx>
 #include <IGESControl_Reader.hxx>
+#include <STEPControl_Writer.hxx>
 #include <TopoDS_Shape.hxx>
 
 std::unique_ptr<ModelData> FileHandler::read(const QUrl& path)
@@ -70,7 +71,9 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
     sd.rootShape  = shape;
     sd.sourcePath = spline_path.toLocalFile();
 
-    return std::make_unique<ModelData>( std::move(sd) );
+    auto model = std::make_unique<ModelData>(std::move(sd));
+    model->setModelName(spline_path.fileName());
+    return model;
 }
 
 std::unique_ptr<ModelData> FileHandler::readMesh(const QUrl& mesh_path)
@@ -85,11 +88,15 @@ std::unique_ptr<ModelData> FileHandler::readMesh(const QUrl& mesh_path)
         return nullptr;
     }
     MeshData md{std::move(rawMesh)}; // 调 MeshData 构造完成 patch/block/group
-    return std::make_unique<ModelData>(std::move(md));
+
+    auto model = std::make_unique<ModelData>(std::move(md));
+    model->setModelName(mesh_path.fileName());
+    return model;
 }
 
-bool FileHandler::writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode, const QString& extension)
+bool FileHandler::writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode)
 {
+	QString extension = QFileInfo(targetPath).suffix().toLower();
     if (!model || !model->isMesh()) {
         qDebug() << "writeMesh: ModelData 空，或非 Mesh 类型";
         return false;
@@ -113,4 +120,41 @@ bool FileHandler::writeMesh(ModelData* model, const QString& targetPath, const Q
     std::filesystem::path mesh_path = targetPath.toStdU16String();
     model->write_mesh(mesh_path, mode, extension);
     return true;
+}
+
+bool FileHandler::writeSpline(SplineData& spline, const std::filesystem::path& target_path)
+{
+	if (spline.rootShape.IsNull())
+	{
+		std::cerr << "writeSpline: SplineData rootShape 为空" << std::endl;
+        return false;
+	}
+
+    
+    if (std::filesystem::path extension = target_path.extension();
+        extension == ".stp" || extension == ".step")
+    {
+        STEPControl_Writer writer;
+
+	    // 将形状添加到写入器
+	    IFSelect_ReturnStatus transferStatus = writer.Transfer(spline.rootShape, STEPControl_AsIs);
+
+	    if (transferStatus != IFSelect_RetDone) {
+	        std::cerr << "形状传输失败" << std::endl;
+	        return false;
+	    }
+
+	    // 写入文件
+	    std::ofstream of(target_path);
+	    IFSelect_ReturnStatus writeStatus = writer.WriteStream(of);
+
+	    if (writeStatus != IFSelect_RetDone) {
+	        std::cerr << "写入 STEP 文件失败" << std::endl;
+	        return false;
+	    }
+
+        return true;
+    }
+    std::cerr << "未匹配拓展名" << std::endl;
+    return false;
 }

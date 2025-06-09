@@ -56,7 +56,9 @@ public:
      * @param extension 输出文件的扩展名
      * @return 成功返回 true，失败返回 false
      */
-    bool writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode, const QString& extension);
+    bool writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode);
+
+    bool writeSpline(SplineData& spline, const std::filesystem::path& target_path);
 
 private:
     // 禁止外部构造和拷贝

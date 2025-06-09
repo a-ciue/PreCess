@@ -2,6 +2,7 @@
 #include "ModelManager.h"
 #include "ModelImporter.h"
 #include "ModelObserver.h"
+#include <filesystem>
 // #include "QModelOperatorWrapper.h"   // 若暂不暴露包装器，可注释
 
 QModelManager::QModelManager(QObject* parent)
@@ -22,7 +23,7 @@ QModelManager::QModelManager(QObject* parent)
 
 void QModelManager::importModel(const QUrl& url)
 {
-    if (auto maybeOp = importer_->import(url)) {
+    if (auto maybeOp = importer_->import(std::filesystem::path{ url.path().toStdU32String() })) {
         ModelOperator op = std::move(*maybeOp);
         emit modelAdded(op.getId());
     }
