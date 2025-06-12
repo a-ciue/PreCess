@@ -6,7 +6,7 @@
 import QtQuick 2.15
 import QtQuick.Controls
 
-Item {
+Pane {
     id: root
     signal removeModel(string model_id)
     signal renameModel(string oldName, string newName)
@@ -40,34 +40,38 @@ Item {
             }
             TextInput{
                 id:objectName
+                property string savedName: name
                 width: 80
-                text: name
-                font.bold: {
-                    console.log(savedId, root.selectedModel_id,root.selectedModel_id === savedId)
-                    return root.selectedModel_id === savedId  // 根据选中状态设置粗体
-                }
+                //text: name
+                font.bold: root.selectedModel_id === savedId  // 根据选中状态设置粗体
                 
                 MouseArea {
                     anchors.fill: parent
-                    onDoubleClicked: {
+                    onClicked: {
                         if (root.selectedModel_id === savedId) {
                             root.selectedModel_id = "-1"  // 取消选中
                         } else {
                             root.selectedModel_id = savedId  // 选中当前行
                         }
                         root.selectionChanged(root.selectedModel_id)  // 发送信号
-                        console.log("双击触发")
-                        //console.log(savedId, root.selectedModel_id,root.selectedModel_id === savedId)
+                    }
+                    onDoubleClicked: {
+                        objectName.forceActiveFocus()  // 强制获取焦点，进入编辑模式
                     }
                 }
                 
                 onEditingFinished: {
                     if(text !== savedName){
-                        renameModel(savedName, text)
+                        renameModel(savedId, text)
                         console.log("模型名变更",savedName," -> ",text)
                         renameItem(savedName, text)
                         savedName = text
                     }
+                    objectName.focus = false  // 添加这行，让控件失去焦点
+                }
+
+                Component.onCompleted: {
+                    text = savedName
                 }
             }
             Rectangle{
@@ -82,7 +86,7 @@ Item {
      * @param modelName 模型名字
      */
     function addItem(model_id,modelName){
-        objectModel.append({name:modelName,savedId:model_id})
+        objectModel.append({name:modelName,savedId:model_id})    //这行命令会为新增控件自动构造两个变量：name和savedId，可在控件中直接使用
         idxMap[model_id] = objectModel.count - 1
         console.log("addIdx", idxMap[model_id])
     }
@@ -107,6 +111,7 @@ Item {
         idxMap[newName] = idxMap[oldName]
         delete idxMap[oldName]
     }
+
     /** type:var 对象列表的model数据构造 */
     property alias objectModel: objectListView.model
 }

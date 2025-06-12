@@ -14,6 +14,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs
 import QtQuick.Controls 6.7
+import QtQuick.Controls.Fusion
 
 import fileLoader
 import model
@@ -25,6 +26,48 @@ ApplicationWindow {
     width: 800
     height: 640
     title: qsTr("三角剖分交互程序")
+    menuBar: MenuBar{
+        //height:30
+        Menu{
+            title: "文件"
+            MenuItem{
+                text: "制定样条剖分"
+                onClicked: splineDialog.open()
+            }
+            MenuItem{
+                text: "导入"
+                onClicked: openPatchDialog.open()
+            }
+            Menu{
+                title: "导出..."
+                MenuItem{
+                    text: "网格"
+                    onClicked: saveFaceDialog.open()
+                }
+                MenuItem{
+                    text: "网格（带分块信息）"
+                    onClicked: saveBlockDialog.open()
+                }
+                MenuItem{
+                    text: "网格（带分组信息）"
+                    onClicked: saveGroupDialog.open()
+                }
+            }
+        }
+        Menu{
+            title: "编辑"
+        }
+        Menu{
+            title: "视图"
+        }
+        Menu{
+            title: "算法"
+            MenuItem{
+                text: "命令"
+                onClicked: commandMenu.popup()
+            }
+        }
+    }
 
     required property QModelObserver modelObserver
     required property ModelManager modelManager
@@ -34,7 +77,7 @@ ApplicationWindow {
 
     property bool edgeRenderCheck: false
 
-    header: ToolBar {
+    ToolBar {
         id: header
         RowLayout {
             anchors.fill: parent
@@ -79,86 +122,86 @@ ApplicationWindow {
                 }
             }
 
-            RowLayout {
-                spacing: 3
-                ToolButton{
-                    id:fileButton
-                    text:"文件"
-                    Layout.preferredWidth: 40
-                    onClicked:menu.open()
-                    Menu{
-                        id:menu
-                        closePolicy: Popup.CloseOnPressOutsideParent
-                        MenuItem{
-                            text: "指定样条剖分"
-                            onClicked: splineDialog.open()
-                        }
+            // RowLayout {
+            //     spacing: 3
+            //     ToolButton{
+            //         id:fileButton
+            //         text:"文件"
+            //         Layout.preferredWidth: 40
+            //         onClicked:menu.open()
+            //         Menu{
+            //             id:menu
+            //             closePolicy: Popup.CloseOnPressOutsideParent
+            //             MenuItem{
+            //                 text: "指定样条剖分"
+            //                 onClicked: splineDialog.open()
+            //             }
 
-                        MenuItem {
-                            text: "导入"
-                            onClicked: openPatchDialog.open()
-                        }
+            //             MenuItem {
+            //                 text: "导入"
+            //                 onClicked: openPatchDialog.open()
+            //             }
 
-                        Menu {
-                            title: "导出..."
-                            MenuItem{
-                                text: "网格"
-                                onClicked: saveFaceDialog.open()
-                            }
-                            MenuItem{
-                                text: "网格（带分块信息）"
-                                onClicked: saveBlockDialog.open()
-                            }
-                            MenuItem{
-                                text: "网格（带分组信息）"
-                                onClicked: saveGroupDialog.open()
-                            }
-                        }
-                    }
-                }
-                Button {
-                    id: commandButton
-                    text: qsTr("命令")
-                    onClicked: commandMenu.popup()
-                }
-                Rectangle {
-                    color: "black"
-                    Layout.preferredWidth: 1
-                    Layout.fillHeight: true
-                }
+            //             Menu {
+            //                 title: "导出..."
+            //                 MenuItem{
+            //                     text: "网格"
+            //                     onClicked: saveFaceDialog.open()
+            //                 }
+            //                 MenuItem{
+            //                     text: "网格（带分块信息）"
+            //                     onClicked: saveBlockDialog.open()
+            //                 }
+            //                 MenuItem{
+            //                     text: "网格（带分组信息）"
+            //                     onClicked: saveGroupDialog.open()
+            //                 }
+            //             }
+            //         }
+            //     }
+            //     Button {
+            //         id: commandButton
+            //         text: qsTr("命令")
+            //         onClicked: commandMenu.popup()
+            //     }
+            //     Rectangle {
+            //         color: "black"
+            //         Layout.preferredWidth: 1
+            //         Layout.fillHeight: true
+            //     }
 
-                ButtonGroup {
-                    id: renderGroup
-                    onCheckedButtonChanged: {
-                        myItem.setRenderMode(checkedButton.renderMode)
-                    }
-                }
-                Button {
-                    id: btn1
-                    text: "面模式"
-                    property string renderMode: "Face"
-                    rightPadding: 8
-                    checkable: true
-                    checked: true
-                    onClicked: stacklayout.currentIndex = 0
-                                
-                    ButtonGroup.group: renderGroup
-                }
-                Button {
-                    id: btn2
-                    text: "块模式"
-                    property string renderMode: "Block"
-                    checkable: true
-                    onClicked: stacklayout.currentIndex = 1
-                    ButtonGroup.group: renderGroup
-                }
+            //     ButtonGroup {
+            //         id: renderGroup
+            //         onCheckedButtonChanged: {
+            //             myItem.setRenderMode(checkedButton.renderMode)
+            //         }
+            //     }
+            //     Button {
+            //         id: btn1
+            //         text: "面模式"
+            //         property string renderMode: "Face"
+            //         rightPadding: 8
+            //         checkable: true
+            //         checked: true
+            //         onClicked: stacklayout.currentIndex = 0
 
-                Component.onCompleted: {
-                    let width = 1.5*Math.max(btn1.width, btn2.width)
-                    btn1.Layout.preferredWidth = width
-                    btn2.Layout.preferredWidth = width
-                }
-            }
+            //         ButtonGroup.group: renderGroup
+            //     }
+            //     Button {
+            //         id: btn2
+            //         text: "块模式"
+            //         property string renderMode: "Block"
+            //         checkable: true
+            //         onClicked: stacklayout.currentIndex = 1
+            //         ButtonGroup.group: renderGroup
+            //     }
+
+            //     Component.onCompleted: {
+            //         let width = 1.5*Math.max(btn1.width, btn2.width)
+            //         btn1.Layout.preferredWidth = width
+            //         btn2.Layout.preferredWidth = width
+            //     }
+            // }
 
             CommandMenu {
                 id: commandMenu
@@ -176,6 +219,7 @@ ApplicationWindow {
 
     StackLayout{
         id:stacklayout
+        //anchors.top: root.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         height: 25
@@ -288,12 +332,12 @@ ApplicationWindow {
                         selector.clearSelection()
                     }
                 }else{
-                    if(index === 0) 
-                    { 
+                    if(index === 0)
+                    {
                         modelManager.model(myItem.selectedIDs.getName()).merge_blocks(myItem.selectedIDs)
                         myItem.resetCamera()
                     }
-                    else { 
+                    else {
                         modelManager.model(myItem.selectedIDs.getName()).remesh_block(myItem.selectedIDs)
                         myItem.resetCamera()
                     }
@@ -331,7 +375,7 @@ ApplicationWindow {
             }
             onButtonFunction:{
                 if(modeOrConfirm === 0){
-                    if(index === 0){ 
+                    if(index === 0){
                         // myItem.bindStyle("Group")
                         modelManager.model(myItem.selectedIDs.getName()).merge_groups(myItem.selectedIDs.data().ids)
                         myItem.resetCamera()
@@ -341,8 +385,6 @@ ApplicationWindow {
                         // myItem.bindStyle("Group")
                         modelManager.model(myItem.selectedIDs.getName()).remesh_group(myItem.selectedIDs.data().ids)
                         myItem.resetCamera()
-                        myItem.unbindStyle()
-                        selector.clearSelection()
                     }
                 }else{
                     if(index === 0){
@@ -364,18 +406,18 @@ ApplicationWindow {
         }*/
     }
 
-    Rectangle{
-        id:devider
-        height:1
-        color: "black"
-        anchors.top: stacklayout.bottom
-        anchors.left: parent.left
-        anchors.right: myItemRectangle.left
-    }
+    // Rectangle{
+    //     id:devider
+    //     height:1
+    //     color: "black"
+    //     anchors.top: stacklayout.bottom
+    //     anchors.left: parent.left
+    //     anchors.right: myItemRectangle.left
+    // }
 
     ObjectList{
         id:objectList
-        anchors.top: devider.bottom
+        anchors.top: stacklayout.bottom
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
         //anchors.bottom: sideBar.top
@@ -410,11 +452,11 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         width: 160
         m:ListModel{
-            ListElement{type: 2; name: "属性甲"; content: "55"}
-            ListElement{type: 2; name: "属性乙"; content: "43"}
-            ListElement{type: 1; name: "属性丙"; content: 1}
-            ListElement{type: 0; name: "属性丁"; content: "无"}
-            ListElement{type: 3; name: "选择器"; content: "无"}//可能会有多个选择器的需求，因此需要动态构造多个选择器
+            // ListElement{type: 2; name: "属性甲"; content: "55"}
+            // ListElement{type: 2; name: "属性乙"; content: "43"}
+            // ListElement{type: 1; name: "属性丙"; content: 1}
+            // ListElement{type: 0; name: "属性丁"; content: "无"}
+            //ListElement{type: 3; name: "选择器"; content: "无"}//可能会有多个选择器的需求，因此需要动态构造多个选择器
         }
         onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
             //selector.changePropertyEnabled()
@@ -422,9 +464,16 @@ ApplicationWindow {
             //console.log("信号被接收")
             selector.changeEnable()
         }
-        // Component.onCompleted: {
-        //     selector.comboBoxSelectionChanged()
-        // }
+        onCancleCommand:{
+            m.clear()
+        }
+
+        function changeListElement(){
+            if(paraList.count){
+                m.remove(0)
+            }
+            m.append({})
+        }
     }
 
     Rectangle {
@@ -433,31 +482,96 @@ ApplicationWindow {
         anchors.top:stacklayout.bottom
         anchors.left:objectList.right
         anchors.right:parent.right
-        border {
-            id: border
-            width: 5
+        // border {
+        //     id: border
+        //     width: 5
+        // }
+        //radius: 5
+        color: "transparent"
+        Rectangle {
+            id: borderRectangle
+            anchors.left: myItemRectangle.left
+            anchors.right: myItemRectangle.right
+            anchors.top: myItemRectangle.top
+            height: myItemRectangle.height - 25
+            border.color: "black"
+            border.width: 3
+            //radius: 5
+            color: "transparent"
         }
-        radius: 5
-        color: "magenta"
 
-        QRenderWindow {
-            id: myItem
+        Page{
+            id: renderWindowPage
             anchors.fill: parent
-            anchors.margins: border.width
-            query: modelQuery
+            background: null  // 移除Page的默认背景
+            footer: ToolBar{
+                height: 25
+                // background: Rectangle {  // 为ToolBar添加背景
+                //     color: "transparent"
+                // }
+                RowLayout{
+                    anchors.fill: parent
+                    ToolButton{
+                        text: "边渲染"
+                        checkable: true
+                        Layout.preferredWidth: 50
+                        Layout.fillHeight: true
+                        onClicked:{
+                            root.edgeRenderCheck = !root.edgeRenderCheck
+                            myItem.setEdgeRender(root.edgeRenderCheck)
+                        }
+                    }
+                    ToolButton{
+                        text: "块渲染"
+                        checkable: true
+                        Layout.preferredWidth: 50
+                        Layout.fillHeight: true
+                        onClicked:{
+                            console.log("还没有绑定块渲染接口。")
+                        }
+                    }
+                    Label{
+                        Layout.fillWidth: true
+                    }
+                }
+            }
+
+            QRenderWindow {
+                id: myItem
+                anchors.fill: parent
+                anchors.margins: 3  // 调整边距，与border.width对应
+                query: modelQuery
+            }
         }
 
         Selector{
             id:selector
-            anchors.top:  myItem.top
-            anchors.left: myItem.left
+            anchors.top:  renderWindowPage.top
+            anchors.left: renderWindowPage.left
             anchors.topMargin: 10
             anchors.leftMargin: 10
             property QSelection selection
             enabled: objectList.selectedModelName !== ""  // 绑定到objectList的选中状态
-            
+
             onClearButtonClicked:{
                 clearSelection()
+            }
+
+            onConfirmButtonClicked: {
+                sideBar.curSelection = myItem.selectedIDs
+                sideBar.paraList.currentItem.item.addSelection()
+                /*sideBar.savedSelection.push(myItem.selectedIDs)
+                // 遍历所有加载的选择器组件
+                for (var i in sideBar.parameterList.loadedItems) {
+                    var item = sideBar.parameterList.loadedItems[i]
+                    console.log("检查组件:", i, item)
+                    // 检查是否是选择器组件（type === 3）
+                    if (item && item.type === 3) {
+                        console.log("找到选择器组件，索引:", i)
+                        // 调用 SideBar 的更新函数
+                        sideBar.updateSelectorCount(i, comboBoxSelectedString)
+                    }
+                }*/
             }
 
             function clearSelection(){
@@ -480,7 +594,7 @@ ApplicationWindow {
             }
 
             function changeEnable(){}
-                
+
             onComboBoxSelectionChanged:{
                 bindFunction(comboBoxSelectedString)
             }

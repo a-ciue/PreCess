@@ -16,25 +16,31 @@ Item{
     required property CommandDispatcher commandDispatcher
     property QCommand curCommand
     property int curModel
+    property var savedSelection: []
     required property QSelection curSelection // temp
+    property Item paraList: parameterList
     signal selectModeChanged
+    signal cancleCommand
 
     onCurCommandChanged: {
-        parameterList.model = curCommand.arg_types
+        //parameterList.model = curCommand.arg_types
+        console.log("参数构造控件方式触发，即通过CurCommand属性变化触发")
     }
     Button{
         id: commitButton
-        text: "commit"
+        text: "提交"
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height:30
         onClicked:{
-            for(var i in parameterList.loadedItems){
-                console.log(parameterList.loadedItems[i].value)
-            }
+            // for(var i in parameterList.loadedItems){
+            //     console.log(parameterList.loadedItems[i].value)
+            // }
 
-            commandDispatcher.runCommand(curCommand, curModel, [curSelection])
+             commandDispatcher.runCommand(curCommand, curModel, [curSelection])
+            //commandDispatcher.runCommand(curCommand, curModel, [savedSelection])
+            parameterList.model.clear()
         }
     }
     Item{
@@ -53,11 +59,18 @@ Item{
                 spacing: 5
                 property var loadedItems: ({})
                 delegate:Loader{
-                    required property int type
+                    /*required property int type
                     required property string name
-                    required property string content
+                    required property string content*/
                     sourceComponent:{
-                        if(type === 0){           //文件
+                        if(curCommand && curCommand.name() === "切分边"){
+                            return splictEdgeComponent
+                        }
+                        if(curCommand && curCommand.name() === "切分面"){
+                            return splictFaceComponent
+                        }
+
+                        /*if(type === 0){           //文件
                             return fileComponent
                         }
                         if(type === 1){           //多选一
@@ -68,10 +81,10 @@ Item{
                         }
                         if(type === 3){           //选择器
                             return selectorComponent
-                        }
+                        }*/
                     }
                     Component.onCompleted: {
-                        if(item){
+                        /*if(item){
                             parameterList.loadedItems[index] = item
                             if(type === 0){
                                 parameterList.loadedItems[index].name = name
@@ -87,9 +100,9 @@ Item{
                             }
                             if(type === 3){
                                 parameterList.loadedItems[index].name = name
-                                parameterList.loadedItems[index].parameter1 = content
+                                //parameterList.loadedItems[index].parameter1 = content
                             }
-                        }
+                        }*/
                     }
                     Component.onDestruction: {
                         delete parameterList.loadedItems[index]
@@ -106,7 +119,7 @@ Item{
             color: "grey"
         }
     }
-    Component{
+    /*Component{
         id:componentButton
         Row{
             property alias exposedText: textbar.text   //name
@@ -209,16 +222,18 @@ Item{
                 }
             }
         }
-    }
+    }*/
     Component{
         id: selectorComponent
         RowLayout{
             // id: root
             spacing: 5
             /** type:string */
-            property alias name: nametext.text
-            property alias parameter1: selectedItems.text
-            property var value: selectedItems.text
+            property int valueEdge : 0
+            property int valueFace : 0
+            property int valueBlock : 0
+            property var selected
+            property int type: 3  // 添加类型标识
 
             Text{
                 id:nametext
@@ -230,6 +245,7 @@ Item{
             }
             Text{
                 id:selectedItems
+                text: valueEdge + "边" + valueFace + "面" + valueBlock + "块"
             }
 
             Button{
@@ -239,9 +255,86 @@ Item{
                     root.selectModeChanged()
                 }
             }
-
+            property alias name: nametext.text
+            property alias parameter1: selectedItems.text
+            //property alias selectedItems: selected
         }
     }
-    /** type:var 侧边栏的model数据构造 */
-    property alias m: parameterList.model       //对main.qml的属性接口
+    Component{
+        id:splictEdgeComponent
+        RowLayout{
+            property int value: 0
+            Text{
+                text:"已选择"+value+"条边"
+            }
+            Button{
+                Layout.preferredWidth: 40
+                text: "取消"
+                onClicked: {
+                    cancleCommand()
+                }
+            }
+            function addSelection(){
+                if(!value){
+                    value = 1
+                }
+            }
+        }
+    }
+    Component{
+        id:splictFaceComponent
+        RowLayout{
+            property int value: 0
+            Text{
+                text:"已选择"+value+"个面"
+            }
+            Button{
+                Layout.preferredWidth: 40
+                text: "取消"
+                onClicked: {
+                    cancleCommand()
+                }
+            }
+            function addSelection(){
+                if(!value){
+                    value = 1
+                }
+            }
+        }
+    }
+
+    function updateSelectorCount(selectorIndex, selectType) {
+        console.log("尝试更新选择器计数，索引:", selectorIndex)
+        console.log("当前加载的组件:", parameterList.loadedItems)
+        
+        // 获取对应索引的选择器组件
+        var selector = parameterList.loadedItems[selectorIndex]
+        console.log("获取到的选择器:", selector)
+        
+        if (selector) {
+            if (selectType === "边") {
+                selector.valueEdge++
+                console.log("边计数更新为:", selector.valueEdge)
+            } else if (selectType === "面") {
+                selector.valueFace++
+                console.log("面计数更新为:", selector.valueFace)
+            } else if (selectType === "块") {
+                selector.valueBlock++
+                console.log("块计数更新为:", selector.valueBlock)
+            }
+        } else {
+            console.log("未找到选择器组件，请检查索引是否正确")
+        }
+    }
+
+    function clearSelectorCount(selectorIndex) {
+        // 获取对应索引的选择器组件
+        var selector = parameterList.loadedItems[selectorIndex]
+        if (selector) {
+            selector.valueEdge = 0
+            selector.valueFace = 0
+            selector.valueBlock = 0
+        }
+    }
+    property alias m: parameterList.model
 }
