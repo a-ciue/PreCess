@@ -25,7 +25,7 @@ Item{
         Button{
             id: edgeRenderGroup
             text: "边渲染"
-            checked:edgeRenderCheck
+            checked: myItem.cur_edge_render
             onClicked: {
                 changeEdgeRender()
             }

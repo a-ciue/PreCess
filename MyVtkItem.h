@@ -40,6 +40,7 @@ struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
+    Q_PROPERTY(bool cur_edge_render READ getCurEdgeRender NOTIFY curEdgeRenderChanged)
     QML_ELEMENT
 public:
     QRenderWindow();                              //槽函数，改变边框重置相机
@@ -67,6 +68,8 @@ public:
 
     QSelection* selectedIDs();
     void setModelQuery(QModelQuery* query);
+    void setCurEdgeRender(bool edge_render);
+    bool getCurEdgeRender();
 
     bool getMeshIsEdgeRender(Index model_id);
     bool getSplineIsEdgeRender(Index model_id);
@@ -127,13 +130,14 @@ public:
 
 signals:
     void selectedChanged();
+    void curEdgeRenderChanged();
     void clicked();
  
 private:
     std::unique_ptr<MeshActorManager> mesh_actor_manager_;
     std::unique_ptr<SplineActorManager> spline_actor_manager_;
 
-    bool edge_render_;
+    bool edge_render_{};
     ModelRenderMode renderMode_{};
     SelectMode select_mode_ {};
 

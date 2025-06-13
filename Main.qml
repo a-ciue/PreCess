@@ -20,7 +20,9 @@ import model
 import commands
 
 ApplicationWindow {
-    id: root
+    id: root 
+    width: 800
+    height: 600
     visibility: Window.Maximized
     title: qsTr("三角剖分交互程序")
     menuBar: MenuBar{
@@ -70,8 +72,6 @@ ApplicationWindow {
     required property QModelQuery modelQuery
     required property QCommandCatalog commandCatalog
     required property CommandDispatcher commandDispatcher
-
-    property bool edgeRenderCheck: false
 
     ToolBar {
         id: header
@@ -198,9 +198,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                root.edgeRenderCheck = !root.edgeRenderCheck
-                myItem.setEdgeRender(objectList.curModelId,root.edgeRenderCheck)
-
+                myItem.setEdgeRender(objectList.curModelId, !myItem.cur_edge_render)
             }
         }
 
@@ -255,8 +253,7 @@ ApplicationWindow {
                 myItem.unbindStyle()
             }
             onChangeEdgeRender:{
-                root.edgeRenderCheck = !root.edgeRenderCheck
-                myItem.setEdgeRender(objectList.curModelId,root.edgeRenderCheck)
+                myItem.setEdgeRender(objectList.curModelId, !myItem.cur_edge_render)
             }
         }
 
@@ -300,7 +297,7 @@ ApplicationWindow {
     SideBar{
         id: sideBar
         commandDispatcher: root.commandDispatcher
-        curModel: objectList.selectedModel_id
+        curModel: objectList.curModelId
         curSelection: selector.selection
         anchors.top: objectList.bottom
         anchors.left: parent.left
@@ -369,11 +366,11 @@ ApplicationWindow {
                     ToolButton{
                         text: "边渲染"
                         checkable: true
+                        checked: myItem.cur_edge_render
                         Layout.preferredWidth: 50
                         Layout.fillHeight: true
                         onClicked:{
-                            root.edgeRenderCheck = !root.edgeRenderCheck
-                            myItem.setEdgeRender(root.edgeRenderCheck)
+                            myItem.setEdgeRender(objectList.curModelId, !myItem.cur_edge_render)
                         }
                     }
                     ToolButton{
@@ -383,10 +380,10 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         onClicked:{
                             if (checked) {
-                                myItem.setRenderMode("Block")
+                                myItem.setRenderMode(objectList.curModelId, "Block")
                                 stacklayout.currentIndex = 1
                             } else {
-                                myItem.setRenderMode("Face")
+                                myItem.setRenderMode(objectList.curModelId, "Face")
                                 stacklayout.currentIndex = 0
                             }
                         }

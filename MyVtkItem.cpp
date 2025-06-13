@@ -167,6 +167,17 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
+void QRenderWindow::setCurEdgeRender(bool edge_render)
+{
+    edge_render_ = edge_render;
+	emit curEdgeRenderChanged();
+}
+
+bool QRenderWindow::getCurEdgeRender()
+{
+    return this->edge_render_;
+}
+
 bool QRenderWindow::getMeshIsEdgeRender(Index model_id)
 {
     return this->mesh_actor_manager_->getIsEdgeRender(model_id);
@@ -179,18 +190,18 @@ bool QRenderWindow::getSplineIsEdgeRender(Index model_id)
 
 bool QRenderWindow::getIsEdgeRender(Index model_id)
 {
-    if (this->mesh_actor_manager_->getCount(model_id))
+    if (this->mesh_actor_manager_ && this->mesh_actor_manager_->getCount(model_id))
     {
         return this->getMeshIsEdgeRender(model_id);
     }
-    else if (this->spline_actor_manager_->getCount(model_id))
+    else if (this->spline_actor_manager_ && this->spline_actor_manager_->getCount(model_id))
     {
         return this->getSplineIsEdgeRender(model_id);
     }
     else
     {
         std::cout << "get is edge render mode error" << std::endl;
-        return 0;
+        return false;
     }
     
 }
@@ -249,6 +260,7 @@ void QRenderWindow::setSelectModel(Index model_id)
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
         this->cur_actor_id_ = model_id;
+		this->setCurEdgeRender(this->getIsEdgeRender(model_id));
         if (this->mesh_actor_manager_->getCount(model_id))
             selectManager_->setSelectActor(this->mesh_actor_manager_->getModelActor(model_id));
         else
@@ -308,6 +320,7 @@ void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
     dispatch_async([model_id,is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         this->mesh_actor_manager_->setRenderEdge(model_id, is_render);
+        this->setCurEdgeRender(is_render);
         });
 }
 
