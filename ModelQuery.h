@@ -18,6 +18,8 @@
 #include <QQmlEngine>  // 提供 QML 元素导出宏 (Qt6)
 
 #include "ModelManager.h"
+#include "MeshData.h"
+#include "SplineData.h"
 
 // 前向声明 ModelData 类
 class ModelData;
@@ -26,7 +28,7 @@ class IModelQuery {
 public:
     virtual ~IModelQuery() = default;
 
-    virtual std::optional<ModelDataVtk> getModelData(Index model_id) = 0;
+    virtual std::optional<MeshDataVtk> getModelData(Index model_id) = 0;
 };
 
 /**
@@ -49,9 +51,13 @@ public:
      */
     explicit QModelQuery(ModelManager* mgr, QObject* parent = nullptr);
 
-    std::optional<ModelDataVtk> getModelData(Index model_id) override;
+    std::optional<MeshDataVtk> getModelData(Index model_id) override;
+
+    std::optional<SplineDataVtk> getSplineData(Index model_id) ;
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
+
+    int getModelType(Index model_id) const;
 
     /**
      * @brief 获取指定 Patch 的详细信息

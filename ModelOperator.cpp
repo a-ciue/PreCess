@@ -1,10 +1,19 @@
 #ifndef Model_OPERATOR_H
 #define Model_OPERATOR_H
 #include "ModelOperator.h"
+#include "FileHandler.h"
 
-void ModelOperator::write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString& extension)
+void ModelOperator::write_mesh(const std::filesystem::path& mesh_path, ModelRenderMode mode, const QString& extension)
 {
     model_->write_mesh(mesh_path, mode, extension);
+}
+
+void ModelOperator::write_spline(const std::filesystem::path& spline_path)
+{
+	if (SplineData* spline = model_->asSplineData())
+	{
+		FileHandler::instance().writeSpline(*spline, spline_path);
+	}
 }
 
 void ModelOperator::split_face(QSelection* selection)

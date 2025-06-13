@@ -58,7 +58,7 @@ QList<ArgTypeObject*> SplitFaceCommand::getArgsModel()
     return model;
 }
 
-unique_ptr<SplitFaceCommand> SplitFaceCommand::create(ModelOperator model_op, const QVariantList& list)
+unique_ptr<SplitFaceCommand> SplitFaceCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
 {
     // 根据传入的参数创建 SplitFaceCommand 对象
     return std::make_unique<SplitFaceCommand>(model_op, list.at(0).value<QSelection*>());

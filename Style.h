@@ -20,7 +20,7 @@
 #include <vector>
 class vtkProperty;
 class vtkNamedColors;
-class ModelActor;
+class MeshActor;
 
 class QRenderWindowStyle : public vtkInteractorStyleTrackballCamera {
 public:
@@ -61,7 +61,7 @@ private:
 //    * @param[in] mode 当前的选择模式
 //
 //    */
-//    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
+//    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<MeshActor>>& mActors, SelectMode mode) override;
 //
 //    void SetSelector(std::unique_ptr<BlockSelectorHighlight> selector);
 //    
@@ -91,7 +91,7 @@ private:
 //   * @param[in] mode 当前的选择模式
 //
 //   */
-//    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
+//    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<MeshActor>>& mActors, SelectMode mode) override;
 //
 //private:
 //   
@@ -121,7 +121,7 @@ private:
 //   * @param[in] mode 当前的选择模式
 //
 //   */
-//    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<ModelActor>>& mActors, SelectMode mode) override;
+//    std::unique_ptr<Selection> GetSelectedIDs(const std::unordered_map<QString, std::unique_ptr<MeshActor>>& mActors, SelectMode mode) override;
 //private:
 //    
 //    bool click_ {};

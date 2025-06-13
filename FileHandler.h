@@ -18,14 +18,14 @@
 #include "ModelData.h"
 #include "ToolMesh.h"
 
-/**
- * @brief FileHandler 单例类
- *
- * 负责所有与文件 IO 相关的操作，包括：
- * - 读取样条文件并转换为 ModelData 对象
- * - 读取网格文件并转换为 ModelData 对象
- * - 将 ModelData 数据写出到文件
- */
+ /**
+  * @brief FileHandler 单例类
+  *
+  * 负责所有与文件 IO 相关的操作，包括：
+  * - 读取样条文件并转换为 ModelData 对象
+  * - 读取网格文件并转换为 ModelData 对象
+  * - 将 ModelData 数据写出到文件
+  */
 class FileHandler {
 public:
     static FileHandler& instance() {
@@ -33,6 +33,7 @@ public:
         return instance;
     }
 
+    std::unique_ptr<ModelData> read(const QUrl& path);
     /**
      * @brief 读取样条文件并生成 ModelData 对象
      * @param spline_path 样条文件的 URL 路径
@@ -55,7 +56,9 @@ public:
      * @param extension 输出文件的扩展名
      * @return 成功返回 true，失败返回 false
      */
-    bool writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode, const QString& extension);
+    bool writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode);
+
+    bool writeSpline(SplineData& spline, const std::filesystem::path& target_path);
 
 private:
     // 禁止外部构造和拷贝

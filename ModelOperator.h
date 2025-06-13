@@ -5,9 +5,10 @@
 #include "ModelData.h"
 
 /**
- * @brief ModelOperator 类用于封装对单个模型数据的操作接口
+ * @brief ModelOperator 模型对象基类
  *
- * ModelOperator 持有一个 ModelData 指针，以及一个可选的模型观察者，用于在模型数据发生更改时通知外部。
+ * ModelOperator 是模型基类。
+ * 持有一个 ModelData 指针，以及一个可选的模型观察者，用于在模型数据发生更改时通知外部。
  * 通过 ModelOperator，可以对模型数据执行修改操作（通常通过各具体 ICommand 子类实现），并在操作后通知观察者以更新界面等。
  */
 class ModelOperator {
@@ -32,12 +33,18 @@ public:
      */
     QModelObserver* observer() const { return observer_; }
 
+    /**
+     * @brief 输出样条文件
+     * @param spline_path 输出样条文件路径
+     * @param extension 输出文件拓展名
+     */
+    void write_spline(const std::filesystem::path& spline_path);
 
     //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
     //! @param mesh_path 输出文件路径
     //! @param mode 选定输出模式
     //! @param extension 输出文件拓展名
-    void write_mesh(const std::filesystem::path& mesh_path, RenderMode mode, const QString &extension);
+    void write_mesh(const std::filesystem::path& mesh_path, ModelRenderMode mode, const QString &extension);
 
     
     //! @brief 根据给定id找到mesh的face，进行面分割
@@ -64,6 +71,8 @@ public:
 
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
     void remesh_group(QSelection* selection);
+
+    int getId() const { return model_->id_; }
 
 private:
     ModelData* model_;              //!< 被操作的模型数据指针

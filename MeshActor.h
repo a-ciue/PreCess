@@ -1,5 +1,5 @@
-#ifndef MODEL_ACTOR_H
-#define MODEL_ACTOR_H
+#ifndef MESH_ACTOR_H
+#define MESH_ACTOR_H
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -22,20 +22,22 @@ class vtkPolyData;
 class Model;
 
 //! @brief 负责管理Model的Actor
-class ModelActor {
+class MeshActor {
 public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode render_mode);
-    ~ModelActor();
+    MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode);
 
-    void loadModelData(const ModelDataVtk& model_data);
+    void loadModelData(const MeshDataVtk& model_data);
+    void deleteMeshActor();
+
     void setVisibility(bool visibility);
     void setRenderEdge(bool is_render);
-    void setRenderMode(RenderMode render_mode);
+    void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
+    ModelRenderMode getMeshRenderMode();
     void addPickList(vtkPropCollection* pick_list) const;
     
     Index get_model_face_id(vtkIdType face_id) const;
@@ -43,17 +45,17 @@ public:
     Index get_model_block_id(vtkIdType block_id) const;
 
 private:
-    RenderMode render_mode_;
+    ModelRenderMode render_mode_;
     bool edge_render_;
     bool visibility_;
-    ModelDataVtk model_data_;
+    MeshDataVtk model_data_;
 
     vtkNew<vtkActor> actor_;
     vtkRenderer* renderer_;
     vtkNew<vtkPolyDataMapper> mapper_;
     //Face mapper
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
-    void createBlockMapper(const ModelDataVtk& model_data);
+    void createBlockMapper(const MeshDataVtk& model_data);
 };
 
 

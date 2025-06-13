@@ -5,13 +5,23 @@
 #include <stdexcept>
 #include <limits>
 
-std::optional<ModelDataVtk> QModelQuery::getModelData(Index model_id)
+std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
 {
-    std::optional<ModelDataVtk> model_data {};
+    std::optional<MeshDataVtk> model_data {};
     ModelData* model = m_manager->getModel(model_id);
-    if (model)
-    {
+    if (model->isMesh()){
         model_data = model->getModelData();
+    }
+    return model_data;
+}
+
+std::optional<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
+{
+    std::optional<SplineDataVtk> model_data{};
+    ModelData* model = m_manager->getModel(model_id);
+    if (model->isSpline())
+    {
+        model_data = model->getSplineData();
     }
     return model_data;
 }
@@ -26,6 +36,16 @@ QString QModelQuery::getModelName(Index model_id) const
     return model->getModelName();
 }
 
+//判断模型类型：mesh返回0，spline返回1，未知返回-1
+int QModelQuery::getModelType(Index model_id) const
+{
+    if (m_manager->models_[model_id]->isMesh())
+        return 0;
+    if (m_manager->models_[model_id]->isSpline())
+        return 1;
+    return -1;
+}
+
 QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
         : QObject(parent), m_manager(mgr) {
 }
@@ -35,10 +55,10 @@ QVariantMap QModelQuery::getPatchInfo(Index model_id, int patchId) const {
     if (!model) {
         return {};
     }
-
+    MeshData* mesh = model->asMeshData();
     QVariantMap info;
-    auto it = model->patches_.find(patchId);
-    if (it == model->patches_.end()) {
+    auto it = mesh->patches_.find(patchId);
+    if (it == mesh->patches_.end()) {
         info["error"] = QString("Patch %1 not found").arg(patchId);
         return info;
     }
@@ -96,7 +116,8 @@ QVariantList QModelQuery::getBlockList(Index model_id) const
     if (!model) {
         return list;
     }
-    for (const auto& pair : model->blocks_) {
+    MeshData* mesh = model->asMeshData();
+    for (const auto& pair : mesh->blocks_) {
         const auto& block = pair.second;
         QVariantMap blockMap;
         blockMap["id"] = block->id;
@@ -117,10 +138,11 @@ QVariantList QModelQuery::getPatchIds(Index model_id) const
 {
     QVariantList list;
     ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
     if (!model) {
         return list;
     }
-    for (const auto& pair : model->patches_) {
+    for (const auto& pair : mesh->patches_) {
         list.append(pair.first);
     }
     return list;
@@ -130,10 +152,11 @@ QVariantList QModelQuery::getBlockIds(Index model_id) const
 {
     QVariantList list;
     ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
     if (!model) {
         return list;
     }
-    for (const auto& pair : model->blocks_) {
+    for (const auto& pair : mesh->blocks_) {
         list.append(pair.first);
     }
     return list;
@@ -143,10 +166,11 @@ QVariantList QModelQuery::getGroupIds(Index model_id) const
 {
     QVariantList list;
     ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
     if (!model) {
         return list;
     }
-    for (const auto& pair : model->groups_) {
+    for (const auto& pair : mesh->groups_) {
         list.append(pair.first);
     }
     return list;
@@ -177,12 +201,13 @@ QVariantMap QModelQuery::getBlockInfo(Index model_id, int blockId) const
 {
     QVariantMap info;
     ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
     if (!model) {
         info["error"] = QString("Model not found");
         return info;
     }
-    auto it = model->blocks_.find(blockId);
-    if (it == model->blocks_.end()) {
+    auto it = mesh->blocks_.find(blockId);
+    if (it == mesh->blocks_.end()) {
         info["error"] = QString("Block %1 not found").arg(blockId);
         return info;
     }
@@ -201,12 +226,13 @@ QVariantMap QModelQuery::getGroupInfo(Index model_id, int groupId) const
 {
     QVariantMap info;
     ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
     if (!model) {
         info["error"] = QString("Model not found");
         return info;
     }
-    auto it = model->groups_.find(groupId);
-    if (it == model->groups_.end()) {
+    auto it = mesh->groups_.find(groupId);
+    if (it == mesh->groups_.end()) {
         info["error"] = QString("Group %1 not found").arg(groupId);
         return info;
     }
@@ -224,6 +250,7 @@ QVariantList QModelQuery::queryPatchesByCondition(Index model_id, const QVariant
 {
     QVariantList results;
     ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
     if (!model) {
         return results;
     }
@@ -231,7 +258,7 @@ QVariantList QModelQuery::queryPatchesByCondition(Index model_id, const QVariant
     int minVertexCount = conditions.contains("minVertexCount") ? conditions.value("minVertexCount").toInt() : 0;
     int maxFaceCount = conditions.contains("maxFaceCount") ? conditions.value("maxFaceCount").toInt() : std::numeric_limits<int>::max();
 
-    for (const auto& pair : model->patches_) {
+    for (const auto& pair : mesh->patches_) {
         const auto& patch = pair.second;
         int vertexCount = static_cast<int>(patch->vertexIDs_.size());
         int faceCount = static_cast<int>(patch->faceIDs_.size());
@@ -246,6 +273,7 @@ QVariantMap QModelQuery::getVertexInfo(Index model_id, int vertexId) const
 {
     QVariantMap info;
     ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
     if (!model) {
         info["error"] = QString("Model not found");
         return info;
@@ -253,7 +281,7 @@ QVariantMap QModelQuery::getVertexInfo(Index model_id, int vertexId) const
 
     bool found = false;
     // 遍历所有 Patch 查找该顶点
-    for (const auto& pair : model->patches_) {
+    for (const auto& pair : mesh->patches_) {
         const auto& patch = pair.second;
         const auto& vertexIDs = patch->vertexIDs_;
         const auto& vertexPoints = patch->vertexPoints_;

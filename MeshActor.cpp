@@ -1,5 +1,6 @@
-#include "ModelActor.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
+#include "MeshActor.h"
+#include "MeshActor.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -24,12 +25,12 @@
 #include <cstdlib>                 
 using Index = int;
 
-vtkNew<vtkMinimalStandardRandomSequence> ModelActor::randomSequence;
-vtkNew<vtkNamedColors> ModelActor::colors;
+vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
+vtkNew<vtkNamedColors> MeshActor::colors;
 
 
 
-ModelActor::ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode render_mode)
+MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode)
 {
     this->renderer_ = renderer;
     this->setRenderEdge(is_edge_render);
@@ -37,15 +38,7 @@ ModelActor::ModelActor(vtkRenderer* renderer, bool is_edge_render, RenderMode re
 
 }
 
-ModelActor::~ModelActor()
-{
-    if (this->renderer_)
-    {
-        renderer_->RemoveActor(this->actor_);
-    }
-}
-
-void ModelActor::loadModelData(const ModelDataVtk& model_data)
+void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
 	this->model_data_ = model_data;
 	vtkIdType point_id=0;
@@ -76,24 +69,32 @@ void ModelActor::loadModelData(const ModelDataVtk& model_data)
 
 }
 
-void ModelActor::setVisibility(bool visibility)
+void MeshActor::deleteMeshActor()
+{
+    if (this->renderer_)
+    {
+        renderer_->RemoveActor(this->actor_);
+    }
+}
+
+void MeshActor::setVisibility(bool visibility)
 {
 	this->actor_->SetVisibility(visibility);
 }
 
-void ModelActor::setRenderEdge(bool is_render)
+void MeshActor::setRenderEdge(bool is_render)
 {
     this->actor_->GetProperty()->SetEdgeVisibility(is_render);
 }
 
-void ModelActor::setRenderMode(RenderMode render_mode)
+void MeshActor::setRenderMode(ModelRenderMode render_mode)
 {
     this->render_mode_ = render_mode;
-    if (render_mode_ == RenderMode::Face) {
+    if (render_mode_ == ModelRenderMode::Face) {
         this->actor_->SetMapper(this->mapper_);
         this->renderer_->AddActor(this->actor_);
     }
-    else if (render_mode_ == RenderMode::Block) {
+    else if (render_mode_ == ModelRenderMode::Block) {
         this->actor_->SetMapper(this->block_mapper_);
         this->renderer_->AddActor(this->actor_);
     }
@@ -103,32 +104,37 @@ void ModelActor::setRenderMode(RenderMode render_mode)
     }
 }
 
-bool ModelActor::getIsEdgeRender()
+bool MeshActor::getIsEdgeRender()
 {
     return this->edge_render_;
 }
 
-void ModelActor::addPickList(vtkPropCollection* pick_list) const
+ModelRenderMode MeshActor::getMeshRenderMode()
+{
+    return this->render_mode_;
+}
+
+void MeshActor::addPickList(vtkPropCollection* pick_list) const
 {
     pick_list->AddItem(this->actor_);
 }
 
-Index ModelActor::get_model_face_id(vtkIdType face_id) const
+Index MeshActor::get_model_face_id(vtkIdType face_id) const
 {
     return this->model_data_.model_face_id(face_id);
 }
 
-Index ModelActor::get_model_point_id(vtkIdType point_id) const
+Index MeshActor::get_model_point_id(vtkIdType point_id) const
 {
     return this->model_data_.model_point_id(point_id);
 }
 
-Index ModelActor::get_model_block_id(vtkIdType block_id) const
+Index MeshActor::get_model_block_id(vtkIdType block_id) const
 {
     return this->model_data_.model_block_id(block_id);
 }
 
-void ModelActor::createBlockMapper(const ModelDataVtk& model_data)
+void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
 {
     auto multiblock = vtkSmartPointer<vtkMultiBlockDataSet>::New();
     const auto& blocks = model_data.model_blocks_.block_datas;

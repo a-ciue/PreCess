@@ -66,7 +66,7 @@ ApplicationWindow {
     }
 
     required property QModelObserver modelObserver
-    required property ModelManager modelManager
+    required property QModelManager modelManager
     required property QModelQuery modelQuery
     required property QCommandCatalog commandCatalog
     required property CommandDispatcher commandDispatcher
@@ -87,9 +87,9 @@ ApplicationWindow {
             }
             FileDialog {
                 id: openPatchDialog
-                nameFilters: ["OBJ File (*.obj)"]
+                nameFilters: ["OBJ File (*.obj)", "STP File (*.stp)"]
                 onAccepted: {
-                    modelManager.readMesh(selectedFile);
+                    modelManager.importModel(selectedFile);
                     myItem.resetCamera()
                 }
             }
@@ -199,7 +199,7 @@ ApplicationWindow {
             }
             onChangeEdgeRender:{
                 root.edgeRenderCheck = !root.edgeRenderCheck
-                myItem.setEdgeRender(root.edgeRenderCheck)
+                myItem.setEdgeRender(objectList.curModelId,root.edgeRenderCheck)
 
             }
         }
@@ -256,7 +256,7 @@ ApplicationWindow {
             }
             onChangeEdgeRender:{
                 root.edgeRenderCheck = !root.edgeRenderCheck
-                myItem.setEdgeRender(root.edgeRenderCheck)
+                myItem.setEdgeRender(objectList.curModelId,root.edgeRenderCheck)
             }
         }
 
@@ -419,20 +419,7 @@ ApplicationWindow {
             }
 
             onConfirmButtonClicked: {
-                sideBar.curSelection = myItem.selectedIDs
-                sideBar.paraList.currentItem.item.addSelection()
-                /*sideBar.savedSelection.push(myItem.selectedIDs)
-                // 遍历所有加载的选择器组件
-                for (var i in sideBar.parameterList.loadedItems) {
-                    var item = sideBar.parameterList.loadedItems[i]
-                    console.log("检查组件:", i, item)
-                    // 检查是否是选择器组件（type === 3）
-                    if (item && item.type === 3) {
-                        console.log("找到选择器组件，索引:", i)
-                        // 调用 SideBar 的更新函数
-                        sideBar.updateSelectorCount(i, comboBoxSelectedString)
-                    }
-                }*/
+                selection = myItem.selectedIDs
             }
 
             function clearSelection(){

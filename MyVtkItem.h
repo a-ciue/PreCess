@@ -20,7 +20,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
-
+#include <vtkCameraOrientationWidget.h>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
@@ -29,10 +29,12 @@
 
 #include "Style.h"
 #include "Selection.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include "SelectManager.h"
 #include "Core.h" 
 #include "ModelQuery.h"
+#include "MeshActorManager.h"
+#include "SplineActorManager.h"
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
@@ -49,8 +51,10 @@ public:
 
         vtkNew<vtkRenderer> renderer_;
 
-        std::unordered_map<Index, std::unique_ptr<ModelActor>> models_;
+        /*std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;*/
         vtkNew<QRenderWindowStyle> style_;
+        vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
+
 
 
     };
@@ -64,8 +68,13 @@ public:
     QSelection* selectedIDs();
     void setModelQuery(QModelQuery* query);
 
-    bool getIsEdgeRender(const QRenderWindow::Data* data_, Index model_id);
+    bool getMeshIsEdgeRender(Index model_id);
+    bool getSplineIsEdgeRender(Index model_id);
+    bool getIsEdgeRender(Index model_id);
 
+    QString getMeshRenderMode(Index model_id);
+    QString getSplineRenderMode(Index model_id);
+    QString getRenderMode(Index model_id);
 
 	/**
      * @brief 选择模型
@@ -90,13 +99,13 @@ public:
      * @brief 改变渲染模式
      * @param select_mode
      */
-    Q_INVOKABLE void setRenderMode(QString render_mode);
+    Q_INVOKABLE void setRenderMode(Index model_id, QString render_mode);
 
     /**
      * @brief 边渲染
      * @param select_mode
      */
-    Q_INVOKABLE void setEdgeRender(bool is_render);
+    Q_INVOKABLE void setEdgeRender(Index model_id, bool is_render);
 
     /**
      * @brief 改变可见性
@@ -121,14 +130,17 @@ signals:
     void clicked();
  
 private:
+    std::unique_ptr<MeshActorManager> mesh_actor_manager_;
+    std::unique_ptr<SplineActorManager> spline_actor_manager_;
+
     bool edge_render_;
-    RenderMode renderMode_{};
+    ModelRenderMode renderMode_{};
     SelectMode select_mode_ {};
 
     vtkNew<vtkCamera> _camera;
     
     std::unique_ptr<SelectManager> selectManager_;
-    ModelActor* cur_actor_{};
+    MeshActor* cur_actor_{};
     Index cur_actor_id_;
 
     std::unique_ptr<QMouseEvent> _click;

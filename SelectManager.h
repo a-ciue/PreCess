@@ -12,7 +12,7 @@
 
 #include "Selection.h"
 #include "Selector.h"
-#include "ModelActor.h"
+#include "MeshActor.h"
 #include "Core.h"
 
 class SelectManager {
@@ -27,7 +27,7 @@ public:
 	 */
 	void select(double posx, double posy);
 
-	void setSelectActor(ModelActor* model_actor_);
+	void setSelectActor(const MeshActor* model_actor_);
 	/**
 	 * @brief 传入选择模型
 	 * @param select_mode 
@@ -37,7 +37,7 @@ public:
 	std::unique_ptr<Selection>	getSelection();
 
 private:
-	const ModelActor* cur_model_actor_{};
+	const MeshActor* cur_model_actor_{};
 	SelectMode	select_mode_;
 	vtkNew<vtkActor> selection_actor_;
 	vtkNew<vtkPolyDataMapper> selection_mapper_;

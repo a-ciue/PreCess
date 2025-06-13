@@ -4,6 +4,9 @@
 #include <QList>
 #include "QCommand.h"
 
+#include "../ModelImporter.h"          // 让编译器知道 ModelImporter
+#include "ImportModelCommand.h"        // 导入命令本身
+
 /**
  * @brief QCommandCatalog 命令列表储存命令，负责命令的注册与管理
  *

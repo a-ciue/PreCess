@@ -6,6 +6,7 @@
 #include "ICommand.h"
 #include "../ModelOperator.h"
 #include "ArgTypeObject.h"
+#include "../ModelImporter.h"
 class QSelection;
 
 /**
@@ -19,7 +20,7 @@ public:
     void redo() override;
 
     static QList<ArgTypeObject*> getArgsModel();
-    static unique_ptr<MergeBlocksCommand> create(ModelOperator model_op, const QVariantList& list);
+    static unique_ptr<MergeBlocksCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
 private:
     ModelOperator model_op_;
     QSelection* selection_;

@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 option(ENABLE_TEST "是否启用测试")
+find_package(OpenCASCADE REQUIRED)
 
 find_package(VTK REQUIRED COMPONENTS
         CommonColor
@@ -24,6 +25,7 @@ find_package(VTK REQUIRED COMPONENTS
         RenderingGL2PSOpenGL2
         RenderingOpenGL2
         IOGeometry
+        RenderingAnnotation
 )
 
 find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick)
@@ -39,16 +41,23 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml CommandMenu.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp Selection.h
+        MyVTKItem.h MyVtkItem.cpp Selection.h 
 )
 
 qt_add_library(modelQml STATIC)
+target_link_libraries(modelQml 
+    PRIVATE
+    ${OpenCASCADE_LIBRARIES}
+)                    
 qt_add_qml_module(modelQml 
     URI model
     SOURCES
-        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp 
+        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp QModelManager.h QModelManager.cpp
 )
-add_library(vtkPart STATIC ModelActor.cpp Selector.cpp Style.cpp SelectManager.cpp)
+add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp MeshActorManager.cpp SplineActorManager.cpp
+        MeshData.h
+        SplineData.h
+        MeshData.cpp)
 
 
 add_library(modelPart STATIC
@@ -57,6 +66,10 @@ add_library(modelPart STATIC
         # ModelManager.cpp 
         ModelUtil.cpp
         FileHandler.cpp
+        MeshData.h
+        SplineData.h
+        MeshData.cpp
+        ModelImporter.cpp
         # ModelQuery.cpp
         # commands/SplitFaceCommand.cpp
         # command/MergeBlocksCommand.cpp
@@ -68,13 +81,33 @@ target_include_directories(modelPart
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}   # 项目根目录
 )
+target_link_libraries(modelPart
+        PRIVATE
+        ${OpenCASCADE_LIBRARIES}      # OCCT 的库列表
+)
+target_link_libraries(vtkPart
+        PRIVATE
+        ${OpenCASCADE_LIBRARIES}
+)
+target_link_libraries(vtkPart
+    PRIVATE
+    TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
+    ${VTK_LIBRARIES}
+)
+target_link_libraries(${MYNAME}
+    PRIVATE
+    TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
+    ${VTK_LIBRARIES}
+)
 
 # 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
 target_link_libraries(modelPart
         PRIVATE
         Qt${VTK_QT_VERSION}::Gui
         Qt${VTK_QT_VERSION}::Quick
+        Qt${VTK_QT_VERSION}::Core
 )
+
 
 add_subdirectory(commands)
 target_link_libraries(modelQml PRIVATE modelPart commandsplugin)
@@ -117,6 +150,7 @@ install(
         RUNTIME_DEPENDENCIES
         DIRECTORIES
         $<TARGET_FILE_DIR:VTK::CommonCore>
+        #$<TARGET_FILE_DIR:TKernal>
         # Qt 库所在目录
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
         $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Quick>

@@ -22,21 +22,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         vtk->renderer_->SetBackground(0.5, 0.5, 0.7);
         vtk->renderer_->SetBackground2(0.7, 0.7, 0.7);
         vtk->renderer_->SetGradientBackground(true);
-    
-        /*vtk->style_
-    vtk->styles[0] = vtk->faceStyle;
-    vtk->styles[1] = vtk->edgeStyle;
-    vtk->styles[2] = vtk->blockStyle;
-    vtk->styles[3] = vtk->groupStyle;
 
-    vtk->blockStyle->SetSelector(std::make_unique<BlockSelectorHighlight>(vtk->renderer));
-    vtk->blockStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->groupStyle->SetSelector(std::make_unique<BlockSelectorHighlight>(vtk->renderer));
-    vtk->groupStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->faceStyle->SetSelector(std::make_unique<SingleFaceSelectorHighlight>(vtk->renderer));
-    vtk->faceStyle->SetDefaultRenderer(vtk->renderer);
-    vtk->edgeStyle->SetSelector(std::make_unique<SingleEdgeSelectorHighlight>(vtk->renderer));
-    vtk->edgeStyle->SetDefaultRenderer(vtk->renderer);*/
     vtk->style_->SetSelectManager(this->selectManager_.get());
     selectManager_->bindRenderer(vtk->renderer_);
     vtk->style_->SetDefaultRenderer(vtk->renderer_);
@@ -44,7 +30,15 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_= vtk.GetPointer();
+    this->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
+    this->mesh_actor_manager_->bindRender(vtk->renderer_);
+    this->spline_actor_manager_ = std::make_unique<SplineActorManager>();
+    this->spline_actor_manager_ ->bindRender(vtk->renderer_);
 
+    vtk->orientationWidget->AnimateOff();
+    vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
+    vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor());// 设置坐标系控件大小（占屏幕比例）
+    vtk->orientationWidget->On();
     return vtk;
 }
 
@@ -53,6 +47,7 @@ void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData use
     auto* vtk = Data::SafeDownCast(userData);
     if (vtk->renderer_) {
         _camera->DeepCopy(vtk->renderer_->GetActiveCamera());
+        vtk->renderer_->RemoveAllViewProps();
     }
 }
 
@@ -99,8 +94,7 @@ bool QRenderWindow::event(QEvent* ev)
     default:
         break;
     }
-    ev->accept();
-    return true;
+    return QQuickVTKItem::event(ev);
 }
 
 
@@ -108,7 +102,8 @@ void QRenderWindow::deleteModel(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->models_.erase(model_id);
+        this->mesh_actor_manager_->deleteModel(model_id);
+        this->spline_actor_manager_->deleteModel(model_id);
         this->selectManager_->clearSelection();
         });
 }
@@ -117,16 +112,29 @@ void QRenderWindow::onModelChanged(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-
-        std::optional model_data = model_query_->getModelData(model_id);
-        if (model_data)
+        int type = this->model_query_->getModelType(model_id);
+        if (this->model_query_->getModelType(model_id)==0)
         {
-            if (!vtk->models_.count(model_id))
-                vtk->models_[model_id] = std::make_unique<ModelActor>(vtk->renderer_, edge_render_, renderMode_);
-            vtk->models_[model_id]->loadModelData(*model_data);
-            vtk->models_[model_id]->setRenderMode(renderMode_);
+            std::optional model_data = model_query_->getModelData(model_id);
+            if (model_data)
+            {
+                this->mesh_actor_manager_->loadModel(model_id, *model_data, vtk->renderer_, this->renderMode_, 1);
+            }
         }
-    });
+        else if (this->model_query_->getModelType(model_id) == 1)
+        {
+	        std::optional spline_data = model_query_->getSplineData(model_id);
+            if (spline_data)
+            {
+                this->spline_actor_manager_->loadSpline(model_id, *spline_data);
+            }
+        }
+        else
+        {
+            std::cout << "load model error" << std::endl;
+        }
+
+        });
 }
 
 void QRenderWindow::setVisibility(Index model_id, bool visibility)
@@ -134,7 +142,8 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
     dispatch_async([model_id,visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->clearSelection();
-        vtk->models_[model_id]->setVisibility(visibility);
+        this->mesh_actor_manager_->setVisibility(model_id, visibility);
+        this->spline_actor_manager_->setVisibility(model_id, visibility);
         });
 }
 
@@ -158,9 +167,80 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
-bool QRenderWindow::getIsEdgeRender(const QRenderWindow::Data* data_, Index model_id)
+bool QRenderWindow::getMeshIsEdgeRender(Index model_id)
 {
-    return data_->models_.at(model_id)->getIsEdgeRender();
+    return this->mesh_actor_manager_->getIsEdgeRender(model_id);
+}
+
+bool QRenderWindow::getSplineIsEdgeRender(Index model_id)
+{
+    return this->spline_actor_manager_->getIsEdgeRender(model_id);
+}
+
+bool QRenderWindow::getIsEdgeRender(Index model_id)
+{
+    if (this->mesh_actor_manager_->getCount(model_id))
+    {
+        return this->getMeshIsEdgeRender(model_id);
+    }
+    else if (this->spline_actor_manager_->getCount(model_id))
+    {
+        return this->getSplineIsEdgeRender(model_id);
+    }
+    else
+    {
+        std::cout << "get is edge render mode error" << std::endl;
+        return 0;
+    }
+    
+}
+
+QString QRenderWindow::getMeshRenderMode(Index model_id)
+{
+    if (this->mesh_actor_manager_->getMeshRenderMode(model_id)==ModelRenderMode::Face) {
+        return "face";
+    }
+    else if(this->mesh_actor_manager_->getMeshRenderMode(model_id) == ModelRenderMode::Block) {
+        return "block";
+    }
+    else
+    {
+        std::cout << "get mesh render mode error" << std::endl;
+        return "None";
+    }
+}
+
+QString QRenderWindow::getSplineRenderMode(Index model_id)
+{
+    if (this->spline_actor_manager_->getSplineRenderMode(model_id) == SplineRenderMode::Face) {
+        return "face";
+    }
+    else if (this->spline_actor_manager_->getSplineRenderMode(model_id) == SplineRenderMode::Block) {
+        return "Block";
+    }
+    else
+	{
+        std::cout << "get spline render mode error" << std::endl;
+        return "None";
+	}
+}
+
+QString QRenderWindow::getRenderMode(Index model_id)
+{
+    if (this->mesh_actor_manager_->getCount(model_id))
+    {
+        return this->getMeshRenderMode(model_id);
+    }
+    else if (this->spline_actor_manager_->getCount(model_id))
+    {
+        return this->getSplineRenderMode(model_id);
+    }
+    else
+    {
+        std::cout << "get render mode error" << std::endl;
+        return "None";
+    }
+
 }
 
 void QRenderWindow::setSelectModel(Index model_id)
@@ -169,8 +249,8 @@ void QRenderWindow::setSelectModel(Index model_id)
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
         this->cur_actor_id_ = model_id;
-        if (vtk->models_.count(model_id))
-            selectManager_->setSelectActor(vtk->models_[model_id].get());
+        if (this->mesh_actor_manager_->getCount(model_id))
+            selectManager_->setSelectActor(this->mesh_actor_manager_->getModelActor(model_id));
         else
             selectManager_->setSelectActor(nullptr);
         });
@@ -204,23 +284,17 @@ void QRenderWindow::clearSelection()
     });
 }
 
-void QRenderWindow::setRenderMode(QString render_mode)
+void QRenderWindow::setRenderMode(Index model_id, QString render_mode)
 {
 
-    dispatch_async([render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_id,render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
         this->selectManager_->clearSelection();
         if (render_mode == "Face") {
-            this->renderMode_ = RenderMode::Face;
-            for (auto&& [modelName, modelActor] : vtk->models_) {
-                modelActor->setRenderMode(this->renderMode_);
-            }
+            this->mesh_actor_manager_->setRenderMode(model_id, ModelRenderMode::Face);
         }
         else if (render_mode == "Block") {
-            this->renderMode_ = RenderMode::Block;
-            for (auto&& [modelName, modelActor] : vtk->models_) {
-                modelActor->setRenderMode(this->renderMode_);
-            }
+            this->mesh_actor_manager_->setRenderMode(model_id, ModelRenderMode::Block);
         }
         else {
             qWarning() << "render mode error!";
@@ -229,38 +303,13 @@ void QRenderWindow::setRenderMode(QString render_mode)
         });
 }
 
-void QRenderWindow::setEdgeRender(bool is_render)
+void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
 {
-    dispatch_async([is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
+    dispatch_async([model_id,is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        this->edge_render_ = is_render;
-        for (auto&& [modelName, modelActor] : vtk->models_) {
-            modelActor->setRenderEdge(is_render);
-        }
+        this->mesh_actor_manager_->setRenderEdge(model_id, is_render);
         });
 }
-
-//void QRenderWindow::changeEdgeRender(QString model_name, QString renderMode, bool render)
-//{
-//    ModelActor::RenderMode mode {};
-//    if (renderMode == "Face") {
-//        mode = ModelActor::RenderMode::Face;
-//    } else if (renderMode == "Block") {
-//        mode = ModelActor::RenderMode::Block;
-//    } else if (renderMode == "Group") {
-//        mode = ModelActor::RenderMode::Group;
-//    } else {
-//        std::cerr << "invalid renderMode in QRenderWindow::changeEdgeRenderer" << std::endl;
-//        return;
-//    }
-//
-//    dispatch_async([model_name,this, mode, render](vtkRenderWindow* renderWindow, vtkUserData userData) {
-//        Data* vtk = Data::SafeDownCast(userData);
-//
-//        if (vtk->actor_[model_name])
-//            vtk->actor_[model_name]->render_edge(mode, render);
-//    });
-//}
 
 void QRenderWindow::setClick()
 {
@@ -278,7 +327,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //{
 //    dispatch_async([model_name,patches, blocks, groups, this](vtkRenderWindow* renderWindow, vtkUserData userData)->void {
 //        Data* vtk = Data::SafeDownCast(userData);
-//        vtk->actor_[model_name] = std::make_unique<ModelActor>(*patches, *blocks, *groups);
+//        vtk->actor_[model_name] = std::make_unique<MeshActor>(*patches, *blocks, *groups);
 //
 //        vtk->actor_[model_name]->bind_renderer(vtk->renderer);
 //
@@ -331,13 +380,13 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //Q_INVOKABLE void QRenderWindow::changeRenderer(QString renderMode)
 //{
 //    if (renderMode == "Face") {
-//        this->renderMode_ = ModelActor::RenderMode::Face;
+//        this->renderMode_ = MeshActor::RenderMode::Face;
 //    }
 //    else if (renderMode == "Block") {
-//        this->renderMode_ = ModelActor::RenderMode::Block;
+//        this->renderMode_ = MeshActor::RenderMode::Block;
 //    }
 //    else if (renderMode == "Group") {
-//        this->renderMode_ = ModelActor::RenderMode::Group;
+//        this->renderMode_ = MeshActor::RenderMode::Group;
 //    }
 //    else {
 //        std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
@@ -347,7 +396,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
 //        Data* vtk = Data::SafeDownCast(userData);
 //
-//        if (this->renderMode_ == ModelActor::RenderMode::Face)
+//        if (this->renderMode_ == MeshActor::RenderMode::Face)
 //        {
 //            bindStyle("Face");
 //            for (auto&& [modelName, modelActor] : vtk->actor_)
@@ -361,7 +410,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //
 //            }
 //        }
-//        else if (this->renderMode_ == ModelActor::RenderMode::Block)
+//        else if (this->renderMode_ == MeshActor::RenderMode::Block)
 //        {
 //            bindStyle("Block");
 //            for (auto&& [modelName, modelActor] : vtk->actor_)
@@ -383,7 +432,7 @@ vtkStandardNewMacro(QRenderWindow::Data);
 //            }
 //
 //        }
-//        else if (this->renderMode_ == ModelActor::RenderMode::Group)
+//        else if (this->renderMode_ == MeshActor::RenderMode::Group)
 //        {
 //            bindStyle("Group");
 //            for (auto&& [modelName, modelActor] : vtk->actor_)
