@@ -8,12 +8,11 @@
  * @sa QSideBar.qml
  */
 
-import QtQuick 2.15
-import QtQuick.Window 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Window
+import QtQuick.Controls
+import QtQuick.Layouts
 import QtQuick.Dialogs
-import QtQuick.Controls 6.7
 import QtQuick.Controls.Fusion
 
 import fileLoader
@@ -22,16 +21,14 @@ import commands
 
 ApplicationWindow {
     id: root
-    visible: true
-    width: 800
-    height: 640
+    visibility: Window.Maximized
     title: qsTr("三角剖分交互程序")
     menuBar: MenuBar{
         //height:30
         Menu{
             title: "文件"
             MenuItem{
-                text: "制定样条剖分"
+                text: "指定样条剖分"
                 onClicked: splineDialog.open()
             }
             MenuItem{
@@ -60,12 +57,11 @@ ApplicationWindow {
         Menu{
             title: "视图"
         }
-        Menu{
-            title: "算法"
-            MenuItem{
-                text: "命令"
-                onClicked: commandMenu.popup()
-            }
+        CommandMenu {
+            id: commandMenu
+            commands: commandCatalog.qmlCommands()
+            sideBar: sideBar
+            commandDispatcher: root.commandDispatcher
         }
     }
 
@@ -120,94 +116,6 @@ ApplicationWindow {
                 onAccepted: {
                     modelManager.writeMesh(selectedFile, "Group", selectedNameFilter.extensions[0]);
                 }
-            }
-
-            // RowLayout {
-            //     spacing: 3
-            //     ToolButton{
-            //         id:fileButton
-            //         text:"文件"
-            //         Layout.preferredWidth: 40
-            //         onClicked:menu.open()
-            //         Menu{
-            //             id:menu
-            //             closePolicy: Popup.CloseOnPressOutsideParent
-            //             MenuItem{
-            //                 text: "指定样条剖分"
-            //                 onClicked: splineDialog.open()
-            //             }
-
-            //             MenuItem {
-            //                 text: "导入"
-            //                 onClicked: openPatchDialog.open()
-            //             }
-
-            //             Menu {
-            //                 title: "导出..."
-            //                 MenuItem{
-            //                     text: "网格"
-            //                     onClicked: saveFaceDialog.open()
-            //                 }
-            //                 MenuItem{
-            //                     text: "网格（带分块信息）"
-            //                     onClicked: saveBlockDialog.open()
-            //                 }
-            //                 MenuItem{
-            //                     text: "网格（带分组信息）"
-            //                     onClicked: saveGroupDialog.open()
-            //                 }
-            //             }
-            //         }
-            //     }
-            //     Button {
-            //         id: commandButton
-            //         text: qsTr("命令")
-            //         onClicked: commandMenu.popup()
-            //     }
-            //     Rectangle {
-            //         color: "black"
-            //         Layout.preferredWidth: 1
-            //         Layout.fillHeight: true
-            //     }
-
-            //     ButtonGroup {
-            //         id: renderGroup
-            //         onCheckedButtonChanged: {
-            //             myItem.setRenderMode(checkedButton.renderMode)
-            //         }
-            //     }
-            //     Button {
-            //         id: btn1
-            //         text: "面模式"
-            //         property string renderMode: "Face"
-            //         rightPadding: 8
-            //         checkable: true
-            //         checked: true
-            //         onClicked: stacklayout.currentIndex = 0
-
-            //         ButtonGroup.group: renderGroup
-            //     }
-            //     Button {
-            //         id: btn2
-            //         text: "块模式"
-            //         property string renderMode: "Block"
-            //         checkable: true
-            //         onClicked: stacklayout.currentIndex = 1
-            //         ButtonGroup.group: renderGroup
-            //     }
-
-            //     Component.onCompleted: {
-            //         let width = 1.5*Math.max(btn1.width, btn2.width)
-            //         btn1.Layout.preferredWidth = width
-            //         btn2.Layout.preferredWidth = width
-            //     }
-            // }
-
-            CommandMenu {
-                id: commandMenu
-                commands: commandCatalog.qmlCommands()
-                sideBar: sideBar
-                commandDispatcher: root.commandDispatcher
             }
         }
     }
@@ -352,58 +260,6 @@ ApplicationWindow {
             }
         }
 
-
-        /*SelectingBar{
-            id:groupmode
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            modeButtonModel:ListModel{
-                ListElement{
-                    name:"组合并"
-                }
-                ListElement{
-                    name:"组重网格"
-                }
-            }
-            confirmButtonModel:ListModel{
-                ListElement{
-                    name:"确认"
-                }
-                ListElement{
-                    name:"确认"
-                }
-            }
-            onButtonFunction:{
-                if(modeOrConfirm === 0){
-                    if(index === 0){
-                        // myItem.bindStyle("Group")
-                        modelManager.model(myItem.selectedIDs.getName()).merge_groups(myItem.selectedIDs.data().ids)
-                        myItem.resetCamera()
-                        selector.clearSelection()
-                    }
-                    else{
-                        // myItem.bindStyle("Group")
-                        modelManager.model(myItem.selectedIDs.getName()).remesh_group(myItem.selectedIDs.data().ids)
-                        myItem.resetCamera()
-                    }
-                }else{
-                    if(index === 0){
-                        modelManager.model(myItem.selectedIDs.getName()).merge_groups(myItem.selectedIDs)
-                        myItem.resetCamera()
-                    }
-                    else{
-                        modelManager.model(myItem.selectedIDs.getName()).remesh_group(myItem.selectedIDs)
-                        myItem.resetCamera()
-                    }
-                }
-            }
-            onButtonGroupFunction:{
-                myItem.unbindStyle()
-            }
-            onChangeEdgeRender:{
-                myItem.changeEdgeRender(myItem.selectedIDs.getName(),"Group", check)
-            }
-        }*/
     }
 
     // Rectangle{
@@ -476,7 +332,7 @@ ApplicationWindow {
         }
     }
 
-    Rectangle {
+    Page {
         id: myItemRectangle
         anchors.bottom:parent.bottom
         anchors.top:stacklayout.bottom
@@ -487,7 +343,6 @@ ApplicationWindow {
         //     width: 5
         // }
         //radius: 5
-        color: "transparent"
         Rectangle {
             id: borderRectangle
             anchors.left: myItemRectangle.left
@@ -527,7 +382,13 @@ ApplicationWindow {
                         Layout.preferredWidth: 50
                         Layout.fillHeight: true
                         onClicked:{
-                            console.log("还没有绑定块渲染接口。")
+                            if (checked) {
+                                myItem.setRenderMode("Block")
+                                stacklayout.currentIndex = 1
+                            } else {
+                                myItem.setRenderMode("Face")
+                                stacklayout.currentIndex = 0
+                            }
                         }
                     }
                     Label{

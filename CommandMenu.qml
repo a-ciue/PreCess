@@ -1,13 +1,13 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls.Fusion
+import QtQuick.Layouts
 
 import fileLoader
 import commands
 
 Menu {
     id: commandMenu
-    title: qsTr("命令")
+    title: qsTr("算法")
 
     required property list<QCommand> commands
     required property SideBar sideBar

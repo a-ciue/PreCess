@@ -30,11 +30,7 @@ Item{
                 changeEdgeRender()
             }
         }
-        Rectangle {
-            color: "black"
-            Layout.preferredWidth: 1
-            Layout.fillHeight: true
-        }
+        ToolSeparator {}
 
         Repeater{
             id: modeButton
