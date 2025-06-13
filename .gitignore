@@ -30,3 +30,4 @@
 /html
 *.user
 .qmlls.ini
+CMakePresets.json
