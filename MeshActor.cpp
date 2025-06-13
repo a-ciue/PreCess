@@ -79,11 +79,13 @@ void MeshActor::deleteMeshActor()
 
 void MeshActor::setVisibility(bool visibility)
 {
+    this->visibility_ = visibility;
 	this->actor_->SetVisibility(visibility);
 }
 
 void MeshActor::setRenderEdge(bool is_render)
 {
+    this->edge_render_ = is_render;
     this->actor_->GetProperty()->SetEdgeVisibility(is_render);
 }
 

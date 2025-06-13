@@ -46,8 +46,8 @@ public:
 
 private:
     ModelRenderMode render_mode_;
-    bool edge_render_;
-    bool visibility_;
+    bool edge_render_{ true };
+    bool visibility_{ true };
     MeshDataVtk model_data_;
 
     vtkNew<vtkActor> actor_;
