@@ -149,11 +149,12 @@ install(
         TARGETS ${MYNAME}
         RUNTIME_DEPENDENCIES
         DIRECTORIES
-        $<TARGET_FILE_DIR:VTK::CommonCore>
-        #$<TARGET_FILE_DIR:TKernal>
-        # Qt 库所在目录
-        $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
-        $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Quick>
+            $<TARGET_FILE_DIR:VTK::CommonCore>
+            $<TARGET_FILE_DIR:TKernel>
+            ${FREETYPE_DIR}/bin # FreeType 库所在目录
+             # Qt 库所在目录
+            $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
+            $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Quick>
         PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"  # don't install Windows-provided libs
         POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"  # don't install Windows-provided libs
         FRAMEWORK DESTINATION Frameworks
