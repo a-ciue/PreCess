@@ -3,10 +3,10 @@
  * @brief 侧边栏，执行复杂算法时提供参数的交互界面
  */
 
-import QtQuick 2.15
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs 6.3
+import QtQuick.Dialogs
 
 import fileLoader
 import commands
@@ -23,8 +23,7 @@ Item{
     signal cancleCommand
 
     onCurCommandChanged: {
-        //parameterList.model = curCommand.arg_types
-        console.log("参数构造控件方式触发，即通过CurCommand属性变化触发")
+        parameterList.model = curCommand.arg_types
     }
     Button{
         id: commitButton
@@ -34,13 +33,11 @@ Item{
         anchors.right: parent.right
         height:30
         onClicked:{
-            // for(var i in parameterList.loadedItems){
-            //     console.log(parameterList.loadedItems[i].value)
-            // }
+            let params = parameterList.model.map(model => model.value)
 
-             commandDispatcher.runCommand(curCommand, curModel, [curSelection])
+            //commandDispatcher.runCommand(curCommand, curModel, [curSelection])
+            commandDispatcher.runCommand(curCommand, curModel, params)
             //commandDispatcher.runCommand(curCommand, curModel, [savedSelection])
-            parameterList.model.clear()
         }
     }
     Item{
@@ -51,39 +48,46 @@ Item{
         clip: true
         ColumnLayout{
             anchors.fill: parent
-            ListView{              //model数据层 delegate视图层
+            ListView{
                 id:parameterList
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.margins: 3
                 spacing: 5
                 property var loadedItems: ({})
-                delegate:Loader{
-                    /*required property int type
-                    required property string name
-                    required property string content*/
-                    sourceComponent:{
-                        if(curCommand && curCommand.name() === "切分边"){
-                            return splictEdgeComponent
-                        }
-                        if(curCommand && curCommand.name() === "切分面"){
-                            return splictFaceComponent
-                        }
+                delegate:Component{
+                    Loader{
+                        required property var model
+                        required property int index
+                        required property int type
+                        required property string name
+                        required property string content
+                        required property var value
+                        sourceComponent:{
+                            if(curCommand && curCommand.name() === "切分边"){
+                                return splictEdgeComponent
+                            }
+                            if(curCommand && curCommand.name() === "切分面"){
+                                return splictFaceComponent
+                            }
 
-                        /*if(type === 0){           //文件
-                            return fileComponent
+                            if(type === 0){           //文件
+                                return fileComponent
+                            }
+                            if(type === 1){           //多选一
+                                return componentComboBox
+                            }
+                            if(type === 2){           //数字框
+                                return oneNumberBox
+                            }
+                            if(type === 3){           //选择器
+                                return selectorComponent
+                            }
+                            if(type === 4){           //文字输入框
+                                return textComponent
+                            }
                         }
-                        if(type === 1){           //多选一
-                            return componentComboBox
-                        }
-                        if(type === 2){           //数字框
-                            return oneNumberBox
-                        }
-                        if(type === 3){           //选择器
-                            return selectorComponent
-                        }*/
-                    }
-                    Component.onCompleted: {
+                        Component.onCompleted: {
                         /*if(item){
                             parameterList.loadedItems[index] = item
                             if(type === 0){
@@ -103,9 +107,10 @@ Item{
                                 //parameterList.loadedItems[index].parameter1 = content
                             }
                         }*/
-                    }
-                    Component.onDestruction: {
-                        delete parameterList.loadedItems[index]
+                        }
+                        Component.onDestruction: {
+                            delete parameterList.loadedItems[index]
+                        }
                     }
                 }
             }
@@ -190,16 +195,16 @@ Item{
                 }
             }
         }
-    }
+    }*/
     Component{
         id:fileComponent
         RowLayout{
             spacing: 5
-            property alias name: nametext.text
-            property alias parameter1: fileText.text
-            property var value: fileText.text
+            width: parameterList.width
+            property alias value: fileText.text
             Text{
                 id:nametext
+                text: name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -208,6 +213,16 @@ Item{
             }
             TextArea{
                 id:fileText
+                wrapMode: TextEdit.Wrap
+                Layout.fillWidth: parent.width
+
+                Component.onCompleted: {
+                    fileText.text = content
+                    model.value = fileText.text
+                }
+                onEditingFinished: {
+                    model.value = fileText.text
+                }
             }
             Button{
                 text: "打开文件"
@@ -222,12 +237,43 @@ Item{
                 }
             }
         }
-    }*/
+    }
+    Component{
+        id:textComponent
+        RowLayout{
+            spacing: 5
+            width: parameterList.width
+            property var value: fileText.text
+            Text{
+                id:nametext
+                text: name
+            }
+            Rectangle{
+                Layout.fillHeight: true
+                Layout.preferredWidth: 1
+                color: "black"
+            }
+            TextArea{
+                id:fileText
+                wrapMode: TextEdit.Wrap
+                Layout.fillWidth: true
+                
+                Component.onCompleted: {
+                    fileText.text = content
+                    model.value = fileText.text
+                }
+                onEditingFinished: {
+                    model.value = fileText.text
+                }
+            }
+        }
+    }
     Component{
         id: selectorComponent
         RowLayout{
             // id: root
             spacing: 5
+            width: parameterList.width
             /** type:string */
             property int valueEdge : 0
             property int valueFace : 0
@@ -264,6 +310,7 @@ Item{
         id:splictEdgeComponent
         RowLayout{
             property int value: 0
+            width: parameterList.width
             Text{
                 text:"已选择"+value+"条边"
             }
@@ -285,6 +332,7 @@ Item{
         id:splictFaceComponent
         RowLayout{
             property int value: 0
+            width: parameterList.width
             Text{
                 text:"已选择"+value+"个面"
             }

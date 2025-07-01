@@ -274,7 +274,7 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
         //anchors.bottom: sideBar.top
-        width: 160
+        width: 250
         height: 200
         objectModel:ListModel{
             id: objectInitializeModel
@@ -303,7 +303,7 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
         anchors.bottom: parent.bottom
-        width: 160
+        width: 250
         m:ListModel{
             // ListElement{type: 2; name: "属性甲"; content: "55"}
             // ListElement{type: 2; name: "属性乙"; content: "43"}
@@ -320,13 +320,6 @@ ApplicationWindow {
         onCancleCommand:{
             m.clear()
         }
-
-        function changeListElement(){
-            if(paraList.count){
-                m.remove(0)
-            }
-            m.append({})
-        }
     }
 
     Page {
@@ -342,9 +335,9 @@ ApplicationWindow {
         //radius: 5
         Rectangle {
             id: borderRectangle
-            anchors.left: myItemRectangle.left
-            anchors.right: myItemRectangle.right
-            anchors.top: myItemRectangle.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
             height: myItemRectangle.height - 25
             border.color: "black"
             border.width: 3

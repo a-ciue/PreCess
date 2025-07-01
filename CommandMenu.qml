@@ -19,7 +19,6 @@ Menu {
             text: modelData.name()
             onTriggered: {
                 sideBar.curCommand = modelData
-                sideBar.changeListElement()
             }
         }
     }
