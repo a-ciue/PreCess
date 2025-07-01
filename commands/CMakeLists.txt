@@ -9,6 +9,7 @@ qt_add_library(commands STATIC
         ImportModelCommand.cpp
         CommandDispatcher.cpp
         TrianglulationCommand.cpp
+        CmdExecuteCommand.cpp
 )
 qt_add_qml_module(commands
     URI commands
