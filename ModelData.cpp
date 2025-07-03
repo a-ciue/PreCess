@@ -109,7 +109,6 @@ void ModelData::split_face(QSelection* selection)
     ModelUtil::split_face(face, md->mesh_.get())->point() = mid;
 
     md->update_patches(std::vector{ patch_id }, false);
-    update_actors({ patch_id });
 }
 
 void ModelData::split_edge(QSelection* selection)
@@ -163,7 +162,6 @@ void ModelData::split_edge(QSelection* selection)
     //}
 
     md->update_patches(patch_ids, false);
-    update_actors(patch_ids);
 }
 
 void ModelData::merge_blocks(QSelection* selection) {
@@ -186,7 +184,6 @@ void ModelData::merge_blocks(QSelection* selection) {
     auto& target_block = md->blocks_[target_block_id];
 
     // 合并其他 block 的内容到目标 block
-    std::unordered_set<int> modified_groups;
     for (size_t i = 1; i < block_ids.size(); ++i) {
         int id = block_ids[i];
         auto& block_to_merge = md->blocks_[id];
@@ -196,69 +193,9 @@ void ModelData::merge_blocks(QSelection* selection) {
             target_block->patchIDs.insert(patch_id);
             md->patches_[patch_id]->blockID = target_block_id;
         }
-
-        // 维护groups_，删除后面这些在group的信息
-        modified_groups.insert(block_to_merge->groupID);
-        Group& group = *md->groups_[block_to_merge->groupID];
-        group.blockIDs.erase(block_to_merge->id);
-        if (group.blockIDs.empty()) {
-            md->groups_.erase(block_to_merge->groupID);
-        }
-
         // 删除已合并的 block
         md->blocks_.erase(id);
     }
-
-    // 更新 ModelActor
-    // 更新目标 block 的 patchIDs
-    // 调用 ModelActor 的 merge_blocks 函数更新 Actor
-    //emit blocksMerged(getModelName(), block_ids, block_ids[0], target_block->patchIDs);
-    //emit groupUpdated(getModelName(), target_block->groupID, groups_[target_block->groupID]->blockIDs);
-    //for (int modified_group : modified_groups) {
-    //    if (groups_.count(modified_group)) {
-    //        emit groupUpdated(getModelName(), modified_group, groups_[modified_group]->blockIDs);
-    //    } else {
-    //        emit groupUpdated(getModelName(), modified_group, {});
-    //    }
-    //}
-}
-
-void ModelData::merge_groups(QSelection* selection) {
-    auto* md = asMeshData();
-    auto sel = selection->move();
-    const std::vector<int>& group_ids = sel->ids;
-    if (group_ids.empty()) {
-        throw std::invalid_argument("group_ids cannot be empty.");
-    }
-
-    /* 验证 group_ids 是否有效
-    for (int id : group_ids) {
-        if (groups_.find(id) == groups_.end()) {
-            throw std::runtime_error("Group ID not found: " + std::to_string(id));
-        }
-    }*/
-
-    // 获取目标 group（第一个 group）
-    int target_group_id = group_ids[0];
-    auto& target_group = md->groups_[target_group_id];
-
-    // 合并其他 group 的内容到目标 group
-    for (size_t i = 1; i < group_ids.size(); ++i) {
-        int id = group_ids[i];
-        auto& group_to_merge = md->groups_[id];
-
-        // 合并 blockIDs
-        for (int block_id : group_to_merge->blockIDs) {
-            target_group->blockIDs.insert(block_id);
-            md->blocks_[block_id]->groupID = target_group_id;
-        }
-
-        // 删除已合并的 group
-        md->groups_.erase(id);
-    }
-
-    // 更新 ModelActor
-    //emit groupMerged(getModelName(), group_ids, group_ids[0], target_group->blockIDs);
 }
 
 void ModelData::remesh_block(QSelection* selection) {
@@ -289,50 +226,6 @@ void ModelData::remesh_block(QSelection* selection) {
     for (auto& face : md->mesh_->faces()) {
         all_patch_ids.push_back(face->get_g());
     }
-
-    // 更新 patches_
-    md->update_patches(all_patch_ids, false);
-}
-
-void ModelData::remesh_group(QSelection* selection) {
-    auto* md = asMeshData();
-    auto sel = selection->move();
-    const std::vector<int>& group_ids = sel->ids;
-    // 收集所有 patch_ids
-    std::unordered_set<int> patch_ids_set;
-    for (int group_id : group_ids)
-    {
-        // 验证 group_id 是否有效
-        if (md->groups_.find(group_id) == md->groups_.end()) {
-            throw std::runtime_error("Group ID not found: " + std::to_string(group_id));
-        }
-	    
-        // 获取指定 group
-        auto& group = md->groups_[group_id];
-
-        for (int block_id : group->blockIDs) {
-            if (md->blocks_.find(block_id) == md->blocks_.end()) {
-                throw std::runtime_error("Block ID not found in group: " + std::to_string(block_id));
-            }
-            auto& block = md->blocks_[block_id];
-            patch_ids_set.insert(block->patchIDs.begin(), block->patchIDs.end());
-        }
-    }
-
-    // 将 patch_ids_set 转换为 vector
-    std::vector<int> patch_ids(patch_ids_set.begin(), patch_ids_set.end());
-
-    // 调用 ModelUtil::remesh_patches 方法对这些 patch 进行重新网格化
-    md->mesh_ = ModelUtil::remesh_patches(std::move(md->mesh_), patch_ids);
-
-    // 更新所有patches
-    std::vector<int> all_patch_ids;
-    for (auto& face : md->mesh_->faces()) {
-        all_patch_ids.push_back(face->get_g());
-    }
-
-    // 更新所有相关的 patches
-    //update_patches(patch_ids, false);
 
     // 更新 patches_
     md->update_patches(all_patch_ids, false);
@@ -386,69 +279,6 @@ int ModelData::patch_block_id(int patch_id) {
     throw std::runtime_error("Patch ID not found in any block.");
 }
 
-int ModelData::block_group_id(int patch_id) {
-    auto* md = asMeshData();
-    // 先获取 patch 对应的 block_id
-    int block_id = patch_block_id(patch_id);
-
-    // 遍历 groups_ 查找包含 block_id 的 group
-    for (const auto& [group_id, group_ptr] : md->groups_) {
-        if (group_ptr->blockIDs.find(block_id) != group_ptr->blockIDs.end()) {
-            return group_id; // 找到对应的 group_id
-        }
-    }
-
-    // 如果找不到 block_id，抛出异常
-    throw std::runtime_error("Block ID not found in any group.");
-}
-
-MeshDataVtk ModelData::getModelData()
-{
-    const auto* md = asMeshData();
-    // 构造 ModelData
-    MeshDataVtk modelData;
-
-    // 添加所有顶点和三角形
-    int offset{};
-    unordered_map<int, vector<int>> patch_vtk_face_ids;
-    for (const auto& [patch_id, patch] : md->patches_) {
-        // 添加顶点和模型顶点ID
-        modelData.vtk_points_.insert(modelData.vtk_points_.end(), patch->vertexPoints_.begin(), patch->vertexPoints_.end());
-        modelData.model_point_id_.insert(modelData.model_point_id_.end(), patch->vertexIDs_.begin(), patch->vertexIDs_.end());
-        modelData.model_face_id_.insert(modelData.model_face_id_.end(), patch->faceIDs_.begin(), patch->faceIDs_.end());
-
-        // 添加三角形和模型面ID
-        for (size_t i = 0; i < patch->faceTriangles_.size(); ++i) {
-            array<Index, 3> arr;
-            arr[0] = patch->faceTriangles_[i][0] + offset;
-            arr[1] = patch->faceTriangles_[i][1] + offset;
-            arr[2] = patch->faceTriangles_[i][2] + offset;
-            modelData.vtk_triangles_.push_back(arr);
-            patch_vtk_face_ids[patch_id].push_back(modelData.vtk_triangles_.size() - 1);
-        }
-        offset += patch->vertexPoints_.size();
-    }
-
-    // 添加所有块
-    BlockDatas blockDatas;
-    for (const auto& [block_id, block] : md->blocks_) {
-        BlockData blockData;
-        blockData.model_id_ = block_id;
-        // 添加该块中所有的patch
-        for (const auto& patch_id : block->patchIDs) {
-            vector<int>& vtk_face_ids = patch_vtk_face_ids[patch_id];
-            for (int vtk_face_id : vtk_face_ids)
-            {
-                blockData.faces_.push_back(vtk_face_id);
-            }
-        }
-        blockDatas.block_datas.push_back(blockData);
-    }
-    modelData.model_blocks_ = blockDatas;
-
-    return modelData;
-}
-
 std::optional<SplineDataVtk> ModelData::getSplineData()
 {
     const auto* md = asSplineData();
@@ -457,101 +287,4 @@ std::optional<SplineDataVtk> ModelData::getSplineData()
         return modelData;
     }
     return nullopt;
-}
-
-void ModelData::update_actors(const std::vector<int>& patch_ids)
-{
-    std::unordered_set<int> block_ids, group_ids;
-    for (int patch_id : patch_ids) {
-        block_ids.insert(patch_block_id(patch_id));
-        // emit patchUpdated(getModelName(), patch_id, patches_[patch_id]->vertexPoints_, patches_[patch_id]->faceTriangles_);
-    }
-    for (int block_id : block_ids) {
-        group_ids.insert(block_group_id(block_id));
-        // emit blockUpdated(getModelName(), block_id, blocks_[block_id]->patchIDs);
-    }
-}
-
-// 优化 update_patches 的实现，减少网格遍历次数
-void ModelData::update_patches(const std::vector<int>& patch_ids, bool new_patch) {
-    // 使用 unordered_set 来处理 patch_ids 的快速查找
-    std::unordered_set<int> patch_id_set(patch_ids.begin(), patch_ids.end());
-
-    // 调用重载函数
-    update_patches(patch_id_set, new_patch);
-}
-void ModelData::update_patches(const std::unordered_set<int>& patch_ids, bool new_patch) {
-    // 删除指定的 Patch 数据，但保持Patch所在的BlockID
-    auto* md = asMeshData();
-    std::unordered_map<int, int> blockIDs;
-    for (int patch_id : patch_ids) {
-        if (!new_patch && !md->patches_.count(patch_id))
-        {
-            //throw exception(("patch not found" + std::to_string(patch_id)).c_str());
-            throw std::runtime_error("patch not found" + std::to_string(patch_id));
-        }
-
-        if (md->patches_.count(patch_id))
-        {
-            blockIDs[patch_id] = md->patches_[patch_id]->blockID;
-            md->patches_.erase(patch_id);
-        }
-    }
-
-    // 分组面片：按 Patch ID 将面片分组，取patch_ids包括的patch
-    std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> patch_faces;
-    for (auto& face : md->mesh_->faces()) {
-        int face_patch_id = face->get_g();
-        if (patch_ids.find(face_patch_id) != patch_ids.end()) {
-            patch_faces[face_patch_id].push_back(face);
-        }
-    }
-
-    // 遍历每个 Patch 的面片组
-    for (const auto& [patch_id, faces] : patch_faces) {
-        // 初始化 Patch
-        auto& patch = md->patches_[patch_id];
-        if (!patch) {
-            patch = std::make_unique<Patch>();
-            patch->id_ = patch_id;
-
-            // 赋patch->blockID，从blockIDs取出
-            if (!blockIDs.count(patch_id))
-                blockIDs[patch_id] = -1;
-            patch->blockID = blockIDs[patch_id];
-            blockIDs.erase(patch_id);
-        }
-
-        // 追踪 Patch 内部的顶点
-        std::unordered_map<int, int> vertex_id_map;  // 全局顶点 ID 到 Patch 内局部索引的映射
-
-        // 遍历面片，更新 Patch 的顶点和三角形信息
-        for (auto* face : faces) {
-            // 添加当前面的三角形
-            std::array<int, 3> triangle{};
-            int i = 0;
-
-            // 遍历面的顶点
-            for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); ++vi) {
-                auto vertex = *vi;
-
-                // 如果顶点未被记录，添加到 Patch 的顶点列表
-                if (vertex_id_map.find(vertex->id()) == vertex_id_map.end()) {
-                    vertex_id_map[vertex->id()] = patch->vertexIDs_.size();
-                    patch->vertexIDs_.push_back(vertex->id());
-
-                    // 插入顶点坐标
-                    CPoint& vp = vertex->point();
-                    patch->vertexPoints_.emplace_back(std::array<double, 3>{vp[0], vp[1], vp[2]});
-                }
-
-                // 设置三角形索引
-                triangle[i++] = vertex_id_map[vertex->id()];
-            }
-
-            // 添加三角形到 Patch 的索引列表
-            patch->faceTriangles_.push_back(triangle);
-            patch->faceIDs_.push_back(face->id());
-        }
-    }
 }

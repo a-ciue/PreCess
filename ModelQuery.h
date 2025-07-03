@@ -115,13 +115,6 @@ public:
     Q_INVOKABLE QVariantList getBlockIds(Index model_id) const;
 
     /**
-     * @brief 获取所有 Group 的 ID 列表
-     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
-     * @return 包含所有 Group 标识符的 QVariantList
-     */
-    Q_INVOKABLE QVariantList getGroupIds(Index model_id) const;
-
-    /**
      * @brief 根据给定 Face ID 获取所在 Patch 的详细信息
      * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
      * @param faceId Face 的标识符
@@ -136,14 +129,6 @@ public:
      * @return 包含 Block 详细信息的 QVariantMap，如果无效则包含 error 信息
      */
     Q_INVOKABLE QVariantMap getBlockInfo(Index model_id, int blockId) const;
-
-    /**
-     * @brief 获取指定 Group 的详细信息
-     * @param model_id 具体要查询的模型 ID，通过此 ID在 ModelManager 中定位对应的 ModelData
-     * @param groupId Group 的标识符
-     * @return 包含 Group 详细信息的 QVariantMap，如果无效则包含 error 信息
-     */
-    Q_INVOKABLE QVariantMap getGroupInfo(Index model_id, int groupId) const;
 
     /**
      * @brief 根据指定条件查询满足条件的 Patch 列表

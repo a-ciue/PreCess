@@ -26,19 +26,8 @@ MeshData::MeshData(std::unique_ptr<MeshLib::CTMesh> mesh)
         if (blocks_.find(block_id) == blocks_.end()) {
             blocks_[block_id] = std::make_unique<Block>();
             blocks_[block_id]->id = block_id;
-            blocks_[block_id]->groupID = block_id;
         }
         blocks_[block_id]->patchIDs.insert(patch_id);
-    }
-
-    // 初始化 groups_
-    for (const auto& [block_id, block_ptr] : blocks_) {
-        int group_id = block_id;
-        if (groups_.find(group_id) == groups_.end()) {
-            groups_[group_id] = std::make_unique<Group>();
-            groups_[group_id]->id = group_id;
-        }
-        groups_[group_id]->blockIDs.insert(block_id);
     }
 }
 
@@ -81,13 +70,10 @@ void MeshData::update_patches(const std::unordered_set<int>& patch_ids, bool new
         // 初始化 Patch
         auto& patch = patches_[patch_id];
         if (!patch) {
-            patch = std::make_unique<Patch>();
-            patch->id_ = patch_id;
-
             // 赋patch->blockID，从blockIDs取出
             if (!blockIDs.count(patch_id))
                 blockIDs[patch_id] = -1;
-            patch->blockID = blockIDs[patch_id];
+            patch = std::make_unique<Patch>(patch_id, blockIDs[patch_id]);
             blockIDs.erase(patch_id);
         }
 

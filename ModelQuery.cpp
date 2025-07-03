@@ -7,12 +7,53 @@
 
 std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
 {
-    std::optional<MeshDataVtk> model_data {};
     ModelData* model = m_manager->getModel(model_id);
-    if (model->isMesh()){
-        model_data = model->getModelData();
+    if (!model || !model->isMesh()) {
+        return {};
     }
-    return model_data;
+    MeshData* md = model->asMeshData();
+
+    // 构造 ModelData
+    MeshDataVtk modelData;
+
+    // 添加所有顶点和三角形
+    int offset {};
+    unordered_map<int, vector<int>> patch_vtk_face_ids;
+    for (const auto& [patch_id, patch] : md->patches_) {
+        // 添加顶点和模型顶点ID
+        modelData.vtk_points_.insert(modelData.vtk_points_.end(), patch->vertexPoints_.begin(), patch->vertexPoints_.end());
+        modelData.model_point_id_.insert(modelData.model_point_id_.end(), patch->vertexIDs_.begin(), patch->vertexIDs_.end());
+        modelData.model_face_id_.insert(modelData.model_face_id_.end(), patch->faceIDs_.begin(), patch->faceIDs_.end());
+
+        // 添加三角形和模型面ID
+        for (size_t i = 0; i < patch->faceTriangles_.size(); ++i) {
+            array<Index, 3> arr;
+            arr[0] = patch->faceTriangles_[i][0] + offset;
+            arr[1] = patch->faceTriangles_[i][1] + offset;
+            arr[2] = patch->faceTriangles_[i][2] + offset;
+            modelData.vtk_triangles_.push_back(arr);
+            patch_vtk_face_ids[patch_id].push_back(modelData.vtk_triangles_.size() - 1);
+        }
+        offset += patch->vertexPoints_.size();
+    }
+
+    // 添加所有块
+    BlockDatas blockDatas;
+    for (const auto& [block_id, block] : md->blocks_) {
+        BlockData blockData;
+        blockData.model_id_ = block_id;
+        // 添加该块中所有的patch
+        for (const auto& patch_id : block->patchIDs) {
+            vector<int>& vtk_face_ids = patch_vtk_face_ids[patch_id];
+            for (int vtk_face_id : vtk_face_ids) {
+                blockData.faces_.push_back(vtk_face_id);
+            }
+        }
+        blockDatas.block_datas.push_back(blockData);
+    }
+    modelData.model_blocks_ = blockDatas;
+
+    return modelData;
 }
 
 std::optional<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
@@ -120,7 +161,6 @@ QVariantList QModelQuery::getBlockList(Index model_id) const
         const auto& block = pair.second;
         QVariantMap blockMap;
         blockMap["id"] = block->id;
-        blockMap["groupID"] = block->groupID;
 
         // 转换 patchIDs（unordered_set<int>）
         QVariantList patchIDs;
@@ -156,20 +196,6 @@ QVariantList QModelQuery::getBlockIds(Index model_id) const
         return list;
     }
     for (const auto& pair : mesh->blocks_) {
-        list.append(pair.first);
-    }
-    return list;
-}
-
-QVariantList QModelQuery::getGroupIds(Index model_id) const
-{
-    QVariantList list;
-    ModelData* model = m_manager->getModel(model_id);
-    MeshData* mesh = model->asMeshData();
-    if (!model) {
-        return list;
-    }
-    for (const auto& pair : mesh->groups_) {
         list.append(pair.first);
     }
     return list;
@@ -212,36 +238,11 @@ QVariantMap QModelQuery::getBlockInfo(Index model_id, int blockId) const
     }
     const auto& block = it->second;
     info["id"] = block->id;
-    info["groupID"] = block->groupID;
     QVariantList patchIDs;
     for (int pid : block->patchIDs) {
         patchIDs.append(pid);
     }
     info["patchIDs"] = patchIDs;
-    return info;
-}
-
-QVariantMap QModelQuery::getGroupInfo(Index model_id, int groupId) const
-{
-    QVariantMap info;
-    ModelData* model = m_manager->getModel(model_id);
-    MeshData* mesh = model->asMeshData();
-    if (!model) {
-        info["error"] = QString("Model not found");
-        return info;
-    }
-    auto it = mesh->groups_.find(groupId);
-    if (it == mesh->groups_.end()) {
-        info["error"] = QString("Group %1 not found").arg(groupId);
-        return info;
-    }
-    const auto& group = it->second;
-    info["id"] = group->id;
-    QVariantList blockIDs;
-    for (int bid : group->blockIDs) {
-        blockIDs.append(bid);
-    }
-    info["blockIDs"] = blockIDs;
     return info;
 }
 

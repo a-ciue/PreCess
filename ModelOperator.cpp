@@ -34,23 +34,10 @@ void ModelOperator::merge_blocks(QSelection* selection)
     observer_->notifyModelChanged(model_->getId());
 }
 
-void ModelOperator::merge_groups(QSelection* selection)
-{
-    model_->merge_groups(selection);
-    observer_->notifyModelChanged(model_->getId());
-}
-
 void ModelOperator::remesh_block(QSelection* selection)
 {
     model_->remesh_block(selection);
     observer_->notifyModelChanged(model_->getId());
 }
-
-void ModelOperator::remesh_group(QSelection* selection)
-{
-    model_->remesh_group(selection);
-    observer_->notifyModelChanged(model_->getId());
-}
-
 
 #endif // Model_OPERATOR_H

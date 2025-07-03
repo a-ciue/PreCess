@@ -77,16 +77,9 @@ private:
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
     void merge_blocks(QSelection* selection);
-
-    //! @brief 合并给定group，并更新group actor，依赖ModelActor
-    //! @param group_ids
-    void merge_groups(QSelection* selection);
     
     //! @brief remesh指定block，依赖MeshUtil、update_patches、update_actors
     void remesh_block(QSelection* selection);
-
-    //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
-    void remesh_group(QSelection* selection);
 
     /**
      * @brief 获取指定面 (face) 所属的 patch ID
@@ -121,20 +114,8 @@ private:
     int patch_block_id(int patch_id);
     //const std::vector<int>& block_patch_ids(int block_id);
 
-    /**
-     * @brief 获取指定 block 所属的 group ID
-     *
-     * @param patch_id 需要查询的 patch ID
-     * @return int 该 block 所属的 group ID
-     */
-    int block_group_id(int patch_id);
-    //const std::vector<int>& group_block_ids(int group_id);
-
-
     Index getId() const {
-        if (type_ == Type::Mesh){
-            return id_;
-        }
+        return id_;
     }
 
     /**
@@ -166,20 +147,7 @@ private:
             asSplineData()->model_name_ = name;
     }
 
-    /**
-     * @brief 获取渲染模型需要的数据
-     * @return 模型数据
-     */
-    MeshDataVtk getModelData();
-
     std::optional<SplineDataVtk> getSplineData();
-
-    //! @brief 根据CToolFace::m_g()为面所在patch，读取mesh_更新指定patch的patches
-    void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);
-    void update_patches(const std::unordered_set<int>& patch_ids, bool new_patch = true);
-
-    //! @brief 更新指定patch的actor
-    void update_actors(const std::vector<int>& patch_ids);
 
     Type                                   type_;
     std::variant<MeshData, SplineData>     data_;
