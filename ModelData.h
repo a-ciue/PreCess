@@ -181,9 +181,6 @@ private:
     //! @brief 更新指定patch的actor
     void update_actors(const std::vector<int>& patch_ids);
 
-    //! @brief 更新指定patch的father id
-    void update_father_id(int patch_id, int father_id);
-
     Type                                   type_;
     std::variant<MeshData, SplineData>     data_;
 

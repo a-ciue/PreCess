@@ -104,17 +104,10 @@ void ModelData::split_face(QSelection* selection)
     }
     mid /= i;
 
-    // 记录父节点信息
-    int father_id = md->patches_.at(patch_id)->father_id;
-
     std::vector<int> affected_patch_ids = { patch_id };
     // 执行面切分操作
     ModelUtil::split_face(face, md->mesh_.get())->point() = mid;
 
-    // 更新父节点信息
-    for (int pid : affected_patch_ids) {
-        update_father_id(pid, father_id);
-    }
     md->update_patches(std::vector{ patch_id }, false);
     update_actors({ patch_id });
 }
@@ -192,10 +185,6 @@ void ModelData::merge_blocks(QSelection* selection) {
     int target_block_id = block_ids[0];
     auto& target_block = md->blocks_[target_block_id];
 
-    // 获取目标块的father_id
-    int father_id = md->patches_[target_block->patchIDs.begin() != target_block->patchIDs.end() ?
-        *(target_block->patchIDs.begin()) : 0]->father_id; // 从第一个patch获取father_id
-
     // 合并其他 block 的内容到目标 block
     std::unordered_set<int> modified_groups;
     for (size_t i = 1; i < block_ids.size(); ++i) {
@@ -206,9 +195,6 @@ void ModelData::merge_blocks(QSelection* selection) {
         for (int patch_id : block_to_merge->patchIDs) {
             target_block->patchIDs.insert(patch_id);
             md->patches_[patch_id]->blockID = target_block_id;
-        
-            // 更新父节点信息
-            update_father_id(patch_id, father_id); // 更新每个patch的father_id
         }
 
         // 维护groups_，删除后面这些在group的信息
@@ -484,13 +470,6 @@ void ModelData::update_actors(const std::vector<int>& patch_ids)
         group_ids.insert(block_group_id(block_id));
         // emit blockUpdated(getModelName(), block_id, blocks_[block_id]->patchIDs);
     }
-}
-
-void ModelData::update_father_id(int patch_id, int father_id) {
-    auto* md = asMeshData();
-    // 记录父节点id与子节点patch的映射
-    auto& patch = md->patches_[patch_id];
-    patch->father_id = father_id;
 }
 
 // 优化 update_patches 的实现，减少网格遍历次数

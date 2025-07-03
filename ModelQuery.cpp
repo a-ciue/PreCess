@@ -65,7 +65,6 @@ QVariantMap QModelQuery::getPatchInfo(Index model_id, int patchId) const {
     const auto& patch = it->second;
     info["id"] = patch->id_;
     info["blockID"] = patch->blockID;
-    info["father_id"] = patch->father_id;
 
     // 转换 faceIDs_
     QVariantList faceIDsList;

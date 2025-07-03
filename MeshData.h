@@ -29,9 +29,6 @@ struct Patch {
     int id_ { -1 };
     int blockID { -1 };
 
-    // 新增的父节点id字段
-    int father_id{ -1 }; // 默认值为-1，表示没有父节点
-
     // 全局id
     std::vector<int> faceIDs_;
 
