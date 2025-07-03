@@ -22,8 +22,8 @@
 #include <vtkMultiBlockDataSet.h>
 #include <vtkUnsignedCharArray.h>  
 #include <vtkCellData.h>           
+#include <vtkDoubleArray.h>
 #include <cstdlib>                 
-using Index = int;
 
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
@@ -40,33 +40,35 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode
 
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
-	this->model_data_ = model_data;
-	vtkIdType point_id=0;
-    vtkSmartPointer<vtkPoints> points_data = vtkSmartPointer<vtkPoints>::New();
-    for (const auto&point : this->model_data_.vtk_points_) {
-        
-        points_data->InsertNextPoint(point[0], point[1], point[2]);
-        this->model_data_.model_point_id_.push_back(point_id++);
-        /*cout << point_id <<"          " ;
-        cout << this->model_data_.model_point_id_[point_id]<<endl;*/
+    this->model_data_ = model_data;
+
+    // point data
+    auto points_data = vtkSmartPointer<vtkPoints>::New();
+    {
+        auto& vtk_points = this->model_data_.vtk_points_;
+        auto points_data_array = vtkSmartPointer<vtkDoubleArray>::New();
+
+        points_data_array->SetNumberOfComponents(3);
+        points_data_array->SetArray(vtk_points.data()->data(), 3 * vtk_points.size(), 1);
+        points_data->SetData(points_data_array);
     }
 
-    vtkSmartPointer<vtkCellArray> triangles_data = vtkSmartPointer<vtkCellArray>::New();
-    for (const auto&triangle : this->model_data_.vtk_triangles_) {
-        Index triangle_idx=0;
-        vtkIdType triangle_idxs[3]{ triangle[0], triangle[1], triangle[2] };
-        triangles_data->InsertNextCell(3, triangle_idxs);
-        this->model_data_.model_face_id_.push_back(triangle_idx++);
+    // cell (triangle) data
+    auto triangles_data = vtkSmartPointer<vtkCellArray>::New();
+    {
+        auto triangles_data_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
+        auto& vtk_triangles = this->model_data_.vtk_triangles_;
+        triangles_data_array->SetArray(vtk_triangles.data()->data(), 3 * vtk_triangles.size(), 1);
+        triangles_data->SetData(3, triangles_data_array);
     }
+
+    // poly data
     auto polyData = vtkSmartPointer<vtkPolyData>::New();
-
     polyData->SetPoints(points_data);
     polyData->SetPolys(triangles_data);
 
     this->mapper_->SetInputDataObject(polyData);
     createBlockMapper(this->model_data_);
-
-
 }
 
 void MeshActor::deleteMeshActor()
