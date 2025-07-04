@@ -29,7 +29,6 @@ public:
     explicit CommandDispatcher(ModelManager* manager, QObject* parent = nullptr);
 
     Q_INVOKABLE void runCommand(QCommand* cmd, Index model_id, const QVariantList& args);
-    Q_INVOKABLE void splitFace(Index model_id, QSelection* sel);
     //Q_INVOKABLE void mergeBlocks(const QString& model_name, QSelection* sel);
     //Q_INVOKABLE void renameModel(const QString& oldName, const QString& newName);
     //Q_INVOKABLE void loadSpline(const QUrl& path);

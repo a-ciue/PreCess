@@ -10,7 +10,7 @@
 class QSelection;
 
 /**
- * SplitFaceCommand：拆分选中面的命令
+ * SplitFaceCommand：拆分选中面的命令。根据给定id找到mesh的face，进行面分割
  */
 class SplitFaceCommand : public ICommand {
 public:

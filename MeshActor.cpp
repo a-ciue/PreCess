@@ -40,16 +40,16 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode
 
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
-    this->model_data_ = model_data;
+    this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
 
     // point data
     auto points_data = vtkSmartPointer<vtkPoints>::New();
     {
-        auto& vtk_points = this->model_data_.vtk_points_;
+        auto& vtk_points = this->model_data_->vtk_points_;
         auto points_data_array = vtkSmartPointer<vtkDoubleArray>::New();
 
         points_data_array->SetNumberOfComponents(3);
-        points_data_array->SetArray(vtk_points.data()->data(), 3 * vtk_points.size(), 1);
+        points_data_array->SetArray(const_cast<double*>(vtk_points.data()->data()), 3 * vtk_points.size(), 1);
         points_data->SetData(points_data_array);
     }
 
@@ -57,8 +57,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     auto triangles_data = vtkSmartPointer<vtkCellArray>::New();
     {
         auto triangles_data_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
-        auto& vtk_triangles = this->model_data_.vtk_triangles_;
-        triangles_data_array->SetArray(vtk_triangles.data()->data(), 3 * vtk_triangles.size(), 1);
+        auto& vtk_triangles = this->model_data_->vtk_triangles_;
+        triangles_data_array->SetArray(const_cast<Index*>(vtk_triangles.data()->data()), 3 * vtk_triangles.size(), 1);
         triangles_data->SetData(3, triangles_data_array);
     }
 
@@ -68,7 +68,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     polyData->SetPolys(triangles_data);
 
     this->mapper_->SetInputDataObject(polyData);
-    createBlockMapper(this->model_data_);
+    createBlockMapper(*this->model_data_);
 }
 
 void MeshActor::deleteMeshActor()
@@ -123,19 +123,9 @@ void MeshActor::addPickList(vtkPropCollection* pick_list) const
     pick_list->AddItem(this->actor_);
 }
 
-Index MeshActor::get_model_face_id(vtkIdType face_id) const
-{
-    return this->model_data_.model_face_id(face_id);
-}
-
-Index MeshActor::get_model_point_id(vtkIdType point_id) const
-{
-    return this->model_data_.model_point_id(point_id);
-}
-
 Index MeshActor::get_model_block_id(vtkIdType block_id) const
 {
-    return this->model_data_.model_block_id(block_id);
+    return this->model_data_->model_block_id(block_id);
 }
 
 void MeshActor::createBlockMapper(const MeshDataVtk& model_data)

@@ -116,19 +116,19 @@ std::unique_ptr<Selection> SelectManager::getSelection()
 
 	if (this->select_mode_ == SelectMode::Face) {
 		for (const auto& id : this->selector_->get().ids) {
-			selection->ids.push_back(this->cur_model_actor_->get_model_face_id(id));
+			selection->ids.push_back(id);
 		}
 		selection->type = Element::Face;
 	}
 	else if (this->select_mode_ == SelectMode::Block) {
 		for (const auto& id : this->selector_->get().ids) {
-			selection->ids.push_back(this->cur_model_actor_->get_model_block_id(id));
+			selection->ids.push_back(id);
 		}
 		selection->type = Element::Block;
 	}
 	else if (this->select_mode_ == SelectMode::Edge) {
 		for(const auto& id : this->selector_->get().ids) {
-			selection->ids.push_back(this->cur_model_actor_->get_model_point_id(id));
+			selection->ids.push_back(id);
 		}
 		selection->type = Element::Edge;
 	}

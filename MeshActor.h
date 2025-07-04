@@ -40,15 +40,13 @@ public:
     ModelRenderMode getMeshRenderMode();
     void addPickList(vtkPropCollection* pick_list) const;
     
-    Index get_model_face_id(vtkIdType face_id) const;
-    Index get_model_point_id(vtkIdType point_id) const;
     Index get_model_block_id(vtkIdType block_id) const;
 
 private:
     ModelRenderMode render_mode_;
     bool edge_render_{ true };
     bool visibility_{ true };
-    MeshDataVtk model_data_;
+    std::unique_ptr<MeshDataVtk> model_data_;
 
     vtkNew<vtkActor> actor_;
     vtkRenderer* renderer_;

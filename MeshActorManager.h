@@ -38,7 +38,7 @@ public:
 	void bindRender(vtkRenderer* renderer);
 	const MeshActor* getModelActor(Index model_id);
 	void deleteModel(Index model_id);
-	void loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render);
+	void loadModel(Index model_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render);
 
 	void setVisibility(Index model_id, bool visibility);
 	void setRenderMode(Index model_id, ModelRenderMode render_mode);

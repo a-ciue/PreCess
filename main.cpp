@@ -34,8 +34,8 @@ int main(int argc, char* argv[])
     QModelQuery query(manager, nullptr);
 
     QCommandCatalog catalog;
-    catalog.addCommand(new QCommand("切分面", "faceMode.splitFace", SplitFaceCommand::create, SplitFaceCommand::getArgsModel()));
-    catalog.addCommand(new QCommand("切分边", "faceMode.splitEdge", SplitEdgeCommand::create, SplitEdgeCommand::getArgsModel()));
+    //catalog.addCommand(new QCommand("切分面", "faceMode.splitFace", SplitFaceCommand::create, SplitFaceCommand::getArgsModel()));
+    //catalog.addCommand(new QCommand("切分边", "faceMode.splitEdge", SplitEdgeCommand::create, SplitEdgeCommand::getArgsModel()));
     catalog.addCommand(new QCommand("合并块", "blockMode.mergeBlocks", MergeBlocksCommand::create, MergeBlocksCommand::getArgsModel()));
     catalog.addCommand(new QCommand("网格剖分", "algorithm.triangulation", TrianglulationCommand::create, TrianglulationCommand::getArgsModel()));
     catalog.addCommand(new QCommand("命令调用...", "cmd", CmdExecuteCommand::create, CmdExecuteCommand::getArgsModel()));

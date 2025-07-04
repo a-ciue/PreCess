@@ -40,23 +40,11 @@ public:
      */
     void write_spline(const std::filesystem::path& spline_path);
 
-    //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
-    //! @param mesh_path 输出文件路径
-    //! @param mode 选定输出模式
-    //! @param extension 输出文件拓展名
-    void write_mesh(const std::filesystem::path& mesh_path, ModelRenderMode mode, const QString &extension);
-
-    
-    //! @brief 根据给定id找到mesh的face，进行面分割
-    //! @param patch_id 面所在的patch
-    //! @param face_id 在该patch上的face id
-    void split_face(QSelection* selection);
-
     //! @brief 根据给定id找到mesh的edge，进行边分割
     //! @param patch_id 边所在的patch
     //! @param edge_v_id1 其中一个边点id
     //! @param edge_v_id2 另一个边点id
-    void split_edge(QSelection* selection);
+    void notifyChanged();
     
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
@@ -65,9 +53,6 @@ public:
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
     void merge_groups(QSelection* selection);
-    
-    //! @brief remesh指定block，依赖MeshUtil、update_patches、update_actors
-    void remesh_block(QSelection* selection);
 
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
     void remesh_group(QSelection* selection);

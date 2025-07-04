@@ -33,30 +33,12 @@ public:
         return instance;
     }
 
-    std::unique_ptr<ModelData> read(const QUrl& path);
     /**
      * @brief 读取样条文件并生成 ModelData 对象
      * @param spline_path 样条文件的 URL 路径
      * @return 成功时返回 std::unique_ptr<ModelData>，失败返回 nullptr
      */
     std::unique_ptr<ModelData> readSpline(const QUrl& spline_path);
-
-    /**
-     * @brief 读取网格文件并生成 ModelData 对象
-     * @param mesh_path 网格文件的 URL 路径
-     * @return 成功时返回 std::unique_ptr<ModelData>，失败返回 nullptr
-     */
-    std::unique_ptr<ModelData> readMesh(const QUrl& mesh_path);
-
-    /**
-     * @brief 将 ModelData 数据写入文件
-     * @param model 指向 ModelData 对象的指针
-     * @param targetPath 输出文件的路径
-     * @param renderMode 渲染模式（"Face", "Block", "Group"）
-     * @param extension 输出文件的扩展名
-     * @return 成功返回 true，失败返回 false
-     */
-    bool writeMesh(ModelData* model, const QString& targetPath, const QString& renderMode);
 
     bool writeSpline(SplineData& spline, const std::filesystem::path& target_path);
 

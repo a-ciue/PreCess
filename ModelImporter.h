@@ -6,6 +6,10 @@
 #include <QString>
 #include "ModelOperator.h"
 #include "ModelManager.h"
+
+/**
+ * @brief 用于导入模型，暴露给UI的模型层操作器
+ */
 class ModelImporter {
 public:
     explicit ModelImporter(ModelManager& mgr) : mgr_(mgr) {}

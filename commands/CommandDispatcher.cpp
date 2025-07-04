@@ -4,7 +4,6 @@
 //
 
 #include "CommandDispatcher.h"
-#include "SplitFaceCommand.h"
 #include "MergeBlocksCommand.h"
 
 #include "LoadSplineCommand.h"
@@ -43,23 +42,6 @@ void CommandDispatcher::runCommand(QCommand* cmd, Index model_id, const QVariant
     {
         qWarning() << "命令" << cmd->name() << "创建失败";
     }
-}
-
-void CommandDispatcher::splitFace(Index model_id, QSelection* sel) {
-    if (!model_manager_) {
-        qWarning() << "未设置 ModelBridge";
-        return;
-    }
-    // 通过 ModelBridge 获取对应的 ModelData
-    std::optional model_operator = model_manager_->getModelOperator(model_id);
-    if (!model_operator) {
-        qWarning() << "未找到模型: " << model_id;
-        return;
-    }
-    // 使用 ModelData 指针传递给具体命令类
-    auto cmd = std::make_unique<SplitFaceCommand>(*model_operator, sel);
-    cmd->execute();
-    m_history.push_back(std::move(cmd));
 }
 
 void CommandDispatcher::undo() {

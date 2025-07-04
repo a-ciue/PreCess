@@ -76,7 +76,7 @@ void MeshActorManager::bindRender(vtkRenderer* renderer)
     this->renderer_ = renderer;
 }
 
-void MeshActorManager::loadModel(Index model_id, MeshDataVtk model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render)
+void MeshActorManager::loadModel(Index model_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render)
 {
 	if (!this->models_.count(model_id))
 		this->models_[model_id] = std::make_unique<MeshActor>(renderer, edge_render, render_mode);

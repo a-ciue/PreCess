@@ -56,31 +56,10 @@ public:
 
 private:
 
-    //! @brief 输出网格文件，选择面输出（不带组信息）、块输出、组输出
-    //! @param mesh_path 输出文件路径
-    //! @param mode 选定输出模式
-    //! @param extension 输出文件拓展名
-    void write_mesh(const std::filesystem::path& mesh_path, ModelRenderMode mode, const QString &extension);
-
-    
-    //! @brief 根据给定id找到mesh的face，进行面分割
-    //! @param patch_id 面所在的patch
-    //! @param face_id 在该patch上的face id
-    void split_face(QSelection* selection);
-
-    //! @brief 根据给定id找到mesh的edge，进行边分割
-    //! @param patch_id 边所在的patch
-    //! @param edge_v_id1 其中一个边点id
-    //! @param edge_v_id2 另一个边点id
-    void split_edge(QSelection* selection);
-    
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
     void merge_blocks(QSelection* selection);
     
-    //! @brief remesh指定block，依赖MeshUtil、update_patches、update_actors
-    void remesh_block(QSelection* selection);
-
     /**
      * @brief 获取指定面 (face) 所属的 patch ID
      *
@@ -88,22 +67,6 @@ private:
      * @return int 该面所属的 patch ID
      */
     int face_patch_id(int face_id);
-
-    /**
-     * @brief 获取指定 patch 内所有面的 ID
-     *
-     * @param patch_id 需要查询的 patch ID
-     * @return const std::vector<int>& 该 patch 内包含的所有面 ID
-     */
-    const std::vector<int>& patch_face_ids(int patch_id);
-
-    /**
-     * @brief 获取指定 patch 内所有顶点的 ID
-     *
-     * @param patch_id 需要查询的 patch ID
-     * @return const std::vector<int>& 该 patch 内包含的所有顶点 ID
-     */
-    const std::vector<int>& patch_vertex_ids(int patch_id);
 
     /**
      * @brief 获取指定 patch 所属的 block ID
