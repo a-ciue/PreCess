@@ -26,23 +26,12 @@ namespace MeshLib {
  */
 struct Patch {
     // patch id
-    int id_ { -1 };
-    int blockID { -1 };
-
-    // 全局id
-    std::vector<int> faceIDs_;
-
-    // 三角形的局部id索引
-    std::vector <std::array<int, 3>> faceTriangles_;
-
-    // 全局id
-    std::vector<int> vertexIDs_;
-    // 坐标
-    std::vector <std::array<double, 3>> vertexPoints_;
+    Index id_ { -1 };
+    Index blockID { -1 };
 
     // 构造函数
     Patch() = delete;
-    Patch(int id, int block) : id_(id), blockID(block) {}
+    Patch(Index id, Index block) : id_(id), blockID(block) {}
 };
 
 /**
@@ -51,15 +40,18 @@ struct Patch {
  * Block 由多个 Patch 组成，具有唯一 ID，并归属于某个 Group。
  */
 struct Block {
-    std::unordered_set<int> patchIDs;
-    int id;
+    std::unordered_set<Index> patchIDs;
+    Index id;
 };
 
 struct MeshData {
-    using PatchMap = std::unordered_map<int, std::unique_ptr<Patch>>;
-    using BlockMap = std::unordered_map<int, std::unique_ptr<struct Block>>;
+    using PatchMap = std::unordered_map<Index, std::unique_ptr<Patch>>;
+    using BlockMap = std::unordered_map<Index, std::unique_ptr<struct Block>>;
 
-    std::unique_ptr<MeshLib::CTMesh> mesh_;
+    // 三角形的局部id索引
+    std::vector <std::array<Index, 3>> faceTriangles_;
+    // 坐标
+    std::vector <std::array<double, 3>> vertexPoints_;
 
     PatchMap patches_;
     BlockMap blocks_;
@@ -68,6 +60,6 @@ struct MeshData {
     // ctor 声明
     explicit MeshData(std::unique_ptr<MeshLib::CTMesh> mesh);
     // 优化 update_patches 的实现，减少网格遍历次数
-    void update_patches(const std::vector<int>& patch_ids, bool new_patch = true);
-    void update_patches(const std::unordered_set<int>& patch_ids, bool new_patch = true);
+    void update_patches(const std::vector<Index>& patch_ids, bool new_patch = true);
+    void update_patches(const std::unordered_set<Index>& patch_ids, bool new_patch = true);
 };

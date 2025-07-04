@@ -146,7 +146,7 @@ void ModelData::split_edge(QSelection* selection)
 
     ModelUtil::split_edge(edge, md->mesh_.get());
 
-    std::vector<int> patch_ids {};
+    std::vector<Index> patch_ids {};
     MeshLib::CToolHalfEdge* he1 = md->mesh_->edgeHalfedge(edge, 0);
     patch_ids.push_back(md->mesh_->halfedgeFace(he1)->get_g());
     if (MeshLib::CToolHalfEdge* he2 = md->mesh_->edgeHalfedge(edge, 1);
@@ -222,7 +222,7 @@ void ModelData::remesh_block(QSelection* selection) {
     //update_patches(patch_ids, false);
 
     // 更新所有patches
-    std::vector<int> all_patch_ids;
+    std::vector<Index> all_patch_ids;
     for (auto& face : md->mesh_->faces()) {
         all_patch_ids.push_back(face->get_g());
     }

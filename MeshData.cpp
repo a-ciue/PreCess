@@ -32,14 +32,14 @@ MeshData::MeshData(std::unique_ptr<MeshLib::CTMesh> mesh)
 }
 
 // 优化 update_patches 的实现，减少网格遍历次数
-void MeshData::update_patches(const std::vector<int>& patch_ids, bool new_patch) {
+void MeshData::update_patches(const std::vector<Index>& patch_ids, bool new_patch) {
     // 使用 unordered_set 来处理 patch_ids 的快速查找
     std::unordered_set<int> patch_id_set(patch_ids.begin(), patch_ids.end());
 
     // 调用重载函数
     update_patches(patch_id_set, new_patch);
 }
-void MeshData::update_patches(const std::unordered_set<int>& patch_ids, bool new_patch) {
+void MeshData::update_patches(const std::unordered_set<Index>& patch_ids, bool new_patch) {
     // 删除指定的 Patch 数据，但保持Patch所在的BlockID
     std::unordered_map<int, int> blockIDs;
     for (int patch_id : patch_ids) {
