@@ -20,7 +20,7 @@ public:
     void redo() override;
 
     static QList<ArgTypeObject*> getArgsModel();
-    static unique_ptr<CmdExecuteCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
+    static std::unique_ptr<CmdExecuteCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
 
 private:
     ModelImporter& importer_;

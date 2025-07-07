@@ -19,7 +19,7 @@ public:
     void redo() override;
 
     static QList<ArgTypeObject*> getArgsModel();
-    static unique_ptr<SplitEdgeCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
+    static std::unique_ptr<SplitEdgeCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
 
 private:
     ModelOperator model_op_;

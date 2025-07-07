@@ -5,18 +5,7 @@
 #include <array>
 #include <qstring.h>
 
-#include "ToolMesh.h"
 #include "Core.h"
-
-namespace MeshLib {
-    template <typename V, typename E, typename F, typename H>
-    class CToolMesh;
-    class CToolVertex;
-    class CToolEdge;
-    class CToolFace;
-    class CToolHalfEdge;
-    typedef CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge> CTMesh;
-}
 
 /**
  * @brief 表示网格中的一个 Patch
@@ -38,7 +27,7 @@ struct Patch {
 /**
  * @brief 表示网格中的一个 Block（块）
  *
- * Block 由多个 Patch 组成，具有唯一 ID，并归属于某个 Group。
+ * Block 由多个 Patch 组成，具有唯一 ID
  */
 struct Block {
     std::unordered_set<Index> patchIDs;
@@ -59,7 +48,7 @@ struct MeshData {
         { 1, 5, 6 }, { 6, 2, 1 }
     };
     // 点坐标
-    std::vector<std::array<double, 3>> vertex_points {
+    std::vector<std::array<double, 3>> vertex_positions {
         { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },
         { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },
         { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },
@@ -69,6 +58,7 @@ struct MeshData {
     PatchMap patches_;
     BlockMap blocks_;
 
+    // TODO: 将model_name_移至通用属性位置即ModelData中
     QString model_name_;
     // 优化 update_patches 的实现，减少网格遍历次数
     void update_patches(const std::vector<Index>& patch_ids, bool new_patch = true);

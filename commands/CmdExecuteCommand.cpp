@@ -37,7 +37,7 @@ QList<ArgTypeObject*> CmdExecuteCommand::getArgsModel()
     return model;
 }
 
-unique_ptr<CmdExecuteCommand> CmdExecuteCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
+std::unique_ptr<CmdExecuteCommand> CmdExecuteCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
 {
     // 根据传入的参数创建 SplitFaceCommand 对象
 

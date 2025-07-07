@@ -6,6 +6,7 @@
 #include <QVariantList>
 #include <filesystem>
 #include "../ModelImporter.h"
+#include "../ToolMesh.h"
 
 TrianglulationCommand::TrianglulationCommand(ModelOperator model_op, ModelImporter& importer)
         : model_op_(model_op),importer_(importer) { }
@@ -48,7 +49,7 @@ QList<ArgTypeObject*> TrianglulationCommand::getArgsModel()
     return model;
 }
 
-unique_ptr<TrianglulationCommand> TrianglulationCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
+std::unique_ptr<TrianglulationCommand> TrianglulationCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
 {
     // 根据传入的参数创建 SplitFaceCommand 对象
     return std::make_unique<TrianglulationCommand>(model_op, importer);

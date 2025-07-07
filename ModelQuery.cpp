@@ -11,6 +11,7 @@ QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
 
 std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
 {
+    using namespace std;
     ModelData* model = m_manager->getModel(model_id);
     if (!model || !model->isMesh()) {
         return {};
@@ -18,7 +19,7 @@ std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
     MeshData* md = model->asMeshData();
 
     // 构造 ModelData
-    MeshDataVtk model_data { md->face_vertices, md->vertex_points, {} };
+    MeshDataVtk model_data { md->face_vertices, md->vertex_positions, {} };
 
     // 添加所有块
     BlockDatas block_datas;

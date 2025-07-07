@@ -47,10 +47,6 @@ ApplicationWindow {
                     text: "网格（带分块信息）"
                     onClicked: saveBlockDialog.open()
                 }
-                MenuItem{
-                    text: "网格（带分组信息）"
-                    onClicked: saveGroupDialog.open()
-                }
             }
         }
         Menu{
@@ -107,14 +103,6 @@ ApplicationWindow {
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
                     modelManager.writeMesh(selectedFile, "Block", selectedNameFilter.extensions[0]);
-                }
-            }
-            FileDialog {
-                id: saveGroupDialog
-                nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
-                fileMode: FileDialog.SaveFile
-                onAccepted: {
-                    modelManager.writeMesh(selectedFile, "Group", selectedNameFilter.extensions[0]);
                 }
             }
         }
