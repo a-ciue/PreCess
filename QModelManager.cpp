@@ -23,7 +23,7 @@ QModelManager::QModelManager(QObject* parent)
 
 void QModelManager::importModel(const QUrl& url)
 {
-    if (auto maybeOp = importer_->import(std::filesystem::path{ url.path().toStdU32String() })) {
+    if (auto maybeOp = importer_->import(std::filesystem::path{ url.toLocalFile().toStdString() })) {
         ModelOperator op = std::move(*maybeOp);
         emit modelAdded(op.getId());
     }

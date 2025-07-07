@@ -60,7 +60,4 @@ struct MeshData {
 
     // TODO: 将model_name_移至通用属性位置即ModelData中
     QString model_name_;
-    // 优化 update_patches 的实现，减少网格遍历次数
-    void update_patches(const std::vector<Index>& patch_ids, bool new_patch = true);
-    void update_patches(const std::unordered_set<Index>& patch_ids, bool new_patch = true);
 };

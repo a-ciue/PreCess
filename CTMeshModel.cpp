@@ -1,81 +1,85 @@
+#include "CTMeshModel.h"
 #include "MeshData.h"
+#include "ModelUtil.h"
 #include "ToolMesh.h"
 
-/**
- * @brief 模型层辅助数据结构 CTMesh
- */
-class CTMeshModel {
-public:
-    CTMeshModel();
-    ~CTMeshModel();
+void CTMeshModel::update(MeshData& mesh_data)
+{
+    using namespace std;
 
-    void updateMesh(MeshData& mesh_data)
-    {
-        // 提取所有 patch_id
-        std::unordered_set<int> patch_ids;
-        for (auto& face : mesh_.faces()) {
-            patch_ids.insert(face->get_g());
+    // 初始化点坐标数组 MeshData::vertex_positions
+    auto& vertex_positions = mesh_data.vertex_positions;
+    vertex_positions.clear(); // 清空之前的顶点数据
+    vertex_positions.reserve(mesh_->numVertices()); // 预留空间以提高性能
+    unordered_map<Index, Index> vertex_index_map; // 顶点 ID 到索引的映射
+    for (MeshLib::CTMesh::MeshVertexIterator vi(mesh_.get()); !vi.end(); ++vi) {
+        vertex_index_map[vi.value()->id()] = vertex_positions.size();
+        const CPoint& point = vi.value()->point();
+        vertex_positions.emplace_back(array { point[0], point[1], point[2] });
+    }
+
+    // MeshData包括的patch id
+    unordered_set<int> data_patch_ids;
+    for (const auto& patch : mesh_data.patches_) {
+        data_patch_ids.insert(patch.first);
+    }
+
+    // 按g将面分组
+    std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> patch_faces;
+    for (auto& face : mesh_->faces()) {
+        int face_patch_id = face->get_g();
+        patch_faces[face_patch_id].push_back(face);
+    }
+
+    // 遍历每个组更新面
+    mesh_data.face_vertices.clear(); // 清空之前的面片信息
+    mesh_data.face_vertices.reserve(mesh_->numFaces()); // 预留空间以提高性能
+    for (const auto& [patch_id, faces] : patch_faces) {
+        // 初始化 patches_[patch_id]
+        auto& patch = mesh_data.patches_[patch_id];
+        if (!patch) {
+            // 新增patch需要判断是否需要新增Block，默认block id为patch_id
+            auto& block = mesh_data.blocks_[patch_id];
+            if (!block) {
+                block = std::make_unique<Block>();
+                block->id = patch_id;
+            }
+            block->patchIDs.insert(patch_id);
+
+            patch = std::make_unique<Patch>(patch_id, patch_id);
         }
 
-        // 更新 patches_
-        mesh_data.update_patches(patch_ids);
+        // 从数据中移除已处理的patch id
+        data_patch_ids.erase(patch_id); 
 
-        // 初始化 blocks_
-        for (const auto& [patch_id, patch_ptr] : mesh_data.patches_) {
-            int block_id = patch_id;
-            mesh_data.patches_[patch_id]->blockID = block_id;
+        // 遍历面更新：MeshData::face_vertices, Patch::faces
+        patch->faces.clear(); // 清空之前的面片信息
+        patch->faces.reserve(faces.size()); // 预留空间以提高性能
+        for (auto& face : faces) {
+            patch->faces.emplace_back(mesh_data.face_vertices.size()); // 存面索引
 
-            if (mesh_data.blocks_.find(block_id) == mesh_data.blocks_.end()) {
-                mesh_data.blocks_[block_id] = std::make_unique<Block>();
-                mesh_data.blocks_[block_id]->id = block_id;
+            auto& indices = mesh_data.face_vertices.emplace_back();
+            int i = 0;
+            for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); ++vi) {
+                indices[i] = vertex_index_map[vi.value()->id()]; // 存点索引
+                ++i;
             }
-            mesh_data.blocks_[block_id]->patchIDs.insert(patch_id);
         }
     }
 
-    void update_patches(MeshData& mesh_data, const std::unordered_set<Index>& patch_ids)
-    {
-        // 删除指定的 Patch 数据，但保持Patch所在的BlockID
-        std::unordered_map<int, int> blockIDs;
-        for (int patch_id : patch_ids) {
-            if (mesh_data.patches_.count(patch_id)) {
-                blockIDs[patch_id] = mesh_data.patches_[patch_id]->blockID;
-            }
-        }
-
-        // 分组面片：按 Patch ID 将面片分组，取patch_ids包括的patch
-        std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> patch_faces;
-        for (auto& face : mesh_.faces()) {
-            int face_patch_id = face->get_g();
-            if (patch_ids.count(face_patch_id)) {
-                patch_faces[face_patch_id].push_back(face);
-            }
-        }
-
-        // 遍历每个 Patch 的面片组
-        for (const auto& [patch_id, faces] : patch_faces) {
-            // 初始化 patches_[patch_id]
-            auto& patch = mesh_data.patches_[patch_id];
-            if (!patch) {
-                Index block_id = blockIDs.count(patch_id) ? blockIDs[patch_id] : -1;
-                patch = std::make_unique<Patch>(patch_id, block_id);
-            }
-
-            // 追踪 Patch 内部的顶点
-            std::unordered_map<int, int> vertex_id_map; // 全局顶点 ID 到 Patch 内局部索引的映射
-
-            // TODO: 处理更新MeshData的顶点和面片
+    // 处理MeshData没有被更新的 Patch，应该被删除
+    for (const auto& patch_id : data_patch_ids) {
+        if (mesh_data.patches_.count(patch_id)) {
+            mesh_data.patches_.erase(patch_id);
         }
     }
+}
 
-private:
-    MeshLib::CTMesh mesh_;
-};
-
-CTMeshModel::CTMeshModel()
+void CTMeshModel::update(MeshData& mesh_data, const std::unordered_set<Index>& patch_ids)
 {
 }
 
-CTMeshModel::~CTMeshModel()
+CTMeshModel::CTMeshModel(const std::filesystem::path& mesh_path)
+    : mesh_(ModelUtil::read_obj_with_groups(mesh_path))
 {
 }
