@@ -35,6 +35,7 @@
 #include "ModelQuery.h"
 #include "MeshActorManager.h"
 #include "SplineActorManager.h"
+#include "QSelection.h"
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT

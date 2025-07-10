@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
-#include <QString>
-#include "ModelObserver.h"
 #include "ModelData.h"
 
+class QModelObserver; // 前向声明模型观察者类
+class QSelection; // 前向声明选择类
 /**
  * @brief ModelOperator 模型对象基类
  *

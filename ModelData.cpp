@@ -45,10 +45,10 @@ const SplineData* ModelData::asSplineData() const noexcept {
     return std::get_if<SplineData>(&data_);
 }
 
-void ModelData::merge_blocks(QSelection* selection) {
+void ModelData::merge_blocks(Selection selection) {
     auto* md = asMeshData();
-    auto sel = selection->move();
-    const std::vector<int>& block_ids = sel->ids;
+    auto& sel = selection;
+    const std::vector<int>& block_ids = sel.ids;
     if (block_ids.empty()) {
         throw std::invalid_argument("block_ids cannot be empty.");
     }

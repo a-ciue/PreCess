@@ -25,7 +25,7 @@
 #include <vtkRenderer.h>
 #include <iostream>
 #include <IVTKTools_ShapeDataSource.hxx>
-
+#include "core/SplineDataVtk.h"
 
 class SplineActor {
 

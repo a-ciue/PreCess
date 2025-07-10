@@ -9,9 +9,9 @@ std::optional<ModelOperator> ModelImporter::import(const std::filesystem::path& 
     auto data = std::make_unique<MeshData>();
     CTMeshModel model(path);
     model.update(*data);
-    data->model_name_ = QFileInfo(QString::fromStdString(path.string())).baseName();
 
     auto m = std::make_unique<ModelData>(std::move(*data));
+    m->model_name_ = path.filename().string();
     Index id = mgr_.addModel(std::move(m));
     return mgr_.getModelOperator(id);
 }

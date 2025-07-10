@@ -41,7 +41,7 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml CommandMenu.qml
         SOURCES
-        MyVTKItem.h MyVtkItem.cpp Selection.h 
+        MyVTKItem.h MyVtkItem.cpp QSelection.h 
 )
 
 qt_add_library(modelQml STATIC)

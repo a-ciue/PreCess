@@ -118,19 +118,19 @@ std::unique_ptr<Selection> SelectManager::getSelection()
 		for (const auto& id : this->selector_->get().ids) {
 			selection->ids.push_back(id);
 		}
-		selection->type = Element::Face;
+		selection->type = ElementEnum::Face;
 	}
 	else if (this->select_mode_ == SelectMode::Block) {
 		for (const auto& id : this->selector_->get().ids) {
 			selection->ids.push_back(id);
 		}
-		selection->type = Element::Block;
+		selection->type = ElementEnum::Block;
 	}
 	else if (this->select_mode_ == SelectMode::Edge) {
 		for(const auto& id : this->selector_->get().ids) {
 			selection->ids.push_back(id);
 		}
-		selection->type = Element::Edge;
+		selection->type = ElementEnum::Edge;
 	}
 	else {
 		if (this->selector_)

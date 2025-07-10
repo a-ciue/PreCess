@@ -55,10 +55,9 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
 
     SplineData sd;
     sd.rootShape  = shape;
-    sd.sourcePath = spline_path.toLocalFile();
 
     auto model = std::make_unique<ModelData>(std::move(sd));
-    model->setModelName(spline_path.fileName());
+    model->model_name_ = spline_path.fileName().toStdString();
     return model;
 }
 

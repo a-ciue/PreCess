@@ -12,9 +12,6 @@
 #ifndef MODEL_MANAGER_H
 #define MODEL_MANAGER_H
 #include "ModelData.h"
-#include <qqmlregistration.h>
-#include <QQmlContext>
-#include <QObject>
 
 #include "ModelOperator.h"
 
@@ -27,9 +24,7 @@ class QModelQuery;      // 前向声明 QModelQuery 类
  * ModelManager 允许动态添加、删除和查找模型，通过Observer模式发送模型事件。
  * 使得 QML 层能够访问和控制网格数据。
  */
-class ModelManager : public QObject {
-    Q_OBJECT
-    QML_ELEMENT
+class ModelManager {
 
 public:
     /**
@@ -38,7 +33,7 @@ public:
      * @param parent 父对象，默认为 nullptr
     * @param observer 模型观察者对象，用于捕获模型事件（默认 nullptr）
      */
-    explicit ModelManager(QObject* parent = nullptr, QModelObserver* observer = nullptr) : QObject(parent), observer_(observer) {}
+    explicit ModelManager(QModelObserver* observer = nullptr) :  observer_(observer) {}
 
     /**
      * @brief 添加一个模型
@@ -54,14 +49,6 @@ public:
      * @param model_id 需要移除的模型 ID
      */
     void removeModel(Index model_id);
-
-    /**
-     * @brief 重命名模型
-     *
-     * @param model_id 模型 ID
-     * @param new_name 新名称
-     */
-    void renameModel(Index model_id, const QString& new_name);
 
     /**
      * @brief 获取指定模型的操作接口对象

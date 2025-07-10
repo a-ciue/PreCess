@@ -2,6 +2,8 @@
 #define Model_OPERATOR_H
 #include "ModelOperator.h"
 #include "FileHandler.h"
+#include "QSelection.h"
+#include "ModelObserver.h"
 
 void ModelOperator::write_spline(const std::filesystem::path& spline_path)
 {
@@ -18,7 +20,7 @@ void ModelOperator::notifyChanged()
 
 void ModelOperator::merge_blocks(QSelection* selection)
 {
-    model_->merge_blocks(selection);
+    model_->merge_blocks(*selection->move());
     observer_->notifyModelChanged(model_->getId());
 }
 

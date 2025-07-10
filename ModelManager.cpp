@@ -17,6 +17,7 @@
 #include <QtQml/QQmlApplicationEngine>
 #include <stdexcept>
 
+#include "ModelObserver.h"
 // 添加模型
 Index ModelManager::addModel(std::unique_ptr<ModelData> model)
 {
@@ -26,7 +27,6 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
     }
 
     Index model_id = ++max_index_;
-    model->setModelName(model->getModelName());
     model->id_ = model_id;
     models_[model_id] = std::move(model);
 
@@ -56,18 +56,6 @@ ModelData* ModelManager::getModel(Index model_id) const {
     return it->second.get();
 }
 
-void ModelManager::renameModel(Index model_id, const QString& new_name)
-{
-    if (!models_.count(model_id))
-    {
-        qDebug() << "模型不存在: " << model_id;
-        return;
-    }
-    models_[model_id]->setModelName(new_name);
-
-    // 发射信号通知名称已更新
-    observer_->notifyModelNameChanged(model_id, new_name);
-}
 
 std::optional<ModelOperator> ModelManager::getModelOperator(Index model_id) const
 {

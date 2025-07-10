@@ -20,6 +20,7 @@
 #include "ModelManager.h"
 #include "MeshData.h"
 #include "SplineData.h"
+#include "core/SplineDataVtk.h"
 
 // 前向声明 ModelData 类
 class ModelData;

@@ -2,6 +2,8 @@
 #include "ModelManager.h"
 #include "ModelImporter.h"
 #include "ModelObserver.h"
+
+#include <QDebug>
 #include <filesystem>
 // #include "QModelOperatorWrapper.h"   // 若暂不暴露包装器，可注释
 
@@ -13,7 +15,6 @@ QModelManager::QModelManager(QObject* parent)
 
     // 2) 用两个参数调用 ModelManager 的构造函数
     core_ = std::make_unique<ModelManager>(
-        /*parent=*/nullptr,
         /*observer=*/observer_.get()
     );
 

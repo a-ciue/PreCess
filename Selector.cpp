@@ -45,7 +45,7 @@ void BlockSelectorHighlight::clear() {
 
 SelectionVtk BlockSelectorHighlight::get() {
     SelectionVtk back_selection;
-    back_selection.type = Element::Block;
+    back_selection.type = ElementEnum::Block;
     for (const auto& selection : selections_) {
         back_selection.ids.push_back(selection.block_id);  
     }
@@ -210,7 +210,7 @@ SingleFaceSelectorHighlight::~SingleFaceSelectorHighlight()
 SelectionVtk SingleFaceSelectorHighlight::get()
 {
     SelectionVtk back_selection;
-    back_selection.type = Element::Face;
+    back_selection.type = ElementEnum::Face;
     if (selection_.has_value()) {
         back_selection.ids.push_back(selection_.value());
     }
@@ -315,7 +315,7 @@ void SingleEdgeSelectorHighlight::clear()
 SelectionVtk SingleEdgeSelectorHighlight::get()
 {
     SelectionVtk back_selection;
-    back_selection.type = Element::Edge;
+    back_selection.type = ElementEnum::Edge;
 
     if (selection_.has_value()) {
         back_selection.ids.push_back(this->selection_->v_local_id[0]);

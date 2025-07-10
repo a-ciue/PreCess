@@ -12,13 +12,14 @@
  */
 #ifndef MODEL_H
 #define MODEL_H
-#include <memory>
-#include <unordered_map>
-#include <unordered_set>
+#include <string>
+#include <variant>
+#include <optional>
 
 #include "MeshData.h"
 #include "SplineData.h"
 #include "Selection.h"
+#include "core/SplineDataVtk.h"
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 /**
@@ -30,6 +31,8 @@
 */
 class ModelData {
 public:
+    std::string model_name_;
+
     enum class Type { Mesh, Spline };
 
     /* ============ 构造（仅声明） ============ */
@@ -58,7 +61,7 @@ private:
 
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
-    void merge_blocks(QSelection* selection);
+    void merge_blocks(Selection selection);
     
     /**
      * @brief 获取指定面 (face) 所属的 patch ID
@@ -79,35 +82,6 @@ private:
 
     Index getId() const {
         return id_;
-    }
-
-    /**
-     * @brief 获取模型名称
-     *
-     * @return QString 当前模型的名称
-     */
-    //QString getModelName() const { return model_name_; }
-    QString getModelName() const{
-        switch(type_) {
-            case Type::Mesh:
-                return std::get<MeshData>(data_).model_name_;       // MeshData.id
-            case Type::Spline:
-                return std::get<SplineData>(data_).model_name_;     // 假设你在 SplineData 里也有 id
-        }
-        throw std::logic_error("Unknown model type");
-    }
-
-    /**
-     * @brief 设置模型名称
-     *
-     * @param name 要设置的模型名称
-     */
-    //void setModelName(const QString& name) { model_name_ = name; }
-    void setModelName(const QString& name){
-        if (isMesh())
-            asMeshData()->model_name_ = name;
-        else
-            asSplineData()->model_name_ = name;
     }
 
     std::optional<SplineDataVtk> getSplineData();

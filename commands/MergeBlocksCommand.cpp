@@ -3,6 +3,7 @@
 //
 // command/MergeBlocksCommand.cpp
 #include "MergeBlocksCommand.h"
+#include "../QSelection.h"
 #include <QVariantList>
 
 MergeBlocksCommand::MergeBlocksCommand(ModelOperator model_op, QSelection* selection)

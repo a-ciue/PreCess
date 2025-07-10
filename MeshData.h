@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <array>
-#include <qstring.h>
 
 #include "Core.h"
 
@@ -59,5 +58,4 @@ struct MeshData {
     BlockMap blocks_;
 
     // TODO: 将model_name_移至通用属性位置即ModelData中
-    QString model_name_;
 };
