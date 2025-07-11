@@ -28,11 +28,11 @@ void CmdExecuteCommand::redo()
 {
 }
 
-QList<ArgTypeObject*> CmdExecuteCommand::getArgsModel()
+QList<QArgObject*> CmdExecuteCommand::getArgsModel()
 {
-    QList<ArgTypeObject*> model;
-    model << new ArgTypeObject(4, "cmd命令", "")
-          << new ArgTypeObject(0, "结果文件", "./data/output.obj");
+    QList<QArgObject*> model;
+    model << new QArgObject({ArgTypeEnum::Path, "cmd命令", ""})
+          << new QArgObject({ ArgTypeEnum::Text, "程序附加参数", "" });
 
     return model;
 }

@@ -5,7 +5,7 @@
 #include "Selection.h"
 
 //! @brief Element在QML中暴露了枚举Element::Type，在QML中以Element.Face获取枚举值
-class Element : public QObject, ElementEnum {
+class Element : public QObject, public ElementEnum {
     Q_OBJECT
     QML_ELEMENT
 public:
@@ -52,7 +52,7 @@ public:
      * @brief 获取选中数据的类型枚举值
      * @return 类型枚举值
      */
-    Q_INVOKABLE ElementEnum::Type type() { return data_->type; }
+    Q_INVOKABLE Element::Type type() { return data_->type; }
     /**
      * @brief 初始化一个Selection数据
      */

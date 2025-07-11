@@ -11,6 +11,7 @@ class MeshData;
  */
 class MeshModelBase {
 public:
+    virtual ~MeshModelBase() = default;
 	/**
      * @brief 更新核心网格数据结构
      * @param data 核心数据结构

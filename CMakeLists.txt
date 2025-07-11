@@ -9,6 +9,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 option(ENABLE_TEST "是否启用测试")
+
+find_package(spdlog REQUIRED)
+
 find_package(OpenCASCADE REQUIRED)
 
 find_package(VTK REQUIRED COMPONENTS
@@ -76,6 +79,7 @@ add_library(modelPart STATIC
         # command/MergeBlocksCommand.cpp
         # command/LoadSplineCommand.cpp
 )
+add_subdirectory(systems)
 
 # 让 modelPart 自己也能看到 VTK 和 Qt 的头文件
 target_include_directories(modelPart
@@ -85,6 +89,7 @@ target_include_directories(modelPart
 target_link_libraries(modelPart
         PRIVATE
         ${OpenCASCADE_LIBRARIES}      # OCCT 的库列表
+        Systems
 )
 target_link_libraries(vtkPart
         PRIVATE

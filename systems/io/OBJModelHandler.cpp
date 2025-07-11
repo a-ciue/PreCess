@@ -1,0 +1,46 @@
+#include "OBJModelHandler.h"
+#include "../../ModelData.h"
+#include "../../CTMeshModel.h"
+#include "../../commands/ArgType.h"
+#include "../../ToolMesh.h"
+
+namespace systems::io {
+unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, const vector<std::any>& args)
+{
+    // MeshData
+    auto mesh_data = std::make_unique<MeshData>();
+    CTMeshModel ct_mesh(path);
+    ct_mesh.update(*mesh_data);
+
+    // ModelData
+    auto model_data = std::make_unique<ModelData>(std::move(*mesh_data));
+    model_data->model_name_ = path.filename().string();
+
+    return model_data;   // RVO
+}
+
+void OBJModelHandler::write_model(const ModelData& data, const fs::path& path, const vector<std::any>& args)
+{
+    // TODO: 先实现CTMeshMode::updateFrom(data)方法，可以基于文件IO做
+}
+
+vector<ArgType> OBJModelHandler::read_args_type() const
+{
+    return {  };
+}
+
+vector<ArgType> OBJModelHandler::write_args_type() const
+{
+    return {};
+}
+
+string OBJModelHandler::file_type() const
+{
+    return "Wavefront .obj file";
+}
+
+vector<string> OBJModelHandler::file_extensions() const
+{
+    return { ".obj" };
+}
+}

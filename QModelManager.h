@@ -1,4 +1,6 @@
 #pragma once
+#include "systems/io/ModelIOSystem.h"
+#include "systems/io/OBJModelHandler.h"
 #include <QObject>
 #include <QUrl>
 #include <memory>
@@ -29,4 +31,5 @@ private:
     std::unique_ptr<ModelManager>  core_;
     std::unique_ptr<ModelImporter> importer_;
     std::unique_ptr<QModelObserver> observer_; 
+    std::unique_ptr<systems::io::ModelIOSystem> io_system_;
 };

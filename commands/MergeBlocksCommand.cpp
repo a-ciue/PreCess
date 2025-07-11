@@ -71,11 +71,11 @@ void MergeBlocksCommand::redo()
 {
 }
 
-QList<ArgTypeObject*> MergeBlocksCommand::getArgsModel()
+QList<QArgObject*> MergeBlocksCommand::getArgsModel()
 {
-    QList<ArgTypeObject*> model;
+    QList<QArgObject*> model;
     // 添加一个面选择器
-    model.append(new ArgTypeObject(3, "选择块", "无"));
+    model.append(new QArgObject({ ArgTypeEnum::Selector, "选择块", "无", "" }));
 
     return model;
 }

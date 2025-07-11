@@ -6,7 +6,7 @@
 #include <functional>
 #include <memory>
 
-#include "ArgTypeObject.h"
+#include "QArgObject.h"
 #include "ICommand.h"
 #include "../ModelImporter.h"
 
@@ -23,7 +23,7 @@ class ModelImporter;
 class QCommand : public QObject {
 Q_OBJECT
     QML_ELEMENT
-Q_PROPERTY(QList<ArgTypeObject*> arg_types MEMBER arg_types_ READ getArgTypes)
+Q_PROPERTY(QList<QArgObject*> arg_types MEMBER arg_types_ READ getArgTypes)
 public:
     /// 定义命令工厂函数类型：传入 ModelOperator 和参数列表，返回命令对象智能指针
     using CommandFactory = std::function<std::unique_ptr<ICommand>(ModelOperator, ModelImporter&, const QVariantList&)>;
@@ -36,7 +36,7 @@ public:
      * @param arg_types 命令参数类型描述模型（可选），用于描述该命令所需参数
      * @param parent 父对象，默认为 nullptr
      */
-    QCommand(const QString& name, const QString& path, CommandFactory factory, QList<ArgTypeObject*> arg_types, QObject* parent = nullptr)
+    QCommand(const QString& name, const QString& path, CommandFactory factory, QList<QArgObject*> arg_types, QObject* parent = nullptr)
             : QObject(parent), name_(name), path_(path), factory_(factory), arg_types_(arg_types)
     {
     }
@@ -57,7 +57,7 @@ public:
      * @brief 获取命令参数类型模型
      * @return 指向描述命令参数类型的 QStandardItemModel 对象指针
      */
-    QList<ArgTypeObject*> getArgTypes() const
+    QList<QArgObject*> getArgTypes() const
     {
 	    return arg_types_;
     }
@@ -76,5 +76,5 @@ private:
     QString name_;                       //!< 命令名称，用于在 QML 中显示
     QString path_;                       //!< 命令路径，可以在 QML 中按路径获取命令
     CommandFactory factory_;             //!< 用于创建具体命令的工厂函数
-    QList<ArgTypeObject*> arg_types_;    //!< 命令参数类型描述模型指针
+    QList<QArgObject*> arg_types_;    //!< 命令参数类型描述模型指针
 };

@@ -27,7 +27,7 @@ Item{
     }
     Button{
         id: commitButton
-        text: "提交"
+        text: "执行"
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -59,9 +59,10 @@ Item{
                     Loader{
                         required property var model
                         required property int index
-                        required property int type
+                        required property int type  // ArgTypeEnum
                         required property string name
                         required property string content
+                        required property string description
                         required property var value
                         sourceComponent:{
                             if(curCommand && curCommand.name() === "切分边"){
@@ -71,19 +72,19 @@ Item{
                                 return splictFaceComponent
                             }
 
-                            if(type === 0){           //文件
+                            if(type === QArgType.Path){           //文件
                                 return fileComponent
                             }
-                            if(type === 1){           //多选一
+                            if(type === QArgType.Combo){           //多选一
                                 return componentComboBox
                             }
-                            if(type === 2){           //数字框
+                            if(type === QArgType.Float){           //数字框
                                 return oneNumberBox
                             }
-                            if(type === 3){           //选择器
+                            if(type === QArgType.Selector){           //选择器
                                 return selectorComponent
                             }
-                            if(type === 4){           //文字输入框
+                            if(type === QArgType.Text){           //文字输入框
                                 return textComponent
                             }
                         }

@@ -5,6 +5,7 @@
 
 #include <QDebug>
 #include <filesystem>
+#include <QFileInfo>
 // #include "QModelOperatorWrapper.h"   // 若暂不暴露包装器，可注释
 
 QModelManager::QModelManager(QObject* parent)
@@ -20,11 +21,20 @@ QModelManager::QModelManager(QObject* parent)
 
     // 3) 新建 ModelImporter，将 core_ 传过去
     importer_ = std::make_unique<ModelImporter>(*core_);
+
+    io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
+    auto obj_handler = std::make_unique<systems::io::OBJModelHandler>();
+    io_system_->registerHandler(std::move(obj_handler));
 }
 
 void QModelManager::importModel(const QUrl& url)
 {
-    if (auto maybeOp = importer_->import(std::filesystem::path{ url.toLocalFile().toStdString() })) {
+    // 尝试对obj模型走 IOSystem 读取
+    if (QString ext = QFileInfo(url.toLocalFile()).suffix().toLower();
+        ext == "obj") {
+        io_system_->read(url.toLocalFile().toStdString(), "Wavefront .obj file", {});
+    }
+    else if (auto maybeOp = importer_->import(std::filesystem::path{ url.toLocalFile().toStdString() })) {
         ModelOperator op = std::move(*maybeOp);
         emit modelAdded(op.getId());
     }

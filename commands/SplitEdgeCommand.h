@@ -4,7 +4,7 @@
 #pragma once
 #include "ICommand.h"
 #include "../ModelOperator.h"
-#include "ArgTypeObject.h"
+#include "QArgObject.h"
 #include "../ModelImporter.h"
 class QSelection;
 
@@ -18,7 +18,7 @@ public:
     void undo() override;
     void redo() override;
 
-    static QList<ArgTypeObject*> getArgsModel();
+    static QList<QArgObject*> getArgsModel();
     static std::unique_ptr<SplitEdgeCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
 
 private:

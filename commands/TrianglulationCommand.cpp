@@ -42,9 +42,9 @@ void TrianglulationCommand::redo()
 {
 }
 
-QList<ArgTypeObject*> TrianglulationCommand::getArgsModel()
+QList<QArgObject*> TrianglulationCommand::getArgsModel()
 {
-    QList<ArgTypeObject*> model;
+    QList<QArgObject*> model;
 
     return model;
 }

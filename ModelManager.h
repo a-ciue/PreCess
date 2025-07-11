@@ -61,10 +61,9 @@ public:
      */
     std::optional<ModelOperator> getModelOperator(Index model_id) const;
 
-private:
     ModelData* getModel(Index model_id) const;
+private:
 
-    //使用unordered_map替代原unique_ptr用于满足存储多模型的要求
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     QModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件

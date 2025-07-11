@@ -1,24 +1,42 @@
-#ifndef ARG_TYPE_OBJECT_H
-#define ARG_TYPE_OBJECT_H
+#ifndef Q_ARG_OBJECT_H
+#define Q_ARG_OBJECT_H
 
 #include <QObject>
+#include <qqmlintegration.h>
 #include <QVariant>
+#include "ArgType.h"
 
-class ArgTypeObject : public QObject {
-    Q_OBJECT
-
-    Q_PROPERTY(int type MEMBER type)
-    Q_PROPERTY(QString name MEMBER name)
-    Q_PROPERTY(QString content MEMBER content)
-    Q_PROPERTY(QVariant value MEMBER value)
+class QArgType : public QObject
+{
+	Q_OBJECT
+    QML_ELEMENT
+	QML_UNCREATABLE("QArgType 声明了枚举类型，不应该被实例化")
 public:
-    ArgTypeObject(int type, const QString& name, const QString& content, QObject* parent = nullptr)
+// 枚举类型插入点
+@ArgTypeEnum_H_CONTENT@
+    Q_ENUM(ArgTypeEnum)
+};
+
+class QArgObject : public QObject {
+    Q_OBJECT
+    QML_ELEMENT
+
+    Q_PROPERTY(QArgType::ArgTypeEnum type READ type CONSTANT)
+    Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(QString content READ content CONSTANT)
+    Q_PROPERTY(QString description READ desc CONSTANT)
+    Q_PROPERTY(QVariant value MEMBER value_)
+public:
+    QArgObject(ArgType type, QObject* parent = nullptr)
         : QObject(parent)
-        , type(type)
-        , name(name)
-        , content(content)
+        , type_(std::move(type))
     {
     }
+
+    QArgType::ArgTypeEnum type() const { return static_cast<QArgType::ArgTypeEnum>(type_.type); }
+    QString name() const { return QString::fromStdString(type_.name); }
+    QString content() const { return QString::fromStdString(type_.content); }
+    QString desc() const { return QString::fromStdString(type_.desc); }
 
 signals:
 	//void typeChanged();
@@ -26,9 +44,7 @@ signals:
  //   void contentChanged();
 
 private:
-    int type;
-    QString name;
-    QString content;
-    QVariant value;
+    ArgType type_;
+    QVariant value_;
 };
-#endif // !ARG_TYPE_OBJECT_H
+#endif // !Q_ARG_OBJECT_H

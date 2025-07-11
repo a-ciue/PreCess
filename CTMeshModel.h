@@ -19,7 +19,7 @@ namespace MeshLib {
 /**
  * @brief 模型层辅助数据结构 CTMesh
  */
-class CTMeshModel : MeshModelBase {
+class CTMeshModel : public MeshModelBase {
 public:
     CTMeshModel(const std::filesystem::path& mesh_path);
 
