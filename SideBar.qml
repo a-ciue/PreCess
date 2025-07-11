@@ -27,7 +27,7 @@ Item{
     }
     Button{
         id: commitButton
-        text: "提交"
+        text: "执行"
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -225,7 +225,7 @@ Item{
                 }
             }
             Button{
-                text: "打开文件"
+                text: "...."
                 onClicked:{
                     parameterFileDialog.open()
                 }
@@ -233,8 +233,21 @@ Item{
             FileDialog{
                 id:parameterFileDialog
                 onAccepted:{
-                    fileText.text = selectedFile
+                    fileText.text = urlToPath(selectedFile)
+                    model.value = fileText.text
                 }
+
+				function urlToPath(url) {
+                    var urlString = new String(url)
+					var s
+					if (urlString.startsWith("file:///")) {
+						var k = urlString.charAt(9) === ':' ? 8 : 7
+						s = urlString.substring(k)
+					} else {
+						s = urlString
+					}
+					return decodeURIComponent(s);
+				}
             }
         }
     }

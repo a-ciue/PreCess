@@ -14,7 +14,7 @@ class QSelection;
 */
 class CmdExecuteCommand : public ICommand {
 public:
-    CmdExecuteCommand(ModelImporter& importer, const std::string& cmd, const std::filesystem::path& import_path);
+    CmdExecuteCommand(ModelOperator model_op, ModelImporter& importer, const std::filesystem::path& cmd, const std::string& args);
     void execute() override;
     void undo() override;
     void redo() override;
@@ -23,7 +23,8 @@ public:
     static unique_ptr<CmdExecuteCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
 
 private:
+    ModelOperator model_op_;
     ModelImporter& importer_;
-    std::string cmd_ {};
-    std::filesystem::path import_path_ {};
+    std::filesystem::path cmd_ {};
+    std::string args_ {};
 };
