@@ -11,8 +11,8 @@ find_package(VTK REQUIRED COMPONENTS
 add_executable(
   hello_test
   hello_test.cc
-        TestModel.h
-        test_ModelQuery.cpp
+#        TestModel.h
+#        test_ModelQuery.cpp
 )
 
 target_include_directories(hello_test PRIVATE
