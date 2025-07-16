@@ -2,7 +2,6 @@
  * @file ModelIOSystem.h
  * @author 张家僮(htxz_6a6@163.com)
  */
-//#pragma once
 #ifndef MODEL_IO_HANDLER_H
 #define MODEL_IO_HANDLER_H
 #include <memory>
@@ -12,7 +11,7 @@
 #include <any>
 
 class ModelData;
-class ArgType;
+struct ArgType;
 
 namespace systems::io {
 namespace fs = std::filesystem;
@@ -21,7 +20,7 @@ using std::unique_ptr;
 using std::string;
 
 /**
- * @brief 模型IO处理器接口
+ * @brief 模型IO系统的功能接口，继承他来实现具体的模型读写功能
  */
 class ModelIOHandler {
 public:

@@ -10,6 +10,7 @@
 #include "FileHandler.h"
 #include "ModelUtil.h"
 #include "Core.h"
+#include "SplineData.h"
 
 #include <filesystem>
 #include <QDebug>

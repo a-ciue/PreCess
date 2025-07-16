@@ -15,6 +15,8 @@
 
 #include "ModelOperator.h"
 
+#include <unordered_map>
+
 class QModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
 

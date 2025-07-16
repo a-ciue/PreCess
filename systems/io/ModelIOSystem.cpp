@@ -17,7 +17,7 @@ void ModelIOSystem::read(const std::filesystem::path& path, const string& file_t
     // 检查文件类型是否已注册
     ModelIOHandler* handler = this->handlers_.count(file_type) ? this->handlers_[file_type].get() : nullptr;
     if (!handler) {
-        spdlog::warn(u8"写文件时没有注册文件类型 {}", file_type);
+        spdlog::warn("file type {} not registered when read model file", file_type);
         return;
     }
 
@@ -30,21 +30,21 @@ void ModelIOSystem::write(Index model, const std::filesystem::path& path, const 
     // 检查文件类型是否已注册
     ModelIOHandler* handler = this->handlers_.count(file_type) ? this->handlers_[file_type].get() : nullptr;
     if (!handler) {
-        spdlog::warn("写文件时没有注册文件类型 {}", file_type);
+        spdlog::warn("file type {} not registered when write model file", file_type);
         return;
     }
 
     if (ModelData* model_data = this->manager_->getModel(model)) {
         handler->write_model(*model_data, path, args);
     } else {
-        spdlog::warn("模型 id {} 不存在，无法写出", model);
+        spdlog::warn("model id {} does not exist, cant write model file", model);
     }
 }
 
 void ModelIOSystem::registerHandler(std::unique_ptr<ModelIOHandler> handler)
 {
     if (!handler) {
-        spdlog::warn(u8"没有传入有效handler");
+        spdlog::warn("{} received an empty handler", __func__);
         return;
     }
 

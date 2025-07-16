@@ -4,7 +4,7 @@
 * @author 张家僮(htxz_6a6@163.com)
 */
 
-class MeshData;
+struct MeshData;
 
 /**
  * @brief 辅助网格数据结构，用于更新核心网格数据结构

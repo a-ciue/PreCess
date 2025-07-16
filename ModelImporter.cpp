@@ -2,6 +2,7 @@
 #include "ModelImporter.h"      // 声明 ModelImporter
 #include "FileHandler.h"        // 调用 readMesh/readSpline
 #include "CTMeshModel.h"
+#include "MeshData.h"
 #include <QFileInfo>            // 用来取后缀
 #include <optional>             // for std::nullopt and std::optional
 std::optional<ModelOperator> ModelImporter::import(const std::filesystem::path& path) {

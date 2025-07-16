@@ -1,6 +1,8 @@
 #pragma once
-#include <memory>
 #include "ModelData.h"
+
+#include <memory>
+#include <filesystem>
 
 class QModelObserver; // 前向声明模型观察者类
 class QSelection; // 前向声明选择类
