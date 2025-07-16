@@ -16,36 +16,54 @@
 #include "ModelData.h"
 #include "ToolMesh.h"
 #include "ModelUtil.h"
+#include "MeshData.h"
+#include "SplineData.h"
 
 #include <stdexcept>  // 用于抛出异常
 
-ModelData::ModelData(MeshData mesh)
-        : type_(Type::Mesh), data_(std::move(mesh))
-{}
+ModelData::ModelData() = default;
+ModelData::~ModelData() = default;
 
-ModelData::ModelData(SplineData spline)
-        : type_(Type::Spline), data_(std::move(spline))
-{}
+ModelData::ModelData(std::unique_ptr<MeshData> mesh)
+    : type_(Type::Mesh)
+    , data_(std::move(mesh))
+{
+}
+
+ModelData::ModelData(std::unique_ptr<SplineData> spline)
+    : type_(Type::Spline)
+    , data_(std::move(spline))
+{
+}
 
 ModelData::Type ModelData::type() const { return type_; }
-bool ModelData::isMesh()   const noexcept { return type_ == Type::Mesh; }
+bool ModelData::isMesh() const noexcept { return type_ == Type::Mesh; }
 bool ModelData::isSpline() const noexcept { return type_ == Type::Spline; }
 
-MeshData* ModelData::asMeshData() noexcept {
-    return std::get_if<MeshData>(&data_);
+MeshData* ModelData::asMeshData() noexcept
+{
+    auto pp = std::get_if<std::unique_ptr<MeshData>>(&data_);
+    return pp ? pp->get() : nullptr;
 }
-const MeshData* ModelData::asMeshData() const noexcept {
-    return std::get_if<MeshData>(&data_);
-}
-
-SplineData* ModelData::asSplineData() noexcept {
-    return std::get_if<SplineData>(&data_);
-}
-const SplineData* ModelData::asSplineData() const noexcept {
-    return std::get_if<SplineData>(&data_);
+const MeshData* ModelData::asMeshData() const noexcept
+{
+    auto pp = std::get_if<std::unique_ptr<MeshData>>(&data_);
+    return pp ? pp->get() : nullptr;
 }
 
-void ModelData::merge_blocks(Selection selection) {
+SplineData* ModelData::asSplineData() noexcept
+{
+    auto pp = std::get_if<std::unique_ptr<SplineData>>(&data_);
+    return pp ? pp->get() : nullptr;
+}
+const SplineData* ModelData::asSplineData() const noexcept
+{
+    auto pp = std::get_if<std::unique_ptr<SplineData>>(&data_);
+    return pp ? pp->get() : nullptr;
+}
+
+void ModelData::merge_blocks(Selection selection)
+{
     auto* md = asMeshData();
     auto& sel = selection;
     const std::vector<int>& block_ids = sel.ids;
@@ -79,7 +97,8 @@ void ModelData::merge_blocks(Selection selection) {
     }
 }
 
-int ModelData::face_patch_id(int face_id) {
+int ModelData::face_patch_id(int face_id)
+{
     auto* md = asMeshData();
     // 遍历所有 patches
     for (const auto& [patch_id, patch_ptr] : md->patches_) {
@@ -92,7 +111,8 @@ int ModelData::face_patch_id(int face_id) {
     throw std::runtime_error("Face ID not found in any patch.");
 }
 
-int ModelData::patch_block_id(int patch_id) {
+int ModelData::patch_block_id(int patch_id)
+{
     auto* md = asMeshData();
     // 遍历 blocks_ 查找包含 patch_id 的 block
     for (const auto& [block_id, block_ptr] : md->blocks_) {
@@ -103,14 +123,4 @@ int ModelData::patch_block_id(int patch_id) {
 
     // 如果找不到 patch_id，抛出异常
     throw std::runtime_error("Patch ID not found in any block.");
-}
-
-std::optional<SplineDataVtk> ModelData::getSplineData()
-{
-    const auto* md = asSplineData();
-    if (md) {
-        SplineDataVtk modelData{ md->rootShape };
-        return modelData;
-    }
-    return nullopt;
 }

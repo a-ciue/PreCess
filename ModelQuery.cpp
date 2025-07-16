@@ -47,7 +47,7 @@ std::optional<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
     ModelData* model = m_manager->getModel(model_id);
     if (model->isSpline())
     {
-        model_data = model->getSplineData();
+        model_data = model->asSplineData()->getSplineData();
     }
     return model_data;
 }

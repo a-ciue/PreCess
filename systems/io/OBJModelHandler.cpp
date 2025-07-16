@@ -3,6 +3,7 @@
 #include "../../CTMeshModel.h"
 #include "../../commands/ArgType.h"
 #include "../../ToolMesh.h"
+#include "../../MeshData.h"
 
 namespace systems::io {
 unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, const vector<std::any>& args)
@@ -13,7 +14,7 @@ unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, const ve
     ct_mesh.update(*mesh_data);
 
     // ModelData
-    auto model_data = std::make_unique<ModelData>(std::move(*mesh_data));
+    auto model_data = std::make_unique<ModelData>(std::move(mesh_data));
     model_data->model_name_ = path.filename().string();
 
     return model_data;   // RVO

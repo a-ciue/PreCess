@@ -54,8 +54,8 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
         return nullptr;
     }
 
-    SplineData sd;
-    sd.rootShape  = shape;
+    auto sd = std::make_unique<SplineData>();
+    sd->rootShape = std::make_shared<TopoDS_Shape>(shape);
 
     auto model = std::make_unique<ModelData>(std::move(sd));
     model->model_name_ = spline_path.fileName().toStdString();
@@ -64,7 +64,7 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
 
 bool FileHandler::writeSpline(SplineData& spline, const std::filesystem::path& target_path)
 {
-	if (spline.rootShape.IsNull())
+	if (!spline.rootShape || spline.rootShape->IsNull())
 	{
 		std::cerr << "writeSpline: SplineData rootShape 为空" << std::endl;
         return false;
@@ -77,7 +77,7 @@ bool FileHandler::writeSpline(SplineData& spline, const std::filesystem::path& t
         STEPControl_Writer writer;
 
 	    // 将形状添加到写入器
-	    IFSelect_ReturnStatus transferStatus = writer.Transfer(spline.rootShape, STEPControl_AsIs);
+	    IFSelect_ReturnStatus transferStatus = writer.Transfer(*spline.rootShape, STEPControl_AsIs);
 
 	    if (transferStatus != IFSelect_RetDone) {
 	        std::cerr << "形状传输失败" << std::endl;

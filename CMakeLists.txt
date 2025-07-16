@@ -61,7 +61,9 @@ add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cp
         MeshData.h
         SplineData.h
         CTMeshModel.cpp
-        MeshData.cpp)
+        MeshData.cpp
+        "SplineData.cpp"
+)
 
 
 add_library(modelPart STATIC

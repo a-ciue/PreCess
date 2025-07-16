@@ -12,14 +12,15 @@
  */
 #ifndef MODEL_H
 #define MODEL_H
+#include "Selection.h"
+	
 #include <string>
 #include <variant>
 #include <optional>
+#include <memory>
 
-#include "MeshData.h"
-#include "SplineData.h"
-#include "Selection.h"
-#include "core/SplineDataVtk.h"
+struct MeshData;
+struct SplineData;
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 /**
@@ -31,13 +32,16 @@
 */
 class ModelData {
 public:
+    ModelData();
+    ~ModelData();
+
     std::string model_name_;
 
     enum class Type { Mesh, Spline };
 
     /* ============ 构造（仅声明） ============ */
-    explicit ModelData(MeshData mesh);
-    explicit ModelData(SplineData spline);
+    explicit ModelData(std::unique_ptr<MeshData> mesh);
+    explicit ModelData(std::unique_ptr<SplineData> spline);
 
     /* ============ 类型查询 ============ */
     Type type() const;
@@ -84,10 +88,9 @@ private:
         return id_;
     }
 
-    std::optional<SplineDataVtk> getSplineData();
 
     Type                                   type_;
-    std::variant<MeshData, SplineData>     data_;
+    std::variant<std::unique_ptr<MeshData>, std::unique_ptr<SplineData>>     data_;
 
     Index id_{ -1 }; //!< 模型的唯一标识符
 

@@ -11,7 +11,7 @@ std::optional<ModelOperator> ModelImporter::import(const std::filesystem::path& 
     CTMeshModel model(path);
     model.update(*data);
 
-    auto m = std::make_unique<ModelData>(std::move(*data));
+    auto m = std::make_unique<ModelData>(std::move(data));
     m->model_name_ = path.filename().string();
     Index id = mgr_.addModel(std::move(m));
     return mgr_.getModelOperator(id);
