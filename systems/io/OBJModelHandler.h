@@ -1,3 +1,7 @@
+/**
+ * @file OBJModelHandler.h
+ * @author 张家僮(htxz_6a6@163.com)
+ */
 #ifndef OBJ_MODEL_HANDLER_H
 #define OBJ_MODEL_HANDLER_H
 #include "ModelIOHandler.h"
@@ -18,8 +22,6 @@ public:
     void write_model(const ModelData& data, const fs::path& path, const vector<std::any>& args) override;
     vector<ArgType> read_args_type() const override;
     vector<ArgType> write_args_type() const override;
-    string file_type() const override;
-    vector<string> file_extensions() const override;
 };
 
 }

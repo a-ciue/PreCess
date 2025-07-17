@@ -43,23 +43,15 @@ public:
 	/**
 	 * @brief 读取文件参数类型，交给UI使用
 	 * @return 返回参数类型列表
+	 * TODO: 待存放到元数据
 	 */
 	virtual vector<ArgType> read_args_type() const = 0;
 	/**
 	 * @brief 写出文件参数类型，交给UI使用
 	 * @return 返回参数类型列表
+	 * TODO: 待存放到元数据
 	 */
 	virtual vector<ArgType> write_args_type() const = 0;
-	/**
-	 * @brief 处理的文件格式，每种拓展名都对应一个文件格式
-	 * @return 文件类型名称，取Wikipedia上对应模型类型词条名称，如"Wavefront .obj file", "ISO 10303-21", "STL (file format)"等
-	 */
-	virtual string file_type() const = 0;
-	/**
-	 * @brief 该处理器支持的文件扩展名列表
-	 * @return 支持的文件扩展名列表，因为一种文件格式可能有多个扩展名，如["step", "stp"]
-	 */
-	virtual vector<string> file_extensions() const = 0;
 };
 }
 #endif // MODEL_IO_HANDLER_H

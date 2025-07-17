@@ -1,3 +1,7 @@
+/**
+ * @file OBJModelHandler.cpp
+ * @author 张家僮(htxz_6a6@163.com)
+ */
 #include "OBJModelHandler.h"
 #include "../../ModelData.h"
 #include "../../CTMeshModel.h"
@@ -17,7 +21,7 @@ unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, const ve
     auto model_data = std::make_unique<ModelData>(std::move(mesh_data));
     model_data->model_name_ = path.filename().string();
 
-    return model_data;   // RVO
+    return model_data;   // 技巧：RVO
 }
 
 void OBJModelHandler::write_model(const ModelData& data, const fs::path& path, const vector<std::any>& args)
@@ -33,15 +37,5 @@ vector<ArgType> OBJModelHandler::read_args_type() const
 vector<ArgType> OBJModelHandler::write_args_type() const
 {
     return {};
-}
-
-string OBJModelHandler::file_type() const
-{
-    return "Wavefront .obj file";
-}
-
-vector<string> OBJModelHandler::file_extensions() const
-{
-    return { ".obj" };
 }
 }

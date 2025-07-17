@@ -2,11 +2,11 @@
 #include "ModelManager.h"
 #include "ModelImporter.h"
 #include "ModelObserver.h"
+#include "systems/io/ModelIOSystemRegister.h"
 
 #include <QDebug>
 #include <filesystem>
 #include <QFileInfo>
-// #include "QModelOperatorWrapper.h"   // 若暂不暴露包装器，可注释
 
 QModelManager::QModelManager(QObject* parent)
     : QObject(parent)
@@ -23,8 +23,10 @@ QModelManager::QModelManager(QObject* parent)
     importer_ = std::make_unique<ModelImporter>(*core_);
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
-    auto obj_handler = std::make_unique<systems::io::OBJModelHandler>();
-    io_system_->registerHandler(std::move(obj_handler));
+
+    plugin_manager_ = std::make_unique<systems::SystemPluginManager>();
+    plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
+    plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-relwithdebinfo\systems\io\OBJModelPlugin.dll)");
 }
 
 void QModelManager::importModel(const QUrl& url)
