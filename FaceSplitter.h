@@ -252,7 +252,6 @@ typename M::V* CFaceSplitter<M>::slice_face(vector<H*> phes_in)
 template <typename M>
 typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 {
-    // TODO
     // 合并操作
     // 获取即将被删除的半边
     H* to_be_deleted_hes[2];

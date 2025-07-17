@@ -56,6 +56,4 @@ struct MeshData {
 
     PatchMap patches_;
     BlockMap blocks_;
-
-    // TODO: 将model_name_移至通用属性位置即ModelData中
 };
