@@ -5,6 +5,7 @@
 #include <QVariantList>
 #include <filesystem>
 #include "../ModelImporter.h"
+#include <QFileInfo>
 
 CmdExecuteCommand::CmdExecuteCommand(ModelOperator model_op, ModelImporter& importer, const std::filesystem::path& cmd, const std::string& args)
     : model_op_(model_op), importer_(importer), cmd_(cmd), args_(args) { }
