@@ -1,5 +1,5 @@
-#ifndef Q_ARG_OBJECT_H
-#define Q_ARG_OBJECT_H
+#ifndef Q_ARG_TYPE_H
+#define Q_ARG_TYPE_H
 
 #include <QObject>
 #include <qqmlintegration.h>
@@ -47,4 +47,4 @@ private:
     ArgType type_;
     QVariant value_;
 };
-#endif // !Q_ARG_OBJECT_H
+#endif // !Q_ARG_TYPE_H
