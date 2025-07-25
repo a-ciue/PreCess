@@ -4,21 +4,22 @@ import QtQuick.Layouts
 
 import fileLoader
 import commands
+import systems.algo
 
 Menu {
     id: commandMenu
     title: qsTr("算法")
 
-    required property list<QCommand> commands
+    required property list<QAlgorithmInfo> algoInfos
     required property SideBar sideBar
     required property CommandDispatcher commandDispatcher
 
     Repeater {
-        model: commands
+        model: algoInfos
         MenuItem {
-            text: modelData.name()
+            text: modelData.display_name
             onTriggered: {
-                sideBar.curCommand = modelData
+                sideBar.curAlgoInfo = modelData
             }
         }
     }

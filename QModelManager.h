@@ -1,6 +1,8 @@
 #pragma once
 #include "systems/io/ModelIOSystem.h"
 #include "systems/SystemPluginManager.h"
+#include "systems/algo/QAlgorithmSystemAdaptor.h"
+#include "systems/algo/AlgorithmSystem.h"
 #include <QObject>
 #include <QUrl>
 #include <memory>
@@ -19,6 +21,7 @@ public:
     Q_INVOKABLE QObject* getOperator(int id);
     ModelManager* getModelManager();
     QModelObserver* getModelObserver();
+    systems::algo::QAlgorithmSystemAdaptor getAlgorithmSystemAdaptor();
 
 signals:
     void modelAdded(int id);
@@ -32,5 +35,6 @@ private:
     std::unique_ptr<ModelImporter> importer_;
     std::unique_ptr<QModelObserver> observer_; 
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
+    std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
 };

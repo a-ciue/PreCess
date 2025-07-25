@@ -1,12 +1,11 @@
 #include "QModelManager.h"
-#include "ModelManager.h"
-#include "ModelImporter.h"
-#include "ModelObserver.h"
-#include "systems/io/ModelIOSystemRegister.h"
 
 #include <QDebug>
 #include <filesystem>
 #include <QFileInfo>
+
+#include "systems/algo/AlgorithmSystemRegister.h"
+#include "systems/io/ModelIOSystemRegister.h"
 
 QModelManager::QModelManager(QObject* parent)
     : QObject(parent)
@@ -23,9 +22,11 @@ QModelManager::QModelManager(QObject* parent)
     importer_ = std::make_unique<ModelImporter>(*core_);
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
+    algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
 
     plugin_manager_ = std::make_unique<systems::SystemPluginManager>();
     plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
+    plugin_manager_->addSystemRegister(systems::algo::AlgorithmSystem::name, std::make_unique<systems::algo::AlgorithmSystemRegister>(*algo_system_));
     plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-relwithdebinfo\systems\io\OBJModelPlugin.dll)");
 }
 
@@ -71,4 +72,9 @@ ModelManager* QModelManager::getModelManager()
 QModelObserver* QModelManager::getModelObserver()
 {
     return observer_.get();
+}
+
+systems::algo::QAlgorithmSystemAdaptor QModelManager::getAlgorithmSystemAdaptor()
+{
+    return systems::algo::QAlgorithmSystemAdaptor(*algo_system_);
 }

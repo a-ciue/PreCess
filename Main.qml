@@ -18,6 +18,7 @@ import QtQuick.Controls.Fusion
 import fileLoader
 import model
 import commands
+import systems.algo
 
 ApplicationWindow {
     id: root 
@@ -57,7 +58,7 @@ ApplicationWindow {
         }
         CommandMenu {
             id: commandMenu
-            commands: commandCatalog.qmlCommands()
+            algoInfos: algorithmSystem.getAlgorithmsInfo()
             sideBar: sideBar
             commandDispatcher: root.commandDispatcher
         }
@@ -68,6 +69,7 @@ ApplicationWindow {
     required property QModelQuery modelQuery
     required property QCommandCatalog commandCatalog
     required property CommandDispatcher commandDispatcher
+    required property QAlgorithmSystemAdaptor algorithmSystem
 
     ToolBar {
         id: header

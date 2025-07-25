@@ -10,11 +10,12 @@ import QtQuick.Dialogs
 
 import fileLoader
 import commands
+import systems.algo
 
 Item{
     id: root
     required property CommandDispatcher commandDispatcher
-    property QCommand curCommand
+    property QAlgorithmInfo curAlgoInfo
     property int curModel
     property var savedSelection: []
     required property QSelection curSelection // temp
@@ -22,8 +23,8 @@ Item{
     signal selectModeChanged
     signal cancleCommand
 
-    onCurCommandChanged: {
-        parameterList.model = curCommand.arg_types
+    onCurAlgoInfoChanged: {
+        parameterList.model = curAlgoInfo.arg_types
     }
     Button{
         id: commitButton
@@ -65,10 +66,10 @@ Item{
                         required property string description
                         required property var value
                         sourceComponent:{
-                            if(curCommand && curCommand.name() === "切分边"){
+                            if(curAlgoInfo && curAlgoInfo.name() === "切分边"){
                                 return splictEdgeComponent
                             }
-                            if(curCommand && curCommand.name() === "切分面"){
+                            if(curAlgoInfo && curAlgoInfo.name() === "切分面"){
                                 return splictFaceComponent
                             }
 

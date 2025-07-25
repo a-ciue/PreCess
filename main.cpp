@@ -22,6 +22,7 @@
 #include <QtQml/QQmlExtensionPlugin>
 
 #include "QModelManager.h"
+#include "systems/algo/QAlgorithmSystemAdaptor.h"
 
 Q_IMPORT_QML_PLUGIN(modelPlugin)
 
@@ -31,6 +32,7 @@ int main(int argc, char* argv[])
     QModelManager q_manager;
     ModelManager* manager = q_manager.getModelManager();
     QModelObserver* observer = q_manager.getModelObserver();
+    systems::algo::QAlgorithmSystemAdaptor algoAdaptor = q_manager.getAlgorithmSystemAdaptor();
     QModelQuery query(manager, nullptr);
 
     QCommandCatalog catalog;
@@ -50,6 +52,7 @@ int main(int argc, char* argv[])
         { "modelQuery", QVariant::fromValue(&query) },
         { "commandCatalog", QVariant::fromValue(&catalog) },
         { "commandDispatcher", QVariant::fromValue(&dispatcher) },
+        { "algorithmSystem", QVariant::fromValue(&algoAdaptor) }
     });
     engine.loadFromModule("fileLoader", "Main");
     if (engine.rootObjects().isEmpty())
