@@ -3,7 +3,7 @@
 #include <optional>
 
 class TopoDS_Shape;
-class SplineDataVtk;
+struct SplineDataVtk;
 
 // 以后需要控制点 / 曲率等，可继续添加字段
 struct SplineData {

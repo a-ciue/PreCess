@@ -27,13 +27,13 @@ public:
      * @brief 获取关联的模型数据
      * @return 指向 ModelData 的指针
      */
-    ModelData* data() const { return model_; }
+    ModelData* data() const;
 
     /**
      * @brief 获取关联的模型观察者
      * @return 指向 QModelObserver 的指针（如果有）
      */
-    QModelObserver* observer() const { return observer_; }
+    QModelObserver* observer() const;
 
     /**
      * @brief 输出样条文件
@@ -54,12 +54,12 @@ public:
 
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
-    void merge_groups(QSelection* selection);
+    //void merge_groups(QSelection* selection);
 
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
-    void remesh_group(QSelection* selection);
+    //void remesh_group(QSelection* selection);
 
-    int getId() const { return model_->id_; }
+    int getId() const;
 
 private:
     ModelData* model_;              //!< 被操作的模型数据指针
