@@ -6,11 +6,12 @@ qt_add_qml_module(AlgorithmSystemQml
         QAlgorithmInfo.h QAlgorithmSystemAdaptor.h "QAlgorithmSystemAdaptor.cpp"
 )
 target_link_libraries(AlgorithmSystemQml PRIVATE 
+    Data
     Qt6::Core Qt6::Qml spdlog::spdlog)
-target_link_libraries(AlgorithmSystemQml PUBLIC QArgObject)
+target_link_libraries(AlgorithmSystemQml PUBLIC QArgObject Core)
 target_link_libraries(AlgorithmSystemQmlplugin PUBLIC QArgObject)
 
 add_library(AlgorithmSystem STATIC AlgorithmSystem.cpp AlgorithmSystemRegister.cpp)
 target_link_libraries(AlgorithmSystem PRIVATE 
-    Core AlgorithmSystemQmlplugin
+    Core Data
     Qt6::Core spdlog::spdlog)

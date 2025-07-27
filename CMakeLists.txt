@@ -35,6 +35,9 @@ find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick)
 message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
 qt_standard_project_setup()
 
+add_subdirectory(core)
+add_subdirectory(data)
+
 # 1) 生成 App Bundle（macOS 上的 .app 目录结构）
 qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp)
 # 设置编译完成的组件在 qrc:/qt/qml
@@ -50,38 +53,29 @@ qt_add_qml_module(${MYNAME}
 qt_add_library(modelQml STATIC)
 target_link_libraries(modelQml 
     PRIVATE
+    Data
     ${OpenCASCADE_LIBRARIES}
 )                    
 qt_add_qml_module(modelQml 
     URI model
     SOURCES
-        ModelManager.h ModelManager.cpp ModelObserver.h ModelQuery.cpp QModelManager.h QModelManager.cpp
+        QModelObserver.h ModelQuery.cpp QModelManager.h QModelManager.cpp
 )
 add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp MeshActorManager.cpp SplineActorManager.cpp
-        MeshData.h
-        SplineData.h
-        CTMeshModel.cpp
-        MeshData.cpp
-        "SplineData.cpp"
 )
+target_link_libraries(vtkPart PUBLIC Core)
 
 
 add_library(modelPart STATIC
-        ModelData.cpp
-        ModelOperator.cpp 
         # ModelManager.cpp 
         ModelUtil.cpp
         FileHandler.cpp
-        MeshData.h
-        SplineData.h
-        MeshData.cpp
         ModelImporter.cpp
         # ModelQuery.cpp
         # commands/SplitFaceCommand.cpp
         # command/MergeBlocksCommand.cpp
         # command/LoadSplineCommand.cpp
 )
-add_subdirectory(systems)
 
 # 让 modelPart 自己也能看到 VTK 和 Qt 的头文件
 target_include_directories(modelPart
@@ -92,9 +86,11 @@ target_link_libraries(modelPart
         PRIVATE
         ${OpenCASCADE_LIBRARIES}      # OCCT 的库列表
         Systems
+        Data
 )
 target_link_libraries(vtkPart
         PRIVATE
+        Data
         ${OpenCASCADE_LIBRARIES}
 )
 target_link_libraries(vtkPart
@@ -106,6 +102,7 @@ target_link_libraries(${MYNAME}
     PRIVATE
     TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
     ${VTK_LIBRARIES}
+    Data
 )
 
 # 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
@@ -116,8 +113,9 @@ target_link_libraries(modelPart
         Qt${VTK_QT_VERSION}::Core
 )
 
-
 add_subdirectory(commands)
+add_subdirectory(systems)
+add_subdirectory(plugins)
 target_link_libraries(modelQml PRIVATE modelPart commandsplugin)
 
 # VTK 模块自动初始化
