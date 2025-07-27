@@ -5,7 +5,7 @@
 #ifndef ALGORITHM_HANDLER_H
 #define ALGORITHM_HANDLER_H
 #include "../../commands/ArgType.h"
-#include "../../ModelOperator.h"
+#include "ModelOperator.h"
 #include "../io/ModelIOSystem.h"
 
 #include <any>

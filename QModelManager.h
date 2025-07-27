@@ -8,7 +8,7 @@
 #include <memory>
 #include "ModelManager.h"
 #include "ModelImporter.h"
-#include "ModelObserver.h"
+#include "QModelObserver.h"
 
 class QModelManager : public QObject {
     Q_OBJECT

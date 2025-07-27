@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <vector>
-#include "../../Core.h"
+#include "Core.h"
 #include "ModelIOHandler.h"
 
 class ModelManager;

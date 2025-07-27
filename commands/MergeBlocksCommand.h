@@ -4,7 +4,7 @@
 // command/MergeBlocksCommand.h
 #pragma once
 #include "ICommand.h"
-#include "../ModelOperator.h"
+#include "ModelOperator.h"
 #include "QArgObject.h"
 #include "../ModelImporter.h"
 class QSelection;

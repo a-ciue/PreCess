@@ -1,7 +1,7 @@
 #ifndef Q_ALGORITHM_SYSTEM_ADAPTOR_H
 #define Q_ALGORITHM_SYSTEM_ADAPTOR_H
 
-#include "../../Core.h"
+#include "Core.h"
 #include <QObject>
 #include <QtQmlIntegration/qqmlintegration.h>
 

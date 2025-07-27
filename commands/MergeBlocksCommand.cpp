@@ -60,7 +60,7 @@ void MergeBlocksCommand::execute() {
     //    }
     //}
 
-    model_op_.merge_blocks(selection_);
+    model_op_.merge_blocks(selection_->move());
 }
 
 void MergeBlocksCommand::undo() {

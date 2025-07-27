@@ -10,19 +10,18 @@
  * @date 2025/3/20
  */
 #include "ModelManager.h"
-#include "FileHandler.h"
+#include "../FileHandler.h"
+#include "ModelObserver.h"
 
-#include <QObject>
+#include <spdlog/spdlog.h>
 #include <filesystem>
-#include <QtQml/QQmlApplicationEngine>
 #include <stdexcept>
 
-#include "ModelObserver.h"
 // 添加模型
 Index ModelManager::addModel(std::unique_ptr<ModelData> model)
 {
     if (!model) {
-        qDebug() << "添加空模型，跳过";
+        spdlog::warn("Adding an empty model, skipping");
         return -1;
     }
 

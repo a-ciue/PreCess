@@ -3,7 +3,7 @@
  * @author (your name)
  */
 #include "AlgorithmSystem.h"
-#include "../../ModelManager.h"
+#include "ModelManager.h"
 #include <cassert>
 #include <spdlog/spdlog.h>
 

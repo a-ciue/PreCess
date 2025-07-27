@@ -10,7 +10,7 @@
 #include "ICommand.h"
 #include "../ModelImporter.h"
 
-#include "../ModelOperator.h"
+#include "ModelOperator.h"
 
 class ModelImporter;
 

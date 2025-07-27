@@ -4,7 +4,7 @@
 #include <memory>
 #include <filesystem>
 
-class QModelObserver; // 前向声明模型观察者类
+class ModelObserver;
 class QSelection; // 前向声明选择类
 /**
  * @brief ModelOperator 模型对象基类
@@ -20,7 +20,7 @@ public:
      * @param modelData 关联的模型数据指针
      * @param observer 关联的模型观察者指针（可选），用于在模型更改时发出通知
      */
-    ModelOperator(ModelData* modelData, QModelObserver* observer = nullptr)
+    ModelOperator(ModelData* modelData, ModelObserver* observer = nullptr)
             : model_(modelData), observer_(observer) {}
 
     /**
@@ -33,7 +33,7 @@ public:
      * @brief 获取关联的模型观察者
      * @return 指向 QModelObserver 的指针（如果有）
      */
-    QModelObserver* observer() const;
+    ModelObserver* observer() const;
 
     /**
      * @brief 输出样条文件
@@ -50,7 +50,7 @@ public:
     
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
-    void merge_blocks(QSelection* selection);
+    void merge_blocks(std::unique_ptr<Selection> selection);
 
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
@@ -63,5 +63,5 @@ public:
 
 private:
     ModelData* model_;              //!< 被操作的模型数据指针
-    QModelObserver* observer_;     //!< 模型观察者指针，用于通知外部变化（可为 nullptr）
+    ModelObserver* observer_;     //!< 模型观察者指针，用于通知外部变化（可为 nullptr）
 };

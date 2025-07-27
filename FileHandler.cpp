@@ -13,25 +13,26 @@
 #include "SplineData.h"
 
 #include <filesystem>
-#include <QDebug>
-#include <QFileInfo>
 
 #include <STEPControl_Reader.hxx>
 #include <IGESControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <spdlog/spdlog.h>
 
-std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
+std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& spline_path)
 {
-    const QString ext = QFileInfo(spline_path.toLocalFile()).suffix().toLower();
+    using namespace std::filesystem;
+    //const QString ext = QFileInfo(spline_path.toLocalFile()).suffix().toLower();
+    const path& ext = spline_path.extension();
     TopoDS_Shape shape;
 
     if (ext == "step" || ext == "stp") {
         STEPControl_Reader reader;
         IFSelect_ReturnStatus stat = reader.ReadFile(
-                spline_path.toLocalFile().toStdString().c_str());
+                spline_path.string().c_str());
         if (stat != IFSelect_RetDone) {
-            qDebug() << "STEP 读取失败:" << spline_path;
+            spdlog::error("STEP 读取失败: {}", spline_path.string());
         return nullptr;
     }
         reader.TransferRoots();
@@ -40,9 +41,9 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
     else {        // iges / igs
         IGESControl_Reader reader;
         IFSelect_ReturnStatus stat = reader.ReadFile(
-                spline_path.toLocalFile().toStdString().c_str());
+            spline_path.string().c_str());
         if (stat != IFSelect_RetDone) {
-            qDebug() << "IGES 读取失败:" << spline_path;
+            spdlog::error("IGES 读取失败: {}", spline_path.string());
             return nullptr;
         }
         reader.TransferRoots();
@@ -50,7 +51,7 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
     }
 
     if (shape.IsNull()) {
-        qDebug() << "样条文件为空:" << spline_path;
+        spdlog::error("样条文件 {} 读取失败，形状为空", spline_path.string());
         return nullptr;
     }
 
@@ -58,7 +59,7 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const QUrl& spline_path)
     sd->rootShape = std::make_shared<TopoDS_Shape>(shape);
 
     auto model = std::make_unique<ModelData>(std::move(sd));
-    model->model_name_ = spline_path.fileName().toStdString();
+    model->model_name_ = spline_path.filename().string();
     return model;
 }
 

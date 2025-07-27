@@ -7,10 +7,10 @@
 #include "MergeBlocksCommand.h"
 
 #include "LoadSplineCommand.h"
-#include "../Selection.h"
+#include "Selection.h"
 #include <QDebug>
 
-#include "../ModelManager.h"
+#include "ModelManager.h"
 
 CommandDispatcher::CommandDispatcher(ModelManager* manager, QObject* parent)
         : QObject(parent), model_manager_(manager), importer_(*manager) { }

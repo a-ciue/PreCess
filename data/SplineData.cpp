@@ -1,5 +1,5 @@
 #include "SplineData.h"
-#include "core/SplineDataVtk.h"
+#include "SplineDataVtk.h"
 
 std::optional<SplineDataVtk> SplineData::getSplineData()
 {

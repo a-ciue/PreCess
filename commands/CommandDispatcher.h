@@ -13,7 +13,7 @@
 #include <QVariant>
 
 #include "../ModelImporter.h"
-#include "../ModelManager.h"
+#include "ModelManager.h"
 
 class QSelection;
 

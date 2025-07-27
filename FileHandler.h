@@ -12,8 +12,6 @@
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
 
-#include <QString>
-#include <QUrl>
 #include <memory>
 #include "ModelData.h"
 #include "ToolMesh.h"
@@ -38,7 +36,7 @@ public:
      * @param spline_path 样条文件的 URL 路径
      * @return 成功时返回 std::unique_ptr<ModelData>，失败返回 nullptr
      */
-    std::unique_ptr<ModelData> readSpline(const QUrl& spline_path);
+    std::unique_ptr<ModelData> readSpline(const std::filesystem::path& spline_path);
 
     bool writeSpline(SplineData& spline, const std::filesystem::path& target_path);
 

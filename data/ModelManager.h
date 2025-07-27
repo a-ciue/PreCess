@@ -17,7 +17,7 @@
 
 #include <unordered_map>
 
-class QModelObserver;  // 前向声明模型观察者类
+class ModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
 
 /**
@@ -35,7 +35,7 @@ public:
      * @param parent 父对象，默认为 nullptr
     * @param observer 模型观察者对象，用于捕获模型事件（默认 nullptr）
      */
-    explicit ModelManager(QModelObserver* observer = nullptr) :  observer_(observer) {}
+    explicit ModelManager(ModelObserver* observer = nullptr) :  observer_(observer) {}
 
     /**
      * @brief 添加一个模型
@@ -68,7 +68,7 @@ private:
 
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
-    QModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
+    ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
 
     friend class QModelQuery;
 };

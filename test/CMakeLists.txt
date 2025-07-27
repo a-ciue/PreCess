@@ -20,9 +20,6 @@ target_include_directories(hello_test PRIVATE
         ${VTK_INCLUDE_DIRS}                 # 加上 VTK 的 include
 )
 
-qt_add_library(selection STATIC ../Selection.h)
-target_link_libraries(selection PRIVATE Qt6::Core Qt6::Quick)
-
 target_link_libraries(
   hello_test PRIVATE
         Qt6::Core
@@ -31,7 +28,7 @@ target_link_libraries(
         modelPart
         vtkPart
         modelQml
-        selection
+        Core
   GTest::gtest_main
 )
 

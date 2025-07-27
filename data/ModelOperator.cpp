@@ -1,16 +1,15 @@
 #ifndef Model_OPERATOR_H
 #define Model_OPERATOR_H
 #include "ModelOperator.h"
-#include "FileHandler.h"
+#include "../FileHandler.h"
 #include "ModelObserver.h"
-#include "QSelection.h"
 
 ModelData* ModelOperator::data() const
 {
     return model_;
 }
 
-QModelObserver* ModelOperator::observer() const
+ModelObserver* ModelOperator::observer() const
 {
     return observer_;
 }
@@ -27,9 +26,12 @@ void ModelOperator::notifyChanged()
     observer_->notifyModelChanged(model_->getId());
 }
 
-void ModelOperator::merge_blocks(QSelection* selection)
+void ModelOperator::merge_blocks(std::unique_ptr<Selection> selection)
 {
-    model_->merge_blocks(*selection->move());
+    if (!selection) {
+        return; // 如果没有选择或选择为空，直接返回
+    }
+    model_->merge_blocks(*selection);
     observer_->notifyModelChanged(model_->getId());
 }
 

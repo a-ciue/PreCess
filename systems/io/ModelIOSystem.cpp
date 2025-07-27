@@ -8,7 +8,7 @@
 
 #include "ModelIOSystem.h"
 #include "ModelIOHandler.h"
-#include "../../ModelManager.h"
+#include "ModelManager.h"
 
 namespace systems::io {
 const string ModelIOSystem::name = "ModelIOSystem";
