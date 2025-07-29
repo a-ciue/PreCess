@@ -1,7 +1,7 @@
 #ifndef Model_OPERATOR_H
 #define Model_OPERATOR_H
 #include "ModelOperator.h"
-#include "../FileHandler.h"
+//#include "../FileHandler.h"
 #include "ModelObserver.h"
 
 ModelData* ModelOperator::data() const
@@ -16,9 +16,6 @@ ModelObserver* ModelOperator::observer() const
 
 void ModelOperator::write_spline(const std::filesystem::path& spline_path)
 {
-    if (SplineData* spline = model_->asSplineData()) {
-        FileHandler::instance().writeSpline(*spline, spline_path);
-    }
 }
 
 void ModelOperator::notifyChanged()
@@ -35,9 +32,14 @@ void ModelOperator::merge_blocks(std::unique_ptr<Selection> selection)
     observer_->notifyModelChanged(model_->getId());
 }
 
-int ModelOperator::getId() const
+Index ModelOperator::getId() const
 {
     return model_->id_;
+}
+
+ModelData::Type ModelOperator::getType() const
+{
+    return model_->type();
 }
 
 #endif // Model_OPERATOR_H

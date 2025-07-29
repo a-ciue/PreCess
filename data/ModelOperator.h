@@ -1,4 +1,5 @@
 #pragma once
+#include "ModelOperatorBase.h"
 #include "ModelData.h"
 
 #include <memory>
@@ -13,7 +14,7 @@ class QSelection; // 前向声明选择类
  * 持有一个 ModelData 指针，以及一个可选的模型观察者，用于在模型数据发生更改时通知外部。
  * 通过 ModelOperator，可以对模型数据执行修改操作（通常通过各具体 ICommand 子类实现），并在操作后通知观察者以更新界面等。
  */
-class ModelOperator {
+class ModelOperator : public ModelOperatorBase {
 public:
     /**
      * @brief 构造 ModelOperator 对象
@@ -21,7 +22,10 @@ public:
      * @param observer 关联的模型观察者指针（可选），用于在模型更改时发出通知
      */
     ModelOperator(ModelData* modelData, ModelObserver* observer = nullptr)
-            : model_(modelData), observer_(observer) {}
+        : model_(modelData)
+        , observer_(observer)
+    {
+    }
 
     /**
      * @brief 获取关联的模型数据
@@ -47,21 +51,23 @@ public:
     //! @param edge_v_id1 其中一个边点id
     //! @param edge_v_id2 另一个边点id
     void notifyChanged();
-    
+
     //! @brief 合并给定block，并更新block actor，依赖ModelActor
     //! @param block_ids
     void merge_blocks(std::unique_ptr<Selection> selection);
 
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
-    //void merge_groups(QSelection* selection);
+    // void merge_groups(QSelection* selection);
 
     //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
-    //void remesh_group(QSelection* selection);
+    // void remesh_group(QSelection* selection);
 
-    int getId() const;
+    Index getId() const override;
+
+    ModelData::Type getType() const override;
 
 private:
-    ModelData* model_;              //!< 被操作的模型数据指针
-    ModelObserver* observer_;     //!< 模型观察者指针，用于通知外部变化（可为 nullptr）
+    ModelData* model_; //!< 被操作的模型数据指针
+    ModelObserver* observer_; //!< 模型观察者指针，用于通知外部变化（可为 nullptr）
 };

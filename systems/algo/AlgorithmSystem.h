@@ -3,19 +3,24 @@
  * @author (your name)
  */
 #pragma once
-#include "AlgorithmHandler.h"
 #include "AlgorithmInfo.h"
+#include "Core.h"
+
 #include <any>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+class ModelManager;
+
 namespace systems::io {
 class ModelIOSystem;
 }
 
 namespace systems::algo {
+class AlgorithmHandler;
+
 using std::string;
 using std::unordered_map;
 using std::vector;

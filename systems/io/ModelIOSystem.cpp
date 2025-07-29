@@ -11,6 +11,10 @@
 #include "ModelManager.h"
 
 namespace systems::io {
+using std::string;
+using std::unique_ptr;
+using std::vector;
+
 const string ModelIOSystem::name = "ModelIOSystem";
 
 ModelIOSystem::ModelIOSystem(ModelManager& manager)
@@ -75,7 +79,7 @@ void ModelIOSystem::unregisterHandler(const HandlerMetaData& meta_data)
     this->fileExtensions_.erase(file_type);
 }
 
-const unordered_map<string, vector<string>>& ModelIOSystem::registeredFileTypes()
+const std::unordered_map<string, vector<string>>& ModelIOSystem::registeredFileTypes()
 {
     return fileExtensions_;
 }

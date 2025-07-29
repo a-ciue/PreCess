@@ -35,7 +35,7 @@ struct Block {
 
 struct MeshData {
     using PatchMap = std::unordered_map<Index, std::unique_ptr<Patch>>;
-    using BlockMap = std::unordered_map<Index, std::unique_ptr<struct Block>>;
+    using BlockMap = std::unordered_map<Index, std::unique_ptr<Block>>;
 
     // 三角形的点id索引
     std::vector<std::array<Index, 3>> face_vertices {

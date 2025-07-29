@@ -5,12 +5,17 @@
 #ifndef ALGORITHM_HANDLER_H
 #define ALGORITHM_HANDLER_H
 #include "../../commands/ArgType.h"
-#include "ModelOperator.h"
-#include "../io/ModelIOSystem.h"
 
 #include <any>
 #include <string>
 #include <vector>
+
+namespace systems::io
+{
+	class ModelIOSystemBase;
+}
+
+class ModelOperatorBase;
 
 namespace systems::algo {
 using std::any;
@@ -18,8 +23,8 @@ using std::string;
 using std::vector;
 
 struct HandlerContext {
-    io::ModelIOSystem& io_system;
-    ModelOperator& cur_model;
+    io::ModelIOSystemBase& io_system;
+    ModelOperatorBase& cur_model;
 };
 /**
  * @brief 算法系统的功能接口，继承他来实现具体的算法功能

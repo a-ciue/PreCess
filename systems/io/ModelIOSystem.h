@@ -3,6 +3,7 @@
  * @author 张家僮(htxz_6a6@163.com)
  */
 #pragma once
+#include "ModelIOSystemBase.h"
 #include <any>
 #include <filesystem>
 #include <unordered_map>
@@ -13,25 +14,21 @@
 class ModelManager;
 
 namespace systems::io {
-using std::string;
-using std::unordered_map;
-using std::vector;
-
 /**
  * @brief 对应Handler的元信息
  */
 struct HandlerMetaData {
-    string file_type; //> 处理的文件格式，取Wikipedia上对应模型类型词条名称，如"Wavefront .obj file", "ISO 10303-21", "STL (file format)"
-    vector<string> extensions; //> 支持的文件扩展名列表，如["txt", "obj"]
+    std::string file_type; //> 处理的文件格式，取Wikipedia上对应模型类型词条名称，如"Wavefront .obj file", "ISO 10303-21", "STL (file format)"
+    std::vector<std::string> extensions; //> 支持的文件扩展名列表，如["txt", "obj"]
 };
 
 /**
  * @brief 模型IO系统，每种文件格式只能注册一个处理器
  */
-class ModelIOSystem {
+class ModelIOSystem : public ModelIOSystemBase {
 public:
     using Handler = ModelIOHandler;
-    static const string name; //> 系统名称
+    static const std::string name; //> 系统名称
 
     ModelIOSystem(ModelManager& manager);
     /**
@@ -40,7 +37,7 @@ public:
      * @param file_type 文件类型，应在注册的文件类型中
      * @param args 读操作的参数，传给Handler
      */
-    void read(const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args);
+    void read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override;
     /**
      * @brief 系统的写模型接口
      * @param model 模型id
@@ -48,7 +45,7 @@ public:
      * @param file_type 文件类型，应在注册的文件类型中
      * @param args 写操作的参数，传给Handler
      */
-    void write(Index model, const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args);
+    void write(Index model, const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override;
     /**
      * @brief 系统的功能Handler注册函数
      * @param meta_data 功能的元信息
@@ -63,11 +60,11 @@ public:
      * @brief 注册的文件类型
      * @return 键是文件类型，值是支持的文件扩展名列表(如"txt", "obj")
      */
-    const unordered_map<string, vector<string>>& registeredFileTypes();
+    const std::unordered_map<std::string, std::vector<std::string>>& registeredFileTypes();
 
 private:
     ModelManager* manager_;
-    unordered_map<string, std::shared_ptr<ModelIOHandler>> handlers_; //> 键是文件类型
-    unordered_map<string, vector<string>> fileExtensions_; //> 键是文件类型，值是支持的文件扩展名列表(如"txt", "obj")
+    std::unordered_map<std::string, std::shared_ptr<ModelIOHandler>> handlers_; //> 键是文件类型
+    std::unordered_map<std::string, std::vector<std::string>> fileExtensions_; //> 键是文件类型，值是支持的文件扩展名列表(如"txt", "obj")
 };
 }
