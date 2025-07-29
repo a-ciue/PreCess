@@ -5,6 +5,9 @@ target_link_libraries(IOSystem PRIVATE
 	Qt6::Core
 )
 target_link_libraries(IOSystem PUBLIC Core)
+target_include_directories(IOSystem PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}   # 项目根目录
+)
 
 qt_add_plugin(OBJModelPlugin CLASS_NAME OBJModelPlugin "OBJModelHandler.cpp" "OBJModelPlugin.h" "../../data/ModelData.cpp" "../../CTMeshModel.cpp" "../../ModelUtil.cpp")
 target_link_libraries(OBJModelPlugin PRIVATE Qt6::Core)
