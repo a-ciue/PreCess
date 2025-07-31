@@ -19,11 +19,15 @@ public:
 	 * @brief 注册一个插件
      * @param plugin_path 待注册插件的路径，通常指.dll文件路径
 	 * @return 注册是否成功
+	 *
+     * 解析插件元数据，获取插件名称和系统名称，并将插件注册到对应的系统注册器中。
 	 */
 	bool registerPlugin(const std::filesystem::path& plugin_path);
 	/**
 	 * @brief 注销一个插件
 	 * @param plugin_path 待注销的插件的路径，通常指.dll文件路径
+	 *
+	 * 解析插件元数据，获取插件名称和系统名称，并从对应的系统注册器中注销插件。
 	 */
 	void unregisterPlugin(const std::filesystem::path& plugin_path);
 	/**

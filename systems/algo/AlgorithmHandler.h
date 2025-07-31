@@ -1,6 +1,6 @@
 /**
  * @file AlgorithmHandler.h
- * @author (your name)
+ * @author 张家僮(htxz_6a6@163.com)
  */
 #ifndef ALGORITHM_HANDLER_H
 #define ALGORITHM_HANDLER_H
@@ -18,10 +18,6 @@ namespace systems::io
 class ModelOperatorBase;
 
 namespace systems::algo {
-using std::any;
-using std::string;
-using std::vector;
-
 struct HandlerContext {
     io::ModelIOSystemBase& io_system;
     ModelOperatorBase& cur_model;
@@ -38,12 +34,12 @@ public:
      * @param args 算法参数
      * @return 算法结果（可自定义类型）
      */
-    virtual any execute(HandlerContext& context, const vector<any>& args) = 0;
+    virtual std::any execute(HandlerContext& context, const std::vector<std::any>& args) = 0;
     /**
      * @brief 算法参数类型，交给UI使用
      * @return 返回参数类型列表
      */
-    virtual vector<ArgType> args_type() const = 0;
+    virtual std::vector<ArgType> args_type() const = 0;
 };
 }
 #endif // ALGORITHM_HANDLER_H

@@ -4,35 +4,39 @@
  */
 #include "ModelIOSystemRegister.h"
 #include "ModelIOSystem.h"
+#include "../PluginHandler.h"
 
 #include <QJsonArray>
-#include <assert.h>
+#include <cassert>
 #include <spdlog/spdlog.h>
 
 namespace systems::io {
 ModelIOSystemRegister::ModelIOSystemRegister(ModelIOSystem& system): system_(&system)
 {
+    assert(this->system_);
 }
 
-bool ModelIOSystemRegister::registerHandler(const QJsonObject& meta_data, std::any handler)
+bool ModelIOSystemRegister::registerPlugin(const QJsonObject& meta_data, PluginBase& plugin)
 {
-    assert(this->system_);
     using namespace std;
-
-    auto handler_p = any_cast<shared_ptr<ModelIOSystem::Handler>>(&handler);
-    if (!handler_p)
+    try
     {
+		auto plugin_handler = std::make_unique<ModelIOSystem::PluginHandler>(plugin);
+
+	    HandlerMetaData handler_data = toMetaData(meta_data);
+	    return this->system_->registerHandler(handler_data, std::move(plugin_handler));
+    } catch (const std::bad_any_cast& e)
+    {
+        spdlog::error("Failed to cast plugin to ModelIOSystem::Handler: {}", e.what());
+        return false;
+    } catch (const std::exception& e) {
+        spdlog::error("Exception occurred while registering handler: {}", e.what());
         return false;
     }
-
-    HandlerMetaData handler_data = toMetaData(meta_data);
-    return this->system_->registerHandler(handler_data, *handler_p);
 }
 
-void ModelIOSystemRegister::unregisterHandler(const QJsonObject& meta_data)
+void ModelIOSystemRegister::unregisterPlugin(const QJsonObject& meta_data)
 {
-    assert(this->system_);
-
     HandlerMetaData handler_data = toMetaData(meta_data);
     this->system_->unregisterHandler(handler_data);
 }

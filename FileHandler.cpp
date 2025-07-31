@@ -56,7 +56,7 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& 
     }
 
     auto sd = std::make_unique<SplineData>();
-    sd->rootShape = std::make_shared<TopoDS_Shape>(shape);
+    sd->rootShape = std::make_unique<TopoDS_Shape>(shape);
 
     auto model = std::make_unique<ModelData>(std::move(sd));
     model->model_name_ = spline_path.filename().string();

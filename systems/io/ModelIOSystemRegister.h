@@ -17,8 +17,8 @@ struct HandlerMetaData;
 class ModelIOSystemRegister : public SystemRegisterBase { 
 public:
     ModelIOSystemRegister(ModelIOSystem& system);
-    bool registerHandler(const QJsonObject& meta_data, std::any handler) override;
-    void unregisterHandler(const QJsonObject& meta_data) override;
+    bool registerPlugin(const QJsonObject& meta_data, PluginBase& plugin) override;
+    void unregisterPlugin(const QJsonObject& meta_data) override;
 
 private:
     ModelIOSystem* system_;

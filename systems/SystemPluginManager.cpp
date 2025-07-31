@@ -45,11 +45,10 @@ bool SystemPluginManager::registerPlugin(const std::filesystem::path& plugin_pat
         spdlog::error("Plugin '{}' does not inherit from PluginBase", plugin_path_q.toStdString());
         return false;
     }
-    std::any handler_any = plugin->makeHandler();
 
-	SystemRegisterBase* cur_register = this->system_registers_[system_name].get();
+	SystemRegisterBase* cur_system = this->system_registers_[system_name].get();
     QJsonObject handler_data = system_meta_data.value("handler").toObject();
-	if (cur_register->registerHandler(handler_data, std::move(handler_any))) {
+	if (cur_system->registerPlugin(handler_data, *plugin)) {
         this->plugin_names_.insert(plugin_name);
         return true;
     }
@@ -75,10 +74,10 @@ void SystemPluginManager::unregisterPlugin(const std::filesystem::path& plugin_p
         return;
     }
 
-    SystemRegisterBase* cur_register = this->system_registers_[system_name].get();
+    SystemRegisterBase* cur_system = this->system_registers_[system_name].get();
     QJsonObject handler_data = system_meta_data.value("handler").toObject();
 
-	cur_register->unregisterHandler(handler_data);
+	cur_system->unregisterPlugin(handler_data);
     this->plugin_names_.erase(plugin_name);
 }
 

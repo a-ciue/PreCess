@@ -83,3 +83,5 @@ CTMeshModel::CTMeshModel(const std::filesystem::path& mesh_path)
     : mesh_(ModelUtil::read_obj_with_groups(mesh_path))
 {
 }
+
+CTMeshModel::~CTMeshModel() = default;

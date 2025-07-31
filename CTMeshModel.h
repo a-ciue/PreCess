@@ -12,7 +12,6 @@ namespace MeshLib {
     class CToolEdge;
     class CToolFace;
     class CToolHalfEdge;
-    template class CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge>;
     using CTMesh = CToolMesh<CToolVertex, CToolEdge, CToolFace, CToolHalfEdge>;
 }
 
@@ -22,6 +21,7 @@ namespace MeshLib {
 class CTMeshModel : public MeshModelBase {
 public:
     CTMeshModel(const std::filesystem::path& mesh_path);
+    ~CTMeshModel();
 
     /**
      * @brief 更新MeshData
