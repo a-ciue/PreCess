@@ -1,1 +1,2 @@
 add_subdirectory(CmdExecutePlugin)
+add_subdirectory(OBJModelPlugin)
