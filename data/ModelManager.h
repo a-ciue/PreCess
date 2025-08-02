@@ -3,8 +3,6 @@
  * @brief 负责管理多个模型实例的类
  *
  * ModelManager 仅负责管理模型（添加、删除、查询、重命名）以及模型事件的发送。
- * 与文件 IO、样条转换相关的功能已全部移至 FileHandler。
- * 但原接口仍然使用。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
  * @date 2025/3/20
