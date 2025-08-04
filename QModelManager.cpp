@@ -27,7 +27,8 @@ QModelManager::QModelManager(QObject* parent)
     plugin_manager_ = std::make_unique<systems::SystemPluginManager>();
     plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
     plugin_manager_->addSystemRegister(systems::algo::AlgorithmSystem::name, std::make_unique<systems::algo::AlgorithmSystemRegister>(*algo_system_));
-    plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-relwithdebinfo\systems\io\OBJModelPlugin.dll)");
+    plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-debug\plugins\OBJModelPlugin\OBJModelPlugin.dll)");
+    plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-debug\plugins\CmdExecutePlugin\CmdExecutePlugin.dll)");
 }
 
 void QModelManager::importModel(const QUrl& url)
