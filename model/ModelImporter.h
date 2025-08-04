@@ -2,8 +2,6 @@
 // ModelImporter.h
 
 #include <optional>            // for std::optional
-#include <QUrl>
-#include <QString>
 #include "ModelOperator.h"
 #include "ModelManager.h"
 

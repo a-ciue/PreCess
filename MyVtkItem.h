@@ -32,7 +32,7 @@
 #include "MeshActor.h"
 #include "SelectManager.h"
 #include "Core.h" 
-#include "ModelQuery.h"
+#include "QModelQuery.h"
 #include "MeshActorManager.h"
 #include "SplineActorManager.h"
 #include "QSelection.h"

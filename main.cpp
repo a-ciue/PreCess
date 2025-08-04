@@ -11,7 +11,7 @@
 
 #include "ModelManager.h"
 #include "ModelObserver.h"
-#include "ModelQuery.h"
+#include "QModelQuery.h"
 #include "commands/QCommandCatalog.h"
 #include "commands/CommandDispatcher.h"
 #include "commands/SplitFaceCommand.h"
@@ -22,7 +22,7 @@
 #include <QtQml/QQmlExtensionPlugin>
 
 #include "QModelManager.h"
-#include "systems/algo/QAlgorithmSystemAdaptor.h"
+#include "QAlgorithmSystemAdaptor.h"
 
 Q_IMPORT_QML_PLUGIN(modelPlugin)
 

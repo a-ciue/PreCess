@@ -36,7 +36,7 @@ message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
 qt_standard_project_setup()
 
 add_subdirectory(core)
-add_subdirectory(data)
+add_subdirectory(model)
 
 # 1) 生成 App Bundle（macOS 上的 .app 目录结构）
 qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp)
@@ -50,44 +50,11 @@ qt_add_qml_module(${MYNAME}
         MyVTKItem.h MyVtkItem.cpp QSelection.h 
 )
 
-qt_add_library(modelQml STATIC)
-target_link_libraries(modelQml 
-    PRIVATE
-    Data
-    ${OpenCASCADE_LIBRARIES}
-)                    
-qt_add_qml_module(modelQml 
-    URI model
-    SOURCES
-        QModelObserver.h ModelQuery.cpp QModelManager.h QModelManager.cpp
-)
+
 add_library(vtkPart STATIC MeshActor.cpp Selector.cpp Style.cpp SelectManager.cpp SplineActor.cpp MeshActorManager.cpp SplineActorManager.cpp
 )
 target_link_libraries(vtkPart PUBLIC Core)
 
-
-add_library(modelPart STATIC
-        # ModelManager.cpp 
-        ModelUtil.cpp
-        FileHandler.cpp
-        ModelImporter.cpp
-        # ModelQuery.cpp
-        # commands/SplitFaceCommand.cpp
-        # command/MergeBlocksCommand.cpp
-        # command/LoadSplineCommand.cpp
-)
-
-# 让 modelPart 自己也能看到 VTK 和 Qt 的头文件
-target_include_directories(modelPart
-        PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}   # 项目根目录
-)
-target_link_libraries(modelPart
-        PRIVATE
-        ${OpenCASCADE_LIBRARIES}      # OCCT 的库列表
-        Systems
-        Data
-)
 target_link_libraries(vtkPart
         PRIVATE
         Data
@@ -102,21 +69,13 @@ target_link_libraries(${MYNAME}
     PRIVATE
     TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
     ${VTK_LIBRARIES}
-    Data
+    Data modelQml
 )
 
-# 链接 QtCore、QtQuick（如果需要）和所有 VTK 模块
-target_link_libraries(modelPart
-        PRIVATE
-        Qt${VTK_QT_VERSION}::Gui
-        Qt${VTK_QT_VERSION}::Quick
-        Qt${VTK_QT_VERSION}::Core
-)
+
+
 
 add_subdirectory(commands)
-add_subdirectory(systems)
-add_subdirectory(plugins)
-target_link_libraries(modelQml PRIVATE modelPart commandsplugin)
 
 # VTK 模块自动初始化
 vtk_module_autoinit(TARGETS ${MYNAME} vtkPart MODULES ${VTK_LIBRARIES} )

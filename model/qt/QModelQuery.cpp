@@ -1,4 +1,4 @@
-#include "ModelQuery.h"
+#include "QModelQuery.h"
 
 #include <QVariantList>
 #include <QString>

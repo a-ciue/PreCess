@@ -1,13 +1,13 @@
 #pragma once
-#include "systems/io/ModelIOSystem.h"
-#include "systems/SystemPluginManager.h"
-#include "systems/algo/QAlgorithmSystemAdaptor.h"
-#include "systems/algo/AlgorithmSystem.h"
+#include "ModelIOSystem.h"
+#include "SystemPluginManager.h"
+#include "QAlgorithmSystemAdaptor.h"
+#include "AlgorithmSystem.h"
 #include <QObject>
 #include <QUrl>
 #include <memory>
 #include "ModelManager.h"
-#include "ModelImporter.h"
+#include "../ModelImporter.h"
 #include "QModelObserver.h"
 
 class QModelManager : public QObject {

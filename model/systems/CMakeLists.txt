@@ -2,6 +2,9 @@ add_subdirectory(io)
 add_subdirectory(algo)
 
 add_library(Systems STATIC "SystemPluginManager.cpp")
+target_include_directories(Systems PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
+)
 target_link_libraries(Systems INTERFACE IOSystem AlgorithmSystem)
 target_link_libraries(Systems PRIVATE 
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
