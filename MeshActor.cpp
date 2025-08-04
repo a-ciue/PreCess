@@ -12,7 +12,6 @@
 #include <vtkRenderer.h>
 #include <vtkAssembly.h>
 #include <vtkPropAssembly.h>
-#include "ModelUtil.h"
 #include "Style.h"
 #include "Core.h"
 #include <vtkAppendPolyData.h>

@@ -1,7 +1,4 @@
 #include "MeshActorManager.h"
-#include "MeshActorManager.h"
-#include "MeshActorManager.h"
-#include "MeshActorManager.h"
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
@@ -35,7 +32,6 @@
 #include <vtkRenderer.h>
 #include <vtkAssembly.h>
 #include <vtkPropAssembly.h>
-#include "ModelUtil.h"
 #include "Style.h"
 #include "Core.h"
 #include <vtkAppendPolyData.h>

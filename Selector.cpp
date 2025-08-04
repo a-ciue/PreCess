@@ -23,7 +23,6 @@
 #include <vtkPropAssembly.h>
 #include <vtkAssemblyPath.h>
 #include <vtkAppendPolyData.h>
-#include "ModelUtil.h"
 #include <vtkCompositeDataDisplayAttributes.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>

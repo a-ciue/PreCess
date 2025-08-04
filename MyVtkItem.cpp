@@ -1,5 +1,4 @@
 #include "MyVtkItem.h"
-#include "ModelUtil.h"
 #include "ToolMesh.h"
 #include "SelectManager.h"
 QRenderWindow::QRenderWindow()
