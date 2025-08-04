@@ -60,15 +60,12 @@ ApplicationWindow {
             id: commandMenu
             algoInfos: algorithmSystem.getAlgorithmsInfo()
             sideBar: sideBar
-            commandDispatcher: root.commandDispatcher
         }
     }
 
     required property QModelObserver modelObserver
     required property QModelManager modelManager
     required property QModelQuery modelQuery
-    required property QCommandCatalog commandCatalog
-    required property CommandDispatcher commandDispatcher
     required property QAlgorithmSystemAdaptor algorithmSystem
 
     ToolBar {
@@ -150,7 +147,7 @@ ApplicationWindow {
                         //if(ids.type() !== Element.Edge){console.log("ids的类型不是Element.Edge")}
                         console.log("选中的模型名为：",modelQuery.getModelName(ids.getModelId()))
                         if (ids.size() !== 0 /*&& ids.type() === Element.Edge*/) {
-                            commandDispatcher.runCommand(commandCatalog.pathCommand("faceMode.splitEdge"), ids.getModelId(), [ids])
+                            algorithmSystem.call("faceMode.splitEdge", ids.getModelId(), [ids])
                         }else{
                             console.log("未选中对象或选中对象不是边")
                         }
@@ -162,7 +159,7 @@ ApplicationWindow {
                         let ids = myItem.selectedIDs;
                         console.log("选中的模型名为：", modelQuery.getModelName(ids.getModelId()))
                         if (ids.size() !== 0 /*&& ids.type() === Element.Face*/) {
-                            commandDispatcher.runCommand(commandCatalog.pathCommand("faceMode.splitFace"), ids.getModelId(), [ids])
+                            algorithmSystem.call("faceMode.splitFace", ids.getModelId(), [ids])
                         }else{
                             console.log("未选中对象或选中对象不是面")
                         }
@@ -217,7 +214,7 @@ ApplicationWindow {
                     if(index === 0) {
                         // myItem.bindStyle("Block")
                         let ids = myItem.selectedIDs
-                        commandDispatcher.runCommand(commandCatalog.pathCommand("blockMode.mergeBlocks"), ids.getModelId(), [ids])
+                        algorithmSystem.call("blockMode.mergeBlocks", ids.getModelId(), [ids])
                         myItem.resetCamera()
                         selector.clearSelection()
                     }
@@ -286,7 +283,7 @@ ApplicationWindow {
 
     SideBar{
         id: sideBar
-        commandDispatcher: root.commandDispatcher
+        algorithmSystem: algorithmSystem
         curModel: objectList.curModelId
         curSelection: selector.selection
         anchors.top: objectList.bottom

@@ -8,24 +8,13 @@ configure_file("QArgType.h.in" "QArgType.h")
 add_library(QArgObject INTERFACE)
 target_include_directories(QArgObject INTERFACE "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
-qt_add_library(commands STATIC
-        # SplitFaceCommand.cpp
-        # SplitEdgeCommand.cpp
-        # RemeshBlockCommand.cpp
-        MergeBlocksCommand.cpp
-        # LoadSplineCommand.cpp
-        # ImportModelCommand.cpp
-        CommandDispatcher.cpp
-        TrianglulationCommand.cpp
-        CmdExecuteCommand.cpp
-)
+qt_add_library(commands STATIC)
 qt_add_qml_module(commands
     URI commands
     VERSION 1.0
     SOURCES
-        QCommandCatalog.h QCommand.h CommandDispatcher.h CommandDispatcher.cpp "${CMAKE_CURRENT_BINARY_DIR}/QArgType.h" QArgObject.h QArgObject.cpp ImportModelCommand.h 
+        "${CMAKE_CURRENT_BINARY_DIR}/QArgType.h" QArgObject.h QArgObject.cpp
 )
 target_link_libraries(commands PUBLIC QArgObject)
 target_link_libraries(commands PRIVATE Data Qt6::Gui ${OpenCASCADE_LIBRARIES})
-#target_link_libraries(commands PRIVATE modelPart)  # 与 ModelData/ModelManager 库关联
 #target_include_directories(commands PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

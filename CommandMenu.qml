@@ -12,7 +12,6 @@ Menu {
 
     required property list<QAlgorithmInfo> algoInfos
     required property SideBar sideBar
-    required property CommandDispatcher commandDispatcher
 
     Repeater {
         model: algoInfos

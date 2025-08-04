@@ -18,9 +18,6 @@ QModelManager::QModelManager(QObject* parent)
         /*observer=*/observer_.get()
     );
 
-    // 3) 新建 ModelImporter，将 core_ 传过去
-    importer_ = std::make_unique<ModelImporter>(*core_);
-
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
 
@@ -37,10 +34,6 @@ void QModelManager::importModel(const QUrl& url)
     if (QString ext = QFileInfo(url.toLocalFile()).suffix().toLower();
         ext == "obj") {
         io_system_->read(url.toLocalFile().toStdString(), "Wavefront .obj file", {});
-    }
-    else if (auto maybeOp = importer_->import(std::filesystem::path{ url.toLocalFile().toStdString() })) {
-        ModelOperator op = std::move(*maybeOp);
-        emit modelAdded(op.getId());
     }
     else {
         qWarning() << "QModelManager::importModel 导入失败: " << url;

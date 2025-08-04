@@ -7,7 +7,6 @@
 #include <QUrl>
 #include <memory>
 #include "ModelManager.h"
-#include "../ModelImporter.h"
 #include "QModelObserver.h"
 
 class QModelManager : public QObject {
@@ -32,7 +31,6 @@ signals:
 
 private:
     std::unique_ptr<ModelManager>  core_;
-    std::unique_ptr<ModelImporter> importer_;
     std::unique_ptr<QModelObserver> observer_; 
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;

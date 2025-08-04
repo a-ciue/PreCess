@@ -14,7 +14,7 @@ import systems.algo
 
 Item{
     id: root
-    required property CommandDispatcher commandDispatcher
+    required property QAlgorithmSystemAdaptor algorithmSystem
     property QAlgorithmInfo curAlgoInfo
     property int curModel
     property var savedSelection: []
@@ -36,9 +36,8 @@ Item{
         onClicked:{
             let params = parameterList.model.map(model => model.value)
 
-            //commandDispatcher.runCommand(curCommand, curModel, [curSelection])
-            commandDispatcher.runCommand(curCommand, curModel, params)
-            //commandDispatcher.runCommand(curCommand, curModel, [savedSelection])
+            //commandDispatcher.runCommand(curCommand, curModel, 
+            algorithmSystem.call(curAlgoInfo.name, curModel, params)
         }
     }
     Item{

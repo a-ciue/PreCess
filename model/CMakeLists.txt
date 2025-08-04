@@ -5,7 +5,7 @@ add_subdirectory(qt)
 add_library(modelPart STATIC
         ModelUtil.cpp
         FileHandler.cpp
-        ModelImporter.cpp
+        
 
 )
 
@@ -23,4 +23,4 @@ target_link_libraries(modelPart
 
 add_subdirectory(systems)
 add_subdirectory(plugins)
-target_link_libraries(modelQml PRIVATE modelPart commandsplugin)
+target_link_libraries(modelQml PRIVATE modelPart commands)
