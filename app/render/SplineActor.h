@@ -1,5 +1,8 @@
 #ifndef SPLINE_ACTOR_H
 #define SPLINE_ACTOR_H
+#include "MeshActor.h"
+#include "SplineDataVtk.h"
+#include "Core.h"
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -8,14 +11,9 @@
 #include <vtkPropAssembly.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
-#include "Core.h"
-#include "MeshActor.h"
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <iostream>
-#include <TopoDS_Shape.hxx>
-#include <BRepTools.hxx>
-#include <STEPControl_Reader.hxx>
 #include <vtkRenderWindow.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkRenderWindowInteractor.h>
@@ -24,8 +22,6 @@
 #include <vtkNew.h>
 #include <vtkRenderer.h>
 #include <iostream>
-#include <IVTKTools_ShapeDataSource.hxx>
-#include "core/SplineDataVtk.h"
 
 class SplineActor {
 
@@ -45,7 +41,7 @@ private:
 	SplineRenderMode render_mode_;
 	bool edge_render;
 	bool visibility_;
-	SplineDataVtk spline_data_;
+	std::unique_ptr<SplineDataVtk> spline_data_;
 
 	vtkNew<vtkActor> actor_;
 	vtkNew<vtkPolyDataMapper> mapper_;

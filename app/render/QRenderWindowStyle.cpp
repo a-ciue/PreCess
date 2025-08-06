@@ -1,7 +1,7 @@
-#include "Style.h"
+#include "QRenderWindowStyle.h"
+#include "SelectManager.h"
+#include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
-#include "MeshActor.h"
-#include "vtkPropCollection.h"
 
 vtkStandardNewMacro(QRenderWindowStyle);
 

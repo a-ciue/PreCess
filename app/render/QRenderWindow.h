@@ -1,41 +1,35 @@
 /**
-* @file：MyVtkItem.h
+* @file：QRenderWindow.h
 * @brief：定义渲染窗口，以及渲染窗口中的操作
 * @author：付轩宇 email 982531420@qq.com
 
 */
 
 
-#ifndef MYVTKITEM_H
-#define MYVTKITEM_H
+#ifndef Q_RENDER_WINDOW_H
+#define Q_RENDER_WINDOW_H
+#include "QSelection.h"
+#include "QModelQuery.h"
+#include "Core.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
-#include <vtkCapsuleSource.h>
-#include <vtkConeSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
-#include <vtkRendererCollection.h>
 #include <vtkCameraOrientationWidget.h>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
-#include <vtkSphereSource.h>
-#include <vtkOBJReader.h>
 
-#include "Style.h"
-#include "Selection.h"
-#include "MeshActor.h"
-#include "SelectManager.h"
-#include "Core.h" 
-#include "QModelQuery.h"
-#include "MeshActorManager.h"
-#include "SplineActorManager.h"
-#include "QSelection.h"
+class MeshActor;
+class SelectManager;
+class SplineActorManager;
+class MeshActorManager;
+class QRenderWindowStyle;
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
@@ -45,6 +39,7 @@ struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     QML_ELEMENT
 public:
     QRenderWindow();                              //槽函数，改变边框重置相机
+    ~QRenderWindow() override;
 
     struct Data : vtkObject {                 //结构体继承vtkObject
         static Data* New();
@@ -153,4 +148,4 @@ private:
    
     QModelQuery* model_query_ {};
  };
-#endif // MYVTKITEM_H
+#endif // Q_RENDER_WINDOW_H

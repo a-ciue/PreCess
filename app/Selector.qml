@@ -5,6 +5,7 @@
 
 import QtQuick 2.15
 import QtQuick.Controls
+import app.core
 
 Row{
     id:root

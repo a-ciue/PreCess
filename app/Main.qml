@@ -15,10 +15,11 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Controls.Fusion
 
-import fileLoader
-import model
-import commands
-import systems.algo
+import app
+import app.model
+import app.core
+import app.model.systems.algo
+import app.render
 
 ApplicationWindow {
     id: root 
@@ -283,7 +284,7 @@ ApplicationWindow {
 
     SideBar{
         id: sideBar
-        algorithmSystem: algorithmSystem
+        algorithmSystem: root.algorithmSystem
         curModel: objectList.curModelId
         curSelection: selector.selection
         anchors.top: objectList.bottom

@@ -1,4 +1,8 @@
 #include "QModelQuery.h"
+#include "ModelManager.h"
+#include "MeshData.h"
+#include "SplineData.h"
+#include "SplineDataVtk.h"
 
 #include <QVariantList>
 #include <QString>
@@ -43,13 +47,10 @@ std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
 
 std::optional<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
 {
-    std::optional<SplineDataVtk> model_data{};
     ModelData* model = m_manager->getModel(model_id);
-    if (model->isSpline())
-    {
-        model_data = model->asSplineData()->getSplineData();
-    }
-    return model_data;
+    SplineData* data = model->asSplineData();
+
+    return data ? data->getSplineData() : std::nullopt;
 }
 
 QString QModelQuery::getModelName(Index model_id) const

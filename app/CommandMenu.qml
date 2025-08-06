@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Controls.Fusion
 import QtQuick.Layouts
 
-import fileLoader
-import commands
-import systems.algo
+import app
+import app.model.systems.algo
 
 Menu {
     id: commandMenu

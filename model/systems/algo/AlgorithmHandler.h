@@ -4,7 +4,7 @@
  */
 #ifndef ALGORITHM_HANDLER_H
 #define ALGORITHM_HANDLER_H
-#include "../../commands/ArgType.h"
+#include "ArgType.h"
 
 #include <any>
 #include <string>

@@ -1,7 +1,7 @@
 #include "QArgObject.h"
 #include <QUrl>
 
-#include "../QSelection.h"
+#include "QSelection.h"
 
 QArgObject::QArgObject(ArgType&& type, QObject* parent)
     : QObject(parent)

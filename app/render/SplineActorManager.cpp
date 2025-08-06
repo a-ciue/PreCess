@@ -1,52 +1,11 @@
 #include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include "SplineActorManager.h"
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <TopoDS_Shape.hxx>
-#include <BRepTools.hxx>
-#include <STEPControl_Reader.hxx>
-#include <vtkRenderWindow.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkNew.h>
-#include <vtkRenderer.h>
-#include <iostream>
-#include <IVTKTools_ShapeDataSource.hxx>
-#include <vtkNew.h>
-#include <vtkAssembly.h>
-#include <vtkPropAssembly.h>
-#include <vtkMinimalStandardRandomSequence.h>
-#include <vtkNamedColors.h>
-#include "Core.h"
 #include "SplineActor.h"
-#include <vtkMultiBlockDataSet.h>
-#include <vtkCompositePolyDataMapper.h>
-#include <iostream>
-#include <vtkRenderWindow.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkNew.h>
-#include <vtkRenderer.h>
-#include <iostream>
-#include <QtQml/QQmlApplicationEngine>
-#include <QtQml/QQmlContext>
-#include <QtQml/qqmlregistration.h>
-#include <vtkSphereSource.h>
-#include <vtkOBJReader.h>
-#include <QQuickVTKItem.h>
-#include <QVTKRenderWindowAdapter.h>
+
+#include "Core.h"
+
+SplineActorManager::SplineActorManager() = default;
+
+SplineActorManager::~SplineActorManager() = default;
 
 void SplineActorManager::bindRender(vtkRenderer* renderer)
 {
@@ -105,7 +64,7 @@ void SplineActorManager::setVisibility(Index model_id, bool visibility)
 	this->models_[model_id]->setVisibility(visibility);
 }
 
-Q_INVOKABLE void SplineActorManager::setRenderMode(Index model_id, SplineRenderMode render_mode)
+void SplineActorManager::setRenderMode(Index model_id, SplineRenderMode render_mode)
 {
 	if (this->models_.count(model_id))
 	this->models_[model_id]->setRenderMode(render_mode);

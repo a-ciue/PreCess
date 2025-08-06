@@ -1,6 +1,6 @@
-add_library(AlgorithmSystemQml STATIC)
 qt_add_qml_module(AlgorithmSystemQml
-    URI systems.algo
+    URI app.model.systems.algo
+    STATIC
     VERSION 1.0
     SOURCES
         QAlgorithmInfo.h QAlgorithmSystemAdaptor.h "QAlgorithmSystemAdaptor.cpp"

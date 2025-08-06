@@ -1,25 +1,12 @@
 #ifndef MESH_ACTOR_H
 #define MESH_ACTOR_H
-#include <optional>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <vtkNew.h>
-#include <vtkAssembly.h>
-#include <vtkPropAssembly.h>
+#include "Core.h"
+#include <vtkPropCollection.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
-#include "Core.h"
-
-#include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
-struct Group;
-struct Block;
-struct Patch;
-class vtkActor;
+#include <vtkActor.h>
 class vtkRenderer;
-class vtkPolyData;
-class Model;
 
 //! @brief 负责管理Model的Actor
 class MeshActor {

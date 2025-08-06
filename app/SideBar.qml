@@ -8,9 +8,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-import fileLoader
-import commands
-import systems.algo
+import app
+import app.core
+import app.model.systems.algo
 
 Item{
     id: root

@@ -1,5 +1,15 @@
-#include "MyVtkItem.h"
+#include "QRenderWindow.h"
 #include "SelectManager.h"
+#include "QRenderWindowStyle.h"
+#include "Selection.h"
+#include "MeshActor.h"
+#include "SplineDataVtk.h"
+#include "SelectManager.h"
+#include "QModelQuery.h"
+#include "MeshActorManager.h"
+#include "SplineActorManager.h"
+#include "QSelection.h"
+#include <vtkObjectFactory.h>
 QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
@@ -7,6 +17,8 @@ QRenderWindow::QRenderWindow()
     selectManager_ = std::make_unique<SelectManager>();
     edge_render_ = false;
 }
+
+QRenderWindow::~QRenderWindow() = default;
 
 QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderWindow)
 {

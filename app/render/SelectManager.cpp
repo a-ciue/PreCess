@@ -11,9 +11,9 @@
 #include <vtkRenderer.h>
 #include <vtkAssembly.h>
 #include <vtkPropAssembly.h>
-#include "Style.h"
+#include "QRenderWindowStyle.h"
 #include "Selection.h"
-#include "Selector.h"
+#include "SelectorHighlight.h"
 #include <vtkAppendPolyData.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkUnstructuredGrid.h>

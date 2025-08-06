@@ -1,6 +1,6 @@
 #ifndef ALGORITHM_INFO_H
 #define ALGORITHM_INFO_H
-#include "../../commands/ArgType.h"
+#include "ArgType.h"
 #include <string>
 #include <vector>
 namespace systems::algo {

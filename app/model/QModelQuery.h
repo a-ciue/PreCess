@@ -11,19 +11,17 @@
  * @date 2025/4/11
  */
 #pragma once
+#include "Core.h"
 
 #include <QObject>
 #include <QVariant>
 #include <QtGlobal>
 #include <QQmlEngine>  // 提供 QML 元素导出宏 (Qt6)
 
-#include "ModelManager.h"
-#include "MeshData.h"
-#include "SplineData.h"
-#include "SplineDataVtk.h"
 
-// 前向声明 ModelData 类
-class ModelData;
+struct SplineDataVtk;
+struct MeshDataVtk;
+class ModelManager;
 
 class IModelQuery {
 public:

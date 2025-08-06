@@ -1,26 +1,15 @@
 /**
-* @file：Style.h
+* @file：QRenderWindowStyle.h
 * @brief：渲染窗口中的交互操作
 * @author：付轩宇 982531420@qq.com
 
 */
-#ifndef STYLE_H
-#define STYLE_H
-#include <unordered_map>
+#ifndef Q_RENDER_WINDOW_STYLE_H
+#define Q_RENDER_WINDOW_STYLE_H
 #include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkObjectFactory.h>
-#include <vtkSmartPointer.h>
-#include "Selection.h"
-#include "Selector.h"
-#include "SelectManager.h"
-#include <iostream>
-#include <optional>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-class vtkProperty;
-class vtkNamedColors;
-class MeshActor;
+
+class SelectManager;
+
 
 class QRenderWindowStyle : public vtkInteractorStyleTrackballCamera {
 public:

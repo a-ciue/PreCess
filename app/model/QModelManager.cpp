@@ -1,11 +1,16 @@
 #include "QModelManager.h"
+#include "AlgorithmSystemRegister.h"
+#include "ModelIOSystemRegister.h"
+#include "ModelManager.h"
+#include "ModelIOSystem.h"
+#include "AlgorithmSystem.h"
+#include "SystemPluginManager.h"
+#include "QModelObserver.h"
 
 #include <QDebug>
 #include <filesystem>
 #include <QFileInfo>
 
-#include "systems/algo/AlgorithmSystemRegister.h"
-#include "systems/io/ModelIOSystemRegister.h"
 
 QModelManager::QModelManager(QObject* parent)
     : QObject(parent)
@@ -27,6 +32,8 @@ QModelManager::QModelManager(QObject* parent)
     plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-debug\plugins\OBJModelPlugin\OBJModelPlugin.dll)");
     plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-debug\plugins\CmdExecutePlugin\CmdExecutePlugin.dll)");
 }
+
+QModelManager::~QModelManager() = default;
 
 void QModelManager::importModel(const QUrl& url)
 {

@@ -6,15 +6,14 @@ add_subdirectory(render)
 qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp)
 # 设置编译完成的组件在 qrc:/qt/qml
 qt_add_qml_module(${MYNAME}
-        URI fileLoader
+        URI app
         QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml Selector.qml CommandMenu.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE
-    Data modelQml renderQml AlgorithmSystemQml
-    TKernel TKMath TKGeomBase TKGeomAlgo TKTopAlgo TKPrim TKShHealing TKMesh TKMeshVS TKService TKIVtk TKDESTEP
-    Qt${VTK_QT_VERSION}::Core
+    renderQml renderQmlplugin modelQml modelQmlplugin
+    VTK::GUISupportQtQuick
     Qt${VTK_QT_VERSION}::Quick
 )
 

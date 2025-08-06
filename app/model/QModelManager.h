@@ -1,19 +1,26 @@
 #pragma once
-#include "ModelIOSystem.h"
-#include "SystemPluginManager.h"
 #include "QAlgorithmSystemAdaptor.h"
-#include "AlgorithmSystem.h"
 #include <QObject>
 #include <QUrl>
 #include <memory>
-#include "ModelManager.h"
-#include "QModelObserver.h"
+
+namespace systems
+{
+	class SystemPluginManager;
+}
+namespace systems::io
+{
+	class ModelIOSystem;
+}
+class ModelManager;
+class QModelObserver;
 
 class QModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
 public:
     explicit QModelManager(QObject* parent = nullptr);
+    ~QModelManager();
 
     Q_INVOKABLE void importModel(const QUrl& url);
     Q_INVOKABLE void removeModel(int id);

@@ -47,7 +47,7 @@ bool SplineActor::getIsEdgeRender()
 
 void SplineActor::loadShape(const SplineDataVtk& spline_data)
 {
-    this->spline_data_ = spline_data;
+    this->spline_data_ = std::make_unique<SplineDataVtk>(spline_data);
     IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(spline_data.shape);
     vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
     DS->SetShape(aShapeImpl);

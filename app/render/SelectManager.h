@@ -11,7 +11,7 @@
 #include <vtkCompositePolyDataMapper.h>
 
 #include "Selection.h"
-#include "Selector.h"
+#include "SelectorHighlight.h"
 #include "MeshActor.h"
 #include "Core.h"
 

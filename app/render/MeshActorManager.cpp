@@ -1,48 +1,6 @@
 #include "MeshActorManager.h"
-#include <optional>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <vtkNew.h>
-#include <vtkAssembly.h>
-#include <vtkPropAssembly.h>
-#include <vtkMinimalStandardRandomSequence.h>
-#include <vtkNamedColors.h>
-#include "Core.h"
 #include "MeshActor.h"
-#include <vtkMultiBlockDataSet.h>
-#include <vtkCompositePolyDataMapper.h>
-#include <iostream>
-#include <QtQml/QQmlApplicationEngine>
-#include <QtQml/QQmlContext>
-#include <QtQml/qqmlregistration.h>
-#include <vtkSphereSource.h>
-#include <vtkOBJReader.h>
-#include <QQuickVTKItem.h>
-#include <QVTKRenderWindowAdapter.h>
-
-#include <vtkActor.h>
-#include <vtkCellArray.h>
-#include <vtkMinimalStandardRandomSequence.h>
-#include <vtkNamedColors.h>
-#include <vtkPoints.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
-#include <vtkRenderer.h>
-#include <vtkAssembly.h>
-#include <vtkPropAssembly.h>
-#include "Style.h"
 #include "Core.h"
-#include <vtkAppendPolyData.h>
-#include <vtkCompositePolyDataMapper.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkTriangle.h>
-#include <vtkMultiBlockDataSet.h>
-#include <vtkUnsignedCharArray.h>  
-#include <vtkCellData.h>           
-#include <cstdlib>    
-#include <iostream>
 
 const MeshActor* MeshActorManager::getModelActor(Index model_id)
 {

@@ -1,5 +1,5 @@
 qt_add_qml_module(coreQml 
-    URI core 
+    URI app.core 
 	STATIC 
 	SOURCES QSelection.h)
 target_include_directories(coreQml PUBLIC

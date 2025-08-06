@@ -9,15 +9,14 @@
 #include <QtCore/QScopedPointer>
 #include <QQuickVTKItem.h>
 
-#include "ModelManager.h"
-#include "ModelObserver.h"
+#include "QModelObserver.h"
 #include "QModelQuery.h"
 #include <QtQml/QQmlExtensionPlugin>
 
 #include "QModelManager.h"
 #include "QAlgorithmSystemAdaptor.h"
 
-Q_IMPORT_QML_PLUGIN(modelPlugin)
+class ModelManager;
 
 int main(int argc, char* argv[])
 {
@@ -37,7 +36,7 @@ int main(int argc, char* argv[])
         { "modelQuery", QVariant::fromValue(&query) },
         { "algorithmSystem", QVariant::fromValue(&algoAdaptor) }
     });
-    engine.loadFromModule("fileLoader", "Main");
+    engine.loadFromModule("app", "Main");
     if (engine.rootObjects().isEmpty())
         return -1;
 

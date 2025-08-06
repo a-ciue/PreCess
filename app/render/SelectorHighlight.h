@@ -1,11 +1,11 @@
 /**
-* @file：Selector.h
+* @file：SelectorHighlight.h
 * @brief：渲染窗口中的选择和高亮操作
 * @author：付轩宇 email 982531420@qq.com
 
 */
-#ifndef SELECTOR_H
-#define SELECTOR_H
+#ifndef SELECTOR_HIGHLIGHT_H
+#define SELECTOR_HIGHLIGHT_H
 #include <array>
 #include <optional>
 #include <vector>
