@@ -3,7 +3,7 @@
  * @author 张家僮(htxz_6a6@163.com)
  */
 #include "AlgorithmSystem.h"
-#include "../PluginHandler.h"
+#include "PluginHandler.h"
 #include "AlgorithmHandler.h"
 #include "ModelIOSystem.h"
 #include "ModelManager.h"

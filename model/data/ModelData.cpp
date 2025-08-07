@@ -14,7 +14,6 @@
  */
 
 #include "ModelData.h"
-#include "../ToolMesh.h"
 #include "MeshData.h"
 #include "SplineData.h"
 

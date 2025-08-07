@@ -3,7 +3,7 @@
  * @author 张家僮(htxz_6a6@163.com)
  */
 #include "AlgorithmSystemRegister.h"
-#include "../PluginHandler.h"
+#include "PluginHandler.h"
 #include "AlgorithmSystem.h"
 #include <QJsonArray>
 #include <cassert>

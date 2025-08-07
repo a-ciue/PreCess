@@ -4,7 +4,7 @@
  */
 #include "ModelIOSystemRegister.h"
 #include "ModelIOSystem.h"
-#include "../PluginHandler.h"
+#include "PluginHandler.h"
 
 #include <QJsonArray>
 #include <cassert>

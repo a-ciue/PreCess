@@ -1,6 +1,6 @@
 #include "ModelUtil.h"
-#include "ToolMesh.h"
-#include "FaceSplitter.h"
+#include "../../ToolMesh.h"
+#include "../../FaceSplitter.h"
 
 #include <array>
 #include <filesystem>

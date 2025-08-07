@@ -5,7 +5,7 @@
 #ifndef MODEL_IO_SYSTEM_REGISTER_H
 #define MODEL_IO_SYSTEM_REGISTER_H
 
-#include "../SystemRegisterBase.h"
+#include "SystemRegisterBase.h"
 
 namespace systems::io {
 class ModelIOSystem;

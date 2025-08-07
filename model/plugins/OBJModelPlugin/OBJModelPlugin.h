@@ -2,8 +2,8 @@
  * @file OBJModelPlugin.h
  * @author 张家僮(htxz_6a6@163.com)
  */
-#include "../HandlerCreatorDestroyerFactory.h"
-#include "../PluginBase.h"
+#include "HandlerCreatorDestroyerFactory.h"
+#include "PluginBase.h"
 #include "OBJModelHandler.h"
 #include <QObject>
 

@@ -1,7 +1,7 @@
 #include "CTMeshModel.h"
 #include "MeshData.h"
 #include "ModelUtil.h"
-#include "ToolMesh.h"
+#include "../../ToolMesh.h"
 
 void CTMeshModel::update(MeshData& mesh_data)
 {

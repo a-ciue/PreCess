@@ -3,7 +3,7 @@
  * @author 张家僮(htxz_6a6@163.com)
  */
 #include "ModelIOSystem.h"
-#include "../PluginHandler.h"
+#include "PluginHandler.h"
 #include "ModelIOHandler.h"
 #include "ModelManager.h"
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "../PluginBase.h"
+#include "PluginBase.h"
 #include "CmdExecuteHandler.h"
-#include "../HandlerCreatorDestroyerFactory.h"
+#include "HandlerCreatorDestroyerFactory.h"
 #include <QObject>
 
 namespace systems::algo {

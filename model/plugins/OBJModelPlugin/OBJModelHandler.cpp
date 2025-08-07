@@ -4,8 +4,8 @@
  */
 #include "OBJModelHandler.h"
 #include "ModelData.h"
-#include "../../CTMeshModel.h"
-#include "../../commands/ArgType.h"
+#include "CTMeshModel.h"
+#include "ArgType.h"
 #include "MeshData.h"
 
 namespace systems::io {

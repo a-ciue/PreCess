@@ -3,7 +3,7 @@
  * @author (your name)
  */
 #pragma once
-#include "../SystemRegisterBase.h"
+#include "SystemRegisterBase.h"
 
 namespace systems::algo {
 class AlgorithmSystem;
