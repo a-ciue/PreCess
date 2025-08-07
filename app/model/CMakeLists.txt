@@ -1,6 +1,9 @@
 # 准备进行枚举类型 ArgTypeEnum 源代码注入
-get_target_property(ArgTypeEnum_DIRS AlgorithmSystem INCLUDE_DIRECTORIES)
-find_file(ArgTypeEnum_DIR "ArgTypeEnum.h" ${ArgTypeEnum_DIRS})
+get_target_property(ArgTypeEnum_DIRS Core INCLUDE_DIRECTORIES)
+find_file(ArgTypeEnum_DIR "ArgTypeEnum.h" 
+    PATHS ${ArgTypeEnum_DIRS}
+    NO_CACHE # 非缓存变量，每次配置时重新求值保证变量最新
+)
 file(READ ${ArgTypeEnum_DIR} ArgTypeEnum_H_CONTENT)
 set_directory_properties(PROPERTIES CMAKE_CONFIGURE_DEPENDS ${ArgTypeEnum_DIR})    # ArgTypeEnum.h更新时能触发重新配置
 configure_file("QArgType.h.in" "QArgType.h")
