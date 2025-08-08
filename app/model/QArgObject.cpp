@@ -46,7 +46,7 @@ std::optional<std::any> QArgObject::getValue() const
         ret = value_.toBool();
         break;
     case ArgTypeEnum::Path:
-        ret = QFileInfo(value_.toUrl().toLocalFile()).filesystemPath();
+        ret = QFileInfo(value_.toString()).filesystemFilePath();
         break;
     case ArgTypeEnum::Combo:
 		// TODO: 填充Combo逻辑
@@ -54,7 +54,10 @@ std::optional<std::any> QArgObject::getValue() const
     case ArgTypeEnum::Selector:
         ret = std::make_shared<std::unique_ptr<Selection>>(value_.value<QSelection*>()->move());
         break;
+    default:
+        canConvert = false;
+        break;
     }
 
-    return std::nullopt;
+    return canConvert ? ret : std::nullopt;
 }

@@ -10,6 +10,7 @@ import QtQuick.Dialogs
 
 import app
 import app.core
+import app.model
 import app.model.systems.algo
 
 Item{
@@ -34,10 +35,10 @@ Item{
         anchors.right: parent.right
         height:30
         onClicked:{
-            let params = parameterList.model.map(model => model.value)
+            //let params = parameterList.model.map(model => model.value)
 
             //commandDispatcher.runCommand(curCommand, curModel, 
-            algorithmSystem.call(curAlgoInfo.name, curModel, params)
+            algorithmSystem.call(curAlgoInfo.name, curModel, parameterList.model)
         }
     }
     Item{
@@ -65,10 +66,10 @@ Item{
                         required property string description
                         required property var value
                         sourceComponent:{
-                            if(curAlgoInfo && curAlgoInfo.name() === "切分边"){
+                            if(curAlgoInfo && curAlgoInfo.name === "切分边"){
                                 return splictEdgeComponent
                             }
-                            if(curAlgoInfo && curAlgoInfo.name() === "切分面"){
+                            if(curAlgoInfo && curAlgoInfo.name === "切分面"){
                                 return splictFaceComponent
                             }
 
