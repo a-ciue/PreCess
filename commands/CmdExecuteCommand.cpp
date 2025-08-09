@@ -45,16 +45,16 @@ void CmdExecuteCommand::redo()
 {
 }
 
-QList<ArgTypeObject*> CmdExecuteCommand::getArgsModel()
+QList<QArgObject*> CmdExecuteCommand::getArgsModel()
 {
-    QList<ArgTypeObject*> model;
-    model << new ArgTypeObject(0, "功能(.exe,.bat)", "")
-          << new ArgTypeObject(4, "参数列表", "");
+    QList<QArgObject*> model;
+    model << new QArgObject({ArgTypeEnum::Path, "cmd命令", ""})
+          << new QArgObject({ ArgTypeEnum::Text, "程序附加参数", "" });
 
     return model;
 }
 
-unique_ptr<CmdExecuteCommand> CmdExecuteCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
+std::unique_ptr<CmdExecuteCommand> CmdExecuteCommand::create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list)
 {
     // 根据传入的参数创建 SplitFaceCommand 对象
 

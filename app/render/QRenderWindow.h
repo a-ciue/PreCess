@@ -1,0 +1,151 @@
+/**
+* @file：QRenderWindow.h
+* @brief：定义渲染窗口，以及渲染窗口中的操作
+* @author：付轩宇 email 982531420@qq.com
+
+*/
+
+
+#ifndef Q_RENDER_WINDOW_H
+#define Q_RENDER_WINDOW_H
+#include "QSelection.h"
+#include "QModelQuery.h"
+#include "Core.h"
+#include <QQuickVTKItem.h>
+#include <QVTKRenderWindowAdapter.h>
+
+#include <vtkActor.h>
+#include <vtkCamera.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkCameraOrientationWidget.h>
+#include <QtQml/QQmlApplicationEngine>
+#include <QtQml/QQmlContext>
+#include <QtQml/qqmlregistration.h>
+
+class MeshActor;
+class SelectManager;
+class SplineActorManager;
+class MeshActorManager;
+class QRenderWindowStyle;
+
+struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
+    Q_OBJECT
+    Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
+    Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
+    Q_PROPERTY(bool cur_edge_render READ getCurEdgeRender NOTIFY curEdgeRenderChanged)
+    QML_ELEMENT
+public:
+    QRenderWindow();                              //槽函数，改变边框重置相机
+    ~QRenderWindow() override;
+
+    struct Data : vtkObject {                 //结构体继承vtkObject
+        static Data* New();
+        vtkTypeMacro(Data, vtkObject);
+
+
+        vtkNew<vtkRenderer> renderer_;
+
+        /*std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;*/
+        vtkNew<QRenderWindowStyle> style_;
+        vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
+
+
+
+    };
+
+    vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
+    void destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData) override;
+
+    Q_INVOKABLE void resetCamera();
+    //void dispatchChangedSource();
+
+    QSelection* selectedIDs();
+    void setModelQuery(QModelQuery* query);
+    void setCurEdgeRender(bool edge_render);
+    bool getCurEdgeRender();
+
+    bool getMeshIsEdgeRender(Index model_id);
+    bool getSplineIsEdgeRender(Index model_id);
+    bool getIsEdgeRender(Index model_id);
+
+    QString getMeshRenderMode(Index model_id);
+    QString getSplineRenderMode(Index model_id);
+    QString getRenderMode(Index model_id);
+
+	/**
+     * @brief 选择模型
+     * @param select_mode 
+     */
+    Q_INVOKABLE void setSelectModel(Index model_id);
+
+	 /**
+     * @brief 改变选择模式
+     * @param select_mode
+     */
+    Q_INVOKABLE void setSelectMode(QString select_mode);
+   
+    /**
+     * @brief 清空Selection
+     * @param select_mode
+     */
+    Q_INVOKABLE void clearSelection();
+
+
+    /**
+     * @brief 改变渲染模式
+     * @param select_mode
+     */
+    Q_INVOKABLE void setRenderMode(Index model_id, QString render_mode);
+
+    /**
+     * @brief 边渲染
+     * @param select_mode
+     */
+    Q_INVOKABLE void setEdgeRender(Index model_id, bool is_render);
+
+    /**
+     * @brief 改变可见性
+     * @param select_mode
+     */
+    Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
+
+
+    Q_INVOKABLE void onModelChanged(Index model_id);
+    Q_INVOKABLE void deleteModel(Index mode_id);
+
+    Q_SLOT void setClick();
+
+    // Q_PROPERTY(QString file READ file WRITE setFile NOTIFY fileChanged)
+    //QString source() const { return _source; }
+    //void setSource(QString v);
+
+    bool event(QEvent* ev) override;
+
+signals:
+    void selectedChanged();
+    void curEdgeRenderChanged();
+    void clicked();
+ 
+private:
+    std::unique_ptr<MeshActorManager> mesh_actor_manager_;
+    std::unique_ptr<SplineActorManager> spline_actor_manager_;
+
+    bool edge_render_{};
+    ModelRenderMode renderMode_{};
+    SelectMode select_mode_ {};
+
+    vtkNew<vtkCamera> _camera;
+    
+    std::unique_ptr<SelectManager> selectManager_;
+    MeshActor* cur_actor_{};
+    Index cur_actor_id_;
+
+    std::unique_ptr<QMouseEvent> _click;
+    const Data* data_{};
+   
+    QModelQuery* model_query_ {};
+ };
+#endif // Q_RENDER_WINDOW_H

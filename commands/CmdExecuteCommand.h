@@ -3,8 +3,8 @@
 //
 #pragma once
 #include "ICommand.h"
-#include "../ModelOperator.h"
-#include "ArgTypeObject.h"
+#include "ModelOperator.h"
+#include "QArgObject.h"
 #include "../ModelImporter.h"
 #include <filesystem>
 class QSelection;
@@ -19,8 +19,8 @@ public:
     void undo() override;
     void redo() override;
 
-    static QList<ArgTypeObject*> getArgsModel();
-    static unique_ptr<CmdExecuteCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
+    static QList<QArgObject*> getArgsModel();
+    static std::unique_ptr<CmdExecuteCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
 
 private:
     ModelOperator model_op_;

@@ -4,13 +4,13 @@
 // command/SplitFaceCommand.h
 #pragma once
 #include "ICommand.h"
-#include "../ModelOperator.h"
-#include "ArgTypeObject.h"
+#include "ModelOperator.h"
+#include "QArgObject.h"
 #include "../ModelImporter.h"
 class QSelection;
 
 /**
- * SplitFaceCommand：拆分选中面的命令
+ * SplitFaceCommand：拆分选中面的命令。根据给定id找到mesh的face，进行面分割
  */
 class SplitFaceCommand : public ICommand {
 public:
@@ -19,8 +19,8 @@ public:
     void undo() override;
     void redo() override;
 
-    static QList<ArgTypeObject*> getArgsModel();
-    static unique_ptr<SplitFaceCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
+    static QList<QArgObject*> getArgsModel();
+    static std::unique_ptr<SplitFaceCommand> create(ModelOperator model_op, ModelImporter& importer, const QVariantList& list);
 
 private:
     ModelOperator model_op_;

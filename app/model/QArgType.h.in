@@ -1,0 +1,26 @@
+/**
+ * @file QArgType.h
+ * @brief 声明了Qml的枚举类型QArgType
+ *
+ * 由CMake填充C++枚举ArgTypeEnum来做到Qml枚举和C++枚举的一致
+ * @author 张家僮(htxz_6a6@163.com)
+ */
+#ifndef Q_ARG_TYPE_H
+#define Q_ARG_TYPE_H
+
+#include <QObject>
+#include <qqmlintegration.h>
+/**
+ * @brief QArgType 声明了Qml的枚举类型
+ */
+class QArgType : public QObject
+{
+	Q_OBJECT
+    QML_ELEMENT
+	QML_UNCREATABLE("QArgType 声明了枚举类型，不应该被实例化")
+public:
+// 枚举类型插入点
+@ArgTypeEnum_H_CONTENT@
+    Q_ENUM(ArgTypeEnum)
+};
+#endif // !Q_ARG_TYPE_H
