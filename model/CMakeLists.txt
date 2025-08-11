@@ -14,5 +14,3 @@ target_link_libraries(modelPart PUBLIC
 target_link_libraries(modelPart PRIVATE
     TKDESTEP      # OCCT 的库列表
 )
-
-add_subdirectory(plugins)

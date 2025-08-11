@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 
-set(MYNAME triangulation)
+set(MYNAME PreCess)
 
 project(${MYNAME} VERSION 1.0)
 
@@ -28,6 +28,7 @@ qt_standard_project_setup()
 
 add_subdirectory(core)
 add_subdirectory(model)
+add_subdirectory(plugins)
 
 add_subdirectory(app)
 
