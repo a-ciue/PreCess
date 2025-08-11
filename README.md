@@ -85,7 +85,7 @@
 <!-- ABOUT THE PROJECT -->
 ## 关于项目
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](https://geohubdut.netlify.app/products/item-a765/)
 
 本项目使用**前沿版本的开发技术**，力争成为工业软件CAE前处理领域前沿的开源软件项目，成为工业软件CAE前处理领域**最好的网格处理开源项目**。同开源社区学习力争成为现代C++的**前沿工程实践**。
 
@@ -281,6 +281,7 @@ Contributions are what make the open source community such an amazing place to l
 <!-- ACKNOWLEDGMENTS -->
 ## 鸣谢
 
+* [GeoHub-DUT](https://geohubdut.netlify.app/)
 * [大连理工大学软件学院先进工业软件与软件工程研究所](https://ss.dlut.edu.cn/index.htm)
 * 大连理工大学特色化示范性软件学院大型工业软件特色班
 
@@ -300,7 +301,7 @@ Contributions are what make the open source community such an amazing place to l
 [license-url]: https://gitee.com/a-ciue/PreCess/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-111-black.svg?colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: resource/PreCess_letter.png
 [C++]: https://img.shields.io/badge/C++%2017%2F20-000000?style=for-the-badge&logo=cplusplus&logoColor=white
 [C++-url]: https://cppreference.com/
 [CMake]: https://img.shields.io/badge/CMake-000000?style=for-the-badge&logo=cmake&logoColor=white
