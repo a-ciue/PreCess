@@ -15,22 +15,29 @@
 QModelManager::QModelManager(QObject* parent)
     : QObject(parent)
 {
-    // 1) 新建一个 QModelObserver（无参构造）
+    // 1) 初始化
     observer_ = std::make_unique<QModelObserver>();
-
-    // 2) 用两个参数调用 ModelManager 的构造函数
     core_ = std::make_unique<ModelManager>(
         /*observer=*/observer_.get()
     );
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
-
     plugin_manager_ = std::make_unique<systems::SystemPluginManager>();
+
+    // 2) 注册系统
     plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
     plugin_manager_->addSystemRegister(systems::algo::AlgorithmSystem::name, std::make_unique<systems::algo::AlgorithmSystemRegister>(*algo_system_));
-    plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-debug\model\plugins\OBJModelPlugin\OBJModelPlugin.dll)");
-    plugin_manager_->registerPlugin(R"(D:\proj\Qt\triangulation\out\build\x64-debug\model\plugins\CmdExecutePlugin\CmdExecutePlugin.dll)");
+
+    // 3) 注册插件
+    using std::filesystem::path;
+    path plugin_dir = std::filesystem::current_path() / "../plugins";
+    // 遍历插件目录，加载所有插件
+    for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
+        if (entry.is_regular_file()) {
+            plugin_manager_->registerPlugin(entry.path());
+        }
+    }
 }
 
 QModelManager::~QModelManager() = default;
