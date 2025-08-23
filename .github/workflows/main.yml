@@ -5,4 +5,5 @@ jobs:
   gen-doxygen-page:
     runs-on: ubuntu-latest
     steps:
-      - uses: mattnotmitt/doxygen-action@1.9.8
+      - name: Doxygen Action
+        uses: mattnotmitt/doxygen-action@1.9.8
