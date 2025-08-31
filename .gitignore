@@ -31,3 +31,4 @@
 *.user
 .qmlls.ini
 CMakePresets.json
+/vcpkg_installed
