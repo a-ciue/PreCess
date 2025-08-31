@@ -775,15 +775,15 @@ public:
 	MeshVertexIterator constructor, 
 	\param pMesh the current mesh
 	*/
-	MeshVertexIterator( CBaseMesh<CVertex,CEdge,CFace,CHalfEdge> * pMesh )
-	{
-		m_pMesh = pMesh;
-		m_iter = m_pMesh->vertices().begin();
-	}
+    MeshVertexIterator( CBaseMesh<CVertex,CEdge,CFace,CHalfEdge> * pMesh )
+    {
+        m_pMesh = pMesh;
+        m_iter = m_pMesh->vertices().begin();
+    }
 	/*!
 	The vertex, pointed by the current iterator
 	*/
-	CVertex * value() { return *m_iter; };
+	CVertex * value() { return &*m_iter; };
 	/*!
 	The vertex, pointed by the current iterator
 	*/
@@ -810,7 +810,7 @@ private:
 	/*! 
 	Current vertex list iterator.
 	*/
-	typename std::list<CVertex*>::iterator m_iter;
+	typename ElemStorage<CVertex>::iterator m_iter;
 };
 
 // mesh->f
@@ -833,7 +833,7 @@ public:
 	/*!
 	The face, pointed by the current iterator
 	*/
-	CFace * value() { return *m_iter; };
+	CFace * value() { return &*m_iter; };
 	/*!
 	The face, pointed by the current iterator
 	*/
@@ -858,7 +858,7 @@ private:
 	CBaseMesh<CVertex,CEdge,CFace,CHalfEdge> * m_pMesh;
 	/*! Current face list iterator.
 	*/
-	typename std::list<CFace*>::iterator  m_iter;
+	typename ElemStorage<CFace>::iterator  m_iter;
 };
 
 //Mesh->e

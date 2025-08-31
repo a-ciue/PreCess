@@ -27,8 +27,8 @@ void CTMeshModel::update(MeshData& mesh_data)
     // 按g将面分组
     std::unordered_map<int, std::vector<MeshLib::CTMesh::CFace*>> patch_faces;
     for (auto& face : mesh_->faces()) {
-        int face_patch_id = face->get_g();
-        patch_faces[face_patch_id].push_back(face);
+        int face_patch_id = face.get_g();
+        patch_faces[face_patch_id].push_back(&face);
     }
 
     // 遍历每个组更新面

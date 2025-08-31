@@ -24,6 +24,7 @@
 #include "../Geometry/Point.h"
 #include "../Geometry/Point2.h"
 #include "../Parser/StrUtil.h"
+#include "ElemStorage.h"
 
 namespace MeshLib{
 
@@ -55,11 +56,27 @@ public:
 	/*!
 	CBaseMesh constructor.
 	*/
-	CBaseMesh(){};
+    CBaseMesh()
+        : m_verts(ElemStorage<CVertex>())
+        , m_edges(ElemStorage<CEdge>())
+        , m_faces(ElemStorage<CFace>())
+        , m_halfedges(ElemStorage<CHalfEdge>()) { }
+
+	/*!
+	CBaseMesh constructor storage override.
+	*/
+	CBaseMesh(const ElemStorage<CVertex>& verts, const ElemStorage<CEdge>& edges, const ElemStorage<CFace>& faces, const ElemStorage<CHalfEdge>& halfedges)
+            : m_verts(verts)
+            , m_edges(edges)
+            , m_faces(faces)
+            , m_halfedges(halfedges)
+        {
+            m_verts.get_it<>();
+        }
 	/*!
 	CBasemesh destructor
 	*/
-	~CBaseMesh();
+	~CBaseMesh(){}
 
 	//copy operator
 	/*!
@@ -387,29 +404,34 @@ public:
 	double edgeLength( tEdge e );
 
 	/*!
-	List of the edges of the mesh.
+	Storage of the edges of the mesh.
 	*/
-	std::list<tEdge>   & edges()		{ return m_edges; };
+	ElemStorage<CEdge>   & edges()		{ return m_edges; };
 	/*!
-	List of the faces of the mesh.
+	Storage of the faces of the mesh.
 	*/
-	std::list<tFace>   & faces()		{ return m_faces; };
+	ElemStorage<CFace>   & faces()		{ return m_faces; };
 	/*!
-	List of the vertices of the mesh.
+	Storage of the vertices of the mesh.
 	*/
-	std::list<tVertex> & vertices()	{ return m_verts; };
+	ElemStorage<CVertex> & vertices()	{ return m_verts; };
+	/*!
+	Storage of the vertices of the mesh.
+	*/
+	ElemStorage<CHalfEdge> & halfedges() { return m_halfedges; };
 /*
 	bool with_uv() { return m_with_texture; };
 	bool with_normal() { return m_with_normal; };
 */
 protected:
-
-  /*! list of edges */
-  std::list<tEdge>                          m_edges;
-  /*! list of vertices */
-  std::list<tVertex>                        m_verts;
-  /*! list of faces */
-  std::list<tFace>							m_faces;
+  /*! storage of edges */
+  const ElemStorage<CEdge>& m_edges;
+  /*! storage of vertices */
+  const ElemStorage<CVertex>& m_verts;
+  /*! storage of faces */
+  const ElemStorage<CFace>& m_faces;
+  /*! storage of halfedges */
+  const ElemStorage<CHalfEdge>& m_halfedges;
 
   //maps
 
@@ -835,60 +857,6 @@ inline CHalfEdge * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::faceMostClwHalfEdge
 {
 	return (CHalfEdge*)face->halfedge()->he_next();
 };
-/*!
- CBaseMesh destructor
- */
-template<typename CVertex, typename CEdge, typename CFace, typename CHalfEdge>
-CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::~CBaseMesh()
-{
-	//remove vertices
-	
-  for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++ )
-  {
-      CVertex * pV = *viter;
-      delete pV;
-  }
-  m_verts.clear();
-
-	//remove faces
-
-  for( typename std::list<CFace*>::iterator fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++ )
-  {
-      CFace * pF = *fiter;
-
-      tHalfEdge he = faceHalfedge( pF );
- 
-      std::list<CHalfEdge*> hes;
-      do{
-        he = halfedgeNext( he );
-        hes.push_back( he );
-      }while( he != pF->halfedge() );
-
-      for( typename std::list<CHalfEdge*>::iterator hiter = hes.begin(); hiter != hes.end(); hiter ++)
-      {
-          CHalfEdge * pH = *hiter;
-          delete pH;
-      }
-      hes.clear();
-
-      delete pF;
-  }
-  m_faces.clear();
-	
-  //remove edges
-  for( typename std::list<CEdge*>::iterator eiter = m_edges.begin(); eiter != m_edges.end(); eiter ++ )
-  {
-      CEdge * pE = *eiter;
-      delete pE;
-  }
-
-  m_edges.clear();
-	
-  //clear all the maps
-  m_map_vert.clear();
-  m_map_face.clear();
-  //m_map_edge.clear();
-};
 
 /*!
 	Edge length
@@ -912,10 +880,9 @@ double CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::edgeLength( tEdge  e )
 template<typename CVertex, typename CEdge, typename CFace, typename CHalfEdge>
 CVertex * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::createVertex( int id )
 {
-	CVertex * v = new CVertex();
+	CVertex * v = m_verts.allocate();
 	assert( v != NULL );
 	v->id() = id;
-	m_verts.push_back( v );
 	m_map_vert.insert( std::pair<int,CVertex*>(id,v));
 	return v;
 };
@@ -1050,10 +1017,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_obj( const char * filename )
 template<typename CVertex, typename CEdge, typename CFace, typename CHalfEdge>
 CFace * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::createFace( tVertex  v[] , int id )
 {
-	  CFace * f = new CFace();
+	  CFace * f = m_faces.allocate();
 	  assert( f != NULL );
 	  f->id() = id;
-	  m_faces.push_back( f );
 	  m_map_face.insert( std::pair<int,tFace>(id,f) );
 
 		//create halfedges
@@ -1061,7 +1027,7 @@ CFace * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::createFace( tVertex  v[] , int
 
 		for(int i = 0; i < 3; i ++ )
 		{
-			hes[i] = new CHalfEdge;
+			hes[i] = m_halfedges.allocate();
 			assert( hes[i] );
 			CVertex * vert =  v[i];
 			hes[i]->vertex() = vert;
@@ -1163,7 +1129,7 @@ CEdge * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::createEdge( tVertex  v1, tVert
 	std::list<CEdge*> & ledges = (std::list<CEdge*> &) pV->edges();
 
 	
-	for( typename std::list<CEdge*>::iterator te = ledges.begin(); te != ledges.end(); te ++ )
+	for( auto te = ledges.begin(); te != ledges.end(); te ++ )
 	{
 		CEdge	  * pE = *te;
 		CHalfEdge * pH = (CHalfEdge*) pE->halfedge(0);
@@ -1179,9 +1145,8 @@ CEdge * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::createEdge( tVertex  v1, tVert
 	}
 
 	//new edge
-	CEdge * e = new CEdge;
+	CEdge * e = m_edges.allocate();
 	assert( e != NULL );
-	m_edges.push_back( e );
 	ledges.push_back( e );
 
 
@@ -1206,7 +1171,7 @@ inline CEdge * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::vertexEdge( tVertex  v0
 	CVertex * pV = (v0->id() < v1->id() )? v0: v1;
 	std::list<CEdge*> & ledges = vertexEdges( pV );
 
-	for( typename std::list<CEdge*>::iterator eiter = ledges.begin(); eiter != ledges.end(); eiter ++ )
+	for( auto eiter = ledges.begin(); eiter != ledges.end(); eiter ++ )
 	{
 		CEdge * pE = *eiter;
 		CHalfEdge * pH =  edgeHalfedge(pE,0);
@@ -1412,9 +1377,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_m( const char * input )
 	//labelBoundary();
 
 	//Label boundary edges
-	for(typename std::list<CEdge*>::iterator eiter= m_edges.begin() ; eiter != m_edges.end() ; ++ eiter )
+	for(auto eiter= m_edges.begin() ; eiter != m_edges.end() ; ++ eiter )
 	{
-		CEdge *     edge = *eiter;
+		CEdge *     edge = &*eiter;
 		CHalfEdge * he[2];
 
 		he[0] = edgeHalfedge( edge, 0 );
@@ -1445,27 +1410,26 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_m( const char * input )
 
 	std::list<CVertex*> dangling_verts;
 	//Label boundary edges
-	for(typename std::list<CVertex*>::iterator viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
+	for(auto viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
 	{
-		CVertex *     v = *viter;
+		CVertex *     v = &*viter;
 		if( v->halfedge() != NULL ) continue;
 		dangling_verts.push_back( v );
 	}
 
-	for( typename std::list<CVertex*>::iterator  viter = dangling_verts.begin() ; viter != dangling_verts.end(); ++ viter )
+	for( auto  viter = dangling_verts.begin() ; viter != dangling_verts.end(); ++ viter )
 	{
 		CVertex * v = *viter;
-		m_verts.remove( v );
-		delete v;
-		v = NULL;
+		m_verts.deallocate( v );
+        v = NULL;
 	}
 
 	//Arrange the boundary half_edge of boundary vertices, to make its halfedge
 	//to be the most ccw in half_edge
 
-	for(typename std::list<CVertex*>::iterator viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
+	for(auto viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
 	{
-		CVertex *     v = *viter;
+		CVertex *     v = &*viter;
 		if( !v->boundary() ) continue;
 
 		CHalfEdge * he = vertexMostCcwInHalfEdge( v );
@@ -1478,27 +1442,27 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_m( const char * input )
 
 	//read in the traits
 
-	for(typename std::list<CVertex*>::iterator viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
+	for(auto viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
 	{
-		CVertex *     v = *viter;
+		CVertex *     v = &*viter;
 		v->_from_string();
 	}
 
-	for(typename std::list<CEdge*>::iterator eiter = m_edges.begin();  eiter != m_edges.end() ; ++ eiter )
+	for(auto eiter = m_edges.begin();  eiter != m_edges.end() ; ++ eiter )
 	{
-		CEdge *     e = *eiter;
+		CEdge *     e = &*eiter;
 		e->_from_string();
 	}
 
-	for(typename std::list<CFace*>::iterator fiter = m_faces.begin();  fiter != m_faces.end() ; ++ fiter )
+	for(auto fiter = m_faces.begin();  fiter != m_faces.end() ; ++ fiter )
 	{
-		CFace *     f = *fiter;
+		CFace *     f = &*fiter;
 		f->_from_string();
 	}
 
-	for( typename std::list<CFace*>::iterator fiter=m_faces.begin(); fiter != m_faces.end(); fiter ++ )
+	for( auto fiter=m_faces.begin(); fiter != m_faces.end(); fiter ++ )
 	{
-		CFace * pF = *fiter;
+		CFace * pF = &*fiter;
 
 		CHalfEdge * pH  = faceMostCcwHalfEdge( pF );
 		do{
@@ -1516,27 +1480,27 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_m( const char * input )
 void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_m( const char * output )
 {
 	//write traits to string
-	for( typename std::list<CVertex*>::iterator viter=m_verts.begin(); viter != m_verts.end(); viter ++ )
+	for( auto viter=m_verts.begin(); viter != m_verts.end(); viter ++ )
 	{
-		CVertex * pV = *viter;
+		CVertex * pV = &*viter;
 		pV->_to_string();
 	}
 
-	for( typename std::list<CEdge*>::iterator eiter=m_edges.begin(); eiter != m_edges.end(); eiter ++ )
+	for( auto eiter=m_edges.begin(); eiter != m_edges.end(); eiter ++ )
 	{
-		CEdge * pE = *eiter;
+		CEdge * pE = &*eiter;
 		pE->_to_string();
 	}
 
-	for( typename std::list<CFace*>::iterator fiter=m_faces.begin(); fiter != m_faces.end(); fiter ++ )
+	for( auto fiter=m_faces.begin(); fiter != m_faces.end(); fiter ++ )
 	{
-		CFace * pF = *fiter;
+		CFace * pF = &*fiter;
 		pF->_to_string();
 	}
 
-	for( typename std::list<CFace*>::iterator fiter=m_faces.begin(); fiter != m_faces.end(); fiter ++ )
+	for( auto fiter=m_faces.begin(); fiter != m_faces.end(); fiter ++ )
 	{
-		CFace * pF = *fiter;
+		CFace * pF = &*fiter;
 		CHalfEdge * pH  = faceMostCcwHalfEdge( pF );
 		do{
 			pH->_to_string();
@@ -1554,9 +1518,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_m( const char * output )
 
 
 	//remove vertices
-  for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++)
+  for( auto viter = m_verts.begin(); viter != m_verts.end(); viter ++)
   {
-		tVertex v = *viter;
+		tVertex v = &*viter;
 
 		_os << "Vertex " << v->id();
 		
@@ -1571,9 +1535,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_m( const char * output )
 		_os << std::endl;
 	}
 
-  for( typename std::list<CFace*>::iterator fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++ )
+  for( auto fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++ )
 	{
-		tFace f = *fiter;
+		tFace f = &*fiter;
 
 		_os << "Face " << f->id();
 		tHalfEdge he = faceHalfedge( f );
@@ -1589,9 +1553,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_m( const char * output )
 		_os << std::endl;
 	}
 
-  for( typename std::list<CEdge*>::iterator eiter = m_edges.begin(); eiter != m_edges.end(); eiter ++ )
+  for( auto eiter = m_edges.begin(); eiter != m_edges.end(); eiter ++ )
 	{
-		tEdge e = *eiter;
+		tEdge e = &*eiter;
 		if( e->string().size() > 0 )
 		{
 			_os << "Edge "<<  edgeVertex1(e)->id() <<" " << edgeVertex2(e)->id() << " ";
@@ -1599,9 +1563,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_m( const char * output )
 		}
 	}
 
-  for( typename std::list<CFace*>::iterator fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++  )
+  for( auto fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++  )
 	{
-		tFace f = *fiter;
+		tFace f = &*fiter;
 
 		tHalfEdge he = faceHalfedge( f );
 
@@ -1636,15 +1600,15 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_obj( const char * output )
 	}
 
 	int vid = 1;
-	for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++)
+	for( auto viter = m_verts.begin(); viter != m_verts.end(); viter ++)
 	{
-		tVertex v = *viter;
+		tVertex v = &*viter;
 		v->id() = vid ++;
 	}
 
-	for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++)
+	for( auto viter = m_verts.begin(); viter != m_verts.end(); viter ++)
 	{
-		tVertex v = *viter;
+		tVertex v = &*viter;
 
 		_os << "v";
 		
@@ -1655,9 +1619,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_obj( const char * output )
 		_os << std::endl;
 	}
 
-	for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++)
+	for( auto viter = m_verts.begin(); viter != m_verts.end(); viter ++)
 	{
-		tVertex v = *viter;
+		tVertex v = &*viter;
 
 		_os << "vt";
 		
@@ -1668,9 +1632,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_obj( const char * output )
 		_os << std::endl;
 	}
 
-	for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++)
+	for( auto viter = m_verts.begin(); viter != m_verts.end(); viter ++)
 	{
-		tVertex v = *viter;
+		tVertex v = &*viter;
 
 		_os << "vn";
 		
@@ -1682,9 +1646,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_obj( const char * output )
 	}
 
 
-  for( typename std::list<CFace*>::iterator fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++ )
+  for( auto fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++ )
 	{
-		tFace f = *fiter;
+		tFace f = &*fiter;
 
 		_os << "f";
 
@@ -1720,23 +1684,23 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_off( const char * output )
 
 
 	int vid = 0;
-	for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++)
+	for( auto viter = m_verts.begin(); viter != m_verts.end(); viter ++)
 	{
-		tVertex v = *viter;
+		tVertex v = &*viter;
 		v->id() = vid ++;
 	}
 
-	for( typename std::list<CVertex*>::iterator viter = m_verts.begin(); viter != m_verts.end(); viter ++)
+	for( auto viter = m_verts.begin(); viter != m_verts.end(); viter ++)
 	{
-		tVertex v = *viter;
+		tVertex v = &*viter;
 		_os << v->point()[0]  << " " << v->point()[1] << " " << v->point()[2]<< std::endl;
 		//_os << v->normal()[0] << " " << v->normal()[1]<< " " << v->normal()[2]<< std::endl;
 	}
 
 
-	for( typename std::list<CFace*>::iterator fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++ )
+	for( auto fiter = m_faces.begin(); fiter != m_faces.end(); fiter ++ )
 	{
-		tFace f = *fiter;
+		tFace f = &*fiter;
 
 		_os << "3";
 
@@ -1768,7 +1732,6 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::deleteFace( tFace  pFace )
 	  {
 		  m_map_face.erase( fiter );
 	  }	
-	  m_faces.remove( pFace );
 
 		
 	 //create halfedges
@@ -1810,10 +1773,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::deleteFace( tFace  pFace )
 			if( pS == NULL )
 			{
 				//assert(0);
-				m_edges.remove( pE );
 				CVertex * v0 = halfedgeSource( pH );
 				CVertex * v1 = halfedgeTarget( pH );
-				delete pE;
+				m_edges.deallocate( pE );
 			}
 
 			
@@ -1822,10 +1784,10 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::deleteFace( tFace  pFace )
 		//remove half edges
 		for(int i = 0; i < 3; i ++ )
 		{
-			delete hes[i];
+            m_halfedges.deallocate(hes[i]);
 		}
-		
-		delete pFace;
+
+		m_faces.deallocate(pFace);
 };
 
 /*!
@@ -1941,9 +1903,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::labelBoundary( void )
 {
 	
 	//Label boundary edges
-	for(typename std::list<CEdge*>::iterator eiter= m_edges.begin() ; eiter != m_edges.end() ; ++ eiter )
+	for(auto eiter= m_edges.begin() ; eiter != m_edges.end() ; ++ eiter )
 	{
-		CEdge *     edge = *eiter;
+		CEdge *     edge = &*eiter;
 		CHalfEdge * he[2];
 
 		he[0] = (CHalfEdge*)edge->halfedge(0);
@@ -1974,27 +1936,26 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::labelBoundary( void )
 
 	std::list<CVertex*> dangling_verts;
 	//Label boundary edges
-	for(typename std::list<CVertex*>::iterator viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
+	for(auto viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
 	{
-		tVertex     v = *viter;
+		tVertex     v = &*viter;
 		if( v->halfedge() != NULL ) continue;
 		dangling_verts.push_back( v );
 	}
 
-	for( typename std::list<CVertex*>::iterator  viter = dangling_verts.begin() ; viter != dangling_verts.end(); ++ viter )
+	for( auto  viter = dangling_verts.begin() ; viter != dangling_verts.end(); ++ viter )
 	{
 		tVertex v = *viter;
-		m_verts.remove( v );
-		delete v;
-		v = NULL;
+		m_verts.deallocate( v );
+        v = NULL;
 	}
 
 	//Arrange the boundary half_edge of boundary vertices, to make its halfedge
 	//to be the most ccw in half_edge
 
-	for(typename std::list<CVertex*>::iterator viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
+	for(auto viter = m_verts.begin();  viter != m_verts.end() ; ++ viter )
 	{
-		tVertex     v = *viter;
+		tVertex     v = &*viter;
 		if( !v->boundary() ) continue;
 
 		CHalfEdge * he = (CHalfEdge*)v->halfedge();
@@ -2017,10 +1978,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::labelBoundary( void )
 template<typename CVertex, typename CEdge, typename CFace, typename CHalfEdge>
 CFace * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::createFace( std::vector<tVertex> &  v, int id )
 {
-	  CFace * f = new CFace();
+	  CFace * f = m_faces.allocate();
 	  assert( f != NULL );
 	  f->id() = id;
-	  m_faces.push_back( f );
 	  m_map_face.insert( std::pair<int,tFace>(id,f) );
 
 		//create halfedges
@@ -2028,7 +1988,7 @@ CFace * CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::createFace( std::vector<tVerte
 
 		for(size_t i = 0; i < v.size(); i ++ )
 		{
-			tHalfEdge pH = new CHalfEdge;
+			tHalfEdge pH = m_halfedges.allocate();
 			assert( pH );
 			CVertex * vert =  v[i];
 			pH->vertex() = vert;

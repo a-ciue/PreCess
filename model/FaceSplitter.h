@@ -83,11 +83,11 @@ typename M::V* CFaceSplitter<M>::split_edge(H* he)
     array<H*, 4> hes {
         he, // he
         m_pMesh->halfedgeSym(he), // he_sym
-        new H, // he_next
+        m_pMesh->halfedges().allocate(), // he_next
         nullptr
     };
-    hes[3] = hes[1] ? new H : nullptr; // he_sym_prev
-    array<E*, 2> es { m_pMesh->halfedgeEdge(he), new E };
+    hes[3] = hes[1] ? m_pMesh->halfedges().allocate() : nullptr; // he_sym_prev
+    array<E*, 2> es { m_pMesh->halfedgeEdge(he), m_pMesh->edges().allocate() };
 
     // halfedge
     hes[2]->he_next() = hes[0]->he_next(); // hes[0] -> hes[2]
@@ -126,8 +126,6 @@ typename M::V* CFaceSplitter<M>::split_edge(H* he)
     vs[1]->halfedge() = m_pMesh->vertexMostCcwInHalfEdge(vs[1]);
     vs[2]->halfedge() = hes[2];
     vs[2]->halfedge() = m_pMesh->vertexMostCcwInHalfEdge(vs[2]);
-    // mesh
-    m_pMesh->edges().push_back(es[1]);
 
     return vs[1];
 }
@@ -142,8 +140,8 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
     array<F*, 2> fs {};
     array<H*, 2> e_hes {
         // e_hes[i]起点v[i]
-        new H, // v0->v1
-        new H // v1->v0
+        m_pMesh->halfedges().allocate(), // v0->v1
+        m_pMesh->halfedges().allocate() // v1->v0
     };
 
     array<array<H*, 2>, 2> v_adjhe {};
@@ -182,11 +180,10 @@ std::pair<typename M::H*, typename M::F*> CFaceSplitter<M>::create_edge(V* v0, H
         if (e_hes[i]->is_in_same_face(m_pMesh->faceHalfedge(f))) {
             fs[i] = f;
         } else {
-            fs[i] = new F();
+            fs[i] = m_pMesh->faces().allocate();
             newFace = fs[i];
             fs[i]->id() = ++m_maxFid;
             fs[i]->halfedge() = e_hes[i];
-            m_pMesh->faces().push_back(fs[i]);
             m_pMesh->map_face().emplace(fs[i]->id(), fs[i]);
 
             H* cur_he = e_hes[i];
@@ -311,14 +308,14 @@ typename M::F* CFaceSplitter<M>::merge_face(H* phe_del)
 
     m_pMesh->edges().remove(to_be_deleted_e);
 
-    delete to_be_deleted_e;
+    m_pMesh->edges().deallocate(to_be_deleted_e);
     to_be_deleted_e = NULL;
 
     for (int i = 0; i < 2; i++) {
-        delete to_be_deleted_hes[i];
+        m_pMesh->halfedges().deallocate(to_be_deleted_hes[i]);
     }
 
-    delete f_left;
+    m_pMesh->faces().deallocate(f_left);
     f_left = NULL;
 
     return f;

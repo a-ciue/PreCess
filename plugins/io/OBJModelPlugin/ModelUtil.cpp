@@ -164,15 +164,15 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
     using CEdge = CTMesh::CEdge;
     int m_vertex_id = 0;
 
-    for (std::list<tVertex>::iterator viter = mesh->vertices().begin(); viter != mesh->vertices().end(); viter++) {
-        tVertex pV = *viter;
-        m_vertex_id = (m_vertex_id > pV->id()) ? m_vertex_id : pV->id();
+    for (auto viter = mesh->vertices().begin(); viter != mesh->vertices().end(); viter++) {
+        CVertex& pV = *viter;
+        m_vertex_id = (m_vertex_id > pV.id()) ? m_vertex_id : pV.id();
     }
 
     int m_face_id = 0;
-    for (std::list<tFace>::iterator fiter = mesh->faces().begin(); fiter != mesh->faces().end(); fiter++) {
-        tFace pF = *fiter;
-        m_face_id = (m_face_id > pF->id()) ? m_face_id : pF->id();
+    for (auto fiter = mesh->faces().begin(); fiter != mesh->faces().end(); fiter++) {
+        CFace& pF = *fiter;
+        m_face_id = (m_face_id > pF.id()) ? m_face_id : pF.id();
     }
 
     CVertex* pV = mesh->createVertex(++m_vertex_id);
@@ -194,11 +194,10 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
         hs[i] = mesh->halfedgeSym(h[i]);
     }
 
-    CFace* f = new CFace();
+    CFace* f = mesh->faces().allocate();
     assert(f != NULL);
     f->id() = ++m_face_id;
     f->get_g() = face->get_g();
-    mesh->faces().push_back(f);
     mesh->map_face()[f->id()] = f;
 
     // create halfedges
@@ -220,11 +219,10 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
         f->halfedge() = hes[i];
     }
 
-    f = new CFace();
+    f = mesh->faces().allocate();
     assert(f != NULL);
     f->id() = ++m_face_id;
     f->get_g() = face->get_g();
-    mesh->faces().push_back(f);
     mesh->map_face()[f->id()] = f;
 
     // create halfedges
@@ -249,9 +247,8 @@ MeshLib::CToolVertex* ModelUtil::split_face(MeshLib::CToolFace* face, MeshLib::C
 
     CEdge* e[3];
     for (int i = 0; i < 3; i++) {
-        e[i] = new CEdge();
+        e[i] = mesh->edges().allocate();
         assert(e[i]);
-        mesh->edges().push_back(e[i]);
     }
 
     _attach_halfedge_to_edge(h[1], hes[0], e[0]);
@@ -566,7 +563,7 @@ std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::file
             // 为当前面设置分组 ID
             auto face = *face_iter;
             //face->set_g(current_group_id);  // 假设 `set_g` 更新 m_g 属性
-            face->get_g() = current_group_id;
+            face.get_g() = current_group_id;
             ++face_iter;
         }
     }
