@@ -5,14 +5,16 @@ namespace MeshLib {
 template <typename CElement>
 class ElemStorage : public plf::colony<CElement> {
 public:
+    using Base = plf::colony<CElement>;
+
     ElemStorage() = default;
     ~ElemStorage() = default;
-    CElement* allocate() { return &*(emplace()); }
+    CElement* allocate() { return &*(Base::emplace()); }
     void deallocate(CElement* e)
     {
         if (!e)
             return;
-	    erase(get_iterator(e));
+	    Base::erase(Base::get_iterator(e));
     }
 };
 }

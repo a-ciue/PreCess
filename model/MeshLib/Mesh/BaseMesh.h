@@ -56,23 +56,7 @@ public:
 	/*!
 	CBaseMesh constructor.
 	*/
-    CBaseMesh()
-        : m_verts(ElemStorage<CVertex>())
-        , m_edges(ElemStorage<CEdge>())
-        , m_faces(ElemStorage<CFace>())
-        , m_halfedges(ElemStorage<CHalfEdge>()) { }
-
-	/*!
-	CBaseMesh constructor storage override.
-	*/
-	CBaseMesh(const ElemStorage<CVertex>& verts, const ElemStorage<CEdge>& edges, const ElemStorage<CFace>& faces, const ElemStorage<CHalfEdge>& halfedges)
-            : m_verts(verts)
-            , m_edges(edges)
-            , m_faces(faces)
-            , m_halfedges(halfedges)
-        {
-            m_verts.get_it<>();
-        }
+    CBaseMesh() { }
 	/*!
 	CBasemesh destructor
 	*/
@@ -406,32 +390,32 @@ public:
 	/*!
 	Storage of the edges of the mesh.
 	*/
-	ElemStorage<CEdge>   & edges()		{ return m_edges; };
+	ElemStorage<CEdge>		& edges() { return m_edges; };
 	/*!
 	Storage of the faces of the mesh.
 	*/
-	ElemStorage<CFace>   & faces()		{ return m_faces; };
+    ElemStorage<CFace>		& faces() { return m_faces; };
 	/*!
 	Storage of the vertices of the mesh.
 	*/
-	ElemStorage<CVertex> & vertices()	{ return m_verts; };
+    ElemStorage<CVertex>	& vertices() { return m_verts; };
 	/*!
 	Storage of the vertices of the mesh.
 	*/
-	ElemStorage<CHalfEdge> & halfedges() { return m_halfedges; };
+	ElemStorage<CHalfEdge>	& halfedges() { return m_halfedges; };
 /*
 	bool with_uv() { return m_with_texture; };
 	bool with_normal() { return m_with_normal; };
 */
 protected:
   /*! storage of edges */
-  const ElemStorage<CEdge>& m_edges;
+  ElemStorage<CEdge> m_edges;
   /*! storage of vertices */
-  const ElemStorage<CVertex>& m_verts;
+  ElemStorage<CVertex> m_verts;
   /*! storage of faces */
-  const ElemStorage<CFace>& m_faces;
+  ElemStorage<CFace> m_faces;
   /*! storage of halfedges */
-  const ElemStorage<CHalfEdge>& m_halfedges;
+  ElemStorage<CHalfEdge> m_halfedges;
 
   //maps
 
