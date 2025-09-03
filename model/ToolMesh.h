@@ -231,11 +231,11 @@ public:
   typedef VertexInHalfedgeIterator<V, E, F, H> VertexInHalfedgeIterator;
   typedef FaceEdgeIterator<V, E, F, H> FaceEdgeIterator;
 	
-  std::map<int, F*>& map_face()
+  std::unordered_map<int, F*>& map_face()
   {
       return this->m_map_face;
   }
-  std::map<int, V*>& map_vert()
+  std::unordered_map<int, V*>& map_vert()
   {
       return this->m_map_vert;
   }

@@ -420,9 +420,9 @@ protected:
   //maps
 
   /*! map between vetex and its id*/
-  std::map<int, tVertex>                    m_map_vert;
+  std::unordered_map<int, tVertex>					m_map_vert;
   /*! map between face and its id*/
-  std::map<int, tFace>						m_map_face;
+  std::unordered_map<int, tFace>					m_map_face;
 
 
 public:
