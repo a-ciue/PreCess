@@ -130,16 +130,36 @@
 
 ## 构建项目
 
-从尝试构建项目开始上手项目
-
 ### 准备
 
-* 下载[CMake安装包](https://cmake.org/download/)并进行安装
-* 下载并安装vcpkg
-> 通过vcpkg解决依赖的方式目前有待进一步研究
-* **Windows**用户需要安装[Visual Studio](https://visualstudio.microsoft.com/zh-hans/)
+* 下载[CMake安装包](https://cmake.org/download/)并安装
+* 下载并安装Ninja：Windows用户在[Releases · ninja-build/ninja](https://github.com/ninja-build/ninja/releases)下载ninja-win.zip并自行放置exe文件和设置PATH环境变量
+* **Windows**用户需要安装[Visual Studio并选择安装C++桌面开发组件](https://visualstudio.microsoft.com/zh-hans/vs/features/cplusplus/)
 
 ### 构建
+
+#### Windows用户 （使用vcpkg的导出依赖包）
+
+1. 在本项目[发行版页面](https://gitee.com/a-ciue/PreCess/releases)，下载带预编译依赖包vcpkg-export与项目源码PreCess，确保文件目录结构为两文件夹并列：
+```
+- vcpkg-export
+    - installed
+    - scripts
+    - .vcpkg.root
+    - vcpkg.exe
+- PreCess（项目源码目录）
+```
+2. `Win`+`Q`搜索并打开`x64 Native Tools Command Prompt for VS 2022`
+3. 假设该目录为`<path>`，执行命令：
+```pwsh
+cd /d <path>/PreCess
+cmake . --preset vcpkg-export
+cd out/build/vcpkg-export
+cmake --build .
+cmake --install .
+cd ../../install/vcpkg-export/bin
+PreCess.exe
+```
 
 #### Windows用户（不使用vcpkg）
 
@@ -150,9 +170,8 @@
 3. 假设解压目录为`<path>`，
 ```pwsh
 cd <path>/PreCess
-mkdir build
+cmake -S . -B build -DCMAKE_PREFIX_PATH="<dependent_package_directories>"
 cd build
-cmake .. -DCMAKE_PREFIX_PATH="<dependent_package_directories>"
 cmake --build .
 cmake --install . 
 ```
@@ -212,6 +231,7 @@ _For more examples, please refer to the [Documentation]()_
   * [ ] C/S架构：模型层打包成服务器上的服务，类ParaView
 * [ ] 插件管理
   * [ ] 完善动态插件机制：ABI稳定过于抽象，在用户的插件使用过程中逐渐完善
+  * [ ] 插件化的还不够彻底，目前只是实现了业务逻辑的插件化，没有考虑渲染或者UI的插件化
   * [ ] 静态插件机制设计：使用constexpr静态注册，元数据在插件编译时嵌入。尽量兼容动态插件接口
 * [ ] 多任务管理
   * [ ] 算法不阻塞UI，区分工作线程与界面线程
