@@ -26,7 +26,7 @@ ApplicationWindow {
     width: 800
     height: 600
     visibility: Window.Maximized
-    title: qsTr("三角剖分交互程序")
+    title: qsTr("PreCess")
     menuBar: MenuBar{
         //height:30
         Menu{

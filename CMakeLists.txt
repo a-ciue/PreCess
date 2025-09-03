@@ -31,6 +31,7 @@ add_subdirectory(model)
 add_subdirectory(plugins)
 
 add_subdirectory(app)
+add_subdirectory(resource)
 
 if(ENABLE_TEST)
     enable_testing()

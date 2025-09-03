@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
     QModelQuery query(manager, nullptr);
 
     QGuiApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":/images/PreCess.ico"));
 
     QQmlApplicationEngine engine;
     engine.setInitialProperties({
