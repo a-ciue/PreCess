@@ -1,0 +1,8 @@
+{
+  "dependencies": [
+    { "name": "opencascade", "features": ["vtk"] },
+    { "name": "vtk", "features": ["qt"] },
+    { "name": "gtest" },
+    { "name": "spdlog"}
+  ]
+}

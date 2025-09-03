@@ -30,5 +30,6 @@
 /html
 *.user
 .qmlls.ini
-CMakePresets.json
 /vcpkg_installed
+/CMakeUserPresets.json
+/CMakeUserPresets.json
