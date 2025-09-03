@@ -18,6 +18,7 @@
 #include "SplineData.h"
 
 #include <stdexcept>  // 用于抛出异常
+#include <algorithm>
 
 ModelData::ModelData() = default;
 ModelData::~ModelData() = default;

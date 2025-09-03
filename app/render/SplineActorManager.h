@@ -1,8 +1,9 @@
 #ifndef SPLINE_ACTOR_MANAGER_H
 #define SPLINE_ACTOR_MANAGER_H
-#include <unordered_map>
-#include <vtkRenderer.h>
 #include "Core.h"
+#include <vtkRenderer.h>
+#include <unordered_map>
+#include <memory>
 
 struct SplineDataVtk;
 class SplineActor;

@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <filesystem>
 #include <QFileInfo>
+#include <spdlog/spdlog.h>
 
 
 QModelManager::QModelManager(QObject* parent)
@@ -32,6 +33,13 @@ QModelManager::QModelManager(QObject* parent)
     // 3) 注册插件
     using std::filesystem::path;
     path plugin_dir = std::filesystem::current_path() / "../plugins";
+    if (!std::filesystem::is_directory(plugin_dir)) {
+        plugin_dir = std::filesystem::current_path() / "plugins";
+    }
+    if (!std::filesystem::is_directory(plugin_dir)) {
+        spdlog::error("QModelManager::QModelManager: 插件目录 {} 不存在", plugin_dir.string());
+        return;
+    }
     // 遍历插件目录，加载所有插件
     for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
         if (entry.is_regular_file()) {
