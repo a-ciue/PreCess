@@ -3,7 +3,8 @@ add_subdirectory(model)
 add_subdirectory(render)
 
 # 1) 生成 App Bundle（macOS 上的 .app 目录结构）
-qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp)
+set(app_icon_resource_windows "${CMAKE_SOURCE_DIR}/resource/PreCess.rc")
+qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_icon_resource_windows})
 # 设置编译完成的组件在 qrc:/qt/qml
 qt_add_qml_module(${MYNAME}
         URI app
@@ -33,7 +34,9 @@ include(InstallRequiredSystemLibraries)
 install(TARGETS ${MYNAME}
     BUNDLE DESTINATION .          # 放在 install/ 目录下
     FRAMEWORK DESTINATION Frameworks
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT ${MYNAME}
+)
 
 # 3) 安装依赖库 (RUNTIME_DEPENDENCIES)
 #    - 这里要列举实际用到的 VTK::XXX 模块输出目录，否则无法复制对应的 .dylib
@@ -51,6 +54,7 @@ install(
         POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"  # don't install Windows-provided libs
         FRAMEWORK DESTINATION Frameworks
         BUNDLE DESTINATION .
+        COMPONENT ${MYNAME}
 )
 
 # 4) 生成部署 QML 的脚本（若需要更多 QML 插件，可在这里处理）
@@ -58,7 +62,10 @@ qt_generate_deploy_qml_app_script(
         TARGET ${MYNAME}
         OUTPUT_SCRIPT deploy_script
 )
-install(SCRIPT ${deploy_script})
+install(
+    SCRIPT ${deploy_script}
+    COMPONENT ${MYNAME}
+)
 
 # 5) 使用 fixup_bundle 将所有依赖“收拢”进 .app，并修正引用路径（仅在 macOS 下执行）
 if(APPLE)

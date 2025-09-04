@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 
 set(MYNAME PreCess)
 
-project(${MYNAME} VERSION 0.1)
+project(${MYNAME} VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -82,10 +82,12 @@ set(CPACK_NSIS_DISPLAY_NAME "${MYNAME}")
 set(CPACK_NSIS_PACKAGE_NAME "${MYNAME}")
 set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL YES)
 set(CPACK_NSIS_CREATE_ICONS_EXTRA
-    "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${MYNAME}.lnk' '$INSTDIR\\\\${MYNAME}.exe'"
+    "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${MYNAME}.lnk' '$INSTDIR\\\\bin\\\\${MYNAME}.exe'
+    CreateShortCut '$DESKTOP\\\\${MYNAME}.lnk' '$INSTDIR\\\\bin\\\\${MYNAME}.exe'"
 )
 set(CPACK_NSIS_DELETE_ICONS_EXTRA
-    "Delete '$SMPROGRAMS\\\\$START_MENU\\\\${MYNAME}.lnk'"
+    "Delete '$SMPROGRAMS\\\\$START_MENU\\\\${MYNAME}.lnk'
+    Delete '$DESKTOP\\\\${MYNAME}.lnk'"
 )
 
 include(CPack)
@@ -94,18 +96,20 @@ cpack_add_component(${MYNAME}
     DISPLAY_NAME ${MYNAME}
     DESCRIPTION "主程序"
     REQUIRED
-    INSTALL_TYPES Full Developer Minimal
+    INSTALL_TYPES Full Minimal
 )
 
 cpack_add_component(AllPlugins
     DISPLAY_NAME "${MYNAME} 插件"
     DESCRIPTION "所有插件"
-    REQUIRED
-    INSTALL_TYPES Full Developer Minimal
+    DEPENDS ${MYNAME}
+    GROUP Plugins
+    INSTALL_TYPES Full
+)
+cpack_add_component_group(Plugins
+    DISPLAY_NAME "功能插件"
+    DESCRIPTION "IO与算法功能。"
 )
 
 cpack_add_install_type(Full)
-#cpack_add_install_type(Minimal)
-#cpack_add_install_type(Developer
-#    DISPLAY_NAME "SDK Development"
-#)
+cpack_add_install_type(Minimal)
