@@ -27,7 +27,7 @@ class IModelQuery {
 public:
     virtual ~IModelQuery() = default;
 
-    virtual std::optional<MeshDataVtk> getModelData(Index model_id) = 0;
+    virtual std::optional<MeshDataVtk> getMeshData(Index model_id) = 0;
 };
 
 /**
@@ -50,7 +50,7 @@ public:
      */
     explicit QModelQuery(ModelManager* mgr, QObject* parent = nullptr);
 
-    std::optional<MeshDataVtk> getModelData(Index model_id) override;
+    std::optional<MeshDataVtk> getMeshData(Index model_id) override;
 
     std::optional<SplineDataVtk> getSplineData(Index model_id) ;
 

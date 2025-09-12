@@ -2,6 +2,7 @@
 #define CORE_H
 #include <vector>
 #include <array>
+#include <memory>
 
 enum class ModelRenderMode {
     Face,
@@ -37,11 +38,11 @@ struct BlockDatas {
 struct MeshDataVtk {
     const std::vector<std::array<Index, 3>>& vtk_triangles_;
     const std::vector<std::array<double, 3>>& vtk_points_;
-    BlockDatas model_blocks_;
+    std::shared_ptr<BlockDatas> model_blocks_;
 
     Index model_block_id(Index block_id) const
 {
-    return this->model_blocks_.block_datas[block_id].id;
+    return this->model_blocks_->block_datas[block_id].id;
 }
 };
 #endif // CORE_H

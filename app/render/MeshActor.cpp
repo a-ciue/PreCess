@@ -130,7 +130,7 @@ Index MeshActor::get_model_block_id(vtkIdType block_id) const
 void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
 {
     auto multiblock = vtkSmartPointer<vtkMultiBlockDataSet>::New();
-    const auto& blocks = model_data.model_blocks_.block_datas;
+    const auto& blocks = model_data.model_blocks_->block_datas;
 
     for (size_t block_index = 0; block_index < blocks.size(); ++block_index) {
         const auto& block = blocks[block_index];
