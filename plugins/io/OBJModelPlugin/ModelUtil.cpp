@@ -541,8 +541,7 @@ std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::file
     std::string line;
     int current_group_id = -1; // 当前分组的 ID
     // 获取面片集合并进行迭代
-    auto& face_list = mesh->faces();
-    auto face_iter = face_list.begin();
+    auto face_iter = MeshLib::CTMesh::MeshFaceIterator(mesh.get());
 
     while (std::getline(obj_stream, line)) {
         std::istringstream line_stream(line);
@@ -559,17 +558,17 @@ std::unique_ptr<MeshLib::CTMesh> ModelUtil::read_obj_with_groups(const std::file
             std::cout << "Patch: " << group_name << " -> ID: " << current_group_id << std::endl;
         }
             // 处理面信息
-        else if (prefix == "f" && face_iter != mesh->faces().end()) {
+        else if (prefix == "f" && !face_iter.end()) {
             // 为当前面设置分组 ID
             auto face = *face_iter;
             //face->set_g(current_group_id);  // 假设 `set_g` 更新 m_g 属性
-            face.get_g() = current_group_id;
+            face->get_g() = current_group_id;
             ++face_iter;
         }
     }
 
     // 检查是否所有面都被分组
-    if (face_iter != mesh->faces().end()) {
+    if (!face_iter.end()) {
         throw std::runtime_error("Mismatch between OBJ face count and mesh faces.");
     }
 
