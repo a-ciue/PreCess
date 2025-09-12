@@ -57,11 +57,11 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 	{
 		auto index_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
 		auto& vtk_indices = this->model_data_->vtk_poly_vertices_;
-		index_array->SetArray(const_cast<Index*>(vtk_indices.data()), 3 * vtk_indices.size(), 1);
+		index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
 
 		auto offset_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
 		auto& vtk_offsets= this->model_data_->vtk_poly_offsets_;
-		offset_array->SetArray(const_cast<Index*>(vtk_offsets.data()), 3 * vtk_offsets.size(), 1);
+		offset_array->SetArray(const_cast<Index*>(vtk_offsets.data()), vtk_offsets.size(), 1);
 
 		poly_data->SetData(offset_array, index_array);
 	}
