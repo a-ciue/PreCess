@@ -23,7 +23,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
     MeshData* md = model->asMeshData();
 
     // 构造 ModelData
-    MeshDataVtk model_data { md->face_vertices, md->vertex_positions, {} };
+    MeshDataVtk model_data { md->face_vertices, md->face_vertex_offsets, md->vertex_positions, {} };
 
     // 添加所有块
     auto block_datas = std::make_shared<BlockDatas>();

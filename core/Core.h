@@ -36,7 +36,8 @@ struct BlockDatas {
 };
 
 struct MeshDataVtk {
-    const std::vector<std::array<Index, 3>>& vtk_triangles_;
+    const std::vector<Index>& vtk_poly_vertices_;
+    const std::vector<Index>& vtk_poly_offsets_;
     const std::vector<std::array<double, 3>>& vtk_points_;
     std::shared_ptr<BlockDatas> model_blocks_;
 
