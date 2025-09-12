@@ -18,6 +18,7 @@ function(precess_add_io_plugin)
 
 	install(TARGETS ${TARGET}
 		LIBRARY DESTINATION "./plugins"
+        COMPONENT AllPlugins
 	)
 endfunction()
 
@@ -38,6 +39,7 @@ function(precess_add_algo_plugin)
 
 	install(TARGETS ${TARGET}
 		LIBRARY DESTINATION "./plugins"
+        COMPONENT AllPlugins
 	)
 endfunction()
 
