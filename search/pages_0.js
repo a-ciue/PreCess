@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['information_0',['License Information',['../md_LICENSE.html',1,'']]]
+  ['1_3a_20code_20licensed_20under_20gnu_20lesser_20general_20public_20license_20lgpl_0',['Section 1: Code Licensed under GNU Lesser General Public License (LGPL)',['../md_LICENSE.html#autotoc_md1',1,'']]]
 ];
