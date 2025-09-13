@@ -4,7 +4,7 @@
  */
 #include "OBJModelHandler.h"
 #include "ModelData.h"
-#include "CTMeshModel.h"
+#include "../CTMeshModel.h"
 #include "ArgType.h"
 #include "MeshData.h"
 
