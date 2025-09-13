@@ -20,7 +20,12 @@ namespace MeshLib {
  */
 class CTMeshModel : public MeshModelBase {
 public:
-    CTMeshModel(const std::filesystem::path& mesh_path);
+    enum class Type {
+		OBJ, //> 读取OBJ文件
+		M    //> 读取M文件
+	};
+
+    CTMeshModel(const std::filesystem::path& mesh_path, Type type = Type::OBJ);
     ~CTMeshModel();
 
     /**

@@ -1,7 +1,11 @@
 #include "CTMeshModel.h"
 #include "MeshData.h"
-#include "ModelUtil.h"
 #include "../../ToolMesh.h"
+
+//! @brief 从.obj文件读取网格模型并解析分组信息
+//! @param obj_file 输入的.obj文件路径
+//! @return 加载并解析完成的网格对象
+std::unique_ptr<MeshLib::CTMesh> read_obj_with_groups(const std::filesystem::path& obj_file);
 
 void CTMeshModel::update(MeshData& mesh_data)
 {
@@ -101,9 +105,77 @@ void CTMeshModel::update(MeshData& mesh_data, const std::unordered_set<Index>& p
 {
 }
 
-CTMeshModel::CTMeshModel(const std::filesystem::path& mesh_path)
-    : mesh_(ModelUtil::read_obj_with_groups(mesh_path))
+CTMeshModel::CTMeshModel(const std::filesystem::path& mesh_path, Type type)
 {
+    switch (type)
+    {
+    case CTMeshModel::Type::OBJ:
+		mesh_ = read_obj_with_groups(mesh_path);
+        break;
+    case CTMeshModel::Type::M:
+		mesh_ = std::make_unique<MeshLib::CTMesh>();
+		mesh_->read_m(mesh_path.string().c_str());
+        break;
+    default:
+        break;
+    }
 }
 
 CTMeshModel::~CTMeshModel() = default;
+
+std::unique_ptr<MeshLib::CTMesh> read_obj_with_groups(const std::filesystem::path& obj_file) {
+    if (!std::filesystem::exists(obj_file)) {
+        throw std::runtime_error("OBJ file does not exist: " + obj_file.string());
+    }
+
+    // 第一次读取：加载网格几何信息
+    auto mesh = std::make_unique<MeshLib::CTMesh>();
+    // 调用 CTMesh 的 read_obj 成员函数读取网格
+    mesh->read_obj(obj_file.string().c_str());
+    // 第二次读取：解析分组信息并更新面片的 m_g 属性
+    std::ifstream obj_stream(obj_file);
+    if (!obj_stream.is_open()) {
+        throw std::runtime_error("Failed to open OBJ file for reading groups: " + obj_file.string());
+    }
+
+    if (!mesh) {
+        throw std::runtime_error("Failed to load mesh geometry from OBJ file.");
+    }
+
+    std::string line;
+    int current_group_id = -1; // 当前分组的 ID
+    // 获取面片集合并进行迭代
+    auto face_iter = MeshLib::CTMesh::MeshFaceIterator(mesh.get());
+
+    while (std::getline(obj_stream, line)) {
+        std::istringstream line_stream(line);
+        std::string prefix;
+        line_stream >> prefix;
+
+        // 处理 g 标签
+        if (prefix == "g") {
+            std::string group_name;
+            line_stream >> group_name;
+
+            // 为每个分组分配唯一的 ID
+            current_group_id = std::stoi(group_name);
+            std::cout << "Patch: " << group_name << " -> ID: " << current_group_id << std::endl;
+        }
+        // 处理面信息
+        else if (prefix == "f" && !face_iter.end()) {
+            // 为当前面设置分组 ID
+            auto face = *face_iter;
+            //face->set_g(current_group_id);  // 假设 `set_g` 更新 m_g 属性
+            face->get_g() = current_group_id;
+            ++face_iter;
+        }
+    }
+
+    // 检查是否所有面都被分组
+    if (!face_iter.end()) {
+        throw std::runtime_error("Mismatch between OBJ face count and mesh faces.");
+    }
+
+    std::cout << "Finished reading OBJ file with groups. Total groups: " << (current_group_id + 1) << std::endl;
+    return mesh;
+}
