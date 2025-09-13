@@ -132,8 +132,7 @@
 
 ### 准备
 
-* 下载[CMake安装包](https://cmake.org/download/)并安装
-* 下载并安装Ninja：Windows用户在[Releases · ninja-build/ninja](https://github.com/ninja-build/ninja/releases)下载ninja-win.zip并自行放置exe文件和设置PATH环境变量
+* 下载[CMake安装包](https://cmake.org/download/)并安装，勾选把CMake添加到PATH环境变量
 * **Windows**用户需要安装[Visual Studio并选择安装C++桌面开发组件](https://visualstudio.microsoft.com/zh-hans/vs/features/cplusplus/)
 
 ### 构建
