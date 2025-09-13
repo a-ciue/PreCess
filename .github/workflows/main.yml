@@ -1,9 +1,14 @@
 name: Doxygen Action
 run-name: Generating Doxygen Page...
-on: [push]
+
+on:
+  push:
+    branches: [ develop ]
+
 jobs:
   gen-doxygen-page:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Doxygen Action
         uses: mattnotmitt/doxygen-action@1.9.8
