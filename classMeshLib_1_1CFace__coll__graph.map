@@ -1,0 +1,17 @@
+<map id="MeshLib::CFace" name="MeshLib::CFace">
+<area shape="rect" id="Node000001" title="CFace base class of all kinds of face classes" alt="" coords="119,5,241,31"/>
+<area shape="rect" id="Node000002" href="$classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges." alt="" coords="104,110,256,135"/>
+<area shape="poly" id="edge4_Node000002_Node000001" title=" " alt="" coords="147,41,134,56,131,66,134,76,147,94,163,108,160,112,143,98,130,78,126,66,130,53,143,37"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="188,96,192,76,192,55,184,32,189,30,197,54,198,77,193,97"/>
+<area shape="poly" id="edge9_Node000002_Node000002" title=" " alt="" coords="271,113,279,116,283,123,275,132,257,135,256,130,272,127,277,122,276,120,269,117"/>
+<area shape="rect" id="Node000003" href="$classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes" alt="" coords="13,235,139,260"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="91,140,44,153,26,161,15,170,10,180,8,189,16,209,27,223,43,232,40,237,24,227,11,212,3,189,5,178,11,166,24,156,42,148,89,135"/>
+<area shape="rect" id="Node000004" href="$classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes" alt="" coords="325,235,459,260"/>
+<area shape="poly" id="edge8_Node000004_Node000002" title=" " alt="" coords="191,147,207,184,223,209,240,217,264,224,325,236,324,241,263,230,238,222,220,213,202,186,186,149"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="92,222,102,209,133,166,165,134,169,137,137,170,106,212,96,225"/>
+<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="357,230,335,212,327,200,323,190,319,180,310,170,278,151,242,138,244,133,280,146,314,166,323,177,328,188,332,198,339,209,360,226"/>
+<area shape="rect" id="Node000005" href="$classCPoint.html" title="CPoint class, three dimensional point" alt="" coords="411,110,475,135"/>
+<area shape="poly" id="edge6_Node000004_Node000005" title=" " alt="" coords="438,150,416,212,402,236,398,233,411,210,433,148"/>
+<area shape="rect" id="Node000006" href="$classCPoint2.html" title="CPoint2 class, two dimensional point" alt="" coords="512,110,584,135"/>
+<area shape="poly" id="edge7_Node000004_Node000006" title=" " alt="" coords="546,149,534,182,525,198,512,213,488,229,460,239,458,234,485,224,509,209,521,195,530,180,541,148"/>
+</map>

@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: MeshLib::CBoundary&lt; CVertex, CEdge, CFace, CHalfEdge &gt; 模板类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>MeshLib</b></li><li class="navelem"><a href="classMeshLib_1_1CBoundary.html">CBoundary</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pro-methods">Protected 成员函数</a> &#124;
+<a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="classMeshLib_1_1CBoundary-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">MeshLib::CBoundary&lt; CVertex, CEdge, CFace, CHalfEdge &gt; 模板类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classMeshLib_1_1CBoundary.html" title="CBoundary Boundary class.">CBoundary</a> Boundary class.  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="boundary_8h_source.html">boundary.h</a>&gt;</code></p>
+<div class="dynheader">
+MeshLib::CBoundary&lt; CVertex, CEdge, CFace, CHalfEdge &gt; 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CBoundary__coll__graph.png" border="0" usemap="#aMeshLib_1_1CBoundary_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aMeshLib_1_1CBoundary_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_coll__map" id="aMeshLib_1_1CBoundary_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_coll__map">
+<area shape="rect" title="CBoundary Boundary class." alt="" coords="1104,94,1291,149"/>
+<area shape="rect" href="classMeshLib_1_1CBaseMesh.html" title=" " alt="" coords="763,87,984,156"/>
+<area shape="poly" title=" " alt="" coords="998,119,1104,119,1104,124,998,124"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="447,5,613,45"/>
+<area shape="poly" title=" " alt="" coords="628,42,739,71,781,84,779,89,738,76,626,48"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,5,389,45"/>
+<area shape="poly" title=" " alt="" coords="403,23,447,23,447,28,403,28"/>
+<area shape="rect" title=" " alt="" coords="5,5,181,45"/>
+<area shape="poly" title=" " alt="" coords="195,23,231,23,231,28,195,28"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="447,69,613,109"/>
+<area shape="poly" title=" " alt="" coords="627,96,763,108,762,114,627,101"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,69,389,109"/>
+<area shape="poly" title=" " alt="" coords="403,87,447,87,447,92,403,92"/>
+<area shape="rect" title=" " alt="" coords="5,69,181,109"/>
+<area shape="poly" title=" " alt="" coords="195,87,231,87,231,92,195,92"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="447,133,613,173"/>
+<area shape="poly" title=" " alt="" coords="627,144,738,135,762,132,763,137,739,140,628,149"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,133,389,173"/>
+<area shape="poly" title=" " alt="" coords="403,151,447,151,447,156,403,156"/>
+<area shape="rect" title=" " alt="" coords="5,133,181,173"/>
+<area shape="poly" title=" " alt="" coords="195,151,231,151,231,156,195,156"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="439,197,621,237"/>
+<area shape="poly" title=" " alt="" coords="634,196,738,171,788,154,790,159,739,176,635,201"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,197,389,237"/>
+<area shape="poly" title=" " alt="" coords="403,215,439,215,439,220,403,220"/>
+<area shape="rect" title=" " alt="" coords="5,197,181,237"/>
+<area shape="poly" title=" " alt="" coords="195,215,231,215,231,220,195,220"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ae8f0ae5dcbd7083268dd22b4db773c88" id="r_ae8f0ae5dcbd7083268dd22b4db773c88"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8f0ae5dcbd7083268dd22b4db773c88">CBoundary</a> (<a class="el" href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; *pMesh)</td></tr>
+<tr class="memitem:ac46449d5cb6708f2da90a2314ae1e9ba" id="r_ac46449d5cb6708f2da90a2314ae1e9ba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac46449d5cb6708f2da90a2314ae1e9ba">~CBoundary</a> ()</td></tr>
+<tr class="memitem:acc9c4f3675a8e25a5b03a374364b4d8c" id="r_acc9c4f3675a8e25a5b03a374364b4d8c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classMeshLib_1_1CLoop.html">TLoop</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc9c4f3675a8e25a5b03a374364b4d8c">loops</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected 成员函数</h2></td></tr>
+<tr class="memitem:a323f8a0aa90198d55814cac0e3477228" id="r_a323f8a0aa90198d55814cac0e3477228"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a323f8a0aa90198d55814cac0e3477228">_bubble_sort</a> (std::vector&lt; <a class="el" href="classMeshLib_1_1CLoop.html">CLoop</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; * &gt; &amp;<a class="el" href="#acc9c4f3675a8e25a5b03a374364b4d8c">loops</a>)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected 属性</h2></td></tr>
+<tr class="memitem:aa8433a77082ef2564f6dde8abac6cccf" id="r_aa8433a77082ef2564f6dde8abac6cccf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa8433a77082ef2564f6dde8abac6cccf">m_pMesh</a></td></tr>
+<tr class="memitem:aace53fe51b6ce09ba0d0f59a92ef413b" id="r_aace53fe51b6ce09ba0d0f59a92ef413b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classMeshLib_1_1CLoop.html">TLoop</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aace53fe51b6ce09ba0d0f59a92ef413b">m_loops</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt;<br />
+class MeshLib::CBoundary&lt; CVertex, CEdge, CFace, CHalfEdge &gt;</div><p><a class="el" href="classMeshLib_1_1CBoundary.html" title="CBoundary Boundary class.">CBoundary</a> Boundary class. </p>
+<dl class="tparams"><dt>模板参数</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">CVertex</a></td><td>Vertex type </td></tr>
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">CEdge</a></td><td>Edge type </td></tr>
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CFace.html" title="CFace base class of all kinds of face classes">CFace</a></td><td>Face type </td></tr>
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges.">CHalfEdge</a></td><td>HalfEdge type </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ae8f0ae5dcbd7083268dd22b4db773c88" name="ae8f0ae5dcbd7083268dd22b4db773c88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8f0ae5dcbd7083268dd22b4db773c88">&#9670;&#160;</a></span>CBoundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CBoundary.html">MeshLib::CBoundary</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::CBoundary </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; *</td>          <td class="paramname"><span class="paramname"><em>pMesh</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classMeshLib_1_1CBoundary.html" title="CBoundary Boundary class.">CBoundary</a> constructor </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pMesh</td><td>pointer to the current mesh</td></tr>
+  </table>
+  </dd>
+</dl>
+<p><a class="el" href="classMeshLib_1_1CBoundary.html" title="CBoundary Boundary class.">CBoundary</a> constructor </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pMesh</td><td>the current mesh </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac46449d5cb6708f2da90a2314ae1e9ba" name="ac46449d5cb6708f2da90a2314ae1e9ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac46449d5cb6708f2da90a2314ae1e9ba">&#9670;&#160;</a></span>~CBoundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CBoundary.html">MeshLib::CBoundary</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::~<a class="el" href="classMeshLib_1_1CBoundary.html">CBoundary</a> </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classMeshLib_1_1CBoundary.html" title="CBoundary Boundary class.">CBoundary</a> destructor</p>
+<p><a class="el" href="classMeshLib_1_1CBoundary.html" title="CBoundary Boundary class.">CBoundary</a> destructor, delete all boundary loop objects. </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a323f8a0aa90198d55814cac0e3477228" name="a323f8a0aa90198d55814cac0e3477228"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a323f8a0aa90198d55814cac0e3477228">&#9670;&#160;</a></span>_bubble_sort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBoundary.html">MeshLib::CBoundary</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::_bubble_sort </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classMeshLib_1_1CLoop.html">CLoop</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; * &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>loops</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Bubble sort the loops </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loops</td><td>the vector of loops</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>_bubble_sort bubble sort a vector of boundary loop objects, according to their lengths </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loops</td><td>vector of loops </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acc9c4f3675a8e25a5b03a374364b4d8c" name="acc9c4f3675a8e25a5b03a374364b4d8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc9c4f3675a8e25a5b03a374364b4d8c">&#9670;&#160;</a></span>loops()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classMeshLib_1_1CLoop.html">TLoop</a> * &gt; &amp; <a class="el" href="classMeshLib_1_1CBoundary.html">MeshLib::CBoundary</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::loops </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The list of boundary loops. </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="aace53fe51b6ce09ba0d0f59a92ef413b" name="aace53fe51b6ce09ba0d0f59a92ef413b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aace53fe51b6ce09ba0d0f59a92ef413b">&#9670;&#160;</a></span>m_loops</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classMeshLib_1_1CLoop.html">TLoop</a>*&gt; <a class="el" href="classMeshLib_1_1CBoundary.html">MeshLib::CBoundary</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_loops</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>List of boundary loops. </p>
+
+</div>
+</div>
+<a id="aa8433a77082ef2564f6dde8abac6cccf" name="aa8433a77082ef2564f6dde8abac6cccf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8433a77082ef2564f6dde8abac6cccf">&#9670;&#160;</a></span>m_pMesh</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a>&lt;<a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>,<a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>,<a class="el" href="classMeshLib_1_1CFace.html">CFace</a>,<a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt;* <a class="el" href="classMeshLib_1_1CBoundary.html">MeshLib::CBoundary</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_pMesh</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Pointer to the current mesh. </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/MeshLib/Mesh/<a class="el" href="boundary_8h_source.html">boundary.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

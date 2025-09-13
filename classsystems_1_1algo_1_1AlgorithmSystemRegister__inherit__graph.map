@@ -1,0 +1,5 @@
+<map id="systems::algo::AlgorithmSystemRegister" name="systems::algo::AlgorithmSystemRegister">
+<area shape="rect" id="Node000001" title="算法系统的操作器，负责注册和注销算法插件" alt="" coords="23,79,208,119"/>
+<area shape="rect" id="Node000002" href="$classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,5,225,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,44,118,79,113,79,113,44"/>
+</map>

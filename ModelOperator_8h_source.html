@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/ModelOperator.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">ModelOperator.h</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;ModelOperatorBase.h&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="ModelData_8h.html">ModelData.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;filesystem&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">class </span><a class="code hl_class" href="classModelObserver.html">ModelObserver</a>;</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">class </span><a class="code hl_class" href="classQSelection.html">QSelection</a>; <span class="comment">// 前向声明选择类</span></div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classModelOperator.html">   17</a></span><span class="keyword">class </span><a class="code hl_function" href="classModelOperator.html#a0d27f67d640394d621d7a130c408b993">ModelOperator</a> : <span class="keyword">public</span> <a class="code hl_class" href="classModelOperatorBase.html">ModelOperatorBase</a> {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="}">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classModelOperator.html#a0d27f67d640394d621d7a130c408b993">   24</a></span>    <a class="code hl_function" href="classModelOperator.html#a0d27f67d640394d621d7a130c408b993">ModelOperator</a>(<a class="code hl_class" href="classModelData.html">ModelData</a>* modelData, <a class="code hl_class" href="classModelObserver.html">ModelObserver</a>* <a class="code hl_function" href="classModelOperator.html#a379378dbad88b2c783d8cbe6847e8f58">observer</a> = <span class="keyword">nullptr</span>)</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        : model_(modelData)</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        , observer_(<a class="code hl_function" href="classModelOperator.html#a379378dbad88b2c783d8cbe6847e8f58">observer</a>)</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    {</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    }</div>
+</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <a class="code hl_class" href="classModelData.html">ModelData</a>* <a class="code hl_function" href="classModelOperator.html#a5f3d7eff14ec643548eaf0a5f1b1d826">data</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <a class="code hl_class" href="classModelObserver.html">ModelObserver</a>* <a class="code hl_function" href="classModelOperator.html#a379378dbad88b2c783d8cbe6847e8f58">observer</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classModelOperator.html#a5802761cfca26fbfa18932b3370c9ec5">write_spline</a>(<span class="keyword">const</span> std::filesystem::path&amp; spline_path);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classModelOperator.html#a1c75fa2cbef440c82900e6964988ea73">notifyChanged</a>();</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classModelOperator.html#a9a0f072abfa2b41d5998e397f40e70c7">merge_blocks</a>(std::unique_ptr&lt;Selection&gt; selection);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="comment">// void merge_groups(QSelection* selection);</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="comment">// void remesh_group(QSelection* selection);</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    Index <a class="code hl_function" href="classModelOperator.html#ab7394fb98e1a7aab644affaae9e0a844">getId</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    ModelData::Type getType() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <a class="code hl_class" href="classModelData.html">ModelData</a>* model_; </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <a class="code hl_class" href="classModelObserver.html">ModelObserver</a>* observer_; </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>};</div>
+</div>
+<div class="ttc" id="aModelData_8h_html"><div class="ttname"><a href="ModelData_8h.html">ModelData.h</a></div><div class="ttdoc">负责管理和操作网格模型数据的核心类</div></div>
+<div class="ttc" id="aclassModelData_html"><div class="ttname"><a href="classModelData.html">ModelData</a></div><div class="ttdoc">Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数</div><div class="ttdef"><b>定义</b> ModelData.h:33</div></div>
+<div class="ttc" id="aclassModelObserver_html"><div class="ttname"><a href="classModelObserver.html">ModelObserver</a></div><div class="ttdef"><b>定义</b> ModelObserver.h:5</div></div>
+<div class="ttc" id="aclassModelOperatorBase_html"><div class="ttname"><a href="classModelOperatorBase.html">ModelOperatorBase</a></div><div class="ttdef"><b>定义</b> ModelOperatorBase.h:7</div></div>
+<div class="ttc" id="aclassModelOperator_html_a0d27f67d640394d621d7a130c408b993"><div class="ttname"><a href="classModelOperator.html#a0d27f67d640394d621d7a130c408b993">ModelOperator::ModelOperator</a></div><div class="ttdeci">ModelOperator(ModelData *modelData, ModelObserver *observer=nullptr)</div><div class="ttdoc">构造 ModelOperator 对象</div><div class="ttdef"><b>定义</b> ModelOperator.h:24</div></div>
+<div class="ttc" id="aclassModelOperator_html_a1c75fa2cbef440c82900e6964988ea73"><div class="ttname"><a href="classModelOperator.html#a1c75fa2cbef440c82900e6964988ea73">ModelOperator::notifyChanged</a></div><div class="ttdeci">void notifyChanged()</div><div class="ttdoc">根据给定id找到mesh的edge，进行边分割</div><div class="ttdef"><b>定义</b> ModelOperator.cpp:21</div></div>
+<div class="ttc" id="aclassModelOperator_html_a379378dbad88b2c783d8cbe6847e8f58"><div class="ttname"><a href="classModelOperator.html#a379378dbad88b2c783d8cbe6847e8f58">ModelOperator::observer</a></div><div class="ttdeci">ModelObserver * observer() const</div><div class="ttdoc">获取关联的模型观察者</div><div class="ttdef"><b>定义</b> ModelOperator.cpp:12</div></div>
+<div class="ttc" id="aclassModelOperator_html_a5802761cfca26fbfa18932b3370c9ec5"><div class="ttname"><a href="classModelOperator.html#a5802761cfca26fbfa18932b3370c9ec5">ModelOperator::write_spline</a></div><div class="ttdeci">void write_spline(const std::filesystem::path &amp;spline_path)</div><div class="ttdoc">输出样条文件</div><div class="ttdef"><b>定义</b> ModelOperator.cpp:17</div></div>
+<div class="ttc" id="aclassModelOperator_html_a5f3d7eff14ec643548eaf0a5f1b1d826"><div class="ttname"><a href="classModelOperator.html#a5f3d7eff14ec643548eaf0a5f1b1d826">ModelOperator::data</a></div><div class="ttdeci">ModelData * data() const</div><div class="ttdoc">获取关联的模型数据</div><div class="ttdef"><b>定义</b> ModelOperator.cpp:7</div></div>
+<div class="ttc" id="aclassModelOperator_html_a9a0f072abfa2b41d5998e397f40e70c7"><div class="ttname"><a href="classModelOperator.html#a9a0f072abfa2b41d5998e397f40e70c7">ModelOperator::merge_blocks</a></div><div class="ttdeci">void merge_blocks(std::unique_ptr&lt; Selection &gt; selection)</div><div class="ttdoc">合并给定block，并更新block actor，依赖ModelActor</div><div class="ttdef"><b>定义</b> ModelOperator.cpp:26</div></div>
+<div class="ttc" id="aclassModelOperator_html_ab7394fb98e1a7aab644affaae9e0a844"><div class="ttname"><a href="classModelOperator.html#ab7394fb98e1a7aab644affaae9e0a844">ModelOperator::getId</a></div><div class="ttdeci">Index getId() const override</div><div class="ttdoc">合并给定group，并更新group actor，依赖ModelActor</div><div class="ttdef"><b>定义</b> ModelOperator.cpp:35</div></div>
+<div class="ttc" id="aclassQSelection_html"><div class="ttname"><a href="classQSelection.html">QSelection</a></div><div class="ttdoc">Selection类的QML交互接口。Selection可以存于QSelection中，就可以在QML代码中进行交互。C++中使用new来创建对象，QML中为只读对象</div><div class="ttdef"><b>定义</b> QSelection.h:18</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

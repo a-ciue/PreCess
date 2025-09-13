@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/FileHandler.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">FileHandler.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>实现 <a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 类，用于管理所有与文件 IO 相关的操作  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="FileHandler_8h_source.html">FileHandler.h</a>&quot;</code><br />
+<code>#include &quot;Core.h&quot;</code><br />
+<code>#include &quot;SplineData.h&quot;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
+<code>#include &lt;STEPControl_Reader.hxx&gt;</code><br />
+<code>#include &lt;IGESControl_Reader.hxx&gt;</code><br />
+<code>#include &lt;STEPControl_Writer.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Shape.hxx&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+FileHandler.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="FileHandler_8cpp__incl.png" border="0" usemap="#amodel_2FileHandler_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2FileHandler_8cpp" id="amodel_2FileHandler_8cpp">
+<area shape="rect" title="实现 FileHandler 类，用于管理所有与文件 IO 相关的操作" alt="" coords="360,5,527,31"/>
+<area shape="rect" href="FileHandler_8h.html" title="声明 FileHandler 类，用于处理所有与文件 IO 相关的操作" alt="" coords="172,79,278,104"/>
+<area shape="poly" title=" " alt="" coords="409,33,274,77,273,72,408,28"/>
+<area shape="rect" href="Core_8h_source.html" title=" " alt="" coords="266,299,330,324"/>
+<area shape="poly" title=" " alt="" coords="361,27,247,45,185,60,126,81,66,107,45,125,26,153,14,180,8,203,12,225,26,249,40,261,62,271,123,287,191,298,253,304,252,310,190,303,122,292,60,276,37,265,22,252,7,227,3,203,9,178,21,151,41,121,63,103,124,76,184,55,246,39,360,22"/>
+<area shape="rect" title=" " alt="" coords="348,152,438,177"/>
+<area shape="poly" title=" " alt="" coords="406,33,371,51,355,64,343,80,340,96,344,112,355,127,368,141,365,145,351,131,339,114,334,96,339,78,352,61,368,47,404,28"/>
+<area shape="rect" href="SplineData_8h_source.html" title=" " alt="" coords="36,152,142,177"/>
+<area shape="poly" title=" " alt="" coords="360,25,313,31,261,41,209,58,161,81,128,110,104,142,100,139,124,106,158,76,207,53,260,36,312,26,360,20"/>
+<area shape="rect" title=" " alt="" coords="353,79,534,104"/>
+<area shape="poly" title=" " alt="" coords="446,31,446,65,441,65,441,31"/>
+<area shape="rect" title=" " alt="" coords="558,79,737,104"/>
+<area shape="poly" title=" " alt="" coords="477,28,603,72,601,77,476,33"/>
+<area shape="rect" title=" " alt="" coords="762,79,936,104"/>
+<area shape="poly" title=" " alt="" coords="509,28,771,74,770,79,508,33"/>
+<area shape="rect" title=" " alt="" coords="960,79,1106,104"/>
+<area shape="poly" title=" " alt="" coords="528,26,947,76,946,81,527,31"/>
+<area shape="rect" title=" " alt="" coords="1130,79,1254,104"/>
+<area shape="poly" title=" " alt="" coords="528,22,786,42,1116,76,1115,81,786,48,527,28"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="218,152,323,177"/>
+<area shape="poly" title=" " alt="" coords="235,103,258,139,253,142,230,106"/>
+<area shape="rect" title=" " alt="" coords="36,225,113,251"/>
+<area shape="poly" title=" " alt="" coords="218,106,191,140,155,179,105,219,101,215,151,175,187,137,214,103"/>
+<area shape="poly" title=" " alt="" coords="253,102,354,144,352,149,251,106"/>
+<area shape="rect" href="Selection_8h_source.html" title=" " alt="" coords="328,225,423,251"/>
+<area shape="poly" title=" " alt="" coords="289,175,349,215,346,220,286,180"/>
+<area shape="rect" title=" " alt="" coords="448,225,506,251"/>
+<area shape="poly" title=" " alt="" coords="304,175,435,220,433,225,303,180"/>
+<area shape="rect" title=" " alt="" coords="236,225,304,251"/>
+<area shape="poly" title=" " alt="" coords="273,178,273,212,268,212,268,178"/>
+<area shape="rect" title=" " alt="" coords="137,225,212,251"/>
+<area shape="poly" title=" " alt="" coords="256,180,203,219,200,215,253,175"/>
+<area shape="poly" title=" " alt="" coords="240,180,120,223,118,218,238,175"/>
+<area shape="rect" title=" " alt="" coords="344,372,407,397"/>
+<area shape="poly" title=" " alt="" coords="378,251,378,358,373,358,373,251"/>
+<area shape="poly" title=" " alt="" coords="365,253,323,291,319,287,361,249"/>
+<area shape="poly" title=" " alt="" coords="313,322,355,361,351,364,309,326"/>
+<area shape="rect" title=" " alt="" coords="264,372,320,397"/>
+<area shape="poly" title=" " alt="" coords="300,325,297,359,291,358,295,324"/>
+<area shape="poly" title=" " alt="" coords="104,175,152,214,148,219,101,179"/>
+<area shape="poly" title=" " alt="" coords="89,178,82,212,77,211,84,177"/>
+</map>
+</div>
+</div><a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>实现 <a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 类，用于管理所有与文件 IO 相关的操作 </p>
+<p>该文件包含 <a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 类的实现，提供读取样条文件、读取网格文件以及将模型数据写出到文件的功能。</p>
+<dl class="section author"><dt>作者</dt><dd>徐昊阳 <a href="#" onclick="location.href='mai'+'lto:'+'hao'+'ya'+'ngx'+'u0'+'6@g'+'ma'+'il.'+'co'+'m'; return false;">haoya<span class="obfuscator">.nosp@m.</span>ngxu<span class="obfuscator">.nosp@m.</span>06@gm<span class="obfuscator">.nosp@m.</span>ail.<span class="obfuscator">.nosp@m.</span>com</a> </dd></dl>
+<dl class="section date"><dt>日期</dt><dd>2025/3/22 </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

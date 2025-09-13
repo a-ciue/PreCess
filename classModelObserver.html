@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: ModelObserver类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classModelObserver-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">ModelObserver类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+</div><!--header-->
+<div class="contents">
+<div class="dynheader">
+类 ModelObserver 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classModelObserver__inherit__graph.png" border="0" usemap="#aModelObserver_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aModelObserver_inherit__map" id="aModelObserver_inherit__map">
+<area shape="rect" title=" " alt="" coords="10,5,131,31"/>
+<area shape="rect" href="classQModelObserver.html" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类" alt="" coords="5,79,136,104"/>
+<area shape="poly" title=" " alt="" coords="73,44,73,79,68,79,68,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:af70f9df2aca91d6cca529f6e628df87d" id="r_af70f9df2aca91d6cca529f6e628df87d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af70f9df2aca91d6cca529f6e628df87d">notifyModelChanged</a> (Index model_id)=0</td></tr>
+<tr class="memdesc:af70f9df2aca91d6cca529f6e628df87d"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型数据变更的通知函数  <br /></td></tr>
+<tr class="memitem:a90a2ab815ca62393d808bb457063756f" id="r_a90a2ab815ca62393d808bb457063756f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90a2ab815ca62393d808bb457063756f">notifyModelAdded</a> (Index model_id)=0</td></tr>
+<tr class="memdesc:a90a2ab815ca62393d808bb457063756f"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被添加的通知函数  <br /></td></tr>
+<tr class="memitem:adaa628f9822c6c8250117917d8a52d4e" id="r_adaa628f9822c6c8250117917d8a52d4e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adaa628f9822c6c8250117917d8a52d4e">notifyModelRemoved</a> (Index model_id)=0</td></tr>
+<tr class="memdesc:adaa628f9822c6c8250117917d8a52d4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被移除的通知函数  <br /></td></tr>
+<tr class="memitem:a50ab34f21b3d15aa55e765b86a4c365c" id="r_a50ab34f21b3d15aa55e765b86a4c365c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a50ab34f21b3d15aa55e765b86a4c365c">notifyModelNameChanged</a> (Index model_id, const std::string &amp;new_name)=0</td></tr>
+<tr class="memdesc:a50ab34f21b3d15aa55e765b86a4c365c"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型名称变更的通知函数  <br /></td></tr>
+<tr class="memitem:ad8fc1c4c007dbcf380b3c7dda606b4be" id="r_ad8fc1c4c007dbcf380b3c7dda606b4be"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8fc1c4c007dbcf380b3c7dda606b4be">notifySplineLoadFailed</a> (const std::string &amp;message)=0</td></tr>
+<tr class="memdesc:ad8fc1c4c007dbcf380b3c7dda606b4be"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收样条曲线加载失败的通知函数  <br /></td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a90a2ab815ca62393d808bb457063756f" name="a90a2ab815ca62393d808bb457063756f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90a2ab815ca62393d808bb457063756f">&#9670;&#160;</a></span>notifyModelAdded()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void ModelObserver::notifyModelAdded </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型被添加的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>新添加的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型被导入到软件中时发出信号，通知外部组件。 </p>
+
+<p>在 <a class="el" href="classQModelObserver.html#ae6e553fc81a44a8055f300e38fce05ac">QModelObserver</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="af70f9df2aca91d6cca529f6e628df87d" name="af70f9df2aca91d6cca529f6e628df87d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af70f9df2aca91d6cca529f6e628df87d">&#9670;&#160;</a></span>notifyModelChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void ModelObserver::notifyModelChanged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型数据变更的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>发生变化的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该槽函数由模型层在模型数据发生更改时调用，以便触发相应的信号通知。 </p>
+
+<p>在 <a class="el" href="classQModelObserver.html#afd7605c63a216faa10fa4da27143e2d1">QModelObserver</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a50ab34f21b3d15aa55e765b86a4c365c" name="a50ab34f21b3d15aa55e765b86a4c365c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50ab34f21b3d15aa55e765b86a4c365c">&#9670;&#160;</a></span>notifyModelNameChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void ModelObserver::notifyModelNameChanged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>new_name</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型名称变更的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型 ID </td></tr>
+    <tr><td class="paramname">new_name</td><td>新模型名称</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型名称发生变化时发出信号，通知外部组件。 </p>
+
+<p>在 <a class="el" href="classQModelObserver.html#a60298e5dae88e4ddae135243ce28bad4">QModelObserver</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="adaa628f9822c6c8250117917d8a52d4e" name="adaa628f9822c6c8250117917d8a52d4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adaa628f9822c6c8250117917d8a52d4e">&#9670;&#160;</a></span>notifyModelRemoved()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void ModelObserver::notifyModelRemoved </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型被移除的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>移除的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型被从软件中移除时发出信号，通知外部组件。 </p>
+
+<p>在 <a class="el" href="classQModelObserver.html#aacbfe7aa17fb1b4b6f844bec28b28927">QModelObserver</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="ad8fc1c4c007dbcf380b3c7dda606b4be" name="ad8fc1c4c007dbcf380b3c7dda606b4be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8fc1c4c007dbcf380b3c7dda606b4be">&#9670;&#160;</a></span>notifySplineLoadFailed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void ModelObserver::notifySplineLoadFailed </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收样条曲线加载失败的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>失败信息</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在样条曲线加载失败时发出信号，通知外部组件。 </p>
+
+<p>在 <a class="el" href="classQModelObserver.html#a29778eb3b23683498202f8a1727574ba">QModelObserver</a> 内被实现.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="ModelObserver_8h_source.html">ModelObserver.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

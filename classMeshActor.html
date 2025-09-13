@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: MeshActor类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-attribs">静态 Public 属性</a> &#124;
+<a href="classMeshActor-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">MeshActor类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>负责管理Model的Actor  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="MeshActor_8h_source.html">MeshActor.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ac60dbeff313d32050a1adb7d546f1d8c" id="r_ac60dbeff313d32050a1adb7d546f1d8c"><td class="memItemLeft" align="right" valign="top"><a id="ac60dbeff313d32050a1adb7d546f1d8c" name="ac60dbeff313d32050a1adb7d546f1d8c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>MeshActor</b> (vtkRenderer *renderer, bool is_edge_render, ModelRenderMode render_mode)</td></tr>
+<tr class="memitem:a70be0e3ea4dc333f6454667209f68f98" id="r_a70be0e3ea4dc333f6454667209f68f98"><td class="memItemLeft" align="right" valign="top"><a id="a70be0e3ea4dc333f6454667209f68f98" name="a70be0e3ea4dc333f6454667209f68f98"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>loadModelData</b> (const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;model_data)</td></tr>
+<tr class="memitem:a62299d59030dd179e8930a745ed7cda7" id="r_a62299d59030dd179e8930a745ed7cda7"><td class="memItemLeft" align="right" valign="top"><a id="a62299d59030dd179e8930a745ed7cda7" name="a62299d59030dd179e8930a745ed7cda7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteMeshActor</b> ()</td></tr>
+<tr class="memitem:adf6ab9d3e2278feb471c0fd00f6e8806" id="r_adf6ab9d3e2278feb471c0fd00f6e8806"><td class="memItemLeft" align="right" valign="top"><a id="adf6ab9d3e2278feb471c0fd00f6e8806" name="adf6ab9d3e2278feb471c0fd00f6e8806"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setVisibility</b> (bool visibility)</td></tr>
+<tr class="memitem:a78c4a4fa63141029336b0bb5d789cdab" id="r_a78c4a4fa63141029336b0bb5d789cdab"><td class="memItemLeft" align="right" valign="top"><a id="a78c4a4fa63141029336b0bb5d789cdab" name="a78c4a4fa63141029336b0bb5d789cdab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setRenderEdge</b> (bool is_render)</td></tr>
+<tr class="memitem:a530f62f7486ea1af3e438928c777125b" id="r_a530f62f7486ea1af3e438928c777125b"><td class="memItemLeft" align="right" valign="top"><a id="a530f62f7486ea1af3e438928c777125b" name="a530f62f7486ea1af3e438928c777125b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setRenderMode</b> (ModelRenderMode render_mode)</td></tr>
+<tr class="memitem:a7f9183a61df679f87a7e69ffaa5cc80f" id="r_a7f9183a61df679f87a7e69ffaa5cc80f"><td class="memItemLeft" align="right" valign="top"><a id="a7f9183a61df679f87a7e69ffaa5cc80f" name="a7f9183a61df679f87a7e69ffaa5cc80f"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>getIsEdgeRender</b> ()</td></tr>
+<tr class="memitem:a95e0bcf987120163ed268125e6a52368" id="r_a95e0bcf987120163ed268125e6a52368"><td class="memItemLeft" align="right" valign="top"><a id="a95e0bcf987120163ed268125e6a52368" name="a95e0bcf987120163ed268125e6a52368"></a>
+ModelRenderMode&#160;</td><td class="memItemRight" valign="bottom"><b>getMeshRenderMode</b> ()</td></tr>
+<tr class="memitem:a0784ca286d50ada04c3011b23b4a0eae" id="r_a0784ca286d50ada04c3011b23b4a0eae"><td class="memItemLeft" align="right" valign="top"><a id="a0784ca286d50ada04c3011b23b4a0eae" name="a0784ca286d50ada04c3011b23b4a0eae"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addPickList</b> (vtkPropCollection *pick_list) const</td></tr>
+<tr class="memitem:a6ec54ca9ce0251df42cecdf3edb4d800" id="r_a6ec54ca9ce0251df42cecdf3edb4d800"><td class="memItemLeft" align="right" valign="top"><a id="a6ec54ca9ce0251df42cecdf3edb4d800" name="a6ec54ca9ce0251df42cecdf3edb4d800"></a>
+Index&#160;</td><td class="memItemRight" valign="bottom"><b>get_model_block_id</b> (vtkIdType block_id) const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+静态 Public 属性</h2></td></tr>
+<tr class="memitem:ac380af301cd858ea21543c6776a24e14" id="r_ac380af301cd858ea21543c6776a24e14"><td class="memItemLeft" align="right" valign="top"><a id="ac380af301cd858ea21543c6776a24e14" name="ac380af301cd858ea21543c6776a24e14"></a>
+static vtkNew&lt; vtkMinimalStandardRandomSequence &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>randomSequence</b></td></tr>
+<tr class="memitem:a780070ae950cbd0e2799be889fe9b5f5" id="r_a780070ae950cbd0e2799be889fe9b5f5"><td class="memItemLeft" align="right" valign="top"><a id="a780070ae950cbd0e2799be889fe9b5f5" name="a780070ae950cbd0e2799be889fe9b5f5"></a>
+static vtkNew&lt; vtkNamedColors &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>colors</b></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>负责管理Model的Actor </p>
+</div><hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/<a class="el" href="MeshActor_8h_source.html">MeshActor.h</a></li>
+<li>app/render/<b>MeshActor.cpp</b></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

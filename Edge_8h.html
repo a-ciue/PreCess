@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/MeshLib/Mesh/Edge.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_1cd1d868ebda9b05bc9322be51c15f7d.html">MeshLib</a></li><li class="navelem"><a href="dir_3db29c336a1d05f265ef6ae98a697c71.html">Mesh</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">Edge.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Base class of edge  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;assert.h&gt;</code><br />
+<code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Edge.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="Edge_8h__incl.png" border="0" usemap="#amodel_2MeshLib_2Mesh_2Edge_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2MeshLib_2Mesh_2Edge_8h" id="amodel_2MeshLib_2Mesh_2Edge_8h">
+<area shape="rect" title="Base class of edge" alt="" coords="107,5,267,45"/>
+<area shape="rect" title=" " alt="" coords="5,93,80,119"/>
+<area shape="poly" title=" " alt="" coords="153,48,77,89,75,84,151,43"/>
+<area shape="rect" title=" " alt="" coords="105,93,175,119"/>
+<area shape="poly" title=" " alt="" coords="178,47,156,83,152,80,173,44"/>
+<area shape="rect" title=" " alt="" coords="199,93,267,119"/>
+<area shape="poly" title=" " alt="" coords="200,44,222,80,217,83,196,47"/>
+<area shape="rect" title=" " alt="" coords="292,93,351,119"/>
+<area shape="poly" title=" " alt="" coords="220,43,291,84,288,89,218,48"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="Edge_8h__dep__incl.png" border="0" usemap="#amodel_2MeshLib_2Mesh_2Edge_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2MeshLib_2Mesh_2Edge_8hdep" id="amodel_2MeshLib_2Mesh_2Edge_8hdep">
+<area shape="rect" title="Base class of edge" alt="" coords="115,5,275,45"/>
+<area shape="rect" href="HalfEdge_8h.html" title="Base class of HalfEdge" alt="" coords="56,93,216,133"/>
+<area shape="poly" title=" " alt="" coords="176,58,151,95,147,92,172,55"/>
+<area shape="rect" href="ToolMesh_8h_source.html" title=" " alt="" coords="133,269,273,295"/>
+<area shape="poly" title=" " alt="" coords="216,57,231,93,235,144,230,195,220,239,210,270,205,268,215,238,225,194,230,144,225,94,211,58"/>
+<area shape="rect" href="Vertex_8h.html" title="Base class of vertex" alt="" coords="5,181,165,221"/>
+<area shape="poly" title=" " alt="" coords="120,147,99,182,94,180,115,144"/>
+<area shape="poly" title=" " alt="" coords="160,144,180,180,195,229,204,269,198,270,190,230,175,182,155,146"/>
+<area shape="poly" title=" " alt="" coords="127,227,187,267,184,271,124,231"/>
+</map>
+</div>
+</div>
+<p><a href="Edge_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:MeshLib_3A_3ACEdge" id="r_MeshLib_3A_3ACEdge"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CEdge.html">MeshLib::CEdge</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">CEdge</a> class, which is the base class of all kinds of edge classes  <a href="classMeshLib_1_1CEdge.html#details">更多...</a><br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>Base class of edge </p>
+<dl class="section author"><dt>作者</dt><dd>David Gu </dd></dl>
+<dl class="section date"><dt>日期</dt><dd>10/07/2010 </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

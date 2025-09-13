@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::io::ModelIOSystemRegister类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>systems</b></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1ModelIOSystemRegister.html">ModelIOSystemRegister</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classsystems_1_1io_1_1ModelIOSystemRegister-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::io::ModelIOSystemRegister类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>ModelIOSystem的操作类，负责功能注册和管理  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="ModelIOSystemRegister_8h_source.html">ModelIOSystemRegister.h</a>&gt;</code></p>
+<div class="dynheader">
+类 systems::io::ModelIOSystemRegister 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1io_1_1ModelIOSystemRegister__inherit__graph.png" border="0" usemap="#asystems_1_1io_1_1ModelIOSystemRegister_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="asystems_1_1io_1_1ModelIOSystemRegister_inherit__map" id="asystems_1_1io_1_1ModelIOSystemRegister_inherit__map">
+<area shape="rect" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="11,79,219,119"/>
+<area shape="rect" href="classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,5,225,31"/>
+<area shape="poly" title=" " alt="" coords="118,44,118,79,113,79,113,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+systems::io::ModelIOSystemRegister 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1io_1_1ModelIOSystemRegister__coll__graph.png" border="0" usemap="#asystems_1_1io_1_1ModelIOSystemRegister_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1io_1_1ModelIOSystemRegister_coll__map" id="asystems_1_1io_1_1ModelIOSystemRegister_coll__map">
+<area shape="rect" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="11,79,219,119"/>
+<area shape="rect" href="classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,5,225,31"/>
+<area shape="poly" title=" " alt="" coords="118,44,118,79,113,79,113,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a9271ec5dea5858e27ec11b2fb94a4bc1" id="r_a9271ec5dea5858e27ec11b2fb94a4bc1"><td class="memItemLeft" align="right" valign="top"><a id="a9271ec5dea5858e27ec11b2fb94a4bc1" name="a9271ec5dea5858e27ec11b2fb94a4bc1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ModelIOSystemRegister</b> (<a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html">ModelIOSystem</a> &amp;system)</td></tr>
+<tr class="memitem:ad34c3a88a762f93f0c68d57c253ebd0f" id="r_ad34c3a88a762f93f0c68d57c253ebd0f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad34c3a88a762f93f0c68d57c253ebd0f">registerPlugin</a> (const QJsonObject &amp;meta_data, <a class="el" href="classsystems_1_1PluginBase.html">PluginBase</a> &amp;plugin) override</td></tr>
+<tr class="memdesc:ad34c3a88a762f93f0c68d57c253ebd0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个插件。  <br /></td></tr>
+<tr class="memitem:a518862e5955be0c2ebe66295e1e6e48c" id="r_a518862e5955be0c2ebe66295e1e6e48c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a518862e5955be0c2ebe66295e1e6e48c">unregisterPlugin</a> (const QJsonObject &amp;meta_data) override</td></tr>
+<tr class="memdesc:a518862e5955be0c2ebe66295e1e6e48c"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销指定的插件  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>ModelIOSystem的操作类，负责功能注册和管理 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ad34c3a88a762f93f0c68d57c253ebd0f" name="ad34c3a88a762f93f0c68d57c253ebd0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad34c3a88a762f93f0c68d57c253ebd0f">&#9670;&#160;</a></span>registerPlugin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::io::ModelIOSystemRegister::registerPlugin </td>
+          <td>(</td>
+          <td class="paramtype">const QJsonObject &amp;</td>          <td class="paramname"><span class="paramname"><em>meta_data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1PluginBase.html">PluginBase</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>plugin</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注册一个插件。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meta_data</td><td>插件的元信息，包括包含的处理器的类型、名称等信息 </td></tr>
+    <tr><td class="paramname">plugin</td><td>要注册的插件 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>注册是否成功 </dd></dl>
+
+<p>实现了 <a class="el" href="classsystems_1_1SystemRegisterBase.html#a537af28be223a0289d919e3f62b2bc1b">systems::SystemRegisterBase</a>.</p>
+
+</div>
+</div>
+<a id="a518862e5955be0c2ebe66295e1e6e48c" name="a518862e5955be0c2ebe66295e1e6e48c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a518862e5955be0c2ebe66295e1e6e48c">&#9670;&#160;</a></span>unregisterPlugin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::io::ModelIOSystemRegister::unregisterPlugin </td>
+          <td>(</td>
+          <td class="paramtype">const QJsonObject &amp;</td>          <td class="paramname"><span class="paramname"><em>meta_data</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注销指定的插件 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meta_data</td><td>处理器的元信息，包含处理器的类型、名称等信息 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>实现了 <a class="el" href="classsystems_1_1SystemRegisterBase.html#a0ce24938790d35a9c06eb1f14f874722">systems::SystemRegisterBase</a>.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/io/<a class="el" href="ModelIOSystemRegister_8h_source.html">ModelIOSystemRegister.h</a></li>
+<li>model/systems/io/<a class="el" href="ModelIOSystemRegister_8cpp.html">ModelIOSystemRegister.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

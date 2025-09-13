@@ -1,0 +1,5 @@
+<map id="MeshLib::CEdge" name="MeshLib::CEdge">
+<area shape="rect" id="Node000001" title="CEdge class, which is the base class of all kinds of edge classes" alt="" coords="18,5,143,31"/>
+<area shape="rect" id="Node000002" href="$classMeshLib_1_1CToolEdge.html" title=" " alt="" coords="5,79,156,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,44,83,79,78,79,78,44"/>
+</map>

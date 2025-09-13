@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/MeshLib/Mesh/Edge.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_1cd1d868ebda9b05bc9322be51c15f7d.html">MeshLib</a></li><li class="navelem"><a href="dir_3db29c336a1d05f265ef6ae98a697c71.html">Mesh</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">Edge.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="Edge_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#ifndef _MESHLIB_EDGE_H_</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define _MESHLIB_EDGE_H_</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;assert.h&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;math.h&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">namespace </span>MeshLib{</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CVertex.html">CVertex</a>;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span></div>
+<div class="foldopen" id="foldopen00026" data-start="{" data-end="};">
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html">   26</a></span><span class="keyword">class </span><a class="code hl_function" href="classMeshLib_1_1CEdge.html#a513a0dc0e44f2592d516926c90763b67">CEdge</a></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>{</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a513a0dc0e44f2592d516926c90763b67">   32</a></span>    <a class="code hl_function" href="classMeshLib_1_1CEdge.html#a513a0dc0e44f2592d516926c90763b67">CEdge</a>(){ <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[0] = NULL; <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[1] = NULL; };</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a06f2cccf7d71658e397d83205f4a2c29">   36</a></span>    <a class="code hl_function" href="classMeshLib_1_1CEdge.html#a06f2cccf7d71658e397d83205f4a2c29">~CEdge</a>(){};</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a56d16baa1f8333b3cc874b8001680d8c">   43</a></span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * &amp; <a class="code hl_function" href="classMeshLib_1_1CEdge.html#a56d16baa1f8333b3cc874b8001680d8c">halfedge</a>( <span class="keywordtype">int</span> <span class="keywordtype">id</span> ) { assert( 0&lt;=<span class="keywordtype">id</span> &amp;&amp; <span class="keywordtype">id</span> &lt; 2 ); <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[id];};</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a5fb31e9605d9f59fd89f74039bf4f9d9">   47</a></span>    <span class="keywordtype">bool</span>          <a class="code hl_function" href="classMeshLib_1_1CEdge.html#a5fb31e9605d9f59fd89f74039bf4f9d9">boundary</a>() { <span class="keywordflow">return</span> (<a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[0] == NULL &amp;&amp; <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[1] != NULL ) || (<a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[0] != NULL &amp;&amp; <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[1] == NULL ); };</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a553f21dc90fa8f5a16f8d138f67fa5d2">   53</a></span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * &amp; <a class="code hl_function" href="classMeshLib_1_1CEdge.html#a553f21dc90fa8f5a16f8d138f67fa5d2">other</a>( <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * he ) { <span class="keywordflow">return</span> (he != <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[0] )?<a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[0]:<a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[1]; };</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#ad7bfad53e3605f1cb3bf00230d54402b">   57</a></span>    std::string &amp; <a class="code hl_function" href="classMeshLib_1_1CEdge.html#ad7bfad53e3605f1cb3bf00230d54402b">string</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a810f0a280e3a97d449386cc5cb6cce3b">m_string</a>; };</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a18e3af9e9a7dc8e6f60a2483bb19ad24">   61</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshLib_1_1CEdge.html#a18e3af9e9a7dc8e6f60a2483bb19ad24">_from_string</a>() {};</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a420d6973d64a53c21ef4dc15c557b36f">   65</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshLib_1_1CEdge.html#a420d6973d64a53c21ef4dc15c557b36f">_to_string</a>() {};</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">   70</a></span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>      * <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a>[2];</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CEdge.html#a810f0a280e3a97d449386cc5cb6cce3b">   74</a></span>    std::string      <a class="code hl_variable" href="classMeshLib_1_1CEdge.html#a810f0a280e3a97d449386cc5cb6cce3b">m_string</a>;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>};</div>
+</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>}<span class="comment">//name space MeshLib</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="preprocessor">#endif </span><span class="comment">//_MESHLIB_EDGE_H_ defined</span></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a06f2cccf7d71658e397d83205f4a2c29"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a06f2cccf7d71658e397d83205f4a2c29">MeshLib::CEdge::~CEdge</a></div><div class="ttdeci">~CEdge()</div><div class="ttdef"><b>定义</b> Edge.h:36</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a18e3af9e9a7dc8e6f60a2483bb19ad24"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a18e3af9e9a7dc8e6f60a2483bb19ad24">MeshLib::CEdge::_from_string</a></div><div class="ttdeci">void _from_string()</div><div class="ttdef"><b>定义</b> Edge.h:61</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a1d597f8d90c6c322ffbc5a454e7efb94"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94">MeshLib::CEdge::m_halfedge</a></div><div class="ttdeci">CHalfEdge * m_halfedge[2]</div><div class="ttdef"><b>定义</b> Edge.h:70</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a420d6973d64a53c21ef4dc15c557b36f"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a420d6973d64a53c21ef4dc15c557b36f">MeshLib::CEdge::_to_string</a></div><div class="ttdeci">void _to_string()</div><div class="ttdef"><b>定义</b> Edge.h:65</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a513a0dc0e44f2592d516926c90763b67"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a513a0dc0e44f2592d516926c90763b67">MeshLib::CEdge::CEdge</a></div><div class="ttdeci">CEdge()</div><div class="ttdef"><b>定义</b> Edge.h:32</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a553f21dc90fa8f5a16f8d138f67fa5d2"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a553f21dc90fa8f5a16f8d138f67fa5d2">MeshLib::CEdge::other</a></div><div class="ttdeci">CHalfEdge *&amp; other(CHalfEdge *he)</div><div class="ttdef"><b>定义</b> Edge.h:53</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a56d16baa1f8333b3cc874b8001680d8c"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a56d16baa1f8333b3cc874b8001680d8c">MeshLib::CEdge::halfedge</a></div><div class="ttdeci">CHalfEdge *&amp; halfedge(int id)</div><div class="ttdef"><b>定义</b> Edge.h:43</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a5fb31e9605d9f59fd89f74039bf4f9d9"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a5fb31e9605d9f59fd89f74039bf4f9d9">MeshLib::CEdge::boundary</a></div><div class="ttdeci">bool boundary()</div><div class="ttdef"><b>定义</b> Edge.h:47</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_a810f0a280e3a97d449386cc5cb6cce3b"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#a810f0a280e3a97d449386cc5cb6cce3b">MeshLib::CEdge::m_string</a></div><div class="ttdeci">std::string m_string</div><div class="ttdef"><b>定义</b> Edge.h:74</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CEdge_html_ad7bfad53e3605f1cb3bf00230d54402b"><div class="ttname"><a href="classMeshLib_1_1CEdge.html#ad7bfad53e3605f1cb3bf00230d54402b">MeshLib::CEdge::string</a></div><div class="ttdeci">std::string &amp; string()</div><div class="ttdef"><b>定义</b> Edge.h:57</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CHalfEdge_html"><div class="ttname"><a href="classMeshLib_1_1CHalfEdge.html">MeshLib::CHalfEdge</a></div><div class="ttdoc">CHalfEdge Base class of all kinds of halfedges.</div><div class="ttdef"><b>定义</b> HalfEdge.h:27</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html"><div class="ttname"><a href="classMeshLib_1_1CVertex.html">MeshLib::CVertex</a></div><div class="ttdoc">CVertex class, which is the base class of all kinds of vertex classes</div><div class="ttdef"><b>定义</b> Vertex.h:28</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

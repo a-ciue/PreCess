@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: MeshLib::CEdge类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>MeshLib</b></li><li class="navelem"><a href="classMeshLib_1_1CEdge.html">CEdge</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="classMeshLib_1_1CEdge-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">MeshLib::CEdge类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">CEdge</a> class, which is the base class of all kinds of edge classes  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Edge_8h_source.html">Edge.h</a>&gt;</code></p>
+<div class="dynheader">
+类 MeshLib::CEdge 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CEdge__inherit__graph.png" border="0" usemap="#aMeshLib_1_1CEdge_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aMeshLib_1_1CEdge_inherit__map" id="aMeshLib_1_1CEdge_inherit__map">
+<area shape="rect" title="CEdge class, which is the base class of all kinds of edge classes" alt="" coords="18,5,143,31"/>
+<area shape="rect" href="classMeshLib_1_1CToolEdge.html" title=" " alt="" coords="5,79,156,104"/>
+<area shape="poly" title=" " alt="" coords="83,44,83,79,78,79,78,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+MeshLib::CEdge 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CEdge__coll__graph.png" border="0" usemap="#aMeshLib_1_1CEdge_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aMeshLib_1_1CEdge_coll__map" id="aMeshLib_1_1CEdge_coll__map">
+<area shape="rect" title="CEdge class, which is the base class of all kinds of edge classes" alt="" coords="115,5,240,31"/>
+<area shape="rect" href="classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges." alt="" coords="101,110,253,135"/>
+<area shape="poly" title=" " alt="" coords="143,41,130,56,127,66,130,76,143,94,159,108,156,112,139,98,126,78,122,66,126,53,139,37"/>
+<area shape="poly" title=" " alt="" coords="187,97,192,76,192,55,182,32,187,30,197,54,198,77,192,98"/>
+<area shape="poly" title=" " alt="" coords="268,113,276,116,280,123,272,132,254,135,253,130,269,127,275,122,273,120,266,117"/>
+<area shape="rect" href="classMeshLib_1_1CFace.html" title="CFace base class of all kinds of face classes" alt="" coords="15,235,137,260"/>
+<area shape="poly" title=" " alt="" coords="89,141,43,153,26,161,15,170,10,180,8,189,16,209,27,223,43,232,40,237,24,227,11,212,3,189,5,178,11,166,23,157,41,148,87,135"/>
+<area shape="rect" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes" alt="" coords="321,235,455,260"/>
+<area shape="poly" title=" " alt="" coords="188,147,203,184,219,209,236,217,260,224,321,236,320,241,259,230,234,222,216,213,198,186,183,149"/>
+<area shape="poly" title=" " alt="" coords="92,222,102,209,133,166,163,134,167,137,137,170,106,212,96,225"/>
+<area shape="poly" title=" " alt="" coords="353,230,331,212,323,200,319,190,315,180,306,170,274,151,239,138,241,133,276,146,310,166,319,177,324,188,328,198,335,209,356,226"/>
+<area shape="rect" href="classCPoint.html" title="CPoint class, three dimensional point" alt="" coords="407,110,471,135"/>
+<area shape="poly" title=" " alt="" coords="434,150,412,212,398,236,393,233,407,210,429,148"/>
+<area shape="rect" href="classCPoint2.html" title="CPoint2 class, two dimensional point" alt="" coords="508,110,580,135"/>
+<area shape="poly" title=" " alt="" coords="542,149,530,182,521,198,508,213,484,229,456,239,454,234,481,224,505,209,517,195,526,180,537,148"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a513a0dc0e44f2592d516926c90763b67" id="r_a513a0dc0e44f2592d516926c90763b67"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a513a0dc0e44f2592d516926c90763b67">CEdge</a> ()</td></tr>
+<tr class="memitem:a06f2cccf7d71658e397d83205f4a2c29" id="r_a06f2cccf7d71658e397d83205f4a2c29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a06f2cccf7d71658e397d83205f4a2c29">~CEdge</a> ()</td></tr>
+<tr class="memitem:a56d16baa1f8333b3cc874b8001680d8c" id="r_a56d16baa1f8333b3cc874b8001680d8c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56d16baa1f8333b3cc874b8001680d8c">halfedge</a> (int id)</td></tr>
+<tr class="memitem:a5fb31e9605d9f59fd89f74039bf4f9d9" id="r_a5fb31e9605d9f59fd89f74039bf4f9d9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fb31e9605d9f59fd89f74039bf4f9d9">boundary</a> ()</td></tr>
+<tr class="memitem:a553f21dc90fa8f5a16f8d138f67fa5d2" id="r_a553f21dc90fa8f5a16f8d138f67fa5d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a553f21dc90fa8f5a16f8d138f67fa5d2">other</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *he)</td></tr>
+<tr class="memitem:ad7bfad53e3605f1cb3bf00230d54402b" id="r_ad7bfad53e3605f1cb3bf00230d54402b"><td class="memItemLeft" align="right" valign="top">std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7bfad53e3605f1cb3bf00230d54402b">string</a> ()</td></tr>
+<tr class="memitem:a18e3af9e9a7dc8e6f60a2483bb19ad24" id="r_a18e3af9e9a7dc8e6f60a2483bb19ad24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18e3af9e9a7dc8e6f60a2483bb19ad24">_from_string</a> ()</td></tr>
+<tr class="memitem:a420d6973d64a53c21ef4dc15c557b36f" id="r_a420d6973d64a53c21ef4dc15c557b36f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a420d6973d64a53c21ef4dc15c557b36f">_to_string</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected 属性</h2></td></tr>
+<tr class="memitem:a1d597f8d90c6c322ffbc5a454e7efb94" id="r_a1d597f8d90c6c322ffbc5a454e7efb94"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d597f8d90c6c322ffbc5a454e7efb94">m_halfedge</a> [2]</td></tr>
+<tr class="memitem:a810f0a280e3a97d449386cc5cb6cce3b" id="r_a810f0a280e3a97d449386cc5cb6cce3b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a810f0a280e3a97d449386cc5cb6cce3b">m_string</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p><a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">CEdge</a> class, which is the base class of all kinds of edge classes </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a513a0dc0e44f2592d516926c90763b67" name="a513a0dc0e44f2592d516926c90763b67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a513a0dc0e44f2592d516926c90763b67">&#9670;&#160;</a></span>CEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshLib::CEdge::CEdge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">CEdge</a> constructor, set both halfedge pointers to be NULL. </p>
+
+</div>
+</div>
+<a id="a06f2cccf7d71658e397d83205f4a2c29" name="a06f2cccf7d71658e397d83205f4a2c29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06f2cccf7d71658e397d83205f4a2c29">&#9670;&#160;</a></span>~CEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshLib::CEdge::~CEdge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">CEdge</a> destructor. </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a18e3af9e9a7dc8e6f60a2483bb19ad24" name="a18e3af9e9a7dc8e6f60a2483bb19ad24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18e3af9e9a7dc8e6f60a2483bb19ad24">&#9670;&#160;</a></span>_from_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshLib::CEdge::_from_string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Read the traits from the string. </p>
+
+</div>
+</div>
+<a id="a420d6973d64a53c21ef4dc15c557b36f" name="a420d6973d64a53c21ef4dc15c557b36f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a420d6973d64a53c21ef4dc15c557b36f">&#9670;&#160;</a></span>_to_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshLib::CEdge::_to_string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Save the traits to the string. </p>
+
+</div>
+</div>
+<a id="a5fb31e9605d9f59fd89f74039bf4f9d9" name="a5fb31e9605d9f59fd89f74039bf4f9d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fb31e9605d9f59fd89f74039bf4f9d9">&#9670;&#160;</a></span>boundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshLib::CEdge::boundary </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>whether the edge is on the boundary. </p>
+
+</div>
+</div>
+<a id="a56d16baa1f8333b3cc874b8001680d8c" name="a56d16baa1f8333b3cc874b8001680d8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56d16baa1f8333b3cc874b8001680d8c">&#9670;&#160;</a></span>halfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&amp; MeshLib::CEdge::halfedge </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The halfedge attached to the current edge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>either 0 or 1 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the halfedge[id] </dd></dl>
+
+</div>
+</div>
+<a id="a553f21dc90fa8f5a16f8d138f67fa5d2" name="a553f21dc90fa8f5a16f8d138f67fa5d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a553f21dc90fa8f5a16f8d138f67fa5d2">&#9670;&#160;</a></span>other()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&amp; MeshLib::CEdge::other </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *</td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The dual halfedge to the input halfedge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>halfedge attached to the current edge </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the other halfedge attached to the current edge </dd></dl>
+
+</div>
+</div>
+<a id="ad7bfad53e3605f1cb3bf00230d54402b" name="ad7bfad53e3605f1cb3bf00230d54402b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7bfad53e3605f1cb3bf00230d54402b">&#9670;&#160;</a></span>string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string &amp; MeshLib::CEdge::string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The string of the current edge. </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a1d597f8d90c6c322ffbc5a454e7efb94" name="a1d597f8d90c6c322ffbc5a454e7efb94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d597f8d90c6c322ffbc5a454e7efb94">&#9670;&#160;</a></span>m_halfedge</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>* MeshLib::CEdge::m_halfedge[2]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Pointers to the two halfedges attached to the current edge. </p>
+
+</div>
+</div>
+<a id="a810f0a280e3a97d449386cc5cb6cce3b" name="a810f0a280e3a97d449386cc5cb6cce3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a810f0a280e3a97d449386cc5cb6cce3b">&#9670;&#160;</a></span>m_string</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string MeshLib::CEdge::m_string</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The string associated to the current edge. </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/MeshLib/Mesh/<a class="el" href="Edge_8h_source.html">Edge.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

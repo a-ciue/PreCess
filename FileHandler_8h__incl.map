@@ -1,0 +1,25 @@
+<map id="model/FileHandler.h" name="model/FileHandler.h">
+<area shape="rect" id="Node000001" title="声明 FileHandler 类，用于处理所有与文件 IO 相关的操作" alt="" coords="351,5,503,31"/>
+<area shape="rect" id="Node000002" href="$ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="256,79,361,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="410,33,341,74,339,69,407,28"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="418,152,495,177"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="432,31,454,138,449,139,427,32"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="465,79,555,104"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="442,29,488,67,484,72,439,33"/>
+<area shape="rect" id="Node000003" href="$Selection_8h_source.html" title=" " alt="" coords="24,152,119,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="271,107,124,151,122,145,270,101"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="143,152,202,177"/>
+<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="288,106,208,148,206,143,286,102"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="227,152,295,177"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="303,106,278,142,274,139,299,103"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="319,152,394,177"/>
+<area shape="poly" id="edge9_Node000002_Node000009" title=" " alt="" coords="319,103,344,139,339,142,314,106"/>
+<area shape="poly" id="edge10_Node000002_Node000010" title=" " alt="" coords="334,102,421,144,419,148,331,106"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,299,68,324"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="71,178,45,286,40,285,66,177"/>
+<area shape="rect" id="Node000005" href="$Core_8h_source.html" title=" " alt="" coords="74,225,138,251"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="79,176,97,212,92,214,75,179"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="96,253,59,291,55,287,93,249"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="93,299,149,324"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="111,250,118,285,113,286,106,252"/>
+</map>

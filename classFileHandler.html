@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: FileHandler类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="classFileHandler-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">FileHandler类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 单例类  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FileHandler_8h_source.html">FileHandler.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a7f51d0d12133b61b68bb11e384c362e2" id="r_a7f51d0d12133b61b68bb11e384c362e2"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f51d0d12133b61b68bb11e384c362e2">readSpline</a> (const std::filesystem::path &amp;spline_path)</td></tr>
+<tr class="memdesc:a7f51d0d12133b61b68bb11e384c362e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">读取样条文件并生成 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 对象  <br /></td></tr>
+<tr class="memitem:a84ab03a785ec7b3f659985cb4dd7c379" id="r_a84ab03a785ec7b3f659985cb4dd7c379"><td class="memItemLeft" align="right" valign="top"><a id="a84ab03a785ec7b3f659985cb4dd7c379" name="a84ab03a785ec7b3f659985cb4dd7c379"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>writeSpline</b> (<a class="el" href="structSplineData.html">SplineData</a> &amp;spline, const std::filesystem::path &amp;target_path)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a4c8f1431a8c91df1dd1d99c1642f6373" id="r_a4c8f1431a8c91df1dd1d99c1642f6373"><td class="memItemLeft" align="right" valign="top"><a id="a4c8f1431a8c91df1dd1d99c1642f6373" name="a4c8f1431a8c91df1dd1d99c1642f6373"></a>
+static <a class="el" href="classFileHandler.html">FileHandler</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>instance</b> ()</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p><a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 单例类 </p>
+<p>负责所有与文件 IO 相关的操作，包括：</p><ul>
+<li>读取样条文件并转换为 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 对象</li>
+<li>读取网格文件并转换为 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 对象</li>
+<li>将 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 数据写出到文件 </li>
+</ul>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a7f51d0d12133b61b68bb11e384c362e2" name="a7f51d0d12133b61b68bb11e384c362e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f51d0d12133b61b68bb11e384c362e2">&#9670;&#160;</a></span>readSpline()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt; FileHandler::readSpline </td>
+          <td>(</td>
+          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>spline_path</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>读取样条文件并生成 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 对象 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">spline_path</td><td>样条文件的 URL 路径 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>成功时返回 std::unique_ptr&lt;ModelData&gt;，失败返回 nullptr </dd></dl>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/<a class="el" href="FileHandler_8h_source.html">FileHandler.h</a></li>
+<li>model/<a class="el" href="FileHandler_8cpp.html">FileHandler.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

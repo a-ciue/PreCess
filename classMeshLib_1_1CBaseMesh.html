@@ -1,0 +1,2352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: MeshLib::CBaseMesh&lt; CVertex, CEdge, CFace, CHalfEdge &gt; 模板类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>MeshLib</b></li><li class="navelem"><a href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Public 类型</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="classMeshLib_1_1CBaseMesh-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">MeshLib::CBaseMesh&lt; CVertex, CEdge, CFace, CHalfEdge &gt; 模板类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classMeshLib_1_1CBaseMesh.html" title="CBaseMesh, base class for all types of mesh classes">CBaseMesh</a>, base class for all types of mesh classes  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="BaseMesh_8h_source.html">BaseMesh.h</a>&gt;</code></p>
+<div class="dynheader">
+类 MeshLib::CBaseMesh&lt; CVertex, CEdge, CFace, CHalfEdge &gt; 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CBaseMesh__inherit__graph.png" border="0" usemap="#aMeshLib_1_1CBaseMesh_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aMeshLib_1_1CBaseMesh_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_inherit__map" id="aMeshLib_1_1CBaseMesh_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_inherit__map">
+<area shape="rect" title="CBaseMesh, base class for all types of mesh classes" alt="" coords="15,5,202,60"/>
+<area shape="rect" href="classMeshLib_1_1CToolMesh.html" title=" " alt="" coords="5,108,212,163"/>
+<area shape="poly" title=" " alt="" coords="111,74,111,108,106,108,106,74"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+MeshLib::CBaseMesh&lt; CVertex, CEdge, CFace, CHalfEdge &gt; 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CBaseMesh__coll__graph.png" border="0" usemap="#aMeshLib_1_1CBaseMesh_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aMeshLib_1_1CBaseMesh_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_coll__map" id="aMeshLib_1_1CBaseMesh_3_01CVertex_00_01CEdge_00_01CFace_00_01CHalfEdge_01_4_coll__map">
+<area shape="rect" title="CBaseMesh, base class for all types of mesh classes" alt="" coords="763,94,949,149"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="447,5,613,45"/>
+<area shape="poly" title=" " alt="" coords="627,42,739,72,792,91,791,96,738,77,626,47"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,5,389,45"/>
+<area shape="poly" title=" " alt="" coords="403,23,447,23,447,28,403,28"/>
+<area shape="rect" title=" " alt="" coords="5,5,181,45"/>
+<area shape="poly" title=" " alt="" coords="195,23,231,23,231,28,195,28"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="447,69,613,109"/>
+<area shape="poly" title=" " alt="" coords="627,96,763,110,762,115,627,101"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,69,389,109"/>
+<area shape="poly" title=" " alt="" coords="403,87,447,87,447,92,403,92"/>
+<area shape="rect" title=" " alt="" coords="5,69,181,109"/>
+<area shape="poly" title=" " alt="" coords="195,87,231,87,231,92,195,92"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="447,133,613,173"/>
+<area shape="poly" title=" " alt="" coords="627,144,738,135,762,132,763,137,739,140,628,150"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,133,389,173"/>
+<area shape="poly" title=" " alt="" coords="403,151,447,151,447,156,403,156"/>
+<area shape="rect" title=" " alt="" coords="5,133,181,173"/>
+<area shape="poly" title=" " alt="" coords="195,151,231,151,231,156,195,156"/>
+<area shape="rect" href="classMeshLib_1_1ElemStorage.html" title=" " alt="" coords="439,197,621,237"/>
+<area shape="poly" title=" " alt="" coords="634,198,738,172,800,146,802,151,740,177,636,203"/>
+<area shape="rect" href="classplf_1_1colony.html" title=" " alt="" coords="231,197,389,237"/>
+<area shape="poly" title=" " alt="" coords="403,215,439,215,439,220,403,220"/>
+<area shape="rect" title=" " alt="" coords="5,197,181,237"/>
+<area shape="poly" title=" " alt="" coords="195,215,231,215,231,220,195,220"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:adcf412e8267910b50f3145d6416947da" id="r_adcf412e8267910b50f3145d6416947da"><td class="memItemLeft" align="right" valign="top"><a id="adcf412e8267910b50f3145d6416947da" name="adcf412e8267910b50f3145d6416947da"></a>
+typedef <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>tVertex</b></td></tr>
+<tr class="memitem:a30024aa977abb5ab248e7c87ba1ec109" id="r_a30024aa977abb5ab248e7c87ba1ec109"><td class="memItemLeft" align="right" valign="top"><a id="a30024aa977abb5ab248e7c87ba1ec109" name="a30024aa977abb5ab248e7c87ba1ec109"></a>
+typedef <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>tHalfEdge</b></td></tr>
+<tr class="memitem:a966f6321c2cf92b849e77b931a36821b" id="r_a966f6321c2cf92b849e77b931a36821b"><td class="memItemLeft" align="right" valign="top"><a id="a966f6321c2cf92b849e77b931a36821b" name="a966f6321c2cf92b849e77b931a36821b"></a>
+typedef <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>tEdge</b></td></tr>
+<tr class="memitem:ad231546551e85dffb41c9aa9bcf5b86b" id="r_ad231546551e85dffb41c9aa9bcf5b86b"><td class="memItemLeft" align="right" valign="top"><a id="ad231546551e85dffb41c9aa9bcf5b86b" name="ad231546551e85dffb41c9aa9bcf5b86b"></a>
+typedef <a class="el" href="classMeshLib_1_1CFace.html">CFace</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>tFace</b></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ac0fb8b8bec22dcfc33d694bae1905e9e" id="r_ac0fb8b8bec22dcfc33d694bae1905e9e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0fb8b8bec22dcfc33d694bae1905e9e">CBaseMesh</a> ()</td></tr>
+<tr class="memitem:a875ca1255924a0ce68566150d4c55e76" id="r_a875ca1255924a0ce68566150d4c55e76"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a875ca1255924a0ce68566150d4c55e76">~CBaseMesh</a> ()</td></tr>
+<tr class="memitem:a65338968dc92c9d326956a9a60d08f35" id="r_a65338968dc92c9d326956a9a60d08f35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65338968dc92c9d326956a9a60d08f35">copy</a> (<a class="el" href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a> &amp;mesh)</td></tr>
+<tr class="memitem:ad711e992ab1cd7371690eba2b6292b35" id="r_ad711e992ab1cd7371690eba2b6292b35"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad711e992ab1cd7371690eba2b6292b35">read_obj</a> (const char *filename)</td></tr>
+<tr class="memitem:af885e691fce7e793d5d4185ea286d1cc" id="r_af885e691fce7e793d5d4185ea286d1cc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af885e691fce7e793d5d4185ea286d1cc">write_obj</a> (const char *output)</td></tr>
+<tr class="memitem:ace7e07c6b5f0d07cdfda11d3f73139f4" id="r_ace7e07c6b5f0d07cdfda11d3f73139f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace7e07c6b5f0d07cdfda11d3f73139f4">read_m</a> (const char *input)</td></tr>
+<tr class="memitem:aac9e4fdd74de34f44e8ac7afad00c322" id="r_aac9e4fdd74de34f44e8ac7afad00c322"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac9e4fdd74de34f44e8ac7afad00c322">write_m</a> (const char *output)</td></tr>
+<tr class="memitem:a15db6845a5ce5460a92a6afb0fcd1a31" id="r_a15db6845a5ce5460a92a6afb0fcd1a31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15db6845a5ce5460a92a6afb0fcd1a31">read_off</a> (const char *input)</td></tr>
+<tr class="memitem:a1ec12eff25a713eb43d2cdef1b452743" id="r_a1ec12eff25a713eb43d2cdef1b452743"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ec12eff25a713eb43d2cdef1b452743">write_off</a> (const char *output)</td></tr>
+<tr class="memitem:a180ba1fbde1e68a4a2201928e6573dc7" id="r_a180ba1fbde1e68a4a2201928e6573dc7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a180ba1fbde1e68a4a2201928e6573dc7">numVertices</a> ()</td></tr>
+<tr class="memitem:a59246eb0edbe1ad11f0e6ecb41444135" id="r_a59246eb0edbe1ad11f0e6ecb41444135"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59246eb0edbe1ad11f0e6ecb41444135">numEdges</a> ()</td></tr>
+<tr class="memitem:ac750e49625e3ebbc50a135f77cbbdf87" id="r_ac750e49625e3ebbc50a135f77cbbdf87"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac750e49625e3ebbc50a135f77cbbdf87">numFaces</a> ()</td></tr>
+<tr class="memitem:a74e917019ff789ac7e4e402de81cbe94" id="r_a74e917019ff789ac7e4e402de81cbe94"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74e917019ff789ac7e4e402de81cbe94">isBoundary</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:a9cd94b0e1dd28c2aecce5c15975e0bd8" id="r_a9cd94b0e1dd28c2aecce5c15975e0bd8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9cd94b0e1dd28c2aecce5c15975e0bd8">isBoundary</a> (<a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> e)</td></tr>
+<tr class="memitem:a8d60d481e391e80b3ef710811fe83352" id="r_a8d60d481e391e80b3ef710811fe83352"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d60d481e391e80b3ef710811fe83352">isBoundary</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:af03a301faaed2e2ea23ddca3b96a8b23" id="r_af03a301faaed2e2ea23ddca3b96a8b23"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af03a301faaed2e2ea23ddca3b96a8b23">idVertex</a> (int id)</td></tr>
+<tr class="memitem:a5f2f3d6715095a364f390321868aaa8a" id="r_a5f2f3d6715095a364f390321868aaa8a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f2f3d6715095a364f390321868aaa8a">vertexId</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:aad0fd30815bc0a4b414e9ad7b9d6c81f" id="r_aad0fd30815bc0a4b414e9ad7b9d6c81f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aad0fd30815bc0a4b414e9ad7b9d6c81f">idFace</a> (int id)</td></tr>
+<tr class="memitem:a721b0f334a34d5e6e23b99ba186f0606" id="r_a721b0f334a34d5e6e23b99ba186f0606"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a721b0f334a34d5e6e23b99ba186f0606">faceId</a> (<a class="el" href="classMeshLib_1_1CFace.html">tFace</a> f)</td></tr>
+<tr class="memitem:ae8a58acc899cab99f651b0845250d311" id="r_ae8a58acc899cab99f651b0845250d311"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8a58acc899cab99f651b0845250d311">vertexEdge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v0, <a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v1)</td></tr>
+<tr class="memitem:ad43e40c6eef135e91d792ed9f4dfbccf" id="r_ad43e40c6eef135e91d792ed9f4dfbccf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad43e40c6eef135e91d792ed9f4dfbccf">vertexHalfedge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v0, <a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v1)</td></tr>
+<tr class="memitem:a94ac4a6222c7ec036d586b1beb5c81d6" id="r_a94ac4a6222c7ec036d586b1beb5c81d6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94ac4a6222c7ec036d586b1beb5c81d6">corner</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v, <a class="el" href="classMeshLib_1_1CFace.html">tFace</a> f)</td></tr>
+<tr class="memitem:ad244041d5d03f443128eec0c589e6a5c" id="r_ad244041d5d03f443128eec0c589e6a5c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad244041d5d03f443128eec0c589e6a5c">halfedgeFace</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:ab306584de9fde74de2038c0b0113d0a0" id="r_ab306584de9fde74de2038c0b0113d0a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab306584de9fde74de2038c0b0113d0a0">halfedgeVertex</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a019148ba8fcdc951366bb297f7cf706d" id="r_a019148ba8fcdc951366bb297f7cf706d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a019148ba8fcdc951366bb297f7cf706d">halfedgeTarget</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:aa3e98fc14c2dae20fd4fada65c5d13a2" id="r_aa3e98fc14c2dae20fd4fada65c5d13a2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3e98fc14c2dae20fd4fada65c5d13a2">halfedgeSource</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a172ab9124d1c0236a66e104fe1cce404" id="r_a172ab9124d1c0236a66e104fe1cce404"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a172ab9124d1c0236a66e104fe1cce404">halfedgeNext</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a9d89bff17b86a5d8f0dc13f4eb7f5b6f" id="r_a9d89bff17b86a5d8f0dc13f4eb7f5b6f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d89bff17b86a5d8f0dc13f4eb7f5b6f">halfedgePrev</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a4905fc3ff11c836e07395dd424d37ece" id="r_a4905fc3ff11c836e07395dd424d37ece"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4905fc3ff11c836e07395dd424d37ece">halfedgeSym</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:ada3fa889304e08af51bc8734512ab38e" id="r_ada3fa889304e08af51bc8734512ab38e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada3fa889304e08af51bc8734512ab38e">halfedgeEdge</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a46a10c439e6a7c13f0dec5bd62ce1565" id="r_a46a10c439e6a7c13f0dec5bd62ce1565"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46a10c439e6a7c13f0dec5bd62ce1565">vertexHalfedge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:a73ddf93eff3bcb04f5657bb858403cc1" id="r_a73ddf93eff3bcb04f5657bb858403cc1"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73ddf93eff3bcb04f5657bb858403cc1">vertexEdges</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:ae5e25339a32fa919bb4c3600b03435f9" id="r_ae5e25339a32fa919bb4c3600b03435f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5e25339a32fa919bb4c3600b03435f9">edgeVertex1</a> (<a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> e)</td></tr>
+<tr class="memitem:a348d1cc713885bf04be5684727dcbf21" id="r_a348d1cc713885bf04be5684727dcbf21"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a348d1cc713885bf04be5684727dcbf21">edgeVertex2</a> (<a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> e)</td></tr>
+<tr class="memitem:aa00d7192146f94c4853fb1b660a449c6" id="r_aa00d7192146f94c4853fb1b660a449c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa00d7192146f94c4853fb1b660a449c6">edgeFace1</a> (<a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> e)</td></tr>
+<tr class="memitem:ab52850e9a6bb778f3372b925d01e2783" id="r_ab52850e9a6bb778f3372b925d01e2783"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab52850e9a6bb778f3372b925d01e2783">edgeFace2</a> (<a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> e)</td></tr>
+<tr class="memitem:ab1bc4850fcc8e74cfdf16560ecb9558a" id="r_ab1bc4850fcc8e74cfdf16560ecb9558a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1bc4850fcc8e74cfdf16560ecb9558a">edgeHalfedge</a> (<a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> e, int id)</td></tr>
+<tr class="memitem:a24655b5a0c6cba60c236c84def777e9a" id="r_a24655b5a0c6cba60c236c84def777e9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24655b5a0c6cba60c236c84def777e9a">faceHalfedge</a> (<a class="el" href="classMeshLib_1_1CFace.html">tFace</a> f)</td></tr>
+<tr class="memitem:a170cd5aafa0925c710c0d770789b2f6d" id="r_a170cd5aafa0925c710c0d770789b2f6d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a170cd5aafa0925c710c0d770789b2f6d">vertexMostClwOutHalfEdge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:ac0a1fd4394382d87004048cff63e2efe" id="r_ac0a1fd4394382d87004048cff63e2efe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0a1fd4394382d87004048cff63e2efe">vertexNextCcwOutHalfEdge</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a90c1bfc4bc7d1467c1d36dbc792d5481" id="r_a90c1bfc4bc7d1467c1d36dbc792d5481"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90c1bfc4bc7d1467c1d36dbc792d5481">vertexMostCcwOutHalfEdge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:af2f1696c5e66668c8b1f3fe98b4c5d92" id="r_af2f1696c5e66668c8b1f3fe98b4c5d92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af2f1696c5e66668c8b1f3fe98b4c5d92">vertexNextClwOutHalfEdge</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a3966eec3d8d8a301bfaac27e380210fc" id="r_a3966eec3d8d8a301bfaac27e380210fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3966eec3d8d8a301bfaac27e380210fc">vertexMostClwInHalfEdge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:a721933757b5348b4c251d519e95a9a96" id="r_a721933757b5348b4c251d519e95a9a96"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a721933757b5348b4c251d519e95a9a96">vertexNextCcwInHalfEdge</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a201002431101172f57da7ec748a2770e" id="r_a201002431101172f57da7ec748a2770e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a201002431101172f57da7ec748a2770e">vertexMostCcwInHalfEdge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v)</td></tr>
+<tr class="memitem:a29d3d0c0a41b3e54e777b9546cbd88f6" id="r_a29d3d0c0a41b3e54e777b9546cbd88f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29d3d0c0a41b3e54e777b9546cbd88f6">vertexNextClwInHalfEdge</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a093a262a9ac1648f4a9071b46858634f" id="r_a093a262a9ac1648f4a9071b46858634f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a093a262a9ac1648f4a9071b46858634f">faceMostClwHalfEdge</a> (<a class="el" href="classMeshLib_1_1CFace.html">tFace</a> face)</td></tr>
+<tr class="memitem:ae935733ecd2d03ea094f93e5e174c775" id="r_ae935733ecd2d03ea094f93e5e174c775"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae935733ecd2d03ea094f93e5e174c775">faceMostCcwHalfEdge</a> (<a class="el" href="classMeshLib_1_1CFace.html">tFace</a> face)</td></tr>
+<tr class="memitem:a1ab17a733e28d417106f6e32be8a80cf" id="r_a1ab17a733e28d417106f6e32be8a80cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ab17a733e28d417106f6e32be8a80cf">faceNextCcwHalfEdge</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:af9fef8808ee51bfa9c3d043bde7b3db4" id="r_af9fef8808ee51bfa9c3d043bde7b3db4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9fef8808ee51bfa9c3d043bde7b3db4">faceNextClwHalfEdge</a> (<a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a> he)</td></tr>
+<tr class="memitem:a2f1e00892d9f3c970937a2c20196d225" id="r_a2f1e00892d9f3c970937a2c20196d225"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f1e00892d9f3c970937a2c20196d225">edgeLength</a> (<a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a> e)</td></tr>
+<tr class="memitem:aaf0303d716b3d6012c2de2f6cc45e123" id="r_aaf0303d716b3d6012c2de2f6cc45e123"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf0303d716b3d6012c2de2f6cc45e123">edges</a> ()</td></tr>
+<tr class="memitem:a873df62bb485e96b08150a68d88a9008" id="r_a873df62bb485e96b08150a68d88a9008"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CFace.html">CFace</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a873df62bb485e96b08150a68d88a9008">faces</a> ()</td></tr>
+<tr class="memitem:a65afb2dd09d095dd1d224d1fa308e9c2" id="r_a65afb2dd09d095dd1d224d1fa308e9c2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65afb2dd09d095dd1d224d1fa308e9c2">vertices</a> ()</td></tr>
+<tr class="memitem:afcfda5fcd6c3f6d8fd39016b109c4053" id="r_afcfda5fcd6c3f6d8fd39016b109c4053"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afcfda5fcd6c3f6d8fd39016b109c4053">halfedges</a> ()</td></tr>
+<tr class="memitem:a04ee0f997dd274fdcf5ba6bc7b979569" id="r_a04ee0f997dd274fdcf5ba6bc7b979569"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a04ee0f997dd274fdcf5ba6bc7b979569">createVertex</a> (int id=0)</td></tr>
+<tr class="memitem:a24b4f0bd948452d506631015deb704df" id="r_a24b4f0bd948452d506631015deb704df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24b4f0bd948452d506631015deb704df">createEdge</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v1, <a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v2)</td></tr>
+<tr class="memitem:a5c1a9a5b45a58d766a664595f8c799b1" id="r_a5c1a9a5b45a58d766a664595f8c799b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5c1a9a5b45a58d766a664595f8c799b1">createFace</a> (<a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> v[], int id)</td></tr>
+<tr class="memitem:a2ae791035daa07ac116913aa6866e990" id="r_a2ae791035daa07ac116913aa6866e990"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2ae791035daa07ac116913aa6866e990">createFace</a> (std::vector&lt; <a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> &gt; &amp;v, int id)</td></tr>
+<tr class="memitem:a1a037d32457d70216d0885c31a2d889a" id="r_a1a037d32457d70216d0885c31a2d889a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a037d32457d70216d0885c31a2d889a">deleteFace</a> (<a class="el" href="classMeshLib_1_1CFace.html">tFace</a> pFace)</td></tr>
+<tr class="memitem:a7f7c5053e7254f0b3a9ed4869848885f" id="r_a7f7c5053e7254f0b3a9ed4869848885f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f7c5053e7254f0b3a9ed4869848885f">labelBoundary</a> (void)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a36ba9fb8f3b289de348f1133ee6ab4bb" id="r_a36ba9fb8f3b289de348f1133ee6ab4bb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36ba9fb8f3b289de348f1133ee6ab4bb">m_with_texture</a></td></tr>
+<tr class="memitem:a105ddccad80953028cc54cd317dee8a4" id="r_a105ddccad80953028cc54cd317dee8a4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a105ddccad80953028cc54cd317dee8a4">m_with_normal</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected 属性</h2></td></tr>
+<tr class="memitem:a75a3b2cfe542f417a2f9400b52787728" id="r_a75a3b2cfe542f417a2f9400b52787728"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75a3b2cfe542f417a2f9400b52787728">m_edges</a></td></tr>
+<tr class="memitem:aa418052e4678755232e854ce063f2b7b" id="r_aa418052e4678755232e854ce063f2b7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa418052e4678755232e854ce063f2b7b">m_verts</a></td></tr>
+<tr class="memitem:aed13e9aa114e6adfde3b910676480dd2" id="r_aed13e9aa114e6adfde3b910676480dd2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CFace.html">CFace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aed13e9aa114e6adfde3b910676480dd2">m_faces</a></td></tr>
+<tr class="memitem:a68ac9a7b9087d8c83c307ea7f8299dcf" id="r_a68ac9a7b9087d8c83c307ea7f8299dcf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68ac9a7b9087d8c83c307ea7f8299dcf">m_halfedges</a></td></tr>
+<tr class="memitem:a587e5ce14b9a84ef648d0764a063450d" id="r_a587e5ce14b9a84ef648d0764a063450d"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, <a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a587e5ce14b9a84ef648d0764a063450d">m_map_vert</a></td></tr>
+<tr class="memitem:aacbeec9d726ecc9b9ca5ace06d3a244c" id="r_aacbeec9d726ecc9b9ca5ace06d3a244c"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, <a class="el" href="classMeshLib_1_1CFace.html">tFace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacbeec9d726ecc9b9ca5ace06d3a244c">m_map_face</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt;<br />
+class MeshLib::CBaseMesh&lt; CVertex, CEdge, CFace, CHalfEdge &gt;</div><p><a class="el" href="classMeshLib_1_1CBaseMesh.html" title="CBaseMesh, base class for all types of mesh classes">CBaseMesh</a>, base class for all types of mesh classes </p>
+<p>This is the fundamental class for meshes. It includes a list of vertices, a list of edges, a list of faces. All the geometric objects are connected by pointers, vertex, edge, face are connected by halfedges. The mesh class has file IO functionalities, supporting .obj, .m and .off file formats. It offers Euler operators, each geometric primative can access its neighbors freely.</p>
+<dl class="tparams"><dt>模板参数</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">CVertex</a></td><td>vertex class, derived from <a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">MeshLib::CVertex</a> class </td></tr>
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">CEdge</a></td><td>edge class, derived from <a class="el" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes">MeshLib::CEdge</a> class </td></tr>
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CFace.html" title="CFace base class of all kinds of face classes">CFace</a></td><td>face class, derived from <a class="el" href="classMeshLib_1_1CFace.html" title="CFace base class of all kinds of face classes">MeshLib::CFace</a> class </td></tr>
+    <tr><td class="paramname"><a class="el" href="classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges.">CHalfEdge</a></td><td>halfedge class, derived from <a class="el" href="classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges.">MeshLib::CHalfEdge</a> class </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ac0fb8b8bec22dcfc33d694bae1905e9e" name="ac0fb8b8bec22dcfc33d694bae1905e9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0fb8b8bec22dcfc33d694bae1905e9e">&#9670;&#160;</a></span>CBaseMesh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::CBaseMesh </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classMeshLib_1_1CBaseMesh.html" title="CBaseMesh, base class for all types of mesh classes">CBaseMesh</a> constructor. </p>
+
+</div>
+</div>
+<a id="a875ca1255924a0ce68566150d4c55e76" name="a875ca1255924a0ce68566150d4c55e76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a875ca1255924a0ce68566150d4c55e76">&#9670;&#160;</a></span>~CBaseMesh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::~<a class="el" href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a> </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>CBasemesh destructor </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a65338968dc92c9d326956a9a60d08f35" name="a65338968dc92c9d326956a9a60d08f35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65338968dc92c9d326956a9a60d08f35">&#9670;&#160;</a></span>copy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CBaseMesh.html">CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>mesh</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Copy operator </p>
+
+</div>
+</div>
+<a id="a94ac4a6222c7ec036d586b1beb5c81d6" name="a94ac4a6222c7ec036d586b1beb5c81d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94ac4a6222c7ec036d586b1beb5c81d6">&#9670;&#160;</a></span>corner()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::corner </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Access a halfedge by its target vertex, and attaching face. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>target vertex </td></tr>
+    <tr><td class="paramname">f</td><td>attaching face </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>halfedge, whose target is v, attaching face is f. NULL if no such an halfedge exists. </dd></dl>
+
+</div>
+</div>
+<a id="a24b4f0bd948452d506631015deb704df" name="a24b4f0bd948452d506631015deb704df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24b4f0bd948452d506631015deb704df">&#9670;&#160;</a></span>createEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::createEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create an edge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v1</td><td>end vertex of the edge </td></tr>
+    <tr><td class="paramname">v2</td><td>end vertex of the edge </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>pointer to the new edge </dd></dl>
+
+</div>
+</div>
+<a id="a2ae791035daa07ac116913aa6866e990" name="a2ae791035daa07ac116913aa6866e990"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ae791035daa07ac116913aa6866e990">&#9670;&#160;</a></span>createFace() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFace.html">CFace</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::createFace </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>v</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>an array of vertices </td></tr>
+    <tr><td class="paramname">id</td><td>face id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>pointer to the new face </dd></dl>
+
+</div>
+</div>
+<a id="a5c1a9a5b45a58d766a664595f8c799b1" name="a5c1a9a5b45a58d766a664595f8c799b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c1a9a5b45a58d766a664595f8c799b1">&#9670;&#160;</a></span>createFace() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFace.html">CFace</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::createFace </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>an array of vertices </td></tr>
+    <tr><td class="paramname">id</td><td>face id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>pointer to the new face </dd></dl>
+
+</div>
+</div>
+<a id="a04ee0f997dd274fdcf5ba6bc7b979569" name="a04ee0f997dd274fdcf5ba6bc7b979569"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04ee0f997dd274fdcf5ba6bc7b979569">&#9670;&#160;</a></span>createVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::createVertex </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a vertex </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>Vertex id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>pointer to the new vertex </dd></dl>
+
+</div>
+</div>
+<a id="a1a037d32457d70216d0885c31a2d889a" name="a1a037d32457d70216d0885c31a2d889a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a037d32457d70216d0885c31a2d889a">&#9670;&#160;</a></span>deleteFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::deleteFace </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a></td>          <td class="paramname"><span class="paramname"><em>pFace</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>delete one face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pFace</td><td>the face to be deleted </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa00d7192146f94c4853fb1b660a449c6" name="aa00d7192146f94c4853fb1b660a449c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa00d7192146f94c4853fb1b660a449c6">&#9670;&#160;</a></span>edgeFace1()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFace.html">CFace</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::edgeFace1 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The first face attaching to an edge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the first face attaching to e. </dd></dl>
+
+</div>
+</div>
+<a id="ab52850e9a6bb778f3372b925d01e2783" name="ab52850e9a6bb778f3372b925d01e2783"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab52850e9a6bb778f3372b925d01e2783">&#9670;&#160;</a></span>edgeFace2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFace.html">CFace</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::edgeFace2 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The second face attaching to an edge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the second face attaching to e.</dd></dl>
+<p>The second face attaching to an edge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the first face attaching to e. </dd></dl>
+
+</div>
+</div>
+<a id="ab1bc4850fcc8e74cfdf16560ecb9558a" name="ab1bc4850fcc8e74cfdf16560ecb9558a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1bc4850fcc8e74cfdf16560ecb9558a">&#9670;&#160;</a></span>edgeHalfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::edgeHalfedge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The halfedge attaching to an edge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge. </td></tr>
+    <tr><td class="paramname">id</td><td>the index of the halfedge, either 0 or 1 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the halfedge[i] attaching to edge e. </dd></dl>
+
+</div>
+</div>
+<a id="a2f1e00892d9f3c970937a2c20196d225" name="a2f1e00892d9f3c970937a2c20196d225"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f1e00892d9f3c970937a2c20196d225">&#9670;&#160;</a></span>edgeLength()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::edgeLength </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Edge length </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the length of the edge e</dd></dl>
+<p>Edge length </p>
+
+</div>
+</div>
+<a id="aaf0303d716b3d6012c2de2f6cc45e123" name="aaf0303d716b3d6012c2de2f6cc45e123"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf0303d716b3d6012c2de2f6cc45e123">&#9670;&#160;</a></span>edges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> &gt; &amp; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::edges </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Storage of the edges of the mesh. </p>
+
+</div>
+</div>
+<a id="ae5e25339a32fa919bb4c3600b03435f9" name="ae5e25339a32fa919bb4c3600b03435f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5e25339a32fa919bb4c3600b03435f9">&#9670;&#160;</a></span>edgeVertex1()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::edgeVertex1 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The first vertex of an edge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the first vertex of e. </dd></dl>
+
+</div>
+</div>
+<a id="a348d1cc713885bf04be5684727dcbf21" name="a348d1cc713885bf04be5684727dcbf21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a348d1cc713885bf04be5684727dcbf21">&#9670;&#160;</a></span>edgeVertex2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::edgeVertex2 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The second vertex of an edge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the second vertex of e.</dd></dl>
+<p>The second vertex of an edge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the input edge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the first vertex of e. </dd></dl>
+
+</div>
+</div>
+<a id="a24655b5a0c6cba60c236c84def777e9a" name="a24655b5a0c6cba60c236c84def777e9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24655b5a0c6cba60c236c84def777e9a">&#9670;&#160;</a></span>faceHalfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::faceHalfedge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The first halfedge attaching to a face f. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>the input face. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the first halfedge attaching to f. </dd></dl>
+
+</div>
+</div>
+<a id="a721b0f334a34d5e6e23b99ba186f0606" name="a721b0f334a34d5e6e23b99ba186f0606"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a721b0f334a34d5e6e23b99ba186f0606">&#9670;&#160;</a></span>faceId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::faceId </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The face id </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>the input face </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the face id. </dd></dl>
+
+</div>
+</div>
+<a id="ae935733ecd2d03ea094f93e5e174c775" name="ae935733ecd2d03ea094f93e5e174c775"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae935733ecd2d03ea094f93e5e174c775">&#9670;&#160;</a></span>faceMostCcwHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::faceMostCcwHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a></td>          <td class="paramname"><span class="paramname"><em>face</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most Ccw HalfEdge of a face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">face</td><td>the input face. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Ccw HalfEdge of f. </dd></dl>
+
+</div>
+</div>
+<a id="a093a262a9ac1648f4a9071b46858634f" name="a093a262a9ac1648f4a9071b46858634f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a093a262a9ac1648f4a9071b46858634f">&#9670;&#160;</a></span>faceMostClwHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::faceMostClwHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CFace.html">tFace</a></td>          <td class="paramname"><span class="paramname"><em>face</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most Clw HalfEdge of a face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">face</td><td>the input face. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Clw HalfEdge of f.</dd></dl>
+<p>The most Clw HalfEdge in a face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">face</td><td>the input face. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Clw HalfEdge in a face. </dd></dl>
+
+</div>
+</div>
+<a id="a1ab17a733e28d417106f6e32be8a80cf" name="a1ab17a733e28d417106f6e32be8a80cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ab17a733e28d417106f6e32be8a80cf">&#9670;&#160;</a></span>faceNextCcwHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::faceNextCcwHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The next Ccw HalfEdge of a halfedge in a face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next Ccw HalfEdge of he in a face. </dd></dl>
+
+</div>
+</div>
+<a id="af9fef8808ee51bfa9c3d043bde7b3db4" name="af9fef8808ee51bfa9c3d043bde7b3db4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9fef8808ee51bfa9c3d043bde7b3db4">&#9670;&#160;</a></span>faceNextClwHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::faceNextClwHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The next Clw HalfEdge of a halfedge in a face </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next Clw HalfEdge of he in a face. </dd></dl>
+
+</div>
+</div>
+<a id="a873df62bb485e96b08150a68d88a9008" name="a873df62bb485e96b08150a68d88a9008"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a873df62bb485e96b08150a68d88a9008">&#9670;&#160;</a></span>faces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CFace.html">CFace</a> &gt; &amp; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::faces </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Storage of the faces of the mesh. </p>
+
+</div>
+</div>
+<a id="ada3fa889304e08af51bc8734512ab38e" name="ada3fa889304e08af51bc8734512ab38e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada3fa889304e08af51bc8734512ab38e">&#9670;&#160;</a></span>halfedgeEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgeEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The edge of a halfedge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the edge of he. </dd></dl>
+
+</div>
+</div>
+<a id="ad244041d5d03f443128eec0c589e6a5c" name="ad244041d5d03f443128eec0c589e6a5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad244041d5d03f443128eec0c589e6a5c">&#9670;&#160;</a></span>halfedgeFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFace.html">CFace</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgeFace </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The face a halfedge attaching to. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the face he attaches </dd></dl>
+
+</div>
+</div>
+<a id="a172ab9124d1c0236a66e104fe1cce404" name="a172ab9124d1c0236a66e104fe1cce404"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a172ab9124d1c0236a66e104fe1cce404">&#9670;&#160;</a></span>halfedgeNext()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgeNext </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The next halfedge of a halfedge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next halfedge of he. </dd></dl>
+
+</div>
+</div>
+<a id="a9d89bff17b86a5d8f0dc13f4eb7f5b6f" name="a9d89bff17b86a5d8f0dc13f4eb7f5b6f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d89bff17b86a5d8f0dc13f4eb7f5b6f">&#9670;&#160;</a></span>halfedgePrev()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgePrev </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The previous halfedge of a halfedge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next halfedge of he. </dd></dl>
+
+</div>
+</div>
+<a id="afcfda5fcd6c3f6d8fd39016b109c4053" name="afcfda5fcd6c3f6d8fd39016b109c4053"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcfda5fcd6c3f6d8fd39016b109c4053">&#9670;&#160;</a></span>halfedges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt; &amp; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedges </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Storage of the vertices of the mesh. </p>
+
+</div>
+</div>
+<a id="aa3e98fc14c2dae20fd4fada65c5d13a2" name="aa3e98fc14c2dae20fd4fada65c5d13a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3e98fc14c2dae20fd4fada65c5d13a2">&#9670;&#160;</a></span>halfedgeSource()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgeSource </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The source vertex of a halfedge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the source vertex of he. </dd></dl>
+
+</div>
+</div>
+<a id="a4905fc3ff11c836e07395dd424d37ece" name="a4905fc3ff11c836e07395dd424d37ece"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4905fc3ff11c836e07395dd424d37ece">&#9670;&#160;</a></span>halfedgeSym()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgeSym </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The dual halfedge of a halfedge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the dual halfedge of he. </dd></dl>
+
+</div>
+</div>
+<a id="a019148ba8fcdc951366bb297f7cf706d" name="a019148ba8fcdc951366bb297f7cf706d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a019148ba8fcdc951366bb297f7cf706d">&#9670;&#160;</a></span>halfedgeTarget()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgeTarget </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The target vertex of a halfedge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the target vertex of he. </dd></dl>
+
+</div>
+</div>
+<a id="ab306584de9fde74de2038c0b0113d0a0" name="ab306584de9fde74de2038c0b0113d0a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab306584de9fde74de2038c0b0113d0a0">&#9670;&#160;</a></span>halfedgeVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::halfedgeVertex </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The target vertex of a halfedge. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the target vertex of he. </dd></dl>
+
+</div>
+</div>
+<a id="aad0fd30815bc0a4b414e9ad7b9d6c81f" name="aad0fd30815bc0a4b414e9ad7b9d6c81f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad0fd30815bc0a4b414e9ad7b9d6c81f">&#9670;&#160;</a></span>idFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFace.html">CFace</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::idFace </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Access a face by its id </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the face id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the face, whose ID equals to id. NULL, if there is no such a face. </dd></dl>
+
+</div>
+</div>
+<a id="af03a301faaed2e2ea23ddca3b96a8b23" name="af03a301faaed2e2ea23ddca3b96a8b23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af03a301faaed2e2ea23ddca3b96a8b23">&#9670;&#160;</a></span>idVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::idVertex </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Access a vertex by its id </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the vertex id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the vertex, whose ID equals to id. NULL, if there is no such a vertex. </dd></dl>
+
+</div>
+</div>
+<a id="a9cd94b0e1dd28c2aecce5c15975e0bd8" name="a9cd94b0e1dd28c2aecce5c15975e0bd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cd94b0e1dd28c2aecce5c15975e0bd8">&#9670;&#160;</a></span>isBoundary() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::isBoundary </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CEdge.html">tEdge</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>whether an edge is on the boundary </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>the pointer to the edge </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8d60d481e391e80b3ef710811fe83352" name="a8d60d481e391e80b3ef710811fe83352"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d60d481e391e80b3ef710811fe83352">&#9670;&#160;</a></span>isBoundary() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::isBoundary </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>whether a halfedge is on the boundary </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the pointer to the halfedge </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a74e917019ff789ac7e4e402de81cbe94" name="a74e917019ff789ac7e4e402de81cbe94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74e917019ff789ac7e4e402de81cbe94">&#9670;&#160;</a></span>isBoundary() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::isBoundary </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>whether a vertex is on the boundary </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the pointer to the vertex </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7f7c5053e7254f0b3a9ed4869848885f" name="a7f7c5053e7254f0b3a9ed4869848885f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f7c5053e7254f0b3a9ed4869848885f">&#9670;&#160;</a></span>labelBoundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::labelBoundary </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>label boundary vertices, edges, faces</p>
+<p>Label boundary edges, vertices </p>
+
+</div>
+</div>
+<a id="a59246eb0edbe1ad11f0e6ecb41444135" name="a59246eb0edbe1ad11f0e6ecb41444135"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59246eb0edbe1ad11f0e6ecb41444135">&#9670;&#160;</a></span>numEdges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::numEdges </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>number of edges</p>
+<p>Number of edges of the mesh </p>
+
+</div>
+</div>
+<a id="ac750e49625e3ebbc50a135f77cbbdf87" name="ac750e49625e3ebbc50a135f77cbbdf87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac750e49625e3ebbc50a135f77cbbdf87">&#9670;&#160;</a></span>numFaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::numFaces </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>number of faces</p>
+<p>Number of faces of the mesh </p>
+
+</div>
+</div>
+<a id="a180ba1fbde1e68a4a2201928e6573dc7" name="a180ba1fbde1e68a4a2201928e6573dc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a180ba1fbde1e68a4a2201928e6573dc7">&#9670;&#160;</a></span>numVertices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::numVertices </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>number of vertices</p>
+<p>Number of vertices of the mesh </p>
+
+</div>
+</div>
+<a id="ace7e07c6b5f0d07cdfda11d3f73139f4" name="ace7e07c6b5f0d07cdfda11d3f73139f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace7e07c6b5f0d07cdfda11d3f73139f4">&#9670;&#160;</a></span>read_m()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::read_m </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Read an .m file. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>the input obj file name </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad711e992ab1cd7371690eba2b6292b35" name="ad711e992ab1cd7371690eba2b6292b35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad711e992ab1cd7371690eba2b6292b35">&#9670;&#160;</a></span>read_obj()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::read_obj </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>filename</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Read an .obj file. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>the input .obj file name</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Read an .obj file. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>the filename .obj file name </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a15db6845a5ce5460a92a6afb0fcd1a31" name="a15db6845a5ce5460a92a6afb0fcd1a31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15db6845a5ce5460a92a6afb0fcd1a31">&#9670;&#160;</a></span>read_off()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::read_off </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Read an .off file </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>the input .off filename </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae8a58acc899cab99f651b0845250d311" name="ae8a58acc899cab99f651b0845250d311"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8a58acc899cab99f651b0845250d311">&#9670;&#160;</a></span>vertexEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v0</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v1</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Access an edge by its two end vertices </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v0</td><td>one vertex of the edge </td></tr>
+    <tr><td class="paramname">v1</td><td>the other vertex of the edge </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the edge connecting both v0 and v1, NULL if no such edge exists. </dd></dl>
+
+</div>
+</div>
+<a id="a73ddf93eff3bcb04f5657bb858403cc1" name="a73ddf93eff3bcb04f5657bb858403cc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73ddf93eff3bcb04f5657bb858403cc1">&#9670;&#160;</a></span>vertexEdges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::list&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * &gt; &amp; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexEdges </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v0</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The edge list attaching to the vertex v, such that v is the first vertex of the edge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the reference to the edge list</dd></dl>
+<p>Access the edge list of a vertex, {e} such that e-&gt;vertex1() == v </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>vertex </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the list of adjacent edges </dd></dl>
+
+</div>
+</div>
+<a id="a46a10c439e6a7c13f0dec5bd62ce1565" name="a46a10c439e6a7c13f0dec5bd62ce1565"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46a10c439e6a7c13f0dec5bd62ce1565">&#9670;&#160;</a></span>vertexHalfedge() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexHalfedge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The halfedge targeting at a vertex. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the halfedge targeting at v, which is the most ccw in halfedge of v. </dd></dl>
+
+</div>
+</div>
+<a id="ad43e40c6eef135e91d792ed9f4dfbccf" name="ad43e40c6eef135e91d792ed9f4dfbccf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad43e40c6eef135e91d792ed9f4dfbccf">&#9670;&#160;</a></span>vertexHalfedge() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexHalfedge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v0</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v1</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Access a halfedge by its two end vertices </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v0</td><td>one vertex of the halfedge </td></tr>
+    <tr><td class="paramname">v1</td><td>the other vertex of the halfedge </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the halfedge connecting both v0 and v1, NULL if no such edge exists. </dd></dl>
+
+</div>
+</div>
+<a id="a5f2f3d6715095a364f390321868aaa8a" name="a5f2f3d6715095a364f390321868aaa8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f2f3d6715095a364f390321868aaa8a">&#9670;&#160;</a></span>vertexId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexId </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The vertex id </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the vertex id. </dd></dl>
+
+</div>
+</div>
+<a id="a201002431101172f57da7ec748a2770e" name="a201002431101172f57da7ec748a2770e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a201002431101172f57da7ec748a2770e">&#9670;&#160;</a></span>vertexMostCcwInHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexMostCcwInHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most Ccw In HalfEdge of a vertex </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Ccw In HalfEdge of v.</dd></dl>
+<p>The most Ccw In HalfEdge of a vertex </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Clw In HalfEdge of v. </dd></dl>
+
+</div>
+</div>
+<a id="a90c1bfc4bc7d1467c1d36dbc792d5481" name="a90c1bfc4bc7d1467c1d36dbc792d5481"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90c1bfc4bc7d1467c1d36dbc792d5481">&#9670;&#160;</a></span>vertexMostCcwOutHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexMostCcwOutHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most Ccw Out HalfEdge of a vertex </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Ccw Out HalfEdge of v.</dd></dl>
+<p>The next Ccw Out HalfEdge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next Ccw Out HalfEdge, sharing the same source of he. </dd></dl>
+
+</div>
+</div>
+<a id="a3966eec3d8d8a301bfaac27e380210fc" name="a3966eec3d8d8a301bfaac27e380210fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3966eec3d8d8a301bfaac27e380210fc">&#9670;&#160;</a></span>vertexMostClwInHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexMostClwInHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most Clw In HalfEdge of a vertex </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Clw In HalfEdge of v. </dd></dl>
+
+</div>
+</div>
+<a id="a170cd5aafa0925c710c0d770789b2f6d" name="a170cd5aafa0925c710c0d770789b2f6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a170cd5aafa0925c710c0d770789b2f6d">&#9670;&#160;</a></span>vertexMostClwOutHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexMostClwOutHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a></td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most Clw Out HalfEdge of a vertex </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>the input vertex. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the most Clw Out HalfEdge of v. </dd></dl>
+
+</div>
+</div>
+<a id="a721933757b5348b4c251d519e95a9a96" name="a721933757b5348b4c251d519e95a9a96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a721933757b5348b4c251d519e95a9a96">&#9670;&#160;</a></span>vertexNextCcwInHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexNextCcwInHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The next Ccw In HalfEdge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge . </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next Ccw In HalfEdge, sharing the same target of he. </dd></dl>
+
+</div>
+</div>
+<a id="ac0a1fd4394382d87004048cff63e2efe" name="ac0a1fd4394382d87004048cff63e2efe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0a1fd4394382d87004048cff63e2efe">&#9670;&#160;</a></span>vertexNextCcwOutHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexNextCcwOutHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The next Ccw Out HalfEdge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge . </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next Ccw Out HalfEdge, sharing the same source of he. </dd></dl>
+
+</div>
+</div>
+<a id="a29d3d0c0a41b3e54e777b9546cbd88f6" name="a29d3d0c0a41b3e54e777b9546cbd88f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29d3d0c0a41b3e54e777b9546cbd88f6">&#9670;&#160;</a></span>vertexNextClwInHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexNextClwInHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The next Clw In HalfEdge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge . </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next Clw In HalfEdge, sharing the same target of he. </dd></dl>
+
+</div>
+</div>
+<a id="af2f1696c5e66668c8b1f3fe98b4c5d92" name="af2f1696c5e66668c8b1f3fe98b4c5d92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2f1696c5e66668c8b1f3fe98b4c5d92">&#9670;&#160;</a></span>vertexNextClwOutHalfEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertexNextClwOutHalfEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshLib_1_1CHalfEdge.html">tHalfEdge</a></td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The next Clw Out HalfEdge </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">he</td><td>the input halfedge . </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>the next Clw Out HalfEdge, sharing the same source of he. </dd></dl>
+
+</div>
+</div>
+<a id="a65afb2dd09d095dd1d224d1fa308e9c2" name="a65afb2dd09d095dd1d224d1fa308e9c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65afb2dd09d095dd1d224d1fa308e9c2">&#9670;&#160;</a></span>vertices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a> &gt; &amp; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::vertices </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Storage of the vertices of the mesh. </p>
+
+</div>
+</div>
+<a id="aac9e4fdd74de34f44e8ac7afad00c322" name="aac9e4fdd74de34f44e8ac7afad00c322"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac9e4fdd74de34f44e8ac7afad00c322">&#9670;&#160;</a></span>write_m()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::write_m </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>output</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Write an .m file. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">output</td><td>the output .m file name </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af885e691fce7e793d5d4185ea286d1cc" name="af885e691fce7e793d5d4185ea286d1cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af885e691fce7e793d5d4185ea286d1cc">&#9670;&#160;</a></span>write_obj()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::write_obj </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>output</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Write an .obj file. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">output</td><td>the output .obj file name </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1ec12eff25a713eb43d2cdef1b452743" name="a1ec12eff25a713eb43d2cdef1b452743"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ec12eff25a713eb43d2cdef1b452743">&#9670;&#160;</a></span>write_off()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::write_off </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>output</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Write an .off file. </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">output</td><td>the output .off file name </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a75a3b2cfe542f417a2f9400b52787728" name="a75a3b2cfe542f417a2f9400b52787728"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75a3b2cfe542f417a2f9400b52787728">&#9670;&#160;</a></span>m_edges</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt;<a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>&gt; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_edges</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>storage of edges </p>
+
+</div>
+</div>
+<a id="aed13e9aa114e6adfde3b910676480dd2" name="aed13e9aa114e6adfde3b910676480dd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed13e9aa114e6adfde3b910676480dd2">&#9670;&#160;</a></span>m_faces</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt;<a class="el" href="classMeshLib_1_1CFace.html">CFace</a>&gt; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_faces</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>storage of faces </p>
+
+</div>
+</div>
+<a id="a68ac9a7b9087d8c83c307ea7f8299dcf" name="a68ac9a7b9087d8c83c307ea7f8299dcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68ac9a7b9087d8c83c307ea7f8299dcf">&#9670;&#160;</a></span>m_halfedges</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt;<a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_halfedges</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>storage of halfedges </p>
+
+</div>
+</div>
+<a id="aacbeec9d726ecc9b9ca5ace06d3a244c" name="aacbeec9d726ecc9b9ca5ace06d3a244c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacbeec9d726ecc9b9ca5ace06d3a244c">&#9670;&#160;</a></span>m_map_face</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;int, <a class="el" href="classMeshLib_1_1CFace.html">tFace</a>&gt; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_map_face</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>map between face and its id </p>
+
+</div>
+</div>
+<a id="a587e5ce14b9a84ef648d0764a063450d" name="a587e5ce14b9a84ef648d0764a063450d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a587e5ce14b9a84ef648d0764a063450d">&#9670;&#160;</a></span>m_map_vert</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;int, <a class="el" href="classMeshLib_1_1CVertex.html">tVertex</a>&gt; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_map_vert</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>map between vetex and its id </p>
+
+</div>
+</div>
+<a id="aa418052e4678755232e854ce063f2b7b" name="aa418052e4678755232e854ce063f2b7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa418052e4678755232e854ce063f2b7b">&#9670;&#160;</a></span>m_verts</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1ElemStorage.html">ElemStorage</a>&lt;<a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>&gt; <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_verts</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>storage of vertices </p>
+
+</div>
+</div>
+<a id="a105ddccad80953028cc54cd317dee8a4" name="a105ddccad80953028cc54cd317dee8a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a105ddccad80953028cc54cd317dee8a4">&#9670;&#160;</a></span>m_with_normal</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_with_normal</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>whether the mesh is with normal </p>
+
+</div>
+</div>
+<a id="a36ba9fb8f3b289de348f1133ee6ab4bb" name="a36ba9fb8f3b289de348f1133ee6ab4bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36ba9fb8f3b289de348f1133ee6ab4bb">&#9670;&#160;</a></span>m_with_texture</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, typename <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, typename <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, typename <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh</a>&lt; <a class="el" href="classMeshLib_1_1CVertex.html">CVertex</a>, <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>, <a class="el" href="classMeshLib_1_1CFace.html">CFace</a>, <a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> &gt;::m_with_texture</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>whether the vertex is with texture coordinates </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/MeshLib/Mesh/<a class="el" href="BaseMesh_8h_source.html">BaseMesh.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

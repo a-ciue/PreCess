@@ -1,0 +1,759 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: QModelObserver类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#signals">信号</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classQModelObserver-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">QModelObserver类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>QModelObserver：用于监听模型数据更改并向外通知的观察者类  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="QModelObserver_8h_source.html">QModelObserver.h</a>&gt;</code></p>
+<div class="dynheader">
+类 QModelObserver 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQModelObserver__inherit__graph.png" border="0" usemap="#aQModelObserver_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aQModelObserver_inherit__map" id="aQModelObserver_inherit__map">
+<area shape="rect" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类" alt="" coords="39,79,169,104"/>
+<area shape="rect" title=" " alt="" coords="5,5,80,31"/>
+<area shape="poly" title=" " alt="" coords="64,40,96,77,92,80,60,43"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="105,5,226,31"/>
+<area shape="poly" title=" " alt="" coords="148,43,116,80,112,77,144,40"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+QModelObserver 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQModelObserver__coll__graph.png" border="0" usemap="#aQModelObserver_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aQModelObserver_coll__map" id="aQModelObserver_coll__map">
+<area shape="rect" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类" alt="" coords="39,79,169,104"/>
+<area shape="rect" title=" " alt="" coords="5,5,80,31"/>
+<area shape="poly" title=" " alt="" coords="64,40,96,77,92,80,60,43"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="105,5,226,31"/>
+<area shape="poly" title=" " alt="" coords="148,43,116,80,112,77,144,40"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:a6d00f8ec71649b78c433a2b719db30b4" id="r_a6d00f8ec71649b78c433a2b719db30b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d00f8ec71649b78c433a2b719db30b4">splineLoadFailed</a> (QString message)</td></tr>
+<tr class="memdesc:a6d00f8ec71649b78c433a2b719db30b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">样条曲线加载失败信号  <br /></td></tr>
+<tr class="memitem:a0bd468afb207170009e0fa36fb4c9fd7" id="r_a0bd468afb207170009e0fa36fb4c9fd7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bd468afb207170009e0fa36fb4c9fd7">modelNameChanged</a> (Index model_id, const QString &amp;new_name)</td></tr>
+<tr class="memdesc:a0bd468afb207170009e0fa36fb4c9fd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型名称变更信号  <br /></td></tr>
+<tr class="memitem:a1732e5e6095c40fcd8b6f18095103c6e" id="r_a1732e5e6095c40fcd8b6f18095103c6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1732e5e6095c40fcd8b6f18095103c6e">modelAdded</a> (Index model_id)</td></tr>
+<tr class="memdesc:a1732e5e6095c40fcd8b6f18095103c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">新模型添加信号  <br /></td></tr>
+<tr class="memitem:a62380a0c106069575dd30c86027134ca" id="r_a62380a0c106069575dd30c86027134ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62380a0c106069575dd30c86027134ca">modelRemoved</a> (Index model_id)</td></tr>
+<tr class="memdesc:a62380a0c106069575dd30c86027134ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型移除信号  <br /></td></tr>
+<tr class="memitem:aaf212d6090f697976ff5ac1686de6a95" id="r_aaf212d6090f697976ff5ac1686de6a95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf212d6090f697976ff5ac1686de6a95">modelChanged</a> (Index model_id)</td></tr>
+<tr class="memdesc:aaf212d6090f697976ff5ac1686de6a95"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型数据发生变化时发出的信号  <br /></td></tr>
+<tr class="memitem:ac655bcd06c83b3d6f7304c7b8389c696" id="r_ac655bcd06c83b3d6f7304c7b8389c696"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac655bcd06c83b3d6f7304c7b8389c696">patchUpdated</a> (Index model_id, int patch_id, const std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;points, const std::vector&lt; std::array&lt; int, 3 &gt; &gt; &amp;triangles)</td></tr>
+<tr class="memdesc:ac655bcd06c83b3d6f7304c7b8389c696"><td class="mdescLeft">&#160;</td><td class="mdescRight">当 <a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> 更新时触发  <br /></td></tr>
+<tr class="memitem:a6f0cf16c33ebce2aa965465d607b6581" id="r_a6f0cf16c33ebce2aa965465d607b6581"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f0cf16c33ebce2aa965465d607b6581">blockUpdated</a> (Index model_id, int block_id, const std::unordered_set&lt; int &gt; &amp;block_patches)</td></tr>
+<tr class="memdesc:a6f0cf16c33ebce2aa965465d607b6581"><td class="mdescLeft">&#160;</td><td class="mdescRight">当 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 更新时触发  <br /></td></tr>
+<tr class="memitem:ab1b6f878f7c9814a275165c6f4d9aee2" id="r_ab1b6f878f7c9814a275165c6f4d9aee2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1b6f878f7c9814a275165c6f4d9aee2">groupUpdated</a> (Index model_id, int group_id, const std::unordered_set&lt; int &gt; &amp;group_blocks)</td></tr>
+<tr class="memdesc:ab1b6f878f7c9814a275165c6f4d9aee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">当 Group 更新时触发  <br /></td></tr>
+<tr class="memitem:ac1bdada16a5cc4b6ad8fe7cda93cb1b5" id="r_ac1bdada16a5cc4b6ad8fe7cda93cb1b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1bdada16a5cc4b6ad8fe7cda93cb1b5">blocksMerged</a> (Index model_id, const std::vector&lt; int &gt; &amp;block_ids, int father_block, const std::unordered_set&lt; int &gt; &amp;father_block_patches)</td></tr>
+<tr class="memdesc:ac1bdada16a5cc4b6ad8fe7cda93cb1b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">当多个 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 被合并时触发  <br /></td></tr>
+<tr class="memitem:a00d8f03db26de49ba041a9455fba60e7" id="r_a00d8f03db26de49ba041a9455fba60e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00d8f03db26de49ba041a9455fba60e7">groupMerged</a> (Index model_id, const std::vector&lt; int &gt; &amp;group_ids, int father_group, const std::unordered_set&lt; int &gt; &amp;father_group_blocks)</td></tr>
+<tr class="memdesc:a00d8f03db26de49ba041a9455fba60e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">当多个 Group 被合并时触发  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:afd7605c63a216faa10fa4da27143e2d1" id="r_afd7605c63a216faa10fa4da27143e2d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd7605c63a216faa10fa4da27143e2d1">notifyModelChanged</a> (Index model_id) override</td></tr>
+<tr class="memdesc:afd7605c63a216faa10fa4da27143e2d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型数据变更的通知函数  <br /></td></tr>
+<tr class="memitem:ae6e553fc81a44a8055f300e38fce05ac" id="r_ae6e553fc81a44a8055f300e38fce05ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6e553fc81a44a8055f300e38fce05ac">notifyModelAdded</a> (Index model_id) override</td></tr>
+<tr class="memdesc:ae6e553fc81a44a8055f300e38fce05ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被添加的通知函数  <br /></td></tr>
+<tr class="memitem:aacbfe7aa17fb1b4b6f844bec28b28927" id="r_aacbfe7aa17fb1b4b6f844bec28b28927"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacbfe7aa17fb1b4b6f844bec28b28927">notifyModelRemoved</a> (Index model_id) override</td></tr>
+<tr class="memdesc:aacbfe7aa17fb1b4b6f844bec28b28927"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被移除的通知函数  <br /></td></tr>
+<tr class="memitem:a60298e5dae88e4ddae135243ce28bad4" id="r_a60298e5dae88e4ddae135243ce28bad4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a60298e5dae88e4ddae135243ce28bad4">notifyModelNameChanged</a> (Index model_id, const std::string &amp;new_name) override</td></tr>
+<tr class="memdesc:a60298e5dae88e4ddae135243ce28bad4"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型名称变更的通知函数  <br /></td></tr>
+<tr class="memitem:a29778eb3b23683498202f8a1727574ba" id="r_a29778eb3b23683498202f8a1727574ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29778eb3b23683498202f8a1727574ba">notifySplineLoadFailed</a> (const std::string &amp;message) override</td></tr>
+<tr class="memdesc:a29778eb3b23683498202f8a1727574ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收样条曲线加载失败的通知函数  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>QModelObserver：用于监听模型数据更改并向外通知的观察者类 </p>
+<p><a class="el" href="classQModelObserver.html" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类">QModelObserver</a> 通过槽函数接收模型层发出的事件，然后通过信号将这些事件通知给外部（例如 UI 层）。 这样可以将模型数据的变化与界面解耦，当模型发生变化时，观察者发出相应的信号供 QML 或其他组件处理。 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ac1bdada16a5cc4b6ad8fe7cda93cb1b5" name="ac1bdada16a5cc4b6ad8fe7cda93cb1b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1bdada16a5cc4b6ad8fe7cda93cb1b5">&#9670;&#160;</a></span>blocksMerged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::blocksMerged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>block_ids</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>father_block</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::unordered_set&lt; int &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>father_block_patches</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当多个 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 被合并时触发 </p>
+<p>该信号用于通知外部组件多个 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 发生合并，并提供合并后的 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 信息。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型的 ID </td></tr>
+    <tr><td class="paramname">block_ids</td><td>参与合并的 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> ID 列表 </td></tr>
+    <tr><td class="paramname">father_block</td><td>合并后的 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> ID </td></tr>
+    <tr><td class="paramname">father_block_patches</td><td>合并后 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 内包含的 <a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> ID 集合 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6f0cf16c33ebce2aa965465d607b6581" name="a6f0cf16c33ebce2aa965465d607b6581"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f0cf16c33ebce2aa965465d607b6581">&#9670;&#160;</a></span>blockUpdated</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::blockUpdated </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>block_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::unordered_set&lt; int &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>block_patches</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 更新时触发 </p>
+<p>该信号用于通知外部组件某个 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 发生了变化，例如其包含的 <a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> 发生调整。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型的 ID </td></tr>
+    <tr><td class="paramname">block_id</td><td>发生变化的 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> ID </td></tr>
+    <tr><td class="paramname">block_patches</td><td><a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 内包含的 <a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> ID 集合 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a00d8f03db26de49ba041a9455fba60e7" name="a00d8f03db26de49ba041a9455fba60e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00d8f03db26de49ba041a9455fba60e7">&#9670;&#160;</a></span>groupMerged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::groupMerged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; int &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>group_ids</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>father_group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::unordered_set&lt; int &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>father_group_blocks</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当多个 Group 被合并时触发 </p>
+<p>该信号用于通知外部组件多个 Group 发生合并，并提供合并后的 Group 信息。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型的 ID </td></tr>
+    <tr><td class="paramname">group_ids</td><td>参与合并的 Group ID 列表 </td></tr>
+    <tr><td class="paramname">father_group</td><td>合并后的 Group ID </td></tr>
+    <tr><td class="paramname">father_group_blocks</td><td>合并后 Group 内包含的 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> ID 集合 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab1b6f878f7c9814a275165c6f4d9aee2" name="ab1b6f878f7c9814a275165c6f4d9aee2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1b6f878f7c9814a275165c6f4d9aee2">&#9670;&#160;</a></span>groupUpdated</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::groupUpdated </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>group_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::unordered_set&lt; int &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>group_blocks</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当 Group 更新时触发 </p>
+<p>该信号用于通知外部组件某个 Group 发生了变化，例如其包含的 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> 发生调整。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型的 ID </td></tr>
+    <tr><td class="paramname">group_id</td><td>发生变化的 Group ID </td></tr>
+    <tr><td class="paramname">group_blocks</td><td>Group 内包含的 <a class="el" href="structBlock.html" title="表示网格中的一个 Block（块）">Block</a> ID 集合 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1732e5e6095c40fcd8b6f18095103c6e" name="a1732e5e6095c40fcd8b6f18095103c6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1732e5e6095c40fcd8b6f18095103c6e">&#9670;&#160;</a></span>modelAdded</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::modelAdded </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>新模型添加信号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>新添加的模型 ID </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaf212d6090f697976ff5ac1686de6a95" name="aaf212d6090f697976ff5ac1686de6a95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf212d6090f697976ff5ac1686de6a95">&#9670;&#160;</a></span>modelChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::modelChanged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>模型数据发生变化时发出的信号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>发生变化的模型 ID </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0bd468afb207170009e0fa36fb4c9fd7" name="a0bd468afb207170009e0fa36fb4c9fd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bd468afb207170009e0fa36fb4c9fd7">&#9670;&#160;</a></span>modelNameChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::modelNameChanged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>new_name</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>模型名称变更信号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型 ID </td></tr>
+    <tr><td class="paramname">new_name</td><td>新模型名称 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a62380a0c106069575dd30c86027134ca" name="a62380a0c106069575dd30c86027134ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62380a0c106069575dd30c86027134ca">&#9670;&#160;</a></span>modelRemoved</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::modelRemoved </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>模型移除信号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>移除的模型 ID </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae6e553fc81a44a8055f300e38fce05ac" name="ae6e553fc81a44a8055f300e38fce05ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6e553fc81a44a8055f300e38fce05ac">&#9670;&#160;</a></span>notifyModelAdded()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::notifyModelAdded </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型被添加的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>新添加的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型被导入到软件中时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#a90a2ab815ca62393d808bb457063756f">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="afd7605c63a216faa10fa4da27143e2d1" name="afd7605c63a216faa10fa4da27143e2d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd7605c63a216faa10fa4da27143e2d1">&#9670;&#160;</a></span>notifyModelChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::notifyModelChanged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型数据变更的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>发生变化的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该槽函数由模型层在模型数据发生更改时调用，以便触发相应的信号通知。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="a60298e5dae88e4ddae135243ce28bad4" name="a60298e5dae88e4ddae135243ce28bad4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60298e5dae88e4ddae135243ce28bad4">&#9670;&#160;</a></span>notifyModelNameChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::notifyModelNameChanged </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>new_name</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型名称变更的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型 ID </td></tr>
+    <tr><td class="paramname">new_name</td><td>新模型名称</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型名称发生变化时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="aacbfe7aa17fb1b4b6f844bec28b28927" name="aacbfe7aa17fb1b4b6f844bec28b28927"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacbfe7aa17fb1b4b6f844bec28b28927">&#9670;&#160;</a></span>notifyModelRemoved()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::notifyModelRemoved </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型被移除的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>移除的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型被从软件中移除时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="a29778eb3b23683498202f8a1727574ba" name="a29778eb3b23683498202f8a1727574ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29778eb3b23683498202f8a1727574ba">&#9670;&#160;</a></span>notifySplineLoadFailed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::notifySplineLoadFailed </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收样条曲线加载失败的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>失败信息</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在样条曲线加载失败时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#ad8fc1c4c007dbcf380b3c7dda606b4be">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="ac655bcd06c83b3d6f7304c7b8389c696" name="ac655bcd06c83b3d6f7304c7b8389c696"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac655bcd06c83b3d6f7304c7b8389c696">&#9670;&#160;</a></span>patchUpdated</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::patchUpdated </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>patch_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>points</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::array&lt; int, 3 &gt; &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>triangles</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当 <a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> 更新时触发 </p>
+<p>该信号用于通知外部组件某个 <a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> 的顶点坐标或三角形索引发生了变化。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型的 ID </td></tr>
+    <tr><td class="paramname">patch_id</td><td>发生变化的 <a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> ID </td></tr>
+    <tr><td class="paramname">points</td><td><a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> 内顶点的新坐标 </td></tr>
+    <tr><td class="paramname">triangles</td><td><a class="el" href="structPatch.html" title="表示网格中的一个 Patch">Patch</a> 内三角形的新索引 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6d00f8ec71649b78c433a2b719db30b4" name="a6d00f8ec71649b78c433a2b719db30b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d00f8ec71649b78c433a2b719db30b4">&#9670;&#160;</a></span>splineLoadFailed</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelObserver::splineLoadFailed </td>
+          <td>(</td>
+          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>message</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>样条曲线加载失败信号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>失败信息 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/model/<a class="el" href="QModelObserver_8h_source.html">QModelObserver.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

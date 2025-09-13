@@ -1,0 +1,20 @@
+<map id="core/ArgTypeEnum.h" name="core/ArgTypeEnum.h">
+<area shape="rect" id="Node000001" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="213,5,367,31"/>
+<area shape="rect" id="Node000002" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="231,79,349,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="293,44,293,79,287,79,287,44"/>
+<area shape="rect" id="Node000003" href="$QArgObject_8h_source.html" title=" " alt="" coords="39,159,221,185"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="256,112,154,162,152,157,253,108"/>
+<area shape="rect" id="Node000005" href="$AlgorithmHandler_8h.html" title=" " alt="" coords="213,240,367,280"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="293,117,293,240,287,240,287,117"/>
+<area shape="rect" id="Node000007" href="$AlgorithmInfo_8h_source.html" title=" " alt="" coords="359,152,514,192"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="325,108,403,149,400,154,322,113"/>
+<area shape="rect" id="Node000004" href="$QAlgorithmInfo_8h_source.html" title=" " alt="" coords="5,240,188,280"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="123,198,107,240,102,239,118,196"/>
+<area shape="rect" id="Node000006" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="207,328,373,368"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="293,294,293,328,287,328,287,294"/>
+<area shape="rect" id="Node000008" href="$AlgorithmSystem_8h.html" title=" " alt="" coords="391,240,546,280"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="451,204,464,239,459,241,446,206"/>
+<area shape="poly" id="edge8_Node000008_Node000006" title=" " alt="" coords="418,288,330,330,328,326,416,284"/>
+<area shape="rect" id="Node000009" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="398,328,617,368"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="485,291,501,327,496,329,480,294"/>
+</map>

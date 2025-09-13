@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/MeshLib/Mesh/Vertex.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_1cd1d868ebda9b05bc9322be51c15f7d.html">MeshLib</a></li><li class="navelem"><a href="dir_3db29c336a1d05f265ef6ae98a697c71.html">Mesh</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">Vertex.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Base class of vertex  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;list&gt;</code><br />
+<code>#include &quot;<a class="el" href="Point_8h_source.html">../Geometry/Point.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Point2_8h_source.html">../Geometry/Point2.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="HalfEdge_8h_source.html">HalfEdge.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Vertex.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="Vertex_8h__incl.png" border="0" usemap="#amodel_2MeshLib_2Mesh_2Vertex_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2MeshLib_2Mesh_2Vertex_8h" id="amodel_2MeshLib_2Mesh_2Vertex_8h">
+<area shape="rect" title="Base class of vertex" alt="" coords="167,5,327,45"/>
+<area shape="rect" title=" " alt="" coords="5,240,76,265"/>
+<area shape="poly" title=" " alt="" coords="200,48,163,68,128,95,101,127,80,163,51,228,47,225,75,161,97,124,124,91,160,64,198,43"/>
+<area shape="rect" title=" " alt="" coords="142,240,201,265"/>
+<area shape="poly" title=" " alt="" coords="209,48,178,68,149,95,129,128,121,167,118,180,121,191,132,211,148,229,144,232,128,214,115,193,113,180,115,166,124,126,145,92,174,64,207,43"/>
+<area shape="rect" title=" " alt="" coords="378,93,421,119"/>
+<area shape="poly" title=" " alt="" coords="285,43,367,85,364,90,283,48"/>
+<area shape="rect" href="Point_8h.html" title="Three dimensional point class" alt="" coords="331,167,479,192"/>
+<area shape="poly" title=" " alt="" coords="262,44,289,79,324,117,376,157,373,161,320,121,285,83,258,47"/>
+<area shape="rect" href="Point2_8h.html" title="Two dimensional point class" alt="" coords="503,167,659,192"/>
+<area shape="poly" title=" " alt="" coords="268,44,312,81,367,116,435,143,502,161,500,166,433,148,365,121,309,85,265,48"/>
+<area shape="rect" href="HalfEdge_8h.html" title="Base class of HalfEdge" alt="" coords="159,93,253,119"/>
+<area shape="poly" title=" " alt="" coords="240,47,221,82,216,80,235,44"/>
+<area shape="poly" title=" " alt="" coords="368,195,215,241,213,236,366,189"/>
+<area shape="rect" title=" " alt="" coords="229,240,303,265"/>
+<area shape="poly" title=" " alt="" coords="384,194,302,236,300,231,381,190"/>
+<area shape="rect" title=" " alt="" coords="340,240,408,265"/>
+<area shape="poly" title=" " alt="" coords="402,193,387,229,382,227,397,191"/>
+<area shape="rect" title=" " alt="" coords="439,240,514,265"/>
+<area shape="poly" title=" " alt="" coords="418,190,457,228,453,232,415,194"/>
+<area shape="poly" title=" " alt="" coords="503,194,369,215,217,243,215,243,214,238,216,237,368,210,502,189"/>
+<area shape="poly" title=" " alt="" coords="531,195,318,242,316,237,530,189"/>
+<area shape="poly" title=" " alt="" coords="548,195,421,238,420,233,547,189"/>
+<area shape="poly" title=" " alt="" coords="565,194,507,234,504,230,562,190"/>
+<area shape="rect" title=" " alt="" coords="541,240,621,265"/>
+<area shape="poly" title=" " alt="" coords="583,192,583,226,578,226,578,192"/>
+<area shape="poly" title=" " alt="" coords="181,121,152,140,139,153,128,168,125,183,129,199,150,229,146,232,124,201,120,184,124,166,134,149,148,136,178,116"/>
+<area shape="poly" title=" " alt="" coords="213,118,258,226,253,228,208,120"/>
+<area shape="poly" title=" " alt="" coords="221,117,352,229,348,233,218,121"/>
+<area shape="rect" href="Edge_8h.html" title="Base class of edge" alt="" coords="138,167,205,192"/>
+<area shape="poly" title=" " alt="" coords="203,120,185,155,181,153,198,118"/>
+<area shape="poly" title=" " alt="" coords="152,194,75,236,73,231,149,190"/>
+<area shape="poly" title=" " alt="" coords="174,192,174,226,169,226,169,192"/>
+<area shape="poly" title=" " alt="" coords="188,190,241,229,238,234,185,194"/>
+<area shape="poly" title=" " alt="" coords="205,190,329,233,328,238,203,195"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="Vertex_8h__dep__incl.png" border="0" usemap="#amodel_2MeshLib_2Mesh_2Vertex_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2MeshLib_2Mesh_2Vertex_8hdep" id="amodel_2MeshLib_2Mesh_2Vertex_8hdep">
+<area shape="rect" title="Base class of vertex" alt="" coords="5,5,165,45"/>
+<area shape="rect" href="ToolMesh_8h_source.html" title=" " alt="" coords="15,93,155,119"/>
+<area shape="poly" title=" " alt="" coords="88,59,88,93,83,93,83,59"/>
+</map>
+</div>
+</div>
+<p><a href="Vertex_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:MeshLib_3A_3ACVertex" id="r_MeshLib_3A_3ACVertex"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CVertex.html">MeshLib::CVertex</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">CVertex</a> class, which is the base class of all kinds of vertex classes  <a href="classMeshLib_1_1CVertex.html#details">更多...</a><br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>Base class of vertex </p>
+<dl class="section author"><dt>作者</dt><dd>David Gu </dd></dl>
+<dl class="section date"><dt>日期</dt><dd>10/07/2010 </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

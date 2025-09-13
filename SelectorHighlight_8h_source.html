@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/SelectorHighlight.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">SelectorHighlight.h</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#ifndef SELECTOR_HIGHLIGHT_H</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#define SELECTOR_HIGHLIGHT_H</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;array&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;vtkNew.h&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;vtkAssembly.h&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;vtkPropAssembly.h&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;Selection.h&quot;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;vtkCompositeDataDisplayAttributes.h&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;vtkMultiBlockDataSet.h&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;vtkCompositePolyDataMapper.h&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">class </span>vtkRenderer;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">class </span>vtkProperty;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classvtkSmartPointer.html">   25</a></span><span class="keyword">class </span><a class="code hl_class" href="classvtkSmartPointer.html">vtkSmartPointer</a>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">class </span>vtkDataSetMapper;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">class </span>vtkActor;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">using </span>SelectionVtk = <a class="code hl_struct" href="structSelection.html">Selection</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment">//namespace Selector {</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="comment">//std::optional&lt;std::pair&lt;vtkActor*, int&gt;&gt; pick_cell(double posx, double posy, vtkRenderer* renderer);</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="comment">//}</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="foldopen" id="foldopen00036" data-start="{" data-end="};">
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classSelectorHighlight.html">   36</a></span><span class="keyword">class </span><a class="code hl_class" href="classSelectorHighlight.html">SelectorHighlight</a> {</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> select(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy) = 0;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> clear() = 0;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keyword">virtual</span> SelectionVtk get()=0;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keyword">virtual</span> vtkPropCollection* getPickList()=0;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>};</div>
+</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
+<div class="foldopen" id="foldopen00044" data-start="{" data-end="};">
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classBlockSelectorHighlight.html">   44</a></span><span class="keyword">class </span>BlockSelectorHighlight : <span class="keyword">public</span> <a class="code hl_class" href="classSelectorHighlight.html">SelectorHighlight</a> {</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    BlockSelectorHighlight(vtkRenderer* renderer);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    ~BlockSelectorHighlight() { <a class="code hl_function" href="classBlockSelectorHighlight.html#a00db2380779b365e92193b6620ea56f2">clear</a>(); }</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classBlockSelectorHighlight.html#a00db2380779b365e92193b6620ea56f2">clear</a>()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    SelectionVtk <a class="code hl_function" href="classBlockSelectorHighlight.html#a1a9f8e03b530538b03295c5d2f8a1cc2">get</a>()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classBlockSelectorHighlight.html#af565d7b1c286faa9505856c03b15656f">select</a>(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">void</span> highlightBlockByCellColor(vtkCompositePolyDataMapper* mapper, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> block_index,</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> r, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> g, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> b);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    vtkPropCollection* getPickList()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="comment">/* struct Actor</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="comment">    {</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment">        vtkSmartPointer&lt;vtkActor&gt; actor;</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="comment">        vtkSmartPointer&lt;vtkProperty&gt; backup_property;</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="comment">    };*/</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keyword">struct </span>Block{</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        vtkIdType block_id;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordtype">double</span> backup_color[3]{};</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    };</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    std::vector&lt;Block&gt; selections_;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    vtkRenderer* renderer_;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    vtkCompositePolyDataMapper* mapper_;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    vtkNew&lt;vtkPropCollection&gt; collection_;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordtype">void</span> _cancel_highlight(Block &amp;selection);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keyword">static</span> std::optional&lt;size_t&gt; _is_selected(<span class="keyword">const</span> vtkIdType block_id, <span class="keyword">const</span> std::vector&lt;Block&gt;&amp; selections);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>};</div>
+</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="foldopen" id="foldopen00076" data-start="{" data-end="};">
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classSingleFaceSelectorHighlight.html">   76</a></span><span class="keyword">class </span><a class="code hl_function" href="classSingleFaceSelectorHighlight.html#a4e3f478d55c4b077ac8cea597e78e603">SingleFaceSelectorHighlight</a> : <span class="keyword">public</span> <a class="code hl_class" href="classSelectorHighlight.html">SelectorHighlight</a> {</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <span class="comment">//struct SelectedFace {</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="comment">//    //! @brief 面所在的actor，借由actor可以找到全局id</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="comment">//    vtkIdType face_id;</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="comment">//    //! @brief 面局部索引id</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="comment">//    int local_id;</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="comment">//};</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <a class="code hl_function" href="classSingleFaceSelectorHighlight.html#a4e3f478d55c4b077ac8cea597e78e603">SingleFaceSelectorHighlight</a>(vtkRenderer* renderer);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <a class="code hl_function" href="classSingleFaceSelectorHighlight.html#a83c8b802be1cf801e41e5832f2aa2099">~SingleFaceSelectorHighlight</a>();</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    SelectionVtk <a class="code hl_function" href="classSingleFaceSelectorHighlight.html#aff3b7849ec18fbd0f2048ac4d09e3f8f">get</a>()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSingleFaceSelectorHighlight.html#a725602d01cf11fc59a18d184c64bce03">clear</a>()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSingleFaceSelectorHighlight.html#a2d8dfc7ee69b0f19f8d22bd582c84d53">select</a>(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    vtkPropCollection* getPickList()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    </div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="comment">//！@brief 取消高亮，清空mapper</span></div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keywordtype">void</span> _cancel_highlight(std::optional&lt;vtkIdType&gt; selection, vtkRenderer* renderer);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> _is_selected(vtkIdType new_face_id, <span class="keyword">const</span> std::optional&lt;vtkIdType&gt;&amp; selection);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordtype">void</span> set_highlight_actor();</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    vtkRenderer* renderer_;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    std::optional&lt;vtkIdType&gt; selection_;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    vtkNew&lt;vtkActor&gt; highlight_actor_;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    vtkNew&lt;vtkPolyDataMapper&gt; mapper_;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    vtkNew&lt;vtkPropCollection&gt; collection_;</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>};</div>
+</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
+<div class="foldopen" id="foldopen00111" data-start="{" data-end="};">
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="classSingleEdgeSelectorHighlight.html">  111</a></span><span class="keyword">class </span><a class="code hl_function" href="classSingleEdgeSelectorHighlight.html#a54108c0048efc8f8e673656ab09c9102">SingleEdgeSelectorHighlight</a> : <span class="keyword">public</span> <a class="code hl_class" href="classSelectorHighlight.html">SelectorHighlight</a> {</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00113" data-start="{" data-end="};">
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html">  113</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html">SelectedEdge</a> {</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a6bb867e4141c0df55a4eaee3f2ff6e85">  115</a></span>        vtkActor* <a class="code hl_variable" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a6bb867e4141c0df55a4eaee3f2ff6e85">actor</a>;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a83a73dd4e40a69179f86efefe956cc3a">  117</a></span>        std::array&lt;int, 2&gt; <a class="code hl_variable" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a83a73dd4e40a69179f86efefe956cc3a">v_local_id</a>;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    };</div>
+</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    <a class="code hl_function" href="classSingleEdgeSelectorHighlight.html#a54108c0048efc8f8e673656ab09c9102">SingleEdgeSelectorHighlight</a>(vtkRenderer* renderer);</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <a class="code hl_function" href="classSingleEdgeSelectorHighlight.html#a597e45b7ea250e5c33df4c1765fd6923">~SingleEdgeSelectorHighlight</a>();</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    SelectionVtk <a class="code hl_function" href="classSingleEdgeSelectorHighlight.html#ada0c04691f53d30a85d00b0e3160ed13">get</a>()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSingleEdgeSelectorHighlight.html#a81bee48421f0cd1da1e3bd1787df1777">clear</a>()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSingleEdgeSelectorHighlight.html#a4530fd56371fcdc0bf74af83a6e15c8a">select</a>(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy)<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    vtkPropCollection* getPickList()<span class="keyword">override</span>;</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="comment">//！@brief 取消高亮，清空mapper</span></div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> _cancel_highlight(vtkDataSetMapper* selectedMapper, vtkActor* selectedActor);</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> _is_selected(<a class="code hl_struct" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html">SelectedEdge</a> new_edge, <span class="keyword">const</span> std::optional&lt;SelectedEdge&gt;&amp; selection, vtkActor* selectedActor);</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    vtkRenderer* renderer_;</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    std::optional&lt;SelectedEdge&gt; selection_;</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="comment">//vtkPropAssembly edgeAssembly;</span></div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    vtkNew&lt;vtkPolyDataMapper&gt; mapper_;</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    vtkNew&lt;vtkDataSetMapper&gt; selected_mapper_;</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <a class="code hl_class" href="classvtkSmartPointer.html">vtkSmartPointer&lt;vtkActor&gt;</a> selected_actor_;</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    vtkNew&lt;vtkPropCollection&gt; collection_;</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>};</div>
+</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassBlockSelectorHighlight_html_a00db2380779b365e92193b6620ea56f2"><div class="ttname"><a href="classBlockSelectorHighlight.html#a00db2380779b365e92193b6620ea56f2">BlockSelectorHighlight::clear</a></div><div class="ttdeci">void clear() override</div><div class="ttdoc">清空selections并取消高亮</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:37</div></div>
+<div class="ttc" id="aclassBlockSelectorHighlight_html_a1a9f8e03b530538b03295c5d2f8a1cc2"><div class="ttname"><a href="classBlockSelectorHighlight.html#a1a9f8e03b530538b03295c5d2f8a1cc2">BlockSelectorHighlight::get</a></div><div class="ttdeci">SelectionVtk get() override</div><div class="ttdoc">获取当前选中的actors</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:45</div></div>
+<div class="ttc" id="aclassBlockSelectorHighlight_html_af565d7b1c286faa9505856c03b15656f"><div class="ttname"><a href="classBlockSelectorHighlight.html#af565d7b1c286faa9505856c03b15656f">BlockSelectorHighlight::select</a></div><div class="ttdeci">void select(double posx, double posy) override</div><div class="ttdoc">找到该坐标下的actor，并高亮该actor；若选中已选actor要取消选中和高亮</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:54</div></div>
+<div class="ttc" id="aclassSelectorHighlight_html"><div class="ttname"><a href="classSelectorHighlight.html">SelectorHighlight</a></div><div class="ttdef"><b>定义</b> SelectorHighlight.h:36</div></div>
+<div class="ttc" id="aclassSingleEdgeSelectorHighlight_html_a4530fd56371fcdc0bf74af83a6e15c8a"><div class="ttname"><a href="classSingleEdgeSelectorHighlight.html#a4530fd56371fcdc0bf74af83a6e15c8a">SingleEdgeSelectorHighlight::select</a></div><div class="ttdeci">void select(double posx, double posy) override</div><div class="ttdoc">找到坐标下的edge并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:327</div></div>
+<div class="ttc" id="aclassSingleEdgeSelectorHighlight_html_a54108c0048efc8f8e673656ab09c9102"><div class="ttname"><a href="classSingleEdgeSelectorHighlight.html#a54108c0048efc8f8e673656ab09c9102">SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight</a></div><div class="ttdeci">SingleEdgeSelectorHighlight(vtkRenderer *renderer)</div><div class="ttdoc">将actor绑定到renderer，mapper绑定到actor</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:298</div></div>
+<div class="ttc" id="aclassSingleEdgeSelectorHighlight_html_a597e45b7ea250e5c33df4c1765fd6923"><div class="ttname"><a href="classSingleEdgeSelectorHighlight.html#a597e45b7ea250e5c33df4c1765fd6923">SingleEdgeSelectorHighlight::~SingleEdgeSelectorHighlight</a></div><div class="ttdeci">~SingleEdgeSelectorHighlight()</div><div class="ttdoc">将actor从renderer中删除</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:303</div></div>
+<div class="ttc" id="aclassSingleEdgeSelectorHighlight_html_a81bee48421f0cd1da1e3bd1787df1777"><div class="ttname"><a href="classSingleEdgeSelectorHighlight.html#a81bee48421f0cd1da1e3bd1787df1777">SingleEdgeSelectorHighlight::clear</a></div><div class="ttdeci">void clear() override</div><div class="ttdoc">清空selection并取消高亮，即清空mapper</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:308</div></div>
+<div class="ttc" id="aclassSingleEdgeSelectorHighlight_html_ada0c04691f53d30a85d00b0e3160ed13"><div class="ttname"><a href="classSingleEdgeSelectorHighlight.html#ada0c04691f53d30a85d00b0e3160ed13">SingleEdgeSelectorHighlight::get</a></div><div class="ttdeci">SelectionVtk get() override</div><div class="ttdoc">获取当前选择的边</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:314</div></div>
+<div class="ttc" id="aclassSingleFaceSelectorHighlight_html_a2d8dfc7ee69b0f19f8d22bd582c84d53"><div class="ttname"><a href="classSingleFaceSelectorHighlight.html#a2d8dfc7ee69b0f19f8d22bd582c84d53">SingleFaceSelectorHighlight::select</a></div><div class="ttdeci">void select(double posx, double posy) override</div><div class="ttdoc">找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:225</div></div>
+<div class="ttc" id="aclassSingleFaceSelectorHighlight_html_a4e3f478d55c4b077ac8cea597e78e603"><div class="ttname"><a href="classSingleFaceSelectorHighlight.html#a4e3f478d55c4b077ac8cea597e78e603">SingleFaceSelectorHighlight::SingleFaceSelectorHighlight</a></div><div class="ttdeci">SingleFaceSelectorHighlight(vtkRenderer *renderer)</div><div class="ttdoc">将actor绑定到renderer，mapper绑定到actor</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:199</div></div>
+<div class="ttc" id="aclassSingleFaceSelectorHighlight_html_a725602d01cf11fc59a18d184c64bce03"><div class="ttname"><a href="classSingleFaceSelectorHighlight.html#a725602d01cf11fc59a18d184c64bce03">SingleFaceSelectorHighlight::clear</a></div><div class="ttdeci">void clear() override</div><div class="ttdoc">清空selection并取消高亮，即清空mapper</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:219</div></div>
+<div class="ttc" id="aclassSingleFaceSelectorHighlight_html_a83c8b802be1cf801e41e5832f2aa2099"><div class="ttname"><a href="classSingleFaceSelectorHighlight.html#a83c8b802be1cf801e41e5832f2aa2099">SingleFaceSelectorHighlight::~SingleFaceSelectorHighlight</a></div><div class="ttdeci">~SingleFaceSelectorHighlight()</div><div class="ttdoc">将actor从renderer中删除</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:203</div></div>
+<div class="ttc" id="aclassSingleFaceSelectorHighlight_html_aff3b7849ec18fbd0f2048ac4d09e3f8f"><div class="ttname"><a href="classSingleFaceSelectorHighlight.html#aff3b7849ec18fbd0f2048ac4d09e3f8f">SingleFaceSelectorHighlight::get</a></div><div class="ttdeci">SelectionVtk get() override</div><div class="ttdoc">返回当前选择的面</div><div class="ttdef"><b>定义</b> SelectorHighlight.cpp:209</div></div>
+<div class="ttc" id="aclassvtkSmartPointer_html"><div class="ttname"><a href="classvtkSmartPointer.html">vtkSmartPointer</a></div><div class="ttdef"><b>定义</b> SelectorHighlight.h:25</div></div>
+<div class="ttc" id="astructSelection_html"><div class="ttname"><a href="structSelection.html">Selection</a></div><div class="ttdoc">存储选择的对象</div><div class="ttdef"><b>定义</b> Selection.h:20</div></div>
+<div class="ttc" id="astructSingleEdgeSelectorHighlight_1_1SelectedEdge_html"><div class="ttname"><a href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html">SingleEdgeSelectorHighlight::SelectedEdge</a></div><div class="ttdef"><b>定义</b> SelectorHighlight.h:113</div></div>
+<div class="ttc" id="astructSingleEdgeSelectorHighlight_1_1SelectedEdge_html_a6bb867e4141c0df55a4eaee3f2ff6e85"><div class="ttname"><a href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a6bb867e4141c0df55a4eaee3f2ff6e85">SingleEdgeSelectorHighlight::SelectedEdge::actor</a></div><div class="ttdeci">vtkActor * actor</div><div class="ttdoc">边所在的actor，借由actor可以找到全局id</div><div class="ttdef"><b>定义</b> SelectorHighlight.h:115</div></div>
+<div class="ttc" id="astructSingleEdgeSelectorHighlight_1_1SelectedEdge_html_a83a73dd4e40a69179f86efefe956cc3a"><div class="ttname"><a href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a83a73dd4e40a69179f86efefe956cc3a">SingleEdgeSelectorHighlight::SelectedEdge::v_local_id</a></div><div class="ttdeci">std::array&lt; int, 2 &gt; v_local_id</div><div class="ttdoc">边端点局部索引id</div><div class="ttdef"><b>定义</b> SelectorHighlight.h:117</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

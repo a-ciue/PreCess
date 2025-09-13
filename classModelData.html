@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: ModelData类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Public 类型</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="#friends">友元</a> &#124;
+<a href="classModelData-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">ModelData类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="ModelData_8h_source.html">ModelData.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:a7e74072e77a8add198a037d63803f9ee" id="r_a7e74072e77a8add198a037d63803f9ee"><td class="memItemLeft" align="right" valign="top"><a id="a7e74072e77a8add198a037d63803f9ee" name="a7e74072e77a8add198a037d63803f9ee"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>Type</b> { <b>Mesh</b>
+, <b>Spline</b>
+ }</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ad5014d4b01241b18302eac6590f3518f" id="r_ad5014d4b01241b18302eac6590f3518f"><td class="memItemLeft" align="right" valign="top"><a id="ad5014d4b01241b18302eac6590f3518f" name="ad5014d4b01241b18302eac6590f3518f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ModelData</b> (std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt; mesh)</td></tr>
+<tr class="memitem:ab3494273871b1b378539a06065439668" id="r_ab3494273871b1b378539a06065439668"><td class="memItemLeft" align="right" valign="top"><a id="ab3494273871b1b378539a06065439668" name="ab3494273871b1b378539a06065439668"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ModelData</b> (std::unique_ptr&lt; <a class="el" href="structSplineData.html">SplineData</a> &gt; spline)</td></tr>
+<tr class="memitem:a8a7895f27f877a854dfae6d087d78a34" id="r_a8a7895f27f877a854dfae6d087d78a34"><td class="memItemLeft" align="right" valign="top"><a id="a8a7895f27f877a854dfae6d087d78a34" name="a8a7895f27f877a854dfae6d087d78a34"></a>
+Type&#160;</td><td class="memItemRight" valign="bottom"><b>type</b> () const</td></tr>
+<tr class="memitem:a8837e0e23532cdd20b364e86a11dcd37" id="r_a8837e0e23532cdd20b364e86a11dcd37"><td class="memItemLeft" align="right" valign="top"><a id="a8837e0e23532cdd20b364e86a11dcd37" name="a8837e0e23532cdd20b364e86a11dcd37"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isMesh</b> () const noexcept</td></tr>
+<tr class="memitem:aec453f07a3c80dbff31ffdf5062680e6" id="r_aec453f07a3c80dbff31ffdf5062680e6"><td class="memItemLeft" align="right" valign="top"><a id="aec453f07a3c80dbff31ffdf5062680e6" name="aec453f07a3c80dbff31ffdf5062680e6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isSpline</b> () const noexcept</td></tr>
+<tr class="memitem:a34fb079753624b175054ff622d2b96c5" id="r_a34fb079753624b175054ff622d2b96c5"><td class="memItemLeft" align="right" valign="top"><a id="a34fb079753624b175054ff622d2b96c5" name="a34fb079753624b175054ff622d2b96c5"></a>
+<a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>asMeshData</b> () noexcept</td></tr>
+<tr class="memitem:a11c8cd7e79300f0dd0b00f7aa3ebb216" id="r_a11c8cd7e79300f0dd0b00f7aa3ebb216"><td class="memItemLeft" align="right" valign="top"><a id="a11c8cd7e79300f0dd0b00f7aa3ebb216" name="a11c8cd7e79300f0dd0b00f7aa3ebb216"></a>
+const <a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>asMeshData</b> () const noexcept</td></tr>
+<tr class="memitem:a4a2bffbbd0b79f512811b0400488f89b" id="r_a4a2bffbbd0b79f512811b0400488f89b"><td class="memItemLeft" align="right" valign="top"><a id="a4a2bffbbd0b79f512811b0400488f89b" name="a4a2bffbbd0b79f512811b0400488f89b"></a>
+<a class="el" href="structSplineData.html">SplineData</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>asSplineData</b> () noexcept</td></tr>
+<tr class="memitem:a35116f5eacfd99c36cb533e8ca2ce131" id="r_a35116f5eacfd99c36cb533e8ca2ce131"><td class="memItemLeft" align="right" valign="top"><a id="a35116f5eacfd99c36cb533e8ca2ce131" name="a35116f5eacfd99c36cb533e8ca2ce131"></a>
+const <a class="el" href="structSplineData.html">SplineData</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>asSplineData</b> () const noexcept</td></tr>
+<tr class="memitem:ab79bfd690a35f8134488cd2b08a0fb0a" id="r_ab79bfd690a35f8134488cd2b08a0fb0a"><td class="memTemplParams" colspan="2"><a id="ab79bfd690a35f8134488cd2b08a0fb0a" name="ab79bfd690a35f8134488cd2b08a0fb0a"></a>
+template&lt;typename Visitor&gt; </td></tr>
+<tr class="memitem:ab79bfd690a35f8134488cd2b08a0fb0a template"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><b>visit</b> (Visitor &amp;&amp;v)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:aa1e3c6c09490f733d4279b333ed13bcc" id="r_aa1e3c6c09490f733d4279b333ed13bcc"><td class="memItemLeft" align="right" valign="top"><a id="aa1e3c6c09490f733d4279b333ed13bcc" name="aa1e3c6c09490f733d4279b333ed13bcc"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>model_name_</b></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
+友元</h2></td></tr>
+<tr class="memitem:a8068bdef10f16414943fe7feaad34b8f" id="r_a8068bdef10f16414943fe7feaad34b8f"><td class="memItemLeft" align="right" valign="top"><a id="a8068bdef10f16414943fe7feaad34b8f" name="a8068bdef10f16414943fe7feaad34b8f"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8068bdef10f16414943fe7feaad34b8f">QModelQuery</a></td></tr>
+<tr class="memdesc:a8068bdef10f16414943fe7feaad34b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明 <a class="el" href="classQModelQuery.html" title="ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）">QModelQuery</a> 为友元，以允许其访问 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 私有数据 <br /></td></tr>
+<tr class="memitem:aba90de16a197d7e8e5a0354046ddc2bf" id="r_aba90de16a197d7e8e5a0354046ddc2bf"><td class="memItemLeft" align="right" valign="top"><a id="aba90de16a197d7e8e5a0354046ddc2bf" name="aba90de16a197d7e8e5a0354046ddc2bf"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>TestModel</b></td></tr>
+<tr class="memdesc:aba90de16a197d7e8e5a0354046ddc2bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明 TestModel 为友元，用于GoogleTest <br /></td></tr>
+<tr class="memitem:ae4a612afabef6e8cfa5397aa9aa88838" id="r_ae4a612afabef6e8cfa5397aa9aa88838"><td class="memItemLeft" align="right" valign="top"><a id="ae4a612afabef6e8cfa5397aa9aa88838" name="ae4a612afabef6e8cfa5397aa9aa88838"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4a612afabef6e8cfa5397aa9aa88838">ModelOperator</a></td></tr>
+<tr class="memdesc:ae4a612afabef6e8cfa5397aa9aa88838"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明 <a class="el" href="classModelOperator.html" title="ModelOperator 模型对象基类">ModelOperator</a> 为友元，以允许其访问 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 私有数据 <br /></td></tr>
+<tr class="memitem:ad948b5763603915e0f4e528b6e15f7ff" id="r_ad948b5763603915e0f4e528b6e15f7ff"><td class="memItemLeft" align="right" valign="top"><a id="ad948b5763603915e0f4e528b6e15f7ff" name="ad948b5763603915e0f4e528b6e15f7ff"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad948b5763603915e0f4e528b6e15f7ff">FileHandler</a></td></tr>
+<tr class="memdesc:ad948b5763603915e0f4e528b6e15f7ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明 <a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 为友元，以允许其访问 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 私有数据 <br /></td></tr>
+<tr class="memitem:aa54a149299ea6a38d6cee1943b2bddf9" id="r_aa54a149299ea6a38d6cee1943b2bddf9"><td class="memItemLeft" align="right" valign="top"><a id="aa54a149299ea6a38d6cee1943b2bddf9" name="aa54a149299ea6a38d6cee1943b2bddf9"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa54a149299ea6a38d6cee1943b2bddf9">ModelManager</a></td></tr>
+<tr class="memdesc:aa54a149299ea6a38d6cee1943b2bddf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明 <a class="el" href="classModelManager.html" title="负责管理多个 ModelData 实例的类">ModelManager</a> 为友元，以允许其访问 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 私有数据 <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数 </p>
+<p>负责管理和操作网格模型数据的核心类</p>
+<p><a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。 该类提供了网格划分、合并、重划分等功能，并维护与 <a class="el" href="classMeshActor.html" title="负责管理Model的Actor">MeshActor</a> 之间的关联， 以便进行可视化和渲染。 </p>
+</div><hr/>该类的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="ModelData_8h_source.html">ModelData.h</a></li>
+<li>model/data/<a class="el" href="ModelData_8cpp.html">ModelData.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

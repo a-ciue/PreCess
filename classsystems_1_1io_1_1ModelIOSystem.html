@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::io::ModelIOSystem类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>systems</b></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1ModelIOSystem.html">ModelIOSystem</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Public 类型</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-attribs">静态 Public 属性</a> &#124;
+<a href="classsystems_1_1io_1_1ModelIOSystem-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::io::ModelIOSystem类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>模型IO系统，每种文件格式只能注册一个处理器  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="ModelIOSystem_8h_source.html">ModelIOSystem.h</a>&gt;</code></p>
+<div class="dynheader">
+类 systems::io::ModelIOSystem 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1io_1_1ModelIOSystem__inherit__graph.png" border="0" usemap="#asystems_1_1io_1_1ModelIOSystem_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="asystems_1_1io_1_1ModelIOSystem_inherit__map" id="asystems_1_1io_1_1ModelIOSystem_inherit__map">
+<area shape="rect" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="21,79,229,104"/>
+<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystemBase.html" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="5,5,245,31"/>
+<area shape="poly" title=" " alt="" coords="128,44,128,79,123,79,123,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+systems::io::ModelIOSystem 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1io_1_1ModelIOSystem__coll__graph.png" border="0" usemap="#asystems_1_1io_1_1ModelIOSystem_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1io_1_1ModelIOSystem_coll__map" id="asystems_1_1io_1_1ModelIOSystem_coll__map">
+<area shape="rect" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="21,79,229,104"/>
+<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystemBase.html" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="5,5,245,31"/>
+<area shape="poly" title=" " alt="" coords="128,44,128,79,123,79,123,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:aae8e21426a0ba9bd5bfcf55de0fef54f" id="r_aae8e21426a0ba9bd5bfcf55de0fef54f"><td class="memItemLeft" align="right" valign="top"><a id="aae8e21426a0ba9bd5bfcf55de0fef54f" name="aae8e21426a0ba9bd5bfcf55de0fef54f"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>Handler</b> = <a class="el" href="classsystems_1_1io_1_1ModelIOHandler.html">ModelIOHandler</a></td></tr>
+<tr class="memitem:ab9b539181f1383712ec9dcd21aa544b6" id="r_ab9b539181f1383712ec9dcd21aa544b6"><td class="memItemLeft" align="right" valign="top"><a id="ab9b539181f1383712ec9dcd21aa544b6" name="ab9b539181f1383712ec9dcd21aa544b6"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>PluginHandler</b> = <a class="el" href="classsystems_1_1PluginHandler.html">::systems::PluginHandler</a>&lt;<a class="el" href="classsystems_1_1io_1_1ModelIOHandler.html">Handler</a>&gt;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a17c243d78de5bd5cf167a6ee73e3cd91" id="r_a17c243d78de5bd5cf167a6ee73e3cd91"><td class="memItemLeft" align="right" valign="top"><a id="a17c243d78de5bd5cf167a6ee73e3cd91" name="a17c243d78de5bd5cf167a6ee73e3cd91"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ModelIOSystem</b> (<a class="el" href="classModelManager.html">ModelManager</a> &amp;manager)</td></tr>
+<tr class="memitem:a7004f0f19816f4147a8bc55f4e384787" id="r_a7004f0f19816f4147a8bc55f4e384787"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7004f0f19816f4147a8bc55f4e384787">read</a> (const std::filesystem::path &amp;path, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args) override</td></tr>
+<tr class="memdesc:a7004f0f19816f4147a8bc55f4e384787"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统的读模型接口  <br /></td></tr>
+<tr class="memitem:a5b3ca6c65457cf47801ca9fd44ce21db" id="r_a5b3ca6c65457cf47801ca9fd44ce21db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b3ca6c65457cf47801ca9fd44ce21db">write</a> (Index model, const std::filesystem::path &amp;path, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args) override</td></tr>
+<tr class="memdesc:a5b3ca6c65457cf47801ca9fd44ce21db"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统的写模型接口  <br /></td></tr>
+<tr class="memitem:a4a15f602200ca956516f2cac1b531a99" id="r_a4a15f602200ca956516f2cac1b531a99"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a15f602200ca956516f2cac1b531a99">registerHandler</a> (const <a class="el" href="structsystems_1_1io_1_1HandlerMetaData.html">HandlerMetaData</a> &amp;meta_data, std::unique_ptr&lt; <a class="el" href="classsystems_1_1PluginHandler.html">PluginHandler</a> &gt; plugin_handler)</td></tr>
+<tr class="memdesc:a4a15f602200ca956516f2cac1b531a99"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统的功能Handler注册函数  <br /></td></tr>
+<tr class="memitem:a967e6162ac57971dc824eb93384b2e85" id="r_a967e6162ac57971dc824eb93384b2e85"><td class="memItemLeft" align="right" valign="top"><a id="a967e6162ac57971dc824eb93384b2e85" name="a967e6162ac57971dc824eb93384b2e85"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>unregisterHandler</b> (const <a class="el" href="structsystems_1_1io_1_1HandlerMetaData.html">HandlerMetaData</a> &amp;meta_data)</td></tr>
+<tr class="memdesc:a967e6162ac57971dc824eb93384b2e85"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统功能注销 <br /></td></tr>
+<tr class="memitem:a45c8fd56065e7a9c7927563f3a44f989" id="r_a45c8fd56065e7a9c7927563f3a44f989"><td class="memItemLeft" align="right" valign="top">const std::unordered_map&lt; std::string, std::vector&lt; std::string &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45c8fd56065e7a9c7927563f3a44f989">registeredFileTypes</a> ()</td></tr>
+<tr class="memdesc:a45c8fd56065e7a9c7927563f3a44f989"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册的文件类型  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+静态 Public 属性</h2></td></tr>
+<tr class="memitem:a6d4515f8bfc100037fcb119f5d539f3d" id="r_a6d4515f8bfc100037fcb119f5d539f3d"><td class="memItemLeft" align="right" valign="top"><a id="a6d4515f8bfc100037fcb119f5d539f3d" name="a6d4515f8bfc100037fcb119f5d539f3d"></a>
+static const std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b> = &quot;ModelIOSystem&quot;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>模型IO系统，每种文件格式只能注册一个处理器 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a7004f0f19816f4147a8bc55f4e384787" name="a7004f0f19816f4147a8bc55f4e384787"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7004f0f19816f4147a8bc55f4e384787">&#9670;&#160;</a></span>read()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::io::ModelIOSystem::read </td>
+          <td>(</td>
+          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>file_type</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::any &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>系统的读模型接口 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>读取路径 </td></tr>
+    <tr><td class="paramname">file_type</td><td>文件类型，应在注册的文件类型中 </td></tr>
+    <tr><td class="paramname">args</td><td>读操作的参数，传给Handler </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>实现了 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemBase.html">systems::io::ModelIOSystemBase</a>.</p>
+
+</div>
+</div>
+<a id="a45c8fd56065e7a9c7927563f3a44f989" name="a45c8fd56065e7a9c7927563f3a44f989"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45c8fd56065e7a9c7927563f3a44f989">&#9670;&#160;</a></span>registeredFileTypes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::unordered_map&lt; string, vector&lt; string &gt; &gt; &amp; systems::io::ModelIOSystem::registeredFileTypes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注册的文件类型 </p>
+<dl class="section return"><dt>返回</dt><dd>键是文件类型，值是支持的文件扩展名列表(如"txt", "obj") </dd></dl>
+
+</div>
+</div>
+<a id="a4a15f602200ca956516f2cac1b531a99" name="a4a15f602200ca956516f2cac1b531a99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a15f602200ca956516f2cac1b531a99">&#9670;&#160;</a></span>registerHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::io::ModelIOSystem::registerHandler </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structsystems_1_1io_1_1HandlerMetaData.html">HandlerMetaData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>meta_data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classsystems_1_1PluginHandler.html">PluginHandler</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>plugin_handler</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>系统的功能Handler注册函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meta_data</td><td>功能的元信息 </td></tr>
+    <tr><td class="paramname">plugin_handler</td><td>从插件读取的待注册的处理功能 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5b3ca6c65457cf47801ca9fd44ce21db" name="a5b3ca6c65457cf47801ca9fd44ce21db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b3ca6c65457cf47801ca9fd44ce21db">&#9670;&#160;</a></span>write()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::io::ModelIOSystem::write </td>
+          <td>(</td>
+          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>file_type</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::any &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>系统的写模型接口 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>模型id </td></tr>
+    <tr><td class="paramname">path</td><td>写出路径 </td></tr>
+    <tr><td class="paramname">file_type</td><td>文件类型，应在注册的文件类型中 </td></tr>
+    <tr><td class="paramname">args</td><td>写操作的参数，传给Handler </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>实现了 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemBase.html">systems::io::ModelIOSystemBase</a>.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/io/<a class="el" href="ModelIOSystem_8h_source.html">ModelIOSystem.h</a></li>
+<li>model/systems/io/<a class="el" href="ModelIOSystem_8cpp.html">ModelIOSystem.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

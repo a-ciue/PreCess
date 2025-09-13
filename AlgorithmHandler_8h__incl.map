@@ -1,0 +1,14 @@
+<map id="model/systems/algo/AlgorithmHandler.h" name="model/systems/algo/AlgorithmHandler.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="84,5,239,45"/>
+<area shape="rect" id="Node000002" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="73,93,159,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,47,132,83,127,80,148,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,64,192"/>
+<area shape="poly" id="edge5_Node000001_Node000003" title=" " alt="" coords="121,48,90,68,62,95,48,124,40,154,35,152,43,122,58,92,86,64,118,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="183,93,230,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="175,44,195,80,191,83,170,47"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="254,93,317,119"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="193,43,257,84,254,88,190,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="105,121,60,160,56,156,101,117"/>
+<area shape="rect" id="Node000004" href="$ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="88,167,211,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="124,118,141,153,136,155,119,120"/>
+</map>

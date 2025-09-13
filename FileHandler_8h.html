@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/FileHandler.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">FileHandler.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>声明 <a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 类，用于处理所有与文件 IO 相关的操作  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ModelData_8h_source.html">ModelData.h</a>&quot;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+FileHandler.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="FileHandler_8h__incl.png" border="0" usemap="#amodel_2FileHandler_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2FileHandler_8h" id="amodel_2FileHandler_8h">
+<area shape="rect" title="声明 FileHandler 类，用于处理所有与文件 IO 相关的操作" alt="" coords="351,5,503,31"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="256,79,361,104"/>
+<area shape="poly" title=" " alt="" coords="410,33,341,74,339,69,407,28"/>
+<area shape="rect" title=" " alt="" coords="418,152,495,177"/>
+<area shape="poly" title=" " alt="" coords="432,31,454,138,449,139,427,32"/>
+<area shape="rect" title=" " alt="" coords="465,79,555,104"/>
+<area shape="poly" title=" " alt="" coords="442,29,488,67,484,72,439,33"/>
+<area shape="rect" href="Selection_8h_source.html" title=" " alt="" coords="24,152,119,177"/>
+<area shape="poly" title=" " alt="" coords="271,107,124,151,122,145,270,101"/>
+<area shape="rect" title=" " alt="" coords="143,152,202,177"/>
+<area shape="poly" title=" " alt="" coords="288,106,208,148,206,143,286,102"/>
+<area shape="rect" title=" " alt="" coords="227,152,295,177"/>
+<area shape="poly" title=" " alt="" coords="303,106,278,142,274,139,299,103"/>
+<area shape="rect" title=" " alt="" coords="319,152,394,177"/>
+<area shape="poly" title=" " alt="" coords="319,103,344,139,339,142,314,106"/>
+<area shape="poly" title=" " alt="" coords="334,102,421,144,419,148,331,106"/>
+<area shape="rect" title=" " alt="" coords="5,299,68,324"/>
+<area shape="poly" title=" " alt="" coords="71,178,45,286,40,285,66,177"/>
+<area shape="rect" href="Core_8h_source.html" title=" " alt="" coords="74,225,138,251"/>
+<area shape="poly" title=" " alt="" coords="79,176,97,212,92,214,75,179"/>
+<area shape="poly" title=" " alt="" coords="96,253,59,291,55,287,93,249"/>
+<area shape="rect" title=" " alt="" coords="93,299,149,324"/>
+<area shape="poly" title=" " alt="" coords="111,250,118,285,113,286,106,252"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="FileHandler_8h__dep__incl.png" border="0" usemap="#amodel_2FileHandler_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2FileHandler_8hdep" id="amodel_2FileHandler_8hdep">
+<area shape="rect" title="声明 FileHandler 类，用于处理所有与文件 IO 相关的操作" alt="" coords="13,5,165,31"/>
+<area shape="rect" href="FileHandler_8cpp.html" title="实现 FileHandler 类，用于管理所有与文件 IO 相关的操作" alt="" coords="5,79,172,104"/>
+<area shape="poly" title=" " alt="" coords="91,44,91,79,86,79,86,44"/>
+</map>
+</div>
+</div>
+<p><a href="FileHandler_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:FileHandler" id="r_FileHandler"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileHandler.html">FileHandler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 单例类  <a href="classFileHandler.html#details">更多...</a><br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>声明 <a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 类，用于处理所有与文件 IO 相关的操作 </p>
+<p><a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 是一个单例类，负责读取样条文件和网格文件， 将文件数据转换为 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 对象，并支持将 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 数据写出到文件中。 该类封装了文件操作和数据转换的具体实现，从而实现与模型管理的彻底解耦。</p>
+<dl class="section author"><dt>作者</dt><dd>徐昊阳 <a href="#" onclick="location.href='mai'+'lto:'+'hao'+'ya'+'ngx'+'u0'+'6@g'+'ma'+'il.'+'co'+'m'; return false;">haoya<span class="obfuscator">.nosp@m.</span>ngxu<span class="obfuscator">.nosp@m.</span>06@gm<span class="obfuscator">.nosp@m.</span>ail.<span class="obfuscator">.nosp@m.</span>com</a> </dd></dl>
+<dl class="section date"><dt>日期</dt><dd>2025/3/22 </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

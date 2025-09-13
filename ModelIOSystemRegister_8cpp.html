@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/io/ModelIOSystemRegister.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_450d7ac149e95254efb4ef0e4674485e.html">io</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">ModelIOSystemRegister.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;ModelIOSystemRegister.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelIOSystem_8h_source.html">ModelIOSystem.h</a>&quot;</code><br />
+<code>#include &quot;PluginHandler.h&quot;</code><br />
+<code>#include &lt;QJsonArray&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+ModelIOSystemRegister.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelIOSystemRegister_8cpp__incl.png" border="0" usemap="#amodel_2systems_2io_2ModelIOSystemRegister_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2io_2ModelIOSystemRegister_8cpp" id="amodel_2systems_2io_2ModelIOSystemRegister_8cpp">
+<area shape="rect" title=" " alt="" coords="789,5,1034,45"/>
+<area shape="rect" href="ModelIOSystemRegister_8h_source.html" title=" " alt="" coords="568,93,759,119"/>
+<area shape="poly" title=" " alt="" coords="853,48,713,92,712,87,851,43"/>
+<area shape="rect" href="ModelIOSystem_8h.html" title=" " alt="" coords="192,167,329,192"/>
+<area shape="poly" title=" " alt="" coords="797,48,680,69,556,96,422,132,310,165,308,160,420,126,555,91,679,64,796,43"/>
+<area shape="rect" href="PluginHandler_8h_source.html" title=" " alt="" coords="783,93,907,119"/>
+<area shape="poly" title=" " alt="" coords="897,47,865,84,861,81,893,44"/>
+<area shape="rect" title=" " alt="" coords="931,93,1025,119"/>
+<area shape="poly" title=" " alt="" coords="929,44,961,81,957,84,925,47"/>
+<area shape="rect" title=" " alt="" coords="1050,93,1119,119"/>
+<area shape="poly" title=" " alt="" coords="954,43,1048,85,1046,90,952,48"/>
+<area shape="rect" title=" " alt="" coords="1144,93,1268,119"/>
+<area shape="poly" title=" " alt="" coords="983,43,1150,87,1149,92,981,48"/>
+<area shape="rect" href="SystemRegisterBase_8h.html" title=" " alt="" coords="579,167,748,192"/>
+<area shape="poly" title=" " alt="" coords="666,119,666,153,661,153,661,119"/>
+<area shape="rect" title=" " alt="" coords="569,240,670,265"/>
+<area shape="poly" title=" " alt="" coords="658,194,636,230,631,227,654,191"/>
+<area shape="rect" title=" " alt="" coords="684,313,731,339"/>
+<area shape="poly" title=" " alt="" coords="670,191,685,239,703,299,698,301,679,241,664,193"/>
+<area shape="poly" title=" " alt="" coords="324,189,411,209,506,238,532,250,558,263,672,309,670,314,556,268,530,254,504,242,410,214,323,195"/>
+<area shape="rect" href="Core_8h_source.html" title=" " alt="" coords="82,313,146,339"/>
+<area shape="poly" title=" " alt="" coords="231,195,193,214,157,242,137,271,124,301,119,299,133,268,153,238,190,209,229,190"/>
+<area shape="rect" title=" " alt="" coords="5,387,68,412"/>
+<area shape="poly" title=" " alt="" coords="227,195,181,214,134,242,99,274,72,315,57,345,46,374,41,373,52,343,68,312,95,271,131,238,179,209,225,190"/>
+<area shape="rect" href="ModelIOSystemBase_8h_source.html" title=" " alt="" coords="176,240,345,265"/>
+<area shape="poly" title=" " alt="" coords="263,192,263,226,258,226,258,192"/>
+<area shape="rect" title=" " alt="" coords="193,313,283,339"/>
+<area shape="poly" title=" " alt="" coords="227,194,192,213,177,226,166,241,162,259,170,275,186,291,205,304,202,309,182,295,166,278,157,259,161,239,174,222,189,208,224,190"/>
+<area shape="rect" title=" " alt="" coords="369,240,493,265"/>
+<area shape="poly" title=" " alt="" coords="289,190,392,232,390,237,287,194"/>
+<area shape="poly" title=" " alt="" coords="103,341,61,379,58,375,100,337"/>
+<area shape="rect" title=" " alt="" coords="93,387,149,412"/>
+<area shape="poly" title=" " alt="" coords="118,339,121,373,116,373,112,339"/>
+<area shape="poly" title=" " alt="" coords="333,263,670,316,670,321,332,268"/>
+<area shape="poly" title=" " alt="" coords="238,268,151,310,149,305,236,263"/>
+<area shape="poly" title=" " alt="" coords="259,266,248,301,243,299,254,265"/>
+<area shape="rect" href="PluginBase_8h.html" title=" " alt="" coords="791,167,898,192"/>
+<area shape="poly" title=" " alt="" coords="847,119,847,153,842,153,842,119"/>
+<area shape="rect" title=" " alt="" coords="923,167,1009,192"/>
+<area shape="poly" title=" " alt="" coords="866,116,936,157,933,162,863,121"/>
+<area shape="poly" title=" " alt="" coords="834,194,785,242,728,305,724,301,781,238,830,190"/>
+<area shape="rect" href="HandlerCreatorDestroyer_8h_source.html" title=" " alt="" coords="796,240,992,265"/>
+<area shape="poly" title=" " alt="" coords="855,191,880,227,876,230,851,194"/>
+<area shape="rect" title=" " alt="" coords="919,313,1005,339"/>
+<area shape="poly" title=" " alt="" coords="894,190,961,211,989,224,1007,238,1013,256,1009,274,987,305,983,302,1004,272,1007,256,1002,242,986,228,959,216,892,195"/>
+<area shape="poly" title=" " alt="" coords="865,268,744,314,742,309,863,263"/>
+<area shape="poly" title=" " alt="" coords="907,264,943,301,939,305,903,268"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems_3A_3Aio" id="r_systems_3A_3Aio"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1io.html">systems::io</a></td></tr>
+<tr class="memdesc:namespacesystems_1_1io"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="ModelIOSystemRegister_8h_source.html">ModelIOSystemRegister.h</a> <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><dl class="section author"><dt>作者</dt><dd>张家僮(<a href="#" onclick="location.href='mai'+'lto:'+'htx'+'z_'+'6a6'+'@1'+'63.'+'co'+'m'; return false;">htxz_<span class="obfuscator">.nosp@m.</span>6a6@<span class="obfuscator">.nosp@m.</span>163.c<span class="obfuscator">.nosp@m.</span>om</a>) </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

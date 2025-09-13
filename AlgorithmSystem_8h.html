@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/algo/AlgorithmSystem.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_49a612e62f0d95b2306847c8f56a657d.html">algo</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">AlgorithmSystem.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;AlgorithmInfo.h&quot;</code><br />
+<code>#include &quot;Core.h&quot;</code><br />
+<code>#include &lt;any&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+AlgorithmSystem.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="AlgorithmSystem_8h__incl.png" border="0" usemap="#amodel_2systems_2algo_2AlgorithmSystem_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2algo_2AlgorithmSystem_8h" id="amodel_2systems_2algo_2AlgorithmSystem_8h">
+<area shape="rect" title=" " alt="" coords="224,5,379,45"/>
+<area shape="rect" href="AlgorithmInfo_8h_source.html" title=" " alt="" coords="72,93,195,119"/>
+<area shape="poly" title=" " alt="" coords="262,48,172,90,169,85,260,43"/>
+<area shape="rect" title=" " alt="" coords="5,240,64,265"/>
+<area shape="poly" title=" " alt="" coords="224,30,182,36,138,47,97,67,62,95,44,126,35,161,32,196,34,226,28,226,27,196,29,160,39,124,58,92,94,62,136,42,181,31,223,25"/>
+<area shape="rect" title=" " alt="" coords="201,167,263,192"/>
+<area shape="poly" title=" " alt="" coords="289,47,260,94,240,154,235,152,255,92,284,44"/>
+<area shape="rect" href="Core_8h_source.html" title=" " alt="" coords="269,93,333,119"/>
+<area shape="poly" title=" " alt="" coords="304,46,304,79,299,79,299,46"/>
+<area shape="rect" title=" " alt="" coords="358,93,405,119"/>
+<area shape="poly" title=" " alt="" coords="323,44,361,82,358,85,319,47"/>
+<area shape="rect" title=" " alt="" coords="429,93,507,119"/>
+<area shape="poly" title=" " alt="" coords="342,43,432,85,430,90,340,48"/>
+<area shape="rect" title=" " alt="" coords="531,93,655,119"/>
+<area shape="poly" title=" " alt="" coords="372,43,538,87,537,92,371,48"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="90,167,177,192"/>
+<area shape="poly" title=" " alt="" coords="136,119,136,153,131,153,131,119"/>
+<area shape="poly" title=" " alt="" coords="123,121,101,142,80,168,61,199,47,228,42,226,56,196,75,165,97,138,119,117"/>
+<area shape="poly" title=" " alt="" coords="151,117,206,156,203,161,148,121"/>
+<area shape="poly" title=" " alt="" coords="119,194,63,234,60,230,116,190"/>
+<area shape="rect" href="ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="88,240,211,265"/>
+<area shape="poly" title=" " alt="" coords="139,192,146,226,141,227,133,193"/>
+<area shape="poly" title=" " alt="" coords="292,121,255,159,251,155,288,117"/>
+<area shape="rect" title=" " alt="" coords="288,167,344,192"/>
+<area shape="poly" title=" " alt="" coords="306,118,313,153,308,154,301,120"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="AlgorithmSystem_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2algo_2AlgorithmSystem_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2algo_2AlgorithmSystem_8hdep" id="amodel_2systems_2algo_2AlgorithmSystem_8hdep">
+<area shape="rect" title=" " alt="" coords="119,5,274,45"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="5,93,172,133"/>
+<area shape="poly" title=" " alt="" coords="164,56,114,95,111,91,160,52"/>
+<area shape="rect" href="AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="197,93,415,133"/>
+<area shape="poly" title=" " alt="" coords="233,52,283,91,280,95,230,56"/>
+</map>
+</div>
+</div>
+<p><a href="AlgorithmSystem_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Aalgo_3A_3AHandlerMetaData" id="r_systems_3A_3Aalgo_3A_3AHandlerMetaData"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1algo_1_1HandlerMetaData.html">systems::algo::HandlerMetaData</a></td></tr>
+<tr class="memitem:systems_3A_3Aalgo_3A_3AAlgorithmSystem" id="r_systems_3A_3Aalgo_3A_3AAlgorithmSystem"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1algo_1_1AlgorithmSystem.html">systems::algo::AlgorithmSystem</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems_3A_3Aio" id="r_systems_3A_3Aio"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1io.html">systems::io</a></td></tr>
+<tr class="memdesc:namespacesystems_1_1io"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="ModelIOSystemRegister_8h_source.html">ModelIOSystemRegister.h</a> <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><dl class="section author"><dt>作者</dt><dd>(your name) </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

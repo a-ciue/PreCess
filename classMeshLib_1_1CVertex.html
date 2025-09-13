@@ -1,0 +1,772 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: MeshLib::CVertex类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><b>MeshLib</b></li><li class="navelem"><a href="classMeshLib_1_1CVertex.html">CVertex</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="classMeshLib_1_1CVertex-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">MeshLib::CVertex类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">CVertex</a> class, which is the base class of all kinds of vertex classes  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Vertex_8h_source.html">Vertex.h</a>&gt;</code></p>
+<div class="dynheader">
+类 MeshLib::CVertex 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CVertex__inherit__graph.png" border="0" usemap="#aMeshLib_1_1CVertex_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aMeshLib_1_1CVertex_inherit__map" id="aMeshLib_1_1CVertex_inherit__map">
+<area shape="rect" title="CVertex class, which is the base class of all kinds of vertex classes" alt="" coords="19,5,153,31"/>
+<area shape="rect" href="classMeshLib_1_1CToolVertex.html" title=" " alt="" coords="5,79,167,104"/>
+<area shape="poly" title=" " alt="" coords="89,44,89,79,83,79,83,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+MeshLib::CVertex 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CVertex__coll__graph.png" border="0" usemap="#aMeshLib_1_1CVertex_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aMeshLib_1_1CVertex_coll__map" id="aMeshLib_1_1CVertex_coll__map">
+<area shape="rect" title="CVertex class, which is the base class of all kinds of vertex classes" alt="" coords="94,121,229,147"/>
+<area shape="rect" href="classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges." alt="" coords="86,226,238,251"/>
+<area shape="poly" title=" " alt="" coords="124,156,109,172,107,186,114,200,142,224,139,228,110,203,102,187,105,170,120,152"/>
+<area shape="rect" href="classCPoint.html" title="CPoint class, three dimensional point" alt="" coords="78,5,142,31"/>
+<area shape="poly" title=" " alt="" coords="107,44,106,70,113,96,124,109,137,119,134,123,120,113,109,99,101,71,102,44"/>
+<area shape="rect" href="classCPoint2.html" title="CPoint2 class, two dimensional point" alt="" coords="179,5,251,31"/>
+<area shape="poly" title=" " alt="" coords="210,45,188,99,173,123,168,120,183,96,205,43"/>
+<area shape="poly" title=" " alt="" coords="174,213,181,192,180,171,169,148,173,146,186,170,186,193,179,215"/>
+<area shape="poly" title=" " alt="" coords="253,229,261,232,264,239,256,248,238,251,237,246,254,243,259,238,257,236,250,233"/>
+<area shape="rect" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes" alt="" coords="11,331,136,356"/>
+<area shape="poly" title=" " alt="" coords="73,249,39,262,24,273,12,285,8,295,12,305,24,319,40,328,37,333,20,323,7,308,3,295,7,283,21,269,36,258,71,244"/>
+<area shape="rect" href="classMeshLib_1_1CFace.html" title="CFace base class of all kinds of face classes" alt="" coords="190,331,312,356"/>
+<area shape="poly" title=" " alt="" coords="176,262,206,305,235,329,231,333,202,308,172,265"/>
+<area shape="poly" title=" " alt="" coords="87,318,116,282,147,250,151,253,120,286,92,321"/>
+<area shape="poly" title=" " alt="" coords="281,320,293,305,296,295,293,285,268,264,237,251,239,246,271,259,297,283,301,295,297,308,285,323"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ac97920fc9fe1786a2199b02e0bdcea27" id="r_ac97920fc9fe1786a2199b02e0bdcea27"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac97920fc9fe1786a2199b02e0bdcea27">CVertex</a> ()</td></tr>
+<tr class="memitem:a7e93bbcd7e264d336f1e935b466118d5" id="r_a7e93bbcd7e264d336f1e935b466118d5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e93bbcd7e264d336f1e935b466118d5">~CVertex</a> ()</td></tr>
+<tr class="memitem:af6b59dfc900e565e14c941d10ff804a5" id="r_af6b59dfc900e565e14c941d10ff804a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af6b59dfc900e565e14c941d10ff804a5">point</a> ()</td></tr>
+<tr class="memitem:a6a94eb796e85769a54913d33234d305e" id="r_a6a94eb796e85769a54913d33234d305e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a94eb796e85769a54913d33234d305e">normal</a> ()</td></tr>
+<tr class="memitem:ad60f9c70cebc4991810696bb835f8014" id="r_ad60f9c70cebc4991810696bb835f8014"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint2.html">CPoint2</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad60f9c70cebc4991810696bb835f8014">uv</a> ()</td></tr>
+<tr class="memitem:a2de79af92df8f39c851e811c2ee20b09" id="r_a2de79af92df8f39c851e811c2ee20b09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2de79af92df8f39c851e811c2ee20b09">most_ccw_out_halfedge</a> ()</td></tr>
+<tr class="memitem:af5fd1d56b98c3e6b1e6c29b2a40067f7" id="r_af5fd1d56b98c3e6b1e6c29b2a40067f7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5fd1d56b98c3e6b1e6c29b2a40067f7">most_clw_out_halfedge</a> ()</td></tr>
+<tr class="memitem:ae25573c3fc9a3a1ff08f95ed637879d1" id="r_ae25573c3fc9a3a1ff08f95ed637879d1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae25573c3fc9a3a1ff08f95ed637879d1">most_ccw_in_halfedge</a> ()</td></tr>
+<tr class="memdesc:ae25573c3fc9a3a1ff08f95ed637879d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">The most counter clockwise incoming halfedge of the vertex  <br /></td></tr>
+<tr class="memitem:a88f960be654aa5d907bca82846baf83f" id="r_a88f960be654aa5d907bca82846baf83f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a88f960be654aa5d907bca82846baf83f">most_clw_in_halfedge</a> ()</td></tr>
+<tr class="memitem:aa6a88f7ef25f9586ad2f8c9e06161105" id="r_aa6a88f7ef25f9586ad2f8c9e06161105"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6a88f7ef25f9586ad2f8c9e06161105">halfedge</a> ()</td></tr>
+<tr class="memitem:aac93df686b47204846ac8e08c8e86125" id="r_aac93df686b47204846ac8e08c8e86125"><td class="memItemLeft" align="right" valign="top">std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac93df686b47204846ac8e08c8e86125">string</a> ()</td></tr>
+<tr class="memitem:aa96d85a7e370ff262f9e576438034a73" id="r_aa96d85a7e370ff262f9e576438034a73"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa96d85a7e370ff262f9e576438034a73">id</a> ()</td></tr>
+<tr class="memitem:af2b03defeb092cd172d0011762e9b3cf" id="r_af2b03defeb092cd172d0011762e9b3cf"><td class="memItemLeft" align="right" valign="top">bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af2b03defeb092cd172d0011762e9b3cf">boundary</a> ()</td></tr>
+<tr class="memitem:a16b808933a970ac84776d404d21ecaee" id="r_a16b808933a970ac84776d404d21ecaee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16b808933a970ac84776d404d21ecaee">_to_string</a> ()</td></tr>
+<tr class="memitem:a89670e5392950fcbeb467fa5f7a8c88a" id="r_a89670e5392950fcbeb467fa5f7a8c88a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89670e5392950fcbeb467fa5f7a8c88a">_from_string</a> ()</td></tr>
+<tr class="memitem:ac4059e5608197e92c23359e182b4602f" id="r_ac4059e5608197e92c23359e182b4602f"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac4059e5608197e92c23359e182b4602f">edges</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected 属性</h2></td></tr>
+<tr class="memitem:a686d33c96343be3d7b9c46b628061bd9" id="r_a686d33c96343be3d7b9c46b628061bd9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a686d33c96343be3d7b9c46b628061bd9">m_id</a></td></tr>
+<tr class="memitem:a0611ed63a1451d3077bcb2dbaf5f1e89" id="r_a0611ed63a1451d3077bcb2dbaf5f1e89"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0611ed63a1451d3077bcb2dbaf5f1e89">m_point</a></td></tr>
+<tr class="memitem:aa313fb31475b4951f50e50f141cec0fc" id="r_aa313fb31475b4951f50e50f141cec0fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa313fb31475b4951f50e50f141cec0fc">m_normal</a></td></tr>
+<tr class="memitem:a8509cd466e9db87b76b2571783d111a2" id="r_a8509cd466e9db87b76b2571783d111a2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint2.html">CPoint2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8509cd466e9db87b76b2571783d111a2">m_uv</a></td></tr>
+<tr class="memitem:a322a95750dc442c4559ef180d35a6074" id="r_a322a95750dc442c4559ef180d35a6074"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a322a95750dc442c4559ef180d35a6074">m_halfedge</a></td></tr>
+<tr class="memitem:a82467ff3e1f8bf16972a1b63326441c3" id="r_a82467ff3e1f8bf16972a1b63326441c3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a></td></tr>
+<tr class="memitem:a0ad694c0749eb9b71c0faaafde732d3e" id="r_a0ad694c0749eb9b71c0faaafde732d3e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ad694c0749eb9b71c0faaafde732d3e">m_string</a></td></tr>
+<tr class="memitem:ac6914ef1d52a245340b8bd07e671c87d" id="r_ac6914ef1d52a245340b8bd07e671c87d"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6914ef1d52a245340b8bd07e671c87d">m_edges</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p><a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">CVertex</a> class, which is the base class of all kinds of vertex classes </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ac97920fc9fe1786a2199b02e0bdcea27" name="ac97920fc9fe1786a2199b02e0bdcea27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac97920fc9fe1786a2199b02e0bdcea27">&#9670;&#160;</a></span>CVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshLib::CVertex::CVertex </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">CVertex</a> constructor </p>
+
+</div>
+</div>
+<a id="a7e93bbcd7e264d336f1e935b466118d5" name="a7e93bbcd7e264d336f1e935b466118d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e93bbcd7e264d336f1e935b466118d5">&#9670;&#160;</a></span>~CVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshLib::CVertex::~CVertex </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes">CVertex</a> destructor </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a89670e5392950fcbeb467fa5f7a8c88a" name="a89670e5392950fcbeb467fa5f7a8c88a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89670e5392950fcbeb467fa5f7a8c88a">&#9670;&#160;</a></span>_from_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshLib::CVertex::_from_string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Read traits from the string. </p>
+
+</div>
+</div>
+<a id="a16b808933a970ac84776d404d21ecaee" name="a16b808933a970ac84776d404d21ecaee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16b808933a970ac84776d404d21ecaee">&#9670;&#160;</a></span>_to_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshLib::CVertex::_to_string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Convert vertex traits to string. </p>
+
+</div>
+</div>
+<a id="af2b03defeb092cd172d0011762e9b3cf" name="af2b03defeb092cd172d0011762e9b3cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2b03defeb092cd172d0011762e9b3cf">&#9670;&#160;</a></span>boundary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool &amp; MeshLib::CVertex::boundary </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Whether the vertex is on the boundary. </p>
+
+</div>
+</div>
+<a id="ac4059e5608197e92c23359e182b4602f" name="ac4059e5608197e92c23359e182b4602f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4059e5608197e92c23359e182b4602f">&#9670;&#160;</a></span>edges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::list&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * &gt; &amp; MeshLib::CVertex::edges </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adjacent edges, temporarily used for loading the mesh </p>
+
+</div>
+</div>
+<a id="aa6a88f7ef25f9586ad2f8c9e06161105" name="aa6a88f7ef25f9586ad2f8c9e06161105"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6a88f7ef25f9586ad2f8c9e06161105">&#9670;&#160;</a></span>halfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *&amp; MeshLib::CVertex::halfedge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>One incoming halfedge of the vertex . </p>
+
+</div>
+</div>
+<a id="aa96d85a7e370ff262f9e576438034a73" name="aa96d85a7e370ff262f9e576438034a73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa96d85a7e370ff262f9e576438034a73">&#9670;&#160;</a></span>id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int &amp; MeshLib::CVertex::id </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Vertex id. </p>
+
+</div>
+</div>
+<a id="ae25573c3fc9a3a1ff08f95ed637879d1" name="ae25573c3fc9a3a1ff08f95ed637879d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae25573c3fc9a3a1ff08f95ed637879d1">&#9670;&#160;</a></span>most_ccw_in_halfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * MeshLib::CVertex::most_ccw_in_halfedge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The most counter clockwise incoming halfedge of the vertex </p>
+<p>The most counter clockwise incoming halfedge of the vertex.</p>
+<dl class="section return"><dt>返回</dt><dd>the most CCW in halfedge </dd></dl>
+
+</div>
+</div>
+<a id="a2de79af92df8f39c851e811c2ee20b09" name="a2de79af92df8f39c851e811c2ee20b09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2de79af92df8f39c851e811c2ee20b09">&#9670;&#160;</a></span>most_ccw_out_halfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * MeshLib::CVertex::most_ccw_out_halfedge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most counter clockwise outgoing halfedge of the vertex . </p>
+
+</div>
+</div>
+<a id="a88f960be654aa5d907bca82846baf83f" name="a88f960be654aa5d907bca82846baf83f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88f960be654aa5d907bca82846baf83f">&#9670;&#160;</a></span>most_clw_in_halfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * MeshLib::CVertex::most_clw_in_halfedge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most clockwise incoming halfedge of the vertex. </p>
+
+</div>
+</div>
+<a id="af5fd1d56b98c3e6b1e6c29b2a40067f7" name="af5fd1d56b98c3e6b1e6c29b2a40067f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5fd1d56b98c3e6b1e6c29b2a40067f7">&#9670;&#160;</a></span>most_clw_out_halfedge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * MeshLib::CVertex::most_clw_out_halfedge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most clockwise outgoing halfedge of the vertex . </p>
+
+</div>
+</div>
+<a id="a6a94eb796e85769a54913d33234d305e" name="a6a94eb796e85769a54913d33234d305e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a94eb796e85769a54913d33234d305e">&#9670;&#160;</a></span>normal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> &amp; MeshLib::CVertex::normal </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The normal of the vertex </p>
+
+</div>
+</div>
+<a id="af6b59dfc900e565e14c941d10ff804a5" name="af6b59dfc900e565e14c941d10ff804a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6b59dfc900e565e14c941d10ff804a5">&#9670;&#160;</a></span>point()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> &amp; MeshLib::CVertex::point </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The point of the vertex </p>
+
+</div>
+</div>
+<a id="aac93df686b47204846ac8e08c8e86125" name="aac93df686b47204846ac8e08c8e86125"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac93df686b47204846ac8e08c8e86125">&#9670;&#160;</a></span>string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string &amp; MeshLib::CVertex::string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>the string of the vertex. </p>
+
+</div>
+</div>
+<a id="ad60f9c70cebc4991810696bb835f8014" name="ad60f9c70cebc4991810696bb835f8014"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad60f9c70cebc4991810696bb835f8014">&#9670;&#160;</a></span>uv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint2.html">CPoint2</a> &amp; MeshLib::CVertex::uv </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The texutre coordinates of the vertex </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a82467ff3e1f8bf16972a1b63326441c3" name="a82467ff3e1f8bf16972a1b63326441c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82467ff3e1f8bf16972a1b63326441c3">&#9670;&#160;</a></span>m_boundary</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshLib::CVertex::m_boundary</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Indicating if the vertex is on the boundary. </p>
+
+</div>
+</div>
+<a id="ac6914ef1d52a245340b8bd07e671c87d" name="ac6914ef1d52a245340b8bd07e671c87d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6914ef1d52a245340b8bd07e671c87d">&#9670;&#160;</a></span>m_edges</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::list&lt;<a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a>*&gt; MeshLib::CVertex::m_edges</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>List of adjacent edges, such that current vertex is the end vertex of the edge with smaller id </p>
+
+</div>
+</div>
+<a id="a322a95750dc442c4559ef180d35a6074" name="a322a95750dc442c4559ef180d35a6074"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a322a95750dc442c4559ef180d35a6074">&#9670;&#160;</a></span>m_halfedge</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>* MeshLib::CVertex::m_halfedge</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The most CCW incoming halfedge of the vertex. </p>
+
+</div>
+</div>
+<a id="a686d33c96343be3d7b9c46b628061bd9" name="a686d33c96343be3d7b9c46b628061bd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a686d33c96343be3d7b9c46b628061bd9">&#9670;&#160;</a></span>m_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MeshLib::CVertex::m_id</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Vertex ID. </p>
+
+</div>
+</div>
+<a id="aa313fb31475b4951f50e50f141cec0fc" name="aa313fb31475b4951f50e50f141cec0fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa313fb31475b4951f50e50f141cec0fc">&#9670;&#160;</a></span>m_normal</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> MeshLib::CVertex::m_normal</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Normal at the vertex. </p>
+
+</div>
+</div>
+<a id="a0611ed63a1451d3077bcb2dbaf5f1e89" name="a0611ed63a1451d3077bcb2dbaf5f1e89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0611ed63a1451d3077bcb2dbaf5f1e89">&#9670;&#160;</a></span>m_point</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> MeshLib::CVertex::m_point</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Vertex position point. </p>
+
+</div>
+</div>
+<a id="a0ad694c0749eb9b71c0faaafde732d3e" name="a0ad694c0749eb9b71c0faaafde732d3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ad694c0749eb9b71c0faaafde732d3e">&#9670;&#160;</a></span>m_string</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string MeshLib::CVertex::m_string</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The string of the vertex, which stores the traits information. </p>
+
+</div>
+</div>
+<a id="a8509cd466e9db87b76b2571783d111a2" name="a8509cd466e9db87b76b2571783d111a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8509cd466e9db87b76b2571783d111a2">&#9670;&#160;</a></span>m_uv</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint2.html">CPoint2</a> MeshLib::CVertex::m_uv</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Texture coordinates of the vertex. </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/MeshLib/Mesh/<a class="el" href="Vertex_8h_source.html">Vertex.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

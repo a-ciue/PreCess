@@ -1,0 +1,19 @@
+<map id="model/systems/SystemPluginManager.h" name="model/systems/SystemPluginManager.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="367,5,582,45"/>
+<area shape="rect" id="Node000002" href="$SystemRegisterBase_8h.html" title=" " alt="" coords="21,93,190,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="387,48,173,93,172,88,386,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="214,93,338,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="428,48,319,91,317,86,426,43"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="363,93,477,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="464,47,438,84,434,80,459,44"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="501,93,560,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="490,44,517,80,512,84,486,47"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="584,93,675,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="513,43,596,85,593,89,511,48"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="699,93,776,119"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="538,43,687,87,685,92,537,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,107,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,121,74,157,70,154,95,117"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="131,167,178,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="116,117,141,154,137,157,111,121"/>
+</map>

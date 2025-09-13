@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: MeshData结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Public 类型</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structMeshData-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">MeshData结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:ab794797f8cf5da5098cacf3b99872da6" id="r_ab794797f8cf5da5098cacf3b99872da6"><td class="memItemLeft" align="right" valign="top"><a id="ab794797f8cf5da5098cacf3b99872da6" name="ab794797f8cf5da5098cacf3b99872da6"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>PatchMap</b> = std::unordered_map&lt;Index, std::unique_ptr&lt;<a class="el" href="structPatch.html">Patch</a>&gt;&gt;</td></tr>
+<tr class="memitem:aff3987502c3ff7826c87d5f0472079e8" id="r_aff3987502c3ff7826c87d5f0472079e8"><td class="memItemLeft" align="right" valign="top"><a id="aff3987502c3ff7826c87d5f0472079e8" name="aff3987502c3ff7826c87d5f0472079e8"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>BlockMap</b> = std::unordered_map&lt;Index, std::unique_ptr&lt;<a class="el" href="structBlock.html">Block</a>&gt;&gt;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a763d029b7f95c779b909df0407be9d56" id="r_a763d029b7f95c779b909df0407be9d56"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::array&lt; Index, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a763d029b7f95c779b909df0407be9d56">face_vertices</a></td></tr>
+<tr class="memitem:a4ad31e07f3b240f85b5f3d792c6da187" id="r_a4ad31e07f3b240f85b5f3d792c6da187"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::array&lt; double, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ad31e07f3b240f85b5f3d792c6da187">vertex_positions</a></td></tr>
+<tr class="memitem:a59f1e04e2185643cac0cc8ef811e36ad" id="r_a59f1e04e2185643cac0cc8ef811e36ad"><td class="memItemLeft" align="right" valign="top"><a id="a59f1e04e2185643cac0cc8ef811e36ad" name="a59f1e04e2185643cac0cc8ef811e36ad"></a>
+PatchMap&#160;</td><td class="memItemRight" valign="bottom"><b>patches_</b></td></tr>
+<tr class="memitem:ad5bf8ed9eb3e17cfadf3077b00c2fa2a" id="r_ad5bf8ed9eb3e17cfadf3077b00c2fa2a"><td class="memItemLeft" align="right" valign="top"><a id="ad5bf8ed9eb3e17cfadf3077b00c2fa2a" name="ad5bf8ed9eb3e17cfadf3077b00c2fa2a"></a>
+BlockMap&#160;</td><td class="memItemRight" valign="bottom"><b>blocks_</b></td></tr>
+</table>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a763d029b7f95c779b909df0407be9d56" name="a763d029b7f95c779b909df0407be9d56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a763d029b7f95c779b909df0407be9d56">&#9670;&#160;</a></span>face_vertices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::array&lt;Index, 3&gt; &gt; MeshData::face_vertices</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>初始值:</b><div class="fragment"><div class="line">{</div>
+<div class="line">        { 0, 1, 2 }, { 2, 3, 0 },</div>
+<div class="line">        { 3, 2, 6 }, { 6, 7, 3 },</div>
+<div class="line">        { 4, 0, 3 }, { 3, 7, 4 },</div>
+<div class="line">        { 7, 6, 5 }, { 5, 4, 7 },</div>
+<div class="line">        { 4, 5, 1 }, { 1, 0, 4 },</div>
+<div class="line">        { 1, 5, 6 }, { 6, 2, 1 }</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a4ad31e07f3b240f85b5f3d792c6da187" name="a4ad31e07f3b240f85b5f3d792c6da187"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ad31e07f3b240f85b5f3d792c6da187">&#9670;&#160;</a></span>vertex_positions</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::array&lt;double, 3&gt; &gt; MeshData::vertex_positions</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>初始值:</b><div class="fragment"><div class="line">{</div>
+<div class="line">        { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },</div>
+<div class="line">        { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },</div>
+<div class="line">        { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },</div>
+<div class="line">        { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }</div>
+<div class="line">    }</div>
+</div><!-- fragment -->
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="MeshData_8h_source.html">MeshData.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

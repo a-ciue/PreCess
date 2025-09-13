@@ -1,0 +1,9 @@
+<map id="SelectorHighlight" name="SelectorHighlight">
+<area shape="rect" id="Node000001" title=" " alt="" coords="237,5,371,31"/>
+<area shape="rect" id="Node000002" href="$classBlockSelectorHighlight.html" title=" " alt="" coords="5,79,176,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="258,37,126,81,124,76,256,32"/>
+<area shape="rect" id="Node000003" href="$classSingleEdgeSelectorHighlight.html" title=" " alt="" coords="201,79,407,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="307,44,307,79,301,79,301,44"/>
+<area shape="rect" id="Node000004" href="$classSingleFaceSelectorHighlight.html" title=" " alt="" coords="432,79,635,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="355,32,497,76,495,81,353,37"/>
+</map>

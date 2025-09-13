@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/MeshLib/Mesh/Vertex.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_1cd1d868ebda9b05bc9322be51c15f7d.html">MeshLib</a></li><li class="navelem"><a href="dir_3db29c336a1d05f265ef6ae98a697c71.html">Mesh</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">Vertex.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="Vertex_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#ifndef  _MESHLIB_VERTEX_H_</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define  _MESHLIB_VERTEX_H_</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;list&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="Point_8h.html">../Geometry/Point.h</a>&quot;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;<a class="code" href="Point2_8h.html">../Geometry/Point2.h</a>&quot;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;<a class="code" href="HalfEdge_8h.html">HalfEdge.h</a>&quot;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">namespace </span>MeshLib{</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>  <span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a>;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html">   27</a></span>  <span class="keyword">class </span><a class="code hl_function" href="classMeshLib_1_1CVertex.html#ac97920fc9fe1786a2199b02e0bdcea27">CVertex</a></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>  {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>  <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#ac97920fc9fe1786a2199b02e0bdcea27">   33</a></span>      <a class="code hl_function" href="classMeshLib_1_1CVertex.html#ac97920fc9fe1786a2199b02e0bdcea27">CVertex</a>(){ <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a> = NULL; <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a> = <span class="keyword">false</span>; };</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a7e93bbcd7e264d336f1e935b466118d5">   37</a></span>    <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a7e93bbcd7e264d336f1e935b466118d5">~CVertex</a>(){};</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#af6b59dfc900e565e14c941d10ff804a5">   41</a></span>    <a class="code hl_class" href="classCPoint.html">CPoint</a> &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#af6b59dfc900e565e14c941d10ff804a5">point</a>()    { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a0611ed63a1451d3077bcb2dbaf5f1e89">m_point</a>;};</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a6a94eb796e85769a54913d33234d305e">   44</a></span>    <a class="code hl_class" href="classCPoint.html">CPoint</a> &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a6a94eb796e85769a54913d33234d305e">normal</a>()   { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#aa313fb31475b4951f50e50f141cec0fc">m_normal</a>; };</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#ad60f9c70cebc4991810696bb835f8014">   47</a></span>    <a class="code hl_class" href="classCPoint2.html">CPoint2</a> &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#ad60f9c70cebc4991810696bb835f8014">uv</a>()       { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a8509cd466e9db87b76b2571783d111a2">m_uv</a>; };</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a2de79af92df8f39c851e811c2ee20b09">most_ccw_out_halfedge</a>();</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="code hl_function" href="classMeshLib_1_1CVertex.html#af5fd1d56b98c3e6b1e6c29b2a40067f7">most_clw_out_halfedge</a>();</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="code hl_function" href="classMeshLib_1_1CVertex.html#ae25573c3fc9a3a1ff08f95ed637879d1">most_ccw_in_halfedge</a>();</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a88f960be654aa5d907bca82846baf83f">most_clw_in_halfedge</a>();</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#aa6a88f7ef25f9586ad2f8c9e06161105">   64</a></span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#aa6a88f7ef25f9586ad2f8c9e06161105">halfedge</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>; };</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#aac93df686b47204846ac8e08c8e86125">   67</a></span>    std::string &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#aac93df686b47204846ac8e08c8e86125">string</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a0ad694c0749eb9b71c0faaafde732d3e">m_string</a>;};</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#aa96d85a7e370ff262f9e576438034a73">   70</a></span>    <span class="keywordtype">int</span>  &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#aa96d85a7e370ff262f9e576438034a73">id</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a686d33c96343be3d7b9c46b628061bd9">m_id</a>; };</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#af2b03defeb092cd172d0011762e9b3cf">   73</a></span>    <span class="keywordtype">bool</span> &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#af2b03defeb092cd172d0011762e9b3cf">boundary</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a>;};</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a16b808933a970ac84776d404d21ecaee">   76</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a16b808933a970ac84776d404d21ecaee">_to_string</a>()   {};</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a89670e5392950fcbeb467fa5f7a8c88a">   79</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a89670e5392950fcbeb467fa5f7a8c88a">_from_string</a>() {};</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#ac4059e5608197e92c23359e182b4602f">   83</a></span>    std::list&lt;CEdge*&gt; &amp; <a class="code hl_function" href="classMeshLib_1_1CVertex.html#ac4059e5608197e92c23359e182b4602f">edges</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#ac6914ef1d52a245340b8bd07e671c87d">m_edges</a>; };</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>  <span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a686d33c96343be3d7b9c46b628061bd9">   89</a></span>    <span class="keywordtype">int</span>    <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a686d33c96343be3d7b9c46b628061bd9">m_id</a> ;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a0611ed63a1451d3077bcb2dbaf5f1e89">   92</a></span>    <a class="code hl_class" href="classCPoint.html">CPoint</a> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a0611ed63a1451d3077bcb2dbaf5f1e89">m_point</a>;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#aa313fb31475b4951f50e50f141cec0fc">   95</a></span>    <a class="code hl_class" href="classCPoint.html">CPoint</a> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#aa313fb31475b4951f50e50f141cec0fc">m_normal</a>;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a8509cd466e9db87b76b2571783d111a2">   98</a></span>    <a class="code hl_class" href="classCPoint2.html">CPoint2</a> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a8509cd466e9db87b76b2571783d111a2">m_uv</a>;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">  101</a></span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *     <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">  104</a></span>    <span class="keywordtype">bool</span>            <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a>;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a0ad694c0749eb9b71c0faaafde732d3e">  107</a></span>    std::string     <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a0ad694c0749eb9b71c0faaafde732d3e">m_string</a>;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#ac6914ef1d52a245340b8bd07e671c87d">  111</a></span>    std::list&lt;CEdge*&gt; <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#ac6914ef1d52a245340b8bd07e671c87d">m_edges</a>;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>  }; <span class="comment">//class CVertex</span></div>
+</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span></div>
+<div class="foldopen" id="foldopen00119" data-start="{" data-end="}">
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#ae25573c3fc9a3a1ff08f95ed637879d1">  119</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *  <a class="code hl_function" href="classMeshLib_1_1CVertex.html#ae25573c3fc9a3a1ff08f95ed637879d1">CVertex::most_ccw_in_halfedge</a>()  </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>{ </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="comment">//for interior vertex</span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keywordflow">if</span>( !<a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a> )</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    {</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>; <span class="comment">//current half edge is the most ccw in halfedge </span></div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    }</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    <span class="comment">//for boundary vertex</span></div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * he = <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>-&gt;ccw_rotate_about_target();</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    <span class="comment">//rotate to the most ccw in halfedge</span></div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    <span class="keywordflow">while</span>( he != NULL )</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    {</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a> = he;</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        he = <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>-&gt;ccw_rotate_about_target();</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    }</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="comment">// the halfedge of the vertex becomes the most ccw in halfedge</span></div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>;</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>};</div>
+</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span><span class="comment">//most clockwise in halfedge</span></div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span> </div>
+<div class="foldopen" id="foldopen00141" data-start="{" data-end="}">
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a88f960be654aa5d907bca82846baf83f">  141</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *  <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a88f960be654aa5d907bca82846baf83f">CVertex::most_clw_in_halfedge</a>()  </div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>{ </div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="comment">//for interior vertex </span></div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="keywordflow">if</span>( !<a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a> )</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    {</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classMeshLib_1_1CVertex.html#ae25573c3fc9a3a1ff08f95ed637879d1">most_ccw_in_halfedge</a>()-&gt;<a class="code hl_function" href="classMeshLib_1_1CHalfEdge.html#ab8c6cc91d89cd5f52ab9ef8202af1e90">ccw_rotate_about_target</a>(); <span class="comment">//the most ccw in halfedge rotate ccwly once to get the most clw in halfedge</span></div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    }</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="comment">//for boundary vertex</span></div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * he = <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>-&gt;clw_rotate_about_target();</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="comment">//rotate to the most clw in halfedge</span></div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordflow">while</span>( he != NULL )</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    {</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a> = he;</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        he = <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>-&gt;clw_rotate_about_target();</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    }</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>;</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>};</div>
+</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="comment">//most counter clockwise out halfedge</span></div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
+<div class="foldopen" id="foldopen00162" data-start="{" data-end="}">
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#a2de79af92df8f39c851e811c2ee20b09">  162</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> *  <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a2de79af92df8f39c851e811c2ee20b09">CVertex::most_ccw_out_halfedge</a>()  </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>{ </div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <span class="comment">//for interior vertex</span></div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <span class="keywordflow">if</span>( !<a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a> )</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    {</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classMeshLib_1_1CVertex.html#ae25573c3fc9a3a1ff08f95ed637879d1">most_ccw_in_halfedge</a>()-&gt;<a class="code hl_function" href="classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421">he_sym</a>(); <span class="comment">//most ccw out halfedge is the dual of the most ccw in halfedge</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    }</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    <span class="comment">//for boundary vertex</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * he = <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>-&gt;he_next();</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="comment">//get the out halfedge which is the next halfedge of the most ccw in halfedge</span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * ne = he-&gt;<a class="code hl_function" href="classMeshLib_1_1CHalfEdge.html#a3ccd9bdf3da946ead46ec5d9c25c6057">ccw_rotate_about_source</a>();</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    <span class="comment">//rotate ccwly around the source vertex</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    <span class="keywordflow">while</span>( ne != NULL )</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    {</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        he = ne;</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        ne = he-&gt;<a class="code hl_function" href="classMeshLib_1_1CHalfEdge.html#a3ccd9bdf3da946ead46ec5d9c25c6057">ccw_rotate_about_source</a>();</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    }</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span> </div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    <span class="keywordflow">return</span> he;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>};</div>
+</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment">//most clockwise out halfedge</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
+<div class="foldopen" id="foldopen00186" data-start="{" data-end="}">
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CVertex.html#af5fd1d56b98c3e6b1e6c29b2a40067f7">  186</a></span><span class="keyword">inline</span> <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * <a class="code hl_function" href="classMeshLib_1_1CVertex.html#af5fd1d56b98c3e6b1e6c29b2a40067f7">CVertex::most_clw_out_halfedge</a>()  </div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>{ </div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="comment">//for interior vertex</span></div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    <span class="keywordflow">if</span>( !<a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">m_boundary</a> )</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    {</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classMeshLib_1_1CVertex.html#a2de79af92df8f39c851e811c2ee20b09">most_ccw_out_halfedge</a>()-&gt;<a class="code hl_function" href="classMeshLib_1_1CHalfEdge.html#a3ccd9bdf3da946ead46ec5d9c25c6057">ccw_rotate_about_source</a>();  <span class="comment">//most ccw out halfedge rotate ccwly once about the source</span></div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    }</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    <span class="comment">//get one out halfedge</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * he = <a class="code hl_variable" href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">m_halfedge</a>-&gt;he_next();</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    <span class="comment">//rotate the out halfedge clwly about the source</span></div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    <a class="code hl_class" href="classMeshLib_1_1CHalfEdge.html">CHalfEdge</a> * ne = he-&gt;<a class="code hl_function" href="classMeshLib_1_1CHalfEdge.html#ae286b5933152133439005627e6d793a9">clw_rotate_about_source</a>();</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    <span class="keywordflow">while</span>( ne != NULL )</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    {</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        he = ne;</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        ne = he-&gt;<a class="code hl_function" href="classMeshLib_1_1CHalfEdge.html#ae286b5933152133439005627e6d793a9">clw_rotate_about_source</a>();</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    }</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    <span class="keywordflow">return</span> he;</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>};</div>
+</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span> </div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>}<span class="comment">//name space MeshLib</span></div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span><span class="preprocessor">#endif </span><span class="comment">//_MESHLIB_VERTEX_H_defined</span></div>
+<div class="ttc" id="aHalfEdge_8h_html"><div class="ttname"><a href="HalfEdge_8h.html">HalfEdge.h</a></div><div class="ttdoc">Base class of HalfEdge</div></div>
+<div class="ttc" id="aPoint2_8h_html"><div class="ttname"><a href="Point2_8h.html">Point2.h</a></div><div class="ttdoc">Two dimensional point class</div></div>
+<div class="ttc" id="aPoint_8h_html"><div class="ttname"><a href="Point_8h.html">Point.h</a></div><div class="ttdoc">Three dimensional point class</div></div>
+<div class="ttc" id="aclassCPoint2_html"><div class="ttname"><a href="classCPoint2.html">CPoint2</a></div><div class="ttdoc">CPoint2 class, two dimensional point</div><div class="ttdef"><b>定义</b> Point2.h:27</div></div>
+<div class="ttc" id="aclassCPoint_html"><div class="ttname"><a href="classCPoint.html">CPoint</a></div><div class="ttdoc">CPoint class, three dimensional point</div><div class="ttdef"><b>定义</b> Point.h:25</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CHalfEdge_html"><div class="ttname"><a href="classMeshLib_1_1CHalfEdge.html">MeshLib::CHalfEdge</a></div><div class="ttdoc">CHalfEdge Base class of all kinds of halfedges.</div><div class="ttdef"><b>定义</b> HalfEdge.h:27</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CHalfEdge_html_a2e51f02c577eeee8dad486cdab39d421"><div class="ttname"><a href="classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421">MeshLib::CHalfEdge::he_sym</a></div><div class="ttdeci">CHalfEdge *&amp; he_sym()</div><div class="ttdef"><b>定义</b> HalfEdge.h:50</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CHalfEdge_html_a3ccd9bdf3da946ead46ec5d9c25c6057"><div class="ttname"><a href="classMeshLib_1_1CHalfEdge.html#a3ccd9bdf3da946ead46ec5d9c25c6057">MeshLib::CHalfEdge::ccw_rotate_about_source</a></div><div class="ttdeci">CHalfEdge * ccw_rotate_about_source()</div><div class="ttdef"><b>定义</b> HalfEdge.h:112</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CHalfEdge_html_ab8c6cc91d89cd5f52ab9ef8202af1e90"><div class="ttname"><a href="classMeshLib_1_1CHalfEdge.html#ab8c6cc91d89cd5f52ab9ef8202af1e90">MeshLib::CHalfEdge::ccw_rotate_about_target</a></div><div class="ttdeci">CHalfEdge * ccw_rotate_about_target()</div><div class="ttdef"><b>定义</b> HalfEdge.h:93</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CHalfEdge_html_ae286b5933152133439005627e6d793a9"><div class="ttname"><a href="classMeshLib_1_1CHalfEdge.html#ae286b5933152133439005627e6d793a9">MeshLib::CHalfEdge::clw_rotate_about_source</a></div><div class="ttdeci">CHalfEdge * clw_rotate_about_source()</div><div class="ttdef"><b>定义</b> HalfEdge.h:121</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a0611ed63a1451d3077bcb2dbaf5f1e89"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a0611ed63a1451d3077bcb2dbaf5f1e89">MeshLib::CVertex::m_point</a></div><div class="ttdeci">CPoint m_point</div><div class="ttdef"><b>定义</b> Vertex.h:92</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a0ad694c0749eb9b71c0faaafde732d3e"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a0ad694c0749eb9b71c0faaafde732d3e">MeshLib::CVertex::m_string</a></div><div class="ttdeci">std::string m_string</div><div class="ttdef"><b>定义</b> Vertex.h:107</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a16b808933a970ac84776d404d21ecaee"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a16b808933a970ac84776d404d21ecaee">MeshLib::CVertex::_to_string</a></div><div class="ttdeci">void _to_string()</div><div class="ttdef"><b>定义</b> Vertex.h:76</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a2de79af92df8f39c851e811c2ee20b09"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a2de79af92df8f39c851e811c2ee20b09">MeshLib::CVertex::most_ccw_out_halfedge</a></div><div class="ttdeci">CHalfEdge * most_ccw_out_halfedge()</div><div class="ttdef"><b>定义</b> Vertex.h:162</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a322a95750dc442c4559ef180d35a6074"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074">MeshLib::CVertex::m_halfedge</a></div><div class="ttdeci">CHalfEdge * m_halfedge</div><div class="ttdef"><b>定义</b> Vertex.h:101</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a686d33c96343be3d7b9c46b628061bd9"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a686d33c96343be3d7b9c46b628061bd9">MeshLib::CVertex::m_id</a></div><div class="ttdeci">int m_id</div><div class="ttdef"><b>定义</b> Vertex.h:89</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a6a94eb796e85769a54913d33234d305e"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a6a94eb796e85769a54913d33234d305e">MeshLib::CVertex::normal</a></div><div class="ttdeci">CPoint &amp; normal()</div><div class="ttdef"><b>定义</b> Vertex.h:44</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a7e93bbcd7e264d336f1e935b466118d5"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a7e93bbcd7e264d336f1e935b466118d5">MeshLib::CVertex::~CVertex</a></div><div class="ttdeci">~CVertex()</div><div class="ttdef"><b>定义</b> Vertex.h:37</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a82467ff3e1f8bf16972a1b63326441c3"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3">MeshLib::CVertex::m_boundary</a></div><div class="ttdeci">bool m_boundary</div><div class="ttdef"><b>定义</b> Vertex.h:104</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a8509cd466e9db87b76b2571783d111a2"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a8509cd466e9db87b76b2571783d111a2">MeshLib::CVertex::m_uv</a></div><div class="ttdeci">CPoint2 m_uv</div><div class="ttdef"><b>定义</b> Vertex.h:98</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a88f960be654aa5d907bca82846baf83f"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a88f960be654aa5d907bca82846baf83f">MeshLib::CVertex::most_clw_in_halfedge</a></div><div class="ttdeci">CHalfEdge * most_clw_in_halfedge()</div><div class="ttdef"><b>定义</b> Vertex.h:141</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_a89670e5392950fcbeb467fa5f7a8c88a"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#a89670e5392950fcbeb467fa5f7a8c88a">MeshLib::CVertex::_from_string</a></div><div class="ttdeci">void _from_string()</div><div class="ttdef"><b>定义</b> Vertex.h:79</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_aa313fb31475b4951f50e50f141cec0fc"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#aa313fb31475b4951f50e50f141cec0fc">MeshLib::CVertex::m_normal</a></div><div class="ttdeci">CPoint m_normal</div><div class="ttdef"><b>定义</b> Vertex.h:95</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_aa6a88f7ef25f9586ad2f8c9e06161105"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#aa6a88f7ef25f9586ad2f8c9e06161105">MeshLib::CVertex::halfedge</a></div><div class="ttdeci">CHalfEdge *&amp; halfedge()</div><div class="ttdef"><b>定义</b> Vertex.h:64</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_aa96d85a7e370ff262f9e576438034a73"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#aa96d85a7e370ff262f9e576438034a73">MeshLib::CVertex::id</a></div><div class="ttdeci">int &amp; id()</div><div class="ttdef"><b>定义</b> Vertex.h:70</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_aac93df686b47204846ac8e08c8e86125"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#aac93df686b47204846ac8e08c8e86125">MeshLib::CVertex::string</a></div><div class="ttdeci">std::string &amp; string()</div><div class="ttdef"><b>定义</b> Vertex.h:67</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_ac4059e5608197e92c23359e182b4602f"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#ac4059e5608197e92c23359e182b4602f">MeshLib::CVertex::edges</a></div><div class="ttdeci">std::list&lt; CEdge * &gt; &amp; edges()</div><div class="ttdef"><b>定义</b> Vertex.h:83</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_ac6914ef1d52a245340b8bd07e671c87d"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#ac6914ef1d52a245340b8bd07e671c87d">MeshLib::CVertex::m_edges</a></div><div class="ttdeci">std::list&lt; CEdge * &gt; m_edges</div><div class="ttdef"><b>定义</b> Vertex.h:111</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_ac97920fc9fe1786a2199b02e0bdcea27"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#ac97920fc9fe1786a2199b02e0bdcea27">MeshLib::CVertex::CVertex</a></div><div class="ttdeci">CVertex()</div><div class="ttdef"><b>定义</b> Vertex.h:33</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_ad60f9c70cebc4991810696bb835f8014"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#ad60f9c70cebc4991810696bb835f8014">MeshLib::CVertex::uv</a></div><div class="ttdeci">CPoint2 &amp; uv()</div><div class="ttdef"><b>定义</b> Vertex.h:47</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_ae25573c3fc9a3a1ff08f95ed637879d1"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#ae25573c3fc9a3a1ff08f95ed637879d1">MeshLib::CVertex::most_ccw_in_halfedge</a></div><div class="ttdeci">CHalfEdge * most_ccw_in_halfedge()</div><div class="ttdoc">The most counter clockwise incoming halfedge of the vertex</div><div class="ttdef"><b>定义</b> Vertex.h:119</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_af2b03defeb092cd172d0011762e9b3cf"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#af2b03defeb092cd172d0011762e9b3cf">MeshLib::CVertex::boundary</a></div><div class="ttdeci">bool &amp; boundary()</div><div class="ttdef"><b>定义</b> Vertex.h:73</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_af5fd1d56b98c3e6b1e6c29b2a40067f7"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#af5fd1d56b98c3e6b1e6c29b2a40067f7">MeshLib::CVertex::most_clw_out_halfedge</a></div><div class="ttdeci">CHalfEdge * most_clw_out_halfedge()</div><div class="ttdef"><b>定义</b> Vertex.h:186</div></div>
+<div class="ttc" id="aclassMeshLib_1_1CVertex_html_af6b59dfc900e565e14c941d10ff804a5"><div class="ttname"><a href="classMeshLib_1_1CVertex.html#af6b59dfc900e565e14c941d10ff804a5">MeshLib::CVertex::point</a></div><div class="ttdeci">CPoint &amp; point()</div><div class="ttdef"><b>定义</b> Vertex.h:41</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

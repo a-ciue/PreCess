@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/io/ModelIOSystem.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_450d7ac149e95254efb4ef0e4674485e.html">io</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">ModelIOSystem.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;Core.h&quot;</code><br />
+<code>#include &quot;ModelIOSystemBase.h&quot;</code><br />
+<code>#include &lt;any&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+ModelIOSystem.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelIOSystem_8h__incl.png" border="0" usemap="#amodel_2systems_2io_2ModelIOSystem_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2io_2ModelIOSystem_8h" id="amodel_2systems_2io_2ModelIOSystem_8h">
+<area shape="rect" title=" " alt="" coords="143,5,400,31"/>
+<area shape="rect" href="Core_8h_source.html" title=" " alt="" coords="82,152,146,177"/>
+<area shape="poly" title=" " alt="" coords="189,33,148,51,130,64,115,80,109,94,106,108,109,138,104,139,101,108,104,92,110,77,126,60,145,46,187,28"/>
+<area shape="rect" title=" " alt="" coords="5,225,68,251"/>
+<area shape="poly" title=" " alt="" coords="197,33,146,51,122,64,101,81,77,111,60,147,49,182,43,213,37,211,44,181,55,145,73,109,97,77,119,60,144,46,195,28"/>
+<area shape="rect" href="ModelIOSystemBase_8h_source.html" title=" " alt="" coords="125,79,295,104"/>
+<area shape="poly" title=" " alt="" coords="263,33,231,70,227,66,259,29"/>
+<area shape="rect" title=" " alt="" coords="171,152,262,177"/>
+<area shape="poly" title=" " alt="" coords="285,30,308,63,314,84,310,105,289,130,262,148,259,144,285,126,305,103,309,84,304,66,281,33"/>
+<area shape="rect" title=" " alt="" coords="327,152,373,177"/>
+<area shape="poly" title=" " alt="" coords="288,29,309,50,330,77,342,108,349,137,344,139,337,110,325,80,305,54,284,33"/>
+<area shape="rect" title=" " alt="" coords="421,79,545,104"/>
+<area shape="poly" title=" " alt="" coords="306,28,437,72,435,77,305,33"/>
+<area shape="poly" title=" " alt="" coords="103,179,61,218,58,214,100,175"/>
+<area shape="rect" title=" " alt="" coords="93,225,149,251"/>
+<area shape="poly" title=" " alt="" coords="118,177,121,212,116,212,112,178"/>
+<area shape="poly" title=" " alt="" coords="196,106,142,146,139,141,193,102"/>
+<area shape="poly" title=" " alt="" coords="214,104,217,138,212,139,208,105"/>
+<area shape="poly" title=" " alt="" coords="234,102,316,143,314,148,231,106"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelIOSystem_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2io_2ModelIOSystem_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2io_2ModelIOSystem_8hdep" id="amodel_2systems_2io_2ModelIOSystem_8hdep">
+<area shape="rect" title=" " alt="" coords="204,5,461,31"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="5,79,172,119"/>
+<area shape="poly" title=" " alt="" coords="285,37,148,81,147,76,283,32"/>
+<area shape="rect" href="ModelIOSystem_8cpp.html" title=" " alt="" coords="197,86,469,111"/>
+<area shape="poly" title=" " alt="" coords="335,44,335,86,330,86,330,44"/>
+<area shape="rect" href="ModelIOSystemRegister_8cpp.html" title=" " alt="" coords="493,79,738,119"/>
+<area shape="poly" title=" " alt="" coords="387,32,548,76,547,81,386,37"/>
+</map>
+</div>
+</div>
+<p><a href="ModelIOSystem_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Aio_3A_3AHandlerMetaData" id="r_systems_3A_3Aio_3A_3AHandlerMetaData"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1io_1_1HandlerMetaData.html">systems::io::HandlerMetaData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">对应Handler的元信息  <a href="structsystems_1_1io_1_1HandlerMetaData.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:systems_3A_3Aio_3A_3AModelIOSystem" id="r_systems_3A_3Aio_3A_3AModelIOSystem"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html">systems::io::ModelIOSystem</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型IO系统，每种文件格式只能注册一个处理器  <a href="classsystems_1_1io_1_1ModelIOSystem.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems_3A_3Aio" id="r_systems_3A_3Aio"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1io.html">systems::io</a></td></tr>
+<tr class="memdesc:namespacesystems_1_1io"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="ModelIOSystemRegister_8h_source.html">ModelIOSystemRegister.h</a> <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><dl class="section author"><dt>作者</dt><dd>张家僮(<a href="#" onclick="location.href='mai'+'lto:'+'htx'+'z_'+'6a6'+'@1'+'63.'+'co'+'m'; return false;">htxz_<span class="obfuscator">.nosp@m.</span>6a6@<span class="obfuscator">.nosp@m.</span>163.c<span class="obfuscator">.nosp@m.</span>om</a>) </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
