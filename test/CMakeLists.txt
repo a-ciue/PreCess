@@ -15,22 +15,23 @@ add_executable(
 #        test_ModelQuery.cpp
 )
 
-target_include_directories(hello_test PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/..     # 保证可以找到 ModelData.h
-        ${VTK_INCLUDE_DIRS}                 # 加上 VTK 的 include
-)
-
 target_link_libraries(
   hello_test PRIVATE
+  modelQml
         Qt6::Core
-        Qt6::Quick
-        Qt6::QmlIntegration
+        Qt6::Qml
         modelPart
         vtkPart
         modelQml
         Core
   GTest::gtest_main
 )
+add_custom_command(TARGET hello_test POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:hello_test> $<TARGET_RUNTIME_DLLS:hello_test>
+  COMMAND_EXPAND_LISTS
+)
 
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(hello_test
+    XML_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+)
