@@ -26,6 +26,9 @@ target_link_libraries(
         Core
   GTest::gtest_main
 )
+set_target_properties(hello_test PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/test_bin
+)
 add_custom_command(TARGET hello_test POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:hello_test> $<TARGET_RUNTIME_DLLS:hello_test>
   COMMAND_EXPAND_LISTS
@@ -33,5 +36,5 @@ add_custom_command(TARGET hello_test POST_BUILD
 
 include(GoogleTest)
 gtest_discover_tests(hello_test
-    XML_OUTPUT_DIR ${CMAKE_BINARY_DIR}
+    XML_OUTPUT_DIR ${CMAKE_BINARY_DIR}/test_bin
 )
