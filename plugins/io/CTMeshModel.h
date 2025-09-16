@@ -20,13 +20,8 @@ namespace MeshLib {
  */
 class CTMeshModel : public MeshModelBase {
 public:
-    enum class Type {
-		OBJ, //> 读取OBJ文件
-		M    //> 读取M文件
-	};
-
-    CTMeshModel(const std::filesystem::path& mesh_path, Type type = Type::OBJ);
-    ~CTMeshModel();
+    CTMeshModel(MeshLib::CTMesh& mesh);
+    ~CTMeshModel() override;
 
     /**
      * @brief 更新MeshData
@@ -43,6 +38,12 @@ public:
      * 3. 更新MeshData的face_vertices, vertex_positions等容器
      */
     void update(MeshData& mesh_data) override;
+
+    /**
+     * @brief 从指定的 MeshData 对象更新当前对象的数据。
+     * @param mesh_data 用于更新的 MeshData 对象。
+     */
+    void updateFrom(MeshData& mesh_data) override;
     /**
      * @brief 更新MeshData，只更新指定的Patch
      * @param mesh_data 待更新的核心网格数据结构
@@ -51,5 +52,5 @@ public:
     void update(MeshData& mesh_data, const std::unordered_set<Index>& patch_ids);
 
 private:
-    std::unique_ptr<MeshLib::CTMesh> mesh_;
+    MeshLib::CTMesh* mesh_;
 };

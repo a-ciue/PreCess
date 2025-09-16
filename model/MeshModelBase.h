@@ -17,5 +17,9 @@ public:
      * @param data 核心数据结构
 	 */
 	virtual void update(MeshData& data) = 0;
-    //TODO: virtual void updateFrom(MeshData& data) = 0;
+    /**
+     * @brief 从指定的 MeshData 对象更新当前对象的数据。
+     * @param data 用于更新的 MeshData 对象。
+     */
+    virtual void updateFrom(MeshData& data) = 0;
 };

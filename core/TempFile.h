@@ -7,11 +7,10 @@
 
 namespace core {
 /**
- * @brief 获取临时文件的RAII实现
+ * @brief 获取临时文件，单例模式
  */
 class TempFile {
 public:
-    TempFile();
     ~TempFile();
     // 对象拥有文件所有权（类unique_ptr，禁止拷贝构造和赋值
     TempFile(TempFile&) = delete;
@@ -19,17 +18,20 @@ public:
 
     TempFile(TempFile&&) = default;
     TempFile& operator=(TempFile&&) = default;
+
+    static TempFile& instance();
     /**
      * @brief （废弃）获取临时文件路径，推荐使用stream()代替path()
      */
     [[deprecated("Use stream() instead")]]
-	const std::filesystem::path& path() const;
+    std::filesystem::path path() const;
     /**
      * @return 获取临时文件的fstream对象
      */
-    std::fstream stream();
+    std::fstream stream() const;
 
 private:
+    TempFile();
     std::filesystem::path path_;
     // 生成随机字符串
     static std::string random_string(size_t length);

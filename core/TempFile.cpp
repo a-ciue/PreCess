@@ -3,30 +3,37 @@
 #include <random>
 
 namespace core {
-TempFile::TempFile() {
+TempFile::TempFile()
+{
     auto temp_dir = std::filesystem::temp_directory_path();
-    std::string filename = "tmp_" + random_string(8) + ".tmp";
-    path_ = temp_dir / filename;
-    std::ofstream ofs(path_);
-    ofs.close();
+    std::string folder = "PreCess_" + random_string(8);
+    path_ = temp_dir / folder;
 }
-TempFile::~TempFile() {
+TempFile::~TempFile()
+{
     if (std::filesystem::exists(path_)) {
-        std::filesystem::remove(path_);
+        std::filesystem::remove_all(path_);
     }
 }
 
-const std::filesystem::path& TempFile::path() const
+TempFile& TempFile::instance()
 {
-    return path_;
+    static TempFile instance;
+    return instance;
 }
 
-std::fstream TempFile::stream() {
-    return std::fstream(path_, std::ios::in | std::ios::out);
+std::filesystem::path TempFile::path() const
+{
+    return path_ / ("temp_" + random_string(20) + ".tmp");
+}
+
+std::fstream TempFile::stream() const
+{
+    return std::fstream(path(), std::ios::in | std::ios::out);
 }
 std::string TempFile::random_string(size_t length)
 {
-    static const char charset[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    constexpr char charset[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static std::mt19937 rng { std::random_device {}() };
     static std::uniform_int_distribution<> dist(0, sizeof(charset) - 2);
     std::string str;
