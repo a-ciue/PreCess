@@ -50,18 +50,6 @@ QModelManager::QModelManager(QObject* parent)
 
 QModelManager::~QModelManager() = default;
 
-void QModelManager::importModel(const QUrl& url)
-{
-    // 尝试对obj模型走 IOSystem 读取
-    if (QString ext = QFileInfo(url.toLocalFile()).suffix().toLower();
-        ext == "obj") {
-        io_system_->read(url.toLocalFile().toStdString(), "Wavefront .obj file", {});
-    }
-    else {
-        qWarning() << "QModelManager::importModel 导入失败: " << url;
-    }
-}
-
 void QModelManager::removeModel(int id)
 {
     core_->removeModel(id);
@@ -93,4 +81,9 @@ QModelObserver* QModelManager::getModelObserver()
 systems::algo::QAlgorithmSystemAdaptor QModelManager::getAlgorithmSystemAdaptor()
 {
     return systems::algo::QAlgorithmSystemAdaptor(*algo_system_);
+}
+
+systems::io::QModelIOSystemAdaptor QModelManager::getModelIOSystemAdaptor()
+{
+    return systems::io::QModelIOSystemAdaptor(*io_system_);
 }

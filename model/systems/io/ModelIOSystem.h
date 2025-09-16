@@ -19,6 +19,7 @@ class PluginHandler;
 
 namespace systems::io {
 class ModelIOHandler;
+struct ModelIOInfo;
 /**
  * @brief 对应Handler的元信息
  */
@@ -65,13 +66,13 @@ public:
     void unregisterHandler(const HandlerMetaData& meta_data);
     /**
      * @brief 注册的文件类型
-     * @return 键是文件类型，值是支持的文件扩展名列表(如"txt", "obj")
+     * @return 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
      */
-    const std::unordered_map<std::string, std::vector<std::string>>& registeredFileTypes();
+    std::vector<ModelIOInfo*> registeredFileTypeInfos();
 
 private:
     ModelManager* manager_;
     std::unordered_map<std::string, std::unique_ptr<PluginHandler>> handlers_; //> 键是文件类型
-    std::unordered_map<std::string, std::vector<std::string>> fileExtensions_; //> 键是文件类型，值是支持的文件扩展名列表(如"txt", "obj")
+    std::unordered_map<std::string, std::unique_ptr<ModelIOInfo>> file_type_infos_; //> 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
 };
 }

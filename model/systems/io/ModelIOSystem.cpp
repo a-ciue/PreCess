@@ -6,6 +6,7 @@
 #include "PluginHandler.h"
 #include "ModelIOHandler.h"
 #include "ModelManager.h"
+#include "ModelIOInfo.h"
 
 #include <spdlog/fmt/ranges.h>
 #include <spdlog/spdlog.h>
@@ -64,7 +65,13 @@ bool ModelIOSystem::registerHandler(const HandlerMetaData& meta_data, std::uniqu
         return false;
     }
 
-    this->fileExtensions_[file_type] = meta_data.extensions;
+    auto info = std::make_unique<ModelIOInfo>(ModelIOInfo { file_type,
+        "", // TODO: 以后从meta_data中获取描述信息
+        meta_data.extensions,
+        plugin_handler->handler().read_args_type(),
+        plugin_handler->handler().write_args_type() });
+    this->file_type_infos_[file_type] = std::move(info);
+
     this->handlers_[file_type] = std::move(plugin_handler);
 
     spdlog::info("registered file type: {}, supported file extension: {}", file_type, fmt::join(meta_data.extensions, ", "));
@@ -75,13 +82,18 @@ void ModelIOSystem::unregisterHandler(const HandlerMetaData& meta_data)
 {
     const string& file_type = meta_data.file_type;
     this->handlers_.erase(file_type);
-    this->fileExtensions_.erase(file_type);
+    this->file_type_infos_.erase(file_type);
 
     spdlog::info("unregistered file type: {}", file_type);
 }
 
-const std::unordered_map<string, vector<string>>& ModelIOSystem::registeredFileTypes()
+std::vector<ModelIOInfo*> ModelIOSystem::registeredFileTypeInfos()
 {
-    return fileExtensions_;
+    vector<ModelIOInfo*> infos;
+    infos.reserve(file_type_infos_.size());
+    for (auto&& [algo_name, algo_info] : file_type_infos_) {
+        infos.push_back(algo_info.get());
+    }
+    return infos;
 }
 }

@@ -8,7 +8,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-import app
 import app.core
 import app.model
 import app.model.systems.algo

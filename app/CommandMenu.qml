@@ -2,7 +2,6 @@ import QtQuick
 import QtQuick.Controls.Fusion
 import QtQuick.Layouts
 
-import app
 import app.model.systems.algo
 
 Menu {

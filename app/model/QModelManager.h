@@ -1,5 +1,6 @@
 #pragma once
 #include "QAlgorithmSystemAdaptor.h"
+#include "QModelIOSystemAdaptor.h"
 #include <QObject>
 #include <QUrl>
 #include <memory>
@@ -22,12 +23,12 @@ public:
     explicit QModelManager(QObject* parent = nullptr);
     ~QModelManager();
 
-    Q_INVOKABLE void importModel(const QUrl& url);
     Q_INVOKABLE void removeModel(int id);
     Q_INVOKABLE QObject* getOperator(int id);
     ModelManager* getModelManager();
     QModelObserver* getModelObserver();
     systems::algo::QAlgorithmSystemAdaptor getAlgorithmSystemAdaptor();
+    systems::io::QModelIOSystemAdaptor getModelIOSystemAdaptor();
 
 signals:
     void modelAdded(int id);
