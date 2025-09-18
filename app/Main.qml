@@ -15,10 +15,10 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Controls.Fusion
 
-import app
 import app.model
 import app.core
 import app.model.systems.algo
+import app.model.systems.io
 import app.render
 
 ApplicationWindow {
@@ -39,16 +39,9 @@ ApplicationWindow {
                 text: "导入"
                 onClicked: openPatchDialog.open()
             }
-            Menu{
-                title: "导出..."
-                MenuItem{
-                    text: "网格"
-                    onClicked: saveFaceDialog.open()
-                }
-                MenuItem{
-                    text: "网格（带分块信息）"
-                    onClicked: saveBlockDialog.open()
-                }
+            MenuItem{
+                text: "导出..."
+                onClicked: saveFaceDialog.open()
             }
         }
         Menu{
@@ -68,6 +61,7 @@ ApplicationWindow {
     required property QModelManager modelManager
     required property QModelQuery modelQuery
     required property QAlgorithmSystemAdaptor algorithmSystem
+    required property QModelIOSystemAdaptor ioSystem
 
     ToolBar {
         id: header
@@ -83,26 +77,26 @@ ApplicationWindow {
             }
             FileDialog {
                 id: openPatchDialog
-                nameFilters: ["OBJ File (*.obj)", "STP File (*.stp)"]
+                nameFilters: ioSystem.getDialogNameFilters()
                 onAccepted: {
-                    modelManager.importModel(selectedFile);
-                    myItem.resetCamera()
+                    if (selectedNameFilter.index >= 0) {
+                        ioSystem.read(selectedNameFilter.name, selectedFile, [])
+                        myItem.resetCamera()
+                    } else {
+                        console.exception("No valid file type selected.")
+                    }
                 }
             }
             FileDialog {
                 id: saveFaceDialog
-                nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
+                nameFilters: ioSystem.getDialogNameFilters()
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
-                    modelManager.writeMesh(selectedFile, "Face", selectedNameFilter.extensions[0]);
-                }
-            }
-            FileDialog {
-                id: saveBlockDialog
-                nameFilters: ["OBJ File (*.obj)", "INP File (*.inp)"]
-                fileMode: FileDialog.SaveFile
-                onAccepted: {
-                    modelManager.writeMesh(selectedFile, "Block", selectedNameFilter.extensions[0]);
+                    if (selectedNameFilter.index >= 0) {
+                        ioSystem.write(selectedNameFilter.name, objectList.curModelId, selectedFile, [])
+                    } else {
+                        console.exception("No valid file type selected.")
+                    }
                 }
             }
         }

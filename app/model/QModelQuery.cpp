@@ -13,7 +13,7 @@ QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
         : QObject(parent), m_manager(mgr) {
 }
 
-std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
+std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
 {
     using namespace std;
     ModelData* model = m_manager->getModel(model_id);
@@ -23,10 +23,10 @@ std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
     MeshData* md = model->asMeshData();
 
     // 构造 ModelData
-    MeshDataVtk model_data { md->face_vertices, md->vertex_positions, {} };
+    MeshDataVtk model_data { md->face_vertices, md->face_vertex_offsets, md->vertex_positions, {} };
 
     // 添加所有块
-    BlockDatas block_datas;
+    auto block_datas = std::make_shared<BlockDatas>();
     for (const auto& [block_id, block] : md->blocks_) {
         BlockData block_data;
         block_data.id = block_id;
@@ -38,7 +38,7 @@ std::optional<MeshDataVtk> QModelQuery::getModelData(Index model_id)
             block_faces.insert(block_faces.end(), patch_faces.begin(), patch_faces.end());
         }
 
-        block_datas.block_datas.push_back(block_data);
+        block_datas->block_datas.push_back(block_data);
     }
     model_data.model_blocks_ = block_datas;
 

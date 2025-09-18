@@ -958,10 +958,9 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_obj( const char * filename )
 
 		if ( token == "f" )
 		{
-			CVertex* v[3];
-			for( int i = 0 ; i < 3; i ++ )
+			std::vector<CVertex*> v;
+            while (stokenizer.nextToken())
 			{
-				stokenizer.nextToken();
 				token = stokenizer.getToken();
 				
 				
@@ -977,11 +976,11 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_obj( const char * filename )
 				}
 
 				
-				v[i] = m_map_vert[ ids[0] ];
+				v.push_back(m_map_vert[ ids[0] ]);
 				if( with_uv )
-					v[i]->uv() = uvs[ ids[1]-1 ];
+					v.back()->uv() = uvs[ ids[1]-1 ];
 				if( with_normal )
-					v[i]->normal() = normals[ ids[2]-1 ];
+					v.back()->normal() = normals[ ids[2]-1 ];
 			}
 			createFace( v, fid++ );
 		}

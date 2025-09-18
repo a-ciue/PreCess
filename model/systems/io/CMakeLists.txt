@@ -1,4 +1,4 @@
-add_library(IOSystem STATIC ModelIOSystem.cpp "ModelIOSystemRegister.cpp")
+add_library(IOSystem STATIC ModelIOSystem.cpp ModelIOSystemRegister.cpp)
 target_link_libraries(IOSystem PRIVATE 
 	Data 
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>

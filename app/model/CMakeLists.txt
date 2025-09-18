@@ -22,11 +22,11 @@ target_include_directories(modelQml PUBLIC
 )
 # 将插件暴露给使用者（PUBLIC）
 target_link_libraries(modelQmlplugin PUBLIC 
-    coreQmlplugin AlgorithmSystemQmlplugin
+    coreQmlplugin AlgorithmSystemQmlplugin IOSystemQmlplugin
 )
 # 将封装接口暴露给使用者（PUBLIC），隐藏C++实现(PRIVATE)
 target_link_libraries(modelQml PUBLIC 
-    coreQml AlgorithmSystemQml
+    coreQml AlgorithmSystemQml IOSystemQml
 )
 target_link_libraries(modelQml PRIVATE 
     modelPart QArgType

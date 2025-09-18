@@ -25,6 +25,7 @@ find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick)
 message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
 qt_policy(SET QTP0001 NEW)
 qt_standard_project_setup()
+include(GNUInstallDirs)
 
 add_subdirectory(core)
 add_subdirectory(model)

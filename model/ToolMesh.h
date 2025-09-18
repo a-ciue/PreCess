@@ -17,8 +17,6 @@
 
 #include <unordered_map>
 
-using namespace std;
-
 namespace MeshLib {
 class CToolVertex : public CVertex {
 public:

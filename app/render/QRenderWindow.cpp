@@ -125,10 +125,10 @@ void QRenderWindow::onModelChanged(Index model_id)
         int type = this->model_query_->getModelType(model_id);
         if (this->model_query_->getModelType(model_id)==0)
         {
-            std::optional model_data = model_query_->getModelData(model_id);
-            if (model_data)
+            std::optional mesh_data = model_query_->getMeshData(model_id);
+            if (mesh_data)
             {
-                this->mesh_actor_manager_->loadModel(model_id, *model_data, vtk->renderer_, this->renderMode_, 1);
+                this->mesh_actor_manager_->loadModel(model_id, *mesh_data, vtk->renderer_, this->renderMode_, 1);
             }
         }
         else if (this->model_query_->getModelType(model_id) == 1)

@@ -37,22 +37,40 @@ struct MeshData {
     using PatchMap = std::unordered_map<Index, std::unique_ptr<Patch>>;
     using BlockMap = std::unordered_map<Index, std::unique_ptr<Block>>;
 
-    // 三角形的点id索引
-    std::vector<std::array<Index, 3>> face_vertices {
-        { 0, 1, 2 }, { 2, 3, 0 },
-        { 3, 2, 6 }, { 6, 7, 3 },
-        { 4, 0, 3 }, { 3, 7, 4 },
-        { 7, 6, 5 }, { 5, 4, 7 },
-        { 4, 5, 1 }, { 1, 0, 4 },
-        { 1, 5, 6 }, { 6, 2, 1 }
-    };
-    // 点坐标
-    std::vector<std::array<double, 3>> vertex_positions {
+    /**
+     * @brief 多边形面网格点id索引
+     * 
+        0, 1, 2,
+        2, 3, 0,
+        3, 2, 6,
+        6, 7, 3,
+        4, 0, 3,
+        3, 7, 4,
+        7, 6, 5,
+        5, 4, 7,
+        4, 5, 1,
+        1, 0, 4,
+        1, 5, 6,
+        6, 2, 1
+     */
+    std::vector<Index> face_vertices;
+
+    /**
+     * @brief 存储每个面的顶点偏移量的索引数组。
+
+        { 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33 }
+     */
+    std::vector<Index> face_vertex_offsets;
+
+    /**
+     * @brief 存储顶点的三维坐标位置。
+
         { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },
         { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },
         { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },
         { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }
-    };
+     */
+    std::vector<std::array<double, 3>> vertex_positions;
 
     PatchMap patches_;
     BlockMap blocks_;
