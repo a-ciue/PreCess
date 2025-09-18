@@ -29,7 +29,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://gitee.com/a-ciue/PreCess">
+  <a href="https://gitee.com/precess/PreCess">
     <img src="https://foruda.gitee.com/images/1754736381119453114/37538937_9363227.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -139,7 +139,7 @@
 
 #### Windows用户 （使用vcpkg的导出依赖包）
 
-1. 在本项目[发行版页面](https://gitee.com/a-ciue/PreCess/releases)，下载带预编译依赖包vcpkg-export与项目源码PreCess，确保文件目录结构为两文件夹并列：
+1. 在本项目[发行版页面](https://gitee.com/precess/PreCess/releases)，下载带预编译依赖包vcpkg-export与项目源码PreCess，确保文件目录结构为两文件夹并列：
 ```
 - vcpkg-export
     - installed
@@ -164,7 +164,7 @@ PreCess.exe
 
 **前提**：需要提前准备所需依赖库：qt、vtk、occ，暂且略过
 
-1. 在本项目[发行版页面](https://gitee.com/a-ciue/PreCess/releases)，下载带预编译依赖库的软件源码并解压
+1. 在本项目[发行版页面](https://gitee.com/precess/PreCess/releases)，下载带预编译依赖库的软件源码并解压
 2. `Win`+`Q`搜索并打开`x64 Native Tools Command Prompt for VS 2022`
 3. 假设解压目录为`<path>`，
 ```pwsh
@@ -239,7 +239,7 @@ _For more examples, please refer to the [Documentation]()_
 * [ ] 动画系统：一些算法的执行过程就是完美的动画
 * [ ] 操作结果预览：Blender在进行某些网格操作如挤出收口等操作时，有预览效果可以看得到。但这要UI与算法功能强相关，功能又在dll插件里，跨层操作难度大。参考Blender
 
-可以查看开启的或进行中的 [Issues](https://gitee.com/a-ciue/PreCess/issues) 或 [里程碑](https://gitee.com/a-ciue/PreCess/milestones) 来了解每个任务目前的具体进度。也可以**开启新的Issue**描述遇到的bug、建议或新的项目需求。
+可以查看开启的或进行中的 [Issues](https://gitee.com/precess/PreCess/issues) 或 [里程碑](https://gitee.com/precess/PreCess/milestones) 来了解每个任务目前的具体进度。也可以**开启新的Issue**描述遇到的bug、建议或新的项目需求。
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -253,7 +253,7 @@ Contributions are what make the open source community such an amazing place to l
 在此从简单开始列举可以为项目的**贡献形式**：
 
 1. 给项目一个**Star**⭐！
-2. **新建[Issue](https://gitee.com/a-ciue/PreCess/issues)**：反馈项目bug、功能改进建议、新功能建议。写Issue时按照给定模板进行填写，并标注对应的tag标签。如，
+2. **新建[Issue](https://gitee.com/precess/PreCess/issues)**：反馈项目bug、功能改进建议、新功能建议。写Issue时按照给定模板进行填写，并标注对应的tag标签。如，
    * 项目Bug：反馈程序运行过程中遇到的bug，填写Issue时附带程序的输出记录。最好能做到稳定复现Bug，并附带Bug的复现操作流程。标注**bug标签**
    * 改进建议：标注enhancement标签
    * 新功能：标注feature标签
@@ -266,7 +266,7 @@ Contributions are what make the open source community such an amazing place to l
 
 理论上**每个人都可以**修改项目代码并实现功能，如果缺少指导与项目结构理解可以[参与交流](#联系方式)。**贡献代码**难度由简单排序：
 
-1. 修改完善项目**文档**、根据[注释要求](https://gitee.com/a-ciue/PreCess/wikis/%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83#%E6%B3%A8%E9%87%8A)完善程序**注释**
+1. 修改完善项目**文档**、根据[注释要求](https://gitee.com/precess/PreCess/wikis/%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83#%E6%B3%A8%E9%87%8A)完善程序**注释**
 2. 为项目补充缺失的单元**测试**等测试代码
 3. 发现并调试修复程序中的**bug**
 4. 基于现有架构做**二次开发**，开发软件拓展插件，集成网格算法等功能
@@ -293,7 +293,7 @@ Contributions are what make the open source community such an amazing place to l
     <img src="https://foruda.gitee.com/images/1754749758923219333/0f73d9d8_9363227.png" alt="Logo" width="300">
 </div>
 
-仓库链接: [https://gitee.com/a-ciue/PreCess](https://gitee.com/a-ciue/PreCess)
+仓库链接: [https://gitee.com/precess/PreCess](https://gitee.com/precess/PreCess)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -308,16 +308,16 @@ Contributions are what make the open source community such an amazing place to l
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/endpoint?url=https%3A%2F%2Fgitee-badge.vercel.app%2Fjson%2Fcontributors%2Fa-ciue%2FPreCess
-[contributors-url]: https://gitee.com/a-ciue/PreCess/graphs/contributors
-[forks-shield]: https://gitee.com/a-ciue/PreCess/badge/fork.svg?theme=dark
-[forks-url]: https://gitee.com/a-ciue/PreCess/network/members
-[stars-shield]: https://gitee.com/a-ciue/PreCess/badge/star.svg?theme=dark
-[stars-url]: https://gitee.com/a-ciue/PreCess/stargazers
-[issues-shield]: https://svg.hamm.cn/gitee.svg?user=a-ciue&project=PreCess&type=issue
-[issues-url]: https://gitee.com/a-ciue/PreCess/issues
-[license-shield]: https://svg.hamm.cn/gitee.svg?user=a-ciue&project=PreCess&type=license
-[license-url]: https://gitee.com/a-ciue/PreCess/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/endpoint?url=https%3A%2F%2Fgitee-badge.vercel.app%2Fjson%2Fcontributors%2Fprecess%2FPreCess
+[contributors-url]: https://gitee.com/precess/PreCess/graphs/contributors
+[forks-shield]: https://gitee.com/precess/PreCess/badge/fork.svg?theme=dark
+[forks-url]: https://gitee.com/precess/PreCess/network/members
+[stars-shield]: https://gitee.com/precess/PreCess/badge/star.svg?theme=dark
+[stars-url]: https://gitee.com/precess/PreCess/stargazers
+[issues-shield]: https://svg.hamm.cn/gitee.svg?user=precess&project=PreCess&type=issue
+[issues-url]: https://gitee.com/precess/PreCess/issues
+[license-shield]: https://svg.hamm.cn/gitee.svg?user=precess&project=PreCess&type=license
+[license-url]: https://gitee.com/precess/PreCess/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-111-black.svg?colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: resource/PreCess_letter.png
