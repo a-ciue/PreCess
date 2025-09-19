@@ -78,16 +78,6 @@ $(function() {
   <div class="headertitle"><div class="title">MeshDataVtk结构体 参考</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="dynheader">
-MeshDataVtk 的协作图:</div>
-<div class="dyncontent">
-<div class="center"><img src="structMeshDataVtk__coll__graph.png" border="0" usemap="#aMeshDataVtk_coll__map" loading="lazy" alt="Collaboration graph"/></div>
-<map name="aMeshDataVtk_coll__map" id="aMeshDataVtk_coll__map">
-<area shape="rect" title=" " alt="" coords="5,101,116,127"/>
-<area shape="rect" href="structBlockDatas.html" title=" " alt="" coords="13,5,109,31"/>
-<area shape="poly" title=" " alt="" coords="63,45,63,101,58,101,58,45"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -96,12 +86,14 @@ Index&#160;</td><td class="memItemRight" valign="bottom"><b>model_block_id</b> (
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
-<tr class="memitem:a89a6991c612941669ee4aa20bafe3606" id="r_a89a6991c612941669ee4aa20bafe3606"><td class="memItemLeft" align="right" valign="top"><a id="a89a6991c612941669ee4aa20bafe3606" name="a89a6991c612941669ee4aa20bafe3606"></a>
-const std::vector&lt; std::array&lt; Index, 3 &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_triangles_</b></td></tr>
+<tr class="memitem:aae9b4b79586e6e7e1b9d467b9681c324" id="r_aae9b4b79586e6e7e1b9d467b9681c324"><td class="memItemLeft" align="right" valign="top"><a id="aae9b4b79586e6e7e1b9d467b9681c324" name="aae9b4b79586e6e7e1b9d467b9681c324"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_poly_vertices_</b></td></tr>
+<tr class="memitem:ac411fd34eef101aeddbca8186750e037" id="r_ac411fd34eef101aeddbca8186750e037"><td class="memItemLeft" align="right" valign="top"><a id="ac411fd34eef101aeddbca8186750e037" name="ac411fd34eef101aeddbca8186750e037"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_poly_offsets_</b></td></tr>
 <tr class="memitem:a026080d79dbe29db73e7284bfde5bfed" id="r_a026080d79dbe29db73e7284bfde5bfed"><td class="memItemLeft" align="right" valign="top"><a id="a026080d79dbe29db73e7284bfde5bfed" name="a026080d79dbe29db73e7284bfde5bfed"></a>
 const std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_points_</b></td></tr>
-<tr class="memitem:ac481e513d7e1d19a33673ce5adc11afb" id="r_ac481e513d7e1d19a33673ce5adc11afb"><td class="memItemLeft" align="right" valign="top"><a id="ac481e513d7e1d19a33673ce5adc11afb" name="ac481e513d7e1d19a33673ce5adc11afb"></a>
-<a class="el" href="structBlockDatas.html">BlockDatas</a>&#160;</td><td class="memItemRight" valign="bottom"><b>model_blocks_</b></td></tr>
+<tr class="memitem:a1118eb1cbb38a9d80a5c454fce95c80b" id="r_a1118eb1cbb38a9d80a5c454fce95c80b"><td class="memItemLeft" align="right" valign="top"><a id="a1118eb1cbb38a9d80a5c454fce95c80b" name="a1118eb1cbb38a9d80a5c454fce95c80b"></a>
+std::shared_ptr&lt; <a class="el" href="structBlockDatas.html">BlockDatas</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>model_blocks_</b></td></tr>
 </table>
 <hr/>该结构体的文档由以下文件生成:<ul>
 <li>core/<a class="el" href="Core_8h_source.html">Core.h</a></li>

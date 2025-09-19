@@ -1,0 +1,5 @@
+<map id="systems::io::QModelIOSystemAdaptor" name="systems::io::QModelIOSystemAdaptor">
+<area shape="rect" id="Node000001" title="向Qml暴露的ModelIOSystem适配器，向界面暴露IO功能：读取模型、写出模型等各种功能操作" alt="" coords="5,79,224,119"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="77,5,152,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,44,117,79,112,79,112,44"/>
+</map>

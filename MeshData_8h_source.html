@@ -110,30 +110,22 @@ $(function() {
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structMeshData.html">   36</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structMeshData.html">MeshData</a> {</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keyword">using </span>PatchMap = std::unordered_map&lt;Index, std::unique_ptr&lt;Patch&gt;&gt;;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">using </span>BlockMap = std::unordered_map&lt;Index, std::unique_ptr&lt;Block&gt;&gt;;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="comment">// 三角形的点id索引</span></div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    std::vector&lt;std::array&lt;Index, 3&gt;&gt; face_vertices {</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        { 0, 1, 2 }, { 2, 3, 0 },</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        { 3, 2, 6 }, { 6, 7, 3 },</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        { 4, 0, 3 }, { 3, 7, 4 },</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        { 7, 6, 5 }, { 5, 4, 7 },</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        { 4, 5, 1 }, { 1, 0, 4 },</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        { 1, 5, 6 }, { 6, 2, 1 }</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    };</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="comment">// 点坐标</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    std::vector&lt;std::array&lt;double, 3&gt;&gt; vertex_positions {</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    };</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    PatchMap patches_;</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    BlockMap blocks_;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>};</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structMeshData.html#a8fc52d261fa72cd374337eef4241fca3">   56</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="structMeshData.html#a8fc52d261fa72cd374337eef4241fca3">face_vertices</a>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="structMeshData.html#af226d93496aa714c68840099f9a492f1">   63</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="structMeshData.html#af226d93496aa714c68840099f9a492f1">face_vertex_offsets</a>;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="structMeshData.html#a4ad31e07f3b240f85b5f3d792c6da187">   73</a></span>    std::vector&lt;std::array&lt;double, 3&gt;&gt; <a class="code hl_variable" href="structMeshData.html#a4ad31e07f3b240f85b5f3d792c6da187">vertex_positions</a>;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    PatchMap patches_;</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    BlockMap blocks_;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>};</div>
 </div>
 <div class="ttc" id="astructBlock_html"><div class="ttname"><a href="structBlock.html">Block</a></div><div class="ttdoc">表示网格中的一个 Block（块）</div><div class="ttdef"><b>定义</b> MeshData.h:31</div></div>
 <div class="ttc" id="astructMeshData_html"><div class="ttname"><a href="structMeshData.html">MeshData</a></div><div class="ttdef"><b>定义</b> MeshData.h:36</div></div>
+<div class="ttc" id="astructMeshData_html_a4ad31e07f3b240f85b5f3d792c6da187"><div class="ttname"><a href="structMeshData.html#a4ad31e07f3b240f85b5f3d792c6da187">MeshData::vertex_positions</a></div><div class="ttdeci">std::vector&lt; std::array&lt; double, 3 &gt; &gt; vertex_positions</div><div class="ttdoc">存储顶点的三维坐标位置。</div><div class="ttdef"><b>定义</b> MeshData.h:73</div></div>
+<div class="ttc" id="astructMeshData_html_a8fc52d261fa72cd374337eef4241fca3"><div class="ttname"><a href="structMeshData.html#a8fc52d261fa72cd374337eef4241fca3">MeshData::face_vertices</a></div><div class="ttdeci">std::vector&lt; Index &gt; face_vertices</div><div class="ttdoc">多边形面网格点id索引</div><div class="ttdef"><b>定义</b> MeshData.h:56</div></div>
+<div class="ttc" id="astructMeshData_html_af226d93496aa714c68840099f9a492f1"><div class="ttname"><a href="structMeshData.html#af226d93496aa714c68840099f9a492f1">MeshData::face_vertex_offsets</a></div><div class="ttdeci">std::vector&lt; Index &gt; face_vertex_offsets</div><div class="ttdoc">存储每个面的顶点偏移量的索引数组。</div><div class="ttdef"><b>定义</b> MeshData.h:63</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

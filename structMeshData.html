@@ -88,34 +88,50 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>BlockMap</b> = std::
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
-<tr class="memitem:a763d029b7f95c779b909df0407be9d56" id="r_a763d029b7f95c779b909df0407be9d56"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::array&lt; Index, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a763d029b7f95c779b909df0407be9d56">face_vertices</a></td></tr>
+<tr class="memitem:a8fc52d261fa72cd374337eef4241fca3" id="r_a8fc52d261fa72cd374337eef4241fca3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8fc52d261fa72cd374337eef4241fca3">face_vertices</a></td></tr>
+<tr class="memdesc:a8fc52d261fa72cd374337eef4241fca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">多边形面网格点id索引  <br /></td></tr>
+<tr class="memitem:af226d93496aa714c68840099f9a492f1" id="r_af226d93496aa714c68840099f9a492f1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af226d93496aa714c68840099f9a492f1">face_vertex_offsets</a></td></tr>
+<tr class="memdesc:af226d93496aa714c68840099f9a492f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">存储每个面的顶点偏移量的索引数组。  <br /></td></tr>
 <tr class="memitem:a4ad31e07f3b240f85b5f3d792c6da187" id="r_a4ad31e07f3b240f85b5f3d792c6da187"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::array&lt; double, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ad31e07f3b240f85b5f3d792c6da187">vertex_positions</a></td></tr>
+<tr class="memdesc:a4ad31e07f3b240f85b5f3d792c6da187"><td class="mdescLeft">&#160;</td><td class="mdescRight">存储顶点的三维坐标位置。  <br /></td></tr>
 <tr class="memitem:a59f1e04e2185643cac0cc8ef811e36ad" id="r_a59f1e04e2185643cac0cc8ef811e36ad"><td class="memItemLeft" align="right" valign="top"><a id="a59f1e04e2185643cac0cc8ef811e36ad" name="a59f1e04e2185643cac0cc8ef811e36ad"></a>
 PatchMap&#160;</td><td class="memItemRight" valign="bottom"><b>patches_</b></td></tr>
 <tr class="memitem:ad5bf8ed9eb3e17cfadf3077b00c2fa2a" id="r_ad5bf8ed9eb3e17cfadf3077b00c2fa2a"><td class="memItemLeft" align="right" valign="top"><a id="ad5bf8ed9eb3e17cfadf3077b00c2fa2a" name="ad5bf8ed9eb3e17cfadf3077b00c2fa2a"></a>
 BlockMap&#160;</td><td class="memItemRight" valign="bottom"><b>blocks_</b></td></tr>
 </table>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="a763d029b7f95c779b909df0407be9d56" name="a763d029b7f95c779b909df0407be9d56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a763d029b7f95c779b909df0407be9d56">&#9670;&#160;</a></span>face_vertices</h2>
+<a id="af226d93496aa714c68840099f9a492f1" name="af226d93496aa714c68840099f9a492f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af226d93496aa714c68840099f9a492f1">&#9670;&#160;</a></span>face_vertex_offsets</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::array&lt;Index, 3&gt; &gt; MeshData::face_vertices</td>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::face_vertex_offsets</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>初始值:</b><div class="fragment"><div class="line">{</div>
-<div class="line">        { 0, 1, 2 }, { 2, 3, 0 },</div>
-<div class="line">        { 3, 2, 6 }, { 6, 7, 3 },</div>
-<div class="line">        { 4, 0, 3 }, { 3, 7, 4 },</div>
-<div class="line">        { 7, 6, 5 }, { 5, 4, 7 },</div>
-<div class="line">        { 4, 5, 1 }, { 1, 0, 4 },</div>
-<div class="line">        { 1, 5, 6 }, { 6, 2, 1 }</div>
-<div class="line">    }</div>
-</div><!-- fragment -->
+
+<p>存储每个面的顶点偏移量的索引数组。 </p>
+<p>{ 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33 } </p>
+
+</div>
+</div>
+<a id="a8fc52d261fa72cd374337eef4241fca3" name="a8fc52d261fa72cd374337eef4241fca3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fc52d261fa72cd374337eef4241fca3">&#9670;&#160;</a></span>face_vertices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::face_vertices</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>多边形面网格点id索引 </p>
+<p>0, 1, 2, 2, 3, 0, 3, 2, 6, 6, 7, 3, 4, 0, 3, 3, 7, 4, 7, 6, 5, 5, 4, 7, 4, 5, 1, 1, 0, 4, 1, 5, 6, 6, 2, 1 </p>
+
 </div>
 </div>
 <a id="a4ad31e07f3b240f85b5f3d792c6da187" name="a4ad31e07f3b240f85b5f3d792c6da187"></a>
@@ -129,13 +145,10 @@ BlockMap&#160;</td><td class="memItemRight" valign="bottom"><b>blocks_</b></td><
         </tr>
       </table>
 </div><div class="memdoc">
-<b>初始值:</b><div class="fragment"><div class="line">{</div>
-<div class="line">        { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },</div>
-<div class="line">        { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },</div>
-<div class="line">        { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },</div>
-<div class="line">        { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }</div>
-<div class="line">    }</div>
-</div><!-- fragment -->
+
+<p>存储顶点的三维坐标位置。 </p>
+<p>{ 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 }, { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 }, { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 }, { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 } </p>
+
 </div>
 </div>
 <hr/>该结构体的文档由以下文件生成:<ul>

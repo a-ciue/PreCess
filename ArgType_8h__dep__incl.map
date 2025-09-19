@@ -1,18 +1,24 @@
 <map id="core/ArgType.h" name="core/ArgType.h">
-<area shape="rect" id="Node000001" title="用于模型层描述功能参数类型" alt="" coords="231,5,349,31"/>
-<area shape="rect" id="Node000002" href="$QArgObject_8h_source.html" title=" " alt="" coords="39,86,221,111"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="256,39,154,88,152,84,253,34"/>
-<area shape="rect" id="Node000004" href="$AlgorithmHandler_8h.html" title=" " alt="" coords="213,167,367,207"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="293,44,293,166,287,166,287,44"/>
-<area shape="rect" id="Node000006" href="$AlgorithmInfo_8h_source.html" title=" " alt="" coords="359,79,514,119"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="325,35,403,76,400,81,322,40"/>
+<area shape="rect" id="Node000001" title="用于模型层描述功能参数类型" alt="" coords="481,5,600,31"/>
+<area shape="rect" id="Node000002" href="$QArgObject_8h_source.html" title=" " alt="" coords="169,86,350,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="487,37,301,89,300,83,486,32"/>
+<area shape="rect" id="Node000005" href="$AlgorithmHandler_8h.html" title=" " alt="" coords="374,79,529,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="519,42,475,81,471,77,516,38"/>
+<area shape="rect" id="Node000007" href="$AlgorithmInfo_8h_source.html" title=" " alt="" coords="553,79,707,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="566,38,610,77,607,81,562,42"/>
+<area shape="rect" id="Node000010" href="$ModelIOInfo_8h_source.html" title=" " alt="" coords="741,86,975,111"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="601,31,812,83,811,89,599,37"/>
 <area shape="rect" id="Node000003" href="$QAlgorithmInfo_8h_source.html" title=" " alt="" coords="5,167,188,207"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="123,125,107,167,102,165,118,123"/>
-<area shape="rect" id="Node000005" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="207,255,373,295"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="293,221,293,254,287,254,287,221"/>
-<area shape="rect" id="Node000007" href="$AlgorithmSystem_8h.html" title=" " alt="" coords="391,167,546,207"/>
-<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="451,131,464,166,459,167,446,132"/>
-<area shape="poly" id="edge7_Node000007_Node000005" title=" " alt="" coords="418,215,330,257,328,252,416,210"/>
-<area shape="rect" id="Node000008" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="398,255,617,295"/>
-<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="485,218,501,253,496,256,480,220"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="227,120,134,169,131,164,224,115"/>
+<area shape="rect" id="Node000004" href="$QModelIOInfo_8h_source.html" title=" " alt="" coords="212,167,379,207"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="272,123,290,165,285,167,267,125"/>
+<area shape="rect" id="Node000006" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="368,255,535,295"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="454,132,454,254,449,254,449,132"/>
+<area shape="rect" id="Node000008" href="$AlgorithmSystem_8h.html" title=" " alt="" coords="549,167,703,207"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="631,133,630,167,624,166,626,132"/>
+<area shape="poly" id="edge8_Node000008_Node000006" title=" " alt="" coords="577,215,491,257,488,252,574,210"/>
+<area shape="rect" id="Node000009" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="559,255,778,295"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="644,218,662,253,657,256,639,220"/>
+<area shape="rect" id="Node000011" href="$ModelIOSystem_8cpp.html" title=" " alt="" coords="727,174,999,199"/>
+<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="862,125,865,173,860,174,857,125"/>
 </map>

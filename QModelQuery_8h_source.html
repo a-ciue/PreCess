@@ -97,7 +97,7 @@ $(function() {
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">public</span>:</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classIModelQuery.html">~IModelQuery</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">virtual</span> std::optional&lt;MeshDataVtk&gt; getModelData(Index model_id) = 0;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">virtual</span> std::optional&lt;MeshDataVtk&gt; getMeshData(Index model_id) = 0;</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
 </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
@@ -109,7 +109,7 @@ $(function() {
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">public</span>:</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classQModelQuery.html#ae680b059488e7c532da3900eab3e7775">QModelQuery</a>(<a class="code hl_class" href="classModelManager.html">ModelManager</a>* mgr, QObject* parent = <span class="keyword">nullptr</span>);</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    std::optional&lt;MeshDataVtk&gt; getModelData(Index model_id) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    std::optional&lt;MeshDataVtk&gt; getMeshData(Index model_id) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    std::optional&lt;SplineDataVtk&gt; getSplineData(Index model_id) ;</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
@@ -124,7 +124,7 @@ $(function() {
 <div class="ttc" id="aclassIModelQuery_html"><div class="ttname"><a href="classIModelQuery.html">IModelQuery</a></div><div class="ttdef"><b>定义</b> QModelQuery.h:26</div></div>
 <div class="ttc" id="aclassModelManager_html"><div class="ttname"><a href="classModelManager.html">ModelManager</a></div><div class="ttdoc">负责管理多个 ModelData 实例的类</div><div class="ttdef"><b>定义</b> ModelManager.h:27</div></div>
 <div class="ttc" id="aclassQModelQuery_html_ae680b059488e7c532da3900eab3e7775"><div class="ttname"><a href="classQModelQuery.html#ae680b059488e7c532da3900eab3e7775">QModelQuery::QModelQuery</a></div><div class="ttdeci">QModelQuery(ModelManager *mgr, QObject *parent=nullptr)</div><div class="ttdoc">构造函数</div><div class="ttdef"><b>定义</b> QModelQuery.cpp:12</div></div>
-<div class="ttc" id="astructMeshDataVtk_html"><div class="ttname"><a href="structMeshDataVtk.html">MeshDataVtk</a></div><div class="ttdef"><b>定义</b> Core.h:37</div></div>
+<div class="ttc" id="astructMeshDataVtk_html"><div class="ttname"><a href="structMeshDataVtk.html">MeshDataVtk</a></div><div class="ttdef"><b>定义</b> Core.h:38</div></div>
 <div class="ttc" id="astructSplineDataVtk_html"><div class="ttname"><a href="structSplineDataVtk.html">SplineDataVtk</a></div><div class="ttdef"><b>定义</b> SplineDataVtk.h:5</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

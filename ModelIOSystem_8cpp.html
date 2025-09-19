@@ -84,6 +84,7 @@ $(function() {
 <code>#include &quot;PluginHandler.h&quot;</code><br />
 <code>#include &quot;ModelIOHandler.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="ModelManager_8h_source.html">ModelManager.h</a>&quot;</code><br />
+<code>#include &quot;ModelIOInfo.h&quot;</code><br />
 <code>#include &lt;spdlog/fmt/ranges.h&gt;</code><br />
 <code>#include &lt;spdlog/spdlog.h&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
@@ -92,78 +93,88 @@ ModelIOSystem.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ModelIOSystem_8cpp__incl.png" border="0" usemap="#amodel_2systems_2io_2ModelIOSystem_8cpp" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2io_2ModelIOSystem_8cpp" id="amodel_2systems_2io_2ModelIOSystem_8cpp">
-<area shape="rect" title=" " alt="" coords="786,5,1058,31"/>
-<area shape="rect" href="ModelIOSystem_8h.html" title=" " alt="" coords="167,225,304,251"/>
-<area shape="poly" title=" " alt="" coords="887,33,285,224,284,219,885,28"/>
-<area shape="rect" href="PluginHandler_8h_source.html" title=" " alt="" coords="657,152,781,177"/>
-<area shape="poly" title=" " alt="" coords="893,33,848,53,802,81,767,111,739,143,735,139,764,108,799,77,846,48,890,28"/>
-<area shape="rect" href="ModelIOHandler_8h_source.html" title=" " alt="" coords="846,299,985,324"/>
-<area shape="poly" title=" " alt="" coords="899,33,870,52,857,65,847,80,838,107,836,136,840,165,849,193,874,246,900,286,896,289,869,248,844,195,835,166,831,136,833,106,842,78,853,62,867,48,896,28"/>
-<area shape="rect" href="ModelManager_8h.html" title="负责管理多个模型实例的类" alt="" coords="857,79,987,104"/>
-<area shape="poly" title=" " alt="" coords="925,31,925,65,919,65,919,31"/>
-<area shape="rect" title=" " alt="" coords="1175,372,1250,397"/>
-<area shape="poly" title=" " alt="" coords="993,28,1090,48,1194,77,1240,95,1278,115,1303,138,1310,150,1313,163,1313,240,1305,278,1287,312,1264,342,1240,365,1236,361,1260,338,1283,309,1300,276,1307,239,1307,164,1305,152,1299,141,1275,119,1238,100,1193,82,1089,53,992,33"/>
-<area shape="rect" title=" " alt="" coords="1347,79,1499,104"/>
-<area shape="poly" title=" " alt="" coords="1003,28,1334,75,1333,80,1002,33"/>
-<area shape="rect" title=" " alt="" coords="1524,79,1648,104"/>
-<area shape="poly" title=" " alt="" coords="1054,28,1264,48,1511,76,1510,81,1264,53,1054,33"/>
-<area shape="rect" href="Core_8h_source.html" title=" " alt="" coords="786,445,850,471"/>
-<area shape="poly" title=" " alt="" coords="167,245,104,253,46,267,25,278,12,290,9,304,18,322,39,343,70,362,108,378,152,393,256,416,371,432,489,443,602,450,772,454,772,459,601,455,489,449,370,438,255,421,151,398,106,383,67,367,36,347,13,326,4,305,7,287,22,273,44,262,103,248,166,240"/>
-<area shape="rect" title=" " alt="" coords="711,519,773,544"/>
-<area shape="poly" title=" " alt="" coords="167,245,104,253,46,267,25,277,12,290,9,304,18,322,37,342,64,362,138,397,231,429,334,456,541,498,697,522,697,527,541,503,333,461,229,434,136,402,62,366,34,347,13,326,4,305,8,287,22,273,44,262,103,247,166,240"/>
-<area shape="rect" href="ModelIOSystemBase_8h_source.html" title=" " alt="" coords="28,299,197,324"/>
-<area shape="poly" title=" " alt="" coords="217,253,146,294,143,289,214,248"/>
-<area shape="rect" title=" " alt="" coords="502,372,593,397"/>
-<area shape="poly" title=" " alt="" coords="245,250,272,286,291,305,313,322,382,343,489,368,488,373,381,348,310,326,288,309,268,289,241,253"/>
-<area shape="rect" title=" " alt="" coords="431,372,477,397"/>
-<area shape="poly" title=" " alt="" coords="239,250,248,286,256,305,269,322,304,346,343,363,382,373,417,378,416,384,381,378,341,368,301,351,266,326,252,308,243,288,234,252"/>
-<area shape="rect" title=" " alt="" coords="324,299,448,324"/>
-<area shape="poly" title=" " alt="" coords="261,248,350,290,348,295,259,253"/>
-<area shape="poly" title=" " alt="" coords="808,473,766,511,763,507,804,469"/>
-<area shape="rect" title=" " alt="" coords="798,519,854,544"/>
-<area shape="poly" title=" " alt="" coords="822,471,826,505,821,505,817,471"/>
-<area shape="poly" title=" " alt="" coords="149,321,268,357,419,395,615,429,773,449,772,454,614,434,418,400,267,362,147,327"/>
-<area shape="poly" title=" " alt="" coords="190,321,489,369,490,369,489,375,488,375,189,327"/>
-<area shape="poly" title=" " alt="" coords="168,321,418,373,417,378,167,327"/>
-<area shape="rect" href="PluginBase_8h.html" title=" " alt="" coords="563,225,670,251"/>
-<area shape="poly" title=" " alt="" coords="704,180,646,219,643,215,701,175"/>
-<area shape="rect" title=" " alt="" coords="695,225,781,251"/>
-<area shape="poly" title=" " alt="" coords="725,177,734,212,729,213,720,178"/>
-<area shape="poly" title=" " alt="" coords="590,253,551,273,513,301,488,331,468,361,464,358,483,327,510,297,549,268,587,248"/>
-<area shape="rect" href="HandlerCreatorDestroyer_8h_source.html" title=" " alt="" coords="524,299,720,324"/>
-<area shape="poly" title=" " alt="" coords="620,251,623,285,618,285,615,251"/>
-<area shape="rect" title=" " alt="" coords="617,372,704,397"/>
-<area shape="poly" title=" " alt="" coords="665,248,703,267,720,280,734,298,738,317,730,336,714,353,696,367,693,363,711,349,726,333,733,317,729,300,716,284,700,271,662,253"/>
-<area shape="poly" title=" " alt="" coords="596,326,491,371,489,366,594,322"/>
-<area shape="poly" title=" " alt="" coords="631,323,650,359,646,361,626,326"/>
-<area shape="poly" title=" " alt="" coords="850,327,806,344,786,357,770,374,752,405,743,441,741,475,742,505,736,505,735,475,738,440,747,403,765,370,783,353,803,339,848,322"/>
-<area shape="poly" title=" " alt="" coords="856,327,607,374,606,369,855,321"/>
-<area shape="poly" title=" " alt="" coords="846,321,688,340,591,355,491,375,490,370,590,350,687,335,846,316"/>
-<area shape="rect" title=" " alt="" coords="779,372,857,397"/>
-<area shape="poly" title=" " alt="" coords="901,326,847,366,844,361,898,322"/>
-<area shape="rect" title=" " alt="" coords="881,372,939,397"/>
-<area shape="poly" title=" " alt="" coords="917,325,915,359,909,358,912,324"/>
-<area shape="poly" title=" " alt="" coords="919,106,902,136,875,177,839,219,794,253,745,266,658,280,462,305,461,299,657,275,744,261,792,248,835,215,871,174,897,133,914,103"/>
-<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="1060,299,1165,324"/>
-<area shape="poly" title=" " alt="" coords="926,104,932,138,948,176,978,212,1013,243,1080,290,1077,294,1009,248,974,216,944,179,927,140,921,105"/>
-<area shape="rect" href="ModelOperator_8h_source.html" title=" " alt="" coords="958,152,1089,177"/>
-<area shape="poly" title=" " alt="" coords="940,102,997,142,994,146,937,106"/>
-<area shape="poly" title=" " alt="" coords="1066,327,870,374,869,368,1065,321"/>
-<area shape="poly" title=" " alt="" coords="1081,327,954,371,952,366,1079,322"/>
-<area shape="rect" href="Selection_8h_source.html" title=" " alt="" coords="964,372,1059,397"/>
-<area shape="poly" title=" " alt="" coords="1098,326,1041,366,1038,362,1095,322"/>
-<area shape="rect" title=" " alt="" coords="1083,372,1151,397"/>
-<area shape="poly" title=" " alt="" coords="1116,324,1118,358,1113,359,1111,324"/>
-<area shape="poly" title=" " alt="" coords="1130,322,1187,362,1184,366,1127,326"/>
-<area shape="poly" title=" " alt="" coords="981,400,863,443,861,438,979,395"/>
-<area shape="poly" title=" " alt="" coords="993,400,863,473,780,515,777,510,861,468,991,395"/>
-<area shape="poly" title=" " alt="" coords="1008,180,956,214,890,253,813,293,732,326,602,371,600,366,731,322,811,288,887,248,953,209,1005,175"/>
-<area shape="poly" title=" " alt="" coords="1028,177,1030,206,1029,246,1020,288,1011,308,999,326,982,336,950,347,871,372,869,366,948,342,979,331,995,322,1006,305,1015,286,1024,245,1025,207,1023,178"/>
-<area shape="poly" title=" " alt="" coords="1033,176,1101,286,1096,288,1029,179"/>
-<area shape="rect" href="ModelOperatorBase_8h_source.html" title=" " alt="" coords="1110,225,1273,251"/>
-<area shape="poly" title=" " alt="" coords="1051,175,1152,217,1150,222,1049,180"/>
-<area shape="poly" title=" " alt="" coords="1206,249,1234,277,1262,316,1272,337,1277,359,1275,380,1264,399,1243,410,1205,420,1094,437,864,457,864,451,1093,432,1204,415,1241,406,1260,395,1270,378,1272,359,1267,339,1257,319,1230,281,1203,253"/>
-<area shape="poly" title=" " alt="" coords="1181,253,1137,291,1134,288,1177,249"/>
+<area shape="rect" title=" " alt="" coords="1112,5,1384,31"/>
+<area shape="rect" href="ModelIOSystem_8h.html" title=" " alt="" coords="536,225,673,251"/>
+<area shape="poly" title=" " alt="" coords="1112,31,928,50,846,64,788,81,737,110,691,147,653,184,624,216,620,213,649,181,687,143,734,106,786,76,845,59,927,45,1111,26"/>
+<area shape="rect" href="PluginHandler_8h_source.html" title=" " alt="" coords="328,152,452,177"/>
+<area shape="poly" title=" " alt="" coords="1112,28,899,46,780,61,662,81,536,115,433,150,431,145,535,109,661,76,779,56,899,40,1112,23"/>
+<area shape="rect" href="ModelIOHandler_8h_source.html" title=" " alt="" coords="943,299,1082,324"/>
+<area shape="poly" title=" " alt="" coords="1199,33,1127,56,1044,95,1003,120,966,151,934,186,909,226,906,237,907,246,918,264,939,279,963,291,961,296,936,284,915,268,902,248,901,236,904,224,930,183,962,147,1000,116,1041,90,1125,51,1198,28"/>
+<area shape="rect" href="ModelManager_8h.html" title="负责管理多个模型实例的类" alt="" coords="1092,79,1223,104"/>
+<area shape="poly" title=" " alt="" coords="1235,33,1185,72,1182,68,1232,29"/>
+<area shape="rect" title=" " alt="" coords="1295,372,1370,397"/>
+<area shape="poly" title=" " alt="" coords="1258,30,1286,85,1298,123,1303,163,1303,239,1311,304,1326,358,1321,360,1306,305,1298,239,1298,164,1293,125,1281,87,1253,32"/>
+<area shape="rect" href="ModelIOInfo_8h_source.html" title=" " alt="" coords="1406,225,1520,251"/>
+<area shape="poly" title=" " alt="" coords="1265,29,1321,77,1392,150,1447,213,1443,217,1388,154,1317,81,1262,33"/>
+<area shape="rect" title=" " alt="" coords="1388,79,1540,104"/>
+<area shape="poly" title=" " alt="" coords="1284,28,1417,72,1415,77,1282,33"/>
+<area shape="rect" title=" " alt="" coords="1565,79,1689,104"/>
+<area shape="poly" title=" " alt="" coords="1310,28,1553,73,1552,79,1309,33"/>
+<area shape="rect" href="Core_8h_source.html" title=" " alt="" coords="811,445,875,471"/>
+<area shape="poly" title=" " alt="" coords="608,250,613,279,623,318,641,360,667,395,697,417,731,433,766,443,798,450,797,455,764,448,729,438,694,422,664,399,636,362,618,320,608,280,603,251"/>
+<area shape="rect" title=" " alt="" coords="896,519,958,544"/>
+<area shape="poly" title=" " alt="" coords="536,244,474,251,417,265,397,276,383,288,379,304,386,322,410,341,458,365,598,420,757,474,883,514,882,519,755,479,596,425,455,370,407,346,382,326,374,304,379,286,393,271,416,260,473,246,535,239"/>
+<area shape="rect" href="ModelIOSystemBase_8h_source.html" title=" " alt="" coords="397,299,566,324"/>
+<area shape="poly" title=" " alt="" coords="586,253,515,294,512,289,583,248"/>
+<area shape="rect" title=" " alt="" coords="678,372,768,397"/>
+<area shape="poly" title=" " alt="" coords="616,249,707,360,703,363,612,253"/>
+<area shape="rect" title=" " alt="" coords="274,372,321,397"/>
+<area shape="poly" title=" " alt="" coords="535,242,489,246,438,256,387,274,342,301,329,313,320,328,306,359,301,357,315,326,325,310,339,297,385,269,436,251,488,241,535,236"/>
+<area shape="rect" title=" " alt="" coords="693,299,817,324"/>
+<area shape="poly" title=" " alt="" coords="630,248,719,290,717,295,627,253"/>
+<area shape="poly" title=" " alt="" coords="858,469,904,507,901,512,855,473"/>
+<area shape="rect" title=" " alt="" coords="815,519,871,544"/>
+<area shape="poly" title=" " alt="" coords="846,471,846,505,840,505,840,471"/>
+<area shape="rect" title=" " alt="" coords="1050,519,1127,544"/>
+<area shape="poly" title=" " alt="" coords="876,466,1037,512,1035,518,874,471"/>
+<area shape="poly" title=" " alt="" coords="494,323,533,359,559,378,587,395,641,417,698,433,798,450,797,455,697,438,640,422,584,400,556,383,530,363,491,326"/>
+<area shape="poly" title=" " alt="" coords="521,321,671,365,670,371,520,327"/>
+<area shape="poly" title=" " alt="" coords="453,327,335,372,333,367,451,322"/>
+<area shape="rect" href="PluginBase_8h.html" title=" " alt="" coords="136,225,243,251"/>
+<area shape="poly" title=" " alt="" coords="358,180,236,223,234,218,357,175"/>
+<area shape="rect" title=" " alt="" coords="346,225,433,251"/>
+<area shape="poly" title=" " alt="" coords="392,178,392,212,387,212,387,178"/>
+<area shape="poly" title=" " alt="" coords="201,250,283,359,279,362,196,253"/>
+<area shape="rect" href="HandlerCreatorDestroyer_8h_source.html" title=" " alt="" coords="24,299,220,324"/>
+<area shape="poly" title=" " alt="" coords="180,253,144,290,140,287,176,249"/>
+<area shape="rect" title=" " alt="" coords="10,372,97,397"/>
+<area shape="poly" title=" " alt="" coords="137,244,104,249,70,259,38,276,13,300,8,315,11,330,33,361,28,364,7,332,3,314,9,297,35,272,68,254,102,244,136,239"/>
+<area shape="poly" title=" " alt="" coords="151,322,262,366,260,371,149,326"/>
+<area shape="poly" title=" " alt="" coords="112,326,76,364,72,360,108,322"/>
+<area shape="poly" title=" " alt="" coords="1012,325,988,398,941,507,936,505,983,396,1006,323"/>
+<area shape="poly" title=" " alt="" coords="1019,323,1082,505,1077,507,1014,325"/>
+<area shape="poly" title=" " alt="" coords="966,327,782,372,781,366,965,321"/>
+<area shape="poly" title=" " alt="" coords="943,322,335,382,334,377,942,317"/>
+<area shape="rect" title=" " alt="" coords="1394,372,1452,397"/>
+<area shape="poly" title=" " alt="" coords="1082,319,1216,339,1380,369,1380,375,1216,344,1081,324"/>
+<area shape="poly" title=" " alt="" coords="1130,107,1018,156,878,228,826,261,782,293,779,288,823,256,875,223,1016,151,1128,102"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="1157,299,1262,324"/>
+<area shape="poly" title=" " alt="" coords="1169,103,1184,124,1197,151,1207,187,1212,223,1213,285,1208,285,1206,224,1201,188,1192,153,1180,127,1165,106"/>
+<area shape="rect" href="ModelOperator_8h_source.html" title=" " alt="" coords="1052,152,1183,177"/>
+<area shape="poly" title=" " alt="" coords="1153,106,1133,141,1128,139,1149,103"/>
+<area shape="poly" title=" " alt="" coords="1220,323,1235,357,1239,378,1235,398,1212,436,1183,468,1151,494,1122,514,1119,509,1148,490,1179,464,1208,432,1230,396,1233,378,1230,359,1215,326"/>
+<area shape="poly" title=" " alt="" coords="1245,321,1382,367,1380,372,1243,327"/>
+<area shape="rect" href="Selection_8h_source.html" title=" " alt="" coords="880,372,974,397"/>
+<area shape="poly" title=" " alt="" coords="1165,327,986,371,985,366,1164,321"/>
+<area shape="rect" title=" " alt="" coords="1152,372,1220,397"/>
+<area shape="poly" title=" " alt="" coords="1208,325,1196,360,1191,358,1203,323"/>
+<area shape="poly" title=" " alt="" coords="1231,322,1302,363,1299,367,1228,326"/>
+<area shape="poly" title=" " alt="" coords="915,399,869,438,866,434,912,395"/>
+<area shape="poly" title=" " alt="" coords="930,398,930,505,924,505,924,398"/>
+<area shape="poly" title=" " alt="" coords="1119,178,1093,505,1088,505,1114,177"/>
+<area shape="poly" title=" " alt="" coords="1053,176,980,194,943,209,908,228,883,250,868,274,854,299,830,326,797,350,763,368,760,364,794,345,826,322,850,296,864,271,879,247,905,223,941,204,978,189,1051,171"/>
+<area shape="poly" title=" " alt="" coords="1127,176,1197,286,1193,289,1123,179"/>
+<area shape="rect" href="ModelOperatorBase_8h_source.html" title=" " alt="" coords="919,225,1082,251"/>
+<area shape="poly" title=" " alt="" coords="1100,180,1033,220,1030,216,1097,175"/>
+<area shape="poly" title=" " alt="" coords="985,253,927,301,896,335,869,373,857,403,850,432,844,431,852,401,865,371,891,331,924,297,982,249"/>
+<area shape="poly" title=" " alt="" coords="1035,248,1163,292,1162,297,1033,253"/>
+<area shape="poly" title=" " alt="" coords="1490,248,1539,274,1590,310,1610,331,1622,353,1624,376,1613,399,1600,409,1579,419,1515,438,1331,476,1128,507,972,527,972,522,1127,502,1330,470,1514,433,1577,414,1597,405,1609,396,1619,375,1617,354,1605,334,1586,314,1536,279,1487,253"/>
+<area shape="poly" title=" " alt="" coords="1462,252,1432,359,1427,358,1457,250"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="1461,299,1548,324"/>
+<area shape="poly" title=" " alt="" coords="1472,250,1493,285,1488,288,1467,252"/>
+<area shape="poly" title=" " alt="" coords="1493,326,1448,365,1445,361,1489,322"/>
+<area shape="rect" href="ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="1476,372,1599,397"/>
+<area shape="poly" title=" " alt="" coords="1512,323,1529,359,1524,361,1507,325"/>
 </map>
 </div>
 </div><table class="memberdecls">

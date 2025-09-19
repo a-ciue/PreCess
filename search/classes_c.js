@@ -1,15 +1,8 @@
 var searchData=
 [
-  ['selectededge_0',['SelectedEdge',['../structSingleEdgeSelectorHighlight_1_1SelectedEdge.html',1,'SingleEdgeSelectorHighlight']]],
-  ['selection_1',['Selection',['../structSelection.html',1,'']]],
-  ['selectmanager_2',['SelectManager',['../classSelectManager.html',1,'']]],
-  ['selectorhighlight_3',['SelectorHighlight',['../classSelectorHighlight.html',1,'']]],
-  ['singleedgeselectorhighlight_4',['SingleEdgeSelectorHighlight',['../classSingleEdgeSelectorHighlight.html',1,'']]],
-  ['singlefaceselectorhighlight_5',['SingleFaceSelectorHighlight',['../classSingleFaceSelectorHighlight.html',1,'']]],
-  ['splineactor_6',['SplineActor',['../classSplineActor.html',1,'']]],
-  ['splineactormanager_7',['SplineActorManager',['../classSplineActorManager.html',1,'']]],
-  ['splinedata_8',['SplineData',['../structSplineData.html',1,'']]],
-  ['splinedatavtk_9',['SplineDataVtk',['../structSplineDataVtk.html',1,'']]],
-  ['systempluginmanager_10',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
-  ['systemregisterbase_11',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
+  ['patch_0',['Patch',['../structPatch.html',1,'']]],
+  ['pluginbase_1',['PluginBase',['../classsystems_1_1PluginBase.html',1,'systems']]],
+  ['pluginhandler_2',['PluginHandler',['../classsystems_1_1PluginHandler.html',1,'systems']]],
+  ['pluginhandler_3c_20handler_20_3e_3',['PluginHandler&lt; Handler &gt;',['../classsystems_1_1PluginHandler.html',1,'systems']]],
+  ['points_5ft_4',['points_t',['../structtinyobj_1_1points__t.html',1,'tinyobj']]]
 ];
