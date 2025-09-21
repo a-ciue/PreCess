@@ -43,7 +43,7 @@ public:
      * @brief 从指定的 MeshData 对象更新当前对象的数据。
      * @param mesh_data 用于更新的 MeshData 对象。
      */
-    void updateFrom(MeshData& mesh_data) override;
+    void updateFrom(const MeshData& mesh_data) override;
     /**
      * @brief 更新MeshData，只更新指定的Patch
      * @param mesh_data 待更新的核心网格数据结构

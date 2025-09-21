@@ -98,7 +98,7 @@ void CTMeshModel::update(MeshData& mesh_data)
     }
 }
 
-void CTMeshModel::updateFrom(MeshData& mesh_data)
+void CTMeshModel::updateFrom(const MeshData& mesh_data)
 {
     // 解析mesh_data更新CTMesh
     auto temp_path = core::TempFile::instance().path();

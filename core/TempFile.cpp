@@ -6,8 +6,9 @@ namespace core {
 TempFile::TempFile()
 {
     auto temp_dir = std::filesystem::temp_directory_path();
-    std::string folder = "PreCess_" + random_string(8);
+    std::string folder = "PreCess";
     path_ = temp_dir / folder;
+    std::filesystem::create_directory(path_);
 }
 TempFile::~TempFile()
 {
