@@ -8,20 +8,26 @@ import QtQuick.Controls
 
 Pane {
     id: root
-    signal removeModel(string model_id)
-    signal renameModel(string oldName, string newName)
-    signal changeModelVisibility(string model_id,bool visibility)
-    signal selectionChanged(string modelName)
-    property var idxMap: ({})
-    property var selectedModel_id: "-1"  // 存储当前选中的模型名
+    signal removeModel(int model_id)
+    signal renameModel(int modelId, string newName)
+    signal changeModelVisibility(int model_id,bool visibility)
+    signal selectionChanged(int modelId)
+    property int selectedModel_id: -1  // 存储当前选中的模型id
+
+    ObjectListModel {
+        id: objectInitializeModel
+    }
     /**
      * @brief 对象显示列表，每行由两个按钮，一个文本和一个图标组成
      */
     ListView{
         id: objectListView
         anchors.fill: parent
-        model:ListModel{}
+        model: objectInitializeModel
         delegate:Row{
+            required property string name
+            required property int savedId
+
             Button{
                 id:visibilityButton
                 text: "隐藏"
@@ -64,7 +70,6 @@ Pane {
                     if(text !== savedName){
                         renameModel(savedId, text)
                         console.log("模型名变更",savedName," -> ",text)
-                        renameItem(savedName, text)
                         savedName = text
                     }
                     objectName.focus = false  // 添加这行，让控件失去焦点
@@ -86,18 +91,14 @@ Pane {
      * @param modelName 模型名字
      */
     function addItem(model_id,modelName){
-        objectModel.append({name:modelName,savedId:model_id})    //这行命令会为新增控件自动构造两个变量：name和savedId，可在控件中直接使用
-        idxMap[model_id] = objectModel.count - 1
-        console.log("addIdx", idxMap[model_id])
+        objectModel.addItem(model_id, modelName)
     }
     /**
      * @brief 删除一行模型信息
-     * @param modelName 模型名字
+     * @param model_id 要删除的模型id
      */
     function removeItem(model_id){
-        console.log("remove: ", model_id)
-        objectModel.remove(idxMap[model_id])
-        delete idxMap[model_id]
+        objectModel.removeItem(model_id)
     }
     /**
      * @brief 重命名一行模型信息的名字
@@ -107,9 +108,7 @@ Pane {
      * @param newName 模型的新名
      */
     function renameItem(oldName, newName){
-        objectModel.setProperty(idxMap[oldName],"name",newName)
-        idxMap[newName] = idxMap[oldName]
-        delete idxMap[oldName]
+        objectModel.rename(oldName, newName)
     }
 
     /** type:var 对象列表的model数据构造 */

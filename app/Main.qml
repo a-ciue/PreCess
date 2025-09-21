@@ -258,9 +258,6 @@ ApplicationWindow {
         //anchors.bottom: sideBar.top
         width: 250
         height: 200
-        objectModel:ListModel{
-            id: objectInitializeModel
-        }
         Component.onCompleted: {
             modelObserver.modelAdded.connect((model_id)=>objectList.addItem(model_id,modelQuery.getModelName(model_id)))
             modelObserver.modelAdded.connect(myItem.onModelChanged)
