@@ -1,6 +1,6 @@
 #include "CTMeshModel.h"
 #include "MeshData.h"
-#include "../../ToolMesh.h"
+#include "ToolMesh.h"
 #include "OBJMeshIO.h"
 #include "TempFile.h"
 

@@ -1,1 +1,2 @@
 add_subdirectory(OBJModelPlugin)
+add_subdirectory(MModelPlugin)

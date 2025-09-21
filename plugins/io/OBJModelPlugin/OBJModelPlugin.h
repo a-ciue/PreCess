@@ -2,6 +2,8 @@
  * @file OBJModelPlugin.h
  * @author 张家僮(htxz_6a6@163.com)
  */
+#ifndef OBJ_MODEL_PLUGIN_H
+#define OBJ_MODEL_PLUGIN_H
 #include "HandlerCreatorDestroyerFactory.h"
 #include "PluginBase.h"
 #include "OBJModelHandler.h"
@@ -19,3 +21,4 @@ private:
     }
 };
 }
+#endif // !OBJ_MODEL_PLUGIN_H

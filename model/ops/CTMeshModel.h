@@ -2,7 +2,7 @@
 #include <unordered_set>
 #include <filesystem>
 
-#include "../../MeshModelBase.h"
+#include "MeshModelBase.h"
 #include "Core.h"
 
 namespace MeshLib {
