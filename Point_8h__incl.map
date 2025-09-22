@@ -1,5 +1,5 @@
-<map id="model/MeshLib/Geometry/Point.h" name="model/MeshLib/Geometry/Point.h">
-<area shape="rect" id="Node000001" title="Three dimensional point class" alt="" coords="87,5,278,45"/>
+<map id="model/data/MeshLib/Geometry/Point.h" name="model/data/MeshLib/Geometry/Point.h">
+<area shape="rect" id="Node000001" title="Three dimensional point class" alt="" coords="105,5,260,45"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,93,80,119"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="150,48,77,89,74,84,148,43"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="105,93,173,119"/>

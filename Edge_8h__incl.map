@@ -1,5 +1,5 @@
-<map id="model/MeshLib/Mesh/Edge.h" name="model/MeshLib/Mesh/Edge.h">
-<area shape="rect" id="Node000001" title="Base class of edge" alt="" coords="107,5,267,45"/>
+<map id="model/data/MeshLib/Mesh/Edge.h" name="model/data/MeshLib/Mesh/Edge.h">
+<area shape="rect" id="Node000001" title="Base class of edge" alt="" coords="109,5,264,45"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,93,80,119"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="153,48,77,89,75,84,151,43"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="105,93,175,119"/>

@@ -1,0 +1,5 @@
+<map id="CTMeshModel" name="CTMeshModel">
+<area shape="rect" id="Node000001" title="模型层辅助数据结构 CTMesh" alt="" coords="13,79,127,104"/>
+<area shape="rect" id="Node000002" href="$classMeshModelBase.html" title="辅助网格数据结构，用于更新核心网格数据结构" alt="" coords="5,5,135,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,44,73,79,67,79,67,44"/>
+</map>
