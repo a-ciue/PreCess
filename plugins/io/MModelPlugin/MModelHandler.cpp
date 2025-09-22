@@ -20,7 +20,7 @@ std::unique_ptr<ModelData> MModelHandler::read_model(const fs::path& path, const
     mesh.read_m(path.string().c_str());
     auto mesh_data = std::make_unique<MeshData>();
     CTMeshModel model(mesh);
-    model.update(*mesh_data.get());
+    model.update(*mesh_data);
 
     // ModelData
     auto model_data = std::make_unique<ModelData>(std::move(mesh_data));
