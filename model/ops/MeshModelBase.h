@@ -21,5 +21,5 @@ public:
      * @brief 从指定的 MeshData 对象更新当前对象的数据。
      * @param data 用于更新的 MeshData 对象。
      */
-    virtual void updateFrom(MeshData& data) = 0;
+    virtual void updateFrom(const MeshData& data) = 0;
 };

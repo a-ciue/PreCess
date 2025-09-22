@@ -1,0 +1,7 @@
+{
+  "system": "ModelIOSystem",
+  "handler": {
+    "file_type": "STEP. ISO 10303",
+    "extensions": [ "stp", "step", "stpnc", "p21", "210" ]
+  }
+}

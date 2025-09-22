@@ -1,0 +1,7 @@
+{
+  "system": "ModelIOSystem",
+  "handler": {
+    "file_type": "Mesh .m file",
+    "extensions": [ "m" ]
+  }
+}

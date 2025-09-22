@@ -5,7 +5,7 @@ function(precess_add_io_plugin)
 	set(TARGET ${ARGV0})
 	qt_add_plugin(${ARGV})
 	target_link_libraries(${TARGET} PRIVATE
-		Core Data
+		Core Data DataOps
 		$<COMPILE_ONLY:IOSystem>
 		Qt6::Core
 		spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
@@ -17,7 +17,7 @@ function(precess_add_io_plugin)
 	add_dependencies(AllPlugins ${TARGET})
 
 	install(TARGETS ${TARGET}
-		LIBRARY DESTINATION "./plugins"
+		LIBRARY DESTINATION plugins
         COMPONENT AllPlugins
 	)
 endfunction()
@@ -26,7 +26,7 @@ function(precess_add_algo_plugin)
 	set(TARGET ${ARGV0})
 	qt_add_plugin(${ARGV})
 	target_link_libraries(${TARGET} PRIVATE
-		Core Data AlgorithmSystem
+		Core Data DataOps AlgorithmSystem
 		$<COMPILE_ONLY:IOSystem>
 		Qt6::Core
 		spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
@@ -38,7 +38,7 @@ function(precess_add_algo_plugin)
 	add_dependencies(AllPlugins ${TARGET})
 
 	install(TARGETS ${TARGET}
-		LIBRARY DESTINATION "./plugins"
+		LIBRARY DESTINATION plugins
         COMPONENT AllPlugins
 	)
 endfunction()
