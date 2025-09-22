@@ -43,5 +43,30 @@ function(precess_add_algo_plugin)
 	)
 endfunction()
 
+function(precess_plugin_link_libraries)
+    if(ARGC LESS_EQUAL 1)
+        message(FATAL_ERROR "Function my_function requires at least 2 arguments, but got ${ARGC}")
+    endif()
+
+	set(TARGET ${ARGV0})
+	list(SUBLIST ARGV 1 -1 DEPENDENT_LIBRARIES)
+
+	target_link_libraries(${TARGET} PRIVATE ${DEPENDENT_LIBRARIES})
+
+	list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
+    list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")
+	install(
+			TARGETS ${TARGET}
+			RUNTIME_DEPENDENCIES
+			DIRECTORIES ${DEPENDENT_LIBRARIES}
+			PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"  # don't install Windows-provided libs
+			POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"  # don't install Windows-provided libs
+			FRAMEWORK DESTINATION Frameworks
+			BUNDLE DESTINATION .
+			LIBRARY DESTINATION plugins
+			COMPONENT AllPlugins
+	)
+endfunction()
+
 add_subdirectory(io)
 add_subdirectory(algo)
