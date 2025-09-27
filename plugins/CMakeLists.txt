@@ -58,9 +58,9 @@ function(precess_plugin_link_libraries)
 	install(
 			TARGETS ${TARGET}
 			RUNTIME_DEPENDENCIES
-			DIRECTORIES ${DEPENDENT_LIBRARIES}
-			PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"  # don't install Windows-provided libs
-			POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"  # don't install Windows-provided libs
+			DIRECTORIES $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core> ${DEPENDENT_LIBRARIES}
+			PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "spdlog" "freetype" # don't install Windows-provided libs
+			POST_EXCLUDE_REGEXES ".*system32/.*\\.dll" "Qt${VTK_QT_VERSION}Core"  # don't install Windows-provided libs
 			FRAMEWORK DESTINATION Frameworks
 			BUNDLE DESTINATION .
 			LIBRARY DESTINATION plugins
