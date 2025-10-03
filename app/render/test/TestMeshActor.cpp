@@ -7,9 +7,17 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <iostream>
 
 int main(int argc, char** argv)
 {
+    // 可选：传入一个外部 vtk/vtu/vtp 文件路径
+    std::string inputFile;
+    if (argc > 1) {
+        inputFile = argv[1];
+        std::cout << "Try load file: " << inputFile << std::endl;
+    }
+
     std::vector<std::array<double, 3>> vtk_points_;
 
     std::vector<unsigned char> vtk_solid_cell_types_;
@@ -25,19 +33,32 @@ int main(int argc, char** argv)
 
     std::vector<Index> vtk_edge_cells_;
 
-    MeshDataVtk test_mesh_data = MakeMeshDataVtk(
-        vtk_points_,
-        vtk_solid_cell_types_,
-        vtk_solid_cells_,
-        vtk_solid_cells_offset_,
-        vtk_solid_faces_,
-        vtk_solid_faces_offset_,
-        vtk_solid_face_locations_,
-        vtk_solid_face_locations_offset_,
-        vtk_face_cells_, //> 表示面顶点索引的数组
-        vtk_face_cells_offset_,
-        vtk_edge_cells_ //> 表示边顶点索引的数组
-    );
+    MeshDataVtk test_mesh_data = inputFile.empty()
+        ? MakeMeshDataVtk(
+            vtk_points_,
+            vtk_solid_cell_types_,
+            vtk_solid_cells_,
+            vtk_solid_cells_offset_,
+            vtk_solid_faces_,
+            vtk_solid_faces_offset_,
+            vtk_solid_face_locations_,
+            vtk_solid_face_locations_offset_,
+            vtk_face_cells_,
+            vtk_face_cells_offset_,
+            vtk_edge_cells_)
+        : MakeMeshDataVtkFromFile(
+            inputFile,
+            vtk_points_,
+            vtk_solid_cell_types_,
+            vtk_solid_cells_,
+            vtk_solid_cells_offset_,
+            vtk_solid_faces_,
+            vtk_solid_faces_offset_,
+            vtk_solid_face_locations_,
+            vtk_solid_face_locations_offset_,
+            vtk_face_cells_,
+            vtk_face_cells_offset_,
+            vtk_edge_cells_);
 
     vtkNew<vtkRenderer> renderer;
     vtkNew<vtkRenderWindow> renderWindow;
@@ -51,19 +72,13 @@ int main(int argc, char** argv)
     vtkNew<vtkInteractorStyleTrackballCamera> style;
     renderWindowInteractor->SetInteractorStyle(style);
 
-    // 创建MeshActor
     MeshActor meshActor(renderer, true, ModelRenderMode::Face);
-
-    // 加载模型数据
     meshActor.loadModelData(test_mesh_data);
-
-    // Face 模式（会添加 solid, face, edge）
     meshActor.setRenderMode(ModelRenderMode::Face);
     meshActor.setVisibility(true);
     meshActor.setRenderEdge(true);
 
     renderer->SetBackground(0.1, 0.2, 0.4);
     renderWindow->Render();
-
     renderWindowInteractor->Start();
 }

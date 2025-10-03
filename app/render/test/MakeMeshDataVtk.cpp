@@ -1,5 +1,17 @@
 #include "MakeMeshDataVtk.h"
+#include <filesystem>
+#include <iostream>
+#include <vtkCell.h>
+#include <vtkCellArray.h>
 #include <vtkCellType.h>
+#include <vtkDataSet.h>
+#include <vtkGenericDataObjectReader.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkXMLPolyDataReader.h>
+#include <vtkXMLUnstructuredGridReader.h>
 
 MeshDataVtk MakeMeshDataVtk(
     std::vector<std::array<double, 3>>& vtk_points_,
@@ -112,12 +124,6 @@ MeshDataVtk MakeMeshDataVtk(
     };
     vtk_solid_cells_offset_ = { 0, 8, 14 }; // 2 个cell
 
-    // Polyhedral 数据：标准VTK_HEXAHEDRON / VTK_WEDGE 不需要 polyhedral faces 描述
-    //std::vector<Index> vtk_solid_faces_; // 留空
-    //std::vector<Index> vtk_solid_faces_offset_; // 留空
-    //std::vector<Index> vtk_solid_face_locations_; // 留空
-    //std::vector<Index> vtk_solid_face_locations_offset_; // 留空
-
     // Block:
     // Block1 -> 立方体 6个面 (0-5)
     // Block2 -> 楔体    5个面 (6-10)
@@ -138,7 +144,6 @@ MeshDataVtk MakeMeshDataVtk(
         block_datas->block_datas.push_back(b3);
     }
 
-    // 组装 MeshDataVtk
     MeshDataVtk test_mesh_data = {
         vtk_points_,
         vtk_solid_cell_types_,
@@ -155,4 +160,164 @@ MeshDataVtk MakeMeshDataVtk(
     };
 
     return test_mesh_data;
+}
+
+namespace {
+bool readFileToGrid(std::string_view file, vtkSmartPointer<vtkUnstructuredGrid>& ug, vtkSmartPointer<vtkPolyData>& pd)
+{
+    auto ext = std::filesystem::path(file).extension().string();
+    if (ext == ".vtu") {
+        auto reader = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
+        reader->SetFileName(file.data());
+        if (!reader->CanReadFile(file.data()))
+            return false;
+        reader->Update();
+        ug = reader->GetOutput();
+        return true;
+    } else if (ext == ".vtp") {
+        auto reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
+        reader->SetFileName(file.data());
+        if (!reader->CanReadFile(file.data()))
+            return false;
+        reader->Update();
+        pd = reader->GetOutput();
+        return true;
+    } else if (ext == ".vtk") {
+        // legacy 格式
+        auto reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
+        reader->SetFileName(file.data());
+        reader->Update();
+        if (auto outUG = vtkUnstructuredGrid::SafeDownCast(reader->GetOutput())) {
+            ug = outUG;
+            return true;
+        }
+        if (auto outPD = vtkPolyData::SafeDownCast(reader->GetOutput())) {
+            pd = outPD;
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+}
+
+MeshDataVtk MakeMeshDataVtkFromFile(
+    std::string_view file_path,
+    std::vector<std::array<double, 3>>& vtk_points_,
+    std::vector<unsigned char>& vtk_solid_cell_types_,
+    std::vector<Index>& vtk_solid_cells_,
+    std::vector<Index>& vtk_solid_cells_offset_,
+    std::vector<Index>& vtk_solid_faces_,
+    std::vector<Index>& vtk_solid_faces_offset_,
+    std::vector<Index>& vtk_solid_face_locations_,
+    std::vector<Index>& vtk_solid_face_locations_offset_,
+    std::vector<Index>& vtk_face_cells_,
+    std::vector<Index>& vtk_face_cells_offset_,
+    std::vector<Index>& vtk_edge_cells_)
+{
+    // 确保容器干净
+    vtk_points_.clear();
+    vtk_solid_cell_types_.clear();
+    vtk_solid_cells_.clear();
+    vtk_solid_cells_offset_.clear();
+    vtk_solid_faces_.clear();
+    vtk_solid_faces_offset_.clear();
+    vtk_solid_face_locations_.clear();
+    vtk_solid_face_locations_offset_.clear();
+    vtk_face_cells_.clear();
+    vtk_face_cells_offset_.clear();
+    vtk_edge_cells_.clear();
+
+    vtkSmartPointer<vtkUnstructuredGrid> ug;
+    vtkSmartPointer<vtkPolyData> pd;
+    if (!readFileToGrid(file_path, ug, pd)) {
+        std::cerr << "Cannot read file: " << file_path << ", fallback to built-in demo.\n";
+        return MakeMeshDataVtk(
+            vtk_points_,
+            vtk_solid_cell_types_, vtk_solid_cells_, vtk_solid_cells_offset_,
+            vtk_solid_faces_, vtk_solid_faces_offset_, vtk_solid_face_locations_, vtk_solid_face_locations_offset_,
+            vtk_face_cells_, vtk_face_cells_offset_, vtk_edge_cells_);
+    }
+
+    vtkPoints* pts = ug ? ug->GetPoints() : (pd ? pd->GetPoints() : nullptr);
+    if (!pts) {
+        std::cerr << "No points in file, fallback demo.\n";
+        return MakeMeshDataVtk(
+            vtk_points_,
+            vtk_solid_cell_types_, vtk_solid_cells_, vtk_solid_cells_offset_,
+            vtk_solid_faces_, vtk_solid_faces_offset_, vtk_solid_face_locations_, vtk_solid_face_locations_offset_,
+            vtk_face_cells_, vtk_face_cells_offset_, vtk_edge_cells_);
+    }
+    vtk_points_.resize(static_cast<size_t>(pts->GetNumberOfPoints()));
+    double p[3];
+    for (vtkIdType i = 0; i < pts->GetNumberOfPoints(); ++i) {
+        pts->GetPoint(i, p);
+        vtk_points_[static_cast<size_t>(i)] = { p[0], p[1], p[2] };
+    }
+
+    auto processCells = [&](vtkDataSet* ds) {
+        if (!ds)
+            return;
+        vtkIdType nCells = ds->GetNumberOfCells();
+        vtk_solid_cells_offset_.push_back(0);
+        vtk_face_cells_offset_.push_back(0);
+        for (vtkIdType cid = 0; cid < nCells; ++cid) {
+            vtkCell* cell = ds->GetCell(cid);
+            if (!cell)
+                continue;
+            int dim = cell->GetCellDimension();
+            int npts = cell->GetNumberOfPoints();
+            if (dim == 3) { // 体
+                unsigned char ctype = ds->GetCellType(cid);
+                vtk_solid_cell_types_.push_back(ctype);
+                for (int i = 0; i < npts; ++i) {
+                    vtk_solid_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));
+                }
+                vtk_solid_cells_offset_.push_back(static_cast<Index>(vtk_solid_cells_.size()));
+            } else if (dim == 2) { // 面
+                for (int i = 0; i < npts; ++i) {
+                    vtk_face_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));
+                }
+                vtk_face_cells_offset_.push_back(static_cast<Index>(vtk_face_cells_.size()));
+            } else if (dim == 1) { // 边或折线
+                if (npts >= 2) {
+                    for (int i = 0; i < npts - 1; ++i) {
+                        vtk_edge_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));
+                        vtk_edge_cells_.push_back(static_cast<Index>(cell->GetPointId(i + 1)));
+                    }
+                }
+            }
+        }
+    };
+
+    if (ug)
+        processCells(ug);
+    if (pd)
+        processCells(pd);
+
+    auto block_datas = std::make_shared<BlockDatas>();
+    if (vtk_face_cells_offset_.size() > 1) {
+        BlockData b;
+        b.id = 1; // 所有面放一个block
+        int faceCount = static_cast<int>(vtk_face_cells_offset_.size()) - 1;
+        for (int f = 0; f < faceCount; ++f)
+            b.faces_.push_back(f);
+        block_datas->block_datas.push_back(b);
+    }
+
+    MeshDataVtk data = {
+        vtk_points_,
+        vtk_solid_cell_types_,
+        vtk_solid_cells_,
+        vtk_solid_cells_offset_,
+        vtk_solid_faces_,
+        vtk_solid_faces_offset_,
+        vtk_solid_face_locations_,
+        vtk_solid_face_locations_offset_,
+        vtk_face_cells_,
+        vtk_face_cells_offset_,
+        vtk_edge_cells_,
+        block_datas
+    };
+    return data;
 }
