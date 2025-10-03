@@ -422,33 +422,18 @@ void SingleEdgeSelectorHighlight::setCurModelActor(MeshActorSelectOp model_actor
     }
 }
 
-std::array<int, 2> SingleEdgeSelectorHighlight::_find_picked_edge(vtkHardwarePicker* picker, vtkCell* picked_cell)
+std::array<vtkIdType, 2> SingleEdgeSelectorHighlight::_find_picked_edge(vtkHardwarePicker* picker, vtkCell* picked_cell)
 {
-    vtkIdList* pointIds = picked_cell->GetPointIds();
-
-    // 取出三角形的三个顶点索引
-    vtkIdType v0 = pointIds->GetId(0);
-    vtkIdType v1 = pointIds->GetId(1);
-    vtkIdType v2 = pointIds->GetId(2);
+    if (picked_cell->GetCellType() == VTK_LINE)
+        return { picked_cell->GetPointId(0), picked_cell->GetPointId(1) };
 
     double pPos[3] {};
     picker->GetPCoords(pPos);
-    pPos[2] = 1 - pPos[1] - pPos[0];
 
-    std::array<int, 2> v_ids;
+    vtkNew<vtkIdList> cellIds;
+    picked_cell->CellBoundary(0, pPos, cellIds);
 
-    /**/ if (pPos[1] < pPos[0] && pPos[1] < pPos[2]) {
-        v_ids[0] = v0;
-        v_ids[1] = v1;
-    } else if (pPos[2] < pPos[0] && pPos[2] < pPos[1]) {
-        v_ids[0] = v1;
-        v_ids[1] = v2;
-    } else if (pPos[0] < pPos[1] && pPos[0] < pPos[2]) {
-        v_ids[0] = v0;
-        v_ids[1] = v2;
-    }
-
-    return v_ids;
+    return { cellIds->GetId(0), cellIds->GetId(1) };
 }
 
 void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper)
@@ -464,8 +449,8 @@ bool SingleEdgeSelectorHighlight::_is_selected(SelectedEdge new_edge, const std:
         return true;
     if (selection && selection->actor == new_edge.actor) {
         // 选中的边点id，交换意义下对应相同
-        const std::array<int, 2>& selected1 = selection->v_local_id;
-        const std::array<int, 2>& selected2 = new_edge.v_local_id;
+        const std::array<vtkIdType, 2>& selected1 = selection->v_local_id;
+        const std::array<vtkIdType, 2>& selected2 = new_edge.v_local_id;
         return selected1[0] == selected2[0] && selected1[1] == selected2[1]
             || selected1[0] == selected2[1] && selected1[1] == selected2[0];
     }

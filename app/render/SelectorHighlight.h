@@ -99,7 +99,7 @@ public:
     void clear()override;
     //! @brief 找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
     void select(double posx, double posy) override;
-    
+
     void setCurModelActor(MeshActorSelectOp model_actor) override;
 
 private:
@@ -123,7 +123,7 @@ public:
         //! @brief 边所在的actor，借由actor可以找到全局id
         vtkActor* actor;
         //! @brief 边端点局部索引id
-        std::array<int, 2> v_local_id;
+        std::array<vtkIdType, 2> v_local_id;
     };
     //! @brief 将actor绑定到renderer，mapper绑定到actor
     SingleEdgeSelectorHighlight(vtkRenderer* renderer);
@@ -144,7 +144,7 @@ public:
     void setCurModelActor(MeshActorSelectOp model_actor) override;
 
 private:
-    static std::array<int, 2> _find_picked_edge(vtkHardwarePicker* picker, vtkCell* picked_cell);
+    static std::array<vtkIdType, 2> _find_picked_edge(vtkHardwarePicker* picker, vtkCell* picked_cell);
     //！@brief 取消高亮，清空mapper
     static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
