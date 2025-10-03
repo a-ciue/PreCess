@@ -2,17 +2,15 @@
 #include "MeshActor.h"
 #include "Core.h"
 
-const MeshActor* MeshActorManager::getModelActor(Index model_id)
+std::shared_ptr<const MeshActor> MeshActorManager::getModelActor(Index model_id)
 {
     if (this->models_.count(model_id))
-        return this->models_.at(model_id).get();
+        return this->models_.at(model_id);
     else
     {
         std::cout << "MeshActorManager getModelActor error" << std::endl;
 	    return nullptr;
     }
-        
-
 }
 
 void MeshActorManager::deleteModel(Index model_id)

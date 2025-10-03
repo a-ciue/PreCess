@@ -274,7 +274,7 @@ void QRenderWindow::setSelectModel(Index model_id)
         if (this->mesh_actor_manager_->getCount(model_id))
             selectManager_->setSelectActor(this->mesh_actor_manager_->getModelActor(model_id));
         else
-            selectManager_->setSelectActor(nullptr);
+            selectManager_->setSelectActor({});
         });
 }
 

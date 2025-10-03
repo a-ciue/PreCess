@@ -33,22 +33,16 @@ void SelectManager::select(double posx, double posy)
 	}
 }
 
-void SelectManager::setSelectActor(const MeshActor* model_actor_)
+void SelectManager::setSelectActor(std::weak_ptr<const MeshActor> model_actor_)
 {
 	//assert(this->selector_);
 
-	this->cur_model_actor_ = model_actor_;
+	this->cur_model_actor_ = MeshActorSelectOp { model_actor_ };
 	if (this->selector_)
 	{
-		this->selector_->clear();
-		this->selector_->getPickList()->RemoveAllItems();
-		if (model_actor_)
-		{
-			this->cur_model_actor_->addPickList(this->selector_->getPickList());
-		}
+	    this->selector_->clear();
+            this->selector_->setCurModelActor(*cur_model_actor_);
 	}
-		
-	
 }
 
 void SelectManager::setSelectMode(SelectMode select_mode)
@@ -61,10 +55,9 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 			this->selector_->clear();
 		}
 		this->selector_ = std::make_unique<SingleFaceSelectorHighlight>(this->renderer_);
-		this->selector_->getPickList()->RemoveAllItems();
 		if (this->cur_model_actor_)
 		{
-			this->cur_model_actor_->addPickList(this->selector_->getPickList());
+                    this->selector_->setCurModelActor(*cur_model_actor_);
 		}
 	}
 	else if (this->select_mode_ == SelectMode::Block)
@@ -74,10 +67,9 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 			this->selector_->clear();
 		}
 		this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
-		this->selector_->getPickList()->RemoveAllItems();
 		if (this->cur_model_actor_)
 		{
-			this->cur_model_actor_->addPickList(this->selector_->getPickList());
+                    this->selector_->setCurModelActor(*cur_model_actor_);
 		}
 	}
 	else if (this->select_mode_ == SelectMode::Edge)
@@ -86,10 +78,9 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 		{
 			this->selector_->clear();
 		}		this->selector_ = std::make_unique<SingleEdgeSelectorHighlight>(this->renderer_);
-		this->selector_->getPickList()->RemoveAllItems();
 		if (this->cur_model_actor_)
 		{
-			this->cur_model_actor_->addPickList(this->selector_->getPickList());
+                    this->selector_->setCurModelActor(*cur_model_actor_);
 		}
 	}
 	else

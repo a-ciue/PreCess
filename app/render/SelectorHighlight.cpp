@@ -1,5 +1,6 @@
 #include "SelectorHighlight.h"
 #include "MeshActor.h"
+#include "MeshActorSelectOp.h"
 #include "Selection.h"
 #include <array>
 #include <optional>
@@ -147,9 +148,14 @@ void BlockSelectorHighlight::highlightBlockByCellColor(vtkCompositePolyDataMappe
     block->GetCellData()->SetScalars(colors);
     block->Modified(); // 通知 VTK 数据已更新
 }
-vtkPropCollection* BlockSelectorHighlight::getPickList()
+
+void BlockSelectorHighlight::setCurModelActor(MeshActorSelectOp model_actor)
 {
-    return this->collection_;
+    this->collection_->RemoveAllItems();
+    this->model_actor_ = {};
+    if (model_actor.addPickList(this->collection_)) {
+        this->model_actor_ = model_actor;
+}
 }
 
 void BlockSelectorHighlight::_cancel_highlight(Block& selection)
@@ -272,9 +278,13 @@ void SingleFaceSelectorHighlight::select(double posx, double posy)
     // renderer_->Render();
 }
 
-vtkPropCollection* SingleFaceSelectorHighlight::getPickList()
+void SingleFaceSelectorHighlight::setCurModelActor(MeshActorSelectOp model_actor)
 {
-    return this->collection_;
+    this->collection_->RemoveAllItems();
+    this->model_actor_ = {};
+    if (model_actor.addPickList(this->collection_)) {
+        this->model_actor_ = model_actor;
+}
 }
 
 void SingleFaceSelectorHighlight::_cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer)
@@ -425,9 +435,13 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
     }
 }
 
-vtkPropCollection* SingleEdgeSelectorHighlight::getPickList()
+void SingleEdgeSelectorHighlight::setCurModelActor(MeshActorSelectOp model_actor)
 {
-    return this->collection_;
+    this->collection_->RemoveAllItems();
+    this->model_actor_ = {};
+    if (model_actor.addPickList(this->collection_)) {
+        this->model_actor_ = model_actor;
+    }
 }
 
 void SingleEdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper, vtkActor* selectedActor)

@@ -1,19 +1,14 @@
 #ifndef SELECT_MANAGER_H
 #define SELECT_MANAGER_H
-#include <optional>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <vtkNew.h>
-#include <vtkAssembly.h>
-#include <vtkPropAssembly.h>
-#include <vtkMultiBlockDataSet.h>
-#include <vtkCompositePolyDataMapper.h>
-
 #include "Selection.h"
 #include "SelectorHighlight.h"
-#include "MeshActor.h"
+#include "MeshActorSelectOp.h"
 #include "Core.h"
+
+#include <unordered_set>
+#include <vtkNew.h>
+#include <vtkAssembly.h>
+#include <vtkCompositePolyDataMapper.h>
 
 class SelectManager {
 
@@ -27,7 +22,7 @@ public:
 	 */
 	void select(double posx, double posy);
 
-	void setSelectActor(const MeshActor* model_actor_);
+	void setSelectActor(std::weak_ptr<const MeshActor> model_actor_);
 	/**
 	 * @brief 传入选择模型
 	 * @param select_mode 
@@ -37,7 +32,7 @@ public:
 	std::unique_ptr<Selection>	getSelection();
 
 private:
-	const MeshActor* cur_model_actor_{};
+	std::optional<MeshActorSelectOp> cur_model_actor_{};
 	SelectMode	select_mode_;
 	vtkNew<vtkActor> selection_actor_;
 	vtkNew<vtkPolyDataMapper> selection_mapper_;
