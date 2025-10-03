@@ -6,6 +6,14 @@ target_link_libraries(TestDeps PRIVATE
 )
 vtk_module_autoinit(TARGETS TestDeps MODULES VTK::CommonColor VTK::RenderingCore VTK::RenderingOpenGL2)
 
+add_executable(TestSingleEdgeSelectorHighlight TestSingleEdgeSelectorHighlight.cpp)
+target_link_libraries(TestSingleEdgeSelectorHighlight PRIVATE 
+    vtkPart TestDeps
+    VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
+)
+vtk_module_autoinit(TARGETS TestSingleEdgeSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+install(TARGETS TestSingleEdgeSelectorHighlight)
+
 add_executable(TestMeshActor TestMeshActor.cpp)
 target_link_libraries(TestMeshActor PRIVATE 
     vtkPart TestDeps

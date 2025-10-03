@@ -23,10 +23,10 @@
 
 class vtkRenderer;
 class vtkProperty;
-template <typename T>
-class vtkSmartPointer;
 class vtkDataSetMapper;
 class vtkActor;
+class vtkHardwarePicker;
+class vtkCell;
 
 using SelectionVtk = Selection;
 //namespace Selector {
@@ -144,8 +144,9 @@ public:
     void setCurModelActor(MeshActorSelectOp model_actor) override;
 
 private:
+    static std::array<int, 2> _find_picked_edge(vtkHardwarePicker* picker, vtkCell* picked_cell);
     //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkDataSetMapper* selectedMapper, vtkActor* selectedActor);
+    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
     static bool _is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor);
 
