@@ -52,6 +52,8 @@ public:
         vtkNew<QRenderWindowStyle> style_;
         vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
 
+        std::unique_ptr<MeshActorManager> mesh_actor_manager_;
+        std::unique_ptr<SplineActorManager> spline_actor_manager_;
 
 
     };
@@ -67,13 +69,7 @@ public:
     void setCurEdgeRender(bool edge_render);
     bool getCurEdgeRender();
 
-    bool getMeshIsEdgeRender(Index model_id);
-    bool getSplineIsEdgeRender(Index model_id);
-    bool getIsEdgeRender(Index model_id);
-
-    QString getMeshRenderMode(Index model_id);
-    QString getSplineRenderMode(Index model_id);
-    QString getRenderMode(Index model_id);
+    bool getIsEdgeRender(Data& vtk, Index model_id);
 
 	/**
      * @brief 选择模型
@@ -130,9 +126,6 @@ signals:
     void clicked();
  
 private:
-    std::unique_ptr<MeshActorManager> mesh_actor_manager_;
-    std::unique_ptr<SplineActorManager> spline_actor_manager_;
-
     bool edge_render_{};
     ModelRenderMode renderMode_{};
     SelectMode select_mode_ {};
