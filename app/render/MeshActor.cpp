@@ -1,11 +1,6 @@
 #include "MeshActor.h"
 #include "Core.h"
-#include "MeshActor.h"
-#include "QRenderWindowStyle.h"
-
 #include <vtkActor.h>
-#include <vtkAppendPolyData.h>
-#include <vtkAssembly.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkCompositePolyDataMapper.h>
@@ -19,19 +14,32 @@
 #include <vtkPropAssembly.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkTriangle.h>
 #include <vtkUnsignedCharArray.h>
-#include <vtkUnstructuredGrid.h>
-#include <cstdlib>
+#include <vtkUnstructuredGrid.h>  
+#include <vtkGeometryFilter.h>
 
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
 MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode)
+    : renderer_(renderer)
+    , render_mode_(render_mode)
+    , edge_render_(is_edge_render)
 {
-    this->renderer_ = renderer;
+    this->setRenderMode(render_mode);
     this->setRenderEdge(is_edge_render);
-    this->render_mode_ = render_mode;
+
+    this->edge_actor_->GetProperty()->SetLineWidth(2);
+}
+
+MeshActor::~MeshActor()
+{
+    if (this->renderer_) {
+        renderer_->RemoveActor(this->actor_);
+        renderer_->RemoveActor(this->solid_actor_);
+        renderer_->RemoveActor(this->face_actor_);
+        renderer_->RemoveActor(this->edge_actor_);
+    }
 }
 
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
@@ -49,56 +57,89 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         points_data->SetData(points_data_array);
     }
 
-    // cell (triangle) data
-    auto poly_data = vtkSmartPointer<vtkCellArray>::New();
+    // face data
+    auto face_poly = vtkSmartPointer<vtkPolyData>::New();
     {
+        auto poly_data = vtkSmartPointer<vtkCellArray>::New();
         auto index_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
-        auto& vtk_indices = this->model_data_->vtk_poly_vertices_;
+        auto& vtk_indices = this->model_data_->vtk_face_cells_;
         index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
 
         auto offset_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
-        auto& vtk_offsets = this->model_data_->vtk_poly_offsets_;
+        auto& vtk_offsets = this->model_data_->vtk_face_cells_offset_;
         offset_array->SetArray(const_cast<Index*>(vtk_offsets.data()), vtk_offsets.size(), 1);
 
         poly_data->SetData(offset_array, index_array);
+
+        // face poly data
+        face_poly->SetPoints(points_data);
+        face_poly->SetPolys(poly_data);
     }
 
-    // poly data
-    auto polyData = vtkSmartPointer<vtkPolyData>::New();
-    polyData->SetPoints(points_data);
-    polyData->SetPolys(poly_data);
+    // edge data
+    vtkNew<vtkPolyData> edge_poly;
+    {
+        vtkNew<vtkCellArray> edge_cells;
+        vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
+        auto& vtk_indices = this->model_data_->vtk_edge_cells_;
+        index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
+        edge_cells->SetData(2, index_array);
 
-    this->mapper_->SetInputDataObject(polyData);
+        edge_poly->SetPoints(points_data);
+        edge_poly->SetLines(edge_cells);
+    }
+
+    // solid data
+    vtkSmartPointer<vtkUnstructuredGrid> solid_ugird = this->_createSolidUGird(*this->model_data_);
+    vtkNew<vtkGeometryFilter> solid_filter;
+    solid_filter->SetInputData(solid_ugird);
+
+    // mappers
+    vtkNew<vtkPolyDataMapper> edge_mapper;
+    edge_mapper->SetInputData(edge_poly);
+    vtkNew<vtkPolyDataMapper> face_mapper;
+    face_mapper->SetInputData(face_poly);
+    vtkNew<vtkPolyDataMapper> solid_mapper;
+    solid_mapper->SetInputConnection(solid_filter->GetOutputPort());
+
+    // actors
+    this->edge_actor_->SetMapper(edge_mapper);
+    this->face_actor_->SetMapper(face_mapper);
+    this->solid_actor_->SetMapper(solid_mapper);
+
     createBlockMapper(*this->model_data_);
-}
-
-void MeshActor::deleteMeshActor()
-{
-    if (this->renderer_) {
-        renderer_->RemoveActor(this->actor_);
-    }
 }
 
 void MeshActor::setVisibility(bool visibility)
 {
     this->visibility_ = visibility;
     this->actor_->SetVisibility(visibility);
+    this->solid_actor_->SetVisibility(visibility);
+    this->face_actor_->SetVisibility(visibility);
+    this->edge_actor_->SetVisibility(visibility);
 }
 
 void MeshActor::setRenderEdge(bool is_render)
 {
     this->edge_render_ = is_render;
     this->actor_->GetProperty()->SetEdgeVisibility(is_render);
+    this->solid_actor_->GetProperty()->SetEdgeVisibility(is_render);
+    this->face_actor_->GetProperty()->SetEdgeVisibility(is_render);
+    this->edge_actor_->GetProperty()->SetEdgeVisibility(is_render);
 }
 
 void MeshActor::setRenderMode(ModelRenderMode render_mode)
 {
     this->render_mode_ = render_mode;
     if (render_mode_ == ModelRenderMode::Face) {
-        this->actor_->SetMapper(this->mapper_);
-        this->renderer_->AddActor(this->actor_);
+        this->renderer_->RemoveActor(this->actor_);
+        this->renderer_->AddActor(this->solid_actor_);
+        this->renderer_->AddActor(this->face_actor_);
+        this->renderer_->AddActor(this->edge_actor_);
     } else if (render_mode_ == ModelRenderMode::Block) {
-        this->actor_->SetMapper(this->block_mapper_);
+        this->renderer_->RemoveActor(this->solid_actor_);
+        this->renderer_->RemoveActor(this->face_actor_);
+        this->renderer_->RemoveActor(this->edge_actor_);
         this->renderer_->AddActor(this->actor_);
     } else {
         std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
@@ -114,16 +155,6 @@ bool MeshActor::getIsEdgeRender()
 ModelRenderMode MeshActor::getMeshRenderMode()
 {
     return this->render_mode_;
-}
-
-void MeshActor::addPickList(vtkPropCollection* pick_list) const
-{
-    pick_list->AddItem(this->actor_);
-}
-
-Index MeshActor::get_model_block_id(vtkIdType block_id) const
-{
-    return this->model_data_->model_block_id(block_id);
 }
 
 void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
@@ -155,9 +186,9 @@ void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
         cells->AllocateEstimate(block.faces_.size(), 4); // 预估每个 cell 是三角形
 
         for (vtkIdType face_id : block.faces_) {
-            Index offset = model_data.vtk_poly_offsets_[face_id],
-                  offset_to = model_data.vtk_poly_offsets_[face_id + 1];
-            const Index* index_begin = model_data.vtk_poly_vertices_.data() + offset;
+            Index offset = model_data.vtk_face_cells_offset_[face_id],
+                  offset_to = model_data.vtk_face_cells_offset_[face_id + 1];
+            const Index* index_begin = model_data.vtk_face_cells_.data() + offset;
             std::vector<vtkIdType> tri_pts(offset_to - offset);
 
             for (Index i = 0; i < tri_pts.size(); i++) {
@@ -187,4 +218,51 @@ void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
     this->block_mapper_->SetInputDataObject(multiblock);
     this->block_mapper_->SetScalarModeToUseCellData();
     this->block_mapper_->ScalarVisibilityOn();
+}
+
+vtkSmartPointer<vtkUnstructuredGrid> MeshActor::_createSolidUGird(const MeshDataVtk& model_data)
+{
+    // cells
+    vtkNew<vtkCellArray> solid_cells;
+    vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
+    auto& vtk_indices = this->model_data_->vtk_solid_cells_;
+    index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
+
+    vtkNew<vtkAOSDataArrayTemplate<Index>> offset_array;
+    auto& vtk_offsets = this->model_data_->vtk_solid_cells_offset_;
+    offset_array->SetArray(const_cast<Index*>(vtk_offsets.data()), vtk_offsets.size(), 1);
+
+    solid_cells->SetData(offset_array, index_array);
+
+    // cell types
+    vtkNew<vtkUnsignedCharArray> cell_types;
+    auto& types = this->model_data_->vtk_solid_cell_types_;
+    cell_types->SetArray(const_cast<unsigned char*>(types.data()), types.size(), 1);
+
+    // faces
+    vtkNew<vtkCellArray> faces;
+    vtkNew<vtkAOSDataArrayTemplate<Index>> faces_idx;
+    auto& vtk_faces = this->model_data_->vtk_solid_faces_;
+    faces_idx->SetArray(const_cast<Index*>(vtk_faces.data()), vtk_faces.size(), 1);
+
+    vtkNew<vtkAOSDataArrayTemplate<Index>> faces_offset;
+    auto& vtk_faces_offset = this->model_data_->vtk_solid_faces_offset_;
+    faces_offset->SetArray(const_cast<Index*>(vtk_faces_offset.data()), vtk_faces_offset.size(), 1);
+
+    faces->SetData(faces_offset, faces_idx);
+
+    // face locations
+    vtkNew<vtkCellArray> face_locations;
+    vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_idx;
+    auto& vtk_face_locations = this->model_data_->vtk_solid_face_locations_;
+    face_loc_idx->SetArray(const_cast<Index*>(vtk_face_locations.data()), vtk_face_locations.size(), 1);
+    vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_offset;
+    auto& vtk_face_locations_offset = this->model_data_->vtk_solid_face_locations_offset_;
+    face_loc_offset->SetArray(const_cast<Index*>(vtk_face_locations_offset.data()), vtk_face_locations_offset.size(), 1);
+    face_locations->SetData(face_loc_offset, face_loc_idx);
+
+    // solid ugrid
+    vtkNew<vtkUnstructuredGrid> solid_ugird;
+    solid_ugird->SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
+    return solid_ugird;
 }
