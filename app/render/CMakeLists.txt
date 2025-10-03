@@ -9,9 +9,9 @@ target_link_libraries(vtkPart
     PRIVATE
         Data
         TKIVtk TKDESTEP
-        VTK::InteractionStyle
+        VTK::InteractionStyle VTK::FiltersGeometry
 )
-vtk_module_autoinit(TARGETS vtkPart MODULES VTK::InteractionStyle)
+vtk_module_autoinit(TARGETS vtkPart MODULES VTK::InteractionStyle VTK::FiltersGeometry)
 
 qt_add_qml_module(renderQml
     URI app.render
