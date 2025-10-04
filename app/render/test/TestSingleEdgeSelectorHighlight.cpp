@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
 
     // 集成 SingleEdgeSelectorHighlight
     SingleEdgeSelectorHighlight selector(renderer);
-    selector.setCurModelActor(MeshActorSelectOp(meshActor));
+    selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
     style->SetSelectorHighlight(&selector);
 
     renderWindow->Render();

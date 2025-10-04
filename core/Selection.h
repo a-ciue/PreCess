@@ -8,6 +8,7 @@ public:
     enum Type
     {
         None,
+        Solid,
         Face,
         Edge,
         Vertex,

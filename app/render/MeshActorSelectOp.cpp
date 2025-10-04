@@ -1,37 +1,65 @@
 #include "MeshActorSelectOp.h"
 #include "MeshActor.h"
 
-MeshActorSelectOp::MeshActorSelectOp() = default;
+#include <vtkSelection.h>
+#include <vtkSelectionNode.h>
+#include <vtkUnstructuredGrid.h>
 
-MeshActorSelectOp::MeshActorSelectOp(std::weak_ptr<const MeshActor> mesh_actor)
+MeshActorSelectOpFactory::MeshActorSelectOpFactory() = default;
+MeshActorSelectOpFactory::MeshActorSelectOpFactory(std::weak_ptr<const MeshActor> mesh_actor)
     : mesh_actor_(mesh_actor)
 {
 }
 
-bool MeshActorSelectOp::addPickList(vtkPropCollection* pick_list)
+std::optional<MeshActorSelectOp> MeshActorSelectOpFactory::lock()
 {
     if (auto mesh_actor = mesh_actor_.lock()) {
-        pick_list->AddItem(mesh_actor->actor_);
-        pick_list->AddItem(mesh_actor->edge_actor_);
-        pick_list->AddItem(mesh_actor->face_actor_);
-        pick_list->AddItem(mesh_actor->solid_actor_);
-        return true;
+        return { mesh_actor };
     }
-    return false;
+    return {};
 }
 
-Index MeshActorSelectOp::getModelBlockId(vtkIdType block_id)
+MeshActorSelectOp::MeshActorSelectOp(std::shared_ptr<const MeshActor> mesh_actor)
+    : mesh_actor_(mesh_actor)
 {
-    if (auto mesh_actor = mesh_actor_.lock()) {
-        return mesh_actor->model_data_->model_block_id(block_id);
+    if (!mesh_actor_) {
+        throw std::runtime_error("MeshActorSelectOp: mesh_actor is nullptr");
     }
-    return -1;
 }
 
-vtkIdType MeshActorSelectOp::getSolidIdByFace(vtkIdType face_id)
+vtkProp& MeshActorSelectOp::getSolidActor()
 {
-    if (auto mesh_actor = mesh_actor_.lock()) {
-        //mesh_actor->solid_data_
-    }
-    return -1;
+    return *mesh_actor_->solid_actor_;
+}
+
+vtkProp& MeshActorSelectOp::getFaceActor()
+{
+    return *mesh_actor_->face_actor_;
+}
+
+vtkProp& MeshActorSelectOp::getEdgeActor()
+{
+    return *mesh_actor_->edge_actor_;
+}
+
+vtkProp& MeshActorSelectOp::getBlockActor()
+{
+    return *mesh_actor_->actor_;
+}
+
+vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractSolid(vtkIdTypeArray* ids)
+{
+    vtkNew<vtkSelectionNode> selectionNode;
+    selectionNode->SetFieldType(vtkSelectionNode::CELL);
+    selectionNode->SetContentType(vtkSelectionNode::INDICES);
+    selectionNode->SetSelectionList(ids);
+
+    vtkNew<vtkSelection> selection;
+    selection->SetNode("s", selectionNode);
+
+    vtkNew<vtkExtractSelection> extractSelection;
+    extractSelection->SetInputData(0, mesh_actor_->solid_data_.GetPointer());
+    extractSelection->SetInputData(1, selection);
+
+    return extractSelection;
 }

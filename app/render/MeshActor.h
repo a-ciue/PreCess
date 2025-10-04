@@ -6,6 +6,7 @@
 #include <vtkNamedColors.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkActor.h>
+class vtkPoints;
 class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
@@ -50,6 +51,6 @@ private:
     //Face mapper
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(const MeshDataVtk& model_data);
-    vtkSmartPointer<vtkUnstructuredGrid> _createSolidUGird(const MeshDataVtk& model_data);
+    static void _createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data);
 };
 #endif // MODEL_ACTOR_H

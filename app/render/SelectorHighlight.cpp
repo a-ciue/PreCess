@@ -150,13 +150,13 @@ void BlockSelectorHighlight::highlightBlockByCellColor(vtkCompositePolyDataMappe
     block->Modified(); // 通知 VTK 数据已更新
 }
 
-void BlockSelectorHighlight::setCurModelActor(MeshActorSelectOp model_actor)
+void BlockSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
 {
     this->collection_->RemoveAllItems();
-    this->model_actor_ = {};
-    if (model_actor.addPickList(this->collection_)) {
-        this->model_actor_ = model_actor;
+    if (auto actor = model_actor.lock()) {
+        this->collection_->AddItem(&actor->getBlockActor());
     }
+    this->model_actor_ = model_actor;
 }
 
 void BlockSelectorHighlight::_cancel_highlight(Block& selection)
@@ -279,13 +279,14 @@ void SingleFaceSelectorHighlight::select(double posx, double posy)
     // renderer_->Render();
 }
 
-void SingleFaceSelectorHighlight::setCurModelActor(MeshActorSelectOp model_actor)
+void SingleFaceSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
 {
     this->collection_->RemoveAllItems();
-    this->model_actor_ = {};
-    if (model_actor.addPickList(this->collection_)) {
-        this->model_actor_ = model_actor;
+    if (auto actor = model_actor.lock()) {
+        this->collection_->AddItem(&actor->getFaceActor());
+        this->collection_->AddItem(&actor->getSolidActor());
     }
+    this->model_actor_ = model_actor;
 }
 
 void SingleFaceSelectorHighlight::_cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer)
@@ -372,9 +373,10 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
         }
         vtkPolyData* pickedPoly = pickedMapper->GetInput();
         vtkCell* pickedCell = pickedPoly->GetCell(pickedCellId);
+        assert(picker && pickedCell);
 
         // 构建选中边的PolyData
-        SelectedEdge selected_edge = { pickedActor, _find_picked_edge(picker, pickedCell) };
+        SelectedEdge selected_edge = { pickedActor, _find_selected_edge(*picker, *pickedCell) };
         vtkNew<vtkPoints> points;
         {
             std::array<double, 3> position1 {};
@@ -413,25 +415,27 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
     }
 }
 
-void SingleEdgeSelectorHighlight::setCurModelActor(MeshActorSelectOp model_actor)
+void SingleEdgeSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
 {
     this->collection_->RemoveAllItems();
-    this->model_actor_ = {};
-    if (model_actor.addPickList(this->collection_)) {
-        this->model_actor_ = model_actor;
+    if (auto actor = model_actor.lock()) {
+        this->collection_->AddItem(&actor->getEdgeActor());
+        this->collection_->AddItem(&actor->getFaceActor());
+        this->collection_->AddItem(&actor->getSolidActor());
     }
+    this->model_actor_ = model_actor;
 }
 
-std::array<vtkIdType, 2> SingleEdgeSelectorHighlight::_find_picked_edge(vtkHardwarePicker* picker, vtkCell* picked_cell)
+std::array<vtkIdType, 2> SingleEdgeSelectorHighlight::_find_selected_edge(vtkHardwarePicker& picker, vtkCell& picked_cell)
 {
-    if (picked_cell->GetCellType() == VTK_LINE)
-        return { picked_cell->GetPointId(0), picked_cell->GetPointId(1) };
+    if (picked_cell.GetCellType() == VTK_LINE)
+        return { picked_cell.GetPointId(0), picked_cell.GetPointId(1) };
 
     double pPos[3] {};
-    picker->GetPCoords(pPos);
+    picker.GetPCoords(pPos);
 
     vtkNew<vtkIdList> cellIds;
-    picked_cell->CellBoundary(0, pPos, cellIds);
+    picked_cell.CellBoundary(0, pPos, cellIds);
 
     return { cellIds->GetId(0), cellIds->GetId(1) };
 }

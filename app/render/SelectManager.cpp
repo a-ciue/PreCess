@@ -37,7 +37,7 @@ void SelectManager::setSelectActor(std::weak_ptr<const MeshActor> model_actor_)
 {
 	//assert(this->selector_);
 
-	this->cur_model_actor_ = MeshActorSelectOp { model_actor_ };
+	this->cur_model_actor_ = MeshActorSelectOpFactory { model_actor_ };
 	if (this->selector_)
 	{
 	    this->selector_->clear();

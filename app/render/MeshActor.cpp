@@ -17,6 +17,7 @@
 #include <vtkUnsignedCharArray.h>
 #include <vtkUnstructuredGrid.h>  
 #include <vtkGeometryFilter.h>
+#include <vtkSMPTools.h>
 
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
@@ -58,7 +59,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     }
 
     // face data
-    auto face_poly = vtkSmartPointer<vtkPolyData>::New();
+    vtkPolyData* face_poly = this->face_data_;
     {
         auto poly_data = vtkSmartPointer<vtkCellArray>::New();
         auto index_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
@@ -77,7 +78,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     }
 
     // edge data
-    vtkNew<vtkPolyData> edge_poly;
+    vtkPolyData* edge_poly = this->edge_data_;
     {
         vtkNew<vtkCellArray> edge_cells;
         vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
@@ -90,7 +91,22 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     }
 
     // solid data
-    vtkSmartPointer<vtkUnstructuredGrid> solid_ugird = this->_createSolidUGird(*this->model_data_);
+    vtkUnstructuredGrid* solid_ugird = this->solid_data_;
+    _createSolidUGird(*this->model_data_, *points_data, *solid_ugird);
+    vtkIdType solid_cells_count = solid_ugird->GetNumberOfCells();
+    vtkNew<vtkIdTypeArray> originalCellIds;
+    originalCellIds->SetNumberOfComponents(1);
+    originalCellIds->SetName("vtkOriginalCellIds");
+    originalCellIds->SetNumberOfTuples(solid_cells_count);
+    // 使用并行方式设置原始单元ID
+    vtkSMPTools::For(0, solid_cells_count,
+        [&](vtkIdType begin, vtkIdType end) {
+            for (vtkIdType cellId = begin; cellId < end; ++cellId) {
+                originalCellIds->SetValue(cellId, cellId);
+            }
+        });
+    solid_ugird->GetCellData()->AddArray(originalCellIds);
+
     vtkNew<vtkGeometryFilter> solid_filter;
     solid_filter->SetInputData(solid_ugird);
 
@@ -220,33 +236,33 @@ void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
     this->block_mapper_->ScalarVisibilityOn();
 }
 
-vtkSmartPointer<vtkUnstructuredGrid> MeshActor::_createSolidUGird(const MeshDataVtk& model_data)
+void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)
 {
     // cells
     vtkNew<vtkCellArray> solid_cells;
     vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
-    auto& vtk_indices = this->model_data_->vtk_solid_cells_;
+    auto& vtk_indices = model_data.vtk_solid_cells_;
     index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
 
     vtkNew<vtkAOSDataArrayTemplate<Index>> offset_array;
-    auto& vtk_offsets = this->model_data_->vtk_solid_cells_offset_;
+    auto& vtk_offsets = model_data.vtk_solid_cells_offset_;
     offset_array->SetArray(const_cast<Index*>(vtk_offsets.data()), vtk_offsets.size(), 1);
 
     solid_cells->SetData(offset_array, index_array);
 
     // cell types
     vtkNew<vtkUnsignedCharArray> cell_types;
-    auto& types = this->model_data_->vtk_solid_cell_types_;
+    auto& types = model_data.vtk_solid_cell_types_;
     cell_types->SetArray(const_cast<unsigned char*>(types.data()), types.size(), 1);
 
     // faces
     vtkNew<vtkCellArray> faces;
     vtkNew<vtkAOSDataArrayTemplate<Index>> faces_idx;
-    auto& vtk_faces = this->model_data_->vtk_solid_faces_;
+    auto& vtk_faces = model_data.vtk_solid_faces_;
     faces_idx->SetArray(const_cast<Index*>(vtk_faces.data()), vtk_faces.size(), 1);
 
     vtkNew<vtkAOSDataArrayTemplate<Index>> faces_offset;
-    auto& vtk_faces_offset = this->model_data_->vtk_solid_faces_offset_;
+    auto& vtk_faces_offset = model_data.vtk_solid_faces_offset_;
     faces_offset->SetArray(const_cast<Index*>(vtk_faces_offset.data()), vtk_faces_offset.size(), 1);
 
     faces->SetData(faces_offset, faces_idx);
@@ -254,15 +270,14 @@ vtkSmartPointer<vtkUnstructuredGrid> MeshActor::_createSolidUGird(const MeshData
     // face locations
     vtkNew<vtkCellArray> face_locations;
     vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_idx;
-    auto& vtk_face_locations = this->model_data_->vtk_solid_face_locations_;
+    auto& vtk_face_locations = model_data.vtk_solid_face_locations_;
     face_loc_idx->SetArray(const_cast<Index*>(vtk_face_locations.data()), vtk_face_locations.size(), 1);
     vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_offset;
-    auto& vtk_face_locations_offset = this->model_data_->vtk_solid_face_locations_offset_;
+    auto& vtk_face_locations_offset = model_data.vtk_solid_face_locations_offset_;
     face_loc_offset->SetArray(const_cast<Index*>(vtk_face_locations_offset.data()), vtk_face_locations_offset.size(), 1);
     face_locations->SetData(face_loc_offset, face_loc_idx);
 
     // solid ugrid
-    vtkNew<vtkUnstructuredGrid> solid_ugird;
-    solid_ugird->SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
-    return solid_ugird;
+    solid_data.SetPoints(&points);
+    solid_data.SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
 }
