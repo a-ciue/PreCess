@@ -36,7 +36,13 @@ int main(int argc, char* argv[])
 {
     spdlog::set_level(spdlog::level::debug);
 
-    // 使用内置示例数据（可根据 TestMeshActor 改为从文件导入）
+    // 可选：传入一个外部 vtk/vtu/vtp 文件路径
+    std::string inputFile;
+    if (argc > 1) {
+        inputFile = argv[1];
+        std::cout << "Try load file: " << inputFile << std::endl;
+    }
+
     std::vector<std::array<double, 3>> vtk_points_;
 
     std::vector<unsigned char> vtk_solid_cell_types_;
@@ -52,18 +58,32 @@ int main(int argc, char* argv[])
 
     std::vector<Index> vtk_edge_cells_;
 
-    MeshDataVtk test_mesh_data = MakeMeshDataVtk(
-        vtk_points_,
-        vtk_solid_cell_types_,
-        vtk_solid_cells_,
-        vtk_solid_cells_offset_,
-        vtk_solid_faces_,
-        vtk_solid_faces_offset_,
-        vtk_solid_face_locations_,
-        vtk_solid_face_locations_offset_,
-        vtk_face_cells_,
-        vtk_face_cells_offset_,
-        vtk_edge_cells_);
+    MeshDataVtk test_mesh_data = inputFile.empty()
+        ? MakeMeshDataVtk(
+              vtk_points_,
+              vtk_solid_cell_types_,
+              vtk_solid_cells_,
+              vtk_solid_cells_offset_,
+              vtk_solid_faces_,
+              vtk_solid_faces_offset_,
+              vtk_solid_face_locations_,
+              vtk_solid_face_locations_offset_,
+              vtk_face_cells_,
+              vtk_face_cells_offset_,
+              vtk_edge_cells_)
+        : MakeMeshDataVtkFromFile(
+              inputFile,
+              vtk_points_,
+              vtk_solid_cell_types_,
+              vtk_solid_cells_,
+              vtk_solid_cells_offset_,
+              vtk_solid_faces_,
+              vtk_solid_faces_offset_,
+              vtk_solid_face_locations_,
+              vtk_solid_face_locations_offset_,
+              vtk_face_cells_,
+              vtk_face_cells_offset_,
+              vtk_edge_cells_);
 
     vtkNew<vtkRenderer> renderer;
     renderer->SetBackground(0.15, 0.2, 0.3);
