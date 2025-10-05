@@ -10,20 +10,22 @@ enum class ModelRenderMode {
     Group
 };
 
-enum class SplineRenderMode
-{
+enum class SplineRenderMode {
     Face,
     Block,
     Group
 };
 
 enum class SelectMode {
-	None,
+    None,
     Face,
-	Edge,
+    Edge,
     Block
 };
 
+/**
+ * @brief 基本索引类型定义
+ */
 using Index = int;
 
 struct BlockData {
@@ -35,7 +37,12 @@ struct BlockDatas {
     std::vector<BlockData> block_datas;
 };
 
-// TODO: solid/face/edge data
+/**
+ * @brief 用于存储网格数据以供 VTK 渲染使用的结构体
+ *
+ * 详细描述见 MeshData 说明
+ * @sa MeshData
+ */
 struct MeshDataVtk {
     const std::vector<std::array<double, 3>>& vtk_points_;
 
@@ -55,8 +62,8 @@ struct MeshDataVtk {
     std::shared_ptr<BlockDatas> model_blocks_;
 
     Index model_block_id(Index block_id) const
-{
-    return this->model_blocks_->block_datas[block_id].id;
-}
+    {
+        return this->model_blocks_->block_datas[block_id].id;
+    }
 };
 #endif // CORE_H

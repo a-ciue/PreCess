@@ -247,7 +247,6 @@ MeshDataVtk MakeMeshDataVtkFromFile(
         vtk_solid_cells_offset_.push_back(0);
         vtk_face_cells_offset_.push_back(0);
         vtk_solid_face_locations_offset_.push_back(0);
-        vtk_solid_faces_offset_.push_back(0);
         for (vtkIdType cid = 0; cid < nCells; ++cid) {
             vtkCell* cell = ds->GetCell(cid);
             if (!cell)
@@ -261,18 +260,6 @@ MeshDataVtk MakeMeshDataVtkFromFile(
                     vtk_solid_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));
                 }
                 vtk_solid_cells_offset_.push_back(static_cast<Index>(vtk_solid_cells_.size()));
-
-                auto numFaces = cell->GetNumberOfFaces();
-                for (int i = 0; i < numFaces; ++i) {
-                    vtkCell* face = cell->GetFace(i);
-                    vtk_solid_faces_offset_.push_back(static_cast<Index>(vtk_solid_faces_.size()));
-                    vtk_solid_face_locations_offset_.push_back(static_cast<Index>(vtk_solid_face_locations_.size()));
-                    vtk_solid_face_locations_.push_back(static_cast<Index>(cid)); // 记录该面属于哪个体
-                    int fpts = face->GetNumberOfPoints();
-                    for (int j = 0; j < fpts; ++j) {
-                            vtk_solid_faces_.push_back(static_cast<Index>(face->GetPointId(j)));
-                    }
-                }
             } else if (dim == 2) { // 面
                 for (int i = 0; i < npts; ++i) {
                     vtk_face_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));

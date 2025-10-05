@@ -32,22 +32,22 @@ std::unique_ptr<MeshData> ObjMeshIO::loadFromFile(const std::filesystem::path& f
     auto result = std::make_unique<MeshData>();
     MeshData& mesh_data = *result;
     for (size_t v = 0; v < attrib.vertices.size() / 3; v++) {
-        mesh_data.vertex_positions.push_back({ attrib.vertices[3 * v + 0], attrib.vertices[3 * v + 1], attrib.vertices[3 * v + 2] });
+        mesh_data.vertex_positions_.push_back({ attrib.vertices[3 * v + 0], attrib.vertices[3 * v + 1], attrib.vertices[3 * v + 2] });
     }
     // Loop over shapes(groups)
-    mesh_data.face_vertex_offsets.push_back(0);
+    mesh_data.face_vertices_offset_.push_back(0);
     for (auto& shape: shapes) {
-        Index new_face = static_cast<Index>(mesh_data.face_vertex_offsets.size() - 1);
+        Index new_face = static_cast<Index>(mesh_data.face_vertices_offset_.size() - 1);
 
-        // 面的点索引序列 mesh_data.face_vertices
+        // 面的点索引序列 mesh_data.face_vertices_
         std::transform(shape.mesh.indices.begin(), shape.mesh.indices.end(),
-            std::back_inserter(mesh_data.face_vertices),
+            std::back_inserter(mesh_data.face_vertices_),
             [](const tinyobj::index_t& idx) { return static_cast<Index>(idx.vertex_index); });
 
 
         // 追加面顶点索引偏移
         std::inclusive_scan(shape.mesh.num_face_vertices.begin(), shape.mesh.num_face_vertices.end(),
-            std::back_inserter(mesh_data.face_vertex_offsets), std::plus<>(), mesh_data.face_vertex_offsets.back());
+            std::back_inserter(mesh_data.face_vertices_offset_), std::plus<>(), mesh_data.face_vertices_offset_.back());
 
         int patch_id {0};
         try {
@@ -83,8 +83,8 @@ void ObjMeshIO::saveToFile(const MeshData& mesh, std::ostream& os)
     }
 
     os << "# Exported by MeshData\n";
-    for (size_t v = 0; v < mesh.vertex_positions.size(); v++) {
-        const auto& pos = mesh.vertex_positions[v];
+    for (size_t v = 0; v < mesh.vertex_positions_.size(); v++) {
+        const auto& pos = mesh.vertex_positions_[v];
         os << fmt::format("v {} {} {}\n", pos[0], pos[1], pos[2]);
     }
     // Loop over faces
@@ -93,8 +93,8 @@ void ObjMeshIO::saveToFile(const MeshData& mesh, std::ostream& os)
         const auto& patch = *patch_ptr;
         for (const auto& f : patch.faces) {
             os << "f";
-            for (Index vi = mesh.face_vertex_offsets[f]; vi < mesh.face_vertex_offsets[f + 1]; vi++) {
-                os << fmt::format(" {}", mesh.face_vertices[vi] + 1); // OBJ format uses 1-based index
+            for (Index vi = mesh.face_vertices_offset_[f]; vi < mesh.face_vertices_offset_[f + 1]; vi++) {
+                os << fmt::format(" {}", mesh.face_vertices_[vi] + 1); // OBJ format uses 1-based index
             }
             os << "\n";
         }
