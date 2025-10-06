@@ -17,6 +17,11 @@ public:
 	void setVisibility(Index model_id, bool visibility);
 	void setRenderMode(Index model_id, ModelRenderMode render_mode);
 	void setRenderEdge(Index model_id, bool is_render);
+        /**
+         * @brief 设置或取消裁剪平面
+         * @param plane 裁剪平面，传入nullptr则取消裁剪
+         */
+        void setClipPlane(vtkPlane* plane);
 
 	bool getCount(Index model_id);
 	bool getIsEdgeRender(Index model_id);

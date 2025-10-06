@@ -6,6 +6,9 @@
 #include <vtkNamedColors.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkActor.h>
+class vtkGeometryFilter;
+class vtkExtractGeometry;
+class vtkExtractPolyDataGeometry;
 class vtkPoints;
 class vtkUnstructuredGrid;
 class vtkRenderer;
@@ -25,6 +28,11 @@ public:
     void loadModelData(const MeshDataVtk& model_data);
 
     void setVisibility(bool visibility);
+    /**
+     * @brief 设置或取消裁剪平面
+     * @param plane 裁剪平面，传入nullptr则取消裁剪
+     */
+    void setClipPlane(vtkPlane* plane);
     void setRenderEdge(bool is_render);
     void setRenderMode(ModelRenderMode render_mode);
 
@@ -36,6 +44,18 @@ private:
     bool edge_render_{ true };
     bool visibility_{ true };
     std::unique_ptr<MeshDataVtk> model_data_;
+
+    vtkPlane* clip_plane_ {};
+
+    vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;
+    vtkNew<vtkExtractPolyDataGeometry> face_clipper_;
+    vtkNew<vtkExtractGeometry> solid_clipper_;
+
+    vtkNew<vtkGeometryFilter> solid_filter_;
+
+    vtkNew<vtkPolyDataMapper> edge_mapper_;
+    vtkNew<vtkPolyDataMapper> face_mapper_;
+    vtkNew<vtkPolyDataMapper> solid_mapper_;
 
     vtkNew<vtkActor> solid_actor_;
     vtkNew<vtkActor> face_actor_;

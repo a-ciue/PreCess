@@ -18,6 +18,9 @@
 #include <vtkUnstructuredGrid.h>  
 #include <vtkGeometryFilter.h>
 #include <vtkSMPTools.h>
+#include <vtkExtractGeometry.h>
+#include <vtkExtractPolyDataGeometry.h>
+#include <vtkPlane.h>
 
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
@@ -31,6 +34,10 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode
     this->setRenderEdge(is_edge_render);
 
     this->edge_actor_->GetProperty()->SetLineWidth(2);
+
+    this->solid_actor_->SetMapper(solid_mapper_);
+    this->face_actor_->SetMapper(face_mapper_);
+    this->edge_actor_->SetMapper(edge_mapper_);
 }
 
 MeshActor::~MeshActor()
@@ -107,21 +114,12 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         });
     solid_ugird->GetCellData()->AddArray(originalCellIds);
 
-    vtkNew<vtkGeometryFilter> solid_filter;
-    solid_filter->SetInputData(solid_ugird);
+    solid_filter_->SetInputData(solid_ugird);
 
     // mappers
-    vtkNew<vtkPolyDataMapper> edge_mapper;
-    edge_mapper->SetInputData(edge_poly);
-    vtkNew<vtkPolyDataMapper> face_mapper;
-    face_mapper->SetInputData(face_poly);
-    vtkNew<vtkPolyDataMapper> solid_mapper;
-    solid_mapper->SetInputConnection(solid_filter->GetOutputPort());
-
-    // actors
-    this->edge_actor_->SetMapper(edge_mapper);
-    this->face_actor_->SetMapper(face_mapper);
-    this->solid_actor_->SetMapper(solid_mapper);
+    edge_mapper_->SetInputData(edge_poly);
+    face_mapper_->SetInputData(face_poly);
+    solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
 
     createBlockMapper(*this->model_data_);
 }
@@ -133,6 +131,33 @@ void MeshActor::setVisibility(bool visibility)
     this->solid_actor_->SetVisibility(visibility);
     this->face_actor_->SetVisibility(visibility);
     this->edge_actor_->SetVisibility(visibility);
+}
+
+void MeshActor::setClipPlane(vtkPlane* plane)
+{
+    if (plane) {
+        if (!clip_plane_) {
+            solid_clipper_->SetInputData(this->solid_data_);
+            face_clipper_->SetInputData(this->face_data_);
+            edge_clipper_->SetInputData(this->edge_data_);
+
+            solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
+            solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
+            face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
+            edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
+
+            clip_plane_ = plane;
+        }
+        solid_clipper_->SetImplicitFunction(plane);
+        face_clipper_->SetImplicitFunction(plane);
+        edge_clipper_->SetImplicitFunction(plane);
+    } else {
+        solid_filter_->SetInputData(this->solid_data_);
+        face_mapper_->SetInputData(face_data_);
+        edge_clipper_->SetInputData(edge_data_);
+
+        clip_plane_ = nullptr;
+    }
 }
 
 void MeshActor::setRenderEdge(bool is_render)

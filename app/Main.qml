@@ -360,6 +360,19 @@ ApplicationWindow {
                             }
                         }
                     }
+                    ToolButton{
+                        text: "裁剪"
+                        checkable: true
+                        Layout.preferredWidth: 50
+                        Layout.fillHeight: true
+                        onClicked:{
+                            if (checked) {
+                                myItem.setMeshClip(true)
+                            } else {
+                                myItem.setMeshClip(false)
+                            }
+                        }
+                    }
                     Label{
                         Layout.fillWidth: true
                     }

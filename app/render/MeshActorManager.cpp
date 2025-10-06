@@ -53,6 +53,13 @@ void MeshActorManager::setRenderEdge(Index model_id, bool is_render)
     this->models_[model_id]->setRenderEdge(is_render);
 }
 
+void MeshActorManager::setClipPlane(vtkPlane* plane)
+{
+    for (auto && [idx, mesh_actor] : this->models_) {
+        mesh_actor->setClipPlane(plane);
+    }
+}
+
 bool MeshActorManager::getCount(Index model_id)
 {
     return this->models_.count(model_id);

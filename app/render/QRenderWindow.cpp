@@ -10,6 +10,10 @@
 #include "SplineActorManager.h"
 #include "QSelection.h"
 #include <vtkObjectFactory.h>
+#include <vtkDisplaySizedImplicitPlaneWidget.h>
+#include <vtkDisplaySizedImplicitPlaneRepresentation.h>
+#include <vtkCallbackCommand.h>
+#include <vtkPlane.h>
 QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
@@ -29,9 +33,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // initializeVTK, destroyingVTK or dispatch_async methods)
     // vtk->renderer->GetActiveCamera()->DeepCopy(_camera);
 
-        vtk->renderer_->SetBackground(0.5, 0.5, 0.7);
-        vtk->renderer_->SetBackground2(0.7, 0.7, 0.7);
-        vtk->renderer_->SetGradientBackground(true);
+    vtk->renderer_->SetBackground(0.5, 0.5, 0.7);
+    vtk->renderer_->SetBackground2(0.7, 0.7, 0.7);
+    vtk->renderer_->SetGradientBackground(true);
 
     vtk->style_->SetSelectManager(this->selectManager_.get());
     selectManager_->bindRenderer(vtk->renderer_);
@@ -39,7 +43,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     renderWindow->GetInteractor()->SetInteractorStyle(vtk->style_);
 
     renderWindow->AddRenderer(vtk->renderer_);
-    this->data_= vtk.GetPointer();
+    this->data_ = vtk.GetPointer();
     vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->spline_actor_manager_ = std::make_unique<SplineActorManager>();
@@ -47,8 +51,30 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
-    vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor());// 设置坐标系控件大小（占屏幕比例）
+    vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor()); // 设置坐标系控件大小（占屏幕比例）
     vtk->orientationWidget->On();
+
+    vtkNew<vtkDisplaySizedImplicitPlaneRepresentation> rep;
+    // 连接回调函数到平面控件，更新裁剪平面
+    struct PlaneCallback : public vtkCommand {
+        static PlaneCallback* New() { return new PlaneCallback; }
+        void Execute(vtkObject* caller, unsigned long, void*) override
+        {
+            auto plane_widget = reinterpret_cast<vtkDisplaySizedImplicitPlaneWidget*>(caller);
+            vtkDisplaySizedImplicitPlaneRepresentation* rep = reinterpret_cast<vtkDisplaySizedImplicitPlaneRepresentation*>(
+                plane_widget->GetRepresentation());
+            rep->GetPlane(plane_);
+            mesh_actor_manager_->setClipPlane(plane_);
+        }
+        vtkNew<vtkPlane> plane_;
+        MeshActorManager* mesh_actor_manager_ {};
+    };
+    vtkNew<PlaneCallback> callback;
+    callback->mesh_actor_manager_ = vtk->mesh_actor_manager_.get();
+    vtk->plane_widget_->SetInteractor(renderWindow->GetInteractor());
+    vtk->plane_widget_->SetRepresentation(rep);
+    vtk->plane_widget_->AddObserver(vtkCommand::InteractionEvent, callback);
+
     return vtk;
 }
 
@@ -116,6 +142,21 @@ void QRenderWindow::deleteModel(Index model_id)
         vtk->spline_actor_manager_->deleteModel(model_id);
         this->selectManager_->clearSelection();
         });
+}
+
+void QRenderWindow::setMeshClip(bool on)
+{
+    dispatch_async([on, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (on) {
+            vtk->plane_widget_->InvokeEvent(vtkCommand::InteractionEvent);
+            vtk->plane_widget_->On();
+        } else {
+            vtk->plane_widget_->Off();
+            vtk->mesh_actor_manager_->setClipPlane(nullptr);
+        }
+    });
 }
 
 void QRenderWindow::onModelChanged(Index model_id)

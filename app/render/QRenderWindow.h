@@ -30,6 +30,7 @@ class SelectManager;
 class SplineActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
+class vtkDisplaySizedImplicitPlaneWidget;
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
@@ -55,7 +56,7 @@ public:
         std::unique_ptr<MeshActorManager> mesh_actor_manager_;
         std::unique_ptr<SplineActorManager> spline_actor_manager_;
 
-
+        vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -111,6 +112,12 @@ public:
 
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void deleteModel(Index mode_id);
+
+    /**
+     * @brief 对网格对象设置全局裁剪模式
+     * @param on 是否开启
+     */
+    Q_INVOKABLE void setMeshClip(bool on);
 
     Q_SLOT void setClick();
 
