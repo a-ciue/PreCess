@@ -38,6 +38,8 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode
     this->solid_actor_->SetMapper(solid_mapper_);
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
+
+    this->actor_->SetMapper(block_mapper_);
 }
 
 MeshActor::~MeshActor()
