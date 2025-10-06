@@ -247,27 +247,48 @@ MeshDataVtk MakeMeshDataVtkFromFile(
         vtk_solid_cells_offset_.push_back(0);
         vtk_face_cells_offset_.push_back(0);
         vtk_solid_face_locations_offset_.push_back(0);
-        for (vtkIdType cid = 0; cid < nCells; ++cid) {
-            vtkCell* cell = ds->GetCell(cid);
+        for (vtkIdType cell_id = 0; cell_id < ds->GetNumberOfCells(); ++cell_id) {
+            vtkCell* cell = ds->GetCell(cell_id);
             if (!cell)
                 continue;
-            int dim = cell->GetCellDimension();
-            int npts = cell->GetNumberOfPoints();
+            vtkIdType dim = cell->GetCellDimension();
+            vtkIdType npts = cell->GetNumberOfPoints();
             if (dim == 3) { // 体
-                unsigned char ctype = ds->GetCellType(cid);
+                unsigned char ctype = static_cast<unsigned char>(ds->GetCellType(cell_id));
                 vtk_solid_cell_types_.push_back(ctype);
-                for (int i = 0; i < npts; ++i) {
+                for (vtkIdType i = 0; i < npts; ++i) {
                     vtk_solid_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));
                 }
                 vtk_solid_cells_offset_.push_back(static_cast<Index>(vtk_solid_cells_.size()));
+
+                // 对多面体单元，处理其面的信息
+                if (cell->GetCellType() == VTK_POLYHEDRON) {
+                    vtkIdType nfaces = cell->GetNumberOfFaces();
+                    vtk_solid_face_locations_offset_.push_back(static_cast<Index>(vtk_solid_face_locations_.size()));
+                    for (vtkIdType fid = 0; fid < nfaces; ++fid) {
+                        vtkCell* face = cell->GetFace(fid);
+                        if (!face)
+                            continue;
+                        vtkIdType fnpts = face->GetNumberOfPoints();
+                        vtk_solid_faces_offset_.push_back(static_cast<Index>(vtk_solid_faces_.size()));
+                        for (vtkIdType i = 0; i < fnpts; ++i) {
+                            vtk_solid_faces_.push_back(static_cast<Index>(face->GetPointId(i)));
+                        }
+                        vtk_solid_face_locations_.push_back(static_cast<Index>(vtk_solid_faces_offset_.size() - 1));
+                    }
+                    vtk_solid_faces_offset_.push_back(static_cast<Index>(vtk_solid_faces_.size()));
+                } else {
+                    // 非多面体，补充offset
+                    vtk_solid_face_locations_offset_.push_back(static_cast<Index>(vtk_solid_face_locations_.size()));
+                }
             } else if (dim == 2) { // 面
-                for (int i = 0; i < npts; ++i) {
+                for (vtkIdType i = 0; i < npts; ++i) {
                     vtk_face_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));
                 }
                 vtk_face_cells_offset_.push_back(static_cast<Index>(vtk_face_cells_.size()));
             } else if (dim == 1) { // 边或折线
                 if (npts >= 2) {
-                    for (int i = 0; i < npts - 1; ++i) {
+                    for (vtkIdType i = 0; i < npts - 1; ++i) {
                         vtk_edge_cells_.push_back(static_cast<Index>(cell->GetPointId(i)));
                         vtk_edge_cells_.push_back(static_cast<Index>(cell->GetPointId(i + 1)));
                     }

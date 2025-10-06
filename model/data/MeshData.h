@@ -126,4 +126,29 @@ struct MeshData {
 
     PatchMap patches_;
     BlockMap blocks_;
+
+    void clear() { 
+        vertex_positions_.clear();
+        face_vertices_.clear();
+        face_vertices_offset_.clear();
+        edge_vertices_.clear();
+        solid_types_.clear();
+        solid_vertices_.clear();
+        solid_vertices_offset_.clear();
+        solid_faces_vertices_.clear();
+        solid_faces_vertices_offset_.clear();
+        solid_faces_.clear();
+        solid_faces_offset_.clear();
+        patches_.clear();
+        blocks_.clear();
+    }
+
+    void init()
+    {
+        clear();
+        face_vertices_offset_.push_back(0);
+        solid_vertices_offset_.push_back(0);
+        solid_faces_vertices_offset_.push_back(0);
+        solid_faces_offset_.push_back(0);
+    }
 };

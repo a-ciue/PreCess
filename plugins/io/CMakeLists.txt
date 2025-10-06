@@ -1,3 +1,4 @@
 add_subdirectory(OBJModelPlugin)
 add_subdirectory(MModelPlugin)
 add_subdirectory(StepModelPlugin)
+add_subdirectory(VtkLegacyModelPlugin)
