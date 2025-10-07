@@ -1,0 +1,7 @@
+{
+  "system": "ModelIOSystem",
+  "handler": {
+    "file_type": "VTK Simple Legacy Formats",
+    "extensions": [ "vtk" ]
+  }
+}

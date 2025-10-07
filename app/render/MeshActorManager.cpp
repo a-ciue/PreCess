@@ -2,25 +2,22 @@
 #include "MeshActor.h"
 #include "Core.h"
 
-const MeshActor* MeshActorManager::getModelActor(Index model_id)
+std::shared_ptr<const MeshActor> MeshActorManager::getModelActor(Index model_id)
 {
     if (this->models_.count(model_id))
-        return this->models_.at(model_id).get();
+        return this->models_.at(model_id);
     else
     {
         std::cout << "MeshActorManager getModelActor error" << std::endl;
 	    return nullptr;
     }
-        
-
 }
 
 void MeshActorManager::deleteModel(Index model_id)
 {
     if (this->models_.count(model_id))
     {
-	    this->models_[model_id]->deleteMeshActor();
-		this->models_.erase(model_id);
+	this->models_.erase(model_id);
     }
     
 }
@@ -54,6 +51,13 @@ void MeshActorManager::setRenderEdge(Index model_id, bool is_render)
 {
     if (this->models_.count(model_id))
     this->models_[model_id]->setRenderEdge(is_render);
+}
+
+void MeshActorManager::setClipPlane(vtkPlane* plane)
+{
+    for (auto && [idx, mesh_actor] : this->models_) {
+        mesh_actor->setClipPlane(plane);
+    }
 }
 
 bool MeshActorManager::getCount(Index model_id)

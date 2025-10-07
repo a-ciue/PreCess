@@ -38,40 +38,117 @@ struct MeshData {
     using BlockMap = std::unordered_map<Index, std::unique_ptr<Block>>;
 
     /**
-     * @brief 多边形面网格点id索引
+     * @brief 存储顶点的三维坐标。
+     *
+     *  { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },
+     *  { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },
+     *  { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },
+     *  { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }
+     */
+    std::vector<std::array<double, 3>> vertex_positions_;
+
+    /**
+     * @brief 面的点索引，存储构成网格面单元的顶点索引。可以表示独立于体单元之外单独定义的面单元。
      * 
-        0, 1, 2,
-        2, 3, 0,
-        3, 2, 6,
-        6, 7, 3,
-        4, 0, 3,
-        3, 7, 4,
-        7, 6, 5,
-        5, 4, 7,
-        4, 5, 1,
-        1, 0, 4,
-        1, 5, 6,
-        6, 2, 1
+     *  {0, 1, 2,
+     *  2, 3, 0,
+     *  3, 2, 6,
+     *  6, 7, 3,
+     *  4, 0, 3,
+     *  3, 7, 4,
+     *  7, 6, 5,
+     *  5, 4, 7,
+     *  4, 5, 1,
+     *  1, 0, 4,
+     *  1, 5, 6,
+     *  6, 2, 1}
      */
-    std::vector<Index> face_vertices;
+    std::vector<Index> face_vertices_;
+    /**
+     * @brief 面的点索引偏移，存储每个面单元的顶点偏移量数组。可以表示独立于体单元之外单独定义的面。
+     * 
+     *  { 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33 } 表示了 offsets size - 1 = 11个面单元
+     */
+    std::vector<Index> face_vertices_offset_;
 
     /**
-     * @brief 存储每个面的顶点偏移量的索引数组。
-
-        { 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33 }
+     * @brief 边的点索引，边单元的顶点索引数组，可以表示独立于体、面的边单元。每两个顶点索引表示一条边。
      */
-    std::vector<Index> face_vertex_offsets;
+    std::vector<Index> edge_vertices_;
 
     /**
-     * @brief 存储顶点的三维坐标位置。
-
-        { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },
-        { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },
-        { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },
-        { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }
+     * @brief 体单元的类型，对应每个体单元的 VTK 类型编号。
+     *
+     * 例如，六面体 VTK_HEXAHEDRON = 12, 三棱柱 VTK_WEDGE = 13, 任意多面体 VTK_POLYHEDRON = 42 等。参见 https://vtk.org/doc/nightly/html/vtkCellType_8h.html
+     * 注意：对于可存储任意形状的多面体 VTK_POLYHEDRON，需要同时使用 solid_faces_vertices_、solid_faces_vertices_offset_、solid_faces_ 和 solid_faces_offset_ 来定义其面的拓扑结构。
      */
-    std::vector<std::array<double, 3>> vertex_positions;
+    std::vector<unsigned char> solid_types_;
+    /**
+     * @brief 体的点索引，体单元的顶点索引数组，每个体单元的顶点索引连续存储。
+     *
+     * 例如，对于一个六面体（立方体）VTK_HEXAHEDRON，会有8个顶点索引按VTK定义的顺序依次存储，后面接着存放其他体单元的顶点索引。
+     */
+    std::vector<Index> solid_vertices_;
+    /**
+     * @brief 体的点索引偏移，存储每个体单元的顶点偏移量。
+     *
+     * 例如：{ 0, 8, 14 } 表示两个体单元，第0个体单元由 solid_vertices_ 中的第 [0,8) 个顶点构成，第1个体单元由 solid_vertices_ 中的第 [8,14) 个顶点构成。
+     * 注意，offset数组虽然可以留空，但起码要有{0}表示没有cell。
+     */
+    std::vector<Index> solid_vertices_offset_ { 0 };
+    /**
+     * @brief 体的面的点索引，存储构成多面体 vtkPolyhedron 的面的顶点（角点）索引，顺序存储。
+     *
+     * 例如，有很多的面彼此组合成了多面体，每个面的顶点索引顺序存储在该数组中，表示了每个面是由这些顶点顺次连接来的。
+     * 注意：vtk 有明确定义体单元类型的不必要存储，只需按照vtk定义的顺序将顶点按序存入 solid_vertices_ 和 solid_vertices_offset_ 即可。此处单纯针对多面体 vtkPolyhedron 的情形，即更为复杂的情形，所以数组可以为空。
+     */
+    std::vector<Index> solid_faces_vertices_;
+    /**
+     * @brief 体的面的点索引偏移，存储构成多面体的面的顶点索引偏移量，同 solid_faces_vertices_ 一起定义了多面体的各个面。
+     *
+     * 例如：{ 0, 4, 7, 10 } 表示 solid_faces_vertices_ 中第 [0,4) 点构成第0个面，第[4,7)面构成第1个面，第[7,10)面构成第2个面。
+     * 注意，offset数组虽然可以留空，但起码要有{0}表示没有face。
+     */
+    std::vector<Index> solid_faces_vertices_offset_ { 0 };
+    /**
+     * @brief 体的面索引，存储构成每个多面体的是哪些面。
+     *
+     * 例如，一个多面体由多个面构成，构成每个多面体的面id顺次存储在该数组中。
+     */
+    std::vector<Index> solid_faces_;
+    /**
+     * @brief 体的面索引的偏移，存储多面体单元的面索引偏移量，同 solid_faces_ 一起定义了多面体的各个面。
+     *
+     * 例如：{ 0, 6, 12 } 表示 solid_faces_ 中第 [0,6) 面构成第0个多面体，第[6,12)面构成第1个多面体。
+     * 注意：如果没有多面体（即所有体单元均为简单类型），该数组最少也要包含一个元素 {0}，表示没有多面体。
+     */
+    std::vector<Index> solid_faces_offset_ { 0 };
 
     PatchMap patches_;
     BlockMap blocks_;
+
+    void clear() { 
+        vertex_positions_.clear();
+        face_vertices_.clear();
+        face_vertices_offset_.clear();
+        edge_vertices_.clear();
+        solid_types_.clear();
+        solid_vertices_.clear();
+        solid_vertices_offset_.clear();
+        solid_faces_vertices_.clear();
+        solid_faces_vertices_offset_.clear();
+        solid_faces_.clear();
+        solid_faces_offset_.clear();
+        patches_.clear();
+        blocks_.clear();
+    }
+
+    void init()
+    {
+        clear();
+        face_vertices_offset_.push_back(0);
+        solid_vertices_offset_.push_back(0);
+        solid_faces_vertices_offset_.push_back(0);
+        solid_faces_offset_.push_back(0);
+    }
 };

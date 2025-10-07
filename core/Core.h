@@ -10,20 +10,23 @@ enum class ModelRenderMode {
     Group
 };
 
-enum class SplineRenderMode
-{
+enum class SplineRenderMode {
     Face,
     Block,
     Group
 };
 
 enum class SelectMode {
-	None,
+    None,
     Face,
-	Edge,
+    Edge,
+    Solid,
     Block
 };
 
+/**
+ * @brief 基本索引类型定义
+ */
 using Index = int;
 
 struct BlockData {
@@ -35,15 +38,33 @@ struct BlockDatas {
     std::vector<BlockData> block_datas;
 };
 
+/**
+ * @brief 用于存储网格数据以供 VTK 渲染使用的结构体
+ *
+ * 详细描述见 MeshData 说明
+ * @sa MeshData
+ */
 struct MeshDataVtk {
-    const std::vector<Index>& vtk_poly_vertices_;
-    const std::vector<Index>& vtk_poly_offsets_;
     const std::vector<std::array<double, 3>>& vtk_points_;
+
+    const std::vector<unsigned char>& vtk_solid_cell_types_;
+    const std::vector<Index>& vtk_solid_cells_;
+    const std::vector<Index>& vtk_solid_cells_offset_;
+    const std::vector<Index>& vtk_solid_faces_;
+    const std::vector<Index>& vtk_solid_faces_offset_;
+    const std::vector<Index>& vtk_solid_face_locations_;
+    const std::vector<Index>& vtk_solid_face_locations_offset_;
+
+    const std::vector<Index>& vtk_face_cells_; //> 表示面顶点索引的数组
+    const std::vector<Index>& vtk_face_cells_offset_;
+
+    const std::vector<Index>& vtk_edge_cells_;
+
     std::shared_ptr<BlockDatas> model_blocks_;
 
     Index model_block_id(Index block_id) const
-{
-    return this->model_blocks_->block_datas[block_id].id;
-}
+    {
+        return this->model_blocks_->block_datas[block_id].id;
+    }
 };
 #endif // CORE_H

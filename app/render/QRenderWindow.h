@@ -30,6 +30,7 @@ class SelectManager;
 class SplineActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
+class vtkDisplaySizedImplicitPlaneWidget;
 
 struct QRenderWindow : QQuickVTKItem {            //结构体继承QQuickVTKItem
     Q_OBJECT
@@ -52,8 +53,10 @@ public:
         vtkNew<QRenderWindowStyle> style_;
         vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
 
+        std::unique_ptr<MeshActorManager> mesh_actor_manager_;
+        std::unique_ptr<SplineActorManager> spline_actor_manager_;
 
-
+        vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -67,13 +70,7 @@ public:
     void setCurEdgeRender(bool edge_render);
     bool getCurEdgeRender();
 
-    bool getMeshIsEdgeRender(Index model_id);
-    bool getSplineIsEdgeRender(Index model_id);
-    bool getIsEdgeRender(Index model_id);
-
-    QString getMeshRenderMode(Index model_id);
-    QString getSplineRenderMode(Index model_id);
-    QString getRenderMode(Index model_id);
+    bool getIsEdgeRender(Data& vtk, Index model_id);
 
 	/**
      * @brief 选择模型
@@ -116,6 +113,12 @@ public:
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void deleteModel(Index mode_id);
 
+    /**
+     * @brief 对网格对象设置全局裁剪模式
+     * @param on 是否开启
+     */
+    Q_INVOKABLE void setMeshClip(bool on);
+
     Q_SLOT void setClick();
 
     // Q_PROPERTY(QString file READ file WRITE setFile NOTIFY fileChanged)
@@ -130,9 +133,6 @@ signals:
     void clicked();
  
 private:
-    std::unique_ptr<MeshActorManager> mesh_actor_manager_;
-    std::unique_ptr<SplineActorManager> spline_actor_manager_;
-
     bool edge_render_{};
     ModelRenderMode renderMode_{};
     SelectMode select_mode_ {};

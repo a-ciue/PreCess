@@ -6,25 +6,26 @@
 */
 #ifndef SELECTOR_HIGHLIGHT_H
 #define SELECTOR_HIGHLIGHT_H
+#include "MeshActorSelectOp.h"
+#include "Selection.h"
+
 #include <array>
 #include <optional>
 #include <vector>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 #include <vtkAssembly.h>
-#include <vtkPropAssembly.h>
-#include "Selection.h"
+#include <vtkPropCollection.h>
 #include <vtkCompositeDataDisplayAttributes.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkCompositePolyDataMapper.h>
-#include "Core.h"
 
 class vtkRenderer;
 class vtkProperty;
-template <typename T>
-class vtkSmartPointer;
 class vtkDataSetMapper;
 class vtkActor;
+class vtkHardwarePicker;
+class vtkCell;
 
 using SelectionVtk = Selection;
 //namespace Selector {
@@ -35,16 +36,24 @@ using SelectionVtk = Selection;
 
 class SelectorHighlight {
 public:
+    virtual ~SelectorHighlight() = default;
     virtual void select(double posx, double posy) = 0;
+    /**
+     * @brief 清空选中元素，并取消高亮
+     */
     virtual void clear() = 0;
     virtual SelectionVtk get()=0;
-    virtual vtkPropCollection* getPickList()=0;
+    /**
+     * @brief 设置当前操作的模型actor
+     * @param model_actor ModelActor的操作类，目前暂时只支持操作MeshActor
+     */
+    virtual void setCurModelActor(MeshActorSelectOpFactory model_actor) = 0;
 };
 
 class BlockSelectorHighlight : public SelectorHighlight {
 public:
     BlockSelectorHighlight(vtkRenderer* renderer);
-    ~BlockSelectorHighlight() { clear(); }
+    ~BlockSelectorHighlight() override { clear(); }
     //! @brief 清空selections并取消高亮
     void clear()override;
     //! @brief 获取当前选中的actors
@@ -53,7 +62,8 @@ public:
     void select(double posx, double posy) override;
     void highlightBlockByCellColor(vtkCompositePolyDataMapper* mapper, unsigned int block_index,
         unsigned char r, unsigned char g, unsigned char b);
-    vtkPropCollection* getPickList()override;
+    void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
+
 private:
     /* struct Actor
     {
@@ -69,6 +79,7 @@ private:
     vtkRenderer* renderer_;
     vtkCompositePolyDataMapper* mapper_;
     vtkNew<vtkPropCollection> collection_;
+    MeshActorSelectOpFactory model_actor_;
     void _cancel_highlight(Block &selection);
     static std::optional<size_t> _is_selected(const vtkIdType block_id, const std::vector<Block>& selections);
 };
@@ -84,15 +95,15 @@ public:
     //! @brief 将actor绑定到renderer，mapper绑定到actor
     SingleFaceSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
-    ~SingleFaceSelectorHighlight();
+    ~SingleFaceSelectorHighlight() override;
     //! @brief 返回当前选择的面
     SelectionVtk get()override;
     //! @brief 清空selection并取消高亮，即清空mapper
     void clear()override;
     //! @brief 找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
     void select(double posx, double posy) override;
-    vtkPropCollection* getPickList()override;
-    
+
+    void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
     //！@brief 取消高亮，清空mapper
@@ -106,6 +117,7 @@ private:
     vtkNew<vtkActor> highlight_actor_;
     vtkNew<vtkPolyDataMapper> mapper_;
     vtkNew<vtkPropCollection> collection_;
+    MeshActorSelectOpFactory model_actor_;
 };
 
 class SingleEdgeSelectorHighlight : public SelectorHighlight {
@@ -114,23 +126,36 @@ public:
         //! @brief 边所在的actor，借由actor可以找到全局id
         vtkActor* actor;
         //! @brief 边端点局部索引id
-        std::array<int, 2> v_local_id;
+        std::array<vtkIdType, 2> v_local_id;
     };
     //! @brief 将actor绑定到renderer，mapper绑定到actor
     SingleEdgeSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
-    ~SingleEdgeSelectorHighlight();
+    ~SingleEdgeSelectorHighlight() override;
     //! @brief 获取当前选择的边
     SelectionVtk get()override;
     //! @brief 清空selection并取消高亮，即清空mapper
     void clear()override;
-    //! @brief 找到坐标下的edge并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
+    /**
+     * @brief 找到坐标下的edge并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
+     *
+     * @param posx 鼠标点击位置x坐标
+     * @param posy 鼠标点击位置y坐标
+     */
     void select(double posx, double posy)override;
-    vtkPropCollection* getPickList()override;
+
+    void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
+    /**
+     * @brief 根据pick到的cell（边或面），找到选中边
+     * @param picker 拾取器，提供拾取信息
+     * @param picked_cell 拾取到的cell，可能是边或面
+     * @return 选中边端点对id
+     */
+    static std::array<vtkIdType, 2> _find_selected_edge(vtkHardwarePicker& picker, vtkCell& picked_cell);
     //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkDataSetMapper* selectedMapper, vtkActor* selectedActor);
+    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
     static bool _is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor);
 
@@ -141,5 +166,33 @@ private:
     vtkNew<vtkDataSetMapper> selected_mapper_;
     vtkSmartPointer<vtkActor> selected_actor_;
     vtkNew<vtkPropCollection> collection_;
+    MeshActorSelectOpFactory model_actor_;
+};
+
+class SingleSolidSelectorHighlight : public SelectorHighlight {
+public:
+    //! @brief 将actor绑定到renderer，mapper绑定到actor
+    SingleSolidSelectorHighlight(vtkRenderer* renderer);
+    //! @brief 将actor从renderer中删除
+    ~SingleSolidSelectorHighlight() override;
+    //! @brief 返回当前选择的体
+    SelectionVtk get() override;
+    //! @brief 清空selection并取消高亮，即清空mapper
+    void clear() override;
+    //! @brief 找到坐标下的体元并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
+    void select(double posx, double posy) override;
+
+    void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
+
+private:
+    // ！@brief 取消高亮，清空mapper
+    static void _cancel_highlight(vtkIdTypeArray* selected_ids);
+    //! @brief 判断是否已经被选中
+    static bool _is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_);
+
+    vtkRenderer* renderer_;
+    vtkNew<vtkActor> highlight_actor_;
+    MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空
+    vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的体id，绑定到了mapper，用于触发高亮体cell修改
 };
 #endif

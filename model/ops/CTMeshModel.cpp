@@ -8,8 +8,8 @@ void CTMeshModel::update(MeshData& mesh_data)
 {
     using namespace std;
 
-    // 构造点坐标数组 MeshData::vertex_positions
-    auto& vertex_positions = mesh_data.vertex_positions;
+    // 构造点坐标数组 MeshData::vertex_positions_
+    auto& vertex_positions = mesh_data.vertex_positions_;
     vertex_positions.clear(); // 清空之前的顶点数据
     vertex_positions.reserve(mesh_->numVertices()); // 预留空间以提高性能
     unordered_map<Index, Index> vertex_index_map; // 顶点 ID 到索引的映射
@@ -33,9 +33,9 @@ void CTMeshModel::update(MeshData& mesh_data)
     }
 
     // 遍历每个组更新面
-    mesh_data.face_vertices.clear();
-    mesh_data.face_vertex_offsets = { 0 };
-    mesh_data.face_vertex_offsets.reserve(mesh_->numFaces());
+    mesh_data.face_vertices_.clear();
+    mesh_data.face_vertices_offset_ = { 0 };
+    mesh_data.face_vertices_offset_.reserve(mesh_->numFaces());
     for (const auto& [patch_id, faces] : patch_faces) {
         // 初始化 patches_[patch_id]
         auto& patch = mesh_data.patches_[patch_id];
@@ -54,21 +54,21 @@ void CTMeshModel::update(MeshData& mesh_data)
         // 从数据中移除已处理的patch id
         data_patch_ids.erase(patch_id); 
 
-        // 遍历面更新：MeshData::face_vertices, Patch::faces
+        // 遍历面更新：MeshData::face_vertices_, Patch::faces
         patch->faces.clear(); // 清空之前的面片信息
         patch->faces.reserve(faces.size()); // 预留空间以提高性能
         for (auto& face : faces) {
-            patch->faces.emplace_back(mesh_data.face_vertex_offsets.size() - 1); // 存面索引
+            patch->faces.emplace_back(mesh_data.face_vertices_offset_.size() - 1); // 存面索引
 
             int i = 0;
             // 添加新面的点
             for (MeshLib::CTMesh::FaceVertexIterator vi(face); !vi.end(); ++vi) {
-                auto& cur_index = mesh_data.face_vertices.emplace_back();
+                auto& cur_index = mesh_data.face_vertices_.emplace_back();
                 cur_index = vertex_index_map[vi.value()->id()]; // 存点索引
                 ++i;
             }
 
-            mesh_data.face_vertex_offsets.push_back(i + mesh_data.face_vertex_offsets.back());
+            mesh_data.face_vertices_offset_.push_back(i + mesh_data.face_vertices_offset_.back());
         }
     }
 

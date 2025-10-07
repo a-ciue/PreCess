@@ -22,6 +22,7 @@ Row{
             ListElement{text: "..."}
             ListElement{text: "边"}
             ListElement{text: "面"}
+            ListElement{text: "体"}
             ListElement{text: "块"}
         }
         onCurrentTextChanged: comboBoxSelectionChanged()
