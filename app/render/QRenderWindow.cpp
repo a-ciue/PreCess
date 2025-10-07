@@ -271,8 +271,9 @@ void QRenderWindow::setSelectMode(QString select_mode)
         }
         else if(select_mode == "Block"){
             select_mode_ = SelectMode::Block;
-        }
-        else{
+        } else if (select_mode == "Solid"){
+            select_mode_ = SelectMode::Solid;
+        } else {
             select_mode_ = SelectMode::None;
         }
         selectManager_->setSelectMode(select_mode_);        

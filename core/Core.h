@@ -20,6 +20,7 @@ enum class SelectMode {
     None,
     Face,
     Edge,
+    Solid,
     Block
 };
 

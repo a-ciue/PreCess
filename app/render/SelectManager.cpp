@@ -33,35 +33,20 @@ void SelectManager::setSelectMode(SelectMode select_mode)
 {
     this->select_mode_ = select_mode;
     if (this->select_mode_ == SelectMode::Face) {
-        if (this->selector_) {
-            this->selector_->clear();
-        }
         this->selector_ = std::make_unique<SingleFaceSelectorHighlight>(this->renderer_);
-        if (this->cur_model_actor_) {
-            this->selector_->setCurModelActor(*cur_model_actor_);
-        }
     } else if (this->select_mode_ == SelectMode::Block) {
-        if (this->selector_) {
-            this->selector_->clear();
-        }
         this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
-        if (this->cur_model_actor_) {
-            this->selector_->setCurModelActor(*cur_model_actor_);
-        }
     } else if (this->select_mode_ == SelectMode::Edge) {
-        if (this->selector_) {
-            this->selector_->clear();
-        }
         this->selector_ = std::make_unique<SingleEdgeSelectorHighlight>(this->renderer_);
-        if (this->cur_model_actor_) {
-            this->selector_->setCurModelActor(*cur_model_actor_);
-        }
+    } else if (this->select_mode_ == SelectMode::Solid) {
+        this->selector_ = std::make_unique<SingleSolidSelectorHighlight>(this->renderer_);
     } else {
         assert(this->select_mode_ == SelectMode::None);
-        if (this->selector_) {
-            this->selector_->clear();
-        }
         this->selector_ = nullptr;
+    }
+
+    if (this->selector_ && this->cur_model_actor_) {
+        this->selector_->setCurModelActor(*cur_model_actor_);
     }
 }
 

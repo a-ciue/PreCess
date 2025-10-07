@@ -421,6 +421,9 @@ ApplicationWindow {
                 if(selectType === "块"){
                     myItem.setSelectMode("Block")
                 }
+                if(selectType === "体"){
+                    myItem.setSelectMode("Solid")
+                }
             }
 
             function changeEnable(){}
