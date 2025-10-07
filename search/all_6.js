@@ -2,8 +2,8 @@ var searchData=
 [
   ['face_0',['face',['../classMeshLib_1_1CHalfEdge.html#a2d308b6e3d230164419e78ae4be7a41a',1,'MeshLib::CHalfEdge']]],
   ['face_2eh_1',['Face.h',['../Face_8h.html',1,'']]],
-  ['face_5fvertex_5foffsets_2',['face_vertex_offsets',['../structMeshData.html#af226d93496aa714c68840099f9a492f1',1,'MeshData']]],
-  ['face_5fvertices_3',['face_vertices',['../structMeshData.html#a8fc52d261fa72cd374337eef4241fca3',1,'MeshData']]],
+  ['face_5fvertices_5f_2',['face_vertices_',['../structMeshData.html#a1905a5d8092320d547eb96be6f527918',1,'MeshData']]],
+  ['face_5fvertices_5foffset_5f_3',['face_vertices_offset_',['../structMeshData.html#a994686c601707d424a111695960dd678',1,'MeshData']]],
   ['faceedgeiterator_4',['FaceEdgeIterator',['../classMeshLib_1_1FaceEdgeIterator.html',1,'MeshLib::FaceEdgeIterator&lt; CVertex, CEdge, CFace, CHalfEdge &gt;'],['../classMeshLib_1_1FaceEdgeIterator.html#a73b6a961906309febf686830999e5b9b',1,'MeshLib::FaceEdgeIterator::FaceEdgeIterator()']]],
   ['facehalfedge_5',['faceHalfedge',['../classMeshLib_1_1CBaseMesh.html#a24655b5a0c6cba60c236c84def777e9a',1,'MeshLib::CBaseMesh']]],
   ['facehalfedgeiterator_6',['FaceHalfedgeIterator',['../classMeshLib_1_1FaceHalfedgeIterator.html',1,'MeshLib::FaceHalfedgeIterator&lt; CVertex, CEdge, CFace, CHalfEdge &gt;'],['../classMeshLib_1_1FaceHalfedgeIterator.html#ad0206cbb7214b717bbc625bab2b54f5e',1,'MeshLib::FaceHalfedgeIterator::FaceHalfedgeIterator()']]],

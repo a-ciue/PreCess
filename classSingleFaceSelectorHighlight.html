@@ -103,16 +103,17 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a4e3f478d55c4b077ac8cea597e78e603" id="r_a4e3f478d55c4b077ac8cea597e78e603"><td class="memItemLeft" align="right" valign="top"><a id="a4e3f478d55c4b077ac8cea597e78e603" name="a4e3f478d55c4b077ac8cea597e78e603"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>SingleFaceSelectorHighlight</b> (vtkRenderer *renderer)</td></tr>
 <tr class="memdesc:a4e3f478d55c4b077ac8cea597e78e603"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor绑定到renderer，mapper绑定到actor <br /></td></tr>
-<tr class="memitem:a83c8b802be1cf801e41e5832f2aa2099" id="r_a83c8b802be1cf801e41e5832f2aa2099"><td class="memItemLeft" align="right" valign="top"><a id="a83c8b802be1cf801e41e5832f2aa2099" name="a83c8b802be1cf801e41e5832f2aa2099"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>~SingleFaceSelectorHighlight</b> ()</td></tr>
-<tr class="memdesc:a83c8b802be1cf801e41e5832f2aa2099"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor从renderer中删除 <br /></td></tr>
+<tr class="memitem:ad81750f18341fdb68dde3e36856aa27c" id="r_ad81750f18341fdb68dde3e36856aa27c"><td class="memItemLeft" align="right" valign="top"><a id="ad81750f18341fdb68dde3e36856aa27c" name="ad81750f18341fdb68dde3e36856aa27c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>~SingleFaceSelectorHighlight</b> () override</td></tr>
+<tr class="memdesc:ad81750f18341fdb68dde3e36856aa27c"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor从renderer中删除 <br /></td></tr>
 <tr class="memitem:aff3b7849ec18fbd0f2048ac4d09e3f8f" id="r_aff3b7849ec18fbd0f2048ac4d09e3f8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSelection.html">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff3b7849ec18fbd0f2048ac4d09e3f8f">get</a> () override</td></tr>
 <tr class="memdesc:aff3b7849ec18fbd0f2048ac4d09e3f8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回当前选择的面  <br /></td></tr>
 <tr class="memitem:a725602d01cf11fc59a18d184c64bce03" id="r_a725602d01cf11fc59a18d184c64bce03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a725602d01cf11fc59a18d184c64bce03">clear</a> () override</td></tr>
 <tr class="memdesc:a725602d01cf11fc59a18d184c64bce03"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空selection并取消高亮，即清空mapper  <br /></td></tr>
 <tr class="memitem:a2d8dfc7ee69b0f19f8d22bd582c84d53" id="r_a2d8dfc7ee69b0f19f8d22bd582c84d53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d8dfc7ee69b0f19f8d22bd582c84d53">select</a> (double posx, double posy) override</td></tr>
 <tr class="memdesc:a2d8dfc7ee69b0f19f8d22bd582c84d53"><td class="mdescLeft">&#160;</td><td class="mdescRight">找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()  <br /></td></tr>
-<tr class="memitem:a1cdd750e57ccaa0f649d9b67c11e6000" id="r_a1cdd750e57ccaa0f649d9b67c11e6000"><td class="memItemLeft" align="right" valign="top">vtkPropCollection *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1cdd750e57ccaa0f649d9b67c11e6000">getPickList</a> () override</td></tr>
+<tr class="memitem:ab55750471c80f964a866a7c29e434dbf" id="r_ab55750471c80f964a866a7c29e434dbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab55750471c80f964a866a7c29e434dbf">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor) override</td></tr>
+<tr class="memdesc:ab55750471c80f964a866a7c29e434dbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a725602d01cf11fc59a18d184c64bce03" name="a725602d01cf11fc59a18d184c64bce03"></a>
@@ -140,7 +141,7 @@ Public 成员函数</h2></td></tr>
 
 <p>清空selection并取消高亮，即清空mapper </p>
 
-<p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
+<p>实现了 <a class="el" href="classSelectorHighlight.html#a848c28c9db33a22a74d31fa1be332581">SelectorHighlight</a>.</p>
 
 </div>
 </div>
@@ -168,33 +169,6 @@ Public 成员函数</h2></td></tr>
 </div><div class="memdoc">
 
 <p>返回当前选择的面 </p>
-
-<p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
-
-</div>
-</div>
-<a id="a1cdd750e57ccaa0f649d9b67c11e6000" name="a1cdd750e57ccaa0f649d9b67c11e6000"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cdd750e57ccaa0f649d9b67c11e6000">&#9670;&#160;</a></span>getPickList()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkPropCollection * SingleFaceSelectorHighlight::getPickList </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 <p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
 
@@ -230,6 +204,41 @@ Public 成员函数</h2></td></tr>
 <p>找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell() </p>
 
 <p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
+
+</div>
+</div>
+<a id="ab55750471c80f964a866a7c29e434dbf" name="ab55750471c80f964a866a7c29e434dbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab55750471c80f964a866a7c29e434dbf">&#9670;&#160;</a></span>setCurModelActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SingleFaceSelectorHighlight::setCurModelActor </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a></td>          <td class="paramname"><span class="paramname"><em>model_actor</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置当前操作的模型actor </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_actor</td><td>ModelActor的操作类，目前暂时只支持操作MeshActor </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>实现了 <a class="el" href="classSelectorHighlight.html#a80730c692a8cd3a6c0e17bfe275b32e1">SelectorHighlight</a>.</p>
 
 </div>
 </div>

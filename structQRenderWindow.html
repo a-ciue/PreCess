@@ -130,18 +130,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setModelQuery</b> (<a
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setCurEdgeRender</b> (bool edge_render)</td></tr>
 <tr class="memitem:a9b4a608ecd706ad22ba626c59ab65994" id="r_a9b4a608ecd706ad22ba626c59ab65994"><td class="memItemLeft" align="right" valign="top"><a id="a9b4a608ecd706ad22ba626c59ab65994" name="a9b4a608ecd706ad22ba626c59ab65994"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>getCurEdgeRender</b> ()</td></tr>
-<tr class="memitem:a7d416e7779f78b627a6b96afc23b9477" id="r_a7d416e7779f78b627a6b96afc23b9477"><td class="memItemLeft" align="right" valign="top"><a id="a7d416e7779f78b627a6b96afc23b9477" name="a7d416e7779f78b627a6b96afc23b9477"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getMeshIsEdgeRender</b> (Index model_id)</td></tr>
-<tr class="memitem:a145add00a91407ad8b3790fba7da47c2" id="r_a145add00a91407ad8b3790fba7da47c2"><td class="memItemLeft" align="right" valign="top"><a id="a145add00a91407ad8b3790fba7da47c2" name="a145add00a91407ad8b3790fba7da47c2"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getSplineIsEdgeRender</b> (Index model_id)</td></tr>
-<tr class="memitem:adfcd90ce8764f42604bc0cbaffb7167c" id="r_adfcd90ce8764f42604bc0cbaffb7167c"><td class="memItemLeft" align="right" valign="top"><a id="adfcd90ce8764f42604bc0cbaffb7167c" name="adfcd90ce8764f42604bc0cbaffb7167c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getIsEdgeRender</b> (Index model_id)</td></tr>
-<tr class="memitem:a7577faf4bd003dd171b488088f0606bd" id="r_a7577faf4bd003dd171b488088f0606bd"><td class="memItemLeft" align="right" valign="top"><a id="a7577faf4bd003dd171b488088f0606bd" name="a7577faf4bd003dd171b488088f0606bd"></a>
-QString&#160;</td><td class="memItemRight" valign="bottom"><b>getMeshRenderMode</b> (Index model_id)</td></tr>
-<tr class="memitem:a946568b224a9a597931b2e1fe56b9301" id="r_a946568b224a9a597931b2e1fe56b9301"><td class="memItemLeft" align="right" valign="top"><a id="a946568b224a9a597931b2e1fe56b9301" name="a946568b224a9a597931b2e1fe56b9301"></a>
-QString&#160;</td><td class="memItemRight" valign="bottom"><b>getSplineRenderMode</b> (Index model_id)</td></tr>
-<tr class="memitem:afb7cb6158bef03e62059ed731d572693" id="r_afb7cb6158bef03e62059ed731d572693"><td class="memItemLeft" align="right" valign="top"><a id="afb7cb6158bef03e62059ed731d572693" name="afb7cb6158bef03e62059ed731d572693"></a>
-QString&#160;</td><td class="memItemRight" valign="bottom"><b>getRenderMode</b> (Index model_id)</td></tr>
+<tr class="memitem:a1a07b2cd7313a933a0e52007ad74347c" id="r_a1a07b2cd7313a933a0e52007ad74347c"><td class="memItemLeft" align="right" valign="top"><a id="a1a07b2cd7313a933a0e52007ad74347c" name="a1a07b2cd7313a933a0e52007ad74347c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>getIsEdgeRender</b> (<a class="el" href="structQRenderWindow_1_1Data.html">Data</a> &amp;vtk, Index model_id)</td></tr>
 <tr class="memitem:ad9a7dbce503ce7fa32daa744a5a4dade" id="r_ad9a7dbce503ce7fa32daa744a5a4dade"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad9a7dbce503ce7fa32daa744a5a4dade">setSelectModel</a> (Index model_id)</td></tr>
 <tr class="memdesc:ad9a7dbce503ce7fa32daa744a5a4dade"><td class="mdescLeft">&#160;</td><td class="mdescRight">选择模型  <br /></td></tr>
 <tr class="memitem:a80e72521ebcd80c30c80dacf573dd9ac" id="r_a80e72521ebcd80c30c80dacf573dd9ac"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80e72521ebcd80c30c80dacf573dd9ac">setSelectMode</a> (QString select_mode)</td></tr>
@@ -158,6 +148,8 @@ QString&#160;</td><td class="memItemRight" valign="bottom"><b>getRenderMode</b> 
 Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><b>onModelChanged</b> (Index model_id)</td></tr>
 <tr class="memitem:a61e905ae1619f2bcff8f6536c659c047" id="r_a61e905ae1619f2bcff8f6536c659c047"><td class="memItemLeft" align="right" valign="top"><a id="a61e905ae1619f2bcff8f6536c659c047" name="a61e905ae1619f2bcff8f6536c659c047"></a>
 Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteModel</b> (Index mode_id)</td></tr>
+<tr class="memitem:a8ac6aa9516e2af60122d4cf19fd1dda7" id="r_a8ac6aa9516e2af60122d4cf19fd1dda7"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ac6aa9516e2af60122d4cf19fd1dda7">setMeshClip</a> (bool on)</td></tr>
+<tr class="memdesc:a8ac6aa9516e2af60122d4cf19fd1dda7"><td class="mdescLeft">&#160;</td><td class="mdescRight">对网格对象设置全局裁剪模式  <br /></td></tr>
 <tr class="memitem:a161149b107f8ee29c062a8afd6d4c5b3" id="r_a161149b107f8ee29c062a8afd6d4c5b3"><td class="memItemLeft" align="right" valign="top"><a id="a161149b107f8ee29c062a8afd6d4c5b3" name="a161149b107f8ee29c062a8afd6d4c5b3"></a>
 Q_SLOT void&#160;</td><td class="memItemRight" valign="bottom"><b>setClick</b> ()</td></tr>
 <tr class="memitem:acb350e137abe53836f74a1568abec6df" id="r_acb350e137abe53836f74a1568abec6df"><td class="memItemLeft" align="right" valign="top"><a id="acb350e137abe53836f74a1568abec6df" name="acb350e137abe53836f74a1568abec6df"></a>
@@ -221,6 +213,31 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>cur_edge_render</b></
 <dl class="params"><dt>参数</dt><dd>
   <table class="params">
     <tr><td class="paramname">select_mode</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8ac6aa9516e2af60122d4cf19fd1dda7" name="a8ac6aa9516e2af60122d4cf19fd1dda7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ac6aa9516e2af60122d4cf19fd1dda7">&#9670;&#160;</a></span>setMeshClip()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::setMeshClip </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>on</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>对网格对象设置全局裁剪模式 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">on</td><td>是否开启 </td></tr>
   </table>
   </dd>
 </dl>

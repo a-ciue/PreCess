@@ -110,7 +110,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:af565d7b1c286faa9505856c03b15656f"><td class="mdescLeft">&#160;</td><td class="mdescRight">找到该坐标下的actor，并高亮该actor；若选中已选actor要取消选中和高亮  <br /></td></tr>
 <tr class="memitem:a3bda01a0e127cae5ab71505b43785e85" id="r_a3bda01a0e127cae5ab71505b43785e85"><td class="memItemLeft" align="right" valign="top"><a id="a3bda01a0e127cae5ab71505b43785e85" name="a3bda01a0e127cae5ab71505b43785e85"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>highlightBlockByCellColor</b> (vtkCompositePolyDataMapper *mapper, unsigned int block_index, unsigned char r, unsigned char g, unsigned char b)</td></tr>
-<tr class="memitem:aa45e84de4206cdddf270f2400deb1356" id="r_aa45e84de4206cdddf270f2400deb1356"><td class="memItemLeft" align="right" valign="top">vtkPropCollection *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa45e84de4206cdddf270f2400deb1356">getPickList</a> () override</td></tr>
+<tr class="memitem:a411dcef06225f31343101fc432aac63a" id="r_a411dcef06225f31343101fc432aac63a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a411dcef06225f31343101fc432aac63a">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor) override</td></tr>
+<tr class="memdesc:a411dcef06225f31343101fc432aac63a"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a00db2380779b365e92193b6620ea56f2" name="a00db2380779b365e92193b6620ea56f2"></a>
@@ -138,7 +139,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>highlightBlockByCellC
 
 <p>清空selections并取消高亮 </p>
 
-<p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
+<p>实现了 <a class="el" href="classSelectorHighlight.html#a848c28c9db33a22a74d31fa1be332581">SelectorHighlight</a>.</p>
 
 </div>
 </div>
@@ -166,33 +167,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>highlightBlockByCellC
 </div><div class="memdoc">
 
 <p>获取当前选中的actors </p>
-
-<p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
-
-</div>
-</div>
-<a id="aa45e84de4206cdddf270f2400deb1356" name="aa45e84de4206cdddf270f2400deb1356"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa45e84de4206cdddf270f2400deb1356">&#9670;&#160;</a></span>getPickList()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkPropCollection * BlockSelectorHighlight::getPickList </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 <p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
 
@@ -228,6 +202,41 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>highlightBlockByCellC
 <p>找到该坐标下的actor，并高亮该actor；若选中已选actor要取消选中和高亮 </p>
 
 <p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
+
+</div>
+</div>
+<a id="a411dcef06225f31343101fc432aac63a" name="a411dcef06225f31343101fc432aac63a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a411dcef06225f31343101fc432aac63a">&#9670;&#160;</a></span>setCurModelActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BlockSelectorHighlight::setCurModelActor </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a></td>          <td class="paramname"><span class="paramname"><em>model_actor</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置当前操作的模型actor </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_actor</td><td>ModelActor的操作类，目前暂时只支持操作MeshActor </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>实现了 <a class="el" href="classSelectorHighlight.html#a80730c692a8cd3a6c0e17bfe275b32e1">SelectorHighlight</a>.</p>
 
 </div>
 </div>

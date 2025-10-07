@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['get_0',['get',['../classBlockSelectorHighlight.html#a1a9f8e03b530538b03295c5d2f8a1cc2',1,'BlockSelectorHighlight::get()'],['../classSingleFaceSelectorHighlight.html#aff3b7849ec18fbd0f2048ac4d09e3f8f',1,'SingleFaceSelectorHighlight::get()'],['../classSingleEdgeSelectorHighlight.html#ada0c04691f53d30a85d00b0e3160ed13',1,'SingleEdgeSelectorHighlight::get()']]],
+  ['get_0',['get',['../classBlockSelectorHighlight.html#a1a9f8e03b530538b03295c5d2f8a1cc2',1,'BlockSelectorHighlight::get()'],['../classSingleFaceSelectorHighlight.html#aff3b7849ec18fbd0f2048ac4d09e3f8f',1,'SingleFaceSelectorHighlight::get()'],['../classSingleEdgeSelectorHighlight.html#ada0c04691f53d30a85d00b0e3160ed13',1,'SingleEdgeSelectorHighlight::get()'],['../classSingleSolidSelectorHighlight.html#a02d8fc1a678162288ec88574f4986a97',1,'SingleSolidSelectorHighlight::get()']]],
   ['getalgorithminfos_1',['getAlgorithmInfos',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a8070d5f13544187d1628156fed971266',1,'systems::algo::AlgorithmSystem']]],
   ['getalgorithmsinfo_2',['getAlgorithmsInfo',['../classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html#a6bd279ea1b7dfd63c7b4ae1d3a09fafe',1,'systems::algo::QAlgorithmSystemAdaptor']]],
   ['getdialognamefilters_3',['getDialogNameFilters',['../classsystems_1_1io_1_1QModelIOSystemAdaptor.html#a9bdb1d03075af65a27f20197daf4f88e',1,'systems::io::QModelIOSystemAdaptor']]],

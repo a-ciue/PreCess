@@ -78,6 +78,11 @@ $(function() {
   <div class="headertitle"><div class="title">MeshDataVtk结构体 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>用于存储网格数据以供 VTK 渲染使用的结构体  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Core_8h_source.html">Core.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -86,16 +91,35 @@ Index&#160;</td><td class="memItemRight" valign="bottom"><b>model_block_id</b> (
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
-<tr class="memitem:aae9b4b79586e6e7e1b9d467b9681c324" id="r_aae9b4b79586e6e7e1b9d467b9681c324"><td class="memItemLeft" align="right" valign="top"><a id="aae9b4b79586e6e7e1b9d467b9681c324" name="aae9b4b79586e6e7e1b9d467b9681c324"></a>
-const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_poly_vertices_</b></td></tr>
-<tr class="memitem:ac411fd34eef101aeddbca8186750e037" id="r_ac411fd34eef101aeddbca8186750e037"><td class="memItemLeft" align="right" valign="top"><a id="ac411fd34eef101aeddbca8186750e037" name="ac411fd34eef101aeddbca8186750e037"></a>
-const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_poly_offsets_</b></td></tr>
 <tr class="memitem:a026080d79dbe29db73e7284bfde5bfed" id="r_a026080d79dbe29db73e7284bfde5bfed"><td class="memItemLeft" align="right" valign="top"><a id="a026080d79dbe29db73e7284bfde5bfed" name="a026080d79dbe29db73e7284bfde5bfed"></a>
 const std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_points_</b></td></tr>
+<tr class="memitem:aa679d1ced3d2d089829fc05970c5ea84" id="r_aa679d1ced3d2d089829fc05970c5ea84"><td class="memItemLeft" align="right" valign="top"><a id="aa679d1ced3d2d089829fc05970c5ea84" name="aa679d1ced3d2d089829fc05970c5ea84"></a>
+const std::vector&lt; unsigned char &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_solid_cell_types_</b></td></tr>
+<tr class="memitem:ae6703fba389c0033ae27371ae2eb4008" id="r_ae6703fba389c0033ae27371ae2eb4008"><td class="memItemLeft" align="right" valign="top"><a id="ae6703fba389c0033ae27371ae2eb4008" name="ae6703fba389c0033ae27371ae2eb4008"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_solid_cells_</b></td></tr>
+<tr class="memitem:ac0be0c3b77b7983a91f9c59c1ba9e689" id="r_ac0be0c3b77b7983a91f9c59c1ba9e689"><td class="memItemLeft" align="right" valign="top"><a id="ac0be0c3b77b7983a91f9c59c1ba9e689" name="ac0be0c3b77b7983a91f9c59c1ba9e689"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_solid_cells_offset_</b></td></tr>
+<tr class="memitem:a90b759203359d73185b284d95e89cfe0" id="r_a90b759203359d73185b284d95e89cfe0"><td class="memItemLeft" align="right" valign="top"><a id="a90b759203359d73185b284d95e89cfe0" name="a90b759203359d73185b284d95e89cfe0"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_solid_faces_</b></td></tr>
+<tr class="memitem:acdc3687a081c5661647273156283ea4f" id="r_acdc3687a081c5661647273156283ea4f"><td class="memItemLeft" align="right" valign="top"><a id="acdc3687a081c5661647273156283ea4f" name="acdc3687a081c5661647273156283ea4f"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_solid_faces_offset_</b></td></tr>
+<tr class="memitem:aef0e9b630293349e3be30730a40b7648" id="r_aef0e9b630293349e3be30730a40b7648"><td class="memItemLeft" align="right" valign="top"><a id="aef0e9b630293349e3be30730a40b7648" name="aef0e9b630293349e3be30730a40b7648"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_solid_face_locations_</b></td></tr>
+<tr class="memitem:a1db1bcf9da0e59f11a4c5a73a1659d9d" id="r_a1db1bcf9da0e59f11a4c5a73a1659d9d"><td class="memItemLeft" align="right" valign="top"><a id="a1db1bcf9da0e59f11a4c5a73a1659d9d" name="a1db1bcf9da0e59f11a4c5a73a1659d9d"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_solid_face_locations_offset_</b></td></tr>
+<tr class="memitem:adc7b628189e077adb36379f7114bed1d" id="r_adc7b628189e077adb36379f7114bed1d"><td class="memItemLeft" align="right" valign="top"><a id="adc7b628189e077adb36379f7114bed1d" name="adc7b628189e077adb36379f7114bed1d"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_face_cells_</b></td></tr>
+<tr class="memitem:a43e5eb4c6a4ec9342852363d703d14ac" id="r_a43e5eb4c6a4ec9342852363d703d14ac"><td class="memItemLeft" align="right" valign="top"><a id="a43e5eb4c6a4ec9342852363d703d14ac" name="a43e5eb4c6a4ec9342852363d703d14ac"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_face_cells_offset_</b></td></tr>
+<tr class="memitem:a73b262db1b0aab283da0dd9778d6ed17" id="r_a73b262db1b0aab283da0dd9778d6ed17"><td class="memItemLeft" align="right" valign="top"><a id="a73b262db1b0aab283da0dd9778d6ed17" name="a73b262db1b0aab283da0dd9778d6ed17"></a>
+const std::vector&lt; Index &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>vtk_edge_cells_</b></td></tr>
 <tr class="memitem:a1118eb1cbb38a9d80a5c454fce95c80b" id="r_a1118eb1cbb38a9d80a5c454fce95c80b"><td class="memItemLeft" align="right" valign="top"><a id="a1118eb1cbb38a9d80a5c454fce95c80b" name="a1118eb1cbb38a9d80a5c454fce95c80b"></a>
 std::shared_ptr&lt; <a class="el" href="structBlockDatas.html">BlockDatas</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>model_blocks_</b></td></tr>
 </table>
-<hr/>该结构体的文档由以下文件生成:<ul>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>用于存储网格数据以供 VTK 渲染使用的结构体 </p>
+<p>详细描述见 <a class="el" href="structMeshData.html">MeshData</a> 说明 </p><dl class="section see"><dt>参见</dt><dd><a class="el" href="structMeshData.html">MeshData</a> </dd></dl>
+</div><hr/>该结构体的文档由以下文件生成:<ul>
 <li>core/<a class="el" href="Core_8h_source.html">Core.h</a></li>
 </ul>
 </div><!-- contents -->

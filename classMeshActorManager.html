@@ -82,8 +82,8 @@ $(function() {
 Public 鎴愬憳鍑芥暟</h2></td></tr>
 <tr class="memitem:a74d5c7dfb308f0bcbddf1b1edf09dfd2" id="r_a74d5c7dfb308f0bcbddf1b1edf09dfd2"><td class="memItemLeft" align="right" valign="top"><a id="a74d5c7dfb308f0bcbddf1b1edf09dfd2" name="a74d5c7dfb308f0bcbddf1b1edf09dfd2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>bindRender</b> (vtkRenderer *renderer)</td></tr>
-<tr class="memitem:a82e8f281f087699e73429320dead2b8d" id="r_a82e8f281f087699e73429320dead2b8d"><td class="memItemLeft" align="right" valign="top"><a id="a82e8f281f087699e73429320dead2b8d" name="a82e8f281f087699e73429320dead2b8d"></a>
-const <a class="el" href="classMeshActor.html">MeshActor</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getModelActor</b> (Index model_id)</td></tr>
+<tr class="memitem:a1fd697281127d36399557dfa39491295" id="r_a1fd697281127d36399557dfa39491295"><td class="memItemLeft" align="right" valign="top"><a id="a1fd697281127d36399557dfa39491295" name="a1fd697281127d36399557dfa39491295"></a>
+std::shared_ptr&lt; const <a class="el" href="classMeshActor.html">MeshActor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getModelActor</b> (Index model_id)</td></tr>
 <tr class="memitem:a90d6906d45287a822521d7b0bf955ba7" id="r_a90d6906d45287a822521d7b0bf955ba7"><td class="memItemLeft" align="right" valign="top"><a id="a90d6906d45287a822521d7b0bf955ba7" name="a90d6906d45287a822521d7b0bf955ba7"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteModel</b> (Index model_id)</td></tr>
 <tr class="memitem:acfdd37a334be9491f392489eb4191c76" id="r_acfdd37a334be9491f392489eb4191c76"><td class="memItemLeft" align="right" valign="top"><a id="acfdd37a334be9491f392489eb4191c76" name="acfdd37a334be9491f392489eb4191c76"></a>
@@ -94,6 +94,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setVisibility</b> (In
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setRenderMode</b> (Index model_id, ModelRenderMode render_mode)</td></tr>
 <tr class="memitem:ac124292d0d788e6702297164b3b14376" id="r_ac124292d0d788e6702297164b3b14376"><td class="memItemLeft" align="right" valign="top"><a id="ac124292d0d788e6702297164b3b14376" name="ac124292d0d788e6702297164b3b14376"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setRenderEdge</b> (Index model_id, bool is_render)</td></tr>
+<tr class="memitem:af8909a31ec5b56feba3f60611583d076" id="r_af8909a31ec5b56feba3f60611583d076"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af8909a31ec5b56feba3f60611583d076">setClipPlane</a> (vtkPlane *plane)</td></tr>
+<tr class="memdesc:af8909a31ec5b56feba3f60611583d076"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置或取消裁剪平面  <br /></td></tr>
 <tr class="memitem:a24486a5afb83548592f2f52df8ee2483" id="r_a24486a5afb83548592f2f52df8ee2483"><td class="memItemLeft" align="right" valign="top"><a id="a24486a5afb83548592f2f52df8ee2483" name="a24486a5afb83548592f2f52df8ee2483"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>getCount</b> (Index model_id)</td></tr>
 <tr class="memitem:a9b7b2c9ef26498ef009718994f762be9" id="r_a9b7b2c9ef26498ef009718994f762be9"><td class="memItemLeft" align="right" valign="top"><a id="a9b7b2c9ef26498ef009718994f762be9" name="a9b7b2c9ef26498ef009718994f762be9"></a>
@@ -101,6 +103,32 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>getIsEdgeRender</b> (
 <tr class="memitem:ad7477a04a96ed862e2e384760d8a5e25" id="r_ad7477a04a96ed862e2e384760d8a5e25"><td class="memItemLeft" align="right" valign="top"><a id="ad7477a04a96ed862e2e384760d8a5e25" name="ad7477a04a96ed862e2e384760d8a5e25"></a>
 ModelRenderMode&#160;</td><td class="memItemRight" valign="bottom"><b>getMeshRenderMode</b> (Index model_id)</td></tr>
 </table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">鎴愬憳鍑芥暟璇存槑</h2>
+<a id="af8909a31ec5b56feba3f60611583d076" name="af8909a31ec5b56feba3f60611583d076"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8909a31ec5b56feba3f60611583d076">&#9670;&#160;</a></span>setClipPlane()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshActorManager::setClipPlane </td>
+          <td>(</td>
+          <td class="paramtype">vtkPlane *</td>          <td class="paramname"><span class="paramname"><em>plane</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置或取消裁剪平面 </p>
+<dl class="params"><dt>鍙傛暟</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">plane</td><td>裁剪平面，传入nullptr则取消裁剪 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>璇ョ被鐨勬枃妗ｇ敱浠ヤ笅鏂囦欢鐢熸垚:<ul>
 <li>app/render/<a class="el" href="MeshActorManager_8h_source.html">MeshActorManager.h</a></li>
 <li>app/render/<b>MeshActorManager.cpp</b></li>

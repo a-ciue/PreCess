@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['v_0',['v',['../classCPoint.html#a8101a3d84d2da4ae98126dc8a12bf535',1,'CPoint']]],
-  ['v_5flocal_5fid_1',['v_local_id',['../structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a83a73dd4e40a69179f86efefe956cc3a',1,'SingleEdgeSelectorHighlight::SelectedEdge']]],
-  ['vertex_5fcolor_2',['vertex_color',['../structtinyobj_1_1ObjReaderConfig.html#af89582372bda5ec5d45d7a20e7daf127',1,'tinyobj::ObjReaderConfig']]],
-  ['vertex_5fpositions_3',['vertex_positions',['../structMeshData.html#a4ad31e07f3b240f85b5f3d792c6da187',1,'MeshData']]]
+  ['solid_5ffaces_5f_0',['solid_faces_',['../structMeshData.html#ae15cb77405762cfcbdfb94aedc989bf7',1,'MeshData']]],
+  ['solid_5ffaces_5foffset_5f_1',['solid_faces_offset_',['../structMeshData.html#a42e7d0fbfabc2ba7b5c8c02b61ad0c95',1,'MeshData']]],
+  ['solid_5ffaces_5fvertices_5f_2',['solid_faces_vertices_',['../structMeshData.html#adee7d6dbdcf8576aabd676d15553c84d',1,'MeshData']]],
+  ['solid_5ffaces_5fvertices_5foffset_5f_3',['solid_faces_vertices_offset_',['../structMeshData.html#a57683f0d4db0df4ed8e4baf2363d7ac3',1,'MeshData']]],
+  ['solid_5ftypes_5f_4',['solid_types_',['../structMeshData.html#ae8d8335933110be77b6e91222a56ea71',1,'MeshData']]],
+  ['solid_5fvertices_5f_5',['solid_vertices_',['../structMeshData.html#ab5f1e587332750f98d252f4ed1b30099',1,'MeshData']]],
+  ['solid_5fvertices_5foffset_5f_6',['solid_vertices_offset_',['../structMeshData.html#aaea9d3e989bd31e8f46d25ded9b3d5d6',1,'MeshData']]]
 ];

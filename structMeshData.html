@@ -73,6 +73,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public 类型</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pub-attribs">Public 属性</a> &#124;
 <a href="structMeshData-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">MeshData结构体 参考</div></div>
@@ -86,67 +87,210 @@ using&#160;</td><td class="memItemRight" valign="bottom"><b>PatchMap</b> = std::
 <tr class="memitem:aff3987502c3ff7826c87d5f0472079e8" id="r_aff3987502c3ff7826c87d5f0472079e8"><td class="memItemLeft" align="right" valign="top"><a id="aff3987502c3ff7826c87d5f0472079e8" name="aff3987502c3ff7826c87d5f0472079e8"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>BlockMap</b> = std::unordered_map&lt;Index, std::unique_ptr&lt;<a class="el" href="structBlock.html">Block</a>&gt;&gt;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a441899feec76257ac227a6786fe9aea9" id="r_a441899feec76257ac227a6786fe9aea9"><td class="memItemLeft" align="right" valign="top"><a id="a441899feec76257ac227a6786fe9aea9" name="a441899feec76257ac227a6786fe9aea9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
+<tr class="memitem:adf69187de57678fe40d821885a600aa8" id="r_adf69187de57678fe40d821885a600aa8"><td class="memItemLeft" align="right" valign="top"><a id="adf69187de57678fe40d821885a600aa8" name="adf69187de57678fe40d821885a600aa8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> ()</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
-<tr class="memitem:a8fc52d261fa72cd374337eef4241fca3" id="r_a8fc52d261fa72cd374337eef4241fca3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8fc52d261fa72cd374337eef4241fca3">face_vertices</a></td></tr>
-<tr class="memdesc:a8fc52d261fa72cd374337eef4241fca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">多边形面网格点id索引  <br /></td></tr>
-<tr class="memitem:af226d93496aa714c68840099f9a492f1" id="r_af226d93496aa714c68840099f9a492f1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af226d93496aa714c68840099f9a492f1">face_vertex_offsets</a></td></tr>
-<tr class="memdesc:af226d93496aa714c68840099f9a492f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">存储每个面的顶点偏移量的索引数组。  <br /></td></tr>
-<tr class="memitem:a4ad31e07f3b240f85b5f3d792c6da187" id="r_a4ad31e07f3b240f85b5f3d792c6da187"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::array&lt; double, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ad31e07f3b240f85b5f3d792c6da187">vertex_positions</a></td></tr>
-<tr class="memdesc:a4ad31e07f3b240f85b5f3d792c6da187"><td class="mdescLeft">&#160;</td><td class="mdescRight">存储顶点的三维坐标位置。  <br /></td></tr>
+<tr class="memitem:a1110b959458b134f4c5e38a2db3cfe71" id="r_a1110b959458b134f4c5e38a2db3cfe71"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::array&lt; double, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1110b959458b134f4c5e38a2db3cfe71">vertex_positions_</a></td></tr>
+<tr class="memdesc:a1110b959458b134f4c5e38a2db3cfe71"><td class="mdescLeft">&#160;</td><td class="mdescRight">存储顶点的三维坐标。  <br /></td></tr>
+<tr class="memitem:a1905a5d8092320d547eb96be6f527918" id="r_a1905a5d8092320d547eb96be6f527918"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1905a5d8092320d547eb96be6f527918">face_vertices_</a></td></tr>
+<tr class="memdesc:a1905a5d8092320d547eb96be6f527918"><td class="mdescLeft">&#160;</td><td class="mdescRight">面的点索引，存储构成网格面单元的顶点索引。可以表示独立于体单元之外单独定义的面单元。  <br /></td></tr>
+<tr class="memitem:a994686c601707d424a111695960dd678" id="r_a994686c601707d424a111695960dd678"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a994686c601707d424a111695960dd678">face_vertices_offset_</a></td></tr>
+<tr class="memdesc:a994686c601707d424a111695960dd678"><td class="mdescLeft">&#160;</td><td class="mdescRight">面的点索引偏移，存储每个面单元的顶点偏移量数组。可以表示独立于体单元之外单独定义的面。  <br /></td></tr>
+<tr class="memitem:a136ea84f40ad248a6c07043dda96e81c" id="r_a136ea84f40ad248a6c07043dda96e81c"><td class="memItemLeft" align="right" valign="top"><a id="a136ea84f40ad248a6c07043dda96e81c" name="a136ea84f40ad248a6c07043dda96e81c"></a>
+std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>edge_vertices_</b></td></tr>
+<tr class="memdesc:a136ea84f40ad248a6c07043dda96e81c"><td class="mdescLeft">&#160;</td><td class="mdescRight">边的点索引，边单元的顶点索引数组，可以表示独立于体、面的边单元。每两个顶点索引表示一条边。 <br /></td></tr>
+<tr class="memitem:ae8d8335933110be77b6e91222a56ea71" id="r_ae8d8335933110be77b6e91222a56ea71"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8d8335933110be77b6e91222a56ea71">solid_types_</a></td></tr>
+<tr class="memdesc:ae8d8335933110be77b6e91222a56ea71"><td class="mdescLeft">&#160;</td><td class="mdescRight">体单元的类型，对应每个体单元的 VTK 类型编号。  <br /></td></tr>
+<tr class="memitem:ab5f1e587332750f98d252f4ed1b30099" id="r_ab5f1e587332750f98d252f4ed1b30099"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5f1e587332750f98d252f4ed1b30099">solid_vertices_</a></td></tr>
+<tr class="memdesc:ab5f1e587332750f98d252f4ed1b30099"><td class="mdescLeft">&#160;</td><td class="mdescRight">体的点索引，体单元的顶点索引数组，每个体单元的顶点索引连续存储。  <br /></td></tr>
+<tr class="memitem:aaea9d3e989bd31e8f46d25ded9b3d5d6" id="r_aaea9d3e989bd31e8f46d25ded9b3d5d6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaea9d3e989bd31e8f46d25ded9b3d5d6">solid_vertices_offset_</a> { 0 }</td></tr>
+<tr class="memdesc:aaea9d3e989bd31e8f46d25ded9b3d5d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">体的点索引偏移，存储每个体单元的顶点偏移量。  <br /></td></tr>
+<tr class="memitem:adee7d6dbdcf8576aabd676d15553c84d" id="r_adee7d6dbdcf8576aabd676d15553c84d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adee7d6dbdcf8576aabd676d15553c84d">solid_faces_vertices_</a></td></tr>
+<tr class="memdesc:adee7d6dbdcf8576aabd676d15553c84d"><td class="mdescLeft">&#160;</td><td class="mdescRight">体的面的点索引，存储构成多面体 vtkPolyhedron 的面的顶点（角点）索引，顺序存储。  <br /></td></tr>
+<tr class="memitem:a57683f0d4db0df4ed8e4baf2363d7ac3" id="r_a57683f0d4db0df4ed8e4baf2363d7ac3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a57683f0d4db0df4ed8e4baf2363d7ac3">solid_faces_vertices_offset_</a> { 0 }</td></tr>
+<tr class="memdesc:a57683f0d4db0df4ed8e4baf2363d7ac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">体的面的点索引偏移，存储构成多面体的面的顶点索引偏移量，同 solid_faces_vertices_ 一起定义了多面体的各个面。  <br /></td></tr>
+<tr class="memitem:ae15cb77405762cfcbdfb94aedc989bf7" id="r_ae15cb77405762cfcbdfb94aedc989bf7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae15cb77405762cfcbdfb94aedc989bf7">solid_faces_</a></td></tr>
+<tr class="memdesc:ae15cb77405762cfcbdfb94aedc989bf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">体的面索引，存储构成每个多面体的是哪些面。  <br /></td></tr>
+<tr class="memitem:a42e7d0fbfabc2ba7b5c8c02b61ad0c95" id="r_a42e7d0fbfabc2ba7b5c8c02b61ad0c95"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Index &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42e7d0fbfabc2ba7b5c8c02b61ad0c95">solid_faces_offset_</a> { 0 }</td></tr>
+<tr class="memdesc:a42e7d0fbfabc2ba7b5c8c02b61ad0c95"><td class="mdescLeft">&#160;</td><td class="mdescRight">体的面索引的偏移，存储多面体单元的面索引偏移量，同 solid_faces_ 一起定义了多面体的各个面。  <br /></td></tr>
 <tr class="memitem:a59f1e04e2185643cac0cc8ef811e36ad" id="r_a59f1e04e2185643cac0cc8ef811e36ad"><td class="memItemLeft" align="right" valign="top"><a id="a59f1e04e2185643cac0cc8ef811e36ad" name="a59f1e04e2185643cac0cc8ef811e36ad"></a>
 PatchMap&#160;</td><td class="memItemRight" valign="bottom"><b>patches_</b></td></tr>
 <tr class="memitem:ad5bf8ed9eb3e17cfadf3077b00c2fa2a" id="r_ad5bf8ed9eb3e17cfadf3077b00c2fa2a"><td class="memItemLeft" align="right" valign="top"><a id="ad5bf8ed9eb3e17cfadf3077b00c2fa2a" name="ad5bf8ed9eb3e17cfadf3077b00c2fa2a"></a>
 BlockMap&#160;</td><td class="memItemRight" valign="bottom"><b>blocks_</b></td></tr>
 </table>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="af226d93496aa714c68840099f9a492f1" name="af226d93496aa714c68840099f9a492f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af226d93496aa714c68840099f9a492f1">&#9670;&#160;</a></span>face_vertex_offsets</h2>
+<a id="a1905a5d8092320d547eb96be6f527918" name="a1905a5d8092320d547eb96be6f527918"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1905a5d8092320d547eb96be6f527918">&#9670;&#160;</a></span>face_vertices_</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;Index&gt; MeshData::face_vertex_offsets</td>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::face_vertices_</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>存储每个面的顶点偏移量的索引数组。 </p>
-<p>{ 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33 } </p>
+<p>面的点索引，存储构成网格面单元的顶点索引。可以表示独立于体单元之外单独定义的面单元。 </p>
+<p>{0, 1, 2, 2, 3, 0, 3, 2, 6, 6, 7, 3, 4, 0, 3, 3, 7, 4, 7, 6, 5, 5, 4, 7, 4, 5, 1, 1, 0, 4, 1, 5, 6, 6, 2, 1} </p>
 
 </div>
 </div>
-<a id="a8fc52d261fa72cd374337eef4241fca3" name="a8fc52d261fa72cd374337eef4241fca3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8fc52d261fa72cd374337eef4241fca3">&#9670;&#160;</a></span>face_vertices</h2>
+<a id="a994686c601707d424a111695960dd678" name="a994686c601707d424a111695960dd678"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a994686c601707d424a111695960dd678">&#9670;&#160;</a></span>face_vertices_offset_</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;Index&gt; MeshData::face_vertices</td>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::face_vertices_offset_</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>多边形面网格点id索引 </p>
-<p>0, 1, 2, 2, 3, 0, 3, 2, 6, 6, 7, 3, 4, 0, 3, 3, 7, 4, 7, 6, 5, 5, 4, 7, 4, 5, 1, 1, 0, 4, 1, 5, 6, 6, 2, 1 </p>
+<p>面的点索引偏移，存储每个面单元的顶点偏移量数组。可以表示独立于体单元之外单独定义的面。 </p>
+<p>{ 0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33 } 表示了 offsets size - 1 = 11个面单元 </p>
 
 </div>
 </div>
-<a id="a4ad31e07f3b240f85b5f3d792c6da187" name="a4ad31e07f3b240f85b5f3d792c6da187"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ad31e07f3b240f85b5f3d792c6da187">&#9670;&#160;</a></span>vertex_positions</h2>
+<a id="ae15cb77405762cfcbdfb94aedc989bf7" name="ae15cb77405762cfcbdfb94aedc989bf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae15cb77405762cfcbdfb94aedc989bf7">&#9670;&#160;</a></span>solid_faces_</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::array&lt;double, 3&gt; &gt; MeshData::vertex_positions</td>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::solid_faces_</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>存储顶点的三维坐标位置。 </p>
+<p>体的面索引，存储构成每个多面体的是哪些面。 </p>
+<p>例如，一个多面体由多个面构成，构成每个多面体的面id顺次存储在该数组中。 </p>
+
+</div>
+</div>
+<a id="a42e7d0fbfabc2ba7b5c8c02b61ad0c95" name="a42e7d0fbfabc2ba7b5c8c02b61ad0c95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42e7d0fbfabc2ba7b5c8c02b61ad0c95">&#9670;&#160;</a></span>solid_faces_offset_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::solid_faces_offset_ { 0 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>体的面索引的偏移，存储多面体单元的面索引偏移量，同 solid_faces_ 一起定义了多面体的各个面。 </p>
+<p>例如：{ 0, 6, 12 } 表示 solid_faces_ 中第 [0,6) 面构成第0个多面体，第[6,12)面构成第1个多面体。 注意：如果没有多面体（即所有体单元均为简单类型），该数组最少也要包含一个元素 {0}，表示没有多面体。 </p>
+
+</div>
+</div>
+<a id="adee7d6dbdcf8576aabd676d15553c84d" name="adee7d6dbdcf8576aabd676d15553c84d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adee7d6dbdcf8576aabd676d15553c84d">&#9670;&#160;</a></span>solid_faces_vertices_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::solid_faces_vertices_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>体的面的点索引，存储构成多面体 vtkPolyhedron 的面的顶点（角点）索引，顺序存储。 </p>
+<p>例如，有很多的面彼此组合成了多面体，每个面的顶点索引顺序存储在该数组中，表示了每个面是由这些顶点顺次连接来的。 注意：vtk 有明确定义体单元类型的不必要存储，只需按照vtk定义的顺序将顶点按序存入 solid_vertices_ 和 solid_vertices_offset_ 即可。此处单纯针对多面体 vtkPolyhedron 的情形，即更为复杂的情形，所以数组可以为空。 </p>
+
+</div>
+</div>
+<a id="a57683f0d4db0df4ed8e4baf2363d7ac3" name="a57683f0d4db0df4ed8e4baf2363d7ac3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57683f0d4db0df4ed8e4baf2363d7ac3">&#9670;&#160;</a></span>solid_faces_vertices_offset_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::solid_faces_vertices_offset_ { 0 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>体的面的点索引偏移，存储构成多面体的面的顶点索引偏移量，同 solid_faces_vertices_ 一起定义了多面体的各个面。 </p>
+<p>例如：{ 0, 4, 7, 10 } 表示 solid_faces_vertices_ 中第 [0,4) 点构成第0个面，第[4,7)面构成第1个面，第[7,10)面构成第2个面。 注意，offset数组虽然可以留空，但起码要有{0}表示没有face。 </p>
+
+</div>
+</div>
+<a id="ae8d8335933110be77b6e91222a56ea71" name="ae8d8335933110be77b6e91222a56ea71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8d8335933110be77b6e91222a56ea71">&#9670;&#160;</a></span>solid_types_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;unsigned char&gt; MeshData::solid_types_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>体单元的类型，对应每个体单元的 VTK 类型编号。 </p>
+<p>例如，六面体 VTK_HEXAHEDRON = 12, 三棱柱 VTK_WEDGE = 13, 任意多面体 VTK_POLYHEDRON = 42 等。参见 <a href="https://vtk.org/doc/nightly/html/vtkCellType_8h.html">https://vtk.org/doc/nightly/html/vtkCellType_8h.html</a> 注意：对于可存储任意形状的多面体 VTK_POLYHEDRON，需要同时使用 solid_faces_vertices_、solid_faces_vertices_offset_、solid_faces_ 和 solid_faces_offset_ 来定义其面的拓扑结构。 </p>
+
+</div>
+</div>
+<a id="ab5f1e587332750f98d252f4ed1b30099" name="ab5f1e587332750f98d252f4ed1b30099"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5f1e587332750f98d252f4ed1b30099">&#9670;&#160;</a></span>solid_vertices_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::solid_vertices_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>体的点索引，体单元的顶点索引数组，每个体单元的顶点索引连续存储。 </p>
+<p>例如，对于一个六面体（立方体）VTK_HEXAHEDRON，会有8个顶点索引按VTK定义的顺序依次存储，后面接着存放其他体单元的顶点索引。 </p>
+
+</div>
+</div>
+<a id="aaea9d3e989bd31e8f46d25ded9b3d5d6" name="aaea9d3e989bd31e8f46d25ded9b3d5d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaea9d3e989bd31e8f46d25ded9b3d5d6">&#9670;&#160;</a></span>solid_vertices_offset_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;Index&gt; MeshData::solid_vertices_offset_ { 0 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>体的点索引偏移，存储每个体单元的顶点偏移量。 </p>
+<p>例如：{ 0, 8, 14 } 表示两个体单元，第0个体单元由 solid_vertices_ 中的第 [0,8) 个顶点构成，第1个体单元由 solid_vertices_ 中的第 [8,14) 个顶点构成。 注意，offset数组虽然可以留空，但起码要有{0}表示没有cell。 </p>
+
+</div>
+</div>
+<a id="a1110b959458b134f4c5e38a2db3cfe71" name="a1110b959458b134f4c5e38a2db3cfe71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1110b959458b134f4c5e38a2db3cfe71">&#9670;&#160;</a></span>vertex_positions_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::array&lt;double, 3&gt; &gt; MeshData::vertex_positions_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>存储顶点的三维坐标。 </p>
 <p>{ 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 }, { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 }, { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 }, { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 } </p>
 
 </div>

@@ -1,13 +1,13 @@
 var searchData=
 [
   ['v_0',['v',['../classCPoint.html#a8101a3d84d2da4ae98126dc8a12bf535',1,'CPoint']]],
-  ['v_5flocal_5fid_1',['v_local_id',['../structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a83a73dd4e40a69179f86efefe956cc3a',1,'SingleEdgeSelectorHighlight::SelectedEdge']]],
+  ['v_5flocal_5fid_1',['v_local_id',['../structSingleEdgeSelectorHighlight_1_1SelectedEdge.html#a364e94f8d17b11d26b8dfae2d927e2c3',1,'SingleEdgeSelectorHighlight::SelectedEdge']]],
   ['valid_2',['Valid',['../classtinyobj_1_1ObjReader.html#ac4c689535db68c233dd063e7c726139d',1,'tinyobj::ObjReader']]],
   ['value_3',['value',['../classMeshLib_1_1VertexOutHalfedgeIterator.html#a3ee8e68ab6a2654f655962d23bef8f43',1,'MeshLib::VertexOutHalfedgeIterator::value()'],['../classMeshLib_1_1VertexInHalfedgeIterator.html#a4028fcc4080bd502307652219a5efdd3',1,'MeshLib::VertexInHalfedgeIterator::value()'],['../classMeshLib_1_1VertexVertexIterator.html#a7e699354ccb0d785b2baf640739871b7',1,'MeshLib::VertexVertexIterator::value()'],['../classMeshLib_1_1VertexEdgeIterator.html#af1b85c035fbc258ebecb56c0e4993602',1,'MeshLib::VertexEdgeIterator::value()'],['../classMeshLib_1_1VertexFaceIterator.html#a1236ae571f7ca5c5210074f65e979c23',1,'MeshLib::VertexFaceIterator::value()'],['../classMeshLib_1_1FaceHalfedgeIterator.html#ae3ce6a7b894ee85e9e9f61c995f563d4',1,'MeshLib::FaceHalfedgeIterator::value()'],['../classMeshLib_1_1FaceEdgeIterator.html#a9d1de3b8a52847d86fc8e5a7dfdab49c',1,'MeshLib::FaceEdgeIterator::value()'],['../classMeshLib_1_1FaceVertexIterator.html#a983110f5f7ccc989ce341798a652c332',1,'MeshLib::FaceVertexIterator::value()'],['../classMeshLib_1_1MeshVertexIterator.html#abc17c494e23270e6cc3635b98560970a',1,'MeshLib::MeshVertexIterator::value()'],['../classMeshLib_1_1MeshFaceIterator.html#afaa0b04d185177ebf4e082ff25796e85',1,'MeshLib::MeshFaceIterator::value()'],['../classMeshLib_1_1MeshEdgeIterator.html#a8e7d2bf808106df85bfb69be48e95ce7',1,'MeshLib::MeshEdgeIterator::value()'],['../classMeshLib_1_1MeshHalfEdgeIterator.html#a2a8e5036c6becc263c391fac6c3b6a6b',1,'MeshLib::MeshHalfEdgeIterator::value()']]],
   ['vertex_4',['vertex',['../classMeshLib_1_1CHalfEdge.html#afa5358d25b2e03cbd900644a508d6225',1,'MeshLib::CHalfEdge']]],
   ['vertex_2eh_5',['Vertex.h',['../Vertex_8h.html',1,'']]],
   ['vertex_5fcolor_6',['vertex_color',['../structtinyobj_1_1ObjReaderConfig.html#af89582372bda5ec5d45d7a20e7daf127',1,'tinyobj::ObjReaderConfig']]],
-  ['vertex_5fpositions_7',['vertex_positions',['../structMeshData.html#a4ad31e07f3b240f85b5f3d792c6da187',1,'MeshData']]],
+  ['vertex_5fpositions_5f_7',['vertex_positions_',['../structMeshData.html#a1110b959458b134f4c5e38a2db3cfe71',1,'MeshData']]],
   ['vertexedge_8',['vertexEdge',['../classMeshLib_1_1CBaseMesh.html#ae8a58acc899cab99f651b0845250d311',1,'MeshLib::CBaseMesh']]],
   ['vertexedgeiterator_9',['VertexEdgeIterator',['../classMeshLib_1_1VertexEdgeIterator.html',1,'MeshLib::VertexEdgeIterator&lt; CVertex, CEdge, CFace, CHalfEdge &gt;'],['../classMeshLib_1_1VertexEdgeIterator.html#a86457aa30a6d640cda9c8b3b97fd7174',1,'MeshLib::VertexEdgeIterator::VertexEdgeIterator()']]],
   ['vertexedges_10',['vertexEdges',['../classMeshLib_1_1CBaseMesh.html#a73ddf93eff3bcb04f5657bb858403cc1',1,'MeshLib::CBaseMesh']]],
@@ -25,8 +25,5 @@ var searchData=
   ['vertexnextclwouthalfedge_22',['vertexNextClwOutHalfEdge',['../classMeshLib_1_1CBaseMesh.html#af2f1696c5e66668c8b1f3fe98b4c5d92',1,'MeshLib::CBaseMesh']]],
   ['vertexouthalfedgeiterator_23',['VertexOutHalfedgeIterator',['../classMeshLib_1_1VertexOutHalfedgeIterator.html',1,'MeshLib::VertexOutHalfedgeIterator&lt; CVertex, CEdge, CFace, CHalfEdge &gt;'],['../classMeshLib_1_1VertexOutHalfedgeIterator.html#a3b504c6865e075c5fc2207a2a272b329',1,'MeshLib::VertexOutHalfedgeIterator::VertexOutHalfedgeIterator()']]],
   ['vertexvertexiterator_24',['VertexVertexIterator',['../classMeshLib_1_1VertexVertexIterator.html',1,'MeshLib::VertexVertexIterator&lt; CVertex, CEdge, CFace, CHalfEdge &gt;'],['../classMeshLib_1_1VertexVertexIterator.html#accadfb697db93459561c07d916519342',1,'MeshLib::VertexVertexIterator::VertexVertexIterator()']]],
-  ['vertices_25',['vertices',['../classMeshLib_1_1CBaseMesh.html#a65afb2dd09d095dd1d224d1fa308e9c2',1,'MeshLib::CBaseMesh']]],
-  ['vtksmartpointer_26',['vtkSmartPointer',['../classvtkSmartPointer.html',1,'']]],
-  ['vtksmartpointer_3c_20vtkactor_20_3e_27',['vtkSmartPointer&lt; vtkActor &gt;',['../classvtkSmartPointer.html',1,'']]],
-  ['vtksmartpointer_3c_20vtkcameraorientationwidget_20_3e_28',['vtkSmartPointer&lt; vtkCameraOrientationWidget &gt;',['../classvtkSmartPointer.html',1,'']]]
+  ['vertices_25',['vertices',['../classMeshLib_1_1CBaseMesh.html#a65afb2dd09d095dd1d224d1fa308e9c2',1,'MeshLib::CBaseMesh']]]
 ];

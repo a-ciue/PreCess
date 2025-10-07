@@ -1,31 +1,4 @@
 var searchData=
 [
-  ['m_5fboundary_0',['m_boundary',['../classMeshLib_1_1CVertex.html#a82467ff3e1f8bf16972a1b63326441c3',1,'MeshLib::CVertex']]],
-  ['m_5fedge_1',['m_edge',['../classMeshLib_1_1CHalfEdge.html#a881733f71ac3dd45d2ed7b587d70ee90',1,'MeshLib::CHalfEdge']]],
-  ['m_5fedges_2',['m_edges',['../classMeshLib_1_1CBaseMesh.html#a75a3b2cfe542f417a2f9400b52787728',1,'MeshLib::CBaseMesh::m_edges'],['../classMeshLib_1_1CVertex.html#ac6914ef1d52a245340b8bd07e671c87d',1,'MeshLib::CVertex::m_edges']]],
-  ['m_5fface_3',['m_face',['../classMeshLib_1_1CHalfEdge.html#a46309154e53acc173e688a8fe1299ef9',1,'MeshLib::CHalfEdge']]],
-  ['m_5ffaces_4',['m_faces',['../classMeshLib_1_1CBaseMesh.html#aed13e9aa114e6adfde3b910676480dd2',1,'MeshLib::CBaseMesh']]],
-  ['m_5fhalfedge_5',['m_halfedge',['../classMeshLib_1_1CEdge.html#a1d597f8d90c6c322ffbc5a454e7efb94',1,'MeshLib::CEdge::m_halfedge'],['../classMeshLib_1_1CFace.html#a583616821868cfcafc5cdfd1c5320f20',1,'MeshLib::CFace::m_halfedge'],['../classMeshLib_1_1CVertex.html#a322a95750dc442c4559ef180d35a6074',1,'MeshLib::CVertex::m_halfedge']]],
-  ['m_5fhalfedges_6',['m_halfedges',['../classMeshLib_1_1CBaseMesh.html#a68ac9a7b9087d8c83c307ea7f8299dcf',1,'MeshLib::CBaseMesh::m_halfedges'],['../classMeshLib_1_1CLoop.html#a52708198f9b27b7aba3f3df30f46bb5e',1,'MeshLib::CLoop::m_halfedges']]],
-  ['m_5fid_7',['m_id',['../classMeshLib_1_1CFace.html#ac8e8d0453e5e9882dc1ccbffea98734b',1,'MeshLib::CFace::m_id'],['../classMeshLib_1_1CVertex.html#a686d33c96343be3d7b9c46b628061bd9',1,'MeshLib::CVertex::m_id']]],
-  ['m_5fkey_8',['m_key',['../classMeshLib_1_1CToken.html#a239388f9ad2ccb0985e069754606655e',1,'MeshLib::CToken']]],
-  ['m_5flength_9',['m_length',['../classMeshLib_1_1CLoop.html#a3886caa41e199204666ca08dcf90f847',1,'MeshLib::CLoop']]],
-  ['m_5floops_10',['m_loops',['../classMeshLib_1_1CBoundary.html#aace53fe51b6ce09ba0d0f59a92ef413b',1,'MeshLib::CBoundary']]],
-  ['m_5fmap_5fface_11',['m_map_face',['../classMeshLib_1_1CBaseMesh.html#aacbeec9d726ecc9b9ca5ace06d3a244c',1,'MeshLib::CBaseMesh']]],
-  ['m_5fmap_5fvert_12',['m_map_vert',['../classMeshLib_1_1CBaseMesh.html#a587e5ce14b9a84ef648d0764a063450d',1,'MeshLib::CBaseMesh']]],
-  ['m_5fnext_13',['m_next',['../classMeshLib_1_1CHalfEdge.html#ac9688abf74f8ab58b051fd2eb3895704',1,'MeshLib::CHalfEdge']]],
-  ['m_5fnormal_14',['m_normal',['../classMeshLib_1_1CVertex.html#aa313fb31475b4951f50e50f141cec0fc',1,'MeshLib::CVertex']]],
-  ['m_5fphalfedge_15',['m_pHalfedge',['../classMeshLib_1_1CLoop.html#ad8bcb68b8cafda18031803a855b1c47a',1,'MeshLib::CLoop']]],
-  ['m_5fpmesh_16',['m_pMesh',['../classMeshLib_1_1CLoop.html#a4656ced7a75ac9a63bc5925bb667ee55',1,'MeshLib::CLoop::m_pMesh'],['../classMeshLib_1_1CBoundary.html#aa8433a77082ef2564f6dde8abac6cccf',1,'MeshLib::CBoundary::m_pMesh']]],
-  ['m_5fpoint_17',['m_point',['../classMeshLib_1_1CVertex.html#a0611ed63a1451d3077bcb2dbaf5f1e89',1,'MeshLib::CVertex']]],
-  ['m_5fprev_18',['m_prev',['../classMeshLib_1_1CHalfEdge.html#a7aaae52cda7d9cf2a18c42351c27b71e',1,'MeshLib::CHalfEdge']]],
-  ['m_5fstring_19',['m_string',['../classMeshLib_1_1CEdge.html#a810f0a280e3a97d449386cc5cb6cce3b',1,'MeshLib::CEdge::m_string'],['../classMeshLib_1_1CFace.html#afeb880ed9fa65f4e73f8f62c96ce347c',1,'MeshLib::CFace::m_string'],['../classMeshLib_1_1CHalfEdge.html#a1b8813067a597ad547dc8e2a9405f653',1,'MeshLib::CHalfEdge::m_string'],['../classMeshLib_1_1CVertex.html#a0ad694c0749eb9b71c0faaafde732d3e',1,'MeshLib::CVertex::m_string']]],
-  ['m_5fuv_20',['m_uv',['../classMeshLib_1_1CVertex.html#a8509cd466e9db87b76b2571783d111a2',1,'MeshLib::CVertex']]],
-  ['m_5fvalue_21',['m_value',['../classMeshLib_1_1CToken.html#a93193611239a7d9f5eba7d002dcd93e9',1,'MeshLib::CToken']]],
-  ['m_5fvertex_22',['m_vertex',['../classMeshLib_1_1CHalfEdge.html#acaa06714b73d14153124be09a64236c0',1,'MeshLib::CHalfEdge']]],
-  ['m_5fverts_23',['m_verts',['../classMeshLib_1_1CBaseMesh.html#aa418052e4678755232e854ce063f2b7b',1,'MeshLib::CBaseMesh']]],
-  ['m_5fw_24',['m_w',['../classMeshLib_1_1CQrot.html#a5c166af3330491d45dcbb2059ae08c45',1,'MeshLib::CQrot']]],
-  ['m_5fwith_5fnormal_25',['m_with_normal',['../classMeshLib_1_1CBaseMesh.html#a105ddccad80953028cc54cd317dee8a4',1,'MeshLib::CBaseMesh']]],
-  ['m_5fwith_5ftexture_26',['m_with_texture',['../classMeshLib_1_1CBaseMesh.html#a36ba9fb8f3b289de348f1133ee6ab4bb',1,'MeshLib::CBaseMesh']]],
-  ['mtl_5fsearch_5fpath_27',['mtl_search_path',['../structtinyobj_1_1ObjReaderConfig.html#aff3620e91b88583d1eb7747079941b65',1,'tinyobj::ObjReaderConfig']]]
+  ['ids_0',['ids',['../structSelection.html#a41cce7a4f240f8b802b798fc94b44835',1,'Selection']]]
 ];
