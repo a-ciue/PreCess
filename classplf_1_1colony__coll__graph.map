@@ -1,7 +1,12 @@
 <map id="plf::colony&lt; element_type, allocator_type, priority &gt;" name="plf::colony&lt; element_type, allocator_type, priority &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,176,168,231"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="14,101,159,127"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,141,89,176,84,176,84,141"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="67,5,106,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,45,89,101,84,101,84,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="569,158,732,213"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="186,65,331,90"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="292,55,343,31,408,10,444,4,479,3,514,9,547,22,582,49,610,86,630,123,643,156,638,158,625,125,605,88,578,53,544,26,512,14,479,9,444,10,410,15,345,36,294,60"/>
+<area shape="poly" id="edge4_Node000001_Node000002" title=" " alt="" coords="288,96,330,125,381,149,463,165,569,176,569,182,462,170,379,154,328,129,285,101"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,65,44,90"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="58,75,186,75,186,80,58,80"/>
+<area shape="rect" id="Node000004" href="$classplf_1_1colony_1_1colony__iterator.html" title=" " alt="" coords="161,187,356,256"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="370,226,456,226,545,217,576,210,577,215,546,223,456,231,370,231"/>
+<area shape="rect" id="Node000005" href="$structplf_1_1conditional.html" title=" " alt="" coords="163,280,354,320"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="367,305,456,298,501,289,544,275,568,262,590,246,625,211,629,215,593,250,571,266,546,280,503,294,457,304,368,310"/>
 </map>

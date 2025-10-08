@@ -1,5 +1,11 @@
 <map id="QRenderWindowStyle" name="QRenderWindowStyle">
-<area shape="rect" id="Node000001" title=" " alt="" coords="23,93,185,119"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,203,45"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,59,107,93,101,93,101,59"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="44,323,207,348"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,212,203,252"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,265,126,322,120,323,108,266"/>
+<area shape="rect" id="Node000003" href="$classSelectManager.html" title=" " alt="" coords="227,219,346,245"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="258,254,145,325,142,320,255,250"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="193,101,380,141"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="289,155,289,219,284,219,284,155"/>
+<area shape="rect" id="Node000005" href="$classSelectorHighlight.html" title=" " alt="" coords="219,5,354,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="289,45,289,101,284,101,284,45"/>
 </map>

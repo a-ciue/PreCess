@@ -1,5 +1,9 @@
 <map id="tinyobj::MaterialFileReader" name="tinyobj::MaterialFileReader">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,79,204,104"/>
-<area shape="rect" id="Node000002" href="$classtinyobj_1_1MaterialReader.html" title=" " alt="" coords="17,5,192,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,44,107,79,102,79,102,44"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="43,191,241,216"/>
+<area shape="rect" id="Node000002" href="$classtinyobj_1_1MaterialReader.html" title=" " alt="" coords="5,95,180,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,131,138,189,134,192,103,134"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="204,95,291,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="226,131,157,192,153,188,223,127"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="178,5,317,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="250,59,250,94,245,94,245,59"/>
 </map>

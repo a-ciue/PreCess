@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['h_0',['H',['../classMeshLib_1_1CToolMesh.html#a87c1d0f8797c590761624e1ccafeef60',1,'MeshLib::CToolMesh']]],
+  ['h_0',['H',['../classMeshLib_1_1CToolMesh.html#a87c1d0f8797c590761624e1ccafeef60',1,'MeshLib::CToolMesh::H'],['../classMeshLib_1_1CFaceSplitter.html#aaedc3b84ceb167d0023cddb1cdfce750',1,'MeshLib::CFaceSplitter::H']]],
   ['halfedge_1',['halfedge',['../classMeshLib_1_1CEdge.html#a56d16baa1f8333b3cc874b8001680d8c',1,'MeshLib::CEdge::halfedge()'],['../classMeshLib_1_1CFace.html#ae9d22fbd132054c640ee7b45e3899881',1,'MeshLib::CFace::halfedge()'],['../classMeshLib_1_1CVertex.html#aa6a88f7ef25f9586ad2f8c9e06161105',1,'MeshLib::CVertex::halfedge()']]],
   ['halfedge_2eh_2',['HalfEdge.h',['../HalfEdge_8h.html',1,'']]],
   ['halfedgeedge_3',['halfedgeEdge',['../classMeshLib_1_1CBaseMesh.html#ada3fa889304e08af51bc8734512ab38e',1,'MeshLib::CBaseMesh']]],
@@ -14,14 +14,17 @@ var searchData=
   ['halfedgevertex_11',['halfedgeVertex',['../classMeshLib_1_1CBaseMesh.html#ab306584de9fde74de2038c0b0113d0a0',1,'MeshLib::CBaseMesh']]],
   ['handler_12',['Handler',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a4095b062da971ee85916451f09b6f384',1,'systems::algo::AlgorithmSystem::Handler'],['../classsystems_1_1io_1_1ModelIOSystem.html#aae8e21426a0ba9bd5bfcf55de0fef54f',1,'systems::io::ModelIOSystem::Handler']]],
   ['handler_13',['handler',['../classsystems_1_1PluginHandler.html#ae7faad15faa247229cf6b7e5a0b0fb7d',1,'systems::PluginHandler']]],
-  ['handlercontext_14',['HandlerContext',['../structsystems_1_1algo_1_1HandlerContext.html',1,'systems::algo']]],
-  ['handlercreatordestroyer_15',['HandlerCreatorDestroyer',['../structsystems_1_1HandlerCreatorDestroyer.html',1,'systems']]],
-  ['handlercreatordestroyer_2eh_16',['HandlerCreatorDestroyer.h',['../HandlerCreatorDestroyer_8h.html',1,'']]],
-  ['handlercreatordestroyerfactory_17',['HandlerCreatorDestroyerFactory',['../classsystems_1_1HandlerCreatorDestroyerFactory.html',1,'systems']]],
-  ['handlercreatordestroyerfactory_2eh_18',['HandlerCreatorDestroyerFactory.h',['../HandlerCreatorDestroyerFactory_8h.html',1,'']]],
-  ['handlermetadata_19',['HandlerMetaData',['../structsystems_1_1algo_1_1HandlerMetaData.html',1,'systems::algo::HandlerMetaData'],['../structsystems_1_1io_1_1HandlerMetaData.html',1,'systems::io::HandlerMetaData']]],
-  ['he_5fnext_20',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
-  ['he_5fprev_21',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
-  ['he_5fsym_22',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
-  ['highlightblockbycellcolor_23',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
+  ['handler_5f_14',['handler_',['../classsystems_1_1PluginHandler.html#ae62f547f7b2c2990cd292f51e18ccf77',1,'systems::PluginHandler']]],
+  ['handlercontext_15',['HandlerContext',['../structsystems_1_1algo_1_1HandlerContext.html',1,'systems::algo']]],
+  ['handlercreatordestroyer_16',['HandlerCreatorDestroyer',['../structsystems_1_1HandlerCreatorDestroyer.html',1,'systems']]],
+  ['handlercreatordestroyer_2eh_17',['HandlerCreatorDestroyer.h',['../HandlerCreatorDestroyer_8h.html',1,'']]],
+  ['handlercreatordestroyerfactory_18',['HandlerCreatorDestroyerFactory',['../classsystems_1_1HandlerCreatorDestroyerFactory.html',1,'systems']]],
+  ['handlercreatordestroyerfactory_2eh_19',['HandlerCreatorDestroyerFactory.h',['../HandlerCreatorDestroyerFactory_8h.html',1,'']]],
+  ['handlermetadata_20',['HandlerMetaData',['../structsystems_1_1algo_1_1HandlerMetaData.html',1,'systems::algo::HandlerMetaData'],['../structsystems_1_1io_1_1HandlerMetaData.html',1,'systems::io::HandlerMetaData']]],
+  ['handlers_5f_21',['handlers_',['../classsystems_1_1io_1_1ModelIOSystem.html#aa4810f827bbde84874ca8c5a2131844d',1,'systems::io::ModelIOSystem']]],
+  ['he_5fnext_22',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
+  ['he_5fprev_23',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
+  ['he_5fsym_24',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
+  ['highlight_5factor_5f_25',['highlight_actor_',['../classSingleFaceSelectorHighlight.html#a26d3cc487894e3be97bd524914116e1b',1,'SingleFaceSelectorHighlight::highlight_actor_'],['../classSingleSolidSelectorHighlight.html#a36ecca3d1e1f5a1c63354b65e12f6357',1,'SingleSolidSelectorHighlight::highlight_actor_']]],
+  ['highlightblockbycellcolor_26',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
 ];

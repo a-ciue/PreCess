@@ -1,5 +1,13 @@
 <map id="ModelOperator" name="ModelOperator">
-<area shape="rect" id="Node000001" title="ModelOperator 模型对象基类" alt="" coords="21,79,140,104"/>
-<area shape="rect" id="Node000002" href="$classModelOperatorBase.html" title=" " alt="" coords="5,5,156,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,44,83,79,78,79,78,44"/>
+<area shape="rect" id="Node000001" title="ModelOperator 模型对象基类" alt="" coords="168,287,287,312"/>
+<area shape="rect" id="Node000002" href="$classModelOperatorBase.html" title=" " alt="" coords="5,191,156,216"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,221,211,284,208,289,108,226"/>
+<area shape="rect" id="Node000003" href="$classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="181,191,274,216"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="230,230,230,286,225,286,225,230"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="184,95,271,120"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="230,134,230,190,225,190,225,134"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="158,5,297,45"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="230,59,230,94,225,94,225,59"/>
+<area shape="rect" id="Node000006" href="$classModelObserver.html" title=" " alt="" coords="299,191,420,216"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="339,227,292,265,251,289,249,284,288,260,335,223"/>
 </map>

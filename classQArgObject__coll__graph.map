@@ -1,5 +1,11 @@
 <map id="QArgObject" name="QArgObject">
-<area shape="rect" id="Node000001" title="QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant" alt="" coords="5,79,101,104"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="16,5,91,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="56,44,56,79,51,79,51,44"/>
+<area shape="rect" id="Node000001" title="QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant" alt="" coords="29,327,125,352"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,231,80,256"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="54,268,76,326,71,327,49,270"/>
+<area shape="rect" id="Node000003" href="$structArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="104,231,179,256"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="128,269,87,328,83,325,124,266"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="98,95,185,120"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="144,134,144,231,139,231,139,134"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="72,5,211,45"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="144,59,144,94,139,94,139,59"/>
 </map>

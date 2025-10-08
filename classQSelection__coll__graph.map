@@ -1,5 +1,11 @@
 <map id="QSelection" name="QSelection">
-<area shape="rect" id="Node000001" title="Selection类的QML交互接口。Selection可以存于QSelection中，就可以在QML代码中进行交互。C++中使用new来创建对象，QML中为只读对象" alt="" coords="5,79,97,104"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="14,5,89,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="54,44,54,79,49,79,49,44"/>
+<area shape="rect" id="Node000001" title="Selection类的QML交互接口。Selection可以存于QSelection中，就可以在QML代码中进行交互。C++中使用new来创建对象，QML中为只读对象" alt="" coords="18,293,110,319"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,197,80,223"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="51,235,64,293,59,294,46,237"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="105,197,314,223"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="181,232,83,295,81,291,179,228"/>
+<area shape="rect" id="Node000004" href="$structSelection.html" title="存储选择的对象" alt="" coords="168,101,251,127"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="212,141,212,197,207,197,207,141"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="131,5,288,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="212,45,212,101,207,101,207,45"/>
 </map>

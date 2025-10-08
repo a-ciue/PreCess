@@ -1,0 +1,16 @@
+<map id="systems::SystemPluginManager" name="systems::SystemPluginManager">
+<area shape="rect" id="Node000001" title=" " alt="" coords="969,53,1200,78"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="607,69,793,139"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="807,94,945,81,994,75,995,81,946,87,807,99"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="351,38,438,63"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="452,58,607,85,606,90,451,63"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="629,5,771,45"/>
+<area shape="poly" id="edge7_Node000007_Node000003" title=" " alt="" coords="451,43,628,29,629,34,452,49"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="46,31,185,71"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="198,48,351,48,351,53,198,53"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="300,112,489,152"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="503,133,582,128,606,124,607,130,583,133,503,138"/>
+<area shape="rect" id="Node000006" href="$classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,119,225,145"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="240,129,300,129,300,135,240,135"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="785,31,969,51,969,56,784,37"/>
+</map>

@@ -75,6 +75,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
 <a href="classFileHandler-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">FileHandler类 参考</div></div>
 </div><!--header-->
@@ -94,6 +95,13 @@ Public 成员函数</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
 <tr class="memitem:a4c8f1431a8c91df1dd1d99c1642f6373" id="r_a4c8f1431a8c91df1dd1d99c1642f6373"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classFileHandler.html">FileHandler</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c8f1431a8c91df1dd1d99c1642f6373">instance</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:aab6b2033e364bfd1a48c75327247259a" id="r_aab6b2033e364bfd1a48c75327247259a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab6b2033e364bfd1a48c75327247259a">FileHandler</a> ()=default</td></tr>
+<tr class="memitem:a98feba7e7c8b38d3e55edd17f2c34458" id="r_a98feba7e7c8b38d3e55edd17f2c34458"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a98feba7e7c8b38d3e55edd17f2c34458">~FileHandler</a> ()=default</td></tr>
+<tr class="memitem:ac2ec12fb0e836d0d7905f69a86c82e4a" id="r_ac2ec12fb0e836d0d7905f69a86c82e4a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac2ec12fb0e836d0d7905f69a86c82e4a">FileHandler</a> (const <a class="el" href="classFileHandler.html">FileHandler</a> &amp;)=delete</td></tr>
+<tr class="memitem:a4590047386c85c922d9670db326afcc2" id="r_a4590047386c85c922d9670db326afcc2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileHandler.html">FileHandler</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4590047386c85c922d9670db326afcc2">operator=</a> (const <a class="el" href="classFileHandler.html">FileHandler</a> &amp;)=delete</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p><a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 单例类 </p>
@@ -102,7 +110,83 @@ Public 成员函数</h2></td></tr>
 <li>读取网格文件并转换为 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 对象</li>
 <li>将 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 数据写出到文件 </li>
 </ul>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aab6b2033e364bfd1a48c75327247259a" name="aab6b2033e364bfd1a48c75327247259a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab6b2033e364bfd1a48c75327247259a">&#9670;&#160;</a></span>FileHandler() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FileHandler::FileHandler </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a98feba7e7c8b38d3e55edd17f2c34458" name="a98feba7e7c8b38d3e55edd17f2c34458"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98feba7e7c8b38d3e55edd17f2c34458">&#9670;&#160;</a></span>~FileHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FileHandler::~FileHandler </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac2ec12fb0e836d0d7905f69a86c82e4a" name="ac2ec12fb0e836d0d7905f69a86c82e4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2ec12fb0e836d0d7905f69a86c82e4a">&#9670;&#160;</a></span>FileHandler() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FileHandler::FileHandler </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classFileHandler.html">FileHandler</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span><span class="mlabel delete">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a4c8f1431a8c91df1dd1d99c1642f6373" name="a4c8f1431a8c91df1dd1d99c1642f6373"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4c8f1431a8c91df1dd1d99c1642f6373">&#9670;&#160;</a></span>instance()</h2>
 
@@ -122,6 +206,31 @@ Public 成员函数</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4590047386c85c922d9670db326afcc2" name="a4590047386c85c922d9670db326afcc2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4590047386c85c922d9670db326afcc2">&#9670;&#160;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFileHandler.html">FileHandler</a> &amp; FileHandler::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classFileHandler.html">FileHandler</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span><span class="mlabel delete">delete</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

@@ -78,6 +78,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classMeshLib_1_1CParser-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">MeshLib::CParser类 参考</div></div>
 </div><!--header-->
@@ -87,6 +89,22 @@ $(function() {
  <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="parser_8h_source.html">parser.h</a>&gt;</code></p>
+<div class="dynheader">
+MeshLib::CParser 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshLib_1_1CParser__coll__graph.png" border="0" usemap="#aMeshLib_1_1CParser_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aMeshLib_1_1CParser_coll__map" id="aMeshLib_1_1CParser_coll__map">
+<area shape="rect" title="CParser class" alt="" coords="8,417,141,443"/>
+<area shape="rect" title=" " alt="" coords="5,307,144,347"/>
+<area shape="poly" title=" " alt="" coords="77,361,77,417,72,417,72,361"/>
+<area shape="rect" href="classMeshLib_1_1CToken.html" title="CToken class, key=(value), e.g. uv=(x y)" alt="" coords="9,211,140,236"/>
+<area shape="poly" title=" " alt="" coords="77,250,77,306,72,306,72,250"/>
+<area shape="rect" title=" " alt="" coords="31,95,118,120"/>
+<area shape="poly" title=" " alt="" coords="77,134,77,210,72,210,72,134"/>
+<area shape="rect" title=" " alt="" coords="5,5,144,45"/>
+<area shape="poly" title=" " alt="" coords="77,59,77,94,72,94,72,59"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -96,6 +114,20 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:ac710184703463f9a168e59f8161fc11f" id="r_ac710184703463f9a168e59f8161fc11f"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classMeshLib_1_1CToken.html">CToken</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac710184703463f9a168e59f8161fc11f">tokens</a> ()</td></tr>
 <tr class="memitem:a6cbed1102a9f9c201f66d0e7ec3b2f7c" id="r_a6cbed1102a9f9c201f66d0e7ec3b2f7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6cbed1102a9f9c201f66d0e7ec3b2f7c">_toString</a> (std::string &amp;str)</td></tr>
 <tr class="memitem:aa506e5dedd06443169d9d4f0d466c378" id="r_aa506e5dedd06443169d9d4f0d466c378"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa506e5dedd06443169d9d4f0d466c378">_removeToken</a> (const std::string &amp;key)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a6fc765ce5c9ad4f01250ed61db096a64" id="r_a6fc765ce5c9ad4f01250ed61db096a64"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6fc765ce5c9ad4f01250ed61db096a64">next_char</a> ()</td></tr>
+<tr class="memitem:abe129d3f1880c5f7d504e9016cd51987" id="r_abe129d3f1880c5f7d504e9016cd51987"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe129d3f1880c5f7d504e9016cd51987">skip_blank</a> ()</td></tr>
+<tr class="memitem:ad6ceeab00c0ae200931cad3018747f94" id="r_ad6ceeab00c0ae200931cad3018747f94"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6ceeab00c0ae200931cad3018747f94">end</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a00360523e7b378d61b5696264867524a" id="r_a00360523e7b378d61b5696264867524a"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classMeshLib_1_1CToken.html">CToken</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00360523e7b378d61b5696264867524a">m_tokens</a></td></tr>
+<tr class="memitem:a421c1ed1d3a9e85494ae128b8fdaffaa" id="r_a421c1ed1d3a9e85494ae128b8fdaffaa"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a421c1ed1d3a9e85494ae128b8fdaffaa">m_line</a> [1024]</td></tr>
+<tr class="memitem:ac89fa2ed4fe6cb5af7cb2ba2d7ecac7a" id="r_ac89fa2ed4fe6cb5af7cb2ba2d7ecac7a"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac89fa2ed4fe6cb5af7cb2ba2d7ecac7a">m_key</a> [1024]</td></tr>
+<tr class="memitem:a2338c19a33704dbfc8f69fc7d1df6015" id="r_a2338c19a33704dbfc8f69fc7d1df6015"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2338c19a33704dbfc8f69fc7d1df6015">m_value</a> [1024]</td></tr>
+<tr class="memitem:a40d0da409456196cb636557e2d2aa4f9" id="r_a40d0da409456196cb636557e2d2aa4f9"><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40d0da409456196cb636557e2d2aa4f9">m_pt</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p><a class="el" href="classMeshLib_1_1CParser.html" title="CParser class">CParser</a> class </p>
@@ -222,6 +254,84 @@ Public 成员函数</h2></td></tr>
 
 </div>
 </div>
+<a id="ad6ceeab00c0ae200931cad3018747f94" name="ad6ceeab00c0ae200931cad3018747f94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6ceeab00c0ae200931cad3018747f94">&#9670;&#160;</a></span>end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshLib::CParser::end </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>verify if we </p>
+
+</div>
+</div>
+<a id="a6fc765ce5c9ad4f01250ed61db096a64" name="a6fc765ce5c9ad4f01250ed61db096a64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fc765ce5c9ad4f01250ed61db096a64">&#9670;&#160;</a></span>next_char()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char MeshLib::CParser::next_char </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>get the next char in the current string </p>
+
+</div>
+</div>
+<a id="abe129d3f1880c5f7d504e9016cd51987" name="abe129d3f1880c5f7d504e9016cd51987"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe129d3f1880c5f7d504e9016cd51987">&#9670;&#160;</a></span>skip_blank()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshLib::CParser::skip_blank </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>skip blank spaces </p>
+
+</div>
+</div>
 <a id="ac710184703463f9a168e59f8161fc11f" name="ac710184703463f9a168e59f8161fc11f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac710184703463f9a168e59f8161fc11f">&#9670;&#160;</a></span>tokens()</h2>
 
@@ -245,6 +355,122 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>List of tokens extracted from the string </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ac89fa2ed4fe6cb5af7cb2ba2d7ecac7a" name="ac89fa2ed4fe6cb5af7cb2ba2d7ecac7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac89fa2ed4fe6cb5af7cb2ba2d7ecac7a">&#9670;&#160;</a></span>m_key</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char MeshLib::CParser::m_key[1024]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>current key </p>
+
+</div>
+</div>
+<a id="a421c1ed1d3a9e85494ae128b8fdaffaa" name="a421c1ed1d3a9e85494ae128b8fdaffaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a421c1ed1d3a9e85494ae128b8fdaffaa">&#9670;&#160;</a></span>m_line</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char MeshLib::CParser::m_line[1024]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>The buffer to contain the string </p>
+
+</div>
+</div>
+<a id="a40d0da409456196cb636557e2d2aa4f9" name="a40d0da409456196cb636557e2d2aa4f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40d0da409456196cb636557e2d2aa4f9">&#9670;&#160;</a></span>m_pt</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char* MeshLib::CParser::m_pt</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>current pointer to the char buffer </p>
+
+</div>
+</div>
+<a id="a00360523e7b378d61b5696264867524a" name="a00360523e7b378d61b5696264867524a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00360523e7b378d61b5696264867524a">&#9670;&#160;</a></span>m_tokens</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::list&lt;<a class="el" href="classMeshLib_1_1CToken.html">CToken</a>*&gt; MeshLib::CParser::m_tokens</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>list of tokens </p>
+
+</div>
+</div>
+<a id="a2338c19a33704dbfc8f69fc7d1df6015" name="a2338c19a33704dbfc8f69fc7d1df6015"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2338c19a33704dbfc8f69fc7d1df6015">&#9670;&#160;</a></span>m_value</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">char MeshLib::CParser::m_value[1024]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>current value </p>
 
 </div>
 </div>

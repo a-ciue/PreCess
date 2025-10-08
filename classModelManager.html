@@ -74,6 +74,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
 <a href="#friends">友元</a> &#124;
 <a href="classModelManager-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">ModelManager类 参考</div></div>
@@ -84,6 +85,26 @@ $(function() {
  <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ModelManager_8h_source.html">ModelManager.h</a>&gt;</code></p>
+<div class="dynheader">
+ModelManager 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classModelManager__coll__graph.png" border="0" usemap="#aModelManager_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aModelManager_coll__map" id="aModelManager_coll__map">
+<area shape="rect" title="负责管理多个 ModelData 实例的类" alt="" coords="139,508,257,533"/>
+<area shape="rect" title=" " alt="" coords="34,383,197,437"/>
+<area shape="poly" title=" " alt="" coords="146,447,191,506,187,510,142,450"/>
+<area shape="rect" title=" " alt="" coords="5,287,225,312"/>
+<area shape="poly" title=" " alt="" coords="118,326,118,382,113,382,113,326"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="69,191,162,216"/>
+<area shape="poly" title=" " alt="" coords="118,230,118,286,113,286,113,230"/>
+<area shape="rect" title=" " alt="" coords="72,95,159,120"/>
+<area shape="poly" title=" " alt="" coords="118,134,118,190,113,190,113,134"/>
+<area shape="rect" title=" " alt="" coords="46,5,185,45"/>
+<area shape="poly" title=" " alt="" coords="118,59,118,94,113,94,113,59"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="221,397,343,423"/>
+<area shape="poly" title=" " alt="" coords="273,437,241,486,215,510,212,506,237,482,268,434"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -96,6 +117,14 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:afc719f0a5c8b8d3ffe589a07ea366240" id="r_afc719f0a5c8b8d3ffe589a07ea366240"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classModelOperator.html">ModelOperator</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc719f0a5c8b8d3ffe589a07ea366240">getModelOperator</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
 <tr class="memdesc:afc719f0a5c8b8d3ffe589a07ea366240"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取指定模型的操作接口对象  <br /></td></tr>
 <tr class="memitem:a952bf7b251be950972f4b96c06eba9b3" id="r_a952bf7b251be950972f4b96c06eba9b3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelData.html">ModelData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a952bf7b251be950972f4b96c06eba9b3">getModel</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a82c1fc212d38efca5e18eb5659d39be7" id="r_a82c1fc212d38efca5e18eb5659d39be7"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82c1fc212d38efca5e18eb5659d39be7">models_</a></td></tr>
+<tr class="memitem:ae6dec524d7335dc085fefe7cdd5cc308" id="r_ae6dec524d7335dc085fefe7cdd5cc308"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6dec524d7335dc085fefe7cdd5cc308">max_index_</a> { -1 }</td></tr>
+<tr class="memdesc:ae6dec524d7335dc085fefe7cdd5cc308"><td class="mdescLeft">&#160;</td><td class="mdescRight">最大索引值，用于唯一标识模型  <br /></td></tr>
+<tr class="memitem:a4663bde004487a0e91a5633f5c504634" id="r_a4663bde004487a0e91a5633f5c504634"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelObserver.html">ModelObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4663bde004487a0e91a5633f5c504634">observer_</a> { nullptr }</td></tr>
+<tr class="memdesc:a4663bde004487a0e91a5633f5c504634"><td class="mdescLeft">&#160;</td><td class="mdescRight">全局模型观察者，用于捕获模型事件  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
 友元</h2></td></tr>
@@ -255,6 +284,77 @@ Public 成员函数</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ae6dec524d7335dc085fefe7cdd5cc308" name="ae6dec524d7335dc085fefe7cdd5cc308"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6dec524d7335dc085fefe7cdd5cc308">&#9670;&#160;</a></span>max_index_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ModelManager::max_index_ { -1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>最大索引值，用于唯一标识模型 </p>
+
+</div>
+</div>
+<a id="a82c1fc212d38efca5e18eb5659d39be7" name="a82c1fc212d38efca5e18eb5659d39be7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82c1fc212d38efca5e18eb5659d39be7">&#9670;&#160;</a></span>models_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::unique_ptr&lt;<a class="el" href="classModelData.html">ModelData</a>&gt; &gt; ModelManager::models_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4663bde004487a0e91a5633f5c504634" name="a4663bde004487a0e91a5633f5c504634"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4663bde004487a0e91a5633f5c504634">&#9670;&#160;</a></span>observer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelObserver.html">ModelObserver</a>* ModelManager::observer_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>全局模型观察者，用于捕获模型事件 </p>
 
 </div>
 </div>

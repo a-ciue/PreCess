@@ -81,6 +81,10 @@ $(function() {
 <a href="#pub-types">Public 类型</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pri-types">Private 类型</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
 <a href="#friends">友元</a> &#124;
 <a href="classplf_1_1colony-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">plf::colony&lt; element_type, allocator_type, priority &gt; 模板类 参考</div></div>
@@ -103,11 +107,16 @@ plf::colony&lt; element_type, allocator_type, priority &gt; 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classplf_1_1colony__coll__graph.png" border="0" usemap="#aplf_1_1colony_3_01element__type_00_01allocator__type_00_01priority_01_4_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aplf_1_1colony_3_01element__type_00_01allocator__type_00_01priority_01_4_coll__map" id="aplf_1_1colony_3_01element__type_00_01allocator__type_00_01priority_01_4_coll__map">
-<area shape="rect" title=" " alt="" coords="5,176,168,231"/>
-<area shape="rect" title=" " alt="" coords="14,101,159,127"/>
-<area shape="poly" title=" " alt="" coords="89,141,89,176,84,176,84,141"/>
-<area shape="rect" title=" " alt="" coords="67,5,106,31"/>
-<area shape="poly" title=" " alt="" coords="89,45,89,101,84,101,84,45"/>
+<area shape="rect" title=" " alt="" coords="569,158,732,213"/>
+<area shape="rect" title=" " alt="" coords="186,65,331,90"/>
+<area shape="poly" title=" " alt="" coords="292,55,343,31,408,10,444,4,479,3,514,9,547,22,582,49,610,86,630,123,643,156,638,158,625,125,605,88,578,53,544,26,512,14,479,9,444,10,410,15,345,36,294,60"/>
+<area shape="poly" title=" " alt="" coords="288,96,330,125,381,149,463,165,569,176,569,182,462,170,379,154,328,129,285,101"/>
+<area shape="rect" title=" " alt="" coords="5,65,44,90"/>
+<area shape="poly" title=" " alt="" coords="58,75,186,75,186,80,58,80"/>
+<area shape="rect" href="classplf_1_1colony_1_1colony__iterator.html" title=" " alt="" coords="161,187,356,256"/>
+<area shape="poly" title=" " alt="" coords="370,226,456,226,545,217,576,210,577,215,546,223,456,231,370,231"/>
+<area shape="rect" href="structplf_1_1conditional.html" title=" " alt="" coords="163,280,354,320"/>
+<area shape="poly" title=" " alt="" coords="367,305,456,298,501,289,544,275,568,262,590,246,625,211,629,215,593,250,571,266,546,280,503,294,457,304,368,310"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
@@ -118,6 +127,9 @@ plf::colony&lt; element_type, allocator_type, priority &gt; 的协作图:</div>
 <tr class="memitem:colony_5Fdata" id="r_colony_5Fdata"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1colony__data.html">colony_data</a></td></tr>
 <tr class="memitem:colony_5Fiterator" id="r_colony_5Fiterator"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplf_1_1colony_1_1colony__iterator.html">colony_iterator</a></td></tr>
 <tr class="memitem:colony_5Freverse_5Fiterator" id="r_colony_5Freverse_5Fiterator"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplf_1_1colony_1_1colony__reverse__iterator.html">colony_reverse_iterator</a></td></tr>
+<tr class="memitem:group" id="r_group"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1group.html">group</a></td></tr>
+<tr class="memitem:item_5Findex_5Ftuple" id="r_item_5Findex_5Ftuple"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1item__index__tuple.html">item_index_tuple</a></td></tr>
+<tr class="memitem:sort_5Fdereferencer" id="r_sort_5Fdereferencer"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1sort__dereferencer.html">sort_dereferencer</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public 类型</h2></td></tr>
@@ -217,13 +229,99 @@ Public 成员函数</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
-<tr class="memitem:aa3af83bc9f823a6245a095d4d4f10b1a" id="r_aa3af83bc9f823a6245a095d4d4f10b1a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> skipfield_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3af83bc9f823a6245a095d4d4f10b1a">block_capacity_default_min</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
-<tr class="memitem:a919a2c1dc6adf9de832f7f3532ec4b0b" id="r_a919a2c1dc6adf9de832f7f3532ec4b0b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> skipfield_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a919a2c1dc6adf9de832f7f3532ec4b0b">block_capacity_default_max</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:aa3af83bc9f823a6245a095d4d4f10b1a" id="r_aa3af83bc9f823a6245a095d4d4f10b1a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3af83bc9f823a6245a095d4d4f10b1a">block_capacity_default_min</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a919a2c1dc6adf9de832f7f3532ec4b0b" id="r_a919a2c1dc6adf9de832f7f3532ec4b0b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a919a2c1dc6adf9de832f7f3532ec4b0b">block_capacity_default_max</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
 <tr class="memitem:a2f57e877b56131c803b5c78b2be7a4e0" id="r_a2f57e877b56131c803b5c78b2be7a4e0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="structplf_1_1limits.html">plf::limits</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f57e877b56131c803b5c78b2be7a4e0">block_capacity_default_limits</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
 <tr class="memitem:a97b7823580326732a38cee3f5e45fa62" id="r_a97b7823580326732a38cee3f5e45fa62"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97b7823580326732a38cee3f5e45fa62">block_metadata_memory</a> (const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> block_capacity) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
 <tr class="memitem:a1a997fc0b166b4df9549cb3f0d2e0a64" id="r_a1a997fc0b166b4df9549cb3f0d2e0a64"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a997fc0b166b4df9549cb3f0d2e0a64">block_allocation_amount</a> (<a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> block_capacity) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
 <tr class="memitem:af54f12124feb6159dbc20ad0f410fc6f" id="r_af54f12124feb6159dbc20ad0f410fc6f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af54f12124feb6159dbc20ad0f410fc6f">max_elements_per_allocation</a> (const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> allocation_amount) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
 <tr class="memitem:a80fd09d17d3fcf4a6faf74da8725b6b7" id="r_a80fd09d17d3fcf4a6faf74da8725b6b7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="structplf_1_1limits.html">plf::limits</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80fd09d17d3fcf4a6faf74da8725b6b7">block_capacity_hard_limits</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-types" class="groupheader"><a id="pri-types" name="pri-types"></a>
+Private 类型</h2></td></tr>
+<tr class="memitem:a1004ead4dd464b66377f64719490a4c1" id="r_a1004ead4dd464b66377f64719490a4c1"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structplf_1_1conditional.html">plf::conditional</a>&lt;(<a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a>==<a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05a66f0406364665ed5a30123eeb571d221">performance</a> &amp;&amp;sizeof(element_type)&gt;10), unsignedshort, unsignedchar &gt;::type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td></tr>
+<tr class="memitem:a9607054a35041fe8a5866ae31eaab64f" id="r_a9607054a35041fe8a5866ae31eaab64f"><td class="memItemLeft" align="right" valign="top">typedef allocator_type::template rebind&lt; <a class="el" href="structplf_1_1colony_1_1aligned__element__struct.html">aligned_element_struct</a> &gt;::other&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9607054a35041fe8a5866ae31eaab64f">aligned_allocator_type</a></td></tr>
+<tr class="memitem:a51fd2266f5e8693695c5a83fce6c967a" id="r_a51fd2266f5e8693695c5a83fce6c967a"><td class="memItemLeft" align="right" valign="top">typedef allocator_type::template rebind&lt; <a class="el" href="structplf_1_1colony_1_1group.html">group</a> &gt;::other&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51fd2266f5e8693695c5a83fce6c967a">group_allocator_type</a></td></tr>
+<tr class="memitem:a494f31376a1d22cada0eacd38ecd71e2" id="r_a494f31376a1d22cada0eacd38ecd71e2"><td class="memItemLeft" align="right" valign="top">typedef allocator_type::template rebind&lt; <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> &gt;::other&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a494f31376a1d22cada0eacd38ecd71e2">skipfield_allocator_type</a></td></tr>
+<tr class="memitem:afa5527ab16b9f00484043f142b98f4b7" id="r_afa5527ab16b9f00484043f142b98f4b7"><td class="memItemLeft" align="right" valign="top">typedef allocator_type::template rebind&lt; <a class="el" href="structplf_1_1colony_1_1aligned__allocation__struct.html">aligned_allocation_struct</a> &gt;::other&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa5527ab16b9f00484043f142b98f4b7">aligned_struct_allocator_type</a></td></tr>
+<tr class="memitem:ada31e572ca6bfa5eb27bb7f3323842bd" id="r_ada31e572ca6bfa5eb27bb7f3323842bd"><td class="memItemLeft" align="right" valign="top">typedef allocator_type::template rebind&lt; <a class="el" href="structplf_1_1colony_1_1item__index__tuple.html">item_index_tuple</a> &gt;::other&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada31e572ca6bfa5eb27bb7f3323842bd">tuple_allocator_type</a></td></tr>
+<tr class="memitem:ad320e2a5cb9d14a3b0e8bdb6c081c9ab" id="r_ad320e2a5cb9d14a3b0e8bdb6c081c9ab"><td class="memItemLeft" align="right" valign="top">typedef allocator_type::template rebind&lt; unsignedchar &gt;::other&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad320e2a5cb9d14a3b0e8bdb6c081c9ab">uchar_allocator_type</a></td></tr>
+<tr class="memitem:a1986042ce32a0fe3aa40bd76fcf490ca" id="r_a1986042ce32a0fe3aa40bd76fcf490ca"><td class="memItemLeft" align="right" valign="top">typedef aligned_allocator_type::pointer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td></tr>
+<tr class="memitem:a3457b182bd3f0bb70b455b3adbd9bc2d" id="r_a3457b182bd3f0bb70b455b3adbd9bc2d"><td class="memItemLeft" align="right" valign="top">typedef group_allocator_type::pointer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td></tr>
+<tr class="memitem:a5ae145ad3eade83bae8062d1416dbcb5" id="r_a5ae145ad3eade83bae8062d1416dbcb5"><td class="memItemLeft" align="right" valign="top">typedef skipfield_allocator_type::pointer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a></td></tr>
+<tr class="memitem:ab03d390fe3fe9456e3a077310d0aa387" id="r_ab03d390fe3fe9456e3a077310d0aa387"><td class="memItemLeft" align="right" valign="top">typedef aligned_struct_allocator_type::pointer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab03d390fe3fe9456e3a077310d0aa387">aligned_struct_pointer_type</a></td></tr>
+<tr class="memitem:a740c111a79ba474fd726340642ac616d" id="r_a740c111a79ba474fd726340642ac616d"><td class="memItemLeft" align="right" valign="top">typedef tuple_allocator_type::pointer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a740c111a79ba474fd726340642ac616d">tuple_pointer_type</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a6d23c3b3cfeac5808452494feba2d6fc" id="r_a6d23c3b3cfeac5808452494feba2d6fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d23c3b3cfeac5808452494feba2d6fc">check_capacities_conformance</a> (const <a class="el" href="structplf_1_1limits.html">plf::limits</a> capacities) const</td></tr>
+<tr class="memitem:a7a85be9b941a453e2d1a873298b2acbb" id="r_a7a85be9b941a453e2d1a873298b2acbb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a85be9b941a453e2d1a873298b2acbb">blank</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a344501b09a2800b65c68eef1ebe87db8" id="r_a344501b09a2800b65c68eef1ebe87db8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a344501b09a2800b65c68eef1ebe87db8">reserve_and_fill</a> (const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>, const element_type &amp;element)</td></tr>
+<tr class="memitem:ae177de3694afddd8ea344c8dd685623e" id="r_ae177de3694afddd8ea344c8dd685623e"><td class="memTemplParams" colspan="2">template&lt;class iterator_type&gt; </td></tr>
+<tr class="memitem:ae177de3694afddd8ea344c8dd685623e template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae177de3694afddd8ea344c8dd685623e">reserve_and_range_fill</a> (const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>, const iterator_type &amp;it)</td></tr>
+<tr class="memitem:ae0cc9495c58405d1dd9052ec12438589" id="r_ae0cc9495c58405d1dd9052ec12438589"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0cc9495c58405d1dd9052ec12438589">allocate_new_group</a> (const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> elements_per_group, const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> previous=NULL)</td></tr>
+<tr class="memitem:a2b228e530a1a753de1082906f2f44fa1" id="r_a2b228e530a1a753de1082906f2f44fa1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2b228e530a1a753de1082906f2f44fa1">deallocate_group</a> (const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> the_group) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a585375ba743141a8e8a64ad56b22e933" id="r_a585375ba743141a8e8a64ad56b22e933"><td class="memItemLeft" align="right" valign="top"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a585375ba743141a8e8a64ad56b22e933">destroy_element</a> (const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> element) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a92c37fc3dd3d3a852f8c60691eb5f513" id="r_a92c37fc3dd3d3a852f8c60691eb5f513"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92c37fc3dd3d3a852f8c60691eb5f513">destroy_group</a> (const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> end_pointer) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a846334577bdad455330818127775a9b8" id="r_a846334577bdad455330818127775a9b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a846334577bdad455330818127775a9b8">destroy_all_data</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:af0f113658bb26dea8765f6208f86571e" id="r_af0f113658bb26dea8765f6208f86571e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0f113658bb26dea8765f6208f86571e">initialize</a> (const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> first_group_size)</td></tr>
+<tr class="memitem:ae3923f2ab56c9c98ffbfb39d963d9f0b" id="r_ae3923f2ab56c9c98ffbfb39d963d9f0b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae3923f2ab56c9c98ffbfb39d963d9f0b">edit_free_list</a> (const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a> location, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> value) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a9469285127773ba6771c33e4584e416e" id="r_a9469285127773ba6771c33e4584e416e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9469285127773ba6771c33e4584e416e">edit_free_list_prev</a> (const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> location, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> value) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a52d04d29c980355c0bf7cb7992a91271" id="r_a52d04d29c980355c0bf7cb7992a91271"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a52d04d29c980355c0bf7cb7992a91271">edit_free_list_next</a> (const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> location, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> value) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:aa1ea61852b6e9d660b85f94bb7977121" id="r_aa1ea61852b6e9d660b85f94bb7977121"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1ea61852b6e9d660b85f94bb7977121">edit_free_list_head</a> (const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> location, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> value) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:ad058e3dd73f3c86738f6e499f5f136d8" id="r_ad058e3dd73f3c86738f6e499f5f136d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad058e3dd73f3c86738f6e499f5f136d8">update_skipblock</a> (const <a class="el" href="#a251e57f1115754eea03c0d1716130824">iterator</a> &amp;new_location, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> prev_free_list_index) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:ab96b9286be9664fb77e77f687272f118" id="r_ab96b9286be9664fb77e77f687272f118"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab96b9286be9664fb77e77f687272f118">update_subsequent_group_numbers</a> (<a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> current_group_number, <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> update_group) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a5b7f0c1a2f36d6581f5b55e5cd53b344" id="r_a5b7f0c1a2f36d6581f5b55e5cd53b344"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b7f0c1a2f36d6581f5b55e5cd53b344">reset_group_numbers</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a26116b5815e718f0ade62022d4b3e049" id="r_a26116b5815e718f0ade62022d4b3e049"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a26116b5815e718f0ade62022d4b3e049">reset_group_numbers_if_necessary</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a2f7010c57f3f033ed8d0f301f5829dab" id="r_a2f7010c57f3f033ed8d0f301f5829dab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f7010c57f3f033ed8d0f301f5829dab">reuse_unused_group</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a4b2908d80a991e7200260b9b3662ba93" id="r_a4b2908d80a991e7200260b9b3662ba93"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4b2908d80a991e7200260b9b3662ba93">recover_from_partial_fill</a> ()</td></tr>
+<tr class="memitem:a94496aa5800c3ec3b6f31400667a044c" id="r_a94496aa5800c3ec3b6f31400667a044c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94496aa5800c3ec3b6f31400667a044c">fill</a> (const element_type &amp;element, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>)</td></tr>
+<tr class="memitem:adda10b2afdaa1ba3144ef0b5a39863c9" id="r_adda10b2afdaa1ba3144ef0b5a39863c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adda10b2afdaa1ba3144ef0b5a39863c9">recover_from_partial_skipblock_fill</a> (const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> location, const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> current_location, const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a> skipfield_pointer, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> prev_free_list_node)</td></tr>
+<tr class="memitem:a8215c8a35b74b8f846323d7839f19285" id="r_a8215c8a35b74b8f846323d7839f19285"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8215c8a35b74b8f846323d7839f19285">fill_skipblock</a> (const element_type &amp;element, const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> location, const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a> skipfield_pointer, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>)</td></tr>
+<tr class="memitem:a68c63fba3ac39d1aa8825d02fdf97a52" id="r_a68c63fba3ac39d1aa8825d02fdf97a52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68c63fba3ac39d1aa8825d02fdf97a52">fill_unused_groups</a> (<a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>, const element_type &amp;element, <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> group_number, <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> previous_group, const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> current_group)</td></tr>
+<tr class="memitem:a11caa4914ea5d85a58e7bdade2fa768b" id="r_a11caa4914ea5d85a58e7bdade2fa768b"><td class="memTemplParams" colspan="2">template&lt;class iterator_type&gt; </td></tr>
+<tr class="memitem:a11caa4914ea5d85a58e7bdade2fa768b template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11caa4914ea5d85a58e7bdade2fa768b">range_fill</a> (iterator_type &amp;it, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>)</td></tr>
+<tr class="memitem:a7d48b97ac3cd45c4c351ac7d42eb4b2b" id="r_a7d48b97ac3cd45c4c351ac7d42eb4b2b"><td class="memTemplParams" colspan="2">template&lt;class iterator_type&gt; </td></tr>
+<tr class="memitem:a7d48b97ac3cd45c4c351ac7d42eb4b2b template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7d48b97ac3cd45c4c351ac7d42eb4b2b">range_fill_skipblock</a> (iterator_type &amp;it, const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> location, const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a> skipfield_pointer, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>)</td></tr>
+<tr class="memitem:acf9b6eca6a305afe24a8d6130ba2077c" id="r_acf9b6eca6a305afe24a8d6130ba2077c"><td class="memTemplParams" colspan="2">template&lt;class iterator_type&gt; </td></tr>
+<tr class="memitem:acf9b6eca6a305afe24a8d6130ba2077c template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf9b6eca6a305afe24a8d6130ba2077c">range_fill_unused_groups</a> (<a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>, iterator_type it, <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> group_number, <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> previous_group, const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> current_group)</td></tr>
+<tr class="memitem:a6cac41f750fb044e907d4a447e06eba0" id="r_a6cac41f750fb044e907d4a447e06eba0"><td class="memTemplParams" colspan="2">template&lt;class iterator_type&gt; </td></tr>
+<tr class="memitem:a6cac41f750fb044e907d4a447e06eba0 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6cac41f750fb044e907d4a447e06eba0">range_insert</a> (iterator_type it, <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>)</td></tr>
+<tr class="memitem:ac64c3e8ac66e59e70c22ddc50bb29144" id="r_ac64c3e8ac66e59e70c22ddc50bb29144"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac64c3e8ac66e59e70c22ddc50bb29144">remove_from_groups_with_erasures_list</a> (const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> group_to_remove) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a30745595e5c9052d1adf527d3caeb733" id="r_a30745595e5c9052d1adf527d3caeb733"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30745595e5c9052d1adf527d3caeb733">reset_only_group_left</a> (const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> group_pointer) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:add95184569b7d45d2103fe81b8da7646" id="r_add95184569b7d45d2103fe81b8da7646"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add95184569b7d45d2103fe81b8da7646">add_group_to_unused_groups_list</a> (const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> group_pointer) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a8b2c7e0c6e8a791735975f09de53d86e" id="r_a8b2c7e0c6e8a791735975f09de53d86e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b2c7e0c6e8a791735975f09de53d86e">prepare_groups_for_assign</a> (const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>)</td></tr>
+<tr class="memitem:a75e15b07e88c1e6f0f05907d5e5ecdb7" id="r_a75e15b07e88c1e6f0f05907d5e5ecdb7"><td class="memTemplParams" colspan="2">template&lt;class iterator_type&gt; </td></tr>
+<tr class="memitem:a75e15b07e88c1e6f0f05907d5e5ecdb7 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75e15b07e88c1e6f0f05907d5e5ecdb7">range_assign</a> (iterator_type it, <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="#a8e57366b5f1dbabf324114221dabb1a1">size</a>)</td></tr>
+<tr class="memitem:a3d5c19d17bacc5da8a9ed6a1104cf580" id="r_a3d5c19d17bacc5da8a9ed6a1104cf580"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3d5c19d17bacc5da8a9ed6a1104cf580">consolidate</a> (const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> new_min, const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> new_max)</td></tr>
+<tr class="memitem:a8fe609e54623f10d90273e15ace5b043" id="r_a8fe609e54623f10d90273e15ace5b043"><td class="memTemplParams" colspan="2">template&lt;bool is_const&gt; </td></tr>
+<tr class="memitem:a8fe609e54623f10d90273e15ace5b043 template"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classplf_1_1colony_1_1colony__iterator.html">colony_iterator</a>&lt; is_const &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8fe609e54623f10d90273e15ace5b043">get_it</a> (const <a class="el" href="#a5ae2023f64f641baa5b26db7a20d24eb">pointer</a> element_pointer) const <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:af1a04f968b376f7f5425f5442f55b1e8" id="r_af1a04f968b376f7f5425f5442f55b1e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1a04f968b376f7f5425f5442f55b1e8">source_blocks_incompatible</a> ()</td></tr>
+<tr class="memitem:a8e529e329457645a295b3bfe9c81c1f0" id="r_a8e529e329457645a295b3bfe9c81c1f0"><td class="memTemplParams" colspan="2">template&lt;class the_type&gt; </td></tr>
+<tr class="memitem:a8e529e329457645a295b3bfe9c81c1f0 template"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e529e329457645a295b3bfe9c81c1f0">get_free_space</a> () const <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a489e7c181832cb87f721c797fe5be6dd" id="r_a489e7c181832cb87f721c797fe5be6dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a489e7c181832cb87f721c797fe5be6dd">setup_data_cell</a> (<a class="el" href="structplf_1_1colony_1_1colony__data.html">colony_data</a> *<a class="el" href="#aaa7c776ef54d4b3e9b80acd04623ccce">data</a>, const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> current_group, const size_t <a class="el" href="#ad41ece2a031f60d2bff6eb77fb9c3eda">capacity</a>, const size_t group_number)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+静态 Private 成员函数</h2></td></tr>
+<tr class="memitem:a8415433956ad5ee1885645e06061fe09" id="r_a8415433956ad5ee1885645e06061fe09"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8415433956ad5ee1885645e06061fe09">get_aligned_block_capacity</a> (const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> elements_per_group)</td></tr>
+<tr class="memitem:a7136ce6ac28c6cf87090a6bf3f91ba6a" id="r_a7136ce6ac28c6cf87090a6bf3f91ba6a"><td class="memTemplParams" colspan="2">template&lt;class destination_pointer_type, class source_pointer_type&gt; </td></tr>
+<tr class="memitem:a7136ce6ac28c6cf87090a6bf3f91ba6a template"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> destination_pointer_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7136ce6ac28c6cf87090a6bf3f91ba6a">pointer_cast</a> (const source_pointer_type source_pointer) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+<tr class="memitem:a0feea1e1b35914fa97bc99b24f95c45b" id="r_a0feea1e1b35914fa97bc99b24f95c45b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0feea1e1b35914fa97bc99b24f95c45b">max_size_static</a> () <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:ab5aa72f9ff138a29c66445cd0fedc4cc" id="r_ab5aa72f9ff138a29c66445cd0fedc4cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a251e57f1115754eea03c0d1716130824">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5aa72f9ff138a29c66445cd0fedc4cc">end_iterator</a></td></tr>
+<tr class="memitem:a6f16b8dddbaeac366e5d6ce549f6adbc" id="r_a6f16b8dddbaeac366e5d6ce549f6adbc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a251e57f1115754eea03c0d1716130824">iterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f16b8dddbaeac366e5d6ce549f6adbc">begin_iterator</a></td></tr>
+<tr class="memitem:a30c93fb83086c5943ad8d0bc7250f7d2" id="r_a30c93fb83086c5943ad8d0bc7250f7d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30c93fb83086c5943ad8d0bc7250f7d2">erasure_groups_head</a></td></tr>
+<tr class="memitem:aa3b09d194746cf0c830f147951892341" id="r_aa3b09d194746cf0c830f147951892341"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3b09d194746cf0c830f147951892341">unused_groups_head</a></td></tr>
+<tr class="memitem:a4eb343f1adf072f306b36fa23e8af708" id="r_a4eb343f1adf072f306b36fa23e8af708"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4eb343f1adf072f306b36fa23e8af708">total_size</a></td></tr>
+<tr class="memitem:a200b85229ce6fdd39cf2ac495605948a" id="r_a200b85229ce6fdd39cf2ac495605948a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a200b85229ce6fdd39cf2ac495605948a">total_capacity</a></td></tr>
+<tr class="memitem:a47511aab1d75a38d7437fd33020b4f15" id="r_a47511aab1d75a38d7437fd33020b4f15"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a47511aab1d75a38d7437fd33020b4f15">min_block_capacity</a></td></tr>
+<tr class="memitem:a0c5b09438330cd92a084a28e96c85409" id="r_a0c5b09438330cd92a084a28e96c85409"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c5b09438330cd92a084a28e96c85409">max_block_capacity</a></td></tr>
+<tr class="memitem:ada5a59c6fdb4e0a1646722220d11a48b" id="r_ada5a59c6fdb4e0a1646722220d11a48b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a51fd2266f5e8693695c5a83fce6c967a">group_allocator_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada5a59c6fdb4e0a1646722220d11a48b">group_allocator</a></td></tr>
+<tr class="memitem:ab6b8c7b83c6a0ac2837b3075e91af798" id="r_ab6b8c7b83c6a0ac2837b3075e91af798"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#afa5527ab16b9f00484043f142b98f4b7">aligned_struct_allocator_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6b8c7b83c6a0ac2837b3075e91af798">aligned_struct_allocator</a></td></tr>
+<tr class="memitem:afb7162bc2eadefa46829e5b3d92536fd" id="r_afb7162bc2eadefa46829e5b3d92536fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a494f31376a1d22cada0eacd38ecd71e2">skipfield_allocator_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb7162bc2eadefa46829e5b3d92536fd">skipfield_allocator</a></td></tr>
+<tr class="memitem:a244936c363e54637a0e1ac3504e4388b" id="r_a244936c363e54637a0e1ac3504e4388b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ada31e572ca6bfa5eb27bb7f3323842bd">tuple_allocator_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a244936c363e54637a0e1ac3504e4388b">tuple_allocator</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
 友元</h2></td></tr>
@@ -235,6 +333,102 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a07cefed26b2bf39d356a4f346358eecb" id="r_a07cefed26b2bf39d356a4f346358eecb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07cefed26b2bf39d356a4f346358eecb">operator!=</a> (const <a class="el" href="classplf_1_1colony.html">colony</a> &amp;lh, const <a class="el" href="classplf_1_1colony.html">colony</a> &amp;rh) <a class="el" href="plf__colony_8h.html#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a></td></tr>
 </table>
 <a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">成员类型定义说明</h2>
+<a id="a9607054a35041fe8a5866ae31eaab64f" name="a9607054a35041fe8a5866ae31eaab64f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9607054a35041fe8a5866ae31eaab64f">&#9670;&#160;</a></span>aligned_allocator_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef allocator_type::template rebind&lt;<a class="el" href="structplf_1_1colony_1_1aligned__element__struct.html">aligned_element_struct</a>&gt;::other <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::aligned_allocator_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1986042ce32a0fe3aa40bd76fcf490ca" name="a1986042ce32a0fe3aa40bd76fcf490ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1986042ce32a0fe3aa40bd76fcf490ca">&#9670;&#160;</a></span>aligned_pointer_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef aligned_allocator_type::pointer <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::aligned_pointer_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afa5527ab16b9f00484043f142b98f4b7" name="afa5527ab16b9f00484043f142b98f4b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa5527ab16b9f00484043f142b98f4b7">&#9670;&#160;</a></span>aligned_struct_allocator_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef allocator_type::template rebind&lt;<a class="el" href="structplf_1_1colony_1_1aligned__allocation__struct.html">aligned_allocation_struct</a>&gt;::other <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::aligned_struct_allocator_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab03d390fe3fe9456e3a077310d0aa387" name="ab03d390fe3fe9456e3a077310d0aa387"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab03d390fe3fe9456e3a077310d0aa387">&#9670;&#160;</a></span>aligned_struct_pointer_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef aligned_struct_allocator_type::pointer <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::aligned_struct_pointer_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af9f40100eaac6b622154e79d5b67a921" name="af9f40100eaac6b622154e79d5b67a921"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af9f40100eaac6b622154e79d5b67a921">&#9670;&#160;</a></span>const_iterator</h2>
 
@@ -315,6 +509,54 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a51fd2266f5e8693695c5a83fce6c967a" name="a51fd2266f5e8693695c5a83fce6c967a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51fd2266f5e8693695c5a83fce6c967a">&#9670;&#160;</a></span>group_allocator_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef allocator_type::template rebind&lt;<a class="el" href="structplf_1_1colony_1_1group.html">group</a>&gt;::other <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::group_allocator_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3457b182bd3f0bb70b455b3adbd9bc2d" name="a3457b182bd3f0bb70b455b3adbd9bc2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3457b182bd3f0bb70b455b3adbd9bc2d">&#9670;&#160;</a></span>group_pointer_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef group_allocator_type::pointer <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::group_pointer_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a251e57f1115754eea03c0d1716130824" name="a251e57f1115754eea03c0d1716130824"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a251e57f1115754eea03c0d1716130824">&#9670;&#160;</a></span>iterator</h2>
 
@@ -391,6 +633,150 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
           <td class="memname">typedef allocator_type::size_type <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::size_type</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a494f31376a1d22cada0eacd38ecd71e2" name="a494f31376a1d22cada0eacd38ecd71e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a494f31376a1d22cada0eacd38ecd71e2">&#9670;&#160;</a></span>skipfield_allocator_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef allocator_type::template rebind&lt;<a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a>&gt;::other <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::skipfield_allocator_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5ae145ad3eade83bae8062d1416dbcb5" name="a5ae145ad3eade83bae8062d1416dbcb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ae145ad3eade83bae8062d1416dbcb5">&#9670;&#160;</a></span>skipfield_pointer_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef skipfield_allocator_type::pointer <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::skipfield_pointer_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1004ead4dd464b66377f64719490a4c1" name="a1004ead4dd464b66377f64719490a4c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1004ead4dd464b66377f64719490a4c1">&#9670;&#160;</a></span>skipfield_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="structplf_1_1conditional.html">plf::conditional</a>&lt;(<a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a>==<a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05a66f0406364665ed5a30123eeb571d221">performance</a>&amp;&amp;sizeof(element_type)&gt;10),unsignedshort,unsignedchar&gt;::type <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::skipfield_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada31e572ca6bfa5eb27bb7f3323842bd" name="ada31e572ca6bfa5eb27bb7f3323842bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada31e572ca6bfa5eb27bb7f3323842bd">&#9670;&#160;</a></span>tuple_allocator_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef allocator_type::template rebind&lt;<a class="el" href="structplf_1_1colony_1_1item__index__tuple.html">item_index_tuple</a>&gt;::other <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::tuple_allocator_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a740c111a79ba474fd726340642ac616d" name="a740c111a79ba474fd726340642ac616d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a740c111a79ba474fd726340642ac616d">&#9670;&#160;</a></span>tuple_pointer_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef tuple_allocator_type::pointer <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::tuple_pointer_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad320e2a5cb9d14a3b0e8bdb6c081c9ab" name="ad320e2a5cb9d14a3b0e8bdb6c081c9ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad320e2a5cb9d14a3b0e8bdb6c081c9ab">&#9670;&#160;</a></span>uchar_allocator_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef allocator_type::template rebind&lt;unsignedchar&gt;::other <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::uchar_allocator_type</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -835,6 +1221,64 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="add95184569b7d45d2103fe81b8da7646" name="add95184569b7d45d2103fe81b8da7646"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add95184569b7d45d2103fe81b8da7646">&#9670;&#160;</a></span>add_group_to_unused_groups_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::add_group_to_unused_groups_list </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>group_pointer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae0cc9495c58405d1dd9052ec12438589" name="ae0cc9495c58405d1dd9052ec12438589"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0cc9495c58405d1dd9052ec12438589">&#9670;&#160;</a></span>allocate_new_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::allocate_new_group </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>elements_per_group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>previous</em></span><span class="paramdefsep"> = </span><span class="paramdefval">NULL</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad2fdae5af59245876757ca84dde0cd8e" name="ad2fdae5af59245876757ca84dde0cd8e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad2fdae5af59245876757ca84dde0cd8e">&#9670;&#160;</a></span>assign() <span class="overload">[1/6]</span></h2>
 
@@ -1085,6 +1529,33 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a7a85be9b941a453e2d1a873298b2acbb" name="a7a85be9b941a453e2d1a873298b2acbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a85be9b941a453e2d1a873298b2acbb">&#9670;&#160;</a></span>blank()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::blank </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a1a997fc0b166b4df9549cb3f0d2e0a64" name="a1a997fc0b166b4df9549cb3f0d2e0a64"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1a997fc0b166b4df9549cb3f0d2e0a64">&#9670;&#160;</a></span>block_allocation_amount()</h2>
 
@@ -1151,7 +1622,7 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> skipfield_type <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::block_capacity_default_max </td>
+          <td class="memname"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::block_capacity_default_max </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -1178,7 +1649,7 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> skipfield_type <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::block_capacity_default_min </td>
+          <td class="memname"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::block_capacity_default_min </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -1355,6 +1826,33 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a6d23c3b3cfeac5808452494feba2d6fc" name="a6d23c3b3cfeac5808452494feba2d6fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d23c3b3cfeac5808452494feba2d6fc">&#9670;&#160;</a></span>check_capacities_conformance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::check_capacities_conformance </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structplf_1_1limits.html">plf::limits</a></td>          <td class="paramname"><span class="paramname"><em>capacities</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa9ec26e09393cdda2f01954edd9bc302" name="aa9ec26e09393cdda2f01954edd9bc302"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9ec26e09393cdda2f01954edd9bc302">&#9670;&#160;</a></span>clear()</h2>
 
@@ -1376,6 +1874,37 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3d5c19d17bacc5da8a9ed6a1104cf580" name="a3d5c19d17bacc5da8a9ed6a1104cf580"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d5c19d17bacc5da8a9ed6a1104cf580">&#9670;&#160;</a></span>consolidate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::consolidate </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>new_min</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>new_max</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1457,6 +1986,238 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2b228e530a1a753de1082906f2f44fa1" name="a2b228e530a1a753de1082906f2f44fa1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b228e530a1a753de1082906f2f44fa1">&#9670;&#160;</a></span>deallocate_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::deallocate_group </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>the_group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a846334577bdad455330818127775a9b8" name="a846334577bdad455330818127775a9b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a846334577bdad455330818127775a9b8">&#9670;&#160;</a></span>destroy_all_data()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::destroy_all_data </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a585375ba743141a8e8a64ad56b22e933" name="a585375ba743141a8e8a64ad56b22e933"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a585375ba743141a8e8a64ad56b22e933">&#9670;&#160;</a></span>destroy_element()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::destroy_element </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>element</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a92c37fc3dd3d3a852f8c60691eb5f513" name="a92c37fc3dd3d3a852f8c60691eb5f513"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92c37fc3dd3d3a852f8c60691eb5f513">&#9670;&#160;</a></span>destroy_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::destroy_group </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>end_pointer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae3923f2ab56c9c98ffbfb39d963d9f0b" name="ae3923f2ab56c9c98ffbfb39d963d9f0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3923f2ab56c9c98ffbfb39d963d9f0b">&#9670;&#160;</a></span>edit_free_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::edit_free_list </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa1ea61852b6e9d660b85f94bb7977121" name="aa1ea61852b6e9d660b85f94bb7977121"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1ea61852b6e9d660b85f94bb7977121">&#9670;&#160;</a></span>edit_free_list_head()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::edit_free_list_head </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a52d04d29c980355c0bf7cb7992a91271" name="a52d04d29c980355c0bf7cb7992a91271"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52d04d29c980355c0bf7cb7992a91271">&#9670;&#160;</a></span>edit_free_list_next()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::edit_free_list_next </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9469285127773ba6771c33e4584e416e" name="a9469285127773ba6771c33e4584e416e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9469285127773ba6771c33e4584e416e">&#9670;&#160;</a></span>edit_free_list_prev()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::edit_free_list_prev </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1602,6 +2363,151 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a94496aa5800c3ec3b6f31400667a044c" name="a94496aa5800c3ec3b6f31400667a044c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94496aa5800c3ec3b6f31400667a044c">&#9670;&#160;</a></span>fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::fill </td>
+          <td>(</td>
+          <td class="paramtype">const element_type &amp;</td>          <td class="paramname"><span class="paramname"><em>element</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8215c8a35b74b8f846323d7839f19285" name="a8215c8a35b74b8f846323d7839f19285"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8215c8a35b74b8f846323d7839f19285">&#9670;&#160;</a></span>fill_skipblock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::fill_skipblock </td>
+          <td>(</td>
+          <td class="paramtype">const element_type &amp;</td>          <td class="paramname"><span class="paramname"><em>element</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>skipfield_pointer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a68c63fba3ac39d1aa8825d02fdf97a52" name="a68c63fba3ac39d1aa8825d02fdf97a52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68c63fba3ac39d1aa8825d02fdf97a52">&#9670;&#160;</a></span>fill_unused_groups()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::fill_unused_groups </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const element_type &amp;</td>          <td class="paramname"><span class="paramname"><em>element</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>group_number</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>previous_group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>current_group</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8415433956ad5ee1885645e06061fe09" name="a8415433956ad5ee1885645e06061fe09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8415433956ad5ee1885645e06061fe09">&#9670;&#160;</a></span>get_aligned_block_capacity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::get_aligned_block_capacity </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>elements_per_group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a5eebd54997c9132972ccf76aee68c7ff" name="a5eebd54997c9132972ccf76aee68c7ff"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5eebd54997c9132972ccf76aee68c7ff">&#9670;&#160;</a></span>get_allocator()</h2>
 
@@ -1623,6 +2529,64 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8e529e329457645a295b3bfe9c81c1f0" name="a8e529e329457645a295b3bfe9c81c1f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e529e329457645a295b3bfe9c81c1f0">&#9670;&#160;</a></span>get_free_space()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class the_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::get_free_space </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8fe609e54623f10d90273e15ace5b043" name="a8fe609e54623f10d90273e15ace5b043"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fe609e54623f10d90273e15ace5b043">&#9670;&#160;</a></span>get_it()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;bool is_const&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classplf_1_1colony_1_1colony__iterator.html">colony_iterator</a>&lt; is_const &gt; <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::get_it </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a5ae2023f64f641baa5b26db7a20d24eb">pointer</a></td>          <td class="paramname"><span class="paramname"><em>element_pointer</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1677,6 +2641,33 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af0f113658bb26dea8765f6208f86571e" name="af0f113658bb26dea8765f6208f86571e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0f113658bb26dea8765f6208f86571e">&#9670;&#160;</a></span>initialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::initialize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>first_group_size</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -1987,6 +2978,33 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a0feea1e1b35914fa97bc99b24f95c45b" name="a0feea1e1b35914fa97bc99b24f95c45b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0feea1e1b35914fa97bc99b24f95c45b">&#9670;&#160;</a></span>max_size_static()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> size_t <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::max_size_static </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a55a1a92f40a4bd0ea5db804c323be101" name="a55a1a92f40a4bd0ea5db804c323be101"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a55a1a92f40a4bd0ea5db804c323be101">&#9670;&#160;</a></span>memory()</h2>
 
@@ -2041,6 +3059,252 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a7136ce6ac28c6cf87090a6bf3f91ba6a" name="a7136ce6ac28c6cf87090a6bf3f91ba6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7136ce6ac28c6cf87090a6bf3f91ba6a">&#9670;&#160;</a></span>pointer_cast()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class destination_pointer_type, class source_pointer_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="plf__colony_8h.html#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a> destination_pointer_type <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::pointer_cast </td>
+          <td>(</td>
+          <td class="paramtype">const source_pointer_type</td>          <td class="paramname"><span class="paramname"><em>source_pointer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8b2c7e0c6e8a791735975f09de53d86e" name="a8b2c7e0c6e8a791735975f09de53d86e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b2c7e0c6e8a791735975f09de53d86e">&#9670;&#160;</a></span>prepare_groups_for_assign()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::prepare_groups_for_assign </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a75e15b07e88c1e6f0f05907d5e5ecdb7" name="a75e15b07e88c1e6f0f05907d5e5ecdb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75e15b07e88c1e6f0f05907d5e5ecdb7">&#9670;&#160;</a></span>range_assign()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class iterator_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::range_assign </td>
+          <td>(</td>
+          <td class="paramtype">iterator_type</td>          <td class="paramname"><span class="paramname"><em>it</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a11caa4914ea5d85a58e7bdade2fa768b" name="a11caa4914ea5d85a58e7bdade2fa768b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11caa4914ea5d85a58e7bdade2fa768b">&#9670;&#160;</a></span>range_fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class iterator_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::range_fill </td>
+          <td>(</td>
+          <td class="paramtype">iterator_type &amp;</td>          <td class="paramname"><span class="paramname"><em>it</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7d48b97ac3cd45c4c351ac7d42eb4b2b" name="a7d48b97ac3cd45c4c351ac7d42eb4b2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d48b97ac3cd45c4c351ac7d42eb4b2b">&#9670;&#160;</a></span>range_fill_skipblock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class iterator_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::range_fill_skipblock </td>
+          <td>(</td>
+          <td class="paramtype">iterator_type &amp;</td>          <td class="paramname"><span class="paramname"><em>it</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>skipfield_pointer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acf9b6eca6a305afe24a8d6130ba2077c" name="acf9b6eca6a305afe24a8d6130ba2077c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf9b6eca6a305afe24a8d6130ba2077c">&#9670;&#160;</a></span>range_fill_unused_groups()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class iterator_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::range_fill_unused_groups </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">iterator_type</td>          <td class="paramname"><span class="paramname"><em>it</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>group_number</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>previous_group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>current_group</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6cac41f750fb044e907d4a447e06eba0" name="a6cac41f750fb044e907d4a447e06eba0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cac41f750fb044e907d4a447e06eba0">&#9670;&#160;</a></span>range_insert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class iterator_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::range_insert </td>
+          <td>(</td>
+          <td class="paramtype">iterator_type</td>          <td class="paramname"><span class="paramname"><em>it</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a4704cdcd2751b561a6fab4cca26d9950" name="a4704cdcd2751b561a6fab4cca26d9950"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4704cdcd2751b561a6fab4cca26d9950">&#9670;&#160;</a></span>rbegin() <span class="overload">[1/2]</span></h2>
 
@@ -2089,6 +3353,101 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4b2908d80a991e7200260b9b3662ba93" name="a4b2908d80a991e7200260b9b3662ba93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b2908d80a991e7200260b9b3662ba93">&#9670;&#160;</a></span>recover_from_partial_fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::recover_from_partial_fill </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adda10b2afdaa1ba3144ef0b5a39863c9" name="adda10b2afdaa1ba3144ef0b5a39863c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adda10b2afdaa1ba3144ef0b5a39863c9">&#9670;&#160;</a></span>recover_from_partial_skipblock_fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::recover_from_partial_skipblock_fill </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1986042ce32a0fe3aa40bd76fcf490ca">aligned_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>current_location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a5ae145ad3eade83bae8062d1416dbcb5">skipfield_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>skipfield_pointer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>prev_free_list_node</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac64c3e8ac66e59e70c22ddc50bb29144" name="ac64c3e8ac66e59e70c22ddc50bb29144"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac64c3e8ac66e59e70c22ddc50bb29144">&#9670;&#160;</a></span>remove_from_groups_with_erasures_list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::remove_from_groups_with_erasures_list </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>group_to_remove</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2176,6 +3535,70 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a344501b09a2800b65c68eef1ebe87db8" name="a344501b09a2800b65c68eef1ebe87db8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a344501b09a2800b65c68eef1ebe87db8">&#9670;&#160;</a></span>reserve_and_fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::reserve_and_fill </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const element_type &amp;</td>          <td class="paramname"><span class="paramname"><em>element</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae177de3694afddd8ea344c8dd685623e" name="ae177de3694afddd8ea344c8dd685623e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae177de3694afddd8ea344c8dd685623e">&#9670;&#160;</a></span>reserve_and_range_fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<div class="memtemplate">
+template&lt;class iterator_type&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::reserve_and_range_fill </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const iterator_type &amp;</td>          <td class="paramname"><span class="paramname"><em>it</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ae8741a7316d2e6c3b669bd9d0c183800" name="ae8741a7316d2e6c3b669bd9d0c183800"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae8741a7316d2e6c3b669bd9d0c183800">&#9670;&#160;</a></span>reset()</h2>
 
@@ -2203,6 +3626,87 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
 
 </div>
 </div>
+<a id="a5b7f0c1a2f36d6581f5b55e5cd53b344" name="a5b7f0c1a2f36d6581f5b55e5cd53b344"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b7f0c1a2f36d6581f5b55e5cd53b344">&#9670;&#160;</a></span>reset_group_numbers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::reset_group_numbers </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a26116b5815e718f0ade62022d4b3e049" name="a26116b5815e718f0ade62022d4b3e049"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26116b5815e718f0ade62022d4b3e049">&#9670;&#160;</a></span>reset_group_numbers_if_necessary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::reset_group_numbers_if_necessary </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a30745595e5c9052d1adf527d3caeb733" name="a30745595e5c9052d1adf527d3caeb733"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30745595e5c9052d1adf527d3caeb733">&#9670;&#160;</a></span>reset_only_group_left()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::reset_only_group_left </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>group_pointer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ad9cb744209d1946d1266a9a244df6628" name="ad9cb744209d1946d1266a9a244df6628"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad9cb744209d1946d1266a9a244df6628">&#9670;&#160;</a></span>reshape()</h2>
 
@@ -2224,6 +3728,74 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2f7010c57f3f033ed8d0f301f5829dab" name="a2f7010c57f3f033ed8d0f301f5829dab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f7010c57f3f033ed8d0f301f5829dab">&#9670;&#160;</a></span>reuse_unused_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::reuse_unused_group </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a489e7c181832cb87f721c797fe5be6dd" name="a489e7c181832cb87f721c797fe5be6dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a489e7c181832cb87f721c797fe5be6dd">&#9670;&#160;</a></span>setup_data_cell()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::setup_data_cell </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structplf_1_1colony_1_1colony__data.html">colony_data</a> *</td>          <td class="paramname"><span class="paramname"><em>data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>current_group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>capacity</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>group_number</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2334,6 +3906,33 @@ template&lt;class comparison_function&gt; </div>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af1a04f968b376f7f5425f5442f55b1e8" name="af1a04f968b376f7f5425f5442f55b1e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1a04f968b376f7f5425f5442f55b1e8">&#9670;&#160;</a></span>source_blocks_incompatible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::source_blocks_incompatible </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -2504,6 +4103,68 @@ template&lt;class comparison_function&gt; </div>
 
 </div>
 </div>
+<a id="ad058e3dd73f3c86738f6e499f5f136d8" name="ad058e3dd73f3c86738f6e499f5f136d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad058e3dd73f3c86738f6e499f5f136d8">&#9670;&#160;</a></span>update_skipblock()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::update_skipblock </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a251e57f1115754eea03c0d1716130824">iterator</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>new_location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a></td>          <td class="paramname"><span class="paramname"><em>prev_free_list_index</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab96b9286be9664fb77e77f687272f118" name="ab96b9286be9664fb77e77f687272f118"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab96b9286be9664fb77e77f687272f118">&#9670;&#160;</a></span>update_subsequent_group_numbers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::update_subsequent_group_numbers </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a></td>          <td class="paramname"><span class="paramname"><em>current_group_number</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a></td>          <td class="paramname"><span class="paramname"><em>update_group</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
 <a id="af0bc89354cf0e6d83a03f76696264418" name="af0bc89354cf0e6d83a03f76696264418"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af0bc89354cf0e6d83a03f76696264418">&#9670;&#160;</a></span>colony_iterator&lt; false &gt;</h2>
@@ -2657,6 +4318,295 @@ template&lt;class element_type, class allocator_type = std::allocator&lt;element
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ab6b8c7b83c6a0ac2837b3075e91af798" name="ab6b8c7b83c6a0ac2837b3075e91af798"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6b8c7b83c6a0ac2837b3075e91af798">&#9670;&#160;</a></span>aligned_struct_allocator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#afa5527ab16b9f00484043f142b98f4b7">aligned_struct_allocator_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::aligned_struct_allocator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6f16b8dddbaeac366e5d6ce549f6adbc" name="a6f16b8dddbaeac366e5d6ce549f6adbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f16b8dddbaeac366e5d6ce549f6adbc">&#9670;&#160;</a></span>begin_iterator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a251e57f1115754eea03c0d1716130824">iterator</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::begin_iterator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab5aa72f9ff138a29c66445cd0fedc4cc" name="ab5aa72f9ff138a29c66445cd0fedc4cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5aa72f9ff138a29c66445cd0fedc4cc">&#9670;&#160;</a></span>end_iterator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a251e57f1115754eea03c0d1716130824">iterator</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::end_iterator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a30c93fb83086c5943ad8d0bc7250f7d2" name="a30c93fb83086c5943ad8d0bc7250f7d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30c93fb83086c5943ad8d0bc7250f7d2">&#9670;&#160;</a></span>erasure_groups_head</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::erasure_groups_head</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada5a59c6fdb4e0a1646722220d11a48b" name="ada5a59c6fdb4e0a1646722220d11a48b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada5a59c6fdb4e0a1646722220d11a48b">&#9670;&#160;</a></span>group_allocator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a51fd2266f5e8693695c5a83fce6c967a">group_allocator_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::group_allocator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0c5b09438330cd92a084a28e96c85409" name="a0c5b09438330cd92a084a28e96c85409"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c5b09438330cd92a084a28e96c85409">&#9670;&#160;</a></span>max_block_capacity</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::max_block_capacity</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a47511aab1d75a38d7437fd33020b4f15" name="a47511aab1d75a38d7437fd33020b4f15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47511aab1d75a38d7437fd33020b4f15">&#9670;&#160;</a></span>min_block_capacity</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a1004ead4dd464b66377f64719490a4c1">skipfield_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::min_block_capacity</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afb7162bc2eadefa46829e5b3d92536fd" name="afb7162bc2eadefa46829e5b3d92536fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb7162bc2eadefa46829e5b3d92536fd">&#9670;&#160;</a></span>skipfield_allocator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a494f31376a1d22cada0eacd38ecd71e2">skipfield_allocator_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::skipfield_allocator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a200b85229ce6fdd39cf2ac495605948a" name="a200b85229ce6fdd39cf2ac495605948a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a200b85229ce6fdd39cf2ac495605948a">&#9670;&#160;</a></span>total_capacity</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::total_capacity</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4eb343f1adf072f306b36fa23e8af708" name="a4eb343f1adf072f306b36fa23e8af708"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eb343f1adf072f306b36fa23e8af708">&#9670;&#160;</a></span>total_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#ab4d8bc099325742b0c8565a550ab3649">size_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::total_size</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a244936c363e54637a0e1ac3504e4388b" name="a244936c363e54637a0e1ac3504e4388b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a244936c363e54637a0e1ac3504e4388b">&#9670;&#160;</a></span>tuple_allocator</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#ada31e572ca6bfa5eb27bb7f3323842bd">tuple_allocator_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::tuple_allocator</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa3b09d194746cf0c830f147951892341" name="aa3b09d194746cf0c830f147951892341"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3b09d194746cf0c830f147951892341">&#9670;&#160;</a></span>unused_groups_head</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class element_type, class allocator_type = std::allocator&lt;element_type&gt;, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> priority = performance&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a3457b182bd3f0bb70b455b3adbd9bc2d">group_pointer_type</a> <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">priority</a> &gt;::unused_groups_head</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

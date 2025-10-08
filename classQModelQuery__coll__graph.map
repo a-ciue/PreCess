@@ -1,7 +1,21 @@
 <map id="QModelQuery" name="QModelQuery">
-<area shape="rect" id="Node000001" title="ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）" alt="" coords="45,79,155,104"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,80,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="63,40,93,77,89,80,58,43"/>
-<area shape="rect" id="Node000003" href="$classIModelQuery.html" title=" " alt="" coords="105,5,210,31"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="142,43,111,80,107,77,137,40"/>
+<area shape="rect" id="Node000001" title="ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）" alt="" coords="102,604,213,629"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,508,80,533"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,540,145,602,141,606,65,544"/>
+<area shape="rect" id="Node000003" href="$classIModelQuery.html" title=" " alt="" coords="105,508,210,533"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="160,547,160,604,155,604,155,547"/>
+<area shape="rect" id="Node000004" href="$classModelManager.html" title="负责管理多个 ModelData 实例的类" alt="" coords="234,508,353,533"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="267,543,176,606,173,602,264,539"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="111,383,273,437"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="219,447,249,482,278,506,274,510,245,486,215,450"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="82,287,302,312"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="195,326,195,382,189,382,189,326"/>
+<area shape="rect" id="Node000007" href="$classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="145,191,239,216"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="195,230,195,286,189,286,189,230"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="149,95,235,120"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="195,134,195,190,189,190,189,134"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="123,5,261,45"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="195,59,195,94,189,94,189,59"/>
+<area shape="rect" id="Node000010" href="$classModelObserver.html" title=" " alt="" coords="298,397,419,423"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="347,436,303,509,298,506,342,433"/>
 </map>

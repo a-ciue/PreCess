@@ -1,11 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classSelectorHighlight.html" title=" " alt="" coords="5,80,140,105"/>
-<area shape="rect" id="Node000001" href="$classBlockSelectorHighlight.html" title=" " alt="" coords="206,5,377,31"/>
-<area shape="poly" id="edge24_Node000000_Node000001" title=" " alt="" coords="110,71,187,39,227,28,228,33,189,45,112,76"/>
-<area shape="rect" id="Node000002" href="$classSingleEdgeSelectorHighlight.html" title=" " alt="" coords="188,55,395,80"/>
-<area shape="poly" id="edge25_Node000000_Node000002" title=" " alt="" coords="154,81,188,77,188,82,154,86"/>
-<area shape="rect" id="Node000003" href="$classSingleFaceSelectorHighlight.html" title=" " alt="" coords="190,104,393,129"/>
-<area shape="poly" id="edge26_Node000000_Node000003" title=" " alt="" coords="154,99,190,103,190,108,154,104"/>
-<area shape="rect" id="Node000004" href="$classSingleSolidSelectorHighlight.html" title=" " alt="" coords="188,153,395,179"/>
-<area shape="poly" id="edge27_Node000000_Node000004" title=" " alt="" coords="115,109,189,138,233,151,231,156,187,143,113,114"/>
+<area shape="rect" id="Node000000" href="$structplf_1_1limits.html" title=" " alt="" coords="5,5,88,31"/>
 </map>

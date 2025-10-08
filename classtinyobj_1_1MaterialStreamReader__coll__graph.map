@@ -1,5 +1,13 @@
 <map id="tinyobj::MaterialStreamReader" name="tinyobj::MaterialStreamReader">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,79,228,104"/>
-<area shape="rect" id="Node000002" href="$classtinyobj_1_1MaterialReader.html" title=" " alt="" coords="29,5,204,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,44,119,79,114,79,114,44"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="32,340,255,365"/>
+<area shape="rect" id="Node000002" href="$classtinyobj_1_1MaterialReader.html" title=" " alt="" coords="5,244,180,269"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,280,139,339,135,341,103,283"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="204,244,304,269"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="232,280,159,342,155,338,228,276"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="183,155,325,195"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="257,208,257,244,251,244,251,208"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="169,80,339,105"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="257,119,257,155,251,155,251,119"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="201,5,307,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="257,45,257,80,251,80,251,45"/>
 </map>

@@ -80,6 +80,7 @@ $(function() {
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pro-methods">Protected 成员函数</a> &#124;
 <a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="#pri-types">Private 类型</a> &#124;
 <a href="classMeshLib_1_1CFaceSplitter-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">MeshLib::CFaceSplitter&lt; M &gt; 模板类 参考</div></div>
 </div><!--header-->
@@ -91,11 +92,11 @@ $(function() {
 Public 成员函数</h2></td></tr>
 <tr class="memitem:ab00b1a56e89ec68e1ebdd191819dbd9a" id="r_ab00b1a56e89ec68e1ebdd191819dbd9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab00b1a56e89ec68e1ebdd191819dbd9a">CFaceSplitter</a> (M *pMesh)</td></tr>
 <tr class="memitem:a1bc4f78f0ea7802018c64768ff32887c" id="r_a1bc4f78f0ea7802018c64768ff32887c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1bc4f78f0ea7802018c64768ff32887c">~CFaceSplitter</a> ()</td></tr>
-<tr class="memitem:af9a84767b6bdf372bcde790f9f6131c7" id="r_af9a84767b6bdf372bcde790f9f6131c7"><td class="memItemLeft" align="right" valign="top">V *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9a84767b6bdf372bcde790f9f6131c7">create_vertex</a> ()</td></tr>
-<tr class="memitem:a9fef0d4ad4b51c392c4903dd8d3bc953" id="r_a9fef0d4ad4b51c392c4903dd8d3bc953"><td class="memItemLeft" align="right" valign="top">V *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9fef0d4ad4b51c392c4903dd8d3bc953">split_edge</a> (H *he)</td></tr>
-<tr class="memitem:ae2829443f5d0ea90fd19ddd3b6f92b61" id="r_ae2829443f5d0ea90fd19ddd3b6f92b61"><td class="memItemLeft" align="right" valign="top">std::pair&lt; H *, F * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2829443f5d0ea90fd19ddd3b6f92b61">create_edge</a> (V *v0, H *he_inv0, V *v1, H *he_inv1)</td></tr>
-<tr class="memitem:a4d50a3aac8def8ca35ede1318b2b494a" id="r_a4d50a3aac8def8ca35ede1318b2b494a"><td class="memItemLeft" align="right" valign="top">V *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d50a3aac8def8ca35ede1318b2b494a">slice_face</a> (vector&lt; H * &gt; phes_in)</td></tr>
-<tr class="memitem:a0fbee551f15a0a9bb127507073ad3d1d" id="r_a0fbee551f15a0a9bb127507073ad3d1d"><td class="memItemLeft" align="right" valign="top">F *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0fbee551f15a0a9bb127507073ad3d1d">merge_face</a> (H *phe_del)</td></tr>
+<tr class="memitem:af9a84767b6bdf372bcde790f9f6131c7" id="r_af9a84767b6bdf372bcde790f9f6131c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9a84767b6bdf372bcde790f9f6131c7">create_vertex</a> ()</td></tr>
+<tr class="memitem:a9fef0d4ad4b51c392c4903dd8d3bc953" id="r_a9fef0d4ad4b51c392c4903dd8d3bc953"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9fef0d4ad4b51c392c4903dd8d3bc953">split_edge</a> (<a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *he)</td></tr>
+<tr class="memitem:ae2829443f5d0ea90fd19ddd3b6f92b61" id="r_ae2829443f5d0ea90fd19ddd3b6f92b61"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *, <a class="el" href="#ae8acb87f8f03623cc9559726d2d0f583">F</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2829443f5d0ea90fd19ddd3b6f92b61">create_edge</a> (<a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> *v0, <a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *he_inv0, <a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> *v1, <a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *he_inv1)</td></tr>
+<tr class="memitem:a4d50a3aac8def8ca35ede1318b2b494a" id="r_a4d50a3aac8def8ca35ede1318b2b494a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d50a3aac8def8ca35ede1318b2b494a">slice_face</a> (vector&lt; <a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> * &gt; phes_in)</td></tr>
+<tr class="memitem:a0fbee551f15a0a9bb127507073ad3d1d" id="r_a0fbee551f15a0a9bb127507073ad3d1d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#ae8acb87f8f03623cc9559726d2d0f583">F</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0fbee551f15a0a9bb127507073ad3d1d">merge_face</a> (<a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *phe_del)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected 成员函数</h2></td></tr>
@@ -107,7 +108,111 @@ Protected 属性</h2></td></tr>
 <tr class="memitem:af1c9d2cac6652e275cf5eba33b450eff" id="r_af1c9d2cac6652e275cf5eba33b450eff"><td class="memItemLeft" align="right" valign="top">M *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1c9d2cac6652e275cf5eba33b450eff">m_pMesh</a></td></tr>
 <tr class="memitem:a6ce70f437f87d51f2de8dacb87bd03f8" id="r_a6ce70f437f87d51f2de8dacb87bd03f8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ce70f437f87d51f2de8dacb87bd03f8">m_maxVid</a> {}</td></tr>
 <tr class="memitem:ac20b1b81e9efd043af0b51532393fc4a" id="r_ac20b1b81e9efd043af0b51532393fc4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac20b1b81e9efd043af0b51532393fc4a">m_maxFid</a> {}</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-types" class="groupheader"><a id="pri-types" name="pri-types"></a>
+Private 类型</h2></td></tr>
+<tr class="memitem:abffb85d6f451871df0892edb39105d99" id="r_abffb85d6f451871df0892edb39105d99"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> = typename M::V</td></tr>
+<tr class="memitem:aaedc3b84ceb167d0023cddb1cdfce750" id="r_aaedc3b84ceb167d0023cddb1cdfce750"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> = typename M::H</td></tr>
+<tr class="memitem:a6e472d39cf5a80ae9616408f8c2cffd2" id="r_a6e472d39cf5a80ae9616408f8c2cffd2"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e472d39cf5a80ae9616408f8c2cffd2">E</a> = typename M::E</td></tr>
+<tr class="memitem:ae8acb87f8f03623cc9559726d2d0f583" id="r_ae8acb87f8f03623cc9559726d2d0f583"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8acb87f8f03623cc9559726d2d0f583">F</a> = typename M::F</td></tr>
 </table>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">成员类型定义说明</h2>
+<a id="a6e472d39cf5a80ae9616408f8c2cffd2" name="a6e472d39cf5a80ae9616408f8c2cffd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e472d39cf5a80ae9616408f8c2cffd2">&#9670;&#160;</a></span>E</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::E = typename M::E</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae8acb87f8f03623cc9559726d2d0f583" name="ae8acb87f8f03623cc9559726d2d0f583"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8acb87f8f03623cc9559726d2d0f583">&#9670;&#160;</a></span>F</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::F = typename M::F</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaedc3b84ceb167d0023cddb1cdfce750" name="aaedc3b84ceb167d0023cddb1cdfce750"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaedc3b84ceb167d0023cddb1cdfce750">&#9670;&#160;</a></span>H</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::H = typename M::H</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abffb85d6f451871df0892edb39105d99" name="abffb85d6f451871df0892edb39105d99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abffb85d6f451871df0892edb39105d99">&#9670;&#160;</a></span>V</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::V = typename M::V</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="ab00b1a56e89ec68e1ebdd191819dbd9a" name="ab00b1a56e89ec68e1ebdd191819dbd9a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab00b1a56e89ec68e1ebdd191819dbd9a">&#9670;&#160;</a></span>CFaceSplitter()</h2>
@@ -167,22 +272,22 @@ template&lt;typename M&gt; </div>
         <tr>
           <td class="memname">std::pair&lt; typename M::H *, typename M::F * &gt; <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::create_edge </td>
           <td>(</td>
-          <td class="paramtype">V *</td>          <td class="paramname"><span class="paramname"><em>v0</em></span>, </td>
+          <td class="paramtype"><a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> *</td>          <td class="paramname"><span class="paramname"><em>v0</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">H *</td>          <td class="paramname"><span class="paramname"><em>he_inv0</em></span>, </td>
+          <td class="paramtype"><a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *</td>          <td class="paramname"><span class="paramname"><em>he_inv0</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">V *</td>          <td class="paramname"><span class="paramname"><em>v1</em></span>, </td>
+          <td class="paramtype"><a class="el" href="#abffb85d6f451871df0892edb39105d99">V</a> *</td>          <td class="paramname"><span class="paramname"><em>v1</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">H *</td>          <td class="paramname"><span class="paramname"><em>he_inv1</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *</td>          <td class="paramname"><span class="paramname"><em>he_inv1</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -273,7 +378,7 @@ template&lt;typename M&gt; </div>
         <tr>
           <td class="memname">M::F * <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::merge_face </td>
           <td>(</td>
-          <td class="paramtype">H *</td>          <td class="paramname"><span class="paramname"><em>phe_del</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *</td>          <td class="paramname"><span class="paramname"><em>phe_del</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -299,7 +404,7 @@ template&lt;typename M&gt; </div>
         <tr>
           <td class="memname">M::V * <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::slice_face </td>
           <td>(</td>
-          <td class="paramtype">vector&lt; H * &gt;</td>          <td class="paramname"><span class="paramname"><em>phes_in</em></span></td><td>)</td>
+          <td class="paramtype">vector&lt; <a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> * &gt;</td>          <td class="paramname"><span class="paramname"><em>phes_in</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -325,7 +430,7 @@ template&lt;typename M&gt; </div>
         <tr>
           <td class="memname">M::V * <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::split_edge </td>
           <td>(</td>
-          <td class="paramtype">H *</td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="#aaedc3b84ceb167d0023cddb1cdfce750">H</a> *</td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>

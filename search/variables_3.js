@@ -1,15 +1,21 @@
 var searchData=
 [
-  ['data_0',['data',['../structplf_1_1colony_1_1aligned__element__struct.html#af26ade0c27c6c1c4a094acb8dac3b785',1,'plf::colony::aligned_element_struct::data'],['../structplf_1_1colony_1_1aligned__allocation__struct.html#a5b1a11a73bde2f2fd94c6f60d5aff9ce',1,'plf::colony::aligned_allocation_struct::data']]],
-  ['desc_1',['desc',['../structArgType.html#a32e7adae841fd90a1ed5e6fe88522997',1,'ArgType']]],
-  ['description_2',['description',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a3ed2e0827d56f8602e4ecc4c77ea683e',1,'systems::algo::AlgorithmInfo::description'],['../structsystems_1_1io_1_1ModelIOInfo.html#a70823a394fc6bcfa4a601cf093ecb7ba',1,'systems::io::ModelIOInfo::description']]],
-  ['destroyer_3',['destroyer',['../structsystems_1_1HandlerCreatorDestroyer.html#a750e4dad53d4840bd0f3146ee93e4558',1,'systems::HandlerCreatorDestroyer']]],
-  ['diffuse_4',['diffuse',['../structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453',1,'tinyobj::material_t']]],
-  ['diffuse_5ftexname_5',['diffuse_texname',['../structtinyobj_1_1material__t.html#ad7f71a301a261fca07d2e50edccc792d',1,'tinyobj::material_t']]],
-  ['diffuse_5ftexopt_6',['diffuse_texopt',['../structtinyobj_1_1material__t.html#a170412a1e339856e55d5cec406ecc196',1,'tinyobj::material_t']]],
-  ['displacement_5ftexname_7',['displacement_texname',['../structtinyobj_1_1material__t.html#ab69842db3e67cc7d4dcd8bfe02590f92',1,'tinyobj::material_t']]],
-  ['displacement_5ftexopt_8',['displacement_texopt',['../structtinyobj_1_1material__t.html#a6f28d7a04ebb6435c62adb502847f4c3',1,'tinyobj::material_t']]],
-  ['display_5fname_9',['display_name',['../structsystems_1_1algo_1_1AlgorithmInfo.html#adaea0bf3f4106a845ec8b2d4e1f7bf93',1,'systems::algo::AlgorithmInfo::display_name'],['../structsystems_1_1algo_1_1HandlerMetaData.html#a1177cec33025df2ceb4989fad185c871',1,'systems::algo::HandlerMetaData::display_name']]],
-  ['dissolve_10',['dissolve',['../structtinyobj_1_1material__t.html#a61e3561bf67f6faec6ac4f551f9956cb',1,'tinyobj::material_t']]],
-  ['dummy_11',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]]
+  ['capacity_0',['capacity',['../structplf_1_1colony_1_1group.html#abc9cf941828a9730d9964040e3a40077',1,'plf::colony::group']]],
+  ['clamp_1',['clamp',['../structtinyobj_1_1texture__option__t.html#a55c0ce8fec97910a43606281ea7ee122',1,'tinyobj::texture_option_t']]],
+  ['clearcoat_5froughness_2',['clearcoat_roughness',['../structtinyobj_1_1material__t.html#a0856eb3210823262539af42aa2f5a63e',1,'tinyobj::material_t']]],
+  ['clearcoat_5fthickness_3',['clearcoat_thickness',['../structtinyobj_1_1material__t.html#a324dd4bb8475271e31aeb0a5959af745',1,'tinyobj::material_t']]],
+  ['click_5f_4',['click_',['../classQRenderWindowStyle.html#af4f0e2391c4db538112fa0ccb76e96cf',1,'QRenderWindowStyle']]],
+  ['clip_5fplane_5f_5',['clip_plane_',['../classMeshActor.html#aef69d9e95a452055e5c9f268b386a933',1,'MeshActor']]],
+  ['collection_5f_6',['collection_',['../classBlockSelectorHighlight.html#a592131343e0bfc40b61a9e4a9b7c244c',1,'BlockSelectorHighlight::collection_'],['../classSingleFaceSelectorHighlight.html#afee76604c7c9d07ffcd8034e381cd3cd',1,'SingleFaceSelectorHighlight::collection_'],['../classSingleEdgeSelectorHighlight.html#a076c4fe950c85841d83615e89cbd47b9',1,'SingleEdgeSelectorHighlight::collection_']]],
+  ['colors_7',['colors',['../classMeshActor.html#a780070ae950cbd0e2799be889fe9b5f5',1,'MeshActor::colors'],['../structtinyobj_1_1attrib__t.html#aad0a3d4f2e6f1ff89671dd3d4b2dff2e',1,'tinyobj::attrib_t::colors']]],
+  ['colorspace_8',['colorspace',['../structtinyobj_1_1texture__option__t.html#a1181af8c61dd09fe74c0e8dfff8df804',1,'tinyobj::texture_option_t']]],
+  ['content_9',['content',['../structArgType.html#a3a1181cdc136dd6f5f8c4e8b725fd840',1,'ArgType']]],
+  ['contrast_10',['contrast',['../structtinyobj_1_1texture__option__t.html#a3b81d1c299840825e6633c00ba9ee0e3',1,'tinyobj::texture_option_t']]],
+  ['core_5f_11',['core_',['../classQModelManager.html#a4ff4aeb9cbc510fe35a7990b8e6569a4',1,'QModelManager']]],
+  ['creator_12',['creator',['../structsystems_1_1HandlerCreatorDestroyer.html#a63af688dc5eb5f15d02d2222216502e4',1,'systems::HandlerCreatorDestroyer']]],
+  ['cur_5factor_5f_13',['cur_actor_',['../structQRenderWindow.html#a3f810a45cdd8e37d3beb60229f40626a',1,'QRenderWindow']]],
+  ['cur_5factor_5fid_5f_14',['cur_actor_id_',['../structQRenderWindow.html#a4f5f232a0ca04e365aa737631aefddad',1,'QRenderWindow']]],
+  ['cur_5fmodel_15',['cur_model',['../structsystems_1_1algo_1_1HandlerContext.html#a2155f6ac444b01411a8a4b99f81fb780',1,'systems::algo::HandlerContext']]],
+  ['cur_5fmodel_5factor_5f_16',['cur_model_actor_',['../classSelectManager.html#ac9906967a7ec4e1d38ddbc66bd1b3007',1,'SelectManager']]],
+  ['current_17',['current',['../classplf_1_1colony_1_1colony__reverse__iterator.html#a35aa7733f487c9891fadd51feba91627',1,'plf::colony::colony_reverse_iterator']]]
 ];

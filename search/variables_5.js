@@ -1,9 +1,23 @@
 var searchData=
 [
-  ['face_5fvertices_5f_0',['face_vertices_',['../structMeshData.html#a1905a5d8092320d547eb96be6f527918',1,'MeshData']]],
-  ['face_5fvertices_5foffset_5f_1',['face_vertices_offset_',['../structMeshData.html#a994686c601707d424a111695960dd678',1,'MeshData']]],
-  ['faces_2',['faces',['../structPatch.html#a84986b24eba51cd18a6313f0984fef18',1,'Patch']]],
-  ['faces_5f_3',['faces_',['../structBlockData.html#abbc6e8b1fe2e6b464c9763665fdf9725',1,'BlockData']]],
-  ['file_5ftype_4',['file_type',['../structsystems_1_1io_1_1HandlerMetaData.html#a0fd2bd481588605b64368f0b2f012b06',1,'systems::io::HandlerMetaData']]],
-  ['floatvalues_5',['floatValues',['../structtinyobj_1_1tag__t.html#a6e531cc0a0d53b6334cf55da4bb62ffc',1,'tinyobj::tag_t']]]
+  ['edge_0',['edge',['../classMeshLib_1_1CToolVertex.html#a84f86822b252e7b896cc5e630a263e50',1,'MeshLib::CToolVertex']]],
+  ['edge_5factor_5f_1',['edge_actor_',['../classMeshActor.html#ac1012183fbcf30628db40de715822957',1,'MeshActor']]],
+  ['edge_5fclipper_5f_2',['edge_clipper_',['../classMeshActor.html#a19805d0c0e844a809f0bbb4e67bd48bf',1,'MeshActor']]],
+  ['edge_5fdata_5f_3',['edge_data_',['../classMeshActor.html#aeea019c4c105bbd7e7b37f2e1043c6a3',1,'MeshActor']]],
+  ['edge_5fmapper_5f_4',['edge_mapper_',['../classMeshActor.html#ab0bc13100593d5a6e211fb88fc51ebcf',1,'MeshActor']]],
+  ['edge_5frender_5',['edge_render',['../classSplineActor.html#a61c8f52292c8bfb10def80a695897814',1,'SplineActor']]],
+  ['edge_5frender_5f_6',['edge_render_',['../classMeshActor.html#a60950d473d887ced81f50ad1ac0b3318',1,'MeshActor::edge_render_'],['../structQRenderWindow.html#ab385b44900ccce062106522f7a05bfbc',1,'QRenderWindow::edge_render_']]],
+  ['edge_5fvertices_5f_7',['edge_vertices_',['../structMeshData.html#a136ea84f40ad248a6c07043dda96e81c',1,'MeshData']]],
+  ['element_5fpointer_8',['element_pointer',['../classplf_1_1colony_1_1colony__iterator.html#aee9aca4123a7eb7557a609be7edc9b61',1,'plf::colony::colony_iterator']]],
+  ['elements_9',['elements',['../structplf_1_1colony_1_1group.html#a5f5f09ddb39edba5f73cc41bc99fdf9f',1,'plf::colony::group::elements'],['../classsystems_1_1algo_1_1vector.html#a2396209900e8f592db1f0b2467f7d899',1,'systems::algo::vector::elements'],['../classsystems_1_1io_1_1vector.html#a2396209900e8f592db1f0b2467f7d899',1,'systems::io::vector::elements']]],
+  ['emission_10',['emission',['../structtinyobj_1_1material__t.html#a6ceb4407ddc81f6750eee96d12d784e8',1,'tinyobj::material_t']]],
+  ['emissive_5ftexname_11',['emissive_texname',['../structtinyobj_1_1material__t.html#a63bb93815630b2dfca986ae17c51b919',1,'tinyobj::material_t']]],
+  ['emissive_5ftexopt_12',['emissive_texopt',['../structtinyobj_1_1material__t.html#a7a2da381cdabd6655aaed320d5b1ffe3',1,'tinyobj::material_t']]],
+  ['end_5fiterator_13',['end_iterator',['../classplf_1_1colony.html#ab5aa72f9ff138a29c66445cd0fedc4cc',1,'plf::colony']]],
+  ['erasure_5fgroups_5fhead_14',['erasure_groups_head',['../classplf_1_1colony.html#a30c93fb83086c5943ad8d0bc7250f7d2',1,'plf::colony']]],
+  ['erasures_5flist_5fnext_5fgroup_15',['erasures_list_next_group',['../structplf_1_1colony_1_1group.html#a00a25422165d23cd2ff86c61fee3d238',1,'plf::colony::group']]],
+  ['erasures_5flist_5fprevious_5fgroup_16',['erasures_list_previous_group',['../structplf_1_1colony_1_1group.html#a9777a5ee5f408d2bea4b0a4629c05ed1',1,'plf::colony::group']]],
+  ['error_5f_17',['error_',['../classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec',1,'tinyobj::ObjReader']]],
+  ['extensions_18',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
+  ['extensions_5f_19',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]]
 ];

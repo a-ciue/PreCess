@@ -78,12 +78,80 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classtinyobj_1_1ObjReader-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">tinyobj::ObjReader类 参考</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="tiny__obj__loader_8h_source.html">tiny_obj_loader.h</a>&gt;</code></p>
+<div class="dynheader">
+tinyobj::ObjReader 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classtinyobj_1_1ObjReader__coll__graph.png" border="0" usemap="#atinyobj_1_1ObjReader_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="atinyobj_1_1ObjReader_coll__map" id="atinyobj_1_1ObjReader_coll__map">
+<area shape="rect" title=" " alt="" coords="2307,615,2449,641"/>
+<area shape="rect" href="structtinyobj_1_1attrib__t.html" title=" " alt="" coords="2061,169,2183,194"/>
+<area shape="poly" title=" " alt="" coords="2140,205,2372,614,2367,616,2135,208"/>
+<area shape="rect" title=" " alt="" coords="421,298,579,323"/>
+<area shape="poly" title=" " alt="" coords="532,288,590,256,669,220,761,191,809,182,857,179,1831,179,2060,179,2060,184,1831,184,857,184,809,187,762,196,671,225,592,261,534,293"/>
+<area shape="rect" href="structtinyobj_1_1tag__t.html" title=" " alt="" coords="804,455,912,481"/>
+<area shape="poly" title=" " alt="" coords="555,325,653,361,764,408,840,453,837,458,761,413,651,366,553,330"/>
+<area shape="rect" title=" " alt="" coords="1755,80,1905,120"/>
+<area shape="poly" title=" " alt="" coords="1916,121,2076,166,2075,171,1915,126"/>
+<area shape="rect" href="structtinyobj_1_1skin__weight__t.html" title=" " alt="" coords="1472,27,1637,53"/>
+<area shape="poly" title=" " alt="" coords="1628,53,1755,81,1754,86,1627,58"/>
+<area shape="rect" title=" " alt="" coords="1105,8,1273,48"/>
+<area shape="poly" title=" " alt="" coords="1287,29,1472,35,1471,40,1287,34"/>
+<area shape="rect" href="structtinyobj_1_1joint__and__weight__t.html" title=" " alt="" coords="791,8,925,48"/>
+<area shape="poly" title=" " alt="" coords="939,25,1105,25,1105,31,939,31"/>
+<area shape="rect" title=" " alt="" coords="2047,484,2197,524"/>
+<area shape="poly" title=" " alt="" coords="2178,528,2352,613,2349,618,2176,533"/>
+<area shape="rect" href="structtinyobj_1_1shape__t.html" title=" " alt="" coords="1767,434,1893,459"/>
+<area shape="poly" title=" " alt="" coords="1907,459,2047,487,2046,492,1906,464"/>
+<area shape="rect" title=" " alt="" coords="193,637,280,662"/>
+<area shape="poly" title=" " alt="" coords="294,647,499,647,2123,647,2219,643,2306,634,2307,640,2219,648,2123,652,499,652,294,652"/>
+<area shape="poly" title=" " alt="" coords="290,630,387,608,443,599,499,596,1019,596,1133,592,1249,579,1364,562,1473,540,1662,494,1789,457,1790,462,1663,499,1474,545,1365,567,1250,585,1134,597,1019,601,499,601,443,605,388,613,292,635"/>
+<area shape="poly" title=" " alt="" coords="252,624,274,599,303,578,334,568,387,557,531,534,676,513,762,499,824,478,826,483,763,504,677,518,532,539,388,562,335,573,305,582,278,603,256,627"/>
+<area shape="rect" title=" " alt="" coords="407,465,593,490"/>
+<area shape="poly" title=" " alt="" coords="241,623,262,569,279,540,302,517,326,502,352,490,406,478,407,483,354,496,329,506,306,521,283,544,267,571,246,624"/>
+<area shape="rect" href="structtinyobj_1_1material__t.html" title=" " alt="" coords="787,1018,929,1043"/>
+<area shape="poly" title=" " alt="" coords="250,674,271,722,305,781,350,841,378,867,408,888,456,910,500,918,542,916,582,910,623,903,666,901,713,907,764,926,793,946,818,970,851,1016,847,1019,814,974,790,950,761,930,712,912,666,906,624,909,583,915,542,922,500,923,455,915,405,893,374,871,346,844,300,784,266,724,245,676"/>
+<area shape="rect" href="structtinyobj_1_1texture__option__t.html" title=" " alt="" coords="409,1002,591,1027"/>
+<area shape="poly" title=" " alt="" coords="243,675,251,740,264,822,282,899,293,929,306,949,328,968,353,983,409,1002,408,1007,351,988,325,973,302,952,289,931,277,901,258,823,245,741,238,676"/>
+<area shape="rect" title=" " alt="" coords="419,1140,581,1180"/>
+<area shape="poly" title=" " alt="" coords="242,675,249,757,261,866,280,971,292,1013,306,1043,334,1074,368,1101,404,1122,439,1137,437,1142,402,1126,365,1105,330,1078,302,1045,287,1015,275,972,255,867,243,758,237,676"/>
+<area shape="rect" title=" " alt="" coords="5,629,144,669"/>
+<area shape="poly" title=" " alt="" coords="157,647,193,647,193,652,157,652"/>
+<area shape="rect" href="structtinyobj_1_1mesh__t.html" title=" " alt="" coords="1493,434,1616,459"/>
+<area shape="poly" title=" " alt="" coords="1630,444,1766,444,1766,449,1630,449"/>
+<area shape="rect" title=" " alt="" coords="1114,308,1265,348"/>
+<area shape="poly" title=" " alt="" coords="1266,350,1298,360,1449,408,1518,431,1516,437,1447,413,1297,365,1264,355"/>
+<area shape="rect" href="structtinyobj_1_1lines__t.html" title=" " alt="" coords="1495,262,1614,287"/>
+<area shape="poly" title=" " alt="" coords="1278,305,1297,301,1402,287,1495,277,1495,282,1402,292,1298,307,1279,310"/>
+<area shape="rect" href="structtinyobj_1_1points__t.html" title=" " alt="" coords="1491,326,1618,351"/>
+<area shape="poly" title=" " alt="" coords="1279,328,1491,334,1491,340,1279,333"/>
+<area shape="rect" href="structtinyobj_1_1index__t.html" title=" " alt="" coords="797,315,919,341"/>
+<area shape="poly" title=" " alt="" coords="933,325,1114,325,1114,331,933,331"/>
+<area shape="rect" title=" " alt="" coords="1107,521,1272,561"/>
+<area shape="poly" title=" " alt="" coords="1286,542,1366,535,1407,528,1447,516,1474,504,1499,488,1538,457,1541,462,1502,493,1476,509,1449,521,1409,533,1367,541,1286,547"/>
+<area shape="rect" title=" " alt="" coords="431,385,569,410"/>
+<area shape="poly" title=" " alt="" coords="583,399,1493,441,1493,447,583,404"/>
+<area shape="poly" title=" " alt="" coords="545,413,618,436,716,453,804,462,804,468,716,459,617,441,543,418"/>
+<area shape="poly" title=" " alt="" coords="530,375,616,320,684,304,812,287,1012,270,1297,253,1373,250,1448,253,1495,260,1495,265,1448,259,1373,255,1297,259,1013,275,813,292,685,310,618,325,533,379"/>
+<area shape="rect" title=" " alt="" coords="1114,448,1265,488"/>
+<area shape="poly" title=" " alt="" coords="1279,469,1361,469,1448,464,1496,457,1497,462,1448,469,1361,474,1279,474"/>
+<area shape="poly" title=" " alt="" coords="925,465,1114,465,1114,471,925,471"/>
+<area shape="poly" title=" " alt="" coords="602,489,681,493,762,489,815,478,816,483,763,495,681,499,601,494"/>
+<area shape="poly" title=" " alt="" coords="1606,290,1668,316,1732,352,1783,394,1820,432,1816,436,1779,398,1729,357,1666,321,1604,295"/>
+<area shape="poly" title=" " alt="" coords="1602,354,1797,431,1795,436,1600,359"/>
+<area shape="rect" title=" " alt="" coords="1297,764,1448,804"/>
+<area shape="poly" title=" " alt="" coords="1461,771,1573,761,1695,756,2123,756,2161,752,2198,742,2233,728,2267,710,2323,671,2361,639,2365,643,2326,675,2269,715,2236,733,2200,747,2162,758,2123,761,1695,761,1573,766,1462,776"/>
+<area shape="poly" title=" " alt="" coords="897,1010,1329,802,1331,806,899,1014"/>
+<area shape="poly" title=" " alt="" coords="522,1037,577,1104,619,1148,657,1163,690,1169,723,1164,761,1148,793,1126,818,1097,837,1067,849,1042,854,1045,841,1069,822,1100,796,1130,764,1153,724,1169,690,1174,656,1169,616,1153,573,1108,518,1040"/>
+<area shape="poly" title=" " alt="" coords="553,1183,600,1201,654,1213,710,1214,736,1208,761,1196,782,1181,799,1163,826,1119,843,1076,852,1043,857,1044,848,1077,830,1121,803,1166,785,1185,764,1201,738,1213,710,1219,653,1218,598,1206,551,1188"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -96,6 +164,15 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a881cff2feff404fe14565a1741632b42" id="r_a881cff2feff404fe14565a1741632b42"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a881cff2feff404fe14565a1741632b42">GetMaterials</a> () const</td></tr>
 <tr class="memitem:a74f64d9964657f297b12c51110745a38" id="r_a74f64d9964657f297b12c51110745a38"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74f64d9964657f297b12c51110745a38">Warning</a> () const</td></tr>
 <tr class="memitem:a7f1029f8dfac167a65dae98e7837b611" id="r_a7f1029f8dfac167a65dae98e7837b611"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f1029f8dfac167a65dae98e7837b611">Error</a> () const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:abbc7c6fc84515d1ae0800d04e3c180f5" id="r_abbc7c6fc84515d1ae0800d04e3c180f5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abbc7c6fc84515d1ae0800d04e3c180f5">valid_</a></td></tr>
+<tr class="memitem:a62120e15de47a166de3de5f6f3e4cef1" id="r_a62120e15de47a166de3de5f6f3e4cef1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structtinyobj_1_1attrib__t.html">attrib_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62120e15de47a166de3de5f6f3e4cef1">attrib_</a></td></tr>
+<tr class="memitem:af95328a57a259e704826f76086c2b198" id="r_af95328a57a259e704826f76086c2b198"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structtinyobj_1_1shape__t.html">shape_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af95328a57a259e704826f76086c2b198">shapes_</a></td></tr>
+<tr class="memitem:a0f470783be5b4a70579b17dfafd46963" id="r_a0f470783be5b4a70579b17dfafd46963"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f470783be5b4a70579b17dfafd46963">materials_</a></td></tr>
+<tr class="memitem:abf6c33414dcd8ce1f9e007fa1873fcf2" id="r_abf6c33414dcd8ce1f9e007fa1873fcf2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf6c33414dcd8ce1f9e007fa1873fcf2">warning_</a></td></tr>
+<tr class="memitem:a801eaed7fd371b79f569bd40a728aaec" id="r_a801eaed7fd371b79f569bd40a728aaec"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a801eaed7fd371b79f569bd40a728aaec">error_</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>Wavefront .obj reader class(v2 API) </p>
@@ -340,6 +417,139 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Warning message(may be filled after <span class="tt">Load</span> or <span class="tt">Parse</span>) </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a62120e15de47a166de3de5f6f3e4cef1" name="a62120e15de47a166de3de5f6f3e4cef1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62120e15de47a166de3de5f6f3e4cef1">&#9670;&#160;</a></span>attrib_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structtinyobj_1_1attrib__t.html">attrib_t</a> tinyobj::ObjReader::attrib_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a801eaed7fd371b79f569bd40a728aaec" name="a801eaed7fd371b79f569bd40a728aaec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a801eaed7fd371b79f569bd40a728aaec">&#9670;&#160;</a></span>error_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string tinyobj::ObjReader::error_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0f470783be5b4a70579b17dfafd46963" name="a0f470783be5b4a70579b17dfafd46963"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f470783be5b4a70579b17dfafd46963">&#9670;&#160;</a></span>materials_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structtinyobj_1_1material__t.html">material_t</a>&gt; tinyobj::ObjReader::materials_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af95328a57a259e704826f76086c2b198" name="af95328a57a259e704826f76086c2b198"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af95328a57a259e704826f76086c2b198">&#9670;&#160;</a></span>shapes_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structtinyobj_1_1shape__t.html">shape_t</a>&gt; tinyobj::ObjReader::shapes_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abbc7c6fc84515d1ae0800d04e3c180f5" name="abbc7c6fc84515d1ae0800d04e3c180f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbc7c6fc84515d1ae0800d04e3c180f5">&#9670;&#160;</a></span>valid_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tinyobj::ObjReader::valid_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abf6c33414dcd8ce1f9e007fa1873fcf2" name="abf6c33414dcd8ce1f9e007fa1873fcf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf6c33414dcd8ce1f9e007fa1873fcf2">&#9670;&#160;</a></span>warning_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string tinyobj::ObjReader::warning_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

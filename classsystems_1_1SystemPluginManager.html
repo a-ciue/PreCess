@@ -78,12 +78,34 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classsystems_1_1SystemPluginManager-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">systems::SystemPluginManager类 参考</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="SystemPluginManager_8h_source.html">SystemPluginManager.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::SystemPluginManager 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1SystemPluginManager__coll__graph.png" border="0" usemap="#asystems_1_1SystemPluginManager_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1SystemPluginManager_coll__map" id="asystems_1_1SystemPluginManager_coll__map">
+<area shape="rect" title=" " alt="" coords="969,53,1200,78"/>
+<area shape="rect" title=" " alt="" coords="607,69,793,139"/>
+<area shape="poly" title=" " alt="" coords="807,94,945,81,994,75,995,81,946,87,807,99"/>
+<area shape="rect" title=" " alt="" coords="351,38,438,63"/>
+<area shape="poly" title=" " alt="" coords="452,58,607,85,606,90,451,63"/>
+<area shape="rect" title=" " alt="" coords="629,5,771,45"/>
+<area shape="poly" title=" " alt="" coords="451,43,628,29,629,34,452,49"/>
+<area shape="rect" title=" " alt="" coords="46,31,185,71"/>
+<area shape="poly" title=" " alt="" coords="198,48,351,48,351,53,198,53"/>
+<area shape="rect" title=" " alt="" coords="300,112,489,152"/>
+<area shape="poly" title=" " alt="" coords="503,133,582,128,606,124,607,130,583,133,503,138"/>
+<area shape="rect" href="classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,119,225,145"/>
+<area shape="poly" title=" " alt="" coords="240,129,300,129,300,135,240,135"/>
+<area shape="poly" title=" " alt="" coords="785,31,969,51,969,56,784,37"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -95,6 +117,11 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a01ef95a4da75c22842c39460a5dd4385"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取已注册的插件名称列表  <br /></td></tr>
 <tr class="memitem:a6d67100a816ef7ae5e68ff915e36ed04" id="r_a6d67100a816ef7ae5e68ff915e36ed04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d67100a816ef7ae5e68ff915e36ed04">addSystemRegister</a> (const std::string &amp;system_name, std::unique_ptr&lt; <a class="el" href="classsystems_1_1SystemRegisterBase.html">SystemRegisterBase</a> &gt; system_register)</td></tr>
 <tr class="memitem:ac0adff229fb4662e9c3edc6e526a8046" id="r_ac0adff229fb4662e9c3edc6e526a8046"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0adff229fb4662e9c3edc6e526a8046">removeSystemRegister</a> (const std::string &amp;system_name)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a32a554f1080effbb70344965bd2ba08b" id="r_a32a554f1080effbb70344965bd2ba08b"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, std::unique_ptr&lt; <a class="el" href="classsystems_1_1SystemRegisterBase.html">SystemRegisterBase</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32a554f1080effbb70344965bd2ba08b">system_registers_</a></td></tr>
+<tr class="memitem:ad6de683aaf6d73a18c7c020bc25700a0" id="r_ad6de683aaf6d73a18c7c020bc25700a0"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6de683aaf6d73a18c7c020bc25700a0">plugin_names_</a></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a6d67100a816ef7ae5e68ff915e36ed04" name="a6d67100a816ef7ae5e68ff915e36ed04"></a>
@@ -212,6 +239,51 @@ Public 成员函数</h2></td></tr>
   </dd>
 </dl>
 <p>解析插件元数据，获取插件名称和系统名称，并从对应的系统注册器中注销插件。 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ad6de683aaf6d73a18c7c020bc25700a0" name="ad6de683aaf6d73a18c7c020bc25700a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6de683aaf6d73a18c7c020bc25700a0">&#9670;&#160;</a></span>plugin_names_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_set&lt;std::string&gt; systems::SystemPluginManager::plugin_names_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a32a554f1080effbb70344965bd2ba08b" name="a32a554f1080effbb70344965bd2ba08b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32a554f1080effbb70344965bd2ba08b">&#9670;&#160;</a></span>system_registers_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;std::string, std::unique_ptr&lt;<a class="el" href="classsystems_1_1SystemRegisterBase.html">SystemRegisterBase</a>&gt; &gt; systems::SystemPluginManager::system_registers_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
