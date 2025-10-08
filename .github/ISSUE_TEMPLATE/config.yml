@@ -1,5 +1,5 @@
-blank_issues_enabled: false
+blank_issues_enabled: true
 contact_links:
-  - name: ÈºÁÄÖ§³Ö Group Support
+  - name: ç¾¤èŠæ”¯æŒ Group Support
     url: https://gitee.com/precess/PreCess#%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F
-    about: Í¨¹ıÈºÁÄÑ°ÇóÖ§³Ö¡£ Ask questions and find answers from the group.
+    about: é€šè¿‡ç¾¤èŠå¯»æ±‚æ”¯æŒã€‚ Ask questions and find answers from the group.
