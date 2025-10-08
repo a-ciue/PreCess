@@ -1,0 +1,500 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/MeshLib/Mesh/plf_colony.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li><li class="navelem"><a href="dir_713cb46b43cf79d6bac7583afce10777.html">MeshLib</a></li><li class="navelem"><a href="dir_4c376a39a4041e68459769c3d386dea4.html">Mesh</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a> &#124;
+<a href="#define-members">宏定义</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">plf_colony.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;iterator&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+plf_colony.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="plf__colony_8h__incl.png" border="0" usemap="#amodel_2data_2MeshLib_2Mesh_2plf__colony_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2MeshLib_2Mesh_2plf__colony_8h" id="amodel_2data_2MeshLib_2Mesh_2plf__colony_8h">
+<area shape="rect" title=" " alt="" coords="251,5,405,45"/>
+<area shape="rect" title=" " alt="" coords="5,93,91,119"/>
+<area shape="poly" title=" " alt="" coords="262,48,103,92,102,87,260,43"/>
+<area shape="rect" title=" " alt="" coords="115,93,184,119"/>
+<area shape="poly" title=" " alt="" coords="286,48,189,90,187,85,284,43"/>
+<area shape="rect" title=" " alt="" coords="208,93,275,119"/>
+<area shape="poly" title=" " alt="" coords="309,48,266,86,263,82,305,44"/>
+<area shape="rect" title=" " alt="" coords="299,93,357,119"/>
+<area shape="poly" title=" " alt="" coords="331,46,331,79,325,79,325,46"/>
+<area shape="rect" title=" " alt="" coords="381,93,459,119"/>
+<area shape="poly" title=" " alt="" coords="352,44,398,82,394,86,349,48"/>
+<area shape="rect" title=" " alt="" coords="483,93,554,119"/>
+<area shape="poly" title=" " alt="" coords="375,43,479,86,477,91,373,48"/>
+<area shape="rect" title=" " alt="" coords="578,93,665,119"/>
+<area shape="poly" title=" " alt="" coords="399,43,566,87,564,92,398,48"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="plf__colony_8h__dep__incl.png" border="0" usemap="#amodel_2data_2MeshLib_2Mesh_2plf__colony_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2MeshLib_2Mesh_2plf__colony_8hdep" id="amodel_2data_2MeshLib_2Mesh_2plf__colony_8hdep">
+<area shape="rect" title=" " alt="" coords="8,5,163,45"/>
+<area shape="rect" href="ElemStorage_8h.html" title=" " alt="" coords="5,93,165,133"/>
+<area shape="poly" title=" " alt="" coords="88,59,88,93,83,93,83,59"/>
+<area shape="rect" href="BaseMesh_8h.html" title="Base Mesh Class for all types of Mesh Classes" alt="" coords="8,181,163,221"/>
+<area shape="poly" title=" " alt="" coords="88,147,88,181,83,181,83,147"/>
+<area shape="rect" href="boundary_8h.html" title=" " alt="" coords="40,357,195,397"/>
+<area shape="poly" title=" " alt="" coords="94,235,116,357,111,358,89,236"/>
+<area shape="rect" href="ToolMesh_8h.html" title=" " alt="" coords="31,445,204,471"/>
+<area shape="poly" title=" " alt="" coords="65,234,45,269,27,310,20,354,23,376,30,396,41,411,56,424,88,443,85,448,53,429,37,415,26,399,17,377,15,354,22,309,40,266,61,231"/>
+<area shape="rect" href="iterators_8h.html" title=" " alt="" coords="123,269,277,309"/>
+<area shape="poly" title=" " alt="" coords="123,228,176,267,173,271,120,232"/>
+<area shape="poly" title=" " alt="" coords="120,411,120,445,115,445,115,411"/>
+<area shape="rect" href="CTMeshModel_8cpp.html" title=" " alt="" coords="11,519,224,544"/>
+<area shape="poly" title=" " alt="" coords="120,484,120,519,115,519,115,484"/>
+<area shape="poly" title=" " alt="" coords="174,321,138,359,134,355,170,318"/>
+<area shape="poly" title=" " alt="" coords="213,323,218,360,216,380,209,399,197,415,182,429,149,448,147,443,179,424,193,411,204,396,211,379,212,360,208,323"/>
+</map>
+</div>
+</div>
+<p><a href="plf__colony_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:plf_3A_3Aenable_5Fif_3C_20condition_2C_20T_20_3E" id="r_plf_3A_3Aenable_5Fif_3C_20condition_2C_20T_20_3E"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1enable__if.html">plf::enable_if&lt; condition, T &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Aenable_5Fif_3C_20false_2C_20T_20_3E" id="r_plf_3A_3Aenable_5Fif_3C_20false_2C_20T_20_3E"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1enable__if_3_01false_00_01T_01_4.html">plf::enable_if&lt; false, T &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Aconditional_3C_20true_2C_20is_5Ftrue_2C_20is_5Ffalse_20_3E" id="r_plf_3A_3Aconditional_3C_20true_2C_20is_5Ftrue_2C_20is_5Ffalse_20_3E"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1conditional_3_01true_00_01is__true_00_01is__false_01_4.html">plf::conditional&lt; true, is_true, is_false &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Aconditional_3C_20false_2C_20is_5Ftrue_2C_20is_5Ffalse_20_3E" id="r_plf_3A_3Aconditional_3C_20false_2C_20is_5Ftrue_2C_20is_5Ffalse_20_3E"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1conditional_3_01false_00_01is__true_00_01is__false_01_4.html">plf::conditional&lt; false, is_true, is_false &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Aless_3C_20element_5Ftype_20_3E" id="r_plf_3A_3Aless_3C_20element_5Ftype_20_3E"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1less.html">plf::less&lt; element_type &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Aequal_5Fto_3C_20element_5Ftype_20_3E" id="r_plf_3A_3Aequal_5Fto_3C_20element_5Ftype_20_3E"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1equal__to.html">plf::equal_to&lt; element_type &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Alimits" id="r_plf_3A_3Alimits"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1limits.html">plf::limits</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplf_1_1colony.html">plf::colony&lt; element_type, allocator_type, priority &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Aaligned_5Felement_5Fstruct" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Aaligned_5Felement_5Fstruct"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1aligned__element__struct.html">plf::colony&lt; element_type, allocator_type, priority &gt;::aligned_element_struct</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Aaligned_5Fallocation_5Fstruct" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Aaligned_5Fallocation_5Fstruct"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1aligned__allocation__struct.html">plf::colony&lt; element_type, allocator_type, priority &gt;::aligned_allocation_struct</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Fdata" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Fdata"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1colony__data.html">plf::colony&lt; element_type, allocator_type, priority &gt;::colony_data</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Fiterator_3C_20is_5Fconst_20_3E" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Fiterator_3C_20is_5Fconst_20_3E"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplf_1_1colony_1_1colony__iterator.html">plf::colony&lt; element_type, allocator_type, priority &gt;::colony_iterator&lt; is_const &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Fiterator_3C_20is_5Fconst_20_3E_3A_3Acolony_5Fiterator_5Ftag" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Fiterator_3C_20is_5Fconst_20_3E_3A_3Acolony_5Fiterator_5Ftag"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1colony__iterator_1_1colony__iterator__tag.html">plf::colony&lt; element_type, allocator_type, priority &gt;::colony_iterator&lt; is_const &gt;::colony_iterator_tag</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Freverse_5Fiterator_3C_20is_5Fconst_5Fr_20_3E" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Freverse_5Fiterator_3C_20is_5Fconst_5Fr_20_3E"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classplf_1_1colony_1_1colony__reverse__iterator.html">plf::colony&lt; element_type, allocator_type, priority &gt;::colony_reverse_iterator&lt; is_const_r &gt;</a></td></tr>
+<tr class="memitem:plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Freverse_5Fiterator_3C_20is_5Fconst_5Fr_20_3E_3A_3Acolony_5Fiterator_5Ftag" id="r_plf_3A_3Acolony_3C_20element_5Ftype_2C_20allocator_5Ftype_2C_20priority_20_3E_3A_3Acolony_5Freverse_5Fiterator_3C_20is_5Fconst_5Fr_20_3E_3A_3Acolony_5Fiterator_5Ftag"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structplf_1_1colony_1_1colony__reverse__iterator_1_1colony__iterator__tag.html">plf::colony&lt; element_type, allocator_type, priority &gt;::colony_reverse_iterator&lt; is_const_r &gt;::colony_iterator_tag</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:plf" id="r_plf"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceplf.html">plf</a></td></tr>
+<tr class="memitem:std" id="r_std"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestd.html">std</a></td></tr>
+<tr class="memdesc:namespacestd"><td class="mdescLeft">&#160;</td><td class="mdescRight">STL namespace <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:affccacccd758f752319654a84a8c1be7" id="r_affccacccd758f752319654a84a8c1be7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#affccacccd758f752319654a84a8c1be7">PLF_NOEXCEPT</a>&#160;&#160;&#160;throw()</td></tr>
+<tr class="memitem:a2cff1de7f73388c8909acb0791b68711" id="r_a2cff1de7f73388c8909acb0791b68711"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2cff1de7f73388c8909acb0791b68711">PLF_NOEXCEPT_ALLOCATOR</a></td></tr>
+<tr class="memitem:a1a3a409a90965613f3dfd3c2d43da155" id="r_a1a3a409a90965613f3dfd3c2d43da155"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a3a409a90965613f3dfd3c2d43da155">PLF_CONSTEXPR</a></td></tr>
+<tr class="memitem:aa993a943ed743bc3e3e640b7328b8b9c" id="r_aa993a943ed743bc3e3e640b7328b8b9c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa993a943ed743bc3e3e640b7328b8b9c">PLF_CONSTFUNC</a></td></tr>
+<tr class="memitem:aeddcfd6dc25f6fe4fb2cfb10ac568167" id="r_aeddcfd6dc25f6fe4fb2cfb10ac568167"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeddcfd6dc25f6fe4fb2cfb10ac568167">PLF_EXCEPTIONS_SUPPORT</a></td></tr>
+<tr class="memitem:a22bdf041f10ab5c397aa9079fdfe06c7" id="r_a22bdf041f10ab5c397aa9079fdfe06c7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22bdf041f10ab5c397aa9079fdfe06c7">PLF_NOEXCEPT_MOVE_ASSIGN</a>(the_allocator)</td></tr>
+<tr class="memitem:aad46535489632557c3060bf819c2e852" id="r_aad46535489632557c3060bf819c2e852"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aad46535489632557c3060bf819c2e852">PLF_NOEXCEPT_SWAP</a>(the_allocator)</td></tr>
+<tr class="memitem:aa8cad3907752d276820415c456bb92f4" id="r_aa8cad3907752d276820415c456bb92f4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa8cad3907752d276820415c456bb92f4">PLF_CONSTRUCT</a>(the_allocator,  allocator_instance,  location,  data)</td></tr>
+<tr class="memitem:a2d28edd61e60a5eeb98bb8cb8b6e4f8b" id="r_a2d28edd61e60a5eeb98bb8cb8b6e4f8b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d28edd61e60a5eeb98bb8cb8b6e4f8b">PLF_DESTROY</a>(the_allocator,  allocator_instance,  location)</td></tr>
+<tr class="memitem:a63b1f43a0dd8eef51f9065af8e4ab263" id="r_a63b1f43a0dd8eef51f9065af8e4ab263"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63b1f43a0dd8eef51f9065af8e4ab263">PLF_ALLOCATE</a>(the_allocator,  allocator_instance,  size,  hint)</td></tr>
+<tr class="memitem:a19680f410b603ceec50d659c47ff4b5c" id="r_a19680f410b603ceec50d659c47ff4b5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19680f410b603ceec50d659c47ff4b5c">PLF_DEALLOCATE</a>(the_allocator,  allocator_instance,  location,  size)</td></tr>
+<tr class="memitem:aff4f060cd87272e3d3aefbb317af29c3" id="r_aff4f060cd87272e3d3aefbb317af29c3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff4f060cd87272e3d3aefbb317af29c3">PLF_CONSTRUCT_ELEMENT</a>(location,  element)</td></tr>
+<tr class="memitem:a7573009132dd5818cd458b3f06dc0be0" id="r_a7573009132dd5818cd458b3f06dc0be0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7573009132dd5818cd458b3f06dc0be0">PLF_SORT_FUNCTION</a>&#160;&#160;&#160;std::sort</td></tr>
+<tr class="memitem:a6c47c43a227222c5b19fb625c6527a86" id="r_a6c47c43a227222c5b19fb625c6527a86"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6c47c43a227222c5b19fb625c6527a86">PLF_SORT_FUNCTION_DEFINED</a></td></tr>
+<tr class="memitem:a471307fec3d0a404c53c8df4df3b7c5c" id="r_a471307fec3d0a404c53c8df4df3b7c5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a471307fec3d0a404c53c8df4df3b7c5c">PLF_TOOLS</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:af4e761553ae1a085755c051a82496a05" id="r_af4e761553ae1a085755c051a82496a05"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05">plf::priority</a> { <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05a66f0406364665ed5a30123eeb571d221">plf::performance</a> = 1
+, <a class="el" href="namespaceplf.html#af4e761553ae1a085755c051a82496a05a017034c103c3e3c442d094d1d632d65d">plf::memory_use</a> = 4
+ }</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ac2bbc38086841ad486b759b0c26cc8df" id="r_ac2bbc38086841ad486b759b0c26cc8df"><td class="memTemplParams" colspan="2">template&lt;class element_type, class allocator_type&gt; </td></tr>
+<tr class="memitem:ac2bbc38086841ad486b759b0c26cc8df template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestd.html#ac2bbc38086841ad486b759b0c26cc8df">std::swap</a> (<a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type &gt; &amp;a, <a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type &gt; &amp;b) <a class="el" href="#aad46535489632557c3060bf819c2e852">PLF_NOEXCEPT_SWAP</a>(allocator_type)</td></tr>
+<tr class="memitem:a4d159b20d251208d686c0b37bbe5e96a" id="r_a4d159b20d251208d686c0b37bbe5e96a"><td class="memTemplParams" colspan="2">template&lt;class element_type, class allocator_type, class predicate_function&gt; </td></tr>
+<tr class="memitem:a4d159b20d251208d686c0b37bbe5e96a template"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type &gt;::size_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestd.html#a4d159b20d251208d686c0b37bbe5e96a">std::erase_if</a> (<a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type &gt; &amp;container, predicate_function predicate)</td></tr>
+<tr class="memitem:a35d152c6ecb4a596d374a54f7a821ba1" id="r_a35d152c6ecb4a596d374a54f7a821ba1"><td class="memTemplParams" colspan="2">template&lt;class element_type, class allocator_type&gt; </td></tr>
+<tr class="memitem:a35d152c6ecb4a596d374a54f7a821ba1 template"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type &gt;::size_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestd.html#a35d152c6ecb4a596d374a54f7a821ba1">std::erase</a> (<a class="el" href="classplf_1_1colony.html">plf::colony</a>&lt; element_type, allocator_type &gt; &amp;container, const element_type &amp;value)</td></tr>
+</table>
+<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">宏定义说明</h2>
+<a id="a63b1f43a0dd8eef51f9065af8e4ab263" name="a63b1f43a0dd8eef51f9065af8e4ab263"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63b1f43a0dd8eef51f9065af8e4ab263">&#9670;&#160;</a></span>PLF_ALLOCATE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_ALLOCATE</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>the_allocator</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>allocator_instance</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>hint</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>值:</b><div class="fragment"><div class="line">(allocator_instance).allocate(size, hint)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a1a3a409a90965613f3dfd3c2d43da155" name="a1a3a409a90965613f3dfd3c2d43da155"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a3a409a90965613f3dfd3c2d43da155">&#9670;&#160;</a></span>PLF_CONSTEXPR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_CONSTEXPR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa993a943ed743bc3e3e640b7328b8b9c" name="aa993a943ed743bc3e3e640b7328b8b9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa993a943ed743bc3e3e640b7328b8b9c">&#9670;&#160;</a></span>PLF_CONSTFUNC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_CONSTFUNC</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa8cad3907752d276820415c456bb92f4" name="aa8cad3907752d276820415c456bb92f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8cad3907752d276820415c456bb92f4">&#9670;&#160;</a></span>PLF_CONSTRUCT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_CONSTRUCT</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>the_allocator</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>allocator_instance</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>data</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>值:</b><div class="fragment"><div class="line">(allocator_instance).construct(location, data)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="aff4f060cd87272e3d3aefbb317af29c3" name="aff4f060cd87272e3d3aefbb317af29c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff4f060cd87272e3d3aefbb317af29c3">&#9670;&#160;</a></span>PLF_CONSTRUCT_ELEMENT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_CONSTRUCT_ELEMENT</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>element</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>值:</b><div class="fragment"><div class="line"><a class="code hl_define" href="#aa8cad3907752d276820415c456bb92f4">PLF_CONSTRUCT</a>(allocator_type, *<span class="keyword">this</span>, pointer_cast&lt;pointer&gt;(location), element)</div>
+<div class="ttc" id="aplf__colony_8h_html_aa8cad3907752d276820415c456bb92f4"><div class="ttname"><a href="#aa8cad3907752d276820415c456bb92f4">PLF_CONSTRUCT</a></div><div class="ttdeci">#define PLF_CONSTRUCT(the_allocator, allocator_instance, location, data)</div><div class="ttdef"><b>定义</b> plf_colony.h:208</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a19680f410b603ceec50d659c47ff4b5c" name="a19680f410b603ceec50d659c47ff4b5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19680f410b603ceec50d659c47ff4b5c">&#9670;&#160;</a></span>PLF_DEALLOCATE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_DEALLOCATE</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>the_allocator</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>allocator_instance</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>location</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>值:</b><div class="fragment"><div class="line">(allocator_instance).deallocate(location, size)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a2d28edd61e60a5eeb98bb8cb8b6e4f8b" name="a2d28edd61e60a5eeb98bb8cb8b6e4f8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d28edd61e60a5eeb98bb8cb8b6e4f8b">&#9670;&#160;</a></span>PLF_DESTROY</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_DESTROY</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>the_allocator</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>allocator_instance</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>location</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>值:</b><div class="fragment"><div class="line">(allocator_instance).destroy(location)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="aeddcfd6dc25f6fe4fb2cfb10ac568167" name="aeddcfd6dc25f6fe4fb2cfb10ac568167"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeddcfd6dc25f6fe4fb2cfb10ac568167">&#9670;&#160;</a></span>PLF_EXCEPTIONS_SUPPORT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_EXCEPTIONS_SUPPORT</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="affccacccd758f752319654a84a8c1be7" name="affccacccd758f752319654a84a8c1be7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affccacccd758f752319654a84a8c1be7">&#9670;&#160;</a></span>PLF_NOEXCEPT</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_NOEXCEPT&#160;&#160;&#160;throw()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2cff1de7f73388c8909acb0791b68711" name="a2cff1de7f73388c8909acb0791b68711"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cff1de7f73388c8909acb0791b68711">&#9670;&#160;</a></span>PLF_NOEXCEPT_ALLOCATOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_NOEXCEPT_ALLOCATOR</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a22bdf041f10ab5c397aa9079fdfe06c7" name="a22bdf041f10ab5c397aa9079fdfe06c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22bdf041f10ab5c397aa9079fdfe06c7">&#9670;&#160;</a></span>PLF_NOEXCEPT_MOVE_ASSIGN</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_NOEXCEPT_MOVE_ASSIGN</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>the_allocator</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aad46535489632557c3060bf819c2e852" name="aad46535489632557c3060bf819c2e852"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad46535489632557c3060bf819c2e852">&#9670;&#160;</a></span>PLF_NOEXCEPT_SWAP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_NOEXCEPT_SWAP</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>the_allocator</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7573009132dd5818cd458b3f06dc0be0" name="a7573009132dd5818cd458b3f06dc0be0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7573009132dd5818cd458b3f06dc0be0">&#9670;&#160;</a></span>PLF_SORT_FUNCTION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_SORT_FUNCTION&#160;&#160;&#160;std::sort</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6c47c43a227222c5b19fb625c6527a86" name="a6c47c43a227222c5b19fb625c6527a86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c47c43a227222c5b19fb625c6527a86">&#9670;&#160;</a></span>PLF_SORT_FUNCTION_DEFINED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_SORT_FUNCTION_DEFINED</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a471307fec3d0a404c53c8df4df3b7c5c" name="a471307fec3d0a404c53c8df4df3b7c5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a471307fec3d0a404c53c8df4df3b7c5c">&#9670;&#160;</a></span>PLF_TOOLS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PLF_TOOLS</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

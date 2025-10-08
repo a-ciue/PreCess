@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/core/HandlerCreatorDestroyerFactory.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_50d45cd9bdd66cc9f345a21a971cefc8.html">core</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">HandlerCreatorDestroyerFactory.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="HandlerCreatorDestroyer_8h_source.html">HandlerCreatorDestroyer.h</a>&quot;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+HandlerCreatorDestroyerFactory.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="HandlerCreatorDestroyerFactory_8h__incl.png" border="0" usemap="#amodel_2systems_2core_2HandlerCreatorDestroyerFactory_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2core_2HandlerCreatorDestroyerFactory_8h" id="amodel_2systems_2core_2HandlerCreatorDestroyerFactory_8h">
+<area shape="rect" title=" " alt="" coords="141,5,388,45"/>
+<area shape="rect" href="HandlerCreatorDestroyer_8h.html" title=" " alt="" coords="5,93,201,119"/>
+<area shape="poly" title=" " alt="" coords="227,48,141,90,138,85,225,43"/>
+<area shape="rect" title=" " alt="" coords="226,93,303,119"/>
+<area shape="poly" title=" " alt="" coords="267,46,267,79,262,79,262,46"/>
+<area shape="rect" title=" " alt="" coords="328,93,452,119"/>
+<area shape="poly" title=" " alt="" coords="296,43,362,84,359,88,294,48"/>
+<area shape="rect" title=" " alt="" coords="35,167,81,192"/>
+<area shape="poly" title=" " alt="" coords="98,120,75,157,70,154,94,118"/>
+<area shape="rect" title=" " alt="" coords="105,167,192,192"/>
+<area shape="poly" title=" " alt="" coords="113,118,136,154,132,157,109,120"/>
+</map>
+</div>
+</div>
+<p><a href="HandlerCreatorDestroyerFactory_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3AHandlerCreatorDestroyerFactory_3C_20Handler_2C_20SystemHandler_20_3E" id="r_systems_3A_3AHandlerCreatorDestroyerFactory_3C_20Handler_2C_20SystemHandler_20_3E"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">systems::HandlerCreatorDestroyerFactory&lt; Handler, SystemHandler &gt;</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

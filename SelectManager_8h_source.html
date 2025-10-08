@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,12 +79,12 @@ $(function() {
   <div class="headertitle"><div class="title">SelectManager.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SELECT_MANAGER_H</span></div>
+<a href="SelectManager_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SELECT_MANAGER_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SELECT_MANAGER_H</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;Selection.h&quot;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;SelectorHighlight.h&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;MeshActorSelectOp.h&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="Selection_8h.html">Selection.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="SelectorHighlight_8h.html">SelectorHighlight.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="MeshActorSelectOp_8h.html">MeshActorSelectOp.h</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;vtkNew.h&gt;</span></div>
@@ -94,17 +95,17 @@ $(function() {
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classSelectManager.html">   13</a></span><span class="keyword">class </span><a class="code hl_class" href="classSelectManager.html">SelectManager</a> {</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">void</span> bindRenderer(vtkRenderer* renderer);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSelectManager.html#aa318adc0622e81715fa464dfa6643d67">bindRenderer</a>(vtkRenderer* renderer);</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSelectManager.html#a964a78bc9fe0e1ff7914f6b4e091a818">select</a>(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy);</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordtype">void</span> setSelectActor(std::weak_ptr&lt;const MeshActor&gt; model_actor_);</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSelectManager.html#a3cf6c5704c8747abcf0afce9259d7521">setSelectMode</a>(SelectMode select_mode);</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordtype">void</span> clearSelection();</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    std::unique_ptr&lt;Selection&gt;  getSelection();</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSelectManager.html#a9924a3d6bc6080950634da40e02886b2">setSelectActor</a>(std::weak_ptr&lt;const MeshActor&gt; model_actor_);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSelectManager.html#a3cf6c5704c8747abcf0afce9259d7521">setSelectMode</a>(<a class="code hl_enumeration" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> select_mode);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSelectManager.html#add78e91313321159a48aab6d2bc74341">clearSelection</a>();</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    std::unique_ptr&lt;Selection&gt;  <a class="code hl_function" href="classSelectManager.html#a99a52fe239dd1906a0d6ac54418f2d02">getSelection</a>();</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        std::optional&lt;MeshActorSelectOpFactory&gt; cur_model_actor_ {};</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    SelectMode  select_mode_;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <a class="code hl_enumeration" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a>    select_mode_;</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    vtkNew&lt;vtkActor&gt; selection_actor_;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    vtkNew&lt;vtkPolyDataMapper&gt; selection_mapper_;</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    vtkRenderer* renderer_;</div>
@@ -112,9 +113,18 @@ $(function() {
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
 </div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a33798f6bed937e1f849ed0cf46ebe5a6"><div class="ttname"><a href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a></div><div class="ttdeci">SelectMode</div><div class="ttdef"><b>定义</b> Core.h:19</div></div>
+<div class="ttc" id="aMeshActorSelectOp_8h_html"><div class="ttname"><a href="MeshActorSelectOp_8h.html">MeshActorSelectOp.h</a></div></div>
+<div class="ttc" id="aSelection_8h_html"><div class="ttname"><a href="Selection_8h.html">Selection.h</a></div></div>
+<div class="ttc" id="aSelectorHighlight_8h_html"><div class="ttname"><a href="SelectorHighlight_8h.html">SelectorHighlight.h</a></div></div>
 <div class="ttc" id="aclassSelectManager_html"><div class="ttname"><a href="classSelectManager.html">SelectManager</a></div><div class="ttdef"><b>定义</b> SelectManager.h:13</div></div>
 <div class="ttc" id="aclassSelectManager_html_a3cf6c5704c8747abcf0afce9259d7521"><div class="ttname"><a href="classSelectManager.html#a3cf6c5704c8747abcf0afce9259d7521">SelectManager::setSelectMode</a></div><div class="ttdeci">void setSelectMode(SelectMode select_mode)</div><div class="ttdoc">传入选择模型</div><div class="ttdef"><b>定义</b> SelectManager.cpp:32</div></div>
 <div class="ttc" id="aclassSelectManager_html_a964a78bc9fe0e1ff7914f6b4e091a818"><div class="ttname"><a href="classSelectManager.html#a964a78bc9fe0e1ff7914f6b4e091a818">SelectManager::select</a></div><div class="ttdeci">void select(double posx, double posy)</div><div class="ttdoc">传入renderer</div><div class="ttdef"><b>定义</b> SelectManager.cpp:15</div></div>
+<div class="ttc" id="aclassSelectManager_html_a9924a3d6bc6080950634da40e02886b2"><div class="ttname"><a href="classSelectManager.html#a9924a3d6bc6080950634da40e02886b2">SelectManager::setSelectActor</a></div><div class="ttdeci">void setSelectActor(std::weak_ptr&lt; const MeshActor &gt; model_actor_)</div><div class="ttdef"><b>定义</b> SelectManager.cpp:23</div></div>
+<div class="ttc" id="aclassSelectManager_html_a99a52fe239dd1906a0d6ac54418f2d02"><div class="ttname"><a href="classSelectManager.html#a99a52fe239dd1906a0d6ac54418f2d02">SelectManager::getSelection</a></div><div class="ttdeci">std::unique_ptr&lt; Selection &gt; getSelection()</div><div class="ttdef"><b>定义</b> SelectManager.cpp:60</div></div>
+<div class="ttc" id="aclassSelectManager_html_aa318adc0622e81715fa464dfa6643d67"><div class="ttname"><a href="classSelectManager.html#aa318adc0622e81715fa464dfa6643d67">SelectManager::bindRenderer</a></div><div class="ttdeci">void bindRenderer(vtkRenderer *renderer)</div><div class="ttdef"><b>定义</b> SelectManager.cpp:10</div></div>
+<div class="ttc" id="aclassSelectManager_html_add78e91313321159a48aab6d2bc74341"><div class="ttname"><a href="classSelectManager.html#add78e91313321159a48aab6d2bc74341">SelectManager::clearSelection</a></div><div class="ttdeci">void clearSelection()</div><div class="ttdef"><b>定义</b> SelectManager.cpp:53</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

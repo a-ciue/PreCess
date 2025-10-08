@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>systems</b></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1ModelIOHandler.html">ModelIOHandler</a></li>  </ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1ModelIOHandler.html">ModelIOHandler</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -89,6 +90,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
+<tr class="memitem:a63e74b9e431c9d7642e3b19418c9152f" id="r_a63e74b9e431c9d7642e3b19418c9152f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63e74b9e431c9d7642e3b19418c9152f">~ModelIOHandler</a> ()=default</td></tr>
 <tr class="memitem:a8b303262e50a73ffbe4e81aed7257eb9" id="r_a8b303262e50a73ffbe4e81aed7257eb9"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b303262e50a73ffbe4e81aed7257eb9">read_model</a> (const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
 <tr class="memdesc:a8b303262e50a73ffbe4e81aed7257eb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">读取模型功能  <br /></td></tr>
 <tr class="memitem:a61d9d32a0e1b4bd4318bb68735844df7" id="r_a61d9d32a0e1b4bd4318bb68735844df7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61d9d32a0e1b4bd4318bb68735844df7">write_model</a> (const <a class="el" href="classModelData.html">ModelData</a> &amp;data, const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
@@ -100,7 +102,33 @@ Public 成员函数</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>模型IO系统的功能接口，继承他来实现具体的模型读写功能 </p>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a63e74b9e431c9d7642e3b19418c9152f" name="a63e74b9e431c9d7642e3b19418c9152f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63e74b9e431c9d7642e3b19418c9152f">&#9670;&#160;</a></span>~ModelIOHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual systems::io::ModelIOHandler::~ModelIOHandler </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="aa9d5369c662c079d2cfbdfe4c388e371" name="aa9d5369c662c079d2cfbdfe4c388e371"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa9d5369c662c079d2cfbdfe4c388e371">&#9670;&#160;</a></span>read_args_type()</h2>
 

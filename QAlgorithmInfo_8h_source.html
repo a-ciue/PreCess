@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,33 +79,35 @@ $(function() {
   <div class="headertitle"><div class="title">QAlgorithmInfo.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef Q_ALGORITHM_INFO_H</span></div>
+<a href="QAlgorithmInfo_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef Q_ALGORITHM_INFO_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define Q_ALGORITHM_INFO_H</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;QArgObject.h&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="QArgObject_8h.html">QArgObject.h</a>&quot;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;qqmlintegration.h&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span></div>
 <div class="foldopen" id="foldopen00010" data-start="{" data-end="};">
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html">   10</a></span><span class="keyword">class </span>QAlgorithmInfo : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html">   10</a></span><span class="keyword">class </span><a class="code hl_function" href="classQAlgorithmInfo.html#aaf89e00919084f2b60dec0e738be30a6">QAlgorithmInfo</a> : <span class="keyword">public</span> QObject {</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    Q_OBJECT</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    QML_ELEMENT</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    Q_PROPERTY(QString name READ name CONSTANT)</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    Q_PROPERTY(QString display_name READ displayName CONSTANT)</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    Q_PROPERTY(QString description READ description CONSTANT)</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    Q_PROPERTY(QList&lt;QArgObject*&gt; arg_types READ argTypes CONSTANT)</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    QAlgorithmInfo(QString name, QString display_name, QString description, QList&lt;QArgObject*&gt; arg_types, QObject* parent = <span class="keyword">nullptr</span>)</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#ae0dd2ce61451566c75eac164d18bcc86">   13</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classQAlgorithmInfo.html#ae0dd2ce61451566c75eac164d18bcc86">name</a> READ <a class="code hl_property" href="classQAlgorithmInfo.html#ae0dd2ce61451566c75eac164d18bcc86">name</a> CONSTANT)</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#ab0e46743f664c20ce14e062a4028b672">   14</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classQAlgorithmInfo.html#ab0e46743f664c20ce14e062a4028b672">display_name</a> READ <a class="code hl_function" href="classQAlgorithmInfo.html#aec11817fbd38188a5a8efb6e24d4f8aa">displayName</a> CONSTANT)</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#a473de9f1b411f77bae43f7a1cd45a024">   15</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classQAlgorithmInfo.html#a473de9f1b411f77bae43f7a1cd45a024">description</a> READ <a class="code hl_property" href="classQAlgorithmInfo.html#a473de9f1b411f77bae43f7a1cd45a024">description</a> CONSTANT)</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#a8885d0aafe40193aef9ac333604dd194">   16</a></span>    Q_PROPERTY(QList&lt;<a class="code hl_class" href="classQArgObject.html">QArgObject</a>*&gt; <a class="code hl_property" href="classQAlgorithmInfo.html#a8885d0aafe40193aef9ac333604dd194">arg_types</a> READ <a class="code hl_function" href="classQAlgorithmInfo.html#a2413e18015777bfabc1518c19e2e53ed">argTypes</a> CONSTANT)</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>public:</div>
+<div class="foldopen" id="foldopen00018" data-start="{" data-end="}">
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#aaf89e00919084f2b60dec0e738be30a6">   18</a></span>    <a class="code hl_function" href="classQAlgorithmInfo.html#aaf89e00919084f2b60dec0e738be30a6">QAlgorithmInfo</a>(QString <a class="code hl_property" href="classQAlgorithmInfo.html#ae0dd2ce61451566c75eac164d18bcc86">name</a>, QString <a class="code hl_property" href="classQAlgorithmInfo.html#ab0e46743f664c20ce14e062a4028b672">display_name</a>, QString <a class="code hl_property" href="classQAlgorithmInfo.html#a473de9f1b411f77bae43f7a1cd45a024">description</a>, QList&lt;<a class="code hl_class" href="classQArgObject.html">QArgObject</a>*&gt; <a class="code hl_property" href="classQAlgorithmInfo.html#a8885d0aafe40193aef9ac333604dd194">arg_types</a>, QObject* parent = <span class="keywordtype">nullptr</span>)</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        : QObject(parent)</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        , name_(std::move(name))</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        , display_name_(std::move(display_name))</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        , description_(std::move(description))</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        , arg_types_(std::move(arg_types))</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        , name_(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(<a class="code hl_property" href="classQAlgorithmInfo.html#ae0dd2ce61451566c75eac164d18bcc86">name</a>))</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        , display_name_(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(<a class="code hl_property" href="classQAlgorithmInfo.html#ab0e46743f664c20ce14e062a4028b672">display_name</a>))</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        , description_(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(<a class="code hl_property" href="classQAlgorithmInfo.html#a473de9f1b411f77bae43f7a1cd45a024">description</a>))</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        , arg_types_(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(<a class="code hl_property" href="classQAlgorithmInfo.html#a8885d0aafe40193aef9ac333604dd194">arg_types</a>))</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    {</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    }</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    QString name()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> name_; }</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    QString displayName()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> display_name_; }</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    QString description()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> description_; }</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    QList&lt;QArgObject*&gt; argTypes()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> arg_types_; }</div>
+</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#a02687abc0730586a3580b70fa22ee7e1">   26</a></span>    QString <a class="code hl_function" href="classQAlgorithmInfo.html#a02687abc0730586a3580b70fa22ee7e1">name</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> name_; }</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#aec11817fbd38188a5a8efb6e24d4f8aa">   27</a></span>    QString <a class="code hl_function" href="classQAlgorithmInfo.html#aec11817fbd38188a5a8efb6e24d4f8aa">displayName</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> display_name_; }</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#a9a0cc6ea2529ca206326dcee9becdcc3">   28</a></span>    QString <a class="code hl_function" href="classQAlgorithmInfo.html#a9a0cc6ea2529ca206326dcee9becdcc3">description</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> description_; }</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classQAlgorithmInfo.html#a2413e18015777bfabc1518c19e2e53ed">   29</a></span>    QList&lt;QArgObject*&gt; <a class="code hl_function" href="classQAlgorithmInfo.html#a2413e18015777bfabc1518c19e2e53ed">argTypes</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> arg_types_; }</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    QString name_; <span class="comment">// 算法唯一名称，用作索引</span></div>
@@ -114,6 +117,18 @@ $(function() {
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>};</div>
 </div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#endif </span><span class="comment">// !Q_ALGORITHM_INFO_H</span></div>
+<div class="ttc" id="aQArgObject_8h_html"><div class="ttname"><a href="QArgObject_8h.html">QArgObject.h</a></div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_a02687abc0730586a3580b70fa22ee7e1"><div class="ttname"><a href="classQAlgorithmInfo.html#a02687abc0730586a3580b70fa22ee7e1">QAlgorithmInfo::name</a></div><div class="ttdeci">QString name() const</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:26</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_a2413e18015777bfabc1518c19e2e53ed"><div class="ttname"><a href="classQAlgorithmInfo.html#a2413e18015777bfabc1518c19e2e53ed">QAlgorithmInfo::argTypes</a></div><div class="ttdeci">QList&lt; QArgObject * &gt; argTypes() const</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:29</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_a473de9f1b411f77bae43f7a1cd45a024"><div class="ttname"><a href="classQAlgorithmInfo.html#a473de9f1b411f77bae43f7a1cd45a024">QAlgorithmInfo::description</a></div><div class="ttdeci">QString description</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:15</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_a8885d0aafe40193aef9ac333604dd194"><div class="ttname"><a href="classQAlgorithmInfo.html#a8885d0aafe40193aef9ac333604dd194">QAlgorithmInfo::arg_types</a></div><div class="ttdeci">QList&lt; QArgObject * &gt; arg_types</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:16</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_a9a0cc6ea2529ca206326dcee9becdcc3"><div class="ttname"><a href="classQAlgorithmInfo.html#a9a0cc6ea2529ca206326dcee9becdcc3">QAlgorithmInfo::description</a></div><div class="ttdeci">QString description() const</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:28</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_aaf89e00919084f2b60dec0e738be30a6"><div class="ttname"><a href="classQAlgorithmInfo.html#aaf89e00919084f2b60dec0e738be30a6">QAlgorithmInfo::QAlgorithmInfo</a></div><div class="ttdeci">QAlgorithmInfo(QString name, QString display_name, QString description, QList&lt; QArgObject * &gt; arg_types, QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:18</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_ab0e46743f664c20ce14e062a4028b672"><div class="ttname"><a href="classQAlgorithmInfo.html#ab0e46743f664c20ce14e062a4028b672">QAlgorithmInfo::display_name</a></div><div class="ttdeci">QString display_name</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:14</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_ae0dd2ce61451566c75eac164d18bcc86"><div class="ttname"><a href="classQAlgorithmInfo.html#ae0dd2ce61451566c75eac164d18bcc86">QAlgorithmInfo::name</a></div><div class="ttdeci">QML_ELEMENTQString name</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:13</div></div>
+<div class="ttc" id="aclassQAlgorithmInfo_html_aec11817fbd38188a5a8efb6e24d4f8aa"><div class="ttname"><a href="classQAlgorithmInfo.html#aec11817fbd38188a5a8efb6e24d4f8aa">QAlgorithmInfo::displayName</a></div><div class="ttdeci">QString displayName() const</div><div class="ttdef"><b>定义</b> QAlgorithmInfo.h:27</div></div>
+<div class="ttc" id="aclassQArgObject_html"><div class="ttname"><a href="classQArgObject.html">QArgObject</a></div><div class="ttdoc">QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant</div><div class="ttdef"><b>定义</b> QArgObject.h:13</div></div>
+<div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

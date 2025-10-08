@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QModelManager.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">QModelManager.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="QAlgorithmSystemAdaptor_8h_source.html">QAlgorithmSystemAdaptor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QModelIOSystemAdaptor_8h_source.html">QModelIOSystemAdaptor.h</a>&quot;</code><br />
+<code>#include &lt;QObject&gt;</code><br />
+<code>#include &lt;QUrl&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QModelManager.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QModelManager_8h__incl.png" border="0" usemap="#aapp_2model_2QModelManager_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2QModelManager_8h" id="aapp_2model_2QModelManager_8h">
+<area shape="rect" title=" " alt="" coords="268,5,482,31"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8h.html" title=" " alt="" coords="45,79,252,104"/>
+<area shape="poly" title=" " alt="" coords="339,33,199,77,197,72,338,28"/>
+<area shape="rect" title=" " alt="" coords="86,225,163,251"/>
+<area shape="poly" title=" " alt="" coords="268,27,199,34,130,44,71,60,49,70,34,81,16,103,9,126,11,150,22,176,45,201,74,218,72,223,42,205,18,179,6,151,4,125,12,101,30,77,47,65,70,55,129,39,198,29,268,22"/>
+<area shape="rect" title=" " alt="" coords="400,152,475,177"/>
+<area shape="poly" title=" " alt="" coords="420,28,457,47,474,60,488,77,493,95,488,113,465,144,460,141,483,111,487,95,483,80,471,64,455,51,418,33"/>
+<area shape="rect" href="QModelIOSystemAdaptor_8h.html" title=" " alt="" coords="276,79,474,104"/>
+<area shape="poly" title=" " alt="" coords="378,31,378,65,372,65,372,31"/>
+<area shape="rect" title=" " alt="" coords="518,152,568,177"/>
+<area shape="poly" title=" " alt="" coords="421,28,465,47,488,60,508,77,528,107,540,138,535,140,523,109,504,80,485,65,463,52,419,33"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="312,152,376,177"/>
+<area shape="poly" title=" " alt="" coords="181,102,300,145,299,150,179,107"/>
+<area shape="poly" title=" " alt="" coords="195,101,388,148,386,154,194,107"/>
+<area shape="rect" title=" " alt="" coords="33,152,288,177"/>
+<area shape="poly" title=" " alt="" coords="153,104,159,138,153,139,148,105"/>
+<area shape="rect" title=" " alt="" coords="354,225,417,251"/>
+<area shape="poly" title=" " alt="" coords="353,176,374,212,370,215,349,179"/>
+<area shape="rect" title=" " alt="" coords="274,225,330,251"/>
+<area shape="poly" title=" " alt="" coords="339,179,318,215,313,212,335,176"/>
+<area shape="poly" title=" " alt="" coords="313,179,174,224,172,219,311,174"/>
+<area shape="poly" title=" " alt="" coords="372,105,357,141,352,139,367,103"/>
+<area shape="poly" title=" " alt="" coords="387,103,420,140,416,143,383,106"/>
+<area shape="poly" title=" " alt="" coords="341,107,209,150,207,145,340,101"/>
+<area shape="poly" title=" " alt="" coords="403,102,506,145,503,150,401,106"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="QModelManager_8h__dep__incl.png" border="0" usemap="#aapp_2model_2QModelManager_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2QModelManager_8hdep" id="aapp_2model_2QModelManager_8hdep">
+<area shape="rect" title=" " alt="" coords="50,5,263,31"/>
+<area shape="rect" href="main_8cpp.html" title=" " alt="" coords="5,79,116,104"/>
+<area shape="poly" title=" " alt="" coords="132,41,78,81,75,76,129,37"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="140,79,368,104"/>
+<area shape="poly" title=" " alt="" coords="185,37,240,76,237,81,182,41"/>
+</map>
+</div>
+</div>
+<p><a href="QModelManager_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:QModelManager" id="r_QModelManager"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classQModelManager.html">QModelManager</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Aio" id="r_systems_3A_3Aio"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1io.html">systems::io</a></td></tr>
+<tr class="memdesc:namespacesystems_1_1io"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="ModelIOSystemRegister_8h.html">ModelIOSystemRegister.h</a> <br /></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

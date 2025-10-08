@@ -18,9 +18,9 @@
 <area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="360,43,501,87,500,92,358,48"/>
 <area shape="rect" id="Node000012" href="$Point2_8h.html" title="Two dimensional point class" alt="" coords="221,93,377,119"/>
 <area shape="poly" id="edge13_Node000001_Node000012" title=" " alt="" coords="301,46,301,79,296,79,296,46"/>
-<area shape="rect" id="Node000013" href="$StrUtil_8h_source.html" title=" " alt="" coords="649,93,780,119"/>
+<area shape="rect" id="Node000013" href="$StrUtil_8h.html" title=" " alt="" coords="649,93,780,119"/>
 <area shape="poly" id="edge19_Node000001_Node000013" title=" " alt="" coords="377,39,641,88,640,93,376,44"/>
-<area shape="rect" id="Node000016" href="$ElemStorage_8h_source.html" title=" " alt="" coords="859,93,976,119"/>
+<area shape="rect" id="Node000016" href="$ElemStorage_8h.html" title=" " alt="" coords="859,93,976,119"/>
 <area shape="poly" id="edge25_Node000001_Node000016" title=" " alt="" coords="376,33,836,91,845,92,844,97,836,96,376,39"/>
 <area shape="poly" id="edge10_Node000009_Node000002" title=" " alt="" coords="517,121,385,165,383,160,515,116"/>
 <area shape="poly" id="edge9_Node000009_Node000003" title=" " alt="" coords="501,121,293,169,292,164,500,116"/>
@@ -40,7 +40,7 @@
 <area shape="poly" id="edge23_Node000013_Node000014" title=" " alt="" coords="717,119,717,153,712,153,712,119"/>
 <area shape="rect" id="Node000015" title=" " alt="" coords="581,240,667,265"/>
 <area shape="poly" id="edge24_Node000013_Node000015" title=" " alt="" coords="705,121,667,168,636,229,631,226,663,165,701,117"/>
-<area shape="rect" id="Node000017" href="$plf__colony_8h_source.html" title=" " alt="" coords="871,167,969,192"/>
+<area shape="rect" id="Node000017" href="$plf__colony_8h.html" title=" " alt="" coords="871,167,969,192"/>
 <area shape="poly" id="edge26_Node000016_Node000017" title=" " alt="" coords="920,119,922,153,916,153,915,119"/>
 <area shape="poly" id="edge27_Node000017_Node000015" title=" " alt="" coords="873,195,681,240,679,235,872,189"/>
 <area shape="rect" id="Node000018" title=" " alt="" coords="999,240,1068,265"/>

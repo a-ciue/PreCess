@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/ModelOperatorBase.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">ModelOperatorBase.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="ModelData_8h_source.html">ModelData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+ModelOperatorBase.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelOperatorBase_8h__incl.png" border="0" usemap="#amodel_2data_2ModelOperatorBase_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2ModelOperatorBase_8h" id="amodel_2data_2ModelOperatorBase_8h">
+<area shape="rect" title=" " alt="" coords="261,5,459,45"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="203,93,309,119"/>
+<area shape="poly" title=" " alt="" coords="336,48,284,87,281,83,333,43"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="416,240,480,265"/>
+<area shape="poly" title=" " alt="" coords="376,44,409,97,426,131,440,166,447,197,450,225,445,226,442,197,435,167,421,133,404,100,371,47"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="331,167,426,192"/>
+<area shape="poly" title=" " alt="" coords="277,116,348,157,346,162,274,121"/>
+<area shape="rect" title=" " alt="" coords="255,313,332,339"/>
+<area shape="poly" title=" " alt="" coords="261,118,271,166,292,299,287,300,265,167,256,119"/>
+<area shape="rect" title=" " alt="" coords="5,167,64,192"/>
+<area shape="poly" title=" " alt="" coords="221,121,78,167,77,162,220,116"/>
+<area shape="rect" title=" " alt="" coords="89,167,157,192"/>
+<area shape="poly" title=" " alt="" coords="236,121,158,162,155,158,233,116"/>
+<area shape="rect" title=" " alt="" coords="181,167,256,192"/>
+<area shape="poly" title=" " alt="" coords="252,120,233,156,229,153,247,118"/>
+<area shape="rect" title=" " alt="" coords="357,313,419,339"/>
+<area shape="poly" title=" " alt="" coords="382,192,389,299,384,300,377,193"/>
+<area shape="poly" title=" " alt="" coords="392,190,429,228,425,232,388,194"/>
+<area shape="poly" title=" " alt="" coords="440,267,409,305,404,301,436,264"/>
+<area shape="rect" title=" " alt="" coords="444,313,500,339"/>
+<area shape="poly" title=" " alt="" coords="454,265,466,299,461,301,449,267"/>
+<area shape="poly" title=" " alt="" coords="424,268,332,310,330,305,422,263"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelOperatorBase_8h__dep__incl.png" border="0" usemap="#amodel_2data_2ModelOperatorBase_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2ModelOperatorBase_8hdep" id="amodel_2data_2ModelOperatorBase_8hdep">
+<area shape="rect" title=" " alt="" coords="623,5,821,45"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="618,93,826,119"/>
+<area shape="poly" title=" " alt="" coords="725,59,725,93,719,93,719,59"/>
+<area shape="rect" href="ModelManager_8h.html" title="负责管理多个模型实例的类" alt="" coords="498,167,706,192"/>
+<area shape="poly" title=" " alt="" coords="692,128,623,169,620,164,689,123"/>
+<area shape="rect" href="ModelOperator_8cpp.html" title=" " alt="" coords="731,167,953,192"/>
+<area shape="poly" title=" " alt="" coords="755,123,824,164,821,169,752,128"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="5,247,233,273"/>
+<area shape="poly" title=" " alt="" coords="519,197,190,250,189,245,518,192"/>
+<area shape="rect" href="QModelQuery_8cpp.html" title=" " alt="" coords="257,247,467,273"/>
+<area shape="poly" title=" " alt="" coords="555,199,398,250,396,245,553,194"/>
+<area shape="rect" href="ModelManager_8cpp.html" title="实现 ModelManager 类，用于管理多个网格模型" alt="" coords="491,247,713,273"/>
+<area shape="poly" title=" " alt="" coords="605,206,605,247,599,247,599,206"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="737,240,904,280"/>
+<area shape="poly" title=" " alt="" coords="647,194,769,237,767,242,646,199"/>
+<area shape="rect" href="ModelIOSystem_8cpp.html" title=" " alt="" coords="929,247,1201,273"/>
+<area shape="poly" title=" " alt="" coords="683,192,998,245,997,250,682,197"/>
+</map>
+</div>
+</div>
+<p><a href="ModelOperatorBase_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:ModelOperatorBase" id="r_ModelOperatorBase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModelOperatorBase.html">ModelOperatorBase</a></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

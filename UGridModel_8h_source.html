@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,19 +79,19 @@ $(function() {
   <div class="headertitle"><div class="title">UGridModel.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<a href="UGridModel_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="MeshModelBase_8h.html">MeshModelBase.h</a>&quot;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">class </span>vtkUnstructuredGrid;</div>
 <div class="foldopen" id="foldopen00012" data-start="{" data-end="};">
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classUGridModel.html">   12</a></span><span class="keyword">class </span>UGridModel : <span class="keyword">public</span> <a class="code hl_class" href="classMeshModelBase.html">MeshModelBase</a> {</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classUGridModel.html">   12</a></span><span class="keyword">class </span><a class="code hl_function" href="classUGridModel.html#a3e10611184389adf9a2e34d081603057">UGridModel</a> : <span class="keyword">public</span> <a class="code hl_class" href="classMeshModelBase.html">MeshModelBase</a> {</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    UGridModel(vtkUnstructuredGrid&amp; mesh);</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    ~UGridModel() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <a class="code hl_function" href="classUGridModel.html#a3e10611184389adf9a2e34d081603057">UGridModel</a>(vtkUnstructuredGrid&amp; mesh);</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classUGridModel.html#aeba96366937e1483eeec6504e1c418b8">   15</a></span>    <a class="code hl_function" href="classUGridModel.html#aeba96366937e1483eeec6504e1c418b8">~UGridModel</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUGridModel.html#a9b473812c00cdc4ee778b5cb4ec0b938">update</a>(<a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh_data) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span></div>
@@ -100,10 +101,13 @@ $(function() {
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    vtkSmartPointer&lt;vtkUnstructuredGrid&gt; mesh_;</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
 </div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
 <div class="ttc" id="aMeshModelBase_8h_html"><div class="ttname"><a href="MeshModelBase_8h.html">MeshModelBase.h</a></div></div>
 <div class="ttc" id="aclassMeshModelBase_html"><div class="ttname"><a href="classMeshModelBase.html">MeshModelBase</a></div><div class="ttdoc">辅助网格数据结构，用于更新核心网格数据结构</div><div class="ttdef"><b>定义</b> MeshModelBase.h:12</div></div>
 <div class="ttc" id="aclassUGridModel_html_a3a58712607af0719b85b4dc167d99a7b"><div class="ttname"><a href="classUGridModel.html#a3a58712607af0719b85b4dc167d99a7b">UGridModel::updateFrom</a></div><div class="ttdeci">void updateFrom(const MeshData &amp;mesh_data) override</div><div class="ttdoc">从指定的 MeshData 对象更新当前对象的数据。</div><div class="ttdef"><b>定义</b> UGridModel.cpp:76</div></div>
+<div class="ttc" id="aclassUGridModel_html_a3e10611184389adf9a2e34d081603057"><div class="ttname"><a href="classUGridModel.html#a3e10611184389adf9a2e34d081603057">UGridModel::UGridModel</a></div><div class="ttdeci">UGridModel(vtkUnstructuredGrid &amp;mesh)</div><div class="ttdef"><b>定义</b> UGridModel.cpp:82</div></div>
 <div class="ttc" id="aclassUGridModel_html_a9b473812c00cdc4ee778b5cb4ec0b938"><div class="ttname"><a href="classUGridModel.html#a9b473812c00cdc4ee778b5cb4ec0b938">UGridModel::update</a></div><div class="ttdeci">void update(MeshData &amp;mesh_data) override</div><div class="ttdoc">更新MeshData</div><div class="ttdef"><b>定义</b> UGridModel.cpp:7</div></div>
+<div class="ttc" id="aclassUGridModel_html_aeba96366937e1483eeec6504e1c418b8"><div class="ttname"><a href="classUGridModel.html#aeba96366937e1483eeec6504e1c418b8">UGridModel::~UGridModel</a></div><div class="ttdeci">~UGridModel() override</div></div>
 <div class="ttc" id="astructMeshData_html"><div class="ttname"><a href="structMeshData.html">MeshData</a></div><div class="ttdef"><b>定义</b> MeshData.h:36</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

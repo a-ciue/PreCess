@@ -1,0 +1,13 @@
+<map id="model/FaceSplitter.h" name="model/FaceSplitter.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="159,5,313,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,61,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="204,33,75,78,74,73,203,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="86,79,154,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="219,33,152,74,149,69,216,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="179,79,293,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="239,31,239,65,233,65,233,31"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="318,79,381,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="256,28,321,69,318,74,253,33"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="405,79,465,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="269,28,392,72,390,77,267,33"/>
+</map>

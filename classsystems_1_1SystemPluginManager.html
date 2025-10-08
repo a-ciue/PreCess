@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>systems</b></li><li class="navelem"><a href="classsystems_1_1SystemPluginManager.html">SystemPluginManager</a></li>  </ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="classsystems_1_1SystemPluginManager.html">SystemPluginManager</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -81,6 +82,8 @@ $(function() {
   <div class="headertitle"><div class="title">systems::SystemPluginManager类 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="SystemPluginManager_8h_source.html">SystemPluginManager.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -88,15 +91,60 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ac4c814ad11821c12603f6407545e8d5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个插件  <br /></td></tr>
 <tr class="memitem:a19922cce01c027685313888f5d51a10e" id="r_a19922cce01c027685313888f5d51a10e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19922cce01c027685313888f5d51a10e">unregisterPlugin</a> (const std::filesystem::path &amp;plugin_path)</td></tr>
 <tr class="memdesc:a19922cce01c027685313888f5d51a10e"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销一个插件  <br /></td></tr>
-<tr class="memitem:a01ef95a4da75c22842c39460a5dd4385" id="r_a01ef95a4da75c22842c39460a5dd4385"><td class="memItemLeft" align="right" valign="top"><a id="a01ef95a4da75c22842c39460a5dd4385" name="a01ef95a4da75c22842c39460a5dd4385"></a>
-std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getPluginNames</b> () const</td></tr>
-<tr class="memdesc:a01ef95a4da75c22842c39460a5dd4385"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取已注册的插件名称列表 <br /></td></tr>
-<tr class="memitem:a6d67100a816ef7ae5e68ff915e36ed04" id="r_a6d67100a816ef7ae5e68ff915e36ed04"><td class="memItemLeft" align="right" valign="top"><a id="a6d67100a816ef7ae5e68ff915e36ed04" name="a6d67100a816ef7ae5e68ff915e36ed04"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>addSystemRegister</b> (const std::string &amp;system_name, std::unique_ptr&lt; <a class="el" href="classsystems_1_1SystemRegisterBase.html">SystemRegisterBase</a> &gt; system_register)</td></tr>
-<tr class="memitem:ac0adff229fb4662e9c3edc6e526a8046" id="r_ac0adff229fb4662e9c3edc6e526a8046"><td class="memItemLeft" align="right" valign="top"><a id="ac0adff229fb4662e9c3edc6e526a8046" name="ac0adff229fb4662e9c3edc6e526a8046"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeSystemRegister</b> (const std::string &amp;system_name)</td></tr>
+<tr class="memitem:a01ef95a4da75c22842c39460a5dd4385" id="r_a01ef95a4da75c22842c39460a5dd4385"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a01ef95a4da75c22842c39460a5dd4385">getPluginNames</a> () const</td></tr>
+<tr class="memdesc:a01ef95a4da75c22842c39460a5dd4385"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取已注册的插件名称列表  <br /></td></tr>
+<tr class="memitem:a6d67100a816ef7ae5e68ff915e36ed04" id="r_a6d67100a816ef7ae5e68ff915e36ed04"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d67100a816ef7ae5e68ff915e36ed04">addSystemRegister</a> (const std::string &amp;system_name, std::unique_ptr&lt; <a class="el" href="classsystems_1_1SystemRegisterBase.html">SystemRegisterBase</a> &gt; system_register)</td></tr>
+<tr class="memitem:ac0adff229fb4662e9c3edc6e526a8046" id="r_ac0adff229fb4662e9c3edc6e526a8046"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0adff229fb4662e9c3edc6e526a8046">removeSystemRegister</a> (const std::string &amp;system_name)</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a6d67100a816ef7ae5e68ff915e36ed04" name="a6d67100a816ef7ae5e68ff915e36ed04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d67100a816ef7ae5e68ff915e36ed04">&#9670;&#160;</a></span>addSystemRegister()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::SystemPluginManager::addSystemRegister </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>system_name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classsystems_1_1SystemRegisterBase.html">SystemRegisterBase</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>system_register</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a01ef95a4da75c22842c39460a5dd4385" name="a01ef95a4da75c22842c39460a5dd4385"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01ef95a4da75c22842c39460a5dd4385">&#9670;&#160;</a></span>getPluginNames()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::string &gt; systems::SystemPluginManager::getPluginNames </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>获取已注册的插件名称列表 </p>
+
+</div>
+</div>
 <a id="ac4c814ad11821c12603f6407545e8d5b" name="ac4c814ad11821c12603f6407545e8d5b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac4c814ad11821c12603f6407545e8d5b">&#9670;&#160;</a></span>registerPlugin()</h2>
 
@@ -121,6 +169,23 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>removeSystemRegister<
 </dl>
 <dl class="section return"><dt>返回</dt><dd>注册是否成功</dd></dl>
 <p>解析插件元数据，获取插件名称和系统名称，并将插件注册到对应的系统注册器中。 </p>
+
+</div>
+</div>
+<a id="ac0adff229fb4662e9c3edc6e526a8046" name="ac0adff229fb4662e9c3edc6e526a8046"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0adff229fb4662e9c3edc6e526a8046">&#9670;&#160;</a></span>removeSystemRegister()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::SystemPluginManager::removeSystemRegister </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>system_name</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

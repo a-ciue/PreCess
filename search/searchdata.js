@@ -1,12 +1,17 @@
 var indexSectionsWithContent =
 {
   0: "_abcdefghijlmnopqrstuvw~",
-  1: "abcdefhijlmopqstuv",
-  2: "s",
-  3: "abefhmpsv",
+  1: "abcdefhijlmopqrstuv",
+  2: "cmpst",
+  3: "abcefhimopqstuv",
   4: "_abcdefghilmnopqrstuvw~",
-  5: "acdefimstv",
-  6: "fmqt"
+  5: "abcdefgijlmnoprstuvw",
+  6: "bcdefhimprstv",
+  7: "ampst",
+  8: "bcefgimnpstv",
+  9: "acdenqrstvw",
+  10: "acdfmnopqt",
+  11: "mpt"
 };
 
 var indexSectionNames =
@@ -17,7 +22,12 @@ var indexSectionNames =
   3: "files",
   4: "functions",
   5: "variables",
-  6: "related"
+  6: "typedefs",
+  7: "enums",
+  8: "enumvalues",
+  9: "properties",
+  10: "related",
+  11: "defines"
 };
 
 var indexSectionLabels =
@@ -28,6 +38,11 @@ var indexSectionLabels =
   3: "文件",
   4: "函数",
   5: "变量",
-  6: "友元"
+  6: "类型定义",
+  7: "枚举",
+  8: "枚举值",
+  9: "属性",
+  10: "友元",
+  11: "宏定义"
 };
 

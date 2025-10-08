@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -89,27 +90,32 @@ $(function() {
 <div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classFileHandler.html">   27</a></span><span class="keyword">class </span>FileHandler {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keyword">static</span> FileHandler&amp; instance() {</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="keyword">static</span> FileHandler instance;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        <span class="keywordflow">return</span> instance;</div>
+<div class="foldopen" id="foldopen00029" data-start="{" data-end="}">
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classFileHandler.html#a4c8f1431a8c91df1dd1d99c1642f6373">   29</a></span>    <span class="keyword">static</span> FileHandler&amp; <a class="code hl_function" href="classFileHandler.html#a4c8f1431a8c91df1dd1d99c1642f6373">instance</a>() {</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="keyword">static</span> FileHandler <a class="code hl_function" href="classFileHandler.html#a4c8f1431a8c91df1dd1d99c1642f6373">instance</a>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        <span class="keywordflow">return</span> <a class="code hl_function" href="classFileHandler.html#a4c8f1431a8c91df1dd1d99c1642f6373">instance</a>;</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    }</div>
+</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span></div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    std::unique_ptr&lt;ModelData&gt; <a class="code hl_function" href="classFileHandler.html#a7f51d0d12133b61b68bb11e384c362e2">readSpline</a>(<span class="keyword">const</span> std::filesystem::path&amp; spline_path);</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">bool</span> writeSpline(<a class="code hl_struct" href="structSplineData.html">SplineData</a>&amp; spline, <span class="keyword">const</span> std::filesystem::path&amp; target_path);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classFileHandler.html#a84ab03a785ec7b3f659985cb4dd7c379">writeSpline</a>(<a class="code hl_struct" href="structSplineData.html">SplineData</a>&amp; spline, <span class="keyword">const</span> std::filesystem::path&amp; target_path);</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="comment">// 禁止外部构造和拷贝</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    FileHandler() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    ~FileHandler() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    FileHandler(<span class="keyword">const</span> FileHandler&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    FileHandler&amp; operator=(<span class="keyword">const</span> FileHandler&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <a class="code hl_class" href="classFileHandler.html">FileHandler</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <a class="code hl_class" href="classFileHandler.html">~FileHandler</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <a class="code hl_class" href="classFileHandler.html">FileHandler</a>(<span class="keyword">const</span> <a class="code hl_class" href="classFileHandler.html">FileHandler</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <a class="code hl_class" href="classFileHandler.html">FileHandler</a>&amp; operator=(<span class="keyword">const</span> <a class="code hl_class" href="classFileHandler.html">FileHandler</a>&amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>};</div>
 </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#endif </span><span class="comment">// FILEHANDLER_H</span></div>
 <div class="ttc" id="aModelData_8h_html"><div class="ttname"><a href="ModelData_8h.html">ModelData.h</a></div><div class="ttdoc">负责管理和操作网格模型数据的核心类</div></div>
+<div class="ttc" id="aclassFileHandler_html"><div class="ttname"><a href="classFileHandler.html">FileHandler</a></div><div class="ttdoc">FileHandler 单例类</div><div class="ttdef"><b>定义</b> FileHandler.h:27</div></div>
+<div class="ttc" id="aclassFileHandler_html_a4c8f1431a8c91df1dd1d99c1642f6373"><div class="ttname"><a href="classFileHandler.html#a4c8f1431a8c91df1dd1d99c1642f6373">FileHandler::instance</a></div><div class="ttdeci">static FileHandler &amp; instance()</div><div class="ttdef"><b>定义</b> FileHandler.h:29</div></div>
 <div class="ttc" id="aclassFileHandler_html_a7f51d0d12133b61b68bb11e384c362e2"><div class="ttname"><a href="classFileHandler.html#a7f51d0d12133b61b68bb11e384c362e2">FileHandler::readSpline</a></div><div class="ttdeci">std::unique_ptr&lt; ModelData &gt; readSpline(const std::filesystem::path &amp;spline_path)</div><div class="ttdoc">读取样条文件并生成 ModelData 对象</div><div class="ttdef"><b>定义</b> FileHandler.cpp:22</div></div>
+<div class="ttc" id="aclassFileHandler_html_a84ab03a785ec7b3f659985cb4dd7c379"><div class="ttname"><a href="classFileHandler.html#a84ab03a785ec7b3f659985cb4dd7c379">FileHandler::writeSpline</a></div><div class="ttdeci">bool writeSpline(SplineData &amp;spline, const std::filesystem::path &amp;target_path)</div><div class="ttdef"><b>定义</b> FileHandler.cpp:65</div></div>
 <div class="ttc" id="astructSplineData_html"><div class="ttname"><a href="structSplineData.html">SplineData</a></div><div class="ttdef"><b>定义</b> SplineData.h:9</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

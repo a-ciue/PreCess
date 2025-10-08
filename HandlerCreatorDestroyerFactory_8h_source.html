@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,19 +79,20 @@ $(function() {
   <div class="headertitle"><div class="title">HandlerCreatorDestroyerFactory.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SYSTEMS_HANDLER_CREATOR_FACTORY</span></div>
+<a href="HandlerCreatorDestroyerFactory_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SYSTEMS_HANDLER_CREATOR_FACTORY</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SYSTEMS_HANDLER_CREATOR_FACTORY</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;HandlerCreatorDestroyer.h&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="HandlerCreatorDestroyer_8h.html">HandlerCreatorDestroyer.h</a>&quot;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;spdlog/spdlog.h&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span>systems {</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems.html">systems</a> {</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Handler, <span class="keyword">typename</span> SystemHandler&gt;</div>
 <div class="foldopen" id="foldopen00010" data-start="{" data-end="};">
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">   10</a></span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">HandlerCreatorDestroyerFactory</a> {</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a>&amp; get()</div>
+<div class="foldopen" id="foldopen00012" data-start="{" data-end="}">
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classsystems_1_1HandlerCreatorDestroyerFactory.html#a9497a1b6735a799fee40557b071c39d0">   12</a></span>    <span class="keyword">static</span> <span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a>&amp; <a class="code hl_function" href="classsystems_1_1HandlerCreatorDestroyerFactory.html#a9497a1b6735a799fee40557b071c39d0">get</a>()</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    {</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        <span class="keyword">static</span> <span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1HandlerCreatorDestroyer.html">HandlerCreatorDestroyer</a> handler_creator_destroyer = {</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>            []() {</div>
@@ -120,12 +122,16 @@ $(function() {
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        };</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keywordflow">return</span> handler_creator_destroyer;</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    }</div>
+</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>};</div>
 </div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">#endif </span><span class="comment">// SYSTEMS_HANDLER_CREATOR_FACTORY</span></div>
+<div class="ttc" id="aHandlerCreatorDestroyer_8h_html"><div class="ttname"><a href="HandlerCreatorDestroyer_8h.html">HandlerCreatorDestroyer.h</a></div></div>
 <div class="ttc" id="aclasssystems_1_1HandlerCreatorDestroyerFactory_html"><div class="ttname"><a href="classsystems_1_1HandlerCreatorDestroyerFactory.html">systems::HandlerCreatorDestroyerFactory</a></div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyerFactory.h:10</div></div>
+<div class="ttc" id="aclasssystems_1_1HandlerCreatorDestroyerFactory_html_a9497a1b6735a799fee40557b071c39d0"><div class="ttname"><a href="classsystems_1_1HandlerCreatorDestroyerFactory.html#a9497a1b6735a799fee40557b071c39d0">systems::HandlerCreatorDestroyerFactory::get</a></div><div class="ttdeci">static const systems::HandlerCreatorDestroyer &amp; get()</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyerFactory.h:12</div></div>
+<div class="ttc" id="anamespacesystems_html"><div class="ttname"><a href="namespacesystems.html">systems</a></div><div class="ttdef"><b>定义</b> QModelManager.h:9</div></div>
 <div class="ttc" id="astructsystems_1_1HandlerCreatorDestroyer_html"><div class="ttname"><a href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a></div><div class="ttdoc">处理器的创建与删除函数，用于构造与析构插件来的处理器</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyer.h:12</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

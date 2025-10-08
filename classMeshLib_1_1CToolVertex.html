@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>MeshLib</b></li><li class="navelem"><a href="classMeshLib_1_1CToolVertex.html">CToolVertex</a></li>  </ul>
+<li class="navelem"><a href="namespaceMeshLib.html">MeshLib</a></li><li class="navelem"><a href="classMeshLib_1_1CToolVertex.html">CToolVertex</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -82,6 +83,8 @@ $(function() {
   <div class="headertitle"><div class="title">MeshLib::CToolVertex类 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="ToolMesh_8h_source.html">ToolMesh.h</a>&gt;</code></p>
 <div class="dynheader">
 类 MeshLib::CToolVertex 继承关系图:</div>
 <div class="dyncontent">
@@ -97,43 +100,48 @@ MeshLib::CToolVertex 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classMeshLib_1_1CToolVertex__coll__graph.png" border="0" usemap="#aMeshLib_1_1CToolVertex_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aMeshLib_1_1CToolVertex_coll__map" id="aMeshLib_1_1CToolVertex_coll__map">
-<area shape="rect" title=" " alt="" coords="5,243,167,269"/>
-<area shape="rect" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes" alt="" coords="143,130,277,155"/>
-<area shape="poly" title=" " alt="" coords="189,166,101,245,97,241,185,162"/>
-<area shape="rect" href="classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges." alt="" coords="213,243,365,269"/>
-<area shape="poly" title=" " alt="" coords="198,169,192,190,193,200,196,209,215,228,240,241,237,246,212,233,192,212,187,201,187,189,193,167"/>
-<area shape="rect" href="classCPoint.html" title="CPoint class, three dimensional point" alt="" coords="34,5,98,31"/>
-<area shape="poly" title=" " alt="" coords="63,44,56,99,55,132,58,164,70,208,83,242,78,244,65,209,53,164,50,132,51,99,58,43"/>
-<area shape="poly" title=" " alt="" coords="84,41,105,68,132,95,158,113,185,128,182,132,155,118,128,99,101,72,79,44"/>
-<area shape="rect" href="classCPoint2.html" title="CPoint2 class, two dimensional point" alt="" coords="174,5,246,31"/>
-<area shape="poly" title=" " alt="" coords="213,45,213,130,207,130,207,45"/>
-<area shape="poly" title=" " alt="" coords="283,230,278,209,268,190,251,171,231,158,234,153,254,167,272,186,283,207,288,229"/>
-<area shape="poly" title=" " alt="" coords="380,246,388,250,391,256,383,265,365,269,364,263,381,260,386,256,384,254,378,251"/>
-<area shape="rect" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes" alt="" coords="137,348,262,373"/>
-<area shape="poly" title=" " alt="" coords="209,274,166,287,150,295,140,303,137,312,140,323,152,336,167,346,164,350,148,340,136,325,131,312,136,300,147,290,164,282,208,269"/>
-<area shape="rect" href="classMeshLib_1_1CFace.html" title="CFace base class of all kinds of face classes" alt="" coords="315,348,438,373"/>
-<area shape="poly" title=" " alt="" coords="303,280,332,322,360,346,357,350,328,326,298,283"/>
-<area shape="poly" title=" " alt="" coords="214,335,244,300,275,267,279,271,248,303,218,339"/>
-<area shape="poly" title=" " alt="" coords="407,338,418,323,422,312,418,303,394,281,364,268,366,263,397,277,423,300,427,312,423,325,411,341"/>
+<area shape="rect" title=" " alt="" coords="550,333,711,358"/>
+<area shape="rect" href="classMeshLib_1_1CVertex.html" title="CVertex class, which is the base class of all kinds of vertex classes" alt="" coords="355,219,490,245"/>
+<area shape="poly" title=" " alt="" coords="470,247,532,275,579,304,617,330,614,335,576,308,529,280,467,252"/>
+<area shape="rect" href="classMeshLib_1_1CHalfEdge.html" title="CHalfEdge Base class of all kinds of halfedges." alt="" coords="228,333,380,358"/>
+<area shape="poly" title=" " alt="" coords="418,259,408,281,393,302,367,321,340,335,337,330,364,317,389,298,403,278,413,257"/>
+<area shape="rect" href="classCPoint.html" title="CPoint class, three dimensional point" alt="" coords="488,95,552,120"/>
+<area shape="poly" title=" " alt="" coords="564,125,583,142,599,167,611,193,626,248,632,297,633,332,628,332,627,298,620,249,605,195,594,169,579,146,560,129"/>
+<area shape="poly" title=" " alt="" coords="511,134,495,161,475,188,440,221,437,217,471,185,491,158,506,131"/>
+<area shape="rect" href="classCPoint2.html" title="CPoint2 class, two dimensional point" alt="" coords="387,95,459,120"/>
+<area shape="poly" title=" " alt="" coords="425,134,425,219,420,219,420,134"/>
+<area shape="poly" title=" " alt="" coords="296,319,295,297,303,276,326,255,354,242,356,246,329,259,308,279,301,298,301,319"/>
+<area shape="poly" title=" " alt="" coords="395,335,403,339,407,346,399,354,381,358,380,353,396,349,401,345,400,343,393,340"/>
+<area shape="rect" href="classMeshLib_1_1CEdge.html" title="CEdge class, which is the base class of all kinds of edge classes" alt="" coords="271,437,396,463"/>
+<area shape="poly" title=" " alt="" coords="344,363,358,375,369,389,372,402,369,414,361,428,350,439,346,435,357,425,364,412,367,402,364,392,354,378,341,367"/>
+<area shape="rect" href="classMeshLib_1_1CFace.html" title="CFace base class of all kinds of face classes" alt="" coords="5,437,128,463"/>
+<area shape="poly" title=" " alt="" coords="215,354,126,367,91,378,69,392,64,402,62,414,65,437,60,437,57,414,58,401,65,389,88,373,125,362,214,349"/>
+<area shape="poly" title=" " alt="" coords="310,428,303,414,298,384,299,358,305,359,303,384,308,412,315,425"/>
+<area shape="rect" title=" " alt="" coords="339,533,477,573"/>
+<area shape="poly" title=" " alt="" coords="352,472,396,531,392,535,348,476"/>
+<area shape="rect" title=" " alt="" coords="171,95,258,120"/>
+<area shape="poly" title=" " alt="" coords="249,125,279,142,405,217,403,222,276,146,246,129"/>
+<area shape="poly" title=" " alt="" coords="226,132,302,331,297,333,221,134"/>
+<area shape="poly" title=" " alt="" coords="206,133,184,189,165,263,162,302,164,341,174,378,193,412,204,420,223,427,271,438,270,443,221,432,201,425,189,415,169,380,159,342,156,302,160,262,179,187,201,131"/>
+<area shape="poly" title=" " alt="" coords="193,131,179,146,130,208,92,278,69,333,57,391,57,413,64,436,59,438,52,414,52,390,64,332,87,276,125,206,175,142,189,128"/>
+<area shape="rect" title=" " alt="" coords="145,5,284,45"/>
+<area shape="poly" title=" " alt="" coords="217,59,217,94,212,94,212,59"/>
+<area shape="poly" title=" " alt="" coords="109,430,156,411,279,356,281,361,158,416,111,435"/>
+<area shape="poly" title=" " alt="" coords="439,522,448,508,464,419,480,300,482,288,480,278,466,260,447,247,450,243,469,257,485,276,487,288,485,300,470,420,453,510,443,525"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a07883311e9f2a8d65e12c0777e81c43a" id="r_a07883311e9f2a8d65e12c0777e81c43a"><td class="memItemLeft" align="right" valign="top"><a id="a07883311e9f2a8d65e12c0777e81c43a" name="a07883311e9f2a8d65e12c0777e81c43a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>_to_string</b> ()</td></tr>
-<tr class="memitem:abed174781c49b910527355b29c595ea6" id="r_abed174781c49b910527355b29c595ea6"><td class="memItemLeft" align="right" valign="top"><a id="abed174781c49b910527355b29c595ea6" name="abed174781c49b910527355b29c595ea6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>_from_string</b> ()</td></tr>
-<tr class="memitem:a0ea0fabaa671dcd03d8386c29ac917a2" id="r_a0ea0fabaa671dcd03d8386c29ac917a2"><td class="memItemLeft" align="right" valign="top"><a id="a0ea0fabaa671dcd03d8386c29ac917a2" name="a0ea0fabaa671dcd03d8386c29ac917a2"></a>
-bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>fixed</b> ()</td></tr>
-<tr class="memitem:a12c467af869c8c5caf60c73b507957a5" id="r_a12c467af869c8c5caf60c73b507957a5"><td class="memItemLeft" align="right" valign="top"><a id="a12c467af869c8c5caf60c73b507957a5" name="a12c467af869c8c5caf60c73b507957a5"></a>
-bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>is_edge</b> ()</td></tr>
-<tr class="memitem:a589d58efc4bdc8cfbc1172117225a607" id="r_a589d58efc4bdc8cfbc1172117225a607"><td class="memItemLeft" align="right" valign="top"><a id="a589d58efc4bdc8cfbc1172117225a607" name="a589d58efc4bdc8cfbc1172117225a607"></a>
-int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>father</b> ()</td></tr>
-<tr class="memitem:a806c372659683b63f2c0c067ad8b3aca" id="r_a806c372659683b63f2c0c067ad8b3aca"><td class="memItemLeft" align="right" valign="top"><a id="a806c372659683b63f2c0c067ad8b3aca" name="a806c372659683b63f2c0c067ad8b3aca"></a>
-<a class="el" href="classCPoint.html">CPoint</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>rgb</b> ()</td></tr>
-<tr class="memitem:af5c31597c450332b7a94db8c7f42e52d" id="r_af5c31597c450332b7a94db8c7f42e52d"><td class="memItemLeft" align="right" valign="top"><a id="af5c31597c450332b7a94db8c7f42e52d" name="af5c31597c450332b7a94db8c7f42e52d"></a>
-<a class="el" href="classCPoint.html">CPoint</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>normal</b> ()</td></tr>
+<tr class="memitem:afc74f58c1ace21403ca99e914fae4652" id="r_afc74f58c1ace21403ca99e914fae4652"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc74f58c1ace21403ca99e914fae4652">CToolVertex</a> ()</td></tr>
+<tr class="memitem:a0eeac655dd1f9e24c0e2bfce2d11bc02" id="r_a0eeac655dd1f9e24c0e2bfce2d11bc02"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0eeac655dd1f9e24c0e2bfce2d11bc02">~CToolVertex</a> ()</td></tr>
+<tr class="memitem:a07883311e9f2a8d65e12c0777e81c43a" id="r_a07883311e9f2a8d65e12c0777e81c43a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07883311e9f2a8d65e12c0777e81c43a">_to_string</a> ()</td></tr>
+<tr class="memitem:abed174781c49b910527355b29c595ea6" id="r_abed174781c49b910527355b29c595ea6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abed174781c49b910527355b29c595ea6">_from_string</a> ()</td></tr>
+<tr class="memitem:a0ea0fabaa671dcd03d8386c29ac917a2" id="r_a0ea0fabaa671dcd03d8386c29ac917a2"><td class="memItemLeft" align="right" valign="top">bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ea0fabaa671dcd03d8386c29ac917a2">fixed</a> ()</td></tr>
+<tr class="memitem:a12c467af869c8c5caf60c73b507957a5" id="r_a12c467af869c8c5caf60c73b507957a5"><td class="memItemLeft" align="right" valign="top">bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12c467af869c8c5caf60c73b507957a5">is_edge</a> ()</td></tr>
+<tr class="memitem:a589d58efc4bdc8cfbc1172117225a607" id="r_a589d58efc4bdc8cfbc1172117225a607"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a589d58efc4bdc8cfbc1172117225a607">father</a> ()</td></tr>
+<tr class="memitem:a806c372659683b63f2c0c067ad8b3aca" id="r_a806c372659683b63f2c0c067ad8b3aca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a806c372659683b63f2c0c067ad8b3aca">rgb</a> ()</td></tr>
+<tr class="memitem:af5c31597c450332b7a94db8c7f42e52d" id="r_af5c31597c450332b7a94db8c7f42e52d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5c31597c450332b7a94db8c7f42e52d">normal</a> ()</td></tr>
 <tr class="inherit_header pub_methods_classMeshLib_1_1CVertex"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classMeshLib_1_1CVertex')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classMeshLib_1_1CVertex.html">MeshLib::CVertex</a></td></tr>
 <tr class="memitem:ac97920fc9fe1786a2199b02e0bdcea27 inherit pub_methods_classMeshLib_1_1CVertex" id="r_ac97920fc9fe1786a2199b02e0bdcea27"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CVertex.html#ac97920fc9fe1786a2199b02e0bdcea27">CVertex</a> ()</td></tr>
 <tr class="memitem:a7e93bbcd7e264d336f1e935b466118d5 inherit pub_methods_classMeshLib_1_1CVertex" id="r_a7e93bbcd7e264d336f1e935b466118d5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CVertex.html#a7e93bbcd7e264d336f1e935b466118d5">~CVertex</a> ()</td></tr>
@@ -155,16 +163,11 @@ int &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>father</b> ()</t
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected 属性</h2></td></tr>
-<tr class="memitem:a369f49111aba1d1f96bfd512b34785bd" id="r_a369f49111aba1d1f96bfd512b34785bd"><td class="memItemLeft" align="right" valign="top"><a id="a369f49111aba1d1f96bfd512b34785bd" name="a369f49111aba1d1f96bfd512b34785bd"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_fixed</b></td></tr>
-<tr class="memitem:a84f86822b252e7b896cc5e630a263e50" id="r_a84f86822b252e7b896cc5e630a263e50"><td class="memItemLeft" align="right" valign="top"><a id="a84f86822b252e7b896cc5e630a263e50" name="a84f86822b252e7b896cc5e630a263e50"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>edge</b></td></tr>
-<tr class="memitem:ac39937ab4c50934956a94a101f8ba891" id="r_ac39937ab4c50934956a94a101f8ba891"><td class="memItemLeft" align="right" valign="top"><a id="ac39937ab4c50934956a94a101f8ba891" name="ac39937ab4c50934956a94a101f8ba891"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>m_father</b></td></tr>
-<tr class="memitem:ac233484344c0b2eade0ac13364528d3f" id="r_ac233484344c0b2eade0ac13364528d3f"><td class="memItemLeft" align="right" valign="top"><a id="ac233484344c0b2eade0ac13364528d3f" name="ac233484344c0b2eade0ac13364528d3f"></a>
-<a class="el" href="classCPoint.html">CPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_rgb</b></td></tr>
-<tr class="memitem:acfe2bda6bed1c7dbbb0568e0c7d02fb4" id="r_acfe2bda6bed1c7dbbb0568e0c7d02fb4"><td class="memItemLeft" align="right" valign="top"><a id="acfe2bda6bed1c7dbbb0568e0c7d02fb4" name="acfe2bda6bed1c7dbbb0568e0c7d02fb4"></a>
-<a class="el" href="classCPoint.html">CPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_normal</b></td></tr>
+<tr class="memitem:a369f49111aba1d1f96bfd512b34785bd" id="r_a369f49111aba1d1f96bfd512b34785bd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a369f49111aba1d1f96bfd512b34785bd">m_fixed</a></td></tr>
+<tr class="memitem:a84f86822b252e7b896cc5e630a263e50" id="r_a84f86822b252e7b896cc5e630a263e50"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84f86822b252e7b896cc5e630a263e50">edge</a></td></tr>
+<tr class="memitem:ac39937ab4c50934956a94a101f8ba891" id="r_ac39937ab4c50934956a94a101f8ba891"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac39937ab4c50934956a94a101f8ba891">m_father</a></td></tr>
+<tr class="memitem:ac233484344c0b2eade0ac13364528d3f" id="r_ac233484344c0b2eade0ac13364528d3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac233484344c0b2eade0ac13364528d3f">m_rgb</a></td></tr>
+<tr class="memitem:acfe2bda6bed1c7dbbb0568e0c7d02fb4" id="r_acfe2bda6bed1c7dbbb0568e0c7d02fb4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acfe2bda6bed1c7dbbb0568e0c7d02fb4">m_normal</a></td></tr>
 <tr class="inherit_header pro_attribs_classMeshLib_1_1CVertex"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_classMeshLib_1_1CVertex')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Protected 属性 继承自 <a class="el" href="classMeshLib_1_1CVertex.html">MeshLib::CVertex</a></td></tr>
 <tr class="memitem:a686d33c96343be3d7b9c46b628061bd9 inherit pro_attribs_classMeshLib_1_1CVertex" id="r_a686d33c96343be3d7b9c46b628061bd9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CVertex.html#a686d33c96343be3d7b9c46b628061bd9">m_id</a></td></tr>
 <tr class="memitem:a0611ed63a1451d3077bcb2dbaf5f1e89 inherit pro_attribs_classMeshLib_1_1CVertex" id="r_a0611ed63a1451d3077bcb2dbaf5f1e89"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classCPoint.html">CPoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CVertex.html#a0611ed63a1451d3077bcb2dbaf5f1e89">m_point</a></td></tr>
@@ -175,6 +178,344 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>m_father</b></td></tr>
 <tr class="memitem:a0ad694c0749eb9b71c0faaafde732d3e inherit pro_attribs_classMeshLib_1_1CVertex" id="r_a0ad694c0749eb9b71c0faaafde732d3e"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CVertex.html#a0ad694c0749eb9b71c0faaafde732d3e">m_string</a></td></tr>
 <tr class="memitem:ac6914ef1d52a245340b8bd07e671c87d inherit pro_attribs_classMeshLib_1_1CVertex" id="r_ac6914ef1d52a245340b8bd07e671c87d"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classMeshLib_1_1CEdge.html">CEdge</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CVertex.html#ac6914ef1d52a245340b8bd07e671c87d">m_edges</a></td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="afc74f58c1ace21403ca99e914fae4652" name="afc74f58c1ace21403ca99e914fae4652"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc74f58c1ace21403ca99e914fae4652">&#9670;&#160;</a></span>CToolVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshLib::CToolVertex::CToolVertex </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0eeac655dd1f9e24c0e2bfce2d11bc02" name="a0eeac655dd1f9e24c0e2bfce2d11bc02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0eeac655dd1f9e24c0e2bfce2d11bc02">&#9670;&#160;</a></span>~CToolVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshLib::CToolVertex::~CToolVertex </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="abed174781c49b910527355b29c595ea6" name="abed174781c49b910527355b29c595ea6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abed174781c49b910527355b29c595ea6">&#9670;&#160;</a></span>_from_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshLib::CToolVertex::_from_string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a07883311e9f2a8d65e12c0777e81c43a" name="a07883311e9f2a8d65e12c0777e81c43a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07883311e9f2a8d65e12c0777e81c43a">&#9670;&#160;</a></span>_to_string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshLib::CToolVertex::_to_string </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a589d58efc4bdc8cfbc1172117225a607" name="a589d58efc4bdc8cfbc1172117225a607"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a589d58efc4bdc8cfbc1172117225a607">&#9670;&#160;</a></span>father()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int &amp; MeshLib::CToolVertex::father </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0ea0fabaa671dcd03d8386c29ac917a2" name="a0ea0fabaa671dcd03d8386c29ac917a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ea0fabaa671dcd03d8386c29ac917a2">&#9670;&#160;</a></span>fixed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool &amp; MeshLib::CToolVertex::fixed </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a12c467af869c8c5caf60c73b507957a5" name="a12c467af869c8c5caf60c73b507957a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12c467af869c8c5caf60c73b507957a5">&#9670;&#160;</a></span>is_edge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool &amp; MeshLib::CToolVertex::is_edge </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af5c31597c450332b7a94db8c7f42e52d" name="af5c31597c450332b7a94db8c7f42e52d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5c31597c450332b7a94db8c7f42e52d">&#9670;&#160;</a></span>normal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> &amp; MeshLib::CToolVertex::normal </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a806c372659683b63f2c0c067ad8b3aca" name="a806c372659683b63f2c0c067ad8b3aca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a806c372659683b63f2c0c067ad8b3aca">&#9670;&#160;</a></span>rgb()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> &amp; MeshLib::CToolVertex::rgb </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a84f86822b252e7b896cc5e630a263e50" name="a84f86822b252e7b896cc5e630a263e50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84f86822b252e7b896cc5e630a263e50">&#9670;&#160;</a></span>edge</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshLib::CToolVertex::edge</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac39937ab4c50934956a94a101f8ba891" name="ac39937ab4c50934956a94a101f8ba891"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac39937ab4c50934956a94a101f8ba891">&#9670;&#160;</a></span>m_father</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int MeshLib::CToolVertex::m_father</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a369f49111aba1d1f96bfd512b34785bd" name="a369f49111aba1d1f96bfd512b34785bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a369f49111aba1d1f96bfd512b34785bd">&#9670;&#160;</a></span>m_fixed</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshLib::CToolVertex::m_fixed</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acfe2bda6bed1c7dbbb0568e0c7d02fb4" name="acfe2bda6bed1c7dbbb0568e0c7d02fb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfe2bda6bed1c7dbbb0568e0c7d02fb4">&#9670;&#160;</a></span>m_normal</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> MeshLib::CToolVertex::m_normal</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac233484344c0b2eade0ac13364528d3f" name="ac233484344c0b2eade0ac13364528d3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac233484344c0b2eade0ac13364528d3f">&#9670;&#160;</a></span>m_rgb</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classCPoint.html">CPoint</a> MeshLib::CToolVertex::m_rgb</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>model/data/<a class="el" href="ToolMesh_8h_source.html">ToolMesh.h</a></li>
 </ul>

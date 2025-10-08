@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/SelectorHighlight.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#typedef-members">类型定义</a>  </div>
+  <div class="headertitle"><div class="title">SelectorHighlight.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="MeshActorSelectOp_8h_source.html">MeshActorSelectOp.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Selection_8h_source.html">Selection.h</a>&quot;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;optional&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;vtkNew.h&gt;</code><br />
+<code>#include &lt;vtkSmartPointer.h&gt;</code><br />
+<code>#include &lt;vtkAssembly.h&gt;</code><br />
+<code>#include &lt;vtkPropCollection.h&gt;</code><br />
+<code>#include &lt;vtkCompositeDataDisplayAttributes.h&gt;</code><br />
+<code>#include &lt;vtkMultiBlockDataSet.h&gt;</code><br />
+<code>#include &lt;vtkCompositePolyDataMapper.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+SelectorHighlight.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="SelectorHighlight_8h__incl.png" border="0" usemap="#aapp_2render_2SelectorHighlight_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2SelectorHighlight_8h" id="aapp_2render_2SelectorHighlight_8h">
+<area shape="rect" title=" " alt="" coords="472,5,692,31"/>
+<area shape="rect" href="MeshActorSelectOp_8h.html" title=" " alt="" coords="288,79,449,104"/>
+<area shape="poly" title=" " alt="" coords="549,33,417,77,415,72,547,28"/>
+<area shape="rect" title=" " alt="" coords="213,152,287,177"/>
+<area shape="poly" title=" " alt="" coords="472,32,357,50,310,64,278,81,268,93,261,108,254,138,249,137,256,106,264,90,275,77,308,59,356,45,471,26"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="43,79,137,104"/>
+<area shape="poly" title=" " alt="" coords="496,33,157,81,152,82,151,77,156,76,495,28"/>
+<area shape="rect" title=" " alt="" coords="5,225,68,251"/>
+<area shape="poly" title=" " alt="" coords="472,26,343,33,205,44,90,60,52,70,32,81,22,95,16,111,14,146,20,182,29,212,24,213,14,183,8,147,11,110,18,92,28,77,50,65,89,55,204,39,342,28,472,21"/>
+<area shape="rect" title=" " alt="" coords="119,225,175,251"/>
+<area shape="poly" title=" " alt="" coords="472,33,347,52,293,66,255,81,221,110,194,146,173,182,159,214,154,212,168,180,189,143,217,106,253,76,291,61,346,47,471,28"/>
+<area shape="rect" title=" " alt="" coords="474,79,557,104"/>
+<area shape="poly" title=" " alt="" coords="573,33,537,70,534,67,569,29"/>
+<area shape="rect" title=" " alt="" coords="581,79,719,104"/>
+<area shape="poly" title=" " alt="" coords="595,29,631,67,627,70,591,33"/>
+<area shape="rect" title=" " alt="" coords="743,79,861,104"/>
+<area shape="poly" title=" " alt="" coords="618,28,754,72,753,77,617,33"/>
+<area shape="rect" title=" " alt="" coords="885,79,1034,104"/>
+<area shape="poly" title=" " alt="" coords="643,28,885,73,884,79,642,33"/>
+<area shape="rect" title=" " alt="" coords="1058,79,1327,104"/>
+<area shape="poly" title=" " alt="" coords="680,28,1081,74,1081,80,680,33"/>
+<area shape="rect" title=" " alt="" coords="1351,79,1527,104"/>
+<area shape="poly" title=" " alt="" coords="693,24,980,45,1338,76,1337,81,980,51,692,29"/>
+<area shape="rect" title=" " alt="" coords="1551,79,1783,104"/>
+<area shape="poly" title=" " alt="" coords="692,23,1063,44,1538,76,1537,81,1062,49,692,28"/>
+<area shape="rect" title=" " alt="" coords="319,225,397,251"/>
+<area shape="poly" title=" " alt="" coords="398,102,422,115,445,133,459,154,460,166,456,179,434,204,406,222,403,218,431,200,452,176,455,166,454,156,441,136,419,120,395,107"/>
+<area shape="poly" title=" " alt="" coords="351,106,283,147,280,142,348,102"/>
+<area shape="rect" title=" " alt="" coords="517,152,601,177"/>
+<area shape="poly" title=" " alt="" coords="400,102,516,144,514,149,398,107"/>
+<area shape="rect" title=" " alt="" coords="625,152,787,177"/>
+<area shape="poly" title=" " alt="" coords="423,101,638,146,637,152,422,107"/>
+<area shape="rect" title=" " alt="" coords="311,152,442,177"/>
+<area shape="poly" title=" " alt="" coords="373,104,377,138,371,139,367,105"/>
+<area shape="poly" title=" " alt="" coords="86,105,64,153,46,213,41,211,60,151,81,103"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="74,152,138,177"/>
+<area shape="poly" title=" " alt="" coords="95,104,103,138,98,139,90,105"/>
+<area shape="poly" title=" " alt="" coords="139,173,307,220,305,225,138,178"/>
+<area shape="poly" title=" " alt="" coords="96,180,59,217,55,214,93,176"/>
+<area shape="poly" title=" " alt="" coords="115,176,136,212,131,215,111,179"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="SelectorHighlight_8h__dep__incl.png" border="0" usemap="#aapp_2render_2SelectorHighlight_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2SelectorHighlight_8hdep" id="aapp_2render_2SelectorHighlight_8hdep">
+<area shape="rect" title=" " alt="" coords="595,5,815,31"/>
+<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="5,174,224,199"/>
+<area shape="poly" title=" " alt="" coords="582,28,379,46,287,61,250,71,223,81,190,102,162,128,124,176,120,172,158,124,187,98,220,76,249,66,286,56,379,41,581,23"/>
+<area shape="rect" href="SelectManager_8h.html" title=" " alt="" coords="234,86,438,111"/>
+<area shape="poly" title=" " alt="" coords="639,36,390,89,389,83,638,31"/>
+<area shape="rect" href="SelectorHighlight_8cpp.html" title=" " alt="" coords="463,86,697,111"/>
+<area shape="poly" title=" " alt="" coords="677,40,600,88,597,84,674,36"/>
+<area shape="rect" href="SingleSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="721,79,943,119"/>
+<area shape="poly" title=" " alt="" coords="737,36,803,76,800,81,734,40"/>
+<area shape="rect" href="TestSingleEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="967,79,1161,119"/>
+<area shape="poly" title=" " alt="" coords="771,31,979,76,978,81,770,36"/>
+<area shape="rect" href="TestSingleSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="1185,79,1378,119"/>
+<area shape="poly" title=" " alt="" coords="820,30,1174,76,1185,78,1184,83,1173,81,819,35"/>
+<area shape="poly" title=" " alt="" coords="294,119,145,176,143,171,292,114"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="249,174,479,199"/>
+<area shape="poly" title=" " alt="" coords="346,123,363,173,358,174,341,125"/>
+<area shape="rect" href="QRenderWindowStyle_8cpp.html" title=" " alt="" coords="503,167,707,207"/>
+<area shape="poly" title=" " alt="" coords="386,113,547,164,545,169,384,118"/>
+</map>
+</div>
+</div>
+<p><a href="SelectorHighlight_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:SelectorHighlight" id="r_SelectorHighlight"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSelectorHighlight.html">SelectorHighlight</a></td></tr>
+<tr class="memitem:BlockSelectorHighlight" id="r_BlockSelectorHighlight"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlockSelectorHighlight.html">BlockSelectorHighlight</a></td></tr>
+<tr class="memitem:SingleFaceSelectorHighlight" id="r_SingleFaceSelectorHighlight"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSingleFaceSelectorHighlight.html">SingleFaceSelectorHighlight</a></td></tr>
+<tr class="memitem:SingleEdgeSelectorHighlight" id="r_SingleEdgeSelectorHighlight"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSingleEdgeSelectorHighlight.html">SingleEdgeSelectorHighlight</a></td></tr>
+<tr class="memitem:SingleEdgeSelectorHighlight_3A_3ASelectedEdge" id="r_SingleEdgeSelectorHighlight_3A_3ASelectedEdge"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structSingleEdgeSelectorHighlight_1_1SelectedEdge.html">SingleEdgeSelectorHighlight::SelectedEdge</a></td></tr>
+<tr class="memitem:SingleSolidSelectorHighlight" id="r_SingleSolidSelectorHighlight"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSingleSolidSelectorHighlight.html">SingleSolidSelectorHighlight</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:a4ed5d94ee6c8a2c1894e4b4193672691" id="r_a4ed5d94ee6c8a2c1894e4b4193672691"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a> = <a class="el" href="structSelection.html">Selection</a></td></tr>
+</table>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">类型定义说明</h2>
+<a id="a4ed5d94ee6c8a2c1894e4b4193672691" name="a4ed5d94ee6c8a2c1894e4b4193672691"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ed5d94ee6c8a2c1894e4b4193672691">&#9670;&#160;</a></span>SelectionVtk</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a> = <a class="el" href="structSelection.html">Selection</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

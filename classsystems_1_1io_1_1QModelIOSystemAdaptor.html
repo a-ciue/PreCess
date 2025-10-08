@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>systems</b></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1QModelIOSystemAdaptor.html">QModelIOSystemAdaptor</a></li>  </ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1QModelIOSystemAdaptor.html">QModelIOSystemAdaptor</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -109,11 +110,10 @@ systems::io::QModelIOSystemAdaptor 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a842b3499a2004d3fc3b67143a85364ce" id="r_a842b3499a2004d3fc3b67143a85364ce"><td class="memItemLeft" align="right" valign="top"><a id="a842b3499a2004d3fc3b67143a85364ce" name="a842b3499a2004d3fc3b67143a85364ce"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>QModelIOSystemAdaptor</b> (<a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html">ModelIOSystem</a> &amp;io_system)</td></tr>
+<tr class="memitem:a842b3499a2004d3fc3b67143a85364ce" id="r_a842b3499a2004d3fc3b67143a85364ce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a842b3499a2004d3fc3b67143a85364ce">QModelIOSystemAdaptor</a> (<a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html">ModelIOSystem</a> &amp;io_system)</td></tr>
 <tr class="memitem:a8a5ea8ac89e84bf258cacb8158a2f7d5" id="r_a8a5ea8ac89e84bf258cacb8158a2f7d5"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a5ea8ac89e84bf258cacb8158a2f7d5">read</a> (const QString &amp;unique_name, const QUrl &amp;url, const QList&lt; <a class="el" href="classQArgObject.html">QArgObject</a> * &gt; &amp;args)</td></tr>
 <tr class="memdesc:a8a5ea8ac89e84bf258cacb8158a2f7d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">按照给定文件类型，读取指定路径的文件  <br /></td></tr>
-<tr class="memitem:ac186b9ebe046ddf7be45dbd826c05c23" id="r_ac186b9ebe046ddf7be45dbd826c05c23"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac186b9ebe046ddf7be45dbd826c05c23">write</a> (const QString &amp;unique_name, Index model, const QUrl &amp;url, const QList&lt; <a class="el" href="classQArgObject.html">QArgObject</a> * &gt; &amp;args)</td></tr>
+<tr class="memitem:ac186b9ebe046ddf7be45dbd826c05c23" id="r_ac186b9ebe046ddf7be45dbd826c05c23"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac186b9ebe046ddf7be45dbd826c05c23">write</a> (const QString &amp;unique_name, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model, const QUrl &amp;url, const QList&lt; <a class="el" href="classQArgObject.html">QArgObject</a> * &gt; &amp;args)</td></tr>
 <tr class="memdesc:ac186b9ebe046ddf7be45dbd826c05c23"><td class="mdescLeft">&#160;</td><td class="mdescRight">按照给定文件类型，写出指定模型到指定路径的文件  <br /></td></tr>
 <tr class="memitem:adc057ee7550640ca63e882b791f892c9" id="r_adc057ee7550640ca63e882b791f892c9"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QList&lt; <a class="el" href="classsystems_1_1io_1_1QModelIOInfo.html">QModelIOInfo</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc057ee7550640ca63e882b791f892c9">getModelIOInfo</a> () const</td></tr>
 <tr class="memdesc:adc057ee7550640ca63e882b791f892c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取所有支持的文件类型信息  <br /></td></tr>
@@ -122,7 +122,25 @@ Public 成员函数</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>向Qml暴露的ModelIOSystem适配器，向界面暴露IO功能：读取模型、写出模型等各种功能操作 </p>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a842b3499a2004d3fc3b67143a85364ce" name="a842b3499a2004d3fc3b67143a85364ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a842b3499a2004d3fc3b67143a85364ce">&#9670;&#160;</a></span>QModelIOSystemAdaptor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QModelIOSystemAdaptor::QModelIOSystemAdaptor </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html">ModelIOSystem</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>io_system</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a9bdb1d03075af65a27f20197daf4f88e" name="a9bdb1d03075af65a27f20197daf4f88e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9bdb1d03075af65a27f20197daf4f88e">&#9670;&#160;</a></span>getDialogNameFilters()</h2>
 
@@ -214,7 +232,7 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -245,7 +263,7 @@ Public 成员函数</h2></td></tr>
 </div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>app/model/systems/io/<a class="el" href="QModelIOSystemAdaptor_8h_source.html">QModelIOSystemAdaptor.h</a></li>
-<li>app/model/systems/io/<b>QModelIOSystemAdaptor.cpp</b></li>
+<li>app/model/systems/io/<a class="el" href="QModelIOSystemAdaptor_8cpp.html">QModelIOSystemAdaptor.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

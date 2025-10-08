@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>systems</b></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1ModelIOSystemBase.html">ModelIOSystemBase</a></li>  </ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1io.html">io</a></li><li class="navelem"><a href="classsystems_1_1io_1_1ModelIOSystemBase.html">ModelIOSystemBase</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -99,15 +100,42 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
+<tr class="memitem:a89357f22e8f2dc07e321d0b60bcd453f" id="r_a89357f22e8f2dc07e321d0b60bcd453f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89357f22e8f2dc07e321d0b60bcd453f">~ModelIOSystemBase</a> ()=default</td></tr>
 <tr class="memitem:ac26b111ed67730d4413819798755e7aa" id="r_ac26b111ed67730d4413819798755e7aa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac26b111ed67730d4413819798755e7aa">read</a> (const std::filesystem::path &amp;path, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
-<tr class="memitem:a40d8053366f094fb91c09f868b62683e" id="r_a40d8053366f094fb91c09f868b62683e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40d8053366f094fb91c09f868b62683e">write</a> (Index model, const std::filesystem::path &amp;path, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
+<tr class="memitem:a40d8053366f094fb91c09f868b62683e" id="r_a40d8053366f094fb91c09f868b62683e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40d8053366f094fb91c09f868b62683e">write</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model, const std::filesystem::path &amp;path, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>ModelIOSystem接口基类，出于插件开发而设计的接口基类。 </p>
 <p>目前只被插件Handler使用。 如果基于接口解耦的目的，将出现ModelIOSystem地方全使用基类接口，要参考派生类补全接口基类的函数声明 </p><dl class="section see"><dt>参见</dt><dd><a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html" title="模型IO系统，每种文件格式只能注册一个处理器">systems::io::ModelIOSystem</a> </dd>
 <dd>
 <a class="el" href="structsystems_1_1algo_1_1HandlerContext.html">systems::algo::HandlerContext</a> </dd></dl>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a89357f22e8f2dc07e321d0b60bcd453f" name="a89357f22e8f2dc07e321d0b60bcd453f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89357f22e8f2dc07e321d0b60bcd453f">&#9670;&#160;</a></span>~ModelIOSystemBase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual systems::io::ModelIOSystemBase::~ModelIOSystemBase </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="ac26b111ed67730d4413819798755e7aa" name="ac26b111ed67730d4413819798755e7aa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac26b111ed67730d4413819798755e7aa">&#9670;&#160;</a></span>read()</h2>
 
@@ -156,7 +184,7 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="memname">virtual void systems::io::ModelIOSystemBase::write </td>
           <td>(</td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

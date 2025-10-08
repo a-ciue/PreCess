@@ -1,7 +1,11 @@
 <map id="model/systems/algo/AlgorithmSystem.h" name="model/systems/algo/AlgorithmSystem.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="119,5,274,45"/>
-<area shape="rect" id="Node000002" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="5,93,172,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="164,56,114,95,111,91,160,52"/>
-<area shape="rect" id="Node000003" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="197,93,415,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="233,52,283,91,280,95,230,56"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="405,5,559,45"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,101,233,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="392,51,168,103,167,98,391,45"/>
+<area shape="rect" id="Node000003" href="$QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="258,93,485,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="448,56,397,95,394,91,445,52"/>
+<area shape="rect" id="Node000004" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="509,93,676,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="519,52,570,91,567,95,516,56"/>
+<area shape="rect" id="Node000005" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="701,93,919,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="568,46,739,91,738,96,566,51"/>
 </map>

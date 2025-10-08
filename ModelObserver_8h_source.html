@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,29 +79,32 @@ $(function() {
   <div class="headertitle"><div class="title">ModelObserver.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<a href="ModelObserver_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
 <div class="foldopen" id="foldopen00005" data-start="{" data-end="};">
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno"><a class="line" href="classModelObserver.html">    5</a></span><span class="keyword">class </span><a class="code hl_class" href="classModelObserver.html">ModelObserver</a> {</div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classModelObserver.html">~ModelObserver</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="classModelObserver.html#ab87bc0098d28fb53f4d2d38f8a2e991e">    7</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classModelObserver.html#ab87bc0098d28fb53f4d2d38f8a2e991e">~ModelObserver</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d">   15</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d">notifyModelChanged</a>(Index model_id) = 0;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d">   15</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d">notifyModelChanged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) = 0;</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classModelObserver.html#a90a2ab815ca62393d808bb457063756f">   23</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#a90a2ab815ca62393d808bb457063756f">notifyModelAdded</a>(Index model_id) = 0;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classModelObserver.html#a90a2ab815ca62393d808bb457063756f">   23</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#a90a2ab815ca62393d808bb457063756f">notifyModelAdded</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) = 0;</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e">   31</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e">notifyModelRemoved</a>(Index model_id) = 0;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e">   31</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e">notifyModelRemoved</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) = 0;</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c">   40</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c">notifyModelNameChanged</a>(Index model_id, <span class="keyword">const</span> std::string&amp; new_name) = 0;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c">   40</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c">notifyModelNameChanged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keyword">const</span> std::string&amp; new_name) = 0;</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    </div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classModelObserver.html#ad8fc1c4c007dbcf380b3c7dda606b4be">   48</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classModelObserver.html#ad8fc1c4c007dbcf380b3c7dda606b4be">notifySplineLoadFailed</a>(<span class="keyword">const</span> std::string&amp; message) = 0;</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>};</div>
 </div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:30</div></div>
 <div class="ttc" id="aclassModelObserver_html"><div class="ttname"><a href="classModelObserver.html">ModelObserver</a></div><div class="ttdef"><b>定义</b> ModelObserver.h:5</div></div>
 <div class="ttc" id="aclassModelObserver_html_a50ab34f21b3d15aa55e765b86a4c365c"><div class="ttname"><a href="classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c">ModelObserver::notifyModelNameChanged</a></div><div class="ttdeci">virtual void notifyModelNameChanged(Index model_id, const std::string &amp;new_name)=0</div><div class="ttdoc">接收模型名称变更的通知函数</div></div>
 <div class="ttc" id="aclassModelObserver_html_a90a2ab815ca62393d808bb457063756f"><div class="ttname"><a href="classModelObserver.html#a90a2ab815ca62393d808bb457063756f">ModelObserver::notifyModelAdded</a></div><div class="ttdeci">virtual void notifyModelAdded(Index model_id)=0</div><div class="ttdoc">接收模型被添加的通知函数</div></div>
+<div class="ttc" id="aclassModelObserver_html_ab87bc0098d28fb53f4d2d38f8a2e991e"><div class="ttname"><a href="classModelObserver.html#ab87bc0098d28fb53f4d2d38f8a2e991e">ModelObserver::~ModelObserver</a></div><div class="ttdeci">virtual ~ModelObserver()=default</div></div>
 <div class="ttc" id="aclassModelObserver_html_ad8fc1c4c007dbcf380b3c7dda606b4be"><div class="ttname"><a href="classModelObserver.html#ad8fc1c4c007dbcf380b3c7dda606b4be">ModelObserver::notifySplineLoadFailed</a></div><div class="ttdeci">virtual void notifySplineLoadFailed(const std::string &amp;message)=0</div><div class="ttdoc">接收样条曲线加载失败的通知函数</div></div>
 <div class="ttc" id="aclassModelObserver_html_adaa628f9822c6c8250117917d8a52d4e"><div class="ttname"><a href="classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e">ModelObserver::notifyModelRemoved</a></div><div class="ttdeci">virtual void notifyModelRemoved(Index model_id)=0</div><div class="ttdoc">接收模型被移除的通知函数</div></div>
 <div class="ttc" id="aclassModelObserver_html_af70f9df2aca91d6cca529f6e628df87d"><div class="ttname"><a href="classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d">ModelObserver::notifyModelChanged</a></div><div class="ttdeci">virtual void notifyModelChanged(Index model_id)=0</div><div class="ttdoc">接收模型数据变更的通知函数</div></div>

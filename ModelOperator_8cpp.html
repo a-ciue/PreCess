@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/ModelOperator.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#define-members">宏定义</a>  </div>
+  <div class="headertitle"><div class="title">ModelOperator.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="ModelOperator_8h_source.html">ModelOperator.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelObserver_8h_source.html">ModelObserver.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+ModelOperator.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelOperator_8cpp__incl.png" border="0" usemap="#amodel_2data_2ModelOperator_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2ModelOperator_8cpp" id="amodel_2data_2ModelOperator_8cpp">
+<area shape="rect" title=" " alt="" coords="301,5,523,31"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="228,79,359,104"/>
+<area shape="poly" title=" " alt="" coords="394,33,326,74,323,69,392,28"/>
+<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="585,225,717,251"/>
+<area shape="poly" title=" " alt="" coords="427,29,630,214,626,218,423,33"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="331,152,493,177"/>
+<area shape="poly" title=" " alt="" coords="314,102,382,142,379,147,311,106"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="299,225,405,251"/>
+<area shape="poly" title=" " alt="" coords="299,104,307,137,321,176,340,212,335,215,316,178,302,138,293,105"/>
+<area shape="rect" title=" " alt="" coords="145,445,223,471"/>
+<area shape="poly" title=" " alt="" coords="264,107,224,126,182,154,164,171,149,191,140,213,136,237,136,313,140,346,149,378,173,432,168,434,144,380,134,347,131,313,131,236,134,211,145,188,160,168,179,150,221,121,261,102"/>
+<area shape="rect" title=" " alt="" coords="5,152,96,177"/>
+<area shape="poly" title=" " alt="" coords="255,107,104,151,102,146,254,101"/>
+<area shape="poly" title=" " alt="" coords="404,179,373,217,368,213,400,176"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="505,372,569,397"/>
+<area shape="poly" title=" " alt="" coords="427,176,475,225,502,260,524,298,534,328,539,358,533,359,529,330,519,300,497,263,471,229,423,180"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="414,299,509,324"/>
+<area shape="poly" title=" " alt="" coords="371,248,433,289,430,293,368,253"/>
+<area shape="poly" title=" " alt="" coords="300,251,252,268,230,282,211,300,194,332,185,367,183,402,184,432,178,432,177,402,180,367,189,330,207,297,227,278,250,264,298,246"/>
+<area shape="rect" title=" " alt="" coords="584,299,643,324"/>
+<area shape="poly" title=" " alt="" coords="395,248,571,296,570,301,393,253"/>
+<area shape="rect" title=" " alt="" coords="222,299,290,324"/>
+<area shape="poly" title=" " alt="" coords="338,253,284,292,281,288,335,249"/>
+<area shape="rect" title=" " alt="" coords="315,299,389,324"/>
+<area shape="poly" title=" " alt="" coords="355,251,355,285,349,285,349,251"/>
+<area shape="rect" title=" " alt="" coords="430,445,493,471"/>
+<area shape="poly" title=" " alt="" coords="464,324,464,432,459,432,459,324"/>
+<area shape="poly" title=" " alt="" coords="475,322,517,361,513,364,472,326"/>
+<area shape="poly" title=" " alt="" coords="527,399,486,438,482,434,523,395"/>
+<area shape="rect" title=" " alt="" coords="517,445,573,471"/>
+<area shape="poly" title=" " alt="" coords="541,397,545,432,540,432,536,398"/>
+<area shape="poly" title=" " alt="" coords="505,395,237,449,235,444,504,390"/>
+<area shape="poly" title=" " alt="" coords="658,250,665,285,664,306,657,325,642,343,624,357,584,375,582,371,621,353,639,339,652,323,659,305,660,286,652,251"/>
+<area shape="poly" title=" " alt="" coords="647,252,628,288,623,285,642,250"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:afe3bc333ed1cf438e048d4be367d4c2e" id="r_afe3bc333ed1cf438e048d4be367d4c2e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe3bc333ed1cf438e048d4be367d4c2e">Model_OPERATOR_H</a></td></tr>
+</table>
+<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">宏定义说明</h2>
+<a id="afe3bc333ed1cf438e048d4be367d4c2e" name="afe3bc333ed1cf438e048d4be367d4c2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe3bc333ed1cf438e048d4be367d4c2e">&#9670;&#160;</a></span>Model_OPERATOR_H</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define Model_OPERATOR_H</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

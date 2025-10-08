@@ -1,0 +1,15 @@
+<map id="systems::io::ModelIOInfo" name="systems::io::ModelIOInfo">
+<area shape="rect" id="Node000001" title="模型层文件读写支持的文件类型信息" alt="" coords="40,463,224,488"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="156,95,242,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,129,129,154,86,189,45,231,28,255,15,281,8,308,12,335,22,361,39,386,80,430,117,460,114,464,76,434,35,390,18,364,6,336,3,308,10,279,24,253,41,228,82,185,126,150,164,125"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="106,289,292,314"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="202,133,202,288,196,288,196,133"/>
+<area shape="rect" id="Node000006" href="$structArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="279,231,354,256"/>
+<area shape="poly" id="edge7_Node000006_Node000002" title=" " alt="" coords="250,124,276,142,292,164,304,188,317,229,311,231,299,190,287,167,272,146,247,128"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="130,5,268,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="202,59,202,94,196,94,196,59"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="169,323,147,348,136,378,131,410,133,463,128,463,126,410,130,377,142,345,165,320"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="236,347,410,372"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="293,381,153,465,150,460,290,377"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="320,270,325,346,320,346,315,270"/>
+</map>

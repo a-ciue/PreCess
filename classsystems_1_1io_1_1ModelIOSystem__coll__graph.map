@@ -1,5 +1,9 @@
 <map id="systems::io::ModelIOSystem" name="systems::io::ModelIOSystem">
-<area shape="rect" id="Node000001" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="21,79,229,104"/>
-<area shape="rect" id="Node000002" href="$classsystems_1_1io_1_1ModelIOSystemBase.html" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="5,5,245,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,44,128,79,123,79,123,44"/>
+<area shape="rect" id="Node000001" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="43,191,251,216"/>
+<area shape="rect" id="Node000002" href="$classsystems_1_1io_1_1ModelIOSystemBase.html" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="5,95,245,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="134,133,147,190,141,191,128,134"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="270,95,357,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="282,129,169,193,166,188,280,124"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="244,5,383,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="316,59,316,94,311,94,311,59"/>
 </map>

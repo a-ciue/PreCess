@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -77,23 +78,72 @@ $(function() {
   <div class="headertitle"><div class="title">SelectManager类 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="SelectManager_8h_source.html">SelectManager.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:aa318adc0622e81715fa464dfa6643d67" id="r_aa318adc0622e81715fa464dfa6643d67"><td class="memItemLeft" align="right" valign="top"><a id="aa318adc0622e81715fa464dfa6643d67" name="aa318adc0622e81715fa464dfa6643d67"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>bindRenderer</b> (vtkRenderer *renderer)</td></tr>
+<tr class="memitem:aa318adc0622e81715fa464dfa6643d67" id="r_aa318adc0622e81715fa464dfa6643d67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa318adc0622e81715fa464dfa6643d67">bindRenderer</a> (vtkRenderer *renderer)</td></tr>
 <tr class="memitem:a964a78bc9fe0e1ff7914f6b4e091a818" id="r_a964a78bc9fe0e1ff7914f6b4e091a818"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a964a78bc9fe0e1ff7914f6b4e091a818">select</a> (double posx, double posy)</td></tr>
 <tr class="memdesc:a964a78bc9fe0e1ff7914f6b4e091a818"><td class="mdescLeft">&#160;</td><td class="mdescRight">传入renderer  <br /></td></tr>
-<tr class="memitem:a9924a3d6bc6080950634da40e02886b2" id="r_a9924a3d6bc6080950634da40e02886b2"><td class="memItemLeft" align="right" valign="top"><a id="a9924a3d6bc6080950634da40e02886b2" name="a9924a3d6bc6080950634da40e02886b2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setSelectActor</b> (std::weak_ptr&lt; const <a class="el" href="classMeshActor.html">MeshActor</a> &gt; model_actor_)</td></tr>
-<tr class="memitem:a3cf6c5704c8747abcf0afce9259d7521" id="r_a3cf6c5704c8747abcf0afce9259d7521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cf6c5704c8747abcf0afce9259d7521">setSelectMode</a> (SelectMode select_mode)</td></tr>
+<tr class="memitem:a9924a3d6bc6080950634da40e02886b2" id="r_a9924a3d6bc6080950634da40e02886b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9924a3d6bc6080950634da40e02886b2">setSelectActor</a> (std::weak_ptr&lt; const <a class="el" href="classMeshActor.html">MeshActor</a> &gt; model_actor_)</td></tr>
+<tr class="memitem:a3cf6c5704c8747abcf0afce9259d7521" id="r_a3cf6c5704c8747abcf0afce9259d7521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cf6c5704c8747abcf0afce9259d7521">setSelectMode</a> (<a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> select_mode)</td></tr>
 <tr class="memdesc:a3cf6c5704c8747abcf0afce9259d7521"><td class="mdescLeft">&#160;</td><td class="mdescRight">传入选择模型  <br /></td></tr>
-<tr class="memitem:add78e91313321159a48aab6d2bc74341" id="r_add78e91313321159a48aab6d2bc74341"><td class="memItemLeft" align="right" valign="top"><a id="add78e91313321159a48aab6d2bc74341" name="add78e91313321159a48aab6d2bc74341"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>clearSelection</b> ()</td></tr>
-<tr class="memitem:a99a52fe239dd1906a0d6ac54418f2d02" id="r_a99a52fe239dd1906a0d6ac54418f2d02"><td class="memItemLeft" align="right" valign="top"><a id="a99a52fe239dd1906a0d6ac54418f2d02" name="a99a52fe239dd1906a0d6ac54418f2d02"></a>
-std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getSelection</b> ()</td></tr>
+<tr class="memitem:add78e91313321159a48aab6d2bc74341" id="r_add78e91313321159a48aab6d2bc74341"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add78e91313321159a48aab6d2bc74341">clearSelection</a> ()</td></tr>
+<tr class="memitem:a99a52fe239dd1906a0d6ac54418f2d02" id="r_a99a52fe239dd1906a0d6ac54418f2d02"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99a52fe239dd1906a0d6ac54418f2d02">getSelection</a> ()</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="aa318adc0622e81715fa464dfa6643d67" name="aa318adc0622e81715fa464dfa6643d67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa318adc0622e81715fa464dfa6643d67">&#9670;&#160;</a></span>bindRenderer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SelectManager::bindRenderer </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="add78e91313321159a48aab6d2bc74341" name="add78e91313321159a48aab6d2bc74341"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add78e91313321159a48aab6d2bc74341">&#9670;&#160;</a></span>clearSelection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SelectManager::clearSelection </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a99a52fe239dd1906a0d6ac54418f2d02" name="a99a52fe239dd1906a0d6ac54418f2d02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99a52fe239dd1906a0d6ac54418f2d02">&#9670;&#160;</a></span>getSelection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; SelectManager::getSelection </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a964a78bc9fe0e1ff7914f6b4e091a818" name="a964a78bc9fe0e1ff7914f6b4e091a818"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a964a78bc9fe0e1ff7914f6b4e091a818">&#9670;&#160;</a></span>select()</h2>
 
@@ -124,6 +174,23 @@ std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;
 
 </div>
 </div>
+<a id="a9924a3d6bc6080950634da40e02886b2" name="a9924a3d6bc6080950634da40e02886b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9924a3d6bc6080950634da40e02886b2">&#9670;&#160;</a></span>setSelectActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SelectManager::setSelectActor </td>
+          <td>(</td>
+          <td class="paramtype">std::weak_ptr&lt; const <a class="el" href="classMeshActor.html">MeshActor</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>model_actor_</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3cf6c5704c8747abcf0afce9259d7521" name="a3cf6c5704c8747abcf0afce9259d7521"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3cf6c5704c8747abcf0afce9259d7521">&#9670;&#160;</a></span>setSelectMode()</h2>
 
@@ -133,7 +200,7 @@ std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;
         <tr>
           <td class="memname">void SelectManager::setSelectMode </td>
           <td>(</td>
-          <td class="paramtype">SelectMode</td>          <td class="paramname"><span class="paramname"><em>select_mode</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a></td>          <td class="paramname"><span class="paramname"><em>select_mode</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -151,7 +218,7 @@ std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;
 </div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>app/render/<a class="el" href="SelectManager_8h_source.html">SelectManager.h</a></li>
-<li>app/render/<b>SelectManager.cpp</b></li>
+<li>app/render/<a class="el" href="SelectManager_8cpp.html">SelectManager.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

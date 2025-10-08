@@ -1,19 +1,4 @@
 var searchData=
 [
-  ['selectededge_0',['SelectedEdge',['../structSingleEdgeSelectorHighlight_1_1SelectedEdge.html',1,'SingleEdgeSelectorHighlight']]],
-  ['selection_1',['Selection',['../structSelection.html',1,'']]],
-  ['selectmanager_2',['SelectManager',['../classSelectManager.html',1,'']]],
-  ['selectorhighlight_3',['SelectorHighlight',['../classSelectorHighlight.html',1,'']]],
-  ['shape_5ft_4',['shape_t',['../structtinyobj_1_1shape__t.html',1,'tinyobj']]],
-  ['singleedgeselectorhighlight_5',['SingleEdgeSelectorHighlight',['../classSingleEdgeSelectorHighlight.html',1,'']]],
-  ['singlefaceselectorhighlight_6',['SingleFaceSelectorHighlight',['../classSingleFaceSelectorHighlight.html',1,'']]],
-  ['singlesolidselectorhighlight_7',['SingleSolidSelectorHighlight',['../classSingleSolidSelectorHighlight.html',1,'']]],
-  ['skin_5fweight_5ft_8',['skin_weight_t',['../structtinyobj_1_1skin__weight__t.html',1,'tinyobj']]],
-  ['solidpickinteractorstyle_9',['SolidPickInteractorStyle',['../classSolidPickInteractorStyle.html',1,'']]],
-  ['splineactor_10',['SplineActor',['../classSplineActor.html',1,'']]],
-  ['splineactormanager_11',['SplineActorManager',['../classSplineActorManager.html',1,'']]],
-  ['splinedata_12',['SplineData',['../structSplineData.html',1,'']]],
-  ['splinedatavtk_13',['SplineDataVtk',['../structSplineDataVtk.html',1,'']]],
-  ['systempluginmanager_14',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
-  ['systemregisterbase_15',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
+  ['reverse_5fiterator_0',['reverse_iterator',['../classsystems_1_1algo_1_1string_1_1reverse__iterator.html',1,'systems::algo::string::reverse_iterator'],['../classsystems_1_1algo_1_1vector_1_1reverse__iterator.html',1,'systems::algo::vector&lt; T &gt;::reverse_iterator'],['../classsystems_1_1io_1_1string_1_1reverse__iterator.html',1,'systems::io::string::reverse_iterator'],['../classsystems_1_1io_1_1vector_1_1reverse__iterator.html',1,'systems::io::vector&lt; T &gt;::reverse_iterator']]]
 ];

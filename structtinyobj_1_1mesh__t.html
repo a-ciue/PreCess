@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>tinyobj</b></li><li class="navelem"><a href="structtinyobj_1_1mesh__t.html">mesh_t</a></li>  </ul>
+<li class="navelem"><a href="namespacetinyobj.html">tinyobj</a></li><li class="navelem"><a href="structtinyobj_1_1mesh__t.html">mesh_t</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -81,20 +82,118 @@ $(function() {
   <div class="headertitle"><div class="title">tinyobj::mesh_t结构体 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="tiny__obj__loader_8h_source.html">tiny_obj_loader.h</a>&gt;</code></p>
+<div class="dynheader">
+tinyobj::mesh_t 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structtinyobj_1_1mesh__t__coll__graph.png" border="0" usemap="#atinyobj_1_1mesh__t_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="atinyobj_1_1mesh__t_coll__map" id="atinyobj_1_1mesh__t_coll__map">
+<area shape="rect" title=" " alt="" coords="1343,117,1465,142"/>
+<area shape="rect" title=" " alt="" coords="989,8,1139,48"/>
+<area shape="poly" title=" " alt="" coords="1154,24,1236,33,1279,43,1320,58,1363,85,1393,115,1390,118,1359,89,1317,62,1277,48,1235,39,1153,30"/>
+<area shape="rect" href="structtinyobj_1_1index__t.html" title=" " alt="" coords="721,15,844,41"/>
+<area shape="poly" title=" " alt="" coords="858,25,988,25,988,31,858,31"/>
+<area shape="rect" title=" " alt="" coords="981,76,1147,116"/>
+<area shape="poly" title=" " alt="" coords="1161,103,1343,121,1342,126,1160,108"/>
+<area shape="rect" title=" " alt="" coords="421,154,560,179"/>
+<area shape="poly" title=" " alt="" coords="574,161,1342,129,1343,134,574,166"/>
+<area shape="rect" href="structtinyobj_1_1tag__t.html" title=" " alt="" coords="729,227,837,253"/>
+<area shape="poly" title=" " alt="" coords="556,180,732,225,730,230,555,185"/>
+<area shape="rect" title=" " alt="" coords="989,197,1139,237"/>
+<area shape="poly" title=" " alt="" coords="1153,219,1235,213,1277,205,1318,192,1359,168,1389,140,1393,144,1362,172,1320,197,1278,210,1235,218,1153,224"/>
+<area shape="poly" title=" " alt="" coords="850,232,988,221,988,226,851,237"/>
+<area shape="rect" title=" " alt="" coords="193,258,280,283"/>
+<area shape="poly" title=" " alt="" coords="293,257,304,256,423,246,541,240,728,237,729,242,541,245,423,251,304,261,294,263"/>
+<area shape="rect" title=" " alt="" coords="397,289,584,314"/>
+<area shape="poly" title=" " alt="" coords="294,277,304,279,398,290,397,295,304,284,293,283"/>
+<area shape="rect" title=" " alt="" coords="5,251,144,291"/>
+<area shape="poly" title=" " alt="" coords="157,268,193,268,193,273,157,273"/>
+<area shape="rect" title=" " alt="" coords="411,338,570,363"/>
+<area shape="poly" title=" " alt="" coords="583,350,641,342,696,323,720,308,741,288,771,251,775,255,745,292,723,312,698,328,642,347,584,355"/>
+<area shape="poly" title=" " alt="" coords="598,296,647,290,697,279,730,266,760,250,762,255,733,271,698,284,648,295,598,301"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
-<tr class="memitem:a9dcdbdf04eca02a552793ac7d160127c" id="r_a9dcdbdf04eca02a552793ac7d160127c"><td class="memItemLeft" align="right" valign="top"><a id="a9dcdbdf04eca02a552793ac7d160127c" name="a9dcdbdf04eca02a552793ac7d160127c"></a>
-std::vector&lt; <a class="el" href="structtinyobj_1_1index__t.html">index_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>indices</b></td></tr>
-<tr class="memitem:a0b3e989fbc944b29a4e67a288490ec07" id="r_a0b3e989fbc944b29a4e67a288490ec07"><td class="memItemLeft" align="right" valign="top"><a id="a0b3e989fbc944b29a4e67a288490ec07" name="a0b3e989fbc944b29a4e67a288490ec07"></a>
-std::vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>num_face_vertices</b></td></tr>
-<tr class="memitem:a57b2f12dfa3fd620b25babcd3a09ec6b" id="r_a57b2f12dfa3fd620b25babcd3a09ec6b"><td class="memItemLeft" align="right" valign="top"><a id="a57b2f12dfa3fd620b25babcd3a09ec6b" name="a57b2f12dfa3fd620b25babcd3a09ec6b"></a>
-std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>material_ids</b></td></tr>
-<tr class="memitem:a89b017a3446709c264d94438a9d7541b" id="r_a89b017a3446709c264d94438a9d7541b"><td class="memItemLeft" align="right" valign="top"><a id="a89b017a3446709c264d94438a9d7541b" name="a89b017a3446709c264d94438a9d7541b"></a>
-std::vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>smoothing_group_ids</b></td></tr>
-<tr class="memitem:a60f51d3802c11e2bf269530e0337fc63" id="r_a60f51d3802c11e2bf269530e0337fc63"><td class="memItemLeft" align="right" valign="top"><a id="a60f51d3802c11e2bf269530e0337fc63" name="a60f51d3802c11e2bf269530e0337fc63"></a>
-std::vector&lt; <a class="el" href="structtinyobj_1_1tag__t.html">tag_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tags</b></td></tr>
+<tr class="memitem:a9dcdbdf04eca02a552793ac7d160127c" id="r_a9dcdbdf04eca02a552793ac7d160127c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structtinyobj_1_1index__t.html">index_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9dcdbdf04eca02a552793ac7d160127c">indices</a></td></tr>
+<tr class="memitem:a0b3e989fbc944b29a4e67a288490ec07" id="r_a0b3e989fbc944b29a4e67a288490ec07"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b3e989fbc944b29a4e67a288490ec07">num_face_vertices</a></td></tr>
+<tr class="memitem:a57b2f12dfa3fd620b25babcd3a09ec6b" id="r_a57b2f12dfa3fd620b25babcd3a09ec6b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a57b2f12dfa3fd620b25babcd3a09ec6b">material_ids</a></td></tr>
+<tr class="memitem:a89b017a3446709c264d94438a9d7541b" id="r_a89b017a3446709c264d94438a9d7541b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89b017a3446709c264d94438a9d7541b">smoothing_group_ids</a></td></tr>
+<tr class="memitem:a60f51d3802c11e2bf269530e0337fc63" id="r_a60f51d3802c11e2bf269530e0337fc63"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structtinyobj_1_1tag__t.html">tag_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a60f51d3802c11e2bf269530e0337fc63">tags</a></td></tr>
 </table>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a9dcdbdf04eca02a552793ac7d160127c" name="a9dcdbdf04eca02a552793ac7d160127c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9dcdbdf04eca02a552793ac7d160127c">&#9670;&#160;</a></span>indices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structtinyobj_1_1index__t.html">index_t</a>&gt; tinyobj::mesh_t::indices</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a57b2f12dfa3fd620b25babcd3a09ec6b" name="a57b2f12dfa3fd620b25babcd3a09ec6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57b2f12dfa3fd620b25babcd3a09ec6b">&#9670;&#160;</a></span>material_ids</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;int&gt; tinyobj::mesh_t::material_ids</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0b3e989fbc944b29a4e67a288490ec07" name="a0b3e989fbc944b29a4e67a288490ec07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b3e989fbc944b29a4e67a288490ec07">&#9670;&#160;</a></span>num_face_vertices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;unsigned int&gt; tinyobj::mesh_t::num_face_vertices</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a89b017a3446709c264d94438a9d7541b" name="a89b017a3446709c264d94438a9d7541b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89b017a3446709c264d94438a9d7541b">&#9670;&#160;</a></span>smoothing_group_ids</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;unsigned int&gt; tinyobj::mesh_t::smoothing_group_ids</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a60f51d3802c11e2bf269530e0337fc63" name="a60f51d3802c11e2bf269530e0337fc63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60f51d3802c11e2bf269530e0337fc63">&#9670;&#160;</a></span>tags</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structtinyobj_1_1tag__t.html">tag_t</a>&gt; tinyobj::mesh_t::tags</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>该结构体的文档由以下文件生成:<ul>
 <li>model/ops/<a class="el" href="tiny__obj__loader_8h_source.html">tiny_obj_loader.h</a></li>
 </ul>

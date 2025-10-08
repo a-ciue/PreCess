@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,9 +79,9 @@ $(function() {
   <div class="headertitle"><div class="title">QModelQuery.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<a href="QModelQuery_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;QVariant&gt;</span></div>
@@ -95,9 +96,9 @@ $(function() {
 <div class="foldopen" id="foldopen00026" data-start="{" data-end="};">
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classIModelQuery.html">   26</a></span><span class="keyword">class </span><a class="code hl_class" href="classIModelQuery.html">IModelQuery</a> {</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classIModelQuery.html">~IModelQuery</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classIModelQuery.html#a6ecb68f014fcf949b91ce2c5c436e7fa">   28</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classIModelQuery.html#a6ecb68f014fcf949b91ce2c5c436e7fa">~IModelQuery</a>() = <span class="keywordflow">default</span>;</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">virtual</span> std::optional&lt;MeshDataVtk&gt; getMeshData(Index model_id) = 0;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classIModelQuery.html#acd8a82c476b0af47336e29344c469039">   30</a></span>    <span class="keyword">virtual</span> std::optional&lt;MeshDataVtk&gt; <a class="code hl_function" href="classIModelQuery.html#acd8a82c476b0af47336e29344c469039">getMeshData</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) = 0;</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
 </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
@@ -109,20 +110,28 @@ $(function() {
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">public</span>:</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classQModelQuery.html#ae680b059488e7c532da3900eab3e7775">QModelQuery</a>(<a class="code hl_class" href="classModelManager.html">ModelManager</a>* mgr, QObject* parent = <span class="keyword">nullptr</span>);</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    std::optional&lt;MeshDataVtk&gt; getMeshData(Index model_id) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    std::optional&lt;MeshDataVtk&gt; <a class="code hl_function" href="classQModelQuery.html#a83c8c44b715be78c2199ac6c9367f312">getMeshData</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    std::optional&lt;SplineDataVtk&gt; getSplineData(Index model_id) ;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    std::optional&lt;SplineDataVtk&gt; <a class="code hl_function" href="classQModelQuery.html#ab6f965b6f7562b403811c99c53aa02d1">getSplineData</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) ;</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    Q_INVOKABLE QString getModelName(Index model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    Q_INVOKABLE QString <a class="code hl_function" href="classQModelQuery.html#ac4ede680a9f04237e1f4d9bb6bc2737d">getModelName</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">int</span> getModelType(Index model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classQModelQuery.html#a6a75b2246fc658250e4a99944f359696">getModelType</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <a class="code hl_class" href="classModelManager.html">ModelManager</a>* m_manager;</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>};</div>
 </div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:30</div></div>
 <div class="ttc" id="aclassIModelQuery_html"><div class="ttname"><a href="classIModelQuery.html">IModelQuery</a></div><div class="ttdef"><b>定义</b> QModelQuery.h:26</div></div>
+<div class="ttc" id="aclassIModelQuery_html_a6ecb68f014fcf949b91ce2c5c436e7fa"><div class="ttname"><a href="classIModelQuery.html#a6ecb68f014fcf949b91ce2c5c436e7fa">IModelQuery::~IModelQuery</a></div><div class="ttdeci">virtual ~IModelQuery()=default</div></div>
+<div class="ttc" id="aclassIModelQuery_html_acd8a82c476b0af47336e29344c469039"><div class="ttname"><a href="classIModelQuery.html#acd8a82c476b0af47336e29344c469039">IModelQuery::getMeshData</a></div><div class="ttdeci">virtual std::optional&lt; MeshDataVtk &gt; getMeshData(Index model_id)=0</div></div>
 <div class="ttc" id="aclassModelManager_html"><div class="ttname"><a href="classModelManager.html">ModelManager</a></div><div class="ttdoc">负责管理多个 ModelData 实例的类</div><div class="ttdef"><b>定义</b> ModelManager.h:27</div></div>
+<div class="ttc" id="aclassQModelQuery_html_a6a75b2246fc658250e4a99944f359696"><div class="ttname"><a href="classQModelQuery.html#a6a75b2246fc658250e4a99944f359696">QModelQuery::getModelType</a></div><div class="ttdeci">int getModelType(Index model_id) const</div><div class="ttdef"><b>定义</b> QModelQuery.cpp:72</div></div>
+<div class="ttc" id="aclassQModelQuery_html_a83c8c44b715be78c2199ac6c9367f312"><div class="ttname"><a href="classQModelQuery.html#a83c8c44b715be78c2199ac6c9367f312">QModelQuery::getMeshData</a></div><div class="ttdeci">std::optional&lt; MeshDataVtk &gt; getMeshData(Index model_id) override</div><div class="ttdef"><b>定义</b> QModelQuery.cpp:16</div></div>
+<div class="ttc" id="aclassQModelQuery_html_ab6f965b6f7562b403811c99c53aa02d1"><div class="ttname"><a href="classQModelQuery.html#ab6f965b6f7562b403811c99c53aa02d1">QModelQuery::getSplineData</a></div><div class="ttdeci">std::optional&lt; SplineDataVtk &gt; getSplineData(Index model_id)</div><div class="ttdef"><b>定义</b> QModelQuery.cpp:53</div></div>
+<div class="ttc" id="aclassQModelQuery_html_ac4ede680a9f04237e1f4d9bb6bc2737d"><div class="ttname"><a href="classQModelQuery.html#ac4ede680a9f04237e1f4d9bb6bc2737d">QModelQuery::getModelName</a></div><div class="ttdeci">Q_INVOKABLE QString getModelName(Index model_id) const</div><div class="ttdef"><b>定义</b> QModelQuery.cpp:61</div></div>
 <div class="ttc" id="aclassQModelQuery_html_ae680b059488e7c532da3900eab3e7775"><div class="ttname"><a href="classQModelQuery.html#ae680b059488e7c532da3900eab3e7775">QModelQuery::QModelQuery</a></div><div class="ttdeci">QModelQuery(ModelManager *mgr, QObject *parent=nullptr)</div><div class="ttdoc">构造函数</div><div class="ttdef"><b>定义</b> QModelQuery.cpp:12</div></div>
 <div class="ttc" id="astructMeshDataVtk_html"><div class="ttname"><a href="structMeshDataVtk.html">MeshDataVtk</a></div><div class="ttdoc">用于存储网格数据以供 VTK 渲染使用的结构体</div><div class="ttdef"><b>定义</b> Core.h:47</div></div>
 <div class="ttc" id="astructSplineDataVtk_html"><div class="ttname"><a href="structSplineDataVtk.html">SplineDataVtk</a></div><div class="ttdef"><b>定义</b> SplineDataVtk.h:5</div></div>

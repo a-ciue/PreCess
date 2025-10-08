@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,9 +79,9 @@ $(function() {
   <div class="headertitle"><div class="title">QModelObserver.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;ModelObserver.h&quot;</span></div>
+<a href="QModelObserver_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="ModelObserver_8h.html">ModelObserver.h</a>&quot;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;qqmlintegration.h&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
@@ -91,28 +92,28 @@ $(function() {
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    QML_ELEMENT</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">public</span>:</div>
 <div class="foldopen" id="foldopen00024" data-start="{" data-end="}">
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classQModelObserver.html#afd7605c63a216faa10fa4da27143e2d1">   24</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#afd7605c63a216faa10fa4da27143e2d1">notifyModelChanged</a>(Index model_id)<span class="keyword"> override</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classQModelObserver.html#afd7605c63a216faa10fa4da27143e2d1">   24</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#afd7605c63a216faa10fa4da27143e2d1">notifyModelChanged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)<span class="keyword"> override</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        emit <a class="code hl_signal" href="classQModelObserver.html#aaf212d6090f697976ff5ac1686de6a95">modelChanged</a>(model_id);</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    }</div>
 </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span></div>
 <div class="foldopen" id="foldopen00035" data-start="{" data-end="}">
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ae6e553fc81a44a8055f300e38fce05ac">   35</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#ae6e553fc81a44a8055f300e38fce05ac">notifyModelAdded</a>(Index model_id)<span class="keyword"> override</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ae6e553fc81a44a8055f300e38fce05ac">   35</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#ae6e553fc81a44a8055f300e38fce05ac">notifyModelAdded</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)<span class="keyword"> override</span></div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        emit <a class="code hl_signal" href="classQModelObserver.html#a1732e5e6095c40fcd8b6f18095103c6e">modelAdded</a>(model_id);</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    }</div>
 </div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
 <div class="foldopen" id="foldopen00046" data-start="{" data-end="}">
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classQModelObserver.html#aacbfe7aa17fb1b4b6f844bec28b28927">   46</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#aacbfe7aa17fb1b4b6f844bec28b28927">notifyModelRemoved</a>(Index model_id)<span class="keyword"> override</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classQModelObserver.html#aacbfe7aa17fb1b4b6f844bec28b28927">   46</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#aacbfe7aa17fb1b4b6f844bec28b28927">notifyModelRemoved</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)<span class="keyword"> override</span></div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        emit <a class="code hl_signal" href="classQModelObserver.html#a62380a0c106069575dd30c86027134ca">modelRemoved</a>(model_id);</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    }</div>
 </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span></div>
 <div class="foldopen" id="foldopen00058" data-start="{" data-end="}">
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a60298e5dae88e4ddae135243ce28bad4">   58</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#a60298e5dae88e4ddae135243ce28bad4">notifyModelNameChanged</a>(Index model_id, <span class="keyword">const</span> std::string&amp; new_name)<span class="keyword"> override</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a60298e5dae88e4ddae135243ce28bad4">   58</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQModelObserver.html#a60298e5dae88e4ddae135243ce28bad4">notifyModelNameChanged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keyword">const</span> std::string&amp; new_name)<span class="keyword"> override</span></div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keyword">    </span>{</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        emit <a class="code hl_signal" href="classQModelObserver.html#a0bd468afb207170009e0fa36fb4c9fd7">modelNameChanged</a>(model_id, QString::fromStdString(new_name));</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    }</div>
@@ -128,36 +129,39 @@ $(function() {
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>signals:</div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a6d00f8ec71649b78c433a2b719db30b4">   80</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a6d00f8ec71649b78c433a2b719db30b4">splineLoadFailed</a>(QString message);</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span></div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a0bd468afb207170009e0fa36fb4c9fd7">   88</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a0bd468afb207170009e0fa36fb4c9fd7">modelNameChanged</a>(Index model_id, <span class="keyword">const</span> QString&amp; new_name);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a0bd468afb207170009e0fa36fb4c9fd7">   88</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a0bd468afb207170009e0fa36fb4c9fd7">modelNameChanged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keyword">const</span> QString&amp; new_name);</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span></div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a1732e5e6095c40fcd8b6f18095103c6e">   95</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a1732e5e6095c40fcd8b6f18095103c6e">modelAdded</a>(Index model_id);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a1732e5e6095c40fcd8b6f18095103c6e">   95</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a1732e5e6095c40fcd8b6f18095103c6e">modelAdded</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id);</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span></div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a62380a0c106069575dd30c86027134ca">  102</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a62380a0c106069575dd30c86027134ca">modelRemoved</a>(Index model_id);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a62380a0c106069575dd30c86027134ca">  102</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a62380a0c106069575dd30c86027134ca">modelRemoved</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id);</div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span><span class="preprocessor">#pragma region ModelDataSignals</span></div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span></div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="classQModelObserver.html#aaf212d6090f697976ff5ac1686de6a95">  110</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#aaf212d6090f697976ff5ac1686de6a95">modelChanged</a>(Index model_id);</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="classQModelObserver.html#aaf212d6090f697976ff5ac1686de6a95">  110</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#aaf212d6090f697976ff5ac1686de6a95">modelChanged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id);</div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span></div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ac655bcd06c83b3d6f7304c7b8389c696">  122</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#ac655bcd06c83b3d6f7304c7b8389c696">patchUpdated</a>(Index model_id, <span class="keywordtype">int</span> patch_id,</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ac655bcd06c83b3d6f7304c7b8389c696">  122</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#ac655bcd06c83b3d6f7304c7b8389c696">patchUpdated</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keywordtype">int</span> patch_id,</div>
 <div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keyword">const</span> std::vector&lt;std::array&lt;double, 3&gt;&gt;&amp; points,</div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keyword">const</span> std::vector&lt;std::array&lt;int, 3&gt;&gt;&amp; triangles);</div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span></div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581">  135</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581">blockUpdated</a>(Index model_id, <span class="keywordtype">int</span> block_id,</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581">  135</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581">blockUpdated</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keywordtype">int</span> block_id,</div>
 <div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        <span class="keyword">const</span> std::unordered_set&lt;int&gt;&amp; block_patches);</div>
 <div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span></div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ab1b6f878f7c9814a275165c6f4d9aee2">  147</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#ab1b6f878f7c9814a275165c6f4d9aee2">groupUpdated</a>(Index model_id, <span class="keywordtype">int</span> group_id,</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ab1b6f878f7c9814a275165c6f4d9aee2">  147</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#ab1b6f878f7c9814a275165c6f4d9aee2">groupUpdated</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keywordtype">int</span> group_id,</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        <span class="keyword">const</span> std::unordered_set&lt;int&gt;&amp; group_blocks);</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span></div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ac1bdada16a5cc4b6ad8fe7cda93cb1b5">  160</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#ac1bdada16a5cc4b6ad8fe7cda93cb1b5">blocksMerged</a>(Index model_id, <span class="keyword">const</span> std::vector&lt;int&gt;&amp; block_ids,</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="classQModelObserver.html#ac1bdada16a5cc4b6ad8fe7cda93cb1b5">  160</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#ac1bdada16a5cc4b6ad8fe7cda93cb1b5">blocksMerged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keyword">const</span> std::vector&lt;int&gt;&amp; block_ids,</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        <span class="keywordtype">int</span> father_block,</div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        <span class="keyword">const</span> std::unordered_set&lt;int&gt;&amp; father_block_patches);</div>
 <div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a00d8f03db26de49ba041a9455fba60e7">  174</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a00d8f03db26de49ba041a9455fba60e7">groupMerged</a>(Index model_id, <span class="keyword">const</span> std::vector&lt;int&gt;&amp; group_ids,</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno"><a class="line" href="classQModelObserver.html#a00d8f03db26de49ba041a9455fba60e7">  174</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQModelObserver.html#a00d8f03db26de49ba041a9455fba60e7">groupMerged</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <span class="keyword">const</span> std::vector&lt;int&gt;&amp; group_ids,</div>
 <div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>        <span class="keywordtype">int</span> father_group,</div>
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        <span class="keyword">const</span> std::unordered_set&lt;int&gt;&amp; father_group_blocks);</div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span><span class="preprocessor">#pragma endregion </span><span class="comment">// ModelData</span></div>
 <div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>};</div>
 </div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:30</div></div>
+<div class="ttc" id="aModelObserver_8h_html"><div class="ttname"><a href="ModelObserver_8h.html">ModelObserver.h</a></div></div>
 <div class="ttc" id="aclassModelObserver_html"><div class="ttname"><a href="classModelObserver.html">ModelObserver</a></div><div class="ttdef"><b>定义</b> ModelObserver.h:5</div></div>
 <div class="ttc" id="aclassQModelObserver_html"><div class="ttname"><a href="classQModelObserver.html">QModelObserver</a></div><div class="ttdoc">QModelObserver：用于监听模型数据更改并向外通知的观察者类</div><div class="ttdef"><b>定义</b> QModelObserver.h:14</div></div>
 <div class="ttc" id="aclassQModelObserver_html_a00d8f03db26de49ba041a9455fba60e7"><div class="ttname"><a href="classQModelObserver.html#a00d8f03db26de49ba041a9455fba60e7">QModelObserver::groupMerged</a></div><div class="ttdeci">void groupMerged(Index model_id, const std::vector&lt; int &gt; &amp;group_ids, int father_group, const std::unordered_set&lt; int &gt; &amp;father_group_blocks)</div><div class="ttdoc">当多个 Group 被合并时触发</div></div>

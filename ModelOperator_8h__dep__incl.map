@@ -1,0 +1,17 @@
+<map id="model/data/ModelOperator.h" name="model/data/ModelOperator.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="618,5,826,31"/>
+<area shape="rect" id="Node000002" href="$ModelManager_8h.html" title="负责管理多个模型实例的类" alt="" coords="498,79,706,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="692,40,623,81,620,76,689,35"/>
+<area shape="rect" id="Node000008" href="$ModelOperator_8cpp.html" title=" " alt="" coords="731,79,953,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="755,35,824,76,821,81,752,40"/>
+<area shape="rect" id="Node000003" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,159,233,185"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="519,109,190,162,189,157,518,104"/>
+<area shape="rect" id="Node000004" href="$QModelQuery_8cpp.html" title=" " alt="" coords="257,159,467,185"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="555,111,398,162,396,157,553,106"/>
+<area shape="rect" id="Node000005" href="$ModelManager_8cpp.html" title="实现 ModelManager 类，用于管理多个网格模型" alt="" coords="491,159,713,185"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="605,118,605,159,599,159,599,118"/>
+<area shape="rect" id="Node000006" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="737,152,904,192"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="647,106,769,149,767,154,646,111"/>
+<area shape="rect" id="Node000007" href="$ModelIOSystem_8cpp.html" title=" " alt="" coords="929,159,1201,185"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="683,104,998,157,997,162,682,109"/>
+</map>

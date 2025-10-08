@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/test/MakeMeshDataVtk.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li><li class="navelem"><a href="dir_ea7bf32d4afef5a01f2beaa3de806056.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">MakeMeshDataVtk.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="MeshActor_8h_source.html">MeshActor.h</a>&quot;</code><br />
+<code>#include &lt;string_view&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+MakeMeshDataVtk.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="MakeMeshDataVtk_8h__incl.png" border="0" usemap="#aapp_2render_2test_2MakeMeshDataVtk_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2test_2MakeMeshDataVtk_8h" id="aapp_2render_2test_2MakeMeshDataVtk_8h">
+<area shape="rect" title=" " alt="" coords="518,5,713,45"/>
+<area shape="rect" href="MeshActor_8h.html" title=" " alt="" coords="503,93,605,119"/>
+<area shape="poly" title=" " alt="" coords="603,47,574,84,569,81,598,44"/>
+<area shape="rect" title=" " alt="" coords="629,93,727,119"/>
+<area shape="poly" title=" " alt="" coords="633,44,662,81,658,84,628,47"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="89,174,153,199"/>
+<area shape="poly" title=" " alt="" coords="502,114,350,131,257,147,165,169,158,172,156,167,164,164,256,142,349,126,502,108"/>
+<area shape="rect" title=" " alt="" coords="177,174,326,199"/>
+<area shape="poly" title=" " alt="" coords="511,121,309,173,308,168,509,116"/>
+<area shape="rect" title=" " alt="" coords="350,167,558,207"/>
+<area shape="poly" title=" " alt="" coords="541,121,491,160,487,156,538,117"/>
+<area shape="rect" title=" " alt="" coords="583,174,725,199"/>
+<area shape="poly" title=" " alt="" coords="570,117,630,163,627,167,567,121"/>
+<area shape="rect" title=" " alt="" coords="750,174,982,199"/>
+<area shape="poly" title=" " alt="" coords="600,116,808,168,807,173,599,121"/>
+<area shape="rect" title=" " alt="" coords="1006,174,1094,199"/>
+<area shape="poly" title=" " alt="" coords="606,114,618,116,724,129,807,135,890,144,995,164,1007,167,1006,172,993,169,889,150,807,141,724,134,618,121,605,119"/>
+<area shape="rect" title=" " alt="" coords="5,255,68,280"/>
+<area shape="poly" title=" " alt="" coords="110,201,61,247,57,243,106,198"/>
+<area shape="rect" title=" " alt="" coords="93,255,149,280"/>
+<area shape="poly" title=" " alt="" coords="123,200,123,241,118,241,118,200"/>
+<area shape="rect" title=" " alt="" coords="173,255,250,280"/>
+<area shape="poly" title=" " alt="" coords="136,197,189,244,186,248,132,202"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="MakeMeshDataVtk_8h__dep__incl.png" border="0" usemap="#aapp_2render_2test_2MakeMeshDataVtk_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2test_2MakeMeshDataVtk_8hdep" id="aapp_2render_2test_2MakeMeshDataVtk_8hdep">
+<area shape="rect" title=" " alt="" coords="327,5,521,45"/>
+<area shape="rect" href="MakeMeshDataVtk_8cpp.html" title=" " alt="" coords="5,93,200,133"/>
+<area shape="poly" title=" " alt="" coords="341,51,174,96,172,91,340,46"/>
+<area shape="rect" href="TestMeshActor_8cpp.html" title=" " alt="" coords="224,93,411,133"/>
+<area shape="poly" title=" " alt="" coords="391,56,343,95,339,91,388,52"/>
+<area shape="rect" href="TestSingleEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="435,93,629,133"/>
+<area shape="poly" title=" " alt="" coords="460,52,510,91,506,95,457,56"/>
+<area shape="rect" href="TestSingleSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="653,93,846,133"/>
+<area shape="poly" title=" " alt="" coords="509,46,679,91,677,96,508,51"/>
+</map>
+</div>
+</div>
+<p><a href="MakeMeshDataVtk_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a0226ae40abc28fdedbda8b0e187c0160" id="r_a0226ae40abc28fdedbda8b0e187c0160"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMeshDataVtk.html">MeshDataVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0226ae40abc28fdedbda8b0e187c0160">MakeMeshDataVtk</a> (std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;vtk_points_, std::vector&lt; unsigned char &gt; &amp;vtk_solid_cell_types_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_cells_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_cells_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_faces_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_faces_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_face_locations_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_face_locations_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_face_cells_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_face_cells_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_edge_cells_)</td></tr>
+<tr class="memitem:aed8d76abe6baf2ea2b33c1d91aa9979c" id="r_aed8d76abe6baf2ea2b33c1d91aa9979c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMeshDataVtk.html">MeshDataVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aed8d76abe6baf2ea2b33c1d91aa9979c">MakeMeshDataVtkFromFile</a> (std::string_view file_path, std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;vtk_points_, std::vector&lt; unsigned char &gt; &amp;vtk_solid_cell_types_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_cells_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_cells_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_faces_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_faces_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_face_locations_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_solid_face_locations_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_face_cells_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_face_cells_offset_, std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;vtk_edge_cells_)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a0226ae40abc28fdedbda8b0e187c0160" name="a0226ae40abc28fdedbda8b0e187c0160"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0226ae40abc28fdedbda8b0e187c0160">&#9670;&#160;</a></span>MakeMeshDataVtk()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> MakeMeshDataVtk </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_points_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; unsigned char &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_cell_types_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_cells_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_cells_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_faces_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_faces_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_face_locations_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_face_locations_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_face_cells_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_face_cells_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_edge_cells_</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aed8d76abe6baf2ea2b33c1d91aa9979c" name="aed8d76abe6baf2ea2b33c1d91aa9979c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed8d76abe6baf2ea2b33c1d91aa9979c">&#9670;&#160;</a></span>MakeMeshDataVtkFromFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> MakeMeshDataVtkFromFile </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view</td>          <td class="paramname"><span class="paramname"><em>file_path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_points_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; unsigned char &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_cell_types_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_cells_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_cells_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_faces_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_faces_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_face_locations_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_solid_face_locations_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_face_cells_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_face_cells_offset_</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vtk_edge_cells_</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

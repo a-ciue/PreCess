@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>core</b></li><li class="navelem"><a href="classcore_1_1TempFile.html">TempFile</a></li>  </ul>
+<li class="navelem"><a href="namespacecore.html">core</a></li><li class="navelem"><a href="classcore_1_1TempFile.html">TempFile</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -90,27 +91,184 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a57ad68e56199b19db361fedf2387a68d" id="r_a57ad68e56199b19db361fedf2387a68d"><td class="memItemLeft" align="right" valign="top"><a id="a57ad68e56199b19db361fedf2387a68d" name="a57ad68e56199b19db361fedf2387a68d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>TempFile</b> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;)=delete</td></tr>
-<tr class="memitem:a08b74ac10dbcf53bea77a26948331a1c" id="r_a08b74ac10dbcf53bea77a26948331a1c"><td class="memItemLeft" align="right" valign="top"><a id="a08b74ac10dbcf53bea77a26948331a1c" name="a08b74ac10dbcf53bea77a26948331a1c"></a>
-<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;)=delete</td></tr>
-<tr class="memitem:a5efe0afae379faef8fb2cb4e07318bc0" id="r_a5efe0afae379faef8fb2cb4e07318bc0"><td class="memItemLeft" align="right" valign="top"><a id="a5efe0afae379faef8fb2cb4e07318bc0" name="a5efe0afae379faef8fb2cb4e07318bc0"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>TempFile</b> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&amp;)=default</td></tr>
-<tr class="memitem:a5d3029682ebd85adb7f0ae682737a8b0" id="r_a5d3029682ebd85adb7f0ae682737a8b0"><td class="memItemLeft" align="right" valign="top"><a id="a5d3029682ebd85adb7f0ae682737a8b0" name="a5d3029682ebd85adb7f0ae682737a8b0"></a>
-<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&amp;)=default</td></tr>
-<tr class="memitem:a2f67d6eb2cfea49222a3f8b2917c3129" id="r_a2f67d6eb2cfea49222a3f8b2917c3129"><td class="memItemLeft" align="right" valign="top"><a id="a2f67d6eb2cfea49222a3f8b2917c3129" name="a2f67d6eb2cfea49222a3f8b2917c3129"></a>
-std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><b>path</b> () const</td></tr>
-<tr class="memdesc:a2f67d6eb2cfea49222a3f8b2917c3129"><td class="mdescLeft">&#160;</td><td class="mdescRight">（废弃）获取临时文件路径，推荐使用stream()代替path() <br /></td></tr>
+<tr class="memitem:ac5781f09d3d645fcfbe8b35dedb01185" id="r_ac5781f09d3d645fcfbe8b35dedb01185"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5781f09d3d645fcfbe8b35dedb01185">~TempFile</a> ()</td></tr>
+<tr class="memitem:a57ad68e56199b19db361fedf2387a68d" id="r_a57ad68e56199b19db361fedf2387a68d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a57ad68e56199b19db361fedf2387a68d">TempFile</a> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;)=delete</td></tr>
+<tr class="memitem:a08b74ac10dbcf53bea77a26948331a1c" id="r_a08b74ac10dbcf53bea77a26948331a1c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08b74ac10dbcf53bea77a26948331a1c">operator=</a> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;)=delete</td></tr>
+<tr class="memitem:a5efe0afae379faef8fb2cb4e07318bc0" id="r_a5efe0afae379faef8fb2cb4e07318bc0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5efe0afae379faef8fb2cb4e07318bc0">TempFile</a> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:a5d3029682ebd85adb7f0ae682737a8b0" id="r_a5d3029682ebd85adb7f0ae682737a8b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5d3029682ebd85adb7f0ae682737a8b0">operator=</a> (<a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&amp;)=default</td></tr>
+<tr class="memitem:a2f67d6eb2cfea49222a3f8b2917c3129" id="r_a2f67d6eb2cfea49222a3f8b2917c3129"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f67d6eb2cfea49222a3f8b2917c3129">path</a> () const</td></tr>
+<tr class="memdesc:a2f67d6eb2cfea49222a3f8b2917c3129"><td class="mdescLeft">&#160;</td><td class="mdescRight">（废弃）获取临时文件路径，推荐使用stream()代替path()  <br /></td></tr>
 <tr class="memitem:a3de00b193204b045c2a30303cedd3f58" id="r_a3de00b193204b045c2a30303cedd3f58"><td class="memItemLeft" align="right" valign="top">std::fstream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3de00b193204b045c2a30303cedd3f58">stream</a> () const</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
-<tr class="memitem:ad7b165d514fabed96df608dab8622fd9" id="r_ad7b165d514fabed96df608dab8622fd9"><td class="memItemLeft" align="right" valign="top"><a id="ad7b165d514fabed96df608dab8622fd9" name="ad7b165d514fabed96df608dab8622fd9"></a>
-static <a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>instance</b> ()</td></tr>
+<tr class="memitem:ad7b165d514fabed96df608dab8622fd9" id="r_ad7b165d514fabed96df608dab8622fd9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7b165d514fabed96df608dab8622fd9">instance</a> ()</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>获取临时文件，单例模式 </p>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ac5781f09d3d645fcfbe8b35dedb01185" name="ac5781f09d3d645fcfbe8b35dedb01185"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5781f09d3d645fcfbe8b35dedb01185">&#9670;&#160;</a></span>~TempFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">core::TempFile::~TempFile </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a57ad68e56199b19db361fedf2387a68d" name="a57ad68e56199b19db361fedf2387a68d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57ad68e56199b19db361fedf2387a68d">&#9670;&#160;</a></span>TempFile() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">core::TempFile::TempFile </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel delete">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5efe0afae379faef8fb2cb4e07318bc0" name="a5efe0afae379faef8fb2cb4e07318bc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5efe0afae379faef8fb2cb4e07318bc0">&#9670;&#160;</a></span>TempFile() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">core::TempFile::TempFile </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ad7b165d514fabed96df608dab8622fd9" name="ad7b165d514fabed96df608dab8622fd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7b165d514fabed96df608dab8622fd9">&#9670;&#160;</a></span>instance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp; core::TempFile::instance </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5d3029682ebd85adb7f0ae682737a8b0" name="a5d3029682ebd85adb7f0ae682737a8b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d3029682ebd85adb7f0ae682737a8b0">&#9670;&#160;</a></span>operator=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp; core::TempFile::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a08b74ac10dbcf53bea77a26948331a1c" name="a08b74ac10dbcf53bea77a26948331a1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08b74ac10dbcf53bea77a26948331a1c">&#9670;&#160;</a></span>operator=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp; core::TempFile::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel delete">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2f67d6eb2cfea49222a3f8b2917c3129" name="a2f67d6eb2cfea49222a3f8b2917c3129"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f67d6eb2cfea49222a3f8b2917c3129">&#9670;&#160;</a></span>path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::filesystem::path core::TempFile::path </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>（废弃）获取临时文件路径，推荐使用stream()代替path() </p>
+
+</div>
+</div>
 <a id="a3de00b193204b045c2a30303cedd3f58" name="a3de00b193204b045c2a30303cedd3f58"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3de00b193204b045c2a30303cedd3f58">&#9670;&#160;</a></span>stream()</h2>
 
@@ -131,7 +289,7 @@ static <a class="el" href="classcore_1_1TempFile.html">TempFile</a> &amp;&#160;<
 </div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>core/<a class="el" href="TempFile_8h_source.html">TempFile.h</a></li>
-<li>core/<b>TempFile.cpp</b></li>
+<li>core/<a class="el" href="TempFile_8cpp.html">TempFile.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

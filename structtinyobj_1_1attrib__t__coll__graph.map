@@ -1,0 +1,13 @@
+<map id="tinyobj::attrib_t" name="tinyobj::attrib_t">
+<area shape="rect" id="Node000001" title=" " alt="" coords="102,533,225,559"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,330,164,355"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,369,82,399,84,436,91,473,107,508,119,521,134,531,132,535,116,525,102,511,86,475,79,436,77,399,79,369"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="188,323,339,363"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="263,377,249,442,235,478,216,511,203,525,188,535,185,531,199,521,212,508,230,476,243,440,257,376"/>
+<area shape="rect" id="Node000004" href="$structtinyobj_1_1skin__weight__t.html" title=" " alt="" coords="181,227,346,252"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="266,266,266,322,261,322,261,266"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="179,116,347,156"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="266,170,266,227,261,227,261,170"/>
+<area shape="rect" id="Node000006" href="$structtinyobj_1_1joint__and__weight__t.html" title=" " alt="" coords="196,5,331,45"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="266,59,266,116,261,116,261,59"/>
+</map>

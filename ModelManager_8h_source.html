@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -83,7 +84,7 @@ $(function() {
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define MODEL_MANAGER_H</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="ModelData_8h.html">ModelData.h</a>&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;ModelOperator.h&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="ModelOperator_8h.html">ModelOperator.h</a>&quot;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
@@ -96,27 +97,31 @@ $(function() {
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">public</span>:</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classModelManager.html#a56b3292aea324ebbc9fed859e99df675">   36</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classModelManager.html#a56b3292aea324ebbc9fed859e99df675">ModelManager</a>(<a class="code hl_class" href="classModelObserver.html">ModelObserver</a>* observer = <span class="keyword">nullptr</span>) :  observer_(observer) {}</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span></div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    Index <a class="code hl_function" href="classModelManager.html#aaee5a122abfa9b77fb6bb63e528937c0">addModel</a>(std::unique_ptr&lt;ModelData&gt; model);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_function" href="classModelManager.html#aaee5a122abfa9b77fb6bb63e528937c0">addModel</a>(std::unique_ptr&lt;ModelData&gt; model);</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span></div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classModelManager.html#a873d8b535632056ab730c0beb8623d13">removeModel</a>(Index model_id);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classModelManager.html#a873d8b535632056ab730c0beb8623d13">removeModel</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id);</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    std::optional&lt;ModelOperator&gt; <a class="code hl_function" href="classModelManager.html#afc719f0a5c8b8d3ffe589a07ea366240">getModelOperator</a>(Index model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    std::optional&lt;ModelOperator&gt; <a class="code hl_function" href="classModelManager.html#afc719f0a5c8b8d3ffe589a07ea366240">getModelOperator</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <a class="code hl_class" href="classModelData.html">ModelData</a>* getModel(Index model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <a class="code hl_class" href="classModelData.html">ModelData</a>* <a class="code hl_function" href="classModelManager.html#a952bf7b251be950972f4b96c06eba9b3">getModel</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="keyword">private</span>:</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    std::unordered_map&lt;Index, std::unique_ptr&lt;ModelData&gt;&gt; models_;</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    Index max_index_{ -1 }; </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> max_index_{ -1 }; </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    ModelObserver* observer_{ <span class="keyword">nullptr</span> };                     </div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keyword">friend</span> <span class="keyword">class </span>QModelQuery;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classModelManager.html#a8068bdef10f16414943fe7feaad34b8f">   71</a></span>    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_friend" href="classModelManager.html#a8068bdef10f16414943fe7feaad34b8f">QModelQuery</a>;</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>};</div>
 </div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="preprocessor">#endif </span><span class="comment">// MODEL_MANAGER_H</span></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:30</div></div>
 <div class="ttc" id="aModelData_8h_html"><div class="ttname"><a href="ModelData_8h.html">ModelData.h</a></div><div class="ttdoc">负责管理和操作网格模型数据的核心类</div></div>
+<div class="ttc" id="aModelOperator_8h_html"><div class="ttname"><a href="ModelOperator_8h.html">ModelOperator.h</a></div></div>
 <div class="ttc" id="aclassModelData_html"><div class="ttname"><a href="classModelData.html">ModelData</a></div><div class="ttdoc">Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数</div><div class="ttdef"><b>定义</b> ModelData.h:33</div></div>
 <div class="ttc" id="aclassModelManager_html_a56b3292aea324ebbc9fed859e99df675"><div class="ttname"><a href="classModelManager.html#a56b3292aea324ebbc9fed859e99df675">ModelManager::ModelManager</a></div><div class="ttdeci">ModelManager(ModelObserver *observer=nullptr)</div><div class="ttdoc">构造 ModelManager 对象</div><div class="ttdef"><b>定义</b> ModelManager.h:36</div></div>
+<div class="ttc" id="aclassModelManager_html_a8068bdef10f16414943fe7feaad34b8f"><div class="ttname"><a href="classModelManager.html#a8068bdef10f16414943fe7feaad34b8f">ModelManager::QModelQuery</a></div><div class="ttdeci">friend class QModelQuery</div><div class="ttdef"><b>定义</b> ModelManager.h:71</div></div>
 <div class="ttc" id="aclassModelManager_html_a873d8b535632056ab730c0beb8623d13"><div class="ttname"><a href="classModelManager.html#a873d8b535632056ab730c0beb8623d13">ModelManager::removeModel</a></div><div class="ttdeci">void removeModel(Index model_id)</div><div class="ttdoc">移除指定名称的模型</div><div class="ttdef"><b>定义</b> ModelManager.cpp:37</div></div>
+<div class="ttc" id="aclassModelManager_html_a952bf7b251be950972f4b96c06eba9b3"><div class="ttname"><a href="classModelManager.html#a952bf7b251be950972f4b96c06eba9b3">ModelManager::getModel</a></div><div class="ttdeci">ModelData * getModel(Index model_id) const</div><div class="ttdef"><b>定义</b> ModelManager.cpp:49</div></div>
 <div class="ttc" id="aclassModelManager_html_aaee5a122abfa9b77fb6bb63e528937c0"><div class="ttname"><a href="classModelManager.html#aaee5a122abfa9b77fb6bb63e528937c0">ModelManager::addModel</a></div><div class="ttdeci">Index addModel(std::unique_ptr&lt; ModelData &gt; model)</div><div class="ttdoc">添加一个模型</div><div class="ttdef"><b>定义</b> ModelManager.cpp:20</div></div>
 <div class="ttc" id="aclassModelManager_html_afc719f0a5c8b8d3ffe589a07ea366240"><div class="ttname"><a href="classModelManager.html#afc719f0a5c8b8d3ffe589a07ea366240">ModelManager::getModelOperator</a></div><div class="ttdeci">std::optional&lt; ModelOperator &gt; getModelOperator(Index model_id) const</div><div class="ttdoc">获取指定模型的操作接口对象</div><div class="ttdef"><b>定义</b> ModelManager.cpp:58</div></div>
 <div class="ttc" id="aclassModelObserver_html"><div class="ttname"><a href="classModelObserver.html">ModelObserver</a></div><div class="ttdef"><b>定义</b> ModelObserver.h:5</div></div>

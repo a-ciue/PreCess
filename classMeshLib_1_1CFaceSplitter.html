@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>MeshLib</b></li><li class="navelem"><a href="classMeshLib_1_1CFaceSplitter.html">CFaceSplitter</a></li>  </ul>
+<li class="navelem"><a href="namespaceMeshLib.html">MeshLib</a></li><li class="navelem"><a href="classMeshLib_1_1CFaceSplitter.html">CFaceSplitter</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -83,37 +84,184 @@ $(function() {
   <div class="headertitle"><div class="title">MeshLib::CFaceSplitter&lt; M &gt; 模板类 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="FaceSplitter_8h_source.html">FaceSplitter.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:ab00b1a56e89ec68e1ebdd191819dbd9a" id="r_ab00b1a56e89ec68e1ebdd191819dbd9a"><td class="memItemLeft" align="right" valign="top"><a id="ab00b1a56e89ec68e1ebdd191819dbd9a" name="ab00b1a56e89ec68e1ebdd191819dbd9a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>CFaceSplitter</b> (M *pMesh)</td></tr>
-<tr class="memitem:af9a84767b6bdf372bcde790f9f6131c7" id="r_af9a84767b6bdf372bcde790f9f6131c7"><td class="memItemLeft" align="right" valign="top"><a id="af9a84767b6bdf372bcde790f9f6131c7" name="af9a84767b6bdf372bcde790f9f6131c7"></a>
-V *&#160;</td><td class="memItemRight" valign="bottom"><b>create_vertex</b> ()</td></tr>
-<tr class="memitem:a9fef0d4ad4b51c392c4903dd8d3bc953" id="r_a9fef0d4ad4b51c392c4903dd8d3bc953"><td class="memItemLeft" align="right" valign="top"><a id="a9fef0d4ad4b51c392c4903dd8d3bc953" name="a9fef0d4ad4b51c392c4903dd8d3bc953"></a>
-V *&#160;</td><td class="memItemRight" valign="bottom"><b>split_edge</b> (H *he)</td></tr>
-<tr class="memitem:ae2829443f5d0ea90fd19ddd3b6f92b61" id="r_ae2829443f5d0ea90fd19ddd3b6f92b61"><td class="memItemLeft" align="right" valign="top"><a id="ae2829443f5d0ea90fd19ddd3b6f92b61" name="ae2829443f5d0ea90fd19ddd3b6f92b61"></a>
-std::pair&lt; H *, F * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>create_edge</b> (V *v0, H *he_inv0, V *v1, H *he_inv1)</td></tr>
+<tr class="memitem:ab00b1a56e89ec68e1ebdd191819dbd9a" id="r_ab00b1a56e89ec68e1ebdd191819dbd9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab00b1a56e89ec68e1ebdd191819dbd9a">CFaceSplitter</a> (M *pMesh)</td></tr>
+<tr class="memitem:a1bc4f78f0ea7802018c64768ff32887c" id="r_a1bc4f78f0ea7802018c64768ff32887c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1bc4f78f0ea7802018c64768ff32887c">~CFaceSplitter</a> ()</td></tr>
+<tr class="memitem:af9a84767b6bdf372bcde790f9f6131c7" id="r_af9a84767b6bdf372bcde790f9f6131c7"><td class="memItemLeft" align="right" valign="top">V *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9a84767b6bdf372bcde790f9f6131c7">create_vertex</a> ()</td></tr>
+<tr class="memitem:a9fef0d4ad4b51c392c4903dd8d3bc953" id="r_a9fef0d4ad4b51c392c4903dd8d3bc953"><td class="memItemLeft" align="right" valign="top">V *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9fef0d4ad4b51c392c4903dd8d3bc953">split_edge</a> (H *he)</td></tr>
+<tr class="memitem:ae2829443f5d0ea90fd19ddd3b6f92b61" id="r_ae2829443f5d0ea90fd19ddd3b6f92b61"><td class="memItemLeft" align="right" valign="top">std::pair&lt; H *, F * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2829443f5d0ea90fd19ddd3b6f92b61">create_edge</a> (V *v0, H *he_inv0, V *v1, H *he_inv1)</td></tr>
 <tr class="memitem:a4d50a3aac8def8ca35ede1318b2b494a" id="r_a4d50a3aac8def8ca35ede1318b2b494a"><td class="memItemLeft" align="right" valign="top">V *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d50a3aac8def8ca35ede1318b2b494a">slice_face</a> (vector&lt; H * &gt; phes_in)</td></tr>
 <tr class="memitem:a0fbee551f15a0a9bb127507073ad3d1d" id="r_a0fbee551f15a0a9bb127507073ad3d1d"><td class="memItemLeft" align="right" valign="top">F *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0fbee551f15a0a9bb127507073ad3d1d">merge_face</a> (H *phe_del)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected 成员函数</h2></td></tr>
-<tr class="memitem:ab86a7a99668cb74fc0a0ad91c1637a8d" id="r_ab86a7a99668cb74fc0a0ad91c1637a8d"><td class="memItemLeft" align="right" valign="top"><a id="ab86a7a99668cb74fc0a0ad91c1637a8d" name="ab86a7a99668cb74fc0a0ad91c1637a8d"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>get_max_vid</b> ()</td></tr>
-<tr class="memitem:a8d38bed10d25a65666140862cc13bce0" id="r_a8d38bed10d25a65666140862cc13bce0"><td class="memItemLeft" align="right" valign="top"><a id="a8d38bed10d25a65666140862cc13bce0" name="a8d38bed10d25a65666140862cc13bce0"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>get_max_fid</b> ()</td></tr>
+<tr class="memitem:ab86a7a99668cb74fc0a0ad91c1637a8d" id="r_ab86a7a99668cb74fc0a0ad91c1637a8d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab86a7a99668cb74fc0a0ad91c1637a8d">get_max_vid</a> ()</td></tr>
+<tr class="memitem:a8d38bed10d25a65666140862cc13bce0" id="r_a8d38bed10d25a65666140862cc13bce0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d38bed10d25a65666140862cc13bce0">get_max_fid</a> ()</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected 属性</h2></td></tr>
-<tr class="memitem:af1c9d2cac6652e275cf5eba33b450eff" id="r_af1c9d2cac6652e275cf5eba33b450eff"><td class="memItemLeft" align="right" valign="top"><a id="af1c9d2cac6652e275cf5eba33b450eff" name="af1c9d2cac6652e275cf5eba33b450eff"></a>
-M *&#160;</td><td class="memItemRight" valign="bottom"><b>m_pMesh</b></td></tr>
-<tr class="memitem:a6ce70f437f87d51f2de8dacb87bd03f8" id="r_a6ce70f437f87d51f2de8dacb87bd03f8"><td class="memItemLeft" align="right" valign="top"><a id="a6ce70f437f87d51f2de8dacb87bd03f8" name="a6ce70f437f87d51f2de8dacb87bd03f8"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>m_maxVid</b> {}</td></tr>
-<tr class="memitem:ac20b1b81e9efd043af0b51532393fc4a" id="r_ac20b1b81e9efd043af0b51532393fc4a"><td class="memItemLeft" align="right" valign="top"><a id="ac20b1b81e9efd043af0b51532393fc4a" name="ac20b1b81e9efd043af0b51532393fc4a"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>m_maxFid</b> {}</td></tr>
+<tr class="memitem:af1c9d2cac6652e275cf5eba33b450eff" id="r_af1c9d2cac6652e275cf5eba33b450eff"><td class="memItemLeft" align="right" valign="top">M *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1c9d2cac6652e275cf5eba33b450eff">m_pMesh</a></td></tr>
+<tr class="memitem:a6ce70f437f87d51f2de8dacb87bd03f8" id="r_a6ce70f437f87d51f2de8dacb87bd03f8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ce70f437f87d51f2de8dacb87bd03f8">m_maxVid</a> {}</td></tr>
+<tr class="memitem:ac20b1b81e9efd043af0b51532393fc4a" id="r_ac20b1b81e9efd043af0b51532393fc4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac20b1b81e9efd043af0b51532393fc4a">m_maxFid</a> {}</td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ab00b1a56e89ec68e1ebdd191819dbd9a" name="ab00b1a56e89ec68e1ebdd191819dbd9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab00b1a56e89ec68e1ebdd191819dbd9a">&#9670;&#160;</a></span>CFaceSplitter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::CFaceSplitter </td>
+          <td>(</td>
+          <td class="paramtype">M *</td>          <td class="paramname"><span class="paramname"><em>pMesh</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1bc4f78f0ea7802018c64768ff32887c" name="a1bc4f78f0ea7802018c64768ff32887c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bc4f78f0ea7802018c64768ff32887c">&#9670;&#160;</a></span>~CFaceSplitter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::~<a class="el" href="classMeshLib_1_1CFaceSplitter.html">CFaceSplitter</a> </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ae2829443f5d0ea90fd19ddd3b6f92b61" name="ae2829443f5d0ea90fd19ddd3b6f92b61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2829443f5d0ea90fd19ddd3b6f92b61">&#9670;&#160;</a></span>create_edge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; typename M::H *, typename M::F * &gt; <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::create_edge </td>
+          <td>(</td>
+          <td class="paramtype">V *</td>          <td class="paramname"><span class="paramname"><em>v0</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">H *</td>          <td class="paramname"><span class="paramname"><em>he_inv0</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">V *</td>          <td class="paramname"><span class="paramname"><em>v1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">H *</td>          <td class="paramname"><span class="paramname"><em>he_inv1</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af9a84767b6bdf372bcde790f9f6131c7" name="af9a84767b6bdf372bcde790f9f6131c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9a84767b6bdf372bcde790f9f6131c7">&#9670;&#160;</a></span>create_vertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">M::V * <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::create_vertex </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8d38bed10d25a65666140862cc13bce0" name="a8d38bed10d25a65666140862cc13bce0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d38bed10d25a65666140862cc13bce0">&#9670;&#160;</a></span>get_max_fid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::get_max_fid </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab86a7a99668cb74fc0a0ad91c1637a8d" name="ab86a7a99668cb74fc0a0ad91c1637a8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab86a7a99668cb74fc0a0ad91c1637a8d">&#9670;&#160;</a></span>get_max_vid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::get_max_vid </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a0fbee551f15a0a9bb127507073ad3d1d" name="a0fbee551f15a0a9bb127507073ad3d1d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0fbee551f15a0a9bb127507073ad3d1d">&#9670;&#160;</a></span>merge_face()</h2>
 
@@ -163,6 +311,98 @@ template&lt;typename M&gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a9fef0d4ad4b51c392c4903dd8d3bc953" name="a9fef0d4ad4b51c392c4903dd8d3bc953"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fef0d4ad4b51c392c4903dd8d3bc953">&#9670;&#160;</a></span>split_edge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">M::V * <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::split_edge </td>
+          <td>(</td>
+          <td class="paramtype">H *</td>          <td class="paramname"><span class="paramname"><em>he</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ac20b1b81e9efd043af0b51532393fc4a" name="ac20b1b81e9efd043af0b51532393fc4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac20b1b81e9efd043af0b51532393fc4a">&#9670;&#160;</a></span>m_maxFid</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::m_maxFid {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ce70f437f87d51f2de8dacb87bd03f8" name="a6ce70f437f87d51f2de8dacb87bd03f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce70f437f87d51f2de8dacb87bd03f8">&#9670;&#160;</a></span>m_maxVid</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::m_maxVid {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af1c9d2cac6652e275cf5eba33b450eff" name="af1c9d2cac6652e275cf5eba33b450eff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1c9d2cac6652e275cf5eba33b450eff">&#9670;&#160;</a></span>m_pMesh</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename M&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">M* <a class="el" href="classMeshLib_1_1CFaceSplitter.html">MeshLib::CFaceSplitter</a>&lt; M &gt;::m_pMesh</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

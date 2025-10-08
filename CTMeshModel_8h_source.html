@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,28 +79,28 @@ $(function() {
   <div class="headertitle"><div class="title">CTMeshModel.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<a href="CTMeshModel_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;filesystem&gt;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="MeshModelBase_8h.html">MeshModelBase.h</a>&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span>MeshLib {</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceMeshLib.html">MeshLib</a> {</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> V, <span class="keyword">typename</span> E, <span class="keyword">typename</span> F, <span class="keyword">typename</span> H&gt;</div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CToolMesh.html">CToolMesh</a>;</div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CToolVertex.html">CToolVertex</a>;</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CToolEdge.html">CToolEdge</a>;</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CToolFace.html">CToolFace</a>;</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <span class="keyword">class </span><a class="code hl_class" href="classMeshLib_1_1CToolHalfEdge.html">CToolHalfEdge</a>;</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">using </span>CTMesh = <a class="code hl_class" href="classMeshLib_1_1CToolMesh.html">CToolMesh&lt;CToolVertex, CToolEdge, CToolFace, CToolHalfEdge&gt;</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">using </span><a class="code hl_typedef" href="namespaceMeshLib.html#a0514f3b539184762ea4dd7065c4d1aa0">CTMesh</a> = <a class="code hl_class" href="classMeshLib_1_1CToolMesh.html">CToolMesh&lt;CToolVertex, CToolEdge, CToolFace, CToolHalfEdge&gt;</a>;</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>}</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span></div>
 <div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classCTMeshModel.html">   21</a></span><span class="keyword">class </span>CTMeshModel : <span class="keyword">public</span> <a class="code hl_class" href="classMeshModelBase.html">MeshModelBase</a> {</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classCTMeshModel.html">   21</a></span><span class="keyword">class </span><a class="code hl_function" href="classCTMeshModel.html#a4446d37120ac292ce091eba65bc7a829">CTMeshModel</a> : <span class="keyword">public</span> <a class="code hl_class" href="classMeshModelBase.html">MeshModelBase</a> {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    CTMeshModel(MeshLib::CTMesh&amp; mesh);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    ~CTMeshModel() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <a class="code hl_function" href="classCTMeshModel.html#a4446d37120ac292ce091eba65bc7a829">CTMeshModel</a>(<a class="code hl_typedef" href="namespaceMeshLib.html#a0514f3b539184762ea4dd7065c4d1aa0">MeshLib::CTMesh</a>&amp; mesh);</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classCTMeshModel.html#ace8d238480daeca5198eaf8a59182cee">   24</a></span>    <a class="code hl_function" href="classCTMeshModel.html#ace8d238480daeca5198eaf8a59182cee">~CTMeshModel</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span></div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classCTMeshModel.html#a76843aeccbbe4fe323eb56d3b83f55d5">update</a>(<a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh_data) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span></div>
@@ -107,11 +108,14 @@ $(function() {
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classCTMeshModel.html#a76843aeccbbe4fe323eb56d3b83f55d5">update</a>(<a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh_data, <span class="keyword">const</span> std::unordered_set&lt;Index&gt;&amp; patch_ids);</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    MeshLib::CTMesh* mesh_;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <a class="code hl_typedef" href="namespaceMeshLib.html#a0514f3b539184762ea4dd7065c4d1aa0">MeshLib::CTMesh</a>* mesh_;</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>};</div>
 </div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
 <div class="ttc" id="aMeshModelBase_8h_html"><div class="ttname"><a href="MeshModelBase_8h.html">MeshModelBase.h</a></div></div>
+<div class="ttc" id="aclassCTMeshModel_html_a4446d37120ac292ce091eba65bc7a829"><div class="ttname"><a href="classCTMeshModel.html#a4446d37120ac292ce091eba65bc7a829">CTMeshModel::CTMeshModel</a></div><div class="ttdeci">CTMeshModel(MeshLib::CTMesh &amp;mesh)</div><div class="ttdef"><b>定义</b> CTMeshModel.cpp:114</div></div>
 <div class="ttc" id="aclassCTMeshModel_html_a76843aeccbbe4fe323eb56d3b83f55d5"><div class="ttname"><a href="classCTMeshModel.html#a76843aeccbbe4fe323eb56d3b83f55d5">CTMeshModel::update</a></div><div class="ttdeci">void update(MeshData &amp;mesh_data) override</div><div class="ttdoc">更新MeshData</div><div class="ttdef"><b>定义</b> CTMeshModel.cpp:7</div></div>
+<div class="ttc" id="aclassCTMeshModel_html_ace8d238480daeca5198eaf8a59182cee"><div class="ttname"><a href="classCTMeshModel.html#ace8d238480daeca5198eaf8a59182cee">CTMeshModel::~CTMeshModel</a></div><div class="ttdeci">~CTMeshModel() override</div></div>
 <div class="ttc" id="aclassCTMeshModel_html_af429aabd76355adc1ea4efa8c0eb1315"><div class="ttname"><a href="classCTMeshModel.html#af429aabd76355adc1ea4efa8c0eb1315">CTMeshModel::updateFrom</a></div><div class="ttdeci">void updateFrom(const MeshData &amp;mesh_data) override</div><div class="ttdoc">从指定的 MeshData 对象更新当前对象的数据。</div><div class="ttdef"><b>定义</b> CTMeshModel.cpp:101</div></div>
 <div class="ttc" id="aclassMeshLib_1_1CToolEdge_html"><div class="ttname"><a href="classMeshLib_1_1CToolEdge.html">MeshLib::CToolEdge</a></div><div class="ttdef"><b>定义</b> ToolMesh.h:86</div></div>
 <div class="ttc" id="aclassMeshLib_1_1CToolFace_html"><div class="ttname"><a href="classMeshLib_1_1CToolFace.html">MeshLib::CToolFace</a></div><div class="ttdef"><b>定义</b> ToolMesh.h:134</div></div>
@@ -119,6 +123,8 @@ $(function() {
 <div class="ttc" id="aclassMeshLib_1_1CToolMesh_html"><div class="ttname"><a href="classMeshLib_1_1CToolMesh.html">MeshLib::CToolMesh</a></div><div class="ttdef"><b>定义</b> ToolMesh.h:206</div></div>
 <div class="ttc" id="aclassMeshLib_1_1CToolVertex_html"><div class="ttname"><a href="classMeshLib_1_1CToolVertex.html">MeshLib::CToolVertex</a></div><div class="ttdef"><b>定义</b> ToolMesh.h:21</div></div>
 <div class="ttc" id="aclassMeshModelBase_html"><div class="ttname"><a href="classMeshModelBase.html">MeshModelBase</a></div><div class="ttdoc">辅助网格数据结构，用于更新核心网格数据结构</div><div class="ttdef"><b>定义</b> MeshModelBase.h:12</div></div>
+<div class="ttc" id="anamespaceMeshLib_html"><div class="ttname"><a href="namespaceMeshLib.html">MeshLib</a></div><div class="ttdef"><b>定义</b> quat.h:18</div></div>
+<div class="ttc" id="anamespaceMeshLib_html_a0514f3b539184762ea4dd7065c4d1aa0"><div class="ttname"><a href="namespaceMeshLib.html#a0514f3b539184762ea4dd7065c4d1aa0">MeshLib::CTMesh</a></div><div class="ttdeci">CToolMesh&lt; CToolVertex, CToolEdge, CToolFace, CToolHalfEdge &gt; CTMesh</div><div class="ttdef"><b>定义</b> ToolMesh.h:244</div></div>
 <div class="ttc" id="astructMeshData_html"><div class="ttname"><a href="structMeshData.html">MeshData</a></div><div class="ttdef"><b>定义</b> MeshData.h:36</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

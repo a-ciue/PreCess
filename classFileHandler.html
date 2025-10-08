@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -88,13 +89,11 @@ $(function() {
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a7f51d0d12133b61b68bb11e384c362e2" id="r_a7f51d0d12133b61b68bb11e384c362e2"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f51d0d12133b61b68bb11e384c362e2">readSpline</a> (const std::filesystem::path &amp;spline_path)</td></tr>
 <tr class="memdesc:a7f51d0d12133b61b68bb11e384c362e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">读取样条文件并生成 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 对象  <br /></td></tr>
-<tr class="memitem:a84ab03a785ec7b3f659985cb4dd7c379" id="r_a84ab03a785ec7b3f659985cb4dd7c379"><td class="memItemLeft" align="right" valign="top"><a id="a84ab03a785ec7b3f659985cb4dd7c379" name="a84ab03a785ec7b3f659985cb4dd7c379"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>writeSpline</b> (<a class="el" href="structSplineData.html">SplineData</a> &amp;spline, const std::filesystem::path &amp;target_path)</td></tr>
+<tr class="memitem:a84ab03a785ec7b3f659985cb4dd7c379" id="r_a84ab03a785ec7b3f659985cb4dd7c379"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84ab03a785ec7b3f659985cb4dd7c379">writeSpline</a> (<a class="el" href="structSplineData.html">SplineData</a> &amp;spline, const std::filesystem::path &amp;target_path)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
-<tr class="memitem:a4c8f1431a8c91df1dd1d99c1642f6373" id="r_a4c8f1431a8c91df1dd1d99c1642f6373"><td class="memItemLeft" align="right" valign="top"><a id="a4c8f1431a8c91df1dd1d99c1642f6373" name="a4c8f1431a8c91df1dd1d99c1642f6373"></a>
-static <a class="el" href="classFileHandler.html">FileHandler</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>instance</b> ()</td></tr>
+<tr class="memitem:a4c8f1431a8c91df1dd1d99c1642f6373" id="r_a4c8f1431a8c91df1dd1d99c1642f6373"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classFileHandler.html">FileHandler</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c8f1431a8c91df1dd1d99c1642f6373">instance</a> ()</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p><a class="el" href="classFileHandler.html" title="FileHandler 单例类">FileHandler</a> 单例类 </p>
@@ -104,6 +103,31 @@ static <a class="el" href="classFileHandler.html">FileHandler</a> &amp;&#160;</t
 <li>将 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 数据写出到文件 </li>
 </ul>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a4c8f1431a8c91df1dd1d99c1642f6373" name="a4c8f1431a8c91df1dd1d99c1642f6373"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c8f1431a8c91df1dd1d99c1642f6373">&#9670;&#160;</a></span>instance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFileHandler.html">FileHandler</a> &amp; FileHandler::instance </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a7f51d0d12133b61b68bb11e384c362e2" name="a7f51d0d12133b61b68bb11e384c362e2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7f51d0d12133b61b68bb11e384c362e2">&#9670;&#160;</a></span>readSpline()</h2>
 
@@ -127,6 +151,27 @@ static <a class="el" href="classFileHandler.html">FileHandler</a> &amp;&#160;</t
   </dd>
 </dl>
 <dl class="section return"><dt>返回</dt><dd>成功时返回 std::unique_ptr&lt;ModelData&gt;，失败返回 nullptr </dd></dl>
+
+</div>
+</div>
+<a id="a84ab03a785ec7b3f659985cb4dd7c379" name="a84ab03a785ec7b3f659985cb4dd7c379"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84ab03a785ec7b3f659985cb4dd7c379">&#9670;&#160;</a></span>writeSpline()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool FileHandler::writeSpline </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structSplineData.html">SplineData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>spline</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>target_path</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

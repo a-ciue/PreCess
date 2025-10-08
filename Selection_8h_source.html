@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,38 +79,51 @@ $(function() {
   <div class="headertitle"><div class="title">Selection.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SELECTION_H</span></div>
+<a href="Selection_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SELECTION_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SELECTION_H</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="foldopen" id="foldopen00006" data-start="{" data-end="};">
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="classElementEnum.html">    6</a></span><span class="keyword">class </span><a class="code hl_class" href="classElementEnum.html">ElementEnum</a> {</div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    <span class="keyword">enum</span> Type</div>
+<div class="foldopen" id="foldopen00008" data-start="{" data-end="};">
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">    8</a></span>    <span class="keyword">enum</span> <a class="code hl_enumeration" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">Type</a></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    {</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>        None,</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>        Solid,</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>        Face,</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>        Edge,</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        Vertex,</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        Block,</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        Group</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a26f8a7af5dafb6cbd3fa3e6e1f627aba">   10</a></span>        <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a26f8a7af5dafb6cbd3fa3e6e1f627aba">None</a>,</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953abe3dee32dd4684c4805a3cc900fbe604">   11</a></span>        <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953abe3dee32dd4684c4805a3cc900fbe604">Solid</a>,</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae">   12</a></span>        <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae">Face</a>,</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a4669b8dac1e7b52db4cc113cbce637fc">   13</a></span>        <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a4669b8dac1e7b52db4cc113cbce637fc">Edge</a>,</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953ad9f13d19ea4f113d465d7934b2c15a85">   14</a></span>        <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953ad9f13d19ea4f113d465d7934b2c15a85">Vertex</a>,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a5541275c42aa12931c0b8d4414da3e4c">   15</a></span>        <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a5541275c42aa12931c0b8d4414da3e4c">Block</a>,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a3444f059d003f4867bd86be7eaaf31f6">   16</a></span>        <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a3444f059d003f4867bd86be7eaaf31f6">Group</a></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    };</div>
+</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>};</div>
 </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span></div>
 <div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structSelection.html">   21</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structSelection.html">Selection</a> {</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structSelection.html#a41cce7a4f240f8b802b798fc94b44835">   23</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="structSelection.html#a41cce7a4f240f8b802b798fc94b44835">ids</a>;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structSelection.html#a8d2afce62173810d77bfde03c46e71d7">   25</a></span>    ElementEnum::Type <a class="code hl_variable" href="structSelection.html#a8d2afce62173810d77bfde03c46e71d7">type</a>;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    Index model_id;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structSelection.html#a8d2afce62173810d77bfde03c46e71d7">   25</a></span>    <a class="code hl_enumeration" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">ElementEnum::Type</a> <a class="code hl_variable" href="structSelection.html#a8d2afce62173810d77bfde03c46e71d7">type</a>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structSelection.html#a46e5b6b79deab047eec9c4ac78e6491d">   26</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structSelection.html#a46e5b6b79deab047eec9c4ac78e6491d">model_id</a>;</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>};</div>
 </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif </span><span class="comment">// SELECTION_H</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:30</div></div>
 <div class="ttc" id="aclassElementEnum_html"><div class="ttname"><a href="classElementEnum.html">ElementEnum</a></div><div class="ttdef"><b>定义</b> Selection.h:6</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">ElementEnum::Type</a></div><div class="ttdeci">Type</div><div class="ttdef"><b>定义</b> Selection.h:9</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a26f8a7af5dafb6cbd3fa3e6e1f627aba"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a26f8a7af5dafb6cbd3fa3e6e1f627aba">ElementEnum::None</a></div><div class="ttdeci">@ None</div><div class="ttdef"><b>定义</b> Selection.h:10</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae">ElementEnum::Face</a></div><div class="ttdeci">@ Face</div><div class="ttdef"><b>定义</b> Selection.h:12</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a3444f059d003f4867bd86be7eaaf31f6"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a3444f059d003f4867bd86be7eaaf31f6">ElementEnum::Group</a></div><div class="ttdeci">@ Group</div><div class="ttdef"><b>定义</b> Selection.h:16</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a4669b8dac1e7b52db4cc113cbce637fc"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a4669b8dac1e7b52db4cc113cbce637fc">ElementEnum::Edge</a></div><div class="ttdeci">@ Edge</div><div class="ttdef"><b>定义</b> Selection.h:13</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a5541275c42aa12931c0b8d4414da3e4c"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a5541275c42aa12931c0b8d4414da3e4c">ElementEnum::Block</a></div><div class="ttdeci">@ Block</div><div class="ttdef"><b>定义</b> Selection.h:15</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953abe3dee32dd4684c4805a3cc900fbe604"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953abe3dee32dd4684c4805a3cc900fbe604">ElementEnum::Solid</a></div><div class="ttdeci">@ Solid</div><div class="ttdef"><b>定义</b> Selection.h:11</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953ad9f13d19ea4f113d465d7934b2c15a85"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953ad9f13d19ea4f113d465d7934b2c15a85">ElementEnum::Vertex</a></div><div class="ttdeci">@ Vertex</div><div class="ttdef"><b>定义</b> Selection.h:14</div></div>
 <div class="ttc" id="astructSelection_html"><div class="ttname"><a href="structSelection.html">Selection</a></div><div class="ttdoc">存储选择的对象</div><div class="ttdef"><b>定义</b> Selection.h:21</div></div>
 <div class="ttc" id="astructSelection_html_a41cce7a4f240f8b802b798fc94b44835"><div class="ttname"><a href="structSelection.html#a41cce7a4f240f8b802b798fc94b44835">Selection::ids</a></div><div class="ttdeci">std::vector&lt; Index &gt; ids</div><div class="ttdoc">选择对象的id序列</div><div class="ttdef"><b>定义</b> Selection.h:23</div></div>
+<div class="ttc" id="astructSelection_html_a46e5b6b79deab047eec9c4ac78e6491d"><div class="ttname"><a href="structSelection.html#a46e5b6b79deab047eec9c4ac78e6491d">Selection::model_id</a></div><div class="ttdeci">Index model_id</div><div class="ttdef"><b>定义</b> Selection.h:26</div></div>
 <div class="ttc" id="astructSelection_html_a8d2afce62173810d77bfde03c46e71d7"><div class="ttname"><a href="structSelection.html#a8d2afce62173810d77bfde03c46e71d7">Selection::type</a></div><div class="ttdeci">ElementEnum::Type type</div><div class="ttdoc">选择对象的类型</div><div class="ttdef"><b>定义</b> Selection.h:25</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

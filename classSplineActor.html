@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -77,27 +78,147 @@ $(function() {
   <div class="headertitle"><div class="title">SplineActor类 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="SplineActor_8h_source.html">SplineActor.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:aa5864f34add1787f591f2fc5cffde8d8" id="r_aa5864f34add1787f591f2fc5cffde8d8"><td class="memItemLeft" align="right" valign="top"><a id="aa5864f34add1787f591f2fc5cffde8d8" name="aa5864f34add1787f591f2fc5cffde8d8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SplineActor</b> (vtkRenderer *renderer, SplineRenderMode render_mode)</td></tr>
-<tr class="memitem:acf5da7178198111a492bd02bed525f22" id="r_acf5da7178198111a492bd02bed525f22"><td class="memItemLeft" align="right" valign="top"><a id="acf5da7178198111a492bd02bed525f22" name="acf5da7178198111a492bd02bed525f22"></a>
-SplineRenderMode&#160;</td><td class="memItemRight" valign="bottom"><b>getSplineRenderMode</b> ()</td></tr>
-<tr class="memitem:a9c8fa6a781fa93da13f38eaed050bac1" id="r_a9c8fa6a781fa93da13f38eaed050bac1"><td class="memItemLeft" align="right" valign="top"><a id="a9c8fa6a781fa93da13f38eaed050bac1" name="a9c8fa6a781fa93da13f38eaed050bac1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>getIsEdgeRender</b> ()</td></tr>
-<tr class="memitem:ad7ee443364bdd4a6a688e4d6025aad3d" id="r_ad7ee443364bdd4a6a688e4d6025aad3d"><td class="memItemLeft" align="right" valign="top"><a id="ad7ee443364bdd4a6a688e4d6025aad3d" name="ad7ee443364bdd4a6a688e4d6025aad3d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>loadShape</b> (const <a class="el" href="structSplineDataVtk.html">SplineDataVtk</a> &amp;spline_data)</td></tr>
-<tr class="memitem:afdc3881f675426cdf8f770f7bdf23fc3" id="r_afdc3881f675426cdf8f770f7bdf23fc3"><td class="memItemLeft" align="right" valign="top"><a id="afdc3881f675426cdf8f770f7bdf23fc3" name="afdc3881f675426cdf8f770f7bdf23fc3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>deleteSplineActor</b> ()</td></tr>
-<tr class="memitem:a108838ac99e2b81b4752bd86f4210cfe" id="r_a108838ac99e2b81b4752bd86f4210cfe"><td class="memItemLeft" align="right" valign="top"><a id="a108838ac99e2b81b4752bd86f4210cfe" name="a108838ac99e2b81b4752bd86f4210cfe"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setVisibility</b> (bool visibility)</td></tr>
-<tr class="memitem:a12ef8ab7456c93a2c15f3b4a14401bf7" id="r_a12ef8ab7456c93a2c15f3b4a14401bf7"><td class="memItemLeft" align="right" valign="top"><a id="a12ef8ab7456c93a2c15f3b4a14401bf7" name="a12ef8ab7456c93a2c15f3b4a14401bf7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setRenderMode</b> (SplineRenderMode render_mode)</td></tr>
+<tr class="memitem:aa5864f34add1787f591f2fc5cffde8d8" id="r_aa5864f34add1787f591f2fc5cffde8d8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5864f34add1787f591f2fc5cffde8d8">SplineActor</a> (vtkRenderer *renderer, <a class="el" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a> render_mode)</td></tr>
+<tr class="memitem:acf5da7178198111a492bd02bed525f22" id="r_acf5da7178198111a492bd02bed525f22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf5da7178198111a492bd02bed525f22">getSplineRenderMode</a> ()</td></tr>
+<tr class="memitem:a9c8fa6a781fa93da13f38eaed050bac1" id="r_a9c8fa6a781fa93da13f38eaed050bac1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9c8fa6a781fa93da13f38eaed050bac1">getIsEdgeRender</a> ()</td></tr>
+<tr class="memitem:ad7ee443364bdd4a6a688e4d6025aad3d" id="r_ad7ee443364bdd4a6a688e4d6025aad3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7ee443364bdd4a6a688e4d6025aad3d">loadShape</a> (const <a class="el" href="structSplineDataVtk.html">SplineDataVtk</a> &amp;spline_data)</td></tr>
+<tr class="memitem:afdc3881f675426cdf8f770f7bdf23fc3" id="r_afdc3881f675426cdf8f770f7bdf23fc3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdc3881f675426cdf8f770f7bdf23fc3">deleteSplineActor</a> ()</td></tr>
+<tr class="memitem:a108838ac99e2b81b4752bd86f4210cfe" id="r_a108838ac99e2b81b4752bd86f4210cfe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a108838ac99e2b81b4752bd86f4210cfe">setVisibility</a> (bool visibility)</td></tr>
+<tr class="memitem:a12ef8ab7456c93a2c15f3b4a14401bf7" id="r_a12ef8ab7456c93a2c15f3b4a14401bf7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12ef8ab7456c93a2c15f3b4a14401bf7">setRenderMode</a> (<a class="el" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a> render_mode)</td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aa5864f34add1787f591f2fc5cffde8d8" name="aa5864f34add1787f591f2fc5cffde8d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5864f34add1787f591f2fc5cffde8d8">&#9670;&#160;</a></span>SplineActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SplineActor::SplineActor </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a></td>          <td class="paramname"><span class="paramname"><em>render_mode</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="afdc3881f675426cdf8f770f7bdf23fc3" name="afdc3881f675426cdf8f770f7bdf23fc3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdc3881f675426cdf8f770f7bdf23fc3">&#9670;&#160;</a></span>deleteSplineActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SplineActor::deleteSplineActor </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9c8fa6a781fa93da13f38eaed050bac1" name="a9c8fa6a781fa93da13f38eaed050bac1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c8fa6a781fa93da13f38eaed050bac1">&#9670;&#160;</a></span>getIsEdgeRender()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool SplineActor::getIsEdgeRender </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acf5da7178198111a492bd02bed525f22" name="acf5da7178198111a492bd02bed525f22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf5da7178198111a492bd02bed525f22">&#9670;&#160;</a></span>getSplineRenderMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a> SplineActor::getSplineRenderMode </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad7ee443364bdd4a6a688e4d6025aad3d" name="ad7ee443364bdd4a6a688e4d6025aad3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7ee443364bdd4a6a688e4d6025aad3d">&#9670;&#160;</a></span>loadShape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SplineActor::loadShape </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structSplineDataVtk.html">SplineDataVtk</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>spline_data</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a12ef8ab7456c93a2c15f3b4a14401bf7" name="a12ef8ab7456c93a2c15f3b4a14401bf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12ef8ab7456c93a2c15f3b4a14401bf7">&#9670;&#160;</a></span>setRenderMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SplineActor::setRenderMode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a></td>          <td class="paramname"><span class="paramname"><em>render_mode</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a108838ac99e2b81b4752bd86f4210cfe" name="a108838ac99e2b81b4752bd86f4210cfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a108838ac99e2b81b4752bd86f4210cfe">&#9670;&#160;</a></span>setVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SplineActor::setVisibility </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visibility</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>app/render/<a class="el" href="SplineActor_8h_source.html">SplineActor.h</a></li>
-<li>app/render/<b>SplineActor.cpp</b></li>
+<li>app/render/<a class="el" href="SplineActor_8cpp.html">SplineActor.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

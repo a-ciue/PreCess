@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -77,6 +78,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a> &#124;
 <a href="#define-members">宏定义</a>  </div>
   <div class="headertitle"><div class="title">BaseMesh.h 文件参考</div></div>
 </div><!--header-->
@@ -93,8 +95,8 @@ $(function() {
 <code>#include &lt;map&gt;</code><br />
 <code>#include &quot;<a class="el" href="Point_8h_source.html">../Geometry/Point.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Point2_8h_source.html">../Geometry/Point2.h</a>&quot;</code><br />
-<code>#include &quot;../Parser/StrUtil.h&quot;</code><br />
-<code>#include &quot;ElemStorage.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="StrUtil_8h_source.html">../Parser/StrUtil.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ElemStorage_8h_source.html">ElemStorage.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 BaseMesh.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
@@ -119,9 +121,9 @@ BaseMesh.h 的引用(Include)关系图:</div>
 <area shape="poly" title=" " alt="" coords="360,43,501,87,500,92,358,48"/>
 <area shape="rect" href="Point2_8h.html" title="Two dimensional point class" alt="" coords="221,93,377,119"/>
 <area shape="poly" title=" " alt="" coords="301,46,301,79,296,79,296,46"/>
-<area shape="rect" href="StrUtil_8h_source.html" title=" " alt="" coords="649,93,780,119"/>
+<area shape="rect" href="StrUtil_8h.html" title=" " alt="" coords="649,93,780,119"/>
 <area shape="poly" title=" " alt="" coords="377,39,641,88,640,93,376,44"/>
-<area shape="rect" href="ElemStorage_8h_source.html" title=" " alt="" coords="859,93,976,119"/>
+<area shape="rect" href="ElemStorage_8h.html" title=" " alt="" coords="859,93,976,119"/>
 <area shape="poly" title=" " alt="" coords="376,33,836,91,845,92,844,97,836,96,376,39"/>
 <area shape="poly" title=" " alt="" coords="517,121,385,165,383,160,515,116"/>
 <area shape="poly" title=" " alt="" coords="501,121,293,169,292,164,500,116"/>
@@ -141,7 +143,7 @@ BaseMesh.h 的引用(Include)关系图:</div>
 <area shape="poly" title=" " alt="" coords="717,119,717,153,712,153,712,119"/>
 <area shape="rect" title=" " alt="" coords="581,240,667,265"/>
 <area shape="poly" title=" " alt="" coords="705,121,667,168,636,229,631,226,663,165,701,117"/>
-<area shape="rect" href="plf__colony_8h_source.html" title=" " alt="" coords="871,167,969,192"/>
+<area shape="rect" href="plf__colony_8h.html" title=" " alt="" coords="871,167,969,192"/>
 <area shape="poly" title=" " alt="" coords="920,119,922,153,916,153,915,119"/>
 <area shape="poly" title=" " alt="" coords="873,195,681,240,679,235,872,189"/>
 <area shape="rect" title=" " alt="" coords="999,240,1068,265"/>
@@ -164,13 +166,15 @@ BaseMesh.h 的引用(Include)关系图:</div>
 <div class="center"><img src="BaseMesh_8h__dep__incl.png" border="0" usemap="#amodel_2data_2MeshLib_2Mesh_2BaseMesh_8hdep" loading="lazy" alt=""/></div>
 <map name="amodel_2data_2MeshLib_2Mesh_2BaseMesh_8hdep" id="amodel_2data_2MeshLib_2Mesh_2BaseMesh_8hdep">
 <area shape="rect" title="Base Mesh Class for all types of Mesh Classes" alt="" coords="5,5,160,45"/>
-<area shape="rect" href="boundary_8h_source.html" title=" " alt="" coords="37,181,192,221"/>
+<area shape="rect" href="boundary_8h.html" title=" " alt="" coords="37,181,192,221"/>
 <area shape="poly" title=" " alt="" coords="91,59,114,181,109,182,86,60"/>
-<area shape="rect" href="ToolMesh_8h_source.html" title=" " alt="" coords="28,269,201,295"/>
+<area shape="rect" href="ToolMesh_8h.html" title=" " alt="" coords="28,269,201,295"/>
 <area shape="poly" title=" " alt="" coords="63,58,42,93,24,134,17,178,20,200,28,220,39,235,53,248,85,267,83,272,50,253,35,239,23,223,15,201,12,178,19,133,37,90,58,55"/>
-<area shape="rect" href="iterators_8h_source.html" title=" " alt="" coords="120,93,275,133"/>
+<area shape="rect" href="iterators_8h.html" title=" " alt="" coords="120,93,275,133"/>
 <area shape="poly" title=" " alt="" coords="121,52,174,91,170,95,117,56"/>
 <area shape="poly" title=" " alt="" coords="117,235,117,269,112,269,112,235"/>
+<area shape="rect" href="CTMeshModel_8cpp.html" title=" " alt="" coords="8,343,221,368"/>
+<area shape="poly" title=" " alt="" coords="117,308,117,343,112,343,112,308"/>
 <area shape="poly" title=" " alt="" coords="171,145,135,183,131,179,167,142"/>
 <area shape="poly" title=" " alt="" coords="211,147,215,184,213,204,206,223,195,239,179,253,147,272,144,267,176,248,191,235,202,220,208,203,210,184,205,147"/>
 </map>
@@ -183,16 +187,34 @@ BaseMesh.h 的引用(Include)关系图:</div>
 <tr class="memitem:MeshLib_3A_3ACBaseMesh_3C_20CVertex_2C_20CEdge_2C_20CFace_2C_20CHalfEdge_20_3E" id="r_MeshLib_3A_3ACBaseMesh_3C_20CVertex_2C_20CEdge_2C_20CFace_2C_20CHalfEdge_20_3E"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshLib_1_1CBaseMesh.html">MeshLib::CBaseMesh&lt; CVertex, CEdge, CFace, CHalfEdge &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classMeshLib_1_1CBaseMesh.html" title="CBaseMesh, base class for all types of mesh classes">CBaseMesh</a>, base class for all types of mesh classes  <a href="classMeshLib_1_1CBaseMesh.html#details">更多...</a><br /></td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:MeshLib" id="r_MeshLib"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceMeshLib.html">MeshLib</a></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 宏定义</h2></td></tr>
-<tr class="memitem:a842ed03f27719bc87666bfd1f75415b8" id="r_a842ed03f27719bc87666bfd1f75415b8"><td class="memItemLeft" align="right" valign="top"><a id="a842ed03f27719bc87666bfd1f75415b8" name="a842ed03f27719bc87666bfd1f75415b8"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_LINE</b>&#160;&#160;&#160;2048</td></tr>
+<tr class="memitem:a842ed03f27719bc87666bfd1f75415b8" id="r_a842ed03f27719bc87666bfd1f75415b8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a842ed03f27719bc87666bfd1f75415b8">MAX_LINE</a>&#160;&#160;&#160;2048</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>Base Mesh Class for all types of Mesh Classes </p>
 <p>This is the fundamental class for meshes </p><dl class="section author"><dt>作者</dt><dd>David Gu </dd></dl>
 <dl class="section date"><dt>日期</dt><dd>10/07/2010 </dd></dl>
-</div></div><!-- contents -->
+</div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">宏定义说明</h2>
+<a id="a842ed03f27719bc87666bfd1f75415b8" name="a842ed03f27719bc87666bfd1f75415b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a842ed03f27719bc87666bfd1f75415b8">&#9670;&#160;</a></span>MAX_LINE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define MAX_LINE&#160;&#160;&#160;2048</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0

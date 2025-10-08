@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,7 +71,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>tinyobj</b></li><li class="navelem"><a href="classtinyobj_1_1MaterialReader.html">MaterialReader</a></li>  </ul>
+<li class="navelem"><a href="namespacetinyobj.html">tinyobj</a></li><li class="navelem"><a href="classtinyobj_1_1MaterialReader.html">MaterialReader</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -81,6 +82,8 @@ $(function() {
   <div class="headertitle"><div class="title">tinyobj::MaterialReader类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="tiny__obj__loader_8h_source.html">tiny_obj_loader.h</a>&gt;</code></p>
 <div class="dynheader">
 类 tinyobj::MaterialReader 继承关系图:</div>
 <div class="dyncontent">
@@ -96,9 +99,108 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a69939bd21d32b4ef6bfc6a6a4b03ada6" id="r_a69939bd21d32b4ef6bfc6a6a4b03ada6"><td class="memItemLeft" align="right" valign="top"><a id="a69939bd21d32b4ef6bfc6a6a4b03ada6" name="a69939bd21d32b4ef6bfc6a6a4b03ada6"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (const std::string &amp;matId, std::vector&lt; <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> &gt; *materials, std::map&lt; std::string, int &gt; *matMap, std::string *warn, std::string *err)=0</td></tr>
+<tr class="memitem:a701bdd6217518e0afb5596fcb59925b6" id="r_a701bdd6217518e0afb5596fcb59925b6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a701bdd6217518e0afb5596fcb59925b6">MaterialReader</a> ()</td></tr>
+<tr class="memitem:afd62ceccd9b373801226e037ea1a5f9f" id="r_afd62ceccd9b373801226e037ea1a5f9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd62ceccd9b373801226e037ea1a5f9f">~MaterialReader</a> ()</td></tr>
+<tr class="memitem:a69939bd21d32b4ef6bfc6a6a4b03ada6" id="r_a69939bd21d32b4ef6bfc6a6a4b03ada6"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69939bd21d32b4ef6bfc6a6a4b03ada6">operator()</a> (const std::string &amp;matId, std::vector&lt; <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> &gt; *materials, std::map&lt; std::string, int &gt; *matMap, std::string *warn, std::string *err)=0</td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a701bdd6217518e0afb5596fcb59925b6" name="a701bdd6217518e0afb5596fcb59925b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a701bdd6217518e0afb5596fcb59925b6">&#9670;&#160;</a></span>MaterialReader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tinyobj::MaterialReader::MaterialReader </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afd62ceccd9b373801226e037ea1a5f9f" name="afd62ceccd9b373801226e037ea1a5f9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd62ceccd9b373801226e037ea1a5f9f">&#9670;&#160;</a></span>~MaterialReader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual tinyobj::MaterialReader::~MaterialReader </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a69939bd21d32b4ef6bfc6a6a4b03ada6" name="a69939bd21d32b4ef6bfc6a6a4b03ada6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69939bd21d32b4ef6bfc6a6a4b03ada6">&#9670;&#160;</a></span>operator()()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool tinyobj::MaterialReader::operator() </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>matId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> &gt; *</td>          <td class="paramname"><span class="paramname"><em>materials</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::map&lt; std::string, int &gt; *</td>          <td class="paramname"><span class="paramname"><em>matMap</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string *</td>          <td class="paramname"><span class="paramname"><em>warn</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string *</td>          <td class="paramname"><span class="paramname"><em>err</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在 <a class="el" href="classtinyobj_1_1MaterialFileReader.html#a83814ef91e8b9ed56cc6aad5f4874d0a">tinyobj::MaterialFileReader</a> , 以及 <a class="el" href="classtinyobj_1_1MaterialStreamReader.html#acab817088be0e68c0e481b05c8810f72">tinyobj::MaterialStreamReader</a> 内被实现.</p>
+
+</div>
+</div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>model/ops/<a class="el" href="tiny__obj__loader_8h_source.html">tiny_obj_loader.h</a></li>
 </ul>

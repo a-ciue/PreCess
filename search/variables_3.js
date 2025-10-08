@@ -1,4 +1,15 @@
 var searchData=
 [
-  ['edge_5fvertices_5f_0',['edge_vertices_',['../structMeshData.html#a136ea84f40ad248a6c07043dda96e81c',1,'MeshData']]]
+  ['data_0',['data',['../structplf_1_1colony_1_1aligned__element__struct.html#af26ade0c27c6c1c4a094acb8dac3b785',1,'plf::colony::aligned_element_struct::data'],['../structplf_1_1colony_1_1aligned__allocation__struct.html#a5b1a11a73bde2f2fd94c6f60d5aff9ce',1,'plf::colony::aligned_allocation_struct::data']]],
+  ['desc_1',['desc',['../structArgType.html#a32e7adae841fd90a1ed5e6fe88522997',1,'ArgType']]],
+  ['description_2',['description',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a3ed2e0827d56f8602e4ecc4c77ea683e',1,'systems::algo::AlgorithmInfo::description'],['../structsystems_1_1io_1_1ModelIOInfo.html#a70823a394fc6bcfa4a601cf093ecb7ba',1,'systems::io::ModelIOInfo::description']]],
+  ['destroyer_3',['destroyer',['../structsystems_1_1HandlerCreatorDestroyer.html#a750e4dad53d4840bd0f3146ee93e4558',1,'systems::HandlerCreatorDestroyer']]],
+  ['diffuse_4',['diffuse',['../structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453',1,'tinyobj::material_t']]],
+  ['diffuse_5ftexname_5',['diffuse_texname',['../structtinyobj_1_1material__t.html#ad7f71a301a261fca07d2e50edccc792d',1,'tinyobj::material_t']]],
+  ['diffuse_5ftexopt_6',['diffuse_texopt',['../structtinyobj_1_1material__t.html#a170412a1e339856e55d5cec406ecc196',1,'tinyobj::material_t']]],
+  ['displacement_5ftexname_7',['displacement_texname',['../structtinyobj_1_1material__t.html#ab69842db3e67cc7d4dcd8bfe02590f92',1,'tinyobj::material_t']]],
+  ['displacement_5ftexopt_8',['displacement_texopt',['../structtinyobj_1_1material__t.html#a6f28d7a04ebb6435c62adb502847f4c3',1,'tinyobj::material_t']]],
+  ['display_5fname_9',['display_name',['../structsystems_1_1algo_1_1AlgorithmInfo.html#adaea0bf3f4106a845ec8b2d4e1f7bf93',1,'systems::algo::AlgorithmInfo::display_name'],['../structsystems_1_1algo_1_1HandlerMetaData.html#a1177cec33025df2ceb4989fad185c871',1,'systems::algo::HandlerMetaData::display_name']]],
+  ['dissolve_10',['dissolve',['../structtinyobj_1_1material__t.html#a61e3561bf67f6faec6ac4f551f9956cb',1,'tinyobj::material_t']]],
+  ['dummy_11',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]]
 ];

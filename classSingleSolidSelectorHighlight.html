@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -77,6 +78,8 @@ $(function() {
   <div class="headertitle"><div class="title">SingleSolidSelectorHighlight类 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="SelectorHighlight_8h_source.html">SelectorHighlight.h</a>&gt;</code></p>
 <div class="dynheader">
 类 SingleSolidSelectorHighlight 继承关系图:</div>
 <div class="dyncontent">
@@ -100,13 +103,11 @@ SingleSolidSelectorHighlight 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:aea38609e7953f0720ea983191eaf8cfd" id="r_aea38609e7953f0720ea983191eaf8cfd"><td class="memItemLeft" align="right" valign="top"><a id="aea38609e7953f0720ea983191eaf8cfd" name="aea38609e7953f0720ea983191eaf8cfd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SingleSolidSelectorHighlight</b> (vtkRenderer *renderer)</td></tr>
-<tr class="memdesc:aea38609e7953f0720ea983191eaf8cfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor绑定到renderer，mapper绑定到actor <br /></td></tr>
-<tr class="memitem:a49beccd3e0f3486d5b6969920b117a21" id="r_a49beccd3e0f3486d5b6969920b117a21"><td class="memItemLeft" align="right" valign="top"><a id="a49beccd3e0f3486d5b6969920b117a21" name="a49beccd3e0f3486d5b6969920b117a21"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>~SingleSolidSelectorHighlight</b> () override</td></tr>
-<tr class="memdesc:a49beccd3e0f3486d5b6969920b117a21"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor从renderer中删除 <br /></td></tr>
-<tr class="memitem:a02d8fc1a678162288ec88574f4986a97" id="r_a02d8fc1a678162288ec88574f4986a97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSelection.html">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02d8fc1a678162288ec88574f4986a97">get</a> () override</td></tr>
+<tr class="memitem:aea38609e7953f0720ea983191eaf8cfd" id="r_aea38609e7953f0720ea983191eaf8cfd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aea38609e7953f0720ea983191eaf8cfd">SingleSolidSelectorHighlight</a> (vtkRenderer *renderer)</td></tr>
+<tr class="memdesc:aea38609e7953f0720ea983191eaf8cfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor绑定到renderer，mapper绑定到actor  <br /></td></tr>
+<tr class="memitem:a49beccd3e0f3486d5b6969920b117a21" id="r_a49beccd3e0f3486d5b6969920b117a21"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a49beccd3e0f3486d5b6969920b117a21">~SingleSolidSelectorHighlight</a> () override</td></tr>
+<tr class="memdesc:a49beccd3e0f3486d5b6969920b117a21"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor从renderer中删除  <br /></td></tr>
+<tr class="memitem:a02d8fc1a678162288ec88574f4986a97" id="r_a02d8fc1a678162288ec88574f4986a97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02d8fc1a678162288ec88574f4986a97">get</a> () override</td></tr>
 <tr class="memdesc:a02d8fc1a678162288ec88574f4986a97"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回当前选择的体  <br /></td></tr>
 <tr class="memitem:a6838f68c25bef6081051218aaf874709" id="r_a6838f68c25bef6081051218aaf874709"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6838f68c25bef6081051218aaf874709">clear</a> () override</td></tr>
 <tr class="memdesc:a6838f68c25bef6081051218aaf874709"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空selection并取消高亮，即清空mapper  <br /></td></tr>
@@ -114,7 +115,56 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:acfc8803e0f86e21e59de3a552ded8a3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">找到坐标下的体元并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()  <br /></td></tr>
 <tr class="memitem:aaf808e9d00b30942e9e821c67cc8116d" id="r_aaf808e9d00b30942e9e821c67cc8116d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf808e9d00b30942e9e821c67cc8116d">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor) override</td></tr>
 <tr class="memdesc:aaf808e9d00b30942e9e821c67cc8116d"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
+<tr class="inherit_header pub_methods_classSelectorHighlight"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classSelectorHighlight')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a></td></tr>
+<tr class="memitem:aeb60a59064e736c2c80f85dd2823ee9f inherit pub_methods_classSelectorHighlight" id="r_aeb60a59064e736c2c80f85dd2823ee9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSelectorHighlight.html#aeb60a59064e736c2c80f85dd2823ee9f">~SelectorHighlight</a> ()=default</td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aea38609e7953f0720ea983191eaf8cfd" name="aea38609e7953f0720ea983191eaf8cfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea38609e7953f0720ea983191eaf8cfd">&#9670;&#160;</a></span>SingleSolidSelectorHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">SingleSolidSelectorHighlight::SingleSolidSelectorHighlight </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>将actor绑定到renderer，mapper绑定到actor </p>
+
+</div>
+</div>
+<a id="a49beccd3e0f3486d5b6969920b117a21" name="a49beccd3e0f3486d5b6969920b117a21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49beccd3e0f3486d5b6969920b117a21">&#9670;&#160;</a></span>~SingleSolidSelectorHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SingleSolidSelectorHighlight::~SingleSolidSelectorHighlight </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将actor从renderer中删除 </p>
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a6838f68c25bef6081051218aaf874709" name="a6838f68c25bef6081051218aaf874709"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6838f68c25bef6081051218aaf874709">&#9670;&#160;</a></span>clear()</h2>
@@ -155,7 +205,7 @@ Public 成员函数</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structSelection.html">SelectionVtk</a> SingleSolidSelectorHighlight::get </td>
+          <td class="memname"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a> SingleSolidSelectorHighlight::get </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -170,7 +220,7 @@ Public 成员函数</h2></td></tr>
 
 <p>返回当前选择的体 </p>
 
-<p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
+<p>实现了 <a class="el" href="classSelectorHighlight.html#a386ff86768e0faea151c2babca4c7d69">SelectorHighlight</a>.</p>
 
 </div>
 </div>
@@ -203,7 +253,7 @@ Public 成员函数</h2></td></tr>
 
 <p>找到坐标下的体元并存储，若选中同一个面需要取消选中。调用Selector::pick_cell() </p>
 
-<p>实现了 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a>.</p>
+<p>实现了 <a class="el" href="classSelectorHighlight.html#a5512ff700657deaa5f27c88045b4dde4">SelectorHighlight</a>.</p>
 
 </div>
 </div>
@@ -244,7 +294,7 @@ Public 成员函数</h2></td></tr>
 </div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>app/render/<a class="el" href="SelectorHighlight_8h_source.html">SelectorHighlight.h</a></li>
-<li>app/render/<b>SingleSolidSelectorHighlight.cpp</b></li>
+<li>app/render/<a class="el" href="SingleSolidSelectorHighlight_8cpp.html">SingleSolidSelectorHighlight.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

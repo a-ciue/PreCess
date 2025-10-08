@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -88,19 +89,17 @@ $(function() {
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a56b3292aea324ebbc9fed859e99df675" id="r_a56b3292aea324ebbc9fed859e99df675"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56b3292aea324ebbc9fed859e99df675">ModelManager</a> (<a class="el" href="classModelObserver.html">ModelObserver</a> *observer=nullptr)</td></tr>
 <tr class="memdesc:a56b3292aea324ebbc9fed859e99df675"><td class="mdescLeft">&#160;</td><td class="mdescRight">构造 <a class="el" href="classModelManager.html" title="负责管理多个 ModelData 实例的类">ModelManager</a> 对象  <br /></td></tr>
-<tr class="memitem:aaee5a122abfa9b77fb6bb63e528937c0" id="r_aaee5a122abfa9b77fb6bb63e528937c0"><td class="memItemLeft" align="right" valign="top">Index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaee5a122abfa9b77fb6bb63e528937c0">addModel</a> (std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt; model)</td></tr>
+<tr class="memitem:aaee5a122abfa9b77fb6bb63e528937c0" id="r_aaee5a122abfa9b77fb6bb63e528937c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaee5a122abfa9b77fb6bb63e528937c0">addModel</a> (std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt; model)</td></tr>
 <tr class="memdesc:aaee5a122abfa9b77fb6bb63e528937c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">添加一个模型  <br /></td></tr>
-<tr class="memitem:a873d8b535632056ab730c0beb8623d13" id="r_a873d8b535632056ab730c0beb8623d13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a873d8b535632056ab730c0beb8623d13">removeModel</a> (Index model_id)</td></tr>
+<tr class="memitem:a873d8b535632056ab730c0beb8623d13" id="r_a873d8b535632056ab730c0beb8623d13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a873d8b535632056ab730c0beb8623d13">removeModel</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)</td></tr>
 <tr class="memdesc:a873d8b535632056ab730c0beb8623d13"><td class="mdescLeft">&#160;</td><td class="mdescRight">移除指定名称的模型  <br /></td></tr>
-<tr class="memitem:afc719f0a5c8b8d3ffe589a07ea366240" id="r_afc719f0a5c8b8d3ffe589a07ea366240"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classModelOperator.html">ModelOperator</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc719f0a5c8b8d3ffe589a07ea366240">getModelOperator</a> (Index model_id) const</td></tr>
+<tr class="memitem:afc719f0a5c8b8d3ffe589a07ea366240" id="r_afc719f0a5c8b8d3ffe589a07ea366240"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classModelOperator.html">ModelOperator</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc719f0a5c8b8d3ffe589a07ea366240">getModelOperator</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
 <tr class="memdesc:afc719f0a5c8b8d3ffe589a07ea366240"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取指定模型的操作接口对象  <br /></td></tr>
-<tr class="memitem:a952bf7b251be950972f4b96c06eba9b3" id="r_a952bf7b251be950972f4b96c06eba9b3"><td class="memItemLeft" align="right" valign="top"><a id="a952bf7b251be950972f4b96c06eba9b3" name="a952bf7b251be950972f4b96c06eba9b3"></a>
-<a class="el" href="classModelData.html">ModelData</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getModel</b> (Index model_id) const</td></tr>
+<tr class="memitem:a952bf7b251be950972f4b96c06eba9b3" id="r_a952bf7b251be950972f4b96c06eba9b3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelData.html">ModelData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a952bf7b251be950972f4b96c06eba9b3">getModel</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
 友元</h2></td></tr>
-<tr class="memitem:a8068bdef10f16414943fe7feaad34b8f" id="r_a8068bdef10f16414943fe7feaad34b8f"><td class="memItemLeft" align="right" valign="top"><a id="a8068bdef10f16414943fe7feaad34b8f" name="a8068bdef10f16414943fe7feaad34b8f"></a>
-class&#160;</td><td class="memItemRight" valign="bottom"><b>QModelQuery</b></td></tr>
+<tr class="memitem:a8068bdef10f16414943fe7feaad34b8f" id="r_a8068bdef10f16414943fe7feaad34b8f"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8068bdef10f16414943fe7feaad34b8f">QModelQuery</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>负责管理多个 <a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 实例的类 </p>
@@ -148,7 +147,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>QModelQuery</b></td>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Index ModelManager::addModel </td>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ModelManager::addModel </td>
           <td>(</td>
           <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>model</em></span></td><td>)</td>
           <td></td>
@@ -167,6 +166,23 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>QModelQuery</b></td>
 
 </div>
 </div>
+<a id="a952bf7b251be950972f4b96c06eba9b3" name="a952bf7b251be950972f4b96c06eba9b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a952bf7b251be950972f4b96c06eba9b3">&#9670;&#160;</a></span>getModel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelData.html">ModelData</a> * ModelManager::getModel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afc719f0a5c8b8d3ffe589a07ea366240" name="afc719f0a5c8b8d3ffe589a07ea366240"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc719f0a5c8b8d3ffe589a07ea366240">&#9670;&#160;</a></span>getModelOperator()</h2>
 
@@ -176,7 +192,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>QModelQuery</b></td>
         <tr>
           <td class="memname">std::optional&lt; <a class="el" href="classModelOperator.html">ModelOperator</a> &gt; ModelManager::getModelOperator </td>
           <td>(</td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -203,7 +219,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>QModelQuery</b></td>
         <tr>
           <td class="memname">void ModelManager::removeModel </td>
           <td>(</td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -216,6 +232,29 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>QModelQuery</b></td>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
+<a id="a8068bdef10f16414943fe7feaad34b8f" name="a8068bdef10f16414943fe7feaad34b8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8068bdef10f16414943fe7feaad34b8f">&#9670;&#160;</a></span>QModelQuery</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classQModelQuery.html">QModelQuery</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,7 +79,7 @@ $(function() {
   <div class="headertitle"><div class="title">ModelIOHandler.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<a href="ModelIOHandler_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#ifndef MODEL_IO_HANDLER_H</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define MODEL_IO_HANDLER_H</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
@@ -95,7 +96,7 @@ $(function() {
 <div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOHandler.html">   21</a></span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1io_1_1ModelIOHandler.html">ModelIOHandler</a> {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classsystems_1_1io_1_1ModelIOHandler.html">~ModelIOHandler</a>() = <span class="keywordflow">default</span>; </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOHandler.html#a63e74b9e431c9d7642e3b19418c9152f">   23</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classsystems_1_1io_1_1ModelIOHandler.html#a63e74b9e431c9d7642e3b19418c9152f">~ModelIOHandler</a>() = <span class="keywordflow">default</span>; </div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOHandler.html#a8b303262e50a73ffbe4e81aed7257eb9">   30</a></span>    <span class="keyword">virtual</span> std::unique_ptr&lt;ModelData&gt; <a class="code hl_function" href="classsystems_1_1io_1_1ModelIOHandler.html#a8b303262e50a73ffbe4e81aed7257eb9">read_model</a>(<span class="keyword">const</span> fs::path&amp; path, <span class="keyword">const</span> std::vector&lt;std::any&gt;&amp; args) = 0;</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOHandler.html#a61d9d32a0e1b4bd4318bb68735844df7">   37</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1io_1_1ModelIOHandler.html#a61d9d32a0e1b4bd4318bb68735844df7">write_model</a>(<span class="keyword">const</span> <a class="code hl_class" href="classModelData.html">ModelData</a>&amp; data, <span class="keyword">const</span> fs::path&amp; path, <span class="keyword">const</span> std::vector&lt;std::any&gt;&amp; args) = 0;</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span></div>
@@ -108,6 +109,7 @@ $(function() {
 <div class="ttc" id="aclassModelData_html"><div class="ttname"><a href="classModelData.html">ModelData</a></div><div class="ttdoc">Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数</div><div class="ttdef"><b>定义</b> ModelData.h:33</div></div>
 <div class="ttc" id="aclasssystems_1_1io_1_1ModelIOHandler_html"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOHandler.html">systems::io::ModelIOHandler</a></div><div class="ttdoc">模型IO系统的功能接口，继承他来实现具体的模型读写功能</div><div class="ttdef"><b>定义</b> ModelIOHandler.h:21</div></div>
 <div class="ttc" id="aclasssystems_1_1io_1_1ModelIOHandler_html_a61d9d32a0e1b4bd4318bb68735844df7"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOHandler.html#a61d9d32a0e1b4bd4318bb68735844df7">systems::io::ModelIOHandler::write_model</a></div><div class="ttdeci">virtual void write_model(const ModelData &amp;data, const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</div><div class="ttdoc">写出模型功能</div></div>
+<div class="ttc" id="aclasssystems_1_1io_1_1ModelIOHandler_html_a63e74b9e431c9d7642e3b19418c9152f"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOHandler.html#a63e74b9e431c9d7642e3b19418c9152f">systems::io::ModelIOHandler::~ModelIOHandler</a></div><div class="ttdeci">virtual ~ModelIOHandler()=default</div></div>
 <div class="ttc" id="aclasssystems_1_1io_1_1ModelIOHandler_html_a8b303262e50a73ffbe4e81aed7257eb9"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOHandler.html#a8b303262e50a73ffbe4e81aed7257eb9">systems::io::ModelIOHandler::read_model</a></div><div class="ttdeci">virtual std::unique_ptr&lt; ModelData &gt; read_model(const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</div><div class="ttdoc">读取模型功能</div></div>
 <div class="ttc" id="aclasssystems_1_1io_1_1ModelIOHandler_html_aa9d5369c662c079d2cfbdfe4c388e371"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOHandler.html#aa9d5369c662c079d2cfbdfe4c388e371">systems::io::ModelIOHandler::read_args_type</a></div><div class="ttdeci">virtual std::vector&lt; ArgType &gt; read_args_type() const =0</div><div class="ttdoc">读取文件参数类型，交给UI使用</div></div>
 <div class="ttc" id="aclasssystems_1_1io_1_1ModelIOHandler_html_ad21421b0503a7607e4d6f85cc47458fc"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOHandler.html#ad21421b0503a7607e4d6f85cc47458fc">systems::io::ModelIOHandler::write_args_type</a></div><div class="ttdeci">virtual std::vector&lt; ArgType &gt; write_args_type() const =0</div><div class="ttdoc">写出文件参数类型，交给UI使用</div></div>

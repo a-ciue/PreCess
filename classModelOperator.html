@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -117,9 +118,11 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a1c75fa2cbef440c82900e6964988ea73"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据给定id找到mesh的edge，进行边分割  <br /></td></tr>
 <tr class="memitem:a9a0f072abfa2b41d5998e397f40e70c7" id="r_a9a0f072abfa2b41d5998e397f40e70c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a0f072abfa2b41d5998e397f40e70c7">merge_blocks</a> (std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; selection)</td></tr>
 <tr class="memdesc:a9a0f072abfa2b41d5998e397f40e70c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">合并给定block，并更新block actor，依赖ModelActor  <br /></td></tr>
-<tr class="memitem:ab7394fb98e1a7aab644affaae9e0a844" id="r_ab7394fb98e1a7aab644affaae9e0a844"><td class="memItemLeft" align="right" valign="top">Index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab7394fb98e1a7aab644affaae9e0a844">getId</a> () const override</td></tr>
+<tr class="memitem:ab7394fb98e1a7aab644affaae9e0a844" id="r_ab7394fb98e1a7aab644affaae9e0a844"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab7394fb98e1a7aab644affaae9e0a844">getId</a> () const override</td></tr>
 <tr class="memdesc:ab7394fb98e1a7aab644affaae9e0a844"><td class="mdescLeft">&#160;</td><td class="mdescRight">合并给定group，并更新group actor，依赖ModelActor  <br /></td></tr>
-<tr class="memitem:a485a4bca4db73fbf63dddc8e8fb38ffe" id="r_a485a4bca4db73fbf63dddc8e8fb38ffe"><td class="memItemLeft" align="right" valign="top">ModelData::Type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a485a4bca4db73fbf63dddc8e8fb38ffe">getType</a> () const override</td></tr>
+<tr class="memitem:a485a4bca4db73fbf63dddc8e8fb38ffe" id="r_a485a4bca4db73fbf63dddc8e8fb38ffe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelData.html#a7e74072e77a8add198a037d63803f9ee">ModelData::Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a485a4bca4db73fbf63dddc8e8fb38ffe">getType</a> () const override</td></tr>
+<tr class="inherit_header pub_methods_classModelOperatorBase"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classModelOperatorBase')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classModelOperatorBase.html">ModelOperatorBase</a></td></tr>
+<tr class="memitem:aefaa0e8863a6debfc27a5765b60473a3 inherit pub_methods_classModelOperatorBase" id="r_aefaa0e8863a6debfc27a5765b60473a3"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModelOperatorBase.html#aefaa0e8863a6debfc27a5765b60473a3">~ModelOperatorBase</a> ()=default</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p><a class="el" href="classModelOperator.html" title="ModelOperator 模型对象基类">ModelOperator</a> 模型对象基类 </p>
@@ -194,7 +197,7 @@ Public 成员函数</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Index ModelOperator::getId </td>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ModelOperator::getId </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -216,7 +219,7 @@ Public 成员函数</h2></td></tr>
 </dl>
 <p>remesh指定group，依赖MeshUtil、update_patches、update_actors </p>
 
-<p>实现了 <a class="el" href="classModelOperatorBase.html">ModelOperatorBase</a>.</p>
+<p>实现了 <a class="el" href="classModelOperatorBase.html#a2cf9e0c8228d346d9e145ea0bf416c3d">ModelOperatorBase</a>.</p>
 
 </div>
 </div>
@@ -230,7 +233,7 @@ Public 成员函数</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ModelData::Type ModelOperator::getType </td>
+          <td class="memname"><a class="el" href="classModelData.html#a7e74072e77a8add198a037d63803f9ee">ModelData::Type</a> ModelOperator::getType </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -243,7 +246,7 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>实现了 <a class="el" href="classModelOperatorBase.html">ModelOperatorBase</a>.</p>
+<p>实现了 <a class="el" href="classModelOperatorBase.html#af0efffbce31667e3720c5e960575140b">ModelOperatorBase</a>.</p>
 
 </div>
 </div>
@@ -347,7 +350,7 @@ Public 成员函数</h2></td></tr>
 </div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>model/data/<a class="el" href="ModelOperator_8h_source.html">ModelOperator.h</a></li>
-<li>model/data/<b>ModelOperator.cpp</b></li>
+<li>model/data/<a class="el" href="ModelOperator_8cpp.html">ModelOperator.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

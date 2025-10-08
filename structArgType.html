@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -82,22 +83,87 @@ $(function() {
  <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="ArgType_8h_source.html">ArgType.h</a>&gt;</code></p>
+<div class="dynheader">
+ArgType 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structArgType__coll__graph.png" border="0" usemap="#aArgType_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aArgType_coll__map" id="aArgType_coll__map">
+<area shape="rect" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="37,231,112,256"/>
+<area shape="rect" title=" " alt="" coords="31,95,118,120"/>
+<area shape="poly" title=" " alt="" coords="77,134,77,231,72,231,72,134"/>
+<area shape="rect" title=" " alt="" coords="5,5,144,45"/>
+<area shape="poly" title=" " alt="" coords="77,59,77,94,72,94,72,59"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
-<tr class="memitem:a87c19e6abb90ef931d1b03f0663332cf" id="r_a87c19e6abb90ef931d1b03f0663332cf"><td class="memItemLeft" align="right" valign="top"><a id="a87c19e6abb90ef931d1b03f0663332cf" name="a87c19e6abb90ef931d1b03f0663332cf"></a>
-ArgTypeEnum&#160;</td><td class="memItemRight" valign="bottom"><b>type</b></td></tr>
-<tr class="memitem:a270557a7067b8483ca25b0b258cffe32" id="r_a270557a7067b8483ca25b0b258cffe32"><td class="memItemLeft" align="right" valign="top"><a id="a270557a7067b8483ca25b0b258cffe32" name="a270557a7067b8483ca25b0b258cffe32"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
-<tr class="memitem:a3a1181cdc136dd6f5f8c4e8b725fd840" id="r_a3a1181cdc136dd6f5f8c4e8b725fd840"><td class="memItemLeft" align="right" valign="top"><a id="a3a1181cdc136dd6f5f8c4e8b725fd840" name="a3a1181cdc136dd6f5f8c4e8b725fd840"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>content</b></td></tr>
-<tr class="memitem:a32e7adae841fd90a1ed5e6fe88522997" id="r_a32e7adae841fd90a1ed5e6fe88522997"><td class="memItemLeft" align="right" valign="top"><a id="a32e7adae841fd90a1ed5e6fe88522997" name="a32e7adae841fd90a1ed5e6fe88522997"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>desc</b></td></tr>
+<tr class="memitem:a87c19e6abb90ef931d1b03f0663332cf" id="r_a87c19e6abb90ef931d1b03f0663332cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ArgTypeEnum_8h.html#a374c959e39e35a98c3c1e86d8805a9b8">ArgTypeEnum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87c19e6abb90ef931d1b03f0663332cf">type</a></td></tr>
+<tr class="memitem:a270557a7067b8483ca25b0b258cffe32" id="r_a270557a7067b8483ca25b0b258cffe32"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a270557a7067b8483ca25b0b258cffe32">name</a></td></tr>
+<tr class="memitem:a3a1181cdc136dd6f5f8c4e8b725fd840" id="r_a3a1181cdc136dd6f5f8c4e8b725fd840"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a1181cdc136dd6f5f8c4e8b725fd840">content</a></td></tr>
+<tr class="memitem:a32e7adae841fd90a1ed5e6fe88522997" id="r_a32e7adae841fd90a1ed5e6fe88522997"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32e7adae841fd90a1ed5e6fe88522997">desc</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件 </p>
 <p>TODO: 参数类型由参数数据类型（int, double, select, choice等），而一种参数类型也可能能用多种控件来实现（如int可以用文本框或滑动条，choice能用dropdown、按钮等），控件类型尽量由UI定义不由集成者定义。即插件开发者只需要做到描述对某个参数的需求，UI根据参数需求来生成对应的控件。可能用std::variant+visit表示控件类型会更好（？）做这个之前学习一下开源软件的思路（blender、unreal engine等） </p>
-</div><hr/>该结构体的文档由以下文件生成:<ul>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a3a1181cdc136dd6f5f8c4e8b725fd840" name="a3a1181cdc136dd6f5f8c4e8b725fd840"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a1181cdc136dd6f5f8c4e8b725fd840">&#9670;&#160;</a></span>content</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ArgType::content</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a32e7adae841fd90a1ed5e6fe88522997" name="a32e7adae841fd90a1ed5e6fe88522997"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32e7adae841fd90a1ed5e6fe88522997">&#9670;&#160;</a></span>desc</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ArgType::desc</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a270557a7067b8483ca25b0b258cffe32" name="a270557a7067b8483ca25b0b258cffe32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a270557a7067b8483ca25b0b258cffe32">&#9670;&#160;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string ArgType::name</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a87c19e6abb90ef931d1b03f0663332cf" name="a87c19e6abb90ef931d1b03f0663332cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87c19e6abb90ef931d1b03f0663332cf">&#9670;&#160;</a></span>type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ArgTypeEnum_8h.html#a374c959e39e35a98c3c1e86d8805a9b8">ArgTypeEnum</a> ArgType::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
 <li>core/<a class="el" href="ArgType_8h_source.html">ArgType.h</a></li>
 </ul>
 </div><!-- contents -->

@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/tiny_obj_loader.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a> &#124;
+<a href="#define-members">宏定义</a> &#124;
+<a href="#typedef-members">类型定义</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">tiny_obj_loader.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;map&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+tiny_obj_loader.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="tiny__obj__loader_8h__incl.png" border="0" usemap="#amodel_2ops_2tiny__obj__loader_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2tiny__obj__loader_8h" id="amodel_2ops_2tiny__obj__loader_8h">
+<area shape="rect" title=" " alt="" coords="36,5,183,45"/>
+<area shape="rect" title=" " alt="" coords="5,93,56,119"/>
+<area shape="poly" title=" " alt="" coords="92,47,54,85,50,82,88,44"/>
+<area shape="rect" title=" " alt="" coords="80,93,139,119"/>
+<area shape="poly" title=" " alt="" coords="112,46,112,79,107,79,107,46"/>
+<area shape="rect" title=" " alt="" coords="163,93,226,119"/>
+<area shape="poly" title=" " alt="" coords="132,44,174,82,170,86,128,48"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="tiny__obj__loader_8h__dep__incl.png" border="0" usemap="#amodel_2ops_2tiny__obj__loader_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2tiny__obj__loader_8hdep" id="amodel_2ops_2tiny__obj__loader_8hdep">
+<area shape="rect" title=" " alt="" coords="28,5,175,45"/>
+<area shape="rect" href="ObjMeshIO_8cpp.html" title=" " alt="" coords="5,93,197,119"/>
+<area shape="poly" title=" " alt="" coords="104,59,104,93,99,93,99,59"/>
+</map>
+</div>
+</div>
+<p><a href="tiny__obj__loader_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:tinyobj_3A_3Atexture_5Foption_5Ft" id="r_tinyobj_3A_3Atexture_5Foption_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1texture__option__t.html">tinyobj::texture_option_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Amaterial_5Ft" id="r_tinyobj_3A_3Amaterial_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1material__t.html">tinyobj::material_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Atag_5Ft" id="r_tinyobj_3A_3Atag_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1tag__t.html">tinyobj::tag_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Ajoint_5Fand_5Fweight_5Ft" id="r_tinyobj_3A_3Ajoint_5Fand_5Fweight_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1joint__and__weight__t.html">tinyobj::joint_and_weight_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Askin_5Fweight_5Ft" id="r_tinyobj_3A_3Askin_5Fweight_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1skin__weight__t.html">tinyobj::skin_weight_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Aindex_5Ft" id="r_tinyobj_3A_3Aindex_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1index__t.html">tinyobj::index_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Amesh_5Ft" id="r_tinyobj_3A_3Amesh_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1mesh__t.html">tinyobj::mesh_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Alines_5Ft" id="r_tinyobj_3A_3Alines_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1lines__t.html">tinyobj::lines_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Apoints_5Ft" id="r_tinyobj_3A_3Apoints_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1points__t.html">tinyobj::points_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Ashape_5Ft" id="r_tinyobj_3A_3Ashape_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1shape__t.html">tinyobj::shape_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Aattrib_5Ft" id="r_tinyobj_3A_3Aattrib_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1attrib__t.html">tinyobj::attrib_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3Acallback_5Ft" id="r_tinyobj_3A_3Acallback_5Ft"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1callback__t.html">tinyobj::callback_t</a></td></tr>
+<tr class="memitem:tinyobj_3A_3AMaterialReader" id="r_tinyobj_3A_3AMaterialReader"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtinyobj_1_1MaterialReader.html">tinyobj::MaterialReader</a></td></tr>
+<tr class="memitem:tinyobj_3A_3AMaterialFileReader" id="r_tinyobj_3A_3AMaterialFileReader"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtinyobj_1_1MaterialFileReader.html">tinyobj::MaterialFileReader</a></td></tr>
+<tr class="memitem:tinyobj_3A_3AMaterialStreamReader" id="r_tinyobj_3A_3AMaterialStreamReader"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtinyobj_1_1MaterialStreamReader.html">tinyobj::MaterialStreamReader</a></td></tr>
+<tr class="memitem:tinyobj_3A_3AObjReaderConfig" id="r_tinyobj_3A_3AObjReaderConfig"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtinyobj_1_1ObjReaderConfig.html">tinyobj::ObjReaderConfig</a></td></tr>
+<tr class="memitem:tinyobj_3A_3AObjReader" id="r_tinyobj_3A_3AObjReader"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtinyobj_1_1ObjReader.html">tinyobj::ObjReader</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:tinyobj" id="r_tinyobj"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetinyobj.html">tinyobj</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:a753f77799f2358606593480b4e83a14f" id="r_a753f77799f2358606593480b4e83a14f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a753f77799f2358606593480b4e83a14f">TINYOBJ_OVERRIDE</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:ad5ca7469ff56bf0d8423120cfd99adce" id="r_ad5ca7469ff56bf0d8423120cfd99adce"><td class="memItemLeft" align="right" valign="top">typedef float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">tinyobj::real_t</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a5c9f207e1f880a48bac0a3b69f16d7f8" id="r_a5c9f207e1f880a48bac0a3b69f16d7f8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8">tinyobj::texture_type_t</a> { <br />
+&#160;&#160;<a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a259804f2e7bf9c39626abe6ebce6edc1">tinyobj::TEXTURE_TYPE_NONE</a>
+, <a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a4e5a6bfb8a95a23bf0cce576aaa5dfa4">tinyobj::TEXTURE_TYPE_SPHERE</a>
+, <a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8acc4c4327df32dce3fa406865a8e35519">tinyobj::TEXTURE_TYPE_CUBE_TOP</a>
+, <a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a20c37be3992ed111ba47045a63351cde">tinyobj::TEXTURE_TYPE_CUBE_BOTTOM</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a1ce5bed3c2ba5c360ca6c2607b9d97ca">tinyobj::TEXTURE_TYPE_CUBE_FRONT</a>
+, <a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8af2cb2d4e7551e713593382c4690aa665">tinyobj::TEXTURE_TYPE_CUBE_BACK</a>
+, <a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a01f908bcfb745ad0d97d84b8cacc6d30">tinyobj::TEXTURE_TYPE_CUBE_LEFT</a>
+, <a class="el" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a7709b5986f04e87ffbdc9bd7280d261c">tinyobj::TEXTURE_TYPE_CUBE_RIGHT</a>
+<br />
+ }</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a9333d068b046d2510a9a1b0a0f918ea3" id="r_a9333d068b046d2510a9a1b0a0f918ea3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">tinyobj::LoadObj</a> (<a class="el" href="structtinyobj_1_1attrib__t.html">attrib_t</a> *attrib, std::vector&lt; <a class="el" href="structtinyobj_1_1shape__t.html">shape_t</a> &gt; *shapes, std::vector&lt; <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> &gt; *materials, std::string *warn, std::string *err, std::istream *inStream, <a class="el" href="classtinyobj_1_1MaterialReader.html">MaterialReader</a> *readMatFn=NULL, bool triangulate=true, bool default_vcols_fallback=true)</td></tr>
+<tr class="memdesc:a9333d068b046d2510a9a1b0a0f918ea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">==&gt;&gt;========= Legacy v1 API =============================================  <br /></td></tr>
+<tr class="memitem:a861cd417f27a4cb95f005a3e1a178f87" id="r_a861cd417f27a4cb95f005a3e1a178f87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetinyobj.html#a861cd417f27a4cb95f005a3e1a178f87">tinyobj::LoadMtl</a> (std::map&lt; std::string, int &gt; *material_map, std::vector&lt; <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> &gt; *materials, std::istream *inStream, std::string *warning, std::string *err)</td></tr>
+<tr class="memdesc:a861cd417f27a4cb95f005a3e1a178f87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads materials into std::map  <br /></td></tr>
+<tr class="memitem:adf1a3ce4c9e43036c62ff81e031a9dab" id="r_adf1a3ce4c9e43036c62ff81e031a9dab"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetinyobj.html#adf1a3ce4c9e43036c62ff81e031a9dab">tinyobj::ParseTextureNameAndOption</a> (std::string *texname, <a class="el" href="structtinyobj_1_1texture__option__t.html">texture_option_t</a> *texopt, const char *linebuf)</td></tr>
+</table>
+<a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">宏定义说明</h2>
+<a id="a753f77799f2358606593480b4e83a14f" name="a753f77799f2358606593480b4e83a14f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a753f77799f2358606593480b4e83a14f">&#9670;&#160;</a></span>TINYOBJ_OVERRIDE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define TINYOBJ_OVERRIDE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

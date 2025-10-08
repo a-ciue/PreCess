@@ -1,5 +1,7 @@
 <map id="model/systems/algo/AlgorithmSystemRegister.h" name="model/systems/algo/AlgorithmSystemRegister.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="13,5,217,45"/>
-<area shape="rect" id="Node000002" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="5,93,224,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,59,117,93,112,93,112,59"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="141,5,345,45"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,101,233,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="206,56,138,103,135,98,203,51"/>
+<area shape="rect" id="Node000003" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="258,93,477,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="284,51,341,91,338,95,281,55"/>
 </map>

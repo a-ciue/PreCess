@@ -1,5 +1,13 @@
 <map id="QRenderWindow::Data" name="QRenderWindow::Data">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,79,173,104"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="47,5,132,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,44,92,79,87,79,87,44"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="649,63,817,88"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="295,5,380,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="394,18,502,28,626,45,690,60,689,65,625,50,501,33,394,24"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="236,55,439,95"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="453,73,649,73,649,78,453,78"/>
+<area shape="rect" id="Node000004" href="$classMeshActorManager.html" title=" " alt="" coords="8,63,156,88"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="170,73,236,73,236,78,170,78"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="233,119,441,159"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="454,126,625,101,688,85,689,91,626,106,455,131"/>
+<area shape="rect" id="Node000006" href="$classSplineActorManager.html" title=" " alt="" coords="5,127,159,152"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="172,137,233,137,233,142,172,142"/>
 </map>

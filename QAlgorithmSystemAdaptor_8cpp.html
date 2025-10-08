@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/systems/algo/QAlgorithmSystemAdaptor.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li><li class="navelem"><a href="dir_58462a8efe102d3098af3bfcc91d6d03.html">systems</a></li><li class="navelem"><a href="dir_ba3c1776c061756c4ef575c1d1e5c95b.html">algo</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">QAlgorithmSystemAdaptor.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="QAlgorithmSystemAdaptor_8h_source.html">QAlgorithmSystemAdaptor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AlgorithmSystem_8h_source.html">AlgorithmSystem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QAlgorithmInfo_8h_source.html">QAlgorithmInfo.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QArgObject_8h_source.html">QArgObject.h</a>&quot;</code><br />
+<code>#include &lt;QVariant&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QAlgorithmSystemAdaptor.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QAlgorithmSystemAdaptor_8cpp__incl.png" border="0" usemap="#aapp_2model_2systems_2algo_2QAlgorithmSystemAdaptor_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2systems_2algo_2QAlgorithmSystemAdaptor_8cpp" id="aapp_2model_2systems_2algo_2QAlgorithmSystemAdaptor_8cpp">
+<area shape="rect" title=" " alt="" coords="782,5,1008,45"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8h.html" title=" " alt="" coords="566,93,773,119"/>
+<area shape="poly" title=" " alt="" coords="842,48,716,91,715,86,840,43"/>
+<area shape="rect" href="AlgorithmSystem_8h.html" title=" " alt="" coords="227,93,374,119"/>
+<area shape="poly" title=" " alt="" coords="782,44,387,96,387,91,781,39"/>
+<area shape="rect" href="QAlgorithmInfo_8h.html" title=" " alt="" coords="880,93,1014,119"/>
+<area shape="poly" title=" " alt="" coords="910,44,934,80,929,83,905,47"/>
+<area shape="rect" href="QArgObject_8h.html" title=" " alt="" coords="805,167,913,192"/>
+<area shape="poly" title=" " alt="" coords="888,46,871,94,862,153,857,152,866,93,883,45"/>
+<area shape="rect" title=" " alt="" coords="1038,93,1117,119"/>
+<area shape="poly" title=" " alt="" coords="940,43,1039,85,1037,90,938,48"/>
+<area shape="rect" title=" " alt="" coords="1141,93,1265,119"/>
+<area shape="poly" title=" " alt="" coords="969,43,1145,87,1144,92,968,48"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="387,167,451,192"/>
+<area shape="poly" title=" " alt="" coords="630,121,465,168,463,163,629,116"/>
+<area shape="rect" title=" " alt="" coords="931,240,1006,265"/>
+<area shape="poly" title=" " alt="" coords="773,109,812,116,852,127,891,143,926,165,950,193,964,225,959,227,945,196,922,169,888,147,850,132,811,121,773,114"/>
+<area shape="rect" title=" " alt="" coords="526,167,781,192"/>
+<area shape="poly" title=" " alt="" coords="669,120,662,154,656,153,664,118"/>
+<area shape="rect" title=" " alt="" coords="36,240,98,265"/>
+<area shape="poly" title=" " alt="" coords="387,190,112,245,111,240,386,185"/>
+<area shape="rect" title=" " alt="" coords="402,240,458,265"/>
+<area shape="poly" title=" " alt="" coords="423,192,428,226,423,227,418,193"/>
+<area shape="rect" title=" " alt="" coords="300,240,378,265"/>
+<area shape="poly" title=" " alt="" coords="408,194,364,233,360,229,404,190"/>
+<area shape="poly" title=" " alt="" coords="321,116,389,157,386,162,318,121"/>
+<area shape="poly" title=" " alt="" coords="227,116,169,123,110,134,60,149,42,158,30,168,25,182,27,198,47,228,43,231,22,199,19,182,26,165,39,154,58,144,109,129,168,118,226,111"/>
+<area shape="poly" title=" " alt="" coords="308,118,325,166,338,226,333,227,320,167,303,120"/>
+<area shape="rect" href="AlgorithmInfo_8h.html" title=" " alt="" coords="40,167,163,192"/>
+<area shape="poly" title=" " alt="" coords="269,121,148,164,146,159,267,116"/>
+<area shape="rect" title=" " alt="" coords="107,313,166,339"/>
+<area shape="poly" title=" " alt="" coords="227,115,166,122,104,133,52,148,32,158,20,168,12,183,8,206,12,234,25,264,39,280,56,293,95,311,92,316,54,298,35,284,21,267,6,235,3,206,7,182,15,165,29,153,50,143,103,128,166,117,226,110"/>
+<area shape="rect" title=" " alt="" coords="609,240,656,265"/>
+<area shape="poly" title=" " alt="" coords="336,116,464,164,598,231,596,236,462,169,334,121"/>
+<area shape="rect" title=" " alt="" coords="188,167,312,192"/>
+<area shape="poly" title=" " alt="" coords="294,121,268,157,264,154,290,117"/>
+<area shape="poly" title=" " alt="" coords="98,194,81,229,76,226,93,191"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="482,240,569,265"/>
+<area shape="poly" title=" " alt="" coords="163,188,469,237,468,243,162,193"/>
+<area shape="poly" title=" " alt="" coords="107,192,133,299,128,301,102,193"/>
+<area shape="poly" title=" " alt="" coords="483,266,470,268,179,320,179,315,469,263,482,260"/>
+<area shape="rect" href="ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="464,313,587,339"/>
+<area shape="poly" title=" " alt="" coords="528,266,528,300,523,300,523,266"/>
+<area shape="poly" title=" " alt="" coords="955,118,964,140,972,166,975,197,974,226,969,226,970,197,967,167,959,141,950,120"/>
+<area shape="poly" title=" " alt="" coords="934,121,886,160,882,156,931,117"/>
+<area shape="rect" title=" " alt="" coords="1039,167,1178,192"/>
+<area shape="poly" title=" " alt="" coords="974,116,1070,159,1068,163,972,121"/>
+<area shape="poly" title=" " alt="" coords="878,190,940,230,937,235,875,194"/>
+<area shape="poly" title=" " alt="" coords="806,195,582,242,581,237,805,189"/>
+<area shape="poly" title=" " alt="" coords="823,195,670,242,668,237,822,189"/>
+<area shape="rect" title=" " alt="" coords="707,240,787,265"/>
+<area shape="poly" title=" " alt="" coords="842,194,778,235,776,230,839,190"/>
+<area shape="rect" title=" " alt="" coords="811,240,907,265"/>
+<area shape="poly" title=" " alt="" coords="862,192,862,226,856,226,856,192"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Aalgo" id="r_systems_3A_3Aalgo"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1algo.html">systems::algo</a></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

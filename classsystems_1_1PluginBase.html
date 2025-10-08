@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -70,12 +71,13 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>systems</b></li><li class="navelem"><a href="classsystems_1_1PluginBase.html">PluginBase</a></li>  </ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="classsystems_1_1PluginBase.html">PluginBase</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#friends">友元</a> &#124;
 <a href="classsystems_1_1PluginBase-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">systems::PluginBase类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
@@ -87,16 +89,70 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="PluginBase_8h_source.html">PluginBase.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a44f4ad98e01466925651525a618c56a2" id="r_a44f4ad98e01466925651525a618c56a2"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44f4ad98e01466925651525a618c56a2">~PluginBase</a> ()=default</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
 友元</h2></td></tr>
-<tr class="memitem:a080036984a644ef55fe4d95a41469479" id="r_a080036984a644ef55fe4d95a41469479"><td class="memTemplParams" colspan="2"><a id="a080036984a644ef55fe4d95a41469479" name="a080036984a644ef55fe4d95a41469479"></a>
-template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a080036984a644ef55fe4d95a41469479 template"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><b>PluginHandler</b></td></tr>
+<tr class="memitem:a080036984a644ef55fe4d95a41469479" id="r_a080036984a644ef55fe4d95a41469479"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:a080036984a644ef55fe4d95a41469479 template"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a080036984a644ef55fe4d95a41469479">PluginHandler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>插件对象基类，定义与插件交互的接口。 </p>
 <p>事实上取代了传统插件交互的extern C函数的接口，以面向对象的方式提供插件功能。 </p>
-</div><hr/>该类的文档由以下文件生成:<ul>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a44f4ad98e01466925651525a618c56a2" name="a44f4ad98e01466925651525a618c56a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44f4ad98e01466925651525a618c56a2">&#9670;&#160;</a></span>~PluginBase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual systems::PluginBase::~PluginBase </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
+<a id="a080036984a644ef55fe4d95a41469479" name="a080036984a644ef55fe4d95a41469479"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a080036984a644ef55fe4d95a41469479">&#9670;&#160;</a></span>PluginHandler</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classsystems_1_1PluginHandler.html">PluginHandler</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
 <li>model/systems/core/<a class="el" href="PluginBase_8h_source.html">PluginBase.h</a></li>
 </ul>
 </div><!-- contents -->

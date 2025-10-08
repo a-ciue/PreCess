@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,11 +79,11 @@ $(function() {
   <div class="headertitle"><div class="title">SplineActor.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SPLINE_ACTOR_H</span></div>
+<a href="SplineActor_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SPLINE_ACTOR_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SPLINE_ACTOR_H</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;MeshActor.h&quot;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;SplineDataVtk.h&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="MeshActor_8h.html">MeshActor.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="SplineDataVtk_8h.html">SplineDataVtk.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
@@ -104,22 +105,22 @@ $(function() {
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
 <div class="foldopen" id="foldopen00026" data-start="{" data-end="};">
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classSplineActor.html">   26</a></span><span class="keyword">class </span>SplineActor {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classSplineActor.html">   26</a></span><span class="keyword">class </span><a class="code hl_function" href="classSplineActor.html#aa5864f34add1787f591f2fc5cffde8d8">SplineActor</a> {</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <a class="code hl_function" href="classSplineActor.html#aa5864f34add1787f591f2fc5cffde8d8">SplineActor</a>(vtkRenderer* renderer, <a class="code hl_enumeration" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a> render_mode);</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    SplineRenderMode getSplineRenderMode();</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordtype">bool</span> getIsEdgeRender();</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <a class="code hl_enumeration" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a> <a class="code hl_function" href="classSplineActor.html#acf5da7178198111a492bd02bed525f22">getSplineRenderMode</a>();</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classSplineActor.html#a9c8fa6a781fa93da13f38eaed050bac1">getIsEdgeRender</a>();</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">void</span> loadShape(<span class="keyword">const</span> <a class="code hl_struct" href="structSplineDataVtk.html">SplineDataVtk</a>&amp; spline_data);</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordtype">void</span> deleteSplineActor();</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSplineActor.html#ad7ee443364bdd4a6a688e4d6025aad3d">loadShape</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structSplineDataVtk.html">SplineDataVtk</a>&amp; spline_data);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSplineActor.html#afdc3881f675426cdf8f770f7bdf23fc3">deleteSplineActor</a>();</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordtype">void</span> setVisibility(<span class="keywordtype">bool</span> visibility);</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keywordtype">void</span> setRenderMode(SplineRenderMode render_mode);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSplineActor.html#a108838ac99e2b81b4752bd86f4210cfe">setVisibility</a>(<span class="keywordtype">bool</span> visibility);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classSplineActor.html#a12ef8ab7456c93a2c15f3b4a14401bf7">setRenderMode</a>(<a class="code hl_enumeration" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a> render_mode);</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    SplineRenderMode render_mode_;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <a class="code hl_enumeration" href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a> render_mode_;</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordtype">bool</span> edge_render;</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">bool</span> visibility_;</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    std::unique_ptr&lt;SplineDataVtk&gt; spline_data_;</div>
@@ -131,6 +132,17 @@ $(function() {
 </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a33d77300705e131c3b875c2242d32daa"><div class="ttname"><a href="Core_8h.html#a33d77300705e131c3b875c2242d32daa">SplineRenderMode</a></div><div class="ttdeci">SplineRenderMode</div><div class="ttdef"><b>定义</b> Core.h:13</div></div>
+<div class="ttc" id="aMeshActor_8h_html"><div class="ttname"><a href="MeshActor_8h.html">MeshActor.h</a></div></div>
+<div class="ttc" id="aSplineDataVtk_8h_html"><div class="ttname"><a href="SplineDataVtk_8h.html">SplineDataVtk.h</a></div></div>
+<div class="ttc" id="aclassSplineActor_html_a108838ac99e2b81b4752bd86f4210cfe"><div class="ttname"><a href="classSplineActor.html#a108838ac99e2b81b4752bd86f4210cfe">SplineActor::setVisibility</a></div><div class="ttdeci">void setVisibility(bool visibility)</div><div class="ttdef"><b>定义</b> SplineActor.cpp:69</div></div>
+<div class="ttc" id="aclassSplineActor_html_a12ef8ab7456c93a2c15f3b4a14401bf7"><div class="ttname"><a href="classSplineActor.html#a12ef8ab7456c93a2c15f3b4a14401bf7">SplineActor::setRenderMode</a></div><div class="ttdeci">void setRenderMode(SplineRenderMode render_mode)</div><div class="ttdef"><b>定义</b> SplineActor.cpp:74</div></div>
+<div class="ttc" id="aclassSplineActor_html_a9c8fa6a781fa93da13f38eaed050bac1"><div class="ttname"><a href="classSplineActor.html#a9c8fa6a781fa93da13f38eaed050bac1">SplineActor::getIsEdgeRender</a></div><div class="ttdeci">bool getIsEdgeRender()</div><div class="ttdef"><b>定义</b> SplineActor.cpp:43</div></div>
+<div class="ttc" id="aclassSplineActor_html_aa5864f34add1787f591f2fc5cffde8d8"><div class="ttname"><a href="classSplineActor.html#aa5864f34add1787f591f2fc5cffde8d8">SplineActor::SplineActor</a></div><div class="ttdeci">SplineActor(vtkRenderer *renderer, SplineRenderMode render_mode)</div><div class="ttdef"><b>定义</b> SplineActor.cpp:32</div></div>
+<div class="ttc" id="aclassSplineActor_html_acf5da7178198111a492bd02bed525f22"><div class="ttname"><a href="classSplineActor.html#acf5da7178198111a492bd02bed525f22">SplineActor::getSplineRenderMode</a></div><div class="ttdeci">SplineRenderMode getSplineRenderMode()</div><div class="ttdef"><b>定义</b> SplineActor.cpp:38</div></div>
+<div class="ttc" id="aclassSplineActor_html_ad7ee443364bdd4a6a688e4d6025aad3d"><div class="ttname"><a href="classSplineActor.html#ad7ee443364bdd4a6a688e4d6025aad3d">SplineActor::loadShape</a></div><div class="ttdeci">void loadShape(const SplineDataVtk &amp;spline_data)</div><div class="ttdef"><b>定义</b> SplineActor.cpp:48</div></div>
+<div class="ttc" id="aclassSplineActor_html_afdc3881f675426cdf8f770f7bdf23fc3"><div class="ttname"><a href="classSplineActor.html#afdc3881f675426cdf8f770f7bdf23fc3">SplineActor::deleteSplineActor</a></div><div class="ttdeci">void deleteSplineActor()</div><div class="ttdef"><b>定义</b> SplineActor.cpp:61</div></div>
 <div class="ttc" id="astructSplineDataVtk_html"><div class="ttname"><a href="structSplineDataVtk.html">SplineDataVtk</a></div><div class="ttdef"><b>定义</b> SplineDataVtk.h:5</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

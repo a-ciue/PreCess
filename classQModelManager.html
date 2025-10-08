@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,6 +79,8 @@ $(function() {
   <div class="headertitle"><div class="title">QModelManager类 参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="QModelManager_8h_source.html">QModelManager.h</a>&gt;</code></p>
 <div class="dynheader">
 类 QModelManager 继承关系图:</div>
 <div class="dyncontent">
@@ -101,37 +104,309 @@ QModelManager 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 信号</h2></td></tr>
-<tr class="memitem:a4df1a149cdd1d42cba7b468b99c41089" id="r_a4df1a149cdd1d42cba7b468b99c41089"><td class="memItemLeft" align="right" valign="top"><a id="a4df1a149cdd1d42cba7b468b99c41089" name="a4df1a149cdd1d42cba7b468b99c41089"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>modelAdded</b> (int id)</td></tr>
-<tr class="memitem:ac8d5dbb5127607227585db82a4469ef5" id="r_ac8d5dbb5127607227585db82a4469ef5"><td class="memItemLeft" align="right" valign="top"><a id="ac8d5dbb5127607227585db82a4469ef5" name="ac8d5dbb5127607227585db82a4469ef5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>modelRemoved</b> (int id)</td></tr>
-<tr class="memitem:a073e458c954a3193ea4232fec014d36a" id="r_a073e458c954a3193ea4232fec014d36a"><td class="memItemLeft" align="right" valign="top"><a id="a073e458c954a3193ea4232fec014d36a" name="a073e458c954a3193ea4232fec014d36a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>modelUpdated</b> (int id)</td></tr>
-<tr class="memitem:add776f215347707e92bad1597421cc0f" id="r_add776f215347707e92bad1597421cc0f"><td class="memItemLeft" align="right" valign="top"><a id="add776f215347707e92bad1597421cc0f" name="add776f215347707e92bad1597421cc0f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>modelNameChanged</b> (int id, const QString &amp;newName)</td></tr>
-<tr class="memitem:a9de85b1bc4da783ab23a970d94dc3f4a" id="r_a9de85b1bc4da783ab23a970d94dc3f4a"><td class="memItemLeft" align="right" valign="top"><a id="a9de85b1bc4da783ab23a970d94dc3f4a" name="a9de85b1bc4da783ab23a970d94dc3f4a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>splineLoadFailed</b> (const QString &amp;message)</td></tr>
+<tr class="memitem:a4df1a149cdd1d42cba7b468b99c41089" id="r_a4df1a149cdd1d42cba7b468b99c41089"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4df1a149cdd1d42cba7b468b99c41089">modelAdded</a> (int id)</td></tr>
+<tr class="memitem:ac8d5dbb5127607227585db82a4469ef5" id="r_ac8d5dbb5127607227585db82a4469ef5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac8d5dbb5127607227585db82a4469ef5">modelRemoved</a> (int id)</td></tr>
+<tr class="memitem:a073e458c954a3193ea4232fec014d36a" id="r_a073e458c954a3193ea4232fec014d36a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a073e458c954a3193ea4232fec014d36a">modelUpdated</a> (int id)</td></tr>
+<tr class="memitem:add776f215347707e92bad1597421cc0f" id="r_add776f215347707e92bad1597421cc0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add776f215347707e92bad1597421cc0f">modelNameChanged</a> (int id, const QString &amp;newName)</td></tr>
+<tr class="memitem:a9de85b1bc4da783ab23a970d94dc3f4a" id="r_a9de85b1bc4da783ab23a970d94dc3f4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9de85b1bc4da783ab23a970d94dc3f4a">splineLoadFailed</a> (const QString &amp;message)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a24e219d7ab3cf11c5f1377d123fcff7c" id="r_a24e219d7ab3cf11c5f1377d123fcff7c"><td class="memItemLeft" align="right" valign="top"><a id="a24e219d7ab3cf11c5f1377d123fcff7c" name="a24e219d7ab3cf11c5f1377d123fcff7c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>QModelManager</b> (QObject *parent=nullptr)</td></tr>
-<tr class="memitem:aa0abd6564fa9cacb196ea84e56a7ce5b" id="r_aa0abd6564fa9cacb196ea84e56a7ce5b"><td class="memItemLeft" align="right" valign="top"><a id="aa0abd6564fa9cacb196ea84e56a7ce5b" name="aa0abd6564fa9cacb196ea84e56a7ce5b"></a>
-Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><b>removeModel</b> (int id)</td></tr>
-<tr class="memitem:a5ba51b79b280332816c43e5e59114370" id="r_a5ba51b79b280332816c43e5e59114370"><td class="memItemLeft" align="right" valign="top"><a id="a5ba51b79b280332816c43e5e59114370" name="a5ba51b79b280332816c43e5e59114370"></a>
-Q_INVOKABLE QObject *&#160;</td><td class="memItemRight" valign="bottom"><b>getOperator</b> (int id)</td></tr>
-<tr class="memitem:a19772e5c05b552dbbdd5742a4090e6b6" id="r_a19772e5c05b552dbbdd5742a4090e6b6"><td class="memItemLeft" align="right" valign="top"><a id="a19772e5c05b552dbbdd5742a4090e6b6" name="a19772e5c05b552dbbdd5742a4090e6b6"></a>
-<a class="el" href="classModelManager.html">ModelManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getModelManager</b> ()</td></tr>
-<tr class="memitem:a5dddaa32704193d7ce2fbe2fb12ee85a" id="r_a5dddaa32704193d7ce2fbe2fb12ee85a"><td class="memItemLeft" align="right" valign="top"><a id="a5dddaa32704193d7ce2fbe2fb12ee85a" name="a5dddaa32704193d7ce2fbe2fb12ee85a"></a>
-<a class="el" href="classQModelObserver.html">QModelObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>getModelObserver</b> ()</td></tr>
-<tr class="memitem:abec8460e33b0b50d336ec45266a038a0" id="r_abec8460e33b0b50d336ec45266a038a0"><td class="memItemLeft" align="right" valign="top"><a id="abec8460e33b0b50d336ec45266a038a0" name="abec8460e33b0b50d336ec45266a038a0"></a>
-<a class="el" href="classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html">systems::algo::QAlgorithmSystemAdaptor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getAlgorithmSystemAdaptor</b> ()</td></tr>
-<tr class="memitem:addaa6ba4c33fa2edf0eb8b12a648bca5" id="r_addaa6ba4c33fa2edf0eb8b12a648bca5"><td class="memItemLeft" align="right" valign="top"><a id="addaa6ba4c33fa2edf0eb8b12a648bca5" name="addaa6ba4c33fa2edf0eb8b12a648bca5"></a>
-<a class="el" href="classsystems_1_1io_1_1QModelIOSystemAdaptor.html">systems::io::QModelIOSystemAdaptor</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getModelIOSystemAdaptor</b> ()</td></tr>
+<tr class="memitem:a24e219d7ab3cf11c5f1377d123fcff7c" id="r_a24e219d7ab3cf11c5f1377d123fcff7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24e219d7ab3cf11c5f1377d123fcff7c">QModelManager</a> (QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a2e272b6cdb445d53a44bca6c7e9871c6" id="r_a2e272b6cdb445d53a44bca6c7e9871c6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e272b6cdb445d53a44bca6c7e9871c6">~QModelManager</a> ()</td></tr>
+<tr class="memitem:aa0abd6564fa9cacb196ea84e56a7ce5b" id="r_aa0abd6564fa9cacb196ea84e56a7ce5b"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0abd6564fa9cacb196ea84e56a7ce5b">removeModel</a> (int id)</td></tr>
+<tr class="memitem:a5ba51b79b280332816c43e5e59114370" id="r_a5ba51b79b280332816c43e5e59114370"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QObject *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ba51b79b280332816c43e5e59114370">getOperator</a> (int id)</td></tr>
+<tr class="memitem:a19772e5c05b552dbbdd5742a4090e6b6" id="r_a19772e5c05b552dbbdd5742a4090e6b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelManager.html">ModelManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19772e5c05b552dbbdd5742a4090e6b6">getModelManager</a> ()</td></tr>
+<tr class="memitem:a5dddaa32704193d7ce2fbe2fb12ee85a" id="r_a5dddaa32704193d7ce2fbe2fb12ee85a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classQModelObserver.html">QModelObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5dddaa32704193d7ce2fbe2fb12ee85a">getModelObserver</a> ()</td></tr>
+<tr class="memitem:abec8460e33b0b50d336ec45266a038a0" id="r_abec8460e33b0b50d336ec45266a038a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html">systems::algo::QAlgorithmSystemAdaptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abec8460e33b0b50d336ec45266a038a0">getAlgorithmSystemAdaptor</a> ()</td></tr>
+<tr class="memitem:addaa6ba4c33fa2edf0eb8b12a648bca5" id="r_addaa6ba4c33fa2edf0eb8b12a648bca5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1io_1_1QModelIOSystemAdaptor.html">systems::io::QModelIOSystemAdaptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addaa6ba4c33fa2edf0eb8b12a648bca5">getModelIOSystemAdaptor</a> ()</td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a24e219d7ab3cf11c5f1377d123fcff7c" name="a24e219d7ab3cf11c5f1377d123fcff7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24e219d7ab3cf11c5f1377d123fcff7c">&#9670;&#160;</a></span>QModelManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QModelManager::QModelManager </td>
+          <td>(</td>
+          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2e272b6cdb445d53a44bca6c7e9871c6" name="a2e272b6cdb445d53a44bca6c7e9871c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e272b6cdb445d53a44bca6c7e9871c6">&#9670;&#160;</a></span>~QModelManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QModelManager::~QModelManager </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="abec8460e33b0b50d336ec45266a038a0" name="abec8460e33b0b50d336ec45266a038a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abec8460e33b0b50d336ec45266a038a0">&#9670;&#160;</a></span>getAlgorithmSystemAdaptor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html">systems::algo::QAlgorithmSystemAdaptor</a> QModelManager::getAlgorithmSystemAdaptor </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="addaa6ba4c33fa2edf0eb8b12a648bca5" name="addaa6ba4c33fa2edf0eb8b12a648bca5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addaa6ba4c33fa2edf0eb8b12a648bca5">&#9670;&#160;</a></span>getModelIOSystemAdaptor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsystems_1_1io_1_1QModelIOSystemAdaptor.html">systems::io::QModelIOSystemAdaptor</a> QModelManager::getModelIOSystemAdaptor </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a19772e5c05b552dbbdd5742a4090e6b6" name="a19772e5c05b552dbbdd5742a4090e6b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19772e5c05b552dbbdd5742a4090e6b6">&#9670;&#160;</a></span>getModelManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelManager.html">ModelManager</a> * QModelManager::getModelManager </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5dddaa32704193d7ce2fbe2fb12ee85a" name="a5dddaa32704193d7ce2fbe2fb12ee85a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dddaa32704193d7ce2fbe2fb12ee85a">&#9670;&#160;</a></span>getModelObserver()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classQModelObserver.html">QModelObserver</a> * QModelManager::getModelObserver </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5ba51b79b280332816c43e5e59114370" name="a5ba51b79b280332816c43e5e59114370"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ba51b79b280332816c43e5e59114370">&#9670;&#160;</a></span>getOperator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QObject * QModelManager::getOperator </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4df1a149cdd1d42cba7b468b99c41089" name="a4df1a149cdd1d42cba7b468b99c41089"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4df1a149cdd1d42cba7b468b99c41089">&#9670;&#160;</a></span>modelAdded</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelManager::modelAdded </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="add776f215347707e92bad1597421cc0f" name="add776f215347707e92bad1597421cc0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add776f215347707e92bad1597421cc0f">&#9670;&#160;</a></span>modelNameChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelManager::modelNameChanged </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>newName</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac8d5dbb5127607227585db82a4469ef5" name="ac8d5dbb5127607227585db82a4469ef5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8d5dbb5127607227585db82a4469ef5">&#9670;&#160;</a></span>modelRemoved</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelManager::modelRemoved </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a073e458c954a3193ea4232fec014d36a" name="a073e458c954a3193ea4232fec014d36a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a073e458c954a3193ea4232fec014d36a">&#9670;&#160;</a></span>modelUpdated</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelManager::modelUpdated </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa0abd6564fa9cacb196ea84e56a7ce5b" name="aa0abd6564fa9cacb196ea84e56a7ce5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0abd6564fa9cacb196ea84e56a7ce5b">&#9670;&#160;</a></span>removeModel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelManager::removeModel </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9de85b1bc4da783ab23a970d94dc3f4a" name="a9de85b1bc4da783ab23a970d94dc3f4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9de85b1bc4da783ab23a970d94dc3f4a">&#9670;&#160;</a></span>splineLoadFailed</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QModelManager::splineLoadFailed </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>app/model/<a class="el" href="QModelManager_8h_source.html">QModelManager.h</a></li>
-<li>app/model/<b>QModelManager.cpp</b></li>
+<li>app/model/<a class="el" href="QModelManager_8cpp.html">QModelManager.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

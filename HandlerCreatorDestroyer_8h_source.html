@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,12 +79,12 @@ $(function() {
   <div class="headertitle"><div class="title">HandlerCreatorDestroyer.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SYSTEMS_HANDLER_CREATOR_DESTROYER</span></div>
+<a href="HandlerCreatorDestroyer_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SYSTEMS_HANDLER_CREATOR_DESTROYER</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SYSTEMS_HANDLER_CREATOR_DESTROYER</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;any&gt;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">namespace </span>systems {</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems.html">systems</a> {</div>
 <div class="foldopen" id="foldopen00012" data-start="{" data-end="};">
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="structsystems_1_1HandlerCreatorDestroyer.html">   12</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1HandlerCreatorDestroyer.html">HandlerCreatorDestroyer</a> {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structsystems_1_1HandlerCreatorDestroyer.html#a63af688dc5eb5f15d02d2222216502e4">   18</a></span>    std::function&lt;std::any()&gt; <a class="code hl_variable" href="structsystems_1_1HandlerCreatorDestroyer.html#a63af688dc5eb5f15d02d2222216502e4">creator</a>;  <span class="comment">// NOLINT(cppcoreguidelines-avoid-const-or-ref-data-members)</span></div>
@@ -93,6 +94,7 @@ $(function() {
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>}</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#endif </span><span class="comment">// SYSTEMS_HANDLER_CREATOR_DESTROYER</span></div>
+<div class="ttc" id="anamespacesystems_html"><div class="ttname"><a href="namespacesystems.html">systems</a></div><div class="ttdef"><b>定义</b> QModelManager.h:9</div></div>
 <div class="ttc" id="astructsystems_1_1HandlerCreatorDestroyer_html"><div class="ttname"><a href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a></div><div class="ttdoc">处理器的创建与删除函数，用于构造与析构插件来的处理器</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyer.h:12</div></div>
 <div class="ttc" id="astructsystems_1_1HandlerCreatorDestroyer_html_a63af688dc5eb5f15d02d2222216502e4"><div class="ttname"><a href="structsystems_1_1HandlerCreatorDestroyer.html#a63af688dc5eb5f15d02d2222216502e4">systems::HandlerCreatorDestroyer::creator</a></div><div class="ttdeci">std::function&lt; std::any()&gt; creator</div><div class="ttdoc">从插件构造处理器对象并返回基类指针。</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyer.h:18</div></div>
 <div class="ttc" id="astructsystems_1_1HandlerCreatorDestroyer_html_a750e4dad53d4840bd0f3146ee93e4558"><div class="ttname"><a href="structsystems_1_1HandlerCreatorDestroyer.html#a750e4dad53d4840bd0f3146ee93e4558">systems::HandlerCreatorDestroyer::destroyer</a></div><div class="ttdeci">std::function&lt; void(std::any)&gt; destroyer</div><div class="ttdoc">析构从creator获取的处理器对象。</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyer.h:25</div></div>

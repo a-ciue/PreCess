@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/MeshActorSelectOp.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">MeshActorSelectOp.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;optional&gt;</code><br />
+<code>#include &lt;vtkProp.h&gt;</code><br />
+<code>#include &lt;vtkExtractSelection.h&gt;</code><br />
+<code>#include &lt;vtkIdTypeArray.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+MeshActorSelectOp.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="MeshActorSelectOp_8h__incl.png" border="0" usemap="#aapp_2render_2MeshActorSelectOp_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2MeshActorSelectOp_8h" id="aapp_2render_2MeshActorSelectOp_8h">
+<area shape="rect" title=" " alt="" coords="131,5,365,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,83,104"/>
+<area shape="poly" title=" " alt="" coords="216,33,91,77,89,72,214,28"/>
+<area shape="rect" title=" " alt="" coords="107,79,181,104"/>
+<area shape="poly" title=" " alt="" coords="233,33,174,73,171,68,230,28"/>
+<area shape="rect" title=" " alt="" coords="206,79,290,104"/>
+<area shape="poly" title=" " alt="" coords="251,31,251,65,245,65,245,31"/>
+<area shape="rect" title=" " alt="" coords="314,79,475,104"/>
+<area shape="poly" title=" " alt="" coords="273,28,360,70,357,75,270,33"/>
+<area shape="rect" title=" " alt="" coords="500,79,631,104"/>
+<area shape="poly" title=" " alt="" coords="300,28,502,73,500,78,298,33"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="MeshActorSelectOp_8h__dep__incl.png" border="0" usemap="#aapp_2render_2MeshActorSelectOp_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2MeshActorSelectOp_8hdep" id="aapp_2render_2MeshActorSelectOp_8hdep">
+<area shape="rect" title=" " alt="" coords="441,5,675,31"/>
+<area shape="rect" href="MeshActorSelectOp_8cpp.html" title=" " alt="" coords="265,79,470,119"/>
+<area shape="poly" title=" " alt="" coords="519,38,414,81,412,76,517,33"/>
+<area shape="rect" href="SelectManager_8h.html" title=" " alt="" coords="209,174,413,199"/>
+<area shape="poly" title=" " alt="" coords="548,44,521,83,484,121,454,140,422,155,361,176,359,171,420,150,451,135,480,117,517,79,543,41"/>
+<area shape="rect" href="SelectorHighlight_8cpp.html" title=" " alt="" coords="438,174,673,199"/>
+<area shape="poly" title=" " alt="" coords="560,44,558,174,553,174,555,44"/>
+<area shape="rect" href="SelectorHighlight_8h.html" title=" " alt="" coords="600,86,820,111"/>
+<area shape="poly" title=" " alt="" coords="594,35,689,83,686,88,591,39"/>
+<area shape="rect" href="SingleSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="1183,167,1405,207"/>
+<area shape="poly" title=" " alt="" coords="626,31,833,76,1215,164,1214,169,832,81,624,36"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="233,262,464,287"/>
+<area shape="poly" title=" " alt="" coords="324,211,346,260,341,263,319,213"/>
+<area shape="rect" href="QRenderWindowStyle_8cpp.html" title=" " alt="" coords="5,255,209,295"/>
+<area shape="poly" title=" " alt="" coords="273,207,153,257,151,252,270,202"/>
+<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="563,262,782,287"/>
+<area shape="poly" title=" " alt="" coords="373,200,625,259,624,265,372,205"/>
+<area shape="poly" title=" " alt="" coords="644,117,365,177,364,171,643,112"/>
+<area shape="poly" title=" " alt="" coords="707,125,678,262,673,261,702,124"/>
+<area shape="poly" title=" " alt="" coords="679,120,578,176,575,171,676,116"/>
+<area shape="poly" title=" " alt="" coords="804,111,1172,164,1183,166,1183,171,1171,169,803,116"/>
+<area shape="rect" href="TestSingleEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="748,167,941,207"/>
+<area shape="poly" title=" " alt="" coords="741,117,816,164,814,169,738,121"/>
+<area shape="rect" href="TestSingleSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="965,167,1159,207"/>
+<area shape="poly" title=" " alt="" coords="771,112,985,164,984,169,770,117"/>
+</map>
+</div>
+</div>
+<p><a href="MeshActorSelectOp_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:MeshActorSelectOpFactory" id="r_MeshActorSelectOpFactory"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象  <a href="classMeshActorSelectOpFactory.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:MeshActorSelectOp" id="r_MeshActorSelectOp"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActorSelectOp.html">MeshActorSelectOp</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">MeshActor在选择过程中的操作类，作为临时对象使用  <a href="classMeshActorSelectOp.html#details">更多...</a><br /></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

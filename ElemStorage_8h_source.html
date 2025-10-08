@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,29 +79,40 @@ $(function() {
   <div class="headertitle"><div class="title">ElemStorage.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;plf_colony.h&quot;</span></div>
+<a href="ElemStorage_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#include &quot;<a class="code" href="plf__colony_8h.html">plf_colony.h</a>&quot;</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="keyword">namespace </span>MeshLib {</div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceMeshLib.html">MeshLib</a> {</div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> CElement&gt;</div>
 <div class="foldopen" id="foldopen00006" data-start="{" data-end="};">
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="classMeshLib_1_1ElemStorage.html">    6</a></span><span class="keyword">class </span>ElemStorage : <span class="keyword">public</span> <a class="code hl_class" href="classplf_1_1colony.html">plf::colony</a>&lt;CElement&gt; {</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="classMeshLib_1_1ElemStorage.html">    6</a></span><span class="keyword">class </span><a class="code hl_function" href="classMeshLib_1_1ElemStorage.html#ae695bef0097cae9dd85b7150344788d4">ElemStorage</a> : <span class="keyword">public</span> <a class="code hl_class" href="classplf_1_1colony.html">plf::colony</a>&lt;CElement&gt; {</div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    <span class="keyword">using </span>Base = <a class="code hl_class" href="classplf_1_1colony.html">plf::colony&lt;CElement&gt;</a>;</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="classMeshLib_1_1ElemStorage.html#abf11bf14564e3d2e5f0f42203c5b42ae">    8</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classMeshLib_1_1ElemStorage.html#abf11bf14564e3d2e5f0f42203c5b42ae">Base</a> = <a class="code hl_class" href="classplf_1_1colony.html">plf::colony&lt;CElement&gt;</a>;</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    ElemStorage() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    ~ElemStorage() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    CElement* allocate() { <span class="keywordflow">return</span> &amp;*(Base::emplace()); }</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordtype">void</span> deallocate(CElement* e)</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classMeshLib_1_1ElemStorage.html#ae695bef0097cae9dd85b7150344788d4">   10</a></span>    <a class="code hl_function" href="classMeshLib_1_1ElemStorage.html#ae695bef0097cae9dd85b7150344788d4">ElemStorage</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classMeshLib_1_1ElemStorage.html#ab3bca0177ad79215d4cafbe61bce3c14">   11</a></span>    <a class="code hl_function" href="classMeshLib_1_1ElemStorage.html#ab3bca0177ad79215d4cafbe61bce3c14">~ElemStorage</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classMeshLib_1_1ElemStorage.html#aa4d717dd2e043e805ce23808123a9448">   12</a></span>    CElement* <a class="code hl_function" href="classMeshLib_1_1ElemStorage.html#aa4d717dd2e043e805ce23808123a9448">allocate</a>() { <span class="keywordflow">return</span> &amp;*(Base::emplace()); }</div>
+<div class="foldopen" id="foldopen00013" data-start="{" data-end="}">
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classMeshLib_1_1ElemStorage.html#af1c1d180827a7dd08c1b7f9e61eba24d">   13</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshLib_1_1ElemStorage.html#af1c1d180827a7dd08c1b7f9e61eba24d">deallocate</a>(CElement* e)</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    {</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        <span class="keywordflow">if</span> (!e)</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>            <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        Base::erase(Base::get_iterator(e));</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        <a class="code hl_function" href="classplf_1_1colony.html#aba1bb9f0f366dc1b72dfcd204b976417">Base::erase</a>(<a class="code hl_function" href="classplf_1_1colony.html#a556656bc3d512bbceb2721097977534b">Base::get_iterator</a>(e));</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    }</div>
+</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>};</div>
 </div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
+<div class="ttc" id="aclassMeshLib_1_1ElemStorage_html_aa4d717dd2e043e805ce23808123a9448"><div class="ttname"><a href="classMeshLib_1_1ElemStorage.html#aa4d717dd2e043e805ce23808123a9448">MeshLib::ElemStorage::allocate</a></div><div class="ttdeci">CElement * allocate()</div><div class="ttdef"><b>定义</b> ElemStorage.h:12</div></div>
+<div class="ttc" id="aclassMeshLib_1_1ElemStorage_html_ab3bca0177ad79215d4cafbe61bce3c14"><div class="ttname"><a href="classMeshLib_1_1ElemStorage.html#ab3bca0177ad79215d4cafbe61bce3c14">MeshLib::ElemStorage::~ElemStorage</a></div><div class="ttdeci">~ElemStorage()=default</div></div>
+<div class="ttc" id="aclassMeshLib_1_1ElemStorage_html_abf11bf14564e3d2e5f0f42203c5b42ae"><div class="ttname"><a href="classMeshLib_1_1ElemStorage.html#abf11bf14564e3d2e5f0f42203c5b42ae">MeshLib::ElemStorage::Base</a></div><div class="ttdeci">plf::colony&lt; CElement &gt; Base</div><div class="ttdef"><b>定义</b> ElemStorage.h:8</div></div>
+<div class="ttc" id="aclassMeshLib_1_1ElemStorage_html_ae695bef0097cae9dd85b7150344788d4"><div class="ttname"><a href="classMeshLib_1_1ElemStorage.html#ae695bef0097cae9dd85b7150344788d4">MeshLib::ElemStorage::ElemStorage</a></div><div class="ttdeci">ElemStorage()=default</div></div>
+<div class="ttc" id="aclassMeshLib_1_1ElemStorage_html_af1c1d180827a7dd08c1b7f9e61eba24d"><div class="ttname"><a href="classMeshLib_1_1ElemStorage.html#af1c1d180827a7dd08c1b7f9e61eba24d">MeshLib::ElemStorage::deallocate</a></div><div class="ttdeci">void deallocate(CElement *e)</div><div class="ttdef"><b>定义</b> ElemStorage.h:13</div></div>
 <div class="ttc" id="aclassplf_1_1colony_html"><div class="ttname"><a href="classplf_1_1colony.html">plf::colony</a></div><div class="ttdef"><b>定义</b> plf_colony.h:377</div></div>
+<div class="ttc" id="aclassplf_1_1colony_html_a556656bc3d512bbceb2721097977534b"><div class="ttname"><a href="classplf_1_1colony.html#a556656bc3d512bbceb2721097977534b">plf::colony&lt; CElement &gt;::get_iterator</a></div><div class="ttdeci">iterator get_iterator(const pointer element_pointer) PLF_NOEXCEPT</div><div class="ttdef"><b>定义</b> plf_colony.h:3964</div></div>
+<div class="ttc" id="aclassplf_1_1colony_html_aba1bb9f0f366dc1b72dfcd204b976417"><div class="ttname"><a href="classplf_1_1colony.html#aba1bb9f0f366dc1b72dfcd204b976417">plf::colony&lt; CElement &gt;::erase</a></div><div class="ttdeci">iterator erase(const const_iterator it)</div><div class="ttdef"><b>定义</b> plf_colony.h:2431</div></div>
+<div class="ttc" id="anamespaceMeshLib_html"><div class="ttname"><a href="namespaceMeshLib.html">MeshLib</a></div><div class="ttdef"><b>定义</b> quat.h:18</div></div>
+<div class="ttc" id="aplf__colony_8h_html"><div class="ttname"><a href="plf__colony_8h.html">plf_colony.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

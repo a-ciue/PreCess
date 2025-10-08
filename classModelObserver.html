@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -77,6 +78,8 @@ $(function() {
   <div class="headertitle"><div class="title">ModelObserver类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="ModelObserver_8h_source.html">ModelObserver.h</a>&gt;</code></p>
 <div class="dynheader">
 类 ModelObserver 继承关系图:</div>
 <div class="dyncontent">
@@ -90,17 +93,44 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:af70f9df2aca91d6cca529f6e628df87d" id="r_af70f9df2aca91d6cca529f6e628df87d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af70f9df2aca91d6cca529f6e628df87d">notifyModelChanged</a> (Index model_id)=0</td></tr>
+<tr class="memitem:ab87bc0098d28fb53f4d2d38f8a2e991e" id="r_ab87bc0098d28fb53f4d2d38f8a2e991e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab87bc0098d28fb53f4d2d38f8a2e991e">~ModelObserver</a> ()=default</td></tr>
+<tr class="memitem:af70f9df2aca91d6cca529f6e628df87d" id="r_af70f9df2aca91d6cca529f6e628df87d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af70f9df2aca91d6cca529f6e628df87d">notifyModelChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)=0</td></tr>
 <tr class="memdesc:af70f9df2aca91d6cca529f6e628df87d"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型数据变更的通知函数  <br /></td></tr>
-<tr class="memitem:a90a2ab815ca62393d808bb457063756f" id="r_a90a2ab815ca62393d808bb457063756f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90a2ab815ca62393d808bb457063756f">notifyModelAdded</a> (Index model_id)=0</td></tr>
+<tr class="memitem:a90a2ab815ca62393d808bb457063756f" id="r_a90a2ab815ca62393d808bb457063756f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90a2ab815ca62393d808bb457063756f">notifyModelAdded</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)=0</td></tr>
 <tr class="memdesc:a90a2ab815ca62393d808bb457063756f"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被添加的通知函数  <br /></td></tr>
-<tr class="memitem:adaa628f9822c6c8250117917d8a52d4e" id="r_adaa628f9822c6c8250117917d8a52d4e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adaa628f9822c6c8250117917d8a52d4e">notifyModelRemoved</a> (Index model_id)=0</td></tr>
+<tr class="memitem:adaa628f9822c6c8250117917d8a52d4e" id="r_adaa628f9822c6c8250117917d8a52d4e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adaa628f9822c6c8250117917d8a52d4e">notifyModelRemoved</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)=0</td></tr>
 <tr class="memdesc:adaa628f9822c6c8250117917d8a52d4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被移除的通知函数  <br /></td></tr>
-<tr class="memitem:a50ab34f21b3d15aa55e765b86a4c365c" id="r_a50ab34f21b3d15aa55e765b86a4c365c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a50ab34f21b3d15aa55e765b86a4c365c">notifyModelNameChanged</a> (Index model_id, const std::string &amp;new_name)=0</td></tr>
+<tr class="memitem:a50ab34f21b3d15aa55e765b86a4c365c" id="r_a50ab34f21b3d15aa55e765b86a4c365c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a50ab34f21b3d15aa55e765b86a4c365c">notifyModelNameChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, const std::string &amp;new_name)=0</td></tr>
 <tr class="memdesc:a50ab34f21b3d15aa55e765b86a4c365c"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型名称变更的通知函数  <br /></td></tr>
 <tr class="memitem:ad8fc1c4c007dbcf380b3c7dda606b4be" id="r_ad8fc1c4c007dbcf380b3c7dda606b4be"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8fc1c4c007dbcf380b3c7dda606b4be">notifySplineLoadFailed</a> (const std::string &amp;message)=0</td></tr>
 <tr class="memdesc:ad8fc1c4c007dbcf380b3c7dda606b4be"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收样条曲线加载失败的通知函数  <br /></td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ab87bc0098d28fb53f4d2d38f8a2e991e" name="ab87bc0098d28fb53f4d2d38f8a2e991e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab87bc0098d28fb53f4d2d38f8a2e991e">&#9670;&#160;</a></span>~ModelObserver()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual ModelObserver::~ModelObserver </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a90a2ab815ca62393d808bb457063756f" name="a90a2ab815ca62393d808bb457063756f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a90a2ab815ca62393d808bb457063756f">&#9670;&#160;</a></span>notifyModelAdded()</h2>
@@ -114,7 +144,7 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="memname">virtual void ModelObserver::notifyModelAdded </td>
           <td>(</td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -150,7 +180,7 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="memname">virtual void ModelObserver::notifyModelChanged </td>
           <td>(</td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -186,7 +216,7 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="memname">virtual void ModelObserver::notifyModelNameChanged </td>
           <td>(</td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -227,7 +257,7 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="memname">virtual void ModelObserver::notifyModelRemoved </td>
           <td>(</td>
-          <td class="paramtype">Index</td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>

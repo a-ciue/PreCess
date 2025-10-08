@@ -1,5 +1,13 @@
 <map id="tinyobj::material_t" name="tinyobj::material_t">
-<area shape="rect" id="Node000001" title=" " alt="" coords="25,301,168,327"/>
-<area shape="rect" id="Node000002" href="$structtinyobj_1_1texture__option__t.html" title=" " alt="" coords="5,5,188,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,44,99,301,94,301,94,44"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="235,704,377,729"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="263,95,349,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="249,115,197,124,140,141,85,170,62,189,43,212,25,241,14,268,9,293,9,318,20,370,43,432,66,480,96,524,130,566,167,603,237,663,290,702,286,706,234,668,163,607,126,569,92,528,62,482,38,434,15,372,3,318,4,292,9,266,21,239,38,209,59,185,83,166,138,136,196,119,248,110"/>
+<area shape="rect" id="Node000004" href="$structtinyobj_1_1texture__option__t.html" title=" " alt="" coords="215,309,397,335"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="309,134,309,309,303,309,303,134"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="422,302,585,342"/>
+<area shape="poly" id="edge6_Node000005_Node000002" title=" " alt="" coords="360,123,392,142,429,181,459,225,498,300,493,303,455,228,425,184,388,146,357,127"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="237,5,375,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="309,59,309,94,303,94,303,59"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="309,349,309,704,303,704,303,349"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="513,355,521,422,522,509,516,556,504,601,486,644,459,682,446,691,426,698,378,709,377,704,425,693,443,686,455,678,481,641,499,599,511,555,516,509,516,423,507,356"/>
 </map>

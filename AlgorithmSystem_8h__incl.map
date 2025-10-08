@@ -1,12 +1,12 @@
 <map id="model/systems/algo/AlgorithmSystem.h" name="model/systems/algo/AlgorithmSystem.h">
 <area shape="rect" id="Node000001" title=" " alt="" coords="224,5,379,45"/>
-<area shape="rect" id="Node000002" href="$AlgorithmInfo_8h_source.html" title=" " alt="" coords="72,93,195,119"/>
+<area shape="rect" id="Node000002" href="$AlgorithmInfo_8h.html" title=" " alt="" coords="72,93,195,119"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="262,48,172,90,169,85,260,43"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="5,240,64,265"/>
 <area shape="poly" id="edge13_Node000001_Node000004" title=" " alt="" coords="224,30,182,36,138,47,97,67,62,95,44,126,35,161,32,196,34,226,28,226,27,196,29,160,39,124,58,92,94,62,136,42,181,31,223,25"/>
 <area shape="rect" id="Node000006" title=" " alt="" coords="201,167,263,192"/>
 <area shape="poly" id="edge15_Node000001_Node000006" title=" " alt="" coords="289,47,260,94,240,154,235,152,255,92,284,44"/>
-<area shape="rect" id="Node000007" href="$Core_8h_source.html" title=" " alt="" coords="269,93,333,119"/>
+<area shape="rect" id="Node000007" href="$Core_8h.html" title=" " alt="" coords="269,93,333,119"/>
 <area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="304,46,304,79,299,79,299,46"/>
 <area shape="rect" id="Node000009" title=" " alt="" coords="368,167,445,192"/>
 <area shape="poly" id="edge12_Node000001_Node000009" title=" " alt="" coords="317,44,393,154,388,157,312,47"/>

@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -78,10 +79,10 @@ $(function() {
   <div class="headertitle"><div class="title">ModelIOSystemBase.h</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SYSTEMS_IO_MODEL_IO_SYSTEM_BASE_H</span></div>
+<a href="ModelIOSystemBase_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef SYSTEMS_IO_MODEL_IO_SYSTEM_BASE_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define SYSTEMS_IO_MODEL_IO_SYSTEM_BASE_H</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;Core.h&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;filesystem&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;any&gt;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
@@ -89,15 +90,20 @@ $(function() {
 <div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOSystemBase.html">   17</a></span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1io_1_1ModelIOSystemBase.html">ModelIOSystemBase</a> {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classsystems_1_1io_1_1ModelIOSystemBase.html">~ModelIOSystemBase</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> read(<span class="keyword">const</span> std::filesystem::path&amp; path, <span class="keyword">const</span> std::string&amp; file_type, <span class="keyword">const</span> std::vector&lt;std::any&gt;&amp; args) = 0;</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> write(Index model, <span class="keyword">const</span> std::filesystem::path&amp; path, <span class="keyword">const</span> std::string&amp; file_type, <span class="keyword">const</span> std::vector&lt;std::any&gt;&amp; args) = 0;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOSystemBase.html#a89357f22e8f2dc07e321d0b60bcd453f">   19</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classsystems_1_1io_1_1ModelIOSystemBase.html#a89357f22e8f2dc07e321d0b60bcd453f">~ModelIOSystemBase</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOSystemBase.html#ac26b111ed67730d4413819798755e7aa">   20</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1io_1_1ModelIOSystemBase.html#ac26b111ed67730d4413819798755e7aa">read</a>(<span class="keyword">const</span> std::filesystem::path&amp; path, <span class="keyword">const</span> std::string&amp; file_type, <span class="keyword">const</span> std::vector&lt;std::any&gt;&amp; args) = 0;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classsystems_1_1io_1_1ModelIOSystemBase.html#a40d8053366f094fb91c09f868b62683e">   21</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1io_1_1ModelIOSystemBase.html#a40d8053366f094fb91c09f868b62683e">write</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model, <span class="keyword">const</span> std::filesystem::path&amp; path, <span class="keyword">const</span> std::string&amp; file_type, <span class="keyword">const</span> std::vector&lt;std::any&gt;&amp; args) = 0;</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>};</div>
 </div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>}</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:30</div></div>
 <div class="ttc" id="aclasssystems_1_1io_1_1ModelIOSystemBase_html"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOSystemBase.html">systems::io::ModelIOSystemBase</a></div><div class="ttdoc">ModelIOSystem接口基类，出于插件开发而设计的接口基类。</div><div class="ttdef"><b>定义</b> ModelIOSystemBase.h:17</div></div>
+<div class="ttc" id="aclasssystems_1_1io_1_1ModelIOSystemBase_html_a40d8053366f094fb91c09f868b62683e"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOSystemBase.html#a40d8053366f094fb91c09f868b62683e">systems::io::ModelIOSystemBase::write</a></div><div class="ttdeci">virtual void write(Index model, const std::filesystem::path &amp;path, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</div></div>
+<div class="ttc" id="aclasssystems_1_1io_1_1ModelIOSystemBase_html_a89357f22e8f2dc07e321d0b60bcd453f"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOSystemBase.html#a89357f22e8f2dc07e321d0b60bcd453f">systems::io::ModelIOSystemBase::~ModelIOSystemBase</a></div><div class="ttdeci">virtual ~ModelIOSystemBase()=default</div></div>
+<div class="ttc" id="aclasssystems_1_1io_1_1ModelIOSystemBase_html_ac26b111ed67730d4413819798755e7aa"><div class="ttname"><a href="classsystems_1_1io_1_1ModelIOSystemBase.html#ac26b111ed67730d4413819798755e7aa">systems::io::ModelIOSystemBase::read</a></div><div class="ttdeci">virtual void read(const std::filesystem::path &amp;path, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</div></div>
 <div class="ttc" id="anamespacesystems_1_1io_html"><div class="ttname"><a href="namespacesystems_1_1io.html">systems::io</a></div><div class="ttdoc">ModelIOSystemRegister.h</div><div class="ttdef"><b>定义</b> QModelManager.h:13</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

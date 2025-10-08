@@ -22,6 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
   <td id="projectalign">
    <div id="projectname">PreCess
    </div>
@@ -77,6 +78,8 @@ $(function() {
   <div class="headertitle"><div class="title">SelectorHighlight类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="SelectorHighlight_8h_source.html">SelectorHighlight.h</a>&gt;</code></p>
 <div class="dynheader">
 类 SelectorHighlight 继承关系图:</div>
 <div class="dyncontent">
@@ -96,13 +99,40 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
+<tr class="memitem:aeb60a59064e736c2c80f85dd2823ee9f" id="r_aeb60a59064e736c2c80f85dd2823ee9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb60a59064e736c2c80f85dd2823ee9f">~SelectorHighlight</a> ()=default</td></tr>
 <tr class="memitem:a5512ff700657deaa5f27c88045b4dde4" id="r_a5512ff700657deaa5f27c88045b4dde4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5512ff700657deaa5f27c88045b4dde4">select</a> (double posx, double posy)=0</td></tr>
 <tr class="memitem:a848c28c9db33a22a74d31fa1be332581" id="r_a848c28c9db33a22a74d31fa1be332581"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a848c28c9db33a22a74d31fa1be332581">clear</a> ()=0</td></tr>
 <tr class="memdesc:a848c28c9db33a22a74d31fa1be332581"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
-<tr class="memitem:a386ff86768e0faea151c2babca4c7d69" id="r_a386ff86768e0faea151c2babca4c7d69"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="structSelection.html">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a386ff86768e0faea151c2babca4c7d69">get</a> ()=0</td></tr>
+<tr class="memitem:a386ff86768e0faea151c2babca4c7d69" id="r_a386ff86768e0faea151c2babca4c7d69"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a386ff86768e0faea151c2babca4c7d69">get</a> ()=0</td></tr>
 <tr class="memitem:a80730c692a8cd3a6c0e17bfe275b32e1" id="r_a80730c692a8cd3a6c0e17bfe275b32e1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80730c692a8cd3a6c0e17bfe275b32e1">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor)=0</td></tr>
 <tr class="memdesc:a80730c692a8cd3a6c0e17bfe275b32e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aeb60a59064e736c2c80f85dd2823ee9f" name="aeb60a59064e736c2c80f85dd2823ee9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb60a59064e736c2c80f85dd2823ee9f">&#9670;&#160;</a></span>~SelectorHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual SelectorHighlight::~SelectorHighlight </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="a848c28c9db33a22a74d31fa1be332581" name="a848c28c9db33a22a74d31fa1be332581"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a848c28c9db33a22a74d31fa1be332581">&#9670;&#160;</a></span>clear()</h2>
@@ -143,7 +173,7 @@ Public 成员函数</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="structSelection.html">SelectionVtk</a> SelectorHighlight::get </td>
+          <td class="memname">virtual <a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a> SelectorHighlight::get </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
