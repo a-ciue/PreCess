@@ -114,8 +114,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:ad5014d4b01241b18302eac6590f3518f" id="r_ad5014d4b01241b18302eac6590f3518f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5014d4b01241b18302eac6590f3518f">ModelData</a> (std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt; mesh)</td></tr>
 <tr class="memitem:ab3494273871b1b378539a06065439668" id="r_ab3494273871b1b378539a06065439668"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab3494273871b1b378539a06065439668">ModelData</a> (std::unique_ptr&lt; <a class="el" href="structSplineData.html">SplineData</a> &gt; spline)</td></tr>
 <tr class="memitem:a8a7895f27f877a854dfae6d087d78a34" id="r_a8a7895f27f877a854dfae6d087d78a34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a7e74072e77a8add198a037d63803f9ee">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a7895f27f877a854dfae6d087d78a34">type</a> () const</td></tr>
-<tr class="memitem:a8837e0e23532cdd20b364e86a11dcd37" id="r_a8837e0e23532cdd20b364e86a11dcd37"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8837e0e23532cdd20b364e86a11dcd37">isMesh</a> () const noexcept</td></tr>
-<tr class="memitem:aec453f07a3c80dbff31ffdf5062680e6" id="r_aec453f07a3c80dbff31ffdf5062680e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec453f07a3c80dbff31ffdf5062680e6">isSpline</a> () const noexcept</td></tr>
+<tr class="memitem:a0974375e8dc34408add48ed67a32eb8e" id="r_a0974375e8dc34408add48ed67a32eb8e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0974375e8dc34408add48ed67a32eb8e">hasMesh</a> () const noexcept</td></tr>
+<tr class="memitem:aa3b5aef481c8536e1b56de77e2c4110f" id="r_aa3b5aef481c8536e1b56de77e2c4110f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3b5aef481c8536e1b56de77e2c4110f">hasSpline</a> () const noexcept</td></tr>
 <tr class="memitem:a34fb079753624b175054ff622d2b96c5" id="r_a34fb079753624b175054ff622d2b96c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34fb079753624b175054ff622d2b96c5">asMeshData</a> () noexcept</td></tr>
 <tr class="memitem:a11c8cd7e79300f0dd0b00f7aa3ebb216" id="r_a11c8cd7e79300f0dd0b00f7aa3ebb216"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11c8cd7e79300f0dd0b00f7aa3ebb216">asMeshData</a> () const noexcept</td></tr>
 <tr class="memitem:a4a2bffbbd0b79f512811b0400488f89b" id="r_a4a2bffbbd0b79f512811b0400488f89b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSplineData.html">SplineData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a2bffbbd0b79f512811b0400488f89b">asSplineData</a> () noexcept</td></tr>
@@ -449,8 +449,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a8837e0e23532cdd20b364e86a11dcd37" name="a8837e0e23532cdd20b364e86a11dcd37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8837e0e23532cdd20b364e86a11dcd37">&#9670;&#160;</a></span>isMesh()</h2>
+<a id="a0974375e8dc34408add48ed67a32eb8e" name="a0974375e8dc34408add48ed67a32eb8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0974375e8dc34408add48ed67a32eb8e">&#9670;&#160;</a></span>hasMesh()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -459,7 +459,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool ModelData::isMesh </td>
+          <td class="memname">bool ModelData::hasMesh </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -474,8 +474,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="aec453f07a3c80dbff31ffdf5062680e6" name="aec453f07a3c80dbff31ffdf5062680e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec453f07a3c80dbff31ffdf5062680e6">&#9670;&#160;</a></span>isSpline()</h2>
+<a id="aa3b5aef481c8536e1b56de77e2c4110f" name="aa3b5aef481c8536e1b56de77e2c4110f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3b5aef481c8536e1b56de77e2c4110f">&#9670;&#160;</a></span>hasSpline()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -484,7 +484,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool ModelData::isSpline </td>
+          <td class="memname">bool ModelData::hasSpline </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>

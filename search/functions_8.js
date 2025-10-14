@@ -11,8 +11,10 @@ var searchData=
   ['halfedgetarget_8',['halfedgeTarget',['../classMeshLib_1_1CBaseMesh.html#a019148ba8fcdc951366bb297f7cf706d',1,'MeshLib::CBaseMesh']]],
   ['halfedgevertex_9',['halfedgeVertex',['../classMeshLib_1_1CBaseMesh.html#ab306584de9fde74de2038c0b0113d0a0',1,'MeshLib::CBaseMesh']]],
   ['handler_10',['handler',['../classsystems_1_1PluginHandler.html#ae7faad15faa247229cf6b7e5a0b0fb7d',1,'systems::PluginHandler']]],
-  ['he_5fnext_11',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
-  ['he_5fprev_12',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
-  ['he_5fsym_13',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
-  ['highlightblockbycellcolor_14',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
+  ['hasmesh_11',['hasMesh',['../classModelData.html#a0974375e8dc34408add48ed67a32eb8e',1,'ModelData']]],
+  ['hasspline_12',['hasSpline',['../classModelData.html#aa3b5aef481c8536e1b56de77e2c4110f',1,'ModelData']]],
+  ['he_5fnext_13',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
+  ['he_5fprev_14',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
+  ['he_5fsym_15',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
+  ['highlightblockbycellcolor_16',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
 ];

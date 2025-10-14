@@ -22,9 +22,11 @@ var searchData=
   ['handlercreatordestroyerfactory_2eh_19',['HandlerCreatorDestroyerFactory.h',['../HandlerCreatorDestroyerFactory_8h.html',1,'']]],
   ['handlermetadata_20',['HandlerMetaData',['../structsystems_1_1algo_1_1HandlerMetaData.html',1,'systems::algo::HandlerMetaData'],['../structsystems_1_1io_1_1HandlerMetaData.html',1,'systems::io::HandlerMetaData']]],
   ['handlers_5f_21',['handlers_',['../classsystems_1_1io_1_1ModelIOSystem.html#aa4810f827bbde84874ca8c5a2131844d',1,'systems::io::ModelIOSystem']]],
-  ['he_5fnext_22',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
-  ['he_5fprev_23',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
-  ['he_5fsym_24',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
-  ['highlight_5factor_5f_25',['highlight_actor_',['../classSingleFaceSelectorHighlight.html#a26d3cc487894e3be97bd524914116e1b',1,'SingleFaceSelectorHighlight::highlight_actor_'],['../classSingleSolidSelectorHighlight.html#a36ecca3d1e1f5a1c63354b65e12f6357',1,'SingleSolidSelectorHighlight::highlight_actor_']]],
-  ['highlightblockbycellcolor_26',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
+  ['hasmesh_22',['hasMesh',['../classModelData.html#a0974375e8dc34408add48ed67a32eb8e',1,'ModelData']]],
+  ['hasspline_23',['hasSpline',['../classModelData.html#aa3b5aef481c8536e1b56de77e2c4110f',1,'ModelData']]],
+  ['he_5fnext_24',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
+  ['he_5fprev_25',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
+  ['he_5fsym_26',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
+  ['highlight_5factor_5f_27',['highlight_actor_',['../classSingleFaceSelectorHighlight.html#a26d3cc487894e3be97bd524914116e1b',1,'SingleFaceSelectorHighlight::highlight_actor_'],['../classSingleSolidSelectorHighlight.html#a36ecca3d1e1f5a1c63354b65e12f6357',1,'SingleSolidSelectorHighlight::highlight_actor_']]],
+  ['highlightblockbycellcolor_28',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
 ];

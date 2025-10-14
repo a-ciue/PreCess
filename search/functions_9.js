@@ -13,7 +13,5 @@ var searchData=
   ['is_5fedge_10',['is_edge',['../classMeshLib_1_1CToolVertex.html#a12c467af869c8c5caf60c73b507957a5',1,'MeshLib::CToolVertex']]],
   ['is_5fin_5fsame_5fface_11',['is_in_same_face',['../classMeshLib_1_1CToolHalfEdge.html#ad88d5e9bafd89fab59a12a6c6ace7a58',1,'MeshLib::CToolHalfEdge']]],
   ['isboundary_12',['isBoundary',['../classMeshLib_1_1CBaseMesh.html#a74e917019ff789ac7e4e402de81cbe94',1,'MeshLib::CBaseMesh::isBoundary(tVertex v)'],['../classMeshLib_1_1CBaseMesh.html#a9cd94b0e1dd28c2aecce5c15975e0bd8',1,'MeshLib::CBaseMesh::isBoundary(tEdge e)'],['../classMeshLib_1_1CBaseMesh.html#a8d60d481e391e80b3ef710811fe83352',1,'MeshLib::CBaseMesh::isBoundary(tHalfEdge he)']]],
-  ['ismesh_13',['isMesh',['../classModelData.html#a8837e0e23532cdd20b364e86a11dcd37',1,'ModelData']]],
-  ['isspline_14',['isSpline',['../classModelData.html#aec453f07a3c80dbff31ffdf5062680e6',1,'ModelData']]],
-  ['item_5findex_5ftuple_15',['item_index_tuple',['../structplf_1_1colony_1_1item__index__tuple.html#a15ee31f5d6287424c5942e337f4104b2',1,'plf::colony::item_index_tuple']]]
+  ['item_5findex_5ftuple_13',['item_index_tuple',['../structplf_1_1colony_1_1item__index__tuple.html#a15ee31f5d6287424c5942e337f4104b2',1,'plf::colony::item_index_tuple']]]
 ];
