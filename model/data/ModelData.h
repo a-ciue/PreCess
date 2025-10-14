@@ -45,8 +45,8 @@ public:
 
     /* ============ 类型查询 ============ */
     Type type() const;
-    bool isMesh()   const noexcept;
-    bool isSpline() const noexcept;
+    bool hasMesh()   const noexcept;
+    bool hasSpline() const noexcept;
 
     /* ============ 访问器 ============ */
     MeshData* asMeshData() noexcept;
