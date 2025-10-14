@@ -59,13 +59,11 @@ body:
   - type: textarea
     attributes:
       label: 其他构建环境信息
-      description: 请提供编译器版本、依赖库版本或任何其他相关的构建环境信息等。
-      value: |
+      description: 在此提供编译器版本、依赖库版本或任何其他相关的构建环境信息等。
+      placeholder: |
         1. 编译器版本：如 MSVC 19.29、GCC 10.2、Clang 12.0 等
         2. 依赖库版本：如 Qt 6.8.0、VTK 9.5.2 等
         3. ...  
-    validations:
-      required: true
   - type: textarea
     attributes:
       label: 其他上下文

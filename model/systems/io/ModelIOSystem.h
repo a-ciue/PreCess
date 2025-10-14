@@ -41,7 +41,7 @@ public:
     ~ModelIOSystem() override;
     /**
      * @brief 系统的读模型接口
-     * @param path 读取路径
+     * @param path 读取路径，本地系统环境编码
      * @param file_type 文件类型，应在注册的文件类型中
      * @param args 读操作的参数，传给Handler
      */
@@ -49,7 +49,7 @@ public:
     /**
      * @brief 系统的写模型接口
      * @param model 模型id
-     * @param path 写出路径
+     * @param path 写出路径，本地系统环境编码
      * @param file_type 文件类型，应在注册的文件类型中
      * @param args 写操作的参数，传给Handler
      */

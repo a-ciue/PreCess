@@ -28,7 +28,7 @@ try {
         }
     }
 
-    io_system_->read(url.toLocalFile().toStdString(), unique_name.toStdString(), converted_args);
+    io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(), unique_name.toStdString(), converted_args);
     return true;
 } catch (const std::exception& e) {
     spdlog::error("ModelIOSystemAdaptor::read: Exception occurred - {}", e.what());
@@ -51,7 +51,7 @@ try {
             return {};
         }
     }
-    io_system_->write(model, url.toLocalFile().toStdString(), unique_name.toStdString(), std::move(any_args));
+    io_system_->write(model, url.toLocalFile().toLocal8Bit().toStdString(), unique_name.toStdString(), std::move(any_args));
     return true;
 } catch (const std::exception& e) {
     spdlog::error("ModelIOSystemAdaptor::write: Exception occurred - {}", e.what());

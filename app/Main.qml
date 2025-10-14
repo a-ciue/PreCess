@@ -32,11 +32,7 @@ ApplicationWindow {
         Menu{
             title: "文件"
             MenuItem{
-                text: "指定样条剖分"
-                onClicked: splineDialog.open()
-            }
-            MenuItem{
-                text: "导入"
+                text: "导入..."
                 onClicked: openPatchDialog.open()
             }
             MenuItem{
@@ -68,13 +64,6 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
 
-            FileDialog {
-                id: splineDialog
-                nameFilters: ["STP File (*.stp)"]
-                onAccepted: {
-                    modelManager.readSpline(selectedFile);
-                }
-            }
             FileDialog {
                 id: openPatchDialog
                 nameFilters: ioSystem.getDialogNameFilters()

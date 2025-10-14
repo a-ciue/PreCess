@@ -1,0 +1,7 @@
+{
+  "system": "ModelIOSystem",
+  "handler": {
+    "file_type": "Gamma Mesh Format @Medit",
+    "extensions": [ "mesh", "meshb" ]
+  }
+}

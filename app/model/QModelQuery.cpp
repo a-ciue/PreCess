@@ -17,7 +17,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
 {
     using namespace std;
     ModelData* model = m_manager->getModel(model_id);
-    if (!model || !model->isMesh()) {
+    if (!model || !model->hasMesh()) {
         return {};
     }
     MeshData* md = model->asMeshData();
@@ -65,15 +65,15 @@ QString QModelQuery::getModelName(Index model_id) const
         qWarning() << "模型不存在，无法获取名称:" << model_id;
         return QString();
     }
-    return QString::fromStdString(model->model_name_);
+    return QString::fromLocal8Bit(model->model_name_);
 }
 
 //判断模型类型：mesh返回0，spline返回1，未知返回-1
 int QModelQuery::getModelType(Index model_id) const
 {
-    if (m_manager->models_[model_id]->isMesh())
+    if (m_manager->models_[model_id]->hasMesh())
         return 0;
-    if (m_manager->models_[model_id]->isSpline())
+    if (m_manager->models_[model_id]->hasSpline())
         return 1;
     return -1;
 }

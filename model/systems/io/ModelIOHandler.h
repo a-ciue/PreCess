@@ -23,7 +23,7 @@ public:
 	virtual ~ModelIOHandler() = default; 
 	/**
 	 * @brief 读取模型功能
-	 * @param path 待读取文件路径
+	 * @param path 待读取文件路径，本地系统环境编码
 	 * @param args 读取文件要传入参数
      * @return 构造的模型数据对象
 	 */
@@ -31,7 +31,7 @@ public:
 	/**
 	 * @brief 写出模型功能
 	 * @param data 待写出模型数据对象
-	 * @param path 写出文件目标路径
+	 * @param path 写出文件目标路径，本地系统环境编码
 	 * @param args 写出文件要传入参数
 	 */
     virtual void write_model(const ModelData& data, const fs::path& path, const std::vector<std::any>& args) = 0;

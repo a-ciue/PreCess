@@ -142,19 +142,23 @@ Item{
                 text: "text_button"
             }
         }
-    }
+    }*/
     Component{
         id:componentComboBox
         RowLayout{
+            id: root
             spacing: 5
-            property alias name: nametext.text
-            property alias parameter1: parameterComboBox.currentIndex
-            property var value: parameterComboBox.currentText
+            width: parameterList.width
             // function commitInformation(){
             //     console.log(information.currentText)
             // }
+            property var model
+            ListModel{
+                id: comboModel
+            }
             Text{
                 id:nametext
+                text: name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -163,9 +167,20 @@ Item{
             }
             ComboBox{
                 id:parameterComboBox
-                model:ListModel{
-                    ListElement{text:"方法A"}
-                    ListElement{text:"方法B"}
+                model: comboModel
+                onCurrentIndexChanged: {
+                    root.parent.model.value = currentIndex
+                } 
+            }
+
+            Component.onCompleted: {
+                root.model = model
+                if(content){
+                    let items = content.split(",")
+                    comboModel.clear()
+                    for(let i=0; i<items.length; i++){
+                        comboModel.append({"text":items[i]})
+                    }
                 }
             }
         }
@@ -174,35 +189,30 @@ Item{
         id:oneNumberBox
         RowLayout{
             spacing: 5
-            property alias name: nametext.text
-            property alias parameter1: parameterTextInput.text
-            property var value: parameterTextInput.text
+            width: parameterList.width
             Text{
                 id:nametext
+                text: name
             }
             Rectangle{
                 Layout.fillHeight: true
                 Layout.preferredWidth: 1
                 color: "black"
             }
-            TextInput{
+            TextField {
                 id:parameterTextInput
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                horizontalAlignment: TextInput.AlignHCenter
-                //verticalAlignment: TextInput.AlignVCenter
+                Layout.fillWidth: parent.width
                 onTextChanged:{
-                    console.log(height,width,"TextInput的height和width")
+                    model.value = parseFloat(text)
                 }
             }
         }
-    }*/
+    }
     Component{
         id:fileComponent
         RowLayout{
             spacing: 5
             width: parameterList.width
-            property alias value: fileText.text
             Text{
                 id:nametext
                 text: name
