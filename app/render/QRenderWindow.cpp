@@ -150,6 +150,12 @@ void QRenderWindow::setMeshClip(bool on)
         Data* vtk = Data::SafeDownCast(userData);
 
         if (on) {
+            double bound[6] {};
+            vtk->renderer_->ComputeVisiblePropBounds(bound);
+
+            double origin[3] { (bound[0] + bound[1]) / 2, (bound[2] + bound[3]) / 2, (bound[4] + bound[5]) / 2 };
+            vtk->plane_widget_->GetDisplaySizedImplicitPlaneRepresentation()->SetOrigin(origin);
+
             vtk->plane_widget_->InvokeEvent(vtkCommand::InteractionEvent);
             vtk->plane_widget_->On();
         } else {
