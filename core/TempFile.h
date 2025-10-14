@@ -21,9 +21,8 @@ public:
 
     static TempFile& instance();
     /**
-     * @brief （废弃）获取临时文件路径，推荐使用stream()代替path()
+     * @brief 获取临时文件路径，推荐使用stream()代替path()
      */
-    [[deprecated("Use stream() instead")]]
     std::filesystem::path path() const;
     /**
      * @return 获取临时文件的fstream对象
