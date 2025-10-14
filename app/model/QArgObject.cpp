@@ -37,7 +37,7 @@ std::optional<std::any> QArgObject::getValue() const
         ret = static_cast<long long>(value_.toLongLong(&canConvert));
         break;
     case ArgTypeEnum::Float:
-        ret = static_cast<size_t>(value_.toULongLong(&canConvert));
+        ret = value_.toDouble(&canConvert);
         break;
     case ArgTypeEnum::Text:
         ret = value_.toString().toStdString();
@@ -49,15 +49,21 @@ std::optional<std::any> QArgObject::getValue() const
         ret = QFileInfo(value_.toString()).filesystemFilePath();
         break;
     case ArgTypeEnum::Combo:
-		// TODO: 填充Combo逻辑
+        // -1 意味着用户未进行选择
+        ret = value_.toInt(&canConvert);
         break;
-    case ArgTypeEnum::Selector:
-        ret = std::make_shared<std::unique_ptr<Selection>>(value_.value<QSelection*>()->move());
+    case ArgTypeEnum::Selector: {
+        QSelection* selection = value_.value<QSelection*>();
+        canConvert = !!selection;
+        if (selection) {
+            ret = std::make_shared<std::unique_ptr<Selection>>(selection->move());
+        }
         break;
+    }
     default:
         canConvert = false;
         break;
     }
 
-    return canConvert ? ret : std::nullopt;
+    return canConvert ? std::optional{ ret } : std::nullopt;
 }
