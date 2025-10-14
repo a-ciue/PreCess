@@ -16,11 +16,16 @@
 #include "QModelManager.h"
 #include "QAlgorithmSystemAdaptor.h"
 
+#include <spdlog/spdlog.h>
+#include <spdlog/cfg/env.h>
+
 class ModelManager;
 
 int main(int argc, char* argv[])
 {
+    spdlog::cfg::load_env_levels();
     QQuickVTKItem::setGraphicsApi();
+
     QModelManager q_manager;
     ModelManager* manager = q_manager.getModelManager();
     QModelObserver* observer = q_manager.getModelObserver();
