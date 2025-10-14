@@ -20,7 +20,7 @@ QVariant QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, 
         if (std::optional value = arg->getValue()) {
             converted_args.push_back(*value);
         } else {
-            spdlog::error("AlgorithmSystemAdaptor::call: Argument {} not valid", arg->name().toStdString());
+            spdlog::error("AlgorithmSystemAdaptor::call: Argument {} not valid", arg->name().toLocal8Bit().toStdString());
             return {};
         }
     }
