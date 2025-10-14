@@ -7,8 +7,9 @@ project(${MYNAME} VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
 
-option(ENABLE_TEST "是否启用测试")
+option(PRECESS_BUILD_TESTS "是否启用并构建测试用例")
 
 find_package(spdlog REQUIRED)
 
@@ -20,6 +21,11 @@ find_package(VTK REQUIRED COMPONENTS
         GUISupportQtQuick
         InteractionStyle
 )
+
+find_package(freetype MODULE QUIET)
+if(NOT FREETYPE_FOUND)
+    find_package(freetype CONFIG REQUIRED)
+endif()
 
 find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick)
 message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
@@ -34,7 +40,7 @@ add_subdirectory(plugins)
 add_subdirectory(app)
 add_subdirectory(resource)
 
-if(ENABLE_TEST)
+if(PRECESS_BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
 endif()

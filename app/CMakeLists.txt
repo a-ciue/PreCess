@@ -46,7 +46,7 @@ install(
         DIRECTORIES
             $<TARGET_FILE_DIR:VTK::CommonCore>
             $<TARGET_FILE_DIR:TKernel>
-            ${FREETYPE_DIR}/bin # FreeType 库所在目录
+            $<TARGET_FILE_DIR:freetype>
              # Qt 库所在目录
             $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
             $<TARGET_FILE_DIR:spdlog::spdlog>

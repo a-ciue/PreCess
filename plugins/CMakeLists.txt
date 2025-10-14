@@ -53,8 +53,11 @@ function(precess_plugin_link_libraries)
 
 	target_link_libraries(${TARGET} PRIVATE ${DEPENDENT_LIBRARIES})
 
+	if (OpenCASCADE_FOUND)
+		list(APPEND DEPENDENT_LIBRARIES TKernel freetype)
+	endif()
 	list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
-    list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")
+    list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")	
 	install(
 			TARGETS ${TARGET}
 			RUNTIME_DEPENDENCIES
