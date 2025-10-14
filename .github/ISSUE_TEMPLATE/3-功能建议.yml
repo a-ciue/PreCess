@@ -18,14 +18,14 @@ body:
     id: desired-solution
     attributes:
       label: 描述你想要添加的功能实现，你希望看到这个问题该如何解决？
-      description: 清晰并简洁地描述你的设想，这个功能实现了应该是什么样的。
+      description: 清晰并简洁地描述你的设想，这个功能实现了应该是什么样的。如果可以的话，请给出你设想的具体的实现方案。
     validations:
       required: true
   - type: textarea
     id: alternatives
     attributes:
       label: 描述你考虑过的其他实现方案。
-      description: 如果有的话，清晰并简洁地描述你考虑过的其他解决方案或功能实现。
+      description: 如果有的话，清晰并简洁地描述你考虑过的其他解决方案、功能实现或已有的实现参考。
     validations:
       required: false
   - type: textarea
