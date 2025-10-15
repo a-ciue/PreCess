@@ -1,4 +1,4 @@
 precess_add_algo_plugin(TetGenPlugin 
-	"TetGenHandler.cpp" 
-	"TetGenPlugin.h"
+	SOURCES "TetGenHandler.cpp" 
+	PLUGIN_H "TetGenPlugin.h"
 )

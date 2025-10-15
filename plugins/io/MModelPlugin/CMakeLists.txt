@@ -1,4 +1,4 @@
 precess_add_io_plugin(MModelPlugin 
-	"MModelHandler.cpp" 
-	"MModelPlugin.h"
+	SOURCES "MModelHandler.cpp" 
+	PLUGIN_H "MModelPlugin.h"
 )

@@ -1,74 +1,111 @@
 add_custom_target(AllPlugins)
 set(PLUGINS_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
-function(precess_add_io_plugin)
-	set(TARGET ${ARGV0})
-	qt_add_plugin(${ARGV})
-	target_link_libraries(${TARGET} PRIVATE
-		Core Data DataOps
-		$<COMPILE_ONLY:IOSystem>
-		Qt6::Core
-		spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
-	)
-	set_target_properties(${TARGET} PROPERTIES
-		LIBRARY_OUTPUT_DIRECTORY "${PLUGINS_BUILD_DIR}"
-	)
-	target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-	add_dependencies(AllPlugins ${TARGET})
+# precess_add_io_plugin(<target> 
+#     SOURCES <source1> <source2> ...
+#     PLUGIN_H <headerPlugin.h>
+# )
+function(precess_add_io_plugin TARGET)
+    cmake_parse_arguments(
+        "plug"
+        ""
+        "PLUGIN_H"
+        "SOURCES"
+        ${ARGN}
+    )
+    set(target_lib ${TARGET}lib)
 
-	install(TARGETS ${TARGET}
-		LIBRARY DESTINATION plugins
+    # 静态库，供测试链接使用
+    add_library(${target_lib} STATIC ${plug_SOURCES})
+    target_link_libraries(${target_lib} PUBLIC
+        Core Data DataOps
+        $<COMPILE_ONLY:IOSystem>
+        spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
+    )
+    target_include_directories(${target_lib} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # 插件
+    qt_add_plugin(${TARGET} ${plug_PLUGIN_H})
+    target_link_libraries(${TARGET} PRIVATE
+        ${target_lib}
+        Qt6::Core
+    )
+    set_target_properties(${TARGET} PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY "${PLUGINS_BUILD_DIR}"
+    )
+    add_dependencies(AllPlugins ${TARGET})
+
+    install(TARGETS ${TARGET}
+        LIBRARY DESTINATION plugins
         COMPONENT AllPlugins
-	)
+    )
 endfunction()
 
-function(precess_add_algo_plugin)
-	set(TARGET ${ARGV0})
-	qt_add_plugin(${ARGV})
-	target_link_libraries(${TARGET} PRIVATE
-		Core Data DataOps AlgorithmSystem
-		$<COMPILE_ONLY:IOSystem>
-		Qt6::Core
-		spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
-	)
-	set_target_properties(${TARGET} PROPERTIES
-		LIBRARY_OUTPUT_DIRECTORY "${PLUGINS_BUILD_DIR}"
-	)
-	target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-	add_dependencies(AllPlugins ${TARGET})
+# precess_add_algo_plugin(<target> 
+#     SOURCES <source1> <source2> ...
+#     PLUGIN_H <headerPlugin.h>
+# )
+function(precess_add_algo_plugin TARGET)
+    cmake_parse_arguments(
+        "plug"
+        ""
+        "PLUGIN_H"
+        "SOURCES"
+        ${ARGN}
+    )
+    set(target_lib ${TARGET}lib)
 
-	install(TARGETS ${TARGET}
-		LIBRARY DESTINATION plugins
+    # 静态库，供测试链接使用
+    add_library(${target_lib} STATIC ${plug_SOURCES})
+    target_link_libraries(${target_lib} PUBLIC
+        Core Data DataOps AlgorithmSystem
+        $<COMPILE_ONLY:IOSystem>
+        spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
+    )
+    target_include_directories(${target_lib} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # 插件
+    qt_add_plugin(${TARGET} ${plug_PLUGIN_H})
+    target_link_libraries(${TARGET} PRIVATE
+        ${target_lib}
+        Qt6::Core
+    )
+    set_target_properties(${TARGET} PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY "${PLUGINS_BUILD_DIR}"
+    )
+    add_dependencies(AllPlugins ${TARGET})
+
+    install(TARGETS ${TARGET}
+        LIBRARY DESTINATION plugins
         COMPONENT AllPlugins
-	)
+    )
 endfunction()
 
-function(precess_plugin_link_libraries)
-    if(ARGC LESS_EQUAL 1)
-        message(FATAL_ERROR "Function my_function requires at least 2 arguments, but got ${ARGC}")
+# precess_plugin_link_libraries(<target> <lib1> <lib2> ...)
+function(precess_plugin_link_libraries TARGET)
+    if(ARGC EQUAL 0)
+        message(FATAL_ERROR "Function my_function requires at least 1 arguments, but got ${ARGC}")
     endif()
+    set(DEPENDENT_LIBRARIES ${ARGN})
 
-	set(TARGET ${ARGV0})
-	list(SUBLIST ARGV 1 -1 DEPENDENT_LIBRARIES)
+    target_link_libraries(${TARGET}lib PUBLIC ${DEPENDENT_LIBRARIES})
 
-	target_link_libraries(${TARGET} PRIVATE ${DEPENDENT_LIBRARIES})
-
-	if (OpenCASCADE_FOUND)
-		list(APPEND DEPENDENT_LIBRARIES TKernel freetype)
-	endif()
-	list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
+    if (OpenCASCADE_FOUND)
+        list(APPEND DEPENDENT_LIBRARIES TKernel freetype)
+    endif()
+    list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
     list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")	
-	install(
-			TARGETS ${TARGET}
-			RUNTIME_DEPENDENCIES
-			DIRECTORIES $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core> ${DEPENDENT_LIBRARIES}
-			PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "spdlog" "freetype" # don't install Windows-provided libs
-			POST_EXCLUDE_REGEXES ".*system32/.*\\.dll" "Qt${VTK_QT_VERSION}Core"  # don't install Windows-provided libs
-			FRAMEWORK DESTINATION Frameworks
-			BUNDLE DESTINATION .
-			LIBRARY DESTINATION plugins
-			COMPONENT AllPlugins
-	)
+    install(
+            TARGETS ${TARGET}
+            RUNTIME_DEPENDENCIES
+            DIRECTORIES $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core> ${DEPENDENT_LIBRARIES}
+            PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "spdlog" "freetype" # don't install Windows-provided libs
+            POST_EXCLUDE_REGEXES ".*system32/.*\\.dll" "Qt${VTK_QT_VERSION}Core"  # don't install Windows-provided libs
+            FRAMEWORK DESTINATION Frameworks
+            BUNDLE DESTINATION .
+            LIBRARY DESTINATION plugins
+            COMPONENT AllPlugins
+    )
 endfunction()
 
 add_subdirectory(io)

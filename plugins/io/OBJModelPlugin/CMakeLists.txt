@@ -1,4 +1,4 @@
 precess_add_io_plugin(OBJModelPlugin 
-	"OBJModelHandler.cpp" 
-	"OBJModelPlugin.h"
+	SOURCES "OBJModelHandler.cpp" 
+	PLUGIN_H "OBJModelPlugin.h"
 )
