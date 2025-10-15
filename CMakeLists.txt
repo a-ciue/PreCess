@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
 
-option(PRECESS_BUILD_TESTS "是否启用并构建测试用例")
+option(BUILD_TESTING "是否启用并构建测试用例" OFF)
 
 find_package(spdlog REQUIRED)
 
@@ -24,6 +24,7 @@ find_package(VTK REQUIRED COMPONENTS
 
 find_package(freetype MODULE QUIET)
 if(NOT FREETYPE_FOUND)
+    message(STATUS "freetype not found as module, trying config...")
     find_package(freetype CONFIG REQUIRED)
 endif()
 
@@ -32,6 +33,7 @@ message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
 qt_policy(SET QTP0001 NEW)
 qt_standard_project_setup()
 include(GNUInstallDirs)
+include(test)
 
 add_subdirectory(core)
 add_subdirectory(model)
@@ -39,11 +41,6 @@ add_subdirectory(plugins)
 
 add_subdirectory(app)
 add_subdirectory(resource)
-
-if(PRECESS_BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(test)
-endif()
 
 set(CPACK_PACKAGE_NAME ${MYNAME})
 set(CPACK_PACKAGE_VENDOR ${MYNAME})
