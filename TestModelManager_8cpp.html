@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/test/TestModelManager.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li><li class="navelem"><a href="dir_a2500666a617fcb70f7565c3cb90ec66.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestModelManager.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="MakeMeshData_8h_source.html">MakeMeshData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelManager_8h_source.html">ModelManager.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestModelManager.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestModelManager_8cpp__incl.png" border="0" usemap="#amodel_2data_2test_2TestModelManager_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2test_2TestModelManager_8cpp" id="amodel_2data_2test_2TestModelManager_8cpp">
+<area shape="rect" title=" " alt="" coords="329,5,524,45"/>
+<area shape="rect" href="MakeMeshData_8h.html" title=" " alt="" coords="135,167,270,192"/>
+<area shape="poly" title=" " alt="" coords="400,48,233,161,230,157,397,43"/>
+<area shape="rect" href="ModelManager_8h.html" title="负责管理多个模型实例的类" alt="" coords="361,93,492,119"/>
+<area shape="poly" title=" " alt="" coords="429,46,429,79,424,79,424,46"/>
+<area shape="rect" title=" " alt="" coords="516,93,735,119"/>
+<area shape="poly" title=" " alt="" coords="475,43,585,86,583,91,473,48"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="157,387,257,412"/>
+<area shape="poly" title=" " alt="" coords="206,192,209,372,204,372,200,192"/>
+<area shape="rect" title=" " alt="" coords="659,533,736,559"/>
+<area shape="poly" title=" " alt="" coords="209,412,215,448,222,467,235,483,256,492,295,501,408,517,645,538,645,544,407,523,294,507,254,497,232,487,218,470,209,449,204,412"/>
+<area shape="rect" title=" " alt="" coords="246,460,370,485"/>
+<area shape="poly" title=" " alt="" coords="224,410,282,450,279,454,221,414"/>
+<area shape="rect" title=" " alt="" coords="5,460,120,485"/>
+<area shape="poly" title=" " alt="" coords="185,414,100,456,97,451,182,410"/>
+<area shape="rect" title=" " alt="" coords="257,533,313,559"/>
+<area shape="poly" title=" " alt="" coords="202,413,189,447,187,466,192,484,202,498,215,510,246,528,243,533,212,515,198,502,187,486,181,467,183,446,197,411"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="395,460,459,485"/>
+<area shape="poly" title=" " alt="" coords="243,409,382,454,381,459,241,415"/>
+<area shape="poly" title=" " alt="" coords="459,480,646,528,645,534,458,485"/>
+<area shape="poly" title=" " alt="" coords="405,488,322,529,319,525,403,483"/>
+<area shape="rect" title=" " alt="" coords="430,533,493,559"/>
+<area shape="poly" title=" " alt="" coords="435,484,452,520,447,522,430,487"/>
+<area shape="poly" title=" " alt="" coords="409,121,379,142,347,172,321,209,313,229,311,252,311,327,311,446,305,446,305,327,305,251,308,228,316,206,343,168,376,138,406,117"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="522,313,627,339"/>
+<area shape="poly" title=" " alt="" coords="437,117,522,239,562,300,558,303,518,241,433,120"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="583,167,713,192"/>
+<area shape="poly" title=" " alt="" coords="463,116,600,160,599,165,461,121"/>
+<area shape="poly" title=" " alt="" coords="628,333,717,353,756,367,781,385,790,403,792,423,787,442,778,462,752,497,724,526,720,522,748,494,774,459,782,441,786,423,785,405,777,388,754,372,716,358,627,338"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="397,387,491,412"/>
+<area shape="poly" title=" " alt="" coords="555,341,478,382,476,378,552,336"/>
+<area shape="rect" title=" " alt="" coords="615,387,673,412"/>
+<area shape="poly" title=" " alt="" coords="588,337,625,375,621,379,584,341"/>
+<area shape="rect" title=" " alt="" coords="698,387,766,412"/>
+<area shape="poly" title=" " alt="" coords="601,336,695,379,693,383,599,341"/>
+<area shape="rect" title=" " alt="" coords="516,387,591,412"/>
+<area shape="poly" title=" " alt="" coords="574,340,563,374,558,373,569,338"/>
+<area shape="poly" title=" " alt="" coords="444,413,435,448,430,446,439,412"/>
+<area shape="poly" title=" " alt="" coords="453,411,464,433,473,459,475,491,471,520,466,519,470,491,468,461,459,435,449,414"/>
+<area shape="poly" title=" " alt="" coords="699,190,749,207,801,234,823,252,841,273,853,297,857,324,857,401,854,424,846,445,817,481,779,510,741,530,739,525,776,505,813,477,841,442,849,422,852,400,852,325,848,299,837,276,819,256,798,239,747,212,697,195"/>
+<area shape="poly" title=" " alt="" coords="644,194,589,302,584,300,640,191"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="345,240,508,265"/>
+<area shape="poly" title=" " alt="" coords="613,195,476,238,474,233,612,189"/>
+<area shape="rect" title=" " alt="" coords="633,240,724,265"/>
+<area shape="poly" title=" " alt="" coords="656,191,671,227,666,229,651,193"/>
+<area shape="poly" title=" " alt="" coords="421,267,407,293,392,329,384,370,384,391,388,411,397,431,409,448,405,451,392,433,383,413,379,392,379,370,387,328,402,291,417,264"/>
+<area shape="poly" title=" " alt="" coords="452,263,539,305,537,310,449,268"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:aa893eaa65c7a9d15633c269dba0ceef7" id="r_aa893eaa65c7a9d15633c269dba0ceef7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa893eaa65c7a9d15633c269dba0ceef7">TEST_CASE</a> (&quot;ModelManager add nullptr&quot;)</td></tr>
+<tr class="memitem:a11587d13ffc0b6dd57996a851057bbad" id="r_a11587d13ffc0b6dd57996a851057bbad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11587d13ffc0b6dd57996a851057bbad">TEST_CASE</a> (&quot;ModelManager add a MeshData&quot;)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a11587d13ffc0b6dd57996a851057bbad" name="a11587d13ffc0b6dd57996a851057bbad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11587d13ffc0b6dd57996a851057bbad">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelManager add a MeshData&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa893eaa65c7a9d15633c269dba0ceef7" name="aa893eaa65c7a9d15633c269dba0ceef7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa893eaa65c7a9d15633c269dba0ceef7">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelManager add nullptr&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

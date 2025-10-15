@@ -152,7 +152,12 @@ var menudata={children:[
 {text:"s",url:"globals.html#index_s"},
 {text:"t",url:"globals.html#index_t"},
 {text:"v",url:"globals.html#index_v"}]},
-{text:"函数",url:"globals_func.html"},
+{text:"函数",url:"globals_func.html",children:[
+{text:"c",url:"globals_func.html#index_c"},
+{text:"m",url:"globals_func.html#index_m"},
+{text:"o",url:"globals_func.html#index_o"},
+{text:"t",url:"globals_func.html#index_t"},
+{text:"v",url:"globals_func.html#index_v"}]},
 {text:"类型定义",url:"globals_type.html"},
 {text:"枚举",url:"globals_enum.html"},
 {text:"宏定义",url:"globals_defs.html"}]}]}]}

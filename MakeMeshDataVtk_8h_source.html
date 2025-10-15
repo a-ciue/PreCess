@@ -83,55 +83,30 @@ $(function() {
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define MAKE_MESH_DATA_VTK_H</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="MeshActor_8h.html">MeshActor.h</a>&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;string_view&gt;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">// 生成内置演示用数据</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><a class="code hl_struct" href="structMeshDataVtk.html">MeshDataVtk</a> <a class="code hl_function" href="MakeMeshDataVtk_8h.html#a0226ae40abc28fdedbda8b0e187c0160">MakeMeshDataVtk</a>(</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    std::vector&lt;std::array&lt;double, 3&gt;&gt;&amp; vtk_points_,</div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="MeshData_8h.html">MeshData.h</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;string_view&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">// 生成内置演示用数据</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><a class="code hl_struct" href="structMeshDataVtk.html">MeshDataVtk</a> <a class="code hl_function" href="MakeMeshDataVtk_8h.html#a73ae695c9635bc2b34e9fc47f2ab5c41">MakeMeshDataVtk</a>(<a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; data);</div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    std::vector&lt;unsigned char&gt;&amp; vtk_solid_cell_types_,</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    std::vector&lt;Index&gt;&amp; vtk_solid_cells_,</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    std::vector&lt;Index&gt;&amp; vtk_solid_cells_offset_,</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    std::vector&lt;Index&gt;&amp; vtk_solid_faces_,</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    std::vector&lt;Index&gt;&amp; vtk_solid_faces_offset_,</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    std::vector&lt;Index&gt;&amp; vtk_solid_face_locations_,</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    std::vector&lt;Index&gt;&amp; vtk_solid_face_locations_offset_,</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    std::vector&lt;Index&gt;&amp; vtk_face_cells_, <span class="comment">//&gt; 表示面顶点索引的数组</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    std::vector&lt;Index&gt;&amp; vtk_face_cells_offset_,</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">// 从外部 vtk/vtu/vtp 文件导入，并尽可能填充 MeshDataVtk</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">// 当前实现：</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">//  - 读取 UnstructuredGrid 或 PolyData</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment">//  - 直接按 cell 维度分类：3D-&gt;solid, 2D-&gt;face, 1D-&gt;edge</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment">//  - polyhedral 相关数组留空</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">//  - face block 生成单一 block，包含全部面；若需要更复杂 block 划分，可在此函数外再修改 block_datas</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><a class="code hl_struct" href="structMeshDataVtk.html">MeshDataVtk</a> <a class="code hl_function" href="MakeMeshDataVtk_8h.html#a86ea92f96f1c8978335749e494c11898">MakeMeshDataVtkFromFile</a>(</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    std::string_view file_path,</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; data</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>);</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    std::vector&lt;Index&gt;&amp; vtk_edge_cells_</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="comment">// 从外部 vtk/vtu/vtp 文件导入，并尽可能填充 MeshDataVtk</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="comment">// 当前实现：</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="comment">//  - 读取 UnstructuredGrid 或 PolyData</span></div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="comment">//  - 直接按 cell 维度分类：3D-&gt;solid, 2D-&gt;face, 1D-&gt;edge</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="comment">//  - polyhedral 相关数组留空</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="comment">//  - face block 生成单一 block，包含全部面；若需要更复杂 block 划分，可在此函数外再修改 block_datas</span></div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><a class="code hl_struct" href="structMeshDataVtk.html">MeshDataVtk</a> <a class="code hl_function" href="MakeMeshDataVtk_8h.html#aed8d76abe6baf2ea2b33c1d91aa9979c">MakeMeshDataVtkFromFile</a>(</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    std::string_view file_path,</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    std::vector&lt;std::array&lt;double, 3&gt;&gt;&amp; vtk_points_,</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    std::vector&lt;unsigned char&gt;&amp; vtk_solid_cell_types_,</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    std::vector&lt;Index&gt;&amp; vtk_solid_cells_,</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    std::vector&lt;Index&gt;&amp; vtk_solid_cells_offset_,</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    std::vector&lt;Index&gt;&amp; vtk_solid_faces_,</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    std::vector&lt;Index&gt;&amp; vtk_solid_faces_offset_,</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    std::vector&lt;Index&gt;&amp; vtk_solid_face_locations_,</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    std::vector&lt;Index&gt;&amp; vtk_solid_face_locations_offset_,</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    std::vector&lt;Index&gt;&amp; vtk_face_cells_,</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    std::vector&lt;Index&gt;&amp; vtk_face_cells_offset_,</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    std::vector&lt;Index&gt;&amp; vtk_edge_cells_</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aMakeMeshDataVtk_8h_html_a0226ae40abc28fdedbda8b0e187c0160"><div class="ttname"><a href="MakeMeshDataVtk_8h.html#a0226ae40abc28fdedbda8b0e187c0160">MakeMeshDataVtk</a></div><div class="ttdeci">MeshDataVtk MakeMeshDataVtk(std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;vtk_points_, std::vector&lt; unsigned char &gt; &amp;vtk_solid_cell_types_, std::vector&lt; Index &gt; &amp;vtk_solid_cells_, std::vector&lt; Index &gt; &amp;vtk_solid_cells_offset_, std::vector&lt; Index &gt; &amp;vtk_solid_faces_, std::vector&lt; Index &gt; &amp;vtk_solid_faces_offset_, std::vector&lt; Index &gt; &amp;vtk_solid_face_locations_, std::vector&lt; Index &gt; &amp;vtk_solid_face_locations_offset_, std::vector&lt; Index &gt; &amp;vtk_face_cells_, std::vector&lt; Index &gt; &amp;vtk_face_cells_offset_, std::vector&lt; Index &gt; &amp;vtk_edge_cells_)</div><div class="ttdef"><b>定义</b> MakeMeshDataVtk.cpp:16</div></div>
-<div class="ttc" id="aMakeMeshDataVtk_8h_html_aed8d76abe6baf2ea2b33c1d91aa9979c"><div class="ttname"><a href="MakeMeshDataVtk_8h.html#aed8d76abe6baf2ea2b33c1d91aa9979c">MakeMeshDataVtkFromFile</a></div><div class="ttdeci">MeshDataVtk MakeMeshDataVtkFromFile(std::string_view file_path, std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;vtk_points_, std::vector&lt; unsigned char &gt; &amp;vtk_solid_cell_types_, std::vector&lt; Index &gt; &amp;vtk_solid_cells_, std::vector&lt; Index &gt; &amp;vtk_solid_cells_offset_, std::vector&lt; Index &gt; &amp;vtk_solid_faces_, std::vector&lt; Index &gt; &amp;vtk_solid_faces_offset_, std::vector&lt; Index &gt; &amp;vtk_solid_face_locations_, std::vector&lt; Index &gt; &amp;vtk_solid_face_locations_offset_, std::vector&lt; Index &gt; &amp;vtk_face_cells_, std::vector&lt; Index &gt; &amp;vtk_face_cells_offset_, std::vector&lt; Index &gt; &amp;vtk_edge_cells_)</div><div class="ttdef"><b>定义</b> MakeMeshDataVtk.cpp:189</div></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aMakeMeshDataVtk_8h_html_a73ae695c9635bc2b34e9fc47f2ab5c41"><div class="ttname"><a href="MakeMeshDataVtk_8h.html#a73ae695c9635bc2b34e9fc47f2ab5c41">MakeMeshDataVtk</a></div><div class="ttdeci">MeshDataVtk MakeMeshDataVtk(MeshData &amp;data)</div><div class="ttdef"><b>定义</b> MakeMeshDataVtk.cpp:18</div></div>
+<div class="ttc" id="aMakeMeshDataVtk_8h_html_a86ea92f96f1c8978335749e494c11898"><div class="ttname"><a href="MakeMeshDataVtk_8h.html#a86ea92f96f1c8978335749e494c11898">MakeMeshDataVtkFromFile</a></div><div class="ttdeci">MeshDataVtk MakeMeshDataVtkFromFile(std::string_view file_path, MeshData &amp;data)</div><div class="ttdef"><b>定义</b> MakeMeshDataVtk.cpp:99</div></div>
 <div class="ttc" id="aMeshActor_8h_html"><div class="ttname"><a href="MeshActor_8h.html">MeshActor.h</a></div></div>
+<div class="ttc" id="aMeshData_8h_html"><div class="ttname"><a href="MeshData_8h.html">MeshData.h</a></div></div>
 <div class="ttc" id="astructMeshDataVtk_html"><div class="ttname"><a href="structMeshDataVtk.html">MeshDataVtk</a></div><div class="ttdoc">用于存储网格数据以供 VTK 渲染使用的结构体</div><div class="ttdef"><b>定义</b> Core.h:47</div></div>
+<div class="ttc" id="astructMeshData_html"><div class="ttname"><a href="structMeshData.html">MeshData</a></div><div class="ttdef"><b>定义</b> MeshData.h:36</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
