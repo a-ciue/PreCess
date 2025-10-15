@@ -20,3 +20,5 @@ else()
 	"OpenCASCADE package not found. Target Data and its dependent targets, including exe target, will not be able to build. Current project configuration only be valid when trying to build plugin without linking to target Data."
 	)
 endif()
+
+add_subdirectory(test)

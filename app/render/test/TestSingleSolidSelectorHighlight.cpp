@@ -18,7 +18,8 @@ public:
 
     void SetSelectorHighlight(SingleSolidSelectorHighlight* selector) { this->Selector = selector; }
 
-    void OnLeftButtonDown() override {
+    void OnLeftButtonDown() override
+    {
         int* clickPos = this->GetInteractor()->GetEventPosition();
         if (Selector) {
             Selector->select(static_cast<double>(clickPos[0]), static_cast<double>(clickPos[1]));
@@ -43,47 +44,11 @@ int main(int argc, char* argv[])
         std::cout << "Try load file: " << inputFile << std::endl;
     }
 
-    std::vector<std::array<double, 3>> vtk_points_;
-
-    std::vector<unsigned char> vtk_solid_cell_types_;
-    std::vector<Index> vtk_solid_cells_;
-    std::vector<Index> vtk_solid_cells_offset_;
-    std::vector<Index> vtk_solid_faces_;
-    std::vector<Index> vtk_solid_faces_offset_;
-    std::vector<Index> vtk_solid_face_locations_;
-    std::vector<Index> vtk_solid_face_locations_offset_;
-
-    std::vector<Index> vtk_face_cells_;
-    std::vector<Index> vtk_face_cells_offset_;
-
-    std::vector<Index> vtk_edge_cells_;
+    MeshData mesh;
 
     MeshDataVtk test_mesh_data = inputFile.empty()
-        ? MakeMeshDataVtk(
-              vtk_points_,
-              vtk_solid_cell_types_,
-              vtk_solid_cells_,
-              vtk_solid_cells_offset_,
-              vtk_solid_faces_,
-              vtk_solid_faces_offset_,
-              vtk_solid_face_locations_,
-              vtk_solid_face_locations_offset_,
-              vtk_face_cells_,
-              vtk_face_cells_offset_,
-              vtk_edge_cells_)
-        : MakeMeshDataVtkFromFile(
-              inputFile,
-              vtk_points_,
-              vtk_solid_cell_types_,
-              vtk_solid_cells_,
-              vtk_solid_cells_offset_,
-              vtk_solid_faces_,
-              vtk_solid_faces_offset_,
-              vtk_solid_face_locations_,
-              vtk_solid_face_locations_offset_,
-              vtk_face_cells_,
-              vtk_face_cells_offset_,
-              vtk_edge_cells_);
+        ? MakeMeshDataVtk(mesh)
+        : MakeMeshDataVtkFromFile(inputFile, mesh);
 
     vtkNew<vtkRenderer> renderer;
     renderer->SetBackground(0.15, 0.2, 0.3);

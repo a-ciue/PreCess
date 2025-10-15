@@ -4,8 +4,10 @@ target_link_libraries(TestDeps PRIVATE
     vtkPart
     VTK::CommonColor VTK::RenderingCore VTK::RenderingOpenGL2 VTK::IOXML VTK::IOLegacy
 )
+target_link_libraries(TestDeps PUBLIC DataTest)
 vtk_module_autoinit(TARGETS TestDeps MODULES VTK::CommonColor VTK::RenderingCore VTK::RenderingOpenGL2 VTK::IOXML VTK::IOLegacy)
 
+# TestSingleEdgeSelectorHighlight
 add_executable(TestSingleEdgeSelectorHighlight TestSingleEdgeSelectorHighlight.cpp)
 target_link_libraries(TestSingleEdgeSelectorHighlight PRIVATE 
     vtkPart TestDeps
@@ -14,6 +16,7 @@ target_link_libraries(TestSingleEdgeSelectorHighlight PRIVATE
 vtk_module_autoinit(TARGETS TestSingleEdgeSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
 install(TARGETS TestSingleEdgeSelectorHighlight)
 
+# TestSingleSolidSelectorHighlight
 add_executable(TestSingleSolidSelectorHighlight TestSingleSolidSelectorHighlight.cpp)
 target_link_libraries(TestSingleSolidSelectorHighlight PRIVATE 
     vtkPart TestDeps
@@ -23,6 +26,7 @@ target_link_libraries(TestSingleSolidSelectorHighlight PRIVATE
 vtk_module_autoinit(TARGETS TestSingleSolidSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
 install(TARGETS TestSingleSolidSelectorHighlight)
 
+# TestMeshActor
 add_executable(TestMeshActor TestMeshActor.cpp)
 target_link_libraries(TestMeshActor PRIVATE 
     vtkPart TestDeps

@@ -45,20 +45,20 @@ struct BlockDatas {
  * @sa MeshData
  */
 struct MeshDataVtk {
-    const std::vector<std::array<double, 3>>& vtk_points_;
+    const std::vector<std::array<double, 3>>& vtk_points_; //> 对应 MeshData::vertex_positions_
 
-    const std::vector<unsigned char>& vtk_solid_cell_types_;
-    const std::vector<Index>& vtk_solid_cells_;
-    const std::vector<Index>& vtk_solid_cells_offset_;
-    const std::vector<Index>& vtk_solid_faces_;
-    const std::vector<Index>& vtk_solid_faces_offset_;
-    const std::vector<Index>& vtk_solid_face_locations_;
-    const std::vector<Index>& vtk_solid_face_locations_offset_;
+    const std::vector<unsigned char>& vtk_solid_cell_types_; //> 对应 MeshData::solid_types_
+    const std::vector<Index>& vtk_solid_cells_; //> 对应 MeshData::solid_vertices_
+    const std::vector<Index>& vtk_solid_cells_offset_; //> 对应 MeshData::solid_vertices_offset_
+    const std::vector<Index>& vtk_solid_faces_; //> 对应 MeshData::solid_faces_vertices_
+    const std::vector<Index>& vtk_solid_faces_offset_; //> 对应 MeshData::solid_faces_vertices_offset_
+    const std::vector<Index>& vtk_solid_face_locations_; //> 对应 MeshData::solid_faces_
+    const std::vector<Index>& vtk_solid_face_locations_offset_; //> 对应 MeshData::solid_faces_offset_
 
-    const std::vector<Index>& vtk_face_cells_; //> 表示面顶点索引的数组
-    const std::vector<Index>& vtk_face_cells_offset_;
+    const std::vector<Index>& vtk_face_cells_; //> 表示面顶点索引的数组，对应 MeshData::face_vertices_
+    const std::vector<Index>& vtk_face_cells_offset_; //> 表示面顶点索引偏移的数组，对应 MeshData::face_vertices_offset_
 
-    const std::vector<Index>& vtk_edge_cells_;
+    const std::vector<Index>& vtk_edge_cells_; //> 表示边顶点索引的数组，对应 MeshData::edge_vertices_
 
     std::shared_ptr<BlockDatas> model_blocks_;
 

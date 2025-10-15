@@ -18,47 +18,11 @@ int main(int argc, char** argv)
         std::cout << "Try load file: " << inputFile << std::endl;
     }
 
-    std::vector<std::array<double, 3>> vtk_points_;
-
-    std::vector<unsigned char> vtk_solid_cell_types_;
-    std::vector<Index> vtk_solid_cells_;
-    std::vector<Index> vtk_solid_cells_offset_;
-    std::vector<Index> vtk_solid_faces_;
-    std::vector<Index> vtk_solid_faces_offset_;
-    std::vector<Index> vtk_solid_face_locations_;
-    std::vector<Index> vtk_solid_face_locations_offset_;
-
-    std::vector<Index> vtk_face_cells_; //> 表示面顶点索引的数组
-    std::vector<Index> vtk_face_cells_offset_;
-
-    std::vector<Index> vtk_edge_cells_;
+    MeshData mesh;
 
     MeshDataVtk test_mesh_data = inputFile.empty()
-        ? MakeMeshDataVtk(
-            vtk_points_,
-            vtk_solid_cell_types_,
-            vtk_solid_cells_,
-            vtk_solid_cells_offset_,
-            vtk_solid_faces_,
-            vtk_solid_faces_offset_,
-            vtk_solid_face_locations_,
-            vtk_solid_face_locations_offset_,
-            vtk_face_cells_,
-            vtk_face_cells_offset_,
-            vtk_edge_cells_)
-        : MakeMeshDataVtkFromFile(
-            inputFile,
-            vtk_points_,
-            vtk_solid_cell_types_,
-            vtk_solid_cells_,
-            vtk_solid_cells_offset_,
-            vtk_solid_faces_,
-            vtk_solid_faces_offset_,
-            vtk_solid_face_locations_,
-            vtk_solid_face_locations_offset_,
-            vtk_face_cells_,
-            vtk_face_cells_offset_,
-            vtk_edge_cells_);
+        ? MakeMeshDataVtk(mesh)
+        : MakeMeshDataVtkFromFile(inputFile, mesh);
 
     vtkNew<vtkRenderer> renderer;
     vtkNew<vtkRenderWindow> renderWindow;
