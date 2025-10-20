@@ -49,6 +49,13 @@ public:
      */
     vtkSmartPointer<vtkExtractSelection> extractSolid(vtkIdTypeArray* ids);
 
+    /**
+     * @brief 根据点id，提取点数据
+     * @param ids 点id数组
+     * @return 提取出的点数据 Filter
+     */
+    vtkSmartPointer<vtkExtractSelection> extractVertex(vtkIdTypeArray* ids);
+
 private:
     std::shared_ptr<const MeshActor> mesh_actor_; // 非空
 };

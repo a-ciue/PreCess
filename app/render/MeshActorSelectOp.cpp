@@ -63,3 +63,20 @@ vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractSolid(vtkIdTypeAr
 
     return extractSelection;
 }
+
+vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractVertex(vtkIdTypeArray* ids)
+{
+    vtkNew<vtkSelectionNode> selectionNode;
+    selectionNode->SetFieldType(vtkSelectionNode::POINT); // 从 points 中选取点
+    selectionNode->SetContentType(vtkSelectionNode::INDICES);
+    selectionNode->SetSelectionList(ids);
+
+    vtkNew<vtkSelection> selection;
+    selection->SetNode("v", selectionNode);
+
+    vtkNew<vtkExtractSelection> extractSelection;
+    extractSelection->SetInputData(0, mesh_actor_->solid_data_.GetPointer()); // 因为点数据 vertex_positions_ 是被所有数据共享的，这里谁都行
+    extractSelection->SetInputData(1, selection);
+
+    return extractSelection;
+}

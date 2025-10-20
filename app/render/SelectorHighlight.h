@@ -195,4 +195,34 @@ private:
     MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空
     vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的体id，绑定到了mapper，用于触发高亮体cell修改
 };
+
+/**
+ * @brief 点击并高亮多个顶点
+ */
+class VertexSelectorHighlight : public SelectorHighlight {
+public:
+    //! @brief 将actor绑定到renderer，mapper绑定到actor
+    VertexSelectorHighlight(vtkRenderer* renderer);
+    //! @brief 将actor从renderer中删除
+    ~VertexSelectorHighlight() override;
+    //! @brief 返回当前选择的点集
+    SelectionVtk get() override;
+    //! @brief 清空selection并取消高亮，即清空mapper
+    void clear() override;
+    //! @brief 找到坐标下的顶点并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()
+    void select(double posx, double posy) override;
+    //! @brief 设置当前操作的模型actor
+    void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
+
+private:
+    // ！@brief 取消高亮，清空mapper
+    static void _cancel_highlight(vtkIdTypeArray* selected_ids);
+    //! @brief 判断是否已经被选中
+    static vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_);
+
+    vtkRenderer* renderer_;
+    vtkNew<vtkActor> highlight_actor_;
+    MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空
+    vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的点id，绑定到了mapper，用于触发高亮顶点修改
+};
 #endif

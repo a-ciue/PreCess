@@ -26,6 +26,15 @@ target_link_libraries(TestSingleSolidSelectorHighlight PRIVATE
 vtk_module_autoinit(TARGETS TestSingleSolidSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
 install(TARGETS TestSingleSolidSelectorHighlight)
 
+# TestVertexSelectorHighlight
+add_executable(TestVertexSelectorHighlight TestVertexSelectorHighlight.cpp)
+target_link_libraries(TestVertexSelectorHighlight PRIVATE 
+    vtkPart TestDeps
+    VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
+)
+vtk_module_autoinit(TARGETS TestVertexSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+install(TARGETS TestVertexSelectorHighlight)
+
 # TestMeshActor
 add_executable(TestMeshActor TestMeshActor.cpp)
 target_link_libraries(TestMeshActor PRIVATE 
