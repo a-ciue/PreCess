@@ -6,6 +6,7 @@ var searchData=
   ['testmodelmanager_2ecpp_3',['TestModelManager.cpp',['../TestModelManager_8cpp.html',1,'']]],
   ['testsingleedgeselectorhighlight_2ecpp_4',['TestSingleEdgeSelectorHighlight.cpp',['../TestSingleEdgeSelectorHighlight_8cpp.html',1,'']]],
   ['testsinglesolidselectorhighlight_2ecpp_5',['TestSingleSolidSelectorHighlight.cpp',['../TestSingleSolidSelectorHighlight_8cpp.html',1,'']]],
-  ['tiny_5fobj_5floader_2eh_6',['tiny_obj_loader.h',['../tiny__obj__loader_8h.html',1,'']]],
-  ['toolmesh_2eh_7',['ToolMesh.h',['../ToolMesh_8h.html',1,'']]]
+  ['testvertexselectorhighlight_2ecpp_6',['TestVertexSelectorHighlight.cpp',['../TestVertexSelectorHighlight_8cpp.html',1,'']]],
+  ['tiny_5fobj_5floader_2eh_7',['tiny_obj_loader.h',['../tiny__obj__loader_8h.html',1,'']]],
+  ['toolmesh_2eh_8',['ToolMesh.h',['../ToolMesh_8h.html',1,'']]]
 ];

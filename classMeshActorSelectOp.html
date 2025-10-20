@@ -127,6 +127,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a1c3f11c41ff0dd6d7542b4b30fa56e6a" id="r_a1c3f11c41ff0dd6d7542b4b30fa56e6a"><td class="memItemLeft" align="right" valign="top">vtkProp &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c3f11c41ff0dd6d7542b4b30fa56e6a">getBlockActor</a> ()</td></tr>
 <tr class="memitem:a12c411069e01248f62cf937c1da798cf" id="r_a12c411069e01248f62cf937c1da798cf"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkExtractSelection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12c411069e01248f62cf937c1da798cf">extractSolid</a> (vtkIdTypeArray *ids)</td></tr>
 <tr class="memdesc:a12c411069e01248f62cf937c1da798cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据体id，提取体数据  <br /></td></tr>
+<tr class="memitem:a171ada9720997d163510dcb2c2028534" id="r_a171ada9720997d163510dcb2c2028534"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkExtractSelection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a171ada9720997d163510dcb2c2028534">extractVertex</a> (vtkIdTypeArray *ids)</td></tr>
+<tr class="memdesc:a171ada9720997d163510dcb2c2028534"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据点id，提取点数据  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
@@ -177,6 +179,32 @@ Private 属性</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>返回</dt><dd>提取出的体数据 Filter </dd></dl>
+
+</div>
+</div>
+<a id="a171ada9720997d163510dcb2c2028534" name="a171ada9720997d163510dcb2c2028534"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a171ada9720997d163510dcb2c2028534">&#9670;&#160;</a></span>extractVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt; vtkExtractSelection &gt; MeshActorSelectOp::extractVertex </td>
+          <td>(</td>
+          <td class="paramtype">vtkIdTypeArray *</td>          <td class="paramname"><span class="paramname"><em>ids</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据点id，提取点数据 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ids</td><td>点id数组 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>提取出的点数据 Filter </dd></dl>
 
 </div>
 </div>

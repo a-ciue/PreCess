@@ -1,7 +1,7 @@
 <map id="类继承关系图" name="类继承关系图">
 <area shape="rect" id="Node000000" href="$classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,45,225,70"/>
 <area shape="rect" id="Node000001" href="$classsystems_1_1algo_1_1AlgorithmSystemRegister.html" title="算法系统的操作器，负责注册和注销算法插件" alt="" coords="285,5,470,45"/>
-<area shape="poly" id="edge48_Node000000_Node000001" title=" " alt="" coords="233,40,284,34,285,39,234,46"/>
+<area shape="poly" id="edge49_Node000000_Node000001" title=" " alt="" coords="233,40,284,34,285,39,234,46"/>
 <area shape="rect" id="Node000002" href="$classsystems_1_1io_1_1ModelIOSystemRegister.html" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="273,69,481,109"/>
-<area shape="poly" id="edge49_Node000000_Node000002" title=" " alt="" coords="233,69,274,74,273,79,233,74"/>
+<area shape="poly" id="edge50_Node000000_Node000002" title=" " alt="" coords="233,69,274,74,273,79,233,74"/>
 </map>

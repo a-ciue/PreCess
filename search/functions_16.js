@@ -56,5 +56,6 @@ var searchData=
   ['_7evertexfaceiterator_53',['~VertexFaceIterator',['../classMeshLib_1_1VertexFaceIterator.html#af4689d218bce4b432802b423e3fc7309',1,'MeshLib::VertexFaceIterator']]],
   ['_7evertexinhalfedgeiterator_54',['~VertexInHalfedgeIterator',['../classMeshLib_1_1VertexInHalfedgeIterator.html#a8199a01c8990c6188c292e98129e93cd',1,'MeshLib::VertexInHalfedgeIterator']]],
   ['_7evertexouthalfedgeiterator_55',['~VertexOutHalfedgeIterator',['../classMeshLib_1_1VertexOutHalfedgeIterator.html#a2e713988f1196d67270ff90228ca3ae0',1,'MeshLib::VertexOutHalfedgeIterator']]],
-  ['_7evertexvertexiterator_56',['~VertexVertexIterator',['../classMeshLib_1_1VertexVertexIterator.html#aa72ea636a0eb13eac5c0309f0aeb5dbe',1,'MeshLib::VertexVertexIterator']]]
+  ['_7evertexselectorhighlight_56',['~VertexSelectorHighlight',['../classVertexSelectorHighlight.html#a1ed2ecf6f65f2a1e7243344dd6eff0ae',1,'VertexSelectorHighlight']]],
+  ['_7evertexvertexiterator_57',['~VertexVertexIterator',['../classMeshLib_1_1VertexVertexIterator.html#aa72ea636a0eb13eac5c0309f0aeb5dbe',1,'MeshLib::VertexVertexIterator']]]
 ];

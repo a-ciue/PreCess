@@ -1,11 +1,13 @@
 <map id="app/render/test/MakeMeshDataVtk.h" name="app/render/test/MakeMeshDataVtk.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="327,5,521,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="435,5,629,45"/>
 <area shape="rect" id="Node000002" href="$MakeMeshDataVtk_8cpp.html" title=" " alt="" coords="5,93,200,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="341,51,174,96,172,91,340,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="425,51,197,96,196,91,424,45"/>
 <area shape="rect" id="Node000003" href="$TestMeshActor_8cpp.html" title=" " alt="" coords="224,93,411,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="391,56,343,95,339,91,388,52"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="473,53,365,96,363,91,471,48"/>
 <area shape="rect" id="Node000004" href="$TestSingleEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="435,93,629,133"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="460,52,510,91,506,95,457,56"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="535,59,535,93,529,93,529,59"/>
 <area shape="rect" id="Node000005" href="$TestSingleSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="653,93,846,133"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="509,46,679,91,677,96,508,51"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="593,48,703,91,701,96,592,53"/>
+<area shape="rect" id="Node000006" href="$TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="870,93,1063,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="641,45,872,91,871,96,640,51"/>
 </map>

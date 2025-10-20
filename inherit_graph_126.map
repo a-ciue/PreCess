@@ -1,9 +1,11 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,47,203,87"/>
-<area shape="rect" id="Node000001" href="$classEdgePickInteractorStyle.html" title=" " alt="" coords="251,5,428,31"/>
-<area shape="poly" id="edge53_Node000000_Node000001" title=" " alt="" coords="213,42,278,28,279,33,214,47"/>
-<area shape="rect" id="Node000002" href="$classQRenderWindowStyle.html" title=" " alt="" coords="258,55,421,80"/>
-<area shape="poly" id="edge54_Node000000_Node000002" title=" " alt="" coords="216,65,258,65,258,70,216,70"/>
-<area shape="rect" id="Node000003" href="$classSolidPickInteractorStyle.html" title=" " alt="" coords="251,104,428,129"/>
-<area shape="poly" id="edge55_Node000000_Node000003" title=" " alt="" coords="214,88,279,101,278,107,213,93"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,73,203,113"/>
+<area shape="rect" id="Node000001" href="$classEdgePickInteractorStyle.html" title=" " alt="" coords="255,5,433,31"/>
+<area shape="poly" id="edge54_Node000000_Node000001" title=" " alt="" coords="172,66,250,39,290,28,292,33,251,45,173,71"/>
+<area shape="rect" id="Node000002" href="$classQRenderWindowStyle.html" title=" " alt="" coords="263,55,425,80"/>
+<area shape="poly" id="edge55_Node000000_Node000002" title=" " alt="" coords="216,78,262,73,263,79,217,83"/>
+<area shape="rect" id="Node000003" href="$classSolidPickInteractorStyle.html" title=" " alt="" coords="255,104,433,129"/>
+<area shape="poly" id="edge56_Node000000_Node000003" title=" " alt="" coords="217,101,255,105,255,110,216,107"/>
+<area shape="rect" id="Node000004" href="$classVertexPickInteractorStyle.html" title=" " alt="" coords="251,153,437,179"/>
+<area shape="poly" id="edge57_Node000000_Node000004" title=" " alt="" coords="177,114,251,138,296,151,294,156,250,143,176,120"/>
 </map>
