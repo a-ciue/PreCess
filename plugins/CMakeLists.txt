@@ -15,7 +15,7 @@ function(precess_add_io_plugin TARGET)
     )
     set(target_lib ${TARGET}lib)
 
-    # 静态库，供测试链接使用
+    # 闈欐�佸簱锛屼緵娴嬭瘯閾炬帴浣跨敤
     add_library(${target_lib} STATIC ${plug_SOURCES})
     target_link_libraries(${target_lib} PUBLIC
         Core Data DataOps
@@ -24,7 +24,7 @@ function(precess_add_io_plugin TARGET)
     )
     target_include_directories(${target_lib} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-    # 插件
+    # 鎻掍欢
     qt_add_plugin(${TARGET} ${plug_PLUGIN_H})
     target_link_libraries(${TARGET} PRIVATE
         ${target_lib}
@@ -55,7 +55,7 @@ function(precess_add_algo_plugin TARGET)
     )
     set(target_lib ${TARGET}lib)
 
-    # 静态库，供测试链接使用
+    # 闈欐�佸簱锛屼緵娴嬭瘯閾炬帴浣跨敤
     add_library(${target_lib} STATIC ${plug_SOURCES})
     target_link_libraries(${target_lib} PUBLIC
         Core Data DataOps AlgorithmSystem
@@ -64,7 +64,7 @@ function(precess_add_algo_plugin TARGET)
     )
     target_include_directories(${target_lib} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-    # 插件
+    # 鎻掍欢
     qt_add_plugin(${TARGET} ${plug_PLUGIN_H})
     target_link_libraries(${TARGET} PRIVATE
         ${target_lib}
@@ -91,7 +91,10 @@ function(precess_plugin_link_libraries TARGET)
     target_link_libraries(${TARGET}lib PUBLIC ${DEPENDENT_LIBRARIES})
 
     if (OpenCASCADE_FOUND)
-        list(APPEND DEPENDENT_LIBRARIES TKernel freetype)
+        list(APPEND DEPENDENT_LIBRARIES TKernel)
+        if (freetype_FOUND)
+            list(APPEND DEPENDENT_LIBRARIES freetype)
+        endif()
     endif()
     list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
     list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")	

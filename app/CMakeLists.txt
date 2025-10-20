@@ -39,22 +39,25 @@ install(TARGETS ${MYNAME}
 )
 
 # 3) 安装依赖库 (RUNTIME_DEPENDENCIES)
-#    - 这里要列举实际用到的 VTK::XXX 模块输出目录，否则无法复制对应的 .dylib
+#    - 这里要列举实际用到的模块动态库目录，否则无法复制对应的运行时依赖
+set(DEPENDENCY_DIRECTORIES 
+    $<TARGET_FILE_DIR:VTK::CommonCore>
+    $<TARGET_FILE_DIR:TKernel>
+    $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
+    $<TARGET_FILE_DIR:spdlog::spdlog>
+)
+if(freetype_FOUND)
+    list(APPEND DEPENDENCY_DIRECTORIES $<TARGET_FILE_DIR:freetype>)
+endif()
 install(
-        TARGETS ${MYNAME}
-        RUNTIME_DEPENDENCIES
-        DIRECTORIES
-            $<TARGET_FILE_DIR:VTK::CommonCore>
-            $<TARGET_FILE_DIR:TKernel>
-            $<TARGET_FILE_DIR:freetype>
-             # Qt 库所在目录
-            $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
-            $<TARGET_FILE_DIR:spdlog::spdlog>
-        PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"  # don't install Windows-provided libs
-        POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"  # don't install Windows-provided libs
-        FRAMEWORK DESTINATION Frameworks
-        BUNDLE DESTINATION .
-        COMPONENT ${MYNAME}
+    TARGETS ${MYNAME}
+    RUNTIME_DEPENDENCIES
+    DIRECTORIES ${DEPENDENCY_DIRECTORIES}
+    PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"  # don't install Windows-provided libs
+    POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"  # don't install Windows-provided libs
+    FRAMEWORK DESTINATION Frameworks
+    BUNDLE DESTINATION .
+    COMPONENT ${MYNAME}
 )
 
 # 4) 生成部署 QML 的脚本（若需要更多 QML 插件，可在这里处理）

@@ -22,14 +22,18 @@ find_package(VTK REQUIRED COMPONENTS
         InteractionStyle
 )
 
-find_package(freetype MODULE QUIET)
-if(NOT FREETYPE_FOUND)
-    message(STATUS "freetype not found as module, trying config...")
-    find_package(freetype CONFIG REQUIRED)
+find_package(freetype CONFIG QUIET)
+if(NOT freetype_FOUND)
+    message(STATUS "freetype not found in config mode. Trying module mode...")
+    find_package(freetype MODULE QUIET)
+    if(NOT freetype_FOUND)
+        message(WARNING "freetype not found as module. You can set \"freetype_DIR\" to find freetype in module mode.")
+        message(WARNING "freetype not found, assuming that maybe freetype is installed along with OpenCASCADE.")
+    endif()
 endif()
 
 find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick)
-message(STATUS "QT_VERSION: Qt${QT_VERSION_MAJOR}")
+message(STATUS "QT_VERSION: Qt${VTK_QT_VERSION}")
 qt_policy(SET QTP0001 NEW)
 qt_standard_project_setup()
 include(GNUInstallDirs)

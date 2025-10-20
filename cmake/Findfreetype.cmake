@@ -3,6 +3,7 @@
 # * 修改了模块名为 Findfreetype.cmake（小写）
 # * 添加了对dll文件的寻找逻辑
 # * 添加了对动态库SHARED/静态库STATIC的区分逻辑
+# * 修改提示变量，从环境变量FREETYPE_DIR改为缓存变量freetype_DIR
 #[=======================================================================[.rst:
 Findfreetype
 ------------
@@ -60,7 +61,7 @@ Hints
 
 This module accepts the following variables:
 
-``FREETYPE_DIR``
+``freetype_DIR``
   The user may set this cache variable to the root directory of a freetype
   installation to find freetype in non-standard locations.
 
@@ -98,7 +99,7 @@ cmake_policy(SET CMP0159 NEW) # file(STRINGS) with REGEX updates CMAKE_MATCH_<n>
 
 set(FREETYPE_FIND_ARGS
   HINTS
-    ${FREETYPE_DIR}
+    ${freetype_DIR} ${FREETYPE_DIR}
   PATHS
     ENV GTKMM_BASEPATH
     [HKEY_CURRENT_USER\\SOFTWARE\\gtkmm\\2.4;Path]
