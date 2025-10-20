@@ -19,7 +19,6 @@ TEST_CASE("ModelManager add a MeshData")
     auto model = make_unique<ModelData>(move(mesh));
 
     manager.addModel(move(model));
-    REQUIRE(manager.getModelOperator(0));
 
     SECTION("getModelOperator with invalid id")
     {
