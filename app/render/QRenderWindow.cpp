@@ -7,6 +7,7 @@
 #include "SelectManager.h"
 #include "Selection.h"
 #include "SplineActorManager.h"
+#include "SplineDataVtk.h"
 
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
@@ -172,7 +173,7 @@ void QRenderWindow::onModelChanged(Index model_id)
         if (this->model_query_->getModelType(model_id) == 0) {
             std::optional mesh_data = model_query_->getMeshData(model_id);
             if (mesh_data) {
-                vtk->mesh_actor_manager_->loadModel(model_id, *mesh_data, vtk->renderer_, this->renderMode_, 1);
+                vtk->mesh_actor_manager_->loadModel(model_id, *mesh_data, vtk->renderer_, this->renderMode_);
             }
         } else if (this->model_query_->getModelType(model_id) == 1) {
             std::optional spline_data = model_query_->getSplineData(model_id);
@@ -225,6 +226,23 @@ bool QRenderWindow::getCurEdgeRender()
     return this->edge_render_;
 }
 
+void QRenderWindow::setCurVertexRender(bool is_render)
+{
+    this->vertex_render_ = is_render;
+    emit curVertexRenderChanged();
+
+    dispatch_async([this, is_render](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        vtk->mesh_actor_manager_->setRenderVertex(this->cur_actor_id_, is_render);
+    });
+}
+
+bool QRenderWindow::getCurVertexRender()
+{
+    return this->vertex_render_;
+}
+
 bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
 {
     if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->getCount(model_id)) {
@@ -238,6 +256,16 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
     return false;
 }
 
+bool QRenderWindow::getIsVertexRender(Data& vtk, Index model_id)
+{
+    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->getCount(model_id)) {
+        return vtk.mesh_actor_manager_->getIsVertexRender(model_id);
+    }
+
+    std::cout << "get is vertex render mode error" << std::endl;
+    return false;
+}
+
 void QRenderWindow::setSelectModel(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -245,6 +273,10 @@ void QRenderWindow::setSelectModel(Index model_id)
         selectManager_->bindRenderer(vtk->renderer_);
         this->cur_actor_id_ = model_id;
         this->setCurEdgeRender(this->getIsEdgeRender(*vtk, model_id));
+
+        this->vertex_render_ = this->getIsVertexRender(*vtk, model_id);
+        emit curVertexRenderChanged();
+
         if (vtk->mesh_actor_manager_->getCount(model_id))
             selectManager_->setSelectActor(vtk->mesh_actor_manager_->getModelActor(model_id));
         else

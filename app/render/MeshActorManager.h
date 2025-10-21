@@ -12,19 +12,21 @@ public:
 	void bindRender(vtkRenderer* renderer);
         std::shared_ptr<const MeshActor> getModelActor(Index model_id);
 	void deleteModel(Index model_id);
-	void loadModel(Index model_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode, bool edge_render);
+	void loadModel(Index model_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode);
 
 	void setVisibility(Index model_id, bool visibility);
 	void setRenderMode(Index model_id, ModelRenderMode render_mode);
-	void setRenderEdge(Index model_id, bool is_render);
+        void setRenderEdge(Index model_id, bool is_render);
+        void setRenderVertex(Index model_id, bool is_render);
         /**
-         * @brief ÉèÖÃ»òÈ¡Ïû²Ã¼ôÆ½Ãæ
-         * @param plane ²Ã¼ôÆ½Ãæ£¬´«ÈënullptrÔòÈ¡Ïû²Ã¼ô
+         * @brief è®¾ç½®æˆ–å–æ¶ˆè£å‰ªå¹³é¢
+         * @param plane è£å‰ªå¹³é¢ï¼Œä¼ å…¥nullptråˆ™å–æ¶ˆè£å‰ª
          */
         void setClipPlane(vtkPlane* plane);
 
 	bool getCount(Index model_id);
-	bool getIsEdgeRender(Index model_id);
+        bool getIsEdgeRender(Index model_id);
+        bool getIsVertexRender(Index model_id);
 	ModelRenderMode getMeshRenderMode(Index model_id);
 private:
 	std::unordered_map<Index, std::shared_ptr<MeshActor>> models_;

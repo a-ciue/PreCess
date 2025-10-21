@@ -335,6 +335,16 @@ ApplicationWindow {
                         }
                     }
                     ToolButton{
+                        text: "点渲染"
+                        checkable: true
+                        checked: myItem.cur_vertex_render
+                        Layout.preferredWidth: 50
+                        Layout.fillHeight: true
+                        onClicked:{
+                            myItem.cur_vertex_render = !myItem.cur_vertex_render
+                        }
+                    }
+                    ToolButton{
                         text: "块渲染"
                         checkable: true
                         Layout.preferredWidth: 50
