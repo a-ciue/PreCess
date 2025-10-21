@@ -22,7 +22,7 @@ public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode);
+    MeshActor(vtkRenderer* renderer, bool is_edge_render, bool is_vertex_render, ModelRenderMode render_mode);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -34,25 +34,30 @@ public:
      */
     void setClipPlane(vtkPlane* plane);
     void setRenderEdge(bool is_render);
+    void setRenderVertex(bool is_render);
     void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
+    bool getIsVertexRender();
     ModelRenderMode getMeshRenderMode();
 
 private:
     ModelRenderMode render_mode_;
     bool edge_render_{ true };
+    bool vertex_render_ {};
     bool visibility_{ true };
     std::unique_ptr<MeshDataVtk> model_data_;
 
     vtkPlane* clip_plane_ {};
 
+    vtkNew<vtkExtractPolyDataGeometry> vertex_clipper_;
     vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;
     vtkNew<vtkExtractPolyDataGeometry> face_clipper_;
     vtkNew<vtkExtractGeometry> solid_clipper_;
 
     vtkNew<vtkGeometryFilter> solid_filter_;
 
+    vtkNew<vtkPolyDataMapper> vertex_mapper_;
     vtkNew<vtkPolyDataMapper> edge_mapper_;
     vtkNew<vtkPolyDataMapper> face_mapper_;
     vtkNew<vtkPolyDataMapper> solid_mapper_;
@@ -60,10 +65,12 @@ private:
     vtkNew<vtkActor> solid_actor_;
     vtkNew<vtkActor> face_actor_;
     vtkNew<vtkActor> edge_actor_;
+    vtkNew<vtkActor> vertex_actor_;
 
     vtkNew<vtkUnstructuredGrid> solid_data_;
     vtkNew<vtkPolyData> face_data_;
     vtkNew<vtkPolyData> edge_data_;
+    vtkNew<vtkPolyData> vertex_data_;
 
     vtkRenderer* renderer_;
 

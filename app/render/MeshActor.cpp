@@ -25,19 +25,24 @@
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
-MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode)
+MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, bool is_vertex_render, ModelRenderMode render_mode)
     : renderer_(renderer)
     , render_mode_(render_mode)
     , edge_render_(is_edge_render)
 {
+    vtkNew<vtkNamedColors> colors;
     this->setRenderMode(render_mode);
     this->setRenderEdge(is_edge_render);
+    this->setRenderVertex(is_vertex_render);
 
     this->edge_actor_->GetProperty()->SetLineWidth(2);
+    this->vertex_actor_->GetProperty()->SetPointSize(3);
+    this->vertex_actor_->GetProperty()->SetColor(colors->GetColor3d("Yellow").GetData());
 
     this->solid_actor_->SetMapper(solid_mapper_);
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
+    this->vertex_actor_->SetMapper(vertex_mapper_);
 
     this->actor_->SetMapper(block_mapper_);
 }
@@ -49,6 +54,7 @@ MeshActor::~MeshActor()
         renderer_->RemoveActor(this->solid_actor_);
         renderer_->RemoveActor(this->face_actor_);
         renderer_->RemoveActor(this->edge_actor_);
+        renderer_->RemoveActor(this->vertex_actor_);
     }
 }
 
@@ -65,6 +71,27 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         points_data_array->SetNumberOfComponents(3);
         points_data_array->SetArray(const_cast<double*>(vtk_points.data()->data()), 3 * vtk_points.size(), 1);
         points_data->SetData(points_data_array);
+    }
+
+    // vertex data
+    vtkPolyData* vertex_poly = this->vertex_data_;
+    {
+        vtkNew<vtkCellArray> vertex_cells;
+        vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
+        vtkIdType size = points_data->GetNumberOfPoints();
+
+        index_array->SetNumberOfValues(size);
+        // 使用并行方式设置点id
+        vtkSMPTools::For(0, size,
+            [&](vtkIdType begin, vtkIdType end) {
+                for (vtkIdType cellId = begin; cellId < end; ++cellId) {
+                    index_array->SetValue(cellId, static_cast<Index>(cellId));
+                }
+            });
+        vertex_cells->SetData(1, index_array);
+
+        vertex_poly->SetPoints(points_data);
+        vertex_poly->SetVerts(vertex_cells);
     }
 
     // face data
@@ -119,6 +146,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     solid_filter_->SetInputData(solid_ugird);
 
     // mappers
+    vertex_mapper_->SetInputData(vertex_poly);
     edge_mapper_->SetInputData(edge_poly);
     face_mapper_->SetInputData(face_poly);
     solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
@@ -132,7 +160,8 @@ void MeshActor::setVisibility(bool visibility)
     this->actor_->SetVisibility(visibility);
     this->solid_actor_->SetVisibility(visibility);
     this->face_actor_->SetVisibility(visibility);
-    this->edge_actor_->SetVisibility(visibility);
+    this->edge_actor_->SetVisibility(visibility && this->edge_render_);
+    this->vertex_actor_->SetVisibility(visibility && this->vertex_render_);
 }
 
 void MeshActor::setClipPlane(vtkPlane* plane)
@@ -142,21 +171,25 @@ void MeshActor::setClipPlane(vtkPlane* plane)
             solid_clipper_->SetInputData(this->solid_data_);
             face_clipper_->SetInputData(this->face_data_);
             edge_clipper_->SetInputData(this->edge_data_);
+            vertex_clipper_->SetInputData(this->vertex_data_);
 
             solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
             solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
             face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
             edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
+            vertex_mapper_->SetInputConnection(vertex_clipper_->GetOutputPort());
 
             clip_plane_ = plane;
         }
         solid_clipper_->SetImplicitFunction(plane);
         face_clipper_->SetImplicitFunction(plane);
         edge_clipper_->SetImplicitFunction(plane);
+        vertex_clipper_->SetImplicitFunction(plane);
     } else {
         solid_filter_->SetInputData(this->solid_data_);
         face_mapper_->SetInputData(face_data_);
         edge_clipper_->SetInputData(edge_data_);
+        vertex_clipper_->SetInputData(vertex_data_);
 
         clip_plane_ = nullptr;
     }
@@ -168,7 +201,13 @@ void MeshActor::setRenderEdge(bool is_render)
     this->actor_->GetProperty()->SetEdgeVisibility(is_render);
     this->solid_actor_->GetProperty()->SetEdgeVisibility(is_render);
     this->face_actor_->GetProperty()->SetEdgeVisibility(is_render);
-    this->edge_actor_->GetProperty()->SetEdgeVisibility(is_render);
+    this->edge_actor_->SetVisibility(is_render && this->visibility_);
+}
+
+void MeshActor::setRenderVertex(bool is_render)
+{
+    this->vertex_render_ = is_render;
+    this->vertex_actor_->SetVisibility(is_render && this->visibility_);
 }
 
 void MeshActor::setRenderMode(ModelRenderMode render_mode)
@@ -179,10 +218,12 @@ void MeshActor::setRenderMode(ModelRenderMode render_mode)
         this->renderer_->AddActor(this->solid_actor_);
         this->renderer_->AddActor(this->face_actor_);
         this->renderer_->AddActor(this->edge_actor_);
+        this->renderer_->AddActor(this->vertex_actor_);
     } else if (render_mode_ == ModelRenderMode::Block) {
         this->renderer_->RemoveActor(this->solid_actor_);
         this->renderer_->RemoveActor(this->face_actor_);
         this->renderer_->RemoveActor(this->edge_actor_);
+        this->renderer_->RemoveActor(this->vertex_actor_);
         this->renderer_->AddActor(this->actor_);
     } else {
         std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
@@ -193,6 +234,11 @@ void MeshActor::setRenderMode(ModelRenderMode render_mode)
 bool MeshActor::getIsEdgeRender()
 {
     return this->edge_render_;
+}
+
+bool MeshActor::getIsVertexRender()
+{
+    return this->vertex_render_;
 }
 
 ModelRenderMode MeshActor::getMeshRenderMode()
