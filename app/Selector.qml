@@ -20,6 +20,7 @@ Row{
         id: selectModeComboBox
         model:ListModel{
             ListElement{text: "..."}
+            ListElement{text: "点"}
             ListElement{text: "边"}
             ListElement{text: "面"}
             ListElement{text: "体"}

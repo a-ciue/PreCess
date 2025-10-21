@@ -13,6 +13,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkSphereSource.h>
+#include <vtkUnstructuredGrid.h>
 
 #include <spdlog/spdlog.h>
 
@@ -23,7 +24,10 @@ SingleSolidSelectorHighlight::SingleSolidSelectorHighlight(vtkRenderer* renderer
     this->selected_ids_->SetNumberOfComponents(1);
     this->selected_ids_->SetNumberOfValues(0);
 
+    vtkNew<vtkUnstructuredGrid> dummy;
     vtkNew<vtkDataSetMapper> mapper;
+    mapper->SetInputData(dummy);
+
     this->highlight_actor_->SetMapper(mapper);
     this->highlight_actor_->GetProperty()->SetColor(1.0, 1.0, 0.0); // 黄色高亮
     this->highlight_actor_->GetProperty()->EdgeVisibilityOn();

@@ -18,6 +18,7 @@ enum class SplineRenderMode {
 
 enum class SelectMode {
     None,
+    Vertex,
     Face,
     Edge,
     Solid,

@@ -7,11 +7,15 @@
 #include <vtkHardwarePicker.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
+#include <vtkUnstructuredGrid.h>
 
 VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer* renderer)
     : renderer_(renderer)
 {
+    vtkNew<vtkUnstructuredGrid> dummy;
     vtkNew<vtkDataSetMapper> mapper;
+    mapper->SetInputData(dummy);
+
     this->highlight_actor_->SetMapper(mapper);
     this->highlight_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0); // 红色高亮
     this->highlight_actor_->GetProperty()->SetPointSize(6.0);

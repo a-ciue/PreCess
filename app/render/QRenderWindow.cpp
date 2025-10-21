@@ -268,8 +268,10 @@ void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) ->void {
         Data* vtk = Data::SafeDownCast(userData);
-        
-        if(select_mode == "Face"){
+        if (select_mode == "Vertex") {
+            select_mode_ = SelectMode::Vertex;
+        }
+        else if(select_mode == "Face"){
             select_mode_ = SelectMode::Face;
         }
         else if(select_mode == "Edge"){

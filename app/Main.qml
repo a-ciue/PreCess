@@ -401,6 +401,9 @@ ApplicationWindow {
                 if(selectType === "..."){
                     myItem.setSelectMode("None")
                 }
+                if(selectType === "点"){
+                    myItem.setSelectMode("Vertex")
+                }
                 if(selectType === "边"){
                     myItem.setSelectMode("Edge")
                 }

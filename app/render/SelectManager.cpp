@@ -32,7 +32,9 @@ void SelectManager::setSelectActor(std::weak_ptr<const MeshActor> model_actor_)
 void SelectManager::setSelectMode(SelectMode select_mode)
 {
     this->select_mode_ = select_mode;
-    if (this->select_mode_ == SelectMode::Face) {
+    if (this->select_mode_ == SelectMode::Vertex) {
+        this->selector_ = std::make_unique<VertexSelectorHighlight>(this->renderer_);
+    } else if (this->select_mode_ == SelectMode::Face) {
         this->selector_ = std::make_unique<SingleFaceSelectorHighlight>(this->renderer_);
     } else if (this->select_mode_ == SelectMode::Block) {
         this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
@@ -61,7 +63,12 @@ std::unique_ptr<Selection> SelectManager::getSelection()
 {
     std::unique_ptr<Selection> selection = std::make_unique<Selection>();
 
-    if (this->select_mode_ == SelectMode::Face) {
+    if (this->select_mode_ == SelectMode::Vertex) {
+        for (const auto& id : this->selector_->get().ids) {
+            selection->ids.push_back(id);
+        }
+        selection->type = ElementEnum::Vertex;
+    } else if (this->select_mode_ == SelectMode::Face) {
         for (const auto& id : this->selector_->get().ids) {
             selection->ids.push_back(id);
         }
@@ -71,6 +78,11 @@ std::unique_ptr<Selection> SelectManager::getSelection()
             selection->ids.push_back(id);
         }
         selection->type = ElementEnum::Block;
+    }else if (this->select_mode_ == SelectMode::Solid) {
+        for (const auto& id : this->selector_->get().ids) {
+            selection->ids.push_back(id);
+        }
+        selection->type = ElementEnum::Solid;
     } else if (this->select_mode_ == SelectMode::Edge) {
         for (const auto& id : this->selector_->get().ids) {
             selection->ids.push_back(id);
