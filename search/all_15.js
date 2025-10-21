@@ -9,7 +9,7 @@ var searchData=
   ['value_5f_6',['value_',['../classQArgObject.html#a9d79f37273c907d676fb4ac74e2f227c',1,'QArgObject']]],
   ['value_5ftype_7',['value_type',['../classplf_1_1colony.html#ace6e03e5725f18e917eabbf3be9b2e97',1,'plf::colony::value_type'],['../classplf_1_1colony_1_1colony__iterator.html#ac3662af70004e7af5d9a0c678eaf0e02',1,'plf::colony::colony_iterator::value_type'],['../classplf_1_1colony_1_1colony__reverse__iterator.html#ab7b699287c5161ab3102d1c44e765564',1,'plf::colony::colony_reverse_iterator::value_type']]],
   ['vector_8',['vector',['../classsystems_1_1algo_1_1vector.html',1,'systems::algo::vector&lt; T &gt;'],['../classsystems_1_1io_1_1vector.html',1,'systems::io::vector&lt; T &gt;']]],
-  ['vertex_9',['Vertex',['../classElementEnum.html#a348e24319977174506bd4fc7f9e9a953ad9f13d19ea4f113d465d7934b2c15a85',1,'ElementEnum']]],
+  ['vertex_9',['Vertex',['../classElementEnum.html#a348e24319977174506bd4fc7f9e9a953ad9f13d19ea4f113d465d7934b2c15a85',1,'ElementEnum::Vertex'],['../Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6ab22b929ba52471a02d18bb3a4e4472e6',1,'Vertex:&#160;Core.h']]],
   ['vertex_10',['vertex',['../classMeshLib_1_1CHalfEdge.html#afa5358d25b2e03cbd900644a508d6225',1,'MeshLib::CHalfEdge']]],
   ['vertex_2eh_11',['Vertex.h',['../Vertex_8h.html',1,'']]],
   ['vertex_5fcb_12',['vertex_cb',['../structtinyobj_1_1callback__t.html#a56770b4d8c2e91a1ebfacb19d78cd6b4',1,'tinyobj::callback_t']]],
