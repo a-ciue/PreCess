@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
     interactor->SetInteractorStyle(style);
 
     // 创建 MeshActor 并加载数据
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, true, ModelRenderMode::Face);
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, true, true, ModelRenderMode::Face);
     meshActor->loadModelData(test_mesh_data);
 
     // 体元高亮选择器

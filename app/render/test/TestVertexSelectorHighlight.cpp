@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
     interactor->SetInteractorStyle(style);
 
     // 创建MeshActor
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, true, ModelRenderMode::Face);
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, true, true, ModelRenderMode::Face);
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 
