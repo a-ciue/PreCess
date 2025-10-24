@@ -119,7 +119,7 @@ MeshActor 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:ab7ce4d5c9af533e44aff29d92225cb01" id="r_ab7ce4d5c9af533e44aff29d92225cb01"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab7ce4d5c9af533e44aff29d92225cb01">MeshActor</a> (vtkRenderer *renderer, bool is_edge_render, bool is_vertex_render, <a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31">ModelRenderMode</a> render_mode)</td></tr>
+<tr class="memitem:a8a58880832090d3733e5999e5e5115d1" id="r_a8a58880832090d3733e5999e5e5115d1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a58880832090d3733e5999e5e5115d1">MeshActor</a> (vtkRenderer *renderer, bool is_edge_render=true, bool is_vertex_render=true, <a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31">ModelRenderMode</a> render_mode=<a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31a8af5861002f3c157f9ba842bba10aa3f">ModelRenderMode::Face</a>)</td></tr>
 <tr class="memitem:a21ef1656d52d5ce899fa1cafe2ea1bd2" id="r_a21ef1656d52d5ce899fa1cafe2ea1bd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21ef1656d52d5ce899fa1cafe2ea1bd2">~MeshActor</a> ()</td></tr>
 <tr class="memitem:a70be0e3ea4dc333f6454667209f68f98" id="r_a70be0e3ea4dc333f6454667209f68f98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70be0e3ea4dc333f6454667209f68f98">loadModelData</a> (const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;model_data)</td></tr>
 <tr class="memitem:adf6ab9d3e2278feb471c0fd00f6e8806" id="r_adf6ab9d3e2278feb471c0fd00f6e8806"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf6ab9d3e2278feb471c0fd00f6e8806">setVisibility</a> (bool visibility)</td></tr>
@@ -178,8 +178,8 @@ Private 属性</h2></td></tr>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>负责管理Model的Actor </p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
-<a id="ab7ce4d5c9af533e44aff29d92225cb01" name="ab7ce4d5c9af533e44aff29d92225cb01"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7ce4d5c9af533e44aff29d92225cb01">&#9670;&#160;</a></span>MeshActor()</h2>
+<a id="a8a58880832090d3733e5999e5e5115d1" name="a8a58880832090d3733e5999e5e5115d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a58880832090d3733e5999e5e5115d1">&#9670;&#160;</a></span>MeshActor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -192,17 +192,17 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>is_edge_render</em></span>, </td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>is_edge_render</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>is_vertex_render</em></span>, </td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>is_vertex_render</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31">ModelRenderMode</a></td>          <td class="paramname"><span class="paramname"><em>render_mode</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31">ModelRenderMode</a></td>          <td class="paramname"><span class="paramname"><em>render_mode</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31a8af5861002f3c157f9ba842bba10aa3f">ModelRenderMode::Face</a></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
