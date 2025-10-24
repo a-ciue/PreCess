@@ -2,17 +2,6 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "vcpkg-export",
-      "displayName": "Vcpkg Export",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "installDir": "${sourceDir}/out/install/${presetName}",
-      "cacheVariables": {
-        "VCPKG_MANIFEST_MODE": "OFF",
-        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../vcpkg-export/scripts/buildsystems/vcpkg.cmake"
-      }
-    },
-    {
       "name": "vcpkg",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
