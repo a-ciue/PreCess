@@ -19,9 +19,9 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 [![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
+[![Gitee Stargazers][stars-shield]][stars-url]
+[![Github Stargazers][github-stars-shield]][github-stars-url]
 [![Issues][issues-shield]][issues-url]
-
 [![Contributors][contributors-shield]][contributors-url]
 [![project_license][license-shield]][license-url]
 <!-- [![LinkedIn][linkedin-shield]][linkedin-url] -->
@@ -33,19 +33,19 @@
     <img src="https://foruda.gitee.com/images/1754736381119453114/37538937_9363227.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">前蔚处理 PreCess</h3>
+  <h3 align="center">前蔚处理 PreCess</h3>
 
   <p align="center">
     专注网格处理的CAE前处理软件，面向网格算法开发者与工业界实际网格处理业务需求。
     <br />
-    <a href=><strong>Explore the docs »</strong></a>
+    <a href="https://gitee.com/precess/PreCess/wikis/Home"><strong>项目文档 »</strong></a>
     <br />
     <br />
-    <a href=>View Demo</a>
+    <a href="https://gitee.com/precess/PreCess/releases">发行版</a>
     &middot;
-    <a href=>Report Bug</a>
+    <a href="https://gitee.com/precess/PreCess/issues/new?template=1-bug%E6%8A%A5%E5%91%8A.yml">Bug 报告</a>
     &middot;
-    <a href=>Request Feature</a>
+    <a href="https://gitee.com/precess/PreCess/issues/new?template=3-%E5%8A%9F%E8%83%BD%E5%BB%BA%E8%AE%AE.yml">功能反馈</a>
   </p>
 </div>
 
@@ -83,7 +83,7 @@
 </details>
 
 <!-- ABOUT THE PROJECT -->
-## 关于项目
+## 🔭关于项目
 
 [![Product Name Screen Shot][product-screenshot]](https://geohubdut.netlify.app/products/item-a765/)
 
@@ -97,11 +97,11 @@
 
 本项目使用**插件化架构**，将功能都封装在插件中。为了方便基于软件做**二次开发**，项目中的插件依赖使用LGPLv3许可，允许**不修改依赖源码前提下闭源**。
 
-**在开源项目早期参与项目，是技术历练与学习实践，是为世界开源社区贡献，也是一场以身入局的人生投资。**
+**参与开源项目是技术历练与学习实践，是为世界开源社区贡献，也是一场以身入局的人生投资。**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### 我们能做什么？
+### 🤔我们能做什么？
 
 长久以来网格算法开发存在**痛点问题**：
 
@@ -118,95 +118,58 @@
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### 项目技术
+### 🛠️项目技术
 
 * [![C++][C++]][C++-url]
 * [![CMake][CMake]][CMake-url]
 * [![Qt][Qt]][Qt-url]
 * [![VTK][VTK]][VTK-url]
 * [![OCC][OCC]][OCC-url]
+* [![Catch2][Catch2]][C++-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## 构建项目
+## 🚀快速构建项目
 
-### 准备
+#### Windows用户
 
-* 下载[CMake安装包](https://cmake.org/download/)并安装，勾选把CMake添加到PATH环境变量
-* **Windows**用户需要安装[Visual Studio并选择安装C++桌面开发组件](https://visualstudio.microsoft.com/zh-hans/vs/features/cplusplus/)
-
-### 构建
-
-#### Windows用户 （使用vcpkg的导出依赖包）
-
-1. 在本项目[发行版页面](https://gitee.com/precess/PreCess/releases)，下载带预编译依赖包vcpkg-export与项目源码PreCess，确保文件目录结构为两文件夹并列：
-```
-- vcpkg-export
-    - installed
-    - scripts
-    - .vcpkg.root
-    - vcpkg.exe
-- PreCess（项目源码目录）
-```
+1. 在本项目[发行版页面](https://gitee.com/precess/PreCess/releases)，下载带预编译依赖包`PreCess-deps`与项目源码`PreCess`，并解压放置在相同目录`<path>`
 2. `Win`+`Q`搜索并打开`x64 Native Tools Command Prompt for VS 2022`
-3. 假设该目录为`<path>`，执行命令：
-```pwsh
-cd /d <path>/PreCess
-cmake . --preset vcpkg-export
-cd out/build/vcpkg-export
-cmake --build .
-cmake --install .
-cd ../../install/vcpkg-export/bin
-PreCess.exe
-```
-
-#### Windows用户（不使用vcpkg）
-
-**前提**：需要提前准备所需依赖库：qt、vtk、occ，暂且略过
-
-1. 在本项目[发行版页面](https://gitee.com/precess/PreCess/releases)，下载带预编译依赖库的软件源码并解压
-2. `Win`+`Q`搜索并打开`x64 Native Tools Command Prompt for VS 2022`
-3. 假设解压目录为`<path>`，
-```pwsh
-cd <path>/PreCess
-cmake -S . -B build -DCMAKE_PREFIX_PATH="<dependent_package_directories>"
-cd build
-cmake --build .
-cmake --install . 
+3. 执行命令：
+```bash
+cd /d "<path>/PreCess"
+cmake -S . -B ./build -GNinja "-DCMAKE_PREFIX_PATH=<path>/PreCess-deps" -DCMAKE_INSTALL_PREFIX=./install-rel -DCMAKE_BUILD_TYPE=Release
+cmake --build ./build --target install
+"./install-rel/bin/PreCess.exe"
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
-## 功能用法
+## ⚙️功能用法
 
 - 导入并展示模型
-- 交互式算法调用：选择面、边、块
+- 交互式算法调用：对列表单击选中的模型，选择点、面、边、块
 - 插件开发与集成：功能皆插件。IO插件、算法插件
 
-_For more examples, please refer to the [Documentation]()_
+_For more examples, please refer to the [Documentation](https://gitee.com/precess/PreCess/wikis/Home)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
-## 路线图
+## 🗺️路线图
 
 需要完成的**特性、功能**，即**迭代计划**：
 
 > 未加粗的目标仍处于计划预览状态。
 
 * [ ] **CI支持**：
-  * [ ] 完成项目的测试框架：对每个功能类都要编写单元测试
+  * [x] 完成项目的测试框架：对每个功能类都要编写单元测试
   * [ ] 配置远程托管平台的自动测试与检查
-* [ ] **网格类型支持**：修改数据层网格核心数据结构与渲染窗口代码，做到能导入并可视化。目前软件只能表示三角形网格，要能表示其他面网格如
-  * [ ] 四边形网格、更广义的多面体网格
-  * [ ] 添加对体网格的支持
-* [ ] **渲染窗口的基础交互支持**：主要是支持各种网格元素的拾取
-  * [ ] 面网格的点线面
-  * [ ] 体网格的点线面体
-  * [ ] 体网格的切面支持，效果参考[HexaLab](https://www.hexalab.net/)暂时只需要实现Filters的Slice中的类切平面效果
+* [x] **网格类型支持**：做到能导入并可视化三角形网格、四边形网格、更广义的多边形网格、体网格
+* [ ] **渲染窗口的基础交互支持**：支持各种网格元素的拾取：点、线、面、体
+  * [x] 体网格的切面支持，实现切平面裁剪网格的可视化效果
+  * [ ] 更便捷的切面可视化与可视化，效果参考[HexaLab](https://www.hexalab.net/)
 * [ ] **辅助数据结构系统**：一些网格算法需要依赖某种特定的数据结构如CTMesh等，需要一个系统用于注册插件给定的数据结构类型、拿模型数据构造并存储于内存中，以免每次执行算法对数据结构反复构造
   * [ ] **数据层存储附加数据支持**：可以存储**模型核心数据**外的附加数据，如顶点id、uv纹理坐标等，也可用于存储**辅助数据结构**。**模型核心数据**指模型点的坐标与面构成等模型的核心数据
 * [ ] **现代化UI开发**：
@@ -244,7 +207,7 @@ _For more examples, please refer to the [Documentation]()_
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
-## 参与项目
+## 🤝参与项目
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
@@ -252,7 +215,7 @@ Contributions are what make the open source community such an amazing place to l
 
 在此从简单开始列举可以为项目的**贡献形式**：
 
-1. 给项目一个**Star**⭐！
+1. 给项目一个**Star**🌟！
 2. **新建[Issue](https://gitee.com/precess/PreCess/issues)**：反馈项目bug、功能改进建议、新功能建议。写Issue时按照给定模板进行填写，并标注对应的tag标签。如，
    * 项目Bug：反馈程序运行过程中遇到的bug，填写Issue时附带程序的输出记录。最好能做到稳定复现Bug，并附带Bug的复现操作流程。标注**bug标签**
    * 改进建议：标注enhancement标签
@@ -276,7 +239,7 @@ Contributions are what make the open source community such an amazing place to l
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
-## 许可证
+## ⚖️许可证
 
 本项目对**不同部分代码**分别使用了`GPLv3`与`LGPLv3`许可证。
 
@@ -287,18 +250,19 @@ Contributions are what make the open source community such an amazing place to l
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTACT -->
-## 联系方式
+## 📞联系方式
 
 <div align="center">
     <img src="https://foruda.gitee.com/images/1754749758923219333/0f73d9d8_9363227.png" alt="Logo" width="300">
 </div>
 
 仓库链接: [https://gitee.com/precess/PreCess](https://gitee.com/precess/PreCess)
+github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/PreCess)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
-## 鸣谢
+## 🙏鸣谢
 
 * [GeoHub-DUT](https://geohubdut.netlify.app/)
 * [大连理工大学软件学院先进工业软件与软件工程研究所](https://ss.dlut.edu.cn/index.htm)
@@ -314,9 +278,11 @@ Contributions are what make the open source community such an amazing place to l
 [forks-url]: https://gitee.com/precess/PreCess/network/members
 [stars-shield]: https://gitee.com/precess/PreCess/badge/star.svg?theme=dark
 [stars-url]: https://gitee.com/precess/PreCess/stargazers
+[github-stars-shield]: https://img.shields.io/github/stars/a-ciue/PreCess?style=social
+[github-stars-url]: https://github.com/a-ciue/PreCess/stargazers
 [issues-shield]: https://svg.hamm.cn/gitee.svg?user=precess&project=PreCess&type=issue
 [issues-url]: https://gitee.com/precess/PreCess/issues
-[license-shield]: https://svg.hamm.cn/gitee.svg?user=precess&project=PreCess&type=license
+[license-shield]: https://img.shields.io/badge/license-GPLv3%2FLGPLv3-blue.svg
 [license-url]: https://gitee.com/precess/PreCess/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-111-black.svg?colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
@@ -331,3 +297,5 @@ Contributions are what make the open source community such an amazing place to l
 [VTK-url]: https://vtk.org/
 [OCC]: https://img.shields.io/badge/OpenCASCADE-000000?style=for-the-badge&logo=occ&logoColor=white
 [OCC-url]: https://dev.opencascade.org/
+[Catch2]: https://img.shields.io/badge/Catch2-000000?style=for-the-badge&logo=catch2&logoColor=white
+[Catch2]: https://github.com/catchorg/Catch2
