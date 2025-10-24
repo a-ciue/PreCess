@@ -13,7 +13,7 @@
 #include <spdlog/spdlog.h>
 
 
-QModelManager::QModelManager(QObject* parent)
+QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     : QObject(parent)
 {
     // 1) 初始化
@@ -32,9 +32,10 @@ QModelManager::QModelManager(QObject* parent)
 
     // 3) 注册插件
     using std::filesystem::path;
-    path plugin_dir = std::filesystem::current_path() / "../plugins";
+    path exe_dir = std::filesystem::absolute(argv0).parent_path();
+    path plugin_dir = exe_dir / "../plugins"; // 对应 install 后的目录结构
     if (!std::filesystem::is_directory(plugin_dir)) {
-        plugin_dir = std::filesystem::current_path() / "plugins";
+        plugin_dir = exe_dir / "plugins"; // 对应 开发调试 时的目录结构
     }
     if (!std::filesystem::is_directory(plugin_dir)) {
         spdlog::error("QModelManager::QModelManager: 插件目录 {} 不存在", plugin_dir.string());

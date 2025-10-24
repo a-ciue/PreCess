@@ -20,7 +20,7 @@ class QModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
 public:
-    explicit QModelManager(QObject* parent = nullptr);
+    explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
     ~QModelManager();
 
     Q_INVOKABLE void removeModel(int id);
