@@ -62,8 +62,10 @@ install(
 
 # 4) 生成部署 QML 的脚本（若需要更多 QML 插件，可在这里处理）
 qt_generate_deploy_qml_app_script(
-        TARGET ${MYNAME}
-        OUTPUT_SCRIPT deploy_script
+    TARGET ${MYNAME}
+    OUTPUT_SCRIPT deploy_script
+    NO_COMPILER_RUNTIME # 不在此包含运行时库，特别是vc_redist.exe。已通过InstallRequiredSystemLibraries声明安装运行时dll
+#    DEPLOY_TOOL_OPTIONS --no-opengl-sw --no-system-dxc-compiler # 可选通过禁用一些功能来减小体积
 )
 install(
     SCRIPT ${deploy_script}
