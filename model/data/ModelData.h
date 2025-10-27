@@ -43,6 +43,10 @@ public:
     explicit ModelData(std::unique_ptr<MeshData> mesh);
     explicit ModelData(std::unique_ptr<SplineData> spline);
 
+    ModelData(const ModelData& other) = delete;
+    ModelData& operator=(const ModelData& other) = delete;
+    ModelData(ModelData&& other);
+    ModelData& operator=(ModelData&& other);
     /* ============ 类型查询 ============ */
     Type type() const;
     bool hasMesh()   const noexcept;

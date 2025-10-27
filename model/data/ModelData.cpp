@@ -35,6 +35,9 @@ ModelData::ModelData(std::unique_ptr<SplineData> spline)
 {
 }
 
+ModelData::ModelData(ModelData&& other) = default;
+ModelData& ModelData::operator=(ModelData&& other) = default;
+
 ModelData::Type ModelData::type() const { return type_; }
 bool ModelData::hasMesh() const noexcept { return type_ == Type::Mesh && asMeshData(); }
 bool ModelData::hasSpline() const noexcept { return type_ == Type::Spline && asSplineData(); }
