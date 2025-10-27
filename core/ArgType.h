@@ -8,7 +8,7 @@
 #include <string>
 
 // 参数类型枚举
-#include "ArgTypeEnum.h"
+#include "private_ArgTypeEnum.h"
 
 /**
  * @brief 描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件
