@@ -5,17 +5,13 @@
 #pragma once
 #include "Core.h"
 #include "ModelIOSystemBase.h"
+#include "SystemHandlerPtr.h"
 #include <any>
 #include <filesystem>
 #include <unordered_map>
 #include <vector>
 
 class ModelManager;
-
-namespace systems {
-template <typename Handler>
-class PluginHandler;
-}
 
 namespace systems::io {
 class ModelIOHandler;
@@ -33,8 +29,8 @@ struct HandlerMetaData {
  */
 class ModelIOSystem : public ModelIOSystemBase {
 public:
-    using Handler = ModelIOHandler;
-    using PluginHandler = ::systems::PluginHandler<Handler>;
+    using SystemHandler = ModelIOHandler;
+    using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>;
     static const std::string name; //> 系统名称
 
     ModelIOSystem(ModelManager& manager);
@@ -57,9 +53,9 @@ public:
     /**
      * @brief 系统的功能Handler注册函数
      * @param meta_data 功能的元信息
-     * @param plugin_handler 从插件读取的待注册的处理功能
+     * @param handler 从插件读取的待注册的处理功能
      */
-    bool registerHandler(const HandlerMetaData& meta_data, std::unique_ptr<PluginHandler> plugin_handler);
+    bool registerHandler(const HandlerMetaData& meta_data, SystemHandlerPtr handler);
     /**
      * @brief 系统功能注销
      */
@@ -72,7 +68,7 @@ public:
 
 private:
     ModelManager* manager_;
-    std::unordered_map<std::string, std::unique_ptr<PluginHandler>> handlers_; //> 键是文件类型
+    std::unordered_map<std::string, SystemHandlerPtr> handlers_; //> 键是文件类型
     std::unordered_map<std::string, std::unique_ptr<ModelIOInfo>> file_type_infos_; //> 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
 };
 }

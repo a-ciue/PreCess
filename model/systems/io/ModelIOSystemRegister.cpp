@@ -4,7 +4,7 @@
  */
 #include "ModelIOSystemRegister.h"
 #include "ModelIOSystem.h"
-#include "PluginHandler.h"
+#include "PluginBase.h"
 
 #include <QJsonArray>
 #include <cassert>
@@ -19,20 +19,15 @@ ModelIOSystemRegister::ModelIOSystemRegister(ModelIOSystem& system): system_(&sy
 bool ModelIOSystemRegister::registerPlugin(const QJsonObject& meta_data, PluginBase& plugin)
 {
     using namespace std;
-    try
-    {
-		auto plugin_handler = std::make_unique<ModelIOSystem::PluginHandler>(plugin);
 
-	    HandlerMetaData handler_data = toMetaData(meta_data);
-	    return this->system_->registerHandler(handler_data, std::move(plugin_handler));
-    } catch (const std::bad_any_cast& e)
-    {
-        spdlog::error("Failed to cast plugin to ModelIOSystem::Handler: {}", e.what());
-        return false;
-    } catch (const std::exception& e) {
-        spdlog::error("Exception occurred while registering handler: {}", e.what());
+    auto handler = plugin.makeHandler<ModelIOSystem::SystemHandler>();
+    if (!handler) {
+        spdlog::error("Failed to create ModelIOSystem::SystemHandler from plugin.");
         return false;
     }
+
+    HandlerMetaData handler_data = toMetaData(meta_data);
+    return this->system_->registerHandler(handler_data, std::move(handler));
 }
 
 void ModelIOSystemRegister::unregisterPlugin(const QJsonObject& meta_data)
