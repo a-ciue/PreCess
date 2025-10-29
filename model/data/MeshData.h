@@ -6,6 +6,8 @@
 
 #include "Core.h"
 
+#include <optional>
+
 /**
  * @brief 表示网格中的一个 Patch
  *
@@ -127,28 +129,24 @@ struct MeshData {
     PatchMap patches_;
     BlockMap blocks_;
 
-    void clear() { 
-        vertex_positions_.clear();
-        face_vertices_.clear();
-        face_vertices_offset_.clear();
-        edge_vertices_.clear();
-        solid_types_.clear();
-        solid_vertices_.clear();
-        solid_vertices_offset_.clear();
-        solid_faces_vertices_.clear();
-        solid_faces_vertices_offset_.clear();
-        solid_faces_.clear();
-        solid_faces_offset_.clear();
-        patches_.clear();
-        blocks_.clear();
-    }
-
-    void init()
-    {
-        clear();
-        face_vertices_offset_.push_back(0);
-        solid_vertices_offset_.push_back(0);
-        solid_faces_vertices_offset_.push_back(0);
-        solid_faces_offset_.push_back(0);
-    }
+    /**
+     * @brief 清除所有数据，即使offset数组起码也要保留一个元素0
+     */
+    void clear();
+    /**
+     * @brief 初始化 MeshData 结构，确保 offset 数组至少包含一个初始元素 0。
+     */
+    void init();
+    /**
+     * @brief 根据给定的面ID，查找其所属的Patch ID
+     * @param face_id 面的索引
+     * @return 如果找到对应的Patch ID，则返回该ID，否则返回std::nullopt
+     */
+    std::optional<Index> face_patch_id(int face_id);
+    /**
+     * @brief 根据给定的Patch ID，查找其所属的Block ID
+     * @param patch_id Patch的索引
+     * @return 如果找到对应的Block ID，则返回该ID，否则返回std::nullopt
+     */
+    std::optional<Index> patch_block_id(int patch_id);
 };

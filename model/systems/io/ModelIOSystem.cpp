@@ -47,8 +47,8 @@ void ModelIOSystem::write(Index model, const std::filesystem::path& path, const 
         return;
     }
 
-    if (ModelData* model_data = this->manager_->getModel(model)) {
-        handler->write_model(*model_data, path, args);
+    if (std::optional model_op = this->manager_->getModelOperator(model)) {
+        handler->write_model(model_op->data(), path, args);
     } else {
         spdlog::warn("model id {} does not exist, cant write model file", model);
     }

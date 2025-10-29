@@ -4,9 +4,9 @@
 //#include "../FileHandler.h"
 #include "ModelObserver.h"
 
-ModelData* ModelOperator::data() const
+ModelData& ModelOperator::data() const
 {
-    return model_;
+    return *model_;
 }
 
 ModelObserver* ModelOperator::observer() const
@@ -20,7 +20,9 @@ void ModelOperator::write_spline(const std::filesystem::path& spline_path)
 
 void ModelOperator::notifyChanged()
 {
-    observer_->notifyModelChanged(model_->getId());
+    if (this->observer_) {
+        observer_->notifyModelChanged(this->id_);
+    }
 }
 
 void ModelOperator::merge_blocks(std::unique_ptr<Selection> selection)
@@ -29,12 +31,14 @@ void ModelOperator::merge_blocks(std::unique_ptr<Selection> selection)
         return; // 如果没有选择或选择为空，直接返回
     }
     model_->merge_blocks(*selection);
-    observer_->notifyModelChanged(model_->getId());
+    if (this->observer_) {
+        observer_->notifyModelChanged(this->id_);
+    }
 }
 
 Index ModelOperator::getId() const
 {
-    return model_->id_;
+    return this->id_;
 }
 
 ModelData::Type ModelOperator::getType() const
