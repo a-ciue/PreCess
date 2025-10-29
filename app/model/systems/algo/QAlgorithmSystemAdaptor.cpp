@@ -14,7 +14,7 @@ QAlgorithmSystemAdaptor::QAlgorithmSystemAdaptor(AlgorithmSystem& algo_system)
 QVariant QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, const QList<QArgObject*>& args)
 {
     // 转换到C++标准库类型，并检验所需类型
-    std::vector<std::any> converted_args;
+    std::vector<core::ArgObject> converted_args;
     converted_args.reserve(args.size());
     for (QArgObject* arg : args) {
         if (std::optional value = arg->getValue()) {

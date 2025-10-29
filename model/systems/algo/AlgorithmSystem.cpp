@@ -4,6 +4,7 @@
  */
 #include "AlgorithmSystem.h"
 #include "AlgorithmHandler.h"
+#include "ArgObject.h"
 #include "ModelIOSystem.h"
 #include "ModelManager.h"
 #include <cassert>
@@ -12,6 +13,7 @@
 namespace systems::algo {
 using std::string;
 using std::vector;
+using core::ArgObject;
 
 const string AlgorithmSystem::name = "AlgorithmSystem";
 
@@ -23,7 +25,7 @@ AlgorithmSystem::AlgorithmSystem(io::ModelIOSystem& io_system, ModelManager& mod
 
 AlgorithmSystem::~AlgorithmSystem() = default;
 
-std::any AlgorithmSystem::call(const string& unique_name, Index model, const vector<std::any>& args)
+std::any AlgorithmSystem::call(const string& unique_name, Index model, const vector<ArgObject>& args)
 {
     std::optional model_op = model_manager_->getModelOperator(model);
     if (!model_op) {

@@ -5,21 +5,79 @@
  */
 #ifndef ARG_TYPE_H
 #define ARG_TYPE_H
+#include <filesystem>
 #include <string>
 
 // 参数类型枚举
 #include "private_ArgTypeEnum.h"
 
+struct Selection;
+
+namespace core {
 /**
  * @brief 描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件
- * 
+ *
  * TODO: 参数类型由参数数据类型（int, double, select, choice等），而一种参数类型也可能能用多种控件来实现（如int可以用文本框或滑动条，choice能用dropdown、按钮等），控件类型尽量由UI定义不由集成者定义。即插件开发者只需要做到描述对某个参数的需求，UI根据参数需求来生成对应的控件。可能用std::variant+visit表示控件类型会更好（？）做这个之前学习一下开源软件的思路（blender、unreal engine等）
  */
 struct ArgType {
-    ArgTypeEnum type; // 参数类型
-    std::string name; // 参数名称
-    std::string content; // 内容（如默认值或其他选项信息），具体形式由参数控件定义
-    std::string desc; // 参数描述
+    /**
+     * @brief 类型映射
+     */
+    template <ArgTypeEnum T>
+    struct TypeMap {
+        static_assert(false, "Enum not correspond to a valid type.");
+    };
+
+    ArgTypeEnum type; //> 参数类型
+    std::string name; //> 参数名称
+    std::string content; //> 内容（如默认值或其他选项信息），具体形式由参数控件定义
+    std::string desc; //> 参数描述
 };
+
+/**
+ * @brief 类型映射的便捷类型别名
+ */
+template <ArgTypeEnum T>
+using ArgTypeT = typename ArgType::TypeMap<T>::type;
+
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::None> {
+    using type = void;
+};
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Int> {
+    using type = long long;
+};
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Float> {
+    using type = double;
+};
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Text> {
+    using type = std::string;
+};
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Bool> {
+    using type = bool;
+};
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Path> {
+    using type = std::filesystem::path;
+};
+/**
+ * @brief 下拉框选择类型，内容为选项索引
+ */
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Combo> {
+    using type = int; 
+};
+/**
+ * @brief 选择器类型，内容为选择器对象指针
+ */
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Selector> {
+    using type = std::shared_ptr<std::unique_ptr<Selection>>;
+}; 
+}
 
 #endif // !ARG_TYPE_H

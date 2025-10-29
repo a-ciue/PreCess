@@ -81,12 +81,12 @@ void MeshMeditModelHandler::write_model(const ModelData& data, const fs::path& p
     }
 }
 
-std::vector<ArgType> MeshMeditModelHandler::read_args_type() const
+std::vector<core::ArgType> MeshMeditModelHandler::read_args_type() const
 {
     return {};
 }
 
-std::vector<ArgType> MeshMeditModelHandler::write_args_type() const
+std::vector<core::ArgType> MeshMeditModelHandler::write_args_type() const
 {
     return {};
 }

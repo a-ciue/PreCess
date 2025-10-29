@@ -11,8 +11,9 @@
 #include <any>
 
 class ModelData;
+namespace core {
 struct ArgType;
-
+}
 namespace systems::io {
 namespace fs = std::filesystem;
 /**
@@ -41,13 +42,13 @@ public:
 	 * @return 返回参数类型列表
 	 * TODO: 待存放到元数据
 	 */
-    virtual std::vector<ArgType> read_args_type() const = 0;
+    virtual std::vector<core::ArgType> read_args_type() const = 0;
 	/**
 	 * @brief 写出文件参数类型，交给UI使用
 	 * @return 返回参数类型列表
 	 * TODO: 待存放到元数据
 	 */
-    virtual std::vector<ArgType> write_args_type() const = 0;
+    virtual std::vector<core::ArgType> write_args_type() const = 0;
 };
 }
 #endif // MODEL_IO_HANDLER_H

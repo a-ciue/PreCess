@@ -13,6 +13,9 @@
 #include <unordered_map>
 #include <vector>
 
+namespace core {
+class ArgObject;
+}
 class ModelManager;
 
 
@@ -41,7 +44,7 @@ public:
      * @param model
      * @param args 算法参数
      */
-    std::any call(const std::string& unique_name, Index model, const std::vector<std::any>& args);
+    std::any call(const std::string& unique_name, Index model, const std::vector<core::ArgObject>& args);
     /**
      * @brief 注册算法处理器插件
      */

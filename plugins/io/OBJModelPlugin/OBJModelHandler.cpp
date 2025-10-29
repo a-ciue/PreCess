@@ -12,6 +12,7 @@
 #include <fstream>
 
 namespace systems::io {
+using core::ArgType;
 std::unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     // MeshData
