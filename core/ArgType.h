@@ -76,7 +76,7 @@ struct ArgType::TypeMap<ArgTypeEnum::Combo> {
  */
 template <>
 struct ArgType::TypeMap<ArgTypeEnum::Selector> {
-    using type = std::shared_ptr<std::unique_ptr<Selection>>;
+    using type = std::shared_ptr<Selection>;
 }; 
 }
 

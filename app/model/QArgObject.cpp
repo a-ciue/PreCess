@@ -57,7 +57,7 @@ std::optional<ArgObject> QArgObject::getValue() const
         QSelection* selection = value_.value<QSelection*>();
         if (selection) {
             canConvert = true;
-            ret = ArgObject::create<ArgTypeEnum::Selector>(std::make_shared<std::unique_ptr<Selection>>(selection->move()));
+            ret = ArgObject::create<ArgTypeEnum::Selector>(selection->get());
         }
         break;
     }

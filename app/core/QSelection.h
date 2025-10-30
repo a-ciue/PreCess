@@ -30,12 +30,12 @@ public:
      * 存入
      * @param data 待存入的数据
      */
-    void set(std::unique_ptr<Selection> data) { data_ = std::move(data); }
+    void set(std::shared_ptr<Selection> data) { data_ = std::move(data); }
     /**
      * 取出
      * @return 存储的Selection对象
      */
-    std::unique_ptr<Selection> move() { return std::move(data_); }
+    std::shared_ptr<Selection> get() { return data_; }
 
     /**
      * @brief 获取该选择的数组大小
@@ -84,7 +84,7 @@ public:
     }
 
 private:
-    std::unique_ptr<Selection> data_;
+    std::shared_ptr<Selection> data_;
 };
 
 #endif //  Q_SELECTION_H
