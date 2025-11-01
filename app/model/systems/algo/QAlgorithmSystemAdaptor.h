@@ -2,7 +2,7 @@
 #define Q_ALGORITHM_SYSTEM_ADAPTOR_H
 
 #include "Core.h"
-#include <QObject>
+#include <QVariant>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 class QArgObject;
@@ -19,12 +19,12 @@ class QAlgorithmSystemAdaptor : public QObject {
 public:
     QAlgorithmSystemAdaptor(AlgorithmSystem& algo_system);
     /**
-     * @brief 调用算法，debug模式下调用算法前检查参数类型是否正确
+     * @brief 调用算法
      * @param unique_name 算法唯一名称
      * @param args 算法参数
      * @return 算法结果
      */
-    Q_INVOKABLE QVariant call(const QString& unique_name, Index model, const QList<QArgObject*>& args);
+    Q_INVOKABLE QVariant call(const QString& unique_name, Index model, const QVariantList& args);
 
     /**
      * @brief 由qml获取所有已注册的算法功能和参数列表

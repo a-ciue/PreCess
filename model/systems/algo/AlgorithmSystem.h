@@ -9,6 +9,7 @@
 
 #include <any>
 #include <memory>
+#include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -57,6 +58,12 @@ public:
      * @brief 获取已注册算法类型信息
      */
     std::vector<AlgorithmInfo*> getAlgorithmInfos();
+    /**
+     * @brief 获取参数类型
+     * @param unique_name 算法唯一名称
+     * @return 参数类型
+     */
+    std::optional<std::vector<core::ArgType>> getArgTypes(const std::string& unique_name);
 
 private:
     io::ModelIOSystem* io_system_; //< 模型IO系统引用，用于模型读写

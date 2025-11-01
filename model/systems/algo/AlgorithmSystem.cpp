@@ -81,4 +81,13 @@ vector<AlgorithmInfo*> AlgorithmSystem::getAlgorithmInfos()
     }
     return infos;
 }
+
+std::optional<std::vector<core::ArgType>> AlgorithmSystem::getArgTypes(const std::string& unique_name)
+{
+    auto it = handlers_.find(unique_name);
+    if (it != handlers_.end() && it->second) {
+        return it->second->args_type();
+    }
+    return {};
+}
 }

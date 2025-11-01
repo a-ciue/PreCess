@@ -1,26 +1,52 @@
 /**
  * @file QArgType.h
- * @brief 声明了Qml的枚举类型QArgType
+ * @brief 声明了Qml的算法参数类型QArgType和枚举类型ArgTypeEnum
  *
  * 由CMake填充C++枚举ArgTypeEnum来做到Qml枚举和C++枚举的一致
  * @author 张家僮(htxz_6a6@163.com)
  */
 #ifndef Q_ARG_TYPE_H
 #define Q_ARG_TYPE_H
+#include "ArgType.h"
 
 #include <QObject>
 #include <qqmlintegration.h>
 /**
- * @brief QArgType 声明了Qml的枚举类型
+ * @brief QArgType Qml侧的算法调用参数类型与相关枚举，存储了这个变量所需的参数类型信息
  */
 class QArgType : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
     QML_ELEMENT
-	QML_UNCREATABLE("QArgType 声明了枚举类型，不应该被实例化")
+    Q_PROPERTY(QArgType::ArgTypeEnum type READ type CONSTANT)
+    Q_PROPERTY(QString name READ name CONSTANT)
+    Q_PROPERTY(QString content READ content CONSTANT)
+    Q_PROPERTY(QString description READ desc CONSTANT)
 public:
 // 枚举类型插入点
 @ArgTypeEnum_H_CONTENT@
     Q_ENUM(ArgTypeEnum)
+
+    QArgType(core::ArgType&& type, QObject* parent = nullptr)
+        : QObject(parent)
+        , type_(std::move(type))
+    {
+    }
+    QArgType(const core::ArgType& type, QObject* parent = nullptr)
+        : QObject(parent)
+        , type_(type)
+    {
+    }
+    /** 获取参数类型枚举值 */
+    QArgType::ArgTypeEnum type() const { return static_cast<QArgType::ArgTypeEnum>(type_.type); }
+    /** 获取参数类型名称，供ui展示 */
+    QString name() const { return QString::fromStdString(type_.name); }
+    /** 获取参数类型的有关内容，供qml解析与对应构造。如下拉框的各个选项、参数的默认值 */
+    QString content() const { return QString::fromStdString(type_.content); }
+    /** 获取参数类型的描述信息，ui展示解释参数的作用 */
+    QString desc() const { return QString::fromStdString(type_.desc); }
+
+private:
+    const core::ArgType& type_;
 };
 #endif // !Q_ARG_TYPE_H

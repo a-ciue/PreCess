@@ -19,11 +19,12 @@ Item{
     property int curModel
     property var savedSelection: []
     required property QSelection curSelection // temp
-    property Item paraList: parameterList
+    property var parameters: []
     signal selectModeChanged
     signal cancleCommand
 
     onCurAlgoInfoChanged: {
+        parameters = []
         parameterList.model = curAlgoInfo.arg_types
     }
     Button{
@@ -34,10 +35,7 @@ Item{
         anchors.right: parent.right
         height:30
         onClicked:{
-            //let params = parameterList.model.map(model => model.value)
-
-            //commandDispatcher.runCommand(curCommand, curModel, 
-            algorithmSystem.call(curAlgoInfo.name, curModel, parameterList.model)
+            algorithmSystem.call(curAlgoInfo.name, curModel, root.parameters)
         }
     }
     Item{
@@ -59,32 +57,20 @@ Item{
                     Loader{
                         required property var model
                         required property int index
-                        required property int type  // ArgTypeEnum
-                        required property string name
-                        required property string content
-                        required property string description
-                        required property var value
                         sourceComponent:{
-                            if(curAlgoInfo && curAlgoInfo.name === "切分边"){
-                                return splictEdgeComponent
-                            }
-                            if(curAlgoInfo && curAlgoInfo.name === "切分面"){
-                                return splictFaceComponent
-                            }
-
-                            if(type === QArgType.Path){           //文件
+                            if(model.type === QArgType.Path){           //文件
                                 return fileComponent
                             }
-                            if(type === QArgType.Combo){           //多选一
+                            if(model.type === QArgType.Combo){           //多选一
                                 return componentComboBox
                             }
-                            if(type === QArgType.Float){           //数字框
+                            if(model.type === QArgType.Float){           //数字框
                                 return oneNumberBox
                             }
-                            if(type === QArgType.Selector){           //选择器
+                            if(model.type === QArgType.Selector){           //选择器
                                 return selectorComponent
                             }
-                            if(type === QArgType.Text){           //文字输入框
+                            if(model.type === QArgType.Text){           //文字输入框
                                 return textComponent
                             }
                         }
@@ -146,19 +132,15 @@ Item{
     Component{
         id:componentComboBox
         RowLayout{
-            id: root
             spacing: 5
             width: parameterList.width
-            // function commitInformation(){
-            //     console.log(information.currentText)
-            // }
-            property var model
+            property var value: null
             ListModel{
                 id: comboModel
             }
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -169,14 +151,13 @@ Item{
                 id:parameterComboBox
                 model: comboModel
                 onCurrentIndexChanged: {
-                    root.parent.model.value = currentIndex
+                    root.parameters[index] = value = currentIndex
                 } 
             }
 
             Component.onCompleted: {
-                root.model = model
-                if(content){
-                    let items = content.split(",")
+                if(model && model.content){
+                    let items = model.content.split(",")
                     comboModel.clear()
                     for(let i=0; i<items.length; i++){
                         comboModel.append({"text":items[i]})
@@ -192,7 +173,7 @@ Item{
             width: parameterList.width
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -203,7 +184,7 @@ Item{
                 id:parameterTextInput
                 Layout.fillWidth: parent.width
                 onTextChanged:{
-                    model.value = parseFloat(text)
+                    root.parameters[index] = parseFloat(text)
                 }
             }
         }
@@ -215,7 +196,7 @@ Item{
             width: parameterList.width
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -228,11 +209,11 @@ Item{
                 Layout.fillWidth: parent.width
 
                 Component.onCompleted: {
-                    fileText.text = content
-                    model.value = fileText.text
+                    fileText.text = model.content
+                    root.parameters[index] = fileText.text
                 }
                 onEditingFinished: {
-                    model.value = fileText.text
+                    root.parameters[index] = fileText.text
                 }
             }
             Button{
@@ -245,7 +226,7 @@ Item{
                 id:parameterFileDialog
                 onAccepted:{
                     fileText.text = urlToPath(selectedFile)
-                    model.value = fileText.text
+                    root.parameters[index] = fileText.text
                 }
 
 				function urlToPath(url) {
@@ -270,7 +251,7 @@ Item{
             property var value: fileText.text
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -283,11 +264,11 @@ Item{
                 Layout.fillWidth: true
                 
                 Component.onCompleted: {
-                    fileText.text = content
-                    model.value = fileText.text
+                    fileText.text = model.content
+                    root.parameters[index] = fileText.text
                 }
                 onEditingFinished: {
-                    model.value = fileText.text
+                    root.parameters[index] = fileText.text
                 }
             }
         }
@@ -298,15 +279,11 @@ Item{
             // id: root
             spacing: 5
             width: parameterList.width
-            /** type:string */
-            property int valueEdge : 0
-            property int valueFace : 0
-            property int valueBlock : 0
-            property var selected
-            property int type: 3  // 添加类型标识
+            property var value: null
 
             Text{
                 id:nametext
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -315,7 +292,7 @@ Item{
             }
             Text{
                 id:selectedItems
-                text: valueEdge + "边" + valueFace + "面" + valueBlock + "块"
+                text: value ? value.size():"无"
             }
 
             Button{
@@ -323,53 +300,19 @@ Item{
                 text: "开始选择"
                 onClicked:{
                     root.selectModeChanged()
+                    checked = !checked
                 }
-            }
-            property alias name: nametext.text
-            property alias parameter1: selectedItems.text
-            //property alias selectedItems: selected
-        }
-    }
-    Component{
-        id:splictEdgeComponent
-        RowLayout{
-            property int value: 0
-            width: parameterList.width
-            Text{
-                text:"已选择"+value+"条边"
-            }
-            Button{
-                Layout.preferredWidth: 40
-                text: "取消"
-                onClicked: {
-                    cancleCommand()
+                onCheckedChanged: {
+                    if (checked) {
+                        root.curSelectionChanged.connect(changeSelectionOnce)
+                    } else {
+                        root.curSelectionChanged.disconnect(changeSelectionOnce)
+                    }
                 }
-            }
-            function addSelection(){
-                if(!value){
-                    value = 1
-                }
-            }
-        }
-    }
-    Component{
-        id:splictFaceComponent
-        RowLayout{
-            property int value: 0
-            width: parameterList.width
-            Text{
-                text:"已选择"+value+"个面"
-            }
-            Button{
-                Layout.preferredWidth: 40
-                text: "取消"
-                onClicked: {
-                    cancleCommand()
-                }
-            }
-            function addSelection(){
-                if(!value){
-                    value = 1
+
+                function changeSelectionOnce() {
+                    root.parameters[index] = value = root.curSelection
+                    checked = false
                 }
             }
         }

@@ -23,7 +23,7 @@ public:
     /**
      * @brief 获取存储的参数对象
      * @tparam T 参数类型枚举
-     * @return 对应的对象，失败则为空
+     * @return 对应的对象指针，失败则为空
      */
     template <ArgTypeEnum T>
     ArgTypeT<T>* get()

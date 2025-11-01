@@ -4,34 +4,19 @@
 #include <QFileInfo>
 
 using namespace core;
-QArgObject::QArgObject(ArgType&& type, QObject* parent)
+QArgObject::QArgObject(const QArgType& type, QObject* parent)
     : QObject(parent)
-    , type_(std::move(type))
+    , type_(&type)
 {
 }
 
-QArgObject::QArgObject(const ArgType& type, QObject* parent)
-    : QObject(parent)
-    , type_(type)
-{
-}
-
-QArgType::ArgTypeEnum QArgObject::type() const { return static_cast<QArgType::ArgTypeEnum>(type_.type); }
-
-QString QArgObject::name() const { return QString::fromStdString(type_.name); }
-
-QString QArgObject::content() const { return QString::fromStdString(type_.content); }
-
-QString QArgObject::desc() const
-{
-    return QString::fromStdString(type_.desc);
-}
+const QArgType* QArgObject::type() const { return type_; }
 
 std::optional<ArgObject> QArgObject::getValue() const
 {
     bool canConvert { true };
     std::optional<ArgObject> ret;
-    switch (type_.type) {
+    switch (static_cast<ArgTypeEnum>(type_->type())) {
     case ArgTypeEnum::None:
         break;
     case ArgTypeEnum::Int:
