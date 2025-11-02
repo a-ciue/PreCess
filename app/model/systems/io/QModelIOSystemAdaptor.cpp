@@ -14,19 +14,11 @@ QModelIOSystemAdaptor::QModelIOSystemAdaptor(ModelIOSystem& io_system)
 {
 }
 
-bool QModelIOSystemAdaptor::read(const QString& unique_name, const QUrl& url, const QList<QArgObject*>& args)
+bool QModelIOSystemAdaptor::read(const QString& unique_name, const QUrl& url, const QVariantList& args)
 try {
     // 转换到C++标准库类型，并检验所需类型
     std::vector<std::any> converted_args;
-    converted_args.reserve(args.size());
-    for (QArgObject* arg : args) {
-        if (std::optional value = arg->getValue()) {
-            converted_args.push_back(*value);
-        } else {
-            spdlog::error("AlgorithmSystemAdaptor::call: Argument {} not valid", arg->name().toStdString());
-            return {};
-        }
-    }
+    // TODO: 暂时不对args处理
 
     io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(), unique_name.toStdString(), converted_args);
     return true;
@@ -38,19 +30,11 @@ try {
     return {};
 }
 
-bool QModelIOSystemAdaptor::write(const QString& unique_name, Index model, const QUrl& url, const QList<QArgObject*>& args)
+bool QModelIOSystemAdaptor::write(const QString& unique_name, Index model, const QUrl& url, const QVariantList& args)
 try {
     // 将QArgObject列表转换为std::vector<std::any>
     std::vector<std::any> any_args;
-    any_args.reserve(args.size());
-    for (QArgObject* arg : args) {
-        if (std::optional value = arg->getValue(); value) {
-            any_args.push_back(*value);
-        } else {
-            spdlog::error("AlgorithmSystemAdaptor::call: Argument {} not valid", arg->name().toStdString());
-            return {};
-        }
-    }
+    // TODO: 暂时不对args处理
     io_system_->write(model, url.toLocalFile().toLocal8Bit().toStdString(), unique_name.toStdString(), std::move(any_args));
     return true;
 } catch (const std::exception& e) {
@@ -65,13 +49,13 @@ QList<QModelIOInfo*> QModelIOSystemAdaptor::getModelIOInfo() const
 try {
     QList<QModelIOInfo*> infos;
     for (ModelIOInfo* file_type_info : io_system_->registeredFileTypeInfos()) {
-        QList<QArgObject*> read_args;
+        QList<QArgType*> read_args;
         for (const auto& arg_type : file_type_info->read_arg_types) {
-            read_args << new QArgObject(arg_type);
+            read_args << new QArgType(arg_type);
         }
-        QList<QArgObject*> write_args;
+        QList<QArgType*> write_args;
         for (const auto& arg_type : file_type_info->write_arg_types) {
-            write_args << new QArgObject(arg_type);
+            write_args << new QArgType(arg_type);
         }
 
         infos << new QModelIOInfo(

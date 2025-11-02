@@ -98,6 +98,7 @@ void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_ac
 void VertexSelectorHighlight::_cancel_highlight(vtkIdTypeArray* selected_ids)
 {
     selected_ids->SetNumberOfValues(0);
+    selected_ids->Modified();
 }
 
 vtkIdType VertexSelectorHighlight::_is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_)

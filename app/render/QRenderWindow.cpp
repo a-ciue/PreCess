@@ -14,6 +14,7 @@
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
+#include <spdlog/spdlog.h>
 
 QRenderWindow::QRenderWindow()
 {
@@ -181,7 +182,9 @@ void QRenderWindow::onModelChanged(Index model_id)
                 vtk->spline_actor_manager_->loadSpline(model_id, *spline_data);
             }
         } else {
-            std::cout << "load model error" << std::endl;
+            vtk->mesh_actor_manager_->deleteModel(model_id);
+            vtk->spline_actor_manager_->deleteModel(model_id);
+            spdlog::info("QRenderWindow::onModelChanged: unrecognized model type loaded as empty.");
         }
     });
 }

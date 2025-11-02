@@ -10,9 +10,12 @@
 #include <string>
 #include <vector>
 
+namespace core {
+class ArgObject;
+}
 namespace systems::io
 {
-	class ModelIOSystemBase;
+class ModelIOSystemBase;
 }
 
 class ModelOperatorBase;
@@ -34,12 +37,12 @@ public:
      * @param args 算法参数
      * @return 算法结果（可自定义类型）
      */
-    virtual std::any execute(HandlerContext& context, const std::vector<std::any>& args) = 0;
+    virtual std::any execute(HandlerContext& context, const std::vector<core::ArgObject>& args) = 0;
     /**
      * @brief 算法参数类型，交给UI使用
      * @return 返回参数类型列表
      */
-    virtual std::vector<ArgType> args_type() const = 0;
+    virtual std::vector<core::ArgType> args_type() const = 0;
 };
 }
 #endif // ALGORITHM_HANDLER_H

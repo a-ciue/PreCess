@@ -14,16 +14,16 @@ import app.model.systems.algo
 
 Item{
     id: root
-    required property QAlgorithmSystemAdaptor algorithmSystem
-    property QAlgorithmInfo curAlgoInfo
+    property var system
+    property var curAlgoInfo
     property int curModel
-    property var savedSelection: []
     required property QSelection curSelection // temp
-    property Item paraList: parameterList
+    property var parameters: []
     signal selectModeChanged
     signal cancleCommand
 
     onCurAlgoInfoChanged: {
+        parameters = []
         parameterList.model = curAlgoInfo.arg_types
     }
     Button{
@@ -34,10 +34,7 @@ Item{
         anchors.right: parent.right
         height:30
         onClicked:{
-            //let params = parameterList.model.map(model => model.value)
-
-            //commandDispatcher.runCommand(curCommand, curModel, 
-            algorithmSystem.call(curAlgoInfo.name, curModel, parameterList.model)
+            system.call(curAlgoInfo.name, curModel, root.parameters)
         }
     }
     Item{
@@ -54,63 +51,26 @@ Item{
                 Layout.fillWidth: true
                 Layout.margins: 3
                 spacing: 5
-                property var loadedItems: ({})
                 delegate:Component{
                     Loader{
                         required property var model
                         required property int index
-                        required property int type  // ArgTypeEnum
-                        required property string name
-                        required property string content
-                        required property string description
-                        required property var value
                         sourceComponent:{
-                            if(curAlgoInfo && curAlgoInfo.name === "切分边"){
-                                return splictEdgeComponent
-                            }
-                            if(curAlgoInfo && curAlgoInfo.name === "切分面"){
-                                return splictFaceComponent
-                            }
-
-                            if(type === QArgType.Path){           //文件
+                            if(model.type === QArgType.Path){           //文件
                                 return fileComponent
                             }
-                            if(type === QArgType.Combo){           //多选一
+                            if(model.type === QArgType.Combo){           //多选一
                                 return componentComboBox
                             }
-                            if(type === QArgType.Float){           //数字框
+                            if(model.type === QArgType.Float){           //数字框
                                 return oneNumberBox
                             }
-                            if(type === QArgType.Selector){           //选择器
+                            if(model.type === QArgType.Selector){           //选择器
                                 return selectorComponent
                             }
-                            if(type === QArgType.Text){           //文字输入框
+                            if(model.type === QArgType.Text){           //文字输入框
                                 return textComponent
                             }
-                        }
-                        Component.onCompleted: {
-                        /*if(item){
-                            parameterList.loadedItems[index] = item
-                            if(type === 0){
-                                parameterList.loadedItems[index].name = name
-                                parameterList.loadedItems[index].parameter1 = content
-                            }
-                            if(type === 1){
-                                parameterList.loadedItems[index].name = name
-                                parameterList.loadedItems[index].parameter1 = content
-                            }
-                            if(type === 2){
-                                parameterList.loadedItems[index].name = name
-                                parameterList.loadedItems[index].parameter1 = content
-                            }
-                            if(type === 3){
-                                parameterList.loadedItems[index].name = name
-                                //parameterList.loadedItems[index].parameter1 = content
-                            }
-                        }*/
-                        }
-                        Component.onDestruction: {
-                            delete parameterList.loadedItems[index]
                         }
                     }
                 }
@@ -146,19 +106,15 @@ Item{
     Component{
         id:componentComboBox
         RowLayout{
-            id: root
             spacing: 5
             width: parameterList.width
-            // function commitInformation(){
-            //     console.log(information.currentText)
-            // }
-            property var model
+            property var value: null
             ListModel{
                 id: comboModel
             }
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -169,14 +125,13 @@ Item{
                 id:parameterComboBox
                 model: comboModel
                 onCurrentIndexChanged: {
-                    root.parent.model.value = currentIndex
+                    root.parameters[index] = value = currentIndex
                 } 
             }
 
             Component.onCompleted: {
-                root.model = model
-                if(content){
-                    let items = content.split(",")
+                if(model && model.content){
+                    let items = model.content.split(",")
                     comboModel.clear()
                     for(let i=0; i<items.length; i++){
                         comboModel.append({"text":items[i]})
@@ -192,7 +147,7 @@ Item{
             width: parameterList.width
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -203,7 +158,7 @@ Item{
                 id:parameterTextInput
                 Layout.fillWidth: parent.width
                 onTextChanged:{
-                    model.value = parseFloat(text)
+                    root.parameters[index] = parseFloat(text)
                 }
             }
         }
@@ -215,7 +170,7 @@ Item{
             width: parameterList.width
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -228,11 +183,11 @@ Item{
                 Layout.fillWidth: parent.width
 
                 Component.onCompleted: {
-                    fileText.text = content
-                    model.value = fileText.text
+                    fileText.text = model.content
+                    root.parameters[index] = fileText.text
                 }
                 onEditingFinished: {
-                    model.value = fileText.text
+                    root.parameters[index] = fileText.text
                 }
             }
             Button{
@@ -245,20 +200,20 @@ Item{
                 id:parameterFileDialog
                 onAccepted:{
                     fileText.text = urlToPath(selectedFile)
-                    model.value = fileText.text
+                    root.parameters[index] = fileText.text
                 }
 
-				function urlToPath(url) {
+                function urlToPath(url) {
                     var urlString = new String(url)
-					var s
-					if (urlString.startsWith("file:///")) {
-						var k = urlString.charAt(9) === ':' ? 8 : 7
-						s = urlString.substring(k)
-					} else {
-						s = urlString
-					}
-					return decodeURIComponent(s);
-				}
+                    var s
+                    if (urlString.startsWith("file:///")) {
+                        var k = urlString.charAt(9) === ':' ? 8 : 7
+                        s = urlString.substring(k)
+                    } else {
+                        s = urlString
+                    }
+                    return decodeURIComponent(s);
+                }
             }
         }
     }
@@ -270,7 +225,7 @@ Item{
             property var value: fileText.text
             Text{
                 id:nametext
-                text: name
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -283,11 +238,11 @@ Item{
                 Layout.fillWidth: true
                 
                 Component.onCompleted: {
-                    fileText.text = content
-                    model.value = fileText.text
+                    fileText.text = model.content
+                    root.parameters[index] = fileText.text
                 }
                 onEditingFinished: {
-                    model.value = fileText.text
+                    root.parameters[index] = fileText.text
                 }
             }
         }
@@ -298,15 +253,11 @@ Item{
             // id: root
             spacing: 5
             width: parameterList.width
-            /** type:string */
-            property int valueEdge : 0
-            property int valueFace : 0
-            property int valueBlock : 0
-            property var selected
-            property int type: 3  // 添加类型标识
+            property var value: null
 
             Text{
                 id:nametext
+                text: model.name
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -315,7 +266,7 @@ Item{
             }
             Text{
                 id:selectedItems
-                text: valueEdge + "边" + valueFace + "面" + valueBlock + "块"
+                text: value ? value.size():"无"
             }
 
             Button{
@@ -323,90 +274,21 @@ Item{
                 text: "开始选择"
                 onClicked:{
                     root.selectModeChanged()
+                    checked = !checked
                 }
-            }
-            property alias name: nametext.text
-            property alias parameter1: selectedItems.text
-            //property alias selectedItems: selected
-        }
-    }
-    Component{
-        id:splictEdgeComponent
-        RowLayout{
-            property int value: 0
-            width: parameterList.width
-            Text{
-                text:"已选择"+value+"条边"
-            }
-            Button{
-                Layout.preferredWidth: 40
-                text: "取消"
-                onClicked: {
-                    cancleCommand()
+                onCheckedChanged: {
+                    if (checked) {
+                        root.curSelectionChanged.connect(changeSelectionOnce)
+                    } else {
+                        root.curSelectionChanged.disconnect(changeSelectionOnce)
+                    }
                 }
-            }
-            function addSelection(){
-                if(!value){
-                    value = 1
-                }
-            }
-        }
-    }
-    Component{
-        id:splictFaceComponent
-        RowLayout{
-            property int value: 0
-            width: parameterList.width
-            Text{
-                text:"已选择"+value+"个面"
-            }
-            Button{
-                Layout.preferredWidth: 40
-                text: "取消"
-                onClicked: {
-                    cancleCommand()
-                }
-            }
-            function addSelection(){
-                if(!value){
-                    value = 1
-                }
-            }
-        }
-    }
 
-    function updateSelectorCount(selectorIndex, selectType) {
-        console.log("尝试更新选择器计数，索引:", selectorIndex)
-        console.log("当前加载的组件:", parameterList.loadedItems)
-        
-        // 获取对应索引的选择器组件
-        var selector = parameterList.loadedItems[selectorIndex]
-        console.log("获取到的选择器:", selector)
-        
-        if (selector) {
-            if (selectType === "边") {
-                selector.valueEdge++
-                console.log("边计数更新为:", selector.valueEdge)
-            } else if (selectType === "面") {
-                selector.valueFace++
-                console.log("面计数更新为:", selector.valueFace)
-            } else if (selectType === "块") {
-                selector.valueBlock++
-                console.log("块计数更新为:", selector.valueBlock)
+                function changeSelectionOnce() {
+                    root.parameters[index] = value = root.curSelection
+                    checked = false
+                }
             }
-        } else {
-            console.log("未找到选择器组件，请检查索引是否正确")
         }
     }
-
-    function clearSelectorCount(selectorIndex) {
-        // 获取对应索引的选择器组件
-        var selector = parameterList.loadedItems[selectorIndex]
-        if (selector) {
-            selector.valueEdge = 0
-            selector.valueFace = 0
-            selector.valueBlock = 0
-        }
-    }
-    property alias m: parameterList.model
 }

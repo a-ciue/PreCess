@@ -1,0 +1,2 @@
+add_subdirectory(DeleteFacePlugin)
+add_subdirectory(CreateFacePlugin)

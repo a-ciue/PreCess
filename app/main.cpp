@@ -31,6 +31,7 @@ int main(int argc, char* argv[])
     QModelObserver* observer = q_manager.getModelObserver();
     systems::algo::QAlgorithmSystemAdaptor algoAdaptor = q_manager.getAlgorithmSystemAdaptor();
     systems::io::QModelIOSystemAdaptor ioAdaptor = q_manager.getModelIOSystemAdaptor();
+    systems::edit::QEditSystemAdaptor editAdaptor = q_manager.getEditSystemAdaptor();
     QModelQuery query(manager, nullptr);
 
     QGuiApplication app(argc, argv);
@@ -42,7 +43,8 @@ int main(int argc, char* argv[])
         { "modelObserver", QVariant::fromValue(observer) },
         { "modelQuery", QVariant::fromValue(&query) },
         { "algorithmSystem", QVariant::fromValue(&algoAdaptor) },
-        { "ioSystem", QVariant::fromValue(&ioAdaptor) } });
+        { "ioSystem", QVariant::fromValue(&ioAdaptor) } ,
+        { "editSystem", QVariant::fromValue(&editAdaptor) } });
     engine.loadFromModule("app", "Main");
     if (engine.rootObjects().isEmpty())
         return -1;

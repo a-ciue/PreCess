@@ -7,9 +7,9 @@ set(app_icon_resource_windows "${CMAKE_SOURCE_DIR}/resource/PreCess.rc")
 qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_icon_resource_windows})
 # 设置编译完成的组件在 qrc:/qt/qml
 qt_add_qml_module(${MYNAME}
-        URI app
-        QML_FILES
-        Main.qml SelectingBar.qml SideBar.qml ObjectList.qml ObjectListModel.qml Selector.qml CommandMenu.qml
+    URI app
+    QML_FILES
+        Main.qml SelectingBar.qml SideBar.qml ObjectList.qml ObjectListModel.qml Selector.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE

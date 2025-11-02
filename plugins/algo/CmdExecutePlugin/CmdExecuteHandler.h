@@ -9,7 +9,7 @@ class CmdExecuteHandler : public AlgorithmHandler {
 public:
     CmdExecuteHandler() = default;
     ~CmdExecuteHandler() override = default;
-    std::any execute(HandlerContext& context, const std::vector<std::any>& args) override;
-    std::vector<ArgType> args_type() const override;
+    std::any execute(HandlerContext& context, const std::vector<core::ArgObject>& args) override;
+    std::vector<core::ArgType> args_type() const override;
 };
 }

@@ -21,17 +21,16 @@ public:
      * @param modelData 关联的模型数据指针
      * @param observer 关联的模型观察者指针（可选），用于在模型更改时发出通知
      */
-    ModelOperator(ModelData* modelData, ModelObserver* observer = nullptr)
-        : model_(modelData)
-        , observer_(observer)
-    {
-    }
+    ModelOperator(Index id, ModelData& modelData, ModelObserver* observer = nullptr)
+        : id_(id)
+        , model_(&modelData)
+        , observer_(observer) { }
 
     /**
      * @brief 获取关联的模型数据
      * @return 指向 ModelData 的指针
      */
-    ModelData* data() const;
+    ModelData& data() const;
 
     /**
      * @brief 获取关联的模型观察者
@@ -68,6 +67,7 @@ public:
     ModelData::Type getType() const override;
 
 private:
+    Index id_;
     ModelData* model_; //!< 被操作的模型数据指针
     ModelObserver* observer_; //!< 模型观察者指针，用于通知外部变化（可为 nullptr）
 };

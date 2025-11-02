@@ -61,8 +61,8 @@ public:
      */
     std::optional<ModelOperator> getModelOperator(Index model_id) const;
 
-    ModelData* getModel(Index model_id) const;
 private:
+    ModelData* getModel(Index model_id) const;
 
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型

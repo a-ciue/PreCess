@@ -1,62 +1,48 @@
 #include "QArgObject.h"
-#include <QUrl>
-
+#include "ArgObject.h"
 #include "QSelection.h"
+#include <QFileInfo>
 
-QArgObject::QArgObject(ArgType&& type, QObject* parent)
+using namespace core;
+QArgObject::QArgObject(const QArgType& type, QObject* parent)
     : QObject(parent)
-    , type_(std::move(type))
+    , type_(&type)
 {
 }
 
-QArgObject::QArgObject(const ArgType& type, QObject* parent)
-    : QObject(parent)
-    , type_(type)
-{
-}
+const QArgType* QArgObject::type() const { return type_; }
 
-QArgType::ArgTypeEnum QArgObject::type() const { return static_cast<QArgType::ArgTypeEnum>(type_.type); }
-
-QString QArgObject::name() const { return QString::fromStdString(type_.name); }
-
-QString QArgObject::content() const { return QString::fromStdString(type_.content); }
-
-QString QArgObject::desc() const
-{
-    return QString::fromStdString(type_.desc);
-}
-
-std::optional<std::any> QArgObject::getValue() const
+std::optional<ArgObject> QArgObject::getValue() const
 {
     bool canConvert { true };
-    std::any ret;
-    switch (type_.type) {
+    std::optional<ArgObject> ret;
+    switch (static_cast<ArgTypeEnum>(type_->type())) {
     case ArgTypeEnum::None:
         break;
     case ArgTypeEnum::Int:
-        ret = static_cast<long long>(value_.toLongLong(&canConvert));
+        ret = ArgObject::create<ArgTypeEnum::Int>(static_cast<long long>(value_.toLongLong(&canConvert)));
         break;
     case ArgTypeEnum::Float:
-        ret = value_.toDouble(&canConvert);
+        ret = ArgObject::create<ArgTypeEnum::Float>(value_.toDouble(&canConvert));
         break;
     case ArgTypeEnum::Text:
-        ret = value_.toString().toStdString();
+        ret = ArgObject::create<ArgTypeEnum::Text>(value_.toString().toStdString());
         break;
     case ArgTypeEnum::Bool:
-        ret = value_.toBool();
+        ret = ArgObject::create<ArgTypeEnum::Bool>(value_.toBool());
         break;
     case ArgTypeEnum::Path:
-        ret = QFileInfo(value_.toString()).filesystemFilePath();
+        ret = ArgObject::create<ArgTypeEnum::Path>(QFileInfo(value_.toString()).filesystemFilePath());
         break;
     case ArgTypeEnum::Combo:
         // -1 意味着用户未进行选择
-        ret = value_.toInt(&canConvert);
+        ret = ArgObject::create<ArgTypeEnum::Combo>(value_.toInt(&canConvert));
         break;
     case ArgTypeEnum::Selector: {
         QSelection* selection = value_.value<QSelection*>();
-        canConvert = !!selection;
         if (selection) {
-            ret = std::make_shared<std::unique_ptr<Selection>>(selection->move());
+            canConvert = true;
+            ret = ArgObject::create<ArgTypeEnum::Selector>(selection->get());
         }
         break;
     }
@@ -65,5 +51,11 @@ std::optional<std::any> QArgObject::getValue() const
         break;
     }
 
-    return canConvert ? std::optional{ ret } : std::nullopt;
+    return canConvert ? ret : std::nullopt;
+}
+
+void QArgObject::setValue(const QVariant& value)
+{
+    value_ = value;
+    emit valueChanged();
 }

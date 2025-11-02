@@ -1,17 +1,19 @@
 #include "CmdExecuteHandler.h"
+#include "ArgObject.h"
 #include "ModelIOSystemBase.h"
 #include "ModelOperatorBase.h"
-#include <spdlog/spdlog.h>
 #include <filesystem>
+#include <spdlog/spdlog.h>
 
-std::any systems::algo::CmdExecuteHandler::execute(HandlerContext& context, const std::vector<std::any>& args)
+using core::ArgType;
+std::any systems::algo::CmdExecuteHandler::execute(HandlerContext& context, const std::vector<core::ArgObject>& args)
 {
     using namespace std;
     using namespace std::filesystem;
     if (args.size() < 2)
         return {};
-    const path* cmd = std::any_cast<path>(&args[0]);
-    const string* args_str = std::any_cast<string>(&args[1]);
+    const path* cmd = args[0].get<ArgTypeEnum::Path>();
+    const string* args_str = args[1].get<ArgTypeEnum::Text>();
     if (!cmd || !args_str) {
         spdlog::critical("CmdExecuteHandler: Invalid command or arguments.");
         return {};

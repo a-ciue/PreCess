@@ -25,7 +25,6 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
     }
 
     Index model_id = ++max_index_;
-    model->id_ = model_id;
     models_[model_id] = std::move(model);
 
     if (observer_)
@@ -59,7 +58,7 @@ std::optional<ModelOperator> ModelManager::getModelOperator(Index model_id) cons
 {
     ModelData* mesh = getModel(model_id);
     if (mesh) {
-        return ModelOperator(mesh, observer_);
+        return ModelOperator(model_id, *mesh, observer_);
     }
     return {}; // 如果找不到模型，返回空指针
 }
