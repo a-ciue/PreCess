@@ -1,0 +1,2 @@
+precess_add_test(TestCreateFace TestCreateFace.cpp)
+precess_test_link_libraries(TestCreateFace DataTest CreateFacePluginlib)
