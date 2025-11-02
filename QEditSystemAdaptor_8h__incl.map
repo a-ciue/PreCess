@@ -1,0 +1,15 @@
+<map id="app/model/systems/edit/QEditSystemAdaptor.h" name="app/model/systems/edit/QEditSystemAdaptor.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="215,5,394,45"/>
+<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="89,93,153,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="262,48,161,90,159,85,260,43"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="177,93,432,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="307,46,307,79,302,79,302,46"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="456,93,535,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="351,43,456,86,454,91,349,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,68,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,121,63,160,59,155,105,117"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="93,167,149,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="123,119,123,153,118,153,118,119"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="173,167,250,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="137,117,187,156,184,160,134,121"/>
+</map>

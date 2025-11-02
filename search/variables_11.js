@@ -48,6 +48,6 @@ var searchData=
   ['stored_5finstance_45',['stored_instance',['../structplf_1_1colony_1_1sort__dereferencer.html#a9056be6a074ccb35c9214dd918114c7a',1,'plf::colony::sort_dereferencer']]],
   ['stringvalues_46',['stringValues',['../structtinyobj_1_1tag__t.html#a25634eea923961fd5b2520ea782397e8',1,'tinyobj::tag_t']]],
   ['style_5f_47',['style_',['../structQRenderWindow_1_1Data.html#ab2554cbb2eb916ccf410ca8e42f54d58',1,'QRenderWindow::Data']]],
-  ['system_5f_48',['system_',['../classsystems_1_1algo_1_1AlgorithmSystemRegister.html#ad5794cde5c160bca4d7708228a03b127',1,'systems::algo::AlgorithmSystemRegister::system_'],['../classsystems_1_1io_1_1ModelIOSystemRegister.html#a4a61cb555de57957004d9d63d85f8926',1,'systems::io::ModelIOSystemRegister::system_']]],
+  ['system_5f_48',['system_',['../classsystems_1_1algo_1_1AlgorithmSystemRegister.html#ad5794cde5c160bca4d7708228a03b127',1,'systems::algo::AlgorithmSystemRegister::system_'],['../classsystems_1_1edit_1_1EditSystemRegister.html#ac38420e6777dc0a964e73d029a9a7c91',1,'systems::edit::EditSystemRegister::system_'],['../classsystems_1_1io_1_1ModelIOSystemRegister.html#a4a61cb555de57957004d9d63d85f8926',1,'systems::io::ModelIOSystemRegister::system_']]],
   ['system_5fregisters_5f_49',['system_registers_',['../classsystems_1_1SystemPluginManager.html#a32a554f1080effbb70344965bd2ba08b',1,'systems::SystemPluginManager']]]
 ];

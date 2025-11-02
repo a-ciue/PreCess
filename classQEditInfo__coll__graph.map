@@ -1,0 +1,5 @@
+<map id="QEditInfo" name="QEditInfo">
+<area shape="rect" id="Node000001" title="向Qml暴露的编辑操作信息，Qml据此构造操作按钮、输入框等调用参数UI" alt="" coords="5,79,88,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="9,5,84,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="49,44,49,79,44,79,44,44"/>
+</map>

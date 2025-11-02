@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['filehandler_0',['FileHandler',['../classModelData.html#ad948b5763603915e0f4e528b6e15f7ff',1,'ModelData']]]
+  ['modeloperator_0',['ModelOperator',['../classModelData.html#ae4a612afabef6e8cfa5397aa9aa88838',1,'ModelData']]]
 ];

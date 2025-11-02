@@ -111,7 +111,13 @@ Public 类型</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a441899feec76257ac227a6786fe9aea9" id="r_a441899feec76257ac227a6786fe9aea9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a441899feec76257ac227a6786fe9aea9">clear</a> ()</td></tr>
+<tr class="memdesc:a441899feec76257ac227a6786fe9aea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">清除所有数据，即使offset数组起码也要保留一个元素0  <br /></td></tr>
 <tr class="memitem:adf69187de57678fe40d821885a600aa8" id="r_adf69187de57678fe40d821885a600aa8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf69187de57678fe40d821885a600aa8">init</a> ()</td></tr>
+<tr class="memdesc:adf69187de57678fe40d821885a600aa8"><td class="mdescLeft">&#160;</td><td class="mdescRight">初始化 <a class="el" href="structMeshData.html">MeshData</a> 结构，确保 offset 数组至少包含一个初始元素 0。  <br /></td></tr>
+<tr class="memitem:ae1521d1e75a558caeed3d50e066170fc" id="r_ae1521d1e75a558caeed3d50e066170fc"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1521d1e75a558caeed3d50e066170fc">face_patch_id</a> (int face_id)</td></tr>
+<tr class="memdesc:ae1521d1e75a558caeed3d50e066170fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据给定的面ID，查找其所属的Patch ID  <br /></td></tr>
+<tr class="memitem:aab3f2ea9e3bcb55c8e081c943d0d94f5" id="r_aab3f2ea9e3bcb55c8e081c943d0d94f5"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab3f2ea9e3bcb55c8e081c943d0d94f5">patch_block_id</a> (int patch_id)</td></tr>
+<tr class="memdesc:aab3f2ea9e3bcb55c8e081c943d0d94f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据给定的Patch ID，查找其所属的Block ID  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
@@ -175,9 +181,6 @@ Public 属性</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void MeshData::clear </td>
@@ -186,12 +189,35 @@ Public 属性</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+
+<p>清除所有数据，即使offset数组起码也要保留一个元素0 </p>
+
+</div>
+</div>
+<a id="ae1521d1e75a558caeed3d50e066170fc" name="ae1521d1e75a558caeed3d50e066170fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1521d1e75a558caeed3d50e066170fc">&#9670;&#160;</a></span>face_patch_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; MeshData::face_patch_id </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>face_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据给定的面ID，查找其所属的Patch ID </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">face_id</td><td>面的索引 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>如果找到对应的Patch ID，则返回该ID，否则返回std::nullopt </dd></dl>
 
 </div>
 </div>
@@ -200,9 +226,6 @@ Public 属性</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void MeshData::init </td>
@@ -211,12 +234,35 @@ Public 属性</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+
+<p>初始化 <a class="el" href="structMeshData.html">MeshData</a> 结构，确保 offset 数组至少包含一个初始元素 0。 </p>
+
+</div>
+</div>
+<a id="aab3f2ea9e3bcb55c8e081c943d0d94f5" name="aab3f2ea9e3bcb55c8e081c943d0d94f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab3f2ea9e3bcb55c8e081c943d0d94f5">&#9670;&#160;</a></span>patch_block_id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; MeshData::patch_block_id </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>patch_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据给定的Patch ID，查找其所属的Block ID </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">patch_id</td><td>Patch的索引 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>如果找到对应的Block ID，则返回该ID，否则返回std::nullopt </dd></dl>
 
 </div>
 </div>
@@ -437,6 +483,7 @@ Public 属性</h2></td></tr>
 </div>
 <hr/>该结构体的文档由以下文件生成:<ul>
 <li>model/data/<a class="el" href="MeshData_8h_source.html">MeshData.h</a></li>
+<li>model/data/<a class="el" href="MeshData_8cpp.html">MeshData.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

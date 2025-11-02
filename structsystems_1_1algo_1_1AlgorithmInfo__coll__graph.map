@@ -1,12 +1,12 @@
 <map id="systems::algo::AlgorithmInfo" name="systems::algo::AlgorithmInfo">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,463,216,488"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,477,216,503"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="67,95,154,120"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,134,97,226,94,284,95,342,102,410,111,462,106,463,97,411,89,343,88,284,92,226,104,134"/>
-<area shape="rect" id="Node000005" href="$structArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="155,231,229,256"/>
-<area shape="poly" id="edge5_Node000005_Node000002" title=" " alt="" coords="127,130,187,229,183,232,122,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="110,134,102,226,100,343,112,477,107,478,95,343,97,226,105,134"/>
+<area shape="rect" id="Node000005" href="$structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="146,231,257,256"/>
+<area shape="poly" id="edge5_Node000005_Node000002" title=" " alt="" coords="128,130,196,229,191,232,124,133"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="41,5,180,45"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="113,59,113,94,108,94,108,59"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="129,367,303,392"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="195,403,125,464,122,460,191,399"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="199,269,217,366,211,367,194,270"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="138,367,281,407"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="183,419,124,479,120,475,179,415"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="205,270,211,366,206,367,200,270"/>
 </map>

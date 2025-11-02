@@ -1,0 +1,5 @@
+<map id="systems::edit::QEditSystemAdaptor" name="systems::edit::QEditSystemAdaptor">
+<area shape="rect" id="Node000001" title="模型编辑系统的QML适配器，负责C++的编辑系统功能暴露给QML、Qt类型与C++类型的转换" alt="" coords="5,79,208,119"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="69,5,144,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,44,109,79,104,79,104,44"/>
+</map>

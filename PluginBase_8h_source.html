@@ -83,36 +83,52 @@ $(function() {
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#ifndef PLUGIN_BASE_H</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define PLUGIN_BASE_H</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="HandlerCreatorDestroyer_8h.html">HandlerCreatorDestroyer.h</a>&quot;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;any&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="SystemHandlerPtr_8h.html">SystemHandlerPtr.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;any&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems.html">systems</a> {</div>
 <div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classsystems_1_1PluginBase.html">   17</a></span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1PluginBase.html">PluginBase</a> {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="classsystems_1_1PluginBase.html#a080036984a644ef55fe4d95a41469479">   20</a></span>    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_friend" href="classsystems_1_1PluginBase.html#a080036984a644ef55fe4d95a41469479">PluginHandler</a>; <span class="comment">// 允许PluginHandler访问私有成员</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classsystems_1_1PluginBase.html#a44f4ad98e01466925651525a618c56a2">   22</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classsystems_1_1PluginBase.html#a44f4ad98e01466925651525a618c56a2">~PluginBase</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classsystems_1_1PluginBase.html#a9ae7029ab308f3a702f595cfaa523b8a">   35</a></span>    <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1HandlerCreatorDestroyer.html">HandlerCreatorDestroyer</a>&amp; <a class="code hl_function" href="classsystems_1_1PluginBase.html#a9ae7029ab308f3a702f595cfaa523b8a">getHandlerCreatorDestroyer</a>() noexcept = 0;</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>};</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SystemHandler&gt;</div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="}">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classsystems_1_1PluginBase.html#a5f038508deb2cc0a04e3db3b3841a438">   27</a></span>    <a class="code hl_typedef" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">SystemHandlerPtr&lt;SystemHandler&gt;</a> <a class="code hl_function" href="classsystems_1_1PluginBase.html#a5f038508deb2cc0a04e3db3b3841a438">makeHandler</a>()</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        <span class="comment">// 调用虚函数getHandlerCreatorDestroyer时跨越dll边界获取std::any包装的函数指针</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="keyword">auto</span>&amp;&amp; [handlerCreator, handlerDestroyer] = <a class="code hl_function" href="classsystems_1_1PluginBase.html#a9ae7029ab308f3a702f595cfaa523b8a">getHandlerCreatorDestroyer</a>().<a class="code hl_function" href="structsystems_1_1HandlerCreatorDestroyer.html#aef2a815db0797b4709c36cb970a7fcc8">get</a>&lt;SystemHandler&gt;();</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        <span class="keywordflow">if</span> (handlerCreator &amp;&amp; handlerDestroyer) {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            <span class="keyword">auto</span> handler = handlerCreator();</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            <a class="code hl_struct" href="structsystems_1_1SystemHandlerDestroyer.html">SystemHandlerDestroyer&lt;SystemHandler&gt;</a> destroyer { handlerDestroyer };</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            <span class="keywordflow">return</span> <a class="code hl_typedef" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">SystemHandlerPtr&lt;SystemHandler&gt;</a>(handler, destroyer);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        }</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        <span class="keywordflow">return</span> {};</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    }</div>
 </div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>}</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#ifdef Q_MOC_RUN</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>Q_DECLARE_INTERFACE(<a class="code hl_class" href="classsystems_1_1PluginBase.html">systems::PluginBase</a>, <span class="stringliteral">&quot;com.PreCess.systems.PluginBase/1.0&quot;</span>)</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="preprocessor">#endif </span><span class="comment">// PLUGIN_BASE_H</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classsystems_1_1PluginBase.html#a44f4ad98e01466925651525a618c56a2">   39</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classsystems_1_1PluginBase.html#a44f4ad98e01466925651525a618c56a2">~PluginBase</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classsystems_1_1PluginBase.html#a9ae7029ab308f3a702f595cfaa523b8a">   49</a></span>    <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1HandlerCreatorDestroyer.html">HandlerCreatorDestroyer</a>&amp; <a class="code hl_function" href="classsystems_1_1PluginBase.html#a9ae7029ab308f3a702f595cfaa523b8a">getHandlerCreatorDestroyer</a>() noexcept = 0;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>};</div>
+</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>}</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="preprocessor">#ifdef Q_MOC_RUN</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>Q_DECLARE_INTERFACE(<a class="code hl_class" href="classsystems_1_1PluginBase.html">systems::PluginBase</a>, <span class="stringliteral">&quot;com.PreCess.systems.PluginBase/1.0&quot;</span>)</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor">#endif </span><span class="comment">// PLUGIN_BASE_H</span></div>
 <div class="ttc" id="aHandlerCreatorDestroyer_8h_html"><div class="ttname"><a href="HandlerCreatorDestroyer_8h.html">HandlerCreatorDestroyer.h</a></div></div>
+<div class="ttc" id="aSystemHandlerPtr_8h_html"><div class="ttname"><a href="SystemHandlerPtr_8h.html">SystemHandlerPtr.h</a></div></div>
 <div class="ttc" id="aclasssystems_1_1PluginBase_html"><div class="ttname"><a href="classsystems_1_1PluginBase.html">systems::PluginBase</a></div><div class="ttdoc">插件对象基类，定义与插件交互的接口。</div><div class="ttdef"><b>定义</b> PluginBase.h:17</div></div>
-<div class="ttc" id="aclasssystems_1_1PluginBase_html_a080036984a644ef55fe4d95a41469479"><div class="ttname"><a href="classsystems_1_1PluginBase.html#a080036984a644ef55fe4d95a41469479">systems::PluginBase::PluginHandler</a></div><div class="ttdeci">friend class PluginHandler</div><div class="ttdef"><b>定义</b> PluginBase.h:20</div></div>
 <div class="ttc" id="aclasssystems_1_1PluginBase_html_a44f4ad98e01466925651525a618c56a2"><div class="ttname"><a href="classsystems_1_1PluginBase.html#a44f4ad98e01466925651525a618c56a2">systems::PluginBase::~PluginBase</a></div><div class="ttdeci">virtual ~PluginBase()=default</div></div>
+<div class="ttc" id="aclasssystems_1_1PluginBase_html_a5f038508deb2cc0a04e3db3b3841a438"><div class="ttname"><a href="classsystems_1_1PluginBase.html#a5f038508deb2cc0a04e3db3b3841a438">systems::PluginBase::makeHandler</a></div><div class="ttdeci">SystemHandlerPtr&lt; SystemHandler &gt; makeHandler()</div><div class="ttdoc">创建插件包裹的Handler派生类型对象，以智能指针管理生命周期。</div><div class="ttdef"><b>定义</b> PluginBase.h:27</div></div>
 <div class="ttc" id="aclasssystems_1_1PluginBase_html_a9ae7029ab308f3a702f595cfaa523b8a"><div class="ttname"><a href="classsystems_1_1PluginBase.html#a9ae7029ab308f3a702f595cfaa523b8a">systems::PluginBase::getHandlerCreatorDestroyer</a></div><div class="ttdeci">virtual const HandlerCreatorDestroyer &amp; getHandlerCreatorDestroyer() noexcept=0</div><div class="ttdoc">获取处理器创建和销毁函数对。</div></div>
-<div class="ttc" id="anamespacesystems_html"><div class="ttname"><a href="namespacesystems.html">systems</a></div><div class="ttdef"><b>定义</b> QModelManager.h:9</div></div>
-<div class="ttc" id="astructsystems_1_1HandlerCreatorDestroyer_html"><div class="ttname"><a href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a></div><div class="ttdoc">处理器的创建与删除函数，用于构造与析构插件来的处理器</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyer.h:12</div></div>
+<div class="ttc" id="anamespacesystems_html"><div class="ttname"><a href="namespacesystems.html">systems</a></div><div class="ttdef"><b>定义</b> QModelManager.h:8</div></div>
+<div class="ttc" id="anamespacesystems_html_a9cec77b8a54a3e8546f9c1cc01542eac"><div class="ttname"><a href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">systems::SystemHandlerPtr</a></div><div class="ttdeci">std::unique_ptr&lt; SystemHandler, SystemHandlerDestroyer&lt; SystemHandler &gt; &gt; SystemHandlerPtr</div><div class="ttdoc">系统处理器智能指针，支持自定义销毁函数</div><div class="ttdef"><b>定义</b> SystemHandlerPtr.h:33</div></div>
+<div class="ttc" id="astructsystems_1_1HandlerCreatorDestroyer_html"><div class="ttname"><a href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a></div><div class="ttdoc">处理器的创建与删除函数，用于构造与析构插件来的处理器</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyer.h:19</div></div>
+<div class="ttc" id="astructsystems_1_1HandlerCreatorDestroyer_html_aef2a815db0797b4709c36cb970a7fcc8"><div class="ttname"><a href="structsystems_1_1HandlerCreatorDestroyer.html#aef2a815db0797b4709c36cb970a7fcc8">systems::HandlerCreatorDestroyer::get</a></div><div class="ttdeci">auto get() const</div><div class="ttdoc">尝试获取插件包裹的Handler具体类型的创建与销毁函数对，利用模板参数尝试转型至基类SystemHandler。</div><div class="ttdef"><b>定义</b> HandlerCreatorDestroyer.h:33</div></div>
+<div class="ttc" id="astructsystems_1_1SystemHandlerDestroyer_html"><div class="ttname"><a href="structsystems_1_1SystemHandlerDestroyer.html">systems::SystemHandlerDestroyer</a></div><div class="ttdoc">SystemHandlerPtr的智能指针析构器，支持自定义销毁函数</div><div class="ttdef"><b>定义</b> SystemHandlerPtr.h:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

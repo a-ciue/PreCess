@@ -1,7 +1,9 @@
 <map id="core/ArgType.h" name="core/ArgType.h">
-<area shape="rect" id="Node000001" title="用于模型层描述功能参数类型" alt="" coords="33,5,151,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,64,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="85,33,55,70,51,66,80,29"/>
-<area shape="rect" id="Node000003" href="$ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="88,79,211,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="104,29,133,66,129,70,99,33"/>
+<area shape="rect" id="Node000001" title="用于模型层描述功能参数类型" alt="" coords="90,5,209,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,96,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="135,33,79,73,76,68,132,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="120,79,179,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="152,31,152,65,147,65,147,31"/>
+<area shape="rect" id="Node000004" href="$private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="203,79,379,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="173,28,257,70,254,75,171,33"/>
 </map>

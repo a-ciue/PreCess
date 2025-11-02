@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/edit/EditSystem.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_2083ac89913e57343d0c9d9b6920b7e7.html">edit</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">EditSystem.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="EditSystem_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="EditInfo_8h.html">EditInfo.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="SystemHandlerPtr_8h.html">SystemHandlerPtr.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;any&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecore.html">core</a> {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">class </span><a class="code hl_class" href="classcore_1_1ArgObject.html">ArgObject</a>;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>}</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">class </span><a class="code hl_class" href="classModelManager.html">ModelManager</a>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1edit.html">systems::edit</a> {</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1edit_1_1EditHandler.html">EditHandler</a>;</div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structsystems_1_1edit_1_1HandlerMetaData.html">   24</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1edit_1_1HandlerMetaData.html">HandlerMetaData</a> {</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structsystems_1_1edit_1_1HandlerMetaData.html#a7741349d4e3a1eae42c0f95e950d171c">   25</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1edit_1_1HandlerMetaData.html#a7741349d4e3a1eae42c0f95e950d171c">name</a> {}; <span class="comment">// 模型编辑操作唯一名称，用作索引</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structsystems_1_1edit_1_1HandlerMetaData.html#a0aa4059bb2ef1186a262f97855ac386b">   26</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1edit_1_1HandlerMetaData.html#a0aa4059bb2ef1186a262f97855ac386b">display_name</a> {}; <span class="comment">// 模型编辑操作UI展示用名称</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>};</div>
+</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span></div>
+<div class="foldopen" id="foldopen00032" data-start="{" data-end="};">
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html">   32</a></span><span class="keyword">class </span><a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#a2b8ac835666f879d58f05cdf62466522">EditSystem</a> {</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html#a56e5739d717fb0491480b3ef4b43e320">   34</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classsystems_1_1edit_1_1EditSystem.html#a56e5739d717fb0491480b3ef4b43e320">SystemHandler</a> = <a class="code hl_class" href="classsystems_1_1edit_1_1EditHandler.html">EditHandler</a>; <span class="comment">//&gt; 模型编辑操作处理器类型，模型编辑操作系统下所有处理器的基类类型</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html#a7c04463044f0a2fd3638a10073e6a828">   35</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classsystems_1_1edit_1_1EditSystem.html#a7c04463044f0a2fd3638a10073e6a828">SystemHandlerPtr</a> = <a class="code hl_typedef" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">::systems::SystemHandlerPtr&lt;SystemHandler&gt;</a>; <span class="comment">//&gt; 处理器的智能指针，支持自定义析构函数。特别是兼容跨dll边界获取的析构函数。</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html#ab68b992530bdce9bb20dae2c6b60513f">   36</a></span>    <span class="keyword">static</span> <span class="keyword">const</span> std::string <a class="code hl_variable" href="classsystems_1_1edit_1_1EditSystem.html#ab68b992530bdce9bb20dae2c6b60513f">name</a>; <span class="comment">//&gt; 系统唯一名称，用于插件注册时的识别</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#a2b8ac835666f879d58f05cdf62466522">EditSystem</a>(<a class="code hl_class" href="classModelManager.html">ModelManager</a>&amp; model_manager);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html#a139aefccb2b34f94338cf7f902701a0f">   39</a></span>    <a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#a139aefccb2b34f94338cf7f902701a0f">~EditSystem</a>();</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    std::any <a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#aec8153b6dcc713b2cea82508682eef74">call</a>(<span class="keyword">const</span> std::string&amp; unique_name, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model, <span class="keyword">const</span> std::vector&lt;core::ArgObject&gt;&amp; args);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#ad59dc36e70febeaf79c60447c81437ab">registerHandler</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1edit_1_1HandlerMetaData.html">HandlerMetaData</a>&amp; meta_data, <a class="code hl_typedef" href="classsystems_1_1edit_1_1EditSystem.html#a7c04463044f0a2fd3638a10073e6a828">SystemHandlerPtr</a> handler);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#acce1c590ae4689cc3fc403479114d7b4">unregisterHandler</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1edit_1_1HandlerMetaData.html">HandlerMetaData</a>&amp; meta_data);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    std::vector&lt;EditInfo*&gt; <a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#ad044d4e792c00b16e8bf83657de48050">getEditInfos</a>();</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    std::optional&lt;std::vector&lt;core::ArgType&gt;&gt; <a class="code hl_function" href="classsystems_1_1edit_1_1EditSystem.html#afe2413627a81c59f42c3db50b18f7238">getArgTypes</a>(<span class="keyword">const</span> std::string&amp; unique_name);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html#a96f054ec4c2ba727ef9e194376becaa6">   67</a></span>    <a class="code hl_class" href="classModelManager.html">ModelManager</a>* <a class="code hl_variable" href="classsystems_1_1edit_1_1EditSystem.html#a96f054ec4c2ba727ef9e194376becaa6">model_manager_</a>; <span class="comment">//&lt; 模型管理器引用，用于获取模型操作接口</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html#a3e2b8fe4ef06ea6e698198d2051a2c1b">   68</a></span>    std::unordered_map&lt;std::string, SystemHandlerPtr&gt; <a class="code hl_variable" href="classsystems_1_1edit_1_1EditSystem.html#a3e2b8fe4ef06ea6e698198d2051a2c1b">handlers_</a>; <span class="comment">//&lt; 模型编辑操作处理器插件列表，key为模型编辑操作唯一名称name</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1EditSystem.html#a1067c073036ad85d4987b6275478f7da">   69</a></span>    std::unordered_map&lt;std::string, std::unique_ptr&lt;EditInfo&gt;&gt; <a class="code hl_variable" href="classsystems_1_1edit_1_1EditSystem.html#a1067c073036ad85d4987b6275478f7da">edit_infos_</a>; <span class="comment">//&lt; 模型编辑操作信息列表，key为模型编辑操作唯一名称name</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>};</div>
+</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>}</div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:31</div></div>
+<div class="ttc" id="aEditInfo_8h_html"><div class="ttname"><a href="EditInfo_8h.html">EditInfo.h</a></div></div>
+<div class="ttc" id="aSystemHandlerPtr_8h_html"><div class="ttname"><a href="SystemHandlerPtr_8h.html">SystemHandlerPtr.h</a></div></div>
+<div class="ttc" id="aclassModelManager_html"><div class="ttname"><a href="classModelManager.html">ModelManager</a></div><div class="ttdoc">负责管理多个 ModelData 实例的类</div><div class="ttdef"><b>定义</b> ModelManager.h:27</div></div>
+<div class="ttc" id="aclasscore_1_1ArgObject_html"><div class="ttname"><a href="classcore_1_1ArgObject.html">core::ArgObject</a></div><div class="ttdoc">实例化的参数类型，存储参数对象的容器</div><div class="ttdef"><b>定义</b> ArgObject.h:10</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditHandler_html"><div class="ttname"><a href="classsystems_1_1edit_1_1EditHandler.html">systems::edit::EditHandler</a></div><div class="ttdoc">模型编辑系统的功能接口，继承他来实现具体的编辑功能</div><div class="ttdef"><b>定义</b> EditHandler.h:22</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_a1067c073036ad85d4987b6275478f7da"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#a1067c073036ad85d4987b6275478f7da">systems::edit::EditSystem::edit_infos_</a></div><div class="ttdeci">std::unordered_map&lt; std::string, std::unique_ptr&lt; EditInfo &gt; &gt; edit_infos_</div><div class="ttdef"><b>定义</b> EditSystem.h:69</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_a139aefccb2b34f94338cf7f902701a0f"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#a139aefccb2b34f94338cf7f902701a0f">systems::edit::EditSystem::~EditSystem</a></div><div class="ttdeci">~EditSystem()</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_a2b8ac835666f879d58f05cdf62466522"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#a2b8ac835666f879d58f05cdf62466522">systems::edit::EditSystem::EditSystem</a></div><div class="ttdeci">EditSystem(ModelManager &amp;model_manager)</div><div class="ttdef"><b>定义</b> EditSystem.cpp:19</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_a3e2b8fe4ef06ea6e698198d2051a2c1b"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#a3e2b8fe4ef06ea6e698198d2051a2c1b">systems::edit::EditSystem::handlers_</a></div><div class="ttdeci">std::unordered_map&lt; std::string, SystemHandlerPtr &gt; handlers_</div><div class="ttdef"><b>定义</b> EditSystem.h:68</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_a56e5739d717fb0491480b3ef4b43e320"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#a56e5739d717fb0491480b3ef4b43e320">systems::edit::EditSystem::SystemHandler</a></div><div class="ttdeci">EditHandler SystemHandler</div><div class="ttdef"><b>定义</b> EditSystem.h:34</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_a7c04463044f0a2fd3638a10073e6a828"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#a7c04463044f0a2fd3638a10073e6a828">systems::edit::EditSystem::SystemHandlerPtr</a></div><div class="ttdeci">::systems::SystemHandlerPtr&lt; SystemHandler &gt; SystemHandlerPtr</div><div class="ttdef"><b>定义</b> EditSystem.h:35</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_a96f054ec4c2ba727ef9e194376becaa6"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#a96f054ec4c2ba727ef9e194376becaa6">systems::edit::EditSystem::model_manager_</a></div><div class="ttdeci">ModelManager * model_manager_</div><div class="ttdef"><b>定义</b> EditSystem.h:67</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_ab68b992530bdce9bb20dae2c6b60513f"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#ab68b992530bdce9bb20dae2c6b60513f">systems::edit::EditSystem::name</a></div><div class="ttdeci">static const std::string name</div><div class="ttdef"><b>定义</b> EditSystem.h:36</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_acce1c590ae4689cc3fc403479114d7b4"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#acce1c590ae4689cc3fc403479114d7b4">systems::edit::EditSystem::unregisterHandler</a></div><div class="ttdeci">void unregisterHandler(const HandlerMetaData &amp;meta_data)</div><div class="ttdoc">注销模型编辑操作处理器插件</div><div class="ttdef"><b>定义</b> EditSystem.cpp:59</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_ad044d4e792c00b16e8bf83657de48050"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#ad044d4e792c00b16e8bf83657de48050">systems::edit::EditSystem::getEditInfos</a></div><div class="ttdeci">std::vector&lt; EditInfo * &gt; getEditInfos()</div><div class="ttdoc">获取已注册模型编辑操作类型信息</div><div class="ttdef"><b>定义</b> EditSystem.cpp:71</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_ad59dc36e70febeaf79c60447c81437ab"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#ad59dc36e70febeaf79c60447c81437ab">systems::edit::EditSystem::registerHandler</a></div><div class="ttdeci">bool registerHandler(const HandlerMetaData &amp;meta_data, SystemHandlerPtr handler)</div><div class="ttdoc">注册模型编辑操作处理器插件</div><div class="ttdef"><b>定义</b> EditSystem.cpp:43</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_aec8153b6dcc713b2cea82508682eef74"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#aec8153b6dcc713b2cea82508682eef74">systems::edit::EditSystem::call</a></div><div class="ttdeci">std::any call(const std::string &amp;unique_name, Index model, const std::vector&lt; core::ArgObject &gt; &amp;args)</div><div class="ttdoc">模型编辑操作调用接口</div><div class="ttdef"><b>定义</b> EditSystem.cpp:26</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditSystem_html_afe2413627a81c59f42c3db50b18f7238"><div class="ttname"><a href="classsystems_1_1edit_1_1EditSystem.html#afe2413627a81c59f42c3db50b18f7238">systems::edit::EditSystem::getArgTypes</a></div><div class="ttdeci">std::optional&lt; std::vector&lt; core::ArgType &gt; &gt; getArgTypes(const std::string &amp;unique_name)</div><div class="ttdoc">获取参数类型</div><div class="ttdef"><b>定义</b> EditSystem.cpp:81</div></div>
+<div class="ttc" id="anamespacecore_html"><div class="ttname"><a href="namespacecore.html">core</a></div><div class="ttdef"><b>定义</b> ArgObject.h:6</div></div>
+<div class="ttc" id="anamespacesystems_1_1edit_html"><div class="ttname"><a href="namespacesystems_1_1edit.html">systems::edit</a></div><div class="ttdef"><b>定义</b> QModelManager.h:15</div></div>
+<div class="ttc" id="anamespacesystems_html_a9cec77b8a54a3e8546f9c1cc01542eac"><div class="ttname"><a href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">systems::SystemHandlerPtr</a></div><div class="ttdeci">std::unique_ptr&lt; SystemHandler, SystemHandlerDestroyer&lt; SystemHandler &gt; &gt; SystemHandlerPtr</div><div class="ttdoc">系统处理器智能指针，支持自定义销毁函数</div><div class="ttdef"><b>定义</b> SystemHandlerPtr.h:33</div></div>
+<div class="ttc" id="astructsystems_1_1edit_1_1HandlerMetaData_html"><div class="ttname"><a href="structsystems_1_1edit_1_1HandlerMetaData.html">systems::edit::HandlerMetaData</a></div><div class="ttdef"><b>定义</b> EditSystem.h:24</div></div>
+<div class="ttc" id="astructsystems_1_1edit_1_1HandlerMetaData_html_a0aa4059bb2ef1186a262f97855ac386b"><div class="ttname"><a href="structsystems_1_1edit_1_1HandlerMetaData.html#a0aa4059bb2ef1186a262f97855ac386b">systems::edit::HandlerMetaData::display_name</a></div><div class="ttdeci">std::string display_name</div><div class="ttdef"><b>定义</b> EditSystem.h:26</div></div>
+<div class="ttc" id="astructsystems_1_1edit_1_1HandlerMetaData_html_a7741349d4e3a1eae42c0f95e950d171c"><div class="ttname"><a href="structsystems_1_1edit_1_1HandlerMetaData.html#a7741349d4e3a1eae42c0f95e950d171c">systems::edit::HandlerMetaData::name</a></div><div class="ttdeci">std::string name</div><div class="ttdef"><b>定义</b> EditSystem.h:25</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

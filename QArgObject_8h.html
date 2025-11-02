@@ -81,31 +81,31 @@ $(function() {
   <div class="headertitle"><div class="title">QArgObject.h 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;QObject&gt;</code><br />
-<code>#include &lt;any&gt;</code><br />
-<code>#include &lt;QFileInfo&gt;</code><br />
-<code>#include &quot;<a class="el" href="ArgType_8h_source.html">ArgType.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="ArgObject_8h_source.html">ArgObject.h</a>&quot;</code><br />
 <code>#include &quot;QArgType.h&quot;</code><br />
+<code>#include &lt;QVariant&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 QArgObject.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QArgObject_8h__incl.png" border="0" usemap="#aapp_2model_2QArgObject_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QArgObject_8h" id="aapp_2model_2QArgObject_8h">
-<area shape="rect" title=" " alt="" coords="125,5,307,31"/>
-<area shape="rect" title=" " alt="" coords="5,79,80,104"/>
-<area shape="poly" title=" " alt="" coords="189,33,85,76,83,71,187,28"/>
-<area shape="rect" title=" " alt="" coords="105,79,151,104"/>
-<area shape="poly" title=" " alt="" coords="204,33,155,72,151,68,200,29"/>
-<area shape="rect" title=" " alt="" coords="176,79,256,104"/>
-<area shape="poly" title=" " alt="" coords="219,31,219,65,213,65,213,31"/>
-<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="281,79,367,104"/>
-<area shape="poly" title=" " alt="" coords="235,28,296,69,293,73,232,33"/>
-<area shape="rect" title=" " alt="" coords="392,79,488,104"/>
-<area shape="poly" title=" " alt="" coords="253,28,392,72,390,77,251,33"/>
-<area shape="rect" title=" " alt="" coords="237,152,296,177"/>
-<area shape="poly" title=" " alt="" coords="317,106,287,143,283,139,312,103"/>
-<area shape="rect" href="ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="320,152,443,177"/>
-<area shape="poly" title=" " alt="" coords="336,103,365,139,361,143,331,106"/>
+<area shape="rect" title=" " alt="" coords="225,5,407,31"/>
+<area shape="rect" href="ArgObject_8h.html" title=" " alt="" coords="145,79,244,104"/>
+<area shape="poly" title=" " alt="" coords="298,33,227,74,225,69,295,28"/>
+<area shape="rect" title=" " alt="" coords="268,79,364,104"/>
+<area shape="poly" title=" " alt="" coords="319,31,319,65,313,65,313,31"/>
+<area shape="rect" title=" " alt="" coords="389,79,467,104"/>
+<area shape="poly" title=" " alt="" coords="335,28,399,69,396,73,333,33"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="106,152,193,177"/>
+<area shape="poly" title=" " alt="" coords="189,106,166,142,162,139,185,103"/>
+<area shape="rect" title=" " alt="" coords="217,152,263,177"/>
+<area shape="poly" title=" " alt="" coords="204,103,228,139,223,142,200,106"/>
+<area shape="rect" title=" " alt="" coords="5,225,96,251"/>
+<area shape="poly" title=" " alt="" coords="135,180,79,219,76,215,132,175"/>
+<area shape="rect" title=" " alt="" coords="120,225,179,251"/>
+<area shape="poly" title=" " alt="" coords="152,178,152,212,147,212,147,178"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="203,225,379,251"/>
+<area shape="poly" title=" " alt="" coords="173,175,257,217,254,221,171,180"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -113,19 +113,15 @@ QArgObject.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QArgObject_8h__dep__incl.png" border="0" usemap="#aapp_2model_2QArgObject_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QArgObject_8hdep" id="aapp_2model_2QArgObject_8hdep">
-<area shape="rect" title=" " alt="" coords="355,5,537,31"/>
+<area shape="rect" title=" " alt="" coords="363,5,545,31"/>
 <area shape="rect" href="QArgObject_8cpp.html" title=" " alt="" coords="5,86,201,111"/>
-<area shape="poly" title=" " alt="" coords="384,36,154,89,153,83,382,31"/>
-<area shape="rect" href="QAlgorithmInfo_8h.html" title=" " alt="" coords="225,79,408,119"/>
-<area shape="poly" title=" " alt="" coords="417,40,349,81,346,76,414,36"/>
-<area shape="rect" href="QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="266,167,493,207"/>
-<area shape="poly" title=" " alt="" coords="444,44,435,80,422,120,395,168,390,165,417,118,430,79,439,43"/>
-<area shape="rect" href="QModelIOInfo_8h.html" title=" " alt="" coords="484,79,651,119"/>
-<area shape="poly" title=" " alt="" coords="477,36,540,76,537,81,474,41"/>
-<area shape="rect" href="QModelIOSystemAdaptor_8cpp.html" title=" " alt="" coords="519,167,735,207"/>
-<area shape="poly" title=" " alt="" coords="538,31,614,49,645,62,664,77,673,100,669,125,658,148,645,168,641,165,654,146,664,123,667,101,660,80,642,67,613,55,537,36"/>
-<area shape="poly" title=" " alt="" coords="341,128,368,165,363,168,337,132"/>
-<area shape="poly" title=" " alt="" coords="591,128,616,165,612,168,586,131"/>
+<area shape="poly" title=" " alt="" coords="391,36,155,89,154,83,389,31"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="226,79,453,119"/>
+<area shape="poly" title=" " alt="" coords="427,41,368,81,365,76,424,36"/>
+<area shape="rect" href="QEditSystemAdaptor_8cpp.html" title=" " alt="" coords="477,79,663,119"/>
+<area shape="poly" title=" " alt="" coords="484,36,544,76,541,81,481,41"/>
+<area shape="rect" href="QModelIOSystemAdaptor_8cpp.html" title=" " alt="" coords="687,79,903,119"/>
+<area shape="poly" title=" " alt="" coords="517,31,714,76,713,81,516,36"/>
 </map>
 </div>
 </div>
@@ -134,7 +130,7 @@ QArgObject.h 的引用(Include)关系图:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 类</h2></td></tr>
 <tr class="memitem:QArgObject" id="r_QArgObject"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classQArgObject.html">QArgObject</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant  <a href="classQArgObject.html#details">更多...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">QML中使用的参数类型实例对象值，用于参数列表中的model。是对应QArgType描述的参数类型的变量实例，封装了QArgType参数类型和参数值QVariant  <a href="classQArgObject.html#details">更多...</a><br /></td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

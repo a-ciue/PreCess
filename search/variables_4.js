@@ -1,19 +1,18 @@
 var searchData=
 [
   ['data_0',['data',['../structplf_1_1colony_1_1aligned__element__struct.html#af26ade0c27c6c1c4a094acb8dac3b785',1,'plf::colony::aligned_element_struct::data'],['../structplf_1_1colony_1_1aligned__allocation__struct.html#a5b1a11a73bde2f2fd94c6f60d5aff9ce',1,'plf::colony::aligned_allocation_struct::data']]],
-  ['data_5f_1',['data_',['../classQSelection.html#ab07dc3dbd93b174e1fb4080d477eaa71',1,'QSelection::data_'],['../structQRenderWindow.html#af36bc244b299907aa7fd3660c883bc38',1,'QRenderWindow::data_'],['../classModelData.html#a602a16dd854be01037709689f8d0eabc',1,'ModelData::data_']]],
-  ['desc_2',['desc',['../structArgType.html#a32e7adae841fd90a1ed5e6fe88522997',1,'ArgType']]],
-  ['description_3',['description',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a3ed2e0827d56f8602e4ecc4c77ea683e',1,'systems::algo::AlgorithmInfo::description'],['../structsystems_1_1io_1_1ModelIOInfo.html#a70823a394fc6bcfa4a601cf093ecb7ba',1,'systems::io::ModelIOInfo::description']]],
-  ['description_5f_4',['description_',['../classQAlgorithmInfo.html#aa0fd999ab0d1d91828fd58b873e1e45a',1,'QAlgorithmInfo::description_'],['../classsystems_1_1io_1_1QModelIOInfo.html#a99021cc8e89feb963ebebdbd31945935',1,'systems::io::QModelIOInfo::description_']]],
-  ['destroyer_5',['destroyer',['../structsystems_1_1HandlerCreatorDestroyer.html#a750e4dad53d4840bd0f3146ee93e4558',1,'systems::HandlerCreatorDestroyer']]],
-  ['destroyer_5f_6',['destroyer_',['../classsystems_1_1PluginHandler.html#ad6bd5869dc3b21a7a55c43092ebd9a96',1,'systems::PluginHandler']]],
-  ['diffuse_7',['diffuse',['../structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453',1,'tinyobj::material_t']]],
-  ['diffuse_5ftexname_8',['diffuse_texname',['../structtinyobj_1_1material__t.html#ad7f71a301a261fca07d2e50edccc792d',1,'tinyobj::material_t']]],
-  ['diffuse_5ftexopt_9',['diffuse_texopt',['../structtinyobj_1_1material__t.html#a170412a1e339856e55d5cec406ecc196',1,'tinyobj::material_t']]],
-  ['displacement_5ftexname_10',['displacement_texname',['../structtinyobj_1_1material__t.html#ab69842db3e67cc7d4dcd8bfe02590f92',1,'tinyobj::material_t']]],
-  ['displacement_5ftexopt_11',['displacement_texopt',['../structtinyobj_1_1material__t.html#a6f28d7a04ebb6435c62adb502847f4c3',1,'tinyobj::material_t']]],
-  ['display_5fname_12',['display_name',['../structsystems_1_1algo_1_1AlgorithmInfo.html#adaea0bf3f4106a845ec8b2d4e1f7bf93',1,'systems::algo::AlgorithmInfo::display_name'],['../structsystems_1_1algo_1_1HandlerMetaData.html#a1177cec33025df2ceb4989fad185c871',1,'systems::algo::HandlerMetaData::display_name']]],
-  ['display_5fname_5f_13',['display_name_',['../classQAlgorithmInfo.html#a581849a72618576791b98b266f657e37',1,'QAlgorithmInfo']]],
-  ['dissolve_14',['dissolve',['../structtinyobj_1_1material__t.html#a61e3561bf67f6faec6ac4f551f9956cb',1,'tinyobj::material_t']]],
-  ['dummy_15',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]]
+  ['data_5f_1',['data_',['../classQSelection.html#ae17a23b67b7c87bdb604e930769d517a',1,'QSelection::data_'],['../structQRenderWindow.html#af36bc244b299907aa7fd3660c883bc38',1,'QRenderWindow::data_'],['../classModelData.html#a602a16dd854be01037709689f8d0eabc',1,'ModelData::data_']]],
+  ['desc_2',['desc',['../structcore_1_1ArgType.html#a740eba74855397c6997e00e6d3cb21d5',1,'core::ArgType']]],
+  ['description_3',['description',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a3ed2e0827d56f8602e4ecc4c77ea683e',1,'systems::algo::AlgorithmInfo::description'],['../structsystems_1_1edit_1_1EditInfo.html#a41dd2f34dd56cb5fdb2d3326195a3fc2',1,'systems::edit::EditInfo::description'],['../structsystems_1_1io_1_1ModelIOInfo.html#a70823a394fc6bcfa4a601cf093ecb7ba',1,'systems::io::ModelIOInfo::description']]],
+  ['description_5f_4',['description_',['../classQAlgorithmInfo.html#aa0fd999ab0d1d91828fd58b873e1e45a',1,'QAlgorithmInfo::description_'],['../classQEditInfo.html#a74841088514f1714b987b93d3e2d68f5',1,'QEditInfo::description_'],['../classsystems_1_1io_1_1QModelIOInfo.html#a99021cc8e89feb963ebebdbd31945935',1,'systems::io::QModelIOInfo::description_']]],
+  ['destroyer_5',['destroyer',['../structsystems_1_1HandlerCreatorDestroyer.html#a3236c6bf1fec789ffffb631d9cc09e0b',1,'systems::HandlerCreatorDestroyer::destroyer'],['../structsystems_1_1SystemHandlerDestroyer.html#a51fc07889a780e77ba48ead7da22cf17',1,'systems::SystemHandlerDestroyer::destroyer']]],
+  ['diffuse_6',['diffuse',['../structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453',1,'tinyobj::material_t']]],
+  ['diffuse_5ftexname_7',['diffuse_texname',['../structtinyobj_1_1material__t.html#ad7f71a301a261fca07d2e50edccc792d',1,'tinyobj::material_t']]],
+  ['diffuse_5ftexopt_8',['diffuse_texopt',['../structtinyobj_1_1material__t.html#a170412a1e339856e55d5cec406ecc196',1,'tinyobj::material_t']]],
+  ['displacement_5ftexname_9',['displacement_texname',['../structtinyobj_1_1material__t.html#ab69842db3e67cc7d4dcd8bfe02590f92',1,'tinyobj::material_t']]],
+  ['displacement_5ftexopt_10',['displacement_texopt',['../structtinyobj_1_1material__t.html#a6f28d7a04ebb6435c62adb502847f4c3',1,'tinyobj::material_t']]],
+  ['display_5fname_11',['display_name',['../structsystems_1_1algo_1_1AlgorithmInfo.html#adaea0bf3f4106a845ec8b2d4e1f7bf93',1,'systems::algo::AlgorithmInfo::display_name'],['../structsystems_1_1algo_1_1HandlerMetaData.html#a1177cec33025df2ceb4989fad185c871',1,'systems::algo::HandlerMetaData::display_name'],['../structsystems_1_1edit_1_1EditInfo.html#a9ddfe6824a8e84f9744b729590d0502a',1,'systems::edit::EditInfo::display_name'],['../structsystems_1_1edit_1_1HandlerMetaData.html#a0aa4059bb2ef1186a262f97855ac386b',1,'systems::edit::HandlerMetaData::display_name']]],
+  ['display_5fname_5f_12',['display_name_',['../classQAlgorithmInfo.html#a581849a72618576791b98b266f657e37',1,'QAlgorithmInfo::display_name_'],['../classQEditInfo.html#adf6d67496c8224250be9d65d6a0ba7f6',1,'QEditInfo::display_name_']]],
+  ['dissolve_13',['dissolve',['../structtinyobj_1_1material__t.html#a61e3561bf67f6faec6ac4f551f9956cb',1,'tinyobj::material_t']]],
+  ['dummy_14',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]]
 ];

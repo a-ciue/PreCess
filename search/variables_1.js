@@ -12,7 +12,7 @@ var searchData=
   ['ambient_5ftexopt_9',['ambient_texopt',['../structtinyobj_1_1material__t.html#ad168f86b0f3f67666b102f9a26a2170b',1,'tinyobj::material_t']]],
   ['anisotropy_10',['anisotropy',['../structtinyobj_1_1material__t.html#a0bd6ee79907285b19365849ba50965b1',1,'tinyobj::material_t']]],
   ['anisotropy_5frotation_11',['anisotropy_rotation',['../structtinyobj_1_1material__t.html#ab1b9216b525cc02d2f6392db71ce0f59',1,'tinyobj::material_t']]],
-  ['arg_5ftypes_12',['arg_types',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a18a36fb763f8d0c0ee357b5c007f70fd',1,'systems::algo::AlgorithmInfo']]],
-  ['arg_5ftypes_5f_13',['arg_types_',['../classQAlgorithmInfo.html#a47deafdf6835b9837bff23e91d646342',1,'QAlgorithmInfo']]],
+  ['arg_5ftypes_12',['arg_types',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a8c05d4a869a62930788cc4b17f7e796b',1,'systems::algo::AlgorithmInfo::arg_types'],['../structsystems_1_1edit_1_1EditInfo.html#a46952091b7b5d951c78a005ed98c57ba',1,'systems::edit::EditInfo::arg_types']]],
+  ['arg_5ftypes_5f_13',['arg_types_',['../classQAlgorithmInfo.html#ae8522dde9690962c72b0041ce759d312',1,'QAlgorithmInfo::arg_types_'],['../classQEditInfo.html#a2e1b4c32db1231f9d7332a1a8dd8fb96',1,'QEditInfo::arg_types_']]],
   ['attrib_5f_14',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]]
 ];

@@ -84,8 +84,10 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="AlgorithmInfo_8h_source.html">AlgorithmInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SystemHandlerPtr_8h_source.html">SystemHandlerPtr.h</a>&quot;</code><br />
 <code>#include &lt;any&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;optional&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
@@ -94,32 +96,39 @@ AlgorithmSystem.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="AlgorithmSystem_8h__incl.png" border="0" usemap="#amodel_2systems_2algo_2AlgorithmSystem_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2algo_2AlgorithmSystem_8h" id="amodel_2systems_2algo_2AlgorithmSystem_8h">
-<area shape="rect" title=" " alt="" coords="224,5,379,45"/>
+<area shape="rect" title=" " alt="" coords="356,5,511,45"/>
 <area shape="rect" href="AlgorithmInfo_8h.html" title=" " alt="" coords="72,93,195,119"/>
-<area shape="poly" title=" " alt="" coords="262,48,172,90,169,85,260,43"/>
+<area shape="poly" title=" " alt="" coords="362,48,191,92,190,87,361,43"/>
 <area shape="rect" title=" " alt="" coords="5,240,64,265"/>
-<area shape="poly" title=" " alt="" coords="224,30,182,36,138,47,97,67,62,95,44,126,35,161,32,196,34,226,28,226,27,196,29,160,39,124,58,92,94,62,136,42,181,31,223,25"/>
+<area shape="poly" title=" " alt="" coords="356,33,275,40,187,51,110,70,82,81,62,95,43,125,33,161,31,196,33,226,28,227,26,196,28,160,38,123,58,91,79,77,109,65,186,46,274,34,356,28"/>
 <area shape="rect" title=" " alt="" coords="201,167,263,192"/>
-<area shape="poly" title=" " alt="" coords="289,47,260,94,240,154,235,152,255,92,284,44"/>
+<area shape="poly" title=" " alt="" coords="357,42,304,62,280,77,259,95,243,123,236,154,231,153,238,121,255,92,277,73,302,57,355,37"/>
 <area shape="rect" href="Core_8h.html" title=" " alt="" coords="269,93,333,119"/>
-<area shape="poly" title=" " alt="" coords="304,46,304,79,299,79,299,46"/>
-<area shape="rect" title=" " alt="" coords="368,167,445,192"/>
-<area shape="poly" title=" " alt="" coords="317,44,393,154,388,157,312,47"/>
-<area shape="rect" title=" " alt="" coords="409,93,455,119"/>
-<area shape="poly" title=" " alt="" coords="334,43,402,84,400,88,332,48"/>
-<area shape="rect" title=" " alt="" coords="479,93,603,119"/>
-<area shape="poly" title=" " alt="" coords="360,43,494,87,492,92,358,48"/>
+<area shape="poly" title=" " alt="" coords="403,48,334,88,332,84,400,43"/>
+<area shape="rect" title=" " alt="" coords="395,167,472,192"/>
+<area shape="poly" title=" " alt="" coords="475,43,498,58,517,76,527,97,528,108,524,120,503,145,478,162,475,158,500,141,519,117,522,107,522,98,512,79,494,62,472,48"/>
+<area shape="rect" href="SystemHandlerPtr_8h.html" title=" " alt="" coords="358,93,509,119"/>
+<area shape="poly" title=" " alt="" coords="436,46,436,79,431,79,431,46"/>
+<area shape="rect" title=" " alt="" coords="585,93,631,119"/>
+<area shape="poly" title=" " alt="" coords="476,43,573,86,571,91,474,48"/>
+<area shape="rect" title=" " alt="" coords="656,93,731,119"/>
+<area shape="poly" title=" " alt="" coords="496,43,643,87,642,92,495,48"/>
+<area shape="rect" title=" " alt="" coords="755,93,879,119"/>
+<area shape="poly" title=" " alt="" coords="512,40,749,88,748,93,511,45"/>
 <area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="90,167,177,192"/>
 <area shape="poly" title=" " alt="" coords="136,119,136,153,131,153,131,119"/>
 <area shape="poly" title=" " alt="" coords="123,121,101,142,80,168,61,199,47,228,42,226,56,196,75,165,97,138,119,117"/>
 <area shape="poly" title=" " alt="" coords="151,117,206,156,203,161,148,121"/>
+<area shape="rect" title=" " alt="" coords="88,240,179,265"/>
+<area shape="poly" title=" " alt="" coords="136,192,136,226,131,226,131,192"/>
 <area shape="poly" title=" " alt="" coords="119,194,63,234,60,230,116,190"/>
-<area shape="rect" href="ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="88,240,211,265"/>
-<area shape="poly" title=" " alt="" coords="139,192,146,226,141,227,133,193"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="203,240,379,265"/>
+<area shape="poly" title=" " alt="" coords="160,190,254,232,252,237,158,194"/>
 <area shape="poly" title=" " alt="" coords="292,121,255,159,251,155,288,117"/>
 <area shape="rect" title=" " alt="" coords="288,167,344,192"/>
 <area shape="poly" title=" " alt="" coords="306,118,313,153,308,154,301,120"/>
-<area shape="poly" title=" " alt="" coords="320,116,380,157,377,161,317,121"/>
+<area shape="poly" title=" " alt="" coords="324,116,401,158,399,162,321,121"/>
+<area shape="poly" title=" " alt="" coords="436,119,436,153,431,153,431,119"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -148,6 +157,7 @@ AlgorithmSystem.h 的引用(Include)关系图:</div>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 命名空间</h2></td></tr>
+<tr class="memitem:core" id="r_core"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecore.html">core</a></td></tr>
 <tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
 <tr class="memitem:systems_3A_3Aio" id="r_systems_3A_3Aio"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1io.html">systems::io</a></td></tr>
 <tr class="memdesc:namespacesystems_1_1io"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="ModelIOSystemRegister_8h.html">ModelIOSystemRegister.h</a> <br /></td></tr>

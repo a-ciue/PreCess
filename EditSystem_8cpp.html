@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/edit/EditSystem.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_2083ac89913e57343d0c9d9b6920b7e7.html">edit</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">EditSystem.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="EditSystem_8h_source.html">EditSystem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ArgObject_8h_source.html">ArgObject.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EditHandler_8h_source.html">EditHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelManager_8h_source.html">ModelManager.h</a>&quot;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+EditSystem.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="EditSystem_8cpp__incl.png" border="0" usemap="#amodel_2systems_2edit_2EditSystem_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2edit_2EditSystem_8cpp" id="amodel_2systems_2edit_2EditSystem_8cpp">
+<area shape="rect" title=" " alt="" coords="501,5,652,45"/>
+<area shape="rect" href="EditSystem_8h.html" title=" " alt="" coords="523,167,631,192"/>
+<area shape="poly" title=" " alt="" coords="579,46,579,153,574,153,574,46"/>
+<area shape="rect" href="ArgObject_8h.html" title=" " alt="" coords="46,240,145,265"/>
+<area shape="poly" title=" " alt="" coords="538,48,133,236,131,232,535,43"/>
+<area shape="rect" href="EditHandler_8h.html" title=" " alt="" coords="219,240,329,265"/>
+<area shape="poly" title=" " alt="" coords="553,48,302,234,299,230,550,43"/>
+<area shape="rect" href="ModelManager_8h.html" title="负责管理多个模型实例的类" alt="" coords="662,93,793,119"/>
+<area shape="poly" title=" " alt="" coords="614,43,694,84,691,89,612,48"/>
+<area shape="rect" title=" " alt="" coords="817,93,941,119"/>
+<area shape="poly" title=" " alt="" coords="650,43,823,87,821,92,648,48"/>
+<area shape="rect" href="EditInfo_8h.html" title=" " alt="" coords="404,240,488,265"/>
+<area shape="poly" title=" " alt="" coords="557,194,480,236,478,231,554,190"/>
+<area shape="rect" title=" " alt="" coords="379,387,438,412"/>
+<area shape="poly" title=" " alt="" coords="523,184,489,189,453,200,420,216,393,242,385,257,381,273,380,309,388,344,399,373,394,375,383,346,375,310,375,273,380,255,389,238,417,212,451,195,487,184,522,179"/>
+<area shape="rect" title=" " alt="" coords="495,533,557,559"/>
+<area shape="poly" title=" " alt="" coords="572,193,545,249,533,286,529,325,529,401,529,520,523,520,523,401,523,325,528,285,540,247,567,191"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="755,460,819,485"/>
+<area shape="poly" title=" " alt="" coords="578,193,578,233,582,291,598,354,612,384,631,410,655,431,683,446,742,463,741,469,681,451,652,435,627,414,607,386,593,356,577,292,572,233,573,192"/>
+<area shape="rect" title=" " alt="" coords="1085,533,1162,559"/>
+<area shape="poly" title=" " alt="" coords="631,180,763,185,924,196,1066,213,1115,224,1143,238,1154,260,1159,292,1157,371,1145,455,1132,521,1126,520,1139,454,1151,371,1154,292,1149,262,1139,242,1114,229,1065,218,923,202,762,191,631,185"/>
+<area shape="rect" href="SystemHandlerPtr_8h.html" title=" " alt="" coords="1161,460,1312,485"/>
+<area shape="poly" title=" " alt="" coords="631,180,771,186,946,197,1101,214,1156,225,1186,238,1207,261,1221,287,1232,315,1239,345,1244,401,1242,447,1237,446,1238,401,1233,345,1227,317,1217,289,1202,264,1183,242,1154,230,1100,219,945,202,771,191,631,185"/>
+<area shape="rect" title=" " alt="" coords="5,313,52,339"/>
+<area shape="poly" title=" " alt="" coords="523,187,378,204,293,220,208,243,183,254,158,268,66,311,63,306,155,263,180,249,206,237,291,215,378,199,522,182"/>
+<area shape="rect" title=" " alt="" coords="641,387,715,412"/>
+<area shape="poly" title=" " alt="" coords="585,191,669,373,664,375,580,193"/>
+<area shape="rect" title=" " alt="" coords="665,240,789,265"/>
+<area shape="poly" title=" " alt="" coords="602,190,691,232,689,236,600,194"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="191,313,277,339"/>
+<area shape="poly" title=" " alt="" coords="413,268,282,311,280,306,411,263"/>
+<area shape="poly" title=" " alt="" coords="446,266,418,374,412,373,440,265"/>
+<area shape="poly" title=" " alt="" coords="451,265,510,485,520,519,515,521,505,486,446,266"/>
+<area shape="rect" title=" " alt="" coords="265,387,355,412"/>
+<area shape="poly" title=" " alt="" coords="248,337,289,375,286,379,244,341"/>
+<area shape="poly" title=" " alt="" coords="263,336,368,379,366,384,261,341"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="65,387,241,412"/>
+<area shape="poly" title=" " alt="" coords="223,341,178,380,174,376,219,337"/>
+<area shape="poly" title=" " alt="" coords="756,485,571,535,570,530,755,480"/>
+<area shape="rect" title=" " alt="" coords="759,533,815,559"/>
+<area shape="poly" title=" " alt="" coords="790,486,790,520,785,520,785,486"/>
+<area shape="poly" title=" " alt="" coords="820,478,1072,531,1071,536,819,483"/>
+<area shape="poly" title=" " alt="" coords="1220,488,1155,528,1152,524,1217,483"/>
+<area shape="poly" title=" " alt="" coords="119,263,200,305,198,309,116,268"/>
+<area shape="poly" title=" " alt="" coords="86,267,51,305,47,301,82,264"/>
+<area shape="poly" title=" " alt="" coords="270,267,250,303,245,300,265,264"/>
+<area shape="poly" title=" " alt="" coords="286,264,349,337,388,375,384,379,345,340,282,268"/>
+<area shape="poly" title=" " alt="" coords="229,268,160,290,91,322,65,342,48,363,44,386,55,410,83,434,128,456,184,476,247,493,376,520,481,536,480,542,375,525,245,498,182,481,125,461,80,439,51,414,39,386,43,361,61,338,89,318,158,285,227,263"/>
+<area shape="poly" title=" " alt="" coords="235,268,66,317,65,312,234,263"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="775,313,880,339"/>
+<area shape="poly" title=" " alt="" coords="329,258,761,314,761,319,329,264"/>
+<area shape="poly" title=" " alt="" coords="775,339,452,393,451,388,774,334"/>
+<area shape="poly" title=" " alt="" coords="854,336,895,357,940,384,1033,457,1103,521,1100,525,1029,461,936,389,892,362,851,341"/>
+<area shape="poly" title=" " alt="" coords="804,341,716,383,714,378,802,336"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="740,387,835,412"/>
+<area shape="poly" title=" " alt="" coords="823,340,803,376,798,373,818,338"/>
+<area shape="rect" title=" " alt="" coords="859,387,927,412"/>
+<area shape="poly" title=" " alt="" coords="840,337,875,375,871,378,836,341"/>
+<area shape="poly" title=" " alt="" coords="768,415,560,529,557,524,765,410"/>
+<area shape="poly" title=" " alt="" coords="790,412,790,446,785,446,785,412"/>
+<area shape="poly" title=" " alt="" coords="730,119,730,226,725,226,725,119"/>
+<area shape="poly" title=" " alt="" coords="737,118,768,169,803,239,823,299,818,300,798,241,763,172,733,120"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="865,167,995,192"/>
+<area shape="poly" title=" " alt="" coords="761,116,885,160,884,165,759,121"/>
+<area shape="poly" title=" " alt="" coords="917,194,868,230,802,268,717,298,598,331,369,387,368,382,597,326,715,293,800,263,865,226,914,190"/>
+<area shape="poly" title=" " alt="" coords="996,187,1101,205,1218,233,1270,251,1313,273,1342,297,1350,310,1353,324,1353,401,1350,448,1343,467,1327,487,1292,513,1253,530,1213,540,1176,545,1175,540,1212,535,1251,525,1290,508,1323,483,1338,465,1345,447,1347,401,1347,325,1345,312,1338,300,1310,277,1268,256,1216,238,1100,210,995,192"/>
+<area shape="poly" title=" " alt="" coords="930,193,919,228,899,267,879,289,858,307,855,303,876,285,894,264,914,226,925,192"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="966,240,1129,265"/>
+<area shape="poly" title=" " alt="" coords="950,190,1018,230,1015,235,947,194"/>
+<area shape="poly" title=" " alt="" coords="1045,267,1007,335,977,377,940,414,914,431,887,445,833,464,832,459,885,440,912,426,936,410,973,374,1003,332,1040,264"/>
+<area shape="poly" title=" " alt="" coords="1013,268,876,312,875,307,1011,263"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Aedit_3A_3Astring" id="r_systems_3A_3Aedit_3A_3Astring"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1edit_1_1string.html">systems::edit::string</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">STL class  <a href="classsystems_1_1edit_1_1string.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:systems_3A_3Aedit_3A_3Avector_3C_20T_20_3E" id="r_systems_3A_3Aedit_3A_3Avector_3C_20T_20_3E"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1edit_1_1vector.html">systems::edit::vector&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">STL class  <a href="classsystems_1_1edit_1_1vector.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Aedit" id="r_systems_3A_3Aedit"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1edit.html">systems::edit</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><dl class="section author"><dt>作者</dt><dd>张家僮(<a href="#" onclick="location.href='mai'+'lto:'+'htx'+'z_'+'6a6'+'@1'+'63.'+'co'+'m'; return false;">htxz_<span class="obfuscator">.nosp@m.</span>6a6@<span class="obfuscator">.nosp@m.</span>163.c<span class="obfuscator">.nosp@m.</span>om</a>) </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,7 @@
+<map id="model/systems/edit/EditSystemRegister.h" name="model/systems/edit/EditSystemRegister.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="150,5,315,45"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,101,233,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="198,56,137,102,133,98,195,52"/>
+<area shape="rect" id="Node000003" href="$EditSystemRegister_8cpp.html" title=" " alt="" coords="257,93,437,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="271,52,324,91,320,95,267,56"/>
+</map>

@@ -78,6 +78,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
 <a href="classsystems_1_1HandlerCreatorDestroyerFactory-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">systems::HandlerCreatorDestroyerFactory&lt; Handler, SystemHandler &gt; 模板类 参考</div></div>
 </div><!--header-->
@@ -87,11 +88,19 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
-<tr class="memitem:a9497a1b6735a799fee40557b071c39d0" id="r_a9497a1b6735a799fee40557b071c39d0"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9497a1b6735a799fee40557b071c39d0">get</a> ()</td></tr>
+<tr class="memitem:a0d1e7fd993d3151dbaea6ccfdf13a939" id="r_a0d1e7fd993d3151dbaea6ccfdf13a939"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="structsystems_1_1HandlerCreatorDestroyer.html">HandlerCreatorDestroyer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d1e7fd993d3151dbaea6ccfdf13a939">get</a> ()</td></tr>
+<tr class="memdesc:a0d1e7fd993d3151dbaea6ccfdf13a939"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取处理器创建与销毁函数对的静态实例。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+静态 Private 成员函数</h2></td></tr>
+<tr class="memitem:a02575c5067fffa2952a28ecb48849697" id="r_a02575c5067fffa2952a28ecb48849697"><td class="memItemLeft" align="right" valign="top">static SystemHandler *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02575c5067fffa2952a28ecb48849697">create</a> ()</td></tr>
+<tr class="memdesc:a02575c5067fffa2952a28ecb48849697"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler对象的创建函数。  <br /></td></tr>
+<tr class="memitem:a17a6e1625c57030235cc018c28794722" id="r_a17a6e1625c57030235cc018c28794722"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a17a6e1625c57030235cc018c28794722">destroy</a> (SystemHandler *handler)</td></tr>
+<tr class="memdesc:a17a6e1625c57030235cc018c28794722"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handler对象的销毁函数。  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a9497a1b6735a799fee40557b071c39d0" name="a9497a1b6735a799fee40557b071c39d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9497a1b6735a799fee40557b071c39d0">&#9670;&#160;</a></span>get()</h2>
+<a id="a02575c5067fffa2952a28ecb48849697" name="a02575c5067fffa2952a28ecb48849697"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02575c5067fffa2952a28ecb48849697">&#9670;&#160;</a></span>create()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -102,7 +111,72 @@ template&lt;typename Handler, typename SystemHandler&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="structsystems_1_1HandlerCreatorDestroyer.html">systems::HandlerCreatorDestroyer</a> &amp; <a class="el" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">systems::HandlerCreatorDestroyerFactory</a>&lt; Handler, SystemHandler &gt;::get </td>
+          <td class="memname">SystemHandler * <a class="el" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">systems::HandlerCreatorDestroyerFactory</a>&lt; Handler, SystemHandler &gt;::create </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Handler对象的创建函数。 </p>
+<dl class="section return"><dt>返回</dt><dd>存储在SystemHandler基类指针的Handler派生类对象 </dd></dl>
+
+</div>
+</div>
+<a id="a17a6e1625c57030235cc018c28794722" name="a17a6e1625c57030235cc018c28794722"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17a6e1625c57030235cc018c28794722">&#9670;&#160;</a></span>destroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Handler, typename SystemHandler&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">systems::HandlerCreatorDestroyerFactory</a>&lt; Handler, SystemHandler &gt;::destroy </td>
+          <td>(</td>
+          <td class="paramtype">SystemHandler *</td>          <td class="paramname"><span class="paramname"><em>handler</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Handler对象的销毁函数。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler</td><td>待销毁的Handler对象指针，存储在SystemHandler基类指针中 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0d1e7fd993d3151dbaea6ccfdf13a939" name="a0d1e7fd993d3151dbaea6ccfdf13a939"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d1e7fd993d3151dbaea6ccfdf13a939">&#9670;&#160;</a></span>get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Handler, typename SystemHandler&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="structsystems_1_1HandlerCreatorDestroyer.html">HandlerCreatorDestroyer</a> &amp; <a class="el" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">systems::HandlerCreatorDestroyerFactory</a>&lt; Handler, SystemHandler &gt;::get </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -115,9 +189,14 @@ template&lt;typename Handler, typename SystemHandler&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>获取处理器创建与销毁函数对的静态实例。 </p>
+<p>该函数返回一个静态的HandlerCreatorDestroyer实例，包含用于创建和销毁指定Handler类型的处理器对象的函数。</p>
+<dl class="section return"><dt>返回</dt><dd>静态的HandlerCreatorDestroyer实例引用。 </dd></dl>
+
 </div>
 </div>
 <hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/core/<a class="el" href="HandlerCreatorDestroyer_8h_source.html">HandlerCreatorDestroyer.h</a></li>
 <li>model/systems/core/<a class="el" href="HandlerCreatorDestroyerFactory_8h_source.html">HandlerCreatorDestroyerFactory.h</a></li>
 </ul>
 </div><!-- contents -->

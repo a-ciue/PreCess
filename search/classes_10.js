@@ -15,7 +15,8 @@ var searchData=
   ['splineactormanager_12',['SplineActorManager',['../classSplineActorManager.html',1,'']]],
   ['splinedata_13',['SplineData',['../structSplineData.html',1,'']]],
   ['splinedatavtk_14',['SplineDataVtk',['../structSplineDataVtk.html',1,'']]],
-  ['string_15',['string',['../classsystems_1_1algo_1_1string.html',1,'systems::algo::string'],['../classsystems_1_1io_1_1string.html',1,'systems::io::string']]],
-  ['systempluginmanager_16',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
-  ['systemregisterbase_17',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
+  ['string_15',['string',['../classsystems_1_1algo_1_1string.html',1,'systems::algo::string'],['../classsystems_1_1edit_1_1string.html',1,'systems::edit::string'],['../classsystems_1_1io_1_1string.html',1,'systems::io::string']]],
+  ['systemhandlerdestroyer_16',['SystemHandlerDestroyer',['../structsystems_1_1SystemHandlerDestroyer.html',1,'systems']]],
+  ['systempluginmanager_17',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
+  ['systemregisterbase_18',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
 ];

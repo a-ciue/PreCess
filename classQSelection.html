@@ -99,15 +99,11 @@ QSelection 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classQSelection__coll__graph.png" border="0" usemap="#aQSelection_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aQSelection_coll__map" id="aQSelection_coll__map">
-<area shape="rect" title="Selection类的QML交互接口。Selection可以存于QSelection中，就可以在QML代码中进行交互。C++中使用new来创建对象，QML中为只读对象" alt="" coords="18,293,110,319"/>
-<area shape="rect" title=" " alt="" coords="5,197,80,223"/>
-<area shape="poly" title=" " alt="" coords="51,235,64,293,59,294,46,237"/>
-<area shape="rect" title=" " alt="" coords="105,197,314,223"/>
-<area shape="poly" title=" " alt="" coords="181,232,83,295,81,291,179,228"/>
-<area shape="rect" href="structSelection.html" title="存储选择的对象" alt="" coords="168,101,251,127"/>
-<area shape="poly" title=" " alt="" coords="212,141,212,197,207,197,207,141"/>
-<area shape="rect" title=" " alt="" coords="131,5,288,31"/>
-<area shape="poly" title=" " alt="" coords="212,45,212,101,207,101,207,45"/>
+<area shape="rect" title="Selection类的QML交互接口。Selection可以存于QSelection中，就可以在QML代码中进行交互。C++中使用new来创建对象，QML中为只读对象" alt="" coords="79,101,171,127"/>
+<area shape="rect" title=" " alt="" coords="5,5,80,31"/>
+<area shape="poly" title=" " alt="" coords="64,39,117,99,113,103,60,43"/>
+<area shape="rect" title=" " alt="" coords="105,5,314,31"/>
+<area shape="poly" title=" " alt="" coords="192,43,138,103,134,99,188,39"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
@@ -115,8 +111,8 @@ QSelection 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:af271af99a1501effea84e88617aac5c0" id="r_af271af99a1501effea84e88617aac5c0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af271af99a1501effea84e88617aac5c0">QSelection</a> ()</td></tr>
 <tr class="memitem:aaee984386736e7fe5f7e65c2d318466d" id="r_aaee984386736e7fe5f7e65c2d318466d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaee984386736e7fe5f7e65c2d318466d">QSelection</a> (std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; data)</td></tr>
-<tr class="memitem:a0df3defac16ab1630541dac23561a521" id="r_a0df3defac16ab1630541dac23561a521"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0df3defac16ab1630541dac23561a521">set</a> (std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; data)</td></tr>
-<tr class="memitem:a7f834b18c509f074a1677e7b67f5b755" id="r_a7f834b18c509f074a1677e7b67f5b755"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f834b18c509f074a1677e7b67f5b755">move</a> ()</td></tr>
+<tr class="memitem:aea3afa5f66180811ffea9161debd6d8d" id="r_aea3afa5f66180811ffea9161debd6d8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aea3afa5f66180811ffea9161debd6d8d">set</a> (std::shared_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; data)</td></tr>
+<tr class="memitem:a3a0c4615a7de33365c82dcb1114f9787" id="r_a3a0c4615a7de33365c82dcb1114f9787"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a0c4615a7de33365c82dcb1114f9787">get</a> ()</td></tr>
 <tr class="memitem:ad39a13f64aa6e900da93d9aeed4738fc" id="r_ad39a13f64aa6e900da93d9aeed4738fc"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad39a13f64aa6e900da93d9aeed4738fc">size</a> ()</td></tr>
 <tr class="memdesc:ad39a13f64aa6e900da93d9aeed4738fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取该选择的数组大小  <br /></td></tr>
 <tr class="memitem:abf6d6b3b49bedb94cb9cb9ddfaf0b0e9" id="r_abf6d6b3b49bedb94cb9cb9ddfaf0b0e9"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE <a class="el" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">Element::Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf6d6b3b49bedb94cb9cb9ddfaf0b0e9">type</a> ()</td></tr>
@@ -130,7 +126,7 @@ Public 成员函数</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:ab07dc3dbd93b174e1fb4080d477eaa71" id="r_ab07dc3dbd93b174e1fb4080d477eaa71"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab07dc3dbd93b174e1fb4080d477eaa71">data_</a></td></tr>
+<tr class="memitem:ae17a23b67b7c87bdb604e930769d517a" id="r_ae17a23b67b7c87bdb604e930769d517a"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae17a23b67b7c87bdb604e930769d517a">data_</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>Selection类的QML交互接口。Selection可以存于QSelection中，就可以在QML代码中进行交互。C++中使用new来创建对象，QML中为只读对象 </p>
@@ -186,6 +182,32 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a3a0c4615a7de33365c82dcb1114f9787" name="a3a0c4615a7de33365c82dcb1114f9787"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a0c4615a7de33365c82dcb1114f9787">&#9670;&#160;</a></span>get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; QSelection::get </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>取出 </p><dl class="section return"><dt>返回</dt><dd>存储的Selection对象 </dd></dl>
+
+</div>
+</div>
 <a id="ad8df42f63a72d90191018a29c00c7bc9" name="ad8df42f63a72d90191018a29c00c7bc9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad8df42f63a72d90191018a29c00c7bc9">&#9670;&#160;</a></span>getModelId()</h2>
 
@@ -275,34 +297,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a7f834b18c509f074a1677e7b67f5b755" name="a7f834b18c509f074a1677e7b67f5b755"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f834b18c509f074a1677e7b67f5b755">&#9670;&#160;</a></span>move()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; QSelection::move </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>取出 </p><dl class="section return"><dt>返回</dt><dd>存储的Selection对象 </dd></dl>
-
-</div>
-</div>
-<a id="a0df3defac16ab1630541dac23561a521" name="a0df3defac16ab1630541dac23561a521"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0df3defac16ab1630541dac23561a521">&#9670;&#160;</a></span>set()</h2>
+<a id="aea3afa5f66180811ffea9161debd6d8d" name="aea3afa5f66180811ffea9161debd6d8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea3afa5f66180811ffea9161debd6d8d">&#9670;&#160;</a></span>set()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -313,7 +309,7 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="memname">void QSelection::set </td>
           <td>(</td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>data</em></span></td><td>)</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>data</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -389,8 +385,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="ab07dc3dbd93b174e1fb4080d477eaa71" name="ab07dc3dbd93b174e1fb4080d477eaa71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab07dc3dbd93b174e1fb4080d477eaa71">&#9670;&#160;</a></span>data_</h2>
+<a id="ae17a23b67b7c87bdb604e930769d517a" name="ae17a23b67b7c87bdb604e930769d517a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae17a23b67b7c87bdb604e930769d517a">&#9670;&#160;</a></span>data_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -399,7 +395,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="structSelection.html">Selection</a>&gt; QSelection::data_</td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="structSelection.html">Selection</a>&gt; QSelection::data_</td>
         </tr>
       </table>
   </td>

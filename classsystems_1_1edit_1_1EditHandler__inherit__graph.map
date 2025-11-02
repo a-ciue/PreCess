@@ -1,0 +1,5 @@
+<map id="systems::edit::EditHandler" name="systems::edit::EditHandler">
+<area shape="rect" id="Node000001" title="模型编辑系统的功能接口，继承他来实现具体的编辑功能" alt="" coords="5,5,200,31"/>
+<area shape="rect" id="Node000002" href="$classsystems_1_1edit_1_1TrivialEditHandler.html" title=" " alt="" coords="11,79,194,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,44,105,79,100,79,100,44"/>
+</map>

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['face_0',['face',['../classMeshLib_1_1CHalfEdge.html#a2d308b6e3d230164419e78ae4be7a41a',1,'MeshLib::CHalfEdge']]],
-  ['face_5fpatch_5fid_1',['face_patch_id',['../classModelData.html#a4bad63099390018f0e7ec565a5e3addf',1,'ModelData']]],
+  ['face_5fpatch_5fid_1',['face_patch_id',['../structMeshData.html#ae1521d1e75a558caeed3d50e066170fc',1,'MeshData']]],
   ['faceedgeiterator_2',['FaceEdgeIterator',['../classMeshLib_1_1FaceEdgeIterator.html#a73b6a961906309febf686830999e5b9b',1,'MeshLib::FaceEdgeIterator']]],
   ['facehalfedge_3',['faceHalfedge',['../classMeshLib_1_1CBaseMesh.html#a24655b5a0c6cba60c236c84def777e9a',1,'MeshLib::CBaseMesh']]],
   ['facehalfedgeiterator_4',['FaceHalfedgeIterator',['../classMeshLib_1_1FaceHalfedgeIterator.html#ad0206cbb7214b717bbc625bab2b54f5e',1,'MeshLib::FaceHalfedgeIterator']]],

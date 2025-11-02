@@ -73,6 +73,7 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#signals">信号</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#properties">属性</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
@@ -81,7 +82,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant  
+<p>QML中使用的参数类型实例对象值，用于参数列表中的model。是对应QArgType描述的参数类型的变量实例，封装了QArgType参数类型和参数值QVariant  
  <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="QArgObject_8h_source.html">QArgObject.h</a>&gt;</code></p>
@@ -90,7 +91,7 @@ $(function() {
 <div class="dyncontent">
 <div class="center"><img src="classQArgObject__inherit__graph.png" border="0" usemap="#aQArgObject_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
 <map name="aQArgObject_inherit__map" id="aQArgObject_inherit__map">
-<area shape="rect" title="QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant" alt="" coords="5,79,101,104"/>
+<area shape="rect" title="QML中使用的参数类型实例对象值，用于参数列表中的model。是对应QArgType描述的参数类型的变量实例，封装了QArgType参数类型和参数值QVariant" alt="" coords="5,79,101,104"/>
 <area shape="rect" title=" " alt="" coords="16,5,91,31"/>
 <area shape="poly" title=" " alt="" coords="56,44,56,79,51,79,51,44"/>
 </map>
@@ -100,46 +101,38 @@ QArgObject 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classQArgObject__coll__graph.png" border="0" usemap="#aQArgObject_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aQArgObject_coll__map" id="aQArgObject_coll__map">
-<area shape="rect" title="QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant" alt="" coords="29,327,125,352"/>
-<area shape="rect" title=" " alt="" coords="5,231,80,256"/>
-<area shape="poly" title=" " alt="" coords="54,268,76,326,71,327,49,270"/>
-<area shape="rect" href="structArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="104,231,179,256"/>
-<area shape="poly" title=" " alt="" coords="128,269,87,328,83,325,124,266"/>
-<area shape="rect" title=" " alt="" coords="98,95,185,120"/>
-<area shape="poly" title=" " alt="" coords="144,134,144,231,139,231,139,134"/>
-<area shape="rect" title=" " alt="" coords="72,5,211,45"/>
-<area shape="poly" title=" " alt="" coords="144,59,144,94,139,94,139,59"/>
+<area shape="rect" title="QML中使用的参数类型实例对象值，用于参数列表中的model。是对应QArgType描述的参数类型的变量实例，封装了QArgType参数类型和参数值QVariant" alt="" coords="5,79,101,104"/>
+<area shape="rect" title=" " alt="" coords="16,5,91,31"/>
+<area shape="poly" title=" " alt="" coords="56,44,56,79,51,79,51,44"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:a029b9dd1e15189b6a5a9f6c0124e72aa" id="r_a029b9dd1e15189b6a5a9f6c0124e72aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a029b9dd1e15189b6a5a9f6c0124e72aa">valueChanged</a> ()</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a7fccb8a0aca62e5f7e919fe0ce3601db" id="r_a7fccb8a0aca62e5f7e919fe0ce3601db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7fccb8a0aca62e5f7e919fe0ce3601db">QArgObject</a> (<a class="el" href="structArgType.html">ArgType</a> &amp;&amp;<a class="el" href="#a610a4002a30194dbe69cdbd4016b0f66">type</a>, QObject *parent=nullptr)</td></tr>
-<tr class="memitem:af9eaa0ea7cee55dcdca3b3a053780780" id="r_af9eaa0ea7cee55dcdca3b3a053780780"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9eaa0ea7cee55dcdca3b3a053780780">QArgObject</a> (const <a class="el" href="structArgType.html">ArgType</a> &amp;<a class="el" href="#a610a4002a30194dbe69cdbd4016b0f66">type</a>, QObject *parent=nullptr)</td></tr>
-<tr class="memitem:a6b71d325a4649d8e8ed893187aa8d235" id="r_a6b71d325a4649d8e8ed893187aa8d235"><td class="memItemLeft" align="right" valign="top">QArgType::ArgTypeEnum&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b71d325a4649d8e8ed893187aa8d235">type</a> () const</td></tr>
-<tr class="memitem:aa36465108db5100759588db2a3ced054" id="r_aa36465108db5100759588db2a3ced054"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa36465108db5100759588db2a3ced054">name</a> () const</td></tr>
-<tr class="memitem:aa77d552524388749756bd89e710f563c" id="r_aa77d552524388749756bd89e710f563c"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa77d552524388749756bd89e710f563c">content</a> () const</td></tr>
-<tr class="memitem:ac7e72b84045a01c4726bed311721fde2" id="r_ac7e72b84045a01c4726bed311721fde2"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7e72b84045a01c4726bed311721fde2">desc</a> () const</td></tr>
-<tr class="memitem:a82b7d11e4bad4c3335eb610aa3de6087" id="r_a82b7d11e4bad4c3335eb610aa3de6087"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::any &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82b7d11e4bad4c3335eb610aa3de6087">getValue</a> () const</td></tr>
+<tr class="memitem:a412205b0f83b527d9a54a707dfbd464d" id="r_a412205b0f83b527d9a54a707dfbd464d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a412205b0f83b527d9a54a707dfbd464d">QArgObject</a> (const QArgType &amp;<a class="el" href="#a6be57d547a06c72078c8ed35a2f9bf93">type</a>, QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a3da4b25dc36960a57b7deb324f6baa66" id="r_a3da4b25dc36960a57b7deb324f6baa66"><td class="memItemLeft" align="right" valign="top">const QArgType *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3da4b25dc36960a57b7deb324f6baa66">type</a> () const</td></tr>
+<tr class="memitem:a816ea2b5572caf47e96370f89c879baf" id="r_a816ea2b5572caf47e96370f89c879baf"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a816ea2b5572caf47e96370f89c879baf">getValue</a> () const</td></tr>
+<tr class="memitem:ace59e81d72f8c8acba10e07122ab2b45" id="r_ace59e81d72f8c8acba10e07122ab2b45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace59e81d72f8c8acba10e07122ab2b45">setValue</a> (const QVariant &amp;<a class="el" href="#af1c79b539eb41eff9dc27169c17b514c">value</a>)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 属性</h2></td></tr>
-<tr class="memitem:a610a4002a30194dbe69cdbd4016b0f66" id="r_a610a4002a30194dbe69cdbd4016b0f66"><td class="memItemLeft" align="right" valign="top">QML_ELEMENTQArgType::ArgTypeEnum&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a610a4002a30194dbe69cdbd4016b0f66">type</a></td></tr>
-<tr class="memitem:a9cbb2d5a4c2663d5b5ac38c6fc4e041e" id="r_a9cbb2d5a4c2663d5b5ac38c6fc4e041e"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9cbb2d5a4c2663d5b5ac38c6fc4e041e">name</a></td></tr>
-<tr class="memitem:ae59fba2c633cd66d7327179745fce25f" id="r_ae59fba2c633cd66d7327179745fce25f"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae59fba2c633cd66d7327179745fce25f">content</a></td></tr>
-<tr class="memitem:ac5906b8b1197e277cfa2a798e0f1da94" id="r_ac5906b8b1197e277cfa2a798e0f1da94"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5906b8b1197e277cfa2a798e0f1da94">description</a></td></tr>
+<tr class="memitem:a6be57d547a06c72078c8ed35a2f9bf93" id="r_a6be57d547a06c72078c8ed35a2f9bf93"><td class="memItemLeft" align="right" valign="top">QML_ELEMENTconst QArgType *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6be57d547a06c72078c8ed35a2f9bf93">type</a></td></tr>
 <tr class="memitem:af1c79b539eb41eff9dc27169c17b514c" id="r_af1c79b539eb41eff9dc27169c17b514c"><td class="memItemLeft" align="right" valign="top">QVariant&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1c79b539eb41eff9dc27169c17b514c">value</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:a97a1660245e2090b1a241bb1baef2df5" id="r_a97a1660245e2090b1a241bb1baef2df5"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structArgType.html">ArgType</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97a1660245e2090b1a241bb1baef2df5">type_</a></td></tr>
+<tr class="memitem:ad6c2a2eebf51ac81693c4731ef520e1d" id="r_ad6c2a2eebf51ac81693c4731ef520e1d"><td class="memItemLeft" align="right" valign="top">const QArgType *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6c2a2eebf51ac81693c4731ef520e1d">type_</a> {}</td></tr>
 <tr class="memitem:a9d79f37273c907d676fb4ac74e2f227c" id="r_a9d79f37273c907d676fb4ac74e2f227c"><td class="memItemLeft" align="right" valign="top">QVariant&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d79f37273c907d676fb4ac74e2f227c">value_</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>QML中使用的参数对象，用于ListView中的model。封装了ArgType参数类型和参数值QVariant </p>
+<div class="textblock"><p>QML中使用的参数类型实例对象值，用于参数列表中的model。是对应QArgType描述的参数类型的变量实例，封装了QArgType参数类型和参数值QVariant </p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
-<a id="a7fccb8a0aca62e5f7e919fe0ce3601db" name="a7fccb8a0aca62e5f7e919fe0ce3601db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fccb8a0aca62e5f7e919fe0ce3601db">&#9670;&#160;</a></span>QArgObject() <span class="overload">[1/2]</span></h2>
+<a id="a412205b0f83b527d9a54a707dfbd464d" name="a412205b0f83b527d9a54a707dfbd464d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a412205b0f83b527d9a54a707dfbd464d">&#9670;&#160;</a></span>QArgObject()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -147,28 +140,7 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="memname">QArgObject::QArgObject </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structArgType.html">ArgType</a> &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af9eaa0ea7cee55dcdca3b3a053780780" name="af9eaa0ea7cee55dcdca3b3a053780780"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af9eaa0ea7cee55dcdca3b3a053780780">&#9670;&#160;</a></span>QArgObject() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">QArgObject::QArgObject </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structArgType.html">ArgType</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
+          <td class="paramtype">const QArgType &amp;</td>          <td class="paramname"><span class="paramname"><em>type</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -181,94 +153,62 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="aa77d552524388749756bd89e710f563c" name="aa77d552524388749756bd89e710f563c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa77d552524388749756bd89e710f563c">&#9670;&#160;</a></span>content()</h2>
+<a id="a816ea2b5572caf47e96370f89c879baf" name="a816ea2b5572caf47e96370f89c879baf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a816ea2b5572caf47e96370f89c879baf">&#9670;&#160;</a></span>getValue()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">QString QArgObject::content </td>
+          <td class="memname">std::optional&lt; <a class="el" href="classcore_1_1ArgObject.html">ArgObject</a> &gt; QArgObject::getValue </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>获取参数值对应的参数对象 </p>
 
 </div>
 </div>
-<a id="ac7e72b84045a01c4726bed311721fde2" name="ac7e72b84045a01c4726bed311721fde2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac7e72b84045a01c4726bed311721fde2">&#9670;&#160;</a></span>desc()</h2>
+<a id="ace59e81d72f8c8acba10e07122ab2b45" name="ace59e81d72f8c8acba10e07122ab2b45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace59e81d72f8c8acba10e07122ab2b45">&#9670;&#160;</a></span>setValue()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">QString QArgObject::desc </td>
+          <td class="memname">void QArgObject::setValue </td>
+          <td>(</td>
+          <td class="paramtype">const QVariant &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>设置参数值 </p>
+
+</div>
+</div>
+<a id="a3da4b25dc36960a57b7deb324f6baa66" name="a3da4b25dc36960a57b7deb324f6baa66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3da4b25dc36960a57b7deb324f6baa66">&#9670;&#160;</a></span>type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QArgType * QArgObject::type </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>参数类型 </p>
 
 </div>
 </div>
-<a id="a82b7d11e4bad4c3335eb610aa3de6087" name="a82b7d11e4bad4c3335eb610aa3de6087"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82b7d11e4bad4c3335eb610aa3de6087">&#9670;&#160;</a></span>getValue()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::optional&lt; std::any &gt; QArgObject::getValue </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa36465108db5100759588db2a3ced054" name="aa36465108db5100759588db2a3ced054"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa36465108db5100759588db2a3ced054">&#9670;&#160;</a></span>name()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">QString QArgObject::name </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6b71d325a4649d8e8ed893187aa8d235" name="a6b71d325a4649d8e8ed893187aa8d235"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b71d325a4649d8e8ed893187aa8d235">&#9670;&#160;</a></span>type()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">QArgType::ArgTypeEnum QArgObject::type </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="a97a1660245e2090b1a241bb1baef2df5" name="a97a1660245e2090b1a241bb1baef2df5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97a1660245e2090b1a241bb1baef2df5">&#9670;&#160;</a></span>type_</h2>
+<a id="a029b9dd1e15189b6a5a9f6c0124e72aa" name="a029b9dd1e15189b6a5a9f6c0124e72aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a029b9dd1e15189b6a5a9f6c0124e72aa">&#9670;&#160;</a></span>valueChanged</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -277,7 +217,33 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="structArgType.html">ArgType</a>&amp; QArgObject::type_</td>
+          <td class="memname">void QArgObject::valueChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ad6c2a2eebf51ac81693c4731ef520e1d" name="ad6c2a2eebf51ac81693c4731ef520e1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6c2a2eebf51ac81693c4731ef520e1d">&#9670;&#160;</a></span>type_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QArgType* QArgObject::type_ {}</td>
         </tr>
       </table>
   </td>
@@ -312,8 +278,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
-<a id="ae59fba2c633cd66d7327179745fce25f" name="ae59fba2c633cd66d7327179745fce25f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae59fba2c633cd66d7327179745fce25f">&#9670;&#160;</a></span>content</h2>
+<a id="a6be57d547a06c72078c8ed35a2f9bf93" name="a6be57d547a06c72078c8ed35a2f9bf93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6be57d547a06c72078c8ed35a2f9bf93">&#9670;&#160;</a></span>type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -322,73 +288,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">QString QArgObject::content</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac5906b8b1197e277cfa2a798e0f1da94" name="ac5906b8b1197e277cfa2a798e0f1da94"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5906b8b1197e277cfa2a798e0f1da94">&#9670;&#160;</a></span>description</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">QString QArgObject::description</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9cbb2d5a4c2663d5b5ac38c6fc4e041e" name="a9cbb2d5a4c2663d5b5ac38c6fc4e041e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9cbb2d5a4c2663d5b5ac38c6fc4e041e">&#9670;&#160;</a></span>name</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">QString QArgObject::name</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a610a4002a30194dbe69cdbd4016b0f66" name="a610a4002a30194dbe69cdbd4016b0f66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a610a4002a30194dbe69cdbd4016b0f66">&#9670;&#160;</a></span>type</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">QML_ELEMENTQArgType::ArgTypeEnum QArgObject::type</td>
+          <td class="memname">QML_ELEMENTconst QArgType* QArgObject::type</td>
         </tr>
       </table>
   </td>
@@ -405,11 +305,19 @@ Private 属性</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">QVariant QArgObject::value</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel write">write</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

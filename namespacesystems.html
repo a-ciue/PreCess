@@ -74,7 +74,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#namespaces">命名空间</a> &#124;
-<a href="#nested-classes">类</a>  </div>
+<a href="#nested-classes">类</a> &#124;
+<a href="#typedef-members">类型定义</a>  </div>
   <div class="headertitle"><div class="title">systems 命名空间参考</div></div>
 </div><!--header-->
 <div class="contents">
@@ -82,6 +83,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 命名空间</h2></td></tr>
 <tr class="memitem:algo" id="r_algo"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1algo.html">algo</a></td></tr>
+<tr class="memitem:edit" id="r_edit"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1edit.html">edit</a></td></tr>
 <tr class="memitem:io" id="r_io"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1io.html">io</a></td></tr>
 <tr class="memdesc:namespacesystems_1_1io"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="ModelIOSystemRegister_8h.html">ModelIOSystemRegister.h</a> <br /></td></tr>
 </table><table class="memberdecls">
@@ -92,12 +94,38 @@ $(function() {
 <tr class="memitem:HandlerCreatorDestroyerFactory" id="r_HandlerCreatorDestroyerFactory"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1HandlerCreatorDestroyerFactory.html">HandlerCreatorDestroyerFactory</a></td></tr>
 <tr class="memitem:PluginBase" id="r_PluginBase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1PluginBase.html">PluginBase</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">插件对象基类，定义与插件交互的接口。  <a href="classsystems_1_1PluginBase.html#details">更多...</a><br /></td></tr>
-<tr class="memitem:PluginHandler" id="r_PluginHandler"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1PluginHandler.html">PluginHandler</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">插件处理器对象，跨dll动态库从插件中获取的，可据此访问插件中的处理器对象。需要指定处理器类型T进行转型。  <a href="classsystems_1_1PluginHandler.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:SystemHandlerDestroyer" id="r_SystemHandlerDestroyer"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1SystemHandlerDestroyer.html">SystemHandlerDestroyer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">SystemHandlerPtr的智能指针析构器，支持自定义销毁函数  <a href="structsystems_1_1SystemHandlerDestroyer.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:SystemPluginManager" id="r_SystemPluginManager"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1SystemPluginManager.html">SystemPluginManager</a></td></tr>
 <tr class="memitem:SystemRegisterBase" id="r_SystemRegisterBase"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1SystemRegisterBase.html">SystemRegisterBase</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态  <a href="classsystems_1_1SystemRegisterBase.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:a9cec77b8a54a3e8546f9c1cc01542eac" id="r_a9cec77b8a54a3e8546f9c1cc01542eac"><td class="memTemplParams" colspan="2">template&lt;typename SystemHandler&gt; </td></tr>
+<tr class="memitem:a9cec77b8a54a3e8546f9c1cc01542eac template"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9cec77b8a54a3e8546f9c1cc01542eac">SystemHandlerPtr</a> = std::unique_ptr&lt;SystemHandler, <a class="el" href="structsystems_1_1SystemHandlerDestroyer.html">SystemHandlerDestroyer</a>&lt;SystemHandler&gt;&gt;</td></tr>
+<tr class="memdesc:a9cec77b8a54a3e8546f9c1cc01542eac"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统处理器智能指针，支持自定义销毁函数  <br /></td></tr>
 </table>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">类型定义说明</h2>
+<a id="a9cec77b8a54a3e8546f9c1cc01542eac" name="a9cec77b8a54a3e8546f9c1cc01542eac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cec77b8a54a3e8546f9c1cc01542eac">&#9670;&#160;</a></span>SystemHandlerPtr</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename SystemHandler&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a9cec77b8a54a3e8546f9c1cc01542eac">systems::SystemHandlerPtr</a> = std::unique_ptr&lt;SystemHandler, <a class="el" href="structsystems_1_1SystemHandlerDestroyer.html">SystemHandlerDestroyer</a>&lt;SystemHandler&gt;&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>系统处理器智能指针，支持自定义销毁函数 </p>
+<dl class="section see"><dt>参见</dt><dd><a class="el" href="structsystems_1_1SystemHandlerDestroyer.html" title="SystemHandlerPtr的智能指针析构器，支持自定义销毁函数">systems::SystemHandlerDestroyer</a> </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

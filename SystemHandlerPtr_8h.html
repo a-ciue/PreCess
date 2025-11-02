@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/core/SystemHandlerPtr.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_50d45cd9bdd66cc9f345a21a971cefc8.html">core</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a> &#124;
+<a href="#typedef-members">类型定义</a>  </div>
+  <div class="headertitle"><div class="title">SystemHandlerPtr.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;memory&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+SystemHandlerPtr.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="SystemHandlerPtr_8h__incl.png" border="0" usemap="#amodel_2systems_2core_2SystemHandlerPtr_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2core_2SystemHandlerPtr_8h" id="amodel_2systems_2core_2SystemHandlerPtr_8h">
+<area shape="rect" title=" " alt="" coords="5,5,160,45"/>
+<area shape="rect" title=" " alt="" coords="44,93,121,119"/>
+<area shape="poly" title=" " alt="" coords="85,46,85,79,80,79,80,46"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="SystemHandlerPtr_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2core_2SystemHandlerPtr_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2core_2SystemHandlerPtr_8hdep" id="amodel_2systems_2core_2SystemHandlerPtr_8hdep">
+<area shape="rect" title=" " alt="" coords="1114,5,1269,45"/>
+<area shape="rect" href="AlgorithmSystem_8h.html" title=" " alt="" coords="999,93,1154,133"/>
+<area shape="poly" title=" " alt="" coords="1157,56,1104,95,1100,91,1153,52"/>
+<area shape="rect" href="PluginBase_8h.html" title=" " alt="" coords="533,93,687,133"/>
+<area shape="poly" title=" " alt="" coords="1100,43,688,103,687,98,1100,37"/>
+<area shape="rect" href="EditSystem_8h.html" title=" " alt="" coords="2095,93,2245,133"/>
+<area shape="poly" title=" " alt="" coords="1283,32,2095,103,2094,108,1282,37"/>
+<area shape="rect" href="ModelIOSystem_8h.html" title=" " alt="" coords="1179,101,1436,126"/>
+<area shape="poly" title=" " alt="" coords="1230,52,1293,98,1290,103,1227,56"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="1940,189,2168,214"/>
+<area shape="poly" title=" " alt="" coords="1168,131,1284,144,1382,152,1550,158,1717,163,1929,179,1985,186,1984,191,1928,184,1716,168,1550,164,1382,157,1283,149,1167,136"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="757,181,983,221"/>
+<area shape="poly" title=" " alt="" coords="1020,141,916,184,914,179,1018,136"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="1008,181,1175,221"/>
+<area shape="poly" title=" " alt="" coords="1085,146,1091,181,1085,182,1080,147"/>
+<area shape="rect" href="AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="245,181,463,221"/>
+<area shape="poly" title=" " alt="" coords="986,126,754,151,476,184,464,186,463,180,475,179,754,145,985,121"/>
+<area shape="poly" title=" " alt="" coords="542,140,411,184,409,179,540,135"/>
+<area shape="rect" href="SystemPluginManager_8cpp.html" title=" " alt="" coords="5,181,220,221"/>
+<area shape="poly" title=" " alt="" coords="520,133,221,184,220,179,519,128"/>
+<area shape="rect" href="EditSystemRegister_8cpp.html" title=" " alt="" coords="1736,181,1916,221"/>
+<area shape="poly" title=" " alt="" coords="701,117,1268,148,1556,166,1724,179,1736,180,1736,186,1723,184,1556,171,1267,154,701,122"/>
+<area shape="rect" href="ModelIOSystemRegister_8cpp.html" title=" " alt="" coords="487,181,733,221"/>
+<area shape="poly" title=" " alt="" coords="613,147,613,181,607,181,607,147"/>
+<area shape="poly" title=" " alt="" coords="2135,144,2071,191,2068,186,2131,140"/>
+<area shape="poly" title=" " alt="" coords="2082,139,1902,184,1901,179,2081,134"/>
+<area shape="rect" href="QEditSystemAdaptor_8cpp.html" title=" " alt="" coords="2193,181,2379,221"/>
+<area shape="poly" title=" " alt="" coords="2208,140,2262,179,2259,183,2205,144"/>
+<area shape="rect" href="EditSystem_8cpp.html" title=" " alt="" coords="2404,181,2555,221"/>
+<area shape="poly" title=" " alt="" coords="2252,134,2412,179,2411,184,2250,140"/>
+<area shape="rect" href="TestEditSystem_8cpp.html" title=" " alt="" coords="2579,181,2761,221"/>
+<area shape="poly" title=" " alt="" coords="2259,127,2568,179,2579,181,2578,186,2567,184,2259,132"/>
+<area shape="poly" title=" " alt="" coords="1440,125,1669,148,1929,179,1982,186,1981,191,1928,184,1668,154,1440,130"/>
+<area shape="poly" title=" " alt="" coords="1267,134,1140,184,1138,179,1265,129"/>
+<area shape="poly" title=" " alt="" coords="1210,130,1166,136,745,184,733,185,733,180,744,179,1166,131,1210,125"/>
+<area shape="rect" href="QModelIOSystemAdaptor_8cpp.html" title=" " alt="" coords="1199,181,1415,221"/>
+<area shape="poly" title=" " alt="" coords="1310,140,1310,181,1305,181,1305,140"/>
+<area shape="rect" href="ModelIOSystem_8cpp.html" title=" " alt="" coords="1439,189,1711,214"/>
+<area shape="poly" title=" " alt="" coords="1357,128,1540,186,1539,191,1355,133"/>
+</map>
+</div>
+</div>
+<p><a href="SystemHandlerPtr_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3ASystemHandlerDestroyer_3C_20SystemHandler_20_3E" id="r_systems_3A_3ASystemHandlerDestroyer_3C_20SystemHandler_20_3E"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1SystemHandlerDestroyer.html">systems::SystemHandlerDestroyer&lt; SystemHandler &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">SystemHandlerPtr的智能指针析构器，支持自定义销毁函数  <a href="structsystems_1_1SystemHandlerDestroyer.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:a9cec77b8a54a3e8546f9c1cc01542eac" id="r_a9cec77b8a54a3e8546f9c1cc01542eac"><td class="memTemplParams" colspan="2">template&lt;typename SystemHandler&gt; </td></tr>
+<tr class="memitem:a9cec77b8a54a3e8546f9c1cc01542eac template"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">systems::SystemHandlerPtr</a> = std::unique_ptr&lt;SystemHandler, <a class="el" href="structsystems_1_1SystemHandlerDestroyer.html">SystemHandlerDestroyer</a>&lt;SystemHandler&gt;&gt;</td></tr>
+<tr class="memdesc:a9cec77b8a54a3e8546f9c1cc01542eac"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统处理器智能指针，支持自定义销毁函数  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><dl class="section author"><dt>作者</dt><dd>张家僮 2025~ </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

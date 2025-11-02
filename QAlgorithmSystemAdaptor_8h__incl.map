@@ -1,11 +1,11 @@
 <map id="app/model/systems/algo/QAlgorithmSystemAdaptor.h" name="app/model/systems/algo/QAlgorithmSystemAdaptor.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="109,5,319,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="111,5,322,45"/>
 <area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="89,93,153,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="193,48,147,86,144,82,190,44"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="177,93,251,119"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="217,46,217,79,211,79,211,46"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="276,93,531,119"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="260,43,364,85,362,90,258,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="195,48,147,87,144,82,192,43"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="177,93,256,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="219,46,219,79,214,79,214,46"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="280,93,535,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="263,43,368,86,366,91,261,48"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,167,68,192"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,121,63,160,59,155,105,117"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="93,167,149,192"/>

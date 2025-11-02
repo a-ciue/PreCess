@@ -17,7 +17,8 @@ var searchData=
   ['splinedata_2eh_14',['SplineData.h',['../SplineData_8h.html',1,'']]],
   ['splinedatavtk_2eh_15',['SplineDataVtk.h',['../SplineDataVtk_8h.html',1,'']]],
   ['strutil_2eh_16',['StrUtil.h',['../StrUtil_8h.html',1,'']]],
-  ['systempluginmanager_2ecpp_17',['SystemPluginManager.cpp',['../SystemPluginManager_8cpp.html',1,'']]],
-  ['systempluginmanager_2eh_18',['SystemPluginManager.h',['../SystemPluginManager_8h.html',1,'']]],
-  ['systemregisterbase_2eh_19',['SystemRegisterBase.h',['../SystemRegisterBase_8h.html',1,'']]]
+  ['systemhandlerptr_2eh_17',['SystemHandlerPtr.h',['../SystemHandlerPtr_8h.html',1,'']]],
+  ['systempluginmanager_2ecpp_18',['SystemPluginManager.cpp',['../SystemPluginManager_8cpp.html',1,'']]],
+  ['systempluginmanager_2eh_19',['SystemPluginManager.h',['../SystemPluginManager_8h.html',1,'']]],
+  ['systemregisterbase_2eh_20',['SystemRegisterBase.h',['../SystemRegisterBase_8h.html',1,'']]]
 ];

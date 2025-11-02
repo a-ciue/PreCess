@@ -80,48 +80,53 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="QArgObject_8h_source.html">QArgObject.h</a>&quot;</code><br />
-<code>#include &lt;QUrl&gt;</code><br />
+<code>#include &quot;<a class="el" href="ArgObject_8h_source.html">ArgObject.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="QSelection_8h_source.html">QSelection.h</a>&quot;</code><br />
+<code>#include &lt;QFileInfo&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 QArgObject.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QArgObject_8cpp__incl.png" border="0" usemap="#aapp_2model_2QArgObject_8cpp" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QArgObject_8cpp" id="aapp_2model_2QArgObject_8cpp">
-<area shape="rect" title=" " alt="" coords="300,5,496,31"/>
-<area shape="rect" href="QArgObject_8h.html" title=" " alt="" coords="231,79,339,104"/>
-<area shape="poly" title=" " alt="" coords="381,33,316,74,313,69,378,28"/>
-<area shape="rect" title=" " alt="" coords="373,79,423,104"/>
-<area shape="poly" title=" " alt="" coords="401,31,401,65,395,65,395,31"/>
-<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="453,79,557,104"/>
-<area shape="poly" title=" " alt="" coords="417,28,477,69,474,73,414,33"/>
-<area shape="rect" title=" " alt="" coords="413,152,487,177"/>
-<area shape="poly" title=" " alt="" coords="312,102,412,144,409,149,310,106"/>
-<area shape="rect" title=" " alt="" coords="5,152,52,177"/>
-<area shape="poly" title=" " alt="" coords="241,107,66,155,64,149,240,101"/>
-<area shape="rect" title=" " alt="" coords="77,152,157,177"/>
-<area shape="poly" title=" " alt="" coords="259,106,158,149,156,144,257,102"/>
-<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="181,152,268,177"/>
-<area shape="poly" title=" " alt="" coords="277,106,245,143,241,140,273,103"/>
-<area shape="rect" title=" " alt="" coords="293,152,389,177"/>
-<area shape="poly" title=" " alt="" coords="296,103,325,140,321,143,292,106"/>
-<area shape="rect" title=" " alt="" coords="138,225,197,251"/>
-<area shape="poly" title=" " alt="" coords="217,179,187,216,183,213,213,176"/>
-<area shape="rect" href="ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="221,225,343,251"/>
-<area shape="poly" title=" " alt="" coords="236,176,266,213,262,216,232,179"/>
-<area shape="poly" title=" " alt="" coords="498,106,469,143,465,140,494,103"/>
-<area shape="rect" title=" " alt="" coords="511,152,650,177"/>
-<area shape="poly" title=" " alt="" coords="519,102,560,141,556,144,515,106"/>
-<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="675,152,769,177"/>
-<area shape="poly" title=" " alt="" coords="540,101,675,145,673,150,539,107"/>
-<area shape="rect" title=" " alt="" coords="648,299,711,324"/>
-<area shape="poly" title=" " alt="" coords="721,179,689,286,684,285,716,177"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="727,225,791,251"/>
-<area shape="poly" title=" " alt="" coords="731,176,749,212,745,215,726,179"/>
-<area shape="poly" title=" " alt="" coords="748,253,704,292,701,288,745,249"/>
-<area shape="rect" title=" " alt="" coords="735,299,791,324"/>
-<area shape="poly" title=" " alt="" coords="763,251,765,285,759,285,757,251"/>
-<area shape="rect" title=" " alt="" coords="815,299,893,324"/>
-<area shape="poly" title=" " alt="" coords="776,249,829,288,826,292,773,253"/>
+<area shape="rect" title=" " alt="" coords="366,5,562,31"/>
+<area shape="rect" href="QArgObject_8h.html" title=" " alt="" coords="303,79,411,104"/>
+<area shape="poly" title=" " alt="" coords="448,33,388,73,385,69,445,28"/>
+<area shape="rect" href="ArgObject_8h.html" title=" " alt="" coords="145,152,244,177"/>
+<area shape="poly" title=" " alt="" coords="415,33,355,52,292,81,250,112,216,144,212,140,246,108,289,76,353,47,414,28"/>
+<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="477,79,581,104"/>
+<area shape="poly" title=" " alt="" coords="477,29,511,67,508,70,473,33"/>
+<area shape="rect" title=" " alt="" coords="605,79,685,104"/>
+<area shape="poly" title=" " alt="" coords="494,28,604,71,602,76,492,33"/>
+<area shape="poly" title=" " alt="" coords="332,106,235,149,233,144,330,102"/>
+<area shape="rect" title=" " alt="" coords="268,152,364,177"/>
+<area shape="poly" title=" " alt="" coords="353,106,332,141,327,139,348,103"/>
+<area shape="rect" title=" " alt="" coords="389,152,467,177"/>
+<area shape="poly" title=" " alt="" coords="371,102,409,140,405,144,367,106"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="106,225,193,251"/>
+<area shape="poly" title=" " alt="" coords="189,179,166,215,162,212,185,176"/>
+<area shape="rect" title=" " alt="" coords="217,225,263,251"/>
+<area shape="poly" title=" " alt="" coords="204,176,228,212,223,215,200,179"/>
+<area shape="rect" title=" " alt="" coords="5,299,96,324"/>
+<area shape="poly" title=" " alt="" coords="135,253,79,293,76,288,132,249"/>
+<area shape="rect" title=" " alt="" coords="120,299,179,324"/>
+<area shape="poly" title=" " alt="" coords="152,251,152,285,147,285,147,251"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="203,299,379,324"/>
+<area shape="poly" title=" " alt="" coords="173,248,257,290,254,295,171,253"/>
+<area shape="rect" title=" " alt="" coords="492,152,567,177"/>
+<area shape="poly" title=" " alt="" coords="532,104,532,138,527,138,527,104"/>
+<area shape="rect" title=" " alt="" coords="591,152,729,177"/>
+<area shape="poly" title=" " alt="" coords="552,102,628,143,626,148,549,106"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="754,152,849,177"/>
+<area shape="poly" title=" " alt="" coords="574,101,745,146,744,151,572,107"/>
+<area shape="rect" title=" " alt="" coords="727,299,790,324"/>
+<area shape="poly" title=" " alt="" coords="800,179,769,286,763,285,795,177"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="807,225,871,251"/>
+<area shape="poly" title=" " alt="" coords="810,176,829,212,824,215,805,179"/>
+<area shape="poly" title=" " alt="" coords="828,253,784,292,780,288,824,249"/>
+<area shape="rect" title=" " alt="" coords="815,299,871,324"/>
+<area shape="poly" title=" " alt="" coords="842,251,844,285,839,285,837,251"/>
+<area shape="rect" title=" " alt="" coords="895,299,972,324"/>
+<area shape="poly" title=" " alt="" coords="855,249,908,288,905,292,852,253"/>
 </map>
 </div>
 </div></div><!-- contents -->

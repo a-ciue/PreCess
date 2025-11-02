@@ -79,7 +79,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pri-methods">Private 成员函数</a> &#124;
-<a href="#friends">友元</a> &#124;
 <a href="classsystems_1_1PluginBase-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">systems::PluginBase类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
@@ -92,17 +91,15 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
+<tr class="memitem:a5f038508deb2cc0a04e3db3b3841a438" id="r_a5f038508deb2cc0a04e3db3b3841a438"><td class="memTemplParams" colspan="2">template&lt;typename SystemHandler&gt; </td></tr>
+<tr class="memitem:a5f038508deb2cc0a04e3db3b3841a438 template"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">SystemHandlerPtr</a>&lt; SystemHandler &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f038508deb2cc0a04e3db3b3841a438">makeHandler</a> ()</td></tr>
+<tr class="memdesc:a5f038508deb2cc0a04e3db3b3841a438"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建插件包裹的Handler派生类型对象，以智能指针管理生命周期。  <br /></td></tr>
 <tr class="memitem:a44f4ad98e01466925651525a618c56a2" id="r_a44f4ad98e01466925651525a618c56a2"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44f4ad98e01466925651525a618c56a2">~PluginBase</a> ()=default</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
 <tr class="memitem:a9ae7029ab308f3a702f595cfaa523b8a" id="r_a9ae7029ab308f3a702f595cfaa523b8a"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="structsystems_1_1HandlerCreatorDestroyer.html">HandlerCreatorDestroyer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ae7029ab308f3a702f595cfaa523b8a">getHandlerCreatorDestroyer</a> () noexcept=0</td></tr>
 <tr class="memdesc:a9ae7029ab308f3a702f595cfaa523b8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取处理器创建和销毁函数对。  <br /></td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
-友元</h2></td></tr>
-<tr class="memitem:a080036984a644ef55fe4d95a41469479" id="r_a080036984a644ef55fe4d95a41469479"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
-<tr class="memitem:a080036984a644ef55fe4d95a41469479 template"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a080036984a644ef55fe4d95a41469479">PluginHandler</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>插件对象基类，定义与插件交互的接口。 </p>
@@ -158,34 +155,49 @@ Private 成员函数</h2></td></tr>
 </div><div class="memdoc">
 
 <p>获取处理器创建和销毁函数对。 </p>
-<p>返回一个包含创建和销毁处理器的函数对，创建函数返回一个any类型的处理器指针，销毁函数接受一个any类型的处理器指针。 这允许插件在运行时动态创建和销毁处理器对象。</p>
-<p>由于跨dll传递，所以传递的函数对象引用。</p>
-<p>noexcept修饰符表示该函数不会抛出异常，因为跨DLL边界传递异常是不可行的，且实现中只是构造两个lambda函数。 </p>
+<dl class="section note"><dt>注解</dt><dd>因为虚函数在各自插件dll内实现，所以在主程序调用时会跨越dll边界，所以需要noexcept修饰符表示该函数不会抛出异常 </dd>
+<dd>
+因为这个对象是静态对象，生命周期与程序相同，故返回引用以避免不必要的拷贝开销。 </dd></dl>
+<dl class="section return"><dt>返回</dt><dd>返回一个std::any表示的创建和销毁处理器的函数对，这允许插件在运行时动态创建和销毁处理器对象。 </dd></dl>
 
 </div>
 </div>
-<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
-<a id="a080036984a644ef55fe4d95a41469479" name="a080036984a644ef55fe4d95a41469479"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a080036984a644ef55fe4d95a41469479">&#9670;&#160;</a></span>PluginHandler</h2>
+<a id="a5f038508deb2cc0a04e3db3b3841a438" name="a5f038508deb2cc0a04e3db3b3841a438"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f038508deb2cc0a04e3db3b3841a438">&#9670;&#160;</a></span>makeHandler()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename T&gt; </div>
+template&lt;typename SystemHandler&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">friend class <a class="el" href="classsystems_1_1PluginHandler.html">PluginHandler</a></td>
+          <td class="memname"><a class="el" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">SystemHandlerPtr</a>&lt; SystemHandler &gt; systems::PluginBase::makeHandler </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>创建插件包裹的Handler派生类型对象，以智能指针管理生命周期。 </p>
+<dl class="section see"><dt>参见</dt><dd><a class="el" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac" title="系统处理器智能指针，支持自定义销毁函数">systems::SystemHandlerPtr</a> </dd>
+<dd>
+<a class="el" href="structsystems_1_1SystemHandlerDestroyer.html" title="SystemHandlerPtr的智能指针析构器，支持自定义销毁函数">systems::SystemHandlerDestroyer</a> </dd></dl>
+<dl class="tparams"><dt>模板参数</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">SystemHandler</td><td>系统的处理器基类类型 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>Handler派生对象存储在SystemHandler基类指针，使用各自自定义的销毁函数 </dd></dl>
 
 </div>
 </div>

@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::edit::EditHandler类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1edit.html">edit</a></li><li class="navelem"><a href="classsystems_1_1edit_1_1EditHandler.html">EditHandler</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classsystems_1_1edit_1_1EditHandler-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::edit::EditHandler类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>模型编辑系统的功能接口，继承他来实现具体的编辑功能  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="EditHandler_8h_source.html">EditHandler.h</a>&gt;</code></p>
+<div class="dynheader">
+类 systems::edit::EditHandler 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1edit_1_1EditHandler__inherit__graph.png" border="0" usemap="#asystems_1_1edit_1_1EditHandler_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="asystems_1_1edit_1_1EditHandler_inherit__map" id="asystems_1_1edit_1_1EditHandler_inherit__map">
+<area shape="rect" title="模型编辑系统的功能接口，继承他来实现具体的编辑功能" alt="" coords="5,5,200,31"/>
+<area shape="rect" href="classsystems_1_1edit_1_1TrivialEditHandler.html" title=" " alt="" coords="11,79,194,119"/>
+<area shape="poly" title=" " alt="" coords="105,44,105,79,100,79,100,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a23894d2a6c7cc6349d8f19d855775938" id="r_a23894d2a6c7cc6349d8f19d855775938"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23894d2a6c7cc6349d8f19d855775938">~EditHandler</a> ()=default</td></tr>
+<tr class="memitem:ab7fa21bde11e903e1af72b4f4a5ce51e" id="r_ab7fa21bde11e903e1af72b4f4a5ce51e"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classModelData.html">ModelData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab7fa21bde11e903e1af72b4f4a5ce51e">execute</a> (<a class="el" href="classModelData.html">ModelData</a> model, const std::vector&lt; <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> &gt; &amp;args)=0</td></tr>
+<tr class="memdesc:ab7fa21bde11e903e1af72b4f4a5ce51e"><td class="mdescLeft">&#160;</td><td class="mdescRight">执行模型编辑功能  <br /></td></tr>
+<tr class="memitem:a6c34354e6fd73f56ce084d5583e2c7d3" id="r_a6c34354e6fd73f56ce084d5583e2c7d3"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6c34354e6fd73f56ce084d5583e2c7d3">args_type</a> () const =0</td></tr>
+<tr class="memdesc:a6c34354e6fd73f56ce084d5583e2c7d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型编辑参数类型，交给UI使用  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>模型编辑系统的功能接口，继承他来实现具体的编辑功能 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a23894d2a6c7cc6349d8f19d855775938" name="a23894d2a6c7cc6349d8f19d855775938"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23894d2a6c7cc6349d8f19d855775938">&#9670;&#160;</a></span>~EditHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual systems::edit::EditHandler::~EditHandler </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a6c34354e6fd73f56ce084d5583e2c7d3" name="a6c34354e6fd73f56ce084d5583e2c7d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c34354e6fd73f56ce084d5583e2c7d3">&#9670;&#160;</a></span>args_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt; systems::edit::EditHandler::args_type </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>模型编辑参数类型，交给UI使用 </p>
+<dl class="section return"><dt>返回</dt><dd>返回参数类型列表 </dd></dl>
+
+<p>在 <a class="el" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a829f4dbbf0d60096d4139c073c78eaf9">systems::edit::TrivialEditHandler</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="ab7fa21bde11e903e1af72b4f4a5ce51e" name="ab7fa21bde11e903e1af72b4f4a5ce51e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7fa21bde11e903e1af72b4f4a5ce51e">&#9670;&#160;</a></span>execute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classModelData.html">ModelData</a> systems::edit::EditHandler::execute </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classModelData.html">ModelData</a></td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>执行模型编辑功能 </p>
+<p>i安吉 </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>待操作的模型数据 </td></tr>
+    <tr><td class="paramname">args</td><td>模型编辑参数 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>模型编辑结果模型数据 </dd></dl>
+
+<p>在 <a class="el" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a0ee862c2c63579346f88c352f8f6a943">systems::edit::TrivialEditHandler</a> 内被实现.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/edit/<a class="el" href="EditHandler_8h_source.html">EditHandler.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

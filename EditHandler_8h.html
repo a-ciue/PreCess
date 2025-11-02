@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/edit/EditHandler.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_2083ac89913e57343d0c9d9b6920b7e7.html">edit</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">EditHandler.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="ArgType_8h_source.html">ArgType.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelData_8h_source.html">ModelData.h</a>&quot;</code><br />
+<code>#include &lt;any&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+EditHandler.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="EditHandler_8h__incl.png" border="0" usemap="#amodel_2systems_2edit_2EditHandler_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2edit_2EditHandler_8h" id="amodel_2systems_2edit_2EditHandler_8h">
+<area shape="rect" title=" " alt="" coords="341,5,491,45"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="195,93,282,119"/>
+<area shape="poly" title=" " alt="" coords="375,48,278,90,276,85,372,43"/>
+<area shape="rect" title=" " alt="" coords="320,167,379,192"/>
+<area shape="poly" title=" " alt="" coords="410,47,362,155,358,153,405,45"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="461,93,566,119"/>
+<area shape="poly" title=" " alt="" coords="441,43,490,82,487,87,438,48"/>
+<area shape="rect" title=" " alt="" coords="410,313,473,339"/>
+<area shape="poly" title=" " alt="" coords="420,46,442,299,437,300,415,46"/>
+<area shape="rect" title=" " alt="" coords="590,93,637,119"/>
+<area shape="poly" title=" " alt="" coords="464,43,578,88,576,93,462,48"/>
+<area shape="rect" title=" " alt="" coords="5,167,96,192"/>
+<area shape="poly" title=" " alt="" coords="209,121,95,164,93,159,208,116"/>
+<area shape="poly" title=" " alt="" coords="258,116,321,157,318,161,255,121"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="120,167,296,192"/>
+<area shape="poly" title=" " alt="" coords="236,120,221,155,216,153,231,118"/>
+<area shape="poly" title=" " alt="" coords="488,121,390,164,387,159,486,116"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="466,167,561,192"/>
+<area shape="poly" title=" " alt="" coords="516,119,516,153,511,153,511,119"/>
+<area shape="rect" title=" " alt="" coords="577,313,655,339"/>
+<area shape="poly" title=" " alt="" coords="530,117,553,138,574,165,591,200,603,236,616,299,610,300,598,238,586,202,570,168,549,141,527,121"/>
+<area shape="rect" title=" " alt="" coords="643,167,711,192"/>
+<area shape="poly" title=" " alt="" coords="541,116,639,159,637,164,539,121"/>
+<area shape="rect" title=" " alt="" coords="736,167,811,192"/>
+<area shape="poly" title=" " alt="" coords="556,116,723,162,722,167,554,121"/>
+<area shape="poly" title=" " alt="" coords="510,194,456,302,451,300,505,191"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="504,240,568,265"/>
+<area shape="poly" title=" " alt="" coords="520,192,531,226,526,228,515,193"/>
+<area shape="poly" title=" " alt="" coords="522,267,469,307,466,303,519,263"/>
+<area shape="rect" title=" " alt="" coords="497,313,553,339"/>
+<area shape="poly" title=" " alt="" coords="537,266,532,300,526,299,532,265"/>
+<area shape="poly" title=" " alt="" coords="551,263,595,302,591,306,547,267"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="EditHandler_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2edit_2EditHandler_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2edit_2EditHandler_8hdep" id="amodel_2systems_2edit_2EditHandler_8hdep">
+<area shape="rect" title=" " alt="" coords="100,5,251,45"/>
+<area shape="rect" href="EditSystem_8cpp.html" title=" " alt="" coords="5,93,156,133"/>
+<area shape="poly" title=" " alt="" coords="146,57,103,95,100,91,142,53"/>
+<area shape="rect" href="TrivialEditHandler_8h.html" title=" " alt="" coords="181,93,362,133"/>
+<area shape="poly" title=" " alt="" coords="209,53,252,91,248,95,205,57"/>
+<area shape="rect" href="TestEditSystem_8cpp.html" title=" " alt="" coords="180,181,363,221"/>
+<area shape="poly" title=" " alt="" coords="274,147,274,181,269,181,269,147"/>
+</map>
+</div>
+</div>
+<p><a href="EditHandler_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Aedit_3A_3AEditHandler" id="r_systems_3A_3Aedit_3A_3AEditHandler"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1edit_1_1EditHandler.html">systems::edit::EditHandler</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型编辑系统的功能接口，继承他来实现具体的编辑功能  <a href="classsystems_1_1edit_1_1EditHandler.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:core" id="r_core"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecore.html">core</a></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Aedit" id="r_systems_3A_3Aedit"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1edit.html">systems::edit</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><dl class="section author"><dt>作者</dt><dd>张家僮(<a href="#" onclick="location.href='mai'+'lto:'+'htx'+'z_'+'6a6'+'@1'+'63.'+'co'+'m'; return false;">htxz_<span class="obfuscator">.nosp@m.</span>6a6@<span class="obfuscator">.nosp@m.</span>163.c<span class="obfuscator">.nosp@m.</span>om</a>) </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

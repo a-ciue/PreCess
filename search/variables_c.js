@@ -73,7 +73,7 @@ var searchData=
   ['model_5fblocks_5f_70',['model_blocks_',['../structMeshDataVtk.html#a1118eb1cbb38a9d80a5c454fce95c80b',1,'MeshDataVtk']]],
   ['model_5fdata_5f_71',['model_data_',['../classMeshActor.html#ac25f309b6193f4dee2fc8b15286bf4e4',1,'MeshActor']]],
   ['model_5fid_72',['model_id',['../structSelection.html#a46e5b6b79deab047eec9c4ac78e6491d',1,'Selection']]],
-  ['model_5fmanager_5f_73',['model_manager_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#ae18dc882adaca4aaa35eef45ee7e506b',1,'systems::algo::AlgorithmSystem']]],
+  ['model_5fmanager_5f_73',['model_manager_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#ae18dc882adaca4aaa35eef45ee7e506b',1,'systems::algo::AlgorithmSystem::model_manager_'],['../classsystems_1_1edit_1_1EditSystem.html#a96f054ec4c2ba727ef9e194376becaa6',1,'systems::edit::EditSystem::model_manager_']]],
   ['model_5fname_5f_74',['model_name_',['../classModelData.html#aa1e3c6c09490f733d4279b333ed13bcc',1,'ModelData']]],
   ['model_5fquery_5f_75',['model_query_',['../structQRenderWindow.html#a61410a93a36079a46b21a4a35388fb06',1,'QRenderWindow']]],
   ['models_5f_76',['models_',['../classMeshActorManager.html#adb25ac581b3e6e3eebb67b454106f3c5',1,'MeshActorManager::models_'],['../classSplineActorManager.html#a5ec98ad1d257aa543bfa49f8c34eb25a',1,'SplineActorManager::models_'],['../classModelManager.html#a82c1fc212d38efca5e18eb5659d39be7',1,'ModelManager::models_']]],

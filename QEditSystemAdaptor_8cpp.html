@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/systems/edit/QEditSystemAdaptor.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li><li class="navelem"><a href="dir_58462a8efe102d3098af3bfcc91d6d03.html">systems</a></li><li class="navelem"><a href="dir_96f37fda49710ba2e8f71301869cfa2c.html">edit</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">QEditSystemAdaptor.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="QEditSystemAdaptor_8h_source.html">QEditSystemAdaptor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EditSystem_8h_source.html">EditSystem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QEditInfo_8h_source.html">QEditInfo.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QArgObject_8h_source.html">QArgObject.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ArgObject_8h_source.html">ArgObject.h</a>&quot;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QEditSystemAdaptor.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QEditSystemAdaptor_8cpp__incl.png" border="0" usemap="#aapp_2model_2systems_2edit_2QEditSystemAdaptor_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2systems_2edit_2QEditSystemAdaptor_8cpp" id="aapp_2model_2systems_2edit_2QEditSystemAdaptor_8cpp">
+<area shape="rect" title=" " alt="" coords="1120,5,1307,45"/>
+<area shape="rect" href="QEditSystemAdaptor_8h.html" title=" " alt="" coords="917,93,1085,119"/>
+<area shape="poly" title=" " alt="" coords="1163,48,1046,91,1045,86,1162,43"/>
+<area shape="rect" href="EditSystem_8h.html" title=" " alt="" coords="473,93,581,119"/>
+<area shape="poly" title=" " alt="" coords="1120,40,594,100,594,94,1119,35"/>
+<area shape="rect" href="QEditInfo_8h.html" title=" " alt="" coords="1338,93,1433,119"/>
+<area shape="poly" title=" " alt="" coords="1256,43,1349,85,1347,90,1253,48"/>
+<area shape="rect" href="QArgObject_8h.html" title=" " alt="" coords="1206,93,1314,119"/>
+<area shape="poly" title=" " alt="" coords="1227,44,1248,80,1244,83,1222,47"/>
+<area shape="rect" href="ArgObject_8h.html" title=" " alt="" coords="1211,167,1309,192"/>
+<area shape="poly" title=" " alt="" coords="1205,46,1193,81,1192,100,1196,118,1211,139,1230,157,1227,161,1207,143,1191,120,1186,100,1188,80,1200,44"/>
+<area shape="rect" title=" " alt="" coords="1457,93,1581,119"/>
+<area shape="poly" title=" " alt="" coords="1287,43,1461,87,1460,92,1286,48"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="529,167,593,192"/>
+<area shape="poly" title=" " alt="" coords="931,121,608,173,607,168,930,116"/>
+<area shape="rect" title=" " alt="" coords="829,167,1083,192"/>
+<area shape="poly" title=" " alt="" coords="996,120,973,157,968,154,992,118"/>
+<area shape="rect" title=" " alt="" coords="1107,167,1186,192"/>
+<area shape="poly" title=" " alt="" coords="1026,116,1112,158,1110,163,1024,121"/>
+<area shape="rect" title=" " alt="" coords="610,240,673,265"/>
+<area shape="poly" title=" " alt="" coords="576,190,620,229,616,233,572,194"/>
+<area shape="rect" title=" " alt="" coords="529,240,585,265"/>
+<area shape="poly" title=" " alt="" coords="563,192,561,227,556,226,558,192"/>
+<area shape="rect" title=" " alt="" coords="377,240,455,265"/>
+<area shape="poly" title=" " alt="" coords="539,194,453,236,451,232,537,190"/>
+<area shape="poly" title=" " alt="" coords="535,118,552,153,547,155,530,120"/>
+<area shape="poly" title=" " alt="" coords="549,117,579,137,607,165,625,195,637,226,632,228,621,198,603,168,575,141,546,121"/>
+<area shape="poly" title=" " alt="" coords="518,121,475,168,433,230,428,227,471,165,514,117"/>
+<area shape="rect" href="EditInfo_8h.html" title=" " alt="" coords="669,167,753,192"/>
+<area shape="poly" title=" " alt="" coords="557,116,669,159,667,164,555,121"/>
+<area shape="rect" title=" " alt="" coords="651,313,709,339"/>
+<area shape="poly" title=" " alt="" coords="524,120,514,148,506,186,506,227,510,246,519,264,544,288,574,304,607,314,638,320,637,325,605,319,572,309,540,292,515,267,505,248,500,227,500,185,509,147,519,118"/>
+<area shape="rect" href="SystemHandlerPtr_8h.html" title=" " alt="" coords="253,167,403,192"/>
+<area shape="poly" title=" " alt="" coords="496,121,374,164,373,159,494,116"/>
+<area shape="rect" title=" " alt="" coords="1062,240,1109,265"/>
+<area shape="poly" title=" " alt="" coords="581,115,668,135,765,164,791,177,817,190,880,209,943,224,1049,243,1048,249,942,229,878,214,815,194,789,182,763,169,667,140,580,120"/>
+<area shape="rect" title=" " alt="" coords="5,167,80,192"/>
+<area shape="poly" title=" " alt="" coords="473,116,308,136,94,169,93,164,307,131,472,110"/>
+<area shape="rect" title=" " alt="" coords="105,167,229,192"/>
+<area shape="poly" title=" " alt="" coords="473,121,239,167,238,161,472,115"/>
+<area shape="poly" title=" " alt="" coords="701,194,664,232,660,228,697,190"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="778,240,865,265"/>
+<area shape="poly" title=" " alt="" coords="730,190,793,230,790,235,727,194"/>
+<area shape="poly" title=" " alt="" coords="711,193,688,301,683,300,706,192"/>
+<area shape="rect" title=" " alt="" coords="933,313,1024,339"/>
+<area shape="poly" title=" " alt="" coords="848,263,942,305,940,310,846,268"/>
+<area shape="poly" title=" " alt="" coords="800,268,716,309,714,305,797,263"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="733,313,909,339"/>
+<area shape="poly" title=" " alt="" coords="824,266,824,300,819,300,819,266"/>
+<area shape="poly" title=" " alt="" coords="344,190,393,229,389,233,340,194"/>
+<area shape="rect" title=" " alt="" coords="1333,167,1429,192"/>
+<area shape="poly" title=" " alt="" coords="1387,119,1385,153,1380,153,1382,119"/>
+<area shape="rect" title=" " alt="" coords="1616,167,1691,192"/>
+<area shape="poly" title=" " alt="" coords="1429,116,1603,162,1601,167,1428,121"/>
+<area shape="rect" title=" " alt="" coords="1453,167,1592,192"/>
+<area shape="poly" title=" " alt="" coords="1409,116,1489,158,1487,163,1406,121"/>
+<area shape="poly" title=" " alt="" coords="1243,121,1178,162,1175,157,1240,116"/>
+<area shape="poly" title=" " alt="" coords="1281,116,1351,157,1349,162,1278,121"/>
+<area shape="poly" title=" " alt="" coords="1263,119,1263,153,1257,153,1257,119"/>
+<area shape="poly" title=" " alt="" coords="1211,192,1198,195,879,245,878,240,1197,189,1210,187"/>
+<area shape="poly" title=" " alt="" coords="1233,194,1122,239,1120,234,1231,190"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Aedit_3A_3AArgObject" id="r_systems_3A_3Aedit_3A_3AArgObject"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1edit_1_1ArgObject.html">systems::edit::ArgObject</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">实例化的参数类型，存储参数对象的容器  <a href="classsystems_1_1edit_1_1ArgObject.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Aedit" id="r_systems_3A_3Aedit"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1edit.html">systems::edit</a></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
