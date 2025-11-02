@@ -19,6 +19,7 @@ import app.model
 import app.core
 import app.model.systems.algo
 import app.model.systems.io
+import app.model.systems.edit
 import app.render
 
 ApplicationWindow {
@@ -40,16 +41,36 @@ ApplicationWindow {
                 onClicked: saveFaceDialog.open()
             }
         }
-        Menu{
-            title: "编辑"
+        Menu {
+            id: editMenu
+            title: qsTr("编辑")
+            Repeater {
+                model: editSystem.getEditsInfo()
+                MenuItem {
+                    text: modelData.display_name
+                    onTriggered: {
+                        sideBar.curAlgoInfo = modelData
+                        sideBar.system = editSystem
+                    }
+                }
+            }
         }
         Menu{
             title: "视图"
         }
-        CommandMenu {
+        Menu {
             id: commandMenu
-            algoInfos: algorithmSystem.getAlgorithmsInfo()
-            sideBar: sideBar
+            title: qsTr("算法")
+            Repeater {
+                model: algorithmSystem.getAlgorithmsInfo()
+                MenuItem {
+                    text: modelData.display_name
+                    onTriggered: {
+                        sideBar.curAlgoInfo = modelData
+                        sideBar.system = algorithmSystem
+                    }
+                }
+            }
         }
     }
 
@@ -58,6 +79,7 @@ ApplicationWindow {
     required property QModelQuery modelQuery
     required property QAlgorithmSystemAdaptor algorithmSystem
     required property QModelIOSystemAdaptor ioSystem
+    required property QEditSystemAdaptor editSystem
 
     ToolBar {
         id: header
@@ -264,7 +286,6 @@ ApplicationWindow {
 
     SideBar{
         id: sideBar
-        algorithmSystem: root.algorithmSystem
         curModel: objectList.curModelId
         curSelection: selector.selection
         anchors.top: objectList.bottom

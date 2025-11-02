@@ -1,0 +1,2 @@
+precess_add_test(TestEditSystem TestEditSystem.cpp)
+precess_test_link_libraries(TestEditSystem EditSystem Data DataTest)

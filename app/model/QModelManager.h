@@ -1,8 +1,7 @@
 #pragma once
 #include "QAlgorithmSystemAdaptor.h"
 #include "QModelIOSystemAdaptor.h"
-#include <QObject>
-#include <QUrl>
+#include "QEditSystemAdaptor.h"
 #include <memory>
 
 namespace systems
@@ -12,6 +11,9 @@ namespace systems
 namespace systems::io
 {
 	class ModelIOSystem;
+}
+namespace systems::edit {
+class EditSystem;
 }
 class ModelManager;
 class QModelObserver;
@@ -28,6 +30,7 @@ public:
     ModelManager* getModelManager();
     QModelObserver* getModelObserver();
     systems::algo::QAlgorithmSystemAdaptor getAlgorithmSystemAdaptor();
+    systems::edit::QEditSystemAdaptor getEditSystemAdaptor();
     systems::io::QModelIOSystemAdaptor getModelIOSystemAdaptor();
 
 signals:
@@ -42,5 +45,6 @@ private:
     std::unique_ptr<QModelObserver> observer_; 
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
+    std::unique_ptr<systems::edit::EditSystem> edit_system_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
 };

@@ -14,8 +14,8 @@ import app.model.systems.algo
 
 Item{
     id: root
-    required property QAlgorithmSystemAdaptor algorithmSystem
-    property QAlgorithmInfo curAlgoInfo
+    property var system
+    property var curAlgoInfo
     property int curModel
     property var savedSelection: []
     required property QSelection curSelection // temp
@@ -35,7 +35,7 @@ Item{
         anchors.right: parent.right
         height:30
         onClicked:{
-            algorithmSystem.call(curAlgoInfo.name, curModel, root.parameters)
+            system.call(curAlgoInfo.name, curModel, root.parameters)
         }
     }
     Item{
