@@ -17,7 +17,6 @@ Item{
     property var system
     property var curAlgoInfo
     property int curModel
-    property var savedSelection: []
     required property QSelection curSelection // temp
     property var parameters: []
     signal selectModeChanged
@@ -52,7 +51,6 @@ Item{
                 Layout.fillWidth: true
                 Layout.margins: 3
                 spacing: 5
-                property var loadedItems: ({})
                 delegate:Component{
                     Loader{
                         required property var model
@@ -73,30 +71,6 @@ Item{
                             if(model.type === QArgType.Text){           //文字输入框
                                 return textComponent
                             }
-                        }
-                        Component.onCompleted: {
-                        /*if(item){
-                            parameterList.loadedItems[index] = item
-                            if(type === 0){
-                                parameterList.loadedItems[index].name = name
-                                parameterList.loadedItems[index].parameter1 = content
-                            }
-                            if(type === 1){
-                                parameterList.loadedItems[index].name = name
-                                parameterList.loadedItems[index].parameter1 = content
-                            }
-                            if(type === 2){
-                                parameterList.loadedItems[index].name = name
-                                parameterList.loadedItems[index].parameter1 = content
-                            }
-                            if(type === 3){
-                                parameterList.loadedItems[index].name = name
-                                //parameterList.loadedItems[index].parameter1 = content
-                            }
-                        }*/
-                        }
-                        Component.onDestruction: {
-                            delete parameterList.loadedItems[index]
                         }
                     }
                 }
@@ -229,17 +203,17 @@ Item{
                     root.parameters[index] = fileText.text
                 }
 
-				function urlToPath(url) {
+                function urlToPath(url) {
                     var urlString = new String(url)
-					var s
-					if (urlString.startsWith("file:///")) {
-						var k = urlString.charAt(9) === ':' ? 8 : 7
-						s = urlString.substring(k)
-					} else {
-						s = urlString
-					}
-					return decodeURIComponent(s);
-				}
+                    var s
+                    if (urlString.startsWith("file:///")) {
+                        var k = urlString.charAt(9) === ':' ? 8 : 7
+                        s = urlString.substring(k)
+                    } else {
+                        s = urlString
+                    }
+                    return decodeURIComponent(s);
+                }
             }
         }
     }
@@ -317,39 +291,4 @@ Item{
             }
         }
     }
-
-    function updateSelectorCount(selectorIndex, selectType) {
-        console.log("尝试更新选择器计数，索引:", selectorIndex)
-        console.log("当前加载的组件:", parameterList.loadedItems)
-        
-        // 获取对应索引的选择器组件
-        var selector = parameterList.loadedItems[selectorIndex]
-        console.log("获取到的选择器:", selector)
-        
-        if (selector) {
-            if (selectType === "边") {
-                selector.valueEdge++
-                console.log("边计数更新为:", selector.valueEdge)
-            } else if (selectType === "面") {
-                selector.valueFace++
-                console.log("面计数更新为:", selector.valueFace)
-            } else if (selectType === "块") {
-                selector.valueBlock++
-                console.log("块计数更新为:", selector.valueBlock)
-            }
-        } else {
-            console.log("未找到选择器组件，请检查索引是否正确")
-        }
-    }
-
-    function clearSelectorCount(selectorIndex) {
-        // 获取对应索引的选择器组件
-        var selector = parameterList.loadedItems[selectorIndex]
-        if (selector) {
-            selector.valueEdge = 0
-            selector.valueFace = 0
-            selector.valueBlock = 0
-        }
-    }
-    property alias m: parameterList.model
 }

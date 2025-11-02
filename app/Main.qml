@@ -293,13 +293,6 @@ ApplicationWindow {
         anchors.right: myItemRectangle.left
         anchors.bottom: parent.bottom
         width: 250
-        m:ListModel{
-            // ListElement{type: 2; name: "属性甲"; content: "55"}
-            // ListElement{type: 2; name: "属性乙"; content: "43"}
-            // ListElement{type: 1; name: "属性丙"; content: 1}
-            // ListElement{type: 0; name: "属性丁"; content: "无"}
-            //ListElement{type: 3; name: "选择器"; content: "无"}//可能会有多个选择器的需求，因此需要动态构造多个选择器
-        }
         onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
             //selector.changePropertyEnabled()
             //selector.comboBoxSelectionChanged()

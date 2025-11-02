@@ -4,6 +4,7 @@
  */
 
 import QtQuick 2.15
+import QtQuick.Layouts
 import QtQuick.Controls
 
 Pane {
@@ -24,9 +25,10 @@ Pane {
         id: objectListView
         anchors.fill: parent
         model: objectInitializeModel
-        delegate:Row{
+        delegate: RowLayout {
             required property string name
             required property int savedId
+            width: objectListView.width
 
             Button{
                 id:visibilityButton
@@ -47,7 +49,8 @@ Pane {
             TextInput{
                 id:objectName
                 property string savedName: name
-                width: 80
+                Layout.fillWidth: true
+                wrapMode: TextInput.WrapAnywhere
                 //text: name
                 font.bold: root.selectedModel_id === savedId  // 根据选中状态设置粗体
                 
@@ -78,11 +81,6 @@ Pane {
                 Component.onCompleted: {
                     text = savedName
                 }
-            }
-            Rectangle{
-                width:10
-                height:10
-                color: "red"
             }
         }
     }
