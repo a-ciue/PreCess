@@ -58,7 +58,7 @@ Pane {
                     anchors.fill: parent
                     onClicked: {
                         if (root.selectedModel_id === savedId) {
-                            root.selectedModel_id = "-1"  // 取消选中
+                            root.selectedModel_id = -1  // 取消选中
                         } else {
                             root.selectedModel_id = savedId  // 选中当前行
                         }
@@ -97,6 +97,9 @@ Pane {
      */
     function removeItem(model_id){
         objectModel.removeItem(model_id)
+        if (root.selectedModel_id === model_id) {
+            root.selectedModel_id = -1  // 如果删除的是当前选中的模型，重置选中状态
+        }
     }
     /**
      * @brief 重命名一行模型信息的名字

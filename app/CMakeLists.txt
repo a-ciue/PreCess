@@ -10,6 +10,7 @@ qt_add_qml_module(${MYNAME}
     URI app
     QML_FILES
         Main.qml SelectingBar.qml SideBar.qml ObjectList.qml ObjectListModel.qml Selector.qml
+        SignalListener.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE

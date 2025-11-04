@@ -287,7 +287,7 @@ ApplicationWindow {
     SideBar{
         id: sideBar
         curModel: objectList.curModelId
-        curSelection: selector.selection
+        confirm_listener: selector.confirm_listener
         anchors.top: objectList.bottom
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
@@ -402,19 +402,18 @@ ApplicationWindow {
 
         Selector{
             id:selector
+            cur_model: objectList.curModelId
             anchors.top:  renderWindowPage.top
             anchors.left: renderWindowPage.left
             anchors.topMargin: 10
             anchors.leftMargin: 10
-            property QSelection selection
-            enabled: objectList.selectedModelName !== ""  // 绑定到objectList的选中状态
 
             onClearButtonClicked:{
                 clearSelection()
             }
 
             onConfirmButtonClicked: {
-                selection = myItem.selectedIDs
+                selector.selection = myItem.selectedIDs
             }
 
             function clearSelection(){

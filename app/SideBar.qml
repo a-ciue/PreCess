@@ -17,7 +17,7 @@ Item{
     property var system
     property var curAlgoInfo
     property int curModel
-    required property QSelection curSelection // temp
+    required property SignalListener confirm_listener
     property var parameters: []
     signal selectModeChanged
     signal cancleCommand
@@ -29,6 +29,7 @@ Item{
     Button{
         id: commitButton
         text: "执行"
+        enabled: curModel >= 0 && curAlgoInfo != null
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -272,20 +273,21 @@ Item{
             Button{
                 id: selectStartButton
                 text: "开始选择"
+                enabled: root.curModel >= 0
                 onClicked:{
                     root.selectModeChanged()
                     checked = !checked
                 }
                 onCheckedChanged: {
                     if (checked) {
-                        root.curSelectionChanged.connect(changeSelectionOnce)
+                        root.confirm_listener.registerSignalListener(changeSelectionOnce)
                     } else {
-                        root.curSelectionChanged.disconnect(changeSelectionOnce)
+                        root.confirm_listener.unregisterSignalListener(changeSelectionOnce)
                     }
                 }
 
-                function changeSelectionOnce() {
-                    root.parameters[index] = value = root.curSelection
+                function changeSelectionOnce(selection) {
+                    root.parameters[index] = value = selection
                     checked = false
                 }
             }

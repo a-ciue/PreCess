@@ -10,13 +10,25 @@ import app.core
 
 RowLayout {
     id:root
-
     signal clearButtonClicked
     signal confirmButtonClicked
+    signal onSelectionConfirmed(QSelection selection)
     signal comboBoxSelectionChanged
     property QSelection selection
-    property bool enabled: false
+    property int cur_model
+
+    SignalListener {
+        id: confirm_listener
+        target_signal: root.onSelectionConfirmed
+    }
     
+    Connections {
+        target: root
+        onSelectionChanged: {
+            root.onSelectionConfirmed(root.selection)
+        }
+    }
+
     ComboBox{
         id: selectModeComboBox
         model:ListModel{
@@ -28,24 +40,24 @@ RowLayout {
             ListElement{text: "块"}
         }
         onCurrentTextChanged: comboBoxSelectionChanged()
-        opacity: root.enabled ? 1.0 : 0.5
+        enabled: root.cur_model >= 0
+        opacity: enabled ? 1.0 : 0.6
+        currentIndex: enabled ? currentIndex: 0
     }
     Button{
         id: selectClearButton
         text: "清除选择"
-        onClicked:{
-            root.clearButtonClicked()
-        }
-        opacity: root.enabled ? 1.0 : 0.5
+        onClicked: root.clearButtonClicked()
+        enabled: root.cur_model >= 0
+        opacity: enabled ? 1.0 : 0.6
     }
     Button{
-        visible: root.enabled
         text: "确认"
-        onClicked:{
-            root.confirmButtonClicked()
-        }
-        opacity: root.enabled ? 1.0 : 0.5
+        onClicked: root.confirmButtonClicked()
+        enabled: root.cur_model >= 0 && confirm_listener.getListenerCount() > 0
+        opacity: enabled ? 1.0 : 0.6
     }
     /** type:string 选择框中当前文本 */
     property alias comboBoxSelectedString: selectModeComboBox.currentText
+    property alias confirm_listener: confirm_listener
 }
