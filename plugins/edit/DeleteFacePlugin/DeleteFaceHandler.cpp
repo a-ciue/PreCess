@@ -44,11 +44,11 @@ ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject
     mesh->face_vertices_.erase(vertices_from, vertices_from + vertices_count);
 
     // 更新 face_vertices_offset_
-    if (face_id + 2 < mesh->face_vertices_offset_.size()) {
-        std::for_each(std::execution::par, mesh->face_vertices_offset_.begin() + face_id, mesh->face_vertices_offset_.end() - 1,
-            [offset_offset = mesh->face_vertices_offset_[face_id + 2] - mesh->face_vertices_offset_[face_id + 1] - vertices_count](Index& offset) { offset += offset_offset; });
-    }
-    mesh->face_vertices_offset_.pop_back();
+    mesh->face_vertices_offset_.erase(mesh->face_vertices_offset_.begin() + face_id);
+    std::for_each(std::execution::par, mesh->face_vertices_offset_.begin() + face_id, mesh->face_vertices_offset_.end(),
+        [vertices_count](Index& offset) {
+            offset -= vertices_count;
+        });
 
     // 维护 patch 和 block 关系
     if (std::optional patch_id = mesh->face_patch_id(face_id)) {
