@@ -234,7 +234,7 @@ SelectionVtk SingleFaceSelectorHighlight::get()
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Face;
     if (selection_.has_value()) {
-        back_selection.ids.push_back(selection_->local_id);
+        back_selection.ids.push_back(selection_.value());
     }
     return back_selection;
 }
@@ -268,14 +268,13 @@ void SingleFaceSelectorHighlight::select(double posx, double posy)
         vtkPolyData* pickedPoly = pickedMapper->GetInput();
         if (!pickedPoly)
             return; // 数据无效则返回
-
-        // 构建选中面信息
-        SelectedFace selected_face = { pickedActor, static_cast<int>(pickedCellId) };
-
+        
         // 检查是否重复选择同一面
         if (_is_selected(pickedCellId, selection_)) {
             clear(); // 取消选择
             return;
+        } else {
+            selection_ = pickedCellId;
         }
 
         vtkNew<vtkCellArray> cell_array;
@@ -286,7 +285,6 @@ void SingleFaceSelectorHighlight::select(double posx, double posy)
         selected_face_poly->SetPolys(cell_array); // 设置面单元
 
         selected_mapper_->SetInputData(selected_face_poly); // 触发高亮演员更新渲染
-
     }
     else {
         // 没选到
@@ -310,9 +308,9 @@ void SingleFaceSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMa
     selectedMapper->SetInputData(empty);
 }
 
-bool SingleFaceSelectorHighlight::_is_selected(vtkIdType new_face_id, const std::optional<SelectedFace>& selection)
+bool SingleFaceSelectorHighlight::_is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection)
 {
-    return selection.has_value() && selection->local_id == new_face_id;
+    return selection && selection.value() == new_face_id;
 }
 
 SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer)
@@ -350,7 +348,6 @@ SelectionVtk SingleEdgeSelectorHighlight::get()
     }
 
     return back_selection;
-
 }
 
 // 用词：picker的picked cell -> selector的selected cell

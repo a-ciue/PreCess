@@ -86,12 +86,12 @@ private:
 
 class SingleFaceSelectorHighlight : public SelectorHighlight {
 public:
-    struct SelectedFace {
-        //! @brief 面所在的actor，借由actor可以找到全局id
-        vtkActor* actor;
-        //! @brief 面局部索引id
-        int local_id;
-    };
+    //struct SelectedFace {
+    //    //! @brief 面所在的actor，借由actor可以找到全局id
+    //    vtkActor* actor;
+    //    //! @brief 面局部索引id
+    //    int local_id;
+    //};
     //! @brief 将actor绑定到renderer，mapper绑定到actor
     SingleFaceSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
@@ -109,12 +109,10 @@ private:
     //！@brief 取消高亮，清空mapper
     static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
-    static bool _is_selected(vtkIdType new_face_id, const std::optional<SelectedFace>& selection);
+    static bool _is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection);
 
     vtkRenderer* renderer_;
-    std::optional<SelectedFace> selection_;
-    // vtkPropAssembly faceAssembly;
-    vtkNew<vtkPolyDataMapper> mapper_;
+    std::optional<vtkIdType> selection_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
     vtkSmartPointer<vtkActor> selected_actor_;
     vtkNew<vtkPropCollection> collection_;
