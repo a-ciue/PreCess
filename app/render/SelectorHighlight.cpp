@@ -210,13 +210,23 @@ std::optional<size_t> BlockSelectorHighlight::_is_selected(const vtkIdType block
 
 SingleFaceSelectorHighlight::SingleFaceSelectorHighlight(vtkRenderer* renderer)
 {
+    this->selected_actor_ = vtkSmartPointer<vtkActor>::New();
     this->renderer_ = renderer;
+
+    selected_mapper_->SetInputData(vtkPolyData::New());
+    selected_actor_->SetMapper(selected_mapper_);
+    selected_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0); // 红色高亮
+    selected_actor_->GetProperty()->SetLineWidth(2.0);
+    selected_actor_->GetProperty()->EdgeVisibilityOn();
+    selected_actor_->GetProperty()->SetEdgeColor(1.0, 0.0, 0.0);
+    selected_actor_->PickableOff(); // 防止自己被选中
+
+    renderer_->AddActor(selected_actor_);
 }
 
 SingleFaceSelectorHighlight::~SingleFaceSelectorHighlight()
 {
-    _cancel_highlight(selection_, renderer_);
-    selection_ = std::nullopt;
+    renderer_->RemoveActor(selected_actor_);
 }
 
 SelectionVtk SingleFaceSelectorHighlight::get()
@@ -224,59 +234,64 @@ SelectionVtk SingleFaceSelectorHighlight::get()
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Face;
     if (selection_.has_value()) {
-        back_selection.ids.push_back(selection_.value());
+        back_selection.ids.push_back(selection_->local_id);
     }
     return back_selection;
 }
 
 void SingleFaceSelectorHighlight::clear()
 {
-    _cancel_highlight(selection_, renderer_);
+    _cancel_highlight(selected_mapper_);
     selection_ = std::nullopt;
 }
 
 void SingleFaceSelectorHighlight::select(double posx, double posy)
 {
-    vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
+    vtkNew<vtkHardwarePicker> picker;
     picker->PickFromListOn();
     collection_->InitTraversal();
     for (vtkProp* actor {}; actor = collection_->GetNextProp();) {
         picker->AddPickList(actor);
     }
-    picker->Pick(posx, posy, 0, this->renderer_);
+    picker->Pick(posx, posy, 0, renderer_);
 
-    vtkIdType cellId = picker->GetCellId();
-    if (cellId < 0) {
-        std::cout << "No triangle was picked." << std::endl;
-        return;
+    vtkIdType pickedCellId = picker->GetCellId();
+    if (pickedCellId != -1) {
+        // 获取选中的 cell
+        vtkActor* pickedActor = picker->GetActor();
+        if (!pickedActor)
+            return;
+        vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
+        if (!pickedMapper) {
+            return;
+        }
+        vtkPolyData* pickedPoly = pickedMapper->GetInput();
+        if (!pickedPoly)
+            return; // 数据无效则返回
+
+        // 构建选中面信息
+        SelectedFace selected_face = { pickedActor, static_cast<int>(pickedCellId) };
+
+        // 检查是否重复选择同一面
+        if (_is_selected(pickedCellId, selection_)) {
+            clear(); // 取消选择
+            return;
+        }
+
+        vtkNew<vtkCellArray> cell_array;
+        cell_array->InsertNextCell(pickedPoly->GetCell(pickedCellId));
+
+        vtkNew<vtkPolyData> selected_face_poly;
+        selected_face_poly->SetPoints(pickedPoly->GetPoints()); // 使用原始数据的点集
+        selected_face_poly->SetPolys(cell_array); // 设置面单元
+
+        selected_mapper_->SetInputData(selected_face_poly); // 触发高亮演员更新渲染
+
     }
-    if (_is_selected(cellId, selection_)) {
-        // 再次点击取消选中
+    else {
+        // 没选到
         clear();
-        return;
     }
-
-    // 更新选中
-    selection_ = cellId;
-
-    // 创建一个只包含该面的 polydata 用于高亮
-    vtkSmartPointer<vtkPolyData> input = vtkPolyData::SafeDownCast(picker->GetDataSet());
-    if (!input)
-        return;
-
-    vtkSmartPointer<vtkCellArray> cell_array = vtkSmartPointer<vtkCellArray>::New();
-    cell_array->InsertNextCell(input->GetCell(cellId));
-
-    vtkSmartPointer<vtkPolyData> single_face = vtkSmartPointer<vtkPolyData>::New();
-    single_face->SetPoints(input->GetPoints());
-    single_face->SetPolys(cell_array);
-
-    this->mapper_->SetInputDataObject(single_face);
-
-    set_highlight_actor();
-    // 添加到渲染器中
-    renderer_->AddActor(highlight_actor_);
-    // renderer_->Render();
 }
 
 void SingleFaceSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
@@ -289,27 +304,15 @@ void SingleFaceSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory mode
     this->model_actor_ = model_actor;
 }
 
-void SingleFaceSelectorHighlight::_cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer)
+void SingleFaceSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper)
 {
-    this->renderer_->RemoveActor(this->highlight_actor_);
-    // renderer->Render();
+    vtkNew<vtkPolyData> empty;
+    selectedMapper->SetInputData(empty);
 }
 
-bool SingleFaceSelectorHighlight::_is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection)
+bool SingleFaceSelectorHighlight::_is_selected(vtkIdType new_face_id, const std::optional<SelectedFace>& selection)
 {
-    return selection.has_value() && selection.value() == new_face_id;
-}
-
-void SingleFaceSelectorHighlight::set_highlight_actor()
-{
-    mapper_->ScalarVisibilityOff();
-
-    this->highlight_actor_->SetMapper(mapper_);
-    this->highlight_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0); // 红色高亮
-    this->highlight_actor_->GetProperty()->SetLineWidth(2.0);
-    this->highlight_actor_->GetProperty()->EdgeVisibilityOn();
-    this->highlight_actor_->GetProperty()->SetEdgeColor(1.0, 0.0, 0.0);
-    this->highlight_actor_->PickableOff(); // 防止自己被选中
+    return selection.has_value() && selection->local_id == new_face_id;
 }
 
 SingleEdgeSelectorHighlight::SingleEdgeSelectorHighlight(vtkRenderer* renderer)
@@ -347,6 +350,7 @@ SelectionVtk SingleEdgeSelectorHighlight::get()
     }
 
     return back_selection;
+
 }
 
 // 用词：picker的picked cell -> selector的selected cell
@@ -401,8 +405,7 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
 
         // 复选取消选中
         if (_is_selected(selected_edge, selection_, selected_actor_)) {
-            _cancel_highlight(selected_mapper_);
-            selection_ = std::nullopt;
+            clear();
         } else {
             selection_ = selected_edge;
         }
@@ -410,12 +413,11 @@ void SingleEdgeSelectorHighlight::select(double posx, double posy)
 
     else {
         // 没选到
-        _cancel_highlight(selected_mapper_);
-        selection_ = std::nullopt;
+        clear();
     }
 }
 
-void SingleEdgeSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
+void SingleEdgeSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)  
 {
     this->collection_->RemoveAllItems();
     if (auto actor = model_actor.lock()) {

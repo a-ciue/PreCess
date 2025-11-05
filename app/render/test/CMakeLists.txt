@@ -1,4 +1,4 @@
-add_library(TestDeps OBJECT "MakeMeshDataVtk.cpp")
+﻿add_library(TestDeps OBJECT "MakeMeshDataVtk.cpp")
 target_include_directories(TestDeps PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(TestDeps PRIVATE 
     vtkPart
@@ -15,6 +15,15 @@ target_link_libraries(TestSingleEdgeSelectorHighlight PRIVATE
 )
 vtk_module_autoinit(TARGETS TestSingleEdgeSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
 install(TARGETS TestSingleEdgeSelectorHighlight)
+
+# TestSingleFaceSelectorHighlight
+add_executable(TestSingleFaceSelectorHighlight TestSingleFaceSelectorHighlight.cpp)
+target_link_libraries(TestSingleFaceSelectorHighlight PRIVATE 
+    vtkPart TestDeps
+    VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
+)
+vtk_module_autoinit(TARGETS TestSingleFaceSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+install(TARGETS TestSingleFaceSelectorHighlight)
 
 # TestSingleSolidSelectorHighlight
 add_executable(TestSingleSolidSelectorHighlight TestSingleSolidSelectorHighlight.cpp)
