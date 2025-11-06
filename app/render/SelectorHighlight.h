@@ -88,7 +88,7 @@ class SingleFaceSelectorHighlight : public SelectorHighlight {
 public:
     //struct SelectedFace {
     //    //! @brief 面所在的actor，借由actor可以找到全局id
-    //    vtkIdType face_id;
+    //    vtkActor* actor;
     //    //! @brief 面局部索引id
     //    int local_id;
     //};
@@ -107,15 +107,14 @@ public:
 
 private:
     //！@brief 取消高亮，清空mapper
-    void _cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer);
+    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
     static bool _is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection);
 
-    void set_highlight_actor();
     vtkRenderer* renderer_;
     std::optional<vtkIdType> selection_;
-    vtkNew<vtkActor> highlight_actor_;
-    vtkNew<vtkPolyDataMapper> mapper_;
+    vtkNew<vtkDataSetMapper> selected_mapper_;
+    vtkSmartPointer<vtkActor> selected_actor_;
     vtkNew<vtkPropCollection> collection_;
     MeshActorSelectOpFactory model_actor_;
 };
