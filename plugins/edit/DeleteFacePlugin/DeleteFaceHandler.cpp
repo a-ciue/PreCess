@@ -55,12 +55,6 @@ ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject
         std::vector<Index>& faces = mesh->patches_[*patch_id]->faces;
         auto it = std::find(faces.begin(), faces.end(), face_id);
         faces.erase(it);
-        std::for_each(std::execution::par, faces.begin(), faces.end(),
-            [face_id](Index& id) {
-                if (id > face_id) {
-                    --id;
-                }
-            });
 
         if (faces.empty()) {
             Index block_id = mesh->patches_[*patch_id]->blockID;
@@ -70,6 +64,17 @@ ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject
                 mesh->blocks_.erase(block_id);
             }
         }
+    }
+    // 对所有 patch 中的 face id 进行更新
+    for (auto&& [_, patch]: mesh->patches_) {
+        std::vector<Index>& faces = patch->faces;
+
+        std::for_each(std::execution::par, faces.begin(), faces.end(),
+            [face_id](Index& id) {
+                if (id > face_id) {
+                    --id;
+                }
+            });
     }
 
     return data;
