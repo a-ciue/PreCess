@@ -1,11 +1,13 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,73,203,113"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,97,203,137"/>
 <area shape="rect" id="Node000001" href="$classEdgePickInteractorStyle.html" title=" " alt="" coords="255,5,433,31"/>
-<area shape="poly" id="edge58_Node000000_Node000001" title=" " alt="" coords="172,66,250,39,290,28,292,33,251,45,173,71"/>
-<area shape="rect" id="Node000002" href="$classQRenderWindowStyle.html" title=" " alt="" coords="263,55,425,80"/>
-<area shape="poly" id="edge59_Node000000_Node000002" title=" " alt="" coords="216,78,262,73,263,79,217,83"/>
-<area shape="rect" id="Node000003" href="$classSolidPickInteractorStyle.html" title=" " alt="" coords="255,104,433,129"/>
-<area shape="poly" id="edge60_Node000000_Node000003" title=" " alt="" coords="217,101,255,105,255,110,216,107"/>
-<area shape="rect" id="Node000004" href="$classVertexPickInteractorStyle.html" title=" " alt="" coords="251,153,437,179"/>
-<area shape="poly" id="edge61_Node000000_Node000004" title=" " alt="" coords="177,114,251,138,296,151,294,156,250,143,176,120"/>
+<area shape="poly" id="edge58_Node000000_Node000001" title=" " alt="" coords="150,87,197,63,250,40,285,28,286,33,252,44,200,67,153,92"/>
+<area shape="rect" id="Node000002" href="$classFacePickInteractorStyle.html" title=" " alt="" coords="257,55,431,80"/>
+<area shape="poly" id="edge59_Node000000_Node000002" title=" " alt="" coords="215,91,281,77,282,83,216,96"/>
+<area shape="rect" id="Node000003" href="$classQRenderWindowStyle.html" title=" " alt="" coords="263,104,425,129"/>
+<area shape="poly" id="edge60_Node000000_Node000003" title=" " alt="" coords="216,114,262,114,262,119,216,119"/>
+<area shape="rect" id="Node000004" href="$classSolidPickInteractorStyle.html" title=" " alt="" coords="255,153,433,179"/>
+<area shape="poly" id="edge61_Node000000_Node000004" title=" " alt="" coords="216,137,282,151,281,156,215,142"/>
+<area shape="rect" id="Node000005" href="$classVertexPickInteractorStyle.html" title=" " alt="" coords="251,203,437,228"/>
+<area shape="poly" id="edge62_Node000000_Node000005" title=" " alt="" coords="153,141,200,165,252,188,290,200,289,205,250,192,198,170,151,146"/>
 </map>
