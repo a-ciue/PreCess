@@ -9,6 +9,7 @@ add_library(vtkPart STATIC
     SplineActorManager.cpp
     SingleSolidSelectorHighlight.cpp
     VertexSelectorHighlight.cpp
+    EdgeSelectorHighlight.cpp
 )
 target_include_directories(vtkPart PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
