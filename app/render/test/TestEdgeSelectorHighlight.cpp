@@ -26,7 +26,7 @@ public:
     static EdgePickInteractorStyle* New();
     vtkTypeMacro(EdgePickInteractorStyle, vtkInteractorStyleTrackballCamera);
 
-    void SetSelectorHighlight(SingleEdgeSelectorHighlight* selector)
+    void SetSelectorHighlight(EdgeSelectorHighlight* selector)
     {
         this->Selector = selector;
     }
@@ -40,7 +40,7 @@ public:
     }
 
 private:
-    SingleEdgeSelectorHighlight* Selector = nullptr;
+    EdgeSelectorHighlight* Selector = nullptr;
 };
 
 vtkStandardNewMacro(EdgePickInteractorStyle);
@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 
-    // 集成 SingleEdgeSelectorHighlight
-    SingleEdgeSelectorHighlight selector(renderer);
+    // 集成 EdgeSelectorHighlight
+    EdgeSelectorHighlight selector(renderer);
     selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
     style->SetSelectorHighlight(&selector);
 
