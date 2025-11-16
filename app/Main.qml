@@ -227,7 +227,6 @@ ApplicationWindow {
                 myItem.setEdgeRender(objectList.curModelId, !myItem.cur_edge_render)
             }
         }
-
     }
 
     // Rectangle{
@@ -437,6 +436,48 @@ ApplicationWindow {
             Component.onCompleted:{
                 selector.comboBoxSelectionChanged()
             }
+        }
+    }
+
+    // 控制台可视化全局参数
+    property bool consoleVisible: false
+
+    Item {
+        id: testRect
+        anchors.fill: parent
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                testRect.focus = true
+                testRect.forceActiveFocus()
+            }
+        }
+
+        focus: true
+        Keys.onPressed: (event) => {
+            if (event.key === Qt.Key_Tab) {
+                root.consoleVisible = !root.consoleVisible
+                event.accepted = true
+            }
+        }
+
+        JavaScriptConsole {
+            id: myConsole
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: parent.height * 0.3
+            consoleVisible: root.consoleVisible
+        
+            // 处理关闭请求
+            onCloseRequested: {
+                root.consoleVisible = false
+            }
+        }
+
+        Component.onCompleted: {
+            console.log("控制台已加载，Tab显示")
         }
     }
 }

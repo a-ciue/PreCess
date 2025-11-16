@@ -9,7 +9,7 @@ qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_icon_resource_windows})
 qt_add_qml_module(${MYNAME}
         URI app
         QML_FILES
-        Main.qml SelectingBar.qml SideBar.qml ObjectList.qml ObjectListModel.qml Selector.qml CommandMenu.qml
+        Main.qml SelectingBar.qml SideBar.qml ObjectList.qml ObjectListModel.qml Selector.qml CommandMenu.qml JavaScriptConsole.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE
