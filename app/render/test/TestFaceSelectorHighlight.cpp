@@ -1,4 +1,4 @@
-﻿#include "MakeMeshDataVtk.h"
+#include "MakeMeshDataVtk.h"
 
 #include "SelectorHighlight.h"
 #include <vtkActor.h>
@@ -26,7 +26,7 @@ public:
     static FacePickInteractorStyle* New();
     vtkTypeMacro(FacePickInteractorStyle, vtkInteractorStyleTrackballCamera);
 
-    void SetSelectorHighlight(SingleFaceSelectorHighlight* selector)
+    void SetSelectorHighlight(FaceSelectorHighlight* selector)
     {
         this->Selector = selector;
     }
@@ -40,7 +40,7 @@ public:
     }
 
 private:
-    SingleFaceSelectorHighlight* Selector = nullptr;
+    FaceSelectorHighlight* Selector = nullptr;
 };
 
 vtkStandardNewMacro(FacePickInteractorStyle);
@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 
-    // 集成 SingleFaceSelectorHighlight
-    SingleFaceSelectorHighlight selector(renderer);
+    // 集成 FaceSelectorHighlight
+    FaceSelectorHighlight selector(renderer);
     selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
     style->SetSelectorHighlight(&selector);
 
