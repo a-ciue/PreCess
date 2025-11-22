@@ -456,7 +456,7 @@ ApplicationWindow {
 
         focus: true
         Keys.onPressed: (event) => {
-            if (event.key === Qt.Key_Tab) {
+            if (event.key === Qt.Key_F10) {
                 root.consoleVisible = !root.consoleVisible
                 event.accepted = true
             }
@@ -477,7 +477,7 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            console.log("控制台已加载，Tab显示")
+            console.log("控制台已加载，F10显示")
         }
     }
 }

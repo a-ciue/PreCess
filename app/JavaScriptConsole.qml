@@ -74,7 +74,7 @@ Item {
                             border.color: "#3d3d3d"
                         }
                         text: "=== PreCess JavaScript 控制台 ===\n" +
-                              "按 Tab 切换控制台显示\n" +
+                              "按 F10 切换控制台显示\n" +
                               "----------------------------\n\n"
                     }
                 }
@@ -107,6 +107,51 @@ Item {
 
                         property var history: []
                         property int historyIndex: -1
+
+                        // 处理输入文本变化，检测是否输入了父组件ID并按了.
+                        onTextChanged: {
+                            // 检查文本是否包含点号，表示正在访问子组件
+                            if (text.endsWith(".")) {
+                                var parentId = text.substring(0, text.length - 1).trim();
+                                if (parentId) {
+                                    // 尝试获取父组件
+                                    var parentComponent = findComponentById(parentId);
+                                    if (parentId) {
+                                        // 获取子组件列表并显示
+                                        var childrenList = getChildrenList(parentComponent);
+                                        outputText.text += "子组件列表 (" + parentId + "):\n";
+                                        outputText.text += childrenList + "\n";
+                                        outputText.cursorPosition = outputText.length;
+                                    }
+                                }
+                            }
+                        }
+
+                        // 处理Tab键，显示子组件
+                        Keys.onPressed: {
+                            if (event.key === Qt.Key_Tab) {
+                                event.accepted = true;
+                                // 如果文本以点结尾，显示子组件
+                                if (text.endsWith(".")) {
+                                    var parentId = text.substring(0, text.length - 1).trim();
+                                    if (parentId) {
+                                        try {
+                                            var parentComponent = findComponentById(parentId);
+                                            if (parentId) {
+                                                var childrenList = getChildrenList(parentComponent);
+                                                outputText.text += "子组件列表 (" + parentId + "):\n";
+                                                outputText.text += childrenList + "\n";
+                                                outputText.cursorPosition = outputText.length;
+                                            } else {
+                                                outputText.text += "✗ 错误: 未找到组件 " + parentId + "\n";
+                                            }
+                                        } catch (e) {
+                                            outputText.text += "✗ 错误: " + e.toString() + "\n";
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         Keys.onUpPressed: {
                             if (history.length > 0) {
@@ -153,6 +198,19 @@ Item {
     function executeCommand(cmd) {
         outputText.text += "> " + cmd + "\n"
 
+        // 特殊命令处理
+        if (cmd.trim() === "help") {
+            showQuickHelp()
+            return
+        } else if (cmd.trim() === "clear") {
+            outputText.text = "=== PreCess JavaScript 控制台 ===\n\n"
+            return
+        } else if (cmd.trim() === "components") {
+            outputText.text += "← 主要组件: objectList, sideBar, myItem, selector, stacklayout, facemode, patchmode\n"
+            outputText.text += "← 系统组件: modelQuery, algorithmSystem, modelManager, ioSystem, modelObserver\n\n"
+            return
+        }
+
         try {
             var result = eval(cmd)
 
@@ -179,29 +237,76 @@ Item {
         outputText.cursorPosition = outputText.length
     }
 
-    function findChild(parent, objectName) {
-        if (!parent) return null
-        for (var i = 0; i < parent.children.length; i++) {
-            var child = parent.children[i]
-            if (child.objectName === objectName) {
-                return child
+    // 获取子组件列表的函数
+    function getChildrenList(parent) {
+        var result = "";
+        
+        // 对于Item类型的组件，使用children属性
+        if (parent.children && parent.children.length > 0) {
+            result += "  item类型组件:\n";
+            for (var i = 0; i < parent.children.length; i++) {
+                var child = parent.children[i];
+                var childType = child.toString().split(" ")[0] || "Unknown";
+                
+                result += "  - " + " (" + childType + ")\n";
+                
+                // 递归获取更深层的子组件（可选，这里只显示一层）
             }
-            var found = findChild(child, objectName)
-            if (found) return found
+        } else {
+            result += "  (无子组件)\n";
         }
-        return null
+        
+        // 对于非Item组件，检查contentChildren属性
+        if (parent.contentChildren && parent.contentChildren.length > 0) {
+            result += "  控件类型组件:\n";
+            for (var j = 0; j < parent.contentChildren.length; j++) {
+                var contentChild = parent.contentChildren[j];
+                var contentChildType = contentChild.toString().split(" ")[0] || "Unknown";
+                
+                result += "    - " + " (" + contentChildType + ")\n";
+            }
+        }
+        
+        // 检查data属性（适用于Item的data属性）
+        if (parent.data && parent.data.length > 0) {
+            result += "  数据类型组件:\n";
+            for (var k = 0; k < parent.data.length; k++) {
+                var dataChild = parent.data[k];
+                if (dataChild) {
+                    var dataChildType = dataChild.toString().split(" ")[0] || "Unknown";
+                    
+                    result += "    - " + " (" + dataChildType + ")\n";
+                }
+            }
+        }
+        
+        return result;
     }
 
-    function listChildren(parent, indent) {
-        if (!parent) return ""
-        indent = indent || ""
-        var result = ""
-        for (var i = 0; i < parent.children.length; i++) {
-            var child = parent.children[i]
-            var name = child.objectName || child.toString()
-            result += indent + "- " + name + "\n"
-            result += listChildren(child, indent + "  ")
+    // 显示快速帮助信息
+    function showQuickHelp() {
+        var helpText = "🚀 快速命令:\n" +
+                      "• help - 显示此帮助\n" +
+                      "• clear - 清空控制台\n" +
+                      "• components - 显示可用组件\n\n" +
+                      "🔧 组件探索:\n" +
+                      "• 输入 '组件ID.' 然后按 Tab 键显示子组件\n" +
+                      "• 例如: 'myItem.' + Tab\n\n" +
+                      "💡 提示: 使用 Tab 键查看子组件列表\n"
+
+        outputText.text += helpText + "\n"
+        outputText.cursorPosition = outputText.length
+    }
+
+    // 专门用于查找组件的包装函数
+    function findComponentById(id) {
+        // 使用安全的方式查找组件
+        try {
+            var component = eval(id);
+            return component;
+        } catch (e) {
+            console.log("查找组件失败: " + e.toString());
+            return null;
         }
-        return result
     }
 }
