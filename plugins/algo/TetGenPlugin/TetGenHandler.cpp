@@ -1,25 +1,27 @@
 #include "TetGenHandler.h"
+#include "ArgObject.h"
 #include "ModelIOSystemBase.h"
 #include "ModelOperatorBase.h"
 #include "TempFile.h"
 
-#include <spdlog/spdlog.h>
 #include <filesystem>
+#include <spdlog/spdlog.h>
 
 using namespace std;
+using namespace core;
 namespace fs = std::filesystem;
 using fs::path;
 
-std::any systems::algo::TetGenHandler::execute(HandlerContext& context, const std::vector<std::any>& args)
+std::any systems::algo::TetGenHandler::execute(HandlerContext& context, const std::vector<ArgObject>& args)
 {
     // parse args
     if (args.size() < 3) {
         spdlog::critical("TetGenHandler: Not enough arguments provided.");
         return {};
     }
-    const path* cmd = std::any_cast<path>(&args[0]);
-    const int* keep_outer_idx = std::any_cast<int>(&args[1]);
-    const double* scale = std::any_cast<double>(&args[2]);
+    const path* cmd = args[0].get<ArgTypeEnum::Path>();
+    const int* keep_outer_idx = args[1].get<ArgTypeEnum::Combo>();
+    const double* scale = args[2].get<ArgTypeEnum::Float>();
     if (!cmd || !keep_outer_idx || *keep_outer_idx < 0 || !scale) {
         spdlog::critical("TetGenHandler: Invalid command or arguments.");
         return {};
@@ -36,7 +38,7 @@ std::any systems::algo::TetGenHandler::execute(HandlerContext& context, const st
     temp_file.replace_extension(temp_file.extension().string() + ".mesh");
     context.io_system.write(context.cur_model.getId(), temp_file, "Gamma Mesh Format @Medit", {});
 
-    std::string full_command { "\"" + cmd->string() + "\" -pqG" + to_string(*scale) + "BNEFVYAg " + (keep_outer ? "-H ":" ") + temp_file.string() };
+    std::string full_command { "\"" + cmd->string() + "\" -pqG" + to_string(*scale) + "BNEFVYAg " + (keep_outer ? "-H " : " ") + temp_file.string() };
     spdlog::debug("TetGenHandler: Executing command: {}", full_command);
     std::system(full_command.c_str());
 

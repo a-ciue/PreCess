@@ -1,4 +1,4 @@
-#include "MakeMeshDataVtk.h"
+﻿#include "MakeMeshDataVtk.h"
 
 #include "SelectorHighlight.h"
 #include <vtkActor.h>
@@ -21,12 +21,12 @@
 #include <vtkWin32OpenGLRenderWindow.h>
 
 // 自定义交互器，响应鼠标左键点击
-class EdgePickInteractorStyle : public vtkInteractorStyleTrackballCamera {
+class FacePickInteractorStyle : public vtkInteractorStyleTrackballCamera {
 public:
-    static EdgePickInteractorStyle* New();
-    vtkTypeMacro(EdgePickInteractorStyle, vtkInteractorStyleTrackballCamera);
+    static FacePickInteractorStyle* New();
+    vtkTypeMacro(FacePickInteractorStyle, vtkInteractorStyleTrackballCamera);
 
-    void SetSelectorHighlight(SingleEdgeSelectorHighlight* selector)
+    void SetSelectorHighlight(SingleFaceSelectorHighlight* selector)
     {
         this->Selector = selector;
     }
@@ -40,10 +40,10 @@ public:
     }
 
 private:
-    SingleEdgeSelectorHighlight* Selector = nullptr;
+    SingleFaceSelectorHighlight* Selector = nullptr;
 };
 
-vtkStandardNewMacro(EdgePickInteractorStyle);
+vtkStandardNewMacro(FacePickInteractorStyle);
 
 int main(int argc, char* argv[])
 {
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     vtkSmartPointer<vtkRenderWindowInteractor> interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
     interactor->SetRenderWindow(renderWindow);
 
-    vtkSmartPointer<EdgePickInteractorStyle> style = vtkSmartPointer<EdgePickInteractorStyle>::New();
+    vtkSmartPointer<FacePickInteractorStyle> style = vtkSmartPointer<FacePickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
     // 创建MeshActor
@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 
-    // 集成 SingleEdgeSelectorHighlight
-    SingleEdgeSelectorHighlight selector(renderer);
+    // 集成 SingleFaceSelectorHighlight
+    SingleFaceSelectorHighlight selector(renderer);
     selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
     style->SetSelectorHighlight(&selector);
 

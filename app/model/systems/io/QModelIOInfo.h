@@ -1,6 +1,6 @@
 #ifndef Q_MODEL_IO_INFO_H
 #define Q_MODEL_IO_INFO_H
-#include "QArgObject.h"
+#include "QArgType.h"
 #include <QObject>
 #include <qqmlintegration.h>
 
@@ -16,10 +16,10 @@ class QModelIOInfo : public QObject {
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString description READ description CONSTANT)
     Q_PROPERTY(QStringList extensions READ extensions CONSTANT)
-    Q_PROPERTY(QList<QArgObject*> read_arg_types READ readArgTypes CONSTANT)
-    Q_PROPERTY(QList<QArgObject*> write_arg_types READ writeArgTypes CONSTANT)
+    Q_PROPERTY(QList<QArgType*> read_arg_types READ readArgTypes CONSTANT)
+    Q_PROPERTY(QList<QArgType*> write_arg_types READ writeArgTypes CONSTANT)
 public:
-    QModelIOInfo(QString name, QString description, const std::vector<std::string>& extensions, QList<QArgObject*> read_arg_types, QList<QArgObject*> write_arg_types, QObject* parent = nullptr)
+    QModelIOInfo(QString name, QString description, const std::vector<std::string>& extensions, QList<QArgType*> read_arg_types, QList<QArgType*> write_arg_types, QObject* parent = nullptr)
         : QObject(parent)
         , name_(std::move(name))
         , description_(std::move(description))
@@ -33,15 +33,15 @@ public:
     QString name() const { return name_; }
     QString description() const { return description_; }
     QStringList extensions() const { return extensions_; }
-    QList<QArgObject*> readArgTypes() const { return read_arg_types_; }
-    QList<QArgObject*> writeArgTypes() const { return write_arg_types_; }
+    QList<QArgType*> readArgTypes() const { return read_arg_types_; }
+    QList<QArgType*> writeArgTypes() const { return write_arg_types_; }
 
 private:
     QString name_; // 算法唯一名称，用作索引
     QString description_; // 算法描述
     QStringList extensions_; //> 文件类型对应拓展名列表
-    QList<QArgObject*> read_arg_types_; //> 读操作参数类型列表
-    QList<QArgObject*> write_arg_types_; //> 写操作参数类型列表
+    QList<QArgType*> read_arg_types_; //> 读操作参数类型列表
+    QList<QArgType*> write_arg_types_; //> 写操作参数类型列表
 };
 }
 #endif // !Q_MODEL_IO_INFO_H

@@ -43,12 +43,12 @@ void MModelHandler::write_model(const ModelData& data, const fs::path& path, con
     mesh.write_m(path.string().c_str());
 }
 
-std::vector<ArgType> MModelHandler::read_args_type() const
+std::vector<core::ArgType> MModelHandler::read_args_type() const
 {
     return {};
 }
 
-std::vector<ArgType> MModelHandler::write_args_type() const
+std::vector<core::ArgType> MModelHandler::write_args_type() const
 {
     return {};
 }

@@ -1,5 +1,5 @@
 /**
- * @file ArgTypeEnum.h
+ * @file private_ArgTypeEnum.h
  * @brief 参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。
  *
  * 因为需要被嵌入到其他头文件中，所以不在本文件中使用include guard。

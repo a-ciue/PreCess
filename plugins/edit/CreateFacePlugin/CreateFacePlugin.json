@@ -1,0 +1,7 @@
+{
+  "system": "EditSystem",
+  "handler": {
+    "name": "CreateFacePlugin",
+    "display_name": "创建面"
+  }
+}

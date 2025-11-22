@@ -1,9 +1,11 @@
 #include "QModelManager.h"
 #include "AlgorithmSystemRegister.h"
 #include "ModelIOSystemRegister.h"
+#include "EditSystemRegister.h"
 #include "ModelManager.h"
 #include "ModelIOSystem.h"
 #include "AlgorithmSystem.h"
+#include "EditSystem.h"
 #include "SystemPluginManager.h"
 #include "QModelObserver.h"
 
@@ -13,7 +15,7 @@
 #include <spdlog/spdlog.h>
 
 
-QModelManager::QModelManager(QObject* parent)
+QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     : QObject(parent)
 {
     // 1) 初始化
@@ -24,17 +26,20 @@ QModelManager::QModelManager(QObject* parent)
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
+    edit_system_ = std::make_unique<systems::edit::EditSystem>(*core_);
     plugin_manager_ = std::make_unique<systems::SystemPluginManager>();
 
     // 2) 注册系统
     plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
     plugin_manager_->addSystemRegister(systems::algo::AlgorithmSystem::name, std::make_unique<systems::algo::AlgorithmSystemRegister>(*algo_system_));
+    plugin_manager_->addSystemRegister(systems::edit::EditSystem::name, std::make_unique<systems::edit::EditSystemRegister>(*edit_system_));
 
     // 3) 注册插件
     using std::filesystem::path;
-    path plugin_dir = std::filesystem::current_path() / "../plugins";
+    path exe_dir = std::filesystem::absolute(argv0).parent_path();
+    path plugin_dir = exe_dir / "plugins"; // 对应 开发调试 时的目录结构，相对严格
     if (!std::filesystem::is_directory(plugin_dir)) {
-        plugin_dir = std::filesystem::current_path() / "plugins";
+        plugin_dir = exe_dir / "../plugins"; // 对应 install 后的目录结构，相对宽松
     }
     if (!std::filesystem::is_directory(plugin_dir)) {
         spdlog::error("QModelManager::QModelManager: 插件目录 {} 不存在", plugin_dir.string());
@@ -81,6 +86,10 @@ QModelObserver* QModelManager::getModelObserver()
 systems::algo::QAlgorithmSystemAdaptor QModelManager::getAlgorithmSystemAdaptor()
 {
     return systems::algo::QAlgorithmSystemAdaptor(*algo_system_);
+}
+systems::edit::QEditSystemAdaptor QModelManager::getEditSystemAdaptor()
+{
+    return systems::edit::QEditSystemAdaptor(*edit_system_);
 }
 
 systems::io::QModelIOSystemAdaptor QModelManager::getModelIOSystemAdaptor()

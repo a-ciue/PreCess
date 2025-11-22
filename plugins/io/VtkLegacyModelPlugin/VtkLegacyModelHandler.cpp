@@ -38,12 +38,12 @@ void VtkLegacyModelHandler::write_model(const ModelData& data, const fs::path& p
     // TODO: implement
 }
 
-std::vector<ArgType> VtkLegacyModelHandler::read_args_type() const
+std::vector<core::ArgType> VtkLegacyModelHandler::read_args_type() const
 {
     return {};
 }
 
-std::vector<ArgType> VtkLegacyModelHandler::write_args_type() const
+std::vector<core::ArgType> VtkLegacyModelHandler::write_args_type() const
 {
     return {};
 }

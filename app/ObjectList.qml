@@ -4,6 +4,7 @@
  */
 
 import QtQuick 2.15
+import QtQuick.Layouts
 import QtQuick.Controls
 
 Pane {
@@ -24,9 +25,10 @@ Pane {
         id: objectListView
         anchors.fill: parent
         model: objectInitializeModel
-        delegate:Row{
+        delegate: RowLayout {
             required property string name
             required property int savedId
+            width: objectListView.width
 
             Button{
                 id:visibilityButton
@@ -47,7 +49,8 @@ Pane {
             TextInput{
                 id:objectName
                 property string savedName: name
-                width: 80
+                Layout.fillWidth: true
+                wrapMode: TextInput.WrapAnywhere
                 //text: name
                 font.bold: root.selectedModel_id === savedId  // 根据选中状态设置粗体
                 
@@ -55,7 +58,7 @@ Pane {
                     anchors.fill: parent
                     onClicked: {
                         if (root.selectedModel_id === savedId) {
-                            root.selectedModel_id = "-1"  // 取消选中
+                            root.selectedModel_id = -1  // 取消选中
                         } else {
                             root.selectedModel_id = savedId  // 选中当前行
                         }
@@ -79,11 +82,6 @@ Pane {
                     text = savedName
                 }
             }
-            Rectangle{
-                width:10
-                height:10
-                color: "red"
-            }
         }
     }
     /**
@@ -99,6 +97,9 @@ Pane {
      */
     function removeItem(model_id){
         objectModel.removeItem(model_id)
+        if (root.selectedModel_id === model_id) {
+            root.selectedModel_id = -1  // 如果删除的是当前选中的模型，重置选中状态
+        }
     }
     /**
      * @brief 重命名一行模型信息的名字

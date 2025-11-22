@@ -64,6 +64,7 @@ void VertexSelectorHighlight::select(double posx, double posy)
     picker->AddPickList(&model_actor->getSolidActor());
     picker->AddPickList(&model_actor->getFaceActor());
     picker->AddPickList(&model_actor->getEdgeActor());
+    picker->AddPickList(&model_actor->getVertexActor());
     picker->Pick(posx, posy, 0, renderer_);
     vtkIdType picked_point_id = picker->GetPointId();
     if (picked_point_id == -1) {
@@ -98,6 +99,7 @@ void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_ac
 void VertexSelectorHighlight::_cancel_highlight(vtkIdTypeArray* selected_ids)
 {
     selected_ids->SetNumberOfValues(0);
+    selected_ids->Modified();
 }
 
 vtkIdType VertexSelectorHighlight::_is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_)

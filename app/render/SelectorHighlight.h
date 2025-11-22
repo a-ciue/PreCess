@@ -88,7 +88,7 @@ class SingleFaceSelectorHighlight : public SelectorHighlight {
 public:
     //struct SelectedFace {
     //    //! @brief 面所在的actor，借由actor可以找到全局id
-    //    vtkIdType face_id;
+    //    vtkActor* actor;
     //    //! @brief 面局部索引id
     //    int local_id;
     //};
@@ -107,31 +107,26 @@ public:
 
 private:
     //！@brief 取消高亮，清空mapper
-    void _cancel_highlight(std::optional<vtkIdType> selection, vtkRenderer* renderer);
+    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
     static bool _is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection);
 
-    void set_highlight_actor();
     vtkRenderer* renderer_;
     std::optional<vtkIdType> selection_;
-    vtkNew<vtkActor> highlight_actor_;
-    vtkNew<vtkPolyDataMapper> mapper_;
+    vtkNew<vtkDataSetMapper> selected_mapper_;
+    vtkSmartPointer<vtkActor> selected_actor_;
     vtkNew<vtkPropCollection> collection_;
     MeshActorSelectOpFactory model_actor_;
 };
 
-class SingleEdgeSelectorHighlight : public SelectorHighlight {
+class EdgeSelectorHighlight : public SelectorHighlight {
 public:
-    struct SelectedEdge {
-        //! @brief 边所在的actor，借由actor可以找到全局id
-        vtkActor* actor;
-        //! @brief 边端点局部索引id
-        std::array<vtkIdType, 2> v_local_id;
-    };
+    //! @brief 边端点局部索引id
+    std::array<vtkIdType, 2> v_local_id;
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    SingleEdgeSelectorHighlight(vtkRenderer* renderer);
+    EdgeSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
-    ~SingleEdgeSelectorHighlight() override;
+    ~EdgeSelectorHighlight() override;
     //! @brief 获取当前选择的边
     SelectionVtk get()override;
     //! @brief 清空selection并取消高亮，即清空mapper
@@ -157,11 +152,10 @@ private:
     //！@brief 取消高亮，清空mapper
     static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
-    static bool _is_selected(SelectedEdge new_edge, const std::optional<SelectedEdge>& selection, vtkActor* selectedActor);
+    static bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::array<vtkIdType, 2>>& selection);
 
     vtkRenderer* renderer_;
-    std::optional<SelectedEdge> selection_;
-    //vtkPropAssembly edgeAssembly;
+    std::vector<std::array<vtkIdType, 2>> selections_;
     vtkNew<vtkPolyDataMapper> mapper_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
     vtkSmartPointer<vtkActor> selected_actor_;

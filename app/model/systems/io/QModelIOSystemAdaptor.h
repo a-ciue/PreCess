@@ -2,8 +2,8 @@
 #define Q_MODEL_IO_SYSTEM_ADAPTOR_H
 
 #include "Core.h"
-#include <QObject>
 #include <QUrl>
+#include <QVariantList>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 class QArgObject;
@@ -26,7 +26,7 @@ public:
      * @param args 附加参数列表
      * @return 是否读取成功
      */
-    Q_INVOKABLE bool read(const QString& unique_name, const QUrl& url, const QList<QArgObject*>& args);
+    Q_INVOKABLE bool read(const QString& unique_name, const QUrl& url, const QVariantList& args);
     /**
      * @brief 按照给定文件类型，写出指定模型到指定路径的文件
      * @param unique_name 文件类型唯一名称
@@ -35,7 +35,7 @@ public:
      * @param args 附加参数列表
      * @return 是否写出成功
      */
-    Q_INVOKABLE bool write(const QString& unique_name, Index model, const QUrl& url, const QList<QArgObject*>& args);
+    Q_INVOKABLE bool write(const QString& unique_name, Index model, const QUrl& url, const QVariantList& args);
     /**
      * @brief 获取所有支持的文件类型信息
      * @return 文件类型信息列表

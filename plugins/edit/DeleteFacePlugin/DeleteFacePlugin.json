@@ -1,0 +1,7 @@
+{
+  "system": "EditSystem",
+  "handler": {
+    "name": "DeleteFacePlugin",
+    "display_name": "删除面"
+  }
+}

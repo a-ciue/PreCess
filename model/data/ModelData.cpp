@@ -24,20 +24,26 @@ ModelData::ModelData() = default;
 ModelData::~ModelData() = default;
 
 ModelData::ModelData(std::unique_ptr<MeshData> mesh)
-    : type_(Type::Mesh)
-    , data_(std::move(mesh))
-{
-}
+    : data_(std::move(mesh)) { }
 
 ModelData::ModelData(std::unique_ptr<SplineData> spline)
-    : type_(Type::Spline)
-    , data_(std::move(spline))
-{
-}
+    : data_(std::move(spline)) { }
 
-ModelData::Type ModelData::type() const { return type_; }
-bool ModelData::hasMesh() const noexcept { return type_ == Type::Mesh && asMeshData(); }
-bool ModelData::hasSpline() const noexcept { return type_ == Type::Spline && asSplineData(); }
+ModelData::ModelData(ModelData&& other) noexcept = default;
+ModelData& ModelData::operator=(ModelData&& other) noexcept = default;
+
+ModelData::Type ModelData::type() const
+{
+    if (hasMesh()) {
+        return Type::Mesh;
+    }
+    if (hasSpline()) {
+        return Type::Spline;
+    }
+    return Type::None;
+}
+bool ModelData::hasMesh() const noexcept { return asMeshData(); }
+bool ModelData::hasSpline() const noexcept { return asSplineData(); }
 
 MeshData* ModelData::asMeshData() noexcept
 {
@@ -46,8 +52,7 @@ MeshData* ModelData::asMeshData() noexcept
 }
 const MeshData* ModelData::asMeshData() const noexcept
 {
-    auto pp = std::get_if<std::unique_ptr<MeshData>>(&data_);
-    return pp ? pp->get() : nullptr;
+    return const_cast<ModelData*>(this)->asMeshData();
 }
 
 SplineData* ModelData::asSplineData() noexcept
@@ -57,8 +62,7 @@ SplineData* ModelData::asSplineData() noexcept
 }
 const SplineData* ModelData::asSplineData() const noexcept
 {
-    auto pp = std::get_if<std::unique_ptr<SplineData>>(&data_);
-    return pp ? pp->get() : nullptr;
+    return const_cast<ModelData*>(this)->asSplineData();
 }
 
 void ModelData::merge_blocks(Selection selection)
@@ -94,32 +98,4 @@ void ModelData::merge_blocks(Selection selection)
         // 删除已合并的 block
         md->blocks_.erase(id);
     }
-}
-
-int ModelData::face_patch_id(int face_id)
-{
-    auto* md = asMeshData();
-    // 遍历所有 patches
-    for (const auto& [patch_id, patch_ptr] : md->patches_) {
-        if (std::find(patch_ptr->faces.begin(), patch_ptr->faces.end(), face_id) != patch_ptr->faces.end()) {
-            return patch_id; // 找到对应的 patch_id
-        }
-    }
-
-    // 如果找不到 face_id，抛出异常或返回特殊值
-    throw std::runtime_error("Face ID not found in any patch.");
-}
-
-int ModelData::patch_block_id(int patch_id)
-{
-    auto* md = asMeshData();
-    // 遍历 blocks_ 查找包含 patch_id 的 block
-    for (const auto& [block_id, block_ptr] : md->blocks_) {
-        if (block_ptr->patchIDs.find(patch_id) != block_ptr->patchIDs.end()) {
-            return block_id; // 找到对应的 block_id
-        }
-    }
-
-    // 如果找不到 patch_id，抛出异常
-    throw std::runtime_error("Patch ID not found in any block.");
 }

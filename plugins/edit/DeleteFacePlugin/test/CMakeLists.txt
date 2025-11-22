@@ -1,0 +1,5 @@
+precess_add_test(TestDeleteFace TestDeleteFace.cpp)
+precess_test_link_libraries(TestDeleteFace DataTest DeleteFacePluginlib)
+
+precess_add_test(TestCreateDeleteFace TestCreateDeleteFace.cpp)
+precess_test_link_libraries(TestCreateDeleteFace DataTest DeleteFacePluginlib CreateFacePluginlib)

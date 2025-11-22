@@ -19,6 +19,7 @@ import app.model
 import app.core
 import app.model.systems.algo
 import app.model.systems.io
+import app.model.systems.edit
 import app.render
 
 ApplicationWindow {
@@ -40,16 +41,36 @@ ApplicationWindow {
                 onClicked: saveFaceDialog.open()
             }
         }
-        Menu{
-            title: "编辑"
+        Menu {
+            id: editMenu
+            title: qsTr("编辑")
+            Repeater {
+                model: editSystem.getEditsInfo()
+                MenuItem {
+                    text: modelData.display_name
+                    onTriggered: {
+                        sideBar.curAlgoInfo = modelData
+                        sideBar.system = editSystem
+                    }
+                }
+            }
         }
         Menu{
             title: "视图"
         }
-        CommandMenu {
+        Menu {
             id: commandMenu
-            algoInfos: algorithmSystem.getAlgorithmsInfo()
-            sideBar: sideBar
+            title: qsTr("算法")
+            Repeater {
+                model: algorithmSystem.getAlgorithmsInfo()
+                MenuItem {
+                    text: modelData.display_name
+                    onTriggered: {
+                        sideBar.curAlgoInfo = modelData
+                        sideBar.system = algorithmSystem
+                    }
+                }
+            }
         }
     }
 
@@ -58,6 +79,7 @@ ApplicationWindow {
     required property QModelQuery modelQuery
     required property QAlgorithmSystemAdaptor algorithmSystem
     required property QModelIOSystemAdaptor ioSystem
+    required property QEditSystemAdaptor editSystem
 
     ToolBar {
         id: header
@@ -263,21 +285,13 @@ ApplicationWindow {
 
     SideBar{
         id: sideBar
-        algorithmSystem: root.algorithmSystem
         curModel: objectList.curModelId
-        curSelection: selector.selection
+        confirm_listener: selector.confirm_listener
         anchors.top: objectList.bottom
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
         anchors.bottom: parent.bottom
         width: 250
-        m:ListModel{
-            // ListElement{type: 2; name: "属性甲"; content: "55"}
-            // ListElement{type: 2; name: "属性乙"; content: "43"}
-            // ListElement{type: 1; name: "属性丙"; content: 1}
-            // ListElement{type: 0; name: "属性丁"; content: "无"}
-            //ListElement{type: 3; name: "选择器"; content: "无"}//可能会有多个选择器的需求，因此需要动态构造多个选择器
-        }
         onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
             //selector.changePropertyEnabled()
             //selector.comboBoxSelectionChanged()
@@ -387,19 +401,18 @@ ApplicationWindow {
 
         Selector{
             id:selector
+            cur_model: objectList.curModelId
             anchors.top:  renderWindowPage.top
             anchors.left: renderWindowPage.left
             anchors.topMargin: 10
             anchors.leftMargin: 10
-            property QSelection selection
-            enabled: objectList.selectedModelName !== ""  // 绑定到objectList的选中状态
 
             onClearButtonClicked:{
                 clearSelection()
             }
 
             onConfirmButtonClicked: {
-                selection = myItem.selectedIDs
+                selector.selection = myItem.selectedIDs
             }
 
             function clearSelection(){

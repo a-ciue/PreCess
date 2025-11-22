@@ -62,12 +62,12 @@ void StepModelHandler::write_model(const ModelData& data, const fs::path& path, 
     spdlog::info("Successfully wrote STEP file: {}", path.string());
 }
 
-std::vector<ArgType> StepModelHandler::read_args_type() const
+std::vector<core::ArgType> StepModelHandler::read_args_type() const
 {
     return {};
 }
 
-std::vector<ArgType> StepModelHandler::write_args_type() const
+std::vector<core::ArgType> StepModelHandler::write_args_type() const
 {
     return {};
 }
