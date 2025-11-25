@@ -84,18 +84,18 @@ private:
     static std::optional<size_t> _is_selected(const vtkIdType block_id, const std::vector<Block>& selections);
 };
 
-class SingleFaceSelectorHighlight : public SelectorHighlight {
+class FaceSelectorHighlight : public SelectorHighlight {
 public:
-    //struct SelectedFace {
+    // struct SelectedFace {
     //    //! @brief 面所在的actor，借由actor可以找到全局id
     //    vtkActor* actor;
     //    //! @brief 面局部索引id
     //    int local_id;
     //};
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    SingleFaceSelectorHighlight(vtkRenderer* renderer);
+    FaceSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
-    ~SingleFaceSelectorHighlight() override;
+    ~FaceSelectorHighlight() override;
     //! @brief 返回当前选择的面
     SelectionVtk get()override;
     //! @brief 清空selection并取消高亮，即清空mapper
@@ -109,10 +109,10 @@ private:
     //！@brief 取消高亮，清空mapper
     static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
     //! @brief 判断是否已经被选中
-    static bool _is_selected(vtkIdType new_face_id, const std::optional<vtkIdType>& selection);
+    std::vector<vtkIdType>::const_iterator _find_selected(vtkIdType new_face_id, const std::vector<vtkIdType>& selections);
 
     vtkRenderer* renderer_;
-    std::optional<vtkIdType> selection_;
+    std::vector<vtkIdType> selections_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
     vtkSmartPointer<vtkActor> selected_actor_;
     vtkNew<vtkPropCollection> collection_;
