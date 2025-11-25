@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.14.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>PreCess: SingleFaceSelectorHighlight类 参考</title>
+<title>PreCess: FaceSelectorHighlight类 参考</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,34 +74,37 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
 <a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
-<a href="classSingleFaceSelectorHighlight-members.html">所有成员列表</a>  </div>
-  <div class="headertitle"><div class="title">SingleFaceSelectorHighlight类 参考</div></div>
+<a href="classFaceSelectorHighlight-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">FaceSelectorHighlight类 参考</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="SelectorHighlight_8h_source.html">SelectorHighlight.h</a>&gt;</code></p>
 <div class="dynheader">
-类 SingleFaceSelectorHighlight 继承关系图:</div>
+类 FaceSelectorHighlight 继承关系图:</div>
 <div class="dyncontent">
-<div class="center"><img src="classSingleFaceSelectorHighlight__inherit__graph.png" border="0" usemap="#aSingleFaceSelectorHighlight_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
-<map name="aSingleFaceSelectorHighlight_inherit__map" id="aSingleFaceSelectorHighlight_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,79,208,104"/>
-<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="39,5,174,31"/>
-<area shape="poly" title=" " alt="" coords="109,44,109,79,104,79,104,44"/>
+<div class="center"><img src="classFaceSelectorHighlight__inherit__graph.png" border="0" usemap="#aFaceSelectorHighlight_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aFaceSelectorHighlight_inherit__map" id="aFaceSelectorHighlight_inherit__map">
+<area shape="rect" title=" " alt="" coords="5,79,168,104"/>
+<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="19,5,154,31"/>
+<area shape="poly" title=" " alt="" coords="89,44,89,79,84,79,84,44"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <div class="dynheader">
-SingleFaceSelectorHighlight 的协作图:</div>
+FaceSelectorHighlight 的协作图:</div>
 <div class="dyncontent">
-<div class="center"><img src="classSingleFaceSelectorHighlight__coll__graph.png" border="0" usemap="#aSingleFaceSelectorHighlight_coll__map" loading="lazy" alt="Collaboration graph"/></div>
-<map name="aSingleFaceSelectorHighlight_coll__map" id="aSingleFaceSelectorHighlight_coll__map">
-<area shape="rect" title=" " alt="" coords="2893,282,3096,307"/>
-<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="2583,258,2717,283"/>
-<area shape="poly" title=" " alt="" coords="2732,274,2893,285,2893,290,2731,279"/>
+<div class="center"><img src="classFaceSelectorHighlight__coll__graph.png" border="0" usemap="#aFaceSelectorHighlight_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aFaceSelectorHighlight_coll__map" id="aFaceSelectorHighlight_coll__map">
+<area shape="rect" title=" " alt="" coords="2893,254,3056,279"/>
+<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="2583,205,2717,230"/>
+<area shape="poly" title=" " alt="" coords="2731,219,2799,226,2870,236,2933,251,2932,256,2869,241,2798,231,2731,225"/>
+<area shape="rect" title=" " alt="" coords="2558,254,2742,279"/>
+<area shape="poly" title=" " alt="" coords="2756,264,2893,264,2893,269,2756,269"/>
 <area shape="rect" href="classMeshActorSelectOpFactory.html" title="MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象" alt="" coords="2552,307,2748,333"/>
-<area shape="poly" title=" " alt="" coords="2761,318,2869,312,2925,305,2926,310,2870,317,2762,323"/>
+<area shape="poly" title=" " alt="" coords="2762,308,2869,292,2931,277,2932,282,2870,297,2762,313"/>
 <area shape="rect" title=" " alt="" coords="2252,300,2412,340"/>
 <area shape="poly" title=" " alt="" coords="2426,317,2552,317,2552,323,2426,323"/>
 <area shape="rect" href="classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2087,307,2177,333"/>
@@ -132,45 +135,48 @@ SingleFaceSelectorHighlight 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a4e3f478d55c4b077ac8cea597e78e603" id="r_a4e3f478d55c4b077ac8cea597e78e603"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4e3f478d55c4b077ac8cea597e78e603">SingleFaceSelectorHighlight</a> (vtkRenderer *renderer)</td></tr>
-<tr class="memdesc:a4e3f478d55c4b077ac8cea597e78e603"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor绑定到renderer，mapper绑定到actor  <br /></td></tr>
-<tr class="memitem:ad81750f18341fdb68dde3e36856aa27c" id="r_ad81750f18341fdb68dde3e36856aa27c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad81750f18341fdb68dde3e36856aa27c">~SingleFaceSelectorHighlight</a> () override</td></tr>
-<tr class="memdesc:ad81750f18341fdb68dde3e36856aa27c"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor从renderer中删除  <br /></td></tr>
-<tr class="memitem:aff3b7849ec18fbd0f2048ac4d09e3f8f" id="r_aff3b7849ec18fbd0f2048ac4d09e3f8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff3b7849ec18fbd0f2048ac4d09e3f8f">get</a> () override</td></tr>
-<tr class="memdesc:aff3b7849ec18fbd0f2048ac4d09e3f8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回当前选择的面  <br /></td></tr>
-<tr class="memitem:a725602d01cf11fc59a18d184c64bce03" id="r_a725602d01cf11fc59a18d184c64bce03"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a725602d01cf11fc59a18d184c64bce03">clear</a> () override</td></tr>
-<tr class="memdesc:a725602d01cf11fc59a18d184c64bce03"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空selection并取消高亮，即清空mapper  <br /></td></tr>
-<tr class="memitem:a2d8dfc7ee69b0f19f8d22bd582c84d53" id="r_a2d8dfc7ee69b0f19f8d22bd582c84d53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d8dfc7ee69b0f19f8d22bd582c84d53">select</a> (double posx, double posy) override</td></tr>
-<tr class="memdesc:a2d8dfc7ee69b0f19f8d22bd582c84d53"><td class="mdescLeft">&#160;</td><td class="mdescRight">找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()  <br /></td></tr>
-<tr class="memitem:ab55750471c80f964a866a7c29e434dbf" id="r_ab55750471c80f964a866a7c29e434dbf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab55750471c80f964a866a7c29e434dbf">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor) override</td></tr>
-<tr class="memdesc:ab55750471c80f964a866a7c29e434dbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
+<tr class="memitem:a90186d113823940ea32b867b8a96b84f" id="r_a90186d113823940ea32b867b8a96b84f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90186d113823940ea32b867b8a96b84f">FaceSelectorHighlight</a> (vtkRenderer *renderer)</td></tr>
+<tr class="memdesc:a90186d113823940ea32b867b8a96b84f"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor绑定到renderer，mapper绑定到actor  <br /></td></tr>
+<tr class="memitem:a95143147ea3d17c3842ddc37bccaaae0" id="r_a95143147ea3d17c3842ddc37bccaaae0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95143147ea3d17c3842ddc37bccaaae0">~FaceSelectorHighlight</a> () override</td></tr>
+<tr class="memdesc:a95143147ea3d17c3842ddc37bccaaae0"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor从renderer中删除  <br /></td></tr>
+<tr class="memitem:aa76562ed0c1c967d69f226ad2719ff6a" id="r_aa76562ed0c1c967d69f226ad2719ff6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa76562ed0c1c967d69f226ad2719ff6a">get</a> () override</td></tr>
+<tr class="memdesc:aa76562ed0c1c967d69f226ad2719ff6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回当前选择的面  <br /></td></tr>
+<tr class="memitem:a68126ce958a1798d371dd7ca8cb4d008" id="r_a68126ce958a1798d371dd7ca8cb4d008"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68126ce958a1798d371dd7ca8cb4d008">clear</a> () override</td></tr>
+<tr class="memdesc:a68126ce958a1798d371dd7ca8cb4d008"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空selection并取消高亮，即清空mapper  <br /></td></tr>
+<tr class="memitem:aace8feb95c02fb87dac0994478ba8989" id="r_aace8feb95c02fb87dac0994478ba8989"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aace8feb95c02fb87dac0994478ba8989">select</a> (double posx, double posy) override</td></tr>
+<tr class="memdesc:aace8feb95c02fb87dac0994478ba8989"><td class="mdescLeft">&#160;</td><td class="mdescRight">找到坐标下的face并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()  <br /></td></tr>
+<tr class="memitem:a64130142201b2aac84b5a1f0ec6c12cf" id="r_a64130142201b2aac84b5a1f0ec6c12cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a64130142201b2aac84b5a1f0ec6c12cf">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor) override</td></tr>
+<tr class="memdesc:a64130142201b2aac84b5a1f0ec6c12cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
 <tr class="inherit_header pub_methods_classSelectorHighlight"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classSelectorHighlight')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a></td></tr>
 <tr class="memitem:aeb60a59064e736c2c80f85dd2823ee9f inherit pub_methods_classSelectorHighlight" id="r_aeb60a59064e736c2c80f85dd2823ee9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSelectorHighlight.html#aeb60a59064e736c2c80f85dd2823ee9f">~SelectorHighlight</a> ()=default</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:aa6241ce80de00ada8dd723c4006f658f" id="r_aa6241ce80de00ada8dd723c4006f658f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; vtkIdType &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6241ce80de00ada8dd723c4006f658f">_find_selected</a> (vtkIdType new_face_id, const std::vector&lt; vtkIdType &gt; &amp;selections)</td></tr>
+<tr class="memdesc:aa6241ce80de00ada8dd723c4006f658f"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断是否已经被选中  <br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 静态 Private 成员函数</h2></td></tr>
-<tr class="memitem:ad3a7a97aeaca6c997fed152cb3b5a78d" id="r_ad3a7a97aeaca6c997fed152cb3b5a78d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad3a7a97aeaca6c997fed152cb3b5a78d">_cancel_highlight</a> (vtkDataSetMapper *selectedMapper)</td></tr>
-<tr class="memitem:a373b0eab6b12b5fa8b518920d62c5815" id="r_a373b0eab6b12b5fa8b518920d62c5815"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a373b0eab6b12b5fa8b518920d62c5815">_is_selected</a> (vtkIdType new_face_id, const std::optional&lt; vtkIdType &gt; &amp;selection)</td></tr>
-<tr class="memdesc:a373b0eab6b12b5fa8b518920d62c5815"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断是否已经被选中  <br /></td></tr>
+<tr class="memitem:af00dded6293ad1aa0c3b1f5218935eae" id="r_af00dded6293ad1aa0c3b1f5218935eae"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af00dded6293ad1aa0c3b1f5218935eae">_cancel_highlight</a> (vtkDataSetMapper *selectedMapper)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:aa030deab8fb8fdcbaab8b93b3cf10fe1" id="r_aa030deab8fb8fdcbaab8b93b3cf10fe1"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa030deab8fb8fdcbaab8b93b3cf10fe1">renderer_</a></td></tr>
-<tr class="memitem:adba99a525bdd84d8da3ce486a694adbc" id="r_adba99a525bdd84d8da3ce486a694adbc"><td class="memItemLeft" align="right" valign="top">std::optional&lt; vtkIdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adba99a525bdd84d8da3ce486a694adbc">selection_</a></td></tr>
-<tr class="memitem:a87f282d30c530067c362bf66d0346bd8" id="r_a87f282d30c530067c362bf66d0346bd8"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkDataSetMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87f282d30c530067c362bf66d0346bd8">selected_mapper_</a></td></tr>
-<tr class="memitem:acad50bd733b6deb2c3fe272c85cb2eeb" id="r_acad50bd733b6deb2c3fe272c85cb2eeb"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acad50bd733b6deb2c3fe272c85cb2eeb">selected_actor_</a></td></tr>
-<tr class="memitem:afee76604c7c9d07ffcd8034e381cd3cd" id="r_afee76604c7c9d07ffcd8034e381cd3cd"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPropCollection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afee76604c7c9d07ffcd8034e381cd3cd">collection_</a></td></tr>
-<tr class="memitem:aff89737aa9c7eb16afcdd310ed75719a" id="r_aff89737aa9c7eb16afcdd310ed75719a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff89737aa9c7eb16afcdd310ed75719a">model_actor_</a></td></tr>
+<tr class="memitem:ab8d0d0753dc16b36001c60b8a459e211" id="r_ab8d0d0753dc16b36001c60b8a459e211"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab8d0d0753dc16b36001c60b8a459e211">renderer_</a></td></tr>
+<tr class="memitem:afb6f684b325526cc0658fc957718a9af" id="r_afb6f684b325526cc0658fc957718a9af"><td class="memItemLeft" align="right" valign="top">std::vector&lt; vtkIdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb6f684b325526cc0658fc957718a9af">selections_</a></td></tr>
+<tr class="memitem:ab4c82c2fbf5d7ae19ed5ec7848bb13c4" id="r_ab4c82c2fbf5d7ae19ed5ec7848bb13c4"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkDataSetMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab4c82c2fbf5d7ae19ed5ec7848bb13c4">selected_mapper_</a></td></tr>
+<tr class="memitem:aa0f96839bc742c45077facf04ef7ee01" id="r_aa0f96839bc742c45077facf04ef7ee01"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0f96839bc742c45077facf04ef7ee01">selected_actor_</a></td></tr>
+<tr class="memitem:a281ac88574e4c0951c4d5e993be076ce" id="r_a281ac88574e4c0951c4d5e993be076ce"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPropCollection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a281ac88574e4c0951c4d5e993be076ce">collection_</a></td></tr>
+<tr class="memitem:aef15db633237be3c63f89bfce1e3ea18" id="r_aef15db633237be3c63f89bfce1e3ea18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef15db633237be3c63f89bfce1e3ea18">model_actor_</a></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
-<a id="a4e3f478d55c4b077ac8cea597e78e603" name="a4e3f478d55c4b077ac8cea597e78e603"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e3f478d55c4b077ac8cea597e78e603">&#9670;&#160;</a></span>SingleFaceSelectorHighlight()</h2>
+<a id="a90186d113823940ea32b867b8a96b84f" name="a90186d113823940ea32b867b8a96b84f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90186d113823940ea32b867b8a96b84f">&#9670;&#160;</a></span>FaceSelectorHighlight()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">SingleFaceSelectorHighlight::SingleFaceSelectorHighlight </td>
+          <td class="memname">FaceSelectorHighlight::FaceSelectorHighlight </td>
           <td>(</td>
           <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span></td><td>)</td>
           <td></td>
@@ -182,8 +188,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="ad81750f18341fdb68dde3e36856aa27c" name="ad81750f18341fdb68dde3e36856aa27c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad81750f18341fdb68dde3e36856aa27c">&#9670;&#160;</a></span>~SingleFaceSelectorHighlight()</h2>
+<a id="a95143147ea3d17c3842ddc37bccaaae0" name="a95143147ea3d17c3842ddc37bccaaae0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95143147ea3d17c3842ddc37bccaaae0">&#9670;&#160;</a></span>~FaceSelectorHighlight()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -192,7 +198,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">SingleFaceSelectorHighlight::~SingleFaceSelectorHighlight </td>
+          <td class="memname">FaceSelectorHighlight::~FaceSelectorHighlight </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -210,8 +216,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="ad3a7a97aeaca6c997fed152cb3b5a78d" name="ad3a7a97aeaca6c997fed152cb3b5a78d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad3a7a97aeaca6c997fed152cb3b5a78d">&#9670;&#160;</a></span>_cancel_highlight()</h2>
+<a id="af00dded6293ad1aa0c3b1f5218935eae" name="af00dded6293ad1aa0c3b1f5218935eae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af00dded6293ad1aa0c3b1f5218935eae">&#9670;&#160;</a></span>_cancel_highlight()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -220,7 +226,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void SingleFaceSelectorHighlight::_cancel_highlight </td>
+          <td class="memname">void FaceSelectorHighlight::_cancel_highlight </td>
           <td>(</td>
           <td class="paramtype">vtkDataSetMapper *</td>          <td class="paramname"><span class="paramname"><em>selectedMapper</em></span></td><td>)</td>
           <td></td>
@@ -235,8 +241,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a373b0eab6b12b5fa8b518920d62c5815" name="a373b0eab6b12b5fa8b518920d62c5815"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a373b0eab6b12b5fa8b518920d62c5815">&#9670;&#160;</a></span>_is_selected()</h2>
+<a id="aa6241ce80de00ada8dd723c4006f658f" name="aa6241ce80de00ada8dd723c4006f658f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6241ce80de00ada8dd723c4006f658f">&#9670;&#160;</a></span>_find_selected()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -245,19 +251,19 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool SingleFaceSelectorHighlight::_is_selected </td>
+          <td class="memname">std::vector&lt; vtkIdType &gt;::const_iterator FaceSelectorHighlight::_find_selected </td>
           <td>(</td>
           <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>new_face_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::optional&lt; vtkIdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>selection</em></span>&#160;)</td>
+          <td class="paramtype">const std::vector&lt; vtkIdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>selections</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -266,8 +272,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a725602d01cf11fc59a18d184c64bce03" name="a725602d01cf11fc59a18d184c64bce03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a725602d01cf11fc59a18d184c64bce03">&#9670;&#160;</a></span>clear()</h2>
+<a id="a68126ce958a1798d371dd7ca8cb4d008" name="a68126ce958a1798d371dd7ca8cb4d008"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68126ce958a1798d371dd7ca8cb4d008">&#9670;&#160;</a></span>clear()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,7 +282,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void SingleFaceSelectorHighlight::clear </td>
+          <td class="memname">void FaceSelectorHighlight::clear </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -295,8 +301,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="aff3b7849ec18fbd0f2048ac4d09e3f8f" name="aff3b7849ec18fbd0f2048ac4d09e3f8f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff3b7849ec18fbd0f2048ac4d09e3f8f">&#9670;&#160;</a></span>get()</h2>
+<a id="aa76562ed0c1c967d69f226ad2719ff6a" name="aa76562ed0c1c967d69f226ad2719ff6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa76562ed0c1c967d69f226ad2719ff6a">&#9670;&#160;</a></span>get()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -305,7 +311,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a> SingleFaceSelectorHighlight::get </td>
+          <td class="memname"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a> FaceSelectorHighlight::get </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -324,8 +330,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a2d8dfc7ee69b0f19f8d22bd582c84d53" name="a2d8dfc7ee69b0f19f8d22bd582c84d53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d8dfc7ee69b0f19f8d22bd582c84d53">&#9670;&#160;</a></span>select()</h2>
+<a id="aace8feb95c02fb87dac0994478ba8989" name="aace8feb95c02fb87dac0994478ba8989"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aace8feb95c02fb87dac0994478ba8989">&#9670;&#160;</a></span>select()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -334,7 +340,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void SingleFaceSelectorHighlight::select </td>
+          <td class="memname">void FaceSelectorHighlight::select </td>
           <td>(</td>
           <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
         </tr>
@@ -357,8 +363,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="ab55750471c80f964a866a7c29e434dbf" name="ab55750471c80f964a866a7c29e434dbf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab55750471c80f964a866a7c29e434dbf">&#9670;&#160;</a></span>setCurModelActor()</h2>
+<a id="a64130142201b2aac84b5a1f0ec6c12cf" name="a64130142201b2aac84b5a1f0ec6c12cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64130142201b2aac84b5a1f0ec6c12cf">&#9670;&#160;</a></span>setCurModelActor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -367,7 +373,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void SingleFaceSelectorHighlight::setCurModelActor </td>
+          <td class="memname">void FaceSelectorHighlight::setCurModelActor </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a></td>          <td class="paramname"><span class="paramname"><em>model_actor</em></span></td><td>)</td>
           <td></td>
@@ -393,8 +399,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="afee76604c7c9d07ffcd8034e381cd3cd" name="afee76604c7c9d07ffcd8034e381cd3cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afee76604c7c9d07ffcd8034e381cd3cd">&#9670;&#160;</a></span>collection_</h2>
+<a id="a281ac88574e4c0951c4d5e993be076ce" name="a281ac88574e4c0951c4d5e993be076ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a281ac88574e4c0951c4d5e993be076ce">&#9670;&#160;</a></span>collection_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -403,7 +409,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkNew&lt;vtkPropCollection&gt; SingleFaceSelectorHighlight::collection_</td>
+          <td class="memname">vtkNew&lt;vtkPropCollection&gt; FaceSelectorHighlight::collection_</td>
         </tr>
       </table>
   </td>
@@ -415,8 +421,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="aff89737aa9c7eb16afcdd310ed75719a" name="aff89737aa9c7eb16afcdd310ed75719a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff89737aa9c7eb16afcdd310ed75719a">&#9670;&#160;</a></span>model_actor_</h2>
+<a id="aef15db633237be3c63f89bfce1e3ea18" name="aef15db633237be3c63f89bfce1e3ea18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef15db633237be3c63f89bfce1e3ea18">&#9670;&#160;</a></span>model_actor_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -425,7 +431,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> SingleFaceSelectorHighlight::model_actor_</td>
+          <td class="memname"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> FaceSelectorHighlight::model_actor_</td>
         </tr>
       </table>
   </td>
@@ -437,8 +443,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="aa030deab8fb8fdcbaab8b93b3cf10fe1" name="aa030deab8fb8fdcbaab8b93b3cf10fe1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa030deab8fb8fdcbaab8b93b3cf10fe1">&#9670;&#160;</a></span>renderer_</h2>
+<a id="ab8d0d0753dc16b36001c60b8a459e211" name="ab8d0d0753dc16b36001c60b8a459e211"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8d0d0753dc16b36001c60b8a459e211">&#9670;&#160;</a></span>renderer_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -447,7 +453,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkRenderer* SingleFaceSelectorHighlight::renderer_</td>
+          <td class="memname">vtkRenderer* FaceSelectorHighlight::renderer_</td>
         </tr>
       </table>
   </td>
@@ -459,8 +465,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="acad50bd733b6deb2c3fe272c85cb2eeb" name="acad50bd733b6deb2c3fe272c85cb2eeb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acad50bd733b6deb2c3fe272c85cb2eeb">&#9670;&#160;</a></span>selected_actor_</h2>
+<a id="aa0f96839bc742c45077facf04ef7ee01" name="aa0f96839bc742c45077facf04ef7ee01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0f96839bc742c45077facf04ef7ee01">&#9670;&#160;</a></span>selected_actor_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -469,7 +475,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkSmartPointer&lt;vtkActor&gt; SingleFaceSelectorHighlight::selected_actor_</td>
+          <td class="memname">vtkSmartPointer&lt;vtkActor&gt; FaceSelectorHighlight::selected_actor_</td>
         </tr>
       </table>
   </td>
@@ -481,8 +487,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a87f282d30c530067c362bf66d0346bd8" name="a87f282d30c530067c362bf66d0346bd8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87f282d30c530067c362bf66d0346bd8">&#9670;&#160;</a></span>selected_mapper_</h2>
+<a id="ab4c82c2fbf5d7ae19ed5ec7848bb13c4" name="ab4c82c2fbf5d7ae19ed5ec7848bb13c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4c82c2fbf5d7ae19ed5ec7848bb13c4">&#9670;&#160;</a></span>selected_mapper_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -491,7 +497,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkNew&lt;vtkDataSetMapper&gt; SingleFaceSelectorHighlight::selected_mapper_</td>
+          <td class="memname">vtkNew&lt;vtkDataSetMapper&gt; FaceSelectorHighlight::selected_mapper_</td>
         </tr>
       </table>
   </td>
@@ -503,8 +509,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="adba99a525bdd84d8da3ce486a694adbc" name="adba99a525bdd84d8da3ce486a694adbc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adba99a525bdd84d8da3ce486a694adbc">&#9670;&#160;</a></span>selection_</h2>
+<a id="afb6f684b325526cc0658fc957718a9af" name="afb6f684b325526cc0658fc957718a9af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb6f684b325526cc0658fc957718a9af">&#9670;&#160;</a></span>selections_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -513,7 +519,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::optional&lt;vtkIdType&gt; SingleFaceSelectorHighlight::selection_</td>
+          <td class="memname">std::vector&lt;vtkIdType&gt; FaceSelectorHighlight::selections_</td>
         </tr>
       </table>
   </td>
@@ -527,7 +533,7 @@ Private 属性</h2></td></tr>
 </div>
 <hr/>该类的文档由以下文件生成:<ul>
 <li>app/render/<a class="el" href="SelectorHighlight_8h_source.html">SelectorHighlight.h</a></li>
-<li>app/render/<a class="el" href="SelectorHighlight_8cpp.html">SelectorHighlight.cpp</a></li>
+<li>app/render/<a class="el" href="FaceSelectorHighlight_8cpp.html">FaceSelectorHighlight.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
