@@ -464,27 +464,17 @@ ApplicationWindow {
         }
     }
 
-    // 控制台容器 - 放在最底层，覆盖整个窗口底部
-    Item {
-        id: consoleContainer
+    JavaScriptConsole {
+        id: myConsole
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         height: parent.height * 0.3
         z: 1000  // 确保在最上层显示
-
-        JavaScriptConsole {
-            id: myConsole
-            anchors.fill: parent
-            consoleVisible: root.consoleVisible
+        consoleVisible: root.consoleVisible
         
-            onCloseRequested: {
-                root.consoleVisible = false
-            }
-        }
-
-        Component.onCompleted: {
-            console.log("控制台已加载，按F10切换显示")
+        onCloseRequested: {
+            root.consoleVisible = false
         }
     }
 }
