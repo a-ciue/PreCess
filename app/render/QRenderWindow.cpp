@@ -336,6 +336,7 @@ void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
     dispatch_async([model_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->mesh_actor_manager_->setRenderEdge(model_id, is_render);
+        vtk->spline_actor_manager_->setRenderEdge(model_id, is_render);
         this->setCurEdgeRender(is_render);
     });
 }

@@ -1,51 +1,37 @@
 #ifndef SPLINE_ACTOR_H
 #define SPLINE_ACTOR_H
-#include "MeshActor.h"
-#include "SplineDataVtk.h"
 #include "Core.h"
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-#include <vtkNew.h>
-#include <vtkAssembly.h>
-#include <vtkPropAssembly.h>
-#include <vtkMinimalStandardRandomSequence.h>
-#include <vtkNamedColors.h>
-#include <vtkMultiBlockDataSet.h>
-#include <vtkCompositePolyDataMapper.h>
-#include <iostream>
-#include <vtkRenderWindow.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkRenderWindowInteractor.h>
+#include "SplineDataVtk.h"
 #include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkNew.h>
-#include <vtkRenderer.h>
-#include <iostream>
+#include <vtkPolyDataMapper.h>
 
 class SplineActor {
 
 public:
-	SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode);
+    SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode);
+    ~SplineActor();
 
-	SplineRenderMode getSplineRenderMode();
-	bool getIsEdgeRender();
+    SplineRenderMode getSplineRenderMode();
+    bool getIsEdgeRender();
 
-	void loadShape(const SplineDataVtk& spline_data);
-	void deleteSplineActor();
+    void loadShape(const SplineDataVtk& spline_data);
 
-	void setVisibility(bool visibility);
-	void setRenderMode(SplineRenderMode render_mode);
+    void setVisibility(bool visibility);
+    void setRenderMode(SplineRenderMode render_mode);
+    void setRenderEdge(bool is_render);
 
 private:
-	SplineRenderMode render_mode_;
-	bool edge_render;
-	bool visibility_;
-	std::unique_ptr<SplineDataVtk> spline_data_;
+    void deleteSplineActor();
 
-	vtkNew<vtkActor> actor_;
-	vtkNew<vtkPolyDataMapper> mapper_;
-	vtkRenderer* renderer_;
+    SplineRenderMode render_mode_;
+    bool edge_render;
+    bool visibility_;
+    std::unique_ptr<SplineDataVtk> spline_data_;
+
+    vtkNew<vtkActor> poly_actor_;
+    vtkNew<vtkActor> line_actor_;
+    vtkRenderer* renderer_;
 };
 
 #endif
