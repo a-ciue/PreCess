@@ -49,10 +49,11 @@ var searchData=
   ['pointer_5fcast_46',['pointer_cast',['../classplf_1_1colony.html#a7136ce6ac28c6cf87090a6bf3f91ba6a',1,'plf::colony']]],
   ['points_47',['points',['../structtinyobj_1_1shape__t.html#a8515a73329f151bd081693f283f20eb4',1,'tinyobj::shape_t']]],
   ['points_5ft_48',['points_t',['../structtinyobj_1_1points__t.html',1,'tinyobj']]],
-  ['prepare_5fgroups_5ffor_5fassign_49',['prepare_groups_for_assign',['../classplf_1_1colony.html#a8b2c7e0c6e8a791735975f09de53d86e',1,'plf::colony']]],
-  ['prev_50',['prev',['../classplf_1_1colony_1_1colony__iterator.html#a4b91efa857656da7b67e84879aae4ef1',1,'plf::colony::colony_iterator::prev()'],['../classplf_1_1colony_1_1colony__reverse__iterator.html#a3ede7cefe7772ebf5ce79e58652d0852',1,'plf::colony::colony_reverse_iterator::prev()']]],
-  ['previous_5fgroup_51',['previous_group',['../structplf_1_1colony_1_1group.html#ae19449b38e52d52880a6d7ab152a2ae3',1,'plf::colony::group']]],
-  ['priority_52',['priority',['../namespaceplf.html#af4e761553ae1a085755c051a82496a05',1,'plf']]],
-  ['private_5fargtypeenum_2eh_53',['private_ArgTypeEnum.h',['../private__ArgTypeEnum_8h.html',1,'']]],
-  ['ptr_54',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
+  ['poly_5factor_5f_49',['poly_actor_',['../classSplineActor.html#a568e205742d95e11513ff49ae742cf0b',1,'SplineActor']]],
+  ['prepare_5fgroups_5ffor_5fassign_50',['prepare_groups_for_assign',['../classplf_1_1colony.html#a8b2c7e0c6e8a791735975f09de53d86e',1,'plf::colony']]],
+  ['prev_51',['prev',['../classplf_1_1colony_1_1colony__iterator.html#a4b91efa857656da7b67e84879aae4ef1',1,'plf::colony::colony_iterator::prev()'],['../classplf_1_1colony_1_1colony__reverse__iterator.html#a3ede7cefe7772ebf5ce79e58652d0852',1,'plf::colony::colony_reverse_iterator::prev()']]],
+  ['previous_5fgroup_52',['previous_group',['../structplf_1_1colony_1_1group.html#ae19449b38e52d52880a6d7ab152a2ae3',1,'plf::colony::group']]],
+  ['priority_53',['priority',['../namespaceplf.html#af4e761553ae1a085755c051a82496a05',1,'plf']]],
+  ['private_5fargtypeenum_2eh_54',['private_ArgTypeEnum.h',['../private__ArgTypeEnum_8h.html',1,'']]],
+  ['ptr_55',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
 ];

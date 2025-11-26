@@ -9,6 +9,7 @@ var searchData=
   ['plugin_5fmanager_5f_6',['plugin_manager_',['../classQModelManager.html#a9d3616377c0dcec9f90cf336d8863e7c',1,'QModelManager']]],
   ['plugin_5fnames_5f_7',['plugin_names_',['../classsystems_1_1SystemPluginManager.html#ad6de683aaf6d73a18c7c020bc25700a0',1,'systems::SystemPluginManager']]],
   ['points_8',['points',['../structtinyobj_1_1shape__t.html#a8515a73329f151bd081693f283f20eb4',1,'tinyobj::shape_t']]],
-  ['previous_5fgroup_9',['previous_group',['../structplf_1_1colony_1_1group.html#ae19449b38e52d52880a6d7ab152a2ae3',1,'plf::colony::group']]],
-  ['ptr_10',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
+  ['poly_5factor_5f_9',['poly_actor_',['../classSplineActor.html#a568e205742d95e11513ff49ae742cf0b',1,'SplineActor']]],
+  ['previous_5fgroup_10',['previous_group',['../structplf_1_1colony_1_1group.html#ae19449b38e52d52880a6d7ab152a2ae3',1,'plf::colony::group']]],
+  ['ptr_11',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
 ];
