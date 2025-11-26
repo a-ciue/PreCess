@@ -26,8 +26,8 @@ private:
     bool visibility_;
     std::unique_ptr<SplineDataVtk> spline_data_;
 
-    vtkNew<vtkActor> actor_;
-    vtkNew<vtkPolyDataMapper> mapper_;
+    vtkNew<vtkActor> poly_actor_;
+    vtkNew<vtkActor> line_actor_;
     vtkRenderer* renderer_;
 };
 
