@@ -13,6 +13,11 @@ SplineActor::SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode)
     this->render_mode_ = render_mode;
 }
 
+SplineActor::~SplineActor()
+{
+    deleteSplineActor();
+}
+
 SplineRenderMode SplineActor::getSplineRenderMode()
 {
     return this->render_mode_;
@@ -79,4 +84,11 @@ void SplineActor::setVisibility(bool visibility)
 
 void SplineActor::setRenderMode(SplineRenderMode render_mode)
 {
+    // 没用
+}
+
+void SplineActor::setRenderEdge(bool is_render)
+{
+    this->edge_render = is_render;
+    this->line_actor_->SetVisibility(is_render && this->visibility_);
 }

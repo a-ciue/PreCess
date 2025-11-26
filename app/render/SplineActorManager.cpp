@@ -42,7 +42,6 @@ bool SplineActorManager::getCount(Index model_id)
 void SplineActorManager::deleteModel(Index model_id)
 {
     if (this->models_.count(model_id)) {
-        this->models_[model_id]->deleteSplineActor();
         this->models_.erase(model_id);
     }
 }
@@ -64,4 +63,10 @@ void SplineActorManager::setRenderMode(Index model_id, SplineRenderMode render_m
 {
     if (this->models_.count(model_id))
         this->models_[model_id]->setRenderMode(render_mode);
+}
+
+void SplineActorManager::setRenderEdge(Index model_id, bool is_render)
+{
+    if (this->models_.count(model_id))
+        this->models_[model_id]->setRenderEdge(is_render);
 }

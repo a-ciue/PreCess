@@ -24,6 +24,7 @@ public:
 
     void setVisibility(Index model_id, bool visibility);
     void setRenderMode(Index model_id, SplineRenderMode render_mode);
+    void setRenderEdge(Index model_id, bool is_render);
 
 private:
     std::unordered_map<Index, std::unique_ptr<SplineActor>> models_;

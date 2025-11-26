@@ -10,17 +10,20 @@ class SplineActor {
 
 public:
     SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode);
+    ~SplineActor();
 
     SplineRenderMode getSplineRenderMode();
     bool getIsEdgeRender();
 
     void loadShape(const SplineDataVtk& spline_data);
-    void deleteSplineActor();
 
     void setVisibility(bool visibility);
     void setRenderMode(SplineRenderMode render_mode);
+    void setRenderEdge(bool is_render);
 
 private:
+    void deleteSplineActor();
+
     SplineRenderMode render_mode_;
     bool edge_render;
     bool visibility_;
