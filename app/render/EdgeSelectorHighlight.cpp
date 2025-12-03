@@ -7,6 +7,7 @@
 #include <vtkDataSetMapper.h>
 #include <vtkHardwarePicker.h>
 #include <vtkLine.h>
+#include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
@@ -74,13 +75,20 @@ void EdgeSelectorHighlight::select(double posx, double posy)
         vtkCell* pickedCell = pickedPoly->GetCell(pickedCellId);
         assert(picker && pickedCell);
 
-        // 构建选中边的PolyData
-        v_local_id = _find_selected_edge(*picker, *pickedCell);
+        // 边端点的局部id
+        auto v_local_id = _find_selected_edge(*picker, *pickedCell);
+        // 边端点的原始id
+        std::array<vtkIdType, 2> original_id;
+        auto point_id_array = vtkIdTypeArray::SafeDownCast(pickedPoly->GetPointData()->GetArray("vtkOriginalPointIds"));
+        if (point_id_array) {
+            original_id[0] = point_id_array->GetValue(v_local_id[0]);
+            original_id[1] = point_id_array->GetValue(v_local_id[1]);
+        }
 
         // 检查是否已选中
         auto it = std::find_if(selections_.begin(), selections_.end(),
             [&](const std::array<vtkIdType, 2>& id) {
-                return _is_selected(v_local_id, std::optional<std::array<vtkIdType, 2>>(id));
+                return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(id));
             });
 
         if (it != selections_.end()) {
@@ -88,7 +96,7 @@ void EdgeSelectorHighlight::select(double posx, double posy)
             selections_.erase(it);
         } else {
             // 未选中，添加
-            selections_.push_back(v_local_id);
+            selections_.push_back(original_id);
         }
 
         // 更新高亮显示
@@ -97,29 +105,22 @@ void EdgeSelectorHighlight::select(double posx, double posy)
             return;
         }
 
-        vtkNew<vtkPoints> points;
-        vtkNew<vtkCellArray> lines;
+        auto model_actor = model_actor_.lock();
+        if (model_actor) {
+            // 将点对转换为数组
+            vtkNew<vtkIdTypeArray> point_pairs;
+            point_pairs->SetNumberOfComponents(1);
+            for (const auto& edge : selections_) {
+                point_pairs->InsertNextValue(edge[0]);
+                point_pairs->InsertNextValue(edge[1]);
+            }
 
-        for (const auto& edge : selections_) {
-
-            std::array<double, 3> position1 {};
-            std::array<double, 3> position2 {};
-            pickedPoly->GetPoint(edge[0], position1.data());
-            pickedPoly->GetPoint(edge[1], position2.data());
-            vtkIdType id1 = points->InsertNextPoint(position1.data());
-            vtkIdType id2 = points->InsertNextPoint(position2.data());
-
-            vtkNew<vtkLine> line;
-            line->GetPointIds()->SetId(0, id1);
-            line->GetPointIds()->SetId(1, id2);
-            lines->InsertNextCell(line);
-        }
-
-        vtkNew<vtkPolyData> highlight_poly;
-        highlight_poly->SetPoints(points);
-        highlight_poly->SetLines(lines);
-
-        selected_mapper_->SetInputData(highlight_poly);
+            // 调用工厂方法获取原始点数据构建的边
+            auto extract_selection = model_actor->extractEdge(point_pairs);
+            if (extract_selection) {
+                selected_mapper_->SetInputConnection(extract_selection->GetOutputPort());
+            }
+        } 
     } else {
         // 没选到
         clear();

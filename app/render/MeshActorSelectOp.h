@@ -57,6 +57,13 @@ public:
      */
     vtkSmartPointer<vtkExtractSelection> extractVertex(vtkIdTypeArray* ids);
 
+     /**
+     * @brief 根据边的点id对，提取边数据
+     * @param edgeIds 边id数组，每两个元素表示一条边（起始点ID，结束点ID）
+     * @return 提取出的边数据 Filter
+     */
+    vtkSmartPointer<vtkExtractSelection> extractEdge(vtkIdTypeArray* edgeIds);
+
 private:
     std::shared_ptr<const MeshActor> mesh_actor_; // 非空
 };
