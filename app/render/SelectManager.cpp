@@ -41,7 +41,7 @@ void SelectManager::setSelectMode(SelectMode select_mode)
     } else if (this->select_mode_ == SelectMode::Edge) {
         this->selector_ = std::make_unique<EdgeSelectorHighlight>(this->renderer_);
     } else if (this->select_mode_ == SelectMode::Solid) {
-        this->selector_ = std::make_unique<SingleSolidSelectorHighlight>(this->renderer_);
+        this->selector_ = std::make_unique<SolidSelectorHighlight>(this->renderer_);
     } else {
         assert(this->select_mode_ == SelectMode::None);
         this->selector_ = nullptr;
