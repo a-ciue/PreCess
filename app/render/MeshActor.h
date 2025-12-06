@@ -39,9 +39,45 @@ public:
 
     bool getIsEdgeRender();
     bool getIsVertexRender();
+   
     ModelRenderMode getMeshRenderMode();
+    /**
+     * @brief 渲染的属性所在actor位置
+     */
+     enum ElementType {
+        VERTEX,
+        EDGE,
+        FACE,
+        SOLID
+    };
+     /**
+     * @brief 属性渲染方式
+      */
+    enum Mode {
+        RGB,
+        SCALAR,
+        UV,
+        VECTOR
+    };
+    void setActiveScalarAttribute(std::string attr_name, ElementType type);
+    void setActiveVectorAttribute(std::string attr_name, ElementType type);
+     /**
+      * @brief 设置属性渲染方式
+      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
+      * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
+      * @param texturePath 贴图路径
+      */
+    void setAttriMode(std::string attr_name, Mode mode, ElementType type, std::string texturePath);
+    /**
+     * @brief 取消属性渲染
+     */
+    void cancelActiveAttribute();
+   
 
 private:
+    void cancelActiveGlyph3D();
+    void setTextureImage(std::string texturePath);
+
     ModelRenderMode render_mode_;
     bool edge_render_{ true };
     bool vertex_render_ {};

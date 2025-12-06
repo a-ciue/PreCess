@@ -3,5 +3,6 @@
 
 #include "MeshData.h"
 MeshData MakeMeshData();
-
+MeshData MakeMeshDataWithAtri();
+MeshData MakeMeshDataWithUV();
 #endif

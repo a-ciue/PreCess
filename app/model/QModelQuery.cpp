@@ -28,7 +28,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
         md->solid_faces_vertices_, md->solid_faces_vertices_offset_,
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
-        md->edge_vertices_, {} };
+        md->edge_vertices_, md->vertex_attributes_,md->edge_attributes_,md->face_attributes_,md->solid_attributes_,{} };
 
     // 添加所有块
     auto block_datas = std::make_shared<BlockDatas>();

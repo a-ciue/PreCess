@@ -22,7 +22,17 @@
 #include <vtkExtractGeometry.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkPlane.h>
-
+#include <vtkPointData.h>
+#include <vtkLookupTable.h>
+#include <vtkGlyph3D.h>
+#include <vtkArrowSource.h>
+#include <vtkAlgorithmOutput.h>
+#include <vtkCellCenters.h>
+#include <vtkCellDataToPointData.h>
+#include <vtkImageReader2Factory.h>
+#include <vtkImageReader2.h> 
+#include <vtkTexture.h>
+#include <vtkTextureMapToPlane.h>
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
@@ -108,6 +118,111 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         vertex_poly->SetVerts(vertex_cells);
 
         vertex_poly->GetPointData()->AddArray(originalPointIds);
+
+        // 新增：动态处理顶点属性
+        const size_t num_vertex = size;
+        for (const auto& attr : model_data.vertex_attributes_) {
+            const std::string& attr_name = attr.first;
+            const std::vector<double>& attr_values = attr.second;
+            bool isTriple = !attr_name.empty() && attr_name.back() == '3';
+            bool isDouble = !attr_name.empty() && attr_name.back() == '2';
+            if (!isTriple && !isDouble) {
+                // 单分量属性 (如 "pressure")
+                vtkNew<vtkDoubleArray> scalar_array;
+                scalar_array->SetNumberOfComponents(1);
+                scalar_array->SetName(attr_name.c_str());
+
+                for (size_t i = 0; i < num_vertex; ++i) {
+                    scalar_array->InsertNextValue(attr_values[i]);
+                }
+                vertex_poly->GetPointData()->AddArray(scalar_array);
+            } else if (isDouble) {
+                // 双元组属性 (如 "vertex_uv_2")
+                vtkNew<vtkDoubleArray> vector_array;
+                vector_array->SetNumberOfComponents(2);
+                bool isUV = (attr_name.find("uv") != std::string::npos || attr_name.find("UV") != std::string::npos);
+                if (isUV) {
+                    std::cout << "Setting texture UV coordinates for attribute: " << attr_name << std::endl;
+                    for (size_t i = 0; i < num_vertex; ++i) {
+                        vector_array->InsertNextTuple2(
+                            attr_values[i * 2],
+                            attr_values[i * 2 + 1]);
+                    }
+                    vertex_poly->GetPointData()->SetTCoords(vector_array);
+                    this->face_data_->GetPointData()->SetTCoords(vector_array);
+                } else {
+                    vector_array->SetName(attr_name.c_str());
+                    for (size_t i = 0; i < num_vertex; ++i) {
+                        vector_array->InsertNextTuple2(
+                            attr_values[i * 2],
+                            attr_values[i * 2 + 1]);
+                    }
+                    vertex_poly->GetPointData()->AddArray(vector_array);
+                }
+               vtkDataArray* tcoords = this->vertex_data_->GetPointData()->GetTCoords();
+               if (tcoords) {
+                   // 打印UV范围，正常应该在 [0,1] 之间
+                   double minUV[2] = {1e10, 1e10}, maxUV[2] = {-1e10, -1e10};
+                   for (int i = 0; i < tcoords->GetNumberOfTuples(); i++) {
+                       double uv[2];
+                       tcoords->GetTuple(i, uv);
+                       minUV[0] = std::min(minUV[0], uv[0]);
+                       minUV[1] = std::min(minUV[1], uv[1]);
+                       maxUV[0] = std::max(maxUV[0], uv[0]);
+                       maxUV[1] = std::max(maxUV[1], uv[1]);
+                   }
+                   std::cout << "UVscope: [" << minUV[0] << ", " << maxUV[0] << "] x [" 
+                             << minUV[1] << ", " << maxUV[1] << "]" << std::endl;
+               }
+            }else if (isTriple) {
+                // 三元组属性 (如 "vertex_vector_3")
+                bool isColor = (attr_name.find("colors") != std::string::npos || attr_name.find("Colors") != std::string::npos
+                    || attr_name.find("color") != std::string::npos || attr_name.find("Color") != std::string::npos);
+                if (isColor) {
+                    // 如果是颜色属性
+                    vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+                    colors->SetNumberOfComponents(3);
+                    colors->SetName(attr_name.c_str());
+
+                    for (size_t i = 0; i < num_vertex; ++i) {
+                        unsigned char r = static_cast<unsigned char>(attr_values[i * 3] * 255);
+                        unsigned char g = static_cast<unsigned char>(attr_values[i * 3 + 1] * 255);
+                        unsigned char b = static_cast<unsigned char>(attr_values[i * 3 + 2] * 255);
+                        colors->InsertNextTuple3(r, g, b);
+                    }
+                    vertex_poly->GetPointData()->AddArray(colors);
+                }
+                    else// 否则作为向量处理
+                    {
+                        vtkNew<vtkDoubleArray> vector_array;
+                        vector_array->SetNumberOfComponents(3);
+                        vector_array->SetName(attr_name.c_str());
+
+                        for (size_t i = 0; i < num_vertex; ++i) {
+                            vector_array->InsertNextTuple3(
+                                attr_values[i * 3],
+                                attr_values[i * 3 + 1],
+                                attr_values[i * 3 + 2]);
+                        }
+                        vertex_poly->GetPointData()->AddArray(vector_array);
+                    
+                    }
+                    //// 输出vector_array看是否正确
+                    //vtkDoubleArray* test = static_cast<vtkDoubleArray*>(vertex_poly->GetPointData()->GetArray(attr_name.c_str()));
+                    //for (vtkIdType i = 0; i < test->GetNumberOfTuples(); i++) {
+                    //    double testValue[3];
+                    //    test->GetTuple(i, testValue);
+                    //    std::cout << "vertex" << ":" << attr_name.c_str() << ":" << i << ":" << testValue[0] << "," << testValue[1] << "," << testValue[2] << std::endl;
+                    //}
+                }
+            
+            else {
+                // 错误处理：属性长度不匹配
+                std::cerr << "Warning: Vertex attribute '" << attr_name
+                          << "' has invalid length (" << attr_values.size()
+                          << "), expected " << num_vertex << " or " << 3 * num_vertex << std::endl;
+            }
+        }
     }
 
     // face data
@@ -129,6 +244,68 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         face_poly->SetPolys(poly_data);
 
         face_poly->GetPointData()->AddArray(originalPointIds);
+        // 新增：动态处理面属性 
+        const size_t num_faces = face_poly->GetNumberOfCells();
+        for (const auto& attr : model_data.face_attributes_) {
+            const std::string& attr_name = attr.first;
+            const std::vector<double>& attr_values = attr.second;
+            bool isTriple = !attr_name.empty() && attr_name.back() == '3';
+            bool isDouble = !attr_name.empty() && attr_name.back() == '2';
+            if (!isTriple && !isDouble) {
+                // 单分量属性 (如 "face_pressure")
+                vtkNew<vtkDoubleArray> scalar_array;
+                scalar_array->SetNumberOfComponents(1);
+                scalar_array->SetName(attr_name.c_str());
+
+                for (size_t i = 0; i < num_faces; ++i) {
+                    scalar_array->InsertNextValue(attr_values[i]);
+                }
+                face_poly->GetCellData()->AddArray(scalar_array);
+            } else if (isTriple) {
+                // 判断是否是颜色属性
+                bool isColor = (attr_name.find("colors") != std::string::npos || attr_name.find("Colors") != std::string::npos
+                    || attr_name.find("color") != std::string::npos || attr_name.find("Color") != std::string::npos);
+                if (isColor) {
+                    // 如果是颜色属性
+                    vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+                    colors->SetNumberOfComponents(3);
+                    colors->SetName(attr_name.c_str());
+
+                    for (size_t i = 0; i < num_faces; ++i) {
+                        unsigned char r = static_cast<unsigned char>(attr_values[i * 3] * 255);
+                        unsigned char g = static_cast<unsigned char>(attr_values[i * 3 + 1] * 255);
+                        unsigned char b = static_cast<unsigned char>(attr_values[i * 3 + 2] * 255);
+                        colors->InsertNextTuple3(r, g, b);
+                    }
+                    face_poly->GetCellData()->AddArray(colors);
+                } else {
+                    // 否则作为向量处理
+                    vtkNew<vtkDoubleArray> vector_array;
+                    vector_array->SetNumberOfComponents(3);
+                    vector_array->SetName(attr_name.c_str());
+
+                    for (size_t i = 0; i < num_faces; ++i) {
+                        vector_array->InsertNextTuple3(
+                            attr_values[i * 3],
+                            attr_values[i * 3 + 1],
+                            attr_values[i * 3 + 2]);
+                    }
+                    face_poly->GetCellData()->AddArray(vector_array);
+                }
+                //// 输出face的vector_array看是否正确
+                //vtkDoubleArray* test = static_cast<vtkDoubleArray*>(face_poly->GetCellData()->GetArray(attr_name.c_str()));
+                //for (vtkIdType i = 0; i < test->GetNumberOfTuples(); i++) {
+                //    double testValue[3];
+                //    test->GetTuple(i, testValue);
+                //    std::cout << "face" << i << ":" << attr_name.c_str() << ":" << testValue[0] << "," << testValue[1] << "," << testValue[2] << std::endl;
+                //}
+            } else {
+                // 错误处理：属性长度不匹配
+                std::cerr << "Warning: Face attribute '" << attr_name
+                          << "' has invalid length (" << attr_values.size()
+                          << "), expected " << num_faces << " or " << 3 * num_faces << std::endl;
+            }
+        }
     }
 
     // edge data
@@ -144,6 +321,39 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         edge_poly->SetLines(edge_cells);
 
         edge_poly->GetPointData()->AddArray(originalPointIds);
+        // 新增：动态处理边属性
+        const size_t num_edges = edge_poly->GetNumberOfCells();
+        for (const auto& attr : model_data.edge_attributes_) {
+            const std::string& attr_name = attr.first;
+            const std::vector<double>& attr_values = attr.second;
+            if (attr_values.size() == num_edges) {
+                // 单分量属性 (如 "edge_weight")
+                vtkNew<vtkDoubleArray> scalar_array;
+                scalar_array->SetNumberOfComponents(1);
+                scalar_array->SetName(attr_name.c_str());
+                for (size_t i = 0; i < num_edges; ++i) {
+                    scalar_array->InsertNextValue(attr_values[i]);
+                }
+                edge_poly->GetCellData()->AddArray(scalar_array);
+            } else if (attr_values.size() == 3 * num_edges) {
+                // 三元组属性 (如 "edge_direction_3")
+                vtkNew<vtkDoubleArray> vector_array;
+                vector_array->SetNumberOfComponents(3);
+                vector_array->SetName(attr_name.c_str());
+                for (size_t i = 0; i < num_edges; ++i) {
+                    vector_array->InsertNextTuple3(
+                        attr_values[i * 3],
+                        attr_values[i * 3 + 1],
+                        attr_values[i * 3 + 2]);
+                }
+                edge_poly->GetCellData()->AddArray(vector_array);
+            } else {
+                // 错误处理：属性长度不匹配
+                std::cerr << "Warning: Edge attribute '" << attr_name
+                          << "' has invalid length (" << attr_values.size()
+                          << "), expected " << num_edges << " or " << 3 * num_edges << std::endl;
+            }
+        }
     }
 
     // solid data
@@ -172,6 +382,10 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     face_mapper_->SetInputData(face_poly);
     solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
 
+    vertex_mapper_->SetScalarVisibility(0);
+    edge_mapper_->SetScalarVisibility(0);
+    face_mapper_->SetScalarVisibility(0);
+    solid_mapper_->SetScalarVisibility(0);
     createBlockMapper(*this->model_data_);
 }
 
@@ -371,3 +585,284 @@ void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& poin
     solid_data.SetPoints(&points);
     solid_data.SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
 }
+
+void MeshActor::setActiveScalarAttribute(std::string attr_name, ElementType type)
+{
+    switch (type) {
+    case VERTEX:
+        if (this->vertex_data_) {
+            vtkDataArray* array = this->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
+            this->vertex_data_->GetPointData()->SetActiveAttribute(attr_name.c_str(), vtkDataSetAttributes::SCALARS);
+            // 设置映射范围
+            double range[2];
+            array->GetRange(range);
+            vertex_mapper_->SetScalarRange(range[0], range[1]); 
+
+            //vertex_mapper_->SetScalarModeToUsePointData();
+            vertex_mapper_->SetScalarVisibility(1);
+
+            vertex_mapper_->Update();
+            renderer_->Render();
+        }
+        break;
+    case FACE:
+        if (this->face_data_) {
+            vtkDataArray* array = this->face_data_->GetCellData()->GetArray(attr_name.c_str());
+            // 设置映射范围
+            double range[2];
+            array->GetRange(range); 
+            face_mapper_->SetScalarRange(range[0], range[1]);
+
+            face_mapper_->SetScalarModeToUseCellData(); 
+            this->face_data_->GetCellData()->SetActiveScalars(attr_name.c_str());
+            face_mapper_->SetScalarVisibility(1);
+            // 如果是 RGB 颜色数组（组件数=3 且类型是 unsigned char）
+            if (array->GetNumberOfComponents() == 3 && array->GetDataType() == VTK_UNSIGNED_CHAR) {
+
+                face_mapper_->SetColorModeToDirectScalars(); // 直接使用 RGB
+            } else {
+                face_mapper_->SetColorModeToMapScalars(); // 使用 colormap
+            }
+            face_mapper_->Update();
+            renderer_->Render();
+        }
+        break;
+    case EDGE:
+        if (this->edge_data_) {
+            this->edge_data_->GetCellData()->SetActiveAttribute(attr_name.c_str(), vtkDataSetAttributes::SCALARS);
+            edge_mapper_->SetScalarModeToUseCellData();
+            edge_mapper_->SetScalarVisibility(1);
+            edge_mapper_->Update();
+            renderer_->Render();
+        }
+        break;
+    }
+}
+
+void MeshActor::setActiveVectorAttribute(std::string attr_name, ElementType type)
+{
+    switch (type) {
+    case VERTEX:
+        if (this->vertex_data_) { 
+            vtkDataArray* array = this->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
+            if (array) {
+                this->vertex_data_->GetPointData()->SetActiveVectors(attr_name.c_str());
+                vtkSmartPointer<vtkActor> normalsActor;
+                std::cout<< "vertex vector attribute '" << attr_name << "' found with "
+                          << array->GetNumberOfComponents() << " components." << std::endl;
+                // 创建箭头源并配置 创建法向量可视化（使用箭头glyph）
+                vtkNew<vtkArrowSource> arrowSource;
+                arrowSource->SetTipResolution(16); // 设置箭头尖端的分辨率（侧面数）
+                arrowSource->SetTipLength(0.3);
+                arrowSource->SetTipRadius(0.1);
+                // 创建Glyph过滤器并配置
+                vtkNew<vtkGlyph3D> glyph3D;
+                glyph3D->SetSourceConnection(arrowSource->GetOutputPort()); // 设置glyph源为箭头
+                glyph3D->SetInputData(this->vertex_data_); // 设置输入数据
+                //glyph3D->SetVectorModeToUseVector();                       // 使用x向量模式定向glyph
+                glyph3D->SetScaleModeToScaleByVector(); // 使用向量模式缩放glyph
+                glyph3D->SetScaleFactor(0.3); // 设置缩放因子
+                glyph3D->OrientOn(); // 开启方向功能
+                glyph3D->Update(); // 执行glyph生成
+
+                vtkNew<vtkPolyDataMapper> normalsMapper;
+                normalsMapper->SetInputConnection(glyph3D->GetOutputPort());
+                normalsMapper->ScalarVisibilityOff();
+
+                normalsActor = vtkSmartPointer<vtkActor>::New();
+                normalsActor->SetMapper(normalsMapper);
+                normalsActor->GetProperty()->SetColor(colors->GetColor3d("Red").GetData()); // 法向量箭头为红色
+                // 在添加新Actor前移除旧的
+                vtkActorCollection* actorCollection = renderer_->GetActors();
+                actorCollection->InitTraversal();
+                for (vtkIdType i = 0; i < actorCollection->GetNumberOfItems(); ++i) {
+                    vtkActor* actor = vtkActor::SafeDownCast(actorCollection->GetNextActor());
+                        vtkAlgorithm* producer = nullptr;
+                        if (actor->GetMapper() && actor->GetMapper()->GetInputConnection(0, 0)) {
+                            producer = actor->GetMapper()->GetInputConnection(0, 0)->GetProducer();
+                        }
+                        if (producer && std::string(producer->GetClassName()) == "vtkGlyph3D") {
+                            std::cout << "--------------" << "remove old glyph3D" << "' -----" << std::endl;
+                            renderer_->RemoveActor(actor);
+                            break;
+                        }
+                }
+                renderer_->AddActor(normalsActor);
+            }
+            vertex_mapper_->Update();
+            renderer_->Render();
+        }
+        break;
+    case FACE:
+        if (this->face_data_) {
+            vtkDataArray* array = this->face_data_->GetCellData()->GetArray(attr_name.c_str());
+            if (array) {
+                std::cout << "Face vector attribute '" << attr_name << "' found with "
+                          << array->GetNumberOfComponents() << " components." << std::endl;
+
+                // 计算面中心点位置 =====
+                vtkNew<vtkCellCenters> centers;
+                centers->SetInputData(this->face_data_);
+                
+                centers->Update();
+
+                // 将面中心点位置与向量数据合并 =====
+                vtkNew<vtkPolyData> glyphInput;
+                glyphInput->SetPoints(centers->GetOutput()->GetPoints());
+                glyphInput->GetPointData()->SetVectors(array);
+
+                // 创建箭头源
+                vtkNew<vtkArrowSource> arrowSource;
+                arrowSource->SetTipResolution(16);
+                arrowSource->SetTipLength(0.3);
+                arrowSource->SetTipRadius(0.1);
+
+                // 创建Glyph过滤器
+                vtkNew<vtkGlyph3D> glyph3D;
+                glyph3D->SetSourceConnection(arrowSource->GetOutputPort());
+                glyph3D->SetInputData(glyphInput);
+                //glyph3D->SetVectorModeToUseVector(); 
+                glyph3D->SetScaleModeToScaleByVector(); // 按向量长度缩放
+                glyph3D->SetScaleFactor(0.3); // 缩放因子
+                glyph3D->Update();
+                vtkDataArray* vectors = glyphInput->GetPointData()->GetVectors();
+                if (vectors) {
+                    double vec[3];
+                    vectors->GetTuple(0, vec); // 获取第一个面的向量
+                    std::cout << "First face vector: " << vec[0] << ", " << vec[1] << ", " << vec[2] << std::endl;
+                }
+                // 创建映射器和演员
+                vtkNew<vtkPolyDataMapper> glyphMapper;
+                glyphMapper->SetInputConnection(glyph3D->GetOutputPort());
+                glyphMapper->ScalarVisibilityOff();
+
+                vtkSmartPointer<vtkActor> glyphActor = vtkSmartPointer<vtkActor>::New();
+                glyphActor->SetMapper(glyphMapper);
+                glyphActor->GetProperty()->SetColor(colors->GetColor3d("Blue").GetData());
+
+                // 清除旧的Glyph3D演员
+                vtkActorCollection* actorCollection = renderer_->GetActors();
+                actorCollection->InitTraversal();
+                for (vtkIdType i = 0; i < actorCollection->GetNumberOfItems(); ++i) {
+                    vtkActor* actor = vtkActor::SafeDownCast(actorCollection->GetNextActor());
+                    vtkAlgorithm* producer = nullptr;
+                    if (actor->GetMapper() && actor->GetMapper()->GetInputConnection(0, 0)) {
+                        producer = actor->GetMapper()->GetInputConnection(0, 0)->GetProducer();
+                    }
+                    if (producer && std::string(producer->GetClassName()) == "vtkGlyph3D") {
+                        renderer_->RemoveActor(actor);
+                        break;
+                    }
+                }
+
+                renderer_->AddActor(glyphActor);
+                renderer_->Render();
+            }
+        }
+        break;
+    case EDGE:
+        if (this->edge_data_) { 
+            this->edge_data_->GetCellData()->SetActiveAttribute(attr_name.c_str(), vtkDataSetAttributes::VECTORS);
+            edge_mapper_->SetScalarModeToUseCellData();
+            //edge_mapper_->SetVectorModeToUseVector();
+            edge_mapper_->Update();
+            renderer_->Render();
+        }
+        break;
+    }
+}
+
+void MeshActor::setTextureImage(std::string texturePath)
+{
+    std::cout << "start setTextureImage---------------------------" << std::endl;
+
+    //  读取纹理贴图文件
+    vtkNew<vtkImageReader2Factory> readerFactory;
+    vtkSmartPointer<vtkImageReader2> textureFile;
+    textureFile.TakeReference(readerFactory->CreateImageReader2(texturePath.c_str()));
+
+    if (!textureFile) {
+        std::cerr << "Error: Failed to create texture reader for " << texturePath << std::endl;
+        return;
+    }
+    textureFile->SetFileName(texturePath.c_str());
+    textureFile->Update();
+    // 创建纹理对象
+    vtkNew<vtkTexture> texture;
+    texture->SetInputConnection(textureFile->GetOutputPort());
+    texture->InterpolateOn(); // 启用插值使纹理更平滑
+
+    // 如果模型没有 UV，这里会自动触发计算
+    if ((this->vertex_data_->GetPointData()->GetTCoords()) ){
+        std::cout << "重新计算uv" << std::endl;
+        vtkNew<vtkTextureMapToPlane> textureMapper;
+        textureMapper->SetInputData(this->vertex_data_);
+        textureMapper->Update();
+
+        // 将计算的 UV 设置到模型
+        this->vertex_data_->GetPointData()->SetTCoords(
+            textureMapper->GetOutput()->GetPointData()->GetTCoords());
+   
+    }
+
+    this->face_actor_->SetTexture(texture);
+    renderer_->Render();
+}
+void MeshActor::setAttriMode(std::string attr_name, Mode mode, ElementType type, std::string texturePath)
+{
+    cancelActiveAttribute();
+    std::cout << "Mode:"<<mode << "type:"<<type << std::endl;
+    switch (mode) {
+    case SCALAR:
+        setActiveScalarAttribute(attr_name, type); 
+        break;
+    case VECTOR:
+        setActiveVectorAttribute(attr_name, type); 
+        break;
+    case RGB:
+        // RGB通常是颜色属性，直接设置为标量可视化并开启直接颜色模式
+        setActiveScalarAttribute(attr_name, type); 
+        break;
+    case UV:
+        // UV坐标用于纹理映射
+        setTextureImage(texturePath);
+        break;
+    default:
+        std::cout << "not the defalt mode" << std::endl;
+        break;
+    }
+}
+void MeshActor::cancelActiveAttribute()
+{
+        cancelActiveGlyph3D();
+        vertex_mapper_->SetScalarVisibility(0);
+        edge_mapper_->SetScalarVisibility(0);
+        face_mapper_->SetScalarVisibility(0);
+        solid_mapper_->SetScalarVisibility(0);
+}
+void MeshActor::cancelActiveGlyph3D()
+{
+    // 移除vtkGlyph3D的actor
+    vtkActorCollection* actorCollection = renderer_->GetActors();
+    actorCollection->InitTraversal();
+    for (vtkIdType i = 0; i < actorCollection->GetNumberOfItems(); ++i) {
+        vtkActor* actor = vtkActor::SafeDownCast(actorCollection->GetNextActor());
+        vtkAlgorithm* producer = nullptr;
+        if (actor->GetMapper() && actor->GetMapper()->GetInputConnection(0, 0)) {
+            producer = actor->GetMapper()->GetInputConnection(0, 0)->GetProducer();
+        }
+        if (producer && std::string(producer->GetClassName()) == "vtkGlyph3D") {
+            renderer_->RemoveActor(actor);
+            break;
+        }
+    }
+}
+
+// todo
+// glypf3D 的缩放因子调整接口
+// 标量的range映射标调整接口 
+// 接口整理  
+// 提交优化
+// vtk插件分别提交
+// cancel 纹理贴图接口
+// 点标量对面的插值

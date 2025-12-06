@@ -52,3 +52,12 @@ target_link_libraries(TestMeshActor PRIVATE
 )
 vtk_module_autoinit(TARGETS TestMeshActor MODULES VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry)
 install(TARGETS TestMeshActor)
+
+# TestMeshData
+add_executable(TestMeshData TestMeshData.cpp)
+target_link_libraries(TestMeshData PRIVATE 
+    vtkPart TestDeps
+    VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
+)
+vtk_module_autoinit(TARGETS TestVertexSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+install(TARGETS TestMeshData)
