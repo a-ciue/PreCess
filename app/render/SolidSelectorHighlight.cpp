@@ -1,5 +1,5 @@
-#include "SelectorHighlight.h"
 #include "MeshActorSelectOp.h"
+#include "SelectorHighlight.h"
 
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -16,6 +16,21 @@
 #include <vtkUnstructuredGrid.h>
 
 #include <spdlog/spdlog.h>
+
+namespace {
+void _cancel_highlight(vtkIdTypeArray* selected_ids)
+{
+    selected_ids->SetNumberOfValues(0);
+    selected_ids->Modified();
+}
+
+vtkIdType _is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_)
+{
+    vtkIdTypeArray& selected_ids = const_cast<vtkIdTypeArray&>(selected_ids_);
+    vtkIdType id_idx = selected_ids.LookupTypedValue(new_solid);
+    return id_idx;
+}
+}
 
 SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer* renderer)
     : renderer_(renderer)
@@ -110,17 +125,4 @@ void SolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_act
         vtkSmartPointer extract_selection = model_actor->extractSolid(selected_ids_);
         this->highlight_actor_->GetMapper()->SetInputConnection(extract_selection->GetOutputPort());
     }
-}
-
-void SolidSelectorHighlight::_cancel_highlight(vtkIdTypeArray* selected_ids)
-{
-    selected_ids->SetNumberOfValues(0);
-    selected_ids->Modified();
-}
-
-vtkIdType SolidSelectorHighlight::_is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_)
-{
-    vtkIdTypeArray& selected_ids = const_cast<vtkIdTypeArray&>(selected_ids_);
-    vtkIdType id_idx = selected_ids.LookupTypedValue(new_solid);
-    return id_idx;
 }

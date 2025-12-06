@@ -88,7 +88,7 @@ vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractVertex(vtkIdTypeA
     return extractSelection;
 }
 
-vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractEdge(vtkIdTypeArray* edgeIds)
+vtkSmartPointer<vtkPolyData> MeshActorSelectOp::extractEdge(std::vector<std::array<vtkIdType, 2>>& ids)
 {
     // 创建包含选中边的PolyData
     vtkNew<vtkPolyData> edgePolyData;
@@ -102,10 +102,10 @@ vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractEdge(vtkIdTypeArr
     }
 
     // 添加选中的边
-    vtkIdType numIds = edgeIds->GetNumberOfTuples();
-    for (vtkIdType i = 0; i < numIds; i += 2) {
-        vtkIdType ptId1 = edgeIds->GetValue(i);
-        vtkIdType ptId2 = edgeIds->GetValue(i + 1);
+    vtkIdType numIds = ids.size();
+    for (vtkIdType i = 0; i < numIds; i++) {
+        vtkIdType ptId1 = ids.at(i)[0];
+        vtkIdType ptId2 = ids.at(i)[1];
 
         // 检查点ID是否有效
         if (ptId1 >= 0 && ptId1 < originalPoints->GetNumberOfPoints() && ptId2 >= 0 && ptId2 < originalPoints->GetNumberOfPoints()) {
@@ -130,24 +130,5 @@ vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractEdge(vtkIdTypeArr
     edgePolyData->SetPoints(points);
     edgePolyData->SetLines(lines);
 
-    // 创建选择过滤器（选择所有边）
-    vtkNew<vtkSelectionNode> selectionNode;
-    selectionNode->SetFieldType(vtkSelectionNode::CELL);
-    selectionNode->SetContentType(vtkSelectionNode::INDICES);
-
-    vtkNew<vtkIdTypeArray> allEdgeIds;
-    vtkIdType numEdges = lines->GetNumberOfCells();
-    for (vtkIdType i = 0; i < numEdges; i++) {
-        allEdgeIds->InsertNextValue(i);
-    }
-    selectionNode->SetSelectionList(allEdgeIds);
-
-    vtkNew<vtkSelection> selection;
-    selection->SetNode("e", selectionNode);
-
-    vtkNew<vtkExtractSelection> extractSelection;
-    extractSelection->SetInputData(0, edgePolyData);
-    extractSelection->SetInputData(1, selection);
-
-    return extractSelection;
+    return edgePolyData;
 }

@@ -9,6 +9,22 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
+namespace {
+void _cancel_highlight(vtkDataSetMapper* selectedMapper)
+{
+    vtkNew<vtkPolyData> empty;
+    selectedMapper->SetInputData(empty);
+}
+
+std::vector<vtkIdType>::const_iterator _find_selected(vtkIdType new_face_id, const std::vector<vtkIdType>& selections)
+{
+    return std::find_if(selections.begin(), selections.end(),
+        [&](const vtkIdType& id) {
+            return id == new_face_id;
+        });
+}
+}
+
 FaceSelectorHighlight::FaceSelectorHighlight(vtkRenderer* renderer)
 {
     this->selected_actor_ = vtkSmartPointer<vtkActor>::New();
@@ -62,15 +78,11 @@ void FaceSelectorHighlight::select(double posx, double posy)
     if (pickedCellId != -1) {
         // 获取选中的 cell
         vtkActor* pickedActor = picker->GetActor();
-        if (!pickedActor)
-            return;
+        assert(pickedActor);
         vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
-        if (!pickedMapper) {
-            return;
-        }
+        assert(pickedMapper);
         vtkPolyData* pickedPoly = pickedMapper->GetInput();
-        if (!pickedPoly)
-            return; // 数据无效则返回
+        assert(pickedPoly);
 
         // 检查是否已选中
         auto it = _find_selected(pickedCellId, selections_);
@@ -107,18 +119,4 @@ void FaceSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_acto
         this->collection_->AddItem(&actor->getFaceActor());
     }
     this->model_actor_ = model_actor;
-}
-
-void FaceSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper)
-{
-    vtkNew<vtkPolyData> empty;
-    selectedMapper->SetInputData(empty);
-}
-
-std::vector<vtkIdType>::const_iterator FaceSelectorHighlight::_find_selected(vtkIdType new_face_id, const std::vector<vtkIdType>& selections)
-{
-    return std::find_if(selections.begin(), selections.end(),
-        [&](const vtkIdType& id) {
-            return id == new_face_id;
-        });
 }

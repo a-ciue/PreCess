@@ -12,6 +12,47 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
+namespace {
+std::array<vtkIdType, 2> _find_selected_edge(vtkHardwarePicker& picker, vtkCell& picked_cell, vtkPolyData& pickedPoly)
+{
+    if (picked_cell.GetCellType() == VTK_LINE)
+        return { picked_cell.GetPointId(0), picked_cell.GetPointId(1) };
+
+    double pPos[3] {};
+    picker.GetPCoords(pPos);
+
+    vtkNew<vtkIdList> cellIds;
+    picked_cell.CellBoundary(0, pPos, cellIds);
+
+    // 边端点的原始id
+    std::array<vtkIdType, 2> original_id;
+    auto point_id_array = vtkIdTypeArray::SafeDownCast(pickedPoly.GetPointData()->GetArray("vtkOriginalPointIds"));
+    assert(point_id_array);
+    original_id[0] = point_id_array->GetValue(cellIds->GetId(0));
+    original_id[1] = point_id_array->GetValue(cellIds->GetId(1));
+
+    return { original_id[0], original_id[1] };
+}
+
+void _cancel_highlight(vtkDataSetMapper* selectedMapper)
+{
+    vtkNew<vtkPolyData> empty;
+    selectedMapper->SetInputData(empty);
+}
+
+bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::array<vtkIdType, 2>>& selection)
+{
+    if (selection) {
+        // 选中的边点id，交换意义下对应相同
+        const std::array<vtkIdType, 2>& selected1 = *selection;
+        const std::array<vtkIdType, 2>& selected2 = v_local_id;
+        return selected1[0] == selected2[0] && selected1[1] == selected2[1]
+            || selected1[0] == selected2[1] && selected1[1] == selected2[0];
+    }
+    return false;
+}
+}
+
 EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer* renderer)
 {
     this->selected_actor_ = vtkSmartPointer<vtkActor>::New();
@@ -65,25 +106,15 @@ void EdgeSelectorHighlight::select(double posx, double posy)
     if (pickedCellId != -1) {
         // 获取选中的 cell
         vtkActor* pickedActor = picker->GetActor();
-        if (!pickedActor)
-            return;
+        assert(pickedActor);
         vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
-        if (!pickedMapper) {
-            return;
-        }
+        assert(pickedMapper);
         vtkPolyData* pickedPoly = pickedMapper->GetInput();
         vtkCell* pickedCell = pickedPoly->GetCell(pickedCellId);
         assert(picker && pickedCell);
 
-        // 边端点的局部id
-        auto v_local_id = _find_selected_edge(*picker, *pickedCell);
         // 边端点的原始id
-        std::array<vtkIdType, 2> original_id;
-        auto point_id_array = vtkIdTypeArray::SafeDownCast(pickedPoly->GetPointData()->GetArray("vtkOriginalPointIds"));
-        if (point_id_array) {
-            original_id[0] = point_id_array->GetValue(v_local_id[0]);
-            original_id[1] = point_id_array->GetValue(v_local_id[1]);
-        }
+        std::array<vtkIdType, 2> original_id = _find_selected_edge(*picker, *pickedCell, *pickedPoly);
 
         // 检查是否已选中
         auto it = std::find_if(selections_.begin(), selections_.end(),
@@ -99,28 +130,12 @@ void EdgeSelectorHighlight::select(double posx, double posy)
             selections_.push_back(original_id);
         }
 
-        // 更新高亮显示
-        if (selections_.empty()) {
-            _cancel_highlight(selected_mapper_);
-            return;
-        }
-
         auto model_actor = model_actor_.lock();
-        if (model_actor) {
-            // 将点对转换为数组
-            vtkNew<vtkIdTypeArray> point_pairs;
-            point_pairs->SetNumberOfComponents(1);
-            for (const auto& edge : selections_) {
-                point_pairs->InsertNextValue(edge[0]);
-                point_pairs->InsertNextValue(edge[1]);
-            }
-
-            // 调用工厂方法获取原始点数据构建的边
-            auto extract_selection = model_actor->extractEdge(point_pairs);
-            if (extract_selection) {
-                selected_mapper_->SetInputConnection(extract_selection->GetOutputPort());
-            }
-        } 
+        assert(model_actor);
+        // 获取原始点数据构建的边PolyData
+        auto edge_poly_data = model_actor->extractEdge(selections_);
+        // 设置PolyData到mapper
+        selected_mapper_->SetInputData(edge_poly_data);
     } else {
         // 没选到
         clear();
@@ -136,36 +151,4 @@ void EdgeSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_acto
         this->collection_->AddItem(&actor->getSolidActor());
     }
     this->model_actor_ = model_actor;
-}
-
-std::array<vtkIdType, 2> EdgeSelectorHighlight::_find_selected_edge(vtkHardwarePicker& picker, vtkCell& picked_cell)
-{
-    if (picked_cell.GetCellType() == VTK_LINE)
-        return { picked_cell.GetPointId(0), picked_cell.GetPointId(1) };
-
-    double pPos[3] {};
-    picker.GetPCoords(pPos);
-
-    vtkNew<vtkIdList> cellIds;
-    picked_cell.CellBoundary(0, pPos, cellIds);
-
-    return { cellIds->GetId(0), cellIds->GetId(1) };
-}
-
-void EdgeSelectorHighlight::_cancel_highlight(vtkDataSetMapper* selectedMapper)
-{
-    vtkNew<vtkPolyData> empty;
-    selectedMapper->SetInputData(empty);
-}
-
-bool EdgeSelectorHighlight::_is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::array<vtkIdType, 2>>& selection)
-{
-    if (selection) {
-        // 选中的边点id，交换意义下对应相同
-        const std::array<vtkIdType, 2>& selected1 = *selection;
-        const std::array<vtkIdType, 2>& selected2 = v_local_id;
-        return selected1[0] == selected2[0] && selected1[1] == selected2[1]
-            || selected1[0] == selected2[1] && selected1[1] == selected2[0];
-    }
-    return false;
 }

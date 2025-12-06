@@ -3,12 +3,27 @@
 #include "SelectorHighlight.h"
 #include <optional>
 #include <spdlog/spdlog.h>
-#include <vtkPointData.h>
 #include <vtkDataSetMapper.h>
 #include <vtkHardwarePicker.h>
+#include <vtkPointData.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkUnstructuredGrid.h>
+
+namespace {
+void _cancel_highlight(vtkIdTypeArray* selected_ids)
+{
+    selected_ids->SetNumberOfValues(0);
+    selected_ids->Modified();
+}
+
+vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_)
+{
+    vtkIdTypeArray& selected_ids = const_cast<vtkIdTypeArray&>(selected_ids_);
+    vtkIdType id_idx = selected_ids.LookupTypedValue(new_vertex);
+    return id_idx;
+}
+}
 
 VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer* renderer)
     : renderer_(renderer)
@@ -105,17 +120,4 @@ void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_ac
         auto extract_selection = model_actor->extractVertex(this->selected_ids_);
         this->highlight_actor_->GetMapper()->SetInputConnection(extract_selection->GetOutputPort());
     }
-}
-
-void VertexSelectorHighlight::_cancel_highlight(vtkIdTypeArray* selected_ids)
-{
-    selected_ids->SetNumberOfValues(0);
-    selected_ids->Modified();
-}
-
-vtkIdType VertexSelectorHighlight::_is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_)
-{
-    vtkIdTypeArray& selected_ids = const_cast<vtkIdTypeArray&>(selected_ids_);
-    vtkIdType id_idx = selected_ids.LookupTypedValue(new_vertex);
-    return id_idx;
 }

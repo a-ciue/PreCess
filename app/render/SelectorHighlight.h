@@ -106,11 +106,6 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
-    //! @brief 判断是否已经被选中
-    std::vector<vtkIdType>::const_iterator _find_selected(vtkIdType new_face_id, const std::vector<vtkIdType>& selections);
-
     vtkRenderer* renderer_;
     std::vector<vtkIdType> selections_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
@@ -140,18 +135,6 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    /**
-     * @brief 根据pick到的cell（边或面），找到选中边
-     * @param picker 拾取器，提供拾取信息
-     * @param picked_cell 拾取到的cell，可能是边或面
-     * @return 选中边端点对id
-     */
-    static std::array<vtkIdType, 2> _find_selected_edge(vtkHardwarePicker& picker, vtkCell& picked_cell);
-    //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
-    //! @brief 判断是否已经被选中
-    static bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::array<vtkIdType, 2>>& selection);
-
     vtkRenderer* renderer_;
     std::vector<std::array<vtkIdType, 2>> selections_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
@@ -176,11 +159,6 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    // ！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkIdTypeArray* selected_ids);
-    //! @brief 判断是否已经被选中
-    static vtkIdType _is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_);
-
     vtkRenderer* renderer_;
     vtkNew<vtkActor> highlight_actor_;
     MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空
@@ -206,11 +184,6 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    // ！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkIdTypeArray* selected_ids);
-    //! @brief 判断是否已经被选中
-    static vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_);
-
     vtkRenderer* renderer_;
     vtkNew<vtkActor> highlight_actor_;
     MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空

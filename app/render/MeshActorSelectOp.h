@@ -3,6 +3,7 @@
 #include <memory>
 #include <optional>
 #include <vtkProp.h>
+#include <vtkPolyData.h>
 #include <vtkExtractSelection.h>
 #include <vtkIdTypeArray.h>
 
@@ -59,10 +60,10 @@ public:
 
      /**
      * @brief 根据边的点id对，提取边数据
-     * @param edgeIds 边id数组，每两个元素表示一条边（起始点ID，结束点ID）
+     * @param ids 每个元素表示一条边（起始点ID，结束点ID）
      * @return 提取出的边数据 Filter
      */
-    vtkSmartPointer<vtkExtractSelection> extractEdge(vtkIdTypeArray* edgeIds);
+    vtkSmartPointer<vtkPolyData> extractEdge(std::vector<std::array<vtkIdType, 2>>& ids);
 
 private:
     std::shared_ptr<const MeshActor> mesh_actor_; // 非空
