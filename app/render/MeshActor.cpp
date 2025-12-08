@@ -174,12 +174,9 @@ void MeshActor::setClipPlane(vtkPlane* plane)
             vertex_clipper_->SetInputData(this->vertex_data_);
 
             solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
-            solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
             face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
             edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
             vertex_mapper_->SetInputConnection(vertex_clipper_->GetOutputPort());
-
-            clip_plane_ = plane;
         }
         solid_clipper_->SetImplicitFunction(plane);
         face_clipper_->SetImplicitFunction(plane);
@@ -187,12 +184,11 @@ void MeshActor::setClipPlane(vtkPlane* plane)
         vertex_clipper_->SetImplicitFunction(plane);
     } else {
         solid_filter_->SetInputData(this->solid_data_);
-        face_mapper_->SetInputData(face_data_);
-        edge_clipper_->SetInputData(edge_data_);
-        vertex_clipper_->SetInputData(vertex_data_);
-
-        clip_plane_ = nullptr;
+        face_mapper_->SetInputData(this->face_data_);
+        edge_mapper_->SetInputData(this->edge_data_);
+        vertex_mapper_->SetInputData(this->vertex_data_);
     }
+    clip_plane_ = plane;
 }
 
 void MeshActor::setRenderEdge(bool is_render)
