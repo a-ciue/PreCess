@@ -47,7 +47,7 @@ var searchData=
   ['_7eqmodelmanager_44',['~QModelManager',['../classQModelManager.html#a2e272b6cdb445d53a44bca6c7e9871c6',1,'QModelManager']]],
   ['_7eqrenderwindow_45',['~QRenderWindow',['../structQRenderWindow.html#a3cd9c46f8437f830679b856446e52a56',1,'QRenderWindow']]],
   ['_7eselectorhighlight_46',['~SelectorHighlight',['../classSelectorHighlight.html#aeb60a59064e736c2c80f85dd2823ee9f',1,'SelectorHighlight']]],
-  ['_7esinglesolidselectorhighlight_47',['~SingleSolidSelectorHighlight',['../classSingleSolidSelectorHighlight.html#a49beccd3e0f3486d5b6969920b117a21',1,'SingleSolidSelectorHighlight']]],
+  ['_7esolidselectorhighlight_47',['~SolidSelectorHighlight',['../classSolidSelectorHighlight.html#a9b694eb75c462b8adf44c987b7a09651',1,'SolidSelectorHighlight']]],
   ['_7esplineactor_48',['~SplineActor',['../classSplineActor.html#a4399081a758df440c16f0c58d0f7488a',1,'SplineActor']]],
   ['_7esplineactormanager_49',['~SplineActorManager',['../classSplineActorManager.html#a50bf8d75d9b497c9717a6f22a2a8c76a',1,'SplineActorManager']]],
   ['_7esplinedata_50',['~SplineData',['../structSplineData.html#a9a10132de8fe6499073d55f91f6a3db1',1,'SplineData']]],

@@ -13,7 +13,7 @@ var searchData=
   ['testfaceselectorhighlight_2ecpp_10',['TestFaceSelectorHighlight.cpp',['../TestFaceSelectorHighlight_8cpp.html',1,'']]],
   ['testmeshactor_2ecpp_11',['TestMeshActor.cpp',['../TestMeshActor_8cpp.html',1,'']]],
   ['testmodelmanager_2ecpp_12',['TestModelManager.cpp',['../TestModelManager_8cpp.html',1,'']]],
-  ['testsinglesolidselectorhighlight_2ecpp_13',['TestSingleSolidSelectorHighlight.cpp',['../TestSingleSolidSelectorHighlight_8cpp.html',1,'']]],
+  ['testsolidselectorhighlight_2ecpp_13',['TestSolidSelectorHighlight.cpp',['../TestSolidSelectorHighlight_8cpp.html',1,'']]],
   ['testvertexselectorhighlight_2ecpp_14',['TestVertexSelectorHighlight.cpp',['../TestVertexSelectorHighlight_8cpp.html',1,'']]],
   ['texcoord_5fcb_15',['texcoord_cb',['../structtinyobj_1_1callback__t.html#ad3771d01fb52729cda7a6e956902f28e',1,'tinyobj::callback_t']]],
   ['texcoord_5findex_16',['texcoord_index',['../structtinyobj_1_1index__t.html#ac27280f3e6bd7db6eb6f05232db9726d',1,'tinyobj::index_t']]],

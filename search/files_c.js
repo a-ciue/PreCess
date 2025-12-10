@@ -9,7 +9,7 @@ var searchData=
   ['selectorhighlight_2eh_6',['SelectorHighlight.h',['../SelectorHighlight_8h.html',1,'']]],
   ['sidebar_2eqml_7',['SideBar.qml',['../SideBar_8qml.html',1,'']]],
   ['signallistener_2eqml_8',['SignalListener.qml',['../SignalListener_8qml.html',1,'']]],
-  ['singlesolidselectorhighlight_2ecpp_9',['SingleSolidSelectorHighlight.cpp',['../SingleSolidSelectorHighlight_8cpp.html',1,'']]],
+  ['solidselectorhighlight_2ecpp_9',['SolidSelectorHighlight.cpp',['../SolidSelectorHighlight_8cpp.html',1,'']]],
   ['splineactor_2ecpp_10',['SplineActor.cpp',['../SplineActor_8cpp.html',1,'']]],
   ['splineactor_2eh_11',['SplineActor.h',['../SplineActor_8h.html',1,'']]],
   ['splineactormanager_2ecpp_12',['SplineActorManager.cpp',['../SplineActorManager_8cpp.html',1,'']]],

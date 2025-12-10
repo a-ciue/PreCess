@@ -24,6 +24,6 @@ var searchData=
   ['he_5fnext_21',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
   ['he_5fprev_22',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
   ['he_5fsym_23',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
-  ['highlight_5factor_5f_24',['highlight_actor_',['../classSingleSolidSelectorHighlight.html#a36ecca3d1e1f5a1c63354b65e12f6357',1,'SingleSolidSelectorHighlight::highlight_actor_'],['../classVertexSelectorHighlight.html#a0ae01f796c3ae8d6ae249bbcbe4e9e8e',1,'VertexSelectorHighlight::highlight_actor_']]],
+  ['highlight_5factor_5f_24',['highlight_actor_',['../classSolidSelectorHighlight.html#a87e5472c31321d54fd1fc6e644f4b32d',1,'SolidSelectorHighlight::highlight_actor_'],['../classVertexSelectorHighlight.html#a0ae01f796c3ae8d6ae249bbcbe4e9e8e',1,'VertexSelectorHighlight::highlight_actor_']]],
   ['highlightblockbycellcolor_25',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
 ];

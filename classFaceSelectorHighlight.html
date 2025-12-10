@@ -74,8 +74,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
-<a href="#pri-methods">Private 成员函数</a> &#124;
-<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classFaceSelectorHighlight-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">FaceSelectorHighlight类 参考</div></div>
@@ -150,15 +148,6 @@ Public 成员函数</h2></td></tr>
 <tr class="inherit_header pub_methods_classSelectorHighlight"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classSelectorHighlight')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a></td></tr>
 <tr class="memitem:aeb60a59064e736c2c80f85dd2823ee9f inherit pub_methods_classSelectorHighlight" id="r_aeb60a59064e736c2c80f85dd2823ee9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSelectorHighlight.html#aeb60a59064e736c2c80f85dd2823ee9f">~SelectorHighlight</a> ()=default</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
-Private 成员函数</h2></td></tr>
-<tr class="memitem:aa6241ce80de00ada8dd723c4006f658f" id="r_aa6241ce80de00ada8dd723c4006f658f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; vtkIdType &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6241ce80de00ada8dd723c4006f658f">_find_selected</a> (vtkIdType new_face_id, const std::vector&lt; vtkIdType &gt; &amp;selections)</td></tr>
-<tr class="memdesc:aa6241ce80de00ada8dd723c4006f658f"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断是否已经被选中  <br /></td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
-静态 Private 成员函数</h2></td></tr>
-<tr class="memitem:af00dded6293ad1aa0c3b1f5218935eae" id="r_af00dded6293ad1aa0c3b1f5218935eae"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af00dded6293ad1aa0c3b1f5218935eae">_cancel_highlight</a> (vtkDataSetMapper *selectedMapper)</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
 <tr class="memitem:ab8d0d0753dc16b36001c60b8a459e211" id="r_ab8d0d0753dc16b36001c60b8a459e211"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab8d0d0753dc16b36001c60b8a459e211">renderer_</a></td></tr>
@@ -216,62 +205,6 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="af00dded6293ad1aa0c3b1f5218935eae" name="af00dded6293ad1aa0c3b1f5218935eae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af00dded6293ad1aa0c3b1f5218935eae">&#9670;&#160;</a></span>_cancel_highlight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void FaceSelectorHighlight::_cancel_highlight </td>
-          <td>(</td>
-          <td class="paramtype">vtkDataSetMapper *</td>          <td class="paramname"><span class="paramname"><em>selectedMapper</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa6241ce80de00ada8dd723c4006f658f" name="aa6241ce80de00ada8dd723c4006f658f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6241ce80de00ada8dd723c4006f658f">&#9670;&#160;</a></span>_find_selected()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; vtkIdType &gt;::const_iterator FaceSelectorHighlight::_find_selected </td>
-          <td>(</td>
-          <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>new_face_id</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; vtkIdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>selections</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>判断是否已经被选中 </p>
-
-</div>
-</div>
 <a id="a68126ce958a1798d371dd7ca8cb4d008" name="a68126ce958a1798d371dd7ca8cb4d008"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a68126ce958a1798d371dd7ca8cb4d008">&#9670;&#160;</a></span>clear()</h2>
 

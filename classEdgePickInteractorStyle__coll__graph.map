@@ -1,41 +1,40 @@
 <map id="EdgePickInteractorStyle" name="EdgePickInteractorStyle">
-<area shape="rect" id="Node000001" title=" " alt="" coords="3233,175,3411,201"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="2927,140,3124,180"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3138,168,3233,177,3233,182,3137,173"/>
-<area shape="rect" id="Node000003" href="$classEdgeSelectorHighlight.html" title=" " alt="" coords="2942,205,3109,230"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="3122,210,3209,203,3244,198,3245,203,3210,208,3123,215"/>
-<area shape="rect" id="Node000004" href="$classSelectorHighlight.html" title=" " alt="" coords="2616,122,2751,147"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2765,139,2834,152,2904,174,2928,190,2963,202,2961,207,2925,194,2902,178,2832,157,2764,145"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="2252,205,2445,230"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="2459,211,2469,211,2686,208,2903,211,2942,212,2942,217,2903,216,2686,214,2469,216,2459,216"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="2599,243,2767,283"/>
-<area shape="poly" id="edge6_Node000006_Node000005" title=" " alt="" coords="2443,229,2470,233,2599,250,2599,256,2469,239,2442,235"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="2781,249,2902,233,2943,227,2944,233,2903,239,2782,254"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="3233,221,3411,246"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="2927,185,3124,225"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3138,213,3233,222,3233,228,3137,219"/>
+<area shape="rect" id="Node000003" href="$classEdgeSelectorHighlight.html" title=" " alt="" coords="2942,250,3109,275"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="3122,255,3209,248,3244,243,3245,249,3210,253,3123,261"/>
+<area shape="rect" id="Node000004" href="$classSelectorHighlight.html" title=" " alt="" coords="2616,193,2751,218"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2765,212,2903,232,2974,247,2973,253,2902,237,2764,217"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="2599,243,2767,283"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="2782,260,2942,260,2942,265,2782,265"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="2252,250,2445,275"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2459,260,2599,260,2599,265,2459,265"/>
 <area shape="rect" id="Node000007" href="$classMeshActorSelectOpFactory.html" title="MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象" alt="" coords="2585,307,2781,333"/>
-<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="2791,302,2847,291,2902,275,2956,252,3001,228,3004,233,2958,257,2904,280,2848,296,2792,307"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="2795,305,2902,288,2973,273,2974,278,2903,293,2796,310"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="2269,300,2429,340"/>
-<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="2442,317,2585,317,2585,323,2442,323"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="2442,317,2585,317,2585,323,2442,323"/>
 <area shape="rect" id="Node000009" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2087,307,2177,333"/>
-<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="2191,317,2268,317,2268,323,2191,323"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="2191,317,2268,317,2268,323,2191,323"/>
 <area shape="rect" id="Node000010" title=" " alt="" coords="1745,300,1945,340"/>
-<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="1959,317,2086,317,2086,323,1959,323"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="1959,317,2086,317,2086,323,1959,323"/>
 <area shape="rect" id="Node000011" href="$structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="1560,307,1671,333"/>
-<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="1685,317,1745,317,1745,323,1685,323"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="1685,317,1745,317,1745,323,1685,323"/>
 <area shape="rect" id="Node000012" title=" " alt="" coords="1169,207,1337,247"/>
-<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="1351,232,1442,246,1537,272,1570,288,1598,305,1595,309,1567,292,1535,277,1441,252,1350,237"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="1351,232,1442,246,1537,272,1570,288,1598,305,1595,309,1567,292,1535,277,1441,252,1350,237"/>
 <area shape="rect" id="Node000013" title=" " alt="" coords="849,214,1024,239"/>
-<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="1037,224,1168,224,1168,229,1037,229"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="1037,224,1168,224,1168,229,1037,229"/>
 <area shape="rect" id="Node000014" title=" " alt="" coords="1170,271,1335,311"/>
-<area shape="poly" id="edge14_Node000011_Node000014" title=" " alt="" coords="1350,296,1560,313,1560,318,1349,301"/>
+<area shape="poly" id="edge13_Node000011_Node000014" title=" " alt="" coords="1350,296,1560,313,1560,318,1349,301"/>
 <area shape="rect" id="Node000015" title=" " alt="" coords="5,361,163,386"/>
-<area shape="poly" id="edge15_Node000011_Node000015" title=" " alt="" coords="172,356,237,349,305,345,1254,345,1421,338,1560,324,1560,330,1422,343,1254,351,305,351,237,354,172,361"/>
+<area shape="poly" id="edge14_Node000011_Node000015" title=" " alt="" coords="172,356,237,349,305,345,1254,345,1421,338,1560,324,1560,330,1422,343,1254,351,305,351,237,354,172,361"/>
 <area shape="rect" id="Node000019" href="$structBlockData.html" title=" " alt="" coords="261,386,351,411"/>
-<area shape="poly" id="edge20_Node000019_Node000015" title=" " alt="" coords="175,385,187,387,261,393,261,399,186,392,175,391"/>
+<area shape="poly" id="edge19_Node000019_Node000015" title=" " alt="" coords="175,385,187,387,261,393,261,399,186,392,175,391"/>
 <area shape="rect" id="Node000016" title=" " alt="" coords="1141,386,1364,411"/>
-<area shape="poly" id="edge16_Node000011_Node000016" title=" " alt="" coords="1363,409,1449,407,1493,400,1535,387,1556,376,1574,361,1602,331,1606,335,1578,365,1559,380,1537,392,1494,405,1450,412,1364,415"/>
+<area shape="poly" id="edge15_Node000011_Node000016" title=" " alt="" coords="1363,409,1449,407,1493,400,1535,387,1556,376,1574,361,1602,331,1606,335,1578,365,1559,380,1537,392,1494,405,1450,412,1364,415"/>
 <area shape="rect" id="Node000017" href="$structBlockDatas.html" title=" " alt="" coords="889,387,985,413"/>
-<area shape="poly" id="edge17_Node000016_Node000017" title=" " alt="" coords="999,397,1141,396,1141,402,999,402"/>
+<area shape="poly" id="edge16_Node000016_Node000017" title=" " alt="" coords="999,397,1141,396,1141,402,999,402"/>
 <area shape="rect" id="Node000018" title=" " alt="" coords="468,387,656,413"/>
-<area shape="poly" id="edge18_Node000017_Node000018" title=" " alt="" coords="670,397,888,397,888,403,670,403"/>
-<area shape="poly" id="edge19_Node000018_Node000019" title=" " alt="" coords="364,396,468,397,468,402,364,402"/>
+<area shape="poly" id="edge17_Node000017_Node000018" title=" " alt="" coords="670,397,888,397,888,403,670,403"/>
+<area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="364,396,468,397,468,402,364,402"/>
 </map>

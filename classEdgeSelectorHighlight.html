@@ -74,8 +74,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
-<a href="#pub-attribs">Public 属性</a> &#124;
-<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classEdgeSelectorHighlight-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">EdgeSelectorHighlight类 参考</div></div>
@@ -98,16 +96,15 @@ EdgeSelectorHighlight 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classEdgeSelectorHighlight__coll__graph.png" border="0" usemap="#aEdgeSelectorHighlight_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aEdgeSelectorHighlight_coll__map" id="aEdgeSelectorHighlight_coll__map">
-<area shape="rect" title=" " alt="" coords="2927,205,3093,230"/>
-<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="2616,122,2751,147"/>
-<area shape="poly" title=" " alt="" coords="2764,143,2833,156,2903,173,2981,202,2979,207,2902,179,2831,161,2763,149"/>
-<area shape="rect" title=" " alt="" coords="2252,205,2445,230"/>
-<area shape="poly" title=" " alt="" coords="2459,211,2469,211,2686,208,2903,211,2927,211,2926,217,2903,216,2686,213,2469,216,2459,216"/>
+<area shape="rect" title=" " alt="" coords="2927,250,3093,275"/>
+<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="2616,193,2751,218"/>
+<area shape="poly" title=" " alt="" coords="2765,211,2903,232,2966,247,2965,253,2902,237,2764,216"/>
 <area shape="rect" title=" " alt="" coords="2599,243,2767,283"/>
-<area shape="poly" title=" " alt="" coords="2443,229,2470,233,2599,250,2599,256,2469,239,2442,235"/>
-<area shape="poly" title=" " alt="" coords="2781,249,2902,233,2939,227,2940,233,2903,239,2782,255"/>
+<area shape="poly" title=" " alt="" coords="2781,260,2926,260,2926,265,2781,265"/>
+<area shape="rect" title=" " alt="" coords="2252,250,2445,275"/>
+<area shape="poly" title=" " alt="" coords="2459,260,2599,260,2599,265,2459,265"/>
 <area shape="rect" href="classMeshActorSelectOpFactory.html" title="MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象" alt="" coords="2585,307,2781,333"/>
-<area shape="poly" title=" " alt="" coords="2794,303,2848,291,2902,275,2950,252,2989,228,2992,232,2952,257,2904,280,2850,296,2795,308"/>
+<area shape="poly" title=" " alt="" coords="2795,305,2902,288,2965,273,2966,278,2903,293,2796,310"/>
 <area shape="rect" title=" " alt="" coords="2269,300,2429,340"/>
 <area shape="poly" title=" " alt="" coords="2442,317,2585,317,2585,323,2442,323"/>
 <area shape="rect" href="classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2087,307,2177,333"/>
@@ -153,24 +150,10 @@ Public 成员函数</h2></td></tr>
 <tr class="inherit_header pub_methods_classSelectorHighlight"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classSelectorHighlight')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a></td></tr>
 <tr class="memitem:aeb60a59064e736c2c80f85dd2823ee9f inherit pub_methods_classSelectorHighlight" id="r_aeb60a59064e736c2c80f85dd2823ee9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSelectorHighlight.html#aeb60a59064e736c2c80f85dd2823ee9f">~SelectorHighlight</a> ()=default</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public 属性</h2></td></tr>
-<tr class="memitem:a2eabb5ab4050fd7d00219c9c01c42c0d" id="r_a2eabb5ab4050fd7d00219c9c01c42c0d"><td class="memItemLeft" align="right" valign="top">std::array&lt; vtkIdType, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2eabb5ab4050fd7d00219c9c01c42c0d">v_local_id</a></td></tr>
-<tr class="memdesc:a2eabb5ab4050fd7d00219c9c01c42c0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">边端点局部索引id  <br /></td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
-静态 Private 成员函数</h2></td></tr>
-<tr class="memitem:a0f4cdeed859bfc784bfb04c5380c6bbd" id="r_a0f4cdeed859bfc784bfb04c5380c6bbd"><td class="memItemLeft" align="right" valign="top">static std::array&lt; vtkIdType, 2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f4cdeed859bfc784bfb04c5380c6bbd">_find_selected_edge</a> (vtkHardwarePicker &amp;picker, vtkCell &amp;picked_cell)</td></tr>
-<tr class="memdesc:a0f4cdeed859bfc784bfb04c5380c6bbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据pick到的cell（边或面），找到选中边  <br /></td></tr>
-<tr class="memitem:a7516ba3929ca2ee9f29ebc38586d5443" id="r_a7516ba3929ca2ee9f29ebc38586d5443"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7516ba3929ca2ee9f29ebc38586d5443">_cancel_highlight</a> (vtkDataSetMapper *selectedMapper)</td></tr>
-<tr class="memitem:a55f938b70281a31332db4382e0767c27" id="r_a55f938b70281a31332db4382e0767c27"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55f938b70281a31332db4382e0767c27">_is_selected</a> (std::array&lt; vtkIdType, 2 &gt; <a class="el" href="#a2eabb5ab4050fd7d00219c9c01c42c0d">v_local_id</a>, const std::optional&lt; std::array&lt; vtkIdType, 2 &gt; &gt; &amp;selection)</td></tr>
-<tr class="memdesc:a55f938b70281a31332db4382e0767c27"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断是否已经被选中  <br /></td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
 <tr class="memitem:a12dbaa6873a414e77bc6701f84baae02" id="r_a12dbaa6873a414e77bc6701f84baae02"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12dbaa6873a414e77bc6701f84baae02">renderer_</a></td></tr>
 <tr class="memitem:aa9fa2c43455bdee3ebdd9e69a2e54226" id="r_aa9fa2c43455bdee3ebdd9e69a2e54226"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::array&lt; vtkIdType, 2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9fa2c43455bdee3ebdd9e69a2e54226">selections_</a></td></tr>
-<tr class="memitem:ae1649f2f22e437d020960b5eb2b6d108" id="r_ae1649f2f22e437d020960b5eb2b6d108"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1649f2f22e437d020960b5eb2b6d108">mapper_</a></td></tr>
 <tr class="memitem:aa2263936a46d7c2eba5d9dc6c80d5ddf" id="r_aa2263936a46d7c2eba5d9dc6c80d5ddf"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkDataSetMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa2263936a46d7c2eba5d9dc6c80d5ddf">selected_mapper_</a></td></tr>
 <tr class="memitem:a8a487353c1f1e036374f0419d19d5fe9" id="r_a8a487353c1f1e036374f0419d19d5fe9"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a487353c1f1e036374f0419d19d5fe9">selected_actor_</a></td></tr>
 <tr class="memitem:a6bec65a60a27b193509f8eb59cc1ad18" id="r_a6bec65a60a27b193509f8eb59cc1ad18"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPropCollection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6bec65a60a27b193509f8eb59cc1ad18">collection_</a></td></tr>
@@ -224,101 +207,6 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a7516ba3929ca2ee9f29ebc38586d5443" name="a7516ba3929ca2ee9f29ebc38586d5443"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7516ba3929ca2ee9f29ebc38586d5443">&#9670;&#160;</a></span>_cancel_highlight()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void EdgeSelectorHighlight::_cancel_highlight </td>
-          <td>(</td>
-          <td class="paramtype">vtkDataSetMapper *</td>          <td class="paramname"><span class="paramname"><em>selectedMapper</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0f4cdeed859bfc784bfb04c5380c6bbd" name="a0f4cdeed859bfc784bfb04c5380c6bbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f4cdeed859bfc784bfb04c5380c6bbd">&#9670;&#160;</a></span>_find_selected_edge()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt; vtkIdType, 2 &gt; EdgeSelectorHighlight::_find_selected_edge </td>
-          <td>(</td>
-          <td class="paramtype">vtkHardwarePicker &amp;</td>          <td class="paramname"><span class="paramname"><em>picker</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vtkCell &amp;</td>          <td class="paramname"><span class="paramname"><em>picked_cell</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>根据pick到的cell（边或面），找到选中边 </p>
-<dl class="params"><dt>参数</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">picker</td><td>拾取器，提供拾取信息 </td></tr>
-    <tr><td class="paramname">picked_cell</td><td>拾取到的cell，可能是边或面 </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>返回</dt><dd>选中边端点对id </dd></dl>
-
-</div>
-</div>
-<a id="a55f938b70281a31332db4382e0767c27" name="a55f938b70281a31332db4382e0767c27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55f938b70281a31332db4382e0767c27">&#9670;&#160;</a></span>_is_selected()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool EdgeSelectorHighlight::_is_selected </td>
-          <td>(</td>
-          <td class="paramtype">std::array&lt; vtkIdType, 2 &gt;</td>          <td class="paramname"><span class="paramname"><em>v_local_id</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::optional&lt; std::array&lt; vtkIdType, 2 &gt; &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>selection</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>判断是否已经被选中 </p>
-
-</div>
-</div>
 <a id="af71996a5002742103866e5c826479d0f" name="af71996a5002742103866e5c826479d0f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af71996a5002742103866e5c826479d0f">&#9670;&#160;</a></span>clear()</h2>
 
@@ -475,28 +363,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="ae1649f2f22e437d020960b5eb2b6d108" name="ae1649f2f22e437d020960b5eb2b6d108"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1649f2f22e437d020960b5eb2b6d108">&#9670;&#160;</a></span>mapper_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkNew&lt;vtkPolyDataMapper&gt; EdgeSelectorHighlight::mapper_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a22877cc7c78c92710f3f66439e7a26fe" name="a22877cc7c78c92710f3f66439e7a26fe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a22877cc7c78c92710f3f66439e7a26fe">&#9670;&#160;</a></span>model_actor_</h2>
 
@@ -604,22 +470,6 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2eabb5ab4050fd7d00219c9c01c42c0d" name="a2eabb5ab4050fd7d00219c9c01c42c0d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2eabb5ab4050fd7d00219c9c01c42c0d">&#9670;&#160;</a></span>v_local_id</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;vtkIdType, 2&gt; EdgeSelectorHighlight::v_local_id</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>边端点局部索引id </p>
 
 </div>
 </div>
