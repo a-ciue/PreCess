@@ -106,11 +106,6 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
-    //! @brief 判断是否已经被选中
-    std::vector<vtkIdType>::const_iterator _find_selected(vtkIdType new_face_id, const std::vector<vtkIdType>& selections);
-
     vtkRenderer* renderer_;
     std::vector<vtkIdType> selections_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
@@ -121,8 +116,6 @@ private:
 
 class EdgeSelectorHighlight : public SelectorHighlight {
 public:
-    //! @brief 边端点局部索引id
-    std::array<vtkIdType, 2> v_local_id;
     //! @brief 将actor绑定到renderer，mapper绑定到actor
     EdgeSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
@@ -142,33 +135,20 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    /**
-     * @brief 根据pick到的cell（边或面），找到选中边
-     * @param picker 拾取器，提供拾取信息
-     * @param picked_cell 拾取到的cell，可能是边或面
-     * @return 选中边端点对id
-     */
-    static std::array<vtkIdType, 2> _find_selected_edge(vtkHardwarePicker& picker, vtkCell& picked_cell);
-    //！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkDataSetMapper* selectedMapper);
-    //! @brief 判断是否已经被选中
-    static bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::array<vtkIdType, 2>>& selection);
-
     vtkRenderer* renderer_;
     std::vector<std::array<vtkIdType, 2>> selections_;
-    vtkNew<vtkPolyDataMapper> mapper_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
     vtkSmartPointer<vtkActor> selected_actor_;
     vtkNew<vtkPropCollection> collection_;
     MeshActorSelectOpFactory model_actor_;
 };
 
-class SingleSolidSelectorHighlight : public SelectorHighlight {
+class SolidSelectorHighlight : public SelectorHighlight {
 public:
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    SingleSolidSelectorHighlight(vtkRenderer* renderer);
+    SolidSelectorHighlight(vtkRenderer* renderer);
     //! @brief 将actor从renderer中删除
-    ~SingleSolidSelectorHighlight() override;
+    ~SolidSelectorHighlight() override;
     //! @brief 返回当前选择的体
     SelectionVtk get() override;
     //! @brief 清空selection并取消高亮，即清空mapper
@@ -179,11 +159,6 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    // ！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkIdTypeArray* selected_ids);
-    //! @brief 判断是否已经被选中
-    static bool _is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_);
-
     vtkRenderer* renderer_;
     vtkNew<vtkActor> highlight_actor_;
     MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空
@@ -209,11 +184,6 @@ public:
     void setCurModelActor(MeshActorSelectOpFactory model_actor) override;
 
 private:
-    // ！@brief 取消高亮，清空mapper
-    static void _cancel_highlight(vtkIdTypeArray* selected_ids);
-    //! @brief 判断是否已经被选中
-    static vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_);
-
     vtkRenderer* renderer_;
     vtkNew<vtkActor> highlight_actor_;
     MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空

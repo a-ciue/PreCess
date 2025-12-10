@@ -16,7 +16,7 @@ public:
     static SolidPickInteractorStyle* New();
     vtkTypeMacro(SolidPickInteractorStyle, vtkInteractorStyleTrackballCamera);
 
-    void SetSelectorHighlight(SingleSolidSelectorHighlight* selector) { this->Selector = selector; }
+    void SetSelectorHighlight(SolidSelectorHighlight* selector) { this->Selector = selector; }
 
     void OnLeftButtonDown() override
     {
@@ -28,7 +28,7 @@ public:
     }
 
 private:
-    SingleSolidSelectorHighlight* Selector = nullptr;
+    SolidSelectorHighlight* Selector = nullptr;
 };
 
 vtkStandardNewMacro(SolidPickInteractorStyle);
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     meshActor->loadModelData(test_mesh_data);
 
     // 体元高亮选择器
-    SingleSolidSelectorHighlight selector(renderer);
+    SolidSelectorHighlight selector(renderer);
     selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
     style->SetSelectorHighlight(&selector);
 

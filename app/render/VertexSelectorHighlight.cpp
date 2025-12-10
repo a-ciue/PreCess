@@ -5,9 +5,25 @@
 #include <spdlog/spdlog.h>
 #include <vtkDataSetMapper.h>
 #include <vtkHardwarePicker.h>
+#include <vtkPointData.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkUnstructuredGrid.h>
+
+namespace {
+void _cancel_highlight(vtkIdTypeArray* selected_ids)
+{
+    selected_ids->SetNumberOfValues(0);
+    selected_ids->Modified();
+}
+
+vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_)
+{
+    vtkIdTypeArray& selected_ids = const_cast<vtkIdTypeArray&>(selected_ids_);
+    vtkIdType id_idx = selected_ids.LookupTypedValue(new_vertex);
+    return id_idx;
+}
+}
 
 VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer* renderer)
     : renderer_(renderer)
@@ -71,18 +87,28 @@ void VertexSelectorHighlight::select(double posx, double posy)
         spdlog::debug("VertexSelectorHighlight::select: no point picked.");
         return;
     }
+    vtkDataSet* picked_data_set = picker->GetDataSet();
+
+    // 获取对应的点id selected_vertex_id
+    auto vertex_id_array = vtkIdTypeArray::SafeDownCast(picked_data_set->GetPointData()->GetArray("vtkOriginalPointIds"));
+    if (!vertex_id_array) {
+        clear();
+        spdlog::debug("Picked cell id: {}, no vertex id array found.", picked_point_id);
+        return;
+    }
+    vtkIdType selected_vertex_id = vertex_id_array->GetValue(picked_point_id);
 
     // 检查该点是否已经被选中
-    if (vtkIdType id_idx = _is_selected(picked_point_id, *this->selected_ids_);
-        id_idx >= 0) {
+    vtkIdType id_idx = _is_selected(selected_vertex_id, *this->selected_ids_);
+    if (id_idx >= 0) {
         // 已选中，取消选中
         selected_ids_->RemoveTuple(id_idx);
-        spdlog::debug("VertexSelectorHighlight::select: point {} deselected.", picked_point_id);
+        spdlog::debug("VertexSelectorHighlight::select: point {} deselected.", selected_vertex_id);
     } else {
         // 未选中，添加选中
-        selected_ids_->InsertNextValue(picked_point_id);
+        selected_ids_->InsertNextValue(selected_vertex_id);
         selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
-        spdlog::debug("VertexSelectorHighlight::select: point {} selected.", picked_point_id);
+        spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
     }
     selected_ids_->Modified(); // 通知 VTK 数据已更改，进行刷新
 }
@@ -94,17 +120,4 @@ void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_ac
         auto extract_selection = model_actor->extractVertex(this->selected_ids_);
         this->highlight_actor_->GetMapper()->SetInputConnection(extract_selection->GetOutputPort());
     }
-}
-
-void VertexSelectorHighlight::_cancel_highlight(vtkIdTypeArray* selected_ids)
-{
-    selected_ids->SetNumberOfValues(0);
-    selected_ids->Modified();
-}
-
-vtkIdType VertexSelectorHighlight::_is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_)
-{
-    vtkIdTypeArray& selected_ids = const_cast<vtkIdTypeArray&>(selected_ids_);
-    vtkIdType id_idx = selected_ids.LookupTypedValue(new_vertex);
-    return id_idx;
 }

@@ -1,5 +1,5 @@
-#include "SelectorHighlight.h"
 #include "MeshActorSelectOp.h"
+#include "SelectorHighlight.h"
 
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -17,7 +17,22 @@
 
 #include <spdlog/spdlog.h>
 
-SingleSolidSelectorHighlight::SingleSolidSelectorHighlight(vtkRenderer* renderer)
+namespace {
+void _cancel_highlight(vtkIdTypeArray* selected_ids)
+{
+    selected_ids->SetNumberOfValues(0);
+    selected_ids->Modified();
+}
+
+vtkIdType _is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_)
+{
+    vtkIdTypeArray& selected_ids = const_cast<vtkIdTypeArray&>(selected_ids_);
+    vtkIdType id_idx = selected_ids.LookupTypedValue(new_solid);
+    return id_idx;
+}
+}
+
+SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer* renderer)
     : renderer_(renderer)
 {
     this->selected_ids_->SetName("vtkOriginalCellIds");
@@ -33,30 +48,32 @@ SingleSolidSelectorHighlight::SingleSolidSelectorHighlight(vtkRenderer* renderer
     this->highlight_actor_->GetProperty()->EdgeVisibilityOn();
     this->highlight_actor_->GetProperty()->SetEdgeColor(1.0, 0.0, 0.0); // 红色边框
     this->highlight_actor_->GetProperty()->SetLineWidth(2.0);
-    
+
     renderer_->AddActor(this->highlight_actor_);
 }
-SingleSolidSelectorHighlight::~SingleSolidSelectorHighlight()
+
+SolidSelectorHighlight::~SolidSelectorHighlight()
 {
     clear();
     renderer_->RemoveActor(this->highlight_actor_);
 }
-SelectionVtk SingleSolidSelectorHighlight::get()
+
+SelectionVtk SolidSelectorHighlight::get()
 {
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Solid;
-    if (selected_ids_->GetNumberOfValues()) {
-        back_selection.ids.push_back(selected_ids_->GetValue(0));
+    for (vtkIdType i = 0; i < selected_ids_->GetNumberOfValues(); ++i) {
+        back_selection.ids.push_back(selected_ids_->GetValue(i));
     }
     return back_selection;
 }
 
-void SingleSolidSelectorHighlight::clear()
+void SolidSelectorHighlight::clear()
 {
     _cancel_highlight(this->selected_ids_);
 }
 
-void SingleSolidSelectorHighlight::select(double posx, double posy)
+void SolidSelectorHighlight::select(double posx, double posy)
 {
     // 获取 picked_cell_id和picked_data_set
     vtkNew<vtkHardwarePicker> picker;
@@ -86,34 +103,26 @@ void SingleSolidSelectorHighlight::select(double posx, double posy)
     }
     vtkIdType selected_solid_id = solid_id_array->GetValue(picked_cell_id);
 
-    if (_is_selected(selected_solid_id, *this->selected_ids_)) {
+    // 检查该体是否已经被选中
+    vtkIdType id_idx = _is_selected(selected_solid_id, *this->selected_ids_);
+    if (id_idx >= 0) {
         // 取消选中
-        clear();
-        spdlog::debug("Selected solid {} canceled.", selected_solid_id);
-        return;
-    } 
-
-    this->selected_ids_->SetNumberOfValues(1);
-    this->selected_ids_->SetValue(0, selected_solid_id);
+        selected_ids_->RemoveTuple(id_idx);
+        spdlog::debug("SolidSelectorHighlight::select: point {} canceled.", selected_solid_id);
+    } else {
+        // 未选中，添加选中
+        selected_ids_->InsertNextValue(selected_solid_id);
+        selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
+        spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
+    }
     this->selected_ids_->Modified(); // 触发highlight_actor_更新
 }
 
-void SingleSolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
+void SolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
 {
     this->model_actor_ = model_actor;
     if (auto model_actor = this->model_actor_.lock()) {
         vtkSmartPointer extract_selection = model_actor->extractSolid(selected_ids_);
         this->highlight_actor_->GetMapper()->SetInputConnection(extract_selection->GetOutputPort());
     }
-}
-
-void SingleSolidSelectorHighlight::_cancel_highlight(vtkIdTypeArray* selected_ids)
-{
-    selected_ids->SetNumberOfValues(0);
-    selected_ids->Modified();
-}
-
-bool SingleSolidSelectorHighlight::_is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_)
-{
-    return selected_ids_.GetNumberOfValues() && new_solid == selected_ids_.GetValue(0);
 }

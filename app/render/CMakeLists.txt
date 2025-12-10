@@ -7,7 +7,7 @@ add_library(vtkPart STATIC
     SplineActor.cpp
     MeshActorManager.cpp
     SplineActorManager.cpp
-    SingleSolidSelectorHighlight.cpp
+    SolidSelectorHighlight.cpp
     VertexSelectorHighlight.cpp
     EdgeSelectorHighlight.cpp
     FaceSelectorHighlight.cpp
