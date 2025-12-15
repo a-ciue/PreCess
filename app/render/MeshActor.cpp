@@ -1,4 +1,4 @@
-#include "MeshActor.h"
+﻿#include "MeshActor.h"
 #include "Core.h"
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -33,6 +33,9 @@
 #include <vtkImageReader2.h> 
 #include <vtkTexture.h>
 #include <vtkTextureMapToPlane.h>
+#include <vtkPointDataToCellData.h>
+
+
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
@@ -244,6 +247,11 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         face_poly->SetPolys(poly_data);
 
         face_poly->GetPointData()->AddArray(originalPointIds);
+
+        //  拷贝属性
+        vtkPointData* src = this->vertex_data_->GetPointData();
+        vtkPointData* dst = this->face_data_->GetPointData();
+        dst->ShallowCopy(src);
         // 新增：动态处理面属性 
         const size_t num_faces = face_poly->GetNumberOfCells();
         for (const auto& attr : model_data.face_attributes_) {
@@ -597,11 +605,31 @@ void MeshActor::setActiveScalarAttribute(std::string attr_name, ElementType type
             double range[2];
             array->GetRange(range);
             vertex_mapper_->SetScalarRange(range[0], range[1]); 
-
-            //vertex_mapper_->SetScalarModeToUsePointData();
             vertex_mapper_->SetScalarVisibility(1);
+            // 如果是 RGB 颜色数组（组件数=3 且类型是 unsigned char）
+            if (array->GetNumberOfComponents() == 3 && array->GetDataType() == VTK_UNSIGNED_CHAR) {
 
+                vertex_mapper_->SetColorModeToDirectScalars(); // 使用 RGB
+                if (this->face_data_) {
+                    this->face_data_->GetPointData()->SetActiveScalars(attr_name.c_str());
+                    face_mapper_->SetScalarModeToUsePointData();
+                    face_mapper_->SetScalarVisibility(1);
+                    face_mapper_->SetScalarRange(range[0], range[1]);
+                    face_mapper_->SetColorModeToDirectScalars(); // 使用 RGB
+
+                }
+            } else {
+                vertex_mapper_->SetColorModeToMapScalars(); // 使用 colormap
+                if (this->face_data_) {
+                    this->face_data_->GetPointData()->SetActiveScalars(attr_name.c_str());
+                    face_mapper_->SetScalarModeToUsePointData();
+                    face_mapper_->SetScalarVisibility(1);
+                    face_mapper_->SetScalarRange(range[0], range[1]);
+                    face_mapper_->SetColorModeToMapScalars();
+                }
+            }
             vertex_mapper_->Update();
+            face_mapper_->Update();
             renderer_->Render();
         }
         break;
@@ -808,6 +836,12 @@ void MeshActor::setTextureImage(std::string texturePath)
     this->face_actor_->SetTexture(texture);
     renderer_->Render();
 }
+void MeshActor::cancelTextureImage()
+{
+    this->face_actor_->SetTexture(nullptr);
+    std::cout << "取消texture" << std::endl;
+    renderer_->Render();
+}
 void MeshActor::setAttriMode(std::string attr_name, Mode mode, ElementType type, std::string texturePath)
 {
     cancelActiveAttribute();
@@ -834,6 +868,7 @@ void MeshActor::setAttriMode(std::string attr_name, Mode mode, ElementType type,
 }
 void MeshActor::cancelActiveAttribute()
 {
+        cancelTextureImage();
         cancelActiveGlyph3D();
         vertex_mapper_->SetScalarVisibility(0);
         edge_mapper_->SetScalarVisibility(0);
@@ -858,11 +893,101 @@ void MeshActor::cancelActiveGlyph3D()
     }
 }
 
+// Glyph3D 的缩放因子调整接口
+void MeshActor::setGlyph3DScaleFactor(double scale)
+{
+    // 遍历renderer中的actor，找到Glyph3D生成的actor并调整其scale factor
+    vtkActorCollection* actorCollection = renderer_->GetActors();
+    actorCollection->InitTraversal();
+    for (vtkIdType i = 0; i < actorCollection->GetNumberOfItems(); ++i) {
+        vtkActor* actor = vtkActor::SafeDownCast(actorCollection->GetNextActor());
+        if (!actor)
+            continue;
+        vtkMapper* mapper = actor->GetMapper();
+        if (mapper && mapper->GetInputConnection(0, 0)) {
+            vtkAlgorithm* producer = mapper->GetInputConnection(0, 0)->GetProducer();
+            if (producer && std::string(producer->GetClassName()) == "vtkGlyph3D") {
+                vtkGlyph3D* glyph = vtkGlyph3D::SafeDownCast(producer);
+                if (glyph) {
+                    glyph->SetScaleFactor(scale);
+                    glyph->Update();
+                    renderer_->Render();
+                }
+            }
+        }
+    }
+}
+// 标量的range映射标调整接口
+void MeshActor::setScalarRange(double min, double max)
+{
+    vtkDataArray* array = nullptr;
+    vtkPolyDataMapper* mapper = nullptr;
+
+
+
+    // 如果点映射可见且有标量，设置点，同时同步设置面（点对面插值）
+    if (vertex_mapper_->GetScalarVisibility() && vertex_data_ && vertex_data_->GetPointData()->GetScalars()) {
+        array = vertex_data_->GetPointData()->GetScalars();
+        mapper = vertex_mapper_;
+        mapper->SetScalarRange(min, max);
+        mapper->Update();
+
+        // 同步设置面（点对面插值时，面mapper用点数据）
+        if (face_mapper_ && face_data_ && face_data_->GetPointData()->GetScalars()) {
+            face_mapper_->SetScalarModeToUsePointData();
+            face_mapper_->SetScalarRange(min, max);
+            face_mapper_->Update();
+        }
+    }else     // fz面映射可见且有标量，设置面
+        if (face_mapper_->GetScalarVisibility() && face_data_ && face_data_->GetCellData()->GetScalars()) {
+            array = face_data_->GetCellData()->GetScalars();
+            mapper = face_mapper_;
+            mapper->SetScalarRange(min, max);
+            mapper->Update();
+        }
+    renderer_->Render();
+    return;
+}
+
+void MeshActor::resetScalarRange()
+{
+    // 优先判断面映射（cell data），否则判断点映射（point data）
+    vtkDataArray* array = nullptr;
+    vtkPolyDataMapper* mapper = nullptr;
+
+   
+
+    // 如果点映射可见且有标量，设置点，同时同步设置面（点对面插值）
+    if (vertex_mapper_->GetScalarVisibility() && vertex_data_ && vertex_data_->GetPointData()->GetScalars()) {
+        array = vertex_data_->GetPointData()->GetScalars();
+        mapper = vertex_mapper_;
+        double range[2];
+        array->GetRange(range);
+        mapper->SetScalarRange(range[0], range[1]);
+        mapper->Update();
+
+        // 同步设置面（点对面插值时，面mapper用点数据）
+        if (face_mapper_ && face_data_ && face_data_->GetPointData()->GetScalars()) {
+            face_mapper_->SetScalarModeToUsePointData();
+            face_mapper_->SetScalarRange(range[0], range[1]);
+            face_mapper_->Update();
+        }
+        renderer_->Render();
+        return;
+    } else if // 负责如果面映射可见且有标量，设置面
+         (face_mapper_->GetScalarVisibility() && face_data_ && face_data_->GetCellData()->GetScalars()) {
+            array = face_data_->GetCellData()->GetScalars();
+            mapper = face_mapper_;
+            double range[2];
+            array->GetRange(range);
+            mapper->SetScalarRange(range[0], range[1]);
+            mapper->Update();
+            renderer_->Render();
+            return;
+        }
+}
 // todo
-// glypf3D 的缩放因子调整接口
-// 标量的range映射标调整接口 
 // 接口整理  
 // 提交优化
 // vtk插件分别提交
 // cancel 纹理贴图接口
-// 点标量对面的插值

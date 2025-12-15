@@ -55,6 +55,16 @@ static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void*
         } else if (strcmp(key, "0") == 0 || strcmp(key, "KP_0") == 0) {
             (*meshActorPtr)->cancelActiveAttribute();
             std::cout << "cancelActiveAttribute" << std::endl;
+        } else if (strcmp(key, "t") == 0 ) {
+            (*meshActorPtr)->setScalarRange(2,6);
+            std::cout << "cancelActiveAttribute" << std::endl;
+        } else if (strcmp(key, "y") == 0 ) {
+            (*meshActorPtr)->resetScalarRange();
+            std::cout << "cancelActiveAttribute" << std::endl;
+        } 
+        else if (strcmp(key, "u") == 0) {
+            (*meshActorPtr)->setGlyph3DScaleFactor(0.5);
+            std::cout << "cancelActiveAttribute" << std::endl;
         } 
     }
 }

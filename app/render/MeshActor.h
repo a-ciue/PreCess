@@ -1,4 +1,4 @@
-#ifndef MESH_ACTOR_H
+﻿#ifndef MESH_ACTOR_H
 #define MESH_ACTOR_H
 #include "Core.h"
 #include <vtkPropCollection.h>
@@ -72,11 +72,14 @@ public:
      * @brief 取消属性渲染
      */
     void cancelActiveAttribute();
-   
+    void setGlyph3DScaleFactor(double scale);
+    void setScalarRange(double min, double max);
+    void resetScalarRange();
 
 private:
     void cancelActiveGlyph3D();
     void setTextureImage(std::string texturePath);
+    void cancelTextureImage();
 
     ModelRenderMode render_mode_;
     bool edge_render_{ true };
