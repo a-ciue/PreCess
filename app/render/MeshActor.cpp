@@ -876,8 +876,6 @@ void MeshActor::setScalarRange(double min, double max)
     vtkDataArray* array = nullptr;
     vtkPolyDataMapper* mapper = nullptr;
 
-
-
     // 如果点映射可见且有标量，设置点，同时同步设置面（点对面插值）
     if (vertex_mapper_->GetScalarVisibility() && vertex_data_ && vertex_data_->GetPointData()->GetScalars()) {
         array = vertex_data_->GetPointData()->GetScalars();
@@ -901,7 +899,7 @@ void MeshActor::setScalarRange(double min, double max)
     renderer_->Render();
     return;
 }
-
+// 重置标量映射范围到数据的实际范围
 void MeshActor::resetScalarRange()
 {
     // 优先判断面映射（cell data），否则判断点映射（point data）
@@ -939,8 +937,3 @@ void MeshActor::resetScalarRange()
             return;
         }
 }
-// todo
-// 接口整理  
-// 提交优化
-// vtk插件分别提交
-// cancel 纹理贴图接口
