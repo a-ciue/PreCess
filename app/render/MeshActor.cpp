@@ -210,20 +210,13 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
                         vertex_poly->GetPointData()->AddArray(vector_array);
                     
                     }
-                    //// 输出vector_array看是否正确
-                    //vtkDoubleArray* test = static_cast<vtkDoubleArray*>(vertex_poly->GetPointData()->GetArray(attr_name.c_str()));
-                    //for (vtkIdType i = 0; i < test->GetNumberOfTuples(); i++) {
-                    //    double testValue[3];
-                    //    test->GetTuple(i, testValue);
-                    //    std::cout << "vertex" << ":" << attr_name.c_str() << ":" << i << ":" << testValue[0] << "," << testValue[1] << "," << testValue[2] << std::endl;
-                    //}
+
                 }
             
             else {
-                // 错误处理：属性长度不匹配
+
                 std::cerr << "Warning: Vertex attribute '" << attr_name
-                          << "' has invalid length (" << attr_values.size()
-                          << "), expected " << num_vertex << " or " << 3 * num_vertex << std::endl;
+                          << std::endl;
             }
         }
     }
@@ -300,18 +293,10 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
                     }
                     face_poly->GetCellData()->AddArray(vector_array);
                 }
-                //// 输出face的vector_array看是否正确
-                //vtkDoubleArray* test = static_cast<vtkDoubleArray*>(face_poly->GetCellData()->GetArray(attr_name.c_str()));
-                //for (vtkIdType i = 0; i < test->GetNumberOfTuples(); i++) {
-                //    double testValue[3];
-                //    test->GetTuple(i, testValue);
-                //    std::cout << "face" << i << ":" << attr_name.c_str() << ":" << testValue[0] << "," << testValue[1] << "," << testValue[2] << std::endl;
-                //}
+
             } else {
-                // 错误处理：属性长度不匹配
                 std::cerr << "Warning: Face attribute '" << attr_name
-                          << "' has invalid length (" << attr_values.size()
-                          << "), expected " << num_faces << " or " << 3 * num_faces << std::endl;
+                          << std::endl;
             }
         }
     }
@@ -329,39 +314,6 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         edge_poly->SetLines(edge_cells);
 
         edge_poly->GetPointData()->AddArray(originalPointIds);
-        // 新增：动态处理边属性
-        const size_t num_edges = edge_poly->GetNumberOfCells();
-        for (const auto& attr : model_data.edge_attributes_) {
-            const std::string& attr_name = attr.first;
-            const std::vector<double>& attr_values = attr.second;
-            if (attr_values.size() == num_edges) {
-                // 单分量属性 (如 "edge_weight")
-                vtkNew<vtkDoubleArray> scalar_array;
-                scalar_array->SetNumberOfComponents(1);
-                scalar_array->SetName(attr_name.c_str());
-                for (size_t i = 0; i < num_edges; ++i) {
-                    scalar_array->InsertNextValue(attr_values[i]);
-                }
-                edge_poly->GetCellData()->AddArray(scalar_array);
-            } else if (attr_values.size() == 3 * num_edges) {
-                // 三元组属性 (如 "edge_direction_3")
-                vtkNew<vtkDoubleArray> vector_array;
-                vector_array->SetNumberOfComponents(3);
-                vector_array->SetName(attr_name.c_str());
-                for (size_t i = 0; i < num_edges; ++i) {
-                    vector_array->InsertNextTuple3(
-                        attr_values[i * 3],
-                        attr_values[i * 3 + 1],
-                        attr_values[i * 3 + 2]);
-                }
-                edge_poly->GetCellData()->AddArray(vector_array);
-            } else {
-                // 错误处理：属性长度不匹配
-                std::cerr << "Warning: Edge attribute '" << attr_name
-                          << "' has invalid length (" << attr_values.size()
-                          << "), expected " << num_edges << " or " << 3 * num_edges << std::endl;
-            }
-        }
     }
 
     // solid data
@@ -821,7 +773,7 @@ void MeshActor::setTextureImage(std::string texturePath)
     texture->InterpolateOn(); // 启用插值使纹理更平滑
 
     // 如果模型没有 UV，这里会自动触发计算
-    if ((this->vertex_data_->GetPointData()->GetTCoords()) ){
+    if (!(this->vertex_data_->GetPointData()->GetTCoords()) ){
         std::cout << "重新计算uv" << std::endl;
         vtkNew<vtkTextureMapToPlane> textureMapper;
         textureMapper->SetInputData(this->vertex_data_);
@@ -829,6 +781,8 @@ void MeshActor::setTextureImage(std::string texturePath)
 
         // 将计算的 UV 设置到模型
         this->vertex_data_->GetPointData()->SetTCoords(
+            textureMapper->GetOutput()->GetPointData()->GetTCoords());
+        this->face_data_->GetPointData()->SetTCoords(
             textureMapper->GetOutput()->GetPointData()->GetTCoords());
    
     }
@@ -839,7 +793,6 @@ void MeshActor::setTextureImage(std::string texturePath)
 void MeshActor::cancelTextureImage()
 {
     this->face_actor_->SetTexture(nullptr);
-    std::cout << "取消texture" << std::endl;
     renderer_->Render();
 }
 void MeshActor::setAttriMode(std::string attr_name, Mode mode, ElementType type, std::string texturePath)

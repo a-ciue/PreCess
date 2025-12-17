@@ -1,4 +1,4 @@
-#include "MeshActorManager.h"
+﻿#include "MeshActorManager.h"
 #include "MeshActor.h"
 #include "Core.h"
 
@@ -89,3 +89,29 @@ ModelRenderMode MeshActorManager::getMeshRenderMode(Index model_id)
     if (this->models_.count(model_id))
     return this->models_[model_id]->getMeshRenderMode();
 }
+void MeshActorManager::setAttriMode(Index model_id, std::string attr_name, MeshActor::Mode mode, MeshActor::ElementType type, std::string texturePath)
+{
+    if (this->models_.count(model_id))
+        this->models_[model_id]->setAttriMode(attr_name, mode, type, texturePath);
+}
+void MeshActorManager::cancelAttri(Index model_id)
+{
+    if (this->models_.count(model_id))
+        this->models_[model_id]->cancelActiveAttribute();
+}
+void MeshActorManager::setGlyph3DScaleFactor(Index model_id, double scale)
+{
+    if (this->models_.count(model_id))
+        this->models_[model_id]->setGlyph3DScaleFactor(scale);
+}
+void MeshActorManager::setScalarRange(Index model_id, double min, double max)
+{
+    if (this->models_.count(model_id))
+        this->models_[model_id]->setScalarRange(min, max);
+}
+void MeshActorManager::resetScalarRange(Index model_id)
+{
+    if (this->models_.count(model_id))
+        this->models_[model_id]->resetScalarRange();
+}
+

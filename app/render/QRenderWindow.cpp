@@ -1,4 +1,4 @@
-#include "QRenderWindow.h"
+﻿#include "QRenderWindow.h"
 #include "MeshActor.h"
 #include "MeshActorManager.h"
 #include "QModelQuery.h"
@@ -15,9 +15,10 @@
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 #include <spdlog/spdlog.h>
-
+#include <vtkOutputWindow.h>
 QRenderWindow::QRenderWindow()
 {
+    vtkOutputWindow::SetGlobalWarningDisplay(0);
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
     selectManager_ = std::make_unique<SelectManager>();
@@ -99,6 +100,8 @@ void QRenderWindow::resetCamera()
         scheduleRender();
     });
 }
+
+
 
 bool QRenderWindow::event(QEvent* ev)
 {
@@ -349,4 +352,78 @@ void QRenderWindow::setClick()
     });
 }
 
+void QRenderWindow::setAttriMode(QString attr_name, int mode, int type, QString texturePath)
+{
+    dispatch_async([this, attr_name, mode, type, texturePath](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        // int -> 枚举类型
+        MeshActor::Mode modeEnum = static_cast<MeshActor::Mode>(mode);
+        MeshActor::ElementType typeEnum = static_cast<MeshActor::ElementType>(type);
+
+        std::cout << "modeEnum: " << modeEnum
+                  << ", typeEnum: " << typeEnum << std::endl;
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+            vtk->mesh_actor_manager_->setAttriMode(
+                cur_actor_id_,
+                attr_name.toStdString(),
+                modeEnum,
+                typeEnum,
+                texturePath.toStdString());
+        }
+        std::cout << "-----setAttriMode------------" << std::endl;
+
+    });
+}
+
+void QRenderWindow::cancelAttri()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+            vtk->mesh_actor_manager_->cancelAttri(
+                cur_actor_id_);
+        }
+        std::cout << "--------cancelAttri-----------" << std::endl;
+
+
+    });
+}
+void QRenderWindow::setScalarRange(double min, double max)
+{
+    dispatch_async([this, min, max](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+            vtk->mesh_actor_manager_->setScalarRange(
+                cur_actor_id_,
+                min,
+                max);
+        }
+        std::cout << "-----setAttriRange------------" << std::endl;
+
+    });
+}
+void QRenderWindow::resetScalarRange()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+            vtk->mesh_actor_manager_->resetScalarRange(
+                cur_actor_id_);
+        }
+        std::cout << "-----resetScalarRange------------" << std::endl;
+
+    });
+}
+void QRenderWindow::setGlyph3DScaleFactor(double scale)
+{
+    dispatch_async([this,scale](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+            vtk->mesh_actor_manager_->setGlyph3DScaleFactor(
+                cur_actor_id_,
+                scale);
+        }
+        std::cout << "-----setGlyph3DScaleFactor------------" << std::endl;
+    });
+}
 vtkStandardNewMacro(QRenderWindow::Data);
