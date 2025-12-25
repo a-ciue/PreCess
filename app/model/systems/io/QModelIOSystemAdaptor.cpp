@@ -12,6 +12,9 @@ using namespace systems::io;
 QModelIOSystemAdaptor::QModelIOSystemAdaptor(ModelIOSystem& io_system)
     : io_system_(&io_system)
 {
+    io_system.setOnDialogNameFiltersChanged([this]() {
+        emit dialogNameFiltersChanged();
+    });
 }
 
 bool QModelIOSystemAdaptor::read(const QString& unique_name, const QUrl& url, const QVariantList& args)

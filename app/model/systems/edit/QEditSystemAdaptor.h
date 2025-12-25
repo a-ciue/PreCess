@@ -16,6 +16,7 @@ class EditSystem;
 class QEditSystemAdaptor : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    Q_PROPERTY(QList<QEditInfo*> editsInfo READ getEditsInfo NOTIFY editInfoChanged)
 public:
     QEditSystemAdaptor(EditSystem& edit_system);
     /**
@@ -31,6 +32,9 @@ public:
      * @return 注册的编辑功能和参数列表
      */
     Q_INVOKABLE QList<QEditInfo*> getEditsInfo() const;
+
+signals:
+    void editInfoChanged();
 
 private:
     EditSystem* edit_system_; //> 编辑系统的引用

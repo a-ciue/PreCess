@@ -10,6 +10,9 @@ using core::ArgObject;
 QEditSystemAdaptor::QEditSystemAdaptor(EditSystem& edit_system)
     : edit_system_(&edit_system)
 {
+    edit_system.setOnEditInfoChangedCallback([this]() {
+        emit editInfoChanged();
+    });
 }
 
 QVariant QEditSystemAdaptor::call(const QString& unique_name, Index model, const QVariantList& args)

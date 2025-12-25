@@ -13,6 +13,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <functional>
 
 namespace core {
 class ArgObject;
@@ -65,10 +66,17 @@ public:
      */
     std::optional<std::vector<core::ArgType>> getArgTypes(const std::string& unique_name);
 
+    /**
+     * @brief 设置算法信息变更回调函数
+     */
+    void setOnAlgorithmInfosChanged(std::function<void()> callback);
+
 private:
     io::ModelIOSystem* io_system_; //< 模型IO系统引用，用于模型读写
     ModelManager* model_manager_; //< 模型管理器引用，用于获取模型操作接口
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //< 算法处理器插件列表，key为算法唯一名称name
     std::unordered_map<std::string, std::unique_ptr<AlgorithmInfo>> algorithm_infos_; //< 算法信息列表，key为算法唯一名称name
+
+    std::function<void()> on_algorithm_infos_changed_;
 };
 }

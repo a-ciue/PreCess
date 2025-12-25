@@ -21,6 +21,7 @@ AlgorithmSystem::AlgorithmSystem(io::ModelIOSystem& io_system, ModelManager& mod
     : io_system_(&io_system)
     , model_manager_(&model_manager)
 {
+    on_algorithm_infos_changed_ = []() { };
 }
 
 AlgorithmSystem::~AlgorithmSystem() = default;
@@ -57,6 +58,7 @@ bool AlgorithmSystem::registerHandler(const HandlerMetaData& meta_data, SystemHa
 
     handlers_[meta_data.name] = std::move(handler);
     spdlog::info("AlgorithmSystem::registerHandler: Registered handler for algorithm '{}'", meta_data.name);
+    on_algorithm_infos_changed_();
     return true;
 }
 
@@ -68,6 +70,7 @@ void AlgorithmSystem::unregisterHandler(const HandlerMetaData& meta_data)
 
     handlers_.erase(meta_data.name);
     this->algorithm_infos_.erase(meta_data.name);
+    on_algorithm_infos_changed_();
 
     spdlog::info("AlgorithmSystem::unregisterHandler: Unregistered handler for algorithm '{}'", meta_data.name);
 }
@@ -89,5 +92,10 @@ std::optional<std::vector<core::ArgType>> AlgorithmSystem::getArgTypes(const std
         return it->second->args_type();
     }
     return {};
+}
+
+void AlgorithmSystem::setOnAlgorithmInfosChanged(std::function<void()> callback)
+{
+    on_algorithm_infos_changed_ = std::move(callback);
 }
 }

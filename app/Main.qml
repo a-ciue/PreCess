@@ -17,6 +17,7 @@ import QtQuick.Controls.Fusion
 
 import app.model
 import app.core
+import app.model.systems
 import app.model.systems.algo
 import app.model.systems.io
 import app.model.systems.edit
@@ -52,12 +53,16 @@ ApplicationWindow {
                 text: "导出..."
                 onClicked: saveFaceDialog.open()
             }
+            MenuItem{
+                text: qsTr("插件管理")
+                onClicked: pluginManagerDialog.open()
+            }
         }
         Menu {
             id: editMenu
             title: qsTr("编辑")
             Repeater {
-                model: editSystem.getEditsInfo()
+                model: editSystem.editsInfo
                 MenuItem {
                     text: modelData.display_name
                     onTriggered: {
@@ -74,7 +79,7 @@ ApplicationWindow {
             id: commandMenu
             title: qsTr("算法")
             Repeater {
-                model: algorithmSystem.getAlgorithmsInfo()
+                model: algorithmSystem.algorithmsInfo
                 MenuItem {
                     text: modelData.display_name
                     onTriggered: {
@@ -100,7 +105,7 @@ ApplicationWindow {
 
             FileDialog {
                 id: openPatchDialog
-                nameFilters: ioSystem.getDialogNameFilters()
+                nameFilters: ioSystem.dialogNameFilters
                 onAccepted: {
                     if (selectedNameFilter.index >= 0) {
                         ioSystem.read(selectedNameFilter.name, selectedFile, [])
@@ -112,7 +117,7 @@ ApplicationWindow {
             }
             FileDialog {
                 id: saveFaceDialog
-                nameFilters: ioSystem.getDialogNameFilters()
+                nameFilters: ioSystem.dialogNameFilters
                 fileMode: FileDialog.SaveFile
                 onAccepted: {
                     if (selectedNameFilter.index >= 0) {
@@ -475,6 +480,22 @@ ApplicationWindow {
         
         onCloseRequested: {
             root.consoleVisible = false
+        }
+    }
+
+    Dialog {
+        id: pluginManagerDialog
+        title: "插件管理"
+        standardButtons: DialogButtonBox.NoButton
+        modal: true
+        anchors.centerIn: parent
+        width: 400
+        height: 300
+
+        PluginManagerComponent {
+            id: pluginManagerComponent
+            anchors.fill: parent
+            pluginManager: root.modelManager.systemPluginManager
         }
     }
 }

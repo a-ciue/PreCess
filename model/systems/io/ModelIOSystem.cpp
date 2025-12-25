@@ -21,6 +21,7 @@ const string ModelIOSystem::name = "ModelIOSystem";
 ModelIOSystem::ModelIOSystem(ModelManager& manager)
     : manager_(&manager)
 {
+    on_dialog_name_filters_changed_ = []() { };
 }
 
 ModelIOSystem::~ModelIOSystem() = default;
@@ -72,6 +73,8 @@ bool ModelIOSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     this->handlers_[file_type] = std::move(handler);
 
     spdlog::info("registered file type: {}, supported file extension: {}", file_type, fmt::join(meta_data.extensions, ", "));
+    on_dialog_name_filters_changed_();
+
     return true;
 }
 
@@ -82,6 +85,7 @@ void ModelIOSystem::unregisterHandler(const HandlerMetaData& meta_data)
     this->file_type_infos_.erase(file_type);
 
     spdlog::info("unregistered file type: {}", file_type);
+    on_dialog_name_filters_changed_();
 }
 
 std::vector<ModelIOInfo*> ModelIOSystem::registeredFileTypeInfos()
@@ -91,6 +95,12 @@ std::vector<ModelIOInfo*> ModelIOSystem::registeredFileTypeInfos()
     for (auto&& [algo_name, algo_info] : file_type_infos_) {
         infos.push_back(algo_info.get());
     }
+
     return infos;
+}
+
+void ModelIOSystem::setOnDialogNameFiltersChanged(std::function<void()> callback)
+{
+    on_dialog_name_filters_changed_ = std::move(callback);
 }
 }

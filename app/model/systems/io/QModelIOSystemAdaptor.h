@@ -17,6 +17,7 @@ class QModelIOInfo;
 class QModelIOSystemAdaptor : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    Q_PROPERTY(QStringList dialogNameFilters READ getDialogNameFilters NOTIFY dialogNameFiltersChanged)
 public:
     QModelIOSystemAdaptor(ModelIOSystem& io_system);
     /**
@@ -46,6 +47,9 @@ public:
      * @return 文件类型过滤器列表，如 ["Wavefront .obj file (*.obj)", "All files (*)"]
      */
     Q_INVOKABLE QStringList getDialogNameFilters() const;
+
+signals:
+    void dialogNameFiltersChanged();
 
 private:
     ModelIOSystem* io_system_; //> 文件系统的引用

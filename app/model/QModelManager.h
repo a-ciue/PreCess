@@ -2,6 +2,7 @@
 #include "QAlgorithmSystemAdaptor.h"
 #include "QModelIOSystemAdaptor.h"
 #include "QEditSystemAdaptor.h"
+#include "QSystemPluginManager.h"
 #include <memory>
 
 namespace systems
@@ -12,8 +13,9 @@ namespace systems::io
 {
 	class ModelIOSystem;
 }
-namespace systems::edit {
-class EditSystem;
+namespace systems::edit
+{
+    class EditSystem;
 }
 class ModelManager;
 class QModelObserver;
@@ -21,6 +23,7 @@ class QModelObserver;
 class QModelManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    Q_PROPERTY(systems::QSystemPluginManager* systemPluginManager READ getSystemPluginManager)
 public:
     explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
     ~QModelManager();
@@ -32,6 +35,7 @@ public:
     systems::algo::QAlgorithmSystemAdaptor getAlgorithmSystemAdaptor();
     systems::edit::QEditSystemAdaptor getEditSystemAdaptor();
     systems::io::QModelIOSystemAdaptor getModelIOSystemAdaptor();
+    systems::QSystemPluginManager* getSystemPluginManager();
 
 signals:
     void modelAdded(int id);
@@ -46,5 +50,6 @@ private:
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
     std::unique_ptr<systems::edit::EditSystem> edit_system_;
+    std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
 };

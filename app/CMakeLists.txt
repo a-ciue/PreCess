@@ -17,6 +17,7 @@ qt_add_qml_module(${MYNAME}
             Selector.qml
             JavaScriptConsole.qml
             SignalListener.qml
+            PluginManagerComponent.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE

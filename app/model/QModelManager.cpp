@@ -1,19 +1,19 @@
 #include "QModelManager.h"
-#include "AlgorithmSystemRegister.h"
-#include "ModelIOSystemRegister.h"
-#include "EditSystemRegister.h"
-#include "ModelManager.h"
-#include "ModelIOSystem.h"
 #include "AlgorithmSystem.h"
+#include "AlgorithmSystemRegister.h"
 #include "EditSystem.h"
-#include "SystemPluginManager.h"
+#include "EditSystemRegister.h"
+#include "ModelIOSystem.h"
+#include "ModelIOSystemRegister.h"
+#include "ModelManager.h"
 #include "QModelObserver.h"
+#include "SystemPluginManager.h"
+
 
 #include <QDebug>
-#include <filesystem>
 #include <QFileInfo>
+#include <filesystem>
 #include <spdlog/spdlog.h>
-
 
 QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     : QObject(parent)
@@ -21,8 +21,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     // 1) 初始化
     observer_ = std::make_unique<QModelObserver>();
     core_ = std::make_unique<ModelManager>(
-        /*observer=*/observer_.get()
-    );
+        /*observer=*/observer_.get());
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
@@ -33,6 +32,8 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
     plugin_manager_->addSystemRegister(systems::algo::AlgorithmSystem::name, std::make_unique<systems::algo::AlgorithmSystemRegister>(*algo_system_));
     plugin_manager_->addSystemRegister(systems::edit::EditSystem::name, std::make_unique<systems::edit::EditSystemRegister>(*edit_system_));
+
+    q_plugin_manager_ = std::make_unique<systems::QSystemPluginManager>(plugin_manager_.get());
 
     // 3) 注册插件
     using std::filesystem::path;
@@ -48,7 +49,8 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     // 遍历插件目录，加载所有插件
     for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
         if (entry.is_regular_file()) {
-            plugin_manager_->registerPlugin(entry.path());
+            // plugin_manager_->registerPlugin(entry.path());
+            getSystemPluginManager()->registerPlugin(QString::fromStdString(entry.path().string()));
         }
     }
 }
@@ -87,6 +89,7 @@ systems::algo::QAlgorithmSystemAdaptor QModelManager::getAlgorithmSystemAdaptor(
 {
     return systems::algo::QAlgorithmSystemAdaptor(*algo_system_);
 }
+
 systems::edit::QEditSystemAdaptor QModelManager::getEditSystemAdaptor()
 {
     return systems::edit::QEditSystemAdaptor(*edit_system_);
@@ -95,4 +98,9 @@ systems::edit::QEditSystemAdaptor QModelManager::getEditSystemAdaptor()
 systems::io::QModelIOSystemAdaptor QModelManager::getModelIOSystemAdaptor()
 {
     return systems::io::QModelIOSystemAdaptor(*io_system_);
+}
+
+systems::QSystemPluginManager* QModelManager::getSystemPluginManager()
+{
+    return q_plugin_manager_.get();
 }

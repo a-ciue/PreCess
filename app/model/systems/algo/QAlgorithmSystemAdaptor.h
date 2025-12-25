@@ -16,6 +16,7 @@ class AlgorithmSystem;
 class QAlgorithmSystemAdaptor : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    Q_PROPERTY(QList<QAlgorithmInfo*> algorithmsInfo READ getAlgorithmsInfo NOTIFY algorithmsInfoChanged)
 public:
     QAlgorithmSystemAdaptor(AlgorithmSystem& algo_system);
     /**
@@ -31,6 +32,9 @@ public:
      * @return 注册的算法功能和参数列表
      */
     Q_INVOKABLE QList<QAlgorithmInfo*> getAlgorithmsInfo() const;
+
+signals:
+    void algorithmsInfoChanged();
 
 private:
     AlgorithmSystem* algo_system_; // 算法系统的引用

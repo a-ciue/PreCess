@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <vector>
+#include<functional>
 
 class ModelManager;
 
@@ -65,10 +66,14 @@ public:
      * @return 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
      */
     std::vector<ModelIOInfo*> registeredFileTypeInfos();
+    
+    void setOnDialogNameFiltersChanged(std::function<void()> callback);
 
 private:
     ModelManager* manager_;
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //> 键是文件类型
     std::unordered_map<std::string, std::unique_ptr<ModelIOInfo>> file_type_infos_; //> 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
+
+    std::function<void()> on_dialog_name_filters_changed_;
 };
 }
