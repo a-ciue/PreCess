@@ -1,11 +1,11 @@
-﻿#ifndef MESH_ACTOR_H
+#ifndef MESH_ACTOR_H
 #define MESH_ACTOR_H
 #include "Core.h"
-#include <vtkPropCollection.h>
+#include <vtkActor.h>
+#include <vtkCompositePolyDataMapper.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
-#include <vtkCompositePolyDataMapper.h>
-#include <vtkActor.h>
+#include <vtkPropCollection.h>
 class vtkGeometryFilter;
 class vtkExtractGeometry;
 class vtkExtractPolyDataGeometry;
@@ -39,34 +39,33 @@ public:
 
     bool getIsEdgeRender();
     bool getIsVertexRender();
-   
+
     ModelRenderMode getMeshRenderMode();
     /**
      * @brief 渲染的属性所在actor位置
      */
-     enum ElementType {
+    enum ElementType {
         VERTEX,
         EDGE,
         FACE,
         SOLID
     };
-     /**
+    /**
      * @brief 属性渲染方式
-      */
+     */
     enum Mode {
         RGB,
         SCALAR,
         UV,
         VECTOR
     };
-    void setActiveScalarAttribute(std::string attr_name, ElementType type);
-    void setActiveVectorAttribute(std::string attr_name, ElementType type);
-     /**
-      * @brief 设置属性渲染方式
-      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
-      * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
-      * @param texturePath 贴图路径
-      */
+
+    /**
+     * @brief 设置属性渲染方式
+     * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
+     * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
+     * @param texturePath 贴图路径
+     */
     void setAttriMode(std::string attr_name, Mode mode, ElementType type, std::string texturePath);
     /**
      * @brief 取消属性渲染
@@ -77,14 +76,18 @@ public:
     void resetScalarRange();
 
 private:
+    void setActiveScalarAttribute(std::string attr_name, ElementType type);
+    void setActiveVectorAttribute(std::string attr_name, ElementType type);
+    void setActiveRGBAttribute(std::string attr_name, ElementType type);
     void cancelActiveGlyph3D();
-    void setTextureImage(std::string texturePath);
+    vtkSmartPointer<vtkActor> createGlyph3DActor(vtkDataSet* input, const std::array<double, 3>& color, double scale = 0.3);
+    void setTextureImage(std::string attr_name, std::string texturePath);
     void cancelTextureImage();
 
     ModelRenderMode render_mode_;
-    bool edge_render_{ true };
+    bool edge_render_ { true };
     bool vertex_render_ {};
-    bool visibility_{ true };
+    bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
 
     vtkPlane* clip_plane_ {};
@@ -114,7 +117,7 @@ private:
     vtkRenderer* renderer_;
 
     vtkNew<vtkActor> actor_;
-    //Face mapper
+    // Face mapper
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(const MeshDataVtk& model_data);
     static void _createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data);

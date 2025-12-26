@@ -1,4 +1,4 @@
-﻿/**
+/**
 * @file：QRenderWindow.h
 * @brief：定义渲染窗口，以及渲染窗口中的操作
 * @author：付轩宇 email 982531420@qq.com
@@ -23,7 +23,6 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
-#include "MeshActor.h" 
 
 class MeshActor;
 class SelectManager;
@@ -120,11 +119,10 @@ public:
     Q_INVOKABLE void setMeshClip(bool on);
 
     Q_SLOT void setClick();
-    
-    
+
     /**
      * @brief 设置属性渲染方式
-     * 
+     *
      * 在控制台中调用示例：
      * myItem.setAttriMode("face_color_3", 0, 2, "")
      * myItem.setAttriMode("face_vectors_3", 3, 2, "")
@@ -132,7 +130,7 @@ public:
      * myItem.setAttriMode(" ", 2, 0, "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp")
      * myItem.setAttriMode("vertex_scalars", 1, 0, "")
      * myItem.cancelAttri()
-     * 
+     * @param attr_name 属性名 
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
      * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
      * @param texturePath 贴图路径
@@ -150,7 +148,7 @@ public:
      * 在控制台中调用示例：
      * myItem.setGlyph3DScaleFactor(0.5)
      */
-    Q_INVOKABLE void setGlyph3DScaleFactor( double scale);
+    Q_INVOKABLE void setGlyph3DScaleFactor(double scale);
     /**
      * @brief 设置标量映射范围
      * 在控制台中调用示例：

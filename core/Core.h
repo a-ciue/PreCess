@@ -1,10 +1,10 @@
 #ifndef CORE_H
 #define CORE_H
-#include <vector>
 #include <array>
+#include <map>
 #include <memory>
 #include <string>
-#include <map>
+#include <vector>
 enum class ModelRenderMode {
     Face,
     Block,
@@ -61,12 +61,11 @@ struct MeshDataVtk {
     const std::vector<Index>& vtk_face_cells_offset_; //> 表示面顶点索引偏移的数组，对应 MeshData::face_vertices_offset_
 
     const std::vector<Index>& vtk_edge_cells_; //> 表示边顶点索引的数组，对应 MeshData::edge_vertices_
+
     const std::map<std::string, std::vector<double>>& vertex_attributes_; //> 表示点属性的数组，对应 MeshData::vertex_attributes_
     const std::map<std::string, std::vector<double>>& edge_attributes_; //> 表示边属性的数组，对应 MeshData::edge_attributes_
     const std::map<std::string, std::vector<double>>& face_attributes_; //> 表示面属性的数组，对应 MeshData::face_attributes_
-    const std::map<std::string, std::vector<double>>& solid_attributes_; //> 表示体属性的数组，对应 MeshData::solid_attributes_  
-
-
+    const std::map<std::string, std::vector<double>>& solid_attributes_; //> 表示体属性的数组，对应 MeshData::solid_attributes_
 
     std::shared_ptr<BlockDatas> model_blocks_;
 

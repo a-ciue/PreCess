@@ -2,16 +2,10 @@
 #include "MeshData.h"
 
 #include <spdlog/spdlog.h>
-#include <vtkUnstructuredGrid.h>
-
-#include "UGridModel.h"
-#include "MeshData.h"
-
-#include <spdlog/spdlog.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkPointData.h> 
-#include <vtkCellData.h>  
+#include <vtkCellData.h>
 #include <vtkDoubleArray.h>
+#include <vtkPointData.h>
+#include <vtkUnstructuredGrid.h>
 void UGridModel::update(MeshData& mesh_data)
 {
     using namespace std;
@@ -32,36 +26,24 @@ void UGridModel::update(MeshData& mesh_data)
 
     // 处理顶点属性
     vtkPointData* pointData = mesh_->GetPointData();
-    if (pointData) {
-        int numArrays = pointData->GetNumberOfArrays();
-        for (int i = 0; i < numArrays; i++) {
-            vtkDataArray* array = pointData->GetArray(i);
-            if (array) {
-                std::string arrayName = array->GetName();
-                if (!arrayName.empty()) {
-                    int numComponents = array->GetNumberOfComponents();
-                    // 检查是否为3元或2元属性，自动补全属性名
-                    if (numComponents == 3) {
-                        if (arrayName.size() < 2 || arrayName.substr(arrayName.size() - 2) != "_3") {
-                            arrayName += "_3";
-                        }
-                    }
-                    if (numComponents == 2) {
-                        if (arrayName.size() < 2 || arrayName.substr(arrayName.size() - 2) != "_2") {
-                            arrayName += "_2";
-                        }
-                    }
-                    std::vector<double> values;
-                    values.reserve(static_cast<size_t>(pts->GetNumberOfPoints()) * numComponents);
-                    std::vector<double> tuple(numComponents);
-                    for (vtkIdType j = 0; j < pts->GetNumberOfPoints(); ++j) {
-                        array->GetTuple(j, tuple.data());
-                        values.insert(values.end(), tuple.begin(), tuple.end());
-                    }
-                    mesh_data.vertex_attributes_[arrayName] = std::move(values);
-                }
-            }
+    assert(pointData);
+
+    int numArrays = pointData->GetNumberOfArrays();
+    for (int i = 0; i < numArrays; i++) {
+        vtkDataArray* array = pointData->GetArray(i);
+        assert(array);
+        std::string arrayName = array->GetName();
+        int numComponents = array->GetNumberOfComponents();
+        // 检查是否为3元或2元属性，自动补全属性名
+        arrayName = completeAttributeName(arrayName, numComponents);
+        std::vector<double> values;
+        values.reserve(static_cast<size_t>(pts->GetNumberOfPoints()) * numComponents);
+        std::vector<double> tuple(numComponents);
+        for (vtkIdType j = 0; j < pts->GetNumberOfPoints(); ++j) {
+            array->GetTuple(j, tuple.data());
+            values.insert(values.end(), tuple.begin(), tuple.end());
         }
+        mesh_data.vertex_attributes_[arrayName] = std::move(values);
     }
 
     // cells
@@ -107,32 +89,24 @@ void UGridModel::update(MeshData& mesh_data)
 
             // 处理面属性
             vtkCellData* cellData = mesh_->GetCellData();
-            if (cellData) {
-                int numArrays = cellData->GetNumberOfArrays();
-                for (int i = 0; i < numArrays; i++) {
-                    vtkDataArray* array = cellData->GetArray(i);
-                    if (array) {
-                        std::string arrayName = array->GetName();
-                        if (!arrayName.empty()) {
-                            int numComponents = array->GetNumberOfComponents();
-                            if (numComponents == 3) {
-                                if (arrayName.size() < 2 || arrayName.substr(arrayName.size() - 2) != "_3") {
-                                    arrayName += "_3";
-                                }
-                            }
-                            std::vector<double> values;
-                            values.reserve(static_cast<size_t>(mesh_->GetNumberOfCells()) * numComponents);
-                            std::vector<double> tuple(numComponents);
-                            for (vtkIdType j = 0; j < mesh_->GetNumberOfCells(); ++j) {
-                                if (mesh_->GetCell(j)->GetCellDimension() == 2) {
-                                    array->GetTuple(j, tuple.data());
-                                    values.insert(values.end(), tuple.begin(), tuple.end());
-                                }
-                            }
-                            mesh_data.face_attributes_[arrayName] = std::move(values);
-                        }
-                    }
+            assert(cellData);
+            int numArrays = cellData->GetNumberOfArrays();
+            for (int i = 0; i < numArrays; i++) {
+                vtkDataArray* array = cellData->GetArray(i);
+                assert(array);
+                std::string arrayName = array->GetName();
+
+                int numComponents = array->GetNumberOfComponents();
+                arrayName = completeAttributeName(arrayName, numComponents);
+
+                std::vector<double> values;
+                values.reserve(static_cast<size_t>(mesh_->GetNumberOfCells()) * numComponents);
+                std::vector<double> tuple(numComponents);
+                for (vtkIdType j = 0; j < mesh_->GetNumberOfCells(); ++j) {
+                    array->GetTuple(j, tuple.data());
+                    values.insert(values.end(), tuple.begin(), tuple.end());
                 }
+                mesh_data.face_attributes_[arrayName] = std::move(values);
             }
         } else if (dim == 1) { // 边或折线
             if (npts >= 2) {
@@ -147,38 +121,11 @@ void UGridModel::update(MeshData& mesh_data)
     // 遍历mesh_data的vertex_attributes
     for (const auto& [name, values] : mesh_data.vertex_attributes_) {
         spdlog::info("Vertex attribute: {}", name);
-        size_t numComponents = 1;
-        if (!values.empty()) {
-            if (name.size() > 2 && name.substr(name.size() - 2) == "_3") numComponents = 3;
-            else if (name.size() > 2 && name.substr(name.size() - 2) == "_2") numComponents = 2;
-}
-        for (size_t i = 0; i < values.size(); i += numComponents) {
-            if (numComponents == 3)
-                spdlog::info("  value[{}] = ({}, {}, {})", i / 3, values[i], values[i + 1], values[i + 2]);
-            else if (numComponents == 2)
-                spdlog::info("  value[{}] = ({}, {})", i / 2, values[i], values[i + 1]);
-            else
-                spdlog::info("  value[{}] = {}", i, values[i]);
-        }
     }
+
     // 遍历mesh_data的face_attributes
     for (const auto& [name, values] : mesh_data.face_attributes_) {
         spdlog::info("Face attribute: {}", name);
-        size_t numComponents = 1;
-        if (!values.empty()) {
-            if (name.size() > 2 && name.substr(name.size() - 2) == "_3")
-                numComponents = 3;
-            else if (name.size() > 2 && name.substr(name.size() - 2) == "_2")
-                numComponents = 2;
-        }
-        for (size_t i = 0; i < values.size(); i += numComponents) {
-            if (numComponents == 3)
-                spdlog::info("  value[{}] = ({}, {}, {})", i / 3, values[i], values[i + 1], values[i + 2]);
-            else if (numComponents == 2)
-                spdlog::info("  value[{}] = ({}, {})", i / 2, values[i], values[i + 1]);
-            else
-                spdlog::info("  value[{}] = {}", i, values[i]);
-        }
     }
 }
 
@@ -187,10 +134,25 @@ void UGridModel::updateFrom(const MeshData& mesh_data)
     // TODO: 从 MeshData 更新 vtkUnstructuredGrid
 }
 
-
 UGridModel::UGridModel(vtkUnstructuredGrid& mesh)
-    :mesh_(&mesh)
+    : mesh_(&mesh)
 {
 }
 
 UGridModel::~UGridModel() = default;
+
+
+std::string UGridModel::completeAttributeName(const std::string& name, int numComponents)
+{
+    if (numComponents == 3) {
+        if (name.size() < 2 || name.substr(name.size() - 2) != "_3") {
+            return name + "_3";
+        }
+    }
+    if (numComponents == 2) {
+        if (name.size() < 2 || name.substr(name.size() - 2) != "_2") {
+            return name + "_2";
+        }
+    }
+    return name;
+}

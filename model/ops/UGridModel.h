@@ -28,4 +28,10 @@ public:
 
 private:
     vtkSmartPointer<vtkUnstructuredGrid> mesh_;
+    /**
+     * @brief 根据分量数自动补全属性名后缀
+     * @param baseName 用于更新的 baseName。
+     * @param numComponents 分量数。
+     */
+    std::string completeAttributeName(const std::string& baseName, int numComponents);
 };

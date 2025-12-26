@@ -1,4 +1,4 @@
-﻿#include "QRenderWindow.h"
+#include "QRenderWindow.h"
 #include "MeshActor.h"
 #include "MeshActorManager.h"
 #include "QModelQuery.h"
@@ -9,16 +9,15 @@
 #include "SplineActorManager.h"
 #include "SplineDataVtk.h"
 
+#include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkObjectFactory.h>
-#include <vtkPlane.h>
-#include <spdlog/spdlog.h>
 #include <vtkOutputWindow.h>
+#include <vtkPlane.h>
 QRenderWindow::QRenderWindow()
 {
-    vtkOutputWindow::SetGlobalWarningDisplay(0);
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
     selectManager_ = std::make_unique<SelectManager>();
@@ -100,8 +99,6 @@ void QRenderWindow::resetCamera()
         scheduleRender();
     });
 }
-
-
 
 bool QRenderWindow::event(QEvent* ev)
 {
@@ -370,8 +367,7 @@ void QRenderWindow::setAttriMode(QString attr_name, int mode, int type, QString 
                 typeEnum,
                 texturePath.toStdString());
         }
-        std::cout << "-----setAttriMode------------" << std::endl;
-
+        spdlog::info("-----setAttriMode:" + attr_name.toStdString());
     });
 }
 
@@ -383,9 +379,7 @@ void QRenderWindow::cancelAttri()
             vtk->mesh_actor_manager_->cancelAttri(
                 cur_actor_id_);
         }
-        std::cout << "--------cancelAttri-----------" << std::endl;
-
-
+        spdlog::info("--------cancelAttri-----------");
     });
 }
 void QRenderWindow::setScalarRange(double min, double max)
@@ -398,8 +392,7 @@ void QRenderWindow::setScalarRange(double min, double max)
                 min,
                 max);
         }
-        std::cout << "-----setAttriRange------------" << std::endl;
-
+        spdlog::info("-----setAttriRange------------");
     });
 }
 void QRenderWindow::resetScalarRange()
@@ -410,20 +403,19 @@ void QRenderWindow::resetScalarRange()
             vtk->mesh_actor_manager_->resetScalarRange(
                 cur_actor_id_);
         }
-        std::cout << "-----resetScalarRange------------" << std::endl;
-
+        spdlog::info("-----resetScalarRange------------");
     });
 }
 void QRenderWindow::setGlyph3DScaleFactor(double scale)
 {
-    dispatch_async([this,scale](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([this, scale](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
             vtk->mesh_actor_manager_->setGlyph3DScaleFactor(
                 cur_actor_id_,
                 scale);
         }
-        std::cout << "-----setGlyph3DScaleFactor------------" << std::endl;
+        spdlog::info("-----setGlyph3DScaleFactor: {}", scale);
     });
 }
 vtkStandardNewMacro(QRenderWindow::Data);

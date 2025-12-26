@@ -18,9 +18,6 @@
 MeshDataVtk MakeMeshDataVtk(MeshData& data)
 {
 
-    if (&data == nullptr) {
-        data = MakeMeshData();
-    }
     if (data.vertex_positions_.empty()) {
         data = MakeMeshData();
     }
