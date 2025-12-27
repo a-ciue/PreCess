@@ -35,13 +35,13 @@ void SelectManager::setSelectMode(SelectMode select_mode)
     if (this->select_mode_ == SelectMode::Vertex) {
         this->selector_ = std::make_unique<VertexSelectorHighlight>(this->renderer_);
     } else if (this->select_mode_ == SelectMode::Face) {
-        this->selector_ = std::make_unique<SingleFaceSelectorHighlight>(this->renderer_);
+        this->selector_ = std::make_unique<FaceSelectorHighlight>(this->renderer_);
     } else if (this->select_mode_ == SelectMode::Block) {
         this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
     } else if (this->select_mode_ == SelectMode::Edge) {
         this->selector_ = std::make_unique<EdgeSelectorHighlight>(this->renderer_);
     } else if (this->select_mode_ == SelectMode::Solid) {
-        this->selector_ = std::make_unique<SingleSolidSelectorHighlight>(this->renderer_);
+        this->selector_ = std::make_unique<SolidSelectorHighlight>(this->renderer_);
     } else {
         assert(this->select_mode_ == SelectMode::None);
         this->selector_ = nullptr;

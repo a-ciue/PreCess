@@ -16,24 +16,24 @@ target_link_libraries(TestEdgeSelectorHighlight PRIVATE
 vtk_module_autoinit(TARGETS TestEdgeSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
 install(TARGETS TestEdgeSelectorHighlight)
 
-# TestSingleFaceSelectorHighlight
-add_executable(TestSingleFaceSelectorHighlight TestSingleFaceSelectorHighlight.cpp)
-target_link_libraries(TestSingleFaceSelectorHighlight PRIVATE 
+# TestFaceSelectorHighlight
+add_executable(TestFaceSelectorHighlight "TestFaceSelectorHighlight.cpp")
+target_link_libraries(TestFaceSelectorHighlight PRIVATE 
     vtkPart TestDeps
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
-vtk_module_autoinit(TARGETS TestSingleFaceSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
-install(TARGETS TestSingleFaceSelectorHighlight)
+vtk_module_autoinit(TARGETS TestFaceSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+install(TARGETS TestFaceSelectorHighlight)
 
-# TestSingleSolidSelectorHighlight
-add_executable(TestSingleSolidSelectorHighlight TestSingleSolidSelectorHighlight.cpp)
-target_link_libraries(TestSingleSolidSelectorHighlight PRIVATE 
+# TestSolidSelectorHighlight
+add_executable(TestSolidSelectorHighlight "TestSolidSelectorHighlight.cpp")
+target_link_libraries(TestSolidSelectorHighlight PRIVATE 
     vtkPart TestDeps
     spdlog::spdlog
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
-vtk_module_autoinit(TARGETS TestSingleSolidSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
-install(TARGETS TestSingleSolidSelectorHighlight)
+vtk_module_autoinit(TARGETS TestSolidSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+install(TARGETS TestSolidSelectorHighlight)
 
 # TestVertexSelectorHighlight
 add_executable(TestVertexSelectorHighlight TestVertexSelectorHighlight.cpp)

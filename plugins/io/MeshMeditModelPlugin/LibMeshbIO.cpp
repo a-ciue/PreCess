@@ -11,6 +11,146 @@ constexpr unsigned char VTK_HEXAHEDRON = 12;
 constexpr unsigned char VTK_WEDGE = 13;
 constexpr unsigned char VTK_PYRAMID = 14;
 
+namespace {
+template <int V>
+using MeshInt_t = std::conditional_t<(V <= 3), int, int64_t>;
+template <int V>
+using MeshDbl_t = std::conditional_t<(V <= 2), float, double>;
+
+template<typename MI>
+void add_face(MeshData& mesh_data, std::initializer_list<MI> vertices)
+{
+    for (auto v : vertices) {
+        mesh_data.face_vertices_.push_back(static_cast<Index>(v - 1)); // Convert to 0-based
+    }
+    mesh_data.face_vertices_offset_.push_back(static_cast<Index>(mesh_data.face_vertices_.size()));
+};
+
+template <typename MI>
+void add_solid(MeshData& mesh_data, unsigned char type, std::initializer_list<MI> vertices)
+{
+    mesh_data.solid_types_.push_back(type);
+    for (auto v : vertices) {
+        mesh_data.solid_vertices_.push_back(static_cast<Index>(v - 1)); // Convert to 0-based
+    }
+    mesh_data.solid_vertices_offset_.push_back(static_cast<Index>(mesh_data.solid_vertices_.size()));
+    mesh_data.solid_faces_offset_.push_back(0);
+};
+
+template <int V>
+void read_given_version(MeshData& mesh_data, int64_t meshb_idx)
+{
+    static_assert(0 <= V && V <= 4 && "Version 0~4 LibMeshb supported");
+    using MeshInt = MeshInt_t<V>;
+    using MeshDbl = MeshDbl_t<V>;
+
+    mesh_data.init();
+
+    // Read Vertices
+    int64_t num_vertices = GmfStatKwd(meshb_idx, GmfVertices);
+    if (num_vertices > 0) {
+        mesh_data.vertex_positions_.reserve(num_vertices);
+        GmfGotoKwd(meshb_idx, GmfVertices);
+
+        for (int64_t i = 0; i < num_vertices; ++i) {
+            MeshDbl x, y, z;
+            MeshInt ref;
+            GmfGetLin(meshb_idx, GmfVertices, &x, &y, &z, &ref);
+            mesh_data.vertex_positions_.push_back({ x, y, z });
+        }
+        spdlog::info("Read {} vertices", num_vertices);
+    }
+
+    // Read Edges
+    int64_t num_edges = GmfStatKwd(meshb_idx, GmfEdges);
+    if (num_edges > 0) {
+        GmfGotoKwd(meshb_idx, GmfEdges);
+        mesh_data.edge_vertices_.reserve(num_edges * 2);
+
+        for (int64_t i = 0; i < num_edges; ++i) {
+            MeshInt v1, v2, ref;
+            GmfGetLin(meshb_idx, GmfEdges, &v1, &v2, &ref);
+            // Convert from 1-based to 0-based indexing
+            mesh_data.edge_vertices_.push_back(static_cast<Index>(v1 - 1));
+            mesh_data.edge_vertices_.push_back(static_cast<Index>(v2 - 1));
+        }
+        spdlog::info("Read {} edges", num_edges);
+    }
+
+    // Read Triangles
+    int64_t num_triangles = GmfStatKwd(meshb_idx, GmfTriangles);
+    if (num_triangles > 0) {
+        GmfGotoKwd(meshb_idx, GmfTriangles);
+        for (int64_t i = 0; i < num_triangles; ++i) {
+            MeshInt v1, v2, v3, ref;
+            GmfGetLin(meshb_idx, GmfTriangles, &v1, &v2, &v3, &ref);
+            add_face(mesh_data, { v1, v2, v3 });
+        }
+        spdlog::info("Read {} triangles", num_triangles);
+    }
+
+    // Read Quadrilaterals
+    int64_t num_quads = GmfStatKwd(meshb_idx, GmfQuadrilaterals);
+    if (num_quads > 0) {
+        GmfGotoKwd(meshb_idx, GmfQuadrilaterals);
+        for (int64_t i = 0; i < num_quads; ++i) {
+            MeshInt v1, v2, v3, v4, ref;
+            GmfGetLin(meshb_idx, GmfQuadrilaterals, &v1, &v2, &v3, &v4, &ref);
+            add_face(mesh_data, { v1, v2, v3, v4 });
+        }
+        spdlog::info("Read {} quadrilaterals", num_quads);
+    }
+
+    // Read Tetrahedra
+    int64_t num_tets = GmfStatKwd(meshb_idx, GmfTetrahedra);
+    if (num_tets > 0) {
+        GmfGotoKwd(meshb_idx, GmfTetrahedra);
+        for (int64_t i = 0; i < num_tets; ++i) {
+            MeshInt v1, v2, v3, v4, ref;
+            GmfGetLin(meshb_idx, GmfTetrahedra, &v1, &v2, &v3, &v4, &ref);
+            add_solid(mesh_data, VTK_TETRA, { v1, v2, v3, v4 });
+        }
+        spdlog::info("Read {} tetrahedra", num_tets);
+    }
+
+    // Read Pyramids
+    int64_t num_pyramids = GmfStatKwd(meshb_idx, GmfPyramids);
+    if (num_pyramids > 0) {
+        GmfGotoKwd(meshb_idx, GmfPyramids);
+        for (int64_t i = 0; i < num_pyramids; ++i) {
+            MeshInt v1, v2, v3, v4, v5, ref;
+            GmfGetLin(meshb_idx, GmfPyramids, &v1, &v2, &v3, &v4, &v5, &ref);
+            add_solid(mesh_data, VTK_PYRAMID, { v1, v2, v3, v4, v5 });
+        }
+        spdlog::info("Read {} pyramids", num_pyramids);
+    }
+
+    // Read Prisms (Wedges)
+    int64_t num_prisms = GmfStatKwd(meshb_idx, GmfPrisms);
+    if (num_prisms > 0) {
+        GmfGotoKwd(meshb_idx, GmfPrisms);
+        for (int64_t i = 0; i < num_prisms; ++i) {
+            MeshInt v1, v2, v3, v4, v5, v6, ref;
+            GmfGetLin(meshb_idx, GmfPrisms, &v1, &v2, &v3, &v4, &v5, &v6, &ref);
+            add_solid(mesh_data, VTK_WEDGE, { v1, v2, v3, v4, v5, v6 });
+        }
+        spdlog::info("Read {} prisms", num_prisms);
+    }
+
+    // Read Hexahedra
+    int64_t num_hexes = GmfStatKwd(meshb_idx, GmfHexahedra);
+    if (num_hexes > 0) {
+        GmfGotoKwd(meshb_idx, GmfHexahedra);
+        for (int64_t i = 0; i < num_hexes; ++i) {
+            MeshInt v1, v2, v3, v4, v5, v6, v7, v8, ref;
+            GmfGetLin(meshb_idx, GmfHexahedra, &v1, &v2, &v3, &v4, &v5, &v6, &v7, &v8, &ref);
+            add_solid(mesh_data, VTK_HEXAHEDRON, { v1, v2, v3, v4, v5, v6, v7, v8 });
+        }
+        spdlog::info("Read {} hexahedra", num_hexes);
+    }
+}
+}
+
 bool LibMeshbIO::read(const std::filesystem::path& input_path, MeshData& mesh_data)
 {
     int version = 1;
@@ -22,136 +162,19 @@ bool LibMeshbIO::read(const std::filesystem::path& input_path, MeshData& mesh_da
     }
 
     try {
-        mesh_data.init();
-
-        // Read Vertices
-        int64_t num_vertices = GmfStatKwd(meshb_idx, GmfVertices);
-        if (num_vertices > 0) {
-            GmfGotoKwd(meshb_idx, GmfVertices);
-            mesh_data.vertex_positions_.resize(num_vertices);
-
-            if (version == 3) {
-                for (int64_t i = 0; i < num_vertices; ++i) {
-                    double x, y, z;
-                    int ref;
-                    GmfGetLin(meshb_idx, GmfVertices, &x, &y, &z, &ref);
-                    mesh_data.vertex_positions_[i] = { x, y, z };
-                }
-            } else {
-                for (int64_t i = 0; i < num_vertices; ++i) {
-                    float x, y, z;
-                    int ref;
-                    GmfGetLin(meshb_idx, GmfVertices, &x, &y, &z, &ref);
-                    mesh_data.vertex_positions_[i] = { x, y, z };
-                }
-            }
-            spdlog::info("Read {} vertices", num_vertices);
-        }
-
-        // Read Edges
-        int64_t num_edges = GmfStatKwd(meshb_idx, GmfEdges);
-        if (num_edges > 0) {
-            GmfGotoKwd(meshb_idx, GmfEdges);
-            mesh_data.edge_vertices_.reserve(num_edges * 2);
-
-            for (int64_t i = 0; i < num_edges; ++i) {
-                int v1, v2, ref;
-                GmfGetLin(meshb_idx, GmfEdges, &v1, &v2, &ref);
-                // Convert from 1-based to 0-based indexing
-                mesh_data.edge_vertices_.push_back(v1 - 1);
-                mesh_data.edge_vertices_.push_back(v2 - 1);
-            }
-            spdlog::info("Read {} edges", num_edges);
-        }
-
-        // Helper lambda to add face data
-        auto add_face = [&](const std::vector<Index>& vertices) {
-            for (Index v : vertices) {
-                mesh_data.face_vertices_.push_back(v - 1); // Convert to 0-based
-            }
-            mesh_data.face_vertices_offset_.push_back(mesh_data.face_vertices_.size());
-        };
-
-        // Helper lambda to add solid data
-        auto add_solid = [&](unsigned char type, const std::vector<Index>& vertices) {
-            mesh_data.solid_types_.push_back(type);
-            for (Index v : vertices) {
-                mesh_data.solid_vertices_.push_back(v - 1); // Convert to 0-based
-            }
-            mesh_data.solid_vertices_offset_.push_back(mesh_data.solid_vertices_.size());
-            mesh_data.solid_faces_offset_.push_back(0);
-        };
-
-        // Read Triangles
-        int64_t num_triangles = GmfStatKwd(meshb_idx, GmfTriangles);
-        if (num_triangles > 0) {
-            GmfGotoKwd(meshb_idx, GmfTriangles);
-            for (int64_t i = 0; i < num_triangles; ++i) {
-                int v1, v2, v3, ref;
-                GmfGetLin(meshb_idx, GmfTriangles, &v1, &v2, &v3, &ref);
-                add_face({ v1, v2, v3 });
-            }
-            spdlog::info("Read {} triangles", num_triangles);
-        }
-
-        // Read Quadrilaterals
-        int64_t num_quads = GmfStatKwd(meshb_idx, GmfQuadrilaterals);
-        if (num_quads > 0) {
-            GmfGotoKwd(meshb_idx, GmfQuadrilaterals);
-            for (int64_t i = 0; i < num_quads; ++i) {
-                int v1, v2, v3, v4, ref;
-                GmfGetLin(meshb_idx, GmfQuadrilaterals, &v1, &v2, &v3, &v4, &ref);
-                add_face({ v1, v2, v3, v4 });
-            }
-            spdlog::info("Read {} quadrilaterals", num_quads);
-        }
-
-        // Read Tetrahedra
-        int64_t num_tets = GmfStatKwd(meshb_idx, GmfTetrahedra);
-        if (num_tets > 0) {
-            GmfGotoKwd(meshb_idx, GmfTetrahedra);
-            for (int64_t i = 0; i < num_tets; ++i) {
-                int v1, v2, v3, v4, ref;
-                GmfGetLin(meshb_idx, GmfTetrahedra, &v1, &v2, &v3, &v4, &ref);
-                add_solid(VTK_TETRA, { v1, v2, v3, v4 });
-            }
-            spdlog::info("Read {} tetrahedra", num_tets);
-        }
-
-        // Read Pyramids
-        int64_t num_pyramids = GmfStatKwd(meshb_idx, GmfPyramids);
-        if (num_pyramids > 0) {
-            GmfGotoKwd(meshb_idx, GmfPyramids);
-            for (int64_t i = 0; i < num_pyramids; ++i) {
-                int v1, v2, v3, v4, v5, ref;
-                GmfGetLin(meshb_idx, GmfPyramids, &v1, &v2, &v3, &v4, &v5, &ref);
-                add_solid(VTK_PYRAMID, { v1, v2, v3, v4, v5 });
-            }
-            spdlog::info("Read {} pyramids", num_pyramids);
-        }
-
-        // Read Prisms (Wedges)
-        int64_t num_prisms = GmfStatKwd(meshb_idx, GmfPrisms);
-        if (num_prisms > 0) {
-            GmfGotoKwd(meshb_idx, GmfPrisms);
-            for (int64_t i = 0; i < num_prisms; ++i) {
-                int v1, v2, v3, v4, v5, v6, ref;
-                GmfGetLin(meshb_idx, GmfPrisms, &v1, &v2, &v3, &v4, &v5, &v6, &ref);
-                add_solid(VTK_WEDGE, { v1, v2, v3, v4, v5, v6 });
-            }
-            spdlog::info("Read {} prisms", num_prisms);
-        }
-
-        // Read Hexahedra
-        int64_t num_hexes = GmfStatKwd(meshb_idx, GmfHexahedra);
-        if (num_hexes > 0) {
-            GmfGotoKwd(meshb_idx, GmfHexahedra);
-            for (int64_t i = 0; i < num_hexes; ++i) {
-                int v1, v2, v3, v4, v5, v6, v7, v8, ref;
-                GmfGetLin(meshb_idx, GmfHexahedra, &v1, &v2, &v3, &v4, &v5, &v6, &v7, &v8, &ref);
-                add_solid(VTK_HEXAHEDRON, { v1, v2, v3, v4, v5, v6, v7, v8 });
-            }
-            spdlog::info("Read {} hexahedra", num_hexes);
+        switch (version) {
+        case 1:
+            read_given_version<1>(mesh_data, meshb_idx);
+            break;
+        case 2:
+        case 3:
+            read_given_version<3>(mesh_data, meshb_idx);
+            break;
+        case 4:
+            read_given_version<4>(mesh_data, meshb_idx);
+            break;
+        default:
+            spdlog::error("Unsupported mesh version: {}", version);
         }
 
         GmfCloseMesh(meshb_idx);

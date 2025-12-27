@@ -3,6 +3,7 @@
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
+#include <vtkPointData.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkDoubleArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -73,6 +74,19 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         points_data->SetData(points_data_array);
     }
 
+    // 添加原始点ID数组
+    vtkNew<vtkIdTypeArray> originalPointIds;
+    originalPointIds->SetNumberOfComponents(1);
+    originalPointIds->SetName("vtkOriginalPointIds");
+    originalPointIds->SetNumberOfTuples(points_data->GetNumberOfPoints());
+
+    vtkSMPTools::For(0, points_data->GetNumberOfPoints(),
+        [&](vtkIdType begin, vtkIdType end) {
+            for (vtkIdType pointId = begin; pointId < end; ++pointId) {
+                originalPointIds->SetValue(pointId, pointId);
+            }
+        });
+
     // vertex data
     vtkPolyData* vertex_poly = this->vertex_data_;
     {
@@ -92,6 +106,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 
         vertex_poly->SetPoints(points_data);
         vertex_poly->SetVerts(vertex_cells);
+
+        vertex_poly->GetPointData()->AddArray(originalPointIds);
     }
 
     // face data
@@ -111,6 +127,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         // face poly data
         face_poly->SetPoints(points_data);
         face_poly->SetPolys(poly_data);
+
+        face_poly->GetPointData()->AddArray(originalPointIds);
     }
 
     // edge data
@@ -124,6 +142,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 
         edge_poly->SetPoints(points_data);
         edge_poly->SetLines(edge_cells);
+
+        edge_poly->GetPointData()->AddArray(originalPointIds);
     }
 
     // solid data
@@ -142,6 +162,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
             }
         });
     solid_ugird->GetCellData()->AddArray(originalCellIds);
+    solid_ugird->GetPointData()->AddArray(originalPointIds);
 
     solid_filter_->SetInputData(solid_ugird);
 
@@ -174,12 +195,9 @@ void MeshActor::setClipPlane(vtkPlane* plane)
             vertex_clipper_->SetInputData(this->vertex_data_);
 
             solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
-            solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
             face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
             edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
             vertex_mapper_->SetInputConnection(vertex_clipper_->GetOutputPort());
-
-            clip_plane_ = plane;
         }
         solid_clipper_->SetImplicitFunction(plane);
         face_clipper_->SetImplicitFunction(plane);
@@ -187,12 +205,11 @@ void MeshActor::setClipPlane(vtkPlane* plane)
         vertex_clipper_->SetImplicitFunction(plane);
     } else {
         solid_filter_->SetInputData(this->solid_data_);
-        face_mapper_->SetInputData(face_data_);
-        edge_clipper_->SetInputData(edge_data_);
-        vertex_clipper_->SetInputData(vertex_data_);
-
-        clip_plane_ = nullptr;
+        face_mapper_->SetInputData(this->face_data_);
+        edge_mapper_->SetInputData(this->edge_data_);
+        vertex_mapper_->SetInputData(this->vertex_data_);
     }
+    clip_plane_ = plane;
 }
 
 void MeshActor::setRenderEdge(bool is_render)
