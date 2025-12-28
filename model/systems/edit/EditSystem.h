@@ -3,17 +3,17 @@
  * @author (your name)
  */
 #pragma once
-#include "EditInfo.h"
 #include "Core.h"
+#include "EditInfo.h"
 #include "SystemHandlerPtr.h"
 
 #include <any>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include<functional>
 
 namespace core {
 class ArgObject;
@@ -63,7 +63,9 @@ public:
      * @return 参数类型
      */
     std::optional<std::vector<core::ArgType>> getArgTypes(const std::string& unique_name);
-
+    /**
+     * @brief 设置算法信息变更回调函数
+     */
     void setOnEditInfoChangedCallback(std::function<void()> callback);
 
 private:

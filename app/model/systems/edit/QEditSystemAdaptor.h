@@ -2,8 +2,8 @@
 #define Q_EDIT_SYSTEM_ADAPTOR_H
 
 #include "Core.h"
-#include <QtQmlIntegration/qqmlintegration.h>
 #include <QVariant>
+#include <QtQmlIntegration/qqmlintegration.h>
 
 class QArgObject;
 class QEditInfo;

@@ -11,9 +11,9 @@
 #include <spdlog/spdlog.h>
 
 namespace systems::algo {
+using core::ArgObject;
 using std::string;
 using std::vector;
-using core::ArgObject;
 
 const string AlgorithmSystem::name = "AlgorithmSystem";
 

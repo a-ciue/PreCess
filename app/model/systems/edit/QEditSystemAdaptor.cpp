@@ -1,8 +1,8 @@
 #include "QEditSystemAdaptor.h"
-#include "EditSystem.h"
-#include "QEditInfo.h"
-#include "QArgObject.h"
 #include "ArgObject.h"
+#include "EditSystem.h"
+#include "QArgObject.h"
+#include "QEditInfo.h"
 #include <spdlog/spdlog.h>
 
 namespace systems::edit {

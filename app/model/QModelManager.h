@@ -1,21 +1,18 @@
 #pragma once
 #include "QAlgorithmSystemAdaptor.h"
-#include "QModelIOSystemAdaptor.h"
 #include "QEditSystemAdaptor.h"
+#include "QModelIOSystemAdaptor.h"
 #include "QSystemPluginManager.h"
 #include <memory>
 
-namespace systems
-{
-	class SystemPluginManager;
+namespace systems {
+class SystemPluginManager;
 }
-namespace systems::io
-{
-	class ModelIOSystem;
+namespace systems::io {
+class ModelIOSystem;
 }
-namespace systems::edit
-{
-    class EditSystem;
+namespace systems::edit {
+class EditSystem;
 }
 class ModelManager;
 class QModelObserver;
@@ -45,8 +42,8 @@ signals:
     void splineLoadFailed(const QString& message);
 
 private:
-    std::unique_ptr<ModelManager>  core_;
-    std::unique_ptr<QModelObserver> observer_; 
+    std::unique_ptr<ModelManager> core_;
+    std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
     std::unique_ptr<systems::edit::EditSystem> edit_system_;

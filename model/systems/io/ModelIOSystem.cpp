@@ -4,12 +4,12 @@
  */
 #include "ModelIOSystem.h"
 #include "ModelIOHandler.h"
-#include "ModelManager.h"
 #include "ModelIOInfo.h"
+#include "ModelManager.h"
 
+#include <optional>
 #include <spdlog/fmt/ranges.h>
 #include <spdlog/spdlog.h>
-#include <optional>
 
 namespace systems::io {
 using std::string;
