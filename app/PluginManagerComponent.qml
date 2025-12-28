@@ -28,7 +28,7 @@ Item {
             delegate: Rectangle {
                 id: pluginItem
                 width: pluginListView.width
-                height: 30
+                height: Math.max(30, implicitHeight)
                 color: pluginListView.currentIndex === index ? "lightblue" : "transparent"
                 border.color: "lightgray"
                 
@@ -63,7 +63,7 @@ Item {
             
             Button {
                 text: "注销"
-                enabled: pluginListView.currentIndex !== -1
+                enabled: pluginListView.currentIndex !== -1 && pluginListView.currentIndex < pluginManager.pluginNames.length
                 onClicked: {
                     if (pluginListView.currentIndex >= 0 && pluginListView.currentIndex < pluginManager.pluginNames.length) {
                         var selectedPlugin = pluginManager.pluginNames[pluginListView.currentIndex]
@@ -88,12 +88,7 @@ Item {
         nameFilters: ["Plugin files (*.dll *.so)", "All files (*)"]
         
         onAccepted: {
-            var pluginPath = selectedFile.toString()
-            // 移除 "file:///" 前缀
-            if (pluginPath.startsWith("file:///")) {
-                pluginPath = pluginPath.substring(8)
-            }
-            var result = pluginManager.registerPlugin(pluginPath)
+            var result = pluginManager.registerPlugin(selectedFile)
             if (!result) {
                 registerFailureDialog.open()
             }

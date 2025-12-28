@@ -9,9 +9,9 @@
 #include "QModelObserver.h"
 #include "SystemPluginManager.h"
 
-
 #include <QDebug>
 #include <QFileInfo>
+#include <QUrl>
 #include <filesystem>
 #include <spdlog/spdlog.h>
 
@@ -49,8 +49,8 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     // 遍历插件目录，加载所有插件
     for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
         if (entry.is_regular_file()) {
-            // plugin_manager_->registerPlugin(entry.path());
-            getSystemPluginManager()->registerPlugin(QString::fromStdString(entry.path().string()));
+            QUrl plugin_url = QUrl::fromLocalFile(QString::fromStdString(entry.path().string()));
+            getSystemPluginManager()->registerPlugin(plugin_url);
         }
     }
 }

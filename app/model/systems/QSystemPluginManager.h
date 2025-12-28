@@ -2,6 +2,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QUrl>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 namespace systems {
@@ -14,7 +15,7 @@ class QSystemPluginManager : public QObject {
 public:
     QSystemPluginManager(SystemPluginManager* system_plugin_manager_);
 
-    Q_INVOKABLE bool registerPlugin(const QString& plugin_path);
+    Q_INVOKABLE bool registerPlugin(const QUrl& plugin_path);
 
     Q_INVOKABLE void unregisterPlugin(const QString& plugin_path);
 

@@ -195,10 +195,10 @@ ApplicationWindow {
                         onClicked:{
                             if (checked) {
                                 myItem.setRenderMode(objectList.curModelId, "Block")
-                                stacklayout.currentIndex = 1
+                                //stacklayout.currentIndex = 1
                             } else {
                                 myItem.setRenderMode(objectList.curModelId, "Face")
-                                stacklayout.currentIndex = 0
+                                //stacklayout.currentIndex = 0
                             }
                         }
                     }
@@ -328,7 +328,7 @@ ApplicationWindow {
     //插件管理对话框
     Dialog {
         id: pluginManagerDialog
-        title: "插件管理"
+        title: qsTr("插件管理")
         standardButtons: DialogButtonBox.NoButton
         modal: true
         anchors.centerIn: parent
