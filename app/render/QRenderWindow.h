@@ -124,43 +124,41 @@ public:
      * @brief 设置属性渲染方式
      *
      * 在控制台中调用示例：
-     * myItem.setAttriMode("face_color_3", 0, 2, "")
-     * myItem.setAttriMode("face_vectors_3", 3, 2, "")
-     * myItem.setAttriMode("vertex_vector_3", 3, 0, "")
-     * myItem.setAttriMode(" ", 2, 0, "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp")
-     * myItem.setAttriMode("vertex_scalars", 1, 0, "")
-     * myItem.cancelAttri()
+     * myItem.setAttriMode("face_color_3", 0, 2)
+     * myItem.setAttriMode("face_vectors_3", 3, 2)
+     * myItem.setAttriMode("vertex_vector_3", 3, 0)
+     * myItem.setAttriMode("vertex_vector_3", 3, 0, "",0.5);
+     * myItem.setAttriMode("vertex_uv_2", 2, 0, "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp")
+     * myItem.setAttriMode("vertex_scalars", 1, 0)
+     * myItem.setAttriMode("vertex_scalars", 1, 0,"",-1,[2,6])
+     * myItem.setAttriMode("vertex_scalars", 1, 0, "",0,0,1);
+     * 对于blow.vtk:
+     * myItem.setAttriMode("displacement9_3", 3, 0)
+     * myItem.setAttriMode("displacement9_3", 3, 0,"",0.5)
+     * myItem.setAttriMode("thickness9", 1, 0)
      * @param attr_name 属性名 
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
      * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
      * @param texturePath 贴图路径
+     * @param glyphScale 箭头缩放比例
+     * @param scalarRange 标量范围
+     * @param resetScalarRange 是否重置标量范围
      */
-    Q_INVOKABLE void setAttriMode(QString attr_name, int mode, int type, QString texturePath);
-
+    Q_INVOKABLE void setAttriMode(
+        QString attr_name,
+        int mode,
+        int type,
+        QString texturePath = "",
+        double glyphScale = -1,
+        QVariant scalarRange = QVariant(),
+        bool resetScalarRange = false);
     /**
      * @brief 取消属性渲染
      * 在控制台中调用示例：
      * myItem.cancelAttri()
      */
     Q_INVOKABLE void cancelAttri();
-    /**
-     * @brief 设置3D Glyph缩放比例
-     * 在控制台中调用示例：
-     * myItem.setGlyph3DScaleFactor(0.5)
-     */
-    Q_INVOKABLE void setGlyph3DScaleFactor(double scale);
-    /**
-     * @brief 设置标量映射范围
-     * 在控制台中调用示例：
-     * myItem.setScalarRange(2.0, 5.0)
-     */
-    Q_INVOKABLE void setScalarRange(double min, double max);
-    /**
-     * @brief 重置标量映射范围
-     * 在控制台中调用示例：
-     * myItem.resetScalarRange()
-     */
-    Q_INVOKABLE void resetScalarRange();
+    
 
     bool event(QEvent* ev) override;
 

@@ -1,6 +1,7 @@
 #ifndef MESH_ACTOR_H
 #define MESH_ACTOR_H
 #include "Core.h"
+#include <optional>
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -64,9 +65,19 @@ public:
      * @brief 设置属性渲染方式
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
      * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
-     * @param texturePath 贴图路径
+     * @param attr_name 属性名称
+     * @param texturePath 贴图路径，仅在mode为UV时有效，传空表示不设置贴图
+     * @param glyphScale 箭头缩放比例，仅在mode为VECTOR时有效
+     * @param scalarRange 标量范围，仅在mode为SCALAR时有效，传空表示不设置
      */
-    void setAttriMode(std::string attr_name, Mode mode, ElementType type, std::string texturePath);
+    void setAttriMode(
+        const std::string& attr_name,
+        Mode mode,
+        ElementType type,
+        const std::string& texturePath = "",
+        double glyphScale = -1,
+        std::optional<std::pair<double, double>> scalarRange = std::nullopt,
+        bool resetScalarRange = false);
     /**
      * @brief 取消属性渲染
      */
@@ -79,8 +90,7 @@ private:
     void setActiveScalarAttribute(std::string attr_name, ElementType type);
     void setActiveVectorAttribute(std::string attr_name, ElementType type);
     void setActiveRGBAttribute(std::string attr_name, ElementType type);
-    void cancelActiveGlyph3D();
-    vtkSmartPointer<vtkActor> createGlyph3DActor(vtkDataSet* input, const std::array<double, 3>& color, double scale = 0.3);
+    void createGlyph3D(vtkDataSet* input, const std::array<double, 3>& color, double scale = 0.3);
     void setTextureImage(std::string attr_name, std::string texturePath);
     void cancelTextureImage();
 
@@ -103,11 +113,13 @@ private:
     vtkNew<vtkPolyDataMapper> edge_mapper_;
     vtkNew<vtkPolyDataMapper> face_mapper_;
     vtkNew<vtkPolyDataMapper> solid_mapper_;
+    vtkNew<vtkPolyDataMapper> glyph3D_mapper_;
 
     vtkNew<vtkActor> solid_actor_;
     vtkNew<vtkActor> face_actor_;
     vtkNew<vtkActor> edge_actor_;
     vtkNew<vtkActor> vertex_actor_;
+    vtkNew<vtkActor> glyph3D_actor_;
 
     vtkNew<vtkUnstructuredGrid> solid_data_;
     vtkNew<vtkPolyData> face_data_;

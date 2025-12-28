@@ -349,14 +349,30 @@ void QRenderWindow::setClick()
     });
 }
 
-void QRenderWindow::setAttriMode(QString attr_name, int mode, int type, QString texturePath)
+void QRenderWindow::setAttriMode(
+    QString attr_name,
+    int mode,
+    int type,
+    QString texturePath,
+    double glyphScale,
+    QVariant scalarRange,
+    bool resetScalarRange)
 {
-    dispatch_async([this, attr_name, mode, type, texturePath](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([this, attr_name, mode, type, texturePath, glyphScale, scalarRange, resetScalarRange](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         // int -> 枚举类型
         MeshActor::Mode modeEnum = static_cast<MeshActor::Mode>(mode);
         MeshActor::ElementType typeEnum = static_cast<MeshActor::ElementType>(type);
-
+        // 解析QVariant为std::optional<std::pair<double, double>>
+        std::optional<std::pair<double, double>> rangeOpt = std::nullopt;
+        if (scalarRange.isValid() && scalarRange.canConvert<QVariantList>()) {
+            QVariantList list = scalarRange.toList();
+            if (list.size() == 2) {
+                rangeOpt = std::make_pair(list[0].toDouble(), list[1].toDouble());
+            } else {
+                spdlog::error("setAttriMode: scalarRange QVariantList size is {}, expected 2 (min, max)", list.size());
+            }
+        }
         std::cout << "modeEnum: " << modeEnum
                   << ", typeEnum: " << typeEnum << std::endl;
         if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
@@ -365,7 +381,10 @@ void QRenderWindow::setAttriMode(QString attr_name, int mode, int type, QString 
                 attr_name.toStdString(),
                 modeEnum,
                 typeEnum,
-                texturePath.toStdString());
+                texturePath.toStdString(),
+                glyphScale,
+                rangeOpt,
+                resetScalarRange);
         }
         spdlog::info("-----setAttriMode:" + attr_name.toStdString());
     });
@@ -382,40 +401,5 @@ void QRenderWindow::cancelAttri()
         spdlog::info("--------cancelAttri-----------");
     });
 }
-void QRenderWindow::setScalarRange(double min, double max)
-{
-    dispatch_async([this, min, max](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
-            vtk->mesh_actor_manager_->setScalarRange(
-                cur_actor_id_,
-                min,
-                max);
-        }
-        spdlog::info("-----setAttriRange------------");
-    });
-}
-void QRenderWindow::resetScalarRange()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
-            vtk->mesh_actor_manager_->resetScalarRange(
-                cur_actor_id_);
-        }
-        spdlog::info("-----resetScalarRange------------");
-    });
-}
-void QRenderWindow::setGlyph3DScaleFactor(double scale)
-{
-    dispatch_async([this, scale](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
-            vtk->mesh_actor_manager_->setGlyph3DScaleFactor(
-                cur_actor_id_,
-                scale);
-        }
-        spdlog::info("-----setGlyph3DScaleFactor: {}", scale);
-    });
-}
+
 vtkStandardNewMacro(QRenderWindow::Data);

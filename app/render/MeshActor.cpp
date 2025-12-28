@@ -56,6 +56,7 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, bool is_vertex_
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
     this->vertex_actor_->SetMapper(vertex_mapper_);
+    this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
 
     this->actor_->SetMapper(block_mapper_);
 }
@@ -68,6 +69,7 @@ MeshActor::~MeshActor()
         renderer_->RemoveActor(this->face_actor_);
         renderer_->RemoveActor(this->edge_actor_);
         renderer_->RemoveActor(this->vertex_actor_);
+        renderer_->RemoveActor(this->glyph3D_actor_);
     }
 }
 
@@ -305,6 +307,7 @@ void MeshActor::setVisibility(bool visibility)
     this->face_actor_->SetVisibility(visibility);
     this->edge_actor_->SetVisibility(visibility && this->edge_render_);
     this->vertex_actor_->SetVisibility(visibility && this->vertex_render_);
+    this->glyph3D_actor_->SetVisibility(visibility);
 }
 
 void MeshActor::setClipPlane(vtkPlane* plane)
@@ -358,11 +361,13 @@ void MeshActor::setRenderMode(ModelRenderMode render_mode)
         this->renderer_->AddActor(this->face_actor_);
         this->renderer_->AddActor(this->edge_actor_);
         this->renderer_->AddActor(this->vertex_actor_);
+        this->renderer_->AddActor(this->glyph3D_actor_);
     } else if (render_mode_ == ModelRenderMode::Block) {
         this->renderer_->RemoveActor(this->solid_actor_);
         this->renderer_->RemoveActor(this->face_actor_);
         this->renderer_->RemoveActor(this->edge_actor_);
         this->renderer_->RemoveActor(this->vertex_actor_);
+        this->renderer_->RemoveActor(this->glyph3D_actor_);
         this->renderer_->AddActor(this->actor_);
     } else {
         std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
@@ -538,21 +543,13 @@ void MeshActor::setActiveVectorAttribute(std::string attr_name, ElementType type
         case VERTEX:
             vtkDataArray* array = this->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
             this->vertex_data_->GetPointData()->SetActiveVectors(attr_name.c_str());
-            std::cout << "vertex vector attribute '" << attr_name << "' found with "
-                      << array->GetNumberOfComponents() << " components." << std::endl;
-            auto glyphActor = createGlyph3DActor(this->vertex_data_, { 1.0, 0.0, 0.0 }); // 红色
-            // 在添加新Actor前移除旧的
-            cancelActiveGlyph3D();
-            renderer_->AddActor(glyphActor);
-
+            spdlog::info("vertex vector attribute '{}' found with {} components.", attr_name, array->GetNumberOfComponents());
+            createGlyph3D(this->vertex_data_, { 1.0, 0.0, 0.0 }); // 红色
             break;
         }
     case FACE: {
         vtkDataArray* array = this->face_data_->GetCellData()->GetArray(attr_name.c_str());
-
-        std::cout << "Face vector attribute '" << attr_name << "' found with "
-                  << array->GetNumberOfComponents() << " components." << std::endl;
-
+        spdlog::info("face vector attribute '{}' found with {} components.", attr_name, array->GetNumberOfComponents());
         // 计算面中心点位置 =====
         vtkNew<vtkCellCenters> centers;
         centers->SetInputData(this->face_data_);
@@ -561,12 +558,8 @@ void MeshActor::setActiveVectorAttribute(std::string attr_name, ElementType type
         vtkNew<vtkPolyData> glyphInput;
         glyphInput->SetPoints(centers->GetOutput()->GetPoints());
         glyphInput->GetPointData()->SetVectors(array);
+        createGlyph3D(glyphInput, { 0.0, 0.0, 1.0 }); // 蓝色
 
-        auto actor = createGlyph3DActor(glyphInput, { 0.0, 0.0, 1.0 }); // 蓝色
-
-        // 清除旧的Glyph3D演员
-        cancelActiveGlyph3D();
-        renderer_->AddActor(actor);
         break;
     }
     case EDGE: {
@@ -588,7 +581,7 @@ void MeshActor::setActiveRGBAttribute(std::string attr_name, ElementType type)
         this->face_data_->GetPointData()->SetActiveScalars(attr_name.c_str());
         face_mapper_->SetScalarModeToUsePointData(); // 面使用点数据的插值
         face_mapper_->SetScalarVisibility(1);
-        face_mapper_->SetColorModeToDirectScalars(); 
+        face_mapper_->SetColorModeToDirectScalars();
 
     } break;
     case FACE: {
@@ -636,23 +629,36 @@ void MeshActor::cancelTextureImage()
 {
     this->face_actor_->SetTexture(nullptr);
 }
-void MeshActor::setAttriMode(std::string attr_name, Mode mode, ElementType type, std::string texturePath)
+
+void MeshActor::setAttriMode(
+    const std::string& attr_name,
+    Mode mode,
+    ElementType type,
+    const std::string& texturePath,
+    double glyphScale,
+    std::optional<std::pair<double, double>> scalarRange,
+    bool resetScalarRange)
 {
     cancelActiveAttribute();
     spdlog::info("Mode:{} type:{}", static_cast<int>(mode), static_cast<int>(type));
     switch (mode) {
     case SCALAR:
         setActiveScalarAttribute(attr_name, type);
+        if (scalarRange.has_value()) {
+            this->setScalarRange(scalarRange.value().first, scalarRange.value().second);
+        }
+        if (resetScalarRange)
+            this->resetScalarRange();
         break;
     case VECTOR:
         setActiveVectorAttribute(attr_name, type);
+        if (glyphScale > 0)
+            this->setGlyph3DScaleFactor(glyphScale);
         break;
     case RGB:
-        // RGB通常是颜色属性，直接设置为标量可视化并开启直接颜色模式
         setActiveRGBAttribute(attr_name, type);
         break;
     case UV:
-        // UV坐标用于纹理映射
         setTextureImage(attr_name, texturePath);
         break;
     default:
@@ -665,53 +671,26 @@ void MeshActor::cancelActiveAttribute()
     if (face_actor_->GetTexture() != nullptr) {
         cancelTextureImage();
     }
-    cancelActiveGlyph3D();
+    glyph3D_actor_->SetVisibility(0);
     vertex_mapper_->SetScalarVisibility(0);
     edge_mapper_->SetScalarVisibility(0);
     face_mapper_->SetScalarVisibility(0);
     solid_mapper_->SetScalarVisibility(0);
 }
 
-void MeshActor::cancelActiveGlyph3D()
-{
-    // 移除vtkGlyph3D的actor
-    vtkActorCollection* actorCollection = renderer_->GetActors();
-    actorCollection->InitTraversal();
-    for (vtkIdType i = 0; i < actorCollection->GetNumberOfItems(); ++i) {
-        vtkActor* actor = vtkActor::SafeDownCast(actorCollection->GetNextActor());
-        vtkAlgorithm* producer = nullptr;
-        if (actor->GetMapper() && actor->GetMapper()->GetInputConnection(0, 0)) {
-            producer = actor->GetMapper()->GetInputConnection(0, 0)->GetProducer();
-        }
-        if (producer && std::string(producer->GetClassName()) == "vtkGlyph3D") {
-            renderer_->RemoveActor(actor);
-            spdlog::info("Removed vtkGlyph3D actor");
-            break;
-        }
-    }
-}
-
 // Glyph3D 的缩放因子调整接口
 void MeshActor::setGlyph3DScaleFactor(double scale)
 {
-    // 遍历renderer中的actor，找到Glyph3D生成的actor并调整其scale factor
-    vtkActorCollection* actorCollection = renderer_->GetActors();
-    actorCollection->InitTraversal();
-    for (vtkIdType i = 0; i < actorCollection->GetNumberOfItems(); ++i) {
-        vtkActor* actor = vtkActor::SafeDownCast(actorCollection->GetNextActor());
-        if (!actor)
-            continue;
-        vtkMapper* mapper = actor->GetMapper();
-        if (mapper && mapper->GetInputConnection(0, 0)) {
-            vtkAlgorithm* producer = mapper->GetInputConnection(0, 0)->GetProducer();
-            if (producer && std::string(producer->GetClassName()) == "vtkGlyph3D") {
-                vtkGlyph3D* glyph = vtkGlyph3D::SafeDownCast(producer);
-                if (glyph) {
-                    glyph->SetScaleFactor(scale);
-                    glyph->Update();
-                }
-            }
-        }
+
+    vtkMapper* mapper = this->glyph3D_mapper_;
+    if (!mapper)
+        return;
+    vtkAlgorithm* producer = nullptr;
+    producer = mapper->GetInputConnection(0, 0)->GetProducer();
+    if (producer) {
+        vtkGlyph3D* glyph = vtkGlyph3D::SafeDownCast(producer);
+        glyph->SetScaleFactor(scale);
+        glyph->Update();
     }
 }
 // 标量的range映射标调整接口
@@ -770,7 +749,7 @@ void MeshActor::resetScalarRange()
         return;
     }
 }
-vtkSmartPointer<vtkActor> MeshActor::createGlyph3DActor(vtkDataSet* input, const std::array<double, 3>& color, double scale)
+void MeshActor::createGlyph3D(vtkDataSet* input, const std::array<double, 3>& color, double scale)
 {
     vtkNew<vtkArrowSource> arrow_source; // 箭头源
     arrow_source->SetTipResolution(16);
@@ -785,12 +764,12 @@ vtkSmartPointer<vtkActor> MeshActor::createGlyph3DActor(vtkDataSet* input, const
     glyph3D->OrientOn();
     glyph3D->Update();
 
-    vtkNew<vtkPolyDataMapper> mapper;
+    vtkPolyDataMapper* mapper = this->glyph3D_mapper_;
     mapper->SetInputConnection(glyph3D->GetOutputPort());
     mapper->ScalarVisibilityOff();
 
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    vtkActor* actor = this->glyph3D_actor_;
     actor->SetMapper(mapper);
     actor->GetProperty()->SetColor(const_cast<double*>(color.data()));
-    return actor;
+    actor->SetVisibility(1);
 }

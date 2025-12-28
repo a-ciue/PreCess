@@ -28,11 +28,16 @@ public:
     bool getIsVertexRender(Index model_id);
     ModelRenderMode getMeshRenderMode(Index model_id);
 
-    void setAttriMode(Index model_id, std::string attr_name, MeshActor::Mode mode, MeshActor::ElementType type, std::string texturePath);
+    void setAttriMode(
+        Index model_id,
+        std::string attr_name,
+        MeshActor::Mode mode,
+        MeshActor::ElementType type,
+        std::string texturePath,
+        double glyphScale,
+        std::optional<std::pair<double, double>> scalarRange,
+        bool resetScalarRange);
     void cancelAttri(Index model_id);
-    void setGlyph3DScaleFactor(Index model_id, double scale);
-    void setScalarRange(Index model_id, double min, double max);
-    void resetScalarRange(Index model_id);
 
 private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> models_;
