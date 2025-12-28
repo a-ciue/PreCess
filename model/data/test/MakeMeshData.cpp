@@ -1,8 +1,6 @@
 #include "MakeMeshData.h"
 #include <iostream>
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
+
 MeshData MakeMeshData()
 {
     MeshData data;
@@ -107,6 +105,7 @@ MeshData MakeMeshData()
 
 MeshData MakeMeshDataWithAtri()
 {
+
     MeshData data;
     data.init();
 
@@ -293,6 +292,7 @@ MeshData MakeMeshDataWithAtri()
 
 MeshData MakeMeshDataWithUV()
 {
+    constexpr double m_pi = 3.14159265358979323846;
     MeshData data;
     data.init();
 
@@ -304,10 +304,10 @@ MeshData MakeMeshDataWithUV()
     positions.push_back({ -1.0, -1.0, 1.0 }); // 索引0
 
     // 2. 30°纬度 (6个点)
-    const double theta1 = 30.0 * M_PI / 180.0;
+    const double theta1 = 30.0 * m_pi / 180.0;
 
     for (int i = 0; i < 6; i++) {
-        double phi = i * 60.0 * M_PI / 180.0;
+        double phi = i * 60.0 * m_pi / 180.0;
         double x = sin(theta1) * cos(phi)-1;
         double y = sin(theta1) * sin(phi)-1;
         double z = cos(theta1);
@@ -315,9 +315,9 @@ MeshData MakeMeshDataWithUV()
     }
 
     // 3. 60°纬度 (6个点)
-    const double theta2 = 60.0 * M_PI / 180.0;
+    const double theta2 = 60.0 * m_pi / 180.0;
     for (int i = 0; i < 6; i++) {
-        double phi = i * 60.0 * M_PI / 180.0;
+        double phi = i * 60.0 * m_pi / 180.0;
         double x = sin(theta2) * cos(phi)-1;
         double y = sin(theta2) * sin(phi)-1;
         double z = cos(theta2);
@@ -325,9 +325,9 @@ MeshData MakeMeshDataWithUV()
     }
 
     // 4. 90°纬度 (底部圆环，6个点)
-    const double theta3 = 90.0 * M_PI / 180.0;
+    const double theta3 = 90.0 * m_pi / 180.0;
     for (int i = 0; i < 6; i++) {
-        double phi = i * 60.0 * M_PI / 180.0;
+        double phi = i * 60.0 * m_pi / 180.0;
         double x = sin(theta3) * cos(phi)-1;
         double y = sin(theta3) * sin(phi)-1;
         double z = cos(theta3);
@@ -394,23 +394,23 @@ MeshData MakeMeshDataWithUV()
         }
         // 30°纬度 (索引1-6)
         else if (i <= 6) {
-            theta = 30.0 * M_PI / 180.0;
-            phi = (i - 1) * 60.0 * M_PI / 180.0;
+            theta = 30.0 * m_pi / 180.0;
+            phi = (i - 1) * 60.0 * m_pi / 180.0;
         }
         // 60°纬度 (索引7-12)
         else if (i <= 12) {
-            theta = 60.0 * M_PI / 180.0;
-            phi = (i - 7) * 60.0 * M_PI / 180.0;
+            theta = 60.0 * m_pi / 180.0;
+            phi = (i - 7) * 60.0 * m_pi / 180.0;
         }
         // 90°纬度 (索引13-18)
         else {
-            theta = 90.0 * M_PI / 180.0;
-            phi = (i - 13) * 60.0 * M_PI / 180.0;
+            theta = 90.0 * m_pi / 180.0;
+            phi = (i - 13) * 60.0 * m_pi / 180.0;
         }
 
         // UV映射: U=phi/(2π), V=(π/2 - theta)/(π/2)
-        double u = phi / (2 * M_PI);
-        double v = (M_PI / 2 - theta) / (M_PI / 2);
+        double u = phi / (2 * m_pi);
+        double v = (m_pi / 2 - theta) / (m_pi / 2);
 
         uv.push_back(u);
         uv.push_back(v);

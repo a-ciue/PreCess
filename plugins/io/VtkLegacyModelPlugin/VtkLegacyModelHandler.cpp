@@ -15,17 +15,10 @@
 #include <vtkDataSetReader.h>
 #include <vtkPointData.h>
 #include <vtkUnstructuredGrid.h>
-#include <vtkUnstructuredGridReader.h>
-#include <vtkXMLUnstructuredGridReader.h>
-#include <vtkXMLUnstructuredGridWriter.h>
 
 namespace systems::io {
 std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
-    std::string ext = path.extension().string();
-    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-
-    vtkSmartPointer<vtkUnstructuredGrid> ugrid;
 
     vtkNew<vtkDataSetReader> reader;
     auto path_string = path.string();
@@ -39,7 +32,7 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
     reader->ReadAllTensorsOn();
 
     reader->Update();
-    ugrid = reader->GetUnstructuredGridOutput();
+    vtkSmartPointer<vtkUnstructuredGrid> ugrid = reader->GetUnstructuredGridOutput();
 
     // 输出属性信息
     vtkPointData* pointData = ugrid->GetPointData();
