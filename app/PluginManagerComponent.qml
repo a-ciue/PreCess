@@ -8,13 +8,6 @@ Item {
     
     required property var pluginManager
 
-    Connections {
-        target: pluginManager
-        onPluginNamesChanged: {
-            pluginListView.model = pluginManager.pluginNames
-        }
-    }
-
     ColumnLayout {
         anchors.fill: parent
         
@@ -31,7 +24,7 @@ Item {
                 height: Math.max(30, implicitHeight)
                 color: pluginListView.currentIndex === index ? "lightblue" : "transparent"
                 border.color: "lightgray"
-                
+                border.width: 1
                 Text {
                     anchors.left: parent.left
                     anchors.leftMargin: 10
@@ -63,14 +56,12 @@ Item {
             
             Button {
                 text: "注销"
-                enabled: pluginListView.currentIndex !== -1 && pluginListView.currentIndex < pluginManager.pluginNames.length
+                enabled: pluginListView.currentIndex !== -1
                 onClicked: {
-                    if (pluginListView.currentIndex >= 0 && pluginListView.currentIndex < pluginManager.pluginNames.length) {
-                        var selectedPlugin = pluginManager.pluginNames[pluginListView.currentIndex]
-                        var pluginPath = pluginManager.getPluginPath(selectedPlugin)
-                        pluginManager.unregisterPlugin(pluginPath)
-                        pluginListView.currentIndex = -1
-                    }
+                    var selectedPlugin = pluginManager.pluginNames[pluginListView.currentIndex]
+                    var pluginPath = pluginManager.getPluginPath(selectedPlugin)
+                    pluginManager.unregisterPlugin(pluginPath)
+                    pluginListView.currentIndex = -1
                 }
             }
             

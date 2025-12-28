@@ -22,7 +22,7 @@ bool SystemPluginManager::registerPlugin(const std::filesystem::path& plugin_pat
     }
 
     // 读取插件元数据，找对应的系统注册器注册
-    QString plugin_path_q = QString::fromStdString(plugin_path.string());
+    QString plugin_path_q = QString::fromLocal8Bit(plugin_path.string());
     QPluginLoader plugin_loader(plugin_path_q);
     QObject* plugin_instance = plugin_loader.instance();
     if (!plugin_instance) {

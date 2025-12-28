@@ -20,7 +20,7 @@ QSystemPluginManager::QSystemPluginManager(SystemPluginManager* system_plugin_ma
 bool QSystemPluginManager::registerPlugin(const QUrl& plugin_path)
 {
     QString plugin_path_temp = plugin_path.toLocalFile();
-    std::filesystem::path path_std(plugin_path_temp.toStdString());
+    std::filesystem::path path_std = QFileInfo(plugin_path_temp).filesystemFilePath();
     bool result = system_plugin_manager_->registerPlugin(path_std);
     if (result) {
         plugin_paths_.append(plugin_path_temp);
@@ -32,10 +32,11 @@ bool QSystemPluginManager::registerPlugin(const QUrl& plugin_path)
 
 void QSystemPluginManager::unregisterPlugin(const QString& plugin_path)
 {
-    std::filesystem::path path_std(plugin_path.toStdString());
+    std::filesystem::path path_std = QFileInfo(plugin_path).filesystemFilePath();
     system_plugin_manager_->unregisterPlugin(path_std);
     plugin_paths_.removeOne(plugin_path);
-    updatePluginNames();
+    plugin_names_.removeOne(QFileInfo(plugin_path).fileName());
+    emit pluginNamesChanged();
 }
 
 const QStringList& QSystemPluginManager::getPluginNames() const
@@ -53,21 +54,5 @@ QString QSystemPluginManager::getPluginPath(const QString& plugin_name) const
     }
 
     return QString();
-}
-
-void QSystemPluginManager::updatePluginNames()
-{
-    QStringList new_names;
-    new_names.reserve(plugin_paths_.size());
-
-    for (const QString& path : plugin_paths_) {
-        QString baseName = QFileInfo(path).fileName();
-        new_names.append(baseName);
-    }
-
-    if (plugin_names_ != new_names) {
-        plugin_names_ = new_names;
-        emit pluginNamesChanged();
-    }
 }
 } // namespace system

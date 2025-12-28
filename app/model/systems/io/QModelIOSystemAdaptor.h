@@ -46,7 +46,7 @@ public:
      * @brief 供文件对话框使用，获取所有支持的文件类型过滤器
      * @return 文件类型过滤器列表，如 ["Wavefront .obj file (*.obj)", "All files (*)"]
      */
-    Q_INVOKABLE QStringList getDialogNameFilters() const;
+    QStringList getDialogNameFilters() const;
 
 signals:
     void dialogNameFiltersChanged();

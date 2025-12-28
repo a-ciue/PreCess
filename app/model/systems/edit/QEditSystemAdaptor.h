@@ -31,7 +31,7 @@ public:
      * @brief 获取所有已注册的编辑功能和参数列表
      * @return 注册的编辑功能和参数列表
      */
-    Q_INVOKABLE QList<QEditInfo*> getEditsInfo() const;
+    QList<QEditInfo*> getEditsInfo() const;
 
 signals:
     void editInfoChanged();

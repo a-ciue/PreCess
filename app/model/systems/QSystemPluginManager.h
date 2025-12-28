@@ -23,9 +23,6 @@ public:
 
     Q_INVOKABLE QString getPluginPath(const QString& plugin_name) const;
 
-private:
-    void updatePluginNames();
-
 signals:
     void pluginNamesChanged();
 

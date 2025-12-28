@@ -49,7 +49,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     // 遍历插件目录，加载所有插件
     for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
         if (entry.is_regular_file()) {
-            QUrl plugin_url = QUrl::fromLocalFile(QString::fromStdString(entry.path().string()));
+            QUrl plugin_url = QUrl::fromLocalFile(QString::fromLocal8Bit(entry.path().string()));
             getSystemPluginManager()->registerPlugin(plugin_url);
         }
     }

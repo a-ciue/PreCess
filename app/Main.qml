@@ -195,10 +195,8 @@ ApplicationWindow {
                         onClicked:{
                             if (checked) {
                                 myItem.setRenderMode(objectList.curModelId, "Block")
-                                //stacklayout.currentIndex = 1
                             } else {
                                 myItem.setRenderMode(objectList.curModelId, "Face")
-                                //stacklayout.currentIndex = 0
                             }
                         }
                     }

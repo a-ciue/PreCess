@@ -31,7 +31,7 @@ public:
      * @brief 由qml获取所有已注册的算法功能和参数列表
      * @return 注册的算法功能和参数列表
      */
-    Q_INVOKABLE QList<QAlgorithmInfo*> getAlgorithmsInfo() const;
+    QList<QAlgorithmInfo*> getAlgorithmsInfo() const;
 
 signals:
     void algorithmsInfoChanged();
