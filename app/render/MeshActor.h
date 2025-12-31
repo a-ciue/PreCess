@@ -82,11 +82,11 @@ public:
      * @brief 取消属性渲染
      */
     void cancelActiveAttribute();
-    void setGlyph3DScaleFactor(double scale);
-    void setScalarRange(double min, double max);
-    void resetScalarRange();
 
 private:
+    void resetScalarRange();
+    void setScalarRange(double min, double max);
+    void setGlyph3DScaleFactor(double scale);
     void setActiveScalarAttribute(std::string attr_name, ElementType type);
     void setActiveVectorAttribute(std::string attr_name, ElementType type);
     void setActiveRGBAttribute(std::string attr_name, ElementType type);

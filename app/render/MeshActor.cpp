@@ -154,9 +154,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
                     vector_array->InsertNextTuple2(
                         attr_values[i * 2],
                         attr_values[i * 2 + 1]);
-
-                    vertex_poly->GetPointData()->AddArray(vector_array);
                 }
+                vertex_poly->GetPointData()->AddArray(vector_array);
             } else if (isTriple) {
                 // 三元组属性 (如 "vertex_vector_3")
                 auto vector_array = vtkSmartPointer<vtkDoubleArray>::New();
