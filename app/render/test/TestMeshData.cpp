@@ -7,7 +7,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
-static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void* clientData, void* callData)
+static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void* clientData, [[maybe_unused]] void* callData)
 {
     if (eventId == vtkCommand::KeyPressEvent) {
         MeshActor* meshActorPtr = static_cast<MeshActor*>(clientData);
@@ -36,7 +36,7 @@ static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void*
         } else if (strcmp(key, "8") == 0 || strcmp(key, "KP_8") == 0) {
             meshActorPtr->setAttriMode("face_normal_3", MeshActor::VECTOR, MeshActor::FACE);
             spdlog::info("Switched to Face Vector: face_normal_3");
-        }  else if (strcmp(key, "0") == 0 || strcmp(key, "KP_0") == 0) {
+        } else if (strcmp(key, "0") == 0 || strcmp(key, "KP_0") == 0) {
             meshActorPtr->cancelActiveAttribute();
             spdlog::info("cancelActiveAttribute");
         } else if (strcmp(key, "t") == 0) {
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     keyPressCallback->SetCallback(KeyPressCallbackFunc);
     keyPressCallback->SetClientData(meshActor.get());
     if (interactor->AddObserver(vtkCommand::KeyPressEvent, keyPressCallback) == 0) {
-        std::cerr << "Failed to add key press observer!" << std::endl;
+        spdlog::error("Failed to add key press observer!");
     }
 
     spdlog::info("Press '1' for Vertex Scalar (VertexScalar), '2' for Vertex Color (vertex_color_3)");

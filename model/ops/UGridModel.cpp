@@ -28,8 +28,8 @@ void UGridModel::update(MeshData& mesh_data)
     vtkPointData* pointData = mesh_->GetPointData();
     assert(pointData);
 
-    int numArrays = pointData->GetNumberOfArrays();
-    for (int i = 0; i < numArrays; i++) {
+    int vertexArrays = pointData->GetNumberOfArrays();
+    for (int i = 0; i < vertexArrays; i++) {
         vtkDataArray* array = pointData->GetArray(i);
         assert(array);
         std::string arrayName = array->GetName();
@@ -90,8 +90,8 @@ void UGridModel::update(MeshData& mesh_data)
             // 处理面属性
             vtkCellData* cellData = mesh_->GetCellData();
             assert(cellData);
-            int numArrays = cellData->GetNumberOfArrays();
-            for (int i = 0; i < numArrays; i++) {
+            int faceArrays = cellData->GetNumberOfArrays();
+            for (int i = 0; i < faceArrays; i++) {
                 vtkDataArray* array = cellData->GetArray(i);
                 assert(array);
                 std::string arrayName = array->GetName();

@@ -161,13 +161,13 @@ MeshData MakeMeshDataWithAtri()
     //  添加顶点一元属性 (VertexScalar)
     std::vector<double> vertex_scalar;
     for (size_t i = 0; i < num_points; i++) {
-       
-        vertex_scalar.push_back(i);
+
+        vertex_scalar.push_back(static_cast<double>(i));
     }
     data.vertex_attributes_["VertexScalar"] = vertex_scalar; // 顶点标量属性
     // 输出点一元属性
-    for each (double var in vertex_scalar) {
-        std::cout << "vertex_scalar" <<var << std::endl;
+    for (double var : vertex_scalar) {
+        std::cout << "vertex_scalar" << var << std::endl;
     }
     //  添加面一元属性 (FaceScalar)
     std::vector<double> face_scalar;
@@ -185,38 +185,38 @@ MeshData MakeMeshDataWithAtri()
         face_scalar.push_back((sum_x + sum_y * (sum_z + i)) / (end - start) + i);
     }
     data.face_attributes_["FaceScalar"] = face_scalar; // 面标量属性
-    //输出面一元属性
-    for each (double var in face_scalar ) {
-        std::cout << "faceScalar" << std::endl;
+    // 输出面一元属性
+    for (double var : face_scalar) {
+        std::cout << "faceScalar: " << var << std::endl;
     }
     // 顶点颜色 (三元组)
     std::vector<double> vertex_color_3;
     for (int i = 0; i < num_points; ++i) {
-            switch (i % 6) { // 6种颜色
-            case 0:
-                vertex_color_3.insert(vertex_color_3.end(), { 1.0, 0.0, 0.0 });
-                break; // 纯红
-            case 1:
-                vertex_color_3.insert(vertex_color_3.end(), { 1.0, 0.5, 0.0 });
-                break; // 橙
-            case 2:
-                vertex_color_3.insert(vertex_color_3.end(), { 1.0, 1.0, 0.0 });
-                break; // 黄
-            case 3:
-                vertex_color_3.insert(vertex_color_3.end(), { 0.0, 1.0, 0.0 });
-                break; // 绿
-            case 4:
-                vertex_color_3.insert(vertex_color_3.end(), { 0.0, 0.0, 1.0 });
-                break; // 蓝
-            case 5:
-                vertex_color_3.insert(vertex_color_3.end(), { 0.5, 0.0, 1.0 });
-                break; // 紫
-            }
+        switch (i % 6) { // 6种颜色
+        case 0:
+            vertex_color_3.insert(vertex_color_3.end(), { 1.0, 0.0, 0.0 });
+            break; // 纯红
+        case 1:
+            vertex_color_3.insert(vertex_color_3.end(), { 1.0, 0.5, 0.0 });
+            break; // 橙
+        case 2:
+            vertex_color_3.insert(vertex_color_3.end(), { 1.0, 1.0, 0.0 });
+            break; // 黄
+        case 3:
+            vertex_color_3.insert(vertex_color_3.end(), { 0.0, 1.0, 0.0 });
+            break; // 绿
+        case 4:
+            vertex_color_3.insert(vertex_color_3.end(), { 0.0, 0.0, 1.0 });
+            break; // 蓝
+        case 5:
+            vertex_color_3.insert(vertex_color_3.end(), { 0.5, 0.0, 1.0 });
+            break; // 紫
+        }
     }
-        data.vertex_attributes_["vertex_color_3"] = vertex_color_3;
+    data.vertex_attributes_["vertex_color_3"] = vertex_color_3;
 
     // 面颜色 (三元组)
-    //std::cout << "num_faces" << num_faces << std::endl;
+    // std::cout << "num_faces" << num_faces << std::endl;
     std::vector<double> face_color_3;
     for (int i = 0; i < num_faces; ++i) {
         switch (i % 5) {
@@ -262,7 +262,7 @@ MeshData MakeMeshDataWithAtri()
         { { 0, 3, -2 } },
         { { 0, -1, 1 } },
         { { 1, -4, 1 } },
-        { { 1,2, 1 } },
+        { { 1, 2, 1 } },
         { { -2, 1, 5 } } } };
     std::vector<double> vertex_vector2;
     for (size_t i = 0; i < num_points; ++i) {
@@ -308,8 +308,8 @@ MeshData MakeMeshDataWithUV()
 
     for (int i = 0; i < 6; i++) {
         double phi = i * 60.0 * m_pi / 180.0;
-        double x = sin(theta1) * cos(phi)-1;
-        double y = sin(theta1) * sin(phi)-1;
+        double x = sin(theta1) * cos(phi) - 1;
+        double y = sin(theta1) * sin(phi) - 1;
         double z = cos(theta1);
         positions.push_back({ x, y, z });
     }
@@ -318,8 +318,8 @@ MeshData MakeMeshDataWithUV()
     const double theta2 = 60.0 * m_pi / 180.0;
     for (int i = 0; i < 6; i++) {
         double phi = i * 60.0 * m_pi / 180.0;
-        double x = sin(theta2) * cos(phi)-1;
-        double y = sin(theta2) * sin(phi)-1;
+        double x = sin(theta2) * cos(phi) - 1;
+        double y = sin(theta2) * sin(phi) - 1;
         double z = cos(theta2);
         positions.push_back({ x, y, z });
     }
@@ -328,8 +328,8 @@ MeshData MakeMeshDataWithUV()
     const double theta3 = 90.0 * m_pi / 180.0;
     for (int i = 0; i < 6; i++) {
         double phi = i * 60.0 * m_pi / 180.0;
-        double x = sin(theta3) * cos(phi)-1;
-        double y = sin(theta3) * sin(phi)-1;
+        double x = sin(theta3) * cos(phi) - 1;
+        double y = sin(theta3) * sin(phi) - 1;
         double z = cos(theta3);
         positions.push_back({ x, y, z });
     }

@@ -572,11 +572,9 @@ void MeshActor::setActiveRGBAttribute(std::string attr_name, ElementType type)
 {
     switch (type) {
     case VERTEX: {
-        vtkDataArray* array = this->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
         this->vertex_data_->GetPointData()->SetActiveAttribute(attr_name.c_str(), vtkDataSetAttributes::SCALARS);
         vertex_mapper_->SetScalarVisibility(1);
         vertex_mapper_->SetColorModeToDirectScalars(); // 使用 RGB
-
         this->face_data_->GetPointData()->SetActiveScalars(attr_name.c_str());
         face_mapper_->SetScalarModeToUsePointData(); // 面使用点数据的插值
         face_mapper_->SetScalarVisibility(1);
@@ -584,12 +582,10 @@ void MeshActor::setActiveRGBAttribute(std::string attr_name, ElementType type)
 
     } break;
     case FACE: {
-        vtkDataArray* array = this->face_data_->GetCellData()->GetArray(attr_name.c_str());
         face_mapper_->SetScalarModeToUseCellData();
         this->face_data_->GetCellData()->SetActiveScalars(attr_name.c_str());
         face_mapper_->SetScalarVisibility(1);
         face_mapper_->SetColorModeToDirectScalars();
-
     } break;
     case EDGE:
         break;

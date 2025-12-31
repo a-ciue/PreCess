@@ -14,7 +14,6 @@
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkObjectFactory.h>
-#include <vtkOutputWindow.h>
 #include <vtkPlane.h>
 QRenderWindow::QRenderWindow()
 {
