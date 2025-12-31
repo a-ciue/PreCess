@@ -128,8 +128,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         for (const auto& attr : model_data.vertex_attributes_) {
             const std::string& attr_name = attr.first;
             const std::vector<double>& attr_values = attr.second;
-            bool isTriple = attr_name.substr(attr_name.size() - 2) == "_3";
-            bool isDouble = attr_name.substr(attr_name.size() - 2) == "_2";
+            bool isTriple = attr_name.size() >= 2 && attr_name.substr(attr_name.size() - 2) == "_3";
+            bool isDouble = attr_name.size() >= 2 && attr_name.substr(attr_name.size() - 2) == "_2";
             if (attr_values.size() < num_vertex) {
                 spdlog::error("Attribute {} has insufficient values", attr_name);
                 continue;
