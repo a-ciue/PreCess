@@ -144,14 +144,10 @@ UGridModel::~UGridModel() = default;
 
 std::string UGridModel::completeAttributeName(const std::string& name, int numComponents)
 {
-    if (numComponents == 3) {
-        if (name.size() < 2 || (name.size() >= 2 && name.substr(name.size() - 2) == "_3")) {
-            return name + "_3";
-        }
-    }
-    if (numComponents == 2) {
-        if (name.size() < 2 || (name.size() >= 2 && name.substr(name.size() - 2) == "_2")) {
-            return name + "_2";
+    if (numComponents > 1) {
+        std::string suffix = "_" + std::to_string(numComponents);
+        if (name.size() < 2 || name.substr(name.size() - suffix.size()) != suffix) {
+            return name + suffix;
         }
     }
     return name;

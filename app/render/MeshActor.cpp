@@ -123,57 +123,29 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 
         vertex_poly->GetPointData()->AddArray(originalPointIds);
 
-        // 动态处理顶点属性
+        // 处理顶点属性
         const size_t num_vertex = size;
         for (const auto& attr : model_data.vertex_attributes_) {
             const std::string& attr_name = attr.first;
             const std::vector<double>& attr_values = attr.second;
-            bool isTriple = attr_name.size() >= 2 && attr_name.substr(attr_name.size() - 2) == "_3";
-            bool isDouble = attr_name.size() >= 2 && attr_name.substr(attr_name.size() - 2) == "_2";
             if (attr_values.size() < num_vertex) {
                 spdlog::error("Attribute {} has insufficient values", attr_name);
                 continue;
             }
-            if (!isTriple && !isDouble) {
-                // 单分量属性 (如 "pressure")
-                auto scalar_array = vtkSmartPointer<vtkDoubleArray>::New();
-                scalar_array->SetNumberOfComponents(1);
-                scalar_array->SetName(attr_name.c_str());
-
-                for (size_t i = 0; i < num_vertex; ++i) {
-                    scalar_array->InsertNextValue(attr_values[i]);
-                }
-                vertex_poly->GetPointData()->AddArray(scalar_array);
-            } else if (isDouble) {
-                // 双元组属性 (如 "vertex_uv_2")
-                auto vector_array = vtkSmartPointer<vtkDoubleArray>::New();
-                vector_array->SetNumberOfComponents(2);
-                vector_array->SetName(attr_name.c_str());
-
-                for (size_t i = 0; i < num_vertex; ++i) {
-                    vector_array->InsertNextTuple2(
-                        attr_values[i * 2],
-                        attr_values[i * 2 + 1]);
-                }
-                vertex_poly->GetPointData()->AddArray(vector_array);
-            } else if (isTriple) {
-                // 三元组属性 (如 "vertex_vector_3")
-                auto vector_array = vtkSmartPointer<vtkDoubleArray>::New();
-                vector_array->SetNumberOfComponents(3);
-                vector_array->SetName(attr_name.c_str());
-
-                for (size_t i = 0; i < num_vertex; ++i) {
-                    vector_array->InsertNextTuple3(
-                        attr_values[i * 3],
-                        attr_values[i * 3 + 1],
-                        attr_values[i * 3 + 2]);
-                }
-                vertex_poly->GetPointData()->AddArray(vector_array);
-            } else {
-
-                std::cerr << "Warning: Vertex attribute '" << attr_name
-                          << std::endl;
+            size_t ncomp = attr_values.size() / num_vertex;
+            // 判断属性数量是不是顶点数量的整数倍
+            if (ncomp * num_vertex != attr_values.size()) {
+                spdlog::error("Attribute {} size mismatch: {} values for {} vertices", attr_name, attr_values.size(), num_vertex);
+                continue;
             }
+            auto array = vtkSmartPointer<vtkDoubleArray>::New();
+            array->SetNumberOfComponents(static_cast<int>(ncomp));
+            array->SetName(attr_name.c_str());
+            array->SetNumberOfTuples(num_vertex);
+            for (size_t i = 0; i < num_vertex; ++i) {
+                array->SetTuple(i, &attr_values[i * ncomp]);
+            }
+            vertex_poly->GetPointData()->AddArray(array);
         }
     }
 
@@ -201,52 +173,29 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         vtkPointData* src = this->vertex_data_->GetPointData();
         vtkPointData* dst = this->face_data_->GetPointData();
         dst->ShallowCopy(src);
-        // 新增：动态处理面属性
+
+        // 处理面属性
         const size_t num_faces = face_poly->GetNumberOfCells();
         for (const auto& attr : model_data.face_attributes_) {
             const std::string& attr_name = attr.first;
             const std::vector<double>& attr_values = attr.second;
-            bool isTriple = !attr_name.empty() && attr_name.back() == '3';
-            bool isDouble = !attr_name.empty() && attr_name.back() == '2';
-            if (!isTriple && !isDouble) {
-                // 单分量属性 (如 "face_pressure")
-                auto scalar_array = vtkSmartPointer<vtkDoubleArray>::New();
-                scalar_array->SetNumberOfComponents(1);
-                scalar_array->SetName(attr_name.c_str());
-
-                for (size_t i = 0; i < num_faces; ++i) {
-                    scalar_array->InsertNextValue(attr_values[i]);
-                }
-                face_poly->GetCellData()->AddArray(scalar_array);
-            } else if (isDouble) {
-                // 双分量属性
-                auto vector_array = vtkSmartPointer<vtkDoubleArray>::New();
-                vector_array->SetNumberOfComponents(2);
-                vector_array->SetName(attr_name.c_str());
-                for (size_t i = 0; i < num_faces; ++i) {
-                    vector_array->InsertNextTuple2(
-                        attr_values[i * 2],
-                        attr_values[i * 2 + 1]);
-                }
-                face_poly->GetCellData()->AddArray(vector_array);
-            } else if (isTriple) {
-                // 三分量属性
-                auto vector_array = vtkSmartPointer<vtkDoubleArray>::New();
-                vector_array->SetNumberOfComponents(3);
-                vector_array->SetName(attr_name.c_str());
-
-                for (size_t i = 0; i < num_faces; ++i) {
-                    vector_array->InsertNextTuple3(
-                        attr_values[i * 3],
-                        attr_values[i * 3 + 1],
-                        attr_values[i * 3 + 2]);
-                }
-                face_poly->GetCellData()->AddArray(vector_array);
-
-            } else {
-                std::cerr << "Warning: Face attribute '" << attr_name
-                          << std::endl;
+            if (attr_values.size() < num_faces) {
+                spdlog::error("Attribute {} has insufficient values", attr_name);
+                continue;
             }
+            size_t ncomp = attr_values.size() / num_faces;
+            if (ncomp * num_faces != attr_values.size()) {
+                spdlog::error("Attribute {} size mismatch: {} values for {} faces", attr_name, attr_values.size(), num_faces);
+                continue;
+            }
+            auto array = vtkSmartPointer<vtkDoubleArray>::New();
+            array->SetNumberOfComponents(static_cast<int>(ncomp));
+            array->SetName(attr_name.c_str());
+            array->SetNumberOfTuples(num_faces);
+            for (size_t i = 0; i < num_faces; ++i) {
+                array->SetTuple(i, &attr_values[i * ncomp]);
+            }
+            face_poly->GetCellData()->AddArray(array);
         }
     }
 
