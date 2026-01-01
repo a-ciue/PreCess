@@ -318,7 +318,7 @@ void MeshActor::setRenderMode(ModelRenderMode render_mode)
         this->renderer_->RemoveActor(this->glyph3D_actor_);
         this->renderer_->AddActor(this->actor_);
     } else {
-        std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
+        spdlog::error("invalid renderMode in QRenderWindow::changeRenderer");
         return;
     }
 }
