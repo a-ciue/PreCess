@@ -34,14 +34,14 @@ void UGridModel::update(MeshData& mesh_data)
         assert(array);
         std::string arrayName = array->GetName();
         int numComponents = array->GetNumberOfComponents();
-        // 检查是否为3元或2元属性，自动补全属性名
+        // 检查是否为多元属性，补全属性名
         arrayName = completeAttributeName(arrayName, numComponents);
         std::vector<double> values;
-        values.reserve(static_cast<size_t>(pts->GetNumberOfPoints()) * numComponents);
+        values.resize(static_cast<size_t>(pts->GetNumberOfPoints()) * numComponents);
         std::vector<double> tuple(numComponents);
         for (vtkIdType j = 0; j < pts->GetNumberOfPoints(); ++j) {
             array->GetTuple(j, tuple.data());
-            values.insert(values.end(), tuple.begin(), tuple.end());
+            std::copy(tuple.begin(), tuple.end(), values.begin() + j * numComponents);
         }
         mesh_data.vertex_attributes_[arrayName] = std::move(values);
     }
@@ -100,11 +100,11 @@ void UGridModel::update(MeshData& mesh_data)
                 arrayName = completeAttributeName(arrayName, numComponents);
 
                 std::vector<double> values;
-                values.reserve(static_cast<size_t>(mesh_->GetNumberOfCells()) * numComponents);
+                values.resize(static_cast<size_t>(mesh_->GetNumberOfCells()) * numComponents);
                 std::vector<double> tuple(numComponents);
                 for (vtkIdType j = 0; j < mesh_->GetNumberOfCells(); ++j) {
                     array->GetTuple(j, tuple.data());
-                    values.insert(values.end(), tuple.begin(), tuple.end());
+                    std::copy(tuple.begin(), tuple.end(), values.begin() + j * numComponents);
                 }
                 mesh_data.face_attributes_[arrayName] = std::move(values);
             }

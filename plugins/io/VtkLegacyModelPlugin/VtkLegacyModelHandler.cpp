@@ -10,6 +10,7 @@
 
 #include <fstream>
 #include <spdlog/spdlog.h>
+#include <vtkAppendFilter.h>
 #include <vtkCell.h>
 #include <vtkCellData.h>
 #include <vtkDataSetReader.h>
@@ -30,9 +31,28 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
     reader->ReadAllNormalsOn();
     reader->ReadAllTCoordsOn();
     reader->ReadAllTensorsOn();
-
     reader->Update();
-    vtkSmartPointer<vtkUnstructuredGrid> ugrid = reader->GetUnstructuredGridOutput();
+    vtkDataSet* dataset = reader->GetOutput();
+    if (!dataset) {
+        spdlog::error("VTK file read failed: {}", path_string);
+        return nullptr;
+    }
+
+    // 转换为UnstructuredGrid
+    vtkSmartPointer<vtkUnstructuredGrid> ugrid;
+    if (dataset->GetDataObjectType() == VTK_UNSTRUCTURED_GRID) {
+        ugrid = reader->GetUnstructuredGridOutput();
+    } else {
+        vtkNew<vtkAppendFilter> appendFilter;
+        appendFilter->AddInputData(dataset);
+        appendFilter->Update();
+        ugrid = vtkUnstructuredGrid::SafeDownCast(appendFilter->GetOutput());
+    }
+
+    if (!ugrid || ugrid->GetNumberOfPoints() == 0) {
+        spdlog::error("Failed to convert to vtkUnstructuredGrid: {}", path_string);
+        return nullptr;
+    }
 
     // 输出属性信息
     vtkPointData* pointData = ugrid->GetPointData();
@@ -41,10 +61,7 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
         spdlog::info("vtkUnstructuredGrid PointData arrays: {}", numArrays);
         for (int i = 0; i < numArrays; ++i) {
             vtkDataArray* array = pointData->GetArray(i);
-            if (array) {
-                spdlog::info("  PointData array[{}]: {}", i, array->GetName());
-            } else
-                break;
+            spdlog::info("  PointData array[{}]: {}", i, array->GetName());
         }
     }
     vtkCellData* cellData = ugrid->GetCellData();
@@ -54,10 +71,7 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
         spdlog::info("vtkUnstructuredGrid CellData arrays: {}", numArrays);
         for (int i = 0; i < numArrays; ++i) {
             vtkDataArray* array = cellData->GetArray(i);
-            if (array) {
-                spdlog::info("  CellData array[{}]: {}", i, array->GetName());
-            } else
-                break;
+            spdlog::info("  CellData array[{}]: {}", i, array->GetName());
         }
     }
 
