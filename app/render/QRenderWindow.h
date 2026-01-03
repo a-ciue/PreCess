@@ -131,34 +131,31 @@ public:
      * myItem.setAttriMode("vertex_uv_2", 2, 0, "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp")
      * myItem.setAttriMode("vertex_scalars", 1, 0)
      * myItem.setAttriMode("vertex_scalars", 1, 0,"",-1,[2,6])
-     * myItem.setAttriMode("vertex_scalars", 1, 0, "",0,0,1);
      * 对于blow.vtk:
      * myItem.setAttriMode("displacement9_3", 3, 0)
      * myItem.setAttriMode("displacement9_3", 3, 0,"",0.5)
      * myItem.setAttriMode("thickness9", 1, 0)
-     * @param attr_name 属性名 
+     * myItem.setAttriMode("thickness9", 1, 0,"",-1,[0,2])
+     * @param attr_name 属性名
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
      * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
      * @param texturePath 贴图路径
      * @param glyphScale 箭头缩放比例
-     * @param scalarRange 标量范围
-     * @param resetScalarRange 是否重置标量范围
+     * @param scalarRange 标量范围 (不给就是默认)
      */
     Q_INVOKABLE void setAttriMode(
         QString attr_name,
         int mode,
         int type,
-        QString texturePath = "",
-        double glyphScale = -1,
-        QVariant scalarRange = QVariant(),
-        bool resetScalarRange = false);
+        QString texture_path = "",
+        double glyph_scale = -1,
+        QVariant scalar_range = QVariant());
     /**
      * @brief 取消属性渲染
      * 在控制台中调用示例：
      * myItem.cancelAttri()
      */
     Q_INVOKABLE void cancelAttri();
-    
 
     bool event(QEvent* ev) override;
 

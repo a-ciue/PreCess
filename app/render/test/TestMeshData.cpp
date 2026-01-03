@@ -7,46 +7,46 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
-static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void* clientData, [[maybe_unused]] void* callData)
+static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void* client_data, [[maybe_unused]] void* call_data)
 {
     if (eventId == vtkCommand::KeyPressEvent) {
-        MeshActor* meshActorPtr = static_cast<MeshActor*>(clientData);
+        MeshActor* mesh_actor_ptr = static_cast<MeshActor*>(client_data);
         vtkRenderWindowInteractor* interactor = static_cast<vtkRenderWindowInteractor*>(caller);
         const char* key = interactor->GetKeySym();
         spdlog::info("Key pressed: [{}]", key);
 
         if (strcmp(key, "1") == 0 || strcmp(key, "KP_1") == 0) {
-            meshActorPtr->setAttriMode("VertexScalar", MeshActor::SCALAR, MeshActor::VERTEX);
+            mesh_actor_ptr->setAttriMode("VertexScalar", MeshActor::SCALAR, MeshActor::VERTEX);
             spdlog::info("Switched to Vertex Scalar: VertexScalar");
         } else if (strcmp(key, "2") == 0 || strcmp(key, "KP_2") == 0) {
-            meshActorPtr->setAttriMode("vertex_color_3", MeshActor::RGB, MeshActor::VERTEX);
+            mesh_actor_ptr->setAttriMode("vertex_color_3", MeshActor::RGB, MeshActor::VERTEX);
             spdlog::info("Switched to Vertex Color: vertex_color_3");
         } else if (strcmp(key, "4") == 0 || strcmp(key, "KP_4") == 0) {
-            meshActorPtr->setAttriMode("FaceScalar", MeshActor::SCALAR, MeshActor::FACE);
+            mesh_actor_ptr->setAttriMode("FaceScalar", MeshActor::SCALAR, MeshActor::FACE);
             spdlog::info("Switched to Face Scalar: FaceScalar");
         } else if (strcmp(key, "5") == 0 || strcmp(key, "KP_5") == 0) {
-            meshActorPtr->setAttriMode("face_color_3", MeshActor::RGB, MeshActor::FACE);
+            mesh_actor_ptr->setAttriMode("face_color_3", MeshActor::RGB, MeshActor::FACE);
             spdlog::info("Switched to Face Color: face_color_3");
         } else if (strcmp(key, "6") == 0 || strcmp(key, "KP_6") == 0) {
-            meshActorPtr->setAttriMode("vertex_press_3", MeshActor::VECTOR, MeshActor::VERTEX);
+            mesh_actor_ptr->setAttriMode("vertex_press_3", MeshActor::VECTOR, MeshActor::VERTEX);
             spdlog::info("Switched to Vertex Vector: vertex_press_3");
         } else if (strcmp(key, "7") == 0 || strcmp(key, "KP_7") == 0) {
-            meshActorPtr->setAttriMode("vertex_normal_3", MeshActor::VECTOR, MeshActor::VERTEX);
+            mesh_actor_ptr->setAttriMode("vertex_normal_3", MeshActor::VECTOR, MeshActor::VERTEX);
             spdlog::info("Switched to Vertex Vector: vertex_normal_3");
         } else if (strcmp(key, "8") == 0 || strcmp(key, "KP_8") == 0) {
-            meshActorPtr->setAttriMode("face_normal_3", MeshActor::VECTOR, MeshActor::FACE);
+            mesh_actor_ptr->setAttriMode("face_normal_3", MeshActor::VECTOR, MeshActor::FACE);
             spdlog::info("Switched to Face Vector: face_normal_3");
         } else if (strcmp(key, "0") == 0 || strcmp(key, "KP_0") == 0) {
-            meshActorPtr->cancelActiveAttribute();
+            mesh_actor_ptr->cancelActiveAttribute();
             spdlog::info("cancelActiveAttribute");
         } else if (strcmp(key, "t") == 0) {
-            meshActorPtr->setAttriMode("VertexScalar", MeshActor::SCALAR, MeshActor::VERTEX, "", 0.3, std::make_pair(2.0, 6.0), false);
+            mesh_actor_ptr->setAttriMode("VertexScalar", MeshActor::SCALAR, MeshActor::VERTEX, "", 0.3, std::make_pair(2.0, 6.0));
             spdlog::info("setScalarRange(2, 6)");
         } else if (strcmp(key, "y") == 0) {
-            meshActorPtr->setAttriMode("VertexScalar", MeshActor::SCALAR, MeshActor::VERTEX, "", 0.3, std::nullopt, true);
+            mesh_actor_ptr->setAttriMode("VertexScalar", MeshActor::SCALAR, MeshActor::VERTEX, "", 0.3, std::nullopt);
             spdlog::info("resetScalarRange()");
         } else if (strcmp(key, "u") == 0) {
-            meshActorPtr->setAttriMode("vertex_press_3", MeshActor::VECTOR, MeshActor::VERTEX, "", 0.5, std::nullopt, false);
+            mesh_actor_ptr->setAttriMode("vertex_press_3", MeshActor::VECTOR, MeshActor::VERTEX, "", 0.5, std::nullopt);
             spdlog::info("setGlyph3DScaleFactor(0.5)");
         }
     }
@@ -76,10 +76,10 @@ int main(int argc, char* argv[])
     std::shared_ptr<MeshActor> meshActor2 = std::make_shared<MeshActor>(renderer, true, true, ModelRenderMode::Face);
     meshActor2->loadModelData(test_mesh_data2);
     // 按键交互逻辑
-    vtkSmartPointer<vtkCallbackCommand> keyPressCallback = vtkSmartPointer<vtkCallbackCommand>::New();
-    keyPressCallback->SetCallback(KeyPressCallbackFunc);
-    keyPressCallback->SetClientData(meshActor.get());
-    if (interactor->AddObserver(vtkCommand::KeyPressEvent, keyPressCallback) == 0) {
+    vtkSmartPointer<vtkCallbackCommand> key_press_callback = vtkSmartPointer<vtkCallbackCommand>::New();
+    key_press_callback->SetCallback(KeyPressCallbackFunc);
+    key_press_callback->SetClientData(meshActor.get());
+    if (interactor->AddObserver(vtkCommand::KeyPressEvent, key_press_callback) == 0) {
         spdlog::error("Failed to add key press observer!");
     }
 

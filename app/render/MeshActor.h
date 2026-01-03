@@ -74,17 +74,15 @@ public:
         const std::string& attr_name,
         Mode mode,
         ElementType type,
-        const std::string& texturePath = "",
-        double glyphScale = -1,
-        std::optional<std::pair<double, double>> scalarRange = std::nullopt,
-        bool resetScalarRange = false);
+        const std::string& texture_path = "",
+        double glyph_scale = -1,
+        std::optional<std::pair<double, double>> scalar_range = std::nullopt);
     /**
      * @brief 取消属性渲染
      */
     void cancelActiveAttribute();
 
 private:
-    void resetScalarRange();
     void setScalarRange(double min, double max);
     void setGlyph3DScaleFactor(double scale);
     void setActiveScalarAttribute(std::string attr_name, ElementType type);
@@ -129,7 +127,7 @@ private:
     vtkRenderer* renderer_;
 
     vtkNew<vtkActor> actor_;
-    // Face mapper
+
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(const MeshDataVtk& model_data);
     static void _createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data);

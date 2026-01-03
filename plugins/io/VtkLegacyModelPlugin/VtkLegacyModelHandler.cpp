@@ -43,10 +43,10 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
     if (dataset->GetDataObjectType() == VTK_UNSTRUCTURED_GRID) {
         ugrid = reader->GetUnstructuredGridOutput();
     } else {
-        vtkNew<vtkAppendFilter> appendFilter;
-        appendFilter->AddInputData(dataset);
-        appendFilter->Update();
-        ugrid = vtkUnstructuredGrid::SafeDownCast(appendFilter->GetOutput());
+        vtkNew<vtkAppendFilter> append_filter;
+        append_filter->AddInputData(dataset);
+        append_filter->Update();
+        ugrid = vtkUnstructuredGrid::SafeDownCast(append_filter->GetOutput());
     }
 
     if (!ugrid || ugrid->GetNumberOfPoints() == 0) {
@@ -55,22 +55,21 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
     }
 
     // 输出属性信息
-    vtkPointData* pointData = ugrid->GetPointData();
-    if (pointData) {
-        int numArrays = pointData->GetNumberOfArrays();
+    vtkPointData* point_data = ugrid->GetPointData();
+    if (point_data) {
+        int numArrays = point_data->GetNumberOfArrays();
         spdlog::info("vtkUnstructuredGrid PointData arrays: {}", numArrays);
         for (int i = 0; i < numArrays; ++i) {
-            vtkDataArray* array = pointData->GetArray(i);
+            vtkAbstractArray* array = point_data->GetAbstractArray(i);
             spdlog::info("  PointData array[{}]: {}", i, array->GetName());
         }
     }
-    vtkCellData* cellData = ugrid->GetCellData();
-    if (cellData) {
-        int numArrays = cellData->GetNumberOfArrays();
-
+    vtkCellData* cell_data = ugrid->GetCellData();
+    if (cell_data) {
+        int numArrays = cell_data->GetNumberOfArrays();
         spdlog::info("vtkUnstructuredGrid CellData arrays: {}", numArrays);
         for (int i = 0; i < numArrays; ++i) {
-            vtkDataArray* array = cellData->GetArray(i);
+            vtkAbstractArray* array = cell_data->GetAbstractArray(i);
             spdlog::info("  CellData array[{}]: {}", i, array->GetName());
         }
     }

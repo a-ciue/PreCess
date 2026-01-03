@@ -33,10 +33,9 @@ public:
         std::string attr_name,
         MeshActor::Mode mode,
         MeshActor::ElementType type,
-        std::string texturePath,
-        double glyphScale,
-        std::optional<std::pair<double, double>> scalarRange,
-        bool resetScalarRange);
+        std::string texture_path,
+        double glyph_scale,
+        std::optional<std::pair<double, double>> scalar_range);
     void cancelAttri(Index model_id);
 
 private:

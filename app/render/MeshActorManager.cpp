@@ -91,14 +91,13 @@ void MeshActorManager::setAttriMode(
     std::string attr_name,
     MeshActor::Mode mode,
     MeshActor::ElementType type,
-    std::string texturePath,
-    double glyphScale,
-    std::optional<std::pair<double, double>> scalarRange,
-    bool resetScalarRange
+    std::string texture_path,
+    double glyph_scale,
+    std::optional<std::pair<double, double>> scalar_range
     )
 {
     if (this->models_.count(model_id))
-        this->models_[model_id]->setAttriMode(attr_name, mode, type, texturePath,glyphScale,scalarRange,resetScalarRange);
+        this->models_[model_id]->setAttriMode(attr_name, mode, type, texture_path,glyph_scale,scalar_range);
 }
 void MeshActorManager::cancelAttri(Index model_id)
 {
