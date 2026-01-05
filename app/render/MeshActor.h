@@ -1,5 +1,6 @@
 #ifndef MESH_ACTOR_H
 #define MESH_ACTOR_H
+#include "AttributeCommon.h"
 #include "Core.h"
 #include <optional>
 #include <vtkActor.h>
@@ -14,10 +15,12 @@ class vtkPoints;
 class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
+class AttributeOperator;
 
 //! @brief 负责管理Model的Actor
 class MeshActor {
     friend MeshActorSelectOp;
+    friend AttributeOperator;
 
 public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
@@ -43,25 +46,6 @@ public:
 
     ModelRenderMode getMeshRenderMode();
     /**
-     * @brief 渲染的属性所在actor位置
-     */
-    enum ElementType {
-        VERTEX,
-        EDGE,
-        FACE,
-        SOLID
-    };
-    /**
-     * @brief 属性渲染方式
-     */
-    enum Mode {
-        RGB,
-        SCALAR,
-        UV,
-        VECTOR
-    };
-
-    /**
      * @brief 设置属性渲染方式
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
      * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
@@ -83,15 +67,6 @@ public:
     void cancelActiveAttribute();
 
 private:
-    void setScalarRange(double min, double max);
-    void setGlyph3DScaleFactor(double scale);
-    void setActiveScalarAttribute(std::string attr_name, ElementType type);
-    void setActiveVectorAttribute(std::string attr_name, ElementType type);
-    void setActiveRGBAttribute(std::string attr_name, ElementType type);
-    void createGlyph3D(vtkDataSet* input, const std::array<double, 3>& color, double scale = 0.3);
-    void setTextureImage(std::string attr_name, std::string texturePath);
-    void cancelTextureImage();
-
     ModelRenderMode render_mode_;
     bool edge_render_ { true };
     bool vertex_render_ {};

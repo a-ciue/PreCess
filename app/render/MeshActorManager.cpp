@@ -1,6 +1,5 @@
 #include "MeshActorManager.h"
 #include "Core.h"
-#include "MeshActor.h"
 
 std::shared_ptr<const MeshActor> MeshActorManager::getModelActor(Index model_id)
 {
@@ -89,8 +88,8 @@ ModelRenderMode MeshActorManager::getMeshRenderMode(Index model_id)
 void MeshActorManager::setAttriMode(
     Index model_id,
     std::string attr_name,
-    MeshActor::Mode mode,
-    MeshActor::ElementType type,
+    Mode mode,
+    ElementType type,
     std::string texture_path,
     double glyph_scale,
     std::optional<std::pair<double, double>> scalar_range

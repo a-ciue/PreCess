@@ -1,28 +1,20 @@
 #include "MeshActor.h"
+#include "AttributeOperator.h"
 #include "Core.h"
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
-#include <vtkAlgorithmOutput.h>
-#include <vtkArrowSource.h>
 #include <vtkCellArray.h>
-#include <vtkCellCenters.h>
 #include <vtkCellData.h>
-#include <vtkCellDataToPointData.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkDoubleArray.h>
 #include <vtkExtractGeometry.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkGeometryFilter.h>
-#include <vtkGlyph3D.h>
-#include <vtkImageReader2.h>
-#include <vtkImageReader2Factory.h>
-#include <vtkLookupTable.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkNamedColors.h>
 #include <vtkPlane.h>
 #include <vtkPointData.h>
-#include <vtkPointDataToCellData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -30,11 +22,8 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkSMPTools.h>
-#include <vtkTexture.h>
-#include <vtkTextureMapToPlane.h>
 #include <vtkUnsignedCharArray.h>
 #include <vtkUnstructuredGrid.h>
-
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
@@ -447,132 +436,6 @@ void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& poin
     solid_data.SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
 }
 
-void MeshActor::setActiveScalarAttribute(std::string attr_name, ElementType type)
-{
-    switch (type) {
-    case VERTEX: {
-        vtkDataArray* array = this->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
-        this->vertex_data_->GetPointData()->SetActiveAttribute(attr_name.c_str(), vtkDataSetAttributes::SCALARS);
-        // 设置映射范围
-        double range[2];
-        array->GetRange(range);
-        vertex_mapper_->SetScalarRange(range[0], range[1]);
-        vertex_mapper_->SetScalarVisibility(1);
-        vertex_mapper_->SetColorModeToMapScalars(); // 使用 colormap
-        if (this->face_data_) {
-            this->face_data_->GetPointData()->SetActiveScalars(attr_name.c_str());
-            face_mapper_->SetScalarModeToUsePointData();
-            face_mapper_->SetScalarVisibility(1);
-            face_mapper_->SetScalarRange(range[0], range[1]);
-            face_mapper_->SetColorModeToMapScalars();
-        }
-        break;
-    }
-    case FACE: {
-        vtkDataArray* array = this->face_data_->GetCellData()->GetArray(attr_name.c_str());
-        // 设置映射范围
-        double range[2];
-        array->GetRange(range);
-        face_mapper_->SetScalarRange(range[0], range[1]);
-        face_mapper_->SetScalarModeToUseCellData();
-        this->face_data_->GetCellData()->SetActiveScalars(attr_name.c_str());
-        face_mapper_->SetScalarVisibility(1);
-        face_mapper_->SetColorModeToMapScalars(); // 使用 colormap
-        break;
-    }
-    case EDGE:
-        break;
-    }
-}
-
-void MeshActor::setActiveVectorAttribute(std::string attr_name, ElementType type)
-{
-    switch (type) {
-    case VERTEX: {
-        vtkDataArray* array = this->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
-        this->vertex_data_->GetPointData()->SetActiveVectors(attr_name.c_str());
-        spdlog::info("vertex vector attribute '{}' found with {} components.", attr_name, array->GetNumberOfComponents());
-        createGlyph3D(this->vertex_data_, { 1.0, 0.0, 0.0 }); // 红色
-        break;
-    }
-    case FACE: {
-        vtkDataArray* array = this->face_data_->GetCellData()->GetArray(attr_name.c_str());
-        spdlog::info("face vector attribute '{}' found with {} components.", attr_name, array->GetNumberOfComponents());
-        // 计算面中心点位置 =====
-        vtkNew<vtkCellCenters> centers;
-        centers->SetInputData(this->face_data_);
-        centers->Update();
-        // 将面中心点位置与向量数据合并 =====
-        vtkNew<vtkPolyData> glyphInput;
-        glyphInput->SetPoints(centers->GetOutput()->GetPoints());
-        glyphInput->GetPointData()->SetVectors(array);
-        createGlyph3D(glyphInput, { 0.0, 0.0, 1.0 }); // 蓝色
-
-        break;
-    }
-    case EDGE:
-        break;
-    }
-}
-
-void MeshActor::setActiveRGBAttribute(std::string attr_name, ElementType type)
-{
-    switch (type) {
-    case VERTEX: {
-        this->vertex_data_->GetPointData()->SetActiveAttribute(attr_name.c_str(), vtkDataSetAttributes::SCALARS);
-        vertex_mapper_->SetScalarVisibility(1);
-        vertex_mapper_->SetColorModeToDirectScalars(); // 使用 RGB
-        this->face_data_->GetPointData()->SetActiveScalars(attr_name.c_str());
-        face_mapper_->SetScalarModeToUsePointData(); // 面使用点数据的插值
-        face_mapper_->SetScalarVisibility(1);
-        face_mapper_->SetColorModeToDirectScalars();
-        break;
-    }
-    case FACE: {
-        face_mapper_->SetScalarModeToUseCellData();
-        this->face_data_->GetCellData()->SetActiveScalars(attr_name.c_str());
-        face_mapper_->SetScalarVisibility(1);
-        face_mapper_->SetColorModeToDirectScalars();
-        break;
-    }
-    case EDGE:
-        break;
-    }
-}
-
-void MeshActor::setTextureImage(std::string attr_name, std::string texturePath)
-{
-    spdlog::info("start setTextureImage---------------------------");
-
-    // 读取纹理贴图文件
-    vtkNew<vtkImageReader2Factory> reader_factory;
-    vtkSmartPointer<vtkImageReader2> texture_file = reader_factory->CreateImageReader2(texturePath.c_str());
-    if (!texture_file) {
-        spdlog::error("Error: Failed to create texture reader for {}", texturePath);
-        return;
-    }
-    texture_file->SetFileName(texturePath.c_str());
-    texture_file->Update();
-
-    // 创建纹理对象
-    vtkNew<vtkTexture> texture;
-    texture->SetInputConnection(texture_file->GetOutputPort());
-    texture->InterpolateOn(); // 启用插值使纹理更平滑
-
-    // 读取传入的属性名作为UV
-    vtkDataArray* tcoords = this->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
-    if (tcoords && tcoords->GetNumberOfComponents() == 2) {
-        spdlog::info("use attribute [{}] as UV", attr_name);
-        this->vertex_data_->GetPointData()->SetTCoords(tcoords);
-        this->face_data_->GetPointData()->SetTCoords(tcoords);
-    }
-    this->face_actor_->SetTexture(texture);
-}
-void MeshActor::cancelTextureImage()
-{
-    this->face_actor_->SetTexture(nullptr);
-}
-
 void MeshActor::setAttriMode(
     const std::string& attr_name,
     Mode mode,
@@ -581,104 +444,12 @@ void MeshActor::setAttriMode(
     double glyph_scale,
     std::optional<std::pair<double, double>> scalar_range)
 {
-    cancelActiveAttribute();
-    spdlog::info("Mode:{} type:{}", static_cast<int>(mode), static_cast<int>(type));
-    switch (mode) {
-    case SCALAR:
-        setActiveScalarAttribute(attr_name, type);
-        if (scalar_range.has_value()) {
-            this->setScalarRange(scalar_range.value().first, scalar_range.value().second);
-        }
-        break;
-    case VECTOR:
-        setActiveVectorAttribute(attr_name, type);
-        if (glyph_scale > 0)
-            this->setGlyph3DScaleFactor(glyph_scale);
-        break;
-    case RGB:
-        setActiveRGBAttribute(attr_name, type);
-        break;
-    case UV:
-        setTextureImage(attr_name, texture_path);
-        break;
-    default:
-        spdlog::error("not the defalt mode");
-        assert(false);
-        break;
-    }
+    AttributeOperator op(this);
+    op.setAttriMode(attr_name, mode, type, texture_path, glyph_scale, scalar_range);
 }
+
 void MeshActor::cancelActiveAttribute()
 {
-    if (face_actor_->GetTexture() != nullptr) {
-        cancelTextureImage();
-    }
-    glyph3D_actor_->SetVisibility(0);
-    vertex_mapper_->SetScalarVisibility(0);
-    edge_mapper_->SetScalarVisibility(0);
-    face_mapper_->SetScalarVisibility(0);
-    solid_mapper_->SetScalarVisibility(0);
-}
-
-// Glyph3D 的缩放因子调整接口
-void MeshActor::setGlyph3DScaleFactor(double scale)
-{
-    vtkMapper* mapper = this->glyph3D_mapper_;
-    if (!mapper)
-        return;
-    vtkAlgorithm* producer = nullptr;
-    producer = mapper->GetInputConnection(0, 0)->GetProducer();
-    if (producer) {
-        vtkGlyph3D* glyph = vtkGlyph3D::SafeDownCast(producer);
-        glyph->SetScaleFactor(scale);
-        glyph->Update();
-    }
-}
-// 标量的range映射标调整接口
-void MeshActor::setScalarRange(double min, double max)
-{
-    vtkDataArray* array = nullptr;
-    vtkPolyDataMapper* mapper = nullptr;
-
-    // 如果点映射可见且有标量，设置点，同时同步设置面（点对面插值）
-    if (vertex_mapper_->GetScalarVisibility() && vertex_data_ && vertex_data_->GetPointData()->GetScalars()) {
-        array = vertex_data_->GetPointData()->GetScalars();
-        mapper = vertex_mapper_;
-        mapper->SetScalarRange(min, max);
-
-        // 同步设置面（点对面插值时，面mapper用点数据）
-        if (face_mapper_ && face_data_ && face_data_->GetPointData()->GetScalars()) {
-            face_mapper_->SetScalarModeToUsePointData();
-            face_mapper_->SetScalarRange(min, max);
-        }
-    } else // 否则面映射可见且有标量，设置面
-        if (face_mapper_->GetScalarVisibility() && face_data_ && face_data_->GetCellData()->GetScalars()) {
-            array = face_data_->GetCellData()->GetScalars();
-            mapper = face_mapper_;
-            mapper->SetScalarRange(min, max);
-        }
-    return;
-}
-void MeshActor::createGlyph3D(vtkDataSet* input, const std::array<double, 3>& color, double scale)
-{
-    vtkNew<vtkArrowSource> arrow_source; // 箭头源
-    arrow_source->SetTipResolution(16);
-    arrow_source->SetTipLength(0.3);
-    arrow_source->SetTipRadius(0.1);
-
-    vtkNew<vtkGlyph3D> glyph3D; // 过滤器
-    glyph3D->SetSourceConnection(arrow_source->GetOutputPort());
-    glyph3D->SetInputData(input);
-    glyph3D->SetScaleModeToScaleByVector();
-    glyph3D->SetScaleFactor(scale);
-    glyph3D->OrientOn();
-    glyph3D->Update();
-
-    vtkPolyDataMapper* mapper = this->glyph3D_mapper_;
-    mapper->SetInputConnection(glyph3D->GetOutputPort());
-    mapper->ScalarVisibilityOff();
-
-    vtkActor* actor = this->glyph3D_actor_;
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(const_cast<double*>(color.data()));
-    actor->SetVisibility(1);
+    AttributeOperator op(this);
+    op.cancelActiveAttribute();
 }

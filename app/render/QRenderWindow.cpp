@@ -1,5 +1,5 @@
 #include "QRenderWindow.h"
-#include "MeshActor.h"
+#include "AttributeCommon.h"
 #include "MeshActorManager.h"
 #include "QModelQuery.h"
 #include "QRenderWindowStyle.h"
@@ -359,8 +359,8 @@ void QRenderWindow::setAttriMode(
     dispatch_async([this, attr_name, mode, type, texture_path, glyph_scale, scalar_range](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         // int -> 枚举类型
-        MeshActor::Mode modeEnum = static_cast<MeshActor::Mode>(mode);
-        MeshActor::ElementType typeEnum = static_cast<MeshActor::ElementType>(type);
+        Mode modeEnum = static_cast<Mode>(mode);
+        ElementType typeEnum = static_cast<ElementType>(type);
         // 解析QVariant为std::optional<std::pair<double, double>>
         std::optional<std::pair<double, double>> rangeOpt = std::nullopt;
         if (scalar_range.isValid() && scalar_range.canConvert<QVariantList>()) {

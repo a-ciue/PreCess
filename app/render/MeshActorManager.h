@@ -31,8 +31,8 @@ public:
     void setAttriMode(
         Index model_id,
         std::string attr_name,
-        MeshActor::Mode mode,
-        MeshActor::ElementType type,
+        Mode mode,
+        ElementType type,
         std::string texture_path,
         double glyph_scale,
         std::optional<std::pair<double, double>> scalar_range);

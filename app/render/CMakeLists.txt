@@ -11,6 +11,7 @@ add_library(vtkPart STATIC
     VertexSelectorHighlight.cpp
     EdgeSelectorHighlight.cpp
     FaceSelectorHighlight.cpp
+    AttributeOperator.cpp
 )
 target_include_directories(vtkPart PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
