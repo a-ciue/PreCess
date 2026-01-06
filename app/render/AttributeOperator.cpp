@@ -22,6 +22,7 @@
 #include <vtkProperty.h>
 #include <vtkSmartPointer.h>
 #include <vtkTexture.h>
+#include <filesystem>
 
 AttributeOperator::AttributeOperator(MeshActor* actor)
     : actor_(actor)
@@ -168,6 +169,10 @@ void AttributeOperator::setActiveRGBAttribute(std::string attr_name, ElementType
 
 void AttributeOperator::setTextureImage(std::string attr_name, std::string texturePath)
 {
+    if (!std::filesystem::exists(texturePath)) {
+        spdlog::error("Texture file not found: {}", texturePath);
+        return;
+    }
     spdlog::info("start setTextureImage---------------------------");
 
     // 读取纹理贴图文件
