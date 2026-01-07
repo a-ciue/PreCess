@@ -8,6 +8,7 @@
 #include <QString>
 #include <stdexcept>
 #include <limits>
+#include <spdlog/spdlog.h>
 
 QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
         : QObject(parent), m_manager(mgr) {
@@ -68,25 +69,49 @@ QString QModelQuery::getModelName(Index model_id) const
     return QString::fromLocal8Bit(model->model_name_);
 }
 
-Q_INVOKABLE QStringList QModelQuery::getModelAttriList(Index model_id) const
+Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
 {
     ModelData* model = m_manager->getModel(model_id);
     MeshData* mesh = model->asMeshData();
     if (mesh) {
         QStringList attri_list;
         for (const auto& [name, data] : mesh->vertex_attributes_) {
-            attri_list.append(QString("Vertex Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+            attri_list.append(QString::fromStdString(name));
         }
         for (const auto& [name, data] : mesh->edge_attributes_) {
-            attri_list.append(QString("Edge Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+            attri_list.append(QString::fromStdString(name));
         }
         for (const auto& [name, data] : mesh->face_attributes_) {
-            attri_list.append(QString("Face Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+            attri_list.append(QString::fromStdString(name));
         }
         for (const auto& [name, data] : mesh->solid_attributes_) {
-            attri_list.append(QString("Solid Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+            attri_list.append(QString::fromStdString(name));
         }
+        spdlog::info("attri_list.size():", attri_list.size());
         return attri_list;
+    }
+}
+
+Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) const
+{
+    ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
+    if (mesh) {
+        QList<Element::Type> type_list;
+        for (const auto& [name, data] : mesh->vertex_attributes_) {
+            type_list.append(Element::Type::Vertex);
+        }
+        for (const auto& [name, data] : mesh->edge_attributes_) {
+            type_list.append(Element::Type::Edge);
+        }
+        for (const auto& [name, data] : mesh->face_attributes_) {
+            type_list.append(Element::Type::Face);
+        }
+        for (const auto& [name, data] : mesh->solid_attributes_) {
+            type_list.append(Element::Type::Solid);
+        }
+        spdlog::info ("type_list.size():" ,type_list.size());
+        return type_list;
     }
 }
 
