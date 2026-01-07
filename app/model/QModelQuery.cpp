@@ -68,6 +68,28 @@ QString QModelQuery::getModelName(Index model_id) const
     return QString::fromLocal8Bit(model->model_name_);
 }
 
+Q_INVOKABLE QStringList QModelQuery::getModelAttriList(Index model_id) const
+{
+    ModelData* model = m_manager->getModel(model_id);
+    MeshData* mesh = model->asMeshData();
+    if (mesh) {
+        QStringList attri_list;
+        for (const auto& [name, data] : mesh->vertex_attributes_) {
+            attri_list.append(QString("Vertex Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+        }
+        for (const auto& [name, data] : mesh->edge_attributes_) {
+            attri_list.append(QString("Edge Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+        }
+        for (const auto& [name, data] : mesh->face_attributes_) {
+            attri_list.append(QString("Face Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+        }
+        for (const auto& [name, data] : mesh->solid_attributes_) {
+            attri_list.append(QString("Solid Attribute: %1 (size: %2)").arg(QString::fromStdString(name)).arg(data.size()));
+        }
+        return attri_list;
+    }
+}
+
 //判断模型类型：mesh返回0，spline返回1，未知返回-1
 int QModelQuery::getModelType(Index model_id) const
 {

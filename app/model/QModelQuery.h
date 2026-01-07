@@ -55,6 +55,8 @@ public:
     std::optional<SplineDataVtk> getSplineData(Index model_id) ;
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
+    
+    Q_INVOKABLE QStringList getModelAttriList(Index model_id) const;
 
     int getModelType(Index model_id) const;
 
