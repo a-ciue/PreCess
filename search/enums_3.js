@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['selectmode_0',['SelectMode',['../Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6',1,'Core.h']]],
-  ['splinerendermode_1',['SplineRenderMode',['../Core_8h.html#a33d77300705e131c3b875c2242d32daa',1,'Core.h']]]
+  ['priority_0',['priority',['../namespaceplf.html#af4e761553ae1a085755c051a82496a05',1,'plf']]]
 ];

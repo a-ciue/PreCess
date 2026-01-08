@@ -1,15 +1,19 @@
 <map id="app/model/systems/algo/QAlgorithmSystemAdaptor.h" name="app/model/systems/algo/QAlgorithmSystemAdaptor.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="111,5,322,45"/>
-<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="89,93,153,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="195,48,147,87,144,82,192,43"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="177,93,256,119"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="219,46,219,79,214,79,214,46"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="280,93,535,119"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="263,43,368,86,366,91,261,48"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,68,192"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="109,121,63,160,59,155,105,117"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="93,167,149,192"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="123,119,123,153,118,153,118,119"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="173,167,250,192"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="137,117,187,156,184,160,134,121"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="189,5,400,45"/>
+<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="167,93,231,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="273,48,225,87,222,82,270,43"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="255,93,334,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="297,46,297,79,292,79,292,46"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="358,93,613,119"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="341,43,446,86,444,91,339,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,61,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="173,121,74,164,72,159,171,116"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="85,167,136,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="186,121,137,160,134,156,183,117"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="160,167,237,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="201,119,201,153,196,153,196,119"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="261,167,320,192"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="215,117,267,156,263,160,212,121"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="345,167,407,192"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="228,116,336,159,334,164,226,121"/>
 </map>

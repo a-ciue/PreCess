@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/AttributeOperator.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">AttributeOperator.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="AttributeOperator_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef ATTRIBUTE_OPERATOR_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define ATTRIBUTE_OPERATOR_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="AttributeCommon_8h.html">AttributeCommon.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="MeshActor_8h.html">MeshActor.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;array&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;vtkDataSet.h&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">class </span><a class="code hl_class" href="classMeshActor.html">MeshActor</a>;</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="foldopen" id="foldopen00011" data-start="{" data-end="};">
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classAttributeOperator.html">   11</a></span><span class="keyword">class </span><a class="code hl_function" href="classAttributeOperator.html#aa20f5cdea071789db061d07b60f8fe3f">AttributeOperator</a> {</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <a class="code hl_function" href="classAttributeOperator.html#aa20f5cdea071789db061d07b60f8fe3f">AttributeOperator</a>(<a class="code hl_class" href="classMeshActor.html">MeshActor</a>* actor);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#aae54398de778dd14dbeef052742e3dcf">setAttriMode</a>(</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <span class="keyword">const</span> std::string&amp; attr_name,</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <a class="code hl_enumeration" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911">Mode</a> mode,</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        <a class="code hl_enumeration" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">ElementType</a> type,</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <span class="keyword">const</span> std::string&amp; texture_path = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keywordtype">double</span> glyph_scale = -1,</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        std::optional&lt;std::pair&lt;double, double&gt;&gt; scalar_range = std::nullopt);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a9b32187bee8902b74d6e988466e967b4">cancelActiveAttribute</a>();</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classAttributeOperator.html#ae85e050c72f3184e3869977d078fafe0">   37</a></span>    <a class="code hl_class" href="classMeshActor.html">MeshActor</a>* <a class="code hl_variable" href="classAttributeOperator.html#ae85e050c72f3184e3869977d078fafe0">actor_</a>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a9c87db6180c97650e7459dd273bd65de">setScalarRange</a>(<span class="keywordtype">double</span> min, <span class="keywordtype">double</span> max);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a405f82e0862670d2752626c5f17bee57">setGlyph3DScaleFactor</a>(<span class="keywordtype">double</span> scale);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a6b068f0ba2218c1b8e31c3884ee4a583">setActiveScalarAttribute</a>(std::string attr_name, <a class="code hl_enumeration" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">ElementType</a> type);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a39426c03fd03a1a94a7e4332e761da71">setActiveVectorAttribute</a>(std::string attr_name, <a class="code hl_enumeration" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">ElementType</a> type);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a04847fc2a4bc7b0879351533da7e1c4a">setActiveRGBAttribute</a>(std::string attr_name, <a class="code hl_enumeration" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">ElementType</a> type);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a5b4759094c86895005d0c43ac92efa24">createGlyph3D</a>(vtkDataSet* input, <span class="keyword">const</span> std::array&lt;double, 3&gt;&amp; color, <span class="keywordtype">double</span> scale = 0.3);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a65a7df45e3324a1ad6c67591d7395fbc">setTextureImage</a>(std::string attr_name, std::string texturePath);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttributeOperator.html#a0cd0987baf4a60249ef3f34904aeb536">cancelTextureImage</a>();</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>};</div>
+</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">#endif </span><span class="comment">// ATTRIBUTE_OPERATOR_H</span></div>
+<div class="ttc" id="aAttributeCommon_8h_html"><div class="ttname"><a href="AttributeCommon_8h.html">AttributeCommon.h</a></div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a16b11be27a8e9362dd122c4d879e01ae"><div class="ttname"><a href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">ElementType</a></div><div class="ttdeci">ElementType</div><div class="ttdef"><b>定义</b> AttributeCommon.h:11</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a46c8a310cf4c094f8c80e1cb8dc1f911"><div class="ttname"><a href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911">Mode</a></div><div class="ttdeci">Mode</div><div class="ttdef"><b>定义</b> AttributeCommon.h:4</div></div>
+<div class="ttc" id="aMeshActor_8h_html"><div class="ttname"><a href="MeshActor_8h.html">MeshActor.h</a></div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a04847fc2a4bc7b0879351533da7e1c4a"><div class="ttname"><a href="classAttributeOperator.html#a04847fc2a4bc7b0879351533da7e1c4a">AttributeOperator::setActiveRGBAttribute</a></div><div class="ttdeci">void setActiveRGBAttribute(std::string attr_name, ElementType type)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:149</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a0cd0987baf4a60249ef3f34904aeb536"><div class="ttname"><a href="classAttributeOperator.html#a0cd0987baf4a60249ef3f34904aeb536">AttributeOperator::cancelTextureImage</a></div><div class="ttdeci">void cancelTextureImage()</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:207</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a39426c03fd03a1a94a7e4332e761da71"><div class="ttname"><a href="classAttributeOperator.html#a39426c03fd03a1a94a7e4332e761da71">AttributeOperator::setActiveVectorAttribute</a></div><div class="ttdeci">void setActiveVectorAttribute(std::string attr_name, ElementType type)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:119</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a405f82e0862670d2752626c5f17bee57"><div class="ttname"><a href="classAttributeOperator.html#a405f82e0862670d2752626c5f17bee57">AttributeOperator::setGlyph3DScaleFactor</a></div><div class="ttdeci">void setGlyph3DScaleFactor(double scale)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:213</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a5b4759094c86895005d0c43ac92efa24"><div class="ttname"><a href="classAttributeOperator.html#a5b4759094c86895005d0c43ac92efa24">AttributeOperator::createGlyph3D</a></div><div class="ttdeci">void createGlyph3D(vtkDataSet *input, const std::array&lt; double, 3 &gt; &amp;color, double scale=0.3)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:253</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a65a7df45e3324a1ad6c67591d7395fbc"><div class="ttname"><a href="classAttributeOperator.html#a65a7df45e3324a1ad6c67591d7395fbc">AttributeOperator::setTextureImage</a></div><div class="ttdeci">void setTextureImage(std::string attr_name, std::string texturePath)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:174</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a6b068f0ba2218c1b8e31c3884ee4a583"><div class="ttname"><a href="classAttributeOperator.html#a6b068f0ba2218c1b8e31c3884ee4a583">AttributeOperator::setActiveScalarAttribute</a></div><div class="ttdeci">void setActiveScalarAttribute(std::string attr_name, ElementType type)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:79</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a9b32187bee8902b74d6e988466e967b4"><div class="ttname"><a href="classAttributeOperator.html#a9b32187bee8902b74d6e988466e967b4">AttributeOperator::cancelActiveAttribute</a></div><div class="ttdeci">void cancelActiveAttribute()</div><div class="ttdoc">取消属性渲染</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:67</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_a9c87db6180c97650e7459dd273bd65de"><div class="ttname"><a href="classAttributeOperator.html#a9c87db6180c97650e7459dd273bd65de">AttributeOperator::setScalarRange</a></div><div class="ttdeci">void setScalarRange(double min, double max)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:228</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_aa20f5cdea071789db061d07b60f8fe3f"><div class="ttname"><a href="classAttributeOperator.html#aa20f5cdea071789db061d07b60f8fe3f">AttributeOperator::AttributeOperator</a></div><div class="ttdeci">AttributeOperator(MeshActor *actor)</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:27</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_aae54398de778dd14dbeef052742e3dcf"><div class="ttname"><a href="classAttributeOperator.html#aae54398de778dd14dbeef052742e3dcf">AttributeOperator::setAttriMode</a></div><div class="ttdeci">void setAttriMode(const std::string &amp;attr_name, Mode mode, ElementType type, const std::string &amp;texture_path=&quot;&quot;, double glyph_scale=-1, std::optional&lt; std::pair&lt; double, double &gt; &gt; scalar_range=std::nullopt)</div><div class="ttdoc">设置属性渲染方式</div><div class="ttdef"><b>定义</b> AttributeOperator.cpp:32</div></div>
+<div class="ttc" id="aclassAttributeOperator_html_ae85e050c72f3184e3869977d078fafe0"><div class="ttname"><a href="classAttributeOperator.html#ae85e050c72f3184e3869977d078fafe0">AttributeOperator::actor_</a></div><div class="ttdeci">MeshActor * actor_</div><div class="ttdef"><b>定义</b> AttributeOperator.h:37</div></div>
+<div class="ttc" id="aclassMeshActor_html"><div class="ttname"><a href="classMeshActor.html">MeshActor</a></div><div class="ttdoc">负责管理Model的Actor</div><div class="ttdef"><b>定义</b> MeshActor.h:21</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

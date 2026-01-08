@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/AttributeCommon.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">AttributeCommon.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="AttributeCommon_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// AttributeCommon.h</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="foldopen" id="foldopen00004" data-start="{" data-end="};">
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911">    4</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911">Mode</a> {</div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a889574aebacda6bfd3e534e2b49b8028">    5</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a889574aebacda6bfd3e534e2b49b8028">RGB</a>,</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a8f3d9a4b6a7b7f2c7afa61ca113d0db9">    6</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a8f3d9a4b6a7b7f2c7afa61ca113d0db9">SCALAR</a>,</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82">    7</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82">UV</a>,</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a87752381b583740610f1dfeb07fdad7e">    8</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a87752381b583740610f1dfeb07fdad7e">VECTOR</a></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>};</div>
+</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="foldopen" id="foldopen00011" data-start="{" data-end="};">
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">   11</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">ElementType</a> {</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea0c3e47aef93a7f244f41ab309a33634b">   12</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea0c3e47aef93a7f244f41ab309a33634b">VERTEX</a>,</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea6563b7570ee4add31ffc4e94fa86b6fb">   13</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea6563b7570ee4add31ffc4e94fa86b6fb">EDGE</a>,</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea345094d9e282b0f2b2b49fab9b8ad89f">   14</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea345094d9e282b0f2b2b49fab9b8ad89f">FACE</a>,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aead0dea69649a83749aa6bdf176092e8c9">   15</a></span>    <a class="code hl_enumvalue" href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aead0dea69649a83749aa6bdf176092e8c9">SOLID</a></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>};</div>
+</div>
+<div class="ttc" id="aAttributeCommon_8h_html_a16b11be27a8e9362dd122c4d879e01ae"><div class="ttname"><a href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae">ElementType</a></div><div class="ttdeci">ElementType</div><div class="ttdef"><b>定义</b> AttributeCommon.h:11</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a16b11be27a8e9362dd122c4d879e01aea0c3e47aef93a7f244f41ab309a33634b"><div class="ttname"><a href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea0c3e47aef93a7f244f41ab309a33634b">ElementType::VERTEX</a></div><div class="ttdeci">@ VERTEX</div><div class="ttdef"><b>定义</b> AttributeCommon.h:12</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a16b11be27a8e9362dd122c4d879e01aea345094d9e282b0f2b2b49fab9b8ad89f"><div class="ttname"><a href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea345094d9e282b0f2b2b49fab9b8ad89f">ElementType::FACE</a></div><div class="ttdeci">@ FACE</div><div class="ttdef"><b>定义</b> AttributeCommon.h:14</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a16b11be27a8e9362dd122c4d879e01aea6563b7570ee4add31ffc4e94fa86b6fb"><div class="ttname"><a href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea6563b7570ee4add31ffc4e94fa86b6fb">ElementType::EDGE</a></div><div class="ttdeci">@ EDGE</div><div class="ttdef"><b>定义</b> AttributeCommon.h:13</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a16b11be27a8e9362dd122c4d879e01aead0dea69649a83749aa6bdf176092e8c9"><div class="ttname"><a href="AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aead0dea69649a83749aa6bdf176092e8c9">ElementType::SOLID</a></div><div class="ttdeci">@ SOLID</div><div class="ttdef"><b>定义</b> AttributeCommon.h:15</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a46c8a310cf4c094f8c80e1cb8dc1f911"><div class="ttname"><a href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911">Mode</a></div><div class="ttdeci">Mode</div><div class="ttdef"><b>定义</b> AttributeCommon.h:4</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a46c8a310cf4c094f8c80e1cb8dc1f911a87752381b583740610f1dfeb07fdad7e"><div class="ttname"><a href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a87752381b583740610f1dfeb07fdad7e">Mode::VECTOR</a></div><div class="ttdeci">@ VECTOR</div><div class="ttdef"><b>定义</b> AttributeCommon.h:8</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a46c8a310cf4c094f8c80e1cb8dc1f911a889574aebacda6bfd3e534e2b49b8028"><div class="ttname"><a href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a889574aebacda6bfd3e534e2b49b8028">Mode::RGB</a></div><div class="ttdeci">@ RGB</div><div class="ttdef"><b>定义</b> AttributeCommon.h:5</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a46c8a310cf4c094f8c80e1cb8dc1f911a8f3d9a4b6a7b7f2c7afa61ca113d0db9"><div class="ttname"><a href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911a8f3d9a4b6a7b7f2c7afa61ca113d0db9">Mode::SCALAR</a></div><div class="ttdeci">@ SCALAR</div><div class="ttdef"><b>定义</b> AttributeCommon.h:6</div></div>
+<div class="ttc" id="aAttributeCommon_8h_html_a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82"><div class="ttname"><a href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82">Mode::UV</a></div><div class="ttdeci">@ UV</div><div class="ttdef"><b>定义</b> AttributeCommon.h:7</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

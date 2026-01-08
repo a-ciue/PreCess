@@ -8,5 +8,6 @@ var searchData=
   ['aligned_5felement_5fstruct_5',['aligned_element_struct',['../structplf_1_1colony_1_1aligned__element__struct.html',1,'plf::colony']]],
   ['argobject_6',['ArgObject',['../classcore_1_1ArgObject.html',1,'core::ArgObject'],['../classsystems_1_1algo_1_1ArgObject.html',1,'systems::algo::ArgObject'],['../classsystems_1_1edit_1_1ArgObject.html',1,'systems::edit::ArgObject']]],
   ['argtype_7',['ArgType',['../structcore_1_1ArgType.html',1,'core']]],
-  ['attrib_5ft_8',['attrib_t',['../structtinyobj_1_1attrib__t.html',1,'tinyobj']]]
+  ['attrib_5ft_8',['attrib_t',['../structtinyobj_1_1attrib__t.html',1,'tinyobj']]],
+  ['attributeoperator_9',['AttributeOperator',['../classAttributeOperator.html',1,'']]]
 ];
