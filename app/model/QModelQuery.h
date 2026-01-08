@@ -16,7 +16,8 @@
 #include <QObject>
 #include <QVariant>
 #include <QtGlobal>
-#include <QQmlEngine>  // 提供 QML 元素导出宏 (Qt6)
+#include <QQmlEngine> // 提供 QML 元素导出宏 (Qt6)
+#include "QSelection.h"
 
 
 struct SplineDataVtk;
@@ -39,9 +40,9 @@ public:
  */
 class QModelQuery : public QObject, IModelQuery {
     Q_OBJECT
-    QML_ELEMENT  // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
+    QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
 
-public:
+public :
     /**
      * @brief 构造函数
      *
@@ -52,9 +53,20 @@ public:
 
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
 
-    std::optional<SplineDataVtk> getSplineData(Index model_id) ;
+    std::optional<SplineDataVtk> getSplineData(Index model_id);
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
+    /**
+     * @brief 获取模型的属性名列表
+     * @param model_id
+     */
+    Q_INVOKABLE QStringList getModelAttriName(Index model_id) const;
+    /**
+     * @brief 获取模型的属性类型列表
+     * 现在有bug返回到控制台ui那边似乎拿不到
+     * @param model_id
+     */
+    Q_INVOKABLE QList<Element::Type> getModelAttriType(Index model_id) const;
 
     int getModelType(Index model_id) const;
 

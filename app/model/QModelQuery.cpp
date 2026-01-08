@@ -8,6 +8,7 @@
 #include <QString>
 #include <stdexcept>
 #include <limits>
+#include <spdlog/spdlog.h>
 
 QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
         : QObject(parent), m_manager(mgr) {
@@ -28,7 +29,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
         md->solid_faces_vertices_, md->solid_faces_vertices_offset_,
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
-        md->edge_vertices_, {} };
+        md->edge_vertices_, md->vertex_attributes_,md->edge_attributes_,md->face_attributes_,md->solid_attributes_,{} };
 
     // 添加所有块
     auto block_datas = std::make_shared<BlockDatas>();
@@ -62,10 +63,64 @@ QString QModelQuery::getModelName(Index model_id) const
 {
     ModelData* model = m_manager->getModel(model_id);
     if (!model) {
-        qWarning() << "模型不存在，无法获取名称:" << model_id;
+        spdlog::error("模型不存在，无法获取名称,id:{}", model_id);
         return QString();
     }
     return QString::fromLocal8Bit(model->model_name_);
+}
+
+Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
+{
+    QStringList attri_list;
+    ModelData* model = m_manager->getModel(model_id);
+    if (!model) {
+        spdlog::error("模型不存在，无法获取属性名，id:{}", model_id);
+        return {};
+    }
+    MeshData* mesh = model->asMeshData();
+    if (mesh) {
+        for (const auto& [name, data] : mesh->vertex_attributes_) {
+            attri_list.append(QString::fromStdString(name));
+        }
+        for (const auto& [name, data] : mesh->edge_attributes_) {
+            attri_list.append(QString::fromStdString(name));
+        }
+        for (const auto& [name, data] : mesh->face_attributes_) {
+            attri_list.append(QString::fromStdString(name));
+        }
+        for (const auto& [name, data] : mesh->solid_attributes_) {
+            attri_list.append(QString::fromStdString(name));
+        }
+        spdlog::info("attri_list.size():", attri_list.size());
+    }
+    return attri_list;
+}
+
+Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) const
+{
+    QList<Element::Type> type_list;
+    ModelData* model = m_manager->getModel(model_id);
+    if (!model) {
+        spdlog::error( "模型不存在，无法获取属性类型，id:{}",model_id);
+        return {};
+    }
+    MeshData* mesh = model->asMeshData();
+    if (mesh) {
+        for (const auto& [name, data] : mesh->vertex_attributes_) {
+            type_list.append(Element::Type::Vertex);
+        }
+        for (const auto& [name, data] : mesh->edge_attributes_) {
+            type_list.append(Element::Type::Edge);
+        }
+        for (const auto& [name, data] : mesh->face_attributes_) {
+            type_list.append(Element::Type::Face);
+        }
+        for (const auto& [name, data] : mesh->solid_attributes_) {
+            type_list.append(Element::Type::Solid);
+        }
+        spdlog::info ("type_list.size():" ,type_list.size());
+    }
+    return type_list;
 }
 
 //判断模型类型：mesh返回0，spline返回1，未知返回-1

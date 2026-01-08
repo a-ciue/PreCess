@@ -18,6 +18,11 @@ void MeshData::clear()
     solid_faces_offset_.clear();
     patches_.clear();
     blocks_.clear();
+    // 清除属性
+    vertex_attributes_.clear();
+    face_attributes_.clear();
+    edge_attributes_.clear();
+    solid_attributes_.clear();
 }
 
 void MeshData::init()

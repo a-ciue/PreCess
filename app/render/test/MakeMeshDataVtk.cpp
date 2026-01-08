@@ -17,7 +17,10 @@
 
 MeshDataVtk MakeMeshDataVtk(MeshData& data)
 {
-    data = MakeMeshData();
+
+    if (data.vertex_positions_.empty()) {
+        data = MakeMeshData();
+    }
 
     // Block: 根据删减后的面索引重新划分
     // Block1 -> 立方体 1 个面 (0)
@@ -51,6 +54,10 @@ MeshDataVtk MakeMeshDataVtk(MeshData& data)
         data.face_vertices_,
         data.face_vertices_offset_,
         data.edge_vertices_,
+        data.vertex_attributes_,
+        data.edge_attributes_,
+        data.face_attributes_,
+        data.solid_attributes_,
         block_datas
     };
 
@@ -205,6 +212,10 @@ MeshDataVtk MakeMeshDataVtkFromFile(
         data.face_vertices_,
         data.face_vertices_offset_,
         data.edge_vertices_,
+        data.vertex_attributes_,
+        data.edge_attributes_,
+        data.face_attributes_,
+        data.solid_attributes_,
         block_datas
     };
     return res;

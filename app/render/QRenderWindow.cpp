@@ -1,5 +1,5 @@
 #include "QRenderWindow.h"
-#include "MeshActor.h"
+#include "AttributeCommon.h"
 #include "MeshActorManager.h"
 #include "QModelQuery.h"
 #include "QRenderWindowStyle.h"
@@ -9,13 +9,12 @@
 #include "SplineActorManager.h"
 #include "SplineDataVtk.h"
 
+#include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
-#include <spdlog/spdlog.h>
-
 QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
@@ -346,6 +345,57 @@ void QRenderWindow::setClick()
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->style_->SetClick();
+    });
+}
+
+void QRenderWindow::setAttriMode(
+    QString attr_name,
+    int mode,
+    int type,
+    QString texture_path,
+    double glyph_scale,
+    QVariant scalar_range)
+{
+    dispatch_async([this, attr_name, mode, type, texture_path, glyph_scale, scalar_range](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        // int -> 枚举类型
+        Mode modeEnum = static_cast<Mode>(mode);
+        ElementType typeEnum = static_cast<ElementType>(type);
+        // 解析QVariant为std::optional<std::pair<double, double>>
+        std::optional<std::pair<double, double>> rangeOpt = std::nullopt;
+        if (scalar_range.isValid() && scalar_range.canConvert<QVariantList>()) {
+            QVariantList list = scalar_range.toList();
+            if (list.size() == 2) {
+                rangeOpt = std::make_pair(list[0].toDouble(), list[1].toDouble());
+            } else {
+                spdlog::error("setAttriMode: scalarRange QVariantList size is {}, expected 2 (min, max)", list.size());
+            }
+        }
+        spdlog::info("modeEnum: {}", static_cast<int>(modeEnum));
+        spdlog::info("typeEnum: {}", static_cast<int>(typeEnum));
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+            vtk->mesh_actor_manager_->setAttriMode(
+                cur_actor_id_,
+                attr_name.toStdString(),
+                modeEnum,
+                typeEnum,
+                texture_path.toStdString(),
+                glyph_scale,
+                rangeOpt);
+        }
+        spdlog::info("-----setAttriMode:" + attr_name.toStdString());
+    });
+}
+
+void QRenderWindow::cancelAttri()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+            vtk->mesh_actor_manager_->cancelAttri(
+                cur_actor_id_);
+        }
+        spdlog::info("--------cancelAttri-----------");
     });
 }
 

@@ -1,28 +1,29 @@
 #include "MeshActor.h"
+#include "AttributeOperator.h"
 #include "Core.h"
+#include <spdlog/spdlog.h>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
-#include <vtkPointData.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkDoubleArray.h>
+#include <vtkExtractGeometry.h>
+#include <vtkExtractPolyDataGeometry.h>
+#include <vtkGeometryFilter.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkMultiBlockDataSet.h>
 #include <vtkNamedColors.h>
+#include <vtkPlane.h>
+#include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPropAssembly.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkUnsignedCharArray.h>
-#include <vtkUnstructuredGrid.h>  
-#include <vtkGeometryFilter.h>
 #include <vtkSMPTools.h>
-#include <vtkExtractGeometry.h>
-#include <vtkExtractPolyDataGeometry.h>
-#include <vtkPlane.h>
-
+#include <vtkUnsignedCharArray.h>
+#include <vtkUnstructuredGrid.h>
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
@@ -44,6 +45,7 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, bool is_vertex_
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
     this->vertex_actor_->SetMapper(vertex_mapper_);
+    this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
 
     this->actor_->SetMapper(block_mapper_);
 }
@@ -56,6 +58,7 @@ MeshActor::~MeshActor()
         renderer_->RemoveActor(this->face_actor_);
         renderer_->RemoveActor(this->edge_actor_);
         renderer_->RemoveActor(this->vertex_actor_);
+        renderer_->RemoveActor(this->glyph3D_actor_);
     }
 }
 
@@ -108,6 +111,31 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         vertex_poly->SetVerts(vertex_cells);
 
         vertex_poly->GetPointData()->AddArray(originalPointIds);
+
+        // 处理顶点属性
+        const size_t num_vertex = size;
+        for (const auto& attr : model_data.vertex_attributes_) {
+            const std::string& attr_name = attr.first;
+            const std::vector<double>& attr_values = attr.second;
+            if (attr_values.size() < num_vertex) {
+                spdlog::error("Attribute {} has insufficient values", attr_name);
+                continue;
+            }
+            size_t ncomp = attr_values.size() / num_vertex;
+            // 判断属性数量是不是顶点数量的整数倍
+            if (ncomp * num_vertex != attr_values.size()) {
+                spdlog::error("Attribute {} size mismatch: {} values for {} vertices", attr_name, attr_values.size(), num_vertex);
+                continue;
+            }
+            auto array = vtkSmartPointer<vtkDoubleArray>::New();
+            array->SetNumberOfComponents(static_cast<int>(ncomp));
+            array->SetName(attr_name.c_str());
+            array->SetNumberOfTuples(num_vertex);
+            for (size_t i = 0; i < num_vertex; ++i) {
+                array->SetTuple(i, &attr_values[i * ncomp]);
+            }
+            vertex_poly->GetPointData()->AddArray(array);
+        }
     }
 
     // face data
@@ -129,6 +157,35 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         face_poly->SetPolys(poly_data);
 
         face_poly->GetPointData()->AddArray(originalPointIds);
+
+        //  拷贝属性
+        vtkPointData* src = this->vertex_data_->GetPointData();
+        vtkPointData* dst = this->face_data_->GetPointData();
+        dst->ShallowCopy(src);
+
+        // 处理面属性
+        const size_t num_faces = face_poly->GetNumberOfCells();
+        for (const auto& attr : model_data.face_attributes_) {
+            const std::string& attr_name = attr.first;
+            const std::vector<double>& attr_values = attr.second;
+            if (attr_values.size() < num_faces) {
+                spdlog::error("Attribute {} has insufficient values", attr_name);
+                continue;
+            }
+            size_t ncomp = attr_values.size() / num_faces;
+            if (ncomp * num_faces != attr_values.size()) {
+                spdlog::error("Attribute {} size mismatch: {} values for {} faces", attr_name, attr_values.size(), num_faces);
+                continue;
+            }
+            auto array = vtkSmartPointer<vtkDoubleArray>::New();
+            array->SetNumberOfComponents(static_cast<int>(ncomp));
+            array->SetName(attr_name.c_str());
+            array->SetNumberOfTuples(num_faces);
+            for (size_t i = 0; i < num_faces; ++i) {
+                array->SetTuple(i, &attr_values[i * ncomp]);
+            }
+            face_poly->GetCellData()->AddArray(array);
+        }
     }
 
     // edge data
@@ -172,6 +229,10 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     face_mapper_->SetInputData(face_poly);
     solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
 
+    vertex_mapper_->SetScalarVisibility(0);
+    edge_mapper_->SetScalarVisibility(0);
+    face_mapper_->SetScalarVisibility(0);
+    solid_mapper_->SetScalarVisibility(0);
     createBlockMapper(*this->model_data_);
 }
 
@@ -183,6 +244,7 @@ void MeshActor::setVisibility(bool visibility)
     this->face_actor_->SetVisibility(visibility);
     this->edge_actor_->SetVisibility(visibility && this->edge_render_);
     this->vertex_actor_->SetVisibility(visibility && this->vertex_render_);
+    this->glyph3D_actor_->SetVisibility(visibility);
 }
 
 void MeshActor::setClipPlane(vtkPlane* plane)
@@ -236,14 +298,16 @@ void MeshActor::setRenderMode(ModelRenderMode render_mode)
         this->renderer_->AddActor(this->face_actor_);
         this->renderer_->AddActor(this->edge_actor_);
         this->renderer_->AddActor(this->vertex_actor_);
+        this->renderer_->AddActor(this->glyph3D_actor_);
     } else if (render_mode_ == ModelRenderMode::Block) {
         this->renderer_->RemoveActor(this->solid_actor_);
         this->renderer_->RemoveActor(this->face_actor_);
         this->renderer_->RemoveActor(this->edge_actor_);
         this->renderer_->RemoveActor(this->vertex_actor_);
+        this->renderer_->RemoveActor(this->glyph3D_actor_);
         this->renderer_->AddActor(this->actor_);
     } else {
-        std::cerr << "invalid renderMode in QRenderWindow::changeRenderer" << std::endl;
+        spdlog::error("invalid renderMode in QRenderWindow::changeRenderer");
         return;
     }
 }
@@ -370,4 +434,22 @@ void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& poin
     // solid ugrid
     solid_data.SetPoints(&points);
     solid_data.SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
+}
+
+void MeshActor::setAttriMode(
+    const std::string& attr_name,
+    Mode mode,
+    ElementType type,
+    const std::string& texture_path,
+    double glyph_scale,
+    std::optional<std::pair<double, double>> scalar_range)
+{
+    AttributeOperator op(this);
+    op.setAttriMode(attr_name, mode, type, texture_path, glyph_scale, scalar_range);
+}
+
+void MeshActor::cancelActiveAttribute()
+{
+    AttributeOperator op(this);
+    op.cancelActiveAttribute();
 }

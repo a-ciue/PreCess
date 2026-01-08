@@ -5,6 +5,7 @@
 #include <array>
 
 #include "Core.h"
+#include <string>
 
 #include <optional>
 
@@ -129,6 +130,13 @@ struct MeshData {
     PatchMap patches_;
     BlockMap blocks_;
 
+    /*来存储增加的表示点面边体的属性*/
+ 
+    std::map<std::string, std::vector<double>> vertex_attributes_;
+    std::map<std::string, std::vector<double>> face_attributes_;
+    std::map<std::string, std::vector<double>> edge_attributes_;
+    std::map<std::string, std::vector<double>> solid_attributes_;
+ 
     /**
      * @brief 清除所有数据，即使offset数组起码也要保留一个元素0
      */
