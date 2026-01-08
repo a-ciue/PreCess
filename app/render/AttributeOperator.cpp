@@ -81,6 +81,7 @@ void AttributeOperator::setActiveScalarAttribute(std::string attr_name, ElementT
     switch (type) {
     case ElementType::VERTEX: {
         vtkDataArray* array = actor_->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
+        assert(array);
         actor_->vertex_data_->GetPointData()->SetActiveAttribute(attr_name.c_str(), vtkDataSetAttributes::SCALARS);
         // 设置映射范围
         double range[2];
@@ -99,6 +100,7 @@ void AttributeOperator::setActiveScalarAttribute(std::string attr_name, ElementT
     }
     case ElementType::FACE: {
         vtkDataArray* array = actor_->face_data_->GetCellData()->GetArray(attr_name.c_str());
+        assert(array);
         // 设置映射范围
         double range[2];
         array->GetRange(range);
@@ -119,12 +121,14 @@ void AttributeOperator::setActiveVectorAttribute(std::string attr_name, ElementT
     switch (type) {
     case ElementType::VERTEX: {
         vtkDataArray* array = actor_->vertex_data_->GetPointData()->GetArray(attr_name.c_str());
+        assert(array);
         actor_->vertex_data_->GetPointData()->SetActiveVectors(attr_name.c_str());
         createGlyph3D(actor_->vertex_data_, { 1.0, 0.0, 0.0 }); // 红色
         break;
     }
     case ElementType::FACE: {
         vtkDataArray* array = actor_->face_data_->GetCellData()->GetArray(attr_name.c_str());
+        assert(array);
         // 计算面中心点位置 =====
         vtkNew<vtkCellCenters> centers;
         centers->SetInputData(actor_->face_data_);

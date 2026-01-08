@@ -63,7 +63,7 @@ QString QModelQuery::getModelName(Index model_id) const
 {
     ModelData* model = m_manager->getModel(model_id);
     if (!model) {
-        qWarning() << "模型不存在，无法获取名称:" << model_id;
+        spdlog::error("模型不存在，无法获取名称,id:{}", model_id);
         return QString();
     }
     return QString::fromLocal8Bit(model->model_name_);
@@ -71,10 +71,14 @@ QString QModelQuery::getModelName(Index model_id) const
 
 Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
 {
+    QStringList attri_list;
     ModelData* model = m_manager->getModel(model_id);
+    if (!model) {
+        spdlog::error("模型不存在，无法获取属性名，id:{}", model_id);
+        return {};
+    }
     MeshData* mesh = model->asMeshData();
     if (mesh) {
-        QStringList attri_list;
         for (const auto& [name, data] : mesh->vertex_attributes_) {
             attri_list.append(QString::fromStdString(name));
         }
@@ -88,16 +92,20 @@ Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
             attri_list.append(QString::fromStdString(name));
         }
         spdlog::info("attri_list.size():", attri_list.size());
-        return attri_list;
     }
+    return attri_list;
 }
 
 Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) const
 {
+    QList<Element::Type> type_list;
     ModelData* model = m_manager->getModel(model_id);
+    if (!model) {
+        spdlog::error( "模型不存在，无法获取属性类型，id:{}",model_id);
+        return {};
+    }
     MeshData* mesh = model->asMeshData();
     if (mesh) {
-        QList<Element::Type> type_list;
         for (const auto& [name, data] : mesh->vertex_attributes_) {
             type_list.append(Element::Type::Vertex);
         }
@@ -111,8 +119,8 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
             type_list.append(Element::Type::Solid);
         }
         spdlog::info ("type_list.size():" ,type_list.size());
-        return type_list;
     }
+    return type_list;
 }
 
 //判断模型类型：mesh返回0，spline返回1，未知返回-1

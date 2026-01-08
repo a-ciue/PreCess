@@ -124,6 +124,7 @@ public:
      * @brief 设置属性渲染方式
      *
      * 在控制台中调用示例：
+     * myItem.setAttriMode("face_pressure", 1, 2)
      * myItem.setAttriMode("face_color_3", 0, 2)
      * myItem.setAttriMode("face_vectors_3", 3, 2)
      * myItem.setAttriMode("vertex_vector_3", 3, 0)
