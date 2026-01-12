@@ -52,6 +52,7 @@ ApplicationWindow {
                 text: "导出..."
                 onClicked: saveFaceDialog.open()
             }
+            MenuSeparator{}
             MenuItem{
                 text: qsTr("插件管理")
                 onClicked: pluginManagerDialog.open()
