@@ -167,6 +167,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a8070d5f13544187d1628156fed971266"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取已注册算法类型信息  <br /></td></tr>
 <tr class="memitem:a70c463a4fcdc22915f39ac1d07c2fbf5" id="r_a70c463a4fcdc22915f39ac1d07c2fbf5"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70c463a4fcdc22915f39ac1d07c2fbf5">getArgTypes</a> (const std::string &amp;unique_name)</td></tr>
 <tr class="memdesc:a70c463a4fcdc22915f39ac1d07c2fbf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取参数类型  <br /></td></tr>
+<tr class="memitem:a5a58b6376b5d53aed9cbef0702a3ca38" id="r_a5a58b6376b5d53aed9cbef0702a3ca38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a58b6376b5d53aed9cbef0702a3ca38">setOnAlgorithmInfosChanged</a> (std::function&lt; void()&gt; callback)</td></tr>
+<tr class="memdesc:a5a58b6376b5d53aed9cbef0702a3ca38"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置算法信息变更回调函数  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 静态 Public 属性</h2></td></tr>
@@ -178,6 +180,7 @@ Private 属性</h2></td></tr>
 <tr class="memitem:ae18dc882adaca4aaa35eef45ee7e506b" id="r_ae18dc882adaca4aaa35eef45ee7e506b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelManager.html">ModelManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae18dc882adaca4aaa35eef45ee7e506b">model_manager_</a></td></tr>
 <tr class="memitem:a4e880ca41137da510ccc4bb5e81b13a0" id="r_a4e880ca41137da510ccc4bb5e81b13a0"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="#a0d8434a13e322022619cd021ead7dd13">SystemHandlerPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4e880ca41137da510ccc4bb5e81b13a0">handlers_</a></td></tr>
 <tr class="memitem:af21c79bc9ebe036e27fa392e3ee82b6a" id="r_af21c79bc9ebe036e27fa392e3ee82b6a"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, std::unique_ptr&lt; <a class="el" href="structsystems_1_1algo_1_1AlgorithmInfo.html">AlgorithmInfo</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af21c79bc9ebe036e27fa392e3ee82b6a">algorithm_infos_</a></td></tr>
+<tr class="memitem:a19a4f53b1731b8d984f005dbe7f04cce" id="r_a19a4f53b1731b8d984f005dbe7f04cce"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19a4f53b1731b8d984f005dbe7f04cce">on_algorithm_infos_changed_</a></td></tr>
 </table>
 <a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">成员类型定义说明</h2>
 <a id="aae6db223bd7e8ed813e7e2a1a2b60f09" name="aae6db223bd7e8ed813e7e2a1a2b60f09"></a>
@@ -360,6 +363,25 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a5a58b6376b5d53aed9cbef0702a3ca38" name="a5a58b6376b5d53aed9cbef0702a3ca38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a58b6376b5d53aed9cbef0702a3ca38">&#9670;&#160;</a></span>setOnAlgorithmInfosChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::algo::AlgorithmSystem::setOnAlgorithmInfosChanged </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; void()&gt;</td>          <td class="paramname"><span class="paramname"><em>callback</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置算法信息变更回调函数 </p>
+
+</div>
+</div>
 <a id="aeee1312f2026c3aec2d1bcb8b74e502a" name="aeee1312f2026c3aec2d1bcb8b74e502a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeee1312f2026c3aec2d1bcb8b74e502a">&#9670;&#160;</a></span>unregisterHandler()</h2>
 
@@ -484,6 +506,28 @@ Private 属性</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a19a4f53b1731b8d984f005dbe7f04cce" name="a19a4f53b1731b8d984f005dbe7f04cce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19a4f53b1731b8d984f005dbe7f04cce">&#9670;&#160;</a></span>on_algorithm_infos_changed_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::algo::AlgorithmSystem::on_algorithm_infos_changed_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

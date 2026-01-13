@@ -75,6 +75,7 @@ $(function() {
   <div class="summary">
 <a href="#signals">信号</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#properties">属性</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classQModelManager-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">QModelManager类 参考</div></div>
@@ -97,107 +98,113 @@ QModelManager 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classQModelManager__coll__graph.png" border="0" usemap="#aQModelManager_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aQModelManager_coll__map" id="aQModelManager_coll__map">
-<area shape="rect" title=" " alt="" coords="4204,380,4333,405"/>
-<area shape="rect" title=" " alt="" coords="2940,120,3015,145"/>
-<area shape="poly" title=" " alt="" coords="3027,113,3111,87,3229,56,3371,28,3531,8,3615,4,3700,4,3785,9,3869,20,3952,39,4033,66,4109,101,4182,145,4208,170,4229,200,4245,234,4256,268,4267,333,4270,380,4265,380,4262,334,4250,269,4240,235,4224,203,4204,174,4178,150,4107,105,4031,71,3951,44,3868,26,3784,14,3699,9,3615,9,3531,13,3372,33,3230,62,3113,92,3028,118"/>
-<area shape="rect" href="classQModelObserver.html" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类" alt="" coords="3403,165,3534,191"/>
-<area shape="poly" title=" " alt="" coords="3029,136,3106,143,3403,170,3403,175,3105,149,3028,141"/>
-<area shape="rect" title=" " alt="" coords="3105,484,3352,509"/>
-<area shape="poly" title=" " alt="" coords="3366,483,3774,445,4204,398,4204,403,3775,450,3366,488"/>
-<area shape="rect" href="classModelManager.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2525,528,2643,553"/>
-<area shape="poly" title=" " alt="" coords="2657,531,2728,525,3105,501,3105,506,2728,530,2658,536"/>
-<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystem.html" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="2873,380,3081,405"/>
-<area shape="poly" title=" " alt="" coords="2623,520,2727,472,2761,463,2788,459,2815,455,2849,446,2904,425,2950,403,2953,408,2906,430,2850,451,2816,460,2789,464,2762,468,2729,477,2626,525"/>
-<area shape="rect" href="classsystems_1_1algo_1_1AlgorithmSystem.html" title=" " alt="" coords="3376,617,3561,657"/>
-<area shape="poly" title=" " alt="" coords="2642,555,2728,574,2907,599,3086,615,3376,632,3376,637,3086,621,2907,604,2728,579,2641,560"/>
-<area shape="rect" href="classsystems_1_1edit_1_1EditSystem.html" title="模型编辑操作系统，负责管理和调用各种模型编辑操作处理器。所有模型编辑操作的入口。" alt="" coords="2881,857,3073,883"/>
-<area shape="poly" title=" " alt="" coords="2617,559,2745,653,2810,707,2852,751,2861,775,2862,797,2864,817,2875,836,2904,855,2901,860,2871,840,2859,818,2857,797,2856,777,2847,754,2806,710,2742,657,2614,563"/>
-<area shape="rect" title=" " alt="" coords="1807,535,1970,589"/>
-<area shape="poly" title=" " alt="" coords="1984,557,2524,540,2524,545,1984,562"/>
-<area shape="rect" title=" " alt="" coords="1315,585,1535,611"/>
-<area shape="poly" title=" " alt="" coords="1548,586,1807,566,1807,571,1548,591"/>
-<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="896,560,989,585"/>
-<area shape="poly" title=" " alt="" coords="1003,573,1314,590,1314,595,1003,579"/>
-<area shape="rect" title=" " alt="" coords="351,619,438,644"/>
-<area shape="poly" title=" " alt="" coords="452,619,513,610,727,587,895,573,896,579,727,593,514,615,452,624"/>
-<area shape="poly" title=" " alt="" coords="399,604,412,557,434,498,466,437,487,409,512,384,564,345,612,323,664,314,731,313,2585,313,2660,314,2719,318,2777,327,2850,344,2903,360,2948,378,2946,383,2901,365,2849,349,2776,332,2718,323,2660,319,2585,318,731,318,665,320,613,328,567,349,515,388,491,412,471,440,438,501,417,559,404,606"/>
-<area shape="rect" title=" " alt="" coords="2479,705,2689,760"/>
-<area shape="poly" title=" " alt="" coords="452,643,579,667,655,676,731,679,2177,679,2309,685,2440,703,2479,710,2478,715,2440,709,2309,691,2177,685,731,685,654,681,579,672,451,648"/>
-<area shape="rect" title=" " alt="" coords="2499,403,2669,473"/>
-<area shape="poly" title=" " alt="" coords="426,609,466,588,513,570,631,541,733,523,824,514,909,511,1087,513,1192,512,1315,507,1631,495,1878,492,2124,485,2269,475,2440,459,2499,451,2500,457,2440,465,2269,481,2125,490,1878,497,1631,500,1315,513,1192,518,1087,518,909,516,824,519,734,528,633,546,514,575,469,593,429,614"/>
-<area shape="rect" href="structsystems_1_1io_1_1ModelIOInfo.html" title="模型层文件读写支持的文件类型信息" alt="" coords="1572,391,1756,416"/>
-<area shape="poly" title=" " alt="" coords="399,605,411,561,433,507,466,455,487,432,512,413,536,404,573,396,680,385,820,380,980,380,1311,386,1572,396,1572,402,1311,392,980,385,820,386,680,391,574,401,538,409,515,418,491,436,470,458,438,510,416,562,404,606"/>
-<area shape="rect" title=" " alt="" coords="849,428,1036,453"/>
-<area shape="poly" title=" " alt="" coords="405,605,422,574,445,539,476,505,512,479,553,459,596,445,686,428,773,424,849,427,849,432,773,429,687,434,598,450,555,464,515,483,479,509,450,543,426,577,410,607"/>
-<area shape="rect" href="structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="677,787,787,812"/>
-<area shape="poly" title=" " alt="" coords="406,656,421,694,443,737,474,780,493,797,515,812,537,821,561,827,610,828,657,821,697,810,698,815,658,826,611,833,560,832,535,826,512,816,490,802,470,783,438,740,416,696,401,658"/>
-<area shape="poly" title=" " alt="" coords="452,629,731,629,1890,629,2160,635,2370,648,2580,660,2703,662,2849,661,3137,651,3376,639,3376,645,3138,656,2849,666,2703,667,2579,665,2370,654,2160,640,1890,634,731,634,452,634"/>
-<area shape="rect" title=" " alt="" coords="2495,785,2673,854"/>
-<area shape="poly" title=" " alt="" coords="435,647,473,663,514,676,548,682,576,683,639,685,2495,811,2495,816,639,690,575,689,548,687,513,681,471,668,433,652"/>
-<area shape="rect" href="structsystems_1_1algo_1_1AlgorithmInfo.html" title=" " alt="" coords="1559,841,1769,867"/>
-<area shape="poly" title=" " alt="" coords="405,657,419,698,441,748,472,796,492,817,515,834,536,843,570,850,670,861,797,866,936,869,1192,867,1315,865,1425,867,1535,865,1558,863,1559,869,1535,870,1425,872,1315,870,1192,873,936,874,796,872,669,866,570,855,535,848,512,839,489,821,468,799,436,750,414,700,400,659"/>
-<area shape="poly" title=" " alt="" coords="399,657,405,725,423,815,438,864,458,912,483,957,515,996,565,1038,588,1051,611,1060,664,1069,731,1070,2585,1070,2647,1064,2707,1047,2764,1022,2818,992,2906,929,2961,881,2965,885,2909,933,2820,997,2767,1027,2709,1052,2648,1069,2585,1075,731,1075,663,1074,610,1065,585,1056,562,1043,511,1000,479,960,453,914,433,866,418,817,400,725,394,658"/>
-<area shape="rect" title=" " alt="" coords="2499,902,2669,971"/>
-<area shape="poly" title=" " alt="" coords="403,657,415,710,436,777,469,849,490,882,515,912,565,960,611,990,663,1005,731,1010,2177,1010,2263,1005,2349,993,2430,977,2499,959,2500,964,2431,982,2350,998,2264,1011,2177,1015,731,1015,662,1011,609,994,562,964,511,916,486,885,464,851,431,779,409,711,398,659"/>
-<area shape="rect" href="structsystems_1_1edit_1_1EditInfo.html" title="某个模型编辑操作的描述" alt="" coords="1580,924,1748,949"/>
-<area shape="poly" title=" " alt="" coords="404,657,417,702,439,758,471,814,491,839,515,861,551,883,598,902,654,918,717,930,862,947,1020,955,1183,956,1337,953,1580,940,1580,946,1337,958,1183,962,1020,960,861,952,716,935,652,923,596,907,549,888,512,866,487,843,466,817,434,760,412,704,399,658"/>
-<area shape="rect" title=" " alt="" coords="639,145,825,214"/>
-<area shape="poly" title=" " alt="" coords="393,605,398,534,415,438,430,387,450,336,477,288,512,245,532,232,563,219,638,197,639,202,565,224,535,236,515,249,481,291,455,338,435,388,420,439,404,535,399,605"/>
-<area shape="rect" title=" " alt="" coords="661,238,803,278"/>
-<area shape="poly" title=" " alt="" coords="394,605,401,542,419,459,434,415,454,372,480,333,512,299,537,286,574,275,660,262,661,267,575,280,539,291,515,303,484,336,459,375,439,417,424,460,406,543,400,605"/>
-<area shape="rect" title=" " alt="" coords="46,611,185,651"/>
-<area shape="poly" title=" " alt="" coords="198,629,351,629,351,634,198,634"/>
-<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="2115,417,2236,443"/>
-<area shape="poly" title=" " alt="" coords="2237,444,2537,526,2535,531,2236,449"/>
-<area shape="poly" title=" " alt="" coords="2249,429,2297,422,2320,414,2341,403,2349,395,2352,386,2356,375,2365,365,2390,351,2412,345,2464,338,2660,301,2930,257,3403,185,3404,190,2930,262,2661,307,2464,343,2413,350,2392,356,2368,370,2361,378,2357,387,2353,398,2344,407,2322,419,2298,427,2250,435"/>
-<area shape="rect" title=" " alt="" coords="3799,165,4057,191"/>
-<area shape="poly" title=" " alt="" coords="4071,170,4129,182,4156,193,4182,208,4202,226,4220,248,4245,297,4261,344,4268,379,4263,381,4255,346,4240,299,4215,251,4198,230,4178,212,4154,198,4127,187,4070,175"/>
-<area shape="poly" title=" " alt="" coords="3548,175,3799,175,3799,181,3548,181"/>
-<area shape="rect" title=" " alt="" coords="3585,373,3775,413"/>
-<area shape="poly" title=" " alt="" coords="3788,390,4204,390,4204,395,3788,395"/>
-<area shape="poly" title=" " alt="" coords="3095,390,3585,390,3585,395,3095,395"/>
-<area shape="poly" title=" " alt="" coords="3017,409,3059,427,3106,442,3143,449,3176,451,3233,448,3260,448,3289,450,3319,459,3353,476,3392,507,3423,545,3446,584,3462,615,3457,618,3441,586,3418,548,3388,511,3351,480,3318,464,3288,456,3260,453,3233,454,3176,457,3142,455,3105,447,3058,432,3015,414"/>
-<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystemBase.html" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="2464,353,2704,379"/>
-<area shape="poly" title=" " alt="" coords="2718,359,2850,365,2924,377,2924,383,2849,370,2718,364"/>
-<area shape="poly" title=" " alt="" coords="2624,694,2672,655,2727,615,2761,595,2789,583,2816,570,2848,548,2886,511,2920,470,2966,404,2970,407,2924,473,2890,514,2851,552,2819,575,2791,588,2763,600,2729,619,2675,659,2628,699"/>
-<area shape="poly" title=" " alt="" coords="2703,741,2838,748,3001,746,3089,740,3178,730,3266,715,3351,694,3396,676,3436,655,3438,659,3399,681,3353,699,3267,720,3179,735,3089,745,3002,751,2838,753,2703,747"/>
-<area shape="poly" title=" " alt="" coords="2682,762,2705,770,2874,836,2934,855,2932,860,2872,841,2703,775,2681,767"/>
-<area shape="rect" title=" " alt="" coords="2008,719,2343,759"/>
-<area shape="poly" title=" " alt="" coords="2356,734,2478,732,2478,737,2356,739"/>
-<area shape="poly" title=" " alt="" coords="2682,424,2728,418,2873,402,2873,407,2728,423,2682,429"/>
-<area shape="rect" title=" " alt="" coords="2081,353,2270,393"/>
-<area shape="poly" title=" " alt="" coords="2284,381,2440,404,2500,415,2499,421,2440,409,2283,387"/>
-<area shape="poly" title=" " alt="" coords="1770,394,2080,376,2081,381,1770,400"/>
-<area shape="poly" title=" " alt="" coords="1050,433,1571,406,1572,411,1050,438"/>
-<area shape="rect" title=" " alt="" coords="1104,770,1247,810"/>
-<area shape="poly" title=" " alt="" coords="1186,756,1204,715,1232,667,1268,620,1289,599,1313,581,1344,567,1372,561,1398,561,1424,564,1475,568,1503,563,1533,550,1575,520,1610,482,1637,444,1654,415,1658,418,1641,447,1614,485,1579,524,1536,555,1505,568,1476,573,1423,569,1398,566,1372,566,1345,572,1316,586,1293,603,1272,623,1236,670,1209,717,1191,758"/>
-<area shape="poly" title=" " alt="" coords="1261,789,1390,797,1535,816,1626,839,1624,844,1534,821,1390,803,1260,795"/>
-<area shape="poly" title=" " alt="" coords="1235,813,1316,844,1471,889,1605,921,1603,927,1470,894,1314,849,1234,818"/>
-<area shape="poly" title=" " alt="" coords="801,795,1104,789,1104,794,801,801"/>
-<area shape="rect" title=" " alt="" coords="3831,538,4025,578"/>
-<area shape="poly" title=" " alt="" coords="4039,550,4111,535,4146,522,4179,505,4206,482,4230,454,4259,404,4264,407,4234,457,4210,486,4181,510,4148,527,4112,540,4040,556"/>
-<area shape="poly" title=" " alt="" coords="3575,616,3830,572,3831,577,3576,621"/>
-<area shape="poly" title=" " alt="" coords="2686,815,2850,810,3043,797,3224,776,3297,761,3351,742,3381,724,3409,701,3450,655,3454,659,3413,705,3385,728,3353,747,3298,766,3225,781,3044,803,2850,815,2687,821"/>
-<area shape="rect" title=" " alt="" coords="2081,834,2270,874"/>
-<area shape="poly" title=" " alt="" coords="2284,847,2440,835,2495,829,2496,835,2440,841,2284,852"/>
-<area shape="poly" title=" " alt="" coords="1783,851,2080,851,2080,857,1783,857"/>
-<area shape="rect" title=" " alt="" coords="3585,813,3775,853"/>
-<area shape="poly" title=" " alt="" coords="3749,805,3842,766,3955,710,4014,675,4072,637,4127,594,4178,548,4208,511,4232,471,4260,405,4265,407,4236,473,4212,514,4182,552,4131,599,4075,641,4017,680,3958,714,3845,771,3751,810"/>
-<area shape="poly" title=" " alt="" coords="3087,862,3585,835,3585,840,3087,867"/>
-<area shape="poly" title=" " alt="" coords="2682,931,2764,924,2849,910,2899,896,2944,880,2946,885,2901,901,2850,915,2765,929,2683,936"/>
-<area shape="rect" title=" " alt="" coords="2081,917,2270,957"/>
-<area shape="poly" title=" " alt="" coords="2284,934,2499,934,2499,939,2284,939"/>
-<area shape="poly" title=" " alt="" coords="1762,934,2080,934,2080,939,1762,939"/>
-<area shape="rect" title=" " alt="" coords="1793,183,1984,223"/>
-<area shape="poly" title=" " alt="" coords="1998,207,2850,262,3225,285,3517,301,3808,324,3979,344,4180,371,4213,377,4213,383,4180,377,3978,349,3807,329,3516,306,3224,291,2849,267,1998,212"/>
-<area shape="rect" href="classsystems_1_1SystemPluginManager.html" title=" " alt="" coords="1060,191,1291,216"/>
-<area shape="poly" title=" " alt="" coords="1304,201,1793,201,1793,206,1304,206"/>
-<area shape="poly" title=" " alt="" coords="839,183,1060,195,1060,200,839,188"/>
-<area shape="rect" title=" " alt="" coords="300,145,489,185"/>
-<area shape="poly" title=" " alt="" coords="504,167,638,173,638,178,503,172"/>
-<area shape="rect" href="classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,152,225,177"/>
-<area shape="poly" title=" " alt="" coords="240,162,300,162,300,167,240,167"/>
-<area shape="poly" title=" " alt="" coords="817,247,1036,222,1096,213,1096,219,1036,227,817,253"/>
+<area shape="rect" title=" " alt="" coords="4005,249,4135,274"/>
+<area shape="rect" title=" " alt="" coords="2635,66,2710,91"/>
+<area shape="poly" title=" " alt="" coords="2724,74,2812,71,3059,71,3440,67,3607,68,3821,77,3868,76,3906,73,3942,77,3983,96,4002,112,4019,132,4044,174,4060,216,4069,248,4063,249,4055,218,4039,177,4014,135,3998,116,3980,101,3941,82,3906,79,3868,82,3821,83,3607,73,3440,72,3059,76,2812,76,2724,79"/>
+<area shape="rect" href="classQModelObserver.html" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类" alt="" coords="3138,145,3269,170"/>
+<area shape="poly" title=" " alt="" coords="2724,82,2874,101,3059,128,3138,142,3137,147,3058,133,2873,106,2723,87"/>
+<area shape="rect" href="classsystems_1_1QSystemPluginManager.html" title=" " alt="" coords="3083,95,3324,121"/>
+<area shape="poly" title=" " alt="" coords="2724,78,3059,95,3083,96,3082,102,3059,100,2724,83"/>
+<area shape="rect" title=" " alt="" coords="2812,419,3059,445"/>
+<area shape="poly" title=" " alt="" coords="3072,423,3413,399,3617,379,3821,351,3903,338,3937,329,3980,314,4018,294,4050,272,4053,277,4021,298,3982,318,3939,335,3904,343,3822,356,3618,384,3414,405,3072,429"/>
+<area shape="rect" href="classModelManager.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2202,409,2321,434"/>
+<area shape="poly" title=" " alt="" coords="2335,418,2405,417,2533,417,2812,425,2812,430,2533,423,2405,423,2335,423"/>
+<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystem.html" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="2569,573,2777,598"/>
+<area shape="poly" title=" " alt="" coords="2335,431,2461,453,2535,471,2543,482,2548,492,2548,513,2549,533,2559,552,2589,570,2586,575,2555,555,2544,534,2543,513,2542,493,2539,484,2532,476,2460,458,2334,436"/>
+<area shape="rect" href="classsystems_1_1algo_1_1AlgorithmSystem.html" title=" " alt="" coords="3111,308,3296,348"/>
+<area shape="poly" title=" " alt="" coords="2330,403,2405,389,2601,366,2797,348,3110,329,3110,334,2797,354,2602,371,2406,395,2331,408"/>
+<area shape="rect" href="classsystems_1_1edit_1_1EditSystem.html" title="模型编辑操作系统，负责管理和调用各种模型编辑操作处理器。所有模型编辑操作的入口。" alt="" coords="2577,691,2769,717"/>
+<area shape="poly" title=" " alt="" coords="2294,440,2654,689,2651,693,2291,444"/>
+<area shape="rect" title=" " alt="" coords="1429,469,1592,523"/>
+<area shape="poly" title=" " alt="" coords="1605,484,2201,424,2202,430,1606,489"/>
+<area shape="rect" title=" " alt="" coords="941,518,1161,543"/>
+<area shape="poly" title=" " alt="" coords="1175,519,1429,499,1429,505,1175,524"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="438,519,531,545"/>
+<area shape="poly" title=" " alt="" coords="545,529,941,528,941,534,545,535"/>
+<area shape="rect" title=" " alt="" coords="193,517,280,542"/>
+<area shape="poly" title=" " alt="" coords="294,527,438,529,438,534,294,533"/>
+<area shape="poly" title=" " alt="" coords="262,506,303,480,351,457,390,441,430,431,483,428,1512,428,1732,429,1828,434,1951,447,2123,471,2256,498,2388,528,2558,563,2598,570,2597,575,2557,568,2386,533,2254,503,2122,476,1950,452,1828,440,1732,434,1512,433,483,433,431,436,391,446,353,462,305,485,265,510"/>
+<area shape="rect" title=" " alt="" coords="2156,611,2367,666"/>
+<area shape="poly" title=" " alt="" coords="275,509,303,500,332,496,354,497,405,500,751,501,867,497,958,489,1002,487,1049,489,1101,497,1162,511,1175,518,1186,524,1323,559,1441,576,1547,581,1647,579,1747,575,1855,573,1976,579,2118,597,2169,609,2168,614,2117,603,1976,584,1855,578,1748,580,1647,584,1547,587,1441,581,1322,564,1184,529,1172,522,1160,516,1100,502,1048,495,1002,493,959,494,867,502,751,507,405,505,354,502,332,502,305,505,276,514"/>
+<area shape="rect" title=" " alt="" coords="2177,696,2346,765"/>
+<area shape="poly" title=" " alt="" coords="294,535,430,553,635,573,795,584,956,594,1162,609,1640,653,2118,701,2177,711,2176,716,2117,707,1639,658,1161,615,955,599,795,589,635,578,429,559,293,541"/>
+<area shape="rect" href="structsystems_1_1io_1_1ModelIOInfo.html" title="模型层文件读写支持的文件类型信息" alt="" coords="1203,699,1387,725"/>
+<area shape="poly" title=" " alt="" coords="244,555,251,584,262,617,280,649,306,674,324,682,355,690,443,701,560,709,694,713,975,715,1203,711,1203,717,975,720,694,718,560,714,443,706,354,695,323,687,302,678,276,652,257,619,246,586,239,556"/>
+<area shape="rect" title=" " alt="" coords="564,733,751,758"/>
+<area shape="poly" title=" " alt="" coords="240,556,242,598,251,649,271,699,286,721,306,739,324,748,349,755,415,760,490,759,563,753,564,759,491,764,415,766,348,760,322,753,302,744,282,724,267,702,246,650,237,599,235,556"/>
+<area shape="rect" href="structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="429,629,540,654"/>
+<area shape="poly" title=" " alt="" coords="246,554,266,607,283,633,305,652,342,665,381,667,419,661,451,651,453,657,420,666,381,672,340,671,303,657,279,636,261,609,241,556"/>
+<area shape="poly" title=" " alt="" coords="237,503,243,462,254,412,273,359,302,310,341,262,379,228,400,216,424,208,483,201,2471,201,2564,204,2660,213,2845,240,3009,274,3132,305,3131,311,3008,279,2844,245,2659,218,2564,210,2471,207,483,207,425,213,402,221,382,233,345,266,306,314,278,361,259,414,248,463,243,503"/>
+<area shape="rect" title=" " alt="" coords="2173,241,2350,311"/>
+<area shape="poly" title=" " alt="" coords="242,502,264,443,281,410,302,380,343,330,379,292,399,278,423,267,450,261,483,259,1785,259,1994,262,2173,269,2172,274,1993,268,1785,264,483,264,451,266,424,272,402,282,383,296,347,333,306,383,285,413,269,445,247,504"/>
+<area shape="rect" href="structsystems_1_1algo_1_1AlgorithmInfo.html" title=" " alt="" coords="1190,331,1401,357"/>
+<area shape="poly" title=" " alt="" coords="242,502,263,454,280,429,303,410,323,401,353,393,439,380,685,360,961,349,1190,343,1190,348,961,354,685,366,440,385,354,399,324,406,305,414,284,433,268,456,247,504"/>
+<area shape="poly" title=" " alt="" coords="242,555,248,630,260,727,279,819,291,855,306,880,345,915,384,931,428,936,483,936,2263,936,2344,930,2375,922,2404,911,2462,879,2532,834,2572,804,2608,771,2659,715,2663,719,2611,775,2575,809,2535,838,2465,883,2407,915,2377,927,2344,935,2263,941,483,941,428,941,382,936,342,919,302,883,287,857,274,821,255,728,243,631,237,556"/>
+<area shape="rect" title=" " alt="" coords="2177,789,2346,859"/>
+<area shape="poly" title=" " alt="" coords="243,555,264,698,282,773,294,801,306,821,346,855,384,871,428,876,483,876,1785,876,1891,872,1997,862,2176,837,2177,842,1997,868,1891,877,1785,881,483,881,428,881,383,876,343,860,302,824,289,804,277,774,259,699,238,556"/>
+<area shape="rect" href="structsystems_1_1edit_1_1EditInfo.html" title="某个模型编辑操作的描述" alt="" coords="1211,809,1379,834"/>
+<area shape="poly" title=" " alt="" coords="240,556,242,602,251,659,271,717,286,743,306,766,334,787,372,805,417,819,470,830,591,845,725,851,863,849,997,844,1211,827,1211,833,997,849,864,855,725,856,590,850,469,835,416,824,370,810,331,792,302,770,282,746,266,719,246,660,237,602,235,557"/>
+<area shape="rect" title=" " alt="" coords="2168,27,2355,96"/>
+<area shape="poly" title=" " alt="" coords="237,503,244,423,257,317,276,215,288,174,302,144,339,92,376,55,397,42,422,33,450,27,483,25,1785,25,1990,33,2168,48,2167,54,1990,38,1785,31,483,31,451,32,423,38,400,47,379,59,343,95,306,147,293,176,281,216,262,318,249,423,242,503"/>
+<area shape="rect" title=" " alt="" coords="1975,123,2117,163"/>
+<area shape="poly" title=" " alt="" coords="237,503,243,429,254,334,273,243,286,208,302,184,323,164,343,151,363,143,384,139,429,138,483,140,1512,140,1974,140,1974,145,1512,145,483,145,429,144,384,144,365,148,346,156,326,169,306,187,291,210,279,245,260,335,248,430,242,503"/>
+<area shape="rect" title=" " alt="" coords="5,509,144,549"/>
+<area shape="poly" title=" " alt="" coords="157,527,193,527,193,532,157,532"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="1723,366,1844,391"/>
+<area shape="poly" title=" " alt="" coords="1858,383,2202,413,2201,419,1858,388"/>
+<area shape="poly" title=" " alt="" coords="1857,371,2133,349,2277,334,2381,320,2431,308,2469,296,2507,283,2557,271,2697,248,2808,238,2918,227,3058,201,3116,185,3167,168,3169,173,3118,190,3059,207,2919,232,2809,243,2698,253,2558,276,2508,289,2470,301,2432,314,2382,325,2277,340,2134,354,1858,376"/>
+<area shape="rect" title=" " alt="" coords="3563,163,3821,189"/>
+<area shape="poly" title=" " alt="" coords="3798,188,3888,205,3982,227,4039,246,4037,251,3981,232,3887,210,3797,194"/>
+<area shape="poly" title=" " alt="" coords="3282,158,3563,168,3563,174,3282,163"/>
+<area shape="rect" title=" " alt="" coords="3349,533,3538,573"/>
+<area shape="poly" title=" " alt="" coords="3551,551,3650,542,3763,522,3820,505,3877,484,3930,457,3980,425,4013,389,4038,346,4054,304,4063,273,4068,275,4059,306,4043,348,4018,392,3983,429,3933,462,3879,489,3822,510,3764,527,3651,548,3552,556"/>
+<area shape="poly" title=" " alt="" coords="2728,599,2812,617,2888,623,2964,624,3116,614,3253,593,3362,571,3363,576,3254,598,3117,619,2965,630,2887,629,2812,623,2727,605"/>
+<area shape="poly" title=" " alt="" coords="2790,588,2867,589,2944,586,3011,578,3038,572,3057,563,3086,542,3112,515,3133,486,3152,455,3179,394,3194,347,3199,349,3184,396,3156,457,3138,489,3116,519,3090,546,3060,568,3039,577,3012,583,2944,592,2867,594,2790,594"/>
+<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystemBase.html" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="2141,562,2381,587"/>
+<area shape="poly" title=" " alt="" coords="2395,575,2569,580,2569,585,2395,581"/>
+<area shape="poly" title=" " alt="" coords="2381,654,2456,656,2533,647,2566,637,2598,623,2650,596,2653,600,2600,628,2568,642,2534,652,2457,661,2380,659"/>
+<area shape="poly" title=" " alt="" coords="2380,623,2469,607,2506,598,2532,587,2539,581,2543,573,2547,565,2556,558,2625,523,2689,506,2748,500,2805,500,2862,500,2922,496,2986,482,3057,454,3096,430,3131,401,3184,346,3188,350,3135,405,3099,434,3060,458,2988,488,2922,502,2862,505,2805,505,2748,505,2690,511,2627,528,2559,562,2552,569,2548,576,2543,584,2535,592,2508,603,2470,613,2381,628"/>
+<area shape="poly" title=" " alt="" coords="2345,668,2406,684,2493,696,2577,701,2576,706,2492,701,2405,689,2344,673"/>
+<area shape="rect" title=" " alt="" coords="1616,600,1951,640"/>
+<area shape="poly" title=" " alt="" coords="1965,624,2156,632,2156,637,1964,630"/>
+<area shape="poly" title=" " alt="" coords="2360,752,2403,756,2448,755,2492,747,2532,728,2542,718,2545,706,2547,693,2555,677,2578,652,2603,630,2649,596,2652,600,2606,634,2581,656,2560,680,2553,694,2550,708,2546,721,2535,733,2493,752,2448,761,2403,762,2359,758"/>
+<area shape="rect" title=" " alt="" coords="1689,715,1878,755"/>
+<area shape="poly" title=" " alt="" coords="1892,731,2176,729,2176,734,1892,736"/>
+<area shape="poly" title=" " alt="" coords="1401,714,1689,728,1688,733,1401,720"/>
+<area shape="poly" title=" " alt="" coords="765,753,982,769,1086,771,1161,765,1221,746,1270,722,1273,727,1223,751,1162,771,1086,777,982,775,764,759"/>
+<area shape="rect" title=" " alt="" coords="775,621,917,661"/>
+<area shape="poly" title=" " alt="" coords="931,651,942,652,1052,666,1162,683,1235,697,1234,702,1161,688,1051,672,941,657,931,656"/>
+<area shape="poly" title=" " alt="" coords="853,607,865,571,883,530,907,489,940,454,1252,354,1254,359,943,458,912,492,888,533,870,573,858,609"/>
+<area shape="poly" title=" " alt="" coords="881,669,910,691,943,711,1017,744,1094,771,1229,806,1228,811,1092,776,1015,749,940,716,907,695,878,673"/>
+<area shape="poly" title=" " alt="" coords="553,639,774,639,774,644,553,644"/>
+<area shape="rect" title=" " alt="" coords="3595,301,3789,341"/>
+<area shape="poly" title=" " alt="" coords="3803,312,3890,302,3981,287,4034,272,4035,277,3982,292,3891,307,3803,317"/>
+<area shape="poly" title=" " alt="" coords="3310,324,3594,320,3594,325,3310,329"/>
+<area shape="poly" title=" " alt="" coords="2364,279,3111,320,3110,326,2363,284"/>
+<area shape="rect" title=" " alt="" coords="1689,300,1878,340"/>
+<area shape="poly" title=" " alt="" coords="1892,315,2001,310,2117,300,2172,292,2173,297,2118,305,2001,316,1892,321"/>
+<area shape="poly" title=" " alt="" coords="1414,336,1688,322,1688,327,1415,341"/>
+<area shape="rect" title=" " alt="" coords="3349,647,3538,687"/>
+<area shape="poly" title=" " alt="" coords="3551,663,3655,651,3712,641,3770,625,3828,604,3884,577,3935,544,3979,502,4001,474,4019,443,4044,377,4058,316,4065,274,4070,275,4064,317,4049,378,4023,445,4005,477,3983,506,3938,548,3886,582,3830,609,3772,630,3713,646,3655,657,3552,668"/>
+<area shape="poly" title=" " alt="" coords="2782,696,3348,669,3349,674,2782,701"/>
+<area shape="poly" title=" " alt="" coords="2360,830,2445,826,2490,819,2532,807,2572,787,2607,762,2658,715,2662,719,2610,766,2574,792,2534,812,2491,824,2446,832,2360,835"/>
+<area shape="rect" title=" " alt="" coords="1689,801,1878,841"/>
+<area shape="poly" title=" " alt="" coords="1892,819,2176,821,2176,826,1892,825"/>
+<area shape="poly" title=" " alt="" coords="1393,819,1688,819,1688,824,1393,824"/>
+<area shape="rect" title=" " alt="" coords="3591,92,3793,132"/>
+<area shape="poly" title=" " alt="" coords="3807,117,3895,135,3940,150,3983,170,4008,187,4031,208,4062,247,4058,250,4027,212,4005,191,3980,174,3938,155,3894,141,3806,123"/>
+<area shape="poly" title=" " alt="" coords="3338,106,3591,109,3591,114,3338,112"/>
+<area shape="rect" href="classsystems_1_1SystemPluginManager.html" title=" " alt="" coords="2557,135,2788,161"/>
+<area shape="poly" title=" " alt="" coords="2802,140,3058,123,3104,118,3104,123,3059,128,2802,145"/>
+<area shape="rect" title=" " alt="" coords="3348,216,3539,256"/>
+<area shape="poly" title=" " alt="" coords="2760,160,2812,168,3105,202,3348,225,3348,231,3105,207,2812,173,2759,166"/>
+<area shape="poly" title=" " alt="" coords="2369,81,2612,133,2611,138,2367,86"/>
+<area shape="rect" title=" " alt="" coords="1689,65,1878,105"/>
+<area shape="poly" title=" " alt="" coords="1892,78,2117,67,2168,64,2168,69,2117,72,1892,83"/>
+<area shape="rect" href="classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="1185,73,1405,98"/>
+<area shape="poly" title=" " alt="" coords="1419,83,1689,83,1689,88,1419,88"/>
+<area shape="poly" title=" " alt="" coords="2131,141,2557,144,2557,150,2131,146"/>
+<area shape="poly" title=" " alt="" coords="3552,238,4005,256,4005,261,3552,243"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
@@ -220,6 +227,11 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:abec8460e33b0b50d336ec45266a038a0" id="r_abec8460e33b0b50d336ec45266a038a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html">systems::algo::QAlgorithmSystemAdaptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abec8460e33b0b50d336ec45266a038a0">getAlgorithmSystemAdaptor</a> ()</td></tr>
 <tr class="memitem:a602f1d1ff5efe98bb777d1ce94315acf" id="r_a602f1d1ff5efe98bb777d1ce94315acf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1edit_1_1QEditSystemAdaptor.html">systems::edit::QEditSystemAdaptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a602f1d1ff5efe98bb777d1ce94315acf">getEditSystemAdaptor</a> ()</td></tr>
 <tr class="memitem:addaa6ba4c33fa2edf0eb8b12a648bca5" id="r_addaa6ba4c33fa2edf0eb8b12a648bca5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1io_1_1QModelIOSystemAdaptor.html">systems::io::QModelIOSystemAdaptor</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addaa6ba4c33fa2edf0eb8b12a648bca5">getModelIOSystemAdaptor</a> ()</td></tr>
+<tr class="memitem:a622ff614804eabf8b57213024b212887" id="r_a622ff614804eabf8b57213024b212887"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1QSystemPluginManager.html">systems::QSystemPluginManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a622ff614804eabf8b57213024b212887">getSystemPluginManager</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
+属性</h2></td></tr>
+<tr class="memitem:a3a4a212a83b8113dbd0d246242f36674" id="r_a3a4a212a83b8113dbd0d246242f36674"><td class="memItemLeft" align="right" valign="top">QML_ELEMENTsystems::QSystemPluginManager *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a4a212a83b8113dbd0d246242f36674">systemPluginManager</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
@@ -228,6 +240,7 @@ Private 属性</h2></td></tr>
 <tr class="memitem:aaded691b8acfe185a40e1ce308448b60" id="r_aaded691b8acfe185a40e1ce308448b60"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html">systems::io::ModelIOSystem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaded691b8acfe185a40e1ce308448b60">io_system_</a></td></tr>
 <tr class="memitem:ac167e11314e1610b10ccfac73bb28cab" id="r_ac167e11314e1610b10ccfac73bb28cab"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classsystems_1_1algo_1_1AlgorithmSystem.html">systems::algo::AlgorithmSystem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac167e11314e1610b10ccfac73bb28cab">algo_system_</a></td></tr>
 <tr class="memitem:abc9552478fd6cb161c5822e7f48578c6" id="r_abc9552478fd6cb161c5822e7f48578c6"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classsystems_1_1edit_1_1EditSystem.html">systems::edit::EditSystem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc9552478fd6cb161c5822e7f48578c6">edit_system_</a></td></tr>
+<tr class="memitem:a52c049a3953d2ee76d29330397165143" id="r_a52c049a3953d2ee76d29330397165143"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classsystems_1_1QSystemPluginManager.html">systems::QSystemPluginManager</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a52c049a3953d2ee76d29330397165143">q_plugin_manager_</a></td></tr>
 <tr class="memitem:a9d3616377c0dcec9f90cf336d8863e7c" id="r_a9d3616377c0dcec9f90cf336d8863e7c"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classsystems_1_1SystemPluginManager.html">systems::SystemPluginManager</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d3616377c0dcec9f90cf336d8863e7c">plugin_manager_</a></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
@@ -381,6 +394,23 @@ Private 属性</h2></td></tr>
           <td class="memname">QObject * QModelManager::getOperator </td>
           <td>(</td>
           <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a622ff614804eabf8b57213024b212887" name="a622ff614804eabf8b57213024b212887"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a622ff614804eabf8b57213024b212887">&#9670;&#160;</a></span>getSystemPluginManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsystems_1_1QSystemPluginManager.html">systems::QSystemPluginManager</a> * QModelManager::getSystemPluginManager </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -661,6 +691,51 @@ Private 属性</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a52c049a3953d2ee76d29330397165143" name="a52c049a3953d2ee76d29330397165143"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52c049a3953d2ee76d29330397165143">&#9670;&#160;</a></span>q_plugin_manager_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classsystems_1_1QSystemPluginManager.html">systems::QSystemPluginManager</a>&gt; QModelManager::q_plugin_manager_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
+<a id="a3a4a212a83b8113dbd0d246242f36674" name="a3a4a212a83b8113dbd0d246242f36674"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a4a212a83b8113dbd0d246242f36674">&#9670;&#160;</a></span>systemPluginManager</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QML_ELEMENTsystems::QSystemPluginManager* QModelManager::systemPluginManager</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

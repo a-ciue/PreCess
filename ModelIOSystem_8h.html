@@ -87,6 +87,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="SystemHandlerPtr_8h_source.html">SystemHandlerPtr.h</a>&quot;</code><br />
 <code>#include &lt;any&gt;</code><br />
 <code>#include &lt;filesystem&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -94,34 +95,36 @@ ModelIOSystem.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ModelIOSystem_8h__incl.png" border="0" usemap="#amodel_2systems_2io_2ModelIOSystem_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2io_2ModelIOSystem_8h" id="amodel_2systems_2io_2ModelIOSystem_8h">
-<area shape="rect" title=" " alt="" coords="132,5,389,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="127,152,191,177"/>
-<area shape="poly" title=" " alt="" coords="220,33,185,51,169,64,156,80,151,94,149,109,153,138,148,139,144,109,146,93,152,77,165,60,182,47,218,28"/>
+<area shape="rect" title=" " alt="" coords="232,5,489,31"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="89,152,153,177"/>
+<area shape="poly" title=" " alt="" coords="263,33,174,52,139,65,117,80,111,93,109,108,114,138,108,139,104,108,106,92,113,77,136,60,173,47,262,28"/>
 <area shape="rect" title=" " alt="" coords="5,225,68,251"/>
-<area shape="poly" title=" " alt="" coords="228,33,185,53,144,81,113,113,86,149,50,214,45,212,82,147,109,110,140,77,183,48,226,28"/>
-<area shape="rect" href="ModelIOSystemBase_8h.html" title=" " alt="" coords="176,79,345,104"/>
-<area shape="poly" title=" " alt="" coords="263,31,263,65,258,65,258,31"/>
-<area shape="rect" title=" " alt="" coords="215,152,306,177"/>
-<area shape="poly" title=" " alt="" coords="227,33,192,52,177,64,166,80,162,90,163,99,173,116,193,132,217,144,214,149,190,136,169,120,157,100,157,89,161,77,174,61,189,47,224,28"/>
-<area shape="rect" title=" " alt="" coords="345,152,392,177"/>
-<area shape="poly" title=" " alt="" coords="295,28,330,47,347,61,360,77,372,108,374,138,368,139,366,109,356,80,343,65,327,52,292,33"/>
-<area shape="rect" href="SystemHandlerPtr_8h.html" title=" " alt="" coords="421,79,572,104"/>
-<area shape="poly" title=" " alt="" coords="299,28,446,72,445,77,298,33"/>
-<area shape="rect" title=" " alt="" coords="596,79,720,104"/>
-<area shape="poly" title=" " alt="" coords="325,28,583,74,582,79,324,33"/>
+<area shape="poly" title=" " alt="" coords="273,33,173,53,131,66,104,81,78,110,60,146,49,181,42,212,37,211,44,180,55,144,74,107,100,77,129,61,172,48,272,28"/>
+<area shape="rect" href="ModelIOSystemBase_8h.html" title=" " alt="" coords="128,79,297,104"/>
+<area shape="poly" title=" " alt="" coords="338,33,250,75,248,70,336,28"/>
+<area shape="rect" title=" " alt="" coords="177,152,267,177"/>
+<area shape="poly" title=" " alt="" coords="358,32,340,67,312,106,285,129,258,147,255,143,282,125,308,102,336,64,353,30"/>
+<area shape="rect" title=" " alt="" coords="292,152,339,177"/>
+<area shape="poly" title=" " alt="" coords="364,31,364,65,357,105,336,143,331,140,351,103,359,64,359,31"/>
+<area shape="rect" href="SystemHandlerPtr_8h.html" title=" " alt="" coords="363,152,513,177"/>
+<area shape="poly" title=" " alt="" coords="369,30,428,139,423,141,365,32"/>
+<area shape="rect" title=" " alt="" coords="475,79,561,104"/>
+<area shape="poly" title=" " alt="" coords="387,28,481,71,479,75,385,33"/>
+<area shape="rect" title=" " alt="" coords="585,79,709,104"/>
+<area shape="poly" title=" " alt="" coords="407,28,588,73,587,78,406,33"/>
 <area shape="rect" title=" " alt="" coords="93,225,149,251"/>
-<area shape="poly" title=" " alt="" coords="155,179,136,215,131,212,151,176"/>
+<area shape="poly" title=" " alt="" coords="123,178,123,212,118,212,118,178"/>
 <area shape="rect" title=" " alt="" coords="173,225,223,251"/>
-<area shape="poly" title=" " alt="" coords="168,176,188,212,183,215,163,179"/>
-<area shape="rect" title=" " alt="" coords="378,225,455,251"/>
-<area shape="poly" title=" " alt="" coords="192,172,365,220,364,225,191,177"/>
+<area shape="poly" title=" " alt="" coords="135,175,177,214,173,218,131,179"/>
+<area shape="rect" title=" " alt="" coords="365,225,442,251"/>
+<area shape="poly" title=" " alt="" coords="154,172,165,175,352,221,350,226,164,180,152,177"/>
 <area shape="rect" title=" " alt="" coords="247,225,306,251"/>
-<area shape="poly" title=" " alt="" coords="180,175,247,216,244,220,177,180"/>
-<area shape="poly" title=" " alt="" coords="141,180,70,221,67,216,138,175"/>
-<area shape="poly" title=" " alt="" coords="246,106,189,146,186,142,243,102"/>
-<area shape="poly" title=" " alt="" coords="263,104,263,138,258,138,258,104"/>
-<area shape="poly" title=" " alt="" coords="279,102,341,142,338,147,277,106"/>
-<area shape="poly" title=" " alt="" coords="492,106,432,215,427,212,488,103"/>
+<area shape="poly" title=" " alt="" coords="147,175,240,217,238,222,145,180"/>
+<area shape="poly" title=" " alt="" coords="109,179,63,218,59,214,105,175"/>
+<area shape="poly" title=" " alt="" coords="200,106,148,146,145,141,196,102"/>
+<area shape="poly" title=" " alt="" coords="217,104,221,138,216,139,212,105"/>
+<area shape="poly" title=" " alt="" coords="231,102,289,142,286,146,228,106"/>
+<area shape="poly" title=" " alt="" coords="435,179,417,214,413,212,430,176"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">

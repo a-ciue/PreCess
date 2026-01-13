@@ -151,6 +151,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ad044d4e792c00b16e8bf83657de48050"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取已注册模型编辑操作类型信息  <br /></td></tr>
 <tr class="memitem:afe2413627a81c59f42c3db50b18f7238" id="r_afe2413627a81c59f42c3db50b18f7238"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe2413627a81c59f42c3db50b18f7238">getArgTypes</a> (const std::string &amp;unique_name)</td></tr>
 <tr class="memdesc:afe2413627a81c59f42c3db50b18f7238"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取参数类型  <br /></td></tr>
+<tr class="memitem:afa6a1d9a5edfe1a7809217187c09dd8b" id="r_afa6a1d9a5edfe1a7809217187c09dd8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa6a1d9a5edfe1a7809217187c09dd8b">setOnEditInfoChangedCallback</a> (std::function&lt; void()&gt; callback)</td></tr>
+<tr class="memdesc:afa6a1d9a5edfe1a7809217187c09dd8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置算法信息变更回调函数  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 静态 Public 属性</h2></td></tr>
@@ -161,6 +163,7 @@ Private 属性</h2></td></tr>
 <tr class="memitem:a96f054ec4c2ba727ef9e194376becaa6" id="r_a96f054ec4c2ba727ef9e194376becaa6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelManager.html">ModelManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96f054ec4c2ba727ef9e194376becaa6">model_manager_</a></td></tr>
 <tr class="memitem:a3e2b8fe4ef06ea6e698198d2051a2c1b" id="r_a3e2b8fe4ef06ea6e698198d2051a2c1b"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="#a7c04463044f0a2fd3638a10073e6a828">SystemHandlerPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e2b8fe4ef06ea6e698198d2051a2c1b">handlers_</a></td></tr>
 <tr class="memitem:a1067c073036ad85d4987b6275478f7da" id="r_a1067c073036ad85d4987b6275478f7da"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, std::unique_ptr&lt; <a class="el" href="structsystems_1_1edit_1_1EditInfo.html">EditInfo</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1067c073036ad85d4987b6275478f7da">edit_infos_</a></td></tr>
+<tr class="memitem:a1858470c2be700704c46fcd00acb31fe" id="r_a1858470c2be700704c46fcd00acb31fe"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1858470c2be700704c46fcd00acb31fe">on_edit_info_changed_</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>模型编辑操作系统，负责管理和调用各种模型编辑操作处理器。所有模型编辑操作的入口。 </p>
@@ -341,6 +344,25 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="afa6a1d9a5edfe1a7809217187c09dd8b" name="afa6a1d9a5edfe1a7809217187c09dd8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa6a1d9a5edfe1a7809217187c09dd8b">&#9670;&#160;</a></span>setOnEditInfoChangedCallback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::edit::EditSystem::setOnEditInfoChangedCallback </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; void()&gt;</td>          <td class="paramname"><span class="paramname"><em>callback</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置算法信息变更回调函数 </p>
+
+</div>
+</div>
 <a id="acce1c590ae4689cc3fc403479114d7b4" name="acce1c590ae4689cc3fc403479114d7b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acce1c590ae4689cc3fc403479114d7b4">&#9670;&#160;</a></span>unregisterHandler()</h2>
 
@@ -443,6 +465,28 @@ Private 属性</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1858470c2be700704c46fcd00acb31fe" name="a1858470c2be700704c46fcd00acb31fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1858470c2be700704c46fcd00acb31fe">&#9670;&#160;</a></span>on_edit_info_changed_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::edit::EditSystem::on_edit_info_changed_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

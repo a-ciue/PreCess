@@ -10,5 +10,6 @@ var searchData=
   ['qmodelmanager_7',['QModelManager',['../classQModelManager.html#a7dd7e8f47065b6aa31653ab6aceb9976',1,'QModelManager']]],
   ['qmodelquery_8',['QModelQuery',['../classQModelQuery.html#ae680b059488e7c532da3900eab3e7775',1,'QModelQuery']]],
   ['qrenderwindow_9',['QRenderWindow',['../structQRenderWindow.html#a74f8adff8942153a695cbd56e53e13d2',1,'QRenderWindow']]],
-  ['qselection_10',['QSelection',['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]]
+  ['qselection_10',['QSelection',['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]],
+  ['qsystempluginmanager_11',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html#abedb39985f7bd1fe6c8d02a131596d86',1,'systems::QSystemPluginManager']]]
 ];

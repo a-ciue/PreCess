@@ -10,7 +10,8 @@ var searchData=
   ['patch_5fwrite_7',['Patch_Write',['../classMeshLib_1_1CToolMesh.html#a07c96b9a765a410185777c8110fa06c2',1,'MeshLib::CToolMesh']]],
   ['patchupdated_8',['patchUpdated',['../classQModelObserver.html#ac655bcd06c83b3d6f7304c7b8389c696',1,'QModelObserver']]],
   ['path_9',['path',['../classcore_1_1TempFile.html#a2f67d6eb2cfea49222a3f8b2917c3129',1,'core::TempFile']]],
-  ['point_10',['point',['../classMeshLib_1_1CVertex.html#af6b59dfc900e565e14c941d10ff804a5',1,'MeshLib::CVertex']]],
-  ['pointer_5fcast_11',['pointer_cast',['../classplf_1_1colony.html#a7136ce6ac28c6cf87090a6bf3f91ba6a',1,'plf::colony']]],
-  ['prepare_5fgroups_5ffor_5fassign_12',['prepare_groups_for_assign',['../classplf_1_1colony.html#a8b2c7e0c6e8a791735975f09de53d86e',1,'plf::colony']]]
+  ['pluginnameschanged_10',['pluginNamesChanged',['../classsystems_1_1QSystemPluginManager.html#a2ef3adc257f9e37a8edf36743e710dde',1,'systems::QSystemPluginManager']]],
+  ['point_11',['point',['../classMeshLib_1_1CVertex.html#af6b59dfc900e565e14c941d10ff804a5',1,'MeshLib::CVertex']]],
+  ['pointer_5fcast_12',['pointer_cast',['../classplf_1_1colony.html#a7136ce6ac28c6cf87090a6bf3f91ba6a',1,'plf::colony']]],
+  ['prepare_5fgroups_5ffor_5fassign_13',['prepare_groups_for_assign',['../classplf_1_1colony.html#a8b2c7e0c6e8a791735975f09de53d86e',1,'plf::colony']]]
 ];

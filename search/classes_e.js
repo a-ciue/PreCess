@@ -12,5 +12,6 @@ var searchData=
   ['qmodelquery_9',['QModelQuery',['../classQModelQuery.html',1,'']]],
   ['qrenderwindow_10',['QRenderWindow',['../structQRenderWindow.html',1,'']]],
   ['qrenderwindowstyle_11',['QRenderWindowStyle',['../classQRenderWindowStyle.html',1,'']]],
-  ['qselection_12',['QSelection',['../classQSelection.html',1,'']]]
+  ['qselection_12',['QSelection',['../classQSelection.html',1,'']]],
+  ['qsystempluginmanager_13',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html',1,'systems']]]
 ];

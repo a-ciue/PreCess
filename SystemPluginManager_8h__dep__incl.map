@@ -1,7 +1,9 @@
 <map id="model/systems/SystemPluginManager.h" name="model/systems/SystemPluginManager.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="135,5,349,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="257,5,472,45"/>
 <area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,101,233,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="205,56,137,103,134,98,202,51"/>
-<area shape="rect" id="Node000003" href="$SystemPluginManager_8cpp.html" title=" " alt="" coords="257,93,472,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="282,51,339,91,336,95,279,55"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="299,52,153,103,151,98,297,47"/>
+<area shape="rect" id="Node000003" href="$QSystemPluginManager_8cpp.html" title=" " alt="" coords="258,93,471,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="367,59,367,93,362,93,362,59"/>
+<area shape="rect" id="Node000004" href="$SystemPluginManager_8cpp.html" title=" " alt="" coords="496,93,711,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="431,48,552,91,550,96,429,53"/>
 </map>

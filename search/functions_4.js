@@ -12,6 +12,7 @@ var searchData=
   ['destroy_5felement_9',['destroy_element',['../classplf_1_1colony.html#a585375ba743141a8e8a64ad56b22e933',1,'plf::colony']]],
   ['destroy_5fgroup_10',['destroy_group',['../classplf_1_1colony.html#a92c37fc3dd3d3a852f8c60691eb5f513',1,'plf::colony']]],
   ['destroyingvtk_11',['destroyingVTK',['../structQRenderWindow.html#a8414adc3aee1f2e5f9fd71fb4e961d4b',1,'QRenderWindow']]],
-  ['displayname_12',['displayName',['../classQAlgorithmInfo.html#aec11817fbd38188a5a8efb6e24d4f8aa',1,'QAlgorithmInfo::displayName()'],['../classQEditInfo.html#a4bea9967d53ce515b004cca217e1ff69',1,'QEditInfo::displayName()']]],
-  ['distance_13',['distance',['../classplf_1_1colony_1_1colony__iterator.html#aeea90bcd88b14b35a8b4c661ff945a9a',1,'plf::colony::colony_iterator::distance()'],['../classplf_1_1colony_1_1colony__reverse__iterator.html#aa2af79a54decbfc2a1da669b4531e5e1',1,'plf::colony::colony_reverse_iterator::distance()']]]
+  ['dialognamefilterschanged_12',['dialogNameFiltersChanged',['../classsystems_1_1io_1_1QModelIOSystemAdaptor.html#a960ba5eb69c3879b5f4e0a6397d67059',1,'systems::io::QModelIOSystemAdaptor']]],
+  ['displayname_13',['displayName',['../classQAlgorithmInfo.html#aec11817fbd38188a5a8efb6e24d4f8aa',1,'QAlgorithmInfo::displayName()'],['../classQEditInfo.html#a4bea9967d53ce515b004cca217e1ff69',1,'QEditInfo::displayName()']]],
+  ['distance_14',['distance',['../classplf_1_1colony_1_1colony__iterator.html#aeea90bcd88b14b35a8b4c661ff945a9a',1,'plf::colony::colony_iterator::distance()'],['../classplf_1_1colony_1_1colony__reverse__iterator.html#aa2af79a54decbfc2a1da669b4531e5e1',1,'plf::colony::colony_reverse_iterator::distance()']]]
 ];

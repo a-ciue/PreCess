@@ -21,5 +21,7 @@ var searchData=
   ['qrenderwindowstyle_2ecpp_18',['QRenderWindowStyle.cpp',['../QRenderWindowStyle_8cpp.html',1,'']]],
   ['qrenderwindowstyle_2eh_19',['QRenderWindowStyle.h',['../QRenderWindowStyle_8h.html',1,'']]],
   ['qselection_2eh_20',['QSelection.h',['../QSelection_8h.html',1,'']]],
-  ['quat_2eh_21',['quat.h',['../quat_8h.html',1,'']]]
+  ['qsystempluginmanager_2ecpp_21',['QSystemPluginManager.cpp',['../QSystemPluginManager_8cpp.html',1,'']]],
+  ['qsystempluginmanager_2eh_22',['QSystemPluginManager.h',['../QSystemPluginManager_8h.html',1,'']]],
+  ['quat_2eh_23',['quat.h',['../quat_8h.html',1,'']]]
 ];
