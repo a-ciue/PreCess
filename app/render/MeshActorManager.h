@@ -30,12 +30,9 @@ public:
 
     void setAttriMode(
         Index model_id,
-        std::string attr_name,
+        const std::string& attr_name,
         Mode mode,
-        ElementType type,
-        std::string texture_path,
-        double glyph_scale,
-        std::optional<std::pair<double, double>> scalar_range);
+        std::map<std::string, std::any> args);
     void cancelAttri(Index model_id);
 
 private:

@@ -436,20 +436,23 @@ void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& poin
     solid_data.SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
 }
 
-void MeshActor::setAttriMode(
-    const std::string& attr_name,
-    Mode mode,
-    ElementType type,
-    const std::string& texture_path,
-    double glyph_scale,
-    std::optional<std::pair<double, double>> scalar_range)
-{
-    AttributeOperator op(this);
-    op.setAttriMode(attr_name, mode, type, texture_path, glyph_scale, scalar_range);
-}
-
 void MeshActor::cancelActiveAttribute()
 {
-    AttributeOperator op(this);
-    op.cancelActiveAttribute();
+    if (render_strategy_)
+        render_strategy_->cancelActiveAttribute(new AttributeOperator(this));
+}
+
+void MeshActor::setRenderStrategy(std::unique_ptr<IAttributeRenderStrategy> strategy)
+{
+    render_strategy_ = std::move(strategy);
+}
+
+void MeshActor::renderAttribute(
+    const std::string& attr_name,
+    std::map<std::string, std::any> args)
+{
+    if (render_strategy_) {
+        AttributeOperator op(this);
+        render_strategy_->Render(&op, attr_name, args);
+    }
 }

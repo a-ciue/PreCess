@@ -124,33 +124,30 @@ public:
      * @brief 设置属性渲染方式
      *
      * 在控制台中调用示例：
-     * myItem.setAttriMode("face_pressure", 1, 2)
-     * myItem.setAttriMode("face_color_3", 0, 2)
-     * myItem.setAttriMode("face_vectors_3", 3, 2)
-     * myItem.setAttriMode("vertex_vector_3", 3, 0)
-     * myItem.setAttriMode("vertex_vector_3", 3, 0, "",0.5);
-     * myItem.setAttriMode("vertex_uv_2", 2, 0, "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp")
-     * myItem.setAttriMode("vertex_scalars", 1, 0)
-     * myItem.setAttriMode("vertex_scalars", 1, 0,"",-1,[2,6])
-     * 对于blow.vtk:
-     * myItem.setAttriMode("displacement9_3", 3, 0)
-     * myItem.setAttriMode("displacement9_3", 3, 0,"",0.5)
-     * myItem.setAttriMode("thickness9", 1, 0)
-     * myItem.setAttriMode("thickness9", 1, 0,"",-1,[0,2])
-     * @param attr_name 属性名
+     * myItem.setAttriMode("face_pressure_1", 1, {})
+     * myItem.setAttriMode("face_color_3", 0, {})
+     * myItem.setAttriMode("face_vectors_3", 3, {})
+     * myItem.setAttriMode("vertex_vector_3", 3, { "glyph_scale": 0.5 })
+     * myItem.setAttriMode("vertex_uv_2", 2, { "texture_path": "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp" })
+     * myItem.setAttriMode("vertex_scalars_1", 1, {})
+     * myItem.setAttriMode("vertex_scalars_1", 1, { "scalar_range": [2, 6] })
+     * // blow.vtk 示例：
+     * myItem.setAttriMode("displacement9_3", 3, {})
+     * myItem.setAttriMode("displacement9_3", 3, { "glyph_scale": 0.5 })
+     * myItem.setAttriMode("thickness9_1", 1, {})
+     * myItem.setAttriMode("thickness9_1", 1, { "scalar_range": [0, 2] })
+     *
+     * @param attr_name 属性名 后缀_3表示属性分量为3
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
-     * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
-     * @param texturePath 贴图路径
-     * @param glyphScale 箭头缩放比例
-     * @param scalarRange 标量范围 (不给就是默认)
+     * @param args 其他参数（可选），如：
+     *   "texture_path": 贴图路径（string）
+     *   "glyph_scale": 箭头缩放比例（double）
+     *   "scalar_range": 标量范围（长度为2的数组）
      */
     Q_INVOKABLE void setAttriMode(
         QString attr_name,
         int mode,
-        int type,
-        QString texture_path = "",
-        double glyph_scale = -1,
-        QVariant scalar_range = QVariant());
+        QVariantMap args);
     /**
      * @brief 取消属性渲染
      * 在控制台中调用示例：

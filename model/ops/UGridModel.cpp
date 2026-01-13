@@ -153,7 +153,7 @@ UGridModel::~UGridModel() = default;
 
 std::string UGridModel::completeAttributeName(const std::string& name, int numComponents)
 {
-    if (numComponents > 1) {
+    if (numComponents>0) {
         std::string suffix = "_" + std::to_string(numComponents);
         if (name.size() < suffix.size() || name.substr(name.size() - suffix.size()) != suffix) {
             return name + suffix;

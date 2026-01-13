@@ -12,6 +12,11 @@ add_library(vtkPart STATIC
     EdgeSelectorHighlight.cpp
     FaceSelectorHighlight.cpp
     AttributeOperator.cpp
+    AttriRenderStrategyScalar.cpp
+    AttriRenderStrategyVector.cpp
+    AttriRenderStrategyRGB.cpp
+    AttriRenderStrategyUV.cpp
+    IAttributeRenderStrategy.cpp
 )
 target_include_directories(vtkPart PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径

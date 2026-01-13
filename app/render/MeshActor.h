@@ -2,6 +2,7 @@
 #define MESH_ACTOR_H
 #include "AttributeCommon.h"
 #include "Core.h"
+#include "IAttributeRenderStrategy.h"
 #include <optional>
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
@@ -16,6 +17,7 @@ class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
 class AttributeOperator;
+class IAttributeRenderStrategy;
 
 //! @brief 负责管理Model的Actor
 class MeshActor {
@@ -46,27 +48,25 @@ public:
 
     ModelRenderMode getMeshRenderMode();
     /**
-     * @brief 设置属性渲染方式
-     * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
-     * @param type 属性类型 0:VERTEX 1:EDGE 2:FACE 3:SOLID
-     * @param attr_name 属性名称
-     * @param texturePath 贴图路径，仅在mode为UV时有效，传空表示不设置贴图
-     * @param glyphScale 箭头缩放比例，仅在mode为VECTOR时有效
-     * @param scalarRange 标量范围，仅在mode为SCALAR时有效，传空表示不设置
-     */
-    void setAttriMode(
-        const std::string& attr_name,
-        Mode mode,
-        ElementType type,
-        const std::string& texture_path = "",
-        double glyph_scale = -1,
-        std::optional<std::pair<double, double>> scalar_range = std::nullopt);
-    /**
      * @brief 取消属性渲染
      */
     void cancelActiveAttribute();
+    /**
+     * @brief 设置渲染策略
+     * @param strategy 渲染策略
+     */
+    void setRenderStrategy(std::unique_ptr<IAttributeRenderStrategy> strategy);
+    /**
+     * @brief 渲染属性
+     * @param attr_name 属性名称
+     * @param args 渲染参数
+     */
+    void renderAttribute(
+        const std::string& attr_name,
+        std::map<std::string, std::any> args);
 
 private:
+    std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     ModelRenderMode render_mode_;
     bool edge_render_ { true };
     bool vertex_render_ {};
