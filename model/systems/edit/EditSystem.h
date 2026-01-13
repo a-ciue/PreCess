@@ -3,11 +3,12 @@
  * @author (your name)
  */
 #pragma once
-#include "EditInfo.h"
 #include "Core.h"
+#include "EditInfo.h"
 #include "SystemHandlerPtr.h"
 
 #include <any>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -62,10 +63,16 @@ public:
      * @return 参数类型
      */
     std::optional<std::vector<core::ArgType>> getArgTypes(const std::string& unique_name);
+    /**
+     * @brief 设置算法信息变更回调函数
+     */
+    void setOnEditInfoChangedCallback(std::function<void()> callback);
 
 private:
     ModelManager* model_manager_; //< 模型管理器引用，用于获取模型操作接口
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //< 模型编辑操作处理器插件列表，key为模型编辑操作唯一名称name
     std::unordered_map<std::string, std::unique_ptr<EditInfo>> edit_infos_; //< 模型编辑操作信息列表，key为模型编辑操作唯一名称name
+
+    std::function<void()> on_edit_info_changed_; //< 编辑信息变更回调
 };
 }

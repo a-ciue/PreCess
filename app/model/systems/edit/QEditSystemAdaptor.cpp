@@ -1,8 +1,8 @@
 #include "QEditSystemAdaptor.h"
-#include "EditSystem.h"
-#include "QEditInfo.h"
-#include "QArgObject.h"
 #include "ArgObject.h"
+#include "EditSystem.h"
+#include "QArgObject.h"
+#include "QEditInfo.h"
 #include <spdlog/spdlog.h>
 
 namespace systems::edit {
@@ -10,6 +10,9 @@ using core::ArgObject;
 QEditSystemAdaptor::QEditSystemAdaptor(EditSystem& edit_system)
     : edit_system_(&edit_system)
 {
+    edit_system.setOnEditInfoChangedCallback([this]() {
+        emit editInfoChanged();
+    });
 }
 
 QVariant QEditSystemAdaptor::call(const QString& unique_name, Index model, const QVariantList& args)

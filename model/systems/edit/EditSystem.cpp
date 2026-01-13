@@ -19,6 +19,7 @@ const string EditSystem::name = "EditSystem";
 EditSystem::EditSystem(ModelManager& model_manager)
     : model_manager_(&model_manager)
 {
+    on_edit_info_changed_ = []() { };
 }
 
 EditSystem::~EditSystem() = default;
@@ -52,6 +53,7 @@ bool EditSystem::registerHandler(const HandlerMetaData& meta_data, SystemHandler
     this->edit_infos_[meta_data.name] = std::move(info);
 
     handlers_[meta_data.name] = std::move(handler);
+    on_edit_info_changed_();
     spdlog::info("EditSystem::registerHandler: Registered handler for edit '{}'", meta_data.name);
     return true;
 }
@@ -64,6 +66,7 @@ void EditSystem::unregisterHandler(const HandlerMetaData& meta_data)
 
     handlers_.erase(meta_data.name);
     this->edit_infos_.erase(meta_data.name);
+    on_edit_info_changed_();
 
     spdlog::info("EditSystem::unregisterHandler: Unregistered handler for edit '{}'", meta_data.name);
 }
@@ -85,5 +88,10 @@ std::optional<std::vector<core::ArgType>> EditSystem::getArgTypes(const std::str
         return it->second->args_type();
     }
     return {};
+}
+
+void EditSystem::setOnEditInfoChangedCallback(std::function<void()> callback)
+{
+    on_edit_info_changed_ = std::move(callback);
 }
 }

@@ -8,6 +8,9 @@ namespace systems::algo {
 QAlgorithmSystemAdaptor::QAlgorithmSystemAdaptor(AlgorithmSystem& algo_system)
     : algo_system_(&algo_system)
 {
+    algo_system.setOnAlgorithmInfosChanged([this]() {
+        emit algorithmsInfoChanged();
+    });
 }
 
 QVariant QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, const QVariantList& args)
