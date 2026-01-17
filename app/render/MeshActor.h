@@ -1,8 +1,8 @@
 #ifndef MESH_ACTOR_H
 #define MESH_ACTOR_H
-#include "AttributeCommon.h"
+#include "renderStrategy/AttributeCommon.h"
 #include "Core.h"
-#include "IAttributeRenderStrategy.h"
+#include "renderStrategy/IAttributeRenderStrategy.h"
 #include <optional>
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
@@ -17,7 +17,6 @@ class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
 class AttributeOperator;
-class IAttributeRenderStrategy;
 
 //! @brief 负责管理Model的Actor
 class MeshActor {

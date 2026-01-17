@@ -8,13 +8,11 @@
 #include <vtkPolyData.h>
 #include <vtkProperty.h>
 #include <spdlog/spdlog.h>
-void AttriRenderStrategyVector::Render(
-    AttributeOperator* op,
+void AttriRenderStrategyVector::render(
+    AttributeOperator& op,
     const std::string& attr_name,
     std::map<std::string, std::any> args)
 {
-    if (!op)
-        return;
     this->cancelActiveAttribute(op);
     // 提取glyphScale参数
     double glyph_scale = 0.5;
@@ -32,37 +30,24 @@ void AttriRenderStrategyVector::Render(
     }
     // 判断是否是顶点属性
     vtkDataArray* array = nullptr;
-    array = op->getVertexData()->GetPointData()->GetArray(attr_name.c_str());
+    array = op.getVertexPointData()->GetArray(attr_name.c_str());
     if (array) {
-        vtkPolyData* vertex_data = op->getVertexData();
-        vtkDataArray* array = vertex_data->GetPointData()->GetArray(attr_name.c_str());
-        assert(array);
-        vertex_data->GetPointData()->SetActiveVectors(attr_name.c_str());
+        vtkPolyData* vertex_data = op.getVertexGlyphInput(attr_name);
         createGlyph3D(op, vertex_data, { 1.0, 0.0, 0.0 }, glyph_scale); // 红色
         return;
     }
     // 判断是否是面属性
-    if (vtkPolyData* face_data = op->getFaceData()) {
-        array = face_data->GetCellData()->GetArray(attr_name.c_str());
+    if (vtkCellData* face_data = op.getFaceCellData()) {
+        array = face_data->GetArray(attr_name.c_str());
     }
     if (array) {
-        vtkPolyData* face_data = op->getFaceData();
-        array = face_data->GetCellData()->GetArray(attr_name.c_str());
-        assert(array);
-        // 计算面中心点位置 =====
-        vtkNew<vtkCellCenters> centers;
-        centers->SetInputData(face_data);
-        centers->Update();
-        // 将面中心点位置与向量数据合并 =====
-        vtkNew<vtkPolyData> glyphInput;
-        glyphInput->SetPoints(centers->GetOutput()->GetPoints());
-        glyphInput->GetPointData()->SetVectors(array);
+        vtkSmartPointer<vtkPolyData> glyphInput = op.getFaceGlyphInput(attr_name);
         createGlyph3D(op, glyphInput, { 0.0, 0.0, 1.0 }, glyph_scale); // 蓝色
     } else {
         spdlog::error("Attribute {} not found in vertex or face data.", attr_name);
     }
 }
-void AttriRenderStrategyVector::createGlyph3D(AttributeOperator* op, vtkDataSet* input, const std::array<double, 3>& color, double scale)
+void AttriRenderStrategyVector::createGlyph3D(AttributeOperator& op, vtkDataSet* input, const std::array<double, 3>& color, double scale)
 {
     vtkNew<vtkArrowSource> arrow_source; // 箭头源
     arrow_source->SetTipResolution(16);
@@ -77,11 +62,11 @@ void AttriRenderStrategyVector::createGlyph3D(AttributeOperator* op, vtkDataSet*
     glyph3D->OrientOn();
     glyph3D->Update();
 
-    vtkPolyDataMapper* mapper = op->getGlyph3DMapper();
+    vtkPolyDataMapper* mapper = op.getGlyph3DMapper();
     mapper->SetInputConnection(glyph3D->GetOutputPort());
     mapper->ScalarVisibilityOff();
 
-    vtkActor* glyph_actor = op->getGlyph3DActor();
+    vtkActor* glyph_actor = op.getGlyph3DActor();
     glyph_actor->SetMapper(mapper);
     glyph_actor->GetProperty()->SetColor(const_cast<double*>(color.data()));
     glyph_actor->SetVisibility(1);

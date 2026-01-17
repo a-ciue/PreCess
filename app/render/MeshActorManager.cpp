@@ -1,9 +1,9 @@
 #include "MeshActorManager.h"
 #include "Core.h"
-#include "AttriRenderStrategyScalar.h"
-#include "AttriRenderStrategyVector.h"
-#include "AttriRenderStrategyUV.h"
-#include "AttriRenderStrategyRGB.h"
+#include "renderStrategy/AttriRenderStrategyScalar.h"
+#include "renderStrategy/AttriRenderStrategyVector.h"
+#include "renderStrategy/AttriRenderStrategyUV.h"
+#include "renderStrategy/AttriRenderStrategyRGB.h"
 #include <spdlog/spdlog.h>
 std::shared_ptr<const MeshActor> MeshActorManager::getModelActor(Index model_id)
 {

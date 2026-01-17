@@ -1,8 +1,8 @@
-#include "AttriRenderStrategyRGB.h"
-#include "AttriRenderStrategyScalar.h"
-#include "AttriRenderStrategyUV.h"
-#include "AttriRenderStrategyVector.h"
-#include "AttributeCommon.h"
+#include "renderStrategy/AttriRenderStrategyRGB.h"
+#include "renderStrategy/AttriRenderStrategyScalar.h"
+#include "renderStrategy/AttriRenderStrategyUV.h"
+#include "renderStrategy/AttriRenderStrategyVector.h"
+#include "renderStrategy/AttributeCommon.h"
 #include "MakeMeshData.h"
 #include "MakeMeshDataVtk.h"
 #include <spdlog/spdlog.h>

@@ -8,13 +8,11 @@
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkTexture.h>
-void AttriRenderStrategyUV::Render(
-    AttributeOperator* op,
+void AttriRenderStrategyUV::render(
+    AttributeOperator& op,
     const std::string& attr_name,
     std::map<std::string, std::any> args)
 {
-    if (!op)
-        return;
     this->cancelActiveAttribute(op);
     // 获取贴图路径
     std::string texture_path;
@@ -43,11 +41,11 @@ void AttriRenderStrategyUV::Render(
     texture->InterpolateOn(); // 启用插值使纹理更平滑
 
     // 读取传入的属性作为UV
-    vtkDataArray* tcoords = op->getVertexData()->GetPointData()->GetArray(attr_name.c_str());
+    vtkDataArray* tcoords = op.getVertexPointData()->GetArray(attr_name.c_str());
     if (tcoords && tcoords->GetNumberOfComponents() == 2) {
         spdlog::info("use attribute {} as UV", attr_name);
-        op->getVertexData()->GetPointData()->SetTCoords(tcoords);
-        op->getFaceData()->GetPointData()->SetTCoords(tcoords);
+        op.getVertexPointData()->SetTCoords(tcoords);
+        op.getFacePointData()->SetTCoords(tcoords);
     }
-    op->getFaceActor()->SetTexture(texture);
+    op.getFaceActor()->SetTexture(texture);
 }

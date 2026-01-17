@@ -1,5 +1,5 @@
 #include "QRenderWindow.h"
-#include "AttributeCommon.h"
+#include <renderStrategy/AttributeCommon.h>
 #include "MeshActorManager.h"
 #include "QModelQuery.h"
 #include "QRenderWindowStyle.h"
@@ -355,22 +355,22 @@ void QRenderWindow::setAttriMode(
 {
     dispatch_async([this, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        Mode modeEnum = static_cast<Mode>(mode);
+        Mode mode_enum = static_cast<Mode>(mode);
 
         // QVariantMap 转 std::map<std::string, std::any>
-        std::map<std::string, std::any> stdArgs;
+        std::map<std::string, std::any> std_args;
         for (auto it = args.constBegin(); it != args.constEnd(); ++it) {
             if (it.value().type() == QVariant::Double) {
-                stdArgs[it.key().toStdString()] = it.value().toDouble();
+                std_args[it.key().toStdString()] = it.value().toDouble();
             } else if (it.value().type() == QVariant::Int) {
-                stdArgs[it.key().toStdString()] = it.value().toInt();
+                std_args[it.key().toStdString()] = it.value().toInt();
             } else if (it.value().type() == QVariant::String) {
-                stdArgs[it.key().toStdString()] = it.value().toString().toStdString();
+                std_args[it.key().toStdString()] = it.value().toString().toStdString();
             } else if (it.value().type() == QVariant::List) {
                 QVariantList list = it.value().toList();
                 // 如果是两个元素，转为 pair
                 if (list.size() == 2 && list[0].canConvert<double>() && list[1].canConvert<double>()) {
-                    stdArgs[it.key().toStdString()] = std::make_pair(list[0].toDouble(), list[1].toDouble());
+                    std_args[it.key().toStdString()] = std::make_pair(list[0].toDouble(), list[1].toDouble());
                 } else {
                     // 否则转为 vector<double>
                     std::vector<double> vec;
@@ -378,19 +378,19 @@ void QRenderWindow::setAttriMode(
                         if (v.canConvert<double>())
                             vec.push_back(v.toDouble());
                     }
-                    stdArgs[it.key().toStdString()] = vec;
+                    std_args[it.key().toStdString()] = vec;
                 }
             } else {
                 spdlog::error("Unsupported QVariant type,type:{}", QString(QMetaType::typeName(it.value().type())).toStdString());
             }
         }
-        spdlog::info("modeEnum: {}", static_cast<int>(modeEnum));
+        spdlog::info("modeEnum: {}", static_cast<int>(mode_enum));
         if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
             vtk->mesh_actor_manager_->setAttriMode(
                 cur_actor_id_,
                 attr_name.toStdString(),
-                modeEnum,
-                stdArgs);
+                mode_enum,
+                std_args);
         }
         spdlog::info("-----setAttriMode:" + attr_name.toStdString());
     });

@@ -12,21 +12,18 @@ public:
     AttributeOperator(MeshActor* mesh_actor_);
 
     vtkPolyDataMapper* getVertexMapper();
-    vtkPolyDataMapper* getEdgeMapper();
     vtkPolyDataMapper* getFaceMapper();
-    vtkPolyDataMapper* getSolidMapper();
     vtkPolyDataMapper* getGlyph3DMapper();
 
-    vtkActor* getSolidActor();
-    vtkActor* getFaceActor();
-    vtkActor* getEdgeActor();
-    vtkActor* getVertexActor();
     vtkActor* getGlyph3DActor();
+    vtkActor* getFaceActor();
 
-    vtkUnstructuredGrid* getSolidData();
-    vtkPolyData* getFaceData();
-    vtkPolyData* getEdgeData();
-    vtkPolyData* getVertexData();
+    vtkCellData* getFaceCellData();
+    vtkPointData* getFacePointData();
+    vtkPointData* getVertexPointData();
+
+    vtkSmartPointer<vtkPolyData> getFaceGlyphInput(const std::string& attr_name);
+    vtkSmartPointer<vtkPolyData> getVertexGlyphInput(const std::string& attr_name);
 
 private:
     MeshActor* mesh_actor_;

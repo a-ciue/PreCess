@@ -1,5 +1,5 @@
 #include "MeshActor.h"
-#include "AttributeOperator.h"
+#include "renderStrategy/AttributeOperator.h"
 #include "Core.h"
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
@@ -438,8 +438,10 @@ void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& poin
 
 void MeshActor::cancelActiveAttribute()
 {
-    if (render_strategy_)
-        render_strategy_->cancelActiveAttribute(new AttributeOperator(this));
+    if (render_strategy_) {
+        AttributeOperator op(this);
+        render_strategy_->cancelActiveAttribute(op);
+    }
 }
 
 void MeshActor::setRenderStrategy(std::unique_ptr<IAttributeRenderStrategy> strategy)
@@ -453,6 +455,6 @@ void MeshActor::renderAttribute(
 {
     if (render_strategy_) {
         AttributeOperator op(this);
-        render_strategy_->Render(&op, attr_name, args);
+        render_strategy_->render(op, attr_name, args);
     }
 }
