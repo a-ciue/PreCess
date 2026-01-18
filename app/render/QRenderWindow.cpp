@@ -1,5 +1,5 @@
 #include "QRenderWindow.h"
-#include "AttributeCommon.h"
+#include "renderStrategy/AttributeCommon.h"
 #include "MeshActorManager.h"
 #include "QModelQuery.h"
 #include "QRenderWindowStyle.h"
@@ -351,37 +351,40 @@ void QRenderWindow::setClick()
 void QRenderWindow::setAttriMode(
     QString attr_name,
     int mode,
-    int type,
-    QString texture_path,
-    double glyph_scale,
-    QVariant scalar_range)
+    QVariantMap args)
 {
-    dispatch_async([this, attr_name, mode, type, texture_path, glyph_scale, scalar_range](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([this, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        // int -> 枚举类型
-        Mode modeEnum = static_cast<Mode>(mode);
-        ElementType typeEnum = static_cast<ElementType>(type);
-        // 解析QVariant为std::optional<std::pair<double, double>>
-        std::optional<std::pair<double, double>> rangeOpt = std::nullopt;
-        if (scalar_range.isValid() && scalar_range.canConvert<QVariantList>()) {
-            QVariantList list = scalar_range.toList();
-            if (list.size() == 2) {
-                rangeOpt = std::make_pair(list[0].toDouble(), list[1].toDouble());
+        Mode mode_enum = static_cast<Mode>(mode);
+
+        // QVariantMap 转 std::map<std::string, std::any>
+        std::map<std::string, std::any> std_args;
+        for (auto it = args.constBegin(); it != args.constEnd(); ++it) {
+            if (it.value().type() == QVariant::Double) {
+                std_args[it.key().toStdString()] = it.value().toDouble();
+            } else if (it.value().type() == QVariant::Int) {
+                std_args[it.key().toStdString()] = it.value().toInt();
+            } else if (it.value().type() == QVariant::String) {
+                std_args[it.key().toStdString()] = it.value().toString().toStdString();
+            } else if (it.value().type() == QVariant::List) {
+                QVariantList list = it.value().toList();
+                std::vector<double> vec;
+                for (const auto& v : list) {
+                    if (v.canConvert<double>())
+                        vec.push_back(v.toDouble());
+                }
+                std_args[it.key().toStdString()] = vec;
             } else {
-                spdlog::error("setAttriMode: scalarRange QVariantList size is {}, expected 2 (min, max)", list.size());
+                spdlog::error("Unsupported QVariant type,type:{}", QString(QMetaType::typeName(it.value().type())).toStdString());
             }
         }
-        spdlog::info("modeEnum: {}", static_cast<int>(modeEnum));
-        spdlog::info("typeEnum: {}", static_cast<int>(typeEnum));
+        spdlog::info("modeEnum: {}", static_cast<int>(mode_enum));
         if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
             vtk->mesh_actor_manager_->setAttriMode(
                 cur_actor_id_,
                 attr_name.toStdString(),
-                modeEnum,
-                typeEnum,
-                texture_path.toStdString(),
-                glyph_scale,
-                rangeOpt);
+                mode_enum,
+                std_args);
         }
         spdlog::info("-----setAttriMode:" + attr_name.toStdString());
     });

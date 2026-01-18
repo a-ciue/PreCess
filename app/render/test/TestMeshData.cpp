@@ -1,5 +1,9 @@
+#include "renderStrategy/AttriRenderStrategyRGB.h"
+#include "renderStrategy/AttriRenderStrategyScalar.h"
+#include "renderStrategy/AttriRenderStrategyUV.h"
+#include "renderStrategy/AttriRenderStrategyVector.h"
+#include "renderStrategy/AttributeCommon.h"
 #include "MakeMeshData.h"
-#include "AttributeCommon.h"
 #include "MakeMeshDataVtk.h"
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
@@ -14,38 +18,52 @@ static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void*
         const char* key = interactor->GetKeySym();
         spdlog::info("Key pressed: [{}]", key);
 
+        std::map<std::string, std::any> args;
+
         if (strcmp(key, "1") == 0 || strcmp(key, "KP_1") == 0) {
-            mesh_actor_ptr->setAttriMode("VertexScalar", Mode::SCALAR, ElementType::VERTEX);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+            mesh_actor_ptr->renderAttribute("VertexScalar", args);
             spdlog::info("Switched to Vertex Scalar: VertexScalar");
         } else if (strcmp(key, "2") == 0 || strcmp(key, "KP_2") == 0) {
-            mesh_actor_ptr->setAttriMode("vertex_color_3", Mode::RGB, ElementType::VERTEX);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyRGB>());
+            mesh_actor_ptr->renderAttribute("vertex_color_3", args);
             spdlog::info("Switched to Vertex Color: vertex_color_3");
         } else if (strcmp(key, "4") == 0 || strcmp(key, "KP_4") == 0) {
-            mesh_actor_ptr->setAttriMode("FaceScalar", Mode::SCALAR, ElementType::FACE);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+            mesh_actor_ptr->renderAttribute("FaceScalar", args);
             spdlog::info("Switched to Face Scalar: FaceScalar");
         } else if (strcmp(key, "5") == 0 || strcmp(key, "KP_5") == 0) {
-            mesh_actor_ptr->setAttriMode("face_color_3", Mode::RGB, ElementType::FACE);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyRGB>());
+            mesh_actor_ptr->renderAttribute("face_color_3", args);
             spdlog::info("Switched to Face Color: face_color_3");
         } else if (strcmp(key, "6") == 0 || strcmp(key, "KP_6") == 0) {
-            mesh_actor_ptr->setAttriMode("vertex_press_3", Mode::VECTOR, ElementType::VERTEX);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
+            mesh_actor_ptr->renderAttribute("vertex_press_3", args);
             spdlog::info("Switched to Vertex Vector: vertex_press_3");
         } else if (strcmp(key, "7") == 0 || strcmp(key, "KP_7") == 0) {
-            mesh_actor_ptr->setAttriMode("vertex_normal_3", Mode::VECTOR, ElementType::VERTEX);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
+            mesh_actor_ptr->renderAttribute("vertex_normal_3", args);
             spdlog::info("Switched to Vertex Vector: vertex_normal_3");
         } else if (strcmp(key, "8") == 0 || strcmp(key, "KP_8") == 0) {
-            mesh_actor_ptr->setAttriMode("face_normal_3", Mode::VECTOR, ElementType::FACE);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
+            mesh_actor_ptr->renderAttribute("face_normal_3", args);
             spdlog::info("Switched to Face Vector: face_normal_3");
         } else if (strcmp(key, "0") == 0 || strcmp(key, "KP_0") == 0) {
             mesh_actor_ptr->cancelActiveAttribute();
             spdlog::info("cancelActiveAttribute");
         } else if (strcmp(key, "t") == 0) {
-            mesh_actor_ptr->setAttriMode("VertexScalar", Mode::SCALAR, ElementType::VERTEX, "", 0.3, std::make_pair(2.0, 6.0));
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+            args["scalar_range"] = std::vector<double> { 2.0, 6.0 };
+            mesh_actor_ptr->renderAttribute("VertexScalar", args);
             spdlog::info("setScalarRange(2, 6)");
         } else if (strcmp(key, "y") == 0) {
-            mesh_actor_ptr->setAttriMode("VertexScalar", Mode::SCALAR, ElementType::VERTEX, "", 0.3, std::nullopt);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+            mesh_actor_ptr->renderAttribute("VertexScalar", args);
             spdlog::info("resetScalarRange()");
         } else if (strcmp(key, "u") == 0) {
-            mesh_actor_ptr->setAttriMode("vertex_press_3", Mode::VECTOR, ElementType::VERTEX, "", 0.5, std::nullopt);
+            mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
+            args["glyph_scale"] = 0.5;
+            mesh_actor_ptr->renderAttribute("vertex_press_3", args);
             spdlog::info("setGlyph3DScaleFactor(0.5)");
         }
     }
@@ -90,7 +108,10 @@ int main(int argc, char* argv[])
     spdlog::info("Press 't' to set scalar range, 'y' to reset scalar range, 'u' to set glyph3D scale factor");
     renderWindow->Render();
     if (argc > 1) {
-        meshActor2->setAttriMode("vertex_uv_2", Mode::UV, ElementType::VERTEX, argv[1]);
+        std::map<std::string, std::any> args;
+        args["texture_path"] = std::string(argv[1]);
+        meshActor2->setRenderStrategy(std::make_unique<AttriRenderStrategyUV>());
+        meshActor2->renderAttribute("vertex_uv_2", args);
     } else {
         spdlog::error("Texture path not provided");
     }

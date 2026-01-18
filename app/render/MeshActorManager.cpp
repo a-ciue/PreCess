@@ -1,6 +1,10 @@
 #include "MeshActorManager.h"
 #include "Core.h"
-
+#include "renderStrategy/AttriRenderStrategyScalar.h"
+#include "renderStrategy/AttriRenderStrategyVector.h"
+#include "renderStrategy/AttriRenderStrategyUV.h"
+#include "renderStrategy/AttriRenderStrategyRGB.h"
+#include <spdlog/spdlog.h>
 std::shared_ptr<const MeshActor> MeshActorManager::getModelActor(Index model_id)
 {
     if (this->models_.count(model_id))
@@ -87,16 +91,32 @@ ModelRenderMode MeshActorManager::getMeshRenderMode(Index model_id)
 }
 void MeshActorManager::setAttriMode(
     Index model_id,
-    std::string attr_name,
+    const std::string& attr_name,
     Mode mode,
-    ElementType type,
-    std::string texture_path,
-    double glyph_scale,
-    std::optional<std::pair<double, double>> scalar_range
-    )
+    std::map<std::string, std::any> args)
 {
-    if (this->models_.count(model_id))
-        this->models_[model_id]->setAttriMode(attr_name, mode, type, texture_path,glyph_scale,scalar_range);
+    if (this->models_.count(model_id)) {
+        std::unique_ptr<IAttributeRenderStrategy> strategy;
+        switch (mode) {
+        case Mode::SCALAR:
+            strategy = std::make_unique<AttriRenderStrategyScalar>();
+            break;
+        case Mode::VECTOR:
+            strategy = std::make_unique<AttriRenderStrategyVector>();
+            break;
+        case Mode::UV:
+            strategy = std::make_unique<AttriRenderStrategyUV>();
+            break;
+        case Mode::RGB:
+            strategy = std::make_unique<AttriRenderStrategyRGB>();
+            break;
+        default:
+            spdlog::error("Invalid attribute render mode");
+            return;
+        }
+        this->models_[model_id]->setRenderStrategy(std::move(strategy));
+        this->models_[model_id]->renderAttribute(attr_name, args);
+    }
 }
 void MeshActorManager::cancelAttri(Index model_id)
 {
