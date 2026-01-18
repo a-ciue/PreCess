@@ -69,6 +69,8 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getFaceGlyphInput(const std::str
 vtkSmartPointer<vtkPolyData> AttributeOperator::getVertexGlyphInput(const std::string& attr_name)
 {
     vtkPolyData* vertex_data = mesh_actor_->vertex_data_;
+    if (!vertex_data)
+        return nullptr;
     vtkDataArray* array = vertex_data->GetPointData()->GetArray(attr_name.c_str());
     if (!array)
         return nullptr;

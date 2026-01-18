@@ -1,7 +1,7 @@
 #include "IAttributeRenderStrategy.h"
 #include "AttributeOperator.h"
 
-void IAttributeRenderStrategy::cancelActiveAttribute(AttributeOperator& op)
+void IAttributeRenderStrategy::cancelActiveAttribute(AttributeOperator op)
 {
     if (op.getFaceActor()->GetTexture() != nullptr) {
         op.getFaceActor()->SetTexture(nullptr);

@@ -6,14 +6,13 @@
 #include <vtkPolyDataMapper.h>
 #include <spdlog/spdlog.h>
 void AttriRenderStrategyRGB::render(
-    AttributeOperator& op,
+    AttributeOperator op,
     const std::string& attr_name,
     std::map<std::string, std::any> args)
 {
     this->cancelActiveAttribute(op);
     // 先判断是否是顶点属性
-    vtkDataArray* array = nullptr;
-    array = op.getVertexPointData()->GetArray(attr_name.c_str());
+    vtkDataArray* array = op.getVertexPointData()->GetArray(attr_name.c_str());
     if (array) {
         vtkPointData* vertex_data = op.getVertexPointData();
         vtkPolyDataMapper* vertex_mapper = op.getVertexMapper();
@@ -21,7 +20,7 @@ void AttriRenderStrategyRGB::render(
         vertex_mapper->SetScalarVisibility(1);
         vertex_mapper->SetColorModeToDirectScalars(); // 直接映射RGB
         vertex_mapper->SetScalarModeToUsePointData();
-        if (vtkCellData* face_data = op.getFaceCellData()) {
+        if (vtkPointData* face_data = op.getFacePointData()) {
             face_data->SetActiveScalars(attr_name.c_str());
             vtkPolyDataMapper* face_mapper = op.getFaceMapper();
             face_mapper->SetScalarModeToUsePointData();// 面使用点数据

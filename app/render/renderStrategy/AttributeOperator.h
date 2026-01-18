@@ -1,6 +1,7 @@
 #pragma once
 #include "MeshActor.h"
-#include <vtkUnstructuredGrid.h> 
+#include <vtkPointData.h>
+#include <vtkCellData.h>
 
 class MeshActor;
 /**

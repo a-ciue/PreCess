@@ -53,7 +53,7 @@ static void KeyPressCallbackFunc(vtkObject* caller, unsigned long eventId, void*
             spdlog::info("cancelActiveAttribute");
         } else if (strcmp(key, "t") == 0) {
             mesh_actor_ptr->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
-            args["scalar_range"] = std::make_pair(2.0, 6.0);
+            args["scalar_range"] = std::vector<double> { 2.0, 6.0 };
             mesh_actor_ptr->renderAttribute("VertexScalar", args);
             spdlog::info("setScalarRange(2, 6)");
         } else if (strcmp(key, "y") == 0) {

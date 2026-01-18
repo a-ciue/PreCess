@@ -9,7 +9,7 @@
 #include <vtkProperty.h>
 #include <spdlog/spdlog.h>
 void AttriRenderStrategyVector::render(
-    AttributeOperator& op,
+    AttributeOperator op,
     const std::string& attr_name,
     std::map<std::string, std::any> args)
 {
@@ -29,8 +29,7 @@ void AttriRenderStrategyVector::render(
         }
     }
     // 判断是否是顶点属性
-    vtkDataArray* array = nullptr;
-    array = op.getVertexPointData()->GetArray(attr_name.c_str());
+    vtkDataArray* array = op.getVertexPointData()->GetArray(attr_name.c_str());
     if (array) {
         vtkPolyData* vertex_data = op.getVertexGlyphInput(attr_name);
         createGlyph3D(op, vertex_data, { 1.0, 0.0, 0.0 }, glyph_scale); // 红色

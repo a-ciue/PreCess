@@ -21,10 +21,10 @@ public:
      * @param args 渲染参数
      */
     virtual void render(
-        AttributeOperator& op,
+        AttributeOperator op,
         const std::string& attr_name,
         std::map<std::string, std::any> args)
         = 0;
 
-    void cancelActiveAttribute(AttributeOperator& op);
+    void cancelActiveAttribute(AttributeOperator op);
 };

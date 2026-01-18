@@ -1,5 +1,5 @@
 #include "QRenderWindow.h"
-#include <renderStrategy/AttributeCommon.h>
+#include "renderStrategy/AttributeCommon.h"
 #include "MeshActorManager.h"
 #include "QModelQuery.h"
 #include "QRenderWindowStyle.h"
@@ -368,18 +368,12 @@ void QRenderWindow::setAttriMode(
                 std_args[it.key().toStdString()] = it.value().toString().toStdString();
             } else if (it.value().type() == QVariant::List) {
                 QVariantList list = it.value().toList();
-                // 如果是两个元素，转为 pair
-                if (list.size() == 2 && list[0].canConvert<double>() && list[1].canConvert<double>()) {
-                    std_args[it.key().toStdString()] = std::make_pair(list[0].toDouble(), list[1].toDouble());
-                } else {
-                    // 否则转为 vector<double>
-                    std::vector<double> vec;
-                    for (const auto& v : list) {
-                        if (v.canConvert<double>())
-                            vec.push_back(v.toDouble());
-                    }
-                    std_args[it.key().toStdString()] = vec;
+                std::vector<double> vec;
+                for (const auto& v : list) {
+                    if (v.canConvert<double>())
+                        vec.push_back(v.toDouble());
                 }
+                std_args[it.key().toStdString()] = vec;
             } else {
                 spdlog::error("Unsupported QVariant type,type:{}", QString(QMetaType::typeName(it.value().type())).toStdString());
             }

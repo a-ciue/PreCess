@@ -4,7 +4,7 @@
 class AttriRenderStrategyRGB : public IAttributeRenderStrategy {
 public:
     void render(
-        AttributeOperator& op,
+        AttributeOperator op,
         const std::string& attr_name,
         std::map<std::string, std::any> args) override;
 };

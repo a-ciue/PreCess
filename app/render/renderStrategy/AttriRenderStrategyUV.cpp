@@ -9,7 +9,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkTexture.h>
 void AttriRenderStrategyUV::render(
-    AttributeOperator& op,
+    AttributeOperator op,
     const std::string& attr_name,
     std::map<std::string, std::any> args)
 {
