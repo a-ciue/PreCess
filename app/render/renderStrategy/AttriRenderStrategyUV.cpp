@@ -19,10 +19,10 @@ void AttriRenderStrategyUV::render(
     auto it = args.find("texture_path");
     if (it != args.end()) {
         texture_path = std::any_cast<std::string>(it->second);
-    }
-    if (!std::filesystem::exists(texture_path)) {
-        spdlog::error("Texture file not found: {}", texture_path);
-        return;
+        if (!std::filesystem::exists(texture_path)) {
+            spdlog::error("Texture file not found: {}", texture_path);
+            return;
+        }
     }
 
     // 读取纹理贴图文件
