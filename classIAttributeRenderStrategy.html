@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: IAttributeRenderStrategy类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classIAttributeRenderStrategy-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">IAttributeRenderStrategy类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>属性渲染策略接口  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="IAttributeRenderStrategy_8h_source.html">IAttributeRenderStrategy.h</a>&gt;</code></p>
+<div class="dynheader">
+类 IAttributeRenderStrategy 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classIAttributeRenderStrategy__inherit__graph.png" border="0" usemap="#aIAttributeRenderStrategy_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aIAttributeRenderStrategy_inherit__map" id="aIAttributeRenderStrategy_inherit__map">
+<area shape="rect" title="属性渲染策略接口" alt="" coords="5,80,189,105"/>
+<area shape="rect" href="classAttriRenderStrategyRGB.html" title=" " alt="" coords="244,5,423,31"/>
+<area shape="poly" title=" " alt="" coords="142,72,237,39,277,28,278,33,238,45,144,78"/>
+<area shape="rect" href="classAttriRenderStrategyScalar.html" title=" " alt="" coords="238,55,429,80"/>
+<area shape="poly" title=" " alt="" coords="203,79,238,75,238,80,203,84"/>
+<area shape="rect" href="classAttriRenderStrategyUV.html" title=" " alt="" coords="248,104,419,129"/>
+<area shape="poly" title=" " alt="" coords="203,101,248,105,248,111,203,106"/>
+<area shape="rect" href="classAttriRenderStrategyVector.html" title=" " alt="" coords="237,153,429,179"/>
+<area shape="poly" title=" " alt="" coords="147,107,238,138,282,151,281,156,237,143,145,113"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ae00ce9399a3f1342d8cb8ba8c07e2696" id="r_ae00ce9399a3f1342d8cb8ba8c07e2696"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae00ce9399a3f1342d8cb8ba8c07e2696">~IAttributeRenderStrategy</a> ()=default</td></tr>
+<tr class="memitem:a373d58dba25b0601f85806eb821a190c" id="r_a373d58dba25b0601f85806eb821a190c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a373d58dba25b0601f85806eb821a190c">render</a> (<a class="el" href="classAttributeOperator.html">AttributeOperator</a> op, const std::string &amp;attr_name, std::map&lt; std::string, std::any &gt; args)=0</td></tr>
+<tr class="memdesc:a373d58dba25b0601f85806eb821a190c"><td class="mdescLeft">&#160;</td><td class="mdescRight">属性渲染  <br /></td></tr>
+<tr class="memitem:a5619074d91b55553b89f91b7d7c6d635" id="r_a5619074d91b55553b89f91b7d7c6d635"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5619074d91b55553b89f91b7d7c6d635">cancelActiveAttribute</a> (<a class="el" href="classAttributeOperator.html">AttributeOperator</a> op)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>属性渲染策略接口 </p>
+<p>定义属性渲染策略的接口，具体的渲染策略需要继承该接口并实现Render方法 该接口用于不同类型属性的渲染策略，如RGB颜色、标量值、向量等 </p><dl class="section author"><dt>作者</dt><dd>yh </dd></dl>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ae00ce9399a3f1342d8cb8ba8c07e2696" name="ae00ce9399a3f1342d8cb8ba8c07e2696"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae00ce9399a3f1342d8cb8ba8c07e2696">&#9670;&#160;</a></span>~IAttributeRenderStrategy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual IAttributeRenderStrategy::~IAttributeRenderStrategy </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a5619074d91b55553b89f91b7d7c6d635" name="a5619074d91b55553b89f91b7d7c6d635"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5619074d91b55553b89f91b7d7c6d635">&#9670;&#160;</a></span>cancelActiveAttribute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void IAttributeRenderStrategy::cancelActiveAttribute </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAttributeOperator.html">AttributeOperator</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a373d58dba25b0601f85806eb821a190c" name="a373d58dba25b0601f85806eb821a190c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a373d58dba25b0601f85806eb821a190c">&#9670;&#160;</a></span>render()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void IAttributeRenderStrategy::render </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classAttributeOperator.html">AttributeOperator</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>attr_name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::map&lt; std::string, std::any &gt;</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>属性渲染 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">op</td><td>属性操作器 </td></tr>
+    <tr><td class="paramname">attr_name</td><td>属性名称 </td></tr>
+    <tr><td class="paramname">args</td><td>渲染参数 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>在 <a class="el" href="classAttriRenderStrategyRGB.html#ab8a7859339656bb91c3d88787c4615b3">AttriRenderStrategyRGB</a>, <a class="el" href="classAttriRenderStrategyScalar.html#a8ed76727b725c98b8aa32d569c1d7981">AttriRenderStrategyScalar</a>, <a class="el" href="classAttriRenderStrategyUV.html#a016715205c74f96a9ec7357d092129b9">AttriRenderStrategyUV</a> , 以及 <a class="el" href="classAttriRenderStrategyVector.html#abdc903cd501e53147d44dc15dacba009">AttriRenderStrategyVector</a> 内被实现.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/renderStrategy/<a class="el" href="IAttributeRenderStrategy_8h_source.html">IAttributeRenderStrategy.h</a></li>
+<li>app/render/renderStrategy/<a class="el" href="IAttributeRenderStrategy_8cpp.html">IAttributeRenderStrategy.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

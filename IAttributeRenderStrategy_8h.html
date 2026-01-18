@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/renderStrategy/IAttributeRenderStrategy.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li><li class="navelem"><a href="dir_825d4df4e62c6dd90d440e84c10b2174.html">renderStrategy</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">IAttributeRenderStrategy.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;any&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+IAttributeRenderStrategy.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="IAttributeRenderStrategy_8h__incl.png" border="0" usemap="#aapp_2render_2renderStrategy_2IAttributeRenderStrategy_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2renderStrategy_2IAttributeRenderStrategy_8h" id="aapp_2render_2renderStrategy_2IAttributeRenderStrategy_8h">
+<area shape="rect" title=" " alt="" coords="5,5,204,45"/>
+<area shape="rect" title=" " alt="" coords="8,93,55,119"/>
+<area shape="poly" title=" " alt="" coords="89,47,54,85,50,81,85,44"/>
+<area shape="rect" title=" " alt="" coords="79,93,130,119"/>
+<area shape="poly" title=" " alt="" coords="107,46,107,79,102,79,102,46"/>
+<area shape="rect" title=" " alt="" coords="154,93,213,119"/>
+<area shape="poly" title=" " alt="" coords="126,44,164,82,160,85,122,47"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="IAttributeRenderStrategy_8h__dep__incl.png" border="0" usemap="#aapp_2render_2renderStrategy_2IAttributeRenderStrategy_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2renderStrategy_2IAttributeRenderStrategy_8hdep" id="aapp_2render_2renderStrategy_2IAttributeRenderStrategy_8hdep">
+<area shape="rect" title=" " alt="" coords="2148,5,2347,45"/>
+<area shape="rect" href="MeshActor_8h.html" title=" " alt="" coords="1822,93,1998,119"/>
+<area shape="poly" title=" " alt="" coords="2154,51,1960,96,1959,91,2153,46"/>
+<area shape="rect" href="AttriRenderStrategyRGB_8h.html" title=" " alt="" coords="1433,255,1627,295"/>
+<area shape="poly" title=" " alt="" coords="2135,30,1896,34,1600,44,1315,64,1198,78,1109,96,1064,107,1027,117,997,134,970,168,962,188,964,196,969,205,986,211,1025,218,1147,235,1432,262,1432,268,1146,240,1024,224,985,216,966,209,959,198,957,187,965,165,994,130,1025,112,1062,102,1108,91,1197,73,1314,59,1600,39,1896,29,2134,25"/>
+<area shape="rect" href="AttriRenderStrategyScalar_8h.html" title=" " alt="" coords="1652,255,1859,295"/>
+<area shape="poly" title=" " alt="" coords="2134,33,1840,48,1475,74,1301,92,1152,114,1041,139,1004,154,983,169,976,178,974,187,976,196,983,205,997,214,1021,221,1095,233,1192,241,1301,245,1513,248,1640,252,1652,254,1651,259,1639,257,1513,254,1301,250,1192,246,1094,238,1020,226,994,218,979,209,971,198,969,187,972,176,979,165,1002,149,1039,134,1151,108,1301,87,1475,68,1839,42,2134,28"/>
+<area shape="rect" href="AttriRenderStrategyUV_8h.html" title=" " alt="" coords="2315,255,2508,295"/>
+<area shape="poly" title=" " alt="" coords="2361,43,2415,60,2470,86,2520,120,2542,141,2560,165,2568,187,2560,208,2547,224,2531,238,2495,257,2493,252,2528,233,2543,220,2556,205,2563,187,2556,168,2538,145,2517,124,2468,90,2413,65,2359,48"/>
+<area shape="rect" href="AttriRenderStrategyVector_8h.html" title=" " alt="" coords="2532,255,2739,295"/>
+<area shape="poly" title=" " alt="" coords="2361,37,2440,57,2480,72,2517,91,2539,108,2560,128,2593,173,2617,218,2631,254,2627,256,2612,220,2588,175,2556,131,2536,112,2514,96,2477,77,2438,62,2360,42"/>
+<area shape="rect" href="IAttributeRenderStrategy_8cpp.html" title=" " alt="" coords="2763,255,2977,295"/>
+<area shape="poly" title=" " alt="" coords="2361,41,2455,61,2551,91,2638,130,2721,174,2845,252,2842,257,2719,179,2636,134,2549,96,2453,66,2360,46"/>
+<area shape="rect" href="EdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="993,174,1259,199"/>
+<area shape="poly" title=" " alt="" coords="1808,118,1564,140,1272,169,1211,177,1210,171,1271,164,1563,135,1808,113"/>
+<area shape="rect" href="FaceSelectorHighlight_8cpp.html" title=" " alt="" coords="1283,174,1547,199"/>
+<area shape="poly" title=" " alt="" coords="1825,123,1488,177,1487,171,1824,118"/>
+<area shape="rect" href="MeshActor_8cpp.html" title=" " alt="" coords="1883,262,2073,287"/>
+<area shape="poly" title=" " alt="" coords="2012,106,2093,111,2176,121,2247,138,2273,150,2292,165,2301,187,2292,209,2261,220,2196,234,2041,265,2040,259,2195,229,2260,215,2288,205,2296,187,2288,168,2271,155,2245,143,2175,126,2093,116,2012,112"/>
+<area shape="rect" href="MeshActorManager_8h.html" title=" " alt="" coords="3000,174,3233,199"/>
+<area shape="poly" title=" " alt="" coords="2012,111,3000,175,3000,180,2012,117"/>
+<area shape="rect" href="MeshActorSelectOp_8cpp.html" title=" " alt="" coords="1571,167,1777,207"/>
+<area shape="poly" title=" " alt="" coords="1864,125,1732,169,1730,164,1862,120"/>
+<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="1801,174,2019,199"/>
+<area shape="poly" title=" " alt="" coords="1913,132,1913,174,1907,174,1907,132"/>
+<area shape="rect" href="SelectorHighlight_8cpp.html" title=" " alt="" coords="2043,174,2278,199"/>
+<area shape="poly" title=" " alt="" coords="1960,120,2125,171,2123,177,1959,125"/>
+<area shape="rect" href="AttributeOperator_8h.html" title=" " alt="" coords="2353,167,2547,207"/>
+<area shape="poly" title=" " alt="" coords="2009,118,2334,164,2354,167,2353,172,2334,169,2008,123"/>
+<area shape="rect" href="MakeMeshDataVtk_8h.html" title=" " alt="" coords="622,167,817,207"/>
+<area shape="poly" title=" " alt="" coords="1808,115,1425,137,937,169,817,179,817,174,936,164,1425,132,1808,110"/>
+<area shape="rect" href="TestMeshActor_8cpp.html" title=" " alt="" coords="1110,255,1297,295"/>
+<area shape="poly" title=" " alt="" coords="1808,113,1317,132,1089,149,1015,159,982,169,977,177,975,186,983,205,1001,220,1032,233,1110,254,1109,259,1030,238,999,224,979,208,969,186,972,175,979,165,1014,153,1088,144,1317,127,1808,107"/>
+<area shape="rect" href="MeshActorManager_8cpp.html" title=" " alt="" coords="2305,350,2553,375"/>
+<area shape="poly" title=" " alt="" coords="3163,202,3201,219,3235,242,3247,254,3254,268,3254,282,3245,297,3229,307,3203,315,3126,327,3026,335,2912,339,2694,342,2564,345,2504,353,2504,347,2563,340,2694,337,2912,334,3025,329,3126,322,3202,310,3227,302,3241,293,3249,281,3249,269,3243,257,3232,246,3199,224,3161,207"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="3001,262,3232,287"/>
+<area shape="poly" title=" " alt="" coords="3119,213,3119,261,3114,261,3114,213"/>
+<area shape="poly" title=" " alt="" coords="2340,211,2041,265,2040,259,2339,205"/>
+<area shape="poly" title=" " alt="" coords="2340,204,2290,209,2107,223,1964,230,1822,239,1640,257,1628,259,1627,254,1639,252,1822,234,1964,225,2107,218,2290,204,2340,199"/>
+<area shape="poly" title=" " alt="" coords="2340,204,2290,209,2080,232,1870,257,1859,259,1859,254,1870,252,2079,226,2290,204,2340,198"/>
+<area shape="poly" title=" " alt="" coords="2438,220,2422,256,2417,253,2433,218"/>
+<area shape="poly" title=" " alt="" coords="2504,210,2596,252,2594,257,2502,215"/>
+<area shape="rect" href="AttributeOperator_8cpp.html" title=" " alt="" coords="2097,255,2291,295"/>
+<area shape="poly" title=" " alt="" coords="2382,214,2251,257,2249,252,2380,209"/>
+<area shape="poly" title=" " alt="" coords="2556,207,2779,252,2778,257,2555,212"/>
+<area shape="poly" title=" " alt="" coords="1641,292,1825,310,1969,318,2111,325,2293,340,2352,347,2352,353,2292,345,2111,330,1968,323,1825,315,1641,297"/>
+<area shape="rect" href="AttriRenderStrategyRGB_8cpp.html" title=" " alt="" coords="1391,343,1602,383"/>
+<area shape="poly" title=" " alt="" coords="1520,308,1507,343,1502,341,1515,307"/>
+<area shape="rect" href="TestMeshData_8cpp.html" title=" " alt="" coords="1871,343,2058,383"/>
+<area shape="poly" title=" " alt="" coords="1639,295,1872,340,1870,346,1638,300"/>
+<area shape="poly" title=" " alt="" coords="1873,292,2084,317,2293,340,2349,347,2348,353,2292,345,2084,322,1872,298"/>
+<area shape="poly" title=" " alt="" coords="1815,297,1920,340,1918,345,1813,302"/>
+<area shape="rect" href="AttriRenderStrategyScalar_8cpp.html" title=" " alt="" coords="1626,343,1847,383"/>
+<area shape="poly" title=" " alt="" coords="1751,309,1743,343,1738,342,1746,308"/>
+<area shape="poly" title=" " alt="" coords="2420,308,2429,349,2424,350,2415,309"/>
+<area shape="poly" title=" " alt="" coords="2302,300,2059,346,2058,341,2301,294"/>
+<area shape="rect" href="AttriRenderStrategyUV_8cpp.html" title=" " alt="" coords="2083,343,2281,383"/>
+<area shape="poly" title=" " alt="" coords="2349,302,2233,345,2231,340,2348,297"/>
+<area shape="poly" title=" " alt="" coords="2579,302,2457,352,2455,348,2577,297"/>
+<area shape="poly" title=" " alt="" coords="2519,297,2391,312,2292,321,2194,330,2070,345,2059,347,2058,342,2070,340,2194,325,2292,316,2391,307,2518,292"/>
+<area shape="rect" href="AttriRenderStrategyVector_8cpp.html" title=" " alt="" coords="2576,343,2799,383"/>
+<area shape="poly" title=" " alt="" coords="2656,305,2678,341,2674,344,2652,308"/>
+<area shape="poly" title=" " alt="" coords="765,212,829,253,854,275,865,284,880,292,922,305,972,315,1089,328,1222,334,1365,335,1644,333,1764,334,1860,340,1871,341,1871,347,1859,345,1763,339,1644,338,1365,340,1222,339,1088,333,971,320,921,310,878,297,862,289,850,279,826,257,762,216"/>
+<area shape="rect" href="MakeMeshDataVtk_8cpp.html" title=" " alt="" coords="891,255,1086,295"/>
+<area shape="poly" title=" " alt="" coords="792,208,931,252,929,257,791,213"/>
+<area shape="rect" href="TestEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="5,255,188,295"/>
+<area shape="poly" title=" " alt="" coords="608,203,417,227,200,257,189,259,188,254,199,252,416,221,608,198"/>
+<area shape="rect" href="TestFaceSelectorHighlight_8cpp.html" title=" " alt="" coords="212,255,392,295"/>
+<area shape="poly" title=" " alt="" coords="615,212,393,257,392,252,614,207"/>
+<area shape="poly" title=" " alt="" coords="831,205,1098,252,1110,254,1109,259,1098,257,830,210"/>
+<area shape="rect" href="TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="416,255,599,295"/>
+<area shape="poly" title=" " alt="" coords="661,214,555,257,553,252,659,209"/>
+<area shape="rect" href="TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="623,255,816,295"/>
+<area shape="poly" title=" " alt="" coords="722,221,722,254,717,254,717,221"/>
+</map>
+</div>
+</div>
+<p><a href="IAttributeRenderStrategy_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:IAttributeRenderStrategy" id="r_IAttributeRenderStrategy"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIAttributeRenderStrategy.html">IAttributeRenderStrategy</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">属性渲染策略接口  <a href="classIAttributeRenderStrategy.html#details">更多...</a><br /></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
