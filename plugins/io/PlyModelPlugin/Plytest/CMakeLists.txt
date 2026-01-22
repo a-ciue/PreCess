@@ -1,0 +1,2 @@
+precess_add_test(TestPlyModelIO TestPlyModelIO.cpp)
+precess_test_link_libraries(TestPlyModelIO PlyModelPluginlib DataTest)

@@ -1,0 +1,28 @@
+/**
+ * @file PlyModelHandler.h
+ * @author 龚正(1740124400@qq.com)
+ */
+#ifndef PLY_MODEL_HANDLER_H
+#define PLY_MODEL_HANDLER_H
+#include "ModelIOHandler.h"
+#include <tinyply.h>
+class ModelData;
+class CTMeshModel;
+
+namespace systems::io {
+/**
+ * @brief PLY模型文件处理器
+ */
+class PlyModelHandler : public ModelIOHandler {
+public:
+    PlyModelHandler() = default;
+    ~PlyModelHandler() override = default;
+
+    std::unique_ptr<ModelData> read_model(const fs::path& path, const std::vector<std::any>& args) override;
+    void write_model(const ModelData& data, const fs::path& path, const std::vector<std::any>& args) override;
+    std::vector<core::ArgType> read_args_type() const override;
+    std::vector<core::ArgType> write_args_type() const override;
+};
+
+}
+#endif // !PLY_MODEL_HANDLER_H 
