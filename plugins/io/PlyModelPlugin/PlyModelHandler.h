@@ -1,13 +1,13 @@
 /**
  * @file PlyModelHandler.h
  * @author 龚正(1740124400@qq.com)
+ * 支持ASCII和二进制格式的PLY文件
  */
 #ifndef PLY_MODEL_HANDLER_H
 #define PLY_MODEL_HANDLER_H
 #include "ModelIOHandler.h"
 #include <tinyply.h>
 class ModelData;
-class CTMeshModel;
 
 namespace systems::io {
 /**

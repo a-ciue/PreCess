@@ -1,7 +1,7 @@
 /**
- * @file PlyModelHandler_ai.cpp
+ * @file PlyModelHandler.cpp
  * @brief 使用tinyply库实现的PLY文件读写功能
- *        支持ASCII和二进制格式的PLY文件
+ *        
  */
 #include "PlyModelHandler.h"
 #include "ArgType.h"
@@ -10,6 +10,7 @@
 
 #define TINYPLY_IMPLEMENTATION
 #include <tinyply.h>
+#include <spdlog/spdlog.h>
 
 #include <fstream>
 #include <vector>
@@ -30,7 +31,7 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
         // 创建tinyply解析器
         tinyply::PlyFile file;
         if (!file.parse_header(ss)) {
-            std::fprintf(stderr, "PlyModelHandler: malformed PLY header in %s\n", path.string().c_str());
+            spdlog::error("PlyModelHandler: malformed PLY header in {}", path.string().c_str());
             return {};
         }
 
@@ -149,7 +150,7 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
                     }
                 } else {
                     // 回退：如果 tinyply 未填充 listSizes，尝试直接从 buffer 中按 header 的 countType 读取每个面的 count（兼容老实现）
-                    std::fprintf(stderr, "PlyModelHandler: face listSizes not available for %s, falling back to buffer counts\n", path.string().c_str());
+                    spdlog::error("PlyModelHandler: face listSizes not available for {}, falling back to buffer counts", path.string().c_str());
                     // 重置读取偏移
                     size_t testOffset = 0;
                     bool ok = true;
@@ -211,11 +212,11 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
                         }
                     } catch (const std::exception& e) {
                         ok = false;
-                        std::fprintf(stderr, "PlyModelHandler: fallback parsing failed for %s: %s\n", path.string().c_str(), e.what());
+                        spdlog::error("PlyModelHandler: fallback parsing failed for {}: {}", path.string().c_str(), e.what());
                     }
                     if (!ok) {
                         // If fallback failed, abort reading faces
-                        std::fprintf(stderr, "PlyModelHandler: cannot parse faces for %s\n", path.string().c_str());
+                        spdlog::error("PlyModelHandler: cannot parse faces for {}", path.string().c_str());
                     }
                 }
             } else if (prop_is_list && prop_list_count > 0) {
@@ -243,7 +244,7 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
                     mesh->face_vertices_offset_.push_back(static_cast<Index>(mesh->face_vertices_.size()));
                 }
             } else {
-                std::fprintf(stderr, "PlyModelHandler: cannot determine face vertex count/type for %s\n", path.string().c_str());
+                spdlog::error("PlyModelHandler: cannot determine face vertex count/type for {}", path.string().c_str());
             }
         }
 
@@ -252,7 +253,7 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
         return model_data;
 
     } catch (const std::exception& e) {
-        std::fprintf(stderr, "PlyModelHandler: error reading %s: %s\n", path.string().c_str(), e.what());
+        spdlog::error("PlyModelHandler: error reading {}: {}", path.string().c_str(), e.what());
         return {};
     }
 }
@@ -262,7 +263,7 @@ void PlyModelHandler::write_model(const ModelData& data, const fs::path& path, c
     try {
         auto mesh_data = data.asMeshData();
         if (!mesh_data) {
-            std::fprintf(stderr, "PlyModelHandler: only mesh data is supported for writing\n");
+            spdlog::error("PlyModelHandler: only mesh data is supported for writing");
             return;
         }
 
@@ -294,7 +295,6 @@ void PlyModelHandler::write_model(const ModelData& data, const fs::path& path, c
             Index nv = end - start;
             
             face_indices.push_back(static_cast<int32_t>(nv)); // 顶点数量
-            //face_vertexs_count.push_back(static_cast<uint8_t>(nv));
             for (Index k = start; k < end; ++k) {
                 face_indices.push_back(static_cast<int32_t>(faces[k])); // 顶点索引
                 face_vertexs.push_back(static_cast<int32_t>(faces[k]));
@@ -314,12 +314,6 @@ void PlyModelHandler::write_model(const ModelData& data, const fs::path& path, c
             reinterpret_cast<uint8_t*>(face_indices.data()), 
             tinyply::Type::INT8,0);
         
-        /*
-        file.add_properties_to_element("face", { "vertex_indices" },
-            tinyply::Type::INT32, face_count,
-            reinterpret_cast<uint8_t*>(face_vertexs.data()),
-            tinyply::Type::INT8, 4);
-        */
         // 写入文件
         std::ofstream ofs(path, std::ios::binary);
         if (!ofs) {

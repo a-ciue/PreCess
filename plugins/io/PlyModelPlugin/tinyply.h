@@ -726,41 +726,8 @@ void PlyFile::PlyFileImpl::write_binary_internal(std::ostream& os) noexcept
         element_idx++;
     }
 }
-/*����ԭ���Ĵ���ʵ�֣������޷�����䳤�����������
-void PlyFile::PlyFileImpl::write_ascii_internal(std::ostream& os) noexcept
-{
-    write_header(os);
 
-    auto element_property_lookup = make_property_lookup_table();
-
-    size_t element_idx = 0;
-    for (auto& e : elements) {
-        for (size_t i = 0; i < e.size; ++i) {
-            size_t property_index = 0;
-            for (auto& p : e.properties) {
-                auto& f = element_property_lookup[element_idx][property_index];
-                auto* helper = f.helper;
-                if (f.skip || helper == nullptr)
-                    continue;
-
-                if (p.isList) {
-                    os << p.listCount << " ";
-                    for (size_t j = 0; j < p.listCount; ++j) {
-                        write_property_ascii(p.propertyType, os, (helper->data->buffer.get() + helper->cursor->byteOffset), helper->cursor->byteOffset);
-                    }
-                } else {
-                    write_property_ascii(p.propertyType, os, (helper->data->buffer.get() + helper->cursor->byteOffset), helper->cursor->byteOffset);
-                }
-                property_index++;
-            }
-            os << "\n";
-        }
-        element_idx++;
-    }
-}
-*/
-
-//��������չ�Ĵ���ʵ�֣�Ŀ���ǿ�������䳤����
+// 后期添入的方法。并非tinyply原有的代码
 void PlyFile::PlyFileImpl::write_ascii_internal(std::ostream& os) noexcept
 {
     write_header(os);
