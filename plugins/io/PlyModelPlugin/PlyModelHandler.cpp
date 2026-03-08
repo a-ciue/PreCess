@@ -24,7 +24,7 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
         // 打开文件流
         std::ifstream ss(path, std::ios::binary);
         if (!ss) {
-            std::fprintf(stderr, "PlyModelHandler: cannot open file %s\n", path.string().c_str());
+            spdlog::error("PlyModelHandler: cannot open file {}", path.string().c_str());
             return {};
         }
 
@@ -317,7 +317,7 @@ void PlyModelHandler::write_model(const ModelData& data, const fs::path& path, c
         // 写入文件
         std::ofstream ofs(path, std::ios::binary);
         if (!ofs) {
-            std::fprintf(stderr, "PlyModelHandler: cannot create file %s\n", path.string().c_str());
+            spdlog::error("PlyModelHandler: cannot create file {}", path.string().c_str());
             return;
         }
 
@@ -325,7 +325,7 @@ void PlyModelHandler::write_model(const ModelData& data, const fs::path& path, c
         file.write(ofs, false);
 
     } catch (const std::exception& e) {
-        std::fprintf(stderr, "PlyModelHandler: error writing %s: %s\n", path.string().c_str(), e.what());
+        spdlog::error("PlyModelHandler: error writing {}: {}", path.string().c_str(), e.what());
     }
 }
 
