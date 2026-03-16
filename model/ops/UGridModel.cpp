@@ -1,6 +1,7 @@
 #include "UGridModel.h"
 #include "MeshData.h"
 
+#include <execution>
 #include <spdlog/spdlog.h>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
@@ -141,7 +142,111 @@ void UGridModel::update(MeshData& mesh_data)
 
 void UGridModel::updateFrom(const MeshData& mesh_data)
 {
-    // TODO: 从 MeshData 更新 vtkUnstructuredGrid
+    assert(!mesh_data.solid_vertices_offset_.empty());
+    assert(!mesh_data.face_vertices_offset_.empty());
+    assert(!mesh_data.solid_faces_offset_.empty());
+    assert(!mesh_data.solid_faces_vertices_offset_.empty());
+
+    // point data
+    auto points_data = vtkSmartPointer<vtkPoints>::New();
+    {
+        auto& vtk_points = mesh_data.vertex_positions_;
+        auto points_data_array = vtkSmartPointer<vtkDoubleArray>::New();
+
+        points_data_array->SetNumberOfComponents(3);
+        points_data_array->SetArray(const_cast<double*>(vtk_points.data()->data()), 3 * vtk_points.size(), 1);
+        points_data->SetData(points_data_array);
+    }
+
+    // cells
+    vtkNew<vtkCellArray> cells;
+
+    vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
+    {
+        std::unique_ptr vtk_indices = std::make_unique<Index[]>(mesh_data.solid_vertices_.size() + mesh_data.face_vertices_.size() + mesh_data.edge_vertices_.size());
+        std::copy_n(mesh_data.solid_vertices_.data(), mesh_data.solid_vertices_.size(), vtk_indices.get());
+        std::copy_n(mesh_data.face_vertices_.data(), mesh_data.face_vertices_.size(), vtk_indices.get() + mesh_data.solid_vertices_.size());
+        std::copy_n(mesh_data.edge_vertices_.data(), mesh_data.edge_vertices_.size(), vtk_indices.get() + mesh_data.solid_vertices_.size() + mesh_data.face_vertices_.size());
+        index_array->SetArray(vtk_indices.release(), mesh_data.solid_vertices_.size() + mesh_data.face_vertices_.size() + mesh_data.edge_vertices_.size(), 0);
+    }
+
+    vtkNew<vtkAOSDataArrayTemplate<Index>> offset_array;
+    {
+        std::unique_ptr vtk_offsets = std::make_unique<Index[]>(mesh_data.solid_vertices_offset_.size() + mesh_data.face_vertices_offset_.size() - 1 + mesh_data.edge_vertices_.size() / 2);
+        vtk_offsets[0] = 0;
+
+        auto& solid_vertices_offset = mesh_data.solid_vertices_offset_;
+        std::copy_n(std::execution::par, solid_vertices_offset.data(), solid_vertices_offset.size(), vtk_offsets.get());
+
+        auto& face_vertices_offset = mesh_data.face_vertices_offset_;
+        std::transform(std::execution::par, face_vertices_offset.data() + 1, face_vertices_offset.data() + face_vertices_offset.size(), vtk_offsets.get() + solid_vertices_offset.size(),
+            [last_offset = solid_vertices_offset.back()](Index cur) { return cur + last_offset; });
+
+        Index* edge_offset_start = vtk_offsets.get() + solid_vertices_offset.size() + face_vertices_offset.size() - 1;
+        std::generate_n(std::execution::par, edge_offset_start, mesh_data.edge_vertices_.size() / 2,
+            [last_offset = *(edge_offset_start - 1), n = 0]() mutable { n += 2; return last_offset + n; });
+
+        offset_array->SetArray(vtk_offsets.release(), solid_vertices_offset.size() + face_vertices_offset.size() - 1 + mesh_data.edge_vertices_.size() / 2, 0);
+    }
+
+    cells->SetData(offset_array, index_array);
+
+    // cell types
+    vtkNew<vtkUnsignedCharArray> cell_types;
+    {
+        size_t face_size = std::max<size_t>(mesh_data.face_vertices_offset_.size(), 1) - 1,
+               edge_size = mesh_data.edge_vertices_.size() / 2;
+
+        std::unique_ptr<unsigned char[]> vtk_cell_types = std::make_unique<unsigned char[]>(mesh_data.solid_types_.size() + face_size + edge_size);
+
+        std::copy_n(std::execution::par, mesh_data.solid_types_.data(), mesh_data.solid_types_.size(), vtk_cell_types.get());
+
+        auto& face_vertices_offset = mesh_data.face_vertices_offset_;
+        std::transform(std::execution::par, face_vertices_offset.begin(), face_vertices_offset.end() - 1, face_vertices_offset.begin() + 1, vtk_cell_types.get() + mesh_data.solid_types_.size(), [](Index a, Index b) {
+            int sides = b - a;
+            switch (sides) {
+            case 3:
+                return VTKCellType::VTK_TRIANGLE;
+            case 4:
+                return VTKCellType::VTK_QUAD;
+            default:
+                if (sides > 4) {
+                    return VTKCellType::VTK_POLYGON;
+                }
+                return VTKCellType::VTK_EMPTY_CELL;
+            }
+        });
+
+        std::fill_n(std::execution::par, vtk_cell_types.get() + mesh_data.solid_types_.size() + face_size, edge_size, VTKCellType::VTK_LINE);
+
+        cell_types->SetArray(vtk_cell_types.release(), mesh_data.solid_types_.size() + face_size + edge_size, 0);
+    }
+
+    // faces
+    vtkNew<vtkCellArray> faces;
+    vtkNew<vtkAOSDataArrayTemplate<Index>> faces_idx;
+    auto& vtk_faces = mesh_data.solid_faces_vertices_;
+    faces_idx->SetArray(const_cast<Index*>(vtk_faces.data()), vtk_faces.size(), 1);
+
+    vtkNew<vtkAOSDataArrayTemplate<Index>> faces_offset;
+    auto& vtk_faces_offset = mesh_data.solid_faces_vertices_offset_;
+    faces_offset->SetArray(const_cast<Index*>(vtk_faces_offset.data()), vtk_faces_offset.size(), 1);
+
+    faces->SetData(faces_offset, faces_idx);
+
+    // face locations
+    vtkNew<vtkCellArray> face_locations;
+    vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_idx;
+    auto& vtk_face_locations = mesh_data.solid_faces_;
+    face_loc_idx->SetArray(const_cast<Index*>(vtk_face_locations.data()), vtk_face_locations.size(), 1);
+    vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_offset;
+    auto& vtk_face_locations_offset = mesh_data.solid_faces_offset_;
+    face_loc_offset->SetArray(const_cast<Index*>(vtk_face_locations_offset.data()), vtk_face_locations_offset.size(), 1);
+    face_locations->SetData(face_loc_offset, face_loc_idx);
+
+    // solid ugrid
+    this->mesh_->SetPoints(points_data);
+    this->mesh_->SetPolyhedralCells(cell_types, cells, face_locations, faces);
 }
 
 UGridModel::UGridModel(vtkUnstructuredGrid& mesh)
@@ -153,7 +258,7 @@ UGridModel::~UGridModel() = default;
 
 std::string UGridModel::completeAttributeName(const std::string& name, int numComponents)
 {
-    if (numComponents>0) {
+    if (numComponents > 0) {
         std::string suffix = "_" + std::to_string(numComponents);
         if (name.size() < suffix.size() || name.substr(name.size() - suffix.size()) != suffix) {
             return name + suffix;

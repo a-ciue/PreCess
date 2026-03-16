@@ -8,7 +8,6 @@
 #include "ModelData.h"
 #include "UGridModel.h"
 
-#include <fstream>
 #include <spdlog/spdlog.h>
 #include <vtkAppendFilter.h>
 #include <vtkCell.h>
@@ -16,13 +15,13 @@
 #include <vtkDataSetReader.h>
 #include <vtkPointData.h>
 #include <vtkUnstructuredGrid.h>
+#include <vtkUnstructuredGridWriter.h>
 
 namespace systems::io {
 std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
-
     vtkNew<vtkDataSetReader> reader;
-    auto path_string = path.string();
+    auto path_string = path.u8string();
     reader->SetFileName(path_string.c_str());
     reader->ReadAllColorScalarsOn();
     reader->ReadAllScalarsOn();
@@ -85,7 +84,22 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
 
 void VtkLegacyModelHandler::write_model(const ModelData& data, const fs::path& path, const std::vector<std::any>& args)
 {
-    // TODO: implement
+    const MeshData* mesh_data = data.asMeshData();
+    if (!mesh_data) {
+        spdlog::error("VtkLegacyModelHandler only supports writing MeshData.");
+    }
+
+    vtkNew<vtkUnstructuredGrid> ugrid;
+    UGridModel ugrid_model(*ugrid);
+    ugrid_model.updateFrom(*mesh_data);
+
+    // 写入 .vtk 文件
+    vtkSmartPointer<vtkUnstructuredGridWriter> writer = vtkSmartPointer<vtkUnstructuredGridWriter>::New();
+    writer->SetFileName(path.u8string().c_str());
+    writer->SetInputData(ugrid);
+    writer->SetFileTypeToASCII();
+
+    writer->Write();
 }
 
 std::vector<core::ArgType> VtkLegacyModelHandler::read_args_type() const
