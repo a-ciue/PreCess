@@ -61,11 +61,14 @@ public:
      */
     std::optional<ModelOperator> getModelOperator(Index model_id) const;
 
+    Component* findComponent(Index component_id) const;
 private:
     ModelData* getModel(Index model_id) const;
 
+    Index allocateComponentId() noexcept;
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
+    Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
 
     friend class QModelQuery;

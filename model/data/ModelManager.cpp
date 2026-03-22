@@ -25,6 +25,15 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
     }
 
     Index model_id = ++max_index_;
+
+    // 补齐全局 component_id
+    for (auto& c : model->components()) {
+        if (!c)
+            continue;
+        if (c->id < 0) {
+            c->id = allocateComponentId();
+        }
+    }
     models_[model_id] = std::move(model);
 
     if (observer_)
@@ -61,4 +70,24 @@ std::optional<ModelOperator> ModelManager::getModelOperator(Index model_id) cons
         return ModelOperator(model_id, *mesh, observer_);
     }
     return {}; // 如果找不到模型，返回空指针
+}
+
+Index ModelManager::allocateComponentId() noexcept
+{
+    return next_component_id_++;
+}
+
+Component* ModelManager::findComponent(Index component_id) const
+{
+    for (const auto& [mid, model] : models_) {
+        if (!model)
+            continue;
+
+        for (const auto& c : model->components()) {
+            if (c && c->id == component_id) {
+                return c.get();
+            }
+        }
+    }
+    return nullptr;
 }

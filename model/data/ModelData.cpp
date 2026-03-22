@@ -19,36 +19,89 @@
 
 #include <stdexcept>  // 用于抛出异常
 #include <algorithm>
+#include <spdlog/spdlog.h>
 
 ModelData::ModelData() = default;
 ModelData::~ModelData() = default;
 
 ModelData::ModelData(std::unique_ptr<MeshData> mesh)
-    : data_(std::move(mesh)) { }
+{
+    Component* c = createComponent(-1, "Comp_0");
+    c->mesh = std::move(mesh);
+    spdlog::info("ModelData: created 1 component with mesh");
+}
 
 ModelData::ModelData(std::unique_ptr<SplineData> spline)
-    : data_(std::move(spline)) { }
+{
+    Component* c = createComponent(-1, "Comp_0");
+    c->cad = std::move(spline);
+    spdlog::info("ModelData: created 1 component with spline");
+}
 
 ModelData::ModelData(ModelData&& other) noexcept = default;
 ModelData& ModelData::operator=(ModelData&& other) noexcept = default;
 
+// 创建组件
+Component* ModelData::createComponent(Index id, const std::string& name)
+{
+    auto c = std::make_unique<Component>();
+    c->id = id;
+    c->name = name;
+
+    components_.push_back(std::move(c));
+    return components_.back().get();
+}
+std::vector<std::unique_ptr<Component>>& ModelData::components() 
+{ 
+    return components_; 
+}
+const std::vector<std::unique_ptr<Component>>& ModelData::components() const 
+{ 
+    return components_; 
+}
+
 ModelData::Type ModelData::type() const
 {
-    if (hasMesh()) {
+    bool anyMesh = false;
+    bool anySpline = false;
+
+    for (const auto& cPtr : components_) {
+        if (!cPtr)
+            continue;
+        if (cPtr->mesh)
+            anyMesh = true;
+        if (cPtr->cad)
+            anySpline = true;
+    }
+
+    if (!anyMesh && !anySpline)
+        return Type::None;
+    if (anyMesh && !anySpline)
         return Type::Mesh;
-    }
-    if (hasSpline()) {
+    if (!anyMesh && anySpline)
         return Type::Spline;
-    }
-    return Type::None;
+    return Type::Mixed; // 既有 mesh 组件又有 CAD 组件
 }
-bool ModelData::hasMesh() const noexcept { return asMeshData(); }
-bool ModelData::hasSpline() const noexcept { return asSplineData(); }
+bool ModelData::hasMesh() const noexcept
+{
+    Type t = type();
+    return t == Type::Mesh || t == Type::Mixed;
+}
+bool ModelData::hasSpline() const noexcept
+{
+    Type t = type();
+    return t == Type::Spline || t == Type::Mixed;
+}
 
 MeshData* ModelData::asMeshData() noexcept
 {
-    auto pp = std::get_if<std::unique_ptr<MeshData>>(&data_);
-    return pp ? pp->get() : nullptr;
+    if (!hasMesh())
+        return nullptr;
+    for (const auto& cPtr : components_) {
+        if (cPtr && cPtr->mesh)
+            return cPtr->mesh.get();
+    }
+    return nullptr;
 }
 const MeshData* ModelData::asMeshData() const noexcept
 {
@@ -57,8 +110,13 @@ const MeshData* ModelData::asMeshData() const noexcept
 
 SplineData* ModelData::asSplineData() noexcept
 {
-    auto pp = std::get_if<std::unique_ptr<SplineData>>(&data_);
-    return pp ? pp->get() : nullptr;
+    if (!hasSpline())
+        return nullptr;
+    for (const auto& cPtr : components_) {
+        if (cPtr && cPtr->cad)
+            return cPtr->cad.get();
+    }
+    return nullptr;
 }
 const SplineData* ModelData::asSplineData() const noexcept
 {
