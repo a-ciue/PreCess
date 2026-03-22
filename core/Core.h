@@ -31,6 +31,16 @@ enum class SelectMode {
  */
 using Index = int;
 
+using GeomVertexId = int;
+using GeomEdgeId = int;
+using GeomFaceId = int;
+using GeomSolidId = int;
+
+constexpr GeomVertexId kInvalidGeomVertexId = -1;
+constexpr GeomEdgeId kInvalidGeomEdgeId = -1;
+constexpr GeomFaceId kInvalidGeomFaceId = -1;
+constexpr GeomSolidId kInvalidGeomSolidId = -1;
+
 struct BlockData {
     std::vector<Index> faces_;
     Index id;

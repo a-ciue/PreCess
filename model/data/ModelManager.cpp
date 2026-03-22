@@ -11,6 +11,7 @@
  */
 #include "ModelManager.h"
 #include "ModelObserver.h"
+#include "SplineData.h"
 
 #include <spdlog/spdlog.h>
 #include <filesystem>
@@ -34,6 +35,15 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
             c->id = allocateComponentId();
         }
     }
+
+    for (auto& c : model->components()) {
+        if (!c)
+            continue;
+        if (c->cad) {
+            c->cad->ensureCadIndexBuilt(geom_registry_);
+        }
+    }
+
     models_[model_id] = std::move(model);
 
     if (observer_)
@@ -90,4 +100,14 @@ Component* ModelManager::findComponent(Index component_id) const
         }
     }
     return nullptr;
+}
+
+GeometryRegistry& ModelManager::geomRegistry()
+{
+    return geom_registry_;
+}
+
+const GeometryRegistry& ModelManager::geomRegistry() const
+{
+    return geom_registry_;
 }

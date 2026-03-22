@@ -12,6 +12,7 @@
 #include "ModelData.h"
 
 #include "ModelOperator.h"
+#include "GeometryRegistry.h"
 
 #include <unordered_map>
 
@@ -62,10 +63,17 @@ public:
     std::optional<ModelOperator> getModelOperator(Index model_id) const;
 
     Component* findComponent(Index component_id) const;
+
+    GeometryRegistry& geomRegistry();
+    const GeometryRegistry& geomRegistry() const;
+
 private:
     ModelData* getModel(Index model_id) const;
 
     Index allocateComponentId() noexcept;
+
+    GeometryRegistry geom_registry_;
+
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
