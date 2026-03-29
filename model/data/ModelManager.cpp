@@ -39,6 +39,10 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
     for (auto& c : model->components()) {
         if (!c)
             continue;
+
+        component_to_model_[c->id] = model_id;
+        component_index_[c->id] = c.get();
+
         if (c->cad) {
             c->cad->ensureCadIndexBuilt(geom_registry_);
         }
@@ -57,6 +61,16 @@ void ModelManager::removeModel(Index model_id) {
     if (it == models_.end()) {
         throw std::runtime_error("ModelData with the given name does not exist.");
     }
+    if (it->second) {
+        for (const auto& c : it->second->components()) {
+            if (!c)
+                continue;
+
+            component_to_model_.erase(c->id);
+            component_index_.erase(c->id);
+        }
+    }
+
     models_.erase(it);
     // 发射删除模型信号
     if (observer_)
@@ -89,17 +103,35 @@ Index ModelManager::allocateComponentId() noexcept
 
 Component* ModelManager::findComponent(Index component_id) const
 {
-    for (const auto& [mid, model] : models_) {
-        if (!model)
-            continue;
+    auto it = component_index_.find(component_id);
+    if (it == component_index_.end())
+        return nullptr;
+    return it->second;
+}
 
-        for (const auto& c : model->components()) {
-            if (c && c->id == component_id) {
-                return c.get();
-            }
+std::optional<Index> ModelManager::findModelIdByComponent(Index component_id) const
+{
+    auto it = component_to_model_.find(component_id);
+    if (it == component_to_model_.end())
+        return std::nullopt;
+    return it->second;
+}
+
+std::vector<Index> ModelManager::getComponentIds(Index model_id) const
+{
+    std::vector<Index> result;
+
+    auto it = models_.find(model_id);
+    if (it == models_.end() || !it->second)
+        return result;
+
+    for (const auto& c : it->second->components()) {
+        if (c) {
+            result.push_back(c->id);
         }
     }
-    return nullptr;
+
+    return result;
 }
 
 GeometryRegistry& ModelManager::geomRegistry()
