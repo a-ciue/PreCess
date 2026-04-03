@@ -149,6 +149,20 @@ void QRenderWindow::deleteModel(Index model_id)
     });
 }
 
+void QRenderWindow::deleteComponent(Index component_id)
+{
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->spline_actor_manager_) {
+            spdlog::info("[Render] delete component actor: component_id={}", component_id);
+            vtk->spline_actor_manager_->deleteComponent(component_id);
+        }
+
+        this->selectManager_->clearSelection();
+    });
+}
+
 void QRenderWindow::setMeshClip(bool on)
 {
     dispatch_async([on, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -190,7 +204,7 @@ void QRenderWindow::onModelChanged(Index model_id)
             auto component_ids = model_query_->getComponentIds(model_id);
             for (Index component_id : component_ids) {
                 vtk->spline_actor_manager_->deleteComponent(component_id);
-        }
+            }
             spdlog::info("QRenderWindow::onModelChanged: unrecognized/empty model.");
         }
     });

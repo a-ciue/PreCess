@@ -77,6 +77,36 @@ void ModelManager::removeModel(Index model_id) {
         observer_->notifyModelRemoved(model_id);
 }
 
+void ModelManager::removeComponent(Index component_id)
+{
+    auto modelIt = component_to_model_.find(component_id);
+    if (modelIt == component_to_model_.end()) {
+        throw std::runtime_error("Component with the given id does not exist.");
+    }
+
+    Index model_id = modelIt->second;
+
+    auto it = models_.find(model_id);
+    if (it == models_.end() || !it->second) {
+        throw std::runtime_error("Owner model of the component does not exist.");
+    }
+
+    auto& comps = it->second->components();
+    for (auto compIt = comps.begin(); compIt != comps.end(); ++compIt) {
+        if (*compIt && (*compIt)->id == component_id) {
+            comps.erase(compIt);
+            break;
+        }
+    }
+
+    component_index_.erase(component_id);
+    component_to_model_.erase(component_id);
+
+    if (observer_) {
+        observer_->notifyComponentRemoved(component_id);
+    }
+}
+
 // 获取模型
 ModelData* ModelManager::getModel(Index model_id) const {
     auto it = models_.find(model_id);

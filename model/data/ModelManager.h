@@ -50,6 +50,7 @@ public:
      * @param model_id 需要移除的模型 ID
      */
     void removeModel(Index model_id);
+    void removeComponent(Index component_id);
 
     /**
      * @brief 获取指定模型的操作接口对象

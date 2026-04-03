@@ -115,6 +115,7 @@ public:
     Q_INVOKABLE void onComponentChanged(Index component_id);
 
     Q_INVOKABLE void deleteModel(Index mode_id);
+    Q_INVOKABLE void deleteComponent(Index component_id);
 
     /**
      * @brief 对网格对象设置全局裁剪模式

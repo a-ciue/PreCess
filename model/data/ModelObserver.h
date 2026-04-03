@@ -29,6 +29,7 @@ public:
      * 该通知函数用于在模型被从软件中移除时发出信号，通知外部组件。
      */
     virtual void notifyModelRemoved(Index model_id) = 0;
+    virtual void notifyComponentRemoved(Index component_id) = 0;
 
     /**
      * @brief 接收模型名称变更的通知函数

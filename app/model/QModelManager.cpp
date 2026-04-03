@@ -63,6 +63,11 @@ void QModelManager::removeModel(int id)
     emit modelRemoved(id);
 }
 
+void QModelManager::removeComponent(int id)
+{
+    core_->removeComponent(id);
+}
+
 QObject* QModelManager::getOperator(int id)
 {
     auto maybeOp = core_->getModelOperator(id);

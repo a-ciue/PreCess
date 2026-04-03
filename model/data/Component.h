@@ -34,6 +34,9 @@ struct Component {
     Index material_id { -1 }; ///< 材料/属性 ID（先留个 int 占位）
     Index source_xde_leaf_id { -1 };
 
+    Component();
+    ~Component();
+
     // 便捷判断
     bool hasMesh() const noexcept { return static_cast<bool>(mesh); }
     bool hasCad() const noexcept { return static_cast<bool>(cad); }

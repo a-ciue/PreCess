@@ -26,6 +26,7 @@ public:
     ~QModelManager();
 
     Q_INVOKABLE void removeModel(int id);
+    Q_INVOKABLE void removeComponent(int id);
     Q_INVOKABLE QObject* getOperator(int id);
     ModelManager* getModelManager();
     QModelObserver* getModelObserver();
