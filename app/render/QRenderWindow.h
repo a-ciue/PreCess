@@ -102,14 +102,18 @@ public:
      * @param select_mode
      */
     Q_INVOKABLE void setEdgeRender(Index model_id, bool is_render);
+    Q_INVOKABLE void setComponentEdgeRender(Index component_id, bool is_render);
 
     /**
      * @brief 改变可见性
      * @param select_mode
      */
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
+    Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
 
     Q_INVOKABLE void onModelChanged(Index model_id);
+    Q_INVOKABLE void onComponentChanged(Index component_id);
+
     Q_INVOKABLE void deleteModel(Index mode_id);
 
     /**

@@ -139,7 +139,12 @@ void QRenderWindow::deleteModel(Index model_id)
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->mesh_actor_manager_->deleteModel(model_id);
-        vtk->spline_actor_manager_->deleteModel(model_id);
+
+        auto component_ids = model_query_->getComponentIds(model_id);
+        for (Index component_id : component_ids) {
+            vtk->spline_actor_manager_->deleteComponent(component_id);
+        }
+
         this->selectManager_->clearSelection();
     });
 }
@@ -170,21 +175,41 @@ void QRenderWindow::onModelChanged(Index model_id)
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         int type = this->model_query_->getModelType(model_id);
-        if (this->model_query_->getModelType(model_id) == 0) {
-            std::optional mesh_data = model_query_->getMeshData(model_id);
+        if (type == 0) { // Mesh model
+            auto mesh_data = model_query_->getMeshData(model_id);
             if (mesh_data) {
-                vtk->mesh_actor_manager_->loadModel(model_id, *mesh_data, vtk->renderer_, this->renderMode_);
+                vtk->mesh_actor_manager_->loadModel(model_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
             }
-        } else if (this->model_query_->getModelType(model_id) == 1) {
-            std::optional spline_data = model_query_->getSplineData(model_id);
-            if (spline_data) {
-                vtk->spline_actor_manager_->loadSpline(model_id, *spline_data);
+        } else if (type == 1) { // Spline/CAD model
+            auto spline_datas = model_query_->getSplineData(model_id);
+            for (const auto& spline_data : spline_datas) {
+                vtk->spline_actor_manager_->loadSpline(spline_data);
             }
         } else {
             vtk->mesh_actor_manager_->deleteModel(model_id);
-            vtk->spline_actor_manager_->deleteModel(model_id);
-            spdlog::info("QRenderWindow::onModelChanged: unrecognized model type loaded as empty.");
+            auto component_ids = model_query_->getComponentIds(model_id);
+            for (Index component_id : component_ids) {
+                vtk->spline_actor_manager_->deleteComponent(component_id);
         }
+            spdlog::info("QRenderWindow::onModelChanged: unrecognized/empty model.");
+        }
+    });
+}
+
+void QRenderWindow::onComponentChanged(Index component_id)
+{
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (!vtk->spline_actor_manager_ || !this->model_query_)
+            return;
+
+        auto spline_data = this->model_query_->getSplineDataByComponent(component_id);
+        if (!spline_data)
+            return;
+
+        vtk->spline_actor_manager_->deleteComponent(component_id);
+        vtk->spline_actor_manager_->loadSpline(*spline_data);
     });
 }
 
@@ -194,7 +219,22 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->clearSelection();
         vtk->mesh_actor_manager_->setVisibility(model_id, visibility);
-        vtk->spline_actor_manager_->setVisibility(model_id, visibility);
+
+        auto spline_datas = model_query_->getSplineData(model_id);
+        for (const auto& spline_data : spline_datas) {
+            vtk->spline_actor_manager_->setVisibility(spline_data.component_id, visibility);
+        }
+    });
+}
+
+void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
+{
+    dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->spline_actor_manager_) {
+            vtk->spline_actor_manager_->setVisibility(component_id, visibility);
+        }
     });
 }
 
@@ -250,8 +290,12 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
     if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->getCount(model_id)) {
         return vtk.mesh_actor_manager_->getIsEdgeRender(model_id);
     }
-    if (vtk.spline_actor_manager_ && vtk.spline_actor_manager_->getCount(model_id)) {
-        return vtk.spline_actor_manager_->getIsEdgeRender(model_id);
+
+    if (vtk.spline_actor_manager_) {
+        auto spline_datas = model_query_->getSplineData(model_id);
+        if (!spline_datas.empty()) {
+            return vtk.spline_actor_manager_->getIsEdgeRender(spline_datas.front().component_id);
+        }
     }
 
     std::cout << "get is edge render mode error" << std::endl;
@@ -335,8 +379,24 @@ void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
     dispatch_async([model_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->mesh_actor_manager_->setRenderEdge(model_id, is_render);
-        vtk->spline_actor_manager_->setRenderEdge(model_id, is_render);
+
+        auto spline_datas = model_query_->getSplineData(model_id);
+        for (const auto& spline_data : spline_datas) {
+            vtk->spline_actor_manager_->setRenderEdge(spline_data.component_id, is_render);
+        }
+
         this->setCurEdgeRender(is_render);
+    });
+}
+
+void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
+{
+    dispatch_async([component_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->spline_actor_manager_) {
+            vtk->spline_actor_manager_->setRenderEdge(component_id, is_render);
+        }
     });
 }
 

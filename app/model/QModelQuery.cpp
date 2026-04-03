@@ -8,6 +8,7 @@
 #include <QString>
 #include <stdexcept>
 #include <limits>
+#include <TopoDS_Shape.hxx>
 #include <spdlog/spdlog.h>
 
 QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
@@ -51,12 +52,36 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
     return model_data;
 }
 
-std::optional<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
+std::vector<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
 {
-    ModelData* model = m_manager->getModel(model_id);
-    SplineData* data = model->asSplineData();
+    std::vector<SplineDataVtk> result;
 
-    return data ? data->getSplineData() : std::nullopt;
+    ModelData* model = m_manager->getModel(model_id);
+
+    auto& comps = model->components();
+    for (const auto& comp : comps) {
+        if (!comp || !comp->cad || !comp->cad->rootShape)
+            continue;
+
+        result.push_back(SplineDataVtk { *comp->cad->rootShape, comp->id });
+    }
+
+    return result;
+}
+
+std::optional<SplineDataVtk> QModelQuery::getSplineDataByComponent(Index component_id)
+{
+    Component* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->cad || !comp->cad->rootShape)
+        return std::nullopt;
+
+    return SplineDataVtk { *comp->cad->rootShape, comp->id };
+}
+
+
+std::vector<Index> QModelQuery::getComponentIds(Index model_id) const
+{
+    return m_manager->getComponentIds(model_id);
 }
 
 QString QModelQuery::getModelName(Index model_id) const

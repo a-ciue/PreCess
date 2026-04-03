@@ -53,7 +53,10 @@ public :
 
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
 
-    std::optional<SplineDataVtk> getSplineData(Index model_id);
+    std::vector<SplineDataVtk> getSplineData(Index model_id);
+    std::optional<SplineDataVtk> getSplineDataByComponent(Index component_id);
+
+    std::vector<Index> getComponentIds(Index model_id) const;
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
     /**

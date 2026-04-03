@@ -3,6 +3,7 @@
 #include "Core.h"
 #include <memory>
 #include <unordered_map>
+#include <vector>
 #include <vtkRenderer.h>
 
 struct SplineDataVtk;
@@ -14,20 +15,20 @@ public:
     ~SplineActorManager();
     void bindRender(vtkRenderer* renderer);
 
-    const SplineActor* getSplineActor(Index model_id);
-    SplineRenderMode getSplineRenderMode(Index model_id);
-    bool getIsEdgeRender(Index model_id);
-    bool getCount(Index model_id);
+    const SplineActor* getSplineActor(Index component_id);
+    SplineRenderMode getSplineRenderMode(Index component_id);
+    bool getIsEdgeRender(Index component_id);
+    bool hasComponent(Index component_id) const;
 
-    void deleteModel(Index model_id);
-    void loadSpline(Index model_id, const SplineDataVtk& spline_data);
+    void deleteComponent(Index component_id);
+    void loadSpline(const SplineDataVtk& spline_data);
 
-    void setVisibility(Index model_id, bool visibility);
-    void setRenderMode(Index model_id, SplineRenderMode render_mode);
-    void setRenderEdge(Index model_id, bool is_render);
+    void setVisibility(Index component_id, bool visibility);
+    void setRenderMode(Index component_id, SplineRenderMode render_mode);
+    void setRenderEdge(Index component_id, bool is_render);
 
 private:
-    std::unordered_map<Index, std::unique_ptr<SplineActor>> models_;
+    std::unordered_map<Index, std::unique_ptr<SplineActor>> component_actors_;
     vtkRenderer* renderer_;
 };
 
