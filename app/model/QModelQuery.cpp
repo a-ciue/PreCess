@@ -52,6 +52,48 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
     return model_data;
 }
 
+std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_id)
+{
+    Component* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->mesh) {
+        return std::nullopt;
+    }
+
+    MeshData* md = comp->mesh.get();
+
+    MeshDataVtk model_data {
+        md->vertex_positions_,
+        md->solid_types_, md->solid_vertices_, md->solid_vertices_offset_,
+        md->solid_faces_vertices_, md->solid_faces_vertices_offset_,
+        md->solid_faces_, md->solid_faces_offset_,
+        md->face_vertices_, md->face_vertices_offset_,
+        md->edge_vertices_,
+        md->vertex_attributes_,
+        md->edge_attributes_,
+        md->face_attributes_,
+        md->solid_attributes_,
+        {},
+        component_id
+    };
+
+    auto block_datas = std::make_shared<BlockDatas>();
+    for (const auto& [block_id, block] : md->blocks_) {
+        BlockData block_data;
+        block_data.id = block_id;
+
+        std::vector<Index>& block_faces = block_data.faces_;
+        for (const auto& patch_id : block->patchIDs) {
+            std::vector<Index> patch_faces = md->patches_[patch_id]->faces;
+            block_faces.insert(block_faces.end(), patch_faces.begin(), patch_faces.end());
+        }
+
+        block_datas->block_datas.push_back(block_data);
+    }
+
+    model_data.model_blocks_ = block_datas;
+    return model_data;
+}
+
 std::vector<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
 {
     std::vector<SplineDataVtk> result;
@@ -158,3 +200,62 @@ int QModelQuery::getModelType(Index model_id) const
     return -1;
 }
 
+std::optional<GeomFaceId> QModelQuery::resolveCadFaceLocalId(Index component_id, int localFaceId)
+{
+    Component* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->cad || !comp->cad->rootShape)
+        return std::nullopt;
+
+    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+
+    GeomFaceId gid = comp->cad->cad_index.faceGlobalId(localFaceId);
+    if (gid == kInvalidGeomFaceId)
+        return std::nullopt;
+
+    return gid;
+}
+
+std::optional<GeomEdgeId> QModelQuery::resolveCadEdgeLocalId(Index component_id, int localEdgeId)
+{
+    Component* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->cad || !comp->cad->rootShape)
+        return std::nullopt;
+
+    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+
+    GeomEdgeId gid = comp->cad->cad_index.edgeGlobalId(localEdgeId);
+    if (gid == kInvalidGeomEdgeId)
+        return std::nullopt;
+
+    return gid;
+}
+
+std::optional<GeomVertexId> QModelQuery::resolveCadVertexLocalId(Index component_id, int localVertexId)
+{
+    Component* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->cad || !comp->cad->rootShape)
+        return std::nullopt;
+
+    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+
+    GeomVertexId gid = comp->cad->cad_index.vertexGlobalId(localVertexId);
+    if (gid == kInvalidGeomVertexId)
+        return std::nullopt;
+
+    return gid;
+}
+
+std::optional<GeomSolidId> QModelQuery::resolveCadSolidLocalId(Index component_id, int localSolidId)
+{
+    Component* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->cad || !comp->cad->rootShape)
+        return std::nullopt;
+
+    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+
+    GeomSolidId gid = comp->cad->cad_index.solidGlobalId(localSolidId);
+    if (gid == kInvalidGeomSolidId)
+        return std::nullopt;
+
+    return gid;
+}

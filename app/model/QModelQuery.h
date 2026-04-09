@@ -40,9 +40,9 @@ public:
  */
 class QModelQuery : public QObject, IModelQuery {
     Q_OBJECT
-    QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
+QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
 
-public :
+    public :
     /**
      * @brief 构造函数
      *
@@ -52,6 +52,7 @@ public :
     explicit QModelQuery(ModelManager* mgr, QObject* parent = nullptr);
 
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
+    std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
     std::vector<SplineDataVtk> getSplineData(Index model_id);
     std::optional<SplineDataVtk> getSplineDataByComponent(Index component_id);
@@ -72,6 +73,11 @@ public :
     Q_INVOKABLE QList<Element::Type> getModelAttriType(Index model_id) const;
 
     int getModelType(Index model_id) const;
+
+    std::optional<GeomFaceId> resolveCadFaceLocalId(Index component_id, int localFaceId);
+    std::optional<GeomEdgeId> resolveCadEdgeLocalId(Index component_id, int localEdgeId);
+    std::optional<GeomVertexId> resolveCadVertexLocalId(Index component_id, int localVertexId);
+    std::optional<GeomSolidId> resolveCadSolidLocalId(Index component_id, int localSolidId);
 
 private:
     ModelManager* m_manager;

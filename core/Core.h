@@ -79,6 +79,8 @@ struct MeshDataVtk {
 
     std::shared_ptr<BlockDatas> model_blocks_;
 
+    Index component_id { -1 };
+
     Index model_block_id(Index block_id) const
     {
         return this->model_blocks_->block_datas[block_id].id;
