@@ -346,7 +346,7 @@ ApplicationWindow {
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = ioSystem.read("All files", commandLineArgs[i], []);
                 if (!ok) {
-                    console.exception("启动打开失败: " + filePath);
+                    console.exception("启动打开失败: " + commandLineArgs[i]);
                 }
             }
 
