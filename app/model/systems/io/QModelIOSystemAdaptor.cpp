@@ -3,6 +3,7 @@
 #include "ModelIOSystem.h"
 #include "QArgObject.h"
 #include "QModelIOInfo.h"
+#include <QFileInfo>
 #include <QUrl>
 #include <spdlog/fmt/ranges.h>
 #include <spdlog/spdlog.h>
@@ -23,7 +24,36 @@ try {
     std::vector<std::any> converted_args;
     // TODO: 暂时不对args处理
 
-    io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(), unique_name.toStdString(), converted_args);
+    std::string resolved_unique_name = unique_name.toStdString();
+    const auto all_infos = io_system_->registeredFileTypeInfos();
+
+    auto is_registered_name = [&](const std::string& name) {
+        return std::any_of(all_infos.begin(), all_infos.end(), [&](const ModelIOInfo* info) {
+            return info->name == name;
+        });
+    };
+
+    if (resolved_unique_name == "All files" || !is_registered_name(resolved_unique_name)) {
+        const QString ext = QFileInfo(url.toLocalFile()).suffix().toLower();
+        for (const ModelIOInfo* info : all_infos) {
+            for (const auto& extension : info->extensions) {
+                if (QString::fromStdString(extension).compare(ext, Qt::CaseInsensitive) == 0) {
+                    resolved_unique_name = info->name;
+                    break;
+                }
+            }
+            if (is_registered_name(resolved_unique_name)) {
+                break;
+            }
+        }
+    }
+
+    if (!is_registered_name(resolved_unique_name)) {
+        spdlog::error("ModelIOSystemAdaptor::read: file type '{}' not registered", unique_name.toStdString());
+        return false;
+    }
+
+    io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(), resolved_unique_name, converted_args);
     return true;
 } catch (const std::exception& e) {
     spdlog::error("ModelIOSystemAdaptor::read: Exception occurred - {}", e.what());
@@ -80,6 +110,9 @@ try {
 QStringList QModelIOSystemAdaptor::getDialogNameFilters() const
 try {
     QStringList filters;
+    // 添加"所有文件"选项，方便用户选择任意文件
+    filters << "All files (*)";
+
     for (ModelIOInfo* file_type_info : io_system_->registeredFileTypeInfos()) {
         filters << QString("%1 (*%2)")
                        .arg(QString::fromStdString(file_type_info->name))
