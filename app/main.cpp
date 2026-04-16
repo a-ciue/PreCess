@@ -38,6 +38,17 @@ int main(int argc, char* argv[])
     app.setWindowIcon(QIcon(":/images/PreCess.ico"));
 
     QQmlApplicationEngine engine;
+
+    // 收集命令行参数（跳过第一个参数，它是程序路径）
+    QStringList arguments_str = app.arguments().mid(1);
+    QList<QUrl> arguments;
+    for (auto& argument_str : arguments_str) {
+        arguments << QUrl::fromLocalFile(argument_str);
+    }
+
+    // 将参数列表暴露给QML
+    engine.rootContext()->setContextProperty("commandLineArgs", QVariant::fromValue(arguments));
+
     engine.setInitialProperties({
         { "modelManager", QVariant::fromValue(&q_manager) },
         { "modelObserver", QVariant::fromValue(observer) },
