@@ -98,6 +98,35 @@ set(CPACK_NSIS_DELETE_ICONS_EXTRA
     Delete '$DESKTOP\\\\${MYNAME}.lnk'"
 )
 
+set(SUPPORTED_MESH_EXTS .mesh .meshb .obj .step .stp .vtk .m .ply )
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "")
+set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "")
+
+# 注册PreCess到打开方式
+string(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe' '' 'PreCess'
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe' 'FriendlyAppName' 'PreCess'
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe\\shell\\open\\command' '' '\"$INSTDIR\\bin\\${MYNAME}.exe\" \"%1\"'
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe\\DefaultIcon' '' '$INSTDIR\\bin\\${MYNAME}.exe,0'
+")
+string(APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+DeleteRegKey HKCR 'Applications\\${MYNAME}.exe'
+")
+
+foreach(ext ${SUPPORTED_MESH_EXTS})
+    # 添加右键直接打开菜单
+    string(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\PreCess' '' '使用 PreCess 打开'
+    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\PreCess\\command' '' '\"$INSTDIR\\bin\\${MYNAME}.exe\" \"%1\"'
+    # 添加到打开方式列表
+    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\OpenWithProgids' '${MYNAME}${ext}' ''
+    ")
+    string(APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+    DeleteRegKey HKCR 'SystemFileAssociations\\${ext}\\shell\\PreCess'
+    DeleteRegValue HKCR 'SystemFileAssociations\\${ext}\\OpenWithProgids' '${MYNAME}${ext}'
+    ")
+endforeach()
+
 include(CPack)
 
 cpack_add_component(${MYNAME}
