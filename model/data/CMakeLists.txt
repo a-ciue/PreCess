@@ -6,7 +6,9 @@ add_library(Data STATIC
 	ModelOperator.cpp
     GeometryRegistry.cpp 
 	CadSubshapeIndex.cpp 
-	Component.cpp)
+	Component.cpp 
+	ElementIDMap.cpp
+)
 target_include_directories(Data PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
 )

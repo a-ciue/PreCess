@@ -12,6 +12,7 @@
 #include "ModelManager.h"
 #include "ModelObserver.h"
 #include "SplineData.h"
+#include "MeshData.h"
 
 #include <spdlog/spdlog.h>
 #include <filesystem>
@@ -45,6 +46,9 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
 
         if (c->cad) {
             c->cad->ensureCadIndexBuilt(geom_registry_);
+        }
+        if (c->mesh) {
+            c->mesh->ensureEdgeIdMapBuilt(edge_id_map_, c->id);
         }
     }
 
@@ -89,6 +93,10 @@ void ModelManager::removeComponent(Index component_id)
     auto it = models_.find(model_id);
     if (it == models_.end() || !it->second) {
         throw std::runtime_error("Owner model of the component does not exist.");
+    }
+
+    if (Component* c = findComponent(component_id); c && c->mesh) {
+        c->mesh->releaseEdgeIdMap(edge_id_map_); // 或 releaseEdgeGlobalIds(edge_id_map_)
     }
 
     auto& comps = it->second->components();

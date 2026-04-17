@@ -10,3 +10,6 @@ precess_test_link_libraries(TestComponentModel Data)
 
 precess_add_test(TestCadIndex TestCadIndex.cpp)
 precess_test_link_libraries(TestCadIndex Data TKPrim TKBRep TKTopAlgo)
+
+precess_add_test(TestElementIDMap TestElementIDMap.cpp)
+precess_test_link_libraries(TestElementIDMap Data)
