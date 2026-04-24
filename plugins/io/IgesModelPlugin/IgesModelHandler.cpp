@@ -24,8 +24,7 @@ std::unique_ptr<ModelData> IgesModelHandler::read_model(const fs::path& path,
     IGESControl_Reader reader;
     IFSelect_ReturnStatus stat;
     // 使用UTF-8编码字符串路径，配合C++17 std::filesystem处理中文路径
-    const std::string& utf8_path = path.u8string();
-    stat = reader.ReadFile(utf8_path.c_str());
+    stat = reader.ReadFile(path.u8string().c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read IGES file: {}", path.string());
         return nullptr;
@@ -68,8 +67,7 @@ void IgesModelHandler::write_model(const ModelData& data, const fs::path& path,
     writer.ComputeModel();
 
     // 写入文件，使用UTF-8编码字符串路径
-    const std::string& utf8_path = path.u8string();
-    Standard_Boolean writeStatus = writer.Write(utf8_path.c_str());
+    Standard_Boolean writeStatus = writer.Write(path.u8string().c_str());
 
     if (!writeStatus) {
         spdlog::error("Failed to write IGES file: {}", path.string());
