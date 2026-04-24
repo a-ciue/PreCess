@@ -4,8 +4,8 @@
  */
 #include "StepModelHandler.h"
 #include "ArgType.h"
-#include "ModelData.h"
 #include "SplineData.h"
+#include "ModelData.h"
 
 #include <STEPControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
@@ -15,10 +15,7 @@ namespace systems::io {
 std::unique_ptr<ModelData> StepModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     STEPControl_Reader reader;
-    IFSelect_ReturnStatus stat;
-    // 使用UTF-8编码字符串路径，配合C++17 std::filesystem处理中文路径
-    const std::string& utf8_path = path.u8string();
-    stat = reader.ReadFile(utf8_path.c_str());
+    IFSelect_ReturnStatus stat = reader.ReadFile(path.string().c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read STEP file: {}", path.string());
         return nullptr;
@@ -67,11 +64,11 @@ void StepModelHandler::write_model(const ModelData& data, const fs::path& path, 
 
 std::vector<core::ArgType> StepModelHandler::read_args_type() const
 {
-    return { };
+    return {};
 }
 
 std::vector<core::ArgType> StepModelHandler::write_args_type() const
 {
-    return { };
+    return {};
 }
 }

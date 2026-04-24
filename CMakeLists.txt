@@ -98,7 +98,7 @@ set(CPACK_NSIS_DELETE_ICONS_EXTRA
     Delete '$DESKTOP\\\\${MYNAME}.lnk'"
 )
 
-set(SUPPORTED_MESH_EXTS .mesh .meshb .obj .step .stp .iges .igs .vtk .m .ply )
+set(SUPPORTED_MESH_EXTS .mesh .meshb .obj .step .stp .vtk .m .ply )
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "")
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "")
 
