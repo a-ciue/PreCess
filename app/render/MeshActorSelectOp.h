@@ -41,7 +41,7 @@ public:
     vtkProp& getSolidActor();
     vtkProp& getFaceActor();
     vtkProp& getEdgeActor();
-    vtkProp& getVertexActor();
+    //vtkProp& getVertexActor();
     vtkProp& getBlockActor();
 
     /**

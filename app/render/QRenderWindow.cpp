@@ -336,22 +336,28 @@ bool QRenderWindow::getCurEdgeRender()
 
 void QRenderWindow::setCurVertexRender(bool is_render)
 {
-    this->vertex_render_ = is_render;
-    emit curVertexRenderChanged();
+    //this->vertex_render_ = is_render;
+    //emit curVertexRenderChanged();
 
-    dispatch_async([this, is_render](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
+    //dispatch_async([this, is_render](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    //    Data* vtk = Data::SafeDownCast(userData);
 
-        auto component_ids = model_query_->getComponentIds(this->cur_actor_id_);
-        for (Index component_id : component_ids) {
-            vtk->mesh_actor_manager_->setRenderVertex(component_id, is_render);
-        }
-    });
+    //    auto component_ids = model_query_->getComponentIds(this->cur_actor_id_);
+    //    for (Index component_id : component_ids) {
+    //        vtk->mesh_actor_manager_->setRenderVertex(component_id, is_render);
+    //    }
+    //});
+    // vertex rendering disabled
+    if (vertex_render_ != false) {
+        vertex_render_ = false;
+        emit curVertexRenderChanged();
+    }
 }
 
 bool QRenderWindow::getCurVertexRender()
 {
-    return this->vertex_render_;
+    //return this->vertex_render_;
+    return false;
 }
 
 bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
@@ -374,16 +380,16 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
 
 bool QRenderWindow::getIsVertexRender(Data& vtk, Index model_id)
 {
-    auto component_ids = model_query_->getComponentIds(model_id);
-    if (!component_ids.empty()) {
-        Index component_id = component_ids.front();
+    //auto component_ids = model_query_->getComponentIds(model_id);
+    //if (!component_ids.empty()) {
+    //    Index component_id = component_ids.front();
 
-        if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
-            return vtk.mesh_actor_manager_->getIsVertexRender(component_id);
-        }
-    }
+    //    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
+    //        return vtk.mesh_actor_manager_->getIsVertexRender(component_id);
+    //    }
+    //}
 
-    std::cout << "get is vertex render mode error" << std::endl;
+    //std::cout << "get is vertex render mode error" << std::endl;
     return false;
 }
 
@@ -395,7 +401,7 @@ void QRenderWindow::setSelectModel(Index model_id)
         this->cur_actor_id_ = model_id;
         this->setCurEdgeRender(this->getIsEdgeRender(*vtk, model_id));
 
-        this->vertex_render_ = this->getIsVertexRender(*vtk, model_id);
+        this->vertex_render_ = false;
         emit curVertexRenderChanged();
 
         auto component_ids = model_query_->getComponentIds(model_id);
