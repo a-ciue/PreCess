@@ -62,7 +62,6 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
     MeshData* md = comp->mesh.get();
 
     MeshDataVtk model_data {
-        md->vertex_positions_,
         md->solid_types_, md->solid_vertices_, md->solid_vertices_offset_,
         md->solid_faces_vertices_, md->solid_faces_vertices_offset_,
         md->solid_faces_, md->solid_faces_offset_,
@@ -92,6 +91,11 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
 
     model_data.model_blocks_ = block_datas;
     return model_data;
+}
+
+std::vector<std::array<double, 3>> QModelQuery::copyGlobalPoints() const
+{
+    return m_manager->globalPoints();
 }
 
 std::vector<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
@@ -124,6 +128,30 @@ std::optional<SplineDataVtk> QModelQuery::getSplineDataByComponent(Index compone
 std::vector<Index> QModelQuery::getComponentIds(Index model_id) const
 {
     return m_manager->getComponentIds(model_id);
+}
+
+QVariantList QModelQuery::getCadEdgeMappedPointIds(Index component_id, int localCadEdgeId)
+{
+    QVariantList out;
+
+    Component* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->cad)
+        return out;
+
+    auto gidOpt = resolveCadEdgeLocalId(component_id, localCadEdgeId);
+    if (!gidOpt)
+        return out;
+
+    if (!comp->mapping)
+        return out;
+
+    auto it = comp->mapping->cad_edge_to_mesh_point_gids.find(*gidOpt);
+    if (it == comp->mapping->cad_edge_to_mesh_point_gids.end())
+        return out;
+
+    for (Index pid : it->second)
+        out.push_back(pid);
+    return out;
 }
 
 QString QModelQuery::getModelName(Index model_id) const

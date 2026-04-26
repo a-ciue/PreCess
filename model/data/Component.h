@@ -2,16 +2,23 @@
 #pragma once
 
 #include "Core.h" 
+#include "MeshData.h"
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 struct MeshData;
 struct SplineData;
 
 // 日后在这里补充 CAD↔网格的映射结构
 struct SplineMeshMap {
-    // 先占位，后续再设计具体字段
-    // std::unordered_map<Index, std::vector<Index>> cadFace_to_meshFaces;
+    // CAD 几何边(全局 GeomEdgeId) -> 网格点(全局点池下标)序列
+    // 语义：一条 CAD 边对应一条折线/采样点序列（顺序有意义）
+    std::unordered_map<GeomEdgeId, std::vector<Index>> cad_edge_to_mesh_point_gids;
+
+    void clear() { cad_edge_to_mesh_point_gids.clear(); }
+    bool empty() const { return cad_edge_to_mesh_point_gids.empty(); }
 };
 
 /**
@@ -38,6 +45,10 @@ struct Component {
     ~Component();
 
     // 便捷判断
-    bool hasMesh() const noexcept { return static_cast<bool>(mesh); }
-    bool hasCad() const noexcept { return static_cast<bool>(cad); }
+    bool hasMesh() const noexcept;
+    bool hasCad() const noexcept;
+
+    SplineMeshMap& ensureMapping();
+    const SplineMeshMap* getMapping() const noexcept;
+    bool ownsGlobalPoint(Index global_pid) const noexcept;
 };

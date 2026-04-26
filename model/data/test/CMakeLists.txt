@@ -16,3 +16,6 @@ precess_test_link_libraries(TestElementIDMap Data)
 
 precess_add_test(TestGlobalPoints TestGlobalPoints.cpp)
 precess_test_link_libraries(TestGlobalPoints Data)
+
+precess_add_test(TestCadMeshMap TestCadMeshMap.cpp)
+precess_test_link_libraries(TestCadMeshMap Data)

@@ -54,10 +54,14 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
     std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
+    std::vector<std::array<double, 3>> copyGlobalPoints() const;
+
     std::vector<SplineDataVtk> getSplineData(Index model_id);
     std::optional<SplineDataVtk> getSplineDataByComponent(Index component_id);
 
     std::vector<Index> getComponentIds(Index model_id) const;
+
+    Q_INVOKABLE QVariantList getCadEdgeMappedPointIds(Index component_id, int localCadEdgeId);
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
     /**
