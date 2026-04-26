@@ -18,9 +18,11 @@
 #include <array>
 #include <vector>
 #include <unordered_map>
+#include <optional>
 
 class ModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
+class ComponentOperator;
 
 /**
  * @brief 负责管理多个 ModelData 实例的类
@@ -65,6 +67,8 @@ public:
      * @return 对应模型名称的 ModelOperator 对象指针
      */
     std::optional<ModelOperator> getModelOperator(Index model_id) const;
+    ModelData* modelById(Index model_id) const;
+    std::optional<ComponentOperator> getComponentOperator(Index component_id);
 
     Component* findComponent(Index component_id) const;
     std::optional<Index> findModelIdByComponent(Index component_id) const;

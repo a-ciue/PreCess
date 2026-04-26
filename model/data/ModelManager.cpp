@@ -13,6 +13,7 @@
 #include "ModelObserver.h"
 #include "SplineData.h"
 #include "MeshData.h"
+#include "ComponentOperator.h"
 
 #include <spdlog/spdlog.h>
 #include <filesystem>
@@ -147,6 +148,23 @@ std::optional<ModelOperator> ModelManager::getModelOperator(Index model_id) cons
         return ModelOperator(model_id, *mesh, observer_);
     }
     return {}; // 如果找不到模型，返回空指针
+}
+
+ModelData* ModelManager::modelById(Index model_id) const
+{
+    auto it = models_.find(model_id);
+    if (it == models_.end())
+        return nullptr;
+    return it->second.get();
+}
+
+std::optional<ComponentOperator> ModelManager::getComponentOperator(Index component_id)
+{
+    Component* c = findComponent(component_id);
+    if (!c)
+        return std::nullopt;
+
+    return ComponentOperator(component_id, *c, *this, observer_);
 }
 
 Index ModelManager::allocateComponentId() noexcept

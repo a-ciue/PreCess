@@ -8,6 +8,7 @@ add_library(Data STATIC
 	CadSubshapeIndex.cpp 
 	Component.cpp 
 	ElementIDMap.cpp
+	ComponentOperator.cpp
 )
 target_include_directories(Data PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
