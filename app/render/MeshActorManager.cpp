@@ -37,8 +37,10 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
     if (!this->component_actors_.count(component_id))
         this->component_actors_[component_id] = std::make_shared<MeshActor>(renderer);
 
-    this->component_actors_[component_id]->loadModelData(model_data);
-    this->component_actors_[component_id]->setRenderMode(render_mode);
+    auto& actor = this->component_actors_[component_id];
+    actor->setGlobalPoints(global_points_);
+    actor->loadModelData(model_data);
+    actor->setRenderMode(render_mode);
 }
 
 void MeshActorManager::setVisibility(Index component_id, bool visibility)
@@ -134,4 +136,19 @@ void MeshActorManager::cancelAttri(Index component_id)
 {
     if (this->component_actors_.count(component_id))
         this->component_actors_[component_id]->cancelActiveAttribute();
+}
+
+void MeshActorManager::bindGlobalPoints(vtkPoints* pts)
+{
+    global_points_ = pts;
+}
+
+void MeshActorManager::syncOriginalPointIds()
+{
+    for (auto& [cid, actor] : component_actors_) {
+        if (!actor)
+            continue;
+        actor->setGlobalPoints(global_points_); 
+        actor->ensureOriginalPointIds(); 
+    }
 }

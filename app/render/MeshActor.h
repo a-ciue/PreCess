@@ -9,6 +9,8 @@
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include <vtkPropCollection.h>
+#include <vtkPoints.h>
+#include <vtkIdTypeArray.h>
 class vtkGeometryFilter;
 class vtkExtractGeometry;
 class vtkExtractPolyDataGeometry;
@@ -64,6 +66,9 @@ public:
         const std::string& attr_name,
         std::map<std::string, std::any> args);
 
+    void setGlobalPoints(vtkPoints* pts);
+    void ensureOriginalPointIds();
+
 private:
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     ModelRenderMode render_mode_;
@@ -101,6 +106,9 @@ private:
     vtkRenderer* renderer_;
 
     vtkNew<vtkActor> actor_;
+
+    vtkPoints* global_points_ {};
+    vtkNew<vtkIdTypeArray> original_point_ids_;
 
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(const MeshDataVtk& model_data);

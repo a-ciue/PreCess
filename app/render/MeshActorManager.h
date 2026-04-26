@@ -3,6 +3,8 @@
 #include "Core.h"
 #include "MeshActor.h"
 #include <unordered_map>
+#include <vtkPoints.h>
+#include <vtkIdTypeArray.h>
 
 class vtkRenderer;
 
@@ -37,8 +39,12 @@ public:
         std::map<std::string, std::any> args);
     void cancelAttri(Index component_id);
 
+    void bindGlobalPoints(vtkPoints* pts);
+    void syncOriginalPointIds();
+
 private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
+    vtkPoints* global_points_ {};
 };
 #endif

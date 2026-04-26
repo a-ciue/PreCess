@@ -46,6 +46,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_ = vtk.GetPointer();
     vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
+    vtk->mesh_actor_manager_->bindGlobalPoints(vtk->global_points_.GetPointer());
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->spline_actor_manager_ = std::make_unique<SplineActorManager>();
     vtk->spline_actor_manager_->bindRender(vtk->renderer_);
@@ -166,6 +167,37 @@ void QRenderWindow::deleteComponent(Index component_id)
     });
 }
 
+void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
+{
+    if (!vtk || !model_query_)
+        return;
+
+    auto pts = model_query_->copyGlobalPoints();
+
+    vtkPoints* gpts = vtk->global_points_.GetPointer();
+    gpts->Reset();
+    gpts->SetNumberOfPoints((vtkIdType)pts.size());
+    for (vtkIdType i = 0; i < (vtkIdType)pts.size(); ++i) {
+        gpts->SetPoint(i, pts[(size_t)i].data());
+    }
+    gpts->Modified();
+
+    // 全局点数变化后同步所有 actor 的 vtkOriginalPointIds 长度
+    if (vtk->mesh_actor_manager_) {
+        vtk->mesh_actor_manager_->syncOriginalPointIds();
+    }
+
+    spdlog::info("[VTK GlobalPoints] updated: N={}", (int)gpts->GetNumberOfPoints());
+}
+
+void QRenderWindow::updateGlobalVtkPoints()
+{
+    dispatch_async([this](vtkRenderWindow*, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+        updateGlobalVtkPointsImpl(vtk);
+    });
+}
+
 void QRenderWindow::setMeshClip(bool on)
 {
     dispatch_async([on, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -193,7 +225,7 @@ void QRenderWindow::onModelChanged(Index model_id)
         Data* vtk = Data::SafeDownCast(userData);
 
         auto component_ids = model_query_->getComponentIds(model_id);
-
+        updateGlobalVtkPointsImpl(vtk);
         // 先删旧 actor
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
@@ -222,6 +254,8 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         if (!this->model_query_)
             return;
+
+        updateGlobalVtkPointsImpl(vtk);
 
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);

@@ -23,6 +23,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkPoints.h>
+#include <vtkIdTypeArray.h>
 
 class MeshActor;
 class SelectManager;
@@ -56,6 +58,8 @@ public:
         std::unique_ptr<SplineActorManager> spline_actor_manager_;
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
+
+        vtkNew<vtkPoints> global_points_;
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -116,6 +120,8 @@ public:
 
     Q_INVOKABLE void deleteModel(Index mode_id);
     Q_INVOKABLE void deleteComponent(Index component_id);
+
+    void updateGlobalVtkPoints();
 
     /**
      * @brief 对网格对象设置全局裁剪模式
@@ -184,5 +190,7 @@ private:
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
+
+    void updateGlobalVtkPointsImpl(Data* vtk);
 };
 #endif // Q_RENDER_WINDOW_H

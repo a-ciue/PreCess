@@ -57,8 +57,6 @@ struct BlockDatas {
  * @sa MeshData
  */
 struct MeshDataVtk {
-    const std::vector<std::array<double, 3>>& vtk_points_; //> 对应 MeshData::vertex_positions_
-
     const std::vector<unsigned char>& vtk_solid_cell_types_; //> 对应 MeshData::solid_types_
     const std::vector<Index>& vtk_solid_cells_; //> 对应 MeshData::solid_vertices_
     const std::vector<Index>& vtk_solid_cells_offset_; //> 对应 MeshData::solid_vertices_offset_

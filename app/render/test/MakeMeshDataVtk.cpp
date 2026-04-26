@@ -43,7 +43,6 @@ MeshDataVtk MakeMeshDataVtk(MeshData& data)
     }
 
     MeshDataVtk test_mesh_data = {
-        data.vertex_positions_,
         data.solid_types_,
         data.solid_vertices_,
         data.solid_vertices_offset_,
@@ -201,7 +200,6 @@ MeshDataVtk MakeMeshDataVtkFromFile(
     }
 
     MeshDataVtk res = {
-        data.vertex_positions_,
         data.solid_types_,
         data.solid_vertices_,
         data.solid_vertices_offset_,

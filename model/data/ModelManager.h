@@ -15,6 +15,8 @@
 #include "GeometryRegistry.h"
 #include "ElementIDMap.h"
 
+#include <array>
+#include <vector>
 #include <unordered_map>
 
 class ModelObserver;  // 前向声明模型观察者类
@@ -71,6 +73,9 @@ public:
     GeometryRegistry& geomRegistry();
     const GeometryRegistry& geomRegistry() const;
 
+    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
+    const std::vector<std::array<double, 3>>& globalPoints() const { return global_points_; }
+
     ElementIDMap& edgeIdMap() { return edge_id_map_; }
     const ElementIDMap& edgeIdMap() const { return edge_id_map_; }
 
@@ -86,6 +91,8 @@ private:
     std::unordered_map<Index, Component*> component_index_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
+
+    std::vector<std::array<double, 3>> global_points_;
     ElementIDMap edge_id_map_; // 先只维护 edge 的 global->local
 
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件

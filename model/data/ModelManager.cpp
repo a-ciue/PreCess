@@ -48,7 +48,22 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
             c->cad->ensureCadIndexBuilt(geom_registry_);
         }
         if (c->mesh) {
-            c->mesh->ensureEdgeIdMapBuilt(edge_id_map_, c->id);
+            MeshData& md = *c->mesh;
+
+            // append 全局点池（只增不减）
+            if (md.global_point_base_ < 0) {
+                md.global_point_base_ = appendGlobalPoints(md.vertex_positions_);
+                md.vertex_count_ = (Index)md.vertex_positions_.size();
+            }
+
+            // 将 mesh 内部所有点索引数组转换成全局点 id
+            md.makePointIdsGlobal(md.global_point_base_);
+
+            // 释放局部点内存（成员保留，但运行期不占内存）
+            std::vector<std::array<double, 3>> {}.swap(md.vertex_positions_);
+
+            // edge 单元全局id映射（仅真实线单元）
+            md.ensureEdgeIdMapBuilt(edge_id_map_, c->id);
         }
     }
 
@@ -180,4 +195,11 @@ GeometryRegistry& ModelManager::geomRegistry()
 const GeometryRegistry& ModelManager::geomRegistry() const
 {
     return geom_registry_;
+}
+
+Index ModelManager::appendGlobalPoints(const std::vector<std::array<double, 3>>& pts)
+{
+    Index base = (Index)global_points_.size();
+    global_points_.insert(global_points_.end(), pts.begin(), pts.end());
+    return base;
 }

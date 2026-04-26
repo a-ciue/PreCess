@@ -64,31 +64,14 @@ MeshActor::~MeshActor()
 
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
+    assert(global_points_);
+    ensureOriginalPointIds();
+
     this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
 
-    // point data
-    auto points_data = vtkSmartPointer<vtkPoints>::New();
-    {
-        auto& vtk_points = this->model_data_->vtk_points_;
-        auto points_data_array = vtkSmartPointer<vtkDoubleArray>::New();
 
-        points_data_array->SetNumberOfComponents(3);
-        points_data_array->SetArray(const_cast<double*>(vtk_points.data()->data()), 3 * vtk_points.size(), 1);
-        points_data->SetData(points_data_array);
-    }
 
-    // 添加原始点ID数组
-    vtkNew<vtkIdTypeArray> originalPointIds;
-    originalPointIds->SetNumberOfComponents(1);
-    originalPointIds->SetName("vtkOriginalPointIds");
-    originalPointIds->SetNumberOfTuples(points_data->GetNumberOfPoints());
 
-    vtkSMPTools::For(0, points_data->GetNumberOfPoints(),
-        [&](vtkIdType begin, vtkIdType end) {
-            for (vtkIdType pointId = begin; pointId < end; ++pointId) {
-                originalPointIds->SetValue(pointId, pointId);
-            }
-        });
 
     // vertex data
     vtkPolyData* vertex_poly = this->vertex_data_;
@@ -153,10 +136,10 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         poly_data->SetData(offset_array, index_array);
 
         // face poly data
-        face_poly->SetPoints(points_data);
+        face_poly->SetPoints(global_points_);
         face_poly->SetPolys(poly_data);
 
-        face_poly->GetPointData()->AddArray(originalPointIds);
+        face_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
 
         //  拷贝属性
         vtkPointData* src = this->vertex_data_->GetPointData();
@@ -197,15 +180,15 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
         edge_cells->SetData(2, index_array);
 
-        edge_poly->SetPoints(points_data);
+        edge_poly->SetPoints(global_points_);
         edge_poly->SetLines(edge_cells);
 
-        edge_poly->GetPointData()->AddArray(originalPointIds);
+        edge_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
     }
 
     // solid data
     vtkUnstructuredGrid* solid_ugird = this->solid_data_;
-    _createSolidUGird(*this->model_data_, *points_data, *solid_ugird);
+    _createSolidUGird(*this->model_data_, *global_points_, *solid_ugird);
     vtkIdType solid_cells_count = solid_ugird->GetNumberOfCells();
     vtkNew<vtkIdTypeArray> originalCellIds;
     originalCellIds->SetNumberOfComponents(1);
@@ -219,7 +202,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
             }
         });
     solid_ugird->GetCellData()->AddArray(originalCellIds);
-    solid_ugird->GetPointData()->AddArray(originalPointIds);
+    solid_ugird->GetPointData()->AddArray(original_point_ids_.GetPointer());
 
     solid_filter_->SetInputData(solid_ugird);
 
@@ -365,8 +348,9 @@ void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
                 vtkIdType global_id = index_begin[i];
                 auto iter = global_to_local.find(global_id);
                 if (iter == global_to_local.end()) {
-                    const auto& pt = model_data.vtk_points_[global_id];
-                    points->InsertPoint(local_id, pt.data());
+                    double pt[3];
+                    this->global_points_->GetPoint(global_id, pt);
+                    points->InsertPoint(local_id, pt);
                     global_to_local[global_id] = local_id;
                     tri_pts[i] = local_id++;
                 } else {
@@ -457,4 +441,24 @@ void MeshActor::renderAttribute(
         AttributeOperator op(this);
         render_strategy_->render(op, attr_name, args);
     }
+}
+
+void MeshActor::setGlobalPoints(vtkPoints* pts)
+{
+    global_points_ = pts;
+}
+
+void MeshActor::ensureOriginalPointIds()
+{
+    if (!global_points_)
+        return;
+
+    vtkIdType n = global_points_->GetNumberOfPoints();
+    original_point_ids_->SetName("vtkOriginalPointIds");
+    original_point_ids_->SetNumberOfComponents(1);
+    original_point_ids_->SetNumberOfTuples(n);
+    for (vtkIdType i = 0; i < n; ++i) {
+        original_point_ids_->SetValue(i, i);
+    }
+    original_point_ids_->Modified();
 }

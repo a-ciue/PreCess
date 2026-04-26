@@ -8,6 +8,9 @@
 void MeshData::clear()
 {
     vertex_positions_.clear();
+    global_point_base_ = -1;
+    vertex_count_ = 0;
+    point_ids_are_global_ = false;
     face_vertices_.clear();
     face_vertices_offset_.clear();
     edge_vertices_.clear();
@@ -57,6 +60,24 @@ std::optional<Index> MeshData::patch_block_id(int patch_id)
         }
     }
     return {};
+}
+
+void MeshData::makePointIdsGlobal(Index base)
+{
+    if (point_ids_are_global_)
+        return;
+
+    auto shift = [base](std::vector<Index>& a) {
+        for (auto& x : a)
+            x += base;
+    };
+
+    shift(edge_vertices_);
+    shift(face_vertices_);
+    shift(solid_vertices_);
+    shift(solid_faces_vertices_);
+
+    point_ids_are_global_ = true;
 }
 
 void MeshData::ensureEdgeIdMapBuilt(ElementIDMap& map, Index component_id)
