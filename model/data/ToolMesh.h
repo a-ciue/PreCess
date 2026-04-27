@@ -20,7 +20,7 @@
 namespace MeshLib {
 class CToolVertex : public CVertex {
 public:
-  CToolVertex() { m_fixed = false; };
+  CToolVertex(): m_fixed(false), edge(false), m_father(0) { };
   ~CToolVertex(){};
   void _to_string();
   void _from_string();
@@ -133,7 +133,7 @@ inline void CToolEdge::_from_string() {
 
 class CToolFace : public CFace {
 public:
-  CToolFace(){};
+  CToolFace() : m_g(0) {};
   ~CToolFace(){};
   void _to_string();
   void _from_string();

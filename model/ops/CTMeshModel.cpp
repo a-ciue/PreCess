@@ -104,6 +104,8 @@ void CTMeshModel::updateFrom(const MeshData& mesh_data)
     auto temp_path = core::TempFile::instance().path();
     std::ofstream ofs(temp_path);
     ObjMeshIO::saveToFile(mesh_data, ofs);
+    ofs.flush();
+    ofs.close();
     mesh_->read_obj(temp_path.string().c_str());
 }
 
