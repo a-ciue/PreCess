@@ -3,3 +3,5 @@ precess_add_io_plugin(IgesModelPlugin
 	PLUGIN_H "IgesModelPlugin.h"
 )
 precess_plugin_link_libraries(IgesModelPlugin TKDEIGES)
+
+add_subdirectory(test)
