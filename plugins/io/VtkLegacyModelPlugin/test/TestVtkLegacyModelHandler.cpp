@@ -1,7 +1,7 @@
 #include "MakeMeshData.h"
 #include "MeshData.h"
 #include "ModelData.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "TempFile.h"
 #include "VtkLegacyModelHandler.h"
 
@@ -31,7 +31,7 @@ TEST_CASE("VtkLegacyModelHandler::write_components()/read_model() over MakeMeshD
     auto mesh_data = std::make_unique<MeshData>(MakeMeshData());
     auto model = std::make_unique<ModelData>(std::move(mesh_data));
 
-    ModelManager mgr;
+    ModelLayer mgr;
     Index model_id = mgr.addModel(std::move(model));
     auto cids = mgr.getComponentIds(model_id);
     REQUIRE(!cids.empty());

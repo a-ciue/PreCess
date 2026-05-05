@@ -28,7 +28,7 @@
 
 class MeshActor;
 class SelectManager;
-class SplineActorManager;
+class GeometryActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
@@ -55,7 +55,7 @@ public:
         vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
 
         std::unique_ptr<MeshActorManager> mesh_actor_manager_;
-        std::unique_ptr<SplineActorManager> spline_actor_manager_;
+        std::unique_ptr<GeometryActorManager> spline_actor_manager_;
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
 

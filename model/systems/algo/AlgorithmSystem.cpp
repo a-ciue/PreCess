@@ -6,7 +6,7 @@
 #include "AlgorithmHandler.h"
 #include "ArgObject.h"
 #include "ModelIOSystem.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include <cassert>
 #include <spdlog/spdlog.h>
 
@@ -17,7 +17,7 @@ using std::vector;
 
 const string AlgorithmSystem::name = "AlgorithmSystem";
 
-AlgorithmSystem::AlgorithmSystem(io::ModelIOSystem& io_system, ModelManager& model_manager)
+AlgorithmSystem::AlgorithmSystem(io::ModelIOSystem& io_system, ModelLayer& model_manager)
     : io_system_(&io_system)
     , model_manager_(&model_manager)
 {
@@ -30,7 +30,7 @@ std::any AlgorithmSystem::call(const string& unique_name, Index component_id, co
 {
     std::optional comp_op = model_manager_->getComponentOperator(component_id);
     if (!comp_op) {
-        spdlog::error("AlgorithmSystem::call: Component operator for component ID {} not found.", component_id);
+        spdlog::error("AlgorithmSystem::call: ComponentData operator for component ID {} not found.", component_id);
         return {};
     }
 

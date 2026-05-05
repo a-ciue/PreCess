@@ -9,7 +9,7 @@
 class TopoDS_Shape;
 class GeometryRegistry;
 
-struct CadSubshapeIndex {
+struct GeometrySubshapeIndex {
     bool built { false };
 
     // 按 OCC 类型的局部索引

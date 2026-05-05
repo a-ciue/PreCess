@@ -6,8 +6,8 @@
 #include "QSelection.h"
 #include "SelectManager.h"
 #include "Selection.h"
-#include "SplineActorManager.h"
-#include "SplineDataVtk.h"
+#include "GeometryActorManager.h"
+#include "GeometryDataVtk.h"
 
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
@@ -48,7 +48,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
     vtk->mesh_actor_manager_->bindGlobalPoints(vtk->global_points_.GetPointer());
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
-    vtk->spline_actor_manager_ = std::make_unique<SplineActorManager>();
+    vtk->spline_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->spline_actor_manager_->bindRender(vtk->renderer_);
 
     vtk->orientationWidget->AnimateOff();

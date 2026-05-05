@@ -9,7 +9,7 @@
 
 #include <optional>
 
-class ElementIDMap;
+class MeshIDMap;
 
 /**
  * @brief 表示网格中的一个 Patch
@@ -166,6 +166,6 @@ struct MeshData {
 
     void makePointIdsGlobal(Index base);
 
-    void ensureEdgeIdMapBuilt(ElementIDMap& map, Index component_id);
-    void releaseEdgeIdMap(ElementIDMap& map);
+    void ensureEdgeIdMapBuilt(MeshIDMap& map, Index component_id);
+    void releaseEdgeIdMap(MeshIDMap& map);
 };

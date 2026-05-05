@@ -1,11 +1,11 @@
-#include "CadSubshapeIndex.h"
+#include "GeometrySubshapeIndex.h"
 #include "GeometryRegistry.h"
 
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 #include <algorithm>
 
-int CadSubshapeIndex::typeIndex(TopAbs_ShapeEnum type)
+int GeometrySubshapeIndex::typeIndex(TopAbs_ShapeEnum type)
 {
     // 我们只支持 TopAbs_COMPOUND..TopAbs_VERTEX
     if (type < TopAbs_COMPOUND || type > TopAbs_VERTEX)
@@ -13,7 +13,7 @@ int CadSubshapeIndex::typeIndex(TopAbs_ShapeEnum type)
     return static_cast<int>(type); // OCCT enum 这段正好是连续的 0..7
 }
 
-void CadSubshapeIndex::build(const TopoDS_Shape& root, GeometryRegistry& reg)
+void GeometrySubshapeIndex::build(const TopoDS_Shape& root, GeometryRegistry& reg)
 {
     built = false;
 
@@ -72,28 +72,28 @@ void CadSubshapeIndex::build(const TopoDS_Shape& root, GeometryRegistry& reg)
     built = true;
 }
 
-GeomVertexId CadSubshapeIndex::vertexGlobalId(int localTypeId) const
+GeomVertexId GeometrySubshapeIndex::vertexGlobalId(int localTypeId) const
 {
     if (localTypeId <= 0 || localTypeId >= (int)vertex_local_to_global.size())
         return kInvalidGeomVertexId;
     return vertex_local_to_global[localTypeId];
 }
 
-GeomEdgeId CadSubshapeIndex::edgeGlobalId(int localTypeId) const
+GeomEdgeId GeometrySubshapeIndex::edgeGlobalId(int localTypeId) const
 {
     if (localTypeId <= 0 || localTypeId >= (int)edge_local_to_global.size())
         return kInvalidGeomEdgeId;
     return edge_local_to_global[localTypeId];
 }
 
-GeomFaceId CadSubshapeIndex::faceGlobalId(int localTypeId) const
+GeomFaceId GeometrySubshapeIndex::faceGlobalId(int localTypeId) const
 {
     if (localTypeId <= 0 || localTypeId >= (int)face_local_to_global.size())
         return kInvalidGeomFaceId;
     return face_local_to_global[localTypeId];
 }
 
-GeomSolidId CadSubshapeIndex::solidGlobalId(int localTypeId) const
+GeomSolidId GeometrySubshapeIndex::solidGlobalId(int localTypeId) const
 {
     if (localTypeId <= 0 || localTypeId >= (int)solid_local_to_global.size())
         return kInvalidGeomSolidId;

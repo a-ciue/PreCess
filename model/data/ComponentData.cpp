@@ -1,33 +1,33 @@
-#include "Component.h"
+#include "ComponentData.h"
 #include "MeshData.h"
-#include "SplineData.h"
+#include "GeometryData.h"
 
-Component::Component() = default;
-Component::~Component() = default;
+ComponentData::ComponentData() = default;
+ComponentData::~ComponentData() = default;
 
-bool Component::hasMesh() const noexcept 
+bool ComponentData::hasMesh() const noexcept 
 {
     return static_cast<bool>(mesh); 
 }
 
-bool Component::hasCad() const noexcept 
+bool ComponentData::hasCad() const noexcept 
 { 
     return static_cast<bool>(cad);
 }
 
-SplineMeshMap& Component::ensureMapping()
+SplineMeshMap& ComponentData::ensureMapping()
 {
     if (!mapping)
         mapping = std::make_unique<SplineMeshMap>();
     return *mapping;
 }
 
-const SplineMeshMap* Component::getMapping() const noexcept 
+const SplineMeshMap* ComponentData::getMapping() const noexcept 
 { 
     return mapping.get(); 
 }
 
-bool Component::ownsGlobalPoint(Index global_pid) const noexcept
+bool ComponentData::ownsGlobalPoint(Index global_pid) const noexcept
 {
     if (!mesh)
         return false;

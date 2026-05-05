@@ -1,4 +1,4 @@
-#include "SplineActor.h"
+#include "GeometryActor.h"
 #include "Core.h"
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <TopoDS_Shape.hxx>
@@ -7,30 +7,30 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
-SplineActor::SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode)
+GeometryActor::GeometryActor(vtkRenderer* renderer, SplineRenderMode render_mode)
 {
     this->renderer_ = renderer;
     this->render_mode_ = render_mode;
 }
 
-SplineActor::~SplineActor()
+GeometryActor::~GeometryActor()
 {
     deleteSplineActor();
 }
 
-SplineRenderMode SplineActor::getSplineRenderMode()
+SplineRenderMode GeometryActor::getSplineRenderMode()
 {
     return this->render_mode_;
 }
 
-bool SplineActor::getIsEdgeRender()
+bool GeometryActor::getIsEdgeRender()
 {
     return this->edge_render;
 }
 
-void SplineActor::loadShape(const SplineDataVtk& spline_data)
+void GeometryActor::loadShape(const GeometryDataVtk& spline_data)
 {
-    this->spline_data_ = std::make_unique<SplineDataVtk>(spline_data);
+    this->spline_data_ = std::make_unique<GeometryDataVtk>(spline_data);
     IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(spline_data.shape);
     vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
     DS->SetShape(aShapeImpl);
@@ -67,7 +67,7 @@ void SplineActor::loadShape(const SplineDataVtk& spline_data)
     this->renderer_->AddActor(this->line_actor_);
 }
 
-void SplineActor::deleteSplineActor()
+void GeometryActor::deleteSplineActor()
 {
     if (this->renderer_) {
         renderer_->RemoveActor(this->poly_actor_);
@@ -75,19 +75,19 @@ void SplineActor::deleteSplineActor()
     }
 }
 
-void SplineActor::setVisibility(bool visibility)
+void GeometryActor::setVisibility(bool visibility)
 {
     this->poly_actor_->SetVisibility(visibility);
     this->line_actor_->SetVisibility(visibility);
     this->visibility_ = visibility;
 }
 
-void SplineActor::setRenderMode(SplineRenderMode render_mode)
+void GeometryActor::setRenderMode(SplineRenderMode render_mode)
 {
     // 没用
 }
 
-void SplineActor::setRenderEdge(bool is_render)
+void GeometryActor::setRenderEdge(bool is_render)
 {
     this->edge_render = is_render;
     this->line_actor_->SetVisibility(is_render && this->visibility_);

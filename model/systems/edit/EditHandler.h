@@ -24,7 +24,7 @@ public:
     virtual ~EditHandler() = default;
     /**i安吉
      * @brief 执行模型编辑功能
-     * @param op 组件操作句柄，包含该组件的上下文和 ModelManager 引用
+     * @param op 组件操作句柄，包含该组件的上下文和 ModelLayer 引用
      * @param args 模型编辑参数
      * @return 模型编辑结果模型数据
      */

@@ -4,10 +4,10 @@
  */
 #include "StepModelHandler.h"
 #include "ArgType.h"
-#include "SplineData.h"
+#include "GeometryData.h"
 #include "ModelData.h"
 #include "StepXdeComponentBuilder.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #include <STEPCAFControl_Reader.hxx>
 #include <STEPControl_Writer.hxx>
@@ -42,7 +42,7 @@ std::unique_ptr<ModelData> StepModelHandler::read_model(const fs::path& path, co
     return model_data;
 }
 
-void StepModelHandler::write_components(const ModelManager& mgr,
+void StepModelHandler::write_components(const ModelLayer& mgr,
     const std::vector<Index>& component_ids,
     const fs::path& path,
     const std::vector<std::any>& /*args*/)
@@ -57,7 +57,7 @@ void StepModelHandler::write_components(const ModelManager& mgr,
     shapes.reserve(component_ids.size());
 
     for (Index cid : component_ids) {
-        const Component* comp = mgr.findComponent(cid);
+        const ComponentData* comp = mgr.findComponent(cid);
         if (!comp) {
             spdlog::warn("StepModelHandler: component {} not found, skip", cid);
             continue;

@@ -4,9 +4,9 @@ add_library(vtkPart STATIC
     SelectorHighlight.cpp
     QRenderWindowStyle.cpp
     SelectManager.cpp
-    SplineActor.cpp
+    GeometryActor.cpp
     MeshActorManager.cpp
-    SplineActorManager.cpp
+    GeometryActorManager.cpp
     SolidSelectorHighlight.cpp
     VertexSelectorHighlight.cpp
     EdgeSelectorHighlight.cpp

@@ -1,7 +1,7 @@
 #include "StepXdeComponentBuilder.h"
-#include "Component.h"
+#include "ComponentData.h"
 #include "ModelData.h"
-#include "SplineData.h"
+#include "GeometryData.h"
 
 #include <TCollection_AsciiString.hxx>
 #include <TDF_Label.hxx>
@@ -91,11 +91,11 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
         for (Standard_Integer i = 1; i <= freeShapes.Length(); ++i) {
             TopoDS_Shape s = shapeTool->GetShape(freeShapes.Value(i));
             if (!s.IsNull()) {
-                auto spline_data = std::make_unique<SplineData>();
+                auto spline_data = std::make_unique<GeometryData>();
                 spline_data->rootShape = std::make_unique<TopoDS_Shape>(s);
 
                 std::string compName = "Comp_" + std::to_string(freeIndex);
-                Component* c = model_data->createComponent(-1, compName);
+                ComponentData* c = model_data->createComponent(-1, compName);
                 c->cad = std::move(spline_data);
 
                 ++freeIndex;
@@ -112,7 +112,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
 
     int leafIndex = 0;
     for (const auto& [label, shape] : leaves) {
-        auto spline_data = std::make_unique<SplineData>();
+        auto spline_data = std::make_unique<GeometryData>();
         spline_data->rootShape = std::make_unique<TopoDS_Shape>(shape);
 
         std::string compName = labelName(label);
@@ -120,7 +120,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
             compName = "Comp_" + std::to_string(leafIndex);
         }
 
-        Component* c = model_data->createComponent(-1, compName);
+        ComponentData* c = model_data->createComponent(-1, compName);
         c->cad = std::move(spline_data);
         c->source_xde_leaf_id = leafIndex;
 

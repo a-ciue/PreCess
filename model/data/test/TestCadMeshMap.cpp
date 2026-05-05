@@ -1,10 +1,10 @@
-#include "Component.h"
+#include "ComponentData.h"
 #include "MeshData.h"
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("Component CAD edge -> mesh point gids map", "[CadMeshMap]")
+TEST_CASE("ComponentData CAD edge -> mesh point gids map", "[CadMeshMap]")
 {
-    Component c;
+    ComponentData c;
     c.id = 1;
     c.mesh = std::make_unique<MeshData>();
     c.mesh->global_point_base_ = 10;

@@ -7,7 +7,7 @@
 #include "MeshData.h"
 #include "ModelData.h"
 #include "UGridModel.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #include <spdlog/spdlog.h>
 #include <vtkAppendFilter.h>
@@ -241,7 +241,7 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
     return model_data;
 }
 
-void VtkLegacyModelHandler::write_components(const ModelManager& mgr,
+void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,
     const std::vector<Index>& component_ids,
     const fs::path& path,
     const std::vector<std::any>&)
@@ -261,7 +261,7 @@ void VtkLegacyModelHandler::write_components(const ModelManager& mgr,
     vtkIdType file_point_offset = 0;
 
     for (Index cid : component_ids) {
-        const Component* comp = mgr.findComponent(cid);
+        const ComponentData* comp = mgr.findComponent(cid);
         if (!comp || !comp->mesh)
             continue;
 

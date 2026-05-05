@@ -14,8 +14,8 @@
 #include <any>
 
 class ModelData;
-struct Component;
-class ModelManager;
+struct ComponentData;
+class ModelLayer;
 
 namespace core {
 struct ArgType;
@@ -37,12 +37,12 @@ public:
     virtual std::unique_ptr<ModelData> read_model(const fs::path& path, const std::vector<std::any>& args) = 0;
         /**
          * @brief 写出组件集合到文件
-         * @param mgr ModelManager（运行期权威：component pool + globalPoints）
+         * @param mgr ModelLayer（运行期权威：component pool + globalPoints）
          * @param component_ids 要写出的组件 id 集合
          * @param path 写出文件目标路径
          * @param args 写出文件要传入参数
          */
-    virtual void write_components(const ModelManager& mgr,
+    virtual void write_components(const ModelLayer& mgr,
         const std::vector<Index>& component_ids,
         const fs::path& path,
         const std::vector<std::any>& args)

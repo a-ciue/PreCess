@@ -5,7 +5,7 @@
 #include "EditSystemRegister.h"
 #include "ModelIOSystem.h"
 #include "ModelIOSystemRegister.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "QModelObserver.h"
 #include "SystemPluginManager.h"
 
@@ -20,7 +20,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 {
     // 1) 初始化
     observer_ = std::make_unique<QModelObserver>();
-    core_ = std::make_unique<ModelManager>(
+    core_ = std::make_unique<ModelLayer>(
         /*observer=*/observer_.get());
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
@@ -80,7 +80,7 @@ QObject* QModelManager::getOperator(int id)
     // return new QModelOperatorWrapper(std::move(*maybeOp), this);
 }
 
-ModelManager* QModelManager::getModelManager()
+ModelLayer* QModelManager::getModelManager()
 {
     return core_.get();
 }

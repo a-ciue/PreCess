@@ -1,17 +1,17 @@
 /**
- * @file ModelManager.cpp
- * @brief 实现 ModelManager 类，用于管理多个网格模型
+ * @file ModelLayer.cpp
+ * @brief 实现 ModelLayer 类，用于管理多个网格模型
  *
- * 该文件包含 ModelManager 类的实现，提供多模型管理功能，包括：
+ * 该文件包含 ModelLayer 类的实现，提供多模型管理功能，包括：
  * - 添加、删除和获取模型
  * - 维护与 VTK 组件的交互
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
  * @date 2025/3/20
  */
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "ModelObserver.h"
-#include "SplineData.h"
+#include "GeometryData.h"
 #include "MeshData.h"
 #include "ComponentOperator.h"
 
@@ -20,7 +20,7 @@
 #include <stdexcept>
 
 // 添加模型
-Index ModelManager::addModel(std::unique_ptr<ModelData> model)
+Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
 {
     if (!model) {
         spdlog::warn("Adding an empty model, skipping");
@@ -38,7 +38,7 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
         }
     }
 
-    // 2) 把 components move 到 ModelManager::components_（真正所有权转移）
+    // 2) 把 components move 到 ModelLayer::components_（真正所有权转移）
     for (auto& c : model->stagingcomponents()) {
         if (!c)
             continue;
@@ -51,7 +51,7 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
 
         // move ownership into global pool
         components_[cid] = std::move(c);
-        Component* cp = components_[cid].get();
+        ComponentData* cp = components_[cid].get();
 
         // CAD index
         if (cp->cad) {
@@ -71,7 +71,7 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
         }
     }
 
-    // 3) 清空 ModelData 里的暂存容器（运行期不再持有 Component）
+    // 3) 清空 ModelData 里的暂存容器（运行期不再持有 ComponentData）
     model->stagingcomponents().clear();
 
     // 4) 存 model
@@ -83,7 +83,7 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
 }
 
 // 删除模型
-void ModelManager::removeModel(Index model_id) {
+void ModelLayer::removeModel(Index model_id) {
     auto it = models_.find(model_id);
     if (it == models_.end())
         throw std::runtime_error("Model not exist");
@@ -97,11 +97,11 @@ void ModelManager::removeModel(Index model_id) {
         observer_->notifyModelRemoved(model_id);
 }
 
-void ModelManager::removeComponent(Index component_id)
+void ModelLayer::removeComponent(Index component_id)
 {
     auto modelIt = component_to_model_.find(component_id);
     if (modelIt == component_to_model_.end())
-        throw std::runtime_error("Component not exist");
+        throw std::runtime_error("ComponentData not exist");
 
     Index model_id = modelIt->second;
 
@@ -113,7 +113,7 @@ void ModelManager::removeComponent(Index component_id)
     auto& ids = mit->second->componentIdsMut();
     ids.erase(std::remove(ids.begin(), ids.end(), component_id), ids.end());
 
-    if (Component* c = findComponent(component_id); c && c->mesh) {
+    if (ComponentData* c = findComponent(component_id); c && c->mesh) {
         c->mesh->releaseEdgeIdMap(edge_id_map_); 
     }
     // 从全局组件池删除
@@ -126,7 +126,7 @@ void ModelManager::removeComponent(Index component_id)
 }
 
 // 获取模型
-ModelData* ModelManager::getModel(Index model_id) const {
+ModelData* ModelLayer::getModel(Index model_id) const {
     auto it = models_.find(model_id);
     if (it == models_.end()) {
         return nullptr; // 模型不存在时返回空指针
@@ -135,7 +135,7 @@ ModelData* ModelManager::getModel(Index model_id) const {
 }
 
 
-std::optional<ModelOperator> ModelManager::getModelOperator(Index model_id) const
+std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
 {
     ModelData* mesh = getModel(model_id);
     if (mesh) {
@@ -144,7 +144,7 @@ std::optional<ModelOperator> ModelManager::getModelOperator(Index model_id) cons
     return {}; // 如果找不到模型，返回空指针
 }
 
-ModelData* ModelManager::modelById(Index model_id) const
+ModelData* ModelLayer::modelById(Index model_id) const
 {
     auto it = models_.find(model_id);
     if (it == models_.end())
@@ -152,27 +152,27 @@ ModelData* ModelManager::modelById(Index model_id) const
     return it->second.get();
 }
 
-std::optional<ComponentOperator> ModelManager::getComponentOperator(Index component_id)
+std::optional<ComponentOperator> ModelLayer::getComponentOperator(Index component_id)
 {
-    Component* c = findComponent(component_id);
+    ComponentData* c = findComponent(component_id);
     if (!c)
         return std::nullopt;
 
     return ComponentOperator(component_id, *c, *this, observer_);
 }
 
-Index ModelManager::allocateComponentId() noexcept
+Index ModelLayer::allocateComponentId() noexcept
 {
     return next_component_id_++;
 }
 
-Component* ModelManager::findComponent(Index component_id) const
+ComponentData* ModelLayer::findComponent(Index component_id) const
 {
     auto it = components_.find(component_id);
     return it == components_.end() ? nullptr : it->second.get();
 }
 
-std::optional<Index> ModelManager::findModelIdByComponent(Index component_id) const
+std::optional<Index> ModelLayer::findModelIdByComponent(Index component_id) const
 {
     auto it = component_to_model_.find(component_id);
     if (it == component_to_model_.end())
@@ -180,7 +180,7 @@ std::optional<Index> ModelManager::findModelIdByComponent(Index component_id) co
     return it->second;
 }
 
-std::vector<Index> ModelManager::getComponentIds(Index model_id) const
+std::vector<Index> ModelLayer::getComponentIds(Index model_id) const
 {
     auto it = models_.find(model_id);
     if (it == models_.end() || !it->second)
@@ -188,17 +188,17 @@ std::vector<Index> ModelManager::getComponentIds(Index model_id) const
     return it->second->componentIds();
 }
 
-GeometryRegistry& ModelManager::geomRegistry()
+GeometryRegistry& ModelLayer::geomRegistry()
 {
     return geom_registry_;
 }
 
-const GeometryRegistry& ModelManager::geomRegistry() const
+const GeometryRegistry& ModelLayer::geomRegistry() const
 {
     return geom_registry_;
 }
 
-Index ModelManager::appendGlobalPoints(const std::vector<std::array<double, 3>>& pts)
+Index ModelLayer::appendGlobalPoints(const std::vector<std::array<double, 3>>& pts)
 {
     Index base = (Index)global_points_.size();
     global_points_.insert(global_points_.end(), pts.begin(), pts.end());

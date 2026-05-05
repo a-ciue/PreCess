@@ -3,7 +3,7 @@
 #include "MakeMeshData.h"
 #include "MeshData.h"
 #include "ModelData.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "Selection.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -15,7 +15,7 @@ TEST_CASE("DeleteFaceHandler: delete face 0")
     auto mesh_data_p = std::make_unique<MeshData>(MakeMeshData());
     auto model = std::make_unique<ModelData>(std::move(mesh_data_p));
 
-    ModelManager mgr;
+    ModelLayer mgr;
     Index model_id = mgr.addModel(std::move(model));
 
     auto cids = mgr.getComponentIds(model_id);

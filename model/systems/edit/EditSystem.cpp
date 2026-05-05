@@ -5,7 +5,7 @@
 #include "EditSystem.h"
 #include "ArgObject.h"
 #include "EditHandler.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #include <spdlog/spdlog.h>
 
@@ -16,7 +16,7 @@ using std::vector;
 
 const string EditSystem::name = "EditSystem";
 
-EditSystem::EditSystem(ModelManager& model_manager)
+EditSystem::EditSystem(ModelLayer& model_manager)
     : model_manager_(&model_manager)
 {
     on_edit_info_changed_ = []() { };
@@ -28,7 +28,7 @@ std::any EditSystem::call(const string& unique_name, Index component_id, const v
 {
     std::optional comp_op = model_manager_->getComponentOperator(component_id);
     if (!comp_op) {
-        spdlog::error("EditSystem::call: Component operator for component ID {} not found.", component_id);
+        spdlog::error("EditSystem::call: ComponentData operator for component ID {} not found.", component_id);
         return {};
     }
     auto it = handlers_.find(unique_name);

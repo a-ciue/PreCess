@@ -2,7 +2,7 @@
 // Created by 徐昊阳 on 5/20/25.
 //
 #include "MeshData.h"
-#include "ElementIDMap.h"
+#include "MeshIDMap.h"
 #include <spdlog/spdlog.h>
 
 void MeshData::clear()
@@ -80,7 +80,7 @@ void MeshData::makePointIdsGlobal(Index base)
     point_ids_are_global_ = true;
 }
 
-void MeshData::ensureEdgeIdMapBuilt(ElementIDMap& map, Index component_id)
+void MeshData::ensureEdgeIdMapBuilt(MeshIDMap& map, Index component_id)
 {
     if (edge_vertices_.size() % 2 != 0) {
         spdlog::error("MeshData::ensureEdgeIdMapBuilt: edge_vertices_ size is odd, component_id={}", component_id);
@@ -100,7 +100,7 @@ void MeshData::ensureEdgeIdMapBuilt(ElementIDMap& map, Index component_id)
     }
 }
 
-void MeshData::releaseEdgeIdMap(ElementIDMap& map)
+void MeshData::releaseEdgeIdMap(MeshIDMap& map)
 {
     for (Index gid : local_to_global_edge_id) {
         if (gid >= 0)

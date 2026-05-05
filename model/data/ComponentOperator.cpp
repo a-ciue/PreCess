@@ -1,17 +1,17 @@
 #include "ComponentOperator.h"
 
-#include "Component.h"
-#include "ModelManager.h"
+#include "ComponentData.h"
+#include "ModelLayer.h"
 #include "ModelObserver.h"
 #include "MeshData.h"
-#include "SplineData.h"
+#include "GeometryData.h"
 #include "ModelData.h"
 
 #include <stdexcept>
 
 ComponentOperator::ComponentOperator(Index component_id,
-                                     Component& component,
-                                     ModelManager& mgr,
+                                     ComponentData& component,
+                                     ModelLayer& mgr,
                                      ModelObserver* observer) noexcept
     : component_id_(component_id)
     , component_(&component)
@@ -25,7 +25,7 @@ MeshData* ComponentOperator::mesh() const noexcept
     return component_ && component_->mesh ? component_->mesh.get() : nullptr;
 }
 
-SplineData* ComponentOperator::cad() const noexcept
+GeometryData* ComponentOperator::cad() const noexcept
 {
     return component_ && component_->cad ? component_->cad.get() : nullptr;
 }
@@ -42,7 +42,7 @@ ModelData* ComponentOperator::model() const
 {
     auto mid = mgr_->findModelIdByComponent(component_id_);
     if (!mid) return nullptr;
-    return mgr_->modelById(*mid); // 见第2步：给 ModelManager 加 public 访问器
+    return mgr_->modelById(*mid); // 见第2步：给 ModelLayer 加 public 访问器
 }
 
 void ComponentOperator::notifyChanged() const

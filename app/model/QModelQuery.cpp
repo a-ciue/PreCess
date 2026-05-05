@@ -1,8 +1,8 @@
 #include "QModelQuery.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "MeshData.h"
-#include "SplineData.h"
-#include "SplineDataVtk.h"
+#include "GeometryData.h"
+#include "GeometryDataVtk.h"
 
 #include <QVariantList>
 #include <QString>
@@ -11,7 +11,7 @@
 #include <TopoDS_Shape.hxx>
 #include <spdlog/spdlog.h>
 
-QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
+QModelQuery::QModelQuery(ModelLayer* mgr, QObject* parent)
         : QObject(parent), m_manager(mgr) {
 }
 
@@ -19,9 +19,9 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
 {
     using namespace std;
     auto ids = m_manager->getComponentIds(model_id);
-    Component* comp = nullptr;
+    ComponentData* comp = nullptr;
     for (Index cid : ids) {
-        Component* c = m_manager->findComponent(cid);
+        ComponentData* c = m_manager->findComponent(cid);
         if (c && c->mesh) {
             comp = c;
             break;
@@ -61,7 +61,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
 
 std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_id)
 {
-    Component* comp = m_manager->findComponent(component_id);
+    ComponentData* comp = m_manager->findComponent(component_id);
     if (!comp || !comp->mesh) {
         return std::nullopt;
     }
@@ -105,27 +105,27 @@ std::vector<std::array<double, 3>> QModelQuery::copyGlobalPoints() const
     return m_manager->globalPoints();
 }
 
-std::vector<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
+std::vector<GeometryDataVtk> QModelQuery::getSplineData(Index model_id)
 {
-    std::vector<SplineDataVtk> result;
+    std::vector<GeometryDataVtk> result;
     for (Index cid : m_manager->getComponentIds(model_id)) {
-        Component* comp = m_manager->findComponent(cid);
+        ComponentData* comp = m_manager->findComponent(cid);
         if (!comp || !comp->cad || !comp->cad->rootShape)
             continue;
 
-        result.push_back(SplineDataVtk { *comp->cad->rootShape, comp->id });
+        result.push_back(GeometryDataVtk { *comp->cad->rootShape, comp->id });
     }
 
     return result;
 }
 
-std::optional<SplineDataVtk> QModelQuery::getSplineDataByComponent(Index component_id)
+std::optional<GeometryDataVtk> QModelQuery::getSplineDataByComponent(Index component_id)
 {
-    Component* comp = m_manager->findComponent(component_id);
+    ComponentData* comp = m_manager->findComponent(component_id);
     if (!comp || !comp->cad || !comp->cad->rootShape)
         return std::nullopt;
 
-    return SplineDataVtk { *comp->cad->rootShape, comp->id };
+    return GeometryDataVtk { *comp->cad->rootShape, comp->id };
 }
 
 
@@ -138,7 +138,7 @@ QVariantList QModelQuery::getCadEdgeMappedPointIds(Index component_id, int local
 {
     QVariantList out;
 
-    Component* comp = m_manager->findComponent(component_id);
+    ComponentData* comp = m_manager->findComponent(component_id);
     if (!comp || !comp->cad)
         return out;
 
@@ -177,9 +177,9 @@ Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
         return {};
     }
     auto ids = m_manager->getComponentIds(model_id);
-    Component* comp = nullptr;
+    ComponentData* comp = nullptr;
     for (Index cid : ids) {
-        Component* c = m_manager->findComponent(cid);
+        ComponentData* c = m_manager->findComponent(cid);
         if (c && c->mesh) {
             comp = c;
             break;
@@ -215,9 +215,9 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
         return {};
     }
     auto ids = m_manager->getComponentIds(model_id);
-    Component* comp = nullptr;
+    ComponentData* comp = nullptr;
     for (Index cid : ids) {
-        Component* c = m_manager->findComponent(cid);
+        ComponentData* c = m_manager->findComponent(cid);
         if (c && c->mesh) {
             comp = c;
             break;
@@ -246,7 +246,7 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
 
 std::optional<GeomFaceId> QModelQuery::resolveCadFaceLocalId(Index component_id, int localFaceId)
 {
-    Component* comp = m_manager->findComponent(component_id);
+    ComponentData* comp = m_manager->findComponent(component_id);
     if (!comp || !comp->cad || !comp->cad->rootShape)
         return std::nullopt;
 
@@ -261,7 +261,7 @@ std::optional<GeomFaceId> QModelQuery::resolveCadFaceLocalId(Index component_id,
 
 std::optional<GeomEdgeId> QModelQuery::resolveCadEdgeLocalId(Index component_id, int localEdgeId)
 {
-    Component* comp = m_manager->findComponent(component_id);
+    ComponentData* comp = m_manager->findComponent(component_id);
     if (!comp || !comp->cad || !comp->cad->rootShape)
         return std::nullopt;
 
@@ -276,7 +276,7 @@ std::optional<GeomEdgeId> QModelQuery::resolveCadEdgeLocalId(Index component_id,
 
 std::optional<GeomVertexId> QModelQuery::resolveCadVertexLocalId(Index component_id, int localVertexId)
 {
-    Component* comp = m_manager->findComponent(component_id);
+    ComponentData* comp = m_manager->findComponent(component_id);
     if (!comp || !comp->cad || !comp->cad->rootShape)
         return std::nullopt;
 
@@ -291,7 +291,7 @@ std::optional<GeomVertexId> QModelQuery::resolveCadVertexLocalId(Index component
 
 std::optional<GeomSolidId> QModelQuery::resolveCadSolidLocalId(Index component_id, int localSolidId)
 {
-    Component* comp = m_manager->findComponent(component_id);
+    ComponentData* comp = m_manager->findComponent(component_id);
     if (!comp || !comp->cad || !comp->cad->rootShape)
         return std::nullopt;
 

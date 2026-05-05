@@ -38,7 +38,7 @@ public:
      */
     std::unique_ptr<ModelData> readSpline(const std::filesystem::path& spline_path);
 
-    bool writeSpline(SplineData& spline, const std::filesystem::path& target_path);
+    bool writeSpline(GeometryData& spline, const std::filesystem::path& target_path);
 
 private:
     // 禁止外部构造和拷贝

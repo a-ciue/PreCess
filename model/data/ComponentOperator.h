@@ -1,27 +1,27 @@
 #pragma once
 #include "Core.h"
 
-class ModelManager;
+class ModelLayer;
 class ModelObserver;
-struct Component;
+struct ComponentData;
 struct MeshData;
-struct SplineData;
+struct GeometryData;
 class ModelData;
 
 class ComponentOperator {
 public:
     ComponentOperator(Index component_id,
-        Component& component,
-        ModelManager& mgr,
+        ComponentData& component,
+        ModelLayer& mgr,
         ModelObserver* observer) noexcept;
 
     Index componentId() const noexcept { return component_id_; }
 
-    Component& component() const noexcept { return *component_; }
+    ComponentData& component() const noexcept { return *component_; }
     MeshData* mesh() const noexcept;
-    SplineData* cad() const noexcept;
+    GeometryData* cad() const noexcept;
 
-    ModelManager& manager() const noexcept { return *mgr_; }
+    ModelLayer& manager() const noexcept { return *mgr_; }
     ModelObserver* observer() const noexcept { return observer_; }
 
     // 常用：找到归属的 model（用于兜底通知/算法上下文）
@@ -33,7 +33,7 @@ public:
 
 private:
     Index component_id_ { -1 };
-    Component* component_ { nullptr };
-    ModelManager* mgr_ { nullptr };
+    ComponentData* component_ { nullptr };
+    ModelLayer* mgr_ { nullptr };
     ModelObserver* observer_ { nullptr };
 };

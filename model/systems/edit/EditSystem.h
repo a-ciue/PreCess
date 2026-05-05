@@ -18,7 +18,7 @@
 namespace core {
 class ArgObject;
 }
-class ModelManager;
+class ModelLayer;
 
 namespace systems::edit {
 class EditHandler;
@@ -36,7 +36,7 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>; //> 处理器的智能指针，支持自定义析构函数。特别是兼容跨dll边界获取的析构函数。
     static const std::string name; //> 系统唯一名称，用于插件注册时的识别
 
-    EditSystem(ModelManager& model_manager);
+    EditSystem(ModelLayer& model_manager);
     ~EditSystem();
     /**
      * @brief 模型编辑操作调用接口
@@ -69,7 +69,7 @@ public:
     void setOnEditInfoChangedCallback(std::function<void()> callback);
 
 private:
-    ModelManager* model_manager_; //< 模型管理器引用，用于获取模型操作接口
+    ModelLayer* model_manager_; //< 模型管理器引用，用于获取模型操作接口
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //< 模型编辑操作处理器插件列表，key为模型编辑操作唯一名称name
     std::unordered_map<std::string, std::unique_ptr<EditInfo>> edit_infos_; //< 模型编辑操作信息列表，key为模型编辑操作唯一名称name
 

@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-class ElementIDMap {
+class MeshIDMap {
 public:
     using ComponentID = Index;
     using LocalID = Index; // localEdgeId

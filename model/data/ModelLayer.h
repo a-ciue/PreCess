@@ -1,8 +1,8 @@
 /**
- * @file ModelManager.h
+ * @file ModelLayer.h
  * @brief 负责管理多个模型实例的类
  *
- * ModelManager 仅负责管理模型（添加、删除、查询、重命名）以及模型事件的发送。
+ * ModelLayer 仅负责管理模型（添加、删除、查询、重命名）以及模型事件的发送。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
  * @date 2025/3/20
@@ -13,7 +13,7 @@
 
 #include "ModelOperator.h"
 #include "GeometryRegistry.h"
-#include "ElementIDMap.h"
+#include "MeshIDMap.h"
 
 #include <array>
 #include <vector>
@@ -27,19 +27,19 @@ class ComponentOperator;
 /**
  * @brief 负责管理多个 ModelData 实例的类
  *
- * ModelManager 允许动态添加、删除和查找模型，通过Observer模式发送模型事件。
+ * ModelLayer 允许动态添加、删除和查找模型，通过Observer模式发送模型事件。
  * 使得 QML 层能够访问和控制网格数据。
  */
-class ModelManager {
+class ModelLayer {
 
 public:
     /**
-     * @brief 构造 ModelManager 对象
+     * @brief 构造 ModelLayer 对象
      *
      * @param parent 父对象，默认为 nullptr
     * @param observer 模型观察者对象，用于捕获模型事件（默认 nullptr）
      */
-    explicit ModelManager(ModelObserver* observer = nullptr) :  observer_(observer) {}
+    explicit ModelLayer(ModelObserver* observer = nullptr) :  observer_(observer) {}
 
     /**
      * @brief 添加一个模型
@@ -70,7 +70,7 @@ public:
     ModelData* modelById(Index model_id) const;
     std::optional<ComponentOperator> getComponentOperator(Index component_id);
 
-    Component* findComponent(Index component_id) const;
+    ComponentData* findComponent(Index component_id) const;
     std::optional<Index> findModelIdByComponent(Index component_id) const;
     std::vector<Index> getComponentIds(Index model_id) const;
 
@@ -80,8 +80,8 @@ public:
     Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
     const std::vector<std::array<double, 3>>& globalPoints() const { return global_points_; }
 
-    ElementIDMap& edgeIdMap() { return edge_id_map_; }
-    const ElementIDMap& edgeIdMap() const { return edge_id_map_; }
+    MeshIDMap& edgeIdMap() { return edge_id_map_; }
+    const MeshIDMap& edgeIdMap() const { return edge_id_map_; }
 
 private:
     ModelData* getModel(Index model_id) const;
@@ -91,13 +91,13 @@ private:
     GeometryRegistry geom_registry_;
 
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
-    std::unordered_map<Index, std::unique_ptr<Component>> components_; // 全局组件池
+    std::unordered_map<Index, std::unique_ptr<ComponentData>> components_; // 全局组件池
     std::unordered_map<Index, Index> component_to_model_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
 
     std::vector<std::array<double, 3>> global_points_;
-    ElementIDMap edge_id_map_; // 先只维护 edge 的 global->local
+    MeshIDMap edge_id_map_; // 先只维护 edge 的 global->local
 
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
 

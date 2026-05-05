@@ -3,7 +3,7 @@
 #include "ArgType.h"
 #include "MeshData.h"
 #include "Selection.h"
-#include "Component.h"
+#include "ComponentData.h"
 #include "ComponentOperator.h"
 
 #include <filesystem>
@@ -17,7 +17,7 @@ using namespace core;
 std::any DeleteFaceHandler::execute(ComponentOperator& op, const std::vector<core::ArgObject>& args)
 {
     // 参数检查
-    Component& comp = op.component();
+    ComponentData& comp = op.component();
     MeshData* mesh = comp.mesh.get();
     if (!mesh) {
         spdlog::error("DeleteFaceHandler::execute: Current component has no mesh.");

@@ -1,10 +1,10 @@
-// Test for PlyModelHandler: read PLY files, snapshot mesh, commit to ModelManager, write out, read back and compare
+// Test for PlyModelHandler: read PLY files, snapshot mesh, commit to ModelLayer, write out, read back and compare
 #include "PlyModelHandler.h"
 
-#include "Component.h"
+#include "ComponentData.h"
 #include "MeshData.h"
 #include "ModelData.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "TempFile.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -103,7 +103,7 @@ TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)"
 
     MeshSnapshot snap = snapshot_from_mesh(*mesh0);
 
-    ModelManager mgr;
+    ModelLayer mgr;
     Index model_id = mgr.addModel(std::move(model));
     auto cids = mgr.getComponentIds(model_id);
     REQUIRE(cids.size() == 1);
@@ -142,7 +142,7 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
 
     MeshSnapshot snap = snapshot_from_mesh(*mesh0);
 
-    ModelManager mgr;
+    ModelLayer mgr;
     Index model_id = mgr.addModel(std::move(model));
     auto cids = mgr.getComponentIds(model_id);
     REQUIRE(cids.size() == 1);

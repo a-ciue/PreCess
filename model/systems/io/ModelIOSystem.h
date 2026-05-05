@@ -12,7 +12,7 @@
 #include <unordered_map>
 #include <vector>
 
-class ModelManager;
+class ModelLayer;
 
 namespace systems::io {
 class ModelIOHandler;
@@ -34,7 +34,7 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>;
     static const std::string name; //> 系统名称
 
-    ModelIOSystem(ModelManager& manager);
+    ModelIOSystem(ModelLayer& manager);
     ~ModelIOSystem() override;
     /**
      * @brief 系统的读模型接口
@@ -76,7 +76,7 @@ public:
     void setOnDialogNameFiltersChanged(std::function<void()> callback);
 
 private:
-    ModelManager* manager_;
+    ModelLayer* manager_;
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //> 键是文件类型
     std::unordered_map<std::string, std::unique_ptr<ModelIOInfo>> file_type_infos_; //> 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
 

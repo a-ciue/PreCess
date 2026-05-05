@@ -1,13 +1,13 @@
 add_library(Data STATIC
 	ModelData.cpp
 	MeshData.cpp
-	SplineData.cpp
-	ModelManager.cpp
+	GeometryData.cpp
+	ModelLayer.cpp
 	ModelOperator.cpp
     GeometryRegistry.cpp 
-	CadSubshapeIndex.cpp 
-	Component.cpp 
-	ElementIDMap.cpp
+	GeometrySubshapeIndex.cpp
+	ComponentData.cpp 
+	MeshIDMap.cpp
 	ComponentOperator.cpp
 )
 target_include_directories(Data PUBLIC

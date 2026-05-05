@@ -2,8 +2,8 @@
 #include "ArgObject.h"
 #include "ModelIOSystemBase.h"
 #include "ComponentOperator.h"
-#include "Component.h"
-#include "ModelManager.h"
+#include "ComponentData.h"
+#include "ModelLayer.h"
 #include <filesystem>
 #include <spdlog/spdlog.h>
 
@@ -25,7 +25,7 @@ std::any systems::algo::CmdExecuteHandler::execute(HandlerContext& context, cons
     exe_dir.remove_filename();
 
     // ====== component 粒度判断输入类型 ======
-    Component& comp = context.cur_component.component();
+    ComponentData& comp = context.cur_component.component();
 
     bool hasMesh = (comp.mesh != nullptr);
     bool hasCad = (comp.cad != nullptr);

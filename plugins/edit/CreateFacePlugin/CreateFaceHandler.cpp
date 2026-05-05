@@ -2,7 +2,7 @@
 #include "ArgObject.h"
 #include "ArgType.h"
 #include "MeshData.h"
-#include "Component.h"         
+#include "ComponentData.h"         
 #include "ComponentOperator.h"  
 #include "Selection.h" 
 
@@ -15,7 +15,7 @@ using namespace core;
 std::any CreateFaceHandler::execute(ComponentOperator& op, const std::vector<core::ArgObject>& args)
 {
     // 参数检查
-    Component& comp = op.component();
+    ComponentData& comp = op.component();
     MeshData* mesh = comp.mesh.get();
     if (!mesh) {
         spdlog::error("CreateFaceHandler::execute: Current component has no mesh.");

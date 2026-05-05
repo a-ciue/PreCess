@@ -2,7 +2,7 @@
 
 #include "MeshData.h"
 #include "ModelData.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "ModelObserver.h"
 // 如果你已经做了 ComponentOperator 再 include
 // #include "ComponentOperator.h"
@@ -16,10 +16,10 @@ struct DummyObserver : ModelObserver {
     void notifySplineLoadFailed(const std::string&) override { }
 };
 
-TEST_CASE("Edge global id map is built for true 1D edges", "[ElementIDMap][MeshData]")
+TEST_CASE("Edge global id map is built for true 1D edges", "[MeshIDMap][MeshData]")
 {
     DummyObserver obs;
-    ModelManager mgr(&obs);
+    ModelLayer mgr(&obs);
 
     auto mesh = std::make_unique<MeshData>();
     mesh->init();
@@ -41,7 +41,7 @@ TEST_CASE("Edge global id map is built for true 1D edges", "[ElementIDMap][MeshD
     REQUIRE(comp_ids.size() == 1);
     Index component_id = comp_ids[0];
 
-    Component* c = mgr.findComponent(component_id);
+    ComponentData* c = mgr.findComponent(component_id);
     REQUIRE(c);
     REQUIRE(c->mesh);
 

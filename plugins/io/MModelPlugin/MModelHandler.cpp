@@ -8,7 +8,7 @@
 #include "ModelData.h"
 #include "CTMeshModel.h"
 #include "ToolMesh.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #include <spdlog/spdlog.h>
 #include <fstream>
@@ -20,7 +20,7 @@ static void localizePointIds(std::vector<Index>& ids, Index base)
         x -= base;
 }
 
-static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelManager& mgr, const Component& comp)
+static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelLayer& mgr, const ComponentData& comp)
 {
     if (!comp.mesh)
         return nullptr;
@@ -117,7 +117,7 @@ std::unique_ptr<ModelData> MModelHandler::read_model(const fs::path& path, const
     return model_data;
 }
 
-void MModelHandler::write_components(const ModelManager& mgr,
+void MModelHandler::write_components(const ModelLayer& mgr,
     const std::vector<Index>& component_ids,
     const fs::path& path,
     const std::vector<std::any>&)
@@ -135,7 +135,7 @@ void MModelHandler::write_components(const ModelManager& mgr,
 
     const Index cid = component_ids.front();
 
-    const Component* comp = mgr.findComponent(cid);
+    const ComponentData* comp = mgr.findComponent(cid);
     if (!comp) {
         spdlog::error("MModelHandler: component {} not found", cid);
         return;

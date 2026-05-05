@@ -4,7 +4,7 @@
 // test_ModelQuery.cpp
 #include "gtest/gtest.h"
 #include "QModelQuery.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include <QVariant>
 
 class ModelQueryTest : public ::testing::Test {
@@ -17,7 +17,7 @@ protected:
         delete query;
     }
 
-    ModelManager manager_;
+    ModelLayer manager_;
     QModelQuery* query;
     const QString model_name_{"dummy"};
 };

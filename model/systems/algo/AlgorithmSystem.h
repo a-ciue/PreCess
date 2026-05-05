@@ -18,7 +18,7 @@
 namespace core {
 class ArgObject;
 }
-class ModelManager;
+class ModelLayer;
 
 namespace systems::io {
 class ModelIOSystem;
@@ -37,7 +37,7 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>; //> 处理器的智能指针，支持自定义析构函数。特别是兼容跨dll边界获取的析构函数。
     static const std::string name; //> 系统唯一名称，用于插件注册时的识别
 
-    AlgorithmSystem(io::ModelIOSystem& io_system, ModelManager& model_manager);
+    AlgorithmSystem(io::ModelIOSystem& io_system, ModelLayer& model_manager);
     ~AlgorithmSystem();
     /**
      * @brief 算法调用接口
@@ -71,7 +71,7 @@ public:
 
 private:
     io::ModelIOSystem* io_system_; //< 模型IO系统引用，用于模型读写
-    ModelManager* model_manager_; //< 模型管理器引用，用于获取模型操作接口
+    ModelLayer* model_manager_; //< 模型管理器引用，用于获取模型操作接口
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //< 算法处理器插件列表，key为算法唯一名称name
     std::unordered_map<std::string, std::unique_ptr<AlgorithmInfo>> algorithm_infos_; //< 算法信息列表，key为算法唯一名称name
 

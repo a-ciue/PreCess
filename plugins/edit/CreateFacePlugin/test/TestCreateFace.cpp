@@ -3,7 +3,7 @@
 #include "MakeMeshData.h"
 #include "MeshData.h"
 #include "ModelData.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "Selection.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -12,13 +12,13 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
 {
     using namespace systems::edit;
 
-    auto build_one_component_model = []() -> std::pair<ModelManager, Index> {
+    auto build_one_component_model = []() -> std::pair<ModelLayer, Index> {
         auto mesh_data = std::make_unique<MeshData>(MakeMeshData());
         mesh_data->init();
 
         auto model = std::make_unique<ModelData>(std::move(mesh_data));
 
-        ModelManager mgr;
+        ModelLayer mgr;
         const Index model_id = mgr.addModel(std::move(model));
 
         return { std::move(mgr), model_id };

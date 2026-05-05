@@ -1,6 +1,6 @@
-#include "ElementIDMap.h"
+#include "MeshIDMap.h"
 
-ElementIDMap::GlobalID ElementIDMap::insert(ComponentID component_id, LocalID local_id)
+MeshIDMap::GlobalID MeshIDMap::insert(ComponentID component_id, LocalID local_id)
 {
     GlobalID gid = -1;
 
@@ -17,7 +17,7 @@ ElementIDMap::GlobalID ElementIDMap::insert(ComponentID component_id, LocalID lo
     return gid;
 }
 
-void ElementIDMap::insertRange(ComponentID component_id, LocalID local_begin, LocalID count, std::vector<GlobalID>& out)
+void MeshIDMap::insertRange(ComponentID component_id, LocalID local_begin, LocalID count, std::vector<GlobalID>& out)
 {
     out.clear();
     out.reserve((size_t)count);
@@ -26,7 +26,7 @@ void ElementIDMap::insertRange(ComponentID component_id, LocalID local_begin, Lo
     }
 }
 
-bool ElementIDMap::update(GlobalID global_id, ComponentID component_id, LocalID local_id)
+bool MeshIDMap::update(GlobalID global_id, ComponentID component_id, LocalID local_id)
 {
     if (global_id < 0 || (size_t)global_id >= global_to_local_.size())
         return false;
@@ -38,7 +38,7 @@ bool ElementIDMap::update(GlobalID global_id, ComponentID component_id, LocalID 
     return true;
 }
 
-bool ElementIDMap::remove(GlobalID global_id)
+bool MeshIDMap::remove(GlobalID global_id)
 {
     if (global_id < 0 || (size_t)global_id >= global_to_local_.size())
         return false;
@@ -55,8 +55,8 @@ bool ElementIDMap::remove(GlobalID global_id)
     return true;
 }
 
-std::pair<ElementIDMap::ComponentID, ElementIDMap::LocalID>
-ElementIDMap::getLocal(GlobalID global_id) const
+std::pair<MeshIDMap::ComponentID, MeshIDMap::LocalID>
+MeshIDMap::getLocal(GlobalID global_id) const
 {
     if (global_id < 0 || (size_t)global_id >= global_to_local_.size())
         return { kInvalidComponent, kInvalidLocal };
@@ -64,12 +64,12 @@ ElementIDMap::getLocal(GlobalID global_id) const
     return global_to_local_[(size_t)global_id];
 }
 
-size_t ElementIDMap::size() const 
+size_t MeshIDMap::size() const 
 { 
     return global_to_local_.size(); 
 }
 
-size_t ElementIDMap::freeSize() const 
+size_t MeshIDMap::freeSize() const 
 { 
     return free_ids_.size(); 
 }

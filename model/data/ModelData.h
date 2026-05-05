@@ -12,7 +12,7 @@
  */
 #ifndef MODEL_H
 #define MODEL_H
-#include "Component.h"
+#include "ComponentData.h"
 #include "Selection.h"
 
 #include <memory>
@@ -21,7 +21,7 @@
 #include <variant>
 
 struct MeshData;
-struct SplineData;
+struct GeometryData;
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 /**
@@ -46,17 +46,17 @@ public:
     };
 
     // 创建一个新组件
-    Component* createComponent(Index id, const std::string& name);
+    ComponentData* createComponent(Index id, const std::string& name);
     const std::vector<Index>& componentIds() const noexcept;
     std::vector<Index>& componentIdsMut() noexcept;
 
     // 访问当前模型中的所有组件
-    std::vector<std::unique_ptr<Component>>& stagingcomponents();
-    const std::vector<std::unique_ptr<Component>>& stagingcomponents() const;
+    std::vector<std::unique_ptr<ComponentData>>& stagingcomponents();
+    const std::vector<std::unique_ptr<ComponentData>>& stagingcomponents() const;
 
     /* ============ 构造（仅声明） ============ */
     explicit ModelData(std::unique_ptr<MeshData> mesh);
-    explicit ModelData(std::unique_ptr<SplineData> spline);
+    explicit ModelData(std::unique_ptr<GeometryData> spline);
 
     ModelData(const ModelData& other) = delete;
     ModelData& operator=(const ModelData& other) = delete;
@@ -65,7 +65,7 @@ public:
 
 private:
 
-    std::vector<std::unique_ptr<Component>> components_;
+    std::vector<std::unique_ptr<ComponentData>> components_;
     std::vector<Index> component_ids_; // 运行期权威：该 model 拥有哪些 component_id
     
 

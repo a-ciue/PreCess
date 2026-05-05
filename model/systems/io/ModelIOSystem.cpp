@@ -5,7 +5,7 @@
 #include "ModelIOSystem.h"
 #include "ModelIOHandler.h"
 #include "ModelIOInfo.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #include <optional>
 #include <spdlog/fmt/ranges.h>
@@ -18,7 +18,7 @@ using std::vector;
 
 const string ModelIOSystem::name = "ModelIOSystem";
 
-ModelIOSystem::ModelIOSystem(ModelManager& manager)
+ModelIOSystem::ModelIOSystem(ModelLayer& manager)
     : manager_(&manager)
 {
     on_dialog_name_filters_changed_ = []() { };

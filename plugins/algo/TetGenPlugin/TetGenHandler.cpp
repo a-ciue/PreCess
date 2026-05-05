@@ -2,8 +2,8 @@
 #include "ArgObject.h"
 #include "ModelIOSystemBase.h"
 #include "ComponentOperator.h"
-#include "Component.h"
-#include "ModelManager.h"
+#include "ComponentData.h"
+#include "ModelLayer.h"
 #include "TempFile.h"
 
 #include <filesystem>
@@ -31,7 +31,7 @@ std::any systems::algo::TetGenHandler::execute(HandlerContext& context, const st
     bool keep_outer = *keep_outer_idx == 0; // 0: 是, 1: 否
 
     // component 粒度：必须有 mesh
-    Component& comp = context.cur_component.component();
+    ComponentData& comp = context.cur_component.component();
     if (!comp.mesh) {
         spdlog::error("TetGenHandler: current component {} has no mesh, not supported by TetGen.",
             context.cur_component.componentId());

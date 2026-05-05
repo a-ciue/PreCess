@@ -19,7 +19,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/cfg/env.h>
 
-class ModelManager;
+class ModelLayer;
 
 int main(int argc, char* argv[])
 {
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     QQuickVTKItem::setGraphicsApi();
 
     QModelManager q_manager(argv[0]);
-    ModelManager* manager = q_manager.getModelManager();
+    ModelLayer* manager = q_manager.getModelManager();
     QModelObserver* observer = q_manager.getModelObserver();
     systems::algo::QAlgorithmSystemAdaptor algoAdaptor = q_manager.getAlgorithmSystemAdaptor();
     systems::io::QModelIOSystemAdaptor ioAdaptor = q_manager.getModelIOSystemAdaptor();

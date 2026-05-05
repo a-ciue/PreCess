@@ -1,7 +1,7 @@
-#include "Component.h"
+#include "ComponentData.h"
 #include "ModelData.h"
-#include "ModelManager.h"
-#include "SplineData.h"
+#include "ModelLayer.h"
+#include "GeometryData.h"
 
 #include <TopoDS_Shape.hxx>
 #include <catch2/catch_test_macros.hpp>
@@ -13,7 +13,7 @@ TEST_CASE("ModelData creates single CAD component (staging)")
 {
     using namespace std;
 
-    auto spline = make_unique<SplineData>();
+    auto spline = make_unique<GeometryData>();
     spline->rootShape = make_unique<TopoDS_Shape>(); // null shape is ok
 
     auto model = make_unique<ModelData>(move(spline));
@@ -34,22 +34,22 @@ TEST_CASE("ModelData supports multiple staging components")
     auto model = make_unique<ModelData>();
     model->model_name_ = "multi_component_model";
 
-    auto spline1 = make_unique<SplineData>();
+    auto spline1 = make_unique<GeometryData>();
     spline1->rootShape = make_unique<TopoDS_Shape>();
 
-    auto spline2 = make_unique<SplineData>();
+    auto spline2 = make_unique<GeometryData>();
     spline2->rootShape = make_unique<TopoDS_Shape>();
 
-    // 直接往 staging 塞 Component（避免依赖 createComponent，如果你还保留 createComponent 也可以用）
+    // 直接往 staging 塞 ComponentData（避免依赖 createComponent，如果你还保留 createComponent 也可以用）
     {
-        auto c1 = make_unique<Component>();
+        auto c1 = make_unique<ComponentData>();
         c1->id = -1;
         c1->name = "Comp_0";
         c1->cad = move(spline1);
         model->stagingcomponents().push_back(move(c1));
     }
     {
-        auto c2 = make_unique<Component>();
+        auto c2 = make_unique<ComponentData>();
         c2->id = -1;
         c2->name = "Comp_1";
         c2->cad = move(spline2);
@@ -63,30 +63,30 @@ TEST_CASE("ModelData supports multiple staging components")
     REQUIRE(model->stagingcomponents()[1]->hasCad());
 }
 
-TEST_CASE("ModelManager adds multiple CAD components (runtime access by ids)")
+TEST_CASE("ModelLayer adds multiple CAD components (runtime access by ids)")
 {
     using namespace std;
 
-    ModelManager manager;
+    ModelLayer manager;
 
     auto model = make_unique<ModelData>();
     model->model_name_ = "component_id_test";
 
-    auto spline1 = make_unique<SplineData>();
+    auto spline1 = make_unique<GeometryData>();
     spline1->rootShape = make_unique<TopoDS_Shape>();
 
-    auto spline2 = make_unique<SplineData>();
+    auto spline2 = make_unique<GeometryData>();
     spline2->rootShape = make_unique<TopoDS_Shape>();
 
     {
-        auto c1 = make_unique<Component>();
+        auto c1 = make_unique<ComponentData>();
         c1->id = -1;
         c1->name = "Part_1";
         c1->cad = move(spline1);
         model->stagingcomponents().push_back(move(c1));
     }
     {
-        auto c2 = make_unique<Component>();
+        auto c2 = make_unique<ComponentData>();
         c2->id = -1;
         c2->name = "Part_2";
         c2->cad = move(spline2);
@@ -98,7 +98,7 @@ TEST_CASE("ModelManager adds multiple CAD components (runtime access by ids)")
     Index modelId = manager.addModel(move(model));
     REQUIRE(modelId == 0);
 
-    // 运行期：通过 ids + findComponent 拿回 Component
+    // 运行期：通过 ids + findComponent 拿回 ComponentData
     auto ids = manager.getComponentIds(modelId);
     REQUIRE(ids.size() == 2);
 
@@ -106,7 +106,7 @@ TEST_CASE("ModelManager adds multiple CAD components (runtime access by ids)")
     REQUIRE(uniq.size() == 2);
 
     for (Index cid : ids) {
-        Component* c = manager.findComponent(cid);
+        ComponentData* c = manager.findComponent(cid);
         REQUIRE(c != nullptr);
         REQUIRE(c->hasCad());
     }

@@ -7,7 +7,7 @@
 #include "ArgType.h"
 #include "MeshData.h"
 #include "ModelData.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #define TINYPLY_IMPLEMENTATION
 #include <tinyply.h>
@@ -259,7 +259,7 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
     }
 }
 
-void PlyModelHandler::write_components(const ModelManager& mgr,
+void PlyModelHandler::write_components(const ModelLayer& mgr,
     const std::vector<Index>& component_ids,
     const fs::path& path,
     const std::vector<std::any>& /*args*/)
@@ -277,7 +277,7 @@ void PlyModelHandler::write_components(const ModelManager& mgr,
     Index max_face_n = 0;
 
     struct CompExportInfo {
-        const Component* comp {};
+        const ComponentData* comp {};
         const MeshData* mesh {};
         Index base {};
         Index cnt {};
@@ -287,7 +287,7 @@ void PlyModelHandler::write_components(const ModelManager& mgr,
     infos.reserve(component_ids.size());
 
     for (Index cid : component_ids) {
-        const Component* comp = mgr.findComponent(cid);
+        const ComponentData* comp = mgr.findComponent(cid);
         if (!comp || !comp->mesh) {
             spdlog::warn("PlyModelHandler: component {} missing or no mesh, skip", cid);
             continue;

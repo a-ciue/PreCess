@@ -26,8 +26,8 @@ static inline Index toFileVertexId(Index global_pid, Index comp_base, Index file
  * @brief 把运行期某个 component 的 MeshData（点索引是全局点池编号、且 vertex_positions_ 已被清空）
  *        追加合并到 merged（merged 是导出用的“局部 mesh”，vertex_positions_ 有坐标、索引是文件内局部）。
  */
-static bool appendComponentMeshToMerged(const ModelManager& mgr,
-    const Component& comp,
+static bool appendComponentMeshToMerged(const ModelLayer& mgr,
+    const ComponentData& comp,
     MeshData& merged,
     Index& io_file_vertex_offset /*in/out*/)
 {
@@ -145,7 +145,7 @@ std::unique_ptr<ModelData> MeshMeditModelHandler::read_model(const fs::path& pat
     return model_data;
 }
 
-void MeshMeditModelHandler::write_components(const ModelManager& mgr,
+void MeshMeditModelHandler::write_components(const ModelLayer& mgr,
     const std::vector<Index>& component_ids,
     const fs::path& path,
     const std::vector<std::any>& args)
@@ -187,7 +187,7 @@ void MeshMeditModelHandler::write_components(const ModelManager& mgr,
 
     int merged_count = 0;
     for (Index cid : component_ids) {
-        const Component* comp = mgr.findComponent(cid);
+        const ComponentData* comp = mgr.findComponent(cid);
         if (!comp) {
             spdlog::warn("MeshMeditModelHandler: component {} not found, skip", cid);
             continue;

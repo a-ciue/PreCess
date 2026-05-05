@@ -6,29 +6,29 @@
 #include <vector>
 #include <vtkRenderer.h>
 
-struct SplineDataVtk;
-class SplineActor;
+struct GeometryDataVtk;
+class GeometryActor;
 
-class SplineActorManager {
+class GeometryActorManager {
 public:
-    SplineActorManager();
-    ~SplineActorManager();
+    GeometryActorManager();
+    ~GeometryActorManager();
     void bindRender(vtkRenderer* renderer);
 
-    const SplineActor* getSplineActor(Index component_id);
+    const GeometryActor* getSplineActor(Index component_id);
     SplineRenderMode getSplineRenderMode(Index component_id);
     bool getIsEdgeRender(Index component_id);
     bool hasComponent(Index component_id) const;
 
     void deleteComponent(Index component_id);
-    void loadSpline(const SplineDataVtk& spline_data);
+    void loadSpline(const GeometryDataVtk& spline_data);
 
     void setVisibility(Index component_id, bool visibility);
     void setRenderMode(Index component_id, SplineRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
 
 private:
-    std::unordered_map<Index, std::unique_ptr<SplineActor>> component_actors_;
+    std::unordered_map<Index, std::unique_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
 };
 

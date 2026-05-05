@@ -1,6 +1,6 @@
 #include "ModelData.h"
-#include "ModelManager.h"
-#include "SplineData.h"
+#include "ModelLayer.h"
+#include "GeometryData.h"
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -11,9 +11,9 @@ TEST_CASE("CAD index build for single component")
 {
     using namespace std;
 
-    ModelManager manager;
+    ModelLayer manager;
 
-    auto spline = make_unique<SplineData>();
+    auto spline = make_unique<GeometryData>();
     spline->rootShape = make_unique<TopoDS_Shape>(
         BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
 
@@ -22,7 +22,7 @@ TEST_CASE("CAD index build for single component")
     Index modelId = manager.addModel(move(model));
     REQUIRE(modelId == 0);
 
-    Component* comp = manager.findComponent(0);
+    ComponentData* comp = manager.findComponent(0);
     REQUIRE(comp != nullptr);
     REQUIRE(comp->cad != nullptr);
     REQUIRE(comp->cad->cad_index.built);
@@ -42,30 +42,30 @@ TEST_CASE("CAD index build for multiple components")
 {
     using namespace std;
 
-    ModelManager manager;
+    ModelLayer manager;
 
     auto model = make_unique<ModelData>();
     model->model_name_ = "two_boxes";
 
-    auto spline1 = make_unique<SplineData>();
+    auto spline1 = make_unique<GeometryData>();
     spline1->rootShape = make_unique<TopoDS_Shape>(
         BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
 
-    auto spline2 = make_unique<SplineData>();
+    auto spline2 = make_unique<GeometryData>();
     spline2->rootShape = make_unique<TopoDS_Shape>(
         BRepPrimAPI_MakeBox(2.0, 1.0, 1.0).Shape());
 
-    Component* c1 = model->createComponent(-1, "Box_1");
+    ComponentData* c1 = model->createComponent(-1, "Box_1");
     c1->cad = move(spline1);
 
-    Component* c2 = model->createComponent(-1, "Box_2");
+    ComponentData* c2 = model->createComponent(-1, "Box_2");
     c2->cad = move(spline2);
 
     Index modelId = manager.addModel(move(model));
     REQUIRE(modelId == 0);
 
-    Component* comp0 = manager.findComponent(0);
-    Component* comp1 = manager.findComponent(1);
+    ComponentData* comp0 = manager.findComponent(0);
+    ComponentData* comp1 = manager.findComponent(1);
 
     REQUIRE(comp0 != nullptr);
     REQUIRE(comp1 != nullptr);

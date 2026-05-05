@@ -15,7 +15,7 @@
 
 #include "ModelData.h"
 #include "MeshData.h"
-#include "SplineData.h"
+#include "GeometryData.h"
 
 #include <stdexcept>  // 用于抛出异常
 #include <algorithm>
@@ -26,14 +26,14 @@ ModelData::~ModelData() = default;
 
 ModelData::ModelData(std::unique_ptr<MeshData> mesh)
 {
-    Component* c = createComponent(-1, "Comp_0");
+    ComponentData* c = createComponent(-1, "Comp_0");
     c->mesh = std::move(mesh);
     spdlog::info("ModelData: created 1 component with mesh");
 }
 
-ModelData::ModelData(std::unique_ptr<SplineData> spline)
+ModelData::ModelData(std::unique_ptr<GeometryData> spline)
 {
-    Component* c = createComponent(-1, "Comp_0");
+    ComponentData* c = createComponent(-1, "Comp_0");
     c->cad = std::move(spline);
     spdlog::info("ModelData: created 1 component with spline");
 }
@@ -42,9 +42,9 @@ ModelData::ModelData(ModelData&& other) noexcept = default;
 ModelData& ModelData::operator=(ModelData&& other) noexcept = default;
 
 // 创建组件
-Component* ModelData::createComponent(Index id, const std::string& name)
+ComponentData* ModelData::createComponent(Index id, const std::string& name)
 {
-    auto c = std::make_unique<Component>();
+    auto c = std::make_unique<ComponentData>();
     c->id = id;
     c->name = name;
 
@@ -59,11 +59,11 @@ std::vector<Index>& ModelData::componentIdsMut() noexcept
 { 
     return component_ids_; 
 }
-std::vector<std::unique_ptr<Component>>& ModelData::stagingcomponents()
+std::vector<std::unique_ptr<ComponentData>>& ModelData::stagingcomponents()
 { 
     return components_; 
 }
-const std::vector<std::unique_ptr<Component>>& ModelData::stagingcomponents() const
+const std::vector<std::unique_ptr<ComponentData>>& ModelData::stagingcomponents() const
 { 
     return components_; 
 }

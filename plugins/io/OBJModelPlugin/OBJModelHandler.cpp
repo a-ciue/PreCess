@@ -7,7 +7,7 @@
 #include "MeshData.h"
 #include "ModelData.h"
 #include "ObjMeshIO.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #include <spdlog/spdlog.h>
 #include <fstream>
@@ -26,7 +26,7 @@ std::unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, con
     return model_data; // 技巧：RVO
 }
 
-void OBJModelHandler::write_components(const ModelManager& mgr,
+void OBJModelHandler::write_components(const ModelLayer& mgr,
     const std::vector<Index>& component_ids,
     const fs::path& path,
     const std::vector<std::any>&)
@@ -43,7 +43,7 @@ void OBJModelHandler::write_components(const ModelManager& mgr,
     Index v_offset_1based = 1;
 
     for (Index cid : component_ids) {
-        const Component* comp = mgr.findComponent(cid);
+        const ComponentData* comp = mgr.findComponent(cid);
         if (!comp) {
             spdlog::warn("OBJModelHandler: component {} not found, skip", cid);
             continue;

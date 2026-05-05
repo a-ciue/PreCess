@@ -1,9 +1,9 @@
-#include "ElementIDMap.h"
+#include "MeshIDMap.h"
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("ElementIDMap basic insert/getLocal")
+TEST_CASE("MeshIDMap basic insert/getLocal")
 {
-    ElementIDMap map;
+    MeshIDMap map;
 
     auto g0 = map.insert(10, 0);
     auto g1 = map.insert(10, 1);
@@ -21,9 +21,9 @@ TEST_CASE("ElementIDMap basic insert/getLocal")
     REQUIRE(map.freeSize() == 0);
 }
 
-TEST_CASE("ElementIDMap remove marks invalid and adds to free pool")
+TEST_CASE("MeshIDMap remove marks invalid and adds to free pool")
 {
-    ElementIDMap map;
+    MeshIDMap map;
 
     auto g0 = map.insert(10, 0);
     auto g1 = map.insert(10, 1);
@@ -31,8 +31,8 @@ TEST_CASE("ElementIDMap remove marks invalid and adds to free pool")
     REQUIRE(map.remove(g0) == true);
 
     auto p0 = map.getLocal(g0);
-    REQUIRE(p0.first == ElementIDMap::kInvalidComponent);
-    REQUIRE(p0.second == ElementIDMap::kInvalidLocal);
+    REQUIRE(p0.first == MeshIDMap::kInvalidComponent);
+    REQUIRE(p0.second == MeshIDMap::kInvalidLocal);
 
     REQUIRE(map.freeSize() == 1);
 
@@ -41,9 +41,9 @@ TEST_CASE("ElementIDMap remove marks invalid and adds to free pool")
     REQUIRE(map.freeSize() == 1);
 }
 
-TEST_CASE("ElementIDMap insert reuses freed ids (unordered, any one)")
+TEST_CASE("MeshIDMap insert reuses freed ids (unordered, any one)")
 {
-    ElementIDMap map;
+    MeshIDMap map;
 
     auto g0 = map.insert(10, 0);
     auto g1 = map.insert(10, 1);
@@ -65,11 +65,11 @@ TEST_CASE("ElementIDMap insert reuses freed ids (unordered, any one)")
     REQUIRE(map.freeSize() == 1);
 }
 
-TEST_CASE("ElementIDMap insertRange works")
+TEST_CASE("MeshIDMap insertRange works")
 {
-    ElementIDMap map;
+    MeshIDMap map;
 
-    std::vector<ElementIDMap::GlobalID> gids;
+    std::vector<MeshIDMap::GlobalID> gids;
     map.insertRange(7, 0, 5, gids);
 
     REQUIRE(gids.size() == 5);

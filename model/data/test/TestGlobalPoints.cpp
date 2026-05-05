@@ -1,5 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include "ModelData.h"
 #include "MeshData.h"
 #include "ModelObserver.h"
@@ -16,7 +16,7 @@ struct DummyObserver : ModelObserver {
 TEST_CASE("Global points pool + globalized indices + vertex_positions swapped out", "[GlobalPoints]")
 {
     DummyObserver obs;
-    ModelManager mgr(&obs);
+    ModelLayer mgr(&obs);
 
     auto mesh = std::make_unique<MeshData>();
     mesh->init();
@@ -40,7 +40,7 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
     REQUIRE(compIds.size() == 1);
     Index cid = compIds[0];
 
-    Component* c = mgr.findComponent(cid);
+    ComponentData* c = mgr.findComponent(cid);
     REQUIRE(c);
     REQUIRE(c->mesh);
 
