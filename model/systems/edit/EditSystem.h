@@ -44,7 +44,7 @@ public:
      * @param model
      * @param args 模型编辑操作参数
      */
-    std::any call(const std::string& unique_name, Index model, const std::vector<core::ArgObject>& args);
+    std::any call(const std::string& unique_name, Index component_id, const std::vector<core::ArgObject>& args);
     /**
      * @brief 注册模型编辑操作处理器插件
      */

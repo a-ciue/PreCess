@@ -48,11 +48,27 @@ void ModelIOSystem::write(Index model, const std::filesystem::path& path, const 
         return;
     }
 
-    if (std::optional model_op = this->manager_->getModelOperator(model)) {
-        handler->write_model(model_op->data(), path, args);
-    } else {
-        spdlog::warn("model id {} does not exist, cant write model file", model);
+    auto cids = manager_->getComponentIds(model);
+    if (cids.empty()) {
+        spdlog::warn("ModelIOSystem::write: model {} has no components", model);
+        return;
     }
+
+    handler->write_components(*manager_, cids, path, args);
+}
+
+void ModelIOSystem::writeComponents(const std::vector<Index>& component_ids,
+        const std::filesystem::path& path,
+        const std::string& file_type,
+        const std::vector<std::any>& args)
+{
+    SystemHandler* handler = handlers_.count(file_type) ? handlers_[file_type].get() : nullptr;
+    if (!handler) {
+        spdlog::warn("file type {} not registered when write model file", file_type);
+        return;
+    }
+
+    handler->write_components(*manager_, component_ids, path, args);
 }
 
 bool ModelIOSystem::registerHandler(const HandlerMetaData& meta_data, SystemHandlerPtr handler)

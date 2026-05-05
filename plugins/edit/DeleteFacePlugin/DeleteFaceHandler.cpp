@@ -2,7 +2,9 @@
 #include "ArgObject.h"
 #include "ArgType.h"
 #include "MeshData.h"
-#include "ModelOperatorBase.h"
+#include "Selection.h"
+#include "Component.h"
+#include "ComponentOperator.h"
 
 #include <filesystem>
 #include <execution>
@@ -12,23 +14,24 @@
 
 namespace systems::edit {
 using namespace core;
-ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject>& args)
+std::any DeleteFaceHandler::execute(ComponentOperator& op, const std::vector<core::ArgObject>& args)
 {
     // 参数检查
-    MeshData* mesh = data.asMeshData();
+    Component& comp = op.component();
+    MeshData* mesh = comp.mesh.get();
     if (!mesh) {
-        spdlog::error("DeleteFaceHandler::execute: ModelData is not a mesh.");
-        return data;
+        spdlog::error("DeleteFaceHandler::execute: Current component has no mesh.");
+        return {};
     }
     auto selection_p = args[0].get<ArgTypeEnum::Selector>();
     if (!selection_p || !*selection_p) {
         spdlog::error("DeleteFaceHandler::execute: Argument 1 is missing or of wrong type.");
-        return data;
+        return {};
     }
     auto selection = *selection_p;
     if (selection->type != ElementEnum::Face || selection->ids.empty()) {
         spdlog::error("DeleteFaceHandler::execute: Selection type is not Face or no faces selected.");
-        return data;
+        return {};
     }
 
     // 获取所有需要删除的面ID并按降序排序，以便从后往前删除
@@ -39,13 +42,14 @@ ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject
     for (Index face_id : face_ids) {
         if (face_id < 0 || face_id >= static_cast<Index>(mesh->face_vertices_offset_.size() - 1)) {
             spdlog::error("DeleteFaceHandler::execute: Face ID {} is out of bounds.", face_id);
-            return data;
+            return {};
         }
     }
 
-    spdlog::debug("DeleteFaceHandler::execute: Deleting faces ID {}", face_ids);
+    spdlog::debug("DeleteFaceHandler::execute: Deleting faces ID {} on component {}",
+        face_ids, op.componentId());
 
-    // 预先收集所有面的顶点数量（因为face_vertices_offset_会在删除过程中变化）
+   // 预先收集所有面的顶点数量（因为face_vertices_offset_会在删除过程中变化）
     std::vector<std::pair<Index, Index>> face_vertex_counts; // <face_id, vertices_count>
     for (Index face_id : face_ids) {
         Index vertices_count = mesh->face_vertices_offset_[face_id + 1] - mesh->face_vertices_offset_[face_id];
@@ -65,7 +69,7 @@ ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject
                 offset -= vertices_count;
             });
 
-        // 维护 patch 和 block 关系
+         // 维护 patch 和 block 关系
         std::optional<Index> patch_id = mesh->face_patch_id(face_id); // 实时查询
         if (patch_id.has_value()) {
             std::vector<Index>& faces = mesh->patches_[patch_id.value()]->faces;
@@ -88,7 +92,7 @@ ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject
     // 对所有 patch 中的 face id 进行更新
     for (auto&& [_, patch] : mesh->patches_) {
         std::vector<Index>& faces = patch->faces;
-
+        
         std::for_each(std::execution::par, faces.begin(), faces.end(),
             [&face_ids](Index& id) {
                 // 计算需要减少的数量
@@ -102,7 +106,7 @@ ModelData DeleteFaceHandler::execute(ModelData data, const std::vector<ArgObject
             });
     }
 
-    return data;
+    return {};
 }
 
 std::vector<ArgType> DeleteFaceHandler::args_type() const

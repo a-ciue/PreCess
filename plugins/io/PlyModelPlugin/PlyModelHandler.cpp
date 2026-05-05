@@ -7,6 +7,7 @@
 #include "ArgType.h"
 #include "MeshData.h"
 #include "ModelData.h"
+#include "ModelManager.h"
 
 #define TINYPLY_IMPLEMENTATION
 #include <tinyply.h>
@@ -258,74 +259,144 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
     }
 }
 
-void PlyModelHandler::write_model(const ModelData& data, const fs::path& path, const std::vector<std::any>& args)
+void PlyModelHandler::write_components(const ModelManager& mgr,
+    const std::vector<Index>& component_ids,
+    const fs::path& path,
+    const std::vector<std::any>& /*args*/)
 {
-    try {
-        auto mesh_data = data.asMeshData();
-        if (!mesh_data) {
-            spdlog::error("PlyModelHandler: only mesh data is supported for writing");
-            return;
+    if (component_ids.empty()) {
+        spdlog::error("PlyModelHandler::write_components: empty component_ids");
+        return;
+    }
+
+    const auto& gp = mgr.globalPoints();
+
+    // 1) 统计总顶点数/总面数，并确定最大面点数（用于选择 list count 类型）
+    Index total_vertices = 0;
+    Index total_faces = 0;
+    Index max_face_n = 0;
+
+    struct CompExportInfo {
+        const Component* comp {};
+        const MeshData* mesh {};
+        Index base {};
+        Index cnt {};
+        Index face_count {};
+    };
+    std::vector<CompExportInfo> infos;
+    infos.reserve(component_ids.size());
+
+    for (Index cid : component_ids) {
+        const Component* comp = mgr.findComponent(cid);
+        if (!comp || !comp->mesh) {
+            spdlog::warn("PlyModelHandler: component {} missing or no mesh, skip", cid);
+            continue;
+        }
+        const MeshData& m = *comp->mesh;
+        const Index base = m.global_point_base_;
+        const Index cnt = m.vertex_count_;
+
+        if (base < 0 || cnt <= 0 || base + cnt > (Index)gp.size()) {
+            spdlog::error("PlyModelHandler: invalid global point range, cid={}, base={}, cnt={}, gp={}",
+                cid, base, cnt, gp.size());
+            continue;
         }
 
-        const auto& verts = mesh_data->vertex_positions_;
-        const auto& offsets = mesh_data->face_vertices_offset_;
-        const auto& faces = mesh_data->face_vertices_;
+        const Index face_count = (m.face_vertices_offset_.size() >= 2)
+            ? (Index)m.face_vertices_offset_.size() - 1
+            : 0;
 
-        size_t vertex_count = verts.size();
-        size_t face_count = offsets.size() > 1 ? offsets.size() - 1 : 0;
-
-        // 创建tinyply文件
-        tinyply::PlyFile file;
-
-        // 准备顶点数据
-        std::vector<float> vertices_float;
-        vertices_float.reserve(vertex_count * 3);
-        for (const auto& v : verts) {
-            vertices_float.push_back(static_cast<float>(v[0]));
-            vertices_float.push_back(static_cast<float>(v[1]));
-            vertices_float.push_back(static_cast<float>(v[2]));
-        }
-
-        // 准备面数据
-        std::vector<int32_t> face_indices;
-        std::vector<int32_t> face_vertexs;
-        for (size_t fi = 0; fi < face_count; ++fi) {
-            Index start = offsets[fi];
-            Index end = offsets[fi + 1];
-            Index nv = end - start;
-            
-            face_indices.push_back(static_cast<int32_t>(nv)); // 顶点数量
-            for (Index k = start; k < end; ++k) {
-                face_indices.push_back(static_cast<int32_t>(faces[k])); // 顶点索引
-                face_vertexs.push_back(static_cast<int32_t>(faces[k]));
+        // 统计 max_face_n
+        if (face_count > 0) {
+            for (Index f = 0; f < face_count; ++f) {
+                Index a = m.face_vertices_offset_[(size_t)f];
+                Index b = m.face_vertices_offset_[(size_t)f + 1];
+                if (a < 0 || b < a || b > (Index)m.face_vertices_.size())
+                    continue;
+                max_face_n = std::max(max_face_n, b - a);
             }
         }
 
-        // 添加顶点属性
-        file.add_properties_to_element("vertex", { "x", "y", "z" }, 
-            tinyply::Type::FLOAT32, vertex_count, 
-            reinterpret_cast<uint8_t*>(vertices_float.data()), 
-            tinyply::Type::INVALID, 0);
+        infos.push_back({ comp, &m, base, cnt, face_count });
 
-        // 添加面属性
-        
-        file.add_properties_to_element("face", { "vertex_indices" }, 
-            tinyply::Type::INT32, face_count, 
-            reinterpret_cast<uint8_t*>(face_indices.data()), 
-            tinyply::Type::INT8,0);
-        
-        // 写入文件
-        std::ofstream ofs(path, std::ios::binary);
-        if (!ofs) {
-            spdlog::error("PlyModelHandler: cannot create file {}", path.string().c_str());
-            return;
+        total_vertices += cnt;
+        total_faces += face_count;
+    }
+
+    if (total_vertices <= 0) {
+        spdlog::error("PlyModelHandler: no vertices to export");
+        return;
+    }
+
+    // PLY list count 类型：若有面顶点数 >255，用 uint（这里用 uint32_t 表达）
+    const bool use_uint_count = (max_face_n > 255);
+
+    // 2) 写 header
+    std::ofstream ofs(path, std::ios::binary);
+    if (!ofs) {
+        spdlog::error("PlyModelHandler: cannot open output {}", path.string());
+        return;
+    }
+
+    ofs << "ply\n";
+    ofs << "format ascii 1.0\n";
+    ofs << "comment generated by PreCess\n";
+    ofs << "element vertex " << total_vertices << "\n";
+    // 用 double，保证 round-trip 精度；你的读逻辑支持 FLOAT64
+    ofs << "property double x\n";
+    ofs << "property double y\n";
+    ofs << "property double z\n";
+    ofs << "element face " << total_faces << "\n";
+    ofs << "property list " << (use_uint_count ? "uint" : "uchar") << " int vertex_indices\n";
+    ofs << "end_header\n";
+
+    // 3) 写 vertices（按 component 顺序拼接）
+    ofs << std::setprecision(17); // double 足够高精度
+    for (const auto& info : infos) {
+        for (Index i = 0; i < info.cnt; ++i) {
+            const auto& p = gp[(size_t)(info.base + i)];
+            ofs << p[0] << " " << p[1] << " " << p[2] << "\n";
+        }
+    }
+
+    // 4) 写 faces（保留每个面的顶点数，不三角化）
+    Index vertex_offset = 0; // 文件内顶点偏移（0-based）
+    for (const auto& info : infos) {
+        const MeshData& m = *info.mesh;
+        const Index base = info.base;
+        const Index cnt = info.cnt;
+
+        for (Index f = 0; f < info.face_count; ++f) {
+            Index a = m.face_vertices_offset_[(size_t)f];
+            Index b = m.face_vertices_offset_[(size_t)f + 1];
+            if (a < 0 || b < a || b > (Index)m.face_vertices_.size()) {
+                // 写一个空 face 会破坏结构；这里直接跳过（但会导致 face 数不一致）
+                // 更稳：在统计 total_faces 时就过滤非法 face；这里假设数据合法
+                spdlog::error("PlyModelHandler: invalid face offset range f={}, a={}, b={}", f, a, b);
+                throw std::runtime_error("PlyModelHandler: invalid face offsets");
+            }
+
+            Index n = b - a;
+            if (use_uint_count)
+                ofs << (uint32_t)n;
+            else
+                ofs << (uint32_t)n; // uchar 也用数值打印即可
+
+            for (Index k = a; k < b; ++k) {
+                Index gid = m.face_vertices_[(size_t)k]; // 全局点 id
+                Index local = gid - base; // component 局部
+                if (local < 0 || local >= cnt) {
+                    spdlog::error("PlyModelHandler: face references vertex out of component range (gid={}, base={}, cnt={})",
+                        gid, base, cnt);
+                    throw std::runtime_error("PlyModelHandler: face index out of range");
+                }
+                Index file_vid = vertex_offset + local; // 文件内 0-based
+                ofs << " " << (int)file_vid;
+            }
+            ofs << "\n";
         }
 
-        // 默认使用ascii格式写入
-        file.write(ofs, false);
-
-    } catch (const std::exception& e) {
-        spdlog::error("PlyModelHandler: error writing {}: {}", path.string().c_str(), e.what());
+        vertex_offset += cnt;
     }
 }
 

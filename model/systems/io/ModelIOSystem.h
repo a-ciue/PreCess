@@ -51,6 +51,10 @@ public:
      * @param args 写操作的参数，传给Handler
      */
     void write(Index model, const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override;
+    void writeComponents(const std::vector<Index>& component_ids,
+        const std::filesystem::path& path,
+        const std::string& file_type,
+        const std::vector<std::any>& args) override;
     /**
      * @brief 系统的功能Handler注册函数
      * @param meta_data 功能的元信息

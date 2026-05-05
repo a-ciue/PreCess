@@ -42,10 +42,10 @@ public:
     /**
      * @brief 算法调用接口
      * @param unique_name 算法唯一名称
-     * @param model
+     * @param component_id
      * @param args 算法参数
      */
-    std::any call(const std::string& unique_name, Index model, const std::vector<core::ArgObject>& args);
+    std::any call(const std::string& unique_name, Index component_id, const std::vector<core::ArgObject>& args);
     /**
      * @brief 注册算法处理器插件
      */

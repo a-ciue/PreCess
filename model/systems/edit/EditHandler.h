@@ -5,7 +5,7 @@
 #ifndef EDIT_HANDLER_H
 #define EDIT_HANDLER_H
 #include "ArgType.h"
-#include "ModelData.h"
+#include "ComponentOperator.h"
 
 #include <any>
 #include <string>
@@ -24,11 +24,11 @@ public:
     virtual ~EditHandler() = default;
     /**i安吉
      * @brief 执行模型编辑功能
-     * @param model 待操作的模型数据
+     * @param op 组件操作句柄，包含该组件的上下文和 ModelManager 引用
      * @param args 模型编辑参数
      * @return 模型编辑结果模型数据
      */
-    virtual ModelData execute(ModelData model, const std::vector<core::ArgObject>& args) = 0;
+    virtual std::any execute(ComponentOperator& op, const std::vector<core::ArgObject>& args) = 0;
     /**
      * @brief 模型编辑参数类型，交给UI使用
      * @return 返回参数类型列表

@@ -19,6 +19,11 @@ public:
     virtual ~ModelIOSystemBase() = default;
     virtual void read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) = 0;
     virtual void write(Index model, const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) = 0;
+    virtual void writeComponents(const std::vector<Index>& component_ids,
+        const std::filesystem::path& path,
+        const std::string& file_type,
+        const std::vector<std::any>& args)
+        = 0;
 };
 }
 
