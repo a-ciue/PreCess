@@ -47,10 +47,12 @@ public:
 
     // 创建一个新组件
     Component* createComponent(Index id, const std::string& name);
+    const std::vector<Index>& componentIds() const noexcept;
+    std::vector<Index>& componentIdsMut() noexcept;
 
     // 访问当前模型中的所有组件
-    std::vector<std::unique_ptr<Component>>& components();
-    const std::vector<std::unique_ptr<Component>>& components() const;
+    std::vector<std::unique_ptr<Component>>& stagingcomponents();
+    const std::vector<std::unique_ptr<Component>>& stagingcomponents() const;
 
     /* ============ 构造（仅声明） ============ */
     explicit ModelData(std::unique_ptr<MeshData> mesh);
@@ -60,23 +62,12 @@ public:
     ModelData& operator=(const ModelData& other) = delete;
     ModelData(ModelData&& other) noexcept;
     ModelData& operator=(ModelData&& other) noexcept;
-    /* ============ 类型查询 ============ */
-    Type type() const;
-    bool hasMesh()   const noexcept;
-    bool hasSpline() const noexcept;
 
-    /* ============ 访问器 ============ */
-    MeshData* asMeshData() noexcept;
-    const MeshData* asMeshData() const noexcept;
-
-    SplineData* asSplineData() noexcept;
-    const SplineData* asSplineData() const noexcept;
 private:
-    //! @brief 合并给定block，并更新block actor，依赖ModelActor
-    //! @param block_ids
-    void merge_blocks(Selection selection);
 
     std::vector<std::unique_ptr<Component>> components_;
+    std::vector<Index> component_ids_; // 运行期权威：该 model 拥有哪些 component_id
+    
 
     friend class ModelOperator; //!< 声明 ModelOperator 为友元，以允许其访问 ModelData 私有数据
 };

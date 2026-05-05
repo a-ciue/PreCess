@@ -91,8 +91,8 @@ private:
     GeometryRegistry geom_registry_;
 
     std::unordered_map<Index, std::unique_ptr<ModelData>> models_;
+    std::unordered_map<Index, std::unique_ptr<Component>> components_; // 全局组件池
     std::unordered_map<Index, Index> component_to_model_;
-    std::unordered_map<Index, Component*> component_index_;
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
 

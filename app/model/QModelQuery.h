@@ -76,8 +76,6 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
      */
     Q_INVOKABLE QList<Element::Type> getModelAttriType(Index model_id) const;
 
-    int getModelType(Index model_id) const;
-
     std::optional<GeomFaceId> resolveCadFaceLocalId(Index component_id, int localFaceId);
     std::optional<GeomEdgeId> resolveCadEdgeLocalId(Index component_id, int localEdgeId);
     std::optional<GeomVertexId> resolveCadVertexLocalId(Index component_id, int localVertexId);

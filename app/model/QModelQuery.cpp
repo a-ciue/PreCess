@@ -18,11 +18,18 @@ QModelQuery::QModelQuery(ModelManager* mgr, QObject* parent)
 std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
 {
     using namespace std;
-    ModelData* model = m_manager->getModel(model_id);
-    if (!model || !model->hasMesh()) {
-        return {};
+    auto ids = m_manager->getComponentIds(model_id);
+    Component* comp = nullptr;
+    for (Index cid : ids) {
+        Component* c = m_manager->findComponent(cid);
+        if (c && c->mesh) {
+            comp = c;
+            break;
+        }
     }
-    MeshData* md = model->asMeshData();
+    if (!comp)
+        return {};
+    MeshData* md = comp->mesh.get();
 
     // 构造 ModelData
     MeshDataVtk model_data { 
@@ -101,11 +108,8 @@ std::vector<std::array<double, 3>> QModelQuery::copyGlobalPoints() const
 std::vector<SplineDataVtk> QModelQuery::getSplineData(Index model_id)
 {
     std::vector<SplineDataVtk> result;
-
-    ModelData* model = m_manager->getModel(model_id);
-
-    auto& comps = model->components();
-    for (const auto& comp : comps) {
+    for (Index cid : m_manager->getComponentIds(model_id)) {
+        Component* comp = m_manager->findComponent(cid);
         if (!comp || !comp->cad || !comp->cad->rootShape)
             continue;
 
@@ -172,7 +176,18 @@ Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
         spdlog::error("模型不存在，无法获取属性名，id:{}", model_id);
         return {};
     }
-    MeshData* mesh = model->asMeshData();
+    auto ids = m_manager->getComponentIds(model_id);
+    Component* comp = nullptr;
+    for (Index cid : ids) {
+        Component* c = m_manager->findComponent(cid);
+        if (c && c->mesh) {
+            comp = c;
+            break;
+        }
+    }
+    if (!comp)
+        return {};
+    MeshData* mesh = comp->asMeshData();
     if (mesh) {
         for (const auto& [name, data] : mesh->vertex_attributes_) {
             attri_list.append(QString::fromStdString(name));
@@ -199,7 +214,18 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
         spdlog::error( "模型不存在，无法获取属性类型，id:{}",model_id);
         return {};
     }
-    MeshData* mesh = model->asMeshData();
+    auto ids = m_manager->getComponentIds(model_id);
+    Component* comp = nullptr;
+    for (Index cid : ids) {
+        Component* c = m_manager->findComponent(cid);
+        if (c && c->mesh) {
+            comp = c;
+            break;
+        }
+    }
+    if (!comp)
+        return {};
+    MeshData* mesh = comp->asMeshData();
     if (mesh) {
         for (const auto& [name, data] : mesh->vertex_attributes_) {
             type_list.append(Element::Type::Vertex);
@@ -216,16 +242,6 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
         spdlog::info ("type_list.size():" ,type_list.size());
     }
     return type_list;
-}
-
-//判断模型类型：mesh返回0，spline返回1，未知返回-1
-int QModelQuery::getModelType(Index model_id) const
-{
-    if (m_manager->models_[model_id]->hasMesh())
-        return 0;
-    if (m_manager->models_[model_id]->hasSpline())
-        return 1;
-    return -1;
 }
 
 std::optional<GeomFaceId> QModelQuery::resolveCadFaceLocalId(Index component_id, int localFaceId)

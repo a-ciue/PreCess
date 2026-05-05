@@ -29,8 +29,8 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
 
     Index model_id = ++max_index_;
 
-    // 补齐全局 component_id
-    for (auto& c : model->components()) {
+    // 1) 补齐全局 component_id
+    for (auto& c : model->stagingcomponents()) {
         if (!c)
             continue;
         if (c->id < 0) {
@@ -38,36 +38,43 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
         }
     }
 
-    for (auto& c : model->components()) {
+    // 2) 把 components move 到 ModelManager::components_（真正所有权转移）
+    for (auto& c : model->stagingcomponents()) {
         if (!c)
             continue;
+        Index cid = c->id;
+        spdlog::info("insert component: requested_id={}, final_id={}, exists_before={}",
+            c->id, cid, components_.count(cid) != 0);
 
-        component_to_model_[c->id] = model_id;
-        component_index_[c->id] = c.get();
+        component_to_model_[cid] = model_id;
+        model->componentIdsMut().push_back(cid);
 
-        if (c->cad) {
-            c->cad->ensureCadIndexBuilt(geom_registry_);
+        // move ownership into global pool
+        components_[cid] = std::move(c);
+        Component* cp = components_[cid].get();
+
+        // CAD index
+        if (cp->cad) {
+            cp->cad->ensureCadIndexBuilt(geom_registry_);
         }
-        if (c->mesh) {
-            MeshData& md = *c->mesh;
 
-            // append 全局点池（只增不减）
+        // Mesh: global points + globalize indices + release vertex_positions + edge id map
+        if (cp->mesh) {
+            MeshData& md = *cp->mesh;
             if (md.global_point_base_ < 0) {
                 md.global_point_base_ = appendGlobalPoints(md.vertex_positions_);
                 md.vertex_count_ = (Index)md.vertex_positions_.size();
             }
-
-            // 将 mesh 内部所有点索引数组转换成全局点 id
             md.makePointIdsGlobal(md.global_point_base_);
-
-            // 释放局部点内存（成员保留，但运行期不占内存）
             std::vector<std::array<double, 3>> {}.swap(md.vertex_positions_);
-
-            // edge 单元全局id映射（仅真实线单元）
-            md.ensureEdgeIdMapBuilt(edge_id_map_, c->id);
+            md.ensureEdgeIdMapBuilt(edge_id_map_, cid);
         }
     }
 
+    // 3) 清空 ModelData 里的暂存容器（运行期不再持有 Component）
+    model->stagingcomponents().clear();
+
+    // 4) 存 model
     models_[model_id] = std::move(model);
 
     if (observer_)
@@ -78,21 +85,14 @@ Index ModelManager::addModel(std::unique_ptr<ModelData> model)
 // 删除模型
 void ModelManager::removeModel(Index model_id) {
     auto it = models_.find(model_id);
-    if (it == models_.end()) {
-        throw std::runtime_error("ModelData with the given name does not exist.");
-    }
-    if (it->second) {
-        for (const auto& c : it->second->components()) {
-            if (!c)
-                continue;
+    if (it == models_.end())
+        throw std::runtime_error("Model not exist");
 
-            component_to_model_.erase(c->id);
-            component_index_.erase(c->id);
-        }
-    }
+    std::vector<Index> comp_ids = it->second ? it->second->componentIds() : std::vector<Index> {};
+    for (Index cid : comp_ids)
+        removeComponent(cid);
 
     models_.erase(it);
-    // 发射删除模型信号
     if (observer_)
         observer_->notifyModelRemoved(model_id);
 }
@@ -100,35 +100,29 @@ void ModelManager::removeModel(Index model_id) {
 void ModelManager::removeComponent(Index component_id)
 {
     auto modelIt = component_to_model_.find(component_id);
-    if (modelIt == component_to_model_.end()) {
-        throw std::runtime_error("Component with the given id does not exist.");
-    }
+    if (modelIt == component_to_model_.end())
+        throw std::runtime_error("Component not exist");
 
     Index model_id = modelIt->second;
 
-    auto it = models_.find(model_id);
-    if (it == models_.end() || !it->second) {
-        throw std::runtime_error("Owner model of the component does not exist.");
-    }
+    auto mit = models_.find(model_id);
+    if (mit == models_.end() || !mit->second)
+        throw std::runtime_error("Owner model not exist");
+
+    // 从 ModelData 的 ids 中移除
+    auto& ids = mit->second->componentIdsMut();
+    ids.erase(std::remove(ids.begin(), ids.end(), component_id), ids.end());
 
     if (Component* c = findComponent(component_id); c && c->mesh) {
-        c->mesh->releaseEdgeIdMap(edge_id_map_); // 或 releaseEdgeGlobalIds(edge_id_map_)
+        c->mesh->releaseEdgeIdMap(edge_id_map_); 
     }
+    // 从全局组件池删除
+    components_.erase(component_id);
 
-    auto& comps = it->second->components();
-    for (auto compIt = comps.begin(); compIt != comps.end(); ++compIt) {
-        if (*compIt && (*compIt)->id == component_id) {
-            comps.erase(compIt);
-            break;
-        }
-    }
-
-    component_index_.erase(component_id);
     component_to_model_.erase(component_id);
 
-    if (observer_) {
+    if (observer_)
         observer_->notifyComponentRemoved(component_id);
-    }
 }
 
 // 获取模型
@@ -174,10 +168,8 @@ Index ModelManager::allocateComponentId() noexcept
 
 Component* ModelManager::findComponent(Index component_id) const
 {
-    auto it = component_index_.find(component_id);
-    if (it == component_index_.end())
-        return nullptr;
-    return it->second;
+    auto it = components_.find(component_id);
+    return it == components_.end() ? nullptr : it->second.get();
 }
 
 std::optional<Index> ModelManager::findModelIdByComponent(Index component_id) const
@@ -190,19 +182,10 @@ std::optional<Index> ModelManager::findModelIdByComponent(Index component_id) co
 
 std::vector<Index> ModelManager::getComponentIds(Index model_id) const
 {
-    std::vector<Index> result;
-
     auto it = models_.find(model_id);
     if (it == models_.end() || !it->second)
-        return result;
-
-    for (const auto& c : it->second->components()) {
-        if (c) {
-            result.push_back(c->id);
-        }
-    }
-
-    return result;
+        return {};
+    return it->second->componentIds();
 }
 
 GeometryRegistry& ModelManager::geomRegistry()

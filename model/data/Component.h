@@ -48,6 +48,12 @@ struct Component {
     bool hasMesh() const noexcept;
     bool hasCad() const noexcept;
 
+    MeshData* asMeshData() noexcept { return mesh.get(); }
+    const MeshData* asMeshData() const noexcept { return mesh.get(); }
+
+    SplineData* asSplineData() noexcept { return cad.get(); }
+    const SplineData* asSplineData() const noexcept { return cad.get(); }
+
     SplineMeshMap& ensureMapping();
     const SplineMeshMap* getMapping() const noexcept;
     bool ownsGlobalPoint(Index global_pid) const noexcept;
