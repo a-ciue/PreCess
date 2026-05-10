@@ -22,22 +22,28 @@
 namespace systems::io {
 static bool is_ascii_path(const std::filesystem::path& p)
 {
-    // 用 u8string 检测是否全 ASCII（非 ASCII 基本就会触发 Windows VTK 写失败）
     auto u8 = p.u8string();
-    for (auto ch : u8) {
-        if (static_cast<unsigned char>(ch) >= 0x80)
+    for (unsigned char ch : u8) {
+        if (ch >= 0x80)
             return false;
     }
     return true;
 }
 
-static void ensure_parent_dir(const std::filesystem::path& p)
+static bool ensure_parent_dir(const std::filesystem::path& p)
 {
     auto parent = p.parent_path();
-    if (!parent.empty()) {
-        std::error_code ec;
-        std::filesystem::create_directories(parent, ec);
+    if (parent.empty())
+        return true;
+
+    std::error_code ec;
+    std::filesystem::create_directories(parent, ec);
+    if (ec) {
+        spdlog::error("VtkLegacyModelHandler: failed to create parent dir '{}': {}",
+            parent.string(), ec.message());
+        return false;
     }
+    return true;
 }
 
 static void mesh_from_ugrid(vtkUnstructuredGrid& ugrid, MeshData& out)
@@ -251,7 +257,9 @@ void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,
         return;
     }
 
-    ensure_parent_dir(path);
+    if (!ensure_parent_dir(path)) {
+        return;
+    }
 
     // 1) 构建一个 ugrid：把所有组件的点/单元拼到一起
     vtkNew<vtkUnstructuredGrid> ugrid;

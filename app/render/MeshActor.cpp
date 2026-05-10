@@ -35,16 +35,12 @@ MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, bool is_vertex_
     vtkNew<vtkNamedColors> colors;
     this->setRenderMode(render_mode);
     this->setRenderEdge(is_edge_render);
-    //this->setRenderVertex(is_vertex_render);
 
     this->edge_actor_->GetProperty()->SetLineWidth(2);
-    //this->vertex_actor_->GetProperty()->SetPointSize(3);
-    //this->vertex_actor_->GetProperty()->SetColor(colors->GetColor3d("Yellow").GetData());
 
     this->solid_actor_->SetMapper(solid_mapper_);
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
-    //this->vertex_actor_->SetMapper(vertex_mapper_);
     this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
 
     this->actor_->SetMapper(block_mapper_);
@@ -57,7 +53,6 @@ MeshActor::~MeshActor()
         renderer_->RemoveActor(this->solid_actor_);
         renderer_->RemoveActor(this->face_actor_);
         renderer_->RemoveActor(this->edge_actor_);
-        //renderer_->RemoveActor(this->vertex_actor_);
         renderer_->RemoveActor(this->glyph3D_actor_);
     }
 }
@@ -68,54 +63,6 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     ensureOriginalPointIds();
 
     this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
-
-    //// vertex data
-    //vtkPolyData* vertex_poly = this->vertex_data_;
-    //{
-    //    vtkNew<vtkCellArray> vertex_cells;
-    //    vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
-    //    vtkIdType size = points_data->GetNumberOfPoints();
-
-    //    index_array->SetNumberOfValues(size);
-    //    // 使用并行方式设置点id
-    //    vtkSMPTools::For(0, size,
-    //        [&](vtkIdType begin, vtkIdType end) {
-    //            for (vtkIdType cellId = begin; cellId < end; ++cellId) {
-    //                index_array->SetValue(cellId, static_cast<Index>(cellId));
-    //            }
-    //        });
-    //    vertex_cells->SetData(1, index_array);
-
-    //    vertex_poly->SetPoints(points_data);
-    //    vertex_poly->SetVerts(vertex_cells);
-
-    //    vertex_poly->GetPointData()->AddArray(originalPointIds);
-
-    //    // 处理顶点属性
-    //    const size_t num_vertex = size;
-    //    for (const auto& attr : model_data.vertex_attributes_) {
-    //        const std::string& attr_name = attr.first;
-    //        const std::vector<double>& attr_values = attr.second;
-    //        if (attr_values.size() < num_vertex) {
-    //            spdlog::error("Attribute {} has insufficient values", attr_name);
-    //            continue;
-    //        }
-    //        size_t ncomp = attr_values.size() / num_vertex;
-    //        // 判断属性数量是不是顶点数量的整数倍
-    //        if (ncomp * num_vertex != attr_values.size()) {
-    //            spdlog::error("Attribute {} size mismatch: {} values for {} vertices", attr_name, attr_values.size(), num_vertex);
-    //            continue;
-    //        }
-    //        auto array = vtkSmartPointer<vtkDoubleArray>::New();
-    //        array->SetNumberOfComponents(static_cast<int>(ncomp));
-    //        array->SetName(attr_name.c_str());
-    //        array->SetNumberOfTuples(num_vertex);
-    //        for (size_t i = 0; i < num_vertex; ++i) {
-    //            array->SetTuple(i, &attr_values[i * ncomp]);
-    //        }
-    //        vertex_poly->GetPointData()->AddArray(array);
-    //    }
-    //}
 
     // face data
     vtkPolyData* face_poly = this->face_data_;
@@ -136,11 +83,6 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         face_poly->SetPolys(poly_data);
 
         face_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
-
-        ////  拷贝属性
-        //vtkPointData* src = this->vertex_data_->GetPointData();
-        //vtkPointData* dst = this->face_data_->GetPointData();
-        //dst->ShallowCopy(src);
 
         // 处理面属性
         const size_t num_faces = face_poly->GetNumberOfCells();
@@ -203,12 +145,10 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     solid_filter_->SetInputData(solid_ugird);
 
     // mappers
-    //vertex_mapper_->SetInputData(vertex_poly);
     edge_mapper_->SetInputData(edge_poly);
     face_mapper_->SetInputData(face_poly);
     solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
 
-    //vertex_mapper_->SetScalarVisibility(0);
     edge_mapper_->SetScalarVisibility(0);
     face_mapper_->SetScalarVisibility(0);
     solid_mapper_->SetScalarVisibility(0);
@@ -222,7 +162,6 @@ void MeshActor::setVisibility(bool visibility)
     this->solid_actor_->SetVisibility(visibility);
     this->face_actor_->SetVisibility(visibility);
     this->edge_actor_->SetVisibility(visibility && this->edge_render_);
-    //this->vertex_actor_->SetVisibility(visibility && this->vertex_render_);
     this->glyph3D_actor_->SetVisibility(visibility);
 }
 
@@ -233,22 +172,18 @@ void MeshActor::setClipPlane(vtkPlane* plane)
             solid_clipper_->SetInputData(this->solid_data_);
             face_clipper_->SetInputData(this->face_data_);
             edge_clipper_->SetInputData(this->edge_data_);
-            //vertex_clipper_->SetInputData(this->vertex_data_);
 
             solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
             face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
             edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
-            //vertex_mapper_->SetInputConnection(vertex_clipper_->GetOutputPort());
         }
         solid_clipper_->SetImplicitFunction(plane);
         face_clipper_->SetImplicitFunction(plane);
         edge_clipper_->SetImplicitFunction(plane);
-        //vertex_clipper_->SetImplicitFunction(plane);
     } else {
         solid_filter_->SetInputData(this->solid_data_);
         face_mapper_->SetInputData(this->face_data_);
         edge_mapper_->SetInputData(this->edge_data_);
-        //vertex_mapper_->SetInputData(this->vertex_data_);
     }
     clip_plane_ = plane;
 }
@@ -264,8 +199,7 @@ void MeshActor::setRenderEdge(bool is_render)
 
 void MeshActor::setRenderVertex(bool is_render)
 {
-    //this->vertex_render_ = is_render;
-    //this->vertex_actor_->SetVisibility(is_render && this->visibility_);
+    // 顶点渲染已取消（设计选择）
 }
 
 void MeshActor::setRenderMode(ModelRenderMode render_mode)
@@ -276,13 +210,11 @@ void MeshActor::setRenderMode(ModelRenderMode render_mode)
         this->renderer_->AddActor(this->solid_actor_);
         this->renderer_->AddActor(this->face_actor_);
         this->renderer_->AddActor(this->edge_actor_);
-        //this->renderer_->AddActor(this->vertex_actor_);
         this->renderer_->AddActor(this->glyph3D_actor_);
     } else if (render_mode_ == ModelRenderMode::Block) {
         this->renderer_->RemoveActor(this->solid_actor_);
         this->renderer_->RemoveActor(this->face_actor_);
         this->renderer_->RemoveActor(this->edge_actor_);
-        //this->renderer_->RemoveActor(this->vertex_actor_);
         this->renderer_->RemoveActor(this->glyph3D_actor_);
         this->renderer_->AddActor(this->actor_);
     } else {
@@ -296,11 +228,11 @@ bool MeshActor::getIsEdgeRender()
     return this->edge_render_;
 }
 
-bool MeshActor::getIsVertexRender()
-{
-    //return this->vertex_render_;
-    return false;
-}
+//bool MeshActor::getIsVertexRender()
+//{
+//    //return this->vertex_render_;
+//    return false;
+//}
 
 ModelRenderMode MeshActor::getMeshRenderMode()
 {

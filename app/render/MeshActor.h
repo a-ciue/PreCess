@@ -21,6 +21,7 @@ class MeshActorSelectOp;
 class AttributeOperator;
 
 //! @brief 负责管理Model的Actor
+// 顶点渲染功能已取消（性能/视觉原因）；顶点拾取与高亮仍保留。
 class MeshActor {
     friend MeshActorSelectOp;
     friend AttributeOperator;
