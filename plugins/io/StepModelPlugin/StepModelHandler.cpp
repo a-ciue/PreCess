@@ -15,7 +15,9 @@ namespace systems::io {
 std::unique_ptr<ModelData> StepModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     STEPControl_Reader reader;
-    IFSelect_ReturnStatus stat = reader.ReadFile(path.string().c_str());
+    IFSelect_ReturnStatus stat;
+    // 使用UTF-8编码字符串路径，配合C++17 std::filesystem处理中文路径
+    stat = reader.ReadFile(path.u8string().c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read STEP file: {}", path.string());
         return nullptr;

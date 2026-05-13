@@ -1,0 +1,10 @@
+{
+    "system": "ModelIOSystem",
+    "handler": {
+        "file_type": "IGES",
+        "extensions": [
+            "igs",
+            "iges"
+        ]
+    }
+}
