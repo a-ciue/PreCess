@@ -309,8 +309,8 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
         // 统计 max_face_n
         if (face_count > 0) {
             for (Index f = 0; f < face_count; ++f) {
-                Index a = m.face_vertices_offset_[(size_t)f];
-                Index b = m.face_vertices_offset_[(size_t)f + 1];
+                Index a = m.face_vertices_offset_[static_cast<size_t>(f)];
+                Index b = m.face_vertices_offset_[static_cast<size_t>(f + 1)];
                 if (a < 0 || b < a || b > (Index)m.face_vertices_.size())
                     continue;
                 max_face_n = std::max(max_face_n, b - a);
@@ -354,7 +354,7 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
     ofs << std::setprecision(17); // double 足够高精度
     for (const auto& info : infos) {
         for (Index i = 0; i < info.cnt; ++i) {
-            const auto& p = gp[(size_t)(info.base + i)];
+            const auto& p = gp[static_cast<size_t>(info.base + i)];
             ofs << p[0] << " " << p[1] << " " << p[2] << "\n";
         }
     }
@@ -367,8 +367,8 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
         const Index cnt = info.cnt;
 
         for (Index f = 0; f < info.face_count; ++f) {
-            Index a = m.face_vertices_offset_[(size_t)f];
-            Index b = m.face_vertices_offset_[(size_t)f + 1];
+            Index a = m.face_vertices_offset_[static_cast<size_t>(f)];
+            Index b = m.face_vertices_offset_[static_cast<size_t>(f + 1)];
             if (a < 0 || b < a || b > (Index)m.face_vertices_.size()) {
                 // 写一个空 face 会破坏结构；这里直接跳过（但会导致 face 数不一致）
                 // 更稳：在统计 total_faces 时就过滤非法 face；这里假设数据合法
@@ -377,13 +377,10 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             }
 
             Index n = b - a;
-            if (use_uint_count)
-                ofs << (uint32_t)n;
-            else
-                ofs << (uint32_t)n; // uchar 也用数值打印即可
+            ofs << static_cast<uint32_t>(n);
 
             for (Index k = a; k < b; ++k) {
-                Index gid = m.face_vertices_[(size_t)k]; // 全局点 id
+                Index gid = m.face_vertices_[static_cast<size_t>(k)]; // 全局点 id
                 Index local = gid - base; // component 局部
                 if (local < 0 || local >= cnt) {
                     spdlog::error("PlyModelHandler: face references vertex out of component range (gid={}, base={}, cnt={})",

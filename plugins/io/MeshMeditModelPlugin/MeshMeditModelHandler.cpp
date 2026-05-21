@@ -6,18 +6,25 @@
 #include "ArgType.h"
 #include "MeshData.h"
 #include "ModelData.h"
+#include "ModelLayer.h"
 #include "LibMeshbIO.h"
 
 #include <libmeshb7.h>
 #include <spdlog/spdlog.h>
+
+#include <cstddef>
 #include <fstream>
+#include <optional>
 
 namespace systems::io {
-static inline Index toFileVertexId(Index global_pid, Index comp_base, Index file_vertex_offset)
+static inline std::optional<Index>
+toFileVertexIdChecked(Index global_pid, Index comp_base, Index comp_cnt, Index file_vertex_offset)
 {
-    // global_pid 是全局点池下标
-    // comp_base 是该 component 的 global_point_base_
-    // file_vertex_offset 是该 component 在导出文件顶点表中的起始位置（0-based）
+    if (comp_base < 0 || comp_cnt <= 0)
+        return std::nullopt;
+    if (global_pid < comp_base || global_pid >= comp_base + comp_cnt)
+        return std::nullopt;
+
     const Index local = global_pid - comp_base;
     return file_vertex_offset + local;
 }
@@ -45,26 +52,33 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
     }
 
     const auto& gp = mgr.globalPoints();
-    if (base + cnt > (Index)gp.size()) {
+
+    const size_t gpsz = gp.size();
+    const size_t sbase = static_cast<size_t>(base);
+    const size_t scnt = static_cast<size_t>(cnt);
+
+    // 防止 size_t 溢出：用 gpsz - sbase 写法
+    if (sbase > gpsz || scnt > gpsz - sbase) {
         spdlog::error("MeshMeditModelHandler: globalPoints out of range (base={}, cnt={}, gp={})",
-            base, cnt, gp.size());
+            base, cnt, gpsz);
         return false;
     }
 
     // 1) 追加顶点坐标：从 globalPoints 切片拷贝进 merged.vertex_positions_
-    merged.vertex_positions_.reserve(merged.vertex_positions_.size() + (size_t)cnt);
+    merged.vertex_positions_.reserve(merged.vertex_positions_.size() + scnt);
     for (Index i = 0; i < cnt; ++i) {
-        merged.vertex_positions_.push_back(gp[(size_t)(base + i)]);
+        merged.vertex_positions_.push_back(gp[static_cast<size_t>(base + i)]);
     }
 
     // 2) 追加边：src.edge_vertices_ 每两个为一条边，点索引是“全局点 id”
     if (!src.edge_vertices_.empty()) {
         if (src.edge_vertices_.size() % 2 != 0) {
-            spdlog::warn("MeshMeditModelHandler: edge_vertices_ size odd, skip edges");
+            spdlog::warn("MeshMeditModelHandler: edge_vertices_ size odd, skip edges, cid={}", comp.id);
         } else {
             merged.edge_vertices_.reserve(merged.edge_vertices_.size() + src.edge_vertices_.size());
             for (Index gid : src.edge_vertices_) {
-                merged.edge_vertices_.push_back(toFileVertexId(gid, base, io_file_vertex_offset));
+                auto out = toFileVertexIdChecked(gid, base, cnt, io_file_vertex_offset);
+                merged.edge_vertices_.push_back(*out);
             }
         }
     }
@@ -72,12 +86,13 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
     // 3) 追加面：需要同时追加 face_vertices_ 与 face_vertices_offset_
     // merged.face_vertices_offset_ 必须保持“首元素 0 + 单调递增”
     if (src.face_vertices_offset_.size() >= 2) {
-        const Index old_face_vert_size = (Index)merged.face_vertices_.size();
+        const Index old_face_vert_size = static_cast<Index>(merged.face_vertices_.size());
 
         // 3.1 顶点索引追加
         merged.face_vertices_.reserve(merged.face_vertices_.size() + src.face_vertices_.size());
         for (Index gid : src.face_vertices_) {
-            merged.face_vertices_.push_back(toFileVertexId(gid, base, io_file_vertex_offset));
+            auto out = toFileVertexIdChecked(gid, base, cnt, io_file_vertex_offset);
+            merged.face_vertices_.push_back(*out);
         }
 
         // 3.2 offset 追加：跳过 src 的第一个 0，从第二个开始逐个 + old_face_vert_size
@@ -91,15 +106,16 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
 
     // 4) 追加体单元：solid_types_ + solid_vertices_ + solid_vertices_offset_
     if (src.solid_vertices_offset_.size() >= 2 && src.solid_types_.size() + 1 == src.solid_vertices_offset_.size()) {
-        const Index old_solid_vert_size = (Index)merged.solid_vertices_.size();
+        const Index old_solid_vert_size = static_cast<Index>(merged.solid_vertices_.size());
 
         merged.solid_vertices_.reserve(merged.solid_vertices_.size() + src.solid_vertices_.size());
         for (Index gid : src.solid_vertices_) {
-            merged.solid_vertices_.push_back(toFileVertexId(gid, base, io_file_vertex_offset));
+            auto out = toFileVertexIdChecked(gid, base, cnt, io_file_vertex_offset);
+            merged.solid_vertices_.push_back(*out);
         }
 
         merged.solid_types_.reserve(merged.solid_types_.size() + src.solid_types_.size());
-        for (auto t : src.solid_types_) {
+        for (unsigned char t : src.solid_types_) {
             merged.solid_types_.push_back(t);
         }
 
@@ -132,9 +148,9 @@ std::unique_ptr<ModelData> MeshMeditModelHandler::read_model(const fs::path& pat
     // MeshData
     auto mesh_data = std::make_unique<MeshData>();
 
-    bool success = LibMeshbIO::read(path, *mesh_data);
+    const bool success = LibMeshbIO::read(path, *mesh_data);
     if (!success) {
-        spdlog::error("Failed to read mesh from file: {}", path.string());
+        spdlog::error("MeshMeditModelHandler: failed to read mesh from file: {}", path.string());
         return nullptr;
     }
 
@@ -206,11 +222,11 @@ void MeshMeditModelHandler::write_components(const ModelLayer& mgr,
         return;
     }
 
-    merged.vertex_count_ = (Index)merged.vertex_positions_.size();
+    merged.vertex_count_ = static_cast<Index>(merged.vertex_positions_.size());
 
     // 2) 调 libmeshb 写出
     const std::string path_str = path.string();
-    int64_t write_idx = GmfOpenMesh(path_str.c_str(), GmfWrite, version, dimension);
+    const int64_t write_idx = GmfOpenMesh(path_str.c_str(), GmfWrite, version, dimension);
     if (!write_idx) {
         spdlog::error("MeshMeditModelHandler: Failed to create mesh file: {}", path_str);
         return;

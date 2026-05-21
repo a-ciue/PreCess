@@ -8,6 +8,8 @@
 #include <TDF_LabelSequence.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDocStd_Document.hxx>
+#include <TCollection_ExtendedString.hxx>
+#include <cstring>
 
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
@@ -26,11 +28,11 @@ static std::string labelName(const TDF_Label& label)
 
     const TCollection_ExtendedString& ext = nameAttr->Get();
 
-    std::string s;
-    for (Standard_Integer i = 1; i <= ext.Length(); ++i) {
-        s.push_back((char)ext.Value(i));
-    }
-    return s;
+    std::string buf(ext.Length() * 4 + 1, '\0');
+    char* cstr = buf.data();
+    const Standard_Integer n = ext.ToUTF8CString(cstr); 
+    buf.resize(n);
+    return buf;
 }
 
 static void collectLeafShapes(

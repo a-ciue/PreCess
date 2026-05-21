@@ -69,7 +69,7 @@ std::any DeleteFaceHandler::execute(ComponentOperator& op, const std::vector<cor
                 offset -= vertices_count;
             });
 
-         // 维护 patch 和 block 关系
+        // 维护 patch 和 block 关系
         std::optional<Index> patch_id = mesh->face_patch_id(face_id); // 实时查询
         if (patch_id.has_value()) {
             std::vector<Index>& faces = mesh->patches_[patch_id.value()]->faces;
@@ -92,7 +92,7 @@ std::any DeleteFaceHandler::execute(ComponentOperator& op, const std::vector<cor
     // 对所有 patch 中的 face id 进行更新
     for (auto&& [_, patch] : mesh->patches_) {
         std::vector<Index>& faces = patch->faces;
-        
+
         std::for_each(std::execution::par, faces.begin(), faces.end(),
             [&face_ids](Index& id) {
                 // 计算需要减少的数量

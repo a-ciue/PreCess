@@ -78,32 +78,34 @@ void OBJModelHandler::write_components(const ModelLayer& mgr,
             ofs << "v " << p[0] << " " << p[1] << " " << p[2] << "\n";
         }
 
-        // faces (support polygon via offsets)
+        bool component_ok = true;
         if (m.face_vertices_offset_.size() >= 2) {
-            const Index nFaces = (Index)m.face_vertices_offset_.size() - 1;
-            for (Index f = 0; f < nFaces; ++f) {
-                const Index a = m.face_vertices_offset_[(size_t)f];
-                const Index b = m.face_vertices_offset_[(size_t)f + 1];
-                if (a < 0 || b < a || b > (Index)m.face_vertices_.size())
+            const Index nFaces = static_cast<Index>(m.face_vertices_offset_.size() - 1);
+            for (Index f = 0; f < nFaces && component_ok; ++f) {
+                const Index a = m.face_vertices_offset_[static_cast<size_t>(f)];
+                const Index b = m.face_vertices_offset_[static_cast<size_t>(f + 1)];
+                if (a < 0 || b < a || b > static_cast<Index>(m.face_vertices_.size()))
                     continue;
 
                 ofs << "f";
                 for (Index k = a; k < b; ++k) {
-                    const Index gid = m.face_vertices_[(size_t)k]; // global point id
+                    const Index gid = m.face_vertices_[static_cast<size_t>(k)];// global point id
                     const Index local = gid - base; // to local 0..cnt-1
                     if (local < 0 || local >= cnt) {
                         spdlog::error("OBJModelHandler: face references vertex out of component range, cid={}, gid={}, base={}, cnt={}",
                             cid, gid, base, cnt);
                         ofs << "\n";
-                        goto next_component; // break face loop and proceed
+                        component_ok = false;
+                        break;
                     }
                     ofs << " " << (v_offset_1based + local);
                 }
-                ofs << "\n";
+                if (component_ok) {
+                    ofs << "\n";
+                }
             }
         }
 
-    next_component:
         v_offset_1based += cnt;
     }
 }
