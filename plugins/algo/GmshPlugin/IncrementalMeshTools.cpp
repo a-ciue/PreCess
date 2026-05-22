@@ -1,0 +1,972 @@
+#include "IncrementalMeshTools.h"
+#include "IncrementalMeshContext.h"
+
+#include "MeshData.h"
+
+#include <BRepGProp.hxx>
+#include <BRep_Builder.hxx>
+#include <BRep_Tool.hxx>
+#include <GProp_GProps.hxx>
+#include <IFSelect_ReturnStatus.hxx>
+#include <STEPControl_Reader.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
+#include <gp_Pnt.hxx>
+
+#include <gmsh.h>
+#include <spdlog/spdlog.h>
+
+#include <Bnd_Box.hxx>
+#include <BRepBndLib.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <TopExp.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <cmath>
+#include <map>
+#include <set>
+#include <vector>
+#include <fstream>
+#include <unordered_map>
+
+namespace {
+
+// 合并网格时的顶点去重
+class TempNodeLookup {
+public:
+    explicit TempNodeLookup(
+        std::vector<std::array<double, 3>>& vertices,
+        double tolerance = 1e-7)
+        : _vertices(vertices)
+        , _tolerance(tolerance)
+    {
+        for (size_t i = 0; i < _vertices.size(); ++i) {
+            auto qc = _quantize(_vertices[i][0], _vertices[i][1], _vertices[i][2]);
+            _map[qc] = i;
+        }
+    }
+
+    size_t getOrInsert(double x, double y, double z)
+    {
+        auto qc = _quantize(x, y, z);
+        auto it = _map.find(qc);
+        if (it != _map.end())
+            return it->second;
+
+        size_t idx = _vertices.size();
+        _vertices.push_back({ x, y, z });
+        _map[qc] = idx;
+        return idx;
+    }
+
+private:
+    struct QuantizedCoord {
+        int64_t ix, iy, iz;
+        bool operator==(const QuantizedCoord& o) const
+        {
+            return ix == o.ix && iy == o.iy && iz == o.iz;
+        }
+    };
+
+    struct CoordHash {
+        size_t operator()(const QuantizedCoord& c) const
+        {
+            size_t h = 0;
+            h ^= std::hash<int64_t>()(c.ix) + 0x9e3779b9 + (h << 6) + (h >> 2);
+            h ^= std::hash<int64_t>()(c.iy) + 0x9e3779b9 + (h << 6) + (h >> 2);
+            h ^= std::hash<int64_t>()(c.iz) + 0x9e3779b9 + (h << 6) + (h >> 2);
+            return h;
+        }
+    };
+
+    QuantizedCoord _quantize(double x, double y, double z) const
+    {
+        return {
+            static_cast<int64_t>(std::round(x / _tolerance)),
+            static_cast<int64_t>(std::round(y / _tolerance)),
+            static_cast<int64_t>(std::round(z / _tolerance))
+        };
+    }
+
+    std::vector<std::array<double, 3>>& _vertices;
+    double _tolerance;
+    std::unordered_map<QuantizedCoord, size_t, CoordHash> _map;
+};
+
+// ---- 加载 STEP ----
+TopoDS_Shape loadStep(const std::string& path)
+{
+    STEPControl_Reader reader;
+    if (reader.ReadFile(path.c_str()) != IFSelect_RetDone) {
+        spdlog::error("Cannot read STEP: {}", path);
+        return {};
+    }
+    reader.TransferRoots();
+    return reader.OneShape();
+}
+
+// ---- 包 Compound ----
+TopoDS_Compound makeFaceCompound(const TopoDS_Face& face)
+{
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, face);
+    return compound;
+}
+
+// ---- 边几何特征 ----
+struct EdgeGeoFeature {
+    // 两端点
+    double x1, y1, z1;
+    double x2, y2, z2;
+
+    // 曲线中点
+    double mx, my, mz;
+
+    // 长度
+    double length = 0.0;
+
+    // 3 个采样点
+    std::vector<double> samples; // [x0,y0,z0, x1,y1,z1, x2,y2,z2]
+
+    static double pointDist(double ax, double ay, double az,
+        double bx, double by, double bz)
+    {
+        double dx = ax - bx;
+        double dy = ay - by;
+        double dz = az - bz;
+        return std::sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    // 无向端点距离：考虑方向相反的情况
+    double endpointDistanceTo(const EdgeGeoFeature& o) const
+    {
+        double dForward = pointDist(x1, y1, z1, o.x1, o.y1, o.z1) + pointDist(x2, y2, z2, o.x2, o.y2, o.z2);
+
+        double dReverse = pointDist(x1, y1, z1, o.x2, o.y2, o.z2) + pointDist(x2, y2, z2, o.x1, o.y1, o.z1);
+
+        return std::min(dForward, dReverse);
+    }
+
+    double midpointDistanceTo(const EdgeGeoFeature& o) const
+    {
+        return pointDist(mx, my, mz, o.mx, o.my, o.mz);
+    }
+
+    double lengthDistanceTo(const EdgeGeoFeature& o) const
+    {
+        return std::abs(length - o.length);
+    }
+
+    // 采样点距离，同样考虑正向/反向
+    double sampleDistanceTo(const EdgeGeoFeature& o) const
+    {
+        if (samples.size() != o.samples.size() || samples.empty())
+            return 0.0;
+
+        std::size_t n = samples.size() / 3;
+        double dForward = 0.0;
+        double dReverse = 0.0;
+
+        for (std::size_t i = 0; i < n; ++i) {
+            std::size_t i3 = i * 3;
+            std::size_t r3 = (n - 1 - i) * 3;
+
+            dForward += pointDist(
+                samples[i3], samples[i3 + 1], samples[i3 + 2],
+                o.samples[i3], o.samples[i3 + 1], o.samples[i3 + 2]);
+
+            dReverse += pointDist(
+                samples[i3], samples[i3 + 1], samples[i3 + 2],
+                o.samples[r3], o.samples[r3 + 1], o.samples[r3 + 2]);
+        }
+
+        return std::min(dForward, dReverse);
+    }
+
+    // 综合评分
+    double distanceTo(const EdgeGeoFeature& o, double scale) const
+    {
+        // 防止 scale 太小
+        double s = std::max(scale, 1e-12);
+
+        double de = endpointDistanceTo(o) / s;
+        double dl = lengthDistanceTo(o) / s;
+        double dm = midpointDistanceTo(o) / s;
+        double ds = sampleDistanceTo(o) / s;
+
+        // 端点权重大一些
+        return 5.0 * de + 2.0 * dl + 3.0 * dm + 4.0 * ds;
+    }
+};
+
+std::vector<double> sampleOCCEdgePoints(const TopoDS_Edge& edge, int sampleCount = 3)
+{
+    std::vector<double> pts;
+    if (sampleCount <= 0)
+        return pts;
+
+    BRepAdaptor_Curve curve(edge);
+    double u1 = curve.FirstParameter();
+    double u2 = curve.LastParameter();
+
+    for (int i = 1; i <= sampleCount; ++i) {
+        double t = double(i) / double(sampleCount + 1);
+        double u = (1.0 - t) * u1 + t * u2;
+        gp_Pnt p = curve.Value(u);
+        pts.push_back(p.X());
+        pts.push_back(p.Y());
+        pts.push_back(p.Z());
+    }
+    return pts;
+}
+std::vector<double> sampleGmshEdgePoints(int gmshTag, int sampleCount = 3)
+{
+    std::vector<double> pts;
+    if (sampleCount <= 0)
+        return pts;
+
+    std::vector<double> minv, maxv;
+    gmsh::model::getParametrizationBounds(1, gmshTag, minv, maxv);
+    if (minv.empty() || maxv.empty())
+        return pts;
+
+    double u1 = minv[0];
+    double u2 = maxv[0];
+
+    for (int i = 1; i <= sampleCount; ++i) {
+        double t = double(i) / double(sampleCount + 1);
+        double u = (1.0 - t) * u1 + t * u2;
+
+        std::vector<double> coord;
+        gmsh::model::getValue(1, gmshTag, { u }, coord);
+        if (coord.size() >= 3) {
+            pts.push_back(coord[0]);
+            pts.push_back(coord[1]);
+            pts.push_back(coord[2]);
+        }
+    }
+    return pts;
+}
+
+// ---- OCC 边特征 ----
+EdgeGeoFeature computeOCCEdgeFeature(int gid, const IncrementalMeshContext& ctx)
+{
+    TopoDS_Edge edge = ctx.getEdgeByGlobalId(gid);
+
+    TopoDS_Vertex v1, v2;
+    TopExp::Vertices(edge, v1, v2);
+
+    gp_Pnt p1 = BRep_Tool::Pnt(v1);
+    gp_Pnt p2 = BRep_Tool::Pnt(v2);
+
+    GProp_GProps props;
+    BRepGProp::LinearProperties(edge, props);
+
+    BRepAdaptor_Curve curve(edge);
+    double u1 = curve.FirstParameter();
+    double u2 = curve.LastParameter();
+    double um = 0.5 * (u1 + u2);
+    gp_Pnt pm = curve.Value(um);
+
+    EdgeGeoFeature f {};
+    f.x1 = p1.X();
+    f.y1 = p1.Y();
+    f.z1 = p1.Z();
+    f.x2 = p2.X();
+    f.y2 = p2.Y();
+    f.z2 = p2.Z();
+
+    f.mx = pm.X();
+    f.my = pm.Y();
+    f.mz = pm.Z();
+
+    f.length = props.Mass();
+    f.samples = sampleOCCEdgePoints(edge, 3);
+    return f;
+}
+double getShapeScale(const TopoDS_Shape& shape)
+{
+    Bnd_Box box;
+    BRepBndLib::Add(shape, box);
+
+    double xmin, ymin, zmin, xmax, ymax, zmax;
+    box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
+
+    double dx = xmax - xmin;
+    double dy = ymax - ymin;
+    double dz = zmax - zmin;
+    double diag = std::sqrt(dx * dx + dy * dy + dz * dz);
+
+    if (diag < 1e-12)
+        diag = 1.0;
+    return diag;
+}
+
+// ---- GMSH 边特征 ----
+EdgeGeoFeature computeGmshEdgeFeature(int gmshTag)
+{
+    EdgeGeoFeature f {};
+
+    // 端点
+    std::vector<std::pair<int, int>> vtxBnd;
+    gmsh::model::getBoundary({ { 1, gmshTag } }, vtxBnd, false, false, false);
+
+    if (vtxBnd.size() >= 2) {
+        int v0 = std::abs(vtxBnd[0].second);
+        int v1 = std::abs(vtxBnd[1].second);
+
+        std::vector<double> p0, p1, param;
+        gmsh::model::getValue(0, v0, param, p0);
+        gmsh::model::getValue(0, v1, param, p1);
+
+        if (p0.size() >= 3 && p1.size() >= 3) {
+            f.x1 = p0[0];
+            f.y1 = p0[1];
+            f.z1 = p0[2];
+
+            f.x2 = p1[0];
+            f.y2 = p1[1];
+            f.z2 = p1[2];
+        }
+    }
+
+    // 长度
+    gmsh::model::occ::getMass(1, gmshTag, f.length);
+
+    // 中点
+    std::vector<double> minv, maxv;
+    gmsh::model::getParametrizationBounds(1, gmshTag, minv, maxv);
+    if (!minv.empty() && !maxv.empty()) {
+        double um = 0.5 * (minv[0] + maxv[0]);
+        std::vector<double> coord;
+        gmsh::model::getValue(1, gmshTag, { um }, coord);
+        if (coord.size() >= 3) {
+            f.mx = coord[0];
+            f.my = coord[1];
+            f.mz = coord[2];
+        }
+    }
+
+    f.samples = sampleGmshEdgePoints(gmshTag, 3);
+    return f;
+}
+
+// ---- 匹配 ----
+std::map<int, int> matchGmshToOCCEdges(const TopoDS_Face& face,
+    const IncrementalMeshContext& ctx)
+{
+    // OCC 当前 face 的边
+    auto occIds = ctx.getFaceEdgeIds(face);
+    std::vector<std::pair<int, EdgeGeoFeature>> occFeats;
+    for (int gid : occIds) {
+        occFeats.push_back({ gid, computeOCCEdgeFeature(gid, ctx) });
+    }
+
+    // 只取当前 Gmsh face 的边界边，而不是整个模型所有 edge
+    gmsh::vectorpair gmshFaceTags;
+    gmsh::model::getEntities(gmshFaceTags, 2);
+    if (gmshFaceTags.empty()) {
+        spdlog::warn("  No gmsh face found when matching edges");
+        return {};
+    }
+
+    int gmshFaceTag = gmshFaceTags[0].second;
+    gmsh::vectorpair gmshEdgesRaw;
+    gmsh::model::getBoundary({ { 2, gmshFaceTag } }, gmshEdgesRaw, false, false, false);
+
+    std::vector<int> gmshEdges;
+    std::set<int> uniqueEdges;
+    for (auto& [dim, tag] : gmshEdgesRaw) {
+        if (dim == 1 && !uniqueEdges.count(std::abs(tag))) {
+            uniqueEdges.insert(std::abs(tag));
+            gmshEdges.push_back(std::abs(tag));
+        }
+    }
+
+    // 以当前 face 尺寸作为容差尺度
+    double scale = getShapeScale(face);
+    double acceptTol = 5e-2; // 归一化后的阈值
+
+    std::map<int, int> result;
+    std::set<int> matched;
+
+    for (int gmshTag : gmshEdges) {
+        auto gf = computeGmshEdgeFeature(gmshTag);
+
+        double best = 1e30;
+        int bestId = -1;
+
+        for (auto& [id, of] : occFeats) {
+            if (matched.count(id))
+                continue;
+
+            double d = gf.distanceTo(of, scale);
+
+            spdlog::debug(
+                "  edge candidate gmsh={} occ={}  "
+                "endpoint={:.3e} length={:.3e} midpoint={:.3e} sample={:.3e} total={:.3e}",
+                gmshTag, id,
+                gf.endpointDistanceTo(of) / scale,
+                gf.lengthDistanceTo(of) / scale,
+                gf.midpointDistanceTo(of) / scale,
+                gf.sampleDistanceTo(of) / scale,
+                d);
+
+            if (d < best) {
+                best = d;
+                bestId = id;
+            }
+        }
+
+        if (bestId > 0 && best < acceptTol) {
+            result[gmshTag] = bestId;
+            matched.insert(bestId);
+            spdlog::info("  GMSH edge {} -> OCC edge {} (score={:.3e})",
+                gmshTag, bestId, best);
+        } else {
+            spdlog::warn("  GMSH edge {} UNMATCHED (best OCC={}, score={:.3e})",
+                gmshTag, bestId, best);
+        }
+    }
+
+    spdlog::info("  Matched {}/{} edges", result.size(), gmshEdges.size());
+    return result;
+}
+
+// ---- 注入约束边 ----
+bool injectConstrainedEdge(int gmshTag, int occId,
+    const MeshedEdgeData& nodes,
+    std::size_t& nodeCounter,
+    std::size_t& elemCounter,
+    std::map<int, std::size_t>& vtxNodeMap)
+{
+    if (nodes.empty())
+        return false;
+    std::size_t nc = nodes.nodeCount();
+
+    std::vector<std::pair<int, int>> vtxBnd;
+    gmsh::model::getBoundary({ { 1, gmshTag } }, vtxBnd, false, false, false);
+    if (vtxBnd.size() < 2)
+        return false;
+
+    int vtx0 = std::abs(vtxBnd[0].second);
+    int vtx1 = std::abs(vtxBnd[1].second);
+
+    double gx0, gy0, gz0;
+    {
+        double a, b, c, d, e, f;
+        gmsh::model::getBoundingBox(0, vtx0, a, b, c, d, e, f);
+        gx0 = a;
+        gy0 = b;
+        gz0 = c;
+    }
+
+    double distFwd = std::sqrt(
+        std::pow(gx0 - nodes.coords[0], 2) + std::pow(gy0 - nodes.coords[1], 2) + std::pow(gz0 - nodes.coords[2], 2));
+    bool reversed = (distFwd > 1e-6);
+
+    auto orderedCoords = nodes.coords;
+    auto orderedParams = nodes.paramCoords;
+
+    if (reversed) {
+        std::vector<double> rev(orderedCoords.size());
+        for (std::size_t i = 0; i < nc; ++i) {
+            std::size_t ri = nc - 1 - i;
+            rev[i * 3] = orderedCoords[ri * 3];
+            rev[i * 3 + 1] = orderedCoords[ri * 3 + 1];
+            rev[i * 3 + 2] = orderedCoords[ri * 3 + 2];
+        }
+        orderedCoords = rev;
+        orderedParams.clear();
+        for (std::size_t i = 1; i + 1 < nc; ++i) {
+            try {
+                std::vector<double> cc, cp;
+                gmsh::model::getClosestPoint(1, gmshTag,
+                    { orderedCoords[i * 3], orderedCoords[i * 3 + 1], orderedCoords[i * 3 + 2] }, cc, cp);
+                if (!cp.empty())
+                    orderedParams.push_back(cp[0]);
+            } catch (...) {
+                orderedParams.push_back(double(i) / double(nc - 1));
+            }
+        }
+    }
+
+    // 起点
+    std::size_t tagV0;
+    auto it0 = vtxNodeMap.find(vtx0);
+    if (it0 != vtxNodeMap.end()) {
+        tagV0 = it0->second;
+    } else {
+        tagV0 = nodeCounter++;
+        gmsh::model::mesh::addNodes(0, vtx0, { tagV0 },
+            { orderedCoords[0], orderedCoords[1], orderedCoords[2] });
+        vtxNodeMap[vtx0] = tagV0;
+    }
+
+    // 终点
+    std::size_t tagV1;
+    std::size_t last = nc - 1;
+    auto it1 = vtxNodeMap.find(vtx1);
+    if (it1 != vtxNodeMap.end()) {
+        tagV1 = it1->second;
+    } else {
+        tagV1 = nodeCounter++;
+        gmsh::model::mesh::addNodes(0, vtx1, { tagV1 },
+            { orderedCoords[last * 3], orderedCoords[last * 3 + 1], orderedCoords[last * 3 + 2] });
+        vtxNodeMap[vtx1] = tagV1;
+    }
+
+    // 内部节点
+    std::vector<std::size_t> innerTags;
+    std::vector<double> innerCoords, innerParams;
+
+    for (std::size_t i = 1; i + 1 < nc; ++i) {
+        innerTags.push_back(nodeCounter++);
+        innerCoords.push_back(orderedCoords[i * 3]);
+        innerCoords.push_back(orderedCoords[i * 3 + 1]);
+        innerCoords.push_back(orderedCoords[i * 3 + 2]);
+    }
+
+    if (orderedParams.size() == innerTags.size()) {
+        innerParams = orderedParams;
+    } else {
+        innerParams.clear();
+        for (std::size_t i = 0; i < innerTags.size(); ++i) {
+            std::size_t ci = i + 1;
+            try {
+                std::vector<double> cc, cp;
+                gmsh::model::getClosestPoint(1, gmshTag,
+                    { orderedCoords[ci * 3], orderedCoords[ci * 3 + 1], orderedCoords[ci * 3 + 2] }, cc, cp);
+                if (!cp.empty())
+                    innerParams.push_back(cp[0]);
+            } catch (...) {
+                innerParams.push_back(double(i + 1) / double(nc - 1));
+            }
+        }
+    }
+
+    if (!innerTags.empty())
+        gmsh::model::mesh::addNodes(1, gmshTag, innerTags, innerCoords, innerParams);
+
+    // 线单元
+    std::vector<std::size_t> allN;
+    allN.push_back(tagV0);
+    for (auto t : innerTags)
+        allN.push_back(t);
+    allN.push_back(tagV1);
+
+    std::vector<std::size_t> eT, eN;
+    for (std::size_t i = 0; i + 1 < allN.size(); ++i) {
+        eT.push_back(elemCounter++);
+        eN.push_back(allN[i]);
+        eN.push_back(allN[i + 1]);
+    }
+    gmsh::model::mesh::addElementsByType(gmshTag, 1, eT, eN);
+    return true;
+}
+
+// ---- 提取边节点 ----
+MeshedEdgeData extractEdgeNodes(int gmshTag)
+{
+    MeshedEdgeData en;
+    std::vector<std::pair<int, int>> vtxBnd;
+    gmsh::model::getBoundary({ { 1, gmshTag } }, vtxBnd, false, false, false);
+    if (vtxBnd.size() < 2)
+        return en;
+
+    {
+        int vt = std::abs(vtxBnd[0].second);
+        std::vector<std::size_t> nt;
+        std::vector<double> co, pa;
+        gmsh::model::mesh::getNodes(nt, co, pa, 0, vt, false, false);
+        if (!nt.empty())
+            en.coords.insert(en.coords.end(), co.begin(), co.begin() + 3);
+    }
+
+    {
+        std::vector<std::size_t> it;
+        std::vector<double> ic, ip;
+        gmsh::model::mesh::getNodes(it, ic, ip, 1, gmshTag, false, true);
+        en.coords.insert(en.coords.end(), ic.begin(), ic.end());
+        en.paramCoords.insert(en.paramCoords.end(), ip.begin(), ip.end());
+    }
+
+    {
+        int vt = std::abs(vtxBnd[1].second);
+        std::vector<std::size_t> nt;
+        std::vector<double> co, pa;
+        gmsh::model::mesh::getNodes(nt, co, pa, 0, vt, false, false);
+        if (!nt.empty())
+            en.coords.insert(en.coords.end(), co.begin(), co.begin() + 3);
+    }
+
+    return en;
+}
+
+// ---- 提取面网格（局部索引）----
+SingleFaceMeshResult extractFaceMesh(int faceTag)
+{
+    SingleFaceMeshResult result;
+    result.face_vertices_offset.push_back(0);
+
+    std::vector<std::size_t> nodeTags;
+    std::vector<double> coords, paramCoords;
+    gmsh::model::mesh::getNodes(nodeTags, coords, paramCoords, 2, faceTag, true, false);
+
+    std::map<std::size_t, std::size_t> tagToLocal;
+    for (size_t i = 0; i < nodeTags.size(); ++i) {
+        tagToLocal[nodeTags[i]] = result.vertices.size();
+        result.vertices.push_back({ coords[3 * i], coords[3 * i + 1], coords[3 * i + 2] });
+    }
+
+    std::vector<int> eTypes;
+    std::vector<std::vector<std::size_t>> eTags, eNodes;
+    gmsh::model::mesh::getElements(eTypes, eTags, eNodes, 2, faceTag);
+
+    size_t cnt = 0;
+    for (size_t t = 0; t < eTypes.size(); ++t) {
+        if (eTypes[t] != 2 && eTypes[t] != 3)
+            continue;
+        int npe = (eTypes[t] == 2) ? 3 : 4;
+        for (size_t i = 0; i < eTags[t].size(); ++i) {
+            for (int j = 0; j < npe; ++j)
+                result.face_vertices.push_back(tagToLocal[eNodes[t][i * npe + j]]);
+            result.face_vertices_offset.push_back(result.face_vertices.size());
+            cnt++;
+        }
+    }
+    result.success = (cnt > 0);
+    spdlog::info("  Extracted: {} nodes, {} elements", nodeTags.size(), cnt);
+    return result;
+}
+
+// ---- 存储新边 ----
+void storeNewEdges(SplineData& sp, const std::map<int, int>& g2o)
+{
+    int nNew = 0;
+    int nShared = 0;
+    for (auto& [gt, oid] : g2o) {
+        if (sp.meshedEdgeRefCounts.find(oid) == sp.meshedEdgeRefCounts.end()) {
+            auto ed = extractEdgeNodes(gt);
+            if (!ed.empty()) {
+                sp.meshedEdgesCache[oid] = std::move(ed);
+                sp.meshedEdgeRefCounts[oid] = 1; // 首次创建
+                nNew++;
+            }
+        } else {
+            sp.meshedEdgeRefCounts[oid]++; // 被另一个面复用
+            nShared++;
+        }
+    }
+    spdlog::info("GmshMesh:  {} new edges stored, {} edges reused (total cached: {})", nNew, nShared, sp.meshedEdgeRefCounts.size());
+}
+
+void mergeMeshResult(MeshData& mesh_data, const SingleFaceMeshResult& result)
+{
+    if (!result.success)
+        return;
+
+    if (mesh_data.face_vertices_offset_.empty())
+        mesh_data.face_vertices_offset_.push_back(0);
+
+    TempNodeLookup lookup(mesh_data.vertex_positions_, 1e-7);
+
+    std::vector<size_t> localToGlobal(result.vertices.size());
+    for (size_t i = 0; i < result.vertices.size(); ++i) {
+        localToGlobal[i] = lookup.getOrInsert(
+            result.vertices[i][0],
+            result.vertices[i][1],
+            result.vertices[i][2]);
+    }
+
+    for (size_t i = 0; i + 1 < result.face_vertices_offset.size(); ++i) {
+        size_t start = result.face_vertices_offset[i];
+        size_t end = result.face_vertices_offset[i + 1];
+        for (size_t j = start; j < end; ++j) {
+            mesh_data.face_vertices_.push_back(
+                static_cast<Index>(localToGlobal[result.face_vertices[j]]));
+        }
+        mesh_data.face_vertices_offset_.push_back(
+            static_cast<Index>(mesh_data.face_vertices_.size()));
+    }
+
+    spdlog::info("GmshMesh: merged total {} nodes, {} cells",
+        mesh_data.vertex_positions_.size(),
+        mesh_data.face_vertices_offset_.size() - 1);
+}
+
+} // anonymous namespace
+
+// 公开接口
+bool IncrementalMeshTools::initMeshing(const std::string& stepFile,
+    SplineData& spline)
+{
+    spline.clearMeshCache();
+    spline.rootShape = std::make_unique<TopoDS_Shape>(loadStep(stepFile));
+    if (spline.rootShape->IsNull()) {
+        spdlog::error("Failed to load: {}", stepFile);
+        return false;
+    }
+    spline.meshContext = std::make_unique<IncrementalMeshContext>(*spline.rootShape);
+    spdlog::info("Loaded: {} faces, {} global edges",
+        spline.meshContext->faceCount(),
+        spline.meshContext->globalEdgeCount());
+    return spline.meshContext->faceCount() > 0;
+}
+
+SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
+    MeshData& mesh_data, SplineData& sp, std::size_t faceIndex, double meshSize)
+{
+    SingleFaceMeshResult result;
+
+    if (!sp.meshContext) {
+        spdlog::error("meshContext null, call initMeshing first");
+        return result;
+    }
+    if (faceIndex >= sp.meshContext->faceCount()) {
+        spdlog::error("faceIndex {} out of range", faceIndex);
+        return result;
+    }
+
+    spdlog::info("=== Meshing face {}/{} (size={:.6f}) ===",
+        faceIndex + 1, sp.meshContext->faceCount(), meshSize);
+
+    TopoDS_Face face = sp.meshContext->getFaceByIndex(faceIndex);
+    if (face.IsNull()) {
+        spdlog::error("Face {} is null or invalid", faceIndex);
+        return result;
+    }
+    TopoDS_Compound compound = makeFaceCompound(face);
+
+    gmsh::initialize();
+    gmsh::option::setNumber("General.Terminal", 1);
+    gmsh::model::add("face_model");
+
+    gmsh::vectorpair outDimTags;
+    gmsh::model::occ::importShapesNativePointer(
+        static_cast<const void*>(&compound), outDimTags);
+    gmsh::model::occ::synchronize();
+
+    std::vector<std::pair<int, int>> faceDimTags;
+    gmsh::model::getEntities(faceDimTags, 2);
+    if (faceDimTags.empty()) {
+        spdlog::error("  No face after import");
+        gmsh::finalize();
+        return result;
+    }
+    int faceTag = faceDimTags[0].second;
+
+    auto gmshToOcc = matchGmshToOCCEdges(face, *sp.meshContext);
+
+    std::size_t nodeCounter = 1, elemCounter = 1;
+    int shared = 0, free = 0;
+    std::map<int, std::size_t> vtxNodeMap;
+
+    for (auto& [gt, oid] : gmshToOcc) {
+        if (sp.meshedEdgeRefCounts.count(oid) > 0) {
+            injectConstrainedEdge(gt, oid, sp.meshedEdgesCache.at(oid),
+                nodeCounter, elemCounter, vtxNodeMap);
+            shared++;
+        } else {
+            free++;
+        }
+    }
+    spdlog::info("  {} shared, {} free", shared, free);
+
+    gmsh::option::setNumber("Mesh.MeshSizeMin", meshSize * 0.5);
+    gmsh::option::setNumber("Mesh.MeshSizeMax", meshSize);
+    gmsh::option::setNumber("Mesh.MeshOnlyEmpty", 1);
+    gmsh::option::setNumber("Mesh.SaveAll", 1);
+    gmsh::option::setNumber("Mesh.Algorithm", 6);
+
+    try {
+        gmsh::model::mesh::generate(2);
+    } catch (const std::exception& e) {
+        spdlog::error("  Mesh failed: {}", e.what());
+        storeNewEdges(sp, gmshToOcc);
+        gmsh::finalize();
+        return result;
+    }
+
+    // 检查面单元
+    {
+        std::vector<int> ct;
+        std::vector<std::vector<std::size_t>> cta, cno;
+        gmsh::model::mesh::getElements(ct, cta, cno, 2, faceTag);
+        bool has = false;
+        for (size_t t = 0; t < ct.size(); ++t)
+            if ((ct[t] == 2 || ct[t] == 3) && !cta[t].empty()) {
+                has = true;
+                break;
+            }
+        if (!has) {
+            spdlog::warn("  No surface elements");
+            storeNewEdges(sp, gmshToOcc);
+            gmsh::finalize();
+            return result;
+        }
+    }
+
+    result = extractFaceMesh(faceTag);
+    storeNewEdges(sp, gmshToOcc);
+    sp.meshedFacesCache[faceIndex] = result; // 缓存面结果
+
+    if (result.success) {
+        mergeMeshResult(mesh_data, result);
+    }
+    gmsh::finalize();
+    return result;
+}
+
+double IncrementalMeshTools::estimateMeshSize(const SplineData& sp)
+{
+    if (!sp.rootShape || sp.rootShape->IsNull())
+        return 10.0;
+    GProp_GProps props;
+    BRepGProp::SurfaceProperties(*sp.rootShape, props);
+    double area = props.Mass();
+    if (area > 0) {
+        double s = std::sqrt(area) / 10.0;
+        if (s < 0.01)
+            s = 0.01;
+        if (s > 100.0)
+            s = 100.0;
+        return s;
+    }
+    return 10.0;
+}
+
+std::size_t IncrementalMeshTools::faceCount(const SplineData& sp)
+{
+    return sp.meshContext ? sp.meshContext->faceCount() : 0;
+}
+
+std::size_t IncrementalMeshTools::meshedEdgeCount(const SplineData& sp)
+{
+    return sp.meshedEdgeRefCounts.size();
+}
+
+bool IncrementalMeshTools::writeSingleFaceObj(const SingleFaceMeshResult& res, const std::filesystem::path& filepath)
+{
+    if (!res.success)
+        return false;
+
+    std::ofstream ofs(filepath);
+    if (!ofs.is_open())
+        return false;
+
+    for (const auto& v : res.vertices)
+        ofs << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
+
+    for (size_t i = 0; i + 1 < res.face_vertices_offset.size(); ++i) {
+        size_t start = res.face_vertices_offset[i];
+        size_t end = res.face_vertices_offset[i + 1];
+        ofs << "f";
+        for (size_t j = start; j < end; ++j)
+            ofs << " " << (res.face_vertices[j] + 1);
+        ofs << "\n";
+    }
+    return true;
+}
+
+bool IncrementalMeshTools::writeMeshObj(const MeshData& res, const std::filesystem::path& filepath)
+{
+    std::ofstream ofs(filepath);
+    if (!ofs.is_open())
+        return false;
+
+    ofs << "o GmshMergedMesh\n";
+    ofs << "g 0\n"; 
+
+    for (const auto& v : res.vertex_positions_)
+        ofs << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
+
+    for (size_t i = 0; i + 1 < res.face_vertices_offset_.size(); ++i) {
+        size_t start = res.face_vertices_offset_[i];
+        size_t end = res.face_vertices_offset_[i + 1];
+        ofs << "f";
+        for (size_t j = start; j < end; ++j)
+            ofs << " " << (res.face_vertices_[j] + 1);
+        ofs << "\n";
+    }
+    return true;
+}
+
+bool IncrementalMeshTools::deleteFaceMesh(MeshData& mesh_data, SplineData& spline, std::size_t faceIndex)
+{
+    // 检查是否存在该面的缓存
+    auto it = spline.meshedFacesCache.find(faceIndex);
+    if (it == spline.meshedFacesCache.end()) {
+        spdlog::warn("Face {} is not meshed or not cached.", faceIndex);
+        return false;
+    }
+
+    // 释放面的边界边（更新引用计数并在归零时移除）
+    if (spline.meshContext) {
+        TopoDS_Face face = spline.meshContext->getFaceByIndex(faceIndex);
+        auto occEdges = spline.meshContext->getFaceEdgeIds(face);
+        for (int globalEdgeId : occEdges) {
+            auto refIt = spline.meshedEdgeRefCounts.find(globalEdgeId);
+            if (refIt != spline.meshedEdgeRefCounts.end()) {
+                refIt->second--;
+                if (refIt->second <= 0) {
+                    spline.meshedEdgeRefCounts.erase(refIt);
+                    spline.meshedEdgesCache.erase(globalEdgeId);
+                    spdlog::info("Edge {} cache cleaned up.", globalEdgeId);
+                }
+            }
+        }
+    }
+
+    spline.meshedFacesCache.erase(it);
+    
+    // 重构meshdata 暂时重建面索引
+    mesh_data.face_vertices_.clear();
+    mesh_data.face_vertices_offset_.clear();
+    mesh_data.face_vertices_offset_.push_back(0); 
+
+    TempNodeLookup lookup(mesh_data.vertex_positions_, 1e-7);
+
+    // 遍历目前还保留的所有有效面，按序装入MeshData
+    for (const auto& [fIdx, faceMeshResult] : spline.meshedFacesCache) {
+        if (!faceMeshResult.success)
+            continue;
+
+        std::vector<size_t> localToGlobal(faceMeshResult.vertices.size());
+        for (size_t i = 0; i < faceMeshResult.vertices.size(); ++i) {
+            localToGlobal[i] = lookup.getOrInsert(
+                faceMeshResult.vertices[i][0],
+                faceMeshResult.vertices[i][1],
+                faceMeshResult.vertices[i][2]);
+        }
+
+        for (size_t i = 0; i + 1 < faceMeshResult.face_vertices_offset.size(); ++i) {
+            size_t start = faceMeshResult.face_vertices_offset[i];
+            size_t end = faceMeshResult.face_vertices_offset[i + 1];
+            for (size_t j = start; j < end; ++j) {
+                mesh_data.face_vertices_.push_back(
+                    static_cast<Index>(localToGlobal[faceMeshResult.face_vertices[j]]));
+            }
+            mesh_data.face_vertices_offset_.push_back(
+                static_cast<Index>(mesh_data.face_vertices_.size()));
+        }
+    }
+
+    spdlog::info("Deleted mesh for face {}, rebuilt topology. Remaining cells: {}",
+        faceIndex, mesh_data.face_vertices_offset_.size() - 1);
+    return true;
+}
+
+SingleFaceMeshResult IncrementalMeshTools::remeshSingleFace(
+    MeshData& mesh_data, SplineData& sp, std::size_t faceIndex, double meshSize)
+{
+    if (sp.meshedFacesCache.find(faceIndex) != sp.meshedFacesCache.end()) {
+        spdlog::info("Remeshing: Face {} is already meshed, deleting old mesh first.", faceIndex);
+        deleteFaceMesh(mesh_data, sp, faceIndex);
+    }
+    return meshSingleFace(mesh_data, sp, faceIndex, meshSize);
+}
