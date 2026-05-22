@@ -98,7 +98,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
 
                 std::string compName = "Comp_" + std::to_string(freeIndex);
                 ComponentData* c = model_data->createComponent(-1, compName);
-                c->cad = std::move(spline_data);
+                c->geometry = std::move(spline_data);
 
                 ++freeIndex;
             }
@@ -123,7 +123,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
         }
 
         ComponentData* c = model_data->createComponent(-1, compName);
-        c->cad = std::move(spline_data);
+        c->geometry = std::move(spline_data);
         c->source_xde_leaf_id = leafIndex;
 
         spdlog::info("[STEP-XDE] create component: index={}, name='{}', shapeType={}",

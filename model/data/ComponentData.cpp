@@ -12,7 +12,7 @@ bool ComponentData::hasMesh() const noexcept
 
 bool ComponentData::hasCad() const noexcept 
 { 
-    return static_cast<bool>(cad);
+    return static_cast<bool>(geometry);
 }
 
 SplineMeshMap& ComponentData::ensureMapping()

@@ -77,7 +77,6 @@ public:
     GeometryRegistry& geomRegistry();
     const GeometryRegistry& geomRegistry() const;
 
-    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
     const std::vector<std::array<double, 3>>& globalPoints() const { return global_points_; }
 
     MeshIDMap& edgeIdMap() { return edge_id_map_; }
@@ -96,6 +95,7 @@ private:
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
 
+    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
     std::vector<std::array<double, 3>> global_points_;
     MeshIDMap edge_id_map_; // 先只维护 edge 的 global->local
 

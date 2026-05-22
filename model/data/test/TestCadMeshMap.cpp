@@ -14,11 +14,11 @@ TEST_CASE("ComponentData CAD edge -> mesh point gids map", "[CadMeshMap]")
     std::vector<Index> pts = { 10, 11, 12 };
 
     // ensure mapping created on demand
-    c.ensureMapping().cad_edge_to_mesh_point_gids[e0] = pts;
+    c.ensureMapping().geometry_edge_to_mesh_point_gids[e0] = pts;
 
     REQUIRE(c.mapping);
-    REQUIRE(c.mapping->cad_edge_to_mesh_point_gids.count(e0) == 1);
-    REQUIRE(c.mapping->cad_edge_to_mesh_point_gids[e0].size() == 3);
+    REQUIRE(c.mapping->geometry_edge_to_mesh_point_gids.count(e0) == 1);
+    REQUIRE(c.mapping->geometry_edge_to_mesh_point_gids[e0].size() == 3);
 
     // optional: validate ownership helper
     REQUIRE(c.ownsGlobalPoint(10));

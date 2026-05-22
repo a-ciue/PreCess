@@ -110,10 +110,10 @@ std::vector<GeometryDataVtk> QModelQuery::getSplineData(Index model_id)
     std::vector<GeometryDataVtk> result;
     for (Index cid : m_manager->getComponentIds(model_id)) {
         ComponentData* comp = m_manager->findComponent(cid);
-        if (!comp || !comp->cad || !comp->cad->rootShape)
+        if (!comp || !comp->geometry || !comp->geometry->rootShape)
             continue;
 
-        result.push_back(GeometryDataVtk { *comp->cad->rootShape, comp->id });
+        result.push_back(GeometryDataVtk { *comp->geometry->rootShape, comp->id });
     }
 
     return result;
@@ -122,10 +122,10 @@ std::vector<GeometryDataVtk> QModelQuery::getSplineData(Index model_id)
 std::optional<GeometryDataVtk> QModelQuery::getSplineDataByComponent(Index component_id)
 {
     ComponentData* comp = m_manager->findComponent(component_id);
-    if (!comp || !comp->cad || !comp->cad->rootShape)
+    if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    return GeometryDataVtk { *comp->cad->rootShape, comp->id };
+    return GeometryDataVtk { *comp->geometry->rootShape, comp->id };
 }
 
 
@@ -139,7 +139,7 @@ QVariantList QModelQuery::getCadEdgeMappedPointIds(Index component_id, int local
     QVariantList out;
 
     ComponentData* comp = m_manager->findComponent(component_id);
-    if (!comp || !comp->cad)
+    if (!comp || !comp->geometry)
         return out;
 
     auto gidOpt = resolveCadEdgeLocalId(component_id, localCadEdgeId);
@@ -149,8 +149,8 @@ QVariantList QModelQuery::getCadEdgeMappedPointIds(Index component_id, int local
     if (!comp->mapping)
         return out;
 
-    auto it = comp->mapping->cad_edge_to_mesh_point_gids.find(*gidOpt);
-    if (it == comp->mapping->cad_edge_to_mesh_point_gids.end())
+    auto it = comp->mapping->geometry_edge_to_mesh_point_gids.find(*gidOpt);
+    if (it == comp->mapping->geometry_edge_to_mesh_point_gids.end())
         return out;
 
     for (Index pid : it->second)
@@ -247,12 +247,12 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
 std::optional<GeomFaceId> QModelQuery::resolveCadFaceLocalId(Index component_id, int localFaceId)
 {
     ComponentData* comp = m_manager->findComponent(component_id);
-    if (!comp || !comp->cad || !comp->cad->rootShape)
+    if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureCadIndexBuilt(m_manager->geomRegistry());
 
-    GeomFaceId gid = comp->cad->cad_index.faceGlobalId(localFaceId);
+    GeomFaceId gid = comp->geometry->cad_index.faceGlobalId(localFaceId);
     if (gid == kInvalidGeomFaceId)
         return std::nullopt;
 
@@ -262,12 +262,12 @@ std::optional<GeomFaceId> QModelQuery::resolveCadFaceLocalId(Index component_id,
 std::optional<GeomEdgeId> QModelQuery::resolveCadEdgeLocalId(Index component_id, int localEdgeId)
 {
     ComponentData* comp = m_manager->findComponent(component_id);
-    if (!comp || !comp->cad || !comp->cad->rootShape)
+    if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureCadIndexBuilt(m_manager->geomRegistry());
 
-    GeomEdgeId gid = comp->cad->cad_index.edgeGlobalId(localEdgeId);
+    GeomEdgeId gid = comp->geometry->cad_index.edgeGlobalId(localEdgeId);
     if (gid == kInvalidGeomEdgeId)
         return std::nullopt;
 
@@ -277,12 +277,12 @@ std::optional<GeomEdgeId> QModelQuery::resolveCadEdgeLocalId(Index component_id,
 std::optional<GeomVertexId> QModelQuery::resolveCadVertexLocalId(Index component_id, int localVertexId)
 {
     ComponentData* comp = m_manager->findComponent(component_id);
-    if (!comp || !comp->cad || !comp->cad->rootShape)
+    if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureCadIndexBuilt(m_manager->geomRegistry());
 
-    GeomVertexId gid = comp->cad->cad_index.vertexGlobalId(localVertexId);
+    GeomVertexId gid = comp->geometry->cad_index.vertexGlobalId(localVertexId);
     if (gid == kInvalidGeomVertexId)
         return std::nullopt;
 
@@ -292,12 +292,12 @@ std::optional<GeomVertexId> QModelQuery::resolveCadVertexLocalId(Index component
 std::optional<GeomSolidId> QModelQuery::resolveCadSolidLocalId(Index component_id, int localSolidId)
 {
     ComponentData* comp = m_manager->findComponent(component_id);
-    if (!comp || !comp->cad || !comp->cad->rootShape)
+    if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->cad->ensureCadIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureCadIndexBuilt(m_manager->geomRegistry());
 
-    GeomSolidId gid = comp->cad->cad_index.solidGlobalId(localSolidId);
+    GeomSolidId gid = comp->geometry->cad_index.solidGlobalId(localSolidId);
     if (gid == kInvalidGeomSolidId)
         return std::nullopt;
 

@@ -54,8 +54,8 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
         ComponentData* cp = components_[cid].get();
 
         // CAD index
-        if (cp->cad) {
-            cp->cad->ensureCadIndexBuilt(geom_registry_);
+        if (cp->geometry) {
+            cp->geometry->ensureCadIndexBuilt(geom_registry_);
         }
 
         // Mesh: global points + globalize indices + release vertex_positions + edge id map

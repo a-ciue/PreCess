@@ -23,6 +23,7 @@ struct GeometrySubshapeIndex {
     std::vector<GeomSolidId> solid_local_to_global;
 
     void build(const TopoDS_Shape& root, GeometryRegistry& reg);
+    void release(GeometryRegistry& reg);
 
     GeomVertexId vertexGlobalId(int localTypeId) const;
     GeomEdgeId edgeGlobalId(int localTypeId) const;

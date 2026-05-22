@@ -19,7 +19,7 @@ public:
 
     ComponentData& component() const noexcept { return *component_; }
     MeshData* mesh() const noexcept;
-    GeometryData* cad() const noexcept;
+    GeometryData* geometry() const noexcept;
 
     ModelLayer& manager() const noexcept { return *mgr_; }
     ModelObserver* observer() const noexcept { return observer_; }

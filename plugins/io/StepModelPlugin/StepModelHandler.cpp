@@ -62,11 +62,11 @@ void StepModelHandler::write_components(const ModelLayer& mgr,
             spdlog::warn("StepModelHandler: component {} not found, skip", cid);
             continue;
         }
-        if (!comp->cad || !comp->cad->rootShape) {
-            spdlog::warn("StepModelHandler: component {} has no cad(rootShape), skip", cid);
+        if (!comp->geometry || !comp->geometry->rootShape) {
+            spdlog::warn("StepModelHandler: component {} has no geometry(rootShape), skip", cid);
             continue;
         }
-        shapes.push_back(*comp->cad->rootShape);
+        shapes.push_back(*comp->geometry->rootShape);
     }
 
     if (shapes.empty()) {

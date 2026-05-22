@@ -56,7 +56,7 @@ public:
 
     /* ============ 构造（仅声明） ============ */
     explicit ModelData(std::unique_ptr<MeshData> mesh);
-    explicit ModelData(std::unique_ptr<GeometryData> spline);
+    explicit ModelData(std::unique_ptr<GeometryData> geometry);
 
     ModelData(const ModelData& other) = delete;
     ModelData& operator=(const ModelData& other) = delete;

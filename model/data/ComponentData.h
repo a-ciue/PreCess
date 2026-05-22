@@ -15,10 +15,10 @@ struct GeometryData;
 struct SplineMeshMap {
     // CAD 几何边(全局 GeomEdgeId) -> 网格点(全局点池下标)序列
     // 语义：一条 CAD 边对应一条折线/采样点序列（顺序有意义）
-    std::unordered_map<GeomEdgeId, std::vector<Index>> cad_edge_to_mesh_point_gids;
+    std::unordered_map<GeomEdgeId, std::vector<Index>> geometry_edge_to_mesh_point_gids;
 
-    void clear() { cad_edge_to_mesh_point_gids.clear(); }
-    bool empty() const { return cad_edge_to_mesh_point_gids.empty(); }
+    void clear() { geometry_edge_to_mesh_point_gids.clear(); }
+    bool empty() const { return geometry_edge_to_mesh_point_gids.empty(); }
 };
 
 /**
@@ -34,7 +34,7 @@ struct ComponentData {
 
     // 数据部分：一个组件可以有 CAD，也可以有网格，也可以都有/都没有（初始化阶段）
     std::unique_ptr<MeshData> mesh; ///< 网格数据（来自网格导入或由 CAD 网格化生成）
-    std::unique_ptr<GeometryData> cad; ///< CAD 数据（来自 STEP 等）
+    std::unique_ptr<GeometryData> geometry; ///< CAD 数据（来自 STEP 等）
     std::unique_ptr<SplineMeshMap> mapping; ///< CAD↔网格对应关系（可选，后续实现）
 
     // 组件级属性（后续会扩展 Property/Material）
@@ -51,8 +51,8 @@ struct ComponentData {
     MeshData* asMeshData() noexcept { return mesh.get(); }
     const MeshData* asMeshData() const noexcept { return mesh.get(); }
 
-    GeometryData* asSplineData() noexcept { return cad.get(); }
-    const GeometryData* asSplineData() const noexcept { return cad.get(); }
+    GeometryData* asSplineData() noexcept { return geometry.get(); }
+    const GeometryData* asSplineData() const noexcept { return geometry.get(); }
 
     SplineMeshMap& ensureMapping();
     const SplineMeshMap* getMapping() const noexcept;

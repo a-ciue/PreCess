@@ -25,9 +25,9 @@ MeshData* ComponentOperator::mesh() const noexcept
     return component_ && component_->mesh ? component_->mesh.get() : nullptr;
 }
 
-GeometryData* ComponentOperator::cad() const noexcept
+GeometryData* ComponentOperator::geometry() const noexcept
 {
-    return component_ && component_->cad ? component_->cad.get() : nullptr;
+    return component_ && component_->geometry ? component_->geometry.get() : nullptr;
 }
 
 Index ComponentOperator::modelId() const

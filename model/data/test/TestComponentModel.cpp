@@ -45,14 +45,14 @@ TEST_CASE("ModelData supports multiple staging components")
         auto c1 = make_unique<ComponentData>();
         c1->id = -1;
         c1->name = "Comp_0";
-        c1->cad = move(spline1);
+        c1->geometry = move(spline1);
         model->stagingcomponents().push_back(move(c1));
     }
     {
         auto c2 = make_unique<ComponentData>();
         c2->id = -1;
         c2->name = "Comp_1";
-        c2->cad = move(spline2);
+        c2->geometry = move(spline2);
         model->stagingcomponents().push_back(move(c2));
     }
 
@@ -82,14 +82,14 @@ TEST_CASE("ModelLayer adds multiple CAD components (runtime access by ids)")
         auto c1 = make_unique<ComponentData>();
         c1->id = -1;
         c1->name = "Part_1";
-        c1->cad = move(spline1);
+        c1->geometry = move(spline1);
         model->stagingcomponents().push_back(move(c1));
     }
     {
         auto c2 = make_unique<ComponentData>();
         c2->id = -1;
         c2->name = "Part_2";
-        c2->cad = move(spline2);
+        c2->geometry = move(spline2);
         model->stagingcomponents().push_back(move(c2));
     }
 

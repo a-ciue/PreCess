@@ -72,6 +72,31 @@ void GeometrySubshapeIndex::build(const TopoDS_Shape& root, GeometryRegistry& re
     built = true;
 }
 
+void GeometrySubshapeIndex::release(GeometryRegistry& reg)
+{
+    if (!built)
+        return;
+
+    for (GeomVertexId id : vertex_local_to_global)
+        reg.eraseVertex(id);
+    for (GeomEdgeId id : edge_local_to_global)
+        reg.eraseEdge(id);
+    for (GeomFaceId id : face_local_to_global)
+        reg.eraseFace(id);
+    for (GeomSolidId id : solid_local_to_global)
+        reg.eraseSolid(id);
+
+    vertex_local_to_global.clear();
+    edge_local_to_global.clear();
+    face_local_to_global.clear();
+    solid_local_to_global.clear();
+
+    for (auto& m : type_maps)
+        m.Clear();
+
+    built = false;
+}
+
 GeomVertexId GeometrySubshapeIndex::vertexGlobalId(int localTypeId) const
 {
     if (localTypeId <= 0 || localTypeId >= (int)vertex_local_to_global.size())

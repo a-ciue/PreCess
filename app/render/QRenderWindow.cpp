@@ -374,7 +374,7 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
         }
     }
 
-    std::cout << "get is edge render mode error" << std::endl;
+    spdlog::error("get is edge render mode error");
     return false;
 }
 

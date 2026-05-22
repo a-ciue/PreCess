@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 GeometryActorManager::GeometryActorManager() = default;
 
@@ -21,7 +22,7 @@ const GeometryActor* GeometryActorManager::getSplineActor(Index component_id)
     if (it != component_actors_.end()) {
         return it->second.get();
     } else {
-        std::cout << "GeometryActorManager getSplineActor error" << std::endl;
+        spdlog::error("GeometryActorManager getSplineActor error");
         return nullptr;
     }
 }
@@ -33,7 +34,7 @@ SplineRenderMode GeometryActorManager::getSplineRenderMode(Index component_id)
         return it->second->getSplineRenderMode();
     }
 
-    std::cout << "get spline render mode error" << std::endl;
+    spdlog::error("get spline render mode error");
     return SplineRenderMode::Face;
 }
 
@@ -44,7 +45,7 @@ bool GeometryActorManager::getIsEdgeRender(Index component_id)
         return it->second->getIsEdgeRender();
     }
 
-    std::cout << "get is edge render mode error" << std::endl;
+    spdlog::error("get is edge render mode error");
     return false;
 }
 

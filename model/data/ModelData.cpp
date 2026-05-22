@@ -31,11 +31,11 @@ ModelData::ModelData(std::unique_ptr<MeshData> mesh)
     spdlog::info("ModelData: created 1 component with mesh");
 }
 
-ModelData::ModelData(std::unique_ptr<GeometryData> spline)
+ModelData::ModelData(std::unique_ptr<GeometryData> geometry)
 {
     ComponentData* c = createComponent(-1, "Comp_0");
-    c->cad = std::move(spline);
-    spdlog::info("ModelData: created 1 component with spline");
+    c->geometry = std::move(geometry);
+    spdlog::info("ModelData: created 1 component with geometry");
 }
 
 ModelData::ModelData(ModelData&& other) noexcept = default;

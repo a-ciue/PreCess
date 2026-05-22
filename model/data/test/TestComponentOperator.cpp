@@ -4,8 +4,7 @@
 #include "ModelData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
-// 如果你已经做了 ComponentOperator 再 include
-// #include "ComponentOperator.h"
+#include "ComponentOperator.h"
 
 struct DummyObserver : ModelObserver {
     void notifyModelChanged(Index) override { }

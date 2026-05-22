@@ -24,18 +24,18 @@ TEST_CASE("CAD index build for single component")
 
     ComponentData* comp = manager.findComponent(0);
     REQUIRE(comp != nullptr);
-    REQUIRE(comp->cad != nullptr);
-    REQUIRE(comp->cad->cad_index.built);
+    REQUIRE(comp->geometry != nullptr);
+    REQUIRE(comp->geometry->cad_index.built);
 
-    REQUIRE_FALSE(comp->cad->cad_index.face_local_to_global.empty());
-    REQUIRE_FALSE(comp->cad->cad_index.edge_local_to_global.empty());
-    REQUIRE_FALSE(comp->cad->cad_index.vertex_local_to_global.empty());
-    REQUIRE_FALSE(comp->cad->cad_index.solid_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->cad_index.face_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->cad_index.edge_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->cad_index.vertex_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->cad_index.solid_local_to_global.empty());
 
-    REQUIRE(comp->cad->cad_index.face_local_to_global.size() > 1);
-    REQUIRE(comp->cad->cad_index.edge_local_to_global.size() > 1);
-    REQUIRE(comp->cad->cad_index.vertex_local_to_global.size() > 1);
-    REQUIRE(comp->cad->cad_index.solid_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->cad_index.face_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->cad_index.edge_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->cad_index.vertex_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->cad_index.solid_local_to_global.size() > 1);
 }
 
 TEST_CASE("CAD index build for multiple components")
@@ -56,10 +56,10 @@ TEST_CASE("CAD index build for multiple components")
         BRepPrimAPI_MakeBox(2.0, 1.0, 1.0).Shape());
 
     ComponentData* c1 = model->createComponent(-1, "Box_1");
-    c1->cad = move(spline1);
+    c1->geometry = move(spline1);
 
     ComponentData* c2 = model->createComponent(-1, "Box_2");
-    c2->cad = move(spline2);
+    c2->geometry = move(spline2);
 
     Index modelId = manager.addModel(move(model));
     REQUIRE(modelId == 0);
@@ -71,19 +71,19 @@ TEST_CASE("CAD index build for multiple components")
     REQUIRE(comp1 != nullptr);
     REQUIRE(comp0 != comp1);
 
-    REQUIRE(comp0->cad != nullptr);
-    REQUIRE(comp1->cad != nullptr);
+    REQUIRE(comp0->geometry != nullptr);
+    REQUIRE(comp1->geometry != nullptr);
 
-    REQUIRE(comp0->cad->cad_index.built);
-    REQUIRE(comp1->cad->cad_index.built);
+    REQUIRE(comp0->geometry->cad_index.built);
+    REQUIRE(comp1->geometry->cad_index.built);
 
-    REQUIRE_FALSE(comp0->cad->cad_index.face_local_to_global.empty());
-    REQUIRE_FALSE(comp0->cad->cad_index.edge_local_to_global.empty());
-    REQUIRE_FALSE(comp0->cad->cad_index.vertex_local_to_global.empty());
-    REQUIRE_FALSE(comp0->cad->cad_index.solid_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->cad_index.face_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->cad_index.edge_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->cad_index.vertex_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->cad_index.solid_local_to_global.empty());
 
-    REQUIRE_FALSE(comp1->cad->cad_index.face_local_to_global.empty());
-    REQUIRE_FALSE(comp1->cad->cad_index.edge_local_to_global.empty());
-    REQUIRE_FALSE(comp1->cad->cad_index.vertex_local_to_global.empty());
-    REQUIRE_FALSE(comp1->cad->cad_index.solid_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->cad_index.face_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->cad_index.edge_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->cad_index.vertex_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->cad_index.solid_local_to_global.empty());
 }
