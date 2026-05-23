@@ -1,14 +1,14 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "GmshMeshHandler.h"
-#include "IncrementalMeshContext.h"
-#include "IncrementalMeshTools.h"
 
 #include "ArgObject.h"
+#include "ComponentData.h"
+#include "GeometryData.h"
+#include "IncrementalMeshContext.h"
 #include "ModelData.h"
 #include "ModelIOSystemBase.h"
-#include "ModelOperator.h"
-#include "SplineData.h"
+#include "ModelLayer.h"
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
@@ -17,16 +17,25 @@
 
 namespace {
 
-// 模拟的 IO 系统，避免在测试中涉及真实的界面交互或不可控流
+// 测试用 IO 系统，只记录插件读写请求，避免真实导入导出影响用例状态。
 class MockIOSystem : public systems::io::ModelIOSystemBase {
 public:
     void read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override
     {
         spdlog::info("[MockIO] read file: {}", path.string());
     }
+
     void write(Index model, const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override
     {
-        spdlog::info("[MockIO] write to: {}", path.string());
+        spdlog::info("[MockIO] write model to: {}", path.string());
+    }
+
+    void writeComponents(const std::vector<Index>& component_ids,
+        const std::filesystem::path& path,
+        const std::string& file_type,
+        const std::vector<std::any>& args) override
+    {
+        spdlog::info("[MockIO] write components to: {}", path.string());
     }
 };
 
@@ -36,43 +45,38 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
 {
     spdlog::set_level(spdlog::level::info);
 
-    // 1. 使用 OCC 构造一个 10x10x10 的立方体形状
     BRepPrimAPI_MakeBox boxMaker(10.0, 10.0, 10.0);
     boxMaker.Build();
     REQUIRE(boxMaker.IsDone() == true);
-    TopoDS_Shape cubeShape = boxMaker.Shape();
 
-    // 2. 初始化 SplineData 及持有它的 ModelData
-    auto splineData = std::make_unique<SplineData>();
-    splineData->rootShape = std::make_unique<TopoDS_Shape>(cubeShape);
+    auto geometryData = std::make_unique<GeometryData>();
+    geometryData->rootShape = std::make_unique<TopoDS_Shape>(boxMaker.Shape());
 
-    ModelData modelData(std::move(splineData));
-    ModelOperator op(1, modelData);
+    ModelLayer modelLayer;
+    Index modelId = modelLayer.addModel(std::make_unique<ModelData>(std::move(geometryData)));
+    auto componentIds = modelLayer.getComponentIds(modelId);
+    REQUIRE(componentIds.size() == 1);
 
-    // 3. 构建模拟的 IO 系统和上下文环境
+    auto componentOp = modelLayer.getComponentOperator(componentIds[0]);
+    REQUIRE(componentOp.has_value());
+
     MockIOSystem mockIo;
-    systems::algo::HandlerContext context { mockIo, op };
+    systems::algo::HandlerContext context { mockIo, *componentOp };
 
-    // 4. 准备入参：
-    // Arg 0: 面索引 "0"
-    // Arg 1: 网格尺寸 "2.0"
     std::vector<core::ArgObject> args;
     args.push_back(core::ArgObject::create<ArgTypeEnum::Text>("0"));
     args.push_back(core::ArgObject::create<ArgTypeEnum::Text>("2.0"));
 
-    // 5. 调用执行插件方法
     systems::algo::GmshMeshHandler handler;
-    std::any result = handler.execute(context, args);
+    handler.execute(context, args);
 
-    // 6. 后置断言：验证执行后的内部状态变化
-    SplineData* sp = op.data().asSplineData();
-    REQUIRE(sp != nullptr);
-    REQUIRE(sp->meshContext != nullptr);
-
-    // 立方体应当被提取到了 6 个面
-    REQUIRE(sp->meshContext->faceCount() == 6);
-
-    // 由于面 0 已经成功完成了网格划分，其关联的 4 条自由边界应该被缓存起来了
-    REQUIRE(sp->meshedEdgeRefCounts.size() == 4);
-    REQUIRE(sp->meshedEdgesCache.size() == 4);
+    ComponentData* comp = modelLayer.findComponent(componentIds[0]);
+    REQUIRE(comp != nullptr);
+    REQUIRE(comp->mesh != nullptr);
+    REQUIRE(comp->geometry != nullptr);
+    REQUIRE(comp->geometry->gmsh_mesh_state.meshContext != nullptr);
+    REQUIRE(comp->geometry->gmsh_mesh_state.meshContext->faceCount() == 6);
+    REQUIRE(comp->geometry->gmsh_mesh_state.meshedEdgeRefCounts.size() == 4);
+    REQUIRE(comp->geometry->gmsh_mesh_state.meshedEdgesCache.size() == 4);
+    REQUIRE_FALSE(comp->geometry->gmsh_mesh_state.local_to_global_point_ids.empty());
 }
