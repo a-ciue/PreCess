@@ -1,6 +1,8 @@
 #pragma once
 #include "IAttributeRenderStrategy.h"
 #include "AttributeOperator.h"
+#include <array>
+class vtkDataSet;
 class AttriRenderStrategyVector : public IAttributeRenderStrategy {
 public:
     void render(

@@ -41,11 +41,11 @@ void AttriRenderStrategyUV::render(
     texture->InterpolateOn(); // 启用插值使纹理更平滑
 
     // 读取传入的属性作为UV
-    vtkDataArray* tcoords = op.getVertexPointData()->GetArray(attr_name.c_str());
+    vtkDataArray* tcoords = op.getFacePointData()->GetArray(attr_name.c_str());
     if (tcoords && tcoords->GetNumberOfComponents() == 2) {
         spdlog::info("use attribute {} as UV", attr_name);
-        op.getVertexPointData()->SetTCoords(tcoords);
         op.getFacePointData()->SetTCoords(tcoords);
+        op.getSolidPointData()->SetTCoords(tcoords);
     }
     op.getFaceActor()->SetTexture(texture);
 }

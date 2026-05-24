@@ -1,13 +1,15 @@
 #include "AttriRenderStrategyVector.h"
+#include <vtkActor.h>
 #include <vtkArrowSource.h>
-#include <vtkCellCenters.h>
 #include <vtkCellData.h>
 #include <vtkDataArray.h>
 #include <vtkGlyph3D.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <spdlog/spdlog.h>
+
 void AttriRenderStrategyVector::render(
     AttributeOperator op,
     const std::string& attr_name,
@@ -29,25 +31,35 @@ void AttriRenderStrategyVector::render(
         }
     }
     // 判断是否是顶点属性
-    vtkDataArray* array = op.getVertexPointData()->GetArray(attr_name.c_str());
+    vtkDataArray* array = op.getFacePointData()->GetArray(attr_name.c_str());
     if (array) {
-        vtkPolyData* vertex_data = op.getVertexGlyphInput(attr_name);
-        createGlyph3D(op, vertex_data, { 1.0, 0.0, 0.0 }, glyph_scale); // 红色
+        vtkPolyData* point_data = op.getPointGlyphInput(attr_name);
+        createGlyph3D(op, point_data, { 1.0, 0.0, 0.0 }, glyph_scale);
         return;
     }
     // 判断是否是面属性
-    if (vtkCellData* face_data = op.getFaceCellData()) {
-        array = face_data->GetArray(attr_name.c_str());
-    }
+    array = op.getFaceCellData()->GetArray(attr_name.c_str());
     if (array) {
         vtkSmartPointer<vtkPolyData> glyphInput = op.getFaceGlyphInput(attr_name);
-        createGlyph3D(op, glyphInput, { 0.0, 0.0, 1.0 }, glyph_scale); // 蓝色
-    } else {
-        spdlog::error("Attribute {} not found in vertex or face data.", attr_name);
+        createGlyph3D(op, glyphInput, { 0.0, 0.0, 1.0 }, glyph_scale);
+        return;
     }
+    // 判断是否是体属性
+    array = op.getSolidCellData()->GetArray(attr_name.c_str());
+    if (array) {
+        vtkSmartPointer<vtkPolyData> glyphInput = op.getSolidGlyphInput(attr_name);
+        createGlyph3D(op, glyphInput, { 0.0, 0.6, 0.0 }, glyph_scale);
+        return;
+    }
+
+    spdlog::error("Attribute {} not found in point, face or solid data.", attr_name);
 }
+
 void AttriRenderStrategyVector::createGlyph3D(AttributeOperator& op, vtkDataSet* input, const std::array<double, 3>& color, double scale)
 {
+    if (!input)
+        return;
+
     vtkNew<vtkArrowSource> arrow_source; // 箭头源
     arrow_source->SetTipResolution(16);
     arrow_source->SetTipLength(0.3);

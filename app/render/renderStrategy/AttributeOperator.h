@@ -12,8 +12,8 @@ class AttributeOperator {
 public:
     AttributeOperator(MeshActor* mesh_actor_);
 
-    vtkPolyDataMapper* getVertexMapper();
     vtkPolyDataMapper* getFaceMapper();
+    vtkPolyDataMapper* getSolidMapper();
     vtkPolyDataMapper* getGlyph3DMapper();
 
     vtkActor* getGlyph3DActor();
@@ -21,10 +21,12 @@ public:
 
     vtkCellData* getFaceCellData();
     vtkPointData* getFacePointData();
-    vtkPointData* getVertexPointData();
+    vtkCellData* getSolidCellData();
+    vtkPointData* getSolidPointData();
 
     vtkSmartPointer<vtkPolyData> getFaceGlyphInput(const std::string& attr_name);
-    vtkSmartPointer<vtkPolyData> getVertexGlyphInput(const std::string& attr_name);
+    vtkSmartPointer<vtkPolyData> getPointGlyphInput(const std::string& attr_name);
+    vtkSmartPointer<vtkPolyData> getSolidGlyphInput(const std::string& attr_name);
 
 private:
     MeshActor* mesh_actor_;

@@ -80,7 +80,7 @@ private:
 
     vtkNew<vtkGeometryFilter> solid_filter_;
 
-    vtkNew<vtkPolyDataMapper> vertex_mapper_;
+    //vtkNew<vtkPolyDataMapper> vertex_mapper_;
     vtkNew<vtkPolyDataMapper> edge_mapper_;
     vtkNew<vtkPolyDataMapper> face_mapper_;
     vtkNew<vtkPolyDataMapper> solid_mapper_;
@@ -94,7 +94,7 @@ private:
     vtkNew<vtkUnstructuredGrid> solid_data_;
     vtkNew<vtkPolyData> face_data_;
     vtkNew<vtkPolyData> edge_data_;
-    vtkNew<vtkPolyData> vertex_data_;
+    //vtkNew<vtkPolyData> vertex_data_;
 
     vtkRenderer* renderer_;
 
