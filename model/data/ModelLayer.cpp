@@ -113,8 +113,13 @@ void ModelLayer::removeComponent(Index component_id)
     auto& ids = mit->second->componentIdsMut();
     ids.erase(std::remove(ids.begin(), ids.end(), component_id), ids.end());
 
-    if (ComponentData* c = findComponent(component_id); c && c->mesh) {
-        c->mesh->releaseEdgeIdMap(edge_id_map_); 
+    if (ComponentData* c = findComponent(component_id)) {
+        if (c->mesh) {
+            c->mesh->releaseEdgeIdMap(edge_id_map_);
+        }
+        if (c->geometry) {
+            c->geometry->cad_index.release(geom_registry_);
+        }
     }
     // 从全局组件池删除
     components_.erase(component_id);
