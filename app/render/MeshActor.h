@@ -9,6 +9,8 @@
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include <vtkPropCollection.h>
+#include <vtkPoints.h>
+#include <vtkIdTypeArray.h>
 class vtkGeometryFilter;
 class vtkExtractGeometry;
 class vtkExtractPolyDataGeometry;
@@ -19,6 +21,7 @@ class MeshActorSelectOp;
 class AttributeOperator;
 
 //! @brief 负责管理Model的Actor
+// 顶点渲染功能已取消（性能/视觉原因）；顶点拾取与高亮仍保留。
 class MeshActor {
     friend MeshActorSelectOp;
     friend AttributeOperator;
@@ -64,6 +67,9 @@ public:
         const std::string& attr_name,
         std::map<std::string, std::any> args);
 
+    void setGlobalPoints(vtkPoints* pts);
+    void ensureOriginalPointIds();
+
 private:
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     ModelRenderMode render_mode_;
@@ -101,6 +107,9 @@ private:
     vtkRenderer* renderer_;
 
     vtkNew<vtkActor> actor_;
+
+    vtkPoints* global_points_ {};
+    vtkNew<vtkIdTypeArray> original_point_ids_;
 
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(const MeshDataVtk& model_data);

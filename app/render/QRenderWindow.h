@@ -23,10 +23,12 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkPoints.h>
+#include <vtkIdTypeArray.h>
 
 class MeshActor;
 class SelectManager;
-class SplineActorManager;
+class GeometryActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
@@ -53,9 +55,11 @@ public:
         vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
 
         std::unique_ptr<MeshActorManager> mesh_actor_manager_;
-        std::unique_ptr<SplineActorManager> spline_actor_manager_;
+        std::unique_ptr<GeometryActorManager> spline_actor_manager_;
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
+
+        vtkNew<vtkPoints> global_points_;
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -102,15 +106,22 @@ public:
      * @param select_mode
      */
     Q_INVOKABLE void setEdgeRender(Index model_id, bool is_render);
+    Q_INVOKABLE void setComponentEdgeRender(Index component_id, bool is_render);
 
     /**
      * @brief 改变可见性
      * @param select_mode
      */
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
+    Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
 
     Q_INVOKABLE void onModelChanged(Index model_id);
+    Q_INVOKABLE void onComponentChanged(Index component_id);
+
     Q_INVOKABLE void deleteModel(Index mode_id);
+    Q_INVOKABLE void deleteComponent(Index component_id);
+
+    void updateGlobalVtkPoints();
 
     /**
      * @brief 对网格对象设置全局裁剪模式
@@ -179,5 +190,7 @@ private:
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
+
+    void updateGlobalVtkPointsImpl(Data* vtk);
 };
 #endif // Q_RENDER_WINDOW_H

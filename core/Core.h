@@ -31,6 +31,16 @@ enum class SelectMode {
  */
 using Index = int;
 
+using GeomVertexId = int;
+using GeomEdgeId = int;
+using GeomFaceId = int;
+using GeomSolidId = int;
+
+constexpr GeomVertexId kInvalidGeomVertexId = -1;
+constexpr GeomEdgeId kInvalidGeomEdgeId = -1;
+constexpr GeomFaceId kInvalidGeomFaceId = -1;
+constexpr GeomSolidId kInvalidGeomSolidId = -1;
+
 struct BlockData {
     std::vector<Index> faces_;
     Index id;
@@ -47,8 +57,6 @@ struct BlockDatas {
  * @sa MeshData
  */
 struct MeshDataVtk {
-    const std::vector<std::array<double, 3>>& vtk_points_; //> 对应 MeshData::vertex_positions_
-
     const std::vector<unsigned char>& vtk_solid_cell_types_; //> 对应 MeshData::solid_types_
     const std::vector<Index>& vtk_solid_cells_; //> 对应 MeshData::solid_vertices_
     const std::vector<Index>& vtk_solid_cells_offset_; //> 对应 MeshData::solid_vertices_offset_
@@ -68,6 +76,8 @@ struct MeshDataVtk {
     const std::map<std::string, std::vector<double>>& solid_attributes_; //> 表示体属性的数组，对应 MeshData::solid_attributes_
 
     std::shared_ptr<BlockDatas> model_blocks_;
+
+    Index component_id { -1 };
 
     Index model_block_id(Index block_id) const
     {

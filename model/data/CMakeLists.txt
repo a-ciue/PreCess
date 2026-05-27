@@ -1,9 +1,14 @@
 add_library(Data STATIC
 	ModelData.cpp
 	MeshData.cpp
-	SplineData.cpp
-	ModelManager.cpp
+	GeometryData.cpp
+	ModelLayer.cpp
 	ModelOperator.cpp
+    GeometryRegistry.cpp 
+	GeometrySubshapeIndex.cpp
+	ComponentData.cpp 
+	MeshIDMap.cpp
+	ComponentOperator.cpp
 )
 target_include_directories(Data PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
@@ -12,7 +17,16 @@ target_link_libraries(Data PUBLIC Core
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>	# spdlog日志库
 )
 if (OpenCASCADE_FOUND)
-	target_link_libraries(Data PRIVATE TKernel)
+  if (DEFINED OpenCASCADE_INCLUDE_DIR)
+    target_include_directories(Data PUBLIC ${OpenCASCADE_INCLUDE_DIR})
+  elseif (DEFINED OpenCASCADE_INCLUDE_DIRS)
+    target_include_directories(Data PUBLIC ${OpenCASCADE_INCLUDE_DIRS})
+  else()
+    message(FATAL_ERROR "OpenCASCADE found but include dir variable not set (OpenCASCADE_INCLUDE_DIR/S not found)")
+  endif()
+
+	target_link_libraries(Data PRIVATE TKernel TKTopAlgo)
+	
 else()
 	# 供插件目标引用Data头文件
 	message(WARNING 

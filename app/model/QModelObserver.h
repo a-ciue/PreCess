@@ -47,6 +47,10 @@ public:
     {
         emit modelRemoved(model_id);
     }
+    void notifyComponentRemoved(Index component_id) override
+    {
+        emit componentRemoved(component_id);
+    }
 
     /**
      * @brief 接收模型名称变更的通知函数
@@ -100,6 +104,7 @@ signals:
      * @param model_id 移除的模型 ID
      */
     void modelRemoved(Index model_id);
+    void componentRemoved(Index component_id);
 
 #pragma region ModelDataSignals
 

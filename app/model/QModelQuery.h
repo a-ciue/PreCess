@@ -20,9 +20,9 @@
 #include "QSelection.h"
 
 
-struct SplineDataVtk;
+struct GeometryDataVtk;
 struct MeshDataVtk;
-class ModelManager;
+class ModelLayer;
 
 class IModelQuery {
 public:
@@ -40,20 +40,28 @@ public:
  */
 class QModelQuery : public QObject, IModelQuery {
     Q_OBJECT
-    QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
+QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
 
-public :
+    public :
     /**
      * @brief 构造函数
      *
-     * @param mgr 指向 ModelManager 实例，用于管理并查找多个 ModelData
+     * @param mgr 指向 ModelLayer 实例，用于管理并查找多个 ModelData
      * @param parent 父 QObject（默认为 nullptr），可用于 Qt 对象树内存管理
      */
-    explicit QModelQuery(ModelManager* mgr, QObject* parent = nullptr);
+    explicit QModelQuery(ModelLayer* mgr, QObject* parent = nullptr);
 
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
+    std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
-    std::optional<SplineDataVtk> getSplineData(Index model_id);
+    std::vector<std::array<double, 3>> copyGlobalPoints() const;
+
+    std::vector<GeometryDataVtk> getSplineData(Index model_id);
+    std::optional<GeometryDataVtk> getSplineDataByComponent(Index component_id);
+
+    std::vector<Index> getComponentIds(Index model_id) const;
+
+    Q_INVOKABLE QVariantList getCadEdgeMappedPointIds(Index component_id, int localCadEdgeId);
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
     /**
@@ -68,8 +76,11 @@ public :
      */
     Q_INVOKABLE QList<Element::Type> getModelAttriType(Index model_id) const;
 
-    int getModelType(Index model_id) const;
+    std::optional<GeomFaceId> resolveCadFaceLocalId(Index component_id, int localFaceId);
+    std::optional<GeomEdgeId> resolveCadEdgeLocalId(Index component_id, int localEdgeId);
+    std::optional<GeomVertexId> resolveCadVertexLocalId(Index component_id, int localVertexId);
+    std::optional<GeomSolidId> resolveCadSolidLocalId(Index component_id, int localSolidId);
 
 private:
-    ModelManager* m_manager;
+    ModelLayer* m_manager;
 };

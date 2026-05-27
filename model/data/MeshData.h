@@ -9,6 +9,8 @@
 
 #include <optional>
 
+class MeshIDMap;
+
 /**
  * @brief 表示网格中的一个 Patch
  *
@@ -49,6 +51,9 @@ struct MeshData {
      *  { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }
      */
     std::vector<std::array<double, 3>> vertex_positions_;
+    Index global_point_base_ { -1 };
+    Index vertex_count_ { 0 };
+    bool point_ids_are_global_ { false };
 
     /**
      * @brief 面的点索引，存储构成网格面单元的顶点索引。可以表示独立于体单元之外单独定义的面单元。
@@ -78,6 +83,7 @@ struct MeshData {
      * @brief 边的点索引，边单元的顶点索引数组，可以表示独立于体、面的边单元。每两个顶点索引表示一条边。
      */
     std::vector<Index> edge_vertices_;
+    std::vector<Index> local_to_global_edge_id; // size = edge_vertices_.size()/2
 
     /**
      * @brief 体单元的类型，对应每个体单元的 VTK 类型编号。
@@ -157,4 +163,9 @@ struct MeshData {
      * @return 如果找到对应的Block ID，则返回该ID，否则返回std::nullopt
      */
     std::optional<Index> patch_block_id(int patch_id);
+
+    void makePointIdsGlobal(Index base);
+
+    void ensureEdgeIdMapBuilt(MeshIDMap& map, Index component_id);
+    void releaseEdgeIdMap(MeshIDMap& map);
 };

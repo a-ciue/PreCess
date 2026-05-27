@@ -1,7 +1,8 @@
 #include "CmdExecuteHandler.h"
 #include "ArgObject.h"
 #include "ModelIOSystemBase.h"
-#include "ModelOperatorBase.h"
+#include "ComponentOperator.h"
+#include "ComponentData.h"
 #include <filesystem>
 #include <spdlog/spdlog.h>
 
@@ -22,26 +23,46 @@ std::any systems::algo::CmdExecuteHandler::execute(HandlerContext& context, cons
     path exe_dir = *cmd;
     exe_dir.remove_filename();
 
-    string input_file {};
-    if (context.cur_model.getType() == ModelData::Type::Mesh) {
-        input_file = "input.obj";
-        // model_op_.write_mesh(exe_dir / input_file, ModelRenderMode::Face, "obj");
-        context.io_system.write(context.cur_model.getId(), exe_dir / input_file, "Wavefront .obj file", {});
-    } else {
-        input_file = "input.stp";
-        // model_op_.write_spline(exe_dir / input_file);
-        context.io_system.write(context.cur_model.getId(), exe_dir / input_file, "ISO 10303-21", {});
+    // ====== component 粒度判断输入类型 ======
+    ComponentData& comp = context.cur_component.component();
+
+    bool hasMesh = (comp.mesh != nullptr);
+    bool hasCad = (comp.geometry != nullptr);
+
+    if (!hasMesh && !hasCad) {
+        spdlog::error("CmdExecuteHandler: component {} has neither mesh nor cad",
+            context.cur_component.componentId());
+        return {};
     }
 
+    // ====== 决定输入文件名与格式 ======
+    string input_file;
+    string file_type;
+    if (hasMesh) {
+        input_file = "input.obj";
+        file_type = "Wavefront .obj file";
+    } else {
+        input_file = "input.stp";
+        file_type = "ISO 10303-21";
+    }
+
+    // 直接导出当前 component
+    context.io_system.writeComponents({ context.cur_component.componentId() },
+        exe_dir / input_file,
+        file_type,
+        {});
+
+    // 执行外部命令
     std::string full_command { cmd->string() + " " + input_file + " " + *args_str };
     spdlog::debug("CmdExecuteHandler: Executing command: {}", full_command);
     std::system(full_command.c_str());
 
-    path output_dir;
-    if (std::filesystem::exists(output_dir = exe_dir / "output.obj")) {
-        context.io_system.read(output_dir, "Wavefront .obj file", {});
-    } else if (std::filesystem::exists(output_dir = exe_dir / "output.stp")) {
-        context.io_system.read(output_dir, "ISO 10303-21", {});
+    // 读输出（read 是导入新模型，不依赖 component）
+    path output_path;
+    if (exists(output_path = exe_dir / "output.obj")) {
+        context.io_system.read(output_path, "Wavefront .obj file", {});
+    } else if (exists(output_path = exe_dir / "output.stp")) {
+        context.io_system.read(output_path, "ISO 10303-21", {});
     } else {
         spdlog::critical("CmdExecuteHandler: output file not found in {}", exe_dir.string());
     }

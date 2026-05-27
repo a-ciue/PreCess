@@ -12,24 +12,25 @@
  */
 #ifndef MODEL_H
 #define MODEL_H
+#include "ComponentData.h"
 #include "Selection.h"
-	
+
+#include <memory>
+#include <optional>
 #include <string>
 #include <variant>
-#include <optional>
-#include <memory>
 
 struct MeshData;
-struct SplineData;
+struct GeometryData;
 
 //! @brief Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数
 /**
-*@brief 负责管理和操作网格模型数据的核心类
-*
-* ModelData 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。
-* 该类提供了网格划分、合并、重划分等功能，并维护与 MeshActor 之间的关联，
-* 以便进行可视化和渲染。
-*/
+ *@brief 负责管理和操作网格模型数据的核心类
+ *
+ * ModelData 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。
+ * 该类提供了网格划分、合并、重划分等功能，并维护与 MeshActor 之间的关联，
+ * 以便进行可视化和渲染。
+ */
 class ModelData {
 public:
     ModelData();
@@ -37,42 +38,37 @@ public:
 
     std::string model_name_;
 
-    enum class Type { None, Mesh, Spline };
+    enum class Type {
+        None,
+        Mesh,
+        Spline,
+        Mixed
+    };
+
+    // 创建一个新组件
+    ComponentData* createComponent(Index id, const std::string& name);
+    const std::vector<Index>& componentIds() const noexcept;
+    std::vector<Index>& componentIdsMut() noexcept;
+
+    // 访问当前模型中的所有组件
+    std::vector<std::unique_ptr<ComponentData>>& stagingcomponents();
+    const std::vector<std::unique_ptr<ComponentData>>& stagingcomponents() const;
 
     /* ============ 构造（仅声明） ============ */
     explicit ModelData(std::unique_ptr<MeshData> mesh);
-    explicit ModelData(std::unique_ptr<SplineData> spline);
+    explicit ModelData(std::unique_ptr<GeometryData> geometry);
 
     ModelData(const ModelData& other) = delete;
     ModelData& operator=(const ModelData& other) = delete;
     ModelData(ModelData&& other) noexcept;
     ModelData& operator=(ModelData&& other) noexcept;
-    /* ============ 类型查询 ============ */
-    Type type() const;
-    bool hasMesh()   const noexcept;
-    bool hasSpline() const noexcept;
-
-    /* ============ 访问器 ============ */
-    MeshData* asMeshData() noexcept;
-    const MeshData* asMeshData() const noexcept;
-
-    SplineData* asSplineData() noexcept;
-    const SplineData* asSplineData() const noexcept;
-
-    /* ============ 通用 visit （模板，必须放头文件） ============ */
-    template<typename Visitor>
-    decltype(auto) visit(Visitor&& v) {
-        return std::visit(std::forward<Visitor>(v), data_);
-    }
 
 private:
 
-    //! @brief 合并给定block，并更新block actor，依赖ModelActor
-    //! @param block_ids
-    void merge_blocks(Selection selection);
+    std::vector<std::unique_ptr<ComponentData>> components_;
+    std::vector<Index> component_ids_; // 运行期权威：该 model 拥有哪些 component_id
+    
 
-    std::variant<std::unique_ptr<MeshData>, std::unique_ptr<SplineData>>     data_;
-
-    friend class ModelOperator;    //!< 声明 ModelOperator 为友元，以允许其访问 ModelData 私有数据
+    friend class ModelOperator; //!< 声明 ModelOperator 为友元，以允许其访问 ModelData 私有数据
 };
 #endif // MODEL_H

@@ -7,6 +7,7 @@
 #include "MeshData.h"
 #include "ModelData.h"
 #include "ObjMeshIO.h"
+#include "ModelLayer.h"
 
 #include <spdlog/spdlog.h>
 #include <fstream>
@@ -25,15 +26,88 @@ std::unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, con
     return model_data; // 技巧：RVO
 }
 
-void OBJModelHandler::write_model(const ModelData& data, const fs::path& path, const std::vector<std::any>& args)
+void OBJModelHandler::write_components(const ModelLayer& mgr,
+    const std::vector<Index>& component_ids,
+    const fs::path& path,
+    const std::vector<std::any>&)
 {
-    auto mesh_data = data.asMeshData();
-    if (!mesh_data) {
-        spdlog::error("OBJModelHandler only supports writing MeshData.");
+    std::ofstream ofs(path);
+    if (!ofs) {
+        spdlog::error("OBJModelHandler: failed to open output file: {}", path.string());
+        return;
     }
 
-    std::ofstream ofs(path);
-    ObjMeshIO::saveToFile(*mesh_data, ofs);
+    const auto& gp = mgr.globalPoints();
+
+    // OBJ vertex indices are 1-based and file-global, need accumulated offset
+    Index v_offset_1based = 1;
+
+    for (Index cid : component_ids) {
+        const ComponentData* comp = mgr.findComponent(cid);
+        if (!comp) {
+            spdlog::warn("OBJModelHandler: component {} not found, skip", cid);
+            continue;
+        }
+        if (!comp->mesh) {
+            spdlog::warn("OBJModelHandler: component {} has no mesh, skip", cid);
+            continue;
+        }
+
+        const MeshData& m = *comp->mesh;
+
+        const Index base = m.global_point_base_;
+        const Index cnt = m.vertex_count_;
+
+        if (base < 0 || cnt <= 0) {
+            spdlog::warn("OBJModelHandler: component {} has invalid mesh point range (base={}, cnt={}), skip",
+                cid, base, cnt);
+            continue;
+        }
+        if (base + cnt > (Index)gp.size()) {
+            spdlog::error("OBJModelHandler: globalPoints out of range for component {} (base={}, cnt={}, gp={})",
+                cid, base, cnt, gp.size());
+            continue;
+        }
+
+        // object name
+        ofs << "o " << (comp->name.empty() ? ("component_" + std::to_string(cid)) : comp->name) << "\n";
+
+        // vertices
+        for (Index i = 0; i < cnt; ++i) {
+            const auto& p = gp[(size_t)(base + i)];
+            ofs << "v " << p[0] << " " << p[1] << " " << p[2] << "\n";
+        }
+
+        bool component_ok = true;
+        if (m.face_vertices_offset_.size() >= 2) {
+            const Index nFaces = static_cast<Index>(m.face_vertices_offset_.size() - 1);
+            for (Index f = 0; f < nFaces && component_ok; ++f) {
+                const Index a = m.face_vertices_offset_[static_cast<size_t>(f)];
+                const Index b = m.face_vertices_offset_[static_cast<size_t>(f + 1)];
+                if (a < 0 || b < a || b > static_cast<Index>(m.face_vertices_.size()))
+                    continue;
+
+                ofs << "f";
+                for (Index k = a; k < b; ++k) {
+                    const Index gid = m.face_vertices_[static_cast<size_t>(k)];// global point id
+                    const Index local = gid - base; // to local 0..cnt-1
+                    if (local < 0 || local >= cnt) {
+                        spdlog::error("OBJModelHandler: face references vertex out of component range, cid={}, gid={}, base={}, cnt={}",
+                            cid, gid, base, cnt);
+                        ofs << "\n";
+                        component_ok = false;
+                        break;
+                    }
+                    ofs << " " << (v_offset_1based + local);
+                }
+                if (component_ok) {
+                    ofs << "\n";
+                }
+            }
+        }
+
+        v_offset_1based += cnt;
+    }
 }
 
 std::vector<ArgType> OBJModelHandler::read_args_type() const

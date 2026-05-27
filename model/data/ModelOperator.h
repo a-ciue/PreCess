@@ -51,10 +51,6 @@ public:
     //! @param edge_v_id2 另一个边点id
     void notifyChanged();
 
-    //! @brief 合并给定block，并更新block actor，依赖ModelActor
-    //! @param block_ids
-    void merge_blocks(std::unique_ptr<Selection> selection);
-
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
     // void merge_groups(QSelection* selection);
@@ -63,8 +59,6 @@ public:
     // void remesh_group(QSelection* selection);
 
     Index getId() const override;
-
-    ModelData::Type getType() const override;
 
 private:
     Index id_;

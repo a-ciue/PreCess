@@ -9,7 +9,7 @@
  */
 #include "FileHandler.h"
 #include "Core.h"
-#include "SplineData.h"
+#include "GeometryData.h"
 
 #include <filesystem>
 
@@ -54,7 +54,7 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& 
         return nullptr;
     }
 
-    auto sd = std::make_unique<SplineData>();
+    auto sd = std::make_unique<GeometryData>();
     sd->rootShape = std::make_unique<TopoDS_Shape>(shape);
 
     auto model = std::make_unique<ModelData>(std::move(sd));
@@ -62,11 +62,11 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& 
     return model;
 }
 
-bool FileHandler::writeSpline(SplineData& spline, const std::filesystem::path& target_path)
+bool FileHandler::writeSpline(GeometryData& spline, const std::filesystem::path& target_path)
 {
 	if (!spline.rootShape || spline.rootShape->IsNull())
 	{
-		std::cerr << "writeSpline: SplineData rootShape 为空" << std::endl;
+		std::cerr << "writeSpline: GeometryData rootShape 为空" << std::endl;
         return false;
 	}
 

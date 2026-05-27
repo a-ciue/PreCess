@@ -1,21 +1,30 @@
 #ifndef TRIVIAL_EDIT_HANDLER_H
 #define TRIVIAL_EDIT_HANDLER_H
+
+#include "ComponentOperator.h"
 #include "EditHandler.h"
 
+#include <any>
+
 namespace systems::edit {
+
 class TrivialEditHandler : public EditHandler {
 public:
     TrivialEditHandler() = default;
     ~TrivialEditHandler() override = default;
-    ModelData execute(ModelData model_data, const std::vector<core::ArgObject>& args) override
+
+    std::any execute(ComponentOperator& /*op*/,
+        const std::vector<core::ArgObject>& /*args*/) override
     {
-        return std::move(model_data);
+        return {};
     }
+
     std::vector<core::ArgType> args_type() const override
     {
         return {};
     }
 };
-}
 
-#endif
+} // namespace systems::edit
+
+#endif // TRIVIAL_EDIT_HANDLER_H

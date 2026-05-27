@@ -1,0 +1,211 @@
+/**
+ * @file ModelLayer.cpp
+ * @brief 实现 ModelLayer 类，用于管理多个网格模型
+ *
+ * 该文件包含 ModelLayer 类的实现，提供多模型管理功能，包括：
+ * - 添加、删除和获取模型
+ * - 维护与 VTK 组件的交互
+ *
+ * @author 徐昊阳 haoyangxu06@gmail.com
+ * @date 2025/3/20
+ */
+#include "ModelLayer.h"
+#include "ModelObserver.h"
+#include "GeometryData.h"
+#include "MeshData.h"
+#include "ComponentOperator.h"
+
+#include <spdlog/spdlog.h>
+#include <filesystem>
+#include <stdexcept>
+
+// 添加模型
+Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
+{
+    if (!model) {
+        spdlog::warn("Adding an empty model, skipping");
+        return -1;
+    }
+
+    Index model_id = ++max_index_;
+
+    // 1) 补齐全局 component_id
+    for (auto& c : model->stagingcomponents()) {
+        if (!c)
+            continue;
+        if (c->id < 0) {
+            c->id = allocateComponentId();
+        }
+    }
+
+    // 2) 把 components move 到 ModelLayer::components_（真正所有权转移）
+    for (auto& c : model->stagingcomponents()) {
+        if (!c)
+            continue;
+        Index cid = c->id;
+        spdlog::info("insert component: requested_id={}, final_id={}, exists_before={}",
+            c->id, cid, components_.count(cid) != 0);
+
+        component_to_model_[cid] = model_id;
+        model->componentIdsMut().push_back(cid);
+
+        // move ownership into global pool
+        components_[cid] = std::move(c);
+        ComponentData* cp = components_[cid].get();
+
+        // CAD index
+        if (cp->geometry) {
+            cp->geometry->ensureCadIndexBuilt(geom_registry_);
+        }
+
+        // Mesh: global points + globalize indices + release vertex_positions + edge id map
+        if (cp->mesh) {
+            MeshData& md = *cp->mesh;
+            if (md.global_point_base_ < 0) {
+                md.global_point_base_ = appendGlobalPoints(md.vertex_positions_);
+                md.vertex_count_ = (Index)md.vertex_positions_.size();
+            }
+            md.makePointIdsGlobal(md.global_point_base_);
+            std::vector<std::array<double, 3>> {}.swap(md.vertex_positions_);
+            md.ensureEdgeIdMapBuilt(edge_id_map_, cid);
+        }
+    }
+
+    // 3) 清空 ModelData 里的暂存容器（运行期不再持有 ComponentData）
+    model->stagingcomponents().clear();
+
+    // 4) 存 model
+    models_[model_id] = std::move(model);
+
+    if (observer_)
+        observer_->notifyModelAdded(max_index_);
+    return model_id;
+}
+
+// 删除模型
+void ModelLayer::removeModel(Index model_id) {
+    auto it = models_.find(model_id);
+    if (it == models_.end())
+        throw std::runtime_error("Model not exist");
+
+    std::vector<Index> comp_ids = it->second ? it->second->componentIds() : std::vector<Index> {};
+    for (Index cid : comp_ids)
+        removeComponent(cid);
+
+    models_.erase(it);
+    if (observer_)
+        observer_->notifyModelRemoved(model_id);
+}
+
+void ModelLayer::removeComponent(Index component_id)
+{
+    auto modelIt = component_to_model_.find(component_id);
+    if (modelIt == component_to_model_.end())
+        throw std::runtime_error("ComponentData not exist");
+
+    Index model_id = modelIt->second;
+
+    auto mit = models_.find(model_id);
+    if (mit == models_.end() || !mit->second)
+        throw std::runtime_error("Owner model not exist");
+
+    // 从 ModelData 的 ids 中移除
+    auto& ids = mit->second->componentIdsMut();
+    ids.erase(std::remove(ids.begin(), ids.end(), component_id), ids.end());
+
+    if (ComponentData* c = findComponent(component_id)) {
+        if (c->mesh) {
+            c->mesh->releaseEdgeIdMap(edge_id_map_);
+        }
+        if (c->geometry) {
+            c->geometry->cad_index.release(geom_registry_);
+        }
+    }
+    // 从全局组件池删除
+    components_.erase(component_id);
+
+    component_to_model_.erase(component_id);
+
+    if (observer_)
+        observer_->notifyComponentRemoved(component_id);
+}
+
+// 获取模型
+ModelData* ModelLayer::getModel(Index model_id) const {
+    auto it = models_.find(model_id);
+    if (it == models_.end()) {
+        return nullptr; // 模型不存在时返回空指针
+    }
+    return it->second.get();
+}
+
+
+std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
+{
+    ModelData* mesh = getModel(model_id);
+    if (mesh) {
+        return ModelOperator(model_id, *mesh, observer_);
+    }
+    return {}; // 如果找不到模型，返回空指针
+}
+
+ModelData* ModelLayer::modelById(Index model_id) const
+{
+    auto it = models_.find(model_id);
+    if (it == models_.end())
+        return nullptr;
+    return it->second.get();
+}
+
+std::optional<ComponentOperator> ModelLayer::getComponentOperator(Index component_id)
+{
+    ComponentData* c = findComponent(component_id);
+    if (!c)
+        return std::nullopt;
+
+    return ComponentOperator(component_id, *c, *this, observer_);
+}
+
+Index ModelLayer::allocateComponentId() noexcept
+{
+    return next_component_id_++;
+}
+
+ComponentData* ModelLayer::findComponent(Index component_id) const
+{
+    auto it = components_.find(component_id);
+    return it == components_.end() ? nullptr : it->second.get();
+}
+
+std::optional<Index> ModelLayer::findModelIdByComponent(Index component_id) const
+{
+    auto it = component_to_model_.find(component_id);
+    if (it == component_to_model_.end())
+        return std::nullopt;
+    return it->second;
+}
+
+std::vector<Index> ModelLayer::getComponentIds(Index model_id) const
+{
+    auto it = models_.find(model_id);
+    if (it == models_.end() || !it->second)
+        return {};
+    return it->second->componentIds();
+}
+
+GeometryRegistry& ModelLayer::geomRegistry()
+{
+    return geom_registry_;
+}
+
+const GeometryRegistry& ModelLayer::geomRegistry() const
+{
+    return geom_registry_;
+}
+
+Index ModelLayer::appendGlobalPoints(const std::vector<std::array<double, 3>>& pts)
+{
+    Index base = (Index)global_points_.size();
+    global_points_.insert(global_points_.end(), pts.begin(), pts.end());
+    return base;
+}

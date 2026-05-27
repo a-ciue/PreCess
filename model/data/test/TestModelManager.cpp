@@ -1,19 +1,19 @@
 #include "MakeMeshData.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("ModelManager add nullptr")
+TEST_CASE("ModelLayer add nullptr")
 {
-    ModelManager manager;
+    ModelLayer manager;
     manager.addModel(nullptr);
     manager.addModel(nullptr);
     REQUIRE(!manager.getModelOperator(0));
 }
 
-TEST_CASE("ModelManager add a MeshData")
+TEST_CASE("ModelLayer add a MeshData")
 {
     using namespace std;
-    ModelManager manager;
+    ModelLayer manager;
 
     auto mesh = make_unique<MeshData>(MakeMeshData());
     auto model = make_unique<ModelData>(move(mesh));

@@ -5,6 +5,7 @@
 #ifndef ALGORITHM_HANDLER_H
 #define ALGORITHM_HANDLER_H
 #include "ArgType.h"
+#include "ComponentOperator.h"
 
 #include <any>
 #include <string>
@@ -18,12 +19,10 @@ namespace systems::io
 class ModelIOSystemBase;
 }
 
-class ModelOperatorBase;
-
 namespace systems::algo {
 struct HandlerContext {
     io::ModelIOSystemBase& io_system;
-    ModelOperatorBase& cur_model;
+    ComponentOperator& cur_component;
 };
 /**
  * @brief 算法系统的功能接口，继承他来实现具体的算法功能

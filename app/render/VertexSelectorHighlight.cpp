@@ -80,7 +80,7 @@ void VertexSelectorHighlight::select(double posx, double posy)
     picker->AddPickList(&model_actor->getSolidActor());
     picker->AddPickList(&model_actor->getFaceActor());
     picker->AddPickList(&model_actor->getEdgeActor());
-    picker->AddPickList(&model_actor->getVertexActor());
+    //picker->AddPickList(&model_actor->getVertexActor());
     picker->Pick(posx, posy, 0, renderer_);
     vtkIdType picked_point_id = picker->GetPointId();
     if (picked_point_id == -1) {
