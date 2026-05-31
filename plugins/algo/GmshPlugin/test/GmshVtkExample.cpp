@@ -30,6 +30,7 @@
 // Runtime state shared by the VTK key callback and the example main loop.
 struct AppContext {
     GeometryData geometry;
+    GmshIncrementalMeshState gmshState;
     MeshData meshData;
     ModelLayer modelLayer;
     vtkSmartPointer<vtkPolyData> polyData;
@@ -39,10 +40,10 @@ struct AppContext {
 };
 
 // Builds a local file/render index for mesh vertices whose faces store global point ids.
-static std::unordered_map<Index, std::size_t> buildGlobalToLocalPointMap(const GeometryData& geometry)
+static std::unordered_map<Index, std::size_t> buildGlobalToLocalPointMap(const GmshIncrementalMeshState& state)
 {
     std::unordered_map<Index, std::size_t> globalToLocal;
-    const auto& globalIds = geometry.gmsh_mesh_state.local_to_global_point_ids;
+    const auto& globalIds = state.local_to_global_point_ids;
     for (std::size_t i = 0; i < globalIds.size(); ++i) {
         globalToLocal[globalIds[i]] = i;
     }
@@ -58,7 +59,7 @@ static void reloadPolyData(AppContext& ctx)
     }
 
     auto polys = vtkSmartPointer<vtkCellArray>::New();
-    auto globalToLocal = buildGlobalToLocalPointMap(ctx.geometry);
+    auto globalToLocal = buildGlobalToLocalPointMap(ctx.gmshState);
 
     for (std::size_t i = 0; i + 1 < ctx.meshData.face_vertices_offset_.size(); ++i) {
         std::size_t begin = ctx.meshData.face_vertices_offset_[i];
@@ -89,9 +90,9 @@ static void reloadPolyData(AppContext& ctx)
 static void resetGeneratedMesh(AppContext& ctx)
 {
     ctx.meshData.init();
-    ctx.geometry.gmsh_mesh_state.clear();
+    ctx.gmshState.clear();
     if (ctx.geometry.rootShape) {
-        ctx.geometry.gmsh_mesh_state.meshContext =
+        ctx.gmshState.meshContext =
             std::make_unique<IncrementalMeshContext>(*ctx.geometry.rootShape);
     }
     ctx.currentIndex = 0;
@@ -100,7 +101,7 @@ static void resetGeneratedMesh(AppContext& ctx)
 }
 
 // Saves the example mesh by translating global point ids back to local file node ids.
-static void saveMesh(const MeshData& mesh, const GeometryData& geometry, const std::string& filename)
+static void saveMesh(const MeshData& mesh, const GmshIncrementalMeshState& state, const std::string& filename)
 {
     if (mesh.vertex_positions_.empty()) {
         spdlog::warn("No mesh data to save.");
@@ -114,7 +115,7 @@ static void saveMesh(const MeshData& mesh, const GeometryData& geometry, const s
 
         std::vector<std::size_t> nodeTags(mesh.vertex_positions_.size());
         std::vector<double> nodeCoords(mesh.vertex_positions_.size() * 3);
-        auto globalToLocal = buildGlobalToLocalPointMap(geometry);
+        auto globalToLocal = buildGlobalToLocalPointMap(state);
 
         for (std::size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
             nodeTags[i] = i + 1;
@@ -168,7 +169,7 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
     auto* interactor = static_cast<vtkRenderWindowInteractor*>(caller);
     std::string key = interactor->GetKeySym();
 
-    std::size_t total = IncrementalMeshTools::faceCount(ctx->geometry);
+    std::size_t total = IncrementalMeshTools::faceCount(ctx->gmshState);
 
     if (key == "space") {
         if (ctx->currentIndex >= total) {
@@ -177,7 +178,7 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
         }
 
         auto result = IncrementalMeshTools::meshSingleFace(
-            ctx->meshData, ctx->geometry, ctx->modelLayer, ctx->currentIndex, ctx->meshSize);
+            ctx->meshData, ctx->geometry, ctx->gmshState, ctx->modelLayer, ctx->currentIndex, ctx->meshSize);
         ctx->currentIndex++;
 
         if (result.success) {
@@ -186,11 +187,11 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
                 ctx->meshSize *= 1.5;
             spdlog::info("nodes={}, cached_edges={}, next_size={:.4f}",
                 ctx->meshData.vertex_positions_.size(),
-                IncrementalMeshTools::meshedEdgeCount(ctx->geometry),
+                IncrementalMeshTools::meshedEdgeCount(ctx->gmshState),
                 ctx->meshSize);
         }
     } else if (key == "s" || key == "S") {
-        saveMesh(ctx->meshData, ctx->geometry, "final_mesh.msh");
+        saveMesh(ctx->meshData, ctx->gmshState, "final_mesh.msh");
     } else if (key == "r" || key == "R") {
         resetGeneratedMesh(*ctx);
         spdlog::info("Reset mesh, size={:.4f}", ctx->meshSize);
@@ -206,7 +207,7 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             return;
         }
         ctx->currentIndex--;
-        if (IncrementalMeshTools::deleteFaceMesh(ctx->meshData, ctx->geometry, ctx->modelLayer, ctx->currentIndex)) {
+        if (IncrementalMeshTools::deleteFaceMesh(ctx->meshData, ctx->gmshState, ctx->modelLayer, ctx->currentIndex)) {
             reloadPolyData(*ctx);
         }
     } else if (key == "h" || key == "H") {
@@ -225,7 +226,7 @@ int main(int argc, char* argv[])
     ctx.polyData = vtkSmartPointer<vtkPolyData>::New();
     ctx.meshData.init();
 
-    if (!IncrementalMeshTools::initMeshing(path, ctx.geometry)) {
+    if (!IncrementalMeshTools::initMeshing(path, ctx.geometry, ctx.gmshState)) {
         spdlog::error("Cannot import: {}", path);
         return 1;
     }

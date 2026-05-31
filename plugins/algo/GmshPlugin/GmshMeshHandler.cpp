@@ -65,6 +65,9 @@ std::any systems::algo::GmshMeshHandler::execute(
     }
 
     ComponentData& comp = context.cur_component.component();
+    ModelLayer& modelLayer = context.cur_component.manager();
+    removeExpiredStates(modelLayer);
+
     GeometryData* geometry = comp.geometry.get();
     if (!geometry || !geometry->rootShape) {
         spdlog::error("GmshMesh: current component {} has no geometry",
@@ -81,16 +84,18 @@ std::any systems::algo::GmshMeshHandler::execute(
         meshData = comp.mesh.get();
     }
 
+    GmshIncrementalMeshState& state = component_states_[context.cur_component.componentId()];
+
     // 首次执行时建立 OCC 面/边索引，后续单面划分复用该上下文。
-    if (!geometry->gmsh_mesh_state.meshContext) {
+    if (!state.meshContext) {
         spdlog::info("GmshMesh: init occId...");
-        geometry->gmsh_mesh_state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry->rootShape);
+        state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry->rootShape);
         spdlog::info("GmshMesh: {} face, {} global edge",
-            geometry->gmsh_mesh_state.meshContext->faceCount(),
-            geometry->gmsh_mesh_state.meshContext->globalEdgeCount());
+            state.meshContext->faceCount(),
+            state.meshContext->globalEdgeCount());
     }
 
-    std::size_t totalFaces = geometry->gmsh_mesh_state.meshContext->faceCount();
+    std::size_t totalFaces = state.meshContext->faceCount();
     if (static_cast<std::size_t>(faceIndex) >= totalFaces) {
         spdlog::error("GmshMesh: face id {} out of range (total {} face)",
             faceIndex, totalFaces);
@@ -101,20 +106,19 @@ std::any systems::algo::GmshMeshHandler::execute(
         meshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
 
     SingleFaceMeshResult result;
-    ModelLayer& modelLayer = context.cur_component.manager();
 
     if (operationMode == 2) {
         spdlog::info("GmshMesh: delete mesh for face {}", faceIndex);
-        if (IncrementalMeshTools::deleteFaceMesh(*meshData, *geometry, modelLayer, static_cast<std::size_t>(faceIndex)))
+        if (IncrementalMeshTools::deleteFaceMesh(*meshData, state, modelLayer, static_cast<std::size_t>(faceIndex)))
             spdlog::info("GmshMesh: delete face {} success", faceIndex);
     } else if (operationMode == 3) {
         spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceIndex, meshSize);
         result = IncrementalMeshTools::remeshSingleFace(
-            *meshData, *geometry, modelLayer, static_cast<std::size_t>(faceIndex), meshSize);
+            *meshData, *geometry, state, modelLayer, static_cast<std::size_t>(faceIndex), meshSize);
     } else {
         spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceIndex, meshSize);
         result = IncrementalMeshTools::meshSingleFace(
-            *meshData, *geometry, modelLayer, static_cast<std::size_t>(faceIndex), meshSize);
+            *meshData, *geometry, state, modelLayer, static_cast<std::size_t>(faceIndex), meshSize);
     }
 
     if (operationMode != 2) {
@@ -127,18 +131,18 @@ std::any systems::algo::GmshMeshHandler::execute(
             faceIndex,
             result.vertices.size(),
             result.face_vertices_offset.size() - 1,
-            geometry->gmsh_mesh_state.meshedEdgeRefCounts.size());
+            state.meshedEdgeRefCounts.size());
 
-        std::string faceOut = core::TempFile::instance().path().string() + "_single_face_" + std::to_string(faceIndex) + ".obj";
-        if (!IncrementalMeshTools::writeSingleFaceObj(result, faceOut)) {
-            spdlog::error("GmshMesh: cant save single face");
-            return {};
-        }
-        context.io_system.read(faceOut, "Wavefront .obj file", {});
+        //std::string faceOut = core::TempFile::instance().path().string() + "_single_face_" + std::to_string(faceIndex) + ".obj";
+        //if (!IncrementalMeshTools::writeSingleFaceObj(result, faceOut)) {
+        //    spdlog::error("GmshMesh: cant save single face");
+        //    return {};
+        //}
+        //context.io_system.read(faceOut, "Wavefront .obj file", {});
     }
 
     std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceIndex) + ".obj";
-    if (!IncrementalMeshTools::writeMeshObj(*meshData, *geometry, meshOut)) {
+    if (!IncrementalMeshTools::writeMeshObj(*meshData, state, meshOut)) {
         spdlog::error("GmshMesh: cant save meshdata");
         return {};
     }
@@ -146,6 +150,17 @@ std::any systems::algo::GmshMeshHandler::execute(
     context.cur_component.notifyChanged();
 
     return {};
+}
+
+void systems::algo::GmshMeshHandler::removeExpiredStates(const ModelLayer& model_layer)
+{
+    for (auto it = component_states_.begin(); it != component_states_.end();) {
+        if (!model_layer.findComponent(it->first)) {
+            it = component_states_.erase(it);
+        } else {
+            ++it;
+        }
+    }
 }
 
 std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const

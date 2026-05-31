@@ -5,7 +5,6 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
 #include "GeometryData.h"
-#include "IncrementalMeshContext.h"
 #include "ModelData.h"
 #include "ModelIOSystemBase.h"
 #include "ModelLayer.h"
@@ -74,9 +73,7 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     REQUIRE(comp != nullptr);
     REQUIRE(comp->mesh != nullptr);
     REQUIRE(comp->geometry != nullptr);
-    REQUIRE(comp->geometry->gmsh_mesh_state.meshContext != nullptr);
-    REQUIRE(comp->geometry->gmsh_mesh_state.meshContext->faceCount() == 6);
-    REQUIRE(comp->geometry->gmsh_mesh_state.meshedEdgeRefCounts.size() == 4);
-    REQUIRE(comp->geometry->gmsh_mesh_state.meshedEdgesCache.size() == 4);
-    REQUIRE_FALSE(comp->geometry->gmsh_mesh_state.local_to_global_point_ids.empty());
+    REQUIRE_FALSE(comp->mesh->vertex_positions_.empty());
+    REQUIRE_FALSE(comp->mesh->face_vertices_.empty());
+    REQUIRE(comp->mesh->face_vertices_offset_.size() > 1);
 }

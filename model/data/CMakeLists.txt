@@ -2,7 +2,6 @@ add_library(Data STATIC
 	ModelData.cpp
 	MeshData.cpp
 	GeometryData.cpp
-	IncrementalMeshContext.cpp
 	ModelLayer.cpp
 	ModelOperator.cpp
     GeometryRegistry.cpp 

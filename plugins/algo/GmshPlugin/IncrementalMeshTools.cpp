@@ -39,16 +39,16 @@ class TempNodeLookup {
 public:
     explicit TempNodeLookup(
         MeshData& mesh_data,
-        GeometryData& geometry,
+        GmshIncrementalMeshState& state,
         ModelLayer& model_layer,
         double tolerance = 1e-7)
         : _mesh_data(mesh_data)
-        , _geometry(geometry)
+        , _state(state)
         , _model_layer(model_layer)
         , _tolerance(tolerance)
     {
         const auto& vertices = _mesh_data.vertex_positions_;
-        const auto& global_ids = _geometry.gmsh_mesh_state.local_to_global_point_ids;
+        const auto& global_ids = _state.local_to_global_point_ids;
         for (size_t i = 0; i < vertices.size(); ++i) {
             auto qc = _quantize(vertices[i][0], vertices[i][1], vertices[i][2]);
             if (i < global_ids.size()) {
@@ -72,7 +72,7 @@ public:
         _mesh_data.vertex_positions_.push_back(point);
         _mesh_data.vertex_count_ = static_cast<Index>(_mesh_data.vertex_positions_.size());
         _mesh_data.point_ids_are_global_ = true;
-        _geometry.gmsh_mesh_state.local_to_global_point_ids.push_back(global_id);
+        _state.local_to_global_point_ids.push_back(global_id);
         _map[qc] = global_id;
         return global_id;
     }
@@ -107,7 +107,7 @@ private:
     }
 
     MeshData& _mesh_data;
-    GeometryData& _geometry;
+    GmshIncrementalMeshState& _state;
     ModelLayer& _model_layer;
     double _tolerance;
     std::unordered_map<QuantizedCoord, Index, CoordHash> _map;
@@ -663,9 +663,8 @@ SingleFaceMeshResult extractFaceMesh(int faceTag)
 }
 
 // ---- 存储新边 ----
-void storeNewEdges(GeometryData& geometry, const std::map<int, int>& g2o)
+void storeNewEdges(GmshIncrementalMeshState& state, const std::map<int, int>& g2o)
 {
-    auto& state = geometry.gmsh_mesh_state;
     int nNew = 0;
     int nShared = 0;
     for (auto& [gt, oid] : g2o) {
@@ -684,7 +683,11 @@ void storeNewEdges(GeometryData& geometry, const std::map<int, int>& g2o)
     spdlog::info("GmshMesh:  {} new edges stored, {} edges reused (total cached: {})", nNew, nShared, state.meshedEdgeRefCounts.size());
 }
 
-void mergeMeshResult(MeshData& mesh_data, GeometryData& geometry, ModelLayer& model_layer, const SingleFaceMeshResult& result)
+void mergeMeshResult(
+    MeshData& mesh_data,
+    GmshIncrementalMeshState& state,
+    ModelLayer& model_layer,
+    const SingleFaceMeshResult& result)
 {
     if (!result.success)
         return;
@@ -692,7 +695,7 @@ void mergeMeshResult(MeshData& mesh_data, GeometryData& geometry, ModelLayer& mo
     if (mesh_data.face_vertices_offset_.empty())
         mesh_data.face_vertices_offset_.push_back(0);
 
-    TempNodeLookup lookup(mesh_data, geometry, model_layer, 1e-7);
+    TempNodeLookup lookup(mesh_data, state, model_layer, 1e-7);
 
     std::vector<Index> localToGlobal(result.vertices.size());
     for (size_t i = 0; i < result.vertices.size(); ++i) {
@@ -722,26 +725,31 @@ void mergeMeshResult(MeshData& mesh_data, GeometryData& geometry, ModelLayer& mo
 
 // 公开接口
 bool IncrementalMeshTools::initMeshing(const std::string& stepFile,
-    GeometryData& geometry)
+    GeometryData& geometry,
+    GmshIncrementalMeshState& state)
 {
-    geometry.gmsh_mesh_state.clear();
+    state.clear();
     geometry.rootShape = std::make_unique<TopoDS_Shape>(loadStep(stepFile));
     if (geometry.rootShape->IsNull()) {
         spdlog::error("Failed to load: {}", stepFile);
         return false;
     }
-    geometry.gmsh_mesh_state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry.rootShape);
+    state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry.rootShape);
     spdlog::info("Loaded: {} faces, {} global edges",
-        geometry.gmsh_mesh_state.meshContext->faceCount(),
-        geometry.gmsh_mesh_state.meshContext->globalEdgeCount());
-    return geometry.gmsh_mesh_state.meshContext->faceCount() > 0;
+        state.meshContext->faceCount(),
+        state.meshContext->globalEdgeCount());
+    return state.meshContext->faceCount() > 0;
 }
 
 SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
-    MeshData& mesh_data, GeometryData& geometry, ModelLayer& model_layer, std::size_t faceIndex, double meshSize)
+    MeshData& mesh_data,
+    GeometryData& geometry,
+    GmshIncrementalMeshState& state,
+    ModelLayer& model_layer,
+    std::size_t faceIndex,
+    double meshSize)
 {
     SingleFaceMeshResult result;
-    auto& state = geometry.gmsh_mesh_state;
 
     if (!state.meshContext) {
         spdlog::error("meshContext null, call initMeshing first");
@@ -807,7 +815,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
         gmsh::model::mesh::generate(2);
     } catch (const std::exception& e) {
         spdlog::error("  Mesh failed: {}", e.what());
-        storeNewEdges(geometry, gmshToOcc);
+        storeNewEdges(state, gmshToOcc);
         gmsh::finalize();
         return result;
     }
@@ -825,18 +833,18 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
             }
         if (!has) {
             spdlog::warn("  No surface elements");
-            storeNewEdges(geometry, gmshToOcc);
+            storeNewEdges(state, gmshToOcc);
             gmsh::finalize();
             return result;
         }
     }
 
     result = extractFaceMesh(faceTag);
-    storeNewEdges(geometry, gmshToOcc);
+    storeNewEdges(state, gmshToOcc);
     state.meshedFacesCache[faceIndex] = result; // 缓存面结果
 
     if (result.success) {
-        mergeMeshResult(mesh_data, geometry, model_layer, result);
+        mergeMeshResult(mesh_data, state, model_layer, result);
     }
     gmsh::finalize();
     return result;
@@ -860,14 +868,14 @@ double IncrementalMeshTools::estimateMeshSize(const GeometryData& geometry)
     return 10.0;
 }
 
-std::size_t IncrementalMeshTools::faceCount(const GeometryData& geometry)
+std::size_t IncrementalMeshTools::faceCount(const GmshIncrementalMeshState& state)
 {
-    return geometry.gmsh_mesh_state.meshContext ? geometry.gmsh_mesh_state.meshContext->faceCount() : 0;
+    return state.meshContext ? state.meshContext->faceCount() : 0;
 }
 
-std::size_t IncrementalMeshTools::meshedEdgeCount(const GeometryData& geometry)
+std::size_t IncrementalMeshTools::meshedEdgeCount(const GmshIncrementalMeshState& state)
 {
-    return geometry.gmsh_mesh_state.meshedEdgeRefCounts.size();
+    return state.meshedEdgeRefCounts.size();
 }
 
 bool IncrementalMeshTools::writeSingleFaceObj(const SingleFaceMeshResult& res, const std::filesystem::path& filepath)
@@ -893,7 +901,10 @@ bool IncrementalMeshTools::writeSingleFaceObj(const SingleFaceMeshResult& res, c
     return true;
 }
 
-bool IncrementalMeshTools::writeMeshObj(const MeshData& res, const GeometryData& geometry, const std::filesystem::path& filepath)
+bool IncrementalMeshTools::writeMeshObj(
+    const MeshData& res,
+    const GmshIncrementalMeshState& state,
+    const std::filesystem::path& filepath)
 {
     std::ofstream ofs(filepath);
     if (!ofs.is_open())
@@ -906,7 +917,7 @@ bool IncrementalMeshTools::writeMeshObj(const MeshData& res, const GeometryData&
         ofs << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
 
     std::unordered_map<Index, std::size_t> globalToLocal;
-    const auto& globalIds = geometry.gmsh_mesh_state.local_to_global_point_ids;
+    const auto& globalIds = state.local_to_global_point_ids;
     for (std::size_t i = 0; i < globalIds.size(); ++i) {
         globalToLocal[globalIds[i]] = i + 1;
     }
@@ -928,9 +939,12 @@ bool IncrementalMeshTools::writeMeshObj(const MeshData& res, const GeometryData&
     return true;
 }
 
-bool IncrementalMeshTools::deleteFaceMesh(MeshData& mesh_data, GeometryData& geometry, ModelLayer& model_layer, std::size_t faceIndex)
+bool IncrementalMeshTools::deleteFaceMesh(
+    MeshData& mesh_data,
+    GmshIncrementalMeshState& state,
+    ModelLayer& model_layer,
+    std::size_t faceIndex)
 {
-    auto& state = geometry.gmsh_mesh_state;
     // 检查是否存在该面的缓存
     auto it = state.meshedFacesCache.find(faceIndex);
     if (it == state.meshedFacesCache.end()) {
@@ -962,7 +976,7 @@ bool IncrementalMeshTools::deleteFaceMesh(MeshData& mesh_data, GeometryData& geo
     mesh_data.face_vertices_offset_.clear();
     mesh_data.face_vertices_offset_.push_back(0); 
 
-    TempNodeLookup lookup(mesh_data, geometry, model_layer, 1e-7);
+    TempNodeLookup lookup(mesh_data, state, model_layer, 1e-7);
 
     // 遍历目前还保留的所有有效面，按序装入MeshData
     for (const auto& [fIdx, faceMeshResult] : state.meshedFacesCache) {
@@ -995,11 +1009,16 @@ bool IncrementalMeshTools::deleteFaceMesh(MeshData& mesh_data, GeometryData& geo
 }
 
 SingleFaceMeshResult IncrementalMeshTools::remeshSingleFace(
-    MeshData& mesh_data, GeometryData& geometry, ModelLayer& model_layer, std::size_t faceIndex, double meshSize)
+    MeshData& mesh_data,
+    GeometryData& geometry,
+    GmshIncrementalMeshState& state,
+    ModelLayer& model_layer,
+    std::size_t faceIndex,
+    double meshSize)
 {
-    if (geometry.gmsh_mesh_state.meshedFacesCache.find(faceIndex) != geometry.gmsh_mesh_state.meshedFacesCache.end()) {
+    if (state.meshedFacesCache.find(faceIndex) != state.meshedFacesCache.end()) {
         spdlog::info("Remeshing: Face {} is already meshed, deleting old mesh first.", faceIndex);
-        deleteFaceMesh(mesh_data, geometry, model_layer, faceIndex);
+        deleteFaceMesh(mesh_data, state, model_layer, faceIndex);
     }
-    return meshSingleFace(mesh_data, geometry, model_layer, faceIndex, meshSize);
+    return meshSingleFace(mesh_data, geometry, state, model_layer, faceIndex, meshSize);
 }
