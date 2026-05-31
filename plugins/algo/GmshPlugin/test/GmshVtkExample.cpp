@@ -92,8 +92,9 @@ static void resetGeneratedMesh(AppContext& ctx)
     ctx.meshData.init();
     ctx.gmshState.clear();
     if (ctx.geometry.rootShape) {
+        ctx.geometry.ensureCadIndexBuilt(ctx.modelLayer.geomRegistry());
         ctx.gmshState.meshContext =
-            std::make_unique<IncrementalMeshContext>(*ctx.geometry.rootShape);
+            std::make_unique<IncrementalMeshContext>(ctx.geometry, ctx.modelLayer.geomRegistry());
     }
     ctx.currentIndex = 0;
     ctx.meshSize = IncrementalMeshTools::estimateMeshSize(ctx.geometry);
@@ -226,7 +227,7 @@ int main(int argc, char* argv[])
     ctx.polyData = vtkSmartPointer<vtkPolyData>::New();
     ctx.meshData.init();
 
-    if (!IncrementalMeshTools::initMeshing(path, ctx.geometry, ctx.gmshState)) {
+    if (!IncrementalMeshTools::initMeshing(path, ctx.geometry, ctx.gmshState, ctx.modelLayer.geomRegistry())) {
         spdlog::error("Cannot import: {}", path);
         return 1;
     }

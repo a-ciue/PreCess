@@ -1,6 +1,7 @@
 #include "IncrementalMeshTools.h"
 #include "IncrementalMeshContext.h"
 
+#include "GeometryRegistry.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 
@@ -271,7 +272,7 @@ std::vector<double> sampleGmshEdgePoints(int gmshTag, int sampleCount = 3)
 }
 
 // ---- OCC 边特征 ----
-EdgeGeoFeature computeOCCEdgeFeature(int gid, const IncrementalMeshContext& ctx)
+EdgeGeoFeature computeOCCEdgeFeature(GeomEdgeId gid, const IncrementalMeshContext& ctx)
 {
     TopoDS_Edge edge = ctx.getEdgeByGlobalId(gid);
 
@@ -374,13 +375,13 @@ EdgeGeoFeature computeGmshEdgeFeature(int gmshTag)
 }
 
 // ---- 匹配 ----
-std::map<int, int> matchGmshToOCCEdges(const TopoDS_Face& face,
+std::map<int, GeomEdgeId> matchGmshToOCCEdges(const TopoDS_Face& face,
     const IncrementalMeshContext& ctx)
 {
     // OCC 当前 face 的边
     auto occIds = ctx.getFaceEdgeIds(face);
-    std::vector<std::pair<int, EdgeGeoFeature>> occFeats;
-    for (int gid : occIds) {
+    std::vector<std::pair<GeomEdgeId, EdgeGeoFeature>> occFeats;
+    for (GeomEdgeId gid : occIds) {
         occFeats.push_back({ gid, computeOCCEdgeFeature(gid, ctx) });
     }
 
@@ -409,14 +410,14 @@ std::map<int, int> matchGmshToOCCEdges(const TopoDS_Face& face,
     double scale = getShapeScale(face);
     double acceptTol = 5e-2; // 归一化后的阈值
 
-    std::map<int, int> result;
-    std::set<int> matched;
+    std::map<int, GeomEdgeId> result;
+    std::set<GeomEdgeId> matched;
 
     for (int gmshTag : gmshEdges) {
         auto gf = computeGmshEdgeFeature(gmshTag);
 
         double best = 1e30;
-        int bestId = -1;
+        GeomEdgeId bestId = kInvalidGeomEdgeId;
 
         for (auto& [id, of] : occFeats) {
             if (matched.count(id))
@@ -440,7 +441,7 @@ std::map<int, int> matchGmshToOCCEdges(const TopoDS_Face& face,
             }
         }
 
-        if (bestId > 0 && best < acceptTol) {
+        if (bestId != kInvalidGeomEdgeId && best < acceptTol) {
             result[gmshTag] = bestId;
             matched.insert(bestId);
             spdlog::info("  GMSH edge {} -> OCC edge {} (score={:.3e})",
@@ -456,7 +457,7 @@ std::map<int, int> matchGmshToOCCEdges(const TopoDS_Face& face,
 }
 
 // ---- 注入约束边 ----
-bool injectConstrainedEdge(int gmshTag, int occId,
+bool injectConstrainedEdge(int gmshTag,
     const MeshedEdgeData& nodes,
     std::size_t& nodeCounter,
     std::size_t& elemCounter,
@@ -662,8 +663,8 @@ SingleFaceMeshResult extractFaceMesh(int faceTag)
     return result;
 }
 
-// ---- 存储新边 ----
-void storeNewEdges(GmshIncrementalMeshState& state, const std::map<int, int>& g2o)
+// 将当前划分出的 Gmsh 边节点按全局 CAD 边 ID 缓存，供后续相邻面复用。
+void storeNewEdges(GmshIncrementalMeshState& state, const std::map<int, GeomEdgeId>& g2o)
 {
     int nNew = 0;
     int nShared = 0;
@@ -726,15 +727,19 @@ void mergeMeshResult(
 // 公开接口
 bool IncrementalMeshTools::initMeshing(const std::string& stepFile,
     GeometryData& geometry,
-    GmshIncrementalMeshState& state)
+    GmshIncrementalMeshState& state,
+    GeometryRegistry& registry)
 {
     state.clear();
+    if (geometry.cad_index.built)
+        geometry.cad_index.release(registry);
+
     geometry.rootShape = std::make_unique<TopoDS_Shape>(loadStep(stepFile));
     if (geometry.rootShape->IsNull()) {
         spdlog::error("Failed to load: {}", stepFile);
         return false;
     }
-    state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry.rootShape);
+    state.meshContext = std::make_unique<IncrementalMeshContext>(geometry, registry);
     spdlog::info("Loaded: {} faces, {} global edges",
         state.meshContext->faceCount(),
         state.meshContext->globalEdgeCount());
@@ -796,7 +801,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
 
     for (auto& [gt, oid] : gmshToOcc) {
         if (state.meshedEdgeRefCounts.count(oid) > 0) {
-            injectConstrainedEdge(gt, oid, state.meshedEdgesCache.at(oid),
+            injectConstrainedEdge(gt, state.meshedEdgesCache.at(oid),
                 nodeCounter, elemCounter, vtxNodeMap);
             shared++;
         } else {
@@ -956,7 +961,7 @@ bool IncrementalMeshTools::deleteFaceMesh(
     if (state.meshContext) {
         TopoDS_Face face = state.meshContext->getFaceByIndex(faceIndex);
         auto occEdges = state.meshContext->getFaceEdgeIds(face);
-        for (int globalEdgeId : occEdges) {
+        for (GeomEdgeId globalEdgeId : occEdges) {
             auto refIt = state.meshedEdgeRefCounts.find(globalEdgeId);
             if (refIt != state.meshedEdgeRefCounts.end()) {
                 refIt->second--;

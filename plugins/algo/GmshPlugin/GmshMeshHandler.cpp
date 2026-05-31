@@ -89,7 +89,7 @@ std::any systems::algo::GmshMeshHandler::execute(
     // 首次执行时建立 OCC 面/边索引，后续单面划分复用该上下文。
     if (!state.meshContext) {
         spdlog::info("GmshMesh: init occId...");
-        state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry->rootShape);
+        state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry, modelLayer.geomRegistry());
         spdlog::info("GmshMesh: {} face, {} global edge",
             state.meshContext->faceCount(),
             state.meshContext->globalEdgeCount());

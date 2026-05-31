@@ -32,9 +32,11 @@ struct GmshIncrementalMeshState {
     ~GmshIncrementalMeshState();
 
     std::unique_ptr<IncrementalMeshContext> meshContext;
-    std::map<int, MeshedEdgeData> meshedEdgesCache;
+    // 已划分 CAD 边的节点缓存，key 使用 pr-38 的全局 CAD 边 ID。
+    std::map<GeomEdgeId, MeshedEdgeData> meshedEdgesCache;
     std::map<std::size_t, SingleFaceMeshResult> meshedFacesCache;
-    std::map<int, int> meshedEdgeRefCounts;
+    // 已划分 CAD 边被多少个面复用，用于删除面网格时判断是否清理边缓存。
+    std::map<GeomEdgeId, int> meshedEdgeRefCounts;
     std::vector<Index> local_to_global_point_ids;
 
     // 清空当前 component 的增量网格缓存。

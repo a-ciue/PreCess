@@ -9,10 +9,15 @@
 
 struct MeshData;
 class ModelLayer;
+class GeometryRegistry;
 
 namespace IncrementalMeshTools {
 
-bool initMeshing(const std::string& stepFile, GeometryData& geometry, GmshIncrementalMeshState& state);
+bool initMeshing(
+    const std::string& stepFile,
+    GeometryData& geometry,
+    GmshIncrementalMeshState& state,
+    GeometryRegistry& registry);
 
 SingleFaceMeshResult meshSingleFace(
     MeshData& mesh_data,
