@@ -10,6 +10,24 @@
 #include <vtkProperty.h>
 #include <spdlog/spdlog.h>
 
+namespace {
+// 向量 glyph 只能使用 3 分量数组，提前拦截标量属性以避免触发 VTK OutputWindow。
+bool isValidVectorArray(vtkDataArray* array, const std::string& attr_name)
+{
+    if (!array)
+        return false;
+
+    const int component_count = array->GetNumberOfComponents();
+    if (component_count == 3)
+        return true;
+
+    spdlog::error(
+        "Attribute {} has {} component(s), vector rendering requires 3 components. Use scalar mode for scalar attributes.",
+        attr_name, component_count);
+    return false;
+}
+}
+
 void AttriRenderStrategyVector::render(
     AttributeOperator op,
     const std::string& attr_name,
@@ -17,7 +35,7 @@ void AttriRenderStrategyVector::render(
 {
     this->cancelActiveAttribute(op);
     // 提取glyphScale参数
-    double glyph_scale = 0.5;
+    double glyph_scale = op.getMeshScale() * 0.5;
     auto it = args.find("glyph_scale");
     if (it != args.end()) {
         if (it->second.type() == typeid(double)) {
@@ -33,6 +51,8 @@ void AttriRenderStrategyVector::render(
     // 判断是否是顶点属性
     vtkDataArray* array = op.getFacePointData()->GetArray(attr_name.c_str());
     if (array) {
+        if (!isValidVectorArray(array, attr_name))
+            return;
         vtkPolyData* point_data = op.getPointGlyphInput(attr_name);
         createGlyph3D(op, point_data, { 1.0, 0.0, 0.0 }, glyph_scale);
         return;
@@ -40,6 +60,8 @@ void AttriRenderStrategyVector::render(
     // 判断是否是面属性
     array = op.getFaceCellData()->GetArray(attr_name.c_str());
     if (array) {
+        if (!isValidVectorArray(array, attr_name))
+            return;
         vtkSmartPointer<vtkPolyData> glyphInput = op.getFaceGlyphInput(attr_name);
         createGlyph3D(op, glyphInput, { 0.0, 0.0, 1.0 }, glyph_scale);
         return;
@@ -47,6 +69,8 @@ void AttriRenderStrategyVector::render(
     // 判断是否是体属性
     array = op.getSolidCellData()->GetArray(attr_name.c_str());
     if (array) {
+        if (!isValidVectorArray(array, attr_name))
+            return;
         vtkSmartPointer<vtkPolyData> glyphInput = op.getSolidGlyphInput(attr_name);
         createGlyph3D(op, glyphInput, { 0.0, 0.6, 0.0 }, glyph_scale);
         return;

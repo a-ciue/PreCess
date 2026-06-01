@@ -24,6 +24,9 @@ public:
     vtkCellData* getSolidCellData();
     vtkPointData* getSolidPointData();
 
+    // 返回当前 component 的典型边长，用于计算 glyph 默认缩放比例。
+    double getMeshScale() const noexcept;
+
     vtkSmartPointer<vtkPolyData> getFaceGlyphInput(const std::string& attr_name);
     vtkSmartPointer<vtkPolyData> getPointGlyphInput(const std::string& attr_name);
     vtkSmartPointer<vtkPolyData> getSolidGlyphInput(const std::string& attr_name);
