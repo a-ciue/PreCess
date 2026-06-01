@@ -58,8 +58,8 @@ Item {
                 text: "注销"
                 enabled: pluginListView.currentIndex !== -1
                 onClicked: {
-                    var selectedPlugin = pluginManager.pluginNames[pluginListView.currentIndex]
-                    var pluginPath = pluginManager.getPluginPath(selectedPlugin)
+                    let selectedPlugin = pluginManager.pluginNames[pluginListView.currentIndex]
+                    let pluginPath = pluginManager.getPluginPath(selectedPlugin)
                     pluginManager.unregisterPlugin(pluginPath)
                     pluginListView.currentIndex = -1
                 }
@@ -79,7 +79,7 @@ Item {
         nameFilters: ["Plugin files (*.dll *.so)", "All files (*)"]
         
         onAccepted: {
-            var result = pluginManager.registerPlugin(selectedFile)
+            let result = pluginManager.registerPlugin(selectedFile)
             if (!result) {
                 registerFailureDialog.open()
             }

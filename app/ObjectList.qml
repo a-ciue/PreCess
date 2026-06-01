@@ -1,9 +1,9 @@
 /**
- * @file QObjectList.qml
+ * @file ObjectList.qml
  * @brief 对象列表，用列表方式显示当前加载的模型并提供删除、隐藏和重命名功能
  */
 
-import QtQuick 2.15
+import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
@@ -51,7 +51,6 @@ Pane {
                 property string savedName: name
                 Layout.fillWidth: true
                 wrapMode: TextInput.WrapAnywhere
-                //text: name
                 font.bold: root.selectedModel_id === savedId  // 根据选中状态设置粗体
                 
                 MouseArea {

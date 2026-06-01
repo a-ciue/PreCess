@@ -1,5 +1,5 @@
 /**
- * @file QSideBar.qml
+ * @file SideBar.qml
  * @brief 侧边栏，执行复杂算法时提供参数的交互界面
  */
 
@@ -86,24 +86,7 @@ Item{
             color: "grey"
         }
     }
-    /*Component{
-        id:componentButton
-        Row{
-            property alias exposedText: textbar.text   //name
-            //加入新属性value
-            function commitInformation(){
-                console.log(information.text)
-            }
 
-            Text{
-                id:textbar
-            }
-            Button{
-                id:information
-                text: "text_button"
-            }
-        }
-    }*/
     Component{
         id:componentComboBox
         RowLayout{
@@ -251,7 +234,6 @@ Item{
     Component{
         id: selectorComponent
         RowLayout{
-            // id: root
             spacing: 5
             width: parameterList.width
             property var value: null

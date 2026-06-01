@@ -1,6 +1,6 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
 Item {
     id: jsConsole
@@ -112,16 +112,16 @@ Item {
                         onTextChanged: {
                             // 检查文本是否包含点号，表示正在访问子组件
                             if (text.endsWith(".")) {
-                                var parentId = text.substring(0, text.length - 1).trim();
+                                let parentId = text.substring(0, text.length - 1).trim()
                                 if (parentId) {
                                     // 尝试获取父组件
-                                    var parentComponent = findComponentById(parentId);
+                                    let parentComponent = findComponentById(parentId)
                                     if (parentId) {
                                         // 获取子组件列表并显示
-                                        var childrenList = getChildrenList(parentComponent);
-                                        outputText.text += "子组件列表 (" + parentId + "):\n";
-                                        outputText.text += childrenList + "\n";
-                                        outputText.cursorPosition = outputText.length;
+                                        var childrenList = getChildrenList(parentComponent)
+                                        outputText.text += "子组件列表 (" + parentId + "):\n"
+                                        outputText.text += childrenList + "\n"
+                                        outputText.cursorPosition = outputText.length
                                     }
                                 }
                             }
@@ -130,23 +130,23 @@ Item {
                         // 处理Tab键，显示子组件
                         Keys.onPressed: {
                             if (event.key === Qt.Key_Tab) {
-                                event.accepted = true;
+                                event.accepted = true
                                 // 如果文本以点结尾，显示子组件
                                 if (text.endsWith(".")) {
-                                    var parentId = text.substring(0, text.length - 1).trim();
+                                    let parentId = text.substring(0, text.length - 1).trim()
                                     if (parentId) {
                                         try {
-                                            var parentComponent = findComponentById(parentId);
+                                            let parentComponent = findComponentById(parentId)
                                             if (parentId) {
-                                                var childrenList = getChildrenList(parentComponent);
-                                                outputText.text += "子组件列表 (" + parentId + "):\n";
-                                                outputText.text += childrenList + "\n";
-                                                outputText.cursorPosition = outputText.length;
+                                                let childrenList = getChildrenList(parentComponent)
+                                                outputText.text += "子组件列表 (" + parentId + "):\n"
+                                                outputText.text += childrenList + "\n"
+                                                outputText.cursorPosition = outputText.length
                                             } else {
-                                                outputText.text += "✗ 错误: 未找到组件 " + parentId + "\n";
+                                                outputText.text += "✗ 错误: 未找到组件 " + parentId + "\n"
                                             }
                                         } catch (e) {
-                                            outputText.text += "✗ 错误: " + e.toString() + "\n";
+                                            outputText.text += "✗ 错误: " + e.toString() + "\n"
                                         }
                                     }
                                 }
@@ -239,60 +239,60 @@ Item {
 
     // 获取子组件列表的函数
     function getChildrenList(parent) {
-        var result = "";
+        let result = ""
         
         // 对于Item类型的组件，使用children属性
         if (parent.children && parent.children.length > 0) {
-            result += "  item类型组件:\n";
-            for (var i = 0; i < parent.children.length; i++) {
-                var child = parent.children[i];
-                var childType = child.toString().split(" ")[0] || "Unknown";
+            result += "  item类型组件:\n"
+            for (let i = 0; i < parent.children.length; i++) {
+                let child = parent.children[i]
+                let childType = child.toString().split(" ")[0] || "Unknown"
                 
-                result += "  - " + " (" + childType + ")\n";
+                result += "  - " + " (" + childType + ")\n"
                 
                 // 递归获取更深层的子组件（可选，这里只显示一层）
             }
         } else {
-            result += "  (无子组件)\n";
+            result += "  (无子组件)\n"
         }
         
         // 对于非Item组件，检查contentChildren属性
         if (parent.contentChildren && parent.contentChildren.length > 0) {
-            result += "  控件类型组件:\n";
-            for (var j = 0; j < parent.contentChildren.length; j++) {
-                var contentChild = parent.contentChildren[j];
-                var contentChildType = contentChild.toString().split(" ")[0] || "Unknown";
+            result += "  控件类型组件:\n"
+            for (let j = 0; j < parent.contentChildren.length; j++) {
+                let contentChild = parent.contentChildren[j]
+                let contentChildType = contentChild.toString().split(" ")[0] || "Unknown"
                 
-                result += "    - " + " (" + contentChildType + ")\n";
+                result += "    - " + " (" + contentChildType + ")\n"
             }
         }
         
         // 检查data属性（适用于Item的data属性）
         if (parent.data && parent.data.length > 0) {
-            result += "  数据类型组件:\n";
-            for (var k = 0; k < parent.data.length; k++) {
-                var dataChild = parent.data[k];
+            result += "  数据类型组件:\n"
+            for (let k = 0; k < parent.data.length; k++) {
+                let dataChild = parent.data[k]
                 if (dataChild) {
-                    var dataChildType = dataChild.toString().split(" ")[0] || "Unknown";
+                    let dataChildType = dataChild.toString().split(" ")[0] || "Unknown"
                     
-                    result += "    - " + " (" + dataChildType + ")\n";
+                    result += "    - " + " (" + dataChildType + ")\n"
                 }
             }
         }
         
-        return result;
+        return result
     }
 
     // 显示快速帮助信息
     function showQuickHelp() {
-        var helpText = "🚀 快速命令:\n" +
-                      "• help - 显示此帮助\n" +
-                      "• clear - 清空控制台\n" +
-                      "• components - 显示可用组件\n\n" +
-                      "🔧 组件探索:\n" +
-                      "• 输入 '组件ID.' 然后按 Tab 键显示子组件\n" +
-                      "• 例如: 'myItem.' + Tab\n\n" +
-                      "💡 提示: 使用 Tab 键查看子组件列表\n"
+        let helpText = "🚀 快速命令:\n" +
+                       "• help - 显示此帮助\n" +
+                       "• clear - 清空控制台\n" +
+                       "• components - 显示可用组件\n\n" +
+                       "🔧 组件探索:\n" +
+                       "• 输入 '组件ID.' 然后按 Tab 键显示子组件\n" +
+                       "• 例如: 'myItem.' + Tab\n\n" +
+                       "💡 提示: 使用 Tab 键查看子组件列表\n"
 
         outputText.text += helpText + "\n"
         outputText.cursorPosition = outputText.length
@@ -302,11 +302,11 @@ Item {
     function findComponentById(id) {
         // 使用安全的方式查找组件
         try {
-            var component = eval(id);
-            return component;
+            let component = eval(id)
+            return component
         } catch (e) {
-            console.log("查找组件失败: " + e.toString());
-            return null;
+            console.log("查找组件失败: " + e.toString())
+            return null
         }
     }
 }

@@ -1,9 +1,9 @@
 /**
- * @file QSelector.qml
+ * @file Selector.qml
  * @brief 选择器，位于模型界面左上角，选择项类型与清空选择的交互界面
  */
 
-import QtQuick 2.15
+import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import app.core
@@ -31,13 +31,13 @@ RowLayout {
 
     ComboBox{
         id: selectModeComboBox
-        model:ListModel{
-            ListElement{text: "..."}
-            ListElement{text: "点"}
-            ListElement{text: "边"}
-            ListElement{text: "面"}
-            ListElement{text: "体"}
-            ListElement{text: "块"}
+        model: ListModel {
+            ListElement { text: "..." }
+            ListElement { text: "点" }
+            ListElement { text: "边" }
+            ListElement { text: "面" }
+            ListElement { text: "体" }
+            ListElement { text: "块" }
         }
         onCurrentTextChanged: comboBoxSelectionChanged()
         enabled: root.cur_model >= 0

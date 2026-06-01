@@ -2,10 +2,10 @@
  * @file Main.qml
  * @brief 程序的交互主界面
  *
- * @sa QObjectList.qml
- * @sa QSelectingBar.qml
- * @sa QSelector.qml
- * @sa QSideBar.qml
+ * @sa ObjectList.qml
+ * @sa SelectingBar.qml
+ * @sa Selector.qml
+ * @sa SideBar.qml
  */
 
 import QtQuick
