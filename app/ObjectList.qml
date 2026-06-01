@@ -7,16 +7,14 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
+import app.core
+import app.model
+
 Pane {
     id: root
-    signal removeModel(int model_id)
-    signal renameModel(int modelId, string newName)
-    signal changeModelVisibility(int model_id,bool visibility)
-    signal selectionChanged(int modelId)
-    property int selectedModel_id: -1  // 存储当前选中的模型id
 
     ObjectListModel {
-        id: objectInitializeModel
+        id: objectModel
     }
     /**
      * @brief 对象显示列表，每行由两个按钮，一个文本和一个图标组成
@@ -24,7 +22,7 @@ Pane {
     ListView{
         id: objectListView
         anchors.fill: parent
-        model: objectInitializeModel
+        model: objectModel
         delegate: RowLayout {
             required property string name
             required property int savedId
@@ -34,7 +32,7 @@ Pane {
                 id:visibilityButton
                 text: "隐藏"
                 onClicked:{
-                    changeModelVisibility(savedId, !checked)
+                    App.setModelVisible(savedId, !checked)
                 }
                 checkable: true
             }
@@ -42,7 +40,7 @@ Pane {
                 id:deleteButton
                 text: "删除"
                 onClicked:{
-                    removeModel(savedId)
+                    QModelManager.removeModel(savedId)
                     console.log("buttonDelName: ", name)
                 }
             }
@@ -51,17 +49,16 @@ Pane {
                 property string savedName: name
                 Layout.fillWidth: true
                 wrapMode: TextInput.WrapAnywhere
-                font.bold: root.selectedModel_id === savedId  // 根据选中状态设置粗体
+                font.bold: App.selection.activeModelId === savedId  // 根据选中状态设置粗体
                 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        if (root.selectedModel_id === savedId) {
-                            root.selectedModel_id = -1  // 取消选中
+                        if (App.selection.activeModelId === savedId) {
+                            App.selection.activeModelId = -1  // 取消选中
                         } else {
-                            root.selectedModel_id = savedId  // 选中当前行
+                            App.selection.activeModelId = savedId  // 选中当前行
                         }
-                        root.selectionChanged(root.selectedModel_id)  // 发送信号
                     }
                     onDoubleClicked: {
                         objectName.forceActiveFocus()  // 强制获取焦点，进入编辑模式
@@ -96,8 +93,8 @@ Pane {
      */
     function removeItem(model_id){
         objectModel.removeItem(model_id)
-        if (root.selectedModel_id === model_id) {
-            root.selectedModel_id = -1  // 如果删除的是当前选中的模型，重置选中状态
+        if (App.selection.activeModelId === model_id) {
+            App.selection.activeModelId = -1  // 如果删除的是当前选中的模型，重置选中状态
         }
     }
     /**
@@ -111,7 +108,13 @@ Pane {
         objectModel.rename(oldName, newName)
     }
 
-    /** type:var 对象列表的model数据构造 */
-    property alias objectModel: objectListView.model
-    property alias curModelId: root.selectedModel_id
+    Component.onCompleted: {
+        QModelManager.observer.modelAdded.connect(function(model_id) {
+            addItem(model_id, QModelManager.query.getModelName(model_id))
+        })
+
+        QModelManager.observer.modelRemoved.connect(function(model_id) {
+            removeItem(model_id)
+        })
+    }
 }

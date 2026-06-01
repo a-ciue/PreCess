@@ -1,11 +1,12 @@
 /**
  * @file Main.qml
- * @brief 程序的交互主界面
+ * @brief 程序的交互主界面，使用 KDDockWidgets 可停靠窗口架构
  *
  * @sa ObjectList.qml
- * @sa SelectingBar.qml
  * @sa Selector.qml
  * @sa SideBar.qml
+ * @sa CentralRenderArea.qml
+ * @sa JavaScriptConsole.qml
  */
 
 import QtQuick
@@ -14,6 +15,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Controls.Fusion
+
+import com.kdab.dockwidgets as KDDW
 
 import app.model
 import app.core
@@ -30,14 +33,13 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("PreCess")
 
-    // 控制台可视化全局参数
-    property bool consoleVisible: false
-
-    // 使用Shortcut组件代替Keys处理，更可靠
     Shortcut {
         sequence: "F10"
         onActivated: {
-            root.consoleVisible = !root.consoleVisible
+            if (consoleDock.isOpen)
+                consoleDock.close()
+            else
+                consoleDock.show()
         }
     }
 
@@ -62,233 +64,120 @@ ApplicationWindow {
             id: editMenu
             title: qsTr("编辑")
             Repeater {
-                model: editSystem.editsInfo
+                model: QModelManager.editSystem.editsInfo
                 MenuItem {
                     text: modelData.display_name
                     onTriggered: {
-                        sideBar.curAlgoInfo = modelData
-                        sideBar.system = editSystem
+                        var info = modelData
+                        App.activeOperation = {
+                            info: info,
+                            execute: function(model, args) { QModelManager.editSystem.call(info.name, model, args) }
+                        }
                     }
                 }
             }
         }
         Menu{
             title: "视图"
+            Action {
+                text: "对象列表"
+                checkable: true
+                checked: objectListDock.isOpen
+                onToggled: {
+                    if (objectListDock.isOpen) objectListDock.close()
+                    else objectListDock.show()
+                }
+            }
+            Action {
+                text: "属性列表"
+                checkable: true
+                checked: sideBarDock.isOpen
+                onToggled: {
+                    if (sideBarDock.isOpen) sideBarDock.close()
+                    else sideBarDock.show()
+                }
+            }
+            Action {
+                text: "控制台"
+                checkable: true
+                checked: consoleDock.isOpen
+                onToggled: {
+                    if (consoleDock.isOpen) consoleDock.close()
+                    else consoleDock.show()
+                }
+            }
         }
         Menu {
             id: commandMenu
             title: qsTr("算法")
             Repeater {
-                model: algorithmSystem.algorithmsInfo
+                model: QModelManager.algorithmSystem.algorithmsInfo
                 MenuItem {
                     text: modelData.display_name
                     onTriggered: {
-                        sideBar.curAlgoInfo = modelData
-                        sideBar.system = algorithmSystem
+                        var info = modelData
+                        App.activeOperation = {
+                            info: info,
+                            execute: function(model, args) { QModelManager.algorithmSystem.call(info.name, model, args) }
+                        }
                     }
                 }
             }
         }
     }
 
-    required property QModelObserver modelObserver
-    required property QModelManager modelManager
-    required property QModelQuery modelQuery
-    required property QAlgorithmSystemAdaptor algorithmSystem
-    required property QModelIOSystemAdaptor ioSystem
-    required property QEditSystemAdaptor editSystem
+    KDDW.DockingArea {
+        id: dockingArea
+        anchors.fill: parent
+        options: KDDW.KDDockWidgets.MainWindowOption_HasCentralWidget
+        persistentCentralItemFileName: "qrc:/qt/qml/app/CentralRenderArea.qml"
+        uniqueName: "PreCessMainLayout"
 
-    StackLayout{
-        id:stacklayout
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 0
-    }
-
-    ObjectList{
-        id:objectList
-        anchors.top: stacklayout.bottom
-        anchors.left: parent.left
-        anchors.right: myItemRectangle.left
-        width: 250
-        height: 200
-        Component.onCompleted: {
-            modelObserver.modelAdded.connect((model_id)=>objectList.addItem(model_id,modelQuery.getModelName(model_id)))
-            modelObserver.modelAdded.connect(myItem.onModelChanged)
-            modelObserver.modelChanged.connect(myItem.onModelChanged)
-
-            modelObserver.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            modelObserver.modelRemoved.connect(myItem.deleteModel)
-            objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
-            objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
-            objectList.changeModelVisibility.connect(myItem.setVisibility)
-            objectList.selectionChanged.connect((selectedModel_id)=>{myItem.setSelectModel(selectedModel_id)})
-        }
-    }
-
-    SideBar{
-        id: sideBar
-        curModel: objectList.curModelId
-        confirm_listener: selector.confirm_listener
-        anchors.top: objectList.bottom
-        anchors.left: parent.left
-        anchors.right: myItemRectangle.left
-        anchors.bottom: parent.bottom
-        width: 250
-        onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
-            selector.changeEnable()
-        }
-        onCancleCommand:{
-            m.clear()
-        }
-    }
-
-    Page {
-        id: myItemRectangle
-        anchors.bottom:parent.bottom
-        anchors.top:stacklayout.bottom
-        anchors.left:objectList.right
-        anchors.right:parent.right
-        Rectangle {
-            id: borderRectangle
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            height: myItemRectangle.height - 25
-            border.color: "black"
-            border.width: 3
-            color: "transparent"
-        }
-
-        Page{
-            id: renderWindowPage
-            anchors.fill: parent
-            background: null  // 移除Page的默认背景
-            footer: ToolBar{
-                height: 25
-                RowLayout{
-                    anchors.fill: parent
-                    ToolButton{
-                        text: "边渲染"
-                        checkable: true
-                        checked: myItem.cur_edge_render
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            myItem.setEdgeRender(objectList.curModelId, !myItem.cur_edge_render)
-                        }
-                    }
-                    ToolButton{
-                        text: "点渲染"
-                        checkable: true
-                        checked: myItem.cur_vertex_render
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            myItem.cur_vertex_render = !myItem.cur_vertex_render
-                        }
-                    }
-                    ToolButton{
-                        text: "块渲染"
-                        checkable: true
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            if (checked) {
-                                myItem.setRenderMode(objectList.curModelId, "Block")
-                            } else {
-                                myItem.setRenderMode(objectList.curModelId, "Face")
-                            }
-                        }
-                    }
-                    ToolButton{
-                        text: "裁剪"
-                        checkable: true
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            if (checked) {
-                                myItem.setMeshClip(true)
-                            } else {
-                                myItem.setMeshClip(false)
-                            }
-                        }
-                    }
-                    Label{
-                        Layout.fillWidth: true
-                    }
-                }
-            }
-
-            QRenderWindow {
-                id: myItem
+        KDDW.DockWidget {
+            id: objectListDock
+            uniqueName: "objectList"
+            title: "对象列表"
+            ObjectList {
                 anchors.fill: parent
-                anchors.margins: 3  // 调整边距，与border.width对应
-                query: modelQuery
             }
         }
 
-        Selector{
-            id:selector
-            cur_model: objectList.curModelId
-            anchors.top:  renderWindowPage.top
-            anchors.left: renderWindowPage.left
-            anchors.topMargin: 10
-            anchors.leftMargin: 10
-
-            onClearButtonClicked:{
-                clearSelection()
+        KDDW.DockWidget {
+            id: sideBarDock
+            uniqueName: "sideBar"
+            title: "属性列表"
+            SideBar {
+                anchors.fill: parent
             }
+        }
 
-            onConfirmButtonClicked: {
-                selector.selection = myItem.selectedIDs
+        KDDW.DockWidget {
+            id: consoleDock
+            uniqueName: "console"
+            title: "控制台"
+
+            JavaScriptConsole {
+                anchors.fill: parent
+                onCloseRequested: consoleDock.close()
             }
+        }
 
-            function clearSelection(){
-                myItem.clearSelection()
-            }
-
-            function bindFunction(selectType){
-                if(selectType === "..."){
-                    myItem.setSelectMode("None")
-                }
-                if(selectType === "点"){
-                    myItem.setSelectMode("Vertex")
-                }
-                if(selectType === "边"){
-                    myItem.setSelectMode("Edge")
-                }
-                if(selectType === "面"){
-                    myItem.setSelectMode("Face")
-                }
-                if(selectType === "块"){
-                    myItem.setSelectMode("Block")
-                }
-                if(selectType === "体"){
-                    myItem.setSelectMode("Solid")
-                }
-            }
-
-            function changeEnable(){}
-
-            onComboBoxSelectionChanged:{
-                bindFunction(comboBoxSelectedString)
-            }
-
-            Component.onCompleted:{
-                selector.comboBoxSelectionChanged()
-            }
+        Component.onCompleted: {
+            addDockWidget(objectListDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
+            addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectListDock, Qt.size(0, 200))
+            addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 150), KDDW.KDDockWidgets.StartHidden)
         }
     }
 
+    KDDW.LayoutSaver { id: layoutSaver }
+    
     //打开文件对话框
     FileDialog {
         id: openPatchDialog
-        nameFilters: ioSystem.dialogNameFilters
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
-                ioSystem.read(selectedNameFilter.name, selectedFile, [])
-                myItem.resetCamera()
+                QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
             } else {
                 console.exception("No valid file type selected.")
             }
@@ -298,29 +187,14 @@ ApplicationWindow {
     //保存文件对话框
     FileDialog {
         id: saveFaceDialog
-        nameFilters: ioSystem.dialogNameFilters
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
         fileMode: FileDialog.SaveFile
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
-                ioSystem.write(selectedNameFilter.name, objectList.curModelId, selectedFile, [])
+                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
             } else {
                 console.exception("No valid file type selected.")
             }
-        }
-    }
-
-    //JavaScript控制台
-    JavaScriptConsole {
-        id: myConsole
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        height: parent.height * 0.3
-        z: 1000  // 确保在最上层显示
-        consoleVisible: root.consoleVisible
-        
-        onCloseRequested: {
-            root.consoleVisible = false
         }
     }
 
@@ -337,20 +211,17 @@ ApplicationWindow {
         PluginManagerComponent {
             id: pluginManagerComponent
             anchors.fill: parent
-            pluginManager: root.modelManager.systemPluginManager
         }
     }
 
     Component.onCompleted: {
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
-                let ok = ioSystem.read("All files", commandLineArgs[i], []);
+                let ok = QModelManager.ioSystem.read("All files", commandLineArgs[i], [])
                 if (!ok) {
                     console.exception("启动打开失败: " + commandLineArgs[i]);
                 }
             }
-
-            myItem.resetCamera();
-        });
+        })
     }
 }

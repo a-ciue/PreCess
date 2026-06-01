@@ -4,189 +4,175 @@ import QtQuick.Layouts
 
 Item {
     id: jsConsole
-    width: consoleDrawer.width
-    height: consoleDrawer.height
-    
-    // 外部控制的可见性属性
-    property bool consoleVisible: false
-    
+
     // 关闭请求信号
     signal closeRequested()
-    
-    // 控制台抽屉
-    Drawer {
-        id: consoleDrawer
-        width: parent.width
-        height: parent.height * 0.3
-        edge: Qt.BottomEdge
-        visible: jsConsole.consoleVisible  // 直接绑定到外部属性
 
-        Rectangle {
+    Rectangle {
+        anchors.fill: parent
+        color: "#1e1e1e"
+
+        ColumnLayout {
             anchors.fill: parent
-            color: "#1e1e1e"
+            anchors.margins: 10
+            spacing: 10
+            
+            // 标题栏
+            RowLayout {
+                Layout.fillWidth: true
 
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 10
+                Text {
+                    text: "JavaScript 控制台"
+                    color: "#ffffff"
+                    font.pixelSize: 16
+                    font.bold: true
+                    Layout.fillWidth: true
+                }
+
+                Button {
+                    text: "清空"
+                    onClicked: outputText.text = ""
+                }
+
+                Button {
+                    text: "关闭"
+                    onClicked: {
+                        // 发送关闭请求，而不是直接修改状态
+                        jsConsole.closeRequested()
+                    }
+                }
+            }
+            
+            // 输出区域
+            ScrollView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                clip: true
+
+                TextArea {
+                    id: outputText
+                    readOnly: true
+                    color: "#ffffff"
+                    font.family: "Courier New"
+                    font.pixelSize: 12
+                    wrapMode: TextArea.Wrap
+                    background: Rectangle {
+                        color: "#2d2d2d"
+                        border.color: "#3d3d3d"
+                    }
+                    text: "=== PreCess JavaScript 控制台 ===\n" +
+                          "按 F10 切换控制台显示\n" +
+                          "----------------------------\n\n"
+                }
+            }
+            
+            // 输入区域
+            RowLayout {
+                Layout.fillWidth: true
                 spacing: 10
 
-                // 标题栏
-                RowLayout {
-                    Layout.fillWidth: true
-
-                    Text {
-                        text: "JavaScript 控制台"
-                        color: "#ffffff"
-                        font.pixelSize: 16
-                        font.bold: true
-                        Layout.fillWidth: true
-                    }
-
-                    Button {
-                        text: "清空"
-                        onClicked: outputText.text = ""
-                    }
-
-                    Button {
-                        text: "关闭"
-                        onClicked: {
-                            // 发送关闭请求，而不是直接修改状态
-                            jsConsole.closeRequested()
-                        }        
-                    }
+                Text {
+                    text: ">"
+                    color: "#4ec9b0"
+                    font.pixelSize: 14
+                    font.bold: true
                 }
 
-                // 输出区域
-                ScrollView {
+                TextField {
+                    id: inputField
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    clip: true
+                    placeholderText: "输入 JavaScript 代码..."
+                    color: "#ffffff"
+                    font.family: "Courier New"
+                    font.pixelSize: 12
 
-                    TextArea {
-                        id: outputText
-                        readOnly: true
-                        color: "#ffffff"
-                        font.family: "Courier New"
-                        font.pixelSize: 12
-                        wrapMode: TextArea.Wrap
-                        background: Rectangle {
-                            color: "#2d2d2d"
-                            border.color: "#3d3d3d"
-                        }
-                        text: "=== PreCess JavaScript 控制台 ===\n" +
-                              "按 F10 切换控制台显示\n" +
-                              "----------------------------\n\n"
-                    }
-                }
-
-                // 输入区域
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: 10
-
-                    Text {
-                        text: ">"
-                        color: "#4ec9b0"
-                        font.pixelSize: 14
-                        font.bold: true
+                    background: Rectangle {
+                        color: "#2d2d2d"
+                        border.color: inputField.activeFocus ? "#007acc" : "#3d3d3d"
+                        border.width: 1
                     }
 
-                    TextField {
-                        id: inputField
-                        Layout.fillWidth: true
-                        placeholderText: "输入 JavaScript 代码..."
-                        color: "#ffffff"
-                        font.family: "Courier New"
-                        font.pixelSize: 12
+                    property var history: []
+                    property int historyIndex: -1
 
-                        background: Rectangle {
-                            color: "#2d2d2d"
-                            border.color: inputField.activeFocus ? "#007acc" : "#3d3d3d"
-                            border.width: 1
+                    // 处理输入文本变化，检测是否输入了父组件ID并按了.
+                    onTextChanged: {
+                        // 检查文本是否包含点号，表示正在访问子组件
+                        if (text.endsWith(".")) {
+                            let parentId = text.substring(0, text.length - 1).trim()
+                            if (parentId) {
+                                // 尝试获取父组件
+                                let parentComponent = findComponentById(parentId)
+                                if (parentId) {
+                                    // 获取子组件列表并显示
+                                    var childrenList = getChildrenList(parentComponent)
+                                    outputText.text += "子组件列表 (" + parentId + "):\n"
+                                    outputText.text += childrenList + "\n"
+                                    outputText.cursorPosition = outputText.length
+                                }
+                            }
                         }
+                    }
 
-                        property var history: []
-                        property int historyIndex: -1
-
-                        // 处理输入文本变化，检测是否输入了父组件ID并按了.
-                        onTextChanged: {
-                            // 检查文本是否包含点号，表示正在访问子组件
+                    // 处理Tab键，显示子组件
+                    Keys.onPressed: {
+                        if (event.key === Qt.Key_Tab) {
+                            event.accepted = true
+                            // 如果文本以点结尾，显示子组件
                             if (text.endsWith(".")) {
                                 let parentId = text.substring(0, text.length - 1).trim()
                                 if (parentId) {
-                                    // 尝试获取父组件
-                                    let parentComponent = findComponentById(parentId)
-                                    if (parentId) {
-                                        // 获取子组件列表并显示
-                                        var childrenList = getChildrenList(parentComponent)
-                                        outputText.text += "子组件列表 (" + parentId + "):\n"
-                                        outputText.text += childrenList + "\n"
-                                        outputText.cursorPosition = outputText.length
-                                    }
-                                }
-                            }
-                        }
-
-                        // 处理Tab键，显示子组件
-                        Keys.onPressed: {
-                            if (event.key === Qt.Key_Tab) {
-                                event.accepted = true
-                                // 如果文本以点结尾，显示子组件
-                                if (text.endsWith(".")) {
-                                    let parentId = text.substring(0, text.length - 1).trim()
-                                    if (parentId) {
-                                        try {
-                                            let parentComponent = findComponentById(parentId)
-                                            if (parentId) {
-                                                let childrenList = getChildrenList(parentComponent)
-                                                outputText.text += "子组件列表 (" + parentId + "):\n"
-                                                outputText.text += childrenList + "\n"
-                                                outputText.cursorPosition = outputText.length
-                                            } else {
-                                                outputText.text += "✗ 错误: 未找到组件 " + parentId + "\n"
-                                            }
-                                        } catch (e) {
-                                            outputText.text += "✗ 错误: " + e.toString() + "\n"
+                                    try {
+                                        let parentComponent = findComponentById(parentId)
+                                        if (parentId) {
+                                            let childrenList = getChildrenList(parentComponent)
+                                            outputText.text += "子组件列表 (" + parentId + "):\n"
+                                            outputText.text += childrenList + "\n"
+                                            outputText.cursorPosition = outputText.length
+                                        } else {
+                                            outputText.text += "✗ 错误: 未找到组件 " + parentId + "\n"
                                         }
+                                    } catch (e) {
+                                        outputText.text += "✗ 错误: " + e.toString() + "\n"
                                     }
                                 }
-                            }
-                        }
-
-                        Keys.onUpPressed: {
-                            if (history.length > 0) {
-                                historyIndex = Math.max(0, historyIndex - 1)
-                                text = history[historyIndex]
-                            }
-                        }
-
-                        Keys.onDownPressed: {
-                            if (history.length > 0) {
-                                historyIndex = Math.min(history.length - 1, historyIndex + 1)
-                                text = history[historyIndex]
-                            }
-                        }
-
-                        Keys.onReturnPressed: {
-                            if (text.trim() !== "") {
-                                executeCommand(text)
-                                history.push(text)
-                                historyIndex = history.length
-                                text = ""
                             }
                         }
                     }
 
-                    Button {
-                        text: "执行"
-                        highlighted: true
-                        onClicked: {
-                            if (inputField.text.trim() !== "") {
-                                executeCommand(inputField.text)
-                                inputField.history.push(inputField.text)
-                                inputField.historyIndex = inputField.history.length
-                                inputField.text = ""
-                            }
+                    Keys.onUpPressed: {
+                        if (history.length > 0) {
+                            historyIndex = Math.max(0, historyIndex - 1)
+                            text = history[historyIndex]
+                        }
+                    }
+
+                    Keys.onDownPressed: {
+                        if (history.length > 0) {
+                            historyIndex = Math.min(history.length - 1, historyIndex + 1)
+                            text = history[historyIndex]
+                        }
+                    }
+
+                    Keys.onReturnPressed: {
+                        if (text.trim() !== "") {
+                            executeCommand(text)
+                            history.push(text)
+                            historyIndex = history.length
+                            text = ""
+                        }
+                    }
+                }
+
+                Button {
+                    text: "执行"
+                    highlighted: true
+                    onClicked: {
+                        if (inputField.text.trim() !== "") {
+                            executeCommand(inputField.text)
+                            inputField.history.push(inputField.text)
+                            inputField.historyIndex = inputField.history.length
+                            inputField.text = ""
                         }
                     }
                 }
@@ -207,7 +193,7 @@ Item {
             return
         } else if (cmd.trim() === "components") {
             outputText.text += "← 主要组件: objectList, sideBar, myItem, selector, stacklayout, facemode, patchmode\n"
-            outputText.text += "← 系统组件: modelQuery, algorithmSystem, modelManager, ioSystem, modelObserver\n\n"
+            outputText.text += "← 系统组件: QModelManager.query, QModelManager.algorithmSystem, QModelManager.ioSystem, QModelManager.observer\n\n"
             return
         }
 

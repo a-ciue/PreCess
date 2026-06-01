@@ -3,10 +3,10 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
+import app.model
+
 Item {
     id: pluginWindow
-    
-    required property var pluginManager
 
     ColumnLayout {
         anchors.fill: parent
@@ -15,7 +15,7 @@ Item {
             id: pluginListView
             Layout.fillWidth: true
             Layout.fillHeight: true
-            model: pluginManager.pluginNames
+            model: QModelManager.systemPluginManager.pluginNames
             currentIndex: -1
 
             delegate: Rectangle {
@@ -58,9 +58,9 @@ Item {
                 text: "注销"
                 enabled: pluginListView.currentIndex !== -1
                 onClicked: {
-                    let selectedPlugin = pluginManager.pluginNames[pluginListView.currentIndex]
-                    let pluginPath = pluginManager.getPluginPath(selectedPlugin)
-                    pluginManager.unregisterPlugin(pluginPath)
+                    let selectedPlugin = QModelManager.systemPluginManager.pluginNames[pluginListView.currentIndex]
+                    let pluginPath = QModelManager.systemPluginManager.getPluginPath(selectedPlugin)
+                    QModelManager.systemPluginManager.unregisterPlugin(pluginPath)
                     pluginListView.currentIndex = -1
                 }
             }
@@ -79,7 +79,7 @@ Item {
         nameFilters: ["Plugin files (*.dll *.so)", "All files (*)"]
         
         onAccepted: {
-            let result = pluginManager.registerPlugin(selectedFile)
+            let result = QModelManager.systemPluginManager.registerPlugin(selectedFile)
             if (!result) {
                 registerFailureDialog.open()
             }

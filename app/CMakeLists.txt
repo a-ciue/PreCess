@@ -1,3 +1,5 @@
+find_package(KDDockWidgets-qt6 REQUIRED)
+
 add_subdirectory(core)
 add_subdirectory(model)
 add_subdirectory(render)
@@ -10,13 +12,12 @@ qt_add_qml_module(${MYNAME}
         URI app
         QML_FILES
             Main.qml
-            SelectingBar.qml
+            CentralRenderArea.qml
             SideBar.qml
             ObjectList.qml
             ObjectListModel.qml
             Selector.qml
             JavaScriptConsole.qml
-            SignalListener.qml
             PluginManagerComponent.qml
 )
 target_link_libraries(${MYNAME}
@@ -24,6 +25,7 @@ target_link_libraries(${MYNAME}
     renderQml renderQmlplugin modelQml modelQmlplugin
     VTK::GUISupportQtQuick
     Qt${VTK_QT_VERSION}::Quick
+    KDAB::kddockwidgets
 )
 
 # - Prevent the creation of a console window on Windows.
@@ -53,6 +55,7 @@ set(DEPENDENCY_DIRECTORIES
     $<TARGET_FILE_DIR:TKernel>
     $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
     $<TARGET_FILE_DIR:spdlog::spdlog>
+    $<TARGET_FILE_DIR:KDAB::kddockwidgets>
 )
 if(freetype_FOUND)
     list(APPEND DEPENDENCY_DIRECTORIES $<TARGET_FILE_DIR:freetype>)

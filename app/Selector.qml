@@ -12,22 +12,8 @@ RowLayout {
     id:root
     signal clearButtonClicked
     signal confirmButtonClicked
-    signal onSelectionConfirmed(QSelection selection)
-    signal comboBoxSelectionChanged
     property QSelection selection
     property int cur_model
-
-    SignalListener {
-        id: confirm_listener
-        target_signal: root.onSelectionConfirmed
-    }
-    
-    Connections {
-        target: root
-        onSelectionChanged: {
-            root.onSelectionConfirmed(root.selection)
-        }
-    }
 
     ComboBox{
         id: selectModeComboBox
@@ -39,7 +25,26 @@ RowLayout {
             ListElement { text: "体" }
             ListElement { text: "块" }
         }
-        onCurrentTextChanged: comboBoxSelectionChanged()
+        onCurrentTextChanged: {
+            if(currentText === "..."){
+                App.selection.selectMode = "None"
+            }
+            if(currentText === "点"){
+                App.selection.selectMode = "Vertex"
+            }
+            if(currentText === "边"){
+                App.selection.selectMode = "Edge"
+            }
+            if(currentText === "面"){
+                App.selection.selectMode = "Face"
+            }
+            if(currentText === "块"){
+                App.selection.selectMode = "Block"
+            }
+            if(currentText === "体"){
+                App.selection.selectMode = "Solid"
+            }
+        }
         enabled: root.cur_model >= 0
         opacity: enabled ? 1.0 : 0.6
         currentIndex: enabled ? currentIndex: 0
@@ -53,11 +58,13 @@ RowLayout {
     }
     Button{
         text: "确认"
-        onClicked: root.confirmButtonClicked()
-        enabled: root.cur_model >= 0 && confirm_listener.getListenerCount() > 0
+        onClicked: {
+            root.confirmButtonClicked()
+            App.selection.confirmed(root.selection)
+        }
+        enabled: root.cur_model >= 0 && App.selection.listeningSelectorIndex >= 0
         opacity: enabled ? 1.0 : 0.6
     }
     /** type:string 选择框中当前文本 */
     property alias comboBoxSelectedString: selectModeComboBox.currentText
-    property alias confirm_listener: confirm_listener
 }

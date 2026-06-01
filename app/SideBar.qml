@@ -14,28 +14,24 @@ import app.model.systems.algo
 
 Item{
     id: root
-    property var system
-    property var curAlgoInfo
-    property int curModel
-    required property SignalListener confirm_listener
     property var parameters: []
-    signal selectModeChanged
-    signal cancleCommand
 
-    onCurAlgoInfoChanged: {
+    readonly property var activeOp: App.activeOperation
+
+    onActiveOpChanged: {
         parameters = []
-        parameterList.model = curAlgoInfo.arg_types
     }
     Button{
         id: commitButton
         text: "执行"
-        enabled: curModel >= 0 && curAlgoInfo != null
+        enabled: !!(App.selection.activeModelId >= 0 && root.activeOp && root.activeOp.info)
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height:30
         onClicked:{
-            system.call(curAlgoInfo.name, curModel, root.parameters)
+            if (root.activeOp && root.activeOp.execute)
+                root.activeOp.execute(App.selection.activeModelId, root.parameters)
         }
     }
     Item{
@@ -52,6 +48,7 @@ Item{
                 Layout.fillWidth: true
                 Layout.margins: 3
                 spacing: 5
+                model: root.activeOp ? root.activeOp.info.arg_types : []
                 delegate:Component{
                     Loader{
                         required property var model
@@ -255,22 +252,22 @@ Item{
             Button{
                 id: selectStartButton
                 text: "开始选择"
-                enabled: root.curModel >= 0
-                onClicked:{
-                    root.selectModeChanged()
-                    checked = !checked
+                checked: App.selection.listeningSelectorIndex === index
+                enabled: App.selection.activeModelId >= 0
+                onClicked: {
+                    if (!checked)
+                        App.selection.listeningSelectorIndex = index
+                    else
+                        App.selection.listeningSelectorIndex = -1
                 }
-                onCheckedChanged: {
-                    if (checked) {
-                        root.confirm_listener.registerSignalListener(changeSelectionOnce)
-                    } else {
-                        root.confirm_listener.unregisterSignalListener(changeSelectionOnce)
-                    }
-                }
+            }
 
-                function changeSelectionOnce(selection) {
+            Connections {
+                target: App.selection
+                enabled: selectStartButton.checked
+                function onConfirmed(selection) {
                     root.parameters[index] = value = selection
-                    checked = false
+                    App.selection.listeningSelectorIndex = -1
                 }
             }
         }
