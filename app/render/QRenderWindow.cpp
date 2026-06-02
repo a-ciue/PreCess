@@ -254,7 +254,7 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
         return vtk.spline_actor_manager_->getIsEdgeRender(model_id);
     }
 
-    std::cout << "get is edge render mode error" << std::endl;
+    spdlog::error("QRenderWindow::getIsEdgeRender: error getting edge render mode");
     return false;
 }
 
@@ -264,7 +264,7 @@ bool QRenderWindow::getIsVertexRender(Data& vtk, Index model_id)
         return vtk.mesh_actor_manager_->getIsVertexRender(model_id);
     }
 
-    std::cout << "get is vertex render mode error" << std::endl;
+    spdlog::error("QRenderWindow::getIsVertexRender: error getting vertex render mode");
     return false;
 }
 

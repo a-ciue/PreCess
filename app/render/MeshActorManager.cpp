@@ -10,7 +10,7 @@ std::shared_ptr<const MeshActor> MeshActorManager::getModelActor(Index model_id)
     if (this->models_.count(model_id))
         return this->models_.at(model_id);
     else {
-        std::cout << "MeshActorManager getModelActor error" << std::endl;
+        spdlog::error("MeshActorManager getModelActor error");
         return nullptr;
     }
 }

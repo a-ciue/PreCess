@@ -2,6 +2,7 @@
 #include "SplineActor.h"
 
 #include "Core.h"
+#include <spdlog/spdlog.h>
 
 SplineActorManager::SplineActorManager() = default;
 
@@ -17,7 +18,7 @@ const SplineActor* SplineActorManager::getSplineActor(Index model_id)
     if (this->models_.count(model_id))
         return this->models_.at(model_id).get();
     else {
-        std::cout << "SplineActorManager getSplineActor error" << std::endl;
+        spdlog::error("SplineActorManager getSplineActor error");
         return nullptr;
     }
 }
