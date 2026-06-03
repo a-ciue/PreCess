@@ -105,20 +105,28 @@ std::any systems::algo::GmshMeshHandler::execute(
     if (meshSize <= 0.0)
         meshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
 
+    std::size_t faceKey = static_cast<std::size_t>(faceIndex);
     SingleFaceMeshResult result;
 
-    if (operationMode == 2) {
+    if (operationMode == 1) {
+        if (state.meshedFacesCache.find(faceKey) != state.meshedFacesCache.end()) {
+            spdlog::info("GmshMesh: face {} already meshed, skip mesh mode; use remesh mode to rebuild", faceIndex);
+            return {};
+        }
+        spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceIndex, meshSize);
+        result = IncrementalMeshTools::meshSingleFace(
+            *meshData, *geometry, state, modelLayer, faceKey, meshSize);
+    } else if (operationMode == 2) {
         spdlog::info("GmshMesh: delete mesh for face {}", faceIndex);
-        if (IncrementalMeshTools::deleteFaceMesh(*meshData, state, modelLayer, static_cast<std::size_t>(faceIndex)))
+        if (IncrementalMeshTools::deleteFaceMesh(*meshData, state, modelLayer, faceKey))
             spdlog::info("GmshMesh: delete face {} success", faceIndex);
     } else if (operationMode == 3) {
         spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceIndex, meshSize);
         result = IncrementalMeshTools::remeshSingleFace(
-            *meshData, *geometry, state, modelLayer, static_cast<std::size_t>(faceIndex), meshSize);
+            *meshData, *geometry, state, modelLayer, faceKey, meshSize);
     } else {
-        spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceIndex, meshSize);
-        result = IncrementalMeshTools::meshSingleFace(
-            *meshData, *geometry, state, modelLayer, static_cast<std::size_t>(faceIndex), meshSize);
+        spdlog::warn("GmshMesh: unknown operation mode {}, skip", operationMode);
+        return {};
     }
 
     if (operationMode != 2) {
@@ -133,12 +141,12 @@ std::any systems::algo::GmshMeshHandler::execute(
             result.face_vertices_offset.size() - 1,
             state.meshedEdgeRefCounts.size());
 
-        //std::string faceOut = core::TempFile::instance().path().string() + "_single_face_" + std::to_string(faceIndex) + ".obj";
-        //if (!IncrementalMeshTools::writeSingleFaceObj(result, faceOut)) {
-        //    spdlog::error("GmshMesh: cant save single face");
-        //    return {};
-        //}
-        //context.io_system.read(faceOut, "Wavefront .obj file", {});
+        // std::string faceOut = core::TempFile::instance().path().string() + "_single_face_" + std::to_string(faceIndex) + ".obj";
+        // if (!IncrementalMeshTools::writeSingleFaceObj(result, faceOut)) {
+        //     spdlog::error("GmshMesh: cant save single face");
+        //     return {};
+        // }
+        // context.io_system.read(faceOut, "Wavefront .obj file", {});
     }
 
     std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceIndex) + ".obj";
