@@ -34,6 +34,23 @@ IncrementalMeshContext::IncrementalMeshContext(GeometryData& geometry, GeometryR
     , registry_(&registry)
 {
     geometry.ensureCadIndexBuilt(registry);
+
+    // 计算每个 CAD face 的边集合，后续 Gmsh 单面匹配只查这个拓扑缓存。
+    const auto& faceMap = cad_index_->type_maps[faceTypeIndex()];
+    const auto& edgeMap = cad_index_->type_maps[edgeTypeIndex()];
+    face_edge_infos_.resize(static_cast<std::size_t>(faceMap.Extent()));
+
+    for (int faceIdx = 1; faceIdx <= faceMap.Extent(); ++faceIdx) {
+        auto face = TopoDS::Face(faceMap(faceIdx));
+        std::set<GeomEdgeId> seen;
+
+        for (TopExp_Explorer ex(face, TopAbs_EDGE); ex.More(); ex.Next()) {
+            int localEdgeId = edgeMap.FindIndex(ex.Current());
+            GeomEdgeId gid = cad_index_->edgeGlobalId(localEdgeId);
+            if (gid != kInvalidGeomEdgeId && seen.insert(gid).second)
+                face_edge_infos_[static_cast<std::size_t>(faceIdx - 1)].push_back({ gid, localEdgeId });
+        }
+    }
 }
 
 IncrementalMeshContext::~IncrementalMeshContext() = default;
@@ -43,18 +60,19 @@ int IncrementalMeshContext::globalEdgeCount() const
     return cad_index_->type_maps[edgeTypeIndex()].Extent();
 }
 
+std::vector<FaceEdgeInfo> IncrementalMeshContext::getFaceEdgeInfos(const TopoDS_Face& face) const
+{
+    int localFaceId = cad_index_->type_maps[faceTypeIndex()].FindIndex(face);
+    if (localFaceId < 1 || static_cast<std::size_t>(localFaceId) > face_edge_infos_.size())
+        return {};
+    return face_edge_infos_[static_cast<std::size_t>(localFaceId - 1)];
+}
+
 std::vector<GeomEdgeId> IncrementalMeshContext::getFaceEdgeIds(const TopoDS_Face& face) const
 {
     std::vector<GeomEdgeId> ids;
-    std::set<GeomEdgeId> seen;
-    const auto& edgeMap = cad_index_->type_maps[edgeTypeIndex()];
-
-    for (TopExp_Explorer ex(face, TopAbs_EDGE); ex.More(); ex.Next()) {
-        int localEdgeId = edgeMap.FindIndex(ex.Current());
-        GeomEdgeId gid = cad_index_->edgeGlobalId(localEdgeId);
-        if (gid != kInvalidGeomEdgeId && seen.insert(gid).second)
-            ids.push_back(gid);
-    }
+    for (const auto& info : getFaceEdgeInfos(face))
+        ids.push_back(info.edgeId);
     return ids;
 }
 

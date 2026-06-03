@@ -379,10 +379,10 @@ std::map<int, GeomEdgeId> matchGmshToOCCEdges(const TopoDS_Face& face,
     const IncrementalMeshContext& ctx)
 {
     // OCC 当前 face 的边
-    auto occIds = ctx.getFaceEdgeIds(face);
+    auto edgeInfos = ctx.getFaceEdgeInfos(face);
     std::vector<std::pair<GeomEdgeId, EdgeGeoFeature>> occFeats;
-    for (GeomEdgeId gid : occIds) {
-        occFeats.push_back({ gid, computeOCCEdgeFeature(gid, ctx) });
+    for (const auto& info : edgeInfos) {
+        occFeats.push_back({ info.edgeId, computeOCCEdgeFeature(info.edgeId, ctx) });
     }
 
     // 只取当前 Gmsh face 的边界边，而不是整个模型所有 edge
