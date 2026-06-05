@@ -10,6 +10,8 @@ Pane{
     required property var modelQuery
     property int curModelId: -1
 
+    signal selectionChanged(int modelId)
+
     TreeModel {
         id: treeModel
         modelQuery: objectTree.modelQuery
@@ -137,6 +139,7 @@ Pane{
                     viewDelegate.treeView.selectionModel.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
 
                     objectTree.curModelId = viewDelegate.model.modelId
+                    objectTree.selectionChanged(viewDelegate.model.modelId)
                 }
             }
         }

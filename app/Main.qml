@@ -342,6 +342,9 @@ ApplicationWindow {
         modelObserver.modelRemoved.connect(myItem.deleteModel)
         modelObserver.componentRemoved.connect(myItem.deleteComponent)
 
+        // ===== 选中 — objectTree → myItem =====
+        objectTree.selectionChanged.connect((modelId) => { myItem.setSelectModel(modelId) })
+
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = ioSystem.read("All files", commandLineArgs[i], []);
