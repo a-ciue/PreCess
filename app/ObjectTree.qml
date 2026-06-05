@@ -11,6 +11,7 @@ Pane{
     property int curModelId: -1
 
     signal selectionChanged(int modelId)
+    signal deleteRequested(int nodeId, int depth)
 
     TreeModel {
         id: treeModel
@@ -140,6 +141,56 @@ Pane{
 
                     objectTree.curModelId = viewDelegate.model.modelId
                     objectTree.selectionChanged(viewDelegate.model.modelId)
+                }
+            }
+
+            // 右键菜单
+            TapHandler {
+                acceptedButtons: Qt.RightButton
+                onTapped: {
+                    let index = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
+                    viewDelegate.treeView.selectionModel.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
+                    contextMenu.popup()
+                }
+            }
+
+            Menu {
+                id: contextMenu
+
+                background: Rectangle {
+                    color: "#ffffff"
+                    border.color: "#d0d0d0"
+                    border.width: 1
+                    radius: 4
+                    implicitWidth: 100
+                }
+
+                MenuItem {
+                    id: deleteItem
+                    text: "删除"
+                    implicitHeight: 30
+
+                    background: Rectangle {
+                        color: deleteItem.hovered ? "#ffebee" : "transparent"
+                    }
+
+                    contentItem: Text {
+                        text: deleteItem.text
+                        color: deleteItem.hovered ? "#d32f2f" : "#c62828"
+                        font.pixelSize: 12
+                        font.family: "Microsoft YaHei"
+                        leftPadding: 15
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onTriggered: {
+                        viewDelegate.treeView.selectionModel.clear()
+                        contextMenu.close()
+                        objectTree.deleteRequested(
+                            viewDelegate.model.nodeId,
+                            viewDelegate.model.depth
+                        )
+                    }
                 }
             }
         }

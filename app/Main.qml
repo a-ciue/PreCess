@@ -345,6 +345,15 @@ ApplicationWindow {
         // ===== 选中 — objectTree → myItem =====
         objectTree.selectionChanged.connect((modelId) => { myItem.setSelectModel(modelId) })
 
+        // ===== 删除 — objectTree → modelManager =====
+        objectTree.deleteRequested.connect((nodeId, depth) => {
+            if (depth === 1) {
+                modelManager.removeModel(nodeId)
+            } else if (depth === 2) {
+                modelManager.removeComponent(nodeId)
+            }
+        })
+
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = ioSystem.read("All files", commandLineArgs[i], []);
