@@ -5,13 +5,19 @@
 #include <QVector>
 #include <QtQml/qqmlregistration.h>
 
+#include "QModelQuery.h"
+
 struct TreeNode {
     QString name;
-    QString value;
+    QString number;
+    int nodeId = -1;
+    bool isVisible = true;
+    int depth = 0;
     QVector<TreeNode*> children;
-    TreeNode* parent;
+    TreeNode* parent = nullptr;
 
-    TreeNode(const QString& n, const QString& v = "", TreeNode* p = nullptr): name(n), value(v), parent(p)
+    TreeNode(const QString& n, const QString& num = "", TreeNode* p = nullptr, int d = 0)
+        : name(n), number(num), parent(p), depth(d)
     {
         if (p)
             p->children << this;
@@ -23,30 +29,27 @@ struct TreeNode {
 class TreeModel : public QAbstractItemModel {
     Q_OBJECT
     QML_NAMED_ELEMENT(TreeModel)
+    Q_PROPERTY(QObject* modelQuery READ getModelQuery WRITE setModelQuery REQUIRED)
 
 public:
     explicit TreeModel(QObject* parent = nullptr);
     ~TreeModel();
 
     QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
-
     QModelIndex parent(const QModelIndex& child) const override;
-
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-
     int columnCount(const QModelIndex& parent = QModelIndex()) const override;
-
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE bool removeNode(int row, const QModelIndex& parentIndex);
+    Q_INVOKABLE bool refresh();
 
-    Q_INVOKABLE bool rebuiltTree();
+    QObject* getModelQuery() const { return modelQuery_; }
+    void setModelQuery(QObject* query);
 
 private:
     TreeNode* getNode(const QModelIndex& index) const;
 
-private:
-    TreeNode* rootNode;
+    TreeNode* rootNode = nullptr;
+    QModelQuery* modelQuery_ = nullptr;
 };

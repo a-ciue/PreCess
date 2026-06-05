@@ -105,32 +105,20 @@ ApplicationWindow {
         height: 0
     }
 
-    ObjectList{
-        id:objectList
+    ObjectTree {
+        id: objectTree
         anchors.top: stacklayout.bottom
         anchors.left: parent.left
-        anchors.right: myItemRectangle.left
         width: 250
         height: 200
-        Component.onCompleted: {
-            modelObserver.modelAdded.connect((model_id)=>objectList.addItem(model_id,modelQuery.getModelName(model_id)))
-            modelObserver.modelAdded.connect(myItem.onModelChanged)
-            modelObserver.modelChanged.connect(myItem.onModelChanged)
-
-            modelObserver.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            modelObserver.modelRemoved.connect(myItem.deleteModel)
-            objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
-            objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
-            objectList.changeModelVisibility.connect(myItem.setVisibility)
-            objectList.selectionChanged.connect((selectedModel_id)=>{myItem.setSelectModel(selectedModel_id)})
-        }
+        modelQuery: root.modelQuery
     }
 
     SideBar{
         id: sideBar
-        curModel: objectList.curModelId
+        curModel: objectTree.curModelId
         confirm_listener: selector.confirm_listener
-        anchors.top: objectList.bottom
+        anchors.top: objectTree.bottom
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
         anchors.bottom: parent.bottom
@@ -147,7 +135,7 @@ ApplicationWindow {
         id: myItemRectangle
         anchors.bottom:parent.bottom
         anchors.top:stacklayout.bottom
-        anchors.left:objectList.right
+        anchors.left:objectTree.right
         anchors.right:parent.right
         Rectangle {
             id: borderRectangle
@@ -175,7 +163,7 @@ ApplicationWindow {
                         Layout.preferredWidth: 50
                         Layout.fillHeight: true
                         onClicked:{
-                            myItem.setEdgeRender(objectList.curModelId, !myItem.cur_edge_render)
+                            myItem.setEdgeRender(objectTree.curModelId, !myItem.cur_edge_render)
                         }
                     }
                     ToolButton{
@@ -195,9 +183,9 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         onClicked:{
                             if (checked) {
-                                myItem.setRenderMode(objectList.curModelId, "Block")
+                                myItem.setRenderMode(objectTree.curModelId, "Block")
                             } else {
-                                myItem.setRenderMode(objectList.curModelId, "Face")
+                                myItem.setRenderMode(objectTree.curModelId, "Face")
                             }
                         }
                     }
@@ -230,7 +218,7 @@ ApplicationWindow {
 
         Selector{
             id:selector
-            cur_model: objectList.curModelId
+            cur_model: objectTree.curModelId
             anchors.top:  renderWindowPage.top
             anchors.left: renderWindowPage.left
             anchors.topMargin: 10
@@ -302,7 +290,7 @@ ApplicationWindow {
         fileMode: FileDialog.SaveFile
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
-                ioSystem.write(selectedNameFilter.name, objectList.curModelId, selectedFile, [])
+                ioSystem.write(selectedNameFilter.name, objectTree.curModelId, selectedFile, [])
             } else {
                 console.exception("No valid file type selected.")
             }
@@ -342,6 +330,18 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        // ===== 树刷新 — modelObserver → objectTree =====
+        modelObserver.modelAdded.connect(() => { objectTree.refreshTree() })
+        modelObserver.modelRemoved.connect(() => { objectTree.refreshTree() })
+        modelObserver.modelChanged.connect(() => { objectTree.refreshTree() })
+        modelObserver.componentRemoved.connect(() => { objectTree.refreshTree() })
+
+        // ===== 渲染 — modelObserver → myItem =====
+        modelObserver.modelAdded.connect(myItem.onModelChanged)
+        modelObserver.modelChanged.connect(myItem.onModelChanged)
+        modelObserver.modelRemoved.connect(myItem.deleteModel)
+        modelObserver.componentRemoved.connect(myItem.deleteComponent)
+
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = ioSystem.read("All files", commandLineArgs[i], []);
