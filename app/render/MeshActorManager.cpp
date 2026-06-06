@@ -49,6 +49,14 @@ void MeshActorManager::setVisibility(Index component_id, bool visibility)
         this->component_actors_[component_id]->setVisibility(visibility);
 }
 
+bool MeshActorManager::getVisibility(Index component_id) const
+{
+    auto it = component_actors_.find(component_id);
+    if (it != component_actors_.end())
+        return it->second->isVisible();
+    return true;
+}
+
 void MeshActorManager::setRenderMode(Index component_id, ModelRenderMode render_mode)
 {
     if (this->component_actors_.count(component_id))

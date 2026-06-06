@@ -78,6 +78,14 @@ void GeometryActorManager::setVisibility(Index component_id, bool visibility)
     }
 }
 
+bool GeometryActorManager::getVisibility(Index component_id) const
+{
+    auto it = component_actors_.find(component_id);
+    if (it != component_actors_.end())
+        return it->second->isVisible();
+    return true;
+}
+
 void GeometryActorManager::setRenderMode(Index component_id, SplineRenderMode render_mode)
 {
     auto it = component_actors_.find(component_id);
