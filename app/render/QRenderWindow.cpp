@@ -422,6 +422,8 @@ bool QRenderWindow::getCurVertexRender()
 
 bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
 {
+    if (model_id < 0) return false;
+
     auto component_ids = model_query_->getComponentIds(model_id);
     if (!component_ids.empty()) {
         Index component_id = component_ids.front();

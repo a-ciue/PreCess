@@ -78,6 +78,25 @@ Pane{
                 implicitWidth: textContent.implicitWidth + viewDelegate._padding * 2
                 implicitHeight: viewDelegate._rowHeight
 
+                // 左键选中（仅限 contentItem 区域，不触发展开）
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton
+                    onClicked: (mouse) => {
+                        mouse.accepted = true
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                        if (viewDelegate.current) {
+                            viewDelegate.treeView.selectionModel.clear()
+                            objectTree.curModelId = -1
+                            objectTree.selectionChanged(-1)
+                        } else if (idx.valid) {
+                            viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
+                            objectTree.curModelId = viewDelegate.model.modelId
+                            objectTree.selectionChanged(viewDelegate.model.modelId)
+                        }
+                    }
+                }
+
                 Row {
                     id: textContent
                     anchors.fill: parent
@@ -88,7 +107,10 @@ Pane{
                     Text {
                         id: nameText
                         text: viewDelegate.model.name || "N/A"
-                        color: viewDelegate.model.isVisible ? "#333333" : "#aaaaaa"
+                        color: {
+                            if (!viewDelegate.model.isVisible) return "#aaaaaa"
+                            return viewDelegate.current ? "#333333" : "#555555"
+                        }
                         font.pixelSize: 13
                         font.family: "Consolas"
                         font.weight: viewDelegate.current ? Font.Bold : Font.Normal
@@ -110,30 +132,13 @@ Pane{
                 }
             }
 
-            // 左键点击选择
-            TapHandler {
-                acceptedButtons: Qt.LeftButton
-                onTapped: {
-                    let index = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
-                    if (viewDelegate.current) {
-                        viewDelegate.treeView.selectionModel.clear()
-                        objectTree.curModelId = -1
-                        objectTree.selectionChanged(-1)
-                    } else {
-                        viewDelegate.treeView.selectionModel.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
-                        objectTree.curModelId = viewDelegate.model.modelId
-                        objectTree.selectionChanged(viewDelegate.model.modelId)
-                    }
-                }
-            }
-
             // 右键菜单
             TapHandler {
                 acceptedButtons: Qt.RightButton
                 onTapped: {
                     if (viewDelegate.model.depth > 2) return
-                    let index = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
-                    viewDelegate.treeView.selectionModel.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
+                    let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                    viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                     contextMenu.popup()
                 }
             }
@@ -168,8 +173,8 @@ Pane{
                     }
 
                     onTriggered: {
-                        let idx = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
-                        treeModel.setVisibility(viewDelegate.row, idx.parent, false)
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                        treeModel.setVisibility(idx.row, idx.parent, false)
                         objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.model.depth, false)
                     }
                 }
@@ -193,8 +198,8 @@ Pane{
                     }
 
                     onTriggered: {
-                        let idx = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
-                        treeModel.setVisibility(viewDelegate.row, idx.parent, true)
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                        treeModel.setVisibility(idx.row, idx.parent, true)
                         objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.model.depth, true)
                     }
                 }

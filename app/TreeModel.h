@@ -44,6 +44,7 @@ public:
 
     Q_INVOKABLE bool refresh();
     Q_INVOKABLE bool setVisibility(int row, const QModelIndex& parent, bool visible);
+    Q_INVOKABLE QModelIndex findIndexByNodeId(int nodeId, int depth) const;
 
     QObject* getModelQuery() const { return modelQuery_; }
     void setModelQuery(QObject* query);

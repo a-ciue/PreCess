@@ -3,6 +3,7 @@
 
 #include <QVariantList>
 #include <QVariantMap>
+#include <functional>
 
 TreeModel::TreeModel(QObject* parent)
     : QAbstractItemModel(parent)
@@ -180,6 +181,24 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
     QModelIndex idx = createIndex(row, 0, target);
     emit dataChanged(idx, idx, { Qt::UserRole + 5 });
     return true;
+}
+
+QModelIndex TreeModel::findIndexByNodeId(int nodeId, int depth) const
+{
+    std::function<QModelIndex(TreeNode*, const QModelIndex&)> find =
+        [&](TreeNode* parent, const QModelIndex& parentIdx) -> QModelIndex {
+            for (int i = 0; i < parent->children.size(); ++i) {
+                TreeNode* child = parent->children[i];
+                QModelIndex childIdx = createIndex(i, 0, child);
+                if (child->nodeId == nodeId && child->depth == depth)
+                    return childIdx;
+                QModelIndex found = find(child, childIdx);
+                if (found.isValid())
+                    return found;
+            }
+            return QModelIndex();
+        };
+    return find(rootNode, QModelIndex());
 }
 
 void TreeModel::setModelQuery(QObject* query)
