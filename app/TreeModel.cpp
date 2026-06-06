@@ -167,6 +167,21 @@ bool TreeModel::refresh()
     return true;
 }
 
+bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visible)
+{
+    TreeNode* parentNode = getNode(parentIndex);
+
+    if (row < 0 || row >= parentNode->children.size())
+        return false;
+
+    TreeNode* target = parentNode->children[row];
+    target->isVisible = visible;
+
+    QModelIndex idx = createIndex(row, 0, target);
+    emit dataChanged(idx, idx, { Qt::UserRole + 5 });
+    return true;
+}
+
 void TreeModel::setModelQuery(QObject* query)
 {
     modelQuery_ = qobject_cast<QModelQuery*>(query);

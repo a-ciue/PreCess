@@ -354,6 +354,15 @@ ApplicationWindow {
             }
         })
 
+        // ===== 显隐 — objectTree → myItem =====
+        objectTree.visibilityChanged.connect((nodeId, depth, visible) => {
+            if (depth === 1) {
+                myItem.setVisibility(nodeId, visible)
+            } else if (depth === 2) {
+                myItem.setComponentVisibility(nodeId, visible)
+            }
+        })
+
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = ioSystem.read("All files", commandLineArgs[i], []);

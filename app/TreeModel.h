@@ -43,6 +43,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE bool refresh();
+    Q_INVOKABLE bool setVisibility(int row, const QModelIndex& parent, bool visible);
 
     QObject* getModelQuery() const { return modelQuery_; }
     void setModelQuery(QObject* query);

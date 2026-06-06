@@ -12,6 +12,7 @@ Pane{
 
     signal selectionChanged(int modelId)
     signal deleteRequested(int nodeId, int depth)
+    signal visibilityChanged(int nodeId, int depth, bool visible)
 
     TreeModel {
         id: treeModel
@@ -38,22 +39,7 @@ Pane{
 
             background: Rectangle {
                 anchors.fill: parent
-                color: {
-                    if (viewDelegate.current) {
-                        return "#e3f2fd"
-                    } else if (viewDelegate.hovered) {
-                        return "#f0f0f0"
-                    } else {
-                        return "transparent"
-                    }
-                }
-
-                Rectangle {
-                    width: 3
-                    height: parent.height
-                    color: viewDelegate.current ? "#1976d2" : "transparent"
-                    anchors.left: parent.left
-                }
+                color: viewDelegate.hovered ? "#f0f0f0" : "transparent"
             }
 
             // 展开/折叠指示器
@@ -102,15 +88,7 @@ Pane{
                     Text {
                         id: nameText
                         text: viewDelegate.model.name || "N/A"
-                        color: {
-                            if (!viewDelegate.model.isVisible) {
-                                return "#aaaaaa"
-                            } else if (viewDelegate.current) {
-                                return "#1976d2"
-                            } else {
-                                return "#333333"
-                            }
-                        }
+                        color: viewDelegate.model.isVisible ? "#333333" : "#aaaaaa"
                         font.pixelSize: 13
                         font.family: "Consolas"
                         font.weight: viewDelegate.current ? Font.Bold : Font.Normal
@@ -137,10 +115,15 @@ Pane{
                 acceptedButtons: Qt.LeftButton
                 onTapped: {
                     let index = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
-                    viewDelegate.treeView.selectionModel.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
-
-                    objectTree.curModelId = viewDelegate.model.modelId
-                    objectTree.selectionChanged(viewDelegate.model.modelId)
+                    if (viewDelegate.current) {
+                        viewDelegate.treeView.selectionModel.clear()
+                        objectTree.curModelId = -1
+                        objectTree.selectionChanged(-1)
+                    } else {
+                        viewDelegate.treeView.selectionModel.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
+                        objectTree.curModelId = viewDelegate.model.modelId
+                        objectTree.selectionChanged(viewDelegate.model.modelId)
+                    }
                 }
             }
 
@@ -148,6 +131,7 @@ Pane{
             TapHandler {
                 acceptedButtons: Qt.RightButton
                 onTapped: {
+                    if (viewDelegate.model.depth > 2) return
                     let index = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
                     viewDelegate.treeView.selectionModel.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
                     contextMenu.popup()
@@ -166,8 +150,61 @@ Pane{
                 }
 
                 MenuItem {
+                    id: hideItem
+                    text: "隐藏"
+                    implicitHeight: 30
+
+                    background: Rectangle {
+                        color: hideItem.hovered ? "#f0f0f0" : "transparent"
+                    }
+
+                    contentItem: Text {
+                        text: hideItem.text
+                        color: hideItem.hovered ? "#1976d2" : "#333333"
+                        font.pixelSize: 12
+                        font.family: "Microsoft YaHei"
+                        leftPadding: 15
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onTriggered: {
+                        let idx = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
+                        treeModel.setVisibility(viewDelegate.row, idx.parent, false)
+                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.model.depth, false)
+                    }
+                }
+
+                MenuItem {
+                    id: showItem
+                    text: "显示"
+                    implicitHeight: 30
+
+                    background: Rectangle {
+                        color: showItem.hovered ? "#f0f0f0" : "transparent"
+                    }
+
+                    contentItem: Text {
+                        text: showItem.text
+                        color: showItem.hovered ? "#1976d2" : "#333333"
+                        font.pixelSize: 12
+                        font.family: "Microsoft YaHei"
+                        leftPadding: 15
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onTriggered: {
+                        let idx = viewDelegate.treeView.index(viewDelegate.row, viewDelegate.column)
+                        treeModel.setVisibility(viewDelegate.row, idx.parent, true)
+                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.model.depth, true)
+                    }
+                }
+
+                MenuSeparator {}
+
+                MenuItem {
                     id: deleteItem
                     text: "删除"
+                    visible: viewDelegate.model.depth <= 2
                     implicitHeight: 30
 
                     background: Rectangle {
