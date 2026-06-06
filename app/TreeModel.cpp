@@ -128,6 +128,7 @@ bool TreeModel::refresh()
     rootNode->nodeId = -1;
 
     QVariantList models = modelQuery_->listModels();
+    int fakeId = -2;
     for (const QVariant& mv : models) {
         QVariantMap m = mv.toMap();
         int mid = m["model_id"].toInt();
@@ -151,15 +152,47 @@ bool TreeModel::refresh()
             if (hasMesh) {
                 QVariantMap ms = modelQuery_->getMeshSummary(cid);
                 int fc = ms["face_count"].toInt();
-                TreeNode* meshN = new TreeNode("Mesh", QString::number(fc), cNode, 3);
-                meshN->nodeId = -1;
+                int sc = ms["solid_count"].toInt();
+
+                TreeNode* meshN = new TreeNode("Mesh", QString::number(fc + sc), cNode, 3);
+                meshN->nodeId = fakeId--;
+
+                if (fc > 0) {
+                    TreeNode* n2d = new TreeNode("2D", QString::number(fc), meshN, 4);
+                    n2d->nodeId = fakeId--;
+                }
+                if (sc > 0) {
+                    TreeNode* n3d = new TreeNode("3D", QString::number(sc), meshN, 4);
+                    n3d->nodeId = fakeId--;
+                }
             }
 
             if (hasCad) {
                 QVariantMap gs = modelQuery_->getGeometrySummary(cid);
+                int vc = gs["vertex_count"].toInt();
+                int ec = gs["edge_count"].toInt();
                 int fc = gs["face_count"].toInt();
-                TreeNode* geoN = new TreeNode("Geometry", QString::number(fc), cNode, 3);
-                geoN->nodeId = -1;
+                int sc = gs["solid_count"].toInt();
+
+                TreeNode* geoN = new TreeNode("Geometry", QString::number(vc + ec + fc + sc), cNode, 3);
+                geoN->nodeId = fakeId--;
+
+                if (vc > 0) {
+                    TreeNode* vn = new TreeNode("Vertex", QString::number(vc), geoN, 4);
+                    vn->nodeId = fakeId--;
+                }
+                if (ec > 0) {
+                    TreeNode* en = new TreeNode("Edge", QString::number(ec), geoN, 4);
+                    en->nodeId = fakeId--;
+                }
+                if (fc > 0) {
+                    TreeNode* fn = new TreeNode("Face", QString::number(fc), geoN, 4);
+                    fn->nodeId = fakeId--;
+                }
+                if (sc > 0) {
+                    TreeNode* sn = new TreeNode("Solid", QString::number(sc), geoN, 4);
+                    sn->nodeId = fakeId--;
+                }
             }
         }
     }
