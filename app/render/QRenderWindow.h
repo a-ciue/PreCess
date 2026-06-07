@@ -25,7 +25,6 @@
 #include <vtkRenderer.h>
 #include <vtkPoints.h>
 #include <vtkIdTypeArray.h>
-#include <unordered_map>
 
 class MeshActor;
 class SelectManager;
@@ -116,8 +115,6 @@ public:
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
     Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
 
-    Q_INVOKABLE bool isModelVisible(Index model_id) const;
-    Q_INVOKABLE bool isComponentVisible(Index component_id) const;
     Q_INVOKABLE void showModel(Index model_id);
     Q_INVOKABLE void hideModel(Index model_id);
     Q_INVOKABLE void showComponent(Index component_id);
@@ -198,8 +195,6 @@ private:
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
-
-    mutable std::unordered_map<Index, bool> component_visibility_;
 
     void updateGlobalVtkPointsImpl(Data* vtk);
 };
