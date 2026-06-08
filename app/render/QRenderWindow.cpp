@@ -137,11 +137,6 @@ bool QRenderWindow::event(QEvent* ev)
 
 void QRenderWindow::deleteModel(Index model_id)
 {
-    auto component_ids = model_query_->getComponentIds(model_id);
-    for (Index component_id : component_ids) {
-        component_visibility_.erase(component_id);
-    }
-
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
@@ -157,8 +152,6 @@ void QRenderWindow::deleteModel(Index model_id)
 
 void QRenderWindow::deleteComponent(Index component_id)
 {
-    component_visibility_.erase(component_id);
-
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
@@ -228,11 +221,6 @@ void QRenderWindow::setMeshClip(bool on)
 
 void QRenderWindow::onModelChanged(Index model_id)
 {
-    auto component_ids = model_query_->getComponentIds(model_id);
-    for (Index component_id : component_ids) {
-        component_visibility_[component_id] = true;
-    }
-
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
@@ -261,8 +249,6 @@ void QRenderWindow::onModelChanged(Index model_id)
 
 void QRenderWindow::onComponentChanged(Index component_id)
 {
-    component_visibility_[component_id] = true;
-
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
@@ -291,11 +277,6 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
 void QRenderWindow::setVisibility(Index model_id, bool visibility)
 {
-    auto component_ids = model_query_->getComponentIds(model_id);
-    for (Index component_id : component_ids) {
-        component_visibility_[component_id] = visibility;
-    }
-
     dispatch_async([model_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->clearSelection();
@@ -310,8 +291,6 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
 
 void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 {
-    component_visibility_[component_id] = visibility;
-
     dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
@@ -323,45 +302,6 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
             vtk->spline_actor_manager_->setVisibility(component_id, visibility);
         }
     });
-}
-
-bool QRenderWindow::isModelVisible(Index model_id) const
-{
-    auto component_ids = model_query_->getComponentIds(model_id);
-    if (component_ids.empty())
-        return false;
-    for (Index cid : component_ids) {
-        auto it = component_visibility_.find(cid);
-        if (it != component_visibility_.end() && !it->second)
-            return false;
-    }
-    return true;
-}
-
-bool QRenderWindow::isComponentVisible(Index component_id) const
-{
-    auto it = component_visibility_.find(component_id);
-    return it != component_visibility_.end() ? it->second : true;
-}
-
-void QRenderWindow::showModel(Index model_id)
-{
-    setVisibility(model_id, true);
-}
-
-void QRenderWindow::hideModel(Index model_id)
-{
-    setVisibility(model_id, false);
-}
-
-void QRenderWindow::showComponent(Index component_id)
-{
-    setComponentVisibility(component_id, true);
-}
-
-void QRenderWindow::hideComponent(Index component_id)
-{
-    setComponentVisibility(component_id, false);
 }
 
 QSelection* QRenderWindow::selectedIDs()

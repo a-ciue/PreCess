@@ -18,7 +18,6 @@ public:
     void loadShape(const GeometryDataVtk& spline_data);
 
     void setVisibility(bool visibility);
-    bool isVisible() const noexcept;
     void setRenderMode(SplineRenderMode render_mode);
     void setRenderEdge(bool is_render);
 

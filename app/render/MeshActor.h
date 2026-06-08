@@ -36,7 +36,6 @@ public:
     void loadModelData(const MeshDataVtk& model_data);
 
     void setVisibility(bool visibility);
-    bool isVisible() const noexcept;
     /**
      * @brief 设置或取消裁剪平面
      * @param plane 裁剪平面，传入nullptr则取消裁剪
