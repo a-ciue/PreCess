@@ -347,18 +347,18 @@ ApplicationWindow {
 
         // ===== 删除 — objectTree → modelManager =====
         objectTree.deleteRequested.connect((nodeId, depth) => {
-            if (depth === 1) {
+            if (depth === 0) {
                 modelManager.removeModel(nodeId)
-            } else if (depth === 2) {
+            } else if (depth === 1) {
                 modelManager.removeComponent(nodeId)
             }
         })
 
         // ===== 显隐 — objectTree → myItem =====
         objectTree.visibilityChanged.connect((nodeId, depth, visible) => {
-            if (depth === 1) {
+            if (depth === 0) {
                 myItem.setVisibility(nodeId, visible)
-            } else if (depth === 2) {
+            } else if (depth === 1) {
                 myItem.setComponentVisibility(nodeId, visible)
             }
         })

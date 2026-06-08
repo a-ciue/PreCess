@@ -54,15 +54,16 @@ Pane{
                 visible: viewDelegate.isTreeNode && viewDelegate.hasChildren
                 z: 10
 
+                rotation: viewDelegate.expanded ? 0 : -90
+                Behavior on rotation {
+                    NumberAnimation { duration: 100 }
+                }
+
                 Text {
                     anchors.centerIn: parent
-                    text: viewDelegate.expanded ? "▼" : "▶"
+                    text: "▼"
                     color: "#666666"
                     font.pixelSize: 10
-
-                    Behavior on rotation {
-                        NumberAnimation { duration: 100 }
-                    }
                 }
 
                 TapHandler {
@@ -75,7 +76,7 @@ Pane{
 
             // 内容区域
             contentItem: Item {
-                implicitWidth: textContent.implicitWidth + viewDelegate._padding * 2
+                implicitWidth: textContent.implicitWidth + viewDelegate._padding
                 implicitHeight: viewDelegate._rowHeight
 
                 // 左键选中（仅限 contentItem 区域，不触发展开）
@@ -84,7 +85,7 @@ Pane{
                     acceptedButtons: Qt.LeftButton
                     onClicked: (mouse) => {
                         mouse.accepted = true
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         if (viewDelegate.current) {
                             viewDelegate.treeView.selectionModel.clear()
                             objectTree.curModelId = -1
@@ -99,9 +100,11 @@ Pane{
 
                 Row {
                     id: textContent
-                    anchors.fill: parent
-                    anchors.leftMargin: viewDelegate._padding + (viewDelegate.hasChildren ? indicatorItem.implicitWidth + 2 : 0)
+                    anchors.left: parent.left
+                     anchors.leftMargin: viewDelegate._padding + 2
+                    anchors.right: parent.right
                     anchors.rightMargin: viewDelegate._padding
+                    anchors.verticalCenter: parent.verticalCenter
                     spacing: 4
 
                     Text {
@@ -117,7 +120,6 @@ Pane{
                         font.italic: !viewDelegate.model.isVisible
                         elide: Text.ElideRight
                         verticalAlignment: Text.AlignVCenter
-                        height: parent.height
                     }
 
                     Text {
@@ -127,7 +129,6 @@ Pane{
                         font.pixelSize: 11
                         visible: text !== ""
                         verticalAlignment: Text.AlignVCenter
-                        height: parent.height
                     }
                 }
             }
@@ -136,8 +137,8 @@ Pane{
             TapHandler {
                 acceptedButtons: Qt.RightButton
                 onTapped: {
-                    if (viewDelegate.model.depth > 2) return
-                    let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                    if (viewDelegate.depth > 1) return
+                    let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                     viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                     contextMenu.popup()
                 }
@@ -173,9 +174,9 @@ Pane{
                     }
 
                     onTriggered: {
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         treeModel.setVisibility(idx.row, idx.parent, false)
-                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.model.depth, false)
+                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.depth, false)
                     }
                 }
 
@@ -198,9 +199,9 @@ Pane{
                     }
 
                     onTriggered: {
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.model.depth)
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         treeModel.setVisibility(idx.row, idx.parent, true)
-                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.model.depth, true)
+                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.depth, true)
                     }
                 }
 
@@ -209,7 +210,6 @@ Pane{
                 MenuItem {
                     id: deleteItem
                     text: "删除"
-                    visible: viewDelegate.model.depth <= 2
                     implicitHeight: 30
 
                     background: Rectangle {
@@ -230,7 +230,7 @@ Pane{
                         contextMenu.close()
                         objectTree.deleteRequested(
                             viewDelegate.model.nodeId,
-                            viewDelegate.model.depth
+                            viewDelegate.depth
                         )
                     }
                 }

@@ -81,12 +81,9 @@ QVariant TreeModel::data(const QModelIndex& index, int role) const
     case Qt::UserRole + 5:
         return node->isVisible;
 
-    case Qt::UserRole + 6:
-        return node->depth;
-
-    case Qt::UserRole + 7: {
+    case Qt::UserRole + 6: {
         TreeNode* cur = node;
-        while (cur && cur->depth > 1)
+        while (cur && cur->parent && cur->parent != rootNode)
             cur = cur->parent;
         return cur ? cur->nodeId : -1;
     }
@@ -104,8 +101,7 @@ QHash<int, QByteArray> TreeModel::roleNames() const
     roles[Qt::UserRole + 3] = "hasChildren";
     roles[Qt::UserRole + 4] = "nodeId";
     roles[Qt::UserRole + 5] = "isVisible";
-    roles[Qt::UserRole + 6] = "depth";
-    roles[Qt::UserRole + 7] = "modelId";
+    roles[Qt::UserRole + 6] = "modelId";
     return roles;
 }
 
@@ -135,7 +131,7 @@ bool TreeModel::refresh()
         QString mname = m["name"].toString();
         int ccount = m["component_count"].toInt();
 
-        TreeNode* mNode = new TreeNode(mname, QString::number(ccount), rootNode, 1);
+        TreeNode* mNode = new TreeNode(mname, QString::number(ccount), rootNode);
         mNode->nodeId = mid;
 
         QVariantList comps = modelQuery_->getComponentsSummary(mid);
@@ -146,7 +142,7 @@ bool TreeModel::refresh()
             bool hasMesh = c["has_mesh"].toBool();
             bool hasCad = c["has_cad"].toBool();
 
-            TreeNode* cNode = new TreeNode(cname, "", mNode, 2);
+            TreeNode* cNode = new TreeNode(cname, "", mNode);
             cNode->nodeId = cid;
 
             if (hasMesh) {
@@ -154,15 +150,15 @@ bool TreeModel::refresh()
                 int fc = ms["face_count"].toInt();
                 int sc = ms["solid_count"].toInt();
 
-                TreeNode* meshN = new TreeNode("Mesh", QString::number(fc + sc), cNode, 3);
+                TreeNode* meshN = new TreeNode("Mesh", QString::number(fc + sc), cNode);
                 meshN->nodeId = fakeId--;
 
                 if (fc > 0) {
-                    TreeNode* n2d = new TreeNode("2D", QString::number(fc), meshN, 4);
+                    TreeNode* n2d = new TreeNode("2D", QString::number(fc), meshN);
                     n2d->nodeId = fakeId--;
                 }
                 if (sc > 0) {
-                    TreeNode* n3d = new TreeNode("3D", QString::number(sc), meshN, 4);
+                    TreeNode* n3d = new TreeNode("3D", QString::number(sc), meshN);
                     n3d->nodeId = fakeId--;
                 }
             }
@@ -174,23 +170,23 @@ bool TreeModel::refresh()
                 int fc = gs["face_count"].toInt();
                 int sc = gs["solid_count"].toInt();
 
-                TreeNode* geoN = new TreeNode("Geometry", QString::number(vc + ec + fc + sc), cNode, 3);
+                TreeNode* geoN = new TreeNode("Geometry", QString::number(vc + ec + fc + sc), cNode);
                 geoN->nodeId = fakeId--;
 
                 if (vc > 0) {
-                    TreeNode* vn = new TreeNode("Vertex", QString::number(vc), geoN, 4);
+                    TreeNode* vn = new TreeNode("Vertex", QString::number(vc), geoN);
                     vn->nodeId = fakeId--;
                 }
                 if (ec > 0) {
-                    TreeNode* en = new TreeNode("Edge", QString::number(ec), geoN, 4);
+                    TreeNode* en = new TreeNode("Edge", QString::number(ec), geoN);
                     en->nodeId = fakeId--;
                 }
                 if (fc > 0) {
-                    TreeNode* fn = new TreeNode("Face", QString::number(fc), geoN, 4);
+                    TreeNode* fn = new TreeNode("Face", QString::number(fc), geoN);
                     fn->nodeId = fakeId--;
                 }
                 if (sc > 0) {
-                    TreeNode* sn = new TreeNode("Solid", QString::number(sc), geoN, 4);
+                    TreeNode* sn = new TreeNode("Solid", QString::number(sc), geoN);
                     sn->nodeId = fakeId--;
                 }
             }
@@ -218,20 +214,20 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
 
 QModelIndex TreeModel::findIndexByNodeId(int nodeId, int depth) const
 {
-    std::function<QModelIndex(TreeNode*, const QModelIndex&)> find =
-        [&](TreeNode* parent, const QModelIndex& parentIdx) -> QModelIndex {
+    std::function<QModelIndex(TreeNode*, const QModelIndex&, int)> find =
+        [&](TreeNode* parent, const QModelIndex& parentIdx, int currentDepth) -> QModelIndex {
             for (int i = 0; i < parent->children.size(); ++i) {
                 TreeNode* child = parent->children[i];
                 QModelIndex childIdx = createIndex(i, 0, child);
-                if (child->nodeId == nodeId && child->depth == depth)
+                if (child->nodeId == nodeId && currentDepth == depth)
                     return childIdx;
-                QModelIndex found = find(child, childIdx);
+                QModelIndex found = find(child, childIdx, currentDepth + 1);
                 if (found.isValid())
                     return found;
             }
             return QModelIndex();
         };
-    return find(rootNode, QModelIndex());
+    return find(rootNode, QModelIndex(), 0);
 }
 
 void TreeModel::setModelQuery(QObject* query)

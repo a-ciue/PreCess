@@ -12,12 +12,11 @@ struct TreeNode {
     QString number;
     int nodeId = -1;
     bool isVisible = true;
-    int depth = 0;
     QVector<TreeNode*> children;
     TreeNode* parent = nullptr;
 
-    TreeNode(const QString& n, const QString& num = "", TreeNode* p = nullptr, int d = 0)
-        : name(n), number(num), parent(p), depth(d)
+    TreeNode(const QString& n, const QString& num = "", TreeNode* p = nullptr)
+        : name(n), number(num), parent(p)
     {
         if (p)
             p->children << this;
