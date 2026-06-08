@@ -36,6 +36,22 @@ Pane{
             readonly property real _padding: 5
             readonly property real _rowHeight: 25
             readonly property real _indentWidth: 20
+            property bool _reusing: true
+
+            TableView.onPooled: {
+                indicatorAnim.complete()
+                _reusing = true
+            }
+            onExpandedChanged: {
+                if (_reusing) {
+                    _reusing = false
+                    indicatorItem.rotation = expanded ? 0 : -90
+                } else {
+                    indicatorAnim.from = expanded ? -90 : 0
+                    indicatorAnim.to = expanded ? 0 : -90
+                    indicatorAnim.start()
+                }
+            }
 
             background: Rectangle {
                 anchors.fill: parent
@@ -54,9 +70,14 @@ Pane{
                 visible: viewDelegate.isTreeNode && viewDelegate.hasChildren
                 z: 10
 
-                rotation: viewDelegate.expanded ? 0 : -90
-                Behavior on rotation {
-                    NumberAnimation { duration: 100 }
+                Component.onCompleted: indicatorItem.rotation = viewDelegate.expanded ? 0 : -90
+
+                NumberAnimation {
+                    id: indicatorAnim
+                    target: indicatorItem
+                    property: "rotation"
+                    duration: 100
+                    easing.type: Easing.OutQuart
                 }
 
                 Text {
