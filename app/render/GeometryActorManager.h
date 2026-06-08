@@ -24,7 +24,6 @@ public:
     void loadSpline(const GeometryDataVtk& spline_data);
 
     void setVisibility(Index component_id, bool visibility);
-    bool getVisibility(Index component_id) const;
     void setRenderMode(Index component_id, SplineRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
 

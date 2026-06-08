@@ -82,11 +82,6 @@ void GeometryActor::setVisibility(bool visibility)
     this->visibility_ = visibility;
 }
 
-bool GeometryActor::isVisible() const noexcept
-{ 
-    return visibility_; 
-}    
-
 void GeometryActor::setRenderMode(SplineRenderMode render_mode)
 {
     // 没用

@@ -304,26 +304,6 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
     });
 }
 
-void QRenderWindow::showModel(Index model_id)
-{
-    setVisibility(model_id, true);
-}
-
-void QRenderWindow::hideModel(Index model_id)
-{
-    setVisibility(model_id, false);
-}
-
-void QRenderWindow::showComponent(Index component_id)
-{
-    setComponentVisibility(component_id, true);
-}
-
-void QRenderWindow::hideComponent(Index component_id)
-{
-    setComponentVisibility(component_id, false);
-}
-
 QSelection* QRenderWindow::selectedIDs()
 {
     std::unique_ptr<Selection> data(this->selectManager_->getSelection());

@@ -165,11 +165,6 @@ void MeshActor::setVisibility(bool visibility)
     this->glyph3D_actor_->SetVisibility(visibility);
 }
 
-bool MeshActor::isVisible() const noexcept
-{ 
-    return visibility_; 
-}
-
 void MeshActor::setClipPlane(vtkPlane* plane)
 {
     if (plane) {

@@ -18,7 +18,6 @@ public:
         vtkRenderer* renderer, ModelRenderMode render_mode = ModelRenderMode::Face);
 
     void setVisibility(Index component_id, bool visibility);
-    bool getVisibility(Index component_id) const;
     void setRenderMode(Index component_id, ModelRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
     void setRenderVertex(Index component_id, bool is_render);

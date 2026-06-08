@@ -115,11 +115,6 @@ public:
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
     Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
 
-    Q_INVOKABLE void showModel(Index model_id);
-    Q_INVOKABLE void hideModel(Index model_id);
-    Q_INVOKABLE void showComponent(Index component_id);
-    Q_INVOKABLE void hideComponent(Index component_id);
-
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 
