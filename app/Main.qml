@@ -329,40 +329,40 @@ ApplicationWindow {
         }
     }
 
-    Component.onCompleted: {
-        // ===== 树刷新 — modelObserver → objectTree =====
-        modelObserver.modelAdded.connect(() => { objectTree.refreshTree() })
-        modelObserver.modelRemoved.connect(() => { objectTree.refreshTree() })
-        modelObserver.modelChanged.connect(() => { objectTree.refreshTree() })
-        modelObserver.componentRemoved.connect(() => { objectTree.refreshTree() })
+    // ===== modelObserver → objectTree / myItem =====
+    Connections {
+        target: modelObserver
 
-        // ===== 渲染 — modelObserver → myItem =====
-        modelObserver.modelAdded.connect(myItem.onModelChanged)
-        modelObserver.modelChanged.connect(myItem.onModelChanged)
-        modelObserver.modelRemoved.connect(myItem.deleteModel)
-        modelObserver.componentRemoved.connect(myItem.deleteComponent)
+        function onModelAdded(modelId)   { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
+        function onModelChanged(modelId) { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
+        function onModelRemoved(modelId) { objectTree.refreshTree(); myItem.deleteModel(modelId) }
+        function onComponentRemoved(componentId) { objectTree.refreshTree(); myItem.deleteComponent(componentId) }
+    }
 
-        // ===== 选中 — objectTree → myItem =====
-        objectTree.selectionChanged.connect((modelId) => { myItem.setSelectModel(modelId) })
+    // ===== objectTree → myItem / modelManager =====
+    Connections {
+        target: objectTree
 
-        // ===== 删除 — objectTree → modelManager =====
-        objectTree.deleteRequested.connect((nodeId, depth) => {
+        function onSelectionChanged(modelId) { myItem.setSelectModel(modelId) }
+
+        function onDeleteRequested(nodeId, depth) {
             if (depth === 0) {
                 modelManager.removeModel(nodeId)
             } else if (depth === 1) {
                 modelManager.removeComponent(nodeId)
             }
-        })
+        }
 
-        // ===== 显隐 — objectTree → myItem =====
-        objectTree.visibilityChanged.connect((nodeId, depth, visible) => {
+        function onVisibilityChanged(nodeId, depth, visible) {
             if (depth === 0) {
                 myItem.setVisibility(nodeId, visible)
             } else if (depth === 1) {
                 myItem.setComponentVisibility(nodeId, visible)
             }
-        })
+        }
+    }
 
+    Component.onCompleted: {
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = ioSystem.read("All files", commandLineArgs[i], []);
