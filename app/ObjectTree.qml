@@ -62,7 +62,7 @@ Pane{
             indicator: Rectangle {
                 id: indicatorItem
                 x: viewDelegate._padding + viewDelegate.depth * viewDelegate._indentWidth
-                y: (viewDelegate._rowHeight - implicitHeight) / 2
+                anchors.verticalCenter: parent.verticalCenter
 
                 implicitWidth: 16
                 implicitHeight: 16
