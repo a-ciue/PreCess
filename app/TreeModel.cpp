@@ -117,6 +117,8 @@ bool TreeModel::refresh()
     rootNode = new TreeNode("root");
     rootNode->nodeId = -1;
 
+    beginResetModel();
+
     QVariantList models = modelQuery_->listModels();
     int fakeId = -2;
     for (const QVariant& mv : models) {
@@ -187,7 +189,6 @@ bool TreeModel::refresh()
         }
     }
 
-    beginResetModel();
     endResetModel();
     delete oldRoot;
     return true;
