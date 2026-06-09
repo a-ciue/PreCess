@@ -15,8 +15,6 @@ qt_add_qml_module(${MYNAME}
             Main.qml
             SelectingBar.qml
             SideBar.qml
-            ObjectList.qml
-            ObjectListModel.qml
             ObjectTree.qml
             Selector.qml
             JavaScriptConsole.qml
