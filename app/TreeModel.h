@@ -31,6 +31,14 @@ class TreeModel : public QAbstractItemModel {
     Q_PROPERTY(QObject* modelQuery READ getModelQuery WRITE setModelQuery REQUIRED)
 
 public:
+    enum TreeRole {
+        NameRole    = Qt::UserRole + 1,
+        NumberRole,
+        NodeIdRole,
+        IsVisibleRole,
+        ModelIdRole
+    };
+    Q_ENUM(TreeRole)
     explicit TreeModel(QObject* parent = nullptr);
     ~TreeModel();
 
