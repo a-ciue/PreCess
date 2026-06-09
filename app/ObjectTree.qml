@@ -86,38 +86,12 @@ Pane{
                     color: "#666666"
                     font.pixelSize: 10
                 }
-
-                TapHandler {
-                    acceptedButtons: Qt.LeftButton
-                    onTapped: {
-                        viewDelegate.treeView.toggleExpanded(viewDelegate.row)
-                    }
-                }
             }
 
             // 内容区域
             contentItem: Item {
                 implicitWidth: textContent.implicitWidth + viewDelegate._padding
                 implicitHeight: viewDelegate._rowHeight
-
-                // 左键选中（仅限 contentItem 区域，不触发展开）
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton
-                    onClicked: (mouse) => {
-                        mouse.accepted = true
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        if (viewDelegate.current) {
-                            viewDelegate.treeView.selectionModel.clear()
-                            objectTree.curModelId = -1
-                            objectTree.selectionChanged(-1)
-                        } else if (idx.valid) {
-                            viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
-                            objectTree.curModelId = viewDelegate.model.modelId
-                            objectTree.selectionChanged(viewDelegate.model.modelId)
-                        }
-                    }
-                }
 
                 Row {
                     id: textContent
@@ -154,14 +128,31 @@ Pane{
                 }
             }
 
-            // 右键菜单
-            TapHandler {
-                acceptedButtons: Qt.RightButton
-                onTapped: {
-                    if (viewDelegate.depth > 1) return
-                    let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                    viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
-                    contextMenu.popup()
+            // 统一交互区
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onClicked: (mouse) => {
+                    if (mouse.button === Qt.RightButton) {
+                        if (viewDelegate.depth > 1) return
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
+                        viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
+                        contextMenu.popup()
+                    } else if (mouse.x < indicatorItem.x + indicatorItem.implicitWidth
+                               && viewDelegate.isTreeNode && viewDelegate.hasChildren) {
+                        viewDelegate.treeView.toggleExpanded(viewDelegate.row)
+                    } else {
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
+                        if (viewDelegate.current) {
+                            viewDelegate.treeView.selectionModel.clear()
+                            objectTree.curModelId = -1
+                            objectTree.selectionChanged(-1)
+                        } else if (idx.valid) {
+                            viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
+                            objectTree.curModelId = viewDelegate.model.modelId
+                            objectTree.selectionChanged(viewDelegate.model.modelId)
+                        }
+                    }
                 }
             }
 

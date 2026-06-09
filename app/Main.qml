@@ -98,13 +98,20 @@ ApplicationWindow {
     required property QEditSystemAdaptor editSystem
 
     // ===== modelObserver → objectTree / myItem =====
+    Timer {
+        id: refreshTimer
+        interval: 100
+        repeat: false
+        onTriggered: objectTree.refreshTree()
+    }
+
     Connections {
         target: modelObserver
 
-        function onModelAdded(modelId)   { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
-        function onModelChanged(modelId) { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
-        function onModelRemoved(modelId) { objectTree.refreshTree(); myItem.deleteModel(modelId) }
-        function onComponentRemoved(componentId) { objectTree.refreshTree(); myItem.deleteComponent(componentId) }
+        function onModelAdded(modelId)   { refreshTimer.restart(); myItem.onModelChanged(modelId) }
+        function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId) }
+        function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId) }
+        function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId) }
     }
 
     StackLayout{
