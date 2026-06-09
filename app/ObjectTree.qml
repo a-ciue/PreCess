@@ -36,7 +36,7 @@ Pane{
             readonly property real _padding: 5
             readonly property real _rowHeight: 25
             readonly property real _indentWidth: 20
-            property bool _reusing: true
+            property bool _reusing: false
 
             TableView.onPooled: {
                 indicatorAnim.complete()
@@ -76,7 +76,7 @@ Pane{
                     id: indicatorAnim
                     target: indicatorItem
                     property: "rotation"
-                    duration: 100
+                    duration: 200
                     easing.type: Easing.OutQuart
                 }
 

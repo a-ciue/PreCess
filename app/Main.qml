@@ -98,6 +98,16 @@ ApplicationWindow {
     required property QModelIOSystemAdaptor ioSystem
     required property QEditSystemAdaptor editSystem
 
+    // ===== modelObserver → objectTree / myItem =====
+    Connections {
+        target: modelObserver
+
+        function onModelAdded(modelId)   { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
+        function onModelChanged(modelId) { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
+        function onModelRemoved(modelId) { objectTree.refreshTree(); myItem.deleteModel(modelId) }
+        function onComponentRemoved(componentId) { objectTree.refreshTree(); myItem.deleteComponent(componentId) }
+    }
+
     StackLayout{
         id:stacklayout
         anchors.left: parent.left
@@ -112,6 +122,18 @@ ApplicationWindow {
         width: 250
         height: 200
         modelQuery: root.modelQuery
+
+        onSelectionChanged: (modelId) => myItem.setSelectModel(modelId)
+
+        onDeleteRequested: (nodeId, depth) => {
+            if (depth === 0) modelManager.removeModel(nodeId)
+            else if (depth === 1) modelManager.removeComponent(nodeId)
+        }
+
+        onVisibilityChanged: (nodeId, depth, visible) => {
+            if (depth === 0) myItem.setVisibility(nodeId, visible)
+            else if (depth === 1) myItem.setComponentVisibility(nodeId, visible)
+        }
     }
 
     SideBar{
@@ -326,39 +348,6 @@ ApplicationWindow {
             id: pluginManagerComponent
             anchors.fill: parent
             pluginManager: root.modelManager.systemPluginManager
-        }
-    }
-
-    // ===== modelObserver → objectTree / myItem =====
-    Connections {
-        target: modelObserver
-
-        function onModelAdded(modelId)   { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
-        function onModelChanged(modelId) { objectTree.refreshTree(); myItem.onModelChanged(modelId) }
-        function onModelRemoved(modelId) { objectTree.refreshTree(); myItem.deleteModel(modelId) }
-        function onComponentRemoved(componentId) { objectTree.refreshTree(); myItem.deleteComponent(componentId) }
-    }
-
-    // ===== objectTree → myItem / modelManager =====
-    Connections {
-        target: objectTree
-
-        function onSelectionChanged(modelId) { myItem.setSelectModel(modelId) }
-
-        function onDeleteRequested(nodeId, depth) {
-            if (depth === 0) {
-                modelManager.removeModel(nodeId)
-            } else if (depth === 1) {
-                modelManager.removeComponent(nodeId)
-            }
-        }
-
-        function onVisibilityChanged(nodeId, depth, visible) {
-            if (depth === 0) {
-                myItem.setVisibility(nodeId, visible)
-            } else if (depth === 1) {
-                myItem.setComponentVisibility(nodeId, visible)
-            }
         }
     }
 

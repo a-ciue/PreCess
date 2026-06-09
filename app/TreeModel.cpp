@@ -73,15 +73,12 @@ QVariant TreeModel::data(const QModelIndex& index, int role) const
         return node->number;
 
     case Qt::UserRole + 3:
-        return !node->children.isEmpty();
-
-    case Qt::UserRole + 4:
         return node->nodeId;
 
-    case Qt::UserRole + 5:
+    case Qt::UserRole + 4:
         return node->isVisible;
 
-    case Qt::UserRole + 6: {
+    case Qt::UserRole + 5: {
         TreeNode* cur = node;
         while (cur && cur->parent && cur->parent != rootNode)
             cur = cur->parent;
@@ -98,10 +95,9 @@ QHash<int, QByteArray> TreeModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles[Qt::UserRole + 1] = "name";
     roles[Qt::UserRole + 2] = "number";
-    roles[Qt::UserRole + 3] = "hasChildren";
-    roles[Qt::UserRole + 4] = "nodeId";
-    roles[Qt::UserRole + 5] = "isVisible";
-    roles[Qt::UserRole + 6] = "modelId";
+    roles[Qt::UserRole + 3] = "nodeId";
+    roles[Qt::UserRole + 4] = "isVisible";
+    roles[Qt::UserRole + 5] = "modelId";
     return roles;
 }
 
@@ -208,7 +204,7 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
     target->isVisible = visible;
 
     QModelIndex idx = createIndex(row, 0, target);
-    emit dataChanged(idx, idx, { Qt::UserRole + 5 });
+    emit dataChanged(idx, idx, { Qt::UserRole + 4 });
     return true;
 }
 
