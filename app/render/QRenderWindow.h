@@ -74,14 +74,14 @@ public:
     void setCurVertexRender(bool is_render);
     bool getCurVertexRender();
 
-    bool getIsEdgeRender(Data& vtk, Index model_id);
+    bool getIsEdgeRender(Data& vtk, Index component_id);
     bool getIsVertexRender(Data& vtk, Index model_id);
 
     /**
      * @brief 选择模型
      * @param select_mode
      */
-    Q_INVOKABLE void setSelectModel(Index model_id);
+    Q_INVOKABLE void setSelectComponent(Index component_id);
 
     /**
      * @brief 改变选择模式
@@ -184,7 +184,7 @@ private:
 
     std::unique_ptr<SelectManager> selectManager_;
     MeshActor* cur_actor_ {};
-    Index cur_actor_id_;
+    Index cur_component_id_;
 
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_ {};

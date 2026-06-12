@@ -135,6 +135,12 @@ std::vector<Index> QModelQuery::getComponentIds(Index model_id) const
     return m_manager->getComponentIds(model_id);
 }
 
+int QModelQuery::findModelIdByComponent(Index component_id) const
+{
+    auto opt = m_manager->findModelIdByComponent(component_id);
+    return opt.has_value() ? *opt : -1;
+}
+
 QVariantList QModelQuery::getCadEdgeMappedPointIds(Index component_id, int localCadEdgeId)
 {
     QVariantList out;

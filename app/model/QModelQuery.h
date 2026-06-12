@@ -60,6 +60,7 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
     std::optional<GeometryDataVtk> getSplineDataByComponent(Index component_id);
 
     std::vector<Index> getComponentIds(Index model_id) const;
+    Q_INVOKABLE int findModelIdByComponent(Index component_id) const;
 
     Q_INVOKABLE QVariantList getCadEdgeMappedPointIds(Index component_id, int localCadEdgeId);
 

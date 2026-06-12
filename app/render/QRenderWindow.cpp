@@ -311,7 +311,7 @@ QSelection* QRenderWindow::selectedIDs()
         return nullptr;
     }
 
-    data->model_id = this->cur_actor_id_;
+    data->component_id = this->cur_component_id_;
     QSelection* selection = new QSelection(std::move(data));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
@@ -342,7 +342,7 @@ void QRenderWindow::setCurVertexRender(bool is_render)
     //dispatch_async([this, is_render](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
     //    Data* vtk = Data::SafeDownCast(userData);
 
-    //    auto component_ids = model_query_->getComponentIds(this->cur_actor_id_);
+    //    auto component_ids = model_query_->getComponentIds(this->cur_component_id_);
     //    for (Index component_id : component_ids) {
     //        vtk->mesh_actor_manager_->setRenderVertex(component_id, is_render);
     //    }
@@ -360,20 +360,15 @@ bool QRenderWindow::getCurVertexRender()
     return false;
 }
 
-bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
+bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
 {
-    if (model_id < 0) return false;
+    if (component_id < 0) return false;
 
-    auto component_ids = model_query_->getComponentIds(model_id);
-    if (!component_ids.empty()) {
-        Index component_id = component_ids.front();
-
-        if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
-            return vtk.mesh_actor_manager_->getIsEdgeRender(component_id);
-        }
-        if (vtk.spline_actor_manager_ && vtk.spline_actor_manager_->hasComponent(component_id)) {
-            return vtk.spline_actor_manager_->getIsEdgeRender(component_id);
-        }
+    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
+        return vtk.mesh_actor_manager_->getIsEdgeRender(component_id);
+    }
+    if (vtk.spline_actor_manager_ && vtk.spline_actor_manager_->hasComponent(component_id)) {
+        return vtk.spline_actor_manager_->getIsEdgeRender(component_id);
     }
 
     spdlog::error("get is edge render mode error");
@@ -395,26 +390,20 @@ bool QRenderWindow::getIsVertexRender(Data& vtk, Index model_id)
     return false;
 }
 
-void QRenderWindow::setSelectModel(Index model_id)
+void QRenderWindow::setSelectComponent(Index component_id)
 {
-    dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
-        this->cur_actor_id_ = model_id;
-        this->setCurEdgeRender(this->getIsEdgeRender(*vtk, model_id));
+        this->cur_component_id_ = component_id;
+        this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
 
         this->vertex_render_ = false;
         emit curVertexRenderChanged();
 
-        auto component_ids = model_query_->getComponentIds(model_id);
         std::shared_ptr<const MeshActor> mesh_actor;
-
-        for (Index component_id : component_ids) {
-            if (vtk->mesh_actor_manager_->hasComponent(component_id)) {
-                mesh_actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
-                break;
-            }
-        }
+        if (vtk->mesh_actor_manager_->hasComponent(component_id))
+            mesh_actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
 
         if (mesh_actor)
             selectManager_->setSelectActor(mesh_actor);
@@ -544,9 +533,9 @@ void QRenderWindow::setAttriMode(
             }
         }
         spdlog::info("modeEnum: {}", static_cast<int>(mode_enum));
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
             vtk->mesh_actor_manager_->setAttriMode(
-                cur_actor_id_,
+                cur_component_id_,
                 attr_name.toStdString(),
                 mode_enum,
                 std_args);
@@ -559,9 +548,9 @@ void QRenderWindow::cancelAttri()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
             vtk->mesh_actor_manager_->cancelAttri(
-                cur_actor_id_);
+                cur_component_id_);
         }
         spdlog::info("--------cancelAttri-----------");
     });
