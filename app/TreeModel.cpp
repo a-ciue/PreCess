@@ -78,11 +78,14 @@ QVariant TreeModel::data(const QModelIndex& index, int role) const
     case IsVisibleRole:
         return node->isVisible;
 
-    case ModelIdRole: {
+    case ComponentIdRole: {
         TreeNode* cur = node;
-        while (cur && cur->parent && cur->parent != rootNode)
+        while (cur && cur->parent && cur->parent != rootNode) {
+            if (cur->parent->parent == rootNode)
+                return cur->nodeId;
             cur = cur->parent;
-        return cur ? cur->nodeId : -1;
+        }
+        return -1;
     }
 
     default:
@@ -97,7 +100,7 @@ QHash<int, QByteArray> TreeModel::roleNames() const
     roles[NumberRole]   = "number";
     roles[NodeIdRole]   = "nodeId";
     roles[IsVisibleRole] = "isVisible";
-    roles[ModelIdRole]  = "modelId";
+    roles[ComponentIdRole] = "componentId";
     return roles;
 }
 

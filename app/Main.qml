@@ -129,7 +129,7 @@ ApplicationWindow {
         height: 200
         modelQuery: root.modelQuery
 
-        onSelectionChanged: (modelId) => myItem.setSelectModel(modelId)
+        onSelectionChanged: (componentId) => myItem.setSelectComponent(componentId)
 
         onDeleteRequested: (nodeId, depth) => {
             if (depth === 0) modelManager.removeModel(nodeId)

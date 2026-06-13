@@ -36,7 +36,7 @@ public:
         NumberRole,
         NodeIdRole,
         IsVisibleRole,
-        ModelIdRole
+        ComponentIdRole
     };
     Q_ENUM(TreeRole)
     explicit TreeModel(QObject* parent = nullptr);

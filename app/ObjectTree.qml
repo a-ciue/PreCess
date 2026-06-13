@@ -9,8 +9,9 @@ Pane{
 
     required property var modelQuery
     property int curModelId: -1
+    property int curComponentId: -1
 
-    signal selectionChanged(int modelId)
+    signal selectionChanged(int componentId)
     signal deleteRequested(int nodeId, int depth)
     signal visibilityChanged(int nodeId, int depth, bool visible)
 
@@ -143,14 +144,23 @@ Pane{
                         viewDelegate.treeView.toggleExpanded(viewDelegate.row)
                     } else {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
+                        let compId = viewDelegate.model.componentId
+
                         if (viewDelegate.current) {
                             viewDelegate.treeView.selectionModel.clear()
                             objectTree.curModelId = -1
+                            objectTree.curComponentId = -1
+                            objectTree.selectionChanged(-1)
+                        } else if (compId < 0) {
+                            viewDelegate.treeView.selectionModel.clear()
+                            objectTree.curModelId = -1
+                            objectTree.curComponentId = -1
                             objectTree.selectionChanged(-1)
                         } else if (idx.valid) {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
-                            objectTree.curModelId = viewDelegate.model.modelId
-                            objectTree.selectionChanged(viewDelegate.model.modelId)
+                            objectTree.curComponentId = compId
+                            objectTree.curModelId = modelQuery.findModelIdByComponent(compId)
+                            objectTree.selectionChanged(compId)
                         }
                     }
                 }
