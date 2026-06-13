@@ -32,10 +32,10 @@ Pane{
         delegate: TreeViewDelegate {
             id:viewDelegate
             width: treeView.width
-            height: 30
+            height: 20
 
             readonly property real _padding: 5
-            readonly property real _rowHeight: 25
+            readonly property real _rowHeight: 18
             readonly property real _indentWidth: 20
             property bool _reusing: false
 
@@ -84,7 +84,7 @@ Pane{
                 Text {
                     anchors.centerIn: parent
                     text: "▼"
-                    color: "#666666"
+                    color: "black"
                     font.pixelSize: 10
                 }
             }
@@ -108,7 +108,7 @@ Pane{
                         text: viewDelegate.model.name || "N/A"
                         color: {
                             if (!viewDelegate.model.isVisible) return "#aaaaaa"
-                            return viewDelegate.current ? "#333333" : "#555555"
+                            return "black"
                         }
                         font.pixelSize: 13
                         font.family: "Consolas"
@@ -121,7 +121,7 @@ Pane{
                     Text {
                         id: valueText
                         text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
-                        color: "#888888"
+                        color: "black"
                         font.pixelSize: 11
                         visible: text !== ""
                         verticalAlignment: Text.AlignVCenter

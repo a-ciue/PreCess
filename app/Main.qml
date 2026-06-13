@@ -133,7 +133,7 @@ ApplicationWindow {
         anchors.top: stacklayout.bottom
         anchors.left: parent.left
         width: 250
-        height: 200
+        height: parent.height * 0.5
         modelQuery: root.modelQuery
 
         onSelectionChanged: (componentId) => myItem.setSelectComponent(componentId)
