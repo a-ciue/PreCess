@@ -105,13 +105,20 @@ ApplicationWindow {
         onTriggered: objectTree.refreshTree()
     }
 
+    function resetSelectionState() {
+        objectTree.curComponentId = -1
+        objectTree.curModelId = -1
+        myItem.setSelectMode("None")
+        myItem.clearSelection()
+    }
+
     Connections {
         target: modelObserver
 
-        function onModelAdded(modelId)   { refreshTimer.restart(); myItem.onModelChanged(modelId) }
-        function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId) }
-        function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId) }
-        function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId) }
+        function onModelAdded(modelId)   { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
+        function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
+        function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId); resetSelectionState() }
+        function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId); resetSelectionState() }
     }
 
     StackLayout{
