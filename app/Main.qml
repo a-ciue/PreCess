@@ -144,7 +144,7 @@ ApplicationWindow {
 
     SideBar{
         id: sideBar
-        curModel: objectTree.curModelId
+        curComponent: objectTree.curComponentId
         confirm_listener: selector.confirm_listener
         anchors.top: objectTree.bottom
         anchors.left: parent.left
@@ -246,7 +246,7 @@ ApplicationWindow {
 
         Selector{
             id:selector
-            cur_model: objectTree.curModelId
+            cur_model: objectTree.curComponentId
             anchors.top:  renderWindowPage.top
             anchors.left: renderWindowPage.left
             anchors.topMargin: 10

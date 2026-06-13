@@ -16,7 +16,7 @@ Item{
     id: root
     property var system
     property var curAlgoInfo
-    property int curModel
+    property int curComponent
     required property SignalListener confirm_listener
     property var parameters: []
     signal selectModeChanged
@@ -29,13 +29,13 @@ Item{
     Button{
         id: commitButton
         text: "执行"
-        enabled: curModel >= 0 && curAlgoInfo != null
+        enabled: curComponent >= 0 && curAlgoInfo != null
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height:30
         onClicked:{
-            system.call(curAlgoInfo.name, curModel, root.parameters)
+            system.call(curAlgoInfo.name, curComponent, root.parameters)
         }
     }
     Item{
@@ -273,7 +273,7 @@ Item{
             Button{
                 id: selectStartButton
                 text: "开始选择"
-                enabled: root.curModel >= 0
+                enabled: root.curComponent >= 0
                 onClicked:{
                     root.selectModeChanged()
                     checked = !checked
