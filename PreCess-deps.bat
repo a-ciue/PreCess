@@ -109,6 +109,14 @@ if not defined qtPath (
 set "prefixPath=%depsPath%"
 if defined qtPath set "prefixPath=%depsPath%;!qtPath!"
 
+REM Clone and build spdlog 1.16.0
+pushd "%sourcePath%/spdlog"
+cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i -DSPDLOG_BUILD_SHARED=1 "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\spdlog1.16.0" -DCMAKE_INSTALL_MESSAGE=LAZY
+pushd build
+cmake --build . --target install --config RelWithDebInfo
+cmake --build . --target install --config Debug
+if "!buildRelease!"=="1" cmake --build . --target install --config Release
+
 REM Clone and build KDDockWidgets 2.4.0
 pushd "%sourcePath%/KDDockWidgets"
 cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i "-DCMAKE_PREFIX_PATH:PATH=!prefixPath!" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\KDDockWidgets-qt6-2.4.0" -DCMAKE_INSTALL_MESSAGE=LAZY
@@ -138,14 +146,6 @@ pushd "%sourcePath%/OCCT"
 tar -xf ./3rdparty-vc14-64-temp.zip -C .
 tar -xf ./3rdparty-vc14-64.zip -C .
 cmake -S . -B ./build "-GNinja Multi-Config" "-DINSTALL_DIR:PATH=%depsPath%\OpenCASCADE8.0.0" "-D3RDPARTY_DIR:PATH=%cd%/3rdparty-vc14-64" "-D3RDPARTY_FREETYPE_DIR:PATH=%depsPath%\freetype2.14.1" -DUSE_VTK:BOOL=1 "-D3RDPARTY_VTK_DIR:PATH=%depsPath%\VTK9.6.2" -DCMAKE_INSTALL_MESSAGE=LAZY
-pushd build
-cmake --build . --target install --config RelWithDebInfo
-cmake --build . --target install --config Debug
-if "!buildRelease!"=="1" cmake --build . --target install --config Release
-
-REM Clone and build spdlog 1.16.0
-pushd "%sourcePath%/spdlog"
-cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\spdlog1.16.0" -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 cmake --build . --target install --config RelWithDebInfo
 cmake --build . --target install --config Debug
