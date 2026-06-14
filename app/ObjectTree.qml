@@ -29,6 +29,11 @@ Pane{
         anchors.fill: parent
         model: treeModel
         columnSpacing: 0
+
+        property int toggleExpandRow: -1
+        onExpanded: (row, depth) => toggleExpandRow = row
+        onCollapsed: (row, recursively) => toggleExpandRow = row
+
         delegate: TreeViewDelegate {
             id:viewDelegate
             width: treeView.width
@@ -37,19 +42,11 @@ Pane{
             readonly property real _padding: 5
             readonly property real _rowHeight: 18
             readonly property real _indentWidth: 20
-            property bool _reusing: false
 
-            TableView.onPooled: {
-                indicatorAnim.complete()
-                _reusing = true
-            }
-            onExpandedChanged: {
-                if (_reusing) {
-                    _reusing = false
-                    indicatorItem.rotation = expanded ? 0 : -90
-                } else {
-                    indicatorAnim.from = expanded ? -90 : 0
-                    indicatorAnim.to = expanded ? 0 : -90
+            TableView.onPooled: indicatorAnim.complete()
+            TableView.onReused: {
+                if (treeView.toggleExpandRow === viewDelegate.row) {
+                    treeView.toggleExpandRow = -1
                     indicatorAnim.start()
                 }
             }
@@ -68,15 +65,19 @@ Pane{
                 implicitWidth: 16
                 implicitHeight: 16
                 color: "transparent"
-                visible: viewDelegate.isTreeNode && viewDelegate.hasChildren
                 z: 10
 
-                Component.onCompleted: indicatorItem.rotation = viewDelegate.expanded ? 0 : -90
+                Binding on rotation {
+                    when: !indicatorAnim.running
+                    value: viewDelegate.expanded ? 0 : -90
+                }
 
                 NumberAnimation {
                     id: indicatorAnim
                     target: indicatorItem
                     property: "rotation"
+                    from: viewDelegate.expanded ? -90 : 0
+                    to: viewDelegate.expanded ? 0 : -90
                     duration: 200
                     easing.type: Easing.OutQuart
                 }
@@ -97,7 +98,7 @@ Pane{
                 Row {
                     id: textContent
                     anchors.left: parent.left
-                     anchors.leftMargin: viewDelegate._padding + 2
+                    anchors.leftMargin: viewDelegate._padding + 2
                     anchors.right: parent.right
                     anchors.rightMargin: viewDelegate._padding
                     anchors.verticalCenter: parent.verticalCenter
@@ -141,7 +142,7 @@ Pane{
                         contextMenu.popup()
                     } else if (mouse.x < indicatorItem.x + indicatorItem.implicitWidth
                                && viewDelegate.isTreeNode && viewDelegate.hasChildren) {
-                        viewDelegate.treeView.toggleExpanded(viewDelegate.row)
+                        //viewDelegate.treeView.toggleExpanded(viewDelegate.row)
                     } else {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         let compId = viewDelegate.model.componentId
