@@ -1,0 +1,2 @@
+precess_add_test(TestMModelHandler TestMModelHandler.cpp)
+precess_test_link_libraries(TestMModelHandler MModelPluginlib DataTest)

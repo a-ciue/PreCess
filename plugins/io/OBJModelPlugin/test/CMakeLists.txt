@@ -1,0 +1,2 @@
+precess_add_test(TestOBJModelHandler TestOBJModelHandler.cpp)
+precess_test_link_libraries(TestOBJModelHandler OBJModelPluginlib DataTest)
