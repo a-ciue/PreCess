@@ -3,6 +3,7 @@
 #include "MeshData.h"
 #include "GeometryData.h"
 #include "GeometryDataVtk.h"
+#include "ComponentData.h"
 
 #include <QVariantList>
 #include <QString>
@@ -134,6 +135,12 @@ std::vector<Index> QModelQuery::getComponentIds(Index model_id) const
     return m_manager->getComponentIds(model_id);
 }
 
+int QModelQuery::findModelIdByComponent(Index component_id) const
+{
+    auto opt = m_manager->findModelIdByComponent(component_id);
+    return opt.has_value() ? *opt : -1;
+}
+
 QVariantList QModelQuery::getCadEdgeMappedPointIds(Index component_id, int localCadEdgeId)
 {
     QVariantList out;
@@ -242,6 +249,115 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
         spdlog::info ("type_list.size():" ,type_list.size());
     }
     return type_list;
+}
+
+QVariantList QModelQuery::listModels() const
+{
+    QVariantList out;
+    if (!m_manager)
+        return out;
+
+    for (const auto& [mid, modelPtr] : m_manager->models_) {
+        QVariantMap m;
+        m["model_id"] = mid;
+        m["name"] = modelPtr ? QString::fromLocal8Bit(modelPtr->model_name_) : QString();
+
+        int compCount = 0;
+
+        const std::vector<Index> cids = m_manager->getComponentIds(mid);
+        compCount = (int)cids.size();
+
+        m["component_count"] = compCount;
+
+        out.push_back(m);
+    }
+    return out;
+}
+
+QVariantList QModelQuery::getComponentsSummary(Index model_id) const
+{
+    QVariantList out;
+    if (!m_manager)
+        return out;
+
+    const std::vector<Index> cids = m_manager->getComponentIds(model_id);
+    out.reserve((int)cids.size());
+
+    for (Index cid : cids) {
+        ComponentData* c = m_manager->findComponent(cid);
+        if (!c)
+            continue;
+
+        QVariantMap m;
+        m["component_id"] = cid;
+        m["name"] = QString::fromLocal8Bit(c->name);
+        m["has_mesh"] = (bool)c->mesh;
+        m["has_cad"] = (bool)c->geometry;
+        m["material_id"] = c->material_id;
+
+        out.push_back(m);
+    }
+    return out;
+}
+
+QVariantMap QModelQuery::getMeshSummary(Index component_id) const
+{
+    QVariantMap m;
+    if (!m_manager)
+        return m;
+
+    ComponentData* c = m_manager->findComponent(component_id);
+    if (!c || !c->mesh) {
+        m["has_mesh"] = false;
+        return m;
+    }
+
+    const MeshData& md = *c->mesh;
+    m["has_mesh"] = true;
+
+    m["vertex_count"] = md.vertex_count_;
+    m["edge_count"] = (int)(md.edge_vertices_.size() / 2);
+
+    int faceCount = 0;
+    if (md.face_vertices_offset_.size() >= 1)
+        faceCount = (int)md.face_vertices_offset_.size() - 1;
+    m["face_count"] = faceCount;
+
+    m["solid_count"] = (int)md.solid_types_.size();
+
+    return m;
+}
+
+QVariantMap QModelQuery::getGeometrySummary(Index component_id) const
+{
+    QVariantMap m;
+    if (!m_manager)
+        return m;
+
+    ComponentData* c = m_manager->findComponent(component_id);
+    if (!c || !c->geometry || !c->geometry->rootShape) {
+        m["has_cad"] = false;
+        return m;
+    }
+
+    c->geometry->ensureCadIndexBuilt(m_manager->geomRegistry());
+
+    const GeometrySubshapeIndex& idx = c->geometry->cad_index;
+    m["has_cad"] = true;
+
+    auto countOf = [&](TopAbs_ShapeEnum t) -> int {
+        const int ti = GeometrySubshapeIndex::typeIndex(t);
+        if (ti < 0)
+            return 0;
+        return idx.type_maps[(size_t)ti].Extent();
+    };
+
+    m["vertex_count"] = countOf(TopAbs_VERTEX);
+    m["edge_count"] = countOf(TopAbs_EDGE);
+    m["face_count"] = countOf(TopAbs_FACE);
+    m["solid_count"] = countOf(TopAbs_SOLID);
+
+    return m;
 }
 
 std::optional<GeomFaceId> QModelQuery::resolveCadFaceLocalId(Index component_id, int localFaceId)
