@@ -3,3 +3,5 @@ precess_add_io_plugin(StepModelPlugin
 	PLUGIN_H "StepModelPlugin.h"
 )
 precess_plugin_link_libraries(StepModelPlugin TKDESTEP)
+
+add_subdirectory(test)
