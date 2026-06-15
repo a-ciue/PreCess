@@ -140,19 +140,11 @@ Pane{
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                         contextMenu.popup()
-                    } else if (mouse.x < indicatorItem.x + indicatorItem.implicitWidth
-                               && viewDelegate.isTreeNode && viewDelegate.hasChildren) {
-                        //viewDelegate.treeView.toggleExpanded(viewDelegate.row)
                     } else {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         let compId = viewDelegate.model.componentId
 
-                        if (viewDelegate.current) {
-                            viewDelegate.treeView.selectionModel.clear()
-                            objectTree.curModelId = -1
-                            objectTree.curComponentId = -1
-                            objectTree.selectionChanged(-1)
-                        } else if (compId < 0) {
+                        if (viewDelegate.current || compId < 0) {
                             viewDelegate.treeView.selectionModel.clear()
                             objectTree.curModelId = -1
                             objectTree.curComponentId = -1
