@@ -30,8 +30,12 @@ static std::string labelName(const TDF_Label& label)
 
     std::string buf(ext.Length() * 4 + 1, '\0');
     char* cstr = buf.data();
-    const Standard_Integer n = ext.ToUTF8CString(cstr); 
-    buf.resize(n);
+    const Standard_Integer n = ext.ToUTF8CString(cstr);
+    if (n < 0) {
+        return {};
+    }
+
+    buf.resize(static_cast<std::string::size_type>(n));
     return buf;
 }
 
@@ -127,7 +131,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
         c->source_xde_leaf_id = leafIndex;
 
         spdlog::info("[STEP-XDE] create component: index={}, name='{}', shapeType={}",
-            leafIndex, compName, (int)shape.ShapeType());
+            leafIndex, compName, static_cast<int>(shape.ShapeType()));
 
         ++leafIndex;
     }

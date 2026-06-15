@@ -33,7 +33,11 @@ static std::string labelName(const TDF_Label& label)
     std::string buf(ext.Length() * 4 + 1, '\0');
     char* cstr = buf.data();
     const Standard_Integer n = ext.ToUTF8CString(cstr);
-    buf.resize(n);
+    if (n < 0) {
+        return {};
+    }
+
+    buf.resize(static_cast<std::string::size_type>(n));
     return buf;
 }
 
