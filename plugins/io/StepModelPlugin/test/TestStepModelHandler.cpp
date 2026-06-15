@@ -1,12 +1,15 @@
 /**
- * @file TestIgesModelHandler.cpp
- * @brief IGES 模型文件处理器单元测试
- * @author PreCess Team
+ * @file TestStepModelHandler.cpp
+ * @brief STEP 模型文件处理器单元测试
+ *
+ * StepModelHandler 基于 OpenCASCADE 的 STEPControl_Reader/Writer，
+ * 当前以组件化 GeometryData（封装 TopoDS_Shape）作为 CAD 几何读写对象。
+ * 测试模式参考 IGES 的测试：用 OCCT 在内存中构造 box/sphere，写出 STEP 再读回，
+ * 验证读取到有效组件化几何；同时覆盖中文路径。
  */
-#include "IgesModelHandler.h"
+#include "StepModelHandler.h"
 #include "ComponentData.h"
 #include "GeometryData.h"
-#include "MeshData.h"
 #include "ModelData.h"
 #include "ModelLayer.h"
 #include "TempFile.h"
@@ -68,156 +71,115 @@ static void requireReadableGeometryModel(const ModelData& model)
     REQUIRE(hasValidGeometry);
 }
 
-/**
- * @brief 创建测试：英文路径下立方体读写回环测试
- */
-TEST_CASE("IgesModelHandler::write_components()/read_model() - English path")
+TEST_CASE("StepModelHandler::write_components()/read_model() - English path (box)")
 {
-    systems::io::IgesModelHandler io;
+    systems::io::StepModelHandler io;
     ModelLayer layer;
-    fs::path out = core::TempFile::instance().path().string() + ".igs";
+    fs::path out = core::TempFile::instance().path().string() + ".stp";
 
-    // 步骤1: 使用 OpenCASCADE 创建立方体
     TopoDS_Shape box = BRepPrimAPI_MakeBox(10.0, 20.0, 30.0);
     REQUIRE(!box.IsNull());
 
-    // 步骤2: 包装为组件化 GeometryData
     std::vector<Index> componentIds = addModelAndGetComponentIds(
         layer,
         makeGeometryModel(box, "Box"));
 
-    // 步骤3: 写入 IGES 文件
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    // 步骤4: 读取 IGES 文件
     std::unique_ptr<ModelData> modelRead;
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
     requireReadableGeometryModel(*modelRead);
+
+    // model_name_ 应被设置为文件名
+    REQUIRE(modelRead->model_name_ == out.filename().string());
 }
 
-/**
- * @brief 创建测试：中文文件名（仅文件名含中文）
- */
-TEST_CASE("IgesModelHandler::write_components()/read_model() - Chinese filename")
+TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese filename")
 {
-    systems::io::IgesModelHandler io;
+    // 验证中文路径支持（path.u8string()）
+    systems::io::StepModelHandler io;
     ModelLayer layer;
 
-    // 创建中文文件名
     fs::path out = core::TempFile::instance().path();
-    out.replace_filename("测试_立方体_" + out.stem().string() + ".igs");
+    out.replace_filename("中文_测试_" + out.stem().string() + ".stp");
 
-    // 步骤1: 使用 OpenCASCADE 创建立方体
     TopoDS_Shape box = BRepPrimAPI_MakeBox(15.0, 25.0, 35.0);
     REQUIRE(!box.IsNull());
 
-    // 步骤2: 包装为组件化 GeometryData
     std::vector<Index> componentIds = addModelAndGetComponentIds(
         layer,
         makeGeometryModel(box, "中文立方体"));
 
-    // 步骤3: 写入 IGES 文件
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    // 步骤4: 读取 IGES 文件
     std::unique_ptr<ModelData> modelRead;
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
     requireReadableGeometryModel(*modelRead);
 }
 
-/**
- * @brief 创建测试：中文完整路径（目录+文件名均含中文）
- */
-TEST_CASE("IgesModelHandler::write_components()/read_model() - Chinese full path")
+TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese full path")
 {
-    systems::io::IgesModelHandler io;
+    systems::io::StepModelHandler io;
     ModelLayer layer;
 
-    // 创建中文目录 + 中文文件名的完整路径
     fs::path out = core::TempFile::instance().path();
-    out = out.parent_path() / "测试数据目录" / "子目录_模型" / ("测试_立方体_" + out.stem().string() + ".igs");
+    out = out.parent_path() / "测试数据目录" / "子目录_模型"
+        / ("中文_" + out.stem().string() + ".stp");
     fs::create_directories(out.parent_path());
 
-    // 步骤1: 使用 OpenCASCADE 创建立方体
     TopoDS_Shape box = BRepPrimAPI_MakeBox(12.0, 22.0, 32.0);
     REQUIRE(!box.IsNull());
 
-    // 步骤2: 包装为组件化 GeometryData
     std::vector<Index> componentIds = addModelAndGetComponentIds(
         layer,
         makeGeometryModel(box, "完整路径立方体"));
 
-    // 步骤3: 写入 IGES 文件
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    // 步骤4: 读取 IGES 文件
     std::unique_ptr<ModelData> modelRead;
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
     requireReadableGeometryModel(*modelRead);
 }
 
-/**
- * @brief 创建测试：球体读写回环测试
- */
-TEST_CASE("IgesModelHandler::write_components()/read_model() - Sphere test")
+TEST_CASE("StepModelHandler::write_components()/read_model() - sphere")
 {
-    systems::io::IgesModelHandler io;
+    systems::io::StepModelHandler io;
     ModelLayer layer;
-    fs::path out = core::TempFile::instance().path().string() + "_sphere.igs";
+    fs::path out = core::TempFile::instance().path().string() + "_sphere.stp";
 
-    // 步骤1: 使用 OpenCASCADE 创建球体
     TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(50.0);
     REQUIRE(!sphere.IsNull());
 
-    // 步骤2: 包装为组件化 GeometryData
     std::vector<Index> componentIds = addModelAndGetComponentIds(
         layer,
         makeGeometryModel(sphere, "Sphere"));
 
-    // 步骤3: 写入 IGES 文件
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    // 步骤4: 读取 IGES 文件
     std::unique_ptr<ModelData> modelRead;
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
     requireReadableGeometryModel(*modelRead);
 }
 
-/**
- * @brief 测试：非 CAD 模型写入（错误处理测试）
- */
-TEST_CASE("IgesModelHandler::write_components() - Non-CAD component handling")
+TEST_CASE("StepModelHandler::read_model() - non-existent file")
 {
-    systems::io::IgesModelHandler io;
-    ModelLayer layer;
-    fs::path out = core::TempFile::instance().path().string() + "_non_cad.igs";
+    systems::io::StepModelHandler io;
+    fs::path bad = core::TempFile::instance().path().string() + "_not_exist.stp";
 
-    if (fs::exists(out)) {
-        fs::remove(out);
-    }
-
-    // 创建一个非 CAD 组件模型（只有 MeshData，没有 GeometryData）
-    auto meshData = std::make_unique<MeshData>();
-    auto model = std::make_unique<ModelData>(std::move(meshData));
-    std::vector<Index> componentIds = addModelAndGetComponentIds(layer, std::move(model));
-
-    // 应该不会抛出异常，但会记录错误日志，不写入文件
-    REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
-    REQUIRE_FALSE(fs::exists(out));
+    // 文件不存在，read_model 应返回 nullptr（而不是崩溃）
+    std::unique_ptr<ModelData> model;
+    REQUIRE_NOTHROW(model = io.read_model(bad, {}));
+    REQUIRE(model == nullptr);
 }

@@ -1,16 +1,18 @@
-#include "StepXdeComponentBuilder.h"
+/**
+ * @file IgesXdeComponentBuilder.cpp
+ * @brief IGES XDE 组件构建器实现
+ * @author 范成通
+ */
+#include "IgesXdeComponentBuilder.h"
 #include "ComponentData.h"
-#include "ModelData.h"
 #include "GeometryData.h"
+#include "ModelData.h"
 
-#include <TCollection_AsciiString.hxx>
+#include <TCollection_ExtendedString.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_LabelSequence.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDocStd_Document.hxx>
-#include <TCollection_ExtendedString.hxx>
-#include <cstring>
-
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 
@@ -40,7 +42,7 @@ static std::string labelName(const TDF_Label& label)
 }
 
 static void collectLeafShapes(
-    const Handle(XCAFDoc_ShapeTool) & shapeTool,
+    const Handle(XCAFDoc_ShapeTool)& shapeTool,
     const TDF_Label& label,
     std::vector<std::pair<TDF_Label, TopoDS_Shape>>& outLeaves)
 {
@@ -69,7 +71,7 @@ static void collectLeafShapes(
     }
 }
 
-std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
+std::unique_ptr<ModelData> IgesXdeComponentBuilder::buildModelData(
     TDocStd_Document& doc,
     const std::string& modelName)
 {
@@ -91,18 +93,18 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
     }
 
     if (leaves.empty()) {
-        spdlog::warn("[STEP-XDE] no leaf found, fallback to first free shape");
+        spdlog::warn("[IGES-XDE] no leaf found, fallback to first free shape");
 
         int freeIndex = 0;
         for (Standard_Integer i = 1; i <= freeShapes.Length(); ++i) {
             TopoDS_Shape s = shapeTool->GetShape(freeShapes.Value(i));
             if (!s.IsNull()) {
-                auto spline_data = std::make_unique<GeometryData>();
-                spline_data->rootShape = std::make_unique<TopoDS_Shape>(s);
+                auto geometry_data = std::make_unique<GeometryData>();
+                geometry_data->rootShape = std::make_unique<TopoDS_Shape>(s);
 
                 std::string compName = "Comp_" + std::to_string(freeIndex);
                 ComponentData* c = model_data->createComponent(-1, compName);
-                c->geometry = std::move(spline_data);
+                c->geometry = std::move(geometry_data);
 
                 ++freeIndex;
             }
@@ -112,14 +114,14 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
             return model_data;
         }
 
-        spdlog::error("[STEP-XDE] no valid shape found");
+        spdlog::error("[IGES-XDE] no valid shape found");
         return nullptr;
     }
 
     int leafIndex = 0;
     for (const auto& [label, shape] : leaves) {
-        auto spline_data = std::make_unique<GeometryData>();
-        spline_data->rootShape = std::make_unique<TopoDS_Shape>(shape);
+        auto geometry_data = std::make_unique<GeometryData>();
+        geometry_data->rootShape = std::make_unique<TopoDS_Shape>(shape);
 
         std::string compName = labelName(label);
         if (compName.empty()) {
@@ -127,18 +129,19 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
         }
 
         ComponentData* c = model_data->createComponent(-1, compName);
-        c->geometry = std::move(spline_data);
+        c->geometry = std::move(geometry_data);
         c->source_xde_leaf_id = leafIndex;
 
-        spdlog::info("[STEP-XDE] create component: index={}, name='{}', shapeType={}",
+        spdlog::info("[IGES-XDE] create component: index={}, name='{}', shapeType={}",
             leafIndex, compName, static_cast<int>(shape.ShapeType()));
 
         ++leafIndex;
     }
 
-    spdlog::info("[STEP-XDE] model '{}' created {} components",
+    spdlog::info("[IGES-XDE] model '{}' created {} components",
         model_data->model_name_, model_data->stagingcomponents().size());
 
     return model_data;
 }
+
 }

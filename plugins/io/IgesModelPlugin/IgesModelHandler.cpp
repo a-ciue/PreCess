@@ -5,11 +5,19 @@
  */
 #include "IgesModelHandler.h"
 #include "ArgType.h"
+#include "ComponentData.h"
+#include "GeometryData.h"
+#include "IgesXdeComponentBuilder.h"
 #include "ModelData.h"
-#include "SplineData.h"
+#include "ModelLayer.h"
 
-#include <IGESControl_Reader.hxx>
+#include <BRep_Builder.hxx>
+#include <IGESCAFControl_Reader.hxx>
 #include <IGESControl_Writer.hxx>
+#include <TDocStd_Document.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
+#include <XCAFApp_Application.hxx>
 #include <spdlog/spdlog.h>
 
 namespace systems::io {
@@ -21,46 +29,81 @@ using core::ArgType;
 std::unique_ptr<ModelData> IgesModelHandler::read_model(const fs::path& path,
     const std::vector<std::any>& args)
 {
-    IGESControl_Reader reader;
-    IFSelect_ReturnStatus stat;
+    Handle(TDocStd_Document) doc;
+    Handle(XCAFApp_Application)::DownCast(XCAFApp_Application::GetApplication())
+        ->NewDocument("MDTV-XCAF", doc);
+
+    IGESCAFControl_Reader reader;
     // 使用UTF-8编码字符串路径，配合C++17 std::filesystem处理中文路径
-    stat = reader.ReadFile(path.u8string().c_str());
+    IFSelect_ReturnStatus stat = reader.ReadFile(path.u8string().c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read IGES file: {}", path.string());
         return nullptr;
     }
-    reader.TransferRoots();
 
-    // SplineData - 和 STEP 一样保存为 BRep 边界表示
-    auto spline_data = std::make_unique<SplineData>();
-    spline_data->rootShape = std::make_unique<TopoDS_Shape>(reader.OneShape());
+    if (!reader.Transfer(doc)) {
+        spdlog::error("Failed to transfer IGES file: {}", path.string());
+        return nullptr;
+    }
 
-    // ModelData
-    auto model_data = std::make_unique<ModelData>(std::move(spline_data));
-    model_data->model_name_ = path.filename().string();
-
+    auto model_data = IgesXdeComponentBuilder::buildModelData(*doc, path.filename().string());
     return model_data;
 }
 
 /**
  * @brief 写入 IGES 文件
  */
-void IgesModelHandler::write_model(const ModelData& data, const fs::path& path,
+void IgesModelHandler::write_components(const ModelLayer& mgr,
+    const std::vector<Index>& component_ids,
+    const fs::path& path,
     const std::vector<std::any>& args)
 {
-    auto spline_data = data.asSplineData();
-    if (!spline_data) {
-        spdlog::error("IgesModelHandler only supports writing SplineData.");
+    if (component_ids.empty()) {
+        spdlog::error("IgesModelHandler: write_components called with empty component_ids");
         return;
+    }
+
+    // 收集要导出的 shape
+    std::vector<TopoDS_Shape> shapes;
+    shapes.reserve(component_ids.size());
+
+    for (Index cid : component_ids) {
+        const ComponentData* comp = mgr.findComponent(cid);
+        if (!comp) {
+            spdlog::warn("IgesModelHandler: component {} not found, skip", cid);
+            continue;
+        }
+        if (!comp->geometry || !comp->geometry->rootShape) {
+            spdlog::warn("IgesModelHandler: component {} has no geometry(rootShape), skip", cid);
+            continue;
+        }
+        shapes.push_back(*comp->geometry->rootShape);
+    }
+
+    if (shapes.empty()) {
+        spdlog::error("IgesModelHandler: no CAD shapes to export for given components");
+        return;
+    }
+
+    // 多组件：合并成一个 compound 写出（与 STEP 插件保持一致）
+    TopoDS_Shape shape_to_write;
+    if (shapes.size() == 1) {
+        shape_to_write = shapes.front();
+    } else {
+        BRep_Builder builder;
+        TopoDS_Compound compound;
+        builder.MakeCompound(compound);
+        for (const auto& s : shapes) {
+            builder.Add(compound, s);
+        }
+        shape_to_write = compound;
     }
 
     IGESControl_Writer writer;
 
-    // 将形状添加到写入器
-    Standard_Boolean transferStatus = writer.AddShape(*spline_data->rootShape);
-
+    Standard_Boolean transferStatus = writer.AddShape(shape_to_write);
     if (!transferStatus) {
-        spdlog::error("Failed when transferring shape to IGES writer.");
+        spdlog::error("IgesModelHandler: Failed when transferring shape(s) to IGES writer.");
         return;
     }
 
@@ -68,13 +111,12 @@ void IgesModelHandler::write_model(const ModelData& data, const fs::path& path,
 
     // 写入文件，使用UTF-8编码字符串路径
     Standard_Boolean writeStatus = writer.Write(path.u8string().c_str());
-
     if (!writeStatus) {
-        spdlog::error("Failed to write IGES file: {}", path.string());
+        spdlog::error("IgesModelHandler: Failed to write IGES file: {}", path.string());
         return;
     }
 
-    spdlog::info("Successfully wrote IGES file: {}", path.string());
+    spdlog::info("IgesModelHandler: Successfully wrote IGES file: {}", path.string());
 }
 
 /**
@@ -82,7 +124,7 @@ void IgesModelHandler::write_model(const ModelData& data, const fs::path& path,
  */
 std::vector<ArgType> IgesModelHandler::read_args_type() const
 {
-    return { };
+    return {};
 }
 
 /**
@@ -90,7 +132,7 @@ std::vector<ArgType> IgesModelHandler::read_args_type() const
  */
 std::vector<ArgType> IgesModelHandler::write_args_type() const
 {
-    return { };
+    return {};
 }
 
 } // namespace systems::io
