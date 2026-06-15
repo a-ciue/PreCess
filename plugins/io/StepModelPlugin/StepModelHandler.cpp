@@ -27,7 +27,8 @@ std::unique_ptr<ModelData> StepModelHandler::read_model(const fs::path& path, co
         ->NewDocument("MDTV-XCAF", doc);
 
     STEPCAFControl_Reader reader;
-    IFSelect_ReturnStatus stat = reader.ReadFile(path.string().c_str());
+    // 使用UTF-8编码字符串路径，配合C++17 std::filesystem处理中文路径
+    IFSelect_ReturnStatus stat = reader.ReadFile(path.u8string().c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read STEP file: {}", path.string());
         return nullptr;
