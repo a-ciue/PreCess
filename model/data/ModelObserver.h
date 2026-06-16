@@ -13,7 +13,8 @@ public:
      * 该槽函数由模型层在模型数据发生更改时调用，以便触发相应的信号通知。
      */
     virtual void notifyModelChanged(Index model_id) = 0;
-
+    virtual void notifyComponentChanged(Index component_id) = 0;
+    
     /**
      * @brief 接收模型被添加的通知函数 
      * @param model_id 新添加的模型 ID

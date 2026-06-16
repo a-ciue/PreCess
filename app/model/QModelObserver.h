@@ -25,6 +25,10 @@ public:
     {
         emit modelChanged(model_id);
     }
+    void notifyComponentChanged(Index component_id) override
+    {
+        emit componentChanged(component_id);
+    }
 
     /**
      * @brief 接收模型被添加的通知函数
@@ -113,6 +117,7 @@ signals:
      * @param model_id 发生变化的模型 ID
      */
     void modelChanged(Index model_id);
+    void componentChanged(Index component_id);
 
     /**
      * @brief 当 Patch 更新时触发
