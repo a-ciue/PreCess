@@ -11,10 +11,10 @@ std::optional<GeometryDataVtk> GeometryData::getGeometryVtkData()
 	return modelData;
 } 
 
-void GeometryData::ensureGeometryIndexBuilt(GeometryRegistry& reg)
+void GeometryData::ensureIndexBuilt(GeometryRegistry& reg)
 {
     if (!rootShape)
         return;
-    if (!geometry_index.built)
-        geometry_index.build(*rootShape, reg);
+    if (!index.built)
+        index.build(*rootShape, reg);
 }

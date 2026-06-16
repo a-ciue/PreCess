@@ -340,9 +340,9 @@ QVariantMap QModelQuery::getGeometrySummary(Index component_id) const
         return m;
     }
 
-    c->geometry->ensureGeometryIndexBuilt(m_manager->geomRegistry());
+    c->geometry->ensureIndexBuilt(m_manager->geomRegistry());
 
-    const GeometrySubshapeIndex& idx = c->geometry->geometry_index;
+    const GeometrySubshapeIndex& idx = c->geometry->index;
     m["has_geometry"] = true;
 
     auto countOf = [&](TopAbs_ShapeEnum t) -> int {
@@ -366,9 +366,9 @@ std::optional<GeomFaceId> QModelQuery::resolveGeometryFaceLocalId(Index componen
     if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->geometry->ensureGeometryIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureIndexBuilt(m_manager->geomRegistry());
 
-    GeomFaceId gid = comp->geometry->geometry_index.faceGlobalId(localFaceId);
+    GeomFaceId gid = comp->geometry->index.faceGlobalId(localFaceId);
     if (gid == kInvalidGeomFaceId)
         return std::nullopt;
 
@@ -381,9 +381,9 @@ std::optional<GeomEdgeId> QModelQuery::resolveGeometryEdgeLocalId(Index componen
     if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->geometry->ensureGeometryIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureIndexBuilt(m_manager->geomRegistry());
 
-    GeomEdgeId gid = comp->geometry->geometry_index.edgeGlobalId(localEdgeId);
+    GeomEdgeId gid = comp->geometry->index.edgeGlobalId(localEdgeId);
     if (gid == kInvalidGeomEdgeId)
         return std::nullopt;
 
@@ -396,9 +396,9 @@ std::optional<GeomVertexId> QModelQuery::resolveGeometryVertexLocalId(Index comp
     if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->geometry->ensureGeometryIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureIndexBuilt(m_manager->geomRegistry());
 
-    GeomVertexId gid = comp->geometry->geometry_index.vertexGlobalId(localVertexId);
+    GeomVertexId gid = comp->geometry->index.vertexGlobalId(localVertexId);
     if (gid == kInvalidGeomVertexId)
         return std::nullopt;
 
@@ -411,9 +411,9 @@ std::optional<GeomSolidId> QModelQuery::resolveGeometrySolidLocalId(Index compon
     if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    comp->geometry->ensureGeometryIndexBuilt(m_manager->geomRegistry());
+    comp->geometry->ensureIndexBuilt(m_manager->geomRegistry());
 
-    GeomSolidId gid = comp->geometry->geometry_index.solidGlobalId(localSolidId);
+    GeomSolidId gid = comp->geometry->index.solidGlobalId(localSolidId);
     if (gid == kInvalidGeomSolidId)
         return std::nullopt;
 

@@ -25,17 +25,17 @@ TEST_CASE("Geometry index build for single component")
     ComponentData* comp = manager.findComponent(0);
     REQUIRE(comp != nullptr);
     REQUIRE(comp->geometry != nullptr);
-    REQUIRE(comp->geometry->geometry_index.built);
+    REQUIRE(comp->geometry->index.built);
 
-    REQUIRE_FALSE(comp->geometry->geometry_index.face_local_to_global.empty());
-    REQUIRE_FALSE(comp->geometry->geometry_index.edge_local_to_global.empty());
-    REQUIRE_FALSE(comp->geometry->geometry_index.vertex_local_to_global.empty());
-    REQUIRE_FALSE(comp->geometry->geometry_index.solid_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->index.face_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->index.edge_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->index.vertex_local_to_global.empty());
+    REQUIRE_FALSE(comp->geometry->index.solid_local_to_global.empty());
 
-    REQUIRE(comp->geometry->geometry_index.face_local_to_global.size() > 1);
-    REQUIRE(comp->geometry->geometry_index.edge_local_to_global.size() > 1);
-    REQUIRE(comp->geometry->geometry_index.vertex_local_to_global.size() > 1);
-    REQUIRE(comp->geometry->geometry_index.solid_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->index.face_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->index.edge_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->index.vertex_local_to_global.size() > 1);
+    REQUIRE(comp->geometry->index.solid_local_to_global.size() > 1);
 }
 
 TEST_CASE("Geometry index build for multiple components")
@@ -74,16 +74,16 @@ TEST_CASE("Geometry index build for multiple components")
     REQUIRE(comp0->geometry != nullptr);
     REQUIRE(comp1->geometry != nullptr);
 
-    REQUIRE(comp0->geometry->geometry_index.built);
-    REQUIRE(comp1->geometry->geometry_index.built);
+    REQUIRE(comp0->geometry->index.built);
+    REQUIRE(comp1->geometry->index.built);
 
-    REQUIRE_FALSE(comp0->geometry->geometry_index.face_local_to_global.empty());
-    REQUIRE_FALSE(comp0->geometry->geometry_index.edge_local_to_global.empty());
-    REQUIRE_FALSE(comp0->geometry->geometry_index.vertex_local_to_global.empty());
-    REQUIRE_FALSE(comp0->geometry->geometry_index.solid_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->index.face_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->index.edge_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->index.vertex_local_to_global.empty());
+    REQUIRE_FALSE(comp0->geometry->index.solid_local_to_global.empty());
 
-    REQUIRE_FALSE(comp1->geometry->geometry_index.face_local_to_global.empty());
-    REQUIRE_FALSE(comp1->geometry->geometry_index.edge_local_to_global.empty());
-    REQUIRE_FALSE(comp1->geometry->geometry_index.vertex_local_to_global.empty());
-    REQUIRE_FALSE(comp1->geometry->geometry_index.solid_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->index.face_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->index.edge_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->index.vertex_local_to_global.empty());
+    REQUIRE_FALSE(comp1->geometry->index.solid_local_to_global.empty());
 }
