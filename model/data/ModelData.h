@@ -41,7 +41,7 @@ public:
     enum class Type {
         None,
         Mesh,
-        Spline,
+        Geometry,
         Mixed
     };
 

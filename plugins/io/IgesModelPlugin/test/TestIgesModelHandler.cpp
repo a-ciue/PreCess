@@ -95,7 +95,7 @@ TEST_CASE("IgesModelHandler::write_components()/read_model() - English path")
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
+    // 步骤5: 验证读取到有效的组件化 Geometry 几何
     requireReadableGeometryModel(*modelRead);
 }
 
@@ -129,7 +129,7 @@ TEST_CASE("IgesModelHandler::write_components()/read_model() - Chinese filename"
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
+    // 步骤5: 验证读取到有效的组件化 Geometry 几何
     requireReadableGeometryModel(*modelRead);
 }
 
@@ -164,7 +164,7 @@ TEST_CASE("IgesModelHandler::write_components()/read_model() - Chinese full path
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
+    // 步骤5: 验证读取到有效的组件化 Geometry 几何
     requireReadableGeometryModel(*modelRead);
 }
 
@@ -195,24 +195,24 @@ TEST_CASE("IgesModelHandler::write_components()/read_model() - Sphere test")
     REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
     REQUIRE(modelRead != nullptr);
 
-    // 步骤5: 验证读取到有效的组件化 CAD 几何
+    // 步骤5: 验证读取到有效的组件化 Geometry 几何
     requireReadableGeometryModel(*modelRead);
 }
 
 /**
- * @brief 测试：非 CAD 模型写入（错误处理测试）
+ * @brief 测试：非 Geometry 模型写入（错误处理测试）
  */
-TEST_CASE("IgesModelHandler::write_components() - Non-CAD component handling")
+TEST_CASE("IgesModelHandler::write_components() - Non-Geometry component handling")
 {
     systems::io::IgesModelHandler io;
     ModelLayer layer;
-    fs::path out = core::TempFile::instance().path().string() + "_non_cad.igs";
+    fs::path out = core::TempFile::instance().path().string() + "_non_geometry.igs";
 
     if (fs::exists(out)) {
         fs::remove(out);
     }
 
-    // 创建一个非 CAD 组件模型（只有 MeshData，没有 GeometryData）
+    // 创建一个非 Geometry 组件模型（只有 MeshData，没有 GeometryData）
     auto meshData = std::make_unique<MeshData>();
     auto model = std::make_unique<ModelData>(std::move(meshData));
     std::vector<Index> componentIds = addModelAndGetComponentIds(layer, std::move(model));

@@ -40,7 +40,7 @@ signals:
     void modelRemoved(int id);
     void modelUpdated(int id);
     void modelNameChanged(int id, const QString& newName);
-    void splineLoadFailed(const QString& message);
+    void geometryLoadFailed(const QString& message);
 
 private:
     std::unique_ptr<ModelLayer> core_;

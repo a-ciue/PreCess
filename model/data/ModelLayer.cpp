@@ -53,9 +53,9 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
         components_[cid] = std::move(c);
         ComponentData* cp = components_[cid].get();
 
-        // CAD index
+        // Geometry index
         if (cp->geometry) {
-            cp->geometry->ensureCadIndexBuilt(geom_registry_);
+            cp->geometry->ensureGeometryIndexBuilt(geom_registry_);
         }
 
         // Mesh: global points + globalize indices + release vertex_positions + edge id map
@@ -118,7 +118,7 @@ void ModelLayer::removeComponent(Index component_id)
             c->mesh->releaseEdgeIdMap(edge_id_map_);
         }
         if (c->geometry) {
-            c->geometry->cad_index.release(geom_registry_);
+            c->geometry->geometry_index.release(geom_registry_);
         }
     }
     // 从全局组件池删除

@@ -27,10 +27,10 @@ std::any systems::algo::CmdExecuteHandler::execute(HandlerContext& context, cons
     ComponentData& comp = context.cur_component.component();
 
     bool hasMesh = (comp.mesh != nullptr);
-    bool hasCad = (comp.geometry != nullptr);
+    bool hasGeometry = (comp.geometry != nullptr);
 
-    if (!hasMesh && !hasCad) {
-        spdlog::error("CmdExecuteHandler: component {} has neither mesh nor cad",
+    if (!hasMesh && !hasGeometry) {
+        spdlog::error("CmdExecuteHandler: component {} has neither mesh nor geometry",
             context.cur_component.componentId());
         return {};
     }

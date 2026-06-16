@@ -5,16 +5,16 @@
 GeometryData::GeometryData() = default;
 GeometryData::~GeometryData() = default;
 
-std::optional<GeometryDataVtk> GeometryData::getSplineData()
+std::optional<GeometryDataVtk> GeometryData::getGeometryVtkData()
 {
 	GeometryDataVtk modelData { *this->rootShape };
 	return modelData;
 } 
 
-void GeometryData::ensureCadIndexBuilt(GeometryRegistry& reg)
+void GeometryData::ensureGeometryIndexBuilt(GeometryRegistry& reg)
 {
     if (!rootShape)
         return;
-    if (!cad_index.built)
-        cad_index.build(*rootShape, reg);
+    if (!geometry_index.built)
+        geometry_index.build(*rootShape, reg);
 }

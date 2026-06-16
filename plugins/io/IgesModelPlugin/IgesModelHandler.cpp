@@ -81,7 +81,7 @@ void IgesModelHandler::write_components(const ModelLayer& mgr,
     }
 
     if (shapes.empty()) {
-        spdlog::error("IgesModelHandler: no CAD shapes to export for given components");
+        spdlog::error("IgesModelHandler: no geometry shapes to export for given components");
         return;
     }
 

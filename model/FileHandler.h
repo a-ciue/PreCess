@@ -20,7 +20,7 @@
   * @brief FileHandler 单例类
   *
   * 负责所有与文件 IO 相关的操作，包括：
-  * - 读取样条文件并转换为 ModelData 对象
+  * - 读取几何文件并转换为 ModelData 对象
   * - 读取网格文件并转换为 ModelData 对象
   * - 将 ModelData 数据写出到文件
   */
@@ -32,13 +32,13 @@ public:
     }
 
     /**
-     * @brief 读取样条文件并生成 ModelData 对象
-     * @param spline_path 样条文件的 URL 路径
+     * @brief 读取几何文件并生成 ModelData 对象
+     * @param geometry_path 几何文件的 URL 路径
      * @return 成功时返回 std::unique_ptr<ModelData>，失败返回 nullptr
      */
-    std::unique_ptr<ModelData> readSpline(const std::filesystem::path& spline_path);
+    std::unique_ptr<ModelData> readGeometry(const std::filesystem::path& geometry_path);
 
-    bool writeSpline(GeometryData& spline, const std::filesystem::path& target_path);
+    bool writeGeometry(GeometryData& geometry, const std::filesystem::path& target_path);
 
 private:
     // 禁止外部构造和拷贝

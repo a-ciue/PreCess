@@ -48,8 +48,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
     vtk->mesh_actor_manager_->bindGlobalPoints(vtk->global_points_.GetPointer());
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
-    vtk->spline_actor_manager_ = std::make_unique<GeometryActorManager>();
-    vtk->spline_actor_manager_->bindRender(vtk->renderer_);
+    vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
+    vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
@@ -143,7 +143,7 @@ void QRenderWindow::deleteModel(Index model_id)
         auto component_ids = model_query_->getComponentIds(model_id);
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
-            vtk->spline_actor_manager_->deleteComponent(component_id);
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
 
         this->selectManager_->clearSelection();
@@ -159,8 +159,8 @@ void QRenderWindow::deleteComponent(Index component_id)
             vtk->mesh_actor_manager_->deleteComponent(component_id);
         }
 
-        if (vtk->spline_actor_manager_) {
-            vtk->spline_actor_manager_->deleteComponent(component_id);
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
 
         this->selectManager_->clearSelection();
@@ -229,7 +229,7 @@ void QRenderWindow::onModelChanged(Index model_id)
         // 先删旧 actor
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
-            vtk->spline_actor_manager_->deleteComponent(component_id);
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
 
         // 再逐 component 重建
@@ -239,9 +239,9 @@ void QRenderWindow::onModelChanged(Index model_id)
                 vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
             }
 
-            auto spline_data = model_query_->getSplineDataByComponent(component_id);
-            if (spline_data) {
-                vtk->spline_actor_manager_->loadSpline(*spline_data);
+            auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
+            if (geometry_data) {
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
             }
         }
     });
@@ -265,11 +265,11 @@ void QRenderWindow::onComponentChanged(Index component_id)
             }
         }
 
-        if (vtk->spline_actor_manager_) {
-            auto spline_data = this->model_query_->getSplineDataByComponent(component_id);
-            vtk->spline_actor_manager_->deleteComponent(component_id);
-            if (spline_data) {
-                vtk->spline_actor_manager_->loadSpline(*spline_data);
+        if (vtk->geometry_actor_manager_) {
+            auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
+            if (geometry_data) {
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
             }
         }
     });
@@ -284,7 +284,7 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
         auto component_ids = model_query_->getComponentIds(model_id);
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
-            vtk->spline_actor_manager_->setVisibility(component_id, visibility);
+            vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
     });
 }
@@ -298,8 +298,8 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
         }
 
-        if (vtk->spline_actor_manager_) {
-            vtk->spline_actor_manager_->setVisibility(component_id, visibility);
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
     });
 }
@@ -367,8 +367,8 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
     if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
         return vtk.mesh_actor_manager_->getIsEdgeRender(component_id);
     }
-    if (vtk.spline_actor_manager_ && vtk.spline_actor_manager_->hasComponent(component_id)) {
-        return vtk.spline_actor_manager_->getIsEdgeRender(component_id);
+    if (vtk.geometry_actor_manager_ && vtk.geometry_actor_manager_->hasComponent(component_id)) {
+        return vtk.geometry_actor_manager_->getIsEdgeRender(component_id);
     }
 
     spdlog::error("get is edge render mode error");
@@ -472,7 +472,7 @@ void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
         auto component_ids = model_query_->getComponentIds(model_id);
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
-            vtk->spline_actor_manager_->setRenderEdge(component_id, is_render);
+            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
         }
 
         this->setCurEdgeRender(is_render);
@@ -488,8 +488,8 @@ void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
             vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
         }
 
-        if (vtk->spline_actor_manager_) {
-            vtk->spline_actor_manager_->setRenderEdge(component_id, is_render);
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
         }
     });
 }

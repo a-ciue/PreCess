@@ -2,7 +2,7 @@
  * @file FileHandler.cpp
  * @brief 实现 FileHandler 类，用于管理所有与文件 IO 相关的操作
  *
- * 该文件包含 FileHandler 类的实现，提供读取样条文件、读取网格文件以及将模型数据写出到文件的功能。
+ * 该文件包含 FileHandler 类的实现，提供读取几何文件、读取网格文件以及将模型数据写出到文件的功能。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
  * @date 2025/3/22
@@ -19,19 +19,19 @@
 #include <TopoDS_Shape.hxx>
 #include <spdlog/spdlog.h>
 
-std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& spline_path)
+std::unique_ptr<ModelData> FileHandler::readGeometry(const std::filesystem::path& geometry_path)
 {
     using namespace std::filesystem;
-    //const QString ext = QFileInfo(spline_path.toLocalFile()).suffix().toLower();
-    const path& ext = spline_path.extension();
+    //const QString ext = QFileInfo(geometry_path.toLocalFile()).suffix().toLower();
+    const path& ext = geometry_path.extension();
     TopoDS_Shape shape;
 
     if (ext == "step" || ext == "stp") {
         STEPControl_Reader reader;
         IFSelect_ReturnStatus stat = reader.ReadFile(
-                spline_path.string().c_str());
+                geometry_path.string().c_str());
         if (stat != IFSelect_RetDone) {
-            spdlog::error("STEP 读取失败: {}", spline_path.string());
+            spdlog::error("STEP 读取失败: {}", geometry_path.string());
         return nullptr;
     }
         reader.TransferRoots();
@@ -40,9 +40,9 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& 
     else {        // iges / igs
         IGESControl_Reader reader;
         IFSelect_ReturnStatus stat = reader.ReadFile(
-            spline_path.string().c_str());
+            geometry_path.string().c_str());
         if (stat != IFSelect_RetDone) {
-            spdlog::error("IGES 读取失败: {}", spline_path.string());
+            spdlog::error("IGES 读取失败: {}", geometry_path.string());
             return nullptr;
         }
         reader.TransferRoots();
@@ -50,7 +50,7 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& 
     }
 
     if (shape.IsNull()) {
-        spdlog::error("样条文件 {} 读取失败，形状为空", spline_path.string());
+        spdlog::error("几何文件 {} 读取失败，形状为空", geometry_path.string());
         return nullptr;
     }
 
@@ -58,15 +58,15 @@ std::unique_ptr<ModelData> FileHandler::readSpline(const std::filesystem::path& 
     sd->rootShape = std::make_unique<TopoDS_Shape>(shape);
 
     auto model = std::make_unique<ModelData>(std::move(sd));
-    model->model_name_ = spline_path.filename().string();
+    model->model_name_ = geometry_path.filename().string();
     return model;
 }
 
-bool FileHandler::writeSpline(GeometryData& spline, const std::filesystem::path& target_path)
+bool FileHandler::writeGeometry(GeometryData& geometry, const std::filesystem::path& target_path)
 {
-	if (!spline.rootShape || spline.rootShape->IsNull())
+	if (!geometry.rootShape || geometry.rootShape->IsNull())
 	{
-		std::cerr << "writeSpline: GeometryData rootShape 为空" << std::endl;
+		std::cerr << "writeGeometry: GeometryData rootShape 为空" << std::endl;
         return false;
 	}
 
@@ -77,7 +77,7 @@ bool FileHandler::writeSpline(GeometryData& spline, const std::filesystem::path&
         STEPControl_Writer writer;
 
 	    // 将形状添加到写入器
-	    IFSelect_ReturnStatus transferStatus = writer.Transfer(*spline.rootShape, STEPControl_AsIs);
+	    IFSelect_ReturnStatus transferStatus = writer.Transfer(*geometry.rootShape, STEPControl_AsIs);
 
 	    if (transferStatus != IFSelect_RetDone) {
 	        std::cerr << "形状传输失败" << std::endl;

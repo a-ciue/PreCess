@@ -1,5 +1,5 @@
-#ifndef SPLINE_ACTOR_H
-#define SPLINE_ACTOR_H
+#ifndef GEOMETRY_ACTOR_H
+#define GEOMETRY_ACTOR_H
 #include "Core.h"
 #include "GeometryDataVtk.h"
 #include <vtkActor.h>
@@ -9,25 +9,25 @@
 class GeometryActor {
 
 public:
-    GeometryActor(vtkRenderer* renderer, SplineRenderMode render_mode);
+    GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode);
     ~GeometryActor();
 
-    SplineRenderMode getSplineRenderMode();
+    GeometryRenderMode getGeometryRenderMode();
     bool getIsEdgeRender();
 
-    void loadShape(const GeometryDataVtk& spline_data);
+    void loadShape(const GeometryDataVtk& geometry_data);
 
     void setVisibility(bool visibility);
-    void setRenderMode(SplineRenderMode render_mode);
+    void setRenderMode(GeometryRenderMode render_mode);
     void setRenderEdge(bool is_render);
 
 private:
-    void deleteSplineActor();
+    void deleteGeometryActor();
 
-    SplineRenderMode render_mode_;
+    GeometryRenderMode render_mode_;
     bool edge_render;
     bool visibility_;
-    std::unique_ptr<GeometryDataVtk> spline_data_;
+    std::unique_ptr<GeometryDataVtk> geometry_data_;
 
     vtkNew<vtkActor> poly_actor_;
     vtkNew<vtkActor> line_actor_;

@@ -12,7 +12,7 @@ struct DummyObserver : ModelObserver {
     void notifyModelRemoved(Index) override { }
     void notifyComponentRemoved(Index) override { }
     void notifyModelNameChanged(Index, const std::string&) override { }
-    void notifySplineLoadFailed(const std::string&) override { }
+    void notifyGeometryLoadFailed(const std::string&) override { }
 };
 
 TEST_CASE("Edge global id map is built for true 1D edges", "[MeshIDMap][MeshData]")

@@ -11,7 +11,7 @@ enum class ModelRenderMode {
     Group
 };
 
-enum class SplineRenderMode {
+enum class GeometryRenderMode {
     Face,
     Block,
     Group

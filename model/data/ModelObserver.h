@@ -41,10 +41,10 @@ public:
     virtual void notifyModelNameChanged(Index model_id, const std::string& new_name) = 0;
     
     /**
-     * @brief 接收样条曲线加载失败的通知函数
+     * @brief 接收几何曲线加载失败的通知函数
      * @param message 失败信息
      *
-     * 该通知函数用于在样条曲线加载失败时发出信号，通知外部组件。
+     * 该通知函数用于在几何曲线加载失败时发出信号，通知外部组件。
      */
-    virtual void notifySplineLoadFailed(const std::string& message) = 0;
+    virtual void notifyGeometryLoadFailed(const std::string& message) = 0;
 };

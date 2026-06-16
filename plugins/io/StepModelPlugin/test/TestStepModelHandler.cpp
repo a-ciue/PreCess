@@ -3,7 +3,7 @@
  * @brief STEP 模型文件处理器单元测试
  *
  * StepModelHandler 基于 OpenCASCADE 的 STEPControl_Reader/Writer，
- * 当前以组件化 GeometryData（封装 TopoDS_Shape）作为 CAD 几何读写对象。
+ * 当前以组件化 GeometryData（封装 TopoDS_Shape）作为 Geometry 几何读写对象。
  * 测试模式参考 IGES 的测试：用 OCCT 在内存中构造 box/sphere，写出 STEP 再读回，
  * 验证读取到有效组件化几何；同时覆盖中文路径。
  */

@@ -1,5 +1,5 @@
-#ifndef SPLINE_ACTOR_MANAGER_H
-#define SPLINE_ACTOR_MANAGER_H
+#ifndef GEOMETRY_ACTOR_MANAGER_H
+#define GEOMETRY_ACTOR_MANAGER_H
 #include "Core.h"
 #include <memory>
 #include <unordered_map>
@@ -15,16 +15,16 @@ public:
     ~GeometryActorManager();
     void bindRender(vtkRenderer* renderer);
 
-    const GeometryActor* getSplineActor(Index component_id);
-    SplineRenderMode getSplineRenderMode(Index component_id);
+    const GeometryActor* getGeometryActor(Index component_id);
+    GeometryRenderMode getGeometryRenderMode(Index component_id);
     bool getIsEdgeRender(Index component_id);
     bool hasComponent(Index component_id) const;
 
     void deleteComponent(Index component_id);
-    void loadSpline(const GeometryDataVtk& spline_data);
+    void loadGeometry(const GeometryDataVtk& geometry_data);
 
     void setVisibility(Index component_id, bool visibility);
-    void setRenderMode(Index component_id, SplineRenderMode render_mode);
+    void setRenderMode(Index component_id, GeometryRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
 
 private:

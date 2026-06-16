@@ -71,7 +71,7 @@ void StepModelHandler::write_components(const ModelLayer& mgr,
     }
 
     if (shapes.empty()) {
-        spdlog::error("StepModelHandler: no CAD shapes to export for given components");
+        spdlog::error("StepModelHandler: no geometry shapes to export for given components");
         return;
     }
 

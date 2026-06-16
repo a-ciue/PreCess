@@ -2,7 +2,7 @@
 #include "MeshData.h"
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("ComponentData CAD edge -> mesh point gids map", "[CadMeshMap]")
+TEST_CASE("ComponentData Geometry edge -> mesh point gids map", "[GeometryMeshMap]")
 {
     ComponentData c;
     c.id = 1;

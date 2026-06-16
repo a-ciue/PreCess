@@ -97,12 +97,12 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
         for (Standard_Integer i = 1; i <= freeShapes.Length(); ++i) {
             TopoDS_Shape s = shapeTool->GetShape(freeShapes.Value(i));
             if (!s.IsNull()) {
-                auto spline_data = std::make_unique<GeometryData>();
-                spline_data->rootShape = std::make_unique<TopoDS_Shape>(s);
+                auto geometry_data = std::make_unique<GeometryData>();
+                geometry_data->rootShape = std::make_unique<TopoDS_Shape>(s);
 
                 std::string compName = "Comp_" + std::to_string(freeIndex);
                 ComponentData* c = model_data->createComponent(-1, compName);
-                c->geometry = std::move(spline_data);
+                c->geometry = std::move(geometry_data);
 
                 ++freeIndex;
             }
@@ -118,8 +118,8 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
 
     int leafIndex = 0;
     for (const auto& [label, shape] : leaves) {
-        auto spline_data = std::make_unique<GeometryData>();
-        spline_data->rootShape = std::make_unique<TopoDS_Shape>(shape);
+        auto geometry_data = std::make_unique<GeometryData>();
+        geometry_data->rootShape = std::make_unique<TopoDS_Shape>(shape);
 
         std::string compName = labelName(label);
         if (compName.empty()) {
@@ -127,7 +127,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
         }
 
         ComponentData* c = model_data->createComponent(-1, compName);
-        c->geometry = std::move(spline_data);
+        c->geometry = std::move(geometry_data);
         c->source_xde_leaf_id = leafIndex;
 
         spdlog::info("[STEP-XDE] create component: index={}, name='{}', shapeType={}",

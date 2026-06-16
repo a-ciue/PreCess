@@ -40,9 +40,9 @@ public:
  */
 class QModelQuery : public QObject, IModelQuery {
     Q_OBJECT
-QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
+    QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
 
-    public :
+public :
     /**
      * @brief 构造函数
      *
@@ -56,13 +56,13 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
 
     std::vector<std::array<double, 3>> copyGlobalPoints() const;
 
-    std::vector<GeometryDataVtk> getSplineData(Index model_id);
-    std::optional<GeometryDataVtk> getSplineDataByComponent(Index component_id);
+    std::vector<GeometryDataVtk> getGeometryVtkData(Index model_id);
+    std::optional<GeometryDataVtk> getGeometryVtkDataByComponent(Index component_id);
 
     std::vector<Index> getComponentIds(Index model_id) const;
     Q_INVOKABLE int findModelIdByComponent(Index component_id) const;
 
-    Q_INVOKABLE QVariantList getCadEdgeMappedPointIds(Index component_id, int localCadEdgeId);
+    Q_INVOKABLE QVariantList getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId);
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
     /**
@@ -82,10 +82,10 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
     Q_INVOKABLE QVariantMap getMeshSummary(Index component_id) const;
     Q_INVOKABLE QVariantMap getGeometrySummary(Index component_id) const;
 
-    std::optional<GeomFaceId> resolveCadFaceLocalId(Index component_id, int localFaceId);
-    std::optional<GeomEdgeId> resolveCadEdgeLocalId(Index component_id, int localEdgeId);
-    std::optional<GeomVertexId> resolveCadVertexLocalId(Index component_id, int localVertexId);
-    std::optional<GeomSolidId> resolveCadSolidLocalId(Index component_id, int localSolidId);
+    std::optional<GeomFaceId> resolveGeometryFaceLocalId(Index component_id, int localFaceId);
+    std::optional<GeomEdgeId> resolveGeometryEdgeLocalId(Index component_id, int localEdgeId);
+    std::optional<GeomVertexId> resolveGeometryVertexLocalId(Index component_id, int localVertexId);
+    std::optional<GeomSolidId> resolveGeometrySolidLocalId(Index component_id, int localSolidId);
 
 private:
     ModelLayer* m_manager;

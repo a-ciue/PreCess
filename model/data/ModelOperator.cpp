@@ -14,7 +14,7 @@ ModelObserver* ModelOperator::observer() const
     return observer_;
 }
 
-void ModelOperator::write_spline(const std::filesystem::path& spline_path)
+void ModelOperator::write_geometry(const std::filesystem::path& geometry_path)
 {
 }
 

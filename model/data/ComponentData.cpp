@@ -10,19 +10,19 @@ bool ComponentData::hasMesh() const noexcept
     return static_cast<bool>(mesh); 
 }
 
-bool ComponentData::hasCad() const noexcept 
+bool ComponentData::hasGeometry() const noexcept 
 { 
     return static_cast<bool>(geometry);
 }
 
-SplineMeshMap& ComponentData::ensureMapping()
+GeometryMeshMap& ComponentData::ensureMapping()
 {
     if (!mapping)
-        mapping = std::make_unique<SplineMeshMap>();
+        mapping = std::make_unique<GeometryMeshMap>();
     return *mapping;
 }
 
-const SplineMeshMap* ComponentData::getMapping() const noexcept 
+const GeometryMeshMap* ComponentData::getMapping() const noexcept 
 { 
     return mapping.get(); 
 }
