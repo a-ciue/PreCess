@@ -217,7 +217,13 @@ void QRenderWindow::onModelChanged(Index model_id)
 
         auto component_ids = model_query_->getComponentIds(model_id);
         updateGlobalVtkPointsImpl(vtk);
+        // 先删旧 actor
+        for (Index component_id : component_ids) {
+            vtk->mesh_actor_manager_->deleteComponent(component_id);
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
+        }
 
+        // 再逐 component 重建
         for (Index component_id : component_ids) {
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
@@ -244,6 +250,7 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
+            vtk->mesh_actor_manager_->deleteComponent(component_id);
             if (mesh_data) {
                 vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
             }
@@ -251,6 +258,7 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         if (vtk->geometry_actor_manager_) {
             auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
             if (geometry_data) {
                 vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
             }

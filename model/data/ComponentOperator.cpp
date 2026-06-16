@@ -49,5 +49,6 @@ void ComponentOperator::notifyChanged() const
 {
     if (!observer_) return;
 
-    observer_->notifyComponentChanged(component_id_);
+    // 目前先用 modelChanged 兜底
+    observer_->notifyModelChanged(modelId());
 }
