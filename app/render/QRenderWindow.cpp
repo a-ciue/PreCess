@@ -190,14 +190,6 @@ void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
     spdlog::info("[VTK GlobalPoints] updated: N={}", (int)gpts->GetNumberOfPoints());
 }
 
-void QRenderWindow::updateGlobalVtkPoints()
-{
-    dispatch_async([this](vtkRenderWindow*, vtkUserData userData) {
-        Data* vtk = Data::SafeDownCast(userData);
-        updateGlobalVtkPointsImpl(vtk);
-    });
-}
-
 void QRenderWindow::setMeshClip(bool on)
 {
     dispatch_async([on, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -334,32 +326,6 @@ bool QRenderWindow::getCurEdgeRender()
     return this->edge_render_;
 }
 
-void QRenderWindow::setCurVertexRender(bool is_render)
-{
-    //this->vertex_render_ = is_render;
-    //emit curVertexRenderChanged();
-
-    //dispatch_async([this, is_render](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-    //    Data* vtk = Data::SafeDownCast(userData);
-
-    //    auto component_ids = model_query_->getComponentIds(this->cur_component_id_);
-    //    for (Index component_id : component_ids) {
-    //        vtk->mesh_actor_manager_->setRenderVertex(component_id, is_render);
-    //    }
-    //});
-    // vertex rendering disabled
-    if (vertex_render_ != false) {
-        vertex_render_ = false;
-        emit curVertexRenderChanged();
-    }
-}
-
-bool QRenderWindow::getCurVertexRender()
-{
-    //return this->vertex_render_;
-    return false;
-}
-
 bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
 {
     if (component_id < 0) return false;
@@ -375,21 +341,6 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
     return false;
 }
 
-bool QRenderWindow::getIsVertexRender(Data& vtk, Index model_id)
-{
-    //auto component_ids = model_query_->getComponentIds(model_id);
-    //if (!component_ids.empty()) {
-    //    Index component_id = component_ids.front();
-
-    //    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
-    //        return vtk.mesh_actor_manager_->getIsVertexRender(component_id);
-    //    }
-    //}
-
-    //std::cout << "get is vertex render mode error" << std::endl;
-    return false;
-}
-
 void QRenderWindow::setSelectComponent(Index component_id)
 {
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -397,9 +348,6 @@ void QRenderWindow::setSelectComponent(Index component_id)
         selectManager_->bindRenderer(vtk->renderer_);
         this->cur_component_id_ = component_id;
         this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
-
-        this->vertex_render_ = false;
-        emit curVertexRenderChanged();
 
         std::shared_ptr<const MeshActor> mesh_actor;
         if (vtk->mesh_actor_manager_->hasComponent(component_id))

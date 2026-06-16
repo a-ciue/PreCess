@@ -21,7 +21,6 @@ class MeshActorSelectOp;
 class AttributeOperator;
 
 //! @brief 负责管理Model的Actor
-// 顶点渲染功能已取消（性能/视觉原因）；顶点拾取与高亮仍保留。
 class MeshActor {
     friend MeshActorSelectOp;
     friend AttributeOperator;
@@ -30,7 +29,7 @@ public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    MeshActor(vtkRenderer* renderer, bool is_edge_render = true, bool is_vertex_render = true, ModelRenderMode render_mode = ModelRenderMode::Face);
+    MeshActor(vtkRenderer* renderer, bool is_edge_render = true, ModelRenderMode render_mode = ModelRenderMode::Face);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -42,11 +41,9 @@ public:
      */
     void setClipPlane(vtkPlane* plane);
     void setRenderEdge(bool is_render);
-    void setRenderVertex(bool is_render);
     void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
-    bool getIsVertexRender();
 
     ModelRenderMode getMeshRenderMode();
     /**
@@ -74,13 +71,10 @@ private:
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     ModelRenderMode render_mode_;
     bool edge_render_ { true };
-    bool vertex_render_ {};
     bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
 
     vtkPlane* clip_plane_ {};
-
-    vtkNew<vtkExtractPolyDataGeometry> vertex_clipper_;
     vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;
     vtkNew<vtkExtractPolyDataGeometry> face_clipper_;
     vtkNew<vtkExtractGeometry> solid_clipper_;
@@ -96,7 +90,6 @@ private:
     vtkNew<vtkActor> solid_actor_;
     vtkNew<vtkActor> face_actor_;
     vtkNew<vtkActor> edge_actor_;
-    vtkNew<vtkActor> vertex_actor_;
     vtkNew<vtkActor> glyph3D_actor_;
 
     vtkNew<vtkUnstructuredGrid> solid_data_;

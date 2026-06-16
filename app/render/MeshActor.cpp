@@ -27,7 +27,7 @@
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
-MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, bool is_vertex_render, ModelRenderMode render_mode)
+MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode)
     : renderer_(renderer)
     , render_mode_(render_mode)
     , edge_render_(is_edge_render)
@@ -197,11 +197,6 @@ void MeshActor::setRenderEdge(bool is_render)
     this->edge_actor_->SetVisibility(is_render && this->visibility_);
 }
 
-void MeshActor::setRenderVertex(bool is_render)
-{
-    // 顶点渲染已取消（设计选择）
-}
-
 void MeshActor::setRenderMode(ModelRenderMode render_mode)
 {
     this->render_mode_ = render_mode;
@@ -227,12 +222,6 @@ bool MeshActor::getIsEdgeRender()
 {
     return this->edge_render_;
 }
-
-//bool MeshActor::getIsVertexRender()
-//{
-//    //return this->vertex_render_;
-//    return false;
-//}
 
 ModelRenderMode MeshActor::getMeshRenderMode()
 {

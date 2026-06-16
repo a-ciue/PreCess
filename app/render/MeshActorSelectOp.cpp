@@ -44,11 +44,6 @@ vtkProp& MeshActorSelectOp::getEdgeActor()
     return *mesh_actor_->edge_actor_;
 }
  
-//vtkProp& MeshActorSelectOp::getVertexActor()
-//{
-//    return *mesh_actor_->vertex_actor_;
-//}
-
 vtkProp& MeshActorSelectOp::getBlockActor()
 {
     return *mesh_actor_->actor_;

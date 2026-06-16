@@ -61,12 +61,6 @@ void MeshActorManager::setRenderEdge(Index component_id, bool is_render)
         this->component_actors_[component_id]->setRenderEdge(is_render);
 }
 
-void MeshActorManager::setRenderVertex(Index component_id, bool is_render)
-{
-    //if (this->component_actors_.count(component_id))
-    //    this->component_actors_[component_id]->setRenderVertex(is_render);
-}
-
 void MeshActorManager::setClipPlane(vtkPlane* plane)
 {
     for (auto&& [idx, mesh_actor] : this->component_actors_) {
@@ -84,13 +78,6 @@ bool MeshActorManager::getIsEdgeRender(Index component_id)
 {
     if (this->component_actors_.count(component_id))
         return this->component_actors_[component_id]->getIsEdgeRender();
-    return false;
-}
-
-bool MeshActorManager::getIsVertexRender(Index component_id)
-{
-    //if (this->component_actors_.count(component_id))
-    //    return this->component_actors_[component_id]->getIsVertexRender();
     return false;
 }
 

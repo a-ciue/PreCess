@@ -4,7 +4,6 @@
 #include "MeshActor.h"
 #include <unordered_map>
 #include <vtkPoints.h>
-#include <vtkIdTypeArray.h>
 
 class vtkRenderer;
 
@@ -20,7 +19,6 @@ public:
     void setVisibility(Index component_id, bool visibility);
     void setRenderMode(Index component_id, ModelRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
-    void setRenderVertex(Index component_id, bool is_render);
     /**
      * @brief 设置或取消裁剪平面
      * @param plane 裁剪平面，传入nullptr则取消裁剪
@@ -29,7 +27,6 @@ public:
 
     bool getCount(Index component_id);
     bool getIsEdgeRender(Index component_id);
-    bool getIsVertexRender(Index component_id);
     ModelRenderMode getMeshRenderMode(Index component_id);
 
     void setAttriMode(

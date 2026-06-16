@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     vtkNew<vtkInteractorStyleTrackballCamera> style;
     renderWindowInteractor->SetInteractorStyle(style);
 
-    MeshActor meshActor(renderer, true, true, ModelRenderMode::Face);
+    MeshActor meshActor(renderer, true, ModelRenderMode::Face);
     meshActor.loadModelData(test_mesh_data);
     meshActor.setRenderMode(ModelRenderMode::Face);
     meshActor.setVisibility(true);

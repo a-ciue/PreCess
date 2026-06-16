@@ -5,7 +5,7 @@
 GeometryData::GeometryData() = default;
 GeometryData::~GeometryData() = default;
 
-std::optional<GeometryDataVtk> GeometryData::getGeometryVtkData()
+std::optional<GeometryDataVtk> GeometryData::getGeometryData()
 {
 	GeometryDataVtk modelData { *this->rootShape };
 	return modelData;

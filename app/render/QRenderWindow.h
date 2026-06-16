@@ -24,7 +24,6 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkPoints.h>
-#include <vtkIdTypeArray.h>
 
 class MeshActor;
 class SelectManager;
@@ -38,7 +37,6 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
     Q_PROPERTY(bool cur_edge_render READ getCurEdgeRender NOTIFY curEdgeRenderChanged)
-    Q_PROPERTY(bool cur_vertex_render READ getCurVertexRender WRITE setCurVertexRender NOTIFY curVertexRenderChanged)
     QML_ELEMENT
 public:
     QRenderWindow(); // 槽函数，改变边框重置相机
@@ -71,11 +69,8 @@ public:
     void setModelQuery(QModelQuery* query);
     void setCurEdgeRender(bool edge_render);
     bool getCurEdgeRender();
-    void setCurVertexRender(bool is_render);
-    bool getCurVertexRender();
 
     bool getIsEdgeRender(Data& vtk, Index component_id);
-    bool getIsVertexRender(Data& vtk, Index model_id);
 
     /**
      * @brief 选择模型
@@ -171,13 +166,11 @@ public:
 signals:
     void selectedChanged();
     void curEdgeRenderChanged();
-    void curVertexRenderChanged();
     void clicked();
 
 private:
     bool edge_render_ {};
     ModelRenderMode renderMode_ {};
-    bool vertex_render_ {};
     SelectMode select_mode_ {};
 
     vtkNew<vtkCamera> _camera;
