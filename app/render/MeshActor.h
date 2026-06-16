@@ -29,7 +29,7 @@ public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    MeshActor(vtkRenderer* renderer, bool is_edge_render = true, ModelRenderMode render_mode = ModelRenderMode::Face);
+    MeshActor(vtkRenderer* renderer, vtkPoints* global_points, bool is_edge_render = true, ModelRenderMode render_mode = ModelRenderMode::Face);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -64,7 +64,6 @@ public:
         const std::string& attr_name,
         std::map<std::string, std::any> args);
 
-    void setGlobalPoints(vtkPoints* pts);
     void ensureOriginalPointIds();
 
 private:

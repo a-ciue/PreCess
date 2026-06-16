@@ -101,7 +101,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
     return model_data;
 }
 
-std::vector<std::array<double, 3>> QModelQuery::copyGlobalPoints() const
+const std::vector<std::array<double, 3>>& QModelQuery::globalPoints() const
 {
     return m_manager->globalPoints();
 }

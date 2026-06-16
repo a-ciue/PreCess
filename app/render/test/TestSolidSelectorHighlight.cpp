@@ -6,6 +6,7 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkNew.h>
 #include <vtkObjectFactory.h>
+#include <vtkPoints.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
@@ -63,8 +64,14 @@ int main(int argc, char* argv[])
     vtkNew<SolidPickInteractorStyle> style;
     interactor->SetInteractorStyle(style);
 
+    vtkNew<vtkPoints> pts;
+    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
+    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
+        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
+    }
+
     // 创建 MeshActor 并加载数据
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, true, true, ModelRenderMode::Face);
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, pts, true, true, ModelRenderMode::Face);
     meshActor->loadModelData(test_mesh_data);
 
     // 体元高亮选择器

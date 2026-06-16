@@ -2,6 +2,7 @@
 #include "renderStrategy/AttributeOperator.h"
 #include "Core.h"
 #include <spdlog/spdlog.h>
+#include <stdexcept>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
@@ -27,11 +28,15 @@
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
-MeshActor::MeshActor(vtkRenderer* renderer, bool is_edge_render, ModelRenderMode render_mode)
+MeshActor::MeshActor(vtkRenderer* renderer, vtkPoints* global_points, bool is_edge_render, ModelRenderMode render_mode)
     : renderer_(renderer)
+    , global_points_(global_points)
     , render_mode_(render_mode)
     , edge_render_(is_edge_render)
 {
+    if (!global_points_) {
+        throw std::invalid_argument("MeshActor: global_points cannot be null");
+    }
     vtkNew<vtkNamedColors> colors;
     this->setRenderMode(render_mode);
     this->setRenderEdge(is_edge_render);
@@ -59,7 +64,6 @@ MeshActor::~MeshActor()
 
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
-    assert(global_points_);
     ensureOriginalPointIds();
 
     this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
@@ -361,22 +365,17 @@ void MeshActor::renderAttribute(
     }
 }
 
-void MeshActor::setGlobalPoints(vtkPoints* pts)
-{
-    global_points_ = pts;
-}
-
 void MeshActor::ensureOriginalPointIds()
 {
-    if (!global_points_)
-        return;
-
     vtkIdType n = global_points_->GetNumberOfPoints();
     original_point_ids_->SetName("vtkOriginalPointIds");
     original_point_ids_->SetNumberOfComponents(1);
     original_point_ids_->SetNumberOfTuples(n);
-    for (vtkIdType i = 0; i < n; ++i) {
-        original_point_ids_->SetValue(i, i);
-    }
+    vtkSMPTools::For(0, n,
+        [&](vtkIdType begin, vtkIdType end) {
+            for (vtkIdType i = begin; i < end; ++i) {
+                original_point_ids_->SetValue(i, i);
+            }
+        });
     original_point_ids_->Modified();
 }

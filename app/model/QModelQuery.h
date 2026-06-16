@@ -54,7 +54,7 @@ public :
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
     std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
-    std::vector<std::array<double, 3>> copyGlobalPoints() const;
+    const std::vector<std::array<double, 3>>& globalPoints() const;
 
     std::vector<GeometryDataVtk> getGeometryVtkData(Index model_id);
     std::optional<GeometryDataVtk> getGeometryVtkDataByComponent(Index component_id);

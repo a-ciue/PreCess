@@ -10,6 +10,7 @@
 #include "GeometryDataVtk.h"
 
 #include <spdlog/spdlog.h>
+#include <vtkDoubleArray.h>
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
@@ -45,8 +46,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_ = vtk.GetPointer();
-    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
-    vtk->mesh_actor_manager_->bindGlobalPoints(vtk->global_points_.GetPointer());
+    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>(vtk->global_points_.GetPointer());
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
@@ -172,22 +172,21 @@ void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
     if (!vtk || !model_query_)
         return;
 
-    auto pts = model_query_->copyGlobalPoints();
+    const auto& pts = model_query_->globalPoints();
+    auto count = static_cast<vtkIdType>(pts.size());
+    vtkIdType totalVals = count * 3;
 
-    vtkPoints* gpts = vtk->global_points_.GetPointer();
-    gpts->Reset();
-    gpts->SetNumberOfPoints((vtkIdType)pts.size());
-    for (vtkIdType i = 0; i < (vtkIdType)pts.size(); ++i) {
-        gpts->SetPoint(i, pts[(size_t)i].data());
-    }
-    gpts->Modified();
+    vtkNew<vtkDoubleArray> arr;
+    arr->SetNumberOfComponents(3);
+    arr->SetArray(const_cast<double*>(pts.data()->data()), totalVals, 0);
 
-    // 全局点数变化后同步所有 actor 的 vtkOriginalPointIds 长度
+    vtk->global_points_->SetData(arr);
+
     if (vtk->mesh_actor_manager_) {
         vtk->mesh_actor_manager_->syncOriginalPointIds();
     }
 
-    spdlog::info("[VTK GlobalPoints] updated: N={}", (int)gpts->GetNumberOfPoints());
+    spdlog::info("[VTK GlobalPoints] updated: N={}", (int)vtk->global_points_->GetNumberOfPoints());
 }
 
 void QRenderWindow::setMeshClip(bool on)

@@ -9,6 +9,7 @@ class vtkRenderer;
 
 class MeshActorManager {
 public:
+    explicit MeshActorManager(vtkPoints* global_points);
     void bindRender(vtkRenderer* renderer);
     bool hasComponent(Index component_id) const;
     std::shared_ptr<const MeshActor> getComponentActor(Index component_id) const;
@@ -36,7 +37,6 @@ public:
         std::map<std::string, std::any> args);
     void cancelAttri(Index component_id);
 
-    void bindGlobalPoints(vtkPoints* pts);
     void syncOriginalPointIds();
 
 private:

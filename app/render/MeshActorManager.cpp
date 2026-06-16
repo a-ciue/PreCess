@@ -5,6 +5,12 @@
 #include "renderStrategy/AttriRenderStrategyUV.h"
 #include "renderStrategy/AttriRenderStrategyRGB.h"
 #include <spdlog/spdlog.h>
+
+MeshActorManager::MeshActorManager(vtkPoints* global_points)
+    : global_points_(global_points)
+{
+}
+
 std::shared_ptr<const MeshActor> MeshActorManager::getComponentActor(Index component_id) const
 {
     if (this->component_actors_.count(component_id))
@@ -35,10 +41,9 @@ bool MeshActorManager::hasComponent(Index component_id) const
 void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
 {
     if (!this->component_actors_.count(component_id))
-        this->component_actors_[component_id] = std::make_shared<MeshActor>(renderer);
+        this->component_actors_[component_id] = std::make_shared<MeshActor>(renderer, global_points_);
 
     auto& actor = this->component_actors_[component_id];
-    actor->setGlobalPoints(global_points_);
     actor->loadModelData(model_data);
     actor->setRenderMode(render_mode);
 }
@@ -125,17 +130,11 @@ void MeshActorManager::cancelAttri(Index component_id)
         this->component_actors_[component_id]->cancelActiveAttribute();
 }
 
-void MeshActorManager::bindGlobalPoints(vtkPoints* pts)
-{
-    global_points_ = pts;
-}
-
 void MeshActorManager::syncOriginalPointIds()
 {
     for (auto& [cid, actor] : component_actors_) {
         if (!actor)
             continue;
-        actor->setGlobalPoints(global_points_); 
         actor->ensureOriginalPointIds(); 
     }
 }
