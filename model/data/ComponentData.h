@@ -55,6 +55,4 @@ struct ComponentData {
     const GeometryData* asGeometryData() const noexcept { return geometry.get(); }
 
     GeometryMeshMap& ensureMapping();
-    const GeometryMeshMap* getMapping() const noexcept;
-    bool ownsGlobalPoint(Index global_pid) const noexcept;
 };
