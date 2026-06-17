@@ -139,7 +139,7 @@ bool TreeModel::refresh()
             int cid = c["component_id"].toInt();
             QString cname = c["name"].toString();
             bool hasMesh = c["has_mesh"].toBool();
-            bool hasCad = c["has_cad"].toBool();
+            bool hasGeometry = c["has_geometry"].toBool();
 
             TreeNode* cNode = new TreeNode(cname, "", mNode);
             cNode->nodeId = cid;
@@ -162,7 +162,7 @@ bool TreeModel::refresh()
                 }
             }
 
-            if (hasCad) {
+            if (hasGeometry) {
                 QVariantMap gs = modelQuery_->getGeometrySummary(cid);
                 int vc = gs["vertex_count"].toInt();
                 int ec = gs["edge_count"].toInt();
