@@ -55,18 +55,15 @@ void OBJModelHandler::write_components(const ModelLayer& mgr,
 
         const MeshData& m = *comp->mesh;
 
-        const Index base = m.global_point_base_;
         const Index cnt = m.vertex_count_;
-
-        if (base < 0 || cnt <= 0) {
-            spdlog::warn("OBJModelHandler: component {} has invalid mesh point range (base={}, cnt={}), skip",
-                cid, base, cnt);
+        if (cnt <= 0) {
+            spdlog::warn("OBJModelHandler: component {} has no vertices, skip", cid);
             continue;
         }
-        if (base + cnt > (Index)gp.size()) {
-            spdlog::error("OBJModelHandler: globalPoints out of range for component {} (base={}, cnt={}, gp={})",
-                cid, base, cnt, gp.size());
-            continue;
+
+        std::unordered_map<Index, Index> global_to_local;
+        for (Index i = 0; i < cnt; ++i) {
+            global_to_local[m.local_to_global_[i]] = i;
         }
 
         // object name
@@ -74,7 +71,8 @@ void OBJModelHandler::write_components(const ModelLayer& mgr,
 
         // vertices
         for (Index i = 0; i < cnt; ++i) {
-            const auto& p = gp[(size_t)(base + i)];
+            const Index gid = m.local_to_global_[i];
+            const auto& p = gp[(size_t)gid];
             ofs << "v " << p[0] << " " << p[1] << " " << p[2] << "\n";
         }
 
@@ -89,16 +87,16 @@ void OBJModelHandler::write_components(const ModelLayer& mgr,
 
                 ofs << "f";
                 for (Index k = a; k < b; ++k) {
-                    const Index gid = m.face_vertices_[static_cast<size_t>(k)];// global point id
-                    const Index local = gid - base; // to local 0..cnt-1
-                    if (local < 0 || local >= cnt) {
-                        spdlog::error("OBJModelHandler: face references vertex out of component range, cid={}, gid={}, base={}, cnt={}",
-                            cid, gid, base, cnt);
+                    const Index gid = m.face_vertices_[static_cast<size_t>(k)];
+                    auto it = global_to_local.find(gid);
+                    if (it == global_to_local.end()) {
+                        spdlog::error("OBJModelHandler: face references vertex not in component, cid={}, gid={}",
+                            cid, gid);
                         ofs << "\n";
                         component_ok = false;
                         break;
                     }
-                    ofs << " " << (v_offset_1based + local);
+                    ofs << " " << (v_offset_1based + it->second);
                 }
                 if (component_ok) {
                     ofs << "\n";

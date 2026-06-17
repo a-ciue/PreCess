@@ -14,43 +14,57 @@
 #include <fstream>
 
 namespace systems::io {
-static void localizePointIds(std::vector<Index>& ids, Index base)
+static void localizePointIds(std::vector<Index>& ids, const std::unordered_map<Index, Index>& global_to_local)
 {
-    for (auto& x : ids)
-        x -= base;
+    for (auto& x : ids) {
+        auto it = global_to_local.find(x);
+        if (it != global_to_local.end())
+            x = it->second;
+    }
 }
 
-static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelLayer& mgr, const ComponentData& comp)
+static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelLayer& mgr, Index cid)
 {
-    if (!comp.mesh)
+    const ComponentData* comp = mgr.findComponent(cid);
+    if (!comp || !comp->mesh)
         return nullptr;
 
-    const MeshData& src = *comp.mesh;
+    const MeshData& src = *comp->mesh;
 
-    const Index base = src.global_point_base_;
     const Index cnt = src.vertex_count_;
-    if (base < 0 || cnt <= 0) {
-        spdlog::error("MModelHandler: invalid mesh global point range base={}, cnt={}", base, cnt);
+    if (cnt <= 0) {
+        spdlog::error("MModelHandler: component {} has no vertices", cid);
+        return nullptr;
+    }
+    if ((Index)src.local_to_global_.size() < cnt) {
+        spdlog::error("MModelHandler: local_to_global_ size mismatch, cid={}, cnt={}, ltg={}",
+            cid, cnt, src.local_to_global_.size());
         return nullptr;
     }
 
     const auto& gp = mgr.globalPoints();
-    if (base + cnt > (Index)gp.size()) {
-        spdlog::error("MModelHandler: globalPoints out of range (base={}, cnt={}, gp={})", base, cnt, gp.size());
-        return nullptr;
+    const Index gp_size = (Index)gp.size();
+
+    std::unordered_map<Index, Index> global_to_local;
+    for (Index i = 0; i < cnt; ++i) {
+        const Index gid = src.local_to_global_[i];
+        if (gid < 0 || gid >= gp_size) {
+            spdlog::error("MModelHandler: local_to_global_ out of gp range, cid={}, i={}, gid={}, gp={}",
+                cid, i, gid, gp_size);
+            return nullptr;
+        }
+        global_to_local[gid] = i;
     }
 
     auto out = std::make_unique<MeshData>();
     out->init();
 
-    // 1) 顶点坐标：从全局点池切片取回，作为“局部 mesh”的 vertex_positions_
-    out->vertex_positions_.assign(gp.begin() + base, gp.begin() + base + cnt);
+    out->vertex_positions_.reserve(cnt);
+    for (Index i = 0; i < cnt; ++i) {
+        out->vertex_positions_.push_back(gp[(size_t)src.local_to_global_[i]]);
+    }
     out->vertex_count_ = cnt;
-    out->global_point_base_ = -1; // 导出用局部 mesh，不需要全局 base
-    out->point_ids_are_global_ = false; // 导出用局部编号
 
-    // 2) 拓扑：拷贝并把点索引从 global -> local
-    // 注意：commit 后 src 的点索引已经是全局点池编号
     out->edge_vertices_ = src.edge_vertices_;
     out->face_vertices_ = src.face_vertices_;
     out->solid_vertices_ = src.solid_vertices_;
@@ -63,16 +77,11 @@ static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelLayer& mgr, 
     out->solid_faces_ = src.solid_faces_;
     out->solid_faces_offset_ = src.solid_faces_offset_;
 
-    // 将点索引 localize（只处理“引用点的数组”）
-    // face_vertices_/edge_vertices_/solid_vertices_/solid_faces_vertices_ 都是点 id 数组
-    if (src.point_ids_are_global_) {
-        localizePointIds(out->edge_vertices_, base);
-        localizePointIds(out->face_vertices_, base);
-        localizePointIds(out->solid_vertices_, base);
-        localizePointIds(out->solid_faces_vertices_, base);
-    }
+    localizePointIds(out->edge_vertices_, global_to_local);
+    localizePointIds(out->face_vertices_, global_to_local);
+    localizePointIds(out->solid_vertices_, global_to_local);
+    localizePointIds(out->solid_faces_vertices_, global_to_local);
 
-    // 3) Patch/Block（深拷贝，避免丢分组信息）
     for (const auto& [pid, p] : src.patches_) {
         if (!p)
             continue;
@@ -89,13 +98,11 @@ static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelLayer& mgr, 
         out->blocks_[bid] = std::move(nb);
     }
 
-    // 4) 属性（直接拷贝）
     out->vertex_attributes_ = src.vertex_attributes_;
     out->face_attributes_ = src.face_attributes_;
     out->edge_attributes_ = src.edge_attributes_;
     out->solid_attributes_ = src.solid_attributes_;
 
-    // 5) 导出不依赖 edge global id 映射
     out->local_to_global_edge_id.clear();
 
     return out;
@@ -146,7 +153,7 @@ void MModelHandler::write_components(const ModelLayer& mgr,
     }
 
     // 从运行期权威数据重建“局部 MeshData”，以适配 CTMeshModel::updateFrom
-    auto local_mesh = buildLocalMeshForExport(mgr, *comp);
+    auto local_mesh = buildLocalMeshForExport(mgr, cid);
     if (!local_mesh) {
         spdlog::error("MModelHandler: failed to build local mesh for export, cid={}", cid);
         return;

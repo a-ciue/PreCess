@@ -279,9 +279,9 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
     struct CompExportInfo {
         const ComponentData* comp {};
         const MeshData* mesh {};
-        Index base {};
         Index cnt {};
         Index face_count {};
+        std::unordered_map<Index, Index> global_to_local;
     };
     std::vector<CompExportInfo> infos;
     infos.reserve(component_ids.size());
@@ -293,13 +293,15 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             continue;
         }
         const MeshData& m = *comp->mesh;
-        const Index base = m.global_point_base_;
         const Index cnt = m.vertex_count_;
-
-        if (base < 0 || cnt <= 0 || base + cnt > (Index)gp.size()) {
-            spdlog::error("PlyModelHandler: invalid global point range, cid={}, base={}, cnt={}, gp={}",
-                cid, base, cnt, gp.size());
+        if (cnt <= 0) {
+            spdlog::warn("PlyModelHandler: component {} has no vertices, skip", cid);
             continue;
+        }
+
+        std::unordered_map<Index, Index> global_to_local;
+        for (Index i = 0; i < cnt; ++i) {
+            global_to_local[m.local_to_global_[i]] = i;
         }
 
         const Index face_count = (m.face_vertices_offset_.size() >= 2)
@@ -317,7 +319,7 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             }
         }
 
-        infos.push_back({ comp, &m, base, cnt, face_count });
+        infos.push_back({ comp, &m, cnt, face_count, std::move(global_to_local) });
 
         total_vertices += cnt;
         total_faces += face_count;
@@ -354,7 +356,8 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
     ofs << std::setprecision(17); // double 足够高精度
     for (const auto& info : infos) {
         for (Index i = 0; i < info.cnt; ++i) {
-            const auto& p = gp[static_cast<size_t>(info.base + i)];
+            const Index gid = info.mesh->local_to_global_[i];
+            const auto& p = gp[static_cast<size_t>(gid)];
             ofs << p[0] << " " << p[1] << " " << p[2] << "\n";
         }
     }
@@ -363,15 +366,13 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
     Index vertex_offset = 0; // 文件内顶点偏移（0-based）
     for (const auto& info : infos) {
         const MeshData& m = *info.mesh;
-        const Index base = info.base;
         const Index cnt = info.cnt;
+        const auto& global_to_local = info.global_to_local;
 
         for (Index f = 0; f < info.face_count; ++f) {
             Index a = m.face_vertices_offset_[static_cast<size_t>(f)];
             Index b = m.face_vertices_offset_[static_cast<size_t>(f + 1)];
             if (a < 0 || b < a || b > (Index)m.face_vertices_.size()) {
-                // 写一个空 face 会破坏结构；这里直接跳过（但会导致 face 数不一致）
-                // 更稳：在统计 total_faces 时就过滤非法 face；这里假设数据合法
                 spdlog::error("PlyModelHandler: invalid face offset range f={}, a={}, b={}", f, a, b);
                 throw std::runtime_error("PlyModelHandler: invalid face offsets");
             }
@@ -380,14 +381,14 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             ofs << static_cast<uint32_t>(n);
 
             for (Index k = a; k < b; ++k) {
-                Index gid = m.face_vertices_[static_cast<size_t>(k)]; // 全局点 id
-                Index local = gid - base; // component 局部
-                if (local < 0 || local >= cnt) {
-                    spdlog::error("PlyModelHandler: face references vertex out of component range (gid={}, base={}, cnt={})",
-                        gid, base, cnt);
+                Index gid = m.face_vertices_[static_cast<size_t>(k)];
+                auto it = global_to_local.find(gid);
+                if (it == global_to_local.end()) {
+                    spdlog::error("PlyModelHandler: face references vertex not in component (gid={})", gid);
                     throw std::runtime_error("PlyModelHandler: face index out of range");
                 }
-                Index file_vid = vertex_offset + local; // 文件内 0-based
+                Index local = it->second;
+                Index file_vid = vertex_offset + local;
                 ofs << " " << (int)file_vid;
             }
             ofs << "\n";

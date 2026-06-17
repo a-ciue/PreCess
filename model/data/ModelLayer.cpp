@@ -61,11 +61,13 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
         // Mesh: global points + globalize indices + release vertex_positions + edge id map
         if (cp->mesh) {
             MeshData& md = *cp->mesh;
-            if (md.global_point_base_ < 0) {
-                md.global_point_base_ = appendGlobalPoints(md.vertex_positions_);
-                md.vertex_count_ = (Index)md.vertex_positions_.size();
+            const Index base = appendGlobalPoints(md.vertex_positions_);
+            md.vertex_count_ = (Index)md.vertex_positions_.size();
+            md.local_to_global_.resize(md.vertex_count_);
+            for (Index i = 0; i < md.vertex_count_; ++i) {
+                md.local_to_global_[i] = base + i;
             }
-            md.makePointIdsGlobal(md.global_point_base_);
+            md.makePointIdsGlobal();
             std::vector<std::array<double, 3>> {}.swap(md.vertex_positions_);
             md.ensureEdgeIdMapBuilt(edge_id_map_, cid);
         }

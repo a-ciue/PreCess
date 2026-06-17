@@ -48,18 +48,20 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
     const MeshData& md = *c->mesh;
 
     REQUIRE(md.vertex_positions_.empty());
-    REQUIRE(md.point_ids_are_global_);
-    REQUIRE(md.global_point_base_ >= 0);
     REQUIRE(md.vertex_count_ == 4);
-    REQUIRE((int)mgr.globalPoints().size() >= md.global_point_base_ + md.vertex_count_);
+    REQUIRE(md.local_to_global_.size() == 4);
+
+    const Index base = md.local_to_global_[0];
+    REQUIRE(base >= 0);
+    REQUIRE((int)mgr.globalPoints().size() >= base + md.vertex_count_);
 
     // indices 应该已经全局化：原来 0.. 现在 base+0..
-    REQUIRE(md.face_vertices_[0] == md.global_point_base_ + 0);
-    REQUIRE(md.face_vertices_[1] == md.global_point_base_ + 1);
-    REQUIRE(md.face_vertices_[2] == md.global_point_base_ + 2);
+    REQUIRE(md.face_vertices_[0] == base + 0);
+    REQUIRE(md.face_vertices_[1] == base + 1);
+    REQUIRE(md.face_vertices_[2] == base + 2);
 
-    REQUIRE(md.edge_vertices_[0] == md.global_point_base_ + 0);
-    REQUIRE(md.edge_vertices_[1] == md.global_point_base_ + 1);
+    REQUIRE(md.edge_vertices_[0] == base + 0);
+    REQUIRE(md.edge_vertices_[1] == base + 1);
 
     // 所有点索引不能越界 globalPoints
     auto check = [&](const std::vector<Index>& a){

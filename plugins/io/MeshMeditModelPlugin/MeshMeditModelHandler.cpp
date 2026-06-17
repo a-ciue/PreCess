@@ -18,15 +18,12 @@
 
 namespace systems::io {
 static inline std::optional<Index>
-toFileVertexIdChecked(Index global_pid, Index comp_base, Index comp_cnt, Index file_vertex_offset)
+toFileVertexIdChecked(Index global_pid, const std::unordered_map<Index, Index>& global_to_local, Index file_vertex_offset)
 {
-    if (comp_base < 0 || comp_cnt <= 0)
+    auto it = global_to_local.find(global_pid);
+    if (it == global_to_local.end())
         return std::nullopt;
-    if (global_pid < comp_base || global_pid >= comp_base + comp_cnt)
-        return std::nullopt;
-
-    const Index local = global_pid - comp_base;
-    return file_vertex_offset + local;
+    return file_vertex_offset + it->second;
 }
 
 /**
@@ -43,31 +40,23 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
 
     const MeshData& src = *comp.mesh;
 
-    const Index base = src.global_point_base_;
     const Index cnt = src.vertex_count_;
-
-    if (base < 0 || cnt <= 0) {
-        spdlog::error("MeshMeditModelHandler: invalid mesh global point range (base={}, cnt={})", base, cnt);
+    if (cnt <= 0) {
+        spdlog::error("MeshMeditModelHandler: component {} has no vertices", comp.id);
         return false;
+    }
+
+    std::unordered_map<Index, Index> global_to_local;
+    for (Index i = 0; i < cnt; ++i) {
+        global_to_local[src.local_to_global_[i]] = i;
     }
 
     const auto& gp = mgr.globalPoints();
 
-    const size_t gpsz = gp.size();
-    const size_t sbase = static_cast<size_t>(base);
-    const size_t scnt = static_cast<size_t>(cnt);
-
-    // 防止 size_t 溢出：用 gpsz - sbase 写法
-    if (sbase > gpsz || scnt > gpsz - sbase) {
-        spdlog::error("MeshMeditModelHandler: globalPoints out of range (base={}, cnt={}, gp={})",
-            base, cnt, gpsz);
-        return false;
-    }
-
-    // 1) 追加顶点坐标：从 globalPoints 切片拷贝进 merged.vertex_positions_
-    merged.vertex_positions_.reserve(merged.vertex_positions_.size() + scnt);
+    // 1) 追加顶点坐标：从 globalPoints 通过 local_to_global_ 拷贝进 merged.vertex_positions_
+    merged.vertex_positions_.reserve(merged.vertex_positions_.size() + cnt);
     for (Index i = 0; i < cnt; ++i) {
-        merged.vertex_positions_.push_back(gp[static_cast<size_t>(base + i)]);
+        merged.vertex_positions_.push_back(gp[static_cast<size_t>(src.local_to_global_[i])]);
     }
 
     // 2) 追加边：src.edge_vertices_ 每两个为一条边，点索引是“全局点 id”
@@ -77,7 +66,7 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
         } else {
             merged.edge_vertices_.reserve(merged.edge_vertices_.size() + src.edge_vertices_.size());
             for (Index gid : src.edge_vertices_) {
-                auto out = toFileVertexIdChecked(gid, base, cnt, io_file_vertex_offset);
+                auto out = toFileVertexIdChecked(gid, global_to_local, io_file_vertex_offset);
                 merged.edge_vertices_.push_back(*out);
             }
         }
@@ -194,10 +183,8 @@ void MeshMeditModelHandler::write_components(const ModelLayer& mgr,
     MeshData merged;
     merged.init(); // 重要：offset 至少有 {0}
 
-    // merged 用局部点编号，不用 global 标记
-    merged.global_point_base_ = -1;
+    // merged 用局部点编号
     merged.vertex_count_ = 0;
-    merged.point_ids_are_global_ = false;
 
     Index file_vertex_offset = 0; // 文件内顶点偏移（0-based）
 

@@ -117,14 +117,16 @@ static void mesh_from_ugrid(vtkUnstructuredGrid& ugrid, MeshData& out)
 static void add_cells_from_mesh(vtkUnstructuredGrid& ugrid,
     const std::vector<std::array<double, 3>>& points,
     const MeshData& mesh,
-    Index global_base,
+    const std::unordered_map<Index, Index>& global_to_local,
     vtkIdType file_point_offset)
 {
     // points already added outside
 
     auto toPid = [&](Index global_pid) -> vtkIdType {
-        const Index local = global_pid - global_base;
-        return file_point_offset + (vtkIdType)local;
+        auto it = global_to_local.find(global_pid);
+        if (it == global_to_local.end())
+            return -1;
+        return file_point_offset + (vtkIdType)it->second;
     };
 
     // 1) edges -> VTK_LINE
@@ -274,24 +276,24 @@ void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,
             continue;
 
         const MeshData& m = *comp->mesh;
-        const Index base = m.global_point_base_;
         const Index cnt = m.vertex_count_;
+        if (cnt <= 0)
+            continue;
 
-        if (base < 0 || cnt <= 0)
-            continue;
-        if (base + cnt > (Index)gp.size()) {
-            spdlog::error("VtkLegacyModelHandler: component {} out of globalPoints range", cid);
-            continue;
+        std::unordered_map<Index, Index> global_to_local;
+        for (Index i = 0; i < cnt; ++i) {
+            global_to_local[m.local_to_global_[i]] = i;
         }
 
         // add points
         for (Index i = 0; i < cnt; ++i) {
-            const auto& p = gp[(size_t)(base + i)];
+            const Index gid = m.local_to_global_[i];
+            const auto& p = gp[(size_t)gid];
             points->InsertNextPoint(p[0], p[1], p[2]);
         }
 
         // add cells (edge/face/solid)
-        add_cells_from_mesh(*ugrid, gp, m, base, file_point_offset);
+        add_cells_from_mesh(*ugrid, gp, m, global_to_local, file_point_offset);
 
         file_point_offset += (vtkIdType)cnt;
     }

@@ -6,9 +6,8 @@ static bool ownsGlobalPoint(const ComponentData& c, Index global_pid)
 {
     if (!c.mesh)
         return false;
-    const Index base = c.mesh->global_point_base_;
-    const Index cnt = c.mesh->vertex_count_;
-    return base >= 0 && cnt >= 0 && global_pid >= base && global_pid < base + cnt;
+    const auto& l2g = c.mesh->local_to_global_;
+    return std::find(l2g.begin(), l2g.end(), global_pid) != l2g.end();
 }
 
 TEST_CASE("ComponentData Geometry edge -> mesh point gids map", "[GeometryMeshMap]")
@@ -16,8 +15,8 @@ TEST_CASE("ComponentData Geometry edge -> mesh point gids map", "[GeometryMeshMa
     ComponentData c;
     c.id = 1;
     c.mesh = std::make_unique<MeshData>();
-    c.mesh->global_point_base_ = 10;
-    c.mesh->vertex_count_ = 5; // points are [10..15)
+    c.mesh->local_to_global_ = { 10, 11, 12, 13, 14 };
+    c.mesh->vertex_count_ = 5;
 
     GeomEdgeId e0 = 7;
     std::vector<Index> pts = { 10, 11, 12 };

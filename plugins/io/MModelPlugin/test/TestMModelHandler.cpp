@@ -4,7 +4,7 @@
  *
  * MModelHandler 用 MeshLib::CTMesh 读写 .m 文件，当前写出入口为组件化
  * write_components()。源 MeshData 需要先进入 ModelLayer，由 ModelLayer 维护全局点池
- * 与组件 MeshData 的 global_point_base_/vertex_count_，再交给 MModelHandler 导出。
+ * 与组件 MeshData 的 local_to_global_/vertex_count_，再交给 MModelHandler 导出。
  * .m 格式以表面三角网格为主，不支持体单元，写出后体信息不会回流。
  */
 #include "MModelHandler.h"
@@ -34,9 +34,9 @@ MeshData MakeSurfaceTriMesh()
         { 0.0, 0.0, 1.0 },
     };
     m.face_vertices_ = {
-        0, 1, 2,
+        0, 2, 1,
         0, 1, 3,
-        0, 2, 3,
+        0, 3, 2,
         1, 2, 3,
     };
     m.face_vertices_offset_ = { 0, 3, 6, 9, 12 };
@@ -66,9 +66,9 @@ MeshData MakeMultiPatchMesh()
         { 0.0, 0.0, 1.0 },
     };
     m.face_vertices_ = {
-        0, 1, 2,
+        0, 2, 1,
         0, 1, 3,
-        0, 2, 3,
+        0, 3, 2,
         1, 2, 3,
     };
     m.face_vertices_offset_ = { 0, 3, 6, 9, 12 };

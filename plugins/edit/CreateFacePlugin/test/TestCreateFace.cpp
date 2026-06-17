@@ -14,7 +14,6 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
 
     auto build_one_component_model = []() -> std::pair<ModelLayer, Index> {
         auto mesh_data = std::make_unique<MeshData>(MakeMeshData());
-        mesh_data->init();
 
         auto model = std::make_unique<ModelData>(std::move(mesh_data));
 
@@ -38,7 +37,7 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
         MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);
 
-        const Index base = mesh->global_point_base_;
+        const Index base = mesh->local_to_global_[0];
         REQUIRE(base >= 0);
 
     
@@ -74,7 +73,7 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
         MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);
 
-        const Index base = mesh->global_point_base_;
+        const Index base = mesh->local_to_global_[0];
         REQUIRE(base >= 0);
 
         auto selection = std::make_shared<Selection>(
