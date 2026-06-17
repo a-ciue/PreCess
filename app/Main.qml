@@ -119,6 +119,7 @@ ApplicationWindow {
         function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
         function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId); resetSelectionState() }
         function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId); resetSelectionState() }
+        function onComponentChanged(componentId) { refreshTimer.restart(); myItem.onComponentChanged(componentId); resetSelectionState() }
     }
 
     StackLayout{
