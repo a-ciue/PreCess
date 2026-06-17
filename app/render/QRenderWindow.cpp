@@ -178,7 +178,7 @@ void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
 
     vtkNew<vtkDoubleArray> arr;
     arr->SetNumberOfComponents(3);
-    arr->SetArray(const_cast<double*>(pts.data()->data()), totalVals, 0);
+    arr->SetArray(const_cast<double*>(pts.data()->data()), totalVals, 1);
 
     vtk->global_points_->SetData(arr);
 
