@@ -17,25 +17,14 @@ MeshIDMap::GlobalID MeshIDMap::insert(ComponentID component_id, LocalID local_id
     return gid;
 }
 
-void MeshIDMap::insertRange(ComponentID component_id, LocalID local_begin, LocalID count, std::vector<GlobalID>& out)
+std::vector<MeshIDMap::GlobalID> MeshIDMap::insertRange(ComponentID component_id, LocalID local_begin, LocalID count)
 {
-    out.clear();
+    std::vector<GlobalID> out;
     out.reserve((size_t)count);
     for (LocalID i = 0; i < count; ++i) {
         out.push_back(insert(component_id, local_begin + i));
     }
-}
-
-bool MeshIDMap::update(GlobalID global_id, ComponentID component_id, LocalID local_id)
-{
-    if (global_id < 0 || (size_t)global_id >= global_to_local_.size())
-        return false;
-
-    global_to_local_[(size_t)global_id] = { component_id, local_id };
-
-    // 如果之前 remove() 进了 free pool，现在重新激活要移除
-    free_ids_.erase(global_id);
-    return true;
+    return out;
 }
 
 bool MeshIDMap::remove(GlobalID global_id)

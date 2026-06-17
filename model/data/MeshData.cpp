@@ -91,10 +91,8 @@ void MeshData::ensureEdgeIdMapBuilt(MeshIDMap& map, Index component_id)
 
     for (Index local_eid = 0; local_eid < nEdges; ++local_eid) {
         Index& gid = local_to_global_edge_id[local_eid];
-        if (gid >= 0) {
-            map.update(gid, component_id, local_eid); // 你刚加的 update
-        } else {
-            gid = map.insert(component_id, local_eid); // 复用 free id 或新建
+        if (gid < 0) {
+            gid = map.insert(component_id, local_eid);
         }
     }
 }

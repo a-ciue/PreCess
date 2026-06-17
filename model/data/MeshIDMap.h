@@ -15,8 +15,7 @@ public:
     static constexpr LocalID kInvalidLocal = -1;
 
     GlobalID insert(ComponentID component_id, LocalID local_id);
-    void insertRange(ComponentID component_id, LocalID local_begin, LocalID count, std::vector<GlobalID>& out);
-    bool update(GlobalID global_id, ComponentID component_id, LocalID local_id);
+    std::vector<GlobalID> insertRange(ComponentID component_id, LocalID local_begin, LocalID count);
 
     bool remove(GlobalID global_id);
     std::pair<ComponentID, LocalID> getLocal(GlobalID global_id) const;

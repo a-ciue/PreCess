@@ -69,8 +69,7 @@ TEST_CASE("MeshIDMap insertRange works")
 {
     MeshIDMap map;
 
-    std::vector<MeshIDMap::GlobalID> gids;
-    map.insertRange(7, 0, 5, gids);
+    auto gids = map.insertRange(7, 0, 5);
 
     REQUIRE(gids.size() == 5);
     // 因为初始为空，应该是 0..4
