@@ -24,17 +24,17 @@ struct MeshSnapshot {
     std::vector<Index> face_offsets; // size = nFaces+1
 };
 
-static MeshData* first_staging_mesh(ModelData& m)
+static MeshData* first_component_mesh(ModelData& m)
 {
-    auto& comps = m.stagingcomponents();
+    auto& comps = m.componentDatas();
     if (comps.empty() || !comps[0] || !comps[0]->mesh)
         return nullptr;
     return comps[0]->mesh.get();
 }
 
-static const MeshData* first_staging_mesh(const ModelData& m)
+static const MeshData* first_component_mesh(const ModelData& m)
 {
-    auto& comps = m.stagingcomponents();
+    auto& comps = m.componentDatas();
     if (comps.empty() || !comps[0] || !comps[0]->mesh)
         return nullptr;
     return comps[0]->mesh.get();
@@ -94,7 +94,7 @@ TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)"
     auto model = handler.read_model(infile, {});
     REQUIRE(model != nullptr);
 
-    MeshData* mesh0 = first_staging_mesh(*model);
+    MeshData* mesh0 = first_component_mesh(*model);
     REQUIRE(mesh0 != nullptr);
 
     REQUIRE(mesh0->vertex_positions_.size() == 5u);
@@ -117,7 +117,7 @@ TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)"
     auto model2 = handler.read_model(out, {});
     REQUIRE(model2 != nullptr);
 
-    const MeshData* mesh2 = first_staging_mesh(*model2);
+    const MeshData* mesh2 = first_component_mesh(*model2);
     REQUIRE(mesh2 != nullptr);
 
     REQUIRE(snapshot_equal_mesh(snap, *mesh2));
@@ -134,7 +134,7 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
     auto model = handler.read_model(infile, {});
     REQUIRE(model != nullptr);
 
-    MeshData* mesh0 = first_staging_mesh(*model);
+    MeshData* mesh0 = first_component_mesh(*model);
     REQUIRE(mesh0 != nullptr);
 
     REQUIRE(mesh0->vertex_positions_.size() == 10u);
@@ -156,7 +156,7 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
     auto model2 = handler.read_model(out, {});
     REQUIRE(model2 != nullptr);
 
-    const MeshData* mesh2 = first_staging_mesh(*model2);
+    const MeshData* mesh2 = first_component_mesh(*model2);
     REQUIRE(mesh2 != nullptr);
 
     REQUIRE(snapshot_equal_mesh(snap, *mesh2));

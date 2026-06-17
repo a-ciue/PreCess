@@ -55,15 +55,15 @@ const std::vector<Index>& ModelData::componentIds() const noexcept
 { 
     return component_ids_; 
 }
-std::vector<Index>& ModelData::componentIdsMut() noexcept 
+std::vector<Index>& ModelData::componentIds() noexcept 
 { 
     return component_ids_; 
 }
-std::vector<std::unique_ptr<ComponentData>>& ModelData::stagingcomponents()
+std::vector<std::unique_ptr<ComponentData>>& ModelData::componentDatas()
 { 
     return components_; 
 }
-const std::vector<std::unique_ptr<ComponentData>>& ModelData::stagingcomponents() const
+const std::vector<std::unique_ptr<ComponentData>>& ModelData::componentDatas() const
 { 
     return components_; 
 }

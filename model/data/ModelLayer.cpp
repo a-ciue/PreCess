@@ -30,7 +30,7 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
     Index model_id = ++max_index_;
 
     // 1) 补齐全局 component_id
-    for (auto& c : model->stagingcomponents()) {
+    for (auto& c : model->componentDatas()) {
         if (!c)
             continue;
         if (c->id < 0) {
@@ -39,7 +39,7 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
     }
 
     // 2) 把 components move 到 ModelLayer::components_（真正所有权转移）
-    for (auto& c : model->stagingcomponents()) {
+    for (auto& c : model->componentDatas()) {
         if (!c)
             continue;
         Index cid = c->id;
@@ -47,7 +47,7 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
             c->id, cid, components_.count(cid) != 0);
 
         component_to_model_[cid] = model_id;
-        model->componentIdsMut().push_back(cid);
+        model->componentIds().push_back(cid);
 
         // move ownership into global pool
         components_[cid] = std::move(c);
@@ -73,8 +73,8 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
         }
     }
 
-    // 3) 清空 ModelData 里的暂存容器（运行期不再持有 ComponentData）
-    model->stagingcomponents().clear();
+    // 3) 清空 ModelData 里的 ComponentData 容器（运行期不再持有 ComponentData）
+    model->componentDatas().clear();
 
     // 4) 存 model
     models_[model_id] = std::move(model);
@@ -112,7 +112,7 @@ void ModelLayer::removeComponent(Index component_id)
         throw std::runtime_error("Owner model not exist");
 
     // 从 ModelData 的 ids 中移除
-    auto& ids = mit->second->componentIdsMut();
+    auto& ids = mit->second->componentIds();
     ids.erase(std::remove(ids.begin(), ids.end(), component_id), ids.end());
 
     if (ComponentData* c = findComponent(component_id)) {

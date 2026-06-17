@@ -74,7 +74,7 @@ std::vector<Index> addMeshModelAndGetComponentIds(
 
 const MeshData* requireReadableMeshModel(const ModelData& model)
 {
-    const auto& components = model.stagingcomponents();
+    const auto& components = model.componentDatas();
     REQUIRE(!components.empty());
 
     for (const auto& component : components) {

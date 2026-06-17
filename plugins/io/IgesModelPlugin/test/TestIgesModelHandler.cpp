@@ -52,10 +52,10 @@ static std::vector<Index> addModelAndGetComponentIds(
 
 static void requireReadableGeometryModel(const ModelData& model)
 {
-    REQUIRE(!model.stagingcomponents().empty());
+    REQUIRE(!model.componentDatas().empty());
 
     bool hasValidGeometry = false;
-    for (const auto& component : model.stagingcomponents()) {
+    for (const auto& component : model.componentDatas()) {
         if (component
             && component->geometry
             && component->geometry->rootShape

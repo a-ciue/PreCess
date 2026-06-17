@@ -108,7 +108,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
             }
         }
 
-        if (!model_data->stagingcomponents().empty()) {
+        if (!model_data->componentDatas().empty()) {
             return model_data;
         }
 
@@ -137,7 +137,7 @@ std::unique_ptr<ModelData> StepXdeComponentBuilder::buildModelData(
     }
 
     spdlog::info("[STEP-XDE] model '{}' created {} components",
-        model_data->model_name_, model_data->stagingcomponents().size());
+        model_data->model_name_, model_data->componentDatas().size());
 
     return model_data;
 }

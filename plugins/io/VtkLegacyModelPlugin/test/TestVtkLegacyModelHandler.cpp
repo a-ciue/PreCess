@@ -43,7 +43,7 @@ TEST_CASE("VtkLegacyModelHandler::write_components()/read_model() over MakeMeshD
     REQUIRE_NOTHROW(read_model = io.read_model(out, {}));
     REQUIRE(read_model);
 
-    const auto& comps = read_model->stagingcomponents();
+    const auto& comps = read_model->componentDatas();
     REQUIRE(!comps.empty());
     REQUIRE(comps[0]);
     REQUIRE(comps[0]->mesh);
