@@ -4,9 +4,7 @@
  * @author 范成通
  */
 #include "IgesXdeComponentBuilder.h"
-#include "ComponentData.h"
 #include "GeometryData.h"
-#include "ModelData.h"
 
 #include <TCollection_ExtendedString.hxx>
 #include <TDF_Label.hxx>
@@ -71,18 +69,17 @@ static void collectLeafShapes(
     }
 }
 
-std::unique_ptr<ModelData> IgesXdeComponentBuilder::buildModelData(
+std::optional<ModelPayload> IgesXdeComponentBuilder::buildModelData(
     TDocStd_Document& doc,
     const std::string& modelName)
 {
     Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(doc.Main());
     if (shapeTool.IsNull()) {
         spdlog::error("Failed to get XCAF shape tool.");
-        return nullptr;
+        return std::nullopt;
     }
 
-    auto model_data = std::make_unique<ModelData>();
-    model_data->model_name_ = modelName;
+    ComponentDatas comps;
 
     TDF_LabelSequence freeShapes;
     shapeTool->GetFreeShapes(freeShapes);
@@ -102,20 +99,22 @@ std::unique_ptr<ModelData> IgesXdeComponentBuilder::buildModelData(
                 auto geometry_data = std::make_unique<GeometryData>();
                 geometry_data->rootShape = std::make_unique<TopoDS_Shape>(s);
 
-                std::string compName = "Comp_" + std::to_string(freeIndex);
-                ComponentData* c = model_data->createComponent(-1, compName);
+                auto c = std::make_unique<ComponentData>();
+                c->id = -1;
+                c->name = "Comp_" + std::to_string(freeIndex);
                 c->geometry = std::move(geometry_data);
 
+                comps.push_back(std::move(c));
                 ++freeIndex;
             }
         }
 
-        if (!model_data->componentDatas().empty()) {
-            return model_data;
+        if (!comps.empty()) {
+            return ModelPayload{modelName, std::move(comps)};
         }
 
         spdlog::error("[IGES-XDE] no valid shape found");
-        return nullptr;
+        return std::nullopt;
     }
 
     int leafIndex = 0;
@@ -128,9 +127,13 @@ std::unique_ptr<ModelData> IgesXdeComponentBuilder::buildModelData(
             compName = "Comp_" + std::to_string(leafIndex);
         }
 
-        ComponentData* c = model_data->createComponent(-1, compName);
+        auto c = std::make_unique<ComponentData>();
+        c->id = -1;
+        c->name = compName;
         c->geometry = std::move(geometry_data);
         c->source_xde_leaf_id = leafIndex;
+
+        comps.push_back(std::move(c));
 
         spdlog::info("[IGES-XDE] create component: index={}, name='{}', shapeType={}",
             leafIndex, compName, static_cast<int>(shape.ShapeType()));
@@ -139,9 +142,9 @@ std::unique_ptr<ModelData> IgesXdeComponentBuilder::buildModelData(
     }
 
     spdlog::info("[IGES-XDE] model '{}' created {} components",
-        model_data->model_name_, model_data->componentDatas().size());
+        modelName, comps.size());
 
-    return model_data;
+    return ModelPayload{modelName, std::move(comps)};
 }
 
 }

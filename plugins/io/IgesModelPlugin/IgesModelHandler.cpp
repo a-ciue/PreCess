@@ -26,7 +26,7 @@ using core::ArgType;
 /**
  * @brief 读取 IGES 文件
  */
-std::unique_ptr<ModelData> IgesModelHandler::read_model(const fs::path& path,
+std::optional<ModelPayload> IgesModelHandler::read_model(const fs::path& path,
     const std::vector<std::any>& args)
 {
     Handle(TDocStd_Document) doc;
@@ -38,16 +38,15 @@ std::unique_ptr<ModelData> IgesModelHandler::read_model(const fs::path& path,
     IFSelect_ReturnStatus stat = reader.ReadFile(path.u8string().c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read IGES file: {}", path.string());
-        return nullptr;
+        return std::nullopt;
     }
 
     if (!reader.Transfer(doc)) {
         spdlog::error("Failed to transfer IGES file: {}", path.string());
-        return nullptr;
+        return std::nullopt;
     }
 
-    auto model_data = IgesXdeComponentBuilder::buildModelData(*doc, path.filename().string());
-    return model_data;
+    return IgesXdeComponentBuilder::buildModelData(*doc, path.filename().string());
 }
 
 /**

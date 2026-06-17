@@ -1,13 +1,15 @@
 #include "MakeMeshData.h"
+#include "ComponentData.h"
 #include "MeshData.h"
-#include "ModelData.h"
 #include "ModelLayer.h"
+#include "ModelPayload.h"
 #include "TempFile.h"
 #include "VtkLegacyModelHandler.h"
 
 #include <catch2/catch_test_macros.hpp>
 #include <filesystem>
 #include <memory>
+#include <optional>
 
 TEST_CASE("VtkLegacyModelHandler::write_components()/read_model() over MakeMeshData()")
 {
@@ -29,26 +31,30 @@ TEST_CASE("VtkLegacyModelHandler::write_components()/read_model() over MakeMeshD
     MeshData rhs = MakeMeshData();
 
     auto mesh_data = std::make_unique<MeshData>(MakeMeshData());
-    auto model = std::make_unique<ModelData>(std::move(mesh_data));
+    ComponentDatas comps;
+    auto comp = std::make_unique<ComponentData>();
+    comp->id = -1;
+    comp->mesh = std::move(mesh_data);
+    comps.push_back(std::move(comp));
 
     ModelLayer mgr;
-    Index model_id = mgr.addModel(std::move(model));
+    Index model_id = mgr.addModel("model", std::move(comps));
     auto cids = mgr.getComponentIds(model_id);
     REQUIRE(!cids.empty());
 
     REQUIRE_NOTHROW(io.write_components(mgr, cids, out, {}));
     REQUIRE(std::filesystem::exists(out));
 
-    std::unique_ptr<ModelData> read_model;
-    REQUIRE_NOTHROW(read_model = io.read_model(out, {}));
-    REQUIRE(read_model);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    const auto& comps = read_model->componentDatas();
-    REQUIRE(!comps.empty());
-    REQUIRE(comps[0]);
-    REQUIRE(comps[0]->mesh);
+    const auto& read_comps = payload->components;
+    REQUIRE(!read_comps.empty());
+    REQUIRE(read_comps[0]);
+    REQUIRE(read_comps[0]->mesh);
 
-    const MeshData* read_mesh = comps[0]->mesh.get();
+    const MeshData* read_mesh = read_comps[0]->mesh.get();
     REQUIRE(read_mesh);
 
     REQUIRE(read_mesh->vertex_positions_.size() == rhs.vertex_positions_.size());

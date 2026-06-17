@@ -47,7 +47,7 @@ public:
      * @param model_name 新模型的名称
      * @param model 需要添加的模型对象
      */
-    Index addModel(std::unique_ptr<ModelData> model);
+    Index addModel(const std::string& model_name, ComponentDatas components);
 
     /**
      * @brief 移除指定名称的模型

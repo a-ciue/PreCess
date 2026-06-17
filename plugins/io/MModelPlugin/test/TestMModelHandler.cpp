@@ -8,13 +8,15 @@
  * .m 格式以表面三角网格为主，不支持体单元，写出后体信息不会回流。
  */
 #include "MModelHandler.h"
+#include "ComponentData.h"
 #include "MeshData.h"
-#include "ModelData.h"
 #include "ModelLayer.h"
+#include "ModelPayload.h"
 #include "TempFile.h"
 #include <catch2/catch_test_macros.hpp>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <vector>
 
 namespace fs = std::filesystem;
@@ -100,8 +102,12 @@ std::vector<Index> addMeshModelAndGetComponentIds(
     ModelLayer& layer,
     std::unique_ptr<MeshData> mesh)
 {
-    auto model = std::make_unique<ModelData>(std::move(mesh));
-    const Index modelId = layer.addModel(std::move(model));
+    ComponentDatas comps;
+    auto comp = std::make_unique<ComponentData>();
+    comp->id = -1;
+    comp->mesh = std::move(mesh);
+    comps.push_back(std::move(comp));
+    const Index modelId = layer.addModel("model", std::move(comps));
     REQUIRE(modelId >= 0);
 
     std::vector<Index> componentIds = layer.getComponentIds(modelId);
@@ -110,9 +116,9 @@ std::vector<Index> addMeshModelAndGetComponentIds(
     return componentIds;
 }
 
-const MeshData* requireReadableMeshModel(const ModelData& model)
+const MeshData* requireReadableMeshModel(const ModelPayload& payload)
 {
-    const auto& components = model.componentDatas();
+    const auto& components = payload.components;
     REQUIRE(!components.empty());
 
     for (const auto& component : components) {
@@ -150,11 +156,11 @@ TEST_CASE("MModelHandler::write_components()/read_model() round-trip")
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> read_back;
-    REQUIRE_NOTHROW(read_back = io.read_model(out, {}));
-    REQUIRE(read_back != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    const MeshData* read_mesh = requireReadableMeshModel(*read_back);
+    const MeshData* read_mesh = requireReadableMeshModel(*payload);
 
     const MeshData ref = MakeSurfaceTriMesh();
     // 顶点数应一致
@@ -193,11 +199,11 @@ TEST_CASE("MModelHandler::multi-patch round-trip")
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> read_back;
-    REQUIRE_NOTHROW(read_back = io.read_model(out, {}));
-    REQUIRE(read_back != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    const MeshData* read_mesh = requireReadableMeshModel(*read_back);
+    const MeshData* read_mesh = requireReadableMeshModel(*payload);
 
     const MeshData ref = MakeMultiPatchMesh();
     REQUIRE(read_mesh->vertex_positions_.size() == ref.vertex_positions_.size());
@@ -234,11 +240,11 @@ TEST_CASE("MModelHandler::write_components() without patches produces empty file
     REQUIRE(fs::exists(out));
 
     // 无 patch 时读回应为空或基本空网格
-    std::unique_ptr<ModelData> read_back;
-    REQUIRE_NOTHROW(read_back = io.read_model(out, {}));
-    REQUIRE(read_back != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    const MeshData* read_mesh = requireReadableMeshModel(*read_back);
+    const MeshData* read_mesh = requireReadableMeshModel(*payload);
     // 读回的面数应为 0（CTMesh 读 .m 后无面）
     REQUIRE(read_mesh->face_vertices_offset_.size() <= 1); // 只有 {0} 或空
 }
@@ -256,8 +262,8 @@ TEST_CASE("MModelHandler::read_model() - model_name preserved")
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> read_back;
-    REQUIRE_NOTHROW(read_back = io.read_model(out, {}));
-    REQUIRE(read_back != nullptr);
-    REQUIRE(read_back->model_name_ == out.filename().string());
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
+    REQUIRE(payload->model_name == out.filename().string());
 }

@@ -20,7 +20,7 @@
 
 namespace systems::io {
 
-std::unique_ptr<ModelData> StepModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
+std::optional<ModelPayload> StepModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     Handle(TDocStd_Document) doc;
     Handle(XCAFApp_Application)::DownCast(XCAFApp_Application::GetApplication())
@@ -31,16 +31,15 @@ std::unique_ptr<ModelData> StepModelHandler::read_model(const fs::path& path, co
     IFSelect_ReturnStatus stat = reader.ReadFile(path.u8string().c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read STEP file: {}", path.string());
-        return nullptr;
+        return std::nullopt;
     }
 
     if (!reader.Transfer(doc)) {
         spdlog::error("Failed to transfer STEP file: {}", path.string());
-        return nullptr;
+        return std::nullopt;
     }
 
-    auto model_data = StepXdeComponentBuilder::buildModelData(*doc, path.filename().string());
-    return model_data;
+    return StepXdeComponentBuilder::buildModelData(*doc, path.filename().string());
 }
 
 void StepModelHandler::write_components(const ModelLayer& mgr,

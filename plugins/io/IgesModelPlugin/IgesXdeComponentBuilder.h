@@ -4,17 +4,18 @@
  * @author 范成通
  */
 #pragma once
+#include "ModelPayload.h"
 #include <memory>
+#include <optional>
 #include <string>
 
-class ModelData;
 class TDocStd_Document;
 
 namespace systems::io {
 
 class IgesXdeComponentBuilder {
 public:
-    static std::unique_ptr<ModelData> buildModelData(
+    static std::optional<ModelPayload> buildModelData(
         TDocStd_Document& doc,
         const std::string& modelName);
 };

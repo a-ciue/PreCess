@@ -6,12 +6,14 @@
 #define MODEL_IO_HANDLER_H
 
 #include "Core.h"
+#include "ModelPayload.h"
 
 #include <memory>
 #include <vector>
 #include <string>
 #include <filesystem>
 #include <any>
+#include <optional>
 
 class ModelData;
 struct ComponentData;
@@ -34,7 +36,7 @@ public:
      * @param args 读取文件要传入参数
      * @return 构造的模型数据对象
      */
-    virtual std::unique_ptr<ModelData> read_model(const fs::path& path, const std::vector<std::any>& args) = 0;
+    virtual std::optional<ModelPayload> read_model(const fs::path& path, const std::vector<std::any>& args) = 0;
         /**
          * @brief 写出组件集合到文件
          * @param mgr ModelLayer（运行期权威：component pool + globalPoints）

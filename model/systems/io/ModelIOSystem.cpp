@@ -35,8 +35,12 @@ void ModelIOSystem::read(const std::filesystem::path& path, const string& file_t
         return;
     }
 
-    unique_ptr<ModelData> data = handler->read_model(path, args);
-    this->manager_->addModel(std::move(data));
+    auto payload = handler->read_model(path, args);
+    if (payload) {
+        this->manager_->addModel(payload->model_name, std::move(payload->components));
+    } else {
+        spdlog::warn(R"(failed to read model from file "{}")", path.string());
+    }
 }
 
 void ModelIOSystem::write(Index model, const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)

@@ -10,8 +10,8 @@
 #include "StepModelHandler.h"
 #include "ComponentData.h"
 #include "GeometryData.h"
-#include "ModelData.h"
 #include "ModelLayer.h"
+#include "ModelPayload.h"
 #include "TempFile.h"
 
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -21,30 +21,34 @@
 
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
 namespace fs = std::filesystem;
 
-static std::unique_ptr<ModelData> makeGeometryModel(
+static ComponentDatas makeGeometryModel(
     const TopoDS_Shape& shape,
     const std::string& componentName)
 {
-    auto model = std::make_unique<ModelData>();
-    ComponentData* component = model->createComponent(-1, componentName);
+    ComponentDatas comps;
+    auto component = std::make_unique<ComponentData>();
+    component->id = -1;
+    component->name = componentName;
 
     auto geometry = std::make_unique<GeometryData>();
     geometry->rootShape = std::make_unique<TopoDS_Shape>(shape);
     component->geometry = std::move(geometry);
 
-    return model;
+    comps.push_back(std::move(component));
+    return comps;
 }
 
 static std::vector<Index> addModelAndGetComponentIds(
     ModelLayer& layer,
-    std::unique_ptr<ModelData> model)
+    ComponentDatas comps)
 {
-    const Index modelId = layer.addModel(std::move(model));
+    const Index modelId = layer.addModel("model", std::move(comps));
     REQUIRE(modelId >= 0);
 
     std::vector<Index> componentIds = layer.getComponentIds(modelId);
@@ -53,12 +57,12 @@ static std::vector<Index> addModelAndGetComponentIds(
     return componentIds;
 }
 
-static void requireReadableGeometryModel(const ModelData& model)
+static void requireReadableGeometryModel(const ModelPayload& payload)
 {
-    REQUIRE(!model.componentDatas().empty());
+    REQUIRE(!payload.components.empty());
 
     bool hasValidGeometry = false;
-    for (const auto& component : model.componentDatas()) {
+    for (const auto& component : payload.components) {
         if (component
             && component->geometry
             && component->geometry->rootShape
@@ -87,14 +91,14 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - English path (box
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> modelRead;
-    REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
-    REQUIRE(modelRead != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    requireReadableGeometryModel(*modelRead);
+    requireReadableGeometryModel(*payload);
 
-    // model_name_ 应被设置为文件名
-    REQUIRE(modelRead->model_name_ == out.filename().string());
+    // model_name 应被设置为文件名
+    REQUIRE(payload->model_name == out.filename().string());
 }
 
 TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese filename")
@@ -116,11 +120,11 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese filename"
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> modelRead;
-    REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
-    REQUIRE(modelRead != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    requireReadableGeometryModel(*modelRead);
+    requireReadableGeometryModel(*payload);
 }
 
 TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese full path")
@@ -143,11 +147,11 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese full path
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> modelRead;
-    REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
-    REQUIRE(modelRead != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    requireReadableGeometryModel(*modelRead);
+    requireReadableGeometryModel(*payload);
 }
 
 TEST_CASE("StepModelHandler::write_components()/read_model() - sphere")
@@ -166,11 +170,11 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - sphere")
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> modelRead;
-    REQUIRE_NOTHROW(modelRead = io.read_model(out, {}));
-    REQUIRE(modelRead != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    requireReadableGeometryModel(*modelRead);
+    requireReadableGeometryModel(*payload);
 }
 
 TEST_CASE("StepModelHandler::read_model() - non-existent file")
@@ -178,8 +182,8 @@ TEST_CASE("StepModelHandler::read_model() - non-existent file")
     systems::io::StepModelHandler io;
     fs::path bad = core::TempFile::instance().path().string() + "_not_exist.stp";
 
-    // 文件不存在，read_model 应返回 nullptr（而不是崩溃）
-    std::unique_ptr<ModelData> model;
+    // 文件不存在，read_model 应返回 nullopt（而不是崩溃）
+    std::optional<ModelPayload> model;
     REQUIRE_NOTHROW(model = io.read_model(bad, {}));
-    REQUIRE(model == nullptr);
+    REQUIRE(!model.has_value());
 }

@@ -185,7 +185,7 @@ static void add_cells_from_mesh(vtkUnstructuredGrid& ugrid,
     }
 }
 
-std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
+std::optional<ModelPayload> VtkLegacyModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     vtkNew<vtkDataSetReader> reader;
     auto path_string = path.u8string();
@@ -201,7 +201,7 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
     vtkDataSet* dataset = reader->GetOutput();
     if (!dataset) {
         spdlog::error("VTK file read failed: {}", path_string);
-        return nullptr;
+        return std::nullopt;
     }
 
     // 转换为UnstructuredGrid
@@ -217,7 +217,7 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
 
     if (!ugrid || ugrid->GetNumberOfPoints() == 0) {
         spdlog::error("Failed to convert to vtkUnstructuredGrid: {}", path_string);
-        return nullptr;
+        return std::nullopt;
     }
 
     // 输出属性信息
@@ -243,10 +243,16 @@ std::unique_ptr<ModelData> VtkLegacyModelHandler::read_model(const fs::path& pat
     UGridModel ugrid_model(*ugrid);
     auto mesh_data = std::make_unique<MeshData>();
     ugrid_model.update(*mesh_data);
-    // ModelData
-    auto model_data = std::make_unique<ModelData>(std::move(mesh_data));
-    model_data->model_name_ = path.filename().string();
-    return model_data;
+
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = std::move(mesh_data);
+
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    return ModelPayload{path.filename().string(), std::move(comps)};
 }
 
 void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,

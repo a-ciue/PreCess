@@ -19,18 +19,14 @@
 #include <filesystem>
 #include <stdexcept>
 
-// 添加模型
-Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
+Index ModelLayer::addModel(const std::string& model_name, ComponentDatas components)
 {
-    if (!model) {
-        spdlog::warn("Adding an empty model, skipping");
-        return -1;
-    }
-
     Index model_id = ++max_index_;
 
-    // 1) 补齐全局 component_id
-    for (auto& c : model->componentDatas()) {
+    auto model = std::make_unique<ModelData>();
+    model->model_name_ = model_name;
+
+    for (auto& c : components) {
         if (!c)
             continue;
         if (c->id < 0) {
@@ -38,8 +34,7 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
         }
     }
 
-    // 2) 把 components move 到 ModelLayer::components_（真正所有权转移）
-    for (auto& c : model->componentDatas()) {
+    for (auto& c : components) {
         if (!c)
             continue;
         Index cid = c->id;
@@ -49,16 +44,13 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
         component_to_model_[cid] = model_id;
         model->componentIds().push_back(cid);
 
-        // move ownership into global pool
         components_[cid] = std::move(c);
         ComponentData* cp = components_[cid].get();
 
-        // Geometry index
         if (cp->geometry) {
             cp->geometry->ensureIndexBuilt(geom_registry_);
         }
 
-        // Mesh: global points + globalize indices + release vertex_positions + edge id map
         if (cp->mesh) {
             MeshData& md = *cp->mesh;
             const Index base = appendGlobalPoints(md.vertex_positions_);
@@ -73,10 +65,6 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
         }
     }
 
-    // 3) 清空 ModelData 里的 ComponentData 容器（运行期不再持有 ComponentData）
-    model->componentDatas().clear();
-
-    // 4) 存 model
     models_[model_id] = std::move(model);
 
     if (observer_)
@@ -84,7 +72,6 @@ Index ModelLayer::addModel(std::unique_ptr<ModelData> model)
     return model_id;
 }
 
-// 删除模型
 void ModelLayer::removeModel(Index model_id) {
     auto it = models_.find(model_id);
     if (it == models_.end())
@@ -111,7 +98,6 @@ void ModelLayer::removeComponent(Index component_id)
     if (mit == models_.end() || !mit->second)
         throw std::runtime_error("Owner model not exist");
 
-    // 从 ModelData 的 ids 中移除
     auto& ids = mit->second->componentIds();
     ids.erase(std::remove(ids.begin(), ids.end(), component_id), ids.end());
 
@@ -123,7 +109,6 @@ void ModelLayer::removeComponent(Index component_id)
             c->geometry->index.release(geom_registry_);
         }
     }
-    // 从全局组件池删除
     components_.erase(component_id);
 
     component_to_model_.erase(component_id);
@@ -132,11 +117,10 @@ void ModelLayer::removeComponent(Index component_id)
         observer_->notifyComponentRemoved(component_id);
 }
 
-// 获取模型
 ModelData* ModelLayer::getModel(Index model_id) const {
     auto it = models_.find(model_id);
     if (it == models_.end()) {
-        return nullptr; // 模型不存在时返回空指针
+        return nullptr;
     }
     return it->second.get();
 }
@@ -148,7 +132,7 @@ std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
     if (mesh) {
         return ModelOperator(model_id, *mesh, observer_);
     }
-    return {}; // 如果找不到模型，返回空指针
+    return {};
 }
 
 ModelData* ModelLayer::modelById(Index model_id) const

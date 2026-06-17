@@ -1,8 +1,10 @@
-#include "ModelData.h"
+#include "ComponentData.h"
 #include "ModelLayer.h"
 #include "GeometryData.h"
 
 #include <catch2/catch_test_macros.hpp>
+
+#include <memory>
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
@@ -17,9 +19,14 @@ TEST_CASE("Geometry index build for single component")
     geom->rootShape = make_unique<TopoDS_Shape>(
         BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
 
-    auto model = make_unique<ModelData>(move(geom));
+    ComponentDatas comps;
+    auto c = make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->geometry = move(geom);
+    comps.push_back(move(c));
 
-    Index modelId = manager.addModel(move(model));
+    Index modelId = manager.addModel("geom_index_test", move(comps));
     REQUIRE(modelId == 0);
 
     ComponentData* comp = manager.findComponent(0);
@@ -44,9 +51,6 @@ TEST_CASE("Geometry index build for multiple components")
 
     ModelLayer manager;
 
-    auto model = make_unique<ModelData>();
-    model->model_name_ = "two_boxes";
-
     auto geom1 = make_unique<GeometryData>();
     geom1->rootShape = make_unique<TopoDS_Shape>(
         BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
@@ -55,13 +59,23 @@ TEST_CASE("Geometry index build for multiple components")
     geom2->rootShape = make_unique<TopoDS_Shape>(
         BRepPrimAPI_MakeBox(2.0, 1.0, 1.0).Shape());
 
-    ComponentData* c1 = model->createComponent(-1, "Box_1");
-    c1->geometry = move(geom1);
+    ComponentDatas comps;
+    {
+        auto c1 = make_unique<ComponentData>();
+        c1->id = -1;
+        c1->name = "Box_1";
+        c1->geometry = move(geom1);
+        comps.push_back(move(c1));
+    }
+    {
+        auto c2 = make_unique<ComponentData>();
+        c2->id = -1;
+        c2->name = "Box_2";
+        c2->geometry = move(geom2);
+        comps.push_back(move(c2));
+    }
 
-    ComponentData* c2 = model->createComponent(-1, "Box_2");
-    c2->geometry = move(geom2);
-
-    Index modelId = manager.addModel(move(model));
+    Index modelId = manager.addModel("two_boxes", move(comps));
     REQUIRE(modelId == 0);
 
     ComponentData* comp0 = manager.findComponent(0);

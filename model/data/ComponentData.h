@@ -11,6 +11,9 @@
 struct MeshData;
 struct GeometryData;
 
+struct ComponentData;
+using ComponentDatas = std::vector<std::unique_ptr<ComponentData>>;
+
 // 日后在这里补充 Geometry↔网格的映射结构
 struct GeometryMeshMap {
     // Geometry 几何边(全局 GeomEdgeId) -> 网格点(全局点池下标)序列

@@ -14,16 +14,19 @@
 
 namespace systems::io {
 using core::ArgType;
-std::unique_ptr<ModelData> OBJModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
+std::optional<ModelPayload> OBJModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
-    // MeshData
     auto mesh_data = ObjMeshIO::loadFromFile(path);
 
-    // ModelData
-    auto model_data = std::make_unique<ModelData>(std::move(mesh_data));
-    model_data->model_name_ = path.filename().string();
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = std::move(mesh_data);
 
-    return model_data; // 技巧：RVO
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    return ModelPayload{path.filename().string(), std::move(comps)};
 }
 
 void OBJModelHandler::write_components(const ModelLayer& mgr,

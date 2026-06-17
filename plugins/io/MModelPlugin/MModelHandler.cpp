@@ -108,7 +108,7 @@ static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelLayer& mgr, 
     return out;
 }
 
-std::unique_ptr<ModelData> MModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
+std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     // MeshData
     MeshLib::CTMesh mesh;
@@ -117,11 +117,15 @@ std::unique_ptr<ModelData> MModelHandler::read_model(const fs::path& path, const
     CTMeshModel model(mesh);
     model.update(*mesh_data);
 
-    // ModelData
-    auto model_data = std::make_unique<ModelData>(std::move(mesh_data));
-    model_data->model_name_ = path.filename().string();
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = std::move(mesh_data);
 
-    return model_data;
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    return ModelPayload{path.filename().string(), std::move(comps)};
 }
 
 void MModelHandler::write_components(const ModelLayer& mgr,

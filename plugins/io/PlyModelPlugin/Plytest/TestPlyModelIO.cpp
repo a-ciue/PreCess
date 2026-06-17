@@ -3,8 +3,8 @@
 
 #include "ComponentData.h"
 #include "MeshData.h"
-#include "ModelData.h"
 #include "ModelLayer.h"
+#include "ModelPayload.h"
 #include "TempFile.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -12,6 +12,7 @@
 #include <cmath>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -24,17 +25,17 @@ struct MeshSnapshot {
     std::vector<Index> face_offsets; // size = nFaces+1
 };
 
-static MeshData* first_component_mesh(ModelData& m)
+static MeshData* first_component_mesh(ModelPayload& p)
 {
-    auto& comps = m.componentDatas();
+    auto& comps = p.components;
     if (comps.empty() || !comps[0] || !comps[0]->mesh)
         return nullptr;
     return comps[0]->mesh.get();
 }
 
-static const MeshData* first_component_mesh(const ModelData& m)
+static const MeshData* first_component_mesh(const ModelPayload& p)
 {
-    auto& comps = m.componentDatas();
+    const auto& comps = p.components;
     if (comps.empty() || !comps[0] || !comps[0]->mesh)
         return nullptr;
     return comps[0]->mesh.get();
@@ -91,10 +92,10 @@ TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)"
     fs::path infile = dir / "simple.ply";
     REQUIRE(fs::exists(infile));
 
-    auto model = handler.read_model(infile, {});
-    REQUIRE(model != nullptr);
+    auto payload = handler.read_model(infile, {});
+    REQUIRE(payload.has_value());
 
-    MeshData* mesh0 = first_component_mesh(*model);
+    MeshData* mesh0 = first_component_mesh(*payload);
     REQUIRE(mesh0 != nullptr);
 
     REQUIRE(mesh0->vertex_positions_.size() == 5u);
@@ -104,7 +105,7 @@ TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)"
     MeshSnapshot snap = snapshot_from_mesh(*mesh0);
 
     ModelLayer mgr;
-    Index model_id = mgr.addModel(std::move(model));
+    Index model_id = mgr.addModel(payload->model_name, std::move(payload->components));
     auto cids = mgr.getComponentIds(model_id);
     REQUIRE(cids.size() == 1);
 
@@ -114,10 +115,10 @@ TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)"
     REQUIRE_NOTHROW(handler.write_components(mgr, cids, out, {}));
     REQUIRE(fs::exists(out));
 
-    auto model2 = handler.read_model(out, {});
-    REQUIRE(model2 != nullptr);
+    auto payload2 = handler.read_model(out, {});
+    REQUIRE(payload2.has_value());
 
-    const MeshData* mesh2 = first_component_mesh(*model2);
+    const MeshData* mesh2 = first_component_mesh(*payload2);
     REQUIRE(mesh2 != nullptr);
 
     REQUIRE(snapshot_equal_mesh(snap, *mesh2));
@@ -131,10 +132,10 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
     fs::path infile = dir / "test.ply";
     REQUIRE(fs::exists(infile));
 
-    auto model = handler.read_model(infile, {});
-    REQUIRE(model != nullptr);
+    auto payload = handler.read_model(infile, {});
+    REQUIRE(payload.has_value());
 
-    MeshData* mesh0 = first_component_mesh(*model);
+    MeshData* mesh0 = first_component_mesh(*payload);
     REQUIRE(mesh0 != nullptr);
 
     REQUIRE(mesh0->vertex_positions_.size() == 10u);
@@ -143,7 +144,7 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
     MeshSnapshot snap = snapshot_from_mesh(*mesh0);
 
     ModelLayer mgr;
-    Index model_id = mgr.addModel(std::move(model));
+    Index model_id = mgr.addModel(payload->model_name, std::move(payload->components));
     auto cids = mgr.getComponentIds(model_id);
     REQUIRE(cids.size() == 1);
 
@@ -153,10 +154,10 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
     REQUIRE_NOTHROW(handler.write_components(mgr, cids, out, {}));
     REQUIRE(fs::exists(out));
 
-    auto model2 = handler.read_model(out, {});
-    REQUIRE(model2 != nullptr);
+    auto payload2 = handler.read_model(out, {});
+    REQUIRE(payload2.has_value());
 
-    const MeshData* mesh2 = first_component_mesh(*model2);
+    const MeshData* mesh2 = first_component_mesh(*payload2);
     REQUIRE(mesh2 != nullptr);
 
     REQUIRE(snapshot_equal_mesh(snap, *mesh2));

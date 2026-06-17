@@ -132,7 +132,7 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
     return true;
 }
 
-std::unique_ptr<ModelData> MeshMeditModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
+std::optional<ModelPayload> MeshMeditModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     // MeshData
     auto mesh_data = std::make_unique<MeshData>();
@@ -140,14 +140,18 @@ std::unique_ptr<ModelData> MeshMeditModelHandler::read_model(const fs::path& pat
     const bool success = LibMeshbIO::read(path, *mesh_data);
     if (!success) {
         spdlog::error("MeshMeditModelHandler: failed to read mesh from file: {}", path.string());
-        return nullptr;
+        return std::nullopt;
     }
 
-    // ModelData
-    auto model_data = std::make_unique<ModelData>(std::move(mesh_data));
-    model_data->model_name_ = path.filename().string();
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = std::move(mesh_data);
 
-    return model_data;
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    return ModelPayload{path.filename().string(), std::move(comps)};
 }
 
 void MeshMeditModelHandler::write_components(const ModelLayer& mgr,

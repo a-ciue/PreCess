@@ -7,14 +7,16 @@
  * 这里不直接复用 MakeMeshData()（其 solid 部分会在 OBJ 写出/读回过程中丢失），
  * 而是构造一个仅含点 + 面 + patch/block 的最小网格，做读写回环验证。
  */
+#include "ComponentData.h"
 #include "MeshData.h"
-#include "ModelData.h"
 #include "ModelLayer.h"
+#include "ModelPayload.h"
 #include "OBJModelHandler.h"
 #include "TempFile.h"
 #include <catch2/catch_test_macros.hpp>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <vector>
 
 namespace fs = std::filesystem;
@@ -62,8 +64,12 @@ std::vector<Index> addMeshModelAndGetComponentIds(
     ModelLayer& layer,
     std::unique_ptr<MeshData> mesh)
 {
-    auto model = std::make_unique<ModelData>(std::move(mesh));
-    const Index modelId = layer.addModel(std::move(model));
+    ComponentDatas comps;
+    auto comp = std::make_unique<ComponentData>();
+    comp->id = -1;
+    comp->mesh = std::move(mesh);
+    comps.push_back(std::move(comp));
+    const Index modelId = layer.addModel("model", std::move(comps));
     REQUIRE(modelId >= 0);
 
     std::vector<Index> componentIds = layer.getComponentIds(modelId);
@@ -72,9 +78,9 @@ std::vector<Index> addMeshModelAndGetComponentIds(
     return componentIds;
 }
 
-const MeshData* requireReadableMeshModel(const ModelData& model)
+const MeshData* requireReadableMeshModel(const ModelPayload& payload)
 {
-    const auto& components = model.componentDatas();
+    const auto& components = payload.components;
     REQUIRE(!components.empty());
 
     for (const auto& component : components) {
@@ -112,11 +118,11 @@ TEST_CASE("OBJModelHandler::write_components()/read_model() round-trip")
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> read_back;
-    REQUIRE_NOTHROW(read_back = io.read_model(out, {}));
-    REQUIRE(read_back != nullptr);
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
 
-    const MeshData* read_mesh = requireReadableMeshModel(*read_back);
+    const MeshData* read_mesh = requireReadableMeshModel(*payload);
 
     const MeshData ref = MakeSurfaceMesh();
     // 顶点数应一致
@@ -147,10 +153,10 @@ TEST_CASE("OBJModelHandler::read_model() - model_name preserved")
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    std::unique_ptr<ModelData> read_back;
-    REQUIRE_NOTHROW(read_back = io.read_model(out, {}));
-    REQUIRE(read_back != nullptr);
-    REQUIRE(read_back->model_name_ == out.filename().string());
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(out, {}));
+    REQUIRE(payload.has_value());
+    REQUIRE(payload->model_name == out.filename().string());
 }
 
 TEST_CASE("OBJModelHandler::write_components() - empty MeshData gracefully")

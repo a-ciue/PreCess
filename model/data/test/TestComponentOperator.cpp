@@ -1,7 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include <memory>
+
 #include "MeshData.h"
-#include "ModelData.h"
+#include "ComponentData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
 #include "ComponentOperator.h"
@@ -33,19 +35,25 @@ TEST_CASE("Edge global id map is built for true 1D edges", "[MeshIDMap][MeshData
     // 真实线单元：两条边 (0-1), (1-2)
     mesh->edge_vertices_ = { 0, 1, 1, 2 };
 
-    auto model = std::make_unique<ModelData>(std::move(mesh));
-    Index model_id = mgr.addModel(std::move(model));
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = std::move(mesh);
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    Index model_id = mgr.addModel("edge_id_map_test", std::move(comps));
     REQUIRE(model_id >= 0);
 
     auto comp_ids = mgr.getComponentIds(model_id);
     REQUIRE(comp_ids.size() == 1);
     Index component_id = comp_ids[0];
 
-    ComponentData* c = mgr.findComponent(component_id);
-    REQUIRE(c);
-    REQUIRE(c->mesh);
+    ComponentData* comp = mgr.findComponent(component_id);
+    REQUIRE(comp);
+    REQUIRE(comp->mesh);
 
-    auto& md = *c->mesh;
+    auto& md = *comp->mesh;
     REQUIRE(md.edge_vertices_.size() == 4);
     REQUIRE(md.local_to_global_edge_id.size() == 2);
 

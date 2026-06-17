@@ -27,7 +27,7 @@ public:
      * @param args 参数
      * @return 读取到的模型对象
      */
-    std::unique_ptr<ModelData> read_model(const fs::path& path, const std::vector<std::any>& args) override;
+    std::optional<ModelPayload> read_model(const fs::path& path, const std::vector<std::any>& args) override;
     void write_components(const ModelLayer& mgr,
         const std::vector<Index>& component_ids,
         const fs::path& path,

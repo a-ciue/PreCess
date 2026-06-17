@@ -19,7 +19,7 @@
 
 namespace systems::io {
 
-std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
+std::optional<ModelPayload> PlyModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     try {
         // 打开文件流
@@ -249,13 +249,19 @@ std::unique_ptr<ModelData> PlyModelHandler::read_model(const fs::path& path, con
             }
         }
 
-        auto model_data = std::make_unique<ModelData>(std::move(mesh));
-        model_data->model_name_ = path.filename().string();
-        return model_data;
+        auto c = std::make_unique<ComponentData>();
+        c->id = -1;
+        c->name = "Comp_0";
+        c->mesh = std::move(mesh);
+
+        ComponentDatas comps;
+        comps.push_back(std::move(c));
+
+        return ModelPayload{path.filename().string(), std::move(comps)};
 
     } catch (const std::exception& e) {
         spdlog::error("PlyModelHandler: error reading {}: {}", path.string().c_str(), e.what());
-        return {};
+        return std::nullopt;
     }
 }
 

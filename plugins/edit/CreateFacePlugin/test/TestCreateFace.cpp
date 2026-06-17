@@ -1,8 +1,8 @@
 #include "ArgObject.h"
+#include "ComponentData.h"
 #include "CreateFaceHandler.h"
 #include "MakeMeshData.h"
 #include "MeshData.h"
-#include "ModelData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
 
@@ -15,10 +15,14 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
     auto build_one_component_model = []() -> std::pair<ModelLayer, Index> {
         auto mesh_data = std::make_unique<MeshData>(MakeMeshData());
 
-        auto model = std::make_unique<ModelData>(std::move(mesh_data));
+        auto c = std::make_unique<ComponentData>();
+        c->id = -1; c->name = "Comp_0";
+        c->mesh = std::move(mesh_data);
+        ComponentDatas comps;
+        comps.push_back(std::move(c));
 
         ModelLayer mgr;
-        const Index model_id = mgr.addModel(std::move(model));
+        const Index model_id = mgr.addModel("test_model", std::move(comps));
 
         return { std::move(mgr), model_id };
     };

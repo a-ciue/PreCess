@@ -1,33 +1,39 @@
+#include "ComponentData.h"
 #include "MakeMeshData.h"
 #include "ModelLayer.h"
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("ModelLayer add nullptr")
+TEST_CASE("ModelLayer add with empty components")
 {
     ModelLayer manager;
-    manager.addModel(nullptr);
-    manager.addModel(nullptr);
-    REQUIRE(!manager.getModelOperator(0));
+    Index id = manager.addModel("empty_model", ComponentDatas{});
+    REQUIRE(manager.getModelOperator(id));
+    REQUIRE_FALSE(manager.getModelOperator(-1));
+    REQUIRE(manager.getComponentIds(id).empty());
 }
 
-TEST_CASE("ModelLayer add a MeshData")
+TEST_CASE("ModelLayer add a MeshData component")
 {
     using namespace std;
     ModelLayer manager;
 
     auto mesh = make_unique<MeshData>(MakeMeshData());
-    auto model = make_unique<ModelData>(move(mesh));
+    auto c = make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = move(mesh);
+    ComponentDatas comps;
+    comps.push_back(move(c));
 
-    manager.addModel(move(model));
+    Index id = manager.addModel("test_model", move(comps));
 
     SECTION("getModelOperator with invalid id")
     {
-        REQUIRE(!manager.getModelOperator(1));
         REQUIRE(!manager.getModelOperator(-1));
     }
 
     SECTION("getModelOperator with valid id")
     {
-        REQUIRE(manager.getModelOperator(0));
+        REQUIRE(manager.getModelOperator(id));
     }
 }

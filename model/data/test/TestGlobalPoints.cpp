@@ -1,8 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include "ModelLayer.h"
-#include "ModelData.h"
+#include "ComponentData.h"
 #include "MeshData.h"
 #include "ModelObserver.h"
+#include <memory>
 
 struct DummyObserver : ModelObserver {
     void notifyModelChanged(Index) override {}
@@ -33,19 +34,25 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
     // 一条真实线单元边 (0,1)
     mesh->edge_vertices_ = {0,1};
 
-    auto model = std::make_unique<ModelData>(std::move(mesh));
-    Index mid = mgr.addModel(std::move(model));
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = std::move(mesh);
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    Index mid = mgr.addModel("global_points_test", std::move(comps));
     REQUIRE(mid >= 0);
 
     auto compIds = mgr.getComponentIds(mid);
     REQUIRE(compIds.size() == 1);
     Index cid = compIds[0];
 
-    ComponentData* c = mgr.findComponent(cid);
-    REQUIRE(c);
-    REQUIRE(c->mesh);
+    ComponentData* comp = mgr.findComponent(cid);
+    REQUIRE(comp);
+    REQUIRE(comp->mesh);
 
-    const MeshData& md = *c->mesh;
+    const MeshData& md = *comp->mesh;
 
     REQUIRE(md.vertex_positions_.empty());
     REQUIRE(md.vertex_count_ == 4);
@@ -55,7 +62,6 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
     REQUIRE(base >= 0);
     REQUIRE((int)mgr.globalPoints().size() >= base + md.vertex_count_);
 
-    // indices 应该已经全局化：原来 0.. 现在 base+0..
     REQUIRE(md.face_vertices_[0] == base + 0);
     REQUIRE(md.face_vertices_[1] == base + 1);
     REQUIRE(md.face_vertices_[2] == base + 2);
@@ -63,7 +69,6 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
     REQUIRE(md.edge_vertices_[0] == base + 0);
     REQUIRE(md.edge_vertices_[1] == base + 1);
 
-    // 所有点索引不能越界 globalPoints
     auto check = [&](const std::vector<Index>& a){
         for (Index v: a) {REQUIRE(v >= 0); REQUIRE(v < (Index)mgr.globalPoints().size());
     } };
