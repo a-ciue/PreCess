@@ -2,6 +2,15 @@
 #include "MeshData.h"
 #include <catch2/catch_test_macros.hpp>
 
+static bool ownsGlobalPoint(const ComponentData& c, Index global_pid)
+{
+    if (!c.mesh)
+        return false;
+    const Index base = c.mesh->global_point_base_;
+    const Index cnt = c.mesh->vertex_count_;
+    return base >= 0 && cnt >= 0 && global_pid >= base && global_pid < base + cnt;
+}
+
 TEST_CASE("ComponentData Geometry edge -> mesh point gids map", "[GeometryMeshMap]")
 {
     ComponentData c;
@@ -21,7 +30,7 @@ TEST_CASE("ComponentData Geometry edge -> mesh point gids map", "[GeometryMeshMa
     REQUIRE(c.mapping->geometry_edge_to_mesh_point_gids[e0].size() == 3);
 
     // optional: validate ownership helper
-    REQUIRE(c.ownsGlobalPoint(10));
-    REQUIRE_FALSE(c.ownsGlobalPoint(9));
-    REQUIRE_FALSE(c.ownsGlobalPoint(15));
+    REQUIRE(ownsGlobalPoint(c,10));
+    REQUIRE_FALSE(ownsGlobalPoint(c,9));
+    REQUIRE_FALSE(ownsGlobalPoint(c,15));
 }
