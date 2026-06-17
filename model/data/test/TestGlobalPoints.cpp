@@ -44,7 +44,7 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
     Index mid = mgr.addModel("global_points_test", std::move(comps));
     REQUIRE(mid >= 0);
 
-    auto compIds = mgr.getComponentIds(mid);
+    auto compIds = mgr.modelById(mid)->componentIds();
     REQUIRE(compIds.size() == 1);
     Index cid = compIds[0];
 

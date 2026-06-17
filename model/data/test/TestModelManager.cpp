@@ -9,7 +9,7 @@ TEST_CASE("ModelLayer add with empty components")
     Index id = manager.addModel("empty_model", ComponentDatas{});
     REQUIRE(manager.getModelOperator(id));
     REQUIRE_FALSE(manager.getModelOperator(-1));
-    REQUIRE(manager.getComponentIds(id).empty());
+    REQUIRE(manager.modelById(id)->componentIds().empty());
 }
 
 TEST_CASE("ModelLayer add a MeshData component")

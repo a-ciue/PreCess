@@ -38,13 +38,6 @@ public:
      */
     ModelObserver* observer() const;
 
-    /**
-     * @brief 输出几何文件
-     * @param geometry_path 输出几何文件路径
-     * @param extension 输出文件拓展名
-     */
-    void write_geometry(const std::filesystem::path& geometry_path);
-
     //! @brief 根据给定id找到mesh的edge，进行边分割
     //! @param patch_id 边所在的patch
     //! @param edge_v_id1 其中一个边点id

@@ -94,7 +94,7 @@ TEST_CASE("ModelLayer adds multiple Geometry components (runtime access by ids)"
     Index modelId = manager.addModel("component_id_test", move(comps));
     REQUIRE(modelId == 0);
 
-    auto ids = manager.getComponentIds(modelId);
+    auto ids = manager.modelById(modelId)->componentIds();
     REQUIRE(ids.size() == 2);
 
     unordered_set<Index> uniq(ids.begin(), ids.end());

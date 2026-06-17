@@ -52,7 +52,8 @@ void ModelIOSystem::write(Index model, const std::filesystem::path& path, const 
         return;
     }
 
-    auto cids = manager_->getComponentIds(model);
+    auto* m = manager_->modelById(model);
+    auto cids = m ? m->componentIds() : std::vector<Index>{};
     if (cids.empty()) {
         spdlog::warn("ModelIOSystem::write: model {} has no components", model);
         return;

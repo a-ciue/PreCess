@@ -19,7 +19,7 @@ QModelQuery::QModelQuery(ModelLayer* mgr, QObject* parent)
 std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
 {
     using namespace std;
-    auto ids = m_manager->getComponentIds(model_id);
+    auto ids = getComponentIds(model_id);
     ComponentData* comp = nullptr;
     for (Index cid : ids) {
         ComponentData* c = m_manager->findComponent(cid);
@@ -109,7 +109,7 @@ const std::vector<std::array<double, 3>>& QModelQuery::globalPoints() const
 std::vector<GeometryDataVtk> QModelQuery::getGeometryVtkData(Index model_id)
 {
     std::vector<GeometryDataVtk> result;
-    for (Index cid : m_manager->getComponentIds(model_id)) {
+    for (Index cid : getComponentIds(model_id)) {
         ComponentData* comp = m_manager->findComponent(cid);
         if (!comp || !comp->geometry || !comp->geometry->rootShape)
             continue;
@@ -132,13 +132,14 @@ std::optional<GeometryDataVtk> QModelQuery::getGeometryVtkDataByComponent(Index 
 
 std::vector<Index> QModelQuery::getComponentIds(Index model_id) const
 {
-    return m_manager->getComponentIds(model_id);
+    auto* model = m_manager->modelById(model_id);
+    return model ? model->componentIds() : std::vector<Index>{};
 }
 
 int QModelQuery::findModelIdByComponent(Index component_id) const
 {
-    auto opt = m_manager->findModelIdByComponent(component_id);
-    return opt.has_value() ? *opt : -1;
+    auto it = m_manager->component_to_model_.find(component_id);
+    return it != m_manager->component_to_model_.end() ? it->second : -1;
 }
 
 QVariantList QModelQuery::getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId)
@@ -167,7 +168,7 @@ QVariantList QModelQuery::getGeometryEdgeMappedPointIds(Index component_id, int 
 
 QString QModelQuery::getModelName(Index model_id) const
 {
-    ModelData* model = m_manager->getModel(model_id);
+    ModelData* model = m_manager->modelById(model_id);
     if (!model) {
         spdlog::error("模型不存在，无法获取名称,id:{}", model_id);
         return QString();
@@ -178,12 +179,12 @@ QString QModelQuery::getModelName(Index model_id) const
 Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
 {
     QStringList attri_list;
-    ModelData* model = m_manager->getModel(model_id);
+    ModelData* model = m_manager->modelById(model_id);
     if (!model) {
         spdlog::error("模型不存在，无法获取属性名，id:{}", model_id);
         return {};
     }
-    auto ids = m_manager->getComponentIds(model_id);
+    auto ids = getComponentIds(model_id);
     ComponentData* comp = nullptr;
     for (Index cid : ids) {
         ComponentData* c = m_manager->findComponent(cid);
@@ -216,12 +217,12 @@ Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
 Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) const
 {
     QList<Element::Type> type_list;
-    ModelData* model = m_manager->getModel(model_id);
+    ModelData* model = m_manager->modelById(model_id);
     if (!model) {
         spdlog::error( "模型不存在，无法获取属性类型，id:{}",model_id);
         return {};
     }
-    auto ids = m_manager->getComponentIds(model_id);
+    auto ids = getComponentIds(model_id);
     ComponentData* comp = nullptr;
     for (Index cid : ids) {
         ComponentData* c = m_manager->findComponent(cid);
@@ -264,7 +265,7 @@ QVariantList QModelQuery::listModels() const
 
         int compCount = 0;
 
-        const std::vector<Index> cids = m_manager->getComponentIds(mid);
+        const std::vector<Index> cids = getComponentIds(mid);
         compCount = (int)cids.size();
 
         m["component_count"] = compCount;
@@ -280,7 +281,7 @@ QVariantList QModelQuery::getComponentsSummary(Index model_id) const
     if (!m_manager)
         return out;
 
-    const std::vector<Index> cids = m_manager->getComponentIds(model_id);
+    const std::vector<Index> cids = getComponentIds(model_id);
     out.reserve((int)cids.size());
 
     for (Index cid : cids) {

@@ -1,5 +1,6 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "CreateFaceHandler.h"
 #include "DeleteFaceHandler.h"
 #include "MakeMeshData.h"
@@ -26,12 +27,12 @@ TEST_CASE("DeleteFace and CreateFace, Delete -> Create(Recover) -> Delete -> Cre
     ModelLayer mgr;
     Index model_id = mgr.addModel("test_model", std::move(comps));
 
-    auto cids = mgr.getComponentIds(model_id);
+    auto cids = mgr.modelById(model_id)->componentIds();
     REQUIRE(cids.size() == 1);
 
-    auto op_opt = mgr.getComponentOperator(cids[0]);
-    REQUIRE(op_opt.has_value());
-    auto op = std::move(*op_opt);
+    ComponentData* comp = mgr.findComponent(cids[0]);
+    REQUIRE(comp);
+    ComponentOperator op(cids[0], *comp, mgr, nullptr);
 
     MeshData* mesh = op.mesh();
     REQUIRE(mesh != nullptr);

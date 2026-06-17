@@ -71,20 +71,16 @@ public:
     std::optional<ComponentOperator> getComponentOperator(Index component_id);
 
     ComponentData* findComponent(Index component_id) const;
-    std::optional<Index> findModelIdByComponent(Index component_id) const;
-    std::vector<Index> getComponentIds(Index model_id) const;
 
     GeometryRegistry& geomRegistry();
     const GeometryRegistry& geomRegistry() const;
 
-    const std::vector<std::array<double, 3>>& globalPoints() const { return global_points_; }
+    const std::vector<std::array<double, 3>>& globalPoints() const;
 
-    MeshIDMap& edgeIdMap() { return edge_id_map_; }
-    const MeshIDMap& edgeIdMap() const { return edge_id_map_; }
+    MeshIDMap& edgeIdMap();
+    const MeshIDMap& edgeIdMap() const;
 
 private:
-    ModelData* getModel(Index model_id) const;
-
     Index allocateComponentId() noexcept;
 
     GeometryRegistry geom_registry_;

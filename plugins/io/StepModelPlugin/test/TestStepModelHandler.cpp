@@ -51,7 +51,7 @@ static std::vector<Index> addModelAndGetComponentIds(
     const Index modelId = layer.addModel("model", std::move(comps));
     REQUIRE(modelId >= 0);
 
-    std::vector<Index> componentIds = layer.getComponentIds(modelId);
+    std::vector<Index> componentIds = layer.modelById(modelId)->componentIds();
     REQUIRE(!componentIds.empty());
 
     return componentIds;

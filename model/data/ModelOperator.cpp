@@ -14,10 +14,6 @@ ModelObserver* ModelOperator::observer() const
     return observer_;
 }
 
-void ModelOperator::write_geometry(const std::filesystem::path& geometry_path)
-{
-}
-
 void ModelOperator::notifyChanged()
 {
     if (this->observer_) {

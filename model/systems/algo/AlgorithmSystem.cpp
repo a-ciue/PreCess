@@ -28,7 +28,7 @@ AlgorithmSystem::~AlgorithmSystem() = default;
 
 std::any AlgorithmSystem::call(const string& unique_name, Index component_id, const vector<ArgObject>& args)
 {
-    std::optional comp_op = model_manager_->getComponentOperator(component_id);
+    auto comp_op = model_manager_->getComponentOperator(component_id);
     if (!comp_op) {
         spdlog::error("AlgorithmSystem::call: ComponentData operator for component ID {} not found.", component_id);
         return {};

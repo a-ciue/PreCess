@@ -45,7 +45,7 @@ TEST_CASE("Edge global id map is built for true 1D edges", "[MeshIDMap][MeshData
     Index model_id = mgr.addModel("edge_id_map_test", std::move(comps));
     REQUIRE(model_id >= 0);
 
-    auto comp_ids = mgr.getComponentIds(model_id);
+    auto comp_ids = mgr.modelById(model_id)->componentIds();
     REQUIRE(comp_ids.size() == 1);
     Index component_id = comp_ids[0];
 

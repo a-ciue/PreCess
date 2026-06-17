@@ -10,10 +10,12 @@
 #include <stdexcept>
 
 ComponentOperator::ComponentOperator(Index component_id,
-                                     ComponentData& component,
-                                     ModelLayer& mgr,
-                                     ModelObserver* observer) noexcept
+    ComponentData& component,
+    ModelLayer& mgr,
+    ModelObserver* observer,
+    Index model_id) noexcept
     : component_id_(component_id)
+    , model_id_(model_id)
     , component_(&component)
     , mgr_(&mgr)
     , observer_(observer)
@@ -30,19 +32,14 @@ GeometryData* ComponentOperator::geometry() const noexcept
     return component_ && component_->geometry ? component_->geometry.get() : nullptr;
 }
 
-Index ComponentOperator::modelId() const
+Index ComponentOperator::modelId() const noexcept
 {
-    auto mid = mgr_->findModelIdByComponent(component_id_);
-    if (!mid)
-        throw std::runtime_error("ComponentOperator::modelId: owner model not found");
-    return *mid;
+    return model_id_;
 }
 
 ModelData* ComponentOperator::model() const
 {
-    auto mid = mgr_->findModelIdByComponent(component_id_);
-    if (!mid) return nullptr;
-    return mgr_->modelById(*mid); // 见第2步：给 ModelLayer 加 public 访问器
+    return mgr_->modelById(model_id_);
 }
 
 void ComponentOperator::notifyChanged() const

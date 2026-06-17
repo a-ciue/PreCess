@@ -1,5 +1,6 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "CreateFaceHandler.h"
 #include "MakeMeshData.h"
 #include "MeshData.h"
@@ -31,12 +32,12 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
     {
         auto [mgr, model_id] = build_one_component_model();
 
-        auto cids = mgr.getComponentIds(model_id);
+        auto cids = mgr.modelById(model_id)->componentIds();
         REQUIRE(cids.size() == 1);
 
-        auto comp_op_opt = mgr.getComponentOperator(cids[0]);
-        REQUIRE(comp_op_opt.has_value());
-        auto comp_op = std::move(*comp_op_opt);
+        ComponentData* c = mgr.findComponent(cids[0]);
+        REQUIRE(c);
+        ComponentOperator comp_op(cids[0], *c, mgr, nullptr);
 
         MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);
@@ -67,12 +68,12 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
     {
         auto [mgr, model_id] = build_one_component_model();
 
-        auto cids = mgr.getComponentIds(model_id);
+        auto cids = mgr.modelById(model_id)->componentIds();
         REQUIRE(cids.size() == 1);
 
-        auto comp_op_opt = mgr.getComponentOperator(cids[0]);
-        REQUIRE(comp_op_opt.has_value());
-        auto comp_op = std::move(*comp_op_opt);
+        ComponentData* c = mgr.findComponent(cids[0]);
+        REQUIRE(c);
+        ComponentOperator comp_op(cids[0], *c, mgr, nullptr);
 
         MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);

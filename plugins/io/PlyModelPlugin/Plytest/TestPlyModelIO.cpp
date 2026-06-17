@@ -106,7 +106,7 @@ TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)"
 
     ModelLayer mgr;
     Index model_id = mgr.addModel(payload->model_name, std::move(payload->components));
-    auto cids = mgr.getComponentIds(model_id);
+    auto cids = mgr.modelById(model_id)->componentIds();
     REQUIRE(cids.size() == 1);
 
     fs::path out = core::TempFile::instance().path();
@@ -145,7 +145,7 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
 
     ModelLayer mgr;
     Index model_id = mgr.addModel(payload->model_name, std::move(payload->components));
-    auto cids = mgr.getComponentIds(model_id);
+    auto cids = mgr.modelById(model_id)->componentIds();
     REQUIRE(cids.size() == 1);
 
     fs::path out = core::TempFile::instance().path();

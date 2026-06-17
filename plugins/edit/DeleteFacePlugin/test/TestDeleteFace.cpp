@@ -1,5 +1,6 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "DeleteFaceHandler.h"
 #include "MakeMeshData.h"
 #include "MeshData.h"
@@ -23,12 +24,12 @@ TEST_CASE("DeleteFaceHandler: delete face 0")
     ModelLayer mgr;
     Index model_id = mgr.addModel("test_model", std::move(comps));
 
-    auto cids = mgr.getComponentIds(model_id);
+    auto cids = mgr.modelById(model_id)->componentIds();
     REQUIRE(cids.size() == 1);
 
-    auto op_opt = mgr.getComponentOperator(cids[0]);
-    REQUIRE(op_opt.has_value());
-    auto op = std::move(*op_opt);
+    ComponentData* comp = mgr.findComponent(cids[0]);
+    REQUIRE(comp);
+    ComponentOperator op(cids[0], *comp, mgr, nullptr);
 
     MeshData* mesh = op.mesh();
     REQUIRE(mesh != nullptr);

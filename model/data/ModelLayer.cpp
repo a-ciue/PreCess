@@ -29,17 +29,15 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
     for (auto& c : components) {
         if (!c)
             continue;
-        if (c->id < 0) {
-            c->id = allocateComponentId();
-        }
+        c->id = allocateComponentId();
     }
 
     for (auto& c : components) {
         if (!c)
             continue;
         Index cid = c->id;
-        spdlog::info("insert component: requested_id={}, final_id={}, exists_before={}",
-            c->id, cid, components_.count(cid) != 0);
+        spdlog::info("insert component: final_id={}, exists_before={}",
+            cid, components_.count(cid) != 0);
 
         component_to_model_[cid] = model_id;
         model->componentIds().push_back(cid);
@@ -117,20 +115,11 @@ void ModelLayer::removeComponent(Index component_id)
         observer_->notifyComponentRemoved(component_id);
 }
 
-ModelData* ModelLayer::getModel(Index model_id) const {
-    auto it = models_.find(model_id);
-    if (it == models_.end()) {
-        return nullptr;
-    }
-    return it->second.get();
-}
-
-
 std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
 {
-    ModelData* mesh = getModel(model_id);
-    if (mesh) {
-        return ModelOperator(model_id, *mesh, observer_);
+    ModelData* m = modelById(model_id);
+    if (m) {
+        return ModelOperator(model_id, *m, observer_);
     }
     return {};
 }
@@ -149,7 +138,9 @@ std::optional<ComponentOperator> ModelLayer::getComponentOperator(Index componen
     if (!c)
         return std::nullopt;
 
-    return ComponentOperator(component_id, *c, *this, observer_);
+    auto mit = component_to_model_.find(component_id);
+    Index model_id = mit != component_to_model_.end() ? mit->second : -1;
+    return ComponentOperator(component_id, *c, *this, observer_, model_id);
 }
 
 Index ModelLayer::allocateComponentId() noexcept
@@ -163,20 +154,19 @@ ComponentData* ModelLayer::findComponent(Index component_id) const
     return it == components_.end() ? nullptr : it->second.get();
 }
 
-std::optional<Index> ModelLayer::findModelIdByComponent(Index component_id) const
+const std::vector<std::array<double, 3>>& ModelLayer::globalPoints() const
 {
-    auto it = component_to_model_.find(component_id);
-    if (it == component_to_model_.end())
-        return std::nullopt;
-    return it->second;
+    return global_points_;
 }
 
-std::vector<Index> ModelLayer::getComponentIds(Index model_id) const
+MeshIDMap& ModelLayer::edgeIdMap()
 {
-    auto it = models_.find(model_id);
-    if (it == models_.end() || !it->second)
-        return {};
-    return it->second->componentIds();
+    return edge_id_map_;
+}
+
+const MeshIDMap& ModelLayer::edgeIdMap() const
+{
+    return edge_id_map_;
 }
 
 GeometryRegistry& ModelLayer::geomRegistry()

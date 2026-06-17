@@ -26,17 +26,15 @@ EditSystem::~EditSystem() = default;
 
 std::any EditSystem::call(const string& unique_name, Index component_id, const vector<ArgObject>& args)
 {
-    std::optional comp_op = model_manager_->getComponentOperator(component_id);
+    auto comp_op = model_manager_->getComponentOperator(component_id);
     if (!comp_op) {
         spdlog::error("EditSystem::call: ComponentData operator for component ID {} not found.", component_id);
         return {};
     }
     auto it = handlers_.find(unique_name);
     if (it != handlers_.end() && it->second) {
-        // 2) 调用插件 execute，传入 ComponentOperator
         std::any result = it->second->execute(*comp_op, args);
 
-        // 3) 通知变更（ComponentOperator 内已封装 notifyChanged）
         comp_op->notifyChanged();
 
         return result;

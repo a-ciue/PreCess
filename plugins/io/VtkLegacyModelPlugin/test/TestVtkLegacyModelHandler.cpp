@@ -39,7 +39,7 @@ TEST_CASE("VtkLegacyModelHandler::write_components()/read_model() over MakeMeshD
 
     ModelLayer mgr;
     Index model_id = mgr.addModel("model", std::move(comps));
-    auto cids = mgr.getComponentIds(model_id);
+    auto cids = mgr.modelById(model_id)->componentIds();
     REQUIRE(!cids.empty());
 
     REQUIRE_NOTHROW(io.write_components(mgr, cids, out, {}));
