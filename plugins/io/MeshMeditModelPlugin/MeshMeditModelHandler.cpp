@@ -80,7 +80,7 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
         // 3.1 顶点索引追加
         merged.face_vertices_.reserve(merged.face_vertices_.size() + src.face_vertices_.size());
         for (Index gid : src.face_vertices_) {
-            auto out = toFileVertexIdChecked(gid, base, cnt, io_file_vertex_offset);
+            auto out = toFileVertexIdChecked(gid, global_to_local, io_file_vertex_offset);
             merged.face_vertices_.push_back(*out);
         }
 
@@ -99,7 +99,7 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
 
         merged.solid_vertices_.reserve(merged.solid_vertices_.size() + src.solid_vertices_.size());
         for (Index gid : src.solid_vertices_) {
-            auto out = toFileVertexIdChecked(gid, base, cnt, io_file_vertex_offset);
+            auto out = toFileVertexIdChecked(gid, global_to_local, io_file_vertex_offset);
             merged.solid_vertices_.push_back(*out);
         }
 
