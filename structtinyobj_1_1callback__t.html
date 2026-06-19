@@ -97,10 +97,10 @@ Public 属性</h2></td></tr>
 <tr class="memitem:aec89406f0dce3b2c27436808d3176c7c" id="r_aec89406f0dce3b2c27436808d3176c7c"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec89406f0dce3b2c27436808d3176c7c">normal_cb</a> )(void *user_data, <a class="el" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> x, <a class="el" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> y, <a class="el" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> z)</td></tr>
 <tr class="memitem:ad3771d01fb52729cda7a6e956902f28e" id="r_ad3771d01fb52729cda7a6e956902f28e"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad3771d01fb52729cda7a6e956902f28e">texcoord_cb</a> )(void *user_data, <a class="el" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> x, <a class="el" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> y, <a class="el" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> z)</td></tr>
 <tr class="memitem:a3e1516ee5130eced6d08e2d8a623a148" id="r_a3e1516ee5130eced6d08e2d8a623a148"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e1516ee5130eced6d08e2d8a623a148">index_cb</a> )(void *user_data, <a class="el" href="structtinyobj_1_1index__t.html">index_t</a> *indices, int num_indices)</td></tr>
-<tr class="memitem:af328b54be3e8cecd0e3d04ba302a0ca1" id="r_af328b54be3e8cecd0e3d04ba302a0ca1"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af328b54be3e8cecd0e3d04ba302a0ca1">usemtl_cb</a> )(void *user_data, const char *name, int material_id)</td></tr>
+<tr class="memitem:af328b54be3e8cecd0e3d04ba302a0ca1" id="r_af328b54be3e8cecd0e3d04ba302a0ca1"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af328b54be3e8cecd0e3d04ba302a0ca1">usemtl_cb</a> )(void *user_data, const char *<a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>, int material_id)</td></tr>
 <tr class="memitem:a19238ff49af5974b2e4ebe23e065b192" id="r_a19238ff49af5974b2e4ebe23e065b192"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19238ff49af5974b2e4ebe23e065b192">mtllib_cb</a> )(void *user_data, const <a class="el" href="structtinyobj_1_1material__t.html">material_t</a> *materials, int num_materials)</td></tr>
 <tr class="memitem:acfd64aafe46d7f7601f652838426d219" id="r_acfd64aafe46d7f7601f652838426d219"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acfd64aafe46d7f7601f652838426d219">group_cb</a> )(void *user_data, const char **names, int num_names)</td></tr>
-<tr class="memitem:a905e0452b155afa871b8ed4bfd45d51f" id="r_a905e0452b155afa871b8ed4bfd45d51f"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a905e0452b155afa871b8ed4bfd45d51f">object_cb</a> )(void *user_data, const char *name)</td></tr>
+<tr class="memitem:a905e0452b155afa871b8ed4bfd45d51f" id="r_a905e0452b155afa871b8ed4bfd45d51f"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a905e0452b155afa871b8ed4bfd45d51f">object_cb</a> )(void *user_data, const char *<a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>)</td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a41323a8cf55d4ad9f8e5bd77e57e9b2d" name="a41323a8cf55d4ad9f8e5bd77e57e9b2d"></a>
@@ -192,7 +192,7 @@ Public 属性</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void(* tinyobj::callback_t::object_cb) (void *user_data, const char *name)</td>
+          <td class="memname">void(* tinyobj::callback_t::object_cb) (void *user_data, const char *<a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -220,7 +220,7 @@ Public 属性</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void(* tinyobj::callback_t::usemtl_cb) (void *user_data, const char *name, int material_id)</td>
+          <td class="memname">void(* tinyobj::callback_t::usemtl_cb) (void *user_data, const char *<a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>, int material_id)</td>
         </tr>
       </table>
 </div><div class="memdoc">

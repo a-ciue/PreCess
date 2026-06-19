@@ -1,5 +1,8 @@
 <map id="ModelObserver" name="ModelObserver">
-<area shape="rect" id="Node000001" title=" " alt="" coords="10,5,131,31"/>
-<area shape="rect" id="Node000002" href="$classQModelObserver.html" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类" alt="" coords="5,79,136,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,44,73,79,68,79,68,44"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="11,5,133,31"/>
+<area shape="rect" id="Node000002" href="$structDummyObserver.html" title=" " alt="" coords="5,79,139,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="66,44,68,78,62,79,61,45"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="83,45,82,79,76,78,78,44"/>
+<area shape="rect" id="Node000003" href="$classQModelObserver.html" title="QModelObserver：用于监听模型数据更改并向外通知的观察者类" alt="" coords="163,79,293,104"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="111,34,204,76,201,81,108,39"/>
 </map>

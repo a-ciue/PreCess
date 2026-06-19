@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/TreeModel.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">TreeModel.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;QAbstractItemModel&gt;</code><br />
+<code>#include &lt;QVariant&gt;</code><br />
+<code>#include &lt;QVector&gt;</code><br />
+<code>#include &lt;QtQml/qqmlregistration.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="QModelQuery_8h_source.html">QModelQuery.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TreeModel.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TreeModel_8h__incl.png" border="0" usemap="#aapp_2TreeModel_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2TreeModel_8h" id="aapp_2TreeModel_8h">
+<area shape="rect" title=" " alt="" coords="209,5,339,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,161,104"/>
+<area shape="poly" title=" " alt="" coords="244,33,128,76,126,71,242,28"/>
+<area shape="rect" title=" " alt="" coords="261,152,340,177"/>
+<area shape="poly" title=" " alt="" coords="261,33,246,47,232,65,224,84,227,103,244,125,266,143,263,147,240,129,222,105,219,83,227,62,242,44,257,29"/>
+<area shape="rect" title=" " alt="" coords="237,79,311,104"/>
+<area shape="poly" title=" " alt="" coords="277,31,277,65,271,65,271,31"/>
+<area shape="rect" title=" " alt="" coords="335,79,523,104"/>
+<area shape="poly" title=" " alt="" coords="300,28,392,70,390,75,298,33"/>
+<area shape="rect" href="QModelQuery_8h.html" title=" " alt="" coords="547,79,668,104"/>
+<area shape="poly" title=" " alt="" coords="328,28,541,73,540,78,327,33"/>
+<area shape="poly" title=" " alt="" coords="559,107,354,154,353,149,557,101"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="641,299,705,324"/>
+<area shape="poly" title=" " alt="" coords="593,106,562,133,530,169,518,189,511,210,511,230,519,249,541,272,569,287,599,298,628,304,627,309,597,303,566,292,538,276,514,252,505,231,506,209,513,187,525,166,558,129,590,102"/>
+<area shape="rect" title=" " alt="" coords="529,225,603,251"/>
+<area shape="poly" title=" " alt="" coords="595,106,574,126,558,153,554,183,560,212,554,213,549,183,553,151,570,123,591,102"/>
+<area shape="rect" title=" " alt="" coords="568,152,647,177"/>
+<area shape="poly" title=" " alt="" coords="610,104,610,138,605,138,605,104"/>
+<area shape="rect" title=" " alt="" coords="671,152,773,177"/>
+<area shape="poly" title=" " alt="" coords="627,102,693,142,690,147,624,106"/>
+<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="798,152,902,177"/>
+<area shape="poly" title=" " alt="" coords="647,101,799,146,797,151,646,107"/>
+<area shape="rect" title=" " alt="" coords="479,372,535,397"/>
+<area shape="poly" title=" " alt="" coords="647,326,548,369,546,364,645,322"/>
+<area shape="rect" title=" " alt="" coords="559,372,610,397"/>
+<area shape="poly" title=" " alt="" coords="660,326,611,365,608,361,657,322"/>
+<area shape="rect" title=" " alt="" coords="634,372,711,397"/>
+<area shape="poly" title=" " alt="" coords="675,324,675,358,670,358,670,324"/>
+<area shape="rect" title=" " alt="" coords="735,372,794,397"/>
+<area shape="poly" title=" " alt="" coords="689,322,741,361,737,366,686,326"/>
+<area shape="rect" title=" " alt="" coords="819,372,881,397"/>
+<area shape="poly" title=" " alt="" coords="702,322,810,364,808,369,700,326"/>
+<area shape="poly" title=" " alt="" coords="805,180,617,227,616,222,804,175"/>
+<area shape="rect" title=" " alt="" coords="639,225,778,251"/>
+<area shape="poly" title=" " alt="" coords="828,180,745,221,743,217,826,175"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="803,225,897,251"/>
+<area shape="poly" title=" " alt="" coords="853,178,853,212,847,212,847,178"/>
+<area shape="poly" title=" " alt="" coords="822,253,715,296,713,291,821,248"/>
+<area shape="poly" title=" " alt="" coords="853,251,853,358,847,358,847,251"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="TreeModel_8h__dep__incl.png" border="0" usemap="#aapp_2TreeModel_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2TreeModel_8hdep" id="aapp_2TreeModel_8hdep">
+<area shape="rect" title=" " alt="" coords="13,5,142,31"/>
+<area shape="rect" href="TreeModel_8cpp.html" title=" " alt="" coords="5,79,149,104"/>
+<area shape="poly" title=" " alt="" coords="80,44,80,79,75,79,75,44"/>
+</map>
+</div>
+</div>
+<p><a href="TreeModel_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:TreeNode" id="r_TreeNode"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTreeNode.html">TreeNode</a></td></tr>
+<tr class="memitem:TreeModel" id="r_TreeModel"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTreeModel.html">TreeModel</a></td></tr>
+</table>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,19 @@
+<map id="model/data/GeometryData.h" name="model/data/GeometryData.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="903,5,1111,31"/>
+<area shape="rect" id="Node000002" href="$QModelQuery_8cpp.html" title=" " alt="" coords="5,86,215,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="889,28,588,47,407,62,226,81,175,89,175,83,226,76,407,57,588,42,889,23"/>
+<area shape="rect" id="Node000003" href="$ComponentData_8cpp.html" title=" " alt="" coords="239,86,472,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="890,34,485,81,432,89,431,83,484,76,889,29"/>
+<area shape="rect" id="Node000004" href="$ComponentOperator_8cpp.html" title=" " alt="" coords="497,86,755,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="939,36,682,89,681,83,938,31"/>
+<area shape="rect" id="Node000005" href="$GeometryData_8cpp.html" title=" " alt="" coords="779,86,1001,111"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="980,41,909,88,906,84,977,36"/>
+<area shape="rect" id="Node000006" href="$ModelData_8cpp.html" title="实现 ModelData 类的核心功能，用于管理和操作网格数据" alt="" coords="1025,86,1224,111"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1038,36,1109,84,1106,88,1035,41"/>
+<area shape="rect" id="Node000007" href="$ModelLayer_8cpp.html" title="实现 ModelLayer 类，用于管理多个网格模型" alt="" coords="1249,86,1451,111"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1071,31,1301,83,1300,89,1070,36"/>
+<area shape="rect" id="Node000008" href="$TestComponentModel_8cpp.html" title=" " alt="" coords="1476,79,1707,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1111,30,1464,76,1476,78,1476,83,1463,81,1111,35"/>
+<area shape="rect" id="Node000009" href="$TestGeometryIndex_8cpp.html" title=" " alt="" coords="1731,79,1951,119"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1125,24,1397,44,1720,76,1731,77,1730,83,1719,81,1397,50,1125,29"/>
+</map>

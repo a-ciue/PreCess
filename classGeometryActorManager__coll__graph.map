@@ -1,0 +1,13 @@
+<map id="GeometryActorManager" name="GeometryActorManager">
+<area shape="rect" id="Node000001" title=" " alt="" coords="15,544,194,569"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="9,419,200,473"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,487,107,544,102,544,102,487"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,308,204,348"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="107,362,107,418,102,418,102,362"/>
+<area shape="rect" id="Node000004" href="$classGeometryActor.html" title=" " alt="" coords="44,212,165,237"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="107,251,107,308,102,308,102,251"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,101,204,141"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="107,155,107,212,102,212,102,155"/>
+<area shape="rect" id="Node000006" href="$structGeometryDataVtk.html" title=" " alt="" coords="35,5,175,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="107,45,107,101,102,101,102,45"/>
+</map>

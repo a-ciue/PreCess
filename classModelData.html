@@ -73,10 +73,8 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public 类型</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pub-attribs">Public 属性</a> &#124;
-<a href="#pri-methods">Private 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="#friends">友元</a> &#124;
 <a href="classModelData-members.html">所有成员列表</a>  </div>
@@ -93,53 +91,34 @@ ModelData 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classModelData__coll__graph.png" border="0" usemap="#aModelData_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aModelData_coll__map" id="aModelData_coll__map">
-<area shape="rect" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="28,191,121,216"/>
+<area shape="rect" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="101,191,195,216"/>
 <area shape="rect" title=" " alt="" coords="31,95,118,120"/>
-<area shape="poly" title=" " alt="" coords="77,134,77,190,72,190,72,134"/>
+<area shape="poly" title=" " alt="" coords="80,133,85,150,93,165,106,178,122,188,119,193,103,182,89,168,80,152,75,135"/>
 <area shape="rect" title=" " alt="" coords="5,5,144,45"/>
 <area shape="poly" title=" " alt="" coords="77,59,77,94,72,94,72,59"/>
+<area shape="rect" title=" " alt="" coords="143,95,300,120"/>
+<area shape="poly" title=" " alt="" coords="214,134,194,168,168,192,164,188,190,165,210,131"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
-Public 类型</h2></td></tr>
-<tr class="memitem:a7e74072e77a8add198a037d63803f9ee" id="r_a7e74072e77a8add198a037d63803f9ee"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e74072e77a8add198a037d63803f9ee">Type</a> { <a class="el" href="#a7e74072e77a8add198a037d63803f9eea6adf97f83acf6453d4a6a4b1070f3754">None</a>
-, <a class="el" href="#a7e74072e77a8add198a037d63803f9eea710fdb6adb881b408116ef95335e1961">Mesh</a>
-, <a class="el" href="#a7e74072e77a8add198a037d63803f9eea4cff6afc4963881749f7742fbb4d1392">Spline</a>
- }</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a7412b0ec776c43cd3803b7cc12d99297" id="r_a7412b0ec776c43cd3803b7cc12d99297"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7412b0ec776c43cd3803b7cc12d99297">ModelData</a> ()</td></tr>
 <tr class="memitem:a8888ea03c5d27446f2f7f93f6fe6cd42" id="r_a8888ea03c5d27446f2f7f93f6fe6cd42"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8888ea03c5d27446f2f7f93f6fe6cd42">~ModelData</a> ()</td></tr>
-<tr class="memitem:ad5014d4b01241b18302eac6590f3518f" id="r_ad5014d4b01241b18302eac6590f3518f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5014d4b01241b18302eac6590f3518f">ModelData</a> (std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt; mesh)</td></tr>
-<tr class="memitem:ab3494273871b1b378539a06065439668" id="r_ab3494273871b1b378539a06065439668"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab3494273871b1b378539a06065439668">ModelData</a> (std::unique_ptr&lt; <a class="el" href="structSplineData.html">SplineData</a> &gt; spline)</td></tr>
+<tr class="memitem:aeef3c116a7a66784844d65f43cfa95f5" id="r_aeef3c116a7a66784844d65f43cfa95f5"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeef3c116a7a66784844d65f43cfa95f5">componentIds</a> () const noexcept</td></tr>
+<tr class="memitem:a4213b4e9a12ed9982d3fa4417a84b38d" id="r_a4213b4e9a12ed9982d3fa4417a84b38d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4213b4e9a12ed9982d3fa4417a84b38d">componentIds</a> () noexcept</td></tr>
 <tr class="memitem:a9282e2012da62729a8293a4dd47c0fc7" id="r_a9282e2012da62729a8293a4dd47c0fc7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9282e2012da62729a8293a4dd47c0fc7">ModelData</a> (const <a class="el" href="classModelData.html">ModelData</a> &amp;other)=delete</td></tr>
 <tr class="memitem:a0b518c5abe3a9144a132ca598f5be92d" id="r_a0b518c5abe3a9144a132ca598f5be92d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelData.html">ModelData</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b518c5abe3a9144a132ca598f5be92d">operator=</a> (const <a class="el" href="classModelData.html">ModelData</a> &amp;other)=delete</td></tr>
 <tr class="memitem:a6f055843c74e202aeeff29dc94cb4631" id="r_a6f055843c74e202aeeff29dc94cb4631"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f055843c74e202aeeff29dc94cb4631">ModelData</a> (<a class="el" href="classModelData.html">ModelData</a> &amp;&amp;other) noexcept</td></tr>
 <tr class="memitem:a694025dc79899152e09474f6b65270c6" id="r_a694025dc79899152e09474f6b65270c6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelData.html">ModelData</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a694025dc79899152e09474f6b65270c6">operator=</a> (<a class="el" href="classModelData.html">ModelData</a> &amp;&amp;other) noexcept</td></tr>
-<tr class="memitem:a8a7895f27f877a854dfae6d087d78a34" id="r_a8a7895f27f877a854dfae6d087d78a34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a7e74072e77a8add198a037d63803f9ee">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a7895f27f877a854dfae6d087d78a34">type</a> () const</td></tr>
-<tr class="memitem:a0974375e8dc34408add48ed67a32eb8e" id="r_a0974375e8dc34408add48ed67a32eb8e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0974375e8dc34408add48ed67a32eb8e">hasMesh</a> () const noexcept</td></tr>
-<tr class="memitem:aa3b5aef481c8536e1b56de77e2c4110f" id="r_aa3b5aef481c8536e1b56de77e2c4110f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3b5aef481c8536e1b56de77e2c4110f">hasSpline</a> () const noexcept</td></tr>
-<tr class="memitem:a34fb079753624b175054ff622d2b96c5" id="r_a34fb079753624b175054ff622d2b96c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34fb079753624b175054ff622d2b96c5">asMeshData</a> () noexcept</td></tr>
-<tr class="memitem:a11c8cd7e79300f0dd0b00f7aa3ebb216" id="r_a11c8cd7e79300f0dd0b00f7aa3ebb216"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11c8cd7e79300f0dd0b00f7aa3ebb216">asMeshData</a> () const noexcept</td></tr>
-<tr class="memitem:a4a2bffbbd0b79f512811b0400488f89b" id="r_a4a2bffbbd0b79f512811b0400488f89b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structSplineData.html">SplineData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a2bffbbd0b79f512811b0400488f89b">asSplineData</a> () noexcept</td></tr>
-<tr class="memitem:a35116f5eacfd99c36cb533e8ca2ce131" id="r_a35116f5eacfd99c36cb533e8ca2ce131"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structSplineData.html">SplineData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a35116f5eacfd99c36cb533e8ca2ce131">asSplineData</a> () const noexcept</td></tr>
-<tr class="memitem:ab79bfd690a35f8134488cd2b08a0fb0a" id="r_ab79bfd690a35f8134488cd2b08a0fb0a"><td class="memTemplParams" colspan="2">template&lt;typename Visitor&gt; </td></tr>
-<tr class="memitem:ab79bfd690a35f8134488cd2b08a0fb0a template"><td class="memItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab79bfd690a35f8134488cd2b08a0fb0a">visit</a> (Visitor &amp;&amp;v)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
 <tr class="memitem:aa1e3c6c09490f733d4279b333ed13bcc" id="r_aa1e3c6c09490f733d4279b333ed13bcc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1e3c6c09490f733d4279b333ed13bcc">model_name_</a></td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
-Private 成员函数</h2></td></tr>
-<tr class="memitem:a6db2bb20791481fc381b6277beda8a34" id="r_a6db2bb20791481fc381b6277beda8a34"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6db2bb20791481fc381b6277beda8a34">merge_blocks</a> (<a class="el" href="structSelection.html">Selection</a> selection)</td></tr>
-<tr class="memdesc:a6db2bb20791481fc381b6277beda8a34"><td class="mdescLeft">&#160;</td><td class="mdescRight">合并给定block，并更新block actor，依赖ModelActor  <br /></td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:a602a16dd854be01037709689f8d0eabc" id="r_a602a16dd854be01037709689f8d0eabc"><td class="memItemLeft" align="right" valign="top">std::variant&lt; std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt;, std::unique_ptr&lt; <a class="el" href="structSplineData.html">SplineData</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a602a16dd854be01037709689f8d0eabc">data_</a></td></tr>
+<tr class="memitem:a88581a1ea3219a43cf87cd3301eb2446" id="r_a88581a1ea3219a43cf87cd3301eb2446"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a88581a1ea3219a43cf87cd3301eb2446">component_ids_</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
 友元</h2></td></tr>
@@ -150,37 +129,9 @@ Private 属性</h2></td></tr>
 <div class="textblock"><p>Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数 </p>
 <p>负责管理和操作网格模型数据的核心类</p>
 <p><a class="el" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数">ModelData</a> 负责管理网格数据，包括 Patch、Block 和 Group 的存储、更新和操作。 该类提供了网格划分、合并、重划分等功能，并维护与 <a class="el" href="classMeshActor.html" title="负责管理Model的Actor">MeshActor</a> 之间的关联， 以便进行可视化和渲染。 </p>
-</div><a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">成员枚举类型说明</h2>
-<a id="a7e74072e77a8add198a037d63803f9ee" name="a7e74072e77a8add198a037d63803f9ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e74072e77a8add198a037d63803f9ee">&#9670;&#160;</a></span>Type</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum class <a class="el" href="#a7e74072e77a8add198a037d63803f9ee">ModelData::Type</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a7e74072e77a8add198a037d63803f9eea6adf97f83acf6453d4a6a4b1070f3754" name="a7e74072e77a8add198a037d63803f9eea6adf97f83acf6453d4a6a4b1070f3754"></a>None&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7e74072e77a8add198a037d63803f9eea710fdb6adb881b408116ef95335e1961" name="a7e74072e77a8add198a037d63803f9eea710fdb6adb881b408116ef95335e1961"></a>Mesh&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a7e74072e77a8add198a037d63803f9eea4cff6afc4963881749f7742fbb4d1392" name="a7e74072e77a8add198a037d63803f9eea4cff6afc4963881749f7742fbb4d1392"></a>Spline&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
-<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a7412b0ec776c43cd3803b7cc12d99297" name="a7412b0ec776c43cd3803b7cc12d99297"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7412b0ec776c43cd3803b7cc12d99297">&#9670;&#160;</a></span>ModelData() <span class="overload">[1/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7412b0ec776c43cd3803b7cc12d99297">&#9670;&#160;</a></span>ModelData() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -229,58 +180,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="ad5014d4b01241b18302eac6590f3518f" name="ad5014d4b01241b18302eac6590f3518f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5014d4b01241b18302eac6590f3518f">&#9670;&#160;</a></span>ModelData() <span class="overload">[2/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">ModelData::ModelData </td>
-          <td>(</td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>mesh</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab3494273871b1b378539a06065439668" name="ab3494273871b1b378539a06065439668"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3494273871b1b378539a06065439668">&#9670;&#160;</a></span>ModelData() <span class="overload">[3/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">ModelData::ModelData </td>
-          <td>(</td>
-          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="structSplineData.html">SplineData</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>spline</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a9282e2012da62729a8293a4dd47c0fc7" name="a9282e2012da62729a8293a4dd47c0fc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9282e2012da62729a8293a4dd47c0fc7">&#9670;&#160;</a></span>ModelData() <span class="overload">[4/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9282e2012da62729a8293a4dd47c0fc7">&#9670;&#160;</a></span>ModelData() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -305,7 +206,7 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a id="a6f055843c74e202aeeff29dc94cb4631" name="a6f055843c74e202aeeff29dc94cb4631"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f055843c74e202aeeff29dc94cb4631">&#9670;&#160;</a></span>ModelData() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f055843c74e202aeeff29dc94cb4631">&#9670;&#160;</a></span>ModelData() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -330,8 +231,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a11c8cd7e79300f0dd0b00f7aa3ebb216" name="a11c8cd7e79300f0dd0b00f7aa3ebb216"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11c8cd7e79300f0dd0b00f7aa3ebb216">&#9670;&#160;</a></span>asMeshData() <span class="overload">[1/2]</span></h2>
+<a id="aeef3c116a7a66784844d65f43cfa95f5" name="aeef3c116a7a66784844d65f43cfa95f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeef3c116a7a66784844d65f43cfa95f5">&#9670;&#160;</a></span>componentIds() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -340,7 +241,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="structMeshData.html">MeshData</a> * ModelData::asMeshData </td>
+          <td class="memname">const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp; ModelData::componentIds </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -355,8 +256,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a34fb079753624b175054ff622d2b96c5" name="a34fb079753624b175054ff622d2b96c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34fb079753624b175054ff622d2b96c5">&#9670;&#160;</a></span>asMeshData() <span class="overload">[2/2]</span></h2>
+<a id="a4213b4e9a12ed9982d3fa4417a84b38d" name="a4213b4e9a12ed9982d3fa4417a84b38d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4213b4e9a12ed9982d3fa4417a84b38d">&#9670;&#160;</a></span>componentIds() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -365,7 +266,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structMeshData.html">MeshData</a> * ModelData::asMeshData </td>
+          <td class="memname">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp; ModelData::componentIds </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -377,139 +278,6 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a35116f5eacfd99c36cb533e8ca2ce131" name="a35116f5eacfd99c36cb533e8ca2ce131"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35116f5eacfd99c36cb533e8ca2ce131">&#9670;&#160;</a></span>asSplineData() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="structSplineData.html">SplineData</a> * ModelData::asSplineData </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4a2bffbbd0b79f512811b0400488f89b" name="a4a2bffbbd0b79f512811b0400488f89b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a2bffbbd0b79f512811b0400488f89b">&#9670;&#160;</a></span>asSplineData() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structSplineData.html">SplineData</a> * ModelData::asSplineData </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0974375e8dc34408add48ed67a32eb8e" name="a0974375e8dc34408add48ed67a32eb8e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0974375e8dc34408add48ed67a32eb8e">&#9670;&#160;</a></span>hasMesh()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ModelData::hasMesh </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa3b5aef481c8536e1b56de77e2c4110f" name="aa3b5aef481c8536e1b56de77e2c4110f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3b5aef481c8536e1b56de77e2c4110f">&#9670;&#160;</a></span>hasSpline()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ModelData::hasSpline </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6db2bb20791481fc381b6277beda8a34" name="a6db2bb20791481fc381b6277beda8a34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6db2bb20791481fc381b6277beda8a34">&#9670;&#160;</a></span>merge_blocks()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ModelData::merge_blocks </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structSelection.html">Selection</a></td>          <td class="paramname"><span class="paramname"><em>selection</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>合并给定block，并更新block actor，依赖ModelActor </p>
-<dl class="params"><dt>参数</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">block_ids</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -563,50 +331,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a8a7895f27f877a854dfae6d087d78a34" name="a8a7895f27f877a854dfae6d087d78a34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a7895f27f877a854dfae6d087d78a34">&#9670;&#160;</a></span>type()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="#a7e74072e77a8add198a037d63803f9ee">ModelData::Type</a> ModelData::type </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab79bfd690a35f8134488cd2b08a0fb0a" name="ab79bfd690a35f8134488cd2b08a0fb0a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab79bfd690a35f8134488cd2b08a0fb0a">&#9670;&#160;</a></span>visit()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Visitor&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">decltype(auto) ModelData::visit </td>
-          <td>(</td>
-          <td class="paramtype">Visitor &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>v</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
 <a id="ae4a612afabef6e8cfa5397aa9aa88838" name="ae4a612afabef6e8cfa5397aa9aa88838"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae4a612afabef6e8cfa5397aa9aa88838">&#9670;&#160;</a></span>ModelOperator</h2>
@@ -633,8 +357,8 @@ template&lt;typename Visitor&gt; </div>
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="a602a16dd854be01037709689f8d0eabc" name="a602a16dd854be01037709689f8d0eabc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a602a16dd854be01037709689f8d0eabc">&#9670;&#160;</a></span>data_</h2>
+<a id="a88581a1ea3219a43cf87cd3301eb2446" name="a88581a1ea3219a43cf87cd3301eb2446"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88581a1ea3219a43cf87cd3301eb2446">&#9670;&#160;</a></span>component_ids_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -643,7 +367,7 @@ template&lt;typename Visitor&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::variant&lt;std::unique_ptr&lt;<a class="el" href="structMeshData.html">MeshData</a>&gt;, std::unique_ptr&lt;<a class="el" href="structSplineData.html">SplineData</a>&gt; &gt; ModelData::data_</td>
+          <td class="memname">std::vector&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&gt; ModelData::component_ids_</td>
         </tr>
       </table>
   </td>

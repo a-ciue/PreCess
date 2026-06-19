@@ -1,13 +1,21 @@
 var searchData=
 [
-  ['object_5f_0',['object_',['../classcore_1_1ArgObject.html#a42420c737aece76a870fc1e287c09897',1,'core::ArgObject::object_'],['../classsystems_1_1edit_1_1ArgObject.html#a42420c737aece76a870fc1e287c09897',1,'systems::edit::ArgObject::object_'],['../classsystems_1_1algo_1_1ArgObject.html#a42420c737aece76a870fc1e287c09897',1,'systems::algo::ArgObject::object_']]],
-  ['object_5fcb_1',['object_cb',['../structtinyobj_1_1callback__t.html#a905e0452b155afa871b8ed4bfd45d51f',1,'tinyobj::callback_t']]],
-  ['observer_5f_2',['observer_',['../classQModelManager.html#a3e6a2a98d5ec6d18ff86e04c12d2841d',1,'QModelManager::observer_'],['../classModelManager.html#a4663bde004487a0e91a5633f5c504634',1,'ModelManager::observer_'],['../classModelOperator.html#a7f68955b886a941687b5eebf76096fdc',1,'ModelOperator::observer_']]],
-  ['on_5falgorithm_5finfos_5fchanged_5f_3',['on_algorithm_infos_changed_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a19a4f53b1731b8d984f005dbe7f04cce',1,'systems::algo::AlgorithmSystem']]],
-  ['on_5fdialog_5fname_5ffilters_5fchanged_5f_4',['on_dialog_name_filters_changed_',['../classsystems_1_1io_1_1ModelIOSystem.html#a4521a78603d0f5cfc61bf9694b762c6c',1,'systems::io::ModelIOSystem']]],
-  ['on_5fedit_5finfo_5fchanged_5f_5',['on_edit_info_changed_',['../classsystems_1_1edit_1_1EditSystem.html#a1858470c2be700704c46fcd00acb31fe',1,'systems::edit::EditSystem']]],
-  ['orientationwidget_6',['orientationWidget',['../structQRenderWindow_1_1Data.html#a1b12899f8c4642d55ac21f66906a33f2',1,'QRenderWindow::Data']]],
-  ['origin_5foffset_7',['origin_offset',['../structtinyobj_1_1texture__option__t.html#ab6a036a11f7b1317709a4d3e25495e07',1,'tinyobj::texture_option_t']]],
-  ['original_5findex_8',['original_index',['../structplf_1_1colony_1_1item__index__tuple.html#ab538348723e6ba21e667948061987283',1,'plf::colony::item_index_tuple']]],
-  ['original_5flocation_9',['original_location',['../structplf_1_1colony_1_1item__index__tuple.html#a71438fc9dade7cae247be3dab7e75a2c',1,'plf::colony::item_index_tuple']]]
+  ['name_0',['name',['../structTreeNode.html#afc778af68fa7826995822bc7741bc3d5',1,'TreeNode::name'],['../structcore_1_1ArgType.html#a806efab7d532542e6905c2046c324b22',1,'core::ArgType::name'],['../structComponentData.html#ab73a27d5bc26d0594614b36f816d0906',1,'ComponentData::name'],['../structtinyobj_1_1material__t.html#a41fde82dd0ec383b1d4ee258c4e4a1b9',1,'tinyobj::material_t::name'],['../structtinyobj_1_1tag__t.html#a9b3650154d2fbd83dad945ebcf6bd448',1,'tinyobj::tag_t::name'],['../structtinyobj_1_1shape__t.html#a98650e2e66d00934f68de88eafb34630',1,'tinyobj::shape_t::name'],['../structsystems_1_1algo_1_1AlgorithmInfo.html#a4ff0645b27fe93d1246081a4ce023790',1,'systems::algo::AlgorithmInfo::name'],['../structsystems_1_1algo_1_1HandlerMetaData.html#a198a55131a7c14002af11ba5427f5406',1,'systems::algo::HandlerMetaData::name'],['../classsystems_1_1algo_1_1AlgorithmSystem.html#a59fc07d004c1eafabf7c7195cd4ff997',1,'systems::algo::AlgorithmSystem::name'],['../structsystems_1_1edit_1_1EditInfo.html#a6c16fbe7d2fd165f800bc760d93c85b7',1,'systems::edit::EditInfo::name'],['../structsystems_1_1edit_1_1HandlerMetaData.html#a7741349d4e3a1eae42c0f95e950d171c',1,'systems::edit::HandlerMetaData::name'],['../classsystems_1_1edit_1_1EditSystem.html#ab68b992530bdce9bb20dae2c6b60513f',1,'systems::edit::EditSystem::name'],['../structsystems_1_1io_1_1ModelIOInfo.html#a84953833d98444e83be0e498dc814b51',1,'systems::io::ModelIOInfo::name'],['../classsystems_1_1io_1_1ModelIOSystem.html#a6d4515f8bfc100037fcb119f5d539f3d',1,'systems::io::ModelIOSystem::name'],['../TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1',1,'name:&#160;TestComponentModel.cpp']]],
+  ['name_5f_1',['name_',['../classQAlgorithmInfo.html#abe2e56e7a557e04def5e5e83b2234920',1,'QAlgorithmInfo::name_'],['../classQEditInfo.html#a517469290ff60b23492084cac3dab617',1,'QEditInfo::name_'],['../classsystems_1_1io_1_1QModelIOInfo.html#a07c7d519a5488c42124413858deafa5b',1,'systems::io::QModelIOInfo::name_']]],
+  ['next_5fcomponent_5fid_5f_2',['next_component_id_',['../classModelLayer.html#ad697ebb631629ccefb0e90b7a6096906',1,'ModelLayer']]],
+  ['next_5fedge_5fid_5f_3',['next_edge_id_',['../classGeometryRegistry.html#aafd14f58ba79aa57eebb27ff803e0bf0',1,'GeometryRegistry']]],
+  ['next_5fface_5fid_5f_4',['next_face_id_',['../classGeometryRegistry.html#ae460ae33ca67bd5186093feb81819938',1,'GeometryRegistry']]],
+  ['next_5fgroup_5',['next_group',['../structplf_1_1colony_1_1group.html#ae03e5fe4ad287e935b16507c98c6b565',1,'plf::colony::group']]],
+  ['next_5fsolid_5fid_5f_6',['next_solid_id_',['../classGeometryRegistry.html#a6a088f79309755f46cb840b8b06fa3cd',1,'GeometryRegistry']]],
+  ['next_5fvertex_5fid_5f_7',['next_vertex_id_',['../classGeometryRegistry.html#a0f64006ec0ad6c4acab222a66b146265',1,'GeometryRegistry']]],
+  ['nodeid_8',['nodeId',['../structTreeNode.html#a76a2f05c583f9e174afc609b720c6e1c',1,'TreeNode']]],
+  ['normal_5fcb_9',['normal_cb',['../structtinyobj_1_1callback__t.html#aec89406f0dce3b2c27436808d3176c7c',1,'tinyobj::callback_t']]],
+  ['normal_5findex_10',['normal_index',['../structtinyobj_1_1index__t.html#acc544f8c9b23b5093d291dcf787a2d77',1,'tinyobj::index_t']]],
+  ['normal_5ftexname_11',['normal_texname',['../structtinyobj_1_1material__t.html#a7512ccf46044357bea1739d583871578',1,'tinyobj::material_t']]],
+  ['normal_5ftexopt_12',['normal_texopt',['../structtinyobj_1_1material__t.html#aa0087d1bfcaf0a195f8c244970c2ef4e',1,'tinyobj::material_t']]],
+  ['normals_13',['normals',['../structtinyobj_1_1attrib__t.html#ac647590e9a03bec3c6cee5c215781e12',1,'tinyobj::attrib_t']]],
+  ['num_5fface_5fvertices_14',['num_face_vertices',['../structtinyobj_1_1mesh__t.html#a0b3e989fbc944b29a4e67a288490ec07',1,'tinyobj::mesh_t']]],
+  ['num_5fline_5fvertices_15',['num_line_vertices',['../structtinyobj_1_1lines__t.html#a97270228c686b420540510c138df7ab3',1,'tinyobj::lines_t']]],
+  ['number_16',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]],
+  ['number_5fof_5fblocks_17',['number_of_blocks',['../structplf_1_1colony_1_1colony__data.html#a3a204f82213a409fd4fec5d77dc9bb0c',1,'plf::colony::colony_data']]]
 ];

@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/ModelLayer.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">ModelLayer.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>实现 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 类，用于管理多个网格模型  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelObserver_8h_source.html">ModelObserver.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryData_8h_source.html">GeometryData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshData_8h_source.html">MeshData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ComponentOperator_8h_source.html">ComponentOperator.h</a>&quot;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+ModelLayer.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelLayer_8cpp__incl.png" border="0" usemap="#amodel_2data_2ModelLayer_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2ModelLayer_8cpp" id="amodel_2data_2ModelLayer_8cpp">
+<area shape="rect" title="实现 ModelLayer 类，用于管理多个网格模型" alt="" coords="961,5,1163,31"/>
+<area shape="rect" href="ModelLayer_8h.html" title="负责管理多个模型实例的类" alt="" coords="846,79,955,104"/>
+<area shape="poly" title=" " alt="" coords="1037,33,941,75,938,71,1035,28"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="845,445,945,471"/>
+<area shape="poly" title=" " alt="" coords="1056,32,1024,87,1010,124,1005,164,1005,313,997,352,977,387,951,416,925,439,922,435,947,412,972,384,992,350,999,312,999,163,1005,123,1019,85,1051,30"/>
+<area shape="rect" title=" " alt="" coords="263,225,354,251"/>
+<area shape="poly" title=" " alt="" coords="961,30,847,43,711,67,565,103,493,127,425,154,374,185,333,218,329,213,371,180,422,150,492,122,564,98,710,62,847,38,960,24"/>
+<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="5,445,137,471"/>
+<area shape="poly" title=" " alt="" coords="961,27,722,42,437,69,306,87,199,109,157,122,126,135,107,149,101,164,101,313,94,378,81,433,76,432,89,377,95,313,95,163,103,146,124,131,155,117,197,104,305,82,436,63,721,36,960,21"/>
+<area shape="rect" href="GeometryData_8h.html" title=" " alt="" coords="1442,372,1573,397"/>
+<area shape="poly" title=" " alt="" coords="1130,28,1225,48,1328,77,1373,95,1410,115,1435,138,1442,150,1445,163,1445,239,1449,273,1461,306,1492,360,1488,362,1456,308,1444,275,1439,240,1439,164,1437,152,1431,141,1407,120,1371,100,1326,82,1224,53,1129,33"/>
+<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="1039,152,1205,177"/>
+<area shape="poly" title=" " alt="" coords="1069,30,1114,138,1109,140,1064,32"/>
+<area shape="rect" title=" " alt="" coords="1480,79,1604,104"/>
+<area shape="poly" title=" " alt="" coords="1140,28,1467,76,1466,82,1139,33"/>
+<area shape="rect" title=" " alt="" coords="1628,79,1715,104"/>
+<area shape="poly" title=" " alt="" coords="1164,25,1368,44,1615,76,1614,81,1368,49,1163,30"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="683,299,788,324"/>
+<area shape="poly" title=" " alt="" coords="894,106,755,289,750,286,890,103"/>
+<area shape="rect" title=" " alt="" coords="1443,592,1499,617"/>
+<area shape="poly" title=" " alt="" coords="956,90,1244,97,1439,105,1643,118,1835,136,1997,161,2060,176,2108,193,2140,213,2148,224,2151,236,2151,459,2151,507,2143,527,2126,546,2091,560,2029,572,1852,589,1659,600,1513,605,1513,600,1659,594,1852,584,2028,566,2090,555,2123,542,2139,524,2145,506,2146,459,2146,237,2144,227,2136,217,2106,198,2058,181,1996,166,1834,141,1642,123,1439,110,1243,102,955,96"/>
+<area shape="rect" title=" " alt="" coords="1111,592,1173,617"/>
+<area shape="poly" title=" " alt="" coords="911,103,960,176,1089,345,1173,457,1214,518,1217,532,1214,545,1197,568,1177,586,1173,582,1193,565,1209,543,1212,531,1209,520,1168,460,1085,348,956,179,906,106"/>
+<area shape="rect" title=" " alt="" coords="544,519,668,544"/>
+<area shape="poly" title=" " alt="" coords="846,95,681,101,579,108,476,121,380,139,301,164,271,179,248,196,234,215,229,237,229,386,231,397,237,408,260,429,294,448,337,465,437,494,531,515,530,520,435,499,336,470,292,453,256,433,232,411,226,399,223,386,223,236,229,213,244,192,268,174,299,159,379,133,475,115,578,103,681,96,845,90"/>
+<area shape="rect" title=" " alt="" coords="1410,519,1485,544"/>
+<area shape="poly" title=" " alt="" coords="956,94,1078,109,1222,135,1288,154,1342,176,1364,189,1380,204,1390,219,1394,236,1394,386,1398,420,1408,452,1435,506,1430,508,1403,454,1393,421,1389,386,1389,237,1385,221,1376,207,1360,194,1340,181,1286,159,1221,140,1077,114,955,100"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="551,152,682,177"/>
+<area shape="poly" title=" " alt="" coords="856,107,676,151,675,146,854,101"/>
+<area shape="rect" href="GeometryRegistry_8h.html" title=" " alt="" coords="416,445,567,471"/>
+<area shape="poly" title=" " alt="" coords="846,95,782,99,703,108,620,125,540,154,503,170,473,184,461,193,452,204,447,218,445,237,445,313,448,346,457,378,480,432,476,434,452,380,443,347,439,313,439,237,441,217,448,201,457,189,470,180,501,165,538,150,619,120,703,102,781,93,846,90"/>
+<area shape="rect" href="MeshIDMap_8h.html" title=" " alt="" coords="1192,445,1303,471"/>
+<area shape="poly" title=" " alt="" coords="914,102,1022,211,1175,370,1231,433,1227,437,1171,374,1018,214,910,106"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="747,372,887,397"/>
+<area shape="poly" title=" " alt="" coords="750,322,795,361,791,365,747,326"/>
+<area shape="rect" title=" " alt="" coords="781,592,858,617"/>
+<area shape="poly" title=" " alt="" coords="683,325,560,353,491,374,426,400,372,430,351,446,336,463,327,482,326,501,332,521,347,542,360,553,377,562,421,576,475,583,535,586,655,586,748,589,767,592,767,598,747,595,655,591,535,591,475,588,420,581,374,567,357,558,343,546,327,523,320,501,322,480,332,460,347,442,369,425,423,395,489,369,559,348,682,320"/>
+<area shape="rect" title=" " alt="" coords="677,592,735,617"/>
+<area shape="poly" title=" " alt="" coords="683,320,524,339,430,357,339,380,263,410,233,427,211,446,197,467,193,490,200,515,218,542,241,553,283,564,408,580,549,592,663,599,663,604,549,597,408,586,282,569,239,558,215,546,195,517,188,490,192,465,207,443,230,423,260,405,338,375,429,351,523,334,682,314"/>
+<area shape="poly" title=" " alt="" coords="789,316,889,331,1022,355,1169,392,1244,416,1315,443,1375,475,1424,508,1421,513,1372,479,1313,448,1242,421,1168,397,1020,361,888,336,788,321"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="1021,445,1116,471"/>
+<area shape="poly" title=" " alt="" coords="771,322,899,370,1037,436,1034,441,897,374,769,327"/>
+<area shape="rect" title=" " alt="" coords="655,372,723,397"/>
+<area shape="poly" title=" " alt="" coords="730,326,706,362,702,359,725,323"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="895,519,959,544"/>
+<area shape="poly" title=" " alt="" coords="819,397,821,432,826,451,835,469,858,493,885,510,883,515,854,497,830,472,821,453,816,433,813,398"/>
+<area shape="poly" title=" " alt="" coords="747,398,404,448,378,469,358,493,353,505,352,517,356,530,364,542,393,562,435,574,487,582,544,585,659,586,748,589,767,592,767,598,747,595,659,591,544,590,486,587,434,580,390,567,360,546,351,532,347,518,348,504,354,490,374,465,402,443,746,393"/>
+<area shape="poly" title=" " alt="" coords="795,400,766,419,740,447,725,480,715,515,708,578,703,578,710,514,720,478,736,444,762,415,792,395"/>
+<area shape="poly" title=" " alt="" coords="817,398,814,431,816,451,821,470,832,495,844,512,861,527,885,542,938,567,996,583,1050,593,1097,599,1096,604,1050,599,994,589,937,572,882,546,858,531,841,516,827,497,815,472,810,452,809,431,812,397"/>
+<area shape="poly" title=" " alt="" coords="831,395,874,434,871,438,828,399"/>
+<area shape="poly" title=" " alt="" coords="784,400,737,420,689,448,654,478,625,510,621,506,650,474,686,443,735,415,782,395"/>
+<area shape="poly" title=" " alt="" coords="960,538,978,541,1234,577,1429,597,1429,602,1233,582,978,547,959,543"/>
+<area shape="rect" title=" " alt="" coords="902,592,953,617"/>
+<area shape="poly" title=" " alt="" coords="930,544,930,578,925,578,925,544"/>
+<area shape="poly" title=" " alt="" coords="911,546,850,587,847,582,909,542"/>
+<area shape="poly" title=" " alt="" coords="896,545,749,592,748,587,894,540"/>
+<area shape="poly" title=" " alt="" coords="960,541,1098,586,1096,591,959,546"/>
+<area shape="poly" title=" " alt="" coords="903,470,919,505,914,507,898,472"/>
+<area shape="poly" title=" " alt="" coords="916,468,984,505,1028,525,1073,541,1172,566,1271,583,1430,599,1429,604,1271,588,1171,571,1072,547,1026,530,981,510,913,473"/>
+<area shape="poly" title=" " alt="" coords="891,472,834,581,829,579,887,470"/>
+<area shape="poly" title=" " alt="" coords="881,473,734,586,730,582,878,469"/>
+<area shape="poly" title=" " alt="" coords="849,473,667,518,665,513,848,468"/>
+<area shape="rect" title=" " alt="" coords="1085,519,1199,544"/>
+<area shape="poly" title=" " alt="" coords="936,468,1090,512,1088,517,934,473"/>
+<area shape="poly" title=" " alt="" coords="946,463,1397,521,1396,526,945,468"/>
+<area shape="poly" title=" " alt="" coords="1047,473,964,515,961,510,1045,468"/>
+<area shape="poly" title=" " alt="" coords="1069,471,1067,505,1069,524,1075,543,1091,565,1111,582,1108,586,1087,568,1070,545,1064,526,1062,505,1064,471"/>
+<area shape="poly" title=" " alt="" coords="646,175,681,195,712,224,728,254,735,284,730,286,723,256,708,227,678,199,644,180"/>
+<area shape="poly" title=" " alt="" coords="596,180,500,238,440,280,383,329,335,382,317,409,305,436,298,464,299,490,308,517,325,542,339,554,357,563,404,577,461,584,524,587,650,586,748,589,767,592,767,597,747,595,650,592,524,592,460,590,402,582,355,568,336,558,321,546,303,519,294,491,293,463,300,435,312,407,331,379,379,325,437,276,497,233,593,175"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="535,225,698,251"/>
+<area shape="poly" title=" " alt="" coords="619,178,619,212,614,212,614,178"/>
+<area shape="poly" title=" " alt="" coords="568,180,368,226,367,221,567,175"/>
+<area shape="poly" title=" " alt="" coords="637,248,705,289,703,294,634,253"/>
+<area shape="poly" title=" " alt="" coords="618,251,616,280,617,318,626,359,644,396,668,423,697,446,761,482,826,506,882,520,881,525,825,511,759,487,694,450,665,427,640,399,620,360,612,318,611,279,612,251"/>
+<area shape="poly" title=" " alt="" coords="562,468,882,520,882,525,561,473"/>
+<area shape="poly" title=" " alt="" coords="511,468,577,509,574,514,508,473"/>
+<area shape="rect" title=" " alt="" coords="375,519,520,544"/>
+<area shape="poly" title=" " alt="" coords="486,472,464,508,459,506,482,470"/>
+<area shape="poly" title=" " alt="" coords="1196,473,973,523,972,517,1195,468"/>
+<area shape="poly" title=" " alt="" coords="1281,468,1310,482,1337,499,1353,521,1354,533,1348,546,1322,564,1280,579,1187,599,1186,594,1279,574,1319,559,1344,542,1349,532,1348,522,1334,503,1308,486,1279,473"/>
+<area shape="poly" title=" " alt="" coords="1232,473,1172,513,1169,509,1229,468"/>
+<area shape="rect" title=" " alt="" coords="1275,519,1335,544"/>
+<area shape="poly" title=" " alt="" coords="1259,469,1289,506,1285,510,1255,473"/>
+<area shape="poly" title=" " alt="" coords="138,462,882,524,881,529,137,467"/>
+<area shape="poly" title=" " alt="" coords="81,469,112,507,133,526,158,542,200,556,258,568,401,585,549,595,663,600,663,605,549,601,401,591,257,573,199,561,156,546,130,530,108,510,77,473"/>
+<area shape="poly" title=" " alt="" coords="1514,397,1520,427,1524,467,1519,509,1511,529,1498,546,1484,555,1460,562,1392,573,1201,586,1007,591,890,595,872,597,871,592,890,589,1006,585,1201,580,1391,568,1459,557,1482,550,1495,542,1507,526,1514,508,1519,467,1515,428,1508,398"/>
+<area shape="poly" title=" " alt="" coords="1505,399,1460,507,1455,505,1500,397"/>
+<area shape="rect" href="GeometrySubshapeIndex_8h.html" title=" " alt="" coords="1559,445,1757,471"/>
+<area shape="poly" title=" " alt="" coords="1533,395,1622,437,1620,442,1530,400"/>
+<area shape="poly" title=" " alt="" coords="1559,472,973,528,973,523,1558,466"/>
+<area shape="poly" title=" " alt="" coords="1653,473,1629,508,1593,546,1553,572,1513,591,1511,586,1551,567,1590,542,1625,504,1649,470"/>
+<area shape="poly" title=" " alt="" coords="1648,473,1604,510,1574,530,1542,546,1495,563,1446,576,1348,594,1258,603,1188,606,1187,601,1258,598,1347,589,1445,571,1493,558,1540,542,1571,525,1601,506,1644,469"/>
+<area shape="rect" title=" " alt="" coords="1661,519,1841,544"/>
+<area shape="poly" title=" " alt="" coords="1675,469,1727,508,1724,512,1671,473"/>
+<area shape="rect" title=" " alt="" coords="1865,519,2112,544"/>
+<area shape="poly" title=" " alt="" coords="1712,468,1923,513,1921,518,1711,473"/>
+<area shape="poly" title=" " alt="" coords="1120,178,1084,271,1056,335,1023,399,984,460,947,509,943,506,980,457,1018,396,1051,333,1079,269,1115,176"/>
+</map>
+</div>
+</div><a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>实现 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 类，用于管理多个网格模型 </p>
+<p>该文件包含 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 类的实现，提供多模型管理功能，包括：</p><ul>
+<li>添加、删除和获取模型</li>
+<li>维护与 VTK 组件的交互</li>
+</ul>
+<dl class="section author"><dt>作者</dt><dd>徐昊阳 <a href="#" onclick="location.href='mai'+'lto:'+'hao'+'ya'+'ngx'+'u0'+'6@g'+'ma'+'il.'+'co'+'m'; return false;">haoya<span class="obfuscator">.nosp@m.</span>ngxu<span class="obfuscator">.nosp@m.</span>06@gm<span class="obfuscator">.nosp@m.</span>ail.<span class="obfuscator">.nosp@m.</span>com</a> </dd></dl>
+<dl class="section date"><dt>日期</dt><dd>2025/3/20 </dd></dl>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

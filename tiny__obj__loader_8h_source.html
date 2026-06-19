@@ -546,13 +546,13 @@ $(function() {
 <div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span>  <span class="comment">// `name` material name, `material_id` = the array index of material_t[]. -1</span></div>
 <div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span>  <span class="comment">// if</span></div>
 <div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span>  <span class="comment">// a material not found in .mtl</span></div>
-<div class="line"><a id="l00442" name="l00442"></a><span class="lineno"><a class="line" href="structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1">  442</a></span>  void (*<a class="code hl_variable" href="structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1">usemtl_cb</a>)(<span class="keywordtype">void</span> *user_data, <span class="keyword">const</span> <span class="keywordtype">char</span> *name, <span class="keywordtype">int</span> material_id);</div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno"><a class="line" href="structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1">  442</a></span>  void (*<a class="code hl_variable" href="structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1">usemtl_cb</a>)(<span class="keywordtype">void</span> *user_data, <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>, <span class="keywordtype">int</span> material_id);</div>
 <div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>  <span class="comment">// `materials` = parsed material data.</span></div>
 <div class="line"><a id="l00444" name="l00444"></a><span class="lineno"><a class="line" href="structtinyobj_1_1callback__t.html#a19238ff49af5974b2e4ebe23e065b192">  444</a></span>  void (*<a class="code hl_variable" href="structtinyobj_1_1callback__t.html#a19238ff49af5974b2e4ebe23e065b192">mtllib_cb</a>)(<span class="keywordtype">void</span> *user_data, <span class="keyword">const</span> <a class="code hl_struct" href="structtinyobj_1_1material__t.html">material_t</a> *materials,</div>
 <div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span>                    <span class="keywordtype">int</span> num_materials);</div>
 <div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span>  <span class="comment">// There may be multiple group names</span></div>
 <div class="line"><a id="l00447" name="l00447"></a><span class="lineno"><a class="line" href="structtinyobj_1_1callback__t.html#acfd64aafe46d7f7601f652838426d219">  447</a></span>  void (*<a class="code hl_variable" href="structtinyobj_1_1callback__t.html#acfd64aafe46d7f7601f652838426d219">group_cb</a>)(<span class="keywordtype">void</span> *user_data, <span class="keyword">const</span> <span class="keywordtype">char</span> **names, <span class="keywordtype">int</span> num_names);</div>
-<div class="line"><a id="l00448" name="l00448"></a><span class="lineno"><a class="line" href="structtinyobj_1_1callback__t.html#a905e0452b155afa871b8ed4bfd45d51f">  448</a></span>  void (*<a class="code hl_variable" href="structtinyobj_1_1callback__t.html#a905e0452b155afa871b8ed4bfd45d51f">object_cb</a>)(<span class="keywordtype">void</span> *user_data, <span class="keyword">const</span> <span class="keywordtype">char</span> *name);</div>
+<div class="line"><a id="l00448" name="l00448"></a><span class="lineno"><a class="line" href="structtinyobj_1_1callback__t.html#a905e0452b155afa871b8ed4bfd45d51f">  448</a></span>  void (*<a class="code hl_variable" href="structtinyobj_1_1callback__t.html#a905e0452b155afa871b8ed4bfd45d51f">object_cb</a>)(<span class="keywordtype">void</span> *user_data, <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>);</div>
 <div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span> </div>
 <div class="foldopen" id="foldopen00450" data-start="{" data-end="}">
 <div class="line"><a id="l00450" name="l00450"></a><span class="lineno"><a class="line" href="structtinyobj_1_1callback__t.html#a41323a8cf55d4ad9f8e5bd77e57e9b2d">  450</a></span>  <a class="code hl_function" href="structtinyobj_1_1callback__t.html#a41323a8cf55d4ad9f8e5bd77e57e9b2d">callback_t</a>()</div>
@@ -1544,14 +1544,14 @@ $(function() {
 <div class="line"><a id="l01492" name="l01492"></a><span class="lineno"> 1492</span><span class="comment">// TODO(syoyo): refactor function.</span></div>
 <div class="line"><a id="l01493" name="l01493"></a><span class="lineno"> 1493</span><span class="keyword">static</span> <span class="keywordtype">bool</span> exportGroupsToShape(<a class="code hl_struct" href="structtinyobj_1_1shape__t.html">shape_t</a> *shape, <span class="keyword">const</span> PrimGroup &amp;prim_group,</div>
 <div class="line"><a id="l01494" name="l01494"></a><span class="lineno"> 1494</span>                                <span class="keyword">const</span> std::vector&lt;tag_t&gt; &amp;tags,</div>
-<div class="line"><a id="l01495" name="l01495"></a><span class="lineno"> 1495</span>                                <span class="keyword">const</span> <span class="keywordtype">int</span> material_id, <span class="keyword">const</span> std::string &amp;name,</div>
+<div class="line"><a id="l01495" name="l01495"></a><span class="lineno"> 1495</span>                                <span class="keyword">const</span> <span class="keywordtype">int</span> material_id, <span class="keyword">const</span> std::string &amp;<a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>,</div>
 <div class="line"><a id="l01496" name="l01496"></a><span class="lineno"> 1496</span>                                <span class="keywordtype">bool</span> triangulate, <span class="keyword">const</span> std::vector&lt;real_t&gt; &amp;v,</div>
 <div class="line"><a id="l01497" name="l01497"></a><span class="lineno"> 1497</span>                                std::string *warn) {</div>
 <div class="line"><a id="l01498" name="l01498"></a><span class="lineno"> 1498</span>  <span class="keywordflow">if</span> (prim_group.IsEmpty()) {</div>
 <div class="line"><a id="l01499" name="l01499"></a><span class="lineno"> 1499</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a id="l01500" name="l01500"></a><span class="lineno"> 1500</span>  }</div>
 <div class="line"><a id="l01501" name="l01501"></a><span class="lineno"> 1501</span> </div>
-<div class="line"><a id="l01502" name="l01502"></a><span class="lineno"> 1502</span>  shape-&gt;name = name;</div>
+<div class="line"><a id="l01502" name="l01502"></a><span class="lineno"> 1502</span>  shape-&gt;name = <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>;</div>
 <div class="line"><a id="l01503" name="l01503"></a><span class="lineno"> 1503</span> </div>
 <div class="line"><a id="l01504" name="l01504"></a><span class="lineno"> 1504</span>  <span class="comment">// polygon</span></div>
 <div class="line"><a id="l01505" name="l01505"></a><span class="lineno"> 1505</span>  <span class="keywordflow">if</span> (!prim_group.faceGroup.empty()) {</div>
@@ -2663,7 +2663,7 @@ $(function() {
 <div class="line"><a id="l02611" name="l02611"></a><span class="lineno"> 2611</span>  std::vector&lt;skin_weight_t&gt; vw;  <span class="comment">// tinyobj extension: vertex skin weights</span></div>
 <div class="line"><a id="l02612" name="l02612"></a><span class="lineno"> 2612</span>  std::vector&lt;tag_t&gt; tags;</div>
 <div class="line"><a id="l02613" name="l02613"></a><span class="lineno"> 2613</span>  PrimGroup prim_group;</div>
-<div class="line"><a id="l02614" name="l02614"></a><span class="lineno"> 2614</span>  std::string name;</div>
+<div class="line"><a id="l02614" name="l02614"></a><span class="lineno"> 2614</span>  std::string <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>;</div>
 <div class="line"><a id="l02615" name="l02615"></a><span class="lineno"> 2615</span> </div>
 <div class="line"><a id="l02616" name="l02616"></a><span class="lineno"> 2616</span>  <span class="comment">// material</span></div>
 <div class="line"><a id="l02617" name="l02617"></a><span class="lineno"> 2617</span>  std::set&lt;std::string&gt; material_filenames;</div>
@@ -2937,7 +2937,7 @@ $(function() {
 <div class="line"><a id="l02885" name="l02885"></a><span class="lineno"> 2885</span>        <span class="comment">// Create per-face material. Thus we don&#39;t add `shape` to `shapes` at</span></div>
 <div class="line"><a id="l02886" name="l02886"></a><span class="lineno"> 2886</span>        <span class="comment">// this time.</span></div>
 <div class="line"><a id="l02887" name="l02887"></a><span class="lineno"> 2887</span>        <span class="comment">// just clear `faceGroup` after `exportGroupsToShape()` call.</span></div>
-<div class="line"><a id="l02888" name="l02888"></a><span class="lineno"> 2888</span>        exportGroupsToShape(&amp;shape, prim_group, tags, material, name,</div>
+<div class="line"><a id="l02888" name="l02888"></a><span class="lineno"> 2888</span>        exportGroupsToShape(&amp;shape, prim_group, tags, material, <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>,</div>
 <div class="line"><a id="l02889" name="l02889"></a><span class="lineno"> 2889</span>                            triangulate, v, warn);</div>
 <div class="line"><a id="l02890" name="l02890"></a><span class="lineno"> 2890</span>        prim_group.faceGroup.clear();</div>
 <div class="line"><a id="l02891" name="l02891"></a><span class="lineno"> 2891</span>        material = newMaterialId;</div>
@@ -3006,7 +3006,7 @@ $(function() {
 <div class="line"><a id="l02954" name="l02954"></a><span class="lineno"> 2954</span>    <span class="comment">// group name</span></div>
 <div class="line"><a id="l02955" name="l02955"></a><span class="lineno"> 2955</span>    <span class="keywordflow">if</span> (token[0] == <span class="charliteral">&#39;g&#39;</span> &amp;&amp; IS_SPACE((token[1]))) {</div>
 <div class="line"><a id="l02956" name="l02956"></a><span class="lineno"> 2956</span>      <span class="comment">// flush previous face group.</span></div>
-<div class="line"><a id="l02957" name="l02957"></a><span class="lineno"> 2957</span>      <span class="keywordtype">bool</span> ret = exportGroupsToShape(&amp;shape, prim_group, tags, material, name,</div>
+<div class="line"><a id="l02957" name="l02957"></a><span class="lineno"> 2957</span>      <span class="keywordtype">bool</span> ret = exportGroupsToShape(&amp;shape, prim_group, tags, material, <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>,</div>
 <div class="line"><a id="l02958" name="l02958"></a><span class="lineno"> 2958</span>                                     triangulate, v, warn);</div>
 <div class="line"><a id="l02959" name="l02959"></a><span class="lineno"> 2959</span>      (void)ret;  <span class="comment">// return value not used.</span></div>
 <div class="line"><a id="l02960" name="l02960"></a><span class="lineno"> 2960</span> </div>
@@ -3035,7 +3035,7 @@ $(function() {
 <div class="line"><a id="l02983" name="l02983"></a><span class="lineno"> 2983</span>          std::stringstream ss;</div>
 <div class="line"><a id="l02984" name="l02984"></a><span class="lineno"> 2984</span>          ss &lt;&lt; <span class="stringliteral">&quot;Empty group name. line: &quot;</span> &lt;&lt; line_num &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line"><a id="l02985" name="l02985"></a><span class="lineno"> 2985</span>          (*warn) += ss.str();</div>
-<div class="line"><a id="l02986" name="l02986"></a><span class="lineno"> 2986</span>          name = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a id="l02986" name="l02986"></a><span class="lineno"> 2986</span>          <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a> = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a id="l02987" name="l02987"></a><span class="lineno"> 2987</span>        }</div>
 <div class="line"><a id="l02988" name="l02988"></a><span class="lineno"> 2988</span>      } <span class="keywordflow">else</span> {</div>
 <div class="line"><a id="l02989" name="l02989"></a><span class="lineno"> 2989</span>        std::stringstream ss;</div>
@@ -3049,7 +3049,7 @@ $(function() {
 <div class="line"><a id="l02997" name="l02997"></a><span class="lineno"> 2997</span>          ss &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; names[i];</div>
 <div class="line"><a id="l02998" name="l02998"></a><span class="lineno"> 2998</span>        }</div>
 <div class="line"><a id="l02999" name="l02999"></a><span class="lineno"> 2999</span> </div>
-<div class="line"><a id="l03000" name="l03000"></a><span class="lineno"> 3000</span>        name = ss.str();</div>
+<div class="line"><a id="l03000" name="l03000"></a><span class="lineno"> 3000</span>        <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a> = ss.str();</div>
 <div class="line"><a id="l03001" name="l03001"></a><span class="lineno"> 3001</span>      }</div>
 <div class="line"><a id="l03002" name="l03002"></a><span class="lineno"> 3002</span> </div>
 <div class="line"><a id="l03003" name="l03003"></a><span class="lineno"> 3003</span>      <span class="keywordflow">continue</span>;</div>
@@ -3058,7 +3058,7 @@ $(function() {
 <div class="line"><a id="l03006" name="l03006"></a><span class="lineno"> 3006</span>    <span class="comment">// object name</span></div>
 <div class="line"><a id="l03007" name="l03007"></a><span class="lineno"> 3007</span>    <span class="keywordflow">if</span> (token[0] == <span class="charliteral">&#39;o&#39;</span> &amp;&amp; IS_SPACE((token[1]))) {</div>
 <div class="line"><a id="l03008" name="l03008"></a><span class="lineno"> 3008</span>      <span class="comment">// flush previous face group.</span></div>
-<div class="line"><a id="l03009" name="l03009"></a><span class="lineno"> 3009</span>      <span class="keywordtype">bool</span> ret = exportGroupsToShape(&amp;shape, prim_group, tags, material, name,</div>
+<div class="line"><a id="l03009" name="l03009"></a><span class="lineno"> 3009</span>      <span class="keywordtype">bool</span> ret = exportGroupsToShape(&amp;shape, prim_group, tags, material, <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>,</div>
 <div class="line"><a id="l03010" name="l03010"></a><span class="lineno"> 3010</span>                                     triangulate, v, warn);</div>
 <div class="line"><a id="l03011" name="l03011"></a><span class="lineno"> 3011</span>      (void)ret;  <span class="comment">// return value not used.</span></div>
 <div class="line"><a id="l03012" name="l03012"></a><span class="lineno"> 3012</span> </div>
@@ -3075,7 +3075,7 @@ $(function() {
 <div class="line"><a id="l03023" name="l03023"></a><span class="lineno"> 3023</span>      token += 2;</div>
 <div class="line"><a id="l03024" name="l03024"></a><span class="lineno"> 3024</span>      std::stringstream ss;</div>
 <div class="line"><a id="l03025" name="l03025"></a><span class="lineno"> 3025</span>      ss &lt;&lt; token;</div>
-<div class="line"><a id="l03026" name="l03026"></a><span class="lineno"> 3026</span>      name = ss.str();</div>
+<div class="line"><a id="l03026" name="l03026"></a><span class="lineno"> 3026</span>      <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a> = ss.str();</div>
 <div class="line"><a id="l03027" name="l03027"></a><span class="lineno"> 3027</span> </div>
 <div class="line"><a id="l03028" name="l03028"></a><span class="lineno"> 3028</span>      <span class="keywordflow">continue</span>;</div>
 <div class="line"><a id="l03029" name="l03029"></a><span class="lineno"> 3029</span>    }</div>
@@ -3197,7 +3197,7 @@ $(function() {
 <div class="line"><a id="l03145" name="l03145"></a><span class="lineno"> 3145</span>    }</div>
 <div class="line"><a id="l03146" name="l03146"></a><span class="lineno"> 3146</span>  }</div>
 <div class="line"><a id="l03147" name="l03147"></a><span class="lineno"> 3147</span> </div>
-<div class="line"><a id="l03148" name="l03148"></a><span class="lineno"> 3148</span>  <span class="keywordtype">bool</span> ret = exportGroupsToShape(&amp;shape, prim_group, tags, material, name,</div>
+<div class="line"><a id="l03148" name="l03148"></a><span class="lineno"> 3148</span>  <span class="keywordtype">bool</span> ret = exportGroupsToShape(&amp;shape, prim_group, tags, material, <a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>,</div>
 <div class="line"><a id="l03149" name="l03149"></a><span class="lineno"> 3149</span>                                 triangulate, v, warn);</div>
 <div class="line"><a id="l03150" name="l03150"></a><span class="lineno"> 3150</span>  <span class="comment">// exportGroupsToShape return false when `usemtl` is called in the last</span></div>
 <div class="line"><a id="l03151" name="l03151"></a><span class="lineno"> 3151</span>  <span class="comment">// line.</span></div>
@@ -3568,6 +3568,7 @@ $(function() {
 <div class="line"><a id="l03516" name="l03516"></a><span class="lineno"> 3516</span> </div>
 <div class="line"><a id="l03517" name="l03517"></a><span class="lineno"> 3517</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aPoint2_8h_html_ae8aa9b1b72683199c28e94a59fa2c9d0"><div class="ttname"><a href="Point2_8h.html#ae8aa9b1b72683199c28e94a59fa2c9d0">cross</a></div><div class="ttdeci">double cross(CPoint2 uv1, CPoint2 uv2)</div><div class="ttdef"><b>定义</b> Point2.h:241</div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_a4f5452c5c19395231dec92c40e3d10e1"><div class="ttname"><a href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a></div><div class="ttdeci">c1 name</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:80</div></div>
 <div class="ttc" id="aclasstinyobj_1_1MaterialFileReader_html"><div class="ttname"><a href="classtinyobj_1_1MaterialFileReader.html">tinyobj::MaterialFileReader</a></div><div class="ttdef"><b>定义</b> tiny_obj_loader.h:476</div></div>
 <div class="ttc" id="aclasstinyobj_1_1MaterialFileReader_html_a83814ef91e8b9ed56cc6aad5f4874d0a"><div class="ttname"><a href="classtinyobj_1_1MaterialFileReader.html#a83814ef91e8b9ed56cc6aad5f4874d0a">tinyobj::MaterialFileReader::operator()</a></div><div class="ttdeci">virtual bool operator()(const std::string &amp;matId, std::vector&lt; material_t &gt; *materials, std::map&lt; std::string, int &gt; *matMap, std::string *warn, std::string *err) TINYOBJ_OVERRIDE</div></div>
 <div class="ttc" id="aclasstinyobj_1_1MaterialFileReader_html_aeb0081a32915ccf6c5c0612335eef560"><div class="ttname"><a href="classtinyobj_1_1MaterialFileReader.html#aeb0081a32915ccf6c5c0612335eef560">tinyobj::MaterialFileReader::m_mtlBaseDir</a></div><div class="ttdeci">std::string m_mtlBaseDir</div><div class="ttdef"><b>定义</b> tiny_obj_loader.h:488</div></div>

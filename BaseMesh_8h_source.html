@@ -626,7 +626,7 @@ $(function() {
 <div class="line"><a id="l00866" name="l00866"></a><span class="lineno">  866</span>{</div>
 <div class="line"><a id="l00867" name="l00867"></a><span class="lineno">  867</span>    <a class="code hl_class" href="classMeshLib_1_1CVertex.html">CVertex</a> * v = <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#aa418052e4678755232e854ce063f2b7b">m_verts</a>.allocate();</div>
 <div class="line"><a id="l00868" name="l00868"></a><span class="lineno">  868</span>    assert( v != NULL );</div>
-<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>    v-&gt;<a class="code hl_function" href="classMeshLib_1_1CVertex.html#aa96d85a7e370ff262f9e576438034a73">id</a>() = id;</div>
+<div class="line"><a id="l00869" name="l00869"></a><span class="lineno">  869</span>    v-&gt;<a class="code hl_function" href="classMeshLib_1_1CVertex.html#aa96d85a7e370ff262f9e576438034a73">id</a>() = <a class="code hl_variable" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>;</div>
 <div class="line"><a id="l00870" name="l00870"></a><span class="lineno">  870</span>    <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#a587e5ce14b9a84ef648d0764a063450d">m_map_vert</a>.insert( std::pair&lt;int,CVertex*&gt;(<span class="keywordtype">id</span>,v));</div>
 <div class="line"><a id="l00871" name="l00871"></a><span class="lineno">  871</span>    <span class="keywordflow">return</span> v;</div>
 <div class="line"><a id="l00872" name="l00872"></a><span class="lineno">  872</span>};</div>
@@ -724,21 +724,21 @@ $(function() {
 <div class="line"><a id="l00966" name="l00966"></a><span class="lineno">  966</span>                </div>
 <div class="line"><a id="l00967" name="l00967"></a><span class="lineno">  967</span>                <a class="code hl_class" href="classstrutil_1_1Tokenizer.html">strutil::Tokenizer</a> tokenizer( token, <span class="stringliteral">&quot; /\t\r\n&quot;</span> );</div>
 <div class="line"><a id="l00968" name="l00968"></a><span class="lineno">  968</span>                </div>
-<div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span>                <span class="keywordtype">int</span> ids[3];</div>
+<div class="line"><a id="l00969" name="l00969"></a><span class="lineno">  969</span>                <span class="keywordtype">int</span> <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>[3];</div>
 <div class="line"><a id="l00970" name="l00970"></a><span class="lineno">  970</span>                <span class="keywordtype">int</span> k = 0;</div>
 <div class="line"><a id="l00971" name="l00971"></a><span class="lineno">  971</span>                <span class="keywordflow">while</span>( tokenizer.<a class="code hl_function" href="classstrutil_1_1Tokenizer.html#ab595c59adf60b6fda91f966923adf1e4">nextToken</a>() )</div>
 <div class="line"><a id="l00972" name="l00972"></a><span class="lineno">  972</span>                {</div>
 <div class="line"><a id="l00973" name="l00973"></a><span class="lineno">  973</span>                    std::string token = tokenizer.<a class="code hl_function" href="classstrutil_1_1Tokenizer.html#aca531b1dd9615acd97be3d9c1e3e6050">getToken</a>();</div>
-<div class="line"><a id="l00974" name="l00974"></a><span class="lineno">  974</span>                    ids[k] = <a class="code hl_function" href="namespacestrutil.html#a0776455dafd1a05a3dafc302001d8520">strutil::parseString&lt;int&gt;</a>(token);</div>
+<div class="line"><a id="l00974" name="l00974"></a><span class="lineno">  974</span>                    <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>[k] = <a class="code hl_function" href="namespacestrutil.html#a0776455dafd1a05a3dafc302001d8520">strutil::parseString&lt;int&gt;</a>(token);</div>
 <div class="line"><a id="l00975" name="l00975"></a><span class="lineno">  975</span>                    k ++;</div>
 <div class="line"><a id="l00976" name="l00976"></a><span class="lineno">  976</span>                }</div>
 <div class="line"><a id="l00977" name="l00977"></a><span class="lineno">  977</span> </div>
 <div class="line"><a id="l00978" name="l00978"></a><span class="lineno">  978</span>                </div>
-<div class="line"><a id="l00979" name="l00979"></a><span class="lineno">  979</span>                v.push_back(<a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#a587e5ce14b9a84ef648d0764a063450d">m_map_vert</a>[ ids[0] ]);</div>
+<div class="line"><a id="l00979" name="l00979"></a><span class="lineno">  979</span>                v.push_back(<a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#a587e5ce14b9a84ef648d0764a063450d">m_map_vert</a>[ <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>[0] ]);</div>
 <div class="line"><a id="l00980" name="l00980"></a><span class="lineno">  980</span>                <span class="keywordflow">if</span>( with_uv )</div>
-<div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span>                    v.back()-&gt;uv() = uvs[ ids[1]-1 ];</div>
+<div class="line"><a id="l00981" name="l00981"></a><span class="lineno">  981</span>                    v.back()-&gt;uv() = uvs[ <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>[1]-1 ];</div>
 <div class="line"><a id="l00982" name="l00982"></a><span class="lineno">  982</span>                <span class="keywordflow">if</span>( with_normal )</div>
-<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>                    v.back()-&gt;normal() = normals[ ids[2]-1 ];</div>
+<div class="line"><a id="l00983" name="l00983"></a><span class="lineno">  983</span>                    v.back()-&gt;normal() = normals[ <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>[2]-1 ];</div>
 <div class="line"><a id="l00984" name="l00984"></a><span class="lineno">  984</span>            }</div>
 <div class="line"><a id="l00985" name="l00985"></a><span class="lineno">  985</span>            <a class="code hl_function" href="classMeshLib_1_1CBaseMesh.html#a5c1a9a5b45a58d766a664595f8c799b1">createFace</a>( v, fid++ );</div>
 <div class="line"><a id="l00986" name="l00986"></a><span class="lineno">  986</span>        }</div>
@@ -757,7 +757,7 @@ $(function() {
 <div class="line"><a id="l01002" name="l01002"></a><span class="lineno"> 1002</span>{</div>
 <div class="line"><a id="l01003" name="l01003"></a><span class="lineno"> 1003</span>      <a class="code hl_class" href="classMeshLib_1_1CFace.html">CFace</a> * f = <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#aed13e9aa114e6adfde3b910676480dd2">m_faces</a>.allocate();</div>
 <div class="line"><a id="l01004" name="l01004"></a><span class="lineno"> 1004</span>      assert( f != NULL );</div>
-<div class="line"><a id="l01005" name="l01005"></a><span class="lineno"> 1005</span>      f-&gt;<a class="code hl_function" href="classMeshLib_1_1CFace.html#ae6566f29bc4cfd225c6369a16cb29b62">id</a>() = id;</div>
+<div class="line"><a id="l01005" name="l01005"></a><span class="lineno"> 1005</span>      f-&gt;<a class="code hl_function" href="classMeshLib_1_1CFace.html#ae6566f29bc4cfd225c6369a16cb29b62">id</a>() = <a class="code hl_variable" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>;</div>
 <div class="line"><a id="l01006" name="l01006"></a><span class="lineno"> 1006</span>      <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#aacbeec9d726ecc9b9ca5ace06d3a244c">m_map_face</a>.insert( std::pair&lt;int,tFace&gt;(<span class="keywordtype">id</span>,f) );</div>
 <div class="line"><a id="l01007" name="l01007"></a><span class="lineno"> 1007</span> </div>
 <div class="line"><a id="l01008" name="l01008"></a><span class="lineno"> 1008</span>        <span class="comment">//create halfedges</span></div>
@@ -812,7 +812,7 @@ $(function() {
 <div class="foldopen" id="foldopen01061" data-start="{" data-end="}">
 <div class="line"><a id="l01061" name="l01061"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CBaseMesh.html#af03a301faaed2e2ea23ddca3b96a8b23"> 1061</a></span><a class="code hl_class" href="classMeshLib_1_1CVertex.html">CVertex</a> * <a class="code hl_function" href="classMeshLib_1_1CBaseMesh.html#af03a301faaed2e2ea23ddca3b96a8b23">CBaseMesh&lt;CVertex,CEdge,CFace,CHalfEdge&gt;::idVertex</a>( <span class="keywordtype">int</span> <span class="keywordtype">id</span> ) </div>
 <div class="line"><a id="l01062" name="l01062"></a><span class="lineno"> 1062</span>{</div>
-<div class="line"><a id="l01063" name="l01063"></a><span class="lineno"> 1063</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#a587e5ce14b9a84ef648d0764a063450d">m_map_vert</a>[id];</div>
+<div class="line"><a id="l01063" name="l01063"></a><span class="lineno"> 1063</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#a587e5ce14b9a84ef648d0764a063450d">m_map_vert</a>[<a class="code hl_variable" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>];</div>
 <div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span>};</div>
 </div>
 <div class="line"><a id="l01065" name="l01065"></a><span class="lineno"> 1065</span> </div>
@@ -830,7 +830,7 @@ $(function() {
 <div class="foldopen" id="foldopen01085" data-start="{" data-end="}">
 <div class="line"><a id="l01085" name="l01085"></a><span class="lineno"><a class="line" href="classMeshLib_1_1CBaseMesh.html#aad0fd30815bc0a4b414e9ad7b9d6c81f"> 1085</a></span><a class="code hl_class" href="classMeshLib_1_1CFace.html">CFace</a> * <a class="code hl_function" href="classMeshLib_1_1CBaseMesh.html#aad0fd30815bc0a4b414e9ad7b9d6c81f">CBaseMesh&lt;CVertex,CEdge,CFace,CHalfEdge&gt;::idFace</a>( <span class="keywordtype">int</span> <span class="keywordtype">id</span> )</div>
 <div class="line"><a id="l01086" name="l01086"></a><span class="lineno"> 1086</span>{</div>
-<div class="line"><a id="l01087" name="l01087"></a><span class="lineno"> 1087</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#aacbeec9d726ecc9b9ca5ace06d3a244c">m_map_face</a>[id];</div>
+<div class="line"><a id="l01087" name="l01087"></a><span class="lineno"> 1087</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#aacbeec9d726ecc9b9ca5ace06d3a244c">m_map_face</a>[<a class="code hl_variable" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>];</div>
 <div class="line"><a id="l01088" name="l01088"></a><span class="lineno"> 1088</span>};</div>
 </div>
 <div class="line"><a id="l01089" name="l01089"></a><span class="lineno"> 1089</span> </div>
@@ -950,7 +950,7 @@ $(function() {
 <div class="line"><a id="l01226" name="l01226"></a><span class="lineno"> 1226</span>    }</div>
 <div class="line"><a id="l01227" name="l01227"></a><span class="lineno"> 1227</span> </div>
 <div class="line"><a id="l01228" name="l01228"></a><span class="lineno"> 1228</span>    <span class="keywordtype">char</span> buffer[<a class="code hl_define" href="BaseMesh_8h.html#a842ed03f27719bc87666bfd1f75415b8">MAX_LINE</a>];</div>
-<div class="line"><a id="l01229" name="l01229"></a><span class="lineno"> 1229</span>    <span class="keywordtype">int</span> id;</div>
+<div class="line"><a id="l01229" name="l01229"></a><span class="lineno"> 1229</span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>;</div>
 <div class="line"><a id="l01230" name="l01230"></a><span class="lineno"> 1230</span> </div>
 <div class="line"><a id="l01231" name="l01231"></a><span class="lineno"> 1231</span>    <span class="keywordflow">while</span>( is.getline(buffer, <a class="code hl_define" href="BaseMesh_8h.html#a842ed03f27719bc87666bfd1f75415b8">MAX_LINE</a> )  )</div>
 <div class="line"><a id="l01232" name="l01232"></a><span class="lineno"> 1232</span>    {       </div>
@@ -979,7 +979,7 @@ $(function() {
 <div class="line"><a id="l01255" name="l01255"></a><span class="lineno"> 1255</span>        </div>
 <div class="line"><a id="l01256" name="l01256"></a><span class="lineno"> 1256</span>            <a class="code hl_typedef" href="classMeshLib_1_1CBaseMesh.html#adcf412e8267910b50f3145d6416947da">tVertex</a> v  = <a class="code hl_function" href="classMeshLib_1_1CBaseMesh.html#a04ee0f997dd274fdcf5ba6bc7b979569">createVertex</a>( <span class="keywordtype">id</span> );</div>
 <div class="line"><a id="l01257" name="l01257"></a><span class="lineno"> 1257</span>            v-&gt;<a class="code hl_function" href="classMeshLib_1_1CVertex.html#af6b59dfc900e565e14c941d10ff804a5">point</a>() = p;</div>
-<div class="line"><a id="l01258" name="l01258"></a><span class="lineno"> 1258</span>            v-&gt;<a class="code hl_function" href="classMeshLib_1_1CVertex.html#aa96d85a7e370ff262f9e576438034a73">id</a>()    = id;</div>
+<div class="line"><a id="l01258" name="l01258"></a><span class="lineno"> 1258</span>            v-&gt;<a class="code hl_function" href="classMeshLib_1_1CVertex.html#aa96d85a7e370ff262f9e576438034a73">id</a>()    = <a class="code hl_variable" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>;</div>
 <div class="line"><a id="l01259" name="l01259"></a><span class="lineno"> 1259</span> </div>
 <div class="line"><a id="l01260" name="l01260"></a><span class="lineno"> 1260</span>            <span class="keywordflow">if</span>( ! stokenizer.<a class="code hl_function" href="classstrutil_1_1Tokenizer.html#ab595c59adf60b6fda91f966923adf1e4">nextToken</a>(<span class="stringliteral">&quot;\t\r\n&quot;</span>) ) <span class="keywordflow">continue</span>;</div>
 <div class="line"><a id="l01261" name="l01261"></a><span class="lineno"> 1261</span>            token = stokenizer.<a class="code hl_function" href="classstrutil_1_1Tokenizer.html#aca531b1dd9615acd97be3d9c1e3e6050">getToken</a>();</div>
@@ -1675,7 +1675,7 @@ $(function() {
 <div class="line"><a id="l01963" name="l01963"></a><span class="lineno"> 1963</span>{</div>
 <div class="line"><a id="l01964" name="l01964"></a><span class="lineno"> 1964</span>      <a class="code hl_class" href="classMeshLib_1_1CFace.html">CFace</a> * f = <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#aed13e9aa114e6adfde3b910676480dd2">m_faces</a>.allocate();</div>
 <div class="line"><a id="l01965" name="l01965"></a><span class="lineno"> 1965</span>      assert( f != NULL );</div>
-<div class="line"><a id="l01966" name="l01966"></a><span class="lineno"> 1966</span>      f-&gt;<a class="code hl_function" href="classMeshLib_1_1CFace.html#ae6566f29bc4cfd225c6369a16cb29b62">id</a>() = id;</div>
+<div class="line"><a id="l01966" name="l01966"></a><span class="lineno"> 1966</span>      f-&gt;<a class="code hl_function" href="classMeshLib_1_1CFace.html#ae6566f29bc4cfd225c6369a16cb29b62">id</a>() = <a class="code hl_variable" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>;</div>
 <div class="line"><a id="l01967" name="l01967"></a><span class="lineno"> 1967</span>      <a class="code hl_variable" href="classMeshLib_1_1CBaseMesh.html#aacbeec9d726ecc9b9ca5ace06d3a244c">m_map_face</a>.insert( std::pair&lt;int,tFace&gt;(<span class="keywordtype">id</span>,f) );</div>
 <div class="line"><a id="l01968" name="l01968"></a><span class="lineno"> 1968</span> </div>
 <div class="line"><a id="l01969" name="l01969"></a><span class="lineno"> 1969</span>        <span class="comment">//create halfedges</span></div>
@@ -1788,6 +1788,8 @@ $(function() {
 <div class="ttc" id="aPoint2_8h_html"><div class="ttname"><a href="Point2_8h.html">Point2.h</a></div><div class="ttdoc">Two dimensional point class</div></div>
 <div class="ttc" id="aPoint_8h_html"><div class="ttname"><a href="Point_8h.html">Point.h</a></div><div class="ttdoc">Three dimensional point class</div></div>
 <div class="ttc" id="aStrUtil_8h_html"><div class="ttname"><a href="StrUtil_8h.html">StrUtil.h</a></div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_a39f48d78b28941e045e423f59f774459"><div class="ttname"><a href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a></div><div class="ttdeci">c1 id</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:79</div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_a5b425756f8f086f69cb81301d88866ca"><div class="ttname"><a href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a></div><div class="ttdeci">auto ids</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:97</div></div>
 <div class="ttc" id="aclassCPoint2_html"><div class="ttname"><a href="classCPoint2.html">CPoint2</a></div><div class="ttdoc">CPoint2 class, two dimensional point</div><div class="ttdef"><b>定义</b> Point2.h:27</div></div>
 <div class="ttc" id="aclassCPoint_html"><div class="ttname"><a href="classCPoint.html">CPoint</a></div><div class="ttdoc">CPoint class, three dimensional point</div><div class="ttdef"><b>定义</b> Point.h:25</div></div>
 <div class="ttc" id="aclassMeshLib_1_1CBaseMesh_html_a019148ba8fcdc951366bb297f7cf706d"><div class="ttname"><a href="classMeshLib_1_1CBaseMesh.html#a019148ba8fcdc951366bb297f7cf706d">MeshLib::CBaseMesh::halfedgeTarget</a></div><div class="ttdeci">tVertex halfedgeTarget(tHalfEdge he)</div><div class="ttdef"><b>定义</b> BaseMesh.h:630</div></div>

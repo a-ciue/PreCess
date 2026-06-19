@@ -19,11 +19,12 @@ var searchData=
   ['handlercreatordestroyerfactory_2eh_16',['HandlerCreatorDestroyerFactory.h',['../HandlerCreatorDestroyerFactory_8h.html',1,'']]],
   ['handlermetadata_17',['HandlerMetaData',['../structsystems_1_1algo_1_1HandlerMetaData.html',1,'systems::algo::HandlerMetaData'],['../structsystems_1_1edit_1_1HandlerMetaData.html',1,'systems::edit::HandlerMetaData'],['../structsystems_1_1io_1_1HandlerMetaData.html',1,'systems::io::HandlerMetaData']]],
   ['handlers_5f_18',['handlers_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a4e880ca41137da510ccc4bb5e81b13a0',1,'systems::algo::AlgorithmSystem::handlers_'],['../classsystems_1_1edit_1_1EditSystem.html#a3e2b8fe4ef06ea6e698198d2051a2c1b',1,'systems::edit::EditSystem::handlers_'],['../classsystems_1_1io_1_1ModelIOSystem.html#aabdb2c0123dfb7980b25f8d611a4ee5e',1,'systems::io::ModelIOSystem::handlers_']]],
-  ['hasmesh_19',['hasMesh',['../classModelData.html#a0974375e8dc34408add48ed67a32eb8e',1,'ModelData']]],
-  ['hasspline_20',['hasSpline',['../classModelData.html#aa3b5aef481c8536e1b56de77e2c4110f',1,'ModelData']]],
-  ['he_5fnext_21',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
-  ['he_5fprev_22',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
-  ['he_5fsym_23',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
-  ['highlight_5factor_5f_24',['highlight_actor_',['../classSolidSelectorHighlight.html#a87e5472c31321d54fd1fc6e644f4b32d',1,'SolidSelectorHighlight::highlight_actor_'],['../classVertexSelectorHighlight.html#a0ae01f796c3ae8d6ae249bbcbe4e9e8e',1,'VertexSelectorHighlight::highlight_actor_']]],
-  ['highlightblockbycellcolor_25',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
+  ['hascomponent_19',['hasComponent',['../classGeometryActorManager.html#a34957ce93a72aee7ed198cc5f21fb42e',1,'GeometryActorManager::hasComponent()'],['../classMeshActorManager.html#afdb5c94a7051977099f18737f8f697c8',1,'MeshActorManager::hasComponent()']]],
+  ['hasgeometry_20',['hasGeometry',['../structComponentData.html#a89b5b7d048461de0b087c6c1e9ecc0d9',1,'ComponentData']]],
+  ['hasmesh_21',['hasMesh',['../structComponentData.html#adf67c038a108088ce936973b012b57a0',1,'ComponentData']]],
+  ['he_5fnext_22',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
+  ['he_5fprev_23',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
+  ['he_5fsym_24',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
+  ['highlight_5factor_5f_25',['highlight_actor_',['../classSolidSelectorHighlight.html#a87e5472c31321d54fd1fc6e644f4b32d',1,'SolidSelectorHighlight::highlight_actor_'],['../classVertexSelectorHighlight.html#a0ae01f796c3ae8d6ae249bbcbe4e9e8e',1,'VertexSelectorHighlight::highlight_actor_']]],
+  ['highlightblockbycellcolor_26',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
 ];

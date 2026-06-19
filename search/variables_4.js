@@ -1,7 +1,7 @@
 var searchData=
 [
   ['data_0',['data',['../structplf_1_1colony_1_1aligned__element__struct.html#af26ade0c27c6c1c4a094acb8dac3b785',1,'plf::colony::aligned_element_struct::data'],['../structplf_1_1colony_1_1aligned__allocation__struct.html#a5b1a11a73bde2f2fd94c6f60d5aff9ce',1,'plf::colony::aligned_allocation_struct::data']]],
-  ['data_5f_1',['data_',['../classQSelection.html#ae17a23b67b7c87bdb604e930769d517a',1,'QSelection::data_'],['../structQRenderWindow.html#af36bc244b299907aa7fd3660c883bc38',1,'QRenderWindow::data_'],['../classModelData.html#a602a16dd854be01037709689f8d0eabc',1,'ModelData::data_']]],
+  ['data_5f_1',['data_',['../classQSelection.html#ae17a23b67b7c87bdb604e930769d517a',1,'QSelection::data_'],['../structQRenderWindow.html#af36bc244b299907aa7fd3660c883bc38',1,'QRenderWindow::data_']]],
   ['desc_2',['desc',['../structcore_1_1ArgType.html#a740eba74855397c6997e00e6d3cb21d5',1,'core::ArgType']]],
   ['description_3',['description',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a3ed2e0827d56f8602e4ecc4c77ea683e',1,'systems::algo::AlgorithmInfo::description'],['../structsystems_1_1edit_1_1EditInfo.html#a41dd2f34dd56cb5fdb2d3326195a3fc2',1,'systems::edit::EditInfo::description'],['../structsystems_1_1io_1_1ModelIOInfo.html#a70823a394fc6bcfa4a601cf093ecb7ba',1,'systems::io::ModelIOInfo::description']]],
   ['description_5f_4',['description_',['../classQAlgorithmInfo.html#aa0fd999ab0d1d91828fd58b873e1e45a',1,'QAlgorithmInfo::description_'],['../classQEditInfo.html#a74841088514f1714b987b93d3e2d68f5',1,'QEditInfo::description_'],['../classsystems_1_1io_1_1QModelIOInfo.html#a99021cc8e89feb963ebebdbd31945935',1,'systems::io::QModelIOInfo::description_']]],

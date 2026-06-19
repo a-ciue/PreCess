@@ -1,3 +1,13 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structsystems_1_1algo_1_1HandlerContext.html" title=" " alt="" coords="5,5,228,31"/>
+<area shape="rect" id="Node000000" href="$classSelectorHighlight.html" title=" " alt="" coords="5,104,140,129"/>
+<area shape="rect" id="Node000001" href="$classBlockSelectorHighlight.html" title=" " alt="" coords="191,5,361,31"/>
+<area shape="poly" id="edge33_Node000000_Node000001" title=" " alt="" coords="100,93,140,66,187,40,218,28,220,33,189,44,143,70,103,98"/>
+<area shape="rect" id="Node000002" href="$classEdgeSelectorHighlight.html" title=" " alt="" coords="193,55,359,80"/>
+<area shape="poly" id="edge34_Node000000_Node000002" title=" " alt="" coords="138,98,222,77,223,83,139,103"/>
+<area shape="rect" id="Node000003" href="$classFaceSelectorHighlight.html" title=" " alt="" coords="195,104,357,129"/>
+<area shape="poly" id="edge35_Node000000_Node000003" title=" " alt="" coords="154,114,195,114,195,119,154,119"/>
+<area shape="rect" id="Node000004" href="$classSolidSelectorHighlight.html" title=" " alt="" coords="193,153,359,179"/>
+<area shape="poly" id="edge36_Node000000_Node000004" title=" " alt="" coords="139,130,223,151,222,156,138,135"/>
+<area shape="rect" id="Node000005" href="$classVertexSelectorHighlight.html" title="点击并高亮多个顶点" alt="" coords="188,203,364,228"/>
+<area shape="poly" id="edge37_Node000000_Node000005" title=" " alt="" coords="103,136,143,162,189,188,223,200,221,205,187,192,140,167,100,140"/>
 </map>

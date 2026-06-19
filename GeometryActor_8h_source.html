@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/GeometryActor.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">GeometryActor.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="GeometryActor_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef GEOMETRY_ACTOR_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define GEOMETRY_ACTOR_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="GeometryDataVtk_8h.html">GeometryDataVtk.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;vtkActor.h&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;vtkNew.h&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;vtkPolyDataMapper.h&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="foldopen" id="foldopen00009" data-start="{" data-end="};">
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="classGeometryActor.html">    9</a></span><span class="keyword">class </span><a class="code hl_function" href="classGeometryActor.html#a1628965ebc59f1ec2907728685b7f43b">GeometryActor</a> {</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <a class="code hl_function" href="classGeometryActor.html#a1628965ebc59f1ec2907728685b7f43b">GeometryActor</a>(vtkRenderer* renderer, <a class="code hl_enumeration" href="Core_8h.html#ac614e6e9aba921e4ffbc6e7a50fa0ad9">GeometryRenderMode</a> render_mode);</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <a class="code hl_function" href="classGeometryActor.html#a6b14f4a840410ad6eea5564d42ee9f58">~GeometryActor</a>();</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <a class="code hl_enumeration" href="Core_8h.html#ac614e6e9aba921e4ffbc6e7a50fa0ad9">GeometryRenderMode</a> <a class="code hl_function" href="classGeometryActor.html#a5986bf59c8bf9647396af579240161cb">getGeometryRenderMode</a>();</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classGeometryActor.html#af8403cc0b623aa7d931a604762e4f7b2">getIsEdgeRender</a>();</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classGeometryActor.html#aef1bf238b45d59679f9c3e2199ca48ab">loadShape</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structGeometryDataVtk.html">GeometryDataVtk</a>&amp; geometry_data);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classGeometryActor.html#a16e10383b0c5192f3dc2d4d43b1f2dbe">setVisibility</a>(<span class="keywordtype">bool</span> visibility);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classGeometryActor.html#a59066d557510298301e459a05f04e661">setRenderMode</a>(<a class="code hl_enumeration" href="Core_8h.html#ac614e6e9aba921e4ffbc6e7a50fa0ad9">GeometryRenderMode</a> render_mode);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classGeometryActor.html#a497053af7f7ab09cc05a6c15e86609e3">setRenderEdge</a>(<span class="keywordtype">bool</span> is_render);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classGeometryActor.html#aa2cbb4d083f0e253fc5d6d8a85117b0a">deleteGeometryActor</a>();</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classGeometryActor.html#ad6a7e757bd2e75aed07ebcf0959a9dca">   27</a></span>    <a class="code hl_enumeration" href="Core_8h.html#ac614e6e9aba921e4ffbc6e7a50fa0ad9">GeometryRenderMode</a> <a class="code hl_variable" href="classGeometryActor.html#ad6a7e757bd2e75aed07ebcf0959a9dca">render_mode_</a>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classGeometryActor.html#a7a7bbab4268a049e155924e0a59d0943">   28</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classGeometryActor.html#a7a7bbab4268a049e155924e0a59d0943">edge_render</a>;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classGeometryActor.html#a97fc8ae0aedbc702fdf00ee057243614">   29</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classGeometryActor.html#a97fc8ae0aedbc702fdf00ee057243614">visibility_</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classGeometryActor.html#a7db3f6900edad8a6ca8ab8461d8fd044">   30</a></span>    std::unique_ptr&lt;GeometryDataVtk&gt; <a class="code hl_variable" href="classGeometryActor.html#a7db3f6900edad8a6ca8ab8461d8fd044">geometry_data_</a>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classGeometryActor.html#afbb5e16fb1a81c23cac20aec405005f7">   32</a></span>    vtkNew&lt;vtkActor&gt; <a class="code hl_variable" href="classGeometryActor.html#afbb5e16fb1a81c23cac20aec405005f7">poly_actor_</a>;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classGeometryActor.html#af5540aa138cd129aa2c90fc04c08190a">   33</a></span>    vtkNew&lt;vtkActor&gt; <a class="code hl_variable" href="classGeometryActor.html#af5540aa138cd129aa2c90fc04c08190a">line_actor_</a>;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classGeometryActor.html#a043b12989c4b8c0e1a2032bb9009d666">   34</a></span>    vtkRenderer* <a class="code hl_variable" href="classGeometryActor.html#a043b12989c4b8c0e1a2032bb9009d666">renderer_</a>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>};</div>
+</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_ac614e6e9aba921e4ffbc6e7a50fa0ad9"><div class="ttname"><a href="Core_8h.html#ac614e6e9aba921e4ffbc6e7a50fa0ad9">GeometryRenderMode</a></div><div class="ttdeci">GeometryRenderMode</div><div class="ttdef"><b>定义</b> Core.h:14</div></div>
+<div class="ttc" id="aGeometryDataVtk_8h_html"><div class="ttname"><a href="GeometryDataVtk_8h.html">GeometryDataVtk.h</a></div></div>
+<div class="ttc" id="aclassGeometryActor_html_a043b12989c4b8c0e1a2032bb9009d666"><div class="ttname"><a href="classGeometryActor.html#a043b12989c4b8c0e1a2032bb9009d666">GeometryActor::renderer_</a></div><div class="ttdeci">vtkRenderer * renderer_</div><div class="ttdef"><b>定义</b> GeometryActor.h:34</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a1628965ebc59f1ec2907728685b7f43b"><div class="ttname"><a href="classGeometryActor.html#a1628965ebc59f1ec2907728685b7f43b">GeometryActor::GeometryActor</a></div><div class="ttdeci">GeometryActor(vtkRenderer *renderer, GeometryRenderMode render_mode)</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:10</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a16e10383b0c5192f3dc2d4d43b1f2dbe"><div class="ttname"><a href="classGeometryActor.html#a16e10383b0c5192f3dc2d4d43b1f2dbe">GeometryActor::setVisibility</a></div><div class="ttdeci">void setVisibility(bool visibility)</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:78</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a497053af7f7ab09cc05a6c15e86609e3"><div class="ttname"><a href="classGeometryActor.html#a497053af7f7ab09cc05a6c15e86609e3">GeometryActor::setRenderEdge</a></div><div class="ttdeci">void setRenderEdge(bool is_render)</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:90</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a59066d557510298301e459a05f04e661"><div class="ttname"><a href="classGeometryActor.html#a59066d557510298301e459a05f04e661">GeometryActor::setRenderMode</a></div><div class="ttdeci">void setRenderMode(GeometryRenderMode render_mode)</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:85</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a5986bf59c8bf9647396af579240161cb"><div class="ttname"><a href="classGeometryActor.html#a5986bf59c8bf9647396af579240161cb">GeometryActor::getGeometryRenderMode</a></div><div class="ttdeci">GeometryRenderMode getGeometryRenderMode()</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:21</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a6b14f4a840410ad6eea5564d42ee9f58"><div class="ttname"><a href="classGeometryActor.html#a6b14f4a840410ad6eea5564d42ee9f58">GeometryActor::~GeometryActor</a></div><div class="ttdeci">~GeometryActor()</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:16</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a7a7bbab4268a049e155924e0a59d0943"><div class="ttname"><a href="classGeometryActor.html#a7a7bbab4268a049e155924e0a59d0943">GeometryActor::edge_render</a></div><div class="ttdeci">bool edge_render</div><div class="ttdef"><b>定义</b> GeometryActor.h:28</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a7db3f6900edad8a6ca8ab8461d8fd044"><div class="ttname"><a href="classGeometryActor.html#a7db3f6900edad8a6ca8ab8461d8fd044">GeometryActor::geometry_data_</a></div><div class="ttdeci">std::unique_ptr&lt; GeometryDataVtk &gt; geometry_data_</div><div class="ttdef"><b>定义</b> GeometryActor.h:30</div></div>
+<div class="ttc" id="aclassGeometryActor_html_a97fc8ae0aedbc702fdf00ee057243614"><div class="ttname"><a href="classGeometryActor.html#a97fc8ae0aedbc702fdf00ee057243614">GeometryActor::visibility_</a></div><div class="ttdeci">bool visibility_</div><div class="ttdef"><b>定义</b> GeometryActor.h:29</div></div>
+<div class="ttc" id="aclassGeometryActor_html_aa2cbb4d083f0e253fc5d6d8a85117b0a"><div class="ttname"><a href="classGeometryActor.html#aa2cbb4d083f0e253fc5d6d8a85117b0a">GeometryActor::deleteGeometryActor</a></div><div class="ttdeci">void deleteGeometryActor()</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:70</div></div>
+<div class="ttc" id="aclassGeometryActor_html_ad6a7e757bd2e75aed07ebcf0959a9dca"><div class="ttname"><a href="classGeometryActor.html#ad6a7e757bd2e75aed07ebcf0959a9dca">GeometryActor::render_mode_</a></div><div class="ttdeci">GeometryRenderMode render_mode_</div><div class="ttdef"><b>定义</b> GeometryActor.h:27</div></div>
+<div class="ttc" id="aclassGeometryActor_html_aef1bf238b45d59679f9c3e2199ca48ab"><div class="ttname"><a href="classGeometryActor.html#aef1bf238b45d59679f9c3e2199ca48ab">GeometryActor::loadShape</a></div><div class="ttdeci">void loadShape(const GeometryDataVtk &amp;geometry_data)</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:31</div></div>
+<div class="ttc" id="aclassGeometryActor_html_af5540aa138cd129aa2c90fc04c08190a"><div class="ttname"><a href="classGeometryActor.html#af5540aa138cd129aa2c90fc04c08190a">GeometryActor::line_actor_</a></div><div class="ttdeci">vtkNew&lt; vtkActor &gt; line_actor_</div><div class="ttdef"><b>定义</b> GeometryActor.h:33</div></div>
+<div class="ttc" id="aclassGeometryActor_html_af8403cc0b623aa7d931a604762e4f7b2"><div class="ttname"><a href="classGeometryActor.html#af8403cc0b623aa7d931a604762e4f7b2">GeometryActor::getIsEdgeRender</a></div><div class="ttdeci">bool getIsEdgeRender()</div><div class="ttdef"><b>定义</b> GeometryActor.cpp:26</div></div>
+<div class="ttc" id="aclassGeometryActor_html_afbb5e16fb1a81c23cac20aec405005f7"><div class="ttname"><a href="classGeometryActor.html#afbb5e16fb1a81c23cac20aec405005f7">GeometryActor::poly_actor_</a></div><div class="ttdeci">vtkNew&lt; vtkActor &gt; poly_actor_</div><div class="ttdef"><b>定义</b> GeometryActor.h:32</div></div>
+<div class="ttc" id="astructGeometryDataVtk_html"><div class="ttname"><a href="structGeometryDataVtk.html">GeometryDataVtk</a></div><div class="ttdef"><b>定义</b> GeometryDataVtk.h:5</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

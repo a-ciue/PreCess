@@ -91,10 +91,10 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a63e74b9e431c9d7642e3b19418c9152f" id="r_a63e74b9e431c9d7642e3b19418c9152f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63e74b9e431c9d7642e3b19418c9152f">~ModelIOHandler</a> ()=default</td></tr>
-<tr class="memitem:a8b303262e50a73ffbe4e81aed7257eb9" id="r_a8b303262e50a73ffbe4e81aed7257eb9"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b303262e50a73ffbe4e81aed7257eb9">read_model</a> (const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
-<tr class="memdesc:a8b303262e50a73ffbe4e81aed7257eb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">读取模型功能  <br /></td></tr>
-<tr class="memitem:a61d9d32a0e1b4bd4318bb68735844df7" id="r_a61d9d32a0e1b4bd4318bb68735844df7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61d9d32a0e1b4bd4318bb68735844df7">write_model</a> (const <a class="el" href="classModelData.html">ModelData</a> &amp;data, const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
-<tr class="memdesc:a61d9d32a0e1b4bd4318bb68735844df7"><td class="mdescLeft">&#160;</td><td class="mdescRight">写出模型功能  <br /></td></tr>
+<tr class="memitem:ac1290ae25d6603e80d61deace966f25f" id="r_ac1290ae25d6603e80d61deace966f25f"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; <a class="el" href="structModelPayload.html">ModelPayload</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1290ae25d6603e80d61deace966f25f">read_model</a> (const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
+<tr class="memdesc:ac1290ae25d6603e80d61deace966f25f"><td class="mdescLeft">&#160;</td><td class="mdescRight">读取模型功能  <br /></td></tr>
+<tr class="memitem:ae1e8e54e616dd14374667a1d0b3f24c9" id="r_ae1e8e54e616dd14374667a1d0b3f24c9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae1e8e54e616dd14374667a1d0b3f24c9">write_components</a> (const <a class="el" href="classModelLayer.html">ModelLayer</a> &amp;mgr, const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;component_ids, const fs::path &amp;path, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
+<tr class="memdesc:ae1e8e54e616dd14374667a1d0b3f24c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">写出组件集合到文件  <br /></td></tr>
 <tr class="memitem:a0bc0c1aa034d9f1f60051d67656ddd7a" id="r_a0bc0c1aa034d9f1f60051d67656ddd7a"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bc0c1aa034d9f1f60051d67656ddd7a">read_args_type</a> () const =0</td></tr>
 <tr class="memdesc:a0bc0c1aa034d9f1f60051d67656ddd7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">读取文件参数类型，交给UI使用  <br /></td></tr>
 <tr class="memitem:a74a010ff84f38dce321a891122aa8d12" id="r_a74a010ff84f38dce321a891122aa8d12"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74a010ff84f38dce321a891122aa8d12">write_args_type</a> () const =0</td></tr>
@@ -157,8 +157,8 @@ Public 成员函数</h2></td></tr>
 
 </div>
 </div>
-<a id="a8b303262e50a73ffbe4e81aed7257eb9" name="a8b303262e50a73ffbe4e81aed7257eb9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b303262e50a73ffbe4e81aed7257eb9">&#9670;&#160;</a></span>read_model()</h2>
+<a id="ac1290ae25d6603e80d61deace966f25f" name="ac1290ae25d6603e80d61deace966f25f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1290ae25d6603e80d61deace966f25f">&#9670;&#160;</a></span>read_model()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +167,7 @@ Public 成员函数</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::unique_ptr&lt; <a class="el" href="classModelData.html">ModelData</a> &gt; systems::io::ModelIOHandler::read_model </td>
+          <td class="memname">virtual std::optional&lt; <a class="el" href="structModelPayload.html">ModelPayload</a> &gt; systems::io::ModelIOHandler::read_model </td>
           <td>(</td>
           <td class="paramtype">const fs::path &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
         </tr>
@@ -224,8 +224,8 @@ Public 成员函数</h2></td></tr>
 
 </div>
 </div>
-<a id="a61d9d32a0e1b4bd4318bb68735844df7" name="a61d9d32a0e1b4bd4318bb68735844df7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61d9d32a0e1b4bd4318bb68735844df7">&#9670;&#160;</a></span>write_model()</h2>
+<a id="ae1e8e54e616dd14374667a1d0b3f24c9" name="ae1e8e54e616dd14374667a1d0b3f24c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1e8e54e616dd14374667a1d0b3f24c9">&#9670;&#160;</a></span>write_components()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -234,9 +234,14 @@ Public 成员函数</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void systems::io::ModelIOHandler::write_model </td>
+          <td class="memname">virtual void systems::io::ModelIOHandler::write_components </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classModelData.html">ModelData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>data</em></span>, </td>
+          <td class="paramtype">const <a class="el" href="classModelLayer.html">ModelLayer</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>mgr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>component_ids</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -256,11 +261,12 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>写出模型功能 </p>
+<p>写出组件集合到文件 </p>
 <dl class="params"><dt>参数</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>待写出模型数据对象 </td></tr>
-    <tr><td class="paramname">path</td><td>写出文件目标路径，本地系统环境编码 </td></tr>
+    <tr><td class="paramname">mgr</td><td>ModelLayer（运行期权威：component pool + globalPoints） </td></tr>
+    <tr><td class="paramname">component_ids</td><td>要写出的组件 id 集合 </td></tr>
+    <tr><td class="paramname">path</td><td>写出文件目标路径 </td></tr>
     <tr><td class="paramname">args</td><td>写出文件要传入参数 </td></tr>
   </table>
   </dd>

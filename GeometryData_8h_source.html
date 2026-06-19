@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/GeometryData.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">GeometryData.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="GeometryData_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="GeometrySubshapeIndex_8h.html">GeometrySubshapeIndex.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">class </span>TopoDS_Shape;</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">struct </span><a class="code hl_struct" href="structGeometryDataVtk.html">GeometryDataVtk</a>;</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">// 以后需要控制点 / 曲率等，可继续添加字段</span></div>
+<div class="foldopen" id="foldopen00010" data-start="{" data-end="};">
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="structGeometryData.html">   10</a></span><span class="keyword">struct </span><a class="code hl_function" href="structGeometryData.html#a1e3f6620346418ca083b54b8211c25ca">GeometryData</a> {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="structGeometryData.html#a1e3f6620346418ca083b54b8211c25ca">   11</a></span>    <a class="code hl_function" href="structGeometryData.html#a1e3f6620346418ca083b54b8211c25ca">GeometryData</a>();</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="structGeometryData.html#a71e7ad60a393be4d9b55262795031699">   12</a></span>    <a class="code hl_function" href="structGeometryData.html#a71e7ad60a393be4d9b55262795031699">~GeometryData</a>();</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="structGeometryData.html#a888100380df742104af1f2c0c0619dc2">   13</a></span>    std::unique_ptr&lt;TopoDS_Shape&gt; <a class="code hl_variable" href="structGeometryData.html#a888100380df742104af1f2c0c0619dc2">rootShape</a>;      <span class="comment">// 读取 STEP/IGES 后的拓扑根</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="structGeometryData.html#afc7b4ea4db6164b91d640070852eabec">   14</a></span>    <a class="code hl_struct" href="structGeometrySubshapeIndex.html">GeometrySubshapeIndex</a> <a class="code hl_variable" href="structGeometryData.html#afc7b4ea4db6164b91d640070852eabec">index</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="structGeometryData.html#a813025254425b3382c788103d2a432e6">ensureIndexBuilt</a>(<a class="code hl_class" href="classGeometryRegistry.html">GeometryRegistry</a>&amp; reg);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <span class="comment">//std::vector&lt;TopoDS_Edge&gt;     edges;      // 可选：拆分得到的边</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="comment">//std::vector&lt;TopoDS_Vertex&gt;   controlPts; // 可选：用于渲染／算法</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    std::optional&lt;GeometryDataVtk&gt; <a class="code hl_function" href="structGeometryData.html#a5f12ecfafab18dc82eff09223b80cab2">getGeometryData</a>();</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>};</div>
+</div>
+<div class="ttc" id="aGeometrySubshapeIndex_8h_html"><div class="ttname"><a href="GeometrySubshapeIndex_8h.html">GeometrySubshapeIndex.h</a></div></div>
+<div class="ttc" id="aclassGeometryRegistry_html"><div class="ttname"><a href="classGeometryRegistry.html">GeometryRegistry</a></div><div class="ttdef"><b>定义</b> GeometryRegistry.h:7</div></div>
+<div class="ttc" id="astructGeometryDataVtk_html"><div class="ttname"><a href="structGeometryDataVtk.html">GeometryDataVtk</a></div><div class="ttdef"><b>定义</b> GeometryDataVtk.h:5</div></div>
+<div class="ttc" id="astructGeometryData_html_a1e3f6620346418ca083b54b8211c25ca"><div class="ttname"><a href="structGeometryData.html#a1e3f6620346418ca083b54b8211c25ca">GeometryData::GeometryData</a></div><div class="ttdeci">GeometryData()</div></div>
+<div class="ttc" id="astructGeometryData_html_a5f12ecfafab18dc82eff09223b80cab2"><div class="ttname"><a href="structGeometryData.html#a5f12ecfafab18dc82eff09223b80cab2">GeometryData::getGeometryData</a></div><div class="ttdeci">std::optional&lt; GeometryDataVtk &gt; getGeometryData()</div><div class="ttdef"><b>定义</b> GeometryData.cpp:8</div></div>
+<div class="ttc" id="astructGeometryData_html_a71e7ad60a393be4d9b55262795031699"><div class="ttname"><a href="structGeometryData.html#a71e7ad60a393be4d9b55262795031699">GeometryData::~GeometryData</a></div><div class="ttdeci">~GeometryData()</div></div>
+<div class="ttc" id="astructGeometryData_html_a813025254425b3382c788103d2a432e6"><div class="ttname"><a href="structGeometryData.html#a813025254425b3382c788103d2a432e6">GeometryData::ensureIndexBuilt</a></div><div class="ttdeci">void ensureIndexBuilt(GeometryRegistry &amp;reg)</div><div class="ttdef"><b>定义</b> GeometryData.cpp:14</div></div>
+<div class="ttc" id="astructGeometryData_html_a888100380df742104af1f2c0c0619dc2"><div class="ttname"><a href="structGeometryData.html#a888100380df742104af1f2c0c0619dc2">GeometryData::rootShape</a></div><div class="ttdeci">std::unique_ptr&lt; TopoDS_Shape &gt; rootShape</div><div class="ttdef"><b>定义</b> GeometryData.h:13</div></div>
+<div class="ttc" id="astructGeometryData_html_afc7b4ea4db6164b91d640070852eabec"><div class="ttname"><a href="structGeometryData.html#afc7b4ea4db6164b91d640070852eabec">GeometryData::index</a></div><div class="ttdeci">GeometrySubshapeIndex index</div><div class="ttdef"><b>定义</b> GeometryData.h:14</div></div>
+<div class="ttc" id="astructGeometrySubshapeIndex_html"><div class="ttname"><a href="structGeometrySubshapeIndex.html">GeometrySubshapeIndex</a></div><div class="ttdef"><b>定义</b> GeometrySubshapeIndex.h:12</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

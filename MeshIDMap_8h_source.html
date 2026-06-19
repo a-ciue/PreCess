@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/MeshIDMap.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">MeshIDMap.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="MeshIDMap_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="foldopen" id="foldopen00008" data-start="{" data-end="};">
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="classMeshIDMap.html">    8</a></span><span class="keyword">class </span><a class="code hl_class" href="classMeshIDMap.html">MeshIDMap</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classMeshIDMap.html#a1f1f525fa6edea9d89f50c53719a8a07">   10</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classMeshIDMap.html#a1f1f525fa6edea9d89f50c53719a8a07">ComponentID</a> = <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classMeshIDMap.html#adc795a648182a812494777df67aaba16">   11</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classMeshIDMap.html#adc795a648182a812494777df67aaba16">LocalID</a> = <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>; <span class="comment">// localEdgeId</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb">   12</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb">GlobalID</a> = <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>; <span class="comment">// globalEdgeId</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="classMeshIDMap.html#aeaf508fd7d5909b90310cbad38399796">   14</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <a class="code hl_typedef" href="classMeshIDMap.html#a1f1f525fa6edea9d89f50c53719a8a07">ComponentID</a> <a class="code hl_variable" href="classMeshIDMap.html#aeaf508fd7d5909b90310cbad38399796">kInvalidComponent</a> = -1;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classMeshIDMap.html#a565446ff3feaedaaa277cbe06ac37c1e">   15</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <a class="code hl_typedef" href="classMeshIDMap.html#adc795a648182a812494777df67aaba16">LocalID</a> <a class="code hl_variable" href="classMeshIDMap.html#a565446ff3feaedaaa277cbe06ac37c1e">kInvalidLocal</a> = -1;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <a class="code hl_typedef" href="classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb">GlobalID</a> <a class="code hl_function" href="classMeshIDMap.html#ab212ad471ffb9384e1096cebf1ac1982">insert</a>(<a class="code hl_typedef" href="classMeshIDMap.html#a1f1f525fa6edea9d89f50c53719a8a07">ComponentID</a> component_id, <a class="code hl_typedef" href="classMeshIDMap.html#adc795a648182a812494777df67aaba16">LocalID</a> local_id);</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    std::vector&lt;GlobalID&gt; <a class="code hl_function" href="classMeshIDMap.html#a462c11a41623c193d4999f6d5165ddf3">insertRange</a>(<a class="code hl_typedef" href="classMeshIDMap.html#a1f1f525fa6edea9d89f50c53719a8a07">ComponentID</a> component_id, <a class="code hl_typedef" href="classMeshIDMap.html#adc795a648182a812494777df67aaba16">LocalID</a> local_begin, <a class="code hl_typedef" href="classMeshIDMap.html#adc795a648182a812494777df67aaba16">LocalID</a> count);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classMeshIDMap.html#afbbc1277e33960652cb27143c7dadfe7">remove</a>(<a class="code hl_typedef" href="classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb">GlobalID</a> global_id);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    std::pair&lt;ComponentID, LocalID&gt; <a class="code hl_function" href="classMeshIDMap.html#af30d8bbc8dba62bd50afe82effe66c04">getLocal</a>(<a class="code hl_typedef" href="classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb">GlobalID</a> global_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordtype">size_t</span> <a class="code hl_function" href="classMeshIDMap.html#a18b1e4fe1e354f421f9ad13bc6de191e">size</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">size_t</span> <a class="code hl_function" href="classMeshIDMap.html#ad8a4fcc0916165efec4a8cb3a752d662">freeSize</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classMeshIDMap.html#a6b08df87e288ed23004baf704417fa0b">   27</a></span>    std::vector&lt;std::pair&lt;ComponentID, LocalID&gt;&gt; <a class="code hl_variable" href="classMeshIDMap.html#a6b08df87e288ed23004baf704417fa0b">global_to_local_</a>; <span class="comment">// index=GlobalID</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classMeshIDMap.html#af77c63a66105df837cd430116bd84fde">   28</a></span>    std::unordered_set&lt;GlobalID&gt; <a class="code hl_variable" href="classMeshIDMap.html#af77c63a66105df837cd430116bd84fde">free_ids_</a>; <span class="comment">// 可复用id集合</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>};</div>
+</div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:32</div></div>
+<div class="ttc" id="aclassMeshIDMap_html"><div class="ttname"><a href="classMeshIDMap.html">MeshIDMap</a></div><div class="ttdef"><b>定义</b> MeshIDMap.h:8</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_a18b1e4fe1e354f421f9ad13bc6de191e"><div class="ttname"><a href="classMeshIDMap.html#a18b1e4fe1e354f421f9ad13bc6de191e">MeshIDMap::size</a></div><div class="ttdeci">size_t size() const</div><div class="ttdef"><b>定义</b> MeshIDMap.cpp:56</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_a1f1f525fa6edea9d89f50c53719a8a07"><div class="ttname"><a href="classMeshIDMap.html#a1f1f525fa6edea9d89f50c53719a8a07">MeshIDMap::ComponentID</a></div><div class="ttdeci">Index ComponentID</div><div class="ttdef"><b>定义</b> MeshIDMap.h:10</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_a462c11a41623c193d4999f6d5165ddf3"><div class="ttname"><a href="classMeshIDMap.html#a462c11a41623c193d4999f6d5165ddf3">MeshIDMap::insertRange</a></div><div class="ttdeci">std::vector&lt; GlobalID &gt; insertRange(ComponentID component_id, LocalID local_begin, LocalID count)</div><div class="ttdef"><b>定义</b> MeshIDMap.cpp:20</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_a50f7289b75b1ed94c9ad3429581758fb"><div class="ttname"><a href="classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb">MeshIDMap::GlobalID</a></div><div class="ttdeci">Index GlobalID</div><div class="ttdef"><b>定义</b> MeshIDMap.h:12</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_a565446ff3feaedaaa277cbe06ac37c1e"><div class="ttname"><a href="classMeshIDMap.html#a565446ff3feaedaaa277cbe06ac37c1e">MeshIDMap::kInvalidLocal</a></div><div class="ttdeci">static constexpr LocalID kInvalidLocal</div><div class="ttdef"><b>定义</b> MeshIDMap.h:15</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_a6b08df87e288ed23004baf704417fa0b"><div class="ttname"><a href="classMeshIDMap.html#a6b08df87e288ed23004baf704417fa0b">MeshIDMap::global_to_local_</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; ComponentID, LocalID &gt; &gt; global_to_local_</div><div class="ttdef"><b>定义</b> MeshIDMap.h:27</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_ab212ad471ffb9384e1096cebf1ac1982"><div class="ttname"><a href="classMeshIDMap.html#ab212ad471ffb9384e1096cebf1ac1982">MeshIDMap::insert</a></div><div class="ttdeci">GlobalID insert(ComponentID component_id, LocalID local_id)</div><div class="ttdef"><b>定义</b> MeshIDMap.cpp:3</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_ad8a4fcc0916165efec4a8cb3a752d662"><div class="ttname"><a href="classMeshIDMap.html#ad8a4fcc0916165efec4a8cb3a752d662">MeshIDMap::freeSize</a></div><div class="ttdeci">size_t freeSize() const</div><div class="ttdef"><b>定义</b> MeshIDMap.cpp:61</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_adc795a648182a812494777df67aaba16"><div class="ttname"><a href="classMeshIDMap.html#adc795a648182a812494777df67aaba16">MeshIDMap::LocalID</a></div><div class="ttdeci">Index LocalID</div><div class="ttdef"><b>定义</b> MeshIDMap.h:11</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_aeaf508fd7d5909b90310cbad38399796"><div class="ttname"><a href="classMeshIDMap.html#aeaf508fd7d5909b90310cbad38399796">MeshIDMap::kInvalidComponent</a></div><div class="ttdeci">static constexpr ComponentID kInvalidComponent</div><div class="ttdef"><b>定义</b> MeshIDMap.h:14</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_af30d8bbc8dba62bd50afe82effe66c04"><div class="ttname"><a href="classMeshIDMap.html#af30d8bbc8dba62bd50afe82effe66c04">MeshIDMap::getLocal</a></div><div class="ttdeci">std::pair&lt; ComponentID, LocalID &gt; getLocal(GlobalID global_id) const</div><div class="ttdef"><b>定义</b> MeshIDMap.cpp:48</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_af77c63a66105df837cd430116bd84fde"><div class="ttname"><a href="classMeshIDMap.html#af77c63a66105df837cd430116bd84fde">MeshIDMap::free_ids_</a></div><div class="ttdeci">std::unordered_set&lt; GlobalID &gt; free_ids_</div><div class="ttdef"><b>定义</b> MeshIDMap.h:28</div></div>
+<div class="ttc" id="aclassMeshIDMap_html_afbbc1277e33960652cb27143c7dadfe7"><div class="ttname"><a href="classMeshIDMap.html#afbbc1277e33960652cb27143c7dadfe7">MeshIDMap::remove</a></div><div class="ttdeci">bool remove(GlobalID global_id)</div><div class="ttdef"><b>定义</b> MeshIDMap.cpp:30</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

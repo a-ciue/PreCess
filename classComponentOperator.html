@@ -1,0 +1,582 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: ComponentOperator类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classComponentOperator-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">ComponentOperator类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="ComponentOperator_8h_source.html">ComponentOperator.h</a>&gt;</code></p>
+<div class="dynheader">
+ComponentOperator 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classComponentOperator__coll__graph.png" border="0" usemap="#aComponentOperator_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aComponentOperator_coll__map" id="aComponentOperator_coll__map">
+<area shape="rect" title=" " alt="" coords="3136,1035,3291,1061"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1869,919,1997,945"/>
+<area shape="poly" title=" " alt="" coords="1957,953,2005,997,2073,1048,2113,1071,2156,1089,2200,1102,2246,1107,2999,1107,3051,1102,3103,1089,3185,1058,3187,1063,3104,1094,3052,1107,2999,1112,2246,1112,2199,1107,2154,1094,2111,1075,2070,1052,2001,1001,1953,956"/>
+<area shape="rect" title=" " alt="" coords="2143,912,2352,952"/>
+<area shape="poly" title=" " alt="" coords="2010,929,2142,929,2142,935,2010,935"/>
+<area shape="rect" title=" " alt="" coords="281,858,368,883"/>
+<area shape="poly" title=" " alt="" coords="356,889,410,924,484,968,570,1010,661,1044,751,1066,843,1081,936,1090,1031,1093,1125,1091,1218,1086,1397,1064,1561,1033,1703,999,1817,967,1894,942,1896,947,1818,972,1704,1004,1562,1039,1398,1069,1218,1091,1125,1097,1031,1098,936,1095,842,1086,750,1071,659,1049,568,1015,482,972,408,929,353,893"/>
+<area shape="rect" title=" " alt="" coords="667,851,851,891"/>
+<area shape="poly" title=" " alt="" coords="382,868,667,868,667,873,382,873"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="712,330,805,355"/>
+<area shape="poly" title=" " alt="" coords="334,844,374,755,442,628,487,559,538,491,595,428,658,372,684,358,711,349,713,354,686,363,662,377,599,432,542,495,491,562,447,631,378,757,339,846"/>
+<area shape="rect" title=" " alt="" coords="5,851,144,891"/>
+<area shape="poly" title=" " alt="" coords="158,868,281,868,281,873,158,873"/>
+<area shape="rect" title=" " alt="" coords="1416,919,1631,945"/>
+<area shape="poly" title=" " alt="" coords="1644,929,1869,929,1869,935,1644,935"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="1145,919,1233,945"/>
+<area shape="poly" title=" " alt="" coords="1246,929,1416,929,1416,935,1246,935"/>
+<area shape="rect" title=" " alt="" coords="675,1123,843,1163"/>
+<area shape="poly" title=" " alt="" coords="833,1116,939,1075,1053,1022,1119,980,1170,943,1173,947,1122,985,1056,1026,941,1080,835,1121"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2948,875,3047,901"/>
+<area shape="poly" title=" " alt="" coords="856,1140,1187,1140,1934,1140,2059,1136,2164,1124,2256,1106,2341,1084,2516,1029,2619,999,2742,969,2834,954,2874,946,2923,930,2952,915,2977,899,2980,903,2955,919,2925,934,2875,951,2835,960,2743,975,2621,1004,2517,1034,2342,1089,2257,1112,2165,1130,2060,1141,1934,1145,1187,1145,856,1145"/>
+<area shape="rect" title=" " alt="" coords="237,1166,412,1191"/>
+<area shape="poly" title=" " alt="" coords="426,1182,528,1183,636,1175,699,1160,700,1165,636,1180,528,1188,426,1188"/>
+<area shape="rect" title=" " alt="" coords="246,334,403,359"/>
+<area shape="poly" title=" " alt="" coords="342,370,386,441,456,535,500,585,550,632,603,674,661,708,717,728,767,734,814,730,859,722,904,714,951,711,1001,719,1056,743,1082,761,1105,783,1143,833,1169,882,1185,918,1180,920,1165,884,1138,836,1101,787,1079,765,1053,748,1000,724,951,717,905,719,860,727,814,735,767,739,715,734,659,713,600,678,546,636,497,588,452,539,381,444,337,373"/>
+<area shape="rect" title=" " alt="" coords="660,251,857,306"/>
+<area shape="poly" title=" " alt="" coords="417,330,660,291,660,297,417,335"/>
+<area shape="poly" title=" " alt="" coords="417,344,636,343,712,341,712,347,636,348,417,349"/>
+<area shape="rect" title=" " alt="" coords="676,995,841,1035"/>
+<area shape="poly" title=" " alt="" coords="854,999,1054,964,1144,942,1145,947,1055,969,855,1004"/>
+<area shape="rect" title=" " alt="" coords="682,771,835,826"/>
+<area shape="poly" title=" " alt="" coords="849,777,897,772,950,772,1004,778,1056,794,1099,820,1135,855,1164,890,1182,918,1178,920,1159,893,1131,858,1096,824,1054,798,1003,783,950,777,898,778,849,783"/>
+<area shape="rect" title=" " alt="" coords="682,915,835,970"/>
+<area shape="poly" title=" " alt="" coords="849,938,1144,930,1145,936,849,943"/>
+<area shape="poly" title=" " alt="" coords="865,880,1055,905,1145,921,1144,926,1054,911,864,885"/>
+<area shape="rect" title=" " alt="" coords="242,1113,407,1138"/>
+<area shape="poly" title=" " alt="" coords="351,1102,480,1008,567,952,659,902,690,888,692,893,661,906,570,957,483,1013,354,1106"/>
+<area shape="rect" title=" " alt="" coords="1424,312,1623,352"/>
+<area shape="poly" title=" " alt="" coords="1585,356,1644,387,1709,431,1770,486,1797,518,1820,552,1836,592,1842,627,1841,661,1836,693,1830,725,1827,758,1831,794,1844,834,1859,859,1877,882,1916,917,1912,921,1874,886,1854,862,1839,836,1826,795,1822,758,1825,724,1830,692,1836,660,1837,628,1831,593,1815,555,1793,521,1767,489,1705,435,1641,392,1583,360"/>
+<area shape="rect" href="structGeometryData.html" title=" " alt="" coords="1129,187,1248,213"/>
+<area shape="poly" title=" " alt="" coords="1236,215,1473,310,1471,314,1234,220"/>
+<area shape="rect" title=" " alt="" coords="667,180,850,220"/>
+<area shape="poly" title=" " alt="" coords="864,197,1129,197,1129,203,864,203"/>
+<area shape="rect" href="structGeometrySubshapeIndex.html" title=" " alt="" coords="665,123,852,149"/>
+<area shape="poly" title=" " alt="" coords="866,146,1055,172,1129,185,1128,191,1054,177,865,151"/>
+<area shape="rect" title=" " alt="" coords="193,59,456,99"/>
+<area shape="poly" title=" " alt="" coords="470,86,636,105,709,121,708,126,636,111,469,91"/>
+<area shape="rect" title=" " alt="" coords="217,123,432,149"/>
+<area shape="poly" title=" " alt="" coords="446,133,665,133,665,139,446,139"/>
+<area shape="rect" title=" " alt="" coords="223,174,427,199"/>
+<area shape="poly" title=" " alt="" coords="440,180,536,173,636,161,709,146,710,151,636,167,536,178,441,185"/>
+<area shape="rect" title=" " alt="" coords="224,227,425,253"/>
+<area shape="poly" title=" " alt="" coords="439,248,488,247,539,240,589,227,634,204,642,196,646,187,650,177,658,166,695,146,698,151,662,170,654,179,651,189,647,199,638,209,590,232,540,245,488,252,439,254"/>
+<area shape="rect" title=" " alt="" coords="223,9,427,34"/>
+<area shape="poly" title=" " alt="" coords="441,22,537,34,588,44,637,59,668,72,697,89,743,121,740,125,695,94,666,77,635,64,587,49,537,39,440,27"/>
+<area shape="rect" title=" " alt="" coords="1424,768,1623,808"/>
+<area shape="poly" title=" " alt="" coords="1595,810,1896,917,1894,922,1593,815"/>
+<area shape="rect" href="structGeometryMeshMap.html" title=" " alt="" coords="1113,630,1264,655"/>
+<area shape="poly" title=" " alt="" coords="1233,659,1477,765,1475,770,1231,663"/>
+<area shape="poly" title=" " alt="" coords="871,277,920,285,971,299,1017,323,1057,357,1074,386,1081,414,1079,441,1073,468,1067,495,1064,522,1067,550,1081,580,1094,596,1111,609,1147,627,1144,632,1108,613,1090,599,1076,583,1062,552,1058,522,1061,494,1068,467,1074,440,1075,414,1070,388,1053,360,1014,327,969,304,919,290,870,282"/>
+<area shape="poly" title=" " alt="" coords="3028,907,3196,1033,3193,1037,3025,911"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="2573,569,2714,594"/>
+<area shape="poly" title=" " alt="" coords="2710,595,2762,613,2819,638,2876,672,2926,714,2955,755,2976,801,2989,843,2996,874,2991,876,2984,844,2971,803,2951,758,2922,718,2873,676,2817,643,2760,618,2708,600"/>
+<area shape="rect" title=" " alt="" coords="2154,475,2341,530"/>
+<area shape="poly" title=" " alt="" coords="2355,519,2521,551,2589,566,2588,571,2519,556,2354,524"/>
+<area shape="rect" title=" " alt="" coords="2159,554,2335,609"/>
+<area shape="poly" title=" " alt="" coords="2349,579,2572,579,2572,584,2349,584"/>
+<area shape="rect" title=" " alt="" coords="2161,633,2334,687"/>
+<area shape="poly" title=" " alt="" coords="2347,640,2519,607,2588,591,2589,597,2521,612,2348,645"/>
+<area shape="rect" title=" " alt="" coords="2159,397,2335,451"/>
+<area shape="poly" title=" " alt="" coords="2349,440,2434,462,2521,495,2583,531,2629,567,2626,571,2580,536,2519,500,2433,467,2348,445"/>
+<area shape="rect" title=" " alt="" coords="1655,565,1817,619"/>
+<area shape="poly" title=" " alt="" coords="1788,625,1846,659,1917,694,1998,721,2040,729,2081,732,2645,732,2726,730,2792,729,2823,733,2854,742,2888,756,2926,778,2951,800,2970,826,2994,874,2989,876,2966,829,2947,803,2922,782,2886,761,2853,747,2822,738,2792,734,2727,735,2645,737,2081,737,2039,734,1996,726,1915,699,1843,664,1785,629"/>
+<area shape="rect" title=" " alt="" coords="1079,543,1299,569"/>
+<area shape="poly" title=" " alt="" coords="1313,561,1655,584,1654,589,1313,567"/>
+<area shape="poly" title=" " alt="" coords="819,357,858,372,951,417,1040,465,1169,541,1166,545,1038,469,949,421,856,377,817,362"/>
+<area shape="rect" title=" " alt="" coords="2544,905,2743,959"/>
+<area shape="poly" title=" " alt="" coords="2756,926,2839,919,2923,907,2958,898,2959,903,2925,912,2839,924,2757,931"/>
+<area shape="poly" title=" " alt="" coords="2365,929,2544,929,2544,935,2365,935"/>
+<area shape="rect" title=" " alt="" coords="2567,840,2719,880"/>
+<area shape="poly" title=" " alt="" coords="2734,864,2948,881,2947,887,2733,870"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="2594,790,2693,815"/>
+<area shape="poly" title=" " alt="" coords="2707,801,2811,811,2869,822,2925,839,2956,855,2982,873,2979,877,2954,859,2923,844,2867,827,2810,816,2707,806"/>
+<area shape="rect" title=" " alt="" coords="2141,783,2353,823"/>
+<area shape="poly" title=" " alt="" coords="2367,800,2594,800,2594,805,2367,805"/>
+<area shape="rect" title=" " alt="" coords="1841,783,2024,823"/>
+<area shape="poly" title=" " alt="" coords="2038,800,2141,800,2141,805,2038,805"/>
+<area shape="rect" title=" " alt="" coords="2176,847,2319,887"/>
+<area shape="poly" title=" " alt="" coords="2332,855,2520,828,2593,812,2594,817,2520,833,2333,860"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="2583,1035,2704,1061"/>
+<area shape="poly" title=" " alt="" coords="2718,1045,3136,1045,3136,1051,2718,1051"/>
+<area shape="poly" title=" " alt="" coords="2717,1037,2843,1019,2895,1009,2923,1000,2947,978,2967,950,2990,900,2994,902,2971,953,2951,981,2925,1005,2896,1014,2844,1024,2718,1042"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:aa9242a9f6e060b56029b2ff1d7f1a8db" id="r_aa9242a9f6e060b56029b2ff1d7f1a8db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9242a9f6e060b56029b2ff1d7f1a8db">ComponentOperator</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <a class="el" href="structComponentData.html">ComponentData</a> &amp;<a class="el" href="#a0191e7427971e7932ef2609d20d1436c">component</a>, <a class="el" href="classModelLayer.html">ModelLayer</a> &amp;mgr, <a class="el" href="classModelObserver.html">ModelObserver</a> *<a class="el" href="#ab0b7f1ac9d97b227adad9898619212c0">observer</a>=nullptr, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id=-1) noexcept</td></tr>
+<tr class="memitem:afc927436cda3d7e366844a987987a95b" id="r_afc927436cda3d7e366844a987987a95b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc927436cda3d7e366844a987987a95b">componentId</a> () const noexcept</td></tr>
+<tr class="memitem:a0191e7427971e7932ef2609d20d1436c" id="r_a0191e7427971e7932ef2609d20d1436c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structComponentData.html">ComponentData</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0191e7427971e7932ef2609d20d1436c">component</a> () const noexcept</td></tr>
+<tr class="memitem:a9e26be5124bacbcd5cf03bff5be2836e" id="r_a9e26be5124bacbcd5cf03bff5be2836e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e26be5124bacbcd5cf03bff5be2836e">mesh</a> () const noexcept</td></tr>
+<tr class="memitem:aee7c5d7a64c00a863982a91bdc7ca5fd" id="r_aee7c5d7a64c00a863982a91bdc7ca5fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGeometryData.html">GeometryData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aee7c5d7a64c00a863982a91bdc7ca5fd">geometry</a> () const noexcept</td></tr>
+<tr class="memitem:a39f2de524ef35e49951a2c08953e97ab" id="r_a39f2de524ef35e49951a2c08953e97ab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39f2de524ef35e49951a2c08953e97ab">manager</a> () const noexcept</td></tr>
+<tr class="memitem:ab0b7f1ac9d97b227adad9898619212c0" id="r_ab0b7f1ac9d97b227adad9898619212c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelObserver.html">ModelObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0b7f1ac9d97b227adad9898619212c0">observer</a> () const noexcept</td></tr>
+<tr class="memitem:ad1a898f241ad7fac9ab2091ade83ba6a" id="r_ad1a898f241ad7fac9ab2091ade83ba6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1a898f241ad7fac9ab2091ade83ba6a">modelId</a> () const noexcept</td></tr>
+<tr class="memitem:a7949069eaab1630387db6abaecf93d18" id="r_a7949069eaab1630387db6abaecf93d18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelData.html">ModelData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7949069eaab1630387db6abaecf93d18">model</a> () const</td></tr>
+<tr class="memitem:a3b2c6f2d517b029b9af641dda94cd4bf" id="r_a3b2c6f2d517b029b9af641dda94cd4bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3b2c6f2d517b029b9af641dda94cd4bf">notifyChanged</a> () const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a42c09da072bd1e8e3a61338150e3b4d7" id="r_a42c09da072bd1e8e3a61338150e3b4d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42c09da072bd1e8e3a61338150e3b4d7">component_id_</a> { -1 }</td></tr>
+<tr class="memitem:aca6752cb2203867448f3ecf13e2aa56a" id="r_aca6752cb2203867448f3ecf13e2aa56a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca6752cb2203867448f3ecf13e2aa56a">model_id_</a> { -1 }</td></tr>
+<tr class="memitem:aa387f232bb4476915ef226a6d017c87d" id="r_aa387f232bb4476915ef226a6d017c87d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structComponentData.html">ComponentData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa387f232bb4476915ef226a6d017c87d">component_</a> { nullptr }</td></tr>
+<tr class="memitem:a2ff8610d971e1c00d59205eee97909f6" id="r_a2ff8610d971e1c00d59205eee97909f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelLayer.html">ModelLayer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2ff8610d971e1c00d59205eee97909f6">mgr_</a> { nullptr }</td></tr>
+<tr class="memitem:af544a3855bc7b048d798ed7967adb3f3" id="r_af544a3855bc7b048d798ed7967adb3f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelObserver.html">ModelObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af544a3855bc7b048d798ed7967adb3f3">observer_</a> { nullptr }</td></tr>
+</table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aa9242a9f6e060b56029b2ff1d7f1a8db" name="aa9242a9f6e060b56029b2ff1d7f1a8db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9242a9f6e060b56029b2ff1d7f1a8db">&#9670;&#160;</a></span>ComponentOperator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ComponentOperator::ComponentOperator </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structComponentData.html">ComponentData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>component</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>mgr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classModelObserver.html">ModelObserver</a> *</td>          <td class="paramname"><span class="paramname"><em>observer</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span><span class="paramdefsep"> = </span><span class="paramdefval">-1</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a0191e7427971e7932ef2609d20d1436c" name="a0191e7427971e7932ef2609d20d1436c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0191e7427971e7932ef2609d20d1436c">&#9670;&#160;</a></span>component()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structComponentData.html">ComponentData</a> &amp; ComponentOperator::component </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afc927436cda3d7e366844a987987a95b" name="afc927436cda3d7e366844a987987a95b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc927436cda3d7e366844a987987a95b">&#9670;&#160;</a></span>componentId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ComponentOperator::componentId </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aee7c5d7a64c00a863982a91bdc7ca5fd" name="aee7c5d7a64c00a863982a91bdc7ca5fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee7c5d7a64c00a863982a91bdc7ca5fd">&#9670;&#160;</a></span>geometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGeometryData.html">GeometryData</a> * ComponentOperator::geometry </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a39f2de524ef35e49951a2c08953e97ab" name="a39f2de524ef35e49951a2c08953e97ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39f2de524ef35e49951a2c08953e97ab">&#9670;&#160;</a></span>manager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp; ComponentOperator::manager </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9e26be5124bacbcd5cf03bff5be2836e" name="a9e26be5124bacbcd5cf03bff5be2836e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e26be5124bacbcd5cf03bff5be2836e">&#9670;&#160;</a></span>mesh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structMeshData.html">MeshData</a> * ComponentOperator::mesh </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7949069eaab1630387db6abaecf93d18" name="a7949069eaab1630387db6abaecf93d18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7949069eaab1630387db6abaecf93d18">&#9670;&#160;</a></span>model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelData.html">ModelData</a> * ComponentOperator::model </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad1a898f241ad7fac9ab2091ade83ba6a" name="ad1a898f241ad7fac9ab2091ade83ba6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1a898f241ad7fac9ab2091ade83ba6a">&#9670;&#160;</a></span>modelId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ComponentOperator::modelId </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3b2c6f2d517b029b9af641dda94cd4bf" name="a3b2c6f2d517b029b9af641dda94cd4bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b2c6f2d517b029b9af641dda94cd4bf">&#9670;&#160;</a></span>notifyChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ComponentOperator::notifyChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab0b7f1ac9d97b227adad9898619212c0" name="ab0b7f1ac9d97b227adad9898619212c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0b7f1ac9d97b227adad9898619212c0">&#9670;&#160;</a></span>observer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelObserver.html">ModelObserver</a> * ComponentOperator::observer </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="aa387f232bb4476915ef226a6d017c87d" name="aa387f232bb4476915ef226a6d017c87d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa387f232bb4476915ef226a6d017c87d">&#9670;&#160;</a></span>component_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structComponentData.html">ComponentData</a>* ComponentOperator::component_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a42c09da072bd1e8e3a61338150e3b4d7" name="a42c09da072bd1e8e3a61338150e3b4d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42c09da072bd1e8e3a61338150e3b4d7">&#9670;&#160;</a></span>component_id_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ComponentOperator::component_id_ { -1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2ff8610d971e1c00d59205eee97909f6" name="a2ff8610d971e1c00d59205eee97909f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ff8610d971e1c00d59205eee97909f6">&#9670;&#160;</a></span>mgr_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelLayer.html">ModelLayer</a>* ComponentOperator::mgr_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aca6752cb2203867448f3ecf13e2aa56a" name="aca6752cb2203867448f3ecf13e2aa56a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca6752cb2203867448f3ecf13e2aa56a">&#9670;&#160;</a></span>model_id_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ComponentOperator::model_id_ { -1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af544a3855bc7b048d798ed7967adb3f3" name="af544a3855bc7b048d798ed7967adb3f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af544a3855bc7b048d798ed7967adb3f3">&#9670;&#160;</a></span>observer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelObserver.html">ModelObserver</a>* ComponentOperator::observer_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="ComponentOperator_8h_source.html">ComponentOperator.h</a></li>
+<li>model/data/<a class="el" href="ComponentOperator_8cpp.html">ComponentOperator.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,19 +1,10 @@
 var searchData=
 [
-  ['labelboundary_0',['labelBoundary',['../classMeshLib_1_1CBaseMesh.html#a7f7c5053e7254f0b3a9ed4869848885f',1,'MeshLib::CBaseMesh']]],
-  ['length_1',['length',['../classMeshLib_1_1CLoop.html#af56b2cace83571be3b745528e8985131',1,'MeshLib::CLoop']]],
-  ['less_2',['less',['../structplf_1_1less.html',1,'plf']]],
-  ['limits_3',['limits',['../structplf_1_1limits.html',1,'plf::limits'],['../structplf_1_1limits.html#a7664901295a64d8da946a68fede62818',1,'plf::limits::limits()']]],
-  ['line_5factor_5f_4',['line_actor_',['../classSplineActor.html#a83f413f5975f6f9ba804921faee34a43',1,'SplineActor']]],
-  ['lines_5',['lines',['../structtinyobj_1_1shape__t.html#ac396e29ff9977e87eed5584c38d6cad3',1,'tinyobj::shape_t']]],
-  ['lines_5ft_6',['lines_t',['../structtinyobj_1_1lines__t.html',1,'tinyobj']]],
-  ['loadfromfile_7',['loadFromFile',['../classObjMeshIO.html#a92c532874baa1ace4b65605f130afbcd',1,'ObjMeshIO']]],
-  ['loadmodel_8',['loadModel',['../classMeshActorManager.html#a2067bca15dc63a0ab06d2e3dbeefddb1',1,'MeshActorManager']]],
-  ['loadmodeldata_9',['loadModelData',['../classMeshActor.html#a70be0e3ea4dc333f6454667209f68f98',1,'MeshActor']]],
-  ['loadmtl_10',['LoadMtl',['../namespacetinyobj.html#a861cd417f27a4cb95f005a3e1a178f87',1,'tinyobj']]],
-  ['loadobj_11',['LoadObj',['../namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3',1,'tinyobj']]],
-  ['loadshape_12',['loadShape',['../classSplineActor.html#ad7ee443364bdd4a6a688e4d6025aad3d',1,'SplineActor']]],
-  ['loadspline_13',['loadSpline',['../classSplineActorManager.html#aa5683f4ea91d9a06e18513eeb77ff9c1',1,'SplineActorManager']]],
-  ['lock_14',['lock',['../classMeshActorSelectOpFactory.html#a13ab4a11c68be637479ab067aecd2525',1,'MeshActorSelectOpFactory']]],
-  ['loops_15',['loops',['../classMeshLib_1_1CBoundary.html#acc9c4f3675a8e25a5b03a374364b4d8c',1,'MeshLib::CBoundary']]]
+  ['kinvalidcomponent_0',['kInvalidComponent',['../classMeshIDMap.html#aeaf508fd7d5909b90310cbad38399796',1,'MeshIDMap']]],
+  ['kinvalidgeomedgeid_1',['kInvalidGeomEdgeId',['../Core_8h.html#a3bb54d671f5f88a16049fac0fe2a5758',1,'Core.h']]],
+  ['kinvalidgeomfaceid_2',['kInvalidGeomFaceId',['../Core_8h.html#ab42003beeafa19a93736149be2370f2b',1,'Core.h']]],
+  ['kinvalidgeomsolidid_3',['kInvalidGeomSolidId',['../Core_8h.html#a568e78519b186938703f8780b9cc52f1',1,'Core.h']]],
+  ['kinvalidgeomvertexid_4',['kInvalidGeomVertexId',['../Core_8h.html#a24cb95d98be446581a9839fbaabbd399',1,'Core.h']]],
+  ['kinvalidlocal_5',['kInvalidLocal',['../classMeshIDMap.html#a565446ff3feaedaaa277cbe06ac37c1e',1,'MeshIDMap']]],
+  ['ktypecount_6',['kTypeCount',['../structGeometrySubshapeIndex.html#a8220fb5df165f1baa794452a195d44ce',1,'GeometrySubshapeIndex']]]
 ];

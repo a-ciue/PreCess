@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/test/TestElementIDMap.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li><li class="navelem"><a href="dir_a2500666a617fcb70f7565c3cb90ec66.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a> &#124;
+<a href="#var-members">变量</a>  </div>
+  <div class="headertitle"><div class="title">TestElementIDMap.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="MeshIDMap_8h_source.html">MeshIDMap.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestElementIDMap.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestElementIDMap_8cpp__incl.png" border="0" usemap="#amodel_2data_2test_2TestElementIDMap_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2test_2TestElementIDMap_8cpp" id="amodel_2data_2test_2TestElementIDMap_8cpp">
+<area shape="rect" title=" " alt="" coords="381,5,590,45"/>
+<area shape="rect" href="MeshIDMap_8h.html" title=" " alt="" coords="335,93,446,119"/>
+<area shape="poly" title=" " alt="" coords="464,48,417,86,414,82,461,43"/>
+<area shape="rect" title=" " alt="" coords="471,93,689,119"/>
+<area shape="poly" title=" " alt="" coords="510,43,557,82,553,86,507,48"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="212,167,276,192"/>
+<area shape="poly" title=" " alt="" coords="368,121,281,163,279,158,366,116"/>
+<area shape="rect" title=" " alt="" coords="345,240,407,265"/>
+<area shape="poly" title=" " alt="" coords="388,120,372,167,370,198,373,226,368,227,365,198,367,166,383,118"/>
+<area shape="rect" title=" " alt="" coords="381,167,496,192"/>
+<area shape="poly" title=" " alt="" coords="401,118,426,154,421,157,396,121"/>
+<area shape="rect" title=" " alt="" coords="521,167,581,192"/>
+<area shape="poly" title=" " alt="" coords="417,116,513,159,511,163,415,121"/>
+<area shape="rect" title=" " alt="" coords="5,240,61,265"/>
+<area shape="poly" title=" " alt="" coords="212,194,75,240,73,235,211,189"/>
+<area shape="rect" title=" " alt="" coords="85,240,136,265"/>
+<area shape="poly" title=" " alt="" coords="224,194,146,236,143,231,221,190"/>
+<area shape="rect" title=" " alt="" coords="160,240,237,265"/>
+<area shape="poly" title=" " alt="" coords="239,194,216,230,211,227,234,191"/>
+<area shape="rect" title=" " alt="" coords="261,240,320,265"/>
+<area shape="poly" title=" " alt="" coords="254,191,278,227,273,230,249,194"/>
+<area shape="poly" title=" " alt="" coords="266,190,344,231,341,236,264,194"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a9ef4378b3dd04dc5af47e53e5bc7f164" id="r_a9ef4378b3dd04dc5af47e53e5bc7f164"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ef4378b3dd04dc5af47e53e5bc7f164">TEST_CASE</a> (&quot;MeshIDMap basic insert/getLocal&quot;)</td></tr>
+<tr class="memitem:a98320f3343dedea25e210ce8d170c028" id="r_a98320f3343dedea25e210ce8d170c028"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a98320f3343dedea25e210ce8d170c028">TEST_CASE</a> (&quot;MeshIDMap remove marks invalid and adds to free pool&quot;)</td></tr>
+<tr class="memitem:af749f426e7786eca88353ee665a630e9" id="r_af749f426e7786eca88353ee665a630e9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af749f426e7786eca88353ee665a630e9">REQUIRE</a> (map.remove(<a class="el" href="#a4f56be8b69945b65bb636192c2049a29">g1</a>)==true)</td></tr>
+<tr class="memitem:acf48e9bd1ebab115f8729a9cc57d11d6" id="r_acf48e9bd1ebab115f8729a9cc57d11d6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf48e9bd1ebab115f8729a9cc57d11d6">REQUIRE</a> (map.remove(<a class="el" href="#a58b2952853b86a795d2e0ce4057624b1">g2</a>)==true)</td></tr>
+<tr class="memitem:ab01d92d1aafcdfdf0fe483af0efb1e39" id="r_ab01d92d1aafcdfdf0fe483af0efb1e39"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab01d92d1aafcdfdf0fe483af0efb1e39">REQUIRE</a> (map.freeSize()==2)</td></tr>
+<tr class="memitem:aacce6d24bffdcbcfa913c5094a065232" id="r_aacce6d24bffdcbcfa913c5094a065232"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacce6d24bffdcbcfa913c5094a065232">REQUIRE</a> ((<a class="el" href="#a8cb869f20183dab7ac586f530afb7aec">g3</a>==<a class="el" href="#a4f56be8b69945b65bb636192c2049a29">g1</a>||<a class="el" href="#a8cb869f20183dab7ac586f530afb7aec">g3</a>==<a class="el" href="#a58b2952853b86a795d2e0ce4057624b1">g2</a>))</td></tr>
+<tr class="memitem:aa576596b774610f23bd62c132cfb808b" id="r_aa576596b774610f23bd62c132cfb808b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa576596b774610f23bd62c132cfb808b">REQUIRE</a> (p3.first==20)</td></tr>
+<tr class="memitem:a1f060d191a550645f5e6943e9da8fc74" id="r_a1f060d191a550645f5e6943e9da8fc74"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f060d191a550645f5e6943e9da8fc74">TEST_CASE</a> (&quot;MeshIDMap insertRange works&quot;)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
+变量</h2></td></tr>
+<tr class="memitem:a512452305e6718c45e3d847d6401f4ef" id="r_a512452305e6718c45e3d847d6401f4ef"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a512452305e6718c45e3d847d6401f4ef">g0</a> = map.insert(10, 0)</td></tr>
+<tr class="memitem:a4f56be8b69945b65bb636192c2049a29" id="r_a4f56be8b69945b65bb636192c2049a29"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f56be8b69945b65bb636192c2049a29">g1</a> = map.insert(10, 1)</td></tr>
+<tr class="memitem:a58b2952853b86a795d2e0ce4057624b1" id="r_a58b2952853b86a795d2e0ce4057624b1"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a58b2952853b86a795d2e0ce4057624b1">g2</a> = map.insert(10, 2)</td></tr>
+<tr class="memitem:a8cb869f20183dab7ac586f530afb7aec" id="r_a8cb869f20183dab7ac586f530afb7aec"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8cb869f20183dab7ac586f530afb7aec">g3</a> = map.insert(20, 99)</td></tr>
+<tr class="memitem:af1499327e413f32f6f1d1499d7b50be7" id="r_af1499327e413f32f6f1d1499d7b50be7"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af1499327e413f32f6f1d1499d7b50be7">p3</a> = map.getLocal(<a class="el" href="#a8cb869f20183dab7ac586f530afb7aec">g3</a>)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="aacce6d24bffdcbcfa913c5094a065232" name="aacce6d24bffdcbcfa913c5094a065232"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacce6d24bffdcbcfa913c5094a065232">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype">(<a class="el" href="#a8cb869f20183dab7ac586f530afb7aec">g3</a>==<a class="el" href="#a4f56be8b69945b65bb636192c2049a29">g1</a>||<a class="el" href="#a8cb869f20183dab7ac586f530afb7aec">g3</a>==<a class="el" href="#a58b2952853b86a795d2e0ce4057624b1">g2</a>)</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab01d92d1aafcdfdf0fe483af0efb1e39" name="ab01d92d1aafcdfdf0fe483af0efb1e39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab01d92d1aafcdfdf0fe483af0efb1e39">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype">map.</td>          <td class="paramname"><span class="paramname"><em>freeSize</em></span>()<span class="paramdefsep"> = </span><span class="paramdefval">=2</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af749f426e7786eca88353ee665a630e9" name="af749f426e7786eca88353ee665a630e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af749f426e7786eca88353ee665a630e9">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype">map.</td>          <td class="paramname"><span class="paramname"><em>remove</em></span>g1<span class="paramdefsep"> = </span><span class="paramdefval">=true</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acf48e9bd1ebab115f8729a9cc57d11d6" name="acf48e9bd1ebab115f8729a9cc57d11d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf48e9bd1ebab115f8729a9cc57d11d6">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype">map.</td>          <td class="paramname"><span class="paramname"><em>remove</em></span>g2<span class="paramdefsep"> = </span><span class="paramdefval">=true</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa576596b774610f23bd62c132cfb808b" name="aa576596b774610f23bd62c132cfb808b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa576596b774610f23bd62c132cfb808b">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype">p3.</td>          <td class="paramname"><span class="paramname"><em>first</em></span><span class="paramdefsep"> = </span><span class="paramdefval">=20</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9ef4378b3dd04dc5af47e53e5bc7f164" name="a9ef4378b3dd04dc5af47e53e5bc7f164"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ef4378b3dd04dc5af47e53e5bc7f164">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshIDMap basic insert/getLocal&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1f060d191a550645f5e6943e9da8fc74" name="a1f060d191a550645f5e6943e9da8fc74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f060d191a550645f5e6943e9da8fc74">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshIDMap insertRange works&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a98320f3343dedea25e210ce8d170c028" name="a98320f3343dedea25e210ce8d170c028"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98320f3343dedea25e210ce8d170c028">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshIDMap remove marks invalid and adds to free pool&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">变量说明</h2>
+<a id="a512452305e6718c45e3d847d6401f4ef" name="a512452305e6718c45e3d847d6401f4ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a512452305e6718c45e3d847d6401f4ef">&#9670;&#160;</a></span>g0</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto g0 = map.insert(10, 0)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4f56be8b69945b65bb636192c2049a29" name="a4f56be8b69945b65bb636192c2049a29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f56be8b69945b65bb636192c2049a29">&#9670;&#160;</a></span>g1</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto g1 = map.insert(10, 1)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a58b2952853b86a795d2e0ce4057624b1" name="a58b2952853b86a795d2e0ce4057624b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a58b2952853b86a795d2e0ce4057624b1">&#9670;&#160;</a></span>g2</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto g2 = map.insert(10, 2)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8cb869f20183dab7ac586f530afb7aec" name="a8cb869f20183dab7ac586f530afb7aec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cb869f20183dab7ac586f530afb7aec">&#9670;&#160;</a></span>g3</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto g3 = map.insert(20, 99)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af1499327e413f32f6f1d1499d7b50be7" name="af1499327e413f32f6f1d1499d7b50be7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af1499327e413f32f6f1d1499d7b50be7">&#9670;&#160;</a></span>p3</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto p3 = map.getLocal(<a class="el" href="#a8cb869f20183dab7ac586f530afb7aec">g3</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
