@@ -7,7 +7,8 @@
 
 #include <BRepGProp.hxx>
 #include <BRep_Builder.hxx>
-#include <BRep_Tool.hxx>
+#include <GEdge.h>
+#include <GModel.h>
 #include <GProp_GProps.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <STEPControl_Reader.hxx>
@@ -16,19 +17,12 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <gp_Pnt.hxx>
 
 #include <gmsh.h>
 #include <spdlog/spdlog.h>
 
-#include <Bnd_Box.hxx>
-#include <BRepBndLib.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <TopExp.hxx>
-#include <TopoDS_Vertex.hxx>
 #include <cmath>
 #include <map>
-#include <set>
 #include <vector>
 #include <fstream>
 #include <unordered_map>
@@ -136,323 +130,33 @@ TopoDS_Compound makeFaceCompound(const TopoDS_Face& face)
     return compound;
 }
 
-// ---- 边几何特征 ----
-struct EdgeGeoFeature {
-    // 两端点
-    double x1, y1, z1;
-    double x2, y2, z2;
-
-    // 曲线中点
-    double mx, my, mz;
-
-    // 长度
-    double length = 0.0;
-
-    // 3 个采样点
-    std::vector<double> samples; // [x0,y0,z0, x1,y1,z1, x2,y2,z2]
-
-    static double pointDist(double ax, double ay, double az,
-        double bx, double by, double bz)
-    {
-        double dx = ax - bx;
-        double dy = ay - by;
-        double dz = az - bz;
-        return std::sqrt(dx * dx + dy * dy + dz * dz);
-    }
-
-    // 无向端点距离：考虑方向相反的情况
-    double endpointDistanceTo(const EdgeGeoFeature& o) const
-    {
-        double dForward = pointDist(x1, y1, z1, o.x1, o.y1, o.z1) + pointDist(x2, y2, z2, o.x2, o.y2, o.z2);
-
-        double dReverse = pointDist(x1, y1, z1, o.x2, o.y2, o.z2) + pointDist(x2, y2, z2, o.x1, o.y1, o.z1);
-
-        return std::min(dForward, dReverse);
-    }
-
-    double midpointDistanceTo(const EdgeGeoFeature& o) const
-    {
-        return pointDist(mx, my, mz, o.mx, o.my, o.mz);
-    }
-
-    double lengthDistanceTo(const EdgeGeoFeature& o) const
-    {
-        return std::abs(length - o.length);
-    }
-
-    // 采样点距离，同样考虑正向/反向
-    double sampleDistanceTo(const EdgeGeoFeature& o) const
-    {
-        if (samples.size() != o.samples.size() || samples.empty())
-            return 0.0;
-
-        std::size_t n = samples.size() / 3;
-        double dForward = 0.0;
-        double dReverse = 0.0;
-
-        for (std::size_t i = 0; i < n; ++i) {
-            std::size_t i3 = i * 3;
-            std::size_t r3 = (n - 1 - i) * 3;
-
-            dForward += pointDist(
-                samples[i3], samples[i3 + 1], samples[i3 + 2],
-                o.samples[i3], o.samples[i3 + 1], o.samples[i3 + 2]);
-
-            dReverse += pointDist(
-                samples[i3], samples[i3 + 1], samples[i3 + 2],
-                o.samples[r3], o.samples[r3 + 1], o.samples[r3 + 2]);
-        }
-
-        return std::min(dForward, dReverse);
-    }
-
-    // 综合评分
-    double distanceTo(const EdgeGeoFeature& o, double scale) const
-    {
-        // 防止 scale 太小
-        double s = std::max(scale, 1e-12);
-
-        double de = endpointDistanceTo(o) / s;
-        double dl = lengthDistanceTo(o) / s;
-        double dm = midpointDistanceTo(o) / s;
-        double ds = sampleDistanceTo(o) / s;
-
-        // 端点权重大一些
-        return 5.0 * de + 2.0 * dl + 3.0 * dm + 4.0 * ds;
-    }
-};
-
-std::vector<double> sampleOCCEdgePoints(const TopoDS_Edge& edge, int sampleCount = 3)
-{
-    std::vector<double> pts;
-    if (sampleCount <= 0)
-        return pts;
-
-    BRepAdaptor_Curve curve(edge);
-    double u1 = curve.FirstParameter();
-    double u2 = curve.LastParameter();
-
-    for (int i = 1; i <= sampleCount; ++i) {
-        double t = double(i) / double(sampleCount + 1);
-        double u = (1.0 - t) * u1 + t * u2;
-        gp_Pnt p = curve.Value(u);
-        pts.push_back(p.X());
-        pts.push_back(p.Y());
-        pts.push_back(p.Z());
-    }
-    return pts;
-}
-std::vector<double> sampleGmshEdgePoints(int gmshTag, int sampleCount = 3)
-{
-    std::vector<double> pts;
-    if (sampleCount <= 0)
-        return pts;
-
-    std::vector<double> minv, maxv;
-    gmsh::model::getParametrizationBounds(1, gmshTag, minv, maxv);
-    if (minv.empty() || maxv.empty())
-        return pts;
-
-    double u1 = minv[0];
-    double u2 = maxv[0];
-
-    for (int i = 1; i <= sampleCount; ++i) {
-        double t = double(i) / double(sampleCount + 1);
-        double u = (1.0 - t) * u1 + t * u2;
-
-        std::vector<double> coord;
-        gmsh::model::getValue(1, gmshTag, { u }, coord);
-        if (coord.size() >= 3) {
-            pts.push_back(coord[0]);
-            pts.push_back(coord[1]);
-            pts.push_back(coord[2]);
-        }
-    }
-    return pts;
-}
-
-// ---- OCC 边特征 ----
-EdgeGeoFeature computeOCCEdgeFeature(GeomEdgeId gid, const IncrementalMeshContext& ctx)
-{
-    TopoDS_Edge edge = ctx.getEdgeByGlobalId(gid);
-
-    TopoDS_Vertex v1, v2;
-    TopExp::Vertices(edge, v1, v2);
-
-    gp_Pnt p1 = BRep_Tool::Pnt(v1);
-    gp_Pnt p2 = BRep_Tool::Pnt(v2);
-
-    GProp_GProps props;
-    BRepGProp::LinearProperties(edge, props);
-
-    BRepAdaptor_Curve curve(edge);
-    double u1 = curve.FirstParameter();
-    double u2 = curve.LastParameter();
-    double um = 0.5 * (u1 + u2);
-    gp_Pnt pm = curve.Value(um);
-
-    EdgeGeoFeature f {};
-    f.x1 = p1.X();
-    f.y1 = p1.Y();
-    f.z1 = p1.Z();
-    f.x2 = p2.X();
-    f.y2 = p2.Y();
-    f.z2 = p2.Z();
-
-    f.mx = pm.X();
-    f.my = pm.Y();
-    f.mz = pm.Z();
-
-    f.length = props.Mass();
-    f.samples = sampleOCCEdgePoints(edge, 3);
-    return f;
-}
-double getShapeScale(const TopoDS_Shape& shape)
-{
-    Bnd_Box box;
-    BRepBndLib::Add(shape, box);
-
-    double xmin, ymin, zmin, xmax, ymax, zmax;
-    box.Get(xmin, ymin, zmin, xmax, ymax, zmax);
-
-    double dx = xmax - xmin;
-    double dy = ymax - ymin;
-    double dz = zmax - zmin;
-    double diag = std::sqrt(dx * dx + dy * dy + dz * dz);
-
-    if (diag < 1e-12)
-        diag = 1.0;
-    return diag;
-}
-
-// ---- GMSH 边特征 ----
-EdgeGeoFeature computeGmshEdgeFeature(int gmshTag)
-{
-    EdgeGeoFeature f {};
-
-    // 端点
-    std::vector<std::pair<int, int>> vtxBnd;
-    gmsh::model::getBoundary({ { 1, gmshTag } }, vtxBnd, false, false, false);
-
-    if (vtxBnd.size() >= 2) {
-        int v0 = std::abs(vtxBnd[0].second);
-        int v1 = std::abs(vtxBnd[1].second);
-
-        std::vector<double> p0, p1, param;
-        gmsh::model::getValue(0, v0, param, p0);
-        gmsh::model::getValue(0, v1, param, p1);
-
-        if (p0.size() >= 3 && p1.size() >= 3) {
-            f.x1 = p0[0];
-            f.y1 = p0[1];
-            f.z1 = p0[2];
-
-            f.x2 = p1[0];
-            f.y2 = p1[1];
-            f.z2 = p1[2];
-        }
-    }
-
-    // 长度
-    gmsh::model::occ::getMass(1, gmshTag, f.length);
-
-    // 中点
-    std::vector<double> minv, maxv;
-    gmsh::model::getParametrizationBounds(1, gmshTag, minv, maxv);
-    if (!minv.empty() && !maxv.empty()) {
-        double um = 0.5 * (minv[0] + maxv[0]);
-        std::vector<double> coord;
-        gmsh::model::getValue(1, gmshTag, { um }, coord);
-        if (coord.size() >= 3) {
-            f.mx = coord[0];
-            f.my = coord[1];
-            f.mz = coord[2];
-        }
-    }
-
-    f.samples = sampleGmshEdgePoints(gmshTag, 3);
-    return f;
-}
-
-// ---- 匹配 ----
+// 通过 Gmsh 内部保存的 OCC Shape 映射，将当前面的 Gmsh 曲线 tag 对应回全局 CAD 边 ID。
+// 必须在 importShapesNativePointer() 和 synchronize() 之后调用。
 std::map<int, GeomEdgeId> matchGmshToOCCEdges(const TopoDS_Face& face,
     const IncrementalMeshContext& ctx)
 {
-    // OCC 当前 face 的边
-    auto edgeInfos = ctx.getFaceEdgeInfos(face);
-    std::vector<std::pair<GeomEdgeId, EdgeGeoFeature>> occFeats;
-    for (const auto& info : edgeInfos) {
-        occFeats.push_back({ info.edgeId, computeOCCEdgeFeature(info.edgeId, ctx) });
-    }
-
-    // 只取当前 Gmsh face 的边界边，而不是整个模型所有 edge
-    gmsh::vectorpair gmshFaceTags;
-    gmsh::model::getEntities(gmshFaceTags, 2);
-    if (gmshFaceTags.empty()) {
-        spdlog::warn("  No gmsh face found when matching edges");
+    GModel* model = GModel::current();
+    if (!model) {
+        spdlog::warn("  No current Gmsh model when matching OCC edges");
         return {};
     }
 
-    int gmshFaceTag = gmshFaceTags[0].second;
-    gmsh::vectorpair gmshEdgesRaw;
-    gmsh::model::getBoundary({ { 2, gmshFaceTag } }, gmshEdgesRaw, false, false, false);
-
-    std::vector<int> gmshEdges;
-    std::set<int> uniqueEdges;
-    for (auto& [dim, tag] : gmshEdgesRaw) {
-        if (dim == 1 && !uniqueEdges.count(std::abs(tag))) {
-            uniqueEdges.insert(std::abs(tag));
-            gmshEdges.push_back(std::abs(tag));
-        }
-    }
-
-    // 以当前 face 尺寸作为容差尺度
-    double scale = getShapeScale(face);
-    double acceptTol = 5e-2; // 归一化后的阈值
-
     std::map<int, GeomEdgeId> result;
-    std::set<GeomEdgeId> matched;
-
-    for (int gmshTag : gmshEdges) {
-        auto gf = computeGmshEdgeFeature(gmshTag);
-
-        double best = 1e30;
-        GeomEdgeId bestId = kInvalidGeomEdgeId;
-
-        for (auto& [id, of] : occFeats) {
-            if (matched.count(id))
-                continue;
-
-            double d = gf.distanceTo(of, scale);
-
-            spdlog::debug(
-                "  edge candidate gmsh={} occ={}  "
-                "endpoint={:.3e} length={:.3e} midpoint={:.3e} sample={:.3e} total={:.3e}",
-                gmshTag, id,
-                gf.endpointDistanceTo(of) / scale,
-                gf.lengthDistanceTo(of) / scale,
-                gf.midpointDistanceTo(of) / scale,
-                gf.sampleDistanceTo(of) / scale,
-                d);
-
-            if (d < best) {
-                best = d;
-                bestId = id;
-            }
+    const auto edgeInfos = ctx.getFaceEdgeInfos(face);
+    for (const auto& info : edgeInfos) {
+        TopoDS_Edge edge = ctx.getEdgeByGlobalId(info.edgeId);
+        GEdge* gmshEdge = model->getEdgeForOCCShape(static_cast<const void*>(&edge));
+        if (!gmshEdge) {
+            spdlog::warn("  OCC edge {} has no Gmsh curve mapping", info.edgeId);
+            continue;
         }
 
-        if (bestId != kInvalidGeomEdgeId && best < acceptTol) {
-            result[gmshTag] = bestId;
-            matched.insert(bestId);
-            spdlog::info("  GMSH edge {} -> OCC edge {} (score={:.3e})",
-                gmshTag, bestId, best);
-        } else {
-            spdlog::warn("  GMSH edge {} UNMATCHED (best OCC={}, score={:.3e})",
-                gmshTag, bestId, best);
-        }
+        result[gmshEdge->tag()] = info.edgeId;
+        spdlog::info("  GMSH edge {} -> OCC edge {}", gmshEdge->tag(), info.edgeId);
     }
 
-    spdlog::info("  Matched {}/{} edges", result.size(), gmshEdges.size());
+    spdlog::info("  Matched {}/{} edges through Gmsh OCC mapping",
+        result.size(), edgeInfos.size());
     return result;
 }
 
