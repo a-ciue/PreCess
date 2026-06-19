@@ -8,7 +8,6 @@ class ModelOperatorBase {
 public:
     virtual ~ModelOperatorBase() = default;
     virtual Index getId() const = 0;
-    virtual ModelData::Type getType() const = 0;
 };
 
 #endif // MODEL_OPERATOR_BASE_H

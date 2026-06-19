@@ -30,6 +30,7 @@
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
+#include <spdlog/spdlog.h>
 
 BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer* renderer)
 {
@@ -68,7 +69,7 @@ void BlockSelectorHighlight::select(double posx, double posy)
     vtkProp* pickedProp = picker->GetViewProp();
 
     if (!pickedProp || !pickedProp->IsA("vtkActor")) {
-        std::cout << "No valid object picked!" << std::endl;
+        spdlog::warn("No valid object picked!");
         for (auto& selection : selections_) {
             _cancel_highlight(selection);
         }
@@ -80,7 +81,7 @@ void BlockSelectorHighlight::select(double posx, double posy)
     vtkActor* actor = vtkActor::SafeDownCast(pickedProp);
     vtkMapper* getMapper = actor->GetMapper();
     if (!getMapper->IsA("vtkCompositePolyDataMapper")) {
-        std::cout << "Not a composite mapper!" << std::endl;
+        spdlog::warn("Not a composite mapper!");
         return;
     }
 
@@ -164,20 +165,20 @@ void BlockSelectorHighlight::_cancel_highlight(Block& selection)
     // 获取 multiblock 数据集
     auto multiblock = vtkMultiBlockDataSet::SafeDownCast(this->mapper_->GetInputDataObject(0, 0));
     if (!multiblock || selection.block_id >= multiblock->GetNumberOfBlocks()) {
-        std::cout << "Invalid block index!" << std::endl;
+        spdlog::warn("Invalid block index!");
         return;
     }
 
     // 获取 block 和颜色数据
     auto block = vtkPolyData::SafeDownCast(multiblock->GetBlock(selection.block_id));
     if (!block) {
-        std::cout << "Invalid block!" << std::endl;
+        spdlog::warn("Invalid block!");
         return;
     }
 
     auto colors = vtkUnsignedCharArray::SafeDownCast(block->GetCellData()->GetScalars());
     if (!colors || colors->GetNumberOfComponents() != 3) {
-        std::cout << "No valid color data!" << std::endl;
+        spdlog::warn("No valid color data!");
         return;
     }
 

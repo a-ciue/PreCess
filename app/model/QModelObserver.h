@@ -25,6 +25,10 @@ public:
     {
         emit modelChanged(model_id);
     }
+    void notifyComponentChanged(Index component_id) override
+    {
+        emit componentChanged(component_id);
+    }
 
     /**
      * @brief 接收模型被添加的通知函数
@@ -47,6 +51,10 @@ public:
     {
         emit modelRemoved(model_id);
     }
+    void notifyComponentRemoved(Index component_id) override
+    {
+        emit componentRemoved(component_id);
+    }
 
     /**
      * @brief 接收模型名称变更的通知函数
@@ -61,23 +69,23 @@ public:
     }
 
     /**
-     * @brief 接收样条曲线加载失败的通知函数
+     * @brief 接收几何曲线加载失败的通知函数
      * @param message 失败信息
      *
-     * 该通知函数用于在样条曲线加载失败时发出信号，通知外部组件。
+     * 该通知函数用于在几何曲线加载失败时发出信号，通知外部组件。
      */
-    void notifySplineLoadFailed(const std::string& message) override
+    void notifyGeometryLoadFailed(const std::string& message) override
     {
-        emit splineLoadFailed(QString::fromStdString(message));
+        emit geometryLoadFailed(QString::fromStdString(message));
     }
 
 signals:
     /**
-     * @brief 样条曲线加载失败信号
+     * @brief 几何曲线加载失败信号
      *
      * @param message 失败信息
      */
-    void splineLoadFailed(QString message);
+    void geometryLoadFailed(QString message);
 
     /**
      * @brief 模型名称变更信号
@@ -100,6 +108,7 @@ signals:
      * @param model_id 移除的模型 ID
      */
     void modelRemoved(Index model_id);
+    void componentRemoved(Index component_id);
 
 #pragma region ModelDataSignals
 
@@ -108,6 +117,7 @@ signals:
      * @param model_id 发生变化的模型 ID
      */
     void modelChanged(Index model_id);
+    void componentChanged(Index component_id);
 
     /**
      * @brief 当 Patch 更新时触发

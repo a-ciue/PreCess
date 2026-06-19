@@ -14,23 +14,8 @@ ModelObserver* ModelOperator::observer() const
     return observer_;
 }
 
-void ModelOperator::write_spline(const std::filesystem::path& spline_path)
-{
-}
-
 void ModelOperator::notifyChanged()
 {
-    if (this->observer_) {
-        observer_->notifyModelChanged(this->id_);
-    }
-}
-
-void ModelOperator::merge_blocks(std::unique_ptr<Selection> selection)
-{
-    if (!selection) {
-        return; // 如果没有选择或选择为空，直接返回
-    }
-    model_->merge_blocks(*selection);
     if (this->observer_) {
         observer_->notifyModelChanged(this->id_);
     }
@@ -39,11 +24,6 @@ void ModelOperator::merge_blocks(std::unique_ptr<Selection> selection)
 Index ModelOperator::getId() const
 {
     return this->id_;
-}
-
-ModelData::Type ModelOperator::getType() const
-{
-    return model_->type();
 }
 
 #endif // Model_OPERATOR_H

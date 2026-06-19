@@ -1,17 +1,26 @@
+#include "ComponentData.h"
 #include "EditSystem.h"
-#include "ModelManager.h"
 #include "MeshData.h"
-#include "MakeMeshData.h"
+#include "ModelLayer.h"
 #include "TrivialEditHandler.h"
+
 #include <catch2/catch_test_macros.hpp>
 
 using namespace systems::edit;
+
 TEST_CASE("EditSystem::register&unregister")
 {
     auto mesh_data = std::make_unique<MeshData>();
-    auto model = std::make_unique<ModelData>(std::move(mesh_data));
-    ModelManager model_manager;
-    model_manager.addModel(std::move(model));
+    mesh_data->init();
+
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1; c->name = "Comp_0";
+    c->mesh = std::move(mesh_data);
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    ModelLayer model_manager;
+    REQUIRE_NOTHROW(model_manager.addModel("test_model", std::move(comps)));
     EditSystem system(model_manager);
 
     EditSystem::SystemHandlerPtr handler { new TrivialEditHandler() };

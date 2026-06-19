@@ -1,10 +1,12 @@
 #include "MakeMeshDataVtk.h"
 #include "SelectorHighlight.h"
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkNew.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
+#include <vtkPoints.h>
 
 // 自定义交互器，响应鼠标左键点击
 class VertexPickInteractorStyle : public vtkInteractorStyleTrackballCamera {
@@ -50,8 +52,14 @@ int main(int argc, char* argv[])
     vtkSmartPointer<VertexPickInteractorStyle> style = vtkSmartPointer<VertexPickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
+    vtkNew<vtkPoints> pts;
+    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
+    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
+        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
+    }
+
     // 创建MeshActor
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, true, true, ModelRenderMode::Face);
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, pts, true, ModelRenderMode::Face);
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 

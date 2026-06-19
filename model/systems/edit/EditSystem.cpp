@@ -5,7 +5,7 @@
 #include "EditSystem.h"
 #include "ArgObject.h"
 #include "EditHandler.h"
-#include "ModelManager.h"
+#include "ModelLayer.h"
 
 #include <spdlog/spdlog.h>
 
@@ -16,7 +16,7 @@ using std::vector;
 
 const string EditSystem::name = "EditSystem";
 
-EditSystem::EditSystem(ModelManager& model_manager)
+EditSystem::EditSystem(ModelLayer& model_manager)
     : model_manager_(&model_manager)
 {
     on_edit_info_changed_ = []() { };
@@ -24,20 +24,23 @@ EditSystem::EditSystem(ModelManager& model_manager)
 
 EditSystem::~EditSystem() = default;
 
-std::any EditSystem::call(const string& unique_name, Index model, const vector<ArgObject>& args)
+std::any EditSystem::call(const string& unique_name, Index component_id, const vector<ArgObject>& args)
 {
-    std::optional model_op = model_manager_->getModelOperator(model);
-    if (!model_op) {
-        spdlog::error("EditSystem::call: Model operator for model ID {} not found.", model);
+    auto comp_op = model_manager_->getComponentOperator(component_id);
+    if (!comp_op) {
+        spdlog::error("EditSystem::call: ComponentData operator for component ID {} not found.", component_id);
         return {};
     }
-    ModelData& data_op = model_op->data();
-
     auto it = handlers_.find(unique_name);
     if (it != handlers_.end() && it->second) {
-        data_op = it->second->execute(std::move(data_op), args);
-        model_op->notifyChanged();
+        std::any result = it->second->execute(*comp_op, args);
+
+        comp_op->notifyChanged();
+
+        return result;
     }
+
+    spdlog::warn("EditSystem::call: Handler '{}' not found.", unique_name);
     return {};
 }
 

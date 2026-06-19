@@ -2,7 +2,6 @@
  * @file Main.qml
  * @brief 程序的交互主界面
  *
- * @sa QObjectList.qml
  * @sa QSelectingBar.qml
  * @sa QSelector.qml
  * @sa QSideBar.qml
@@ -98,6 +97,31 @@ ApplicationWindow {
     required property QModelIOSystemAdaptor ioSystem
     required property QEditSystemAdaptor editSystem
 
+    // ===== modelObserver → objectTree / myItem =====
+    Timer {
+        id: refreshTimer
+        interval: 100
+        repeat: false
+        onTriggered: objectTree.refreshTree()
+    }
+
+    function resetSelectionState() {
+        objectTree.curComponentId = -1
+        objectTree.curModelId = -1
+        myItem.setSelectMode("None")
+        myItem.clearSelection()
+    }
+
+    Connections {
+        target: modelObserver
+
+        function onModelAdded(modelId)   { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
+        function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
+        function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId); resetSelectionState() }
+        function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId); resetSelectionState() }
+        function onComponentChanged(componentId) { refreshTimer.restart(); myItem.onComponentChanged(componentId); resetSelectionState() }
+    }
+
     StackLayout{
         id:stacklayout
         anchors.left: parent.left
@@ -105,32 +129,38 @@ ApplicationWindow {
         height: 0
     }
 
-    ObjectList{
-        id:objectList
+    ObjectTree {
+        id: objectTree
         anchors.top: stacklayout.bottom
         anchors.left: parent.left
-        anchors.right: myItemRectangle.left
         width: 250
-        height: 200
-        Component.onCompleted: {
-            modelObserver.modelAdded.connect((model_id)=>objectList.addItem(model_id,modelQuery.getModelName(model_id)))
-            modelObserver.modelAdded.connect(myItem.onModelChanged)
-            modelObserver.modelChanged.connect(myItem.onModelChanged)
+        height: parent.height * 0.5
+        modelQuery: root.modelQuery
 
-            modelObserver.modelRemoved.connect((modelName)=>{objectList.removeItem(modelName)})
-            modelObserver.modelRemoved.connect(myItem.deleteModel)
-            objectList.renameModel.connect((oldName,newName)=>{modelManager.renameModel(oldName,newName)})
-            objectList.removeModel.connect((modelName)=>{modelManager.removeModel(modelName)})
-            objectList.changeModelVisibility.connect(myItem.setVisibility)
-            objectList.selectionChanged.connect((selectedModel_id)=>{myItem.setSelectModel(selectedModel_id)})
+        onSelectionChanged: (componentId) => {
+            if (componentId >= 0) {
+                myItem.setSelectComponent(componentId)
+            } else {
+                myItem.clearSelection()
+            }
+        }
+
+        onDeleteRequested: (nodeId, depth) => {
+            if (depth === 0) modelManager.removeModel(nodeId)
+            else if (depth === 1) modelManager.removeComponent(nodeId)
+        }
+
+        onVisibilityChanged: (nodeId, depth, visible) => {
+            if (depth === 0) myItem.setVisibility(nodeId, visible)
+            else if (depth === 1) myItem.setComponentVisibility(nodeId, visible)
         }
     }
 
     SideBar{
         id: sideBar
-        curModel: objectList.curModelId
+        curComponent: objectTree.curComponentId
         confirm_listener: selector.confirm_listener
-        anchors.top: objectList.bottom
+        anchors.top: objectTree.bottom
         anchors.left: parent.left
         anchors.right: myItemRectangle.left
         anchors.bottom: parent.bottom
@@ -147,7 +177,7 @@ ApplicationWindow {
         id: myItemRectangle
         anchors.bottom:parent.bottom
         anchors.top:stacklayout.bottom
-        anchors.left:objectList.right
+        anchors.left:objectTree.right
         anchors.right:parent.right
         Rectangle {
             id: borderRectangle
@@ -175,17 +205,7 @@ ApplicationWindow {
                         Layout.preferredWidth: 50
                         Layout.fillHeight: true
                         onClicked:{
-                            myItem.setEdgeRender(objectList.curModelId, !myItem.cur_edge_render)
-                        }
-                    }
-                    ToolButton{
-                        text: "点渲染"
-                        checkable: true
-                        checked: myItem.cur_vertex_render
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            myItem.cur_vertex_render = !myItem.cur_vertex_render
+                            myItem.setEdgeRender(objectTree.curModelId, !myItem.cur_edge_render)
                         }
                     }
                     ToolButton{
@@ -195,9 +215,9 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         onClicked:{
                             if (checked) {
-                                myItem.setRenderMode(objectList.curModelId, "Block")
+                                myItem.setRenderMode(objectTree.curModelId, "Block")
                             } else {
-                                myItem.setRenderMode(objectList.curModelId, "Face")
+                                myItem.setRenderMode(objectTree.curModelId, "Face")
                             }
                         }
                     }
@@ -230,7 +250,7 @@ ApplicationWindow {
 
         Selector{
             id:selector
-            cur_model: objectList.curModelId
+            cur_model: objectTree.curComponentId
             anchors.top:  renderWindowPage.top
             anchors.left: renderWindowPage.left
             anchors.topMargin: 10
@@ -302,7 +322,7 @@ ApplicationWindow {
         fileMode: FileDialog.SaveFile
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
-                ioSystem.write(selectedNameFilter.name, objectList.curModelId, selectedFile, [])
+                ioSystem.write(selectedNameFilter.name, objectTree.curModelId, selectedFile, [])
             } else {
                 console.exception("No valid file type selected.")
             }

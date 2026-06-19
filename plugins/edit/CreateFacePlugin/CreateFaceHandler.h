@@ -11,7 +11,7 @@ class CreateFaceHandler : public EditHandler {
 public:
     CreateFaceHandler() = default;
     ~CreateFaceHandler() override = default;
-    ModelData execute(ModelData data, const std::vector<core::ArgObject>& args) override;
+    std::any execute(ComponentOperator& op, const std::vector<core::ArgObject>& args) override;
     std::vector<core::ArgType> args_type() const override;
 };
 }

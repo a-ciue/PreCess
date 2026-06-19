@@ -1,18 +1,49 @@
 #include "ArgObject.h"
+#include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "DeleteFaceHandler.h"
 #include "MakeMeshData.h"
-#include "ModelData.h"
+#include "MeshData.h"
+#include "ModelLayer.h"
+#include "Selection.h"
 
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("DeleteFace")
+TEST_CASE("DeleteFaceHandler: delete face 0")
 {
-    using std::move;
-    auto mesh_data = std::make_unique<MeshData>(MakeMeshData());
-    ModelData model_data { move(mesh_data) };
+    using namespace systems::edit;
 
-    systems::edit::DeleteFaceHandler del_face;
-    auto selection = std::make_shared<Selection>(Selection { std::vector<Index> { 0 }, ElementEnum::Face, 0 });
-    core::ArgObject faces = core::ArgObject::create<ArgTypeEnum::Selector>(selection);
-    ModelData del_model = del_face.execute(move(model_data), { faces });
+    auto mesh_data_p = std::make_unique<MeshData>(MakeMeshData());
+
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1; c->name = "Comp_0";
+    c->mesh = std::move(mesh_data_p);
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+
+    ModelLayer mgr;
+    Index model_id = mgr.addModel("test_model", std::move(comps));
+
+    auto cids = mgr.modelById(model_id)->componentIds();
+    REQUIRE(cids.size() == 1);
+
+    ComponentData* comp = mgr.findComponent(cids[0]);
+    REQUIRE(comp);
+    ComponentOperator op(cids[0], *comp, mgr, nullptr);
+
+    MeshData* mesh = op.mesh();
+    REQUIRE(mesh != nullptr);
+    REQUIRE(mesh->face_vertices_offset_.size() >= 2);
+
+    const Index old_face_count = (Index)mesh->face_vertices_offset_.size() - 1;
+
+    DeleteFaceHandler del_face;
+    auto selection = std::make_shared<Selection>(
+        Selection { std::vector<Index> { 0 }, ElementEnum::Face, 0 });
+    core::ArgObject arg = core::ArgObject::create<ArgTypeEnum::Selector>(selection);
+
+    REQUIRE_NOTHROW(del_face.execute(op, { arg }));
+
+    const Index new_face_count = (Index)mesh->face_vertices_offset_.size() - 1;
+    REQUIRE(new_face_count == old_face_count - 1);
 }

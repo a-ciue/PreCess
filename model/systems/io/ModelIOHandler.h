@@ -4,13 +4,21 @@
  */
 #ifndef MODEL_IO_HANDLER_H
 #define MODEL_IO_HANDLER_H
+
+#include "Core.h"
+#include "ModelPayload.h"
+
 #include <memory>
 #include <vector>
 #include <string>
 #include <filesystem>
 #include <any>
+#include <optional>
 
 class ModelData;
+struct ComponentData;
+class ModelLayer;
+
 namespace core {
 struct ArgType;
 }
@@ -21,21 +29,26 @@ namespace fs = std::filesystem;
  */
 class ModelIOHandler {
 public:
-	virtual ~ModelIOHandler() = default; 
+    virtual ~ModelIOHandler() = default; 
 	/**
-	 * @brief 读取模型功能
-	 * @param path 待读取文件路径，本地系统环境编码
-	 * @param args 读取文件要传入参数
+     * @brief 读取模型功能
+     * @param path 待读取文件路径，本地系统环境编码
+     * @param args 读取文件要传入参数
      * @return 构造的模型数据对象
-	 */
-	virtual std::unique_ptr<ModelData> read_model(const fs::path& path, const std::vector<std::any>& args) = 0;
-	/**
-	 * @brief 写出模型功能
-	 * @param data 待写出模型数据对象
-	 * @param path 写出文件目标路径，本地系统环境编码
-	 * @param args 写出文件要传入参数
-	 */
-    virtual void write_model(const ModelData& data, const fs::path& path, const std::vector<std::any>& args) = 0;
+     */
+    virtual std::optional<ModelPayload> read_model(const fs::path& path, const std::vector<std::any>& args) = 0;
+        /**
+         * @brief 写出组件集合到文件
+         * @param mgr ModelLayer（运行期权威：component pool + globalPoints）
+         * @param component_ids 要写出的组件 id 集合
+         * @param path 写出文件目标路径
+         * @param args 写出文件要传入参数
+         */
+    virtual void write_components(const ModelLayer& mgr,
+        const std::vector<Index>& component_ids,
+        const fs::path& path,
+        const std::vector<std::any>& args)
+        = 0;
 
 	/**
 	 * @brief 读取文件参数类型，交给UI使用

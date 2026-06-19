@@ -78,9 +78,9 @@ public:
      * @brief 返回选中对象的模型 ID
      * @return 模型id
      */
-    Q_INVOKABLE Index getModelId()
+    Q_INVOKABLE Index getComponentId()
     {
-        return data_->model_id;
+        return data_->component_id;
     }
 
 private:

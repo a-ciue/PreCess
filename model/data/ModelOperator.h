@@ -38,22 +38,11 @@ public:
      */
     ModelObserver* observer() const;
 
-    /**
-     * @brief 输出样条文件
-     * @param spline_path 输出样条文件路径
-     * @param extension 输出文件拓展名
-     */
-    void write_spline(const std::filesystem::path& spline_path);
-
     //! @brief 根据给定id找到mesh的edge，进行边分割
     //! @param patch_id 边所在的patch
     //! @param edge_v_id1 其中一个边点id
     //! @param edge_v_id2 另一个边点id
     void notifyChanged();
-
-    //! @brief 合并给定block，并更新block actor，依赖ModelActor
-    //! @param block_ids
-    void merge_blocks(std::unique_ptr<Selection> selection);
 
     //! @brief 合并给定group，并更新group actor，依赖ModelActor
     //! @param group_ids
@@ -63,8 +52,6 @@ public:
     // void remesh_group(QSelection* selection);
 
     Index getId() const override;
-
-    ModelData::Type getType() const override;
 
 private:
     Index id_;

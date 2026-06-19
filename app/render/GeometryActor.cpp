@@ -1,4 +1,4 @@
-#include "SplineActor.h"
+#include "GeometryActor.h"
 #include "Core.h"
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <TopoDS_Shape.hxx>
@@ -7,45 +7,45 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
-SplineActor::SplineActor(vtkRenderer* renderer, SplineRenderMode render_mode)
+GeometryActor::GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode)
 {
     this->renderer_ = renderer;
     this->render_mode_ = render_mode;
 }
 
-SplineActor::~SplineActor()
+GeometryActor::~GeometryActor()
 {
-    deleteSplineActor();
+    deleteGeometryActor();
 }
 
-SplineRenderMode SplineActor::getSplineRenderMode()
+GeometryRenderMode GeometryActor::getGeometryRenderMode()
 {
     return this->render_mode_;
 }
 
-bool SplineActor::getIsEdgeRender()
+bool GeometryActor::getIsEdgeRender()
 {
     return this->edge_render;
 }
 
-void SplineActor::loadShape(const SplineDataVtk& spline_data)
+void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    this->spline_data_ = std::make_unique<SplineDataVtk>(spline_data);
-    IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(spline_data.shape);
+    this->geometry_data_ = std::make_unique<GeometryDataVtk>(geometry_data);
+    IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
     vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
     DS->SetShape(aShapeImpl);
     DS->Update();
-    vtkPolyData* spline_poly_data = DS->GetOutput();
+    vtkPolyData* geometry_poly_data = DS->GetOutput();
 
     // 分开 polys 和 lines
     vtkNew<vtkPolyData> line_only;
-    line_only->SetPoints(spline_poly_data->GetPoints());
-    line_only->SetLines(spline_poly_data->GetLines());
+    line_only->SetPoints(geometry_poly_data->GetPoints());
+    line_only->SetLines(geometry_poly_data->GetLines());
 
     vtkNew<vtkPolyData> poly_only;
-    poly_only->SetPoints(spline_poly_data->GetPoints());
-    poly_only->SetPolys(spline_poly_data->GetPolys());
-    poly_only->GetPointData()->SetNormals(spline_poly_data->GetPointData()->GetNormals());
+    poly_only->SetPoints(geometry_poly_data->GetPoints());
+    poly_only->SetPolys(geometry_poly_data->GetPolys());
+    poly_only->GetPointData()->SetNormals(geometry_poly_data->GetPointData()->GetNormals());
 
     // 渲染面（带光照）
     vtkNew<vtkPolyDataMapper> poly_mapper;
@@ -67,7 +67,7 @@ void SplineActor::loadShape(const SplineDataVtk& spline_data)
     this->renderer_->AddActor(this->line_actor_);
 }
 
-void SplineActor::deleteSplineActor()
+void GeometryActor::deleteGeometryActor()
 {
     if (this->renderer_) {
         renderer_->RemoveActor(this->poly_actor_);
@@ -75,19 +75,19 @@ void SplineActor::deleteSplineActor()
     }
 }
 
-void SplineActor::setVisibility(bool visibility)
+void GeometryActor::setVisibility(bool visibility)
 {
     this->poly_actor_->SetVisibility(visibility);
     this->line_actor_->SetVisibility(visibility);
     this->visibility_ = visibility;
 }
 
-void SplineActor::setRenderMode(SplineRenderMode render_mode)
+void GeometryActor::setRenderMode(GeometryRenderMode render_mode)
 {
     // 没用
 }
 
-void SplineActor::setRenderEdge(bool is_render)
+void GeometryActor::setRenderEdge(bool is_render)
 {
     this->edge_render = is_render;
     this->line_actor_->SetVisibility(is_render && this->visibility_);

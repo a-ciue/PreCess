@@ -1,57 +1,95 @@
 #include "ArgObject.h"
+#include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "CreateFaceHandler.h"
 #include "DeleteFaceHandler.h"
 #include "MakeMeshData.h"
-#include "ModelData.h"
+#include "MeshData.h"
+#include "ModelLayer.h"
+#include "Selection.h"
 
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("DeleteFace and CreateFace, Delete -> Create(Recover) -> Delete")
+TEST_CASE("DeleteFace and CreateFace, Delete -> Create(Recover) -> Delete -> Create")
 {
-    using std::move;
+    using namespace systems::edit;
+
+    MeshData baseline = MakeMeshData();
+
     auto mesh_data_p = std::make_unique<MeshData>(MakeMeshData());
-    auto mesh_data = mesh_data_p.get();
-    ModelData model_data { move(mesh_data_p) };
 
-    systems::edit::DeleteFaceHandler del_face;
-    systems::edit::CreateFaceHandler create_face;
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1; c->name = "Comp_0";
+    c->mesh = std::move(mesh_data_p);
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
 
-    size_t face_to_delete_at {};
+    ModelLayer mgr;
+    Index model_id = mgr.addModel("test_model", std::move(comps));
+
+    auto cids = mgr.modelById(model_id)->componentIds();
+    REQUIRE(cids.size() == 1);
+
+    ComponentData* comp = mgr.findComponent(cids[0]);
+    REQUIRE(comp);
+    ComponentOperator op(cids[0], *comp, mgr, nullptr);
+
+    MeshData* mesh = op.mesh();
+    REQUIRE(mesh != nullptr);
+    REQUIRE(mesh->face_vertices_offset_.size() >= 2);
+
+    DeleteFaceHandler del_face;
+    CreateFaceHandler create_face;
+
+    Index face_to_delete_at = 0;
+
     SECTION("try last face")
     {
-        face_to_delete_at = mesh_data->face_vertices_offset_.size() - 2;
+        face_to_delete_at = (Index)mesh->face_vertices_offset_.size() - 2;
     }
     SECTION("try first face")
     {
         face_to_delete_at = 0;
     }
 
-    auto vertices_to_delete_begin = mesh_data->face_vertices_.begin() + mesh_data->face_vertices_offset_[face_to_delete_at];
-    auto vertices_to_delete_end = mesh_data->face_vertices_.begin() + mesh_data->face_vertices_offset_[face_to_delete_at + 1];
-    std::vector vertices_to_delete(vertices_to_delete_begin, vertices_to_delete_end);
+    REQUIRE(face_to_delete_at >= 0);
+    REQUIRE(face_to_delete_at < (Index)mesh->face_vertices_offset_.size() - 1);
 
-    auto first_del_selection = std::make_shared<Selection>(Selection { std::vector<Index> { static_cast<Index>(face_to_delete_at) }, ElementEnum::Face, 0 });
-    auto end_del_selection = std::make_shared<Selection>(Selection { std::vector<Index> { (Index)mesh_data->face_vertices_offset_.size() - 2 }, ElementEnum::Face, 0 });
-    core::ArgObject first_face_to_del = core::ArgObject::create<ArgTypeEnum::Selector>(first_del_selection);
-    core::ArgObject end_face_to_del = core::ArgObject::create<ArgTypeEnum::Selector>(end_del_selection);
-    core::ArgObject face_to_create = core::ArgObject::create<ArgTypeEnum::Selector>(std::make_shared<Selection>(Selection { vertices_to_delete, ElementEnum::Vertex, 0 }));
+    auto v_begin = mesh->face_vertices_.begin() + mesh->face_vertices_offset_[(size_t)face_to_delete_at];
+    auto v_end = mesh->face_vertices_.begin() + mesh->face_vertices_offset_[(size_t)face_to_delete_at + 1];
+    std::vector<Index> vertices_to_recover(v_begin, v_end);
+    REQUIRE(vertices_to_recover.size() >= 3);
 
-    ModelData del_model = del_face.execute(move(model_data), { first_face_to_del });
-    ModelData recover_model = create_face.execute(move(del_model), { face_to_create });
-    ModelData del2_model = del_face.execute(move(recover_model), { end_face_to_del });
-    ModelData recover2_model = create_face.execute(move(del2_model), { face_to_create });
+    auto sel_del_1 = std::make_shared<Selection>(
+        Selection { std::vector<Index> { face_to_delete_at }, ElementEnum::Face, 0 });
+    core::ArgObject arg_del_1 = core::ArgObject::create<ArgTypeEnum::Selector>(sel_del_1);
+    REQUIRE_NOTHROW(del_face.execute(op, { arg_del_1 }));
 
-    MeshData* mesh_final = recover2_model.asMeshData();
-    MeshData rhs = MakeMeshData();
-    REQUIRE(mesh_final->vertex_positions_.size() == rhs.vertex_positions_.size());
-    REQUIRE(mesh_final->face_vertices_.size() == rhs.face_vertices_.size());
-    REQUIRE(mesh_final->face_vertices_offset_.size() == rhs.face_vertices_offset_.size());
-    REQUIRE(mesh_final->edge_vertices_.size() == rhs.edge_vertices_.size());
-    REQUIRE(mesh_final->solid_types_.size() == rhs.solid_types_.size());
-    REQUIRE(mesh_final->solid_vertices_.size() == rhs.solid_vertices_.size());
-    REQUIRE(mesh_final->solid_vertices_offset_.size() == rhs.solid_vertices_offset_.size());
-    REQUIRE(mesh_final->solid_faces_vertices_.size() == rhs.solid_faces_vertices_.size());
-    REQUIRE(mesh_final->solid_faces_vertices_offset_.size() == rhs.solid_faces_vertices_offset_.size());
-    REQUIRE(mesh_final->solid_faces_.size() == rhs.solid_faces_.size());
-    REQUIRE(mesh_final->solid_faces_offset_.size() == rhs.solid_faces_offset_.size());
+    auto sel_create = std::make_shared<Selection>(
+        Selection { vertices_to_recover, ElementEnum::Vertex, 0 });
+    core::ArgObject arg_create = core::ArgObject::create<ArgTypeEnum::Selector>(sel_create);
+    REQUIRE_NOTHROW(create_face.execute(op, { arg_create }));
+
+    REQUIRE(mesh->face_vertices_offset_.size() >= 2);
+    Index last_face_now = (Index)mesh->face_vertices_offset_.size() - 2;
+
+    auto sel_del_2 = std::make_shared<Selection>(
+        Selection { std::vector<Index> { last_face_now }, ElementEnum::Face, 0 });
+    core::ArgObject arg_del_2 = core::ArgObject::create<ArgTypeEnum::Selector>(sel_del_2);
+    REQUIRE_NOTHROW(del_face.execute(op, { arg_del_2 }));
+
+    REQUIRE_NOTHROW(create_face.execute(op, { arg_create }));
+
+    REQUIRE(mesh->vertex_count_ == (Index)baseline.vertex_positions_.size());
+
+    REQUIRE(mesh->face_vertices_.size() == baseline.face_vertices_.size());
+    REQUIRE(mesh->face_vertices_offset_.size() == baseline.face_vertices_offset_.size());
+    REQUIRE(mesh->edge_vertices_.size() == baseline.edge_vertices_.size());
+    REQUIRE(mesh->solid_types_.size() == baseline.solid_types_.size());
+    REQUIRE(mesh->solid_vertices_.size() == baseline.solid_vertices_.size());
+    REQUIRE(mesh->solid_vertices_offset_.size() == baseline.solid_vertices_offset_.size());
+    REQUIRE(mesh->solid_faces_vertices_.size() == baseline.solid_faces_vertices_.size());
+    REQUIRE(mesh->solid_faces_vertices_offset_.size() == baseline.solid_faces_vertices_offset_.size());
+    REQUIRE(mesh->solid_faces_.size() == baseline.solid_faces_.size());
+    REQUIRE(mesh->solid_faces_offset_.size() == baseline.solid_faces_offset_.size());
 }
