@@ -430,6 +430,8 @@ void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
         }
+
+        this->setCurEdgeRender(is_render);
     });
 }
 
