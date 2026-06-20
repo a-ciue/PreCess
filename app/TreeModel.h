@@ -4,6 +4,7 @@
 #include <QVariant>
 #include <QVector>
 #include <QtQml/qqmlregistration.h>
+#include <unordered_map>
 
 #include "QModelQuery.h"
 
@@ -61,4 +62,5 @@ private:
 
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;
+    std::unordered_map<int, bool> visibility_map_;
 };

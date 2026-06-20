@@ -193,6 +193,23 @@ bool TreeModel::refresh()
     }
 
     endResetModel();
+
+    // Restore persisted visibility and prune stale entries
+    std::unordered_map<int, bool> fresh;
+    for (TreeNode* mNode : rootNode->children) {
+        int mkey = (0 << 24) | (mNode->nodeId & 0xFFFFFF);
+        auto mit = visibility_map_.find(mkey);
+        mNode->isVisible = (mit != visibility_map_.end()) ? mit->second : true;
+        fresh[mkey] = mNode->isVisible;
+        for (TreeNode* cNode : mNode->children) {
+            int ckey = (1 << 24) | (cNode->nodeId & 0xFFFFFF);
+            auto cit = visibility_map_.find(ckey);
+            cNode->isVisible = (cit != visibility_map_.end()) ? cit->second : true;
+            fresh[ckey] = cNode->isVisible;
+        }
+    }
+    visibility_map_ = std::move(fresh);
+
     delete oldRoot;
     return true;
 }
@@ -206,6 +223,10 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
 
     TreeNode* target = parentNode->children[row];
     target->isVisible = visible;
+
+    int depth = target->parent->parent == rootNode ? 1 : 0;
+    int key = (depth << 24) | (target->nodeId & 0xFFFFFF);
+    visibility_map_[key] = visible;
 
     QModelIndex idx = createIndex(row, 0, target);
     emit dataChanged(idx, idx, { IsVisibleRole });
