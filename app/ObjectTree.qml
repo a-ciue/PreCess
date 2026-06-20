@@ -3,43 +3,40 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Basic
 import QtQuick.Layouts 1.15
 
-Pane{
+import app.core
+import app.model
+
+Pane {
     id: objectTree
     padding: 0
 
-    required property var modelQuery
-    property int curModelId: -1
-    property int curComponentId: -1
+    TreeModel {
+        id: treeModel
+        modelQuery: QModelManager.query
+    }
 
-    property var onSelectionChanged: (componentId) => {
-        if (componentId >= 0) {
-            myItem.setSelectComponent(componentId)
-        } else {
-            myItem.clearSelection()
+    Timer {
+        id: refreshTimer
+        interval: 100
+        repeat: false
+        onTriggered: {
+            treeModel.refresh()
+            App.selection.activeComponentId = -1
+            App.selection.activeModelId = -1
         }
     }
 
-    property var onDeleteRequested: (nodeId, depth) => {
-        if (depth === 0) modelManager.removeModel(nodeId)
-        else if (depth === 1) modelManager.removeComponent(nodeId)
-    }
-
-    property var onVisibilityChanged: (nodeId, depth, visible) => {
-        if (depth === 0) myItem.setVisibility(nodeId, visible)
-        else if (depth === 1) myItem.setComponentVisibility(nodeId, visible)
-    }
-
-    TreeModel {
-        id: treeModel
-        modelQuery: objectTree.modelQuery
-    }
-
-    function refreshTree() {
-        treeModel.refresh()
+    Connections {
+        target: QModelManager.observer
+        function onModelAdded(modelId)   { refreshTimer.restart() }
+        function onModelChanged(modelId) { refreshTimer.restart() }
+        function onModelRemoved(modelId) { refreshTimer.restart() }
+        function onComponentRemoved(componentId) { refreshTimer.restart() }
+        function onComponentChanged(componentId) { refreshTimer.restart() }
     }
 
     TreeView {
-        id:treeView
+        id: treeView
         anchors.fill: parent
         model: treeModel
         columnSpacing: 0
@@ -49,7 +46,7 @@ Pane{
         onCollapsed: (row, recursively) => toggleExpandRow = row
 
         delegate: TreeViewDelegate {
-            id:viewDelegate
+            id: viewDelegate
             width: treeView.width
             height: 20
 
@@ -160,14 +157,12 @@ Pane{
 
                         if (viewDelegate.current || compId < 0) {
                             viewDelegate.treeView.selectionModel.clear()
-                            objectTree.curModelId = -1
-                            objectTree.curComponentId = -1
-                            objectTree.selectionChanged(-1)
+                            App.selection.activeComponentId = -1
+                            App.selection.activeModelId = -1
                         } else if (idx.valid) {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
-                            objectTree.curComponentId = compId
-                            objectTree.curModelId = modelQuery.findModelIdByComponent(compId)
-                            objectTree.selectionChanged(compId)
+                            App.selection.activeComponentId = compId
+                            App.selection.activeModelId = QModelManager.query.findModelIdByComponent(compId)
                         }
                     }
                 }
@@ -205,7 +200,10 @@ Pane{
                     onTriggered: {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         treeModel.setVisibility(idx.row, idx.parent, false)
-                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.depth, false)
+                        if (viewDelegate.depth === 0)
+                            App.modelVisibilityUpdated(viewDelegate.model.nodeId, false)
+                        else
+                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, false)
                     }
                 }
 
@@ -230,7 +228,10 @@ Pane{
                     onTriggered: {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         treeModel.setVisibility(idx.row, idx.parent, true)
-                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.depth, true)
+                        if (viewDelegate.depth === 0)
+                            App.modelVisibilityUpdated(viewDelegate.model.nodeId, true)
+                        else
+                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, true)
                     }
                 }
 
@@ -257,10 +258,10 @@ Pane{
                     onTriggered: {
                         viewDelegate.treeView.selectionModel.clear()
                         contextMenu.close()
-                        objectTree.deleteRequested(
-                            viewDelegate.model.nodeId,
-                            viewDelegate.depth
-                        )
+                        if (viewDelegate.depth === 0)
+                            QModelManager.removeModel(viewDelegate.model.nodeId)
+                        else
+                            QModelManager.removeComponent(viewDelegate.model.nodeId)
                     }
                 }
             }

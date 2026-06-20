@@ -23,7 +23,7 @@ Page {
                 Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
-                    myItem.setEdgeRender(App.selection.activeModelId, !myItem.cur_edge_render)
+                    myItem.setComponentEdgeRender(App.selection.activeComponentId, !myItem.cur_edge_render)
                 }
             }
             ToolButton {
@@ -79,17 +79,25 @@ Page {
                 function onModelAdded(model_id) { myItem.onModelChanged(model_id) }
                 function onModelChanged(model_id) { myItem.onModelChanged(model_id) }
                 function onModelRemoved(model_id) { myItem.deleteModel(model_id) }
+                function onComponentChanged(component_id) { myItem.onComponentChanged(component_id) }
+                function onComponentRemoved(component_id) { myItem.deleteComponent(component_id) }
             }
 
             Connections {
                 target: App.selection
-                function onActiveModelIdChanged() { myItem.setSelectModel(App.selection.activeModelId) }
+                function onActiveComponentIdChanged() {
+                    if (App.selection.activeComponentId >= 0)
+                        myItem.setSelectComponent(App.selection.activeComponentId)
+                    else
+                        myItem.clearSelection()
+                }
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
             }
 
             Connections {
                 target: App
                 function onModelVisibilityUpdated(modelId, visible) { myItem.setVisibility(modelId, visible) }
+                function onComponentVisibilityUpdated(componentId, visible) { myItem.setComponentVisibility(componentId, visible) }
             }
         }
 

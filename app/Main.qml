@@ -2,7 +2,7 @@
  * @file Main.qml
  * @brief 程序的交互主界面，使用 KDDockWidgets 可停靠窗口架构
  *
- * @sa ObjectList.qml
+ * @sa ObjectTree.qml
  * @sa Selector.qml
  * @sa SideBar.qml
  * @sa CentralRenderArea.qml
@@ -70,12 +70,12 @@ ApplicationWindow {
         Menu{
             title: "视图"
             Action {
-                text: "对象列表"
+                text: "对象树"
                 checkable: true
-                checked: objectListDock.isOpen
+                checked: objectTreeDock.isOpen
                 onToggled: {
-                    if (objectListDock.isOpen) objectListDock.close()
-                    else objectListDock.show()
+                    if (objectTreeDock.isOpen) objectTreeDock.close()
+                    else objectTreeDock.show()
                 }
             }
             Action {
@@ -116,31 +116,6 @@ ApplicationWindow {
         }
     }
 
-    // ===== modelObserver → objectTree / myItem =====
-    Timer {
-        id: refreshTimer
-        interval: 100
-        repeat: false
-        onTriggered: objectTree.refreshTree()
-    }
-
-    function resetSelectionState() {
-        objectTree.curComponentId = -1
-        objectTree.curModelId = -1
-        myItem.setSelectMode("None")
-        myItem.clearSelection()
-    }
-
-    Connections {
-        target: modelObserver
-
-        function onModelAdded(modelId)   { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
-        function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
-        function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId); resetSelectionState() }
-        function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId); resetSelectionState() }
-        function onComponentChanged(componentId) { refreshTimer.restart(); myItem.onComponentChanged(componentId); resetSelectionState() }
-    }
-
     StackLayout{
         id:stacklayout
         anchors.left: parent.left
@@ -156,9 +131,9 @@ ApplicationWindow {
         uniqueName: "PreCessMainLayout"
 
         KDDW.DockWidget {
-            id: objectListDock
-            uniqueName: "objectList"
-            title: "对象列表"
+            id: objectTreeDock
+            uniqueName: "objectTree"
+            title: "对象树"
             ObjectTree {
                 anchors.fill: parent
             }
@@ -185,8 +160,8 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            addDockWidget(objectListDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
-            addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectListDock, Qt.size(0, 200))
+            addDockWidget(objectTreeDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
+            addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 200))
             addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 150), KDDW.KDDockWidgets.StartHidden)
         }
     }
