@@ -150,3 +150,6 @@ cpack_add_component_group(Plugins
 
 cpack_add_install_type(Full)
 cpack_add_install_type(Minimal)
+
+# 将版本号写入一个独立的文件，便于CI读取
+file(WRITE "${CMAKE_BINARY_DIR}/project_version.txt" "${PROJECT_VERSION}")
