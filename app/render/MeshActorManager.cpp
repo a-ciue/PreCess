@@ -5,20 +5,26 @@
 #include "renderStrategy/AttriRenderStrategyUV.h"
 #include "renderStrategy/AttriRenderStrategyRGB.h"
 #include <spdlog/spdlog.h>
-std::shared_ptr<const MeshActor> MeshActorManager::getModelActor(Index model_id)
+
+MeshActorManager::MeshActorManager(vtkPoints* global_points)
+    : global_points_(global_points)
 {
-    if (this->models_.count(model_id))
-        return this->models_.at(model_id);
+}
+
+std::shared_ptr<const MeshActor> MeshActorManager::getComponentActor(Index component_id) const
+{
+    if (this->component_actors_.count(component_id))
+        return this->component_actors_.at(component_id);
     else {
-        spdlog::error("MeshActorManager getModelActor error");
+        spdlog::error("MeshActorManager getComponentActor error");
         return nullptr;
     }
 }
 
-void MeshActorManager::deleteModel(Index model_id)
+void MeshActorManager::deleteComponent(Index component_id)
 {
-    if (this->models_.count(model_id)) {
-        this->models_.erase(model_id);
+    if (this->component_actors_.count(component_id)) {
+        this->component_actors_.erase(component_id);
     }
 }
 
@@ -27,75 +33,74 @@ void MeshActorManager::bindRender(vtkRenderer* renderer)
     this->renderer_ = renderer;
 }
 
-void MeshActorManager::loadModel(Index model_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
+bool MeshActorManager::hasComponent(Index component_id) const
 {
-    if (!this->models_.count(model_id))
-        this->models_[model_id] = std::make_unique<MeshActor>(renderer);
-    this->models_[model_id]->loadModelData(model_data);
-    this->models_[model_id]->setRenderMode(render_mode);
+    return this->component_actors_.count(component_id) != 0;
 }
 
-void MeshActorManager::setVisibility(Index model_id, bool visibility)
+void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
 {
-    if (this->models_.count(model_id))
-        this->models_[model_id]->setVisibility(visibility);
+    if (!this->component_actors_.count(component_id))
+        this->component_actors_[component_id] = std::make_shared<MeshActor>(renderer, global_points_);
+
+    auto& actor = this->component_actors_[component_id];
+    actor->loadModelData(model_data);
+    actor->setRenderMode(render_mode);
 }
 
-void MeshActorManager::setRenderMode(Index model_id, ModelRenderMode render_mode)
+void MeshActorManager::setVisibility(Index component_id, bool visibility)
 {
-    if (this->models_.count(model_id))
-        this->models_[model_id]->setRenderMode(render_mode);
+    if (this->component_actors_.count(component_id))
+        this->component_actors_[component_id]->setVisibility(visibility);
 }
 
-void MeshActorManager::setRenderEdge(Index model_id, bool is_render)
+void MeshActorManager::setRenderMode(Index component_id, ModelRenderMode render_mode)
 {
-    if (this->models_.count(model_id))
-        this->models_[model_id]->setRenderEdge(is_render);
+    if (this->component_actors_.count(component_id))
+        this->component_actors_[component_id]->setRenderMode(render_mode);
 }
 
-void MeshActorManager::setRenderVertex(Index model_id, bool is_render)
+void MeshActorManager::setRenderEdge(Index component_id, bool is_render)
 {
-    if (this->models_.count(model_id))
-        this->models_[model_id]->setRenderVertex(is_render);
+    if (this->component_actors_.count(component_id))
+        this->component_actors_[component_id]->setRenderEdge(is_render);
 }
 
 void MeshActorManager::setClipPlane(vtkPlane* plane)
 {
-    for (auto&& [idx, mesh_actor] : this->models_) {
+    for (auto&& [idx, mesh_actor] : this->component_actors_) {
         mesh_actor->setClipPlane(plane);
     }
 }
 
-bool MeshActorManager::getCount(Index model_id)
+bool MeshActorManager::getCount(Index component_id)
 {
-    return this->models_.count(model_id);
+    return this->component_actors_.count(component_id);
 }
 
-bool MeshActorManager::getIsEdgeRender(Index model_id)
-{
-    if (this->models_.count(model_id))
-        return this->models_[model_id]->getIsEdgeRender();
-}
 
-bool MeshActorManager::getIsVertexRender(Index model_id)
+bool MeshActorManager::getIsEdgeRender(Index component_id)
 {
-    if (this->models_.count(model_id))
-        return this->models_[model_id]->getIsVertexRender();
+    if (this->component_actors_.count(component_id))
+        return this->component_actors_[component_id]->getIsEdgeRender();
     return false;
 }
 
-ModelRenderMode MeshActorManager::getMeshRenderMode(Index model_id)
+ModelRenderMode MeshActorManager::getMeshRenderMode(Index component_id)
 {
-    if (this->models_.count(model_id))
-        return this->models_[model_id]->getMeshRenderMode();
+    if (this->component_actors_.count(component_id))
+        return this->component_actors_[component_id]->getMeshRenderMode();
+
+    return ModelRenderMode::Face;
 }
+
 void MeshActorManager::setAttriMode(
-    Index model_id,
+    Index component_id,
     const std::string& attr_name,
     Mode mode,
     std::map<std::string, std::any> args)
 {
-    if (this->models_.count(model_id)) {
+    if (this->component_actors_.count(component_id)) {
         std::unique_ptr<IAttributeRenderStrategy> strategy;
         switch (mode) {
         case Mode::SCALAR:
@@ -114,13 +119,22 @@ void MeshActorManager::setAttriMode(
             spdlog::error("Invalid attribute render mode");
             return;
         }
-        this->models_[model_id]->setRenderStrategy(std::move(strategy));
-        this->models_[model_id]->renderAttribute(attr_name, args);
+        this->component_actors_[component_id]->setRenderStrategy(std::move(strategy));
+        this->component_actors_[component_id]->renderAttribute(attr_name, args);
     }
 }
-void MeshActorManager::cancelAttri(Index model_id)
+
+void MeshActorManager::cancelAttri(Index component_id)
 {
-    if (this->models_.count(model_id))
-        this->models_[model_id]->cancelActiveAttribute();
+    if (this->component_actors_.count(component_id))
+        this->component_actors_[component_id]->cancelActiveAttribute();
 }
 
+void MeshActorManager::syncOriginalPointIds()
+{
+    for (auto& [cid, actor] : component_actors_) {
+        if (!actor)
+            continue;
+        actor->ensureOriginalPointIds(); 
+    }
+}

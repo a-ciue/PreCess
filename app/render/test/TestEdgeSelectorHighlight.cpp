@@ -64,8 +64,14 @@ int main(int argc, char* argv[])
     vtkSmartPointer<EdgePickInteractorStyle> style = vtkSmartPointer<EdgePickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
+    vtkNew<vtkPoints> pts;
+    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
+    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
+        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
+    }
+
     // 创建MeshActor
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, true, true, ModelRenderMode::Face);
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, pts, true, ModelRenderMode::Face);
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 

@@ -20,9 +20,9 @@
 #include "QSelection.h"
 
 
-struct SplineDataVtk;
+struct GeometryDataVtk;
 struct MeshDataVtk;
-class ModelManager;
+class ModelLayer;
 
 class IModelQuery {
 public:
@@ -46,14 +46,23 @@ public :
     /**
      * @brief 构造函数
      *
-     * @param mgr 指向 ModelManager 实例，用于管理并查找多个 ModelData
+     * @param mgr 指向 ModelLayer 实例，用于管理并查找多个 ModelData
      * @param parent 父 QObject（默认为 nullptr），可用于 Qt 对象树内存管理
      */
-    explicit QModelQuery(ModelManager* mgr, QObject* parent = nullptr);
+    explicit QModelQuery(ModelLayer* mgr, QObject* parent = nullptr);
 
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
+    std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
-    std::optional<SplineDataVtk> getSplineData(Index model_id);
+    const std::vector<std::array<double, 3>>& globalPoints() const;
+
+    std::vector<GeometryDataVtk> getGeometryVtkData(Index model_id);
+    std::optional<GeometryDataVtk> getGeometryVtkDataByComponent(Index component_id);
+
+    std::vector<Index> getComponentIds(Index model_id) const;
+    Q_INVOKABLE int findModelIdByComponent(Index component_id) const;
+
+    Q_INVOKABLE QVariantList getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId);
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
     /**
@@ -68,8 +77,16 @@ public :
      */
     Q_INVOKABLE QList<Element::Type> getModelAttriType(Index model_id) const;
 
-    int getModelType(Index model_id) const;
+    Q_INVOKABLE QVariantList listModels() const;
+    Q_INVOKABLE QVariantList getComponentsSummary(Index model_id) const;
+    Q_INVOKABLE QVariantMap getMeshSummary(Index component_id) const;
+    Q_INVOKABLE QVariantMap getGeometrySummary(Index component_id) const;
+
+    std::optional<GeomFaceId> resolveGeometryFaceLocalId(Index component_id, int localFaceId);
+    std::optional<GeomEdgeId> resolveGeometryEdgeLocalId(Index component_id, int localEdgeId);
+    std::optional<GeomVertexId> resolveGeometryVertexLocalId(Index component_id, int localVertexId);
+    std::optional<GeomSolidId> resolveGeometrySolidLocalId(Index component_id, int localSolidId);
 
 private:
-    ModelManager* m_manager;
+    ModelLayer* m_manager;
 };

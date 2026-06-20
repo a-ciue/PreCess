@@ -23,10 +23,11 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkPoints.h>
 
 class MeshActor;
 class SelectManager;
-class SplineActorManager;
+class GeometryActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
@@ -36,7 +37,6 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
     Q_PROPERTY(bool cur_edge_render READ getCurEdgeRender NOTIFY curEdgeRenderChanged)
-    Q_PROPERTY(bool cur_vertex_render READ getCurVertexRender WRITE setCurVertexRender NOTIFY curVertexRenderChanged)
     QML_ELEMENT
 public:
     QRenderWindow(); // 槽函数，改变边框重置相机
@@ -53,9 +53,11 @@ public:
         vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
 
         std::unique_ptr<MeshActorManager> mesh_actor_manager_;
-        std::unique_ptr<SplineActorManager> spline_actor_manager_;
+        std::unique_ptr<GeometryActorManager> geometry_actor_manager_;
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
+
+        vtkNew<vtkPoints> global_points_;
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -67,17 +69,14 @@ public:
     void setModelQuery(QModelQuery* query);
     void setCurEdgeRender(bool edge_render);
     bool getCurEdgeRender();
-    void setCurVertexRender(bool is_render);
-    bool getCurVertexRender();
 
-    bool getIsEdgeRender(Data& vtk, Index model_id);
-    bool getIsVertexRender(Data& vtk, Index model_id);
+    bool getIsEdgeRender(Data& vtk, Index component_id);
 
     /**
      * @brief 选择模型
      * @param select_mode
      */
-    Q_INVOKABLE void setSelectModel(Index model_id);
+    Q_INVOKABLE void setSelectComponent(Index component_id);
 
     /**
      * @brief 改变选择模式
@@ -102,15 +101,22 @@ public:
      * @param select_mode
      */
     Q_INVOKABLE void setEdgeRender(Index model_id, bool is_render);
+    Q_INVOKABLE void setComponentEdgeRender(Index component_id, bool is_render);
 
     /**
      * @brief 改变可见性
      * @param select_mode
      */
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
+    Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
 
     Q_INVOKABLE void onModelChanged(Index model_id);
+    Q_INVOKABLE void onComponentChanged(Index component_id);
+
     Q_INVOKABLE void deleteModel(Index mode_id);
+    Q_INVOKABLE void deleteComponent(Index component_id);
+
+    void updateGlobalVtkPoints();
 
     /**
      * @brief 对网格对象设置全局裁剪模式
@@ -160,24 +166,24 @@ public:
 signals:
     void selectedChanged();
     void curEdgeRenderChanged();
-    void curVertexRenderChanged();
     void clicked();
 
 private:
     bool edge_render_ {};
     ModelRenderMode renderMode_ {};
-    bool vertex_render_ {};
     SelectMode select_mode_ {};
 
     vtkNew<vtkCamera> _camera;
 
     std::unique_ptr<SelectManager> selectManager_;
     MeshActor* cur_actor_ {};
-    Index cur_actor_id_;
+    Index cur_component_id_;
 
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
+
+    void updateGlobalVtkPointsImpl(Data* vtk);
 };
 #endif // Q_RENDER_WINDOW_H

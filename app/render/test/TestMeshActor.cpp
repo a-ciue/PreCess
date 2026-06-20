@@ -4,6 +4,7 @@
 #include <vtkCellType.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkNew.h>
+#include <vtkPoints.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
@@ -36,7 +37,13 @@ int main(int argc, char** argv)
     vtkNew<vtkInteractorStyleTrackballCamera> style;
     renderWindowInteractor->SetInteractorStyle(style);
 
-    MeshActor meshActor(renderer, true, true, ModelRenderMode::Face);
+    vtkNew<vtkPoints> pts;
+    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
+    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
+        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
+    }
+
+    MeshActor meshActor(renderer, pts, true, ModelRenderMode::Face);
     meshActor.loadModelData(test_mesh_data);
     meshActor.setRenderMode(ModelRenderMode::Face);
     meshActor.setVisibility(true);

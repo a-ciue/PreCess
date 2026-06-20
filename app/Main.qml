@@ -33,16 +33,6 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("PreCess")
 
-    Shortcut {
-        sequence: "F10"
-        onActivated: {
-            if (consoleDock.isOpen)
-                consoleDock.close()
-            else
-                consoleDock.show()
-        }
-    }
-
     menuBar: MenuBar{
         Menu{
             title: "文件"
@@ -126,6 +116,38 @@ ApplicationWindow {
         }
     }
 
+    // ===== modelObserver → objectTree / myItem =====
+    Timer {
+        id: refreshTimer
+        interval: 100
+        repeat: false
+        onTriggered: objectTree.refreshTree()
+    }
+
+    function resetSelectionState() {
+        objectTree.curComponentId = -1
+        objectTree.curModelId = -1
+        myItem.setSelectMode("None")
+        myItem.clearSelection()
+    }
+
+    Connections {
+        target: modelObserver
+
+        function onModelAdded(modelId)   { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
+        function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
+        function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId); resetSelectionState() }
+        function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId); resetSelectionState() }
+        function onComponentChanged(componentId) { refreshTimer.restart(); myItem.onComponentChanged(componentId); resetSelectionState() }
+    }
+
+    StackLayout{
+        id:stacklayout
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 0
+    }
+
     KDDW.DockingArea {
         id: dockingArea
         anchors.fill: parent
@@ -137,7 +159,7 @@ ApplicationWindow {
             id: objectListDock
             uniqueName: "objectList"
             title: "对象列表"
-            ObjectList {
+            ObjectTree {
                 anchors.fill: parent
             }
         }

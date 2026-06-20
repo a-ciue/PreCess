@@ -2,7 +2,9 @@
 #include "ArgObject.h"
 #include "ArgType.h"
 #include "MeshData.h"
-#include "ModelOperatorBase.h"
+#include "ComponentData.h"         
+#include "ComponentOperator.h"  
+#include "Selection.h" 
 
 #include <filesystem>
 #include <spdlog/spdlog.h>
@@ -10,34 +12,36 @@
 
 namespace systems::edit {
 using namespace core;
-ModelData CreateFaceHandler::execute(ModelData data, const std::vector<ArgObject>& args)
+std::any CreateFaceHandler::execute(ComponentOperator& op, const std::vector<core::ArgObject>& args)
 {
     // 参数检查
-    MeshData* mesh = data.asMeshData();
+    ComponentData& comp = op.component();
+    MeshData* mesh = comp.mesh.get();
     if (!mesh) {
-        spdlog::error("CreateFaceHandler::execute: ModelData is not a mesh.");
-        return data;
+        spdlog::error("CreateFaceHandler::execute: Current component has no mesh.");
+        return {}; // 返回空
     }
     auto selection_p = args[0].get<ArgTypeEnum::Selector>();
     if (!selection_p || !*selection_p) {
         spdlog::error("CreateFaceHandler::execute: Argument 1 is missing or of wrong type.");
-        return data;
+        return {};
     }
     auto selection = *selection_p;
     if (selection->type != ElementEnum::Vertex || selection->ids.size() < 3) {
         spdlog::error("CreateFaceHandler::execute: Selection type is not Vertex or vertices are less than 3.");
-        return data;
+        return {};
     }
 
-    spdlog::debug("CreateFaceHandler::execute: Creating face with points ID {}", selection->ids);
+    spdlog::debug("CreateFaceHandler::execute: Creating face on component {} with points ID {}",
+        op.componentId(), selection->ids);
 
     // 追加面对应的顶点索引 face_vertices_
     mesh->face_vertices_.insert(mesh->face_vertices_.end(), selection->ids.begin(), selection->ids.end());
 
     // 更新 face_vertices_offset_
-    mesh->face_vertices_offset_.push_back(mesh->face_vertices_.size());
+    mesh->face_vertices_offset_.push_back(static_cast<Index>(mesh->face_vertices_.size()));
 
-    return data;
+    return {};
 }
 
 std::vector<ArgType> CreateFaceHandler::args_type() const

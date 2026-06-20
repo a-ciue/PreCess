@@ -10,12 +10,14 @@ qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_icon_resource_windows})
 # 设置编译完成的组件在 qrc:/qt/qml
 qt_add_qml_module(${MYNAME}
         URI app
+        SOURCES
+            TreeModel.h
+            TreeModel.cpp
         QML_FILES
             Main.qml
             CentralRenderArea.qml
             SideBar.qml
-            ObjectList.qml
-            ObjectListModel.qml
+            ObjectTree.qml
             Selector.qml
             JavaScriptConsole.qml
             PluginManagerComponent.qml

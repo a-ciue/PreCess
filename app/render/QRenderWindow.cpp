@@ -6,10 +6,11 @@
 #include "QSelection.h"
 #include "SelectManager.h"
 #include "Selection.h"
-#include "SplineActorManager.h"
-#include "SplineDataVtk.h"
+#include "GeometryActorManager.h"
+#include "GeometryDataVtk.h"
 
 #include <spdlog/spdlog.h>
+#include <vtkDoubleArray.h>
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
@@ -45,10 +46,10 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
     renderWindow->AddRenderer(vtk->renderer_);
     this->data_ = vtk.GetPointer();
-    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
+    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>(vtk->global_points_.GetPointer());
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
-    vtk->spline_actor_manager_ = std::make_unique<SplineActorManager>();
-    vtk->spline_actor_manager_->bindRender(vtk->renderer_);
+    vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
+    vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
@@ -138,10 +139,54 @@ void QRenderWindow::deleteModel(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        vtk->mesh_actor_manager_->deleteModel(model_id);
-        vtk->spline_actor_manager_->deleteModel(model_id);
+
+        auto component_ids = model_query_->getComponentIds(model_id);
+        for (Index component_id : component_ids) {
+            vtk->mesh_actor_manager_->deleteComponent(component_id);
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
+        }
+
         this->selectManager_->clearSelection();
     });
+}
+
+void QRenderWindow::deleteComponent(Index component_id)
+{
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->deleteComponent(component_id);
+        }
+
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
+        }
+
+        this->selectManager_->clearSelection();
+    });
+}
+
+void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
+{
+    if (!vtk || !model_query_)
+        return;
+
+    const auto& pts = model_query_->globalPoints();
+    auto count = static_cast<vtkIdType>(pts.size());
+    vtkIdType totalVals = count * 3;
+
+    vtkNew<vtkDoubleArray> arr;
+    arr->SetNumberOfComponents(3);
+    arr->SetArray(const_cast<double*>(pts.data()->data()), totalVals, 1);
+
+    vtk->global_points_->SetData(arr);
+
+    if (vtk->mesh_actor_manager_) {
+        vtk->mesh_actor_manager_->syncOriginalPointIds();
+    }
+
+    spdlog::info("[VTK GlobalPoints] updated: N={}", (int)vtk->global_points_->GetNumberOfPoints());
 }
 
 void QRenderWindow::setMeshClip(bool on)
@@ -169,21 +214,46 @@ void QRenderWindow::onModelChanged(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        int type = this->model_query_->getModelType(model_id);
-        if (this->model_query_->getModelType(model_id) == 0) {
-            std::optional mesh_data = model_query_->getMeshData(model_id);
+
+        auto component_ids = model_query_->getComponentIds(model_id);
+        updateGlobalVtkPointsImpl(vtk);
+
+        for (Index component_id : component_ids) {
+            auto mesh_data = model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
-                vtk->mesh_actor_manager_->loadModel(model_id, *mesh_data, vtk->renderer_, this->renderMode_);
+                vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
             }
-        } else if (this->model_query_->getModelType(model_id) == 1) {
-            std::optional spline_data = model_query_->getSplineData(model_id);
-            if (spline_data) {
-                vtk->spline_actor_manager_->loadSpline(model_id, *spline_data);
+
+            auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
+            if (geometry_data) {
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
             }
-        } else {
-            vtk->mesh_actor_manager_->deleteModel(model_id);
-            vtk->spline_actor_manager_->deleteModel(model_id);
-            spdlog::info("QRenderWindow::onModelChanged: unrecognized model type loaded as empty.");
+        }
+    });
+}
+
+void QRenderWindow::onComponentChanged(Index component_id)
+{
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (!this->model_query_)
+            return;
+
+        updateGlobalVtkPointsImpl(vtk);
+
+        if (vtk->mesh_actor_manager_) {
+            auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
+            if (mesh_data) {
+                vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
+            }
+        }
+
+        if (vtk->geometry_actor_manager_) {
+            auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
+            if (geometry_data) {
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+            }
         }
     });
 }
@@ -193,8 +263,27 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
     dispatch_async([model_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->clearSelection();
-        vtk->mesh_actor_manager_->setVisibility(model_id, visibility);
-        vtk->spline_actor_manager_->setVisibility(model_id, visibility);
+
+        auto component_ids = model_query_->getComponentIds(model_id);
+        for (Index component_id : component_ids) {
+            vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
+            vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
+        }
+    });
+}
+
+void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
+{
+    dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
+        }
+
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
+        }
     });
 }
 
@@ -205,7 +294,7 @@ QSelection* QRenderWindow::selectedIDs()
         return nullptr;
     }
 
-    data->model_id = this->cur_actor_id_;
+    data->component_id = this->cur_component_id_;
     QSelection* selection = new QSelection(std::move(data));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
@@ -228,59 +317,35 @@ bool QRenderWindow::getCurEdgeRender()
     return this->edge_render_;
 }
 
-void QRenderWindow::setCurVertexRender(bool is_render)
+bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
 {
-    this->vertex_render_ = is_render;
-    emit curVertexRenderChanged();
+    if (component_id < 0) return false;
 
-    dispatch_async([this, is_render](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        vtk->mesh_actor_manager_->setRenderVertex(this->cur_actor_id_, is_render);
-    });
-}
-
-bool QRenderWindow::getCurVertexRender()
-{
-    return this->vertex_render_;
-}
-
-bool QRenderWindow::getIsEdgeRender(Data& vtk, Index model_id)
-{
-    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->getCount(model_id)) {
-        return vtk.mesh_actor_manager_->getIsEdgeRender(model_id);
+    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
+        return vtk.mesh_actor_manager_->getIsEdgeRender(component_id);
     }
-    if (vtk.spline_actor_manager_ && vtk.spline_actor_manager_->getCount(model_id)) {
-        return vtk.spline_actor_manager_->getIsEdgeRender(model_id);
+    if (vtk.geometry_actor_manager_ && vtk.geometry_actor_manager_->hasComponent(component_id)) {
+        return vtk.geometry_actor_manager_->getIsEdgeRender(component_id);
     }
 
     spdlog::error("QRenderWindow::getIsEdgeRender: error getting edge render mode");
     return false;
 }
 
-bool QRenderWindow::getIsVertexRender(Data& vtk, Index model_id)
+void QRenderWindow::setSelectComponent(Index component_id)
 {
-    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->getCount(model_id)) {
-        return vtk.mesh_actor_manager_->getIsVertexRender(model_id);
-    }
-
-    spdlog::error("QRenderWindow::getIsVertexRender: error getting vertex render mode");
-    return false;
-}
-
-void QRenderWindow::setSelectModel(Index model_id)
-{
-    dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->bindRenderer(vtk->renderer_);
-        this->cur_actor_id_ = model_id;
-        this->setCurEdgeRender(this->getIsEdgeRender(*vtk, model_id));
+        this->cur_component_id_ = component_id;
+        this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
 
-        this->vertex_render_ = this->getIsVertexRender(*vtk, model_id);
-        emit curVertexRenderChanged();
+        std::shared_ptr<const MeshActor> mesh_actor;
+        if (vtk->mesh_actor_manager_->hasComponent(component_id))
+            mesh_actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
 
-        if (vtk->mesh_actor_manager_->getCount(model_id))
-            selectManager_->setSelectActor(vtk->mesh_actor_manager_->getModelActor(model_id));
+        if (mesh_actor)
+            selectManager_->setSelectActor(mesh_actor);
         else
             selectManager_->setSelectActor({});
     });
@@ -320,10 +385,17 @@ void QRenderWindow::setRenderMode(Index model_id, QString render_mode)
     dispatch_async([model_id, render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         this->selectManager_->clearSelection();
+
+        auto component_ids = model_query_->getComponentIds(model_id);
+
         if (render_mode == "Face") {
-            vtk->mesh_actor_manager_->setRenderMode(model_id, ModelRenderMode::Face);
+            for (Index component_id : component_ids) {
+                vtk->mesh_actor_manager_->setRenderMode(component_id, ModelRenderMode::Face);
+            }
         } else if (render_mode == "Block") {
-            vtk->mesh_actor_manager_->setRenderMode(model_id, ModelRenderMode::Block);
+            for (Index component_id : component_ids) {
+                vtk->mesh_actor_manager_->setRenderMode(component_id, ModelRenderMode::Block);
+            }
         } else {
             qWarning() << "render mode error!";
         }
@@ -335,8 +407,29 @@ void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
     dispatch_async([model_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->mesh_actor_manager_->setRenderEdge(model_id, is_render);
-        vtk->spline_actor_manager_->setRenderEdge(model_id, is_render);
+
+        auto component_ids = model_query_->getComponentIds(model_id);
+        for (Index component_id : component_ids) {
+            vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
+            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
+        }
+
         this->setCurEdgeRender(is_render);
+    });
+}
+
+void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
+{
+    dispatch_async([component_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
+        }
+
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
+        }
     });
 }
 
@@ -379,9 +472,9 @@ void QRenderWindow::setAttriMode(
             }
         }
         spdlog::info("modeEnum: {}", static_cast<int>(mode_enum));
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
             vtk->mesh_actor_manager_->setAttriMode(
-                cur_actor_id_,
+                cur_component_id_,
                 attr_name.toStdString(),
                 mode_enum,
                 std_args);
@@ -394,9 +487,9 @@ void QRenderWindow::cancelAttri()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_actor_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
             vtk->mesh_actor_manager_->cancelAttri(
-                cur_actor_id_);
+                cur_component_id_);
         }
         spdlog::info("--------cancelAttri-----------");
     });

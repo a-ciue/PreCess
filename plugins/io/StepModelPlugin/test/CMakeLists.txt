@@ -1,0 +1,2 @@
+precess_add_test(TestStepModelHandler TestStepModelHandler.cpp)
+precess_test_link_libraries(TestStepModelHandler StepModelPluginlib DataTest)

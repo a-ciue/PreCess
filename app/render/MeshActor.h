@@ -9,6 +9,8 @@
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include <vtkPropCollection.h>
+#include <vtkPoints.h>
+#include <vtkIdTypeArray.h>
 class vtkGeometryFilter;
 class vtkExtractGeometry;
 class vtkExtractPolyDataGeometry;
@@ -27,7 +29,7 @@ public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    MeshActor(vtkRenderer* renderer, bool is_edge_render = true, bool is_vertex_render = true, ModelRenderMode render_mode = ModelRenderMode::Face);
+    MeshActor(vtkRenderer* renderer, vtkPoints* global_points, bool is_edge_render = true, ModelRenderMode render_mode = ModelRenderMode::Face);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -39,11 +41,9 @@ public:
      */
     void setClipPlane(vtkPlane* plane);
     void setRenderEdge(bool is_render);
-    void setRenderVertex(bool is_render);
     void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
-    bool getIsVertexRender();
 
     ModelRenderMode getMeshRenderMode();
     /**
@@ -64,17 +64,16 @@ public:
         const std::string& attr_name,
         std::map<std::string, std::any> args);
 
+    void ensureOriginalPointIds();
+
 private:
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     ModelRenderMode render_mode_;
     bool edge_render_ { true };
-    bool vertex_render_ {};
     bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
 
     vtkPlane* clip_plane_ {};
-
-    vtkNew<vtkExtractPolyDataGeometry> vertex_clipper_;
     vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;
     vtkNew<vtkExtractPolyDataGeometry> face_clipper_;
     vtkNew<vtkExtractGeometry> solid_clipper_;
@@ -90,7 +89,6 @@ private:
     vtkNew<vtkActor> solid_actor_;
     vtkNew<vtkActor> face_actor_;
     vtkNew<vtkActor> edge_actor_;
-    vtkNew<vtkActor> vertex_actor_;
     vtkNew<vtkActor> glyph3D_actor_;
 
     vtkNew<vtkUnstructuredGrid> solid_data_;
@@ -101,6 +99,9 @@ private:
     vtkRenderer* renderer_;
 
     vtkNew<vtkActor> actor_;
+
+    vtkPoints* global_points_ {};
+    vtkNew<vtkIdTypeArray> original_point_ids_;
 
     vtkNew<vtkCompositePolyDataMapper> block_mapper_;
     void createBlockMapper(const MeshDataVtk& model_data);

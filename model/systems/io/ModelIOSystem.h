@@ -12,7 +12,7 @@
 #include <unordered_map>
 #include <vector>
 
-class ModelManager;
+class ModelLayer;
 
 namespace systems::io {
 class ModelIOHandler;
@@ -34,7 +34,7 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>;
     static const std::string name; //> 系统名称
 
-    ModelIOSystem(ModelManager& manager);
+    ModelIOSystem(ModelLayer& manager);
     ~ModelIOSystem() override;
     /**
      * @brief 系统的读模型接口
@@ -51,6 +51,10 @@ public:
      * @param args 写操作的参数，传给Handler
      */
     void write(Index model, const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override;
+    void writeComponents(const std::vector<Index>& component_ids,
+        const std::filesystem::path& path,
+        const std::string& file_type,
+        const std::vector<std::any>& args) override;
     /**
      * @brief 系统的功能Handler注册函数
      * @param meta_data 功能的元信息
@@ -72,7 +76,7 @@ public:
     void setOnDialogNameFiltersChanged(std::function<void()> callback);
 
 private:
-    ModelManager* manager_;
+    ModelLayer* manager_;
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //> 键是文件类型
     std::unordered_map<std::string, std::unique_ptr<ModelIOInfo>> file_type_infos_; //> 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
 

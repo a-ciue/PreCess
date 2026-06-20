@@ -72,15 +72,19 @@ Item{
                         }
                     }
                 }
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AsNeeded
+                    background: Rectangle {
+                        implicitWidth: 8
+                        color: "transparent"
+                    }
+                    contentItem: Rectangle {
+                        implicitWidth: 8
+                        radius: 4
+                        color: parent.hovered ? "#c0c0c0" : "#e0e0e0"
+                    }
+                }
             }
-        }
-        Rectangle{
-            id: scrollbar
-            anchors.right: parent.right
-            y: parameterList.visibleArea.yPosition * parameterList.height
-            width: 5
-            height: parameterList.visibleArea.heightRatio * parameterList.height
-            color: "grey"
         }
     }
 

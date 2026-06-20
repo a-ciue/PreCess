@@ -16,7 +16,7 @@ class ModelIOSystem;
 namespace systems::edit {
 class EditSystem;
 }
-class ModelManager;
+class ModelLayer;
 
 class QModelManager : public QObject {
     Q_OBJECT
@@ -33,8 +33,9 @@ public:
     ~QModelManager();
 
     Q_INVOKABLE void removeModel(int id);
+    Q_INVOKABLE void removeComponent(int id);
     Q_INVOKABLE QObject* getOperator(int id);
-    ModelManager* getModelManager();
+    ModelLayer* getModelManager();
     QModelObserver* getModelObserver() const;
     QModelQuery* getModelQuery() const;
     systems::algo::QAlgorithmSystemAdaptor* getAlgorithmSystemAdaptor() const;
@@ -53,10 +54,10 @@ signals:
     void modelRemoved(int id);
     void modelUpdated(int id);
     void modelNameChanged(int id, const QString& newName);
-    void splineLoadFailed(const QString& message);
+    void geometryLoadFailed(const QString& message);
 
 private:
-    std::unique_ptr<ModelManager> core_;
+    std::unique_ptr<ModelLayer> core_;
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
