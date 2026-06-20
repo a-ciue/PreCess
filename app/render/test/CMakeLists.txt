@@ -14,7 +14,6 @@ target_link_libraries(TestEdgeSelectorHighlight PRIVATE
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestEdgeSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
-install(TARGETS TestEdgeSelectorHighlight)
 
 # TestFaceSelectorHighlight
 add_executable(TestFaceSelectorHighlight "TestFaceSelectorHighlight.cpp")
@@ -23,7 +22,6 @@ target_link_libraries(TestFaceSelectorHighlight PRIVATE
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestFaceSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
-install(TARGETS TestFaceSelectorHighlight)
 
 # TestSolidSelectorHighlight
 add_executable(TestSolidSelectorHighlight "TestSolidSelectorHighlight.cpp")
@@ -33,7 +31,6 @@ target_link_libraries(TestSolidSelectorHighlight PRIVATE
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestSolidSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
-install(TARGETS TestSolidSelectorHighlight)
 
 # TestVertexSelectorHighlight
 add_executable(TestVertexSelectorHighlight TestVertexSelectorHighlight.cpp)
@@ -42,7 +39,6 @@ target_link_libraries(TestVertexSelectorHighlight PRIVATE
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestVertexSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
-install(TARGETS TestVertexSelectorHighlight)
 
 # TestMeshActor
 add_executable(TestMeshActor TestMeshActor.cpp)
@@ -51,7 +47,6 @@ target_link_libraries(TestMeshActor PRIVATE
     VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestMeshActor MODULES VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry)
-install(TARGETS TestMeshActor)
 
 # TestMeshData
 add_executable(TestMeshData TestMeshData.cpp)
@@ -60,4 +55,3 @@ target_link_libraries(TestMeshData PRIVATE
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestVertexSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
-install(TARGETS TestMeshData)
