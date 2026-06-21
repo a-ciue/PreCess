@@ -4,7 +4,6 @@ precess_add_algo_plugin(GmshPlugin
     SOURCES
         "GmshMeshHandler.cpp"
         "GmshIncrementalMeshState.cpp"
-        "IncrementalMeshContext.cpp"
         "IncrementalMeshTools.cpp"
     PLUGIN_H "GmshMeshPlugin.h"
 )

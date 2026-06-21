@@ -4,7 +4,6 @@
 #include "ComponentData.h"
 #include "ComponentOperator.h"
 #include "GeometryData.h"
-#include "IncrementalMeshContext.h"
 #include "IncrementalMeshTools.h"
 #include "MeshData.h"
 #include "ModelIOSystemBase.h"
@@ -93,16 +92,8 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     GmshIncrementalMeshState& state = component_states_[context.cur_component.componentId()];
 
-    // 首次执行时建立 OCC 面/边索引，后续单面划分复用该上下文。
-    if (!state.meshContext) {
-        spdlog::info("GmshMesh: init occId...");
-        state.meshContext = std::make_unique<IncrementalMeshContext>(*geometry, modelLayer.geomRegistry());
-        spdlog::info("GmshMesh: {} face, {} global edge",
-            state.meshContext->faceCount(),
-            state.meshContext->globalEdgeCount());
-    }
-
-    std::size_t totalFaces = state.meshContext->faceCount();
+    geometry->ensureCadIndexBuilt(modelLayer.geomRegistry());
+    std::size_t totalFaces = IncrementalMeshTools::faceCount(*geometry);
     if (static_cast<std::size_t>(faceIndex) >= totalFaces) {
         spdlog::error("GmshMesh: face id {} out of range (total {} face)",
             faceIndex, totalFaces);
@@ -125,7 +116,8 @@ std::any systems::algo::GmshMeshHandler::execute(
             *meshData, *geometry, state, modelLayer, faceKey, meshSize, meshTypeIndex);
     } else if (operationMode == 2) {
         spdlog::info("GmshMesh: delete mesh for face {}", faceIndex);
-        if (IncrementalMeshTools::deleteFaceMesh(*meshData, state, modelLayer, faceKey))
+        if (IncrementalMeshTools::deleteFaceMesh(
+                *meshData, *geometry, state, modelLayer, faceKey))
             spdlog::info("GmshMesh: delete face {} success", faceIndex);
     } else if (operationMode == 3) {
         spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceIndex, meshSize);

@@ -1,5 +1,4 @@
 #include "IncrementalMeshTools.h"
-#include "IncrementalMeshContext.h"
 
 #include "GeometryRegistry.h"
 #include "GmshMeshTypes.h"
@@ -16,10 +15,12 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopExp_Explorer.hxx>
 
 #include <gmsh.h>
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <cmath>
 #include <map>
 #include <vector>
@@ -129,6 +130,43 @@ TopoDS_Compound makeFaceCompound(const TopoDS_Face& face)
     return compound;
 }
 
+// 返回 GeometryData 中指定索引的 CAD 面，实际 Shape 统一从 GeometryRegistry 取得。
+TopoDS_Face getFaceByIndex(
+    const GeometryData& geometry,
+    const GeometryRegistry& registry,
+    std::size_t faceIndex)
+{
+    const auto& faceMap =
+        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)];
+    int localFaceId = static_cast<int>(faceIndex) + 1;
+    if (localFaceId < 1 || localFaceId > faceMap.Extent())
+        return {};
+
+    GeomFaceId globalFaceId = geometry.cad_index.faceGlobalId(localFaceId);
+    const TopoDS_Shape* shape = registry.getFace(globalFaceId);
+    return shape ? TopoDS::Face(*shape) : TopoDS_Face {};
+}
+
+// 遍历一个 CAD 面，返回其去重后的全局边 ID。
+std::vector<GeomEdgeId> getFaceEdgeIds(
+    const TopoDS_Face& face,
+    const GeometryData& geometry)
+{
+    const auto& edgeMap =
+        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)];
+
+    std::vector<GeomEdgeId> edgeIds;
+    for (TopExp_Explorer explorer(face, TopAbs_EDGE); explorer.More(); explorer.Next()) {
+        int localEdgeId = edgeMap.FindIndex(explorer.Current());
+        GeomEdgeId globalEdgeId = geometry.cad_index.edgeGlobalId(localEdgeId);
+        if (globalEdgeId != kInvalidGeomEdgeId
+            && std::find(edgeIds.begin(), edgeIds.end(), globalEdgeId) == edgeIds.end()) {
+            edgeIds.push_back(globalEdgeId);
+        }
+    }
+    return edgeIds;
+}
+
 // 将前端 Combo 索引转换为内部曲面网格类型。
 GmshSurfaceMeshType parseSurfaceMeshType(int meshTypeIndex)
 {
@@ -154,12 +192,22 @@ const char* surfaceMeshTypeName(GmshSurfaceMeshType meshType)
 // 逐条导入当前面的 OCC 边，并直接使用公开 API 返回的 tag 建立 CAD 边映射。
 // 后续导入整个面时，Gmsh 会通过内部 Shape 映射复用这些已经绑定的曲线 tag。
 std::map<int, GeomEdgeId> importGmshEdges(const TopoDS_Face& face,
-    const IncrementalMeshContext& ctx)
+    const GeometryData& geometry)
 {
     std::map<int, GeomEdgeId> result;
-    const auto edgeInfos = ctx.getFaceEdgeInfos(face);
-    for (const auto& info : edgeInfos) {
-        TopoDS_Edge edge = ctx.getEdgeByGlobalId(info.edgeId);
+    const auto& edgeMap =
+        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)];
+    std::vector<GeomEdgeId> importedEdgeIds;
+
+    for (TopExp_Explorer explorer(face, TopAbs_EDGE); explorer.More(); explorer.Next()) {
+        TopoDS_Edge edge = TopoDS::Edge(explorer.Current());
+        int localEdgeId = edgeMap.FindIndex(edge);
+        GeomEdgeId globalEdgeId = geometry.cad_index.edgeGlobalId(localEdgeId);
+        if (globalEdgeId == kInvalidGeomEdgeId
+            || std::find(importedEdgeIds.begin(), importedEdgeIds.end(), globalEdgeId) != importedEdgeIds.end()) {
+            continue;
+        }
+        importedEdgeIds.push_back(globalEdgeId);
 
         gmsh::vectorpair edgeDimTags;
         gmsh::model::occ::importShapesNativePointer(
@@ -174,16 +222,16 @@ std::map<int, GeomEdgeId> importGmshEdges(const TopoDS_Face& face,
         }
 
         if (gmshTag <= 0) {
-            spdlog::warn("  Cannot import OCC edge {}", info.edgeId);
+            spdlog::warn("  Cannot import OCC edge {}", globalEdgeId);
             continue;
         }
 
-        result[gmshTag] = info.edgeId;
-        spdlog::info("  GMSH edge {} -> OCC edge {}", gmshTag, info.edgeId);
+        result[gmshTag] = globalEdgeId;
+        spdlog::info("  GMSH edge {} -> OCC edge {}", gmshTag, globalEdgeId);
     }
 
     spdlog::info("  Imported {}/{} OCC edges",
-        result.size(), edgeInfos.size());
+        result.size(), importedEdgeIds.size());
     return result;
 }
 
@@ -599,11 +647,13 @@ bool IncrementalMeshTools::initMeshing(const std::string& stepFile,
         spdlog::error("Failed to load: {}", stepFile);
         return false;
     }
-    state.meshContext = std::make_unique<IncrementalMeshContext>(geometry, registry);
+    geometry.ensureCadIndexBuilt(registry);
+    std::size_t faceCount = IncrementalMeshTools::faceCount(geometry);
+    std::size_t edgeCount = static_cast<std::size_t>(
+        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)].Extent());
     spdlog::info("Loaded: {} faces, {} global edges",
-        state.meshContext->faceCount(),
-        state.meshContext->globalEdgeCount());
-    return state.meshContext->faceCount() > 0;
+        faceCount, edgeCount);
+    return faceCount > 0;
 }
 
 SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
@@ -618,20 +668,18 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     SingleFaceMeshResult result;
     GmshSurfaceMeshType meshType = parseSurfaceMeshType(meshTypeIndex);
 
-    if (!state.meshContext) {
-        spdlog::error("meshContext null, call initMeshing first");
-        return result;
-    }
-    if (faceIndex >= state.meshContext->faceCount()) {
+    std::size_t totalFaces = IncrementalMeshTools::faceCount(geometry);
+    if (faceIndex >= totalFaces) {
         spdlog::error("faceIndex {} out of range", faceIndex);
         return result;
     }
 
     spdlog::info("=== Meshing face {}/{} (size={:.6f}, type={}) ===",
-        faceIndex + 1, state.meshContext->faceCount(), meshSize,
+        faceIndex + 1, totalFaces, meshSize,
         surfaceMeshTypeName(meshType));
 
-    TopoDS_Face face = state.meshContext->getFaceByIndex(faceIndex);
+    TopoDS_Face face = getFaceByIndex(
+        geometry, model_layer.geomRegistry(), faceIndex);
     if (face.IsNull()) {
         spdlog::error("Face {} is null or invalid", faceIndex);
         return result;
@@ -643,7 +691,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     gmsh::model::add("face_model");
 
     // 先逐边导入并记录返回 tag，再导入整个面；面导入会复用相同 OCC 边的 tag。
-    auto gmshToOcc = importGmshEdges(face, *state.meshContext);
+    auto gmshToOcc = importGmshEdges(face, geometry);
 
     gmsh::vectorpair outDimTags;
     gmsh::model::occ::importShapesNativePointer(
@@ -744,9 +792,12 @@ double IncrementalMeshTools::estimateMeshSize(const GeometryData& geometry)
     return 10.0;
 }
 
-std::size_t IncrementalMeshTools::faceCount(const GmshIncrementalMeshState& state)
+std::size_t IncrementalMeshTools::faceCount(const GeometryData& geometry)
 {
-    return state.meshContext ? state.meshContext->faceCount() : 0;
+    if (!geometry.cad_index.built)
+        return 0;
+    return static_cast<std::size_t>(
+        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].Extent());
 }
 
 std::size_t IncrementalMeshTools::meshedEdgeCount(const GmshIncrementalMeshState& state)
@@ -817,6 +868,7 @@ bool IncrementalMeshTools::writeMeshObj(
 
 bool IncrementalMeshTools::deleteFaceMesh(
     MeshData& mesh_data,
+    GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
     std::size_t faceIndex)
@@ -829,18 +881,16 @@ bool IncrementalMeshTools::deleteFaceMesh(
     }
 
     // 释放面的边界边（更新引用计数并在归零时移除）
-    if (state.meshContext) {
-        TopoDS_Face face = state.meshContext->getFaceByIndex(faceIndex);
-        auto occEdges = state.meshContext->getFaceEdgeIds(face);
-        for (GeomEdgeId globalEdgeId : occEdges) {
-            auto refIt = state.meshedEdgeRefCounts.find(globalEdgeId);
-            if (refIt != state.meshedEdgeRefCounts.end()) {
-                refIt->second--;
-                if (refIt->second <= 0) {
-                    state.meshedEdgeRefCounts.erase(refIt);
-                    state.meshedEdgesCache.erase(globalEdgeId);
-                    spdlog::info("Edge {} cache cleaned up.", globalEdgeId);
-                }
+    TopoDS_Face face = getFaceByIndex(
+        geometry, model_layer.geomRegistry(), faceIndex);
+    for (GeomEdgeId globalEdgeId : getFaceEdgeIds(face, geometry)) {
+        auto refIt = state.meshedEdgeRefCounts.find(globalEdgeId);
+        if (refIt != state.meshedEdgeRefCounts.end()) {
+            refIt->second--;
+            if (refIt->second <= 0) {
+                state.meshedEdgeRefCounts.erase(refIt);
+                state.meshedEdgesCache.erase(globalEdgeId);
+                spdlog::info("Edge {} cache cleaned up.", globalEdgeId);
             }
         }
     }
@@ -895,7 +945,7 @@ SingleFaceMeshResult IncrementalMeshTools::remeshSingleFace(
 {
     if (state.meshedFacesCache.find(faceIndex) != state.meshedFacesCache.end()) {
         spdlog::info("Remeshing: Face {} is already meshed, deleting old mesh first.", faceIndex);
-        deleteFaceMesh(mesh_data, state, model_layer, faceIndex);
+        deleteFaceMesh(mesh_data, geometry, state, model_layer, faceIndex);
     }
     return meshSingleFace(
         mesh_data, geometry, state, model_layer, faceIndex, meshSize, meshTypeIndex);

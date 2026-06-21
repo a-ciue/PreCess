@@ -1,7 +1,6 @@
 #include <gmsh.h>
 
 #include "GeometryData.h"
-#include "IncrementalMeshContext.h"
 #include "IncrementalMeshTools.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
@@ -91,11 +90,8 @@ static void resetGeneratedMesh(AppContext& ctx)
 {
     ctx.meshData.init();
     ctx.gmshState.clear();
-    if (ctx.geometry.rootShape) {
+    if (ctx.geometry.rootShape)
         ctx.geometry.ensureCadIndexBuilt(ctx.modelLayer.geomRegistry());
-        ctx.gmshState.meshContext =
-            std::make_unique<IncrementalMeshContext>(ctx.geometry, ctx.modelLayer.geomRegistry());
-    }
     ctx.currentIndex = 0;
     ctx.meshSize = IncrementalMeshTools::estimateMeshSize(ctx.geometry);
     reloadPolyData(ctx);
@@ -170,7 +166,7 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
     auto* interactor = static_cast<vtkRenderWindowInteractor*>(caller);
     std::string key = interactor->GetKeySym();
 
-    std::size_t total = IncrementalMeshTools::faceCount(ctx->gmshState);
+    std::size_t total = IncrementalMeshTools::faceCount(ctx->geometry);
 
     if (key == "space") {
         if (ctx->currentIndex >= total) {
@@ -208,7 +204,9 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             return;
         }
         ctx->currentIndex--;
-        if (IncrementalMeshTools::deleteFaceMesh(ctx->meshData, ctx->gmshState, ctx->modelLayer, ctx->currentIndex)) {
+        if (IncrementalMeshTools::deleteFaceMesh(
+                ctx->meshData, ctx->geometry, ctx->gmshState,
+                ctx->modelLayer, ctx->currentIndex)) {
             reloadPolyData(*ctx);
         }
     } else if (key == "h" || key == "H") {

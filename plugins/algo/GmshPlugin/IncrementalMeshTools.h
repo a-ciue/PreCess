@@ -39,13 +39,14 @@ SingleFaceMeshResult remeshSingleFace(
 
 bool deleteFaceMesh(
     MeshData& mesh_data,
+    GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
     std::size_t faceIndex);
 
 double estimateMeshSize(const GeometryData& geometry);
 
-std::size_t faceCount(const GmshIncrementalMeshState& state);
+std::size_t faceCount(const GeometryData& geometry);
 
 std::size_t meshedEdgeCount(const GmshIncrementalMeshState& state);
 

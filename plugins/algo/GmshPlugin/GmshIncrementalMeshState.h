@@ -4,10 +4,7 @@
 
 #include <array>
 #include <map>
-#include <memory>
 #include <vector>
-
-class IncrementalMeshContext;
 
 // 保存一条已生成网格的 CAD 边，供相邻面复用边界节点。
 struct MeshedEdgeData {
@@ -31,8 +28,7 @@ struct GmshIncrementalMeshState {
     GmshIncrementalMeshState();
     ~GmshIncrementalMeshState();
 
-    std::unique_ptr<IncrementalMeshContext> meshContext;
-    // 已划分 CAD 边的节点缓存，key 使用 pr-38 的全局 CAD 边 ID。
+    // 已划分 CAD 边的节点缓存，key 使用 geometry 的全局 CAD 边 ID。
     std::map<GeomEdgeId, MeshedEdgeData> meshedEdgesCache;
     std::map<std::size_t, SingleFaceMeshResult> meshedFacesCache;
     // 已划分 CAD 边被多少个面复用，用于删除面网格时判断是否清理边缓存。
