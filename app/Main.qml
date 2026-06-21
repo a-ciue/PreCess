@@ -185,6 +185,7 @@ ApplicationWindow {
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
                 QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
+                App.registry.renderWindow.resetCamera()
             } else {
                 console.exception("No valid file type selected.")
             }
