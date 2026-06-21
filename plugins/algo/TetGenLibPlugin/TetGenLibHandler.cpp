@@ -19,12 +19,31 @@
 namespace {
 constexpr unsigned char kVtkTetra = 10;
 
-std::string makeTetGenSwitches(bool keep_outer, double quality_bound)
+std::string makeTetGenSwitches(bool keep_outer,
+    bool preserve_surface,
+    bool detect_intersections_only,
+    double quality_bound,
+    double max_volume)
 {
-    std::string switches = "pq" + std::to_string(quality_bound) + "Q";
+    std::string switches = "p";
+    if (detect_intersections_only) {
+        switches += "d";
+        return switches;
+    }
+
+    if (quality_bound > 0.0) {
+        switches += "q" + std::to_string(quality_bound);
+    }
+    if (max_volume > 0.0) {
+        switches += "a" + std::to_string(max_volume);
+    }
+    if (preserve_surface) {
+        switches += "Y";
+    }
     if (keep_outer) {
         switches += "H";
     }
+    switches += "Q";
     return switches;
 }
 
@@ -173,14 +192,19 @@ std::unique_ptr<MeshData> buildMeshDataFromTetGenOutput(const tetgenio& output)
 
 std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const std::vector<core::ArgObject>& args)
 {
-    if (args.size() < 2) {
+    if (args.size() < 5) {
         spdlog::critical("TetGenLibHandler: Not enough arguments provided.");
         return {};
     }
 
     const int* keep_outer_idx = args[0].get<ArgTypeEnum::Combo>();
     const double* quality_bound = args[1].get<ArgTypeEnum::Float>();
-    if (!keep_outer_idx || *keep_outer_idx < 0 || !quality_bound) {
+    const double* max_volume = args[2].get<ArgTypeEnum::Float>();
+    const int* preserve_surface_idx = args[3].get<ArgTypeEnum::Combo>();
+    const int* detect_intersections_idx = args[4].get<ArgTypeEnum::Combo>();
+    if (!keep_outer_idx || *keep_outer_idx < 0 || !quality_bound || !max_volume
+        || !preserve_surface_idx || *preserve_surface_idx < 0
+        || !detect_intersections_idx || *detect_intersections_idx < 0) {
         spdlog::critical("TetGenLibHandler: Invalid arguments.");
         return {};
     }
@@ -199,7 +223,13 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
     }
 
     const bool keep_outer = *keep_outer_idx == 0;
-    std::string switches = makeTetGenSwitches(keep_outer, *quality_bound);
+    const bool preserve_surface = *preserve_surface_idx == 0;
+    const bool detect_intersections_only = *detect_intersections_idx == 0;
+    std::string switches = makeTetGenSwitches(keep_outer,
+        preserve_surface,
+        detect_intersections_only,
+        *quality_bound,
+        *max_volume);
     spdlog::debug("TetGenLibHandler: tetrahedralize switches: {}", switches);
 
     try {
@@ -212,6 +242,11 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         return {};
     } catch (...) {
         spdlog::critical("TetGenLibHandler: TetGen failed with unknown exception");
+        return {};
+    }
+
+    if (detect_intersections_only) {
+        spdlog::info("TetGenLibHandler: PLC self-intersection detection finished");
         return {};
     }
 
@@ -234,7 +269,10 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
 std::vector<core::ArgType> systems::algo::TetGenLibHandler::args_type() const
 {
     return {
-        core::ArgType { ArgTypeEnum::Combo, "是否仅保留最外层腔体", "是,否" },
-        core::ArgType { ArgTypeEnum::Float, "质量参数（越大越粗，建议1.2）", "1.2" },
+        core::ArgType { ArgTypeEnum::Combo, "是否仅保留最外层腔体", "是,否|1" },
+        core::ArgType { ArgTypeEnum::Float, "质量参数 q（0表示关闭）", "1.2" },
+        core::ArgType { ArgTypeEnum::Float, "最大单元体积 a（0表示关闭）", "0" },
+        core::ArgType { ArgTypeEnum::Combo, "是否保留原始表面", "是,否|1" },
+        core::ArgType { ArgTypeEnum::Combo, "是否仅检测自交", "是,否|1" },
     };
 }

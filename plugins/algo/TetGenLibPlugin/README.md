@@ -15,7 +15,7 @@ third_party/tetgen/
 └─ CHANGELOG.md
 ```
 
-本目录目前仍是任务/实验目录，尚未在 `../CMakeLists.txt` 中 `add_subdirectory`，不会影响现有构建。
+本目录已经通过 `../CMakeLists.txt` 接入构建，会生成 `TetGenLibPlugin` 插件；TetGen 源码由本插件目录内的 CMake 统一编译为内部静态库 `TetGenInternal`。
 
 ## 目标
 
@@ -54,9 +54,9 @@ tetrahedralize("pq1.414a0.1", &in, &out);
 - `tetgenio` 用数组替代输入/输出文件，保存点、facet、四面体、边界 marker、孔洞、区域等数据。
 - `tetrahedralize()` 的 switches 字符串与命令行参数一致，但不带前导 `-`。
 
-## CMake 草案
+## CMake 集成
 
-已新增 `CMakeLists.txt.draft`，记录未来接入方式。核心思路是只编译 TetGen 静态库，不编译 `tetgen` 可执行文件：
+当前 `CMakeLists.txt` 会只编译 TetGen 静态库，不编译 `tetgen` 可执行文件：
 
 ```cmake
 add_library(TetGenInternal STATIC
@@ -69,16 +69,45 @@ target_include_directories(TetGenInternal PUBLIC third_party/tetgen)
 
 注意：TetGen 官方 CMake 中库目标叫 `tet`，并用 `TETLIBRARY` 编译定义启用库模式。
 
-## 初步实施步骤
+## 当前实现状态
+
+1. 已接入父级 `plugins/algo/CMakeLists.txt`。
+2. 已新增 `TetGenLibPlugin.h/.json` 和 `TetGenLibHandler.h/.cpp`。
+3. 已实现 `ComponentData -> tetgenio` 输入转换。
+4. 已实现 `tetgenio -> MeshData -> ModelLayer::addModel(...)` 输出转换。
+5. 已通过复杂网格完成运行验证。
+6. 现有 `TetGenPlugin` 可继续作为命令行 fallback 或调试对照。
+
+## 后续可扩展项
 
 1. 检查 TetGen 许可证与 PreCess 插件许可证边界是否兼容。
-2. 将 `CMakeLists.txt.draft` 转为正式 `CMakeLists.txt`，并决定是否接入父级 `plugins/algo/CMakeLists.txt`。
-3. 新建 `TetGenLibPlugin.h/.json` 和 `TetGenLibHandler.h/.cpp`。
-4. 当前已实现 `ComponentData -> tetgenio` 输入转换。
-5. 当前已实现 `tetgenio -> MeshData -> ModelLayer::addModel(...)` 输出转换。
-6. 后续需要用简单封闭测试网格验证运行稳定性。
-7. 后续可继续补充区域、孔洞、局部尺寸、属性和错误诊断。
-8. 保留现有 `TetGenPlugin` 作为命令行 fallback 或调试对照。
+2. 补充局部尺寸、孔洞、区域属性等 TetGen 参数。
+3. 保留并传递 face marker、region attribute、material 等属性。
+4. 增强输入网格诊断，例如开口、非流形边、退化三角形。
+5. 改进自交检测结果的 UI 提示。
+6. 改进结果模型命名。
+
+## 已验证关键点（2025-06-21）
+
+- 库调用已通过复杂网格验证，可生成表面三角面和四面体体网格。
+- **参数极简原则**：库模式下应避免直接沿用命令行插件中的文件输出控制参数（如 `B`、`N`、`E`、`F`、`V`、`Y`、`A`），否则可能触发 TetGen 内部空指针异常。
+- 当前参数集：
+  - `p`：读取 PLC（piecewise linear complex）
+  - `q<value>`：质量控制，如 `q1.2`，`0` 表示关闭
+  - `a<value>`：最大四面体体积，`0` 表示关闭
+  - `Y`：保留原始表面（可选）
+  - `H`：仅保留最外层腔体（可选）
+  - `d`：仅检测 PLC 自交（可选，启用时不生成结果网格）
+  - `Q`：静默模式，减少控制台输出
+- 当前 UI 默认值：
+  - `是否仅保留最外层腔体`：否
+  - `质量参数 q`：`1.2`
+  - `最大单元体积 a`：`0`（关闭）
+  - `是否保留原始表面`：否
+  - `是否仅检测自交`：否
+- `Combo` 参数内容支持 `选项1,选项2|默认索引` 格式，例如 `是,否|1` 表示默认选择“否”。
+- 结果通过 `ModelLayer::addModel(...)` 直接加入项目，不再绕 Medit IO 临时文件。
+- 输入数据直接从 `context.cur_component.component().mesh` 和 `context.cur_component.manager().globalPoints()` 构造。
 
 ## 外部预编译库的缺点
 

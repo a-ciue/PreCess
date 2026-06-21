@@ -131,16 +131,23 @@ Item{
                 model: comboModel
                 onCurrentIndexChanged: {
                     root.parameters[index] = value = currentIndex
-                } 
+                }
             }
 
             Component.onCompleted: {
                 if(model && model.content){
-                    let items = model.content.split(",")
+                    let parts = model.content.split("|")
+                    let items = parts[0].split(",")
                     comboModel.clear()
                     for(let i=0; i<items.length; i++){
                         comboModel.append({"text":items[i]})
                     }
+                    let defaultIndex = parts.length > 1 ? parseInt(parts[1]) : 0
+                    if (isNaN(defaultIndex) || defaultIndex < 0 || defaultIndex >= items.length) {
+                        defaultIndex = 0
+                    }
+                    parameterComboBox.currentIndex = defaultIndex
+                    root.parameters[index] = value = defaultIndex
                 }
             }
         }
@@ -162,6 +169,10 @@ Item{
             TextField {
                 id:parameterTextInput
                 Layout.fillWidth: parent.width
+                text: model.content
+                Component.onCompleted: {
+                    root.parameters[index] = parseFloat(text)
+                }
                 onTextChanged:{
                     root.parameters[index] = parseFloat(text)
                 }
