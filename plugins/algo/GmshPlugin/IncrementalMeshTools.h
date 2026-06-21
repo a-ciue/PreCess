@@ -25,7 +25,8 @@ SingleFaceMeshResult meshSingleFace(
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
     std::size_t faceIndex,
-    double meshSize);
+    double meshSize,
+    int meshTypeIndex = 0);
 
 SingleFaceMeshResult remeshSingleFace(
     MeshData& mesh_data, 
@@ -33,7 +34,8 @@ SingleFaceMeshResult remeshSingleFace(
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
     std::size_t faceIndex,
-    double meshSize);
+    double meshSize,
+    int meshTypeIndex = 0);
 
 bool deleteFaceMesh(
     MeshData& mesh_data,

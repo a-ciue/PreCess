@@ -25,6 +25,7 @@ std::any systems::algo::GmshMeshHandler::execute(
     int faceIndex = -1;
     double meshSize = 0.0;
     int operationMode = 1;
+    int meshTypeIndex = 0;
 
     if (args.size() >= 1) {
         const std::string* idxStr = args[0].get<ArgTypeEnum::Text>();
@@ -57,6 +58,12 @@ std::any systems::algo::GmshMeshHandler::execute(
                 spdlog::warn("GmshMesh: invalid operation mode '{}', using default 1 (Mesh)", *opStr);
             }
         }
+    }
+
+    if (args.size() >= 4) {
+        const int* value = args[3].get<ArgTypeEnum::Combo>();
+        if (value)
+            meshTypeIndex = *value;
     }
 
     if (faceIndex < 0) {
@@ -115,7 +122,7 @@ std::any systems::algo::GmshMeshHandler::execute(
         }
         spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceIndex, meshSize);
         result = IncrementalMeshTools::meshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceKey, meshSize);
+            *meshData, *geometry, state, modelLayer, faceKey, meshSize, meshTypeIndex);
     } else if (operationMode == 2) {
         spdlog::info("GmshMesh: delete mesh for face {}", faceIndex);
         if (IncrementalMeshTools::deleteFaceMesh(*meshData, state, modelLayer, faceKey))
@@ -123,7 +130,7 @@ std::any systems::algo::GmshMeshHandler::execute(
     } else if (operationMode == 3) {
         spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceIndex, meshSize);
         result = IncrementalMeshTools::remeshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceKey, meshSize);
+            *meshData, *geometry, state, modelLayer, faceKey, meshSize, meshTypeIndex);
     } else {
         spdlog::warn("GmshMesh: unknown operation mode {}, skip", operationMode);
         return {};
@@ -176,6 +183,7 @@ std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
     return {
         ArgType { ArgTypeEnum::Text, "面索引(0开始)", "" },
         ArgType { ArgTypeEnum::Text, "网格尺寸(留空自动)", "" },
-        ArgType { ArgTypeEnum::Text, "1: mesh 2: delete 3: remesh", "" }
+        ArgType { ArgTypeEnum::Text, "1: mesh 2: delete 3: remesh", "" },
+        ArgType { ArgTypeEnum::Combo, "网格类型", "三角形,四边形主导,结构化四边形" }
     };
 }
