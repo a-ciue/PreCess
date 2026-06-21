@@ -2,7 +2,6 @@
 #include "IncrementalMeshContext.h"
 
 #include "GeometryRegistry.h"
-#include "GmshInternalMesher.h"
 #include "GmshMeshTypes.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
@@ -152,17 +151,30 @@ const char* surfaceMeshTypeName(GmshSurfaceMeshType meshType)
     return "triangle";
 }
 
-// 将当前面的 Gmsh 曲线 tag 对应回全局 CAD 边 ID。
-std::map<int, GeomEdgeId> matchGmshToOCCEdges(const TopoDS_Face& face,
+// 逐条导入当前面的 OCC 边，并直接使用公开 API 返回的 tag 建立 CAD 边映射。
+// 后续导入整个面时，Gmsh 会通过内部 Shape 映射复用这些已经绑定的曲线 tag。
+std::map<int, GeomEdgeId> importGmshEdges(const TopoDS_Face& face,
     const IncrementalMeshContext& ctx)
 {
     std::map<int, GeomEdgeId> result;
     const auto edgeInfos = ctx.getFaceEdgeInfos(face);
     for (const auto& info : edgeInfos) {
         TopoDS_Edge edge = ctx.getEdgeByGlobalId(info.edgeId);
-        int gmshTag = GmshInternalMesher::findEdgeTag(edge);
+
+        gmsh::vectorpair edgeDimTags;
+        gmsh::model::occ::importShapesNativePointer(
+            static_cast<const void*>(&edge), edgeDimTags);
+
+        int gmshTag = 0;
+        for (const auto& [dim, tag] : edgeDimTags) {
+            if (dim == 1) {
+                gmshTag = tag;
+                break;
+            }
+        }
+
         if (gmshTag <= 0) {
-            spdlog::warn("  OCC edge {} has no Gmsh curve mapping", info.edgeId);
+            spdlog::warn("  Cannot import OCC edge {}", info.edgeId);
             continue;
         }
 
@@ -170,7 +182,7 @@ std::map<int, GeomEdgeId> matchGmshToOCCEdges(const TopoDS_Face& face,
         spdlog::info("  GMSH edge {} -> OCC edge {}", gmshTag, info.edgeId);
     }
 
-    spdlog::info("  Matched {}/{} edges through Gmsh OCC mapping",
+    spdlog::info("  Imported {}/{} OCC edges",
         result.size(), edgeInfos.size());
     return result;
 }
@@ -630,6 +642,9 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     gmsh::option::setNumber("General.Terminal", 1);
     gmsh::model::add("face_model");
 
+    // 先逐边导入并记录返回 tag，再导入整个面；面导入会复用相同 OCC 边的 tag。
+    auto gmshToOcc = importGmshEdges(face, *state.meshContext);
+
     gmsh::vectorpair outDimTags;
     gmsh::model::occ::importShapesNativePointer(
         static_cast<const void*>(&compound), outDimTags);
@@ -643,8 +658,6 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
         return result;
     }
     int faceTag = faceDimTags[0].second;
-
-    auto gmshToOcc = matchGmshToOCCEdges(face, *state.meshContext);
 
     std::size_t nodeCounter = 1, elemCounter = 1;
     int shared = 0, free = 0;
