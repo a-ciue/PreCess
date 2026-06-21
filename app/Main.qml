@@ -116,6 +116,16 @@ ApplicationWindow {
         }
     }
 
+    Shortcut {
+        sequence: "F10"
+        onActivated: {
+            if (consoleDock.isOpen)
+                consoleDock.close()
+            else
+                consoleDock.show()
+        }
+    }
+
     StackLayout{
         id:stacklayout
         anchors.left: parent.left
