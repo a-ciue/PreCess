@@ -140,10 +140,9 @@ if "!buildRelease!"=="1" cmake --build . --target install --config Release
 
 REM Clone and build freetype 2.14.1
 pushd "%sourcePath%/freetype"
-cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i "-DCMAKE_PREFIX_PATH:PATH=!prefixPath!" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\freetype2.14.1" -DCMAKE_INSTALL_MESSAGE=LAZY
+cmake -S . -B ./build "-GNinja Multi-Config" "-DCMAKE_PREFIX_PATH:PATH=!prefixPath!" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\freetype2.14.1" -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 cmake --build . --target install --config Release
-if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
 cmake --build . --target install --config Debug
 
 REM Clone and build OpenCASCADE 8.0.0
