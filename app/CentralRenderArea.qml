@@ -120,6 +120,7 @@ Page {
     }
 
     Component.onCompleted: {
+        App.registry.renderWindow = myItem
         Qt.callLater(function() { myItem.resetCamera() })
     }
 }

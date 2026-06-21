@@ -282,4 +282,8 @@ Pane {
             }
         }
     }
+
+    Component.onCompleted: {
+        App.registry.treeModel = treeModel
+    }
 }

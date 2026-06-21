@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import app.core
+import app.model
+
 Item {
     id: jsConsole
 
@@ -192,8 +195,9 @@ Item {
             outputText.text = "=== PreCess JavaScript 控制台 ===\n\n"
             return
         } else if (cmd.trim() === "components") {
-            outputText.text += "← 主要组件: objectList, sideBar, myItem, selector, stacklayout, facemode, patchmode\n"
-            outputText.text += "← 系统组件: QModelManager.query, QModelManager.algorithmSystem, QModelManager.ioSystem, QModelManager.observer\n\n"
+            outputText.text += "← 全局对象: App (App.selection, App.registry, App.activeOperation)\n"
+            outputText.text += "← 系统对象: QModelManager (observer, query, algorithmSystem, ioSystem, editSystem)\n"
+            outputText.text += "← 注册控件: App.registry.renderWindow, App.registry.treeModel\n\n"
             return
         }
 
@@ -276,9 +280,10 @@ Item {
                        "• clear - 清空控制台\n" +
                        "• components - 显示可用组件\n\n" +
                        "🔧 组件探索:\n" +
-                       "• 输入 '组件ID.' 然后按 Tab 键显示子组件\n" +
-                       "• 例如: 'myItem.' + Tab\n\n" +
-                       "💡 提示: 使用 Tab 键查看子组件列表\n"
+                       "• 通过 App.registry.xxx 访问注册控件\n" +
+                       "• 例如: App.registry.renderWindow.resetCamera()\n" +
+                       "• Tab 键查看对象子属性\n\n" +
+                       "💡 提示: 直接输入表达式执行 JavaScript\n"
 
         outputText.text += helpText + "\n"
         outputText.cursorPosition = outputText.length

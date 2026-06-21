@@ -12,6 +12,7 @@ QtObject {
     }
 
     property var activeOperation: null
+    property var registry: ({})
 
     signal modelVisibilityUpdated(int modelId, bool visible)
     signal componentVisibilityUpdated(int componentId, bool visible)
