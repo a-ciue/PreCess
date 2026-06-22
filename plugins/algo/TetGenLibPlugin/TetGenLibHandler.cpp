@@ -8,10 +8,14 @@
 
 #include <array>
 #include <exception>
+#include <algorithm>
 #include <memory>
+#include <queue>
+#include <sstream>
 #include <spdlog/spdlog.h>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "tetgen.h"
@@ -19,8 +23,7 @@
 namespace {
 constexpr unsigned char kVtkTetra = 10;
 
-std::string makeTetGenSwitches(bool keep_outer,
-    bool preserve_surface,
+std::string makeTetGenSwitches(bool preserve_surface,
     bool detect_intersections_only,
     double quality_bound,
     double max_volume)
@@ -40,14 +43,134 @@ std::string makeTetGenSwitches(bool keep_outer,
     if (preserve_surface) {
         switches += "Y";
     }
-    if (keep_outer) {
-        switches += "H";
-    }
     switches += "Q";
     return switches;
 }
 
-bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager, tetgenio& input)
+std::string sanitizeModelName(std::string name)
+{
+    if (name.empty()) {
+        return "Component";
+    }
+    for (char& ch : name) {
+        switch (ch) {
+        case '<':
+        case '>':
+        case ':':
+        case '"':
+        case '/':
+        case '\\':
+        case '|':
+        case '?':
+        case '*':
+            ch = '_';
+            break;
+        default:
+            break;
+        }
+    }
+    return name;
+}
+
+std::string makeResultModelName(const ComponentData& input_component,
+    double quality_bound,
+    double max_volume,
+    bool preserve_surface,
+    bool use_largest_surface_shell)
+{
+    std::ostringstream name;
+    name << sanitizeModelName(input_component.name) << "_TetGen";
+    if (use_largest_surface_shell) {
+        name << "_largestShell";
+    }
+    if (quality_bound > 0.0) {
+        name << "_q" << quality_bound;
+    }
+    if (max_volume > 0.0) {
+        name << "_a" << max_volume;
+    }
+    if (preserve_surface) {
+        name << "_Y";
+    }
+    return name.str();
+}
+
+std::vector<Index> collectLargestSurfaceShellFaces(const MeshData& mesh)
+{
+    const Index face_count = static_cast<Index>(mesh.face_vertices_offset_.size() - 1);
+    if (face_count <= 1) {
+        std::vector<Index> all_faces;
+        for (Index face_id = 0; face_id < face_count; ++face_id) {
+            all_faces.push_back(face_id);
+        }
+        return all_faces;
+    }
+
+    std::unordered_map<Index, std::vector<Index>> vertex_to_faces;
+    for (Index face_id = 0; face_id < face_count; ++face_id) {
+        const Index begin = mesh.face_vertices_offset_[static_cast<size_t>(face_id)];
+        const Index end = mesh.face_vertices_offset_[static_cast<size_t>(face_id + 1)];
+        for (Index offset = begin; offset < end; ++offset) {
+            vertex_to_faces[mesh.face_vertices_[static_cast<size_t>(offset)]].push_back(face_id);
+        }
+    }
+
+    std::vector<char> visited(static_cast<size_t>(face_count), 0);
+    std::vector<Index> largest_component;
+
+    for (Index seed = 0; seed < face_count; ++seed) {
+        if (visited[static_cast<size_t>(seed)]) {
+            continue;
+        }
+
+        std::vector<Index> component_faces;
+        std::queue<Index> pending;
+        pending.push(seed);
+        visited[static_cast<size_t>(seed)] = 1;
+
+        while (!pending.empty()) {
+            const Index face_id = pending.front();
+            pending.pop();
+            component_faces.push_back(face_id);
+
+            const Index begin = mesh.face_vertices_offset_[static_cast<size_t>(face_id)];
+            const Index end = mesh.face_vertices_offset_[static_cast<size_t>(face_id + 1)];
+            for (Index offset = begin; offset < end; ++offset) {
+                const Index vertex_id = mesh.face_vertices_[static_cast<size_t>(offset)];
+                auto it = vertex_to_faces.find(vertex_id);
+                if (it == vertex_to_faces.end()) {
+                    continue;
+                }
+                for (Index neighbor_face : it->second) {
+                    if (!visited[static_cast<size_t>(neighbor_face)]) {
+                        visited[static_cast<size_t>(neighbor_face)] = 1;
+                        pending.push(neighbor_face);
+                    }
+                }
+            }
+        }
+
+        if (component_faces.size() > largest_component.size()) {
+            largest_component = std::move(component_faces);
+        }
+    }
+
+    std::sort(largest_component.begin(), largest_component.end());
+    return largest_component;
+}
+
+std::vector<Index> collectAllSurfaceFaces(const MeshData& mesh)
+{
+    const Index face_count = static_cast<Index>(mesh.face_vertices_offset_.size() - 1);
+    std::vector<Index> faces;
+    faces.reserve(static_cast<size_t>(face_count));
+    for (Index face_id = 0; face_id < face_count; ++face_id) {
+        faces.push_back(face_id);
+    }
+    return faces;
+}
+
+bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager, tetgenio& input, bool use_largest_surface_shell)
 {
     const MeshData* mesh = component.asMeshData();
     if (!mesh) {
@@ -89,12 +212,23 @@ bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager,
         input.pointmarkerlist[local_id] = 0;
     }
 
-    const Index face_count = static_cast<Index>(mesh->face_vertices_offset_.size() - 1);
-    input.numberoffacets = static_cast<int>(face_count);
+    std::vector<Index> selected_faces = use_largest_surface_shell
+        ? collectLargestSurfaceShellFaces(*mesh)
+        : collectAllSurfaceFaces(*mesh);
+    if (selected_faces.empty()) {
+        spdlog::error("TetGenLibHandler: no surface faces selected for TetGen input");
+        return false;
+    }
+    if (use_largest_surface_shell) {
+        spdlog::info("TetGenLibHandler: selected largest surface shell with {} faces", selected_faces.size());
+    }
+
+    input.numberoffacets = static_cast<int>(selected_faces.size());
     input.facetlist = new tetgenio::facet[input.numberoffacets];
     input.facetmarkerlist = new int[input.numberoffacets];
 
-    for (Index face_id = 0; face_id < face_count; ++face_id) {
+    for (Index selected_index = 0; selected_index < static_cast<Index>(selected_faces.size()); ++selected_index) {
+        const Index face_id = selected_faces[static_cast<size_t>(selected_index)];
         const Index begin = mesh->face_vertices_offset_[static_cast<size_t>(face_id)];
         const Index end = mesh->face_vertices_offset_[static_cast<size_t>(face_id + 1)];
         const Index vertex_count = end - begin;
@@ -104,7 +238,7 @@ bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager,
             return false;
         }
 
-        tetgenio::facet& facet = input.facetlist[face_id];
+        tetgenio::facet& facet = input.facetlist[selected_index];
         tetgenio::init(&facet);
         facet.numberofpolygons = 1;
         facet.polygonlist = new tetgenio::polygon[1];
@@ -130,7 +264,7 @@ bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager,
             polygon.vertexlist[offset] = static_cast<int>(local_id);
         }
 
-        input.facetmarkerlist[face_id] = 0;
+        input.facetmarkerlist[selected_index] = 0;
     }
 
     return true;
@@ -197,12 +331,12 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         return {};
     }
 
-    const int* keep_outer_idx = args[0].get<ArgTypeEnum::Combo>();
+    const int* largest_shell_idx = args[0].get<ArgTypeEnum::Combo>();
     const double* quality_bound = args[1].get<ArgTypeEnum::Float>();
     const double* max_volume = args[2].get<ArgTypeEnum::Float>();
     const int* preserve_surface_idx = args[3].get<ArgTypeEnum::Combo>();
     const int* detect_intersections_idx = args[4].get<ArgTypeEnum::Combo>();
-    if (!keep_outer_idx || *keep_outer_idx < 0 || !quality_bound || !max_volume
+    if (!largest_shell_idx || *largest_shell_idx < 0 || !quality_bound || !max_volume
         || !preserve_surface_idx || *preserve_surface_idx < 0
         || !detect_intersections_idx || *detect_intersections_idx < 0) {
         spdlog::critical("TetGenLibHandler: Invalid arguments.");
@@ -218,15 +352,14 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
 
     tetgenio input;
     tetgenio output;
-    if (!buildTetGenInput(input_component, context.cur_component.manager(), input)) {
+    const bool use_largest_surface_shell = *largest_shell_idx == 0;
+    if (!buildTetGenInput(input_component, context.cur_component.manager(), input, use_largest_surface_shell)) {
         return {};
     }
 
-    const bool keep_outer = *keep_outer_idx == 0;
     const bool preserve_surface = *preserve_surface_idx == 0;
     const bool detect_intersections_only = *detect_intersections_idx == 0;
-    std::string switches = makeTetGenSwitches(keep_outer,
-        preserve_surface,
+    std::string switches = makeTetGenSwitches(preserve_surface,
         detect_intersections_only,
         *quality_bound,
         *max_volume);
@@ -256,12 +389,13 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
     }
 
     auto output_component = std::make_unique<ComponentData>();
-    output_component->name = input_component.name.empty() ? "TetGen Result" : input_component.name + " TetGen";
+    std::string result_model_name = makeResultModelName(input_component, *quality_bound, *max_volume, preserve_surface, use_largest_surface_shell);
+    output_component->name = result_model_name;
     output_component->mesh = std::move(output_mesh);
 
     ComponentDatas components;
     components.push_back(std::move(output_component));
-    context.cur_component.manager().addModel("TetGen Result", std::move(components));
+    context.cur_component.manager().addModel(result_model_name, std::move(components));
 
     return {};
 }
@@ -269,7 +403,7 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
 std::vector<core::ArgType> systems::algo::TetGenLibHandler::args_type() const
 {
     return {
-        core::ArgType { ArgTypeEnum::Combo, "是否仅保留最外层腔体", "是,否|1" },
+        core::ArgType { ArgTypeEnum::Combo, "是否仅使用最大表面壳", "是,否|1" },
         core::ArgType { ArgTypeEnum::Float, "质量参数 q（0表示关闭）", "1.2" },
         core::ArgType { ArgTypeEnum::Float, "最大单元体积 a（0表示关闭）", "0" },
         core::ArgType { ArgTypeEnum::Combo, "是否保留原始表面", "是,否|1" },
