@@ -59,6 +59,7 @@ public:
 
 private:
     TreeNode* getNode(const QModelIndex& index) const;
+    void emitDescendantDataChanged(const QModelIndex& parentIndex);
 
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;

@@ -116,16 +116,18 @@ Pane {
                     Layout.maximumWidth: implicitWidth
                     Layout.leftMargin: viewDelegate._padding + 2
                     text: viewDelegate.model.name || "N/A"
-                    color: {
-                        if (!viewDelegate.model.isVisible) return "#aaaaaa"
-                        return "black"
-                    }
+                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
                     font.pixelSize: 13
                     font.family: "Consolas"
                     font.weight: viewDelegate.current ? Font.Bold : Font.Normal
                     font.italic: !viewDelegate.model.isVisible
                     elide: Text.ElideRight
-                    verticalAlignment: Text.AlignVCenter
+
+                    ToolTip {
+                        visible: nameText.truncated && viewDelegate.hovered
+                        text: nameText.text + (valueText.text ? " " + valueText.text : "")
+                        delay: 300
+                    }
                 }
 
                 Text {
@@ -134,34 +136,11 @@ Pane {
                     visible: text !== ""
                     color: "black"
                     font.pixelSize: 11
-                    verticalAlignment: Text.AlignVCenter
                 }
 
                 Item {
                     Layout.fillWidth: true
                     Layout.rightMargin: 10
-                }
-            }
-
-            ToolTip {
-                id: detailTooltip
-                visible: viewDelegate.hovered && nameText.truncated
-                text: nameText.text + (valueText.text ? " " + valueText.text : "")
-                delay: 300
-                z: 9999
-
-                contentItem: Text {
-                    text: detailTooltip.text
-                    color: "black"
-                    font.family: "Consolas"
-                    font.pixelSize: 13
-                }
-
-                background: Rectangle {
-                    color: "white"
-                    border.color: "#c0c0c0"
-                    border.width: 1
-                    radius: 4
                 }
             }
 
@@ -228,6 +207,7 @@ Pane {
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, false)
                         else
                             App.componentVisibilityUpdated(viewDelegate.model.nodeId, false)
+                        viewDelegate.treeView.selectionModel.clear()
                     }
                 }
 
@@ -256,6 +236,7 @@ Pane {
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, true)
                         else
                             App.componentVisibilityUpdated(viewDelegate.model.nodeId, true)
+                        viewDelegate.treeView.selectionModel.clear()
                     }
                 }
 

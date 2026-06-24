@@ -75,8 +75,22 @@ QVariant TreeModel::data(const QModelIndex& index, int role) const
     case NodeIdRole:
         return node->nodeId;
 
-    case IsVisibleRole:
+    case IsVisibleRole: {
+        if (node == rootNode) return true;
+        if (node->parent == rootNode) {
+            for (TreeNode* child : node->children) {
+                if (child->isVisible) return true;
+            }
+            return false;
+        }
+        TreeNode* cur = node;
+        while (cur && cur->parent != rootNode) {
+            if (cur->parent->parent == rootNode)
+                return cur->isVisible;
+            cur = cur->parent;
+        }
         return node->isVisible;
+    }
 
     case ComponentIdRole: {
         TreeNode* cur = node;
@@ -197,10 +211,6 @@ bool TreeModel::refresh()
     // Restore persisted visibility and prune stale entries
     std::unordered_map<int, bool> fresh;
     for (TreeNode* mNode : rootNode->children) {
-        int mkey = (0 << 24) | (mNode->nodeId & 0xFFFFFF);
-        auto mit = visibility_map_.find(mkey);
-        mNode->isVisible = (mit != visibility_map_.end()) ? mit->second : true;
-        fresh[mkey] = mNode->isVisible;
         for (TreeNode* cNode : mNode->children) {
             int ckey = (1 << 24) | (cNode->nodeId & 0xFFFFFF);
             auto cit = visibility_map_.find(ckey);
@@ -222,15 +232,57 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
         return false;
 
     TreeNode* target = parentNode->children[row];
-    target->isVisible = visible;
 
-    int depth = target->parent->parent == rootNode ? 1 : 0;
-    int key = (depth << 24) | (target->nodeId & 0xFFFFFF);
+    if (target->parent == rootNode) {
+        for (int i = 0; i < target->children.size(); ++i) {
+            TreeNode* comp = target->children[i];
+            comp->isVisible = visible;
+            int ckey = (1 << 24) | (comp->nodeId & 0xFFFFFF);
+            visibility_map_[ckey] = visible;
+        }
+        QModelIndex mIdx = createIndex(row, 0, target);
+        emit dataChanged(mIdx, mIdx, { IsVisibleRole });
+        emitDescendantDataChanged(mIdx);
+        return true;
+    }
+
+    if (target->parent->parent == rootNode) {
+        target->isVisible = visible;
+        int key = (1 << 24) | (target->nodeId & 0xFFFFFF);
+        visibility_map_[key] = visible;
+
+        QModelIndex idx = createIndex(row, 0, target);
+        emit dataChanged(idx, idx, { IsVisibleRole });
+        emitDescendantDataChanged(idx);
+
+        for (int i = 0; i < rootNode->children.size(); ++i) {
+            if (rootNode->children[i] == target->parent) {
+                QModelIndex mIdx = createIndex(i, 0, target->parent);
+                emit dataChanged(mIdx, mIdx, { IsVisibleRole });
+                break;
+            }
+        }
+        return true;
+    }
+
+    target->isVisible = visible;
+    int key = (0 << 24) | (target->nodeId & 0xFFFFFF);
     visibility_map_[key] = visible;
 
     QModelIndex idx = createIndex(row, 0, target);
     emit dataChanged(idx, idx, { IsVisibleRole });
+    emitDescendantDataChanged(idx);
     return true;
+}
+
+void TreeModel::emitDescendantDataChanged(const QModelIndex& parentIndex)
+{
+    int count = rowCount(parentIndex);
+    for (int i = 0; i < count; ++i) {
+        QModelIndex child = index(i, 0, parentIndex);
+        emit dataChanged(child, child, { IsVisibleRole });
+        emitDescendantDataChanged(child);
+    }
 }
 
 QModelIndex TreeModel::findIndexByNodeId(int nodeId, int depth) const
