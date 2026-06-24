@@ -153,6 +153,28 @@ Pane {
                 }
             }
 
+            ToolTip {
+                id: detailTooltip
+                visible: viewDelegate.hovered && nameText.truncated
+                text: nameText.text + (valueText.text ? " " + valueText.text : "")
+                delay: 300
+                z: 9999
+
+                contentItem: Text {
+                    text: detailTooltip.text
+                    color: "black"
+                    font.family: "Consolas"
+                    font.pixelSize: 13
+                }
+
+                background: Rectangle {
+                    color: "white"
+                    border.color: "#c0c0c0"
+                    border.width: 1
+                    radius: 4
+                }
+            }
+
             // 统一交互区
             MouseArea {
                 anchors.fill: parent
