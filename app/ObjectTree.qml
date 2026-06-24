@@ -9,6 +9,7 @@ import app.model
 Pane {
     id: objectTree
     padding: 0
+    clip: true
 
     TreeModel {
         id: treeModel
@@ -40,6 +41,19 @@ Pane {
         anchors.fill: parent
         model: treeModel
         columnSpacing: 0
+        clip: true
+        interactive: false
+        columnWidthProvider: function(column) { return treeView.width }
+
+        WheelHandler {
+            onWheel: (event) => {
+                var delta = event.angleDelta.y
+                var newY = treeView.contentY - delta
+                var maxY = Math.max(0, treeView.contentHeight - treeView.height)
+                newY = Math.max(0, Math.min(newY, maxY))
+                treeView.contentY = newY
+            }
+        }
 
         property int toggleExpandRow: -1
         onExpanded: (row, depth) => toggleExpandRow = row
@@ -103,41 +117,39 @@ Pane {
 
             // 内容区域
             contentItem: Item {
-                implicitWidth: textContent.implicitWidth + viewDelegate._padding
+                id: ctItem
                 implicitHeight: viewDelegate._rowHeight
 
-                Row {
-                    id: textContent
-                    anchors.left: parent.left
-                    anchors.leftMargin: viewDelegate._padding + 2
-                    anchors.right: parent.right
-                    anchors.rightMargin: viewDelegate._padding
+                Text {
+                    id: valueText
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 4
+                    visible: text !== ""
+                    text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
+                    color: "black"
+                    font.pixelSize: 11
 
-                    Text {
-                        id: nameText
-                        text: viewDelegate.model.name || "N/A"
-                        color: {
-                            if (!viewDelegate.model.isVisible) return "#aaaaaa"
-                            return "black"
-                        }
-                        font.pixelSize: 13
-                        font.family: "Consolas"
-                        font.weight: viewDelegate.current ? Font.Bold : Font.Normal
-                        font.italic: !viewDelegate.model.isVisible
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                    }
+                    x: nameText.x + nameText.width + 4
+                }
 
-                    Text {
-                        id: valueText
-                        text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
-                        color: "black"
-                        font.pixelSize: 11
-                        visible: text !== ""
-                        verticalAlignment: Text.AlignVCenter
+                Text {
+                    id: nameText
+                    anchors.verticalCenter: parent.verticalCenter
+                    x: viewDelegate._padding + 2
+                    text: viewDelegate.model.name || "N/A"
+                    color: {
+                        if (!viewDelegate.model.isVisible) return "#aaaaaa"
+                        return "black"
                     }
+                    font.pixelSize: 13
+                    font.family: "Consolas"
+                    font.weight: viewDelegate.current ? Font.Bold : Font.Normal
+                    font.italic: !viewDelegate.model.isVisible
+                    elide: Text.ElideRight
+                    verticalAlignment: Text.AlignVCenter
+
+                    readonly property real _scrollMargin: 10
+                    readonly property real _avail: ctItem.width - x - (valueText.visible ? valueText.width + 4 : 0) - _scrollMargin
+                    width: Math.min(implicitWidth, Math.max(0, _avail))
                 }
             }
 
