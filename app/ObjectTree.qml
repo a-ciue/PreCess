@@ -42,18 +42,9 @@ Pane {
         model: treeModel
         columnSpacing: 0
         clip: true
-        interactive: false
+        flickDeceleration: 100000
+        boundsBehavior: Flickable.StopAtBounds
         columnWidthProvider: function(column) { return treeView.width }
-
-        WheelHandler {
-            onWheel: (event) => {
-                var delta = event.angleDelta.y
-                var newY = treeView.contentY - delta
-                var maxY = Math.max(0, treeView.contentHeight - treeView.height)
-                newY = Math.max(0, Math.min(newY, maxY))
-                treeView.contentY = newY
-            }
-        }
 
         property int toggleExpandRow: -1
         onExpanded: (row, depth) => toggleExpandRow = row
