@@ -107,25 +107,14 @@ Pane {
             }
 
             // 内容区域
-            contentItem: Item {
-                id: ctItem
-                implicitHeight: viewDelegate._rowHeight
-
-                Text {
-                    id: valueText
-                    anchors.verticalCenter: parent.verticalCenter
-                    visible: text !== ""
-                    text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
-                    color: "black"
-                    font.pixelSize: 11
-
-                    x: nameText.x + nameText.width + 4
-                }
+            contentItem: RowLayout {
+                spacing: 4
 
                 Text {
                     id: nameText
-                    anchors.verticalCenter: parent.verticalCenter
-                    x: viewDelegate._padding + 2
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: implicitWidth
+                    Layout.leftMargin: viewDelegate._padding + 2
                     text: viewDelegate.model.name || "N/A"
                     color: {
                         if (!viewDelegate.model.isVisible) return "#aaaaaa"
@@ -137,10 +126,20 @@ Pane {
                     font.italic: !viewDelegate.model.isVisible
                     elide: Text.ElideRight
                     verticalAlignment: Text.AlignVCenter
+                }
 
-                    readonly property real _scrollMargin: 10
-                    readonly property real _avail: ctItem.width - x - (valueText.visible ? valueText.width + 4 : 0) - _scrollMargin
-                    width: Math.min(implicitWidth, Math.max(0, _avail))
+                Text {
+                    id: valueText
+                    text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
+                    visible: text !== ""
+                    color: "black"
+                    font.pixelSize: 11
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.rightMargin: 10
                 }
             }
 
