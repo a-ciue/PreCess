@@ -1,17 +1,15 @@
 #include "IncrementalMeshTools.h"
 
 #include "GeometryRegistry.h"
-#include "GmshMeshTypes.h"
+#include "GmshMeshOptions.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 
 #include <BRepGProp.hxx>
-#include <BRep_Builder.hxx>
 #include <GProp_GProps.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <STEPControl_Reader.hxx>
 #include <TopoDS.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
@@ -118,16 +116,6 @@ TopoDS_Shape loadStep(const std::string& path)
     }
     reader.TransferRoots();
     return reader.OneShape();
-}
-
-// ---- 包 Compound ----
-TopoDS_Compound makeFaceCompound(const TopoDS_Face& face)
-{
-    BRep_Builder builder;
-    TopoDS_Compound compound;
-    builder.MakeCompound(compound);
-    builder.Add(compound, face);
-    return compound;
 }
 
 // 返回 GeometryData 中指定索引的 CAD 面，实际 Shape 统一从 GeometryRegistry 取得。
@@ -242,9 +230,45 @@ struct EdgeTransfiniteInfo {
     bool fixedByExistingMesh {};
 };
 
-// 根据曲线长度和目标网格尺寸估算节点数，并延续原实现的偶数节点约束。
-int estimateEdgePointCount(int gmshTag, double meshSize)
+// 设置 Gmsh 数值 option；
+void setGmshNumberOption(const std::string& name, double value)
 {
+    try {
+        gmsh::option::setNumber(name, value);
+    } catch (const std::exception& e) {
+        spdlog::warn("GmshMesh: cannot set option {} = {}: {}", name, value, e.what());
+    }
+}
+
+// 把用户参数转换为 Gmsh 全局网格选项。只在这里直接写 Gmsh option，便于后续维护默认值。
+void configureMeshingOptions(const IncrementalMeshTools::GmshMeshParameters& parameters, double meshSize)
+{
+    double minSize = parameters.minMeshSize > 0.0 ? parameters.minMeshSize : meshSize * 0.5;
+    double maxSize = parameters.maxMeshSize > 0.0 ? parameters.maxMeshSize : meshSize;
+
+    setGmshNumberOption("Mesh.MeshSizeMin", minSize);
+    setGmshNumberOption("Mesh.MeshSizeMax", maxSize);
+    setGmshNumberOption("Mesh.MeshOnlyEmpty", 1);
+    setGmshNumberOption("Mesh.SaveAll", 1);
+    setGmshNumberOption("Mesh.Algorithm", parameters.meshAlgorithm);
+    setGmshNumberOption("Mesh.RecombineAll", 0);
+    setGmshNumberOption("Mesh.Smoothing", parameters.smoothingSteps);
+
+    setGmshNumberOption("Mesh.AlgorithmSwitchOnFailure", parameters.algorithmSwitchOnFailure);
+    if (parameters.recombineAlgorithm >= 0)
+        setGmshNumberOption("Mesh.RecombinationAlgorithm", parameters.recombineAlgorithm);
+    if (parameters.quadMinQuality > 0.0)
+        setGmshNumberOption("Mesh.RecombineMinimumQuality", parameters.quadMinQuality);
+    if (parameters.recombineOptimizeTopology > 0)
+        setGmshNumberOption("Mesh.RecombineOptimizeTopology", parameters.recombineOptimizeTopology);
+}
+
+// 根据曲线长度和目标网格尺寸估算结构化曲线节点数；或者指定的划分段数
+int estimateEdgePointCount(int gmshTag, double meshSize, int structuredEdgeDivisions)
+{
+    if (structuredEdgeDivisions > 0)
+        return std::max(2, structuredEdgeDivisions );
+
     double length = 0.0;
     gmsh::model::occ::getMass(1, gmshTag, length);
 
@@ -261,7 +285,8 @@ EdgeTransfiniteInfo makeEdgeTransfiniteInfo(
     int gmshTag,
     const std::map<int, GeomEdgeId>& gmshToOcc,
     const GmshIncrementalMeshState& state,
-    double meshSize)
+    double meshSize,
+    int structuredEdgeDivisions)
 {
     EdgeTransfiniteInfo info;
     info.gmshTag = gmshTag;
@@ -276,7 +301,7 @@ EdgeTransfiniteInfo makeEdgeTransfiniteInfo(
         }
     }
 
-    info.pointCount = estimateEdgePointCount(gmshTag, meshSize);
+    info.pointCount = estimateEdgePointCount(gmshTag, meshSize, structuredEdgeDivisions);
     return info;
 }
 
@@ -320,13 +345,14 @@ bool configureSurfaceMeshType(
     GmshSurfaceMeshType meshType,
     const std::map<int, GeomEdgeId>& gmshToOcc,
     const GmshIncrementalMeshState& state,
-    double meshSize)
+    double meshSize,
+    const IncrementalMeshTools::GmshMeshParameters& parameters)
 {
     if (meshType == GmshSurfaceMeshType::Triangle)
         return true;
 
     if (meshType == GmshSurfaceMeshType::QuadDominant) {
-        gmsh::model::mesh::setRecombine(2, faceTag, 45.0);
+        gmsh::model::mesh::setRecombine(2, faceTag, parameters.recombineAngle);
         return true;
     }
 
@@ -346,7 +372,8 @@ bool configureSurfaceMeshType(
 
     std::array<EdgeTransfiniteInfo, 4> edges {};
     for (std::size_t i = 0; i < edges.size(); ++i)
-        edges[i] = makeEdgeTransfiniteInfo(edgeTags[i], gmshToOcc, state, meshSize);
+        edges[i] = makeEdgeTransfiniteInfo(
+            edgeTags[i], gmshToOcc, state, meshSize, parameters.structuredEdgeDivisions);
 
     int firstPairPointCount = 0;
     int secondPairPointCount = 0;
@@ -360,7 +387,7 @@ bool configureSurfaceMeshType(
     gmsh::model::mesh::setTransfiniteCurve(edges[1].gmshTag, secondPairPointCount);
     gmsh::model::mesh::setTransfiniteCurve(edges[3].gmshTag, secondPairPointCount);
     gmsh::model::mesh::setTransfiniteSurface(faceTag);
-    gmsh::model::mesh::setRecombine(2, faceTag, 45.0);
+    gmsh::model::mesh::setRecombine(2, faceTag, parameters.recombineAngle);
     return true;
 }
 
@@ -663,10 +690,10 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     ModelLayer& model_layer,
     std::size_t faceIndex,
     double meshSize,
-    int meshTypeIndex)
+    const GmshMeshParameters& parameters)
 {
     SingleFaceMeshResult result;
-    GmshSurfaceMeshType meshType = parseSurfaceMeshType(meshTypeIndex);
+    GmshSurfaceMeshType meshType = parseSurfaceMeshType(parameters.meshTypeIndex);
 
     std::size_t totalFaces = IncrementalMeshTools::faceCount(geometry);
     if (faceIndex >= totalFaces) {
@@ -684,10 +711,8 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
         spdlog::error("Face {} is null or invalid", faceIndex);
         return result;
     }
-    TopoDS_Compound compound = makeFaceCompound(face);
-
     gmsh::initialize();
-    gmsh::option::setNumber("General.Terminal", 1);
+    setGmshNumberOption("General.Terminal", 1);
     gmsh::model::add("face_model");
 
     // 先逐边导入并记录返回 tag，再导入整个面；面导入会复用相同 OCC 边的 tag。
@@ -695,7 +720,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
 
     gmsh::vectorpair outDimTags;
     gmsh::model::occ::importShapesNativePointer(
-        static_cast<const void*>(&compound), outDimTags);
+        static_cast<const void*>(&face), outDimTags);
     gmsh::model::occ::synchronize();
 
     std::vector<std::pair<int, int>> faceDimTags;
@@ -722,15 +747,10 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     }
     spdlog::info("  {} shared, {} free", shared, free);
 
-    gmsh::option::setNumber("Mesh.MeshSizeMin", meshSize * 0.5);
-    gmsh::option::setNumber("Mesh.MeshSizeMax", meshSize);
-    gmsh::option::setNumber("Mesh.MeshOnlyEmpty", 1);
-    gmsh::option::setNumber("Mesh.SaveAll", 1);
-    gmsh::option::setNumber("Mesh.Algorithm", 6);
-    gmsh::option::setNumber("Mesh.RecombineAll", 0);
+    configureMeshingOptions(parameters, meshSize);
 
     try {
-        if (!configureSurfaceMeshType(faceTag, meshType, gmshToOcc, state, meshSize)) {
+        if (!configureSurfaceMeshType(faceTag, meshType, gmshToOcc, state, meshSize, parameters)) {
             spdlog::warn("  Cannot configure {} mesh", surfaceMeshTypeName(meshType));
             storeNewEdges(state, gmshToOcc);
             gmsh::finalize();
@@ -941,12 +961,12 @@ SingleFaceMeshResult IncrementalMeshTools::remeshSingleFace(
     ModelLayer& model_layer,
     std::size_t faceIndex,
     double meshSize,
-    int meshTypeIndex)
+    const GmshMeshParameters& parameters)
 {
     if (state.meshedFacesCache.find(faceIndex) != state.meshedFacesCache.end()) {
         spdlog::info("Remeshing: Face {} is already meshed, deleting old mesh first.", faceIndex);
         deleteFaceMesh(mesh_data, geometry, state, model_layer, faceIndex);
     }
     return meshSingleFace(
-        mesh_data, geometry, state, model_layer, faceIndex, meshSize, meshTypeIndex);
+        mesh_data, geometry, state, model_layer, faceIndex, meshSize, parameters);
 }

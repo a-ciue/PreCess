@@ -142,6 +142,7 @@ Item{
                         comboModel.append({"text":items[i]})
                     }
                 }
+                root.parameters[index] = value = parameterComboBox.currentIndex
             }
         }
     }

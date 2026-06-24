@@ -174,8 +174,17 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             return;
         }
 
+        IncrementalMeshTools::GmshMeshParameters parameters;
+        parameters.targetMeshSize = ctx->meshSize;
+
         auto result = IncrementalMeshTools::meshSingleFace(
-            ctx->meshData, ctx->geometry, ctx->gmshState, ctx->modelLayer, ctx->currentIndex, ctx->meshSize);
+            ctx->meshData,
+            ctx->geometry,
+            ctx->gmshState,
+            ctx->modelLayer,
+            ctx->currentIndex,
+            ctx->meshSize,
+            parameters);
         ctx->currentIndex++;
 
         if (result.success) {

@@ -13,6 +13,22 @@ class GeometryRegistry;
 
 namespace IncrementalMeshTools {
 
+// Gmsh 单面划分参数。空白 UI 参数在 Handler 层会被转换为这里的默认值。
+struct GmshMeshParameters {
+    double targetMeshSize {};
+    double minMeshSize {};
+    double maxMeshSize {};
+    int meshAlgorithm { 6 };
+    int meshTypeIndex {};
+    int algorithmSwitchOnFailure {};
+    int smoothingSteps {};
+    int recombineAlgorithm { -1 };
+    double recombineAngle { 45.0 };
+    double quadMinQuality {};
+    int recombineOptimizeTopology {};
+    int structuredEdgeDivisions {};
+};
+
 bool initMeshing(
     const std::string& stepFile,
     GeometryData& geometry,
@@ -26,16 +42,17 @@ SingleFaceMeshResult meshSingleFace(
     ModelLayer& model_layer,
     std::size_t faceIndex,
     double meshSize,
-    int meshTypeIndex = 0);
+    const GmshMeshParameters& parameters);
+
 
 SingleFaceMeshResult remeshSingleFace(
-    MeshData& mesh_data, 
+    MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
     std::size_t faceIndex,
     double meshSize,
-    int meshTypeIndex = 0);
+    const GmshMeshParameters& parameters);
 
 bool deleteFaceMesh(
     MeshData& mesh_data,

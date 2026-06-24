@@ -3,6 +3,7 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
 #include "ComponentOperator.h"
+#include "GmshMeshOptions.h"
 #include "GeometryData.h"
 #include "IncrementalMeshTools.h"
 #include "MeshData.h"
@@ -13,18 +14,68 @@
 #include <spdlog/spdlog.h>
 
 #include <filesystem>
+#include <optional>
 #include <string>
 
 using core::ArgType;
+
+namespace {
+
+// 从 Text 参数读取可选 double；空字符串表示用户不设置，后续使用默认值。
+std::optional<double> readOptionalDouble(const std::vector<core::ArgObject>& args, std::size_t index)
+{
+    if (args.size() <= index)
+        return std::nullopt;
+
+    const std::string* text = args[index].get<ArgTypeEnum::Text>();
+    if (!text || text->empty())
+        return std::nullopt;
+
+    try {
+        return std::stod(*text);
+    } catch (...) {
+        spdlog::warn("GmshMesh: invalid double parameter {} = '{}'", index, *text);
+        return std::nullopt;
+    }
+}
+
+// 从 Text 参数读取可选 int；空字符串表示用户不设置。
+std::optional<int> readOptionalInt(const std::vector<core::ArgObject>& args, std::size_t index)
+{
+    if (args.size() <= index)
+        return std::nullopt;
+
+    const std::string* text = args[index].get<ArgTypeEnum::Text>();
+    if (!text || text->empty())
+        return std::nullopt;
+
+    try {
+        return std::stoi(*text);
+    } catch (...) {
+        spdlog::warn("GmshMesh: invalid int parameter {} = '{}'", index, *text);
+        return std::nullopt;
+    }
+}
+
+// Combo 参数没有“空值”，所以第一个选项统一作为“默认”。
+int readComboIndex(const std::vector<core::ArgObject>& args, std::size_t index, int defaultValue = 0)
+{
+    if (args.size() <= index)
+        return defaultValue;
+
+    const int* value = args[index].get<ArgTypeEnum::Combo>();
+    return value ? *value : defaultValue;
+}
+
+} // namespace
 
 std::any systems::algo::GmshMeshHandler::execute(
     HandlerContext& context,
     const std::vector<core::ArgObject>& args)
 {
     int faceIndex = -1;
-    double meshSize = 0.0;
     int operationMode = 1;
-    int meshTypeIndex = 0;
+    IncrementalMeshTools::GmshMeshParameters parameters;
 
     if (args.size() >= 1) {
         const std::string* idxStr = args[0].get<ArgTypeEnum::Text>();
@@ -37,32 +88,40 @@ std::any systems::algo::GmshMeshHandler::execute(
         }
     }
 
-    if (args.size() >= 2) {
-        const std::string* sizeStr = args[1].get<ArgTypeEnum::Text>();
-        if (sizeStr && !sizeStr->empty()) {
-            try {
-                meshSize = std::stod(*sizeStr);
-            } catch (...) {
-                spdlog::warn("GmshMesh: invalid size '{}'", *sizeStr);
+    if (args.size() <= 4) {
+        // 兼容旧参数顺序：面索引、网格尺寸、操作模式、网格类型。
+        parameters.targetMeshSize = readOptionalDouble(args, 1).value_or(0.0);
+        if (args.size() >= 3) {
+            const std::string* opStr = args[2].get<ArgTypeEnum::Text>();
+            if (opStr && !opStr->empty()) {
+                try {
+                    operationMode = std::stoi(*opStr);
+                } catch (...) {
+                    spdlog::warn("GmshMesh: invalid operation mode '{}', using default 1 (Mesh)", *opStr);
+                }
             }
         }
-    }
-
-    if (args.size() >= 3) {
-        const std::string* opStr = args[2].get<ArgTypeEnum::Text>();
-        if (opStr && !opStr->empty()) {
-            try {
-                operationMode = std::stoi(*opStr);
-            } catch (...) {
-                spdlog::warn("GmshMesh: invalid operation mode '{}', using default 1 (Mesh)", *opStr);
-            }
+        if (args.size() >= 4) {
+            const int* value = args[3].get<ArgTypeEnum::Combo>();
+            if (value)
+                parameters.meshTypeIndex = *value;
         }
-    }
-
-    if (args.size() >= 4) {
-        const int* value = args[3].get<ArgTypeEnum::Combo>();
-        if (value)
-            meshTypeIndex = *value;
+    } else {
+        operationMode = readComboIndex(args, 1) + 1;
+        parameters.targetMeshSize = readOptionalDouble(args, 2).value_or(0.0);
+        parameters.minMeshSize = readOptionalDouble(args, 3).value_or(0.0);
+        parameters.maxMeshSize = readOptionalDouble(args, 4).value_or(0.0);
+        parameters.meshAlgorithm = gmshComboValue(
+            kGmshMeshAlgorithmComboValues, readComboIndex(args, 5));
+        parameters.meshTypeIndex = readComboIndex(args, 6);
+        parameters.algorithmSwitchOnFailure = 0;
+        parameters.smoothingSteps = readOptionalInt(args, 7).value_or(0);
+        parameters.recombineAlgorithm = gmshComboValue(
+            kGmshRecombinationAlgorithmComboValues, readComboIndex(args, 8));
+        parameters.recombineAngle = readOptionalDouble(args, 9).value_or(45.0);
+        parameters.quadMinQuality = readOptionalDouble(args, 10).value_or(0.0);
+        parameters.recombineOptimizeTopology = readOptionalInt(args, 11).value_or(0);
+        parameters.structuredEdgeDivisions = readOptionalInt(args, 12).value_or(0);
     }
 
     if (faceIndex < 0) {
@@ -100,8 +159,8 @@ std::any systems::algo::GmshMeshHandler::execute(
         return {};
     }
 
-    if (meshSize <= 0.0)
-        meshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
+    if (parameters.targetMeshSize <= 0.0)
+        parameters.targetMeshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
 
     std::size_t faceKey = static_cast<std::size_t>(faceIndex);
     SingleFaceMeshResult result;
@@ -111,18 +170,18 @@ std::any systems::algo::GmshMeshHandler::execute(
             spdlog::info("GmshMesh: face {} already meshed, skip mesh mode; use remesh mode to rebuild", faceIndex);
             return {};
         }
-        spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceIndex, meshSize);
+        spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceIndex, parameters.targetMeshSize);
         result = IncrementalMeshTools::meshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceKey, meshSize, meshTypeIndex);
+            *meshData, *geometry, state, modelLayer, faceKey, parameters.targetMeshSize, parameters);
     } else if (operationMode == 2) {
         spdlog::info("GmshMesh: delete mesh for face {}", faceIndex);
         if (IncrementalMeshTools::deleteFaceMesh(
                 *meshData, *geometry, state, modelLayer, faceKey))
             spdlog::info("GmshMesh: delete face {} success", faceIndex);
     } else if (operationMode == 3) {
-        spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceIndex, meshSize);
+        spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceIndex, parameters.targetMeshSize);
         result = IncrementalMeshTools::remeshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceKey, meshSize, meshTypeIndex);
+            *meshData, *geometry, state, modelLayer, faceKey, parameters.targetMeshSize, parameters);
     } else {
         spdlog::warn("GmshMesh: unknown operation mode {}, skip", operationMode);
         return {};
@@ -173,9 +232,18 @@ void systems::algo::GmshMeshHandler::removeExpiredStates(const ModelLayer& model
 std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
 {
     return {
-        ArgType { ArgTypeEnum::Text, "面索引(0开始)", "" },
-        ArgType { ArgTypeEnum::Text, "网格尺寸(留空自动)", "" },
-        ArgType { ArgTypeEnum::Text, "1: mesh 2: delete 3: remesh", "" },
-        ArgType { ArgTypeEnum::Combo, "网格类型", "三角形,四边形主导,结构化四边形" }
+        ArgType { ArgTypeEnum::Text, "CAD面索引(0开始)", "" },
+        ArgType { ArgTypeEnum::Combo, "操作模式", "划分,删除,重划分" },
+        ArgType { ArgTypeEnum::Text, "目标网格尺寸(留空自动)", "" },
+        ArgType { ArgTypeEnum::Text, "最小网格尺寸(留空默认)", "" },
+        ArgType { ArgTypeEnum::Text, "最大网格尺寸(留空默认)", "" },
+        ArgType { ArgTypeEnum::Combo, "二维网格算法", kGmshMeshAlgorithmComboText },
+        ArgType { ArgTypeEnum::Combo, "网格类型", kGmshSurfaceMeshTypeComboText },
+        ArgType { ArgTypeEnum::Text, "平滑次数(留空默认)", "" },
+        ArgType { ArgTypeEnum::Combo, "四边形重组算法", kGmshRecombinationAlgorithmComboText },
+        ArgType { ArgTypeEnum::Text, "重组角度阈值(默认45)", "" },
+        ArgType { ArgTypeEnum::Text, "四边形最低质量(0~1，留空默认)", "" },
+        ArgType { ArgTypeEnum::Text, "拓扑优化次数(留空默认)", "" },
+        ArgType { ArgTypeEnum::Text, "结构化网格边划分数(留空自动)", "" }
     };
 }
