@@ -65,10 +65,8 @@ double estimateMeshSize(const GeometryData& geometry);
 
 std::size_t faceCount(const GeometryData& geometry);
 
-std::size_t meshedEdgeCount(const GmshIncrementalMeshState& state);
-
 bool writeSingleFaceObj(const SingleFaceMeshResult& res, const std::filesystem::path& filepath);
 
-bool writeMeshObj(const MeshData& res, const GmshIncrementalMeshState& state, const std::filesystem::path& filepath);
+bool writeMeshObj(const MeshData& res, const std::filesystem::path& filepath);
 
 } // namespace IncrementalMeshTools

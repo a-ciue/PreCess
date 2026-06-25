@@ -5,7 +5,6 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
 #include "GeometryData.h"
-#include "ModelData.h"
 #include "ModelIOSystemBase.h"
 #include "ModelLayer.h"
 
@@ -51,9 +50,15 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     auto geometryData = std::make_unique<GeometryData>();
     geometryData->rootShape = std::make_unique<TopoDS_Shape>(boxMaker.Shape());
 
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->name = "box";
+    component->geometry = std::move(geometryData);
+    components.push_back(std::move(component));
+
     ModelLayer modelLayer;
-    Index modelId = modelLayer.addModel(std::make_unique<ModelData>(std::move(geometryData)));
-    auto componentIds = modelLayer.getComponentIds(modelId);
+    Index modelId = modelLayer.addModel("box", std::move(components));
+    auto componentIds = modelLayer.modelById(modelId)->componentIds();
     REQUIRE(componentIds.size() == 1);
 
     auto componentOp = modelLayer.getComponentOperator(componentIds[0]);
@@ -73,7 +78,7 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     REQUIRE(comp != nullptr);
     REQUIRE(comp->mesh != nullptr);
     REQUIRE(comp->geometry != nullptr);
-    REQUIRE_FALSE(comp->mesh->vertex_positions_.empty());
+    REQUIRE_FALSE(comp->mesh->local_to_global_.empty());
     REQUIRE_FALSE(comp->mesh->face_vertices_.empty());
     REQUIRE(comp->mesh->face_vertices_offset_.size() > 1);
 }

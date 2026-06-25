@@ -10,9 +10,6 @@
 struct MeshedEdgeData {
     std::vector<double> coords;
     std::vector<double> paramCoords;
-
-    std::size_t nodeCount() const { return coords.size() / 3; }
-    bool empty() const { return coords.empty(); }
 };
 
 // 保存单个 CAD 面的网格结果，面删除和重划分时用它重建整体 MeshData。
@@ -25,16 +22,9 @@ struct SingleFaceMeshResult {
 
 // 保存一个 component 的 Gmsh 增量网格状态，由 Gmsh 插件管理生命周期。
 struct GmshIncrementalMeshState {
-    GmshIncrementalMeshState();
-    ~GmshIncrementalMeshState();
-
     // 已划分 CAD 边的节点缓存，key 使用 geometry 的全局 CAD 边 ID。
     std::map<GeomEdgeId, MeshedEdgeData> meshedEdgesCache;
     std::map<std::size_t, SingleFaceMeshResult> meshedFacesCache;
     // 已划分 CAD 边被多少个面复用，用于删除面网格时判断是否清理边缓存。
     std::map<GeomEdgeId, int> meshedEdgeRefCounts;
-    std::vector<Index> local_to_global_point_ids;
-
-    // 清空当前 component 的增量网格缓存。
-    void clear();
 };

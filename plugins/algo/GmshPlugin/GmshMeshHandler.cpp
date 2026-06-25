@@ -151,7 +151,7 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     GmshIncrementalMeshState& state = component_states_[context.cur_component.componentId()];
 
-    geometry->ensureCadIndexBuilt(modelLayer.geomRegistry());
+    geometry->ensureIndexBuilt(modelLayer.geomRegistry());
     std::size_t totalFaces = IncrementalMeshTools::faceCount(*geometry);
     if (static_cast<std::size_t>(faceIndex) >= totalFaces) {
         spdlog::error("GmshMesh: face id {} out of range (total {} face)",
@@ -208,7 +208,7 @@ std::any systems::algo::GmshMeshHandler::execute(
     }
 
     std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceIndex) + ".obj";
-    if (!IncrementalMeshTools::writeMeshObj(*meshData, state, meshOut)) {
+    if (!IncrementalMeshTools::writeMeshObj(*meshData, meshOut)) {
         spdlog::error("GmshMesh: cant save meshdata");
         return {};
     }

@@ -32,21 +32,17 @@ class TempNodeLookup {
 public:
     explicit TempNodeLookup(
         MeshData& mesh_data,
-        GmshIncrementalMeshState& state,
         ModelLayer& model_layer,
         double tolerance = 1e-7)
         : _mesh_data(mesh_data)
-        , _state(state)
         , _model_layer(model_layer)
         , _tolerance(tolerance)
     {
         const auto& vertices = _mesh_data.vertex_positions_;
-        const auto& global_ids = _state.local_to_global_point_ids;
-        for (size_t i = 0; i < vertices.size(); ++i) {
+        const auto& global_ids = _mesh_data.local_to_global_;
+        for (size_t i = 0; i < vertices.size() && i < global_ids.size(); ++i) {
             auto qc = _quantize(vertices[i][0], vertices[i][1], vertices[i][2]);
-            if (i < global_ids.size()) {
-                _map[qc] = global_ids[i];
-            }
+            _map[qc] = global_ids[i];
         }
     }
 
@@ -59,13 +55,9 @@ public:
 
         std::array<double, 3> point { x, y, z };
         Index global_id = _model_layer.appendGlobalPoints({ point });
-        if (_mesh_data.global_point_base_ < 0) {
-            _mesh_data.global_point_base_ = global_id;
-        }
         _mesh_data.vertex_positions_.push_back(point);
         _mesh_data.vertex_count_ = static_cast<Index>(_mesh_data.vertex_positions_.size());
-        _mesh_data.point_ids_are_global_ = true;
-        _state.local_to_global_point_ids.push_back(global_id);
+        _mesh_data.local_to_global_.push_back(global_id);
         _map[qc] = global_id;
         return global_id;
     }
@@ -100,7 +92,6 @@ private:
     }
 
     MeshData& _mesh_data;
-    GmshIncrementalMeshState& _state;
     ModelLayer& _model_layer;
     double _tolerance;
     std::unordered_map<QuantizedCoord, Index, CoordHash> _map;
@@ -125,12 +116,12 @@ TopoDS_Face getFaceByIndex(
     std::size_t faceIndex)
 {
     const auto& faceMap =
-        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)];
+        geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)];
     int localFaceId = static_cast<int>(faceIndex) + 1;
     if (localFaceId < 1 || localFaceId > faceMap.Extent())
         return {};
 
-    GeomFaceId globalFaceId = geometry.cad_index.faceGlobalId(localFaceId);
+    GeomFaceId globalFaceId = geometry.index.faceGlobalId(localFaceId);
     const TopoDS_Shape* shape = registry.getFace(globalFaceId);
     return shape ? TopoDS::Face(*shape) : TopoDS_Face {};
 }
@@ -141,12 +132,12 @@ std::vector<GeomEdgeId> getFaceEdgeIds(
     const GeometryData& geometry)
 {
     const auto& edgeMap =
-        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)];
+        geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)];
 
     std::vector<GeomEdgeId> edgeIds;
     for (TopExp_Explorer explorer(face, TopAbs_EDGE); explorer.More(); explorer.Next()) {
         int localEdgeId = edgeMap.FindIndex(explorer.Current());
-        GeomEdgeId globalEdgeId = geometry.cad_index.edgeGlobalId(localEdgeId);
+        GeomEdgeId globalEdgeId = geometry.index.edgeGlobalId(localEdgeId);
         if (globalEdgeId != kInvalidGeomEdgeId
             && std::find(edgeIds.begin(), edgeIds.end(), globalEdgeId) == edgeIds.end()) {
             edgeIds.push_back(globalEdgeId);
@@ -184,13 +175,13 @@ std::map<int, GeomEdgeId> importGmshEdges(const TopoDS_Face& face,
 {
     std::map<int, GeomEdgeId> result;
     const auto& edgeMap =
-        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)];
+        geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)];
     std::vector<GeomEdgeId> importedEdgeIds;
 
     for (TopExp_Explorer explorer(face, TopAbs_EDGE); explorer.More(); explorer.Next()) {
         TopoDS_Edge edge = TopoDS::Edge(explorer.Current());
         int localEdgeId = edgeMap.FindIndex(edge);
-        GeomEdgeId globalEdgeId = geometry.cad_index.edgeGlobalId(localEdgeId);
+        GeomEdgeId globalEdgeId = geometry.index.edgeGlobalId(localEdgeId);
         if (globalEdgeId == kInvalidGeomEdgeId
             || std::find(importedEdgeIds.begin(), importedEdgeIds.end(), globalEdgeId) != importedEdgeIds.end()) {
             continue;
@@ -294,8 +285,8 @@ EdgeTransfiniteInfo makeEdgeTransfiniteInfo(
     auto occIt = gmshToOcc.find(gmshTag);
     if (occIt != gmshToOcc.end()) {
         auto cacheIt = state.meshedEdgesCache.find(occIt->second);
-        if (cacheIt != state.meshedEdgesCache.end() && !cacheIt->second.empty()) {
-            info.pointCount = static_cast<int>(cacheIt->second.nodeCount());
+        if (cacheIt != state.meshedEdgesCache.end() && !cacheIt->second.coords.empty()) {
+            info.pointCount = static_cast<int>(cacheIt->second.coords.size() / 3);
             info.fixedByExistingMesh = true;
             return info;
         }
@@ -398,9 +389,9 @@ bool injectConstrainedEdge(int gmshTag,
     std::size_t& elemCounter,
     std::map<int, std::size_t>& vtxNodeMap)
 {
-    if (nodes.empty())
+    if (nodes.coords.empty())
         return false;
-    std::size_t nc = nodes.nodeCount();
+    std::size_t nc = nodes.coords.size() / 3;
 
     std::vector<std::pair<int, int>> vtxBnd;
     gmsh::model::getBoundary({ { 1, gmshTag } }, vtxBnd, false, false, false);
@@ -606,7 +597,7 @@ void storeNewEdges(GmshIncrementalMeshState& state, const std::map<int, GeomEdge
     for (auto& [gt, oid] : g2o) {
         if (state.meshedEdgeRefCounts.find(oid) == state.meshedEdgeRefCounts.end()) {
             auto ed = extractEdgeNodes(gt);
-            if (!ed.empty()) {
+            if (!ed.coords.empty()) {
                 state.meshedEdgesCache[oid] = std::move(ed);
                 state.meshedEdgeRefCounts[oid] = 1; // 首次创建
                 nNew++;
@@ -621,7 +612,6 @@ void storeNewEdges(GmshIncrementalMeshState& state, const std::map<int, GeomEdge
 
 void mergeMeshResult(
     MeshData& mesh_data,
-    GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
     const SingleFaceMeshResult& result)
 {
@@ -631,7 +621,7 @@ void mergeMeshResult(
     if (mesh_data.face_vertices_offset_.empty())
         mesh_data.face_vertices_offset_.push_back(0);
 
-    TempNodeLookup lookup(mesh_data, state, model_layer, 1e-7);
+    TempNodeLookup lookup(mesh_data, model_layer, 1e-7);
 
     std::vector<Index> localToGlobal(result.vertices.size());
     for (size_t i = 0; i < result.vertices.size(); ++i) {
@@ -665,19 +655,19 @@ bool IncrementalMeshTools::initMeshing(const std::string& stepFile,
     GmshIncrementalMeshState& state,
     GeometryRegistry& registry)
 {
-    state.clear();
-    if (geometry.cad_index.built)
-        geometry.cad_index.release(registry);
+    state = {};
+    if (geometry.index.built)
+        geometry.index.release(registry);
 
     geometry.rootShape = std::make_unique<TopoDS_Shape>(loadStep(stepFile));
     if (geometry.rootShape->IsNull()) {
         spdlog::error("Failed to load: {}", stepFile);
         return false;
     }
-    geometry.ensureCadIndexBuilt(registry);
+    geometry.ensureIndexBuilt(registry);
     std::size_t faceCount = IncrementalMeshTools::faceCount(geometry);
     std::size_t edgeCount = static_cast<std::size_t>(
-        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)].Extent());
+        geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)].Extent());
     spdlog::info("Loaded: {} faces, {} global edges",
         faceCount, edgeCount);
     return faceCount > 0;
@@ -788,7 +778,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     state.meshedFacesCache[faceIndex] = result; // 缓存面结果
 
     if (result.success) {
-        mergeMeshResult(mesh_data, state, model_layer, result);
+        mergeMeshResult(mesh_data, model_layer, result);
     }
     gmsh::finalize();
     return result;
@@ -814,15 +804,10 @@ double IncrementalMeshTools::estimateMeshSize(const GeometryData& geometry)
 
 std::size_t IncrementalMeshTools::faceCount(const GeometryData& geometry)
 {
-    if (!geometry.cad_index.built)
+    if (!geometry.index.built)
         return 0;
     return static_cast<std::size_t>(
-        geometry.cad_index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].Extent());
-}
-
-std::size_t IncrementalMeshTools::meshedEdgeCount(const GmshIncrementalMeshState& state)
-{
-    return state.meshedEdgeRefCounts.size();
+        geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].Extent());
 }
 
 bool IncrementalMeshTools::writeSingleFaceObj(const SingleFaceMeshResult& res, const std::filesystem::path& filepath)
@@ -850,7 +835,6 @@ bool IncrementalMeshTools::writeSingleFaceObj(const SingleFaceMeshResult& res, c
 
 bool IncrementalMeshTools::writeMeshObj(
     const MeshData& res,
-    const GmshIncrementalMeshState& state,
     const std::filesystem::path& filepath)
 {
     std::ofstream ofs(filepath);
@@ -864,7 +848,7 @@ bool IncrementalMeshTools::writeMeshObj(
         ofs << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
 
     std::unordered_map<Index, std::size_t> globalToLocal;
-    const auto& globalIds = state.local_to_global_point_ids;
+    const auto& globalIds = res.local_to_global_;
     for (std::size_t i = 0; i < globalIds.size(); ++i) {
         globalToLocal[globalIds[i]] = i + 1;
     }
@@ -922,7 +906,7 @@ bool IncrementalMeshTools::deleteFaceMesh(
     mesh_data.face_vertices_offset_.clear();
     mesh_data.face_vertices_offset_.push_back(0); 
 
-    TempNodeLookup lookup(mesh_data, state, model_layer, 1e-7);
+    TempNodeLookup lookup(mesh_data, model_layer, 1e-7);
 
     // 遍历目前还保留的所有有效面，按序装入MeshData
     for (const auto& [fIdx, faceMeshResult] : state.meshedFacesCache) {

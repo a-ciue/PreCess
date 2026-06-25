@@ -26,7 +26,7 @@
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 
-// Runtime state shared by the VTK key callback and the example main loop.
+// VTK 按键回调和示例主循环共享的运行状态。
 struct AppContext {
     GeometryData geometry;
     GmshIncrementalMeshState gmshState;
@@ -38,18 +38,18 @@ struct AppContext {
     double meshSize { 10.0 };
 };
 
-// Builds a local file/render index for mesh vertices whose faces store global point ids.
-static std::unordered_map<Index, std::size_t> buildGlobalToLocalPointMap(const GmshIncrementalMeshState& state)
+// 根据当前 MeshData 的局部到全局点映射，生成“全局点 ID -> 本地点序号”的查询表。
+static std::unordered_map<Index, std::size_t> buildGlobalToLocalPointMap(const MeshData& mesh)
 {
     std::unordered_map<Index, std::size_t> globalToLocal;
-    const auto& globalIds = state.local_to_global_point_ids;
+    const auto& globalIds = mesh.local_to_global_;
     for (std::size_t i = 0; i < globalIds.size(); ++i) {
         globalToLocal[globalIds[i]] = i;
     }
     return globalToLocal;
 }
 
-// Reloads vtkPolyData from MeshData without depending on app/render classes.
+// 从 MeshData 重建 vtkPolyData，避免示例程序依赖 app/render 层。
 static void reloadPolyData(AppContext& ctx)
 {
     auto points = vtkSmartPointer<vtkPoints>::New();
@@ -58,7 +58,7 @@ static void reloadPolyData(AppContext& ctx)
     }
 
     auto polys = vtkSmartPointer<vtkCellArray>::New();
-    auto globalToLocal = buildGlobalToLocalPointMap(ctx.gmshState);
+    auto globalToLocal = buildGlobalToLocalPointMap(ctx.meshData);
 
     for (std::size_t i = 0; i + 1 < ctx.meshData.face_vertices_offset_.size(); ++i) {
         std::size_t begin = ctx.meshData.face_vertices_offset_[i];
@@ -85,20 +85,20 @@ static void reloadPolyData(AppContext& ctx)
     ctx.window->Render();
 }
 
-// Resets generated mesh and Gmsh caches while keeping the loaded CAD shape.
+// 清空已生成网格和 Gmsh 缓存，但保留已经加载的 CAD 形体。
 static void resetGeneratedMesh(AppContext& ctx)
 {
     ctx.meshData.init();
-    ctx.gmshState.clear();
+    ctx.gmshState = {};
     if (ctx.geometry.rootShape)
-        ctx.geometry.ensureCadIndexBuilt(ctx.modelLayer.geomRegistry());
+        ctx.geometry.ensureIndexBuilt(ctx.modelLayer.geomRegistry());
     ctx.currentIndex = 0;
     ctx.meshSize = IncrementalMeshTools::estimateMeshSize(ctx.geometry);
     reloadPolyData(ctx);
 }
 
-// Saves the example mesh by translating global point ids back to local file node ids.
-static void saveMesh(const MeshData& mesh, const GmshIncrementalMeshState& state, const std::string& filename)
+// 保存示例网格时，把全局点 ID 转回文件内的局部点编号。
+static void saveMesh(const MeshData& mesh, const std::string& filename)
 {
     if (mesh.vertex_positions_.empty()) {
         spdlog::warn("No mesh data to save.");
@@ -112,7 +112,7 @@ static void saveMesh(const MeshData& mesh, const GmshIncrementalMeshState& state
 
         std::vector<std::size_t> nodeTags(mesh.vertex_positions_.size());
         std::vector<double> nodeCoords(mesh.vertex_positions_.size() * 3);
-        auto globalToLocal = buildGlobalToLocalPointMap(state);
+        auto globalToLocal = buildGlobalToLocalPointMap(mesh);
 
         for (std::size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
             nodeTags[i] = i + 1;
@@ -193,11 +193,11 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
                 ctx->meshSize *= 1.5;
             spdlog::info("nodes={}, cached_edges={}, next_size={:.4f}",
                 ctx->meshData.vertex_positions_.size(),
-                IncrementalMeshTools::meshedEdgeCount(ctx->gmshState),
+                ctx->gmshState.meshedEdgeRefCounts.size(),
                 ctx->meshSize);
         }
     } else if (key == "s" || key == "S") {
-        saveMesh(ctx->meshData, ctx->gmshState, "final_mesh.msh");
+        saveMesh(ctx->meshData, "final_mesh.msh");
     } else if (key == "r" || key == "R") {
         resetGeneratedMesh(*ctx);
         spdlog::info("Reset mesh, size={:.4f}", ctx->meshSize);
