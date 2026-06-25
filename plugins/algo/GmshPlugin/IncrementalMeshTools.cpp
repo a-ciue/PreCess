@@ -246,19 +246,16 @@ void configureMeshingOptions(const IncrementalMeshTools::GmshMeshParameters& par
     setGmshNumberOption("Mesh.Smoothing", parameters.smoothingSteps);
 
     setGmshNumberOption("Mesh.AlgorithmSwitchOnFailure", parameters.algorithmSwitchOnFailure);
-    if (parameters.recombineAlgorithm >= 0)
-        setGmshNumberOption("Mesh.RecombinationAlgorithm", parameters.recombineAlgorithm);
+    setGmshNumberOption("Mesh.RecombinationAlgorithm", parameters.recombineAlgorithm);
     if (parameters.quadMinQuality > 0.0)
         setGmshNumberOption("Mesh.RecombineMinimumQuality", parameters.quadMinQuality);
-    if (parameters.recombineOptimizeTopology > 0)
-        setGmshNumberOption("Mesh.RecombineOptimizeTopology", parameters.recombineOptimizeTopology);
 }
 
 // 根据曲线长度和目标网格尺寸估算结构化曲线节点数；或者指定的划分段数
 int estimateEdgePointCount(int gmshTag, double meshSize, int structuredEdgeDivisions)
 {
     if (structuredEdgeDivisions > 0)
-        return std::max(2, structuredEdgeDivisions );
+        return std::max(2, structuredEdgeDivisions + 1);
 
     double length = 0.0;
     gmsh::model::occ::getMass(1, gmshTag, length);
@@ -343,7 +340,7 @@ bool configureSurfaceMeshType(
         return true;
 
     if (meshType == GmshSurfaceMeshType::QuadDominant) {
-        gmsh::model::mesh::setRecombine(2, faceTag, parameters.recombineAngle);
+        gmsh::model::mesh::setRecombine(2, faceTag, 45.0);
         return true;
     }
 
@@ -378,7 +375,7 @@ bool configureSurfaceMeshType(
     gmsh::model::mesh::setTransfiniteCurve(edges[1].gmshTag, secondPairPointCount);
     gmsh::model::mesh::setTransfiniteCurve(edges[3].gmshTag, secondPairPointCount);
     gmsh::model::mesh::setTransfiniteSurface(faceTag);
-    gmsh::model::mesh::setRecombine(2, faceTag, parameters.recombineAngle);
+    gmsh::model::mesh::setRecombine(2, faceTag, 45.0);
     return true;
 }
 
@@ -808,66 +805,6 @@ std::size_t IncrementalMeshTools::faceCount(const GeometryData& geometry)
         return 0;
     return static_cast<std::size_t>(
         geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].Extent());
-}
-
-bool IncrementalMeshTools::writeSingleFaceObj(const SingleFaceMeshResult& res, const std::filesystem::path& filepath)
-{
-    if (!res.success)
-        return false;
-
-    std::ofstream ofs(filepath);
-    if (!ofs.is_open())
-        return false;
-
-    for (const auto& v : res.vertices)
-        ofs << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
-
-    for (size_t i = 0; i + 1 < res.face_vertices_offset.size(); ++i) {
-        size_t start = res.face_vertices_offset[i];
-        size_t end = res.face_vertices_offset[i + 1];
-        ofs << "f";
-        for (size_t j = start; j < end; ++j)
-            ofs << " " << (res.face_vertices[j] + 1);
-        ofs << "\n";
-    }
-    return true;
-}
-
-bool IncrementalMeshTools::writeMeshObj(
-    const MeshData& res,
-    const std::filesystem::path& filepath)
-{
-    std::ofstream ofs(filepath);
-    if (!ofs.is_open())
-        return false;
-
-    ofs << "o GmshMergedMesh\n";
-    ofs << "g 0\n"; 
-
-    for (const auto& v : res.vertex_positions_)
-        ofs << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
-
-    std::unordered_map<Index, std::size_t> globalToLocal;
-    const auto& globalIds = res.local_to_global_;
-    for (std::size_t i = 0; i < globalIds.size(); ++i) {
-        globalToLocal[globalIds[i]] = i + 1;
-    }
-
-    for (size_t i = 0; i + 1 < res.face_vertices_offset_.size(); ++i) {
-        size_t start = res.face_vertices_offset_[i];
-        size_t end = res.face_vertices_offset_[i + 1];
-        ofs << "f";
-        for (size_t j = start; j < end; ++j) {
-            auto it = globalToLocal.find(res.face_vertices_[j]);
-            if (it == globalToLocal.end()) {
-                spdlog::error("GmshMesh: missing local point for global id {}", res.face_vertices_[j]);
-                return false;
-            }
-            ofs << " " << it->second;
-        }
-        ofs << "\n";
-    }
-    return true;
 }
 
 bool IncrementalMeshTools::deleteFaceMesh(

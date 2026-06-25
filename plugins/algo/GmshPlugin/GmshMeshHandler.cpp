@@ -118,10 +118,8 @@ std::any systems::algo::GmshMeshHandler::execute(
         parameters.smoothingSteps = readOptionalInt(args, 7).value_or(0);
         parameters.recombineAlgorithm = gmshComboValue(
             kGmshRecombinationAlgorithmComboValues, readComboIndex(args, 8));
-        parameters.recombineAngle = readOptionalDouble(args, 9).value_or(45.0);
-        parameters.quadMinQuality = readOptionalDouble(args, 10).value_or(0.0);
-        parameters.recombineOptimizeTopology = readOptionalInt(args, 11).value_or(0);
-        parameters.structuredEdgeDivisions = readOptionalInt(args, 12).value_or(0);
+        parameters.quadMinQuality = readOptionalDouble(args, 9).value_or(0.0);
+        parameters.structuredEdgeDivisions = readOptionalInt(args, 10).value_or(0);
     }
 
     if (faceIndex < 0) {
@@ -198,20 +196,14 @@ std::any systems::algo::GmshMeshHandler::execute(
             result.vertices.size(),
             result.face_vertices_offset.size() - 1,
             state.meshedEdgeRefCounts.size());
-
-        // std::string faceOut = core::TempFile::instance().path().string() + "_single_face_" + std::to_string(faceIndex) + ".obj";
-        // if (!IncrementalMeshTools::writeSingleFaceObj(result, faceOut)) {
-        //     spdlog::error("GmshMesh: cant save single face");
-        //     return {};
-        // }
-        // context.io_system.read(faceOut, "Wavefront .obj file", {});
     }
 
     std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceIndex) + ".obj";
-    if (!IncrementalMeshTools::writeMeshObj(*meshData, meshOut)) {
-        spdlog::error("GmshMesh: cant save meshdata");
-        return {};
-    }
+    context.io_system.writeComponents(
+        { context.cur_component.componentId() },
+        meshOut,
+        "Wavefront .obj file",
+        {});
     context.io_system.read(meshOut, "Wavefront .obj file", {});
     context.cur_component.notifyChanged();
 
@@ -241,9 +233,7 @@ std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
         ArgType { ArgTypeEnum::Combo, "网格类型", kGmshSurfaceMeshTypeComboText },
         ArgType { ArgTypeEnum::Text, "平滑次数(留空默认)", "" },
         ArgType { ArgTypeEnum::Combo, "四边形重组算法", kGmshRecombinationAlgorithmComboText },
-        ArgType { ArgTypeEnum::Text, "重组角度阈值(默认45)", "" },
         ArgType { ArgTypeEnum::Text, "四边形最低质量(0~1，留空默认)", "" },
-        ArgType { ArgTypeEnum::Text, "拓扑优化次数(留空默认)", "" },
         ArgType { ArgTypeEnum::Text, "结构化网格边划分数(留空自动)", "" }
     };
 }

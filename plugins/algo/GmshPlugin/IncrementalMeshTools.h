@@ -22,10 +22,8 @@ struct GmshMeshParameters {
     int meshTypeIndex {};
     int algorithmSwitchOnFailure {};
     int smoothingSteps {};
-    int recombineAlgorithm { -1 };
-    double recombineAngle { 45.0 };
+    int recombineAlgorithm { 1 };
     double quadMinQuality {};
-    int recombineOptimizeTopology {};
     int structuredEdgeDivisions {};
 };
 
@@ -66,7 +64,5 @@ double estimateMeshSize(const GeometryData& geometry);
 std::size_t faceCount(const GeometryData& geometry);
 
 bool writeSingleFaceObj(const SingleFaceMeshResult& res, const std::filesystem::path& filepath);
-
-bool writeMeshObj(const MeshData& res, const std::filesystem::path& filepath);
 
 } // namespace IncrementalMeshTools
