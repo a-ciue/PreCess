@@ -212,13 +212,13 @@ bool TreeModel::refresh()
     std::unordered_map<int, bool> fresh;
     for (TreeNode* mNode : rootNode->children) {
         for (TreeNode* cNode : mNode->children) {
-            int ckey = (1 << 24) | (cNode->nodeId & 0xFFFFFF);
-            auto cit = visibility_map_.find(ckey);
-            cNode->isVisible = (cit != visibility_map_.end()) ? cit->second : true;
+            int ckey = cNode->nodeId;
+            auto cit = components_visibility_.find(ckey);
+            cNode->isVisible = (cit != components_visibility_.end()) ? cit->second : true;
             fresh[ckey] = cNode->isVisible;
         }
     }
-    visibility_map_ = std::move(fresh);
+    components_visibility_ = std::move(fresh);
 
     delete oldRoot;
     return true;
@@ -237,8 +237,8 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
         for (int i = 0; i < target->children.size(); ++i) {
             TreeNode* comp = target->children[i];
             comp->isVisible = visible;
-            int ckey = (1 << 24) | (comp->nodeId & 0xFFFFFF);
-            visibility_map_[ckey] = visible;
+            int ckey = comp->nodeId;
+            components_visibility_[ckey] = visible;
         }
         QModelIndex mIdx = createIndex(row, 0, target);
         emit dataChanged(mIdx, mIdx, { IsVisibleRole });
@@ -248,8 +248,8 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
 
     if (target->parent->parent == rootNode) {
         target->isVisible = visible;
-        int key = (1 << 24) | (target->nodeId & 0xFFFFFF);
-        visibility_map_[key] = visible;
+        int key = target->nodeId;
+        components_visibility_[key] = visible;
 
         QModelIndex idx = createIndex(row, 0, target);
         emit dataChanged(idx, idx, { IsVisibleRole });
@@ -266,8 +266,8 @@ bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visi
     }
 
     target->isVisible = visible;
-    int key = (0 << 24) | (target->nodeId & 0xFFFFFF);
-    visibility_map_[key] = visible;
+    int key_fb = target->nodeId;
+    components_visibility_[key_fb] = visible;
 
     QModelIndex idx = createIndex(row, 0, target);
     emit dataChanged(idx, idx, { IsVisibleRole });

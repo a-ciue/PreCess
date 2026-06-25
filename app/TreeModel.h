@@ -63,5 +63,5 @@ private:
 
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;
-    std::unordered_map<int, bool> visibility_map_;
+    std::unordered_map<int, bool> components_visibility_;
 };

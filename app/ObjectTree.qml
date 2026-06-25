@@ -125,7 +125,7 @@ Pane {
 
                     ToolTip {
                         visible: nameText.truncated && viewDelegate.hovered
-                        text: nameText.text + (valueText.text ? " " + valueText.text : "")
+                        text: nameText.text
                         delay: 300
                     }
                 }
@@ -151,8 +151,6 @@ Pane {
                 onClicked: (mouse) => {
                     if (mouse.button === Qt.RightButton) {
                         if (viewDelegate.depth > 1) return
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                         contextMenu.popup()
                     } else {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
@@ -207,7 +205,6 @@ Pane {
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, false)
                         else
                             App.componentVisibilityUpdated(viewDelegate.model.nodeId, false)
-                        viewDelegate.treeView.selectionModel.clear()
                     }
                 }
 
@@ -236,7 +233,6 @@ Pane {
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, true)
                         else
                             App.componentVisibilityUpdated(viewDelegate.model.nodeId, true)
-                        viewDelegate.treeView.selectionModel.clear()
                     }
                 }
 
