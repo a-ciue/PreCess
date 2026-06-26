@@ -60,6 +60,8 @@ public:
 private:
     TreeNode* getNode(const QModelIndex& index) const;
     void emitDescendantDataChanged(const QModelIndex& parentIndex);
+    void setNodeVisibility(TreeNode* node, bool visible);
+    void syncSubNodes(TreeNode* node);
 
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;
