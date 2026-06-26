@@ -9,6 +9,7 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 
 class SelectManager;
+class GeometrySelectManager;
 
 
 class QRenderWindowStyle : public vtkInteractorStyleTrackballCamera {
@@ -17,11 +18,18 @@ public:
     vtkTypeMacro(QRenderWindowStyle, vtkInteractorStyleTrackballCamera);
     void SetClick();
     void SetSelectManager(SelectManager* select_manager);
+    void SetGeometrySelectManager(GeometrySelectManager* geometry_select_manager);
+    void OnLeftButtonDown() override;
+    void OnMouseMove() override;
     void OnLeftButtonUp() override;
      
 private:    
     bool click_ {};
+    bool trackball_started_ { false };
+    bool button_down_ { false };
+    int downPos_[2] { 0, 0 };
     SelectManager* select_manager_{};
+    GeometrySelectManager* geometry_select_manager_{};
 
 };
 

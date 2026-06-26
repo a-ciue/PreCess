@@ -55,3 +55,26 @@ target_link_libraries(TestMeshData PRIVATE
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestVertexSelectorHighlight MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+
+# TestCadShapePicker (OCCT IVtkTools_ShapePicker)
+add_executable(TestCadShapePicker TestCadShapePicker.cpp)
+target_link_libraries(TestCadShapePicker PRIVATE
+    vtkPart TestDeps
+    spdlog::spdlog
+
+    VTK::InteractionStyle VTK::CommonColor
+    VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2
+
+    TKIVtk
+    TKPrim TKBRep TKGeomBase TKMath TKernel TKTopAlgo
+    TKDESTEP
+    TKXCAF
+    TKVCAF
+    TKCAF
+    TKLCAF
+)
+vtk_module_autoinit(TARGETS TestCadShapePicker MODULES
+    VTK::InteractionStyle VTK::CommonColor
+    VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2
+)
+install(TARGETS TestCadShapePicker)

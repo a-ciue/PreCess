@@ -1,9 +1,12 @@
 add_library(vtkPart STATIC 
     MeshActor.cpp
     MeshActorSelectOp.cpp
+    GeometryActorSelectOp.cpp
     SelectorHighlight.cpp
+    GeometrySelectorHighlight.cpp
     QRenderWindowStyle.cpp
     SelectManager.cpp
+    GeometrySelectManager.cpp
     GeometryActor.cpp
     MeshActorManager.cpp
     GeometryActorManager.cpp

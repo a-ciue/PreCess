@@ -32,7 +32,7 @@ public:
 	std::unique_ptr<Selection>	getSelection();
 
 private:
-        std::optional<MeshActorSelectOpFactory> cur_model_actor_ {};
+    std::optional<MeshActorSelectOpFactory> cur_model_actor_ {};
 	SelectMode	select_mode_;
 	vtkNew<vtkActor> selection_actor_;
 	vtkNew<vtkPolyDataMapper> selection_mapper_;

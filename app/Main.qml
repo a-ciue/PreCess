@@ -287,6 +287,18 @@ ApplicationWindow {
                 if(selectType === "体"){
                     myItem.setSelectMode("Solid")
                 }
+                if(selectType === "几何点"){
+                    myItem.setSelectMode("GeometryVertex")
+                }
+                if(selectType === "几何边"){
+                    myItem.setSelectMode("GeometryEdge")
+                }
+                if(selectType === "几何面"){
+                    myItem.setSelectMode("GeometryFace")
+                }
+                if(selectType === "几何体"){
+                    myItem.setSelectMode("GeometrySolid")
+                }
             }
 
             function changeEnable(){}

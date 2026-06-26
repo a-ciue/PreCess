@@ -38,6 +38,10 @@ RowLayout {
             ListElement{text: "面"}
             ListElement{text: "体"}
             ListElement{text: "块"}
+            ListElement{text: "几何点"}
+            ListElement{text: "几何边"}
+            ListElement{text: "几何面"}
+            ListElement{text: "几何体"}
         }
         onCurrentTextChanged: comboBoxSelectionChanged()
         enabled: root.cur_model >= 0
