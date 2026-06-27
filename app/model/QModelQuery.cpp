@@ -39,8 +39,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
         md->edge_vertices_,
-        md->global_point_base_,
-        md->vertex_count_,
+        md->local_to_global_,
         md->vertex_attributes_,md->edge_attributes_,md->face_attributes_,md->solid_attributes_,{},-1 };
 
     // 添加所有块
@@ -78,8 +77,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
         md->edge_vertices_,
-        md->global_point_base_,
-        md->vertex_count_,
+        md->local_to_global_,
         md->vertex_attributes_,
         md->edge_attributes_,
         md->face_attributes_,
