@@ -2,6 +2,7 @@
 #include <vtkPolyData.h>
 #include <vtkCellCenters.h>
 #include <vtkCellData.h>
+#include <vtkMapper.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
 #include <cassert>
@@ -154,6 +155,18 @@ vtkCellData* AttributeOperator::getSolidCellData()
 vtkPointData* AttributeOperator::getSolidPointData()
 {
     return mesh_actor_->solid_data_->GetPointData();
+}
+
+void AttributeOperator::enableFaceAttributeOffset()
+{
+    vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
+    vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
+    mesh_actor_->face_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(-1.0, -1.0);
+}
+
+void AttributeOperator::disableFaceAttributeOffset()
+{
+    mesh_actor_->face_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
 }
 
 double AttributeOperator::getMeshScale() const noexcept

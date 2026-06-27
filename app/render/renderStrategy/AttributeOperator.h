@@ -24,6 +24,12 @@ public:
     vtkCellData* getSolidCellData();
     vtkPointData* getSolidPointData();
 
+    // 启用面属性渲染的深度偏移，避免面属性和体外表面共面时互相遮挡。
+    void enableFaceAttributeOffset();
+
+    // 关闭面属性渲染的深度偏移，恢复普通面渲染深度关系。
+    void disableFaceAttributeOffset();
+
     // 返回当前 component 的典型边长，用于计算 glyph 默认缩放比例。
     double getMeshScale() const noexcept;
 

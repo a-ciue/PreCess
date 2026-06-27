@@ -31,6 +31,7 @@ void AttriRenderStrategyRGB::render(
     // 判断是否是面属性
     array = op.getFaceCellData()->GetArray(attr_name.c_str());
     if (array) {
+        op.enableFaceAttributeOffset();
         op.getFaceCellData()->SetActiveScalars(attr_name.c_str());
         vtkPolyDataMapper* face_mapper = op.getFaceMapper();
         face_mapper->SetScalarModeToUseCellData();
@@ -41,6 +42,7 @@ void AttriRenderStrategyRGB::render(
     // 判断是否是体属性
     array = op.getSolidCellData()->GetArray(attr_name.c_str());
     if (array) {
+        op.disableFaceAttributeOffset();
         op.getSolidCellData()->SetActiveScalars(attr_name.c_str());
         vtkPolyDataMapper* solid_mapper = op.getSolidMapper();
         solid_mapper->SetScalarModeToUseCellData();

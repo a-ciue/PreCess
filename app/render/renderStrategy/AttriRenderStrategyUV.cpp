@@ -43,6 +43,7 @@ void AttriRenderStrategyUV::render(
     // 读取传入的属性作为UV
     vtkDataArray* tcoords = op.getFacePointData()->GetArray(attr_name.c_str());
     if (tcoords && tcoords->GetNumberOfComponents() == 2) {
+        op.enableFaceAttributeOffset();
         spdlog::info("use attribute {} as UV", attr_name);
         op.getFacePointData()->SetTCoords(tcoords);
         op.getSolidPointData()->SetTCoords(tcoords);

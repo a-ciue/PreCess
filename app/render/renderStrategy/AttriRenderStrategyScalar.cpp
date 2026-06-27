@@ -54,6 +54,7 @@ void AttriRenderStrategyScalar::render(
     // 判断是否是面属性
     array = op.getFaceCellData()->GetArray(attr_name.c_str());
     if (array) {
+        op.enableFaceAttributeOffset();
         double range[2];
         resolveRange(array, range);
 
@@ -68,6 +69,7 @@ void AttriRenderStrategyScalar::render(
     // 判断是否是体属性
     array = op.getSolidCellData()->GetArray(attr_name.c_str());
     if (array) {
+        op.disableFaceAttributeOffset();
         double range[2];
         resolveRange(array, range);
 
