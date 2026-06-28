@@ -19,3 +19,5 @@ precess_add_algo_plugin(TetGenLibPlugin
 )
 
 precess_plugin_link_libraries(TetGenLibPlugin TetGenInternal)
+
+add_subdirectory(test)
