@@ -219,42 +219,42 @@ bool TreeModel::refresh()
     }
 
     endResetModel();
-
+    
     delete oldRoot;
     return true;
 }
 
-bool TreeModel::setVisibility(int row, const QModelIndex& parentIndex, bool visible)
+bool TreeModel::setVisibility(const QModelIndex& idx, bool visible)
 {
-    TreeNode* parentNode = getNode(parentIndex);
+    if (!idx.isValid()) return false;
+    TreeNode* target = getNode(idx);
 
-    if (row < 0 || row >= parentNode->children.size())
-        return false;
+    if (target->parent == rootNode) {
+        for (int i = 0; i < target->children.size(); ++i) {
+            TreeNode* comp = target->children[i];
+            comp->isVisible = visible;
+            if (comp->nodeId >= 0)
+                components_visibility_[comp->nodeId] = visible;
+            syncSubNodes(comp);
+        }
+    } else {
+        setNodeVisibility(target, visible);
+    }
 
-    TreeNode* target = parentNode->children[row];
-
-    setNodeVisibility(target, visible);
-
-    QModelIndex idx = createIndex(row, 0, target);
     emit dataChanged(idx, idx, { IsVisibleRole });
     emitDescendantDataChanged(idx);
 
-    if (target->parent && target->parent->parent == rootNode) {
-        for (int i = 0; i < rootNode->children.size(); ++i) {
-            if (rootNode->children[i] == target->parent) {
-                QModelIndex mIdx = createIndex(i, 0, target->parent);
-                emit dataChanged(mIdx, mIdx, { IsVisibleRole });
-                break;
-            }
-        }
-    }
+    QModelIndex parentIdx = parent(idx);
+    if (parentIdx.isValid())
+        emit dataChanged(parentIdx, parentIdx, { IsVisibleRole });
+
     return true;
 }
 
 void TreeModel::setNodeVisibility(TreeNode* node, bool visible)
 {
     node->isVisible = visible;
-    if (node->nodeId > 0)
+    if (node->nodeId >= 0)
         components_visibility_[node->nodeId] = visible;
     for (TreeNode* child : node->children)
         setNodeVisibility(child, visible);

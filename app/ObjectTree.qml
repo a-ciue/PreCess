@@ -101,7 +101,7 @@ Pane {
                 Text {
                     anchors.centerIn: parent
                     text: "▼"
-                    color: "black"
+                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
                     font.pixelSize: 10
                 }
             }
@@ -134,7 +134,7 @@ Pane {
                     id: valueText
                     text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
                     visible: text !== ""
-                    color: "black"
+                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
                     font.pixelSize: 11
                 }
 
@@ -200,7 +200,7 @@ Pane {
 
                     onTriggered: {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        treeModel.setVisibility(idx.row, idx.parent, false)
+                        treeModel.setVisibility(idx, false)
                         if (viewDelegate.depth === 0)
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, false)
                         else
@@ -228,7 +228,7 @@ Pane {
 
                     onTriggered: {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        treeModel.setVisibility(idx.row, idx.parent, true)
+                        treeModel.setVisibility(idx, true)
                         if (viewDelegate.depth === 0)
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, true)
                         else
