@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['value_0',['value',['../classQArgObject.html#af1c79b539eb41eff9dc27169c17b514c',1,'QArgObject']]]
+  ['selectedids_0',['selectedIDs',['../structQRenderWindow.html#a4c03bb09521541323af430677bf4f0df',1,'QRenderWindow']]],
+  ['systempluginmanager_1',['systemPluginManager',['../classQModelManager.html#a3a4a212a83b8113dbd0d246242f36674',1,'QModelManager']]]
 ];

@@ -1,23 +1,27 @@
 <map id="app/core/QSelection.h" name="app/core/QSelection.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="518,5,682,31"/>
-<area shape="rect" id="Node000002" href="$QArgObject_8cpp.html" title=" " alt="" coords="177,79,373,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="535,36,328,81,327,76,534,31"/>
-<area shape="rect" id="Node000003" href="$QModelQuery_8h.html" title=" " alt="" coords="397,79,592,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="573,41,513,81,510,76,570,36"/>
-<area shape="rect" id="Node000008" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="629,225,859,251"/>
-<area shape="poly" id="edge11_Node000001_Node000008" title=" " alt="" coords="674,31,725,48,778,72,827,106,849,127,866,151,871,164,870,177,863,189,852,199,823,216,790,228,788,223,820,211,849,195,859,186,865,176,866,165,862,153,845,130,824,110,776,77,723,53,673,37"/>
-<area shape="rect" id="Node000009" href="$QRenderWindow_8h.html" title=" " alt="" coords="637,152,851,177"/>
-<area shape="poly" id="edge12_Node000001_Node000009" title=" " alt="" coords="623,39,734,150,731,154,620,43"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="622,5,786,31"/>
+<area shape="rect" id="Node000002" href="$QArgObject_8cpp.html" title=" " alt="" coords="281,79,477,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="639,36,432,81,431,76,638,31"/>
+<area shape="rect" id="Node000003" href="$QModelQuery_8h.html" title=" " alt="" coords="501,79,696,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="677,41,617,81,614,76,674,36"/>
+<area shape="rect" id="Node000010" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="733,225,963,251"/>
+<area shape="poly" id="edge13_Node000001_Node000010" title=" " alt="" coords="778,32,828,48,881,72,930,106,951,127,969,151,974,164,973,177,966,189,955,199,925,216,893,228,891,223,923,211,952,195,962,185,968,176,969,165,964,153,947,130,927,110,879,77,827,53,777,37"/>
+<area shape="rect" id="Node000011" href="$QRenderWindow_8h.html" title=" " alt="" coords="741,152,955,177"/>
+<area shape="poly" id="edge14_Node000001_Node000011" title=" " alt="" coords="727,39,838,150,835,154,724,43"/>
 <area shape="rect" id="Node000004" href="$TreeModel_8cpp.html" title=" " alt="" coords="5,225,149,251"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="385,108,171,135,52,154,46,170,49,189,70,223,65,226,44,191,41,169,49,150,170,130,384,103"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="488,107,52,154,46,170,49,189,70,223,65,226,44,190,41,169,49,150,487,102"/>
 <area shape="rect" id="Node000005" href="$TreeModel_8h.html" title=" " alt="" coords="63,152,193,177"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="423,109,188,155,187,149,422,104"/>
-<area shape="rect" id="Node000006" href="$main_8cpp.html" title=" " alt="" coords="217,152,327,177"/>
-<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="447,111,309,154,307,149,445,106"/>
-<area shape="rect" id="Node000007" href="$QModelQuery_8cpp.html" title=" " alt="" coords="351,152,561,177"/>
-<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="484,118,465,153,460,151,479,115"/>
-<area shape="poly" id="edge8_Node000003_Node000008" title=" " alt="" coords="523,109,625,175,720,223,718,228,623,180,520,114"/>
-<area shape="poly" id="edge9_Node000003_Node000009" title=" " alt="" coords="549,105,704,149,703,154,547,110"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="510,109,193,156,192,151,509,103"/>
+<area shape="rect" id="Node000006" href="$QModelManager_8h.html" title=" " alt="" coords="217,152,431,177"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="542,110,369,154,368,149,541,105"/>
+<area shape="rect" id="Node000009" href="$QModelQuery_8cpp.html" title=" " alt="" coords="455,152,665,177"/>
+<area shape="poly" id="edge9_Node000003_Node000009" title=" " alt="" coords="588,118,569,153,564,151,583,115"/>
+<area shape="poly" id="edge10_Node000003_Node000010" title=" " alt="" coords="627,109,729,175,824,223,822,228,727,180,624,114"/>
+<area shape="poly" id="edge11_Node000003_Node000011" title=" " alt="" coords="653,105,808,149,807,154,651,110"/>
 <area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="114,190,88,227,83,224,109,187"/>
-<area shape="poly" id="edge10_Node000009_Node000008" title=" " alt="" coords="747,191,747,225,741,225,741,191"/>
+<area shape="rect" id="Node000007" href="$main_8cpp.html" title=" " alt="" coords="247,225,358,251"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="319,192,309,226,304,224,314,190"/>
+<area shape="rect" id="Node000008" href="$QModelManager_8cpp.html" title=" " alt="" coords="382,225,610,251"/>
+<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="365,180,469,223,467,228,363,185"/>
+<area shape="poly" id="edge12_Node000011_Node000010" title=" " alt="" coords="851,191,851,225,845,225,845,191"/>
 </map>

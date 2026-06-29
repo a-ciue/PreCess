@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['query_0',['query',['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow']]]
+  ['observer_0',['observer',['../classQModelManager.html#aa43a566ac016309298b376f0dd5ca0fc',1,'QModelManager']]]
 ];

@@ -39,5 +39,6 @@ var searchData=
   ['qsystempluginmanager_2ecpp_36',['QSystemPluginManager.cpp',['../QSystemPluginManager_8cpp.html',1,'']]],
   ['qsystempluginmanager_2eh_37',['QSystemPluginManager.h',['../QSystemPluginManager_8h.html',1,'']]],
   ['quat_2eh_38',['quat.h',['../quat_8h.html',1,'']]],
-  ['query_39',['query',['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow']]]
+  ['query_39',['query',['../classQModelManager.html#afab38d2de8a7aba39444a3ba26290098',1,'QModelManager::query'],['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow::query']]],
+  ['query_5f_40',['query_',['../classQModelManager.html#a99ca7f7ca124277e834c170903b2074b',1,'QModelManager']]]
 ];

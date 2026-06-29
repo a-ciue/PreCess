@@ -81,120 +81,101 @@ $(function() {
   <div class="headertitle"><div class="title">main.cpp 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;QtQml/QQmlApplicationEngine&gt;</code><br />
-<code>#include &lt;QtQml/QQmlContext&gt;</code><br />
-<code>#include &lt;QtQuick/QQuickWindow&gt;</code><br />
-<code>#include &lt;QtGui/QGuiApplication&gt;</code><br />
-<code>#include &lt;QtCore/QPointer&gt;</code><br />
-<code>#include &lt;QtCore/QScopedPointer&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="QModelManager_8h_source.html">QModelManager.h</a>&quot;</code><br />
 <code>#include &lt;QQuickVTKItem.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="QModelObserver_8h_source.html">QModelObserver.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="QModelQuery_8h_source.html">QModelQuery.h</a>&quot;</code><br />
-<code>#include &lt;QtQml/QQmlExtensionPlugin&gt;</code><br />
-<code>#include &quot;<a class="el" href="QModelManager_8h_source.html">QModelManager.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="QAlgorithmSystemAdaptor_8h_source.html">QAlgorithmSystemAdaptor.h</a>&quot;</code><br />
-<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+<code>#include &lt;QtQml/QQmlApplicationEngine&gt;</code><br />
+<code>#include &lt;QtQml/QQmlContext&gt;</code><br />
+<code>#include &lt;kddockwidgets/qtquick/Platform.h&gt;</code><br />
 <code>#include &lt;spdlog/cfg/env.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 main.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="main_8cpp__incl.png" border="0" usemap="#aapp_2main_8cpp" loading="lazy" alt=""/></div>
 <map name="aapp_2main_8cpp" id="aapp_2main_8cpp">
-<area shape="rect" title=" " alt="" coords="1243,5,1353,31"/>
-<area shape="rect" title=" " alt="" coords="5,79,228,104"/>
-<area shape="poly" title=" " alt="" coords="1242,24,830,45,242,81,241,76,830,39,1242,19"/>
-<area shape="rect" title=" " alt="" coords="252,79,408,104"/>
-<area shape="poly" title=" " alt="" coords="1243,25,900,44,665,60,422,81,422,76,665,55,900,39,1242,19"/>
-<area shape="rect" title=" " alt="" coords="432,79,609,104"/>
-<area shape="poly" title=" " alt="" coords="1243,26,623,81,623,76,1242,21"/>
-<area shape="rect" title=" " alt="" coords="634,79,802,104"/>
-<area shape="poly" title=" " alt="" coords="1243,29,816,81,815,75,1242,23"/>
-<area shape="rect" title=" " alt="" coords="827,79,953,104"/>
-<area shape="poly" title=" " alt="" coords="1243,32,967,79,966,74,1242,26"/>
-<area shape="rect" title=" " alt="" coords="977,79,1152,104"/>
-<area shape="poly" title=" " alt="" coords="1261,33,1116,77,1115,72,1260,28"/>
-<area shape="rect" title=" " alt="" coords="1176,79,1313,104"/>
-<area shape="poly" title=" " alt="" coords="1291,33,1264,69,1259,66,1287,29"/>
-<area shape="rect" href="QModelObserver_8h.html" title=" " alt="" coords="949,152,1092,177"/>
-<area shape="poly" title=" " alt="" coords="1310,30,1332,65,1335,86,1328,106,1301,115,1246,127,1105,152,1104,147,1245,122,1300,110,1324,102,1330,86,1327,67,1306,32"/>
-<area shape="rect" href="QModelQuery_8h.html" title=" " alt="" coords="1389,79,1511,104"/>
-<area shape="poly" title=" " alt="" coords="1324,28,1414,70,1412,75,1321,33"/>
-<area shape="rect" title=" " alt="" coords="1535,79,1744,104"/>
-<area shape="poly" title=" " alt="" coords="1353,28,1571,73,1570,78,1352,33"/>
-<area shape="rect" href="QModelManager_8h.html" title=" " alt="" coords="1847,79,1987,104"/>
-<area shape="poly" title=" " alt="" coords="1354,23,1833,78,1833,83,1353,28"/>
-<area shape="rect" href="QAlgorithmSystemAdaptor_8h.html" title=" " alt="" coords="1628,152,1835,177"/>
-<area shape="poly" title=" " alt="" coords="1354,20,1589,39,1699,56,1738,65,1759,77,1766,92,1765,110,1751,142,1746,139,1760,108,1761,93,1755,81,1736,70,1698,61,1589,45,1353,25"/>
-<area shape="rect" title=" " alt="" coords="2011,79,2135,104"/>
-<area shape="poly" title=" " alt="" coords="1354,20,1627,40,1997,76,1997,81,1626,45,1353,25"/>
-<area shape="rect" title=" " alt="" coords="2159,79,2287,104"/>
-<area shape="poly" title=" " alt="" coords="1354,19,1685,37,1911,54,2146,76,2145,81,1911,59,1685,43,1354,24"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1457,299,1521,324"/>
-<area shape="poly" title=" " alt="" coords="1034,176,1075,212,1103,232,1134,248,1216,276,1301,293,1380,303,1443,307,1443,312,1379,308,1300,299,1215,281,1132,253,1101,237,1072,216,1030,180"/>
-<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="799,225,931,251"/>
-<area shape="poly" title=" " alt="" coords="997,180,904,222,902,217,995,175"/>
-<area shape="rect" title=" " alt="" coords="1427,225,1502,251"/>
-<area shape="poly" title=" " alt="" coords="1093,173,1414,223,1413,228,1092,179"/>
-<area shape="rect" title=" " alt="" coords="1145,225,1283,251"/>
-<area shape="poly" title=" " alt="" coords="1053,175,1171,218,1169,223,1051,180"/>
-<area shape="rect" title=" " alt="" coords="955,225,1070,251"/>
-<area shape="poly" title=" " alt="" coords="1022,178,1018,212,1013,212,1017,177"/>
-<area shape="rect" title=" " alt="" coords="1531,372,1587,397"/>
-<area shape="poly" title=" " alt="" coords="1502,322,1540,360,1536,364,1498,326"/>
-<area shape="rect" title=" " alt="" coords="1457,372,1507,397"/>
-<area shape="poly" title=" " alt="" coords="1490,325,1487,359,1482,358,1485,324"/>
-<area shape="rect" title=" " alt="" coords="2058,372,2135,397"/>
-<area shape="poly" title=" " alt="" coords="1521,314,2045,375,2044,380,1521,319"/>
-<area shape="rect" title=" " alt="" coords="1178,372,1237,397"/>
-<area shape="poly" title=" " alt="" coords="1457,323,1250,375,1249,370,1456,318"/>
-<area shape="rect" title=" " alt="" coords="1363,372,1425,397"/>
-<area shape="poly" title=" " alt="" coords="1475,326,1422,366,1419,361,1472,322"/>
-<area shape="poly" title=" " alt="" coords="931,246,944,248,1228,281,1444,303,1443,308,1227,286,943,253,930,252"/>
-<area shape="poly" title=" " alt="" coords="893,248,1169,364,1167,369,891,253"/>
-<area shape="poly" title=" " alt="" coords="1471,102,1496,122,1516,151,1525,178,1527,200,1517,251,1504,287,1499,286,1511,250,1521,200,1520,179,1512,153,1492,126,1467,106"/>
-<area shape="poly" title=" " alt="" coords="1389,104,1344,114,1303,129,1289,139,1281,150,1279,162,1285,176,1301,185,1334,197,1415,221,1413,226,1332,202,1299,190,1281,179,1274,163,1276,148,1285,135,1301,125,1342,109,1388,98"/>
-<area shape="rect" title=" " alt="" coords="1581,225,1660,251"/>
-<area shape="poly" title=" " alt="" coords="1479,102,1519,122,1560,150,1588,181,1609,212,1605,215,1584,184,1556,154,1516,126,1477,106"/>
-<area shape="rect" title=" " alt="" coords="1296,152,1375,177"/>
-<area shape="poly" title=" " alt="" coords="1433,106,1367,147,1364,142,1430,102"/>
-<area shape="rect" title=" " alt="" coords="1399,152,1501,177"/>
-<area shape="poly" title=" " alt="" coords="1453,104,1453,138,1447,138,1447,104"/>
-<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="1117,152,1221,177"/>
-<area shape="poly" title=" " alt="" coords="1405,107,1228,151,1227,146,1404,101"/>
-<area shape="poly" title=" " alt="" coords="1217,175,1415,222,1413,227,1216,180"/>
-<area shape="poly" title=" " alt="" coords="1178,176,1202,212,1197,215,1174,179"/>
-<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="1308,225,1403,251"/>
-<area shape="poly" title=" " alt="" coords="1200,175,1313,218,1311,223,1198,180"/>
-<area shape="poly" title=" " alt="" coords="1378,248,1456,290,1454,294,1376,253"/>
-<area shape="poly" title=" " alt="" coords="1361,250,1390,358,1385,359,1356,252"/>
-<area shape="poly" title=" " alt="" coords="1987,100,2000,101,2105,106,2243,109,2312,112,2377,120,2433,132,2475,150,2495,165,2507,181,2521,225,2524,239,2520,252,2495,275,2457,295,2410,314,2356,331,2245,359,2150,377,2149,372,2244,353,2355,326,2408,309,2455,291,2492,270,2516,249,2519,239,2515,226,2502,184,2491,169,2473,154,2431,137,2376,125,2312,118,2242,114,2105,111,1999,107,1987,105"/>
-<area shape="poly" title=" " alt="" coords="1888,107,1775,149,1773,145,1886,102"/>
-<area shape="rect" href="QEditSystemAdaptor_8h.html" title=" " alt="" coords="1859,152,2027,177"/>
-<area shape="poly" title=" " alt="" coords="1924,103,1937,138,1932,140,1919,105"/>
-<area shape="rect" href="QModelIOSystemAdaptor_8h.html" title=" " alt="" coords="2051,152,2249,177"/>
-<area shape="poly" title=" " alt="" coords="1955,101,2100,145,2099,151,1953,107"/>
-<area shape="rect" href="QSystemPluginManager_8h.html" title=" " alt="" coords="2273,152,2462,177"/>
-<area shape="poly" title=" " alt="" coords="1987,101,2282,147,2281,153,1987,106"/>
-<area shape="poly" title=" " alt="" coords="1729,179,1708,215,1693,235,1674,253,1640,273,1604,288,1535,306,1533,301,1602,283,1638,268,1671,249,1689,232,1704,212,1724,176"/>
-<area shape="poly" title=" " alt="" coords="1715,180,1652,220,1649,215,1712,175"/>
-<area shape="rect" title=" " alt="" coords="1787,225,2041,251"/>
-<area shape="poly" title=" " alt="" coords="1762,175,1872,218,1870,223,1760,180"/>
-<area shape="poly" title=" " alt="" coords="1912,180,1703,253,1535,301,1534,296,1701,248,1910,175"/>
-<area shape="poly" title=" " alt="" coords="1892,180,1674,228,1673,222,1891,175"/>
-<area shape="poly" title=" " alt="" coords="1941,179,1926,214,1922,212,1936,177"/>
-<area shape="poly" title=" " alt="" coords="2143,180,2108,217,2083,237,2055,253,2010,267,1950,279,1804,296,1652,307,1535,311,1534,306,1652,301,1803,291,1950,274,2009,262,2053,248,2080,233,2104,213,2139,176"/>
-<area shape="poly" title=" " alt="" coords="2113,180,1966,224,1965,219,2111,175"/>
-<area shape="rect" title=" " alt="" coords="2242,225,2293,251"/>
-<area shape="poly" title=" " alt="" coords="2170,175,2238,216,2235,220,2167,180"/>
-<area shape="rect" title=" " alt="" coords="2117,225,2218,251"/>
-<area shape="poly" title=" " alt="" coords="2155,177,2164,212,2159,213,2150,178"/>
-<area shape="poly" title=" " alt="" coords="2273,179,2261,180,2067,195,1915,204,1764,213,1570,228,1516,233,1515,228,1570,223,1764,208,1915,199,2066,190,2260,175,2272,174"/>
-<area shape="poly" title=" " alt="" coords="2295,180,2001,226,2000,221,2294,175"/>
-<area shape="poly" title=" " alt="" coords="2353,180,2296,219,2293,215,2350,175"/>
-<area shape="rect" title=" " alt="" coords="2435,225,2505,251"/>
-<area shape="poly" title=" " alt="" coords="2385,175,2443,215,2440,219,2382,180"/>
-<area shape="rect" title=" " alt="" coords="2317,225,2410,251"/>
-<area shape="poly" title=" " alt="" coords="2369,178,2367,212,2362,212,2364,178"/>
+<area shape="rect" title=" " alt="" coords="1062,5,1173,31"/>
+<area shape="rect" href="QModelManager_8h.html" title=" " alt="" coords="574,86,714,111"/>
+<area shape="poly" title=" " alt="" coords="1062,29,910,51,727,81,705,86,704,80,726,76,910,45,1061,24"/>
+<area shape="rect" title=" " alt="" coords="738,86,875,111"/>
+<area shape="poly" title=" " alt="" coords="1073,33,866,85,864,80,1072,28"/>
+<area shape="rect" title=" " alt="" coords="899,86,1122,111"/>
+<area shape="poly" title=" " alt="" coords="1103,33,1039,80,1036,76,1100,29"/>
+<area shape="rect" title=" " alt="" coords="1146,86,1302,111"/>
+<area shape="poly" title=" " alt="" coords="1135,29,1199,76,1196,80,1131,33"/>
+<area shape="rect" title=" " alt="" coords="1326,79,1498,119"/>
+<area shape="poly" title=" " alt="" coords="1161,28,1329,73,1327,78,1159,33"/>
+<area shape="rect" title=" " alt="" coords="1523,86,1651,111"/>
+<area shape="poly" title=" " alt="" coords="1173,23,1326,45,1511,76,1531,80,1530,85,1510,81,1325,50,1173,29"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8h.html" title=" " alt="" coords="282,167,489,192"/>
+<area shape="poly" title=" " alt="" coords="607,114,437,165,435,160,606,109"/>
+<area shape="rect" title=" " alt="" coords="277,460,355,485"/>
+<area shape="poly" title=" " alt="" coords="574,105,452,110,308,122,172,141,118,154,78,169,49,185,27,201,13,222,8,252,8,327,10,347,15,364,35,395,65,418,102,436,144,450,187,459,264,467,264,473,186,464,142,455,100,441,62,423,31,398,10,367,5,348,3,327,3,251,8,220,23,197,46,181,76,164,117,149,171,136,307,116,452,105,574,99"/>
+<area shape="rect" href="QEditSystemAdaptor_8h.html" title=" " alt="" coords="89,167,257,192"/>
+<area shape="poly" title=" " alt="" coords="576,114,256,167,255,162,575,109"/>
+<area shape="rect" href="QModelIOSystemAdaptor_8h.html" title=" " alt="" coords="545,167,743,192"/>
+<area shape="poly" title=" " alt="" coords="647,112,647,153,641,153,641,112"/>
+<area shape="rect" href="QModelObserver_8h.html" title=" " alt="" coords="1501,240,1643,265"/>
+<area shape="poly" title=" " alt="" coords="690,109,727,116,811,127,882,133,1003,137,1125,143,1196,151,1279,164,1416,198,1528,233,1527,238,1415,203,1278,169,1195,156,1124,148,1003,143,881,138,810,132,726,121,689,114"/>
+<area shape="rect" href="QModelQuery_8h.html" title=" " alt="" coords="819,167,941,192"/>
+<area shape="poly" title=" " alt="" coords="679,109,834,160,832,165,677,114"/>
+<area shape="rect" href="QSystemPluginManager_8h.html" title=" " alt="" coords="1077,167,1267,192"/>
+<area shape="poly" title=" " alt="" coords="692,109,727,116,904,144,1064,164,1063,169,904,149,726,121,691,114"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="759,387,823,412"/>
+<area shape="poly" title=" " alt="" coords="282,195,192,213,156,226,134,242,129,253,134,264,152,280,176,296,242,323,325,344,417,361,603,383,745,393,745,399,602,389,416,367,324,349,241,328,174,300,149,285,130,267,124,253,130,238,154,221,190,208,281,189"/>
+<area shape="rect" title=" " alt="" coords="145,240,223,265"/>
+<area shape="poly" title=" " alt="" coords="354,195,230,238,229,233,352,190"/>
+<area shape="rect" title=" " alt="" coords="247,240,502,265"/>
+<area shape="poly" title=" " alt="" coords="386,193,381,227,376,226,381,192"/>
+<area shape="rect" title=" " alt="" coords="763,460,819,485"/>
+<area shape="poly" title=" " alt="" coords="793,412,793,446,788,446,788,412"/>
+<area shape="rect" title=" " alt="" coords="688,460,739,485"/>
+<area shape="poly" title=" " alt="" coords="780,414,738,452,734,449,776,410"/>
+<area shape="poly" title=" " alt="" coords="759,408,369,466,368,461,758,403"/>
+<area shape="rect" title=" " alt="" coords="1183,460,1241,485"/>
+<area shape="poly" title=" " alt="" coords="823,403,1169,461,1168,467,822,409"/>
+<area shape="rect" title=" " alt="" coords="843,460,906,485"/>
+<area shape="poly" title=" " alt="" coords="806,410,852,449,849,453,802,414"/>
+<area shape="poly" title=" " alt="" coords="160,194,144,208,130,226,123,245,125,264,141,292,159,310,182,323,213,336,258,350,320,361,470,379,625,389,745,394,745,399,625,394,470,384,319,367,257,355,211,341,180,328,156,314,137,295,120,266,117,244,126,223,140,205,156,190"/>
+<area shape="poly" title=" " alt="" coords="178,192,183,226,178,227,172,193"/>
+<area shape="poly" title=" " alt="" coords="207,190,330,233,328,238,205,195"/>
+<area shape="poly" title=" " alt="" coords="652,191,693,264,736,325,775,374,770,378,731,328,688,267,648,194"/>
+<area shape="poly" title=" " alt="" coords="601,195,432,239,431,234,600,189"/>
+<area shape="rect" title=" " alt="" coords="703,240,753,265"/>
+<area shape="poly" title=" " alt="" coords="659,190,705,229,702,233,656,194"/>
+<area shape="rect" title=" " alt="" coords="527,240,628,265"/>
+<area shape="poly" title=" " alt="" coords="635,194,599,232,596,228,631,191"/>
+<area shape="poly" title=" " alt="" coords="1556,268,1491,309,1430,341,1378,354,1308,365,1140,382,837,399,837,394,1139,376,1308,359,1377,349,1428,336,1489,305,1553,263"/>
+<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="1493,313,1625,339"/>
+<area shape="poly" title=" " alt="" coords="1572,266,1566,300,1561,299,1567,265"/>
+<area shape="rect" title=" " alt="" coords="1191,313,1265,339"/>
+<area shape="poly" title=" " alt="" coords="1517,268,1279,317,1278,312,1516,263"/>
+<area shape="rect" title=" " alt="" coords="1001,313,1140,339"/>
+<area shape="poly" title=" " alt="" coords="1501,267,1154,316,1153,310,1500,261"/>
+<area shape="rect" title=" " alt="" coords="1303,313,1417,339"/>
+<area shape="poly" title=" " alt="" coords="1539,268,1408,311,1406,306,1537,263"/>
+<area shape="poly" title=" " alt="" coords="1493,339,1474,341,1106,376,836,397,836,392,1106,371,1473,336,1492,334"/>
+<area shape="poly" title=" " alt="" coords="1532,341,1253,457,1251,452,1530,336"/>
+<area shape="poly" title=" " alt="" coords="864,194,840,214,818,241,805,275,797,311,792,373,787,373,792,310,800,273,814,239,836,210,861,190"/>
+<area shape="poly" title=" " alt="" coords="819,189,238,243,237,238,819,184"/>
+<area shape="poly" title=" " alt="" coords="894,190,938,226,997,263,1043,281,1091,296,1177,315,1176,320,1090,301,1041,287,995,268,935,231,891,194"/>
+<area shape="rect" title=" " alt="" coords="1007,240,1086,265"/>
+<area shape="poly" title=" " alt="" coords="908,190,1008,232,1006,237,906,194"/>
+<area shape="rect" title=" " alt="" coords="1110,240,1213,265"/>
+<area shape="poly" title=" " alt="" coords="926,189,1103,234,1102,239,925,195"/>
+<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="828,240,932,265"/>
+<area shape="poly" title=" " alt="" coords="883,192,883,226,877,226,877,192"/>
+<area shape="poly" title=" " alt="" coords="933,262,1178,312,1177,317,932,267"/>
+<area shape="poly" title=" " alt="" coords="912,263,1028,306,1026,311,910,268"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="829,313,923,339"/>
+<area shape="poly" title=" " alt="" coords="882,266,880,300,875,300,877,266"/>
+<area shape="poly" title=" " alt="" coords="864,341,817,380,813,376,861,337"/>
+<area shape="poly" title=" " alt="" coords="879,339,878,446,872,446,873,339"/>
+<area shape="poly" title=" " alt="" coords="1077,192,516,242,515,236,1077,186"/>
+<area shape="poly" title=" " alt="" coords="1101,195,767,248,766,243,1100,189"/>
+<area shape="poly" title=" " alt="" coords="1268,190,1310,208,1329,221,1345,239,1351,251,1350,263,1336,283,1310,300,1279,312,1277,307,1307,295,1332,279,1345,261,1345,252,1340,241,1326,225,1308,212,1266,195"/>
+<area shape="rect" title=" " alt="" coords="1406,240,1477,265"/>
+<area shape="poly" title=" " alt="" coords="1216,189,1393,236,1392,241,1215,195"/>
+<area shape="rect" title=" " alt="" coords="1237,240,1331,265"/>
+<area shape="poly" title=" " alt="" coords="1191,190,1255,230,1252,235,1189,194"/>
 </map>
 </div>
 </div><table class="memberdecls">
