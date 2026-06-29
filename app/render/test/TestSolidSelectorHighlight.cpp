@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     std::string inputFile;
     if (argc > 1) {
         inputFile = argv[1];
-        std::cout << "Try load file: " << inputFile << std::endl;
+        spdlog::info("Try load file: {}", inputFile);
     }
 
     MeshData mesh;

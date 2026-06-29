@@ -1,5 +1,5 @@
 /**
- * @file QSideBar.qml
+ * @file SideBar.qml
  * @brief 侧边栏，执行复杂算法时提供参数的交互界面
  */
 
@@ -14,28 +14,24 @@ import app.model.systems.algo
 
 Item{
     id: root
-    property var system
-    property var curAlgoInfo
-    property int curComponent
-    required property SignalListener confirm_listener
     property var parameters: []
-    signal selectModeChanged
-    signal cancleCommand
 
-    onCurAlgoInfoChanged: {
+    readonly property var activeOp: App.activeOperation
+
+    onActiveOpChanged: {
         parameters = []
-        parameterList.model = curAlgoInfo.arg_types
     }
     Button{
         id: commitButton
         text: "执行"
-        enabled: curComponent >= 0 && curAlgoInfo != null
+        enabled: !!(App.selection.activeModelId >= 0 && root.activeOp && root.activeOp.info)
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height:30
         onClicked:{
-            system.call(curAlgoInfo.name, curComponent, root.parameters)
+            if (root.activeOp && root.activeOp.execute)
+                root.activeOp.execute(App.selection.activeModelId, root.parameters)
         }
     }
     Item{
@@ -52,6 +48,7 @@ Item{
                 Layout.fillWidth: true
                 Layout.margins: 3
                 spacing: 5
+                model: root.activeOp ? root.activeOp.info.arg_types : []
                 delegate:Component{
                     Loader{
                         required property var model
@@ -90,24 +87,7 @@ Item{
             }
         }
     }
-    /*Component{
-        id:componentButton
-        Row{
-            property alias exposedText: textbar.text   //name
-            //加入新属性value
-            function commitInformation(){
-                console.log(information.text)
-            }
 
-            Text{
-                id:textbar
-            }
-            Button{
-                id:information
-                text: "text_button"
-            }
-        }
-    }*/
     Component{
         id:componentComboBox
         RowLayout{
@@ -255,7 +235,6 @@ Item{
     Component{
         id: selectorComponent
         RowLayout{
-            // id: root
             spacing: 5
             width: parameterList.width
             property var value: null
@@ -277,22 +256,22 @@ Item{
             Button{
                 id: selectStartButton
                 text: "开始选择"
-                enabled: root.curComponent >= 0
-                onClicked:{
-                    root.selectModeChanged()
-                    checked = !checked
+                checked: App.selection.listeningSelectorIndex === index
+                enabled: App.selection.activeModelId >= 0
+                onClicked: {
+                    if (!checked)
+                        App.selection.listeningSelectorIndex = index
+                    else
+                        App.selection.listeningSelectorIndex = -1
                 }
-                onCheckedChanged: {
-                    if (checked) {
-                        root.confirm_listener.registerSignalListener(changeSelectionOnce)
-                    } else {
-                        root.confirm_listener.unregisterSignalListener(changeSelectionOnce)
-                    }
-                }
+            }
 
-                function changeSelectionOnce(selection) {
+            Connections {
+                target: App.selection
+                enabled: selectStartButton.checked
+                function onConfirmed(selection) {
                     root.parameters[index] = value = selection
-                    checked = false
+                    App.selection.listeningSelectorIndex = -1
                 }
             }
         }

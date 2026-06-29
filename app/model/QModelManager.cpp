@@ -9,8 +9,6 @@
 #include "QModelObserver.h"
 #include "SystemPluginManager.h"
 
-#include <QDebug>
-#include <QFileInfo>
 #include <QUrl>
 #include <filesystem>
 #include <spdlog/spdlog.h>
@@ -23,9 +21,16 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     core_ = std::make_unique<ModelLayer>(
         /*observer=*/observer_.get());
 
+    query_ = std::make_unique<QModelQuery>(core_.get(), this);
+
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
     edit_system_ = std::make_unique<systems::edit::EditSystem>(*core_);
+
+    algo_adaptor_ = std::make_unique<systems::algo::QAlgorithmSystemAdaptor>(*algo_system_);
+    io_adaptor_ = std::make_unique<systems::io::QModelIOSystemAdaptor>(*io_system_);
+    edit_adaptor_ = std::make_unique<systems::edit::QEditSystemAdaptor>(*edit_system_);
+
     plugin_manager_ = std::make_unique<systems::SystemPluginManager>();
 
     // 2) 注册系统
@@ -85,27 +90,39 @@ ModelLayer* QModelManager::getModelManager()
     return core_.get();
 }
 
-QModelObserver* QModelManager::getModelObserver()
+QModelObserver* QModelManager::getModelObserver() const
 {
     return observer_.get();
 }
 
-systems::algo::QAlgorithmSystemAdaptor QModelManager::getAlgorithmSystemAdaptor()
+QModelQuery* QModelManager::getModelQuery() const
 {
-    return systems::algo::QAlgorithmSystemAdaptor(*algo_system_);
+    return query_.get();
 }
 
-systems::edit::QEditSystemAdaptor QModelManager::getEditSystemAdaptor()
+systems::algo::QAlgorithmSystemAdaptor* QModelManager::getAlgorithmSystemAdaptor() const
 {
-    return systems::edit::QEditSystemAdaptor(*edit_system_);
+    return algo_adaptor_.get();
 }
 
-systems::io::QModelIOSystemAdaptor QModelManager::getModelIOSystemAdaptor()
+systems::edit::QEditSystemAdaptor* QModelManager::getEditSystemAdaptor() const
 {
-    return systems::io::QModelIOSystemAdaptor(*io_system_);
+    return edit_adaptor_.get();
 }
 
-systems::QSystemPluginManager* QModelManager::getSystemPluginManager()
+systems::io::QModelIOSystemAdaptor* QModelManager::getModelIOSystemAdaptor() const
+{
+    return io_adaptor_.get();
+}
+
+systems::QSystemPluginManager* QModelManager::getSystemPluginManager() const
 {
     return q_plugin_manager_.get();
+}
+
+std::string_view QModelManager::argv0 = "./PreCess.exe";
+
+QModelManager* QModelManager::create(QQmlEngine*, QJSEngine*)
+{
+    return new QModelManager(argv0);
 }
