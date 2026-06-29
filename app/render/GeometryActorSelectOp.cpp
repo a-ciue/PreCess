@@ -37,3 +37,8 @@ const OccShapeHandle& GeometryActorSelectOp::getOccShape()
 {
     return geometry_actor_->getOccShape();
 }
+
+const GeometrySubshapeIndex* GeometryActorSelectOp::getGeometryIndex()
+{
+    return geometry_actor_->geometryIndex();
+}

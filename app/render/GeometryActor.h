@@ -2,6 +2,7 @@
 #define GEOMETRY_ACTOR_H
 #include "Core.h"
 #include "GeometryDataVtk.h"
+#include "GeometrySubshapeIndex.h"
 #include <vtkActor.h>
 #include <vtkNew.h>
 #include <vtkPolyDataMapper.h>
@@ -30,6 +31,7 @@ public:
     vtkActor* lineActor() noexcept;
     const vtkActor* lineActor() const noexcept;
     const OccShapeHandle& getOccShape() const;
+    const GeometrySubshapeIndex* geometryIndex() const noexcept;
 
 private:
     void deleteGeometryActor();
@@ -38,6 +40,7 @@ private:
     bool edge_render;
     bool visibility_;
     OccShapeHandle occ_shape_;
+    const GeometrySubshapeIndex* geometry_index_;
 
     vtkNew<vtkActor> poly_actor_;
     vtkNew<vtkActor> line_actor_;

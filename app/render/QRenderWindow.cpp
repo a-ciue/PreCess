@@ -365,12 +365,8 @@ void QRenderWindow::setSelectComponent(Index component_id)
         if (vtk->geometry_actor_manager_->hasComponent(component_id))
             geometry_actor = vtk->geometry_actor_manager_->getComponentActor(component_id);
 
-        const GeometrySubshapeIndex* geom_index = nullptr;
-        if (auto geom_data = this->model_query_->getGeometryVtkDataByComponent(component_id))
-            geom_index = geom_data->geometry_index;
-
         if (geometry_actor)
-            geometrySelectManager_->setSelectActor(geometry_actor, geom_index);
+            geometrySelectManager_->setSelectActor(geometry_actor);
         else
             geometrySelectManager_->setSelectActor({});
     });

@@ -21,15 +21,13 @@ void GeometrySelectManager::select(double posx, double posy)
     }
 }
 
-void GeometrySelectManager::setSelectActor(std::weak_ptr<const GeometryActor> geom_actor, const GeometrySubshapeIndex* geom_index)
+void GeometrySelectManager::setSelectActor(std::weak_ptr<const GeometryActor> geom_actor)
 {
     this->cur_geom_actor_ = GeometryActorSelectOpFactory { geom_actor };
-    this->current_geom_index_ = geom_index;
     if (this->selector_) {
         this->selector_->clear();
         this->selector_->setPicker(picker_);
         this->selector_->setCurGeomActor(*cur_geom_actor_);
-        this->selector_->setGeometryIndex(current_geom_index_);
     }
 }
 
@@ -59,7 +57,6 @@ void GeometrySelectManager::setSelectMode(SelectMode select_mode)
     if (this->selector_ && this->cur_geom_actor_) {
         this->selector_->setPicker(picker_);
         this->selector_->setCurGeomActor(*cur_geom_actor_);
-        this->selector_->setGeometryIndex(current_geom_index_);
     }
 }
 

@@ -22,7 +22,6 @@ public:
     virtual void clear() = 0;
     virtual GeometrySelectionVtk get() const = 0;
     virtual void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) = 0;
-    virtual void setGeometryIndex(const GeometrySubshapeIndex* idx) = 0;
     void setPicker(vtkSmartPointer<IVtkTools_ShapePicker> picker) { picker_ = picker; }
 
 protected:
@@ -38,7 +37,6 @@ public:
     GeometrySelectionVtk get() const override;
     void select(double posx, double posy) override;
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
-    void setGeometryIndex(const GeometrySubshapeIndex* idx) override;
 
 private:
     void applyHighlight();
@@ -47,7 +45,6 @@ private:
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    const GeometrySubshapeIndex* geom_index_ { nullptr };
 
     vtkSmartPointer<vtkDataArray> face_sub_id_arr_;
     unsigned char face_base_[3] { 200, 200, 200 };
@@ -64,7 +61,6 @@ public:
     GeometrySelectionVtk get() const override;
     void select(double posx, double posy) override;
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
-    void setGeometryIndex(const GeometrySubshapeIndex* idx) override;
 
 private:
     void applyHighlight();
@@ -73,7 +69,6 @@ private:
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    const GeometrySubshapeIndex* geom_index_ { nullptr };
 
     vtkSmartPointer<vtkDataArray> line_sub_id_arr_;
     unsigned char line_base_[3] { 0, 0, 0 };
@@ -90,7 +85,6 @@ public:
     GeometrySelectionVtk get() const override;
     void select(double posx, double posy) override;
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
-    void setGeometryIndex(const GeometrySubshapeIndex* idx) override;
 
 private:
     void applyHighlight();
@@ -99,7 +93,6 @@ private:
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    const GeometrySubshapeIndex* geom_index_ { nullptr };
 
     vtkSmartPointer<vtkDataArray> line_sub_id_arr_;
     unsigned char line_base_[3] { 0, 0, 0 };
@@ -116,7 +109,6 @@ public:
     GeometrySelectionVtk get() const override;
     void select(double posx, double posy) override;
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
-    void setGeometryIndex(const GeometrySubshapeIndex* idx) override;
 
 private:
     void applyHighlight();
@@ -125,7 +117,6 @@ private:
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    const GeometrySubshapeIndex* geom_index_ { nullptr };
 
     vtkSmartPointer<vtkDataArray> face_sub_id_arr_;
     unsigned char face_base_[3] { 200, 200, 200 };

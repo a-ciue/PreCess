@@ -220,6 +220,7 @@ struct GeomTargetData {
     vtkActor* polyActor = nullptr;
     vtkActor* lineActor = nullptr;
     OccShapeHandle occShape;
+    const GeometrySubshapeIndex* geomIndex = nullptr;
 
     bool valid() const { return !occShape.IsNull(); }
 };
@@ -233,6 +234,7 @@ static GeomTargetData getTargetData(GeometryActorSelectOpFactory& factory)
     d.polyActor = dynamic_cast<vtkActor*>(&op->getPolyActor());
     d.lineActor = dynamic_cast<vtkActor*>(&op->getLineActor());
     d.occShape = op->getOccShape();
+    d.geomIndex = op->getGeometryIndex();
     return d;
 }
 
@@ -293,7 +295,7 @@ void GeometryFaceSelectorHighlight::ensureTargetInit()
 void GeometryFaceSelectorHighlight::select(double posx, double posy)
 {
     auto target = getTargetData(geom_actor_);
-    if (!target.polyActor || !target.valid() || !geom_index_)
+    if (!target.polyActor || !target.valid() || !target.geomIndex)
         return;
 
     ensureTargetInit();
@@ -311,7 +313,7 @@ void GeometryFaceSelectorHighlight::select(double posx, double posy)
         return;
 
     ElementEnum::Type elemType = ElementEnum::None;
-    auto geomId = mapSubshapeToGeomId(target.occShape, *geom_index_, TopAbs_FACE, subId, elemType);
+    auto geomId = mapSubshapeToGeomId(target.occShape, *target.geomIndex, TopAbs_FACE, subId, elemType);
     if (!geomId)
         return;
 
@@ -366,10 +368,6 @@ void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
     configurePicker();
 }
 
-void GeometryFaceSelectorHighlight::setGeometryIndex(const GeometrySubshapeIndex* idx)
-{
-    geom_index_ = idx;
-}
 
 void GeometryFaceSelectorHighlight::configurePicker()
 {
@@ -456,7 +454,7 @@ void GeometryEdgeSelectorHighlight::ensureTargetInit()
 void GeometryEdgeSelectorHighlight::select(double posx, double posy)
 {
     auto target = getTargetData(geom_actor_);
-    if (!target.lineActor || !target.valid() || !geom_index_)
+    if (!target.lineActor || !target.valid() || !target.geomIndex)
         return;
 
     ensureTargetInit();
@@ -474,7 +472,7 @@ void GeometryEdgeSelectorHighlight::select(double posx, double posy)
         return;
 
     ElementEnum::Type elemType = ElementEnum::None;
-    auto geomId = mapSubshapeToGeomId(target.occShape, *geom_index_, TopAbs_EDGE, subId, elemType);
+    auto geomId = mapSubshapeToGeomId(target.occShape, *target.geomIndex, TopAbs_EDGE, subId, elemType);
     if (!geomId)
         return;
 
@@ -527,11 +525,6 @@ void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
     geom_actor_ = std::move(geom_actor);
     target_initialized_ = false;
     configurePicker();
-}
-
-void GeometryEdgeSelectorHighlight::setGeometryIndex(const GeometrySubshapeIndex* idx)
-{
-    geom_index_ = idx;
 }
 
 void GeometryEdgeSelectorHighlight::configurePicker()
@@ -621,7 +614,7 @@ void GeometryVertexSelectorHighlight::ensureTargetInit()
 void GeometryVertexSelectorHighlight::select(double posx, double posy)
 {
     auto target = getTargetData(geom_actor_);
-    if (!target.lineActor || !target.valid() || !geom_index_)
+    if (!target.lineActor || !target.valid() || !target.geomIndex)
         return;
 
     ensureTargetInit();
@@ -639,7 +632,7 @@ void GeometryVertexSelectorHighlight::select(double posx, double posy)
         return;
 
     ElementEnum::Type elemType = ElementEnum::None;
-    auto geomId = mapSubshapeToGeomId(target.occShape, *geom_index_, TopAbs_VERTEX, subId, elemType);
+    auto geomId = mapSubshapeToGeomId(target.occShape, *target.geomIndex, TopAbs_VERTEX, subId, elemType);
     if (!geomId)
         return;
 
@@ -692,11 +685,6 @@ void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFacto
     geom_actor_ = std::move(geom_actor);
     target_initialized_ = false;
     configurePicker();
-}
-
-void GeometryVertexSelectorHighlight::setGeometryIndex(const GeometrySubshapeIndex* idx)
-{
-    geom_index_ = idx;
 }
 
 void GeometryVertexSelectorHighlight::configurePicker()
@@ -787,7 +775,7 @@ void GeometrySolidSelectorHighlight::ensureTargetInit()
 void GeometrySolidSelectorHighlight::select(double posx, double posy)
 {
     auto target = getTargetData(geom_actor_);
-    if (!target.polyActor || !target.valid() || !geom_index_)
+    if (!target.polyActor || !target.valid() || !target.geomIndex)
         return;
 
     ensureTargetInit();
@@ -813,9 +801,9 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
         solidShape = pickedSub;
     } else {
         const int solidTi = GeometrySubshapeIndex::typeIndex(TopAbs_SOLID);
-        const int nSolids = geom_index_->type_maps[solidTi].Extent();
+        const int nSolids = target.geomIndex->type_maps[solidTi].Extent();
         for (int localId = 1; localId <= nSolids; ++localId) {
-            const TopoDS_Shape& solid = geom_index_->type_maps[solidTi].FindKey(localId);
+            const TopoDS_Shape& solid = target.geomIndex->type_maps[solidTi].FindKey(localId);
             for (TopExp_Explorer exp(solid, TopAbs_FACE); exp.More(); exp.Next()) {
                 if (exp.Current().IsSame(pickedSub)) {
                     solidShape = solid;
@@ -830,11 +818,11 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
     }
 
     const int solidTi = GeometrySubshapeIndex::typeIndex(TopAbs_SOLID);
-    const int localTypeId = geom_index_->type_maps[solidTi].FindIndex(solidShape);
+    const int localTypeId = target.geomIndex->type_maps[solidTi].FindIndex(solidShape);
     if (localTypeId <= 0)
         return;
 
-    GeomSolidId gid = geom_index_->solidGlobalId(localTypeId);
+    GeomSolidId gid = target.geomIndex->solidGlobalId(localTypeId);
     if (gid == kInvalidGeomSolidId)
         return;
 
@@ -913,11 +901,6 @@ void GeometrySolidSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactor
     geom_actor_ = std::move(geom_actor);
     target_initialized_ = false;
     configurePicker();
-}
-
-void GeometrySolidSelectorHighlight::setGeometryIndex(const GeometrySubshapeIndex* idx)
-{
-    geom_index_ = idx;
 }
 
 void GeometrySolidSelectorHighlight::configurePicker()

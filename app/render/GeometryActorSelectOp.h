@@ -4,12 +4,9 @@
 #include <optional>
 #include <vtkProp.h>
 
-#include <Standard_Handle.hxx>
-#include <IVtkOCC_Shape.hxx>
-typedef Handle(IVtkOCC_Shape) OccShapeHandle;
+#include "GeometryActor.h"
 
 class GeometryActorSelectOp;
-class GeometryActor;
 
 class GeometryActorSelectOpFactory {
     friend GeometryActorSelectOp;
@@ -32,6 +29,7 @@ public:
     vtkProp& getPolyActor();
     vtkProp& getLineActor();
     const OccShapeHandle& getOccShape();
+    const GeometrySubshapeIndex* getGeometryIndex();
 
 private:
     std::shared_ptr<const GeometryActor> geometry_actor_;

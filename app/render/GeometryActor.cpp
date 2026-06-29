@@ -45,6 +45,7 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
     aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     this->occ_shape_ = aShapeImpl;
+    this->geometry_index_ = geometry_data.geometry_index;
     vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
     DS->SetShape(aShapeImpl);
     DS->Update();
@@ -208,4 +209,9 @@ const vtkActor* GeometryActor::lineActor() const noexcept
 const OccShapeHandle& GeometryActor::getOccShape() const 
 { 
     return occ_shape_;
+}
+
+const GeometrySubshapeIndex* GeometryActor::geometryIndex() const noexcept
+{
+    return geometry_index_; 
 }

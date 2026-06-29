@@ -18,14 +18,13 @@ public:
     void bindRenderer(vtkRenderer* renderer);
     void select(double posx, double posy);
 
-    void setSelectActor(std::weak_ptr<const GeometryActor> geom_actor, const GeometrySubshapeIndex* geom_index = nullptr);
+    void setSelectActor(std::weak_ptr<const GeometryActor> geom_actor);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
 
 private:
     std::optional<GeometryActorSelectOpFactory> cur_geom_actor_ {};
-    const GeometrySubshapeIndex* current_geom_index_ { nullptr };
     SelectMode select_mode_;
     vtkNew<vtkActor> selection_actor_;
     vtkNew<vtkPolyDataMapper> selection_mapper_;

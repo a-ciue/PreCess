@@ -262,7 +262,7 @@ int main(int argc, char** argv)
     selMgr.bindRenderer(renderer);
 
     auto geomActor = gmgr.getComponentActor(component_id);
-    selMgr.setSelectActor(geomActor, &cadIndex);
+    selMgr.setSelectActor(geomActor);
     selMgr.setSelectMode(mode);
 
     vtkNew<GeometrySelectInteractorStyle> style;
