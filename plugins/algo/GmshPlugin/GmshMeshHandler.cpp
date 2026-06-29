@@ -67,6 +67,16 @@ int readComboIndex(const std::vector<core::ArgObject>& args, std::size_t index, 
     return value ? *value : defaultValue;
 }
 
+// 从 Bool 参数读取开关；
+bool readBoolArg(const std::vector<core::ArgObject>& args, std::size_t index, bool defaultValue)
+{
+    if (args.size() <= index)
+        return defaultValue;
+
+    const bool* value = args[index].get<ArgTypeEnum::Bool>();
+    return value ? *value : defaultValue;
+}
+
 } // namespace
 
 std::any systems::algo::GmshMeshHandler::execute(
@@ -121,6 +131,7 @@ std::any systems::algo::GmshMeshHandler::execute(
         parameters.quadMinQuality = readOptionalDouble(args, 9).value_or(0.0);
         parameters.structuredEdgeDivisions = readOptionalInt(args, 10).value_or(0);
     }
+    bool writeModel = readBoolArg(args, 11, true);
 
     if (faceIndex < 0) {
         spdlog::error("GmshMesh: need face id");
@@ -198,13 +209,15 @@ std::any systems::algo::GmshMeshHandler::execute(
             state.meshedEdgeRefCounts.size());
     }
 
-    std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceIndex) + ".obj";
-    context.io_system.writeComponents(
-        { context.cur_component.componentId() },
-        meshOut,
-        "Wavefront .obj file",
-        {});
-    context.io_system.read(meshOut, "Wavefront .obj file", {});
+    if (writeModel) {
+        std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceIndex) + ".obj";
+        context.io_system.writeComponents(
+            { context.cur_component.componentId() },
+            meshOut,
+            "Wavefront .obj file",
+            {});
+        context.io_system.read(meshOut, "Wavefront .obj file", {});
+    }
     context.cur_component.notifyChanged();
 
     return {};
@@ -234,6 +247,7 @@ std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
         ArgType { ArgTypeEnum::Text, "平滑次数(留空默认)", "" },
         ArgType { ArgTypeEnum::Combo, "四边形重组算法", kGmshRecombinationAlgorithmComboText },
         ArgType { ArgTypeEnum::Text, "四边形最低质量(0~1，留空默认)", "" },
-        ArgType { ArgTypeEnum::Text, "结构化网格边划分数(留空自动)", "" }
+        ArgType { ArgTypeEnum::Text, "结构化网格边划分数(留空自动)", "" },
+        ArgType { ArgTypeEnum::Bool, "是否写出网格", "true" }
     };
 }
