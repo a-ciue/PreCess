@@ -18,48 +18,22 @@ void QRenderWindowStyle::SetSelectManager(SelectManager* select_manager)
 
 void QRenderWindowStyle::SetGeometrySelectManager(GeometrySelectManager* geometry_select_manager)
 {
-    this->geometry_select_manager_ = geometry_select_manager;
-}
-
-void QRenderWindowStyle::OnLeftButtonDown()
-{
-    button_down_ = true;
-    trackball_started_ = false;
-    this->GetInteractor()->GetEventPosition(downPos_);
-}
-
-void QRenderWindowStyle::OnMouseMove()
-{
-    if (button_down_ && !trackball_started_) {
-        int cur[2];
-        this->GetInteractor()->GetEventPosition(cur);
-        const int dx = cur[0] - downPos_[0];
-        const int dy = cur[1] - downPos_[1];
-        if (dx * dx + dy * dy > 25) {
-            click_ = false;
-            trackball_started_ = true;
-            vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
-        }
-    }
-    vtkInteractorStyleTrackballCamera::OnMouseMove();
+	this->geometry_select_manager_ = geometry_select_manager;
 }
 
 void QRenderWindowStyle::OnLeftButtonUp()
 {
-    button_down_ = false;
-    if (click_) {
-        click_ = false;
-        int pos[2];
-        this->GetInteractor()->GetEventPosition(pos);
-        if (select_manager_) {
-            select_manager_->select(pos[0], pos[1]);
-        }
-        if (geometry_select_manager_) {
-            geometry_select_manager_->select(pos[0], pos[1]);
-        }
-        return;
-    }
-    vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
+	if (click_) {
+		click_ = false;
+		int pos[2];
+		this->GetInteractor()->GetEventPosition(pos);
+		if (select_manager_)
+			select_manager_->select(pos[0], pos[1]);
+		if (geometry_select_manager_)
+			geometry_select_manager_->select(pos[0], pos[1]);
+	}
+		
+	vtkInteractorStyleTrackballCamera::OnLeftButtonUp();
 }
 
 //vtkStandardNewMacro(MouseInteractorHighLightActor);

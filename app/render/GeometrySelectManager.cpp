@@ -7,9 +7,11 @@
 void GeometrySelectManager::bindRenderer(vtkRenderer* renderer)
 {
     this->renderer_ = renderer;
-    picker_ = vtkSmartPointer<IVtkTools_ShapePicker>::New();
-    picker_->SetRenderer(renderer);
-    picker_->SetAreaSelection(false);
+    if (!picker_) {
+        picker_ = vtkSmartPointer<IVtkTools_ShapePicker>::New();
+        picker_->SetRenderer(renderer);
+        picker_->SetAreaSelection(false);
+    }
 }
 
 void GeometrySelectManager::select(double posx, double posy)
@@ -35,6 +37,12 @@ void GeometrySelectManager::setSelectMode(SelectMode select_mode)
 {
     this->clearSelection();
     this->select_mode_ = select_mode;
+
+    if (this->selector_) {
+        this->selector_->setPicker(picker_);
+        this->selector_->setCurGeomActor(GeometryActorSelectOpFactory {});
+    }
+
     if (this->select_mode_ == SelectMode::Vertex) {
         this->selector_ = std::make_unique<GeometryVertexSelectorHighlight>(this->renderer_);
     } else if (this->select_mode_ == SelectMode::Face) {

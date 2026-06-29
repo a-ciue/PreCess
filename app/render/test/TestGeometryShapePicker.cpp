@@ -205,7 +205,7 @@ int main(int argc, char** argv)
             modeStr = argv[1];
         }
         std::transform(modeStr.begin(), modeStr.end(), modeStr.begin(),
-            [](unsigned char c) { return (char)std::tolower(c); });
+            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         if (modeStr != "face" && modeStr != "edge" && modeStr != "vertex" && modeStr != "solid")
             modeStr = "face";
     }

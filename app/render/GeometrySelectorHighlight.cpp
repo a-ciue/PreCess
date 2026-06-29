@@ -64,7 +64,7 @@ static std::optional<Index> mapSubshapeToGeomId(const OccShapeHandle& occShape,
     if (ti < 0)
         return std::nullopt;
 
-    const int localTypeId = geomIndex.type_maps[(size_t)ti].FindIndex(sub);
+    const int localTypeId = geomIndex.type_maps[static_cast<size_t>(ti)].FindIndex(sub);
     if (localTypeId <= 0)
         return std::nullopt;
 
@@ -73,25 +73,25 @@ static std::optional<Index> mapSubshapeToGeomId(const OccShapeHandle& occShape,
         if (gid == kInvalidGeomFaceId)
             return std::nullopt;
         outType = ElementEnum::Face;
-        return (Index)gid;
+        return gid;
     } else if (wantType == TopAbs_EDGE) {
         GeomEdgeId gid = geomIndex.edgeGlobalId(localTypeId);
         if (gid == kInvalidGeomEdgeId)
             return std::nullopt;
         outType = ElementEnum::Edge;
-        return (Index)gid;
+        return gid;
     } else if (wantType == TopAbs_VERTEX) {
         GeomVertexId gid = geomIndex.vertexGlobalId(localTypeId);
         if (gid == kInvalidGeomVertexId)
             return std::nullopt;
         outType = ElementEnum::Vertex;
-        return (Index)gid;
+        return gid;
     } else if (wantType == TopAbs_SOLID) {
         GeomSolidId gid = geomIndex.solidGlobalId(localTypeId);
         if (gid == kInvalidGeomSolidId)
             return std::nullopt;
         outType = ElementEnum::Solid;
-        return (Index)gid;
+        return gid;
     }
     return std::nullopt;
 }
@@ -150,7 +150,7 @@ static vtkDataArray* detectSubIdArrayByValue(vtkPolyData* pd, IVtk_IdType picked
 
         vtkIdType hits = 0;
         for (vtkIdType c = 0; c < nCells; ++c) {
-            if ((IVtk_IdType)a->GetTuple1(c) == pickedSubId)
+            if (static_cast<IVtk_IdType>(a->GetTuple1(c)) == pickedSubId)
                 ++hits;
         }
         if (hits > bestHits) {
@@ -161,18 +161,18 @@ static vtkDataArray* detectSubIdArrayByValue(vtkPolyData* pd, IVtk_IdType picked
 
     if (best && bestHits > 0) {
         spdlog::info("[{}] detected subId array='{}' hits={}/{} for subId={}",
-            tag, (best->GetName() ? best->GetName() : "(null)"), (int)bestHits, (int)nCells, (int)pickedSubId);
+            tag, (best->GetName() ? best->GetName() : "(null)"), static_cast<int>(bestHits), static_cast<int>(nCells), pickedSubId);
         return best;
     }
 
-    spdlog::warn("[{}] cannot detect subId array by picked subId={}. Dump arrays:", tag, (int)pickedSubId);
+    spdlog::warn("[{}] cannot detect subId array by picked subId={}. Dump arrays:", tag, pickedSubId);
     for (int i = 0; i < cd->GetNumberOfArrays(); ++i) {
         vtkDataArray* a = cd->GetArray(i);
         if (!a)
             continue;
         spdlog::warn("  CellData[{}] name='{}' comps={} tuples={} type={}",
             i, (a->GetName() ? a->GetName() : "(null)"),
-            a->GetNumberOfComponents(), (int)a->GetNumberOfTuples(), a->GetDataType());
+            a->GetNumberOfComponents(), static_cast<int>(a->GetNumberOfTuples()), a->GetDataType());
     }
     return nullptr;
 }
@@ -188,7 +188,7 @@ static void recolorBySelectedSubIds(vtkPolyData* pd,
 
     const vtkIdType n = pd->GetNumberOfCells();
     for (vtkIdType c = 0; c < n; ++c) {
-        const IVtk_IdType sid = (IVtk_IdType)subIdArr->GetTuple1(c);
+        const IVtk_IdType sid = static_cast<IVtk_IdType>(subIdArr->GetTuple1(c));
         unsigned char rgb[3] { base[0], base[1], base[2] };
         if (selected.count(sid)) {
             rgb[0] = 255;
@@ -343,6 +343,23 @@ void GeometryFaceSelectorHighlight::applyHighlight()
 
 void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
+    auto oldTarget = getTargetData(geom_actor_);
+    if (oldTarget.valid()) {
+        picker_->SetSelectionMode(oldTarget.occShape, kSelFace, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelEdge, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelVertex, false);
+        if (oldTarget.polyActor) {
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelVertex, false);
+        }
+        if (oldTarget.lineActor) {
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelVertex, false);
+        }
+        picker_->InitializePickList();
+    }
     clear();
     geom_actor_ = std::move(geom_actor);
     target_initialized_ = false;
@@ -489,6 +506,23 @@ void GeometryEdgeSelectorHighlight::applyHighlight()
 
 void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
+    auto oldTarget = getTargetData(geom_actor_);
+    if (oldTarget.valid()) {
+        picker_->SetSelectionMode(oldTarget.occShape, kSelFace, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelEdge, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelVertex, false);
+        if (oldTarget.polyActor) {
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelVertex, false);
+        }
+        if (oldTarget.lineActor) {
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelVertex, false);
+        }
+        picker_->InitializePickList();
+    }
     clear();
     geom_actor_ = std::move(geom_actor);
     target_initialized_ = false;
@@ -637,6 +671,23 @@ void GeometryVertexSelectorHighlight::applyHighlight()
 
 void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
+    auto oldTarget = getTargetData(geom_actor_);
+    if (oldTarget.valid()) {
+        picker_->SetSelectionMode(oldTarget.occShape, kSelFace, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelEdge, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelVertex, false);
+        if (oldTarget.polyActor) {
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelVertex, false);
+        }
+        if (oldTarget.lineActor) {
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelVertex, false);
+        }
+        picker_->InitializePickList();
+    }
     clear();
     geom_actor_ = std::move(geom_actor);
     target_initialized_ = false;
@@ -787,7 +838,7 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
     if (gid == kInvalidGeomSolidId)
         return;
 
-    auto [it, inserted] = selections_.insert_or_assign((IVtk_IdType)gid, (Index)gid);
+    auto [it, inserted] = selections_.insert_or_assign(gid, gid);
     if (!inserted) {
         selections_.erase(it);
     }
@@ -821,7 +872,7 @@ void GeometrySolidSelectorHighlight::applyHighlight()
 
     const vtkIdType n = pd->GetNumberOfCells();
     for (vtkIdType c = 0; c < n; ++c) {
-        const IVtk_IdType sid = (IVtk_IdType)face_sub_id_arr_->GetTuple1(c);
+        const IVtk_IdType sid = static_cast<IVtk_IdType>(face_sub_id_arr_->GetTuple1(c));
         unsigned char rgb[3] { face_base_[0], face_base_[1], face_base_[2] };
         if (highlighted_face_ids_.count(sid)) {
             rgb[0] = 255;
@@ -841,6 +892,23 @@ void GeometrySolidSelectorHighlight::applyHighlight()
 
 void GeometrySolidSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
+    auto oldTarget = getTargetData(geom_actor_);
+    if (oldTarget.valid()) {
+        picker_->SetSelectionMode(oldTarget.occShape, kSelFace, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelEdge, false);
+        picker_->SetSelectionMode(oldTarget.occShape, kSelVertex, false);
+        if (oldTarget.polyActor) {
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.polyActor, kSelVertex, false);
+        }
+        if (oldTarget.lineActor) {
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelFace, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelEdge, false);
+            picker_->SetSelectionMode(oldTarget.lineActor, kSelVertex, false);
+        }
+        picker_->InitializePickList();
+    }
     clear();
     geom_actor_ = std::move(geom_actor);
     target_initialized_ = false;
@@ -856,7 +924,8 @@ void GeometrySolidSelectorHighlight::configurePicker()
 {
     auto target = getTargetData(geom_actor_);
     if (!target.polyActor || !target.valid()) {
-        picker_->InitializePickList();
+        if (picker_)
+            picker_->InitializePickList();
         return;
     }
 

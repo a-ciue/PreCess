@@ -55,7 +55,7 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     const vtkIdType nP = src->GetNumberOfPolys();
 
     spdlog::info("[GeometryActor] loadShape component={} verts={} lines={} polys={}",
-        geometry_data.component_id, (int)nV, (int)nL, (int)nP);
+        geometry_data.component_id, static_cast<int>(nV), static_cast<int>(nL), static_cast<int>(nP));
 
     auto ExtractCellRangeToPolyData = [](vtkPolyData* in, vtkIdType start, vtkIdType count) -> vtkSmartPointer<vtkPolyData> {
         vtkNew<vtkIdTypeArray> ids;
@@ -122,9 +122,9 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     if (this->poly_actor_ && this->poly_actor_->GetProperty()) {
         double c[3];
         this->poly_actor_->GetProperty()->GetColor(c);
-        faceBase[0] = (unsigned char)std::clamp((int)std::lround(c[0] * 255.0), 0, 255);
-        faceBase[1] = (unsigned char)std::clamp((int)std::lround(c[1] * 255.0), 0, 255);
-        faceBase[2] = (unsigned char)std::clamp((int)std::lround(c[2] * 255.0), 0, 255);
+        faceBase[0] = static_cast<unsigned char>(std::clamp(static_cast<int>(std::lround(c[0] * 255.0)), 0, 255));
+        faceBase[1] = static_cast<unsigned char>(std::clamp(static_cast<int>(std::lround(c[1] * 255.0)), 0, 255));
+        faceBase[2] = static_cast<unsigned char>(std::clamp(static_cast<int>(std::lround(c[2] * 255.0)), 0, 255));
     }
 
     const unsigned char lineBase[3] = { 0, 0, 0 };
@@ -157,7 +157,7 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     this->renderer_->AddActor(this->line_actor_);
 
     spdlog::info("[GeometryActor] component={} actors added, face_cells={} line_cells={}",
-        geometry_data.component_id, (int)poly_only->GetNumberOfCells(), (int)line_only->GetNumberOfCells());
+        geometry_data.component_id, static_cast<int>(poly_only->GetNumberOfCells()), static_cast<int>(line_only->GetNumberOfCells()));
 }
 
 void GeometryActor::deleteGeometryActor()
