@@ -4,6 +4,103 @@
 #include "OBJMeshIO.h"
 #include "TempFile.h"
 
+#include <algorithm>
+#include <cctype>
+#include <map>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+namespace {
+bool parseDoubleList(const std::string& text, std::vector<double>& values)
+{
+    std::istringstream stream(text);
+    double value {};
+    while (stream >> value)
+        values.push_back(value);
+
+    return !values.empty();
+}
+
+// 解析 .m 顶点 {...} 中的数值属性，例如 rgb=(1 0 0)、uv=(0.5 0.2)、wid=12。
+std::unordered_map<std::string, std::vector<double>> parseVertexStringAttributes(const std::string& text)
+{
+    std::unordered_map<std::string, std::vector<double>> result;
+    size_t pos = 0;
+
+    while (pos < text.size()) {
+        while (pos < text.size() && std::isspace(static_cast<unsigned char>(text[pos])))
+            ++pos;
+
+        const size_t key_begin = pos;
+        while (pos < text.size() && text[pos] != '=' && !std::isspace(static_cast<unsigned char>(text[pos])))
+            ++pos;
+        if (key_begin == pos)
+            break;
+
+        const std::string key = text.substr(key_begin, pos - key_begin);
+        while (pos < text.size() && std::isspace(static_cast<unsigned char>(text[pos])))
+            ++pos;
+        if (pos >= text.size() || text[pos] != '=') {
+            while (pos < text.size() && !std::isspace(static_cast<unsigned char>(text[pos])))
+                ++pos;
+            continue;
+        }
+        ++pos;
+
+        while (pos < text.size() && std::isspace(static_cast<unsigned char>(text[pos])))
+            ++pos;
+
+        std::string value_text;
+        if (pos < text.size() && text[pos] == '(') {
+            const size_t value_begin = pos + 1;
+            const size_t value_end = text.find(')', value_begin);
+            if (value_end == std::string::npos)
+                break;
+            value_text = text.substr(value_begin, value_end - value_begin);
+            pos = value_end + 1;
+        } else {
+            const size_t value_begin = pos;
+            while (pos < text.size() && !std::isspace(static_cast<unsigned char>(text[pos])))
+                ++pos;
+            value_text = text.substr(value_begin, pos - value_begin);
+        }
+
+        std::vector<double> values;
+        if (parseDoubleList(value_text, values))
+            result[key + "_" + std::to_string(values.size())] = std::move(values);
+    }
+    return result;
+}
+
+void appendVertexAttributes(
+    std::map<std::string, std::vector<double>>& vertex_attributes,
+    std::unordered_map<std::string, size_t>& component_counts,
+    const std::unordered_map<std::string, std::vector<double>>& parsed_attributes,
+    size_t vertex_index)
+{
+    for (auto& [name, values] : vertex_attributes) {
+        const size_t component_count = component_counts[name];
+        values.resize((vertex_index + 1) * component_count, 0.0);
+    }
+
+    for (const auto& [name, tuple] : parsed_attributes) {
+        const size_t component_count = tuple.size();
+        auto component_iter = component_counts.find(name);
+        if (component_iter == component_counts.end()) {
+            component_counts[name] = component_count;
+        } else if (component_iter->second != component_count) {
+            continue;
+        }
+
+        auto& values = vertex_attributes[name];
+        values.resize((vertex_index + 1) * component_count, 0.0);
+        std::copy(tuple.begin(), tuple.end(), values.begin() + vertex_index * component_count);
+    }
+}
+}
+
 void CTMeshModel::update(MeshData& mesh_data)
 {
     using namespace std;
@@ -11,13 +108,22 @@ void CTMeshModel::update(MeshData& mesh_data)
     // 构造点坐标数组 MeshData::vertex_positions_
     auto& vertex_positions = mesh_data.vertex_positions_;
     vertex_positions.clear(); // 清空之前的顶点数据
+    mesh_data.vertex_attributes_.clear();
     vertex_positions.reserve(mesh_->numVertices()); // 预留空间以提高性能
     unordered_map<Index, Index> vertex_index_map; // 顶点 ID 到索引的映射
+    unordered_map<string, size_t> vertex_attribute_components;
     for (MeshLib::CTMesh::MeshVertexIterator vi(mesh_); !vi.end(); ++vi) {
         vertex_index_map[vi.value()->id()] = vertex_positions.size();
         const CPoint& point = vi.value()->point();
         vertex_positions.emplace_back(array { point[0], point[1], point[2] });
+        appendVertexAttributes(
+            mesh_data.vertex_attributes_,
+            vertex_attribute_components,
+            parseVertexStringAttributes(vi.value()->string()),
+            vertex_positions.size() - 1);
     }
+    for (auto& [name, values] : mesh_data.vertex_attributes_)
+        values.resize(vertex_positions.size() * vertex_attribute_components[name], 0.0);
 
     // MeshData包括的patch id
     unordered_set<int> data_patch_ids;

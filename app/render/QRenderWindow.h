@@ -130,6 +130,7 @@ public:
      * @brief 设置属性渲染方式
      *
      * 在控制台中调用示例：
+     * modelQuery.getModelAttriName(0)
      * myItem.setAttriMode("face_pressure_1", 1, {})
      * myItem.setAttriMode("face_color_3", 0, {})
      * myItem.setAttriMode("face_vectors_3", 3, {})
@@ -142,7 +143,7 @@ public:
      * myItem.setAttriMode("displacement9_3", 3, { "glyph_scale": 0.5 })
      * myItem.setAttriMode("thickness9_1", 1, {})
      * myItem.setAttriMode("thickness9_1", 1, { "scalar_range": [0, 2] })
-     *
+     * 
      * @param attr_name 属性名 后缀_3表示属性分量为3
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
      * @param args 其他参数（可选），如：
