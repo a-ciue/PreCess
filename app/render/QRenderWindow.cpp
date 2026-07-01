@@ -341,7 +341,7 @@ bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
         return vtk.geometry_actor_manager_->getIsEdgeRender(component_id);
     }
 
-    spdlog::error("get is edge render mode error");
+    spdlog::error("QRenderWindow::getIsEdgeRender: error getting edge render mode");
     return false;
 }
 
@@ -472,6 +472,8 @@ void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
         }
+
+        this->setCurEdgeRender(is_render);
     });
 }
 
