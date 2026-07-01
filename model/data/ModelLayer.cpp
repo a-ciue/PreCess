@@ -99,9 +99,7 @@ void ModelLayer::removeComponent(Index component_id)
     auto& ids = mit->second->componentIds();
     ids.erase(std::remove(ids.begin(), ids.end(), component_id), ids.end());
 
-   
-    if (ComponentData* c = findComponent(component_id))
-    {
+    if (ComponentData* c = findComponent(component_id)) {
         if (c->mesh) {
             c->mesh->releaseEdgeIdMap(edge_id_map_);
         }

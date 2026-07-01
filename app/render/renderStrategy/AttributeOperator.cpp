@@ -1,6 +1,5 @@
 #include "AttributeOperator.h"
 #include <vtkPolyData.h>
-#include <vtkCellCenters.h>
 #include <vtkCellData.h>
 #include <vtkMapper.h>
 #include <vtkSmartPointer.h>
@@ -159,6 +158,7 @@ vtkPointData* AttributeOperator::getSolidPointData()
 
 void AttributeOperator::enableFaceAttributeOffset()
 {
+    // 具体偏移量只设置在 face_mapper_ 上，用于避免面属性和体外表面共面时互相遮挡。
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
     vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
     mesh_actor_->face_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(-1.0, -1.0);
@@ -198,14 +198,14 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getFaceGlyphInput(const std::str
     if (!array)
         return nullptr;
 
-    // 计算面中心点位置
-    vtkNew<vtkCellCenters> centers;
-    centers->SetInputData(face_data);
-    centers->Update();
+    // 使用加载阶段缓存的面中心点，避免属性切换或重复渲染时重新计算 vtkCellCenters。
+    vtkPolyData* centers = mesh_actor_->face_cell_centers_;
+    if (!centers || !centers->GetPoints())
+        return nullptr;
 
-    // 合并面中心点与向量数据
+    // 合并缓存的单元中心点与向量数据，作为 glyph 输入。
     vtkSmartPointer<vtkPolyData> glyphInput = vtkSmartPointer<vtkPolyData>::New();
-    glyphInput->SetPoints(centers->GetOutput()->GetPoints());
+    glyphInput->SetPoints(centers->GetPoints());
     glyphInput->GetPointData()->SetVectors(array);
 
     return glyphInput;
@@ -233,12 +233,13 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getSolidGlyphInput(const std::st
     if (!array)
         return nullptr;
 
-    vtkNew<vtkCellCenters> centers;
-    centers->SetInputData(solid_data);
-    centers->Update();
+    //使用加载阶段缓存的体中心点
+    vtkPolyData* centers = mesh_actor_->solid_cell_centers_;
+    if (!centers || !centers->GetPoints())
+        return nullptr;
 
     vtkSmartPointer<vtkPolyData> glyphInput = vtkSmartPointer<vtkPolyData>::New();
-    glyphInput->SetPoints(centers->GetOutput()->GetPoints());
+    glyphInput->SetPoints(centers->GetPoints());
     glyphInput->GetPointData()->SetVectors(array);
 
     return glyphInput;

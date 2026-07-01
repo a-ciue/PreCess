@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
+#include <vtkCellCenters.h>
 #include <vtkCellData.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkDoubleArray.h>
@@ -219,6 +220,19 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     addPointAttributes(*solid_ugird->GetPointData(), model_data.vertex_attributes_,
         global_points_->GetNumberOfPoints(), model_data.local_to_global_);
     addCellAttributes(*solid_ugird->GetCellData(), model_data.solid_attributes_, solid_cells_count, "solid");
+
+    // 单元中心点只和几何拓扑有关，在加载数据时统一计算并缓存，属性渲染阶段直接复用。 
+    {
+        vtkNew<vtkCellCenters> face_centers;
+        face_centers->SetInputData(face_poly);
+        face_centers->Update();
+        face_cell_centers_->DeepCopy(face_centers->GetOutput());
+
+        vtkNew<vtkCellCenters> solid_centers;
+        solid_centers->SetInputData(solid_ugird);
+        solid_centers->Update();
+        solid_cell_centers_->DeepCopy(solid_centers->GetOutput());
+    }
 
     solid_filter_->SetInputData(solid_ugird);
 

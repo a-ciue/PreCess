@@ -15,6 +15,7 @@ class vtkGeometryFilter;
 class vtkExtractGeometry;
 class vtkExtractPolyDataGeometry;
 class vtkPoints;
+class vtkPolyData;
 class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
@@ -80,7 +81,6 @@ private:
 
     vtkNew<vtkGeometryFilter> solid_filter_;
 
-    //vtkNew<vtkPolyDataMapper> vertex_mapper_;
     vtkNew<vtkPolyDataMapper> edge_mapper_;
     vtkNew<vtkPolyDataMapper> face_mapper_;
     vtkNew<vtkPolyDataMapper> solid_mapper_;
@@ -94,7 +94,11 @@ private:
     vtkNew<vtkUnstructuredGrid> solid_data_;
     vtkNew<vtkPolyData> face_data_;
     vtkNew<vtkPolyData> edge_data_;
-    //vtkNew<vtkPolyData> vertex_data_;
+
+    // 缓存面单元中心点。
+    vtkNew<vtkPolyData> face_cell_centers_;
+    // 缓存体单元中心点。
+    vtkNew<vtkPolyData> solid_cell_centers_;
 
     vtkRenderer* renderer_;
 
