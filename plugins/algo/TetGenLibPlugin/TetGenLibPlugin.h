@@ -1,3 +1,9 @@
+/**
+ * @file TetGenLibPlugin.h
+ * @author 范成通 1941804585@qq.com
+ * @brief TetGen 库插件入口，将 TetGenLibHandler 注册到算法系统
+ * @date 2026-06-24
+ */
 #pragma once
 #include "HandlerCreatorDestroyerFactory.h"
 #include "PluginBase.h"

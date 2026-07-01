@@ -1,3 +1,6 @@
+# TetGenLibPlugin CMake 配置
+# 将 TetGen 源码编译为内部静态库 TetGenInternal，并构建算法插件 TetGenLibPlugin
+
 set(TETGEN_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/tetgen")
 
 add_library(TetGenInternal STATIC

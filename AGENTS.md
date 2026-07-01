@@ -1,0 +1,148 @@
+# AGENTS.md — PreCess 前蔚处理 AI 协作开发提示词
+
+> 本文件是面向 AI 编程助手（Codex / Copilot / Cursor 等）与人类贡献者的统一开发规范。
+> 作用范围为整个仓库。提交代码前请遵循本文件，并参考 Wiki《代码提交规范》《项目文件结构》《项目贡献者指南》。
+> 规则按重要程度从上到下排列：越靠前越不能违反。
+
+---
+
+## 0. 给 AI 助手的元指令（最高优先级）
+
+- **先理解，再动手**：修改前先阅读相关目录的代码与依赖关系（见第 2 节），不要凭猜测改动。
+- **最小化改动**：只做与当前任务直接相关的修改，保持与现有代码风格一致；不顺手重命名、不重排无关文件、不“顺便”修无关 bug（可在结论里提示）。
+- **根因优先**：从根本原因修复，避免表层补丁。
+- **不臆造**：不确定的 API、路径、依赖必须先在仓库中检索确认；找不到就说明，不要编造。
+- **尊重许可证边界**：`plugins/` 依赖链使用 **LGPLv3**，其余核心代码使用 **GPLv3**；不要把 GPL 代码引入需要闭源的插件依赖路径（见第 7 节）。
+- **不擅自提交**：除非用户明确要求，不执行 `git commit` / `git push` / 建分支。
+- **沟通语言**：与中文贡献者沟通、注释、commit message 默认使用中文（术语保留英文）。
+- **改完即说明**：交付时简述改了什么、为什么、影响哪些模块、如何验证。
+
+---
+
+## 1. 项目概览
+
+- **定位**：专注网格处理的 CAE 前处理软件，面向网格算法开发者与工业界需求。
+- **架构**：**插件化架构**，功能封装在插件中，主程序运行时按需加载。
+- **技术栈**：C++17、CMake、Qt Quick 6（QML）、VTK、OpenCASCADE、spdlog、GoogleTest。
+- **目标平台**：跨平台（Windows / Linux / macOS），当前主力为 Windows + MSVC。
+- **错误处理机制**：使用 **异常**（不要用错误码裸返回风格替代）。
+
+---
+
+## 2. 目录结构与依赖关系（改代码前必读）
+
+依赖只能单向，**不要制造反向或循环依赖**：
+
+- `core/`：项目通用基础类型，所有层都可依赖。
+- `model/`：业务逻辑层，依赖 `core`。
+  - `model/data/`：底层数据结构（`ModelData`、`MeshData`、`ModelManager` 等）。
+  - `model/ops/`：基于数据结构的操作，依赖 `model/data`。
+  - `model/systems/`：系统层（算法系统、模型 IO 系统），负责插件注册与按字符串分发调用，依赖 `model/data`、`core`。
+- `app/`：程序与界面实现，依赖 `model`、`core`。
+  - `app/core/` → `core`
+  - `app/model/` → `model`、`core`、`app/core`（model 的 Qt 接口、数据绑定）
+  - `app/render/` → `app/model`（VTK 渲染窗口控件）
+  - `app/*.qml` → `app/model`、`app/render`、`app/core`（界面布局与更新，仅做轻量数据处理，不承载主业务逻辑）
+- `plugins/`：插件示例与二次开发，依赖 `model/systems`、`model/data`、`core`，与 `app` 独立构建。
+  - `plugins/algo/`：算法插件；`plugins/io/`：模型 IO 插件；`plugins/edit/`：编辑插件。
+
+**依赖速记**：`app → model → core`；`plugins → model + core`；QML 只调依赖包功能、不写主业务逻辑。
+
+---
+
+## 3. 命名规范
+
+- **C++ 类 / 结构体 / 枚举**：大驼峰 `MyClass`、`ModelActor`；继承 `QObject` 的类以大写 `Q` 开头。
+- **QML 控件名 / 文件名**：大驼峰。
+- **C++ 函数 / QML 成员函数**：小驼峰，优先 `动词+领域名词`（`doSomething`、`changeRenderMode`）；bool 返回值用 `isSomething` / `trySomething`；必要时追加 `forXxx` / `withXxx` / `byXxx`。若无法用“动词+名词”概括，按单一职责拆分函数。
+- **C++ 信号**：小驼峰 `on+变量+Change` 或 `on+动词+名词`（`onNameChange`、`onSendData`）；**QML 信号**同样小驼峰但去掉开头 `on`。
+- **C++ 局部变量**：下划线 `model_name`、`block_id`；容器用复数 `block_ids`。
+- **C++ 类成员变量（非结构体）**：下划线 + 尾下划线 `data_`、`patch_ids_`。
+
+---
+
+## 4. 代码格式与文件编码
+
+- **编码**：统一 **UTF-8 无签名（无 BOM）**；**行尾 CRLF**。
+- **C++ 格式**：遵循根目录 `.clang-format`（BasedOnStyle: WebKit，缩进 4 空格）。VS 中 `Ctrl+K, Ctrl+D` 格式化。
+- **QML 格式**：遵循 `.qmlformat.ini`（缩进 4，行尾 native）。
+- 不要手动重排已格式化文件；提交前确保通过 clang-format / qmlformat。
+
+---
+
+## 5. 头文件与 C++ 编码细则
+
+- **前向声明优先**：能用前向声明就用，减少 include、隔离依赖、加速并行编译。
+  - 头文件中类成员/参数为 `A*`、`A&`、`shared_ptr<A>`、`weak_ptr<A>`、`vector<A*>` 等**只持有指针/引用**时，用前向声明；在对应 `.cpp` 中再 include 完整头文件。
+  - **必须 include**（不可前向声明）的情况：A 是标准库类型；A 以**值类型**作成员/参数或 `vector<A>` 等需要知道大小的容器；使用 `unique_ptr<A>` 时（需在 cpp 中分离析构）。
+- **覆盖虚函数**必须写 `override`。
+- **include 顺序**：从小到大、从少用到多用，按需 include。
+- **include 写法**：标准库与三方库用 `<>`，本项目头文件一律用 `""`。
+- **头文件路径**：禁止相对路径找头文件；找不到说明 CMake 库依赖未配好，去修 CMake。
+- **new 限制**：仅在使用 Qt 框架对象、OCC 智能指针时才允许 `new` 显式初始化；其余优先栈对象 / 标准库智能指针。
+- 注意 `const&` 作函数参数的生命周期陷阱。
+- 参考：CppCoreGuidelines、华为 C/C++ 编程规范。
+
+---
+
+## 6. 注释规范（Doxygen）
+
+- 原则：简洁的行内注释 + 必要的详细说明；注释解释“为什么”，不要复述代码。
+- **文件头注释**（尤其声明全局符号的头文件）用 Doxygen 块注释：`@file`、`@brief`（可空行后接详细描述）、可选 `@author`、`@date`。
+- **符号注释**（类/函数/变量/属性/信号）置于声明前：函数用 `@brief`、`@tparam`、`@param`、`@return`。
+- **逻辑注释**：循环/分支前说明作用与条件；长代码用空行分段，每段首行注释说明该段作用（逻辑注释不要求 Doxygen 格式）。
+- 现有代码常见风格：`/** ... */` 块注释、`//! @brief`、行尾 `//> ...`，新代码与所在文件保持一致。
+- 注释会经 Doxygen 生成 API 文档（见 `Doxyfile`），保持可生成。
+
+---
+
+## 7. 许可证边界（务必小心）
+
+- `plugins/` 及其依赖链使用 **LGPLv3**，允许插件作者在不改依赖源码前提下闭源。
+- 其余核心代码使用 **GPLv3**。
+- **不要**将 GPLv3 代码引入插件依赖路径，否则破坏闭源二次开发能力。新增依赖前确认许可证兼容性。
+
+---
+
+## 8. 构建、测试与验证
+
+- **构建系统**：CMake + Ninja，预设见 `CMakePresets.json` / `CMakeUserPresets.json`。
+- **C++ 标准**：C++17（`CMAKE_CXX_STANDARD 17`，REQUIRED）。
+- **常用命令（Windows，PowerShell）**：
+  - 配置：`cmake --preset x64-debug`（或 `x64-release` / `x64-relwithdebinfo`）
+  - 构建：`cmake --build out/build/x64-debug`
+  - 测试：先以 `-DBUILD_TESTING=ON` 配置（默认 OFF），再 `ctest --test-dir out/build/x64-debug --output-on-failure`
+- 测试框架为 **GoogleTest**，测试代码见各模块 `test/` 目录（如 `model/data/test/`）。
+- **新特性必须配套测试用例**；修 bug 时尽量补可复现的回归测试。
+- 不要向无测试的模块强行塞测试框架；遵循该模块既有测试模式。
+- 工具检测用 PowerShell：例如 `Get-Command makensis`（不要用 `where makensis`）。
+
+---
+
+## 9. Git 提交规范
+
+- **Commit 主题**第一行：`类型: 简述`，类型取 `fix/feat/refactor/docs/style/test/chore/perf/ci/build/revert` 之一。
+- 空行后正文用 Markdown 详述动机与细节，多用具体类名/包名/术语。
+- **一个 commit 只做一件事**；既改 A 又改 B 时拆分提交。
+- 分支命名：`feature/AmazingFeature`（功能）等；通过 Fork + Pull Request 合并到主仓库。
+- **PR 验收标准**：符合编码与命名规范、文件编码 UTF-8 无 BOM、完成关联 Issue 主要任务、通过现有测试、新特性带测试、能构建且主要功能可用。
+
+---
+
+## 10. 插件开发要点
+
+- 功能 `Handler` 封装进插件 `PluginHandler`，由 `SystemPluginManager` 注册到对应系统。
+- 每类插件须实现对应系统接口完成数据交换；算法系统目前通过模型 IO 系统以文件读写交换模型数据。
+- 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
+
+---
+
+## 11. 提交前自检清单（AI 与人类通用）
+
+- [ ] 改动范围最小、与任务直接相关，未引入无关变更。
+- [ ] 命名、注释、格式符合第 3–6 节。
+- [ ] 文件 UTF-8 无 BOM、CRLF 行尾。
+- [ ] 依赖方向正确，无循环/反向依赖；未越过 GPL/LGPL 许可证边界。
+- [ ] 头文件按需前向声明 / include，无相对路径 include。
+- [ ] 能通过构建；涉及逻辑改动已（或建议）跑测试，新特性带测试。
+- [ ] Commit 类型正确、单一职责、信息清晰。

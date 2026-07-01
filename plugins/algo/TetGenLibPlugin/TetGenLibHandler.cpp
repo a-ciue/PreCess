@@ -1,3 +1,9 @@
+/**
+ * @file TetGenLibHandler.cpp
+ * @author 范成通 1941804585@qqin.com
+ * @brief TetGen 库模式四面体剖分处理器实现，包含 MeshData↔tetgenio 双向转换与参数组装
+ * @date 2026-06-24
+ */
 #include "TetGenLibHandler.h"
 
 #include "ArgObject.h"
@@ -6,23 +12,31 @@
 #include "MeshData.h"
 #include "ModelLayer.h"
 
+#include <algorithm>
 #include <array>
 #include <exception>
-#include <algorithm>
 #include <memory>
 #include <queue>
 #include <sstream>
-#include <spdlog/spdlog.h>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
+#include <spdlog/spdlog.h>
+#include <vtkCellType.h>
+
 #include "tetgen.h"
 
 namespace {
-constexpr unsigned char kVtkTetra = 10;
-
+/**
+ * @brief 组装 TetGen tetrahedralize 的开关字符串
+ * @param preserve_surface 是否保留原始表面（对应 -Y）
+ * @param detect_intersections_only 仅做自交检测（对应 -d），此时忽略其他参数
+ * @param quality_bound 质量参数 q（半径/边长比上限），<=0 时不启用
+ * @param max_volume 最大单元体积 a，<=0 时不启用
+ * @return TetGen 开关字符串
+ */
 std::string makeTetGenSwitches(bool preserve_surface,
     bool detect_intersections_only,
     double quality_bound,
@@ -47,6 +61,11 @@ std::string makeTetGenSwitches(bool preserve_surface,
     return switches;
 }
 
+/**
+ * @brief 将模型名中的文件系统非法字符替换为下划线
+ * @param name 原始名称
+ * @return 清洗后的安全名称（为空时返回 Component）
+ */
 std::string sanitizeModelName(std::string name)
 {
     if (name.empty()) {
@@ -72,6 +91,15 @@ std::string sanitizeModelName(std::string name)
     return name;
 }
 
+/**
+ * @brief 根据输入参数生成结果模型的自描述名称
+ * @param input_component 输入的 Component（用于获取 name）
+ * @param quality_bound q 参数值
+ * @param max_volume a 参数值
+ * @param preserve_surface 是否保留表面
+ * @param use_largest_surface_shell 是否仅用最大壳
+ * @return 形如 Name_TetGen_q1.2_a0_Y_largestShell 的名称
+ */
 std::string makeResultModelName(const ComponentData& input_component,
     double quality_bound,
     double max_volume,
@@ -95,8 +123,17 @@ std::string makeResultModelName(const ComponentData& input_component,
     return name.str();
 }
 
+/**
+ * @brief 使用 BFS 找出网格表面中最大的连通分量（壳）
+ *        通过顶点邻接表扩散连通面，跳过不相连的小腔体
+ * @param mesh 输入网格
+ * @return 最大连通壳的面索引列表（已排序）
+ */
 std::vector<Index> collectLargestSurfaceShellFaces(const MeshData& mesh)
 {
+    if (mesh.face_vertices_offset_.size() < 2) {
+        return {};
+    }
     const Index face_count = static_cast<Index>(mesh.face_vertices_offset_.size() - 1);
     if (face_count <= 1) {
         std::vector<Index> all_faces;
@@ -159,8 +196,16 @@ std::vector<Index> collectLargestSurfaceShellFaces(const MeshData& mesh)
     return largest_component;
 }
 
+/**
+ * @brief 收集网格的全部表面面索引
+ * @param mesh 输入网格
+ * @return 所有面的索引列表
+ */
 std::vector<Index> collectAllSurfaceFaces(const MeshData& mesh)
 {
+    if (mesh.face_vertices_offset_.size() < 2) {
+        return {};
+    }
     const Index face_count = static_cast<Index>(mesh.face_vertices_offset_.size() - 1);
     std::vector<Index> faces;
     faces.reserve(static_cast<size_t>(face_count));
@@ -170,6 +215,15 @@ std::vector<Index> collectAllSurfaceFaces(const MeshData& mesh)
     return faces;
 }
 
+/**
+ * @brief 将 PreCess MeshData 转换为 TetGen tetgenio 输入结构
+ *        处理顶点坐标复制、面转换、最大壳筛选
+ * @param component 输入的 ComponentData（需有 MeshData）
+ * @param manager ModelLayer 引用，用于获取全局点坐标
+ * @param input 输出的 tetgenio 结构
+ * @param use_largest_surface_shell 是否仅使用最大表面壳
+ * @return true 成功；false 失败（无 mesh 或数据无效）
+ */
 bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager, tetgenio& input, bool use_largest_surface_shell)
 {
     const MeshData* mesh = component.asMeshData();
@@ -270,6 +324,12 @@ bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager,
     return true;
 }
 
+/**
+ * @brief 将 TetGen tetgenio 输出转换为 PreCess MeshData
+ *        处理索引偏移（TetGen 1-based 转为 PreCess 0-based）
+ * @param output TetGen 输出的 tetgenio 结构
+ * @return 转换后的 MeshData，失败返回 nullptr
+ */
 std::unique_ptr<MeshData> buildMeshDataFromTetGenOutput(const tetgenio& output)
 {
     if (!output.pointlist || output.numberofpoints <= 0) {
@@ -307,12 +367,15 @@ std::unique_ptr<MeshData> buildMeshDataFromTetGenOutput(const tetgenio& output)
         }
     }
 
+    if (output.numberofcorners <= 0) {
+        spdlog::warn("TetGenLibHandler: TetGen output has no corner info, assuming 4");
+    }
     const int corners = output.numberofcorners > 0 ? output.numberofcorners : 4;
     mesh->solid_vertices_.reserve(static_cast<size_t>(output.numberoftetrahedra * 4));
     mesh->solid_types_.reserve(static_cast<size_t>(output.numberoftetrahedra));
     for (int tet_id = 0; tet_id < output.numberoftetrahedra; ++tet_id) {
         const int base = tet_id * corners;
-        mesh->solid_types_.push_back(kVtkTetra);
+        mesh->solid_types_.push_back(VTK_TETRA);
         mesh->solid_vertices_.push_back(output.tetrahedronlist[base] + index_shift);
         mesh->solid_vertices_.push_back(output.tetrahedronlist[base + 1] + index_shift);
         mesh->solid_vertices_.push_back(output.tetrahedronlist[base + 2] + index_shift);
@@ -327,7 +390,7 @@ std::unique_ptr<MeshData> buildMeshDataFromTetGenOutput(const tetgenio& output)
 std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const std::vector<core::ArgObject>& args)
 {
     if (args.size() < 5) {
-        spdlog::critical("TetGenLibHandler: Not enough arguments provided.");
+        spdlog::error("TetGenLibHandler: Not enough arguments provided.");
         return {};
     }
 
@@ -339,7 +402,7 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
     if (!largest_shell_idx || *largest_shell_idx < 0 || !quality_bound || !max_volume
         || !preserve_surface_idx || *preserve_surface_idx < 0
         || !detect_intersections_idx || *detect_intersections_idx < 0) {
-        spdlog::critical("TetGenLibHandler: Invalid arguments.");
+        spdlog::error("TetGenLibHandler: Invalid arguments.");
         return {};
     }
 
@@ -368,13 +431,13 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
     try {
         tetrahedralize(switches.data(), &input, &output);
     } catch (int error_code) {
-        spdlog::critical("TetGenLibHandler: TetGen failed with error code {}", error_code);
+        spdlog::error("TetGenLibHandler: TetGen failed with error code {}", error_code);
         return {};
     } catch (const std::exception& e) {
-        spdlog::critical("TetGenLibHandler: TetGen failed: {}", e.what());
+        spdlog::error("TetGenLibHandler: TetGen failed: {}", e.what());
         return {};
     } catch (...) {
-        spdlog::critical("TetGenLibHandler: TetGen failed with unknown exception");
+        spdlog::error("TetGenLibHandler: TetGen failed with unknown exception");
         return {};
     }
 
@@ -403,10 +466,10 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
 std::vector<core::ArgType> systems::algo::TetGenLibHandler::args_type() const
 {
     return {
-        core::ArgType { ArgTypeEnum::Combo, "是否仅使用最大表面壳", "是,否|1" },
+        core::ArgType { ArgTypeEnum::Combo, "是否仅使用最大表面壳", "是,否" },
         core::ArgType { ArgTypeEnum::Float, "质量参数 q（0表示关闭）", "1.2" },
         core::ArgType { ArgTypeEnum::Float, "最大单元体积 a（0表示关闭）", "0" },
-        core::ArgType { ArgTypeEnum::Combo, "是否保留原始表面", "是,否|1" },
-        core::ArgType { ArgTypeEnum::Combo, "是否仅检测自交", "是,否|1" },
+        core::ArgType { ArgTypeEnum::Combo, "是否保留原始表面", "是,否" },
+        core::ArgType { ArgTypeEnum::Combo, "是否仅检测自交", "是,否" },
     };
 }
