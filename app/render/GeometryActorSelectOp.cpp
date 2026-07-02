@@ -42,3 +42,13 @@ const GeometrySubshapeIndex* GeometryActorSelectOp::getGeometryIndex()
 {
     return geometry_actor_->geometryIndex();
 }
+
+const vtkDataArray* GeometryActorSelectOp::getLineSubIdArray() const
+{
+    return geometry_actor_->lineSubIdArray();
+}
+
+const vtkDataArray* GeometryActorSelectOp::getPolySubIdArray() const
+{
+    return geometry_actor_->polySubIdArray();
+}

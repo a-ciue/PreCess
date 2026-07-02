@@ -16,7 +16,88 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <spdlog/spdlog.h>
+
+static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* pd, const OccShapeHandle& occShape)
+{
+    if (!pd || occShape.IsNull())
+        return nullptr;
+
+    vtkCellData* cd = pd->GetCellData();
+    if (!cd)
+        return nullptr;
+
+    const vtkIdType nCells = pd->GetNumberOfCells();
+    if (nCells <= 0)
+        return nullptr;
+
+    vtkDataArray* best = nullptr;
+    vtkIdType bestValidCount = 0;
+    bool bestHasLineValid = false;
+
+    for (int i = 0; i < cd->GetNumberOfArrays(); ++i) {
+        vtkDataArray* a = cd->GetArray(i);
+        if (!a)
+            continue;
+        if (a->GetNumberOfComponents() != 1)
+            continue;
+        if (a->GetNumberOfTuples() != nCells)
+            continue;
+
+        const char* name = a->GetName();
+        if (name) {
+            if (std::strcmp(name, "vtkOriginalCellIds") == 0)
+                continue;
+            if (std::strcmp(name, "vtkOriginalPointIds") == 0)
+                continue;
+        }
+
+        vtkIdType validCount = 0;
+        bool hasLineValid = false;
+        for (vtkIdType c = 0; c < nCells; ++c) {
+            IVtk_IdType sid = static_cast<IVtk_IdType>(a->GetTuple1(c));
+            if (sid > 0) {
+                try {
+                    if (!occShape->GetSubShape(sid).IsNull()) {
+                        ++validCount;
+                        if (!hasLineValid && pd->GetCellType(c) == VTK_LINE)
+                            hasLineValid = true;
+                    }
+                } catch (...) {
+                }
+            }
+        }
+
+        bool better = false;
+        if (!best) {
+            better = true;
+        } else if (hasLineValid && !bestHasLineValid) {
+            better = true;
+        } else if (!hasLineValid && bestHasLineValid) {
+        } else if (validCount > bestValidCount) {
+            better = true;
+        }
+
+        if (better) {
+            bestValidCount = validCount;
+            bestHasLineValid = hasLineValid;
+            best = a;
+        }
+    }
+
+    if (best && bestValidCount > 0) {
+        spdlog::info("[GeometryActor] found subId array '{}' valid={}/{} hasLine={}",
+            (best->GetName() ? best->GetName() : "(null)"),
+            static_cast<int>(bestValidCount), static_cast<int>(nCells),
+            bestHasLineValid ? "yes" : "no");
+        return best;
+    }
+
+    spdlog::warn("[GeometryActor] no valid subId array found in polydata with {} cells", static_cast<int>(nCells));
+    return nullptr;
+}
+
 GeometryActor::GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode)
 {
     this->renderer_ = renderer;
@@ -92,6 +173,9 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
         line_only = vtkSmartPointer<vtkPolyData>::New();
     if (!poly_only)
         poly_only = vtkSmartPointer<vtkPolyData>::New();
+
+    line_sub_id_array_ = findSubIdArray(line_only, occ_shape_);
+    poly_sub_id_array_ = findSubIdArray(poly_only, occ_shape_);
 
     auto EnsureCellRgbScalars = [](vtkPolyData* pd, const unsigned char rgb[3]) -> vtkUnsignedCharArray* {
         if (!pd)
@@ -214,4 +298,14 @@ const OccShapeHandle& GeometryActor::getOccShape() const
 const GeometrySubshapeIndex* GeometryActor::geometryIndex() const noexcept
 {
     return geometry_index_; 
+}
+
+const vtkDataArray* GeometryActor::lineSubIdArray() const noexcept
+{
+    return line_sub_id_array_.GetPointer();
+}
+
+const vtkDataArray* GeometryActor::polySubIdArray() const noexcept
+{
+    return poly_sub_id_array_.GetPointer();
 }

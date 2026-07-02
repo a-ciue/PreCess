@@ -21,6 +21,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <cstring>
 #include <unordered_map>
 
 static constexpr IVtk_SelectionMode kSelVertex = SM_Vertex;
@@ -148,6 +149,14 @@ static vtkDataArray* detectSubIdArrayByValue(vtkPolyData* pd, IVtk_IdType picked
         if (a->GetNumberOfTuples() != nCells)
             continue;
 
+        const char* name = a->GetName();
+        if (name) {
+            if (std::strcmp(name, "vtkOriginalCellIds") == 0)
+                continue;
+            if (std::strcmp(name, "vtkOriginalPointIds") == 0)
+                continue;
+        }
+
         vtkIdType hits = 0;
         for (vtkIdType c = 0; c < nCells; ++c) {
             if (static_cast<IVtk_IdType>(a->GetTuple1(c)) == pickedSubId)
@@ -221,6 +230,8 @@ struct GeomTargetData {
     vtkActor* lineActor = nullptr;
     OccShapeHandle occShape;
     const GeometrySubshapeIndex* geomIndex = nullptr;
+    const vtkDataArray* lineSubIdArr = nullptr;
+    const vtkDataArray* polySubIdArr = nullptr;
 
     bool valid() const { return !occShape.IsNull(); }
 };
@@ -235,6 +246,8 @@ static GeomTargetData getTargetData(GeometryActorSelectOpFactory& factory)
     d.lineActor = dynamic_cast<vtkActor*>(&op->getLineActor());
     d.occShape = op->getOccShape();
     d.geomIndex = op->getGeometryIndex();
+    d.lineSubIdArr = op->getLineSubIdArray();
+    d.polySubIdArr = op->getPolySubIdArray();
     return d;
 }
 
@@ -322,7 +335,9 @@ void GeometryFaceSelectorHighlight::select(double posx, double posy)
         selections_.erase(it);
 
     vtkPolyData* pd = actorPoly(target.polyActor);
-    if (!face_sub_id_arr_ && pd)
+    if (!face_sub_id_arr_ && target.polySubIdArr)
+        face_sub_id_arr_ = const_cast<vtkDataArray*>(target.polySubIdArr);
+    else if (!face_sub_id_arr_ && pd)
         face_sub_id_arr_ = detectSubIdArrayByValue(pd, subId, "FacePd");
 
     applyHighlight();
@@ -354,7 +369,7 @@ void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
             picker_->SetSelectionMode(oldTarget.polyActor, kSelFace, false);
             picker_->SetSelectionMode(oldTarget.polyActor, kSelEdge, false);
             picker_->SetSelectionMode(oldTarget.polyActor, kSelVertex, false);
-        }
+    }
         if (oldTarget.lineActor) {
             picker_->SetSelectionMode(oldTarget.lineActor, kSelFace, false);
             picker_->SetSelectionMode(oldTarget.lineActor, kSelEdge, false);
@@ -394,7 +409,7 @@ void GeometryFaceSelectorHighlight::configurePicker()
         picker_->SetSelectionMode(target.lineActor, kSelFace, false);
         picker_->SetSelectionMode(target.lineActor, kSelEdge, false);
         picker_->SetSelectionMode(target.lineActor, kSelVertex, false);
-    }
+}
 }
 
 // ─── Edge ──────────────────────────────────────────────
@@ -481,7 +496,9 @@ void GeometryEdgeSelectorHighlight::select(double posx, double posy)
         selections_.erase(it);
 
     vtkPolyData* pd = actorPoly(target.lineActor);
-    if (!line_sub_id_arr_ && pd)
+    if (!line_sub_id_arr_ && target.lineSubIdArr)
+        line_sub_id_arr_ = const_cast<vtkDataArray*>(target.lineSubIdArr);
+    else if (!line_sub_id_arr_ && pd)
         line_sub_id_arr_ = detectSubIdArrayByValue(pd, subId, "LinePd");
 
     applyHighlight();
@@ -518,7 +535,7 @@ void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
             picker_->SetSelectionMode(oldTarget.lineActor, kSelFace, false);
             picker_->SetSelectionMode(oldTarget.lineActor, kSelEdge, false);
             picker_->SetSelectionMode(oldTarget.lineActor, kSelVertex, false);
-        }
+    }
         picker_->InitializePickList();
     }
     clear();
@@ -641,7 +658,9 @@ void GeometryVertexSelectorHighlight::select(double posx, double posy)
         selections_.erase(it);
 
     vtkPolyData* pd = actorPoly(target.lineActor);
-    if (!line_sub_id_arr_ && pd)
+    if (!line_sub_id_arr_ && target.lineSubIdArr)
+        line_sub_id_arr_ = const_cast<vtkDataArray*>(target.lineSubIdArr);
+    else if (!line_sub_id_arr_ && pd)
         line_sub_id_arr_ = detectSubIdArrayByValue(pd, subId, "LinePd");
 
     applyHighlight();
@@ -673,7 +692,7 @@ void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFacto
             picker_->SetSelectionMode(oldTarget.polyActor, kSelFace, false);
             picker_->SetSelectionMode(oldTarget.polyActor, kSelEdge, false);
             picker_->SetSelectionMode(oldTarget.polyActor, kSelVertex, false);
-        }
+    }
         if (oldTarget.lineActor) {
             picker_->SetSelectionMode(oldTarget.lineActor, kSelFace, false);
             picker_->SetSelectionMode(oldTarget.lineActor, kSelEdge, false);
@@ -710,7 +729,7 @@ void GeometryVertexSelectorHighlight::configurePicker()
         picker_->SetSelectionMode(target.polyActor, kSelFace, false);
         picker_->SetSelectionMode(target.polyActor, kSelEdge, false);
         picker_->SetSelectionMode(target.polyActor, kSelVertex, false);
-    }
+}
 
     picker_->SetSelectionMode(target.lineActor, kSelVertex, true);
     picker_->SetSelectionMode(target.lineActor, kSelEdge, false);
@@ -843,7 +862,9 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
     }
 
     vtkPolyData* pd = actorPoly(target.polyActor);
-    if (!face_sub_id_arr_ && pd)
+    if (!face_sub_id_arr_ && target.polySubIdArr)
+        face_sub_id_arr_ = const_cast<vtkDataArray*>(target.polySubIdArr);
+    else if (!face_sub_id_arr_ && pd)
         face_sub_id_arr_ = detectSubIdArrayByValue(pd, subId, "SolidPd");
 
     applyHighlight();

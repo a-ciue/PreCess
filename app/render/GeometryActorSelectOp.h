@@ -2,6 +2,7 @@
 #define GEOMETRY_ACTOR_SELECT_OP_H
 #include <memory>
 #include <optional>
+#include <vtkDataArray.h>
 #include <vtkProp.h>
 
 #include "GeometryActor.h"
@@ -30,6 +31,8 @@ public:
     vtkProp& getLineActor();
     const OccShapeHandle& getOccShape();
     const GeometrySubshapeIndex* getGeometryIndex();
+    const vtkDataArray* getLineSubIdArray() const;
+    const vtkDataArray* getPolySubIdArray() const;
 
 private:
     std::shared_ptr<const GeometryActor> geometry_actor_;

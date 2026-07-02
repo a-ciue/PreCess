@@ -4,8 +4,10 @@
 #include "GeometryDataVtk.h"
 #include "GeometrySubshapeIndex.h"
 #include <vtkActor.h>
+#include <vtkDataArray.h>
 #include <vtkNew.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkSmartPointer.h>
 
 #include <Standard_Handle.hxx>
 #include <IVtkOCC_Shape.hxx>
@@ -32,6 +34,8 @@ public:
     const vtkActor* lineActor() const noexcept;
     const OccShapeHandle& getOccShape() const;
     const GeometrySubshapeIndex* geometryIndex() const noexcept;
+    const vtkDataArray* lineSubIdArray() const noexcept;
+    const vtkDataArray* polySubIdArray() const noexcept;
 
 private:
     void deleteGeometryActor();
@@ -45,6 +49,8 @@ private:
     vtkNew<vtkActor> poly_actor_;
     vtkNew<vtkActor> line_actor_;
     vtkRenderer* renderer_;
+    vtkSmartPointer<vtkDataArray> line_sub_id_array_;
+    vtkSmartPointer<vtkDataArray> poly_sub_id_array_;
 };
 
 #endif
