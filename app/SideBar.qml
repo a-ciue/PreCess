@@ -294,6 +294,13 @@ Item{
             Text{
                 id:nametext
                 text: model.name
+                Layout.preferredWidth: 120
+                elide: Text.ElideRight
+                ToolTip.visible: nameHover.hovered && model.description.length > 0
+                ToolTip.text: model.description
+                HoverHandler {
+                    id: nameHover
+                }
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -304,6 +311,9 @@ Item{
                 id:fileText
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
+                placeholderText: model.description
+                ToolTip.visible: hovered && model.description.length > 0
+                ToolTip.text: model.description
                 
                 Component.onCompleted: {
                     fileText.text = root.loadParameter(index, model, model.content)

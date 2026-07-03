@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cctype>
 #include <exception>
 #include <memory>
 #include <queue>
@@ -58,6 +59,25 @@ std::string makeTetGenSwitches(bool preserve_surface,
         switches += "Y";
     }
     switches += "Q";
+    return switches;
+}
+
+/**
+ * @brief 清理用户输入的附加 TetGen switches，移除空白和开头的 '-'
+ * @param switches 用户输入的纯 switches 文本
+ * @return 可追加到 TetGen switches 的文本
+ */
+std::string sanitizeExtraTetGenSwitches(std::string switches)
+{
+    switches.erase(
+        std::remove_if(switches.begin(), switches.end(), [](unsigned char ch) {
+            return std::isspace(ch);
+        }),
+        switches.end());
+
+    while (!switches.empty() && switches.front() == '-') {
+        switches.erase(switches.begin());
+    }
     return switches;
 }
 
@@ -389,7 +409,7 @@ std::unique_ptr<MeshData> buildMeshDataFromTetGenOutput(const tetgenio& output)
 
 std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const std::vector<core::ArgObject>& args)
 {
-    if (args.size() < 5) {
+    if (args.size() < 7) {
         spdlog::error("TetGenLibHandler: Not enough arguments provided.");
         return {};
     }
@@ -399,9 +419,12 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
     const double* max_volume = args[2].get<ArgTypeEnum::Float>();
     const int* preserve_surface_idx = args[3].get<ArgTypeEnum::Combo>();
     const int* detect_intersections_idx = args[4].get<ArgTypeEnum::Combo>();
+    const int* output_mode_idx = args[5].get<ArgTypeEnum::Combo>();
+    const std::string* extra_switches = args[6].get<ArgTypeEnum::Text>();
     if (!largest_shell_idx || *largest_shell_idx < 0 || !quality_bound || !max_volume
         || !preserve_surface_idx || *preserve_surface_idx < 0
-        || !detect_intersections_idx || *detect_intersections_idx < 0) {
+        || !detect_intersections_idx || *detect_intersections_idx < 0
+        || !output_mode_idx || *output_mode_idx < 0 || !extra_switches) {
         spdlog::error("TetGenLibHandler: Invalid arguments.");
         return {};
     }
@@ -426,6 +449,10 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         detect_intersections_only,
         *quality_bound,
         *max_volume);
+    std::string sanitized_extra_switches = sanitizeExtraTetGenSwitches(*extra_switches);
+    if (!sanitized_extra_switches.empty()) {
+        switches += sanitized_extra_switches;
+    }
     spdlog::debug("TetGenLibHandler: tetrahedralize switches: {}", switches);
 
     try {
@@ -451,14 +478,20 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         return {};
     }
 
-    auto output_component = std::make_unique<ComponentData>();
+    const bool create_new_model = *output_mode_idx == 0;
     std::string result_model_name = makeResultModelName(input_component, *quality_bound, *max_volume, preserve_surface, use_largest_surface_shell);
-    output_component->name = result_model_name;
-    output_component->mesh = std::move(output_mesh);
+    if (create_new_model) {
+        auto output_component = std::make_unique<ComponentData>();
+        output_component->name = result_model_name;
+        output_component->mesh = std::move(output_mesh);
 
-    ComponentDatas components;
-    components.push_back(std::move(output_component));
-    context.cur_component.manager().addModel(result_model_name, std::move(components));
+        ComponentDatas components;
+        components.push_back(std::move(output_component));
+        context.cur_component.manager().addModel(result_model_name, std::move(components));
+    } else if (!context.cur_component.manager().replaceComponentMesh(context.cur_component.componentId(), std::move(output_mesh))) {
+        spdlog::error("TetGenLibHandler: failed to replace mesh for component {}", context.cur_component.componentId());
+        return {};
+    }
 
     return {};
 }
@@ -470,6 +503,14 @@ std::vector<core::ArgType> systems::algo::TetGenLibHandler::args_type() const
         core::ArgType { ArgTypeEnum::Float, "质量参数 q（0表示关闭）", "1.2" },
         core::ArgType { ArgTypeEnum::Float, "最大单元体积 a（0表示关闭）", "0" },
         core::ArgType { ArgTypeEnum::Combo, "是否保留原始表面", "是,否" },
-        core::ArgType { ArgTypeEnum::Combo, "是否仅检测自交", "是,否" },
+        core::ArgType { ArgTypeEnum::Combo, "是否仅检测自交", "是,否|1" },
+        core::ArgType { ArgTypeEnum::Combo,
+            "输出方式",
+            "新建模型,替换当前模型",
+            "默认新建模型；选择替换时仅替换当前 Component 的 mesh，保留 geometry 等其他数据。" },
+        core::ArgType { ArgTypeEnum::Text,
+            "高级 TetGen 参数",
+            "",
+            "追加到自动参数后，例如 O2T1e-8M；holes、regions、background mesh 等需额外数据，不能仅靠 switches 生效。" },
     };
 }

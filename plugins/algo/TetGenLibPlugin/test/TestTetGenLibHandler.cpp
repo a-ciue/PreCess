@@ -5,6 +5,7 @@
 #include "TetGenLibHandler.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <string>
 #include <vector>
 
 using namespace systems::algo;
@@ -15,7 +16,7 @@ TEST_CASE("TetGenLibHandler::args_type() returns correct parameter count and typ
     TetGenLibHandler handler;
     auto args = handler.args_type();
 
-    REQUIRE(args.size() == 5);
+    REQUIRE(args.size() == 7);
 
     SECTION("Parameter 0: Combo - 是否仅使用最大表面壳")
     {
@@ -49,6 +50,23 @@ TEST_CASE("TetGenLibHandler::args_type() returns correct parameter count and typ
     {
         CHECK(args[4].type == ArgTypeEnum::Combo);
         CHECK(args[4].name == "是否仅检测自交");
-        CHECK(args[4].content == "是,否");
+        CHECK(args[4].content == "是,否|1");
     }
+
+    SECTION("Parameter 5: Combo - 输出方式")
+    {
+        CHECK(args[5].type == ArgTypeEnum::Combo);
+        CHECK(args[5].name == "输出方式");
+        CHECK(args[5].content == "新建模型,替换当前模型");
+        CHECK(args[5].desc.find("默认新建模型") != std::string::npos);
+    }
+
+    SECTION("Parameter 6: Text - 高级 TetGen 参数")
+    {
+        CHECK(args[6].type == ArgTypeEnum::Text);
+        CHECK(args[6].name == "高级 TetGen 参数");
+        CHECK(args[6].content == "");
+        CHECK(args[6].desc.find("仅靠 switches") != std::string::npos);
+    }
+
 }

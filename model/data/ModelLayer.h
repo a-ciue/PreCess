@@ -16,6 +16,7 @@
 #include "MeshIDMap.h"
 
 #include <array>
+#include <memory>
 #include <vector>
 #include <unordered_map>
 #include <optional>
@@ -56,6 +57,13 @@ public:
      */
     void removeModel(Index model_id);
     void removeComponent(Index component_id);
+    /**
+     * @brief 替换指定 Component 的网格数据，并维护全局点索引和边 ID 映射
+     * @param component_id 目标 Component ID
+     * @param mesh 新网格数据
+     * @return 是否替换成功
+     */
+    bool replaceComponentMesh(Index component_id, std::unique_ptr<MeshData> mesh);
 
     /**
      * @brief 获取指定模型的操作接口对象
