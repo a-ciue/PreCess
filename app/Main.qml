@@ -1,10 +1,12 @@
 /**
  * @file Main.qml
- * @brief 程序的交互主界面
+ * @brief 程序的交互主界面，使用 KDDockWidgets 可停靠窗口架构
  *
- * @sa QSelectingBar.qml
- * @sa QSelector.qml
- * @sa QSideBar.qml
+ * @sa ObjectTree.qml
+ * @sa Selector.qml
+ * @sa SideBar.qml
+ * @sa CentralRenderArea.qml
+ * @sa JavaScriptConsole.qml
  */
 
 import QtQuick
@@ -13,6 +15,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 import QtQuick.Controls.Fusion
+
+import com.kdab.dockwidgets as KDDW
 
 import app.model
 import app.core
@@ -28,17 +32,6 @@ ApplicationWindow {
     height: 600
     visibility: Window.Maximized
     title: qsTr("PreCess")
-
-    // 控制台可视化全局参数
-    property bool consoleVisible: false
-
-    // 使用Shortcut组件代替Keys处理，更可靠
-    Shortcut {
-        sequence: "F10"
-        onActivated: {
-            root.consoleVisible = !root.consoleVisible
-        }
-    }
 
     menuBar: MenuBar{
         Menu{
@@ -61,65 +54,76 @@ ApplicationWindow {
             id: editMenu
             title: qsTr("编辑")
             Repeater {
-                model: editSystem.editsInfo
+                model: QModelManager.editSystem.editsInfo
                 MenuItem {
                     text: modelData.display_name
                     onTriggered: {
-                        sideBar.curAlgoInfo = modelData
-                        sideBar.system = editSystem
+                        var info = modelData
+                        App.activeOperation = {
+                            info: info,
+                            execute: function(model, args) { QModelManager.editSystem.call(info.name, model, args) }
+                        }
                     }
                 }
             }
         }
         Menu{
             title: "视图"
+            Action {
+                text: "对象树"
+                checkable: true
+                checked: objectTreeDock.isOpen
+                onToggled: {
+                    if (objectTreeDock.isOpen) objectTreeDock.close()
+                    else objectTreeDock.show()
+                }
+            }
+            Action {
+                text: "属性列表"
+                checkable: true
+                checked: sideBarDock.isOpen
+                onToggled: {
+                    if (sideBarDock.isOpen) sideBarDock.close()
+                    else sideBarDock.show()
+                }
+            }
+            Action {
+                text: "控制台"
+                checkable: true
+                checked: consoleDock.isOpen
+                onToggled: {
+                    if (consoleDock.isOpen) consoleDock.close()
+                    else consoleDock.show()
+                }
+            }
         }
         Menu {
             id: commandMenu
             title: qsTr("算法")
             Repeater {
-                model: algorithmSystem.algorithmsInfo
+                model: QModelManager.algorithmSystem.algorithmsInfo
                 MenuItem {
                     text: modelData.display_name
                     onTriggered: {
-                        sideBar.curAlgoInfo = modelData
-                        sideBar.system = algorithmSystem
+                        var info = modelData
+                        App.activeOperation = {
+                            info: info,
+                            execute: function(model, args) { QModelManager.algorithmSystem.call(info.name, model, args) }
+                        }
                     }
                 }
             }
         }
     }
 
-    required property QModelObserver modelObserver
-    required property QModelManager modelManager
-    required property QModelQuery modelQuery
-    required property QAlgorithmSystemAdaptor algorithmSystem
-    required property QModelIOSystemAdaptor ioSystem
-    required property QEditSystemAdaptor editSystem
-
-    // ===== modelObserver → objectTree / myItem =====
-    Timer {
-        id: refreshTimer
-        interval: 100
-        repeat: false
-        onTriggered: objectTree.refreshTree()
-    }
-
-    function resetSelectionState() {
-        objectTree.curComponentId = -1
-        objectTree.curModelId = -1
-        myItem.setSelectMode("None")
-        myItem.clearSelection()
-    }
-
-    Connections {
-        target: modelObserver
-
-        function onModelAdded(modelId)   { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
-        function onModelChanged(modelId) { refreshTimer.restart(); myItem.onModelChanged(modelId); resetSelectionState() }
-        function onModelRemoved(modelId) { refreshTimer.restart(); myItem.deleteModel(modelId); resetSelectionState() }
-        function onComponentRemoved(componentId) { refreshTimer.restart(); myItem.deleteComponent(componentId); resetSelectionState() }
-        function onComponentChanged(componentId) { refreshTimer.restart(); myItem.onComponentChanged(componentId); resetSelectionState() }
+    Shortcut {
+        sequence: "F10"
+        onActivated: {
+            if (consoleDock.isOpen)
+                consoleDock.close()
+            else
+                consoleDock.show()
+        }
     }
 
     StackLayout{
@@ -129,186 +133,59 @@ ApplicationWindow {
         height: 0
     }
 
-    ObjectTree {
-        id: objectTree
-        anchors.top: stacklayout.bottom
-        anchors.left: parent.left
-        width: 250
-        height: parent.height * 0.5
-        modelQuery: root.modelQuery
+    KDDW.DockingArea {
+        id: dockingArea
+        anchors.fill: parent
+        options: KDDW.KDDockWidgets.MainWindowOption_HasCentralWidget
+        persistentCentralItemFileName: "qrc:/qt/qml/app/CentralRenderArea.qml"
+        uniqueName: "PreCessMainLayout"
 
-        onSelectionChanged: (componentId) => {
-            if (componentId >= 0) {
-                myItem.setSelectComponent(componentId)
-            } else {
-                myItem.clearSelection()
-            }
-        }
-
-        onDeleteRequested: (nodeId, depth) => {
-            if (depth === 0) modelManager.removeModel(nodeId)
-            else if (depth === 1) modelManager.removeComponent(nodeId)
-        }
-
-        onVisibilityChanged: (nodeId, depth, visible) => {
-            if (depth === 0) myItem.setVisibility(nodeId, visible)
-            else if (depth === 1) myItem.setComponentVisibility(nodeId, visible)
-        }
-    }
-
-    SideBar{
-        id: sideBar
-        curComponent: objectTree.curComponentId
-        confirm_listener: selector.confirm_listener
-        anchors.top: objectTree.bottom
-        anchors.left: parent.left
-        anchors.right: myItemRectangle.left
-        anchors.bottom: parent.bottom
-        width: 250
-        onSelectModeChanged:{         //应该加上参数以判断是哪一个选择器选择的对象
-            selector.changeEnable()
-        }
-        onCancleCommand:{
-            m.clear()
-        }
-    }
-
-    Page {
-        id: myItemRectangle
-        anchors.bottom:parent.bottom
-        anchors.top:stacklayout.bottom
-        anchors.left:objectTree.right
-        anchors.right:parent.right
-        Rectangle {
-            id: borderRectangle
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            height: myItemRectangle.height - 25
-            border.color: "black"
-            border.width: 3
-            color: "transparent"
-        }
-
-        Page{
-            id: renderWindowPage
-            anchors.fill: parent
-            background: null  // 移除Page的默认背景
-            footer: ToolBar{
-                height: 25
-                RowLayout{
-                    anchors.fill: parent
-                    ToolButton{
-                        text: "边渲染"
-                        checkable: true
-                        checked: myItem.cur_edge_render
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            myItem.setEdgeRender(objectTree.curModelId, !myItem.cur_edge_render)
-                        }
-                    }
-                    ToolButton{
-                        text: "块渲染"
-                        checkable: true
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            if (checked) {
-                                myItem.setRenderMode(objectTree.curModelId, "Block")
-                            } else {
-                                myItem.setRenderMode(objectTree.curModelId, "Face")
-                            }
-                        }
-                    }
-                    ToolButton{
-                        text: "裁剪"
-                        checkable: true
-                        Layout.preferredWidth: 50
-                        Layout.fillHeight: true
-                        onClicked:{
-                            if (checked) {
-                                myItem.setMeshClip(true)
-                            } else {
-                                myItem.setMeshClip(false)
-                            }
-                        }
-                    }
-                    Label{
-                        Layout.fillWidth: true
-                    }
-                }
-            }
-
-            QRenderWindow {
-                id: myItem
+        KDDW.DockWidget {
+            id: objectTreeDock
+            uniqueName: "objectTree"
+            title: "对象树"
+            ObjectTree {
                 anchors.fill: parent
-                anchors.margins: 3  // 调整边距，与border.width对应
-                query: modelQuery
             }
         }
 
-        Selector{
-            id:selector
-            cur_model: objectTree.curComponentId
-            anchors.top:  renderWindowPage.top
-            anchors.left: renderWindowPage.left
-            anchors.topMargin: 10
-            anchors.leftMargin: 10
-
-            onClearButtonClicked:{
-                clearSelection()
+        KDDW.DockWidget {
+            id: sideBarDock
+            uniqueName: "sideBar"
+            title: "属性列表"
+            SideBar {
+                anchors.fill: parent
             }
+        }
 
-            onConfirmButtonClicked: {
-                selector.selection = myItem.selectedIDs
+        KDDW.DockWidget {
+            id: consoleDock
+            uniqueName: "console"
+            title: "控制台"
+
+            JavaScriptConsole {
+                anchors.fill: parent
+                onCloseRequested: consoleDock.close()
             }
+        }
 
-            function clearSelection(){
-                myItem.clearSelection()
-            }
-
-            function bindFunction(selectType){
-                if(selectType === "..."){
-                    myItem.setSelectMode("None")
-                }
-                if(selectType === "点"){
-                    myItem.setSelectMode("Vertex")
-                }
-                if(selectType === "边"){
-                    myItem.setSelectMode("Edge")
-                }
-                if(selectType === "面"){
-                    myItem.setSelectMode("Face")
-                }
-                if(selectType === "块"){
-                    myItem.setSelectMode("Block")
-                }
-                if(selectType === "体"){
-                    myItem.setSelectMode("Solid")
-                }
-            }
-
-            function changeEnable(){}
-
-            onComboBoxSelectionChanged:{
-                bindFunction(comboBoxSelectedString)
-            }
-
-            Component.onCompleted:{
-                selector.comboBoxSelectionChanged()
-            }
+        Component.onCompleted: {
+            addDockWidget(objectTreeDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
+            addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
+            addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
         }
     }
 
+    KDDW.LayoutSaver { id: layoutSaver }
+    
     //打开文件对话框
     FileDialog {
         id: openPatchDialog
-        nameFilters: ioSystem.dialogNameFilters
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
-                ioSystem.read(selectedNameFilter.name, selectedFile, [])
-                myItem.resetCamera()
+                QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
+                App.registry.renderWindow.resetCamera()
             } else {
                 console.exception("No valid file type selected.")
             }
@@ -318,29 +195,14 @@ ApplicationWindow {
     //保存文件对话框
     FileDialog {
         id: saveFaceDialog
-        nameFilters: ioSystem.dialogNameFilters
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
         fileMode: FileDialog.SaveFile
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
-                ioSystem.write(selectedNameFilter.name, objectTree.curModelId, selectedFile, [])
+                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
             } else {
                 console.exception("No valid file type selected.")
             }
-        }
-    }
-
-    //JavaScript控制台
-    JavaScriptConsole {
-        id: myConsole
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        height: parent.height * 0.3
-        z: 1000  // 确保在最上层显示
-        consoleVisible: root.consoleVisible
-        
-        onCloseRequested: {
-            root.consoleVisible = false
         }
     }
 
@@ -357,20 +219,17 @@ ApplicationWindow {
         PluginManagerComponent {
             id: pluginManagerComponent
             anchors.fill: parent
-            pluginManager: root.modelManager.systemPluginManager
         }
     }
 
     Component.onCompleted: {
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
-                let ok = ioSystem.read("All files", commandLineArgs[i], []);
+                let ok = QModelManager.ioSystem.read("All files", commandLineArgs[i], [])
                 if (!ok) {
                     console.exception("启动打开失败: " + commandLineArgs[i]);
                 }
             }
-
-            myItem.resetCamera();
-        });
+        })
     }
 }
