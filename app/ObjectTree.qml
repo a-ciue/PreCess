@@ -3,39 +3,55 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Basic
 import QtQuick.Layouts 1.15
 
-Pane{
+import app.core
+import app.model
+
+Pane {
     id: objectTree
     padding: 0
-
-    required property var modelQuery
-    property int curModelId: -1
-    property int curComponentId: -1
-
-    signal selectionChanged(int componentId)
-    signal deleteRequested(int nodeId, int depth)
-    signal visibilityChanged(int nodeId, int depth, bool visible)
+    clip: true
 
     TreeModel {
         id: treeModel
-        modelQuery: objectTree.modelQuery
+        modelQuery: QModelManager.query
     }
 
-    function refreshTree() {
-        treeModel.refresh()
+    Timer {
+        id: refreshTimer
+        interval: 100
+        repeat: false
+        onTriggered: {
+            treeModel.refresh()
+            App.selection.activeComponentId = -1
+            App.selection.activeModelId = -1
+        }
+    }
+
+    Connections {
+        target: QModelManager.observer
+        function onModelAdded(modelId)   { refreshTimer.restart() }
+        function onModelChanged(modelId) { refreshTimer.restart() }
+        function onModelRemoved(modelId) { refreshTimer.restart() }
+        function onComponentRemoved(componentId) { refreshTimer.restart() }
+        function onComponentChanged(componentId) { refreshTimer.restart() }
     }
 
     TreeView {
-        id:treeView
+        id: treeView
         anchors.fill: parent
         model: treeModel
         columnSpacing: 0
+        clip: true
+        flickDeceleration: 100000
+        boundsBehavior: Flickable.StopAtBounds
+        columnWidthProvider: function(column) { return treeView.width }
 
         property int toggleExpandRow: -1
         onExpanded: (row, depth) => toggleExpandRow = row
         onCollapsed: (row, recursively) => toggleExpandRow = row
 
         delegate: TreeViewDelegate {
-            id:viewDelegate
+            id: viewDelegate
             width: treeView.width
             height: 20
 
@@ -85,48 +101,46 @@ Pane{
                 Text {
                     anchors.centerIn: parent
                     text: "▼"
-                    color: "black"
+                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
                     font.pixelSize: 10
                 }
             }
 
             // 内容区域
-            contentItem: Item {
-                implicitWidth: textContent.implicitWidth + viewDelegate._padding
-                implicitHeight: viewDelegate._rowHeight
+            contentItem: RowLayout {
+                spacing: 4
 
-                Row {
-                    id: textContent
-                    anchors.left: parent.left
-                    anchors.leftMargin: viewDelegate._padding + 2
-                    anchors.right: parent.right
-                    anchors.rightMargin: viewDelegate._padding
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 4
+                Text {
+                    id: nameText
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: implicitWidth
+                    Layout.leftMargin: viewDelegate._padding + 2
+                    text: viewDelegate.model.name || "N/A"
+                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
+                    font.pixelSize: 13
+                    font.family: "Consolas"
+                    font.weight: viewDelegate.current ? Font.Bold : Font.Normal
+                    font.italic: !viewDelegate.model.isVisible
+                    elide: Text.ElideRight
 
-                    Text {
-                        id: nameText
-                        text: viewDelegate.model.name || "N/A"
-                        color: {
-                            if (!viewDelegate.model.isVisible) return "#aaaaaa"
-                            return "black"
-                        }
-                        font.pixelSize: 13
-                        font.family: "Consolas"
-                        font.weight: viewDelegate.current ? Font.Bold : Font.Normal
-                        font.italic: !viewDelegate.model.isVisible
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
+                    ToolTip {
+                        visible: nameText.truncated && viewDelegate.hovered
+                        text: nameText.text
+                        delay: 300
                     }
+                }
 
-                    Text {
-                        id: valueText
-                        text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
-                        color: "black"
-                        font.pixelSize: 11
-                        visible: text !== ""
-                        verticalAlignment: Text.AlignVCenter
-                    }
+                Text {
+                    id: valueText
+                    text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
+                    visible: text !== ""
+                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
+                    font.pixelSize: 11
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.rightMargin: 10
                 }
             }
 
@@ -137,8 +151,6 @@ Pane{
                 onClicked: (mouse) => {
                     if (mouse.button === Qt.RightButton) {
                         if (viewDelegate.depth > 1) return
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                         contextMenu.popup()
                     } else {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
@@ -146,14 +158,12 @@ Pane{
 
                         if (viewDelegate.current || compId < 0) {
                             viewDelegate.treeView.selectionModel.clear()
-                            objectTree.curModelId = -1
-                            objectTree.curComponentId = -1
-                            objectTree.selectionChanged(-1)
+                            App.selection.activeComponentId = -1
+                            App.selection.activeModelId = -1
                         } else if (idx.valid) {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
-                            objectTree.curComponentId = compId
-                            objectTree.curModelId = modelQuery.findModelIdByComponent(compId)
-                            objectTree.selectionChanged(compId)
+                            App.selection.activeComponentId = compId
+                            App.selection.activeModelId = QModelManager.query.findModelIdByComponent(compId)
                         }
                     }
                 }
@@ -190,8 +200,11 @@ Pane{
 
                     onTriggered: {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        treeModel.setVisibility(idx.row, idx.parent, false)
-                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.depth, false)
+                        treeModel.setVisibility(idx, false)
+                        if (viewDelegate.depth === 0)
+                            App.modelVisibilityUpdated(viewDelegate.model.nodeId, false)
+                        else
+                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, false)
                     }
                 }
 
@@ -215,8 +228,11 @@ Pane{
 
                     onTriggered: {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        treeModel.setVisibility(idx.row, idx.parent, true)
-                        objectTree.visibilityChanged(viewDelegate.model.nodeId, viewDelegate.depth, true)
+                        treeModel.setVisibility(idx, true)
+                        if (viewDelegate.depth === 0)
+                            App.modelVisibilityUpdated(viewDelegate.model.nodeId, true)
+                        else
+                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, true)
                     }
                 }
 
@@ -243,10 +259,10 @@ Pane{
                     onTriggered: {
                         viewDelegate.treeView.selectionModel.clear()
                         contextMenu.close()
-                        objectTree.deleteRequested(
-                            viewDelegate.model.nodeId,
-                            viewDelegate.depth
-                        )
+                        if (viewDelegate.depth === 0)
+                            QModelManager.removeModel(viewDelegate.model.nodeId)
+                        else
+                            QModelManager.removeComponent(viewDelegate.model.nodeId)
                     }
                 }
             }
@@ -266,5 +282,9 @@ Pane{
                 color: parent.hovered ? "#c0c0c0" : "#e0e0e0"
             }
         }
+    }
+
+    Component.onCompleted: {
+        App.registry.treeModel = treeModel
     }
 }

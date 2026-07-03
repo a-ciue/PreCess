@@ -4,6 +4,7 @@
 #include <QVariant>
 #include <QVector>
 #include <QtQml/qqmlregistration.h>
+#include <unordered_map>
 
 #include "QModelQuery.h"
 
@@ -50,7 +51,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE bool refresh();
-    Q_INVOKABLE bool setVisibility(int row, const QModelIndex& parent, bool visible);
+    Q_INVOKABLE bool setVisibility(const QModelIndex& idx, bool visible);
     Q_INVOKABLE QModelIndex findIndexByNodeId(int nodeId, int depth) const;
 
     QObject* getModelQuery() const { return modelQuery_; }
@@ -58,7 +59,11 @@ public:
 
 private:
     TreeNode* getNode(const QModelIndex& index) const;
+    void emitDescendantDataChanged(const QModelIndex& parentIndex);
+    void setNodeVisibility(TreeNode* node, bool visible);
+    void syncSubNodes(TreeNode* node);
 
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;
+    std::unordered_map<int, bool> components_visibility_;
 };
