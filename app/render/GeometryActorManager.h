@@ -15,7 +15,7 @@ public:
     ~GeometryActorManager();
     void bindRender(vtkRenderer* renderer);
 
-    std::shared_ptr<const GeometryActor> getComponentActor(Index component_id) const;
+    std::shared_ptr<GeometryActor> getComponentActor(Index component_id) const;
     GeometryRenderMode getGeometryRenderMode(Index component_id);
     bool getIsEdgeRender(Index component_id);
     bool hasComponent(Index component_id) const;

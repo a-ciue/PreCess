@@ -1,8 +1,10 @@
 #include "GeometryActorSelectOp.h"
 #include "GeometryActor.h"
+#include <vtkActor.h>
+#include <IVtkTools_SubPolyDataFilter.hxx>
 
 GeometryActorSelectOpFactory::GeometryActorSelectOpFactory() = default;
-GeometryActorSelectOpFactory::GeometryActorSelectOpFactory(std::weak_ptr<const GeometryActor> geometry_actor)
+GeometryActorSelectOpFactory::GeometryActorSelectOpFactory(std::weak_ptr<GeometryActor> geometry_actor)
     : geometry_actor_(geometry_actor)
 {
 }
@@ -15,7 +17,7 @@ std::optional<GeometryActorSelectOp> GeometryActorSelectOpFactory::lock()
     return {};
 }
 
-GeometryActorSelectOp::GeometryActorSelectOp(std::shared_ptr<const GeometryActor> geometry_actor)
+GeometryActorSelectOp::GeometryActorSelectOp(std::shared_ptr<GeometryActor> geometry_actor)
     : geometry_actor_(geometry_actor)
 {
     if (!geometry_actor_) {
@@ -25,12 +27,32 @@ GeometryActorSelectOp::GeometryActorSelectOp(std::shared_ptr<const GeometryActor
 
 vtkProp& GeometryActorSelectOp::getPolyActor()
 {
-    return *const_cast<vtkActor*>(geometry_actor_->polyActor());
+    return *geometry_actor_->polyActor();
 }
 
 vtkProp& GeometryActorSelectOp::getLineActor()
 {
-    return *const_cast<vtkActor*>(geometry_actor_->lineActor());
+    return *geometry_actor_->lineActor();
+}
+
+vtkActor& GeometryActorSelectOp::getPolyHLActor()
+{
+    return *geometry_actor_->polyHLActor();
+}
+
+vtkActor& GeometryActorSelectOp::getLineHLActor()
+{
+    return *geometry_actor_->lineHLActor();
+}
+
+IVtkTools_SubPolyDataFilter& GeometryActorSelectOp::getPolyHLFilter()
+{
+    return *geometry_actor_->polyHLFilter();
+}
+
+IVtkTools_SubPolyDataFilter& GeometryActorSelectOp::getLineHLFilter()
+{
+    return *geometry_actor_->lineHLFilter();
 }
 
 const OccShapeHandle& GeometryActorSelectOp::getOccShape()

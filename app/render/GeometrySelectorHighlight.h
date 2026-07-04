@@ -9,7 +9,8 @@
 #include <IVtkTools_ShapePicker.hxx>
 
 class vtkRenderer;
-class vtkDataArray;
+class vtkActor;
+class IVtkTools_SubPolyDataFilter;
 class IVtkTools_ShapePicker;
 struct GeometrySubshapeIndex;
 
@@ -39,16 +40,12 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void applyHighlight();
-    void ensureTargetInit();
     void configurePicker() override;
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-
-    vtkSmartPointer<vtkDataArray> face_sub_id_arr_;
-    unsigned char face_base_[3] { 200, 200, 200 };
-    bool target_initialized_ { false };
+    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
+    vtkActor* hl_actor_ { nullptr };
 
     std::unordered_map<IVtk_IdType, Index> selections_;
 };
@@ -63,16 +60,12 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void applyHighlight();
-    void ensureTargetInit();
     void configurePicker() override;
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-
-    vtkSmartPointer<vtkDataArray> line_sub_id_arr_;
-    unsigned char line_base_[3] { 0, 0, 0 };
-    bool target_initialized_ { false };
+    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
+    vtkActor* hl_actor_ { nullptr };
 
     std::unordered_map<IVtk_IdType, Index> selections_;
 };
@@ -87,16 +80,12 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void applyHighlight();
-    void ensureTargetInit();
     void configurePicker() override;
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-
-    vtkSmartPointer<vtkDataArray> line_sub_id_arr_;
-    unsigned char line_base_[3] { 0, 0, 0 };
-    bool target_initialized_ { false };
+    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
+    vtkActor* hl_actor_ { nullptr };
 
     std::unordered_map<IVtk_IdType, Index> selections_;
 };
@@ -111,16 +100,12 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void applyHighlight();
-    void ensureTargetInit();
     void configurePicker() override;
 
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-
-    vtkSmartPointer<vtkDataArray> face_sub_id_arr_;
-    unsigned char face_base_[3] { 200, 200, 200 };
-    bool target_initialized_ { false };
+    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
+    vtkActor* hl_actor_ { nullptr };
 
     std::unordered_map<IVtk_IdType, Index> selections_;
     std::unordered_set<IVtk_IdType> highlighted_face_ids_;

@@ -21,7 +21,7 @@ void GeometrySelectManager::select(double posx, double posy)
     }
 }
 
-void GeometrySelectManager::setSelectActor(std::weak_ptr<const GeometryActor> geom_actor)
+void GeometrySelectManager::setSelectActor(std::weak_ptr<GeometryActor> geom_actor)
 {
     this->cur_geom_actor_ = GeometryActorSelectOpFactory { geom_actor };
     if (this->selector_) {
@@ -72,6 +72,11 @@ void GeometrySelectManager::clearSelection()
 std::unique_ptr<Selection> GeometrySelectManager::getSelection()
 {
     std::unique_ptr<Selection> selection = std::make_unique<Selection>();
+    
+    if (!this->selector_) 
+    {
+        return nullptr;
+    }
 
     if (this->select_mode_ == SelectMode::Vertex) {
         for (const auto& id : this->selector_->get().ids) {

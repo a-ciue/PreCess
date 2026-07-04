@@ -11,6 +11,7 @@
 
 #include <Standard_Handle.hxx>
 #include <IVtkOCC_Shape.hxx>
+#include <IVtkTools_SubPolyDataFilter.hxx>
 typedef Handle(IVtkOCC_Shape) OccShapeHandle;
 
 class GeometryActor {
@@ -32,6 +33,14 @@ public:
     const vtkActor* polyActor() const noexcept;
     vtkActor* lineActor() noexcept;
     const vtkActor* lineActor() const noexcept;
+    vtkActor* polyHLActor() noexcept;
+    const vtkActor* polyHLActor() const noexcept;
+    vtkActor* lineHLActor() noexcept;
+    const vtkActor* lineHLActor() const noexcept;
+    IVtkTools_SubPolyDataFilter* polyHLFilter() noexcept;
+    const IVtkTools_SubPolyDataFilter* polyHLFilter() const noexcept;
+    IVtkTools_SubPolyDataFilter* lineHLFilter() noexcept;
+    const IVtkTools_SubPolyDataFilter* lineHLFilter() const noexcept;
     const OccShapeHandle& getOccShape() const;
     const GeometrySubshapeIndex* geometryIndex() const noexcept;
     const vtkDataArray* lineSubIdArray() const noexcept;
@@ -51,6 +60,13 @@ private:
     vtkRenderer* renderer_;
     vtkSmartPointer<vtkDataArray> line_sub_id_array_;
     vtkSmartPointer<vtkDataArray> poly_sub_id_array_;
+
+    vtkSmartPointer<IVtkTools_SubPolyDataFilter> poly_hl_filter_;
+    vtkSmartPointer<IVtkTools_SubPolyDataFilter> line_hl_filter_;
+    vtkSmartPointer<vtkPolyDataMapper> poly_hl_mapper_;
+    vtkSmartPointer<vtkPolyDataMapper> line_hl_mapper_;
+    vtkSmartPointer<vtkActor> poly_hl_actor_;
+    vtkSmartPointer<vtkActor> line_hl_actor_;
 };
 
 #endif

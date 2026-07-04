@@ -80,7 +80,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->plane_widget_->SetInteractor(renderWindow->GetInteractor());
     vtk->plane_widget_->SetRepresentation(rep);
     vtk->plane_widget_->AddObserver(vtkCommand::InteractionEvent, callback);
-    
+
     return vtk;
 }
 
@@ -229,12 +229,12 @@ void QRenderWindow::onModelChanged(Index model_id)
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
                 vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
-    }
+            }
 
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
                 vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
-}
+            }
         }
     });
 }
@@ -361,7 +361,7 @@ void QRenderWindow::setSelectComponent(Index component_id)
         else
             selectManager_->setSelectActor({});
 
-        std::shared_ptr<const GeometryActor> geometry_actor;
+        std::shared_ptr<GeometryActor> geometry_actor;
         if (vtk->geometry_actor_manager_->hasComponent(component_id))
             geometry_actor = vtk->geometry_actor_manager_->getComponentActor(component_id);
 
@@ -375,7 +375,6 @@ void QRenderWindow::setSelectComponent(Index component_id)
 void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
         if (select_mode == "Vertex") {
             select_mode_ = SelectMode::Vertex;
             geom_select_mode_ = SelectMode::None;

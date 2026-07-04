@@ -16,7 +16,7 @@ void GeometryActorManager::bindRender(vtkRenderer* renderer)
     this->renderer_ = renderer;
 }
 
-std::shared_ptr<const GeometryActor> GeometryActorManager::getComponentActor(Index component_id) const
+std::shared_ptr<GeometryActor> GeometryActorManager::getComponentActor(Index component_id) const
 {
     auto it = component_actors_.find(component_id);
     if (it != component_actors_.end()) {

@@ -2,7 +2,7 @@
 #include "Core.h"
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <TopoDS_Shape.hxx>
-#include <vtkPointData.h>
+#include <TopExp_Explorer.hxx>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
@@ -11,11 +11,8 @@
 #include <vtkIdTypeArray.h>
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
-#include <vtkUnsignedCharArray.h>
 #include <vtkCellData.h>
 
-#include <algorithm>
-#include <cmath>
 #include <cstring>
 #include <spdlog/spdlog.h>
 
@@ -123,6 +120,9 @@ bool GeometryActor::getIsEdgeRender()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
+    // 全局：开一次
+    vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
+
     OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
     aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     this->occ_shape_ = aShapeImpl;
@@ -177,69 +177,87 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_sub_id_array_ = findSubIdArray(line_only, occ_shape_);
     poly_sub_id_array_ = findSubIdArray(poly_only, occ_shape_);
 
-    auto EnsureCellRgbScalars = [](vtkPolyData* pd, const unsigned char rgb[3]) -> vtkUnsignedCharArray* {
-        if (!pd)
-            return nullptr;
-        vtkCellData* cd = pd->GetCellData();
-        if (!cd)
-            return nullptr;
-
-        vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(cd->GetScalars());
-        if (!colors || colors->GetNumberOfComponents() != 3 || colors->GetNumberOfTuples() != pd->GetNumberOfCells()) {
-            vtkNew<vtkUnsignedCharArray> c;
-            c->SetName("CellColors");
-            c->SetNumberOfComponents(3);
-            c->SetNumberOfTuples(pd->GetNumberOfCells());
-            colors = c.GetPointer();
-            cd->SetScalars(c);
-        }
-
-        for (vtkIdType i = 0; i < pd->GetNumberOfCells(); ++i)
-            colors->SetTypedTuple(i, rgb);
-
-        colors->Modified();
-        pd->GetCellData()->Modified();
-        pd->Modified();
-        return colors;
-    };
-
-    unsigned char faceBase[3] = { 200, 200, 200 };
-    if (this->poly_actor_ && this->poly_actor_->GetProperty()) {
-        double c[3];
-        this->poly_actor_->GetProperty()->GetColor(c);
-        faceBase[0] = static_cast<unsigned char>(std::clamp(static_cast<int>(std::lround(c[0] * 255.0)), 0, 255));
-        faceBase[1] = static_cast<unsigned char>(std::clamp(static_cast<int>(std::lround(c[1] * 255.0)), 0, 255));
-        faceBase[2] = static_cast<unsigned char>(std::clamp(static_cast<int>(std::lround(c[2] * 255.0)), 0, 255));
+    NCollection_Map<IVtk_IdType> edgeVertexIds;
+    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_EDGE); exp.More(); exp.Next()) {
+        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
+        if (id >= 0) edgeVertexIds.Add(id);
+    }
+    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_VERTEX); exp.More(); exp.Next()) {
+        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
+        if (id >= 0) edgeVertexIds.Add(id);
     }
 
-    const unsigned char lineBase[3] = { 0, 0, 0 };
-
-    EnsureCellRgbScalars(poly_only, faceBase);
-    EnsureCellRgbScalars(line_only, lineBase);
+    auto lineEdgeFilter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
+    lineEdgeFilter->SetInputData(line_only);
+    lineEdgeFilter->SetDoFiltering(true);
+    if (line_sub_id_array_ && line_sub_id_array_->GetName())
+        lineEdgeFilter->SetIdsArrayName(line_sub_id_array_->GetName());
+    lineEdgeFilter->SetData(edgeVertexIds);
 
     vtkNew<vtkPolyDataMapper> poly_mapper;
     poly_mapper->SetInputData(poly_only);
-    poly_mapper->ScalarVisibilityOn();
-    poly_mapper->SetScalarModeToUseCellData();
-    poly_mapper->SetColorModeToDirectScalars();
+    poly_mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, 0);
 
-    this->poly_actor_->SetMapper(poly_mapper);
-    this->renderer_->AddActor(this->poly_actor_);
+    poly_actor_->SetMapper(poly_mapper);
+    poly_actor_->GetProperty()->SetColor(200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0);
+    renderer_->AddActor(poly_actor_);
+
+    poly_hl_filter_ = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
+    poly_hl_filter_->SetInputData(poly_only);
+    poly_hl_filter_->SetDoFiltering(true);
+    if (poly_sub_id_array_ && poly_sub_id_array_->GetName())
+        poly_hl_filter_->SetIdsArrayName(poly_sub_id_array_->GetName());
+
+    poly_hl_mapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+    poly_hl_mapper_->SetInputConnection(poly_hl_filter_->GetOutputPort());
+    // 相对显示 mapper 默认值：多边形 (0,-1)
+    poly_hl_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
+
+
+    poly_hl_actor_ = vtkSmartPointer<vtkActor>::New();
+    poly_hl_actor_->SetMapper(poly_hl_mapper_);
+    poly_hl_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0);
+    poly_hl_actor_->GetProperty()->SetOpacity(1);
+    poly_hl_actor_->SetVisibility(false);
+    poly_hl_actor_->PickableOff();
+    renderer_->AddActor(poly_hl_actor_);
 
     vtkNew<vtkPolyDataMapper> line_mapper;
-    line_mapper->SetInputData(line_only);
-    line_mapper->ScalarVisibilityOn();
-    line_mapper->SetScalarModeToUseCellData();
-    line_mapper->SetColorModeToDirectScalars();
-    line_mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, -0.1);
+    line_mapper->SetInputConnection(lineEdgeFilter->GetOutputPort());
+    line_mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, 4);
+    line_mapper->SetRelativeCoincidentTopologyPointOffsetParameter(8);
 
-    this->line_actor_->SetMapper(line_mapper);
-    this->line_actor_->GetProperty()->LightingOff();
-    this->line_actor_->GetProperty()->SetLineWidth(2.0);
-    this->line_actor_->GetProperty()->RenderLinesAsTubesOn();
-    this->line_actor_->GetProperty()->SetPointSize(6.0);
+    line_actor_->SetMapper(line_mapper);
+    line_actor_->GetProperty()->LightingOff();
+    line_actor_->GetProperty()->SetLineWidth(2.0);
+    line_actor_->GetProperty()->RenderLinesAsTubesOn();
+    line_actor_->GetProperty()->SetPointSize(6.0);
+    line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
+    renderer_->AddActor(line_actor_);
 
-    this->renderer_->AddActor(this->line_actor_);
+    line_hl_filter_ = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
+    line_hl_filter_->SetInputData(line_only);
+    line_hl_filter_->SetDoFiltering(true);
+    if (line_sub_id_array_ && line_sub_id_array_->GetName())
+        line_hl_filter_->SetIdsArrayName(line_sub_id_array_->GetName());
+
+    line_hl_mapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
+    line_hl_mapper_->SetInputConnection(line_hl_filter_->GetOutputPort());
+    // 相对显示 mapper 默认值：线 (0,-5)，点 (-10)
+    line_hl_mapper_->SetRelativeCoincidentTopologyLineOffsetParameters(0, -1);
+    line_hl_mapper_->SetRelativeCoincidentTopologyPointOffsetParameter(-2);
+
+    line_hl_actor_ = vtkSmartPointer<vtkActor>::New();
+    line_hl_actor_->SetMapper(line_hl_mapper_);
+    line_hl_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0);
+    line_hl_actor_->GetProperty()->SetOpacity(0.5);
+    line_hl_actor_->GetProperty()->RenderLinesAsTubesOn();
+    line_hl_actor_->GetProperty()->SetLineWidth(3.0);
+    line_hl_actor_->GetProperty()->SetPointSize(8.0);
+    line_hl_actor_->GetProperty()->LightingOff();
+    line_hl_actor_->SetVisibility(false);
+    line_hl_actor_->PickableOff();
+    renderer_->AddActor(line_hl_actor_);
 
     spdlog::info("[GeometryActor] component={} actors added, face_cells={} line_cells={}",
         geometry_data.component_id, static_cast<int>(poly_only->GetNumberOfCells()), static_cast<int>(line_only->GetNumberOfCells()));
@@ -250,6 +268,8 @@ void GeometryActor::deleteGeometryActor()
     if (this->renderer_) {
         renderer_->RemoveActor(this->poly_actor_);
         renderer_->RemoveActor(this->line_actor_);
+        renderer_->RemoveActor(this->poly_hl_actor_);
+        renderer_->RemoveActor(this->line_hl_actor_);
     }
 }
 
@@ -308,4 +328,44 @@ const vtkDataArray* GeometryActor::lineSubIdArray() const noexcept
 const vtkDataArray* GeometryActor::polySubIdArray() const noexcept
 {
     return poly_sub_id_array_.GetPointer();
+}
+
+vtkActor* GeometryActor::polyHLActor() noexcept
+{
+    return poly_hl_actor_.GetPointer();
+}
+
+const vtkActor* GeometryActor::polyHLActor() const noexcept
+{
+    return poly_hl_actor_.GetPointer();
+}
+
+vtkActor* GeometryActor::lineHLActor() noexcept
+{
+    return line_hl_actor_.GetPointer();
+}
+
+const vtkActor* GeometryActor::lineHLActor() const noexcept
+{
+    return line_hl_actor_.GetPointer();
+}
+
+IVtkTools_SubPolyDataFilter* GeometryActor::polyHLFilter() noexcept
+{
+    return poly_hl_filter_.GetPointer();
+}
+
+const IVtkTools_SubPolyDataFilter* GeometryActor::polyHLFilter() const noexcept
+{
+    return poly_hl_filter_.GetPointer();
+}
+
+IVtkTools_SubPolyDataFilter* GeometryActor::lineHLFilter() noexcept
+{
+    return line_hl_filter_.GetPointer();
+}
+
+const IVtkTools_SubPolyDataFilter* GeometryActor::lineHLFilter() const noexcept
+{
+    return line_hl_filter_.GetPointer();
 }
