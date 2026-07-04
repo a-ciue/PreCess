@@ -17,24 +17,6 @@ target_link_libraries(Data PUBLIC Core
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>	# spdlog日志库
 )
 if (OpenCASCADE_FOUND)
-  if (DEFINED OpenCASCADE_INCLUDE_DIR)
-    target_include_directories(Data PUBLIC ${OpenCASCADE_INCLUDE_DIR})
-  elseif (DEFINED OpenCASCADE_INCLUDE_DIRS)
-    target_include_directories(Data PUBLIC ${OpenCASCADE_INCLUDE_DIRS})
-  else()
-    message(FATAL_ERROR "OpenCASCADE found but include dir variable not set (OpenCASCADE_INCLUDE_DIR/S not found)")
-  endif()
-
-	target_link_libraries(Data PRIVATE
-		TKernel
-		TKMath
-		TKG2d
-		TKG3d
-		TKGeomBase
-		TKBRep
-		TKTopAlgo
-	)
-	
 	target_link_libraries(Data PUBLIC $<COMPILE_ONLY:TKernel>)
 	target_link_libraries(Data PRIVATE TKernel TKTopAlgo)
 else()
