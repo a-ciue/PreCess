@@ -1,13 +1,16 @@
 #include "AttributeOperator.h"
 #include <vtkPolyData.h>
 #include <vtkCellData.h>
+#include <vtkDoubleArray.h>
 #include <vtkMapper.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
 #include <cassert>
 #include <vtkPointData.h> 
+#include <vtkPoints.h>
 #include <algorithm>
 #include <cmath>
+#include <mutex>
 #include <vector>
 
 namespace {
@@ -57,6 +60,16 @@ double averageEdgeLength(vtkPoints& points, const std::vector<Index>& edge_cells
     return valid_count > 0 ? total_length / valid_count : 0.0;
 }
 
+void ensureGlobalPolygonOffsetConfigured()
+{
+    // ResolveCoincidentTopology 是 VTK 的进程级全局状态，只初始化一次，避免每次面属性渲染都覆盖外部设置。
+    static std::once_flag once;
+    std::call_once(once, [] {
+        vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
+        vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
+    });
+}
+
 // 没有显式边数据时，从面片相邻顶点中均匀采样，估算典型边长。
 double averageFaceEdgeLength(vtkPoints& points, const std::vector<Index>& face_cells, const std::vector<Index>& face_offsets)
 {
@@ -66,13 +79,14 @@ double averageFaceEdgeLength(vtkPoints& points, const std::vector<Index>& face_c
 
     const Index total_face_edges = static_cast<Index>(face_cells.size());
     const Index sample_count = std::min(total_face_edges, kMaxEdgeSamples);
+    const Index sample_step = std::max<Index>(1, total_face_edges / sample_count);
 
     double total_length = 0.0;
     Index valid_count = 0;
-    Index sample_index = 0;
+    Index visited_edge_count = 0;
 
-    // 按面顺序遍历，但只在均匀采样命中的边上计算长度，最多统计固定上限条边。
-    for (Index face_index = 0; face_index < face_count && sample_index < sample_count; ++face_index) {
+    // 按固定步长跳采面边；这里只估算典型边长，不需要精确遍历全部边。
+    for (Index face_index = 0; face_index < face_count && valid_count < sample_count; ++face_index) {
         const Index begin = face_offsets[face_index];
         const Index end = face_offsets[face_index + 1];
         const Index point_count = end - begin;
@@ -81,20 +95,21 @@ double averageFaceEdgeLength(vtkPoints& points, const std::vector<Index>& face_c
         if (begin < 0 || end > total_face_edges)
             continue;
 
-        for (Index local_index = 0; local_index < point_count && sample_index < sample_count; ++local_index) {
-            const Index target_edge_index = sample_index * total_face_edges / sample_count;
-            const Index current_edge_index = begin + local_index;
-            if (current_edge_index < target_edge_index)
+        for (Index local_index = 0; local_index < point_count && valid_count < sample_count; ++local_index) {
+            if (visited_edge_count % sample_step != 0) {
+                ++visited_edge_count;
                 continue;
+            }
 
+            const Index current_edge_index = begin + local_index;
             const Index point_id_a = face_cells[current_edge_index];
             const Index point_id_b = face_cells[begin + ((local_index + 1) % point_count)];
             if (point_id_a < 0 || point_id_b < 0) {
-                ++sample_index;
+                ++visited_edge_count;
                 continue;
             }
             if (point_id_a >= points.GetNumberOfPoints() || point_id_b >= points.GetNumberOfPoints()) {
-                ++sample_index;
+                ++visited_edge_count;
                 continue;
             }
 
@@ -103,7 +118,7 @@ double averageFaceEdgeLength(vtkPoints& points, const std::vector<Index>& face_c
                 total_length += length;
                 ++valid_count;
             }
-            ++sample_index;
+            ++visited_edge_count;
         }
     }
 
@@ -159,8 +174,7 @@ vtkPointData* AttributeOperator::getSolidPointData()
 void AttributeOperator::enableFaceAttributeOffset()
 {
     // 具体偏移量只设置在 face_mapper_ 上，用于避免面属性和体外表面共面时互相遮挡。
-    vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
-    vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
+    ensureGlobalPolygonOffsetConfigured();
     mesh_actor_->face_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(-1.0, -1.0);
 }
 
@@ -219,8 +233,39 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getPointGlyphInput(const std::st
     vtkDataArray* array = face_data->GetPointData()->GetArray(attr_name.c_str());
     if (!array)
         return nullptr;
-    face_data->GetPointData()->SetActiveVectors(attr_name.c_str());
-    return face_data;
+
+    vtkPoints* global_points = mesh_actor_->global_points_;
+    const auto& model_data = mesh_actor_->model_data_;
+    if (!global_points || !model_data || model_data->local_to_global_.empty())
+        return nullptr;
+
+    const int component_count = array->GetNumberOfComponents();
+    auto vectors = vtkSmartPointer<vtkDoubleArray>::New();
+    vectors->SetName(attr_name.c_str());
+    vectors->SetNumberOfComponents(component_count);
+
+    // 点属性数组按全局点池存放；glyph 只需要当前 component 的局部点，避免遍历无关组件的零向量。
+    auto points = vtkSmartPointer<vtkPoints>::New();
+    std::vector<double> tuple(static_cast<size_t>(component_count));
+    for (size_t local_point_id = 0; local_point_id < model_data->local_to_global_.size(); ++local_point_id) {
+        const Index global_point_id = model_data->local_to_global_[local_point_id];
+        if (global_point_id < 0 || global_point_id >= global_points->GetNumberOfPoints()
+            || global_point_id >= array->GetNumberOfTuples()) {
+            continue;
+        }
+
+        double point[3] {};
+        global_points->GetPoint(global_point_id, point);
+        points->InsertNextPoint(point);
+
+        array->GetTuple(global_point_id, tuple.data());
+        vectors->InsertNextTuple(tuple.data());
+    }
+
+    auto glyphInput = vtkSmartPointer<vtkPolyData>::New();
+    glyphInput->SetPoints(points);
+    glyphInput->GetPointData()->SetVectors(vectors);
+    return glyphInput;
 }
 
 vtkSmartPointer<vtkPolyData> AttributeOperator::getSolidGlyphInput(const std::string& attr_name)
