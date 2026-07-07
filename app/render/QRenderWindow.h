@@ -131,7 +131,7 @@ public:
      *
      * 在控制台中调用示例：
      * QModelManager.query.getModelAttriName(0)
-     * A.setAttriMode("face_pressure_1", 1, {})
+     * App.registry.renderWindow.setAttriMode("face_pressure_1", 1, {})
      * App.registry.renderWindow.setAttriMode("face_color_3", 0, {})
      * App.registry.renderWindow.setAttriMode("face_vectors_3", 3, {})
      * App.registry.renderWindow.setAttriMode("vertex_vector_3", 3, { "glyph_scale": 0.5 })
