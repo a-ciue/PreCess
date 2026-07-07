@@ -53,7 +53,7 @@ void AttriRenderStrategyVector::render(
     if (array) {
         if (!isValidVectorArray(array, attr_name))
             return;
-        vtkPolyData* point_data = op.getPointGlyphInput(attr_name);
+        vtkSmartPointer<vtkPolyData> point_data = op.getPointGlyphInput(attr_name);
         createGlyph3D(op, point_data, { 1.0, 0.0, 0.0 }, glyph_scale);
         return;
     }
