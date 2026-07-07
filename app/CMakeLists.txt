@@ -21,6 +21,7 @@ qt_add_qml_module(${MYNAME}
             Selector.qml
             JavaScriptConsole.qml
             PluginManagerComponent.qml
+            AttributeRenderPanel.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE

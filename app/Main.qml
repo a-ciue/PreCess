@@ -88,6 +88,15 @@ ApplicationWindow {
                 }
             }
             Action {
+                text: "属性渲染"
+                checkable: true
+                checked: attributeRenderDock.isOpen
+                onToggled: {
+                    if (attributeRenderDock.isOpen) attributeRenderDock.close()
+                    else attributeRenderDock.show()
+                }
+            }
+            Action {
                 text: "控制台"
                 checkable: true
                 checked: consoleDock.isOpen
@@ -159,6 +168,15 @@ ApplicationWindow {
         }
 
         KDDW.DockWidget {
+            id: attributeRenderDock
+            uniqueName: "attributeRender"
+            title: "属性渲染"
+            AttributeRenderPanel {
+                anchors.fill: parent
+            }
+        }
+
+        KDDW.DockWidget {
             id: consoleDock
             uniqueName: "console"
             title: "控制台"
@@ -172,6 +190,7 @@ ApplicationWindow {
         Component.onCompleted: {
             addDockWidget(objectTreeDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
             addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
+            addDockWidget(attributeRenderDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
         }
     }

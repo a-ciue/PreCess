@@ -65,6 +65,12 @@ public :
     Q_INVOKABLE QVariantList getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId);
 
     Q_INVOKABLE QString getModelName(Index model_id) const;
+
+    /**
+     * @brief 获取指定组件的显示名称，保持和对象树中的组件名称一致
+     * @param component_id 组件 ID
+     */
+    Q_INVOKABLE QString getComponentName(Index component_id) const;
     /**
      * @brief 获取模型的属性名列表
      * @param model_id
@@ -76,6 +82,12 @@ public :
      * @param model_id
      */
     Q_INVOKABLE QList<Element::Type> getModelAttriType(Index model_id) const;
+
+    /**
+     * @brief 获取指定组件的属性渲染条目，供 QML 直接展示属性名、属性类型和分量数
+     * @param component_id 当前选中的组件 ID
+     */
+    Q_INVOKABLE QVariantList getComponentAttriInfo(Index component_id) const;
 
     Q_INVOKABLE QVariantList listModels() const;
     Q_INVOKABLE QVariantList getComponentsSummary(Index model_id) const;
