@@ -144,6 +144,43 @@ std::string makeResultModelName(const ComponentData& input_component,
 }
 
 /**
+ * @brief 替换当前 Component 的 mesh，维护全局点索引与边 ID 映射
+ * @param comp 目标 Component 操作接口
+ * @param mesh 新网格数据
+ * @return true 成功；false 失败（Component 不存在或 mesh 为空）
+ *
+ * 释放旧 mesh 的 edge id map、追加新顶点到全局点池、转换本地→全局索引、
+ * 重建 edge id map，最后通知 observer。与 ModelLayer::addModel 的 mesh 入池流程一致。
+ */
+bool replaceComponentMesh(ComponentOperator& comp, std::unique_ptr<MeshData> mesh)
+{
+    ModelLayer& mgr = comp.manager();
+    const Index component_id = comp.componentId();
+    ComponentData* component = mgr.findComponent(component_id);
+    if (!component || !mesh) {
+        return false;
+    }
+
+    if (component->mesh) {
+        component->mesh->releaseEdgeIdMap(mgr.edgeIdMap());
+    }
+
+    const Index base = mgr.appendGlobalPoints(mesh->vertex_positions_);
+    mesh->vertex_count_ = static_cast<Index>(mesh->vertex_positions_.size());
+    mesh->local_to_global_.resize(mesh->vertex_count_);
+    for (Index i = 0; i < mesh->vertex_count_; ++i) {
+        mesh->local_to_global_[static_cast<size_t>(i)] = base + i;
+    }
+    mesh->makePointIdsGlobal();
+    std::vector<std::array<double, 3>> {}.swap(mesh->vertex_positions_);
+    mesh->ensureEdgeIdMapBuilt(mgr.edgeIdMap(), component_id);
+
+    component->mesh = std::move(mesh);
+    comp.notifyChanged();
+    return true;
+}
+
+/**
  * @brief 使用 BFS 找出网格表面中最大的连通分量（壳）
  *        通过顶点邻接表扩散连通面，跳过不相连的小腔体
  * @param mesh 输入网格
@@ -488,7 +525,7 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         ComponentDatas components;
         components.push_back(std::move(output_component));
         context.cur_component.manager().addModel(result_model_name, std::move(components));
-    } else if (!context.cur_component.manager().replaceComponentMesh(context.cur_component.componentId(), std::move(output_mesh))) {
+    } else if (!replaceComponentMesh(context.cur_component, std::move(output_mesh))) {
         spdlog::error("TetGenLibHandler: failed to replace mesh for component {}", context.cur_component.componentId());
         return {};
     }

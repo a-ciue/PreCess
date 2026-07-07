@@ -115,35 +115,6 @@ void ModelLayer::removeComponent(Index component_id)
         observer_->notifyComponentRemoved(component_id);
 }
 
-bool ModelLayer::replaceComponentMesh(Index component_id, std::unique_ptr<MeshData> mesh)
-{
-    ComponentData* component = findComponent(component_id);
-    if (!component || !mesh) {
-        return false;
-    }
-
-    if (component->mesh) {
-        component->mesh->releaseEdgeIdMap(edge_id_map_);
-    }
-
-    const Index base = appendGlobalPoints(mesh->vertex_positions_);
-    mesh->vertex_count_ = static_cast<Index>(mesh->vertex_positions_.size());
-    mesh->local_to_global_.resize(mesh->vertex_count_);
-    for (Index i = 0; i < mesh->vertex_count_; ++i) {
-        mesh->local_to_global_[static_cast<size_t>(i)] = base + i;
-    }
-    mesh->makePointIdsGlobal();
-    std::vector<std::array<double, 3>> {}.swap(mesh->vertex_positions_);
-    mesh->ensureEdgeIdMapBuilt(edge_id_map_, component_id);
-
-    component->mesh = std::move(mesh);
-
-    if (observer_) {
-        observer_->notifyComponentChanged(component_id);
-    }
-    return true;
-}
-
 std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
 {
     ModelData* m = modelById(model_id);

@@ -57,13 +57,6 @@ public:
      */
     void removeModel(Index model_id);
     void removeComponent(Index component_id);
-    /**
-     * @brief 替换指定 Component 的网格数据，并维护全局点索引和边 ID 映射
-     * @param component_id 目标 Component ID
-     * @param mesh 新网格数据
-     * @return 是否替换成功
-     */
-    bool replaceComponentMesh(Index component_id, std::unique_ptr<MeshData> mesh);
 
     /**
      * @brief 获取指定模型的操作接口对象
@@ -85,6 +78,13 @@ public:
 
     const std::vector<std::array<double, 3>>& globalPoints() const;
 
+    /**
+     * @brief 追加一批顶点到全局点池，返回这批点的起始全局索引
+     * @param pts 待追加的顶点坐标
+     * @return 起始全局索引
+     */
+    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
+
     MeshIDMap& edgeIdMap();
     const MeshIDMap& edgeIdMap() const;
 
@@ -99,7 +99,6 @@ private:
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
 
-    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
     std::vector<std::array<double, 3>> global_points_;
     MeshIDMap edge_id_map_; // 先只维护 edge 的 global->local
 
