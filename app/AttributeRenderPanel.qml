@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
@@ -8,6 +9,7 @@ import app.model
 
 Item {
     id: root
+    clip: true
 
     property var attributes: []
     property int selectedIndex: -1
@@ -92,11 +94,14 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
+            spacing: 4
             Label {
                 text: "组件"
+                Layout.preferredWidth: 32
             }
             Label {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 text: root.componentName.length > 0 ? root.componentName : "未选择"
                 elide: Text.ElideRight
             }
@@ -106,9 +111,12 @@ Item {
             id: attributeList
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.minimumHeight: 60
             clip: true
             model: root.attributes
             currentIndex: root.selectedIndex
+            flickDeceleration: 100000
+            boundsBehavior: Flickable.StopAtBounds
 
             delegate: Rectangle {
                 required property var modelData
@@ -124,7 +132,7 @@ Item {
                 RowLayout {
                     anchors.fill: parent
                     anchors.leftMargin: 8
-                    anchors.rightMargin: 8
+                    anchors.rightMargin: 14
                     spacing: 8
 
                     Label {
@@ -132,19 +140,30 @@ Item {
                         Layout.preferredWidth: 24
                     }
                     Label {
+                        id: attrNameText
                         text: modelData.name
                         elide: Text.ElideRight
                         Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+
+                        ToolTip {
+                            visible: attrNameText.truncated && attributeMouse.hovered
+                            text: attrNameText.text
+                            delay: 300
+                        }
                     }
                     Label {
                         text: modelData.renderable
                             ? (modelData.componentCount > 0 ? modelData.componentCount + "分量" : "")
                             : "暂不支持"
+                        elide: Text.ElideRight
                     }
                 }
 
                 MouseArea {
+                    id: attributeMouse
                     anchors.fill: parent
+                    hoverEnabled: true
                     enabled: modelData.renderable
                     onClicked: {
                         root.selectedIndex = index
@@ -153,8 +172,18 @@ Item {
                 }
             }
 
-            ScrollBar.vertical: ScrollBar {
+            ScrollBar.vertical: Basic.ScrollBar {
                 policy: ScrollBar.AsNeeded
+                padding: 0
+                background: Rectangle {
+                    implicitWidth: 8
+                    color: "transparent"
+                }
+                contentItem: Rectangle {
+                    implicitWidth: 8
+                    radius: 4
+                    color: parent.hovered ? "#c0c0c0" : "#e0e0e0"
+                }
             }
         }
 
@@ -165,7 +194,7 @@ Item {
             columnSpacing: 6
 
             Label {
-                text: "方式"
+                text: "渲染策略"
             }
             ComboBox {
                 id: modeCombo
@@ -176,19 +205,23 @@ Item {
             Label {
                 text: "范围"
                 visible: modeCombo.currentIndex === 1
+                Layout.preferredWidth: 32
             }
             RowLayout {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 visible: modeCombo.currentIndex === 1
                 TextField {
                     id: rangeMinField
                     Layout.fillWidth: true
+                    Layout.minimumWidth: 0
                     placeholderText: "min"
                     validator: DoubleValidator {}
                 }
                 TextField {
                     id: rangeMaxField
                     Layout.fillWidth: true
+                    Layout.minimumWidth: 0
                     placeholderText: "max"
                     validator: DoubleValidator {}
                 }
@@ -197,16 +230,20 @@ Item {
             Label {
                 text: "贴图"
                 visible: modeCombo.currentIndex === 2
+                Layout.preferredWidth: 32
             }
             RowLayout {
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 visible: modeCombo.currentIndex === 2
                 TextField {
                     id: texturePathField
                     Layout.fillWidth: true
+                    Layout.minimumWidth: 0
                 }
                 Button {
                     text: "..."
+                    Layout.preferredWidth: 28
                     onClicked: textureFileDialog.open()
                 }
             }
@@ -214,10 +251,12 @@ Item {
             Label {
                 text: "缩放"
                 visible: modeCombo.currentIndex === 3
+                Layout.preferredWidth: 32
             }
             TextField {
                 id: glyphScaleField
                 Layout.fillWidth: true
+                Layout.minimumWidth: 0
                 visible: modeCombo.currentIndex === 3
                 validator: DoubleValidator {
                     bottom: 0
