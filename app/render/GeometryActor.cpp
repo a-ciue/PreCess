@@ -120,6 +120,22 @@ bool GeometryActor::getIsEdgeRender()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
+    // 清理上一次的高亮管线
+    if (renderer_) {
+        if (poly_hl_actor_) {
+            renderer_->RemoveActor(poly_hl_actor_);
+            poly_hl_actor_ = nullptr;
+        }
+        if (line_hl_actor_) {
+            renderer_->RemoveActor(line_hl_actor_);
+            line_hl_actor_ = nullptr;
+        }
+    }
+    poly_hl_filter_ = nullptr;
+    poly_hl_mapper_ = nullptr;
+    line_hl_filter_ = nullptr;
+    line_hl_mapper_ = nullptr;
+
     // 全局：开一次
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
 
