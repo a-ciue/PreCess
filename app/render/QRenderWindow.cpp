@@ -14,6 +14,7 @@
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
+#include <vtkMapper.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 QRenderWindow::QRenderWindow()
@@ -34,6 +35,10 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // vtkUserData but ONLY if they are accessed from the qml-render-thread. (i.e. only in the
     // initializeVTK, destroyingVTK or dispatch_async methods)
     // vtk->renderer->GetActiveCamera()->DeepCopy(_camera);
+
+    // VTK 的 CoincidentTopology 是进程级全局状态，在渲染窗口初始化阶段统一设置。
+    vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
+    vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
 
     vtk->renderer_->SetBackground(0.5, 0.5, 0.7);
     vtk->renderer_->SetBackground2(0.7, 0.7, 0.7);
