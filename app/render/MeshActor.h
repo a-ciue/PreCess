@@ -15,10 +15,18 @@ class vtkGeometryFilter;
 class vtkExtractGeometry;
 class vtkExtractPolyDataGeometry;
 class vtkPoints;
+class vtkPolyData;
 class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
 class AttributeOperator;
+
+// 保存面属性渲染临时修改 face_mapper_ 前的相对偏移参数
+struct FaceAttributeOffsetState {
+    bool active { false };
+    double factor { 0.0 };
+    double units { 0.0 };
+};
 
 //! @brief 负责管理Model的Actor
 class MeshActor {
@@ -80,7 +88,6 @@ private:
 
     vtkNew<vtkGeometryFilter> solid_filter_;
 
-    vtkNew<vtkPolyDataMapper> vertex_mapper_;
     vtkNew<vtkPolyDataMapper> edge_mapper_;
     vtkNew<vtkPolyDataMapper> face_mapper_;
     vtkNew<vtkPolyDataMapper> solid_mapper_;
@@ -94,7 +101,13 @@ private:
     vtkNew<vtkUnstructuredGrid> solid_data_;
     vtkNew<vtkPolyData> face_data_;
     vtkNew<vtkPolyData> edge_data_;
-    vtkNew<vtkPolyData> vertex_data_;
+
+    // 缓存面单元中心点。
+    vtkNew<vtkPolyData> face_cell_centers_;
+    // 缓存体单元中心点。
+    vtkNew<vtkPolyData> solid_cell_centers_;
+
+    FaceAttributeOffsetState face_attribute_offset_;
 
     vtkRenderer* renderer_;
 

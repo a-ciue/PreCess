@@ -7,6 +7,7 @@
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
 #include <vtkUnstructuredGrid.h>
+#include <vector>
 void UGridModel::update(MeshData& mesh_data)
 {
     using namespace std;
@@ -24,6 +25,10 @@ void UGridModel::update(MeshData& mesh_data)
         pts->GetPoint(i, p.data());
         mesh_data.vertex_positions_.emplace_back(p);
     }
+    // 记录原始 VTK cell id，用于按单元维度拆分 CELL_DATA。
+    std::vector<vtkIdType> solid_cell_ids;
+    std::vector<vtkIdType> face_cell_ids;
+
     // cells
     for (vtkIdType cell_id = 0; cell_id < mesh_->GetNumberOfCells(); ++cell_id) {
         vtkCell* cell = mesh_->GetCell(cell_id);
@@ -32,6 +37,7 @@ void UGridModel::update(MeshData& mesh_data)
         vtkIdType dim = cell->GetCellDimension();
         vtkIdType npts = cell->GetNumberOfPoints();
         if (dim == 3) { // 体
+            solid_cell_ids.push_back(cell_id);
             unsigned char ctype = static_cast<unsigned char>(mesh_->GetCellType(cell_id));
             mesh_data.solid_types_.push_back(ctype);
             for (vtkIdType i = 0; i < npts; ++i) {
@@ -60,6 +66,7 @@ void UGridModel::update(MeshData& mesh_data)
                 mesh_data.solid_faces_offset_.push_back(static_cast<Index>(mesh_data.solid_faces_.size()));
             }
         } else if (dim == 2) { // 面
+            face_cell_ids.push_back(cell_id);
             for (vtkIdType i = 0; i < npts; ++i) {
                 mesh_data.face_vertices_.push_back(static_cast<Index>(cell->GetPointId(i)));
             }
@@ -101,11 +108,11 @@ void UGridModel::update(MeshData& mesh_data)
         mesh_data.vertex_attributes_[array_name] = std::move(values);
     }
 
-    // 处理面属性
+    // 处理cell属性
     vtkCellData* cell_data = mesh_->GetCellData();
     assert(cell_data);
-    int face_arrays = cell_data->GetNumberOfArrays();
-    for (int i = 0; i < face_arrays; i++) {
+    int cell_arrays = cell_data->GetNumberOfArrays();
+    for (int i = 0; i < cell_arrays; i++) {
         vtkAbstractArray* abs_array = cell_data->GetAbstractArray(i);
         std::string abs_name = cell_data->GetArrayName(i);
         vtkDataArray* array = vtkDataArray::SafeDownCast(abs_array);
@@ -118,15 +125,26 @@ void UGridModel::update(MeshData& mesh_data)
 
         int num_components = array->GetNumberOfComponents();
         array_name = completeAttributeName(array_name, num_components);
-
-        std::vector<double> values;
-        values.resize(static_cast<size_t>(mesh_->GetNumberOfCells()) * num_components);
-        std::vector<double> tuple(num_components);
-        for (vtkIdType j = 0; j < mesh_->GetNumberOfCells(); ++j) {
-            array->GetTuple(j, tuple.data());
-            std::copy(tuple.begin(), tuple.end(), values.begin() + j * num_components);
+        // 根据记录的cell id，分别提取体属性和面属性
+        if (!solid_cell_ids.empty()) {
+            std::vector<double> values(solid_cell_ids.size() * num_components);
+            std::vector<double> tuple(num_components);
+            for (size_t j = 0; j < solid_cell_ids.size(); ++j) {
+                array->GetTuple(solid_cell_ids[j], tuple.data());
+                std::copy(tuple.begin(), tuple.end(), values.begin() + j * num_components);
+            }
+            mesh_data.solid_attributes_[array_name] = std::move(values);
         }
-        mesh_data.face_attributes_[array_name] = std::move(values);
+        
+        if (!face_cell_ids.empty()) {
+            std::vector<double> values(face_cell_ids.size() * num_components);
+            std::vector<double> tuple(num_components);
+            for (size_t j = 0; j < face_cell_ids.size(); ++j) {
+                array->GetTuple(face_cell_ids[j], tuple.data());
+                std::copy(tuple.begin(), tuple.end(), values.begin() + j * num_components);
+            }
+            mesh_data.face_attributes_[array_name] = std::move(values);
+        }
     }
     // 输出属性信息进行验证
     // 遍历mesh_data的vertex_attributes
