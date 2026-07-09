@@ -27,7 +27,6 @@
 
 class MeshActor;
 class SelectManager;
-class GeometrySelectManager;
 class GeometryActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
@@ -172,15 +171,12 @@ signals:
 private:
     bool edge_render_ {};
     ModelRenderMode renderMode_ {};
-    SelectMode select_mode_ {};
 
     vtkNew<vtkCamera> _camera;
 
     std::unique_ptr<SelectManager> selectManager_;
-    std::unique_ptr<GeometrySelectManager> geometrySelectManager_;
     MeshActor* cur_actor_ {};
     Index cur_component_id_;
-    SelectMode geom_select_mode_ { SelectMode::None };
 
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_ {};

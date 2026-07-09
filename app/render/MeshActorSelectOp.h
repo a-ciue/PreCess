@@ -18,7 +18,7 @@ class MeshActorSelectOpFactory {
 
 public:
     MeshActorSelectOpFactory();
-    MeshActorSelectOpFactory(std::weak_ptr<const MeshActor> mesh_actor);
+    MeshActorSelectOpFactory(std::weak_ptr<MeshActor> mesh_actor);
     /**
      * @brief 获取操作对象
      * @return 如果MeshActor还存在，返回MeshActorSelectOp对象，否则返回std::nullopt
@@ -26,7 +26,7 @@ public:
     std::optional<MeshActorSelectOp> lock();
 
 private:
-    std::weak_ptr<const MeshActor> mesh_actor_;
+    std::weak_ptr<MeshActor> mesh_actor_;
 };
 
 /**
@@ -36,7 +36,7 @@ class MeshActorSelectOp {
     friend MeshActorSelectOpFactory;
 
 public:
-    MeshActorSelectOp(std::shared_ptr<const MeshActor> mesh_actor);
+    MeshActorSelectOp(std::shared_ptr<MeshActor> mesh_actor);
 
     vtkProp& getSolidActor();
     vtkProp& getFaceActor();
@@ -65,6 +65,6 @@ public:
     vtkSmartPointer<vtkPolyData> extractEdge(std::vector<std::array<vtkIdType, 2>>& ids);
 
 private:
-    std::shared_ptr<const MeshActor> mesh_actor_; // 非空
+    std::shared_ptr<MeshActor> mesh_actor_; // 非空
 };
 #endif // MESH_ACTOR_SELECT_OP_H

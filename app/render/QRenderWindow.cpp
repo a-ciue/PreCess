@@ -5,7 +5,6 @@
 #include "QRenderWindowStyle.h"
 #include "QSelection.h"
 #include "SelectManager.h"
-#include "GeometrySelectManager.h"
 #include "Selection.h"
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
@@ -22,7 +21,6 @@ QRenderWindow::QRenderWindow()
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
     selectManager_ = std::make_unique<SelectManager>();
-    geometrySelectManager_ = std::make_unique<GeometrySelectManager>();
     edge_render_ = false;
 }
 
@@ -42,9 +40,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->renderer_->SetGradientBackground(true);
 
     vtk->style_->SetSelectManager(this->selectManager_.get());
-    vtk->style_->SetGeometrySelectManager(this->geometrySelectManager_.get());
     selectManager_->bindRenderer(vtk->renderer_);
-    geometrySelectManager_->bindRenderer(vtk->renderer_);
     vtk->style_->SetDefaultRenderer(vtk->renderer_);
     renderWindow->GetInteractor()->SetInteractorStyle(vtk->style_);
 
@@ -152,7 +148,6 @@ void QRenderWindow::deleteModel(Index model_id)
         }
 
         this->selectManager_->clearSelection();
-        this->geometrySelectManager_->clearSelection();
     });
 }
 
@@ -170,7 +165,6 @@ void QRenderWindow::deleteComponent(Index component_id)
         }
 
         this->selectManager_->clearSelection();
-        this->geometrySelectManager_->clearSelection();
     });
 }
 
@@ -270,7 +264,6 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
     dispatch_async([model_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         selectManager_->clearSelection();
-        geometrySelectManager_->clearSelection();
 
         auto component_ids = model_query_->getComponentIds(model_id);
         for (Index component_id : component_ids) {
@@ -297,12 +290,7 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 
 QSelection* QRenderWindow::selectedIDs()
 {
-    std::unique_ptr<Selection> data;
-    if (geom_select_mode_ != SelectMode::None) {
-        data = this->geometrySelectManager_->getSelection();
-    } else {
-        data = this->selectManager_->getSelection();
-    }
+    std::unique_ptr<Selection> data = this->selectManager_->getSelection();
     if (!data) {
         return nullptr;
     }
@@ -352,62 +340,30 @@ void QRenderWindow::setSelectComponent(Index component_id)
         this->cur_component_id_ = component_id;
         this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
 
-        std::shared_ptr<const MeshActor> mesh_actor;
+        std::shared_ptr<MeshActor> mesh_actor;
         if (vtk->mesh_actor_manager_->hasComponent(component_id))
             mesh_actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
 
         if (mesh_actor)
             selectManager_->setSelectActor(mesh_actor);
         else
-            selectManager_->setSelectActor({});
+            selectManager_->setSelectActor(std::weak_ptr<MeshActor> {});
 
         std::shared_ptr<GeometryActor> geometry_actor;
         if (vtk->geometry_actor_manager_->hasComponent(component_id))
             geometry_actor = vtk->geometry_actor_manager_->getComponentActor(component_id);
 
         if (geometry_actor)
-            geometrySelectManager_->setSelectActor(geometry_actor);
+            selectManager_->setSelectActor(geometry_actor);
         else
-            geometrySelectManager_->setSelectActor({});
+            selectManager_->setSelectActor(std::weak_ptr<GeometryActor> {});
     });
 }
 
 void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        if (select_mode == "Vertex") {
-            select_mode_ = SelectMode::Vertex;
-            geom_select_mode_ = SelectMode::None;
-        } else if (select_mode == "Face") {
-            select_mode_ = SelectMode::Face;
-            geom_select_mode_ = SelectMode::None;
-        } else if (select_mode == "Edge") {
-            select_mode_ = SelectMode::Edge;
-            geom_select_mode_ = SelectMode::None;
-        } else if (select_mode == "Block") {
-            select_mode_ = SelectMode::Block;
-            geom_select_mode_ = SelectMode::None;
-        } else if (select_mode == "Solid") {
-            select_mode_ = SelectMode::Solid;
-            geom_select_mode_ = SelectMode::None;
-        } else if (select_mode == "GeometryFace") {
-            select_mode_ = SelectMode::None;
-            geom_select_mode_ = SelectMode::Face;
-        } else if (select_mode == "GeometryEdge") {
-            select_mode_ = SelectMode::None;
-            geom_select_mode_ = SelectMode::Edge;
-        } else if (select_mode == "GeometryVertex") {
-            select_mode_ = SelectMode::None;
-            geom_select_mode_ = SelectMode::Vertex;
-        } else if (select_mode == "GeometrySolid") {
-            select_mode_ = SelectMode::None;
-            geom_select_mode_ = SelectMode::Solid;
-        } else {
-            select_mode_ = SelectMode::None;
-            geom_select_mode_ = SelectMode::None;
-        }
-        selectManager_->setSelectMode(select_mode_);
-        geometrySelectManager_->setSelectMode(geom_select_mode_);
+        selectManager_->setSelectMode(select_mode.toStdString());
     });
 }
 
@@ -415,7 +371,6 @@ void QRenderWindow::clearSelection()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         this->selectManager_->clearSelection();
-        this->geometrySelectManager_->clearSelection();
     });
 }
 
@@ -425,7 +380,6 @@ void QRenderWindow::setRenderMode(Index model_id, QString render_mode)
     dispatch_async([model_id, render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         this->selectManager_->clearSelection();
-        this->geometrySelectManager_->clearSelection();
 
         auto component_ids = model_query_->getComponentIds(model_id);
 
