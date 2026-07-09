@@ -10,7 +10,6 @@
 #include <vtkPoints.h>
 #include <algorithm>
 #include <cmath>
-#include <mutex>
 #include <vector>
 
 namespace {
@@ -58,16 +57,6 @@ double averageEdgeLength(vtkPoints& points, const std::vector<Index>& edge_cells
     }
 
     return valid_count > 0 ? total_length / valid_count : 0.0;
-}
-
-void ensureGlobalPolygonOffsetConfigured()
-{
-    // ResolveCoincidentTopology 是 VTK 的进程级全局状态，只初始化一次，避免每次面属性渲染都覆盖外部设置。
-    static std::once_flag once;
-    std::call_once(once, [] {
-        vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
-        vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
-    });
 }
 
 // 没有显式边数据时，从面片相邻顶点中均匀采样，估算典型边长。
@@ -173,14 +162,28 @@ vtkPointData* AttributeOperator::getSolidPointData()
 
 void AttributeOperator::enableFaceAttributeOffset()
 {
-    // 具体偏移量只设置在 face_mapper_ 上，用于避免面属性和体外表面共面时互相遮挡。
-    ensureGlobalPolygonOffsetConfigured();
+    auto& offset = mesh_actor_->face_attribute_offset_;
+    if (!offset.active) {
+        mesh_actor_->face_mapper_->GetRelativeCoincidentTopologyPolygonOffsetParameters(
+            offset.factor,
+            offset.units);
+        offset.active = true;
+    }
+
+    // 只修改当前 face mapper 的相对偏移，避免面属性和体外表面共面时互相遮挡。
     mesh_actor_->face_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(-1.0, -1.0);
 }
 
 void AttributeOperator::disableFaceAttributeOffset()
 {
-    mesh_actor_->face_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
+    auto& offset = mesh_actor_->face_attribute_offset_;
+    if (!offset.active)
+        return;
+
+    mesh_actor_->face_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(
+        offset.factor,
+        offset.units);
+    offset.active = false;
 }
 
 double AttributeOperator::getMeshScale() const noexcept

@@ -21,6 +21,13 @@ class vtkRenderer;
 class MeshActorSelectOp;
 class AttributeOperator;
 
+// 保存面属性渲染临时修改 face_mapper_ 前的相对偏移参数
+struct FaceAttributeOffsetState {
+    bool active { false };
+    double factor { 0.0 };
+    double units { 0.0 };
+};
+
 //! @brief 负责管理Model的Actor
 class MeshActor {
     friend MeshActorSelectOp;
@@ -99,6 +106,8 @@ private:
     vtkNew<vtkPolyData> face_cell_centers_;
     // 缓存体单元中心点。
     vtkNew<vtkPolyData> solid_cell_centers_;
+
+    FaceAttributeOffsetState face_attribute_offset_;
 
     vtkRenderer* renderer_;
 
