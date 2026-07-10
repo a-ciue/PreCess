@@ -26,7 +26,6 @@ public:
     void setPicker(vtkSmartPointer<IVtkTools_ShapePicker> picker) { picker_ = picker; }
 
 protected:
-    virtual void configurePicker() = 0;
     vtkSmartPointer<IVtkTools_ShapePicker> picker_;
 };
 
@@ -40,8 +39,6 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void configurePicker() override;
-
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
     IVtkTools_SubPolyDataFilter* filter_ { nullptr };
@@ -60,8 +57,6 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void configurePicker() override;
-
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
     IVtkTools_SubPolyDataFilter* filter_ { nullptr };
@@ -80,8 +75,6 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void configurePicker() override;
-
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
     IVtkTools_SubPolyDataFilter* filter_ { nullptr };
@@ -100,8 +93,6 @@ public:
     void setCurGeomActor(GeometryActorSelectOpFactory geom_actor) override;
 
 private:
-    void configurePicker() override;
-
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
     IVtkTools_SubPolyDataFilter* filter_ { nullptr };

@@ -1,92 +1,14 @@
 #include "GeometrySelectorHighlight.h"
-#include "GeometryActor.h"
-#include "GeometrySubshapeIndex.h"
+#include "GeometryActorSelectOp.h"
 #include "Core.h"
 
-#include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtk_Types.hxx>
-#include <TopAbs_ShapeEnum.hxx>
-#include <TopExp_Explorer.hxx>
-#include <TopoDS_Shape.hxx>
-
+#include <NCollection_List.hxx>
 #include <vtkActor.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
-
-static constexpr IVtk_SelectionMode kSelVertex = SM_Vertex;
-static constexpr IVtk_SelectionMode kSelEdge   = SM_Edge;
-static constexpr IVtk_SelectionMode kSelFace   = SM_Face;
-static constexpr IVtk_SelectionMode kSelSolid  = SM_Shape;
-
-static int toleranceForMode(const SelectMode m)
-{
-    if (m == SelectMode::Vertex)
-        return 40;
-    if (m == SelectMode::Edge)
-        return 25;
-    if (m == SelectMode::Solid)
-        return 8;
-    return 8;
-}
-
-static bool firstId(const NCollection_List<IVtk_IdType>& list, IVtk_IdType& outId)
-{
-    if (list.IsEmpty())
-        return false;
-    outId = list.First();
-    return true;
-}
-
-static std::optional<Index> mapSubshapeToGeomId(const OccShapeHandle& occShape,
-    const GeometrySubshapeIndex& geomIndex,
-    TopAbs_ShapeEnum wantType,
-    IVtk_IdType subId,
-    ElementEnum::Type& outType)
-{
-    if (occShape.IsNull())
-        return std::nullopt;
-
-    const TopoDS_Shape& sub = occShape->GetSubShape(subId);
-    if (sub.IsNull())
-        return std::nullopt;
-
-    const int ti = GeometrySubshapeIndex::typeIndex(wantType);
-    if (ti < 0)
-        return std::nullopt;
-
-    const int localTypeId = geomIndex.type_maps[static_cast<size_t>(ti)].FindIndex(sub);
-    if (localTypeId <= 0)
-        return std::nullopt;
-
-    if (wantType == TopAbs_FACE) {
-        GeomFaceId gid = geomIndex.faceGlobalId(localTypeId);
-        if (gid == kInvalidGeomFaceId)
-            return std::nullopt;
-        outType = ElementEnum::Face;
-        return gid;
-    } else if (wantType == TopAbs_EDGE) {
-        GeomEdgeId gid = geomIndex.edgeGlobalId(localTypeId);
-        if (gid == kInvalidGeomEdgeId)
-            return std::nullopt;
-        outType = ElementEnum::Edge;
-        return gid;
-    } else if (wantType == TopAbs_VERTEX) {
-        GeomVertexId gid = geomIndex.vertexGlobalId(localTypeId);
-        if (gid == kInvalidGeomVertexId)
-            return std::nullopt;
-        outType = ElementEnum::Vertex;
-        return gid;
-    } else if (wantType == TopAbs_SOLID) {
-        GeomSolidId gid = geomIndex.solidGlobalId(localTypeId);
-        if (gid == kInvalidGeomSolidId)
-            return std::nullopt;
-        outType = ElementEnum::Solid;
-        return gid;
-    }
-    return std::nullopt;
-}
 
 static void flushHighlight(IVtkTools_SubPolyDataFilter* filter, vtkActor* hlActor, bool visible, vtkRenderer* renderer)
 {
@@ -136,24 +58,8 @@ void GeometryFaceSelectorHighlight::select(double posx, double posy)
     if (!op)
         return;
 
-    const int n = picker_->Pick(posx, posy, 0.0, renderer_);
-    if (n <= 0)
-        return;
-
-    IVtk_IdType shapeId = -1;
-    if (!firstId(picker_->GetPickedShapesIds(false), shapeId))
-        return;
-
     IVtk_IdType subId = -1;
-    if (!firstId(picker_->GetPickedSubShapesIds(shapeId, false), subId))
-        return;
-
-    const auto* geomIndex = op->getGeometryIndex();
-    if (!geomIndex)
-        return;
-
-    ElementEnum::Type elemType = ElementEnum::None;
-    auto geomId = mapSubshapeToGeomId(op->getOccShape(), *geomIndex, TopAbs_FACE, subId, elemType);
+    auto geomId = op->pickSubshape(picker_, renderer_, posx, posy, SelectMode::Face, subId);
     if (!geomId)
         return;
 
@@ -172,23 +78,8 @@ void GeometryFaceSelectorHighlight::select(double posx, double posy)
 
 void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
-    {
-        auto oldOp = geom_actor_.lock();
-        if (oldOp) {
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelFace, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelEdge, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelVertex, false);
-            auto& poly = dynamic_cast<vtkActor&>(oldOp->getPolyActor());
-            picker_->SetSelectionMode(&poly, kSelFace, false);
-            picker_->SetSelectionMode(&poly, kSelEdge, false);
-            picker_->SetSelectionMode(&poly, kSelVertex, false);
-            auto& line = dynamic_cast<vtkActor&>(oldOp->getLineActor());
-            picker_->SetSelectionMode(&line, kSelFace, false);
-            picker_->SetSelectionMode(&line, kSelEdge, false);
-            picker_->SetSelectionMode(&line, kSelVertex, false);
-            picker_->InitializePickList();
-        }
-    }
+    if (auto oldOp = geom_actor_.lock())
+        oldOp->disablePickerModes(picker_);
 
     clear();
     geom_actor_ = std::move(geom_actor);
@@ -197,38 +88,10 @@ void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = &op->getPolyHLFilter();
-        hl_actor_ = &op->getPolyHLActor();
+        filter_ = op->highlightFilter(SelectMode::Face);
+        hl_actor_ = op->highlightActor(SelectMode::Face);
+        op->configurePicker(picker_, SelectMode::Face);
     }
-
-    configurePicker();
-}
-
-void GeometryFaceSelectorHighlight::configurePicker()
-{
-    auto op = geom_actor_.lock();
-    if (!op)
-        return;
-
-    picker_->PickFromListOn();
-    picker_->InitializePickList();
-    picker_->AddPickList(&dynamic_cast<vtkActor&>(op->getPolyActor()));
-    picker_->SetPixelTolerance(toleranceForMode(SelectMode::Face));
-
-    picker_->SetSelectionMode(op->getOccShape(), kSelFace, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelEdge, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelVertex, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelFace, true);
-
-    auto& poly = dynamic_cast<vtkActor&>(op->getPolyActor());
-    picker_->SetSelectionMode(&poly, kSelFace, true);
-    picker_->SetSelectionMode(&poly, kSelEdge, false);
-    picker_->SetSelectionMode(&poly, kSelVertex, false);
-
-    auto& line = dynamic_cast<vtkActor&>(op->getLineActor());
-    picker_->SetSelectionMode(&line, kSelFace, false);
-    picker_->SetSelectionMode(&line, kSelEdge, false);
-    picker_->SetSelectionMode(&line, kSelVertex, false);
 }
 
 // ─── Edge ──────────────────────────────────────────────
@@ -269,24 +132,8 @@ void GeometryEdgeSelectorHighlight::select(double posx, double posy)
     if (!op)
         return;
 
-    const int n = picker_->Pick(posx, posy, 0.0, renderer_);
-    if (n <= 0)
-        return;
-
-    IVtk_IdType shapeId = -1;
-    if (!firstId(picker_->GetPickedShapesIds(false), shapeId))
-        return;
-
     IVtk_IdType subId = -1;
-    if (!firstId(picker_->GetPickedSubShapesIds(shapeId, false), subId))
-        return;
-
-    const auto* geomIndex = op->getGeometryIndex();
-    if (!geomIndex)
-        return;
-
-    ElementEnum::Type elemType = ElementEnum::None;
-    auto geomId = mapSubshapeToGeomId(op->getOccShape(), *geomIndex, TopAbs_EDGE, subId, elemType);
+    auto geomId = op->pickSubshape(picker_, renderer_, posx, posy, SelectMode::Edge, subId);
     if (!geomId)
         return;
 
@@ -305,23 +152,8 @@ void GeometryEdgeSelectorHighlight::select(double posx, double posy)
 
 void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
-    {
-        auto oldOp = geom_actor_.lock();
-        if (oldOp) {
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelFace, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelEdge, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelVertex, false);
-            auto& poly = dynamic_cast<vtkActor&>(oldOp->getPolyActor());
-            picker_->SetSelectionMode(&poly, kSelFace, false);
-            picker_->SetSelectionMode(&poly, kSelEdge, false);
-            picker_->SetSelectionMode(&poly, kSelVertex, false);
-            auto& line = dynamic_cast<vtkActor&>(oldOp->getLineActor());
-            picker_->SetSelectionMode(&line, kSelFace, false);
-            picker_->SetSelectionMode(&line, kSelEdge, false);
-            picker_->SetSelectionMode(&line, kSelVertex, false);
-            picker_->InitializePickList();
-        }
-    }
+    if (auto oldOp = geom_actor_.lock())
+        oldOp->disablePickerModes(picker_);
 
     clear();
     geom_actor_ = std::move(geom_actor);
@@ -330,44 +162,10 @@ void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = &op->getLineHLFilter();
-        hl_actor_ = &op->getLineHLActor();
+        filter_ = op->highlightFilter(SelectMode::Edge);
+        hl_actor_ = op->highlightActor(SelectMode::Edge);
+        op->configurePicker(picker_, SelectMode::Edge);
     }
-
-    configurePicker();
-}
-
-void GeometryEdgeSelectorHighlight::configurePicker()
-{
-    auto op = geom_actor_.lock();
-    if (!op)
-        return;
-
-    picker_->PickFromListOn();
-    picker_->InitializePickList();
-    picker_->AddPickList(&dynamic_cast<vtkActor&>(op->getLineActor()));
-    {
-        auto& poly = dynamic_cast<vtkActor&>(op->getPolyActor());
-        picker_->AddPickList(&poly);
-    }
-    picker_->SetPixelTolerance(toleranceForMode(SelectMode::Edge));
-
-    picker_->SetSelectionMode(op->getOccShape(), kSelFace, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelEdge, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelVertex, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelEdge, true);
-
-    {
-        auto& poly = dynamic_cast<vtkActor&>(op->getPolyActor());
-        picker_->SetSelectionMode(&poly, kSelFace, false);
-        picker_->SetSelectionMode(&poly, kSelEdge, false);
-        picker_->SetSelectionMode(&poly, kSelVertex, false);
-    }
-
-    auto& line = dynamic_cast<vtkActor&>(op->getLineActor());
-    picker_->SetSelectionMode(&line, kSelEdge, true);
-    picker_->SetSelectionMode(&line, kSelVertex, false);
-    picker_->SetSelectionMode(&line, kSelFace, false);
 }
 
 // ─── Vertex ────────────────────────────────────────────
@@ -408,24 +206,8 @@ void GeometryVertexSelectorHighlight::select(double posx, double posy)
     if (!op)
         return;
 
-    const int n = picker_->Pick(posx, posy, 0.0, renderer_);
-    if (n <= 0)
-        return;
-
-    IVtk_IdType shapeId = -1;
-    if (!firstId(picker_->GetPickedShapesIds(false), shapeId))
-        return;
-
     IVtk_IdType subId = -1;
-    if (!firstId(picker_->GetPickedSubShapesIds(shapeId, false), subId))
-        return;
-
-    const auto* geomIndex = op->getGeometryIndex();
-    if (!geomIndex)
-        return;
-
-    ElementEnum::Type elemType = ElementEnum::None;
-    auto geomId = mapSubshapeToGeomId(op->getOccShape(), *geomIndex, TopAbs_VERTEX, subId, elemType);
+    auto geomId = op->pickSubshape(picker_, renderer_, posx, posy, SelectMode::Vertex, subId);
     if (!geomId)
         return;
 
@@ -444,23 +226,8 @@ void GeometryVertexSelectorHighlight::select(double posx, double posy)
 
 void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
-    {
-        auto oldOp = geom_actor_.lock();
-        if (oldOp) {
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelFace, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelEdge, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelVertex, false);
-            auto& poly = dynamic_cast<vtkActor&>(oldOp->getPolyActor());
-            picker_->SetSelectionMode(&poly, kSelFace, false);
-            picker_->SetSelectionMode(&poly, kSelEdge, false);
-            picker_->SetSelectionMode(&poly, kSelVertex, false);
-            auto& line = dynamic_cast<vtkActor&>(oldOp->getLineActor());
-            picker_->SetSelectionMode(&line, kSelFace, false);
-            picker_->SetSelectionMode(&line, kSelEdge, false);
-            picker_->SetSelectionMode(&line, kSelVertex, false);
-            picker_->InitializePickList();
-        }
-    }
+    if (auto oldOp = geom_actor_.lock())
+        oldOp->disablePickerModes(picker_);
 
     clear();
     geom_actor_ = std::move(geom_actor);
@@ -469,44 +236,10 @@ void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFacto
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = &op->getLineHLFilter();
-        hl_actor_ = &op->getLineHLActor();
+        filter_ = op->highlightFilter(SelectMode::Vertex);
+        hl_actor_ = op->highlightActor(SelectMode::Vertex);
+        op->configurePicker(picker_, SelectMode::Vertex);
     }
-
-    configurePicker();
-}
-
-void GeometryVertexSelectorHighlight::configurePicker()
-{
-    auto op = geom_actor_.lock();
-    if (!op)
-        return;
-
-    picker_->PickFromListOn();
-    picker_->InitializePickList();
-    picker_->AddPickList(&dynamic_cast<vtkActor&>(op->getLineActor()));
-    {
-        auto& poly = dynamic_cast<vtkActor&>(op->getPolyActor());
-        picker_->AddPickList(&poly);
-    }
-    picker_->SetPixelTolerance(toleranceForMode(SelectMode::Vertex));
-
-    picker_->SetSelectionMode(op->getOccShape(), kSelFace, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelEdge, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelVertex, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelVertex, true);
-
-    {
-        auto& poly = dynamic_cast<vtkActor&>(op->getPolyActor());
-        picker_->SetSelectionMode(&poly, kSelFace, false);
-        picker_->SetSelectionMode(&poly, kSelEdge, false);
-        picker_->SetSelectionMode(&poly, kSelVertex, false);
-    }
-
-    auto& line = dynamic_cast<vtkActor&>(op->getLineActor());
-    picker_->SetSelectionMode(&line, kSelVertex, true);
-    picker_->SetSelectionMode(&line, kSelEdge, false);
-    picker_->SetSelectionMode(&line, kSelFace, false);
 }
 
 // ─── Solid ─────────────────────────────────────────────
@@ -548,70 +281,20 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
     if (!op)
         return;
 
-    const int n = picker_->Pick(posx, posy, 0.0, renderer_);
-    if (n <= 0)
-        return;
-
-    IVtk_IdType shapeId = -1;
-    if (!firstId(picker_->GetPickedShapesIds(false), shapeId))
-        return;
-
-    IVtk_IdType subId = -1;
-    if (!firstId(picker_->GetPickedSubShapesIds(shapeId, false), subId))
-        return;
-
-    const TopoDS_Shape& pickedSub = op->getOccShape()->GetSubShape(subId);
-    if (pickedSub.IsNull())
-        return;
-
-    const auto* geomIndex = op->getGeometryIndex();
-    if (!geomIndex)
-        return;
-
-    TopoDS_Shape solidShape;
-    if (pickedSub.ShapeType() == TopAbs_SOLID) {
-        solidShape = pickedSub;
-    } else {
-        const int solidTi = GeometrySubshapeIndex::typeIndex(TopAbs_SOLID);
-        const int nSolids = geomIndex->type_maps[solidTi].Extent();
-        for (int localId = 1; localId <= nSolids; ++localId) {
-            const TopoDS_Shape& solid = geomIndex->type_maps[solidTi].FindKey(localId);
-            for (TopExp_Explorer exp(solid, TopAbs_FACE); exp.More(); exp.Next()) {
-                if (exp.Current().IsSame(pickedSub)) {
-                    solidShape = solid;
-                    break;
-                }
-            }
-            if (!solidShape.IsNull())
-                break;
-        }
-        if (solidShape.IsNull())
-            return;
-    }
-
-    const int solidTi = GeometrySubshapeIndex::typeIndex(TopAbs_SOLID);
-    const int localTypeId = geomIndex->type_maps[solidTi].FindIndex(solidShape);
-    if (localTypeId <= 0)
-        return;
-
-    GeomSolidId gid = geomIndex->solidGlobalId(localTypeId);
-    if (gid == kInvalidGeomSolidId)
+    GeomSolidId gid = kInvalidGeomSolidId;
+    std::vector<IVtk_IdType> faceSubIds;
+    if (!op->pickSolid(picker_, renderer_, posx, posy, gid, faceSubIds))
         return;
 
     auto [it, inserted] = selections_.insert_or_assign(gid, gid);
-    if (!inserted) {
+    if (!inserted)
         selections_.erase(it);
-    }
 
-    for (TopExp_Explorer expF(solidShape, TopAbs_FACE); expF.More(); expF.Next()) {
-        const TopoDS_Shape& face = expF.Current();
-        IVtk_IdType faceSubId = op->getOccShape()->GetSubShapeId(face);
-        if (faceSubId >= 0) {
-            if (!inserted)
-                highlighted_face_ids_.erase(faceSubId);
-            else
-                highlighted_face_ids_.insert(faceSubId);
-        }
+    for (IVtk_IdType faceSubId : faceSubIds) {
+        if (!inserted)
+            highlighted_face_ids_.erase(faceSubId);
+        else
+            highlighted_face_ids_.insert(faceSubId);
     }
 
     NCollection_List<IVtk_IdType> ids;
@@ -625,23 +308,8 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
 
 void GeometrySolidSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
 {
-    {
-        auto oldOp = geom_actor_.lock();
-        if (oldOp) {
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelFace, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelEdge, false);
-            picker_->SetSelectionMode(oldOp->getOccShape(), kSelVertex, false);
-            auto& poly = dynamic_cast<vtkActor&>(oldOp->getPolyActor());
-            picker_->SetSelectionMode(&poly, kSelFace, false);
-            picker_->SetSelectionMode(&poly, kSelEdge, false);
-            picker_->SetSelectionMode(&poly, kSelVertex, false);
-            auto& line = dynamic_cast<vtkActor&>(oldOp->getLineActor());
-            picker_->SetSelectionMode(&line, kSelFace, false);
-            picker_->SetSelectionMode(&line, kSelEdge, false);
-            picker_->SetSelectionMode(&line, kSelVertex, false);
-            picker_->InitializePickList();
-        }
-    }
+    if (auto oldOp = geom_actor_.lock())
+        oldOp->disablePickerModes(picker_);
 
     clear();
     geom_actor_ = std::move(geom_actor);
@@ -650,39 +318,8 @@ void GeometrySolidSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactor
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = &op->getPolyHLFilter();
-        hl_actor_ = &op->getPolyHLActor();
+        filter_ = op->highlightFilter(SelectMode::Solid);
+        hl_actor_ = op->highlightActor(SelectMode::Solid);
+        op->configurePicker(picker_, SelectMode::Solid);
     }
-
-    configurePicker();
-}
-
-void GeometrySolidSelectorHighlight::configurePicker()
-{
-    auto op = geom_actor_.lock();
-    if (!op) {
-        if (picker_)
-            picker_->InitializePickList();
-        return;
-    }
-
-    picker_->PickFromListOn();
-    picker_->InitializePickList();
-    picker_->AddPickList(&dynamic_cast<vtkActor&>(op->getPolyActor()));
-    picker_->SetPixelTolerance(toleranceForMode(SelectMode::Solid));
-
-    picker_->SetSelectionMode(op->getOccShape(), kSelFace, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelEdge, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelVertex, false);
-    picker_->SetSelectionMode(op->getOccShape(), kSelFace, true);
-
-    auto& poly = dynamic_cast<vtkActor&>(op->getPolyActor());
-    picker_->SetSelectionMode(&poly, kSelFace, true);
-    picker_->SetSelectionMode(&poly, kSelEdge, false);
-    picker_->SetSelectionMode(&poly, kSelVertex, false);
-
-    auto& line = dynamic_cast<vtkActor&>(op->getLineActor());
-    picker_->SetSelectionMode(&line, kSelFace, false);
-    picker_->SetSelectionMode(&line, kSelEdge, false);
-    picker_->SetSelectionMode(&line, kSelVertex, false);
 }

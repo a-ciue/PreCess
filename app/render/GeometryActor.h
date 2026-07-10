@@ -14,7 +14,10 @@
 #include <IVtkTools_SubPolyDataFilter.hxx>
 typedef Handle(IVtkOCC_Shape) OccShapeHandle;
 
+class GeometryActorSelectOp;
+
 class GeometryActor {
+    friend GeometryActorSelectOp;
 
 public:
     GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode);
@@ -28,23 +31,6 @@ public:
     void setVisibility(bool visibility);
     void setRenderMode(GeometryRenderMode render_mode);
     void setRenderEdge(bool is_render);
-
-    vtkActor* polyActor() noexcept;
-    const vtkActor* polyActor() const noexcept;
-    vtkActor* lineActor() noexcept;
-    const vtkActor* lineActor() const noexcept;
-    vtkActor* polyHLActor() noexcept;
-    const vtkActor* polyHLActor() const noexcept;
-    vtkActor* lineHLActor() noexcept;
-    const vtkActor* lineHLActor() const noexcept;
-    IVtkTools_SubPolyDataFilter* polyHLFilter() noexcept;
-    const IVtkTools_SubPolyDataFilter* polyHLFilter() const noexcept;
-    IVtkTools_SubPolyDataFilter* lineHLFilter() noexcept;
-    const IVtkTools_SubPolyDataFilter* lineHLFilter() const noexcept;
-    const OccShapeHandle& getOccShape() const;
-    const GeometrySubshapeIndex* geometryIndex() const noexcept;
-    const vtkDataArray* lineSubIdArray() const noexcept;
-    const vtkDataArray* polySubIdArray() const noexcept;
 
 private:
     void deleteGeometryActor();
