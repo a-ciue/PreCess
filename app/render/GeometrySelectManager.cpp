@@ -41,16 +41,15 @@ void GeometrySelectManager::setSelectMode(SelectMode select_mode)
         this->selector_->setCurGeomActor(GeometryActorSelectOpFactory {});
     }
 
-    if (this->select_mode_ == SelectMode::Vertex) {
+    if (this->select_mode_ == SelectMode::GeometryVertex) {
         this->selector_ = std::make_unique<GeometryVertexSelectorHighlight>(this->renderer_);
-    } else if (this->select_mode_ == SelectMode::Face) {
+    } else if (this->select_mode_ == SelectMode::GeometryFace) {
         this->selector_ = std::make_unique<GeometryFaceSelectorHighlight>(this->renderer_);
-    } else if (this->select_mode_ == SelectMode::Edge) {
+    } else if (this->select_mode_ == SelectMode::GeometryEdge) {
         this->selector_ = std::make_unique<GeometryEdgeSelectorHighlight>(this->renderer_);
-    } else if (this->select_mode_ == SelectMode::Solid) {
+    } else if (this->select_mode_ == SelectMode::GeometrySolid) {
         this->selector_ = std::make_unique<GeometrySolidSelectorHighlight>(this->renderer_);
     } else {
-        assert(this->select_mode_ == SelectMode::None);
         this->selector_ = nullptr;
     }
 
@@ -78,26 +77,26 @@ std::unique_ptr<Selection> GeometrySelectManager::getSelection()
         return nullptr;
     }
 
-    if (this->select_mode_ == SelectMode::Vertex) {
+    if (this->select_mode_ == SelectMode::GeometryVertex) {
         for (const auto& id : this->selector_->get().ids) {
             selection->ids.push_back(id);
         }
-        selection->type = ElementEnum::Vertex;
-    } else if (this->select_mode_ == SelectMode::Face) {
+        selection->type = ElementEnum::GeometryVertex;
+    } else if (this->select_mode_ == SelectMode::GeometryFace) {
         for (const auto& id : this->selector_->get().ids) {
             selection->ids.push_back(id);
         }
-        selection->type = ElementEnum::Face;
-    } else if (this->select_mode_ == SelectMode::Edge) {
+        selection->type = ElementEnum::GeometryFace;
+    } else if (this->select_mode_ == SelectMode::GeometryEdge) {
         for (const auto& id : this->selector_->get().ids) {
             selection->ids.push_back(id);
         }
-        selection->type = ElementEnum::Edge;
-    } else if (this->select_mode_ == SelectMode::Solid) {
+        selection->type = ElementEnum::GeometryEdge;
+    } else if (this->select_mode_ == SelectMode::GeometrySolid) {
         for (const auto& id : this->selector_->get().ids) {
             selection->ids.push_back(id);
         }
-        selection->type = ElementEnum::Solid;
+        selection->type = ElementEnum::GeometrySolid;
     } else {
         if (this->selector_)
             this->selector_->clear();

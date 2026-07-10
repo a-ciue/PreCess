@@ -36,37 +36,29 @@ void SelectManager::setSelectActor(std::weak_ptr<GeometryActor> geom_actor)
 
 void SelectManager::setSelectMode(const std::string& select_mode)
 {
+    SelectMode mode = SelectMode::None;
     if (select_mode == "Vertex") {
-        mesh_->setSelectMode(SelectMode::Vertex);
-        geom_->setSelectMode(SelectMode::None);
+        mode = SelectMode::Vertex;
     } else if (select_mode == "Face") {
-        mesh_->setSelectMode(SelectMode::Face);
-        geom_->setSelectMode(SelectMode::None);
+        mode = SelectMode::Face;
     } else if (select_mode == "Edge") {
-        mesh_->setSelectMode(SelectMode::Edge);
-        geom_->setSelectMode(SelectMode::None);
+        mode = SelectMode::Edge;
     } else if (select_mode == "Block") {
-        mesh_->setSelectMode(SelectMode::Block);
-        geom_->setSelectMode(SelectMode::None);
+        mode = SelectMode::Block;
     } else if (select_mode == "Solid") {
-        mesh_->setSelectMode(SelectMode::Solid);
-        geom_->setSelectMode(SelectMode::None);
-    } else if (select_mode == "GeometryFace") {
-        mesh_->setSelectMode(SelectMode::None);
-        geom_->setSelectMode(SelectMode::Face);
-    } else if (select_mode == "GeometryEdge") {
-        mesh_->setSelectMode(SelectMode::None);
-        geom_->setSelectMode(SelectMode::Edge);
+        mode = SelectMode::Solid;
     } else if (select_mode == "GeometryVertex") {
-        mesh_->setSelectMode(SelectMode::None);
-        geom_->setSelectMode(SelectMode::Vertex);
+        mode = SelectMode::GeometryVertex;
+    } else if (select_mode == "GeometryEdge") {
+        mode = SelectMode::GeometryEdge;
+    } else if (select_mode == "GeometryFace") {
+        mode = SelectMode::GeometryFace;
     } else if (select_mode == "GeometrySolid") {
-        mesh_->setSelectMode(SelectMode::None);
-        geom_->setSelectMode(SelectMode::Solid);
-    } else {
-        mesh_->setSelectMode(SelectMode::None);
-        geom_->setSelectMode(SelectMode::None);
+        mode = SelectMode::GeometrySolid;
     }
+
+    mesh_->setSelectMode(mode);
+    geom_->setSelectMode(mode);
 }
 
 void SelectManager::clearSelection()
@@ -77,8 +69,7 @@ void SelectManager::clearSelection()
 
 std::unique_ptr<Selection> SelectManager::getSelection()
 {
-    auto geom_selection = geom_->getSelection();
-    if (geom_selection) {
+    if (auto geom_selection = geom_->getSelection()) {
         return geom_selection;
     }
     return mesh_->getSelection();

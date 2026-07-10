@@ -23,7 +23,11 @@ enum class SelectMode {
     Face,
     Edge,
     Solid,
-    Block
+    Block,
+    GeometryVertex,
+    GeometryEdge,
+    GeometryFace,
+    GeometrySolid
 };
 
 /**

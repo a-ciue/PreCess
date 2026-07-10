@@ -43,7 +43,6 @@ void MeshSelectManager::setSelectMode(SelectMode select_mode)
     } else if (this->select_mode_ == SelectMode::Solid) {
         this->selector_ = std::make_unique<SolidSelectorHighlight>(this->renderer_);
     } else {
-        assert(this->select_mode_ == SelectMode::None);
         this->selector_ = nullptr;
     }
 

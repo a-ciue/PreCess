@@ -123,8 +123,7 @@ bool QRenderWindow::event(QEvent* ev)
         if (!_click)
             return QQuickVTKItem::event(ev);
 
-        if (data_)
-            data_->style_->SetClick();
+        setClick();
         auto e = static_cast<QMouseEvent*>(ev);
         emit clicked();
         return QQuickVTKItem::event(ev);
