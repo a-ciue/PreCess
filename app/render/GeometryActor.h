@@ -15,6 +15,7 @@
 typedef Handle(IVtkOCC_Shape) OccShapeHandle;
 
 class GeometryActorSelectOp;
+class vtkPolyData;
 
 class GeometryActor {
     friend GeometryActorSelectOp;
@@ -47,12 +48,8 @@ private:
     vtkSmartPointer<vtkDataArray> line_sub_id_array_;
     vtkSmartPointer<vtkDataArray> poly_sub_id_array_;
 
-    vtkSmartPointer<IVtkTools_SubPolyDataFilter> poly_hl_filter_;
-    vtkSmartPointer<IVtkTools_SubPolyDataFilter> line_hl_filter_;
-    vtkSmartPointer<vtkPolyDataMapper> poly_hl_mapper_;
-    vtkSmartPointer<vtkPolyDataMapper> line_hl_mapper_;
-    vtkSmartPointer<vtkActor> poly_hl_actor_;
-    vtkSmartPointer<vtkActor> line_hl_actor_;
+    vtkSmartPointer<vtkPolyData> poly_only_;
+    vtkSmartPointer<vtkPolyData> line_only_;
 };
 
 #endif

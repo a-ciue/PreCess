@@ -120,22 +120,6 @@ bool GeometryActor::getIsEdgeRender()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    // 清理上一次的高亮管线
-    if (renderer_) {
-        if (poly_hl_actor_) {
-            renderer_->RemoveActor(poly_hl_actor_);
-            poly_hl_actor_ = nullptr;
-        }
-        if (line_hl_actor_) {
-            renderer_->RemoveActor(line_hl_actor_);
-            line_hl_actor_ = nullptr;
-        }
-    }
-    poly_hl_filter_ = nullptr;
-    poly_hl_mapper_ = nullptr;
-    line_hl_filter_ = nullptr;
-    line_hl_mapper_ = nullptr;
-
     // 全局：开一次
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
 
@@ -190,6 +174,9 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     if (!poly_only)
         poly_only = vtkSmartPointer<vtkPolyData>::New();
 
+    this->line_only_ = line_only;
+    this->poly_only_ = poly_only;
+
     line_sub_id_array_ = findSubIdArray(line_only, occ_shape_);
     poly_sub_id_array_ = findSubIdArray(poly_only, occ_shape_);
 
@@ -218,26 +205,6 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     poly_actor_->GetProperty()->SetColor(200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0);
     renderer_->AddActor(poly_actor_);
 
-    poly_hl_filter_ = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
-    poly_hl_filter_->SetInputData(poly_only);
-    poly_hl_filter_->SetDoFiltering(true);
-    if (poly_sub_id_array_ && poly_sub_id_array_->GetName())
-        poly_hl_filter_->SetIdsArrayName(poly_sub_id_array_->GetName());
-
-    poly_hl_mapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
-    poly_hl_mapper_->SetInputConnection(poly_hl_filter_->GetOutputPort());
-    // 相对显示 mapper 默认值：多边形 (0,-1)
-    poly_hl_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
-
-
-    poly_hl_actor_ = vtkSmartPointer<vtkActor>::New();
-    poly_hl_actor_->SetMapper(poly_hl_mapper_);
-    poly_hl_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0);
-    poly_hl_actor_->GetProperty()->SetOpacity(1);
-    poly_hl_actor_->SetVisibility(false);
-    poly_hl_actor_->PickableOff();
-    renderer_->AddActor(poly_hl_actor_);
-
     vtkNew<vtkPolyDataMapper> line_mapper;
     line_mapper->SetInputConnection(lineEdgeFilter->GetOutputPort());
     line_mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, 4);
@@ -251,30 +218,6 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
     renderer_->AddActor(line_actor_);
 
-    line_hl_filter_ = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
-    line_hl_filter_->SetInputData(line_only);
-    line_hl_filter_->SetDoFiltering(true);
-    if (line_sub_id_array_ && line_sub_id_array_->GetName())
-        line_hl_filter_->SetIdsArrayName(line_sub_id_array_->GetName());
-
-    line_hl_mapper_ = vtkSmartPointer<vtkPolyDataMapper>::New();
-    line_hl_mapper_->SetInputConnection(line_hl_filter_->GetOutputPort());
-    // 相对显示 mapper 默认值：线 (0,-5)，点 (-10)
-    line_hl_mapper_->SetRelativeCoincidentTopologyLineOffsetParameters(0, -1);
-    line_hl_mapper_->SetRelativeCoincidentTopologyPointOffsetParameter(-2);
-
-    line_hl_actor_ = vtkSmartPointer<vtkActor>::New();
-    line_hl_actor_->SetMapper(line_hl_mapper_);
-    line_hl_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0);
-    line_hl_actor_->GetProperty()->SetOpacity(0.5);
-    line_hl_actor_->GetProperty()->RenderLinesAsTubesOn();
-    line_hl_actor_->GetProperty()->SetLineWidth(3.0);
-    line_hl_actor_->GetProperty()->SetPointSize(8.0);
-    line_hl_actor_->GetProperty()->LightingOff();
-    line_hl_actor_->SetVisibility(false);
-    line_hl_actor_->PickableOff();
-    renderer_->AddActor(line_hl_actor_);
-
     spdlog::info("[GeometryActor] component={} actors added, face_cells={} line_cells={}",
         geometry_data.component_id, static_cast<int>(poly_only->GetNumberOfCells()), static_cast<int>(line_only->GetNumberOfCells()));
 }
@@ -284,8 +227,6 @@ void GeometryActor::deleteGeometryActor()
     if (this->renderer_) {
         renderer_->RemoveActor(this->poly_actor_);
         renderer_->RemoveActor(this->line_actor_);
-        renderer_->RemoveActor(this->poly_hl_actor_);
-        renderer_->RemoveActor(this->line_hl_actor_);
     }
 }
 

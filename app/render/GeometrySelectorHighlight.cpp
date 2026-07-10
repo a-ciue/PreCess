@@ -20,6 +20,15 @@ static void flushHighlight(IVtkTools_SubPolyDataFilter* filter, vtkActor* hlActo
         renderer->GetRenderWindow()->Render();
 }
 
+static void removeHighlightActor(GeometryHighlightPipeline& hl, vtkRenderer* renderer)
+{
+    if (hl.actor && renderer) {
+        renderer->RemoveActor(hl.actor);
+        if (renderer->GetRenderWindow())
+            renderer->GetRenderWindow()->Render();
+    }
+}
+
 // ─── Face ──────────────────────────────────────────────
 
 GeometryFaceSelectorHighlight::GeometryFaceSelectorHighlight(vtkRenderer* renderer)
@@ -27,17 +36,21 @@ GeometryFaceSelectorHighlight::GeometryFaceSelectorHighlight(vtkRenderer* render
 {
 }
 
-GeometryFaceSelectorHighlight::~GeometryFaceSelectorHighlight() { clear(); }
+GeometryFaceSelectorHighlight::~GeometryFaceSelectorHighlight()
+{
+    clear();
+    removeHighlightActor(hl_, renderer_);
+}
 
 void GeometryFaceSelectorHighlight::clear()
 {
     selections_.clear();
-    if (filter_) {
-        filter_->Clear();
-        filter_->Modified();
+    if (hl_.filter) {
+        hl_.filter->Clear();
+        hl_.filter->Modified();
     }
-    if (hl_actor_)
-        hl_actor_->SetVisibility(false);
+    if (hl_.actor)
+        hl_.actor->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -71,9 +84,9 @@ void GeometryFaceSelectorHighlight::select(double posx, double posy)
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
 
-    if (filter_)
-        filter_->SetData(ids);
-    flushHighlight(filter_, hl_actor_, !ids.IsEmpty(), renderer_);
+    if (hl_.filter)
+        hl_.filter->SetData(ids);
+    flushHighlight(hl_.filter, hl_.actor, !ids.IsEmpty(), renderer_);
 }
 
 void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
@@ -82,14 +95,16 @@ void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
         oldOp->disablePickerModes(picker_);
 
     clear();
+    removeHighlightActor(hl_, renderer_);
+    hl_ = {};
+
     geom_actor_ = std::move(geom_actor);
-    filter_ = nullptr;
-    hl_actor_ = nullptr;
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = op->highlightFilter(SelectMode::Face);
-        hl_actor_ = op->highlightActor(SelectMode::Face);
+        hl_ = op->buildHighlight(SelectMode::Face);
+        if (renderer_ && hl_.actor)
+            renderer_->AddActor(hl_.actor);
         op->configurePicker(picker_, SelectMode::Face);
     }
 }
@@ -101,17 +116,21 @@ GeometryEdgeSelectorHighlight::GeometryEdgeSelectorHighlight(vtkRenderer* render
 {
 }
 
-GeometryEdgeSelectorHighlight::~GeometryEdgeSelectorHighlight() { clear(); }
+GeometryEdgeSelectorHighlight::~GeometryEdgeSelectorHighlight()
+{
+    clear();
+    removeHighlightActor(hl_, renderer_);
+}
 
 void GeometryEdgeSelectorHighlight::clear()
 {
     selections_.clear();
-    if (filter_) {
-        filter_->Clear();
-        filter_->Modified();
+    if (hl_.filter) {
+        hl_.filter->Clear();
+        hl_.filter->Modified();
     }
-    if (hl_actor_)
-        hl_actor_->SetVisibility(false);
+    if (hl_.actor)
+        hl_.actor->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -145,9 +164,9 @@ void GeometryEdgeSelectorHighlight::select(double posx, double posy)
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
 
-    if (filter_)
-        filter_->SetData(ids);
-    flushHighlight(filter_, hl_actor_, !ids.IsEmpty(), renderer_);
+    if (hl_.filter)
+        hl_.filter->SetData(ids);
+    flushHighlight(hl_.filter, hl_.actor, !ids.IsEmpty(), renderer_);
 }
 
 void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
@@ -156,14 +175,16 @@ void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory
         oldOp->disablePickerModes(picker_);
 
     clear();
+    removeHighlightActor(hl_, renderer_);
+    hl_ = {};
+
     geom_actor_ = std::move(geom_actor);
-    filter_ = nullptr;
-    hl_actor_ = nullptr;
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = op->highlightFilter(SelectMode::Edge);
-        hl_actor_ = op->highlightActor(SelectMode::Edge);
+        hl_ = op->buildHighlight(SelectMode::Edge);
+        if (renderer_ && hl_.actor)
+            renderer_->AddActor(hl_.actor);
         op->configurePicker(picker_, SelectMode::Edge);
     }
 }
@@ -175,17 +196,21 @@ GeometryVertexSelectorHighlight::GeometryVertexSelectorHighlight(vtkRenderer* re
 {
 }
 
-GeometryVertexSelectorHighlight::~GeometryVertexSelectorHighlight() { clear(); }
+GeometryVertexSelectorHighlight::~GeometryVertexSelectorHighlight()
+{
+    clear();
+    removeHighlightActor(hl_, renderer_);
+}
 
 void GeometryVertexSelectorHighlight::clear()
 {
     selections_.clear();
-    if (filter_) {
-        filter_->Clear();
-        filter_->Modified();
+    if (hl_.filter) {
+        hl_.filter->Clear();
+        hl_.filter->Modified();
     }
-    if (hl_actor_)
-        hl_actor_->SetVisibility(false);
+    if (hl_.actor)
+        hl_.actor->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -219,9 +244,9 @@ void GeometryVertexSelectorHighlight::select(double posx, double posy)
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
 
-    if (filter_)
-        filter_->SetData(ids);
-    flushHighlight(filter_, hl_actor_, !ids.IsEmpty(), renderer_);
+    if (hl_.filter)
+        hl_.filter->SetData(ids);
+    flushHighlight(hl_.filter, hl_.actor, !ids.IsEmpty(), renderer_);
 }
 
 void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
@@ -230,14 +255,16 @@ void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFacto
         oldOp->disablePickerModes(picker_);
 
     clear();
+    removeHighlightActor(hl_, renderer_);
+    hl_ = {};
+
     geom_actor_ = std::move(geom_actor);
-    filter_ = nullptr;
-    hl_actor_ = nullptr;
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = op->highlightFilter(SelectMode::Vertex);
-        hl_actor_ = op->highlightActor(SelectMode::Vertex);
+        hl_ = op->buildHighlight(SelectMode::Vertex);
+        if (renderer_ && hl_.actor)
+            renderer_->AddActor(hl_.actor);
         op->configurePicker(picker_, SelectMode::Vertex);
     }
 }
@@ -249,18 +276,22 @@ GeometrySolidSelectorHighlight::GeometrySolidSelectorHighlight(vtkRenderer* rend
 {
 }
 
-GeometrySolidSelectorHighlight::~GeometrySolidSelectorHighlight() { clear(); }
+GeometrySolidSelectorHighlight::~GeometrySolidSelectorHighlight()
+{
+    clear();
+    removeHighlightActor(hl_, renderer_);
+}
 
 void GeometrySolidSelectorHighlight::clear()
 {
     selections_.clear();
     highlighted_face_ids_.clear();
-    if (filter_) {
-        filter_->Clear();
-        filter_->Modified();
+    if (hl_.filter) {
+        hl_.filter->Clear();
+        hl_.filter->Modified();
     }
-    if (hl_actor_)
-        hl_actor_->SetVisibility(false);
+    if (hl_.actor)
+        hl_.actor->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -301,9 +332,9 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
     for (const auto& fid : highlighted_face_ids_)
         ids.Append(fid);
 
-    if (filter_)
-        filter_->SetData(ids);
-    flushHighlight(filter_, hl_actor_, !ids.IsEmpty(), renderer_);
+    if (hl_.filter)
+        hl_.filter->SetData(ids);
+    flushHighlight(hl_.filter, hl_.actor, !ids.IsEmpty(), renderer_);
 }
 
 void GeometrySolidSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
@@ -312,14 +343,16 @@ void GeometrySolidSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactor
         oldOp->disablePickerModes(picker_);
 
     clear();
+    removeHighlightActor(hl_, renderer_);
+    hl_ = {};
+
     geom_actor_ = std::move(geom_actor);
-    filter_ = nullptr;
-    hl_actor_ = nullptr;
 
     auto op = geom_actor_.lock();
     if (op) {
-        filter_ = op->highlightFilter(SelectMode::Solid);
-        hl_actor_ = op->highlightActor(SelectMode::Solid);
+        hl_ = op->buildHighlight(SelectMode::Solid);
+        if (renderer_ && hl_.actor)
+            renderer_->AddActor(hl_.actor);
         op->configurePicker(picker_, SelectMode::Solid);
     }
 }

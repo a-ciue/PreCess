@@ -5,6 +5,10 @@
 #include "Core.h"
 
 #include <vtkActor.h>
+#include <vtkDataArray.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
@@ -279,16 +283,47 @@ bool GeometryActorSelectOp::pickSolid(IVtkTools_ShapePicker* picker, vtkRenderer
     return true;
 }
 
-IVtkTools_SubPolyDataFilter* GeometryActorSelectOp::highlightFilter(SelectMode mode)
+GeometryHighlightPipeline GeometryActorSelectOp::buildHighlight(SelectMode mode)
 {
-    if (mode == SelectMode::Edge || mode == SelectMode::Vertex)
-        return geometry_actor_->line_hl_filter_.GetPointer();
-    return geometry_actor_->poly_hl_filter_.GetPointer();
-}
+    GeometryHighlightPipeline hl;
 
-vtkActor* GeometryActorSelectOp::highlightActor(SelectMode mode)
-{
-    if (mode == SelectMode::Edge || mode == SelectMode::Vertex)
-        return geometry_actor_->line_hl_actor_.GetPointer();
-    return geometry_actor_->poly_hl_actor_.GetPointer();
+    const bool useLine = (mode == SelectMode::Edge || mode == SelectMode::Vertex);
+    vtkPolyData* source = useLine ? geometry_actor_->line_only_.GetPointer()
+                                  : geometry_actor_->poly_only_.GetPointer();
+    vtkDataArray* idArray = useLine ? geometry_actor_->line_sub_id_array_.GetPointer()
+                                    : geometry_actor_->poly_sub_id_array_.GetPointer();
+    if (!source)
+        return hl;
+
+    hl.filter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
+    hl.filter->SetInputData(source);
+    hl.filter->SetDoFiltering(true);
+    if (idArray && idArray->GetName())
+        hl.filter->SetIdsArrayName(idArray->GetName());
+
+    hl.mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    hl.mapper->SetInputConnection(hl.filter->GetOutputPort());
+
+    hl.actor = vtkSmartPointer<vtkActor>::New();
+    hl.actor->SetMapper(hl.mapper);
+    hl.actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+    hl.actor->SetVisibility(false);
+    hl.actor->PickableOff();
+
+    if (useLine) {
+        // 相对显示 mapper 默认值：线 (0,-5)，点 (-10)
+        hl.mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, -1);
+        hl.mapper->SetRelativeCoincidentTopologyPointOffsetParameter(-2);
+        hl.actor->GetProperty()->SetOpacity(0.5);
+        hl.actor->GetProperty()->RenderLinesAsTubesOn();
+        hl.actor->GetProperty()->SetLineWidth(3.0);
+        hl.actor->GetProperty()->SetPointSize(8.0);
+        hl.actor->GetProperty()->LightingOff();
+    } else {
+        // 相对显示 mapper 默认值：多边形 (0,-1)
+        hl.mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
+        hl.actor->GetProperty()->SetOpacity(1);
+    }
+
+    return hl;
 }

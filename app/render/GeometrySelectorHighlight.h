@@ -41,8 +41,7 @@ public:
 private:
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
-    vtkActor* hl_actor_ { nullptr };
+    GeometryHighlightPipeline hl_;
 
     std::unordered_map<IVtk_IdType, Index> selections_;
 };
@@ -59,8 +58,7 @@ public:
 private:
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
-    vtkActor* hl_actor_ { nullptr };
+    GeometryHighlightPipeline hl_;
 
     std::unordered_map<IVtk_IdType, Index> selections_;
 };
@@ -77,8 +75,7 @@ public:
 private:
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
-    vtkActor* hl_actor_ { nullptr };
+    GeometryHighlightPipeline hl_;
 
     std::unordered_map<IVtk_IdType, Index> selections_;
 };
@@ -95,8 +92,7 @@ public:
 private:
     vtkRenderer* renderer_;
     GeometryActorSelectOpFactory geom_actor_;
-    IVtkTools_SubPolyDataFilter* filter_ { nullptr };
-    vtkActor* hl_actor_ { nullptr };
+    GeometryHighlightPipeline hl_;
 
     std::unordered_map<IVtk_IdType, Index> selections_;
     std::unordered_set<IVtk_IdType> highlighted_face_ids_;
