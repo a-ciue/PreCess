@@ -14,7 +14,9 @@
 #include <spdlog/spdlog.h>
 
 #include <filesystem>
+#include <cmath>
 #include <optional>
+#include <stdexcept>
 #include <string>
 
 using core::ArgType;
@@ -32,7 +34,11 @@ std::optional<double> readOptionalDouble(const std::vector<core::ArgObject>& arg
         return std::nullopt;
 
     try {
-        return std::stod(*text);
+        std::size_t parsed = 0;
+        double value = std::stod(*text, &parsed);
+        if (parsed != text->size() || !std::isfinite(value))
+            throw std::invalid_argument("not a finite double");
+        return value;
     } catch (...) {
         spdlog::warn("GmshMesh: invalid double parameter {} = '{}'", index, *text);
         return std::nullopt;
@@ -50,7 +56,11 @@ std::optional<int> readOptionalInt(const std::vector<core::ArgObject>& args, std
         return std::nullopt;
 
     try {
-        return std::stoi(*text);
+        std::size_t parsed = 0;
+        int value = std::stoi(*text, &parsed);
+        if (parsed != text->size())
+            throw std::invalid_argument("not an integer");
+        return value;
     } catch (...) {
         spdlog::warn("GmshMesh: invalid int parameter {} = '{}'", index, *text);
         return std::nullopt;
@@ -75,6 +85,29 @@ bool readBoolArg(const std::vector<core::ArgObject>& args, std::size_t index, bo
 
     const bool* value = args[index].get<ArgTypeEnum::Bool>();
     return value ? *value : defaultValue;
+}
+
+// 校验传入 Gmsh 前的数值参数，避免把不合法尺寸或质量值传递给底层库。
+bool validateMeshingParameters(const IncrementalMeshTools::GmshMeshParameters& parameters)
+{
+    if (parameters.targetMeshSize < 0.0
+        || parameters.minMeshSize < 0.0
+        || parameters.maxMeshSize < 0.0
+        || parameters.smoothingSteps < 0
+        || parameters.structuredEdgeDivisions < 0
+        || parameters.quadMinQuality < 0.0
+        || parameters.quadMinQuality > 1.0) {
+        spdlog::error("GmshMesh: invalid meshing parameter range");
+        return false;
+    }
+
+    if (parameters.minMeshSize > 0.0
+        && parameters.maxMeshSize > 0.0
+        && parameters.minMeshSize > parameters.maxMeshSize) {
+        spdlog::error("GmshMesh: minimum mesh size must not exceed maximum mesh size");
+        return false;
+    }
+    return true;
 }
 
 } // namespace
@@ -132,6 +165,9 @@ std::any systems::algo::GmshMeshHandler::execute(
         parameters.structuredEdgeDivisions = readOptionalInt(args, 10).value_or(0);
     }
     bool writeModel = readBoolArg(args, 11, true);
+
+    if (!validateMeshingParameters(parameters))
+        return {};
 
     if (faceIndex < 0) {
         spdlog::error("GmshMesh: need face id");

@@ -1,15 +1,12 @@
 #pragma once
 
 #include <array>
-#include <string>
 #include <vector>
-#include <filesystem>
 #include "GmshIncrementalMeshState.h"
 #include "GeometryData.h"
 
 struct MeshData;
 class ModelLayer;
-class GeometryRegistry;
 
 namespace IncrementalMeshTools {
 
@@ -26,12 +23,6 @@ struct GmshMeshParameters {
     double quadMinQuality {};
     int structuredEdgeDivisions {};
 };
-
-bool initMeshing(
-    const std::string& stepFile,
-    GeometryData& geometry,
-    GmshIncrementalMeshState& state,
-    GeometryRegistry& registry);
 
 SingleFaceMeshResult meshSingleFace(
     MeshData& mesh_data,
@@ -62,7 +53,5 @@ bool deleteFaceMesh(
 double estimateMeshSize(const GeometryData& geometry);
 
 std::size_t faceCount(const GeometryData& geometry);
-
-bool writeSingleFaceObj(const SingleFaceMeshResult& res, const std::filesystem::path& filepath);
 
 } // namespace IncrementalMeshTools

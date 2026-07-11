@@ -7,6 +7,9 @@
 
 #include <spdlog/spdlog.h>
 
+#include <IFSelect_ReturnStatus.hxx>
+#include <STEPControl_Reader.hxx>
+
 #include <filesystem>
 #include <memory>
 #include <string>
@@ -37,6 +40,22 @@ struct AppContext {
     std::size_t currentIndex { 0 };
     double meshSize { 10.0 };
 };
+
+// 示例加载 STEP，
+static bool loadStepGeometry(const std::string& path, GeometryData& geometry, GeometryRegistry& registry)
+{
+    STEPControl_Reader reader;
+    if (reader.ReadFile(path.c_str()) != IFSelect_RetDone)
+        return false;
+
+    reader.TransferRoots();
+    geometry.rootShape = std::make_unique<TopoDS_Shape>(reader.OneShape());
+    if (geometry.rootShape->IsNull())
+        return false;
+
+    geometry.ensureIndexBuilt(registry);
+    return true;
+}
 
 // 根据当前 MeshData 的局部到全局点映射，生成“全局点 ID -> 本地点序号”的查询表。
 static std::unordered_map<Index, std::size_t> buildGlobalToLocalPointMap(const MeshData& mesh)
@@ -234,7 +253,7 @@ int main(int argc, char* argv[])
     ctx.polyData = vtkSmartPointer<vtkPolyData>::New();
     ctx.meshData.init();
 
-    if (!IncrementalMeshTools::initMeshing(path, ctx.geometry, ctx.gmshState, ctx.modelLayer.geomRegistry())) {
+    if (!loadStepGeometry(path, ctx.geometry, ctx.modelLayer.geomRegistry())) {
         spdlog::error("Cannot import: {}", path);
         return 1;
     }

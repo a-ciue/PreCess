@@ -16,6 +16,8 @@ target_link_libraries(GmshVtkExample PRIVATE
     gmsh::shared
     Data
     GmshPluginlib
+    TKDESTEP
+    TKXSBase
     VTK::InteractionStyle
     VTK::CommonColor
     VTK::RenderingCore

@@ -7,8 +7,6 @@
 
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
-#include <IFSelect_ReturnStatus.hxx>
-#include <STEPControl_Reader.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
@@ -21,8 +19,9 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <stdexcept>
+#include <string>
 #include <vector>
-#include <fstream>
 #include <unordered_map>
 
 namespace {
@@ -96,18 +95,6 @@ private:
     double _tolerance;
     std::unordered_map<QuantizedCoord, Index, CoordHash> _map;
 };
-
-// ---- 加载 STEP ----
-TopoDS_Shape loadStep(const std::string& path)
-{
-    STEPControl_Reader reader;
-    if (reader.ReadFile(path.c_str()) != IFSelect_RetDone) {
-        spdlog::error("Cannot read STEP: {}", path);
-        return {};
-    }
-    reader.TransferRoots();
-    return reader.OneShape();
-}
 
 // 返回 GeometryData 中指定索引的 CAD 面，实际 Shape 统一从 GeometryRegistry 取得。
 TopoDS_Face getFaceByIndex(
@@ -219,6 +206,37 @@ struct EdgeTransfiniteInfo {
     int gmshTag {};
     int pointCount {};
     bool fixedByExistingMesh {};
+};
+
+// 管理一次单面划分使用的 Gmsh 全局会话，确保异常和提前返回时均会释放资源。
+class GmshSession {
+public:
+    GmshSession()
+    {
+        if (gmsh::isInitialized())
+            throw std::runtime_error("GmshMesh: Gmsh session is already initialized");
+
+        try {
+            gmsh::initialize();
+            ownsSession_ = true;
+        } catch (...) {
+            if (gmsh::isInitialized())
+                gmsh::finalize();
+            throw;
+        }
+    }
+
+    ~GmshSession()
+    {
+        if (ownsSession_ && gmsh::isInitialized())
+            gmsh::finalize();
+    }
+
+    GmshSession(const GmshSession&) = delete;
+    GmshSession& operator=(const GmshSession&) = delete;
+
+private:
+    bool ownsSession_ {};
 };
 
 // 设置 Gmsh 数值 option；
@@ -647,29 +665,6 @@ void mergeMeshResult(
 } // anonymous namespace
 
 // 公开接口
-bool IncrementalMeshTools::initMeshing(const std::string& stepFile,
-    GeometryData& geometry,
-    GmshIncrementalMeshState& state,
-    GeometryRegistry& registry)
-{
-    state = {};
-    if (geometry.index.built)
-        geometry.index.release(registry);
-
-    geometry.rootShape = std::make_unique<TopoDS_Shape>(loadStep(stepFile));
-    if (geometry.rootShape->IsNull()) {
-        spdlog::error("Failed to load: {}", stepFile);
-        return false;
-    }
-    geometry.ensureIndexBuilt(registry);
-    std::size_t faceCount = IncrementalMeshTools::faceCount(geometry);
-    std::size_t edgeCount = static_cast<std::size_t>(
-        geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)].Extent());
-    spdlog::info("Loaded: {} faces, {} global edges",
-        faceCount, edgeCount);
-    return faceCount > 0;
-}
-
 SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     MeshData& mesh_data,
     GeometryData& geometry,
@@ -698,7 +693,8 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
         spdlog::error("Face {} is null or invalid", faceIndex);
         return result;
     }
-    gmsh::initialize();
+    try {
+        GmshSession session;
     setGmshNumberOption("General.Terminal", 1);
     gmsh::model::add("face_model");
 
@@ -714,7 +710,6 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     gmsh::model::getEntities(faceDimTags, 2);
     if (faceDimTags.empty()) {
         spdlog::error("  No face after import");
-        gmsh::finalize();
         return result;
     }
     int faceTag = faceDimTags[0].second;
@@ -723,10 +718,14 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     int shared = 0, free = 0;
     std::map<int, std::size_t> vtxNodeMap;
 
-    for (auto& [gt, oid] : gmshToOcc) {
-        if (state.meshedEdgeRefCounts.count(oid) > 0) {
-            injectConstrainedEdge(gt, state.meshedEdgesCache.at(oid),
-                nodeCounter, elemCounter, vtxNodeMap);
+    for (const auto& [gt, oid] : gmshToOcc) {
+        auto cacheIt = state.meshedEdgesCache.find(oid);
+        if (state.meshedEdgeRefCounts.count(oid) > 0 && cacheIt != state.meshedEdgesCache.end()) {
+            if (!injectConstrainedEdge(gt, cacheIt->second,
+                    nodeCounter, elemCounter, vtxNodeMap)) {
+                spdlog::error("GmshMesh: failed to inject constrained edge {}", oid);
+                return result;
+            }
             shared++;
         } else {
             free++;
@@ -739,15 +738,11 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     try {
         if (!configureSurfaceMeshType(faceTag, meshType, gmshToOcc, state, meshSize, parameters)) {
             spdlog::warn("  Cannot configure {} mesh", surfaceMeshTypeName(meshType));
-            storeNewEdges(state, gmshToOcc);
-            gmsh::finalize();
             return result;
         }
         gmsh::model::mesh::generate(2);
     } catch (const std::exception& e) {
         spdlog::error("  Mesh failed: {}", e.what());
-        storeNewEdges(state, gmshToOcc);
-        gmsh::finalize();
         return result;
     }
 
@@ -764,20 +759,22 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
             }
         if (!has) {
             spdlog::warn("  No surface elements");
-            storeNewEdges(state, gmshToOcc);
-            gmsh::finalize();
             return result;
         }
     }
 
     result = extractFaceMesh(faceTag);
+    if (!result.success)
+        return result;
+
+    // 仅在面网格成功后提交边缓存、引用计数和面缓存，失败路径不改变状态。
     storeNewEdges(state, gmshToOcc);
     state.meshedFacesCache[faceIndex] = result; // 缓存面结果
 
-    if (result.success) {
         mergeMeshResult(mesh_data, model_layer, result);
+    } catch (const std::exception& e) {
+        spdlog::error("GmshMesh: setup or extraction failed: {}", e.what());
     }
-    gmsh::finalize();
     return result;
 }
 

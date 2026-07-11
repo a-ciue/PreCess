@@ -12,8 +12,6 @@ precess_plugin_link_libraries(GmshPlugin
     TKBRep       # BRep_Builder, BRepTools
     TKernel      # Standard_* 基础类型
     TKG3d        # gp_* 准则基础
-    TKDESTEP     # STEPControl_Reader
-    TKXSBase     # STEP/IGES 转换基础
     TKTopAlgo    # TopExp_Explorer
 )
 

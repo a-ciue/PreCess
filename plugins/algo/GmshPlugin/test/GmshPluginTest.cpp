@@ -82,3 +82,48 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     REQUIRE_FALSE(comp->mesh->face_vertices_.empty());
     REQUIRE(comp->mesh->face_vertices_offset_.size() > 1);
 }
+
+TEST_CASE("GmshMeshHandler rejects invalid current parameters", "[GmshPlugin]")
+{
+    BRepPrimAPI_MakeBox boxMaker(10.0, 10.0, 10.0);
+    boxMaker.Build();
+    REQUIRE(boxMaker.IsDone());
+
+    auto geometryData = std::make_unique<GeometryData>();
+    geometryData->rootShape = std::make_unique<TopoDS_Shape>(boxMaker.Shape());
+
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->geometry = std::move(geometryData);
+    components.push_back(std::move(component));
+
+    ModelLayer modelLayer;
+    Index modelId = modelLayer.addModel("box", std::move(components));
+    const Index componentId = modelLayer.modelById(modelId)->componentIds().front();
+    auto componentOp = modelLayer.getComponentOperator(componentId);
+    REQUIRE(componentOp.has_value());
+
+    MockIOSystem mockIo;
+    systems::algo::HandlerContext context { mockIo, *componentOp };
+    std::vector<core::ArgObject> args {
+        core::ArgObject::create<ArgTypeEnum::Text>("0"),
+        core::ArgObject::create<ArgTypeEnum::Combo>(0),
+        core::ArgObject::create<ArgTypeEnum::Text>("1.0"),
+        core::ArgObject::create<ArgTypeEnum::Text>("2.0"),
+        core::ArgObject::create<ArgTypeEnum::Text>("1.0"),
+        core::ArgObject::create<ArgTypeEnum::Combo>(0),
+        core::ArgObject::create<ArgTypeEnum::Combo>(0),
+        core::ArgObject::create<ArgTypeEnum::Text>(""),
+        core::ArgObject::create<ArgTypeEnum::Combo>(0),
+        core::ArgObject::create<ArgTypeEnum::Text>(""),
+        core::ArgObject::create<ArgTypeEnum::Text>(""),
+        core::ArgObject::create<ArgTypeEnum::Bool>(false)
+    };
+
+    systems::algo::GmshMeshHandler handler;
+    handler.execute(context, args);
+
+    ComponentData* comp = modelLayer.findComponent(componentId);
+    REQUIRE(comp != nullptr);
+    REQUIRE(comp->mesh == nullptr);
+}
