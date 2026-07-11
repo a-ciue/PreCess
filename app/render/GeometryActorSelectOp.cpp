@@ -310,7 +310,7 @@ GeometryHighlightPipeline GeometryActorSelectOp::buildHighlight(SelectMode mode)
         hl.mapper->SetRelativeCoincidentTopologyPointOffsetParameter(-2);
     } else {
         // 相对显示 mapper 默认值：多边形 (0,-1)
-        hl.mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
+        hl.mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -5);
     }
 
     return hl;

@@ -39,7 +39,6 @@ VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer* renderer, vtkActor
         prop->SetColor(1.0, 0.0, 0.0); // 红色高亮
         prop->SetPointSize(6.0);
         highlight_actor_->SetProperty(prop);
-        highlight_actor_->SetVisibility(false);
     }
 
     this->selected_ids_->SetNumberOfTuples(1);
@@ -64,8 +63,6 @@ SelectionVtk VertexSelectorHighlight::get()
 void VertexSelectorHighlight::clear()
 {
     _cancel_highlight(this->selected_ids_);
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
 }
 
 void VertexSelectorHighlight::select(double posx, double posy)
@@ -114,8 +111,6 @@ void VertexSelectorHighlight::select(double posx, double posy)
         spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
     }
     selected_ids_->Modified(); // 通知 VTK 数据已更改，进行刷新
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }
 
 void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
@@ -125,6 +120,4 @@ void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_ac
         auto extract_selection = model_actor->extractVertex(this->selected_ids_);
         this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
     }
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }

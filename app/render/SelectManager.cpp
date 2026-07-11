@@ -17,7 +17,7 @@ SelectManager::SelectManager()
     empty_mapper_->SetInputData(empty);
     highlight_actor_->SetMapper(empty_mapper_);
     highlight_actor_->PickableOff();
-    highlight_actor_->SetVisibility(false);
+    highlight_actor_->SetVisibility(true);
 }
 
 SelectManager::~SelectManager() = default;
@@ -48,8 +48,6 @@ void SelectManager::setSelectActor(std::weak_ptr<GeometryActor> geom_actor)
 
 void SelectManager::setSelectMode(const std::string& select_mode)
 {
-    // 复位共享 actor：隐藏并挂回空 mapper；随后由激活的 selector 挂上自己的 mapper（None 则保持空）
-    highlight_actor_->SetVisibility(false);
     highlight_actor_->SetMapper(empty_mapper_);
 
     SelectMode mode = SelectMode::None;

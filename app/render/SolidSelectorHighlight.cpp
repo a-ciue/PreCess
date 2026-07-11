@@ -53,7 +53,6 @@ SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer* renderer, vtkActor* 
         prop->SetEdgeColor(1.0, 0.0, 0.0); // 红色边框
         prop->SetLineWidth(2.0);
         highlight_actor_->SetProperty(prop);
-        highlight_actor_->SetVisibility(false);
     }
 }
 
@@ -75,8 +74,6 @@ SelectionVtk SolidSelectorHighlight::get()
 void SolidSelectorHighlight::clear()
 {
     _cancel_highlight(this->selected_ids_);
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
 }
 
 void SolidSelectorHighlight::select(double posx, double posy)
@@ -122,8 +119,6 @@ void SolidSelectorHighlight::select(double posx, double posy)
         spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
     }
     this->selected_ids_->Modified(); // 触发highlight_actor_更新
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }
 
 void SolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
@@ -133,6 +128,4 @@ void SolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_act
         vtkSmartPointer extract_selection = model_actor->extractSolid(selected_ids_);
         this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
     }
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }

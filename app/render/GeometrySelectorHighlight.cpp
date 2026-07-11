@@ -11,12 +11,11 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 
-static void flushHighlight(IVtkTools_SubPolyDataFilter* filter, vtkActor* hlActor, bool visible, vtkRenderer* renderer)
+static void flushHighlight(IVtkTools_SubPolyDataFilter* filter, vtkRenderer* renderer)
 {
-    if (!filter || !hlActor || !renderer)
+    if (!filter || !renderer)
         return;
     filter->Modified();
-    hlActor->SetVisibility(visible);
     if (renderer->GetRenderWindow())
         renderer->GetRenderWindow()->Render();
 }
@@ -41,7 +40,6 @@ static void mountHighlight(vtkActor* actor, const GeometryHighlightPipeline& hl,
         prop->SetOpacity(1.0);
     }
     actor->SetProperty(prop);
-    actor->SetVisibility(false);
 }
 
 // ─── Face ──────────────────────────────────────────────
@@ -64,8 +62,6 @@ void GeometryFaceSelectorHighlight::clear()
         hl_.filter->Clear();
         hl_.filter->Modified();
     }
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -101,7 +97,7 @@ void GeometryFaceSelectorHighlight::select(double posx, double posy)
 
     if (hl_.filter)
         hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, highlight_actor_, !ids.IsEmpty(), renderer_);
+    flushHighlight(hl_.filter, renderer_);
 }
 
 void GeometryFaceSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
@@ -142,8 +138,6 @@ void GeometryEdgeSelectorHighlight::clear()
         hl_.filter->Clear();
         hl_.filter->Modified();
     }
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -179,7 +173,7 @@ void GeometryEdgeSelectorHighlight::select(double posx, double posy)
 
     if (hl_.filter)
         hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, highlight_actor_, !ids.IsEmpty(), renderer_);
+    flushHighlight(hl_.filter, renderer_);
 }
 
 void GeometryEdgeSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
@@ -220,8 +214,6 @@ void GeometryVertexSelectorHighlight::clear()
         hl_.filter->Clear();
         hl_.filter->Modified();
     }
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -257,7 +249,7 @@ void GeometryVertexSelectorHighlight::select(double posx, double posy)
 
     if (hl_.filter)
         hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, highlight_actor_, !ids.IsEmpty(), renderer_);
+    flushHighlight(hl_.filter, renderer_);
 }
 
 void GeometryVertexSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)
@@ -299,8 +291,6 @@ void GeometrySolidSelectorHighlight::clear()
         hl_.filter->Clear();
         hl_.filter->Modified();
     }
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
     if (renderer_ && renderer_->GetRenderWindow())
         renderer_->GetRenderWindow()->Render();
 }
@@ -343,7 +333,7 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
 
     if (hl_.filter)
         hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, highlight_actor_, !ids.IsEmpty(), renderer_);
+    flushHighlight(hl_.filter, renderer_);
 }
 
 void GeometrySolidSelectorHighlight::setCurGeomActor(GeometryActorSelectOpFactory geom_actor)

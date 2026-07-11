@@ -66,7 +66,6 @@ EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer* renderer, vtkActor* hi
         prop->SetColor(MeshActor::colors->GetColor3d("red").GetData());
         prop->SetLineWidth(5);
         highlight_actor_->SetProperty(prop);
-        highlight_actor_->SetVisibility(false);
     }
 }
 
@@ -79,8 +78,6 @@ void EdgeSelectorHighlight::clear()
 {
     _cancel_highlight(selected_mapper_);
     selections_.clear();
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
 }
 
 SelectionVtk EdgeSelectorHighlight::get()
@@ -142,8 +139,6 @@ void EdgeSelectorHighlight::select(double posx, double posy)
         auto edge_poly_data = model_actor->extractEdge(selections_);
         // 设置PolyData到mapper
         selected_mapper_->SetInputData(edge_poly_data);
-        if (highlight_actor_)
-            highlight_actor_->SetVisibility(!selections_.empty());
     } else {
         // 没选到
         clear();

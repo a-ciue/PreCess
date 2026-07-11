@@ -41,7 +41,6 @@ FaceSelectorHighlight::FaceSelectorHighlight(vtkRenderer* renderer, vtkActor* hi
         prop->EdgeVisibilityOn();
         prop->SetEdgeColor(1.0, 0.0, 0.0);
         highlight_actor_->SetProperty(prop);
-        highlight_actor_->SetVisibility(false);
     }
 }
 
@@ -66,8 +65,6 @@ void FaceSelectorHighlight::clear()
 {
     _cancel_highlight(selected_mapper_);
     selections_.clear();
-    if (highlight_actor_)
-        highlight_actor_->SetVisibility(false);
 }
 
 void FaceSelectorHighlight::select(double posx, double posy)
@@ -112,8 +109,6 @@ void FaceSelectorHighlight::select(double posx, double posy)
         highlight_poly->SetPolys(cell_array); // 设置面单元
 
         selected_mapper_->SetInputData(highlight_poly); // 触发高亮演员更新渲染
-        if (highlight_actor_)
-            highlight_actor_->SetVisibility(!selections_.empty());
     } else {
         // 没选到
         clear();
