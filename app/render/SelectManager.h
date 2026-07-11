@@ -5,6 +5,9 @@
 
 #include <memory>
 #include <string>
+#include <vtkNew.h>
+#include <vtkActor.h>
+#include <vtkPolyDataMapper.h>
 
 class vtkRenderer;
 class MeshActor;
@@ -30,5 +33,7 @@ public:
 private:
     std::unique_ptr<MeshSelectManager> mesh_;
     std::unique_ptr<GeometrySelectManager> geom_;
+    vtkNew<vtkActor> highlight_actor_;
+    vtkNew<vtkPolyDataMapper> empty_mapper_;
 };
 #endif

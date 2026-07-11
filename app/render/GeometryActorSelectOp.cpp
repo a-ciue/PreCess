@@ -304,25 +304,13 @@ GeometryHighlightPipeline GeometryActorSelectOp::buildHighlight(SelectMode mode)
     hl.mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     hl.mapper->SetInputConnection(hl.filter->GetOutputPort());
 
-    hl.actor = vtkSmartPointer<vtkActor>::New();
-    hl.actor->SetMapper(hl.mapper);
-    hl.actor->GetProperty()->SetColor(1.0, 0.0, 0.0);
-    hl.actor->SetVisibility(false);
-    hl.actor->PickableOff();
-
     if (useLine) {
         // 相对显示 mapper 默认值：线 (0,-5)，点 (-10)
         hl.mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, -1);
         hl.mapper->SetRelativeCoincidentTopologyPointOffsetParameter(-2);
-        hl.actor->GetProperty()->SetOpacity(0.5);
-        hl.actor->GetProperty()->RenderLinesAsTubesOn();
-        hl.actor->GetProperty()->SetLineWidth(3.0);
-        hl.actor->GetProperty()->SetPointSize(8.0);
-        hl.actor->GetProperty()->LightingOff();
     } else {
         // 相对显示 mapper 默认值：多边形 (0,-1)
         hl.mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
-        hl.actor->GetProperty()->SetOpacity(1);
     }
 
     return hl;

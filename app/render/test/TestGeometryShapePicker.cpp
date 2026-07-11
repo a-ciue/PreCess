@@ -150,22 +150,22 @@ public:
         }
 
         if (key == "1") {
-            mgr_->setSelectMode(SelectMode::Vertex);
+            mgr_->setSelectMode(SelectMode::GeometryVertex);
             spdlog::info("[GEOMETRY] mode=Vertex");
             return;
         }
         if (key == "2") {
-            mgr_->setSelectMode(SelectMode::Edge);
+            mgr_->setSelectMode(SelectMode::GeometryEdge);
             spdlog::info("[GEOMETRY] mode=Edge");
             return;
         }
         if (key == "3") {
-            mgr_->setSelectMode(SelectMode::Face);
+            mgr_->setSelectMode(SelectMode::GeometryFace);
             spdlog::info("[GEOMETRY] mode=Face");
             return;
         }
         if (key == "4") {
-            mgr_->setSelectMode(SelectMode::Solid);
+            mgr_->setSelectMode(SelectMode::GeometrySolid);
             spdlog::info("[GEOMETRY] mode=Solid");
             return;
         }
@@ -210,13 +210,13 @@ int main(int argc, char** argv)
             modeStr = "face";
     }
 
-    SelectMode mode = SelectMode::Face;
+    SelectMode mode = SelectMode::GeometryFace;
     if (modeStr == "edge")
-        mode = SelectMode::Edge;
+        mode = SelectMode::GeometryEdge;
     else if (modeStr == "vertex")
-        mode = SelectMode::Vertex;
+        mode = SelectMode::GeometryVertex;
     else if (modeStr == "solid")
-        mode = SelectMode::Solid;
+        mode = SelectMode::GeometrySolid;
 
     TopoDS_Shape root;
     if (stepPath) {
@@ -259,7 +259,10 @@ int main(int argc, char** argv)
     gmgr.setVisibility(component_id, true);
 
     GeometrySelectManager selMgr;
-    selMgr.bindRenderer(renderer);
+    vtkNew<vtkActor> highlightActor;
+    highlightActor->PickableOff();
+    renderer->AddActor(highlightActor);
+    selMgr.bindRenderer(renderer, highlightActor);
 
     auto geomActor = gmgr.getComponentActor(component_id);
     selMgr.setSelectActor(geomActor);

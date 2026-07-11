@@ -15,7 +15,7 @@ struct GeometrySubshapeIndex;
 
 class GeometrySelectManager {
 public:
-    void bindRenderer(vtkRenderer* renderer);
+    void bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor);
     void select(double posx, double posy);
 
     void setSelectActor(std::weak_ptr<GeometryActor> geom_actor);
@@ -30,6 +30,7 @@ private:
     vtkNew<vtkPolyDataMapper> selection_mapper_;
     vtkSmartPointer<IVtkTools_ShapePicker> picker_ {};
     vtkRenderer* renderer_ { nullptr };
+    vtkActor* highlight_actor_ { nullptr };
     std::unique_ptr<GeometrySelectorHighlight> selector_ {};
 };
 #endif // GEOMETRY_SELECT_MANAGER_H

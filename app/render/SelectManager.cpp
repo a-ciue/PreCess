@@ -4,18 +4,30 @@
 #include "GeometryActor.h"
 #include "MeshActor.h"
 
+#include <vtkMapper.h>
+#include <vtkPolyData.h>
+#include <vtkRenderer.h>
+
 SelectManager::SelectManager()
     : mesh_(std::make_unique<MeshSelectManager>())
     , geom_(std::make_unique<GeometrySelectManager>())
 {
+    // 共享 actor 始终持有一个空 mapper（None 或未激活时的兜底，避免空 mapper / 残留旧数据）
+    vtkNew<vtkPolyData> empty;
+    empty_mapper_->SetInputData(empty);
+    highlight_actor_->SetMapper(empty_mapper_);
+    highlight_actor_->PickableOff();
+    highlight_actor_->SetVisibility(false);
 }
 
 SelectManager::~SelectManager() = default;
 
 void SelectManager::bindRenderer(vtkRenderer* renderer)
 {
-    mesh_->bindRenderer(renderer);
-    geom_->bindRenderer(renderer);
+    if (renderer)
+        renderer->AddActor(highlight_actor_);
+    mesh_->bindRenderer(renderer, highlight_actor_);
+    geom_->bindRenderer(renderer, highlight_actor_);
 }
 
 void SelectManager::select(double posx, double posy)
@@ -36,6 +48,10 @@ void SelectManager::setSelectActor(std::weak_ptr<GeometryActor> geom_actor)
 
 void SelectManager::setSelectMode(const std::string& select_mode)
 {
+    // 复位共享 actor：隐藏并挂回空 mapper；随后由激活的 selector 挂上自己的 mapper（None 则保持空）
+    highlight_actor_->SetVisibility(false);
+    highlight_actor_->SetMapper(empty_mapper_);
+
     SelectMode mode = SelectMode::None;
     if (select_mode == "Vertex") {
         mode = SelectMode::Vertex;

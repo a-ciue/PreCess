@@ -4,9 +4,10 @@
 #include <vtkRenderWindow.h>
 #include <cassert>
 
-void GeometrySelectManager::bindRenderer(vtkRenderer* renderer)
+void GeometrySelectManager::bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor)
 {
     this->renderer_ = renderer;
+    this->highlight_actor_ = highlight_actor;
     if (!picker_) {
         picker_ = vtkSmartPointer<IVtkTools_ShapePicker>::New();
         picker_->SetRenderer(renderer);
@@ -42,13 +43,13 @@ void GeometrySelectManager::setSelectMode(SelectMode select_mode)
     }
 
     if (this->select_mode_ == SelectMode::GeometryVertex) {
-        this->selector_ = std::make_unique<GeometryVertexSelectorHighlight>(this->renderer_);
+        this->selector_ = std::make_unique<GeometryVertexSelectorHighlight>(this->renderer_, this->highlight_actor_);
     } else if (this->select_mode_ == SelectMode::GeometryFace) {
-        this->selector_ = std::make_unique<GeometryFaceSelectorHighlight>(this->renderer_);
+        this->selector_ = std::make_unique<GeometryFaceSelectorHighlight>(this->renderer_, this->highlight_actor_);
     } else if (this->select_mode_ == SelectMode::GeometryEdge) {
-        this->selector_ = std::make_unique<GeometryEdgeSelectorHighlight>(this->renderer_);
+        this->selector_ = std::make_unique<GeometryEdgeSelectorHighlight>(this->renderer_, this->highlight_actor_);
     } else if (this->select_mode_ == SelectMode::GeometrySolid) {
-        this->selector_ = std::make_unique<GeometrySolidSelectorHighlight>(this->renderer_);
+        this->selector_ = std::make_unique<GeometrySolidSelectorHighlight>(this->renderer_, this->highlight_actor_);
     } else {
         this->selector_ = nullptr;
     }

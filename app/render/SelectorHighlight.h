@@ -93,7 +93,7 @@ public:
     //    int local_id;
     //};
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    FaceSelectorHighlight(vtkRenderer* renderer);
+    FaceSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     //! @brief 将actor从renderer中删除
     ~FaceSelectorHighlight() override;
     //! @brief 返回当前选择的面
@@ -109,7 +109,7 @@ private:
     vtkRenderer* renderer_;
     std::vector<vtkIdType> selections_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
-    vtkSmartPointer<vtkActor> selected_actor_;
+    vtkActor* highlight_actor_ {};
     vtkNew<vtkPropCollection> collection_;
     MeshActorSelectOpFactory model_actor_;
 };
@@ -117,7 +117,7 @@ private:
 class EdgeSelectorHighlight : public SelectorHighlight {
 public:
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    EdgeSelectorHighlight(vtkRenderer* renderer);
+    EdgeSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     //! @brief 将actor从renderer中删除
     ~EdgeSelectorHighlight() override;
     //! @brief 获取当前选择的边
@@ -138,7 +138,7 @@ private:
     vtkRenderer* renderer_;
     std::vector<std::array<vtkIdType, 2>> selections_;
     vtkNew<vtkDataSetMapper> selected_mapper_;
-    vtkSmartPointer<vtkActor> selected_actor_;
+    vtkActor* highlight_actor_ {};
     vtkNew<vtkPropCollection> collection_;
     MeshActorSelectOpFactory model_actor_;
 };
@@ -146,7 +146,7 @@ private:
 class SolidSelectorHighlight : public SelectorHighlight {
 public:
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    SolidSelectorHighlight(vtkRenderer* renderer);
+    SolidSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     //! @brief 将actor从renderer中删除
     ~SolidSelectorHighlight() override;
     //! @brief 返回当前选择的体
@@ -160,7 +160,8 @@ public:
 
 private:
     vtkRenderer* renderer_;
-    vtkNew<vtkActor> highlight_actor_;
+    vtkActor* highlight_actor_ {};
+    vtkSmartPointer<vtkDataSetMapper> mapper_;
     MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空
     vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的体id，绑定到了mapper，用于触发高亮体cell修改
 };
@@ -171,7 +172,7 @@ private:
 class VertexSelectorHighlight : public SelectorHighlight {
 public:
     //! @brief 将actor绑定到renderer，mapper绑定到actor
-    VertexSelectorHighlight(vtkRenderer* renderer);
+    VertexSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     //! @brief 将actor从renderer中删除
     ~VertexSelectorHighlight() override;
     //! @brief 返回当前选择的点集
@@ -185,7 +186,8 @@ public:
 
 private:
     vtkRenderer* renderer_;
-    vtkNew<vtkActor> highlight_actor_;
+    vtkActor* highlight_actor_ {};
+    vtkSmartPointer<vtkDataSetMapper> mapper_;
     MeshActorSelectOpFactory model_actor_; //> 当前操作的模型，可能为空
     vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的点id，绑定到了mapper，用于触发高亮顶点修改
 };

@@ -31,7 +31,7 @@ protected:
 
 class GeometryFaceSelectorHighlight final : public GeometrySelectorHighlight {
 public:
-    GeometryFaceSelectorHighlight(vtkRenderer* renderer);
+    GeometryFaceSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     ~GeometryFaceSelectorHighlight() override;
     void clear() override;
     GeometrySelectionVtk get() const override;
@@ -40,6 +40,7 @@ public:
 
 private:
     vtkRenderer* renderer_;
+    vtkActor* highlight_actor_ {};
     GeometryActorSelectOpFactory geom_actor_;
     GeometryHighlightPipeline hl_;
 
@@ -48,7 +49,7 @@ private:
 
 class GeometryEdgeSelectorHighlight final : public GeometrySelectorHighlight {
 public:
-    GeometryEdgeSelectorHighlight(vtkRenderer* renderer);
+    GeometryEdgeSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     ~GeometryEdgeSelectorHighlight() override;
     void clear() override;
     GeometrySelectionVtk get() const override;
@@ -57,6 +58,7 @@ public:
 
 private:
     vtkRenderer* renderer_;
+    vtkActor* highlight_actor_ {};
     GeometryActorSelectOpFactory geom_actor_;
     GeometryHighlightPipeline hl_;
 
@@ -65,7 +67,7 @@ private:
 
 class GeometryVertexSelectorHighlight final : public GeometrySelectorHighlight {
 public:
-    GeometryVertexSelectorHighlight(vtkRenderer* renderer);
+    GeometryVertexSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     ~GeometryVertexSelectorHighlight() override;
     void clear() override;
     GeometrySelectionVtk get() const override;
@@ -74,6 +76,7 @@ public:
 
 private:
     vtkRenderer* renderer_;
+    vtkActor* highlight_actor_ {};
     GeometryActorSelectOpFactory geom_actor_;
     GeometryHighlightPipeline hl_;
 
@@ -82,7 +85,7 @@ private:
 
 class GeometrySolidSelectorHighlight final : public GeometrySelectorHighlight {
 public:
-    GeometrySolidSelectorHighlight(vtkRenderer* renderer);
+    GeometrySolidSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor);
     ~GeometrySolidSelectorHighlight() override;
     void clear() override;
     GeometrySelectionVtk get() const override;
@@ -91,6 +94,7 @@ public:
 
 private:
     vtkRenderer* renderer_;
+    vtkActor* highlight_actor_ {};
     GeometryActorSelectOpFactory geom_actor_;
     GeometryHighlightPipeline hl_;
 

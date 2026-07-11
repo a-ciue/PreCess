@@ -32,30 +32,34 @@ vtkIdType _is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_)
 }
 }
 
-SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer* renderer)
+SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
     : renderer_(renderer)
+    , highlight_actor_(highlight_actor)
 {
     this->selected_ids_->SetName("vtkOriginalCellIds");
     this->selected_ids_->SetNumberOfComponents(1);
     this->selected_ids_->SetNumberOfValues(0);
 
     vtkNew<vtkUnstructuredGrid> dummy;
-    vtkNew<vtkDataSetMapper> mapper;
-    mapper->SetInputData(dummy);
+    this->mapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
+    this->mapper_->SetInputData(dummy);
+    this->mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
 
-    this->highlight_actor_->SetMapper(mapper);
-    this->highlight_actor_->GetProperty()->SetColor(1.0, 1.0, 0.0); // 黄色高亮
-    this->highlight_actor_->GetProperty()->EdgeVisibilityOn();
-    this->highlight_actor_->GetProperty()->SetEdgeColor(1.0, 0.0, 0.0); // 红色边框
-    this->highlight_actor_->GetProperty()->SetLineWidth(2.0);
-
-    renderer_->AddActor(this->highlight_actor_);
+    if (highlight_actor_) {
+        highlight_actor_->SetMapper(mapper_);
+        vtkNew<vtkProperty> prop;
+        prop->SetColor(1.0, 1.0, 0.0); // 黄色高亮
+        prop->EdgeVisibilityOn();
+        prop->SetEdgeColor(1.0, 0.0, 0.0); // 红色边框
+        prop->SetLineWidth(2.0);
+        highlight_actor_->SetProperty(prop);
+        highlight_actor_->SetVisibility(false);
+    }
 }
 
 SolidSelectorHighlight::~SolidSelectorHighlight()
 {
     clear();
-    renderer_->RemoveActor(this->highlight_actor_);
 }
 
 SelectionVtk SolidSelectorHighlight::get()
@@ -71,6 +75,8 @@ SelectionVtk SolidSelectorHighlight::get()
 void SolidSelectorHighlight::clear()
 {
     _cancel_highlight(this->selected_ids_);
+    if (highlight_actor_)
+        highlight_actor_->SetVisibility(false);
 }
 
 void SolidSelectorHighlight::select(double posx, double posy)
@@ -116,6 +122,8 @@ void SolidSelectorHighlight::select(double posx, double posy)
         spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
     }
     this->selected_ids_->Modified(); // 触发highlight_actor_更新
+    if (highlight_actor_)
+        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }
 
 void SolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
@@ -123,6 +131,8 @@ void SolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_act
     this->model_actor_ = model_actor;
     if (auto model_actor = this->model_actor_.lock()) {
         vtkSmartPointer extract_selection = model_actor->extractSolid(selected_ids_);
-        this->highlight_actor_->GetMapper()->SetInputConnection(extract_selection->GetOutputPort());
+        this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
     }
+    if (highlight_actor_)
+        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }

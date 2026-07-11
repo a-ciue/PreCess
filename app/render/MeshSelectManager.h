@@ -13,7 +13,7 @@
 class MeshSelectManager {
 
 public:
-	void bindRenderer(vtkRenderer* renderer);
+	void bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor);
 	void select(double posx, double posy);
 	void setSelectActor(std::weak_ptr<MeshActor> model_actor_);
 	void setSelectMode(SelectMode select_mode);
@@ -26,6 +26,7 @@ private:
 	vtkNew<vtkActor> selection_actor_;
 	vtkNew<vtkPolyDataMapper> selection_mapper_;
 	vtkRenderer* renderer_;
+	vtkActor* highlight_actor_ {};
 	std::unique_ptr<SelectorHighlight> selector_;
 };
 #endif

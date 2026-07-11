@@ -20,7 +20,6 @@ class vtkRenderer;
 struct GeometryHighlightPipeline {
     vtkSmartPointer<IVtkTools_SubPolyDataFilter> filter;
     vtkSmartPointer<vtkPolyDataMapper> mapper;
-    vtkSmartPointer<vtkActor> actor;
 };
 
 class GeometryActorSelectOpFactory {

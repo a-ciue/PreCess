@@ -120,9 +120,6 @@ bool GeometryActor::getIsEdgeRender()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    // 全局：开一次
-    vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
-
     OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
     aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     this->occ_shape_ = aShapeImpl;

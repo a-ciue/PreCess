@@ -25,28 +25,30 @@ vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_
 }
 }
 
-VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer* renderer)
+VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
     : renderer_(renderer)
+    , highlight_actor_(highlight_actor)
 {
     vtkNew<vtkUnstructuredGrid> dummy;
-    vtkNew<vtkDataSetMapper> mapper;
-    mapper->SetInputData(dummy);
+    this->mapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
+    this->mapper_->SetInputData(dummy);
 
-    this->highlight_actor_->SetMapper(mapper);
-    this->highlight_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0); // 红色高亮
-    this->highlight_actor_->GetProperty()->SetPointSize(6.0);
-    this->highlight_actor_->PickableOff(); // 防止自己被选中
+    if (highlight_actor_) {
+        highlight_actor_->SetMapper(mapper_);
+        vtkNew<vtkProperty> prop;
+        prop->SetColor(1.0, 0.0, 0.0); // 红色高亮
+        prop->SetPointSize(6.0);
+        highlight_actor_->SetProperty(prop);
+        highlight_actor_->SetVisibility(false);
+    }
 
     this->selected_ids_->SetNumberOfTuples(1);
     this->selected_ids_->SetNumberOfValues(0);
-
-    this->renderer_->AddActor(this->highlight_actor_);
 }
 
 VertexSelectorHighlight::~VertexSelectorHighlight()
 {
     clear();
-    this->renderer_->RemoveActor(this->highlight_actor_);
 }
 
 SelectionVtk VertexSelectorHighlight::get()
@@ -62,6 +64,8 @@ SelectionVtk VertexSelectorHighlight::get()
 void VertexSelectorHighlight::clear()
 {
     _cancel_highlight(this->selected_ids_);
+    if (highlight_actor_)
+        highlight_actor_->SetVisibility(false);
 }
 
 void VertexSelectorHighlight::select(double posx, double posy)
@@ -110,6 +114,8 @@ void VertexSelectorHighlight::select(double posx, double posy)
         spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
     }
     selected_ids_->Modified(); // 通知 VTK 数据已更改，进行刷新
+    if (highlight_actor_)
+        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }
 
 void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
@@ -117,6 +123,8 @@ void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_ac
     this->model_actor_ = model_actor;
     if (auto model_actor = this->model_actor_.lock()) {
         auto extract_selection = model_actor->extractVertex(this->selected_ids_);
-        this->highlight_actor_->GetMapper()->SetInputConnection(extract_selection->GetOutputPort());
+        this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
     }
+    if (highlight_actor_)
+        highlight_actor_->SetVisibility(selected_ids_->GetNumberOfValues() > 0);
 }

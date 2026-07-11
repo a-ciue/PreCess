@@ -25,25 +25,29 @@ std::vector<vtkIdType>::const_iterator _find_selected(vtkIdType new_face_id, con
 }
 }
 
-FaceSelectorHighlight::FaceSelectorHighlight(vtkRenderer* renderer)
+FaceSelectorHighlight::FaceSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
 {
-    this->selected_actor_ = vtkSmartPointer<vtkActor>::New();
+    this->highlight_actor_ = highlight_actor;
     this->renderer_ = renderer;
 
     selected_mapper_->SetInputData(vtkPolyData::New());
-    selected_actor_->SetMapper(selected_mapper_);
-    selected_actor_->GetProperty()->SetColor(1.0, 0.0, 0.0); // 红色高亮
-    selected_actor_->GetProperty()->SetLineWidth(2.0);
-    selected_actor_->GetProperty()->EdgeVisibilityOn();
-    selected_actor_->GetProperty()->SetEdgeColor(1.0, 0.0, 0.0);
-    selected_actor_->PickableOff(); // 防止自己被选中
+    selected_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
 
-    renderer_->AddActor(selected_actor_);
+    if (highlight_actor_) {
+        highlight_actor_->SetMapper(selected_mapper_);
+        vtkNew<vtkProperty> prop;
+        prop->SetColor(1.0, 0.0, 0.0); // 红色高亮
+        prop->SetLineWidth(2.0);
+        prop->EdgeVisibilityOn();
+        prop->SetEdgeColor(1.0, 0.0, 0.0);
+        highlight_actor_->SetProperty(prop);
+        highlight_actor_->SetVisibility(false);
+    }
 }
 
-FaceSelectorHighlight::~FaceSelectorHighlight()
-{
-    renderer_->RemoveActor(selected_actor_);
+FaceSelectorHighlight::~FaceSelectorHighlight() 
+{ 
+    clear(); 
 }
 
 SelectionVtk FaceSelectorHighlight::get()
@@ -62,6 +66,8 @@ void FaceSelectorHighlight::clear()
 {
     _cancel_highlight(selected_mapper_);
     selections_.clear();
+    if (highlight_actor_)
+        highlight_actor_->SetVisibility(false);
 }
 
 void FaceSelectorHighlight::select(double posx, double posy)
@@ -106,6 +112,8 @@ void FaceSelectorHighlight::select(double posx, double posy)
         highlight_poly->SetPolys(cell_array); // 设置面单元
 
         selected_mapper_->SetInputData(highlight_poly); // 触发高亮演员更新渲染
+        if (highlight_actor_)
+            highlight_actor_->SetVisibility(!selections_.empty());
     } else {
         // 没选到
         clear();
