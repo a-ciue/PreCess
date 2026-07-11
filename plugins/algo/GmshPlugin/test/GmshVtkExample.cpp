@@ -204,6 +204,7 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             ctx->currentIndex,
             ctx->meshSize,
             parameters);
+
         ctx->currentIndex++;
 
         if (result.success) {

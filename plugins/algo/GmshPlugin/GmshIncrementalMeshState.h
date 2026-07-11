@@ -17,6 +17,8 @@ struct SingleFaceMeshResult {
     std::vector<std::array<double, 3>> vertices;
     std::vector<std::size_t> face_vertices;
     std::vector<std::size_t> face_vertices_offset;
+    // 写入 MeshData 后对应的全局点 ID，用于只删除本次 Gmsh 生成的单元。
+    std::vector<Index> global_face_vertices;
     bool success { false };
 };
 

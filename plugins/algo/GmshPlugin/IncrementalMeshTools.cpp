@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -513,7 +514,7 @@ bool injectConstrainedEdge(int gmshTag,
         gmsh::model::mesh::addNodes(1, gmshTag, innerTags, innerCoords, innerParams);
 
     // 线单元
-    std::vector<std::size_t> allN;
+std::vector<std::size_t> allN;
     allN.push_back(tagV0);
     for (auto t : innerTags)
         allN.push_back(t);
@@ -628,7 +629,7 @@ void storeNewEdges(GmshIncrementalMeshState& state, const std::map<int, GeomEdge
 void mergeMeshResult(
     MeshData& mesh_data,
     ModelLayer& model_layer,
-    const SingleFaceMeshResult& result)
+    SingleFaceMeshResult& result)
 {
     if (!result.success)
         return;
@@ -646,12 +647,16 @@ void mergeMeshResult(
             result.vertices[i][2]);
     }
 
+    result.global_face_vertices.clear();
+    result.global_face_vertices.reserve(result.face_vertices.size());
+
     for (size_t i = 0; i + 1 < result.face_vertices_offset.size(); ++i) {
         size_t start = result.face_vertices_offset[i];
         size_t end = result.face_vertices_offset[i + 1];
         for (size_t j = start; j < end; ++j) {
-            mesh_data.face_vertices_.push_back(
-                localToGlobal[result.face_vertices[j]]);
+            Index globalPointId = localToGlobal[result.face_vertices[j]];
+            result.global_face_vertices.push_back(globalPointId);
+            mesh_data.face_vertices_.push_back(globalPointId);
         }
         mesh_data.face_vertices_offset_.push_back(
             static_cast<Index>(mesh_data.face_vertices_.size()));
@@ -662,6 +667,82 @@ void mergeMeshResult(
         mesh_data.face_vertices_offset_.size() - 1);
 }
 
+// 从 MeshData 中移除指定 Gmsh 面结果的单元，保留其他算法已写入的单元。
+bool removeCachedFaceCells(MeshData& mesh_data, const SingleFaceMeshResult& result)
+{
+    if (result.global_face_vertices.size() != result.face_vertices.size()
+        || result.face_vertices_offset.size() < 2) {
+        spdlog::error("GmshMesh: cached face topology is incomplete");
+        return false;
+    }
+
+    std::set<std::vector<Index>> targetCells;
+    for (std::size_t i = 0; i + 1 < result.face_vertices_offset.size(); ++i) {
+        const std::size_t begin = result.face_vertices_offset[i];
+        const std::size_t end = result.face_vertices_offset[i + 1];
+        if (begin > end || end > result.global_face_vertices.size())
+            return false;
+        targetCells.emplace(result.global_face_vertices.begin() + begin,
+            result.global_face_vertices.begin() + end);
+    }
+
+    std::vector<Index> keptVertices;
+    std::vector<Index> keptOffsets { 0 };
+    for (std::size_t i = 0; i + 1 < mesh_data.face_vertices_offset_.size(); ++i) {
+        const Index begin = mesh_data.face_vertices_offset_[i];
+        const Index end = mesh_data.face_vertices_offset_[i + 1];
+        if (begin < 0 || end < begin
+            || end > static_cast<Index>(mesh_data.face_vertices_.size())) {
+            spdlog::error("GmshMesh: invalid MeshData face offsets");
+            return false;
+        }
+
+        std::vector<Index> cell(mesh_data.face_vertices_.begin() + begin,
+            mesh_data.face_vertices_.begin() + end);
+        if (targetCells.erase(cell) == 0)
+            keptVertices.insert(keptVertices.end(), cell.begin(), cell.end());
+        keptOffsets.push_back(static_cast<Index>(keptVertices.size()));
+    }
+
+    if (!targetCells.empty()) {
+        spdlog::error("GmshMesh: cached face cells are missing from MeshData");
+        return false;
+    }
+
+    mesh_data.face_vertices_ = std::move(keptVertices);
+    mesh_data.face_vertices_offset_ = std::move(keptOffsets);
+    return true;
+}
+
+// 释放一个 CAD 面占用的边缓存和面缓存，不修改 MeshData。
+bool releaseFaceCache(
+    GeometryData& geometry,
+    GmshIncrementalMeshState& state,
+    ModelLayer& model_layer,
+    std::size_t face_index)
+{
+    auto faceIt = state.meshedFacesCache.find(face_index);
+    if (faceIt == state.meshedFacesCache.end())
+        return false;
+
+    TopoDS_Face face = getFaceByIndex(
+        geometry, model_layer.geomRegistry(), face_index);
+    for (GeomEdgeId globalEdgeId : getFaceEdgeIds(face, geometry)) {
+        auto refIt = state.meshedEdgeRefCounts.find(globalEdgeId);
+        if (refIt == state.meshedEdgeRefCounts.end())
+            continue;
+
+        if (--refIt->second <= 0) {
+            state.meshedEdgeRefCounts.erase(refIt);
+            state.meshedEdgesCache.erase(globalEdgeId);
+        }
+    }
+    state.meshedFacesCache.erase(faceIt);
+    return true;
+}
+
+// 复制本次划分会修改的网格数组，用于重划分的候选结果。
+// 提交候选划分产生的网格数组，不影响 MeshData 的属性、边和体数据。
 } // anonymous namespace
 
 // 公开接口
@@ -697,6 +778,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
         GmshSession session;
     setGmshNumberOption("General.Terminal", 1);
     gmsh::model::add("face_model");
+    auto gmshToOcc = importGmshEdges(face, geometry);
 
     // 先逐边导入并记录返回 tag，再导入整个面；面导入会复用相同 OCC 边的 tag。
     auto gmshToOcc = importGmshEdges(face, geometry);
@@ -764,16 +846,10 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     }
 
     result = extractFaceMesh(faceTag);
-    if (!result.success)
-        return result;
-
-    // 仅在面网格成功后提交边缓存、引用计数和面缓存，失败路径不改变状态。
-    storeNewEdges(state, gmshToOcc);
-    state.meshedFacesCache[faceIndex] = result; // 缓存面结果
-
+    if (result.success) {
+        storeNewEdges(state, gmshToOcc);
         mergeMeshResult(mesh_data, model_layer, result);
-    } catch (const std::exception& e) {
-        spdlog::error("GmshMesh: setup or extraction failed: {}", e.what());
+        state.meshedFacesCache[faceIndex] = result;
     }
     return result;
 }
@@ -804,6 +880,7 @@ std::size_t IncrementalMeshTools::faceCount(const GeometryData& geometry)
         geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].Extent());
 }
 
+
 bool IncrementalMeshTools::deleteFaceMesh(
     MeshData& mesh_data,
     GeometryData& geometry,
@@ -811,63 +888,18 @@ bool IncrementalMeshTools::deleteFaceMesh(
     ModelLayer& model_layer,
     std::size_t faceIndex)
 {
-    // 检查是否存在该面的缓存
     auto it = state.meshedFacesCache.find(faceIndex);
     if (it == state.meshedFacesCache.end()) {
         spdlog::warn("Face {} is not meshed or not cached.", faceIndex);
         return false;
     }
 
-    // 释放面的边界边（更新引用计数并在归零时移除）
-    TopoDS_Face face = getFaceByIndex(
-        geometry, model_layer.geomRegistry(), faceIndex);
-    for (GeomEdgeId globalEdgeId : getFaceEdgeIds(face, geometry)) {
-        auto refIt = state.meshedEdgeRefCounts.find(globalEdgeId);
-        if (refIt != state.meshedEdgeRefCounts.end()) {
-            refIt->second--;
-            if (refIt->second <= 0) {
-                state.meshedEdgeRefCounts.erase(refIt);
-                state.meshedEdgesCache.erase(globalEdgeId);
-                spdlog::info("Edge {} cache cleaned up.", globalEdgeId);
-            }
-        }
-    }
+    if (!removeCachedFaceCells(mesh_data, it->second))
+        return false;
+    if (!releaseFaceCache(geometry, state, model_layer, faceIndex))
+        return false;
 
-    state.meshedFacesCache.erase(it);
-    
-    // 重构meshdata 暂时重建面索引
-    mesh_data.face_vertices_.clear();
-    mesh_data.face_vertices_offset_.clear();
-    mesh_data.face_vertices_offset_.push_back(0); 
-
-    TempNodeLookup lookup(mesh_data, model_layer, 1e-7);
-
-    // 遍历目前还保留的所有有效面，按序装入MeshData
-    for (const auto& [fIdx, faceMeshResult] : state.meshedFacesCache) {
-        if (!faceMeshResult.success)
-            continue;
-
-        std::vector<Index> localToGlobal(faceMeshResult.vertices.size());
-        for (size_t i = 0; i < faceMeshResult.vertices.size(); ++i) {
-            localToGlobal[i] = lookup.getOrInsert(
-                faceMeshResult.vertices[i][0],
-                faceMeshResult.vertices[i][1],
-                faceMeshResult.vertices[i][2]);
-        }
-
-        for (size_t i = 0; i + 1 < faceMeshResult.face_vertices_offset.size(); ++i) {
-            size_t start = faceMeshResult.face_vertices_offset[i];
-            size_t end = faceMeshResult.face_vertices_offset[i + 1];
-            for (size_t j = start; j < end; ++j) {
-                mesh_data.face_vertices_.push_back(
-                    localToGlobal[faceMeshResult.face_vertices[j]]);
-            }
-            mesh_data.face_vertices_offset_.push_back(
-                static_cast<Index>(mesh_data.face_vertices_.size()));
-        }
-    }
-
-    spdlog::info("Deleted mesh for face {}, rebuilt topology. Remaining cells: {}",
+    spdlog::info("Deleted Gmsh mesh for face {}. Remaining cells: {}",
         faceIndex, mesh_data.face_vertices_offset_.size() - 1);
     return true;
 }
@@ -881,10 +913,9 @@ SingleFaceMeshResult IncrementalMeshTools::remeshSingleFace(
     double meshSize,
     const GmshMeshParameters& parameters)
 {
-    if (state.meshedFacesCache.find(faceIndex) != state.meshedFacesCache.end()) {
-        spdlog::info("Remeshing: Face {} is already meshed, deleting old mesh first.", faceIndex);
+    if (state.meshedFacesCache.find(faceIndex) != state.meshedFacesCache.end())
         deleteFaceMesh(mesh_data, geometry, state, model_layer, faceIndex);
-    }
+
     return meshSingleFace(
         mesh_data, geometry, state, model_layer, faceIndex, meshSize, parameters);
 }
