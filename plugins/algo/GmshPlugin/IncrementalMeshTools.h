@@ -29,7 +29,7 @@ SingleFaceMeshResult meshSingleFace(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
-    std::size_t faceIndex,
+    GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters);
 
@@ -39,7 +39,7 @@ SingleFaceMeshResult remeshSingleFace(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
-    std::size_t faceIndex,
+    GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters);
 
@@ -48,7 +48,7 @@ bool deleteFaceMesh(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
-    std::size_t faceIndex);
+    GeomFaceId faceId);
 
 double estimateMeshSize(const GeometryData& geometry);
 

@@ -97,20 +97,12 @@ private:
     std::unordered_map<QuantizedCoord, Index, CoordHash> _map;
 };
 
-// 返回 GeometryData 中指定索引的 CAD 面，实际 Shape 统一从 GeometryRegistry 取得。
-TopoDS_Face getFaceByIndex(
-    const GeometryData& geometry,
+// 通过全局几何面 ID 从 GeometryRegistry 取得 CAD 面。
+TopoDS_Face getFaceById(
     const GeometryRegistry& registry,
-    std::size_t faceIndex)
+    GeomFaceId faceId)
 {
-    const auto& faceMap =
-        geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_FACE)];
-    int localFaceId = static_cast<int>(faceIndex) + 1;
-    if (localFaceId < 1 || localFaceId > faceMap.Extent())
-        return {};
-
-    GeomFaceId globalFaceId = geometry.index.faceGlobalId(localFaceId);
-    const TopoDS_Shape* shape = registry.getFace(globalFaceId);
+    const TopoDS_Shape* shape = registry.getFace(faceId);
     return shape ? TopoDS::Face(*shape) : TopoDS_Face {};
 }
 
@@ -719,14 +711,13 @@ bool releaseFaceCache(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
-    std::size_t face_index)
+    GeomFaceId faceId)
 {
-    auto faceIt = state.meshedFacesCache.find(face_index);
+    auto faceIt = state.meshedFacesCache.find(faceId);
     if (faceIt == state.meshedFacesCache.end())
         return false;
 
-    TopoDS_Face face = getFaceByIndex(
-        geometry, model_layer.geomRegistry(), face_index);
+    TopoDS_Face face = getFaceById(model_layer.geomRegistry(), faceId);
     for (GeomEdgeId globalEdgeId : getFaceEdgeIds(face, geometry)) {
         auto refIt = state.meshedEdgeRefCounts.find(globalEdgeId);
         if (refIt == state.meshedEdgeRefCounts.end())
@@ -751,35 +742,25 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
-    std::size_t faceIndex,
+    GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters)
 {
     SingleFaceMeshResult result;
     GmshSurfaceMeshType meshType = parseSurfaceMeshType(parameters.meshTypeIndex);
 
-    std::size_t totalFaces = IncrementalMeshTools::faceCount(geometry);
-    if (faceIndex >= totalFaces) {
-        spdlog::error("faceIndex {} out of range", faceIndex);
-        return result;
-    }
-
-    spdlog::info("=== Meshing face {}/{} (size={:.6f}, type={}) ===",
-        faceIndex + 1, totalFaces, meshSize,
+    spdlog::info("=== Meshing face {} (size={:.6f}, type={}) ===",
+        faceId, meshSize,
         surfaceMeshTypeName(meshType));
 
-    TopoDS_Face face = getFaceByIndex(
-        geometry, model_layer.geomRegistry(), faceIndex);
+    TopoDS_Face face = getFaceById(model_layer.geomRegistry(), faceId);
     if (face.IsNull()) {
-        spdlog::error("Face {} is null or invalid", faceIndex);
+        spdlog::error("Face {} is null or invalid", faceId);
         return result;
     }
-    try {
-        GmshSession session;
+    GmshSession session;
     setGmshNumberOption("General.Terminal", 1);
     gmsh::model::add("face_model");
-    auto gmshToOcc = importGmshEdges(face, geometry);
-
     // 先逐边导入并记录返回 tag，再导入整个面；面导入会复用相同 OCC 边的 tag。
     auto gmshToOcc = importGmshEdges(face, geometry);
 
@@ -849,7 +830,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     if (result.success) {
         storeNewEdges(state, gmshToOcc);
         mergeMeshResult(mesh_data, model_layer, result);
-        state.meshedFacesCache[faceIndex] = result;
+        state.meshedFacesCache[faceId] = result;
     }
     return result;
 }
@@ -886,21 +867,21 @@ bool IncrementalMeshTools::deleteFaceMesh(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
-    std::size_t faceIndex)
+    GeomFaceId faceId)
 {
-    auto it = state.meshedFacesCache.find(faceIndex);
+    auto it = state.meshedFacesCache.find(faceId);
     if (it == state.meshedFacesCache.end()) {
-        spdlog::warn("Face {} is not meshed or not cached.", faceIndex);
+        spdlog::warn("Face {} is not meshed or not cached.", faceId);
         return false;
     }
 
     if (!removeCachedFaceCells(mesh_data, it->second))
         return false;
-    if (!releaseFaceCache(geometry, state, model_layer, faceIndex))
+    if (!releaseFaceCache(geometry, state, model_layer, faceId))
         return false;
 
     spdlog::info("Deleted Gmsh mesh for face {}. Remaining cells: {}",
-        faceIndex, mesh_data.face_vertices_offset_.size() - 1);
+        faceId, mesh_data.face_vertices_offset_.size() - 1);
     return true;
 }
 
@@ -909,13 +890,13 @@ SingleFaceMeshResult IncrementalMeshTools::remeshSingleFace(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
     ModelLayer& model_layer,
-    std::size_t faceIndex,
+    GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters)
 {
-    if (state.meshedFacesCache.find(faceIndex) != state.meshedFacesCache.end())
-        deleteFaceMesh(mesh_data, geometry, state, model_layer, faceIndex);
+    if (state.meshedFacesCache.find(faceId) != state.meshedFacesCache.end())
+        deleteFaceMesh(mesh_data, geometry, state, model_layer, faceId);
 
     return meshSingleFace(
-        mesh_data, geometry, state, model_layer, faceIndex, meshSize, parameters);
+        mesh_data, geometry, state, model_layer, faceId, meshSize, parameters);
 }

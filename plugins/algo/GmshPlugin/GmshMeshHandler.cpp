@@ -5,10 +5,13 @@
 #include "ComponentOperator.h"
 #include "GmshMeshOptions.h"
 #include "GeometryData.h"
+#include "GeometryRegistry.h"
+#include "GeometrySubshapeIndex.h"
 #include "IncrementalMeshTools.h"
 #include "MeshData.h"
 #include "ModelIOSystemBase.h"
 #include "ModelLayer.h"
+#include "Selection.h"
 #include "TempFile.h"
 
 #include <spdlog/spdlog.h>
@@ -116,23 +119,11 @@ std::any systems::algo::GmshMeshHandler::execute(
     HandlerContext& context,
     const std::vector<core::ArgObject>& args)
 {
-    int faceIndex = -1;
     int operationMode = 1;
     IncrementalMeshTools::GmshMeshParameters parameters;
 
-    if (args.size() >= 1) {
-        const std::string* idxStr = args[0].get<ArgTypeEnum::Text>();
-        if (idxStr && !idxStr->empty()) {
-            try {
-                faceIndex = std::stoi(*idxStr);
-            } catch (...) {
-                spdlog::warn("GmshMesh: invalid face index '{}'", *idxStr);
-            }
-        }
-    }
-
     if (args.size() <= 4) {
-        // 兼容旧参数顺序：面索引、网格尺寸、操作模式、网格类型。
+        // 兼容旧参数顺序：选择面、网格尺寸、操作模式、网格类型。
         parameters.targetMeshSize = readOptionalDouble(args, 1).value_or(0.0);
         if (args.size() >= 3) {
             const std::string* opStr = args[2].get<ArgTypeEnum::Text>();
@@ -169,11 +160,6 @@ std::any systems::algo::GmshMeshHandler::execute(
     if (!validateMeshingParameters(parameters))
         return {};
 
-    if (faceIndex < 0) {
-        spdlog::error("GmshMesh: need face id");
-        return {};
-    }
-
     ComponentData& comp = context.cur_component.component();
     ModelLayer& modelLayer = context.cur_component.manager();
     removeExpiredStates(modelLayer);
@@ -182,6 +168,28 @@ std::any systems::algo::GmshMeshHandler::execute(
     if (!geometry || !geometry->rootShape) {
         spdlog::error("GmshMesh: current component {} has no geometry",
             context.cur_component.componentId());
+        return {};
+    }
+
+    geometry->ensureIndexBuilt(modelLayer.geomRegistry());
+    const auto* selection = args.empty()
+        ? nullptr
+        : args[0].get<ArgTypeEnum::Selector>();
+    if (!selection || !*selection
+        || (*selection)->type != ElementEnum::GeometryFace
+        || (*selection)->ids.size() != 1) {
+        spdlog::error("GmshMesh: select exactly one geometry face");
+        return {};
+    }
+
+    const GeomFaceId faceId = (*selection)->ids.front();
+    const TopoDS_Shape* selectedFace = modelLayer.geomRegistry().getFace(faceId);
+    const int localFaceId = selectedFace
+        ? geometry->index.type_maps[
+              GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].FindIndex(*selectedFace)
+        : 0;
+    if (localFaceId <= 0) {
+        spdlog::error("GmshMesh: selected geometry face is not in current component");
         return {};
     }
 
@@ -196,37 +204,28 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     GmshIncrementalMeshState& state = component_states_[context.cur_component.componentId()];
 
-    geometry->ensureIndexBuilt(modelLayer.geomRegistry());
-    std::size_t totalFaces = IncrementalMeshTools::faceCount(*geometry);
-    if (static_cast<std::size_t>(faceIndex) >= totalFaces) {
-        spdlog::error("GmshMesh: face id {} out of range (total {} face)",
-            faceIndex, totalFaces);
-        return {};
-    }
-
     if (parameters.targetMeshSize <= 0.0)
         parameters.targetMeshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
 
-    std::size_t faceKey = static_cast<std::size_t>(faceIndex);
     SingleFaceMeshResult result;
 
     if (operationMode == 1) {
-        if (state.meshedFacesCache.find(faceKey) != state.meshedFacesCache.end()) {
-            spdlog::info("GmshMesh: face {} already meshed, skip mesh mode; use remesh mode to rebuild", faceIndex);
+        if (state.meshedFacesCache.find(faceId) != state.meshedFacesCache.end()) {
+            spdlog::info("GmshMesh: face {} already meshed, skip mesh mode; use remesh mode to rebuild", faceId);
             return {};
         }
-        spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceIndex, parameters.targetMeshSize);
+        spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceId, parameters.targetMeshSize);
         result = IncrementalMeshTools::meshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceKey, parameters.targetMeshSize, parameters);
+            *meshData, *geometry, state, modelLayer, faceId, parameters.targetMeshSize, parameters);
     } else if (operationMode == 2) {
-        spdlog::info("GmshMesh: delete mesh for face {}", faceIndex);
+        spdlog::info("GmshMesh: delete mesh for face {}", faceId);
         if (IncrementalMeshTools::deleteFaceMesh(
-                *meshData, *geometry, state, modelLayer, faceKey))
-            spdlog::info("GmshMesh: delete face {} success", faceIndex);
+                *meshData, *geometry, state, modelLayer, faceId))
+            spdlog::info("GmshMesh: delete face {} success", faceId);
     } else if (operationMode == 3) {
-        spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceIndex, parameters.targetMeshSize);
+        spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceId, parameters.targetMeshSize);
         result = IncrementalMeshTools::remeshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceKey, parameters.targetMeshSize, parameters);
+            *meshData, *geometry, state, modelLayer, faceId, parameters.targetMeshSize, parameters);
     } else {
         spdlog::warn("GmshMesh: unknown operation mode {}, skip", operationMode);
         return {};
@@ -234,19 +233,19 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     if (operationMode != 2) {
         if (!result.success) {
-            spdlog::warn("GmshMesh: face {} meshing failed", faceIndex);
+            spdlog::warn("GmshMesh: face {} meshing failed", faceId);
             return {};
         }
 
         spdlog::info("GmshMesh: face {} finish, {} nodes, {} cells, cached {} edge",
-            faceIndex,
+            faceId,
             result.vertices.size(),
             result.face_vertices_offset.size() - 1,
             state.meshedEdgeRefCounts.size());
     }
 
     if (writeModel) {
-        std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceIndex) + ".obj";
+        std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceId) + ".obj";
         context.io_system.writeComponents(
             { context.cur_component.componentId() },
             meshOut,
@@ -273,7 +272,7 @@ void systems::algo::GmshMeshHandler::removeExpiredStates(const ModelLayer& model
 std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
 {
     return {
-        ArgType { ArgTypeEnum::Text, "CAD面索引(0开始)", "" },
+        ArgType { ArgTypeEnum::Selector, "选择几何面", "" },
         ArgType { ArgTypeEnum::Combo, "操作模式", "划分,删除,重划分" },
         ArgType { ArgTypeEnum::Text, "目标网格尺寸(留空自动)", "" },
         ArgType { ArgTypeEnum::Text, "最小网格尺寸(留空默认)", "" },

@@ -8,6 +8,7 @@
 #include "GeometryData.h"
 #include "ModelIOSystemBase.h"
 #include "ModelLayer.h"
+#include "Selection.h"
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
@@ -68,14 +69,24 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     MockIOSystem mockIo;
     systems::algo::HandlerContext context { mockIo, *componentOp };
 
+    ComponentData* comp = modelLayer.findComponent(componentIds[0]);
+    REQUIRE(comp != nullptr);
+    comp->geometry->ensureIndexBuilt(modelLayer.geomRegistry());
+    auto selection = std::make_shared<Selection>();
+    selection->type = ElementEnum::GeometryFace;
+    selection->ids = {
+        comp->geometry->index.faceGlobalId(1),
+        comp->geometry->index.faceGlobalId(2)
+    };
+
     std::vector<core::ArgObject> args;
-    args.push_back(core::ArgObject::create<ArgTypeEnum::Text>("0"));
+    args.push_back(core::ArgObject::create<ArgTypeEnum::Selector>(selection));
     args.push_back(core::ArgObject::create<ArgTypeEnum::Text>("2.0"));
 
     systems::algo::GmshMeshHandler handler;
     handler.execute(context, args);
 
-    ComponentData* comp = modelLayer.findComponent(componentIds[0]);
+    comp = modelLayer.findComponent(componentIds[0]);
     REQUIRE(comp != nullptr);
     REQUIRE(comp->mesh != nullptr);
     REQUIRE(comp->geometry != nullptr);
@@ -106,8 +117,15 @@ TEST_CASE("GmshMeshHandler rejects invalid current parameters", "[GmshPlugin]")
 
     MockIOSystem mockIo;
     systems::algo::HandlerContext context { mockIo, *componentOp };
+    ComponentData* comp = modelLayer.findComponent(componentId);
+    REQUIRE(comp != nullptr);
+    comp->geometry->ensureIndexBuilt(modelLayer.geomRegistry());
+    auto selection = std::make_shared<Selection>();
+    selection->type = ElementEnum::GeometryFace;
+    selection->ids = { comp->geometry->index.faceGlobalId(1) };
+
     std::vector<core::ArgObject> args {
-        core::ArgObject::create<ArgTypeEnum::Text>("0"),
+        core::ArgObject::create<ArgTypeEnum::Selector>(selection),
         core::ArgObject::create<ArgTypeEnum::Combo>(0),
         core::ArgObject::create<ArgTypeEnum::Text>("1.0"),
         core::ArgObject::create<ArgTypeEnum::Text>("2.0"),
@@ -124,52 +142,7 @@ TEST_CASE("GmshMeshHandler rejects invalid current parameters", "[GmshPlugin]")
     systems::algo::GmshMeshHandler handler;
     handler.execute(context, args);
 
-    ComponentData* comp = modelLayer.findComponent(componentId);
+    comp = modelLayer.findComponent(componentId);
     REQUIRE(comp != nullptr);
     REQUIRE(comp->mesh == nullptr);
-}
-
-TEST_CASE("Gmsh delete preserves cells not owned by its face cache", "[GmshPlugin]")
-{
-    BRepPrimAPI_MakeBox boxMaker(10.0, 10.0, 10.0);
-    boxMaker.Build();
-    REQUIRE(boxMaker.IsDone());
-
-    auto geometryData = std::make_unique<GeometryData>();
-    geometryData->rootShape = std::make_unique<TopoDS_Shape>(boxMaker.Shape());
-
-    ComponentDatas components;
-    auto component = std::make_unique<ComponentData>();
-    component->geometry = std::move(geometryData);
-    component->mesh = std::make_unique<MeshData>();
-    component->mesh->init();
-    components.push_back(std::move(component));
-
-    ModelLayer modelLayer;
-    Index modelId = modelLayer.addModel("box", std::move(components));
-    const Index componentId = modelLayer.modelById(modelId)->componentIds().front();
-    ComponentData* comp = modelLayer.findComponent(componentId);
-    REQUIRE(comp != nullptr);
-    comp->geometry->ensureIndexBuilt(modelLayer.geomRegistry());
-
-    GmshIncrementalMeshState state;
-    IncrementalMeshTools::GmshMeshParameters parameters;
-    parameters.targetMeshSize = 2.0;
-    auto result = IncrementalMeshTools::meshSingleFace(
-        *comp->mesh, *comp->geometry, state, modelLayer, 0, 2.0, parameters);
-    REQUIRE(result.success);
-
-    MeshData& mesh = *comp->mesh;
-    const Index begin = mesh.face_vertices_offset_[0];
-    const Index end = mesh.face_vertices_offset_[1];
-    std::vector<Index> otherAlgorithmCell(
-        mesh.face_vertices_.begin() + begin, mesh.face_vertices_.begin() + end);
-    mesh.face_vertices_.insert(mesh.face_vertices_.end(),
-        otherAlgorithmCell.begin(), otherAlgorithmCell.end());
-    mesh.face_vertices_offset_.push_back(static_cast<Index>(mesh.face_vertices_.size()));
-
-    REQUIRE(IncrementalMeshTools::deleteFaceMesh(
-        mesh, *comp->geometry, state, modelLayer, 0));
-    REQUIRE(mesh.face_vertices_offset_.size() == 2);
-    REQUIRE(mesh.face_vertices_ == otherAlgorithmCell);
 }

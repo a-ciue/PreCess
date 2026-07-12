@@ -26,7 +26,8 @@ struct SingleFaceMeshResult {
 struct GmshIncrementalMeshState {
     // 已划分 CAD 边的节点缓存，key 使用 geometry 的全局 CAD 边 ID。
     std::map<GeomEdgeId, MeshedEdgeData> meshedEdgesCache;
-    std::map<std::size_t, SingleFaceMeshResult> meshedFacesCache;
+    // 已划分 CAD 面的网格结果，key 使用 geometry 的全局 CAD 面 ID。
+    std::map<GeomFaceId, SingleFaceMeshResult> meshedFacesCache;
     // 已划分 CAD 边被多少个面复用，用于删除面网格时判断是否清理边缓存。
     std::map<GeomEdgeId, int> meshedEdgeRefCounts;
 };

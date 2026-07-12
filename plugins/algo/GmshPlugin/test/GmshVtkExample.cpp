@@ -195,13 +195,15 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
 
         IncrementalMeshTools::GmshMeshParameters parameters;
         parameters.targetMeshSize = ctx->meshSize;
+        const GeomFaceId faceId =
+            ctx->geometry.index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
 
         auto result = IncrementalMeshTools::meshSingleFace(
             ctx->meshData,
             ctx->geometry,
             ctx->gmshState,
             ctx->modelLayer,
-            ctx->currentIndex,
+            faceId,
             ctx->meshSize,
             parameters);
 
@@ -233,9 +235,11 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             return;
         }
         ctx->currentIndex--;
+        const GeomFaceId faceId =
+            ctx->geometry.index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
         if (IncrementalMeshTools::deleteFaceMesh(
                 ctx->meshData, ctx->geometry, ctx->gmshState,
-                ctx->modelLayer, ctx->currentIndex)) {
+                ctx->modelLayer, faceId)) {
             reloadPolyData(*ctx);
         }
     } else if (key == "h" || key == "H") {
