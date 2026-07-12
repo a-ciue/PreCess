@@ -196,7 +196,7 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 
     vtkNew<vtkPolyDataMapper> poly_mapper;
     poly_mapper->SetInputData(poly_only);
-    poly_mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, 0);
+    poly_mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, 1.0);
 
     poly_actor_->SetMapper(poly_mapper);
     poly_actor_->GetProperty()->SetColor(200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0);
