@@ -20,11 +20,12 @@ var searchData=
   ['emission_17',['emission',['../structtinyobj_1_1material__t.html#a6ceb4407ddc81f6750eee96d12d784e8',1,'tinyobj::material_t']]],
   ['emissive_5ftexname_18',['emissive_texname',['../structtinyobj_1_1material__t.html#a63bb93815630b2dfca986ae17c51b919',1,'tinyobj::material_t']]],
   ['emissive_5ftexopt_19',['emissive_texopt',['../structtinyobj_1_1material__t.html#a7a2da381cdabd6655aaed320d5b1ffe3',1,'tinyobj::material_t']]],
-  ['end_5fiterator_20',['end_iterator',['../classplf_1_1colony.html#ab5aa72f9ff138a29c66445cd0fedc4cc',1,'plf::colony']]],
-  ['erasure_5fgroups_5fhead_21',['erasure_groups_head',['../classplf_1_1colony.html#a30c93fb83086c5943ad8d0bc7250f7d2',1,'plf::colony']]],
-  ['erasures_5flist_5fnext_5fgroup_22',['erasures_list_next_group',['../structplf_1_1colony_1_1group.html#a00a25422165d23cd2ff86c61fee3d238',1,'plf::colony::group']]],
-  ['erasures_5flist_5fprevious_5fgroup_23',['erasures_list_previous_group',['../structplf_1_1colony_1_1group.html#a9777a5ee5f408d2bea4b0a4629c05ed1',1,'plf::colony::group']]],
-  ['error_5f_24',['error_',['../classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec',1,'tinyobj::ObjReader']]],
-  ['extensions_25',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
-  ['extensions_5f_26',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]]
+  ['empty_5fmapper_5f_20',['empty_mapper_',['../classSelectManager.html#a236431a7aa84afc5ced48fbb05f17253',1,'SelectManager']]],
+  ['end_5fiterator_21',['end_iterator',['../classplf_1_1colony.html#ab5aa72f9ff138a29c66445cd0fedc4cc',1,'plf::colony']]],
+  ['erasure_5fgroups_5fhead_22',['erasure_groups_head',['../classplf_1_1colony.html#a30c93fb83086c5943ad8d0bc7250f7d2',1,'plf::colony']]],
+  ['erasures_5flist_5fnext_5fgroup_23',['erasures_list_next_group',['../structplf_1_1colony_1_1group.html#a00a25422165d23cd2ff86c61fee3d238',1,'plf::colony::group']]],
+  ['erasures_5flist_5fprevious_5fgroup_24',['erasures_list_previous_group',['../structplf_1_1colony_1_1group.html#a9777a5ee5f408d2bea4b0a4629c05ed1',1,'plf::colony::group']]],
+  ['error_5f_25',['error_',['../classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec',1,'tinyobj::ObjReader']]],
+  ['extensions_26',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
+  ['extensions_5f_27',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]]
 ];

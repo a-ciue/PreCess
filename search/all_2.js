@@ -7,7 +7,7 @@ var searchData=
   ['begin_4',['begin',['../classplf_1_1colony.html#a92ec1f3e562957f79cbbb082b587dccf',1,'plf::colony::begin() PLF_NOEXCEPT'],['../classplf_1_1colony.html#a5b0df482ac36c613848f4ba2f90886e8',1,'plf::colony::begin() const PLF_NOEXCEPT']]],
   ['begin_5fiterator_5',['begin_iterator',['../classplf_1_1colony.html#a6f16b8dddbaeac366e5d6ce549f6adbc',1,'plf::colony']]],
   ['bindrender_6',['bindRender',['../classGeometryActorManager.html#a4946109ecfd94ab43631640696e05050',1,'GeometryActorManager::bindRender()'],['../classMeshActorManager.html#a74d5c7dfb308f0bcbddf1b1edf09dfd2',1,'MeshActorManager::bindRender()']]],
-  ['bindrenderer_7',['bindRenderer',['../classSelectManager.html#aa318adc0622e81715fa464dfa6643d67',1,'SelectManager']]],
+  ['bindrenderer_7',['bindRenderer',['../classGeometrySelectManager.html#a295a882e3d0b5b7b7d2727ec1166c3da',1,'GeometrySelectManager::bindRenderer()'],['../classMeshSelectManager.html#a636b90dae6a81b6edcf6ee5f109e5a5e',1,'MeshSelectManager::bindRenderer()'],['../classSelectManager.html#aa318adc0622e81715fa464dfa6643d67',1,'SelectManager::bindRenderer()']]],
   ['bitfield_5fpointers_8',['bitfield_pointers',['../structplf_1_1colony_1_1colony__data.html#a7c267ba046a90efc1c90217f5ac77fd3',1,'plf::colony::colony_data']]],
   ['blank_9',['blank',['../classplf_1_1colony.html#a7a85be9b941a453e2d1a873298b2acbb',1,'plf::colony']]],
   ['blendu_10',['blendu',['../structtinyobj_1_1texture__option__t.html#a6114c2757e6dd4a4929623797a098d25',1,'tinyobj::texture_option_t']]],
@@ -38,8 +38,9 @@ var searchData=
   ['boundary_2eh_35',['boundary.h',['../boundary_8h.html',1,'']]],
   ['brightness_36',['brightness',['../structtinyobj_1_1texture__option__t.html#a4aea70d3ffbaa6b439db7447557cbab2',1,'tinyobj::texture_option_t']]],
   ['build_37',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
-  ['built_38',['built',['../structGeometrySubshapeIndex.html#acb1c4a20283d7edd67b1e152766f0b8d',1,'GeometrySubshapeIndex']]],
-  ['bump_5fmultiplier_39',['bump_multiplier',['../structtinyobj_1_1texture__option__t.html#ad2e2c79e305189e5d146992c32248d49',1,'tinyobj::texture_option_t']]],
-  ['bump_5ftexname_40',['bump_texname',['../structtinyobj_1_1material__t.html#aceb73086232f1cdd82f956fe8c6efcfb',1,'tinyobj::material_t']]],
-  ['bump_5ftexopt_41',['bump_texopt',['../structtinyobj_1_1material__t.html#a77cb124464a606ad2b649196e72c39a0',1,'tinyobj::material_t']]]
+  ['buildhighlight_38',['buildHighlight',['../classGeometryActorSelectOp.html#ac380d1c705ee859584a019eee9f628a3',1,'GeometryActorSelectOp']]],
+  ['built_39',['built',['../structGeometrySubshapeIndex.html#acb1c4a20283d7edd67b1e152766f0b8d',1,'GeometrySubshapeIndex']]],
+  ['bump_5fmultiplier_40',['bump_multiplier',['../structtinyobj_1_1texture__option__t.html#ad2e2c79e305189e5d146992c32248d49',1,'tinyobj::texture_option_t']]],
+  ['bump_5ftexname_41',['bump_texname',['../structtinyobj_1_1material__t.html#aceb73086232f1cdd82f956fe8c6efcfb',1,'tinyobj::material_t']]],
+  ['bump_5ftexopt_42',['bump_texopt',['../structtinyobj_1_1material__t.html#a77cb124464a606ad2b649196e72c39a0',1,'tinyobj::material_t']]]
 ];

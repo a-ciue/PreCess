@@ -1,17 +1,17 @@
 <map id="BlockSelectorHighlight" name="BlockSelectorHighlight">
-<area shape="rect" id="Node000001" title=" " alt="" coords="3025,334,3196,359"/>
-<area shape="rect" id="Node000002" href="$classSelectorHighlight.html" title=" " alt="" coords="2715,277,2849,302"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2864,295,3002,316,3066,331,3064,336,3001,321,2863,300"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="2685,327,2879,367"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="2893,344,3025,344,3025,349,2893,349"/>
-<area shape="rect" id="Node000004" href="$structBlockSelectorHighlight_1_1Block.html" title="存储选中的actor和每个actor原本的颜色渲染设置，用于取消高亮" alt="" coords="2373,325,2544,365"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2558,343,2685,344,2684,349,2558,348"/>
-<area shape="rect" id="Node000005" href="$classMeshActorSelectOpFactory.html" title="MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象" alt="" coords="2684,393,2880,418"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="2893,390,3001,372,3064,357,3066,362,3002,377,2894,395"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="2379,389,2539,429"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2552,406,2684,404,2684,409,2553,411"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="3064,339,3235,365"/>
+<area shape="rect" id="Node000002" href="$classSelectorHighlight.html" title=" " alt="" coords="2753,282,2888,307"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2902,300,3041,321,3104,337,3103,342,3039,327,2901,306"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="2723,332,2918,372"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="2932,349,3064,349,3064,355,2932,355"/>
+<area shape="rect" id="Node000004" href="$structBlockSelectorHighlight_1_1Block.html" title="存储选中的actor和每个actor原本的颜色渲染设置，用于取消高亮" alt="" coords="2393,332,2563,372"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2577,349,2723,349,2723,355,2577,355"/>
+<area shape="rect" id="Node000005" href="$classMeshActorSelectOpFactory.html" title="MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象" alt="" coords="2723,397,2919,422"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="2932,394,3039,377,3103,362,3104,367,3041,383,2933,400"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="2373,397,2583,422"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2596,407,2722,407,2722,412,2596,412"/>
 <area shape="rect" id="Node000007" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2208,397,2299,422"/>
-<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="2313,407,2379,407,2379,412,2313,412"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="2313,407,2373,407,2373,412,2313,412"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="1812,325,2007,365"/>
 <area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="2020,351,2101,361,2185,379,2226,394,2225,399,2183,384,2101,367,2020,356"/>
 <area shape="rect" id="Node000009" href="$classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="1551,333,1735,358"/>

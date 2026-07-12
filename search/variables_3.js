@@ -11,7 +11,7 @@ var searchData=
   ['colors_8',['colors',['../classMeshActor.html#a780070ae950cbd0e2799be889fe9b5f5',1,'MeshActor::colors'],['../structtinyobj_1_1attrib__t.html#aad0a3d4f2e6f1ff89671dd3d4b2dff2e',1,'tinyobj::attrib_t::colors']]],
   ['colorspace_9',['colorspace',['../structtinyobj_1_1texture__option__t.html#a1181af8c61dd09fe74c0e8dfff8df804',1,'tinyobj::texture_option_t']]],
   ['component_5f_10',['component_',['../classComponentOperator.html#aa387f232bb4476915ef226a6d017c87d',1,'ComponentOperator']]],
-  ['component_5factors_5f_11',['component_actors_',['../classGeometryActorManager.html#abf54771b978cd5eae05e18f7976e7a59',1,'GeometryActorManager::component_actors_'],['../classMeshActorManager.html#a46dd38741724917139503c5b8794c193',1,'MeshActorManager::component_actors_']]],
+  ['component_5factors_5f_11',['component_actors_',['../classGeometryActorManager.html#a61d1980b6cba07bc0be9086765175fe2',1,'GeometryActorManager::component_actors_'],['../classMeshActorManager.html#a46dd38741724917139503c5b8794c193',1,'MeshActorManager::component_actors_']]],
   ['component_5fid_12',['component_id',['../structMeshDataVtk.html#a81b209b829e512a4367e0271e10e62d5',1,'MeshDataVtk::component_id'],['../structGeometryDataVtk.html#abbce38251b14ab811d9e123cfbde7413',1,'GeometryDataVtk::component_id'],['../structSelection.html#ab98108b372c23ba9556543b0030eacbe',1,'Selection::component_id']]],
   ['component_5fid_5f_13',['component_id_',['../classComponentOperator.html#a42c09da072bd1e8e3a61338150e3b4d7',1,'ComponentOperator']]],
   ['component_5fids_5f_14',['component_ids_',['../classModelData.html#a88581a1ea3219a43cf87cd3301eb2446',1,'ModelData']]],
@@ -27,6 +27,7 @@ var searchData=
   ['cur_5factor_5f_24',['cur_actor_',['../structQRenderWindow.html#a3f810a45cdd8e37d3beb60229f40626a',1,'QRenderWindow']]],
   ['cur_5fcomponent_25',['cur_component',['../structsystems_1_1algo_1_1HandlerContext.html#a44cba908ae4dc46b741e0bd284dde0c2',1,'systems::algo::HandlerContext']]],
   ['cur_5fcomponent_5fid_5f_26',['cur_component_id_',['../structQRenderWindow.html#ab8603fd67111125e7e479b99a965f640',1,'QRenderWindow']]],
-  ['cur_5fmodel_5factor_5f_27',['cur_model_actor_',['../classSelectManager.html#ac9906967a7ec4e1d38ddbc66bd1b3007',1,'SelectManager']]],
-  ['current_28',['current',['../classplf_1_1colony_1_1colony__reverse__iterator.html#a35aa7733f487c9891fadd51feba91627',1,'plf::colony::colony_reverse_iterator']]]
+  ['cur_5fgeom_5factor_5f_27',['cur_geom_actor_',['../classGeometrySelectManager.html#a8cd7603c9f527057d09ab221b4cc7f2f',1,'GeometrySelectManager']]],
+  ['cur_5fmodel_5factor_5f_28',['cur_model_actor_',['../classMeshSelectManager.html#a67928ec36d463796617056f0901c95d0',1,'MeshSelectManager']]],
+  ['current_29',['current',['../classplf_1_1colony_1_1colony__reverse__iterator.html#a35aa7733f487c9891fadd51feba91627',1,'plf::colony::colony_reverse_iterator']]]
 ];

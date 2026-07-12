@@ -11,6 +11,6 @@ var searchData=
   ['loadmtl_8',['LoadMtl',['../namespacetinyobj.html#a861cd417f27a4cb95f005a3e1a178f87',1,'tinyobj']]],
   ['loadobj_9',['LoadObj',['../namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3',1,'tinyobj']]],
   ['loadshape_10',['loadShape',['../classGeometryActor.html#aef1bf238b45d59679f9c3e2199ca48ab',1,'GeometryActor']]],
-  ['lock_11',['lock',['../classMeshActorSelectOpFactory.html#a13ab4a11c68be637479ab067aecd2525',1,'MeshActorSelectOpFactory']]],
+  ['lock_11',['lock',['../classGeometryActorSelectOpFactory.html#a00b635976b810da2b8f65665f154aef9',1,'GeometryActorSelectOpFactory::lock()'],['../classMeshActorSelectOpFactory.html#a13ab4a11c68be637479ab067aecd2525',1,'MeshActorSelectOpFactory::lock()']]],
   ['loops_12',['loops',['../classMeshLib_1_1CBoundary.html#acc9c4f3675a8e25a5b03a374364b4d8c',1,'MeshLib::CBoundary']]]
 ];

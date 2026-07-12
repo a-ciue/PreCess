@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: GeometrySelectorHighlight类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="classGeometrySelectorHighlight-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">GeometrySelectorHighlight类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="GeometrySelectorHighlight_8h_source.html">GeometrySelectorHighlight.h</a>&gt;</code></p>
+<div class="dynheader">
+类 GeometrySelectorHighlight 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classGeometrySelectorHighlight__inherit__graph.png" border="0" usemap="#aGeometrySelectorHighlight_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aGeometrySelectorHighlight_inherit__map" id="aGeometrySelectorHighlight_inherit__map">
+<area shape="rect" title=" " alt="" coords="5,80,204,105"/>
+<area shape="rect" href="classGeometryEdgeSelectorHighlight.html" title=" " alt="" coords="257,5,488,31"/>
+<area shape="poly" title=" " alt="" coords="151,73,251,39,299,28,300,33,253,45,152,78"/>
+<area shape="rect" href="classGeometryFaceSelectorHighlight.html" title=" " alt="" coords="259,55,487,80"/>
+<area shape="poly" title=" " alt="" coords="217,79,258,75,259,81,218,85"/>
+<area shape="rect" href="classGeometrySolidSelectorHighlight.html" title=" " alt="" coords="257,104,488,129"/>
+<area shape="poly" title=" " alt="" coords="218,100,257,104,257,109,217,105"/>
+<area shape="rect" href="classGeometryVertexSelectorHighlight.html" title=" " alt="" coords="252,153,493,179"/>
+<area shape="poly" title=" " alt="" coords="155,107,253,138,306,151,305,156,251,143,153,112"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:aa975fa492a163dfce7f1f27df3c34ff7" id="r_aa975fa492a163dfce7f1f27df3c34ff7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa975fa492a163dfce7f1f27df3c34ff7">~GeometrySelectorHighlight</a> ()=default</td></tr>
+<tr class="memitem:a1189330d794843300137e63bd8fffb1f" id="r_a1189330d794843300137e63bd8fffb1f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1189330d794843300137e63bd8fffb1f">select</a> (double posx, double posy)=0</td></tr>
+<tr class="memitem:ab44084c25571a84ed86f7f002dfbad7e" id="r_ab44084c25571a84ed86f7f002dfbad7e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab44084c25571a84ed86f7f002dfbad7e">clear</a> ()=0</td></tr>
+<tr class="memitem:a1eb26625afbd6e0edfb3c4d7267f58ab" id="r_a1eb26625afbd6e0edfb3c4d7267f58ab"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="GeometrySelectorHighlight_8h.html#ac326fa7688042f57d37e2dffc01ddbac">GeometrySelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1eb26625afbd6e0edfb3c4d7267f58ab">get</a> () const =0</td></tr>
+<tr class="memitem:aa91bf01fab04ab2282e2382d0ceb737c" id="r_aa91bf01fab04ab2282e2382d0ceb737c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa91bf01fab04ab2282e2382d0ceb737c">setCurGeomActor</a> (<a class="el" href="classGeometryActorSelectOpFactory.html">GeometryActorSelectOpFactory</a> geom_actor)=0</td></tr>
+<tr class="memitem:aeb9c96cf7b348adfd012a538dc6de971" id="r_aeb9c96cf7b348adfd012a538dc6de971"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb9c96cf7b348adfd012a538dc6de971">setPicker</a> (vtkSmartPointer&lt; IVtkTools_ShapePicker &gt; picker)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected 属性</h2></td></tr>
+<tr class="memitem:a35e82ac30c2c17eb029804cef59fd001" id="r_a35e82ac30c2c17eb029804cef59fd001"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; IVtkTools_ShapePicker &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a35e82ac30c2c17eb029804cef59fd001">picker_</a></td></tr>
+</table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aa975fa492a163dfce7f1f27df3c34ff7" name="aa975fa492a163dfce7f1f27df3c34ff7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa975fa492a163dfce7f1f27df3c34ff7">&#9670;&#160;</a></span>~GeometrySelectorHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual GeometrySelectorHighlight::~GeometrySelectorHighlight </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ab44084c25571a84ed86f7f002dfbad7e" name="ab44084c25571a84ed86f7f002dfbad7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab44084c25571a84ed86f7f002dfbad7e">&#9670;&#160;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void GeometrySelectorHighlight::clear </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在 <a class="el" href="classGeometryEdgeSelectorHighlight.html#a8eb2e57b1ba9f2b58ec5290fc7802979">GeometryEdgeSelectorHighlight</a>, <a class="el" href="classGeometryFaceSelectorHighlight.html#ab73ad10ed3f800cbdc76d0fc6ff37199">GeometryFaceSelectorHighlight</a>, <a class="el" href="classGeometrySolidSelectorHighlight.html#aeba9f62ae3f550b61a022000fcb907e7">GeometrySolidSelectorHighlight</a> , 以及 <a class="el" href="classGeometryVertexSelectorHighlight.html#a4919180e3bf12fc7fc6cb8e3ed155b10">GeometryVertexSelectorHighlight</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a1eb26625afbd6e0edfb3c4d7267f58ab" name="a1eb26625afbd6e0edfb3c4d7267f58ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eb26625afbd6e0edfb3c4d7267f58ab">&#9670;&#160;</a></span>get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="GeometrySelectorHighlight_8h.html#ac326fa7688042f57d37e2dffc01ddbac">GeometrySelectionVtk</a> GeometrySelectorHighlight::get </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在 <a class="el" href="classGeometryEdgeSelectorHighlight.html#ac3a1084a89591b065f2a7abae905da4c">GeometryEdgeSelectorHighlight</a>, <a class="el" href="classGeometryFaceSelectorHighlight.html#a22e4f458aff6e785ca4e07706fe0379b">GeometryFaceSelectorHighlight</a>, <a class="el" href="classGeometrySolidSelectorHighlight.html#a7fe84cbf94c387863fd9b1fa9cd6c78d">GeometrySolidSelectorHighlight</a> , 以及 <a class="el" href="classGeometryVertexSelectorHighlight.html#a1cb3c93eb25a1b5909287de515d9459a">GeometryVertexSelectorHighlight</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a1189330d794843300137e63bd8fffb1f" name="a1189330d794843300137e63bd8fffb1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1189330d794843300137e63bd8fffb1f">&#9670;&#160;</a></span>select()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void GeometrySelectorHighlight::select </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在 <a class="el" href="classGeometryEdgeSelectorHighlight.html#a502bee0a8326437d0f607bd00582036d">GeometryEdgeSelectorHighlight</a>, <a class="el" href="classGeometryFaceSelectorHighlight.html#a5ff7613ee1eb4af72ea8d9c68be01a55">GeometryFaceSelectorHighlight</a>, <a class="el" href="classGeometrySolidSelectorHighlight.html#a52ae74a255ed12a839d048b7c645410a">GeometrySolidSelectorHighlight</a> , 以及 <a class="el" href="classGeometryVertexSelectorHighlight.html#a2c1e07ec2531eadc3b2ed3236e4f0c27">GeometryVertexSelectorHighlight</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="aa91bf01fab04ab2282e2382d0ceb737c" name="aa91bf01fab04ab2282e2382d0ceb737c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa91bf01fab04ab2282e2382d0ceb737c">&#9670;&#160;</a></span>setCurGeomActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void GeometrySelectorHighlight::setCurGeomActor </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classGeometryActorSelectOpFactory.html">GeometryActorSelectOpFactory</a></td>          <td class="paramname"><span class="paramname"><em>geom_actor</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在 <a class="el" href="classGeometryEdgeSelectorHighlight.html#aca29dc4b69d11e5316d52f0e3b1cab30">GeometryEdgeSelectorHighlight</a>, <a class="el" href="classGeometryFaceSelectorHighlight.html#a37aed242f4579cd9cc6dc5984cb742f0">GeometryFaceSelectorHighlight</a>, <a class="el" href="classGeometrySolidSelectorHighlight.html#addd775799687b59f89af2c28169f71e4">GeometrySolidSelectorHighlight</a> , 以及 <a class="el" href="classGeometryVertexSelectorHighlight.html#a96155ebfdd16e1be6c45e3d3e47ba888">GeometryVertexSelectorHighlight</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="aeb9c96cf7b348adfd012a538dc6de971" name="aeb9c96cf7b348adfd012a538dc6de971"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb9c96cf7b348adfd012a538dc6de971">&#9670;&#160;</a></span>setPicker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySelectorHighlight::setPicker </td>
+          <td>(</td>
+          <td class="paramtype">vtkSmartPointer&lt; IVtkTools_ShapePicker &gt;</td>          <td class="paramname"><span class="paramname"><em>picker</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a35e82ac30c2c17eb029804cef59fd001" name="a35e82ac30c2c17eb029804cef59fd001"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35e82ac30c2c17eb029804cef59fd001">&#9670;&#160;</a></span>picker_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;IVtkTools_ShapePicker&gt; GeometrySelectorHighlight::picker_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/<a class="el" href="GeometrySelectorHighlight_8h_source.html">GeometrySelectorHighlight.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

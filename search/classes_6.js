@@ -2,10 +2,19 @@ var searchData=
 [
   ['geometryactor_0',['GeometryActor',['../classGeometryActor.html',1,'']]],
   ['geometryactormanager_1',['GeometryActorManager',['../classGeometryActorManager.html',1,'']]],
-  ['geometrydata_2',['GeometryData',['../structGeometryData.html',1,'']]],
-  ['geometrydatavtk_3',['GeometryDataVtk',['../structGeometryDataVtk.html',1,'']]],
-  ['geometrymeshmap_4',['GeometryMeshMap',['../structGeometryMeshMap.html',1,'']]],
-  ['geometryregistry_5',['GeometryRegistry',['../classGeometryRegistry.html',1,'']]],
-  ['geometrysubshapeindex_6',['GeometrySubshapeIndex',['../structGeometrySubshapeIndex.html',1,'']]],
-  ['group_7',['group',['../structplf_1_1colony_1_1group.html',1,'plf::colony']]]
+  ['geometryactorselectop_2',['GeometryActorSelectOp',['../classGeometryActorSelectOp.html',1,'']]],
+  ['geometryactorselectopfactory_3',['GeometryActorSelectOpFactory',['../classGeometryActorSelectOpFactory.html',1,'']]],
+  ['geometrydata_4',['GeometryData',['../structGeometryData.html',1,'']]],
+  ['geometrydatavtk_5',['GeometryDataVtk',['../structGeometryDataVtk.html',1,'']]],
+  ['geometryedgeselectorhighlight_6',['GeometryEdgeSelectorHighlight',['../classGeometryEdgeSelectorHighlight.html',1,'']]],
+  ['geometryfaceselectorhighlight_7',['GeometryFaceSelectorHighlight',['../classGeometryFaceSelectorHighlight.html',1,'']]],
+  ['geometryhighlightpipeline_8',['GeometryHighlightPipeline',['../structGeometryHighlightPipeline.html',1,'']]],
+  ['geometrymeshmap_9',['GeometryMeshMap',['../structGeometryMeshMap.html',1,'']]],
+  ['geometryregistry_10',['GeometryRegistry',['../classGeometryRegistry.html',1,'']]],
+  ['geometryselectmanager_11',['GeometrySelectManager',['../classGeometrySelectManager.html',1,'']]],
+  ['geometryselectorhighlight_12',['GeometrySelectorHighlight',['../classGeometrySelectorHighlight.html',1,'']]],
+  ['geometrysolidselectorhighlight_13',['GeometrySolidSelectorHighlight',['../classGeometrySolidSelectorHighlight.html',1,'']]],
+  ['geometrysubshapeindex_14',['GeometrySubshapeIndex',['../structGeometrySubshapeIndex.html',1,'']]],
+  ['geometryvertexselectorhighlight_15',['GeometryVertexSelectorHighlight',['../classGeometryVertexSelectorHighlight.html',1,'']]],
+  ['group_16',['group',['../structplf_1_1colony_1_1group.html',1,'plf::colony']]]
 ];

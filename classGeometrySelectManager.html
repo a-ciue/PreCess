@@ -1,0 +1,416 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: GeometrySelectManager类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classGeometrySelectManager-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">GeometrySelectManager类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="GeometrySelectManager_8h_source.html">GeometrySelectManager.h</a>&gt;</code></p>
+<div class="dynheader">
+GeometrySelectManager 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classGeometrySelectManager__coll__graph.png" border="0" usemap="#aGeometrySelectManager_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aGeometrySelectManager_coll__map" id="aGeometrySelectManager_coll__map">
+<area shape="rect" title=" " alt="" coords="13,212,197,237"/>
+<area shape="rect" title=" " alt="" coords="5,101,204,141"/>
+<area shape="poly" title=" " alt="" coords="107,155,107,212,102,212,102,155"/>
+<area shape="rect" href="classGeometrySelectorHighlight.html" title=" " alt="" coords="5,5,204,31"/>
+<area shape="poly" title=" " alt="" coords="107,45,107,101,102,101,102,45"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a295a882e3d0b5b7b7d2727ec1166c3da" id="r_a295a882e3d0b5b7b7d2727ec1166c3da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a295a882e3d0b5b7b7d2727ec1166c3da">bindRenderer</a> (vtkRenderer *renderer, vtkActor *highlight_actor)</td></tr>
+<tr class="memitem:a0dbd1d51d886b917ee31059ffd1b85b7" id="r_a0dbd1d51d886b917ee31059ffd1b85b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0dbd1d51d886b917ee31059ffd1b85b7">select</a> (double posx, double posy)</td></tr>
+<tr class="memitem:a61abdff482c2ca655ba1a23b90157fc7" id="r_a61abdff482c2ca655ba1a23b90157fc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61abdff482c2ca655ba1a23b90157fc7">setSelectActor</a> (std::weak_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt; geom_actor)</td></tr>
+<tr class="memitem:accd6412ae019d8e33710f21e12e0a5a4" id="r_accd6412ae019d8e33710f21e12e0a5a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accd6412ae019d8e33710f21e12e0a5a4">setSelectMode</a> (<a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> select_mode)</td></tr>
+<tr class="memitem:aa6fb352ba1bf242a7de34ee69232f3c9" id="r_aa6fb352ba1bf242a7de34ee69232f3c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6fb352ba1bf242a7de34ee69232f3c9">clearSelection</a> ()</td></tr>
+<tr class="memitem:ac72461b0c47ec15d7a4c0efa56ea13e5" id="r_ac72461b0c47ec15d7a4c0efa56ea13e5"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac72461b0c47ec15d7a4c0efa56ea13e5">getSelection</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a8cd7603c9f527057d09ab221b4cc7f2f" id="r_a8cd7603c9f527057d09ab221b4cc7f2f"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classGeometryActorSelectOpFactory.html">GeometryActorSelectOpFactory</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8cd7603c9f527057d09ab221b4cc7f2f">cur_geom_actor_</a> {}</td></tr>
+<tr class="memitem:a1817cd2e7cb3f1b24f98ae6c1237c0e0" id="r_a1817cd2e7cb3f1b24f98ae6c1237c0e0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1817cd2e7cb3f1b24f98ae6c1237c0e0">select_mode_</a> { <a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6a6adf97f83acf6453d4a6a4b1070f3754">SelectMode::None</a> }</td></tr>
+<tr class="memitem:adbe9940f0dd87d8cfe10d073feed4a0c" id="r_adbe9940f0dd87d8cfe10d073feed4a0c"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adbe9940f0dd87d8cfe10d073feed4a0c">selection_actor_</a></td></tr>
+<tr class="memitem:aeb2f334f6e8498b3f59f8203a5dd5963" id="r_aeb2f334f6e8498b3f59f8203a5dd5963"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb2f334f6e8498b3f59f8203a5dd5963">selection_mapper_</a></td></tr>
+<tr class="memitem:aee4b6e025d6ed28b915a4d963e766536" id="r_aee4b6e025d6ed28b915a4d963e766536"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; IVtkTools_ShapePicker &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aee4b6e025d6ed28b915a4d963e766536">picker_</a> {}</td></tr>
+<tr class="memitem:abc0792b6ffe850b225f9e2e1efa1ff10" id="r_abc0792b6ffe850b225f9e2e1efa1ff10"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc0792b6ffe850b225f9e2e1efa1ff10">renderer_</a> { nullptr }</td></tr>
+<tr class="memitem:afdbeb7ef2f4aaf095a6da81ab9469a26" id="r_afdbeb7ef2f4aaf095a6da81ab9469a26"><td class="memItemLeft" align="right" valign="top">vtkActor *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdbeb7ef2f4aaf095a6da81ab9469a26">highlight_actor_</a> { nullptr }</td></tr>
+<tr class="memitem:aaadf9a82f55af4489c8eb55c9ba8120e" id="r_aaadf9a82f55af4489c8eb55c9ba8120e"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classGeometrySelectorHighlight.html">GeometrySelectorHighlight</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaadf9a82f55af4489c8eb55c9ba8120e">selector_</a> {}</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a295a882e3d0b5b7b7d2727ec1166c3da" name="a295a882e3d0b5b7b7d2727ec1166c3da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a295a882e3d0b5b7b7d2727ec1166c3da">&#9670;&#160;</a></span>bindRenderer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySelectManager::bindRenderer </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkActor *</td>          <td class="paramname"><span class="paramname"><em>highlight_actor</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa6fb352ba1bf242a7de34ee69232f3c9" name="aa6fb352ba1bf242a7de34ee69232f3c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6fb352ba1bf242a7de34ee69232f3c9">&#9670;&#160;</a></span>clearSelection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySelectManager::clearSelection </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac72461b0c47ec15d7a4c0efa56ea13e5" name="ac72461b0c47ec15d7a4c0efa56ea13e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac72461b0c47ec15d7a4c0efa56ea13e5">&#9670;&#160;</a></span>getSelection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt; GeometrySelectManager::getSelection </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0dbd1d51d886b917ee31059ffd1b85b7" name="a0dbd1d51d886b917ee31059ffd1b85b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dbd1d51d886b917ee31059ffd1b85b7">&#9670;&#160;</a></span>select()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySelectManager::select </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a61abdff482c2ca655ba1a23b90157fc7" name="a61abdff482c2ca655ba1a23b90157fc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61abdff482c2ca655ba1a23b90157fc7">&#9670;&#160;</a></span>setSelectActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySelectManager::setSelectActor </td>
+          <td>(</td>
+          <td class="paramtype">std::weak_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>geom_actor</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="accd6412ae019d8e33710f21e12e0a5a4" name="accd6412ae019d8e33710f21e12e0a5a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accd6412ae019d8e33710f21e12e0a5a4">&#9670;&#160;</a></span>setSelectMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySelectManager::setSelectMode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a></td>          <td class="paramname"><span class="paramname"><em>select_mode</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a8cd7603c9f527057d09ab221b4cc7f2f" name="a8cd7603c9f527057d09ab221b4cc7f2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cd7603c9f527057d09ab221b4cc7f2f">&#9670;&#160;</a></span>cur_geom_actor_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;<a class="el" href="classGeometryActorSelectOpFactory.html">GeometryActorSelectOpFactory</a>&gt; GeometrySelectManager::cur_geom_actor_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afdbeb7ef2f4aaf095a6da81ab9469a26" name="afdbeb7ef2f4aaf095a6da81ab9469a26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdbeb7ef2f4aaf095a6da81ab9469a26">&#9670;&#160;</a></span>highlight_actor_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkActor* GeometrySelectManager::highlight_actor_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aee4b6e025d6ed28b915a4d963e766536" name="aee4b6e025d6ed28b915a4d963e766536"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee4b6e025d6ed28b915a4d963e766536">&#9670;&#160;</a></span>picker_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;IVtkTools_ShapePicker&gt; GeometrySelectManager::picker_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abc0792b6ffe850b225f9e2e1efa1ff10" name="abc0792b6ffe850b225f9e2e1efa1ff10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc0792b6ffe850b225f9e2e1efa1ff10">&#9670;&#160;</a></span>renderer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkRenderer* GeometrySelectManager::renderer_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1817cd2e7cb3f1b24f98ae6c1237c0e0" name="a1817cd2e7cb3f1b24f98ae6c1237c0e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1817cd2e7cb3f1b24f98ae6c1237c0e0">&#9670;&#160;</a></span>select_mode_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> GeometrySelectManager::select_mode_ { <a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6a6adf97f83acf6453d4a6a4b1070f3754">SelectMode::None</a> }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adbe9940f0dd87d8cfe10d073feed4a0c" name="adbe9940f0dd87d8cfe10d073feed4a0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbe9940f0dd87d8cfe10d073feed4a0c">&#9670;&#160;</a></span>selection_actor_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkActor&gt; GeometrySelectManager::selection_actor_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeb2f334f6e8498b3f59f8203a5dd5963" name="aeb2f334f6e8498b3f59f8203a5dd5963"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb2f334f6e8498b3f59f8203a5dd5963">&#9670;&#160;</a></span>selection_mapper_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkPolyDataMapper&gt; GeometrySelectManager::selection_mapper_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaadf9a82f55af4489c8eb55c9ba8120e" name="aaadf9a82f55af4489c8eb55c9ba8120e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaadf9a82f55af4489c8eb55c9ba8120e">&#9670;&#160;</a></span>selector_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classGeometrySelectorHighlight.html">GeometrySelectorHighlight</a>&gt; GeometrySelectManager::selector_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/<a class="el" href="GeometrySelectManager_8h_source.html">GeometrySelectManager.h</a></li>
+<li>app/render/<a class="el" href="GeometrySelectManager_8cpp.html">GeometrySelectManager.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
