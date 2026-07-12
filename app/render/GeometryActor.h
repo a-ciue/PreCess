@@ -2,11 +2,23 @@
 #define GEOMETRY_ACTOR_H
 #include "Core.h"
 #include "GeometryDataVtk.h"
+#include "GeometrySubshapeIndex.h"
 #include <vtkActor.h>
+#include <vtkDataArray.h>
 #include <vtkNew.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkSmartPointer.h>
+
+#include <Standard_Handle.hxx>
+#include <IVtkOCC_Shape.hxx>
+#include <IVtkTools_SubPolyDataFilter.hxx>
+typedef Handle(IVtkOCC_Shape) OccShapeHandle;
+
+class GeometryActorSelectOp;
+class vtkPolyData;
 
 class GeometryActor {
+    friend GeometryActorSelectOp;
 
 public:
     GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode);
@@ -27,11 +39,17 @@ private:
     GeometryRenderMode render_mode_;
     bool edge_render;
     bool visibility_;
-    std::unique_ptr<GeometryDataVtk> geometry_data_;
+    OccShapeHandle occ_shape_;
+    const GeometrySubshapeIndex* geometry_index_;
 
     vtkNew<vtkActor> poly_actor_;
     vtkNew<vtkActor> line_actor_;
     vtkRenderer* renderer_;
+    vtkSmartPointer<vtkDataArray> line_sub_id_array_;
+    vtkSmartPointer<vtkDataArray> poly_sub_id_array_;
+
+    vtkSmartPointer<vtkPolyData> poly_only_;
+    vtkSmartPointer<vtkPolyData> line_only_;
 };
 
 #endif

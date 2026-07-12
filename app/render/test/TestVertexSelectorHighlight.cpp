@@ -2,6 +2,7 @@
 #include "SelectorHighlight.h"
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkNew.h>
+#include <vtkActor.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
@@ -64,7 +65,10 @@ int main(int argc, char* argv[])
     meshActor->loadModelData(test_mesh_data);
 
     // 集成 VertexSelectorHighlight
-    VertexSelectorHighlight selector(renderer);
+    vtkNew<vtkActor> highlightActor;
+    highlightActor->PickableOff();
+    renderer->AddActor(highlightActor);
+    VertexSelectorHighlight selector(renderer, highlightActor);
     selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
     style->SetSelectorHighlight(&selector);
 

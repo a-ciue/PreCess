@@ -294,7 +294,7 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 
 QSelection* QRenderWindow::selectedIDs()
 {
-    std::unique_ptr<Selection> data(this->selectManager_->getSelection());
+    std::unique_ptr<Selection> data = this->selectManager_->getSelection();
     if (!data) {
         return nullptr;
     }
@@ -341,39 +341,33 @@ void QRenderWindow::setSelectComponent(Index component_id)
 {
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        selectManager_->bindRenderer(vtk->renderer_);
         this->cur_component_id_ = component_id;
         this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
 
-        std::shared_ptr<const MeshActor> mesh_actor;
+        std::shared_ptr<MeshActor> mesh_actor;
         if (vtk->mesh_actor_manager_->hasComponent(component_id))
             mesh_actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
 
         if (mesh_actor)
             selectManager_->setSelectActor(mesh_actor);
         else
-            selectManager_->setSelectActor({});
+            selectManager_->setSelectActor(std::weak_ptr<MeshActor> {});
+
+        std::shared_ptr<GeometryActor> geometry_actor;
+        if (vtk->geometry_actor_manager_->hasComponent(component_id))
+            geometry_actor = vtk->geometry_actor_manager_->getComponentActor(component_id);
+
+        if (geometry_actor)
+            selectManager_->setSelectActor(geometry_actor);
+        else
+            selectManager_->setSelectActor(std::weak_ptr<GeometryActor> {});
     });
 }
 
 void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-        if (select_mode == "Vertex") {
-            select_mode_ = SelectMode::Vertex;
-        } else if (select_mode == "Face") {
-            select_mode_ = SelectMode::Face;
-        } else if (select_mode == "Edge") {
-            select_mode_ = SelectMode::Edge;
-        } else if (select_mode == "Block") {
-            select_mode_ = SelectMode::Block;
-        } else if (select_mode == "Solid") {
-            select_mode_ = SelectMode::Solid;
-        } else {
-            select_mode_ = SelectMode::None;
-        }
-        selectManager_->setSelectMode(select_mode_);
+        selectManager_->setSelectMode(select_mode.toStdString());
     });
 }
 

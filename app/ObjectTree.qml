@@ -44,7 +44,8 @@ Pane {
         clip: true
         flickDeceleration: 100000
         boundsBehavior: Flickable.StopAtBounds
-        columnWidthProvider: function(column) { return treeView.width }
+        columnWidthProvider: function(column) { return colWidth }
+        property real colWidth: treeView.width
 
         property int toggleExpandRow: -1
         onExpanded: (row, depth) => toggleExpandRow = row
