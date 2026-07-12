@@ -12,6 +12,13 @@ target_compile_definitions(TetGenInternal
     PUBLIC TETLIBRARY
 )
 
+# 抑制第三方库的编译器警告，避免污染主项目构建日志
+if(MSVC)
+    target_compile_options(TetGenInternal PRIVATE /w)
+else()
+    target_compile_options(TetGenInternal PRIVATE -w)
+endif()
+
 target_include_directories(TetGenInternal
     PUBLIC "${TETGEN_SOURCE_DIR}"
 )
