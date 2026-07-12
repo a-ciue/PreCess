@@ -17,6 +17,7 @@
 #include <cctype>
 #include <exception>
 #include <memory>
+#include <mutex>
 #include <queue>
 #include <sstream>
 #include <string>
@@ -491,6 +492,10 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         switches += sanitized_extra_switches;
     }
     spdlog::debug("TetGenLibHandler: tetrahedralize switches: {}", switches);
+
+    // TetGen 内部使用全局静态变量，非线程安全，加锁保护并发调用场景
+    static std::mutex s_tetgen_mutex;
+    std::lock_guard<std::mutex> tetgen_lock(s_tetgen_mutex);
 
     try {
         tetrahedralize(switches.data(), &input, &output);
