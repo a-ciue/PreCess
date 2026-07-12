@@ -293,6 +293,6 @@ std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
         ArgType { ArgTypeEnum::Combo, "四边形重组算法", kGmshRecombinationAlgorithmComboText },
         ArgType { ArgTypeEnum::Text, "四边形最低质量(0~1，留空默认)", "" },
         ArgType { ArgTypeEnum::Text, "结构化网格边划分数(留空自动)", "" },
-        ArgType { ArgTypeEnum::Bool, "是否写出网格", "true" }
+        ArgType { ArgTypeEnum::Bool, "是否导出网格", "false" }
     };
 }
