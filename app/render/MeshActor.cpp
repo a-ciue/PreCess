@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
+#include <vtkCellCenters.h>
 #include <vtkCellData.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkDoubleArray.h>
@@ -27,6 +28,94 @@
 #include <vtkUnstructuredGrid.h>
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
+
+namespace {
+// 将组件局部点属性写入全局 PointData，供面/体 mapper 按点属性渲染。
+void addPointAttributes(
+    vtkPointData& point_data,
+    const std::map<std::string, std::vector<double>>& attributes,
+    vtkIdType global_point_count,
+    const std::vector<Index>& local_to_global)
+{
+    // 全局点池未同步时不能挂载点属性。
+    if (global_point_count <= 0)
+        return;
+
+    // component 重构后，点属性仍是组件局部数组，必须依赖局部点到全局点的映射。
+    if (local_to_global.empty())
+        return;
+
+    const size_t local_point_count = local_to_global.size();
+    for (const auto& [attr_name, attr_values] : attributes) {
+        if (attr_values.empty())
+            continue;
+
+        // 属性数组按 [point0 分量..., point1 分量...] 存放，总长度必须是点数的整数倍。
+        if (attr_values.size() % local_point_count != 0) {
+            spdlog::error("Attribute {} size mismatch: {} values for {} points",
+                attr_name, attr_values.size(), local_point_count);
+            continue;
+        }
+
+        // VTK PointData 挂在共享的全局点池上，tuple 数量必须按全局点数创建。
+        const size_t ncomp = attr_values.size() / local_point_count;
+        auto array = vtkSmartPointer<vtkDoubleArray>::New();
+        array->SetNumberOfComponents(static_cast<int>(ncomp));
+        array->SetName(attr_name.c_str());
+        array->SetNumberOfTuples(global_point_count);
+        // 非本组件的点也需要占位，否则 tuple id 无法和全局点 id 对齐。
+        for (int comp = 0; comp < static_cast<int>(ncomp); ++comp)
+            array->FillComponent(comp, 0.0);
+
+        // 将组件局部第 i 个点属性写到 local_to_global[i] 指向的全局 tuple 上。
+        for (size_t i = 0; i < local_point_count; ++i) {
+            const Index global_point_id = local_to_global[i];
+            if (global_point_id < 0 || global_point_id >= static_cast<Index>(global_point_count)) {
+                spdlog::error("Attribute {} point id {} exceeds global point count {}",
+                    attr_name, global_point_id, global_point_count);
+                continue;
+            }
+            const vtkIdType tuple_id = static_cast<vtkIdType>(global_point_id);
+            array->SetTuple(tuple_id, &attr_values[i * ncomp]);
+        }
+        point_data.AddArray(array);
+    }
+}
+
+// 将面属性或体属性写入对应 VTK 数据对象的 CellData。
+void addCellAttributes(
+    vtkCellData& cell_data,
+    const std::map<std::string, std::vector<double>>& attributes,
+    vtkIdType cell_count,
+    const char* cell_kind)
+{
+    if (cell_count <= 0)
+        return;
+
+    const size_t num_cells = static_cast<size_t>(cell_count);
+    for (const auto& [attr_name, attr_values] : attributes) {
+        // CellData 是当前 VTK 数据对象自己的局部 cell 数组，不需要全局偏移。
+        if (attr_values.size() < num_cells) {
+            spdlog::error("Attribute {} has insufficient values for {} cells", attr_name, cell_kind);
+            continue;
+        }
+        if (attr_values.size() % num_cells != 0) {
+            spdlog::error("Attribute {} size mismatch: {} values for {} {} cells",
+                attr_name, attr_values.size(), num_cells, cell_kind);
+            continue;
+        }
+
+        const size_t ncomp = attr_values.size() / num_cells;
+        auto array = vtkSmartPointer<vtkDoubleArray>::New();
+        array->SetNumberOfComponents(static_cast<int>(ncomp));
+        array->SetName(attr_name.c_str());
+        array->SetNumberOfTuples(cell_count);
+        for (size_t i = 0; i < num_cells; ++i)
+            array->SetTuple(static_cast<vtkIdType>(i), &attr_values[i * ncomp]);
+        cell_data.AddArray(array);
+    }
+}
+}
 
 MeshActor::MeshActor(vtkRenderer* renderer, vtkPoints* global_points, bool is_edge_render, ModelRenderMode render_mode)
     : renderer_(renderer)
@@ -89,28 +178,10 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         face_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
 
         // 处理面属性
-        const size_t num_faces = face_poly->GetNumberOfCells();
-        for (const auto& attr : model_data.face_attributes_) {
-            const std::string& attr_name = attr.first;
-            const std::vector<double>& attr_values = attr.second;
-            if (attr_values.size() < num_faces) {
-                spdlog::error("Attribute {} has insufficient values", attr_name);
-                continue;
-            }
-            size_t ncomp = attr_values.size() / num_faces;
-            if (ncomp * num_faces != attr_values.size()) {
-                spdlog::error("Attribute {} size mismatch: {} values for {} faces", attr_name, attr_values.size(), num_faces);
-                continue;
-            }
-            auto array = vtkSmartPointer<vtkDoubleArray>::New();
-            array->SetNumberOfComponents(static_cast<int>(ncomp));
-            array->SetName(attr_name.c_str());
-            array->SetNumberOfTuples(num_faces);
-            for (size_t i = 0; i < num_faces; ++i) {
-                array->SetTuple(i, &attr_values[i * ncomp]);
-            }
-            face_poly->GetCellData()->AddArray(array);
-        }
+        addPointAttributes(*face_poly->GetPointData(), model_data.vertex_attributes_,
+            global_points_->GetNumberOfPoints(), model_data.local_to_global_);
+        addCellAttributes(*face_poly->GetCellData(), model_data.face_attributes_,
+            face_poly->GetNumberOfCells(), "face");
     }
 
     // edge data
@@ -145,6 +216,23 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         });
     solid_ugird->GetCellData()->AddArray(originalCellIds);
     solid_ugird->GetPointData()->AddArray(original_point_ids_.GetPointer());
+    // 处理体属性
+    addPointAttributes(*solid_ugird->GetPointData(), model_data.vertex_attributes_,
+        global_points_->GetNumberOfPoints(), model_data.local_to_global_);
+    addCellAttributes(*solid_ugird->GetCellData(), model_data.solid_attributes_, solid_cells_count, "solid");
+
+    // 单元中心点只和几何拓扑有关，在加载数据时统一计算并缓存，属性渲染阶段直接复用。 
+    {
+        vtkNew<vtkCellCenters> face_centers;
+        face_centers->SetInputData(face_poly);
+        face_centers->Update();
+        face_cell_centers_->DeepCopy(face_centers->GetOutput());
+
+        vtkNew<vtkCellCenters> solid_centers;
+        solid_centers->SetInputData(solid_ugird);
+        solid_centers->Update();
+        solid_cell_centers_->DeepCopy(solid_centers->GetOutput());
+    }
 
     solid_filter_->SetInputData(solid_ugird);
 

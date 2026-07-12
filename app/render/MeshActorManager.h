@@ -12,10 +12,10 @@ public:
     explicit MeshActorManager(vtkPoints* global_points);
     void bindRender(vtkRenderer* renderer);
     bool hasComponent(Index component_id) const;
-    std::shared_ptr<const MeshActor> getComponentActor(Index component_id) const;
+    std::shared_ptr<MeshActor> getComponentActor(Index component_id) const;
     void deleteComponent(Index component_id);
     void loadMesh(Index component_id, const MeshDataVtk& model_data,
-        vtkRenderer* renderer, ModelRenderMode render_mode = ModelRenderMode::Face);
+    vtkRenderer* renderer, ModelRenderMode render_mode = ModelRenderMode::Face);
 
     void setVisibility(Index component_id, bool visibility);
     void setRenderMode(Index component_id, ModelRenderMode render_mode);

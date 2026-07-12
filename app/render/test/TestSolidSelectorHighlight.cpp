@@ -75,7 +75,10 @@ int main(int argc, char* argv[])
     meshActor->loadModelData(test_mesh_data);
 
     // 体元高亮选择器
-    SolidSelectorHighlight selector(renderer);
+    vtkNew<vtkActor> highlightActor;
+    highlightActor->PickableOff();
+    renderer->AddActor(highlightActor);
+    SolidSelectorHighlight selector(renderer, highlightActor);
     selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
     style->SetSelectorHighlight(&selector);
 

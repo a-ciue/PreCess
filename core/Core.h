@@ -23,7 +23,11 @@ enum class SelectMode {
     Face,
     Edge,
     Solid,
-    Block
+    Block,
+    GeometryVertex,
+    GeometryEdge,
+    GeometryFace,
+    GeometrySolid
 };
 
 /**
@@ -69,6 +73,8 @@ struct MeshDataVtk {
     const std::vector<Index>& vtk_face_cells_offset_; //> 表示面顶点索引偏移的数组，对应 MeshData::face_vertices_offset_
 
     const std::vector<Index>& vtk_edge_cells_; //> 表示边顶点索引的数组，对应 MeshData::edge_vertices_
+
+    const std::vector<Index>& local_to_global_; //> 对应 MeshData::local_to_global_
 
     const std::map<std::string, std::vector<double>>& vertex_attributes_; //> 表示点属性的数组，对应 MeshData::vertex_attributes_
     const std::map<std::string, std::vector<double>>& edge_attributes_; //> 表示边属性的数组，对应 MeshData::edge_attributes_

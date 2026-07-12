@@ -8,7 +8,7 @@
 #include <vtkPolyData.h>
 
 MeshActorSelectOpFactory::MeshActorSelectOpFactory() = default;
-MeshActorSelectOpFactory::MeshActorSelectOpFactory(std::weak_ptr<const MeshActor> mesh_actor)
+MeshActorSelectOpFactory::MeshActorSelectOpFactory(std::weak_ptr<MeshActor> mesh_actor)
     : mesh_actor_(mesh_actor)
 {
 }
@@ -21,7 +21,7 @@ std::optional<MeshActorSelectOp> MeshActorSelectOpFactory::lock()
     return {};
 }
 
-MeshActorSelectOp::MeshActorSelectOp(std::shared_ptr<const MeshActor> mesh_actor)
+MeshActorSelectOp::MeshActorSelectOp(std::shared_ptr<MeshActor> mesh_actor)
     : mesh_actor_(mesh_actor)
 {
     if (!mesh_actor_) {

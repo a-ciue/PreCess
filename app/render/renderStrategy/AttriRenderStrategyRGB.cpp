@@ -11,36 +11,45 @@ void AttriRenderStrategyRGB::render(
     std::map<std::string, std::any> args)
 {
     this->cancelActiveAttribute(op);
-    // 先判断是否是顶点属性
-    vtkDataArray* array = op.getVertexPointData()->GetArray(attr_name.c_str());
+    // 判断是否是点属性
+    vtkDataArray* array = op.getFacePointData()->GetArray(attr_name.c_str());
     if (array) {
-        vtkPointData* vertex_data = op.getVertexPointData();
-        vtkPolyDataMapper* vertex_mapper = op.getVertexMapper();
-        vertex_data->SetActiveScalars(attr_name.c_str());
-        vertex_mapper->SetScalarVisibility(1);
-        vertex_mapper->SetColorModeToDirectScalars(); // 直接映射RGB
-        vertex_mapper->SetScalarModeToUsePointData();
-        if (vtkPointData* face_data = op.getFacePointData()) {
-            face_data->SetActiveScalars(attr_name.c_str());
-            vtkPolyDataMapper* face_mapper = op.getFaceMapper();
-            face_mapper->SetScalarModeToUsePointData();// 面使用点数据
-            face_mapper->SetScalarVisibility(1);
-            face_mapper->SetColorModeToDirectScalars();
-        }
+        op.getFacePointData()->SetActiveScalars(attr_name.c_str());
+        op.getSolidPointData()->SetActiveScalars(attr_name.c_str());
+
+        vtkPolyDataMapper* face_mapper = op.getFaceMapper();
+        face_mapper->SetScalarModeToUsePointData();// 面使用点数据
+        face_mapper->SetScalarVisibility(1);
+        face_mapper->SetColorModeToDirectScalars();
+
+        vtkPolyDataMapper* solid_mapper = op.getSolidMapper();
+        solid_mapper->SetScalarModeToUsePointData();
+        solid_mapper->SetScalarVisibility(1);
+        solid_mapper->SetColorModeToDirectScalars();
         return;
     }
     // 判断是否是面属性
-    if (vtkCellData* face_data = op.getFaceCellData()) {
-        array = face_data->GetArray(attr_name.c_str());
-    }
+    array = op.getFaceCellData()->GetArray(attr_name.c_str());
     if (array) {
-        vtkCellData* face_data = op.getFaceCellData();
+        op.enableFaceAttributeOffset();
+        op.getFaceCellData()->SetActiveScalars(attr_name.c_str());
         vtkPolyDataMapper* face_mapper = op.getFaceMapper();
-        face_data->SetActiveScalars(attr_name.c_str());
         face_mapper->SetScalarModeToUseCellData();
         face_mapper->SetScalarVisibility(1);
         face_mapper->SetColorModeToDirectScalars();
-    } else {
-        spdlog::error("Attribute {} not found in vertex or face data.", attr_name);
+        return;
     }
-}   
+    // 判断是否是体属性
+    array = op.getSolidCellData()->GetArray(attr_name.c_str());
+    if (array) {
+        op.disableFaceAttributeOffset();
+        op.getSolidCellData()->SetActiveScalars(attr_name.c_str());
+        vtkPolyDataMapper* solid_mapper = op.getSolidMapper();
+        solid_mapper->SetScalarModeToUseCellData();
+        solid_mapper->SetScalarVisibility(1);
+        solid_mapper->SetColorModeToDirectScalars();
+        return;
+    }
+
+    spdlog::error("Attribute {} not found in point, face or solid data.", attr_name);
+}
