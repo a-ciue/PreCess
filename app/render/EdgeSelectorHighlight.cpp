@@ -53,11 +53,11 @@ bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::
 }
 }
 
-EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
+EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op)
+    : renderer_(&renderer)
+    , highlight_actor_(&highlight_actor)
+    , select_op_(std::move(select_op))
 {
-    this->highlight_actor_ = highlight_actor;
-    this->renderer_ = renderer;
-
     selected_mapper_->SetInputData(vtkPolyData::New());
 
     if (highlight_actor_) {
@@ -69,9 +69,9 @@ EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer* renderer, vtkActor* hi
     }
 }
 
-EdgeSelectorHighlight::~EdgeSelectorHighlight() 
-{ 
-    clear(); 
+EdgeSelectorHighlight::~EdgeSelectorHighlight()
+{
+    clear();
 }
 
 void EdgeSelectorHighlight::clear()
@@ -98,60 +98,42 @@ void EdgeSelectorHighlight::select(double posx, double posy)
 {
     vtkNew<vtkHardwarePicker> picker;
     picker->PickFromListOn();
-    collection_->InitTraversal();
-    for (vtkProp* actor {}; actor = collection_->GetNextProp();) {
-        picker->AddPickList(actor);
-    }
+    picker->AddPickList(&select_op_.getEdgeActor());
+    picker->AddPickList(&select_op_.getFaceActor());
+    picker->AddPickList(&select_op_.getSolidActor());
     picker->Pick(posx, posy, 0, renderer_);
 
     // 获取选中的CellId （面或者是边）
     vtkIdType pickedCellId = picker->GetCellId();
-    if (pickedCellId != -1) {
-        // 获取选中的 cell
-        vtkActor* pickedActor = picker->GetActor();
-        assert(pickedActor);
-        vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
-        assert(pickedMapper);
-        vtkPolyData* pickedPoly = pickedMapper->GetInput();
-        vtkCell* pickedCell = pickedPoly->GetCell(pickedCellId);
-        assert(picker && pickedCell);
-
-        // 边端点的原始id
-        std::array<vtkIdType, 2> original_id = _find_selected_edge(*picker, *pickedCell, *pickedPoly);
-
-        // 检查是否已选中
-        auto it = std::find_if(selections_.begin(), selections_.end(),
-            [&](const std::array<vtkIdType, 2>& id) {
-                return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(id));
-            });
-
-        if (it != selections_.end()) {
-            // 已选中，取消选中
-            selections_.erase(it);
-        } else {
-            // 未选中，添加
-            selections_.push_back(original_id);
-        }
-
-        auto model_actor = model_actor_.lock();
-        assert(model_actor);
-        // 获取原始点数据构建的边PolyData
-        auto edge_poly_data = model_actor->extractEdge(selections_);
-        // 设置PolyData到mapper
-        selected_mapper_->SetInputData(edge_poly_data);
-    } else {
-        // 没选到
-        clear();
+    if (pickedCellId == -1) { // 没选到
+        clear(); 
+        return;
     }
-}
+    
+    // 获取选中的 cell
+    vtkActor* pickedActor = picker->GetActor();
+    assert(pickedActor);
+    vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
+    assert(pickedMapper);
+    vtkPolyData* pickedPoly = pickedMapper->GetInput();
+    vtkCell* pickedCell = pickedPoly->GetCell(pickedCellId);
+    assert(pickedCell);
+    
+    // 边端点的原始id
+    std::array<vtkIdType, 2> original_id = _find_selected_edge(*picker, *pickedCell, *pickedPoly);
 
-void EdgeSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
-{
-    this->collection_->RemoveAllItems();
-    if (auto actor = model_actor.lock()) {
-        this->collection_->AddItem(&actor->getEdgeActor());
-        this->collection_->AddItem(&actor->getFaceActor());
-        this->collection_->AddItem(&actor->getSolidActor());
+    // 检查是否已选中
+    auto it = std::find_if(selections_.begin(), selections_.end(),
+        [&](const std::array<vtkIdType, 2>& id) {
+            return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(id));
+        });
+
+    if (it != selections_.end()) { // 已选中，取消选中
+        selections_.erase(it);
+    } else { // 未选中，添加
+        selections_.push_back(original_id);
     }
-    this->model_actor_ = model_actor;
+
+    auto edge_poly_data = select_op_.extractEdge(selections_);
+    selected_mapper_->SetInputData(edge_poly_data);
 }

@@ -45,7 +45,6 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->renderer_->SetGradientBackground(true);
 
     vtk->style_->SetSelectManager(this->selectManager_.get());
-    selectManager_->bindRenderer(vtk->renderer_);
     vtk->style_->SetDefaultRenderer(vtk->renderer_);
     renderWindow->GetInteractor()->SetInteractorStyle(vtk->style_);
 
@@ -55,6 +54,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
+
+    selectManager_->setOps(vtk->mesh_actor_manager_->op(), vtk->geometry_actor_manager_->op());
+    selectManager_->bindRenderer(vtk->renderer_);
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
@@ -343,24 +345,6 @@ void QRenderWindow::setSelectComponent(Index component_id)
         Data* vtk = Data::SafeDownCast(userData);
         this->cur_component_id_ = component_id;
         this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
-
-        std::shared_ptr<MeshActor> mesh_actor;
-        if (vtk->mesh_actor_manager_->hasComponent(component_id))
-            mesh_actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
-
-        if (mesh_actor)
-            selectManager_->setSelectActor(mesh_actor);
-        else
-            selectManager_->setSelectActor(std::weak_ptr<MeshActor> {});
-
-        std::shared_ptr<GeometryActor> geometry_actor;
-        if (vtk->geometry_actor_manager_->hasComponent(component_id))
-            geometry_actor = vtk->geometry_actor_manager_->getComponentActor(component_id);
-
-        if (geometry_actor)
-            selectManager_->setSelectActor(geometry_actor);
-        else
-            selectManager_->setSelectActor(std::weak_ptr<GeometryActor> {});
     });
 }
 

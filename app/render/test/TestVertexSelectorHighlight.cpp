@@ -68,8 +68,7 @@ int main(int argc, char* argv[])
     vtkNew<vtkActor> highlightActor;
     highlightActor->PickableOff();
     renderer->AddActor(highlightActor);
-    VertexSelectorHighlight selector(renderer, highlightActor);
-    selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
+    VertexSelectorHighlight selector(*renderer, *highlightActor, MeshActorSelectOp(meshActor));
     style->SetSelectorHighlight(&selector);
 
     renderWindow->Render();

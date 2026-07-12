@@ -5,15 +5,15 @@
 
 #include <memory>
 #include <string>
-#include <vtkNew.h>
 #include <vtkActor.h>
+#include <vtkNew.h>
 #include <vtkPolyDataMapper.h>
 
 class vtkRenderer;
-class MeshActor;
-class GeometryActor;
 class MeshSelectManager;
 class GeometrySelectManager;
+class MeshActorManagerSelectOp;
+class GeometryActorManagerSelectOp;
 
 class SelectManager {
 public:
@@ -21,11 +21,9 @@ public:
     ~SelectManager();
 
     void bindRenderer(vtkRenderer* renderer);
+    void setOps(MeshActorManagerSelectOp& meshOp, GeometryActorManagerSelectOp& geomOp);
+
     void select(double posx, double posy);
-
-    void setSelectActor(std::weak_ptr<MeshActor> mesh_actor);
-    void setSelectActor(std::weak_ptr<GeometryActor> geom_actor);
-
     void setSelectMode(const std::string& select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();

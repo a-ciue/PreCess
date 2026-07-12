@@ -4,11 +4,11 @@
 #include <optional>
 #include <vector>
 
-#include <vtkSmartPointer.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtk_Types.hxx>
+#include <vtkActor.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkSmartPointer.h>
 
 #include "Core.h"
 #include "GeometryActor.h"
@@ -51,6 +51,10 @@ public:
         GeomSolidId& out_solid_id, std::vector<IVtk_IdType>& out_face_sub_ids);
 
     GeometryHighlightPipeline buildHighlight(SelectMode mode);
+
+    vtkActor* getPolyActor();
+
+    vtkActor* getLineActor();
 
 private:
     std::shared_ptr<GeometryActor> geometry_actor_;

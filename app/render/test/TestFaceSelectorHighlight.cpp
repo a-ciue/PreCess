@@ -80,8 +80,7 @@ int main(int argc, char* argv[])
     vtkNew<vtkActor> highlightActor;
     highlightActor->PickableOff();
     renderer->AddActor(highlightActor);
-    FaceSelectorHighlight selector(renderer, highlightActor);
-    selector.setCurModelActor(MeshActorSelectOpFactory(meshActor));
+    FaceSelectorHighlight selector(*renderer, *highlightActor, MeshActorSelectOp(meshActor));
     style->SetSelectorHighlight(&selector);
 
     renderWindow->Render();

@@ -1,11 +1,14 @@
 #include "MeshSelectManager.h"
-#include "MeshActor.h"
+#include "MeshActorManagerSelectOp.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
-#include <vtkActor.h>
-#include <vtkAppendPolyData.h>
-#include <vtkCellArray.h>
-#include <vtkProperty.h>
+#include <vtkHardwarePicker.h>
+#include <vtkRenderer.h>
+
+MeshSelectManager::MeshSelectManager(MeshActorManagerSelectOp& op)
+    : op_(&op)
+{
+}
 
 void MeshSelectManager::bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor)
 {
@@ -15,84 +18,101 @@ void MeshSelectManager::bindRenderer(vtkRenderer* renderer, vtkActor* highlight_
 
 void MeshSelectManager::select(double posx, double posy)
 {
-    if (this->selector_) {
-        assert(this->select_mode_ != SelectMode::None);
-        this->selector_->select(posx, posy);
-    }
-}
+    if (this->select_mode_ == SelectMode::None)
+        return;
 
-void MeshSelectManager::setSelectActor(std::weak_ptr<MeshActor> model_actor_)
-{
-    this->cur_model_actor_ = MeshActorSelectOpFactory { model_actor_ };
-    if (this->selector_) {
-        this->selector_->clear();
-        this->selector_->setCurModelActor(*cur_model_actor_);
-    }
+    vtkNew<vtkHardwarePicker> idPicker;
+    op_->addPropsToPickList(idPicker);
+    idPicker->Pick(posx, posy, 0, renderer_);
+
+    vtkActor* pickedActor = idPicker->GetActor();
+    auto component_id = op_->getComponentId(pickedActor);
+    if (!component_id)
+        return;
+
+    auto* sel = getOrCreateSelector(*component_id);
+    if (sel)
+        sel->select(posx, posy);
 }
 
 void MeshSelectManager::setSelectMode(SelectMode select_mode)
 {
     this->select_mode_ = select_mode;
-    if (this->select_mode_ == SelectMode::Vertex) {
-        this->selector_ = std::make_unique<VertexSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::Face) {
-        this->selector_ = std::make_unique<FaceSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::Block) {
-        this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
-    } else if (this->select_mode_ == SelectMode::Edge) {
-        this->selector_ = std::make_unique<EdgeSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::Solid) {
-        this->selector_ = std::make_unique<SolidSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else {
-        this->selector_ = nullptr;
-    }
-
-    if (this->selector_ && this->cur_model_actor_) {
-        this->selector_->setCurModelActor(*cur_model_actor_);
-    }
+    this->component_selectors_.clear();
 }
 
 void MeshSelectManager::clearSelection()
 {
-    if (this->selector_) {
-        this->selector_->clear();
-    }
+    this->component_selectors_.clear();
 }
 
 std::unique_ptr<Selection> MeshSelectManager::getSelection()
 {
-    std::unique_ptr<Selection> selection = std::make_unique<Selection>();
+    auto result = std::make_unique<Selection>();
 
-    if (this->select_mode_ == SelectMode::Vertex) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Vertex;
-    } else if (this->select_mode_ == SelectMode::Face) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Face;
-    } else if (this->select_mode_ == SelectMode::Block) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Block;
-    }else if (this->select_mode_ == SelectMode::Solid) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Solid;
-    } else if (this->select_mode_ == SelectMode::Edge) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Edge;
-    } else {
-        if (this->selector_)
-            this->selector_->clear();
+    ElementEnum::Type type;
+    switch (select_mode_) {
+    case SelectMode::Vertex:
+        type = ElementEnum::Vertex;
+        break;
+    case SelectMode::Face:
+        type = ElementEnum::Face;
+        break;
+    case SelectMode::Edge:
+        type = ElementEnum::Edge;
+        break;
+    case SelectMode::Solid:
+        type = ElementEnum::Solid;
+        break;
+    case SelectMode::Block:
+        type = ElementEnum::Block;
+        break;
+    default:
         return nullptr;
     }
 
-    return selection;
+    for (auto& [comp_id, sel] : component_selectors_) {
+        for (const auto& id : sel->get().ids)
+            result->ids.push_back(id);
+    }
+
+    result->type = type;
+    result->component_id = -1;
+    return result;
+}
+
+SelectorHighlight* MeshSelectManager::getOrCreateSelector(Index component_id)
+{
+    auto it = component_selectors_.find(component_id);
+    if (it != component_selectors_.end())
+        return it->second.get();
+
+    auto select_op = op_->getSelectOp(component_id);
+    if (!select_op)
+        return nullptr;
+
+    std::unique_ptr<SelectorHighlight> sel;
+    switch (select_mode_) {
+    case SelectMode::Face:
+        sel = std::make_unique<FaceSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
+        break;
+    case SelectMode::Edge:
+        sel = std::make_unique<EdgeSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
+        break;
+    case SelectMode::Solid:
+        sel = std::make_unique<SolidSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
+        break;
+    case SelectMode::Vertex:
+        sel = std::make_unique<VertexSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
+        break;
+    case SelectMode::Block:
+        sel = std::make_unique<BlockSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
+        break;
+    default:
+        return nullptr;
+    }
+
+    auto* ptr = sel.get();
+    component_selectors_[component_id] = std::move(sel);
+    return ptr;
 }

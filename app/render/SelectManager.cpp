@@ -1,18 +1,15 @@
 #include "SelectManager.h"
-#include "MeshSelectManager.h"
 #include "GeometrySelectManager.h"
-#include "GeometryActor.h"
-#include "MeshActor.h"
+#include "MeshSelectManager.h"
+#include "MeshActorManagerSelectOp.h"
+#include "GeometryActorManagerSelectOp.h"
 
 #include <vtkMapper.h>
 #include <vtkPolyData.h>
 #include <vtkRenderer.h>
 
 SelectManager::SelectManager()
-    : mesh_(std::make_unique<MeshSelectManager>())
-    , geom_(std::make_unique<GeometrySelectManager>())
 {
-    // 共享 actor 始终持有一个空 mapper（None 或未激活时的兜底，避免空 mapper / 残留旧数据）
     vtkNew<vtkPolyData> empty;
     empty_mapper_->SetInputData(empty);
     highlight_actor_->SetMapper(empty_mapper_);
@@ -30,20 +27,16 @@ void SelectManager::bindRenderer(vtkRenderer* renderer)
     geom_->bindRenderer(renderer, highlight_actor_);
 }
 
+void SelectManager::setOps(MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op)
+{
+    mesh_ = std::make_unique<MeshSelectManager>(mesh_op);
+    geom_ = std::make_unique<GeometrySelectManager>(geom_op);
+}
+
 void SelectManager::select(double posx, double posy)
 {
     mesh_->select(posx, posy);
     geom_->select(posx, posy);
-}
-
-void SelectManager::setSelectActor(std::weak_ptr<MeshActor> mesh_actor)
-{
-    mesh_->setSelectActor(mesh_actor);
-}
-
-void SelectManager::setSelectActor(std::weak_ptr<GeometryActor> geom_actor)
-{
-    geom_->setSelectActor(geom_actor);
 }
 
 void SelectManager::setSelectMode(const std::string& select_mode)

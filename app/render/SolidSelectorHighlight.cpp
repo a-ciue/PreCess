@@ -9,10 +9,8 @@
 #include <vtkExtractSelection.h>
 #include <vtkHardwarePicker.h>
 #include <vtkIdTypeArray.h>
-#include <vtkPropCollection.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkSphereSource.h>
 #include <vtkUnstructuredGrid.h>
 
 #include <spdlog/spdlog.h>
@@ -32,9 +30,10 @@ vtkIdType _is_selected(vtkIdType new_solid, const vtkIdTypeArray& selected_ids_)
 }
 }
 
-SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
-    : renderer_(renderer)
-    , highlight_actor_(highlight_actor)
+SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op)
+    : renderer_(&renderer)
+    , highlight_actor_(&highlight_actor)
+    , select_op_(std::move(select_op))
 {
     this->selected_ids_->SetName("vtkOriginalCellIds");
     this->selected_ids_->SetNumberOfComponents(1);
@@ -44,6 +43,9 @@ SolidSelectorHighlight::SolidSelectorHighlight(vtkRenderer* renderer, vtkActor* 
     this->mapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
     this->mapper_->SetInputData(dummy);
     this->mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
+
+    auto extract_selection = select_op_.extractSolid(selected_ids_);
+    this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
 
     if (highlight_actor_) {
         highlight_actor_->SetMapper(mapper_);
@@ -81,13 +83,7 @@ void SolidSelectorHighlight::select(double posx, double posy)
     // 获取 picked_cell_id和picked_data_set
     vtkNew<vtkHardwarePicker> picker;
     picker->PickFromListOn();
-    auto model_actor = model_actor_.lock();
-    if (!model_actor) {
-        clear();
-        spdlog::debug("No solid actor set, selection cleared.");
-        return;
-    }
-    picker->AddPickList(&model_actor->getSolidActor());
+    picker->AddPickList(&select_op_.getSolidActor());
     picker->Pick(posx, posy, 0, renderer_);
     vtkIdType picked_cell_id = picker->GetCellId();
     if (picked_cell_id < 0) {
@@ -119,13 +115,4 @@ void SolidSelectorHighlight::select(double posx, double posy)
         spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
     }
     this->selected_ids_->Modified(); // 触发highlight_actor_更新
-}
-
-void SolidSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
-{
-    this->model_actor_ = model_actor;
-    if (auto model_actor = this->model_actor_.lock()) {
-        vtkSmartPointer extract_selection = model_actor->extractSolid(selected_ids_);
-        this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
-    }
 }

@@ -1,4 +1,3 @@
-#include "MeshActor.h"
 #include "MeshActorSelectOp.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
@@ -25,11 +24,11 @@ std::vector<vtkIdType>::const_iterator _find_selected(vtkIdType new_face_id, con
 }
 }
 
-FaceSelectorHighlight::FaceSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
+FaceSelectorHighlight::FaceSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op)
+    : renderer_(&renderer)
+    , highlight_actor_(&highlight_actor)
+    , select_op_(std::move(select_op))
 {
-    this->highlight_actor_ = highlight_actor;
-    this->renderer_ = renderer;
-
     selected_mapper_->SetInputData(vtkPolyData::New());
     selected_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
 
@@ -44,9 +43,9 @@ FaceSelectorHighlight::FaceSelectorHighlight(vtkRenderer* renderer, vtkActor* hi
     }
 }
 
-FaceSelectorHighlight::~FaceSelectorHighlight() 
-{ 
-    clear(); 
+FaceSelectorHighlight::~FaceSelectorHighlight()
+{
+    clear();
 }
 
 SelectionVtk FaceSelectorHighlight::get()
@@ -71,55 +70,41 @@ void FaceSelectorHighlight::select(double posx, double posy)
 {
     vtkNew<vtkHardwarePicker> picker;
     picker->PickFromListOn();
-    collection_->InitTraversal();
-    for (vtkProp* actor {}; actor = collection_->GetNextProp();) {
-        picker->AddPickList(actor);
-    }
+    picker->AddPickList(&select_op_.getFaceActor());
     picker->Pick(posx, posy, 0, renderer_);
 
     vtkIdType pickedCellId = picker->GetCellId();
-    if (pickedCellId != -1) {
-        // 获取选中的 cell
-        vtkActor* pickedActor = picker->GetActor();
-        assert(pickedActor);
-        vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
-        assert(pickedMapper);
-        vtkPolyData* pickedPoly = pickedMapper->GetInput();
-        assert(pickedPoly);
-
-        // 检查是否已选中
-        auto it = _find_selected(pickedCellId, selections_);
-
-        if (it != selections_.end()) {
-            // 已选中，取消选中
-            selections_.erase(it);
-        } else {
-            // 未选中，添加
-            selections_.push_back(pickedCellId);
-        }
-
-        vtkNew<vtkCellArray> cell_array;
-
-        for (const auto& face : selections_) {
-            cell_array->InsertNextCell(pickedPoly->GetCell(face));
-        }
-
-        vtkNew<vtkPolyData> highlight_poly;
-        highlight_poly->SetPoints(pickedPoly->GetPoints()); // 使用原始数据的点集
-        highlight_poly->SetPolys(cell_array); // 设置面单元
-
-        selected_mapper_->SetInputData(highlight_poly); // 触发高亮演员更新渲染
-    } else {
-        // 没选到
+    if (pickedCellId == -1) {
         clear();
+        return;
     }
-}
 
-void FaceSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
-{
-    this->collection_->RemoveAllItems();
-    if (auto actor = model_actor.lock()) {
-        this->collection_->AddItem(&actor->getFaceActor());
+    // 获取选中的 cell
+    vtkActor* pickedActor = picker->GetActor();
+    assert(pickedActor);
+    vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
+    assert(pickedMapper);
+    vtkPolyData* pickedPoly = pickedMapper->GetInput();
+    assert(pickedPoly);
+    
+    // 检查是否已选中
+    auto it = _find_selected(pickedCellId, selections_);
+
+    if (it != selections_.end()) { // 已选中，取消选中
+        selections_.erase(it);
+    } else { // 未选中，添加
+        selections_.push_back(pickedCellId);
     }
-    this->model_actor_ = model_actor;
+
+    vtkNew<vtkCellArray> cell_array;
+
+    for (const auto& face : selections_) {
+        cell_array->InsertNextCell(pickedPoly->GetCell(face));
+    }
+
+    vtkNew<vtkPolyData> highlight_poly;
+    highlight_poly->SetPoints(pickedPoly->GetPoints()); // 使用原始数据的点集
+    highlight_poly->SetPolys(cell_array); // 设置面单元
+
+    selected_mapper_->SetInputData(highlight_poly); // 触发高亮演员更新渲染
 }

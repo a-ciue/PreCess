@@ -1,14 +1,9 @@
 #include "GeometryActorSelectOp.h"
+#include "Core.h"
 #include "GeometryActor.h"
 #include "GeometrySubshapeIndex.h"
 #include "Selection.h"
-#include "Core.h"
 
-#include <vtkActor.h>
-#include <vtkDataArray.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
@@ -17,6 +12,11 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS_Shape.hxx>
+#include <vtkActor.h>
+#include <vtkDataArray.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
 
 static constexpr IVtk_SelectionMode kSelVertex = SM_Vertex;
 static constexpr IVtk_SelectionMode kSelEdge = SM_Edge;
@@ -24,11 +24,11 @@ static constexpr IVtk_SelectionMode kSelFace = SM_Face;
 
 static int toleranceForMode(const SelectMode m)
 {
-    if (m == SelectMode::Vertex)
+    if (m == SelectMode::GeometryVertex)
         return 40;
-    if (m == SelectMode::Edge)
+    if (m == SelectMode::GeometryEdge)
         return 25;
-    if (m == SelectMode::Solid)
+    if (m == SelectMode::GeometrySolid)
         return 8;
     return 8;
 }
@@ -142,7 +142,7 @@ void GeometryActorSelectOp::configurePicker(IVtkTools_ShapePicker* picker, Selec
     vtkActor* poly = geometry_actor_->poly_actor_.GetPointer();
     vtkActor* line = geometry_actor_->line_actor_.GetPointer();
 
-    const bool useLine = (mode == SelectMode::Edge || mode == SelectMode::Vertex);
+    const bool useLine = (mode == SelectMode::GeometryEdge || mode == SelectMode::GeometryVertex);
 
     picker->PickFromListOn();
     picker->InitializePickList();
@@ -162,16 +162,16 @@ void GeometryActorSelectOp::configurePicker(IVtkTools_ShapePicker* picker, Selec
     picker->SetSelectionMode(line, kSelVertex, false);
 
     switch (mode) {
-    case SelectMode::Face:
-    case SelectMode::Solid:
+    case SelectMode::GeometryFace:
+    case SelectMode::GeometrySolid:
         picker->SetSelectionMode(occ, kSelFace, true);
         picker->SetSelectionMode(poly, kSelFace, true);
         break;
-    case SelectMode::Edge:
+    case SelectMode::GeometryEdge:
         picker->SetSelectionMode(occ, kSelEdge, true);
         picker->SetSelectionMode(line, kSelEdge, true);
         break;
-    case SelectMode::Vertex:
+    case SelectMode::GeometryVertex:
         picker->SetSelectionMode(occ, kSelVertex, true);
         picker->SetSelectionMode(line, kSelVertex, true);
         break;
@@ -187,11 +187,11 @@ std::optional<Index> GeometryActorSelectOp::pickSubshape(IVtkTools_ShapePicker* 
         return std::nullopt;
 
     TopAbs_ShapeEnum wantType;
-    if (mode == SelectMode::Face)
+    if (mode == SelectMode::GeometryFace)
         wantType = TopAbs_FACE;
-    else if (mode == SelectMode::Edge)
+    else if (mode == SelectMode::GeometryEdge)
         wantType = TopAbs_EDGE;
-    else if (mode == SelectMode::Vertex)
+    else if (mode == SelectMode::GeometryVertex)
         wantType = TopAbs_VERTEX;
     else
         return std::nullopt;
@@ -287,7 +287,7 @@ GeometryHighlightPipeline GeometryActorSelectOp::buildHighlight(SelectMode mode)
 {
     GeometryHighlightPipeline hl;
 
-    const bool useLine = (mode == SelectMode::Edge || mode == SelectMode::Vertex);
+    const bool useLine = (mode == SelectMode::GeometryEdge || mode == SelectMode::GeometryVertex);
     vtkPolyData* source = useLine ? geometry_actor_->line_only_.GetPointer()
                                   : geometry_actor_->poly_only_.GetPointer();
     vtkDataArray* idArray = useLine ? geometry_actor_->line_sub_id_array_.GetPointer()
@@ -314,4 +314,14 @@ GeometryHighlightPipeline GeometryActorSelectOp::buildHighlight(SelectMode mode)
     }
 
     return hl;
+}
+
+vtkActor* GeometryActorSelectOp::getPolyActor()
+{
+    return geometry_actor_->poly_actor_;
+}
+
+vtkActor* GeometryActorSelectOp::getLineActor()
+{
+    return geometry_actor_->line_actor_;
 }

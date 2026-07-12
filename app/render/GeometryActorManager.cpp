@@ -54,7 +54,11 @@ bool GeometryActorManager::hasComponent(Index component_id) const
 
 void GeometryActorManager::deleteComponent(Index component_id)
 {
-    component_actors_.erase(component_id);
+    auto it = component_actors_.find(component_id);
+    if (it != component_actors_.end()) {
+        op_.unregisterProps(it->second);
+        component_actors_.erase(it);
+    }
 }
 
 void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
@@ -65,7 +69,9 @@ void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
         component_actors_[component_id] = std::make_shared<GeometryActor>(this->renderer_, GeometryRenderMode::Face);
     }
 
-    component_actors_[component_id]->loadShape(geometry_data);
+    auto& actor_ptr = component_actors_[component_id];
+    actor_ptr->loadShape(geometry_data);
+    op_.registerProps(component_id, actor_ptr);
 }
 
 void GeometryActorManager::setVisibility(Index component_id, bool visibility)

@@ -25,13 +25,17 @@ vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_
 }
 }
 
-VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
-    : renderer_(renderer)
-    , highlight_actor_(highlight_actor)
+VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op)
+    : renderer_(&renderer)
+    , highlight_actor_(&highlight_actor)
+    , select_op_(std::move(select_op))
 {
     vtkNew<vtkUnstructuredGrid> dummy;
     this->mapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
     this->mapper_->SetInputData(dummy);
+
+    auto extract_selection = select_op_.extractVertex(this->selected_ids_);
+    this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
 
     if (highlight_actor_) {
         highlight_actor_->SetMapper(mapper_);
@@ -72,15 +76,9 @@ void VertexSelectorHighlight::select(double posx, double posy)
     picker->SnapToMeshPointOn(); // 启用贴近网格点
     picker->SetPixelTolerance(5); // 设置点拾取像素容差
     picker->PickFromListOn();
-    auto model_actor = model_actor_.lock();
-    if (!model_actor) {
-        clear();
-        spdlog::debug("VertexSelectorHighlight::select: model_actor is null, selection cleared.");
-        return;
-    }
-    picker->AddPickList(&model_actor->getSolidActor());
-    picker->AddPickList(&model_actor->getFaceActor());
-    picker->AddPickList(&model_actor->getEdgeActor());
+    picker->AddPickList(&select_op_.getSolidActor());
+    picker->AddPickList(&select_op_.getFaceActor());
+    picker->AddPickList(&select_op_.getEdgeActor());
     picker->Pick(posx, posy, 0, renderer_);
     vtkIdType picked_point_id = picker->GetPointId();
     if (picked_point_id == -1) {
@@ -111,13 +109,4 @@ void VertexSelectorHighlight::select(double posx, double posy)
         spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
     }
     selected_ids_->Modified(); // 通知 VTK 数据已更改，进行刷新
-}
-
-void VertexSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
-{
-    this->model_actor_ = model_actor;
-    if (auto model_actor = this->model_actor_.lock()) {
-        auto extract_selection = model_actor->extractVertex(this->selected_ids_);
-        this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
-    }
 }
