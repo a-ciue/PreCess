@@ -177,20 +177,21 @@ std::any systems::algo::GmshMeshHandler::execute(
         : args[0].get<ArgTypeEnum::Selector>();
     if (!selection || !*selection
         || (*selection)->type != ElementEnum::GeometryFace
-        || (*selection)->ids.size() != 1) {
-        spdlog::error("GmshMesh: select exactly one geometry face");
+        || (*selection)->ids.empty()) {
+        spdlog::error("GmshMesh: select at least one geometry face");
         return {};
     }
 
-    const GeomFaceId faceId = (*selection)->ids.front();
-    const TopoDS_Shape* selectedFace = modelLayer.geomRegistry().getFace(faceId);
-    const int localFaceId = selectedFace
-        ? geometry->index.type_maps[
-              GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].FindIndex(*selectedFace)
-        : 0;
-    if (localFaceId <= 0) {
-        spdlog::error("GmshMesh: selected geometry face is not in current component");
-        return {};
+    for (GeomFaceId faceId : (*selection)->ids) {
+        const TopoDS_Shape* selectedFace = modelLayer.geomRegistry().getFace(faceId);
+        const int localFaceId = selectedFace
+            ? geometry->index.type_maps[
+                  GeometrySubshapeIndex::typeIndex(TopAbs_FACE)].FindIndex(*selectedFace)
+            : 0;
+        if (localFaceId <= 0) {
+            spdlog::error("GmshMesh: selected geometry face {} is not in current component", faceId);
+            return {};
+        }
     }
 
     // 获取或创建当前 component 的 MeshData，Gmsh 生成结果直接写回该 component。
@@ -207,45 +208,53 @@ std::any systems::algo::GmshMeshHandler::execute(
     if (parameters.targetMeshSize <= 0.0)
         parameters.targetMeshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
 
-    SingleFaceMeshResult result;
-
-    if (operationMode == 1) {
-        if (state.meshedFacesCache.find(faceId) != state.meshedFacesCache.end()) {
-            spdlog::info("GmshMesh: face {} already meshed, skip mesh mode; use remesh mode to rebuild", faceId);
-            return {};
-        }
-        spdlog::info("GmshMesh: mesh face {} (size={:.4f})", faceId, parameters.targetMeshSize);
-        result = IncrementalMeshTools::meshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceId, parameters.targetMeshSize, parameters);
-    } else if (operationMode == 2) {
-        spdlog::info("GmshMesh: delete mesh for face {}", faceId);
-        if (IncrementalMeshTools::deleteFaceMesh(
-                *meshData, *geometry, state, modelLayer, faceId))
-            spdlog::info("GmshMesh: delete face {} success", faceId);
-    } else if (operationMode == 3) {
-        spdlog::info("GmshMesh: remesh face {} (size={:.4f})", faceId, parameters.targetMeshSize);
-        result = IncrementalMeshTools::remeshSingleFace(
-            *meshData, *geometry, state, modelLayer, faceId, parameters.targetMeshSize, parameters);
-    } else {
+    if (operationMode < 1 || operationMode > 3) {
         spdlog::warn("GmshMesh: unknown operation mode {}, skip", operationMode);
         return {};
     }
 
-    if (operationMode != 2) {
-        if (!result.success) {
-            spdlog::warn("GmshMesh: face {} meshing failed", faceId);
-            return {};
-        }
+    std::size_t successCount = 0;
+    std::size_t failedCount = 0;
+    for (GeomFaceId faceId : (*selection)->ids) {
+        if (operationMode == 1) {
+            if (state.meshedFacesCache.find(faceId) != state.meshedFacesCache.end()) {
+                spdlog::info("GmshMesh: face {} already meshed, skip mesh mode", faceId);
+                continue;
+            }
 
-        spdlog::info("GmshMesh: face {} finish, {} nodes, {} cells, cached {} edge",
-            faceId,
-            result.vertices.size(),
-            result.face_vertices_offset.size() - 1,
-            state.meshedEdgeRefCounts.size());
+            auto result = IncrementalMeshTools::meshSingleFace(
+                *meshData, *geometry, state, modelLayer,
+                faceId, parameters.targetMeshSize, parameters);
+            if (!result.success) {
+                spdlog::warn("GmshMesh: face {} meshing failed", faceId);
+                ++failedCount;
+                continue;
+            }
+        } else if (operationMode == 2) {
+            if (!IncrementalMeshTools::deleteFaceMesh(
+                    *meshData, *geometry, state, modelLayer, faceId)) {
+                spdlog::warn("GmshMesh: delete face {} failed", faceId);
+                ++failedCount;
+                continue;
+            }
+        } else {
+            auto result = IncrementalMeshTools::remeshSingleFace(
+                *meshData, *geometry, state, modelLayer,
+                faceId, parameters.targetMeshSize, parameters);
+            if (!result.success) {
+                spdlog::warn("GmshMesh: face {} remeshing failed", faceId);
+                ++failedCount;
+                continue;
+            }
+        }
+        ++successCount;
     }
 
-    if (writeModel) {
-        std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh_" + std::to_string(faceId) + ".obj";
+    spdlog::info("GmshMesh: {} selected faces processed: {} succeeded, {} failed",
+        (*selection)->ids.size(), successCount, failedCount);
+
+    if (writeModel && successCount > 0) {
+        std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh.obj";
         context.io_system.writeComponents(
             { context.cur_component.componentId() },
             meshOut,
@@ -253,7 +262,8 @@ std::any systems::algo::GmshMeshHandler::execute(
             {});
         context.io_system.read(meshOut, "Wavefront .obj file", {});
     }
-    context.cur_component.notifyChanged();
+    if (successCount > 0)
+        context.cur_component.notifyChanged();
 
     return {};
 }
