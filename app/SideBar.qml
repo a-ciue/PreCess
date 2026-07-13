@@ -279,7 +279,6 @@ Item{
                 id: selectStartButton
                 text: "开始选择"
                 checked: App.selection.listeningSelectorIndex === index
-                enabled: App.selection.activeModelId >= 0
                 onClicked: {
                     if (!checked)
                         App.selection.listeningSelectorIndex = index

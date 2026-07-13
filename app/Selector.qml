@@ -13,7 +13,6 @@ RowLayout {
     signal clearButtonClicked
     signal confirmButtonClicked
     property QSelection selection
-    property int cur_model
 
     ComboBox{
         id: selectModeComboBox
@@ -61,7 +60,6 @@ RowLayout {
                 App.selection.selectMode = "GeometrySolid"
             }
         }
-        enabled: root.cur_model >= 0
         opacity: enabled ? 1.0 : 0.6
         currentIndex: enabled ? currentIndex: 0
     }
@@ -69,7 +67,6 @@ RowLayout {
         id: selectClearButton
         text: "清除选择"
         onClicked: root.clearButtonClicked()
-        enabled: root.cur_model >= 0
         opacity: enabled ? 1.0 : 0.6
     }
     Button{
@@ -78,7 +75,7 @@ RowLayout {
             root.confirmButtonClicked()
             App.selection.confirmed(root.selection)
         }
-        enabled: root.cur_model >= 0 && App.selection.listeningSelectorIndex >= 0
+        enabled: App.selection.listeningSelectorIndex >= 0
         opacity: enabled ? 1.0 : 0.6
     }
     /** type:string 选择框中当前文本 */
