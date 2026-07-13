@@ -6,12 +6,10 @@
 #include <vtkActor.h>
 #include <vtkDataArray.h>
 #include <vtkNew.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 
 #include <Standard_Handle.hxx>
 #include <IVtkOCC_Shape.hxx>
-#include <IVtkTools_SubPolyDataFilter.hxx>
 typedef Handle(IVtkOCC_Shape) OccShapeHandle;
 
 class GeometryActorSelectOp;

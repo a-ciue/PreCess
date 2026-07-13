@@ -259,11 +259,11 @@ int main(int argc, char** argv)
     gmgr.setRenderEdge(component_id, true);
     gmgr.setVisibility(component_id, true);
 
-    GeometrySelectManager selMgr(gmgr.op());
     vtkNew<vtkActor> highlightActor;
     highlightActor->PickableOff();
     renderer->AddActor(highlightActor);
-    selMgr.bindRenderer(renderer, highlightActor);
+
+    GeometrySelectManager selMgr(*renderer, *highlightActor, gmgr.op());
 
     selMgr.setSelectMode(mode);
 

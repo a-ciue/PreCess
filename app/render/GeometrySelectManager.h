@@ -8,17 +8,19 @@
 #include <memory>
 #include <unordered_map>
 #include <vtkNew.h>
+#include <vtkSmartPointer.h>
 #include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
 
 class vtkRenderer;
+class vtkHardwarePicker;
+class vtkPartitionedDataSet;
+class vtkCompositePolyDataMapper;
 class GeometryActorManagerSelectOp;
 
 class GeometrySelectManager {
 public:
-    GeometrySelectManager(GeometryActorManagerSelectOp& op);
+    GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op);
 
-    void bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor);
     void select(double posx, double posy);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
@@ -29,9 +31,14 @@ private:
 
     GeometryActorManagerSelectOp* op_;
     SelectMode select_mode_ { SelectMode::None };
-    vtkRenderer* renderer_ {};
-    vtkActor* highlight_actor_ {};
+    vtkRenderer* renderer_;
+    vtkSmartPointer<vtkHardwarePicker> component_picker_;
     vtkSmartPointer<IVtkTools_ShapePicker> picker_;
+
+    vtkActor* highlight_actor_ {};
+    vtkSmartPointer<vtkPartitionedDataSet> highlight_data_;
+    vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;
+
     std::unordered_map<Index, std::unique_ptr<GeometrySelectorHighlight>> component_selectors_;
 };
 

@@ -101,7 +101,7 @@ std::optional<GeometryActorSelectOp> GeometryActorSelectOpFactory::lock()
     if (auto geometry_actor = geometry_actor_.lock()) {
         return { geometry_actor };
     }
-    return {};
+    return { };
 }
 
 GeometryActorSelectOp::GeometryActorSelectOp(std::shared_ptr<GeometryActor> geometry_actor)
@@ -283,9 +283,9 @@ bool GeometryActorSelectOp::pickSolid(IVtkTools_ShapePicker* picker, vtkRenderer
     return true;
 }
 
-GeometryHighlightPipeline GeometryActorSelectOp::buildHighlight(SelectMode mode)
+vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlight(SelectMode mode)
 {
-    GeometryHighlightPipeline hl;
+    vtkSmartPointer<IVtkTools_SubPolyDataFilter> filter;
 
     const bool useLine = (mode == SelectMode::GeometryEdge || mode == SelectMode::GeometryVertex);
     vtkPolyData* source = useLine ? geometry_actor_->line_only_.GetPointer()
@@ -293,35 +293,18 @@ GeometryHighlightPipeline GeometryActorSelectOp::buildHighlight(SelectMode mode)
     vtkDataArray* idArray = useLine ? geometry_actor_->line_sub_id_array_.GetPointer()
                                     : geometry_actor_->poly_sub_id_array_.GetPointer();
     if (!source)
-        return hl;
+        return { };
 
-    hl.filter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
-    hl.filter->SetInputData(source);
-    hl.filter->SetDoFiltering(true);
+    filter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
+    filter->SetInputData(source);
+    filter->SetDoFiltering(true);
     if (idArray && idArray->GetName())
-        hl.filter->SetIdsArrayName(idArray->GetName());
+        filter->SetIdsArrayName(idArray->GetName());
 
-    hl.mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    hl.mapper->SetInputConnection(hl.filter->GetOutputPort());
-
-    if (useLine) {
-        // 相对显示 mapper 默认值：线 (0,-5)，点 (-10)
-        hl.mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, -1);
-        hl.mapper->SetRelativeCoincidentTopologyPointOffsetParameter(-2);
-    } else {
-        // 相对显示 mapper 默认值：多边形 (0,-1)
-        hl.mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -5);
-    }
-
-    return hl;
+    return filter;
 }
 
 vtkActor* GeometryActorSelectOp::getPolyActor()
 {
     return geometry_actor_->poly_actor_;
-}
-
-vtkActor* GeometryActorSelectOp::getLineActor()
-{
-    return geometry_actor_->line_actor_;
 }

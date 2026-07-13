@@ -1,75 +1,90 @@
 #include "GeometrySelectorHighlight.h"
-#include "GeometryActorSelectOp.h"
 #include "Core.h"
+#include "GeometryActorSelectOp.h"
 
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtk_Types.hxx>
 #include <NCollection_List.hxx>
 #include <vtkActor.h>
+#include <vtkMapper.h>
+#include <vtkPartitionedDataSet.h>
 #include <vtkProperty.h>
-#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 
-static void flushHighlight(IVtkTools_SubPolyDataFilter* filter, vtkRenderer* renderer)
-{
-    if (!filter || !renderer)
-        return;
-    filter->Modified();
-    if (renderer->GetRenderWindow())
-        renderer->GetRenderWindow()->Render();
-}
-
 // 把共享高亮 actor 挂到当前 selector 的 mapper 上，并按模式套用完整样式（避免残留上一模式属性）
-static void mountHighlight(vtkActor* actor, const GeometryHighlightPipeline& hl, SelectMode mode)
+static void mountLineHighlight(vtkActor& actor, vtkMapper& mapper)
 {
-    if (!actor || !hl.mapper)
-        return;
+    actor.SetMapper(&mapper);
 
-    actor->SetMapper(hl.mapper);
+    // 相对显示 mapper 默认值：线 (0,-5)，点 (-10)
+    mapper.SetRelativeCoincidentTopologyLineOffsetParameters(0, -1);
+    mapper.SetRelativeCoincidentTopologyPointOffsetParameter(-2);
 
     vtkNew<vtkProperty> prop;
     prop->SetColor(1.0, 0.0, 0.0);
-    if (mode == SelectMode::GeometryEdge || mode == SelectMode::GeometryVertex) {
-        prop->SetOpacity(0.5);
-        prop->RenderLinesAsTubesOn();
-        prop->SetLineWidth(3.0);
-        prop->SetPointSize(8.0);
-        prop->LightingOff();
-    } else {
-        prop->SetOpacity(1.0);
+    prop->SetOpacity(0.5);
+    prop->RenderLinesAsTubesOn();
+    prop->SetLineWidth(3.0);
+    prop->SetPointSize(8.0);
+    prop->LightingOff();
+
+    actor.SetProperty(prop);
+}
+
+static void mountFaceHighlight(vtkActor& actor, vtkMapper& mapper)
+{
+    actor.SetMapper(&mapper);
+
+    // 相对显示 mapper 默认值：多边形 (0,-1)
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -5);
+
+    vtkNew<vtkProperty> prop;
+    prop->SetColor(1.0, 0.0, 0.0);
+    prop->SetOpacity(1.0);
+    actor.SetProperty(prop);
+}
+
+static void updateFilterAndNotify(IVtkTools_SubPolyDataFilter* filter, const NCollection_List<IVtk_IdType>& ids,
+    vtkPartitionedDataSet* data)
+{
+    if (filter) {
+        filter->SetData(ids);
+        filter->Modified();
+        filter->Update();
     }
-    actor->SetProperty(prop);
+    if (data)
+        data->Modified();
 }
 
 // ─── Face ──────────────────────────────────────────────
 
-GeometryFaceSelectorHighlight::GeometryFaceSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor,
+GeometryFaceSelectorHighlight::GeometryFaceSelectorHighlight(vtkRenderer& renderer,
+    vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
     GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
     : renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
+    , highlight_data_(&highlight_data)
+    , partition_id_(partition_id)
     , select_op_(std::move(select_op))
     , picker_(std::move(picker))
 {
-    hl_ = select_op_.buildHighlight(SelectMode::GeometryFace);
-    mountHighlight(highlight_actor_, hl_, SelectMode::GeometryFace);
+    hl_filter_ = select_op_.buildHighlight(SelectMode::GeometryFace);
+    if (hl_filter_) {
+        hl_filter_->Update();
+        highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
+    }
     select_op_.configurePicker(picker_, SelectMode::GeometryFace);
 }
 
 GeometryFaceSelectorHighlight::~GeometryFaceSelectorHighlight()
 {
-    clear();
+    highlight_data_->SetPartition(partition_id_, nullptr);
 }
 
 void GeometryFaceSelectorHighlight::clear()
 {
     selections_.clear();
-    if (hl_.filter) {
-        hl_.filter->Clear();
-        hl_.filter->Modified();
-    }
-    if (renderer_ && renderer_->GetRenderWindow())
-        renderer_->GetRenderWindow()->Render();
+    updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
 }
 
 GeometrySelectionVtk GeometryFaceSelectorHighlight::get() const
@@ -96,40 +111,42 @@ void GeometryFaceSelectorHighlight::select(double posx, double posy)
     NCollection_List<IVtk_IdType> ids;
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
+}
 
-    if (hl_.filter)
-        hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, renderer_);
+void GeometryFaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
+{
+    mountFaceHighlight(actor, mapper);
 }
 
 // ─── Edge ──────────────────────────────────────────────
 
-GeometryEdgeSelectorHighlight::GeometryEdgeSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor,
+GeometryEdgeSelectorHighlight::GeometryEdgeSelectorHighlight(vtkRenderer& renderer,
+    vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
     GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
     : renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
+    , highlight_data_(&highlight_data)
+    , partition_id_(partition_id)
     , select_op_(std::move(select_op))
     , picker_(std::move(picker))
 {
-    hl_ = select_op_.buildHighlight(SelectMode::GeometryEdge);
-    mountHighlight(highlight_actor_, hl_, SelectMode::GeometryEdge);
+    hl_filter_ = select_op_.buildHighlight(SelectMode::GeometryEdge);
+    if (hl_filter_) {
+        hl_filter_->Update();
+        highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
+    }
     select_op_.configurePicker(picker_, SelectMode::GeometryEdge);
 }
 
 GeometryEdgeSelectorHighlight::~GeometryEdgeSelectorHighlight()
 {
-    clear();
+    highlight_data_->SetPartition(partition_id_, nullptr);
 }
 
 void GeometryEdgeSelectorHighlight::clear()
 {
     selections_.clear();
-    if (hl_.filter) {
-        hl_.filter->Clear();
-        hl_.filter->Modified();
-    }
-    if (renderer_ && renderer_->GetRenderWindow())
-        renderer_->GetRenderWindow()->Render();
+    updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
 }
 
 GeometrySelectionVtk GeometryEdgeSelectorHighlight::get() const
@@ -156,40 +173,42 @@ void GeometryEdgeSelectorHighlight::select(double posx, double posy)
     NCollection_List<IVtk_IdType> ids;
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
+}
 
-    if (hl_.filter)
-        hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, renderer_);
+void GeometryEdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
+{
+    mountLineHighlight(actor, mapper);
 }
 
 // ─── Vertex ────────────────────────────────────────────
 
-GeometryVertexSelectorHighlight::GeometryVertexSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor,
+GeometryVertexSelectorHighlight::GeometryVertexSelectorHighlight(vtkRenderer& renderer,
+    vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
     GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
     : renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
+    , highlight_data_(&highlight_data)
+    , partition_id_(partition_id)
     , select_op_(std::move(select_op))
     , picker_(std::move(picker))
 {
-    hl_ = select_op_.buildHighlight(SelectMode::GeometryVertex);
-    mountHighlight(highlight_actor_, hl_, SelectMode::GeometryVertex);
+    hl_filter_ = select_op_.buildHighlight(SelectMode::GeometryVertex);
+    if (hl_filter_) {
+        hl_filter_->Update();
+        highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
+    }
     select_op_.configurePicker(picker_, SelectMode::GeometryVertex);
 }
 
 GeometryVertexSelectorHighlight::~GeometryVertexSelectorHighlight()
 {
-    clear();
+    highlight_data_->SetPartition(partition_id_, nullptr);
 }
 
 void GeometryVertexSelectorHighlight::clear()
 {
     selections_.clear();
-    if (hl_.filter) {
-        hl_.filter->Clear();
-        hl_.filter->Modified();
-    }
-    if (renderer_ && renderer_->GetRenderWindow())
-        renderer_->GetRenderWindow()->Render();
+    updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
 }
 
 GeometrySelectionVtk GeometryVertexSelectorHighlight::get() const
@@ -216,41 +235,43 @@ void GeometryVertexSelectorHighlight::select(double posx, double posy)
     NCollection_List<IVtk_IdType> ids;
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
+}
 
-    if (hl_.filter)
-        hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, renderer_);
+void GeometryVertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
+{
+    mountLineHighlight(actor, mapper);
 }
 
 // ─── Solid ─────────────────────────────────────────────
 
-GeometrySolidSelectorHighlight::GeometrySolidSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor,
+GeometrySolidSelectorHighlight::GeometrySolidSelectorHighlight(vtkRenderer& renderer,
+    vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
     GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
     : renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
+    , highlight_data_(&highlight_data)
+    , partition_id_(partition_id)
     , select_op_(std::move(select_op))
     , picker_(std::move(picker))
 {
-    hl_ = select_op_.buildHighlight(SelectMode::GeometrySolid);
-    mountHighlight(highlight_actor_, hl_, SelectMode::GeometrySolid);
+    hl_filter_ = select_op_.buildHighlight(SelectMode::GeometrySolid);
+    if (hl_filter_) {
+        hl_filter_->Update();
+        highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
+    }
     select_op_.configurePicker(picker_, SelectMode::GeometrySolid);
 }
 
 GeometrySolidSelectorHighlight::~GeometrySolidSelectorHighlight()
 {
-    clear();
+    highlight_data_->SetPartition(partition_id_, nullptr);
 }
 
 void GeometrySolidSelectorHighlight::clear()
 {
     selections_.clear();
     highlighted_face_ids_.clear();
-    if (hl_.filter) {
-        hl_.filter->Clear();
-        hl_.filter->Modified();
-    }
-    if (renderer_ && renderer_->GetRenderWindow())
-        renderer_->GetRenderWindow()->Render();
+    updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
 }
 
 GeometrySelectionVtk GeometrySolidSelectorHighlight::get() const
@@ -284,8 +305,10 @@ void GeometrySolidSelectorHighlight::select(double posx, double posy)
     NCollection_List<IVtk_IdType> ids;
     for (const auto& fid : highlighted_face_ids_)
         ids.Append(fid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
+}
 
-    if (hl_.filter)
-        hl_.filter->SetData(ids);
-    flushHighlight(hl_.filter, renderer_);
+void GeometrySolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
+{
+    mountLineHighlight(actor, mapper);
 }

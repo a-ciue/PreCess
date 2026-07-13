@@ -23,7 +23,7 @@ MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_
 
 void MeshSelectManager::select(double posx, double posy)
 {
-    if (this->select_mode_ == SelectMode::None)
+    if (this->select_mode_ == SelectMode::None || this->select_mode_ > SelectMode::Block)
         return;
 
     component_picker_->Pick(posx, posy, 0, renderer_);
@@ -55,38 +55,18 @@ std::unique_ptr<Selection> MeshSelectManager::getSelection()
 {
     auto result = std::make_unique<Selection>();
 
-    ElementEnum::Type type;
-    switch (select_mode_) {
-    case SelectMode::Vertex:
-        type = ElementEnum::Vertex;
-        break;
-    case SelectMode::Face:
-        type = ElementEnum::Face;
-        break;
-    case SelectMode::Edge:
-        type = ElementEnum::Edge;
-        break;
-    case SelectMode::Solid:
-        type = ElementEnum::Solid;
-        break;
-    case SelectMode::Block:
-        type = ElementEnum::Block;
-        break;
-    default:
-        return nullptr;
-    }
-
     for (auto& [comp_id, sel] : component_selectors_) {
         auto selection = sel->get();
 
         for (const auto& id : selection.ids)
             result->ids.push_back(id);
 
-        if (selection.ids.size())
+        if (selection.ids.size()) {
             result->component_id = comp_id;
+            result->type = selection.type;
+        }
     }
 
-    result->type = type;
     return result;
 }
 

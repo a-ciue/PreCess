@@ -10,18 +10,16 @@ GeometryActorManagerSelectOp::GeometryActorManagerSelectOp(GeometryActorManager&
 
 std::optional<Index> GeometryActorManagerSelectOp::getComponentId(vtkProp* prop) const
 {
+    if (!prop) return std::nullopt;
     auto it = prop_to_component_.find(prop);
     if (it != prop_to_component_.end())
         return it->second;
     return std::nullopt;
 }
 
-void GeometryActorManagerSelectOp::addPropsToPickList(vtkHardwarePicker* picker) const
+void GeometryActorManagerSelectOp::managePickList(vtkPropCollection* pick_list)
 {
-    picker->PickFromListOn();
-    for (const auto& [prop, _] : prop_to_component_) {
-        picker->AddPickList(prop);
-    }
+    pick_list_ = pick_list;
 }
 
 std::optional<GeometryActorSelectOp> GeometryActorManagerSelectOp::getSelectOp(Index component_id) const
@@ -36,10 +34,18 @@ void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared
 {
     GeometryActorSelectOp op(actor);
     prop_to_component_[op.getPolyActor()] = component_id;
+
+    if (pick_list_) {
+        pick_list_->AddItem(op.getPolyActor());
+    }
 }
 
 void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor> actor)
 {
     GeometryActorSelectOp op(actor);
     prop_to_component_.erase(op.getPolyActor());
+
+    if (pick_list_) {
+        pick_list_->RemoveItem(op.getPolyActor());
+    }
 }

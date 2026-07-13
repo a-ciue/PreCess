@@ -18,7 +18,7 @@ public:
     explicit GeometryActorManagerSelectOp(GeometryActorManager& manager);
 
     std::optional<Index> getComponentId(vtkProp* prop) const;
-    void addPropsToPickList(vtkHardwarePicker* picker) const;
+    void managePickList(vtkPropCollection* pick_list);
     std::optional<GeometryActorSelectOp> getSelectOp(Index component_id) const;
 
     void registerProps(Index component_id, std::shared_ptr<GeometryActor> actor);
@@ -27,6 +27,7 @@ public:
 private:
     GeometryActorManager* manager_ {};
     std::unordered_map<vtkProp*, Index> prop_to_component_;
+    vtkSmartPointer<vtkPropCollection> pick_list_;
 };
 
 #endif
