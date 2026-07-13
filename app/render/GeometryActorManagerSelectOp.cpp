@@ -36,12 +36,10 @@ void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared
 {
     GeometryActorSelectOp op(actor);
     prop_to_component_[op.getPolyActor()] = component_id;
-    prop_to_component_[op.getLineActor()] = component_id;
 }
 
 void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor> actor)
 {
     GeometryActorSelectOp op(actor);
     prop_to_component_.erase(op.getPolyActor());
-    prop_to_component_.erase(op.getLineActor());
 }
