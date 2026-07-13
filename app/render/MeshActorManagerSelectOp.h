@@ -18,15 +18,16 @@ public:
     explicit MeshActorManagerSelectOp(MeshActorManager& manager);
 
     std::optional<Index> getComponentId(vtkProp* prop) const;
-    void addPropsToPickList(vtkHardwarePicker* picker) const;
+    void managePickList(vtkPropCollection* pick_list);
     std::optional<MeshActorSelectOp> getSelectOp(Index component_id) const;
 
     void registerProps(Index component_id, std::shared_ptr<MeshActor> actor);
     void unregisterProps(std::shared_ptr<MeshActor> actor);
 
 private:
-    MeshActorManager* manager_ {};
+    MeshActorManager* manager_ { };
     std::unordered_map<vtkProp*, Index> prop_to_component_;
+    vtkSmartPointer<vtkPropCollection> pick_list_;
 };
 
 #endif

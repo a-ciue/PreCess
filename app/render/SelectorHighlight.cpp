@@ -32,9 +32,8 @@
 #include <vtkUnstructuredGrid.h>
 #include <spdlog/spdlog.h>
 
-BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op)
+BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer& renderer, vtkActor&, MeshActorSelectOp select_op)
     : renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
     , select_op_(std::move(select_op))
 {
 }

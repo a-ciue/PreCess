@@ -3,12 +3,14 @@
 #include "SelectorHighlight.h"
 #include <optional>
 #include <spdlog/spdlog.h>
-#include <vtkDataSetMapper.h>
+#include <vtkDataSet.h>
+#include <vtkExtractSelection.h>
+#include <vtkGeometryFilter.h>
 #include <vtkHardwarePicker.h>
+#include <vtkPartitionedDataSet.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkUnstructuredGrid.h>
 
 namespace {
 void _cancel_highlight(vtkIdTypeArray* selected_ids)
@@ -25,33 +27,25 @@ vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_
 }
 }
 
-VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op)
+VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
+    unsigned int partition_id, MeshActorSelectOp select_op)
     : renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
     , select_op_(std::move(select_op))
+    , highlight_data_(&highlight_data)
+    , partition_id_(partition_id)
 {
-    vtkNew<vtkUnstructuredGrid> dummy;
-    this->mapper_ = vtkSmartPointer<vtkDataSetMapper>::New();
-    this->mapper_->SetInputData(dummy);
-
-    auto extract_selection = select_op_.extractVertex(this->selected_ids_);
-    this->mapper_->SetInputConnection(extract_selection->GetOutputPort());
-
-    if (highlight_actor_) {
-        highlight_actor_->SetMapper(mapper_);
-        vtkNew<vtkProperty> prop;
-        prop->SetColor(1.0, 0.0, 0.0); // 红色高亮
-        prop->SetPointSize(6.0);
-        highlight_actor_->SetProperty(prop);
-    }
-
     this->selected_ids_->SetNumberOfTuples(1);
     this->selected_ids_->SetNumberOfValues(0);
+
+    extract_filter_ = select_op_.extractVertex(this->selected_ids_);
+    geom_filter_->SetInputConnection(extract_filter_->GetOutputPort());
+    geom_filter_->Update();
+    highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
 }
 
 VertexSelectorHighlight::~VertexSelectorHighlight()
 {
-    clear();
+    highlight_data_->SetPartition(partition_id_, nullptr);
 }
 
 SelectionVtk VertexSelectorHighlight::get()
@@ -67,6 +61,8 @@ SelectionVtk VertexSelectorHighlight::get()
 void VertexSelectorHighlight::clear()
 {
     _cancel_highlight(this->selected_ids_);
+    geom_filter_->Update();
+    highlight_data_->Modified();
 }
 
 void VertexSelectorHighlight::select(double posx, double posy)
@@ -108,5 +104,17 @@ void VertexSelectorHighlight::select(double posx, double posy)
         selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
         spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
     }
+
     selected_ids_->Modified(); // 通知 VTK 数据已更改，进行刷新
+    geom_filter_->Update();
+    highlight_data_->Modified();
+}
+
+void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
+{
+    actor.SetMapper(&mapper);
+    vtkNew<vtkProperty> prop;
+    prop->SetColor(1.0, 0.0, 0.0);
+    prop->SetPointSize(6.0);
+    actor.SetProperty(prop);
 }

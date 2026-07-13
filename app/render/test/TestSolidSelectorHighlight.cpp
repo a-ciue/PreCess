@@ -1,5 +1,6 @@
 #include "MakeMeshDataVtk.h"
 #include "SelectorHighlight.h"
+#include <vtkPartitionedDataSet.h>
 #include "spdlog/spdlog.h"
 
 #include <vtkActor.h>
@@ -75,10 +76,8 @@ int main(int argc, char* argv[])
     meshActor->loadModelData(test_mesh_data);
 
     // 体元高亮选择器
-    vtkNew<vtkActor> highlightActor;
-    highlightActor->PickableOff();
-    renderer->AddActor(highlightActor);
-    SolidSelectorHighlight selector(*renderer, *highlightActor, MeshActorSelectOp(meshActor));
+    vtkNew<vtkPartitionedDataSet> highlight_data;
+    SolidSelectorHighlight selector(*renderer, *highlight_data, 0, MeshActorSelectOp(meshActor));
     style->SetSelectorHighlight(&selector);
 
     renderWindow->Render();

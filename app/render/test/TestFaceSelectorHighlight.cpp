@@ -1,6 +1,7 @@
 #include "MakeMeshDataVtk.h"
 
 #include "SelectorHighlight.h"
+#include <vtkPartitionedDataSet.h>
 #include <vtkActor.h>
 #include <vtkNew.h>
 #include <vtkCell.h>
@@ -77,10 +78,8 @@ int main(int argc, char* argv[])
     meshActor->loadModelData(test_mesh_data);
 
     // 集成 FaceSelectorHighlight
-    vtkNew<vtkActor> highlightActor;
-    highlightActor->PickableOff();
-    renderer->AddActor(highlightActor);
-    FaceSelectorHighlight selector(*renderer, *highlightActor, MeshActorSelectOp(meshActor));
+    vtkNew<vtkPartitionedDataSet> highlight_data;
+    FaceSelectorHighlight selector(*renderer, *highlight_data, 0, MeshActorSelectOp(meshActor));
     style->SetSelectorHighlight(&selector);
 
     renderWindow->Render();

@@ -5,9 +5,8 @@
 
 #include <memory>
 #include <string>
-#include <vtkActor.h>
 #include <vtkNew.h>
-#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
 
 class vtkRenderer;
 class MeshSelectManager;
@@ -17,12 +16,9 @@ class GeometryActorManagerSelectOp;
 
 class SelectManager {
 public:
-    SelectManager();
+    SelectManager(vtkRenderer& renderer,
+        MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op);
     ~SelectManager();
-
-    void bindRenderer(vtkRenderer* renderer);
-    void setOps(MeshActorManagerSelectOp& meshOp, GeometryActorManagerSelectOp& geomOp);
-
     void select(double posx, double posy);
     void setSelectMode(const std::string& select_mode);
     void clearSelection();
@@ -32,6 +28,5 @@ private:
     std::unique_ptr<MeshSelectManager> mesh_;
     std::unique_ptr<GeometrySelectManager> geom_;
     vtkNew<vtkActor> highlight_actor_;
-    vtkNew<vtkPolyDataMapper> empty_mapper_;
 };
 #endif

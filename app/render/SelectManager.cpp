@@ -1,37 +1,22 @@
 #include "SelectManager.h"
-#include "GeometrySelectManager.h"
-#include "MeshSelectManager.h"
-#include "MeshActorManagerSelectOp.h"
 #include "GeometryActorManagerSelectOp.h"
+#include "GeometrySelectManager.h"
+#include "MeshActorManagerSelectOp.h"
+#include "MeshSelectManager.h"
 
-#include <vtkMapper.h>
-#include <vtkPolyData.h>
 #include <vtkRenderer.h>
 
-SelectManager::SelectManager()
+SelectManager::SelectManager(vtkRenderer& renderer,
+    MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op)
 {
-    vtkNew<vtkPolyData> empty;
-    empty_mapper_->SetInputData(empty);
-    highlight_actor_->SetMapper(empty_mapper_);
+    mesh_ = std::make_unique<MeshSelectManager>(renderer, *highlight_actor_, mesh_op);
+    geom_ = std::make_unique<GeometrySelectManager>(renderer, *highlight_actor_, geom_op);
     highlight_actor_->PickableOff();
     highlight_actor_->SetVisibility(true);
+    renderer.AddActor(highlight_actor_);
 }
 
 SelectManager::~SelectManager() = default;
-
-void SelectManager::bindRenderer(vtkRenderer* renderer)
-{
-    if (renderer)
-        renderer->AddActor(highlight_actor_);
-    mesh_->bindRenderer(renderer, highlight_actor_);
-    geom_->bindRenderer(renderer, highlight_actor_);
-}
-
-void SelectManager::setOps(MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op)
-{
-    mesh_ = std::make_unique<MeshSelectManager>(mesh_op);
-    geom_ = std::make_unique<GeometrySelectManager>(geom_op);
-}
 
 void SelectManager::select(double posx, double posy)
 {
@@ -41,8 +26,6 @@ void SelectManager::select(double posx, double posy)
 
 void SelectManager::setSelectMode(const std::string& select_mode)
 {
-    highlight_actor_->SetMapper(empty_mapper_);
-
     SelectMode mode = SelectMode::None;
     if (select_mode == "Vertex") {
         mode = SelectMode::Vertex;

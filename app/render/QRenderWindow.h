@@ -175,7 +175,7 @@ private:
 
     vtkNew<vtkCamera> _camera;
 
-    std::unique_ptr<SelectManager> selectManager_;
+    std::unique_ptr<SelectManager> select_manager_;
     MeshActor* cur_actor_ {};
     Index cur_component_id_;
 

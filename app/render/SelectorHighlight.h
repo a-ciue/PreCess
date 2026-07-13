@@ -14,16 +14,16 @@
 #include <vector>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
-#include <vtkAssembly.h>
-#include <vtkCompositeDataDisplayAttributes.h>
-#include <vtkMultiBlockDataSet.h>
-#include <vtkCompositePolyDataMapper.h>
 
 class vtkRenderer;
-class vtkDataSetMapper;
 class vtkActor;
+class vtkMapper;
 class vtkHardwarePicker;
 class vtkCell;
+class vtkPartitionedDataSet;
+class vtkExtractSelection;
+class vtkGeometryFilter;
+class vtkCompositePolyDataMapper;
 
 using SelectionVtk = Selection;
 
@@ -43,30 +43,32 @@ public:
     BlockSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op);
     ~BlockSelectorHighlight() override { clear(); }
     //! @brief 清空selections并取消高亮
-    void clear()override;
-    SelectionVtk get()override;
+    void clear() override;
+    SelectionVtk get() override;
     void select(double posx, double posy) override;
     void highlightBlockByCellColor(vtkCompositePolyDataMapper* mapper, unsigned int block_index,
         unsigned char r, unsigned char g, unsigned char b);
 
 private:
     //! @brief 存储选中的actor和每个actor原本的颜色渲染设置，用于取消高亮
-    struct Block{
+    struct Block {
         vtkIdType block_id;
-        double backup_color[3]{};
+        double backup_color[3] { };
     };
     std::vector<Block> selections_;
     vtkRenderer* renderer_;
-    vtkActor* highlight_actor_;
     MeshActorSelectOp select_op_;
     vtkCompositePolyDataMapper* mapper_;
-    void _cancel_highlight(Block &selection);
+    void _cancel_highlight(Block& selection);
     static std::optional<size_t> _is_selected(const vtkIdType block_id, const std::vector<Block>& selections);
 };
 
 class FaceSelectorHighlight : public SelectorHighlight {
 public:
-    FaceSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op);
+    static void setupHighlightStyle(vtkActor& actor, vtkMapper& mapper);
+
+    FaceSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
+        unsigned int partition_id, MeshActorSelectOp select_op);
     ~FaceSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
@@ -74,15 +76,19 @@ public:
 
 private:
     vtkRenderer* renderer_;
-    vtkActor* highlight_actor_;
     MeshActorSelectOp select_op_;
+    vtkPartitionedDataSet* highlight_data_;
+    unsigned int partition_id_;
     std::vector<vtkIdType> selections_;
-    vtkNew<vtkDataSetMapper> selected_mapper_;
+    vtkSmartPointer<vtkPolyData> selections_poly_;
 };
 
 class EdgeSelectorHighlight : public SelectorHighlight {
 public:
-    EdgeSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op);
+    static void setupHighlightStyle(vtkActor& actor, vtkMapper& mapper);
+
+    EdgeSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
+        unsigned int partition_id, MeshActorSelectOp select_op);
     ~EdgeSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
@@ -90,15 +96,19 @@ public:
 
 private:
     vtkRenderer* renderer_;
-    vtkActor* highlight_actor_;
     MeshActorSelectOp select_op_;
+    vtkPartitionedDataSet* highlight_data_;
+    unsigned int partition_id_;
     std::vector<std::array<vtkIdType, 2>> selections_;
-    vtkNew<vtkDataSetMapper> selected_mapper_;
+    vtkNew<vtkPolyData> selections_poly_;
 };
 
 class SolidSelectorHighlight : public SelectorHighlight {
 public:
-    SolidSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op);
+    static void setupHighlightStyle(vtkActor& actor, vtkMapper& mapper);
+
+    SolidSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
+        unsigned int partition_id, MeshActorSelectOp select_op);
     ~SolidSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
@@ -106,15 +116,20 @@ public:
 
 private:
     vtkRenderer* renderer_;
-    vtkActor* highlight_actor_;
     MeshActorSelectOp select_op_;
-    vtkSmartPointer<vtkDataSetMapper> mapper_;
+    vtkPartitionedDataSet* highlight_data_;
+    unsigned int partition_id_;
     vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的体id，绑定到了mapper，用于触发高亮体cell修改
+    vtkSmartPointer<vtkExtractSelection> extract_filter_;
+    vtkNew<vtkGeometryFilter> geom_filter_;
 };
 
 class VertexSelectorHighlight : public SelectorHighlight {
 public:
-    VertexSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op);
+    static void setupHighlightStyle(vtkActor& actor, vtkMapper& mapper);
+
+    VertexSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
+        unsigned int partition_id, MeshActorSelectOp select_op);
     ~VertexSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
@@ -122,9 +137,11 @@ public:
 
 private:
     vtkRenderer* renderer_;
-    vtkActor* highlight_actor_ {};
     MeshActorSelectOp select_op_;
-    vtkSmartPointer<vtkDataSetMapper> mapper_;
+    vtkPartitionedDataSet* highlight_data_;
+    unsigned int partition_id_;
     vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的点id，绑定到了mapper，用于触发高亮顶点修改
+    vtkSmartPointer<vtkExtractSelection> extract_filter_;
+    vtkNew<vtkGeometryFilter> geom_filter_;
 };
 #endif
