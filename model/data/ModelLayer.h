@@ -80,6 +80,9 @@ public:
     MeshIDMap& edgeIdMap();
     const MeshIDMap& edgeIdMap() const;
 
+    // 将运行期新生成的点追加到全局点池，返回这批点的第一个全局点 ID。
+    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
+
 private:
     Index allocateComponentId() noexcept;
 
@@ -91,7 +94,6 @@ private:
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
 
-    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
     std::vector<std::array<double, 3>> global_points_;
     MeshIDMap edge_id_map_; // 先只维护 edge 的 global->local
 

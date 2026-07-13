@@ -9,7 +9,7 @@ struct GeometryDataVtk;
 // 以后需要控制点 / 曲率等，可继续添加字段
 struct GeometryData {
     GeometryData();
-	~GeometryData();
+    ~GeometryData();
     std::unique_ptr<TopoDS_Shape> rootShape;      // 读取 STEP/IGES 后的拓扑根
     GeometrySubshapeIndex index;
     void ensureIndexBuilt(GeometryRegistry& reg);

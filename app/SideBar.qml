@@ -69,6 +69,9 @@ Item{
                             if(model.type === QArgType.Text){           //文字输入框
                                 return textComponent
                             }
+                            if(model.type === QArgType.Bool){           //布尔值
+                                return boolComponent
+                            }
                         }
                     }
                 }
@@ -122,6 +125,7 @@ Item{
                         comboModel.append({"text":items[i]})
                     }
                 }
+                root.parameters[index] = value = parameterComboBox.currentIndex
             }
         }
     }
@@ -272,6 +276,34 @@ Item{
                 function onConfirmed(selection) {
                     root.parameters[index] = value = selection
                     App.selection.listeningSelectorIndex = -1
+                }
+            }
+        }
+    }
+    Component{
+        id: boolComponent
+        RowLayout{
+            spacing: 5
+            width: parameterList.width
+
+            Text{
+                id:nametext
+                text: model.name
+            }
+            Rectangle{
+                Layout.fillHeight: true
+                Layout.preferredWidth: 1
+                color: "black"
+            }
+            CheckBox{
+                id: parameterCheckBox
+
+                Component.onCompleted: {
+                    checked = (model.content === "true")
+                    root.parameters[index] = checked
+                }
+                onCheckedChanged: {
+                    root.parameters[index] = checked
                 }
             }
         }
