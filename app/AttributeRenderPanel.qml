@@ -141,7 +141,7 @@ Item {
                     }
                     Label {
                         id: attrNameText
-                        text: modelData.name
+                        text: modelData.displayName
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                         Layout.minimumWidth: 0

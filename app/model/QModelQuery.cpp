@@ -24,15 +24,29 @@ void appendAttributeInfo(
     size_t tuple_count)
 {
     for (const auto& [name, values] : attributes) {
+        const int component_count = tuple_count > 0 && values.size() % tuple_count == 0
+            ? static_cast<int>(values.size() / tuple_count)
+            : 0;
+
+        // 前端只展示原始名称，实体类型和分量数由相邻字段单独展示。
+        QString display_name = QString::fromStdString(name);
+        if (display_name.startsWith("v_") || display_name.startsWith("e_")
+            || display_name.startsWith("f_") || display_name.startsWith("s_"))
+            display_name.remove(0, 2);
+        if (component_count > 0) {
+            const QString component_suffix = "_" + QString::number(component_count);
+            if (display_name.endsWith(component_suffix))
+                display_name.chop(component_suffix.size());
+        }
+
         QVariantMap item;
         item["name"] = QString::fromStdString(name);
+        item["displayName"] = display_name;
         item["type"] = static_cast<int>(type);
         item["typeName"] = type_name;
         item["attrType"] = attr_type;
         item["renderable"] = type != Element::Type::Edge;
-        item["componentCount"] = tuple_count > 0 && values.size() % tuple_count == 0
-            ? static_cast<int>(values.size() / tuple_count)
-            : 0;
+        item["componentCount"] = component_count;
         out.append(item);
     }
 }
