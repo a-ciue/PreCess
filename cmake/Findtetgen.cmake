@@ -52,6 +52,7 @@ set(TETGEN_FIND_ARGS
   HINTS
     ${tetgen_DIR} ${TETGEN_DIR}
   PATH_SUFFIXES
+    tetgen1.6.0/include
     include
 )
 
@@ -68,6 +69,7 @@ find_library(TETGEN_LIBRARY_RELEASE
   HINTS
     ${tetgen_DIR} ${TETGEN_DIR}
   PATH_SUFFIXES
+    tetgen1.6.0/lib
     lib
 )
 
@@ -79,6 +81,19 @@ find_library(TETGEN_LIBRARY_DEBUG
   HINTS
     ${tetgen_DIR} ${TETGEN_DIR}
   PATH_SUFFIXES
+    tetgen1.6.0/lib
+    lib
+)
+
+find_library(TETGEN_LIBRARY_RELWITHDEBINFO
+  NAMES
+    teti
+    tetgeni
+    libteti
+  HINTS
+    ${tetgen_DIR} ${TETGEN_DIR}
+  PATH_SUFFIXES
+    tetgen1.6.0/lib
     lib
 )
 
@@ -119,6 +134,18 @@ if(tetgen_FOUND)
       set_target_properties(tetgen::tetgen PROPERTIES
         IMPORTED_LINK_INTERFACE_LANGUAGES_DEBUG "CXX"
         IMPORTED_LOCATION_DEBUG "${TETGEN_LIBRARY_DEBUG}")
+    endif()
+
+    if(TETGEN_LIBRARY_RELWITHDEBINFO)
+      set_property(TARGET tetgen::tetgen APPEND PROPERTY
+        IMPORTED_CONFIGURATIONS RELWITHDEBINFO)
+      set_target_properties(tetgen::tetgen PROPERTIES
+        IMPORTED_LINK_INTERFACE_LANGUAGES_RELWITHDEBINFO "CXX"
+        IMPORTED_LOCATION_RELWITHDEBINFO "${TETGEN_LIBRARY_RELWITHDEBINFO}")
+    elseif(TETGEN_LIBRARY_RELEASE)
+      # 未安装 RelWithDebInfo 变体时，下游 RelWithDebInfo 构建回退到 Release 库
+      set_target_properties(tetgen::tetgen PROPERTIES
+        MAP_IMPORTED_CONFIG_RELWITHDEBINFO "RelWithDebInfo;Release")
     endif()
 
     if(NOT TETGEN_LIBRARY_RELEASE AND NOT TETGEN_LIBRARY_DEBUG)
