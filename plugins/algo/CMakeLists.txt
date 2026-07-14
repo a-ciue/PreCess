@@ -1,3 +1,4 @@
 add_subdirectory(CmdExecutePlugin)
 add_subdirectory(TetGenPlugin)
 add_subdirectory(TetGenLibPlugin)
+add_subdirectory(GmshPlugin)

@@ -15,7 +15,7 @@ public:
     ~GeometryActorManager();
     void bindRender(vtkRenderer* renderer);
 
-    const GeometryActor* getGeometryActor(Index component_id);
+    std::shared_ptr<GeometryActor> getComponentActor(Index component_id) const;
     GeometryRenderMode getGeometryRenderMode(Index component_id);
     bool getIsEdgeRender(Index component_id);
     bool hasComponent(Index component_id) const;
@@ -28,7 +28,7 @@ public:
     void setRenderEdge(Index component_id, bool is_render);
 
 private:
-    std::unordered_map<Index, std::unique_ptr<GeometryActor>> component_actors_;
+    std::unordered_map<Index, std::shared_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
 };
 

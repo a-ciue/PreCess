@@ -53,22 +53,25 @@ bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::
 }
 }
 
-EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer* renderer)
+EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
 {
-    this->selected_actor_ = vtkSmartPointer<vtkActor>::New();
+    this->highlight_actor_ = highlight_actor;
     this->renderer_ = renderer;
 
     selected_mapper_->SetInputData(vtkPolyData::New());
-    selected_actor_->SetMapper(selected_mapper_);
-    selected_actor_->GetProperty()->SetColor(MeshActor::colors->GetColor3d("red").GetData());
-    selected_actor_->GetProperty()->SetLineWidth(5);
 
-    renderer_->AddActor(selected_actor_);
+    if (highlight_actor_) {
+        highlight_actor_->SetMapper(selected_mapper_);
+        vtkNew<vtkProperty> prop;
+        prop->SetColor(MeshActor::colors->GetColor3d("red").GetData());
+        prop->SetLineWidth(5);
+        highlight_actor_->SetProperty(prop);
+    }
 }
 
-EdgeSelectorHighlight::~EdgeSelectorHighlight()
-{
-    renderer_->RemoveActor(selected_actor_);
+EdgeSelectorHighlight::~EdgeSelectorHighlight() 
+{ 
+    clear(); 
 }
 
 void EdgeSelectorHighlight::clear()

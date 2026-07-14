@@ -1,6 +1,8 @@
 #include "GeometrySubshapeIndex.h"
 #include "GeometryRegistry.h"
 
+#include <spdlog/spdlog.h>
+
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 #include <algorithm>
@@ -23,6 +25,21 @@ void GeometrySubshapeIndex::build(const TopoDS_Shape& root, GeometryRegistry& re
 
         const TopAbs_ShapeEnum type = static_cast<TopAbs_ShapeEnum>(ti);
         TopExp::MapShapes(root, type, type_maps[ti]);
+    }
+
+    {
+        const int nVertices = type_maps[typeIndex(TopAbs_VERTEX)].Extent();
+        const int nEdges    = type_maps[typeIndex(TopAbs_EDGE)].Extent();
+        const int nWires    = type_maps[typeIndex(TopAbs_WIRE)].Extent();
+        const int nFaces    = type_maps[typeIndex(TopAbs_FACE)].Extent();
+        const int nShells   = type_maps[typeIndex(TopAbs_SHELL)].Extent();
+        const int nSolids   = type_maps[typeIndex(TopAbs_SOLID)].Extent();
+        const int nCompounds = type_maps[typeIndex(TopAbs_COMPOUND)].Extent();
+        const int nCompSolids = type_maps[typeIndex(TopAbs_COMPSOLID)].Extent();
+
+        spdlog::info("[GeometryIndex] sub-shape summary:"
+            " Vertex={}, Edge={}, Wire={}, Face={}, Shell={}, Solid={}, CompSolid={}, Compound={}",
+            nVertices, nEdges, nWires, nFaces, nShells, nSolids, nCompSolids, nCompounds);
     }
 
     // 2) Vertex: localTypeId -> GeomVertexId

@@ -24,6 +24,10 @@ RowLayout {
             ListElement { text: "面" }
             ListElement { text: "体" }
             ListElement { text: "块" }
+            ListElement{text: "几何点"}
+            ListElement{text: "几何边"}
+            ListElement{text: "几何面"}
+            ListElement{text: "几何体"}
         }
         onCurrentTextChanged: {
             if(currentText === "..."){
@@ -43,6 +47,18 @@ RowLayout {
             }
             if(currentText === "体"){
                 App.selection.selectMode = "Solid"
+            }
+            if(currentText === "几何点"){
+                App.selection.selectMode = "GeometryVertex"
+            }
+            if(currentText === "几何边"){
+                App.selection.selectMode = "GeometryEdge"
+            }
+            if(currentText === "几何面"){
+                App.selection.selectMode = "GeometryFace"
+            }
+            if(currentText === "几何体"){
+                App.selection.selectMode = "GeometrySolid"
             }
         }
         enabled: root.cur_model >= 0

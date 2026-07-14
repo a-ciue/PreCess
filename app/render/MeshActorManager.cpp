@@ -11,7 +11,7 @@ MeshActorManager::MeshActorManager(vtkPoints* global_points)
 {
 }
 
-std::shared_ptr<const MeshActor> MeshActorManager::getComponentActor(Index component_id) const
+std::shared_ptr<MeshActor> MeshActorManager::getComponentActor(Index component_id) const
 {
     if (this->component_actors_.count(component_id))
         return this->component_actors_.at(component_id);

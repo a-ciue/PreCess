@@ -95,6 +95,10 @@ git clone --single-branch --depth 1 --branch v1.16.0 https://github.com/gabime/s
 git clone --single-branch --depth 1 --branch v3.11.0 https://github.com/catchorg/Catch2.git
 git clone --single-branch --depth 1 --branch v7.80 https://github.com/LoicMarechal/libMeshb.git
 git clone --single-branch --depth 1 --branch v1.6.0 https://github.com/TetGen/TetGen.git tetgen
+git clone --single-branch --branch master https://gitlab.onelab.info/gmsh/gmsh.git gmsh-occ8
+pushd gmsh-occ8
+git checkout --detach 86596d7902a1b00e23641ac5c904b7c1f880ce9f
+popd
 curl -L -o OCCT/3rdparty-vc14-64-temp.zip --connect-timeout 30 https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip
 
 if not defined qtPath (
@@ -151,6 +155,15 @@ pushd "%sourcePath%/OCCT"
 tar -xf ./3rdparty-vc14-64-temp.zip -C .
 tar -xf ./3rdparty-vc14-64.zip -C .
 cmake -S . -B ./build "-GNinja Multi-Config" "-DINSTALL_DIR:PATH=%depsPath%\OpenCASCADE8.0.0" "-D3RDPARTY_DIR:PATH=%cd%/3rdparty-vc14-64" "-D3RDPARTY_FREETYPE_DIR:PATH=%depsPath%\freetype2.14.1" -DUSE_VTK:BOOL=1 "-D3RDPARTY_VTK_DIR:PATH=%depsPath%\VTK9.6.2" -DCMAKE_INSTALL_MESSAGE=LAZY
+pushd build
+if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
+cmake --build . --target install --config Debug
+if "!buildRelease!"=="1" cmake --build . --target install --config Release
+
+REM Clone and build Gmsh OCC8
+set "CASROOT=%depsPath%\OpenCASCADE8.0.0"
+pushd "%sourcePath%/gmsh-occ8"
+cmake -S . -B ./build "-GNinja Multi-Config" "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;RelWithDebInfo" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=ON -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
 cmake --build . --target install --config Debug

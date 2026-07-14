@@ -13,7 +13,11 @@ public:
         Edge,
         Vertex,
         Block,
-        Group
+        Group,
+        GeometrySolid,
+        GeometryFace,
+        GeometryEdge,
+        GeometryVertex
     };
 };
 

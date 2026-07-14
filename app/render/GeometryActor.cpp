@@ -2,15 +2,105 @@
 #include "Core.h"
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <TopoDS_Shape.hxx>
-#include <vtkPointData.h>
+#include <TopExp_Explorer.hxx>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
+#include <vtkExtractSelection.h>
+#include <vtkGeometryFilter.h>
+#include <vtkIdTypeArray.h>
+#include <vtkSelection.h>
+#include <vtkSelectionNode.h>
+#include <vtkCellData.h>
+
+#include <cstring>
+#include <spdlog/spdlog.h>
+
+static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* pd, const OccShapeHandle& occShape)
+{
+    if (!pd || occShape.IsNull())
+        return nullptr;
+
+    vtkCellData* cd = pd->GetCellData();
+    if (!cd)
+        return nullptr;
+
+    const vtkIdType nCells = pd->GetNumberOfCells();
+    if (nCells <= 0)
+        return nullptr;
+
+    vtkDataArray* best = nullptr;
+    vtkIdType bestValidCount = 0;
+    bool bestHasLineValid = false;
+
+    for (int i = 0; i < cd->GetNumberOfArrays(); ++i) {
+        vtkDataArray* a = cd->GetArray(i);
+        if (!a)
+            continue;
+        if (a->GetNumberOfComponents() != 1)
+            continue;
+        if (a->GetNumberOfTuples() != nCells)
+            continue;
+
+        const char* name = a->GetName();
+        if (name) {
+            if (std::strcmp(name, "vtkOriginalCellIds") == 0)
+                continue;
+            if (std::strcmp(name, "vtkOriginalPointIds") == 0)
+                continue;
+        }
+
+        vtkIdType validCount = 0;
+        bool hasLineValid = false;
+        for (vtkIdType c = 0; c < nCells; ++c) {
+            IVtk_IdType sid = static_cast<IVtk_IdType>(a->GetTuple1(c));
+            if (sid > 0) {
+                try {
+                    if (!occShape->GetSubShape(sid).IsNull()) {
+                        ++validCount;
+                        if (!hasLineValid && pd->GetCellType(c) == VTK_LINE)
+                            hasLineValid = true;
+                    }
+                } catch (...) {
+                }
+            }
+        }
+
+        bool better = false;
+        if (!best) {
+            better = true;
+        } else if (hasLineValid && !bestHasLineValid) {
+            better = true;
+        } else if (!hasLineValid && bestHasLineValid) {
+        } else if (validCount > bestValidCount) {
+            better = true;
+        }
+
+        if (better) {
+            bestValidCount = validCount;
+            bestHasLineValid = hasLineValid;
+            best = a;
+        }
+    }
+
+    if (best && bestValidCount > 0) {
+        spdlog::info("[GeometryActor] found subId array '{}' valid={}/{} hasLine={}",
+            (best->GetName() ? best->GetName() : "(null)"),
+            static_cast<int>(bestValidCount), static_cast<int>(nCells),
+            bestHasLineValid ? "yes" : "no");
+        return best;
+    }
+
+    spdlog::warn("[GeometryActor] no valid subId array found in polydata with {} cells", static_cast<int>(nCells));
+    return nullptr;
+}
 
 GeometryActor::GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode)
 {
     this->renderer_ = renderer;
     this->render_mode_ = render_mode;
+    this->edge_render = false;
+    this->visibility_ = true;
 }
 
 GeometryActor::~GeometryActor()
@@ -30,41 +120,103 @@ bool GeometryActor::getIsEdgeRender()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    this->geometry_data_ = std::make_unique<GeometryDataVtk>(geometry_data);
-    IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
+    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
+    aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
+    this->occ_shape_ = aShapeImpl;
+    this->geometry_index_ = geometry_data.geometry_index;
     vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
     DS->SetShape(aShapeImpl);
     DS->Update();
-    vtkPolyData* geometry_poly_data = DS->GetOutput();
+    vtkPolyData* src = DS->GetOutput();
 
-    // 分开 polys 和 lines
-    vtkNew<vtkPolyData> line_only;
-    line_only->SetPoints(geometry_poly_data->GetPoints());
-    line_only->SetLines(geometry_poly_data->GetLines());
+    const vtkIdType nV = src->GetNumberOfVerts();
+    const vtkIdType nL = src->GetNumberOfLines();
+    const vtkIdType nP = src->GetNumberOfPolys();
 
-    vtkNew<vtkPolyData> poly_only;
-    poly_only->SetPoints(geometry_poly_data->GetPoints());
-    poly_only->SetPolys(geometry_poly_data->GetPolys());
-    poly_only->GetPointData()->SetNormals(geometry_poly_data->GetPointData()->GetNormals());
+    spdlog::info("[GeometryActor] loadShape component={} verts={} lines={} polys={}",
+        geometry_data.component_id, static_cast<int>(nV), static_cast<int>(nL), static_cast<int>(nP));
 
-    // 渲染面（带光照）
+    auto ExtractCellRangeToPolyData = [](vtkPolyData* in, vtkIdType start, vtkIdType count) -> vtkSmartPointer<vtkPolyData> {
+        vtkNew<vtkIdTypeArray> ids;
+        ids->SetNumberOfComponents(1);
+        ids->SetNumberOfValues(count);
+        for (vtkIdType i = 0; i < count; ++i)
+            ids->SetValue(i, start + i);
+
+        vtkNew<vtkSelectionNode> node;
+        node->SetFieldType(vtkSelectionNode::CELL);
+        node->SetContentType(vtkSelectionNode::INDICES);
+        node->SetSelectionList(ids);
+
+        vtkNew<vtkSelection> sel;
+        sel->AddNode(node);
+
+        vtkNew<vtkExtractSelection> extract;
+        extract->SetInputData(0, in);
+        extract->SetInputData(1, sel);
+        extract->Update();
+
+        vtkNew<vtkGeometryFilter> geom;
+        geom->SetInputConnection(extract->GetOutputPort());
+        geom->Update();
+
+        return vtkPolyData::SafeDownCast(geom->GetOutput());
+    };
+
+    vtkSmartPointer<vtkPolyData> line_only = ExtractCellRangeToPolyData(src, 0, nV + nL);
+    vtkSmartPointer<vtkPolyData> poly_only = ExtractCellRangeToPolyData(src, nV + nL, nP);
+
+    if (!line_only)
+        line_only = vtkSmartPointer<vtkPolyData>::New();
+    if (!poly_only)
+        poly_only = vtkSmartPointer<vtkPolyData>::New();
+
+    this->line_only_ = line_only;
+    this->poly_only_ = poly_only;
+
+    line_sub_id_array_ = findSubIdArray(line_only, occ_shape_);
+    poly_sub_id_array_ = findSubIdArray(poly_only, occ_shape_);
+
+    NCollection_Map<IVtk_IdType> edgeVertexIds;
+    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_EDGE); exp.More(); exp.Next()) {
+        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
+        if (id >= 0) edgeVertexIds.Add(id);
+    }
+    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_VERTEX); exp.More(); exp.Next()) {
+        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
+        if (id >= 0) edgeVertexIds.Add(id);
+    }
+
+    auto lineEdgeFilter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
+    lineEdgeFilter->SetInputData(line_only);
+    lineEdgeFilter->SetDoFiltering(true);
+    if (line_sub_id_array_ && line_sub_id_array_->GetName())
+        lineEdgeFilter->SetIdsArrayName(line_sub_id_array_->GetName());
+    lineEdgeFilter->SetData(edgeVertexIds);
+
     vtkNew<vtkPolyDataMapper> poly_mapper;
     poly_mapper->SetInputData(poly_only);
+    poly_mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, 1.0);
 
-    this->poly_actor_->SetMapper(poly_mapper);
-    this->renderer_->AddActor(this->poly_actor_);
+    poly_actor_->SetMapper(poly_mapper);
+    poly_actor_->GetProperty()->SetColor(200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0);
+    renderer_->AddActor(poly_actor_);
 
-    // 渲染线（无光照）
     vtkNew<vtkPolyDataMapper> line_mapper;
-    line_mapper->SetInputData(line_only);
-    line_mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, -0.1);
+    line_mapper->SetInputConnection(lineEdgeFilter->GetOutputPort());
+    line_mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, 4);
+    line_mapper->SetRelativeCoincidentTopologyPointOffsetParameter(8);
 
-    this->line_actor_->SetMapper(line_mapper);
-    this->line_actor_->GetProperty()->LightingOff(); // 关键：关闭光照防止线变色
-    this->line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
-    this->line_actor_->GetProperty()->SetLineWidth(2.0);
-    this->line_actor_->GetProperty()->RenderLinesAsTubesOn(); // 关键：线条抗锯齿
-    this->renderer_->AddActor(this->line_actor_);
+    line_actor_->SetMapper(line_mapper);
+    line_actor_->GetProperty()->LightingOff();
+    line_actor_->GetProperty()->SetLineWidth(2.0);
+    line_actor_->GetProperty()->RenderLinesAsTubesOn();
+    line_actor_->GetProperty()->SetPointSize(6.0);
+    line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
+    renderer_->AddActor(line_actor_);
+
+    spdlog::info("[GeometryActor] component={} actors added, face_cells={} line_cells={}",
+        geometry_data.component_id, static_cast<int>(poly_only->GetNumberOfCells()), static_cast<int>(line_only->GetNumberOfCells()));
 }
 
 void GeometryActor::deleteGeometryActor()
@@ -84,7 +236,6 @@ void GeometryActor::setVisibility(bool visibility)
 
 void GeometryActor::setRenderMode(GeometryRenderMode render_mode)
 {
-    // 没用
 }
 
 void GeometryActor::setRenderEdge(bool is_render)

@@ -117,7 +117,7 @@ std::vector<GeometryDataVtk> QModelQuery::getGeometryVtkData(Index model_id)
         if (!comp || !comp->geometry || !comp->geometry->rootShape)
             continue;
 
-        result.push_back(GeometryDataVtk { *comp->geometry->rootShape, comp->id });
+        result.push_back(GeometryDataVtk { *comp->geometry->rootShape, comp->id, &comp->geometry->index });
     }
 
     return result;
@@ -129,7 +129,7 @@ std::optional<GeometryDataVtk> QModelQuery::getGeometryVtkDataByComponent(Index 
     if (!comp || !comp->geometry || !comp->geometry->rootShape)
         return std::nullopt;
 
-    return GeometryDataVtk { *comp->geometry->rootShape, comp->id };
+    return GeometryDataVtk { *comp->geometry->rootShape, comp->id, &comp->geometry->index };
 }
 
 
