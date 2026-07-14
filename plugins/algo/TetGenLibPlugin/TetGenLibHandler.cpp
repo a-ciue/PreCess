@@ -28,7 +28,7 @@
 #include <spdlog/spdlog.h>
 #include <vtkCellType.h>
 
-#include "tetgen.h"
+#include <tetgen.h>
 
 namespace {
 /**
