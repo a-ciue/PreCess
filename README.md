@@ -95,7 +95,7 @@
 
 本项目面向**网格算法开发者**与**工业界**对前处理的处理需求。
 
-本项目使用**插件化架构**，将功能都封装在插件中。为了方便基于软件做**二次开发**，项目中的插件依赖使用LGPLv3许可，允许**不修改依赖源码前提下闭源**。
+本项目使用**插件化架构**，将功能都封装在插件中。**核心库** `core/` 与 `model/` 采用 **LGPLv3** 许可，允许在不修改依赖源码前提下被闭源软件链接使用；**应用与插件层**（`app/`、`plugins/` 等）采用 **AGPLv3** 许可。
 
 **参与开源项目是技术历练与学习实践，是为世界开源社区贡献，也是一场以身入局的人生投资。**
 
@@ -241,11 +241,23 @@ Contributions are what make the open source community such an amazing place to l
 <!-- LICENSE -->
 ## ⚖️许可证
 
-本项目对**不同部分代码**分别使用了`GPLv3`与`LGPLv3`许可证。
+本项目对**不同目录代码**分别采用 `LGPLv3` 与 `AGPLv3` 双许可证：
 
-为了允许插件作者开发**插件闭源**与**从中获利**，插件开发所依赖的代码文件使用`LGPLv3`许可。剩余代码使用`GPLv3`许可，禁止将本软件集成到其他**闭源软件**中。如果想商用GPL部分代码可以选择咨询使用**商用协议**。
+- **`core/`、`model/`、`cmake/`（LGPLv3）**：核心库层与其构建辅助脚本。
+  允许在**不修改依赖源码**的前提下被闭源软件链接使用，便于二次开发；
+  `cmake/` 中的 Find 模块可被下游 LGPL 使用者直接复用。
+- **`app/`、`plugins/`、`resource/` 及其余目录（AGPLv3）**：应用、插件与
+  应用品牌资源。由于插件依赖链中可能包含以 AGPLv3 发布的第三方库，
+  此部分统一采用 AGPLv3；分发或通过网络对外提供服务时须遵守 AGPLv3
+  全部条款（含第 13 条网络分发义务）。
 
-许可证详情参见`LICENSE.md`。
+LGPLv3 与 AGPLv3 兼容，因此 `app/` / `plugins/` 可以正常调用 `core/` /
+`model/`；只是任何发行版一旦打包了 AGPLv3 组件，整体分发义务按 AGPLv3
+处理。
+
+许可证边界与义务详情参见 `LICENSE.md`（正式版本，英文）、
+`LGPLv3-LICENSE.txt` 与 `AGPLv3-LICENSE.txt`。
+中文翻译版本见 `LICENSE.zh-CN.md`（仅供参考，以英文版本为准）。
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -282,8 +294,8 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 [github-stars-url]: https://github.com/a-ciue/PreCess/stargazers
 [issues-shield]: https://svg.hamm.cn/gitee.svg?user=precess&project=PreCess&type=issue
 [issues-url]: https://gitee.com/precess/PreCess/issues
-[license-shield]: https://img.shields.io/badge/license-GPLv3%2FLGPLv3-blue.svg
-[license-url]: https://gitee.com/precess/PreCess/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/badge/license-LGPLv3%2FAGPLv3-blue.svg
+[license-url]: https://gitee.com/precess/PreCess/blob/master/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/-111-black.svg?colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: resource/PreCess_letter.png

@@ -82,5 +82,5 @@ add_subdirectory(test)
 
 - **参数极简原则**：库模式下应避免使用命令行插件中的文件输出控制参数（`B`、`N`、`E`、`F`、`V`、`Y`、`A`），否则可能触发 TetGen 内部空指针异常。
 - **`-H`（孔洞文件）未集成**：TetGen 1.6 的 `-H` 需要额外 hole mesh 文件路径，只追加 `H` 而不提供路径会导致访问冲突。
-- **许可证兼容性**：TetGen 许可证与 PreCess 插件 LGPLv3 边界的兼容性待确认。
+- **许可证**：TetGen 采用 **AGPLv3** 许可，因此本插件及 PreCess 的 `app/` / `plugins/` 层同样按 **AGPLv3** 发布；`core/` 与 `model/` 仍保持 **LGPLv3**，二者兼容。基于本插件或打包了本插件的 PreCess 发行版分发衍生软件时，须遵守 AGPLv3（含第 13 条网络分发条款）。
 - **属性传递**：当前未传递 face marker、region attribute、material 等属性。
