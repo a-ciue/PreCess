@@ -47,5 +47,8 @@ private:
 
     // 渲染窗口共享的标量颜色表，同一时刻只显示当前标量属性的颜色和值域。
     vtkNew<vtkScalarBarActor> scalar_bar_;
+
+    // 当前颜色表对应的组件 ID，未显示颜色表时为 -1。
+    Index scalar_bar_component_id_ { -1 };
 };
 #endif

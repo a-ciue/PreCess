@@ -47,9 +47,10 @@ Item {
 
     // 只在输入框有内容时读取数值参数，空输入表示使用渲染策略默认值。
     function optionalNumber(text) {
-        if (text.length === 0)
+        let trimmed = text.trim()
+        if (trimmed.length === 0)
             return null
-        let value = Number(text)
+        let value = Number(trimmed)
         return Number.isFinite(value) ? value : null
     }
 
@@ -79,7 +80,7 @@ Item {
     }
 
     function urlToPath(url) {
-        let urlString = new String(url)
+        let urlString = url.toString()
         if (urlString.startsWith("file:///")) {
             let start = urlString.charAt(9) === ":" ? 8 : 7
             return decodeURIComponent(urlString.substring(start))

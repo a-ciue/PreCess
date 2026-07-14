@@ -124,9 +124,18 @@ std::string scalarBarTitle(const std::string& attr_name)
         || title.rfind("f_", 0) == 0 || title.rfind("s_", 0) == 0) {
         title.erase(0, 2);
     }
-    if (title.size() >= 2 && title[title.size() - 2] == '_'
-        && title.back() >= '0' && title.back() <= '9')
-        title.erase(title.size() - 2);
+    const size_t suffix_pos = title.find_last_of('_');
+    if (suffix_pos != std::string::npos && suffix_pos + 1 < title.size()) {
+        bool numeric_suffix = true;
+        for (size_t i = suffix_pos + 1; i < title.size(); ++i) {
+            if (title[i] < '0' || title[i] > '9') {
+                numeric_suffix = false;
+                break;
+            }
+        }
+        if (numeric_suffix)
+            title.erase(suffix_pos);
+    }
     return title;
 }
 }
