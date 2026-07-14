@@ -83,19 +83,37 @@ $(function() {
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="IAttributeRenderStrategy_8h.html">IAttributeRenderStrategy.h</a>&quot;</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="AttributeOperator_8h.html">AttributeOperator.h</a>&quot;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="foldopen" id="foldopen00005" data-start="{" data-end="};">
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno"><a class="line" href="classAttriRenderStrategyScalar.html">    5</a></span><span class="keyword">class </span><a class="code hl_class" href="classAttriRenderStrategyScalar.html">AttriRenderStrategyScalar</a> : <span class="keyword">public</span> <a class="code hl_class" href="classIAttributeRenderStrategy.html">IAttributeRenderStrategy</a> {</div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttriRenderStrategyScalar.html#a8ed76727b725c98b8aa32d569c1d7981">render</a>(</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>        <a class="code hl_class" href="classAttributeOperator.html">AttributeOperator</a> op,</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>        <span class="keyword">const</span> std::string&amp; attr_name,</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>        std::map&lt;std::string, std::any&gt; args) <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>};</div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="keyword">class </span>vtkPolyDataMapper;</div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">class </span>vtkScalarBarActor;</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="foldopen" id="foldopen00008" data-start="{" data-end="};">
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="classAttriRenderStrategyScalar.html">    8</a></span><span class="keyword">class </span><a class="code hl_function" href="classAttriRenderStrategyScalar.html#a25c8c24987c285ae989bf6ddaae4a7ac">AttriRenderStrategyScalar</a> : <span class="keyword">public</span> <a class="code hl_class" href="classIAttributeRenderStrategy.html">IAttributeRenderStrategy</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="comment">// 接收渲染窗口共享的颜色表，仅负责标量渲染时配置和显示，不管理其生命周期。</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classAttriRenderStrategyScalar.html#a25c8c24987c285ae989bf6ddaae4a7ac">AttriRenderStrategyScalar</a>(vtkScalarBarActor* scalar_bar = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttriRenderStrategyScalar.html#a8ed76727b725c98b8aa32d569c1d7981">render</a>(</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        <a class="code hl_class" href="classAttributeOperator.html">AttributeOperator</a> op,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>        <span class="keyword">const</span> std::string&amp; attr_name,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        std::map&lt;std::string, std::any&gt; args) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="comment">// 使用 mapper 的颜色映射和值域更新颜色表。</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classAttriRenderStrategyScalar.html#a278c98ada0bb4933d7e17d9086d468f7">showScalarBar</a>(</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        vtkPolyDataMapper* mapper,</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        <span class="keyword">const</span> std::string&amp; title,</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keyword">const</span> <span class="keywordtype">double</span> range[2]);</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="comment">// 指向渲染窗口共享的颜色表，不负责其生命周期。</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classAttriRenderStrategyScalar.html#a91187fdadebd879a44c3ef8f4bfd2f5e">   26</a></span>    vtkScalarBarActor* <a class="code hl_variable" href="classAttriRenderStrategyScalar.html#a91187fdadebd879a44c3ef8f4bfd2f5e">scalar_bar_</a> {};</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>};</div>
 </div>
 <div class="ttc" id="aAttributeOperator_8h_html"><div class="ttname"><a href="AttributeOperator_8h.html">AttributeOperator.h</a></div></div>
 <div class="ttc" id="aIAttributeRenderStrategy_8h_html"><div class="ttname"><a href="IAttributeRenderStrategy_8h.html">IAttributeRenderStrategy.h</a></div></div>
-<div class="ttc" id="aclassAttriRenderStrategyScalar_html"><div class="ttname"><a href="classAttriRenderStrategyScalar.html">AttriRenderStrategyScalar</a></div><div class="ttdef"><b>定义</b> AttriRenderStrategyScalar.h:5</div></div>
-<div class="ttc" id="aclassAttriRenderStrategyScalar_html_a8ed76727b725c98b8aa32d569c1d7981"><div class="ttname"><a href="classAttriRenderStrategyScalar.html#a8ed76727b725c98b8aa32d569c1d7981">AttriRenderStrategyScalar::render</a></div><div class="ttdeci">void render(AttributeOperator op, const std::string &amp;attr_name, std::map&lt; std::string, std::any &gt; args) override</div><div class="ttdoc">属性渲染</div><div class="ttdef"><b>定义</b> AttriRenderStrategyScalar.cpp:8</div></div>
+<div class="ttc" id="aclassAttriRenderStrategyScalar_html_a25c8c24987c285ae989bf6ddaae4a7ac"><div class="ttname"><a href="classAttriRenderStrategyScalar.html#a25c8c24987c285ae989bf6ddaae4a7ac">AttriRenderStrategyScalar::AttriRenderStrategyScalar</a></div><div class="ttdeci">AttriRenderStrategyScalar(vtkScalarBarActor *scalar_bar=nullptr)</div><div class="ttdef"><b>定义</b> AttriRenderStrategyScalar.cpp:36</div></div>
+<div class="ttc" id="aclassAttriRenderStrategyScalar_html_a278c98ada0bb4933d7e17d9086d468f7"><div class="ttname"><a href="classAttriRenderStrategyScalar.html#a278c98ada0bb4933d7e17d9086d468f7">AttriRenderStrategyScalar::showScalarBar</a></div><div class="ttdeci">void showScalarBar(vtkPolyDataMapper *mapper, const std::string &amp;title, const double range[2])</div><div class="ttdef"><b>定义</b> AttriRenderStrategyScalar.cpp:41</div></div>
+<div class="ttc" id="aclassAttriRenderStrategyScalar_html_a8ed76727b725c98b8aa32d569c1d7981"><div class="ttname"><a href="classAttriRenderStrategyScalar.html#a8ed76727b725c98b8aa32d569c1d7981">AttriRenderStrategyScalar::render</a></div><div class="ttdeci">void render(AttributeOperator op, const std::string &amp;attr_name, std::map&lt; std::string, std::any &gt; args) override</div><div class="ttdoc">属性渲染</div><div class="ttdef"><b>定义</b> AttriRenderStrategyScalar.cpp:57</div></div>
+<div class="ttc" id="aclassAttriRenderStrategyScalar_html_a91187fdadebd879a44c3ef8f4bfd2f5e"><div class="ttname"><a href="classAttriRenderStrategyScalar.html#a91187fdadebd879a44c3ef8f4bfd2f5e">AttriRenderStrategyScalar::scalar_bar_</a></div><div class="ttdeci">vtkScalarBarActor * scalar_bar_</div><div class="ttdef"><b>定义</b> AttriRenderStrategyScalar.h:26</div></div>
 <div class="ttc" id="aclassAttributeOperator_html"><div class="ttname"><a href="classAttributeOperator.html">AttributeOperator</a></div><div class="ttdoc">属性操作类，提供对MeshActor中各类数据和Mapper、Actor的访问接口</div><div class="ttdef"><b>定义</b> AttributeOperator.h:11</div></div>
 <div class="ttc" id="aclassIAttributeRenderStrategy_html"><div class="ttname"><a href="classIAttributeRenderStrategy.html">IAttributeRenderStrategy</a></div><div class="ttdoc">属性渲染策略接口</div><div class="ttdef"><b>定义</b> IAttributeRenderStrategy.h:14</div></div>
 </div><!-- fragment --></div><!-- contents -->

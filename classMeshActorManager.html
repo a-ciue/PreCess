@@ -152,6 +152,8 @@ Private 属性</h2></td></tr>
 <tr class="memitem:a46dd38741724917139503c5b8794c193" id="r_a46dd38741724917139503c5b8794c193"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::shared_ptr&lt; <a class="el" href="classMeshActor.html">MeshActor</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46dd38741724917139503c5b8794c193">component_actors_</a></td></tr>
 <tr class="memitem:a20d3686e7fdd03025747c0cf1d8df9cc" id="r_a20d3686e7fdd03025747c0cf1d8df9cc"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20d3686e7fdd03025747c0cf1d8df9cc">renderer_</a> {}</td></tr>
 <tr class="memitem:afa06a17b3f4aa16d9e22ca61dda71dad" id="r_afa06a17b3f4aa16d9e22ca61dda71dad"><td class="memItemLeft" align="right" valign="top">vtkPoints *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa06a17b3f4aa16d9e22ca61dda71dad">global_points_</a> {}</td></tr>
+<tr class="memitem:aafa7d0513d66f2a8c7ee7ebadd96a4a0" id="r_aafa7d0513d66f2a8c7ee7ebadd96a4a0"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkScalarBarActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aafa7d0513d66f2a8c7ee7ebadd96a4a0">scalar_bar_</a></td></tr>
+<tr class="memitem:ad70a7f569504b6caa5719e02185db859" id="r_ad70a7f569504b6caa5719e02185db859"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad70a7f569504b6caa5719e02185db859">scalar_bar_component_id_</a> { -1 }</td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a7a446c26afa7c7f1a6de53e68598848c" name="a7a446c26afa7c7f1a6de53e68598848c"></a>
@@ -539,6 +541,50 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">vtkRenderer* MeshActorManager::renderer_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aafa7d0513d66f2a8c7ee7ebadd96a4a0" name="aafa7d0513d66f2a8c7ee7ebadd96a4a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafa7d0513d66f2a8c7ee7ebadd96a4a0">&#9670;&#160;</a></span>scalar_bar_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkScalarBarActor&gt; MeshActorManager::scalar_bar_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad70a7f569504b6caa5719e02185db859" name="ad70a7f569504b6caa5719e02185db859"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad70a7f569504b6caa5719e02185db859">&#9670;&#160;</a></span>scalar_bar_component_id_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> MeshActorManager::scalar_bar_component_id_ { -1 }</td>
         </tr>
       </table>
   </td>

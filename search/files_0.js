@@ -12,12 +12,13 @@ var searchData=
   ['attributecommon_2eh_9',['AttributeCommon.h',['../AttributeCommon_8h.html',1,'']]],
   ['attributeoperator_2ecpp_10',['AttributeOperator.cpp',['../AttributeOperator_8cpp.html',1,'']]],
   ['attributeoperator_2eh_11',['AttributeOperator.h',['../AttributeOperator_8h.html',1,'']]],
-  ['attrirenderstrategyrgb_2ecpp_12',['AttriRenderStrategyRGB.cpp',['../AttriRenderStrategyRGB_8cpp.html',1,'']]],
-  ['attrirenderstrategyrgb_2eh_13',['AttriRenderStrategyRGB.h',['../AttriRenderStrategyRGB_8h.html',1,'']]],
-  ['attrirenderstrategyscalar_2ecpp_14',['AttriRenderStrategyScalar.cpp',['../AttriRenderStrategyScalar_8cpp.html',1,'']]],
-  ['attrirenderstrategyscalar_2eh_15',['AttriRenderStrategyScalar.h',['../AttriRenderStrategyScalar_8h.html',1,'']]],
-  ['attrirenderstrategyuv_2ecpp_16',['AttriRenderStrategyUV.cpp',['../AttriRenderStrategyUV_8cpp.html',1,'']]],
-  ['attrirenderstrategyuv_2eh_17',['AttriRenderStrategyUV.h',['../AttriRenderStrategyUV_8h.html',1,'']]],
-  ['attrirenderstrategyvector_2ecpp_18',['AttriRenderStrategyVector.cpp',['../AttriRenderStrategyVector_8cpp.html',1,'']]],
-  ['attrirenderstrategyvector_2eh_19',['AttriRenderStrategyVector.h',['../AttriRenderStrategyVector_8h.html',1,'']]]
+  ['attributerenderpanel_2eqml_12',['AttributeRenderPanel.qml',['../AttributeRenderPanel_8qml.html',1,'']]],
+  ['attrirenderstrategyrgb_2ecpp_13',['AttriRenderStrategyRGB.cpp',['../AttriRenderStrategyRGB_8cpp.html',1,'']]],
+  ['attrirenderstrategyrgb_2eh_14',['AttriRenderStrategyRGB.h',['../AttriRenderStrategyRGB_8h.html',1,'']]],
+  ['attrirenderstrategyscalar_2ecpp_15',['AttriRenderStrategyScalar.cpp',['../AttriRenderStrategyScalar_8cpp.html',1,'']]],
+  ['attrirenderstrategyscalar_2eh_16',['AttriRenderStrategyScalar.h',['../AttriRenderStrategyScalar_8h.html',1,'']]],
+  ['attrirenderstrategyuv_2ecpp_17',['AttriRenderStrategyUV.cpp',['../AttriRenderStrategyUV_8cpp.html',1,'']]],
+  ['attrirenderstrategyuv_2eh_18',['AttriRenderStrategyUV.h',['../AttriRenderStrategyUV_8h.html',1,'']]],
+  ['attrirenderstrategyvector_2ecpp_19',['AttriRenderStrategyVector.cpp',['../AttriRenderStrategyVector_8cpp.html',1,'']]],
+  ['attrirenderstrategyvector_2eh_20',['AttriRenderStrategyVector.h',['../AttriRenderStrategyVector_8h.html',1,'']]]
 ];
