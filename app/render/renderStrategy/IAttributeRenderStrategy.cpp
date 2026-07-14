@@ -4,6 +4,7 @@
 void IAttributeRenderStrategy::cancelActiveAttribute(AttributeOperator op)
 {
     op.disableFaceAttributeOffset();
+    op.hideScalarBar();
     if (op.getFaceActor()->GetTexture() != nullptr) {
         op.getFaceActor()->SetTexture(nullptr);
     }

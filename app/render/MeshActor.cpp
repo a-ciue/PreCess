@@ -117,11 +117,17 @@ void addCellAttributes(
 }
 }
 
-MeshActor::MeshActor(vtkRenderer* renderer, vtkPoints* global_points, bool is_edge_render, ModelRenderMode render_mode)
-    : renderer_(renderer)
-    , global_points_(global_points)
-    , render_mode_(render_mode)
+MeshActor::MeshActor(
+    vtkRenderer* renderer,
+    vtkPoints* global_points,
+    bool is_edge_render,
+    ModelRenderMode render_mode,
+    vtkScalarBarActor* scalar_bar)
+    : render_mode_(render_mode)
     , edge_render_(is_edge_render)
+    , renderer_(renderer)
+    , scalar_bar_(scalar_bar)
+    , global_points_(global_points)
 {
     if (!global_points_) {
         throw std::invalid_argument("MeshActor: global_points cannot be null");

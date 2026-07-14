@@ -30,6 +30,15 @@ public:
     // 关闭面属性渲染的深度偏移，恢复普通面渲染深度关系。
     void disableFaceAttributeOffset();
 
+    // 显示标量颜色表，并让颜色表与 mapper 使用相同的颜色映射和值域。
+    void showScalarBar(
+        vtkPolyDataMapper* mapper,
+        const std::string& title,
+        const double range[2]);
+
+    // 隐藏当前渲染窗口的标量颜色表。
+    void hideScalarBar();
+
     // 返回当前 component 的典型边长，用于计算 glyph 默认缩放比例。
     double getMeshScale() const noexcept;
 

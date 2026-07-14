@@ -5,10 +5,24 @@
 #include "renderStrategy/AttriRenderStrategyUV.h"
 #include "renderStrategy/AttriRenderStrategyRGB.h"
 #include <spdlog/spdlog.h>
+#include <vtkRenderer.h>
+#include <vtkTextProperty.h>
 
 MeshActorManager::MeshActorManager(vtkPoints* global_points)
     : global_points_(global_points)
 {
+    scalar_bar_->SetOrientationToVertical(); // 使用竖向颜色表。
+    scalar_bar_->SetPosition(0.90, 0.05); // 归一化视口坐标，原点位于渲染窗口左下角。
+    scalar_bar_->SetWidth(0.05); // 颜色表宽度占视口宽度的 10%。
+    scalar_bar_->SetHeight(0.20); // 颜色表高度占视口高度的 35%。
+    scalar_bar_->SetNumberOfLabels(5); // 显示 5 个标量刻度值。
+    scalar_bar_->SetLabelFormat("%.3g"); // 使用 3 位有效数字显示刻度值。
+    scalar_bar_->SetUnconstrainedFontSize(true); // 使用下面指定的固定字体大小。
+    scalar_bar_->GetLabelTextProperty()->SetFontSize(13); // 刻度字体大小。
+    scalar_bar_->GetTitleTextProperty()->SetFontSize(15); // 属性名标题字体大小。
+    scalar_bar_->GetLabelTextProperty()->SetColor(0.0, 0.0, 0.0); // 刻度文字使用黑色。
+    scalar_bar_->GetTitleTextProperty()->SetColor(0.0, 0.0, 0.0); // 属性名标题使用黑色。
+    scalar_bar_->SetVisibility(false); // 默认隐藏，仅在标量渲染时显示。
 }
 
 std::shared_ptr<const MeshActor> MeshActorManager::getComponentActor(Index component_id) const
@@ -24,6 +38,7 @@ std::shared_ptr<const MeshActor> MeshActorManager::getComponentActor(Index compo
 void MeshActorManager::deleteComponent(Index component_id)
 {
     if (this->component_actors_.count(component_id)) {
+        scalar_bar_->SetVisibility(false);
         this->component_actors_.erase(component_id);
     }
 }
@@ -31,6 +46,8 @@ void MeshActorManager::deleteComponent(Index component_id)
 void MeshActorManager::bindRender(vtkRenderer* renderer)
 {
     this->renderer_ = renderer;
+    if (renderer_)
+        renderer_->AddViewProp(scalar_bar_);
 }
 
 bool MeshActorManager::hasComponent(Index component_id) const
@@ -41,8 +58,10 @@ bool MeshActorManager::hasComponent(Index component_id) const
 void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
 {
     if (!this->component_actors_.count(component_id))
-        this->component_actors_[component_id] = std::make_shared<MeshActor>(renderer, global_points_);
+        this->component_actors_[component_id] = std::make_shared<MeshActor>(
+            renderer, global_points_, true, ModelRenderMode::Face, scalar_bar_);
 
+    scalar_bar_->SetVisibility(false);
     auto& actor = this->component_actors_[component_id];
     actor->loadModelData(model_data);
     actor->setRenderMode(render_mode);

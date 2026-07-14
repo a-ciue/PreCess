@@ -49,6 +49,8 @@ void AttriRenderStrategyScalar::render(
         solid_mapper->SetScalarVisibility(1);
         solid_mapper->SetScalarRange(range[0], range[1]);
         solid_mapper->SetColorModeToMapScalars();
+        op.showScalarBar(face_mapper, attr_name, range);
+        solid_mapper->SetLookupTable(face_mapper->GetLookupTable());
         return;
     }
     // 判断是否是面属性
@@ -64,6 +66,7 @@ void AttriRenderStrategyScalar::render(
         face_mapper->SetScalarModeToUseCellData();
         face_mapper->SetScalarVisibility(1);
         face_mapper->SetColorModeToMapScalars(); // 使用 colormap
+        op.showScalarBar(face_mapper, attr_name, range);
         return;
     }
     // 判断是否是体属性
@@ -79,6 +82,7 @@ void AttriRenderStrategyScalar::render(
         solid_mapper->SetScalarModeToUseCellData();
         solid_mapper->SetScalarVisibility(1);
         solid_mapper->SetColorModeToMapScalars();
+        op.showScalarBar(solid_mapper, attr_name, range);
         return;
     }
 
