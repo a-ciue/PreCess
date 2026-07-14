@@ -76,6 +76,15 @@ Item {
         let attr = selectedAttribute()
         if (!attr || !attr.renderable || !App.registry.renderWindow)
             return false
+
+        if (modeCombo.currentIndex === 0 && attr.componentCount !== 3)
+            return false
+        if (modeCombo.currentIndex === 2
+                && (attr.attrType !== 0 || attr.componentCount !== 2))
+            return false
+        if (modeCombo.currentIndex === 3 && attr.componentCount !== 3)
+            return false
+
         return modeCombo.currentIndex !== 2 || texturePathField.text.length > 0
     }
 

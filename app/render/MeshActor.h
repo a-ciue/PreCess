@@ -18,7 +18,6 @@ class vtkPoints;
 class vtkPolyData;
 class vtkUnstructuredGrid;
 class vtkRenderer;
-class vtkScalarBarActor;
 class MeshActorSelectOp;
 class AttributeOperator;
 
@@ -42,8 +41,7 @@ public:
         vtkRenderer* renderer,
         vtkPoints* global_points,
         bool is_edge_render = true,
-        ModelRenderMode render_mode = ModelRenderMode::Face,
-        vtkScalarBarActor* scalar_bar = nullptr);
+        ModelRenderMode render_mode = ModelRenderMode::Face);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -116,9 +114,6 @@ private:
     FaceAttributeOffsetState face_attribute_offset_;
 
     vtkRenderer* renderer_;
-
-    // 指向渲染窗口共享的标量颜色表，不负责其生命周期。
-    vtkScalarBarActor* scalar_bar_ {};
 
     vtkNew<vtkActor> actor_;
 

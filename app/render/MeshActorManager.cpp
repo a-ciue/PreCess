@@ -62,7 +62,7 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
 {
     if (!this->component_actors_.count(component_id))
         this->component_actors_[component_id] = std::make_shared<MeshActor>(
-            renderer, global_points_, true, ModelRenderMode::Face, scalar_bar_);
+            renderer, global_points_, true, ModelRenderMode::Face);
 
     if (scalar_bar_component_id_ == component_id) {
         scalar_bar_->SetVisibility(false);
@@ -129,7 +129,7 @@ void MeshActorManager::setAttriMode(
         std::unique_ptr<IAttributeRenderStrategy> strategy;
         switch (mode) {
         case Mode::SCALAR:
-            strategy = std::make_unique<AttriRenderStrategyScalar>();
+            strategy = std::make_unique<AttriRenderStrategyScalar>(scalar_bar_);
             break;
         case Mode::VECTOR:
             strategy = std::make_unique<AttriRenderStrategyVector>();
@@ -144,6 +144,10 @@ void MeshActorManager::setAttriMode(
             spdlog::error("Invalid attribute render mode");
             return;
         }
+
+        // 颜色表为窗口级共享对象，执行新策略前清理上一次标量渲染状态。
+        scalar_bar_->SetVisibility(false);
+        scalar_bar_component_id_ = -1;
         this->component_actors_[component_id]->setRenderStrategy(std::move(strategy));
         this->component_actors_[component_id]->renderAttribute(attr_name, args);
         scalar_bar_component_id_ = scalar_bar_->GetVisibility() ? component_id : -1;
@@ -154,7 +158,10 @@ void MeshActorManager::cancelAttri(Index component_id)
 {
     if (this->component_actors_.count(component_id)) {
         this->component_actors_[component_id]->cancelActiveAttribute();
-        scalar_bar_component_id_ = -1;
+        if (scalar_bar_component_id_ == component_id) {
+            scalar_bar_->SetVisibility(false);
+            scalar_bar_component_id_ = -1;
+        }
     }
 }
 

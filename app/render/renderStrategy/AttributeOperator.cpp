@@ -8,8 +8,6 @@
 #include <cassert>
 #include <vtkPointData.h> 
 #include <vtkPoints.h>
-#include <vtkScalarBarActor.h>
-#include <vtkScalarsToColors.h>
 #include <algorithm>
 #include <cmath>
 #include <vector>
@@ -116,28 +114,6 @@ double averageFaceEdgeLength(vtkPoints& points, const std::vector<Index>& face_c
     return valid_count > 0 ? total_length / valid_count : 0.0;
 }
 
-// 移除属性类型前缀和分量后缀，只用于颜色表标题显示。
-std::string scalarBarTitle(const std::string& attr_name)
-{
-    std::string title = attr_name;
-    if (title.rfind("v_", 0) == 0 || title.rfind("e_", 0) == 0
-        || title.rfind("f_", 0) == 0 || title.rfind("s_", 0) == 0) {
-        title.erase(0, 2);
-    }
-    const size_t suffix_pos = title.find_last_of('_');
-    if (suffix_pos != std::string::npos && suffix_pos + 1 < title.size()) {
-        bool numeric_suffix = true;
-        for (size_t i = suffix_pos + 1; i < title.size(); ++i) {
-            if (title[i] < '0' || title[i] > '9') {
-                numeric_suffix = false;
-                break;
-            }
-        }
-        if (numeric_suffix)
-            title.erase(suffix_pos);
-    }
-    return title;
-}
 }
 
 AttributeOperator::AttributeOperator(MeshActor* mesh_actor)
@@ -209,27 +185,6 @@ void AttributeOperator::disableFaceAttributeOffset()
         offset.factor,
         offset.units);
     offset.active = false;
-}
-
-void AttributeOperator::showScalarBar(
-    vtkPolyDataMapper* mapper,
-    const std::string& title,
-    const double range[2])
-{
-    if (!mesh_actor_->scalar_bar_ || !mapper)
-        return;
-    vtkScalarsToColors* lookup_table = mapper->GetLookupTable();
-    lookup_table->SetRange(range);
-    lookup_table->Build();
-    mesh_actor_->scalar_bar_->SetLookupTable(lookup_table);
-    mesh_actor_->scalar_bar_->SetTitle(scalarBarTitle(title).c_str());
-    mesh_actor_->scalar_bar_->SetVisibility(true);
-}
-
-void AttributeOperator::hideScalarBar()
-{
-    if (mesh_actor_->scalar_bar_)
-        mesh_actor_->scalar_bar_->SetVisibility(false);
 }
 
 double AttributeOperator::getMeshScale() const noexcept
