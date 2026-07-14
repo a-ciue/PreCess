@@ -114,16 +114,23 @@ Item{
                 model: comboModel
                 onCurrentIndexChanged: {
                     root.parameters[index] = value = currentIndex
-                } 
+                }
             }
 
             Component.onCompleted: {
                 if(model && model.content){
-                    let items = model.content.split(",")
+                    let parts = model.content.split("|")
+                    let items = parts[0].split(",")
                     comboModel.clear()
                     for(let i=0; i<items.length; i++){
                         comboModel.append({"text":items[i]})
                     }
+                    let defaultIndex = parts.length > 1 ? parseInt(parts[1]) : 0
+                    if (isNaN(defaultIndex) || defaultIndex < 0 || defaultIndex >= items.length) {
+                        defaultIndex = 0
+                    }
+                    parameterComboBox.currentIndex = defaultIndex
+                    root.parameters[index] = value = defaultIndex
                 }
                 root.parameters[index] = value = parameterComboBox.currentIndex
             }
@@ -146,6 +153,7 @@ Item{
             TextField {
                 id:parameterTextInput
                 Layout.fillWidth: parent.width
+                text: model.content
                 onTextChanged:{
                     root.parameters[index] = parseFloat(text)
                 }
@@ -215,6 +223,13 @@ Item{
             Text{
                 id:nametext
                 text: model.name
+                Layout.preferredWidth: 120
+                elide: Text.ElideRight
+                ToolTip.visible: nameHover.hovered && model.description.length > 0
+                ToolTip.text: model.description
+                HoverHandler {
+                    id: nameHover
+                }
             }
             Rectangle{
                 Layout.fillHeight: true
@@ -225,6 +240,9 @@ Item{
                 id:fileText
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
+                placeholderText: model.description
+                ToolTip.visible: hovered && model.description.length > 0
+                ToolTip.text: model.description
                 
                 Component.onCompleted: {
                     fileText.text = model.content
