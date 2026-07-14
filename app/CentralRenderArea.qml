@@ -80,79 +80,79 @@ Page {
             anchors.margins: 3
             query: QModelManager.query
 
-            function syncTreeModel(modelId, visible) {
-                let tm = App.registry.treeModel
-                if (!tm) return
-                let idx = tm.findIndexByNodeId(modelId, 0)
-                if (idx && idx.valid)
-                    tm.setVisibility(idx, visible)
-            }
-
             function doHideSelected() {
-                let modelId = App.selection.activeModelId
-                syncTreeModel(modelId, false)
+                let compId = App.selection.activeComponentId
+                let tm = App.registry.treeModel
+                if (tm && compId >= 0) {
+                    let idx = tm.findIndexByNodeId(compId, 1)
+                    if (idx && idx.valid)
+                        tm.setVisibility(idx, false)
+                }
                 myItem.hideSelected()
             }
 
             function doIsolateSelected() {
-                let modelId = App.selection.activeModelId
+                let compId = App.selection.activeComponentId
                 let models = QModelManager.query.listModels()
                 let tm = App.registry.treeModel
                 if (tm) {
                     for (let i = 0; i < models.length; i++) {
                         let mid = models[i].model_id
-                        let idx = tm.findIndexByNodeId(mid, 0)
-                        if (idx && idx.valid)
-                            tm.setVisibility(idx, mid === modelId)
+                        let comps = QModelManager.query.getComponentsSummary(mid)
+                        for (let j = 0; j < comps.length; j++) {
+                            let cid = comps[j].component_id
+                            let visible = (cid === compId)
+                            let idx = tm.findIndexByNodeId(cid, 1)
+                            if (idx && idx.valid)
+                                tm.setVisibility(idx, visible)
+                        }
                     }
                 }
                 myItem.setIsolateComponent()
             }
 
             function doShowSelected() {
-                let modelId = App.selection.activeModelId
-                syncTreeModel(modelId, true)
+                let compId = App.selection.activeComponentId
+                let tm = App.registry.treeModel
+                if (tm && compId >= 0) {
+                    let idx = tm.findIndexByNodeId(compId, 1)
+                    if (idx && idx.valid)
+                        tm.setVisibility(idx, true)
+                }
                 myItem.showSelected()
             }
 
             function doHideAll() {
-                let models = QModelManager.query.listModels()
                 let tm = App.registry.treeModel
                 if (tm) {
-                    for (let i = 0; i < models.length; i++) {
-                        let mid = models[i].model_id
-                        let idx = tm.findIndexByNodeId(mid, 0)
-                        if (idx && idx.valid)
-                            tm.setVisibility(idx, false)
-                    }
+                    let modelCount = tm.rowCount()
+                    for (let mi = 0; mi < modelCount; mi++)
+                        tm.setVisibility(tm.index(mi, 0), false)
                 }
                 myItem.hideAll()
             }
 
             function doShowAll() {
-                let models = QModelManager.query.listModels()
                 let tm = App.registry.treeModel
                 if (tm) {
-                    for (let i = 0; i < models.length; i++) {
-                        let mid = models[i].model_id
-                        let idx = tm.findIndexByNodeId(mid, 0)
-                        if (idx && idx.valid)
-                            tm.setVisibility(idx, true)
-                    }
+                    let modelCount = tm.rowCount()
+                    for (let mi = 0; mi < modelCount; mi++)
+                        tm.setVisibility(tm.index(mi, 0), true)
                 }
                 myItem.showAll()
             }
 
             function doReverseDisplayed() {
-                let models = QModelManager.query.listModels()
                 let tm = App.registry.treeModel
                 if (tm) {
-                    for (let i = 0; i < models.length; i++) {
-                        let mid = models[i].model_id
-                        let idx = tm.findIndexByNodeId(mid, 0)
-                        if (idx && idx.valid) {
-                            let isVis = tm.data(idx, tm.IsVisibleRole)
-                            tm.setVisibility(idx, !isVis)
+                    let modelCount = tm.rowCount()
+                    for (let mi = 0; mi < modelCount; mi++) {
+                        let modelIdx = tm.index(mi, 0)
+                        let compCount = tm.rowCount(modelIdx)
+                        for (let ci = 0; ci < compCount; ci++) {
+                            let compIdx = tm.index(ci, 0, modelIdx)
+                            let isVis = tm.data(compIdx, TreeModel.IsVisibleRole)
+                            tm.setVisibility(compIdx, !isVis)
                         }
                     }
                 }
