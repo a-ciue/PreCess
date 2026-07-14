@@ -11,18 +11,14 @@ TetGenLibPlugin/
 ├── TetGenLibPlugin.h          # 插件入口，注册 TetGenLibHandler
 ├── TetGenLibPlugin.json       # 插件元数据（注册到 AlgorithmSystem）
 ├── TetGenLibHandler.h/.cpp    # 算法处理器实现
-├── test/
-│   ├── CMakeLists.txt
-│   └── TestTetGenLibHandler.cpp
-└── third_party/tetgen/        # TetGen 1.6 源码（编译为内部静态库 TetGenInternal）
-    ├── tetgen.h
-    ├── tetgen.cxx
-    ├── predicates.cxx
+└── test/
     ├── CMakeLists.txt
-    ├── LICENSE
-    ├── README.md
-    └── CHANGELOG.md
+    └── TestTetGenLibHandler.cpp
 ```
+
+> TetGen 库不再随插件源码分发，改为通过 `find_package(tetgen)` 消费预编译产物。
+> 依赖构建由项目根目录的 `PreCess-deps.bat` 统一处理，产物安装到
+> `${深度目录}/tetgen1.6.0/`（包含 `include/tetgen.h` 与 `lib/tet.lib`）。
 
 ## 功能
 
@@ -60,34 +56,27 @@ TetGenLibPlugin/
 |--------|-------------------|-------------------------|
 | 调用方式 | `std::system()` 执行外部 `tetgen` 命令 | 直接调用 `tetrahedralize()` 库函数 |
 | 数据交换 | 写出 Medit `.mesh` 临时文件再读回 | 内存直接转换，无临时文件 |
-| 部署依赖 | 需 PATH 中能找到 `tetgen` 可执行文件 | 无外部依赖，源码随插件统一编译 |
+| 部署依赖 | 需 PATH 中能找到 `tetgen` 可执行文件 | 通过 `find_package(tetgen)` 链接预编译静态库 |
 
 `TetGenPlugin` 可继续作为命令行 fallback 或调试对照使用。
 
 ## CMake 集成
 
-TetGen 源码由本插件目录内的 CMake 统一编译为内部静态库 `TetGenInternal`，再通过 `precess_plugin_link_libraries` 链接到插件目标：
+TetGen 由项目根 `PreCess-deps.bat` 预编译到依赖目录，插件通过 `find_package` 消费。
+仓库中的 `cmake/Findtetgen.cmake` 负责在 `CMAKE_PREFIX_PATH` 下定位 TetGen 的头文件与静态库，
+并暴露 imported target `tetgen::tetgen`（已附带 `TETLIBRARY` 编译定义，使 TetGen 以库模式使用）：
 
 ```cmake
-set(TETGEN_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/tetgen")
-
-add_library(TetGenInternal STATIC
-    "${TETGEN_SOURCE_DIR}/tetgen.cxx"
-    "${TETGEN_SOURCE_DIR}/predicates.cxx"
-)
-target_compile_definitions(TetGenInternal PUBLIC TETLIBRARY)
-target_include_directories(TetGenInternal PUBLIC "${TETGEN_SOURCE_DIR}")
+find_package(tetgen REQUIRED)
 
 precess_add_algo_plugin(TetGenLibPlugin
     SOURCES "TetGenLibHandler.cpp"
     PLUGIN_H "TetGenLibPlugin.h"
 )
-precess_plugin_link_libraries(TetGenLibPlugin TetGenInternal)
+precess_plugin_link_libraries(TetGenLibPlugin tetgen::tetgen)
 
 add_subdirectory(test)
 ```
-
-使用 `TETLIBRARY` 编译定义使 TetGen 以库模式编译（禁用 `main()` 入口）。
 
 ## 已知限制
 
