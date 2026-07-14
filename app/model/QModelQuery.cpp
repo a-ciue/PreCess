@@ -12,6 +12,47 @@
 #include <TopoDS_Shape.hxx>
 #include <spdlog/spdlog.h>
 
+namespace {
+
+// 将一个属性表追加为 QML 可直接使用的属性渲染条目。
+void appendAttributeInfo(
+    QVariantList& out,
+    const std::map<std::string, std::vector<double>>& attributes,
+    Element::Type type,
+    const QString& type_name,
+    int attr_type,
+    size_t tuple_count)
+{
+    for (const auto& [name, values] : attributes) {
+        const int component_count = tuple_count > 0 && values.size() % tuple_count == 0
+            ? static_cast<int>(values.size() / tuple_count)
+            : 0;
+
+        // 前端只展示原始名称，实体类型和分量数由相邻字段单独展示。
+        QString display_name = QString::fromStdString(name);
+        if (display_name.startsWith("v_") || display_name.startsWith("e_")
+            || display_name.startsWith("f_") || display_name.startsWith("s_"))
+            display_name.remove(0, 2);
+        if (component_count > 0) {
+            const QString component_suffix = "_" + QString::number(component_count);
+            if (display_name.endsWith(component_suffix))
+                display_name.chop(component_suffix.size());
+        }
+
+        QVariantMap item;
+        item["name"] = QString::fromStdString(name);
+        item["displayName"] = display_name;
+        item["type"] = static_cast<int>(type);
+        item["typeName"] = type_name;
+        item["attrType"] = attr_type;
+        item["renderable"] = type != Element::Type::Edge;
+        item["componentCount"] = component_count;
+        out.append(item);
+    }
+}
+
+}
+
 QModelQuery::QModelQuery(ModelLayer* mgr, QObject* parent)
         : QObject(parent), m_manager(mgr) {
 }
@@ -179,6 +220,15 @@ QString QModelQuery::getModelName(Index model_id) const
     return QString::fromLocal8Bit(model->model_name_);
 }
 
+QString QModelQuery::getComponentName(Index component_id) const
+{
+    ComponentData* component = m_manager->findComponent(component_id);
+    if (!component) {
+        return QString();
+    }
+    return QString::fromLocal8Bit(component->name);
+}
+
 Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
 {
     QStringList attri_list;
@@ -253,6 +303,31 @@ Q_INVOKABLE QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) 
         spdlog::info("type_list.size(): {}", type_list.size());
     }
     return type_list;
+}
+
+QVariantList QModelQuery::getComponentAttriInfo(Index component_id) const
+{
+    QVariantList out;
+    ComponentData* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->mesh) {
+        return out;
+    }
+
+    const MeshData& mesh = *comp->mesh;
+    const size_t vertex_count = static_cast<size_t>(mesh.vertex_count_);
+    const size_t edge_count = mesh.edge_vertices_.size() / 2;
+    const size_t face_count = mesh.face_vertices_offset_.empty()
+        ? 0
+        : mesh.face_vertices_offset_.size() - 1;
+    const size_t solid_count = mesh.solid_vertices_offset_.empty()
+        ? 0
+        : mesh.solid_vertices_offset_.size() - 1;
+
+    appendAttributeInfo(out, mesh.vertex_attributes_, Element::Type::Vertex, "点", 0, vertex_count);
+    appendAttributeInfo(out, mesh.edge_attributes_, Element::Type::Edge, "边", 1, edge_count);
+    appendAttributeInfo(out, mesh.face_attributes_, Element::Type::Face, "面", 2, face_count);
+    appendAttributeInfo(out, mesh.solid_attributes_, Element::Type::Solid, "体", 3, solid_count);
+    return out;
 }
 
 QVariantList QModelQuery::listModels() const

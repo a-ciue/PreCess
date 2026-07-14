@@ -33,8 +33,9 @@ target_link_libraries(vtkPart
         VTK::InteractionStyle VTK::FiltersGeometry VTK::FiltersExtraction
         VTK::FiltersSources
         VTK::FiltersTexture
+        VTK::RenderingAnnotation
 )
-vtk_module_autoinit(TARGETS vtkPart MODULES VTK::InteractionStyle VTK::FiltersGeometry VTK::FiltersExtraction VTK::FiltersSources VTK::FiltersTexture)
+vtk_module_autoinit(TARGETS vtkPart MODULES VTK::InteractionStyle VTK::FiltersGeometry VTK::FiltersExtraction VTK::FiltersSources VTK::FiltersTexture VTK::RenderingAnnotation)
 
 qt_add_qml_module(renderQml
     URI app.render

@@ -69,7 +69,7 @@ std::unordered_map<std::string, std::vector<double>> parseVertexStringAttributes
 
         std::vector<double> values;
         if (parseDoubleList(value_text, values))
-            result[key + "_" + std::to_string(values.size())] = std::move(values);
+            result["v_" + key + "_" + std::to_string(values.size())] = std::move(values);
     }
     return result;
 }

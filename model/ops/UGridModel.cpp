@@ -28,6 +28,7 @@ void UGridModel::update(MeshData& mesh_data)
     // 记录原始 VTK cell id，用于按单元维度拆分 CELL_DATA。
     std::vector<vtkIdType> solid_cell_ids;
     std::vector<vtkIdType> face_cell_ids;
+    std::vector<vtkIdType> edge_cell_ids;
 
     // cells
     for (vtkIdType cell_id = 0; cell_id < mesh_->GetNumberOfCells(); ++cell_id) {
@@ -76,6 +77,8 @@ void UGridModel::update(MeshData& mesh_data)
                 for (vtkIdType i = 0; i < npts - 1; ++i) {
                     mesh_data.edge_vertices_.push_back(static_cast<Index>(cell->GetPointId(i)));
                     mesh_data.edge_vertices_.push_back(static_cast<Index>(cell->GetPointId(i + 1)));
+                    // 一条 VTK 折线会拆成多条 MeshData 边，重复记录其原始 cell id。
+                    edge_cell_ids.push_back(cell_id);
                 }
             }
         }
@@ -105,7 +108,7 @@ void UGridModel::update(MeshData& mesh_data)
             array->GetTuple(j, tuple.data());
             std::copy(tuple.begin(), tuple.end(), values.begin() + j * num_components);
         }
-        mesh_data.vertex_attributes_[array_name] = std::move(values);
+        mesh_data.vertex_attributes_["v_" + array_name] = std::move(values);
     }
 
     // 处理cell属性
@@ -133,7 +136,7 @@ void UGridModel::update(MeshData& mesh_data)
                 array->GetTuple(solid_cell_ids[j], tuple.data());
                 std::copy(tuple.begin(), tuple.end(), values.begin() + j * num_components);
             }
-            mesh_data.solid_attributes_[array_name] = std::move(values);
+            mesh_data.solid_attributes_["s_" + array_name] = std::move(values);
         }
         
         if (!face_cell_ids.empty()) {
@@ -143,18 +146,31 @@ void UGridModel::update(MeshData& mesh_data)
                 array->GetTuple(face_cell_ids[j], tuple.data());
                 std::copy(tuple.begin(), tuple.end(), values.begin() + j * num_components);
             }
-            mesh_data.face_attributes_[array_name] = std::move(values);
+            mesh_data.face_attributes_["f_" + array_name] = std::move(values);
+        }
+
+        if (!edge_cell_ids.empty()) {
+            std::vector<double> values(edge_cell_ids.size() * num_components);
+            std::vector<double> tuple(num_components);
+            for (size_t j = 0; j < edge_cell_ids.size(); ++j) {
+                array->GetTuple(edge_cell_ids[j], tuple.data());
+                std::copy(tuple.begin(), tuple.end(), values.begin() + j * num_components);
+            }
+            mesh_data.edge_attributes_["e_" + array_name] = std::move(values);
         }
     }
     // 输出属性信息进行验证
-    // 遍历mesh_data的vertex_attributes
     for (const auto& [name, values] : mesh_data.vertex_attributes_) {
         spdlog::info("Vertex attribute: {}", name);
     }
-
-    // 遍历mesh_data的face_attributes
+    for (const auto& [name, values] : mesh_data.edge_attributes_) {
+        spdlog::info("edge attribute: {}", name);
+    }
     for (const auto& [name, values] : mesh_data.face_attributes_) {
         spdlog::info("Face attribute: {}", name);
+    }
+    for (const auto& [name, values] : mesh_data.solid_attributes_) {
+        spdlog::info("solid attribute: {}", name);
     }
 }
 

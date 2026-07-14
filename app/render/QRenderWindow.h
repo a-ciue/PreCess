@@ -131,20 +131,20 @@ public:
      *
      * 在控制台中调用示例：
      * QModelManager.query.getModelAttriName(0)
-     * App.registry.renderWindow.setAttriMode("face_pressure_1", 1, {})
-     * App.registry.renderWindow.setAttriMode("face_color_3", 0, {})
-     * App.registry.renderWindow.setAttriMode("face_vectors_3", 3, {})
-     * App.registry.renderWindow.setAttriMode("vertex_vector_3", 3, { "glyph_scale": 0.5 })
-     * App.registry.renderWindow.setAttriMode("vertex_uv_2", 2, { "texture_path": "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp" })
-     * App.registry.renderWindow.setAttriMode("vertex_scalars_1", 1, {})
-     * App.registry.renderWindow.setAttriMode("vertex_scalars_1", 1, { "scalar_range": [2, 6] })
+     * App.registry.renderWindow.setAttriMode("f_pressure_1", 1, {})
+     * App.registry.renderWindow.setAttriMode("f_color_3", 0, {})
+     * App.registry.renderWindow.setAttriMode("f_vectors_3", 3, {})
+     * App.registry.renderWindow.setAttriMode("v_vector_3", 3, { "glyph_scale": 0.5 })
+     * App.registry.renderWindow.setAttriMode("v_uv_2", 2, { "texture_path": "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp" })
+     * App.registry.renderWindow.setAttriMode("v_scalars_1", 1, {})
+     * App.registry.renderWindow.setAttriMode("v_scalars_1", 1, { "scalar_range": [2, 6] })
      * // blow.vtk 示例：
-     * App.registry.renderWindow.setAttriMode("displacement9_3", 3, {})
-     * App.registry.renderWindow.setAttriMode("displacement9_3", 3, { "glyph_scale": 0.5 })
-     * App.registry.renderWindow.setAttriMode("thickness9_1", 1, {})
-     * App.registry.renderWindow.setAttriMode("thickness9_1", 1, { "scalar_range": [0, 2] })
+     * App.registry.renderWindow.setAttriMode("v_displacement9_3", 3, {})
+     * App.registry.renderWindow.setAttriMode("v_displacement9_3", 3, { "glyph_scale": 0.5 })
+     * App.registry.renderWindow.setAttriMode("v_thickness9_1", 1, {})
+     * App.registry.renderWindow.setAttriMode("v_thickness9_1", 1, { "scalar_range": [0, 2] })
      * 
-     * @param attr_name 属性名 后缀_3表示属性分量为3
+     * @param attr_name 属性名，前缀 v_/e_/f_/s_ 表示点/边/面/体，后缀 _3 表示属性分量为 3
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
      * @param args 其他参数（可选），如：
      *   "texture_path": 贴图路径（string）

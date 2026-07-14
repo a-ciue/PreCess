@@ -113,6 +113,7 @@ double averageFaceEdgeLength(vtkPoints& points, const std::vector<Index>& face_c
 
     return valid_count > 0 ? total_length / valid_count : 0.0;
 }
+
 }
 
 AttributeOperator::AttributeOperator(MeshActor* mesh_actor)

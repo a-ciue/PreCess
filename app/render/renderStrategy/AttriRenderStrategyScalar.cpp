@@ -4,7 +4,56 @@
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkScalarBarActor.h>
+#include <vtkScalarsToColors.h>
 #include <spdlog/spdlog.h>
+
+namespace {
+// 移除属性类型前缀和分量后缀，只用于颜色表标题显示。
+std::string scalarBarTitle(const std::string& attr_name)
+{
+    std::string title = attr_name;
+    if (title.rfind("v_", 0) == 0 || title.rfind("e_", 0) == 0
+        || title.rfind("f_", 0) == 0 || title.rfind("s_", 0) == 0) {
+        title.erase(0, 2);
+    }
+    const size_t suffix_pos = title.find_last_of('_');
+    if (suffix_pos != std::string::npos && suffix_pos + 1 < title.size()) {
+        bool numeric_suffix = true;
+        for (size_t i = suffix_pos + 1; i < title.size(); ++i) {
+            if (title[i] < '0' || title[i] > '9') {
+                numeric_suffix = false;
+                break;
+            }
+        }
+        if (numeric_suffix)
+            title.erase(suffix_pos);
+    }
+    return title;
+}
+}
+
+AttriRenderStrategyScalar::AttriRenderStrategyScalar(vtkScalarBarActor* scalar_bar)
+    : scalar_bar_(scalar_bar)
+{
+}
+
+void AttriRenderStrategyScalar::showScalarBar(
+    vtkPolyDataMapper* mapper,
+    const std::string& title,
+    const double range[2])
+{
+    if (!scalar_bar_ || !mapper)
+        return;
+
+    vtkScalarsToColors* lookup_table = mapper->GetLookupTable();
+    lookup_table->SetRange(range);
+    lookup_table->Build();
+    scalar_bar_->SetLookupTable(lookup_table);
+    scalar_bar_->SetTitle(scalarBarTitle(title).c_str());
+    scalar_bar_->SetVisibility(true);
+}
+
 void AttriRenderStrategyScalar::render(
     AttributeOperator op,
     const std::string& attr_name,
@@ -49,6 +98,8 @@ void AttriRenderStrategyScalar::render(
         solid_mapper->SetScalarVisibility(1);
         solid_mapper->SetScalarRange(range[0], range[1]);
         solid_mapper->SetColorModeToMapScalars();
+        showScalarBar(face_mapper, attr_name, range);
+        solid_mapper->SetLookupTable(face_mapper->GetLookupTable());
         return;
     }
     // 判断是否是面属性
@@ -64,6 +115,7 @@ void AttriRenderStrategyScalar::render(
         face_mapper->SetScalarModeToUseCellData();
         face_mapper->SetScalarVisibility(1);
         face_mapper->SetColorModeToMapScalars(); // 使用 colormap
+        showScalarBar(face_mapper, attr_name, range);
         return;
     }
     // 判断是否是体属性
@@ -79,6 +131,7 @@ void AttriRenderStrategyScalar::render(
         solid_mapper->SetScalarModeToUseCellData();
         solid_mapper->SetScalarVisibility(1);
         solid_mapper->SetColorModeToMapScalars();
+        showScalarBar(solid_mapper, attr_name, range);
         return;
     }
 

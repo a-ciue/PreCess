@@ -37,7 +37,11 @@ public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    MeshActor(vtkRenderer* renderer, vtkPoints* global_points, bool is_edge_render = true, ModelRenderMode render_mode = ModelRenderMode::Face);
+    MeshActor(
+        vtkRenderer* renderer,
+        vtkPoints* global_points,
+        bool is_edge_render = true,
+        ModelRenderMode render_mode = ModelRenderMode::Face);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
