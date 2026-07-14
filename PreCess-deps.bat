@@ -94,6 +94,7 @@ git clone --single-branch --depth 1 --branch V8_0_0 https://github.com/Open-Casc
 git clone --single-branch --depth 1 --branch v1.16.0 https://github.com/gabime/spdlog.git
 git clone --single-branch --depth 1 --branch v3.11.0 https://github.com/catchorg/Catch2.git
 git clone --single-branch --depth 1 --branch v7.80 https://github.com/LoicMarechal/libMeshb.git
+git clone --single-branch --depth 1 --branch v1.6.0 https://github.com/TetGen/TetGen.git tetgen
 curl -L -o OCCT/3rdparty-vc14-64-temp.zip --connect-timeout 30 https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip
 
 if not defined qtPath (
@@ -170,6 +171,24 @@ pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
 cmake --build . --target install --config Debug
 if "!buildRelease!"=="1" cmake --build . --target install --config Release
+
+REM Clone and build tetgen 1.6.0
+pushd "%sourcePath%/tetgen"
+REM tetgen upstream has no CMakeLists.txt, write one with install rules
+echo cmake_minimum_required(VERSION 3.5^)> CMakeLists.txt
+echo project(tetgen CXX)>> CMakeLists.txt
+echo add_library(tet STATIC tetgen.cxx predicates.cxx^)>> CMakeLists.txt
+echo target_compile_definitions(tet PUBLIC TETLIBRARY^)>> CMakeLists.txt
+echo target_include_directories(tet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}^)>> CMakeLists.txt
+echo install(TARGETS tet ARCHIVE DESTINATION lib^)>> CMakeLists.txt
+echo install(FILES tetgen.h DESTINATION include^)>> CMakeLists.txt
+cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i -DCMAKE_DEBUG_POSTFIX=d "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\tetgen1.6.0" -DCMAKE_INSTALL_MESSAGE=LAZY
+pushd build
+if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
+cmake --build . --target install --config Debug
+if "!buildRelease!"=="1" cmake --build . --target install --config Release
+popd
+popd
 
 echo 处理完成！
 
