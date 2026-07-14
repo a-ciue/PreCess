@@ -7,7 +7,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
-import QtCore
 
 import app.core
 import app.model
@@ -18,41 +17,6 @@ Item{
     property var parameters: []
 
     readonly property var activeOp: App.activeOperation
-
-    Settings {
-        id: parameterSettings
-        category: "AlgorithmParameters"
-        property string values: "{}"
-    }
-
-    function parameterSettingsObject() {
-        try {
-            return JSON.parse(parameterSettings.values || "{}")
-        } catch (e) {
-            return {}
-        }
-    }
-
-    function parameterKey(index, argType) {
-        let algorithmName = root.activeOp && root.activeOp.info ? root.activeOp.info.name : ""
-        let parameterName = argType && argType.name ? argType.name : index
-        return algorithmName + "::" + index + "::" + parameterName
-    }
-
-    function loadParameter(index, argType, defaultValue) {
-        let values = parameterSettingsObject()
-        let key = parameterKey(index, argType)
-        return Object.prototype.hasOwnProperty.call(values, key) ? values[key] : defaultValue
-    }
-
-    function saveParameter(index, argType, value) {
-        if (!root.activeOp || !root.activeOp.info || value === undefined || value === null) {
-            return
-        }
-        let values = parameterSettingsObject()
-        values[parameterKey(index, argType)] = value
-        parameterSettings.values = JSON.stringify(values)
-    }
 
     onActiveOpChanged: {
         parameters = []
@@ -147,7 +111,6 @@ Item{
                 model: comboModel
                 onCurrentIndexChanged: {
                     root.parameters[index] = value = currentIndex
-                    root.saveParameter(index, model, currentIndex)
                 }
             }
 
@@ -163,13 +126,8 @@ Item{
                     if (isNaN(defaultIndex) || defaultIndex < 0 || defaultIndex >= items.length) {
                         defaultIndex = 0
                     }
-                    let savedIndex = root.loadParameter(index, model, defaultIndex)
-                    savedIndex = parseInt(savedIndex)
-                    if (isNaN(savedIndex) || savedIndex < 0 || savedIndex >= items.length) {
-                        savedIndex = defaultIndex
-                    }
-                    parameterComboBox.currentIndex = savedIndex
-                    root.parameters[index] = value = savedIndex
+                    parameterComboBox.currentIndex = defaultIndex
+                    root.parameters[index] = value = defaultIndex
                 }
             }
         }
@@ -191,20 +149,9 @@ Item{
             TextField {
                 id:parameterTextInput
                 Layout.fillWidth: parent.width
-                text: root.loadParameter(index, model, model.content)
-                Component.onCompleted: {
-                    let value = parseFloat(text)
-                    root.parameters[index] = value
-                    if (!isNaN(value)) {
-                        root.saveParameter(index, model, value)
-                    }
-                }
+                text: model.content
                 onTextChanged:{
-                    let value = parseFloat(text)
-                    root.parameters[index] = value
-                    if (!isNaN(value)) {
-                        root.saveParameter(index, model, value)
-                    }
+                    root.parameters[index] = parseFloat(text)
                 }
             }
         }
@@ -229,12 +176,11 @@ Item{
                 Layout.fillWidth: parent.width
 
                 Component.onCompleted: {
-                    fileText.text = root.loadParameter(index, model, model.content)
+                    fileText.text = model.content
                     root.parameters[index] = fileText.text
                 }
                 onEditingFinished: {
                     root.parameters[index] = fileText.text
-                    root.saveParameter(index, model, fileText.text)
                 }
             }
             Button{
@@ -248,7 +194,6 @@ Item{
                 onAccepted:{
                     fileText.text = urlToPath(selectedFile)
                     root.parameters[index] = fileText.text
-                    root.saveParameter(index, model, fileText.text)
                 }
 
                 function urlToPath(url) {
@@ -296,12 +241,11 @@ Item{
                 ToolTip.text: model.description
                 
                 Component.onCompleted: {
-                    fileText.text = root.loadParameter(index, model, model.content)
+                    fileText.text = model.content
                     root.parameters[index] = fileText.text
                 }
                 onEditingFinished: {
                     root.parameters[index] = fileText.text
-                    root.saveParameter(index, model, fileText.text)
                 }
             }
         }
