@@ -164,7 +164,7 @@ MeshData MakeMeshDataWithAtri()
 
         vertex_scalar.push_back(static_cast<double>(i));
     }
-    data.vertex_attributes_["VertexScalar"] = vertex_scalar; // 顶点标量属性
+    data.vertex_attributes_["v_scalar_1"] = vertex_scalar; // 顶点标量属性
     // 输出点一元属性
     for (double var : vertex_scalar) {
         std::cout << "vertex_scalar" << var << std::endl;
@@ -184,7 +184,7 @@ MeshData MakeMeshDataWithAtri()
         }
         face_scalar.push_back((sum_x + sum_y * (sum_z + i)) / (end - start) + i);
     }
-    data.face_attributes_["FaceScalar"] = face_scalar; // 面标量属性
+    data.face_attributes_["f_scalar_1"] = face_scalar; // 面标量属性
     // 输出面一元属性
     for (double var : face_scalar) {
         std::cout << "faceScalar: " << var << std::endl;
@@ -213,7 +213,7 @@ MeshData MakeMeshDataWithAtri()
             break; // 紫
         }
     }
-    data.vertex_attributes_["vertex_color_3"] = vertex_color_3;
+    data.vertex_attributes_["v_color_3"] = vertex_color_3;
 
     // 面颜色 (三元组)
     // std::cout << "num_faces" << num_faces << std::endl;
@@ -237,7 +237,7 @@ MeshData MakeMeshDataWithAtri()
             break; // 紫
         }
     }
-    data.face_attributes_["face_color_3"] = face_color_3;
+    data.face_attributes_["f_color_3"] = face_color_3;
     // 顶点向量属性1 press (三元组)
     std::array<std::array<double, 3>, 8> p_vector = { { { { 0, 0, 1 } },
         { { 1, 0, 0 } },
@@ -254,7 +254,7 @@ MeshData MakeMeshDataWithAtri()
         vertex_vector.push_back(vec[1]);
         vertex_vector.push_back(vec[2]);
     }
-    data.vertex_attributes_["vertex_press_3"] = vertex_vector;
+    data.vertex_attributes_["v_press_3"] = vertex_vector;
     // 顶点向量属性2 normal (三元组)
     std::array<std::array<double, 3>, 8> n_vector = { { { { 0, 0, 1 } },
         { { -3, -2, 0 } },
@@ -271,7 +271,7 @@ MeshData MakeMeshDataWithAtri()
         vertex_vector2.push_back(vec[1]);
         vertex_vector2.push_back(vec[2]);
     }
-    data.vertex_attributes_["vertex_normal_3"] = vertex_vector2;
+    data.vertex_attributes_["v_normal_3"] = vertex_vector2;
 
     // 面向量属性 (三元组)
     std::array<std::array<double, 3>, 5> f_vector = { { { { 0, 0, 1 } },
@@ -286,7 +286,7 @@ MeshData MakeMeshDataWithAtri()
         face_vector.push_back(vec[1]);
         face_vector.push_back(vec[2]);
     }
-    data.face_attributes_["face_normal_3"] = face_vector;
+    data.face_attributes_["f_normal_3"] = face_vector;
     return data;
 }
 
@@ -415,7 +415,7 @@ MeshData MakeMeshDataWithUV()
         uv.push_back(u);
         uv.push_back(v);
     }
-    data.vertex_attributes_["vertex_uv_2"] = uv;
+    data.vertex_attributes_["v_uv_2"] = uv;
     // ===== UV添加完成 =====
 
     return data;
