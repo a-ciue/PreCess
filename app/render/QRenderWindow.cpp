@@ -9,6 +9,7 @@
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
 
+#include <algorithm>
 #include <spdlog/spdlog.h>
 #include <vtkDoubleArray.h>
 #include <vtkCallbackCommand.h>
@@ -131,6 +132,10 @@ bool QRenderWindow::event(QEvent* ev)
 
         setClick();
         auto e = static_cast<QMouseEvent*>(ev);
+        if (e->button() == Qt::RightButton) {
+            emit rightClicked();
+            return QQuickVTKItem::event(ev);
+        }
         emit clicked();
         return QQuickVTKItem::event(ev);
         break;
@@ -477,6 +482,86 @@ void QRenderWindow::cancelAttri()
                 cur_component_id_);
         }
         spdlog::info("--------cancelAttri-----------");
+    });
+}
+
+void QRenderWindow::hideSelected()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->hasComponent(cur_component_id_))
+            vtk->mesh_actor_manager_->setVisibility(cur_component_id_, false);
+        if (vtk->geometry_actor_manager_ && vtk->geometry_actor_manager_->hasComponent(cur_component_id_))
+            vtk->geometry_actor_manager_->setVisibility(cur_component_id_, false);
+    });
+}
+
+void QRenderWindow::setIsolateComponent()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        auto meshIds = vtk->mesh_actor_manager_->getAllComponentIds();
+        for (Index cid : meshIds)
+            vtk->mesh_actor_manager_->setVisibility(cid, cid == cur_component_id_);
+
+        auto geomIds = vtk->geometry_actor_manager_->getAllComponentIds();
+        for (Index cid : geomIds)
+            vtk->geometry_actor_manager_->setVisibility(cid, cid == cur_component_id_);
+    });
+}
+
+void QRenderWindow::showSelected()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->hasComponent(cur_component_id_))
+            vtk->mesh_actor_manager_->setVisibility(cur_component_id_, true);
+        if (vtk->geometry_actor_manager_ && vtk->geometry_actor_manager_->hasComponent(cur_component_id_))
+            vtk->geometry_actor_manager_->setVisibility(cur_component_id_, true);
+    });
+}
+
+void QRenderWindow::hideAll()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        auto meshIds = vtk->mesh_actor_manager_->getAllComponentIds();
+        auto geomIds = vtk->geometry_actor_manager_->getAllComponentIds();
+        for (Index cid : meshIds)
+            vtk->mesh_actor_manager_->setVisibility(cid, false);
+        for (Index cid : geomIds)
+            vtk->geometry_actor_manager_->setVisibility(cid, false);
+    });
+}
+
+void QRenderWindow::showAll()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        auto meshIds = vtk->mesh_actor_manager_->getAllComponentIds();
+        auto geomIds = vtk->geometry_actor_manager_->getAllComponentIds();
+        for (Index cid : meshIds)
+            vtk->mesh_actor_manager_->setVisibility(cid, true);
+        for (Index cid : geomIds)
+            vtk->geometry_actor_manager_->setVisibility(cid, true);
+    });
+}
+
+void QRenderWindow::reverseDisplayed()
+{
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        auto meshIds = vtk->mesh_actor_manager_->getAllComponentIds();
+        auto geomIds = vtk->geometry_actor_manager_->getAllComponentIds();
+        for (Index cid : meshIds) {
+            bool curVis = vtk->mesh_actor_manager_->getVisibility(cid);
+            vtk->mesh_actor_manager_->setVisibility(cid, !curVis);
+        }
+        for (Index cid : geomIds) {
+            bool curVis = vtk->geometry_actor_manager_->getVisibility(cid);
+            vtk->geometry_actor_manager_->setVisibility(cid, !curVis);
+        }
     });
 }
 

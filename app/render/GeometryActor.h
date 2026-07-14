@@ -24,6 +24,7 @@ public:
 
     GeometryRenderMode getGeometryRenderMode();
     bool getIsEdgeRender();
+    bool isVisible() const;
 
     void loadShape(const GeometryDataVtk& geometry_data);
 

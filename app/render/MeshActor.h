@@ -56,6 +56,7 @@ public:
     void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
+    bool isVisible() const;
 
     ModelRenderMode getMeshRenderMode();
     /**

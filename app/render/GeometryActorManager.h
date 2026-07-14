@@ -19,7 +19,9 @@ public:
     std::shared_ptr<GeometryActor> getComponentActor(Index component_id) const;
     GeometryRenderMode getGeometryRenderMode(Index component_id);
     bool getIsEdgeRender(Index component_id);
+    bool getVisibility(Index component_id) const;
     bool hasComponent(Index component_id) const;
+    std::vector<Index> getAllComponentIds() const;
 
     void deleteComponent(Index component_id);
     void loadGeometry(const GeometryDataVtk& geometry_data);

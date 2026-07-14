@@ -80,6 +80,89 @@ Page {
             anchors.margins: 3
             query: QModelManager.query
 
+            function syncTreeModel(modelId, visible) {
+                let tm = App.registry.treeModel
+                if (!tm) return
+                let idx = tm.findIndexByNodeId(modelId, 0)
+                if (idx && idx.valid)
+                    tm.setVisibility(idx, visible)
+            }
+
+            function doHideSelected() {
+                let modelId = App.selection.activeModelId
+                syncTreeModel(modelId, false)
+                myItem.hideSelected()
+            }
+
+            function doIsolateSelected() {
+                let modelId = App.selection.activeModelId
+                let models = QModelManager.query.listModels()
+                let tm = App.registry.treeModel
+                if (tm) {
+                    for (let i = 0; i < models.length; i++) {
+                        let mid = models[i].model_id
+                        let idx = tm.findIndexByNodeId(mid, 0)
+                        if (idx && idx.valid)
+                            tm.setVisibility(idx, mid === modelId)
+                    }
+                }
+                myItem.setIsolateComponent()
+            }
+
+            function doShowSelected() {
+                let modelId = App.selection.activeModelId
+                syncTreeModel(modelId, true)
+                myItem.showSelected()
+            }
+
+            function doHideAll() {
+                let models = QModelManager.query.listModels()
+                let tm = App.registry.treeModel
+                if (tm) {
+                    for (let i = 0; i < models.length; i++) {
+                        let mid = models[i].model_id
+                        let idx = tm.findIndexByNodeId(mid, 0)
+                        if (idx && idx.valid)
+                            tm.setVisibility(idx, false)
+                    }
+                }
+                myItem.hideAll()
+            }
+
+            function doShowAll() {
+                let models = QModelManager.query.listModels()
+                let tm = App.registry.treeModel
+                if (tm) {
+                    for (let i = 0; i < models.length; i++) {
+                        let mid = models[i].model_id
+                        let idx = tm.findIndexByNodeId(mid, 0)
+                        if (idx && idx.valid)
+                            tm.setVisibility(idx, true)
+                    }
+                }
+                myItem.showAll()
+            }
+
+            function doReverseDisplayed() {
+                let models = QModelManager.query.listModels()
+                let tm = App.registry.treeModel
+                if (tm) {
+                    for (let i = 0; i < models.length; i++) {
+                        let mid = models[i].model_id
+                        let idx = tm.findIndexByNodeId(mid, 0)
+                        if (idx && idx.valid) {
+                            let isVis = tm.data(idx, tm.IsVisibleRole)
+                            tm.setVisibility(idx, !isVis)
+                        }
+                    }
+                }
+                myItem.reverseDisplayed()
+            }
+
+            onRightClicked: {
+                viewportMenu.popup()
+            }
+
             Connections {
                 target: QModelManager.observer
                 function onModelAdded(model_id) { myItem.onModelChanged(model_id) }
@@ -120,6 +203,111 @@ Page {
 
             onConfirmButtonClicked: {
                 selector.selection = myItem.selectedIDs
+            }
+        }
+
+        Menu {
+            id: viewportMenu
+
+            implicitWidth: 140
+            width: implicitWidth
+            height: implicitHeight
+
+            padding: 0
+            topPadding: 0
+            bottomPadding: 0
+            leftPadding: 0
+            rightPadding: 0
+
+            property int textLeftInset: 18
+            property int textRightInset: 12
+
+            background: Rectangle {
+                anchors.fill: parent
+                color: "#ffffff"
+                border.color: "#d0d0d0"
+                border.width: 1
+                radius: 4
+            }
+
+            component StyledMenuItem: MenuItem {
+                id: control
+                property bool shown: true
+
+                visible: shown
+                enabled: shown
+
+                implicitHeight: shown ? 30 : 0
+                height: implicitHeight
+
+                width: viewportMenu.width
+                implicitWidth: viewportMenu.width
+
+                background: Rectangle {
+                    anchors.fill: parent
+                    color: control.hovered ? "#f0f0f0" : "transparent"
+                }
+
+                contentItem: Text {
+                    anchors.fill: parent
+                    anchors.leftMargin: viewportMenu.textLeftInset
+                    anchors.rightMargin: viewportMenu.textRightInset
+
+                    text: control.text
+                    color: control.hovered ? "#1976d2" : "#333333"
+                    font.pixelSize: 12
+                    font.family: "Microsoft YaHei"
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    elide: Text.ElideRight
+                }
+            }
+
+            component StyledSeparator: MenuSeparator {
+                width: viewportMenu.width
+                implicitWidth: viewportMenu.width
+                implicitHeight: 6
+                height: visible ? implicitHeight : 0
+            }
+
+            StyledMenuItem {
+                text: "隐藏"
+                shown: App.selection.activeComponentId >= 0
+                onTriggered: myItem.doHideSelected()
+            }
+
+            StyledMenuItem {
+                text: "隔离"
+                shown: App.selection.activeComponentId >= 0
+                onTriggered: myItem.doIsolateSelected()
+            }
+
+            StyledMenuItem {
+                text: "显示"
+                shown: App.selection.activeComponentId >= 0
+                onTriggered: myItem.doShowSelected()
+            }
+
+            StyledSeparator {
+                visible: App.selection.activeComponentId >= 0
+            }
+
+            StyledMenuItem {
+                text: "全部隐藏"
+                shown: App.selection.activeComponentId < 0
+                onTriggered: myItem.doHideAll()
+            }
+
+            StyledMenuItem {
+                text: "全部显示"
+                shown: App.selection.activeComponentId < 0
+                onTriggered: myItem.doShowAll()
+            }
+
+            StyledMenuItem {
+                text: "反转显示"
+                shown: true
+                onTriggered: myItem.doReverseDisplayed()
             }
         }
     }

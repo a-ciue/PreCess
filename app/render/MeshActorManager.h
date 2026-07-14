@@ -4,6 +4,7 @@
 #include "MeshActor.h"
 #include "MeshActorManagerSelectOp.h"
 #include <unordered_map>
+#include <vector>
 #include <vtkPoints.h>
 #include <vtkScalarBarActor.h>
 
@@ -27,7 +28,9 @@ public:
 
     bool getCount(Index component_id);
     bool getIsEdgeRender(Index component_id);
+    bool getVisibility(Index component_id) const;
     ModelRenderMode getMeshRenderMode(Index component_id);
+    std::vector<Index> getAllComponentIds() const;
 
     void setAttriMode(
         Index component_id,

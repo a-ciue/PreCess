@@ -47,6 +47,25 @@ bool GeometryActorManager::getIsEdgeRender(Index component_id)
     return false;
 }
 
+bool GeometryActorManager::getVisibility(Index component_id) const
+{
+    auto it = component_actors_.find(component_id);
+    if (it != component_actors_.end()) {
+        return it->second->isVisible();
+    }
+    return false;
+}
+
+std::vector<Index> GeometryActorManager::getAllComponentIds() const
+{
+    std::vector<Index> ids;
+    ids.reserve(component_actors_.size());
+    for (const auto& [id, _] : component_actors_) {
+        ids.push_back(id);
+    }
+    return ids;
+}
+
 bool GeometryActorManager::hasComponent(Index component_id) const
 {
     return component_actors_.count(component_id) != 0;

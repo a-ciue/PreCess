@@ -125,6 +125,23 @@ bool MeshActorManager::getIsEdgeRender(Index component_id)
     return false;
 }
 
+bool MeshActorManager::getVisibility(Index component_id) const
+{
+    if (this->component_actors_.count(component_id))
+        return this->component_actors_.at(component_id)->isVisible();
+    return false;
+}
+
+std::vector<Index> MeshActorManager::getAllComponentIds() const
+{
+    std::vector<Index> ids;
+    ids.reserve(component_actors_.size());
+    for (const auto& [id, _] : component_actors_) {
+        ids.push_back(id);
+    }
+    return ids;
+}
+
 ModelRenderMode MeshActorManager::getMeshRenderMode(Index component_id)
 {
     if (this->component_actors_.count(component_id))
