@@ -74,14 +74,12 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classVertexSelectorHighlight-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">VertexSelectorHighlight类 参考</div></div>
 </div><!--header-->
 <div class="contents">
-
-<p>点击并高亮多个顶点  
- <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="SelectorHighlight_8h_source.html">SelectorHighlight.h</a>&gt;</code></p>
 <div class="dynheader">
@@ -89,7 +87,7 @@ $(function() {
 <div class="dyncontent">
 <div class="center"><img src="classVertexSelectorHighlight__inherit__graph.png" border="0" usemap="#aVertexSelectorHighlight_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
 <map name="aVertexSelectorHighlight_inherit__map" id="aVertexSelectorHighlight_inherit__map">
-<area shape="rect" title="点击并高亮多个顶点" alt="" coords="5,79,181,104"/>
+<area shape="rect" title=" " alt="" coords="5,79,181,104"/>
 <area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="26,5,161,31"/>
 <area shape="poly" title=" " alt="" coords="96,44,96,79,91,79,91,44"/>
 </map>
@@ -99,13 +97,13 @@ VertexSelectorHighlight 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classVertexSelectorHighlight__coll__graph.png" border="0" usemap="#aVertexSelectorHighlight_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aVertexSelectorHighlight_coll__map" id="aVertexSelectorHighlight_coll__map">
-<area shape="rect" title="点击并高亮多个顶点" alt="" coords="3064,371,3240,397"/>
-<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="2753,347,2888,373"/>
-<area shape="poly" title=" " alt="" coords="2902,363,3064,375,3063,380,2901,368"/>
-<area shape="rect" href="classMeshActorSelectOpFactory.html" title="MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象" alt="" coords="2723,397,2919,422"/>
-<area shape="poly" title=" " alt="" coords="2932,407,3040,401,3090,394,3090,399,3040,407,2932,413"/>
-<area shape="rect" title=" " alt="" coords="2373,397,2583,422"/>
-<area shape="poly" title=" " alt="" coords="2596,407,2722,407,2722,412,2596,412"/>
+<area shape="rect" title=" " alt="" coords="3007,371,3183,397"/>
+<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="2739,347,2874,373"/>
+<area shape="poly" title=" " alt="" coords="2888,364,3007,374,3006,379,2888,369"/>
+<area shape="rect" href="classMeshActorSelectOp.html" title="MeshActor在选择过程中的操作类，作为临时对象使用" alt="" coords="2732,397,2881,422"/>
+<area shape="poly" title=" " alt="" coords="2895,406,2982,400,3026,394,3027,399,2983,405,2895,411"/>
+<area shape="rect" title=" " alt="" coords="2373,397,2592,422"/>
+<area shape="poly" title=" " alt="" coords="2606,407,2732,407,2732,412,2606,412"/>
 <area shape="rect" href="classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2208,397,2299,422"/>
 <area shape="poly" title=" " alt="" coords="2313,407,2373,407,2373,412,2313,412"/>
 <area shape="rect" title=" " alt="" coords="1812,325,2007,365"/>
@@ -144,34 +142,32 @@ VertexSelectorHighlight 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:a01fa9179afde87d172c8e1f91d7fde8b" id="r_a01fa9179afde87d172c8e1f91d7fde8b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a01fa9179afde87d172c8e1f91d7fde8b">VertexSelectorHighlight</a> (vtkRenderer *renderer, vtkActor *highlight_actor)</td></tr>
-<tr class="memdesc:a01fa9179afde87d172c8e1f91d7fde8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor绑定到renderer，mapper绑定到actor  <br /></td></tr>
+<tr class="memitem:a168f7bc4759680dfc6a5e51249d53b72" id="r_a168f7bc4759680dfc6a5e51249d53b72"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a168f7bc4759680dfc6a5e51249d53b72">VertexSelectorHighlight</a> (vtkRenderer &amp;renderer, vtkPartitionedDataSet &amp;highlight_data, unsigned int partition_id, <a class="el" href="classMeshActorSelectOp.html">MeshActorSelectOp</a> select_op)</td></tr>
 <tr class="memitem:a1ed2ecf6f65f2a1e7243344dd6eff0ae" id="r_a1ed2ecf6f65f2a1e7243344dd6eff0ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ed2ecf6f65f2a1e7243344dd6eff0ae">~VertexSelectorHighlight</a> () override</td></tr>
-<tr class="memdesc:a1ed2ecf6f65f2a1e7243344dd6eff0ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">将actor从renderer中删除  <br /></td></tr>
-<tr class="memitem:a2306cbc12bb5751802e0198b8d2fa76a" id="r_a2306cbc12bb5751802e0198b8d2fa76a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2306cbc12bb5751802e0198b8d2fa76a">get</a> () override</td></tr>
-<tr class="memdesc:a2306cbc12bb5751802e0198b8d2fa76a"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回当前选择的点集  <br /></td></tr>
-<tr class="memitem:a91e7ac3714d5ed149e529715db458fa5" id="r_a91e7ac3714d5ed149e529715db458fa5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91e7ac3714d5ed149e529715db458fa5">clear</a> () override</td></tr>
-<tr class="memdesc:a91e7ac3714d5ed149e529715db458fa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空selection并取消高亮，即清空mapper  <br /></td></tr>
 <tr class="memitem:ac6252247a307c14206c8e9941cd78858" id="r_ac6252247a307c14206c8e9941cd78858"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac6252247a307c14206c8e9941cd78858">select</a> (double posx, double posy) override</td></tr>
-<tr class="memdesc:ac6252247a307c14206c8e9941cd78858"><td class="mdescLeft">&#160;</td><td class="mdescRight">找到坐标下的顶点并存储，若选中同一个面需要取消选中。调用Selector::pick_cell()  <br /></td></tr>
-<tr class="memitem:ad352500ed634759911bf58e8e20e1431" id="r_ad352500ed634759911bf58e8e20e1431"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad352500ed634759911bf58e8e20e1431">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor) override</td></tr>
-<tr class="memdesc:ad352500ed634759911bf58e8e20e1431"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
+<tr class="memitem:a91e7ac3714d5ed149e529715db458fa5" id="r_a91e7ac3714d5ed149e529715db458fa5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91e7ac3714d5ed149e529715db458fa5">clear</a> () override</td></tr>
+<tr class="memdesc:a91e7ac3714d5ed149e529715db458fa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
+<tr class="memitem:a2306cbc12bb5751802e0198b8d2fa76a" id="r_a2306cbc12bb5751802e0198b8d2fa76a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2306cbc12bb5751802e0198b8d2fa76a">get</a> () override</td></tr>
 <tr class="inherit_header pub_methods_classSelectorHighlight"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classSelectorHighlight')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a></td></tr>
 <tr class="memitem:aeb60a59064e736c2c80f85dd2823ee9f inherit pub_methods_classSelectorHighlight" id="r_aeb60a59064e736c2c80f85dd2823ee9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSelectorHighlight.html#aeb60a59064e736c2c80f85dd2823ee9f">~SelectorHighlight</a> ()=default</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:ab921d79a6eccc9f30c6f00acfdaf2513" id="r_ab921d79a6eccc9f30c6f00acfdaf2513"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab921d79a6eccc9f30c6f00acfdaf2513">setupHighlightStyle</a> (vtkActor &amp;actor, vtkMapper &amp;mapper)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
 <tr class="memitem:a1970df5b6381132974151d50c6756581" id="r_a1970df5b6381132974151d50c6756581"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1970df5b6381132974151d50c6756581">renderer_</a></td></tr>
-<tr class="memitem:a8a838bd2ba828527ba299500d0ea7168" id="r_a8a838bd2ba828527ba299500d0ea7168"><td class="memItemLeft" align="right" valign="top">vtkActor *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a838bd2ba828527ba299500d0ea7168">highlight_actor_</a> {}</td></tr>
-<tr class="memitem:a41caf612677af089cb2e86d8dff2b667" id="r_a41caf612677af089cb2e86d8dff2b667"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkDataSetMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a41caf612677af089cb2e86d8dff2b667">mapper_</a></td></tr>
-<tr class="memitem:a36b527c5c1956130f22e8d1e0826552e" id="r_a36b527c5c1956130f22e8d1e0826552e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36b527c5c1956130f22e8d1e0826552e">model_actor_</a></td></tr>
+<tr class="memitem:acaeaecf27e7de5c5b48d841a6835ff2f" id="r_acaeaecf27e7de5c5b48d841a6835ff2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshActorSelectOp.html">MeshActorSelectOp</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acaeaecf27e7de5c5b48d841a6835ff2f">select_op_</a></td></tr>
+<tr class="memitem:af92af15e89787a25aed9874d93df43bf" id="r_af92af15e89787a25aed9874d93df43bf"><td class="memItemLeft" align="right" valign="top">vtkPartitionedDataSet *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af92af15e89787a25aed9874d93df43bf">highlight_data_</a></td></tr>
+<tr class="memitem:aa367639cd9ef40a442473307d72786f8" id="r_aa367639cd9ef40a442473307d72786f8"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa367639cd9ef40a442473307d72786f8">partition_id_</a></td></tr>
 <tr class="memitem:a91ee95e32dbc304a942194973f9d22da" id="r_a91ee95e32dbc304a942194973f9d22da"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkIdTypeArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91ee95e32dbc304a942194973f9d22da">selected_ids_</a></td></tr>
+<tr class="memitem:a66021a8e9dd4edc9770e6e7866034ca7" id="r_a66021a8e9dd4edc9770e6e7866034ca7"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkExtractSelection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66021a8e9dd4edc9770e6e7866034ca7">extract_filter_</a></td></tr>
+<tr class="memitem:aa4d455f325b9d696f56dee5edf0f261a" id="r_aa4d455f325b9d696f56dee5edf0f261a"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkGeometryFilter &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4d455f325b9d696f56dee5edf0f261a">geom_filter_</a></td></tr>
 </table>
-<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>点击并高亮多个顶点 </p>
-</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
-<a id="a01fa9179afde87d172c8e1f91d7fde8b" name="a01fa9179afde87d172c8e1f91d7fde8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01fa9179afde87d172c8e1f91d7fde8b">&#9670;&#160;</a></span>VertexSelectorHighlight()</h2>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a168f7bc4759680dfc6a5e51249d53b72" name="a168f7bc4759680dfc6a5e51249d53b72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a168f7bc4759680dfc6a5e51249d53b72">&#9670;&#160;</a></span>VertexSelectorHighlight()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,17 +175,25 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="memname">VertexSelectorHighlight::VertexSelectorHighlight </td>
           <td>(</td>
-          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
+          <td class="paramtype">vtkRenderer &amp;</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vtkActor *</td>          <td class="paramname"><span class="paramname"><em>highlight_actor</em></span>&#160;)</td>
+          <td class="paramtype">vtkPartitionedDataSet &amp;</td>          <td class="paramname"><span class="paramname"><em>highlight_data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int</td>          <td class="paramname"><span class="paramname"><em>partition_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMeshActorSelectOp.html">MeshActorSelectOp</a></td>          <td class="paramname"><span class="paramname"><em>select_op</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>将actor绑定到renderer，mapper绑定到actor </p>
 
 </div>
 </div>
@@ -215,8 +219,6 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>将actor从renderer中删除 </p>
 
 </div>
 </div>
@@ -244,7 +246,7 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>清空selection并取消高亮，即清空mapper </p>
+<p>清空选中元素，并取消高亮 </p>
 
 <p>实现了 <a class="el" href="classSelectorHighlight.html#a848c28c9db33a22a74d31fa1be332581">SelectorHighlight</a>.</p>
 
@@ -272,8 +274,6 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>返回当前选择的点集 </p>
 
 <p>实现了 <a class="el" href="classSelectorHighlight.html#a386ff86768e0faea151c2babca4c7d69">SelectorHighlight</a>.</p>
 
@@ -306,14 +306,12 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>找到坐标下的顶点并存储，若选中同一个面需要取消选中。调用Selector::pick_cell() </p>
-
 <p>实现了 <a class="el" href="classSelectorHighlight.html#a5512ff700657deaa5f27c88045b4dde4">SelectorHighlight</a>.</p>
 
 </div>
 </div>
-<a id="ad352500ed634759911bf58e8e20e1431" name="ad352500ed634759911bf58e8e20e1431"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad352500ed634759911bf58e8e20e1431">&#9670;&#160;</a></span>setCurModelActor()</h2>
+<a id="ab921d79a6eccc9f30c6f00acfdaf2513" name="ab921d79a6eccc9f30c6f00acfdaf2513"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab921d79a6eccc9f30c6f00acfdaf2513">&#9670;&#160;</a></span>setupHighlightStyle()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -322,28 +320,28 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void VertexSelectorHighlight::setCurModelActor </td>
+          <td class="memname">void VertexSelectorHighlight::setupHighlightStyle </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a></td>          <td class="paramname"><span class="paramname"><em>model_actor</em></span></td><td>)</td>
+          <td class="paramtype">vtkActor &amp;</td>          <td class="paramname"><span class="paramname"><em>actor</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">vtkMapper &amp;</td>          <td class="paramname"><span class="paramname"><em>mapper</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>设置当前操作的模型actor </p>
-
-<p>实现了 <a class="el" href="classSelectorHighlight.html#a80730c692a8cd3a6c0e17bfe275b32e1">SelectorHighlight</a>.</p>
 
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="a8a838bd2ba828527ba299500d0ea7168" name="a8a838bd2ba828527ba299500d0ea7168"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a838bd2ba828527ba299500d0ea7168">&#9670;&#160;</a></span>highlight_actor_</h2>
+<a id="a66021a8e9dd4edc9770e6e7866034ca7" name="a66021a8e9dd4edc9770e6e7866034ca7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66021a8e9dd4edc9770e6e7866034ca7">&#9670;&#160;</a></span>extract_filter_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -352,7 +350,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkActor* VertexSelectorHighlight::highlight_actor_ {}</td>
+          <td class="memname">vtkSmartPointer&lt;vtkExtractSelection&gt; VertexSelectorHighlight::extract_filter_</td>
         </tr>
       </table>
   </td>
@@ -364,8 +362,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a41caf612677af089cb2e86d8dff2b667" name="a41caf612677af089cb2e86d8dff2b667"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41caf612677af089cb2e86d8dff2b667">&#9670;&#160;</a></span>mapper_</h2>
+<a id="aa4d455f325b9d696f56dee5edf0f261a" name="aa4d455f325b9d696f56dee5edf0f261a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4d455f325b9d696f56dee5edf0f261a">&#9670;&#160;</a></span>geom_filter_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -374,7 +372,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkSmartPointer&lt;vtkDataSetMapper&gt; VertexSelectorHighlight::mapper_</td>
+          <td class="memname">vtkNew&lt;vtkGeometryFilter&gt; VertexSelectorHighlight::geom_filter_</td>
         </tr>
       </table>
   </td>
@@ -386,8 +384,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a36b527c5c1956130f22e8d1e0826552e" name="a36b527c5c1956130f22e8d1e0826552e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36b527c5c1956130f22e8d1e0826552e">&#9670;&#160;</a></span>model_actor_</h2>
+<a id="af92af15e89787a25aed9874d93df43bf" name="af92af15e89787a25aed9874d93df43bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af92af15e89787a25aed9874d93df43bf">&#9670;&#160;</a></span>highlight_data_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -396,7 +394,29 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> VertexSelectorHighlight::model_actor_</td>
+          <td class="memname">vtkPartitionedDataSet* VertexSelectorHighlight::highlight_data_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa367639cd9ef40a442473307d72786f8" name="aa367639cd9ef40a442473307d72786f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa367639cd9ef40a442473307d72786f8">&#9670;&#160;</a></span>partition_id_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int VertexSelectorHighlight::partition_id_</td>
         </tr>
       </table>
   </td>
@@ -419,6 +439,28 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">vtkRenderer* VertexSelectorHighlight::renderer_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acaeaecf27e7de5c5b48d841a6835ff2f" name="acaeaecf27e7de5c5b48d841a6835ff2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acaeaecf27e7de5c5b48d841a6835ff2f">&#9670;&#160;</a></span>select_op_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshActorSelectOp.html">MeshActorSelectOp</a> VertexSelectorHighlight::select_op_</td>
         </tr>
       </table>
   </td>

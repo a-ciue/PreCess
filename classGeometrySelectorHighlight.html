@@ -74,7 +74,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
-<a href="#pro-attribs">Protected 属性</a> &#124;
 <a href="classGeometrySelectorHighlight-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">GeometrySelectorHighlight类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
@@ -104,12 +103,6 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a1189330d794843300137e63bd8fffb1f" id="r_a1189330d794843300137e63bd8fffb1f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1189330d794843300137e63bd8fffb1f">select</a> (double posx, double posy)=0</td></tr>
 <tr class="memitem:ab44084c25571a84ed86f7f002dfbad7e" id="r_ab44084c25571a84ed86f7f002dfbad7e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab44084c25571a84ed86f7f002dfbad7e">clear</a> ()=0</td></tr>
 <tr class="memitem:a1eb26625afbd6e0edfb3c4d7267f58ab" id="r_a1eb26625afbd6e0edfb3c4d7267f58ab"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="GeometrySelectorHighlight_8h.html#ac326fa7688042f57d37e2dffc01ddbac">GeometrySelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1eb26625afbd6e0edfb3c4d7267f58ab">get</a> () const =0</td></tr>
-<tr class="memitem:aa91bf01fab04ab2282e2382d0ceb737c" id="r_aa91bf01fab04ab2282e2382d0ceb737c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa91bf01fab04ab2282e2382d0ceb737c">setCurGeomActor</a> (<a class="el" href="classGeometryActorSelectOpFactory.html">GeometryActorSelectOpFactory</a> geom_actor)=0</td></tr>
-<tr class="memitem:aeb9c96cf7b348adfd012a538dc6de971" id="r_aeb9c96cf7b348adfd012a538dc6de971"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb9c96cf7b348adfd012a538dc6de971">setPicker</a> (vtkSmartPointer&lt; IVtkTools_ShapePicker &gt; picker)</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
-Protected 属性</h2></td></tr>
-<tr class="memitem:a35e82ac30c2c17eb029804cef59fd001" id="r_a35e82ac30c2c17eb029804cef59fd001"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; IVtkTools_ShapePicker &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a35e82ac30c2c17eb029804cef59fd001">picker_</a></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="aa975fa492a163dfce7f1f27df3c34ff7" name="aa975fa492a163dfce7f1f27df3c34ff7"></a>
@@ -220,81 +213,6 @@ Protected 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>在 <a class="el" href="classGeometryEdgeSelectorHighlight.html#a502bee0a8326437d0f607bd00582036d">GeometryEdgeSelectorHighlight</a>, <a class="el" href="classGeometryFaceSelectorHighlight.html#a5ff7613ee1eb4af72ea8d9c68be01a55">GeometryFaceSelectorHighlight</a>, <a class="el" href="classGeometrySolidSelectorHighlight.html#a52ae74a255ed12a839d048b7c645410a">GeometrySolidSelectorHighlight</a> , 以及 <a class="el" href="classGeometryVertexSelectorHighlight.html#a2c1e07ec2531eadc3b2ed3236e4f0c27">GeometryVertexSelectorHighlight</a> 内被实现.</p>
-
-</div>
-</div>
-<a id="aa91bf01fab04ab2282e2382d0ceb737c" name="aa91bf01fab04ab2282e2382d0ceb737c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa91bf01fab04ab2282e2382d0ceb737c">&#9670;&#160;</a></span>setCurGeomActor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void GeometrySelectorHighlight::setCurGeomActor </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classGeometryActorSelectOpFactory.html">GeometryActorSelectOpFactory</a></td>          <td class="paramname"><span class="paramname"><em>geom_actor</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>在 <a class="el" href="classGeometryEdgeSelectorHighlight.html#aca29dc4b69d11e5316d52f0e3b1cab30">GeometryEdgeSelectorHighlight</a>, <a class="el" href="classGeometryFaceSelectorHighlight.html#a37aed242f4579cd9cc6dc5984cb742f0">GeometryFaceSelectorHighlight</a>, <a class="el" href="classGeometrySolidSelectorHighlight.html#addd775799687b59f89af2c28169f71e4">GeometrySolidSelectorHighlight</a> , 以及 <a class="el" href="classGeometryVertexSelectorHighlight.html#a96155ebfdd16e1be6c45e3d3e47ba888">GeometryVertexSelectorHighlight</a> 内被实现.</p>
-
-</div>
-</div>
-<a id="aeb9c96cf7b348adfd012a538dc6de971" name="aeb9c96cf7b348adfd012a538dc6de971"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb9c96cf7b348adfd012a538dc6de971">&#9670;&#160;</a></span>setPicker()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void GeometrySelectorHighlight::setPicker </td>
-          <td>(</td>
-          <td class="paramtype">vtkSmartPointer&lt; IVtkTools_ShapePicker &gt;</td>          <td class="paramname"><span class="paramname"><em>picker</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="a35e82ac30c2c17eb029804cef59fd001" name="a35e82ac30c2c17eb029804cef59fd001"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35e82ac30c2c17eb029804cef59fd001">&#9670;&#160;</a></span>picker_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkSmartPointer&lt;IVtkTools_ShapePicker&gt; GeometrySelectorHighlight::picker_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

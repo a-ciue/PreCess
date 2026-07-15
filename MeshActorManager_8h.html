@@ -83,6 +83,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MeshActor_8h_source.html">MeshActor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshActorManagerSelectOp_8h_source.html">MeshActorManagerSelectOp.h</a>&quot;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;vtkPoints.h&gt;</code><br />
 <code>#include &lt;vtkScalarBarActor.h&gt;</code><br />
@@ -91,51 +92,65 @@ MeshActorManager.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="MeshActorManager_8h__incl.png" border="0" usemap="#aapp_2render_2MeshActorManager_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2MeshActorManager_8h" id="aapp_2render_2MeshActorManager_8h">
-<area shape="rect" title=" " alt="" coords="947,5,1181,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="92,159,156,185"/>
-<area shape="poly" title=" " alt="" coords="947,30,791,44,595,69,381,105,273,128,169,155,161,157,160,152,167,149,272,123,380,99,595,63,791,39,947,24"/>
-<area shape="rect" href="MeshActor_8h.html" title=" " alt="" coords="923,79,1026,104"/>
-<area shape="poly" title=" " alt="" coords="1051,33,1002,72,998,68,1048,29"/>
-<area shape="rect" title=" " alt="" coords="1789,159,1883,185"/>
-<area shape="poly" title=" " alt="" coords="1066,31,1072,67,1079,86,1092,102,1108,110,1135,116,1213,127,1428,138,1646,143,1776,149,1792,153,1790,158,1776,155,1646,148,1428,143,1212,132,1134,122,1106,115,1089,106,1075,89,1066,68,1061,31"/>
-<area shape="rect" title=" " alt="" coords="1102,79,1226,104"/>
-<area shape="poly" title=" " alt="" coords="1082,29,1138,68,1135,73,1079,33"/>
-<area shape="rect" title=" " alt="" coords="1250,79,1401,104"/>
-<area shape="poly" title=" " alt="" coords="1107,28,1270,72,1269,78,1105,33"/>
-<area shape="rect" title=" " alt="" coords="5,240,61,265"/>
-<area shape="poly" title=" " alt="" coords="112,187,59,233,55,229,109,183"/>
-<area shape="rect" title=" " alt="" coords="353,240,404,265"/>
-<area shape="poly" title=" " alt="" coords="150,182,169,189,261,218,340,239,339,245,259,223,167,195,148,187"/>
-<area shape="rect" title=" " alt="" coords="85,240,163,265"/>
-<area shape="poly" title=" " alt="" coords="127,185,127,226,121,226,121,185"/>
-<area shape="rect" title=" " alt="" coords="584,240,643,265"/>
-<area shape="poly" title=" " alt="" coords="149,182,169,189,281,214,393,231,570,247,570,252,393,236,280,220,167,195,147,187"/>
-<area shape="rect" title=" " alt="" coords="187,240,250,265"/>
-<area shape="poly" title=" " alt="" coords="140,183,196,229,192,233,136,187"/>
-<area shape="poly" title=" " alt="" coords="923,97,542,115,325,132,236,142,169,155,160,157,159,152,167,149,235,137,325,126,542,109,923,92"/>
-<area shape="rect" href="AttributeCommon_8h.html" title=" " alt="" coords="885,152,1065,192"/>
-<area shape="poly" title=" " alt="" coords="977,104,977,138,972,138,972,104"/>
-<area shape="rect" href="IAttributeRenderStrategy_8h.html" title=" " alt="" coords="676,152,860,192"/>
-<area shape="poly" title=" " alt="" coords="946,107,832,150,830,145,944,102"/>
-<area shape="rect" title=" " alt="" coords="1089,159,1164,185"/>
-<area shape="poly" title=" " alt="" coords="998,102,1093,151,1091,155,996,107"/>
-<area shape="rect" title=" " alt="" coords="1188,159,1276,185"/>
-<area shape="poly" title=" " alt="" coords="1016,102,1177,149,1186,152,1185,158,1175,155,1014,107"/>
-<area shape="rect" title=" " alt="" coords="1300,159,1532,185"/>
-<area shape="poly" title=" " alt="" coords="1027,99,1339,154,1338,160,1026,104"/>
-<area shape="rect" title=" " alt="" coords="1556,152,1764,192"/>
-<area shape="poly" title=" " alt="" coords="1027,99,1046,101,1183,117,1292,125,1402,134,1543,149,1542,155,1401,139,1292,131,1183,122,1045,107,1026,104"/>
-<area shape="rect" title=" " alt="" coords="181,159,323,185"/>
-<area shape="poly" title=" " alt="" coords="923,98,670,116,504,132,336,155,312,159,311,154,336,149,504,127,670,110,923,93"/>
-<area shape="rect" title=" " alt="" coords="348,159,497,185"/>
-<area shape="poly" title=" " alt="" coords="923,100,740,121,510,155,486,159,485,154,509,149,740,116,923,95"/>
-<area shape="poly" title=" " alt="" coords="1027,99,1046,101,1157,111,1251,116,1412,117,1573,122,1666,132,1777,149,1792,153,1790,158,1775,155,1666,137,1572,127,1412,122,1251,121,1156,117,1045,107,1026,104"/>
-<area shape="rect" title=" " alt="" coords="521,159,652,185"/>
-<area shape="poly" title=" " alt="" coords="923,104,665,155,646,159,645,153,663,149,922,99"/>
-<area shape="poly" title=" " alt="" coords="676,194,418,246,417,241,675,189"/>
-<area shape="poly" title=" " alt="" coords="732,194,649,236,647,231,730,190"/>
-<area shape="rect" title=" " alt="" coords="745,240,791,265"/>
-<area shape="poly" title=" " alt="" coords="771,192,771,226,765,226,765,192"/>
+<area shape="rect" title=" " alt="" coords="873,5,1107,31"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="602,159,666,185"/>
+<area shape="poly" title=" " alt="" coords="964,33,675,156,673,151,962,28"/>
+<area shape="rect" href="MeshActor_8h.html" title=" " alt="" coords="1057,79,1160,104"/>
+<area shape="poly" title=" " alt="" coords="1010,28,1079,69,1076,74,1008,33"/>
+<area shape="rect" title=" " alt="" coords="2199,159,2293,185"/>
+<area shape="poly" title=" " alt="" coords="1031,28,1098,49,1174,76,1199,90,1225,101,1368,131,1491,143,1600,143,1703,137,1807,129,1917,125,2042,130,2188,149,2203,153,2202,158,2187,155,2042,135,1917,130,1807,134,1704,142,1601,149,1491,148,1367,136,1224,107,1197,95,1172,81,1097,54,1030,33"/>
+<area shape="rect" href="MeshActorManagerSelectOp_8h.html" title=" " alt="" coords="255,79,474,104"/>
+<area shape="poly" title=" " alt="" coords="890,33,479,80,478,74,889,28"/>
+<area shape="rect" title=" " alt="" coords="403,159,527,185"/>
+<area shape="poly" title=" " alt="" coords="951,33,518,158,517,153,950,28"/>
+<area shape="rect" title=" " alt="" coords="1236,79,1387,104"/>
+<area shape="poly" title=" " alt="" coords="1042,28,1247,73,1246,78,1041,33"/>
+<area shape="rect" title=" " alt="" coords="559,240,615,265"/>
+<area shape="poly" title=" " alt="" coords="629,186,604,229,599,227,625,183"/>
+<area shape="rect" title=" " alt="" coords="1106,240,1157,265"/>
+<area shape="poly" title=" " alt="" coords="659,182,679,189,795,215,912,232,1092,247,1092,252,911,237,794,220,677,195,657,187"/>
+<area shape="rect" title=" " alt="" coords="387,240,465,265"/>
+<area shape="poly" title=" " alt="" coords="605,187,470,238,468,233,603,182"/>
+<area shape="rect" title=" " alt="" coords="802,240,861,265"/>
+<area shape="poly" title=" " alt="" coords="661,182,679,190,790,233,788,238,677,194,659,187"/>
+<area shape="rect" title=" " alt="" coords="640,240,703,265"/>
+<area shape="poly" title=" " alt="" coords="642,184,662,226,658,229,637,186"/>
+<area shape="poly" title=" " alt="" coords="1057,98,887,114,783,131,679,155,671,157,670,152,677,149,782,126,887,109,1057,93"/>
+<area shape="rect" href="AttributeCommon_8h.html" title=" " alt="" coords="1019,152,1199,192"/>
+<area shape="poly" title=" " alt="" coords="1111,104,1111,138,1106,138,1106,104"/>
+<area shape="rect" href="IAttributeRenderStrategy_8h.html" title=" " alt="" coords="1223,152,1407,192"/>
+<area shape="poly" title=" " alt="" coords="1140,102,1254,145,1252,150,1138,107"/>
+<area shape="rect" title=" " alt="" coords="289,240,363,265"/>
+<area shape="poly" title=" " alt="" coords="1057,98,813,116,683,132,630,143,591,154,576,163,566,173,555,184,539,194,468,219,378,242,376,237,466,214,537,190,552,180,562,169,573,159,589,150,629,137,682,127,812,110,1057,92"/>
+<area shape="rect" title=" " alt="" coords="1431,159,1519,185"/>
+<area shape="poly" title=" " alt="" coords="1161,99,1300,124,1420,149,1431,153,1430,158,1419,155,1299,130,1160,104"/>
+<area shape="rect" title=" " alt="" coords="1543,159,1775,185"/>
+<area shape="poly" title=" " alt="" coords="1161,98,1180,101,1532,149,1569,155,1568,160,1531,155,1179,107,1160,104"/>
+<area shape="rect" title=" " alt="" coords="1799,152,2007,192"/>
+<area shape="poly" title=" " alt="" coords="1161,99,1180,101,1348,118,1481,125,1615,133,1786,149,1785,155,1614,138,1480,131,1348,123,1179,107,1160,104"/>
+<area shape="rect" title=" " alt="" coords="2032,159,2175,185"/>
+<area shape="poly" title=" " alt="" coords="1161,99,1180,101,1307,113,1415,119,1600,121,1784,126,1892,134,2020,149,2045,154,2045,159,2019,155,1892,139,1784,131,1600,127,1415,124,1307,118,1179,107,1160,104"/>
+<area shape="rect" title=" " alt="" coords="690,159,839,185"/>
+<area shape="poly" title=" " alt="" coords="1059,107,829,159,827,154,1058,101"/>
+<area shape="poly" title=" " alt="" coords="1161,99,1180,101,1333,113,1463,117,1685,113,1792,111,1906,115,2036,126,2188,149,2203,153,2202,158,2187,155,2035,132,1906,120,1792,117,1685,118,1463,123,1332,119,1179,107,1160,104"/>
+<area shape="rect" title=" " alt="" coords="863,159,994,185"/>
+<area shape="poly" title=" " alt="" coords="1084,106,968,156,966,151,1081,102"/>
+<area shape="poly" title=" " alt="" coords="1272,194,1170,238,1168,233,1270,190"/>
+<area shape="poly" title=" " alt="" coords="1223,193,1212,195,875,248,874,242,1211,189,1222,187"/>
+<area shape="rect" title=" " alt="" coords="1292,240,1339,265"/>
+<area shape="poly" title=" " alt="" coords="1318,192,1318,226,1313,226,1313,192"/>
+<area shape="poly" title=" " alt="" coords="405,101,590,155,588,160,403,107"/>
+<area shape="poly" title=" " alt="" coords="304,106,264,124,246,137,232,153,225,172,232,190,250,200,285,212,375,236,373,242,284,217,247,205,228,194,220,172,228,151,243,133,261,119,302,102"/>
+<area shape="poly" title=" " alt="" coords="364,105,335,227,329,226,359,103"/>
+<area shape="rect" href="MeshActorSelectOp_8h.html" title=" " alt="" coords="5,159,167,185"/>
+<area shape="poly" title=" " alt="" coords="325,107,140,158,139,153,323,101"/>
+<area shape="poly" title=" " alt="" coords="381,102,441,149,437,153,378,106"/>
+<area shape="rect" title=" " alt="" coords="243,159,327,185"/>
+<area shape="poly" title=" " alt="" coords="355,106,308,151,305,147,351,102"/>
+<area shape="poly" title=" " alt="" coords="136,182,375,237,373,242,135,187"/>
+<area shape="poly" title=" " alt="" coords="122,182,279,233,277,238,120,187"/>
+<area shape="rect" title=" " alt="" coords="17,240,155,265"/>
+<area shape="poly" title=" " alt="" coords="89,185,89,226,83,226,83,185"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -143,11 +158,13 @@ MeshActorManager.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="MeshActorManager_8h__dep__incl.png" border="0" usemap="#aapp_2render_2MeshActorManager_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2MeshActorManager_8hdep" id="aapp_2render_2MeshActorManager_8hdep">
-<area shape="rect" title=" " alt="" coords="145,5,378,31"/>
-<area shape="rect" href="MeshActorManager_8cpp.html" title=" " alt="" coords="5,79,253,104"/>
-<area shape="poly" title=" " alt="" coords="230,39,152,81,150,76,227,35"/>
-<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="278,79,509,104"/>
-<area shape="poly" title=" " alt="" coords="296,35,373,76,370,81,293,39"/>
+<area shape="rect" title=" " alt="" coords="271,5,505,31"/>
+<area shape="rect" href="MeshActorManager_8cpp.html" title=" " alt="" coords="5,86,253,111"/>
+<area shape="poly" title=" " alt="" coords="338,37,168,89,166,83,336,32"/>
+<area shape="rect" href="MeshActorManagerSelectOp_8cpp.html" title=" " alt="" coords="277,79,499,119"/>
+<area shape="poly" title=" " alt="" coords="391,44,391,79,385,79,385,44"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="523,86,754,111"/>
+<area shape="poly" title=" " alt="" coords="438,32,603,83,601,89,437,37"/>
 </map>
 </div>
 </div>

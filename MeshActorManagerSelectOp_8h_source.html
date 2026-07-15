@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/MeshActorManagerSelectOp.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">MeshActorManagerSelectOp.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="MeshActorManagerSelectOp_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef MESH_ACTOR_MANAGER_SELECT_OP_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define MESH_ACTOR_MANAGER_SELECT_OP_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="MeshActorSelectOp_8h.html">MeshActorSelectOp.h</a>&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;vtkProp.h&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">class </span><a class="code hl_class" href="classMeshActorManager.html">MeshActorManager</a>;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">class </span><a class="code hl_class" href="classMeshActor.html">MeshActor</a>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span>vtkHardwarePicker;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="foldopen" id="foldopen00016" data-start="{" data-end="};">
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classMeshActorManagerSelectOp.html">   16</a></span><span class="keyword">class </span><a class="code hl_function" href="classMeshActorManagerSelectOp.html#a9b0e52d27ad38173155be15ffdef9b47">MeshActorManagerSelectOp</a> {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classMeshActorManagerSelectOp.html#a9b0e52d27ad38173155be15ffdef9b47">MeshActorManagerSelectOp</a>(<a class="code hl_class" href="classMeshActorManager.html">MeshActorManager</a>&amp; <a class="code hl_variable" href="TestComponentModel_8cpp.html#a6402cec97b28a6292b45baefb9f38ff2">manager</a>);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    std::optional&lt;Index&gt; <a class="code hl_function" href="classMeshActorManagerSelectOp.html#a1892a6d3aa84de3b4f9b11638ae8ce29">getComponentId</a>(vtkProp* prop) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshActorManagerSelectOp.html#afef791c530d7a8a0d19b811c3aa727bd">managePickList</a>(vtkPropCollection* pick_list);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    std::optional&lt;MeshActorSelectOp&gt; <a class="code hl_function" href="classMeshActorManagerSelectOp.html#ae1f7cc50e5263e0e04a6d0e606d79fce">getSelectOp</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshActorManagerSelectOp.html#a8fb1b11c3f39cfa6677d0d50e5660be0">registerProps</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, std::shared_ptr&lt;MeshActor&gt; actor);</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshActorManagerSelectOp.html#a8f7343381c8925af575a2f13967d9f97">unregisterProps</a>(std::shared_ptr&lt;MeshActor&gt; actor);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classMeshActorManagerSelectOp.html#a34acb5aee8b91ec09ba28942e2f91cf6">   28</a></span>    <a class="code hl_class" href="classMeshActorManager.html">MeshActorManager</a>* <a class="code hl_variable" href="classMeshActorManagerSelectOp.html#a34acb5aee8b91ec09ba28942e2f91cf6">manager_</a> { };</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641">   29</a></span>    std::unordered_map&lt;vtkProp*, Index&gt; <a class="code hl_variable" href="classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641">prop_to_component_</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classMeshActorManagerSelectOp.html#a2a4e01a3c1b96ec4ad551ab18c4fad01">   30</a></span>    vtkSmartPointer&lt;vtkPropCollection&gt; <a class="code hl_variable" href="classMeshActorManagerSelectOp.html#a2a4e01a3c1b96ec4ad551ab18c4fad01">pick_list_</a>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
+</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:36</div></div>
+<div class="ttc" id="aMeshActorSelectOp_8h_html"><div class="ttname"><a href="MeshActorSelectOp_8h.html">MeshActorSelectOp.h</a></div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_a6402cec97b28a6292b45baefb9f38ff2"><div class="ttname"><a href="TestComponentModel_8cpp.html#a6402cec97b28a6292b45baefb9f38ff2">manager</a></div><div class="ttdeci">ModelLayer manager</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:68</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_a0fa04bfae25699ca73ae3c0069ef6641"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641">MeshActorManagerSelectOp::prop_to_component_</a></div><div class="ttdeci">std::unordered_map&lt; vtkProp *, Index &gt; prop_to_component_</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.h:29</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_a1892a6d3aa84de3b4f9b11638ae8ce29"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#a1892a6d3aa84de3b4f9b11638ae8ce29">MeshActorManagerSelectOp::getComponentId</a></div><div class="ttdeci">std::optional&lt; Index &gt; getComponentId(vtkProp *prop) const</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.cpp:11</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_a2a4e01a3c1b96ec4ad551ab18c4fad01"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#a2a4e01a3c1b96ec4ad551ab18c4fad01">MeshActorManagerSelectOp::pick_list_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPropCollection &gt; pick_list_</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.h:30</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_a34acb5aee8b91ec09ba28942e2f91cf6"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#a34acb5aee8b91ec09ba28942e2f91cf6">MeshActorManagerSelectOp::manager_</a></div><div class="ttdeci">MeshActorManager * manager_</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.h:28</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_a8f7343381c8925af575a2f13967d9f97"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#a8f7343381c8925af575a2f13967d9f97">MeshActorManagerSelectOp::unregisterProps</a></div><div class="ttdeci">void unregisterProps(std::shared_ptr&lt; MeshActor &gt; actor)</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.cpp:45</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_a8fb1b11c3f39cfa6677d0d50e5660be0"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#a8fb1b11c3f39cfa6677d0d50e5660be0">MeshActorManagerSelectOp::registerProps</a></div><div class="ttdeci">void registerProps(Index component_id, std::shared_ptr&lt; MeshActor &gt; actor)</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.cpp:31</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_a9b0e52d27ad38173155be15ffdef9b47"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#a9b0e52d27ad38173155be15ffdef9b47">MeshActorManagerSelectOp::MeshActorManagerSelectOp</a></div><div class="ttdeci">MeshActorManagerSelectOp(MeshActorManager &amp;manager)</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.cpp:6</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_ae1f7cc50e5263e0e04a6d0e606d79fce"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#ae1f7cc50e5263e0e04a6d0e606d79fce">MeshActorManagerSelectOp::getSelectOp</a></div><div class="ttdeci">std::optional&lt; MeshActorSelectOp &gt; getSelectOp(Index component_id) const</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.cpp:24</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html_afef791c530d7a8a0d19b811c3aa727bd"><div class="ttname"><a href="classMeshActorManagerSelectOp.html#afef791c530d7a8a0d19b811c3aa727bd">MeshActorManagerSelectOp::managePickList</a></div><div class="ttdeci">void managePickList(vtkPropCollection *pick_list)</div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.cpp:19</div></div>
+<div class="ttc" id="aclassMeshActorManager_html"><div class="ttname"><a href="classMeshActorManager.html">MeshActorManager</a></div><div class="ttdef"><b>定义</b> MeshActorManager.h:12</div></div>
+<div class="ttc" id="aclassMeshActor_html"><div class="ttname"><a href="classMeshActor.html">MeshActor</a></div><div class="ttdoc">负责管理Model的Actor</div><div class="ttdef"><b>定义</b> MeshActor.h:32</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

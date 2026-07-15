@@ -94,7 +94,7 @@ $(function() {
 <area shape="poly" title=" " alt="" coords="154,114,195,114,195,119,154,119"/>
 <area shape="rect" href="classSolidSelectorHighlight.html" title=" " alt="" coords="193,153,359,179"/>
 <area shape="poly" title=" " alt="" coords="139,130,223,151,222,156,138,135"/>
-<area shape="rect" href="classVertexSelectorHighlight.html" title="点击并高亮多个顶点" alt="" coords="188,203,364,228"/>
+<area shape="rect" href="classVertexSelectorHighlight.html" title=" " alt="" coords="188,203,364,228"/>
 <area shape="poly" title=" " alt="" coords="103,136,143,162,189,188,223,200,221,205,187,192,140,167,100,140"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
@@ -106,8 +106,6 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a848c28c9db33a22a74d31fa1be332581" id="r_a848c28c9db33a22a74d31fa1be332581"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a848c28c9db33a22a74d31fa1be332581">clear</a> ()=0</td></tr>
 <tr class="memdesc:a848c28c9db33a22a74d31fa1be332581"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
 <tr class="memitem:a386ff86768e0faea151c2babca4c7d69" id="r_a386ff86768e0faea151c2babca4c7d69"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="SelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a386ff86768e0faea151c2babca4c7d69">get</a> ()=0</td></tr>
-<tr class="memitem:a80730c692a8cd3a6c0e17bfe275b32e1" id="r_a80730c692a8cd3a6c0e17bfe275b32e1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80730c692a8cd3a6c0e17bfe275b32e1">setCurModelActor</a> (<a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a> model_actor)=0</td></tr>
-<tr class="memdesc:a80730c692a8cd3a6c0e17bfe275b32e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置当前操作的模型actor  <br /></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="aeb60a59064e736c2c80f85dd2823ee9f" name="aeb60a59064e736c2c80f85dd2823ee9f"></a>
@@ -220,41 +218,6 @@ Public 成员函数</h2></td></tr>
 </div><div class="memdoc">
 
 <p>在 <a class="el" href="classBlockSelectorHighlight.html#af565d7b1c286faa9505856c03b15656f">BlockSelectorHighlight</a>, <a class="el" href="classEdgeSelectorHighlight.html#afa6bafa87e80b347e5c5c03124dce5e7">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#aace8feb95c02fb87dac0994478ba8989">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#aa3d971790cc40ef0d5c4e6c7f10437d9">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#ac6252247a307c14206c8e9941cd78858">VertexSelectorHighlight</a> 内被实现.</p>
-
-</div>
-</div>
-<a id="a80730c692a8cd3a6c0e17bfe275b32e1" name="a80730c692a8cd3a6c0e17bfe275b32e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80730c692a8cd3a6c0e17bfe275b32e1">&#9670;&#160;</a></span>setCurModelActor()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void SelectorHighlight::setCurModelActor </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classMeshActorSelectOpFactory.html">MeshActorSelectOpFactory</a></td>          <td class="paramname"><span class="paramname"><em>model_actor</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>设置当前操作的模型actor </p>
-<dl class="params"><dt>参数</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">model_actor</td><td>ModelActor的操作类，目前暂时只支持操作MeshActor </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>在 <a class="el" href="classBlockSelectorHighlight.html#a411dcef06225f31343101fc432aac63a">BlockSelectorHighlight</a>, <a class="el" href="classEdgeSelectorHighlight.html#a857a2d999449f9aa091d11c8e7fdd583">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#a64130142201b2aac84b5a1f0ec6c12cf">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#a73878d543fffa6362e7498f11464b941">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#ad352500ed634759911bf58e8e20e1431">VertexSelectorHighlight</a> 内被实现.</p>
 
 </div>
 </div>

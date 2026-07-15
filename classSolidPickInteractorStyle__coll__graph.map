@@ -1,15 +1,15 @@
 <map id="SolidPickInteractorStyle" name="SolidPickInteractorStyle">
-<area shape="rect" id="Node000001" title=" " alt="" coords="3371,342,3548,367"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="3064,307,3261,347"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3275,335,3370,344,3370,349,3275,340"/>
-<area shape="rect" id="Node000003" href="$classSolidSelectorHighlight.html" title=" " alt="" coords="3079,371,3246,397"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="3260,377,3346,369,3382,365,3382,370,3347,375,3260,382"/>
-<area shape="rect" id="Node000004" href="$classSelectorHighlight.html" title=" " alt="" coords="2753,347,2888,373"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2902,363,3079,376,3079,381,2902,368"/>
-<area shape="rect" id="Node000005" href="$classMeshActorSelectOpFactory.html" title="MeshActor在选择过程中的操作句柄类，可以在选择系统中保存该句柄，延迟获取操作对象" alt="" coords="2723,397,2919,422"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="2932,407,3040,401,3094,394,3095,399,3040,407,2932,412"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="2373,397,2583,422"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2596,407,2722,407,2722,412,2596,412"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="3313,342,3491,367"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="3007,307,3204,347"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3218,335,3313,344,3313,349,3217,340"/>
+<area shape="rect" id="Node000003" href="$classSolidSelectorHighlight.html" title=" " alt="" coords="3022,371,3189,397"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="3202,377,3289,369,3324,365,3325,370,3290,375,3203,382"/>
+<area shape="rect" id="Node000004" href="$classSelectorHighlight.html" title=" " alt="" coords="2739,347,2874,373"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2888,364,3022,375,3022,380,2888,369"/>
+<area shape="rect" id="Node000005" href="$classMeshActorSelectOp.html" title="MeshActor在选择过程中的操作类，作为临时对象使用" alt="" coords="2732,397,2881,422"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="2895,405,2982,400,3030,394,3031,399,2983,405,2895,411"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="2373,397,2592,422"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2606,407,2732,407,2732,412,2606,412"/>
 <area shape="rect" id="Node000007" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2208,397,2299,422"/>
 <area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="2313,407,2373,407,2373,412,2313,412"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="1812,325,2007,365"/>
