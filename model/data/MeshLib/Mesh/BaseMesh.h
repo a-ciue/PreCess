@@ -20,6 +20,7 @@
 #include <list>
 #include <vector>
 #include <map>
+#include <spdlog/spdlog.h>
 
 #include "../Geometry/Point.h"
 #include "../Geometry/Point2.h"
@@ -1221,7 +1222,7 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_m( const char * input )
 
 	if( is.fail() )
 	{
-		fprintf(stderr,"Error in opening file %s\n", input );
+		spdlog::error("Error in opening file {}", input);
 		return;
 	}
 
@@ -1495,7 +1496,7 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_m( const char * output )
 	std::fstream _os( output, std::fstream::out );
 	if( _os.fail() )
 	{
-		fprintf(stderr,"Error is opening file %s\n", output );
+		spdlog::error("Error is opening file {}", output);
 		return;
 	}
 
@@ -1578,7 +1579,7 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_obj( const char * output )
 	std::fstream _os( output, std::fstream::out );
 	if( _os.fail() )
 	{
-		fprintf(stderr,"Error is opening file %s\n", output );
+		spdlog::error("Error is opening file {}", output);
 		return;
 	}
 
@@ -1658,7 +1659,7 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::write_off( const char * output )
 	std::fstream _os( output, std::fstream::out );
 	if( _os.fail() )
 	{
-		fprintf(stderr,"Error is opening file %s\n", output );
+		spdlog::error("Error is opening file {}", output);
 		return;
 	}
 
@@ -1784,7 +1785,7 @@ void CBaseMesh<CVertex,CEdge,CFace,CHalfEdge>::read_off( const char * input )
 
 	if( is.fail() )
 	{
-		fprintf(stderr,"Error is opening file %s\n", input );
+		spdlog::error("Error is opening file {}", input);
 		return;
 	}
 

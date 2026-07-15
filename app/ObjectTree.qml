@@ -36,9 +36,65 @@ Pane {
         function onComponentChanged(componentId) { refreshTimer.restart() }
     }
 
+    Rectangle {
+        id: headerBar
+        anchors { left: parent.left; right: parent.right; top: parent.top }
+        height: 28
+        color: "#f5f5f5"
+
+        Row {
+            anchors { right: parent.right; rightMargin: 6; verticalCenter: parent.verticalCenter }
+            spacing: 2
+
+            ToolButton {
+                icon.source: "qrc:/images/modeltree/show.svg"
+                icon.width: 20
+                icon.height: 20
+                implicitWidth: 26
+                implicitHeight: 26
+                display: ToolButton.IconOnly
+
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("显示全部")
+                ToolTip.delay: 500
+
+                onClicked: {
+                    treeModel.setAllVisibility(true)
+                    for (let i = 0; i < treeModel.rowCount(); i++) {
+                        let idx = treeModel.index(i, 0)
+                        App.modelVisibilityUpdated(
+                            treeModel.data(idx, TreeModel.NodeIdRole), true)
+                    }
+                }
+            }
+
+            ToolButton {
+                icon.source: "qrc:/images/modeltree/hide.svg"
+                icon.width: 20
+                icon.height: 20
+                implicitWidth: 26
+                implicitHeight: 26
+                display: ToolButton.IconOnly
+
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("隐藏全部")
+                ToolTip.delay: 500
+
+                onClicked: {
+                    treeModel.setAllVisibility(false)
+                    for (let i = 0; i < treeModel.rowCount(); i++) {
+                        let idx = treeModel.index(i, 0)
+                        App.modelVisibilityUpdated(
+                            treeModel.data(idx, TreeModel.NodeIdRole), false)
+                    }
+                }
+            }
+        }
+    }
+
     TreeView {
         id: treeView
-        anchors.fill: parent
+        anchors { left: parent.left; right: parent.right; top: headerBar.bottom; bottom: parent.bottom }
         model: treeModel
         columnSpacing: 0
         clip: true
@@ -53,8 +109,7 @@ Pane {
 
         delegate: TreeViewDelegate {
             id: viewDelegate
-            width: treeView.width
-            height: 20
+            height: _rowHeight
 
             readonly property real _padding: 5
             readonly property real _rowHeight: 18
@@ -73,7 +128,6 @@ Pane {
                 color: viewDelegate.hovered ? "#f0f0f0" : "transparent"
             }
 
-            // 展开/折叠指示器
             indicator: Rectangle {
                 id: indicatorItem
                 x: viewDelegate._padding + viewDelegate.depth * viewDelegate._indentWidth
@@ -107,7 +161,6 @@ Pane {
                 }
             }
 
-            // 内容区域
             contentItem: RowLayout {
                 spacing: 4
 
@@ -141,15 +194,53 @@ Pane {
 
                 Item {
                     Layout.fillWidth: true
-                    Layout.rightMargin: 10
+                }
+
+                Image {
+                    id: eyeIcon
+                    visible: viewDelegate.depth <= 1
+                    Layout.preferredWidth: 16
+                    Layout.preferredHeight: 16
+                    source: viewDelegate.model.isVisible
+                        ? "qrc:/images/modeltree/show.svg"
+                        : "qrc:/images/modeltree/hide.svg"
+                    opacity: treeMouseArea._overEye ? 1.0 : 0.4
+
+                    ToolTip.visible: treeMouseArea._overEye
+                    ToolTip.text: viewDelegate.model.isVisible ? qsTr("隐藏") : qsTr("显示")
+                    ToolTip.delay: 500
+                }
+
+                Item {
+                    Layout.preferredWidth: 6
                 }
             }
 
-            // 统一交互区
             MouseArea {
+                id: treeMouseArea
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
+                hoverEnabled: true
+
+                readonly property bool _overEye:
+                    treeMouseArea.containsMouse
+                    && viewDelegate.depth <= 1
+                    && mouseX > treeMouseArea.width - 22
+
+                cursorShape: treeMouseArea._overEye ? Qt.PointingHandCursor : Qt.ArrowCursor
+
                 onClicked: (mouse) => {
+                    if (treeMouseArea._overEye) {
+                        if (mouse.button === Qt.RightButton) return
+                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
+                        let newVis = !viewDelegate.model.isVisible
+                        treeModel.setVisibility(idx, newVis)
+                        if (viewDelegate.depth === 0)
+                            App.modelVisibilityUpdated(viewDelegate.model.nodeId, newVis)
+                        else
+                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, newVis)
+                        return
+                    }
                     if (mouse.button === Qt.RightButton) {
                         if (viewDelegate.depth > 1) return
                         contextMenu.popup()
