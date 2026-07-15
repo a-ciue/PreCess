@@ -70,6 +70,29 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
     return model_id;
 }
 
+Index ModelLayer::addGeometryComponent(Index model_id, std::unique_ptr<ComponentData> component)
+{
+    ModelData* model = modelById(model_id);
+    if (!model)
+        throw std::runtime_error("Model not exist");
+    if (!component || !component->geometry)
+        throw std::invalid_argument("Geometry component must contain GeometryData");
+
+    component->id = allocateComponentId();
+    Index component_id = component->id;
+    spdlog::info("insert component: final_id={}, exists_before={}",
+        component_id, components_.count(component_id) != 0);
+
+    component_to_model_[component_id] = model_id;
+    model->componentIds().push_back(component_id);
+    components_[component_id] = std::move(component);
+    components_[component_id]->geometry->ensureIndexBuilt(geom_registry_);
+
+    if (observer_)
+        observer_->notifyModelChanged(model_id);
+    return component_id;
+}
+
 void ModelLayer::removeModel(Index model_id) {
     auto it = models_.find(model_id);
     if (it == models_.end())

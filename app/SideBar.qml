@@ -17,14 +17,18 @@ Item{
     property var parameters: []
 
     readonly property var activeOp: App.activeOperation
+    readonly property bool allowWithoutModel: !!(root.activeOp && root.activeOp.allowWithoutModel)
 
     onActiveOpChanged: {
-        parameters = []
+        // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
+        parameters = root.activeOp && root.activeOp.defaultParameters
+                ? root.activeOp.defaultParameters.slice() : []
     }
     Button{
         id: commitButton
         text: "执行"
-        enabled: !!(App.selection.activeModelId >= 0 && root.activeOp && root.activeOp.info)
+        enabled: !!(root.activeOp && root.activeOp.info
+                    && (App.selection.activeModelId >= 0 || root.allowWithoutModel))
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right

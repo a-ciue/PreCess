@@ -6,6 +6,8 @@
 #include "QModelQuery.h"
 #include "QSystemPluginManager.h"
 #include <memory>
+#include <string>
+#include <string_view>
 
 namespace systems {
 class SystemPluginManager;
@@ -17,6 +19,7 @@ namespace systems::edit {
 class EditSystem;
 }
 class ModelLayer;
+class TopoDS_Shape;
 
 class QModelManager : public QObject {
     Q_OBJECT
@@ -34,6 +37,19 @@ public:
 
     Q_INVOKABLE void removeModel(int id);
     Q_INVOKABLE void removeComponent(int id);
+    /**
+     * @brief 创建长方体，并作为新几何组件加入活动模型；modelId 为 -1 时创建 Geometry 模型。
+     *
+     * @return 新组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createBox(
+        int modelId,
+        double originX,
+        double originY,
+        double originZ,
+        double lengthX,
+        double lengthY,
+        double lengthZ);
     Q_INVOKABLE QObject* getOperator(int id);
     ModelLayer* getModelManager();
     QModelObserver* getModelObserver() const;
@@ -55,8 +71,14 @@ signals:
     void modelUpdated(int id);
     void modelNameChanged(int id, const QString& newName);
     void geometryLoadFailed(const QString& message);
+    void geometryOperationFailed(const QString& message);
 
 private:
+    /**
+     * @brief 将 OCC Shape 包装成 GeometryData 和 ComponentData 后加入模型层。
+     */
+    Index addGeometryShape(Index model_id, std::string component_name, TopoDS_Shape shape);
+
     std::unique_ptr<ModelLayer> core_;
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
@@ -68,4 +90,5 @@ private:
     std::unique_ptr<systems::edit::QEditSystemAdaptor> edit_adaptor_;
     std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
+    int next_box_number_ { 1 };
 };

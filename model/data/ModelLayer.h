@@ -50,6 +50,13 @@ public:
     Index addModel(const std::string& model_name, ComponentDatas components);
 
     /**
+     * @brief 向已有模型增加一个几何组件，并初始化几何子形状索引。
+     *
+     * @return 新组件的全局 ID。
+     */
+    Index addGeometryComponent(Index model_id, std::unique_ptr<ComponentData> component);
+
+    /**
      * @brief 移除指定名称的模型
      *
      * @param model_id 需要移除的模型 ID

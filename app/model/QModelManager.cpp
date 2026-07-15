@@ -3,15 +3,22 @@
 #include "AlgorithmSystemRegister.h"
 #include "EditSystem.h"
 #include "EditSystemRegister.h"
+#include "GeometryBuilder.h"
+#include "GeometryData.h"
 #include "ModelIOSystem.h"
 #include "ModelIOSystemRegister.h"
 #include "ModelLayer.h"
 #include "QModelObserver.h"
 #include "SystemPluginManager.h"
+#include "ComponentData.h"
 
 #include <QUrl>
+#include <Standard_Failure.hxx>
+#include <TopoDS_Shape.hxx>
 #include <filesystem>
 #include <spdlog/spdlog.h>
+#include <stdexcept>
+#include <utility>
 
 QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     : QObject(parent)
@@ -71,6 +78,64 @@ void QModelManager::removeModel(int id)
 void QModelManager::removeComponent(int id)
 {
     core_->removeComponent(id);
+}
+
+int QModelManager::createBox(
+    int modelId,
+    double originX,
+    double originY,
+    double originZ,
+    double lengthX,
+    double lengthY,
+    double lengthZ)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makeBox(
+            originX, originY, originZ, lengthX, lengthY, lengthZ);
+        const std::string component_name = "Box_" + std::to_string(next_box_number_);
+        const Index component_id = addGeometryShape(modelId, component_name, std::move(shape));
+        ++next_box_number_;
+        return component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QModelManager::createBox: {}", detail ? detail : "OpenCASCADE error");
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Box 失败：%1").arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QModelManager::createBox: {}", error.what());
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Box 失败：%1").arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
+Index QModelManager::addGeometryShape(
+    Index model_id,
+    std::string component_name,
+    TopoDS_Shape shape)
+{
+    const std::string model_name = "temp_" + component_name;
+
+    auto geometry = std::make_unique<GeometryData>();
+    geometry->rootShape = std::make_unique<TopoDS_Shape>(std::move(shape));
+
+    auto component = std::make_unique<ComponentData>();
+    component->name = std::move(component_name);
+    component->geometry = std::move(geometry);
+
+    if (model_id >= 0) {
+        if (!core_->modelById(model_id))
+            throw std::invalid_argument("Target model does not exist");
+        return core_->addGeometryComponent(model_id, std::move(component));
+    }
+
+    ComponentDatas components;
+    components.push_back(std::move(component));
+    const Index new_model_id = core_->addModel(model_name, std::move(components));
+    ModelData* model = core_->modelById(new_model_id);
+    if (!model || model->componentIds().empty())
+        throw std::runtime_error("Failed to add the box component");
+    return model->componentIds().back();
 }
 
 QObject* QModelManager::getOperator(int id)

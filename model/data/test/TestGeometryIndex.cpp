@@ -101,3 +101,27 @@ TEST_CASE("Geometry index build for multiple components")
     REQUIRE_FALSE(comp1->geometry->index.vertex_local_to_global.empty());
     REQUIRE_FALSE(comp1->geometry->index.solid_local_to_global.empty());
 }
+
+TEST_CASE("Add geometry component to an existing model")
+{
+    using namespace std;
+
+    ModelLayer manager;
+    const Index model_id = manager.addModel("geometry", ComponentDatas {});
+
+    auto geometry = make_unique<GeometryData>();
+    geometry->rootShape = make_unique<TopoDS_Shape>(
+        BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape());
+
+    auto component = make_unique<ComponentData>();
+    component->name = "Box_1";
+    component->geometry = move(geometry);
+
+    const Index component_id = manager.addGeometryComponent(model_id, move(component));
+    ComponentData* inserted = manager.findComponent(component_id);
+
+    REQUIRE(inserted != nullptr);
+    REQUIRE(inserted->geometry != nullptr);
+    REQUIRE(inserted->geometry->index.built);
+    REQUIRE(manager.modelById(model_id)->componentIds() == vector<Index> { component_id });
+}

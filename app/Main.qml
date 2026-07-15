@@ -33,6 +33,21 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("PreCess")
 
+    // Create Box 暂时直接复用参数侧栏；开始增加第二类几何命令时再评估统一抽象。
+    readonly property var createBoxInfo: ({
+        name: "create_box",
+        display_name: qsTr("创建长方体"),
+        description: qsTr("根据原点和三个轴向尺寸创建长方体"),
+        arg_types: [
+            { type: QArgType.Float, name: qsTr("原点 X"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("原点 Y"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("原点 Z"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("X 方向长度"), content: "10", description: qsTr("必须大于 0") },
+            { type: QArgType.Float, name: qsTr("Y 方向长度"), content: "10", description: qsTr("必须大于 0") },
+            { type: QArgType.Float, name: qsTr("Z 方向长度"), content: "10", description: qsTr("必须大于 0") }
+        ]
+    })
+
     menuBar: MenuBar{
         Menu{
             title: "文件"
@@ -63,6 +78,33 @@ ApplicationWindow {
                             info: info,
                             execute: function(model, args) { QModelManager.editSystem.call(info.name, model, args) }
                         }
+                    }
+                }
+            }
+        }
+        Menu {
+            title: qsTr("几何")
+            Menu {
+                title: qsTr("创建")
+                MenuItem {
+                    text: qsTr("长方体")
+                    onTriggered: {
+                        App.activeOperation = {
+                            info: root.createBoxInfo,
+                            allowWithoutModel: true,
+                            defaultParameters: [0, 0, 0, 10, 10, 10],
+                            execute: function(modelId, args) {
+                                var componentId = QModelManager.createBox(
+                                    modelId,
+                                    args[0], args[1], args[2],
+                                    args[3], args[4], args[5])
+                                if (componentId >= 0) {
+                                    App.selection.activeComponentId = componentId
+                                    App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                }
+                            }
+                        }
+                        sideBarDock.show()
                     }
                 }
             }
@@ -131,6 +173,20 @@ ApplicationWindow {
                     }
                 }
             }
+        }
+    }
+
+    MessageDialog {
+        id: geometryOperationErrorDialog
+        title: qsTr("几何操作失败")
+        buttons: MessageDialog.Ok
+    }
+
+    Connections {
+        target: QModelManager
+        function onGeometryOperationFailed(message) {
+            geometryOperationErrorDialog.text = message
+            geometryOperationErrorDialog.open()
         }
     }
 
