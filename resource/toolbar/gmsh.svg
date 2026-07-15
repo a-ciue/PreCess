@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
+<!-- SVG created with Arrow, by QuiverAI (https://quiver.ai) -->
+  <style type="text/css">.cls-0 {fill:url(#SVGID_1_);}
+.cls-1 {fill:url(#SVGID_2_);}</style>
+  <polygon points="75 6.4 75 120.9 143.8 143.4"/>
+  <linearGradient id="SVGID_1_" x1="6.415" x2="75" y1="73.06" y2="73.06" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#BBBDBF" offset="0"/>
+    <stop stop-color="#ECECED" offset=".6285"/>
+    <stop stop-color="#fff" offset="1"/>
+  </linearGradient>
+  <polygon class="cls-0" points="6.4 143.4 75 120.9 75 8.7"/>
+  <linearGradient id="SVGID_2_" x1="75.11" x2="75.11" y1="143.4" y2="120.9" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#2D2A2C" offset=".0393"/>
+    <stop stop-color="#706D6E" offset="1"/>
+  </linearGradient>
+  <polygon class="cls-1" points="6.4 143.4 143.8 143.4 75 120.9"/>
+</svg>
