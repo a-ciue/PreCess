@@ -1,3 +1,5 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structsystems_1_1edit_1_1EditInfo.html" title="某个模型编辑操作的描述" alt="" coords="5,5,173,31"/>
+<area shape="rect" id="Node000000" href="$classsystems_1_1edit_1_1EditHandler.html" title="模型编辑系统的功能接口，继承他来实现具体的编辑功能" alt="" coords="5,13,200,38"/>
+<area shape="rect" id="Node000001" href="$classsystems_1_1edit_1_1TrivialEditHandler.html" title=" " alt="" coords="248,5,431,45"/>
+<area shape="poly" id="edge64_Node000000_Node000001" title=" " alt="" coords="214,23,248,23,248,28,214,28"/>
 </map>

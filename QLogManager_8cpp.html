@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/QLogManager.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#typedef-members">类型定义</a>  </div>
+  <div class="headertitle"><div class="title">QLogManager.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="QLogManager_8h_source.html">QLogManager.h</a>&quot;</code><br />
+<code>#include &lt;QMetaObject&gt;</code><br />
+<code>#include &lt;spdlog/sinks/base_sink.h&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QLogManager.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QLogManager_8cpp__incl.png" border="0" usemap="#aapp_2QLogManager_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2QLogManager_8cpp" id="aapp_2QLogManager_8cpp">
+<area shape="rect" title=" " alt="" coords="290,5,457,31"/>
+<area shape="rect" href="QLogManager_8h.html" title=" " alt="" coords="89,79,212,104"/>
+<area shape="poly" title=" " alt="" coords="338,33,200,77,199,72,337,28"/>
+<area shape="rect" title=" " alt="" coords="236,79,343,104"/>
+<area shape="poly" title=" " alt="" coords="362,33,315,72,312,67,358,29"/>
+<area shape="rect" title=" " alt="" coords="367,79,551,104"/>
+<area shape="poly" title=" " alt="" coords="389,29,436,68,433,72,385,33"/>
+<area shape="rect" title=" " alt="" coords="575,79,699,104"/>
+<area shape="poly" title=" " alt="" coords="416,28,582,72,581,78,415,33"/>
+<area shape="rect" title=" " alt="" coords="5,152,80,177"/>
+<area shape="poly" title=" " alt="" coords="135,106,73,147,70,142,132,102"/>
+<area shape="rect" title=" " alt="" coords="104,152,197,177"/>
+<area shape="poly" title=" " alt="" coords="153,104,153,138,148,138,148,104"/>
+<area shape="rect" title=" " alt="" coords="221,152,299,177"/>
+<area shape="poly" title=" " alt="" coords="170,102,232,142,229,147,167,106"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:QtLogSink_3C_20Mutex_20_3E" id="r_QtLogSink_3C_20Mutex_20_3E"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classQtLogSink.html">QtLogSink&lt; Mutex &gt;</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:a0b97978c57fb16b5b3a72628fa59c7fe" id="r_a0b97978c57fb16b5b3a72628fa59c7fe"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b97978c57fb16b5b3a72628fa59c7fe">QtLogSink_mt</a> = <a class="el" href="classQtLogSink.html">QtLogSink</a>&lt;std::mutex&gt;</td></tr>
+</table>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">类型定义说明</h2>
+<a id="a0b97978c57fb16b5b3a72628fa59c7fe" name="a0b97978c57fb16b5b3a72628fa59c7fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b97978c57fb16b5b3a72628fa59c7fe">&#9670;&#160;</a></span>QtLogSink_mt</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a0b97978c57fb16b5b3a72628fa59c7fe">QtLogSink_mt</a> = <a class="el" href="classQtLogSink.html">QtLogSink</a>&lt;std::mutex&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

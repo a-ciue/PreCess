@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/QLogManager.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QLogManager.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="QLogManager_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;QStringList&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="foldopen" id="foldopen00007" data-start="{" data-end="};">
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="classQLogManager.html">    7</a></span><span class="keyword">class </span><a class="code hl_function" href="classQLogManager.html#a8c6bdfbe14a7fb76cf713548af60e28c">QLogManager</a> : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>    Q_OBJECT</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="classQLogManager.html#a54bd5b2cffe4943a004f12511855ff16">    9</a></span>    Q_PROPERTY(QStringList <a class="code hl_property" href="classQLogManager.html#a54bd5b2cffe4943a004f12511855ff16">messages</a> READ <a class="code hl_property" href="classQLogManager.html#a54bd5b2cffe4943a004f12511855ff16">messages</a> NOTIFY <a class="code hl_signal" href="classQLogManager.html#ae9343cfa0b2d49fc31124b05539ccabf">messagesChanged</a>)</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classQLogManager.html#a8c6bdfbe14a7fb76cf713548af60e28c">QLogManager</a>(QObject* parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classQLogManager.html#a0a5b2f707c7a7310eaab26cc08f99873">initialize</a>();</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <span class="keyword">static</span> <a class="code hl_function" href="classQLogManager.html#a8c6bdfbe14a7fb76cf713548af60e28c">QLogManager</a>* <a class="code hl_function" href="classQLogManager.html#a2c0e1866534d3a822db7ad7cc7495cb5">instance</a>();</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    QStringList <a class="code hl_property" href="classQLogManager.html#a54bd5b2cffe4943a004f12511855ff16">messages</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQLogManager.html#af4b0c0c2a592df1ffdb5963d27d8985e">appendMessage</a>(<span class="keyword">const</span> QString&amp; level, <span class="keyword">const</span> QString&amp; message);</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>signals:</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classQLogManager.html#ae9343cfa0b2d49fc31124b05539ccabf">   21</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQLogManager.html#ae9343cfa0b2d49fc31124b05539ccabf">messagesChanged</a>();</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classQLogManager.html#a2fa8b5841d5e54c129711e8cd9e78de8">   22</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQLogManager.html#a2fa8b5841d5e54c129711e8cd9e78de8">newMessage</a>(<span class="keyword">const</span> QString&amp; level, <span class="keyword">const</span> QString&amp; message);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classQLogManager.html#a10d5775b28a02741db3b4ff9a22e84ec">   25</a></span>    QStringList <a class="code hl_variable" href="classQLogManager.html#a10d5775b28a02741db3b4ff9a22e84ec">messages_</a>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classQLogManager.html#a81331b0bca3f294201bd199499c258a8">   26</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="classQLogManager.html#a81331b0bca3f294201bd199499c258a8">MaxMessages</a> = 1000;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classQLogManager.html#aad82780540f0a4425033e99cfe20626c">   27</a></span>    <span class="keyword">static</span> std::unique_ptr&lt;QLogManager&gt; <a class="code hl_variable" href="classQLogManager.html#aad82780540f0a4425033e99cfe20626c">self_</a>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>};</div>
+</div>
+<div class="ttc" id="aclassQLogManager_html_a0a5b2f707c7a7310eaab26cc08f99873"><div class="ttname"><a href="classQLogManager.html#a0a5b2f707c7a7310eaab26cc08f99873">QLogManager::initialize</a></div><div class="ttdeci">static void initialize()</div><div class="ttdef"><b>定义</b> QLogManager.cpp:65</div></div>
+<div class="ttc" id="aclassQLogManager_html_a10d5775b28a02741db3b4ff9a22e84ec"><div class="ttname"><a href="classQLogManager.html#a10d5775b28a02741db3b4ff9a22e84ec">QLogManager::messages_</a></div><div class="ttdeci">QStringList messages_</div><div class="ttdef"><b>定义</b> QLogManager.h:25</div></div>
+<div class="ttc" id="aclassQLogManager_html_a2c0e1866534d3a822db7ad7cc7495cb5"><div class="ttname"><a href="classQLogManager.html#a2c0e1866534d3a822db7ad7cc7495cb5">QLogManager::instance</a></div><div class="ttdeci">static QLogManager * instance()</div><div class="ttdef"><b>定义</b> QLogManager.cpp:78</div></div>
+<div class="ttc" id="aclassQLogManager_html_a2fa8b5841d5e54c129711e8cd9e78de8"><div class="ttname"><a href="classQLogManager.html#a2fa8b5841d5e54c129711e8cd9e78de8">QLogManager::newMessage</a></div><div class="ttdeci">void newMessage(const QString &amp;level, const QString &amp;message)</div></div>
+<div class="ttc" id="aclassQLogManager_html_a54bd5b2cffe4943a004f12511855ff16"><div class="ttname"><a href="classQLogManager.html#a54bd5b2cffe4943a004f12511855ff16">QLogManager::messages</a></div><div class="ttdeci">QStringList messages</div><div class="ttdef"><b>定义</b> QLogManager.h:9</div></div>
+<div class="ttc" id="aclassQLogManager_html_a81331b0bca3f294201bd199499c258a8"><div class="ttname"><a href="classQLogManager.html#a81331b0bca3f294201bd199499c258a8">QLogManager::MaxMessages</a></div><div class="ttdeci">static constexpr int MaxMessages</div><div class="ttdef"><b>定义</b> QLogManager.h:26</div></div>
+<div class="ttc" id="aclassQLogManager_html_a8c6bdfbe14a7fb76cf713548af60e28c"><div class="ttname"><a href="classQLogManager.html#a8c6bdfbe14a7fb76cf713548af60e28c">QLogManager::QLogManager</a></div><div class="ttdeci">QLogManager(QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> QLogManager.cpp:60</div></div>
+<div class="ttc" id="aclassQLogManager_html_aad82780540f0a4425033e99cfe20626c"><div class="ttname"><a href="classQLogManager.html#aad82780540f0a4425033e99cfe20626c">QLogManager::self_</a></div><div class="ttdeci">static std::unique_ptr&lt; QLogManager &gt; self_</div><div class="ttdef"><b>定义</b> QLogManager.h:27</div></div>
+<div class="ttc" id="aclassQLogManager_html_ae9343cfa0b2d49fc31124b05539ccabf"><div class="ttname"><a href="classQLogManager.html#ae9343cfa0b2d49fc31124b05539ccabf">QLogManager::messagesChanged</a></div><div class="ttdeci">void messagesChanged()</div></div>
+<div class="ttc" id="aclassQLogManager_html_af4b0c0c2a592df1ffdb5963d27d8985e"><div class="ttname"><a href="classQLogManager.html#af4b0c0c2a592df1ffdb5963d27d8985e">QLogManager::appendMessage</a></div><div class="ttdeci">Q_INVOKABLE void appendMessage(const QString &amp;level, const QString &amp;message)</div><div class="ttdef"><b>定义</b> QLogManager.cpp:88</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

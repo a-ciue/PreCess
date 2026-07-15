@@ -1,0 +1,8 @@
+<map id="QLogManager" name="QLogManager">
+<area shape="rect" id="Node000001" title=" " alt="" coords="69,80,181,105"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,176,244,201"/>
+<area shape="poly" id="edge3_Node000003_Node000001" title=" " alt="" coords="103,117,95,130,93,141,95,151,112,174,108,177,90,153,87,141,90,128,99,114"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="87,5,162,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,45,127,80,122,80,122,45"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="122,162,122,105,127,105,127,162"/>
+</map>

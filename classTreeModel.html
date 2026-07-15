@@ -230,6 +230,7 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:ae48786145852f8e1052a75450ab27e44" id="r_ae48786145852f8e1052a75450ab27e44"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae48786145852f8e1052a75450ab27e44">refresh</a> ()</td></tr>
 <tr class="memitem:a73844970c5827a1429c341ad58b9c849" id="r_a73844970c5827a1429c341ad58b9c849"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73844970c5827a1429c341ad58b9c849">setVisibility</a> (const QModelIndex &amp;idx, bool visible)</td></tr>
 <tr class="memitem:a856e0a0770784805a92c4c2ec1ead38a" id="r_a856e0a0770784805a92c4c2ec1ead38a"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QModelIndex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a856e0a0770784805a92c4c2ec1ead38a">findIndexByNodeId</a> (int nodeId, int depth) const</td></tr>
+<tr class="memitem:a936fc094472c4670f1e3be25c274afd4" id="r_a936fc094472c4670f1e3be25c274afd4"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a936fc094472c4670f1e3be25c274afd4">setAllVisibility</a> (bool visible)</td></tr>
 <tr class="memitem:aff64ec5c6c13a3976e9c33d21f75f441" id="r_aff64ec5c6c13a3976e9c33d21f75f441"><td class="memItemLeft" align="right" valign="top">QObject *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff64ec5c6c13a3976e9c33d21f75f441">getModelQuery</a> () const</td></tr>
 <tr class="memitem:ae8c22a64a5792e32c247cac76b8f486d" id="r_ae8c22a64a5792e32c247cac76b8f486d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8c22a64a5792e32c247cac76b8f486d">setModelQuery</a> (QObject *query)</td></tr>
 </table><table class="memberdecls">
@@ -242,6 +243,7 @@ Private 成员函数</h2></td></tr>
 <tr class="memitem:a068068c71d4a20b98e2a48724fce5b2c" id="r_a068068c71d4a20b98e2a48724fce5b2c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a068068c71d4a20b98e2a48724fce5b2c">getNode</a> (const QModelIndex &amp;<a class="el" href="#a708ec451d6a9dfda530e36284eae78c4">index</a>) const</td></tr>
 <tr class="memitem:a62bec23ec113129c36f4728814460db0" id="r_a62bec23ec113129c36f4728814460db0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62bec23ec113129c36f4728814460db0">emitDescendantDataChanged</a> (const QModelIndex &amp;parentIndex)</td></tr>
 <tr class="memitem:a9fbff31068e0b9b6187d2e2aedfc1d2b" id="r_a9fbff31068e0b9b6187d2e2aedfc1d2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9fbff31068e0b9b6187d2e2aedfc1d2b">setNodeVisibility</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, bool visible)</td></tr>
+<tr class="memitem:a7fe84c9ef47b8d65942ac260e236577c" id="r_a7fe84c9ef47b8d65942ac260e236577c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7fe84c9ef47b8d65942ac260e236577c">setComponentVisibility</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, bool visible)</td></tr>
 <tr class="memitem:a2c43f8c1318d19eca36208c562cb9204" id="r_a2c43f8c1318d19eca36208c562cb9204"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c43f8c1318d19eca36208c562cb9204">syncSubNodes</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
@@ -586,6 +588,52 @@ Private 属性</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a936fc094472c4670f1e3be25c274afd4" name="a936fc094472c4670f1e3be25c274afd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a936fc094472c4670f1e3be25c274afd4">&#9670;&#160;</a></span>setAllVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::setAllVisibility </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7fe84c9ef47b8d65942ac260e236577c" name="a7fe84c9ef47b8d65942ac260e236577c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fe84c9ef47b8d65942ac260e236577c">&#9670;&#160;</a></span>setComponentVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::setComponentVisibility </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
