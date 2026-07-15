@@ -8,9 +8,6 @@ import app.model
 Item {
     id: jsConsole
 
-    // 关闭请求信号
-    signal closeRequested()
-
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 6
@@ -78,8 +75,8 @@ Item {
                     if (text.endsWith(".")) {
                         let parentId = text.substring(0, text.length - 1).trim()
                         if (parentId) {
-                            let parentComponent = findComponentById(parentId)
-                            if (parentId) {
+                        let parentComponent = findComponentById(parentId)
+                        if (parentComponent) {
                                 var childrenList = getChildrenList(parentComponent)
                                 outputText.text += "子组件列表 (" + parentId + "):\n"
                                 outputText.text += childrenList + "\n"

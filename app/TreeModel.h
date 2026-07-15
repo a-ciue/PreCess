@@ -53,6 +53,7 @@ public:
     Q_INVOKABLE bool refresh();
     Q_INVOKABLE bool setVisibility(const QModelIndex& idx, bool visible);
     Q_INVOKABLE QModelIndex findIndexByNodeId(int nodeId, int depth) const;
+    Q_INVOKABLE void setAllVisibility(bool visible);
 
     QObject* getModelQuery() const { return modelQuery_; }
     void setModelQuery(QObject* query);
@@ -61,6 +62,7 @@ private:
     TreeNode* getNode(const QModelIndex& index) const;
     void emitDescendantDataChanged(const QModelIndex& parentIndex);
     void setNodeVisibility(TreeNode* node, bool visible);
+    void setComponentVisibility(TreeNode* node, bool visible);
     void syncSubNodes(TreeNode* node);
 
     TreeNode* rootNode = nullptr;

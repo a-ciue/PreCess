@@ -48,6 +48,12 @@ Page {
                     myItem.setMeshClip(checked)
                 }
             }
+            ToolButton {
+                text: "重置视图"
+                Layout.preferredWidth: 70
+                Layout.fillHeight: true
+                onClicked: myItem.resetCamera()
+            }
             Label {
                 Layout.fillWidth: true
             }
@@ -88,6 +94,8 @@ Page {
                 function onActiveComponentIdChanged() {
                     if (App.selection.activeComponentId >= 0)
                         myItem.setSelectComponent(App.selection.activeComponentId)
+                    else
+                        myItem.clearSelection()
                 }
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
             }

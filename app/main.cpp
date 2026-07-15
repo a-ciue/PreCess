@@ -1,3 +1,4 @@
+#include "QLogManager.h"
 #include "QModelManager.h"
 #include <QQuickVTKItem.h>
 #include <QtQml/QQmlApplicationEngine>
@@ -15,6 +16,8 @@ int main(int argc, char* argv[])
     app.setWindowIcon(QIcon(":/images/PreCess.ico"));
     KDDockWidgets::initFrontend(KDDockWidgets::FrontendType::QtQuick);
 
+    QLogManager::initialize();
+
     QQmlApplicationEngine engine;
     KDDockWidgets::QtQuick::Platform::instance()->setQmlEngine(&engine);
 
@@ -24,6 +27,8 @@ int main(int argc, char* argv[])
     for (auto& argument_str : arguments_str) {
         arguments << QUrl::fromLocalFile(argument_str);
     }
+
+    engine.rootContext()->setContextProperty("QLogManager", QLogManager::instance());
 
     // 将参数列表暴露给QML
     engine.rootContext()->setContextProperty("commandLineArgs", QVariant::fromValue(arguments));

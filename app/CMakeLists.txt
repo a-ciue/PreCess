@@ -13,6 +13,8 @@ qt_add_qml_module(${MYNAME}
         SOURCES
             TreeModel.h
             TreeModel.cpp
+            QLogManager.h
+            QLogManager.cpp
         QML_FILES
             Main.qml
             CentralRenderArea.qml
@@ -20,8 +22,8 @@ qt_add_qml_module(${MYNAME}
             ObjectTree.qml
             Selector.qml
             JavaScriptConsole.qml
-            PluginManagerComponent.qml
-            AttributeRenderPanel.qml
+            PreferencesWindow.qml
+            OutputLog.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE
@@ -29,12 +31,13 @@ target_link_libraries(${MYNAME}
     VTK::GUISupportQtQuick
     Qt${VTK_QT_VERSION}::Quick
     KDAB::kddockwidgets
+    spdlog::spdlog
 )
 
 # - Prevent the creation of a console window on Windows.
 # - Create an application bundle on macOS.
 set_target_properties(${MYNAME} PROPERTIES
-#    WIN32_EXECUTABLE ON
+    WIN32_EXECUTABLE ON
     MACOSX_BUNDLE ON
 )
 
