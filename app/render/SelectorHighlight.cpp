@@ -32,9 +32,10 @@
 #include <vtkUnstructuredGrid.h>
 #include <spdlog/spdlog.h>
 
-BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer* renderer)
+BlockSelectorHighlight::BlockSelectorHighlight(vtkRenderer& renderer, vtkActor&, MeshActorSelectOp select_op)
+    : renderer_(&renderer)
+    , select_op_(std::move(select_op))
 {
-    this->renderer_ = renderer;
 }
 
 void BlockSelectorHighlight::clear()
@@ -60,11 +61,7 @@ void BlockSelectorHighlight::select(double posx, double posy)
 {
     vtkNew<vtkCellPicker> picker;
     picker->PickFromListOn();
-    collection_->InitTraversal();
-    for (vtkProp* actor {}; actor = collection_->GetNextProp();) {
-        picker->AddPickList(actor);
-    }
-
+    picker->AddPickList(&select_op_.getBlockActor());
     picker->Pick(posx, posy, 0, this->renderer_);
     vtkProp* pickedProp = picker->GetViewProp();
 
@@ -149,15 +146,6 @@ void BlockSelectorHighlight::highlightBlockByCellColor(vtkCompositePolyDataMappe
 
     block->GetCellData()->SetScalars(colors);
     block->Modified(); // 通知 VTK 数据已更新
-}
-
-void BlockSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
-{
-    this->collection_->RemoveAllItems();
-    if (auto actor = model_actor.lock()) {
-        this->collection_->AddItem(&actor->getBlockActor());
-    }
-    this->model_actor_ = model_actor;
 }
 
 void BlockSelectorHighlight::_cancel_highlight(Block& selection)

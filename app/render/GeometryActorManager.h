@@ -1,6 +1,7 @@
 #ifndef GEOMETRY_ACTOR_MANAGER_H
 #define GEOMETRY_ACTOR_MANAGER_H
 #include "Core.h"
+#include "GeometryActorManagerSelectOp.h"
 #include <memory>
 #include <unordered_map>
 #include <vector>
@@ -27,9 +28,12 @@ public:
     void setRenderMode(Index component_id, GeometryRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
 
+    GeometryActorManagerSelectOp& op() { return op_; }
+    const GeometryActorManagerSelectOp& op() const { return op_; }
+
 private:
+    GeometryActorManagerSelectOp op_{*this};
     std::unordered_map<Index, std::shared_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
 };
-
 #endif

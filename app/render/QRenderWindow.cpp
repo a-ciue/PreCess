@@ -21,7 +21,6 @@ QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
-    selectManager_ = std::make_unique<SelectManager>();
     edge_render_ = false;
 }
 
@@ -44,8 +43,6 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->renderer_->SetBackground2(0.7, 0.7, 0.7);
     vtk->renderer_->SetGradientBackground(true);
 
-    vtk->style_->SetSelectManager(this->selectManager_.get());
-    selectManager_->bindRenderer(vtk->renderer_);
     vtk->style_->SetDefaultRenderer(vtk->renderer_);
     renderWindow->GetInteractor()->SetInteractorStyle(vtk->style_);
 
@@ -55,6 +52,10 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
+
+    select_manager_ = std::make_unique<SelectManager>(*vtk->renderer_,
+        vtk->mesh_actor_manager_->op(), vtk->geometry_actor_manager_->op());
+    vtk->style_->SetSelectManager(this->select_manager_.get());
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
@@ -151,7 +152,7 @@ void QRenderWindow::deleteModel(Index model_id)
             vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
 
-        this->selectManager_->clearSelection();
+        this->select_manager_->clearSelection();
     });
 }
 
@@ -168,7 +169,7 @@ void QRenderWindow::deleteComponent(Index component_id)
             vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
 
-        this->selectManager_->clearSelection();
+        this->select_manager_->clearSelection();
     });
 }
 
@@ -267,7 +268,7 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
 {
     dispatch_async([model_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        selectManager_->clearSelection();
+        select_manager_->clearSelection();
 
         auto component_ids = model_query_->getComponentIds(model_id);
         for (Index component_id : component_ids) {
@@ -294,7 +295,7 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 
 QSelection* QRenderWindow::selectedIDs()
 {
-    std::unique_ptr<Selection> data = this->selectManager_->getSelection();
+    std::unique_ptr<Selection> data = this->select_manager_->getSelection();
     if (!data) {
         return nullptr;
     }
@@ -343,38 +344,20 @@ void QRenderWindow::setSelectComponent(Index component_id)
         Data* vtk = Data::SafeDownCast(userData);
         this->cur_component_id_ = component_id;
         this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
-
-        std::shared_ptr<MeshActor> mesh_actor;
-        if (vtk->mesh_actor_manager_->hasComponent(component_id))
-            mesh_actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
-
-        if (mesh_actor)
-            selectManager_->setSelectActor(mesh_actor);
-        else
-            selectManager_->setSelectActor(std::weak_ptr<MeshActor> {});
-
-        std::shared_ptr<GeometryActor> geometry_actor;
-        if (vtk->geometry_actor_manager_->hasComponent(component_id))
-            geometry_actor = vtk->geometry_actor_manager_->getComponentActor(component_id);
-
-        if (geometry_actor)
-            selectManager_->setSelectActor(geometry_actor);
-        else
-            selectManager_->setSelectActor(std::weak_ptr<GeometryActor> {});
     });
 }
 
 void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        selectManager_->setSelectMode(select_mode.toStdString());
+        select_manager_->setSelectMode(select_mode.toStdString());
     });
 }
 
 void QRenderWindow::clearSelection()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        this->selectManager_->clearSelection();
+        this->select_manager_->clearSelection();
     });
 }
 
@@ -383,7 +366,7 @@ void QRenderWindow::setRenderMode(Index model_id, QString render_mode)
 
     dispatch_async([model_id, render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        this->selectManager_->clearSelection();
+        this->select_manager_->clearSelection();
 
         auto component_ids = model_query_->getComponentIds(model_id);
 

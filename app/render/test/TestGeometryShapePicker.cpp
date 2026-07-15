@@ -1,6 +1,7 @@
 #include "GeometryActor.h"
 #include "GeometryActorManager.h"
 #include "GeometrySelectManager.h"
+#include "GeometryActorManagerSelectOp.h"
 
 #include "GeometryRegistry.h"
 #include "GeometrySubshapeIndex.h"
@@ -258,14 +259,12 @@ int main(int argc, char** argv)
     gmgr.setRenderEdge(component_id, true);
     gmgr.setVisibility(component_id, true);
 
-    GeometrySelectManager selMgr;
     vtkNew<vtkActor> highlightActor;
     highlightActor->PickableOff();
     renderer->AddActor(highlightActor);
-    selMgr.bindRenderer(renderer, highlightActor);
 
-    auto geomActor = gmgr.getComponentActor(component_id);
-    selMgr.setSelectActor(geomActor);
+    GeometrySelectManager selMgr(*renderer, *highlightActor, gmgr.op());
+
     selMgr.setSelectMode(mode);
 
     vtkNew<GeometrySelectInteractorStyle> style;

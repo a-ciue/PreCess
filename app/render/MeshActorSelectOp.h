@@ -2,11 +2,12 @@
 #define MESH_ACTOR_SELECT_OP_H
 #include <memory>
 #include <optional>
-#include <vtkProp.h>
-#include <vtkPolyData.h>
-#include <vtkExtractSelection.h>
-#include <vtkIdTypeArray.h>
+#include <vtkSmartPointer.h>
 
+class vtkIdTypeArray;
+class vtkProp;
+class vtkPolyData;
+class vtkExtractSelection;
 class MeshActorSelectOp;
 class MeshActor;
 
@@ -57,7 +58,7 @@ public:
      */
     vtkSmartPointer<vtkExtractSelection> extractVertex(vtkIdTypeArray* ids);
 
-     /**
+    /**
      * @brief 根据边的点id对，提取边数据
      * @param ids 每个元素表示一条边（起始点ID，结束点ID）
      * @return 提取出的边数据 Filter

@@ -5,22 +5,15 @@
 #include <vector>
 
 #include <vtkSmartPointer.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <IVtkTools_SubPolyDataFilter.hxx>
-#include <IVtk_Types.hxx>
 
 #include "Core.h"
 #include "GeometryActor.h"
 
 class GeometryActorSelectOp;
 class IVtkTools_ShapePicker;
+class IVtkTools_SubPolyDataFilter;
+class vtkActor;
 class vtkRenderer;
-
-struct GeometryHighlightPipeline {
-    vtkSmartPointer<IVtkTools_SubPolyDataFilter> filter;
-    vtkSmartPointer<vtkPolyDataMapper> mapper;
-};
 
 class GeometryActorSelectOpFactory {
     friend GeometryActorSelectOp;
@@ -50,7 +43,9 @@ public:
     bool pickSolid(IVtkTools_ShapePicker* picker, vtkRenderer* renderer, double posx, double posy,
         GeomSolidId& out_solid_id, std::vector<IVtk_IdType>& out_face_sub_ids);
 
-    GeometryHighlightPipeline buildHighlight(SelectMode mode);
+    vtkSmartPointer<IVtkTools_SubPolyDataFilter> buildHighlight(SelectMode mode);
+
+    vtkActor* getPolyActor();
 
 private:
     std::shared_ptr<GeometryActor> geometry_actor_;

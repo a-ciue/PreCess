@@ -4,9 +4,9 @@
 #include "SelectorHighlight.h"
 #include <optional>
 #include <spdlog/spdlog.h>
-#include <vtkDataSetMapper.h>
 #include <vtkHardwarePicker.h>
 #include <vtkLine.h>
+#include <vtkPartitionedDataSet.h>
 #include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkProperty.h>
@@ -18,7 +18,7 @@ std::array<vtkIdType, 2> _find_selected_edge(vtkHardwarePicker& picker, vtkCell&
     if (picked_cell.GetCellType() == VTK_LINE)
         return { picked_cell.GetPointId(0), picked_cell.GetPointId(1) };
 
-    double pPos[3] {};
+    double pPos[3] { };
     picker.GetPCoords(pPos);
 
     vtkNew<vtkIdList> cellIds;
@@ -34,12 +34,6 @@ std::array<vtkIdType, 2> _find_selected_edge(vtkHardwarePicker& picker, vtkCell&
     return { original_id[0], original_id[1] };
 }
 
-void _cancel_highlight(vtkDataSetMapper* selectedMapper)
-{
-    vtkNew<vtkPolyData> empty;
-    selectedMapper->SetInputData(empty);
-}
-
 bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::array<vtkIdType, 2>>& selection)
 {
     if (selection) {
@@ -53,31 +47,26 @@ bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::
 }
 }
 
-EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer* renderer, vtkActor* highlight_actor)
+EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
+    unsigned int partition_id, MeshActorSelectOp select_op)
+    : renderer_(&renderer)
+    , select_op_(std::move(select_op))
+    , highlight_data_(&highlight_data)
+    , partition_id_(partition_id)
 {
-    this->highlight_actor_ = highlight_actor;
-    this->renderer_ = renderer;
-
-    selected_mapper_->SetInputData(vtkPolyData::New());
-
-    if (highlight_actor_) {
-        highlight_actor_->SetMapper(selected_mapper_);
-        vtkNew<vtkProperty> prop;
-        prop->SetColor(MeshActor::colors->GetColor3d("red").GetData());
-        prop->SetLineWidth(5);
-        highlight_actor_->SetProperty(prop);
-    }
+    highlight_data_->SetPartition(partition_id_, selections_poly_);
 }
 
-EdgeSelectorHighlight::~EdgeSelectorHighlight() 
-{ 
-    clear(); 
+EdgeSelectorHighlight::~EdgeSelectorHighlight()
+{
+    highlight_data_->SetPartition(partition_id_, nullptr);
 }
 
 void EdgeSelectorHighlight::clear()
 {
-    _cancel_highlight(selected_mapper_);
     selections_.clear();
+    selections_poly_->Initialize();
+    highlight_data_->Modified();
 }
 
 SelectionVtk EdgeSelectorHighlight::get()
@@ -98,60 +87,52 @@ void EdgeSelectorHighlight::select(double posx, double posy)
 {
     vtkNew<vtkHardwarePicker> picker;
     picker->PickFromListOn();
-    collection_->InitTraversal();
-    for (vtkProp* actor {}; actor = collection_->GetNextProp();) {
-        picker->AddPickList(actor);
-    }
+    picker->AddPickList(&select_op_.getEdgeActor());
+    picker->AddPickList(&select_op_.getFaceActor());
+    picker->AddPickList(&select_op_.getSolidActor());
     picker->Pick(posx, posy, 0, renderer_);
 
     // 获取选中的CellId （面或者是边）
-    vtkIdType pickedCellId = picker->GetCellId();
-    if (pickedCellId != -1) {
-        // 获取选中的 cell
-        vtkActor* pickedActor = picker->GetActor();
-        assert(pickedActor);
-        vtkPolyDataMapper* pickedMapper = vtkPolyDataMapper::SafeDownCast(pickedActor->GetMapper());
-        assert(pickedMapper);
-        vtkPolyData* pickedPoly = pickedMapper->GetInput();
-        vtkCell* pickedCell = pickedPoly->GetCell(pickedCellId);
-        assert(picker && pickedCell);
-
-        // 边端点的原始id
-        std::array<vtkIdType, 2> original_id = _find_selected_edge(*picker, *pickedCell, *pickedPoly);
-
-        // 检查是否已选中
-        auto it = std::find_if(selections_.begin(), selections_.end(),
-            [&](const std::array<vtkIdType, 2>& id) {
-                return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(id));
-            });
-
-        if (it != selections_.end()) {
-            // 已选中，取消选中
-            selections_.erase(it);
-        } else {
-            // 未选中，添加
-            selections_.push_back(original_id);
-        }
-
-        auto model_actor = model_actor_.lock();
-        assert(model_actor);
-        // 获取原始点数据构建的边PolyData
-        auto edge_poly_data = model_actor->extractEdge(selections_);
-        // 设置PolyData到mapper
-        selected_mapper_->SetInputData(edge_poly_data);
-    } else {
-        // 没选到
+    vtkIdType picked_cell_id = picker->GetCellId();
+    if (picked_cell_id == -1) { // 没选到
         clear();
+        return;
     }
+
+    // 获取选中的 cell
+    vtkActor* picked_actor = picker->GetActor();
+    assert(picked_actor);
+    vtkPolyDataMapper* picked_mapper = vtkPolyDataMapper::SafeDownCast(picked_actor->GetMapper());
+    assert(picked_mapper);
+    vtkPolyData* picked_poly = picked_mapper->GetInput();
+    vtkCell* picked_cell = picked_poly->GetCell(picked_cell_id);
+    assert(picked_cell);
+
+    // 边端点的原始id
+    std::array<vtkIdType, 2> original_id = _find_selected_edge(*picker, *picked_cell, *picked_poly);
+
+    // 检查是否已选中
+    auto it = std::find_if(selections_.begin(), selections_.end(),
+        [&](const std::array<vtkIdType, 2>& id) {
+            return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(id));
+        });
+
+    if (it != selections_.end()) { // 已选中，取消选中
+        selections_.erase(it);
+    } else { // 未选中，添加
+        selections_.push_back(original_id);
+    }
+
+    auto edge_poly_data = select_op_.extractEdge(selections_);
+    selections_poly_->ShallowCopy(edge_poly_data);
+    highlight_data_->Modified();
 }
 
-void EdgeSelectorHighlight::setCurModelActor(MeshActorSelectOpFactory model_actor)
+void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
 {
-    this->collection_->RemoveAllItems();
-    if (auto actor = model_actor.lock()) {
-        this->collection_->AddItem(&actor->getEdgeActor());
-        this->collection_->AddItem(&actor->getFaceActor());
-        this->collection_->AddItem(&actor->getSolidActor());
-    }
-    this->model_actor_ = model_actor;
+    actor.SetMapper(&mapper);
+    vtkNew<vtkProperty> prop;
+    prop->SetColor(MeshActor::colors->GetColor3d("red").GetData());
+    prop->SetLineWidth(5);
+    actor.SetProperty(prop);
 }

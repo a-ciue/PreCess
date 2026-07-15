@@ -1,108 +1,124 @@
 #include "GeometrySelectManager.h"
-#include "GeometryActor.h"
+#include "GeometryActorManagerSelectOp.h"
+#include "GeometryActorSelectOp.h"
+#include "GeometrySelectorHighlight.h"
+#include "Selection.h"
+#include <IVtkTools_ShapePicker.hxx>
+#include <vtkCompositePolyDataMapper.h>
+#include <vtkHardwarePicker.h>
+#include <vtkPartitionedDataSet.h>
 #include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <cassert>
 
-void GeometrySelectManager::bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor)
+GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op)
+    : op_(&op)
+    , renderer_(&renderer)
+    , highlight_actor_(&highlight_actor)
 {
-    this->renderer_ = renderer;
-    this->highlight_actor_ = highlight_actor;
-    if (!picker_) {
-        picker_ = vtkSmartPointer<IVtkTools_ShapePicker>::New();
-        picker_->SetRenderer(renderer);
-        picker_->SetAreaSelection(false);
-    }
+    highlight_data_ = vtkSmartPointer<vtkPartitionedDataSet>::New();
+    highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
+    highlight_mapper_->SetInputDataObject(highlight_data_);
+
+    component_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
+    component_picker_->PickFromListOn();
+    op_->managePickList(component_picker_->GetPickList());
+
+    picker_ = vtkSmartPointer<IVtkTools_ShapePicker>::New();
+    picker_->SetRenderer(renderer_);
+    picker_->SetAreaSelection(false);
 }
 
 void GeometrySelectManager::select(double posx, double posy)
 {
-    if (this->selector_) {
-        this->selector_->select(posx, posy);
-    }
-}
+    if (this->select_mode_ == SelectMode::None)
+        return;
+    if (this->select_mode_ < SelectMode::GeometryVertex)
+        return;
 
-void GeometrySelectManager::setSelectActor(std::weak_ptr<GeometryActor> geom_actor)
-{
-    this->cur_geom_actor_ = GeometryActorSelectOpFactory { geom_actor };
-    if (this->selector_) {
-        this->selector_->clear();
-        this->selector_->setPicker(picker_);
-        this->selector_->setCurGeomActor(*cur_geom_actor_);
-    }
+    component_picker_->Pick(posx, posy, 0, renderer_);
+
+    vtkActor* picked_actor = component_picker_->GetActor();
+    auto component_id = op_->getComponentId(picked_actor);
+    if (!component_id)
+        return;
+
+    if (auto* sel = getOrCreateSelector(*component_id))
+        sel->select(posx, posy);
 }
 
 void GeometrySelectManager::setSelectMode(SelectMode select_mode)
 {
-    this->clearSelection();
     this->select_mode_ = select_mode;
+    this->clearSelection();
 
-    if (this->selector_) {
-        this->selector_->setPicker(picker_);
-        this->selector_->setCurGeomActor(GeometryActorSelectOpFactory {});
-    }
-
-    if (this->select_mode_ == SelectMode::GeometryVertex) {
-        this->selector_ = std::make_unique<GeometryVertexSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::GeometryFace) {
-        this->selector_ = std::make_unique<GeometryFaceSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::GeometryEdge) {
-        this->selector_ = std::make_unique<GeometryEdgeSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::GeometrySolid) {
-        this->selector_ = std::make_unique<GeometrySolidSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else {
-        this->selector_ = nullptr;
-    }
-
-    if (this->selector_ && this->cur_geom_actor_) {
-        this->selector_->setPicker(picker_);
-        this->selector_->setCurGeomActor(*cur_geom_actor_);
+    switch (select_mode) {
+    case SelectMode::GeometryFace:
+        GeometryFaceSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
+    case SelectMode::GeometryEdge:
+        GeometryEdgeSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
+    case SelectMode::GeometryVertex:
+        GeometryVertexSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
+    case SelectMode::GeometrySolid:
+        GeometrySolidSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
     }
 }
 
 void GeometrySelectManager::clearSelection()
 {
-    if (this->selector_) {
-        this->selector_->clear();
-    }
-    if (this->renderer_ && this->renderer_->GetRenderWindow())
-        this->renderer_->GetRenderWindow()->Render();
+    this->component_selectors_.clear();
+    highlight_data_->Initialize();
 }
 
 std::unique_ptr<Selection> GeometrySelectManager::getSelection()
 {
-    std::unique_ptr<Selection> selection = std::make_unique<Selection>();
-    
-    if (!this->selector_) 
-    {
+    auto result = std::make_unique<Selection>();
+
+    for (auto& [comp_id, sel] : component_selectors_) {
+        auto selection = sel->get();
+        for (const auto& id : selection.ids)
+            result->ids.push_back(id);
+        if (selection.ids.size()) {
+            result->component_id = comp_id;
+            result->type = selection.type;
+        }
+    }
+
+    return result;
+}
+
+GeometrySelectorHighlight* GeometrySelectManager::getOrCreateSelector(Index component_id)
+{
+    auto it = component_selectors_.find(component_id);
+    if (it != component_selectors_.end())
+        return it->second.get();
+
+    auto select_op = op_->getSelectOp(component_id);
+    if (!select_op)
+        return nullptr;
+
+    unsigned int pid = component_selectors_.size();
+    std::unique_ptr<GeometrySelectorHighlight> sel;
+    switch (select_mode_) {
+    case SelectMode::GeometryFace:
+        sel = std::make_unique<GeometryFaceSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op), picker_);
+        break;
+    case SelectMode::GeometryEdge:
+        sel = std::make_unique<GeometryEdgeSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op), picker_);
+        break;
+    case SelectMode::GeometryVertex:
+        sel = std::make_unique<GeometryVertexSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op), picker_);
+        break;
+    case SelectMode::GeometrySolid:
+        sel = std::make_unique<GeometrySolidSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op), picker_);
+        break;
+    default:
         return nullptr;
     }
 
-    if (this->select_mode_ == SelectMode::GeometryVertex) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::GeometryVertex;
-    } else if (this->select_mode_ == SelectMode::GeometryFace) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::GeometryFace;
-    } else if (this->select_mode_ == SelectMode::GeometryEdge) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::GeometryEdge;
-    } else if (this->select_mode_ == SelectMode::GeometrySolid) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::GeometrySolid;
-    } else {
-        if (this->selector_)
-            this->selector_->clear();
-        return nullptr;
-    }
-
-    return selection;
+    auto* ptr = sel.get();
+    component_selectors_[component_id] = std::move(sel);
+    return ptr;
 }

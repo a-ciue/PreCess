@@ -35,14 +35,27 @@ std::shared_ptr<MeshActor> MeshActorManager::getComponentActor(Index component_i
     }
 }
 
+std::vector<Index> MeshActorManager::getAllComponentIds() const
+{
+    std::vector<Index> ids;
+    ids.reserve(component_actors_.size());
+    for (const auto& [id, _] : component_actors_) {
+        ids.push_back(id);
+    }
+    return ids;
+}
+
 void MeshActorManager::deleteComponent(Index component_id)
 {
-    if (this->component_actors_.count(component_id)) {
+    auto it = component_actors_.find(component_id);
+    if (it != component_actors_.end()) {
+        op_.unregisterProps(it->second);
+        component_actors_.erase(it);
+
         if (scalar_bar_component_id_ == component_id) {
             scalar_bar_->SetVisibility(false);
             scalar_bar_component_id_ = -1;
         }
-        this->component_actors_.erase(component_id);
     }
 }
 
@@ -71,6 +84,7 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
     auto& actor = this->component_actors_[component_id];
     actor->loadModelData(model_data);
     actor->setRenderMode(render_mode);
+    op_.registerProps(component_id, actor);
 }
 
 void MeshActorManager::setVisibility(Index component_id, bool visibility)

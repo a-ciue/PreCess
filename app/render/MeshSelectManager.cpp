@@ -1,98 +1,126 @@
 #include "MeshSelectManager.h"
-#include "MeshActor.h"
+#include "MeshActorManagerSelectOp.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
-#include <vtkActor.h>
-#include <vtkAppendPolyData.h>
-#include <vtkCellArray.h>
-#include <vtkProperty.h>
+#include <vtkCompositePolyDataMapper.h>
+#include <vtkHardwarePicker.h>
+#include <vtkPartitionedDataSet.h>
+#include <vtkRenderer.h>
 
-void MeshSelectManager::bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor)
+MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorManagerSelectOp& op)
+    : op_(&op)
+    , renderer_(&renderer)
+    , highlight_actor_(&highlight_actor)
 {
-    this->renderer_ = renderer;
-    this->highlight_actor_ = highlight_actor;
+    component_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
+    highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
+    highlight_data_ = vtkSmartPointer<vtkPartitionedDataSet>::New();
+
+    highlight_mapper_->SetInputDataObject(highlight_data_);
+    component_picker_->PickFromListOn();
+    op_->managePickList(component_picker_->GetPickList());
 }
 
 void MeshSelectManager::select(double posx, double posy)
 {
-    if (this->selector_) {
-        assert(this->select_mode_ != SelectMode::None);
-        this->selector_->select(posx, posy);
-    }
-}
+    if (this->select_mode_ == SelectMode::None || this->select_mode_ > SelectMode::Block)
+        return;
 
-void MeshSelectManager::setSelectActor(std::weak_ptr<MeshActor> model_actor_)
-{
-    this->cur_model_actor_ = MeshActorSelectOpFactory { model_actor_ };
-    if (this->selector_) {
-        this->selector_->clear();
-        this->selector_->setCurModelActor(*cur_model_actor_);
-    }
+    component_picker_->Pick(posx, posy, 0, renderer_);
+
+    vtkActor* picked_actor = component_picker_->GetActor();
+    auto component_id = op_->getComponentId(picked_actor);
+    if (!component_id)
+        return;
+
+    if (auto* sel = getOrCreateSelector(*component_id))
+        sel->select(posx, posy);
 }
 
 void MeshSelectManager::setSelectMode(SelectMode select_mode)
 {
     this->select_mode_ = select_mode;
-    if (this->select_mode_ == SelectMode::Vertex) {
-        this->selector_ = std::make_unique<VertexSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::Face) {
-        this->selector_ = std::make_unique<FaceSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::Block) {
-        this->selector_ = std::make_unique<BlockSelectorHighlight>(this->renderer_);
-    } else if (this->select_mode_ == SelectMode::Edge) {
-        this->selector_ = std::make_unique<EdgeSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else if (this->select_mode_ == SelectMode::Solid) {
-        this->selector_ = std::make_unique<SolidSelectorHighlight>(this->renderer_, this->highlight_actor_);
-    } else {
-        this->selector_ = nullptr;
-    }
+    this->component_selectors_.clear();
 
-    if (this->selector_ && this->cur_model_actor_) {
-        this->selector_->setCurModelActor(*cur_model_actor_);
-    }
+    highlight_data_->Initialize();
+    applyHighlightStyle(select_mode);
 }
 
 void MeshSelectManager::clearSelection()
 {
-    if (this->selector_) {
-        this->selector_->clear();
-    }
+    this->component_selectors_.clear();
 }
 
 std::unique_ptr<Selection> MeshSelectManager::getSelection()
 {
-    std::unique_ptr<Selection> selection = std::make_unique<Selection>();
+    auto result = std::make_unique<Selection>();
 
-    if (this->select_mode_ == SelectMode::Vertex) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
+    for (auto& [comp_id, sel] : component_selectors_) {
+        auto selection = sel->get();
+
+        for (const auto& id : selection.ids)
+            result->ids.push_back(id);
+
+        if (selection.ids.size()) {
+            result->component_id = comp_id;
+            result->type = selection.type;
         }
-        selection->type = ElementEnum::Vertex;
-    } else if (this->select_mode_ == SelectMode::Face) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Face;
-    } else if (this->select_mode_ == SelectMode::Block) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Block;
-    }else if (this->select_mode_ == SelectMode::Solid) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Solid;
-    } else if (this->select_mode_ == SelectMode::Edge) {
-        for (const auto& id : this->selector_->get().ids) {
-            selection->ids.push_back(id);
-        }
-        selection->type = ElementEnum::Edge;
-    } else {
-        if (this->selector_)
-            this->selector_->clear();
+    }
+
+    return result;
+}
+
+SelectorHighlight* MeshSelectManager::getOrCreateSelector(Index component_id)
+{
+    auto it = component_selectors_.find(component_id);
+    if (it != component_selectors_.end())
+        return it->second.get();
+
+    auto select_op = op_->getSelectOp(component_id);
+    if (!select_op)
+        return nullptr;
+
+    unsigned int pid = component_selectors_.size();
+    std::unique_ptr<SelectorHighlight> sel;
+    switch (select_mode_) {
+    case SelectMode::Face:
+        sel = std::make_unique<FaceSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
+        break;
+    case SelectMode::Edge:
+        sel = std::make_unique<EdgeSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
+        break;
+    case SelectMode::Solid:
+        sel = std::make_unique<SolidSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
+        break;
+    case SelectMode::Vertex:
+        sel = std::make_unique<VertexSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
+        break;
+    case SelectMode::Block:
+        sel = std::make_unique<BlockSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
+        break;
+    default:
         return nullptr;
     }
 
-    return selection;
+    auto* ptr = sel.get();
+    component_selectors_[component_id] = std::move(sel);
+    return ptr;
+}
+
+void MeshSelectManager::applyHighlightStyle(SelectMode mode)
+{
+    switch (mode) {
+    case SelectMode::Face:
+        FaceSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
+    case SelectMode::Edge:
+        EdgeSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
+    case SelectMode::Solid:
+        SolidSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
+    case SelectMode::Vertex:
+        VertexSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
+        break;
+    }
 }

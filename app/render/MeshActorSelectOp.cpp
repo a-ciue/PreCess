@@ -1,11 +1,12 @@
 #include "MeshActorSelectOp.h"
 #include "MeshActor.h"
 
+#include <vtkExtractSelection.h>
+#include <vtkLine.h>
+#include <vtkPolyData.h>
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
 #include <vtkUnstructuredGrid.h>
-#include <vtkLine.h>
-#include <vtkPolyData.h>
 
 MeshActorSelectOpFactory::MeshActorSelectOpFactory() = default;
 MeshActorSelectOpFactory::MeshActorSelectOpFactory(std::weak_ptr<MeshActor> mesh_actor)
@@ -18,7 +19,7 @@ std::optional<MeshActorSelectOp> MeshActorSelectOpFactory::lock()
     if (auto mesh_actor = mesh_actor_.lock()) {
         return { mesh_actor };
     }
-    return {};
+    return { };
 }
 
 MeshActorSelectOp::MeshActorSelectOp(std::shared_ptr<MeshActor> mesh_actor)
@@ -43,7 +44,7 @@ vtkProp& MeshActorSelectOp::getEdgeActor()
 {
     return *mesh_actor_->edge_actor_;
 }
- 
+
 vtkProp& MeshActorSelectOp::getBlockActor()
 {
     return *mesh_actor_->actor_;

@@ -2,6 +2,7 @@
 #define MODEL_ACTOR_MANAGER_H
 #include "Core.h"
 #include "MeshActor.h"
+#include "MeshActorManagerSelectOp.h"
 #include <unordered_map>
 #include <vtkPoints.h>
 #include <vtkScalarBarActor.h>
@@ -14,17 +15,14 @@ public:
     void bindRender(vtkRenderer* renderer);
     bool hasComponent(Index component_id) const;
     std::shared_ptr<MeshActor> getComponentActor(Index component_id) const;
+    std::vector<Index> getAllComponentIds() const;
     void deleteComponent(Index component_id);
     void loadMesh(Index component_id, const MeshDataVtk& model_data,
-    vtkRenderer* renderer, ModelRenderMode render_mode = ModelRenderMode::Face);
+        vtkRenderer* renderer, ModelRenderMode render_mode = ModelRenderMode::Face);
 
     void setVisibility(Index component_id, bool visibility);
     void setRenderMode(Index component_id, ModelRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
-    /**
-     * @brief 设置或取消裁剪平面
-     * @param plane 裁剪平面，传入nullptr则取消裁剪
-     */
     void setClipPlane(vtkPlane* plane);
 
     bool getCount(Index component_id);
@@ -40,7 +38,11 @@ public:
 
     void syncOriginalPointIds();
 
+    MeshActorManagerSelectOp& op() { return op_; }
+    const MeshActorManagerSelectOp& op() const { return op_; }
+
 private:
+    MeshActorManagerSelectOp op_ { *this };
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
     vtkPoints* global_points_ {};

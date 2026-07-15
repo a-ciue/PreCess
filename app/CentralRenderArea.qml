@@ -88,8 +88,6 @@ Page {
                 function onActiveComponentIdChanged() {
                     if (App.selection.activeComponentId >= 0)
                         myItem.setSelectComponent(App.selection.activeComponentId)
-                    else
-                        myItem.clearSelection()
                 }
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
             }
@@ -103,7 +101,6 @@ Page {
 
         Selector {
             id: selector
-            cur_model: App.selection.activeModelId
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.topMargin: 10

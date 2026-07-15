@@ -1,36 +1,45 @@
 #ifndef GEOMETRY_SELECT_MANAGER_H
 #define GEOMETRY_SELECT_MANAGER_H
+#include "Core.h"
+#include "Selection.h"
 #include "GeometrySelectorHighlight.h"
 #include "GeometryActorSelectOp.h"
-#include "Core.h"
 
 #include <memory>
-#include <optional>
+#include <unordered_map>
 #include <vtkNew.h>
+#include <vtkSmartPointer.h>
 #include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
 
 class vtkRenderer;
-struct GeometrySubshapeIndex;
+class vtkHardwarePicker;
+class vtkPartitionedDataSet;
+class vtkCompositePolyDataMapper;
+class GeometryActorManagerSelectOp;
 
 class GeometrySelectManager {
 public:
-    void bindRenderer(vtkRenderer* renderer, vtkActor* highlight_actor);
-    void select(double posx, double posy);
+    GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op);
 
-    void setSelectActor(std::weak_ptr<GeometryActor> geom_actor);
+    void select(double posx, double posy);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
 
 private:
-    std::optional<GeometryActorSelectOpFactory> cur_geom_actor_ {};
+    GeometrySelectorHighlight* getOrCreateSelector(Index component_id);
+
+    GeometryActorManagerSelectOp* op_;
     SelectMode select_mode_ { SelectMode::None };
-    vtkNew<vtkActor> selection_actor_;
-    vtkNew<vtkPolyDataMapper> selection_mapper_;
-    vtkSmartPointer<IVtkTools_ShapePicker> picker_ {};
-    vtkRenderer* renderer_ { nullptr };
-    vtkActor* highlight_actor_ { nullptr };
-    std::unique_ptr<GeometrySelectorHighlight> selector_ {};
+    vtkRenderer* renderer_;
+    vtkSmartPointer<vtkHardwarePicker> component_picker_;
+    vtkSmartPointer<IVtkTools_ShapePicker> picker_;
+
+    vtkActor* highlight_actor_ {};
+    vtkSmartPointer<vtkPartitionedDataSet> highlight_data_;
+    vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;
+
+    std::unordered_map<Index, std::unique_ptr<GeometrySelectorHighlight>> component_selectors_;
 };
-#endif // GEOMETRY_SELECT_MANAGER_H
+
+#endif
