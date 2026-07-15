@@ -24,14 +24,14 @@ Item{
     Button{
         id: commitButton
         text: "执行"
-        enabled: !!(App.selection.activeModelId >= 0 && root.activeOp && root.activeOp.info)
+        enabled: !!(App.selection.activeComponentId >= 0 && root.activeOp && root.activeOp.info)
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height:30
         onClicked:{
             if (root.activeOp && root.activeOp.execute)
-                root.activeOp.execute(App.selection.activeModelId, root.parameters)
+                root.activeOp.execute(App.selection.activeComponentId, root.parameters)
         }
     }
     Item{
