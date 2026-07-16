@@ -129,7 +129,7 @@ ApplicationWindow {
                             showGeometryTarget: true,
                             defaultParameters: [0, 0, 0],
                             execute: function(modelId, args) {
-                                var componentId = QModelManager.createPoint(
+                                var componentId = QModelManager.geometry.createPoint(
                                     modelId, App.selection.activeComponentId,
                                     args[0], args[1], args[2])
                                 if (componentId >= 0) {
@@ -152,7 +152,7 @@ ApplicationWindow {
                                 showGeometryTarget: true,
                                 defaultParameters: [0, 0, 0, 10, 0, 0],
                                 execute: function(modelId, args) {
-                                    var componentId = QModelManager.createLineByCoordinates(
+                                    var componentId = QModelManager.geometry.createLineByCoordinates(
                                         modelId, App.selection.activeComponentId,
                                         args[0], args[1], args[2],
                                         args[3], args[4], args[5])
@@ -174,7 +174,7 @@ ApplicationWindow {
                                 showGeometryTarget: true,
                                 defaultParameters: [null],
                                 execute: function(modelId, args) {
-                                    var componentId = QModelManager.createLineFromVertices(
+                                    var componentId = QModelManager.geometry.createLineFromVertices(
                                         App.selection.activeComponentId, args[0])
                                     if (componentId >= 0) {
                                         if (App.registry.renderWindow)
@@ -199,7 +199,7 @@ ApplicationWindow {
                             showGeometryTarget: true,
                             defaultParameters: [0, 0, 0, 10, 10, 10],
                             execute: function(modelId, args) {
-                                var componentId = QModelManager.createBox(
+                                var componentId = QModelManager.geometry.createBox(
                                     modelId, App.selection.activeComponentId,
                                     args[0], args[1], args[2],
                                     args[3], args[4], args[5])
@@ -288,8 +288,8 @@ ApplicationWindow {
     }
 
     Connections {
-        target: QModelManager
-        function onGeometryOperationFailed(message) {
+        target: QModelManager.geometry
+        function onOperationFailed(message) {
             geometryOperationErrorDialog.text = message
             geometryOperationErrorDialog.open()
         }
