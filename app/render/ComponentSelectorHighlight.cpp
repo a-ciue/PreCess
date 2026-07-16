@@ -76,12 +76,18 @@ SelectionVtk ComponentSelectorHighlight::get() const
     return back_selection;
 }
 
+std::optional<Index> ComponentSelectorHighlight::getLastPickedComponentId() const
+{
+    return last_picked_component_;
+}
+
 void ComponentSelectorHighlight::select(double posx, double posy)
 {
     component_picker_->Pick(posx, posy, 0, renderer_);
 
     vtkActor* picked_actor = component_picker_->GetActor();
     if (!picked_actor) {
+        last_picked_component_ = std::nullopt;
         return;
     }
 
@@ -89,8 +95,11 @@ void ComponentSelectorHighlight::select(double posx, double posy)
     if (!component_id)
         component_id = geom_op_.getComponentId(picked_actor);
     if (!component_id) {
+        last_picked_component_ = std::nullopt;
         return;
     }
+
+    last_picked_component_ = *component_id;
 
     auto it = _find_component(*component_id, selected_components_);
     if (it != selected_components_.end())

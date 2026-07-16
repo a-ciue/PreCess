@@ -4,6 +4,7 @@
 #include "Selection.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vtkNew.h>
 #include <vtkActor.h>
@@ -24,6 +25,7 @@ public:
     void setSelectMode(const std::string& select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
+    std::optional<Index> getLastPickedComponentId() const;
 
 private:
     std::unique_ptr<MeshSelectManager> mesh_;

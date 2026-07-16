@@ -81,6 +81,7 @@ Page {
             query: QModelManager.query
 
             onRightClicked: {
+                App.selection.activeComponentId = myItem.lastPickedComponentId()
                 viewportMenu.popup()
             }
 

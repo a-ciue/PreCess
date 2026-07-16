@@ -101,3 +101,8 @@ std::unique_ptr<Selection> SelectManager::getSelection()
         return mesh_->getSelection();
     return nullptr;
 }
+
+std::optional<Index> SelectManager::getLastPickedComponentId() const
+{
+    return component_selector_->getLastPickedComponentId();
+}
