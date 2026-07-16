@@ -85,39 +85,44 @@ $(function() {
 <code>#include &quot;<a class="el" href="MeshActorSelectOp_8h_source.html">MeshActorSelectOp.h</a>&quot;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
+<code>#include &lt;set&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;vtkProp.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 MeshActorManagerSelectOp.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="MeshActorManagerSelectOp_8h__incl.png" border="0" usemap="#aapp_2render_2MeshActorManagerSelectOp_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2MeshActorManagerSelectOp_8h" id="aapp_2render_2MeshActorManagerSelectOp_8h">
-<area shape="rect" title=" " alt="" coords="445,5,667,45"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="200,93,264,119"/>
-<area shape="poly" title=" " alt="" coords="479,48,278,96,277,91,478,43"/>
+<area shape="rect" title=" " alt="" coords="435,5,658,45"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="187,93,251,119"/>
+<area shape="poly" title=" " alt="" coords="469,48,265,96,264,91,467,43"/>
 <area shape="rect" title=" " alt="" coords="331,167,408,192"/>
-<area shape="poly" title=" " alt="" coords="485,48,443,67,406,95,387,124,377,154,372,153,382,121,402,92,440,63,483,43"/>
-<area shape="rect" href="MeshActorSelectOp_8h.html" title=" " alt="" coords="417,93,578,119"/>
-<area shape="poly" title=" " alt="" coords="544,47,517,84,512,80,540,44"/>
-<area shape="rect" title=" " alt="" coords="595,167,669,192"/>
-<area shape="poly" title=" " alt="" coords="569,45,593,92,623,153,618,156,588,95,564,47"/>
-<area shape="rect" title=" " alt="" coords="654,93,778,119"/>
-<area shape="poly" title=" " alt="" coords="595,43,681,85,679,90,593,48"/>
-<area shape="rect" title=" " alt="" coords="802,93,886,119"/>
-<area shape="poly" title=" " alt="" coords="626,43,789,87,788,92,624,48"/>
-<area shape="rect" title=" " alt="" coords="5,167,61,192"/>
-<area shape="poly" title=" " alt="" coords="201,121,76,166,74,161,199,116"/>
-<area shape="rect" title=" " alt="" coords="85,167,136,192"/>
-<area shape="poly" title=" " alt="" coords="214,121,143,162,141,157,211,116"/>
-<area shape="poly" title=" " alt="" coords="255,116,336,158,334,163,253,121"/>
-<area shape="rect" title=" " alt="" coords="160,167,219,192"/>
-<area shape="poly" title=" " alt="" coords="227,120,205,156,201,154,223,118"/>
+<area shape="poly" title=" " alt="" coords="472,48,431,67,397,95,381,123,374,153,369,152,376,121,393,92,429,62,470,43"/>
 <area shape="rect" title=" " alt="" coords="243,167,306,192"/>
-<area shape="poly" title=" " alt="" coords="241,118,263,154,259,156,237,120"/>
-<area shape="poly" title=" " alt="" coords="478,121,404,162,401,157,475,116"/>
-<area shape="poly" title=" " alt="" coords="520,116,599,158,597,162,518,121"/>
+<area shape="poly" title=" " alt="" coords="486,48,432,69,377,96,334,127,298,159,294,155,330,123,375,91,430,64,484,43"/>
+<area shape="rect" href="MeshActorSelectOp_8h.html" title=" " alt="" coords="407,93,569,119"/>
+<area shape="poly" title=" " alt="" coords="535,47,507,84,503,80,530,44"/>
+<area shape="rect" title=" " alt="" coords="595,167,669,192"/>
+<area shape="poly" title=" " alt="" coords="560,45,621,153,617,156,555,47"/>
+<area shape="rect" title=" " alt="" coords="644,93,687,119"/>
+<area shape="poly" title=" " alt="" coords="577,43,638,84,635,88,574,48"/>
+<area shape="rect" title=" " alt="" coords="711,93,835,119"/>
+<area shape="poly" title=" " alt="" coords="602,43,728,86,726,91,600,48"/>
+<area shape="rect" title=" " alt="" coords="859,93,943,119"/>
+<area shape="poly" title=" " alt="" coords="632,43,846,90,845,95,631,48"/>
+<area shape="rect" title=" " alt="" coords="5,167,61,192"/>
+<area shape="poly" title=" " alt="" coords="190,121,75,165,73,160,188,116"/>
+<area shape="rect" title=" " alt="" coords="85,167,136,192"/>
+<area shape="poly" title=" " alt="" coords="203,121,141,161,138,157,200,116"/>
+<area shape="poly" title=" " alt="" coords="244,116,333,158,331,163,242,121"/>
+<area shape="rect" title=" " alt="" coords="160,167,219,192"/>
+<area shape="poly" title=" " alt="" coords="216,120,202,155,197,153,211,118"/>
+<area shape="poly" title=" " alt="" coords="230,117,259,154,255,157,226,121"/>
+<area shape="poly" title=" " alt="" coords="470,121,402,162,399,157,468,116"/>
+<area shape="poly" title=" " alt="" coords="512,116,597,158,595,163,510,121"/>
 <area shape="rect" title=" " alt="" coords="432,167,571,192"/>
-<area shape="poly" title=" " alt="" coords="501,119,503,153,497,153,495,119"/>
+<area shape="poly" title=" " alt="" coords="493,119,499,153,494,154,488,119"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -125,20 +130,22 @@ MeshActorManagerSelectOp.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="MeshActorManagerSelectOp_8h__dep__incl.png" border="0" usemap="#aapp_2render_2MeshActorManagerSelectOp_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2MeshActorManagerSelectOp_8hdep" id="aapp_2render_2MeshActorManagerSelectOp_8hdep">
-<area shape="rect" title=" " alt="" coords="591,5,814,45"/>
-<area shape="rect" href="MeshActorManager_8h.html" title=" " alt="" coords="325,93,558,119"/>
-<area shape="poly" title=" " alt="" coords="628,52,480,96,479,91,626,47"/>
-<area shape="rect" href="MeshActorManagerSelectOp_8cpp.html" title=" " alt="" coords="533,167,755,207"/>
-<area shape="poly" title=" " alt="" coords="673,57,659,75,649,94,642,132,644,167,638,167,637,132,644,92,655,72,669,54"/>
-<area shape="rect" href="MeshSelectManager_8cpp.html" title=" " alt="" coords="658,93,913,119"/>
-<area shape="poly" title=" " alt="" coords="734,53,775,91,771,95,731,57"/>
-<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="937,93,1156,119"/>
-<area shape="poly" title=" " alt="" coords="799,46,997,91,996,96,797,51"/>
-<area shape="rect" href="MeshActorManager_8cpp.html" title=" " alt="" coords="5,174,253,199"/>
-<area shape="poly" title=" " alt="" coords="384,125,175,177,174,171,382,119"/>
-<area shape="poly" title=" " alt="" coords="484,121,596,164,594,169,483,126"/>
-<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="278,174,509,199"/>
-<area shape="poly" title=" " alt="" coords="429,132,403,175,398,172,425,129"/>
+<area shape="rect" title=" " alt="" coords="485,5,707,45"/>
+<area shape="rect" href="ComponentSelectorHighlight_8cpp.html" title=" " alt="" coords="76,93,300,133"/>
+<area shape="poly" title=" " alt="" coords="494,51,278,96,277,91,492,46"/>
+<area shape="rect" href="MeshActorManager_8h.html" title=" " alt="" coords="325,101,558,126"/>
+<area shape="poly" title=" " alt="" coords="551,54,463,103,461,98,549,50"/>
+<area shape="rect" href="MeshActorManagerSelectOp_8cpp.html" title=" " alt="" coords="533,181,755,221"/>
+<area shape="poly" title=" " alt="" coords="606,58,625,133,640,180,635,182,620,134,601,60"/>
+<area shape="rect" href="MeshSelectManager_8cpp.html" title=" " alt="" coords="634,101,889,126"/>
+<area shape="poly" title=" " alt="" coords="646,49,741,98,738,103,643,54"/>
+<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="913,101,1132,126"/>
+<area shape="poly" title=" " alt="" coords="703,45,966,98,965,103,702,51"/>
+<area shape="rect" href="MeshActorManager_8cpp.html" title=" " alt="" coords="5,189,253,214"/>
+<area shape="poly" title=" " alt="" coords="387,132,172,191,171,186,386,127"/>
+<area shape="poly" title=" " alt="" coords="482,129,600,179,598,184,480,134"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="278,189,509,214"/>
+<area shape="poly" title=" " alt="" coords="431,139,402,189,398,187,426,137"/>
 </map>
 </div>
 </div>

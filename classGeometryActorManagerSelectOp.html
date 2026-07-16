@@ -74,6 +74,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classGeometryActorManagerSelectOp-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">GeometryActorManagerSelectOp类 参考</div></div>
@@ -86,16 +87,16 @@ GeometryActorManagerSelectOp 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classGeometryActorManagerSelectOp__coll__graph.png" border="0" usemap="#aGeometryActorManagerSelectOp_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aGeometryActorManagerSelectOp_coll__map" id="aGeometryActorManagerSelectOp_coll__map">
-<area shape="rect" title=" " alt="" coords="1416,209,1652,234"/>
-<area shape="rect" href="classGeometryActorManager.html" title=" " alt="" coords="1836,177,2015,202"/>
-<area shape="poly" title=" " alt="" coords="1666,208,1835,194,1836,199,1666,213"/>
-<area shape="poly" title=" " alt="" coords="1893,211,1855,230,1813,244,1753,252,1692,251,1636,245,1588,237,1588,231,1636,240,1692,246,1752,246,1811,239,1853,225,1891,207"/>
-<area shape="rect" title=" " alt="" coords="1439,109,1629,163"/>
-<area shape="poly" title=" " alt="" coords="1643,146,1812,168,1851,174,1850,179,1812,173,1643,151"/>
-<area shape="rect" title=" " alt="" coords="1024,116,1223,156"/>
-<area shape="poly" title=" " alt="" coords="1237,133,1438,133,1438,139,1237,139"/>
+<area shape="rect" title=" " alt="" coords="1429,219,1665,245"/>
+<area shape="rect" href="classGeometryActorManager.html" title=" " alt="" coords="1849,177,2028,202"/>
+<area shape="poly" title=" " alt="" coords="1677,215,1848,196,1849,202,1678,221"/>
+<area shape="poly" title=" " alt="" coords="1906,211,1869,230,1826,244,1774,252,1721,254,1625,247,1626,242,1721,248,1774,246,1825,239,1867,225,1904,207"/>
+<area shape="rect" title=" " alt="" coords="1452,109,1643,163"/>
+<area shape="poly" title=" " alt="" coords="1657,148,1849,175,1848,180,1656,153"/>
+<area shape="rect" title=" " alt="" coords="1031,116,1229,156"/>
+<area shape="poly" title=" " alt="" coords="1243,133,1452,133,1452,139,1243,139"/>
 <area shape="rect" href="classGeometryActor.html" title=" " alt="" coords="828,123,949,149"/>
-<area shape="poly" title=" " alt="" coords="963,133,1024,133,1024,139,963,139"/>
+<area shape="poly" title=" " alt="" coords="963,133,1030,133,1030,139,963,139"/>
 <area shape="rect" href="structGeometrySubshapeIndex.html" title=" " alt="" coords="472,123,659,149"/>
 <area shape="poly" title=" " alt="" coords="673,133,828,133,828,139,673,139"/>
 <area shape="rect" title=" " alt="" coords="5,5,268,45"/>
@@ -107,9 +108,11 @@ GeometryActorManagerSelectOp 的协作图:</div>
 <area shape="rect" title=" " alt="" coords="36,177,237,202"/>
 <area shape="poly" title=" " alt="" coords="251,182,347,174,448,161,518,146,519,151,448,167,348,179,251,187"/>
 <area shape="rect" title=" " alt="" coords="35,230,239,255"/>
-<area shape="poly" title=" " alt="" coords="252,239,349,229,399,219,447,205,476,193,504,177,547,147,550,151,507,182,479,198,449,211,400,225,350,234,253,245"/>
-<area shape="rect" title=" " alt="" coords="1045,201,1202,241"/>
-<area shape="poly" title=" " alt="" coords="1216,219,1416,219,1416,224,1216,224"/>
+<area shape="poly" title=" " alt="" coords="252,240,349,230,399,221,447,207,476,194,504,178,547,147,551,151,507,182,479,199,449,212,400,226,350,236,253,245"/>
+<area shape="rect" title=" " alt="" coords="1051,201,1209,241"/>
+<area shape="poly" title=" " alt="" coords="1222,221,1429,226,1429,232,1222,226"/>
+<area shape="rect" title=" " alt="" coords="1024,265,1236,305"/>
+<area shape="poly" title=" " alt="" coords="1249,273,1405,255,1481,242,1482,247,1406,260,1250,278"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
@@ -117,16 +120,22 @@ GeometryActorManagerSelectOp 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a23cf176375d188d2f4b3d72a346a1e3a" id="r_a23cf176375d188d2f4b3d72a346a1e3a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23cf176375d188d2f4b3d72a346a1e3a">GeometryActorManagerSelectOp</a> (<a class="el" href="classGeometryActorManager.html">GeometryActorManager</a> &amp;<a class="el" href="TestComponentModel_8cpp.html#a6402cec97b28a6292b45baefb9f38ff2">manager</a>)</td></tr>
 <tr class="memitem:afc941a9cae17ff584e705c67fd75bf30" id="r_afc941a9cae17ff584e705c67fd75bf30"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc941a9cae17ff584e705c67fd75bf30">getComponentId</a> (vtkProp *prop) const</td></tr>
-<tr class="memitem:ae246d1e2805e3a094dc248d92d4bcbd4" id="r_ae246d1e2805e3a094dc248d92d4bcbd4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae246d1e2805e3a094dc248d92d4bcbd4">managePickList</a> (vtkPropCollection *pick_list)</td></tr>
+<tr class="memitem:af2e11510d9dd18ff47dc6c4fd29b2e61" id="r_af2e11510d9dd18ff47dc6c4fd29b2e61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af2e11510d9dd18ff47dc6c4fd29b2e61">observePickList</a> (vtkPropCollection *pick_list)</td></tr>
+<tr class="memitem:ac471b14c403310cb89a06da8f5783d7b" id="r_ac471b14c403310cb89a06da8f5783d7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac471b14c403310cb89a06da8f5783d7b">unobservePickList</a> (vtkPropCollection *pick_list)</td></tr>
 <tr class="memitem:a23eca0e7692ec6f6bc534346e19a7472" id="r_a23eca0e7692ec6f6bc534346e19a7472"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23eca0e7692ec6f6bc534346e19a7472">getSelectOp</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
 <tr class="memitem:a65377d76b5c6713f050b5191f16067c8" id="r_a65377d76b5c6713f050b5191f16067c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65377d76b5c6713f050b5191f16067c8">registerProps</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, std::shared_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt; actor)</td></tr>
 <tr class="memitem:a27adcd8fee33a1b9bcc86f9ede0e6f81" id="r_a27adcd8fee33a1b9bcc86f9ede0e6f81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27adcd8fee33a1b9bcc86f9ede0e6f81">unregisterProps</a> (std::shared_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt; actor)</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a8cfed65a6be0d317d350451d75a9ee9c" id="r_a8cfed65a6be0d317d350451d75a9ee9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8cfed65a6be0d317d350451d75a9ee9c">addToAllLists</a> (vtkProp *prop)</td></tr>
+<tr class="memitem:a872539c40ef6ae6585269eb28dd1f9bd" id="r_a872539c40ef6ae6585269eb28dd1f9bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a872539c40ef6ae6585269eb28dd1f9bd">removeFromAllLists</a> (vtkProp *prop)</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:adcf56726f4b223671e41576d737971ae" id="r_adcf56726f4b223671e41576d737971ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGeometryActorManager.html">GeometryActorManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adcf56726f4b223671e41576d737971ae">manager_</a> {}</td></tr>
+<tr class="memitem:adcf56726f4b223671e41576d737971ae" id="r_adcf56726f4b223671e41576d737971ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGeometryActorManager.html">GeometryActorManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adcf56726f4b223671e41576d737971ae">manager_</a> { }</td></tr>
 <tr class="memitem:a0d4f19ac52577626453dcd49d6fc429c" id="r_a0d4f19ac52577626453dcd49d6fc429c"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; vtkProp *, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d4f19ac52577626453dcd49d6fc429c">prop_to_component_</a></td></tr>
-<tr class="memitem:a865a08afc68c68e7d671368c4c10f156" id="r_a865a08afc68c68e7d671368c4c10f156"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPropCollection &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a865a08afc68c68e7d671368c4c10f156">pick_list_</a></td></tr>
+<tr class="memitem:aa1045219a0da8bb76cfca141667e3320" id="r_aa1045219a0da8bb76cfca141667e3320"><td class="memItemLeft" align="right" valign="top">std::vector&lt; vtkSmartPointer&lt; vtkPropCollection &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1045219a0da8bb76cfca141667e3320">pick_lists_</a></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a23cf176375d188d2f4b3d72a346a1e3a" name="a23cf176375d188d2f4b3d72a346a1e3a"></a>
@@ -155,6 +164,31 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a8cfed65a6be0d317d350451d75a9ee9c" name="a8cfed65a6be0d317d350451d75a9ee9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8cfed65a6be0d317d350451d75a9ee9c">&#9670;&#160;</a></span>addToAllLists()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryActorManagerSelectOp::addToAllLists </td>
+          <td>(</td>
+          <td class="paramtype">vtkProp *</td>          <td class="paramname"><span class="paramname"><em>prop</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afc941a9cae17ff584e705c67fd75bf30" name="afc941a9cae17ff584e705c67fd75bf30"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc941a9cae17ff584e705c67fd75bf30">&#9670;&#160;</a></span>getComponentId()</h2>
 
@@ -189,14 +223,14 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="ae246d1e2805e3a094dc248d92d4bcbd4" name="ae246d1e2805e3a094dc248d92d4bcbd4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae246d1e2805e3a094dc248d92d4bcbd4">&#9670;&#160;</a></span>managePickList()</h2>
+<a id="af2e11510d9dd18ff47dc6c4fd29b2e61" name="af2e11510d9dd18ff47dc6c4fd29b2e61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2e11510d9dd18ff47dc6c4fd29b2e61">&#9670;&#160;</a></span>observePickList()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void GeometryActorManagerSelectOp::managePickList </td>
+          <td class="memname">void GeometryActorManagerSelectOp::observePickList </td>
           <td>(</td>
           <td class="paramtype">vtkPropCollection *</td>          <td class="paramname"><span class="paramname"><em>pick_list</em></span></td><td>)</td>
           <td></td>
@@ -221,6 +255,48 @@ Private 属性</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>actor</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a872539c40ef6ae6585269eb28dd1f9bd" name="a872539c40ef6ae6585269eb28dd1f9bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a872539c40ef6ae6585269eb28dd1f9bd">&#9670;&#160;</a></span>removeFromAllLists()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryActorManagerSelectOp::removeFromAllLists </td>
+          <td>(</td>
+          <td class="paramtype">vtkProp *</td>          <td class="paramname"><span class="paramname"><em>prop</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac471b14c403310cb89a06da8f5783d7b" name="ac471b14c403310cb89a06da8f5783d7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac471b14c403310cb89a06da8f5783d7b">&#9670;&#160;</a></span>unobservePickList()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryActorManagerSelectOp::unobservePickList </td>
+          <td>(</td>
+          <td class="paramtype">vtkPropCollection *</td>          <td class="paramname"><span class="paramname"><em>pick_list</em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -255,7 +331,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classGeometryActorManager.html">GeometryActorManager</a>* GeometryActorManagerSelectOp::manager_ {}</td>
+          <td class="memname"><a class="el" href="classGeometryActorManager.html">GeometryActorManager</a>* GeometryActorManagerSelectOp::manager_ { }</td>
         </tr>
       </table>
   </td>
@@ -267,8 +343,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a865a08afc68c68e7d671368c4c10f156" name="a865a08afc68c68e7d671368c4c10f156"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a865a08afc68c68e7d671368c4c10f156">&#9670;&#160;</a></span>pick_list_</h2>
+<a id="aa1045219a0da8bb76cfca141667e3320" name="aa1045219a0da8bb76cfca141667e3320"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1045219a0da8bb76cfca141667e3320">&#9670;&#160;</a></span>pick_lists_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -277,7 +353,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkSmartPointer&lt;vtkPropCollection&gt; GeometryActorManagerSelectOp::pick_list_</td>
+          <td class="memname">std::vector&lt;vtkSmartPointer&lt;vtkPropCollection&gt; &gt; GeometryActorManagerSelectOp::pick_lists_</td>
         </tr>
       </table>
   </td>
