@@ -1,4 +1,5 @@
 #include "ComponentSelectorHighlight.h"
+#include "CoincidentTopology.h"
 #include "GeometryActorManagerSelectOp.h"
 #include "GeometryActorSelectOp.h"
 #include "MeshActorManagerSelectOp.h"
@@ -43,7 +44,7 @@ ComponentSelectorHighlight::ComponentSelectorHighlight(vtkRenderer& renderer,
 {
     highlight_actor_ = vtkSmartPointer<vtkActor>::New();
     highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
-    highlight_mapper_->SetResolveCoincidentTopologyPolygonOffsetParameters(0, -1);
+    highlight_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, highlight::POLYGON_UNITS);
     highlight_data_ = vtkSmartPointer<vtkPartitionedDataSet>::New();
     highlight_mapper_->SetInputDataObject(highlight_data_);
 

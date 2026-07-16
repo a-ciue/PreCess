@@ -1,3 +1,4 @@
+#include "CoincidentTopology.h"
 #include "MeshActor.h"
 #include "MeshActorSelectOp.h"
 #include "Selection.h"
@@ -130,6 +131,8 @@ void EdgeSelectorHighlight::select(double posx, double posy)
 
 void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
 {
+    mapper.SetRelativeCoincidentTopologyLineOffsetParameters(0, highlight::LINE_UNITS);
+
     actor.SetMapper(&mapper);
     vtkNew<vtkProperty> prop;
     prop->SetColor(MeshActor::colors->GetColor3d("red").GetData());

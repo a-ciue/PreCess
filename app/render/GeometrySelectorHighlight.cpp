@@ -1,4 +1,5 @@
 #include "GeometrySelectorHighlight.h"
+#include "CoincidentTopology.h"
 #include "Core.h"
 #include "GeometryActorSelectOp.h"
 
@@ -17,9 +18,9 @@ static void mountLineHighlight(vtkActor& actor, vtkMapper& mapper)
 {
     actor.SetMapper(&mapper);
 
-    // 相对显示 mapper 默认值：线 (0,-5)，点 (-10)
-    mapper.SetRelativeCoincidentTopologyLineOffsetParameters(0, -1);
-    mapper.SetRelativeCoincidentTopologyPointOffsetParameter(-2);
+    // 相对显示 mapper 默认值
+    mapper.SetRelativeCoincidentTopologyLineOffsetParameters(0, highlight::LINE_UNITS);
+    mapper.SetRelativeCoincidentTopologyPointOffsetParameter(highlight::POINT_UNITS);
 
     vtkNew<vtkProperty> prop;
     prop->SetColor(1.0, 0.0, 0.0);
@@ -36,8 +37,8 @@ static void mountFaceHighlight(vtkActor& actor, vtkMapper& mapper)
 {
     actor.SetMapper(&mapper);
 
-    // 相对显示 mapper 默认值：多边形 (0,-1)
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -5);
+    // 相对显示 mapper 默认值
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, highlight::POLYGON_UNITS);
 
     vtkNew<vtkProperty> prop;
     prop->SetColor(1.0, 0.0, 0.0);

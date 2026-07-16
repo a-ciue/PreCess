@@ -1,3 +1,4 @@
+#include "CoincidentTopology.h"
 #include "MeshActorSelectOp.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
@@ -97,7 +98,7 @@ void FaceSelectorHighlight::select(double posx, double posy)
 
 void FaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
 {
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -2);
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, highlight::POLYGON_UNITS);
 
     actor.SetMapper(&mapper);
     vtkNew<vtkProperty> prop;

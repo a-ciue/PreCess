@@ -69,6 +69,7 @@ void SelectManager::setSelectMode(const std::string& select_mode)
         return;
     }
 
+    component_selector_->clear();
     if (is_mesh_mode(mode))
         mesh_->setSelectMode(mode);
     else

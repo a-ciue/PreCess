@@ -1,3 +1,4 @@
+#include "CoincidentTopology.h"
 #include "MeshActorSelectOp.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
@@ -7,6 +8,7 @@
 #include <vtkExtractSelection.h>
 #include <vtkGeometryFilter.h>
 #include <vtkHardwarePicker.h>
+#include <vtkMapper.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
@@ -112,6 +114,8 @@ void VertexSelectorHighlight::select(double posx, double posy)
 
 void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
 {
+    mapper.SetRelativeCoincidentTopologyPointOffsetParameter(highlight::POINT_UNITS);
+
     actor.SetMapper(&mapper);
     vtkNew<vtkProperty> prop;
     prop->SetColor(1.0, 0.0, 0.0);
