@@ -1,5 +1,6 @@
 #include "GeometryBuilder.h"
 
+#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <gp_Pnt.hxx>
@@ -7,6 +8,29 @@
 #include <array>
 #include <cmath>
 #include <stdexcept>
+
+TopoDS_Shape GeometryBuilder::makePoint(double x, double y, double z)
+{
+    // 独立点同样由 QML 数值输入，进入 OCC 前拒绝空值产生的 NaN。
+    const std::array<double, 3> values { x, y, z };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Point coordinates must be finite numbers");
+    }
+
+    BRepBuilderAPI_MakeVertex builder(gp_Pnt(x, y, z));
+    if (!builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the point");
+
+    TopoDS_Shape shape = builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty point");
+
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created point is topologically invalid");
+
+    return shape;
+}
 
 TopoDS_Shape GeometryBuilder::makeBox(
     double origin_x,

@@ -80,6 +80,27 @@ void QModelManager::removeComponent(int id)
     core_->removeComponent(id);
 }
 
+int QModelManager::createPoint(int modelId, double x, double y, double z)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makePoint(x, y, z);
+        const std::string component_name = "Point_" + std::to_string(next_point_number_);
+        const Index component_id = addGeometryShape(modelId, component_name, std::move(shape));
+        ++next_point_number_;
+        return component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QModelManager::createPoint: {}", detail ? detail : "OpenCASCADE error");
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Point 失败：%1").arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QModelManager::createPoint: {}", error.what());
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Point 失败：%1").arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
 int QModelManager::createBox(
     int modelId,
     double originX,
@@ -134,7 +155,7 @@ Index QModelManager::addGeometryShape(
     const Index new_model_id = core_->addModel(model_name, std::move(components));
     ModelData* model = core_->modelById(new_model_id);
     if (!model || model->componentIds().empty())
-        throw std::runtime_error("Failed to add the box component");
+        throw std::runtime_error("Failed to add the geometry component");
     return model->componentIds().back();
 }
 

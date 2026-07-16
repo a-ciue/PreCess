@@ -33,7 +33,18 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("PreCess")
 
-    // Create Box 暂时直接复用参数侧栏；开始增加第二类几何命令时再评估统一抽象。
+    // 基础几何创建暂时直接复用参数侧栏。
+    readonly property var createPointInfo: ({
+        name: "create_point",
+        display_name: qsTr("创建点"),
+        description: qsTr("根据三维坐标创建独立几何点"),
+        arg_types: [
+            { type: QArgType.Float, name: qsTr("X 坐标"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("Y 坐标"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("Z 坐标"), content: "0", description: "" }
+        ]
+    })
+
     readonly property var createBoxInfo: ({
         name: "create_box",
         display_name: qsTr("创建长方体"),
@@ -86,6 +97,25 @@ ApplicationWindow {
             title: qsTr("几何")
             Menu {
                 title: qsTr("创建")
+                MenuItem {
+                    text: qsTr("点")
+                    onTriggered: {
+                        App.activeOperation = {
+                            info: root.createPointInfo,
+                            allowWithoutModel: true,
+                            defaultParameters: [0, 0, 0],
+                            execute: function(modelId, args) {
+                                var componentId = QModelManager.createPoint(
+                                    modelId, args[0], args[1], args[2])
+                                if (componentId >= 0) {
+                                    App.selection.activeComponentId = componentId
+                                    App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                }
+                            }
+                        }
+                        sideBarDock.show()
+                    }
+                }
                 MenuItem {
                     text: qsTr("长方体")
                     onTriggered: {

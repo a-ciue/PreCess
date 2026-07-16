@@ -38,7 +38,14 @@ public:
     Q_INVOKABLE void removeModel(int id);
     Q_INVOKABLE void removeComponent(int id);
     /**
-     * @brief 创建长方体，并作为新几何组件加入活动模型；modelId 为 -1 时创建 Geometry 模型。
+     * @brief 创建独立几何点，并作为新几何组件加入活动模型；modelId 为 -1 时创建新模型。
+     *
+     * @return 新组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createPoint(int modelId, double x, double y, double z);
+
+    /**
+     * @brief 创建长方体，并作为新几何组件加入活动模型；modelId 为 -1 时创建新模型。
      *
      * @return 新组件 ID，失败时返回 -1。
      */
@@ -90,5 +97,6 @@ private:
     std::unique_ptr<systems::edit::QEditSystemAdaptor> edit_adaptor_;
     std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
+    int next_point_number_ { 1 };
     int next_box_number_ { 1 };
 };
