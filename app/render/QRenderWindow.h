@@ -110,13 +110,6 @@ public:
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
     Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
 
-    Q_INVOKABLE void hideSelected();
-    Q_INVOKABLE void setIsolateComponent();
-    Q_INVOKABLE void showSelected();
-    Q_INVOKABLE void hideAll();
-    Q_INVOKABLE void showAll();
-    Q_INVOKABLE void reverseDisplayed();
-
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 

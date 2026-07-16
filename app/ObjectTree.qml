@@ -58,14 +58,7 @@ Pane {
                 ToolTip.text: qsTr("显示全部")
                 ToolTip.delay: 500
 
-                onClicked: {
-                    treeModel.setAllVisibility(true)
-                    for (let i = 0; i < treeModel.rowCount(); i++) {
-                        let idx = treeModel.index(i, 0)
-                        App.modelVisibilityUpdated(
-                            treeModel.data(idx, TreeModel.NodeIdRole), true)
-                    }
-                }
+                onClicked: objectTree.showAllNodes()
             }
 
             ToolButton {
@@ -80,14 +73,7 @@ Pane {
                 ToolTip.text: qsTr("隐藏全部")
                 ToolTip.delay: 500
 
-                onClicked: {
-                    treeModel.setAllVisibility(false)
-                    for (let i = 0; i < treeModel.rowCount(); i++) {
-                        let idx = treeModel.index(i, 0)
-                        App.modelVisibilityUpdated(
-                            treeModel.data(idx, TreeModel.NodeIdRole), false)
-                    }
-                }
+                onClicked: objectTree.hideAllNodes()
             }
         }
     }
@@ -290,14 +276,7 @@ Pane {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    onTriggered: {
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        treeModel.setVisibility(idx, false)
-                        if (viewDelegate.depth === 0)
-                            App.modelVisibilityUpdated(viewDelegate.model.nodeId, false)
-                        else
-                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, false)
-                    }
+                    onTriggered: objectTree.hideNode(viewDelegate.model.nodeId, viewDelegate.depth)
                 }
 
                 MenuItem {
@@ -318,14 +297,7 @@ Pane {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    onTriggered: {
-                        let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
-                        treeModel.setVisibility(idx, true)
-                        if (viewDelegate.depth === 0)
-                            App.modelVisibilityUpdated(viewDelegate.model.nodeId, true)
-                        else
-                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, true)
-                    }
+                    onTriggered: objectTree.showNode(viewDelegate.model.nodeId, viewDelegate.depth)
                 }
 
                 MenuSeparator {}
@@ -349,12 +321,8 @@ Pane {
                     }
 
                     onTriggered: {
-                        viewDelegate.treeView.selectionModel.clear()
                         contextMenu.close()
-                        if (viewDelegate.depth === 0)
-                            QModelManager.removeModel(viewDelegate.model.nodeId)
-                        else
-                            QModelManager.removeComponent(viewDelegate.model.nodeId)
+                        objectTree.deleteNode(viewDelegate.model.nodeId, viewDelegate.depth)
                     }
                 }
             }
@@ -376,7 +344,86 @@ Pane {
         }
     }
 
+    function hideNode(nodeId, depth) {
+        let idx = treeModel.findIndexByNodeId(nodeId, depth)
+        if (!idx || !idx.valid) return
+        treeModel.setVisibility(idx, false)
+        if (depth === 0)
+            App.modelVisibilityUpdated(nodeId, false)
+        else
+            App.componentVisibilityUpdated(nodeId, false)
+    }
+
+    function showNode(nodeId, depth) {
+        let idx = treeModel.findIndexByNodeId(nodeId, depth)
+        if (!idx || !idx.valid) return
+        treeModel.setVisibility(idx, true)
+        if (depth === 0)
+            App.modelVisibilityUpdated(nodeId, true)
+        else
+            App.componentVisibilityUpdated(nodeId, true)
+    }
+
+    function deleteNode(nodeId, depth) {
+        treeView.selectionModel.clear()
+        if (depth === 0)
+            QModelManager.removeModel(nodeId)
+        else
+            QModelManager.removeComponent(nodeId)
+    }
+
+    function hideAllNodes() {
+        treeModel.setAllVisibility(false)
+        for (let i = 0; i < treeModel.rowCount(); i++) {
+            let idx = treeModel.index(i, 0)
+            App.modelVisibilityUpdated(
+                treeModel.data(idx, TreeModel.NodeIdRole), false)
+        }
+    }
+
+    function showAllNodes() {
+        treeModel.setAllVisibility(true)
+        for (let i = 0; i < treeModel.rowCount(); i++) {
+            let idx = treeModel.index(i, 0)
+            App.modelVisibilityUpdated(
+                treeModel.data(idx, TreeModel.NodeIdRole), true)
+        }
+    }
+
+    function isolateNode(nodeId) {
+        let models = QModelManager.query.listModels()
+        for (let i = 0; i < models.length; i++) {
+            let mid = models[i].model_id
+            let comps = QModelManager.query.getComponentsSummary(mid)
+            for (let j = 0; j < comps.length; j++) {
+                let cid = comps[j].component_id
+                let visible = (cid === nodeId)
+                let idx = treeModel.findIndexByNodeId(cid, 1)
+                if (idx && idx.valid) {
+                    treeModel.setVisibility(idx, visible)
+                    App.componentVisibilityUpdated(cid, visible)
+                }
+            }
+        }
+    }
+
+    function reverseDisplayed() {
+        let modelCount = treeModel.rowCount()
+        for (let mi = 0; mi < modelCount; mi++) {
+            let modelIdx = treeModel.index(mi, 0)
+            let compCount = treeModel.rowCount(modelIdx)
+            for (let ci = 0; ci < compCount; ci++) {
+                let compIdx = treeModel.index(ci, 0, modelIdx)
+                let cid = treeModel.data(compIdx, TreeModel.NodeIdRole)
+                let isVis = treeModel.data(compIdx, TreeModel.IsVisibleRole)
+                treeModel.setVisibility(compIdx, !isVis)
+                App.componentVisibilityUpdated(cid, !isVis)
+            }
+        }
+    }
+
     Component.onCompleted: {
         App.registry.treeModel = treeModel
+        App.registry.objectTree = objectTree
     }
 }

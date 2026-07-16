@@ -80,85 +80,6 @@ Page {
             anchors.margins: 3
             query: QModelManager.query
 
-            function doHideSelected() {
-                let compId = App.selection.activeComponentId
-                let tm = App.registry.treeModel
-                if (tm && compId >= 0) {
-                    let idx = tm.findIndexByNodeId(compId, 1)
-                    if (idx && idx.valid)
-                        tm.setVisibility(idx, false)
-                }
-                myItem.hideSelected()
-            }
-
-            function doIsolateSelected() {
-                let compId = App.selection.activeComponentId
-                let models = QModelManager.query.listModels()
-                let tm = App.registry.treeModel
-                if (tm) {
-                    for (let i = 0; i < models.length; i++) {
-                        let mid = models[i].model_id
-                        let comps = QModelManager.query.getComponentsSummary(mid)
-                        for (let j = 0; j < comps.length; j++) {
-                            let cid = comps[j].component_id
-                            let visible = (cid === compId)
-                            let idx = tm.findIndexByNodeId(cid, 1)
-                            if (idx && idx.valid)
-                                tm.setVisibility(idx, visible)
-                        }
-                    }
-                }
-                myItem.setIsolateComponent()
-            }
-
-            function doShowSelected() {
-                let compId = App.selection.activeComponentId
-                let tm = App.registry.treeModel
-                if (tm && compId >= 0) {
-                    let idx = tm.findIndexByNodeId(compId, 1)
-                    if (idx && idx.valid)
-                        tm.setVisibility(idx, true)
-                }
-                myItem.showSelected()
-            }
-
-            function doHideAll() {
-                let tm = App.registry.treeModel
-                if (tm) {
-                    let modelCount = tm.rowCount()
-                    for (let mi = 0; mi < modelCount; mi++)
-                        tm.setVisibility(tm.index(mi, 0), false)
-                }
-                myItem.hideAll()
-            }
-
-            function doShowAll() {
-                let tm = App.registry.treeModel
-                if (tm) {
-                    let modelCount = tm.rowCount()
-                    for (let mi = 0; mi < modelCount; mi++)
-                        tm.setVisibility(tm.index(mi, 0), true)
-                }
-                myItem.showAll()
-            }
-
-            function doReverseDisplayed() {
-                let tm = App.registry.treeModel
-                if (tm) {
-                    let modelCount = tm.rowCount()
-                    for (let mi = 0; mi < modelCount; mi++) {
-                        let modelIdx = tm.index(mi, 0)
-                        let compCount = tm.rowCount(modelIdx)
-                        for (let ci = 0; ci < compCount; ci++) {
-                            let compIdx = tm.index(ci, 0, modelIdx)
-                            let isVis = tm.data(compIdx, TreeModel.IsVisibleRole)
-                            tm.setVisibility(compIdx, !isVis)
-                        }
-                    }
-                }
-                myItem.reverseDisplayed()
-            }
-
             onRightClicked: {
                 viewportMenu.popup()
             }
@@ -273,19 +194,19 @@ Page {
             StyledMenuItem {
                 text: "隐藏"
                 shown: App.selection.activeComponentId >= 0
-                onTriggered: myItem.doHideSelected()
+                onTriggered: App.registry.objectTree.hideNode(App.selection.activeComponentId, 1)
             }
 
             StyledMenuItem {
                 text: "隔离"
                 shown: App.selection.activeComponentId >= 0
-                onTriggered: myItem.doIsolateSelected()
+                onTriggered: App.registry.objectTree.isolateNode(App.selection.activeComponentId)
             }
 
             StyledMenuItem {
                 text: "显示"
                 shown: App.selection.activeComponentId >= 0
-                onTriggered: myItem.doShowSelected()
+                onTriggered: App.registry.objectTree.showNode(App.selection.activeComponentId, 1)
             }
 
             StyledSeparator {
@@ -295,19 +216,19 @@ Page {
             StyledMenuItem {
                 text: "全部隐藏"
                 shown: App.selection.activeComponentId < 0
-                onTriggered: myItem.doHideAll()
+                onTriggered: App.registry.objectTree.hideAllNodes()
             }
 
             StyledMenuItem {
                 text: "全部显示"
                 shown: App.selection.activeComponentId < 0
-                onTriggered: myItem.doShowAll()
+                onTriggered: App.registry.objectTree.showAllNodes()
             }
 
             StyledMenuItem {
                 text: "反转显示"
                 shown: true
-                onTriggered: myItem.doReverseDisplayed()
+                onTriggered: App.registry.objectTree.reverseDisplayed()
             }
         }
     }
