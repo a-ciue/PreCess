@@ -59,6 +59,29 @@ ApplicationWindow {
         ]
     })
 
+    readonly property var createLineByCoordinatesInfo: ({
+        name: "create_line_by_coordinates",
+        display_name: qsTr("创建直线边（坐标）"),
+        description: qsTr("根据起点和终点坐标创建直线边"),
+        arg_types: [
+            { type: QArgType.Float, name: qsTr("起点 X"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("起点 Y"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("起点 Z"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("终点 X"), content: "10", description: "" },
+            { type: QArgType.Float, name: qsTr("终点 Y"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("终点 Z"), content: "0", description: "" }
+        ]
+    })
+
+    readonly property var createLineFromVerticesInfo: ({
+        name: "create_line_from_vertices",
+        display_name: qsTr("创建直线边（选择两点）"),
+        description: qsTr("选择当前组件中的两个已有几何点创建共享拓扑的直线边"),
+        arg_types: [
+            { type: QArgType.Selector, name: qsTr("端点"), content: "", description: qsTr("请选择两个几何点") }
+        ]
+    })
+
     menuBar: MenuBar{
         Menu{
             title: "文件"
@@ -116,6 +139,55 @@ ApplicationWindow {
                             }
                         }
                         sideBarDock.show()
+                    }
+                }
+                Menu {
+                    title: qsTr("直线边")
+                    MenuItem {
+                        text: qsTr("输入两点坐标")
+                        onTriggered: {
+                            App.activeOperation = {
+                                info: root.createLineByCoordinatesInfo,
+                                allowWithoutModel: true,
+                                showGeometryTarget: true,
+                                defaultParameters: [0, 0, 0, 10, 0, 0],
+                                execute: function(modelId, args) {
+                                    var componentId = QModelManager.createLineByCoordinates(
+                                        modelId, App.selection.activeComponentId,
+                                        args[0], args[1], args[2],
+                                        args[3], args[4], args[5])
+                                    if (componentId >= 0) {
+                                        App.selection.activeComponentId = componentId
+                                        App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                    }
+                                }
+                            }
+                            sideBarDock.show()
+                        }
+                    }
+                    MenuItem {
+                        text: qsTr("选择两个已有点")
+                        onTriggered: {
+                            App.activeOperation = {
+                                info: root.createLineFromVerticesInfo,
+                                requireComponent: true,
+                                showGeometryTarget: true,
+                                defaultParameters: [null],
+                                execute: function(modelId, args) {
+                                    var componentId = QModelManager.createLineFromVertices(
+                                        App.selection.activeComponentId, args[0])
+                                    if (componentId >= 0) {
+                                        if (App.registry.renderWindow)
+                                            App.registry.renderWindow.clearSelection()
+                                        App.selection.activeComponentId = componentId
+                                        App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                    }
+                                }
+                            }
+                            App.selection.selectMode = "GeometryVertex"
+                            App.selection.listeningSelectorIndex = 0
+                            sideBarDock.show()
+                        }
                     }
                 }
                 MenuItem {

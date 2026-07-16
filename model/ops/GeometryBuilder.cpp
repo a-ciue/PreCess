@@ -1,8 +1,12 @@
 #include "GeometryBuilder.h"
 
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRep_Tool.hxx>
+#include <Precision.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <gp_Pnt.hxx>
 
 #include <array>
@@ -30,6 +34,62 @@ TopoDS_Shape GeometryBuilder::makePoint(double x, double y, double z)
         throw std::runtime_error("The created point is topologically invalid");
 
     return shape;
+}
+
+namespace {
+// 统一检查直线边构造结果，避免两个入口重复错误处理。
+TopoDS_Shape checkedLine(BRepBuilderAPI_MakeEdge& builder)
+{
+    if (!builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the line");
+
+    TopoDS_Shape shape = builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty line");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created line is topologically invalid");
+    return shape;
+}
+}
+
+TopoDS_Shape GeometryBuilder::makeLine(
+    double start_x,
+    double start_y,
+    double start_z,
+    double end_x,
+    double end_y,
+    double end_z)
+{
+    const std::array<double, 6> values {
+        start_x, start_y, start_z, end_x, end_y, end_z
+    };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Line coordinates must be finite numbers");
+    }
+
+    const gp_Pnt start(start_x, start_y, start_z);
+    const gp_Pnt end(end_x, end_y, end_z);
+    if (start.Distance(end) <= Precision::Confusion())
+        throw std::invalid_argument("Line endpoints must be different");
+
+    BRepBuilderAPI_MakeEdge builder(start, end);
+    return checkedLine(builder);
+}
+
+TopoDS_Shape GeometryBuilder::makeLine(
+    const TopoDS_Vertex& start,
+    const TopoDS_Vertex& end)
+{
+    if (start.IsNull() || end.IsNull())
+        throw std::invalid_argument("Line vertices must not be null");
+    if (start.IsSame(end)
+        || BRep_Tool::Pnt(start).Distance(BRep_Tool::Pnt(end)) <= Precision::Confusion())
+        throw std::invalid_argument("Line endpoints must be different");
+
+    // 使用已有 TopoDS_Vertex，保证新 Edge 与输入点共享拓扑。
+    BRepBuilderAPI_MakeEdge builder(start, end);
+    return checkedLine(builder);
 }
 
 TopoDS_Shape GeometryBuilder::makeBox(

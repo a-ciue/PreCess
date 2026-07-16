@@ -14,6 +14,12 @@ RowLayout {
     signal confirmButtonClicked
     property QSelection selection
 
+    function indexForMode(mode) {
+        const modes = ["None", "Vertex", "Edge", "Face", "Solid", "Block",
+                       "GeometryVertex", "GeometryEdge", "GeometryFace", "GeometrySolid"]
+        return modes.indexOf(mode)
+    }
+
     ComboBox{
         id: selectModeComboBox
         model: ListModel {
@@ -81,6 +87,14 @@ RowLayout {
         }
         enabled: App.selection.listeningSelectorIndex >= 0
         opacity: enabled ? 1.0 : 0.6
+    }
+    Connections {
+        target: App.selection
+        function onSelectModeChanged() {
+            let modeIndex = root.indexForMode(App.selection.selectMode)
+            if (modeIndex >= 0 && selectModeComboBox.currentIndex !== modeIndex)
+                selectModeComboBox.currentIndex = modeIndex
+        }
     }
     /** type:string 选择框中当前文本 */
     property alias comboBoxSelectedString: selectModeComboBox.currentText

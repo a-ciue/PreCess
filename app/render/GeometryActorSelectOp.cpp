@@ -262,3 +262,8 @@ vtkActor& GeometryActorSelectOp::getPolyActor()
 {
     return *geometry_actor_->poly_actor_;
 }
+
+vtkActor* GeometryActorSelectOp::getLineActor()
+{
+    return geometry_actor_->line_actor_;
+}

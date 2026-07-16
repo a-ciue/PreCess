@@ -19,8 +19,10 @@ Item{
     readonly property var activeOp: App.activeOperation
     readonly property bool allowWithoutModel: !!(root.activeOp && root.activeOp.allowWithoutModel)
     readonly property bool showGeometryTarget: !!(root.activeOp && root.activeOp.showGeometryTarget)
+    readonly property bool requireComponent: !!(root.activeOp && root.activeOp.requireComponent)
 
     onActiveOpChanged: {
+        App.selection.listeningSelectorIndex = -1
         // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
         parameters = root.activeOp && root.activeOp.defaultParameters
                 ? root.activeOp.defaultParameters.slice() : []
@@ -29,7 +31,8 @@ Item{
         id: commitButton
         text: "执行"
         enabled: !!(root.activeOp && root.activeOp.info
-                    && (App.selection.activeModelId >= 0 || root.allowWithoutModel))
+                    && (App.selection.activeModelId >= 0 || root.allowWithoutModel)
+                    && (!root.requireComponent || App.selection.activeComponentId >= 0))
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right

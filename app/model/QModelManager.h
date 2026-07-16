@@ -20,6 +20,7 @@ class EditSystem;
 }
 class ModelLayer;
 class TopoDS_Shape;
+class QSelection;
 
 class QModelManager : public QObject {
     Q_OBJECT
@@ -44,6 +45,29 @@ public:
      */
     Q_INVOKABLE int createPoint(
         int modelId, int componentId, double x, double y, double z);
+
+    /**
+     * @brief 根据两个坐标点创建直线边，并按当前 Model/Component 目标写入。
+     *
+     * @return 新建或更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createLineByCoordinates(
+        int modelId,
+        int componentId,
+        double startX,
+        double startY,
+        double startZ,
+        double endX,
+        double endY,
+        double endZ);
+
+    /**
+     * @brief 使用当前组件中选中的两个 Geometry Vertex 创建共享拓扑的直线边。
+     *
+     * @return 被更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createLineFromVertices(
+        int componentId, QSelection* selection);
 
     /**
      * @brief 创建长方体，并根据当前 Model/Component 选择确定写入位置。
@@ -104,5 +128,6 @@ private:
     std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
     int next_point_number_ { 1 };
+    int next_line_number_ { 1 };
     int next_box_number_ { 1 };
 };

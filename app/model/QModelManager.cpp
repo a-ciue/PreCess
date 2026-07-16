@@ -9,12 +9,17 @@
 #include "ModelIOSystemRegister.h"
 #include "ModelLayer.h"
 #include "QModelObserver.h"
+#include "QSelection.h"
 #include "SystemPluginManager.h"
 #include "ComponentData.h"
 
 #include <QUrl>
 #include <Standard_Failure.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <algorithm>
 #include <filesystem>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
@@ -100,6 +105,93 @@ int QModelManager::createPoint(
         spdlog::error("QModelManager::createPoint: {}", error.what());
         emit geometryOperationFailed(
             QStringLiteral("创建 Point 失败：%1").arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
+int QModelManager::createLineByCoordinates(
+    int modelId,
+    int componentId,
+    double startX,
+    double startY,
+    double startZ,
+    double endX,
+    double endY,
+    double endZ)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makeLine(
+            startX, startY, startZ, endX, endY, endZ);
+        const std::string component_name = "Line_" + std::to_string(next_line_number_);
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_line_number_;
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QModelManager::createLineByCoordinates: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Line 失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QModelManager::createLineByCoordinates: {}", error.what());
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Line 失败：%1").arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
+int QModelManager::createLineFromVertices(
+    int componentId, QSelection* selection)
+{
+    try {
+        if (componentId < 0)
+            throw std::invalid_argument("Select a target component first");
+        if (!selection || !selection->get())
+            throw std::invalid_argument("Select two geometry vertices");
+
+        const std::shared_ptr<Selection> selected = selection->get();
+        if (selected->type != ElementEnum::GeometryVertex || selected->ids.size() != 2)
+            throw std::invalid_argument("Exactly two geometry vertices are required");
+
+        ComponentData* component = core_->findComponent(componentId);
+        if (!component || !component->geometry || !component->geometry->rootShape)
+            throw std::invalid_argument("Target component has no geometry");
+        component->geometry->ensureIndexBuilt(core_->geomRegistry());
+
+        const auto& component_vertex_ids = component->geometry->index.vertex_local_to_global;
+        for (Index id : selected->ids) {
+            if (std::find(component_vertex_ids.begin(), component_vertex_ids.end(), id)
+                == component_vertex_ids.end())
+                throw std::invalid_argument("Selected vertices must belong to the target component");
+        }
+
+        const TopoDS_Shape* start_shape = core_->geomRegistry().getVertex(selected->ids[0]);
+        const TopoDS_Shape* end_shape = core_->geomRegistry().getVertex(selected->ids[1]);
+        if (!start_shape || !end_shape
+            || start_shape->ShapeType() != TopAbs_VERTEX
+            || end_shape->ShapeType() != TopAbs_VERTEX)
+            throw std::invalid_argument("Selected geometry vertices are no longer valid");
+
+        // 在索引释放前复制 TopoDS_Vertex，随后用它们构造共享端点的 Edge。
+        const TopoDS_Vertex start = TopoDS::Vertex(*start_shape);
+        const TopoDS_Vertex end = TopoDS::Vertex(*end_shape);
+        TopoDS_Shape line = GeometryBuilder::makeLine(start, end);
+        return addGeometryShape(
+            -1, componentId, "Line_" + std::to_string(next_line_number_), std::move(line));
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QModelManager::createLineFromVertices: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Line 失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QModelManager::createLineFromVertices: {}", error.what());
+        emit geometryOperationFailed(
+            QStringLiteral("创建 Line 失败：%1").arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
