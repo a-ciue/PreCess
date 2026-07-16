@@ -23,6 +23,7 @@
 class ModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
 class ComponentOperator;
+class TopoDS_Shape;
 
 /**
  * @brief 负责管理多个 ModelData 实例的类
@@ -55,6 +56,13 @@ public:
      * @return 新组件的全局 ID。
      */
     Index addGeometryComponent(Index model_id, std::unique_ptr<ComponentData> component);
+
+    /**
+     * @brief 将新形状追加到已有几何组件，并重新建立子形状索引。
+     *
+     * @return 被更新的组件 ID。
+     */
+    Index appendGeometryShape(Index component_id, TopoDS_Shape shape);
 
     /**
      * @brief 移除指定名称的模型

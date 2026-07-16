@@ -38,19 +38,21 @@ public:
     Q_INVOKABLE void removeModel(int id);
     Q_INVOKABLE void removeComponent(int id);
     /**
-     * @brief 创建独立几何点，并作为新几何组件加入活动模型；modelId 为 -1 时创建新模型。
+     * @brief 创建独立几何点，并根据当前 Model/Component 选择确定写入位置。
      *
      * @return 新组件 ID，失败时返回 -1。
      */
-    Q_INVOKABLE int createPoint(int modelId, double x, double y, double z);
+    Q_INVOKABLE int createPoint(
+        int modelId, int componentId, double x, double y, double z);
 
     /**
-     * @brief 创建长方体，并作为新几何组件加入活动模型；modelId 为 -1 时创建新模型。
+     * @brief 创建长方体，并根据当前 Model/Component 选择确定写入位置。
      *
      * @return 新组件 ID，失败时返回 -1。
      */
     Q_INVOKABLE int createBox(
         int modelId,
+        int componentId,
         double originX,
         double originY,
         double originZ,
@@ -82,9 +84,13 @@ signals:
 
 private:
     /**
-     * @brief 将 OCC Shape 包装成 GeometryData 和 ComponentData 后加入模型层。
+     * @brief 根据目标 Model/Component 将 OCC Shape 新建或追加到模型层。
      */
-    Index addGeometryShape(Index model_id, std::string component_name, TopoDS_Shape shape);
+    Index addGeometryShape(
+        Index model_id,
+        Index component_id,
+        std::string component_name,
+        TopoDS_Shape shape);
 
     std::unique_ptr<ModelLayer> core_;
     std::unique_ptr<QModelObserver> observer_;

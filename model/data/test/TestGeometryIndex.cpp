@@ -7,6 +7,10 @@
 #include <memory>
 
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <gp_Pnt.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 
 TEST_CASE("Geometry index build for single component")
@@ -123,5 +127,43 @@ TEST_CASE("Add geometry component to an existing model")
     REQUIRE(inserted != nullptr);
     REQUIRE(inserted->geometry != nullptr);
     REQUIRE(inserted->geometry->index.built);
+    REQUIRE(manager.modelById(model_id)->componentIds() == vector<Index> { component_id });
+}
+
+TEST_CASE("Append geometry shapes to an existing component")
+{
+    using namespace std;
+
+    ModelLayer manager;
+    auto geometry = make_unique<GeometryData>();
+    geometry->rootShape = make_unique<TopoDS_Shape>(
+        BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
+
+    auto component = make_unique<ComponentData>();
+    component->name = "Geometry_1";
+    component->geometry = move(geometry);
+
+    ComponentDatas components;
+    components.push_back(move(component));
+    const Index model_id = manager.addModel("geometry", move(components));
+    const Index component_id = manager.modelById(model_id)->componentIds().front();
+
+    manager.appendGeometryShape(
+        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(2.0, 2.0, 2.0)).Shape());
+    manager.appendGeometryShape(
+        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(3.0, 3.0, 3.0)).Shape());
+
+    ComponentData* updated = manager.findComponent(component_id);
+    REQUIRE(updated != nullptr);
+    REQUIRE(updated->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+    REQUIRE(updated->geometry->index.built);
+    REQUIRE(updated->geometry->index.type_maps[
+        GeometrySubshapeIndex::typeIndex(TopAbs_VERTEX)].Extent() == 10);
+
+    // Box 与两个 Point 应作为根 Compound 的三个直接子形状。
+    int direct_child_count = 0;
+    for (TopoDS_Iterator it(*updated->geometry->rootShape); it.More(); it.Next())
+        ++direct_child_count;
+    REQUIRE(direct_child_count == 3);
     REQUIRE(manager.modelById(model_id)->componentIds() == vector<Index> { component_id });
 }

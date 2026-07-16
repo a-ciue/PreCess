@@ -18,6 +18,7 @@ Item{
 
     readonly property var activeOp: App.activeOperation
     readonly property bool allowWithoutModel: !!(root.activeOp && root.activeOp.allowWithoutModel)
+    readonly property bool showGeometryTarget: !!(root.activeOp && root.activeOp.showGeometryTarget)
 
     onActiveOpChanged: {
         // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
@@ -38,8 +39,24 @@ Item{
                 root.activeOp.execute(App.selection.activeModelId, root.parameters)
         }
     }
-    Item{
+    Label {
+        id: targetLabel
         anchors.top: commitButton.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        visible: root.showGeometryTarget
+        height: visible ? 24 : 0
+        leftPadding: 6
+        verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
+        text: App.selection.activeComponentId >= 0
+              ? qsTr("目标：追加到组件 ") + QModelManager.query.getComponentName(App.selection.activeComponentId)
+              : App.selection.activeModelId >= 0
+                ? qsTr("目标：在模型中新建组件 ") + QModelManager.query.getModelName(App.selection.activeModelId)
+                : qsTr("目标：新建模型")
+    }
+    Item{
+        anchors.top: targetLabel.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

@@ -80,14 +80,17 @@ void QModelManager::removeComponent(int id)
     core_->removeComponent(id);
 }
 
-int QModelManager::createPoint(int modelId, double x, double y, double z)
+int QModelManager::createPoint(
+    int modelId, int componentId, double x, double y, double z)
 {
     try {
         TopoDS_Shape shape = GeometryBuilder::makePoint(x, y, z);
         const std::string component_name = "Point_" + std::to_string(next_point_number_);
-        const Index component_id = addGeometryShape(modelId, component_name, std::move(shape));
-        ++next_point_number_;
-        return component_id;
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_point_number_;
+        return result_component_id;
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("QModelManager::createPoint: {}", detail ? detail : "OpenCASCADE error");
@@ -103,6 +106,7 @@ int QModelManager::createPoint(int modelId, double x, double y, double z)
 
 int QModelManager::createBox(
     int modelId,
+    int componentId,
     double originX,
     double originY,
     double originZ,
@@ -114,9 +118,11 @@ int QModelManager::createBox(
         TopoDS_Shape shape = GeometryBuilder::makeBox(
             originX, originY, originZ, lengthX, lengthY, lengthZ);
         const std::string component_name = "Box_" + std::to_string(next_box_number_);
-        const Index component_id = addGeometryShape(modelId, component_name, std::move(shape));
-        ++next_box_number_;
-        return component_id;
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_box_number_;
+        return result_component_id;
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("QModelManager::createBox: {}", detail ? detail : "OpenCASCADE error");
@@ -132,9 +138,14 @@ int QModelManager::createBox(
 
 Index QModelManager::addGeometryShape(
     Index model_id,
+    Index component_id,
     std::string component_name,
     TopoDS_Shape shape)
 {
+    // Component 目标优先：将新形状追加到其现有 Geometry。
+    if (component_id >= 0)
+        return core_->appendGeometryShape(component_id, std::move(shape));
+
     const std::string model_name = "temp_" + component_name;
 
     auto geometry = std::make_unique<GeometryData>();

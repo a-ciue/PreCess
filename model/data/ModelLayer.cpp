@@ -19,6 +19,11 @@
 #include <filesystem>
 #include <stdexcept>
 
+#include <BRep_Builder.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
+
 Index ModelLayer::addModel(const std::string& model_name, ComponentDatas components)
 {
     Index model_id = ++max_index_;
@@ -90,6 +95,45 @@ Index ModelLayer::addGeometryComponent(Index model_id, std::unique_ptr<Component
 
     if (observer_)
         observer_->notifyModelChanged(model_id);
+    return component_id;
+}
+
+Index ModelLayer::appendGeometryShape(Index component_id, TopoDS_Shape shape)
+{
+    ComponentData* component = findComponent(component_id);
+    if (!component)
+        throw std::runtime_error("Component not exist");
+    if (!component->geometry || !component->geometry->rootShape
+        || component->geometry->rootShape->IsNull())
+        throw std::invalid_argument("Target component has no geometry");
+    if (component->mesh)
+        throw std::invalid_argument("Target component already contains mesh data");
+    if (component->mapping && !component->mapping->empty())
+        throw std::invalid_argument("Target component already contains geometry-mesh mapping");
+    if (shape.IsNull())
+        throw std::invalid_argument("Geometry shape is null");
+
+    const TopoDS_Shape& old_root = *component->geometry->rootShape;
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+
+    // 保持根 Compound 扁平，避免连续创建几何时形成多层嵌套。
+    if (old_root.ShapeType() == TopAbs_COMPOUND) {
+        for (TopoDS_Iterator it(old_root); it.More(); it.Next())
+            builder.Add(compound, it.Value());
+    } else {
+        builder.Add(compound, old_root);
+    }
+    builder.Add(compound, shape);
+
+    // 根形状改变后旧业务 ID 不再有效，必须释放并重新建立索引。
+    component->geometry->index.release(geom_registry_);
+    component->geometry->rootShape = std::make_unique<TopoDS_Shape>(std::move(compound));
+    component->geometry->ensureIndexBuilt(geom_registry_);
+
+    if (observer_)
+        observer_->notifyComponentChanged(component_id);
     return component_id;
 }
 

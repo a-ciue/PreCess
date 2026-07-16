@@ -103,10 +103,12 @@ ApplicationWindow {
                         App.activeOperation = {
                             info: root.createPointInfo,
                             allowWithoutModel: true,
+                            showGeometryTarget: true,
                             defaultParameters: [0, 0, 0],
                             execute: function(modelId, args) {
                                 var componentId = QModelManager.createPoint(
-                                    modelId, args[0], args[1], args[2])
+                                    modelId, App.selection.activeComponentId,
+                                    args[0], args[1], args[2])
                                 if (componentId >= 0) {
                                     App.selection.activeComponentId = componentId
                                     App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
@@ -122,10 +124,11 @@ ApplicationWindow {
                         App.activeOperation = {
                             info: root.createBoxInfo,
                             allowWithoutModel: true,
+                            showGeometryTarget: true,
                             defaultParameters: [0, 0, 0, 10, 10, 10],
                             execute: function(modelId, args) {
                                 var componentId = QModelManager.createBox(
-                                    modelId,
+                                    modelId, App.selection.activeComponentId,
                                     args[0], args[1], args[2],
                                     args[3], args[4], args[5])
                                 if (componentId >= 0) {

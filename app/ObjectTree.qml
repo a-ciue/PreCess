@@ -21,9 +21,21 @@ Pane {
         interval: 100
         repeat: false
         onTriggered: {
+            let selectedModelId = App.selection.activeModelId
+            let selectedComponentId = App.selection.activeComponentId
             treeModel.refresh()
-            App.selection.activeComponentId = -1
-            App.selection.activeModelId = -1
+
+            // TreeModel 重置后按业务 ID 恢复选择，目标已经删除时才清空。
+            let idx = selectedComponentId >= 0
+                    ? treeModel.findIndexByNodeId(selectedComponentId, 1)
+                    : treeModel.findIndexByNodeId(selectedModelId, 0)
+            if (idx.valid) {
+                treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
+            } else {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+                App.selection.activeModelId = -1
+            }
         }
     }
 
@@ -248,10 +260,15 @@ Pane {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         let compId = viewDelegate.model.componentId
 
-                        if (viewDelegate.current || compId < 0) {
+                        if (viewDelegate.current) {
                             viewDelegate.treeView.selectionModel.clear()
                             App.selection.activeComponentId = -1
                             App.selection.activeModelId = -1
+                        } else if (viewDelegate.depth === 0 && idx.valid) {
+                            // Model 节点没有 componentId，直接使用自身 nodeId。
+                            viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
+                            App.selection.activeComponentId = -1
+                            App.selection.activeModelId = viewDelegate.model.nodeId
                         } else if (idx.valid) {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                             App.selection.activeComponentId = compId
@@ -350,6 +367,8 @@ Pane {
 
                     onTriggered: {
                         viewDelegate.treeView.selectionModel.clear()
+                        App.selection.activeComponentId = -1
+                        App.selection.activeModelId = -1
                         contextMenu.close()
                         if (viewDelegate.depth === 0)
                             QModelManager.removeModel(viewDelegate.model.nodeId)
