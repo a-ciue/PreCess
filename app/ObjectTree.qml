@@ -280,6 +280,32 @@ Pane {
                 }
 
                 MenuItem {
+                    id: isolateItem
+                    text: "隔离"
+                    implicitHeight: 30
+
+                    background: Rectangle {
+                        color: isolateItem.hovered ? "#f0f0f0" : "transparent"
+                    }
+
+                    contentItem: Text {
+                        text: isolateItem.text
+                        color: isolateItem.hovered ? "#1976d2" : "#333333"
+                        font.pixelSize: 12
+                        font.family: "Microsoft YaHei"
+                        leftPadding: 15
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onTriggered: {
+                        if (viewDelegate.depth === 0)
+                            objectTree.isolateModel(viewDelegate.model.nodeId)
+                        else
+                            objectTree.isolateNode(viewDelegate.model.nodeId)
+                    }
+                }
+
+                MenuItem {
                     id: showItem
                     text: "显示"
                     implicitHeight: 30
@@ -403,6 +429,19 @@ Pane {
                     treeModel.setVisibility(idx, visible)
                     App.componentVisibilityUpdated(cid, visible)
                 }
+            }
+        }
+    }
+
+    function isolateModel(modelId) {
+        let models = QModelManager.query.listModels()
+        for (let i = 0; i < models.length; i++) {
+            let mid = models[i].model_id
+            let visible = (mid === modelId)
+            let idx = treeModel.findIndexByNodeId(mid, 0)
+            if (idx && idx.valid) {
+                treeModel.setVisibility(idx, visible)
+                App.modelVisibilityUpdated(mid, visible)
             }
         }
     }
