@@ -27,6 +27,7 @@ public:
 private:
     std::unique_ptr<MeshSelectManager> mesh_;
     std::unique_ptr<GeometrySelectManager> geom_;
+    SelectMode select_mode_ { SelectMode::None };
     vtkNew<vtkActor> highlight_actor_;
 };
 #endif

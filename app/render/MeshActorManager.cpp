@@ -30,7 +30,7 @@ std::shared_ptr<MeshActor> MeshActorManager::getComponentActor(Index component_i
     if (this->component_actors_.count(component_id))
         return this->component_actors_.at(component_id);
     else {
-        spdlog::error("MeshActorManager getComponentActor error");
+        spdlog::debug("MeshActorManager getComponentActor failed with component_id {}", component_id);
         return nullptr;
     }
 }

@@ -304,7 +304,7 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlig
     return filter;
 }
 
-vtkActor* GeometryActorSelectOp::getPolyActor()
+vtkActor& GeometryActorSelectOp::getPolyActor()
 {
-    return geometry_actor_->poly_actor_;
+    return *geometry_actor_->poly_actor_;
 }

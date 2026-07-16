@@ -18,10 +18,15 @@ SelectManager::SelectManager(vtkRenderer& renderer,
 
 SelectManager::~SelectManager() = default;
 
+static bool is_mesh_mode(SelectMode m) { return m >= SelectMode::Vertex && m <= SelectMode::Block; }
+static bool is_geom_mode(SelectMode m) { return m >= SelectMode::GeometryVertex && m <= SelectMode::GeometrySolid; }
+
 void SelectManager::select(double posx, double posy)
 {
-    mesh_->select(posx, posy);
-    geom_->select(posx, posy);
+    if (is_mesh_mode(select_mode_))
+        mesh_->select(posx, posy);
+    else if (is_geom_mode(select_mode_))
+        geom_->select(posx, posy);
 }
 
 void SelectManager::setSelectMode(const std::string& select_mode)
@@ -47,8 +52,17 @@ void SelectManager::setSelectMode(const std::string& select_mode)
         mode = SelectMode::GeometrySolid;
     }
 
-    mesh_->setSelectMode(mode);
-    geom_->setSelectMode(mode);
+    select_mode_ = mode;
+
+    if (is_mesh_mode(mode))
+        mesh_->setSelectMode(mode);
+    else
+        mesh_->clearSelection();
+
+    if (is_geom_mode(mode))
+        geom_->setSelectMode(mode);
+    else
+        geom_->clearSelection();
 }
 
 void SelectManager::clearSelection()
@@ -59,8 +73,9 @@ void SelectManager::clearSelection()
 
 std::unique_ptr<Selection> SelectManager::getSelection()
 {
-    if (auto geom_selection = geom_->getSelection()) {
-        return geom_selection;
-    }
-    return mesh_->getSelection();
+    if (is_geom_mode(select_mode_))
+        return geom_->getSelection();
+    if (is_mesh_mode(select_mode_))
+        return mesh_->getSelection();
+    return nullptr;
 }
