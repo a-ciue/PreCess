@@ -18,12 +18,12 @@ MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_
 
     highlight_mapper_->SetInputDataObject(highlight_data_);
     component_picker_->PickFromListOn();
-    op_->managePickList(component_picker_->GetPickList());
+    op_->observePickList(component_picker_->GetPickList());
 }
 
 void MeshSelectManager::select(double posx, double posy)
 {
-    if (this->select_mode_ == SelectMode::None || this->select_mode_ > SelectMode::Block)
+    if (this->select_mode_ == SelectMode::None)
         return;
 
     component_picker_->Pick(posx, posy, 0, renderer_);
@@ -39,6 +39,9 @@ void MeshSelectManager::select(double posx, double posy)
 
 void MeshSelectManager::setSelectMode(SelectMode select_mode)
 {
+    if (this->select_mode_ == select_mode)
+        return;
+
     this->select_mode_ = select_mode;
     this->component_selectors_.clear();
 

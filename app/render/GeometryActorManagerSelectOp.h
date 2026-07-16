@@ -7,6 +7,7 @@
 #include <memory>
 #include <optional>
 #include <unordered_map>
+#include <vector>
 #include <vtkProp.h>
 
 class GeometryActorManager;
@@ -18,16 +19,20 @@ public:
     explicit GeometryActorManagerSelectOp(GeometryActorManager& manager);
 
     std::optional<Index> getComponentId(vtkProp* prop) const;
-    void managePickList(vtkPropCollection* pick_list);
+    void observePickList(vtkPropCollection* pick_list);
+    void unobservePickList(vtkPropCollection* pick_list);
     std::optional<GeometryActorSelectOp> getSelectOp(Index component_id) const;
 
     void registerProps(Index component_id, std::shared_ptr<GeometryActor> actor);
     void unregisterProps(std::shared_ptr<GeometryActor> actor);
 
 private:
-    GeometryActorManager* manager_ {};
+    void addToAllLists(vtkProp* prop);
+    void removeFromAllLists(vtkProp* prop);
+
+    GeometryActorManager* manager_ { };
     std::unordered_map<vtkProp*, Index> prop_to_component_;
-    vtkSmartPointer<vtkPropCollection> pick_list_;
+    std::vector<vtkSmartPointer<vtkPropCollection>> pick_lists_;
 };
 
 #endif

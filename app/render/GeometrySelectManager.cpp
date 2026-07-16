@@ -20,7 +20,7 @@ GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& hi
 
     component_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
     component_picker_->PickFromListOn();
-    op_->managePickList(component_picker_->GetPickList());
+    op_->observePickList(component_picker_->GetPickList());
 
     picker_ = vtkSmartPointer<IVtkTools_ShapePicker>::New();
     picker_->SetRenderer(renderer_);
@@ -30,8 +30,6 @@ GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& hi
 void GeometrySelectManager::select(double posx, double posy)
 {
     if (this->select_mode_ == SelectMode::None)
-        return;
-    if (this->select_mode_ < SelectMode::GeometryVertex)
         return;
 
     component_picker_->Pick(posx, posy, 0, renderer_);
@@ -47,6 +45,8 @@ void GeometrySelectManager::select(double posx, double posy)
 
 void GeometrySelectManager::setSelectMode(SelectMode select_mode)
 {
+    if (select_mode == this->select_mode_)
+        return;
     this->select_mode_ = select_mode;
     this->clearSelection();
 
