@@ -39,6 +39,7 @@ var menudata={children:[
 {text:"s",url:"namespacemembers.html#index_s"},
 {text:"t",url:"namespacemembers.html#index_t"}]},
 {text:"函数",url:"namespacemembers_func.html"},
+{text:"变量",url:"namespacemembers_vars.html"},
 {text:"类型定义",url:"namespacemembers_type.html"},
 {text:"枚举",url:"namespacemembers_enum.html"},
 {text:"枚举值",url:"namespacemembers_eval.html"}]}]},
