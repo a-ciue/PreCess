@@ -15,6 +15,7 @@ add_library(vtkPart STATIC
     VertexSelectorHighlight.cpp
     EdgeSelectorHighlight.cpp
     FaceSelectorHighlight.cpp
+    ComponentSelectorHighlight.cpp
     MeshActorManagerSelectOp.cpp
     GeometryActorManagerSelectOp.cpp
     renderStrategy/AttributeOperator.cpp

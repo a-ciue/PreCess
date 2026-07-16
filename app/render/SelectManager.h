@@ -13,6 +13,7 @@ class MeshSelectManager;
 class GeometrySelectManager;
 class MeshActorManagerSelectOp;
 class GeometryActorManagerSelectOp;
+class ComponentSelectorHighlight;
 
 class SelectManager {
 public:
@@ -27,7 +28,10 @@ public:
 private:
     std::unique_ptr<MeshSelectManager> mesh_;
     std::unique_ptr<GeometrySelectManager> geom_;
+    std::unique_ptr<ComponentSelectorHighlight> component_selector_;
     SelectMode select_mode_ { SelectMode::None };
+    vtkRenderer* renderer_ {};
     vtkNew<vtkActor> highlight_actor_;
 };
+
 #endif
