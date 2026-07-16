@@ -29,7 +29,7 @@ public:
 
 private:
     void addToAllLists(vtkProp* prop);
-    void removeFromAllLists(std::set<vtkProp*> props);
+    void removeFromAllLists(const std::set<vtkProp*>& props);
 
     MeshActorManager* manager_ { };
     std::unordered_map<vtkProp*, Index> prop_to_component_;

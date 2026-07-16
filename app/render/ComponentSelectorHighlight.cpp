@@ -111,8 +111,9 @@ void ComponentSelectorHighlight::updateHighlight()
     highlight_data_->Initialize();
 
     for (Index component_id : selected_components_) {
+        static constexpr unsigned int k_partitions_per_component = 4;
         auto pid = [comp = static_cast<unsigned int>(component_id)](unsigned int off) {
-            return comp * 4 + off;
+            return comp * k_partitions_per_component + off;
         };
         if (auto select_op = mesh_op_.getSelectOp(component_id)) {
             if (auto* poly_data = _get_poly_data(select_op->getSolidActor()))

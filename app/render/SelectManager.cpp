@@ -90,11 +90,7 @@ void SelectManager::clearSelection()
 std::unique_ptr<Selection> SelectManager::getSelection()
 {
     if (select_mode_ == SelectMode::Component) {
-        auto result = std::make_unique<Selection>();
-        auto sel = component_selector_->get();
-        for (const auto& id : sel.ids)
-            result->ids.push_back(id);
-        result->type = ElementEnum::Component;
+        auto result = std::make_unique<Selection>(component_selector_->get());
         result->component_id = -1;
         return result;
     }

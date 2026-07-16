@@ -71,7 +71,7 @@ void MeshActorManagerSelectOp::addToAllLists(vtkProp* prop)
         list->AddItem(prop);
 }
 
-void MeshActorManagerSelectOp::removeFromAllLists(std::set<vtkProp*> props)
+void MeshActorManagerSelectOp::removeFromAllLists(const std::set<vtkProp*>& props)
 {
     for (auto& list : pick_lists_) {
         list->InitTraversal();
