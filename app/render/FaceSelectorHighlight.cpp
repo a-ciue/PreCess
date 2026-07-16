@@ -97,7 +97,7 @@ void FaceSelectorHighlight::select(double posx, double posy)
 
 void FaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
 {
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -2);
 
     actor.SetMapper(&mapper);
     vtkNew<vtkProperty> prop;
