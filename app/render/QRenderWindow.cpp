@@ -280,8 +280,9 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
 
 void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 {
-    dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
+        select_manager_->clearSelection();
 
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
