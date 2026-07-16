@@ -56,6 +56,35 @@ public:
         int componentId, QSelection* selection);
 
     /**
+     * @brief 根据角点、宽度、高度和全局坐标平面创建矩形面。
+     *
+     * @return 新建或更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createRectangleFace(
+        int modelId,
+        int componentId,
+        double originX,
+        double originY,
+        double originZ,
+        double width,
+        double height,
+        int plane);
+
+    /**
+     * @brief 根据圆心、半径和全局坐标平面创建圆面。
+     *
+     * @return 新建或更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createDiskFace(
+        int modelId,
+        int componentId,
+        double centerX,
+        double centerY,
+        double centerZ,
+        double radius,
+        int plane);
+
+    /**
      * @brief 创建长方体，并根据当前 Model/Component 选择确定写入位置。
      *
      * @return 新建或更新的组件 ID，失败时返回 -1。
@@ -86,5 +115,7 @@ private:
     ModelLayer* model_layer_ {};
     int next_point_number_ { 1 };
     int next_line_number_ { 1 };
+    int next_rectangle_face_number_ { 1 };
+    int next_disk_face_number_ { 1 };
     int next_box_number_ { 1 };
 };

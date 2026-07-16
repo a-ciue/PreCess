@@ -82,6 +82,33 @@ ApplicationWindow {
         ]
     })
 
+    readonly property var createRectangleFaceInfo: ({
+        name: "create_rectangle_face",
+        display_name: qsTr("创建矩形面"),
+        description: qsTr("根据角点、宽度、高度和坐标平面创建矩形面"),
+        arg_types: [
+            { type: QArgType.Float, name: qsTr("原点 X"), content: "0", description: qsTr("矩形的一个角点") },
+            { type: QArgType.Float, name: qsTr("原点 Y"), content: "0", description: qsTr("矩形的一个角点") },
+            { type: QArgType.Float, name: qsTr("原点 Z"), content: "0", description: qsTr("矩形的一个角点") },
+            { type: QArgType.Float, name: qsTr("宽度"), content: "10", description: qsTr("沿平面第一个坐标轴的长度") },
+            { type: QArgType.Float, name: qsTr("高度"), content: "10", description: qsTr("沿平面第二个坐标轴的长度") },
+            { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("矩形所在的全局坐标平面") }
+        ]
+    })
+
+    readonly property var createDiskFaceInfo: ({
+        name: "create_disk_face",
+        display_name: qsTr("创建圆面"),
+        description: qsTr("根据圆心、半径和坐标平面创建圆面"),
+        arg_types: [
+            { type: QArgType.Float, name: qsTr("圆心 X"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("圆心 Y"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("圆心 Z"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("半径"), content: "10", description: qsTr("必须大于几何容差") },
+            { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("圆面所在的全局坐标平面") }
+        ]
+    })
+
     menuBar: MenuBar{
         Menu{
             title: "文件"
@@ -186,6 +213,52 @@ ApplicationWindow {
                             }
                             App.selection.selectMode = "GeometryVertex"
                             App.selection.listeningSelectorIndex = 0
+                            sideBarDock.show()
+                        }
+                    }
+                }
+                Menu {
+                    title: qsTr("面")
+                    MenuItem {
+                        text: qsTr("矩形面")
+                        onTriggered: {
+                            App.activeOperation = {
+                                info: root.createRectangleFaceInfo,
+                                allowWithoutModel: true,
+                                showGeometryTarget: true,
+                                defaultParameters: [0, 0, 0, 10, 10, 0],
+                                execute: function(modelId, args) {
+                                    var componentId = QModelManager.geometry.createRectangleFace(
+                                        modelId, App.selection.activeComponentId,
+                                        args[0], args[1], args[2],
+                                        args[3], args[4], args[5])
+                                    if (componentId >= 0) {
+                                        App.selection.activeComponentId = componentId
+                                        App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                    }
+                                }
+                            }
+                            sideBarDock.show()
+                        }
+                    }
+                    MenuItem {
+                        text: qsTr("圆面")
+                        onTriggered: {
+                            App.activeOperation = {
+                                info: root.createDiskFaceInfo,
+                                allowWithoutModel: true,
+                                showGeometryTarget: true,
+                                defaultParameters: [0, 0, 0, 10, 0],
+                                execute: function(modelId, args) {
+                                    var componentId = QModelManager.geometry.createDiskFace(
+                                        modelId, App.selection.activeComponentId,
+                                        args[0], args[1], args[2], args[3], args[4])
+                                    if (componentId >= 0) {
+                                        App.selection.activeComponentId = componentId
+                                        App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                    }
+                                }
+                            }
                             sideBarDock.show()
                         }
                     }

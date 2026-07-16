@@ -9,6 +9,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <array>
 #include <limits>
 #include <stdexcept>
 
@@ -60,6 +61,58 @@ TEST_CASE("GeometryBuilder rejects coincident line endpoints")
 {
     REQUIRE_THROWS_AS(
         GeometryBuilder::makeLine(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        std::invalid_argument);
+}
+
+TEST_CASE("GeometryBuilder creates valid rectangular faces in supported planes")
+{
+    const std::array<CoordinatePlane, 3> planes {
+        CoordinatePlane::XY,
+        CoordinatePlane::YZ,
+        CoordinatePlane::XZ
+    };
+
+    for (CoordinatePlane plane : planes) {
+        TopoDS_Shape shape = GeometryBuilder::makeRectangleFace(
+            1.0, 2.0, 3.0, 10.0, 20.0, plane);
+
+        REQUIRE_FALSE(shape.IsNull());
+        REQUIRE(shape.ShapeType() == TopAbs_FACE);
+        REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+    }
+}
+
+TEST_CASE("GeometryBuilder rejects non-positive rectangle face dimensions")
+{
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeRectangleFace(
+            0.0, 0.0, 0.0, 0.0, 1.0, CoordinatePlane::XY),
+        std::invalid_argument);
+}
+
+TEST_CASE("GeometryBuilder creates valid disk faces in supported planes")
+{
+    const std::array<CoordinatePlane, 3> planes {
+        CoordinatePlane::XY,
+        CoordinatePlane::YZ,
+        CoordinatePlane::XZ
+    };
+
+    for (CoordinatePlane plane : planes) {
+        TopoDS_Shape shape = GeometryBuilder::makeDiskFace(
+            1.0, 2.0, 3.0, 10.0, plane);
+
+        REQUIRE_FALSE(shape.IsNull());
+        REQUIRE(shape.ShapeType() == TopAbs_FACE);
+        REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+    }
+}
+
+TEST_CASE("GeometryBuilder rejects non-positive disk face radius")
+{
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeDiskFace(
+            0.0, 0.0, 0.0, 0.0, CoordinatePlane::XY),
         std::invalid_argument);
 }
 

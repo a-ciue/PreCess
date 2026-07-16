@@ -1,12 +1,18 @@
 #include "GeometryBuilder.h"
 
-#include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRep_Tool.hxx>
 #include <Precision.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <gp_Ax2.hxx>
+#include <gp_Circ.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 
 #include <array>
@@ -90,6 +96,138 @@ TopoDS_Shape GeometryBuilder::makeLine(
     // 使用已有 TopoDS_Vertex，保证新 Edge 与输入点共享拓扑。
     BRepBuilderAPI_MakeEdge builder(start, end);
     return checkedLine(builder);
+}
+
+TopoDS_Shape GeometryBuilder::makeRectangleFace(
+    double origin_x,
+    double origin_y,
+    double origin_z,
+    double width,
+    double height,
+    CoordinatePlane plane)
+{
+    const std::array<double, 5> values {
+        origin_x, origin_y, origin_z, width, height
+    };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Rectangle face parameters must be finite numbers");
+    }
+    if (width <= Precision::Confusion() || height <= Precision::Confusion())
+        throw std::invalid_argument("Rectangle face dimensions must be greater than tolerance");
+
+    // 原点是矩形角点，宽度和高度分别沿所选平面的两个正轴方向展开。
+    std::array<gp_Pnt, 4> points;
+    switch (plane) {
+    case CoordinatePlane::XY:
+        points = { gp_Pnt(origin_x, origin_y, origin_z),
+            gp_Pnt(origin_x + width, origin_y, origin_z),
+            gp_Pnt(origin_x + width, origin_y + height, origin_z),
+            gp_Pnt(origin_x, origin_y + height, origin_z) };
+        break;
+    case CoordinatePlane::YZ:
+        points = { gp_Pnt(origin_x, origin_y, origin_z),
+            gp_Pnt(origin_x, origin_y + width, origin_z),
+            gp_Pnt(origin_x, origin_y + width, origin_z + height),
+            gp_Pnt(origin_x, origin_y, origin_z + height) };
+        break;
+    case CoordinatePlane::XZ:
+        points = { gp_Pnt(origin_x, origin_y, origin_z),
+            gp_Pnt(origin_x + width, origin_y, origin_z),
+            gp_Pnt(origin_x + width, origin_y, origin_z + height),
+            gp_Pnt(origin_x, origin_y, origin_z + height) };
+        break;
+    default:
+        throw std::invalid_argument("Rectangle face plane is invalid");
+    }
+
+    // 显式复用四个拓扑点，保证相邻 Edge 共享 Vertex，再依次组成闭合 Wire。
+    std::array<TopoDS_Vertex, 4> vertices;
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        BRepBuilderAPI_MakeVertex vertex_builder(points[i]);
+        if (!vertex_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to create a rectangle vertex");
+        vertices[i] = vertex_builder.Vertex();
+    }
+
+    BRepBuilderAPI_MakeWire wire_builder;
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        BRepBuilderAPI_MakeEdge edge_builder(vertices[i], vertices[(i + 1) % vertices.size()]);
+        if (!edge_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to create a rectangle edge");
+        wire_builder.Add(edge_builder.Edge());
+    }
+    if (!wire_builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the rectangle wire");
+
+    // OnlyPlane=true：只接受能够识别为平面的闭合 Wire。
+    const TopoDS_Wire wire = wire_builder.Wire();
+    BRepBuilderAPI_MakeFace face_builder(wire, true);
+    if (!face_builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the rectangle face");
+
+    TopoDS_Shape shape = face_builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty rectangle face");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created rectangle face is topologically invalid");
+    return shape;
+}
+
+TopoDS_Shape GeometryBuilder::makeDiskFace(
+    double center_x,
+    double center_y,
+    double center_z,
+    double radius,
+    CoordinatePlane plane)
+{
+    const std::array<double, 4> values {
+        center_x, center_y, center_z, radius
+    };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Disk face parameters must be finite numbers");
+    }
+    if (radius <= Precision::Confusion())
+        throw std::invalid_argument("Disk face radius must be greater than tolerance");
+
+    // 为三个全局坐标平面设置法向和局部 X 参考方向。
+    const gp_Pnt center(center_x, center_y, center_z);
+    gp_Ax2 placement;
+    switch (plane) {
+    case CoordinatePlane::XY:
+        placement = gp_Ax2(center, gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0));
+        break;
+    case CoordinatePlane::YZ:
+        placement = gp_Ax2(center, gp_Dir(1.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+        break;
+    case CoordinatePlane::XZ:
+        placement = gp_Ax2(center, gp_Dir(0.0, -1.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+        break;
+    default:
+        throw std::invalid_argument("Disk face plane is invalid");
+    }
+
+    // 圆曲线先生成闭合 Edge，再组成 Wire 并限定创建平面 Face。
+    BRepBuilderAPI_MakeEdge edge_builder(gp_Circ(placement, radius));
+    if (!edge_builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the disk edge");
+
+    BRepBuilderAPI_MakeWire wire_builder;
+    wire_builder.Add(edge_builder.Edge());
+    if (!wire_builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the disk wire");
+
+    BRepBuilderAPI_MakeFace face_builder(wire_builder.Wire(), true);
+    if (!face_builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the disk face");
+
+    TopoDS_Shape shape = face_builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty disk face");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created disk face is topologically invalid");
+    return shape;
 }
 
 TopoDS_Shape GeometryBuilder::makeBox(

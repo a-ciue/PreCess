@@ -5,6 +5,15 @@
 class TopoDS_Vertex;
 
 /**
+ * @brief 参数创建平面几何时使用的全局坐标平面。
+ */
+enum class CoordinatePlane {
+    XY = 0,
+    YZ = 1,
+    XZ = 2
+};
+
+/**
  * @brief 提供不依赖界面和模型管理的基础 OCC 几何构造函数。
  */
 class GeometryBuilder {
@@ -40,6 +49,33 @@ public:
     static TopoDS_Shape makeLine(
         const TopoDS_Vertex& start,
         const TopoDS_Vertex& end);
+
+    /**
+     * @brief 根据角点、宽度、高度和全局坐标平面创建矩形平面。
+     *
+     * @throws std::invalid_argument 输入包含非有限数值、尺寸过小或平面无效。
+     * @throws std::runtime_error OCC 构造失败或结果拓扑无效。
+     */
+    static TopoDS_Shape makeRectangleFace(
+        double origin_x,
+        double origin_y,
+        double origin_z,
+        double width,
+        double height,
+        CoordinatePlane plane);
+
+    /**
+     * @brief 根据圆心、半径和全局坐标平面创建圆面。
+     *
+     * @throws std::invalid_argument 输入包含非有限数值、半径过小或平面无效。
+     * @throws std::runtime_error OCC 构造失败或结果拓扑无效。
+     */
+    static TopoDS_Shape makeDiskFace(
+        double center_x,
+        double center_y,
+        double center_z,
+        double radius,
+        CoordinatePlane plane);
 
     /**
      * @brief 根据原点和三个轴向尺寸创建长方体。

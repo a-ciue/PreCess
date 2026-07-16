@@ -135,6 +135,86 @@ int QGeometryOperations::createLineFromVertices(
     return -1;
 }
 
+int QGeometryOperations::createRectangleFace(
+    int modelId,
+    int componentId,
+    double originX,
+    double originY,
+    double originZ,
+    double width,
+    double height,
+    int plane)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makeRectangleFace(
+            originX,
+            originY,
+            originZ,
+            width,
+            height,
+            static_cast<CoordinatePlane>(plane));
+        const std::string component_name =
+            "RectangleFace_" + std::to_string(next_rectangle_face_number_);
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_rectangle_face_number_;
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::createRectangleFace: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit operationFailed(
+            QStringLiteral("创建 Rectangle Face 失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QGeometryOperations::createRectangleFace: {}", error.what());
+        emit operationFailed(
+            QStringLiteral("创建 Rectangle Face 失败：%1")
+                .arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
+int QGeometryOperations::createDiskFace(
+    int modelId,
+    int componentId,
+    double centerX,
+    double centerY,
+    double centerZ,
+    double radius,
+    int plane)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makeDiskFace(
+            centerX,
+            centerY,
+            centerZ,
+            radius,
+            static_cast<CoordinatePlane>(plane));
+        const std::string component_name =
+            "DiskFace_" + std::to_string(next_disk_face_number_);
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_disk_face_number_;
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::createDiskFace: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit operationFailed(
+            QStringLiteral("创建 Disk Face 失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QGeometryOperations::createDiskFace: {}", error.what());
+        emit operationFailed(
+            QStringLiteral("创建 Disk Face 失败：%1")
+                .arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
 int QGeometryOperations::createBox(
     int modelId,
     int componentId,
