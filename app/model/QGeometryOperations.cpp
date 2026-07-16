@@ -9,6 +9,7 @@
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <algorithm>
@@ -245,6 +246,107 @@ int QGeometryOperations::createBox(
         spdlog::error("QGeometryOperations::createBox: {}", error.what());
         emit operationFailed(
             QStringLiteral("创建 Box 失败：%1").arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
+int QGeometryOperations::createCylinder(
+    int modelId,
+    int componentId,
+    double centerX,
+    double centerY,
+    double centerZ,
+    double radius,
+    double height,
+    double directionX,
+    double directionY,
+    double directionZ)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makeCylinder(
+            centerX,
+            centerY,
+            centerZ,
+            radius,
+            height,
+            directionX,
+            directionY,
+            directionZ);
+        const std::string component_name =
+            "Cylinder_" + std::to_string(next_cylinder_number_);
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_cylinder_number_;
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::createCylinder: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit operationFailed(
+            QStringLiteral("创建 Cylinder 失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QGeometryOperations::createCylinder: {}", error.what());
+        emit operationFailed(
+            QStringLiteral("创建 Cylinder 失败：%1")
+                .arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
+int QGeometryOperations::extrudeFace(
+    int componentId,
+    QSelection* selection,
+    double directionX,
+    double directionY,
+    double directionZ,
+    double length)
+{
+    try {
+        if (componentId < 0)
+            throw std::invalid_argument("Select a target component first");
+        if (!selection || !selection->get())
+            throw std::invalid_argument("Select one geometry face");
+
+        const std::shared_ptr<Selection> selected = selection->get();
+        if (selected->type != ElementEnum::GeometryFace || selected->ids.size() != 1)
+            throw std::invalid_argument("Exactly one geometry face is required");
+
+        ComponentData* component = model_layer_->findComponent(componentId);
+        if (!component || !component->geometry || !component->geometry->rootShape)
+            throw std::invalid_argument("Target component has no geometry");
+        component->geometry->ensureIndexBuilt(model_layer_->geomRegistry());
+
+        const Index face_id = selected->ids.front();
+        const auto& component_face_ids = component->geometry->index.face_local_to_global;
+        if (std::find(component_face_ids.begin(), component_face_ids.end(), face_id)
+            == component_face_ids.end())
+            throw std::invalid_argument("Selected face must belong to the target component");
+
+        const TopoDS_Shape* source_shape = model_layer_->geomRegistry().getFace(face_id);
+        if (!source_shape || source_shape->ShapeType() != TopAbs_FACE)
+            throw std::invalid_argument("Selected geometry face is no longer valid");
+
+        // 在追加结果导致索引重建前复制句柄，构造器内部再复制源 Face 的拓扑。
+        const TopoDS_Face source = TopoDS::Face(*source_shape);
+        TopoDS_Shape solid = GeometryBuilder::extrudeFace(
+            source, directionX, directionY, directionZ, length);
+        const Index result_component_id = addGeometryShape(
+            -1, componentId, "Extrude", std::move(solid));
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::extrudeFace: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit operationFailed(
+            QStringLiteral("拉伸 Face 失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QGeometryOperations::extrudeFace: {}", error.what());
+        emit operationFailed(
+            QStringLiteral("拉伸 Face 失败：%1")
+                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }

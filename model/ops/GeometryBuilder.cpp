@@ -6,14 +6,20 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCylinder.hxx>
+#include <BRepPrimAPI_MakePrism.hxx>
 #include <BRep_Tool.hxx>
 #include <Precision.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 #include <array>
 #include <cmath>
@@ -267,5 +273,98 @@ TopoDS_Shape GeometryBuilder::makeBox(
     if (!BRepCheck_Analyzer(shape).IsValid())
         throw std::runtime_error("The created box is topologically invalid");
 
+    return shape;
+}
+
+TopoDS_Shape GeometryBuilder::makeCylinder(
+    double center_x,
+    double center_y,
+    double center_z,
+    double radius,
+    double height,
+    double direction_x,
+    double direction_y,
+    double direction_z)
+{
+    const std::array<double, 8> values {
+        center_x,
+        center_y,
+        center_z,
+        radius,
+        height,
+        direction_x,
+        direction_y,
+        direction_z
+    };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Cylinder parameters must be finite numbers");
+    }
+    if (radius <= Precision::Confusion() || height <= Precision::Confusion())
+        throw std::invalid_argument("Cylinder radius and height must be greater than tolerance");
+
+    const gp_Vec axis(direction_x, direction_y, direction_z);
+    if (axis.Magnitude() <= Precision::Confusion())
+        throw std::invalid_argument("Cylinder axis direction must not be zero");
+
+    // gp_Ax2 的原点是底面圆心，主方向是圆柱从底面指向顶面的轴向。
+    const gp_Ax2 placement(
+        gp_Pnt(center_x, center_y, center_z),
+        gp_Dir(axis));
+    BRepPrimAPI_MakeCylinder builder(placement, radius, height);
+    builder.Build();
+    if (!builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the cylinder");
+
+    TopoDS_Shape shape = builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty cylinder");
+    if (shape.ShapeType() != TopAbs_SOLID)
+        throw std::runtime_error("OpenCASCADE did not create a cylinder solid");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created cylinder is topologically invalid");
+    return shape;
+}
+
+TopoDS_Shape GeometryBuilder::extrudeFace(
+    const TopoDS_Face& face,
+    double direction_x,
+    double direction_y,
+    double direction_z,
+    double length)
+{
+    if (face.IsNull())
+        throw std::invalid_argument("Extrude source face must not be null");
+
+    const std::array<double, 4> values {
+        direction_x, direction_y, direction_z, length
+    };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Extrude parameters must be finite numbers");
+    }
+    if (length <= Precision::Confusion())
+        throw std::invalid_argument("Extrude length must be greater than tolerance");
+
+    const gp_Vec axis(direction_x, direction_y, direction_z);
+    if (axis.Magnitude() <= Precision::Confusion())
+        throw std::invalid_argument("Extrude direction must not be zero");
+
+    gp_Vec extrusion { gp_Dir(axis) };
+    extrusion.Multiply(length);
+
+    // Copy=true：Solid 使用源面的副本作为底面，Component 中的独立源 Face 保持不变。
+    BRepPrimAPI_MakePrism builder(face, extrusion, true, true);
+    builder.Build();
+    if (!builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to extrude the face");
+
+    TopoDS_Shape shape = builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty extrude result");
+    if (!TopExp_Explorer(shape, TopAbs_SOLID).More())
+        throw std::runtime_error("OpenCASCADE did not create an extruded solid");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The extruded solid is topologically invalid");
     return shape;
 }

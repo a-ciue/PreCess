@@ -2,9 +2,11 @@
 
 #include <BRepCheck_Analyzer.hxx>
 #include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Vertex.hxx>
 
 #include <catch2/catch_test_macros.hpp>
@@ -129,5 +131,70 @@ TEST_CASE("GeometryBuilder rejects non-positive box dimensions")
 {
     REQUIRE_THROWS_AS(
         GeometryBuilder::makeBox(0.0, 0.0, 0.0, 0.0, 1.0, 1.0),
+        std::invalid_argument);
+}
+
+TEST_CASE("GeometryBuilder creates a valid cylinder")
+{
+    TopoDS_Shape shape = GeometryBuilder::makeCylinder(
+        1.0, 2.0, 3.0,
+        10.0, 20.0,
+        0.0, 0.0, 1.0);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(shape.ShapeType() == TopAbs_SOLID);
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+}
+
+TEST_CASE("GeometryBuilder rejects invalid cylinder parameters")
+{
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCylinder(
+            0.0, 0.0, 0.0,
+            0.0, 10.0,
+            0.0, 0.0, 1.0),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCylinder(
+            0.0, 0.0, 0.0,
+            5.0, 10.0,
+            0.0, 0.0, 0.0),
+        std::invalid_argument);
+}
+
+TEST_CASE("GeometryBuilder extrudes a copied face into a valid solid")
+{
+    const TopoDS_Face source = TopoDS::Face(
+        GeometryBuilder::makeRectangleFace(
+            0.0, 0.0, 0.0, 10.0, 20.0, CoordinatePlane::XY));
+
+    TopoDS_Shape shape = GeometryBuilder::extrudeFace(
+        source, 0.0, 0.0, 1.0, 30.0);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(TopExp_Explorer(shape, TopAbs_SOLID).More());
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+
+    bool shares_source_face = false;
+    for (TopExp_Explorer exp(shape, TopAbs_FACE); exp.More(); exp.Next()) {
+        if (exp.Current().IsSame(source)) {
+            shares_source_face = true;
+            break;
+        }
+    }
+    REQUIRE_FALSE(shares_source_face);
+}
+
+TEST_CASE("GeometryBuilder rejects invalid face extrusion parameters")
+{
+    const TopoDS_Face source = TopoDS::Face(
+        GeometryBuilder::makeRectangleFace(
+            0.0, 0.0, 0.0, 10.0, 20.0, CoordinatePlane::XY));
+
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::extrudeFace(source, 0.0, 0.0, 0.0, 10.0),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::extrudeFace(source, 0.0, 0.0, 1.0, 0.0),
         std::invalid_argument);
 }

@@ -99,6 +99,39 @@ public:
         double lengthY,
         double lengthZ);
 
+    /**
+     * @brief 根据底面圆心、半径、高度和轴向创建完整圆柱体。
+     *
+     * @return 新建或更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createCylinder(
+        int modelId,
+        int componentId,
+        double centerX,
+        double centerY,
+        double centerZ,
+        double radius,
+        double height,
+        double directionX,
+        double directionY,
+        double directionZ);
+
+    /**
+     * @brief 将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。
+     *
+     * 源 Face 保留，拉伸结果使用截面副本并追加回源组件。
+     * @return 被更新的组件 ID，失败时返回 -1。
+     */
+
+
+    Q_INVOKABLE int extrudeFace(
+        int componentId,
+        QSelection* selection,
+        double directionX,
+        double directionY,
+        double directionZ,
+        double length);
+
 signals:
     void operationFailed(const QString& message);
 
@@ -118,4 +151,5 @@ private:
     int next_rectangle_face_number_ { 1 };
     int next_disk_face_number_ { 1 };
     int next_box_number_ { 1 };
+    int next_cylinder_number_ { 1 };
 };

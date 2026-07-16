@@ -2,6 +2,7 @@
 
 #include <TopoDS_Shape.hxx>
 
+class TopoDS_Face;
 class TopoDS_Vertex;
 
 /**
@@ -90,4 +91,33 @@ public:
         double length_x,
         double length_y,
         double length_z);
+
+    /**
+     * @brief 根据底面圆心、半径、高度和轴向创建完整圆柱体。
+     *
+     * @throws std::invalid_argument 输入包含非有限数值、尺寸过小或轴向为零。
+     * @throws std::runtime_error OCC 构造失败或结果拓扑无效。
+     */
+    static TopoDS_Shape makeCylinder(
+        double center_x,
+        double center_y,
+        double center_z,
+        double radius,
+        double height,
+        double direction_x,
+        double direction_y,
+        double direction_z);
+
+    /**
+     * @brief 将已有面沿指定方向和长度拉伸为实体，构造时复制源面。
+     *
+     * @throws std::invalid_argument 源面为空、输入包含非有限数值、长度过小或方向为零。
+     * @throws std::runtime_error OCC 构造失败、未生成实体或结果拓扑无效。
+     */
+    static TopoDS_Shape extrudeFace(
+        const TopoDS_Face& face,
+        double direction_x,
+        double direction_y,
+        double direction_z,
+        double length);
 };

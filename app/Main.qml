@@ -59,6 +59,22 @@ ApplicationWindow {
         ]
     })
 
+    readonly property var createCylinderInfo: ({
+        name: "create_cylinder",
+        display_name: qsTr("创建圆柱体"),
+        description: qsTr("根据底面圆心、半径、高度和轴向创建完整圆柱体"),
+        arg_types: [
+            { type: QArgType.Float, name: qsTr("底面圆心 X"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("底面圆心 Y"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("底面圆心 Z"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("半径"), content: "10", description: qsTr("必须大于几何容差") },
+            { type: QArgType.Float, name: qsTr("高度"), content: "20", description: qsTr("必须大于几何容差") },
+            { type: QArgType.Float, name: qsTr("轴向 X"), content: "0", description: qsTr("轴向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("轴向 Y"), content: "0", description: qsTr("轴向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("轴向 Z"), content: "1", description: qsTr("轴向不能为零向量") }
+        ]
+    })
+
     readonly property var createLineByCoordinatesInfo: ({
         name: "create_line_by_coordinates",
         display_name: qsTr("创建直线边（坐标）"),
@@ -106,6 +122,19 @@ ApplicationWindow {
             { type: QArgType.Float, name: qsTr("圆心 Z"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("半径"), content: "10", description: qsTr("必须大于几何容差") },
             { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("圆面所在的全局坐标平面") }
+        ]
+    })
+
+    readonly property var extrudeFaceInfo: ({
+        name: "extrude_face",
+        display_name: qsTr("拉伸面为实体"),
+        description: qsTr("选择一个几何面，沿指定方向和长度拉伸为实体；源面保留"),
+        arg_types: [
+            { type: QArgType.Selector, name: qsTr("截面"), content: "", description: qsTr("请选择一个几何面") },
+            { type: QArgType.Float, name: qsTr("方向 X"), content: "0", description: qsTr("方向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("方向 Y"), content: "0", description: qsTr("方向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("方向 Z"), content: "1", description: qsTr("方向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("长度"), content: "10", description: qsTr("必须大于几何容差") }
         ]
     })
 
@@ -282,6 +311,54 @@ ApplicationWindow {
                                 }
                             }
                         }
+                        sideBarDock.show()
+                    }
+                }
+                MenuItem {
+                    text: qsTr("圆柱体")
+                    onTriggered: {
+                        App.activeOperation = {
+                            info: root.createCylinderInfo,
+                            allowWithoutModel: true,
+                            showGeometryTarget: true,
+                            defaultParameters: [0, 0, 0, 10, 20, 0, 0, 1],
+                            execute: function(modelId, args) {
+                                var componentId = QModelManager.geometry.createCylinder(
+                                    modelId, App.selection.activeComponentId,
+                                    args[0], args[1], args[2],
+                                    args[3], args[4],
+                                    args[5], args[6], args[7])
+                                if (componentId >= 0) {
+                                    App.selection.activeComponentId = componentId
+                                    App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                }
+                            }
+                        }
+                        sideBarDock.show()
+                    }
+                }
+                MenuItem {
+                    text: qsTr("拉伸面为实体")
+                    onTriggered: {
+                        App.activeOperation = {
+                            info: root.extrudeFaceInfo,
+                            requireComponent: true,
+                            showGeometryTarget: true,
+                            defaultParameters: [null, 0, 0, 1, 10],
+                            execute: function(modelId, args) {
+                                var componentId = QModelManager.geometry.extrudeFace(
+                                    App.selection.activeComponentId,
+                                    args[0], args[1], args[2], args[3], args[4])
+                                if (componentId >= 0) {
+                                    if (App.registry.renderWindow)
+                                        App.registry.renderWindow.clearSelection()
+                                    App.selection.activeComponentId = componentId
+                                    App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+                                }
+                            }
+                        }
+                        App.selection.selectMode = "GeometryFace"
+                        App.selection.listeningSelectorIndex = 0
                         sideBarDock.show()
                     }
                 }
