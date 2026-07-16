@@ -167,8 +167,15 @@ std::optional<Index> GeometryActorSelectOp::resolvePickedSubshape(IVtkTools_Shap
         return std::nullopt;
 
     out_sub_id = -1;
-    if (!firstId(picker->GetPickedSubShapesIds(shapeId, false), out_sub_id))
-        return std::nullopt;
+    if (!firstId(picker->GetPickedSubShapesIds(shapeId, false), out_sub_id)) {
+        // 独立根 Face/Edge/Vertex 可能只返回顶层 Shape ID，不返回 SubShape ID。
+        const TopoDS_Shape& root = geometry_actor_->occ_shape_->GetShape();
+        if (root.ShapeType() != wantType)
+            return std::nullopt;
+        out_sub_id = geometry_actor_->occ_shape_->GetSubShapeId(root);
+        if (out_sub_id < 0)
+            return std::nullopt;
+    }
 
     const GeometrySubshapeIndex* geomIndex = geometry_actor_->geometry_index_;
     if (!geomIndex)
