@@ -3,7 +3,6 @@
 #include "Core.h"
 #include "GeometryActorSelectOp.h"
 
-#include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtk_Types.hxx>
 #include <NCollection_List.hxx>

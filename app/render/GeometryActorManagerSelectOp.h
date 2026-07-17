@@ -36,8 +36,6 @@ public:
 private:
     void addToAllLists(vtkProp* prop);
     void removeFromAllLists(vtkProp* prop);
-    void addToAllShapePickers(vtkProp* prop);
-    void removeFromAllShapePickers(vtkProp* prop);
 
     GeometryActorManager* manager_ { };
     std::unordered_map<vtkProp*, Index> prop_to_component_;

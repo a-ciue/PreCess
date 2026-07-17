@@ -52,15 +52,12 @@ void GeometryActorManagerSelectOp::observeShapePicker(IVtkTools_ShapePicker* pic
     if (!picker)
         return;
     shape_pickers_.push_back(picker);
-    picker->PickFromListOn();
     picker->SetPixelTolerance(GeometryActorSelectOp::toleranceForMode(current_mode_));
     for (Index comp_id : registered_component_ids_) {
         auto actor = manager_->getComponentActor(comp_id);
         if (!actor)
             continue;
         GeometryActorSelectOp op(actor);
-        picker->AddPickList(&op.getPolyActor());
-        picker->AddPickList(&op.getLineActor());
         if (current_mode_ != SelectMode::None)
             op.enableSelectionMode(picker, current_mode_);
     }
@@ -99,9 +96,6 @@ void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared
     registered_component_ids_.insert(component_id);
     shape_id_to_component_[op.getShapeId()] = component_id;
 
-    addToAllShapePickers(&op.getPolyActor());
-    addToAllShapePickers(&op.getLineActor());
-
     for (auto picker : shape_pickers_) {
         if (current_mode_ != SelectMode::None)
             op.enableSelectionMode(picker, current_mode_);
@@ -112,7 +106,6 @@ void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor
 {
     GeometryActorSelectOp op(actor);
     auto* poly = &op.getPolyActor();
-    auto* line = &op.getLineActor();
     prop_to_component_.erase(poly);
 
     removeFromAllLists(poly);
@@ -123,9 +116,6 @@ void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor
         registered_component_ids_.erase(it->second);
         shape_id_to_component_.erase(it);
     }
-
-    removeFromAllShapePickers(poly);
-    removeFromAllShapePickers(line);
 
     for (auto picker : shape_pickers_)
         op.disableSelectionModes(picker);
@@ -141,16 +131,4 @@ void GeometryActorManagerSelectOp::removeFromAllLists(vtkProp* prop)
 {
     for (auto& list : pick_lists_)
         list->RemoveItem(prop);
-}
-
-void GeometryActorManagerSelectOp::addToAllShapePickers(vtkProp* prop)
-{
-    for (auto picker : shape_pickers_)
-        picker->AddPickList(prop);
-}
-
-void GeometryActorManagerSelectOp::removeFromAllShapePickers(vtkProp* prop)
-{
-    for (auto picker : shape_pickers_)
-        picker->DeletePickList(prop);
 }

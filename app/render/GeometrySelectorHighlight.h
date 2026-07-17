@@ -11,8 +11,6 @@ class vtkActor;
 class vtkPartitionedDataSet;
 class vtkMapper;
 class IVtkTools_SubPolyDataFilter;
-class IVtkTools_ShapePicker;
-struct GeometrySubshapeIndex;
 
 using GeometrySelectionVtk = Selection;
 
