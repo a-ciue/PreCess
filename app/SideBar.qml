@@ -293,10 +293,20 @@ Item{
                 text: "开始选择"
                 checked: App.selection.listeningSelectorIndex === index
                 onClicked: {
-                    if (!checked)
+                    if (!checked) {
                         App.selection.listeningSelectorIndex = index
-                    else
+                        if (App.selection.selectMode === "None") {
+                            if (model.content.length > 0) {
+                                const modes = model.content.split(",")
+                                if (modes.length > 0)
+                                    App.selection.selectMode = modes[0]
+                            } else {
+                                App.selection.selectMode = "Face"
+                            }
+                        }
+                    } else {
                         App.selection.listeningSelectorIndex = -1
+                    }
                 }
             }
 

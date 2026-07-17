@@ -5,7 +5,7 @@ QtObject {
     property QtObject selection: QtObject {
         property int activeModelId: -1
         property int activeComponentId: -1
-        property string selectMode: ""
+        property string selectMode: "None"
         property int listeningSelectorIndex: -1
 
         signal confirmed(var sel)

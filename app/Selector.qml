@@ -29,43 +29,49 @@ RowLayout {
             ListElement{text: "几何体"}
             ListElement{text: "组件"}
         }
-        onCurrentTextChanged: {
-            if(currentText === "..."){
+        currentIndex: {
+            switch (App.selection.selectMode) {
+            case "None": return 0;
+            case "Vertex": return 1;
+            case "Edge": return 2;
+            case "Face": return 3;
+            case "Solid": return 4;
+            case "Block": return 5;
+            case "GeometryVertex": return 6;
+            case "GeometryEdge": return 7;
+            case "GeometryFace": return 8;
+            case "GeometrySolid": return 9;
+            case "Component": return 10;
+            default: return 0;
+            }
+        }
+        onActivated: (index) => {
+            const text = selectModeComboBox.textAt(index)
+            if (text === "...") {
                 App.selection.selectMode = "None"
-            }
-            if(currentText === "点"){
+            } else if (text === "点") {
                 App.selection.selectMode = "Vertex"
-            }
-            if(currentText === "边"){
+            } else if (text === "边") {
                 App.selection.selectMode = "Edge"
-            }
-            if(currentText === "面"){
+            } else if (text === "面") {
                 App.selection.selectMode = "Face"
-            }
-            if(currentText === "块"){
-                App.selection.selectMode = "Block"
-            }
-            if(currentText === "体"){
+            } else if (text === "体") {
                 App.selection.selectMode = "Solid"
-            }
-            if(currentText === "几何点"){
+            } else if (text === "块") {
+                App.selection.selectMode = "Block"
+            } else if (text === "几何点") {
                 App.selection.selectMode = "GeometryVertex"
-            }
-            if(currentText === "几何边"){
+            } else if (text === "几何边") {
                 App.selection.selectMode = "GeometryEdge"
-            }
-            if(currentText === "几何面"){
+            } else if (text === "几何面") {
                 App.selection.selectMode = "GeometryFace"
-            }
-            if(currentText === "几何体"){
+            } else if (text === "几何体") {
                 App.selection.selectMode = "GeometrySolid"
-            }
-            if(currentText === "组件"){
+            } else if (text === "组件") {
                 App.selection.selectMode = "Component"
             }
         }
         opacity: enabled ? 1.0 : 0.6
-        currentIndex: enabled ? currentIndex: 0
     }
     Button{
         id: selectClearButton
