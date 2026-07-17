@@ -20,14 +20,10 @@ Page {
                 text: "边渲染"
                 checkable: true
                 checked: myItem.cur_edge_render
-                enabled: App.selection.activeModelId >= 0
                 Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
-                    if (App.selection.activeComponentId >= 0)
                         myItem.setComponentEdgeRender(App.selection.activeComponentId, !myItem.cur_edge_render)
-                    else
-                        myItem.setEdgeRender(App.selection.activeModelId, !myItem.cur_edge_render)
                 }
             }
             ToolButton {
