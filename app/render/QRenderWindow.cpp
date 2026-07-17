@@ -177,6 +177,32 @@ void QRenderWindow::deleteComponent(Index component_id)
     });
 }
 
+void QRenderWindow::deleteMesh(Index component_id)
+{
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->deleteComponent(component_id);
+        }
+
+        this->select_manager_->clearSelection();
+    });
+}
+
+void QRenderWindow::deleteGeometry(Index component_id)
+{
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
+        }
+
+        this->select_manager_->clearSelection();
+    });
+}
+
 void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
 {
     if (!vtk || !model_query_)
@@ -295,6 +321,28 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
         select_manager_->refreshComponentHighlight();
+    });
+}
+
+void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
+{
+    dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
+        }
+    });
+}
+
+void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
+{
+    dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
+        }
     });
 }
 

@@ -55,6 +55,14 @@ public:
     {
         emit componentRemoved(component_id);
     }
+    void notifyMeshRemoved(Index component_id) override
+    {
+        emit meshRemoved(component_id);
+    }
+    void notifyGeometryRemoved(Index component_id) override
+    {
+        emit geometryRemoved(component_id);
+    }
 
     /**
      * @brief 接收模型名称变更的通知函数
@@ -109,6 +117,8 @@ signals:
      */
     void modelRemoved(Index model_id);
     void componentRemoved(Index component_id);
+    void meshRemoved(Index component_id);
+    void geometryRemoved(Index component_id);
 
 #pragma region ModelDataSignals
 

@@ -109,12 +109,16 @@ public:
      */
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
     Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
+    Q_INVOKABLE void setMeshVisibility(Index component_id, bool visibility);
+    Q_INVOKABLE void setGeometryVisibility(Index component_id, bool visibility);
 
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 
     Q_INVOKABLE void deleteModel(Index mode_id);
     Q_INVOKABLE void deleteComponent(Index component_id);
+    Q_INVOKABLE void deleteMesh(Index component_id);
+    Q_INVOKABLE void deleteGeometry(Index component_id);
 
     void updateGlobalVtkPoints();
 

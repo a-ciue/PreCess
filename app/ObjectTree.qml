@@ -16,6 +16,9 @@ Pane {
         modelQuery: QModelManager.query
     }
 
+    readonly property int _nodeTypeMesh: 2
+    readonly property int _nodeTypeGeometry: 3
+
     Timer {
         id: refreshTimer
         interval: 100
@@ -45,6 +48,8 @@ Pane {
         function onModelRemoved(modelId) { refreshTimer.restart() }
         function onComponentRemoved(componentId) { refreshTimer.restart() }
         function onComponentChanged(componentId) { refreshTimer.restart() }
+        function onMeshRemoved(componentId) { refreshTimer.restart() }
+        function onGeometryRemoved(componentId) { refreshTimer.restart() }
     }
 
     Rectangle {
@@ -195,7 +200,7 @@ Pane {
 
                 Image {
                     id: eyeIcon
-                    visible: viewDelegate.depth <= 1
+                    visible: viewDelegate.depth <= 2
                     Layout.preferredWidth: 16
                     Layout.preferredHeight: 16
                     source: viewDelegate.model.isVisible
@@ -221,7 +226,7 @@ Pane {
 
                 readonly property bool _overEye:
                     treeMouseArea.containsMouse
-                    && viewDelegate.depth <= 1
+                    && viewDelegate.depth <= 2
                     && mouseX > treeMouseArea.width - 22
 
                 cursorShape: treeMouseArea._overEye ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -234,12 +239,16 @@ Pane {
                         treeModel.setVisibility(idx, newVis)
                         if (viewDelegate.depth === 0)
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, newVis)
-                        else
+                        else if (viewDelegate.depth === 1)
                             App.componentVisibilityUpdated(viewDelegate.model.nodeId, newVis)
+                        else if (viewDelegate.depth === 2 && viewDelegate.model.nodeType === objectTree._nodeTypeMesh)
+                            App.meshVisibilityUpdated(viewDelegate.model.componentId, newVis)
+                        else if (viewDelegate.depth === 2 && viewDelegate.model.nodeType === objectTree._nodeTypeGeometry)
+                            App.geometryVisibilityUpdated(viewDelegate.model.componentId, newVis)
                         return
                     }
                     if (mouse.button === Qt.RightButton) {
-                        if (viewDelegate.depth > 1) return
+                        if (viewDelegate.depth > 2) return
                         contextMenu.popup()
                     } else {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
@@ -287,7 +296,9 @@ Pane {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    onTriggered: objectTree.hideNode(viewDelegate.model.nodeId, viewDelegate.depth)
+                    onTriggered: objectTree.hideNode(
+                        viewDelegate.model.nodeId, viewDelegate.depth,
+                        viewDelegate.model.nodeType, viewDelegate.model.componentId)
                 }
 
                 MenuItem {
@@ -334,7 +345,9 @@ Pane {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    onTriggered: objectTree.showNode(viewDelegate.model.nodeId, viewDelegate.depth)
+                    onTriggered: objectTree.showNode(
+                        viewDelegate.model.nodeId, viewDelegate.depth,
+                        viewDelegate.model.nodeType, viewDelegate.model.componentId)
                 }
 
                 MenuSeparator {}
@@ -359,7 +372,9 @@ Pane {
 
                     onTriggered: {
                         contextMenu.close()
-                        objectTree.deleteNode(viewDelegate.model.nodeId, viewDelegate.depth)
+                        objectTree.deleteNode(
+                            viewDelegate.model.nodeId, viewDelegate.depth,
+                            viewDelegate.model.nodeType, viewDelegate.model.componentId)
                     }
                 }
             }
@@ -381,32 +396,44 @@ Pane {
         }
     }
 
-    function hideNode(nodeId, depth) {
+    function hideNode(nodeId, depth, nodeType, componentId) {
         let idx = treeModel.findIndexByNodeId(nodeId, depth)
         if (!idx || !idx.valid) return
         treeModel.setVisibility(idx, false)
         if (depth === 0)
             App.modelVisibilityUpdated(nodeId, false)
-        else
+        else if (depth === 1)
             App.componentVisibilityUpdated(nodeId, false)
+        else if (depth === 2 && nodeType === objectTree._nodeTypeMesh)
+            App.meshVisibilityUpdated(componentId, false)
+        else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry)
+            App.geometryVisibilityUpdated(componentId, false)
     }
 
-    function showNode(nodeId, depth) {
+    function showNode(nodeId, depth, nodeType, componentId) {
         let idx = treeModel.findIndexByNodeId(nodeId, depth)
         if (!idx || !idx.valid) return
         treeModel.setVisibility(idx, true)
         if (depth === 0)
             App.modelVisibilityUpdated(nodeId, true)
-        else
+        else if (depth === 1)
             App.componentVisibilityUpdated(nodeId, true)
+        else if (depth === 2 && nodeType === objectTree._nodeTypeMesh)
+            App.meshVisibilityUpdated(componentId, true)
+        else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry)
+            App.geometryVisibilityUpdated(componentId, true)
     }
 
-    function deleteNode(nodeId, depth) {
+    function deleteNode(nodeId, depth, nodeType, componentId) {
         treeView.selectionModel.clear()
         if (depth === 0)
             QModelManager.removeModel(nodeId)
-        else
+        else if (depth === 1)
             QModelManager.removeComponent(nodeId)
+        else if (depth === 2 && nodeType === objectTree._nodeTypeMesh)
+            QModelManager.removeMesh(componentId)
+        else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry)
+            QModelManager.removeGeometry(componentId)
     }
 
     function hideAllNodes() {

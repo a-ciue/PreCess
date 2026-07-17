@@ -9,9 +9,16 @@
 #include "QModelQuery.h"
 
 struct TreeNode {
+    enum class NodeType {
+        Model, Component, Mesh, Geometry,
+        D2, D3,
+        Vertex, Edge, Face, Solid
+    };
+
     QString name;
     QString number;
     int nodeId = -1;
+    NodeType nodeType = NodeType::Component;
     bool isVisible = true;
     QVector<TreeNode*> children;
     TreeNode* parent = nullptr;
@@ -37,7 +44,8 @@ public:
         NumberRole,
         NodeIdRole,
         IsVisibleRole,
-        ComponentIdRole
+        ComponentIdRole,
+        NodeTypeRole
     };
     Q_ENUM(TreeRole)
     explicit TreeModel(QObject* parent = nullptr);
@@ -61,11 +69,13 @@ public:
 private:
     TreeNode* getNode(const QModelIndex& index) const;
     void emitDescendantDataChanged(const QModelIndex& parentIndex);
-    void setNodeVisibility(TreeNode* node, bool visible);
     void setComponentVisibility(TreeNode* node, bool visible);
     void syncSubNodes(TreeNode* node);
+    void propagateUp(TreeNode* node);
 
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;
     std::unordered_map<int, bool> components_visibility_;
+    std::unordered_map<int, bool> mesh_visibility_;
+    std::unordered_map<int, bool> geometry_visibility_;
 };

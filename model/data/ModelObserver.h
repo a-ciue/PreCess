@@ -31,6 +31,8 @@ public:
      */
     virtual void notifyModelRemoved(Index model_id) = 0;
     virtual void notifyComponentRemoved(Index component_id) = 0;
+    virtual void notifyMeshRemoved(Index component_id) = 0;
+    virtual void notifyGeometryRemoved(Index component_id) = 0;
 
     /**
      * @brief 接收模型名称变更的通知函数

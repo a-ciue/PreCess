@@ -115,6 +115,32 @@ void ModelLayer::removeComponent(Index component_id)
         observer_->notifyComponentRemoved(component_id);
 }
 
+void ModelLayer::removeMesh(Index component_id)
+{
+    ComponentData* c = findComponent(component_id);
+    if (!c || !c->mesh)
+        return;
+
+    c->mesh->releaseEdgeIdMap(edge_id_map_);
+    c->mesh.reset();
+
+    if (observer_)
+        observer_->notifyMeshRemoved(component_id);
+}
+
+void ModelLayer::removeGeometry(Index component_id)
+{
+    ComponentData* c = findComponent(component_id);
+    if (!c || !c->geometry)
+        return;
+
+    c->geometry->index.release(geom_registry_);
+    c->geometry.reset();
+
+    if (observer_)
+        observer_->notifyGeometryRemoved(component_id);
+}
+
 std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
 {
     ModelData* m = modelById(model_id);

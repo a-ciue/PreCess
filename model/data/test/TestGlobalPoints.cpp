@@ -10,6 +10,8 @@ struct DummyObserver : ModelObserver {
     void notifyModelAdded(Index) override {}
     void notifyModelRemoved(Index) override {}
     void notifyComponentRemoved(Index) override {}
+    void notifyMeshRemoved(Index) override {}
+    void notifyGeometryRemoved(Index) override {}
     void notifyComponentChanged(Index) override {}
     void notifyModelNameChanged(Index, const std::string&) override {}
     void notifyGeometryLoadFailed(const std::string&) override {}
