@@ -33,19 +33,22 @@ class GeometryActorSelectOp {
 public:
     GeometryActorSelectOp(std::shared_ptr<GeometryActor> geometry_actor);
 
-    void disablePickerModes(IVtkTools_ShapePicker* picker);
+    static int toleranceForMode(SelectMode m);
 
-    void configurePicker(IVtkTools_ShapePicker* picker, SelectMode mode);
+    IVtk_IdType getShapeId() const;
+    void disableSelectionModes(IVtkTools_ShapePicker* picker) const;
+    void enableSelectionMode(IVtkTools_ShapePicker* picker, SelectMode mode) const;
 
-    std::optional<Index> pickSubshape(IVtkTools_ShapePicker* picker, vtkRenderer* renderer,
-        double posx, double posy, SelectMode mode, IVtk_IdType& out_sub_id);
+    std::optional<Index> resolvePickedSubshape(IVtkTools_ShapePicker* picker, IVtk_IdType shapeId,
+        SelectMode mode, IVtk_IdType& out_sub_id) const;
 
-    bool pickSolid(IVtkTools_ShapePicker* picker, vtkRenderer* renderer, double posx, double posy,
-        GeomSolidId& out_solid_id, std::vector<IVtk_IdType>& out_face_sub_ids);
+    bool resolvePickedSolid(IVtkTools_ShapePicker* picker, IVtk_IdType shapeId,
+        GeomSolidId& out_solid_id, std::vector<IVtk_IdType>& out_face_sub_ids) const;
 
     vtkSmartPointer<IVtkTools_SubPolyDataFilter> buildHighlight(SelectMode mode);
 
     vtkActor& getPolyActor();
+    vtkActor& getLineActor();
 
 private:
     std::shared_ptr<GeometryActor> geometry_actor_;

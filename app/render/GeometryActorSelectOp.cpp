@@ -22,7 +22,7 @@ static constexpr IVtk_SelectionMode kSelVertex = SM_Vertex;
 static constexpr IVtk_SelectionMode kSelEdge = SM_Edge;
 static constexpr IVtk_SelectionMode kSelFace = SM_Face;
 
-static int toleranceForMode(const SelectMode m)
+int GeometryActorSelectOp::toleranceForMode(const SelectMode m)
 {
     if (m == SelectMode::GeometryVertex)
         return 40;
@@ -112,28 +112,12 @@ GeometryActorSelectOp::GeometryActorSelectOp(std::shared_ptr<GeometryActor> geom
     }
 }
 
-void GeometryActorSelectOp::disablePickerModes(IVtkTools_ShapePicker* picker)
+IVtk_IdType GeometryActorSelectOp::getShapeId() const
 {
-    if (!picker)
-        return;
-
-    const OccShapeHandle& occ = geometry_actor_->occ_shape_;
-    vtkActor* poly = geometry_actor_->poly_actor_.GetPointer();
-    vtkActor* line = geometry_actor_->line_actor_.GetPointer();
-
-    picker->SetSelectionMode(occ, kSelFace, false);
-    picker->SetSelectionMode(occ, kSelEdge, false);
-    picker->SetSelectionMode(occ, kSelVertex, false);
-    picker->SetSelectionMode(poly, kSelFace, false);
-    picker->SetSelectionMode(poly, kSelEdge, false);
-    picker->SetSelectionMode(poly, kSelVertex, false);
-    picker->SetSelectionMode(line, kSelFace, false);
-    picker->SetSelectionMode(line, kSelEdge, false);
-    picker->SetSelectionMode(line, kSelVertex, false);
-    picker->InitializePickList();
+    return geometry_actor_->occ_shape_->GetId();
 }
 
-void GeometryActorSelectOp::configurePicker(IVtkTools_ShapePicker* picker, SelectMode mode)
+void GeometryActorSelectOp::disableSelectionModes(IVtkTools_ShapePicker* picker) const
 {
     if (!picker)
         return;
@@ -141,15 +125,6 @@ void GeometryActorSelectOp::configurePicker(IVtkTools_ShapePicker* picker, Selec
     const OccShapeHandle& occ = geometry_actor_->occ_shape_;
     vtkActor* poly = geometry_actor_->poly_actor_.GetPointer();
     vtkActor* line = geometry_actor_->line_actor_.GetPointer();
-
-    const bool useLine = (mode == SelectMode::GeometryEdge || mode == SelectMode::GeometryVertex);
-
-    picker->PickFromListOn();
-    picker->InitializePickList();
-    picker->AddPickList(useLine ? line : poly);
-    if (useLine)
-        picker->AddPickList(poly);
-    picker->SetPixelTolerance(toleranceForMode(mode));
 
     picker->SetSelectionMode(occ, kSelFace, false);
     picker->SetSelectionMode(occ, kSelEdge, false);
@@ -160,6 +135,16 @@ void GeometryActorSelectOp::configurePicker(IVtkTools_ShapePicker* picker, Selec
     picker->SetSelectionMode(line, kSelFace, false);
     picker->SetSelectionMode(line, kSelEdge, false);
     picker->SetSelectionMode(line, kSelVertex, false);
+}
+
+void GeometryActorSelectOp::enableSelectionMode(IVtkTools_ShapePicker* picker, SelectMode mode) const
+{
+    if (!picker)
+        return;
+
+    const OccShapeHandle& occ = geometry_actor_->occ_shape_;
+    vtkActor* poly = geometry_actor_->poly_actor_.GetPointer();
+    vtkActor* line = geometry_actor_->line_actor_.GetPointer();
 
     switch (mode) {
     case SelectMode::GeometryFace:
@@ -175,13 +160,11 @@ void GeometryActorSelectOp::configurePicker(IVtkTools_ShapePicker* picker, Selec
         picker->SetSelectionMode(occ, kSelVertex, true);
         picker->SetSelectionMode(line, kSelVertex, true);
         break;
-    default:
-        break;
     }
 }
 
-std::optional<Index> GeometryActorSelectOp::pickSubshape(IVtkTools_ShapePicker* picker, vtkRenderer* renderer,
-    double posx, double posy, SelectMode mode, IVtk_IdType& out_sub_id)
+std::optional<Index> GeometryActorSelectOp::resolvePickedSubshape(IVtkTools_ShapePicker* picker,
+    IVtk_IdType shapeId, SelectMode mode, IVtk_IdType& out_sub_id) const
 {
     if (!picker)
         return std::nullopt;
@@ -196,14 +179,6 @@ std::optional<Index> GeometryActorSelectOp::pickSubshape(IVtkTools_ShapePicker* 
     else
         return std::nullopt;
 
-    const int n = picker->Pick(posx, posy, 0.0, renderer);
-    if (n <= 0)
-        return std::nullopt;
-
-    IVtk_IdType shapeId = -1;
-    if (!firstId(picker->GetPickedShapesIds(false), shapeId))
-        return std::nullopt;
-
     out_sub_id = -1;
     if (!firstId(picker->GetPickedSubShapesIds(shapeId, false), out_sub_id))
         return std::nullopt;
@@ -216,18 +191,10 @@ std::optional<Index> GeometryActorSelectOp::pickSubshape(IVtkTools_ShapePicker* 
     return mapSubshapeToGeomId(geometry_actor_->occ_shape_, *geomIndex, wantType, out_sub_id, elemType);
 }
 
-bool GeometryActorSelectOp::pickSolid(IVtkTools_ShapePicker* picker, vtkRenderer* renderer, double posx, double posy,
-    GeomSolidId& out_solid_id, std::vector<IVtk_IdType>& out_face_sub_ids)
+bool GeometryActorSelectOp::resolvePickedSolid(IVtkTools_ShapePicker* picker, IVtk_IdType shapeId,
+    GeomSolidId& out_solid_id, std::vector<IVtk_IdType>& out_face_sub_ids) const
 {
     if (!picker)
-        return false;
-
-    const int n = picker->Pick(posx, posy, 0.0, renderer);
-    if (n <= 0)
-        return false;
-
-    IVtk_IdType shapeId = -1;
-    if (!firstId(picker->GetPickedShapesIds(false), shapeId))
         return false;
 
     IVtk_IdType subId = -1;
@@ -307,4 +274,9 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlig
 vtkActor& GeometryActorSelectOp::getPolyActor()
 {
     return *geometry_actor_->poly_actor_;
+}
+
+vtkActor& GeometryActorSelectOp::getLineActor()
+{
+    return *geometry_actor_->line_actor_;
 }
