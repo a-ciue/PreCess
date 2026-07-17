@@ -18,13 +18,13 @@ std::optional<Index> GeometryActorManagerSelectOp::getComponentId(vtkProp* prop)
     return std::nullopt;
 }
 
-void GeometryActorManagerSelectOp::observePickList(vtkPropCollection* pick_list)
+void GeometryActorManagerSelectOp::observePickList(vtkSmartPointer<vtkPropCollection> pick_list)
 {
     if (pick_list)
         pick_lists_.push_back(pick_list);
 }
 
-void GeometryActorManagerSelectOp::unobservePickList(vtkPropCollection* pick_list)
+void GeometryActorManagerSelectOp::unobservePickList(vtkSmartPointer<vtkPropCollection> pick_list)
 {
     auto it = std::find(pick_lists_.begin(), pick_lists_.end(), pick_list);
     if (it != pick_lists_.end())
@@ -47,7 +47,7 @@ std::optional<Index> GeometryActorManagerSelectOp::getComponentIdByShapeId(IVtk_
     return std::nullopt;
 }
 
-void GeometryActorManagerSelectOp::observeShapePicker(IVtkTools_ShapePicker* picker)
+void GeometryActorManagerSelectOp::observeShapePicker(vtkSmartPointer<IVtkTools_ShapePicker> picker)
 {
     if (!picker)
         return;
@@ -63,7 +63,7 @@ void GeometryActorManagerSelectOp::observeShapePicker(IVtkTools_ShapePicker* pic
     }
 }
 
-void GeometryActorManagerSelectOp::unobserveShapePicker(IVtkTools_ShapePicker* picker)
+void GeometryActorManagerSelectOp::unobserveShapePicker(vtkSmartPointer<IVtkTools_ShapePicker> picker)
 {
     auto it = std::find(shape_pickers_.begin(), shape_pickers_.end(), picker);
     if (it != shape_pickers_.end())

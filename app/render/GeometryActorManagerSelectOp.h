@@ -20,12 +20,12 @@ public:
     explicit GeometryActorManagerSelectOp(GeometryActorManager& manager);
 
     std::optional<Index> getComponentId(vtkProp* prop) const;
-    void observePickList(vtkPropCollection* pick_list);
-    void unobservePickList(vtkPropCollection* pick_list);
+    void observePickList(vtkSmartPointer<vtkPropCollection> pick_list);
+    void unobservePickList(vtkSmartPointer<vtkPropCollection> pick_list);
 
     std::optional<Index> getComponentIdByShapeId(IVtk_IdType shape_id) const;
-    void observeShapePicker(IVtkTools_ShapePicker* picker);
-    void unobserveShapePicker(IVtkTools_ShapePicker* picker);
+    void observeShapePicker(vtkSmartPointer<IVtkTools_ShapePicker> picker);
+    void unobserveShapePicker(vtkSmartPointer<IVtkTools_ShapePicker> picker);
     void setShapePickerMode(SelectMode mode);
 
     std::optional<GeometryActorSelectOp> getSelectOp(Index component_id) const;
