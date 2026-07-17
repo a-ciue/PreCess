@@ -32,6 +32,7 @@ public:
 
     void registerProps(Index component_id, std::shared_ptr<GeometryActor> actor);
     void unregisterProps(std::shared_ptr<GeometryActor> actor);
+    void setShapePickingEnabled(std::shared_ptr<GeometryActor> actor, bool enabled);
 
 private:
     void addToAllLists(vtkProp* prop);

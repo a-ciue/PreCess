@@ -58,7 +58,7 @@ void GeometryActorManagerSelectOp::observeShapePicker(vtkSmartPointer<IVtkTools_
         if (!actor)
             continue;
         GeometryActorSelectOp op(actor);
-        if (current_mode_ != SelectMode::None)
+        if (current_mode_ != SelectMode::None && actor->isVisible())
             op.enableSelectionMode(picker, current_mode_);
     }
 }
@@ -81,7 +81,8 @@ void GeometryActorManagerSelectOp::setShapePickerMode(SelectMode mode)
                 continue;
             GeometryActorSelectOp op(actor);
             op.disableSelectionModes(picker);
-            op.enableSelectionMode(picker, mode);
+            if (actor->isVisible())
+                op.enableSelectionMode(picker, mode);
         }
     }
 }
@@ -97,7 +98,7 @@ void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared
     shape_id_to_component_[op.getShapeId()] = component_id;
 
     for (auto picker : shape_pickers_) {
-        if (current_mode_ != SelectMode::None)
+        if (current_mode_ != SelectMode::None && actor->isVisible())
             op.enableSelectionMode(picker, current_mode_);
     }
 }
@@ -119,6 +120,19 @@ void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor
 
     for (auto picker : shape_pickers_)
         op.disableSelectionModes(picker);
+}
+
+void GeometryActorManagerSelectOp::setShapePickingEnabled(std::shared_ptr<GeometryActor> actor, bool enabled)
+{
+    GeometryActorSelectOp op(actor);
+    for (auto picker : shape_pickers_) {
+        if (enabled) {
+            if (current_mode_ != SelectMode::None)
+                op.enableSelectionMode(picker, current_mode_);
+        } else {
+            op.disableSelectionModes(picker);
+        }
+    }
 }
 
 void GeometryActorManagerSelectOp::addToAllLists(vtkProp* prop)
