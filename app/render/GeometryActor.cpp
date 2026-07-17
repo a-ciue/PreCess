@@ -1,7 +1,9 @@
 #include "GeometryActor.h"
 #include "Core.h"
+#include <BRep_Builder.hxx>
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <vtkPolyDataMapper.h>
@@ -16,6 +18,20 @@
 
 #include <cstring>
 #include <spdlog/spdlog.h>
+
+// 将独立点、边、面包装成仅用于显示拾取的 Compound，使根形状进入 OCCT 的子形状选择流程。
+static TopoDS_Shape makeSelectableShape(const TopoDS_Shape& shape)
+{
+    const TopAbs_ShapeEnum type = shape.ShapeType();
+    if (type != TopAbs_VERTEX && type != TopAbs_EDGE && type != TopAbs_FACE)
+        return shape;
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, shape);
+    return compound;
+}
 
 static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* pd, const OccShapeHandle& occShape)
 {
@@ -121,7 +137,9 @@ bool GeometryActor::getIsEdgeRender()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
+    // GeometryData 仍保留原始根形状；临时 Compound 只服务于 VTK 显示和拾取。
+    const TopoDS_Shape selectable_shape = makeSelectableShape(geometry_data.shape);
+    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(selectable_shape);
     aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     this->occ_shape_ = aShapeImpl;
     this->geometry_index_ = geometry_data.geometry_index;
@@ -201,7 +219,9 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 
     poly_actor_->SetMapper(poly_mapper);
     poly_actor_->GetProperty()->SetColor(200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0);
-    renderer_->AddActor(poly_actor_);
+    // 重载已有 Component 时复用 Actor，只更新 Mapper，避免 Renderer 重复登记同一对象。
+    if (!renderer_->HasViewProp(poly_actor_))
+        renderer_->AddActor(poly_actor_);
 
     vtkNew<vtkPolyDataMapper> line_mapper;
     line_mapper->SetInputConnection(lineEdgeFilter->GetOutputPort());
@@ -214,7 +234,8 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_actor_->GetProperty()->RenderLinesAsTubesOn();
     line_actor_->GetProperty()->SetPointSize(6.0);
     line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
-    renderer_->AddActor(line_actor_);
+    if (!renderer_->HasViewProp(line_actor_))
+        renderer_->AddActor(line_actor_);
 
     spdlog::info("[GeometryActor] component={} actors added, face_cells={} line_cells={}",
         geometry_data.component_id, static_cast<int>(poly_only->GetNumberOfCells()), static_cast<int>(line_only->GetNumberOfCells()));

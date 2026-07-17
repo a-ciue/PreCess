@@ -45,6 +45,8 @@ ComponentSelectorHighlight::ComponentSelectorHighlight(vtkRenderer& renderer,
     highlight_actor_ = vtkSmartPointer<vtkActor>::New();
     highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
     highlight_mapper_->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, highlight::POLYGON_UNITS);
+    highlight_mapper_->SetRelativeCoincidentTopologyLineOffsetParameters(0, highlight::LINE_UNITS);
+    highlight_mapper_->SetRelativeCoincidentTopologyPointOffsetParameter(highlight::POINT_UNITS);
     highlight_data_ = vtkSmartPointer<vtkPartitionedDataSet>::New();
     highlight_mapper_->SetInputDataObject(highlight_data_);
 
@@ -112,7 +114,8 @@ void ComponentSelectorHighlight::updateHighlight()
     highlight_data_->Initialize();
 
     for (Index component_id : selected_components_) {
-        static constexpr unsigned int k_partitions_per_component = 4;
+        // 网格占三个分区，几何面体与几何点边分别占一个分区。
+        static constexpr unsigned int k_partitions_per_component = 5;
         auto pid = [comp = static_cast<unsigned int>(component_id)](unsigned int off) {
             return comp * k_partitions_per_component + off;
         };
@@ -128,6 +131,8 @@ void ComponentSelectorHighlight::updateHighlight()
         if (auto select_op = geom_op_.getSelectOp(component_id)) {
             if (auto* poly_data = _get_poly_data(select_op->getPolyActor()))
                 highlight_data_->SetPartition(pid(3), poly_data);
+            if (auto* line_data = _get_poly_data(select_op->getLineActor()))
+                highlight_data_->SetPartition(pid(4), line_data);
         }
     }
 
@@ -141,5 +146,8 @@ void ComponentSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper&
     vtkNew<vtkProperty> prop;
     prop->SetColor(1.0, 0.0, 0.0);
     prop->SetOpacity(0.3);
+    prop->SetLineWidth(3.0);
+    prop->SetPointSize(8.0);
+    prop->RenderLinesAsTubesOn();
     actor.SetProperty(prop);
 }

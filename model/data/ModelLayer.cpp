@@ -93,8 +93,9 @@ Index ModelLayer::addGeometryComponent(Index model_id, std::unique_ptr<Component
     components_[component_id] = std::move(component);
     components_[component_id]->geometry->ensureIndexBuilt(geom_registry_);
 
+    // 这里只新增了一个 Component，通知渲染层按组件加载，避免重载 Model 内已有几何。
     if (observer_)
-        observer_->notifyModelChanged(model_id);
+        observer_->notifyComponentChanged(component_id);
     return component_id;
 }
 
