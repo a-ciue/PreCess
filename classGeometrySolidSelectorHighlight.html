@@ -127,11 +127,11 @@ GeometrySolidSelectorHighlight 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
-<tr class="memitem:ac54a17de21618094b09307893e44aeb2" id="r_ac54a17de21618094b09307893e44aeb2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac54a17de21618094b09307893e44aeb2">GeometrySolidSelectorHighlight</a> (vtkRenderer &amp;renderer, vtkPartitionedDataSet &amp;highlight_data, unsigned int partition_id, <a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a> select_op, vtkSmartPointer&lt; IVtkTools_ShapePicker &gt; picker)</td></tr>
+<tr class="memitem:a3321d5313c221e070ac5b4f36f38ecb1" id="r_a3321d5313c221e070ac5b4f36f38ecb1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3321d5313c221e070ac5b4f36f38ecb1">GeometrySolidSelectorHighlight</a> (vtkPartitionedDataSet &amp;highlight_data, unsigned int partition_id, <a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a> select_op)</td></tr>
 <tr class="memitem:a8564d14ab19d573aea806862ddc0b542" id="r_a8564d14ab19d573aea806862ddc0b542"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8564d14ab19d573aea806862ddc0b542">~GeometrySolidSelectorHighlight</a> () override</td></tr>
+<tr class="memitem:a4bf0dc3fdfbab090b716834ccca694de" id="r_a4bf0dc3fdfbab090b716834ccca694de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4bf0dc3fdfbab090b716834ccca694de">toggleSolid</a> (<a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a> solidId, const std::vector&lt; IVtk_IdType &gt; &amp;faceSubIds)</td></tr>
 <tr class="memitem:aeba9f62ae3f550b61a022000fcb907e7" id="r_aeba9f62ae3f550b61a022000fcb907e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeba9f62ae3f550b61a022000fcb907e7">clear</a> () override</td></tr>
 <tr class="memitem:a7fe84cbf94c387863fd9b1fa9cd6c78d" id="r_a7fe84cbf94c387863fd9b1fa9cd6c78d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GeometrySelectorHighlight_8h.html#ac326fa7688042f57d37e2dffc01ddbac">GeometrySelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7fe84cbf94c387863fd9b1fa9cd6c78d">get</a> () const override</td></tr>
-<tr class="memitem:a52ae74a255ed12a839d048b7c645410a" id="r_a52ae74a255ed12a839d048b7c645410a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a52ae74a255ed12a839d048b7c645410a">select</a> (double posx, double posy) override</td></tr>
 <tr class="inherit_header pub_methods_classGeometrySelectorHighlight"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classGeometrySelectorHighlight')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classGeometrySelectorHighlight.html">GeometrySelectorHighlight</a></td></tr>
 <tr class="memitem:aa975fa492a163dfce7f1f27df3c34ff7 inherit pub_methods_classGeometrySelectorHighlight" id="r_aa975fa492a163dfce7f1f27df3c34ff7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGeometrySelectorHighlight.html#aa975fa492a163dfce7f1f27df3c34ff7">~GeometrySelectorHighlight</a> ()=default</td></tr>
 </table><table class="memberdecls">
@@ -141,18 +141,16 @@ Public 成员函数</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:ae8d5890096bfd76b5c0b2df516341115" id="r_ae8d5890096bfd76b5c0b2df516341115"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8d5890096bfd76b5c0b2df516341115">renderer_</a></td></tr>
 <tr class="memitem:a5a9160ed331bd38b73792cf621bfa337" id="r_a5a9160ed331bd38b73792cf621bfa337"><td class="memItemLeft" align="right" valign="top">vtkPartitionedDataSet *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a9160ed331bd38b73792cf621bfa337">highlight_data_</a></td></tr>
 <tr class="memitem:a1511aa0f3cdc959e022764daa4cd417a" id="r_a1511aa0f3cdc959e022764daa4cd417a"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1511aa0f3cdc959e022764daa4cd417a">partition_id_</a></td></tr>
 <tr class="memitem:a7cd0961cb323be30c582e0340e9af62a" id="r_a7cd0961cb323be30c582e0340e9af62a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7cd0961cb323be30c582e0340e9af62a">select_op_</a></td></tr>
-<tr class="memitem:a75a4dceb98c253f684c71d1f37d30f4c" id="r_a75a4dceb98c253f684c71d1f37d30f4c"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; IVtkTools_ShapePicker &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75a4dceb98c253f684c71d1f37d30f4c">picker_</a></td></tr>
 <tr class="memitem:ac84f7737881790d898c8a9e8902af081" id="r_ac84f7737881790d898c8a9e8902af081"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; IVtkTools_SubPolyDataFilter &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac84f7737881790d898c8a9e8902af081">hl_filter_</a></td></tr>
 <tr class="memitem:a9196793cc1ab3b8297ab899b7d981e9d" id="r_a9196793cc1ab3b8297ab899b7d981e9d"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; IVtk_IdType, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9196793cc1ab3b8297ab899b7d981e9d">selections_</a></td></tr>
 <tr class="memitem:a4725275874c7151ac9b4aa00a16c938e" id="r_a4725275874c7151ac9b4aa00a16c938e"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; IVtk_IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4725275874c7151ac9b4aa00a16c938e">highlighted_face_ids_</a></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
-<a id="ac54a17de21618094b09307893e44aeb2" name="ac54a17de21618094b09307893e44aeb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac54a17de21618094b09307893e44aeb2">&#9670;&#160;</a></span>GeometrySolidSelectorHighlight()</h2>
+<a id="a3321d5313c221e070ac5b4f36f38ecb1" name="a3321d5313c221e070ac5b4f36f38ecb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3321d5313c221e070ac5b4f36f38ecb1">&#9670;&#160;</a></span>GeometrySolidSelectorHighlight()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -160,11 +158,6 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="memname">GeometrySolidSelectorHighlight::GeometrySolidSelectorHighlight </td>
           <td>(</td>
-          <td class="paramtype">vtkRenderer &amp;</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">vtkPartitionedDataSet &amp;</td>          <td class="paramname"><span class="paramname"><em>highlight_data</em></span>, </td>
         </tr>
         <tr>
@@ -175,12 +168,7 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a></td>          <td class="paramname"><span class="paramname"><em>select_op</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vtkSmartPointer&lt; IVtkTools_ShapePicker &gt;</td>          <td class="paramname"><span class="paramname"><em>picker</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a></td>          <td class="paramname"><span class="paramname"><em>select_op</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -267,37 +255,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a52ae74a255ed12a839d048b7c645410a" name="a52ae74a255ed12a839d048b7c645410a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52ae74a255ed12a839d048b7c645410a">&#9670;&#160;</a></span>select()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void GeometrySolidSelectorHighlight::select </td>
-          <td>(</td>
-          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>实现了 <a class="el" href="classGeometrySelectorHighlight.html#a1189330d794843300137e63bd8fffb1f">GeometrySelectorHighlight</a>.</p>
-
-</div>
-</div>
 <a id="a8100c03915d6e26d1bb46135496457e6" name="a8100c03915d6e26d1bb46135496457e6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8100c03915d6e26d1bb46135496457e6">&#9670;&#160;</a></span>setupHighlightStyle()</h2>
 
@@ -323,6 +280,27 @@ Private 属性</h2></td></tr>
 <span class="mlabels"><span class="mlabel static">static</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4bf0dc3fdfbab090b716834ccca694de" name="a4bf0dc3fdfbab090b716834ccca694de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bf0dc3fdfbab090b716834ccca694de">&#9670;&#160;</a></span>toggleSolid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySolidSelectorHighlight::toggleSolid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a></td>          <td class="paramname"><span class="paramname"><em>solidId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; IVtk_IdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>faceSubIds</em></span>&#160;)</td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -405,50 +383,6 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">unsigned int GeometrySolidSelectorHighlight::partition_id_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a75a4dceb98c253f684c71d1f37d30f4c" name="a75a4dceb98c253f684c71d1f37d30f4c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75a4dceb98c253f684c71d1f37d30f4c">&#9670;&#160;</a></span>picker_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkSmartPointer&lt;IVtkTools_ShapePicker&gt; GeometrySolidSelectorHighlight::picker_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae8d5890096bfd76b5c0b2df516341115" name="ae8d5890096bfd76b5c0b2df516341115"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8d5890096bfd76b5c0b2df516341115">&#9670;&#160;</a></span>renderer_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkRenderer* GeometrySolidSelectorHighlight::renderer_</td>
         </tr>
       </table>
   </td>

@@ -46,8 +46,10 @@ var searchData=
   ['resolvegeometryfacelocalid_43',['resolveGeometryFaceLocalId',['../classQModelQuery.html#ab22d97753561d0d7c4159ec55499e21b',1,'QModelQuery']]],
   ['resolvegeometrysolidlocalid_44',['resolveGeometrySolidLocalId',['../classQModelQuery.html#ae144ed5fb627e35452099ea6fc64bca0',1,'QModelQuery']]],
   ['resolvegeometryvertexlocalid_45',['resolveGeometryVertexLocalId',['../classQModelQuery.html#a2ffbe8584256d316a0ef164017c9282a',1,'QModelQuery']]],
-  ['reuse_5funused_5fgroup_46',['reuse_unused_group',['../classplf_1_1colony.html#a2f7010c57f3f033ed8d0f301f5829dab',1,'plf::colony']]],
-  ['rgb_47',['rgb',['../classMeshLib_1_1CToolVertex.html#a806c372659683b63f2c0c067ad8b3aca',1,'MeshLib::CToolVertex']]],
-  ['rolenames_48',['roleNames',['../classTreeModel.html#a99c348b9c26c29b438e19af1aab3f63a',1,'TreeModel']]],
-  ['rowcount_49',['rowCount',['../classTreeModel.html#a6aa892d5029263b35e5b1438b7e18bef',1,'TreeModel']]]
+  ['resolvepickedsolid_46',['resolvePickedSolid',['../classGeometryActorSelectOp.html#a369060c025e32dc66d8ebd43746a575d',1,'GeometryActorSelectOp']]],
+  ['resolvepickedsubshape_47',['resolvePickedSubshape',['../classGeometryActorSelectOp.html#a90f6b6edfcbc1bae86fc960740ad6815',1,'GeometryActorSelectOp']]],
+  ['reuse_5funused_5fgroup_48',['reuse_unused_group',['../classplf_1_1colony.html#a2f7010c57f3f033ed8d0f301f5829dab',1,'plf::colony']]],
+  ['rgb_49',['rgb',['../classMeshLib_1_1CToolVertex.html#a806c372659683b63f2c0c067ad8b3aca',1,'MeshLib::CToolVertex']]],
+  ['rolenames_50',['roleNames',['../classTreeModel.html#a99c348b9c26c29b438e19af1aab3f63a',1,'TreeModel']]],
+  ['rowcount_51',['rowCount',['../classTreeModel.html#a6aa892d5029263b35e5b1438b7e18bef',1,'TreeModel']]]
 ];
