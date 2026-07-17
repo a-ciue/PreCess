@@ -194,8 +194,18 @@ if "!buildRelease!"=="1" cmake --build . --target install --config Release
 
 REM Clone and build Gmsh OCC8
 set "CASROOT=%depsPath%\OpenCASCADE8.0.0"
+set "casRootCmake=%CASROOT:\=/%"
+set "occLibs="
+
+REM OCC 8 的导入库：Debug 在 libd，Release 在 lib，RelWithDebInfo 在 libi。
+REM 使用生成表达式让各构建配置链接对应的 OCC 库。
+for %%L in (TKDESTEP TKDEIGES TKXSBase TKOffset TKFeat TKFillet TKBool TKMesh TKHLR TKBO TKPrim TKShHealing TKTopAlgo TKGeomAlgo TKBRep TKGeomBase TKG3d TKG2d TKMath TKernel) do (
+    if defined occLibs set "occLibs=!occLibs!;"
+    set "occLibs=!occLibs!$<IF:$<CONFIG:Debug>,!casRootCmake!/win64/vc14/libd/%%L.lib,$<IF:$<CONFIG:RelWithDebInfo>,!casRootCmake!/win64/vc14/libi/%%L.lib,!casRootCmake!/win64/vc14/lib/%%L.lib>>"
+)
+
 pushd "%sourcePath%/gmsh-occ8"
-cmake -S . -B ./build "-GNinja Multi-Config" "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;RelWithDebInfo" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
+cmake -S . -B ./build "-GNinja Multi-Config" "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;RelWithDebInfo" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_INC:PATH=%CASROOT%\inc" "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
 cmake --build . --target install --config Debug
