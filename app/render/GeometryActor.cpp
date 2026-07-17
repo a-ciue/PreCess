@@ -119,11 +119,6 @@ bool GeometryActor::getIsEdgeRender()
     return this->edge_render;
 }
 
-bool GeometryActor::isVisible() const
-{ 
-    return visibility_; 
-}
-
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
     OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);

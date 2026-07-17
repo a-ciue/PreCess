@@ -319,11 +319,6 @@ bool MeshActor::getIsEdgeRender()
     return this->edge_render_;
 }
 
-bool MeshActor::isVisible() const 
-{ 
-    return visibility_; 
-}
-
 ModelRenderMode MeshActor::getMeshRenderMode()
 {
     return this->render_mode_;

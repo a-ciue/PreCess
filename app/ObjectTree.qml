@@ -59,7 +59,7 @@ Pane {
                 ToolTip.delay: 500
 
                 onClicked: objectTree.showAllNodes()
-            }
+                }
 
             ToolButton {
                 icon.source: "qrc:/images/modeltree/hide.svg"
@@ -74,9 +74,9 @@ Pane {
                 ToolTip.delay: 500
 
                 onClicked: objectTree.hideAllNodes()
+                }
             }
         }
-    }
 
     TreeView {
         id: treeView
@@ -442,6 +442,23 @@ Pane {
             if (idx && idx.valid) {
                 treeModel.setVisibility(idx, visible)
                 App.modelVisibilityUpdated(mid, visible)
+            }
+        }
+    }
+
+    function isolateSelection(ids) {
+        let models = QModelManager.query.listModels()
+        for (let i = 0; i < models.length; i++) {
+            let mid = models[i].model_id
+            let comps = QModelManager.query.getComponentsSummary(mid)
+            for (let j = 0; j < comps.length; j++) {
+                let cid = comps[j].component_id
+                let visible = ids.includes(cid)
+                let idx = treeModel.findIndexByNodeId(cid, 1)
+                if (idx && idx.valid) {
+                    treeModel.setVisibility(idx, visible)
+                    App.componentVisibilityUpdated(cid, visible)
+                }
             }
         }
     }

@@ -4,7 +4,6 @@
 #include "Core.h"
 #include "Selection.h"
 
-#include <optional>
 #include <vector>
 #include <vtkSmartPointer.h>
 
@@ -30,7 +29,6 @@ public:
     void select(double posx, double posy);
     void clear();
     SelectionVtk get() const;
-    std::optional<Index> getLastPickedComponentId() const;
 
 private:
     void updateHighlight();
@@ -40,7 +38,6 @@ private:
     GeometryActorManagerSelectOp& geom_op_;
 
     std::vector<Index> selected_components_;
-    std::optional<Index> last_picked_component_;
 
     vtkSmartPointer<vtkActor> highlight_actor_;
     vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;

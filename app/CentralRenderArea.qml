@@ -80,8 +80,20 @@ Page {
             anchors.margins: 3
             query: QModelManager.query
 
+            property var pickedIds: []
+            property bool _selectionDirty: false
+
+            onClicked: { _selectionDirty = true }
+
             onRightClicked: {
-                App.selection.activeComponentId = myItem.lastPickedComponentId()
+                let sel = myItem.selectedIDs
+                if (sel && sel.size() > 0) {
+                    myItem.pickedIds = sel.idList()
+                    _selectionDirty = false
+                } else if (_selectionDirty) {
+                    myItem.pickedIds = []
+                    _selectionDirty = false
+                }
                 viewportMenu.popup()
             }
 
@@ -121,6 +133,8 @@ Page {
 
             onClearButtonClicked: {
                 myItem.clearSelection()
+                myItem.pickedIds = []
+                myItem._selectionDirty = false
             }
 
             onConfirmButtonClicked: {
@@ -194,35 +208,44 @@ Page {
 
             StyledMenuItem {
                 text: "隐藏"
-                shown: App.selection.activeComponentId >= 0
-                onTriggered: App.registry.objectTree.hideNode(App.selection.activeComponentId, 1)
+                shown: myItem.pickedIds.length > 0
+                onTriggered: {
+                    for (let i = 0; i < myItem.pickedIds.length; i++)
+                        App.registry.objectTree.hideNode(myItem.pickedIds[i], 1)
+                }
             }
 
             StyledMenuItem {
                 text: "隔离"
-                shown: App.selection.activeComponentId >= 0
-                onTriggered: App.registry.objectTree.isolateNode(App.selection.activeComponentId)
+                shown: myItem.pickedIds.length > 0
+                onTriggered: {
+                    if (myItem.pickedIds.length > 0)
+                        App.registry.objectTree.isolateSelection(myItem.pickedIds)
+                }
             }
 
             StyledMenuItem {
                 text: "显示"
-                shown: App.selection.activeComponentId >= 0
-                onTriggered: App.registry.objectTree.showNode(App.selection.activeComponentId, 1)
+                shown: myItem.pickedIds.length > 0
+                onTriggered: {
+                    for (let i = 0; i < myItem.pickedIds.length; i++)
+                        App.registry.objectTree.showNode(myItem.pickedIds[i], 1)
+                }
             }
 
             StyledSeparator {
-                visible: App.selection.activeComponentId >= 0
+                visible: myItem.pickedIds.length > 0
             }
 
             StyledMenuItem {
                 text: "全部隐藏"
-                shown: App.selection.activeComponentId < 0
+                shown: myItem.pickedIds.length === 0
                 onTriggered: App.registry.objectTree.hideAllNodes()
             }
 
             StyledMenuItem {
                 text: "全部显示"
-                shown: App.selection.activeComponentId < 0
+                shown: myItem.pickedIds.length === 0
                 onTriggered: App.registry.objectTree.showAllNodes()
             }
 

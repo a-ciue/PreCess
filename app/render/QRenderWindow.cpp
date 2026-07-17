@@ -9,7 +9,6 @@
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
 
-#include <algorithm>
 #include <spdlog/spdlog.h>
 #include <vtkDoubleArray.h>
 #include <vtkCallbackCommand.h>
@@ -429,12 +428,6 @@ void QRenderWindow::setClick()
         Data* vtk = Data::SafeDownCast(userData);
         vtk->style_->SetClick();
     });
-}
-
-int QRenderWindow::lastPickedComponentId() const
-{
-    auto id = select_manager_->getLastPickedComponentId();
-    return id.has_value() ? id.value() : -1;
 }
 
 void QRenderWindow::setAttriMode(

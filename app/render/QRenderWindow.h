@@ -110,8 +110,6 @@ public:
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
     Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
 
-    Q_INVOKABLE int lastPickedComponentId() const;
-
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 
