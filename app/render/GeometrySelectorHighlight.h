@@ -17,8 +17,6 @@ using GeometrySelectionVtk = Selection;
 class GeometrySelectorHighlight {
 public:
     virtual ~GeometrySelectorHighlight() = default;
-    virtual void toggle(IVtk_IdType subId, Index geomId) = 0;
-    virtual void toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds) = 0;
     virtual void clear() = 0;
     virtual GeometrySelectionVtk get() const = 0;
 };
@@ -30,8 +28,7 @@ public:
     GeometryFaceSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometryFaceSelectorHighlight() override;
-    void toggle(IVtk_IdType subId, Index geomId) override;
-    void toggleSolid(GeomSolidId, const std::vector<IVtk_IdType>&) override { }
+    void toggle(IVtk_IdType subId, Index geomId);
     void clear() override;
     GeometrySelectionVtk get() const override;
 
@@ -50,8 +47,7 @@ public:
     GeometryEdgeSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometryEdgeSelectorHighlight() override;
-    void toggle(IVtk_IdType subId, Index geomId) override;
-    void toggleSolid(GeomSolidId, const std::vector<IVtk_IdType>&) override { }
+    void toggle(IVtk_IdType subId, Index geomId);
     void clear() override;
     GeometrySelectionVtk get() const override;
 
@@ -70,8 +66,7 @@ public:
     GeometryVertexSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometryVertexSelectorHighlight() override;
-    void toggle(IVtk_IdType subId, Index geomId) override;
-    void toggleSolid(GeomSolidId, const std::vector<IVtk_IdType>&) override { }
+    void toggle(IVtk_IdType subId, Index geomId);
     void clear() override;
     GeometrySelectionVtk get() const override;
 
@@ -90,8 +85,7 @@ public:
     GeometrySolidSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometrySolidSelectorHighlight() override;
-    void toggle(IVtk_IdType, Index) override { }
-    void toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds) override;
+    void toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds);
     void clear() override;
     GeometrySelectionVtk get() const override;
 

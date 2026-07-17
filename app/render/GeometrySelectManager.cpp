@@ -55,12 +55,23 @@ void GeometrySelectManager::select(double posx, double posy)
         GeomSolidId solidId = kInvalidGeomSolidId;
         std::vector<IVtk_IdType> faceSubIds;
         if (select_op->resolvePickedSolid(picker_.Get(), shapeId, solidId, faceSubIds))
-            sel->toggleSolid(solidId, faceSubIds);
+            static_cast<GeometrySolidSelectorHighlight*>(sel)->toggleSolid(solidId, faceSubIds);
     } else {
         IVtk_IdType subId = -1;
         auto geomId = select_op->resolvePickedSubshape(picker_.Get(), shapeId, select_mode_, subId);
-        if (geomId)
-            sel->toggle(subId, *geomId);
+        if (!geomId)
+            return;
+        switch (select_mode_) {
+        case SelectMode::GeometryFace:
+            static_cast<GeometryFaceSelectorHighlight*>(sel)->toggle(subId, *geomId);
+            break;
+        case SelectMode::GeometryEdge:
+            static_cast<GeometryEdgeSelectorHighlight*>(sel)->toggle(subId, *geomId);
+            break;
+        case SelectMode::GeometryVertex:
+            static_cast<GeometryVertexSelectorHighlight*>(sel)->toggle(subId, *geomId);
+            break;
+        }
     }
 }
 
