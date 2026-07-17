@@ -3,7 +3,6 @@
 #include "Core.h"
 #include "GeometryActorSelectOp.h"
 
-#include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtk_Types.hxx>
 #include <NCollection_List.hxx>
@@ -11,7 +10,6 @@
 #include <vtkMapper.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkProperty.h>
-#include <vtkRenderer.h>
 
 // 把共享高亮 actor 挂到当前 selector 的 mapper 上，并按模式套用完整样式（避免残留上一模式属性）
 static void mountLineHighlight(vtkActor& actor, vtkMapper& mapper)
@@ -60,21 +58,18 @@ static void updateFilterAndNotify(IVtkTools_SubPolyDataFilter* filter, const NCo
 
 // ─── Face ──────────────────────────────────────────────
 
-GeometryFaceSelectorHighlight::GeometryFaceSelectorHighlight(vtkRenderer& renderer,
+GeometryFaceSelectorHighlight::GeometryFaceSelectorHighlight(
     vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
-    GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
-    : renderer_(&renderer)
-    , highlight_data_(&highlight_data)
+    GeometryActorSelectOp select_op)
+    : highlight_data_(&highlight_data)
     , partition_id_(partition_id)
     , select_op_(std::move(select_op))
-    , picker_(std::move(picker))
 {
     hl_filter_ = select_op_.buildHighlight(SelectMode::GeometryFace);
     if (hl_filter_) {
         hl_filter_->Update();
         highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
     }
-    select_op_.configurePicker(picker_, SelectMode::GeometryFace);
 }
 
 GeometryFaceSelectorHighlight::~GeometryFaceSelectorHighlight()
@@ -98,14 +93,9 @@ GeometrySelectionVtk GeometryFaceSelectorHighlight::get() const
     return s;
 }
 
-void GeometryFaceSelectorHighlight::select(double posx, double posy)
+void GeometryFaceSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
 {
-    IVtk_IdType subId = -1;
-    auto geomId = select_op_.pickSubshape(picker_, renderer_, posx, posy, SelectMode::GeometryFace, subId);
-    if (!geomId)
-        return;
-
-    auto [it, inserted] = selections_.insert_or_assign(subId, *geomId);
+    auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
     if (!inserted)
         selections_.erase(it);
 
@@ -122,21 +112,18 @@ void GeometryFaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapp
 
 // ─── Edge ──────────────────────────────────────────────
 
-GeometryEdgeSelectorHighlight::GeometryEdgeSelectorHighlight(vtkRenderer& renderer,
+GeometryEdgeSelectorHighlight::GeometryEdgeSelectorHighlight(
     vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
-    GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
-    : renderer_(&renderer)
-    , highlight_data_(&highlight_data)
+    GeometryActorSelectOp select_op)
+    : highlight_data_(&highlight_data)
     , partition_id_(partition_id)
     , select_op_(std::move(select_op))
-    , picker_(std::move(picker))
 {
     hl_filter_ = select_op_.buildHighlight(SelectMode::GeometryEdge);
     if (hl_filter_) {
         hl_filter_->Update();
         highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
     }
-    select_op_.configurePicker(picker_, SelectMode::GeometryEdge);
 }
 
 GeometryEdgeSelectorHighlight::~GeometryEdgeSelectorHighlight()
@@ -160,14 +147,9 @@ GeometrySelectionVtk GeometryEdgeSelectorHighlight::get() const
     return s;
 }
 
-void GeometryEdgeSelectorHighlight::select(double posx, double posy)
+void GeometryEdgeSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
 {
-    IVtk_IdType subId = -1;
-    auto geomId = select_op_.pickSubshape(picker_, renderer_, posx, posy, SelectMode::GeometryEdge, subId);
-    if (!geomId)
-        return;
-
-    auto [it, inserted] = selections_.insert_or_assign(subId, *geomId);
+    auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
     if (!inserted)
         selections_.erase(it);
 
@@ -184,21 +166,18 @@ void GeometryEdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapp
 
 // ─── Vertex ────────────────────────────────────────────
 
-GeometryVertexSelectorHighlight::GeometryVertexSelectorHighlight(vtkRenderer& renderer,
+GeometryVertexSelectorHighlight::GeometryVertexSelectorHighlight(
     vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
-    GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
-    : renderer_(&renderer)
-    , highlight_data_(&highlight_data)
+    GeometryActorSelectOp select_op)
+    : highlight_data_(&highlight_data)
     , partition_id_(partition_id)
     , select_op_(std::move(select_op))
-    , picker_(std::move(picker))
 {
     hl_filter_ = select_op_.buildHighlight(SelectMode::GeometryVertex);
     if (hl_filter_) {
         hl_filter_->Update();
         highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
     }
-    select_op_.configurePicker(picker_, SelectMode::GeometryVertex);
 }
 
 GeometryVertexSelectorHighlight::~GeometryVertexSelectorHighlight()
@@ -222,14 +201,9 @@ GeometrySelectionVtk GeometryVertexSelectorHighlight::get() const
     return s;
 }
 
-void GeometryVertexSelectorHighlight::select(double posx, double posy)
+void GeometryVertexSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
 {
-    IVtk_IdType subId = -1;
-    auto geomId = select_op_.pickSubshape(picker_, renderer_, posx, posy, SelectMode::GeometryVertex, subId);
-    if (!geomId)
-        return;
-
-    auto [it, inserted] = selections_.insert_or_assign(subId, *geomId);
+    auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
     if (!inserted)
         selections_.erase(it);
 
@@ -246,21 +220,18 @@ void GeometryVertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMa
 
 // ─── Solid ─────────────────────────────────────────────
 
-GeometrySolidSelectorHighlight::GeometrySolidSelectorHighlight(vtkRenderer& renderer,
+GeometrySolidSelectorHighlight::GeometrySolidSelectorHighlight(
     vtkPartitionedDataSet& highlight_data, unsigned int partition_id,
-    GeometryActorSelectOp select_op, vtkSmartPointer<IVtkTools_ShapePicker> picker)
-    : renderer_(&renderer)
-    , highlight_data_(&highlight_data)
+    GeometryActorSelectOp select_op)
+    : highlight_data_(&highlight_data)
     , partition_id_(partition_id)
     , select_op_(std::move(select_op))
-    , picker_(std::move(picker))
 {
     hl_filter_ = select_op_.buildHighlight(SelectMode::GeometrySolid);
     if (hl_filter_) {
         hl_filter_->Update();
         highlight_data_->SetPartition(partition_id_, hl_filter_->GetOutput());
     }
-    select_op_.configurePicker(picker_, SelectMode::GeometrySolid);
 }
 
 GeometrySolidSelectorHighlight::~GeometrySolidSelectorHighlight()
@@ -285,14 +256,9 @@ GeometrySelectionVtk GeometrySolidSelectorHighlight::get() const
     return s;
 }
 
-void GeometrySolidSelectorHighlight::select(double posx, double posy)
+void GeometrySolidSelectorHighlight::toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds)
 {
-    GeomSolidId gid = kInvalidGeomSolidId;
-    std::vector<IVtk_IdType> faceSubIds;
-    if (!select_op_.pickSolid(picker_, renderer_, posx, posy, gid, faceSubIds))
-        return;
-
-    auto [it, inserted] = selections_.insert_or_assign(gid, gid);
+    auto [it, inserted] = selections_.insert_or_assign(solidId, solidId);
     if (!inserted)
         selections_.erase(it);
 

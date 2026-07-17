@@ -12,7 +12,6 @@
 #include <vtkActor.h>
 
 class vtkRenderer;
-class vtkHardwarePicker;
 class vtkPartitionedDataSet;
 class vtkCompositePolyDataMapper;
 class GeometryActorManagerSelectOp;
@@ -32,7 +31,6 @@ private:
     GeometryActorManagerSelectOp* op_;
     SelectMode select_mode_ { SelectMode::None };
     vtkRenderer* renderer_;
-    vtkSmartPointer<vtkHardwarePicker> component_picker_;
     vtkSmartPointer<IVtkTools_ShapePicker> picker_;
 
     vtkActor* highlight_actor_ {};
