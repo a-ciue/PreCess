@@ -123,18 +123,10 @@ void GeometryActorSelectOp::disableSelectionModes(IVtkTools_ShapePicker* picker)
         return;
 
     const OccShapeHandle& occ = geometry_actor_->occ_shape_;
-    vtkActor* poly = geometry_actor_->poly_actor_.GetPointer();
-    vtkActor* line = geometry_actor_->line_actor_.GetPointer();
 
     picker->SetSelectionMode(occ, kSelFace, false);
     picker->SetSelectionMode(occ, kSelEdge, false);
     picker->SetSelectionMode(occ, kSelVertex, false);
-    picker->SetSelectionMode(poly, kSelFace, false);
-    picker->SetSelectionMode(poly, kSelEdge, false);
-    picker->SetSelectionMode(poly, kSelVertex, false);
-    picker->SetSelectionMode(line, kSelFace, false);
-    picker->SetSelectionMode(line, kSelEdge, false);
-    picker->SetSelectionMode(line, kSelVertex, false);
 }
 
 void GeometryActorSelectOp::enableSelectionMode(IVtkTools_ShapePicker* picker, SelectMode mode) const
@@ -143,22 +135,17 @@ void GeometryActorSelectOp::enableSelectionMode(IVtkTools_ShapePicker* picker, S
         return;
 
     const OccShapeHandle& occ = geometry_actor_->occ_shape_;
-    vtkActor* poly = geometry_actor_->poly_actor_.GetPointer();
-    vtkActor* line = geometry_actor_->line_actor_.GetPointer();
 
     switch (mode) {
     case SelectMode::GeometryFace:
     case SelectMode::GeometrySolid:
         picker->SetSelectionMode(occ, kSelFace, true);
-        picker->SetSelectionMode(poly, kSelFace, true);
         break;
     case SelectMode::GeometryEdge:
         picker->SetSelectionMode(occ, kSelEdge, true);
-        picker->SetSelectionMode(line, kSelEdge, true);
         break;
     case SelectMode::GeometryVertex:
         picker->SetSelectionMode(occ, kSelVertex, true);
-        picker->SetSelectionMode(line, kSelVertex, true);
         break;
     }
 }
@@ -274,9 +261,4 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlig
 vtkActor& GeometryActorSelectOp::getPolyActor()
 {
     return *geometry_actor_->poly_actor_;
-}
-
-vtkActor& GeometryActorSelectOp::getLineActor()
-{
-    return *geometry_actor_->line_actor_;
 }

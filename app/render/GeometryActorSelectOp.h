@@ -48,7 +48,6 @@ public:
     vtkSmartPointer<IVtkTools_SubPolyDataFilter> buildHighlight(SelectMode mode);
 
     vtkActor& getPolyActor();
-    vtkActor& getLineActor();
 
 private:
     std::shared_ptr<GeometryActor> geometry_actor_;
