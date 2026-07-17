@@ -333,6 +333,10 @@ QSelection* QRenderWindow::selectedIDs()
         return nullptr;
     }
 
+    // 保留 SelectManager 实际拾取到的 component_id；如果拾取器未提供，再退到当前活动组件
+    if (data->component_id < 0) {
+        data->component_id = this->cur_component_id_;
+    }
     QSelection* selection = new QSelection(std::move(data));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
