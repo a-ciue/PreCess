@@ -184,7 +184,9 @@ void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
 
     vtkNew<vtkDoubleArray> arr;
     arr->SetNumberOfComponents(3);
-    arr->SetArray(const_cast<double*>(pts.data()->data()), totalVals, 1);
+    // 纯几何模型没有全局网格点，不能对空 vector 的 data() 继续解引用。
+    if (!pts.empty())
+        arr->SetArray(const_cast<double*>(pts.front().data()), totalVals, 1);
 
     vtk->global_points_->SetData(arr);
 
