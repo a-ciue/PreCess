@@ -22,7 +22,6 @@ RowLayout {
             ListElement { text: "边" }
             ListElement { text: "面" }
             ListElement { text: "体" }
-            ListElement { text: "块" }
             ListElement{text: "几何点"}
             ListElement{text: "几何边"}
             ListElement{text: "几何面"}
@@ -36,12 +35,11 @@ RowLayout {
             case "Edge": return 2;
             case "Face": return 3;
             case "Solid": return 4;
-            case "Block": return 5;
-            case "GeometryVertex": return 6;
-            case "GeometryEdge": return 7;
-            case "GeometryFace": return 8;
-            case "GeometrySolid": return 9;
-            case "Component": return 10;
+            case "GeometryVertex": return 5;
+            case "GeometryEdge": return 6;
+            case "GeometryFace": return 7;
+            case "GeometrySolid": return 8;
+            case "Component": return 9;
             default: return 0;
             }
         }
@@ -57,8 +55,6 @@ RowLayout {
                 App.selection.selectMode = "Face"
             } else if (text === "体") {
                 App.selection.selectMode = "Solid"
-            } else if (text === "块") {
-                App.selection.selectMode = "Block"
             } else if (text === "几何点") {
                 App.selection.selectMode = "GeometryVertex"
             } else if (text === "几何边") {
