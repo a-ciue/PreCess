@@ -6,7 +6,9 @@
 
 #include <memory>
 #include <optional>
+#include <set>
 #include <unordered_map>
+#include <vector>
 #include <vtkProp.h>
 
 class MeshActorManager;
@@ -18,16 +20,20 @@ public:
     explicit MeshActorManagerSelectOp(MeshActorManager& manager);
 
     std::optional<Index> getComponentId(vtkProp* prop) const;
-    void managePickList(vtkPropCollection* pick_list);
+    void observePickList(vtkPropCollection* pick_list);
+    void unobservePickList(vtkPropCollection* pick_list);
     std::optional<MeshActorSelectOp> getSelectOp(Index component_id) const;
 
     void registerProps(Index component_id, std::shared_ptr<MeshActor> actor);
     void unregisterProps(std::shared_ptr<MeshActor> actor);
 
 private:
+    void addToAllLists(vtkProp* prop);
+    void removeFromAllLists(const std::set<vtkProp*>& props);
+
     MeshActorManager* manager_ { };
     std::unordered_map<vtkProp*, Index> prop_to_component_;
-    vtkSmartPointer<vtkPropCollection> pick_list_;
+    std::vector<vtkSmartPointer<vtkPropCollection>> pick_lists_;
 };
 
 #endif

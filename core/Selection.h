@@ -17,7 +17,8 @@ public:
         GeometrySolid,
         GeometryFace,
         GeometryEdge,
-        GeometryVertex
+        GeometryVertex,
+        Component
     };
 };
 

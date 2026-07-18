@@ -3,6 +3,10 @@
 #include "AlgorithmSystemRegister.h"
 #include "EditSystem.h"
 #include "EditSystemRegister.h"
+#include "EventBus.h"
+#include "FeatureEvents.h"
+#include "FeatureSystem.h"
+#include "FeatureSystemRegister.h"
 #include "ModelIOSystem.h"
 #include "ModelIOSystemRegister.h"
 #include "ModelLayer.h"
@@ -27,9 +31,38 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
     edit_system_ = std::make_unique<systems::edit::EditSystem>(*core_);
 
+    // 功能系统：事件总线 + 系统本体 + 动态上下文 provider 注入
+    event_bus_ = std::make_unique<core::EventBus>();
+    feature_system_ = std::make_unique<systems::feature::FeatureSystem>(*core_, *event_bus_);
+
     algo_adaptor_ = std::make_unique<systems::algo::QAlgorithmSystemAdaptor>(*algo_system_);
     io_adaptor_ = std::make_unique<systems::io::QModelIOSystemAdaptor>(*io_system_);
     edit_adaptor_ = std::make_unique<systems::edit::QEditSystemAdaptor>(*edit_system_);
+    feature_adaptor_ = std::make_unique<systems::feature::QFeatureSystemAdaptor>(*feature_system_);
+    // 功能上下文的活动模型/组件由 UI 同步到适配器，功能经 provider 动态获取
+    feature_system_->setActiveModelProvider([this]() { return feature_adaptor_->activeModel(); });
+    feature_system_->setActiveComponentProvider([this]() { return feature_adaptor_->activeComponent(); });
+
+    // 模型事件桥接到事件总线：功能可订阅 ModelEvent 实时响应模型增删改
+    using systems::feature::ModelEvent;
+    connect(observer_.get(), &QModelObserver::modelAdded, this, [this](Index id) {
+        event_bus_->publish(ModelEvent { ModelEvent::Kind::ModelAdded, id, -1 });
+    });
+    connect(observer_.get(), &QModelObserver::modelRemoved, this, [this](Index id) {
+        event_bus_->publish(ModelEvent { ModelEvent::Kind::ModelRemoved, id, -1 });
+    });
+    connect(observer_.get(), &QModelObserver::modelChanged, this, [this](Index id) {
+        event_bus_->publish(ModelEvent { ModelEvent::Kind::ModelChanged, id, -1 });
+    });
+    connect(observer_.get(), &QModelObserver::modelNameChanged, this, [this](Index id, const QString&) {
+        event_bus_->publish(ModelEvent { ModelEvent::Kind::ModelNameChanged, id, -1 });
+    });
+    connect(observer_.get(), &QModelObserver::componentChanged, this, [this](Index id) {
+        event_bus_->publish(ModelEvent { ModelEvent::Kind::ComponentChanged, -1, id });
+    });
+    connect(observer_.get(), &QModelObserver::componentRemoved, this, [this](Index id) {
+        event_bus_->publish(ModelEvent { ModelEvent::Kind::ComponentRemoved, -1, id });
+    });
 
     plugin_manager_ = std::make_unique<systems::SystemPluginManager>();
 
@@ -37,6 +70,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
     plugin_manager_->addSystemRegister(systems::algo::AlgorithmSystem::name, std::make_unique<systems::algo::AlgorithmSystemRegister>(*algo_system_));
     plugin_manager_->addSystemRegister(systems::edit::EditSystem::name, std::make_unique<systems::edit::EditSystemRegister>(*edit_system_));
+    plugin_manager_->addSystemRegister(systems::feature::FeatureSystem::name, std::make_unique<systems::feature::FeatureSystemRegister>(*feature_system_));
 
     q_plugin_manager_ = std::make_unique<systems::QSystemPluginManager>(plugin_manager_.get());
 
@@ -113,6 +147,11 @@ systems::edit::QEditSystemAdaptor* QModelManager::getEditSystemAdaptor() const
 systems::io::QModelIOSystemAdaptor* QModelManager::getModelIOSystemAdaptor() const
 {
     return io_adaptor_.get();
+}
+
+systems::feature::QFeatureSystemAdaptor* QModelManager::getFeatureSystemAdaptor() const
+{
+    return feature_adaptor_.get();
 }
 
 systems::QSystemPluginManager* QModelManager::getSystemPluginManager() const

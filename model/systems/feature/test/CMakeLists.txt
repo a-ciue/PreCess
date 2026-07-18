@@ -1,0 +1,5 @@
+precess_add_test(TestEventBus TestEventBus.cpp)
+precess_test_link_libraries(TestEventBus Core)
+
+precess_add_test(TestFeatureSystem TestFeatureSystem.cpp)
+precess_test_link_libraries(TestFeatureSystem FeatureSystem Data)

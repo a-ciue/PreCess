@@ -22,8 +22,19 @@ Pane {
         repeat: false
         onTriggered: {
             treeModel.refresh()
-            App.selection.activeComponentId = -1
-            App.selection.activeModelId = -1
+            // 选中项仍然有效时保留，不重置为 -1
+            let compId = App.selection.activeComponentId
+            let modelId = App.selection.activeModelId
+            if (compId >= 0 && !QModelManager.query.hasComponent(compId))
+                compId = -1
+            if (compId >= 0) {
+                // 组件有效时以组件为准同步所属模型
+                modelId = QModelManager.query.findModelIdByComponent(compId)
+            } else if (modelId >= 0 && !QModelManager.query.hasModel(modelId)) {
+                modelId = -1
+            }
+            App.selection.activeComponentId = compId
+            App.selection.activeModelId = modelId
         }
     }
 

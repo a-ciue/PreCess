@@ -1,3 +1,4 @@
+#include "CoincidentTopology.h"
 #include "MeshActorSelectOp.h"
 #include "SelectorHighlight.h"
 
@@ -112,7 +113,7 @@ void SolidSelectorHighlight::select(double posx, double posy)
 
 void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
 {
-    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, -0.5);
+    mapper.SetRelativeCoincidentTopologyPolygonOffsetParameters(0, highlight::SOLID_UNITS);
 
     actor.SetMapper(&mapper);
     vtkNew<vtkProperty> prop;

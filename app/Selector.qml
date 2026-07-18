@@ -27,6 +27,7 @@ RowLayout {
             ListElement{text: "几何边"}
             ListElement{text: "几何面"}
             ListElement{text: "几何体"}
+            ListElement{text: "组件"}
         }
         onCurrentTextChanged: {
             if(currentText === "..."){
@@ -58,6 +59,9 @@ RowLayout {
             }
             if(currentText === "几何体"){
                 App.selection.selectMode = "GeometrySolid"
+            }
+            if(currentText === "组件"){
+                App.selection.selectMode = "Component"
             }
         }
         opacity: enabled ? 1.0 : 0.6

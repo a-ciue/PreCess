@@ -1,4 +1,5 @@
 #include "SelectManager.h"
+#include "ComponentSelectorHighlight.h"
 #include "GeometryActorManagerSelectOp.h"
 #include "GeometrySelectManager.h"
 #include "MeshActorManagerSelectOp.h"
@@ -8,9 +9,11 @@
 
 SelectManager::SelectManager(vtkRenderer& renderer,
     MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op)
+    : renderer_(&renderer)
 {
     mesh_ = std::make_unique<MeshSelectManager>(renderer, *highlight_actor_, mesh_op);
     geom_ = std::make_unique<GeometrySelectManager>(renderer, *highlight_actor_, geom_op);
+    component_selector_ = std::make_unique<ComponentSelectorHighlight>(renderer, mesh_op, geom_op);
     highlight_actor_->PickableOff();
     highlight_actor_->SetVisibility(true);
     renderer.AddActor(highlight_actor_);
@@ -18,10 +21,19 @@ SelectManager::SelectManager(vtkRenderer& renderer,
 
 SelectManager::~SelectManager() = default;
 
+static bool is_mesh_mode(SelectMode m) { return m >= SelectMode::Vertex && m <= SelectMode::Block; }
+static bool is_geom_mode(SelectMode m) { return m >= SelectMode::GeometryVertex && m <= SelectMode::GeometrySolid; }
+
 void SelectManager::select(double posx, double posy)
 {
-    mesh_->select(posx, posy);
-    geom_->select(posx, posy);
+    if (select_mode_ == SelectMode::Component) {
+        component_selector_->select(posx, posy);
+        return;
+    }
+    if (is_mesh_mode(select_mode_))
+        mesh_->select(posx, posy);
+    else if (is_geom_mode(select_mode_))
+        geom_->select(posx, posy);
 }
 
 void SelectManager::setSelectMode(const std::string& select_mode)
@@ -45,22 +57,47 @@ void SelectManager::setSelectMode(const std::string& select_mode)
         mode = SelectMode::GeometryFace;
     } else if (select_mode == "GeometrySolid") {
         mode = SelectMode::GeometrySolid;
+    } else if (select_mode == "Component") {
+        mode = SelectMode::Component;
     }
 
-    mesh_->setSelectMode(mode);
-    geom_->setSelectMode(mode);
+    select_mode_ = mode;
+
+    if (mode == SelectMode::Component) {
+        mesh_->clearSelection();
+        geom_->clearSelection();
+        return;
+    }
+
+    component_selector_->clear();
+    if (is_mesh_mode(mode))
+        mesh_->setSelectMode(mode);
+    else
+        mesh_->clearSelection();
+
+    if (is_geom_mode(mode))
+        geom_->setSelectMode(mode);
+    else
+        geom_->clearSelection();
 }
 
 void SelectManager::clearSelection()
 {
+    component_selector_->clear();
     mesh_->clearSelection();
     geom_->clearSelection();
 }
 
 std::unique_ptr<Selection> SelectManager::getSelection()
 {
-    if (auto geom_selection = geom_->getSelection()) {
-        return geom_selection;
+    if (select_mode_ == SelectMode::Component) {
+        auto result = std::make_unique<Selection>(component_selector_->get());
+        result->component_id = -1;
+        return result;
     }
-    return mesh_->getSelection();
+    if (is_geom_mode(select_mode_))
+        return geom_->getSelection();
+    if (is_mesh_mode(select_mode_))
+        return mesh_->getSelection();
+    return nullptr;
 }
