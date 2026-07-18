@@ -186,6 +186,16 @@ int QModelQuery::findModelIdByComponent(Index component_id) const
     return it != m_manager->component_to_model_.end() ? it->second : -1;
 }
 
+bool QModelQuery::hasModel(Index model_id) const
+{
+    return m_manager->modelById(model_id) != nullptr;
+}
+
+bool QModelQuery::hasComponent(Index component_id) const
+{
+    return m_manager->findComponent(component_id) != nullptr;
+}
+
 QVariantList QModelQuery::getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId)
 {
     QVariantList out;
