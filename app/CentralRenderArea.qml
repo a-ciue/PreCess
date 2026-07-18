@@ -80,13 +80,7 @@ Page {
             anchors.margins: 3
             query: QModelManager.query
 
-            property var pickedIds: []
-
-            onRightClicked: {
-                let sel = myItem.selectedIDs
-                myItem.pickedIds = sel ? sel.getAsComponentIds() : []
-                viewportMenu.popup()
-            }
+            onRightClicked: { viewportMenu.popup() }
 
             Connections {
                 target: QModelManager.observer
@@ -124,7 +118,6 @@ Page {
 
             onClearButtonClicked: {
                 myItem.clearSelection()
-                myItem.pickedIds = []
             }
 
             onConfirmButtonClicked: {
@@ -134,6 +127,13 @@ Page {
 
         Menu {
             id: viewportMenu
+
+            property var pickedIds: []
+
+            onOpened: {
+                let sel = myItem.selectedIDs
+                pickedIds = sel ? sel.getAsComponentIds() : []
+            }
 
             implicitWidth: 140
             width: implicitWidth
@@ -198,44 +198,44 @@ Page {
 
             StyledMenuItem {
                 text: "隐藏"
-                shown: myItem.pickedIds.length > 0
+                shown: viewportMenu.pickedIds.length > 0
                 onTriggered: {
-                    for (let i = 0; i < myItem.pickedIds.length; i++)
-                        App.registry.objectTree.hideNode(myItem.pickedIds[i], 1)
+                    for (let i = 0; i < viewportMenu.pickedIds.length; i++)
+                        App.registry.objectTree.hideNode(viewportMenu.pickedIds[i], 1)
                 }
             }
 
             StyledMenuItem {
                 text: "隔离"
-                shown: myItem.pickedIds.length > 0
+                shown: viewportMenu.pickedIds.length > 0
                 onTriggered: {
-                    if (myItem.pickedIds.length > 0)
-                        App.registry.objectTree.isolateSelection(myItem.pickedIds)
+                    if (viewportMenu.pickedIds.length > 0)
+                        App.registry.objectTree.isolateSelection(viewportMenu.pickedIds)
                 }
             }
 
             StyledMenuItem {
                 text: "显示"
-                shown: myItem.pickedIds.length > 0
+                shown: viewportMenu.pickedIds.length > 0
                 onTriggered: {
-                    for (let i = 0; i < myItem.pickedIds.length; i++)
-                        App.registry.objectTree.showNode(myItem.pickedIds[i], 1)
+                    for (let i = 0; i < viewportMenu.pickedIds.length; i++)
+                        App.registry.objectTree.showNode(viewportMenu.pickedIds[i], 1)
                 }
             }
 
             StyledSeparator {
-                visible: myItem.pickedIds.length > 0
+                visible: viewportMenu.pickedIds.length > 0
             }
 
             StyledMenuItem {
                 text: "全部隐藏"
-                shown: myItem.pickedIds.length === 0
+                shown: viewportMenu.pickedIds.length === 0
                 onTriggered: App.registry.objectTree.hideAllNodes()
             }
 
             StyledMenuItem {
                 text: "全部显示"
-                shown: myItem.pickedIds.length === 0
+                shown: viewportMenu.pickedIds.length === 0
                 onTriggered: App.registry.objectTree.showAllNodes()
             }
 
