@@ -82,94 +82,110 @@ $(function() {
 <a href="QSelection_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef  Q_SELECTION_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define Q_SELECTION_H </span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;qqmlintegration.h&gt;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="Selection_8h.html">Selection.h</a>&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span></div>
-<div class="foldopen" id="foldopen00008" data-start="{" data-end="};">
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="classElement.html">    8</a></span><span class="keyword">class </span><a class="code hl_class" href="classElement.html">Element</a> : <span class="keyword">public</span> QObject, <span class="keyword">public</span> <a class="code hl_class" href="classElementEnum.html">ElementEnum</a> {</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>    Q_OBJECT</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    QML_ELEMENT</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    Q_ENUM(<a class="code hl_enumeration" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">Type</a>)</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>};</div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;QVariantList&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;qqmlintegration.h&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="Selection_8h.html">Selection.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span></div>
+<div class="foldopen" id="foldopen00009" data-start="{" data-end="};">
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="classElement.html">    9</a></span><span class="keyword">class </span><a class="code hl_class" href="classElement.html">Element</a> : <span class="keyword">public</span> QObject, <span class="keyword">public</span> <a class="code hl_class" href="classElementEnum.html">ElementEnum</a> {</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    Q_OBJECT</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    QML_ELEMENT</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    Q_ENUM(<a class="code hl_enumeration" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">Type</a>)</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>};</div>
 </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span></div>
-<div class="foldopen" id="foldopen00018" data-start="{" data-end="};">
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="classQSelection.html">   18</a></span><span class="keyword">class </span><a class="code hl_function" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection</a> : <span class="keyword">public</span> QObject {</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    Q_OBJECT</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    QML_ELEMENT</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">   23</a></span>    <a class="code hl_function" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection</a>() { }</div>
-<div class="foldopen" id="foldopen00024" data-start="{" data-end="}">
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">   24</a></span>    <a class="code hl_function" href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">QSelection</a>(std::unique_ptr&lt;Selection&gt; data)</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        : <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(data))</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    {</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    }</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span></div>
+<div class="foldopen" id="foldopen00019" data-start="{" data-end="};">
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classQSelection.html">   19</a></span><span class="keyword">class </span><a class="code hl_function" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection</a> : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    Q_OBJECT</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    QML_ELEMENT</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">   24</a></span>    <a class="code hl_function" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection</a>() { }</div>
+<div class="foldopen" id="foldopen00025" data-start="{" data-end="}">
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">   25</a></span>    <a class="code hl_function" href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">QSelection</a>(std::unique_ptr&lt;Selection&gt; data)</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        : <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(data))</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    {</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    }</div>
 </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classQSelection.html#aea3afa5f66180811ffea9161debd6d8d">   33</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQSelection.html#aea3afa5f66180811ffea9161debd6d8d">set</a>(std::shared_ptr&lt;Selection&gt; data) { <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a> = std::move(data); }</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classQSelection.html#a3a0c4615a7de33365c82dcb1114f9787">   38</a></span>    std::shared_ptr&lt;Selection&gt; <a class="code hl_function" href="classQSelection.html#a3a0c4615a7de33365c82dcb1114f9787">get</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>; }</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
-<div class="foldopen" id="foldopen00044" data-start="{" data-end="}">
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="classQSelection.html#ad39a13f64aa6e900da93d9aeed4738fc">   44</a></span>    Q_INVOKABLE <span class="keywordtype">size_t</span> <a class="code hl_function" href="classQSelection.html#ad39a13f64aa6e900da93d9aeed4738fc">size</a>()</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    {</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="keywordflow">if</span> (<a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>) {</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;ids.size();</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        }</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    }</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classQSelection.html#aea3afa5f66180811ffea9161debd6d8d">   34</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQSelection.html#aea3afa5f66180811ffea9161debd6d8d">set</a>(std::shared_ptr&lt;Selection&gt; data) { <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a> = std::move(data); }</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classQSelection.html#a3a0c4615a7de33365c82dcb1114f9787">   39</a></span>    std::shared_ptr&lt;Selection&gt; <a class="code hl_function" href="classQSelection.html#a3a0c4615a7de33365c82dcb1114f9787">get</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>; }</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span></div>
+<div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classQSelection.html#ad39a13f64aa6e900da93d9aeed4738fc">   45</a></span>    Q_INVOKABLE <span class="keywordtype">size_t</span> <a class="code hl_function" href="classQSelection.html#ad39a13f64aa6e900da93d9aeed4738fc">size</a>()</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    {</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keywordflow">if</span> (<a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>) {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>            <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;ids.size();</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        }</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    }</div>
 </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="classQSelection.html#abf6d6b3b49bedb94cb9cb9ddfaf0b0e9">   55</a></span>    Q_INVOKABLE <a class="code hl_enumeration" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">Element::Type</a> <a class="code hl_function" href="classQSelection.html#abf6d6b3b49bedb94cb9cb9ddfaf0b0e9">type</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;type; }</div>
-<div class="foldopen" id="foldopen00059" data-start="{" data-end="}">
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="classQSelection.html#a2a2c5fb236acbf59e1f872d5eabf89a4">   59</a></span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQSelection.html#a2a2c5fb236acbf59e1f872d5eabf89a4">initialize</a>()</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    {</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        std::unique_ptr&lt;Selection&gt; temp = std::make_unique&lt;Selection&gt;();</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        temp-&gt;type = <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae">ElementEnum::Face</a>;</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; 2; i++) {</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            temp-&gt;ids.push_back(i);</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        }</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a> = std::move(temp);</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    }</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classQSelection.html#abf6d6b3b49bedb94cb9cb9ddfaf0b0e9">   56</a></span>    Q_INVOKABLE <a class="code hl_enumeration" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">Element::Type</a> <a class="code hl_function" href="classQSelection.html#abf6d6b3b49bedb94cb9cb9ddfaf0b0e9">type</a>() { <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;type; }</div>
+<div class="foldopen" id="foldopen00060" data-start="{" data-end="}">
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classQSelection.html#a2a2c5fb236acbf59e1f872d5eabf89a4">   60</a></span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQSelection.html#a2a2c5fb236acbf59e1f872d5eabf89a4">initialize</a>()</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    {</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        std::unique_ptr&lt;Selection&gt; temp = std::make_unique&lt;Selection&gt;();</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        temp-&gt;type = <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae">ElementEnum::Face</a>;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; 2; i++) {</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            temp-&gt;ids.push_back(i);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        }</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a> = std::move(temp);</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    }</div>
 </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span></div>
-<div class="foldopen" id="foldopen00073" data-start="{" data-end="}">
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classQSelection.html#a9aa63ce2b6442d47cbbf7c2899bd05fc">   73</a></span>    Q_INVOKABLE <span class="keywordtype">int</span> <a class="code hl_function" href="classQSelection.html#a9aa63ce2b6442d47cbbf7c2899bd05fc">ids</a>(<span class="keywordtype">int</span> i)</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    {</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;ids[i];</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    }</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span></div>
+<div class="foldopen" id="foldopen00074" data-start="{" data-end="}">
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classQSelection.html#a9aa63ce2b6442d47cbbf7c2899bd05fc">   74</a></span>    Q_INVOKABLE <span class="keywordtype">int</span> <a class="code hl_function" href="classQSelection.html#a9aa63ce2b6442d47cbbf7c2899bd05fc">ids</a>(<span class="keywordtype">int</span> i)</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;ids[i];</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    }</div>
 </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span></div>
-<div class="foldopen" id="foldopen00081" data-start="{" data-end="}">
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="classQSelection.html#afd038d7a143ba159b14545379e67e871">   81</a></span>    Q_INVOKABLE <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_function" href="classQSelection.html#afd038d7a143ba159b14545379e67e871">getComponentId</a>()</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    {</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;component_id;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    }</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span></div>
+<div class="foldopen" id="foldopen00082" data-start="{" data-end="}">
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="classQSelection.html#afd038d7a143ba159b14545379e67e871">   82</a></span>    Q_INVOKABLE <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_function" href="classQSelection.html#afd038d7a143ba159b14545379e67e871">getComponentId</a>()</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    {</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;component_id;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    }</div>
 </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">   87</a></span>    std::shared_ptr&lt;Selection&gt; <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>;</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>};</div>
+<div class="foldopen" id="foldopen00086" data-start="{" data-end="}">
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classQSelection.html#a29dc53a5cd0cce54cfef62cfdb9768d7">   86</a></span>    Q_INVOKABLE QVariantList <a class="code hl_function" href="classQSelection.html#a29dc53a5cd0cce54cfef62cfdb9768d7">getAsComponentIds</a>()</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    {</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        QVariantList list;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        <span class="keywordflow">if</span> (!<a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>)</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>            <span class="keywordflow">return</span> list;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <span class="keywordflow">if</span> (<a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;type == <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a5ab833adf45f7af9b2ab3541022173e0">ElementEnum::Component</a>) {</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>            <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keywordtype">id</span> : <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>-&gt;ids)</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>                list.append(<span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        }</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        <span class="keywordflow">return</span> list;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    }</div>
 </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="preprocessor">#endif </span><span class="comment">//  Q_SELECTION_H</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">   99</a></span>    std::shared_ptr&lt;Selection&gt; <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>};</div>
+</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span><span class="preprocessor">#endif </span><span class="comment">//  Q_SELECTION_H</span></div>
 <div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:37</div></div>
 <div class="ttc" id="aSelection_8h_html"><div class="ttname"><a href="Selection_8h.html">Selection.h</a></div></div>
 <div class="ttc" id="aclassElementEnum_html"><div class="ttname"><a href="classElementEnum.html">ElementEnum</a></div><div class="ttdef"><b>定义</b> Selection.h:6</div></div>
 <div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">ElementEnum::Type</a></div><div class="ttdeci">Type</div><div class="ttdef"><b>定义</b> Selection.h:9</div></div>
 <div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a305588fbe98af8cb63f341551c7ffeae">ElementEnum::Face</a></div><div class="ttdeci">@ Face</div><div class="ttdef"><b>定义</b> Selection.h:12</div></div>
-<div class="ttc" id="aclassElement_html"><div class="ttname"><a href="classElement.html">Element</a></div><div class="ttdoc">Element在QML中暴露了枚举Element::Type，在QML中以Element.Face获取枚举值</div><div class="ttdef"><b>定义</b> QSelection.h:8</div></div>
-<div class="ttc" id="aclassQSelection_html_a2a2c5fb236acbf59e1f872d5eabf89a4"><div class="ttname"><a href="classQSelection.html#a2a2c5fb236acbf59e1f872d5eabf89a4">QSelection::initialize</a></div><div class="ttdeci">Q_INVOKABLE void initialize()</div><div class="ttdoc">初始化一个Selection数据</div><div class="ttdef"><b>定义</b> QSelection.h:59</div></div>
-<div class="ttc" id="aclassQSelection_html_a3a0c4615a7de33365c82dcb1114f9787"><div class="ttname"><a href="classQSelection.html#a3a0c4615a7de33365c82dcb1114f9787">QSelection::get</a></div><div class="ttdeci">std::shared_ptr&lt; Selection &gt; get()</div><div class="ttdef"><b>定义</b> QSelection.h:38</div></div>
-<div class="ttc" id="aclassQSelection_html_a9aa63ce2b6442d47cbbf7c2899bd05fc"><div class="ttname"><a href="classQSelection.html#a9aa63ce2b6442d47cbbf7c2899bd05fc">QSelection::ids</a></div><div class="ttdeci">Q_INVOKABLE int ids(int i)</div><div class="ttdoc">ids 返回选择对象的id值表的第i个元素</div><div class="ttdef"><b>定义</b> QSelection.h:73</div></div>
-<div class="ttc" id="aclassQSelection_html_aaee984386736e7fe5f7e65c2d318466d"><div class="ttname"><a href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">QSelection::QSelection</a></div><div class="ttdeci">QSelection(std::unique_ptr&lt; Selection &gt; data)</div><div class="ttdef"><b>定义</b> QSelection.h:24</div></div>
-<div class="ttc" id="aclassQSelection_html_abf6d6b3b49bedb94cb9cb9ddfaf0b0e9"><div class="ttname"><a href="classQSelection.html#abf6d6b3b49bedb94cb9cb9ddfaf0b0e9">QSelection::type</a></div><div class="ttdeci">Q_INVOKABLE Element::Type type()</div><div class="ttdoc">获取选中数据的类型枚举值</div><div class="ttdef"><b>定义</b> QSelection.h:55</div></div>
-<div class="ttc" id="aclassQSelection_html_ad39a13f64aa6e900da93d9aeed4738fc"><div class="ttname"><a href="classQSelection.html#ad39a13f64aa6e900da93d9aeed4738fc">QSelection::size</a></div><div class="ttdeci">Q_INVOKABLE size_t size()</div><div class="ttdoc">获取该选择的数组大小</div><div class="ttdef"><b>定义</b> QSelection.h:44</div></div>
-<div class="ttc" id="aclassQSelection_html_ae17a23b67b7c87bdb604e930769d517a"><div class="ttname"><a href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">QSelection::data_</a></div><div class="ttdeci">std::shared_ptr&lt; Selection &gt; data_</div><div class="ttdef"><b>定义</b> QSelection.h:87</div></div>
-<div class="ttc" id="aclassQSelection_html_aea3afa5f66180811ffea9161debd6d8d"><div class="ttname"><a href="classQSelection.html#aea3afa5f66180811ffea9161debd6d8d">QSelection::set</a></div><div class="ttdeci">void set(std::shared_ptr&lt; Selection &gt; data)</div><div class="ttdef"><b>定义</b> QSelection.h:33</div></div>
-<div class="ttc" id="aclassQSelection_html_af271af99a1501effea84e88617aac5c0"><div class="ttname"><a href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection::QSelection</a></div><div class="ttdeci">QSelection()</div><div class="ttdef"><b>定义</b> QSelection.h:23</div></div>
-<div class="ttc" id="aclassQSelection_html_afd038d7a143ba159b14545379e67e871"><div class="ttname"><a href="classQSelection.html#afd038d7a143ba159b14545379e67e871">QSelection::getComponentId</a></div><div class="ttdeci">Q_INVOKABLE Index getComponentId()</div><div class="ttdoc">返回选中对象的模型 ID</div><div class="ttdef"><b>定义</b> QSelection.h:81</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a5ab833adf45f7af9b2ab3541022173e0"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a5ab833adf45f7af9b2ab3541022173e0">ElementEnum::Component</a></div><div class="ttdeci">@ Component</div><div class="ttdef"><b>定义</b> Selection.h:21</div></div>
+<div class="ttc" id="aclassElement_html"><div class="ttname"><a href="classElement.html">Element</a></div><div class="ttdoc">Element在QML中暴露了枚举Element::Type，在QML中以Element.Face获取枚举值</div><div class="ttdef"><b>定义</b> QSelection.h:9</div></div>
+<div class="ttc" id="aclassQSelection_html_a29dc53a5cd0cce54cfef62cfdb9768d7"><div class="ttname"><a href="classQSelection.html#a29dc53a5cd0cce54cfef62cfdb9768d7">QSelection::getAsComponentIds</a></div><div class="ttdeci">Q_INVOKABLE QVariantList getAsComponentIds()</div><div class="ttdef"><b>定义</b> QSelection.h:86</div></div>
+<div class="ttc" id="aclassQSelection_html_a2a2c5fb236acbf59e1f872d5eabf89a4"><div class="ttname"><a href="classQSelection.html#a2a2c5fb236acbf59e1f872d5eabf89a4">QSelection::initialize</a></div><div class="ttdeci">Q_INVOKABLE void initialize()</div><div class="ttdoc">初始化一个Selection数据</div><div class="ttdef"><b>定义</b> QSelection.h:60</div></div>
+<div class="ttc" id="aclassQSelection_html_a3a0c4615a7de33365c82dcb1114f9787"><div class="ttname"><a href="classQSelection.html#a3a0c4615a7de33365c82dcb1114f9787">QSelection::get</a></div><div class="ttdeci">std::shared_ptr&lt; Selection &gt; get()</div><div class="ttdef"><b>定义</b> QSelection.h:39</div></div>
+<div class="ttc" id="aclassQSelection_html_a9aa63ce2b6442d47cbbf7c2899bd05fc"><div class="ttname"><a href="classQSelection.html#a9aa63ce2b6442d47cbbf7c2899bd05fc">QSelection::ids</a></div><div class="ttdeci">Q_INVOKABLE int ids(int i)</div><div class="ttdoc">ids 返回选择对象的id值表的第i个元素</div><div class="ttdef"><b>定义</b> QSelection.h:74</div></div>
+<div class="ttc" id="aclassQSelection_html_aaee984386736e7fe5f7e65c2d318466d"><div class="ttname"><a href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">QSelection::QSelection</a></div><div class="ttdeci">QSelection(std::unique_ptr&lt; Selection &gt; data)</div><div class="ttdef"><b>定义</b> QSelection.h:25</div></div>
+<div class="ttc" id="aclassQSelection_html_abf6d6b3b49bedb94cb9cb9ddfaf0b0e9"><div class="ttname"><a href="classQSelection.html#abf6d6b3b49bedb94cb9cb9ddfaf0b0e9">QSelection::type</a></div><div class="ttdeci">Q_INVOKABLE Element::Type type()</div><div class="ttdoc">获取选中数据的类型枚举值</div><div class="ttdef"><b>定义</b> QSelection.h:56</div></div>
+<div class="ttc" id="aclassQSelection_html_ad39a13f64aa6e900da93d9aeed4738fc"><div class="ttname"><a href="classQSelection.html#ad39a13f64aa6e900da93d9aeed4738fc">QSelection::size</a></div><div class="ttdeci">Q_INVOKABLE size_t size()</div><div class="ttdoc">获取该选择的数组大小</div><div class="ttdef"><b>定义</b> QSelection.h:45</div></div>
+<div class="ttc" id="aclassQSelection_html_ae17a23b67b7c87bdb604e930769d517a"><div class="ttname"><a href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">QSelection::data_</a></div><div class="ttdeci">std::shared_ptr&lt; Selection &gt; data_</div><div class="ttdef"><b>定义</b> QSelection.h:99</div></div>
+<div class="ttc" id="aclassQSelection_html_aea3afa5f66180811ffea9161debd6d8d"><div class="ttname"><a href="classQSelection.html#aea3afa5f66180811ffea9161debd6d8d">QSelection::set</a></div><div class="ttdeci">void set(std::shared_ptr&lt; Selection &gt; data)</div><div class="ttdef"><b>定义</b> QSelection.h:34</div></div>
+<div class="ttc" id="aclassQSelection_html_af271af99a1501effea84e88617aac5c0"><div class="ttname"><a href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection::QSelection</a></div><div class="ttdeci">QSelection()</div><div class="ttdef"><b>定义</b> QSelection.h:24</div></div>
+<div class="ttc" id="aclassQSelection_html_afd038d7a143ba159b14545379e67e871"><div class="ttname"><a href="classQSelection.html#afd038d7a143ba159b14545379e67e871">QSelection::getComponentId</a></div><div class="ttdeci">Q_INVOKABLE Index getComponentId()</div><div class="ttdoc">返回选中对象的模型 ID</div><div class="ttdef"><b>定义</b> QSelection.h:82</div></div>
 <div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
