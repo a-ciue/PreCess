@@ -12,6 +12,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
+#include <cmath>
 #include <limits>
 #include <stdexcept>
 #include <vector>
@@ -100,10 +101,11 @@ TEST_CASE("GeometryBuilder creates valid disk faces in supported planes")
         CoordinatePlane::YZ,
         CoordinatePlane::XZ
     };
+    const double full_angle = 2.0 * std::acos(-1.0);
 
     for (CoordinatePlane plane : planes) {
         TopoDS_Shape shape = GeometryBuilder::makeDiskFace(
-            1.0, 2.0, 3.0, 10.0, plane);
+            1.0, 2.0, 3.0, 10.0, plane, 0.0, full_angle);
 
         REQUIRE_FALSE(shape.IsNull());
         REQUIRE(shape.ShapeType() == TopAbs_FACE);
@@ -111,11 +113,44 @@ TEST_CASE("GeometryBuilder creates valid disk faces in supported planes")
     }
 }
 
+TEST_CASE("GeometryBuilder creates a valid sector face")
+{
+    const double pi = std::acos(-1.0);
+    TopoDS_Shape shape = GeometryBuilder::makeDiskFace(
+        1.0, 2.0, 3.0, 10.0, CoordinatePlane::XY,
+        pi / 4.0, pi / 2.0);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(shape.ShapeType() == TopAbs_FACE);
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+
+    // 扇形边界应由一条圆弧和两条半径边组成。
+    int edge_count = 0;
+    for (TopExp_Explorer exp(shape, TopAbs_EDGE); exp.More(); exp.Next())
+        ++edge_count;
+    REQUIRE(edge_count == 3);
+}
+
 TEST_CASE("GeometryBuilder rejects non-positive disk face radius")
 {
+    const double full_angle = 2.0 * std::acos(-1.0);
     REQUIRE_THROWS_AS(
         GeometryBuilder::makeDiskFace(
-            0.0, 0.0, 0.0, 0.0, CoordinatePlane::XY),
+            0.0, 0.0, 0.0, 0.0, CoordinatePlane::XY, 0.0, full_angle),
+        std::invalid_argument);
+}
+
+TEST_CASE("GeometryBuilder rejects invalid disk face sweep angles")
+{
+    const double full_angle = 2.0 * std::acos(-1.0);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeDiskFace(
+            0.0, 0.0, 0.0, 10.0, CoordinatePlane::XY, 0.0, 0.0),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeDiskFace(
+            0.0, 0.0, 0.0, 10.0, CoordinatePlane::XY,
+            0.0, full_angle + 0.1),
         std::invalid_argument);
 }
 
@@ -188,10 +223,25 @@ TEST_CASE("GeometryBuilder rejects non-positive box dimensions")
 
 TEST_CASE("GeometryBuilder creates a valid cylinder")
 {
+    const double full_angle = 2.0 * std::acos(-1.0);
     TopoDS_Shape shape = GeometryBuilder::makeCylinder(
         1.0, 2.0, 3.0,
         10.0, 20.0,
-        0.0, 0.0, 1.0);
+        0.0, 0.0, 1.0,
+        full_angle);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(shape.ShapeType() == TopAbs_SOLID);
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+}
+
+TEST_CASE("GeometryBuilder creates a valid partial cylinder")
+{
+    TopoDS_Shape shape = GeometryBuilder::makeCylinder(
+        1.0, 2.0, 3.0,
+        10.0, 20.0,
+        0.0, 0.0, 1.0,
+        std::acos(-1.0) / 2.0);
 
     REQUIRE_FALSE(shape.IsNull());
     REQUIRE(shape.ShapeType() == TopAbs_SOLID);
@@ -200,17 +250,34 @@ TEST_CASE("GeometryBuilder creates a valid cylinder")
 
 TEST_CASE("GeometryBuilder rejects invalid cylinder parameters")
 {
+    const double full_angle = 2.0 * std::acos(-1.0);
     REQUIRE_THROWS_AS(
         GeometryBuilder::makeCylinder(
             0.0, 0.0, 0.0,
             0.0, 10.0,
-            0.0, 0.0, 1.0),
+            0.0, 0.0, 1.0,
+            full_angle),
         std::invalid_argument);
     REQUIRE_THROWS_AS(
         GeometryBuilder::makeCylinder(
             0.0, 0.0, 0.0,
             5.0, 10.0,
-            0.0, 0.0, 0.0),
+            0.0, 0.0, 0.0,
+            full_angle),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCylinder(
+            0.0, 0.0, 0.0,
+            5.0, 10.0,
+            0.0, 0.0, 1.0,
+            0.0),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCylinder(
+            0.0, 0.0, 0.0,
+            5.0, 10.0,
+            0.0, 0.0, 1.0,
+            full_angle + 0.1),
         std::invalid_argument);
 }
 

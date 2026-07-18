@@ -41,7 +41,7 @@ QtObject {
     readonly property var createCylinderInfo: ({
         name: "create_cylinder",
         display_name: qsTr("创建圆柱体"),
-        description: qsTr("根据底面圆心、半径、高度和轴向创建完整圆柱体"),
+        description: qsTr("根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体"),
         arg_types: [
             { type: QArgType.Float, name: qsTr("底面圆心 X"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("底面圆心 Y"), content: "0", description: "" },
@@ -50,7 +50,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("高度"), content: "20", description: qsTr("必须大于几何容差") },
             { type: QArgType.Float, name: qsTr("轴向 X"), content: "0", description: qsTr("轴向不能为零向量") },
             { type: QArgType.Float, name: qsTr("轴向 Y"), content: "0", description: qsTr("轴向不能为零向量") },
-            { type: QArgType.Float, name: qsTr("轴向 Z"), content: "1", description: qsTr("轴向不能为零向量") }
+            { type: QArgType.Float, name: qsTr("轴向 Z"), content: "1", description: qsTr("轴向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") }
         ]
     })
 
@@ -93,14 +94,16 @@ QtObject {
 
     readonly property var createDiskFaceInfo: ({
         name: "create_disk_face",
-        display_name: qsTr("创建圆面"),
-        description: qsTr("根据圆心、半径和坐标平面创建圆面"),
+        display_name: qsTr("创建圆盘/扇形面"),
+        description: qsTr("根据圆心、半径、坐标平面和角度创建圆盘或扇形面"),
         arg_types: [
             { type: QArgType.Float, name: qsTr("圆心 X"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("圆心 Y"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("圆心 Z"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("半径"), content: "10", description: qsTr("必须大于几何容差") },
-            { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("圆面所在的全局坐标平面") }
+            { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("圆面所在的全局坐标平面") },
+            { type: QArgType.Float, name: qsTr("起始角（度）"), content: "0", description: qsTr("完整圆盘时忽略") },
+            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") }
         ]
     })
 
@@ -207,17 +210,18 @@ QtObject {
         }, "", -1)
     }
 
-    // 启动圆面创建操作。
+    // 启动圆盘或扇形面创建操作。
     function startCreateDiskFace() {
         activate({
             info: root.createDiskFaceInfo,
             allowWithoutModel: true,
             showGeometryTarget: true,
-            defaultParameters: [0, 0, 0, 10, 0],
+            defaultParameters: [0, 0, 0, 10, 0, 0, 360],
             execute: function(modelId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createDiskFace(
                     modelId, App.selection.activeComponentId,
-                    args[0], args[1], args[2], args[3], args[4]), false)
+                    args[0], args[1], args[2], args[3],
+                    args[4], args[5], args[6]), false)
             }
         }, "", -1)
     }
@@ -258,12 +262,12 @@ QtObject {
             info: root.createCylinderInfo,
             allowWithoutModel: true,
             showGeometryTarget: true,
-            defaultParameters: [0, 0, 0, 10, 20, 0, 0, 1],
+            defaultParameters: [0, 0, 0, 10, 20, 0, 0, 1, 360],
             execute: function(modelId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createCylinder(
                     modelId, App.selection.activeComponentId,
                     args[0], args[1], args[2],
-                    args[3], args[4], args[5], args[6], args[7]), false)
+                    args[3], args[4], args[5], args[6], args[7], args[8]), false)
             }
         }, "", -1)
     }

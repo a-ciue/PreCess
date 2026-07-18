@@ -68,9 +68,10 @@ public:
         CoordinatePlane plane);
 
     /**
-     * @brief 根据圆心、半径和全局坐标平面创建圆面。
+     * @brief 根据圆心、半径、坐标平面和角度创建圆盘或扇形面。
      *
-     * @throws std::invalid_argument 输入包含非有限数值、半径过小或平面无效。
+     * 角度单位为弧度；完整圆盘忽略起始角，局部扇形从起始角沿正方向扫掠。
+     * @throws std::invalid_argument 输入包含非有限数值、半径过小、角度越界或平面无效。
      * @throws std::runtime_error OCC 构造失败或结果拓扑无效。
      */
     static TopoDS_Shape makeDiskFace(
@@ -78,7 +79,9 @@ public:
         double center_y,
         double center_z,
         double radius,
-        CoordinatePlane plane);
+        CoordinatePlane plane,
+        double start_angle,
+        double sweep_angle);
 
     /**
      * @brief 使用一组已有几何边构造单一闭合 Face。
@@ -105,9 +108,10 @@ public:
         double length_z);
 
     /**
-     * @brief 根据底面圆心、半径、高度和轴向创建完整圆柱体。
+     * @brief 根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体。
      *
-     * @throws std::invalid_argument 输入包含非有限数值、尺寸过小或轴向为零。
+     * 扫掠角单位为弧度；完整角度创建整圆柱，其余角度创建封闭的部分圆柱。
+     * @throws std::invalid_argument 输入包含非有限数值、尺寸过小、轴向为零或角度越界。
      * @throws std::runtime_error OCC 构造失败或结果拓扑无效。
      */
     static TopoDS_Shape makeCylinder(
@@ -118,7 +122,8 @@ public:
         double height,
         double direction_x,
         double direction_y,
-        double direction_z);
+        double direction_z,
+        double sweep_angle);
 
     /**
      * @brief 将已有面沿指定方向和长度拉伸为实体，构造时复制源面。

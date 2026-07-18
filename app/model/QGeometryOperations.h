@@ -71,8 +71,9 @@ public:
         int plane);
 
     /**
-     * @brief 根据圆心、半径和全局坐标平面创建圆面。
+     * @brief 根据圆心、半径、全局坐标平面和角度创建圆盘或扇形面。
      *
+     * QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。
      * @return 新建或更新的组件 ID，失败时返回 -1。
      */
     Q_INVOKABLE int createDiskFace(
@@ -82,7 +83,9 @@ public:
         double centerY,
         double centerZ,
         double radius,
-        int plane);
+        int plane,
+        double startAngle,
+        double sweepAngle);
 
     /**
      * @brief 使用当前组件中选中的几何边创建单一闭合 Face。
@@ -108,8 +111,9 @@ public:
         double lengthZ);
 
     /**
-     * @brief 根据底面圆心、半径、高度和轴向创建完整圆柱体。
+     * @brief 根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体。
      *
+     * QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。
      * @return 新建或更新的组件 ID，失败时返回 -1。
      */
     Q_INVOKABLE int createCylinder(
@@ -122,7 +126,8 @@ public:
         double height,
         double directionX,
         double directionY,
-        double directionZ);
+        double directionZ,
+        double sweepAngle);
 
     /**
      * @brief 将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。

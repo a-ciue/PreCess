@@ -69,6 +69,23 @@ TopoDS_Shape checkedLine(BRepBuilderAPI_MakeEdge& builder)
         throw std::runtime_error("The created line is topologically invalid");
     return shape;
 }
+
+// 统一检查完整圆柱与部分圆柱的构造结果，避免两个重载分支重复错误处理。
+TopoDS_Shape checkedCylinder(BRepPrimAPI_MakeCylinder& builder)
+{
+    builder.Build();
+    if (!builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the cylinder");
+
+    TopoDS_Shape shape = builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty cylinder");
+    if (shape.ShapeType() != TopAbs_SOLID)
+        throw std::runtime_error("OpenCASCADE did not create a cylinder solid");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created cylinder is topologically invalid");
+    return shape;
+}
 }
 
 TopoDS_Shape GeometryBuilder::makeLine(
@@ -192,10 +209,12 @@ TopoDS_Shape GeometryBuilder::makeDiskFace(
     double center_y,
     double center_z,
     double radius,
-    CoordinatePlane plane)
+    CoordinatePlane plane,
+    double start_angle,
+    double sweep_angle)
 {
-    const std::array<double, 4> values {
-        center_x, center_y, center_z, radius
+    const std::array<double, 6> values {
+        center_x, center_y, center_z, radius, start_angle, sweep_angle
     };
     for (double value : values) {
         if (!std::isfinite(value))
@@ -203,6 +222,11 @@ TopoDS_Shape GeometryBuilder::makeDiskFace(
     }
     if (radius <= Precision::Confusion())
         throw std::invalid_argument("Disk face radius must be greater than tolerance");
+
+    const double full_angle = 2.0 * std::acos(-1.0);
+    if (sweep_angle <= Precision::Angular()
+        || sweep_angle > full_angle + Precision::Angular())
+        throw std::invalid_argument("Disk face sweep angle must be in (0, 2*PI]");
 
     // 为三个全局坐标平面设置法向和局部 X 参考方向。
     const gp_Pnt center(center_x, center_y, center_z);
@@ -221,25 +245,53 @@ TopoDS_Shape GeometryBuilder::makeDiskFace(
         throw std::invalid_argument("Disk face plane is invalid");
     }
 
-    // 圆曲线先生成闭合 Edge，再组成 Wire 并限定创建平面 Face。
-    BRepBuilderAPI_MakeEdge edge_builder(gp_Circ(placement, radius));
-    if (!edge_builder.IsDone())
-        throw std::runtime_error("OpenCASCADE failed to create the disk edge");
-
     BRepBuilderAPI_MakeWire wire_builder;
-    wire_builder.Add(edge_builder.Edge());
+    if (std::abs(sweep_angle - full_angle) <= Precision::Angular()) {
+        // 完整圆盘使用整圆 Edge，避免在周期接缝处人为拆边。
+        BRepBuilderAPI_MakeEdge circle_builder(gp_Circ(placement, radius));
+        if (!circle_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to create the disk edge");
+        wire_builder.Add(circle_builder.Edge());
+    } else {
+        // 旋转局部 X 方向表达起始角，再以 [0, sweep] 创建圆弧，避免跨越 2*PI 参数边界。
+        double normalized_start = std::fmod(start_angle, full_angle);
+        if (normalized_start < 0.0)
+            normalized_start += full_angle;
+        placement.Rotate(placement.Axis(), normalized_start);
+
+        BRepBuilderAPI_MakeEdge arc_builder(
+            gp_Circ(placement, radius), 0.0, sweep_angle);
+        if (!arc_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to create the sector arc");
+
+        BRepBuilderAPI_MakeVertex center_builder(center);
+        if (!center_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to create the sector center");
+
+        // 复用圆弧端点构造两条半径边，保证三条 Edge 形成共享顶点的闭合 Wire。
+        BRepBuilderAPI_MakeEdge end_radius_builder(
+            arc_builder.Vertex2(), center_builder.Vertex());
+        BRepBuilderAPI_MakeEdge start_radius_builder(
+            center_builder.Vertex(), arc_builder.Vertex1());
+        if (!end_radius_builder.IsDone() || !start_radius_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to create the sector radius edges");
+
+        wire_builder.Add(arc_builder.Edge());
+        wire_builder.Add(end_radius_builder.Edge());
+        wire_builder.Add(start_radius_builder.Edge());
+    }
     if (!wire_builder.IsDone())
-        throw std::runtime_error("OpenCASCADE failed to create the disk wire");
+        throw std::runtime_error("OpenCASCADE failed to create the circular face wire");
 
     BRepBuilderAPI_MakeFace face_builder(wire_builder.Wire(), true);
     if (!face_builder.IsDone())
-        throw std::runtime_error("OpenCASCADE failed to create the disk face");
+        throw std::runtime_error("OpenCASCADE failed to create the circular face");
 
     TopoDS_Shape shape = face_builder.Shape();
     if (shape.IsNull())
-        throw std::runtime_error("OpenCASCADE returned an empty disk face");
+        throw std::runtime_error("OpenCASCADE returned an empty circular face");
     if (!BRepCheck_Analyzer(shape).IsValid())
-        throw std::runtime_error("The created disk face is topologically invalid");
+        throw std::runtime_error("The created circular face is topologically invalid");
     return shape;
 }
 
@@ -338,9 +390,10 @@ TopoDS_Shape GeometryBuilder::makeCylinder(
     double height,
     double direction_x,
     double direction_y,
-    double direction_z)
+    double direction_z,
+    double sweep_angle)
 {
-    const std::array<double, 8> values {
+    const std::array<double, 9> values {
         center_x,
         center_y,
         center_z,
@@ -348,7 +401,8 @@ TopoDS_Shape GeometryBuilder::makeCylinder(
         height,
         direction_x,
         direction_y,
-        direction_z
+        direction_z,
+        sweep_angle
     };
     for (double value : values) {
         if (!std::isfinite(value))
@@ -361,23 +415,23 @@ TopoDS_Shape GeometryBuilder::makeCylinder(
     if (axis.Magnitude() <= Precision::Confusion())
         throw std::invalid_argument("Cylinder axis direction must not be zero");
 
+    const double full_angle = 2.0 * std::acos(-1.0);
+    if (sweep_angle <= Precision::Angular()
+        || sweep_angle > full_angle + Precision::Angular())
+        throw std::invalid_argument("Cylinder sweep angle must be in (0, 2*PI]");
+
     // gp_Ax2 的原点是底面圆心，主方向是圆柱从底面指向顶面的轴向。
     const gp_Ax2 placement(
         gp_Pnt(center_x, center_y, center_z),
         gp_Dir(axis));
-    BRepPrimAPI_MakeCylinder builder(placement, radius, height);
-    builder.Build();
-    if (!builder.IsDone())
-        throw std::runtime_error("OpenCASCADE failed to create the cylinder");
+    // 完整圆柱调用无角度重载；部分圆柱由 OCC 自动补齐两个径向封闭面。
+    if (std::abs(sweep_angle - full_angle) <= Precision::Angular()) {
+        BRepPrimAPI_MakeCylinder builder(placement, radius, height);
+        return checkedCylinder(builder);
+    }
 
-    TopoDS_Shape shape = builder.Shape();
-    if (shape.IsNull())
-        throw std::runtime_error("OpenCASCADE returned an empty cylinder");
-    if (shape.ShapeType() != TopAbs_SOLID)
-        throw std::runtime_error("OpenCASCADE did not create a cylinder solid");
-    if (!BRepCheck_Analyzer(shape).IsValid())
-        throw std::runtime_error("The created cylinder is topologically invalid");
-    return shape;
+    BRepPrimAPI_MakeCylinder builder(placement, radius, height, sweep_angle);
+    return checkedCylinder(builder);
 }
 
 TopoDS_Shape GeometryBuilder::extrudeFace(

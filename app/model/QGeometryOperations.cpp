@@ -14,10 +14,19 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <algorithm>
+#include <cmath>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <utility>
 #include <vector>
+
+namespace {
+// 界面对用户统一使用度数，进入不依赖 Qt 的 GeometryBuilder 前转换为 OCC 使用的弧度。
+double degreesToRadians(double angle_degrees)
+{
+    return angle_degrees * std::acos(-1.0) / 180.0;
+}
+}
 
 QGeometryOperations::QGeometryOperations(ModelLayer& model_layer, QObject* parent)
     : QObject(parent)
@@ -186,7 +195,9 @@ int QGeometryOperations::createDiskFace(
     double centerY,
     double centerZ,
     double radius,
-    int plane)
+    int plane,
+    double startAngle,
+    double sweepAngle)
 {
     try {
         TopoDS_Shape shape = GeometryBuilder::makeDiskFace(
@@ -194,7 +205,9 @@ int QGeometryOperations::createDiskFace(
             centerY,
             centerZ,
             radius,
-            static_cast<CoordinatePlane>(plane));
+            static_cast<CoordinatePlane>(plane),
+            degreesToRadians(startAngle),
+            degreesToRadians(sweepAngle));
         const std::string component_name =
             "DiskFace_" + std::to_string(next_disk_face_number_);
         const Index result_component_id = addGeometryShape(
@@ -207,12 +220,12 @@ int QGeometryOperations::createDiskFace(
         spdlog::error("QGeometryOperations::createDiskFace: {}",
             detail ? detail : "OpenCASCADE error");
         emit operationFailed(
-            QStringLiteral("创建 Disk Face 失败：%1")
+            QStringLiteral("创建圆盘/扇形面失败：%1")
                 .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createDiskFace: {}", error.what());
         emit operationFailed(
-            QStringLiteral("创建 Disk Face 失败：%1")
+            QStringLiteral("创建圆盘/扇形面失败：%1")
                 .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
@@ -313,7 +326,8 @@ int QGeometryOperations::createCylinder(
     double height,
     double directionX,
     double directionY,
-    double directionZ)
+    double directionZ,
+    double sweepAngle)
 {
     try {
         TopoDS_Shape shape = GeometryBuilder::makeCylinder(
@@ -324,7 +338,8 @@ int QGeometryOperations::createCylinder(
             height,
             directionX,
             directionY,
-            directionZ);
+            directionZ,
+            degreesToRadians(sweepAngle));
         const std::string component_name =
             "Cylinder_" + std::to_string(next_cylinder_number_);
         const Index result_component_id = addGeometryShape(

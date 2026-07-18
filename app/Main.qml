@@ -98,7 +98,7 @@ ApplicationWindow {
                         onTriggered: geometryActions.startCreateRectangleFace()
                     }
                     MenuItem {
-                        text: qsTr("圆面")
+                        text: qsTr("圆盘/扇形面")
                         onTriggered: geometryActions.startCreateDiskFace()
                     }
                     MenuItem {
