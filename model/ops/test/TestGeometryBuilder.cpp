@@ -14,6 +14,7 @@
 #include <array>
 #include <limits>
 #include <stdexcept>
+#include <vector>
 
 TEST_CASE("GeometryBuilder creates a valid point")
 {
@@ -115,6 +116,57 @@ TEST_CASE("GeometryBuilder rejects non-positive disk face radius")
     REQUIRE_THROWS_AS(
         GeometryBuilder::makeDiskFace(
             0.0, 0.0, 0.0, 0.0, CoordinatePlane::XY),
+        std::invalid_argument);
+}
+
+TEST_CASE("GeometryBuilder creates a planar face from unordered closed edges")
+{
+    const TopoDS_Shape rectangle = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 20.0, CoordinatePlane::XY);
+    std::vector<TopoDS_Edge> edges;
+    for (TopExp_Explorer exp(rectangle, TopAbs_EDGE); exp.More(); exp.Next())
+        edges.push_back(TopoDS::Edge(exp.Current()));
+    REQUIRE(edges.size() == 4);
+    const std::vector<TopoDS_Edge> source_edges = edges;
+    edges = { source_edges[0], source_edges[2], source_edges[1], source_edges[3] };
+
+    const TopoDS_Shape shape = GeometryBuilder::makeFaceFromEdges(edges);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(shape.ShapeType() == TopAbs_FACE);
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+}
+
+TEST_CASE("GeometryBuilder creates a filling face from non-planar closed edges")
+{
+    const std::array<TopoDS_Vertex, 4> vertices {
+        TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 0.0, 0.0)),
+        TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 0.0, 0.0)),
+        TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 10.0, 5.0)),
+        TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 10.0, 0.0))
+    };
+    std::vector<TopoDS_Edge> edges;
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        edges.push_back(TopoDS::Edge(GeometryBuilder::makeLine(
+            vertices[i], vertices[(i + 1) % vertices.size()])));
+    }
+
+    const TopoDS_Shape shape = GeometryBuilder::makeFaceFromEdges(edges);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(shape.ShapeType() == TopAbs_FACE);
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+}
+
+TEST_CASE("GeometryBuilder rejects an open edge chain")
+{
+    std::vector<TopoDS_Edge> edges {
+        TopoDS::Edge(GeometryBuilder::makeLine(0.0, 0.0, 0.0, 10.0, 0.0, 0.0)),
+        TopoDS::Edge(GeometryBuilder::makeLine(10.0, 0.0, 0.0, 10.0, 10.0, 0.0))
+    };
+
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeFaceFromEdges(edges),
         std::invalid_argument);
 }
 

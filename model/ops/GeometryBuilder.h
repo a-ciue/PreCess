@@ -1,7 +1,9 @@
 #pragma once
 
 #include <TopoDS_Shape.hxx>
+#include <vector>
 
+class TopoDS_Edge;
 class TopoDS_Face;
 class TopoDS_Vertex;
 
@@ -77,6 +79,16 @@ public:
         double center_z,
         double radius,
         CoordinatePlane plane);
+
+    /**
+     * @brief 使用一组已有几何边构造单一闭合 Face。
+     *
+     * 输入边可以不按连接顺序排列；共面轮廓创建精确平面，非共面轮廓创建 C0 填充曲面。
+     * @throws std::invalid_argument 边集合为空、包含空边或不能组成闭合轮廓。
+     * @throws std::runtime_error OCC 构造 Wire/Face 失败或结果拓扑无效。
+     */
+    static TopoDS_Shape makeFaceFromEdges(
+        const std::vector<TopoDS_Edge>& edges);
 
     /**
      * @brief 根据原点和三个轴向尺寸创建长方体。

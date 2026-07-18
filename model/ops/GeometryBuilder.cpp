@@ -4,17 +4,24 @@
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_WireError.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepFill_Filling.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepTools_WireExplorer.hxx>
+#include <GeomAbs_Shape.hxx>
 #include <Precision.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
+#include <NCollection_List.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
@@ -233,6 +240,53 @@ TopoDS_Shape GeometryBuilder::makeDiskFace(
         throw std::runtime_error("OpenCASCADE returned an empty disk face");
     if (!BRepCheck_Analyzer(shape).IsValid())
         throw std::runtime_error("The created disk face is topologically invalid");
+    return shape;
+}
+
+TopoDS_Shape GeometryBuilder::makeFaceFromEdges(
+    const std::vector<TopoDS_Edge>& edges)
+{
+    if (edges.empty())
+        throw std::invalid_argument("At least one geometry edge is required");
+
+    // 批量 Add 会按连接关系组织无序边；必须检查状态，避免使用断边形成的部分 Wire。
+    NCollection_List<TopoDS_Shape> edge_shapes;
+    for (const TopoDS_Edge& edge : edges) {
+        if (edge.IsNull())
+            throw std::invalid_argument("Selected geometry edges must not be null");
+        edge_shapes.Append(edge);
+    }
+
+    BRepBuilderAPI_MakeWire wire_builder;
+    wire_builder.Add(edge_shapes);
+    if (!wire_builder.IsDone()
+        || wire_builder.Error() != BRepBuilderAPI_WireDone)
+        throw std::invalid_argument("Selected geometry edges must form one connected wire");
+
+    const TopoDS_Wire wire = wire_builder.Wire();
+    if (!BRep_Tool::IsClosed(wire))
+        throw std::invalid_argument("Selected geometry edges must form a closed wire");
+
+    // 共面时优先创建精确平面，保持现有矩形和圆形轮廓的结果不变。
+    BRepBuilderAPI_MakeFace planar_builder(wire, true);
+    TopoDS_Shape shape;
+    if (planar_builder.IsDone()) {
+        shape = planar_builder.Shape();
+    } else {
+        // Filling 要求边界连续输入，因此从已组织好的 Wire 中按连接顺序读取边。
+        BRepFill_Filling filling_builder;
+        for (BRepTools_WireExplorer exp(wire); exp.More(); exp.Next())
+            filling_builder.Add(TopoDS::Edge(exp.Current()), GeomAbs_C0, true);
+        filling_builder.Build();
+        if (!filling_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to fill the non-planar wire");
+        shape = filling_builder.Face();
+    }
+
+    if (shape.IsNull() || shape.ShapeType() != TopAbs_FACE)
+        throw std::runtime_error("OpenCASCADE failed to create the face from edges");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created face is topologically invalid");
     return shape;
 }
 

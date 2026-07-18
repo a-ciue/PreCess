@@ -104,6 +104,15 @@ QtObject {
         ]
     })
 
+    readonly property var createFaceFromEdgesInfo: ({
+        name: "create_face_from_edges",
+        display_name: qsTr("选择闭合边创建面"),
+        description: qsTr("选择当前组件中组成单一闭合轮廓的几何边创建平面或填充曲面"),
+        arg_types: [
+            { type: QArgType.Selector, name: qsTr("轮廓边"), content: "", description: qsTr("请选择一条或多条闭合轮廓边") }
+        ]
+    })
+
     readonly property var extrudeFaceInfo: ({
         name: "extrude_face",
         display_name: qsTr("拉伸面为实体"),
@@ -211,6 +220,20 @@ QtObject {
                     args[0], args[1], args[2], args[3], args[4]), false)
             }
         }, "", -1)
+    }
+
+    // 启动选择闭合几何边创建平面操作。
+    function startCreateFaceFromEdges() {
+        activate({
+            info: root.createFaceFromEdgesInfo,
+            requireComponent: true,
+            showGeometryTarget: true,
+            defaultParameters: [null],
+            execute: function(modelId, args) {
+                root.selectCreatedComponent(QModelManager.geometry.createFaceFromEdges(
+                    App.selection.activeComponentId, args[0]), true)
+            }
+        }, "GeometryEdge", 0)
     }
 
     // 启动长方体创建操作。

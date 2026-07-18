@@ -9,6 +9,7 @@
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
@@ -16,6 +17,7 @@
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 QGeometryOperations::QGeometryOperations(ModelLayer& model_layer, QObject* parent)
     : QObject(parent)
@@ -211,6 +213,57 @@ int QGeometryOperations::createDiskFace(
         spdlog::error("QGeometryOperations::createDiskFace: {}", error.what());
         emit operationFailed(
             QStringLiteral("创建 Disk Face 失败：%1")
+                .arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
+int QGeometryOperations::createFaceFromEdges(
+    int componentId, QSelection* selection)
+{
+    try {
+        if (componentId < 0)
+            throw std::invalid_argument("Select a target component first");
+        if (!selection || !selection->get())
+            throw std::invalid_argument("Select geometry edges");
+
+        const std::shared_ptr<Selection> selected = selection->get();
+        if (selected->type != ElementEnum::GeometryEdge || selected->ids.empty())
+            throw std::invalid_argument("At least one geometry edge is required");
+
+        ComponentData* component = model_layer_->findComponent(componentId);
+        if (!component || !component->geometry || !component->geometry->rootShape)
+            throw std::invalid_argument("Target component has no geometry");
+        component->geometry->ensureIndexBuilt(model_layer_->geomRegistry());
+
+        const auto& component_edge_ids = component->geometry->index.edge_local_to_global;
+        std::vector<TopoDS_Edge> edges;
+        edges.reserve(selected->ids.size());
+        for (Index id : selected->ids) {
+            if (std::find(component_edge_ids.begin(), component_edge_ids.end(), id)
+                == component_edge_ids.end())
+                throw std::invalid_argument("Selected edges must belong to the target component");
+
+            const TopoDS_Shape* edge_shape = model_layer_->geomRegistry().getEdge(id);
+            if (!edge_shape || edge_shape->ShapeType() != TopAbs_EDGE)
+                throw std::invalid_argument("Selected geometry edges are no longer valid");
+            // 追加 Face 会重建索引，因此先复制轻量 TopoDS_Edge 句柄。
+            edges.push_back(TopoDS::Edge(*edge_shape));
+        }
+
+        TopoDS_Shape face = GeometryBuilder::makeFaceFromEdges(edges);
+        return addGeometryShape(-1, componentId, "FaceFromEdges", std::move(face));
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::createFaceFromEdges: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit operationFailed(
+            QStringLiteral("由闭合边创建 Face 失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QGeometryOperations::createFaceFromEdges: {}", error.what());
+        emit operationFailed(
+            QStringLiteral("由闭合边创建 Face 失败：%1")
                 .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;

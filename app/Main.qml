@@ -101,6 +101,10 @@ ApplicationWindow {
                         text: qsTr("圆面")
                         onTriggered: geometryActions.startCreateDiskFace()
                     }
+                    MenuItem {
+                        text: qsTr("选择闭合边创建面")
+                        onTriggered: geometryActions.startCreateFaceFromEdges()
+                    }
                 }
                 Menu {
                     title: qsTr("体")

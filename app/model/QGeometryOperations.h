@@ -85,6 +85,14 @@ public:
         int plane);
 
     /**
+     * @brief 使用当前组件中选中的几何边创建单一闭合 Face。
+     *
+     * @return 被更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createFaceFromEdges(
+        int componentId, QSelection* selection);
+
+    /**
      * @brief 创建长方体，并根据当前 Model/Component 选择确定写入位置。
      *
      * @return 新建或更新的组件 ID，失败时返回 -1。
