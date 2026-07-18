@@ -11,6 +11,7 @@
 #include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -102,6 +103,23 @@ TopoDS_Shape checkedCone(BRepPrimAPI_MakeCone& builder)
         throw std::runtime_error("OpenCASCADE did not create a cone solid");
     if (!BRepCheck_Analyzer(shape).IsValid())
         throw std::runtime_error("The created cone is topologically invalid");
+    return shape;
+}
+
+// 统一检查完整球体和各类部分球体的构造结果，避免不同重载重复错误处理。
+TopoDS_Shape checkedSphere(BRepPrimAPI_MakeSphere& builder)
+{
+    builder.Build();
+    if (!builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the sphere");
+
+    TopoDS_Shape shape = builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty sphere");
+    if (shape.ShapeType() != TopAbs_SOLID)
+        throw std::runtime_error("OpenCASCADE did not create a sphere solid");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created sphere is topologically invalid");
     return shape;
 }
 }
@@ -514,6 +532,95 @@ TopoDS_Shape GeometryBuilder::makeCone(
     BRepPrimAPI_MakeCone builder(
         placement, bottom_radius, top_radius, height, sweep_angle);
     return checkedCone(builder);
+}
+
+TopoDS_Shape GeometryBuilder::makeSphere(
+    double center_x,
+    double center_y,
+    double center_z,
+    double radius,
+    double direction_x,
+    double direction_y,
+    double direction_z,
+    double minimum_latitude,
+    double maximum_latitude,
+    double longitude_sweep)
+{
+    const std::array<double, 10> values {
+        center_x,
+        center_y,
+        center_z,
+        radius,
+        direction_x,
+        direction_y,
+        direction_z,
+        minimum_latitude,
+        maximum_latitude,
+        longitude_sweep
+    };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Sphere parameters must be finite numbers");
+    }
+
+    if (radius <= Precision::Confusion())
+        throw std::invalid_argument("Sphere radius must be greater than tolerance");
+
+    const gp_Vec axis(direction_x, direction_y, direction_z);
+    if (axis.Magnitude() <= Precision::Confusion())
+        throw std::invalid_argument("Sphere axis direction must not be zero");
+
+    const double pi = std::acos(-1.0);
+    const double half_pi = pi / 2.0;
+    const double full_angle = 2.0 * pi;
+    if (minimum_latitude < -half_pi - Precision::Angular()
+        || maximum_latitude > half_pi + Precision::Angular())
+        throw std::invalid_argument("Sphere latitude angles must be in [-PI/2, PI/2]");
+    if (maximum_latitude - minimum_latitude <= Precision::Angular())
+        throw std::invalid_argument("Sphere maximum latitude must be greater than minimum latitude");
+    if (longitude_sweep <= Precision::Angular()
+        || longitude_sweep > full_angle + Precision::Angular())
+        throw std::invalid_argument("Sphere longitude sweep must be in (0, 2*PI]");
+
+    // 将容差范围内的极点角度归一到精确值，避免 OCC 因浮点换算越过纬度边界。
+    const double normalized_minimum =
+        std::abs(minimum_latitude + half_pi) <= Precision::Angular()
+        ? -half_pi
+        : minimum_latitude;
+    const double normalized_maximum =
+        std::abs(maximum_latitude - half_pi) <= Precision::Angular()
+        ? half_pi
+        : maximum_latitude;
+    const bool uses_full_latitude =
+        normalized_minimum == -half_pi && normalized_maximum == half_pi;
+    const bool uses_full_longitude =
+        std::abs(longitude_sweep - full_angle) <= Precision::Angular();
+
+    // 主方向定义南北极轴；部分球体的经度从 OCC 局部 X 参考方向开始扫掠。
+    const gp_Ax2 placement(
+        gp_Pnt(center_x, center_y, center_z),
+        gp_Dir(axis));
+    if (uses_full_latitude && uses_full_longitude) {
+        BRepPrimAPI_MakeSphere builder(placement, radius);
+        return checkedSphere(builder);
+    }
+    if (uses_full_latitude) {
+        BRepPrimAPI_MakeSphere builder(placement, radius, longitude_sweep);
+        return checkedSphere(builder);
+    }
+    if (uses_full_longitude) {
+        BRepPrimAPI_MakeSphere builder(
+            placement, radius, normalized_minimum, normalized_maximum);
+        return checkedSphere(builder);
+    }
+
+    BRepPrimAPI_MakeSphere builder(
+        placement,
+        radius,
+        normalized_minimum,
+        normalized_maximum,
+        longitude_sweep);
+    return checkedSphere(builder);
 }
 
 TopoDS_Shape GeometryBuilder::extrudeFace(

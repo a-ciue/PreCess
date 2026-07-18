@@ -150,6 +150,26 @@ public:
         double sweepAngle);
 
     /**
+     * @brief 根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。
+     *
+     * QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。
+     * @return 新建或更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createSphere(
+        int modelId,
+        int componentId,
+        double centerX,
+        double centerY,
+        double centerZ,
+        double radius,
+        double directionX,
+        double directionY,
+        double directionZ,
+        double minimumLatitude,
+        double maximumLatitude,
+        double longitudeSweep);
+
+    /**
      * @brief 将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。
      *
      * 源 Face 保留，拉伸结果使用截面副本并追加回源组件。
@@ -186,4 +206,5 @@ private:
     int next_box_number_ { 1 };
     int next_cylinder_number_ { 1 };
     int next_cone_number_ { 1 };
+    int next_sphere_number_ { 1 };
 };

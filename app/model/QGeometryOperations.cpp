@@ -412,6 +412,55 @@ int QGeometryOperations::createCone(
     return -1;
 }
 
+int QGeometryOperations::createSphere(
+    int modelId,
+    int componentId,
+    double centerX,
+    double centerY,
+    double centerZ,
+    double radius,
+    double directionX,
+    double directionY,
+    double directionZ,
+    double minimumLatitude,
+    double maximumLatitude,
+    double longitudeSweep)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makeSphere(
+            centerX,
+            centerY,
+            centerZ,
+            radius,
+            directionX,
+            directionY,
+            directionZ,
+            degreesToRadians(minimumLatitude),
+            degreesToRadians(maximumLatitude),
+            degreesToRadians(longitudeSweep));
+        const std::string component_name =
+            "Sphere_" + std::to_string(next_sphere_number_);
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_sphere_number_;
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::createSphere: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit operationFailed(
+            QStringLiteral("创建球体/部分球体失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QGeometryOperations::createSphere: {}", error.what());
+        emit operationFailed(
+            QStringLiteral("创建球体/部分球体失败：%1")
+                .arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
 int QGeometryOperations::extrudeFace(
     int componentId,
     QSelection* selection,

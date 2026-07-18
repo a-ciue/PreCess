@@ -121,6 +121,10 @@ ApplicationWindow {
                         onTriggered: geometryActions.startCreateCone()
                     }
                     MenuItem {
+                        text: qsTr("球体/部分球体")
+                        onTriggered: geometryActions.startCreateSphere()
+                    }
+                    MenuItem {
                         text: qsTr("拉伸面为实体")
                         onTriggered: geometryActions.startExtrudeFace()
                     }

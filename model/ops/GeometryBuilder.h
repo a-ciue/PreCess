@@ -145,6 +145,25 @@ public:
         double sweep_angle);
 
     /**
+     * @brief 根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。
+     *
+     * 角度单位为弧度；纬度范围为 [-PI/2, PI/2]，经度扫掠范围为 (0, 2*PI]。
+     * @throws std::invalid_argument 输入包含非有限数值、尺寸无效、轴向为零或角度越界。
+     * @throws std::runtime_error OCC 构造失败或结果拓扑无效。
+     */
+    static TopoDS_Shape makeSphere(
+        double center_x,
+        double center_y,
+        double center_z,
+        double radius,
+        double direction_x,
+        double direction_y,
+        double direction_z,
+        double minimum_latitude,
+        double maximum_latitude,
+        double longitude_sweep);
+
+    /**
      * @brief 将已有面沿指定方向和长度拉伸为实体，构造时复制源面。
      *
      * @throws std::invalid_argument 源面为空、输入包含非有限数值、长度过小或方向为零。

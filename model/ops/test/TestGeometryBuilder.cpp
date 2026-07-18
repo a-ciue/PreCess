@@ -370,6 +370,95 @@ TEST_CASE("GeometryBuilder rejects invalid cone parameters")
         std::invalid_argument);
 }
 
+TEST_CASE("GeometryBuilder creates a valid full sphere")
+{
+    const double pi = std::acos(-1.0);
+    const TopoDS_Shape shape = GeometryBuilder::makeSphere(
+        1.0, 2.0, 3.0,
+        10.0,
+        0.0, 0.0, 1.0,
+        -pi / 2.0, pi / 2.0, 2.0 * pi);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(shape.ShapeType() == TopAbs_SOLID);
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+}
+
+TEST_CASE("GeometryBuilder creates valid sphere portions")
+{
+    const double pi = std::acos(-1.0);
+    const std::array<TopoDS_Shape, 3> shapes {
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 1.0,
+            -pi / 4.0, pi / 3.0, 2.0 * pi),
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 1.0,
+            -pi / 2.0, pi / 2.0, pi / 2.0),
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 1.0,
+            -pi / 4.0, pi / 4.0, pi / 2.0)
+    };
+
+    for (const TopoDS_Shape& shape : shapes) {
+        REQUIRE_FALSE(shape.IsNull());
+        REQUIRE(shape.ShapeType() == TopAbs_SOLID);
+        REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+    }
+}
+
+TEST_CASE("GeometryBuilder rejects invalid sphere parameters")
+{
+    const double pi = std::acos(-1.0);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            0.0,
+            0.0, 0.0, 1.0,
+            -pi / 2.0, pi / 2.0, 2.0 * pi),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 0.0,
+            -pi / 2.0, pi / 2.0, 2.0 * pi),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 1.0,
+            -pi, pi / 2.0, 2.0 * pi),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 1.0,
+            pi / 4.0, -pi / 4.0, 2.0 * pi),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 1.0,
+            -pi / 2.0, pi / 2.0, 0.0),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeSphere(
+            0.0, 0.0, 0.0,
+            10.0,
+            0.0, 0.0, 1.0,
+            -pi / 2.0, pi / 2.0, 2.0 * pi + 0.1),
+        std::invalid_argument);
+}
+
 TEST_CASE("GeometryBuilder extrudes a copied face into a valid solid")
 {
     const TopoDS_Face source = TopoDS::Face(
