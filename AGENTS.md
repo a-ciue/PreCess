@@ -34,18 +34,19 @@
 
 依赖只能单向，**不要制造反向或循环依赖**：
 
-- `core/`：项目通用基础类型，所有层都可依赖。
+- `core/`：项目通用基础类型，所有层都可依赖（含 `EventBus` 事件总线）。
 - `model/`：业务逻辑层，依赖 `core`。
   - `model/data/`：底层数据结构（`ModelData`、`MeshData`、`ModelManager` 等）。
   - `model/ops/`：基于数据结构的操作，依赖 `model/data`。
-  - `model/systems/`：系统层（算法系统、模型 IO 系统），负责插件注册与按字符串分发调用，依赖 `model/data`、`core`。
+  - `model/systems/`：系统层（算法系统、模型 IO 系统、编辑系统、功能系统），负责插件注册与按字符串分发调用，依赖 `model/data`、`core`。
+    - `model/systems/feature/`：功能系统 `FeatureSystem`，事件驱动的功能注册与调用：功能可注册参数/菜单/按键绑定，经 `EventBus` 订阅按键、参数变更、模型事件，通过 `FeatureContext` 访问模型层。
 - `app/`：程序与界面实现，依赖 `model`、`core`。
   - `app/core/` → `core`
   - `app/model/` → `model`、`core`、`app/core`（model 的 Qt 接口、数据绑定）
   - `app/render/` → `app/model`（VTK 渲染窗口控件）
   - `app/*.qml` → `app/model`、`app/render`、`app/core`（界面布局与更新，仅做轻量数据处理，不承载主业务逻辑）
 - `plugins/`：插件示例与二次开发，依赖 `model/systems`、`model/data`、`core`，与 `app` 独立构建。
-  - `plugins/algo/`：算法插件；`plugins/io/`：模型 IO 插件；`plugins/edit/`：编辑插件。
+  - `plugins/algo/`：算法插件；`plugins/io/`：模型 IO 插件；`plugins/edit/`：编辑插件；`plugins/feature/`：功能插件（`FeatureHandler`，json 的 `system` 字段为 `FeatureSystem`）。
 
 **依赖速记**：`app → model → core`；`plugins → model + core`；QML 只调依赖包功能、不写主业务逻辑。
 
@@ -128,7 +129,8 @@
   - 配置：`cmake --preset x64-debug`（或 `x64-release` / `x64-relwithdebinfo`）
   - 构建：`cmake --build out/build/x64-debug`
   - 测试：先以 `-DBUILD_TESTING=ON` 配置（默认 OFF），再 `ctest --test-dir out/build/x64-debug --output-on-failure`
-- 测试框架为 **GoogleTest**，测试代码见各模块 `test/` 目录（如 `model/data/test/`）。
+  - 注意：`CMakeUserPresets.json` 含 `//` 注释，VS 的 CMake 集成可以容忍，但命令行 `cmake --preset` 会因解析失败而报错；命令行场景请手动传参（参照 preset 中的变量）或直接复用已配置好的构建目录。
+- 测试框架：模块单元测试用 **Catch2**（`cmake/test.cmake` 的 `precess_add_test` / `precess_test_link_libraries`），测试代码见各模块 `test/` 目录（如 `model/data/test/`、`model/systems/feature/test/`）。
 - **新特性必须配套测试用例**；修 bug 时尽量补可复现的回归测试。
 - 不要向无测试的模块强行塞测试框架；遵循该模块既有测试模式。
 - 工具检测用 PowerShell：例如 `Get-Command makensis`（不要用 `where makensis`）。
@@ -150,6 +152,7 @@
 - 功能 `Handler` 封装进插件 `PluginHandler`，由 `SystemPluginManager` 注册到对应系统。
 - 每类插件须实现对应系统接口完成数据交换；算法系统目前通过模型 IO 系统以文件读写交换模型数据。
 - 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
+- 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：在 `setup(FeatureRegistrar&)` 中注册参数、菜单项、按键绑定；在 `activate(FeatureContext&)` 中经 `ctx.events` 订阅事件（`KeyEvent`、`ParameterChangedEvent`、`ModelEvent`）；菜单触发 `execute()`。功能可修改的范围仅限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`），示例见 `plugins/feature/FeatureDemoPlugin/`。
 
 ---
 

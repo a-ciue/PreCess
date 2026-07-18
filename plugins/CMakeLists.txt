@@ -120,6 +120,45 @@ function(precess_add_edit_plugin TARGET)
     )
 endfunction()
 
+# precess_add_feature_plugin(<target> 
+#     SOURCES <source1> <source2> ...
+#     PLUGIN_H <headerPlugin.h>
+# )
+function(precess_add_feature_plugin TARGET)
+    cmake_parse_arguments(
+        "plug"
+        ""
+        "PLUGIN_H"
+        "SOURCES"
+        ${ARGN}
+    )
+    set(target_lib ${TARGET}lib)
+
+    # 静态库，供测试链接使用
+    add_library(${target_lib} STATIC ${plug_SOURCES})
+    target_link_libraries(${target_lib} PUBLIC
+        Core Data DataOps FeatureSystem
+        spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
+    )
+    target_include_directories(${target_lib} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+    # 插件
+    qt_add_plugin(${TARGET} ${plug_PLUGIN_H})
+    target_link_libraries(${TARGET} PRIVATE
+        ${target_lib}
+        Qt6::Core
+    )
+    set_target_properties(${TARGET} PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY "${PLUGINS_BUILD_DIR}"
+    )
+    add_dependencies(AllPlugins ${TARGET})
+
+    install(TARGETS ${TARGET}
+        LIBRARY DESTINATION plugins
+        COMPONENT AllPlugins
+    )
+endfunction()
+
 # precess_plugin_link_libraries(<target> <lib1> <lib2> ...)
 function(precess_plugin_link_libraries TARGET)
     if(ARGC EQUAL 0)
@@ -153,3 +192,4 @@ endfunction()
 add_subdirectory(io)
 add_subdirectory(algo)
 add_subdirectory(edit)
+add_subdirectory(feature)
