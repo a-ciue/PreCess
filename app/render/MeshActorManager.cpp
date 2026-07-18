@@ -115,13 +115,6 @@ bool MeshActorManager::getIsEdgeRender(Index component_id)
     return false;
 }
 
-bool MeshActorManager::getVisibility(Index component_id) const
-{
-    if (this->component_actors_.count(component_id))
-        return this->component_actors_.at(component_id)->isVisible();
-    return false;
-}
-
 ModelRenderMode MeshActorManager::getMeshRenderMode(Index component_id)
 {
     if (this->component_actors_.count(component_id))
