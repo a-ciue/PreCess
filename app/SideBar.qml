@@ -38,7 +38,11 @@ Item{
     Button{
         id: commitButton
         text: "执行"
-        enabled: !!(root.activeOp && root.activeOp.info && (root.activeOp.isFeature || App.selection.activeModelId >= 0))
+        enabled: !!(root.activeOp && root.activeOp.info
+                    && (root.activeOp.isFeature
+                        || (root.requireComponent
+                            ? App.selection.activeComponentId >= 0
+                            : root.allowWithoutModel || App.selection.activeModelId >= 0)))
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right

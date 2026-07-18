@@ -167,3 +167,33 @@ TEST_CASE("Append geometry shapes to an existing component")
     REQUIRE(direct_child_count == 3);
     REQUIRE(manager.modelById(model_id)->componentIds() == vector<Index> { component_id });
 }
+
+TEST_CASE("Initialize and append geometry in a mesh-only component")
+{
+    using namespace std;
+
+    ModelLayer manager;
+    auto component = make_unique<ComponentData>();
+    component->name = "Mesh_1";
+    component->mesh = make_unique<MeshData>();
+
+    ComponentDatas components;
+    components.push_back(move(component));
+    const Index model_id = manager.addModel("mesh", move(components));
+    const Index component_id = manager.modelById(model_id)->componentIds().front();
+
+    manager.appendGeometryShape(
+        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
+    manager.appendGeometryShape(
+        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 5.0, 6.0)).Shape());
+
+    ComponentData* updated = manager.findComponent(component_id);
+    REQUIRE(updated != nullptr);
+    REQUIRE(updated->mesh != nullptr);
+    REQUIRE(updated->geometry != nullptr);
+    REQUIRE(updated->geometry->rootShape != nullptr);
+    REQUIRE(updated->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+    REQUIRE(updated->geometry->index.built);
+    REQUIRE(updated->geometry->index.type_maps[
+        GeometrySubshapeIndex::typeIndex(TopAbs_VERTEX)].Extent() == 2);
+}

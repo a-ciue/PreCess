@@ -58,7 +58,7 @@ public:
     Index addGeometryComponent(Index model_id, std::unique_ptr<ComponentData> component);
 
     /**
-     * @brief 将新形状追加到已有几何组件，并重新建立子形状索引。
+     * @brief 将新形状写入已有组件；无几何时初始化，否则追加并重建子形状索引。
      *
      * @return 被更新的组件 ID。
      */

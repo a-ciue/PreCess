@@ -104,15 +104,25 @@ Index ModelLayer::appendGeometryShape(Index component_id, TopoDS_Shape shape)
     ComponentData* component = findComponent(component_id);
     if (!component)
         throw std::runtime_error("Component not exist");
-    if (!component->geometry || !component->geometry->rootShape
-        || component->geometry->rootShape->IsNull())
-        throw std::invalid_argument("Target component has no geometry");
-    if (component->mesh)
-        throw std::invalid_argument("Target component already contains mesh data");
-    if (component->mapping && !component->mapping->empty())
-        throw std::invalid_argument("Target component already contains geometry-mesh mapping");
     if (shape.IsNull())
         throw std::invalid_argument("Geometry shape is null");
+
+    // Component 尚无有效几何时，直接把新形状作为首个根形状，不额外创建 Component。
+    if (!component->geometry)
+        component->geometry = std::make_unique<GeometryData>();
+    if (!component->geometry->rootShape || component->geometry->rootShape->IsNull()) {
+        if (component->geometry->index.built)
+            component->geometry->index.release(geom_registry_);
+        component->geometry->rootShape = std::make_unique<TopoDS_Shape>(std::move(shape));
+        component->geometry->ensureIndexBuilt(geom_registry_);
+
+        if (observer_)
+            observer_->notifyComponentChanged(component_id);
+        return component_id;
+    }
+
+    if (component->mapping && !component->mapping->empty())
+        throw std::invalid_argument("Target component already contains geometry-mesh mapping");
 
     const TopoDS_Shape& old_root = *component->geometry->rootShape;
     BRep_Builder builder;
