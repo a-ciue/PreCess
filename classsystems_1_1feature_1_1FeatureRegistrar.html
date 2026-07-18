@@ -1,0 +1,372 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::FeatureRegistrar类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="classsystems_1_1feature_1_1FeatureRegistrar.html">FeatureRegistrar</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classsystems_1_1feature_1_1FeatureRegistrar-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::FeatureRegistrar类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能注册器：功能在 setup() 中通过它声明参数、菜单项与按键绑定  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureRegistrar_8h_source.html">FeatureRegistrar.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::feature::FeatureRegistrar 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1feature_1_1FeatureRegistrar__coll__graph.png" border="0" usemap="#asystems_1_1feature_1_1FeatureRegistrar_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1feature_1_1FeatureRegistrar_coll__map" id="asystems_1_1feature_1_1FeatureRegistrar_coll__map">
+<area shape="rect" title="功能注册器：功能在 setup() 中通过它声明参数、菜单项与按键绑定" alt="" coords="1148,96,1337,136"/>
+<area shape="rect" title=" " alt="" coords="819,31,962,71"/>
+<area shape="poly" title=" " alt="" coords="976,60,1125,85,1161,93,1160,99,1123,91,975,65"/>
+<area shape="rect" href="structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="482,35,593,61"/>
+<area shape="poly" title=" " alt="" coords="606,46,819,47,819,53,606,51"/>
+<area shape="rect" title=" " alt="" coords="193,73,280,98"/>
+<area shape="poly" title=" " alt="" coords="293,76,481,52,482,57,294,81"/>
+<area shape="rect" href="structsystems_1_1feature_1_1MenuContribution.html" title="菜单贡献项：声明功能要挂到哪个菜单下" alt="" coords="409,107,665,133"/>
+<area shape="poly" title=" " alt="" coords="269,103,305,117,356,126,409,128,409,134,356,131,303,123,267,108"/>
+<area shape="rect" title=" " alt="" coords="5,65,144,105"/>
+<area shape="poly" title=" " alt="" coords="157,83,193,83,193,88,157,88"/>
+<area shape="rect" title=" " alt="" coords="783,96,999,136"/>
+<area shape="poly" title=" " alt="" coords="1012,113,1148,113,1148,119,1012,119"/>
+<area shape="poly" title=" " alt="" coords="679,116,782,115,782,120,679,121"/>
+<area shape="rect" title=" " alt="" coords="804,160,977,200"/>
+<area shape="poly" title=" " alt="" coords="991,164,1123,141,1160,134,1161,139,1125,147,992,169"/>
+<area shape="rect" href="structsystems_1_1feature_1_1KeyBinding.html" title="按键绑定：按键事件匹配时定向回调功能的 onKeyEvent" alt="" coords="431,167,644,193"/>
+<area shape="poly" title=" " alt="" coords="658,177,804,177,804,183,658,183"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a340c43d701a4416b6070087dbc132f0f" id="r_a340c43d701a4416b6070087dbc132f0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a340c43d701a4416b6070087dbc132f0f">addParameter</a> (<a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> arg)</td></tr>
+<tr class="memdesc:a340c43d701a4416b6070087dbc132f0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个功能参数，UI 依其类型生成参数控件  <br /></td></tr>
+<tr class="memitem:ae6229110772c883b63af615f04503c66" id="r_ae6229110772c883b63af615f04503c66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6229110772c883b63af615f04503c66">addMenuItem</a> (<a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a> item)</td></tr>
+<tr class="memdesc:ae6229110772c883b63af615f04503c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个菜单项，点击后触发功能的 execute()  <br /></td></tr>
+<tr class="memitem:a0aba93c1f2ac3140c880ec4b872b8c70" id="r_a0aba93c1f2ac3140c880ec4b872b8c70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0aba93c1f2ac3140c880ec4b872b8c70">addKeyBinding</a> (<a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> binding)</td></tr>
+<tr class="memdesc:a0aba93c1f2ac3140c880ec4b872b8c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个按键绑定，命中后回调功能的 onKeyEvent()  <br /></td></tr>
+<tr class="memitem:ad2fb1c3ee0265abf1c839add3fe390c3" id="r_ad2fb1c3ee0265abf1c839add3fe390c3"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad2fb1c3ee0265abf1c839add3fe390c3">argTypes</a> () const noexcept</td></tr>
+<tr class="memitem:ad00acdb1bda0e2f75072f7a0f26ea86f" id="r_ad00acdb1bda0e2f75072f7a0f26ea86f"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad00acdb1bda0e2f75072f7a0f26ea86f">menuItems</a> () const noexcept</td></tr>
+<tr class="memitem:a2798edca4724a88c35fde9ebac999e8a" id="r_a2798edca4724a88c35fde9ebac999e8a"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2798edca4724a88c35fde9ebac999e8a">keyBindings</a> () const noexcept</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a51be2044ac65e6f75e77303d7dbbfd92" id="r_a51be2044ac65e6f75e77303d7dbbfd92"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51be2044ac65e6f75e77303d7dbbfd92">arg_types_</a></td></tr>
+<tr class="memitem:a587fda46e53c9b6f5b31e92892b394b0" id="r_a587fda46e53c9b6f5b31e92892b394b0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a587fda46e53c9b6f5b31e92892b394b0">menus_</a></td></tr>
+<tr class="memitem:a87493b591edf7ae2a91daa1e5bbaac7b" id="r_a87493b591edf7ae2a91daa1e5bbaac7b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87493b591edf7ae2a91daa1e5bbaac7b">key_bindings_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能注册器：功能在 setup() 中通过它声明参数、菜单项与按键绑定 </p>
+<p>由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 在注册功能时构造并仅传给 <a class="el" href="classsystems_1_1feature_1_1FeatureHandler.html#a92c4e4bd8c8304a80ca51db789e3ac34" title="声明功能的参数、菜单项与按键绑定（注册时调用一次）">FeatureHandler::setup()</a>， 功能不应保存其引用。 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a0aba93c1f2ac3140c880ec4b872b8c70" name="a0aba93c1f2ac3140c880ec4b872b8c70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0aba93c1f2ac3140c880ec4b872b8c70">&#9670;&#160;</a></span>addKeyBinding()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureRegistrar::addKeyBinding </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a></td>          <td class="paramname"><span class="paramname"><em>binding</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注册一个按键绑定，命中后回调功能的 onKeyEvent() </p>
+
+</div>
+</div>
+<a id="ae6229110772c883b63af615f04503c66" name="ae6229110772c883b63af615f04503c66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6229110772c883b63af615f04503c66">&#9670;&#160;</a></span>addMenuItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureRegistrar::addMenuItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a></td>          <td class="paramname"><span class="paramname"><em>item</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注册一个菜单项，点击后触发功能的 execute() </p>
+
+</div>
+</div>
+<a id="a340c43d701a4416b6070087dbc132f0f" name="a340c43d701a4416b6070087dbc132f0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a340c43d701a4416b6070087dbc132f0f">&#9670;&#160;</a></span>addParameter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureRegistrar::addParameter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structcore_1_1ArgType.html">core::ArgType</a></td>          <td class="paramname"><span class="paramname"><em>arg</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注册一个功能参数，UI 依其类型生成参数控件 </p>
+
+</div>
+</div>
+<a id="ad2fb1c3ee0265abf1c839add3fe390c3" name="ad2fb1c3ee0265abf1c839add3fe390c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2fb1c3ee0265abf1c839add3fe390c3">&#9670;&#160;</a></span>argTypes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt; &amp; systems::feature::FeatureRegistrar::argTypes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2798edca4724a88c35fde9ebac999e8a" name="a2798edca4724a88c35fde9ebac999e8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2798edca4724a88c35fde9ebac999e8a">&#9670;&#160;</a></span>keyBindings()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> &gt; &amp; systems::feature::FeatureRegistrar::keyBindings </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad00acdb1bda0e2f75072f7a0f26ea86f" name="ad00acdb1bda0e2f75072f7a0f26ea86f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad00acdb1bda0e2f75072f7a0f26ea86f">&#9670;&#160;</a></span>menuItems()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a> &gt; &amp; systems::feature::FeatureRegistrar::menuItems </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a51be2044ac65e6f75e77303d7dbbfd92" name="a51be2044ac65e6f75e77303d7dbbfd92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51be2044ac65e6f75e77303d7dbbfd92">&#9670;&#160;</a></span>arg_types_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structcore_1_1ArgType.html">core::ArgType</a>&gt; systems::feature::FeatureRegistrar::arg_types_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a87493b591edf7ae2a91daa1e5bbaac7b" name="a87493b591edf7ae2a91daa1e5bbaac7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87493b591edf7ae2a91daa1e5bbaac7b">&#9670;&#160;</a></span>key_bindings_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a>&gt; systems::feature::FeatureRegistrar::key_bindings_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a587fda46e53c9b6f5b31e92892b394b0" name="a587fda46e53c9b6f5b31e92892b394b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a587fda46e53c9b6f5b31e92892b394b0">&#9670;&#160;</a></span>menus_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a>&gt; systems::feature::FeatureRegistrar::menus_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureRegistrar_8h_source.html">FeatureRegistrar.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::FeatureHandler类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="classsystems_1_1feature_1_1FeatureHandler.html">FeatureHandler</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classsystems_1_1feature_1_1FeatureHandler-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::FeatureHandler类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能系统的功能接口，插件继承它实现具体功能  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureHandler_8h_source.html">FeatureHandler.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a84b6194f25ab74d7614d9f86f03dda9f" id="r_a84b6194f25ab74d7614d9f86f03dda9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84b6194f25ab74d7614d9f86f03dda9f">~FeatureHandler</a> ()=default</td></tr>
+<tr class="memitem:a92c4e4bd8c8304a80ca51db789e3ac34" id="r_a92c4e4bd8c8304a80ca51db789e3ac34"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92c4e4bd8c8304a80ca51db789e3ac34">setup</a> (<a class="el" href="classsystems_1_1feature_1_1FeatureRegistrar.html">FeatureRegistrar</a> &amp;reg)</td></tr>
+<tr class="memdesc:a92c4e4bd8c8304a80ca51db789e3ac34"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明功能的参数、菜单项与按键绑定（注册时调用一次）  <br /></td></tr>
+<tr class="memitem:a47d8bbe060bc4973ccbf54dda673f1b8" id="r_a47d8bbe060bc4973ccbf54dda673f1b8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8">activate</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a47d8bbe060bc4973ccbf54dda673f1b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能激活，在此通过 ctx.events 订阅事件  <br /></td></tr>
+<tr class="memitem:a8238bad62fedc02828b68b78ed1c1e83" id="r_a8238bad62fedc02828b68b78ed1c1e83"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8238bad62fedc02828b68b78ed1c1e83">deactivate</a> ()</td></tr>
+<tr class="memdesc:a8238bad62fedc02828b68b78ed1c1e83"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能停用，清理状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现）  <br /></td></tr>
+<tr class="memitem:a4314d6417cfd92c9728656ffb3b55518" id="r_a4314d6417cfd92c9728656ffb3b55518"><td class="memItemLeft" align="right" valign="top">virtual std::any&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4314d6417cfd92c9728656ffb3b55518">execute</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a4314d6417cfd92c9728656ffb3b55518"><td class="mdescLeft">&#160;</td><td class="mdescRight">菜单触发的功能执行  <br /></td></tr>
+<tr class="memitem:a4927e4524ca08fccc9e8b785da8dd189" id="r_a4927e4524ca08fccc9e8b785da8dd189"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4927e4524ca08fccc9e8b785da8dd189">onKeyEvent</a> (const <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> &amp;event)</td></tr>
+<tr class="memdesc:a4927e4524ca08fccc9e8b785da8dd189"><td class="mdescLeft">&#160;</td><td class="mdescRight">按键绑定命中后的回调（仅按下时触发）  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能系统的功能接口，插件继承它实现具体功能 </p>
+<p>生命周期：注册时先 <a class="el" href="#a92c4e4bd8c8304a80ca51db789e3ac34" title="声明功能的参数、菜单项与按键绑定（注册时调用一次）">setup()</a> 声明参数/菜单/按键绑定，再 <a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能激活，在此通过 ctx.events 订阅事件">activate()</a> 订阅事件、 建立功能状态；注销时 <a class="el" href="#a8238bad62fedc02828b68b78ed1c1e83" title="功能停用，清理状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现）">deactivate()</a> 清理。 菜单项触发 <a class="el" href="#a4314d6417cfd92c9728656ffb3b55518" title="菜单触发的功能执行">execute()</a>；按键绑定命中时回调 <a class="el" href="#a4927e4524ca08fccc9e8b785da8dd189" title="按键绑定命中后的回调（仅按下时触发）">onKeyEvent()</a>。 功能也可在 <a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能激活，在此通过 ctx.events 订阅事件">activate()</a> 中直接订阅 <a class="el" href="structsystems_1_1feature_1_1FeatureContext.html#a3df2529e626582a6c3d0bb341cb36e0a">FeatureContext::events</a> 上的原始事件 （如 <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html" title="键盘按键事件">KeyEvent</a> 的按下/释放流、ParameterChangedEvent、ModelEvent）。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a84b6194f25ab74d7614d9f86f03dda9f" name="a84b6194f25ab74d7614d9f86f03dda9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84b6194f25ab74d7614d9f86f03dda9f">&#9670;&#160;</a></span>~FeatureHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual systems::feature::FeatureHandler::~FeatureHandler </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a47d8bbe060bc4973ccbf54dda673f1b8" name="a47d8bbe060bc4973ccbf54dda673f1b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47d8bbe060bc4973ccbf54dda673f1b8">&#9670;&#160;</a></span>activate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void systems::feature::FeatureHandler::activate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>功能激活，在此通过 ctx.events 订阅事件 </p>
+
+</div>
+</div>
+<a id="a8238bad62fedc02828b68b78ed1c1e83" name="a8238bad62fedc02828b68b78ed1c1e83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8238bad62fedc02828b68b78ed1c1e83">&#9670;&#160;</a></span>deactivate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void systems::feature::FeatureHandler::deactivate </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>功能停用，清理状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现） </p>
+
+</div>
+</div>
+<a id="a4314d6417cfd92c9728656ffb3b55518" name="a4314d6417cfd92c9728656ffb3b55518"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4314d6417cfd92c9728656ffb3b55518">&#9670;&#160;</a></span>execute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::any systems::feature::FeatureHandler::execute </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>菜单触发的功能执行 </p>
+<dl class="section return"><dt>返回</dt><dd>功能结果（可自定义类型） </dd></dl>
+
+</div>
+</div>
+<a id="a4927e4524ca08fccc9e8b785da8dd189" name="a4927e4524ca08fccc9e8b785da8dd189"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4927e4524ca08fccc9e8b785da8dd189">&#9670;&#160;</a></span>onKeyEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool systems::feature::FeatureHandler::onKeyEvent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>按键绑定命中后的回调（仅按下时触发） </p>
+<dl class="section return"><dt>返回</dt><dd>true 表示功能已消费该事件，事件不再向焦点控件等其他对象传递； false 表示未处理，事件继续正常传递 </dd></dl>
+
+</div>
+</div>
+<a id="a92c4e4bd8c8304a80ca51db789e3ac34" name="a92c4e4bd8c8304a80ca51db789e3ac34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92c4e4bd8c8304a80ca51db789e3ac34">&#9670;&#160;</a></span>setup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void systems::feature::FeatureHandler::setup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1feature_1_1FeatureRegistrar.html">FeatureRegistrar</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>reg</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>声明功能的参数、菜单项与按键绑定（注册时调用一次） </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureHandler_8h_source.html">FeatureHandler.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

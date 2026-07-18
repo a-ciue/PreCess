@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['iosystem_0',['ioSystem',['../classQModelManager.html#ac8dfb6d3a356af49ac25a515a90d5034',1,'QModelManager']]]
+  ['featuresinfo_0',['featuresInfo',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a067d8649880bec56dc4a91843d28257a',1,'systems::feature::QFeatureSystemAdaptor']]],
+  ['featuresystem_1',['featureSystem',['../classQModelManager.html#aeb6e740e450da642f792481e9a145d56',1,'QModelManager']]]
 ];

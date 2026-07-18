@@ -1,0 +1,9 @@
+<map id="systems::feature::ParameterChangedEvent" name="systems::feature::ParameterChangedEvent">
+<area shape="rect" id="Node000001" title="功能参数变更事件，FeatureSystem::setParameter 成功后发布" alt="" coords="35,191,242,231"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="31,95,118,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,130,129,189,124,192,87,133"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,144,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="77,59,77,94,72,94,72,59"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="143,95,265,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="195,133,174,168,157,192,152,189,170,165,190,131"/>
+</map>

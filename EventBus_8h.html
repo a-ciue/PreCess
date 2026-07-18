@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: core/EventBus.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_4270bfced15e0e73154b13468c7c9ad9.html">core</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">EventBus.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>类型安全的轻量级事件总线（发布/订阅）  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
+<code>#include &lt;typeindex&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+EventBus.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="EventBus_8h__incl.png" border="0" usemap="#acore_2EventBus_8h" loading="lazy" alt=""/></div>
+<map name="acore_2EventBus_8h" id="acore_2EventBus_8h">
+<area shape="rect" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="297,5,423,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,91,104"/>
+<area shape="poly" title=" " alt="" coords="310,33,105,80,103,75,309,28"/>
+<area shape="rect" title=" " alt="" coords="115,79,181,104"/>
+<area shape="poly" title=" " alt="" coords="327,33,195,77,194,72,325,28"/>
+<area shape="rect" title=" " alt="" coords="206,79,293,104"/>
+<area shape="poly" title=" " alt="" coords="344,33,281,73,278,69,341,28"/>
+<area shape="rect" title=" " alt="" coords="317,79,403,104"/>
+<area shape="poly" title=" " alt="" coords="363,31,363,65,357,65,357,31"/>
+<area shape="rect" title=" " alt="" coords="427,79,551,104"/>
+<area shape="poly" title=" " alt="" coords="382,28,457,69,455,74,380,33"/>
+<area shape="rect" title=" " alt="" coords="575,79,635,104"/>
+<area shape="poly" title=" " alt="" coords="400,28,563,75,561,80,399,33"/>
+<area shape="rect" title=" " alt="" coords="659,79,722,104"/>
+<area shape="poly" title=" " alt="" coords="421,28,646,76,645,81,420,33"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="EventBus_8h__dep__incl.png" border="0" usemap="#acore_2EventBus_8hdep" loading="lazy" alt=""/></div>
+<map name="acore_2EventBus_8hdep" id="acore_2EventBus_8hdep">
+<area shape="rect" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="577,5,704,31"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="5,174,233,199"/>
+<area shape="poly" title=" " alt="" coords="592,37,156,176,154,171,591,32"/>
+<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="493,79,666,119"/>
+<area shape="poly" title=" " alt="" coords="625,43,596,80,592,77,621,40"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="919,167,1125,207"/>
+<area shape="poly" title=" " alt="" coords="657,41,687,80,708,100,730,116,805,138,927,164,926,169,804,143,727,121,704,104,684,84,653,44"/>
+<area shape="rect" href="TestEventBus_8cpp.html" title=" " alt="" coords="741,79,914,119"/>
+<area shape="poly" title=" " alt="" coords="681,33,783,76,781,81,679,38"/>
+<area shape="poly" title=" " alt="" coords="480,121,181,177,180,171,479,116"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="258,167,469,207"/>
+<area shape="poly" title=" " alt="" coords="520,126,412,169,410,164,518,121"/>
+<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="493,167,666,207"/>
+<area shape="poly" title=" " alt="" coords="582,133,582,166,577,166,577,133"/>
+<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="691,167,895,207"/>
+<area shape="poly" title=" " alt="" coords="640,121,747,164,745,169,638,126"/>
+<area shape="poly" title=" " alt="" coords="680,117,925,164,924,169,679,122"/>
+</map>
+</div>
+</div>
+<p><a href="EventBus_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:core_3A_3AEventBus" id="r_core_3A_3AEventBus"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">类型安全的轻量级事件总线，以事件类型为键分发事件  <a href="classcore_1_1EventBus.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:core_3A_3AEventBus_3A_3ASubscription" id="r_core_3A_3AEventBus_3A_3ASubscription"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1EventBus_1_1Subscription.html">core::EventBus::Subscription</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">订阅句柄，析构时自动退订；仅可移动  <a href="classcore_1_1EventBus_1_1Subscription.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:core" id="r_core"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecore.html">core</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>类型安全的轻量级事件总线（发布/订阅） </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

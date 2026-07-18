@@ -1,0 +1,5 @@
+<map id="systems::feature::QFeatureSystemAdaptor" name="systems::feature::QFeatureSystemAdaptor">
+<area shape="rect" id="Node000001" title="功能系统的QML适配器，负责C++的功能系统功能暴露给QML、Qt类型与C++类型的转换， 并承接UI产生的按键事件与活动模型状态同步" alt="" coords="5,79,204,119"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="67,5,142,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="107,44,107,79,102,79,102,44"/>
+</map>

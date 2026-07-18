@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/feature/FeatureEvents.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_05585d2a38afe5c243e9dcc7f0f8321f.html">feature</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">FeatureEvents.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="FeatureEvents_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#ifndef FEATURE_EVENTS_H</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define FEATURE_EVENTS_H</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="ArgObject_8h.html">ArgObject.h</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1feature.html">systems::feature</a> {</div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1KeyEvent.html">   21</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1KeyEvent.html#a9bedb9aa15de7e07ea134ae1a8021383">   22</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsystems_1_1feature_1_1KeyEvent.html#a9bedb9aa15de7e07ea134ae1a8021383">key</a> { 0 }; <span class="comment">//&gt; Qt::Key 键码</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1KeyEvent.html#a4368661060ffd64b71dda538433068ea">   23</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsystems_1_1feature_1_1KeyEvent.html#a4368661060ffd64b71dda538433068ea">modifiers</a> { 0 }; <span class="comment">//&gt; Qt::KeyboardModifiers 组合</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1KeyEvent.html#ac0904a803e0893b8de9d7067fdeca568">   24</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structsystems_1_1feature_1_1KeyEvent.html#ac0904a803e0893b8de9d7067fdeca568">pressed</a> { <span class="keyword">true</span> }; <span class="comment">//&gt; true 为按下，false 为释放</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>};</div>
+</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span></div>
+<div class="foldopen" id="foldopen00030" data-start="{" data-end="};">
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ParameterChangedEvent.html">   30</a></span><span class="keyword">struct </span><a class="code hl_function" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#ac2600a2d5fe529a56cbf42eda90141db">ParameterChangedEvent</a> {</div>
+<div class="foldopen" id="foldopen00031" data-start="{" data-end="}">
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#ac2600a2d5fe529a56cbf42eda90141db">   31</a></span>    <a class="code hl_function" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#ac2600a2d5fe529a56cbf42eda90141db">ParameterChangedEvent</a>(std::string feature_name, std::size_t index, <a class="code hl_class" href="classcore_1_1ArgObject.html">core::ArgObject</a> new_value)</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        : <a class="code hl_variable" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a1393abb9e71ed73e0c1caaca134bec03">feature</a>(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(feature_name))</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        , <a class="code hl_variable" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a5fe5e84b231a367d92a753ecd61b28e2">param_index</a>(index)</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        , <a class="code hl_variable" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a3632fe836e188727696ef318c987caba">value</a>(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(new_value))</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    }</div>
+</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a1393abb9e71ed73e0c1caaca134bec03">   38</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a1393abb9e71ed73e0c1caaca134bec03">feature</a>; <span class="comment">//&gt; 功能唯一名称</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a5fe5e84b231a367d92a753ecd61b28e2">   39</a></span>    std::size_t <a class="code hl_variable" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a5fe5e84b231a367d92a753ecd61b28e2">param_index</a> { 0 }; <span class="comment">//&gt; 参数在参数列表中的下标</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a3632fe836e188727696ef318c987caba">   40</a></span>    <a class="code hl_class" href="classcore_1_1ArgObject.html">core::ArgObject</a> <a class="code hl_variable" href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a3632fe836e188727696ef318c987caba">value</a>; <span class="comment">//&gt; 新参数值</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
+</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span></div>
+<div class="foldopen" id="foldopen00046" data-start="{" data-end="};">
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html">   46</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1feature_1_1ModelEvent.html">ModelEvent</a> {</div>
+<div class="foldopen" id="foldopen00047" data-start="{" data-end="};">
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b">   47</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b">Kind</a> {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3baa460229890a66282fb44b83870040dd1">   48</a></span>        <a class="code hl_enumvalue" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3baa460229890a66282fb44b83870040dd1">ModelAdded</a>,</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3bab81acc16fa4f8eea0ea0eb68a3b5e403">   49</a></span>        <a class="code hl_enumvalue" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3bab81acc16fa4f8eea0ea0eb68a3b5e403">ModelRemoved</a>,</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3ba6ec44867e7cfb160f453ab319519fec4">   50</a></span>        <a class="code hl_enumvalue" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3ba6ec44867e7cfb160f453ab319519fec4">ModelChanged</a>,</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542">   51</a></span>        <a class="code hl_enumvalue" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542">ComponentChanged</a>,</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede">   52</a></span>        <a class="code hl_enumvalue" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede">ComponentRemoved</a>,</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3bad356062e7ca35447436487ca430db40a">   53</a></span>        <a class="code hl_enumvalue" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3bad356062e7ca35447436487ca430db40a">ModelNameChanged</a>,</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    };</div>
+</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a9995be6e6971aea7215d812e325aaf0b">   56</a></span>    <a class="code hl_enumeration" href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b">Kind</a> <a class="code hl_variable" href="structsystems_1_1feature_1_1ModelEvent.html#a9995be6e6971aea7215d812e325aaf0b">kind</a>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#adaa6cb1b37cdb97fea27256880215bdd">   57</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsystems_1_1feature_1_1ModelEvent.html#adaa6cb1b37cdb97fea27256880215bdd">model_id</a> { -1 };</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1ModelEvent.html#a0d39c85b7189f65677a981d8a34e4439">   58</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsystems_1_1feature_1_1ModelEvent.html#a0d39c85b7189f65677a981d8a34e4439">component_id</a> { -1 };</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>};</div>
+</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>}</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#endif </span><span class="comment">// FEATURE_EVENTS_H</span></div>
+<div class="ttc" id="aArgObject_8h_html"><div class="ttname"><a href="ArgObject_8h.html">ArgObject.h</a></div></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:37</div></div>
+<div class="ttc" id="aclasscore_1_1ArgObject_html"><div class="ttname"><a href="classcore_1_1ArgObject.html">core::ArgObject</a></div><div class="ttdoc">实例化的参数类型，存储参数对象的容器</div><div class="ttdef"><b>定义</b> ArgObject.h:10</div></div>
+<div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace</div></div>
+<div class="ttc" id="anamespacesystems_1_1feature_html"><div class="ttname"><a href="namespacesystems_1_1feature.html">systems::feature</a></div><div class="ttdef"><b>定义</b> QModelManager.h:23</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1KeyEvent_html"><div class="ttname"><a href="structsystems_1_1feature_1_1KeyEvent.html">systems::feature::KeyEvent</a></div><div class="ttdoc">键盘按键事件</div><div class="ttdef"><b>定义</b> FeatureEvents.h:21</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1KeyEvent_html_a4368661060ffd64b71dda538433068ea"><div class="ttname"><a href="structsystems_1_1feature_1_1KeyEvent.html#a4368661060ffd64b71dda538433068ea">systems::feature::KeyEvent::modifiers</a></div><div class="ttdeci">int modifiers</div><div class="ttdef"><b>定义</b> FeatureEvents.h:23</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1KeyEvent_html_a9bedb9aa15de7e07ea134ae1a8021383"><div class="ttname"><a href="structsystems_1_1feature_1_1KeyEvent.html#a9bedb9aa15de7e07ea134ae1a8021383">systems::feature::KeyEvent::key</a></div><div class="ttdeci">int key</div><div class="ttdef"><b>定义</b> FeatureEvents.h:22</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1KeyEvent_html_ac0904a803e0893b8de9d7067fdeca568"><div class="ttname"><a href="structsystems_1_1feature_1_1KeyEvent.html#ac0904a803e0893b8de9d7067fdeca568">systems::feature::KeyEvent::pressed</a></div><div class="ttdeci">bool pressed</div><div class="ttdef"><b>定义</b> FeatureEvents.h:24</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html">systems::feature::ModelEvent</a></div><div class="ttdoc">模型变更事件，由 app 层桥接 ModelObserver 通知后发布</div><div class="ttdef"><b>定义</b> FeatureEvents.h:46</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a0d39c85b7189f65677a981d8a34e4439"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a0d39c85b7189f65677a981d8a34e4439">systems::feature::ModelEvent::component_id</a></div><div class="ttdeci">Index component_id</div><div class="ttdef"><b>定义</b> FeatureEvents.h:58</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a91b904d63c8caf3b41e5fa1942da4c3b"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b">systems::feature::ModelEvent::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdef"><b>定义</b> FeatureEvents.h:47</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a91b904d63c8caf3b41e5fa1942da4c3ba6ec44867e7cfb160f453ab319519fec4"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3ba6ec44867e7cfb160f453ab319519fec4">systems::feature::ModelEvent::Kind::ModelChanged</a></div><div class="ttdeci">@ ModelChanged</div><div class="ttdef"><b>定义</b> FeatureEvents.h:50</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede">systems::feature::ModelEvent::Kind::ComponentRemoved</a></div><div class="ttdeci">@ ComponentRemoved</div><div class="ttdef"><b>定义</b> FeatureEvents.h:52</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a91b904d63c8caf3b41e5fa1942da4c3baa460229890a66282fb44b83870040dd1"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3baa460229890a66282fb44b83870040dd1">systems::feature::ModelEvent::Kind::ModelAdded</a></div><div class="ttdeci">@ ModelAdded</div><div class="ttdef"><b>定义</b> FeatureEvents.h:48</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a91b904d63c8caf3b41e5fa1942da4c3bab81acc16fa4f8eea0ea0eb68a3b5e403"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3bab81acc16fa4f8eea0ea0eb68a3b5e403">systems::feature::ModelEvent::Kind::ModelRemoved</a></div><div class="ttdeci">@ ModelRemoved</div><div class="ttdef"><b>定义</b> FeatureEvents.h:49</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542">systems::feature::ModelEvent::Kind::ComponentChanged</a></div><div class="ttdeci">@ ComponentChanged</div><div class="ttdef"><b>定义</b> FeatureEvents.h:51</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a91b904d63c8caf3b41e5fa1942da4c3bad356062e7ca35447436487ca430db40a"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3bad356062e7ca35447436487ca430db40a">systems::feature::ModelEvent::Kind::ModelNameChanged</a></div><div class="ttdeci">@ ModelNameChanged</div><div class="ttdef"><b>定义</b> FeatureEvents.h:53</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_a9995be6e6971aea7215d812e325aaf0b"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#a9995be6e6971aea7215d812e325aaf0b">systems::feature::ModelEvent::kind</a></div><div class="ttdeci">Kind kind</div><div class="ttdef"><b>定义</b> FeatureEvents.h:56</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ModelEvent_html_adaa6cb1b37cdb97fea27256880215bdd"><div class="ttname"><a href="structsystems_1_1feature_1_1ModelEvent.html#adaa6cb1b37cdb97fea27256880215bdd">systems::feature::ModelEvent::model_id</a></div><div class="ttdeci">Index model_id</div><div class="ttdef"><b>定义</b> FeatureEvents.h:57</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ParameterChangedEvent_html_a1393abb9e71ed73e0c1caaca134bec03"><div class="ttname"><a href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a1393abb9e71ed73e0c1caaca134bec03">systems::feature::ParameterChangedEvent::feature</a></div><div class="ttdeci">std::string feature</div><div class="ttdef"><b>定义</b> FeatureEvents.h:38</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ParameterChangedEvent_html_a3632fe836e188727696ef318c987caba"><div class="ttname"><a href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a3632fe836e188727696ef318c987caba">systems::feature::ParameterChangedEvent::value</a></div><div class="ttdeci">core::ArgObject value</div><div class="ttdef"><b>定义</b> FeatureEvents.h:40</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ParameterChangedEvent_html_a5fe5e84b231a367d92a753ecd61b28e2"><div class="ttname"><a href="structsystems_1_1feature_1_1ParameterChangedEvent.html#a5fe5e84b231a367d92a753ecd61b28e2">systems::feature::ParameterChangedEvent::param_index</a></div><div class="ttdeci">std::size_t param_index</div><div class="ttdef"><b>定义</b> FeatureEvents.h:39</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1ParameterChangedEvent_html_ac2600a2d5fe529a56cbf42eda90141db"><div class="ttname"><a href="structsystems_1_1feature_1_1ParameterChangedEvent.html#ac2600a2d5fe529a56cbf42eda90141db">systems::feature::ParameterChangedEvent::ParameterChangedEvent</a></div><div class="ttdeci">ParameterChangedEvent(std::string feature_name, std::size_t index, core::ArgObject new_value)</div><div class="ttdef"><b>定义</b> FeatureEvents.h:31</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

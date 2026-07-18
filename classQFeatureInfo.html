@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: QFeatureInfo类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#properties">属性</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classQFeatureInfo-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">QFeatureInfo类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>向Qml暴露的功能信息，Qml据此构造功能菜单与参数面板  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="QFeatureInfo_8h_source.html">QFeatureInfo.h</a>&gt;</code></p>
+<div class="dynheader">
+类 QFeatureInfo 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQFeatureInfo__inherit__graph.png" border="0" usemap="#aQFeatureInfo_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aQFeatureInfo_inherit__map" id="aQFeatureInfo_inherit__map">
+<area shape="rect" title="向Qml暴露的功能信息，Qml据此构造功能菜单与参数面板" alt="" coords="5,79,112,104"/>
+<area shape="rect" title=" " alt="" coords="21,5,96,31"/>
+<area shape="poly" title=" " alt="" coords="61,44,61,79,56,79,56,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+QFeatureInfo 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQFeatureInfo__coll__graph.png" border="0" usemap="#aQFeatureInfo_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aQFeatureInfo_coll__map" id="aQFeatureInfo_coll__map">
+<area shape="rect" title="向Qml暴露的功能信息，Qml据此构造功能菜单与参数面板" alt="" coords="5,79,112,104"/>
+<area shape="rect" title=" " alt="" coords="21,5,96,31"/>
+<area shape="poly" title=" " alt="" coords="61,44,61,79,56,79,56,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ac52c0fc7cfd092e4345d9dd94790d6f2" id="r_ac52c0fc7cfd092e4345d9dd94790d6f2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac52c0fc7cfd092e4345d9dd94790d6f2">QFeatureInfo</a> (QString <a class="el" href="#ad263a2870b25eaf3ae75a59fd1f3071d">name</a>, QString <a class="el" href="#acf13b79e85b3566fadeda453d115adbb">display_name</a>, QString <a class="el" href="#a31e15d240f6b201ebbc5e4e0f04cfbfe">description</a>, QString <a class="el" href="#a581214c6613bd9f670f442789e029188">menu_path</a>, QList&lt; QArgType * &gt; <a class="el" href="#a09df8a290f43df3c1220628ebeeb50e0">arg_types</a>, QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a97c3e133243c3762b5de6fe4b7da62b2" id="r_a97c3e133243c3762b5de6fe4b7da62b2"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97c3e133243c3762b5de6fe4b7da62b2">name</a> () const</td></tr>
+<tr class="memitem:a2c03a2d3dd09979b611f0e355879f688" id="r_a2c03a2d3dd09979b611f0e355879f688"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c03a2d3dd09979b611f0e355879f688">displayName</a> () const</td></tr>
+<tr class="memitem:a2d63d4ae270c14b18a805c4212ce1f06" id="r_a2d63d4ae270c14b18a805c4212ce1f06"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d63d4ae270c14b18a805c4212ce1f06">description</a> () const</td></tr>
+<tr class="memitem:aa87aac79253037e21a2db022eb2f2558" id="r_aa87aac79253037e21a2db022eb2f2558"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa87aac79253037e21a2db022eb2f2558">menuPath</a> () const</td></tr>
+<tr class="memitem:a6b30541c8c1438458adc995700e30e27" id="r_a6b30541c8c1438458adc995700e30e27"><td class="memItemLeft" align="right" valign="top">QList&lt; QArgType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b30541c8c1438458adc995700e30e27">argTypes</a> () const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
+属性</h2></td></tr>
+<tr class="memitem:ad263a2870b25eaf3ae75a59fd1f3071d" id="r_ad263a2870b25eaf3ae75a59fd1f3071d"><td class="memItemLeft" align="right" valign="top">QML_ELEMENTQString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad263a2870b25eaf3ae75a59fd1f3071d">name</a></td></tr>
+<tr class="memitem:acf13b79e85b3566fadeda453d115adbb" id="r_acf13b79e85b3566fadeda453d115adbb"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf13b79e85b3566fadeda453d115adbb">display_name</a></td></tr>
+<tr class="memitem:a31e15d240f6b201ebbc5e4e0f04cfbfe" id="r_a31e15d240f6b201ebbc5e4e0f04cfbfe"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a31e15d240f6b201ebbc5e4e0f04cfbfe">description</a></td></tr>
+<tr class="memitem:a581214c6613bd9f670f442789e029188" id="r_a581214c6613bd9f670f442789e029188"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a581214c6613bd9f670f442789e029188">menu_path</a></td></tr>
+<tr class="memitem:a09df8a290f43df3c1220628ebeeb50e0" id="r_a09df8a290f43df3c1220628ebeeb50e0"><td class="memItemLeft" align="right" valign="top">QList&lt; QArgType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09df8a290f43df3c1220628ebeeb50e0">arg_types</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:ac04782a8f366a9ee13855081e0ee0a88" id="r_ac04782a8f366a9ee13855081e0ee0a88"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac04782a8f366a9ee13855081e0ee0a88">name_</a></td></tr>
+<tr class="memitem:aa808c58b486376a2081e79dfc725f14a" id="r_aa808c58b486376a2081e79dfc725f14a"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa808c58b486376a2081e79dfc725f14a">display_name_</a></td></tr>
+<tr class="memitem:a99a5fd35e42fe29294ecec02d1555bae" id="r_a99a5fd35e42fe29294ecec02d1555bae"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99a5fd35e42fe29294ecec02d1555bae">description_</a></td></tr>
+<tr class="memitem:a723fc66710b45a87d2339bf43533692d" id="r_a723fc66710b45a87d2339bf43533692d"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a723fc66710b45a87d2339bf43533692d">menu_path_</a></td></tr>
+<tr class="memitem:a714730e875a7da9b95e569df1c3e5f04" id="r_a714730e875a7da9b95e569df1c3e5f04"><td class="memItemLeft" align="right" valign="top">QList&lt; QArgType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a714730e875a7da9b95e569df1c3e5f04">arg_types_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>向Qml暴露的功能信息，Qml据此构造功能菜单与参数面板 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ac52c0fc7cfd092e4345d9dd94790d6f2" name="ac52c0fc7cfd092e4345d9dd94790d6f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac52c0fc7cfd092e4345d9dd94790d6f2">&#9670;&#160;</a></span>QFeatureInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QFeatureInfo::QFeatureInfo </td>
+          <td>(</td>
+          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>display_name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>description</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>menu_path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QList&lt; QArgType * &gt;</td>          <td class="paramname"><span class="paramname"><em>arg_types</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a6b30541c8c1438458adc995700e30e27" name="a6b30541c8c1438458adc995700e30e27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b30541c8c1438458adc995700e30e27">&#9670;&#160;</a></span>argTypes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt; QArgType * &gt; QFeatureInfo::argTypes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2d63d4ae270c14b18a805c4212ce1f06" name="a2d63d4ae270c14b18a805c4212ce1f06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d63d4ae270c14b18a805c4212ce1f06">&#9670;&#160;</a></span>description()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::description </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2c03a2d3dd09979b611f0e355879f688" name="a2c03a2d3dd09979b611f0e355879f688"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c03a2d3dd09979b611f0e355879f688">&#9670;&#160;</a></span>displayName()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::displayName </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa87aac79253037e21a2db022eb2f2558" name="aa87aac79253037e21a2db022eb2f2558"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa87aac79253037e21a2db022eb2f2558">&#9670;&#160;</a></span>menuPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::menuPath </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a97c3e133243c3762b5de6fe4b7da62b2" name="a97c3e133243c3762b5de6fe4b7da62b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97c3e133243c3762b5de6fe4b7da62b2">&#9670;&#160;</a></span>name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::name </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a714730e875a7da9b95e569df1c3e5f04" name="a714730e875a7da9b95e569df1c3e5f04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a714730e875a7da9b95e569df1c3e5f04">&#9670;&#160;</a></span>arg_types_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt;QArgType*&gt; QFeatureInfo::arg_types_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a99a5fd35e42fe29294ecec02d1555bae" name="a99a5fd35e42fe29294ecec02d1555bae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99a5fd35e42fe29294ecec02d1555bae">&#9670;&#160;</a></span>description_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::description_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa808c58b486376a2081e79dfc725f14a" name="aa808c58b486376a2081e79dfc725f14a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa808c58b486376a2081e79dfc725f14a">&#9670;&#160;</a></span>display_name_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::display_name_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a723fc66710b45a87d2339bf43533692d" name="a723fc66710b45a87d2339bf43533692d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a723fc66710b45a87d2339bf43533692d">&#9670;&#160;</a></span>menu_path_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::menu_path_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac04782a8f366a9ee13855081e0ee0a88" name="ac04782a8f366a9ee13855081e0ee0a88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac04782a8f366a9ee13855081e0ee0a88">&#9670;&#160;</a></span>name_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::name_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
+<a id="a09df8a290f43df3c1220628ebeeb50e0" name="a09df8a290f43df3c1220628ebeeb50e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09df8a290f43df3c1220628ebeeb50e0">&#9670;&#160;</a></span>arg_types</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt;QArgType*&gt; QFeatureInfo::arg_types</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a31e15d240f6b201ebbc5e4e0f04cfbfe" name="a31e15d240f6b201ebbc5e4e0f04cfbfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31e15d240f6b201ebbc5e4e0f04cfbfe">&#9670;&#160;</a></span>description</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::description</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acf13b79e85b3566fadeda453d115adbb" name="acf13b79e85b3566fadeda453d115adbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf13b79e85b3566fadeda453d115adbb">&#9670;&#160;</a></span>display_name</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::display_name</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a581214c6613bd9f670f442789e029188" name="a581214c6613bd9f670f442789e029188"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a581214c6613bd9f670f442789e029188">&#9670;&#160;</a></span>menu_path</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QFeatureInfo::menu_path</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad263a2870b25eaf3ae75a59fd1f3071d" name="ad263a2870b25eaf3ae75a59fd1f3071d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad263a2870b25eaf3ae75a59fd1f3071d">&#9670;&#160;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QML_ELEMENTQString QFeatureInfo::name</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/model/systems/feature/<a class="el" href="QFeatureInfo_8h_source.html">QFeatureInfo.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['name_0',['name',['../classQAlgorithmInfo.html#ae0dd2ce61451566c75eac164d18bcc86',1,'QAlgorithmInfo::name'],['../classQEditInfo.html#aa8aeaecb31dffa05129552a6ab82cad0',1,'QEditInfo::name'],['../classsystems_1_1io_1_1QModelIOInfo.html#a85aa87318023a02da7979d27d43cc284',1,'systems::io::QModelIOInfo::name']]]
+  ['menu_5fpath_0',['menu_path',['../classQFeatureInfo.html#a581214c6613bd9f670f442789e029188',1,'QFeatureInfo']]],
+  ['messages_1',['messages',['../classQLogManager.html#a54bd5b2cffe4943a004f12511855ff16',1,'QLogManager']]],
+  ['modelquery_2',['modelQuery',['../classTreeModel.html#a4e92093bec57c9e8ecbe400c5f58215f',1,'TreeModel']]]
 ];

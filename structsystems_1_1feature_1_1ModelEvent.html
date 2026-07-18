@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::ModelEvent结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="structsystems_1_1feature_1_1ModelEvent.html">ModelEvent</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Public 类型</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structsystems_1_1feature_1_1ModelEvent-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::ModelEvent结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>模型变更事件，由 app 层桥接 <a class="el" href="classModelObserver.html">ModelObserver</a> 通知后发布  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureEvents_8h_source.html">FeatureEvents.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:a91b904d63c8caf3b41e5fa1942da4c3b" id="r_a91b904d63c8caf3b41e5fa1942da4c3b"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3b">Kind</a> { <br />
+&#160;&#160;<a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3baa460229890a66282fb44b83870040dd1">ModelAdded</a>
+, <a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3bab81acc16fa4f8eea0ea0eb68a3b5e403">ModelRemoved</a>
+, <a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3ba6ec44867e7cfb160f453ab319519fec4">ModelChanged</a>
+, <a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542">ComponentChanged</a>
+, <br />
+&#160;&#160;<a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede">ComponentRemoved</a>
+, <a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3bad356062e7ca35447436487ca430db40a">ModelNameChanged</a>
+<br />
+ }</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a9995be6e6971aea7215d812e325aaf0b" id="r_a9995be6e6971aea7215d812e325aaf0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3b">Kind</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9995be6e6971aea7215d812e325aaf0b">kind</a></td></tr>
+<tr class="memitem:adaa6cb1b37cdb97fea27256880215bdd" id="r_adaa6cb1b37cdb97fea27256880215bdd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adaa6cb1b37cdb97fea27256880215bdd">model_id</a> { -1 }</td></tr>
+<tr class="memitem:a0d39c85b7189f65677a981d8a34e4439" id="r_a0d39c85b7189f65677a981d8a34e4439"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d39c85b7189f65677a981d8a34e4439">component_id</a> { -1 }</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>模型变更事件，由 app 层桥接 <a class="el" href="classModelObserver.html">ModelObserver</a> 通知后发布 </p>
+</div><a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">成员枚举类型说明</h2>
+<a id="a91b904d63c8caf3b41e5fa1942da4c3b" name="a91b904d63c8caf3b41e5fa1942da4c3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91b904d63c8caf3b41e5fa1942da4c3b">&#9670;&#160;</a></span>Kind</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3b">systems::feature::ModelEvent::Kind</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a91b904d63c8caf3b41e5fa1942da4c3baa460229890a66282fb44b83870040dd1" name="a91b904d63c8caf3b41e5fa1942da4c3baa460229890a66282fb44b83870040dd1"></a>ModelAdded&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91b904d63c8caf3b41e5fa1942da4c3bab81acc16fa4f8eea0ea0eb68a3b5e403" name="a91b904d63c8caf3b41e5fa1942da4c3bab81acc16fa4f8eea0ea0eb68a3b5e403"></a>ModelRemoved&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91b904d63c8caf3b41e5fa1942da4c3ba6ec44867e7cfb160f453ab319519fec4" name="a91b904d63c8caf3b41e5fa1942da4c3ba6ec44867e7cfb160f453ab319519fec4"></a>ModelChanged&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542" name="a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542"></a>ComponentChanged&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede" name="a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede"></a>ComponentRemoved&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a91b904d63c8caf3b41e5fa1942da4c3bad356062e7ca35447436487ca430db40a" name="a91b904d63c8caf3b41e5fa1942da4c3bad356062e7ca35447436487ca430db40a"></a>ModelNameChanged&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a0d39c85b7189f65677a981d8a34e4439" name="a0d39c85b7189f65677a981d8a34e4439"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d39c85b7189f65677a981d8a34e4439">&#9670;&#160;</a></span>component_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> systems::feature::ModelEvent::component_id { -1 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9995be6e6971aea7215d812e325aaf0b" name="a9995be6e6971aea7215d812e325aaf0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9995be6e6971aea7215d812e325aaf0b">&#9670;&#160;</a></span>kind</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a91b904d63c8caf3b41e5fa1942da4c3b">Kind</a> systems::feature::ModelEvent::kind</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adaa6cb1b37cdb97fea27256880215bdd" name="adaa6cb1b37cdb97fea27256880215bdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adaa6cb1b37cdb97fea27256880215bdd">&#9670;&#160;</a></span>model_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> systems::feature::ModelEvent::model_id { -1 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureEvents_8h_source.html">FeatureEvents.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

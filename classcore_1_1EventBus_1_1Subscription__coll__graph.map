@@ -1,0 +1,11 @@
+<map id="core::EventBus::Subscription" name="core::EventBus::Subscription">
+<area shape="rect" id="Node000001" title="订阅句柄，析构时自动退订；仅可移动" alt="" coords="1267,27,1473,53"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1EventBus.html" title="类型安全的轻量级事件总线，以事件类型为键分发事件" alt="" coords="1061,27,1180,53"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1194,37,1266,37,1266,43,1194,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="689,5,924,75"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="938,37,1061,37,1061,43,938,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="309,20,572,60"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="586,37,689,37,689,43,586,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,20,192,60"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="206,37,309,37,309,43,206,43"/>
+</map>

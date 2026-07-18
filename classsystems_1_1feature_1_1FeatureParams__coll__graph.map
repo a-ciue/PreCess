@@ -1,0 +1,15 @@
+<map id="systems::feature::FeatureParams" name="systems::feature::FeatureParams">
+<area shape="rect" id="Node000001" title="功能的持久参数集：参数类型与当前值一一对应" alt="" coords="65,437,254,477"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,327,148,367"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,376,147,435,143,439,97,379"/>
+<area shape="rect" id="Node000003" href="$structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="21,231,132,256"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="79,270,79,326,74,326,74,270"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="33,95,120,120"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="79,134,79,231,74,231,74,134"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="7,5,146,45"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="79,59,79,94,74,94,74,59"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="172,327,315,367"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="222,379,176,439,172,435,218,376"/>
+<area shape="rect" id="Node000007" href="$classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="182,231,305,256"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="246,270,246,326,241,326,241,270"/>
+</map>

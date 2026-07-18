@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::FeatureContext结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structsystems_1_1feature_1_1FeatureContext-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::FeatureContext结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能上下文，由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配并在 activate()/execute() 时传给功能  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::feature::FeatureContext 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structsystems_1_1feature_1_1FeatureContext__coll__graph.png" border="0" usemap="#asystems_1_1feature_1_1FeatureContext_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1feature_1_1FeatureContext_coll__map" id="asystems_1_1feature_1_1FeatureContext_coll__map">
+<area shape="rect" title="功能上下文，由 FeatureSystem 装配并在 activate()/execute() 时传给功能" alt="" coords="3259,816,3448,856"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="3049,823,3147,849"/>
+<area shape="poly" title=" " alt="" coords="3161,833,3259,833,3259,839,3161,839"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="2645,629,2787,654"/>
+<area shape="poly" title=" " alt="" coords="2790,655,2900,690,2960,715,3016,747,3060,785,3090,821,3085,825,3056,789,3013,752,2957,720,2898,695,2788,660"/>
+<area shape="rect" title=" " alt="" coords="2183,587,2370,642"/>
+<area shape="poly" title=" " alt="" coords="2384,618,2645,634,2645,640,2384,624"/>
+<area shape="rect" title=" " alt="" coords="2189,666,2365,721"/>
+<area shape="poly" title=" " alt="" coords="2378,681,2574,659,2645,649,2646,654,2575,664,2379,686"/>
+<area shape="rect" title=" " alt="" coords="2190,430,2363,485"/>
+<area shape="poly" title=" " alt="" coords="2377,453,2428,459,2481,471,2532,493,2577,525,2585,536,2589,548,2589,571,2589,594,2593,604,2600,614,2621,628,2646,636,2644,641,2619,633,2597,618,2588,606,2584,595,2584,571,2584,549,2581,539,2573,529,2530,497,2480,476,2427,464,2377,458"/>
+<area shape="rect" title=" " alt="" coords="2189,509,2365,563"/>
+<area shape="poly" title=" " alt="" coords="2379,543,2476,561,2527,576,2576,595,2588,605,2600,614,2646,629,2644,634,2597,618,2585,609,2573,600,2525,581,2475,566,2378,548"/>
+<area shape="rect" title=" " alt="" coords="1655,115,1817,170"/>
+<area shape="poly" title=" " alt="" coords="1824,178,1857,219,1881,264,1898,310,1909,359,1920,457,1923,551,1931,636,1940,672,1954,704,1974,730,2002,749,2038,761,2085,765,2717,765,2802,767,2868,774,3015,805,3065,821,3063,826,3014,811,2867,779,2802,773,2717,771,2085,771,2037,766,1999,754,1970,733,1949,707,1935,674,1926,637,1918,552,1914,457,1904,360,1893,312,1876,266,1852,222,1820,182"/>
+<area shape="rect" title=" " alt="" coords="1079,205,1299,230"/>
+<area shape="poly" title=" " alt="" coords="1296,200,1654,151,1655,156,1297,205"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="712,194,805,219"/>
+<area shape="poly" title=" " alt="" coords="819,205,1079,212,1078,217,819,211"/>
+<area shape="rect" title=" " alt="" coords="281,165,368,190"/>
+<area shape="poly" title=" " alt="" coords="382,183,480,195,606,202,712,204,712,209,606,207,480,200,381,189"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1871,806,1999,831"/>
+<area shape="poly" title=" " alt="" coords="382,171,577,160,844,152,982,153,1109,159,1218,170,1299,189,1396,226,1478,261,1548,298,1610,339,1665,388,1717,447,1767,519,1820,607,1829,630,1833,651,1830,689,1828,726,1833,745,1843,765,1867,788,1896,804,1893,808,1864,792,1839,768,1828,746,1823,726,1825,689,1827,651,1824,631,1815,609,1763,522,1713,450,1661,391,1607,343,1546,302,1476,266,1394,231,1298,195,1217,176,1109,164,981,158,844,158,577,165,382,176"/>
+<area shape="rect" title=" " alt="" coords="667,936,851,976"/>
+<area shape="poly" title=" " alt="" coords="363,195,412,230,437,253,458,279,496,389,559,603,623,816,647,889,662,922,677,934,674,938,658,926,642,891,617,817,554,604,491,391,454,281,433,256,409,234,360,199"/>
+<area shape="rect" href="structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="703,23,814,49"/>
+<area shape="poly" title=" " alt="" coords="374,158,659,61,710,46,712,51,661,67,375,163"/>
+<area shape="rect" title=" " alt="" coords="5,157,144,197"/>
+<area shape="poly" title=" " alt="" coords="158,175,281,175,281,180,158,180"/>
+<area shape="rect" title=" " alt="" coords="246,293,403,318"/>
+<area shape="poly" title=" " alt="" coords="394,287,711,214,712,220,395,292"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="1145,841,1233,866"/>
+<area shape="poly" title=" " alt="" coords="340,329,383,407,452,513,496,570,546,624,601,674,661,715,716,739,766,749,813,749,859,744,905,739,953,741,1003,753,1056,781,1066,790,1069,801,1073,810,1080,819,1112,836,1145,845,1144,851,1110,841,1077,823,1068,813,1064,803,1061,793,1053,785,1001,758,952,746,905,745,860,749,814,754,765,754,714,744,659,720,598,678,542,628,492,573,448,517,378,410,336,332"/>
+<area shape="rect" title=" " alt="" coords="660,243,857,298"/>
+<area shape="poly" title=" " alt="" coords="417,309,522,310,636,301,667,295,668,301,636,307,522,315,417,314"/>
+<area shape="rect" title=" " alt="" coords="2617,809,2815,863"/>
+<area shape="poly" title=" " alt="" coords="2829,833,3049,833,3049,839,2829,839"/>
+<area shape="rect" title=" " alt="" coords="2172,816,2381,856"/>
+<area shape="poly" title=" " alt="" coords="2395,833,2616,833,2616,839,2395,839"/>
+<area shape="poly" title=" " alt="" coords="2013,820,2172,828,2172,833,2012,825"/>
+<area shape="rect" title=" " alt="" coords="1416,841,1631,866"/>
+<area shape="poly" title=" " alt="" coords="1644,848,1817,836,1870,828,1871,834,1818,841,1645,853"/>
+<area shape="poly" title=" " alt="" coords="1246,851,1416,851,1416,856,1246,856"/>
+<area shape="rect" title=" " alt="" coords="675,1131,843,1171"/>
+<area shape="poly" title=" " alt="" coords="856,1147,952,1143,1054,1133,1212,1106,1345,1073,1460,1038,1568,1003,1675,971,1792,944,1926,927,2085,920,2717,920,2817,912,2915,892,3000,868,3063,846,3065,851,3001,873,2916,897,2818,917,2717,925,2085,925,1926,932,1793,950,1677,976,1569,1008,1462,1043,1346,1079,1213,1111,1055,1139,953,1149,857,1153"/>
+<area shape="poly" title=" " alt="" coords="856,1138,983,1122,1054,1110,1083,1083,1109,1052,1130,1017,1148,981,1171,913,1182,866,1188,867,1176,915,1152,983,1135,1019,1113,1055,1087,1087,1056,1114,984,1127,857,1143"/>
+<area shape="rect" title=" " alt="" coords="237,1138,412,1163"/>
+<area shape="poly" title=" " alt="" coords="426,1148,675,1148,675,1153,426,1153"/>
+<area shape="rect" title=" " alt="" coords="676,1051,841,1091"/>
+<area shape="poly" title=" " alt="" coords="855,1081,904,1083,955,1079,1006,1067,1053,1047,1079,1029,1102,1006,1140,954,1166,903,1181,865,1186,867,1171,905,1144,957,1106,1009,1083,1033,1056,1052,1008,1072,956,1084,904,1088,855,1087"/>
+<area shape="rect" title=" " alt="" coords="682,778,835,833"/>
+<area shape="poly" title=" " alt="" coords="849,807,948,814,1055,825,1145,841,1144,847,1054,831,948,819,849,812"/>
+<area shape="rect" title=" " alt="" coords="682,857,835,911"/>
+<area shape="poly" title=" " alt="" coords="849,868,881,864,1025,855,1144,851,1144,857,1026,860,882,869,849,873"/>
+<area shape="poly" title=" " alt="" coords="838,978,859,987,870,994,882,1000,931,1013,970,1019,1008,1016,1054,1000,1076,988,1097,971,1134,933,1161,895,1179,865,1183,868,1166,898,1138,937,1101,975,1079,992,1056,1005,1009,1021,970,1024,929,1018,880,1005,868,999,856,992,836,983"/>
+<area shape="rect" title=" " alt="" coords="242,902,407,927"/>
+<area shape="poly" title=" " alt="" coords="421,921,636,941,667,944,666,950,636,947,421,926"/>
+<area shape="rect" title=" " alt="" coords="1424,776,1623,816"/>
+<area shape="poly" title=" " alt="" coords="1637,800,1870,812,1870,818,1637,805"/>
+<area shape="rect" href="structGeometryData.html" title=" " alt="" coords="1129,783,1248,809"/>
+<area shape="poly" title=" " alt="" coords="1262,793,1423,793,1423,799,1262,799"/>
+<area shape="rect" title=" " alt="" coords="667,323,850,363"/>
+<area shape="poly" title=" " alt="" coords="838,366,859,379,919,429,975,486,1026,546,1072,606,1143,713,1183,782,1178,785,1138,716,1067,609,1022,549,971,490,915,433,856,383,835,371"/>
+<area shape="rect" href="structGeometrySubshapeIndex.html" title=" " alt="" coords="665,1001,852,1026"/>
+<area shape="poly" title=" " alt="" coords="849,992,855,986,865,970,866,953,868,935,879,918,903,904,925,899,968,905,1010,910,1031,905,1053,893,1063,878,1065,862,1066,845,1077,827,1101,811,1128,801,1130,806,1104,816,1081,831,1071,847,1070,863,1068,880,1056,897,1033,910,1011,915,968,910,925,905,905,909,883,922,873,937,872,954,870,972,859,990,852,996"/>
+<area shape="rect" title=" " alt="" coords="193,952,456,992"/>
+<area shape="poly" title=" " alt="" coords="470,983,636,999,666,1002,665,1007,636,1004,469,988"/>
+<area shape="rect" title=" " alt="" coords="217,1017,432,1042"/>
+<area shape="poly" title=" " alt="" coords="446,1027,636,1021,665,1019,665,1025,636,1027,446,1032"/>
+<area shape="rect" title=" " alt="" coords="223,1069,427,1094"/>
+<area shape="poly" title=" " alt="" coords="440,1084,537,1077,587,1068,635,1054,647,1046,659,1036,693,1024,695,1029,661,1041,650,1050,637,1058,588,1073,538,1082,440,1089"/>
+<area shape="rect" title=" " alt="" coords="1424,461,1623,501"/>
+<area shape="poly" title=" " alt="" coords="1551,511,1599,568,1668,641,1751,718,1796,753,1843,784,1885,804,1883,808,1840,789,1793,757,1747,722,1664,645,1595,572,1547,514"/>
+<area shape="rect" href="structGeometryMeshMap.html" title=" " alt="" coords="1113,331,1264,357"/>
+<area shape="poly" title=" " alt="" coords="1234,359,1474,459,1472,464,1232,364"/>
+<area shape="poly" title=" " alt="" coords="871,284,1055,313,1131,329,1130,334,1054,319,870,289"/>
+<area shape="rect" title=" " alt="" coords="2640,960,2792,1000"/>
+<area shape="poly" title=" " alt="" coords="2806,993,2856,996,2910,993,2964,983,3013,962,3043,937,3065,905,3081,873,3090,848,3095,850,3086,875,3070,908,3047,940,3016,966,2965,988,2910,998,2856,1001,2806,998"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="2667,1025,2765,1050"/>
+<area shape="poly" title=" " alt="" coords="2779,1050,2833,1057,2895,1059,2957,1049,2986,1038,3013,1023,3034,1005,3050,984,3074,934,3087,885,3093,849,3098,849,3093,886,3079,936,3055,986,3038,1009,3016,1028,2988,1043,2958,1054,2895,1064,2833,1063,2778,1055"/>
+<area shape="rect" title=" " alt="" coords="2171,969,2383,1009"/>
+<area shape="poly" title=" " alt="" coords="2397,1000,2666,1029,2666,1035,2396,1005"/>
+<area shape="rect" title=" " alt="" coords="1843,971,2026,1011"/>
+<area shape="poly" title=" " alt="" coords="2040,988,2170,987,2170,992,2040,993"/>
+<area shape="rect" title=" " alt="" coords="2205,1033,2348,1073"/>
+<area shape="poly" title=" " alt="" coords="2362,1050,2575,1044,2666,1038,2666,1044,2575,1049,2362,1055"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="2655,579,2777,605"/>
+<area shape="poly" title=" " alt="" coords="2791,586,2845,589,2904,598,2963,617,2991,631,3016,649,3036,668,3053,691,3077,740,3091,788,3098,823,3092,824,3086,789,3072,742,3048,693,3032,671,3013,653,2988,636,2961,622,2903,603,2844,594,2790,591"/>
+<area shape="rect" href="classcore_1_1EventBus.html" title="类型安全的轻量级事件总线，以事件类型为键分发事件" alt="" coords="3039,1019,3157,1045"/>
+<area shape="poly" title=" " alt="" coords="3125,1009,3324,854,3328,858,3128,1013"/>
+<area shape="rect" title=" " alt="" coords="2599,1076,2833,1145"/>
+<area shape="poly" title=" " alt="" coords="2847,1112,2930,1104,2973,1096,3014,1084,3051,1065,3081,1043,3084,1047,3054,1070,3016,1089,2974,1101,2931,1109,2847,1117"/>
+<area shape="rect" title=" " alt="" coords="2145,1097,2408,1137"/>
+<area shape="poly" title=" " alt="" coords="2422,1112,2599,1110,2599,1115,2422,1118"/>
+<area shape="rect" title=" " alt="" coords="1841,1097,2028,1137"/>
+<area shape="poly" title=" " alt="" coords="2042,1115,2145,1115,2145,1120,2042,1120"/>
+<area shape="rect" href="classsystems_1_1feature_1_1FeatureParams.html" title="功能的持久参数集：参数类型与当前值一一对应" alt="" coords="1429,64,1618,104"/>
+<area shape="poly" title=" " alt="" coords="1632,83,1933,87,3100,87,3129,94,3157,114,3182,145,3205,185,3227,233,3247,287,3281,407,3309,533,3330,651,3352,815,3347,816,3324,652,3303,534,3276,408,3242,288,3222,235,3201,187,3178,148,3153,118,3127,99,3099,92,1933,92,1632,89"/>
+<area shape="rect" title=" " alt="" coords="1117,5,1260,45"/>
+<area shape="poly" title=" " alt="" coords="1274,36,1392,56,1429,63,1428,68,1392,61,1273,41"/>
+<area shape="poly" title=" " alt="" coords="828,32,1117,24,1117,30,828,37"/>
+<area shape="rect" title=" " alt="" coords="1117,69,1260,109"/>
+<area shape="poly" title=" " alt="" coords="1274,85,1428,83,1428,88,1274,91"/>
+<area shape="rect" href="classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="697,77,820,102"/>
+<area shape="poly" title=" " alt="" coords="834,87,1117,87,1117,92,834,92"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a6303d03aa501ee360eddb3c80e47268a" id="r_a6303d03aa501ee360eddb3c80e47268a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6303d03aa501ee360eddb3c80e47268a">model</a></td></tr>
+<tr class="memitem:a3df2529e626582a6c3d0bb341cb36e0a" id="r_a3df2529e626582a6c3d0bb341cb36e0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3df2529e626582a6c3d0bb341cb36e0a">events</a></td></tr>
+<tr class="memitem:ae29ca8f6b1e946c46960eb80487932a5" id="r_ae29ca8f6b1e946c46960eb80487932a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1feature_1_1FeatureParams.html">FeatureParams</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae29ca8f6b1e946c46960eb80487932a5">params</a></td></tr>
+<tr class="memitem:a1c53df3f1b87af4b93a1fa25147878cd" id="r_a1c53df3f1b87af4b93a1fa25147878cd"><td class="memItemLeft" align="right" valign="top">std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c53df3f1b87af4b93a1fa25147878cd">activeModel</a></td></tr>
+<tr class="memitem:aa5ca6e206ed01adc927f33aceca3dd5a" id="r_aa5ca6e206ed01adc927f33aceca3dd5a"><td class="memItemLeft" align="right" valign="top">std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5ca6e206ed01adc927f33aceca3dd5a">activeComponent</a></td></tr>
+<tr class="memitem:a84719620735d15c74794c0fb34ececc1" id="r_a84719620735d15c74794c0fb34ececc1"><td class="memItemLeft" align="right" valign="top">std::function&lt; std::optional&lt; <a class="el" href="classComponentOperator.html">ComponentOperator</a> &gt;(<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84719620735d15c74794c0fb34ececc1">componentOperator</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能上下文，由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配并在 activate()/execute() 时传给功能 </p>
+<p>组合而非单例：依赖以引用或 std::function 动态获取函数注入（后者由 app 层提供）， 功能层不反向依赖 app 层。当前功能可修改的范围仅限模型层对象。 </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="aa5ca6e206ed01adc927f33aceca3dd5a" name="aa5ca6e206ed01adc927f33aceca3dd5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5ca6e206ed01adc927f33aceca3dd5a">&#9670;&#160;</a></span>activeComponent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;std::optional&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&gt;()&gt; systems::feature::FeatureContext::activeComponent</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1c53df3f1b87af4b93a1fa25147878cd" name="a1c53df3f1b87af4b93a1fa25147878cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c53df3f1b87af4b93a1fa25147878cd">&#9670;&#160;</a></span>activeModel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;std::optional&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&gt;()&gt; systems::feature::FeatureContext::activeModel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a84719620735d15c74794c0fb34ececc1" name="a84719620735d15c74794c0fb34ececc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84719620735d15c74794c0fb34ececc1">&#9670;&#160;</a></span>componentOperator</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;std::optional&lt;<a class="el" href="classComponentOperator.html">ComponentOperator</a>&gt;(<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)&gt; systems::feature::FeatureContext::componentOperator</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3df2529e626582a6c3d0bb341cb36e0a" name="a3df2529e626582a6c3d0bb341cb36e0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3df2529e626582a6c3d0bb341cb36e0a">&#9670;&#160;</a></span>events</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a>&amp; systems::feature::FeatureContext::events</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6303d03aa501ee360eddb3c80e47268a" name="a6303d03aa501ee360eddb3c80e47268a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6303d03aa501ee360eddb3c80e47268a">&#9670;&#160;</a></span>model</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelLayer.html">ModelLayer</a>&amp; systems::feature::FeatureContext::model</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae29ca8f6b1e946c46960eb80487932a5" name="ae29ca8f6b1e946c46960eb80487932a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae29ca8f6b1e946c46960eb80487932a5">&#9670;&#160;</a></span>params</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsystems_1_1feature_1_1FeatureParams.html">FeatureParams</a>&amp; systems::feature::FeatureContext::params</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

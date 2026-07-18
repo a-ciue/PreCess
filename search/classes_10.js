@@ -1,15 +1,4 @@
 var searchData=
 [
-  ['selection_0',['Selection',['../structSelection.html',1,'']]],
-  ['selectmanager_1',['SelectManager',['../classSelectManager.html',1,'']]],
-  ['selectorhighlight_2',['SelectorHighlight',['../classSelectorHighlight.html',1,'']]],
-  ['shape_5ft_3',['shape_t',['../structtinyobj_1_1shape__t.html',1,'tinyobj']]],
-  ['skin_5fweight_5ft_4',['skin_weight_t',['../structtinyobj_1_1skin__weight__t.html',1,'tinyobj']]],
-  ['solidpickinteractorstyle_5',['SolidPickInteractorStyle',['../classSolidPickInteractorStyle.html',1,'']]],
-  ['solidselectorhighlight_6',['SolidSelectorHighlight',['../classSolidSelectorHighlight.html',1,'']]],
-  ['sort_5fdereferencer_7',['sort_dereferencer',['../structplf_1_1colony_1_1sort__dereferencer.html',1,'plf::colony']]],
-  ['string_8',['string',['../classsystems_1_1algo_1_1string.html',1,'systems::algo::string'],['../classsystems_1_1edit_1_1string.html',1,'systems::edit::string'],['../classsystems_1_1io_1_1string.html',1,'systems::io::string']]],
-  ['systemhandlerdestroyer_9',['SystemHandlerDestroyer',['../structsystems_1_1SystemHandlerDestroyer.html',1,'systems']]],
-  ['systempluginmanager_10',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
-  ['systemregisterbase_11',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
+  ['reverse_5fiterator_0',['reverse_iterator',['../classsystems_1_1algo_1_1string_1_1reverse__iterator.html',1,'systems::algo::string::reverse_iterator'],['../classsystems_1_1algo_1_1vector_1_1reverse__iterator.html',1,'systems::algo::vector&lt; T &gt;::reverse_iterator'],['../classsystems_1_1edit_1_1string_1_1reverse__iterator.html',1,'systems::edit::string::reverse_iterator'],['../classsystems_1_1edit_1_1vector_1_1reverse__iterator.html',1,'systems::edit::vector&lt; T &gt;::reverse_iterator'],['../classsystems_1_1io_1_1string_1_1reverse__iterator.html',1,'systems::io::string::reverse_iterator'],['../classsystems_1_1io_1_1vector_1_1reverse__iterator.html',1,'systems::io::vector&lt; T &gt;::reverse_iterator']]]
 ];

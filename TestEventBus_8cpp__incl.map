@@ -1,0 +1,21 @@
+<map id="model/systems/feature/test/TestEventBus.cpp" name="model/systems/feature/test/TestEventBus.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="364,5,537,45"/>
+<area shape="rect" id="Node000002" href="$EventBus_8h.html" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="313,93,407,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="430,48,386,86,382,82,427,44"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="432,93,651,119"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="474,44,519,82,516,86,471,48"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,91,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="313,121,105,168,103,163,312,115"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="115,167,181,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="327,121,195,165,194,160,325,116"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="206,167,293,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="344,121,281,161,278,157,341,116"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="317,167,403,192"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="363,119,363,153,357,153,357,119"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="427,167,551,192"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="382,116,457,157,455,162,380,121"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="575,167,635,192"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="400,116,563,163,561,168,399,121"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="659,167,722,192"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="408,114,646,164,645,169,407,119"/>
+</map>

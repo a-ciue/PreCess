@@ -19,5 +19,6 @@ var searchData=
   ['elemstorage_3c_20meshlib_3a_3atv_20_3e_16',['ElemStorage&lt; MeshLib::TV &gt;',['../classMeshLib_1_1ElemStorage.html',1,'MeshLib']]],
   ['enable_5fif_17',['enable_if',['../structplf_1_1enable__if.html',1,'plf']]],
   ['enable_5fif_3c_20false_2c_20t_20_3e_18',['enable_if&lt; false, T &gt;',['../structplf_1_1enable__if_3_01false_00_01T_01_4.html',1,'plf']]],
-  ['equal_5fto_19',['equal_to',['../structplf_1_1equal__to.html',1,'plf']]]
+  ['equal_5fto_19',['equal_to',['../structplf_1_1equal__to.html',1,'plf']]],
+  ['eventbus_20',['EventBus',['../classcore_1_1EventBus.html',1,'core::EventBus'],['../classEventBus.html',1,'EventBus']]]
 ];

@@ -199,6 +199,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a20bc9a79cf7de4b8fe7629750a3f628f" id="r_a20bc9a79cf7de4b8fe7629750a3f628f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20bc9a79cf7de4b8fe7629750a3f628f">geomRegistry</a> ()</td></tr>
 <tr class="memitem:a8dba91a3eb3abfbf3cea34ed197c74a3" id="r_a8dba91a3eb3abfbf3cea34ed197c74a3"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8dba91a3eb3abfbf3cea34ed197c74a3">geomRegistry</a> () const</td></tr>
 <tr class="memitem:ac27658f886aae3df685d179c34ea0656" id="r_ac27658f886aae3df685d179c34ea0656"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac27658f886aae3df685d179c34ea0656">globalPoints</a> () const</td></tr>
+<tr class="memitem:a27117dbaf46be8ba79876000a6dcba01" id="r_a27117dbaf46be8ba79876000a6dcba01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27117dbaf46be8ba79876000a6dcba01">setGlobalPoint</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> global_id, const std::array&lt; double, 3 &gt; &amp;point)</td></tr>
+<tr class="memdesc:a27117dbaf46be8ba79876000a6dcba01"><td class="mdescLeft">&#160;</td><td class="mdescRight">修改指定全局点的坐标  <br /></td></tr>
 <tr class="memitem:aac41ee5efbd5dd1d517015e5490c75d9" id="r_aac41ee5efbd5dd1d517015e5490c75d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac41ee5efbd5dd1d517015e5490c75d9">edgeIdMap</a> ()</td></tr>
 <tr class="memitem:ac9e9da3f7a61a8684a087c11cb3bbb66" id="r_ac9e9da3f7a61a8684a087c11cb3bbb66"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac9e9da3f7a61a8684a087c11cb3bbb66">edgeIdMap</a> () const</td></tr>
 <tr class="memitem:a0005d5374aeeff2cf4cdfe97700d958a" id="r_a0005d5374aeeff2cf4cdfe97700d958a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0005d5374aeeff2cf4cdfe97700d958a">appendGlobalPoints</a> (const std::vector&lt; std::array&lt; double, 3 &gt; &gt; &amp;pts)</td></tr>
@@ -536,6 +538,42 @@ Private 属性</h2></td></tr>
 <dl class="params"><dt>参数</dt><dd>
   <table class="params">
     <tr><td class="paramname">model_id</td><td>需要移除的模型 ID </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a27117dbaf46be8ba79876000a6dcba01" name="a27117dbaf46be8ba79876000a6dcba01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27117dbaf46be8ba79876000a6dcba01">&#9670;&#160;</a></span>setGlobalPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ModelLayer::setGlobalPoint </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>global_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::array&lt; double, 3 &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>point</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>修改指定全局点的坐标 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">global_id</td><td>全局点 ID </td></tr>
+    <tr><td class="paramname">point</td><td>新坐标 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>global_id 越界 </td></tr>
   </table>
   </dd>
 </dl>

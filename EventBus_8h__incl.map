@@ -1,0 +1,17 @@
+<map id="core/EventBus.h" name="core/EventBus.h">
+<area shape="rect" id="Node000001" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="297,5,423,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,91,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="310,33,105,80,103,75,309,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="115,79,181,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="327,33,195,77,194,72,325,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="206,79,293,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="344,33,281,73,278,69,341,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="317,79,403,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="363,31,363,65,357,65,357,31"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="427,79,551,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="382,28,457,69,455,74,380,33"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="575,79,635,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="400,28,563,75,561,80,399,33"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="659,79,722,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="421,28,646,76,645,81,420,33"/>
+</map>

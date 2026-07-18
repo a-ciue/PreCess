@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/systems/feature/QFeatureSystemAdaptor.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li><li class="navelem"><a href="dir_58462a8efe102d3098af3bfcc91d6d03.html">systems</a></li><li class="navelem"><a href="dir_96ad066f16153253dcb2c96b54783087.html">feature</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QFeatureSystemAdaptor.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="QFeatureSystemAdaptor_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef Q_FEATURE_SYSTEM_ADAPTOR_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define Q_FEATURE_SYSTEM_ADAPTOR_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;QVariant&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;QtQmlIntegration/qqmlintegration.h&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">class </span><a class="code hl_class" href="classQFeatureInfo.html">QFeatureInfo</a>;</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1feature.html">systems::feature</a> {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a>;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span></div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html">   17</a></span><span class="keyword">class </span><a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a183479006d373b1150d2f11542209f43">QFeatureSystemAdaptor</a> : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    Q_OBJECT</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    QML_ELEMENT</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a067d8649880bec56dc4a91843d28257a">   20</a></span>    Q_PROPERTY(QList&lt;QFeatureInfo*&gt; <a class="code hl_property" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a067d8649880bec56dc4a91843d28257a">featuresInfo</a> READ <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a63f614642346f019e806532efda74d91">getFeaturesInfo</a> NOTIFY <a class="code hl_signal" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a3a7b99b10cab0fecdb1a39824b05c20d">featuresInfoChanged</a>)</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a183479006d373b1150d2f11542209f43">QFeatureSystemAdaptor</a>(<a class="code hl_class" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a>&amp; feature_system);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    Q_INVOKABLE QVariant <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#af847c5b57910dc89a5632e8992e976e3">invoke</a>(<span class="keyword">const</span> QString&amp; unique_name);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    Q_INVOKABLE <span class="keywordtype">bool</span> <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#ae8631246cdd7f8fb47d503c0782d6f6a">setParameter</a>(<span class="keyword">const</span> QString&amp; unique_name, <span class="keywordtype">int</span> index, <span class="keyword">const</span> QVariant&amp; value);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    Q_INVOKABLE <span class="keywordtype">bool</span> <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a44a4730f77da63ea33d4acb3c155aa8f">postKeyEvent</a>(<span class="keywordtype">int</span> key, <span class="keywordtype">int</span> modifiers, <span class="keywordtype">bool</span> pressed);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#afbdc42f2f57ba7ea1fc740e191a8c8d2">setActiveModel</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a4c61f0b81b6b0c388b35e5bd8b203241">setActiveComponent</a>(<span class="keywordtype">int</span> <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    QList&lt;QFeatureInfo*&gt; <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a63f614642346f019e806532efda74d91">getFeaturesInfo</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="comment">// 功能上下文 provider 的后端实现，由 QModelManager 注入 FeatureSystem</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    std::optional&lt;Index&gt; <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a52768151ba31b6ce6e4434cdbb0d803d">activeModel</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    std::optional&lt;Index&gt; <a class="code hl_function" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a1f2d0132a3f33a7846edd7ccd30a9c84">activeComponent</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>signals:</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a3a7b99b10cab0fecdb1a39824b05c20d">   59</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a3a7b99b10cab0fecdb1a39824b05c20d">featuresInfoChanged</a>();</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a4a84799be9789b5282e5e1bbb20397d6">   62</a></span>    <a class="code hl_class" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a>* <a class="code hl_variable" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a4a84799be9789b5282e5e1bbb20397d6">feature_system_</a>; <span class="comment">//&gt; 功能系统的引用</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#acbc63b0ae588b702612cdbdb767611fb">   63</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#acbc63b0ae588b702612cdbdb767611fb">active_model_id_</a> { -1 };</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#aaaa7abe24ef25754e93520de5a68d88f">   64</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#aaaa7abe24ef25754e93520de5a68d88f">active_component_id_</a> { -1 };</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>};</div>
+</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>}</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:37</div></div>
+<div class="ttc" id="aclassQFeatureInfo_html"><div class="ttname"><a href="classQFeatureInfo.html">QFeatureInfo</a></div><div class="ttdoc">向Qml暴露的功能信息，Qml据此构造功能菜单与参数面板</div><div class="ttdef"><b>定义</b> QFeatureInfo.h:10</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureSystem_html"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureSystem.html">systems::feature::FeatureSystem</a></div><div class="ttdoc">功能系统：管理功能插件的注册、注销、调用与事件路由</div><div class="ttdef"><b>定义</b> FeatureSystem.h:45</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a067d8649880bec56dc4a91843d28257a"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a067d8649880bec56dc4a91843d28257a">systems::feature::QFeatureSystemAdaptor::featuresInfo</a></div><div class="ttdeci">QML_ELEMENTQList&lt; QFeatureInfo * &gt; featuresInfo</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.h:20</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a183479006d373b1150d2f11542209f43"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a183479006d373b1150d2f11542209f43">systems::feature::QFeatureSystemAdaptor::QFeatureSystemAdaptor</a></div><div class="ttdeci">QFeatureSystemAdaptor(FeatureSystem &amp;feature_system)</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:10</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a1f2d0132a3f33a7846edd7ccd30a9c84"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a1f2d0132a3f33a7846edd7ccd30a9c84">systems::feature::QFeatureSystemAdaptor::activeComponent</a></div><div class="ttdeci">std::optional&lt; Index &gt; activeComponent() const</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:91</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a3a7b99b10cab0fecdb1a39824b05c20d"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a3a7b99b10cab0fecdb1a39824b05c20d">systems::feature::QFeatureSystemAdaptor::featuresInfoChanged</a></div><div class="ttdeci">void featuresInfoChanged()</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a44a4730f77da63ea33d4acb3c155aa8f"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a44a4730f77da63ea33d4acb3c155aa8f">systems::feature::QFeatureSystemAdaptor::postKeyEvent</a></div><div class="ttdeci">Q_INVOKABLE bool postKeyEvent(int key, int modifiers, bool pressed)</div><div class="ttdoc">UI层向功能系统派发按键事件</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:42</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a4a84799be9789b5282e5e1bbb20397d6"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a4a84799be9789b5282e5e1bbb20397d6">systems::feature::QFeatureSystemAdaptor::feature_system_</a></div><div class="ttdeci">FeatureSystem * feature_system_</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.h:62</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a4c61f0b81b6b0c388b35e5bd8b203241"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a4c61f0b81b6b0c388b35e5bd8b203241">systems::feature::QFeatureSystemAdaptor::setActiveComponent</a></div><div class="ttdeci">Q_INVOKABLE void setActiveComponent(int id)</div><div class="ttdoc">QML侧同步当前活动组件id，供功能上下文动态获取</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:52</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a52768151ba31b6ce6e4434cdbb0d803d"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a52768151ba31b6ce6e4434cdbb0d803d">systems::feature::QFeatureSystemAdaptor::activeModel</a></div><div class="ttdeci">std::optional&lt; Index &gt; activeModel() const</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:83</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_a63f614642346f019e806532efda74d91"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a63f614642346f019e806532efda74d91">systems::feature::QFeatureSystemAdaptor::getFeaturesInfo</a></div><div class="ttdeci">QList&lt; QFeatureInfo * &gt; getFeaturesInfo() const</div><div class="ttdoc">由qml获取所有已注册的功能和参数列表</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:57</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_aaaa7abe24ef25754e93520de5a68d88f"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#aaaa7abe24ef25754e93520de5a68d88f">systems::feature::QFeatureSystemAdaptor::active_component_id_</a></div><div class="ttdeci">Index active_component_id_</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.h:64</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_acbc63b0ae588b702612cdbdb767611fb"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#acbc63b0ae588b702612cdbdb767611fb">systems::feature::QFeatureSystemAdaptor::active_model_id_</a></div><div class="ttdeci">Index active_model_id_</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.h:63</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_ae8631246cdd7f8fb47d503c0782d6f6a"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#ae8631246cdd7f8fb47d503c0782d6f6a">systems::feature::QFeatureSystemAdaptor::setParameter</a></div><div class="ttdeci">Q_INVOKABLE bool setParameter(const QString &amp;unique_name, int index, const QVariant &amp;value)</div><div class="ttdoc">修改功能参数，实时生效并广播参数变更事件</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:24</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_af847c5b57910dc89a5632e8992e976e3"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#af847c5b57910dc89a5632e8992e976e3">systems::feature::QFeatureSystemAdaptor::invoke</a></div><div class="ttdeci">Q_INVOKABLE QVariant invoke(const QString &amp;unique_name)</div><div class="ttdoc">菜单触发的功能调用</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:18</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1QFeatureSystemAdaptor_html_afbdc42f2f57ba7ea1fc740e191a8c8d2"><div class="ttname"><a href="classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#afbdc42f2f57ba7ea1fc740e191a8c8d2">systems::feature::QFeatureSystemAdaptor::setActiveModel</a></div><div class="ttdeci">Q_INVOKABLE void setActiveModel(int id)</div><div class="ttdoc">QML侧同步当前活动模型id，供功能上下文动态获取</div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:47</div></div>
+<div class="ttc" id="anamespacesystems_1_1feature_html"><div class="ttname"><a href="namespacesystems_1_1feature.html">systems::feature</a></div><div class="ttdef"><b>定义</b> QModelManager.h:23</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

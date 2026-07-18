@@ -1,0 +1,20 @@
+<map id="systems::feature::FeatureRegistrar" name="systems::feature::FeatureRegistrar">
+<area shape="rect" id="Node000001" title="功能注册器：功能在 setup() 中通过它声明参数、菜单项与按键绑定" alt="" coords="1148,96,1337,136"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="819,31,962,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="976,60,1125,85,1161,93,1160,99,1123,91,975,65"/>
+<area shape="rect" id="Node000003" href="$structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="482,35,593,61"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="606,46,819,47,819,53,606,51"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="193,73,280,98"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="293,76,481,52,482,57,294,81"/>
+<area shape="rect" id="Node000007" href="$structsystems_1_1feature_1_1MenuContribution.html" title="菜单贡献项：声明功能要挂到哪个菜单下" alt="" coords="409,107,665,133"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="269,103,305,117,356,126,409,128,409,134,356,131,303,123,267,108"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,65,144,105"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="157,83,193,83,193,88,157,88"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="783,96,999,136"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1012,113,1148,113,1148,119,1012,119"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="679,116,782,115,782,120,679,121"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="804,160,977,200"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="991,164,1123,141,1160,134,1161,139,1125,147,992,169"/>
+<area shape="rect" id="Node000009" href="$structsystems_1_1feature_1_1KeyBinding.html" title="按键绑定：按键事件匹配时定向回调功能的 onKeyEvent" alt="" coords="431,167,644,193"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="658,177,804,177,804,183,658,183"/>
+</map>

@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/feature/FeatureEvents.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_05585d2a38afe5c243e9dcc7f0f8321f.html">feature</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">FeatureEvents.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能系统在事件总线上传递的事件类型  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ArgObject_8h_source.html">ArgObject.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
+<code>#include &lt;cstddef&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+FeatureEvents.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="FeatureEvents_8h__incl.png" border="0" usemap="#amodel_2systems_2feature_2FeatureEvents_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2feature_2FeatureEvents_8h" id="amodel_2systems_2feature_2FeatureEvents_8h">
+<area shape="rect" title="功能系统在事件总线上传递的事件类型" alt="" coords="384,5,557,45"/>
+<area shape="rect" href="ArgObject_8h.html" title=" " alt="" coords="219,93,317,119"/>
+<area shape="poly" title=" " alt="" coords="423,48,312,91,310,86,421,43"/>
+<area shape="rect" title=" " alt="" coords="325,240,384,265"/>
+<area shape="poly" title=" " alt="" coords="459,47,429,95,393,167,367,228,362,226,388,165,424,92,455,44"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="439,93,503,119"/>
+<area shape="poly" title=" " alt="" coords="473,46,473,79,468,79,468,46"/>
+<area shape="rect" title=" " alt="" coords="527,93,598,119"/>
+<area shape="poly" title=" " alt="" coords="495,44,540,82,537,86,491,48"/>
+<area shape="rect" title=" " alt="" coords="622,93,682,119"/>
+<area shape="poly" title=" " alt="" coords="515,43,614,85,612,90,513,48"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="159,167,246,192"/>
+<area shape="poly" title=" " alt="" coords="259,121,224,158,221,155,255,117"/>
+<area shape="rect" title=" " alt="" coords="270,167,317,192"/>
+<area shape="poly" title=" " alt="" coords="275,118,287,153,282,155,270,120"/>
+<area shape="rect" title=" " alt="" coords="5,240,96,265"/>
+<area shape="poly" title=" " alt="" coords="179,194,89,237,87,232,177,190"/>
+<area shape="poly" title=" " alt="" coords="228,190,319,232,317,237,226,194"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="120,240,296,265"/>
+<area shape="poly" title=" " alt="" coords="206,192,209,226,203,227,201,193"/>
+<area shape="poly" title=" " alt="" coords="463,121,375,231,370,228,459,117"/>
+<area shape="rect" title=" " alt="" coords="443,167,499,192"/>
+<area shape="poly" title=" " alt="" coords="473,119,473,153,468,153,468,119"/>
+<area shape="rect" title=" " alt="" coords="523,167,573,192"/>
+<area shape="poly" title=" " alt="" coords="485,117,527,155,523,159,481,121"/>
+<area shape="rect" title=" " alt="" coords="597,167,675,192"/>
+<area shape="poly" title=" " alt="" coords="498,116,598,159,595,164,496,121"/>
+<area shape="rect" title=" " alt="" coords="699,167,762,192"/>
+<area shape="poly" title=" " alt="" coords="504,114,687,163,685,168,502,119"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="FeatureEvents_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2feature_2FeatureEvents_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2feature_2FeatureEvents_8hdep" id="amodel_2systems_2feature_2FeatureEvents_8hdep">
+<area shape="rect" title="功能系统在事件总线上传递的事件类型" alt="" coords="365,5,538,45"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="5,189,233,214"/>
+<area shape="poly" title=" " alt="" coords="404,54,142,191,140,186,402,49"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="258,181,469,221"/>
+<area shape="poly" title=" " alt="" coords="438,59,375,182,371,180,433,56"/>
+<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="481,93,654,133"/>
+<area shape="poly" title=" " alt="" coords="490,52,543,91,540,95,486,56"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="920,181,1127,221"/>
+<area shape="poly" title=" " alt="" coords="527,47,962,179,961,184,525,52"/>
+<area shape="poly" title=" " alt="" coords="468,136,180,191,179,186,467,131"/>
+<area shape="poly" title=" " alt="" coords="511,141,409,184,407,179,509,136"/>
+<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="722,181,895,221"/>
+<area shape="poly" title=" " alt="" coords="634,135,757,179,755,184,632,140"/>
+<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="493,181,697,221"/>
+<area shape="poly" title=" " alt="" coords="580,146,592,180,587,182,575,147"/>
+<area shape="poly" title=" " alt="" coords="668,131,924,179,923,184,667,136"/>
+</map>
+</div>
+</div>
+<p><a href="FeatureEvents_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Afeature_3A_3AKeyEvent" id="r_systems_3A_3Afeature_3A_3AKeyEvent"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">systems::feature::KeyEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">键盘按键事件  <a href="structsystems_1_1feature_1_1KeyEvent.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:systems_3A_3Afeature_3A_3AParameterChangedEvent" id="r_systems_3A_3Afeature_3A_3AParameterChangedEvent"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1ParameterChangedEvent.html">systems::feature::ParameterChangedEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能参数变更事件，FeatureSystem::setParameter 成功后发布  <a href="structsystems_1_1feature_1_1ParameterChangedEvent.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:systems_3A_3Afeature_3A_3AModelEvent" id="r_systems_3A_3Afeature_3A_3AModelEvent"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1ModelEvent.html">systems::feature::ModelEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型变更事件，由 app 层桥接 <a class="el" href="classModelObserver.html">ModelObserver</a> 通知后发布  <a href="structsystems_1_1feature_1_1ModelEvent.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Afeature" id="r_systems_3A_3Afeature"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1feature.html">systems::feature</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能系统在事件总线上传递的事件类型 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

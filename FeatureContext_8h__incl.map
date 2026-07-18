@@ -1,0 +1,22 @@
+<map id="model/systems/feature/FeatureContext.h" name="model/systems/feature/FeatureContext.h">
+<area shape="rect" id="Node000001" title="功能上下文：功能访问软件环境的入口" alt="" coords="212,5,385,45"/>
+<area shape="rect" id="Node000002" href="$ComponentOperator_8h.html" title=" " alt="" coords="56,93,221,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="262,48,176,90,173,85,259,43"/>
+<area shape="rect" id="Node000003" href="$Core_8h.html" title=" " alt="" coords="167,167,231,192"/>
+<area shape="poly" id="edge8_Node000001_Node000003" title=" " alt="" coords="288,47,216,157,212,154,284,44"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="297,93,383,119"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="311,44,330,80,325,82,306,47"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="408,93,483,119"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="335,43,413,84,410,89,333,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="151,117,182,154,178,158,147,121"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,240,61,265"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="173,194,74,237,72,232,171,190"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="85,240,136,265"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="186,194,137,233,134,229,183,190"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="160,240,237,265"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="201,192,201,226,196,226,196,192"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="261,240,320,265"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="215,190,267,229,263,234,212,194"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="345,240,407,265"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="228,190,336,232,334,237,226,194"/>
+</map>

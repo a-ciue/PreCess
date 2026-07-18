@@ -7,10 +7,11 @@ var searchData=
   ['on_5falgorithm_5finfos_5fchanged_5f_4',['on_algorithm_infos_changed_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a19a4f53b1731b8d984f005dbe7f04cce',1,'systems::algo::AlgorithmSystem']]],
   ['on_5fdialog_5fname_5ffilters_5fchanged_5f_5',['on_dialog_name_filters_changed_',['../classsystems_1_1io_1_1ModelIOSystem.html#a4521a78603d0f5cfc61bf9694b762c6c',1,'systems::io::ModelIOSystem']]],
   ['on_5fedit_5finfo_5fchanged_5f_6',['on_edit_info_changed_',['../classsystems_1_1edit_1_1EditSystem.html#a1858470c2be700704c46fcd00acb31fe',1,'systems::edit::EditSystem']]],
-  ['op_5f_7',['op_',['../classGeometryActorManager.html#a4b382d066206906e8b2d29dae5896ac1',1,'GeometryActorManager::op_'],['../classGeometrySelectManager.html#ab114d1012613602d97692c291a3f9dd7',1,'GeometrySelectManager::op_'],['../classMeshActorManager.html#a9f775b709d48b9a27037281c1e63a16c',1,'MeshActorManager::op_'],['../classMeshSelectManager.html#a854dcb3e3977625a60277049b28b99e5',1,'MeshSelectManager::op_']]],
-  ['orientationwidget_8',['orientationWidget',['../structQRenderWindow_1_1Data.html#a1b12899f8c4642d55ac21f66906a33f2',1,'QRenderWindow::Data']]],
-  ['origin_5foffset_9',['origin_offset',['../structtinyobj_1_1texture__option__t.html#ab6a036a11f7b1317709a4d3e25495e07',1,'tinyobj::texture_option_t']]],
-  ['original_5findex_10',['original_index',['../structplf_1_1colony_1_1item__index__tuple.html#ab538348723e6ba21e667948061987283',1,'plf::colony::item_index_tuple']]],
-  ['original_5flocation_11',['original_location',['../structplf_1_1colony_1_1item__index__tuple.html#a71438fc9dade7cae247be3dab7e75a2c',1,'plf::colony::item_index_tuple']]],
-  ['original_5fpoint_5fids_5f_12',['original_point_ids_',['../classMeshActor.html#a91bee7bb17cd1d38a1dfc29296b6ecf6',1,'MeshActor']]]
+  ['on_5ffeature_5finfos_5fchanged_5f_7',['on_feature_infos_changed_',['../classsystems_1_1feature_1_1FeatureSystem.html#aae1499e61eb8c80a34e5a52337e7b120',1,'systems::feature::FeatureSystem']]],
+  ['op_5f_8',['op_',['../classGeometryActorManager.html#a4b382d066206906e8b2d29dae5896ac1',1,'GeometryActorManager::op_'],['../classGeometrySelectManager.html#ab114d1012613602d97692c291a3f9dd7',1,'GeometrySelectManager::op_'],['../classMeshActorManager.html#a9f775b709d48b9a27037281c1e63a16c',1,'MeshActorManager::op_'],['../classMeshSelectManager.html#a854dcb3e3977625a60277049b28b99e5',1,'MeshSelectManager::op_']]],
+  ['orientationwidget_9',['orientationWidget',['../structQRenderWindow_1_1Data.html#a1b12899f8c4642d55ac21f66906a33f2',1,'QRenderWindow::Data']]],
+  ['origin_5foffset_10',['origin_offset',['../structtinyobj_1_1texture__option__t.html#ab6a036a11f7b1317709a4d3e25495e07',1,'tinyobj::texture_option_t']]],
+  ['original_5findex_11',['original_index',['../structplf_1_1colony_1_1item__index__tuple.html#ab538348723e6ba21e667948061987283',1,'plf::colony::item_index_tuple']]],
+  ['original_5flocation_12',['original_location',['../structplf_1_1colony_1_1item__index__tuple.html#a71438fc9dade7cae247be3dab7e75a2c',1,'plf::colony::item_index_tuple']]],
+  ['original_5fpoint_5fids_5f_13',['original_point_ids_',['../classMeshActor.html#a91bee7bb17cd1d38a1dfc29296b6ecf6',1,'MeshActor']]]
 ];

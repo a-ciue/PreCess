@@ -1,0 +1,19 @@
+<map id="core/EventBus.h" name="core/EventBus.h">
+<area shape="rect" id="Node000001" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="577,5,704,31"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,174,233,199"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="592,37,156,176,154,171,591,32"/>
+<area shape="rect" id="Node000003" href="$FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="493,79,666,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="625,43,596,80,592,77,621,40"/>
+<area shape="rect" id="Node000007" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="919,167,1125,207"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="657,41,687,80,708,100,730,116,805,138,927,164,926,169,804,143,727,121,704,104,684,84,653,44"/>
+<area shape="rect" id="Node000008" href="$TestEventBus_8cpp.html" title=" " alt="" coords="741,79,914,119"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="681,33,783,76,781,81,679,38"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="480,121,181,177,180,171,479,116"/>
+<area shape="rect" id="Node000004" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="258,167,469,207"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="520,126,412,169,410,164,518,121"/>
+<area shape="rect" id="Node000005" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="493,167,666,207"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="582,133,582,166,577,166,577,133"/>
+<area shape="rect" id="Node000006" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="691,167,895,207"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="640,121,747,164,745,169,638,126"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="680,117,925,164,924,169,679,122"/>
+</map>

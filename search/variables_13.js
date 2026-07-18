@@ -53,7 +53,10 @@ var searchData=
   ['stored_5finstance_50',['stored_instance',['../structplf_1_1colony_1_1sort__dereferencer.html#a9056be6a074ccb35c9214dd918114c7a',1,'plf::colony::sort_dereferencer']]],
   ['stringvalues_51',['stringValues',['../structtinyobj_1_1tag__t.html#a25634eea923961fd5b2520ea782397e8',1,'tinyobj::tag_t']]],
   ['style_5f_52',['style_',['../structQRenderWindow_1_1Data.html#ab2554cbb2eb916ccf410ca8e42f54d58',1,'QRenderWindow::Data']]],
-  ['system_5f_53',['system_',['../classsystems_1_1algo_1_1AlgorithmSystemRegister.html#ad5794cde5c160bca4d7708228a03b127',1,'systems::algo::AlgorithmSystemRegister::system_'],['../classsystems_1_1edit_1_1EditSystemRegister.html#ac38420e6777dc0a964e73d029a9a7c91',1,'systems::edit::EditSystemRegister::system_'],['../classsystems_1_1io_1_1ModelIOSystemRegister.html#a4a61cb555de57957004d9d63d85f8926',1,'systems::io::ModelIOSystemRegister::system_']]],
-  ['system_5fplugin_5fmanager_5f_54',['system_plugin_manager_',['../classsystems_1_1QSystemPluginManager.html#a457e707b78bae10ec73d175fda899319',1,'systems::QSystemPluginManager']]],
-  ['system_5fregisters_5f_55',['system_registers_',['../classsystems_1_1SystemPluginManager.html#a32a554f1080effbb70344965bd2ba08b',1,'systems::SystemPluginManager']]]
+  ['sub_5fa_53',['sub_a',['../TestEventBus_8cpp.html#a8894421268846950e0a8a42737b0127f',1,'TestEventBus.cpp']]],
+  ['sub_5fb_54',['sub_b',['../TestEventBus_8cpp.html#adde5f59cf420e6defd43023a81a778bb',1,'TestEventBus.cpp']]],
+  ['subscribers_5f_55',['subscribers_',['../classcore_1_1EventBus.html#a5cdbb1eb8dd2fcb52f0d3682f40538db',1,'core::EventBus::subscribers_'],['../classEventBus.html#a5cdbb1eb8dd2fcb52f0d3682f40538db',1,'EventBus::subscribers_']]],
+  ['system_5f_56',['system_',['../classsystems_1_1algo_1_1AlgorithmSystemRegister.html#ad5794cde5c160bca4d7708228a03b127',1,'systems::algo::AlgorithmSystemRegister::system_'],['../classsystems_1_1edit_1_1EditSystemRegister.html#ac38420e6777dc0a964e73d029a9a7c91',1,'systems::edit::EditSystemRegister::system_'],['../classsystems_1_1feature_1_1FeatureSystemRegister.html#aeb846ed8cfad5387dc22fa9122710abb',1,'systems::feature::FeatureSystemRegister::system_'],['../classsystems_1_1io_1_1ModelIOSystemRegister.html#a4a61cb555de57957004d9d63d85f8926',1,'systems::io::ModelIOSystemRegister::system_']]],
+  ['system_5fplugin_5fmanager_5f_57',['system_plugin_manager_',['../classsystems_1_1QSystemPluginManager.html#a457e707b78bae10ec73d175fda899319',1,'systems::QSystemPluginManager']]],
+  ['system_5fregisters_5f_58',['system_registers_',['../classsystems_1_1SystemPluginManager.html#a32a554f1080effbb70344965bd2ba08b',1,'systems::SystemPluginManager']]]
 ];

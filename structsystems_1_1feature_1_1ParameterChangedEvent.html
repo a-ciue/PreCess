@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::ParameterChangedEvent结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="structsystems_1_1feature_1_1ParameterChangedEvent.html">ParameterChangedEvent</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structsystems_1_1feature_1_1ParameterChangedEvent-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::ParameterChangedEvent结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能参数变更事件，FeatureSystem::setParameter 成功后发布  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureEvents_8h_source.html">FeatureEvents.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::feature::ParameterChangedEvent 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structsystems_1_1feature_1_1ParameterChangedEvent__coll__graph.png" border="0" usemap="#asystems_1_1feature_1_1ParameterChangedEvent_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1feature_1_1ParameterChangedEvent_coll__map" id="asystems_1_1feature_1_1ParameterChangedEvent_coll__map">
+<area shape="rect" title="功能参数变更事件，FeatureSystem::setParameter 成功后发布" alt="" coords="35,191,242,231"/>
+<area shape="rect" title=" " alt="" coords="31,95,118,120"/>
+<area shape="poly" title=" " alt="" coords="92,130,129,189,124,192,87,133"/>
+<area shape="rect" title=" " alt="" coords="5,5,144,45"/>
+<area shape="poly" title=" " alt="" coords="77,59,77,94,72,94,72,59"/>
+<area shape="rect" href="classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="143,95,265,120"/>
+<area shape="poly" title=" " alt="" coords="195,133,174,168,157,192,152,189,170,165,190,131"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ac2600a2d5fe529a56cbf42eda90141db" id="r_ac2600a2d5fe529a56cbf42eda90141db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac2600a2d5fe529a56cbf42eda90141db">ParameterChangedEvent</a> (std::string feature_name, std::size_t index, <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> new_value)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a1393abb9e71ed73e0c1caaca134bec03" id="r_a1393abb9e71ed73e0c1caaca134bec03"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1393abb9e71ed73e0c1caaca134bec03">feature</a></td></tr>
+<tr class="memitem:a5fe5e84b231a367d92a753ecd61b28e2" id="r_a5fe5e84b231a367d92a753ecd61b28e2"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fe5e84b231a367d92a753ecd61b28e2">param_index</a> { 0 }</td></tr>
+<tr class="memitem:a3632fe836e188727696ef318c987caba" id="r_a3632fe836e188727696ef318c987caba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3632fe836e188727696ef318c987caba">value</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能参数变更事件，FeatureSystem::setParameter 成功后发布 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ac2600a2d5fe529a56cbf42eda90141db" name="ac2600a2d5fe529a56cbf42eda90141db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2600a2d5fe529a56cbf42eda90141db">&#9670;&#160;</a></span>ParameterChangedEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::feature::ParameterChangedEvent::ParameterChangedEvent </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>feature_name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a></td>          <td class="paramname"><span class="paramname"><em>new_value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a1393abb9e71ed73e0c1caaca134bec03" name="a1393abb9e71ed73e0c1caaca134bec03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1393abb9e71ed73e0c1caaca134bec03">&#9670;&#160;</a></span>feature</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string systems::feature::ParameterChangedEvent::feature</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5fe5e84b231a367d92a753ecd61b28e2" name="a5fe5e84b231a367d92a753ecd61b28e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fe5e84b231a367d92a753ecd61b28e2">&#9670;&#160;</a></span>param_index</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t systems::feature::ParameterChangedEvent::param_index { 0 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3632fe836e188727696ef318c987caba" name="a3632fe836e188727696ef318c987caba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3632fe836e188727696ef318c987caba">&#9670;&#160;</a></span>value</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> systems::feature::ParameterChangedEvent::value</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureEvents_8h_source.html">FeatureEvents.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

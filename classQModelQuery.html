@@ -209,6 +209,10 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a504625b51874dcb1ccf28eb9ca5f9307" id="r_a504625b51874dcb1ccf28eb9ca5f9307"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structGeometryDataVtk.html">GeometryDataVtk</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a504625b51874dcb1ccf28eb9ca5f9307">getGeometryVtkDataByComponent</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
 <tr class="memitem:af4e921e2d56a8cdda49a13a6384c4132" id="r_af4e921e2d56a8cdda49a13a6384c4132"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4e921e2d56a8cdda49a13a6384c4132">getComponentIds</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
 <tr class="memitem:a19938f557fe09eced17f11bc7bdf458d" id="r_a19938f557fe09eced17f11bc7bdf458d"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19938f557fe09eced17f11bc7bdf458d">findModelIdByComponent</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
+<tr class="memitem:a35056e21c07e3fe3e307fa17fef3763c" id="r_a35056e21c07e3fe3e307fa17fef3763c"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a35056e21c07e3fe3e307fa17fef3763c">hasModel</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
+<tr class="memdesc:a35056e21c07e3fe3e307fa17fef3763c"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断指定 id 的模型是否仍然存在  <br /></td></tr>
+<tr class="memitem:afc97a0a71730b8ba54152f15ddc0cf86" id="r_afc97a0a71730b8ba54152f15ddc0cf86"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc97a0a71730b8ba54152f15ddc0cf86">hasComponent</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
+<tr class="memdesc:afc97a0a71730b8ba54152f15ddc0cf86"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断指定 id 的组件是否仍然存在  <br /></td></tr>
 <tr class="memitem:a8252993a581701fff74fea0b302ce92a" id="r_a8252993a581701fff74fea0b302ce92a"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QVariantList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8252993a581701fff74fea0b302ce92a">getGeometryEdgeMappedPointIds</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, int localGeometryEdgeId)</td></tr>
 <tr class="memitem:ac4ede680a9f04237e1f4d9bb6bc2737d" id="r_ac4ede680a9f04237e1f4d9bb6bc2737d"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac4ede680a9f04237e1f4d9bb6bc2737d">getModelName</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
 <tr class="memitem:a8ceb8aa8ef10099a53abff86357d81f5" id="r_a8ceb8aa8ef10099a53abff86357d81f5"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ceb8aa8ef10099a53abff86357d81f5">getComponentName</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
@@ -595,6 +599,56 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="afc97a0a71730b8ba54152f15ddc0cf86" name="afc97a0a71730b8ba54152f15ddc0cf86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc97a0a71730b8ba54152f15ddc0cf86">&#9670;&#160;</a></span>hasComponent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QModelQuery::hasComponent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>判断指定 id 的组件是否仍然存在 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">component_id</td><td>组件 ID </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a35056e21c07e3fe3e307fa17fef3763c" name="a35056e21c07e3fe3e307fa17fef3763c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35056e21c07e3fe3e307fa17fef3763c">&#9670;&#160;</a></span>hasModel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QModelQuery::hasModel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>判断指定 id 的模型是否仍然存在 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型 ID </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

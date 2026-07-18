@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/feature/FeatureRegistrar.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_05585d2a38afe5c243e9dcc7f0f8321f.html">feature</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">FeatureRegistrar.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能声明的收集器  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="FeatureInfo_8h_source.html">FeatureInfo.h</a>&quot;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+FeatureRegistrar.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="FeatureRegistrar_8h__incl.png" border="0" usemap="#amodel_2systems_2feature_2FeatureRegistrar_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2feature_2FeatureRegistrar_8h" id="amodel_2systems_2feature_2FeatureRegistrar_8h">
+<area shape="rect" title="功能声明的收集器" alt="" coords="332,5,505,45"/>
+<area shape="rect" href="FeatureInfo_8h.html" title="功能的描述信息与注册声明（菜单、按键）" alt="" coords="273,93,381,119"/>
+<area shape="poly" title=" " alt="" coords="398,48,353,86,349,82,395,44"/>
+<area shape="rect" title=" " alt="" coords="382,167,445,192"/>
+<area shape="poly" title=" " alt="" coords="421,46,417,153,412,153,415,46"/>
+<area shape="rect" title=" " alt="" coords="457,93,517,119"/>
+<area shape="poly" title=" " alt="" coords="437,44,470,81,466,84,433,47"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="194,167,281,192"/>
+<area shape="poly" title=" " alt="" coords="314,121,264,160,261,156,311,117"/>
+<area shape="rect" title=" " alt="" coords="320,240,379,265"/>
+<area shape="poly" title=" " alt="" coords="331,119,348,226,343,227,326,120"/>
+<area shape="poly" title=" " alt="" coords="342,117,390,156,387,160,339,121"/>
+<area shape="rect" title=" " alt="" coords="5,240,96,265"/>
+<area shape="poly" title=" " alt="" coords="208,195,95,237,93,233,206,190"/>
+<area shape="poly" title=" " alt="" coords="257,190,321,230,318,235,254,194"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="120,240,296,265"/>
+<area shape="poly" title=" " alt="" coords="235,193,220,228,216,226,230,191"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="FeatureRegistrar_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2feature_2FeatureRegistrar_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2feature_2FeatureRegistrar_8hdep" id="amodel_2systems_2feature_2FeatureRegistrar_8hdep">
+<area shape="rect" title="功能声明的收集器" alt="" coords="112,5,285,45"/>
+<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="5,93,179,133"/>
+<area shape="poly" title=" " alt="" coords="166,56,117,95,114,91,163,52"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="203,93,410,133"/>
+<area shape="poly" title=" " alt="" coords="235,52,284,91,281,95,232,56"/>
+</map>
+</div>
+</div>
+<p><a href="FeatureRegistrar_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Afeature_3A_3AFeatureRegistrar" id="r_systems_3A_3Afeature_3A_3AFeatureRegistrar"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1feature_1_1FeatureRegistrar.html">systems::feature::FeatureRegistrar</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能注册器：功能在 setup() 中通过它声明参数、菜单项与按键绑定  <a href="classsystems_1_1feature_1_1FeatureRegistrar.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Afeature" id="r_systems_3A_3Afeature"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1feature.html">systems::feature</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能声明的收集器 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

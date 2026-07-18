@@ -8,5 +8,6 @@ var searchData=
   ['editsystem_2eh_5',['EditSystem.h',['../EditSystem_8h.html',1,'']]],
   ['editsystemregister_2ecpp_6',['EditSystemRegister.cpp',['../EditSystemRegister_8cpp.html',1,'']]],
   ['editsystemregister_2eh_7',['EditSystemRegister.h',['../EditSystemRegister_8h.html',1,'']]],
-  ['elemstorage_2eh_8',['ElemStorage.h',['../ElemStorage_8h.html',1,'']]]
+  ['elemstorage_2eh_8',['ElemStorage.h',['../ElemStorage_8h.html',1,'']]],
+  ['eventbus_2eh_9',['EventBus.h',['../EventBus_8h.html',1,'']]]
 ];

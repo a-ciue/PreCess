@@ -1,0 +1,731 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::FeatureSystem类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#pub-types">Public 类型</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-attribs">静态 Public 属性</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classsystems_1_1feature_1_1FeatureSystem-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::FeatureSystem类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能系统：管理功能插件的注册、注销、调用与事件路由  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureSystem_8h_source.html">FeatureSystem.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::feature::FeatureSystem 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1feature_1_1FeatureSystem__coll__graph.png" border="0" usemap="#asystems_1_1feature_1_1FeatureSystem_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1feature_1_1FeatureSystem_coll__map" id="asystems_1_1feature_1_1FeatureSystem_coll__map">
+<area shape="rect" title="功能系统：管理功能插件的注册、注销、调用与事件路由" alt="" coords="4435,161,4624,201"/>
+<area shape="rect" title=" " alt="" coords="1032,329,1119,354"/>
+<area shape="poly" title=" " alt="" coords="1086,314,1132,233,1165,187,1205,145,1266,91,1320,54,1348,41,1380,32,1416,27,1459,25,4235,25,4278,29,4320,40,4360,57,4398,77,4463,121,4509,159,4506,163,4460,125,4395,81,4358,62,4319,46,4277,35,4235,31,1459,31,1416,32,1381,38,1350,46,1322,59,1269,96,1209,149,1169,190,1136,236,1091,317"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="1413,509,1507,534"/>
+<area shape="poly" title=" " alt="" coords="1103,361,1150,397,1208,432,1235,444,1257,450,1309,463,1427,506,1425,511,1307,468,1256,455,1233,449,1205,437,1147,402,1100,365"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1396,935,1524,961"/>
+<area shape="poly" title=" " alt="" coords="1083,367,1103,470,1121,540,1147,617,1180,698,1221,776,1272,849,1302,883,1334,913,1363,930,1396,940,1395,945,1361,935,1330,917,1298,886,1268,853,1217,779,1175,700,1142,619,1116,541,1098,471,1078,368"/>
+<area shape="rect" title=" " alt="" coords="4143,197,4325,267"/>
+<area shape="poly" title=" " alt="" coords="1093,316,1148,253,1187,215,1232,177,1283,142,1338,113,1397,93,1459,85,3932,85,3970,88,4008,97,4080,124,4143,160,4192,195,4189,199,4140,164,4077,129,4006,102,3969,94,3932,91,1459,91,1398,98,1340,117,1286,146,1235,181,1190,219,1151,257,1097,319"/>
+<area shape="rect" href="structsystems_1_1feature_1_1FeatureInfo.html" title="功能信息：元数据与 setup() 声明的聚合，供 UI 查询" alt="" coords="2199,358,2414,383"/>
+<area shape="poly" title=" " alt="" coords="1132,351,1333,397,1472,435,1533,449,1612,461,1716,463,1841,455,1998,439,2082,429,2165,413,2270,381,2272,386,2166,419,2083,435,1999,444,1841,460,1716,468,1612,467,1532,455,1470,440,1331,403,1131,357"/>
+<area shape="rect" href="structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="1405,255,1515,281"/>
+<area shape="poly" title=" " alt="" coords="1120,321,1206,295,1311,277,1404,268,1405,274,1312,282,1207,300,1122,326"/>
+<area shape="rect" href="structsystems_1_1feature_1_1MenuContribution.html" title="菜单贡献项：声明功能要挂到哪个菜单下" alt="" coords="1332,310,1588,335"/>
+<area shape="poly" title=" " alt="" coords="1133,340,1216,340,1308,337,1362,333,1362,338,1308,343,1216,346,1133,345"/>
+<area shape="rect" title=" " alt="" coords="661,321,799,361"/>
+<area shape="poly" title=" " alt="" coords="813,339,1032,339,1032,344,813,344"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2675,729,2773,754"/>
+<area shape="poly" title=" " alt="" coords="2784,723,2857,705,2947,687,3048,674,3149,668,4235,668,4275,664,4310,652,4342,633,4371,609,4397,579,4420,545,4457,470,4485,390,4505,314,4523,201,4529,202,4510,315,4490,392,4462,472,4424,548,4401,582,4375,612,4345,638,4312,657,4276,669,4235,673,3149,673,3048,679,2948,693,2858,710,2785,728"/>
+<area shape="rect" href="structsystems_1_1feature_1_1FeatureContext.html" title="功能上下文，由 FeatureSystem 装配并在 activate()/execute() 时传给功能" alt="" coords="3056,293,3245,333"/>
+<area shape="poly" title=" " alt="" coords="2746,717,3127,332,3131,335,2750,721"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="2236,729,2377,754"/>
+<area shape="poly" title=" " alt="" coords="2391,739,2674,739,2674,744,2391,744"/>
+<area shape="rect" title=" " alt="" coords="1774,793,1961,847"/>
+<area shape="poly" title=" " alt="" coords="1974,800,2165,767,2243,751,2244,757,2166,772,1975,805"/>
+<area shape="rect" title=" " alt="" coords="1779,557,1955,611"/>
+<area shape="poly" title=" " alt="" coords="1969,585,2019,593,2071,606,2122,628,2167,658,2177,673,2180,688,2182,702,2191,715,2212,728,2236,735,2235,741,2210,733,2188,719,2177,705,2175,689,2172,675,2163,662,2119,632,2070,611,2018,598,1969,590"/>
+<area shape="rect" title=" " alt="" coords="1781,635,1954,690"/>
+<area shape="poly" title=" " alt="" coords="1968,676,2166,711,2244,726,2243,731,2165,716,1967,681"/>
+<area shape="rect" title=" " alt="" coords="1779,714,1955,769"/>
+<area shape="poly" title=" " alt="" coords="1969,739,2236,739,2236,744,1969,744"/>
+<area shape="rect" title=" " alt="" coords="2225,650,2388,705"/>
+<area shape="poly" title=" " alt="" coords="2402,683,2501,695,2606,711,2676,726,2674,731,2605,716,2500,700,2402,689"/>
+<area shape="rect" title=" " alt="" coords="1757,507,1977,533"/>
+<area shape="poly" title=" " alt="" coords="1991,510,2037,514,2083,523,2127,540,2167,566,2179,584,2181,602,2182,619,2191,636,2207,648,2226,658,2224,663,2204,653,2187,639,2177,621,2175,602,2174,585,2163,570,2125,545,2082,529,2036,519,1991,515"/>
+<area shape="poly" title=" " alt="" coords="1520,518,1757,518,1757,523,1520,524"/>
+<area shape="rect" title=" " alt="" coords="303,869,460,894"/>
+<area shape="poly" title=" " alt="" coords="380,855,383,792,397,710,411,666,430,625,455,588,488,556,509,546,542,538,639,526,766,518,911,514,1202,514,1413,517,1413,523,1202,519,911,519,766,523,640,531,543,543,511,551,491,561,459,591,435,628,416,668,403,711,388,792,385,855"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="686,978,774,1003"/>
+<area shape="poly" title=" " alt="" coords="454,895,540,918,632,951,656,964,687,976,685,981,654,969,630,956,538,923,452,900"/>
+<area shape="rect" title=" " alt="" coords="2207,921,2406,975"/>
+<area shape="poly" title=" " alt="" coords="2420,959,2466,959,2513,953,2560,942,2604,922,2627,905,2648,884,2681,836,2703,789,2716,754,2721,755,2708,791,2685,839,2652,887,2631,909,2607,926,2562,947,2514,959,2466,964,2420,964"/>
+<area shape="rect" title=" " alt="" coords="1763,928,1972,968"/>
+<area shape="poly" title=" " alt="" coords="1986,945,2207,945,2207,951,1986,951"/>
+<area shape="poly" title=" " alt="" coords="1538,945,1762,945,1762,951,1538,951"/>
+<area shape="rect" title=" " alt="" coords="968,987,1183,1013"/>
+<area shape="poly" title=" " alt="" coords="1196,985,1308,971,1395,957,1396,962,1308,976,1197,990"/>
+<area shape="poly" title=" " alt="" coords="788,990,968,994,968,1000,788,995"/>
+<area shape="rect" title=" " alt="" coords="297,935,465,975"/>
+<area shape="poly" title=" " alt="" coords="478,940,630,919,654,915,859,897,1032,888,1327,886,1621,883,1794,875,1998,857,2196,833,2389,802,2674,749,2675,754,2390,807,2197,838,1999,863,1795,880,1621,889,1327,891,1032,893,859,902,655,920,631,924,479,945"/>
+<area shape="poly" title=" " alt="" coords="468,975,490,979,595,988,686,989,686,994,595,993,489,984,467,980"/>
+<area shape="rect" title=" " alt="" coords="5,942,180,967"/>
+<area shape="poly" title=" " alt="" coords="194,952,297,952,297,957,194,957"/>
+<area shape="rect" title=" " alt="" coords="976,1037,1175,1077"/>
+<area shape="poly" title=" " alt="" coords="1188,1042,1248,1029,1307,1011,1331,996,1421,958,1423,963,1333,1001,1309,1016,1249,1034,1189,1047"/>
+<area shape="rect" href="structGeometryData.html" title=" " alt="" coords="671,1045,789,1070"/>
+<area shape="poly" title=" " alt="" coords="803,1055,976,1055,976,1060,803,1060"/>
+<area shape="rect" title=" " alt="" coords="976,923,1175,963"/>
+<area shape="poly" title=" " alt="" coords="1189,942,1396,944,1396,950,1189,947"/>
+<area shape="rect" href="structGeometryMeshMap.html" title=" " alt="" coords="655,929,805,954"/>
+<area shape="poly" title=" " alt="" coords="819,939,976,940,976,945,819,944"/>
+<area shape="rect" title=" " alt="" coords="2231,585,2383,625"/>
+<area shape="poly" title=" " alt="" coords="2397,610,2499,628,2554,642,2606,660,2665,693,2709,726,2706,731,2662,697,2604,665,2552,647,2498,633,2396,616"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="2257,1050,2356,1075"/>
+<area shape="poly" title=" " alt="" coords="2363,1076,2418,1086,2481,1090,2514,1088,2546,1082,2576,1071,2604,1055,2638,1023,2665,984,2686,941,2700,896,2716,812,2720,754,2725,754,2721,812,2705,897,2691,943,2670,987,2642,1027,2607,1059,2578,1076,2547,1087,2514,1093,2481,1095,2417,1091,2362,1081"/>
+<area shape="rect" title=" " alt="" coords="1761,1011,1973,1051"/>
+<area shape="poly" title=" " alt="" coords="1987,1037,2257,1056,2257,1062,1987,1042"/>
+<area shape="rect" title=" " alt="" coords="1369,1011,1551,1051"/>
+<area shape="poly" title=" " alt="" coords="1565,1028,1761,1028,1761,1033,1565,1033"/>
+<area shape="rect" title=" " alt="" coords="1796,1075,1939,1115"/>
+<area shape="poly" title=" " alt="" coords="1952,1090,2165,1077,2257,1067,2257,1072,2166,1083,1953,1095"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="2246,999,2367,1025"/>
+<area shape="poly" title=" " alt="" coords="2381,1023,2434,1027,2493,1025,2551,1013,2578,1002,2604,987,2632,963,2656,933,2675,900,2690,865,2710,800,2718,754,2724,755,2715,802,2695,867,2680,902,2660,936,2636,966,2607,992,2581,1007,2553,1018,2493,1030,2434,1032,2381,1028"/>
+<area shape="rect" href="classcore_1_1EventBus.html" title="类型安全的轻量级事件总线，以事件类型为键分发事件" alt="" coords="2665,147,2783,173"/>
+<area shape="poly" title=" " alt="" coords="2797,157,3149,157,4235,157,4339,161,4435,168,4434,174,4338,166,4235,163,3149,163,2797,163"/>
+<area shape="poly" title=" " alt="" coords="2770,175,2843,199,2896,208,2939,210,2981,214,3033,230,3086,259,3128,291,3125,295,3083,263,3031,234,2980,219,2938,215,2896,213,2842,204,2769,180"/>
+<area shape="rect" title=" " alt="" coords="2189,125,2424,195"/>
+<area shape="poly" title=" " alt="" coords="2438,157,2665,157,2665,163,2438,163"/>
+<area shape="rect" title=" " alt="" coords="1736,140,1999,180"/>
+<area shape="poly" title=" " alt="" coords="2013,157,2189,157,2189,163,2013,163"/>
+<area shape="rect" title=" " alt="" coords="1367,140,1553,180"/>
+<area shape="poly" title=" " alt="" coords="1567,157,1736,157,1736,163,1567,163"/>
+<area shape="poly" title=" " alt="" coords="4338,211,4434,195,4435,200,4339,217"/>
+<area shape="rect" href="structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html" title=" " alt="" coords="3836,248,4025,288"/>
+<area shape="poly" title=" " alt="" coords="4038,253,4142,240,4143,245,4039,258"/>
+<area shape="rect" title=" " alt="" coords="2843,351,3032,391"/>
+<area shape="poly" title=" " alt="" coords="3046,374,3176,377,3338,375,3514,365,3603,356,3690,343,3793,317,3880,286,3882,291,3794,322,3691,348,3604,361,3515,370,3338,381,3176,382,3045,379"/>
+<area shape="poly" title=" " alt="" coords="2428,368,2842,368,2842,373,2428,373"/>
+<area shape="rect" title=" " alt="" coords="1796,256,1939,296"/>
+<area shape="poly" title=" " alt="" coords="1952,294,1999,307,2023,313,2232,355,2231,361,2022,319,1998,312,1951,300"/>
+<area shape="rect" href="classsystems_1_1feature_1_1FeatureParams.html" title="功能的持久参数集：参数类型与当前值一一对应" alt="" coords="2629,261,2819,301"/>
+<area shape="poly" title=" " alt="" coords="1952,279,2189,291,2307,293,2424,291,2629,283,2629,289,2424,296,2307,298,2189,296,1952,284"/>
+<area shape="poly" title=" " alt="" coords="1529,267,1796,272,1796,277,1529,272"/>
+<area shape="rect" title=" " alt="" coords="1759,321,1975,361"/>
+<area shape="poly" title=" " alt="" coords="1978,361,2023,367,2113,372,2199,372,2199,377,2113,377,2022,372,1977,366"/>
+<area shape="poly" title=" " alt="" coords="1602,326,1759,334,1759,339,1602,332"/>
+<area shape="rect" title=" " alt="" coords="1781,389,1954,429"/>
+<area shape="poly" title=" " alt="" coords="1968,409,2063,408,2165,400,2260,381,2261,386,2166,405,2064,413,1968,415"/>
+<area shape="rect" href="structsystems_1_1feature_1_1KeyBinding.html" title="按键绑定：按键事件匹配时定向回调功能的 onKeyEvent" alt="" coords="1353,362,1567,387"/>
+<area shape="poly" title=" " alt="" coords="1581,382,1781,399,1780,405,1580,388"/>
+<area shape="rect" title=" " alt="" coords="3269,231,3467,271"/>
+<area shape="poly" title=" " alt="" coords="3480,251,3812,261,3836,262,3836,267,3812,267,3480,257"/>
+<area shape="poly" title=" " alt="" coords="2832,274,3269,253,3269,258,2832,279"/>
+<area shape="poly" title=" " alt="" coords="2817,301,2843,305,2953,313,3056,314,3056,319,2953,319,2842,311,2816,307"/>
+<area shape="rect" title=" " alt="" coords="2235,219,2378,259"/>
+<area shape="poly" title=" " alt="" coords="2392,245,2629,269,2629,274,2391,250"/>
+<area shape="rect" href="classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="1806,206,1929,231"/>
+<area shape="poly" title=" " alt="" coords="1943,219,2235,233,2235,238,1942,225"/>
+<area shape="rect" title=" " alt="" coords="3491,293,3691,333"/>
+<area shape="poly" title=" " alt="" coords="3704,298,3812,284,3835,281,3836,286,3812,289,3705,303"/>
+<area shape="poly" title=" " alt="" coords="3259,311,3490,311,3490,316,3259,316"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:FeatureEntry" id="r_FeatureEntry"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html">FeatureEntry</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:aa490bd1439fee0958e0a6eb4da3ed4c4" id="r_aa490bd1439fee0958e0a6eb4da3ed4c4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa490bd1439fee0958e0a6eb4da3ed4c4">SystemHandler</a> = <a class="el" href="classsystems_1_1feature_1_1FeatureHandler.html">FeatureHandler</a></td></tr>
+<tr class="memitem:a8b70c725ce4577e617f7e7699278c1d3" id="r_a8b70c725ce4577e617f7e7699278c1d3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b70c725ce4577e617f7e7699278c1d3">SystemHandlerPtr</a> = <a class="el" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">::systems::SystemHandlerPtr</a>&lt;<a class="el" href="#aa490bd1439fee0958e0a6eb4da3ed4c4">SystemHandler</a>&gt;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ad2aa12d73c8df89bcd4d4b264b5e5b1a" id="r_ad2aa12d73c8df89bcd4d4b264b5e5b1a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad2aa12d73c8df89bcd4d4b264b5e5b1a">FeatureSystem</a> (<a class="el" href="classModelLayer.html">ModelLayer</a> &amp;model_layer, <a class="el" href="classcore_1_1EventBus.html">core::EventBus</a> &amp;event_bus)</td></tr>
+<tr class="memitem:aacbf176c9bfc3118346cc8374690c6ec" id="r_aacbf176c9bfc3118346cc8374690c6ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacbf176c9bfc3118346cc8374690c6ec">~FeatureSystem</a> ()</td></tr>
+<tr class="memitem:a0ae3fb63ab367450d8fcbd86f7bbba54" id="r_a0ae3fb63ab367450d8fcbd86f7bbba54"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ae3fb63ab367450d8fcbd86f7bbba54">registerHandler</a> (const <a class="el" href="structsystems_1_1feature_1_1HandlerMetaData.html">HandlerMetaData</a> &amp;meta_data, <a class="el" href="#a8b70c725ce4577e617f7e7699278c1d3">SystemHandlerPtr</a> handler)</td></tr>
+<tr class="memdesc:a0ae3fb63ab367450d8fcbd86f7bbba54"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册功能处理器插件：setup() 收集声明 → 装配上下文 → activate()  <br /></td></tr>
+<tr class="memitem:ae9b352244338c77da0e13591346e618c" id="r_ae9b352244338c77da0e13591346e618c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae9b352244338c77da0e13591346e618c">unregisterHandler</a> (const <a class="el" href="structsystems_1_1feature_1_1HandlerMetaData.html">HandlerMetaData</a> &amp;meta_data)</td></tr>
+<tr class="memdesc:ae9b352244338c77da0e13591346e618c"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销功能处理器插件：deactivate() 后移除  <br /></td></tr>
+<tr class="memitem:ad20ab57c00cd78afbcd5397e2190668b" id="r_ad20ab57c00cd78afbcd5397e2190668b"><td class="memItemLeft" align="right" valign="top">std::any&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad20ab57c00cd78afbcd5397e2190668b">invoke</a> (const std::string &amp;unique_name)</td></tr>
+<tr class="memdesc:ad20ab57c00cd78afbcd5397e2190668b"><td class="mdescLeft">&#160;</td><td class="mdescRight">菜单触发的功能调用  <br /></td></tr>
+<tr class="memitem:a715330b0823f970d8e6306a5c2623a50" id="r_a715330b0823f970d8e6306a5c2623a50"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a715330b0823f970d8e6306a5c2623a50">setParameter</a> (const std::string &amp;unique_name, std::size_t index, <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> value)</td></tr>
+<tr class="memdesc:a715330b0823f970d8e6306a5c2623a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">修改功能参数并广播 <a class="el" href="structsystems_1_1feature_1_1ParameterChangedEvent.html" title="功能参数变更事件，FeatureSystem::setParameter 成功后发布">ParameterChangedEvent</a>  <br /></td></tr>
+<tr class="memitem:af3309f79cc6e35a642f90b6fb7684a09" id="r_af3309f79cc6e35a642f90b6fb7684a09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3309f79cc6e35a642f90b6fb7684a09">dispatchKeyEvent</a> (const <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> &amp;event)</td></tr>
+<tr class="memdesc:af3309f79cc6e35a642f90b6fb7684a09"><td class="mdescLeft">&#160;</td><td class="mdescRight">派发按键事件：先向事件总线广播原始事件流，再做按键绑定路由  <br /></td></tr>
+<tr class="memitem:a4cf68e04b49a70fd107b25c67fa91d7e" id="r_a4cf68e04b49a70fd107b25c67fa91d7e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1FeatureInfo.html">FeatureInfo</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4cf68e04b49a70fd107b25c67fa91d7e">getFeatureInfos</a> ()</td></tr>
+<tr class="memdesc:a4cf68e04b49a70fd107b25c67fa91d7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取已注册功能信息列表  <br /></td></tr>
+<tr class="memitem:aec8c7666d7ada08a33aa0b359d8334ba" id="r_aec8c7666d7ada08a33aa0b359d8334ba"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classsystems_1_1feature_1_1FeatureParams.html">FeatureParams</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec8c7666d7ada08a33aa0b359d8334ba">params</a> (const std::string &amp;unique_name) const</td></tr>
+<tr class="memdesc:aec8c7666d7ada08a33aa0b359d8334ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取功能的参数集（UI 展示当前值用），功能不存在时为 nullptr  <br /></td></tr>
+<tr class="memitem:a80cb40c525fd6542d2f4d3185518d022" id="r_a80cb40c525fd6542d2f4d3185518d022"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80cb40c525fd6542d2f4d3185518d022">setOnFeatureInfosChanged</a> (std::function&lt; void()&gt; callback)</td></tr>
+<tr class="memdesc:a80cb40c525fd6542d2f4d3185518d022"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置功能信息变更回调函数  <br /></td></tr>
+<tr class="memitem:a7c06f3d99d963bcbba6f9c5ef0ca874c" id="r_a7c06f3d99d963bcbba6f9c5ef0ca874c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7c06f3d99d963bcbba6f9c5ef0ca874c">setActiveModelProvider</a> (std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt; provider)</td></tr>
+<tr class="memdesc:a7c06f3d99d963bcbba6f9c5ef0ca874c"><td class="mdescLeft">&#160;</td><td class="mdescRight">注入动态上下文 provider（app 层调用，功能注册前后设置均生效）  <br /></td></tr>
+<tr class="memitem:a5bc3edf7e66864596b72a2b6b9d3e9c2" id="r_a5bc3edf7e66864596b72a2b6b9d3e9c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5bc3edf7e66864596b72a2b6b9d3e9c2">setActiveComponentProvider</a> (std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt; provider)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+静态 Public 属性</h2></td></tr>
+<tr class="memitem:a5a5e3327a890e62b0aa00db2a02b825a" id="r_a5a5e3327a890e62b0aa00db2a02b825a"><td class="memItemLeft" align="right" valign="top">static const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a5e3327a890e62b0aa00db2a02b825a">name</a> = &quot;FeatureSystem&quot;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a5f09d2fbafef0d92ec53329594f17b80" id="r_a5f09d2fbafef0d92ec53329594f17b80"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f09d2fbafef0d92ec53329594f17b80">routeKeyEvent</a> (const <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> &amp;event)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a175ea36eb1484936629b56c05aabb4ef" id="r_a175ea36eb1484936629b56c05aabb4ef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelLayer.html">ModelLayer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a175ea36eb1484936629b56c05aabb4ef">model_layer_</a></td></tr>
+<tr class="memitem:aba8b654496a220e2cb145bc305552141" id="r_aba8b654496a220e2cb145bc305552141"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba8b654496a220e2cb145bc305552141">event_bus_</a></td></tr>
+<tr class="memitem:a175c6e151ef13beedba062dccd4a3052" id="r_a175c6e151ef13beedba062dccd4a3052"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html">FeatureEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a175c6e151ef13beedba062dccd4a3052">entries_</a></td></tr>
+<tr class="memitem:ac63494e487932fdbbf868aa4d207d83c" id="r_ac63494e487932fdbbf868aa4d207d83c"><td class="memItemLeft" align="right" valign="top">std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac63494e487932fdbbf868aa4d207d83c">active_model_provider_</a></td></tr>
+<tr class="memitem:a0b352a8da17086f9ac43c8002d125b82" id="r_a0b352a8da17086f9ac43c8002d125b82"><td class="memItemLeft" align="right" valign="top">std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b352a8da17086f9ac43c8002d125b82">active_component_provider_</a></td></tr>
+<tr class="memitem:aae1499e61eb8c80a34e5a52337e7b120" id="r_aae1499e61eb8c80a34e5a52337e7b120"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae1499e61eb8c80a34e5a52337e7b120">on_feature_infos_changed_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能系统：管理功能插件的注册、注销、调用与事件路由 </p>
+<p>非单例，由 app 层组合持有。与算法/编辑系统不同，功能在注册后即处于 激活状态，可持续响应按键、参数变更与模型事件。 </p>
+</div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">成员类型定义说明</h2>
+<a id="aa490bd1439fee0958e0a6eb4da3ed4c4" name="aa490bd1439fee0958e0a6eb4da3ed4c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa490bd1439fee0958e0a6eb4da3ed4c4">&#9670;&#160;</a></span>SystemHandler</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#aa490bd1439fee0958e0a6eb4da3ed4c4">systems::feature::FeatureSystem::SystemHandler</a> = <a class="el" href="classsystems_1_1feature_1_1FeatureHandler.html">FeatureHandler</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8b70c725ce4577e617f7e7699278c1d3" name="a8b70c725ce4577e617f7e7699278c1d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b70c725ce4577e617f7e7699278c1d3">&#9670;&#160;</a></span>SystemHandlerPtr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a8b70c725ce4577e617f7e7699278c1d3">systems::feature::FeatureSystem::SystemHandlerPtr</a> = <a class="el" href="namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac">::systems::SystemHandlerPtr</a>&lt;<a class="el" href="#aa490bd1439fee0958e0a6eb4da3ed4c4">SystemHandler</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ad2aa12d73c8df89bcd4d4b264b5e5b1a" name="ad2aa12d73c8df89bcd4d4b264b5e5b1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2aa12d73c8df89bcd4d4b264b5e5b1a">&#9670;&#160;</a></span>FeatureSystem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::feature::FeatureSystem::FeatureSystem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model_layer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>event_bus</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aacbf176c9bfc3118346cc8374690c6ec" name="aacbf176c9bfc3118346cc8374690c6ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacbf176c9bfc3118346cc8374690c6ec">&#9670;&#160;</a></span>~FeatureSystem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::feature::FeatureSystem::~FeatureSystem </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="af3309f79cc6e35a642f90b6fb7684a09" name="af3309f79cc6e35a642f90b6fb7684a09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3309f79cc6e35a642f90b6fb7684a09">&#9670;&#160;</a></span>dispatchKeyEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::feature::FeatureSystem::dispatchKeyEvent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>派发按键事件：先向事件总线广播原始事件流，再做按键绑定路由 </p>
+<dl class="section return"><dt>返回</dt><dd>任一绑定功能的 onKeyEvent 返回 true（事件已被消费）时为 true， 调用方（UI 层）应据此 accept 事件、阻止其继续传递 </dd></dl>
+
+</div>
+</div>
+<a id="a4cf68e04b49a70fd107b25c67fa91d7e" name="a4cf68e04b49a70fd107b25c67fa91d7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cf68e04b49a70fd107b25c67fa91d7e">&#9670;&#160;</a></span>getFeatureInfos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1FeatureInfo.html">FeatureInfo</a> * &gt; systems::feature::FeatureSystem::getFeatureInfos </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取已注册功能信息列表 </p>
+
+</div>
+</div>
+<a id="ad20ab57c00cd78afbcd5397e2190668b" name="ad20ab57c00cd78afbcd5397e2190668b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad20ab57c00cd78afbcd5397e2190668b">&#9670;&#160;</a></span>invoke()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::any systems::feature::FeatureSystem::invoke </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>unique_name</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>菜单触发的功能调用 </p>
+<dl class="section return"><dt>返回</dt><dd>功能返回的结果，功能不存在时为空 std::any </dd></dl>
+
+</div>
+</div>
+<a id="aec8c7666d7ada08a33aa0b359d8334ba" name="aec8c7666d7ada08a33aa0b359d8334ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec8c7666d7ada08a33aa0b359d8334ba">&#9670;&#160;</a></span>params()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classsystems_1_1feature_1_1FeatureParams.html">FeatureParams</a> * systems::feature::FeatureSystem::params </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>unique_name</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>获取功能的参数集（UI 展示当前值用），功能不存在时为 nullptr </p>
+
+</div>
+</div>
+<a id="a0ae3fb63ab367450d8fcbd86f7bbba54" name="a0ae3fb63ab367450d8fcbd86f7bbba54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ae3fb63ab367450d8fcbd86f7bbba54">&#9670;&#160;</a></span>registerHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::feature::FeatureSystem::registerHandler </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structsystems_1_1feature_1_1HandlerMetaData.html">HandlerMetaData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>meta_data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a8b70c725ce4577e617f7e7699278c1d3">SystemHandlerPtr</a></td>          <td class="paramname"><span class="paramname"><em>handler</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注册功能处理器插件：setup() 收集声明 → 装配上下文 → activate() </p>
+
+</div>
+</div>
+<a id="a5f09d2fbafef0d92ec53329594f17b80" name="a5f09d2fbafef0d92ec53329594f17b80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f09d2fbafef0d92ec53329594f17b80">&#9670;&#160;</a></span>routeKeyEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::feature::FeatureSystem::routeKeyEvent </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5bc3edf7e66864596b72a2b6b9d3e9c2" name="a5bc3edf7e66864596b72a2b6b9d3e9c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bc3edf7e66864596b72a2b6b9d3e9c2">&#9670;&#160;</a></span>setActiveComponentProvider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureSystem::setActiveComponentProvider </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt;</td>          <td class="paramname"><span class="paramname"><em>provider</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7c06f3d99d963bcbba6f9c5ef0ca874c" name="a7c06f3d99d963bcbba6f9c5ef0ca874c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c06f3d99d963bcbba6f9c5ef0ca874c">&#9670;&#160;</a></span>setActiveModelProvider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureSystem::setActiveModelProvider </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;()&gt;</td>          <td class="paramname"><span class="paramname"><em>provider</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注入动态上下文 provider（app 层调用，功能注册前后设置均生效） </p>
+
+</div>
+</div>
+<a id="a80cb40c525fd6542d2f4d3185518d022" name="a80cb40c525fd6542d2f4d3185518d022"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80cb40c525fd6542d2f4d3185518d022">&#9670;&#160;</a></span>setOnFeatureInfosChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureSystem::setOnFeatureInfosChanged </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; void()&gt;</td>          <td class="paramname"><span class="paramname"><em>callback</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置功能信息变更回调函数 </p>
+
+</div>
+</div>
+<a id="a715330b0823f970d8e6306a5c2623a50" name="a715330b0823f970d8e6306a5c2623a50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a715330b0823f970d8e6306a5c2623a50">&#9670;&#160;</a></span>setParameter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::feature::FeatureSystem::setParameter </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>unique_name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a></td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>修改功能参数并广播 <a class="el" href="structsystems_1_1feature_1_1ParameterChangedEvent.html" title="功能参数变更事件，FeatureSystem::setParameter 成功后发布">ParameterChangedEvent</a> </p>
+<dl class="section return"><dt>返回</dt><dd>功能与参数下标均有效时返回 true </dd></dl>
+
+</div>
+</div>
+<a id="ae9b352244338c77da0e13591346e618c" name="ae9b352244338c77da0e13591346e618c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9b352244338c77da0e13591346e618c">&#9670;&#160;</a></span>unregisterHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureSystem::unregisterHandler </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structsystems_1_1feature_1_1HandlerMetaData.html">HandlerMetaData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>meta_data</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注销功能处理器插件：deactivate() 后移除 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a0b352a8da17086f9ac43c8002d125b82" name="a0b352a8da17086f9ac43c8002d125b82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b352a8da17086f9ac43c8002d125b82">&#9670;&#160;</a></span>active_component_provider_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;std::optional&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&gt;()&gt; systems::feature::FeatureSystem::active_component_provider_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac63494e487932fdbbf868aa4d207d83c" name="ac63494e487932fdbbf868aa4d207d83c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac63494e487932fdbbf868aa4d207d83c">&#9670;&#160;</a></span>active_model_provider_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;std::optional&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&gt;()&gt; systems::feature::FeatureSystem::active_model_provider_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a175c6e151ef13beedba062dccd4a3052" name="a175c6e151ef13beedba062dccd4a3052"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a175c6e151ef13beedba062dccd4a3052">&#9670;&#160;</a></span>entries_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html">FeatureEntry</a>&gt; systems::feature::FeatureSystem::entries_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aba8b654496a220e2cb145bc305552141" name="aba8b654496a220e2cb145bc305552141"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba8b654496a220e2cb145bc305552141">&#9670;&#160;</a></span>event_bus_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a>* systems::feature::FeatureSystem::event_bus_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a175ea36eb1484936629b56c05aabb4ef" name="a175ea36eb1484936629b56c05aabb4ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a175ea36eb1484936629b56c05aabb4ef">&#9670;&#160;</a></span>model_layer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelLayer.html">ModelLayer</a>* systems::feature::FeatureSystem::model_layer_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5a5e3327a890e62b0aa00db2a02b825a" name="a5a5e3327a890e62b0aa00db2a02b825a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a5e3327a890e62b0aa00db2a02b825a">&#9670;&#160;</a></span>name</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string systems::feature::FeatureSystem::name = &quot;FeatureSystem&quot;</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aae1499e61eb8c80a34e5a52337e7b120" name="aae1499e61eb8c80a34e5a52337e7b120"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae1499e61eb8c80a34e5a52337e7b120">&#9670;&#160;</a></span>on_feature_infos_changed_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::feature::FeatureSystem::on_feature_infos_changed_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureSystem_8h_source.html">FeatureSystem.h</a></li>
+<li>model/systems/feature/<a class="el" href="FeatureSystem_8cpp.html">FeatureSystem.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
