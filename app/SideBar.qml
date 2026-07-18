@@ -27,12 +27,18 @@ Item{
         parameters = root.activeOp && root.activeOp.defaultParameters
                 ? root.activeOp.defaultParameters.slice() : []
     }
+
+    // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
+    function setParam(index, value) {
+        parameters[index] = value
+        if (root.activeOp && root.activeOp.isFeature)
+            QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
+    }
+
     Button{
         id: commitButton
         text: "执行"
-        enabled: !!(root.activeOp && root.activeOp.info
-                    && (App.selection.activeModelId >= 0 || root.allowWithoutModel)
-                    && (!root.requireComponent || App.selection.activeComponentId >= 0))
+        enabled: !!(root.activeOp && root.activeOp.info && (root.activeOp.isFeature || App.selection.activeModelId >= 0))
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -137,7 +143,8 @@ Item{
                 id:parameterComboBox
                 model: comboModel
                 onCurrentIndexChanged: {
-                    root.parameters[index] = value = currentIndex
+                    value = currentIndex
+                    root.setParam(index, value)
                 }
             }
 
@@ -154,9 +161,11 @@ Item{
                         defaultIndex = 0
                     }
                     parameterComboBox.currentIndex = defaultIndex
-                    root.parameters[index] = value = defaultIndex
+                    value = defaultIndex
+                    root.setParam(index, value)
                 }
-                root.parameters[index] = value = parameterComboBox.currentIndex
+                value = parameterComboBox.currentIndex
+                root.setParam(index, value)
             }
         }
     }
@@ -179,7 +188,7 @@ Item{
                 Layout.fillWidth: parent.width
                 text: model.content
                 onTextChanged:{
-                    root.parameters[index] = parseFloat(text)
+                    root.setParam(index, parseFloat(text))
                 }
             }
         }
@@ -205,10 +214,10 @@ Item{
 
                 Component.onCompleted: {
                     fileText.text = model.content
-                    root.parameters[index] = fileText.text
+                    root.setParam(index, fileText.text)
                 }
                 onEditingFinished: {
-                    root.parameters[index] = fileText.text
+                    root.setParam(index, fileText.text)
                 }
             }
             Button{
@@ -221,7 +230,7 @@ Item{
                 id:parameterFileDialog
                 onAccepted:{
                     fileText.text = urlToPath(selectedFile)
-                    root.parameters[index] = fileText.text
+                    root.setParam(index, fileText.text)
                 }
 
                 function urlToPath(url) {
@@ -267,13 +276,13 @@ Item{
                 placeholderText: model.description
                 ToolTip.visible: hovered && model.description.length > 0
                 ToolTip.text: model.description
-                
+
                 Component.onCompleted: {
                     fileText.text = model.content
-                    root.parameters[index] = fileText.text
+                    root.setParam(index, fileText.text)
                 }
                 onEditingFinished: {
-                    root.parameters[index] = fileText.text
+                    root.setParam(index, fileText.text)
                 }
             }
         }
@@ -315,7 +324,8 @@ Item{
                 target: App.selection
                 enabled: selectStartButton.checked
                 function onConfirmed(selection) {
-                    root.parameters[index] = value = selection
+                    value = selection
+                    root.setParam(index, value)
                     App.selection.listeningSelectorIndex = -1
                 }
             }
@@ -341,10 +351,10 @@ Item{
 
                 Component.onCompleted: {
                     checked = (model.content === "true")
-                    root.parameters[index] = checked
+                    root.setParam(index, checked)
                 }
                 onCheckedChanged: {
-                    root.parameters[index] = checked
+                    root.setParam(index, checked)
                 }
             }
         }

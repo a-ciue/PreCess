@@ -92,6 +92,14 @@ public:
 
     const std::vector<std::array<double, 3>>& globalPoints() const;
 
+    /**
+     * @brief 修改指定全局点的坐标
+     * @param global_id 全局点 ID
+     * @param point 新坐标
+     * @throw std::out_of_range global_id 越界
+     */
+    void setGlobalPoint(Index global_id, const std::array<double, 3>& point);
+
     MeshIDMap& edgeIdMap();
     const MeshIDMap& edgeIdMap() const;
 

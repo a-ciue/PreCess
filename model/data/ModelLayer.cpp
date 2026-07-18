@@ -227,6 +227,14 @@ const std::vector<std::array<double, 3>>& ModelLayer::globalPoints() const
     return global_points_;
 }
 
+void ModelLayer::setGlobalPoint(Index global_id, const std::array<double, 3>& point)
+{
+    if (global_id < 0 || global_id >= static_cast<Index>(global_points_.size())) {
+        throw std::out_of_range("ModelLayer::setGlobalPoint: global point id out of range");
+    }
+    global_points_[global_id] = point;
+}
+
 MeshIDMap& ModelLayer::edgeIdMap()
 {
     return edge_id_map_;

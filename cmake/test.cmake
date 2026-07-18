@@ -4,7 +4,9 @@ function(precess_add_test TARGET)
         add_executable(${ARGV})
         target_link_libraries(${TARGET} PRIVATE Catch2::Catch2WithMain)
 
-        set(dl_paths $<TARGET_RUNTIME_DLL_DIRS:${TARGET}>)
+        # 测试可执行文件自身目录恒存在，保证下方 ENVIRONMENT_MODIFICATION 不为空；
+        # 空值会在属性列表传递中丢失，导致后续属性错位、测试以 BAD_COMMAND 失败
+        set(dl_paths "$<TARGET_FILE_DIR:${TARGET}>$<$<BOOL:$<TARGET_RUNTIME_DLL_DIRS:${TARGET}>>:$<SEMICOLON>$<TARGET_RUNTIME_DLL_DIRS:${TARGET}>>")
         set(test_properties)
         if(WIN32)
             # 添加环境变量修改，确保测试运行时能找到所需的DLL

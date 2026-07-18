@@ -61,6 +61,16 @@ public :
 
     std::vector<Index> getComponentIds(Index model_id) const;
     Q_INVOKABLE int findModelIdByComponent(Index component_id) const;
+    /**
+     * @brief 判断指定 id 的模型是否仍然存在
+     * @param model_id 模型 ID
+     */
+    Q_INVOKABLE bool hasModel(Index model_id) const;
+    /**
+     * @brief 判断指定 id 的组件是否仍然存在
+     * @param component_id 组件 ID
+     */
+    Q_INVOKABLE bool hasComponent(Index component_id) const;
 
     Q_INVOKABLE QVariantList getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId);
 

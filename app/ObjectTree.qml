@@ -24,18 +24,19 @@ Pane {
             let selectedModelId = App.selection.activeModelId
             let selectedComponentId = App.selection.activeComponentId
             treeModel.refresh()
-
-            // TreeModel 重置后按业务 ID 恢复选择，目标已经删除时才清空。
-            let idx = selectedComponentId >= 0
-                    ? treeModel.findIndexByNodeId(selectedComponentId, 1)
-                    : treeModel.findIndexByNodeId(selectedModelId, 0)
-            if (idx.valid) {
-                treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
-            } else {
-                treeView.selectionModel.clear()
-                App.selection.activeComponentId = -1
-                App.selection.activeModelId = -1
+            // 选中项仍然有效时保留，不重置为 -1
+            let compId = App.selection.activeComponentId
+            let modelId = App.selection.activeModelId
+            if (compId >= 0 && !QModelManager.query.hasComponent(compId))
+                compId = -1
+            if (compId >= 0) {
+                // 组件有效时以组件为准同步所属模型
+                modelId = QModelManager.query.findModelIdByComponent(compId)
+            } else if (modelId >= 0 && !QModelManager.query.hasModel(modelId)) {
+                modelId = -1
             }
+            App.selection.activeComponentId = compId
+            App.selection.activeModelId = modelId
         }
     }
 

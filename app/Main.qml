@@ -24,6 +24,7 @@ import app.model.systems
 import app.model.systems.algo
 import app.model.systems.io
 import app.model.systems.edit
+import app.model.systems.feature
 import app.render
 
 ApplicationWindow {
@@ -39,6 +40,7 @@ ApplicationWindow {
     }
 
     menuBar: MenuBar{
+        id: menuBar
         Menu{
             title: "文件"
             MenuItem{
@@ -222,6 +224,72 @@ ApplicationWindow {
         }
     }
 
+    // 功能菜单：按功能声明的 menu_path 分组动态生成（功能注册/注销时重建）
+    property var _featureMenus: []
+
+    function rebuildFeatureMenus() {
+        // 移除旧的功能菜单
+        for (let old_menu of root._featureMenus) {
+            menuBar.removeMenu(old_menu)
+            old_menu.destroy()
+        }
+        root._featureMenus = []
+
+        // 按 menu_path 分组
+        let groups = {}
+        for (let info of QModelManager.featureSystem.featuresInfo) {
+            let path = info.menu_path || "功能"
+            if (!groups[path])
+                groups[path] = []
+            groups[path].push(info)
+        }
+        for (let path in groups) {
+            let menu = featureMenuComponent.createObject(menuBar, { "title": path })
+            for (let info of groups[path]) {
+                let item = featureMenuItemComponent.createObject(menu, { "text": info.display_name })
+                item.triggered.connect(function() {
+                    App.activeOperation = {
+                        info: info,
+                        isFeature: true,
+                        execute: function() { return QModelManager.featureSystem.invoke(info.name) }
+                    }
+                })
+                menu.addItem(item)
+            }
+            menuBar.addMenu(menu)
+            root._featureMenus.push(menu)
+        }
+    }
+
+    Component {
+        id: featureMenuComponent
+        Menu {
+        }
+    }
+    Component {
+        id: featureMenuItemComponent
+        MenuItem {
+        }
+    }
+
+    Connections {
+        target: QModelManager.featureSystem
+        function onFeaturesInfoChanged() {
+            root.rebuildFeatureMenus()
+        }
+    }
+
+    // 同步当前活动模型/组件到功能系统，供功能上下文动态获取
+    Connections {
+        target: App.selection
+        function onActiveModelIdChanged() {
+            QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
+        }
+        function onActiveComponentIdChanged() {
+            QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
+        }
+    }
+
     KDDW.DockingArea {
         id: dockingArea
         anchors.fill: parent
@@ -317,6 +385,11 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        // 构建功能菜单并同步当前活动模型/组件到功能系统
+        rebuildFeatureMenus()
+        QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
+        QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
+
         Qt.callLater(function() {
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = QModelManager.ioSystem.read("All files", commandLineArgs[i], [])

@@ -10,6 +10,10 @@ namespace core {
 class ArgObject {
 public:
     /**
+     * @brief 构造空参数对象，get 恒返回 nullptr
+     */
+    ArgObject() = default;
+    /**
      * @brief 构造函数，存储参数对象
      * @tparam T 参数类型
      * @param value 待存储的参数对象

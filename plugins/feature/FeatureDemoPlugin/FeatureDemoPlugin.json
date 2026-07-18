@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "FeatureDemo",
+    "display_name": "功能示例",
+    "description": "演示功能系统：参数注册、菜单注册、按键绑定与事件实时响应"
+  }
+}

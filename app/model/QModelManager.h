@@ -1,6 +1,7 @@
 #pragma once
 #include "QAlgorithmSystemAdaptor.h"
 #include "QEditSystemAdaptor.h"
+#include "QFeatureSystemAdaptor.h"
 #include "QGeometryOperations.h"
 #include "QModelIOSystemAdaptor.h"
 #include "QModelObserver.h"
@@ -10,6 +11,9 @@
 #include <string>
 #include <string_view>
 
+namespace core {
+class EventBus;
+}
 namespace systems {
 class SystemPluginManager;
 }
@@ -18,6 +22,9 @@ class ModelIOSystem;
 }
 namespace systems::edit {
 class EditSystem;
+}
+namespace systems::feature {
+class FeatureSystem;
 }
 class ModelLayer;
 
@@ -31,6 +38,7 @@ class QModelManager : public QObject {
     Q_PROPERTY(systems::algo::QAlgorithmSystemAdaptor* algorithmSystem READ getAlgorithmSystemAdaptor CONSTANT)
     Q_PROPERTY(systems::io::QModelIOSystemAdaptor* ioSystem READ getModelIOSystemAdaptor CONSTANT)
     Q_PROPERTY(systems::edit::QEditSystemAdaptor* editSystem READ getEditSystemAdaptor CONSTANT)
+    Q_PROPERTY(systems::feature::QFeatureSystemAdaptor* featureSystem READ getFeatureSystemAdaptor CONSTANT)
     Q_PROPERTY(QGeometryOperations* geometry READ getGeometryOperations CONSTANT)
 public:
     explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
@@ -45,6 +53,7 @@ public:
     systems::algo::QAlgorithmSystemAdaptor* getAlgorithmSystemAdaptor() const;
     systems::edit::QEditSystemAdaptor* getEditSystemAdaptor() const;
     systems::io::QModelIOSystemAdaptor* getModelIOSystemAdaptor() const;
+    systems::feature::QFeatureSystemAdaptor* getFeatureSystemAdaptor() const;
     systems::QSystemPluginManager* getSystemPluginManager() const;
     QGeometryOperations* getGeometryOperations() const;
 
@@ -69,9 +78,12 @@ private:
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
     std::unique_ptr<systems::edit::EditSystem> edit_system_;
+    std::unique_ptr<core::EventBus> event_bus_; //> 事件总线，声明在 feature_system_ 之前以保证其更晚析构
+    std::unique_ptr<systems::feature::FeatureSystem> feature_system_;
     std::unique_ptr<systems::algo::QAlgorithmSystemAdaptor> algo_adaptor_;
     std::unique_ptr<systems::io::QModelIOSystemAdaptor> io_adaptor_;
     std::unique_ptr<systems::edit::QEditSystemAdaptor> edit_adaptor_;
+    std::unique_ptr<systems::feature::QFeatureSystemAdaptor> feature_adaptor_;
     std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
 };
