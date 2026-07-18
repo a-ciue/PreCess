@@ -130,6 +130,26 @@ public:
         double sweepAngle);
 
     /**
+     * @brief 根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。
+     *
+     * QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。
+     * @return 新建或更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int createCone(
+        int modelId,
+        int componentId,
+        double centerX,
+        double centerY,
+        double centerZ,
+        double bottomRadius,
+        double topRadius,
+        double height,
+        double directionX,
+        double directionY,
+        double directionZ,
+        double sweepAngle);
+
+    /**
      * @brief 将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。
      *
      * 源 Face 保留，拉伸结果使用截面副本并追加回源组件。
@@ -165,4 +185,5 @@ private:
     int next_disk_face_number_ { 1 };
     int next_box_number_ { 1 };
     int next_cylinder_number_ { 1 };
+    int next_cone_number_ { 1 };
 };

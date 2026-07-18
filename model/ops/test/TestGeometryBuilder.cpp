@@ -281,6 +281,95 @@ TEST_CASE("GeometryBuilder rejects invalid cylinder parameters")
         std::invalid_argument);
 }
 
+TEST_CASE("GeometryBuilder creates valid cone and frustum solids")
+{
+    const double full_angle = 2.0 * std::acos(-1.0);
+    const TopoDS_Shape cone = GeometryBuilder::makeCone(
+        1.0, 2.0, 3.0,
+        10.0, 0.0, 20.0,
+        0.0, 0.0, 1.0,
+        full_angle);
+    const TopoDS_Shape frustum = GeometryBuilder::makeCone(
+        1.0, 2.0, 3.0,
+        10.0, 5.0, 20.0,
+        0.0, 0.0, 1.0,
+        full_angle);
+
+    REQUIRE_FALSE(cone.IsNull());
+    REQUIRE(cone.ShapeType() == TopAbs_SOLID);
+    REQUIRE(BRepCheck_Analyzer(cone).IsValid());
+    REQUIRE_FALSE(frustum.IsNull());
+    REQUIRE(frustum.ShapeType() == TopAbs_SOLID);
+    REQUIRE(BRepCheck_Analyzer(frustum).IsValid());
+}
+
+TEST_CASE("GeometryBuilder creates a valid partial frustum")
+{
+    const TopoDS_Shape shape = GeometryBuilder::makeCone(
+        1.0, 2.0, 3.0,
+        10.0, 5.0, 20.0,
+        0.0, 0.0, 1.0,
+        std::acos(-1.0) / 2.0);
+
+    REQUIRE_FALSE(shape.IsNull());
+    REQUIRE(shape.ShapeType() == TopAbs_SOLID);
+    REQUIRE(BRepCheck_Analyzer(shape).IsValid());
+}
+
+TEST_CASE("GeometryBuilder rejects invalid cone parameters")
+{
+    const double full_angle = 2.0 * std::acos(-1.0);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCone(
+            0.0, 0.0, 0.0,
+            -1.0, 5.0, 10.0,
+            0.0, 0.0, 1.0,
+            full_angle),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCone(
+            0.0, 0.0, 0.0,
+            0.0, 0.0, 10.0,
+            0.0, 0.0, 1.0,
+            full_angle),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCone(
+            0.0, 0.0, 0.0,
+            5.0, 5.0, 10.0,
+            0.0, 0.0, 1.0,
+            full_angle),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCone(
+            0.0, 0.0, 0.0,
+            10.0, 5.0, 0.0,
+            0.0, 0.0, 1.0,
+            full_angle),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCone(
+            0.0, 0.0, 0.0,
+            10.0, 5.0, 10.0,
+            0.0, 0.0, 0.0,
+            full_angle),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCone(
+            0.0, 0.0, 0.0,
+            10.0, 5.0, 10.0,
+            0.0, 0.0, 1.0,
+            0.0),
+        std::invalid_argument);
+    REQUIRE_THROWS_AS(
+        GeometryBuilder::makeCone(
+            0.0, 0.0, 0.0,
+            10.0, 5.0, 10.0,
+            0.0, 0.0, 1.0,
+            full_angle + 0.1),
+        std::invalid_argument);
+}
+
 TEST_CASE("GeometryBuilder extrudes a copied face into a valid solid")
 {
     const TopoDS_Face source = TopoDS::Face(

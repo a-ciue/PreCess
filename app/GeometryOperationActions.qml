@@ -55,6 +55,24 @@ QtObject {
         ]
     })
 
+    readonly property var createConeInfo: ({
+        name: "create_cone",
+        display_name: qsTr("创建圆锥/圆台"),
+        description: qsTr("根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台"),
+        arg_types: [
+            { type: QArgType.Float, name: qsTr("底面圆心 X"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("底面圆心 Y"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("底面圆心 Z"), content: "0", description: "" },
+            { type: QArgType.Float, name: qsTr("底面半径"), content: "10", description: qsTr("必须大于等于 0，且与顶面半径不同") },
+            { type: QArgType.Float, name: qsTr("顶面半径"), content: "5", description: qsTr("必须大于等于 0；设为 0 可创建尖圆锥") },
+            { type: QArgType.Float, name: qsTr("高度"), content: "20", description: qsTr("必须大于几何容差") },
+            { type: QArgType.Float, name: qsTr("轴向 X"), content: "0", description: qsTr("轴向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("轴向 Y"), content: "0", description: qsTr("轴向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("轴向 Z"), content: "1", description: qsTr("轴向不能为零向量") },
+            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") }
+        ]
+    })
+
     readonly property var createLineByCoordinatesInfo: ({
         name: "create_line_by_coordinates",
         display_name: qsTr("创建直线边（坐标）"),
@@ -268,6 +286,22 @@ QtObject {
                     modelId, App.selection.activeComponentId,
                     args[0], args[1], args[2],
                     args[3], args[4], args[5], args[6], args[7], args[8]), false)
+            }
+        }, "", -1)
+    }
+
+    // 启动圆锥或圆台创建操作。
+    function startCreateCone() {
+        activate({
+            info: root.createConeInfo,
+            allowWithoutModel: true,
+            showGeometryTarget: true,
+            defaultParameters: [0, 0, 0, 10, 5, 20, 0, 0, 1, 360],
+            execute: function(modelId, args) {
+                root.selectCreatedComponent(QModelManager.geometry.createCone(
+                    modelId, App.selection.activeComponentId,
+                    args[0], args[1], args[2], args[3], args[4],
+                    args[5], args[6], args[7], args[8], args[9]), false)
             }
         }, "", -1)
     }

@@ -8,6 +8,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFill_Filling.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepPrimAPI_MakeCone.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRep_Tool.hxx>
@@ -84,6 +85,23 @@ TopoDS_Shape checkedCylinder(BRepPrimAPI_MakeCylinder& builder)
         throw std::runtime_error("OpenCASCADE did not create a cylinder solid");
     if (!BRepCheck_Analyzer(shape).IsValid())
         throw std::runtime_error("The created cylinder is topologically invalid");
+    return shape;
+}
+
+// 统一检查完整圆锥和部分圆锥的构造结果，避免两个重载分支重复错误处理。
+TopoDS_Shape checkedCone(BRepPrimAPI_MakeCone& builder)
+{
+    builder.Build();
+    if (!builder.IsDone())
+        throw std::runtime_error("OpenCASCADE failed to create the cone");
+
+    TopoDS_Shape shape = builder.Shape();
+    if (shape.IsNull())
+        throw std::runtime_error("OpenCASCADE returned an empty cone");
+    if (shape.ShapeType() != TopAbs_SOLID)
+        throw std::runtime_error("OpenCASCADE did not create a cone solid");
+    if (!BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error("The created cone is topologically invalid");
     return shape;
 }
 }
@@ -432,6 +450,70 @@ TopoDS_Shape GeometryBuilder::makeCylinder(
 
     BRepPrimAPI_MakeCylinder builder(placement, radius, height, sweep_angle);
     return checkedCylinder(builder);
+}
+
+TopoDS_Shape GeometryBuilder::makeCone(
+    double center_x,
+    double center_y,
+    double center_z,
+    double bottom_radius,
+    double top_radius,
+    double height,
+    double direction_x,
+    double direction_y,
+    double direction_z,
+    double sweep_angle)
+{
+    const std::array<double, 10> values {
+        center_x,
+        center_y,
+        center_z,
+        bottom_radius,
+        top_radius,
+        height,
+        direction_x,
+        direction_y,
+        direction_z,
+        sweep_angle
+    };
+    for (double value : values) {
+        if (!std::isfinite(value))
+            throw std::invalid_argument("Cone parameters must be finite numbers");
+    }
+
+    if (bottom_radius < 0.0 || top_radius < 0.0)
+        throw std::invalid_argument("Cone radii must not be negative");
+    if (bottom_radius <= Precision::Confusion()
+        && top_radius <= Precision::Confusion())
+        throw std::invalid_argument("At least one cone radius must be greater than tolerance");
+    if (std::abs(bottom_radius - top_radius) <= Precision::Confusion())
+        throw std::invalid_argument("Cone radii must be different; use a cylinder instead");
+    if (height <= Precision::Confusion())
+        throw std::invalid_argument("Cone height must be greater than tolerance");
+
+    const gp_Vec axis(direction_x, direction_y, direction_z);
+    if (axis.Magnitude() <= Precision::Confusion())
+        throw std::invalid_argument("Cone axis direction must not be zero");
+
+    const double full_angle = 2.0 * std::acos(-1.0);
+    if (sweep_angle <= Precision::Angular()
+        || sweep_angle > full_angle + Precision::Angular())
+        throw std::invalid_argument("Cone sweep angle must be in (0, 2*PI]");
+
+    // 底面圆心和轴向共同定义局部坐标系，两个半径分别位于 z=0 和 z=height。
+    const gp_Ax2 placement(
+        gp_Pnt(center_x, center_y, center_z),
+        gp_Dir(axis));
+    // 完整体使用无角度重载；部分体由 OCC 自动增加两个径向封闭面。
+    if (std::abs(sweep_angle - full_angle) <= Precision::Angular()) {
+        BRepPrimAPI_MakeCone builder(
+            placement, bottom_radius, top_radius, height);
+        return checkedCone(builder);
+    }
+
+    BRepPrimAPI_MakeCone builder(
+        placement, bottom_radius, top_radius, height, sweep_angle);
+    return checkedCone(builder);
 }
 
 TopoDS_Shape GeometryBuilder::extrudeFace(

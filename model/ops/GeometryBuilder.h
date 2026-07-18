@@ -126,6 +126,25 @@ public:
         double sweep_angle);
 
     /**
+     * @brief 根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。
+     *
+     * 半径允许一个为零以创建尖圆锥；扫掠角单位为弧度，完整角度创建完整体，其余角度创建封闭的部分体。
+     * @throws std::invalid_argument 输入包含非有限数值、尺寸无效、轴向为零或角度越界。
+     * @throws std::runtime_error OCC 构造失败或结果拓扑无效。
+     */
+    static TopoDS_Shape makeCone(
+        double center_x,
+        double center_y,
+        double center_z,
+        double bottom_radius,
+        double top_radius,
+        double height,
+        double direction_x,
+        double direction_y,
+        double direction_z,
+        double sweep_angle);
+
+    /**
      * @brief 将已有面沿指定方向和长度拉伸为实体，构造时复制源面。
      *
      * @throws std::invalid_argument 源面为空、输入包含非有限数值、长度过小或方向为零。

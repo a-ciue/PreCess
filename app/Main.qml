@@ -117,6 +117,10 @@ ApplicationWindow {
                         onTriggered: geometryActions.startCreateCylinder()
                     }
                     MenuItem {
+                        text: qsTr("圆锥/圆台")
+                        onTriggered: geometryActions.startCreateCone()
+                    }
+                    MenuItem {
                         text: qsTr("拉伸面为实体")
                         onTriggered: geometryActions.startExtrudeFace()
                     }

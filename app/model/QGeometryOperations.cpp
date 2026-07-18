@@ -363,6 +363,55 @@ int QGeometryOperations::createCylinder(
     return -1;
 }
 
+int QGeometryOperations::createCone(
+    int modelId,
+    int componentId,
+    double centerX,
+    double centerY,
+    double centerZ,
+    double bottomRadius,
+    double topRadius,
+    double height,
+    double directionX,
+    double directionY,
+    double directionZ,
+    double sweepAngle)
+{
+    try {
+        TopoDS_Shape shape = GeometryBuilder::makeCone(
+            centerX,
+            centerY,
+            centerZ,
+            bottomRadius,
+            topRadius,
+            height,
+            directionX,
+            directionY,
+            directionZ,
+            degreesToRadians(sweepAngle));
+        const std::string component_name =
+            "Cone_" + std::to_string(next_cone_number_);
+        const Index result_component_id = addGeometryShape(
+            modelId, componentId, component_name, std::move(shape));
+        if (componentId < 0)
+            ++next_cone_number_;
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::createCone: {}",
+            detail ? detail : "OpenCASCADE error");
+        emit operationFailed(
+            QStringLiteral("创建圆锥/圆台失败：%1")
+                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
+    } catch (const std::exception& error) {
+        spdlog::error("QGeometryOperations::createCone: {}", error.what());
+        emit operationFailed(
+            QStringLiteral("创建圆锥/圆台失败：%1")
+                .arg(QString::fromLocal8Bit(error.what())));
+    }
+    return -1;
+}
+
 int QGeometryOperations::extrudeFace(
     int componentId,
     QSelection* selection,
