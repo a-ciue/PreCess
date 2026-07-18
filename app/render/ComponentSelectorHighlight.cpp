@@ -67,6 +67,11 @@ void ComponentSelectorHighlight::clear()
     highlight_actor_->SetVisibility(false);
 }
 
+void ComponentSelectorHighlight::refreshHighlight()
+{
+    updateHighlight();
+}
+
 SelectionVtk ComponentSelectorHighlight::get() const
 {
     SelectionVtk back_selection;
@@ -118,6 +123,8 @@ void ComponentSelectorHighlight::updateHighlight()
             return comp * k_partitions_per_component + off;
         };
         if (auto select_op = mesh_op_.getSelectOp(component_id)) {
+            if (!select_op->isVisible())
+                continue;
             if (auto* poly_data = _get_poly_data(select_op->getSolidActor()))
                 highlight_data_->SetPartition(pid(0), poly_data);
             if (auto* poly_data = _get_poly_data(select_op->getFaceActor()))
@@ -127,6 +134,8 @@ void ComponentSelectorHighlight::updateHighlight()
         }
 
         if (auto select_op = geom_op_.getSelectOp(component_id)) {
+            if (!select_op->isVisible())
+                continue;
             if (auto* poly_data = _get_poly_data(select_op->getPolyActor()))
                 highlight_data_->SetPartition(pid(3), poly_data);
         }

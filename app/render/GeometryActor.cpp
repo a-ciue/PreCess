@@ -235,6 +235,12 @@ void GeometryActor::setVisibility(bool visibility)
     this->visibility_ = visibility;
 }
 
+bool GeometryActor::isVisible() const
+{
+    return visibility_;
+}
+
+
 void GeometryActor::setRenderMode(GeometryRenderMode render_mode)
 {
 }

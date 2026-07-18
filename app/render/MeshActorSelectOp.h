@@ -44,6 +44,8 @@ public:
     vtkProp& getEdgeActor();
     vtkProp& getBlockActor();
 
+    bool isVisible() const;
+
     /**
      * @brief 根据体id，提取体数据
      * @param[in] ids 体id数组

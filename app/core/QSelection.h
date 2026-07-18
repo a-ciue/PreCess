@@ -83,10 +83,12 @@ public:
     {
         return data_->component_id;
     }
-    Q_INVOKABLE QVariantList idList()
+    Q_INVOKABLE QVariantList getAsComponentIds()
     {
         QVariantList list;
-        if (data_) {
+        if (!data_)
+            return list;
+        if (data_->type == ElementEnum::Component) {
             for (auto id : data_->ids)
                 list.append(id);
         }

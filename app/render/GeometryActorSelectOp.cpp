@@ -308,3 +308,8 @@ vtkActor& GeometryActorSelectOp::getPolyActor()
 {
     return *geometry_actor_->poly_actor_;
 }
+
+bool GeometryActorSelectOp::isVisible() const
+{
+    return geometry_actor_->isVisible();
+}

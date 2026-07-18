@@ -81,19 +81,10 @@ Page {
             query: QModelManager.query
 
             property var pickedIds: []
-            property bool _selectionDirty: false
-
-            onClicked: { _selectionDirty = true }
 
             onRightClicked: {
                 let sel = myItem.selectedIDs
-                if (sel && sel.size() > 0) {
-                    myItem.pickedIds = sel.idList()
-                    _selectionDirty = false
-                } else if (_selectionDirty) {
-                    myItem.pickedIds = []
-                    _selectionDirty = false
-                }
+                myItem.pickedIds = sel ? sel.getAsComponentIds() : []
                 viewportMenu.popup()
             }
 
@@ -134,7 +125,6 @@ Page {
             onClearButtonClicked: {
                 myItem.clearSelection()
                 myItem.pickedIds = []
-                myItem._selectionDirty = false
             }
 
             onConfirmButtonClicked: {
