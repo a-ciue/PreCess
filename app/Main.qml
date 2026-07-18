@@ -102,17 +102,20 @@ ApplicationWindow {
                         onTriggered: geometryActions.startCreateDiskFace()
                     }
                 }
-                MenuItem {
-                    text: qsTr("长方体")
-                    onTriggered: geometryActions.startCreateBox()
-                }
-                MenuItem {
-                    text: qsTr("圆柱体")
-                    onTriggered: geometryActions.startCreateCylinder()
-                }
-                MenuItem {
-                    text: qsTr("拉伸面为实体")
-                    onTriggered: geometryActions.startExtrudeFace()
+                Menu {
+                    title: qsTr("体")
+                    MenuItem {
+                        text: qsTr("长方体")
+                        onTriggered: geometryActions.startCreateBox()
+                    }
+                    MenuItem {
+                        text: qsTr("圆柱体")
+                        onTriggered: geometryActions.startCreateCylinder()
+                    }
+                    MenuItem {
+                        text: qsTr("拉伸面为实体")
+                        onTriggered: geometryActions.startExtrudeFace()
+                    }
                 }
             }
         }
