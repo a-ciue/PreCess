@@ -28,6 +28,7 @@ public:
     void loadShape(const GeometryDataVtk& geometry_data);
 
     void setVisibility(bool visibility);
+    bool isVisible() const;
     void setRenderMode(GeometryRenderMode render_mode);
     void setRenderEdge(bool is_render);
 

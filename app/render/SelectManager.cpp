@@ -88,6 +88,13 @@ void SelectManager::clearSelection()
     geom_->clearSelection();
 }
 
+void SelectManager::refreshComponentHighlight()
+{
+    component_selector_->refreshHighlight();
+    mesh_->clearSelection();
+    geom_->clearSelection();
+}
+
 std::unique_ptr<Selection> SelectManager::getSelection()
 {
     if (select_mode_ == SelectMode::Component) {

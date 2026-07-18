@@ -35,16 +35,6 @@ std::shared_ptr<MeshActor> MeshActorManager::getComponentActor(Index component_i
     }
 }
 
-std::vector<Index> MeshActorManager::getAllComponentIds() const
-{
-    std::vector<Index> ids;
-    ids.reserve(component_actors_.size());
-    for (const auto& [id, _] : component_actors_) {
-        ids.push_back(id);
-    }
-    return ids;
-}
-
 void MeshActorManager::deleteComponent(Index component_id)
 {
     auto it = component_actors_.find(component_id);

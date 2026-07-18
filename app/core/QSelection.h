@@ -1,6 +1,7 @@
 #ifndef  Q_SELECTION_H
 #define Q_SELECTION_H 
 #include <QObject>
+#include <QVariantList>
 #include <qqmlintegration.h>
 #include "Selection.h"
 
@@ -81,6 +82,17 @@ public:
     Q_INVOKABLE Index getComponentId()
     {
         return data_->component_id;
+    }
+    Q_INVOKABLE QVariantList getAsComponentIds()
+    {
+        QVariantList list;
+        if (!data_)
+            return list;
+        if (data_->type == ElementEnum::Component) {
+            for (auto id : data_->ids)
+                list.append(id);
+        }
+        return list;
     }
 
 private:

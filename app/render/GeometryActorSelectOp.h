@@ -48,6 +48,7 @@ public:
     vtkSmartPointer<IVtkTools_SubPolyDataFilter> buildHighlight(SelectMode mode);
 
     vtkActor& getPolyActor();
+    bool isVisible() const;
 
 private:
     std::shared_ptr<GeometryActor> geometry_actor_;

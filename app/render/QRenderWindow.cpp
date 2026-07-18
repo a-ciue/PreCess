@@ -131,6 +131,10 @@ bool QRenderWindow::event(QEvent* ev)
 
         setClick();
         auto e = static_cast<QMouseEvent*>(ev);
+        if (e->button() == Qt::RightButton) {
+            emit rightClicked();
+            return QQuickVTKItem::event(ev);
+        }
         emit clicked();
         return QQuickVTKItem::event(ev);
         break;
@@ -268,13 +272,13 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
 {
     dispatch_async([model_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        select_manager_->clearSelection();
 
         auto component_ids = model_query_->getComponentIds(model_id);
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->refreshComponentHighlight();
     });
 }
 
@@ -282,7 +286,6 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 {
     dispatch_async([component_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        select_manager_->clearSelection();
 
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
@@ -291,6 +294,7 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->refreshComponentHighlight();
     });
 }
 
@@ -301,7 +305,6 @@ QSelection* QRenderWindow::selectedIDs()
         return nullptr;
     }
 
-    data->component_id = this->cur_component_id_;
     QSelection* selection = new QSelection(std::move(data));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
@@ -367,7 +370,6 @@ void QRenderWindow::setRenderMode(Index model_id, QString render_mode)
 
     dispatch_async([model_id, render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        this->select_manager_->clearSelection();
 
         auto component_ids = model_query_->getComponentIds(model_id);
 

@@ -168,6 +168,7 @@ signals:
     void selectedChanged();
     void curEdgeRenderChanged();
     void clicked();
+    void rightClicked();
 
 private:
     bool edge_render_ {};

@@ -23,6 +23,7 @@ public:
     void select(double posx, double posy);
     void setSelectMode(const std::string& select_mode);
     void clearSelection();
+    void refreshComponentHighlight();
     std::unique_ptr<Selection> getSelection();
 
 private:
