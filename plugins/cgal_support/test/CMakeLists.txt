@@ -1,0 +1,2 @@
+precess_add_test(TestCgalMeshAdapter TestCgalMeshAdapter.cpp)
+precess_test_link_libraries(TestCgalMeshAdapter CgalSupport)
