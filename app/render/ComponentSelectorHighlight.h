@@ -28,6 +28,7 @@ public:
 
     void select(double posx, double posy);
     void clear();
+    void refreshHighlight();
     SelectionVtk get() const;
 
 private:

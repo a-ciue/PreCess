@@ -192,7 +192,12 @@ ApplicationWindow {
                         var info = modelData
                         App.activeOperation = {
                             info: info,
-                            execute: function(model, args) { QModelManager.algorithmSystem.call(info.name, model, args) }
+                            execute: function(component, args) {
+                                QModelManager.algorithmSystem.call(info.name, component, args)
+                                // Gmsh 操作结束后清除几何面选择及其高亮。
+                                if (info.name === "GmshPlugin" && App.registry.renderWindow)
+                                    App.registry.renderWindow.clearSelection()
+                            }
                         }
                     }
                 }

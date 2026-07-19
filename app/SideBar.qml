@@ -49,7 +49,7 @@ Item{
         height:30
         onClicked:{
             if (root.activeOp && root.activeOp.execute)
-                root.activeOp.execute(App.selection.activeModelId, root.parameters)
+                root.activeOp.execute(App.selection.activeComponentId, root.parameters)
         }
     }
     Label {

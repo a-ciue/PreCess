@@ -15,7 +15,6 @@ public:
     void bindRender(vtkRenderer* renderer);
     bool hasComponent(Index component_id) const;
     std::shared_ptr<MeshActor> getComponentActor(Index component_id) const;
-    std::vector<Index> getAllComponentIds() const;
     void deleteComponent(Index component_id);
     void loadMesh(Index component_id, const MeshDataVtk& model_data,
         vtkRenderer* renderer, ModelRenderMode render_mode = ModelRenderMode::Face);

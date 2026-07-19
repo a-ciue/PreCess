@@ -168,7 +168,7 @@ std::optional<Index> GeometryActorSelectOp::resolvePickedSubshape(IVtkTools_Shap
 
     out_sub_id = -1;
     if (!firstId(picker->GetPickedSubShapesIds(shapeId, false), out_sub_id)) {
-        // 独立根 Face/Edge/Vertex 可能只返回顶层 Shape ID，不返回 SubShape ID。
+        // ������ Face/Edge/Vertex ����ֻ���ض��� Shape ID�������� SubShape ID��
         const TopoDS_Shape& root = geometry_actor_->occ_shape_->GetShape();
         if (root.ShapeType() != wantType)
             return std::nullopt;
@@ -273,4 +273,9 @@ vtkActor& GeometryActorSelectOp::getPolyActor()
 vtkActor& GeometryActorSelectOp::getLineActor()
 {
     return *geometry_actor_->line_actor_;
+}
+
+bool GeometryActorSelectOp::isVisible() const
+{
+    return geometry_actor_->isVisible();
 }
