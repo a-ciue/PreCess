@@ -197,11 +197,11 @@ set "CASROOT=%depsPath%\OpenCASCADE8.0.0"
 set "casRootCmake=%CASROOT:\=/%"
 set "occLibs="
 
-REM OCC 8 的导入库：Debug 在 libd，Release 和 RelWithDebInfo 在 libi。
+REM OCC 8 的导入库：Debug 在 libd，Release 在 lib，RelWithDebInfo 在 libi。
 REM 使用生成表达式让三个构建配置链接对应的 OCC 库。
 for %%L in (TKDESTEP TKDEIGES TKXSBase TKOffset TKFeat TKFillet TKBool TKMesh TKHLR TKBO TKPrim TKShHealing TKTopAlgo TKGeomAlgo TKBRep TKGeomBase TKG3d TKG2d TKMath TKernel) do (
     if defined occLibs set "occLibs=!occLibs!;"
-    set "occLibs=!occLibs!$<IF:$<CONFIG:Debug>,!casRootCmake!/win64/vc14/libd/%%L.lib,!casRootCmake!/win64/vc14/libi/%%L.lib>"
+    set "occLibs=!occLibs!$<IF:$<CONFIG:Debug>,!casRootCmake!/win64/vc14/libd/%%L.lib,$<IF:$<CONFIG:RelWithDebInfo>,!casRootCmake!/win64/vc14/libi/%%L.lib,!casRootCmake!/win64/vc14/lib/%%L.lib>>"
 )
 
 pushd "%sourcePath%/gmsh-occ8"
