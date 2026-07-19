@@ -22,3 +22,6 @@ precess_test_link_libraries(TestGlobalPoints Data)
 
 precess_add_test(TestGeometryMeshMap TestGeometryMeshMap.cpp)
 precess_test_link_libraries(TestGeometryMeshMap Data)
+
+precess_add_test(TestMeshAdjacency TestMeshAdjacency.cpp)
+precess_test_link_libraries(TestMeshAdjacency Data)

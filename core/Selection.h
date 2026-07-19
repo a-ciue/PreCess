@@ -25,6 +25,8 @@ public:
 //! @brief 存储选择的对象
 struct Selection {
     //! @brief 选择对象的id序列
+    //! @note Edge 类型为过渡语义：命中独立边时为 component 局部边 id；
+    //!       未命中（面上的边暂无身份）时为两个端点 id 两两排列。后续统一为稳定边 id。
     std::vector<Index> ids;
     //! @brief 选择对象的类型
     ElementEnum::Type type;

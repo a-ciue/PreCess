@@ -54,6 +54,11 @@ void MeshSelectManager::clearSelection()
     this->component_selectors_.clear();
 }
 
+void MeshSelectManager::setMeshIdQuery(const IMeshIdQuery* id_query)
+{
+    id_query_ = id_query;
+}
+
 std::unique_ptr<Selection> MeshSelectManager::getSelection()
 {
     auto result = std::make_unique<Selection>();
@@ -90,7 +95,8 @@ SelectorHighlight* MeshSelectManager::getOrCreateSelector(Index component_id)
         sel = std::make_unique<FaceSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
         break;
     case SelectMode::Edge:
-        sel = std::make_unique<EdgeSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
+        sel = std::make_unique<EdgeSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op),
+            component_id, id_query_);
         break;
     case SelectMode::Solid:
         sel = std::make_unique<SolidSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));

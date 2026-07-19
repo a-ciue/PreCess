@@ -88,6 +88,11 @@ void SelectManager::clearSelection()
     geom_->clearSelection();
 }
 
+void SelectManager::setMeshIdQuery(const IMeshIdQuery* id_query)
+{
+    mesh_->setMeshIdQuery(id_query);
+}
+
 void SelectManager::refreshComponentHighlight()
 {
     component_selector_->refreshHighlight();

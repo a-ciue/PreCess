@@ -54,6 +54,15 @@ public :
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
     std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
+    /**
+     * @brief 按两端点反查组件网格中独立边的局部 id
+     * @param component_id 组件 ID
+     * @param p0 边端点 id（与 MeshData 连通性同一键空间，当前为全局点 id）
+     * @param p1 边另一端点 id（与 p0 无序）
+     * @return 命中返回 component 局部边 id；未命中、无网格或数据异常返回 std::nullopt
+     */
+    std::optional<Index> findEdgeByEndpoints(Index component_id, Index p0, Index p1);
+
     const std::vector<std::array<double, 3>>& globalPoints() const;
 
     std::vector<GeometryDataVtk> getGeometryVtkData(Index model_id);

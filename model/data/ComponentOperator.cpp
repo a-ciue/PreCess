@@ -44,6 +44,10 @@ ModelData* ComponentOperator::model() const
 
 void ComponentOperator::notifyChanged() const
 {
+    // 网格拓扑可能已变更，派生的邻接索引随通知一并失效
+    if (component_)
+        component_->mesh_adjacency.invalidate();
+
     if (!observer_) return;
 
     observer_->notifyComponentChanged(component_id_);

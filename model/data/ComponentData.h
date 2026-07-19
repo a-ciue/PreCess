@@ -3,6 +3,7 @@
 
 #include "Core.h" 
 #include "MeshData.h"
+#include "MeshAdjacency.h"
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -39,6 +40,8 @@ struct ComponentData {
     std::unique_ptr<MeshData> mesh; ///< 网格数据（来自网格导入或由 Geometry 网格化生成）
     std::unique_ptr<GeometryData> geometry; ///< Geometry 数据（来自 STEP 等）
     std::unique_ptr<GeometryMeshMap> mapping; ///< Geometry↔网格对应关系（可选，后续实现）
+
+    MeshAdjacency mesh_adjacency; ///< 网格邻接查询索引（派生缓存，拓扑变更后由 ComponentOperator::notifyChanged 失效）
 
     // 组件级属性（后续会扩展 Property/Material）
     Index material_id { -1 }; ///< 材料/属性 ID（先留个 int 占位）

@@ -31,6 +31,7 @@ class GeometryActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
+class IMeshIdQuery;
 
 struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_OBJECT
@@ -184,6 +185,8 @@ private:
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
+
+    std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
 
     void updateGlobalVtkPointsImpl(Data* vtk);
 };

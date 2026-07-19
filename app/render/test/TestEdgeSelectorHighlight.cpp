@@ -79,7 +79,8 @@ int main(int argc, char* argv[])
 
     // 集成 EdgeSelectorHighlight
     vtkNew<vtkPartitionedDataSet> highlight_data;
-    EdgeSelectorHighlight selector(*renderer, *highlight_data, 0, MeshActorSelectOp(meshActor));
+    EdgeSelectorHighlight selector(*renderer, *highlight_data, 0, MeshActorSelectOp(meshActor),
+        /*component_id*/ 0, /*id_query*/ nullptr);
     style->SetSelectorHighlight(&selector);
 
     renderWindow->Render();

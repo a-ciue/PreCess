@@ -14,6 +14,7 @@ class vtkHardwarePicker;
 class vtkCompositePolyDataMapper;
 class vtkPartitionedDataSet;
 class MeshActorManagerSelectOp;
+class IMeshIdQuery;
 
 class MeshSelectManager {
 public:
@@ -22,6 +23,7 @@ public:
     void select(double posx, double posy);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
+    void setMeshIdQuery(const IMeshIdQuery* id_query);
     std::unique_ptr<Selection> getSelection();
 
 private:
@@ -29,6 +31,7 @@ private:
     void applyHighlightStyle(SelectMode mode);
 
     MeshActorManagerSelectOp* op_;
+    const IMeshIdQuery* id_query_ {};
     SelectMode select_mode_ { SelectMode::None };
     vtkRenderer* renderer_ { };
     vtkSmartPointer<vtkHardwarePicker> component_picker_;

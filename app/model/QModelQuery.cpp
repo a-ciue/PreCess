@@ -145,6 +145,15 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
     return model_data;
 }
 
+std::optional<Index> QModelQuery::findEdgeByEndpoints(Index component_id, Index p0, Index p1)
+{
+    ComponentData* comp = m_manager->findComponent(component_id);
+    if (!comp || !comp->mesh)
+        return std::nullopt;
+
+    return comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, p0, p1);
+}
+
 const std::vector<std::array<double, 3>>& QModelQuery::globalPoints() const
 {
     return m_manager->globalPoints();
