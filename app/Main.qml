@@ -130,9 +130,6 @@ ApplicationWindow {
                             info: info,
                             execute: function(component, args) {
                                 QModelManager.algorithmSystem.call(info.name, component, args)
-                                // Gmsh 操作结束后清除几何面选择及其高亮。
-                                if (info.name === "GmshPlugin" && App.registry.renderWindow)
-                                    App.registry.renderWindow.clearSelection()
                             }
                         }
                     }
@@ -290,6 +287,8 @@ ApplicationWindow {
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
                 QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
+                if (App.registry.renderWindow)
+                    App.registry.renderWindow.clearSelection()
                 App.registry.renderWindow.resetCamera()
             } else {
                 console.exception("No valid file type selected.")
