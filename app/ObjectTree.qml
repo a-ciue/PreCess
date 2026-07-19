@@ -322,8 +322,13 @@ Pane {
                     onTriggered: {
                         if (viewDelegate.depth === 0)
                             objectTree.isolateModel(viewDelegate.model.nodeId)
-                        else
+                        else if (viewDelegate.depth === 1)
                             objectTree.isolateNode(viewDelegate.model.nodeId)
+                        else if (viewDelegate.depth === 2)
+                            objectTree.isolateSubNode(
+                                viewDelegate.model.nodeId,
+                                viewDelegate.model.nodeType,
+                                viewDelegate.model.componentId)
                     }
                 }
 
@@ -466,6 +471,42 @@ Pane {
                 if (idx && idx.valid) {
                     treeModel.setVisibility(idx, visible)
                     App.componentVisibilityUpdated(cid, visible)
+                }
+            }
+        }
+    }
+
+    function isolateSubNode(nodeId, nodeType, componentId) {
+        let models = QModelManager.query.listModels()
+        for (let i = 0; i < models.length; i++) {
+            let mid = models[i].model_id
+            let comps = QModelManager.query.getComponentsSummary(mid)
+            for (let j = 0; j < comps.length; j++) {
+                let cid = comps[j].component_id
+                let vis = (cid === componentId)
+                let idx = treeModel.findIndexByNodeId(cid, 1)
+                if (idx && idx.valid) {
+                    treeModel.setVisibility(idx, vis)
+                    App.componentVisibilityUpdated(cid, vis)
+                }
+            }
+        }
+
+        let compIdx = treeModel.findIndexByNodeId(componentId, 1)
+        if (compIdx && compIdx.valid) {
+            let childCount = treeModel.rowCount(compIdx)
+            for (let ci = 0; ci < childCount; ci++) {
+                let childIdx = treeModel.index(ci, 0, compIdx)
+                let childNodeId = treeModel.data(childIdx, TreeModel.NodeIdRole)
+                let childNodeType = treeModel.data(childIdx, TreeModel.NodeTypeRole)
+                if (childNodeId !== nodeId
+                    && (childNodeType === objectTree._nodeTypeMesh
+                        || childNodeType === objectTree._nodeTypeGeometry)) {
+                    treeModel.setVisibility(childIdx, false)
+                    if (childNodeType === objectTree._nodeTypeMesh)
+                        App.meshVisibilityUpdated(componentId, false)
+                    else if (childNodeType === objectTree._nodeTypeGeometry)
+                        App.geometryVisibilityUpdated(componentId, false)
                 }
             }
         }
