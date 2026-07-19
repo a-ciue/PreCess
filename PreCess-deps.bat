@@ -63,12 +63,12 @@ for /f "tokens=3" %%i in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVer
 if "!ProxyEnable!"=="0x1" (
     echo [状态] 系统代理已启用
     echo.
-    
+
     REM 获取代理服务器地址
     for /f "tokens=2,*" %%i in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyServer 2^>nul') do (
         set "ProxyServer=%%j"
     )
-    
+
     if defined ProxyServer (
         echo [代理地址] !ProxyServer!
         set "HTTP_PROXY=!ProxyServer!"
@@ -76,7 +76,7 @@ if "!ProxyEnable!"=="0x1" (
     ) else (
         echo [代理地址] 未设置具体地址
     )
-    
+
 )
 
 REM 你的操作在这里
@@ -160,15 +160,6 @@ if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInf
 cmake --build . --target install --config Debug
 if "!buildRelease!"=="1" cmake --build . --target install --config Release
 
-REM Clone and build Gmsh OCC8
-set "CASROOT=%depsPath%\OpenCASCADE8.0.0"
-pushd "%sourcePath%/gmsh-occ8"
-cmake -S . -B ./build "-GNinja Multi-Config" "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;RelWithDebInfo" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=ON -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
-pushd build
-if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
-cmake --build . --target install --config Debug
-if "!buildRelease!"=="1" cmake --build . --target install --config Release
-
 REM Clone and build Catch2 3.11.0
 pushd "%sourcePath%/Catch2"
 cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\Catch2-3.11.0" -DCMAKE_INSTALL_MESSAGE=LAZY
@@ -200,7 +191,56 @@ pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
 cmake --build . --target install --config Debug
 if "!buildRelease!"=="1" cmake --build . --target install --config Release
-popd
+
+REM Clone and build Gmsh OCC8
+set "CASROOT=%depsPath%\OpenCASCADE8.0.0"
+set "casRootCmake=%CASROOT:\=/%"
+set "occLibs="
+
+REM OCC 8 的导入库：Debug 在 libd，Release 和 RelWithDebInfo 在 libi。
+REM 使用生成表达式让三个构建配置链接对应的 OCC 库。
+for %%L in (TKDESTEP TKDEIGES TKXSBase TKOffset TKFeat TKFillet TKBool TKMesh TKHLR TKBO TKPrim TKShHealing TKTopAlgo TKGeomAlgo TKBRep TKGeomBase TKG3d TKG2d TKMath TKernel) do (
+    if defined occLibs set "occLibs=!occLibs!;"
+    set "occLibs=!occLibs!$<IF:$<CONFIG:Debug>,!casRootCmake!/win64/vc14/libd/%%L.lib,!casRootCmake!/win64/vc14/libi/%%L.lib>"
+)
+
+pushd "%sourcePath%/gmsh-occ8"
+cmake -S . -B ./build-debug "-GNinja" "-DCMAKE_BUILD_TYPE:STRING=Debug" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_INC:PATH=%CASROOT%\inc" "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
+cmake --build ./build-debug --target install
+if "!buildRelInfo!"=="1" (
+    cmake -S . -B ./build-relwithdebinfo "-GNinja" "-DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_INC:PATH=%CASROOT%\inc" "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
+    cmake --build ./build-relwithdebinfo --target install
+)
+if "!buildRelease!"=="1" (
+    cmake -S . -B ./build-release "-GNinja" "-DCMAKE_BUILD_TYPE:STRING=Release" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_INC:PATH=%CASROOT%\inc" "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
+    cmake --build ./build-release --target install
+)
+
+REM 把 gmshTargets.cmake 中的 OpenCASCADE 绝对路径改为相对路径
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$path = '%depsPath%\gmsh-occ8\share\gmsh\gmshTargets.cmake';" ^
+    "$oldForward = '%depsPath:\=/%/OpenCASCADE8.0.0';" ^
+    "$oldBackward = '%depsPath%\OpenCASCADE8.0.0';" ^
+    "$newPath = '${_IMPORT_PREFIX}/../OpenCASCADE8.0.0';" ^
+    "$content = [System.IO.File]::ReadAllText($path);" ^
+    "$updated = $content.Replace($oldForward, $newPath).Replace($oldBackward, $newPath);" ^
+    "if ($updated -eq $content) {" ^
+    "    if ($content.Contains($newPath)) {" ^
+    "        Write-Host 'OpenCASCADE 路径已经是相对路径。';" ^
+    "        exit 0;" ^
+    "    }" ^
+    "    throw '没有在 gmshTargets.cmake 中找到指定的 OpenCASCADE 绝对路径。';" ^
+    "}" ^
+    "[System.IO.File]::WriteAllText($path, $updated, [System.Text.UTF8Encoding]::new($false));" ^
+    "Write-Host 'OpenCASCADE 路径修改成功。';"
+
+if errorlevel 1 (
+    echo.
+    echo 修改失败。
+    pause
+    exit /b 1
+)
+
 popd
 
 echo 处理完成！
