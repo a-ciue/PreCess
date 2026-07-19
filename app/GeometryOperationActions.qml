@@ -175,7 +175,7 @@ QtObject {
         root.operationActivated()
     }
 
-    // 创建成功后统一更新当前 Model 和 Component，并按需清理渲染选择。
+    // 创建成功后统一更新当前 Model 和 Component，清理选择并在 Actor 更新后重置视角。
     function selectCreatedComponent(componentId, clearRenderSelection) {
         if (componentId < 0)
             return
@@ -183,6 +183,10 @@ QtObject {
             App.registry.renderWindow.clearSelection()
         App.selection.activeComponentId = componentId
         App.selection.activeModelId = QModelManager.query.findModelIdByComponent(componentId)
+        Qt.callLater(function() {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.resetCamera()
+        })
     }
 
     // 启动坐标创建点操作。
