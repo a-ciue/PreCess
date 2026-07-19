@@ -16,11 +16,11 @@ public:
     virtual ~IMeshIdQuery() = default;
 
     /**
-     * @brief 按两端点反查独立边的局部 id
+     * @brief 按两端点反查边表行号
      * @param component_id 组件 ID
      * @param p0 边端点 id（与 MeshData 连通性同一键空间，当前为全局点 id）
      * @param p1 边另一端点 id（与 p0 无序）
-     * @return 命中返回 component 局部边 id；未命中返回 std::nullopt
+     * @return 命中返回边表行号（统一边 id 的 component 局部形式）；未命中返回 std::nullopt
      */
     virtual std::optional<Index> findEdgeByEndpoints(Index component_id, Index p0, Index p1) const = 0;
 };
