@@ -73,6 +73,31 @@ RowLayout {
         onClicked: root.clearButtonClicked()
         opacity: enabled ? 1.0 : 0.6
     }
+    CheckBox {
+        text: "按角度扩散"
+        checked: App.selection.faceSelectByAngle
+        visible: App.selection.selectMode === "Face"
+        onToggled: App.selection.faceSelectByAngle = checked
+    }
+    Label {
+        text: "角度"
+        visible: App.selection.selectMode === "Face" && App.selection.faceSelectByAngle
+    }
+    TextField {
+        text: App.selection.faceSelectAngle.toFixed(1)
+        visible: App.selection.selectMode === "Face" && App.selection.faceSelectByAngle
+        Layout.preferredWidth: 56
+        validator: DoubleValidator {
+            bottom: 0.0
+            top: 180.0
+            decimals: 2
+        }
+        onEditingFinished: {
+            var value = Number(text)
+            if (!isNaN(value))
+                App.selection.faceSelectAngle = Math.max(0.0, Math.min(180.0, value))
+        }
+    }
     Button{
         text: "确认"
         onClicked: {

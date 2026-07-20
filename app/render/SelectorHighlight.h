@@ -27,6 +27,14 @@ class vtkCompositePolyDataMapper;
 
 using SelectionVtk = Selection;
 
+/**
+ * @brief 面选择的角度扩散配置，用于控制是否沿共享边扩展到相邻面
+ */
+struct FaceSelectionSpreadOptions {
+    bool enabled { false };
+    double angle_deg { 30.0 };
+};
+
 class SelectorHighlight {
 public:
     virtual ~SelectorHighlight() = default;
@@ -74,12 +82,19 @@ public:
     void clear() override;
     SelectionVtk get() override;
 
+    /**
+     * @brief 设置面选择的扩散开关和角度阈值
+     * @param options 面选择扩散配置
+     */
+    void setSpreadOptions(FaceSelectionSpreadOptions options);
+
 private:
     vtkRenderer* renderer_;
     MeshActorSelectOp select_op_;
     vtkPartitionedDataSet* highlight_data_;
     unsigned int partition_id_;
     std::vector<vtkIdType> selections_;
+    FaceSelectionSpreadOptions spread_options_;
     vtkSmartPointer<vtkPolyData> selections_poly_;
 };
 

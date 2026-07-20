@@ -100,6 +100,12 @@ Page {
                         myItem.clearSelection()
                 }
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
+                function onFaceSelectByAngleChanged() {
+                    myItem.setFaceSelectionByAngle(App.selection.faceSelectByAngle, App.selection.faceSelectAngle)
+                }
+                function onFaceSelectAngleChanged() {
+                    myItem.setFaceSelectionByAngle(App.selection.faceSelectByAngle, App.selection.faceSelectAngle)
+                }
             }
 
             Connections {

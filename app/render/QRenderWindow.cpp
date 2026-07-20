@@ -358,6 +358,13 @@ void QRenderWindow::setSelectMode(QString select_mode)
     });
 }
 
+void QRenderWindow::setFaceSelectionByAngle(bool enabled, double angle_deg)
+{
+    dispatch_async([enabled, angle_deg, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        select_manager_->setFaceSelectionByAngle(enabled, angle_deg);
+    });
+}
+
 void QRenderWindow::clearSelection()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
