@@ -63,17 +63,27 @@ bool isSelected(vtkIdType face_id, const std::vector<vtkIdType>& selections)
     return findSelected(face_id, selections) != selections.end();
 }
 
-void addSelected(vtkIdType face_id, std::vector<vtkIdType>& selections)
+/**
+ * @brief 批量加入面编号，通过集合避免逐面线性查重
+ */
+void addSelected(const std::vector<vtkIdType>& face_ids, std::vector<vtkIdType>& selections)
 {
-    if (!isSelected(face_id, selections))
-        selections.push_back(face_id);
+    std::unordered_set<vtkIdType> selected_ids(selections.begin(), selections.end());
+    for (vtkIdType face_id : face_ids) {
+        if (selected_ids.insert(face_id).second)
+            selections.push_back(face_id);
+    }
 }
 
-void removeSelected(vtkIdType face_id, std::vector<vtkIdType>& selections)
+/**
+ * @brief 批量移除面编号，保持其余选择面的原有顺序
+ */
+void removeSelected(const std::vector<vtkIdType>& face_ids, std::vector<vtkIdType>& selections)
 {
-    auto it = findSelected(face_id, selections);
-    if (it != selections.end())
-        selections.erase(it);
+    std::unordered_set<vtkIdType> removed_ids(face_ids.begin(), face_ids.end());
+    auto first_removed = std::remove_if(selections.begin(), selections.end(),
+        [&](vtkIdType face_id) { return removed_ids.find(face_id) != removed_ids.end(); });
+    selections.erase(first_removed, selections.end());
 }
 
 /**
@@ -140,13 +150,10 @@ std::array<double, 3> calculateFaceNormal(vtkPolyData& poly, vtkIdType face_id)
  * @brief 从种子面开始，沿共享边扩散到法向夹角不超过阈值的连续面
  */
 std::vector<vtkIdType> spreadFacesByAngle(
-    vtkPolyData& poly, vtkIdType seed_face_id, double angle_deg)
+    const std::vector<std::vector<vtkIdType>>& adjacency,
+    const std::vector<std::array<double, 3>>& normals,
+    vtkIdType seed_face_id, double angle_deg)
 {
-    auto adjacency = buildFaceAdjacency(poly);
-    std::vector<std::array<double, 3>> normals(poly.GetNumberOfCells());
-    for (vtkIdType face_id = 0; face_id < poly.GetNumberOfCells(); ++face_id)
-        normals[face_id] = calculateFaceNormal(poly, face_id);
-
     // 将角度阈值转换成点积阈值，BFS 中无需反复计算 acos。
     angle_deg = std::clamp(angle_deg, 0.0, 180.0);
     double cos_threshold = std::cos(angle_deg * kPi / 180.0);
@@ -164,14 +171,16 @@ std::vector<vtkIdType> spreadFacesByAngle(
         region.push_back(current);
 
         for (vtkIdType next : adjacency[current]) {
-            if (!visited.insert(next).second)
+            if (visited.find(next) != visited.end())
                 continue;
 
             const auto& a = normals[current];
             const auto& b = normals[next];
             double dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-            if (dot >= cos_threshold)
+            if (dot >= cos_threshold) {
+                visited.insert(next);
                 pending.push(next);
+            }
         }
     }
     return region;
@@ -213,6 +222,20 @@ void FaceSelectorHighlight::clear()
     highlight_data_->Modified();
 }
 
+void FaceSelectorHighlight::updateSpreadCache(vtkPolyData& poly)
+{
+    vtkMTimeType mtime = poly.GetMTime();
+    if (spread_cache_.poly_data == &poly && spread_cache_.mtime == mtime)
+        return;
+
+    spread_cache_.poly_data = &poly;
+    spread_cache_.mtime = mtime;
+    spread_cache_.adjacency = buildFaceAdjacency(poly);
+    spread_cache_.normals.resize(poly.GetNumberOfCells());
+    for (vtkIdType face_id = 0; face_id < poly.GetNumberOfCells(); ++face_id)
+        spread_cache_.normals[face_id] = calculateFaceNormal(poly, face_id);
+}
+
 void FaceSelectorHighlight::select(double posx, double posy)
 {
     vtkNew<vtkHardwarePicker> picker;
@@ -235,17 +258,18 @@ void FaceSelectorHighlight::select(double posx, double posy)
     assert(picked_poly);
 
     std::vector<vtkIdType> picked_faces { picked_cell_id };
-    if (spread_options_.enabled)
-        picked_faces = spreadFacesByAngle(*picked_poly, picked_cell_id, spread_options_.angle_deg);
+    if (spread_options_.enabled) {
+        updateSpreadCache(*picked_poly);
+        picked_faces = spreadFacesByAngle(spread_cache_.adjacency,
+            spread_cache_.normals, picked_cell_id, spread_options_.angle_deg);
+    }
 
     // 以种子面的状态决定整片区域是加入还是移除，保持原有点击切换语义。
     bool remove_faces = isSelected(picked_cell_id, selections_);
-    for (vtkIdType face_id : picked_faces) {
-        if (remove_faces)
-            removeSelected(face_id, selections_);
-        else
-            addSelected(face_id, selections_);
-    }
+    if (remove_faces)
+        removeSelected(picked_faces, selections_);
+    else
+        addSelected(picked_faces, selections_);
 
     vtkNew<vtkCellArray> cell_array;
     for (const auto& face : selections_) {

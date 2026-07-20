@@ -14,6 +14,7 @@
 #include <vector>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
+#include <vtkType.h>
 
 class vtkRenderer;
 class vtkActor;
@@ -24,6 +25,7 @@ class vtkPartitionedDataSet;
 class vtkExtractSelection;
 class vtkGeometryFilter;
 class vtkCompositePolyDataMapper;
+class vtkPolyData;
 
 using SelectionVtk = Selection;
 
@@ -89,12 +91,29 @@ public:
     void setSpreadOptions(FaceSelectionSpreadOptions options);
 
 private:
+    /**
+     * @brief 缓存当前面数据的邻接关系和法向，避免每次点击全量重建
+     */
+    struct FaceSpreadCache {
+        vtkPolyData* poly_data {};
+        vtkMTimeType mtime {};
+        std::vector<std::vector<vtkIdType>> adjacency;
+        std::vector<std::array<double, 3>> normals;
+    };
+
+    /**
+     * @brief 当面数据发生变化时重建角度扩散缓存
+     * @param poly 当前选择器使用的面数据
+     */
+    void updateSpreadCache(vtkPolyData& poly);
+
     vtkRenderer* renderer_;
     MeshActorSelectOp select_op_;
     vtkPartitionedDataSet* highlight_data_;
     unsigned int partition_id_;
     std::vector<vtkIdType> selections_;
     FaceSelectionSpreadOptions spread_options_;
+    FaceSpreadCache spread_cache_;
     vtkSmartPointer<vtkPolyData> selections_poly_;
 };
 
