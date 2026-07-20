@@ -12,10 +12,8 @@
 #include <unordered_set>
 #include <utility>
 #include <vtkActor.h>
-#include <vtkCell.h>
 #include <vtkCellArray.h>
 #include <vtkHardwarePicker.h>
-#include <vtkIdList.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -38,10 +36,15 @@ struct EdgeKey {
     }
 };
 
+/**
+ * @brief 组合无向边两个端点的哈希，降低规则点编号下的冲突
+ */
 struct EdgeKeyHash {
     std::size_t operator()(const EdgeKey& key) const
     {
-        return std::hash<vtkIdType> {}(key.a) ^ (std::hash<vtkIdType> {}(key.b) << 1);
+        std::size_t h1 = std::hash<vtkIdType> {}(key.a);
+        std::size_t h2 = std::hash<vtkIdType> {}(key.b);
+        return h1 ^ (h2 + static_cast<std::size_t>(0x9e3779b9U) + (h1 << 6) + (h1 >> 2));
     }
 };
 
@@ -96,11 +99,12 @@ std::vector<std::vector<vtkIdType>> buildFaceAdjacency(vtkPolyData& poly)
 
     // 先记录每条边关联的面，再由边反向建立面邻接关系。
     for (vtkIdType face_id = 0; face_id < poly.GetNumberOfCells(); ++face_id) {
-        vtkIdList* point_ids = poly.GetCell(face_id)->GetPointIds();
-        vtkIdType point_count = point_ids->GetNumberOfIds();
+        vtkIdType point_count = 0;
+        const vtkIdType* point_ids = nullptr;
+        poly.GetCellPoints(face_id, point_count, point_ids);
         for (vtkIdType i = 0; i < point_count; ++i) {
-            vtkIdType p0 = point_ids->GetId(i);
-            vtkIdType p1 = point_ids->GetId((i + 1) % point_count);
+            vtkIdType p0 = point_ids[i];
+            vtkIdType p1 = point_ids[(i + 1) % point_count];
             edge_faces[makeEdgeKey(p0, p1)].push_back(face_id);
         }
     }
@@ -123,14 +127,15 @@ std::vector<std::vector<vtkIdType>> buildFaceAdjacency(vtkPolyData& poly)
 std::array<double, 3> calculateFaceNormal(vtkPolyData& poly, vtkIdType face_id)
 {
     std::array<double, 3> normal {};
-    vtkIdList* point_ids = poly.GetCell(face_id)->GetPointIds();
-    vtkIdType point_count = point_ids->GetNumberOfIds();
+    vtkIdType point_count = 0;
+    const vtkIdType* point_ids = nullptr;
+    poly.GetCellPoints(face_id, point_count, point_ids);
 
     for (vtkIdType i = 0; i < point_count; ++i) {
         double p0[3] {};
         double p1[3] {};
-        poly.GetPoint(point_ids->GetId(i), p0);
-        poly.GetPoint(point_ids->GetId((i + 1) % point_count), p1);
+        poly.GetPoint(point_ids[i], p0);
+        poly.GetPoint(point_ids[(i + 1) % point_count], p1);
         normal[0] += (p0[1] - p1[1]) * (p0[2] + p1[2]);
         normal[1] += (p0[2] - p1[2]) * (p0[0] + p1[0]);
         normal[2] += (p0[0] - p1[0]) * (p0[1] + p1[1]);
@@ -273,7 +278,10 @@ void FaceSelectorHighlight::select(double posx, double posy)
 
     vtkNew<vtkCellArray> cell_array;
     for (const auto& face : selections_) {
-        cell_array->InsertNextCell(picked_poly->GetCell(face));
+        vtkIdType point_count = 0;
+        const vtkIdType* point_ids = nullptr;
+        picked_poly->GetCellPoints(face, point_count, point_ids);
+        cell_array->InsertNextCell(point_count, point_ids);
     }
 
     vtkNew<vtkPolyData> highlight_poly;
