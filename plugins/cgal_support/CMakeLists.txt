@@ -16,7 +16,18 @@ find_path(BOOST_INCLUDE_DIR boost/version.hpp
 add_library(CgalSupport STATIC
     CgalMeshAdapter.cpp
 )
+# 关键：CGAL_DISABLE_GMP 必须同时作为【编译宏】传播——CGAL/CORE/BigInt.h 在未定义该宏时
+# 默认启用 GMP 后端（boost mpz_int，需 gmp.h），会带出大片模板错误；
+# 定义后回退 boost cpp_int（纯头文件）。CMake 变量 CGAL_DISABLE_GMP 只控制 CGALConfig 的查找逻辑
+target_compile_definitions(CgalSupport PUBLIC CGAL_DISABLE_GMP)
 target_include_directories(CgalSupport PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${BOOST_INCLUDE_DIR})
 target_link_libraries(CgalSupport PUBLIC Core Data CGAL::CGAL)
+
+# MSVC 默认不启用 C++ 异常（本项目全局未开 /EHsc），会导致 Boost 判定 BOOST_NO_EXCEPTIONS、
+# boost::throw_exception 模板不实例化而产生链接错误；同时 CGAL 头文件大量 C4530 警告。
+# 对 CGAL 消费目标统一启用（PUBLIC 传播到链接本库的插件与测试）
+if(MSVC)
+    target_compile_options(CgalSupport PUBLIC /EHsc)
+endif()
 
 add_subdirectory(test)
