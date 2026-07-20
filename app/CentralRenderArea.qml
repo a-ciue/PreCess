@@ -106,6 +106,10 @@ Page {
                 function onFaceSelectAngleChanged() {
                     myItem.setFaceSelectionByAngle(App.selection.faceSelectByAngle, App.selection.faceSelectAngle)
                 }
+                function onSelectionInvalidated() {
+                    myItem.clearSelection()
+                    selector.selection = null
+                }
             }
 
             Connections {

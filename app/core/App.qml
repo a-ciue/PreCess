@@ -11,6 +11,7 @@ QtObject {
         property real faceSelectAngle: 30.0
 
         signal confirmed(var sel)
+        signal selectionInvalidated()
     }
 
     property var activeOperation: null

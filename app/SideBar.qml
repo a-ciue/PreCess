@@ -307,6 +307,16 @@ Item{
                     App.selection.listeningSelectorIndex = -1
                 }
             }
+
+            Connections {
+                target: App.selection
+                function onSelectionInvalidated() {
+                    value = null
+                    root.setParam(index, null)
+                    if (App.selection.listeningSelectorIndex === index)
+                        App.selection.listeningSelectorIndex = -1
+                }
+            }
         }
     }
     Component{

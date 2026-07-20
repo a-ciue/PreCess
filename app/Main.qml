@@ -63,7 +63,11 @@ ApplicationWindow {
                         var info = modelData
                         App.activeOperation = {
                             info: info,
-                            execute: function(model, args) { QModelManager.editSystem.call(info.name, model, args) }
+                            execute: function(model, args) {
+                                QModelManager.editSystem.call(info.name, model, args)
+                                // Edit 操作可能改变网格拓扑，原有单元 ID 不再可靠。
+                                App.selection.selectionInvalidated()
+                            }
                         }
                     }
                 }
