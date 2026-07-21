@@ -11,6 +11,10 @@ Page {
     background: null
     anchors.fill: parent
 
+    // 当前渲染区域的面选择角度扩散参数。
+    property bool faceSelectByAngle: false
+    property real faceSelectAngle: 30.0
+
     footer: ToolBar {
         id: toolbar
         height: 25
@@ -80,6 +84,20 @@ Page {
             anchors.margins: 3
             query: QModelManager.query
 
+            Component.onCompleted: {
+                myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
+            }
+
+            Connections {
+                target: root
+                function onFaceSelectByAngleChanged() {
+                    myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
+                }
+                function onFaceSelectAngleChanged() {
+                    myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
+                }
+            }
+
             onRightClicked: { viewportMenu.popup() }
 
             Connections {
@@ -100,12 +118,6 @@ Page {
                         myItem.clearSelection()
                 }
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
-                function onFaceSelectByAngleChanged() {
-                    myItem.setFaceSelectionByAngle(App.selection.faceSelectByAngle, App.selection.faceSelectAngle)
-                }
-                function onFaceSelectAngleChanged() {
-                    myItem.setFaceSelectionByAngle(App.selection.faceSelectByAngle, App.selection.faceSelectAngle)
-                }
                 function onSelectionInvalidated() {
                     myItem.clearSelection()
                     selector.selection = null
@@ -125,6 +137,14 @@ Page {
             anchors.left: parent.left
             anchors.topMargin: 10
             anchors.leftMargin: 10
+
+            faceSelectByAngle: root.faceSelectByAngle
+            faceSelectAngle: root.faceSelectAngle
+
+            onFaceSelectionSpreadEdited: function(enabled, angle) {
+                root.faceSelectByAngle = enabled
+                root.faceSelectAngle = angle
+            }
 
             onClearButtonClicked: {
                 myItem.clearSelection()

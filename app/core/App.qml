@@ -7,9 +7,6 @@ QtObject {
         property int activeComponentId: -1
         property string selectMode: ""
         property int listeningSelectorIndex: -1
-        property bool faceSelectByAngle: false
-        property real faceSelectAngle: 30.0
-
         signal confirmed(var sel)
         signal selectionInvalidated()
     }

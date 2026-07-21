@@ -14,6 +14,13 @@ RowLayout {
     signal confirmButtonClicked
     property QSelection selection
 
+    // 当前角度扩散参数，由渲染区域传入。
+    property bool faceSelectByAngle
+    property real faceSelectAngle
+
+    // 将用户编辑后的参数通知给渲染区域。
+    signal faceSelectionSpreadEdited(bool enabled, real angle)
+
     ComboBox{
         id: selectModeComboBox
         model: ListModel {
@@ -75,17 +82,17 @@ RowLayout {
     }
     CheckBox {
         text: "按角度扩散"
-        checked: App.selection.faceSelectByAngle
+        checked: root.faceSelectByAngle
         visible: App.selection.selectMode === "Face"
-        onToggled: App.selection.faceSelectByAngle = checked
+        onClicked: root.faceSelectionSpreadEdited(checked, root.faceSelectAngle)
     }
     Label {
         text: "角度"
-        visible: App.selection.selectMode === "Face" && App.selection.faceSelectByAngle
+        visible: App.selection.selectMode === "Face" && root.faceSelectByAngle
     }
     TextField {
-        text: App.selection.faceSelectAngle.toFixed(1)
-        visible: App.selection.selectMode === "Face" && App.selection.faceSelectByAngle
+        text: root.faceSelectAngle.toFixed(1)
+        visible: App.selection.selectMode === "Face" && root.faceSelectByAngle
         Layout.preferredWidth: 56
         validator: DoubleValidator {
             bottom: 0.0
@@ -95,7 +102,7 @@ RowLayout {
         onEditingFinished: {
             var value = Number(text)
             if (!isNaN(value))
-                App.selection.faceSelectAngle = Math.max(0.0, Math.min(180.0, value))
+                root.faceSelectionSpreadEdited(root.faceSelectByAngle,Math.max(0.0, Math.min(180.0, value)))
         }
     }
     Button{
