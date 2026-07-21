@@ -198,23 +198,20 @@ set "casRootCmake=%CASROOT:\=/%"
 set "occLibs="
 
 REM OCC 8 的导入库：Debug 在 libd，Release 在 lib，RelWithDebInfo 在 libi。
-REM 使用生成表达式让三个构建配置链接对应的 OCC 库。
 for %%L in (TKDESTEP TKDEIGES TKXSBase TKOffset TKFeat TKFillet TKBool TKMesh TKHLR TKBO TKPrim TKShHealing TKTopAlgo TKGeomAlgo TKBRep TKGeomBase TKG3d TKG2d TKMath TKernel) do (
     if defined occLibs set "occLibs=!occLibs!;"
     set "occLibs=!occLibs!$<IF:$<CONFIG:Debug>,!casRootCmake!/win64/vc14/libd/%%L.lib,$<IF:$<CONFIG:RelWithDebInfo>,!casRootCmake!/win64/vc14/libi/%%L.lib,!casRootCmake!/win64/vc14/lib/%%L.lib>>"
 )
 
-pushd "%sourcePath%/gmsh-occ8"
-cmake -S . -B ./build-debug "-GNinja" "-DCMAKE_BUILD_TYPE:STRING=Debug" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_INC:PATH=%CASROOT%\inc" "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
-cmake --build ./build-debug --target install
-if "!buildRelInfo!"=="1" (
-    cmake -S . -B ./build-relwithdebinfo "-GNinja" "-DCMAKE_BUILD_TYPE:STRING=RelWithDebInfo" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_INC:PATH=%CASROOT%\inc" "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
-    cmake --build ./build-relwithdebinfo --target install
-)
-if "!buildRelease!"=="1" (
-    cmake -S . -B ./build-release "-GNinja" "-DCMAKE_BUILD_TYPE:STRING=Release" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_INC:PATH=%CASROOT%\inc" "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
-    cmake --build ./build-release --target install
-)
+pushd "%sourcePath%\gmsh-occ8"
+
+cmake -S . -B ./build ^
+    "-GNinja Multi-Config" "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;RelWithDebInfo" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
+pushd build
+
+cmake --build . --target install --config Debug
+if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
+if "!buildRelease!"=="1" cmake --build . --target install --config Release
 
 REM 把 gmshTargets.cmake 中的 OpenCASCADE 绝对路径改为相对路径
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
