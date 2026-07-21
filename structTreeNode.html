@@ -73,6 +73,7 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public 类型</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pub-attribs">Public 属性</a> &#124;
 <a href="structTreeNode-members.html">所有成员列表</a>  </div>
@@ -91,6 +92,24 @@ TreeNode 的协作图:</div>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:a62f65fbb26a3d18a773f8e7f201303b3" id="r_a62f65fbb26a3d18a773f8e7f201303b3"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3">NodeType</a> { <br />
+&#160;&#160;<a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3aa559b87068921eec05086ce5485e9784">Model</a>
+, <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3a2cb05e4bb7830be982f0922fed86b4cd">Component</a>
+, <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3a710fdb6adb881b408116ef95335e1961">Mesh</a>
+, <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3ad9c6333623e6357515fcbf17be806273">Geometry</a>
+, <br />
+&#160;&#160;<a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3ac4d62b6dcca08e5caf06c01889282859">D2</a>
+, <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3aa3deb6e481689f1d3303caecb8a6c401">D3</a>
+, <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3ab22b929ba52471a02d18bb3a4e4472e6">Vertex</a>
+, <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3ae4a297a0f76119a442c2595ac040673e">Edge</a>
+, <br />
+&#160;&#160;<a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3a8af5861002f3c157f9ba842bba10aa3f">Face</a>
+, <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3ae41480b6bbfbf7407974a88d3d34f4fa">Solid</a>
+<br />
+ }</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a9e048def3bfa7190c9c8921f7a21b0ad" id="r_a9e048def3bfa7190c9c8921f7a21b0ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e048def3bfa7190c9c8921f7a21b0ad">TreeNode</a> (const QString &amp;n, const QString &amp;num=&quot;&quot;, <a class="el" href="structTreeNode.html">TreeNode</a> *p=nullptr)</td></tr>
@@ -101,10 +120,46 @@ Public 属性</h2></td></tr>
 <tr class="memitem:afc778af68fa7826995822bc7741bc3d5" id="r_afc778af68fa7826995822bc7741bc3d5"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc778af68fa7826995822bc7741bc3d5">name</a></td></tr>
 <tr class="memitem:a7ad06451902899d0e30976c83a4f1c3a" id="r_a7ad06451902899d0e30976c83a4f1c3a"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ad06451902899d0e30976c83a4f1c3a">number</a></td></tr>
 <tr class="memitem:a76a2f05c583f9e174afc609b720c6e1c" id="r_a76a2f05c583f9e174afc609b720c6e1c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76a2f05c583f9e174afc609b720c6e1c">nodeId</a> = -1</td></tr>
+<tr class="memitem:a32f2204c453b9e9b9b4c7013ee4eb9ce" id="r_a32f2204c453b9e9b9b4c7013ee4eb9ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3">NodeType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32f2204c453b9e9b9b4c7013ee4eb9ce">nodeType</a> = <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3a2cb05e4bb7830be982f0922fed86b4cd">NodeType::Component</a></td></tr>
 <tr class="memitem:a469c5a49d69f5006f59dbfcbce8f4280" id="r_a469c5a49d69f5006f59dbfcbce8f4280"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a469c5a49d69f5006f59dbfcbce8f4280">isVisible</a> = true</td></tr>
 <tr class="memitem:ab232c85d643949f9feb6933ebf3ff5ca" id="r_ab232c85d643949f9feb6933ebf3ff5ca"><td class="memItemLeft" align="right" valign="top">QVector&lt; <a class="el" href="structTreeNode.html">TreeNode</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab232c85d643949f9feb6933ebf3ff5ca">children</a></td></tr>
 <tr class="memitem:a77ccf52dc11528bf6cff26e9fa857fce" id="r_a77ccf52dc11528bf6cff26e9fa857fce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77ccf52dc11528bf6cff26e9fa857fce">parent</a> = nullptr</td></tr>
 </table>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">成员枚举类型说明</h2>
+<a id="a62f65fbb26a3d18a773f8e7f201303b3" name="a62f65fbb26a3d18a773f8e7f201303b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62f65fbb26a3d18a773f8e7f201303b3">&#9670;&#160;</a></span>NodeType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3">TreeNode::NodeType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3aa559b87068921eec05086ce5485e9784" name="a62f65fbb26a3d18a773f8e7f201303b3aa559b87068921eec05086ce5485e9784"></a>Model&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3a2cb05e4bb7830be982f0922fed86b4cd" name="a62f65fbb26a3d18a773f8e7f201303b3a2cb05e4bb7830be982f0922fed86b4cd"></a>Component&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3a710fdb6adb881b408116ef95335e1961" name="a62f65fbb26a3d18a773f8e7f201303b3a710fdb6adb881b408116ef95335e1961"></a>Mesh&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3ad9c6333623e6357515fcbf17be806273" name="a62f65fbb26a3d18a773f8e7f201303b3ad9c6333623e6357515fcbf17be806273"></a>Geometry&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3ac4d62b6dcca08e5caf06c01889282859" name="a62f65fbb26a3d18a773f8e7f201303b3ac4d62b6dcca08e5caf06c01889282859"></a>D2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3aa3deb6e481689f1d3303caecb8a6c401" name="a62f65fbb26a3d18a773f8e7f201303b3aa3deb6e481689f1d3303caecb8a6c401"></a>D3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3ab22b929ba52471a02d18bb3a4e4472e6" name="a62f65fbb26a3d18a773f8e7f201303b3ab22b929ba52471a02d18bb3a4e4472e6"></a>Vertex&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3ae4a297a0f76119a442c2595ac040673e" name="a62f65fbb26a3d18a773f8e7f201303b3ae4a297a0f76119a442c2595ac040673e"></a>Edge&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3a8af5861002f3c157f9ba842bba10aa3f" name="a62f65fbb26a3d18a773f8e7f201303b3a8af5861002f3c157f9ba842bba10aa3f"></a>Face&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a62f65fbb26a3d18a773f8e7f201303b3ae41480b6bbfbf7407974a88d3d34f4fa" name="a62f65fbb26a3d18a773f8e7f201303b3ae41480b6bbfbf7407974a88d3d34f4fa"></a>Solid&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a9e048def3bfa7190c9c8921f7a21b0ad" name="a9e048def3bfa7190c9c8921f7a21b0ad"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9e048def3bfa7190c9c8921f7a21b0ad">&#9670;&#160;</a></span>TreeNode()</h2>
@@ -216,6 +271,20 @@ Public 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int TreeNode::nodeId = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a32f2204c453b9e9b9b4c7013ee4eb9ce" name="a32f2204c453b9e9b9b4c7013ee4eb9ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32f2204c453b9e9b9b4c7013ee4eb9ce">&#9670;&#160;</a></span>nodeType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3">NodeType</a> TreeNode::nodeType = <a class="el" href="#a62f65fbb26a3d18a773f8e7f201303b3a2cb05e4bb7830be982f0922fed86b4cd">NodeType::Component</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

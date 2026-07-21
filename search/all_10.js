@@ -74,7 +74,8 @@ var searchData=
   ['priority_71',['priority',['../namespaceplf.html#af4e761553ae1a085755c051a82496a05',1,'plf']]],
   ['private_5fargtypeenum_2eh_72',['private_ArgTypeEnum.h',['../private__ArgTypeEnum_8h.html',1,'']]],
   ['prop_5fto_5fcomponent_5f_73',['prop_to_component_',['../classGeometryActorManagerSelectOp.html#a0d4f19ac52577626453dcd49d6fc429c',1,'GeometryActorManagerSelectOp::prop_to_component_'],['../classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641',1,'MeshActorManagerSelectOp::prop_to_component_']]],
-  ['ptr_74',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]],
-  ['publish_75',['publish',['../classcore_1_1EventBus.html#a54bb00c50513174ae5a3fe4b54c54edb',1,'core::EventBus::publish()'],['../classEventBus.html#a54bb00c50513174ae5a3fe4b54c54edb',1,'EventBus::publish()'],['../TestEventBus_8cpp.html#a2a08d1277353978a21df5a225ab873c7',1,'publish(TestEvent {}):&#160;TestEventBus.cpp']]],
-  ['push_5fback_76',['push_back',['../TestComponentModel_8cpp.html#a02b2049c37f3f3d57a8fa52245b7ce89',1,'push_back(move(c1)):&#160;TestComponentModel.cpp'],['../TestComponentModel_8cpp.html#ae3baf43bf910299d6a2b2a735f484906',1,'push_back(move(c2)):&#160;TestComponentModel.cpp']]]
+  ['propagateup_74',['propagateUp',['../classTreeModel.html#aa7574a1e9fa97b69cd67139902fc806b',1,'TreeModel']]],
+  ['ptr_75',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]],
+  ['publish_76',['publish',['../classcore_1_1EventBus.html#a54bb00c50513174ae5a3fe4b54c54edb',1,'core::EventBus::publish()'],['../classEventBus.html#a54bb00c50513174ae5a3fe4b54c54edb',1,'EventBus::publish()'],['../TestEventBus_8cpp.html#a2a08d1277353978a21df5a225ab873c7',1,'publish(TestEvent {}):&#160;TestEventBus.cpp']]],
+  ['push_5fback_77',['push_back',['../TestComponentModel_8cpp.html#a02b2049c37f3f3d57a8fa52245b7ce89',1,'push_back(move(c1)):&#160;TestComponentModel.cpp'],['../TestComponentModel_8cpp.html#ae3baf43bf910299d6a2b2a735f484906',1,'push_back(move(c2)):&#160;TestComponentModel.cpp']]]
 ];

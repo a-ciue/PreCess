@@ -2,7 +2,7 @@ var searchData=
 [
   ['e_0',['E',['../classMeshLib_1_1CToolMesh.html#a2f1d1aaeb17cff5485349de4fa22c716',1,'MeshLib::CToolMesh::E'],['../classMeshLib_1_1CFaceSplitter.html#a6e472d39cf5a80ae9616408f8c2cffd2',1,'MeshLib::CFaceSplitter::E']]],
   ['edge_1',['EDGE',['../AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01aea6563b7570ee4add31ffc4e94fa86b6fb',1,'AttributeCommon.h']]],
-  ['edge_2',['Edge',['../classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a4669b8dac1e7b52db4cc113cbce637fc',1,'ElementEnum::Edge'],['../Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6ae4a297a0f76119a442c2595ac040673e',1,'Edge:&#160;Core.h']]],
+  ['edge_2',['Edge',['../classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a4669b8dac1e7b52db4cc113cbce637fc',1,'ElementEnum::Edge'],['../structTreeNode.html#a62f65fbb26a3d18a773f8e7f201303b3ae4a297a0f76119a442c2595ac040673e',1,'TreeNode::Edge'],['../Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6ae4a297a0f76119a442c2595ac040673e',1,'Edge:&#160;Core.h']]],
   ['edge_3',['edge',['../classMeshLib_1_1CToolVertex.html#a84f86822b252e7b896cc5e630a263e50',1,'MeshLib::CToolVertex::edge'],['../classMeshLib_1_1CHalfEdge.html#a379389a0315f6ba0c501e0e7451394f0',1,'MeshLib::CHalfEdge::edge()']]],
   ['edge_2eh_4',['Edge.h',['../Edge_8h.html',1,'']]],
   ['edge_5factor_5f_5',['edge_actor_',['../classMeshActor.html#ac1012183fbcf30628db40de715822957',1,'MeshActor']]],
