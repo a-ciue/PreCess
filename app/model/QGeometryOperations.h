@@ -185,9 +185,6 @@ public:
         double directionZ,
         double length);
 
-signals:
-    void operationFailed(const QString& message);
-
 private:
     /**
      * @brief 根据目标 Model/Component 将 OCC Shape 新建或追加到模型层。

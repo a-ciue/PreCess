@@ -50,13 +50,8 @@ int QGeometryOperations::createPoint(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createPoint: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建 Point 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createPoint: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建 Point 失败：%1").arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -84,13 +79,8 @@ int QGeometryOperations::createLineByCoordinates(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createLineByCoordinates: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建 Line 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createLineByCoordinates: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建 Line 失败：%1").arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -137,13 +127,8 @@ int QGeometryOperations::createLineFromVertices(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createLineFromVertices: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建 Line 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createLineFromVertices: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建 Line 失败：%1").arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -177,14 +162,8 @@ int QGeometryOperations::createRectangleFace(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createRectangleFace: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建 Rectangle Face 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createRectangleFace: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建 Rectangle Face 失败：%1")
-                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -220,14 +199,8 @@ int QGeometryOperations::createDiskFace(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createDiskFace: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建圆盘/扇形面失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createDiskFace: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建圆盘/扇形面失败：%1")
-                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -271,14 +244,8 @@ int QGeometryOperations::createFaceFromEdges(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createFaceFromEdges: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("由闭合边创建 Face 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createFaceFromEdges: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("由闭合边创建 Face 失败：%1")
-                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -306,13 +273,8 @@ int QGeometryOperations::createBox(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createBox: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建 Box 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createBox: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建 Box 失败：%1").arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -352,14 +314,8 @@ int QGeometryOperations::createCylinder(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createCylinder: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建 Cylinder 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createCylinder: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建 Cylinder 失败：%1")
-                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -401,14 +357,8 @@ int QGeometryOperations::createCone(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createCone: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建圆锥/圆台失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createCone: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建圆锥/圆台失败：%1")
-                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -450,14 +400,8 @@ int QGeometryOperations::createSphere(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::createSphere: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("创建球体/部分球体失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createSphere: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("创建球体/部分球体失败：%1")
-                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
@@ -506,14 +450,8 @@ int QGeometryOperations::extrudeFace(
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::extrudeFace: {}",
             detail ? detail : "OpenCASCADE error");
-        emit operationFailed(
-            QStringLiteral("拉伸 Face 失败：%1")
-                .arg(QString::fromLocal8Bit(detail ? detail : "OpenCASCADE error")));
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::extrudeFace: {}", error.what());
-        emit operationFailed(
-            QStringLiteral("拉伸 Face 失败：%1")
-                .arg(QString::fromLocal8Bit(error.what())));
     }
     return -1;
 }
