@@ -296,7 +296,14 @@ Item{
                     if (!checked) {
                         App.selection.listeningSelectorIndex = index
                         if (App.selection.selectMode === "None") {
-                            if (model.content.length > 0) {
+                            // 活动组件为纯几何（无网格）时默认切到几何点模式，
+                            // 网格组件则用参数给定的首选模式
+                            const cid = App.selection.activeComponentId
+                            const meshSummary = cid >= 0 ? QModelManager.query.getMeshSummary(cid) : ({})
+                            const geomSummary = cid >= 0 ? QModelManager.query.getGeometrySummary(cid) : ({})
+                            if (!meshSummary.has_mesh && geomSummary.has_geometry) {
+                                App.selection.selectMode = "GeometryVertex"
+                            } else if (model.content.length > 0) {
                                 const modes = model.content.split(",")
                                 if (modes.length > 0)
                                     App.selection.selectMode = modes[0]
