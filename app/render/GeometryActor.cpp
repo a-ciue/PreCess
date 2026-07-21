@@ -240,7 +240,6 @@ bool GeometryActor::isVisible() const
     return visibility_;
 }
 
-
 void GeometryActor::setRenderMode(GeometryRenderMode render_mode)
 {
 }

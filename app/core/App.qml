@@ -15,5 +15,5 @@ QtObject {
     property var registry: ({})
 
     signal modelVisibilityUpdated(int modelId, bool visible)
-    signal componentVisibilityUpdated(int componentId, bool visible)
+    signal componentVisibilityUpdated(int componentId, bool meshVisible, bool geometryVisible)
 }

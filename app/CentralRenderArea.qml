@@ -105,7 +105,10 @@ Page {
             Connections {
                 target: App
                 function onModelVisibilityUpdated(modelId, visible) { myItem.setVisibility(modelId, visible) }
-                function onComponentVisibilityUpdated(componentId, visible) { myItem.setComponentVisibility(componentId, visible) }
+                function onComponentVisibilityUpdated(componentId, meshVisible, geometryVisible) {
+                    myItem.setMeshVisibility(componentId, meshVisible)
+                    myItem.setGeometryVisibility(componentId, geometryVisible)
+                }
             }
         }
 

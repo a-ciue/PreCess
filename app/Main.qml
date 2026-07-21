@@ -130,9 +130,6 @@ ApplicationWindow {
                             info: info,
                             execute: function(component, args) {
                                 QModelManager.algorithmSystem.call(info.name, component, args)
-                                // Gmsh 操作结束后清除几何面选择及其高亮。
-                                if (info.name === "GmshPlugin" && App.registry.renderWindow)
-                                    App.registry.renderWindow.clearSelection()
                             }
                         }
                     }
@@ -206,7 +203,6 @@ ApplicationWindow {
         }
     }
 
-    // 同步当前活动模型/组件到功能系统，供功能上下文动态获取
     Connections {
         target: App.selection
         function onActiveModelIdChanged() {
@@ -214,6 +210,18 @@ ApplicationWindow {
         }
         function onActiveComponentIdChanged() {
             QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
+        }
+    }
+
+    Connections {
+        target: QModelManager
+        function onModelAdded(id) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.clearSelection()
+        }
+        function onModelRemoved(id) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.clearSelection()
         }
     }
 
