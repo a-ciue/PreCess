@@ -167,15 +167,8 @@ std::optional<Index> GeometryActorSelectOp::resolvePickedSubshape(IVtkTools_Shap
         return std::nullopt;
 
     out_sub_id = -1;
-    if (!firstId(picker->GetPickedSubShapesIds(shapeId, false), out_sub_id)) {
-        // ������ Face/Edge/Vertex ����ֻ���ض��� Shape ID�������� SubShape ID��
-        const TopoDS_Shape& root = geometry_actor_->occ_shape_->GetShape();
-        if (root.ShapeType() != wantType)
-            return std::nullopt;
-        out_sub_id = geometry_actor_->occ_shape_->GetSubShapeId(root);
-        if (out_sub_id < 0)
-            return std::nullopt;
-    }
+    if (!firstId(picker->GetPickedSubShapesIds(shapeId, false), out_sub_id))
+        return std::nullopt;
 
     const GeometrySubshapeIndex* geomIndex = geometry_actor_->geometry_index_;
     if (!geomIndex)
@@ -268,11 +261,6 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlig
 vtkActor& GeometryActorSelectOp::getPolyActor()
 {
     return *geometry_actor_->poly_actor_;
-}
-
-vtkActor& GeometryActorSelectOp::getLineActor()
-{
-    return *geometry_actor_->line_actor_;
 }
 
 bool GeometryActorSelectOp::isVisible() const

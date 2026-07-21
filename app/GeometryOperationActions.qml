@@ -167,6 +167,8 @@ QtObject {
 
     // 启动参数侧栏操作，并在需要拾取时设置选择模式和参数下标。
     function activate(operation, selectMode, selectorIndex) {
+        // 坐标创建允许新建 Model；选择创建必须写回所选 Component。
+        operation.targetPolicy = selectorIndex >= 0 ? "component" : "any"
         App.activeOperation = operation
         if (selectMode)
             App.selection.selectMode = selectMode
@@ -193,8 +195,6 @@ QtObject {
     function startCreatePoint() {
         activate({
             info: root.createPointInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createPoint(
@@ -208,8 +208,6 @@ QtObject {
     function startCreateLineByCoordinates() {
         activate({
             info: root.createLineByCoordinatesInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 0, 0],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createLineByCoordinates(
@@ -224,8 +222,6 @@ QtObject {
     function startCreateLineFromVertices() {
         activate({
             info: root.createLineFromVerticesInfo,
-            requireComponent: true,
-            showGeometryTarget: true,
             defaultParameters: [null],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createLineFromVertices(
@@ -238,8 +234,6 @@ QtObject {
     function startCreateRectangleFace() {
         activate({
             info: root.createRectangleFaceInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 10, 0],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createRectangleFace(
@@ -254,8 +248,6 @@ QtObject {
     function startCreateDiskFace() {
         activate({
             info: root.createDiskFaceInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 0, 0, 360],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createDiskFace(
@@ -270,8 +262,6 @@ QtObject {
     function startCreateFaceFromEdges() {
         activate({
             info: root.createFaceFromEdgesInfo,
-            requireComponent: true,
-            showGeometryTarget: true,
             defaultParameters: [null],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createFaceFromEdges(
@@ -284,8 +274,6 @@ QtObject {
     function startCreateBox() {
         activate({
             info: root.createBoxInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 10, 10],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createBox(
@@ -300,8 +288,6 @@ QtObject {
     function startCreateCylinder() {
         activate({
             info: root.createCylinderInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 20, 0, 0, 1, 360],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createCylinder(
@@ -316,8 +302,6 @@ QtObject {
     function startCreateCone() {
         activate({
             info: root.createConeInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 5, 20, 0, 0, 1, 360],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createCone(
@@ -332,8 +316,6 @@ QtObject {
     function startCreateSphere() {
         activate({
             info: root.createSphereInfo,
-            allowWithoutModel: true,
-            showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 0, 0, 1, -90, 90, 360],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createSphere(
@@ -348,8 +330,6 @@ QtObject {
     function startExtrudeFace() {
         activate({
             info: root.extrudeFaceInfo,
-            requireComponent: true,
-            showGeometryTarget: true,
             defaultParameters: [null, 0, 0, 1, 10],
             execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.extrudeFace(

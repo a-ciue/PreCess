@@ -1,4 +1,5 @@
 #include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "ModelLayer.h"
 #include "GeometryData.h"
 
@@ -148,10 +149,12 @@ TEST_CASE("Append geometry shapes to an existing component")
     const Index model_id = manager.addModel("geometry", move(components));
     const Index component_id = manager.modelById(model_id)->componentIds().front();
 
-    manager.appendGeometryShape(
-        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(2.0, 2.0, 2.0)).Shape());
-    manager.appendGeometryShape(
-        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(3.0, 3.0, 3.0)).Shape());
+    auto component_operator = manager.getComponentOperator(component_id);
+    REQUIRE(component_operator);
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(2.0, 2.0, 2.0)).Shape());
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(3.0, 3.0, 3.0)).Shape());
 
     ComponentData* updated = manager.findComponent(component_id);
     REQUIRE(updated != nullptr);
@@ -182,10 +185,12 @@ TEST_CASE("Initialize and append geometry in a mesh-only component")
     const Index model_id = manager.addModel("mesh", move(components));
     const Index component_id = manager.modelById(model_id)->componentIds().front();
 
-    manager.appendGeometryShape(
-        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
-    manager.appendGeometryShape(
-        component_id, BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 5.0, 6.0)).Shape());
+    auto component_operator = manager.getComponentOperator(component_id);
+    REQUIRE(component_operator);
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 5.0, 6.0)).Shape());
 
     ComponentData* updated = manager.findComponent(component_id);
     REQUIRE(updated != nullptr);

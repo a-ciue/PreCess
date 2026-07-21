@@ -89,14 +89,8 @@ void GeometryActorManagerSelectOp::setShapePickerMode(SelectMode mode)
 void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared_ptr<GeometryActor> actor)
 {
     GeometryActorSelectOp op(actor);
-    vtkActor* poly_actor = &op.getPolyActor();
-    vtkActor* line_actor = &op.getLineActor();
-
-    // 面体 Actor 与点边 Actor 都属于同一个几何组件，组件拾取时需要同时登记。
-    prop_to_component_[poly_actor] = component_id;
-    prop_to_component_[line_actor] = component_id;
-    addToAllLists(poly_actor);
-    addToAllLists(line_actor);
+    prop_to_component_[&op.getPolyActor()] = component_id;
+    addToAllLists(&op.getPolyActor());
 
     registered_component_ids_.insert(component_id);
     shape_id_to_component_[op.getShapeId()] = component_id;
@@ -111,12 +105,9 @@ void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor
 {
     GeometryActorSelectOp op(actor);
     auto* poly = &op.getPolyActor();
-    auto* line = &op.getLineActor();
     prop_to_component_.erase(poly);
-    prop_to_component_.erase(line);
 
     removeFromAllLists(poly);
-    removeFromAllLists(line);
 
     auto shape_id = op.getShapeId();
     auto it = shape_id_to_component_.find(shape_id);
@@ -131,16 +122,12 @@ void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor
 
 void GeometryActorManagerSelectOp::addToAllLists(vtkProp* prop)
 {
-    for (auto& list : pick_lists_) {
-        if (!list->IsItemPresent(prop))
-            list->AddItem(prop);
-    }
+    for (auto& list : pick_lists_)
+        list->AddItem(prop);
 }
 
 void GeometryActorManagerSelectOp::removeFromAllLists(vtkProp* prop)
 {
-    for (auto& list : pick_lists_) {
-        while (list->IsItemPresent(prop))
-            list->RemoveItem(prop);
-    }
+    for (auto& list : pick_lists_)
+        list->RemoveItem(prop);
 }

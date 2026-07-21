@@ -1,6 +1,7 @@
 #include "QGeometryOperations.h"
 
 #include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "GeometryBuilder.h"
 #include "GeometryData.h"
 #include "ModelLayer.h"
@@ -524,8 +525,12 @@ Index QGeometryOperations::addGeometryShape(
     TopoDS_Shape shape)
 {
     // Component 目标优先：将新形状追加到其现有 Geometry。
-    if (component_id >= 0)
-        return model_layer_->appendGeometryShape(component_id, std::move(shape));
+    if (component_id >= 0) {
+        auto component_operator = model_layer_->getComponentOperator(component_id);
+        if (!component_operator)
+            throw std::invalid_argument("Target component does not exist");
+        return component_operator->appendGeometryShape(std::move(shape));
+    }
 
     const std::string model_name = "temp_" + component_name;
 

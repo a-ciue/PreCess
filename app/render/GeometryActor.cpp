@@ -17,8 +17,6 @@
 #include <vtkSelectionNode.h>
 #include <vtkCellData.h>
 
-#include <spdlog/spdlog.h>
-
 // 将独立点、边、面包装成仅用于显示拾取的 Compound，使根形状进入 OCCT 的子形状选择流程。
 static TopoDS_Shape makeSelectableShape(const TopoDS_Shape& shape)
 {
@@ -86,9 +84,6 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     const vtkIdType nL = src->GetNumberOfLines();
     const vtkIdType nP = src->GetNumberOfPolys();
 
-    spdlog::info("[GeometryActor] loadShape component={} verts={} lines={} polys={}",
-        geometry_data.component_id, static_cast<int>(nV), static_cast<int>(nL), static_cast<int>(nP));
-
     auto ExtractCellRangeToPolyData = [](vtkPolyData* in, vtkIdType start, vtkIdType count) -> vtkSmartPointer<vtkPolyData> {
         vtkNew<vtkIdTypeArray> ids;
         ids->SetNumberOfComponents(1);
@@ -153,9 +148,7 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 
     poly_actor_->SetMapper(poly_mapper);
     poly_actor_->GetProperty()->SetColor(200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0);
-    // 重载已有 Component 时复用 Actor，只更新 Mapper，避免 Renderer 重复登记同一对象。
-    if (!renderer_->HasViewProp(poly_actor_))
-        renderer_->AddActor(poly_actor_);
+    renderer_->AddActor(poly_actor_);
 
     vtkNew<vtkPolyDataMapper> line_mapper;
     line_mapper->SetInputConnection(lineEdgeFilter->GetOutputPort());
@@ -168,11 +161,7 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_actor_->GetProperty()->RenderLinesAsTubesOn();
     line_actor_->GetProperty()->SetPointSize(6.0);
     line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
-    if (!renderer_->HasViewProp(line_actor_))
-        renderer_->AddActor(line_actor_);
-
-    spdlog::info("[GeometryActor] component={} actors added, face_cells={} line_cells={}",
-        geometry_data.component_id, static_cast<int>(poly_only->GetNumberOfCells()), static_cast<int>(line_only->GetNumberOfCells()));
+    renderer_->AddActor(line_actor_);
 }
 
 void GeometryActor::deleteGeometryActor()

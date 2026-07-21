@@ -17,9 +17,6 @@ Item{
     property var parameters: []
 
     readonly property var activeOp: App.activeOperation
-    readonly property bool allowWithoutModel: !!(root.activeOp && root.activeOp.allowWithoutModel)
-    readonly property bool showGeometryTarget: !!(root.activeOp && root.activeOp.showGeometryTarget)
-    readonly property bool requireComponent: !!(root.activeOp && root.activeOp.requireComponent)
 
     onActiveOpChanged: {
         App.selection.listeningSelectorIndex = -1
@@ -40,9 +37,10 @@ Item{
         text: "执行"
         enabled: !!(root.activeOp && root.activeOp.info
                     && (root.activeOp.isFeature
-                        || (root.requireComponent
+                        || (root.activeOp.targetPolicy === "component"
                             ? App.selection.activeComponentId >= 0
-                            : root.allowWithoutModel || App.selection.activeModelId >= 0)))
+                            : root.activeOp.targetPolicy === "any"
+                              || App.selection.activeModelId >= 0)))
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -57,7 +55,7 @@ Item{
         anchors.top: commitButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        visible: root.showGeometryTarget
+        visible: !!(root.activeOp && root.activeOp.targetPolicy)
         height: visible ? 24 : 0
         leftPadding: 6
         verticalAlignment: Text.AlignVCenter

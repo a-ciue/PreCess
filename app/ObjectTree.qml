@@ -125,10 +125,6 @@ Pane {
             readonly property bool _isActiveComponent:
                 viewDelegate.depth === 1
                 && viewDelegate.model.nodeId === App.selection.activeComponentId
-            readonly property bool _isActiveSubNode:
-                viewDelegate.depth > 1
-                && viewDelegate.current
-                && viewDelegate.model.componentId === App.selection.activeComponentId
 
             TableView.onPooled: indicatorAnim.complete()
             TableView.onReused: {
@@ -190,7 +186,6 @@ Pane {
                     font.family: "Consolas"
                     font.weight: viewDelegate._isActiveModel
                                  || viewDelegate._isActiveComponent
-                                 || viewDelegate._isActiveSubNode
                                  ? Font.Bold : Font.Normal
                     font.italic: !viewDelegate.model.isVisible
                     elide: Text.ElideRight

@@ -50,8 +50,6 @@ public:
     vtkActor& getPolyActor();
     bool isVisible() const;
 
-    // 获取承载几何点和边的 Actor，供组件级拾取登记。
-    vtkActor& getLineActor();
 
 private:
     std::shared_ptr<GeometryActor> geometry_actor_;

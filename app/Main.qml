@@ -205,20 +205,6 @@ ApplicationWindow {
         }
     }
 
-    MessageDialog {
-        id: geometryOperationErrorDialog
-        title: qsTr("几何操作失败")
-        buttons: MessageDialog.Ok
-    }
-
-    Connections {
-        target: QModelManager.geometry
-        function onOperationFailed(message) {
-            geometryOperationErrorDialog.text = message
-            geometryOperationErrorDialog.open()
-        }
-    }
-
     Shortcut {
         sequence: "F10"
         onActivated: {
