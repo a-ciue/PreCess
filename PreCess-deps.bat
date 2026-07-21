@@ -240,6 +240,37 @@ if errorlevel 1 (
 
 popd
 
+REM ============ CGAL 6.0.1（header-only，无需编译） ============
+REM 直接克隆到依赖目录；GitHub 不可达时回退 Debian 镜像
+git clone --single-branch --depth 1 --branch v6.0.1 https://github.com/CGAL/cgal.git "%depsPath%\CGAL-6.0.1" || (
+    echo GitHub 克隆失败，改用 Debian 镜像下载 CGAL...
+    curl -L -o cgal.tar.xz --connect-timeout 30 https://deb.debian.org/debian/pool/main/c/cgal/cgal_6.0.1.orig.tar.xz && tar -xf cgal.tar.xz -C "%depsPath%"
+)
+
+REM ============ Boost 1.87.0（仅需头文件，无需编译） ============
+curl -L -o boost_1_87_0.zip --connect-timeout 30 https://archives.boost.io/release/1.87.0/source/boost_1_87_0.zip
+tar -xf boost_1_87_0.zip -C "%depsPath%"
+
+REM Boost 源树不带安装态 CMake 包（CMake 4.x 已移除 FindBoost 模块，必须走 CONFIG 模式），
+REM 生成极简 BoostConfig，供 find_package(Boost) 命中；升级 Boost 需同步版本号与目录名
+set "boostCmakeDir=%depsPath%\boost_1_87_0\lib\cmake\Boost-1.87.0"
+mkdir "!boostCmakeDir!"
+echo get_filename_component(_BOOST_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE^)> "!boostCmakeDir!\BoostConfig.cmake"
+echo set(Boost_INCLUDE_DIRS "${_BOOST_ROOT}"^)>> "!boostCmakeDir!\BoostConfig.cmake"
+echo set(Boost_LIBRARIES ""^)>> "!boostCmakeDir!\BoostConfig.cmake"
+echo set(Boost_VERSION "1.87.0"^)>> "!boostCmakeDir!\BoostConfig.cmake"
+echo add_library(Boost::headers INTERFACE IMPORTED^)>> "!boostCmakeDir!\BoostConfig.cmake"
+echo set_target_properties(Boost::headers PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}"^)>> "!boostCmakeDir!\BoostConfig.cmake"
+echo add_library(Boost::boost INTERFACE IMPORTED^)>> "!boostCmakeDir!\BoostConfig.cmake"
+echo set_target_properties(Boost::boost PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}"^)>> "!boostCmakeDir!\BoostConfig.cmake"
+echo set(PACKAGE_VERSION 1.87.0^)> "!boostCmakeDir!\BoostConfigVersion.cmake"
+echo if(NOT PACKAGE_VERSION VERSION_LESS PACKAGE_FIND_VERSION^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
+echo     set(PACKAGE_VERSION_COMPATIBLE TRUE^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
+echo     if(PACKAGE_VERSION VERSION_EQUAL PACKAGE_FIND_VERSION^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
+echo         set(PACKAGE_VERSION_EXACT TRUE^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
+echo     endif(^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
+echo endif(^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
+
 echo 处理完成！
 
 endlocal
