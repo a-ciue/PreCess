@@ -83,6 +83,7 @@ void GeometryActorManager::setVisibility(Index component_id, bool visibility)
     auto it = component_actors_.find(component_id);
     if (it != component_actors_.end()) {
         it->second->setVisibility(visibility);
+        op_.setShapePickingEnabled(it->second, visibility);
     }
 }
 

@@ -48,6 +48,8 @@ Item{
         onClicked:{
             if (root.activeOp && root.activeOp.execute)
                 root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.clearSelection()
         }
     }
     Label {

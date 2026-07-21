@@ -97,3 +97,27 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
     notifyChanged();
     return component_id_;
 }
+
+void ComponentOperator::removeMesh()
+{
+    if (!component_ || !component_->mesh)
+        return;
+
+    component_->mesh->releaseEdgeIdMap(mgr_->edgeIdMap());
+    component_->mesh.reset();
+
+    if (observer_)
+        observer_->notifyComponentChanged(component_id_);
+}
+
+void ComponentOperator::removeGeometry()
+{
+    if (!component_ || !component_->geometry)
+        return;
+
+    component_->geometry->index.release(mgr_->geomRegistry());
+    component_->geometry.reset();
+
+    if (observer_)
+        observer_->notifyComponentChanged(component_id_);
+}

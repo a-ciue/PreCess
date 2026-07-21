@@ -243,6 +243,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     // mappers
     edge_mapper_->SetInputData(edge_poly);
     face_mapper_->SetInputData(face_poly);
+    face_mapper_->Modified(); // 确保多边形网格被正确渲染
     solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
 
     edge_mapper_->SetScalarVisibility(0);

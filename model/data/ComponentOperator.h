@@ -37,6 +37,9 @@ public:
      */
     Index appendGeometryShape(TopoDS_Shape shape);
 
+    void removeMesh();
+    void removeGeometry();
+
 private:
     Index component_id_ { -1 };
     Index model_id_ { -1 };

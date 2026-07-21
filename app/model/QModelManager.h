@@ -46,6 +46,8 @@ public:
 
     Q_INVOKABLE void removeModel(int id);
     Q_INVOKABLE void removeComponent(int id);
+    Q_INVOKABLE void removeMesh(int componentId);
+    Q_INVOKABLE void removeGeometry(int componentId);
     Q_INVOKABLE QObject* getOperator(int id);
     ModelLayer* getModelManager();
     QModelObserver* getModelObserver() const;
