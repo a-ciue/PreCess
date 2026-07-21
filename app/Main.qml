@@ -295,7 +295,7 @@ ApplicationWindow {
     FileDialog {
         id: openPatchDialog
         nameFilters: QModelManager.ioSystem.dialogNameFilters
-            onAccepted: {
+        onAccepted: {
             if (selectedNameFilter.index >= 0) {
                 QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
                 App.registry.renderWindow.resetCamera()
