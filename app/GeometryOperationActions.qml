@@ -196,9 +196,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createPoint(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2]), false)
             }
         }, "", -1)
@@ -211,9 +211,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 0, 0],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createLineByCoordinates(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2],
                     args[3], args[4], args[5]), false)
             }
@@ -227,9 +227,9 @@ QtObject {
             requireComponent: true,
             showGeometryTarget: true,
             defaultParameters: [null],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createLineFromVertices(
-                    App.selection.activeComponentId, args[0]), true)
+                    componentId, args[0]), true)
             }
         }, "GeometryVertex", 0)
     }
@@ -241,9 +241,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 10, 0],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createRectangleFace(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2],
                     args[3], args[4], args[5]), false)
             }
@@ -257,9 +257,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 0, 0, 360],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createDiskFace(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2], args[3],
                     args[4], args[5], args[6]), false)
             }
@@ -273,9 +273,9 @@ QtObject {
             requireComponent: true,
             showGeometryTarget: true,
             defaultParameters: [null],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createFaceFromEdges(
-                    App.selection.activeComponentId, args[0]), true)
+                    componentId, args[0]), true)
             }
         }, "GeometryEdge", 0)
     }
@@ -287,9 +287,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 10, 10],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createBox(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2],
                     args[3], args[4], args[5]), false)
             }
@@ -303,9 +303,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 20, 0, 0, 1, 360],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createCylinder(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2],
                     args[3], args[4], args[5], args[6], args[7], args[8]), false)
             }
@@ -319,9 +319,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 5, 20, 0, 0, 1, 360],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createCone(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2], args[3], args[4],
                     args[5], args[6], args[7], args[8], args[9]), false)
             }
@@ -335,9 +335,9 @@ QtObject {
             allowWithoutModel: true,
             showGeometryTarget: true,
             defaultParameters: [0, 0, 0, 10, 0, 0, 1, -90, 90, 360],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.createSphere(
-                    modelId, App.selection.activeComponentId,
+                    App.selection.activeModelId, componentId,
                     args[0], args[1], args[2], args[3], args[4],
                     args[5], args[6], args[7], args[8], args[9]), false)
             }
@@ -351,9 +351,9 @@ QtObject {
             requireComponent: true,
             showGeometryTarget: true,
             defaultParameters: [null, 0, 0, 1, 10],
-            execute: function(modelId, args) {
+            execute: function(componentId, args) {
                 root.selectCreatedComponent(QModelManager.geometry.extrudeFace(
-                    App.selection.activeComponentId,
+                    componentId,
                     args[0], args[1], args[2], args[3], args[4]), true)
             }
         }, "GeometryFace", 0)
