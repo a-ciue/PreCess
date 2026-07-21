@@ -117,8 +117,6 @@ public:
 
     Q_INVOKABLE void deleteModel(Index mode_id);
     Q_INVOKABLE void deleteComponent(Index component_id);
-    Q_INVOKABLE void deleteMesh(Index component_id);
-    Q_INVOKABLE void deleteGeometry(Index component_id);
 
     void updateGlobalVtkPoints();
 

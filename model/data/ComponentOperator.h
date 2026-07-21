@@ -30,6 +30,9 @@ public:
 
     void notifyChanged() const;
 
+    void removeMesh();
+    void removeGeometry();
+
 private:
     Index component_id_ { -1 };
     Index model_id_ { -1 };

@@ -203,7 +203,6 @@ ApplicationWindow {
         }
     }
 
-    // 同步当前活动模型/组件到功能系统，供功能上下文动态获取
     Connections {
         target: App.selection
         function onActiveModelIdChanged() {
@@ -211,6 +210,18 @@ ApplicationWindow {
         }
         function onActiveComponentIdChanged() {
             QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
+        }
+    }
+
+    Connections {
+        target: QModelManager
+        function onModelAdded(id) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.clearSelection()
+        }
+        function onModelRemoved(id) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.clearSelection()
         }
     }
 
@@ -284,11 +295,9 @@ ApplicationWindow {
     FileDialog {
         id: openPatchDialog
         nameFilters: QModelManager.ioSystem.dialogNameFilters
-        onAccepted: {
+            onAccepted: {
             if (selectedNameFilter.index >= 0) {
                 QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
-                if (App.registry.renderWindow)
-                    App.registry.renderWindow.clearSelection()
                 App.registry.renderWindow.resetCamera()
             } else {
                 console.exception("No valid file type selected.")

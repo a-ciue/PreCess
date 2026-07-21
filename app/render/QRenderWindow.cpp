@@ -177,32 +177,6 @@ void QRenderWindow::deleteComponent(Index component_id)
     });
 }
 
-void QRenderWindow::deleteMesh(Index component_id)
-{
-    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        if (vtk->mesh_actor_manager_) {
-            vtk->mesh_actor_manager_->deleteComponent(component_id);
-        }
-
-        this->select_manager_->clearSelection();
-    });
-}
-
-void QRenderWindow::deleteGeometry(Index component_id)
-{
-    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        if (vtk->geometry_actor_manager_) {
-            vtk->geometry_actor_manager_->deleteComponent(component_id);
-        }
-
-        this->select_manager_->clearSelection();
-    });
-}
-
 void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
 {
     if (!vtk || !model_query_)
@@ -282,6 +256,8 @@ void QRenderWindow::onComponentChanged(Index component_id)
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
                 vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
+            } else {
+                vtk->mesh_actor_manager_->deleteComponent(component_id);
             }
         }
 
@@ -289,6 +265,8 @@ void QRenderWindow::onComponentChanged(Index component_id)
             auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
                 vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+            } else {
+                vtk->geometry_actor_manager_->deleteComponent(component_id);
             }
         }
     });
@@ -326,23 +304,25 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 
 void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
 {
-    dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->refreshComponentHighlight();
     });
 }
 
 void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
 {
-    dispatch_async([component_id, visibility](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id, visibility, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->refreshComponentHighlight();
     });
 }
 

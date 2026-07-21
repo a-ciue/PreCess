@@ -48,8 +48,6 @@ Pane {
         function onModelRemoved(modelId) { refreshTimer.restart() }
         function onComponentRemoved(componentId) { refreshTimer.restart() }
         function onComponentChanged(componentId) { refreshTimer.restart() }
-        function onMeshRemoved(componentId) { refreshTimer.restart() }
-        function onGeometryRemoved(componentId) { refreshTimer.restart() }
     }
 
     Rectangle {
@@ -240,11 +238,10 @@ Pane {
                         if (viewDelegate.depth === 0)
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, newVis)
                         else if (viewDelegate.depth === 1)
-                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, newVis)
-                        else if (viewDelegate.depth === 2 && viewDelegate.model.nodeType === objectTree._nodeTypeMesh)
-                            App.meshVisibilityUpdated(viewDelegate.model.componentId, newVis)
-                        else if (viewDelegate.depth === 2 && viewDelegate.model.nodeType === objectTree._nodeTypeGeometry)
-                            App.geometryVisibilityUpdated(viewDelegate.model.componentId, newVis)
+                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, newVis, newVis)
+                        else if (viewDelegate.depth === 2 && (viewDelegate.model.nodeType === objectTree._nodeTypeMesh
+                            || viewDelegate.model.nodeType === objectTree._nodeTypeGeometry))
+                            objectTree.emitComponentVisibility(viewDelegate.model.componentId)
                         return
                     }
                     if (mouse.button === Qt.RightButton) {
@@ -401,6 +398,20 @@ Pane {
         }
     }
 
+    function emitComponentVisibility(componentId) {
+        let compIdx = treeModel.findIndexByNodeId(componentId, 1)
+        if (!compIdx || !compIdx.valid) return
+        let meshVis = false, geomVis = false
+        for (let i = 0; i < treeModel.rowCount(compIdx); i++) {
+            let childIdx = treeModel.index(i, 0, compIdx)
+            let cType = treeModel.data(childIdx, TreeModel.NodeTypeRole)
+            let cVis = treeModel.data(childIdx, TreeModel.IsVisibleRole)
+            if (cType === objectTree._nodeTypeMesh) meshVis = cVis
+            else if (cType === objectTree._nodeTypeGeometry) geomVis = cVis
+        }
+        App.componentVisibilityUpdated(componentId, meshVis, geomVis)
+    }
+
     function hideNode(nodeId, depth, nodeType, componentId) {
         let idx = treeModel.findIndexByNodeId(nodeId, depth)
         if (!idx || !idx.valid) return
@@ -408,11 +419,9 @@ Pane {
         if (depth === 0)
             App.modelVisibilityUpdated(nodeId, false)
         else if (depth === 1)
-            App.componentVisibilityUpdated(nodeId, false)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeMesh)
-            App.meshVisibilityUpdated(componentId, false)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry)
-            App.geometryVisibilityUpdated(componentId, false)
+            App.componentVisibilityUpdated(nodeId, false, false)
+        else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry))
+            emitComponentVisibility(componentId)
     }
 
     function showNode(nodeId, depth, nodeType, componentId) {
@@ -422,11 +431,9 @@ Pane {
         if (depth === 0)
             App.modelVisibilityUpdated(nodeId, true)
         else if (depth === 1)
-            App.componentVisibilityUpdated(nodeId, true)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeMesh)
-            App.meshVisibilityUpdated(componentId, true)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry)
-            App.geometryVisibilityUpdated(componentId, true)
+            App.componentVisibilityUpdated(nodeId, true, true)
+        else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry))
+            emitComponentVisibility(componentId)
     }
 
     function deleteNode(nodeId, depth, nodeType, componentId) {
@@ -470,7 +477,7 @@ Pane {
                 let idx = treeModel.findIndexByNodeId(cid, 1)
                 if (idx && idx.valid) {
                     treeModel.setVisibility(idx, visible)
-                    App.componentVisibilityUpdated(cid, visible)
+                    App.componentVisibilityUpdated(cid, visible, visible)
                 }
             }
         }
@@ -487,7 +494,7 @@ Pane {
                 let idx = treeModel.findIndexByNodeId(cid, 1)
                 if (idx && idx.valid) {
                     treeModel.setVisibility(idx, vis)
-                    App.componentVisibilityUpdated(cid, vis)
+                    App.componentVisibilityUpdated(cid, vis, vis)
                 }
             }
         }
@@ -503,12 +510,9 @@ Pane {
                     && (childNodeType === objectTree._nodeTypeMesh
                         || childNodeType === objectTree._nodeTypeGeometry)) {
                     treeModel.setVisibility(childIdx, false)
-                    if (childNodeType === objectTree._nodeTypeMesh)
-                        App.meshVisibilityUpdated(componentId, false)
-                    else if (childNodeType === objectTree._nodeTypeGeometry)
-                        App.geometryVisibilityUpdated(componentId, false)
                 }
             }
+            emitComponentVisibility(componentId)
         }
     }
 
@@ -536,7 +540,7 @@ Pane {
                 let idx = treeModel.findIndexByNodeId(cid, 1)
                 if (idx && idx.valid) {
                     treeModel.setVisibility(idx, visible)
-                    App.componentVisibilityUpdated(cid, visible)
+                    App.componentVisibilityUpdated(cid, visible, visible)
                 }
             }
         }
@@ -552,7 +556,7 @@ Pane {
                 let cid = treeModel.data(compIdx, TreeModel.NodeIdRole)
                 let isVis = treeModel.data(compIdx, TreeModel.IsVisibleRole)
                 treeModel.setVisibility(compIdx, !isVis)
-                App.componentVisibilityUpdated(cid, !isVis)
+                App.componentVisibilityUpdated(cid, !isVis, !isVis)
             }
         }
     }

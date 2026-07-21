@@ -76,6 +76,5 @@ private:
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;
     std::unordered_map<int, bool> components_visibility_;
-    std::unordered_map<int, bool> mesh_visibility_;
-    std::unordered_map<int, bool> geometry_visibility_;
+    std::unordered_map<int, std::pair<bool, bool>> sub_visibility_; // first=mesh visible, second=geometry visible
 };

@@ -215,8 +215,7 @@ bool TreeModel::refresh()
 
     // Restore persisted visibility and prune stale entries
     std::unordered_map<int, bool> freshComp;
-    std::unordered_map<int, bool> freshMesh;
-    std::unordered_map<int, bool> freshGeom;
+    std::unordered_map<int, std::pair<bool, bool>> freshSub;
     for (TreeNode* mNode : rootNode->children) {
         for (TreeNode* cNode : mNode->children) {
             int ckey = cNode->nodeId;
@@ -224,23 +223,26 @@ bool TreeModel::refresh()
             cNode->isVisible = (cit != components_visibility_.end()) ? cit->second : true;
             freshComp[ckey] = cNode->isVisible;
 
-            // Restore mesh visibility
+            // Restore sub visibility
+            auto sit = sub_visibility_.find(ckey);
+            bool def_mesh = true, def_geom = true;
+            if (sit != sub_visibility_.end()) {
+                def_mesh = sit->second.first;
+                def_geom = sit->second.second;
+            }
             for (TreeNode* child : cNode->children) {
                 if (child->nodeType == TreeNode::NodeType::Mesh) {
-                    auto mit = mesh_visibility_.find(ckey);
-                    child->isVisible = (mit != mesh_visibility_.end()) ? mit->second : true;
-                    freshMesh[ckey] = child->isVisible;
+                    child->isVisible = def_mesh;
+                    freshSub[ckey].first = child->isVisible;
                 } else if (child->nodeType == TreeNode::NodeType::Geometry) {
-                    auto git = geometry_visibility_.find(ckey);
-                    child->isVisible = (git != geometry_visibility_.end()) ? git->second : true;
-                    freshGeom[ckey] = child->isVisible;
+                    child->isVisible = def_geom;
+                    freshSub[ckey].second = child->isVisible;
                 }
             }
         }
     }
     components_visibility_ = std::move(freshComp);
-    mesh_visibility_ = std::move(freshMesh);
-    geometry_visibility_ = std::move(freshGeom);
+    sub_visibility_ = std::move(freshSub);
 
     for (TreeNode* mNode : rootNode->children) {
         for (TreeNode* cNode : mNode->children) {
@@ -268,8 +270,8 @@ void TreeModel::setComponentVisibility(TreeNode* comp, bool visible)
     if (comp->nodeId >= 0) {
         components_visibility_[comp->nodeId] = visible;
         if (visible) {
-            mesh_visibility_[comp->nodeId] = true;
-            geometry_visibility_[comp->nodeId] = true;
+            sub_visibility_[comp->nodeId].first = true;
+            sub_visibility_[comp->nodeId].second = true;
         }
     }
     syncSubNodes(comp);
@@ -289,7 +291,7 @@ bool TreeModel::setVisibility(const QModelIndex& idx, bool visible)
             propagateUp(target->children.first());
     } else if (target->nodeType == TreeNode::NodeType::Mesh && target->parent) {
         int compId = target->parent->nodeId;
-        mesh_visibility_[compId] = visible;
+        sub_visibility_[compId].first = visible;
         target->isVisible = visible;
         if (visible) {
             target->parent->isVisible = true;
@@ -299,7 +301,7 @@ bool TreeModel::setVisibility(const QModelIndex& idx, bool visible)
         propagateUp(target);
     } else if (target->nodeType == TreeNode::NodeType::Geometry && target->parent) {
         int compId = target->parent->nodeId;
-        geometry_visibility_[compId] = visible;
+        sub_visibility_[compId].second = visible;
         target->isVisible = visible;
         if (visible) {
             target->parent->isVisible = true;
@@ -331,8 +333,8 @@ void TreeModel::setAllVisibility(bool visible)
         for (TreeNode* cNode : mNode->children) {
             setComponentVisibility(cNode, visible);
             if (!visible) {
-                mesh_visibility_[cNode->nodeId] = false;
-                geometry_visibility_[cNode->nodeId] = false;
+                sub_visibility_[cNode->nodeId].first = false;
+                sub_visibility_[cNode->nodeId].second = false;
             }
         }
     }
@@ -347,9 +349,9 @@ void TreeModel::syncSubNodes(TreeNode* node)
 {
     for (TreeNode* child : node->children) {
         if (child->nodeType == TreeNode::NodeType::Mesh) {
-            child->isVisible = node->isVisible && mesh_visibility_[node->nodeId];
+            child->isVisible = node->isVisible && sub_visibility_[node->nodeId].first;
         } else if (child->nodeType == TreeNode::NodeType::Geometry) {
-            child->isVisible = node->isVisible && geometry_visibility_[node->nodeId];
+            child->isVisible = node->isVisible && sub_visibility_[node->nodeId].second;
         } else {
             child->isVisible = node->isVisible;
         }

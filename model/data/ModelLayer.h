@@ -56,8 +56,6 @@ public:
      */
     void removeModel(Index model_id);
     void removeComponent(Index component_id);
-    void removeMesh(Index component_id);
-    void removeGeometry(Index component_id);
 
     /**
      * @brief 获取指定模型的操作接口对象

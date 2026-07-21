@@ -89,8 +89,6 @@ Page {
                 function onModelRemoved(model_id) { myItem.deleteModel(model_id) }
                 function onComponentChanged(component_id) { myItem.onComponentChanged(component_id) }
                 function onComponentRemoved(component_id) { myItem.deleteComponent(component_id) }
-                function onMeshRemoved(component_id) { myItem.deleteMesh(component_id) }
-                function onGeometryRemoved(component_id) { myItem.deleteGeometry(component_id) }
             }
 
             Connections {
@@ -107,9 +105,10 @@ Page {
             Connections {
                 target: App
                 function onModelVisibilityUpdated(modelId, visible) { myItem.setVisibility(modelId, visible) }
-                function onComponentVisibilityUpdated(componentId, visible) { myItem.setComponentVisibility(componentId, visible) }
-                function onMeshVisibilityUpdated(componentId, visible) { myItem.setMeshVisibility(componentId, visible) }
-                function onGeometryVisibilityUpdated(componentId, visible) { myItem.setGeometryVisibility(componentId, visible) }
+                function onComponentVisibilityUpdated(componentId, meshVisible, geometryVisible) {
+                    myItem.setMeshVisibility(componentId, meshVisible)
+                    myItem.setGeometryVisibility(componentId, geometryVisible)
+                }
             }
         }
 

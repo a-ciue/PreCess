@@ -109,12 +109,16 @@ void QModelManager::removeComponent(int id)
 
 void QModelManager::removeMesh(int componentId)
 {
-    core_->removeMesh(componentId);
+    auto op = core_->getComponentOperator(componentId);
+    if (op)
+        op->removeMesh();
 }
 
 void QModelManager::removeGeometry(int componentId)
 {
-    core_->removeGeometry(componentId);
+    auto op = core_->getComponentOperator(componentId);
+    if (op)
+        op->removeGeometry();
 }
 
 QObject* QModelManager::getOperator(int id)
