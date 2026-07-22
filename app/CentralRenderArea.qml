@@ -49,6 +49,15 @@ Page {
                 }
             }
             ToolButton {
+                text: "比例尺"
+                checkable: true
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: {
+                    myItem.setScaleBarVisible(checked)
+                }
+            }
+            ToolButton {
                 text: "重置视图"
                 Layout.preferredWidth: 70
                 Layout.fillHeight: true
