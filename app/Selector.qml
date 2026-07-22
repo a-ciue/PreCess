@@ -16,57 +16,34 @@ RowLayout {
 
     ComboBox{
         id: selectModeComboBox
-        model: ListModel {
-            ListElement { text: "..." }
-            ListElement { text: "点" }
-            ListElement { text: "边" }
-            ListElement { text: "面" }
-            ListElement { text: "体" }
-            ListElement{text: "几何点"}
-            ListElement{text: "几何边"}
-            ListElement{text: "几何面"}
-            ListElement{text: "几何体"}
-            ListElement{text: "组件"}
+        model: [
+            { text: "...", value: "None" },
+            { text: "点", value: "Vertex" },
+            { text: "边", value: "Edge" },
+            { text: "面", value: "Face" },
+            { text: "体", value: "Solid" },
+            { text: "几何点", value: "GeometryVertex" },
+            { text: "几何边", value: "GeometryEdge" },
+            { text: "几何面", value: "GeometryFace" },
+            { text: "几何体", value: "GeometrySolid" },
+            { text: "组件", value: "Component" }
+        ]
+        textRole: "text"
+        valueRole: "value"
+
+        // 绑定建立在自己的属性上——ComboBox 内部不会碰它，绑定不会被用户交互破坏
+        property string sourceMode: App.selection.selectMode
+
+        // 外部值变化 → 更新显示（初始化时也会触发一次，不用 Component.onCompleted）
+        onSourceModeChanged: {
+            const idx = indexOfValue(sourceMode)
+            if (idx >= 0)
+                currentIndex = idx
         }
-        currentIndex: {
-            switch (App.selection.selectMode) {
-            case "None": return 0;
-            case "Vertex": return 1;
-            case "Edge": return 2;
-            case "Face": return 3;
-            case "Solid": return 4;
-            case "GeometryVertex": return 5;
-            case "GeometryEdge": return 6;
-            case "GeometryFace": return 7;
-            case "GeometrySolid": return 8;
-            case "Component": return 9;
-            default: return 0;
-            }
-        }
-        onActivated: (index) => {
-            const text = selectModeComboBox.textAt(index)
-            if (text === "...") {
-                App.selection.selectMode = "None"
-            } else if (text === "点") {
-                App.selection.selectMode = "Vertex"
-            } else if (text === "边") {
-                App.selection.selectMode = "Edge"
-            } else if (text === "面") {
-                App.selection.selectMode = "Face"
-            } else if (text === "体") {
-                App.selection.selectMode = "Solid"
-            } else if (text === "几何点") {
-                App.selection.selectMode = "GeometryVertex"
-            } else if (text === "几何边") {
-                App.selection.selectMode = "GeometryEdge"
-            } else if (text === "几何面") {
-                App.selection.selectMode = "GeometryFace"
-            } else if (text === "几何体") {
-                App.selection.selectMode = "GeometrySolid"
-            } else if (text === "组件") {
-                App.selection.selectMode = "Component"
-            }
-        }
+
+        // 用户选择 → 写回数据源
+        onActivated: App.selection.selectMode = currentValue
+
         opacity: enabled ? 1.0 : 0.6
     }
     Button{
