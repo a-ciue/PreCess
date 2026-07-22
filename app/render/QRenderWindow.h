@@ -17,6 +17,7 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
 #include <vtkActor.h>
+#include <vtkAxisActor2D.h>
 #include <vtkCamera.h>
 #include <vtkCameraOrientationWidget.h>
 #include <vtkPolyDataMapper.h>
@@ -47,6 +48,7 @@ public:
         vtkTypeMacro(Data, vtkObject);
 
         vtkNew<vtkRenderer> renderer_;
+        vtkNew<vtkRenderer> overlay_renderer_; //> 叠加层：标尺/标注置顶，不被模型遮挡
 
         /*std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;*/
         vtkNew<QRenderWindowStyle> style_;
@@ -56,6 +58,8 @@ public:
         std::unique_ptr<GeometryActorManager> geometry_actor_manager_;
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
+
+        vtkNew<vtkAxisActor2D> scale_bar_axis_; //> 比例尺标尺轴（叠加层底部中央，刻度随相机缩放更新）
 
         vtkNew<vtkPoints> global_points_;
     };
@@ -85,10 +89,23 @@ public:
     Q_INVOKABLE void setSelectMode(QString select_mode);
 
     /**
+     * @brief 设置面选择的角度扩散参数
+     * @param enabled 是否启用按角度扩散
+     * @param angle_deg 相邻面法向夹角阈值，单位为度
+     */
+    Q_INVOKABLE void setFaceSelectionByAngle(bool enabled, double angle_deg);
+
+    /**
      * @brief 清空Selection
      * @param select_mode
      */
     Q_INVOKABLE void clearSelection();
+
+    /**
+     * @brief 显示/隐藏比例尺（随相机缩放自动更新刻度）
+     * @param on 是否显示
+     */
+    Q_INVOKABLE void setScaleBarVisible(bool on);
 
     /**
      * @brief 改变渲染模式

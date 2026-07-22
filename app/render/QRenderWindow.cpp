@@ -15,8 +15,73 @@
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkMapper.h>
+#include <vtkMath.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
+
+#include <cmath>
+
+namespace {
+//! @brief 每帧渲染前把比例尺段的像素长度换算为世界长度写入 Range，使刻度值随相机缩放更新
+//! （与 vtkLegendScaleActor::UpdateAxisRange 同法：按相机焦点深度反投影轴两端点）
+class ScaleBarRangeUpdater : public vtkCommand {
+public:
+    static ScaleBarRangeUpdater* New() { return new ScaleBarRangeUpdater; }
+
+    vtkAxisActor2D* axis_ {};
+    vtkRenderer* renderer_ {};
+
+    void Execute(vtkObject*, unsigned long, void*) override
+    {
+        vtkCamera* cam = renderer_ ? renderer_->GetActiveCamera() : nullptr;
+        if (!axis_ || !cam)
+            return;
+        const int* size = renderer_->GetSize();
+        if (!size || size[1] <= 0)
+            return;
+
+        // 段像素长度（轴两端点为归一化视口坐标）
+        const double* v1 = axis_->GetPositionCoordinate()->GetValue();
+        const double* v2 = axis_->GetPosition2Coordinate()->GetValue();
+        const double pixel_len = std::abs(v2[0] - v1[0]) * size[0];
+
+        // 解析式求世界长度，避免每帧三次投影/反投影矩阵运算：
+        // 平行投影窗口世界高度 = 2*parallelScale；透视投影焦平面世界高度 = 2*距离*tan(fov/2)
+        double world_per_pixel;
+        if (cam->GetParallelProjection()) {
+            world_per_pixel = 2.0 * cam->GetParallelScale() / size[1];
+        } else {
+            world_per_pixel = 2.0 * cam->GetDistance()
+                * std::tan(vtkMath::RadiansFromDegrees(cam->GetViewAngle()) / 2.0) / size[1];
+        }
+        const double nice = niceNumber(pixel_len * world_per_pixel);
+
+        // 刻度值跨档才 SetRange：vtkAxisActor2D 每次 SetRange 都会重建刻度文本，
+        // 连续缩放时逐帧重建是主要帧率开销
+        if (nice == last_range_)
+            return;
+        last_range_ = nice;
+        axis_->SetRange(0.0, nice);
+    }
+
+private:
+    //! @brief 就近量化到 1-2-5 序列（如 0.037→0.05、12.6→10），刻度跨档才变化
+    static double niceNumber(double value)
+    {
+        if (value <= 0.0)
+            return 0.0;
+        const double exp10 = std::floor(std::log10(value));
+        const double base = std::pow(10.0, exp10);
+        const double frac = value / base; // 归一化到 [1,10)
+        // 1-2-5-10 的几何中值分界，就近取档
+        const double nice_frac = frac < 1.5 ? 1.0 : (frac < 3.5 ? 2.0 : (frac < 7.5 ? 5.0 : 10.0));
+        return nice_frac * base;
+    }
+
+    double last_range_ = -1.0; //> 上次写入的刻度值（初始必触发一次）
+};
+}
+
 QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
@@ -47,6 +112,33 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     renderWindow->GetInteractor()->SetInteractorStyle(vtk->style_);
 
     renderWindow->AddRenderer(vtk->renderer_);
+
+    // 叠加渲染层：标尺/标注置顶显示（SetLayer(1) 自动 PreserveColorBuffer，
+    // 每帧只清深度、保留颜色，不被模型遮挡）
+    renderWindow->SetNumberOfLayers(2);
+    vtk->overlay_renderer_->SetLayer(1);
+    vtk->overlay_renderer_->InteractiveOff();
+    vtk->overlay_renderer_->SetActiveCamera(vtk->renderer_->GetActiveCamera()); // 共享相机，免逐帧同步
+    renderWindow->AddRenderer(vtk->overlay_renderer_);
+
+    // 比例尺（叠加层底部中央的一段标尺轴）：端点视口位置固定，ScaleBarRangeUpdater
+    // 每帧把段长换算为世界长度写入 Range，刻度值随缩放自动更新
+    vtk->scale_bar_axis_->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
+    vtk->scale_bar_axis_->GetPositionCoordinate()->SetValue(0.39, 0.05);
+    vtk->scale_bar_axis_->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
+    vtk->scale_bar_axis_->GetPosition2Coordinate()->SetValue(0.61, 0.05);
+    vtk->scale_bar_axis_->SetNumberOfLabels(3);
+    vtk->scale_bar_axis_->SetLabelFormat("%.6g");
+    vtk->scale_bar_axis_->SetTitleVisibility(false);
+    vtk->scale_bar_axis_->PickableOff();
+    vtk->scale_bar_axis_->SetVisibility(false);
+    vtk->overlay_renderer_->AddActor(vtk->scale_bar_axis_);
+
+    vtkNew<ScaleBarRangeUpdater> scale_bar_updater;
+    scale_bar_updater->axis_ = vtk->scale_bar_axis_.GetPointer();
+    scale_bar_updater->renderer_ = vtk->overlay_renderer_.GetPointer();
+    vtk->overlay_renderer_->AddObserver(vtkCommand::StartEvent, scale_bar_updater);
+
     this->data_ = vtk.GetPointer();
     vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>(vtk->global_points_.GetPointer());
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
@@ -333,6 +425,10 @@ QSelection* QRenderWindow::selectedIDs()
         return nullptr;
     }
 
+    // 保留 SelectManager 实际拾取到的 component_id；如果拾取器未提供，再退到当前活动组件
+    if (data->component_id < 0) {
+        data->component_id = this->cur_component_id_;
+    }
     QSelection* selection = new QSelection(std::move(data));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
@@ -386,10 +482,25 @@ void QRenderWindow::setSelectMode(QString select_mode)
     });
 }
 
+void QRenderWindow::setFaceSelectionByAngle(bool enabled, double angle_deg)
+{
+    dispatch_async([enabled, angle_deg, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        select_manager_->setFaceSelectionByAngle(enabled, angle_deg);
+    });
+}
+
 void QRenderWindow::clearSelection()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         this->select_manager_->clearSelection();
+    });
+}
+
+void QRenderWindow::setScaleBarVisible(bool on)
+{
+    dispatch_async([on](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        vtk->scale_bar_axis_->SetVisibility(on);
     });
 }
 
