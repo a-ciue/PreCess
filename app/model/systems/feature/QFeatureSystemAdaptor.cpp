@@ -96,24 +96,24 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
 {
     QList<QFeatureInfo*> infos;
     for (const FeatureInfo* feature_info : feature_system_->getFeatureInfos()) {
-        // 菜单归属取第一个菜单贡献项，未声明时归入默认"功能"菜单
-        QString menu_path;
-        if (!feature_info->menus.empty()) {
-            menu_path = QString::fromStdString(feature_info->menus.front().menu_path);
+        // 每个菜单贡献项生成一条功能信息（同一功能可挂到多个菜单），未声明时归入默认"功能"菜单
+        std::vector<MenuContribution> menus = feature_info->menus;
+        if (menus.empty()) {
+            menus.push_back({ "功能", "", "" });
         }
-        if (menu_path.isEmpty()) {
-            menu_path = QStringLiteral("功能");
+        for (const auto& menu : menus) {
+            QList<QArgType*> args;
+            for (const auto& arg_type : feature_info->arg_types) {
+                args << new QArgType(arg_type);
+            }
+            infos.append(new QFeatureInfo(
+                QString::fromStdString(feature_info->name),
+                QString::fromStdString(feature_info->display_name),
+                QString::fromStdString(feature_info->description),
+                QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
+                QString::fromStdString(menu.icon),
+                std::move(args)));
         }
-        QList<QArgType*> args;
-        for (const auto& arg_type : feature_info->arg_types) {
-            args << new QArgType(arg_type);
-        }
-        infos.append(new QFeatureInfo(
-            QString::fromStdString(feature_info->name),
-            QString::fromStdString(feature_info->display_name),
-            QString::fromStdString(feature_info->description),
-            std::move(menu_path),
-            std::move(args)));
     }
     return infos;
 }
