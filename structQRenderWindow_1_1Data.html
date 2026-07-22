@@ -199,11 +199,13 @@ Public 成员函数</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public 属性</h2></td></tr>
 <tr class="memitem:a97b88125a576d81c3fce59ca6f5946d8" id="r_a97b88125a576d81c3fce59ca6f5946d8"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkRenderer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97b88125a576d81c3fce59ca6f5946d8">renderer_</a></td></tr>
+<tr class="memitem:a9a49c5edc3b7226b09f92ccfbfc926d8" id="r_a9a49c5edc3b7226b09f92ccfbfc926d8"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkRenderer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a49c5edc3b7226b09f92ccfbfc926d8">overlay_renderer_</a></td></tr>
 <tr class="memitem:ab2554cbb2eb916ccf410ca8e42f54d58" id="r_ab2554cbb2eb916ccf410ca8e42f54d58"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; <a class="el" href="classQRenderWindowStyle.html">QRenderWindowStyle</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab2554cbb2eb916ccf410ca8e42f54d58">style_</a></td></tr>
 <tr class="memitem:a1b12899f8c4642d55ac21f66906a33f2" id="r_a1b12899f8c4642d55ac21f66906a33f2"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkCameraOrientationWidget &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b12899f8c4642d55ac21f66906a33f2">orientationWidget</a> = vtkSmartPointer&lt;vtkCameraOrientationWidget&gt;<a class="el" href="#adb0ba7294e3c153b811d7567e8a264b7">::New</a>()</td></tr>
 <tr class="memitem:a3cb797dad41464a6161b2144a4c376e0" id="r_a3cb797dad41464a6161b2144a4c376e0"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classMeshActorManager.html">MeshActorManager</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cb797dad41464a6161b2144a4c376e0">mesh_actor_manager_</a></td></tr>
 <tr class="memitem:add7efaa3049f0a5073da12238ad5e412" id="r_add7efaa3049f0a5073da12238ad5e412"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classGeometryActorManager.html">GeometryActorManager</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add7efaa3049f0a5073da12238ad5e412">geometry_actor_manager_</a></td></tr>
 <tr class="memitem:a77a80fc9ff914217acdbf4c76ab818d7" id="r_a77a80fc9ff914217acdbf4c76ab818d7"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkDisplaySizedImplicitPlaneWidget &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77a80fc9ff914217acdbf4c76ab818d7">plane_widget_</a></td></tr>
+<tr class="memitem:a00633a0dbeca19dadc3306e03ed6a8ec" id="r_a00633a0dbeca19dadc3306e03ed6a8ec"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkAxisActor2D &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00633a0dbeca19dadc3306e03ed6a8ec">scale_bar_axis_</a></td></tr>
 <tr class="memitem:aea71268fd98d234f200b7a6c82a9726e" id="r_aea71268fd98d234f200b7a6c82a9726e"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPoints &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aea71268fd98d234f200b7a6c82a9726e">global_points_</a></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
@@ -310,6 +312,20 @@ Public 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a9a49c5edc3b7226b09f92ccfbfc926d8" name="a9a49c5edc3b7226b09f92ccfbfc926d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a49c5edc3b7226b09f92ccfbfc926d8">&#9670;&#160;</a></span>overlay_renderer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkRenderer&gt; QRenderWindow::Data::overlay_renderer_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a77a80fc9ff914217acdbf4c76ab818d7" name="a77a80fc9ff914217acdbf4c76ab818d7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a77a80fc9ff914217acdbf4c76ab818d7">&#9670;&#160;</a></span>plane_widget_</h2>
 
@@ -332,6 +348,20 @@ Public 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">vtkNew&lt;vtkRenderer&gt; QRenderWindow::Data::renderer_</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a00633a0dbeca19dadc3306e03ed6a8ec" name="a00633a0dbeca19dadc3306e03ed6a8ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00633a0dbeca19dadc3306e03ed6a8ec">&#9670;&#160;</a></span>scale_bar_axis_</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkAxisActor2D&gt; QRenderWindow::Data::scale_bar_axis_</td>
         </tr>
       </table>
 </div><div class="memdoc">
