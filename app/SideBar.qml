@@ -15,11 +15,13 @@ import app.model.systems.algo
 Item{
     id: root
     property var parameters: []
+    property var resultText: ""
 
     readonly property var activeOp: App.activeOperation
 
     onActiveOpChanged: {
         parameters = []
+        resultText = ""
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
@@ -39,13 +41,29 @@ Item{
         height:30
         onClicked:{
             if (root.activeOp && root.activeOp.execute)
-                root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+                root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
             if (App.registry.renderWindow)
                 App.registry.renderWindow.clearSelection()
         }
     }
-    Item{
+    TextArea {
+        id: resultArea
         anchors.top: commitButton.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 80
+        readOnly: true
+        text: root.resultText
+        wrapMode: TextEdit.Wrap
+        visible: text.length > 0
+        background: Rectangle {
+            color: "#f0f0f0"
+            border.color: "#d0d0d0"
+            border.width: 1
+        }
+    }
+    Item{
+        anchors.top: resultArea.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
