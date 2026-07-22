@@ -22,13 +22,11 @@ void FeatureDemoHandler::setup(FeatureRegistrar& reg)
     // 功能参数注册
     reg.addParameter({ ArgTypeEnum::Float, "缩放因子", "1.0", "网格顶点坐标的缩放倍数" });
     reg.addParameter({ ArgTypeEnum::Bool, "自动应用", "false", "修改参数后立即对当前组件生效" });
-    // 菜单选项注册
-    reg.addMenuItem({ "功能", "功能示例" });
-    // 演示两级菜单路径："工具" 菜单分页内的 "批处理" 分组
-    reg.addMenuItem({ "工具/批处理", "功能示例" });
-    // 演示页内分组竖线分隔："工具" 菜单分页内与 "批处理" 并列的 "测量" 分组
+    // 菜单选项注册：演示两级菜单路径，"示例" 菜单分页内的 "批处理" 分组
+    reg.addMenuItem({ "示例/批处理", "功能示例" });
+    // 演示页内分组竖线分隔："示例" 菜单分页内与 "批处理" 并列的 "测量" 分组
     // 同时演示自定义图标：指定 qrc 图标资源路径，未指定时按插件名映射默认图标
-    reg.addMenuItem({ "工具/测量", "功能示例", "qrc:/images/toolbar/gmsh.svg" });
+    reg.addMenuItem({ "示例/测量", "功能示例", "qrc:/images/toolbar/gmsh.svg" });
     // 按键事件注册：Ctrl+D
     reg.addKeyBinding({ kKeyD, kControlModifier });
 }

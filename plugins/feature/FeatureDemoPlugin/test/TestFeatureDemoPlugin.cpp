@@ -67,10 +67,10 @@ TEST_CASE("FeatureDemoPlugin dll registers into FeatureSystem via SystemPluginMa
     REQUIRE(infos[0]->name == "FeatureDemo");
     REQUIRE(infos[0]->display_name == "功能示例");
     REQUIRE(infos[0]->arg_types.size() == 2);
-    REQUIRE(infos[0]->menus.size() == 3);
-    // 第三个菜单贡献项声明了自定义图标
-    REQUIRE(infos[0]->menus[2].menu_path == "工具/测量");
-    REQUIRE(infos[0]->menus[2].icon == "qrc:/images/toolbar/gmsh.svg");
+    REQUIRE(infos[0]->menus.size() == 2);
+    // 第二个菜单贡献项声明了自定义图标
+    REQUIRE(infos[0]->menus[1].menu_path == "示例/测量");
+    REQUIRE(infos[0]->menus[1].icon == "qrc:/images/toolbar/gmsh.svg");
     REQUIRE(infos[0]->key_bindings.size() == 1);
 
     // 无活动组件时执行，功能应安全地空转
