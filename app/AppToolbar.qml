@@ -55,6 +55,57 @@ ColumnLayout {
         }
     }
 
+    // 功能触发入口：ribbon 功能按钮共用
+    function activateFeature(info) {
+        App.activeOperation = {
+            info: info,
+            isFeature: true,
+            execute: function() { return QModelManager.featureSystem.invoke(info.name) }
+        }
+    }
+
+    // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [QFeatureInfo] }] }]，由 rebuildFeatureMenus 维护
+    property var featureMenus: []
+
+    // 按 menu_path 两级（菜单/分组）重建功能 ribbon 结构（功能注册/注销时调用）
+    function rebuildFeatureMenus() {
+        let menu_order = []
+        let menus = {} // 菜单名 -> { group_order, groups: 分组名 -> [QFeatureInfo] }
+        for (let info of QModelManager.featureSystem.featuresInfo) {
+            let segs = (info.menu_path || "功能").split('/')
+            let menu_name = segs[0]
+            let group_name = segs.length > 1 ? segs[1] : ""
+            if (!menus[menu_name]) {
+                menus[menu_name] = { group_order: [], groups: {} }
+                menu_order.push(menu_name)
+            }
+            let menu = menus[menu_name]
+            if (!menu.groups[group_name]) {
+                menu.groups[group_name] = []
+                menu.group_order.push(group_name)
+            }
+            menu.groups[group_name].push(info)
+        }
+        let ribbon = []
+        for (let menu_name of menu_order) {
+            let menu = menus[menu_name]
+            let groups = []
+            for (let group_name of menu.group_order)
+                groups.push({ name: group_name, items: menu.groups[group_name] })
+            ribbon.push({ name: menu_name, groups: groups })
+        }
+        featureMenus = ribbon
+    }
+
+    Connections {
+        target: QModelManager.featureSystem
+        function onFeaturesInfoChanged() {
+            root.rebuildFeatureMenus()
+        }
+    }
+
+    Component.onCompleted: rebuildFeatureMenus()
+
     ToolBar {
         RowLayout {
             anchors.fill: parent
@@ -81,11 +132,17 @@ ColumnLayout {
                 onClicked: activeCategory = (activeCategory === 2) ? -1 : 2
             }
 
-            ToolButton {
-                text: "功能"
-                checkable: true
-                checked: activeCategory === 3
-                onClicked: activeCategory = (activeCategory === 3) ? -1 : 3
+            // 功能菜单分页：按 menu_path 第一段（菜单）动态生成分页按钮，页序对应 StackLayout 索引 3 起
+            Repeater {
+                model: root.featureMenus
+                ToolButton {
+                    required property var modelData
+                    required property int index
+                    text: modelData.name
+                    checkable: true
+                    checked: activeCategory === 3 + index
+                    onClicked: activeCategory = (activeCategory === 3 + index) ? -1 : 3 + index
+                }
             }
 
             ToolButton {
@@ -228,31 +285,48 @@ ColumnLayout {
             Item { Layout.fillWidth: true }
         }
 
-        // 3: 功能 → 数据驱动，图标按名映射（自定义功能插件使用默认图标）
-        RowLayout {
-            anchors.fill: parent
+        // 功能菜单页（索引 3 起）：页内按 menu_path 第二段（分组）排列功能按钮，同组排在一起，组间以竖线分隔
+        Repeater {
+            model: root.featureMenus
+            RowLayout {
+                id: featureMenuPage
+                required property var modelData
+                anchors.fill: parent
 
-            Repeater {
-                model: QModelManager.featureSystem.featuresInfo
-                ToolButton {
-                    required property var modelData
-                    icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
-                    Layout.fillHeight: true
-                    display: ToolButton.TextUnderIcon
-                    text: modelData.display_name
-                    onClicked: {
-                        App.activeOperation = {
-                            info: modelData,
-                            isFeature: true,
-                            execute: function() { return QModelManager.featureSystem.invoke(modelData.name) }
+                Repeater {
+                    model: featureMenuPage.modelData.groups
+                    RowLayout {
+                        id: featureGroupRow
+                        required property var modelData
+                        required property int index
+                        Layout.fillHeight: true
+                        spacing: 0
+
+                        Repeater {
+                            model: featureGroupRow.modelData.items
+                            ToolButton {
+                                required property var modelData
+                                icon.source: root.getIconForPlugin(modelData.name)
+                                icon.width: parent.height * 0.65
+                                icon.height: parent.height * 0.65
+                                Layout.fillHeight: true
+                                display: ToolButton.TextUnderIcon
+                                text: modelData.display_name
+                                onClicked: root.activateFeature(modelData)
+                            }
+                        }
+
+                        // 分组间竖线分隔（最后一组不显示）
+                        ToolSeparator {
+                            orientation: Qt.Vertical
+                            Layout.fillHeight: true
+                            visible: featureGroupRow.index < featureMenuPage.modelData.groups.length - 1
                         }
                     }
                 }
-            }
 
-            Item { Layout.fillWidth: true }
+                Item { Layout.fillWidth: true }
+            }
         }
     }
 }

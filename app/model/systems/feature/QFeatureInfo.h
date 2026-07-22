@@ -35,7 +35,7 @@ private:
     QString name_; //> 功能唯一名称，用作索引
     QString display_name_; //> 功能UI展示用名称
     QString description_; //> 功能描述
-    QString menu_path_; //> 功能归属的顶层菜单名
+    QString menu_path_; //> 功能归属的菜单路径，以 '/' 分隔，约定两级（"菜单/分组"）：菜单为 ribbon 分页、分组为页内分组
     QList<QArgType*> arg_types_; //> 功能参数类型列表
 };
 #endif // !Q_FEATURE_INFO_H

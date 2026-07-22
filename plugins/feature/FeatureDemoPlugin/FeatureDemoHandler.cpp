@@ -24,6 +24,10 @@ void FeatureDemoHandler::setup(FeatureRegistrar& reg)
     reg.addParameter({ ArgTypeEnum::Bool, "自动应用", "false", "修改参数后立即对当前组件生效" });
     // 菜单选项注册
     reg.addMenuItem({ "功能", "功能示例" });
+    // 演示两级菜单路径："工具" 菜单分页内的 "批处理" 分组
+    reg.addMenuItem({ "工具/批处理", "功能示例" });
+    // 演示页内分组竖线分隔："工具" 菜单分页内与 "批处理" 并列的 "测量" 分组
+    reg.addMenuItem({ "工具/测量", "功能示例" });
     // 按键事件注册：Ctrl+D
     reg.addKeyBinding({ kKeyD, kControlModifier });
 }

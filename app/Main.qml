@@ -190,7 +190,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        // 同步当前活动模型/组件到功能系统
+        // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
         QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
         QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
 
