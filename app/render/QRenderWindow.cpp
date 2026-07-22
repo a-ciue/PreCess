@@ -14,7 +14,6 @@
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
-#include <vtkInteractorObserver.h>
 #include <vtkMapper.h>
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
@@ -34,27 +33,52 @@ public:
 
     void Execute(vtkObject*, unsigned long, void*) override
     {
-        if (!axis_ || !renderer_ || !renderer_->GetActiveCamera())
+        vtkCamera* cam = renderer_ ? renderer_->GetActiveCamera() : nullptr;
+        if (!axis_ || !cam)
+            return;
+        const int* size = renderer_->GetSize();
+        if (!size || size[1] <= 0)
             return;
 
-        // 相机焦点的显示深度
-        double focal[3];
-        renderer_->GetActiveCamera()->GetFocalPoint(focal);
-        double focal_display[4];
-        vtkInteractorObserver::ComputeWorldToDisplay(renderer_, focal[0], focal[1], focal[2], focal_display);
-
-        // 轴两端点（归一化视口坐标）反投影到焦平面，求段的世界长度
-        const int* size = renderer_->GetSize();
+        // 段像素长度（轴两端点为归一化视口坐标）
         const double* v1 = axis_->GetPositionCoordinate()->GetValue();
         const double* v2 = axis_->GetPosition2Coordinate()->GetValue();
-        double w1[4], w2[4];
-        vtkInteractorObserver::ComputeDisplayToWorld(
-            renderer_, v1[0] * size[0], v1[1] * size[1], focal_display[2], w1);
-        vtkInteractorObserver::ComputeDisplayToWorld(
-            renderer_, v2[0] * size[0], v2[1] * size[1], focal_display[2], w2);
+        const double pixel_len = std::abs(v2[0] - v1[0]) * size[0];
 
-        axis_->SetRange(0.0, std::sqrt(vtkMath::Distance2BetweenPoints(w1, w2)));
+        // 解析式求世界长度，避免每帧三次投影/反投影矩阵运算：
+        // 平行投影窗口世界高度 = 2*parallelScale；透视投影焦平面世界高度 = 2*距离*tan(fov/2)
+        double world_per_pixel;
+        if (cam->GetParallelProjection()) {
+            world_per_pixel = 2.0 * cam->GetParallelScale() / size[1];
+        } else {
+            world_per_pixel = 2.0 * cam->GetDistance()
+                * std::tan(vtkMath::RadiansFromDegrees(cam->GetViewAngle()) / 2.0) / size[1];
+        }
+        const double nice = niceNumber(pixel_len * world_per_pixel);
+
+        // 刻度值跨档才 SetRange：vtkAxisActor2D 每次 SetRange 都会重建刻度文本，
+        // 连续缩放时逐帧重建是主要帧率开销
+        if (nice == last_range_)
+            return;
+        last_range_ = nice;
+        axis_->SetRange(0.0, nice);
     }
+
+private:
+    //! @brief 就近量化到 1-2-5 序列（如 0.037→0.05、12.6→10），刻度跨档才变化
+    static double niceNumber(double value)
+    {
+        if (value <= 0.0)
+            return 0.0;
+        const double exp10 = std::floor(std::log10(value));
+        const double base = std::pow(10.0, exp10);
+        const double frac = value / base; // 归一化到 [1,10)
+        // 1-2-5-10 的几何中值分界，就近取档
+        const double nice_frac = frac < 1.5 ? 1.0 : (frac < 3.5 ? 2.0 : (frac < 7.5 ? 5.0 : 10.0));
+        return nice_frac * base;
+    }
+
+    double last_range_ = -1.0; //> 上次写入的刻度值（初始必触发一次）
 };
 }
 
