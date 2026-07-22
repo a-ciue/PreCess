@@ -27,7 +27,8 @@ void FeatureDemoHandler::setup(FeatureRegistrar& reg)
     // 演示两级菜单路径："工具" 菜单分页内的 "批处理" 分组
     reg.addMenuItem({ "工具/批处理", "功能示例" });
     // 演示页内分组竖线分隔："工具" 菜单分页内与 "批处理" 并列的 "测量" 分组
-    reg.addMenuItem({ "工具/测量", "功能示例" });
+    // 同时演示自定义图标：指定 qrc 图标资源路径，未指定时按插件名映射默认图标
+    reg.addMenuItem({ "工具/测量", "功能示例", "qrc:/images/toolbar/gmsh.svg" });
     // 按键事件注册：Ctrl+D
     reg.addKeyBinding({ kKeyD, kControlModifier });
 }

@@ -43,6 +43,11 @@ ColumnLayout {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/PreCess_extra_plugin.svg"
     }
 
+    // 功能图标：优先菜单声明的自定义 qrc 图标，未指定时按插件名映射默认图标
+    function getIconForFeature(info) {
+        return info.icon ? info.icon : getIconForPlugin(info.name)
+    }
+
     function activatePlugin(systemList, pluginName, system) {
         for (var i = 0; i < systemList.length; i++) {
             if (systemList[i].name === pluginName) {
@@ -306,7 +311,7 @@ ColumnLayout {
                             model: featureGroupRow.modelData.items
                             ToolButton {
                                 required property var modelData
-                                icon.source: root.getIconForPlugin(modelData.name)
+                                icon.source: root.getIconForFeature(modelData)
                                 icon.width: parent.height * 0.65
                                 icon.height: parent.height * 0.65
                                 Layout.fillHeight: true
