@@ -21,6 +21,12 @@ public:
 
     void select(double posx, double posy);
     void setSelectMode(SelectMode select_mode);
+    /**
+     * @brief 设置面选择的角度扩散参数，并同步到已创建的面选择器
+     * @param enabled 是否启用按角度扩散
+     * @param angle_deg 相邻面法向夹角阈值，单位为度
+     */
+    void setFaceSelectionByAngle(bool enabled, double angle_deg);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
 
@@ -37,6 +43,7 @@ private:
     vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_; //> 高亮部分的 Mapper
     vtkSmartPointer<vtkPartitionedDataSet> highlight_data_; //> 高亮部分的 Data
 
+    FaceSelectionSpreadOptions face_selection_spread_options_;
     std::unordered_map<Index, std::unique_ptr<SelectorHighlight>> component_selectors_; //> 每个 component 对应的选择器
 };
 

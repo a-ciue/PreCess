@@ -22,6 +22,12 @@ public:
     ~SelectManager();
     void select(double posx, double posy);
     void setSelectMode(const std::string& select_mode);
+    /**
+     * @brief 设置网格面选择的角度扩散参数
+     * @param enabled 是否启用按角度扩散
+     * @param angle_deg 相邻面法向夹角阈值，单位为度
+     */
+    void setFaceSelectionByAngle(bool enabled, double angle_deg);
     void clearSelection();
     void refreshComponentHighlight();
     std::unique_ptr<Selection> getSelection();

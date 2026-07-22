@@ -7,8 +7,8 @@ QtObject {
         property int activeComponentId: -1
         property string selectMode: "None"
         property int listeningSelectorIndex: -1
-
         signal confirmed(var sel)
+        signal selectionInvalidated()
     }
 
     property var activeOperation: null

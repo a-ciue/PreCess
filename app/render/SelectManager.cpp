@@ -81,6 +81,11 @@ void SelectManager::setSelectMode(const std::string& select_mode)
         geom_->clearSelection();
 }
 
+void SelectManager::setFaceSelectionByAngle(bool enabled, double angle_deg)
+{
+    mesh_->setFaceSelectionByAngle(enabled, angle_deg);
+}
+
 void SelectManager::clearSelection()
 {
     component_selector_->clear();
