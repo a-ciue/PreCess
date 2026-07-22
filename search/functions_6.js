@@ -23,10 +23,11 @@ var searchData=
   ['fill_5fskipblock_20',['fill_skipblock',['../classplf_1_1colony.html#a8215c8a35b74b8f846323d7839f19285',1,'plf::colony']]],
   ['fill_5funused_5fgroups_21',['fill_unused_groups',['../classplf_1_1colony.html#a68c63fba3ac39d1aa8825d02fdf97a52',1,'plf::colony']]],
   ['findcomponent_22',['findComponent',['../classModelLayer.html#aa112be1e71059cdc6abc597a57e24484',1,'ModelLayer']]],
-  ['findindexbynodeid_23',['findIndexByNodeId',['../classTreeModel.html#a856e0a0770784805a92c4c2ec1ead38a',1,'TreeModel']]],
-  ['findmodelidbycomponent_24',['findModelIdByComponent',['../classQModelQuery.html#a19938f557fe09eced17f11bc7bdf458d',1,'QModelQuery']]],
-  ['fixed_25',['fixed',['../classMeshLib_1_1CToolVertex.html#a0ea0fabaa671dcd03d8386c29ac917a2',1,'MeshLib::CToolVertex']]],
-  ['flush_5f_26',['flush_',['../classQtLogSink.html#a13bfff2aad1b88059b3766a7b42bfce0',1,'QtLogSink']]],
-  ['for_27',['for',['../TestComponentModel_8cpp.html#ae97f1c44740297fab404285a4388b17b',1,'TestComponentModel.cpp']]],
-  ['freesize_28',['freeSize',['../classMeshIDMap.html#ad8a4fcc0916165efec4a8cb3a752d662',1,'MeshIDMap']]]
+  ['findcomponentidbygeometryfaceid_23',['findComponentIdByGeometryFaceId',['../classModelLayer.html#a01ffb6670b9bd5c413b94510ce12def2',1,'ModelLayer']]],
+  ['findindexbynodeid_24',['findIndexByNodeId',['../classTreeModel.html#a856e0a0770784805a92c4c2ec1ead38a',1,'TreeModel']]],
+  ['findmodelidbycomponent_25',['findModelIdByComponent',['../classQModelQuery.html#a19938f557fe09eced17f11bc7bdf458d',1,'QModelQuery']]],
+  ['fixed_26',['fixed',['../classMeshLib_1_1CToolVertex.html#a0ea0fabaa671dcd03d8386c29ac917a2',1,'MeshLib::CToolVertex']]],
+  ['flush_5f_27',['flush_',['../classQtLogSink.html#a13bfff2aad1b88059b3766a7b42bfce0',1,'QtLogSink']]],
+  ['for_28',['for',['../TestComponentModel_8cpp.html#ae97f1c44740297fab404285a4388b17b',1,'TestComponentModel.cpp']]],
+  ['freesize_29',['freeSize',['../classMeshIDMap.html#ad8a4fcc0916165efec4a8cb3a752d662',1,'MeshIDMap']]]
 ];

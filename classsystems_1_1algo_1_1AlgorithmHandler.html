@@ -91,6 +91,8 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a4e53f0bac9d50e2f4228e5eaa94862b9" id="r_a4e53f0bac9d50e2f4228e5eaa94862b9"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4e53f0bac9d50e2f4228e5eaa94862b9">~AlgorithmHandler</a> ()=default</td></tr>
+<tr class="memitem:a928dfca1d10735e8b66e5baf14411398" id="r_a928dfca1d10735e8b66e5baf14411398"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a928dfca1d10735e8b66e5baf14411398">resolveComponentId</a> (<a class="el" href="classModelLayer.html">ModelLayer</a> &amp;model_layer, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> fallback_component_id, const std::vector&lt; <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> &gt; &amp;args) const</td></tr>
+<tr class="memdesc:a928dfca1d10735e8b66e5baf14411398"><td class="mdescLeft">&#160;</td><td class="mdescRight">在执行前解析算法实际使用的 Component  <br /></td></tr>
 <tr class="memitem:a2887850d5a6dc5a355eacd783cd9514b" id="r_a2887850d5a6dc5a355eacd783cd9514b"><td class="memItemLeft" align="right" valign="top">virtual std::any&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2887850d5a6dc5a355eacd783cd9514b">execute</a> (<a class="el" href="structsystems_1_1algo_1_1HandlerContext.html">HandlerContext</a> &amp;context, const std::vector&lt; <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> &gt; &amp;args)=0</td></tr>
 <tr class="memdesc:a2887850d5a6dc5a355eacd783cd9514b"><td class="mdescLeft">&#160;</td><td class="mdescRight">执行算法功能  <br /></td></tr>
 <tr class="memitem:a7bb54b18ecfddf55f5630ed737514b24" id="r_a7bb54b18ecfddf55f5630ed737514b24"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7bb54b18ecfddf55f5630ed737514b24">args_type</a> () const =0</td></tr>
@@ -189,6 +191,52 @@ Public 成员函数</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>返回</dt><dd>算法结果（可自定义类型） </dd></dl>
+
+</div>
+</div>
+<a id="a928dfca1d10735e8b66e5baf14411398" name="a928dfca1d10735e8b66e5baf14411398"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a928dfca1d10735e8b66e5baf14411398">&#9670;&#160;</a></span>resolveComponentId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; systems::algo::AlgorithmHandler::resolveComponentId </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model_layer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>fallback_component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在执行前解析算法实际使用的 Component </p>
+<p>默认使用对象树传入的 Component；需要根据参数定位目标的插件可覆盖该函数。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_layer</td><td>模型数据层 </td></tr>
+    <tr><td class="paramname">fallback_component_id</td><td>对象树当前 Component ID </td></tr>
+    <tr><td class="paramname">args</td><td>算法参数 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>实际目标 Component ID；无法确定时返回空 </dd></dl>
 
 </div>
 </div>
