@@ -115,6 +115,37 @@ bool validateMeshingParameters(const IncrementalMeshTools::GmshMeshParameters& p
 
 } // namespace
 
+std::optional<Index> systems::algo::GmshMeshHandler::resolveComponentId(
+    ModelLayer& model_layer,
+    Index /*fallback_component_id*/,
+    const std::vector<core::ArgObject>& args) const
+{
+    const auto* selection = args.empty()
+        ? nullptr
+        : args[0].get<ArgTypeEnum::Selector>();
+    if (!selection || !*selection
+        || (*selection)->type != ElementEnum::GeometryFace
+        || (*selection)->ids.empty()) {
+        return std::nullopt;
+    }
+
+    std::optional<Index> component_id;
+    for (GeomFaceId face_id : (*selection)->ids) {
+        const auto owner_id = model_layer.findComponentIdByGeometryFaceId(face_id);
+        if (!owner_id) {
+            spdlog::error("GmshMesh: component owning geometry face {} was not found", face_id);
+            return std::nullopt;
+        }
+        if (component_id && *component_id != *owner_id) {
+            spdlog::error("GmshMesh: selected geometry faces belong to different components");
+            return std::nullopt;
+        }
+        component_id = owner_id;
+    }
+
+    return component_id;
+}
+
 std::any systems::algo::GmshMeshHandler::execute(
     HandlerContext& context,
     const std::vector<core::ArgObject>& args)
