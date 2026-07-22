@@ -313,21 +313,17 @@ Item{
                 onClicked: {
                     if (!checked) {
                         App.selection.listeningSelectorIndex = index
-                        if (App.selection.selectMode === "None") {
-                            // 活动组件为纯几何（无网格）时默认切到几何点模式，
-                            // 网格组件则用参数给定的首选模式
+                        // 每次开始选择都按参数重设模式：content 指定的拾取类型优先；
+                        // 未指定时纯几何（无网格）组件兜底几何点模式，其余兜底 Face
+                        if (model.content.length > 0) {
+                            const modes = model.content.split(",")
+                            if (modes.length > 0)
+                                App.selection.selectMode = modes[0]
+                        } else {
                             const cid = App.selection.activeComponentId
                             const meshSummary = cid >= 0 ? QModelManager.query.getMeshSummary(cid) : ({})
                             const geomSummary = cid >= 0 ? QModelManager.query.getGeometrySummary(cid) : ({})
-                            if (!meshSummary.has_mesh && geomSummary.has_geometry) {
-                                App.selection.selectMode = "GeometryVertex"
-                            } else if (model.content.length > 0) {
-                                const modes = model.content.split(",")
-                                if (modes.length > 0)
-                                    App.selection.selectMode = modes[0]
-                            } else {
-                                App.selection.selectMode = "Face"
-                            }
+                            App.selection.selectMode = (!meshSummary.has_mesh && geomSummary.has_geometry) ? "GeometryVertex" : "Face"
                         }
                     } else {
                         App.selection.listeningSelectorIndex = -1
