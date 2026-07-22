@@ -1,0 +1,11 @@
+<map id="FaceSelectorHighlight::FaceSpreadCache" name="FaceSelectorHighlight::FaceSpreadCache">
+<area shape="rect" id="Node000001" title="缓存当前面数据的邻接关系和法向，避免每次点击全量重建" alt="" coords="116,212,279,252"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="13,101,187,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,150,182,210,178,213,124,153"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,189,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="101,44,102,101,97,101,95,45"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="216,101,384,141"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="275,153,241,190,218,213,214,210,237,186,271,150"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="214,5,389,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="304,45,303,101,298,101,298,45"/>
+</map>

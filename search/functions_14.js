@@ -16,5 +16,6 @@ var searchData=
   ['updateglobalvtkpoints_13',['updateGlobalVtkPoints',['../structQRenderWindow.html#a763bdb6ed86c9652f1dc11dc96900534',1,'QRenderWindow']]],
   ['updateglobalvtkpointsimpl_14',['updateGlobalVtkPointsImpl',['../structQRenderWindow.html#a88acee9d82c9720ede7b4e0e5b3cdcaa',1,'QRenderWindow']]],
   ['updatehighlight_15',['updateHighlight',['../classComponentSelectorHighlight.html#aca183f4c287a4ed3fa2d826b1a743c23',1,'ComponentSelectorHighlight']]],
-  ['uv_16',['uv',['../classMeshLib_1_1CVertex.html#ad60f9c70cebc4991810696bb835f8014',1,'MeshLib::CVertex']]]
+  ['updatespreadcache_16',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
+  ['uv_17',['uv',['../classMeshLib_1_1CVertex.html#ad60f9c70cebc4991810696bb835f8014',1,'MeshLib::CVertex']]]
 ];

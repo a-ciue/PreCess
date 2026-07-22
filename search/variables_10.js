@@ -19,11 +19,12 @@ var searchData=
   ['point_5funits_16',['POINT_UNITS',['../namespacehighlight.html#afbe8de3eaf71fef8622e878795610cfd',1,'highlight']]],
   ['points_17',['points',['../structtinyobj_1_1shape__t.html#a8515a73329f151bd081693f283f20eb4',1,'tinyobj::shape_t']]],
   ['poly_5factor_5f_18',['poly_actor_',['../classGeometryActor.html#afbb5e16fb1a81c23cac20aec405005f7',1,'GeometryActor']]],
-  ['poly_5fonly_5f_19',['poly_only_',['../classGeometryActor.html#a349331045af0ea4b461ee165f08ee5cd',1,'GeometryActor']]],
-  ['poly_5fsub_5fid_5farray_5f_20',['poly_sub_id_array_',['../classGeometryActor.html#a1c118302681d6e1b20def1a1143b7a2c',1,'GeometryActor']]],
-  ['polygon_5funits_21',['POLYGON_UNITS',['../namespacehighlight.html#a846d3053a29ba2562d28086d2b8471b2',1,'highlight']]],
-  ['pressed_22',['pressed',['../structsystems_1_1feature_1_1KeyEvent.html#ac0904a803e0893b8de9d7067fdeca568',1,'systems::feature::KeyEvent']]],
-  ['previous_5fgroup_23',['previous_group',['../structplf_1_1colony_1_1group.html#ae19449b38e52d52880a6d7ab152a2ae3',1,'plf::colony::group']]],
-  ['prop_5fto_5fcomponent_5f_24',['prop_to_component_',['../classGeometryActorManagerSelectOp.html#a0d4f19ac52577626453dcd49d6fc429c',1,'GeometryActorManagerSelectOp::prop_to_component_'],['../classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641',1,'MeshActorManagerSelectOp::prop_to_component_']]],
-  ['ptr_25',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
+  ['poly_5fdata_19',['poly_data',['../structFaceSelectorHighlight_1_1FaceSpreadCache.html#a07c06e180af0309d13139e9a40b8a9f1',1,'FaceSelectorHighlight::FaceSpreadCache']]],
+  ['poly_5fonly_5f_20',['poly_only_',['../classGeometryActor.html#a349331045af0ea4b461ee165f08ee5cd',1,'GeometryActor']]],
+  ['poly_5fsub_5fid_5farray_5f_21',['poly_sub_id_array_',['../classGeometryActor.html#a1c118302681d6e1b20def1a1143b7a2c',1,'GeometryActor']]],
+  ['polygon_5funits_22',['POLYGON_UNITS',['../namespacehighlight.html#a846d3053a29ba2562d28086d2b8471b2',1,'highlight']]],
+  ['pressed_23',['pressed',['../structsystems_1_1feature_1_1KeyEvent.html#ac0904a803e0893b8de9d7067fdeca568',1,'systems::feature::KeyEvent']]],
+  ['previous_5fgroup_24',['previous_group',['../structplf_1_1colony_1_1group.html#ae19449b38e52d52880a6d7ab152a2ae3',1,'plf::colony::group']]],
+  ['prop_5fto_5fcomponent_5f_25',['prop_to_component_',['../classGeometryActorManagerSelectOp.html#a0d4f19ac52577626453dcd49d6fc429c',1,'GeometryActorManagerSelectOp::prop_to_component_'],['../classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641',1,'MeshActorManagerSelectOp::prop_to_component_']]],
+  ['ptr_26',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
 ];

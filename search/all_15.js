@@ -23,7 +23,8 @@ var searchData=
   ['updateglobalvtkpoints_20',['updateGlobalVtkPoints',['../structQRenderWindow.html#a763bdb6ed86c9652f1dc11dc96900534',1,'QRenderWindow']]],
   ['updateglobalvtkpointsimpl_21',['updateGlobalVtkPointsImpl',['../structQRenderWindow.html#a88acee9d82c9720ede7b4e0e5b3cdcaa',1,'QRenderWindow']]],
   ['updatehighlight_22',['updateHighlight',['../classComponentSelectorHighlight.html#aca183f4c287a4ed3fa2d826b1a743c23',1,'ComponentSelectorHighlight']]],
-  ['usemtl_5fcb_23',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
-  ['uv_24',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]],
-  ['uv_25',['uv',['../classMeshLib_1_1CVertex.html#ad60f9c70cebc4991810696bb835f8014',1,'MeshLib::CVertex']]]
+  ['updatespreadcache_23',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
+  ['usemtl_5fcb_24',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
+  ['uv_25',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]],
+  ['uv_26',['uv',['../classMeshLib_1_1CVertex.html#ad60f9c70cebc4991810696bb835f8014',1,'MeshLib::CVertex']]]
 ];
