@@ -28,9 +28,25 @@ AlgorithmSystem::~AlgorithmSystem() = default;
 
 std::any AlgorithmSystem::call(const string& unique_name, Index component_id, const vector<ArgObject>& args)
 {
-    auto comp_op = model_manager_->getComponentOperator(component_id);
+    auto it = handlers_.find(unique_name);
+    if (it == handlers_.end() || !it->second) {
+        spdlog::warn("AlgorithmSystem::call: Handler '{}' not found.", unique_name);
+        return {};
+    }
+
+    const auto target_component_id = it->second->resolveComponentId(
+        *model_manager_, component_id, args);
+    if (!target_component_id) {
+        spdlog::error(
+            "AlgorithmSystem::call: Cannot resolve target component for algorithm '{}'.",
+            unique_name);
+        return {};
+    }
+
+    auto comp_op = model_manager_->getComponentOperator(*target_component_id);
     if (!comp_op) {
-        spdlog::error("AlgorithmSystem::call: ComponentData operator for component ID {} not found.", component_id);
+        spdlog::error("AlgorithmSystem::call: ComponentData operator for component ID {} not found.",
+            *target_component_id);
         return {};
     }
 
@@ -38,11 +54,7 @@ std::any AlgorithmSystem::call(const string& unique_name, Index component_id, co
         *this->io_system_,
         *comp_op
     };
-    auto it = handlers_.find(unique_name);
-    if (it != handlers_.end() && it->second) {
-        return it->second->execute(context, args);
-    }
-    return {};
+    return it->second->execute(context, args);
 }
 
 bool AlgorithmSystem::registerHandler(const HandlerMetaData& meta_data, SystemHandlerPtr handler)
