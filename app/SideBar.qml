@@ -51,7 +51,8 @@ Item{
         anchors.top: commitButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 80
+        // 不可见时不占锚定布局高度，避免留下空白
+        height: visible ? 80 : 0
         readOnly: true
         text: root.resultText
         wrapMode: TextEdit.Wrap
