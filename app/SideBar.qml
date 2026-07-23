@@ -18,10 +18,54 @@ Item{
     property var resultText: ""
 
     readonly property var activeOp: App.activeOperation
+    readonly property bool hasInteractive: !!(activeOp && activeOp.info && activeOp.info.interactive)
+    property int interactionMode: 0 // 0=交互模式 1=参数执行
+    // 当前已启动交互的功能名，用于幂等守卫：状态重复触发时不重启交互
+    property string _interactionName: ""
 
     onActiveOpChanged: {
         parameters = []
         resultText = ""
+        interactionPanel.interactionResult = ""
+        applyInteractionState()
+    }
+    onInteractionModeChanged: applyInteractionState()
+    // activeOp 变化通知触发时 hasInteractive 绑定可能尚未刷新（链式绑定），
+    // 直接监听才能保证首次打开交互插件就正确进入交互模式
+    onHasInteractiveChanged: applyInteractionState()
+
+    // 视口交互与参数执行互斥：按"目标交互功能名"应用状态，已一致时直接返回
+    function applyInteractionState() {
+        var rw = App.registry.renderWindow
+        if (!rw)
+            return
+        var want = (hasInteractive && interactionMode === 0 && activeOp) ? activeOp.info.name : ""
+        if (want === _interactionName) {
+            interactionConn.target = want ? rw : null
+            return
+        }
+        _interactionName = want
+        if (want) {
+            rw.startInteraction(want) // InteractionService 内部会先停止旧 handler
+            App.selection.listeningSelectorIndex = -1
+            App.selection.selectMode = "None"
+            interactionConn.target = rw
+        } else {
+            rw.stopInteraction()
+            interactionConn.target = null
+        }
+    }
+    // 声明视口交互能力的功能专用：勾选进入交互模式，取消回到参数执行
+    CheckBox{
+        id: interactionModeSwitch
+        visible: root.hasInteractive
+        height: visible ? 34 : 0
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        text: "交互模式"
+        checked: root.interactionMode === 0
+        onClicked: root.interactionMode = checked ? 0 : 1
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
@@ -35,13 +79,20 @@ Item{
         id: commitButton
         text: "执行"
         enabled: !!(root.activeOp && root.activeOp.info)
-        anchors.top: parent.top
+        visible: !(root.hasInteractive && root.interactionMode === 0)
+        anchors.top: interactionModeSwitch.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        height:30
+        height: visible ? 30 : 0
         onClicked:{
-            if (root.activeOp && root.activeOp.execute)
-                root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+            if (root.activeOp && root.activeOp.execute) {
+                var r = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+                // 结果路由由插件声明的 result_display 决定：popup 走弹窗，其余走侧栏
+                if (root.activeOp.info && root.activeOp.info.result_display === "popup")
+                    App.showDialog(root.activeOp.info.display_name + "结果", r)
+                else
+                    root.resultText = r
+            }
             if (App.registry.renderWindow)
                 App.registry.renderWindow.clearSelection()
         }
@@ -56,7 +107,8 @@ Item{
         readOnly: true
         text: root.resultText
         wrapMode: TextEdit.Wrap
-        visible: text.length > 0
+        // 声明 popup 的插件结果走弹窗，侧栏结果区只服务其余算法
+        visible: text.length > 0 && !(root.activeOp && root.activeOp.info && root.activeOp.info.result_display === "popup")
         background: Rectangle {
             color: "#f0f0f0"
             border.color: "#d0d0d0"
@@ -69,6 +121,7 @@ Item{
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         clip: true
+        visible: !(root.hasInteractive && root.interactionMode === 0)
         ColumnLayout{
             anchors.fill: parent
             ListView{
@@ -117,6 +170,52 @@ Item{
                     }
                 }
             }
+        }
+    }
+
+    // 视口交互面板：操作说明（功能声明）、结果与清除
+    Column{
+        id: interactionPanel
+        visible: root.hasInteractive && root.interactionMode === 0
+        anchors.top: interactionModeSwitch.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: 4
+        spacing: 8
+        property string interactionResult: ""
+
+        Text{
+            width: parent.width
+            wrapMode: Text.Wrap
+            text: (root.activeOp && root.activeOp.info) ? root.activeOp.info.interaction_guide : ""
+            visible: text.length > 0
+        }
+        TextArea{
+            width: parent.width
+            height: 80
+            readOnly: true
+            text: interactionPanel.interactionResult
+            wrapMode: TextEdit.Wrap
+            visible: text.length > 0
+            background: Rectangle {
+                color: "#f0f0f0"
+                border.color: "#d0d0d0"
+                border.width: 1
+            }
+        }
+        Button{
+            text: "清除"
+            onClicked: {
+                var rw = App.registry.renderWindow
+                if (rw) rw.clearInteraction()
+            }
+        }
+    }
+    Connections{
+        id: interactionConn
+        target: null
+        function onInteractionUpdated(resultText) {
+            interactionPanel.interactionResult = resultText
         }
     }
 

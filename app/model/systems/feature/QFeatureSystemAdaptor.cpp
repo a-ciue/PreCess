@@ -112,7 +112,11 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
                 QString::fromStdString(feature_info->description),
                 QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
                 QString::fromStdString(menu.icon),
-                std::move(args)));
+                std::move(args),
+                QString::fromStdString(feature_info->result_display),
+                feature_info->interactive,
+                QString::fromStdString(feature_info->execute_text),
+                QString::fromStdString(feature_info->interaction_guide)));
         }
     }
     return infos;

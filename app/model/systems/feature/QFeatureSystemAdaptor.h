@@ -51,6 +51,11 @@ public:
      */
     QList<QFeatureInfo*> getFeaturesInfo() const;
 
+    /**
+     * @brief 获取底层功能系统指针（interaction 交互状态等系统级接口用）
+     */
+    FeatureSystem* featureSystem() const { return feature_system_; }
+
     // 功能上下文 provider 的后端实现，由 QModelManager 注入 FeatureSystem
     std::optional<Index> activeModel() const;
     std::optional<Index> activeComponent() const;
