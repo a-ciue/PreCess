@@ -42,7 +42,6 @@ public:
     vtkProp& getSolidActor();
     vtkProp& getFaceActor();
     vtkProp& getEdgeActor();
-    vtkProp& getBlockActor();
 
     bool isVisible() const;
 

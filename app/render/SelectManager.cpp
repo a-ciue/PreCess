@@ -21,7 +21,7 @@ SelectManager::SelectManager(vtkRenderer& renderer,
 
 SelectManager::~SelectManager() = default;
 
-static bool is_mesh_mode(SelectMode m) { return m >= SelectMode::Vertex && m <= SelectMode::Block; }
+static bool is_mesh_mode(SelectMode m) { return m >= SelectMode::Vertex && m <= SelectMode::Solid; }
 static bool is_geom_mode(SelectMode m) { return m >= SelectMode::GeometryVertex && m <= SelectMode::GeometrySolid; }
 
 void SelectManager::select(double posx, double posy)
@@ -45,8 +45,6 @@ void SelectManager::setSelectMode(const std::string& select_mode)
         mode = SelectMode::Face;
     } else if (select_mode == "Edge") {
         mode = SelectMode::Edge;
-    } else if (select_mode == "Block") {
-        mode = SelectMode::Block;
     } else if (select_mode == "Solid") {
         mode = SelectMode::Solid;
     } else if (select_mode == "GeometryVertex") {

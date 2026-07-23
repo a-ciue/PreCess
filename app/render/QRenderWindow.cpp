@@ -323,7 +323,7 @@ void QRenderWindow::onModelChanged(Index model_id)
         for (Index component_id : component_ids) {
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
-                vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
+                vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_);
             }
 
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
@@ -347,7 +347,7 @@ void QRenderWindow::onComponentChanged(Index component_id)
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
-                vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_, ModelRenderMode::Face);
+                vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_);
             } else {
                 vtk->mesh_actor_manager_->deleteComponent(component_id);
             }
@@ -501,29 +501,7 @@ void QRenderWindow::setScaleBarVisible(bool on)
     dispatch_async([on](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->scale_bar_axis_->SetVisibility(on);
-    });
-}
-
-void QRenderWindow::setRenderMode(Index model_id, QString render_mode)
-{
-
-    dispatch_async([model_id, render_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        auto component_ids = model_query_->getComponentIds(model_id);
-
-        if (render_mode == "Face") {
-            for (Index component_id : component_ids) {
-                vtk->mesh_actor_manager_->setRenderMode(component_id, ModelRenderMode::Face);
-            }
-        } else if (render_mode == "Block") {
-            for (Index component_id : component_ids) {
-                vtk->mesh_actor_manager_->setRenderMode(component_id, ModelRenderMode::Block);
-            }
-        } else {
-            qWarning() << "render mode error!";
-        }
-    });
+        });
 }
 
 void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
