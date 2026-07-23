@@ -48,7 +48,6 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     info->name = meta_data.name;
     info->display_name = meta_data.display_name;
     info->description = meta_data.description;
-    info->result_display = meta_data.result_display;
     info->interactive = meta_data.interactive;
     info->arg_types = registrar.argTypes();
     info->menus = registrar.menuItems();

@@ -244,21 +244,19 @@ TEST_CASE("FeatureSystem re-registering same name replaces old handler", "[Featu
     REQUIRE(system.getFeatureInfos().size() == 1);
 }
 
-TEST_CASE("FeatureSystem propagates result_display and interactive metadata to FeatureInfo", "[FeatureSystem]")
+TEST_CASE("FeatureSystem propagates interactive metadata to FeatureInfo", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
     FeatureSystem system(model_layer, bus);
 
     auto meta_data = makeMetaData();
-    meta_data.result_display = "popup";
     meta_data.interactive = true;
     FeatureSystem::SystemHandlerPtr handler { new FakeFeatureHandler };
     REQUIRE(system.registerHandler(meta_data, std::move(handler)));
 
     auto infos = system.getFeatureInfos();
     REQUIRE(infos.size() == 1);
-    REQUIRE(infos[0]->result_display == "popup");
     REQUIRE(infos[0]->interactive);
 
     // 未声明时为空串与 false
@@ -270,7 +268,6 @@ TEST_CASE("FeatureSystem propagates result_display and interactive metadata to F
     REQUIRE(infos.size() == 2);
     for (const FeatureInfo* info : infos) {
         if (info->name == "PlainFeature") {
-            REQUIRE(info->result_display.empty());
             REQUIRE_FALSE(info->interactive);
         }
     }
