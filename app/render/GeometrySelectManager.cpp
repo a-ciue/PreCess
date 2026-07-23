@@ -111,11 +111,6 @@ void GeometrySelectManager::clearSelection()
     highlight_data_->Initialize();
 }
 
-void GeometrySelectManager::setVertexSnapActive(bool on)
-{
-    op_->setShapePickerMode(on ? SelectMode::GeometryVertex : SelectMode::None);
-}
-
 std::optional<std::pair<Index, std::array<double, 3>>> GeometrySelectManager::snapGeometryVertex(double posx, double posy)
 {
     if (picker_->Pick(posx, posy, 0.0, renderer_) <= 0) {

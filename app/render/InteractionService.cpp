@@ -148,19 +148,19 @@ systems::interaction::InteractionState* InteractionService::syncState()
     if (state == current_)
         return current_;
 
-    // 旧状态下线：on_deactivate、清产出与标注、还原几何吸附
+    // 旧状态下线：on_deactivate、清产出与标注、还原选择模式为 None
     if (current_) {
         if (current_->on_deactivate)
             current_->on_deactivate();
         current_->clearSession();
         clearActors();
-        select_manager_->setVertexSnapActive(false);
+        select_manager_->setSelectMode("None");
         emitResult(); // clearSession 后为空串
     }
-    // 新状态上线：几何吸附切顶点模式、on_activate、刷新标注与结果
+    // 新状态上线：选择模式切到几何顶点、on_activate、刷新标注与结果
     current_ = state;
     if (current_) {
-        select_manager_->setVertexSnapActive(true);
+        select_manager_->setSelectMode("GeometryVertex");
         if (current_->on_activate)
             current_->on_activate();
         refreshAnnotations();

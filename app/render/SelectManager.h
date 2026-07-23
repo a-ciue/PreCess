@@ -31,8 +31,6 @@ public:
      * @param angle_deg 相邻面法向夹角阈值，单位为度
      */
     void setFaceSelectionByAngle(bool enabled, double angle_deg);
-    //! @brief 进入/退出几何顶点吸附模式（转发给几何选择管理器，交互服务用）
-    void setVertexSnapActive(bool on);
     //! @brief 吸附几何顶点：命中返回 {GeometryRegistry 顶点 id, 世界坐标}（转发给几何选择管理器）
     std::optional<std::pair<Index, std::array<double, 3>>> snapGeometryVertex(double posx, double posy);
     void clearSelection();
