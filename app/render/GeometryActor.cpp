@@ -96,10 +96,9 @@ static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* pd, const OccSh
     return nullptr;
 }
 
-GeometryActor::GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode)
+GeometryActor::GeometryActor(vtkRenderer* renderer)
 {
     this->renderer_ = renderer;
-    this->render_mode_ = render_mode;
     this->edge_render = false;
     this->visibility_ = true;
 }
@@ -107,11 +106,6 @@ GeometryActor::GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mo
 GeometryActor::~GeometryActor()
 {
     deleteGeometryActor();
-}
-
-GeometryRenderMode GeometryActor::getGeometryRenderMode()
-{
-    return this->render_mode_;
 }
 
 bool GeometryActor::getIsEdgeRender()
@@ -238,10 +232,6 @@ void GeometryActor::setVisibility(bool visibility)
 bool GeometryActor::isVisible() const
 {
     return visibility_;
-}
-
-void GeometryActor::setRenderMode(GeometryRenderMode render_mode)
-{
 }
 
 void GeometryActor::setRenderEdge(bool is_render)

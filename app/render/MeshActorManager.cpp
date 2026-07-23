@@ -61,11 +61,11 @@ bool MeshActorManager::hasComponent(Index component_id) const
     return this->component_actors_.count(component_id) != 0;
 }
 
-void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_data, vtkRenderer* renderer, ModelRenderMode render_mode)
+void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_data, vtkRenderer* renderer)
 {
     if (!this->component_actors_.count(component_id))
         this->component_actors_[component_id] = std::make_shared<MeshActor>(
-            renderer, global_points_, true, ModelRenderMode::Face);
+            renderer, global_points_, true);
 
     if (scalar_bar_component_id_ == component_id) {
         scalar_bar_->SetVisibility(false);
@@ -73,7 +73,6 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
     }
     auto& actor = this->component_actors_[component_id];
     actor->loadModelData(model_data);
-    actor->setRenderMode(render_mode);
     op_.registerProps(component_id, actor);
 }
 
@@ -81,12 +80,6 @@ void MeshActorManager::setVisibility(Index component_id, bool visibility)
 {
     if (this->component_actors_.count(component_id))
         this->component_actors_[component_id]->setVisibility(visibility);
-}
-
-void MeshActorManager::setRenderMode(Index component_id, ModelRenderMode render_mode)
-{
-    if (this->component_actors_.count(component_id))
-        this->component_actors_[component_id]->setRenderMode(render_mode);
 }
 
 void MeshActorManager::setRenderEdge(Index component_id, bool is_render)
@@ -113,14 +106,6 @@ bool MeshActorManager::getIsEdgeRender(Index component_id)
     if (this->component_actors_.count(component_id))
         return this->component_actors_[component_id]->getIsEdgeRender();
     return false;
-}
-
-ModelRenderMode MeshActorManager::getMeshRenderMode(Index component_id)
-{
-    if (this->component_actors_.count(component_id))
-        return this->component_actors_[component_id]->getMeshRenderMode();
-
-    return ModelRenderMode::Face;
 }
 
 void MeshActorManager::setAttriMode(

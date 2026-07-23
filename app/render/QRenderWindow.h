@@ -108,12 +108,6 @@ public:
     Q_INVOKABLE void setScaleBarVisible(bool on);
 
     /**
-     * @brief 改变渲染模式
-     * @param select_mode
-     */
-    Q_INVOKABLE void setRenderMode(Index model_id, QString render_mode);
-
-    /**
      * @brief 边渲染
      * @param select_mode
      */
@@ -191,7 +185,6 @@ signals:
 
 private:
     bool edge_render_ {};
-    ModelRenderMode renderMode_ {};
 
     vtkNew<vtkCamera> _camera;
 

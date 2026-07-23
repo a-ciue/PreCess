@@ -99,10 +99,10 @@ int main(int argc, char* argv[])
     }
 
     // 创建 MeshActor
-    std::shared_ptr<MeshActor> meshActor = std::make_shared<MeshActor>(renderer, pts, true, ModelRenderMode::Face);
+    std::shared_ptr<MeshActor> meshActor = std::make_shared<MeshActor>(renderer, pts, true);
     meshActor->loadModelData(test_mesh_data);
 
-    std::shared_ptr<MeshActor> meshActor2 = std::make_shared<MeshActor>(renderer, pts2, true, ModelRenderMode::Face);
+    std::shared_ptr<MeshActor> meshActor2 = std::make_shared<MeshActor>(renderer, pts2, true);
     meshActor2->loadModelData(test_mesh_data2);
     // 按键交互逻辑
     vtkSmartPointer<vtkCallbackCommand> key_press_callback = vtkSmartPointer<vtkCallbackCommand>::New();

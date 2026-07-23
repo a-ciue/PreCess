@@ -25,17 +25,6 @@ std::shared_ptr<GeometryActor> GeometryActorManager::getComponentActor(Index com
     return nullptr;
 }
 
-GeometryRenderMode GeometryActorManager::getGeometryRenderMode(Index component_id)
-{
-    auto it = component_actors_.find(component_id);
-    if (it != component_actors_.end()) {
-        return it->second->getGeometryRenderMode();
-    }
-
-    spdlog::error("get geometry render mode error");
-    return GeometryRenderMode::Face;
-}
-
 bool GeometryActorManager::getIsEdgeRender(Index component_id)
 {
     auto it = component_actors_.find(component_id);
@@ -66,7 +55,7 @@ void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
     Index component_id = geometry_data.component_id;
 
     if (!component_actors_.count(component_id)) {
-        component_actors_[component_id] = std::make_shared<GeometryActor>(this->renderer_, GeometryRenderMode::Face);
+        component_actors_[component_id] = std::make_shared<GeometryActor>(this->renderer_);
     }
 
     auto& actor_ptr = component_actors_[component_id];
@@ -80,14 +69,6 @@ void GeometryActorManager::setVisibility(Index component_id, bool visibility)
     if (it != component_actors_.end()) {
         it->second->setVisibility(visibility);
         op_.setShapePickingEnabled(it->second, visibility);
-    }
-}
-
-void GeometryActorManager::setRenderMode(Index component_id, GeometryRenderMode render_mode)
-{
-    auto it = component_actors_.find(component_id);
-    if (it != component_actors_.end()) {
-        it->second->setRenderMode(render_mode);
     }
 }
 

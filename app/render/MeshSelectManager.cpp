@@ -114,9 +114,6 @@ SelectorHighlight* MeshSelectManager::getOrCreateSelector(Index component_id)
     case SelectMode::Vertex:
         sel = std::make_unique<VertexSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
         break;
-    case SelectMode::Block:
-        sel = std::make_unique<BlockSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
-        break;
     default:
         return nullptr;
     }

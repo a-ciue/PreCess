@@ -40,8 +40,7 @@ public:
     MeshActor(
         vtkRenderer* renderer,
         vtkPoints* global_points,
-        bool is_edge_render = true,
-        ModelRenderMode render_mode = ModelRenderMode::Face);
+        bool is_edge_render = true);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -54,11 +53,8 @@ public:
      */
     void setClipPlane(vtkPlane* plane);
     void setRenderEdge(bool is_render);
-    void setRenderMode(ModelRenderMode render_mode);
 
     bool getIsEdgeRender();
-
-    ModelRenderMode getMeshRenderMode();
     /**
      * @brief 取消属性渲染
      */
@@ -81,7 +77,6 @@ public:
 
 private:
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
-    ModelRenderMode render_mode_;
     bool edge_render_ { true };
     bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
@@ -116,13 +111,9 @@ private:
 
     vtkRenderer* renderer_;
 
-    vtkNew<vtkActor> actor_;
-
     vtkPoints* global_points_ {};
     vtkNew<vtkIdTypeArray> original_point_ids_;
 
-    vtkNew<vtkCompositePolyDataMapper> block_mapper_;
-    void createBlockMapper(const MeshDataVtk& model_data);
     static void _createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data);
 };
 #endif // MODEL_ACTOR_H

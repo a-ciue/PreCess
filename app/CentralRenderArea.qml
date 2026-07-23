@@ -31,19 +31,6 @@ Page {
                 }
             }
             ToolButton {
-                text: "块渲染"
-                checkable: true
-                Layout.preferredWidth: 50
-                Layout.fillHeight: true
-                onClicked: {
-                    if (checked) {
-                        myItem.setRenderMode(App.selection.activeModelId, "Block")
-                    } else {
-                        myItem.setRenderMode(App.selection.activeModelId, "Face")
-                    }
-                }
-            }
-            ToolButton {
                 text: "裁剪"
                 checkable: true
                 Layout.preferredWidth: 50

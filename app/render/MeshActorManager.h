@@ -17,16 +17,14 @@ public:
     std::shared_ptr<MeshActor> getComponentActor(Index component_id) const;
     void deleteComponent(Index component_id);
     void loadMesh(Index component_id, const MeshDataVtk& model_data,
-        vtkRenderer* renderer, ModelRenderMode render_mode = ModelRenderMode::Face);
+        vtkRenderer* renderer);
 
     void setVisibility(Index component_id, bool visibility);
-    void setRenderMode(Index component_id, ModelRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
     void setClipPlane(vtkPlane* plane);
 
     bool getCount(Index component_id);
     bool getIsEdgeRender(Index component_id);
-    ModelRenderMode getMeshRenderMode(Index component_id);
 
     void setAttriMode(
         Index component_id,

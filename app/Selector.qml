@@ -25,6 +25,7 @@ RowLayout {
         id: selectModeComboBox
         model: [
             { text: "...", value: "None" },
+            { text: "组件", value: "Component" },
             { text: "点", value: "Vertex" },
             { text: "边", value: "Edge" },
             { text: "面", value: "Face" },
@@ -33,7 +34,6 @@ RowLayout {
             { text: "几何边", value: "GeometryEdge" },
             { text: "几何面", value: "GeometryFace" },
             { text: "几何体", value: "GeometrySolid" },
-            { text: "组件", value: "Component" }
         ]
         textRole: "text"
         valueRole: "value"
