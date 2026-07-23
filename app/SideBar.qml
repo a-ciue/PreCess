@@ -50,12 +50,7 @@ Item{
         height: 30
         onClicked:{
             if (root.activeOp && root.activeOp.execute) {
-                var r = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
-                // 结果路由由插件声明的 result_display 决定：popup 走弹窗，其余走侧栏
-                if (root.activeOp.info && root.activeOp.info.result_display === "popup")
-                    App.showDialog(root.activeOp.info.display_name + "结果", r)
-                else
-                    root.resultText = r
+                root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
             }
             if (App.registry.renderWindow)
                 App.registry.renderWindow.clearSelection()
@@ -71,8 +66,7 @@ Item{
         readOnly: true
         text: root.resultText
         wrapMode: TextEdit.Wrap
-        // 声明 popup 的插件结果走弹窗，侧栏结果区只服务其余算法
-        visible: text.length > 0 && !(root.activeOp && root.activeOp.info && root.activeOp.info.result_display === "popup")
+        visible: text.length > 0
         background: Rectangle {
             color: "#f0f0f0"
             border.color: "#d0d0d0"
