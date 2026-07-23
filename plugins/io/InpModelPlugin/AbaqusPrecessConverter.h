@@ -2,7 +2,6 @@
 
 #include "MeshData.h"
 #include "abaqus_io.h"
-#include <iostream>
 #include <map>
 #include <vector>
 
@@ -27,22 +26,7 @@ const unsigned char PENTAGONAL_PRISM = 16;
 }
 
 // Map from meshio cell type to VTK cell type
-static std::map<std::string, unsigned char> meshio_to_vtk_type = {
-    { "line", VTK::LINE },
-    { "line3", VTK::POLY_LINE },
-    { "triangle", VTK::TRIANGLE },
-    { "triangle6", VTK::POLYGON },
-    { "quad", VTK::QUAD },
-    { "quad8", VTK::POLYGON },
-    { "quad9", VTK::POLYGON },
-    { "tetra", VTK::TETRA },
-    { "tetra4", VTK::TETRA },
-    { "tetra10", VTK::TETRA },
-    { "hexahedron", VTK::HEXAHEDRON },
-    { "hexahedron20", VTK::HEXAHEDRON },
-    { "wedge", VTK::WEDGE },
-    { "wedge15", VTK::WEDGE }
-};
+extern const std::map<std::string, unsigned char> meshio_to_vtk_type;
 
 /**
  * @brief Convert abaqus_io Mesh structure to MeshData structure

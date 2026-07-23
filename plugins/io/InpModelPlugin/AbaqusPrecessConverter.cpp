@@ -2,6 +2,25 @@
 
 #include <algorithm>
 #include <unordered_map>
+#include <spdlog/spdlog.h>
+
+const std::map<std::string, unsigned char> meshio_to_vtk_type = {
+    { "line", VTK::LINE },
+    { "line3", VTK::POLY_LINE },
+    { "triangle", VTK::TRIANGLE },
+    { "triangle6", VTK::POLYGON },
+    { "quad", VTK::QUAD },
+    { "quad8", VTK::POLYGON },
+    { "quad9", VTK::POLYGON },
+    { "tetra", VTK::TETRA },
+    { "tetra4", VTK::TETRA },
+    { "tetra10", VTK::TETRA },
+    { "hexahedron", VTK::HEXAHEDRON },
+    { "hexahedron20", VTK::HEXAHEDRON },
+    { "wedge", VTK::WEDGE },
+    { "wedge15", VTK::WEDGE }
+};
+
 void convert_abaqus_to_meshdata(const Mesh_meshIO& abaqus_mesh, MeshData& mesh_data)
 {
     mesh_data.init();
@@ -35,7 +54,7 @@ void convert_abaqus_to_meshdata(const Mesh_meshIO& abaqus_mesh, MeshData& mesh_d
         const std::string& cell_type = cell_block.type;
         auto vtk_it = meshio_to_vtk_type.find(cell_type);
         if (vtk_it == meshio_to_vtk_type.end()) {
-            std::cerr << "Warning: Unknown cell type '" << cell_type << "', skipping." << std::endl;
+            spdlog::warn("AbaqusPrecessConverter: Unknown cell type '{}', skipping.", cell_type);
             continue;
         }
         unsigned char vtk_type = vtk_it->second;
@@ -84,13 +103,11 @@ void convert_abaqus_to_meshdata(const Mesh_meshIO& abaqus_mesh, MeshData& mesh_d
             }
         }
     }
-    /*
-    std::cout << "Conversion completed:" << std::endl;
-    std::cout << "  Vertices: " << mesh_data.vertex_positions_.size() << std::endl;
-    std::cout << "  Faces: " << mesh_data.face_vertices_offset_.size() - 1 << std::endl;
-    std::cout << "  Edges: " << mesh_data.edge_vertices_.size() / 2 << std::endl;
-    std::cout << "  Solids: " << mesh_data.solid_vertices_offset_.size() - 1 << std::endl;
-    */
+    spdlog::debug("AbaqusPrecessConverter: conversion completed - Vertices={}, Faces={}, Edges={}, Solids={}",
+                  mesh_data.vertex_positions_.size(),
+                  mesh_data.face_vertices_offset_.size() - 1,
+                  mesh_data.edge_vertices_.size() / 2,
+                  mesh_data.solid_vertices_offset_.size() - 1);
 }
 
 std::string meshio_type_from_vtk(unsigned char vtk_type)
