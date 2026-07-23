@@ -82,7 +82,7 @@ public:
     void OnLeftButtonUp() override
     {
         int* pos = this->GetInteractor()->GetEventPosition();
-        if (service_ && service_->isActive()) {
+        if (service_ && service_->hasActiveState()) {
             service_->pick(pos[0], pos[1]);
             this->GetInteractor()->Render();
         }
@@ -92,7 +92,7 @@ public:
     void OnMouseMove() override
     {
         vtkInteractorStyleTrackballCamera::OnMouseMove();
-        if (service_ && service_->isActive() && this->State == VTKIS_NONE) {
+        if (service_ && service_->hasActiveState() && this->State == VTKIS_NONE) {
             int* pos = this->GetInteractor()->GetEventPosition();
             service_->hover(pos[0], pos[1]);
             this->GetInteractor()->Render();
@@ -172,17 +172,25 @@ int main(int argc, char* argv[])
         emitted_texts.push_back(text);
     };
 
-    // ---- 生命周期：start 激活 ----
-    service.start(&fake.state);
+    // 交互状态经 provider 提供：开关开启前无激活状态，pick 不转发
+    bool interaction_enabled = false;
+    service.state_provider = [&]() -> systems::interaction::InteractionState* {
+        return interaction_enabled ? &fake.state : nullptr;
+    };
     style->SetInteractionService(&service);
-    check(fake.activate_count == 1, "start() 调用 onActivate 一次");
-    check(service.isActive(), "start() 后服务处于激活态");
 
     renderer->ResetCamera();
     renderWindow->Render();
 
-    // ---- 网格顶点拾取：PickInfo 有效且含全局顶点 id ----
+    check(!service.hasActiveState(), "开关关闭时无激活交互");
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]);
+    check(fake.picks.empty(), "无激活状态时 pick 不转发");
+
+    // 开启开关：首次 pick 触发上线（on_activate + 几何吸附切换）
+    interaction_enabled = true;
+    check(service.hasActiveState(), "开关开启后存在激活交互");
+    pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]);
+    check(fake.activate_count == 1, "上线时调用 onActivate 一次");
     renderWindow->Render();
     check(fake.picks.size() == 1, "命中网格顶点后 onPick 被调用一次");
     if (!fake.picks.empty()) {
@@ -197,7 +205,6 @@ int main(int argc, char* argv[])
 
     // ---- 悬停转发 ----
     const int hover_before = fake.hover_count;
-    pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]); // 第二次点击同一顶点
     double display[3];
     vtkInteractorObserver::ComputeWorldToDisplay(renderer.GetPointer(),
         mesh.vertex_positions_[1][0], mesh.vertex_positions_[1][1], mesh.vertex_positions_[1][2], display);
@@ -242,11 +249,12 @@ int main(int argc, char* argv[])
         }
     }
 
-    // ---- 生命周期：stop 停用并清空结果 ----
-    service.stop();
-    check(fake.deactivate_count == 1, "stop() 调用 onDeactivate 一次");
-    check(!service.isActive(), "stop() 后服务退出激活态");
-    check(!emitted_texts.empty() && emitted_texts.back().empty(), "stop() 后转发空结果文本");
+    // ---- 生命周期：关闭开关触发下线（on_deactivate + 清空产出）----
+    interaction_enabled = false;
+    pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]); // 驱动一次 syncState
+    check(fake.deactivate_count == 1, "下线时调用 onDeactivate 一次");
+    check(!service.hasActiveState(), "开关关闭后无激活交互");
+    check(!emitted_texts.empty() && emitted_texts.back().empty(), "下线后转发空结果文本");
 
     spdlog::info("==== InteractionService self-check: {} ====",
         g_failures == 0 ? "ALL PASS" : "HAS FAILURES");

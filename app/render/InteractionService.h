@@ -27,9 +27,10 @@ struct InteractionState;
 /**
  * @brief 通用视口交互服务
  *
- * start 某个 InteractionState 后，将左键/悬停解析为 PickInfo 调用其回调，
- * 并按其 annotations 统一绘制标注（点/实线/虚线/叠加层文本）。
- * 与选择系统的互斥由 QRenderWindowStyle 按 isActive() 路由；
+ * 经 state_provider 获取当前激活的 InteractionState（FeatureSystem::activeInteraction），
+ * 将左键/悬停解析为 PickInfo 调用其回调，并按其 annotations 统一绘制标注。
+ * 无会话概念：激活状态迁移（功能参数开关驱动）在 pick/hover 入口自动同步。
+ * 与选择系统的互斥由 QRenderWindowStyle 按 hasActiveState() 路由；
  * 几何顶点吸附经 SelectManager 封装接口完成，不直接接触 picker。
  */
 class InteractionService {
@@ -38,27 +39,29 @@ public:
         MeshActorManagerSelectOp& mesh_op, SelectManager& select_manager);
     ~InteractionService();
 
-    //! @brief 启动某个交互状态（几何吸附切到顶点模式，on_activate 后刷新标注）
-    void start(systems::interaction::InteractionState* state);
-    //! @brief 停止交互（on_deactivate、还原几何吸附模式、清空标注与结果）
-    void stop();
-    bool isActive() const { return state_ != nullptr; }
-
-    //! @brief 左键点击：解析吸附点并调用 on_pick 回调
-    void pick(double posx, double posy);
-    //! @brief 悬停：调用 on_hover 回调做动态预览
-    void hover(double posx, double posy);
-    //! @brief 面板"清除"：调用 on_clear 回调并刷新标注与结果
-    void clear();
-
+    //! @brief 交互状态提供者（由 QRenderWindow 注入，转发 FeatureSystem::activeInteraction）
+    std::function<systems::interaction::InteractionState*()> state_provider;
     //! @brief 结果文本变化回调（由 QRenderWindow 设置为发 Qt 信号），渲染线程内触发
     std::function<void(const std::string&)> onResultChanged;
 
+    //! @brief 当前是否存在激活的交互（鼠标路由用）
+    bool hasActiveState() { return state_provider && state_provider() != nullptr; }
+
+    //! @brief 左键点击：同步激活状态，解析吸附点并调用 on_pick 回调
+    void pick(double posx, double posy);
+    //! @brief 悬停：同步激活状态，调用 on_hover 回调做动态预览
+    void hover(double posx, double posy);
+    //! @brief 面板"清除"：调用当前状态的 on_clear 回调并刷新标注与结果
+    void clear();
+
 private:
+    //! @brief 同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）
+    systems::interaction::InteractionState* syncState();
     //! @brief 网格顶点优先、几何顶点兜底的吸附解析；命中时 out.valid 置 true
     bool snapToPickInfo(double posx, double posy, systems::interaction::PickInfo& out);
     //! @brief 拉取标注集并刷新全部 actor
     void refreshAnnotations();
+    void clearActors();
     void emitResult();
 
     vtkRenderer* renderer_ {};
@@ -66,7 +69,7 @@ private:
     MeshActorManagerSelectOp* mesh_op_ {};
     SelectManager* select_manager_ {};
 
-    systems::interaction::InteractionState* state_ {};
+    systems::interaction::InteractionState* current_ {}; //> 当前已上线的交互状态
 
     vtkSmartPointer<vtkHardwarePicker> mesh_picker_;
 

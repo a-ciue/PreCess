@@ -156,6 +156,11 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     interaction_service_ = std::make_unique<InteractionService>(*vtk->renderer_, *vtk->overlay_renderer_,
         vtk->mesh_actor_manager_->op(), *select_manager_);
     vtk->style_->SetInteractionService(interaction_service_.get());
+    // 交互状态由功能参数开关驱动（FeatureSystem::activeInteraction），渲染层随取随用
+    interaction_service_->state_provider = [this]() -> systems::interaction::InteractionState* {
+        auto* feature_system = feature_adaptor_ ? feature_adaptor_->featureSystem() : nullptr;
+        return feature_system ? feature_system->activeInteraction() : nullptr;
+    };
     interaction_service_->onResultChanged = [this](const std::string& text) {
         emit interactionUpdated(QString::fromStdString(text));
     };
@@ -510,30 +515,6 @@ void QRenderWindow::clearSelection()
 void QRenderWindow::setFeatureAdaptor(QObject* adaptor)
 {
     feature_adaptor_ = qobject_cast<systems::feature::QFeatureSystemAdaptor*>(adaptor);
-}
-
-void QRenderWindow::startInteraction(QString name)
-{
-    dispatch_async([name, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        systems::interaction::InteractionState* state = nullptr;
-        if (auto* feature_system = feature_adaptor_ ? feature_adaptor_->featureSystem() : nullptr) {
-            state = feature_system->interaction(name.toStdString());
-        }
-        if (!state) {
-            spdlog::error("QRenderWindow::startInteraction: {} 未声明视口交互能力", name.toStdString());
-            return;
-        }
-        // 交互与选择互斥，避免点击被两边同时处理
-        this->select_manager_->setSelectMode("None");
-        interaction_service_->start(state);
-    });
-}
-
-void QRenderWindow::stopInteraction()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        interaction_service_->stop();
-    });
 }
 
 void QRenderWindow::clearInteraction()

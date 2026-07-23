@@ -21,6 +21,7 @@ namespace systems::interaction {
  * - 注册先行、调用在后，会话启停与选择系统的互斥由 UI 层保证（同原 InteractiveHandler 约定）。
  */
 struct InteractionState {
+    bool active = false; //> 交互激活态：功能经 setActive 写入（GUI 线程），渲染层读取路由拾取
     std::function<void()> on_activate; //> 交互会话开始（通常清空功能内部状态）
     std::function<void()> on_deactivate; //> 交互会话结束
     std::function<void()> on_clear; //> 面板"清除"按钮：清空当前会话状态

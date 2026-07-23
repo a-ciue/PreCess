@@ -43,6 +43,18 @@ public:
     //! @brief 设置面板结果文本（无结果设为空串）
     void setResultText(std::string text) { state_->result_text = std::move(text); }
 
+    //! @brief 设置本功能交互激活态（单激活：激活自己时会先下线其他功能的交互）
+    void setActive(bool on)
+    {
+        if (on && deactivate_others_) {
+            deactivate_others_();
+        }
+        state_->active = on;
+    }
+
+    //! @brief 由 FeatureSystem 装配时注入：激活本功能前下线其他功能的交互（单激活约定）
+    std::function<void()> deactivate_others_;
+
 private:
     systems::interaction::InteractionState* state_;
 };

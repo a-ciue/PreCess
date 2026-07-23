@@ -142,35 +142,71 @@ InteractionService::~InteractionService()
     }
 }
 
-void InteractionService::start(systems::interaction::InteractionState* state)
+systems::interaction::InteractionState* InteractionService::syncState()
 {
-    if (state_ == state)
-        return;
-    if (state_)
-        stop();
-    state_ = state;
-    if (!state_)
-        return;
+    auto* state = state_provider ? state_provider() : nullptr;
+    if (state == current_)
+        return current_;
 
-    // 交互时几何吸附切到顶点模式，停止时还原（经选择系统封装，不接触 picker）
-    select_manager_->setVertexSnapActive(true);
-    if (state_->on_activate)
-        state_->on_activate();
+    // 旧状态下线：on_deactivate、清产出与标注、还原几何吸附
+    if (current_) {
+        if (current_->on_deactivate)
+            current_->on_deactivate();
+        current_->clearSession();
+        clearActors();
+        select_manager_->setVertexSnapActive(false);
+        emitResult(); // clearSession 后为空串
+    }
+    // 新状态上线：几何吸附切顶点模式、on_activate、刷新标注与结果
+    current_ = state;
+    if (current_) {
+        select_manager_->setVertexSnapActive(true);
+        if (current_->on_activate)
+            current_->on_activate();
+        refreshAnnotations();
+        emitResult();
+    }
+    return current_;
+}
+
+void InteractionService::pick(double posx, double posy)
+{
+    auto* state = syncState();
+    if (!state)
+        return;
+    PickInfo info;
+    if (!snapToPickInfo(posx, posy, info))
+        return;
+    if (state->on_pick && state->on_pick(info)) {
+        refreshAnnotations();
+        emitResult();
+    }
+}
+
+void InteractionService::hover(double posx, double posy)
+{
+    auto* state = syncState();
+    if (!state)
+        return;
+    PickInfo info;
+    snapToPickInfo(posx, posy, info); // 未命中时 valid=false，由回调方清预览
+    if (state->on_hover && state->on_hover(info)) {
+        refreshAnnotations();
+    }
+}
+
+void InteractionService::clear()
+{
+    if (!current_)
+        return;
+    if (current_->on_clear)
+        current_->on_clear();
     refreshAnnotations();
     emitResult();
 }
 
-void InteractionService::stop()
+void InteractionService::clearActors()
 {
-    if (!state_)
-        return;
-    if (state_->on_deactivate)
-        state_->on_deactivate();
-    state_->clearSession();
-    state_ = nullptr;
-    select_manager_->setVertexSnapActive(false);
-
-    // 清空全部标注
     points_poly_->Initialize();
     lines_poly_->Initialize();
     dashed_poly_->Initialize();
@@ -179,47 +215,12 @@ void InteractionService::stop()
     dashed_actor_->SetVisibility(false);
     for (auto& t : text_pool_)
         t->SetVisibility(false);
-    emitResult();
-}
-
-void InteractionService::pick(double posx, double posy)
-{
-    if (!state_)
-        return;
-    PickInfo info;
-    if (!snapToPickInfo(posx, posy, info))
-        return;
-    if (state_->on_pick && state_->on_pick(info)) {
-        refreshAnnotations();
-        emitResult();
-    }
-}
-
-void InteractionService::hover(double posx, double posy)
-{
-    if (!state_)
-        return;
-    PickInfo info;
-    snapToPickInfo(posx, posy, info); // 未命中时 valid=false，由回调方清预览
-    if (state_->on_hover && state_->on_hover(info)) {
-        refreshAnnotations();
-    }
-}
-
-void InteractionService::clear()
-{
-    if (!state_)
-        return;
-    if (state_->on_clear)
-        state_->on_clear();
-    refreshAnnotations();
-    emitResult();
 }
 
 void InteractionService::emitResult()
 {
     if (onResultChanged)
-        onResultChanged(state_ ? state_->result_text : std::string());
+        onResultChanged(current_ ? current_->result_text : std::string());
 }
 
 bool InteractionService::snapToPickInfo(double posx, double posy, PickInfo& out)
@@ -258,7 +259,7 @@ bool InteractionService::snapToPickInfo(double posx, double posy, PickInfo& out)
 
 void InteractionService::refreshAnnotations()
 {
-    const AnnotationBatch* batch = state_ ? &state_->annotations : nullptr;
+    const AnnotationBatch* batch = current_ ? &current_->annotations : nullptr;
 
     // 端点：全部标注点
     vtkNew<vtkPoints> pts;

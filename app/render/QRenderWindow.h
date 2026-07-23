@@ -106,24 +106,13 @@ public:
     Q_INVOKABLE void clearSelection();
 
     /**
-     * @brief 注入功能系统适配器（启动交互时按功能名获取 InteractionState）
+     * @brief 注入功能系统适配器（交互服务经 FeatureSystem::activeInteraction 获取激活的交互状态）
      * @param adaptor QModelManager.featureSystem
      */
     Q_INVOKABLE void setFeatureAdaptor(QObject* adaptor);
 
     /**
-     * @brief 启动指定功能的视口交互（与选择互斥，进入时会清空选择模式）
-     * @param name 功能唯一名称（须声明 interactive 交互能力）
-     */
-    Q_INVOKABLE void startInteraction(QString name);
-
-    /**
-     * @brief 停止当前视口交互并清空标注
-     */
-    Q_INVOKABLE void stopInteraction();
-
-    /**
-     * @brief 清空当前交互处理器的状态与视图内标注
+     * @brief 清空当前交互状态与视图内标注（面板"清除"按钮）
      */
     Q_INVOKABLE void clearInteraction();
 

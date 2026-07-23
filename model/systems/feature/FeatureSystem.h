@@ -92,11 +92,10 @@ public:
      */
     const FeatureParams* params(const std::string& unique_name) const;
     /**
-     * @brief 按唯一名称获取功能的视口交互状态（渲染层据此驱动交互服务）
-     * @param unique_name 功能唯一名称
-     * @return 功能存在且声明 interactive 时返回交互状态指针，否则为 nullptr
+     * @brief 获取当前激活的视口交互状态（渲染层据此路由拾取/悬停）
+     * @return 声明 interactive 且 active 的功能状态；无激活交互时为 nullptr
      */
-    interaction::InteractionState* interaction(const std::string& unique_name);
+    interaction::InteractionState* activeInteraction();
     /**
      * @brief 设置功能信息变更回调函数
      */

@@ -282,41 +282,43 @@ TEST_CASE("FeatureSystem propagates result_display and interactive metadata to F
     }
 }
 
-TEST_CASE("FeatureSystem::interaction returns state only for interactive features", "[FeatureSystem]")
+TEST_CASE("FeatureSystem::activeInteraction tracks interactive activation", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
     FeatureSystem system(model_layer, bus);
 
-    // 未声明 interactive 的功能：取不到交互状态
-    FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
-    REQUIRE(system.registerHandler(makeMetaData(), std::move(plain)));
+    auto make_interactive = [](const std::string& name) {
+        auto meta_data = makeMetaData();
+        meta_data.name = name;
+        meta_data.interactive = true;
+        return meta_data;
+    };
 
-    auto interactive_meta = makeMetaData();
-    interactive_meta.name = "InteractiveFeature";
-    interactive_meta.interactive = true;
-    auto* raw = new FakeFeatureHandler;
-    FeatureSystem::SystemHandlerPtr interactive { raw };
-    REQUIRE(system.registerHandler(interactive_meta, std::move(interactive)));
+    auto* raw1 = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr first { raw1 };
+    REQUIRE(system.registerHandler(make_interactive("FeatureA"), std::move(first)));
+    auto* raw2 = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr second { raw2 };
+    REQUIRE(system.registerHandler(make_interactive("FeatureB"), std::move(second)));
 
-    REQUIRE(system.interaction("FakeFeature") == nullptr);
-    REQUIRE(system.interaction("NoSuchFeature") == nullptr);
-    auto* state = system.interaction("InteractiveFeature");
-    REQUIRE(state != nullptr);
+    // 初始无激活交互
+    REQUIRE(system.activeInteraction() == nullptr);
 
-    // 功能经 interaction 上下文订阅回调、产出标注与结果，渲染层经状态读取
-    REQUIRE(raw->context != nullptr);
-    raw->context->interaction.onPick([](const systems::interaction::PickInfo&) { return true; });
-    raw->context->interaction.setResultText("结果");
-    state->annotations.points.push_back({ { 1.0, 2.0, 3.0 } });
-    REQUIRE(state->on_pick != nullptr);
-    REQUIRE(state->on_pick({}));
-    REQUIRE(state->result_text == "结果");
-    REQUIRE(state->annotations.points.size() == 1);
+    // 功能经 interaction 上下文激活自己后可被查到
+    raw1->context->interaction.setActive(true);
+    auto* active = system.activeInteraction();
+    REQUIRE(active != nullptr);
+    REQUIRE(active->active);
 
-    // 会话清理只清产出、不动订阅
-    state->clearSession();
-    REQUIRE(state->annotations.points.empty());
-    REQUIRE(state->result_text.empty());
-    REQUIRE(state->on_pick != nullptr);
+    // 单激活约定：第二个功能激活时，第一个被自动下线
+    raw2->context->interaction.setActive(true);
+    auto* active2 = system.activeInteraction();
+    REQUIRE(active2 != nullptr);
+    REQUIRE(active2 != active);
+    REQUIRE_FALSE(active->active);
+
+    // 取消激活后回到无激活状态
+    raw2->context->interaction.setActive(false);
+    REQUIRE(system.activeInteraction() == nullptr);
 }

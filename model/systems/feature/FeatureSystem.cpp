@@ -74,6 +74,15 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     });
     entry.info = std::move(info);
 
+    // 注入单激活约定：本功能 setActive(true) 时先下线其他功能的交互
+    entry.interaction_context.deactivate_others_ = [this, feature_name = meta_data.name] {
+        for (auto&& [other_name, other] : entries_) {
+            if (other_name != feature_name) {
+                other.interaction_state.active = false;
+            }
+        }
+    };
+
     // 激活失败则撤掉整个条目，不留下半注册状态
     try {
         handler->activate(*entry.context);
@@ -145,13 +154,14 @@ const FeatureParams* FeatureSystem::params(const std::string& unique_name) const
     return it == entries_.end() ? nullptr : it->second.params.get();
 }
 
-interaction::InteractionState* FeatureSystem::interaction(const std::string& unique_name)
+interaction::InteractionState* FeatureSystem::activeInteraction()
 {
-    auto it = entries_.find(unique_name);
-    if (it == entries_.end() || !it->second.info->interactive) {
-        return nullptr;
+    for (auto&& [feature_name, entry] : entries_) {
+        if (entry.info->interactive && entry.interaction_state.active) {
+            return &entry.interaction_state;
+        }
     }
-    return &it->second.interaction_state;
+    return nullptr;
 }
 
 void FeatureSystem::setOnFeatureInfosChanged(std::function<void()> callback)
