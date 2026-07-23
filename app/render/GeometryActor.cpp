@@ -151,9 +151,8 @@ void GeometryActor::deleteGeometryActor()
 
 void GeometryActor::setVisibility(bool visibility)
 {
-    this->poly_actor_->SetVisibility(visibility);
-    this->line_actor_->SetVisibility(visibility);
     this->visibility_ = visibility;
+    applyStyle();
 }
 
 bool GeometryActor::isVisible() const
@@ -164,5 +163,75 @@ bool GeometryActor::isVisible() const
 void GeometryActor::setRenderEdge(bool is_render)
 {
     this->edge_render = is_render;
-    this->line_actor_->SetVisibility(is_render && this->visibility_);
+    applyStyle();
+}
+
+void GeometryActor::setRenderStyle(GeometryRenderStyle style)
+{
+    this->style_ = style;
+    applyStyle();
+}
+
+GeometryRenderStyle GeometryActor::getRenderStyle() const
+{
+    return style_;
+}
+
+void GeometryActor::applyStyle()
+{
+    if (style_ == GeometryRenderStyle::Hidden || !visibility_) {
+        poly_actor_->SetVisibility(false);
+        line_actor_->SetVisibility(false);
+        return;
+    }
+
+    switch (style_) {
+    case GeometryRenderStyle::SurfaceWithEdges:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(1.0);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Surface:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(1.0);
+        line_actor_->SetVisibility(false);
+        break;
+    case GeometryRenderStyle::Transparent75:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.75);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Transparent50:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.50);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Transparent25:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.25);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::WireframeWithLines:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToWireframe();
+        poly_actor_->GetProperty()->SetOpacity(1.0);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Wireframe:
+        poly_actor_->SetVisibility(false);
+        line_actor_->SetVisibility(true);
+        break;
+    default:
+        break;
+    }
 }

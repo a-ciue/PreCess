@@ -25,6 +25,8 @@ public:
 
     void setVisibility(Index component_id, bool visibility);
     void setRenderEdge(Index component_id, bool is_render);
+    void setCurrentRenderStyle(GeometryRenderStyle style);
+    GeometryRenderStyle getCurrentRenderStyle() const;
 
     GeometryActorManagerSelectOp& op() { return op_; }
     const GeometryActorManagerSelectOp& op() const { return op_; }
@@ -33,5 +35,6 @@ private:
     GeometryActorManagerSelectOp op_{*this};
     std::unordered_map<Index, std::shared_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
+    GeometryRenderStyle current_style_ { GeometryRenderStyle::SurfaceWithEdges };
 };
 #endif

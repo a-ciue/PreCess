@@ -42,6 +42,7 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
     Q_PROPERTY(bool cur_edge_render READ getCurEdgeRender NOTIFY curEdgeRenderChanged)
+    Q_PROPERTY(int geometryStyle READ getGeometryStyle WRITE setGeometryStyle NOTIFY geometryStyleChanged)
     QML_ELEMENT
 public:
     QRenderWindow(); // 槽函数，改变边框重置相机
@@ -133,6 +134,9 @@ public:
     Q_INVOKABLE void setMeshVisibility(Index component_id, bool visibility);
     Q_INVOKABLE void setGeometryVisibility(Index component_id, bool visibility);
 
+    Q_INVOKABLE void setGeometryStyle(int style);
+    int getGeometryStyle();
+
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 
@@ -190,11 +194,13 @@ public:
 signals:
     void selectedChanged();
     void curEdgeRenderChanged();
+    void geometryStyleChanged();
     void clicked();
     void rightClicked();
 
 private:
     bool edge_render_ {};
+    GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
 
     vtkNew<vtkCamera> _camera;
 

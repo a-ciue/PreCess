@@ -29,10 +29,14 @@ public:
     void setVisibility(bool visibility);
     bool isVisible() const;
     void setRenderEdge(bool is_render);
+    void setRenderStyle(GeometryRenderStyle style);
+    GeometryRenderStyle getRenderStyle() const;
 
 private:
     void deleteGeometryActor();
+    void applyStyle();
 
+    GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
     bool edge_render;
     bool visibility_;
     OccShapeHandle occ_shape_;

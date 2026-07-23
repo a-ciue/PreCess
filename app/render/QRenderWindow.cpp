@@ -628,4 +628,21 @@ void QRenderWindow::cancelAttri()
     });
 }
 
+void QRenderWindow::setGeometryStyle(int style)
+{
+    geometry_style_ = static_cast<GeometryRenderStyle>(style);
+    dispatch_async([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->setCurrentRenderStyle(static_cast<GeometryRenderStyle>(style));
+        }
+    });
+    emit geometryStyleChanged();
+}
+
+int QRenderWindow::getGeometryStyle()
+{
+    return static_cast<int>(geometry_style_);
+}
+
 vtkStandardNewMacro(QRenderWindow::Data);
