@@ -20,7 +20,6 @@
 #include <cmath>
 #include <iomanip>
 #include <limits>
-#include <map>
 #include <optional>
 #include <sstream>
 #include <string>
@@ -118,21 +117,6 @@ namespace {
             return "Tet Collapse";
         default:
             return "Scaled Jacobian";
-        }
-    }
-
-    /**
-     * @brief 删除插件之前生成的质量属性，避免切换指标后属性列表持续膨胀
-     */
-    void eraseGeneratedQualityAttributes(std::map<std::string, std::vector<double>>& attributes)
-    {
-        for (auto it = attributes.begin(); it != attributes.end();) {
-            if (it->first.rfind("f_mesh_quality_", 0) == 0
-                || it->first.rfind("s_mesh_quality_", 0) == 0) {
-                it = attributes.erase(it);
-            } else {
-                ++it;
-            }
         }
     }
 
@@ -469,8 +453,6 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
 
     const std::string attribute_key = metricKey(metric);
-    eraseGeneratedQualityAttributes(mesh.face_attributes_);
-    eraseGeneratedQualityAttributes(mesh.solid_attributes_);
     if (face_result) {
         const std::string face_attribute = "f_" + attribute_key + "_1";
         mesh.face_attributes_[face_attribute] = face_result->values;

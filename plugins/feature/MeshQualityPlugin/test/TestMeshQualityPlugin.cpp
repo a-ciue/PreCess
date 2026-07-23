@@ -90,12 +90,12 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     REQUIRE(face_quality.front() == Catch::Approx(1.0));
     REQUIRE(solid_quality.front() == Catch::Approx(1.0));
 
-    // 切换指标后只保留本次生成的质量属性，避免属性列表持续膨胀。
+    // 切换指标后保留之前的质量属性，方便用户在属性列表中比较不同指标。
     REQUIRE(feature_system.setParameter(
         "MeshQuality", 0, core::ArgObject::create<ArgTypeEnum::Combo>(1)));
     REQUIRE_NOTHROW(feature_system.invoke("MeshQuality"));
-    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 0);
-    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 0);
+    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 1);
+    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 1);
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_equiangle_skew_1") == 1);
 }
