@@ -18,12 +18,10 @@ Item{
     property var resultText: ""
 
     readonly property var activeOp: App.activeOperation
-    readonly property bool hasInteractive: !!(activeOp && activeOp.info && activeOp.info.interactive)
 
     onActiveOpChanged: {
         parameters = []
         resultText = ""
-        interactionPanel.interactionResult = ""
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
@@ -31,6 +29,15 @@ Item{
         parameters[index] = value
         if (root.activeOp && root.activeOp.isFeature)
             QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
+    }
+
+    // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
+    Connections {
+        target: QModelManager.featureSystem
+        function onParamValueChanged(feature, index, value) {
+            if (root.activeOp && root.activeOp.info && root.activeOp.info.name === feature)
+                root.parameters[index] = value
+        }
     }
 
     Button{
@@ -73,7 +80,7 @@ Item{
         }
     }
     Item{
-        anchors.top: interactionPanel.bottom
+        anchors.top: resultArea.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -126,54 +133,6 @@ Item{
                     }
                 }
             }
-        }
-    }
-
-    // 视口交互面板：操作说明（功能声明）、结果与清除（交互开关为功能的 Bool 参数）
-    Column{
-        id: interactionPanel
-        visible: root.hasInteractive
-        // 不可见时不占锚定布局高度（与 resultArea 同理）
-        height: visible ? implicitHeight : 0
-        anchors.top: resultArea.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: 4
-        spacing: 8
-        property string interactionResult: ""
-
-        Text{
-            width: parent.width
-            wrapMode: Text.Wrap
-            text: (root.activeOp && root.activeOp.info) ? root.activeOp.info.interaction_guide : ""
-            visible: text.length > 0
-        }
-        TextArea{
-            width: parent.width
-            height: 80
-            readOnly: true
-            text: interactionPanel.interactionResult
-            wrapMode: TextEdit.Wrap
-            visible: text.length > 0
-            background: Rectangle {
-                color: "#f0f0f0"
-                border.color: "#d0d0d0"
-                border.width: 1
-            }
-        }
-        Button{
-            text: "清除"
-            onClicked: {
-                var rw = App.registry.renderWindow
-                if (rw) rw.clearInteraction()
-            }
-        }
-    }
-    Connections{
-        id: interactionConn
-        target: App.registry.renderWindow
-        function onInteractionUpdated(resultText) {
-            interactionPanel.interactionResult = resultText
         }
     }
 
@@ -333,8 +292,15 @@ Item{
                 ToolTip.visible: hovered && model.description.length > 0
                 ToolTip.text: model.description
 
+                // 中间属性承接显示值（避免 text 绑定被用户输入摧毁）：
+                // 优先取参数当前值（功能回写的结果等），未赋值时取 content 默认
+                property string sourceText: {
+                    const v = root.parameters[index]
+                    return (v !== undefined && v !== null && v !== "") ? String(v) : (model.content || "")
+                }
+                onSourceTextChanged: text = sourceText
                 Component.onCompleted: {
-                    fileText.text = model.content
+                    text = sourceText
                     root.setParam(index, fileText.text)
                 }
                 onEditingFinished: {
