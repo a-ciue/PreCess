@@ -84,6 +84,7 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     args.push_back(core::ArgObject::create<ArgTypeEnum::Text>("2.0"));
 
     systems::algo::GmshMeshHandler handler;
+    REQUIRE(handler.resolveComponentId(modelLayer, -1, args) == componentIds[0]);
     handler.execute(context, args);
 
     comp = modelLayer.findComponent(componentIds[0]);

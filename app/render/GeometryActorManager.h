@@ -17,7 +17,6 @@ public:
     void bindRender(vtkRenderer* renderer);
 
     std::shared_ptr<GeometryActor> getComponentActor(Index component_id) const;
-    GeometryRenderMode getGeometryRenderMode(Index component_id);
     bool getIsEdgeRender(Index component_id);
     bool hasComponent(Index component_id) const;
 
@@ -25,7 +24,6 @@ public:
     void loadGeometry(const GeometryDataVtk& geometry_data);
 
     void setVisibility(Index component_id, bool visibility);
-    void setRenderMode(Index component_id, GeometryRenderMode render_mode);
     void setRenderEdge(Index component_id, bool is_render);
 
     GeometryActorManagerSelectOp& op() { return op_; }

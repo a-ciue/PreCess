@@ -15,9 +15,10 @@
 #include "MeshData.h"
 #include "ComponentOperator.h"
 
-#include <spdlog/spdlog.h>
+#include <algorithm>
 #include <filesystem>
 #include <stdexcept>
+#include <spdlog/spdlog.h>
 
 Index ModelLayer::addModel(const std::string& model_name, ComponentDatas components)
 {
@@ -176,6 +177,24 @@ ComponentData* ModelLayer::findComponent(Index component_id) const
 {
     auto it = components_.find(component_id);
     return it == components_.end() ? nullptr : it->second.get();
+}
+
+std::optional<Index> ModelLayer::findComponentIdByGeometryFaceId(GeomFaceId face_id) const
+{
+    if (face_id == kInvalidGeomFaceId)
+        return std::nullopt;
+
+    // 全局面 ID 保存在各 Component 的几何索引中，找到后即可确定所有者。
+    for (const auto& [component_id, component] : components_) {
+        if (!component || !component->geometry)
+            continue;
+
+        const auto& face_ids = component->geometry->index.face_local_to_global;
+        if (std::find(face_ids.begin(), face_ids.end(), face_id) != face_ids.end())
+            return component_id;
+    }
+
+    return std::nullopt;
 }
 
 const std::vector<std::array<double, 3>>& ModelLayer::globalPoints() const

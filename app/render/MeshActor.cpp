@@ -7,13 +7,11 @@
 #include <vtkCellArray.h>
 #include <vtkCellCenters.h>
 #include <vtkCellData.h>
-#include <vtkCompositePolyDataMapper.h>
 #include <vtkDoubleArray.h>
 #include <vtkExtractGeometry.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkGeometryFilter.h>
 #include <vtkMinimalStandardRandomSequence.h>
-#include <vtkMultiBlockDataSet.h>
 #include <vtkNamedColors.h>
 #include <vtkPlane.h>
 #include <vtkPointData.h>
@@ -24,7 +22,6 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkSMPTools.h>
-#include <vtkUnsignedCharArray.h>
 #include <vtkUnstructuredGrid.h>
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
@@ -120,10 +117,8 @@ void addCellAttributes(
 MeshActor::MeshActor(
     vtkRenderer* renderer,
     vtkPoints* global_points,
-    bool is_edge_render,
-    ModelRenderMode render_mode)
-    : render_mode_(render_mode)
-    , edge_render_(is_edge_render)
+    bool is_edge_render)
+    : edge_render_(is_edge_render)
     , renderer_(renderer)
     , global_points_(global_points)
 {
@@ -131,7 +126,12 @@ MeshActor::MeshActor(
         throw std::invalid_argument("MeshActor: global_points cannot be null");
     }
     vtkNew<vtkNamedColors> colors;
-    this->setRenderMode(render_mode);
+
+    this->renderer_->AddActor(this->solid_actor_);
+    this->renderer_->AddActor(this->face_actor_);
+    this->renderer_->AddActor(this->edge_actor_);
+    this->renderer_->AddActor(this->glyph3D_actor_);
+
     this->setRenderEdge(is_edge_render);
 
     this->edge_actor_->GetProperty()->SetLineWidth(2);
@@ -140,14 +140,11 @@ MeshActor::MeshActor(
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
     this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
-
-    this->actor_->SetMapper(block_mapper_);
 }
 
 MeshActor::~MeshActor()
 {
     if (this->renderer_) {
-        renderer_->RemoveActor(this->actor_);
         renderer_->RemoveActor(this->solid_actor_);
         renderer_->RemoveActor(this->face_actor_);
         renderer_->RemoveActor(this->edge_actor_);
@@ -249,13 +246,11 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     edge_mapper_->SetScalarVisibility(0);
     face_mapper_->SetScalarVisibility(0);
     solid_mapper_->SetScalarVisibility(0);
-    createBlockMapper(*this->model_data_);
 }
 
 void MeshActor::setVisibility(bool visibility)
 {
     this->visibility_ = visibility;
-    this->actor_->SetVisibility(visibility);
     this->solid_actor_->SetVisibility(visibility);
     this->face_actor_->SetVisibility(visibility);
     this->edge_actor_->SetVisibility(visibility && this->edge_render_);
@@ -293,105 +288,14 @@ void MeshActor::setClipPlane(vtkPlane* plane)
 void MeshActor::setRenderEdge(bool is_render)
 {
     this->edge_render_ = is_render;
-    this->actor_->GetProperty()->SetEdgeVisibility(is_render);
     this->solid_actor_->GetProperty()->SetEdgeVisibility(is_render);
     this->face_actor_->GetProperty()->SetEdgeVisibility(is_render);
     this->edge_actor_->SetVisibility(is_render && this->visibility_);
 }
 
-void MeshActor::setRenderMode(ModelRenderMode render_mode)
-{
-    this->render_mode_ = render_mode;
-    if (render_mode_ == ModelRenderMode::Face) {
-        this->renderer_->RemoveActor(this->actor_);
-        this->renderer_->AddActor(this->solid_actor_);
-        this->renderer_->AddActor(this->face_actor_);
-        this->renderer_->AddActor(this->edge_actor_);
-        this->renderer_->AddActor(this->glyph3D_actor_);
-    } else if (render_mode_ == ModelRenderMode::Block) {
-        this->renderer_->RemoveActor(this->solid_actor_);
-        this->renderer_->RemoveActor(this->face_actor_);
-        this->renderer_->RemoveActor(this->edge_actor_);
-        this->renderer_->RemoveActor(this->glyph3D_actor_);
-        this->renderer_->AddActor(this->actor_);
-    } else {
-        spdlog::error("invalid renderMode in QRenderWindow::changeRenderer");
-        return;
-    }
-}
-
 bool MeshActor::getIsEdgeRender()
 {
     return this->edge_render_;
-}
-
-ModelRenderMode MeshActor::getMeshRenderMode()
-{
-    return this->render_mode_;
-}
-
-void MeshActor::createBlockMapper(const MeshDataVtk& model_data)
-{
-    auto multiblock = vtkSmartPointer<vtkMultiBlockDataSet>::New();
-    const auto& blocks = model_data.model_blocks_->block_datas;
-
-    for (size_t block_index = 0; block_index < blocks.size(); ++block_index) {
-        const auto& block = blocks[block_index];
-
-        std::unordered_map<vtkIdType, vtkIdType> global_to_local;
-        auto points = vtkSmartPointer<vtkPoints>::New();
-        auto cells = vtkSmartPointer<vtkCellArray>::New();
-        auto grid = vtkSmartPointer<vtkPolyData>::New();
-
-        auto colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
-        colors->SetNumberOfComponents(3);
-        colors->SetName("BlockColors");
-
-        // 为该 block 随机生成颜色
-        const std::array<unsigned char, 3> rgb = {
-            static_cast<unsigned char>(rand() % 256),
-            static_cast<unsigned char>(rand() % 256),
-            static_cast<unsigned char>(rand() % 256)
-        };
-
-        vtkIdType local_id = 0;
-        points->Allocate(static_cast<vtkIdType>(block.faces_.size() * 3)); // 预分配，粗略估计
-        cells->AllocateEstimate(block.faces_.size(), 4); // 预估每个 cell 是三角形
-
-        for (vtkIdType face_id : block.faces_) {
-            Index offset = model_data.vtk_face_cells_offset_[face_id],
-                  offset_to = model_data.vtk_face_cells_offset_[face_id + 1];
-            const Index* index_begin = model_data.vtk_face_cells_.data() + offset;
-            std::vector<vtkIdType> tri_pts(offset_to - offset);
-
-            for (Index i = 0; i < tri_pts.size(); i++) {
-                vtkIdType global_id = index_begin[i];
-                auto iter = global_to_local.find(global_id);
-                if (iter == global_to_local.end()) {
-                    double pt[3];
-                    this->global_points_->GetPoint(global_id, pt);
-                    points->InsertPoint(local_id, pt);
-                    global_to_local[global_id] = local_id;
-                    tri_pts[i] = local_id++;
-                } else {
-                    tri_pts[i] = iter->second;
-                }
-            }
-
-            cells->InsertNextCell(tri_pts.size(), tri_pts.data());
-            colors->InsertNextTypedTuple(rgb.data());
-        }
-
-        grid->SetPoints(points);
-        grid->SetPolys(cells);
-        grid->GetCellData()->SetScalars(colors);
-
-        multiblock->SetBlock(static_cast<unsigned int>(block_index), grid);
-    }
-
-    this->block_mapper_->SetInputDataObject(multiblock);
-    this->block_mapper_->SetScalarModeToUseCellData();
-    this->block_mapper_->ScalarVisibilityOn();
 }
 
 void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)

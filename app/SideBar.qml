@@ -15,6 +15,7 @@ import app.model.systems.algo
 Item{
     id: root
     property var parameters: []
+    property var resultText: ""
 
     readonly property var activeOp: App.activeOperation
 
@@ -23,6 +24,7 @@ Item{
         // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
         parameters = root.activeOp && root.activeOp.defaultParameters
                 ? root.activeOp.defaultParameters.slice() : []
+        resultText = ""
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
@@ -47,7 +49,7 @@ Item{
         height:30
         onClicked:{
             if (root.activeOp && root.activeOp.execute)
-                root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+                root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
             if (App.registry.renderWindow)
                 App.registry.renderWindow.clearSelection()
         }
@@ -68,8 +70,25 @@ Item{
                 ? qsTr("目标：在模型中新建组件 ") + QModelManager.query.getModelName(App.selection.activeModelId)
                 : qsTr("目标：新建模型")
     }
-    Item{
+    TextArea {
+        id: resultArea
         anchors.top: targetLabel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        // 不可见时不占锚定布局高度，避免留下空白
+        height: visible ? 80 : 0
+        readOnly: true
+        text: root.resultText
+        wrapMode: TextEdit.Wrap
+        visible: text.length > 0
+        background: Rectangle {
+            color: "#f0f0f0"
+            border.color: "#d0d0d0"
+            border.width: 1
+        }
+    }
+    Item{
+        anchors.top: resultArea.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -317,10 +336,23 @@ Item{
                 text: "开始选择"
                 checked: App.selection.listeningSelectorIndex === index
                 onClicked: {
-                    if (!checked)
+                    if (!checked) {
                         App.selection.listeningSelectorIndex = index
-                    else
+                        // 每次开始选择都按参数重设模式：content 指定的拾取类型优先；
+                        // 未指定时纯几何（无网格）组件兜底几何点模式，其余兜底 Face
+                        if (model.content.length > 0) {
+                            const modes = model.content.split(",")
+                            if (modes.length > 0)
+                                App.selection.selectMode = modes[0]
+                        } else {
+                            const cid = App.selection.activeComponentId
+                            const meshSummary = cid >= 0 ? QModelManager.query.getMeshSummary(cid) : ({})
+                            const geomSummary = cid >= 0 ? QModelManager.query.getGeometrySummary(cid) : ({})
+                            App.selection.selectMode = (!meshSummary.has_mesh && geomSummary.has_geometry) ? "GeometryVertex" : "Face"
+                        }
+                    } else {
                         App.selection.listeningSelectorIndex = -1
+                    }
                 }
             }
 
@@ -331,6 +363,16 @@ Item{
                     value = selection
                     root.setParam(index, value)
                     App.selection.listeningSelectorIndex = -1
+                }
+            }
+
+            Connections {
+                target: App.selection
+                function onSelectionInvalidated() {
+                    value = null
+                    root.setParam(index, null)
+                    if (App.selection.listeningSelectorIndex === index)
+                        App.selection.listeningSelectorIndex = -1
                 }
             }
         }

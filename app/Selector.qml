@@ -14,46 +14,75 @@ RowLayout {
     signal confirmButtonClicked
     property QSelection selection
 
-    ListModel {
-        id: selectModeModel
-        ListElement { text: "..."; mode: "None" }
-        ListElement { text: "点"; mode: "Vertex" }
-        ListElement { text: "边"; mode: "Edge" }
-        ListElement { text: "面"; mode: "Face" }
-        ListElement { text: "体"; mode: "Solid" }
-        ListElement { text: "块"; mode: "Block" }
-        ListElement { text: "几何点"; mode: "GeometryVertex" }
-        ListElement { text: "几何边"; mode: "GeometryEdge" }
-        ListElement { text: "几何面"; mode: "GeometryFace" }
-        ListElement { text: "几何体"; mode: "GeometrySolid" }
-        ListElement { text: "组件"; mode: "Component" }
-    }
+    // 当前角度扩散参数，由渲染区域传入。
+    property bool faceSelectByAngle
+    property real faceSelectAngle
 
-    // 选择模式与界面选项共用同一数据源，新增模式时只需增加一个 ListElement。
-    function indexForMode(mode) {
-        for (let i = 0; i < selectModeModel.count; ++i) {
-            if (selectModeModel.get(i).mode === mode)
-                return i
-        }
-        return -1
-    }
+    // 将用户编辑后的参数通知给渲染区域。
+    signal faceSelectionSpreadEdited(bool enabled, real angle)
 
     ComboBox{
         id: selectModeComboBox
-        model: selectModeModel
+        model: [
+            { text: "...", value: "None" },
+            { text: "组件", value: "Component" },
+            { text: "点", value: "Vertex" },
+            { text: "边", value: "Edge" },
+            { text: "面", value: "Face" },
+            { text: "体", value: "Solid" },
+            { text: "几何点", value: "GeometryVertex" },
+            { text: "几何边", value: "GeometryEdge" },
+            { text: "几何面", value: "GeometryFace" },
+            { text: "几何体", value: "GeometrySolid" },
+        ]
         textRole: "text"
-        onCurrentIndexChanged: {
-            if (currentIndex >= 0)
-                App.selection.selectMode = selectModeModel.get(currentIndex).mode
+        valueRole: "value"
+
+        // 绑定建立在自己的属性上——ComboBox 内部不会碰它，绑定不会被用户交互破坏
+        property string sourceMode: App.selection.selectMode
+
+        // 外部值变化 → 更新显示（初始化时也会触发一次，不用 Component.onCompleted）
+        onSourceModeChanged: {
+            const idx = indexOfValue(sourceMode)
+            if (idx >= 0)
+                currentIndex = idx
         }
+
+        // 用户选择 → 写回数据源
+        onActivated: App.selection.selectMode = currentValue
+
         opacity: enabled ? 1.0 : 0.6
-        currentIndex: enabled ? currentIndex: 0
     }
     Button{
         id: selectClearButton
         text: "清除选择"
         onClicked: root.clearButtonClicked()
         opacity: enabled ? 1.0 : 0.6
+    }
+    CheckBox {
+        text: "按角度扩散"
+        checked: root.faceSelectByAngle
+        visible: App.selection.selectMode === "Face"
+        onClicked: root.faceSelectionSpreadEdited(checked, root.faceSelectAngle)
+    }
+    Label {
+        text: "角度"
+        visible: App.selection.selectMode === "Face" && root.faceSelectByAngle
+    }
+    TextField {
+        text: root.faceSelectAngle.toFixed(1)
+        visible: App.selection.selectMode === "Face" && root.faceSelectByAngle
+        Layout.preferredWidth: 56
+        validator: DoubleValidator {
+            bottom: 0.0
+            top: 180.0
+            decimals: 2
+        }
+        onEditingFinished: {
+            var value = Number(text)
+            if (!isNaN(value))
+                root.faceSelectionSpreadEdited(root.faceSelectByAngle,Math.max(0.0, Math.min(180.0, value)))
+        }
     }
     Button{
         text: "确认"
@@ -63,14 +92,6 @@ RowLayout {
         }
         enabled: App.selection.listeningSelectorIndex >= 0
         opacity: enabled ? 1.0 : 0.6
-    }
-    Connections {
-        target: App.selection
-        function onSelectModeChanged() {
-            let modeIndex = root.indexForMode(App.selection.selectMode)
-            if (modeIndex >= 0 && selectModeComboBox.currentIndex !== modeIndex)
-                selectModeComboBox.currentIndex = modeIndex
-        }
     }
     /** type:string 选择框中当前文本 */
     property alias comboBoxSelectedString: selectModeComboBox.currentText

@@ -105,6 +105,11 @@ TEST_CASE("Geometry index build for multiple components")
     REQUIRE_FALSE(comp1->geometry->index.edge_local_to_global.empty());
     REQUIRE_FALSE(comp1->geometry->index.vertex_local_to_global.empty());
     REQUIRE_FALSE(comp1->geometry->index.solid_local_to_global.empty());
+
+    const GeomFaceId comp0FaceId = comp0->geometry->index.faceGlobalId(1);
+    const GeomFaceId comp1FaceId = comp1->geometry->index.faceGlobalId(1);
+    REQUIRE(manager.findComponentIdByGeometryFaceId(comp0FaceId) == 0);
+    REQUIRE(manager.findComponentIdByGeometryFaceId(comp1FaceId) == 1);
 }
 
 TEST_CASE("Add geometry component to an existing model")
