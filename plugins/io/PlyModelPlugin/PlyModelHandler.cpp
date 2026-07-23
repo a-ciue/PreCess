@@ -16,6 +16,7 @@
 #include <fstream>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 namespace systems::io {
 
@@ -280,8 +281,20 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
                 continue;
             }
 
+            std::unordered_map<Index, Index> global_to_local;
+            global_to_local.reserve(static_cast<size_t>(cnt));
+
             for (Index i = 0; i < cnt; ++i) {
+                if (i >= static_cast<Index>(m.local_to_global_.size())) {
+                    spdlog::error("PlyModelHandler: local_to_global size mismatch, cid={}", cid);
+                    return;
+                }
                 const Index gid = m.local_to_global_[i];
+                if (gid < 0 || static_cast<size_t>(gid) >= gp.size()) {
+                    spdlog::error("PlyModelHandler: global point id out of range, cid={}, gid={}", cid, gid);
+                    return;
+                }
+                global_to_local[gid] = i;
                 const auto& p = gp[(size_t)gid];
                 all_vertices.push_back(static_cast<float>(p[0]));
                 all_vertices.push_back(static_cast<float>(p[1]));
@@ -301,18 +314,12 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
 
                     for (Index k = a; k < b; ++k) {
                         const Index gid = m.face_vertices_[static_cast<size_t>(k)];
-                        Index local_idx = -1;
-                        for (Index i = 0; i < cnt; ++i) {
-                            if (m.local_to_global_[i] == gid) {
-                                local_idx = i;
-                                break;
-                            }
-                        }
-                        if (local_idx == -1) {
+                        auto it = global_to_local.find(gid);
+                        if (it == global_to_local.end()) {
                             spdlog::error("PlyModelHandler: face references vertex not in component, cid={}, gid={}", cid, gid);
                             return;
                         }
-                        all_face_indices.push_back(static_cast<int32_t>(total_vertex_count + local_idx));
+                        all_face_indices.push_back(static_cast<int32_t>(total_vertex_count + it->second));
                     }
                 }
             }

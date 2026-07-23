@@ -43,7 +43,12 @@ void convert_abaqus_to_meshdata(const Mesh_meshIO& abaqus_mesh, MeshData& mesh_d
         // 2D elements -> face data
         if (cell_type == "triangle" || cell_type == "triangle6" || cell_type == "quad" || cell_type == "quad8" || cell_type == "quad9") {
 
-            Index offset = mesh_data.face_vertices_offset_.back();
+            Index offset;
+            if (mesh_data.face_vertices_offset_.empty()) {
+                offset = 0;
+            } else {
+                offset = mesh_data.face_vertices_offset_.back();
+            }
             for (const auto& elem : cell_block.data) {
                 for (Index node_id : elem) {
                     mesh_data.face_vertices_.push_back(node_id);
@@ -55,7 +60,12 @@ void convert_abaqus_to_meshdata(const Mesh_meshIO& abaqus_mesh, MeshData& mesh_d
         // 3D elements -> solid data
         else if (cell_type == "tetra" || cell_type == "tetra4" || cell_type == "tetra10" || cell_type == "hexahedron" || cell_type == "hexahedron20" || cell_type == "wedge" || cell_type == "wedge15") {
 
-            Index offset = mesh_data.solid_vertices_offset_.back();
+            Index offset;
+            if (mesh_data.solid_vertices_offset_.empty()) {
+                offset = 0;
+            } else {
+                offset = mesh_data.solid_vertices_offset_.back();
+            }
             for (const auto& elem : cell_block.data) {
                 mesh_data.solid_types_.push_back(vtk_type);
                 for (Index node_id : elem) {

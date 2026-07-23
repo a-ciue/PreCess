@@ -4,13 +4,12 @@
 #include <cctype>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <sstream>
+#include <spdlog/spdlog.h>
 
-using namespace std;
 namespace fs = std::filesystem;
 
-static unordered_map<string, string> abaqus_to_meshio_type = {
+static std::unordered_map<std::string, std::string> abaqus_to_meshio_type = {
     // trusses
     { "T2D2", "line" },
     { "T2D2H", "line" },
@@ -75,7 +74,7 @@ static unordered_map<string, string> abaqus_to_meshio_type = {
 };
 
 // map from meshio cell type -> number of nodes (used for strict validation)
-static unordered_map<string, int> num_nodes_per_cell = {
+static std::unordered_map<std::string, int> num_nodes_per_cell = {
     { "line", 2 },
     { "line3", 3 },
     { "triangle", 3 },
@@ -92,19 +91,19 @@ static unordered_map<string, int> num_nodes_per_cell = {
     { "wedge15", 15 },
 };
 
-static unordered_map<string, string> meshio_to_abaqus_type; // filled on first use
+static std::unordered_map<std::string, std::string> meshio_to_abaqus_type; // filled on first use
 
-static string upper_copy(const string& s)
+static std::string upper_copy(const std::string& s)
 {
-    string r = s;
-    transform(r.begin(), r.end(), r.begin(), [](unsigned char c) { return toupper(c); });
+    std::string r = s;
+    std::transform(r.begin(), r.end(), r.begin(), [](unsigned char c) { return std::toupper(c); });
     return r;
 }
 
-static vector<string> split_commas(const string& s)
+static std::vector<std::string> split_commas(const std::string& s)
 {
-    vector<string> out;
-    string cur;
+    std::vector<std::string> out;
+    std::string cur;
     for (char c : s) {
         if (c == ',') {
             out.push_back(cur);
@@ -118,81 +117,81 @@ static vector<string> split_commas(const string& s)
     return out;
 }
 
-static unordered_map<string, string> get_param_map(const string& word, const vector<string>& required_keys = {})
+static std::unordered_map<std::string, std::string> get_param_map(const std::string& word, const std::vector<std::string>& required_keys = {})
 {
     // remove leading '*' if present
-    string w = word;
+    std::string w = word;
     if (!w.empty() && w[0] == '*')
         w = w.substr(1);
     auto parts = split_commas(w);
-    unordered_map<string, string> param_map;
+    std::unordered_map<std::string, std::string> param_map;
     for (auto& p : parts) {
-        string t = p;
+        std::string t = p;
         // trim
         auto l = t.find_first_not_of(" \t\r\n");
         auto r = t.find_last_not_of(" \t\r\n");
-        if (l == string::npos)
+        if (l == std::string::npos)
             continue;
         t = t.substr(l, r - l + 1);
         auto eq = t.find('=');
-        if (eq == string::npos) {
+        if (eq == std::string::npos) {
             param_map[upper_copy(t)] = "";
         } else {
-            string key = upper_copy(t.substr(0, eq));
-            string val = t.substr(eq + 1);
+            std::string key = upper_copy(t.substr(0, eq));
+            std::string val = t.substr(eq + 1);
             param_map[key] = val;
         }
     }
     for (auto& k : required_keys) {
         if (param_map.find(k) == param_map.end()) {
-            throw runtime_error(k + " not found in " + word);
+            throw std::runtime_error(k + " not found in " + word);
         }
     }
     return param_map;
 }
 
 // forward
-static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file);
+static Mesh_meshIO read_buffer(std::istream& in, const fs::path& current_file);
 
-Mesh_meshIO read_abaqus(const string& filename)
+Mesh_meshIO read_abaqus(const std::string& filename)
 {
     if (meshio_to_abaqus_type.empty()) {
         for (auto& kv : abaqus_to_meshio_type) {
             meshio_to_abaqus_type[kv.second] = kv.first;
         }
     }
-    ifstream f(filename);
+    std::ifstream f(filename);
     if (!f)
-        throw runtime_error("Cannot open file: " + filename);
+        throw std::runtime_error("Cannot open file: " + filename);
     fs::path p = filename;
     return read_buffer(f, p);
 }
 
-static string readline_trimmed(istream& in)
+static std::string readline_trimmed(std::istream& in)
 {
-    string line;
+    std::string line;
     if (!std::getline(in, line))
-        return string();
+        return std::string();
     // remove possible \r
     if (!line.empty() && line.back() == '\r')
         line.pop_back();
     return line;
 }
 
-static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
+static Mesh_meshIO read_buffer(std::istream& in, const fs::path& current_file)
 {
     Mesh_meshIO mesh;
-    vector<vector<double>> points;
-    vector<CellBlock> cells;
-    vector<unordered_map<int, int>> cell_ids; // per block: orig id -> local idx
+    std::vector<std::vector<double>> points;
+    std::vector<CellBlock> cells;
+    std::vector<std::unordered_map<int, int>> cell_ids; // per block: orig id -> local idx
 
-    unordered_map<string, vector<int>> point_sets;
-    unordered_map<string, vector<vector<int>>> cell_sets;
-    unordered_map<string, vector<int>> cell_sets_element;
-    vector<string> cell_sets_element_order;
+    std::unordered_map<std::string, std::vector<int>> point_sets;
+    std::unordered_map<std::string, std::vector<std::vector<int>>> cell_sets;
+    std::unordered_map<std::string, std::vector<int>> cell_sets_element;
+    std::vector<std::string> cell_sets_element_order;
 
-    string line = readline_trimmed(in);
-    unordered_map<int, int> point_id_map; // orig id -> new index
+    std::string line = readline_trimmed(in);
+    std::unordered_map<int, int> point_id_map; // orig id -> new index
 
     while (!line.empty()) {
         if (line.rfind("**", 0) == 0) { // comment
@@ -202,31 +201,31 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
         // keyword is before first comma
         auto part = line;
         auto pos = part.find(',');
-        string key = (pos == string::npos) ? part : part.substr(0, pos);
+        std::string key = (pos == std::string::npos) ? part : part.substr(0, pos);
         // strip leading * and whitespace
         key.erase(0, key.find_first_not_of("* \t\r\n"));
         key = upper_copy(key);
         if (key == "NODE") {
             // read nodes
             while (true) {
-                string l = readline_trimmed(in);
+                std::string l = readline_trimmed(in);
                 if (l.empty() || l[0] == '*') {
                     line = l;
                     break;
                 }
                 // skip blank
-                if (all_of(l.begin(), l.end(), [](char c) { return isspace((unsigned char)c); })) {
+                if (std::all_of(l.begin(), l.end(), [](char c) { return std::isspace((unsigned char)c); })) {
                     continue;
                 }
                 // parse id, coords
                 // allow spaces after commas
-                stringstream ss(l);
-                vector<string> toks;
-                string tok;
-                while (getline(ss, tok, ',')) {
+                std::stringstream ss(l);
+                std::vector<std::string> toks;
+                std::string tok;
+                while (std::getline(ss, tok, ',')) {
                     // trim
                     auto a = tok.find_first_not_of(" \t\r\n");
-                    if (a == string::npos)
+                    if (a == std::string::npos)
                         toks.push_back("");
                     else {
                         auto b = tok.find_last_not_of(" \t\r\n");
@@ -235,36 +234,36 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                 }
                 if (toks.size() < 2)
                     continue;
-                int orig_id = stoi(toks[0]);
-                vector<double> coords;
+                int orig_id = std::stoi(toks[0]);
+                std::vector<double> coords;
                 coords.reserve(toks.size() - 1);
-                for (size_t i = 1; i < toks.size(); ++i)
-                    coords.push_back(stod(toks[i]));
+                for (std::size_t i = 1; i < toks.size(); ++i)
+                    coords.push_back(std::stod(toks[i]));
                 point_id_map[orig_id] = (int)points.size();
                 points.push_back(coords);
             }
         } else if (key == "ELEMENT") {
             if (point_id_map.empty())
-                throw runtime_error("Expected NODE before ELEMENT");
+                throw std::runtime_error("Expected NODE before ELEMENT");
             auto params = get_param_map(line, { "TYPE" });
-            string etype = params["TYPE"];
+            std::string etype = params["TYPE"];
             if (abaqus_to_meshio_type.find(etype) == abaqus_to_meshio_type.end()) {
                 // unknown element type: suggest adding to mapping
-                throw runtime_error("Element type not available: " + etype + ". Consider adding it to abaqus_to_meshio_type.");
+                throw std::runtime_error("Element type not available: " + etype + ". Consider adding it to abaqus_to_meshio_type.");
             }
-            string cell_type = abaqus_to_meshio_type[etype];
+            std::string cell_type = abaqus_to_meshio_type[etype];
             // determine expected nodes per cell from table
             if (num_nodes_per_cell.find(cell_type) == num_nodes_per_cell.end()) {
-                throw runtime_error("Unknown node count for meshio cell type: " + cell_type);
+                throw std::runtime_error("Unknown node count for meshio cell type: " + cell_type);
             }
             int nodes_per_cell = num_nodes_per_cell[cell_type];
             int num_data = nodes_per_cell + 1; // element id + node ids
 
             // parse lines, accumulate tokens and extract elements when enough tokens
-            vector<int> token_buf;
-            string l;
-            vector<vector<int>> elems;
-            unordered_map<int, int> local_ids;
+            std::vector<int> token_buf;
+            std::string l;
+            std::vector<std::vector<int>> elems;
+            std::unordered_map<int, int> local_ids;
             int counter = 0;
             while (true) {
                 l = readline_trimmed(in);
@@ -272,20 +271,20 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                     line = l;
                     break;
                 }
-                if (all_of(l.begin(), l.end(), [](char c) { return isspace((unsigned char)c); }))
+                if (std::all_of(l.begin(), l.end(), [](char c) { return std::isspace((unsigned char)c); }))
                     continue;
-                stringstream ss(l);
-                string t;
-                while (getline(ss, t, ',')) {
+                std::stringstream ss(l);
+                std::string t;
+                while (std::getline(ss, t, ',')) {
                     auto a = t.find_first_not_of(" \t\r\n");
-                    if (a == string::npos)
+                    if (a == std::string::npos)
                         continue;
                     auto b = t.find_last_not_of(" \t\r\n");
-                    string tok = t.substr(a, b - a + 1);
+                    std::string tok = t.substr(a, b - a + 1);
                     if (tok.empty())
                         continue;
                     try {
-                        int v = stoi(tok);
+                        int v = std::stoi(tok);
                         token_buf.push_back(v);
                     } catch (...) {
                         // ignore non-int tokens silently
@@ -293,7 +292,7 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                     }
                     // while we have enough tokens for an element, extract
                     while ((int)token_buf.size() >= num_data) {
-                        vector<int> nodes;
+                        std::vector<int> nodes;
                         nodes.reserve(nodes_per_cell);
                         int orig_eid = token_buf[0];
                         for (int k = 1; k <= nodes_per_cell; ++k)
@@ -301,12 +300,12 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                         // remove first num_data tokens
                         token_buf.erase(token_buf.begin(), token_buf.begin() + num_data);
                         // map node ids to internal indices
-                        vector<int> mapped;
+                        std::vector<int> mapped;
                         mapped.reserve(nodes.size());
                         for (int orig_nid : nodes) {
                             auto it = point_id_map.find(orig_nid);
                             if (it == point_id_map.end()) {
-                                throw runtime_error("Unknown node id in ELEMENT: " + to_string(orig_nid));
+                                throw std::runtime_error("Unknown node id in ELEMENT: " + std::to_string(orig_nid));
                             }
                             mapped.push_back(it->second);
                         }
@@ -327,11 +326,11 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
             cb.abaqus_type = etype;
             cells.push_back(cb);
             cell_ids.push_back(local_ids);
-            unordered_map<int, int> empty_map;
+            std::unordered_map<int, int> empty_map;
             if (params.find("ELSET") != params.end()) {
-                string nm = params["ELSET"];
+                std::string nm = params["ELSET"];
                 int n_elems = elems.size();
-                vector<int> all_idx(n_elems);
+                std::vector<int> all_idx(n_elems);
                 for (int i = 0; i < n_elems; ++i)
                     all_idx[i] = i;
                 cell_sets_element[nm] = all_idx;
@@ -339,39 +338,39 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
             }
         } else if (key == "NSET") {
             auto params = get_param_map(line, { "NSET" });
-            string name = params["NSET"];
-            vector<int> set_ids;
-            string l;
+            std::string name = params["NSET"];
+            std::vector<int> set_ids;
+            std::string l;
             while (true) {
                 l = readline_trimmed(in);
                 if (l.empty() || l[0] == '*') {
                     line = l;
                     break;
                 }
-                if (all_of(l.begin(), l.end(), [](char c) { return isspace((unsigned char)c); }))
+                if (std::all_of(l.begin(), l.end(), [](char c) { return std::isspace((unsigned char)c); }))
                     continue;
-                stringstream ss(l);
-                string t;
-                while (getline(ss, t, ',')) {
+                std::stringstream ss(l);
+                std::string t;
+                while (std::getline(ss, t, ',')) {
                     auto a = t.find_first_not_of(" \t\r\n");
-                    if (a == string::npos)
+                    if (a == std::string::npos)
                         continue;
                     auto b = t.find_last_not_of(" \t\r\n");
-                    string tok = t.substr(a, b - a + 1);
+                    std::string tok = t.substr(a, b - a + 1);
                     if (!tok.empty()) {
                         try {
-                            set_ids.push_back(stoi(tok));
+                            set_ids.push_back(std::stoi(tok));
                         } catch (...) {
-                            std::cerr << "Warning: skipping non-integer token in NSET: '" << tok << "'\n";
+                            spdlog::warn("Skipping non-integer token in NSET: '{}'", tok);
                         }
                     }
                 }
             }
-            vector<int> mapped;
+            std::vector<int> mapped;
             for (int sid : set_ids) {
                 auto it = point_id_map.find(sid);
                 if (it == point_id_map.end()) {
-                    std::cerr << "Warning: NSET references unknown node id " << sid << " - skipping\n";
+                    spdlog::warn("NSET references unknown node id {} - skipping", sid);
                     continue;
                 }
                 mapped.push_back(it->second);
@@ -379,46 +378,46 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
             point_sets[name] = mapped;
         } else if (key == "ELSET") {
             auto params = get_param_map(line, { "ELSET" });
-            string name = params["ELSET"];
-            vector<int> set_ids;
-            vector<string> set_names;
-            string l;
+            std::string name = params["ELSET"];
+            std::vector<int> set_ids;
+            std::vector<std::string> set_names;
+            std::string l;
             while (true) {
                 l = readline_trimmed(in);
                 if (l.empty() || l[0] == '*') {
                     line = l;
                     break;
                 }
-                if (all_of(l.begin(), l.end(), [](char c) { return isspace((unsigned char)c); }))
+                if (std::all_of(l.begin(), l.end(), [](char c) { return std::isspace((unsigned char)c); }))
                     continue;
-                stringstream ss(l);
-                string t;
-                while (getline(ss, t, ',')) {
+                std::stringstream ss(l);
+                std::string t;
+                while (std::getline(ss, t, ',')) {
                     auto a = t.find_first_not_of(" \t\r\n");
-                    if (a == string::npos)
+                    if (a == std::string::npos)
                         continue;
                     auto b = t.find_last_not_of(" \t\r\n");
-                    string tok = t.substr(a, b - a + 1);
+                    std::string tok = t.substr(a, b - a + 1);
                     if (!tok.empty()) {
                         // numeric?
                         bool isnumeric = true;
                         for (char c : tok)
-                            if (!isdigit((unsigned char)c)) {
+                            if (!std::isdigit((unsigned char)c)) {
                                 isnumeric = false;
                                 break;
                             }
                         if (isnumeric)
-                            set_ids.push_back(stoi(tok));
+                            set_ids.push_back(std::stoi(tok));
                         else
                             set_names.push_back(tok);
                     }
                 }
             }
-            cell_sets[name] = vector<vector<int>>();
+            cell_sets[name] = std::vector<std::vector<int>>();
             if (!set_ids.empty()) {
                 // for each existing cell block, produce the intersection
-                for (size_t ic = 0; ic < cell_ids.size(); ++ic) {
-                    vector<int> out;
+                for (std::size_t ic = 0; ic < cell_ids.size(); ++ic) {
+                    std::vector<int> out;
                     for (int sid : set_ids) {
                         auto it = cell_ids[ic].find(sid);
                         if (it != cell_ids[ic].end())
@@ -430,32 +429,37 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                 for (auto& sn : set_names) {
                     if (cell_sets.find(sn) != cell_sets.end()) {
                         // append existing
-                        cell_sets[name].push_back(vector<int>());
+                        cell_sets[name].push_back(std::vector<int>());
                     } else if (cell_sets_element.find(sn) != cell_sets_element.end()) {
                         // append element-level
                         // will be fixed later
                         cell_sets[name].push_back(cell_sets_element[sn]);
                     } else {
-                        throw runtime_error(string("Unknown cell set '") + sn + "'");
+                        throw std::runtime_error(std::string("Unknown cell set '") + sn + "'");
                     }
                 }
             }
         } else if (key == "INCLUDE") {
             // parse INPUT=...
             auto pos = line.find('=');
-            if (pos == string::npos) {
+            if (pos == std::string::npos) {
                 line = readline_trimmed(in);
                 continue;
             }
-            string path = line.substr(pos + 1);
+            std::string path = line.substr(pos + 1);
             // trim
             auto a = path.find_first_not_of(" \t\r\n");
             auto b = path.find_last_not_of(" \t\r\n");
-            if (a == string::npos) {
+            if (a == std::string::npos) {
                 line = readline_trimmed(in);
                 continue;
             }
             path = path.substr(a, b - a + 1);
+            if (path.find("..") != std::string::npos) {
+                spdlog::error("Relative paths with .. are not allowed in INCLUDE");
+                line = readline_trimmed(in);
+                continue;
+            }
             fs::path ext = path;
             if (!ext.is_absolute())
                 ext = current_file.parent_path() / ext;
@@ -463,7 +467,7 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                 line = readline_trimmed(in);
                 continue;
             }
-            ifstream ef(ext);
+            std::ifstream ef(ext);
             if (ef) {
                 Mesh_meshIO out = read_buffer(ef, ext);
                 // merge points and cells into current containers
@@ -476,7 +480,7 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                     nb.abaqus_type = cb.abaqus_type;
                     nb.data.reserve(cb.data.size());
                     for (auto& row : cb.data) {
-                        vector<int> r2;
+                        std::vector<int> r2;
                         r2.reserve(row.size());
                         for (int nid : row)
                             r2.push_back(nid + new_point_id);
@@ -486,7 +490,7 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                 }
                 // merge point_sets, shifting indices
                 for (auto& kv : out.point_sets) {
-                    vector<int> shifted;
+                    std::vector<int> shifted;
                     shifted.reserve(kv.second.size());
                     for (int v : kv.second)
                         shifted.push_back(v + new_point_id);
@@ -500,7 +504,7 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
                 }
                 // TODO: merge cell_sets and other metadata if necessary
             } else {
-                std::cerr << "Warning: INCLUDE file exists but could not be opened: " << ext.string() << "\n";
+                spdlog::warn("INCLUDE file exists but could not be opened: {}", ext.string());
             }
             line = readline_trimmed(in);
         } else {
@@ -510,47 +514,47 @@ static Mesh_meshIO read_buffer(istream& in, const fs::path& current_file)
     }
 
     // post-process cell_sets_element
-    for (size_t i = 0; i < cell_sets_element_order.size(); ++i) {
+    for (std::size_t i = 0; i < cell_sets_element_order.size(); ++i) {
         auto& name = cell_sets_element_order[i];
         if (cell_sets.find(name) != cell_sets.end()) {
             // replace i-th entry
             if (i < cell_sets[name].size())
                 cell_sets[name][i] = cell_sets_element[name];
         } else {
-            cell_sets[name] = vector<vector<int>>();
-            for (size_t ic = 0; ic < cells.size(); ++ic) {
+            cell_sets[name] = std::vector<std::vector<int>>();
+            for (std::size_t ic = 0; ic < cells.size(); ++ic) {
                 if (i == ic)
                     cell_sets[name].push_back(cell_sets_element[name]);
                 else
-                    cell_sets[name].push_back(vector<int>());
+                    cell_sets[name].push_back(std::vector<int>());
             }
         }
     }
 
-    mesh.points = move(points);
-    mesh.cells = move(cells);
-    mesh.point_sets = move(point_sets);
-    mesh.cell_sets = move(cell_sets);
+    mesh.points = std::move(points);
+    mesh.cells = std::move(cells);
+    mesh.point_sets = std::move(point_sets);
+    mesh.cell_sets = std::move(cell_sets);
     return mesh;
 }
 
-void write_abaqus(const string& filename, const Mesh_meshIO& mesh, const string& float_fmt, bool translate_cell_names)
+void write_abaqus(const std::string& filename, const Mesh_meshIO& mesh, const std::string& float_fmt, bool translate_cell_names)
 {
-    ofstream f(filename);
+    std::ofstream f(filename);
     if (!f)
-        throw runtime_error("Cannot open for writing: " + filename);
+        throw std::runtime_error("Cannot open for writing: " + filename);
     f << "*HEADING\n";
     f << "Abaqus DataFile generated by C++ converter\n";
     f << "*NODE\n";
     // write nodes
-    for (size_t k = 0; k < mesh.points.size(); ++k) {
+    for (std::size_t k = 0; k < mesh.points.size(); ++k) {
         f << (k + 1);
         for (double x : mesh.points[k]) {
             char buf[128];
             // float_fmt is expected to be a printf-style format like "%.16e" or "%.6f"
             // guard: ensure format contains a single % specifier
             try {
-                snprintf(buf, sizeof(buf), float_fmt.c_str(), x);
+                std::snprintf(buf, sizeof(buf), float_fmt.c_str(), x);
                 f << "," << buf;
             } catch (...) {
                 // fallback
@@ -561,8 +565,8 @@ void write_abaqus(const string& filename, const Mesh_meshIO& mesh, const string&
     }
     int eid = 0;
     for (auto& cell_block : mesh.cells) {
-        string cell_type = cell_block.type;
-        string name = cell_type;
+        std::string cell_type = cell_block.type;
+        std::string name = cell_type;
         // prefer original Abaqus type if present
         if (translate_cell_names && !cell_block.abaqus_type.empty()) {
             name = cell_block.abaqus_type;
@@ -582,18 +586,18 @@ void write_abaqus(const string& filename, const Mesh_meshIO& mesh, const string&
     }
     const int nnl = 8;
     int offset = 0;
-    for (size_t ic = 0; ic < mesh.cells.size(); ++ic) {
+    for (std::size_t ic = 0; ic < mesh.cells.size(); ++ic) {
         for (auto& kv : mesh.cell_sets) {
             auto& k = kv.first;
             auto& v = kv.second;
             if (ic < v.size() && !v[ic].empty()) {
-                vector<string> els;
+                std::vector<std::string> els;
                 els.reserve(v[ic].size());
                 for (int i : v[ic])
-                    els.push_back(to_string(i + 1 + offset));
+                    els.push_back(std::to_string(i + 1 + offset));
                 f << "*ELSET, ELSET=" << k << "\n";
-                for (size_t i = 0; i < els.size(); i += nnl) {
-                    for (size_t j = i; j < min(els.size(), i + nnl); ++j) {
+                for (std::size_t i = 0; i < els.size(); i += nnl) {
+                    for (std::size_t j = i; j < std::min(els.size(), i + nnl); ++j) {
                         if (j > i)
                             f << ",";
                         f << els[j];
@@ -607,13 +611,13 @@ void write_abaqus(const string& filename, const Mesh_meshIO& mesh, const string&
     for (auto& kv : mesh.point_sets) {
         auto& k = kv.first;
         auto& v = kv.second;
-        vector<string> nds;
+        std::vector<std::string> nds;
         nds.reserve(v.size());
         for (int i : v)
-            nds.push_back(to_string(i + 1));
+            nds.push_back(std::to_string(i + 1));
         f << "*NSET, NSET=" << k << "\n";
-        for (size_t i = 0; i < nds.size(); i += nnl) {
-            for (size_t j = i; j < min(nds.size(), i + nnl); ++j) {
+        for (std::size_t i = 0; i < nds.size(); i += nnl) {
+            for (std::size_t j = i; j < std::min(nds.size(), i + nnl); ++j) {
                 if (j > i)
                     f << ",";
                 f << nds[j];
