@@ -38,6 +38,10 @@ HandlerMetaData FeatureSystemRegister::toMetaData(const QJsonObject& meta_data) 
     handler_data.name = meta_data.value("name").toString().toStdString();
     handler_data.display_name = meta_data.value("display_name").toString().toStdString();
     handler_data.description = meta_data.value("description").toString().toStdString();
+    handler_data.result_display = meta_data.value("result_display").toString().toStdString();
+    handler_data.interactive = meta_data.value("interactive").toBool(false);
+    handler_data.execute_text = meta_data.value("execute_text").toString().toStdString();
+    handler_data.interaction_guide = meta_data.value("interaction_guide").toString().toStdString();
     return handler_data;
 }
 }

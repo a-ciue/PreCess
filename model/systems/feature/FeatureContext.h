@@ -18,6 +18,7 @@ class EventBus;
 
 namespace systems::feature {
 class FeatureParams;
+class InteractionContext;
 
 /**
  * @brief 功能上下文，由 FeatureSystem 装配并在 activate()/execute() 时传给功能
@@ -29,6 +30,7 @@ struct FeatureContext {
     ModelLayer& model; //> 模型层入口
     core::EventBus& events; //> 事件总线，功能在 activate() 中订阅事件
     FeatureParams& params; //> 本功能的持久参数集
+    InteractionContext& interaction; //> 视口交互入口，功能在 activate() 中订阅拾取/悬停回调
     std::function<std::optional<Index>()> activeModel; //> 动态获取当前活动模型 id
     std::function<std::optional<Index>()> activeComponent; //> 动态获取当前活动组件 id
     std::function<std::optional<ComponentOperator>(Index component_id)> componentOperator; //> 申请组件操作句柄

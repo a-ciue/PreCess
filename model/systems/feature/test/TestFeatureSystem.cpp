@@ -4,6 +4,7 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "InteractionState.h"
 #include "ModelLayer.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -78,6 +79,7 @@ HandlerMetaData makeMetaData()
     meta_data.description = "测试用功能";
     return meta_data;
 }
+
 }
 
 TEST_CASE("FeatureSystem::registerHandler collects declarations and activates", "[FeatureSystem]")
@@ -240,4 +242,81 @@ TEST_CASE("FeatureSystem re-registering same name replaces old handler", "[Featu
     REQUIRE(first_deactivate_count == 1);
     REQUIRE(raw_second->activate_count == 1);
     REQUIRE(system.getFeatureInfos().size() == 1);
+}
+
+TEST_CASE("FeatureSystem propagates result_display and interactive metadata to FeatureInfo", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    auto meta_data = makeMetaData();
+    meta_data.result_display = "popup";
+    meta_data.interactive = true;
+    meta_data.execute_text = "尺寸标注";
+    meta_data.interaction_guide = "点击两点成线";
+    FeatureSystem::SystemHandlerPtr handler { new FakeFeatureHandler };
+    REQUIRE(system.registerHandler(meta_data, std::move(handler)));
+
+    auto infos = system.getFeatureInfos();
+    REQUIRE(infos.size() == 1);
+    REQUIRE(infos[0]->result_display == "popup");
+    REQUIRE(infos[0]->interactive);
+    REQUIRE(infos[0]->execute_text == "尺寸标注");
+    REQUIRE(infos[0]->interaction_guide == "点击两点成线");
+
+    // 未声明时为空串与 false
+    FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
+    auto plain_meta = makeMetaData();
+    plain_meta.name = "PlainFeature";
+    REQUIRE(system.registerHandler(plain_meta, std::move(plain)));
+    infos = system.getFeatureInfos();
+    REQUIRE(infos.size() == 2);
+    for (const FeatureInfo* info : infos) {
+        if (info->name == "PlainFeature") {
+            REQUIRE(info->result_display.empty());
+            REQUIRE_FALSE(info->interactive);
+            REQUIRE(info->execute_text.empty());
+            REQUIRE(info->interaction_guide.empty());
+        }
+    }
+}
+
+TEST_CASE("FeatureSystem::interaction returns state only for interactive features", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    // 未声明 interactive 的功能：取不到交互状态
+    FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
+    REQUIRE(system.registerHandler(makeMetaData(), std::move(plain)));
+
+    auto interactive_meta = makeMetaData();
+    interactive_meta.name = "InteractiveFeature";
+    interactive_meta.interactive = true;
+    auto* raw = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr interactive { raw };
+    REQUIRE(system.registerHandler(interactive_meta, std::move(interactive)));
+
+    REQUIRE(system.interaction("FakeFeature") == nullptr);
+    REQUIRE(system.interaction("NoSuchFeature") == nullptr);
+    auto* state = system.interaction("InteractiveFeature");
+    REQUIRE(state != nullptr);
+
+    // 功能经 interaction 上下文订阅回调、产出标注与结果，渲染层经状态读取
+    REQUIRE(raw->context != nullptr);
+    raw->context->interaction.onPick([](const systems::interaction::PickInfo&) { return true; });
+    raw->context->interaction.setResultText("结果");
+    state->annotations.points.push_back({ { 1.0, 2.0, 3.0 } });
+    REQUIRE(state->on_pick != nullptr);
+    REQUIRE(state->on_pick({}));
+    REQUIRE(state->result_text == "结果");
+    REQUIRE(state->annotations.points.size() == 1);
+
+    // 会话清理只清产出、不动订阅
+    state->clearSession();
+    REQUIRE(state->annotations.points.empty());
+    REQUIRE(state->result_text.empty());
+    REQUIRE(state->on_pick != nullptr);
 }

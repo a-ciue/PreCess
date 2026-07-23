@@ -10,6 +10,8 @@
 #include "FeatureEvents.h"
 #include "FeatureInfo.h"
 #include "FeatureParams.h"
+#include "InteractionContext.h"
+#include "InteractionState.h"
 #include "SystemHandlerPtr.h"
 
 #include <any>
@@ -34,6 +36,10 @@ struct HandlerMetaData {
     std::string name {}; //> 功能唯一名称，用作索引
     std::string display_name {}; //> 功能 UI 展示用名称
     std::string description {}; //> 功能描述
+    std::string result_display {}; //> 结果展示方式："popup" 弹窗展示，空或其他值默认侧栏展示
+    bool interactive {}; //> 是否声明视口交互能力（功能经 interaction 上下文订阅交互回调）
+    std::string execute_text {}; //> 参数执行模式的 UI 名称（interactive 功能专用）
+    std::string interaction_guide {}; //> 交互模式的操作说明文字（interactive 功能专用）
 };
 
 /**
@@ -86,6 +92,12 @@ public:
      */
     const FeatureParams* params(const std::string& unique_name) const;
     /**
+     * @brief 按唯一名称获取功能的视口交互状态（渲染层据此驱动交互服务）
+     * @param unique_name 功能唯一名称
+     * @return 功能存在且声明 interactive 时返回交互状态指针，否则为 nullptr
+     */
+    interaction::InteractionState* interaction(const std::string& unique_name);
+    /**
      * @brief 设置功能信息变更回调函数
      */
     void setOnFeatureInfosChanged(std::function<void()> callback);
@@ -101,6 +113,8 @@ private:
         SystemHandlerPtr handler;
         std::unique_ptr<FeatureInfo> info;
         std::unique_ptr<FeatureParams> params;
+        interaction::InteractionState interaction_state; //> 视口交互状态（回调 + 标注 + 结果）
+        InteractionContext interaction_context { interaction_state }; //> 交互上下文（包装本条目状态）
         std::unique_ptr<FeatureContext> context;
     };
 

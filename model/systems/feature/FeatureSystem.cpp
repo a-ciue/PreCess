@@ -47,27 +47,41 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     info->name = meta_data.name;
     info->display_name = meta_data.display_name;
     info->description = meta_data.description;
+    info->result_display = meta_data.result_display;
+    info->interactive = meta_data.interactive;
+    info->execute_text = meta_data.execute_text;
+    info->interaction_guide = meta_data.interaction_guide;
     info->arg_types = registrar.argTypes();
     info->menus = registrar.menuItems();
     info->key_bindings = registrar.keyBindings();
 
-    // 装配功能上下文：参数集 + 动态 provider（经系统转发，provider 后设置也生效）
-    FeatureEntry entry;
+    // 条目就地入库再装配：InteractionContext 持有本条目 InteractionState 的指针，
+    // 先移动入库会使指针悬垂，故先 try_emplace 再装配上下文
+    auto [it, inserted] = entries_.try_emplace(meta_data.name);
+    FeatureEntry& entry = it->second;
+    (void)inserted;
+
+    // 装配功能上下文：参数集 + 交互上下文 + 动态 provider（经系统转发，provider 后设置也生效）
     entry.params = std::make_unique<FeatureParams>(info->arg_types);
     entry.context = std::make_unique<FeatureContext>(FeatureContext {
         *model_layer_,
         *event_bus_,
         *entry.params,
+        entry.interaction_context,
         [this]() { return active_model_provider_ ? active_model_provider_() : std::optional<Index> {}; },
         [this]() { return active_component_provider_ ? active_component_provider_() : std::optional<Index> {}; },
         [this](Index component_id) { return model_layer_->getComponentOperator(component_id); },
     });
     entry.info = std::move(info);
 
-    // 先激活再入库：激活中抛异常不会留下半注册状态
-    handler->activate(*entry.context);
+    // 激活失败则撤掉整个条目，不留下半注册状态
+    try {
+        handler->activate(*entry.context);
+    } catch (...) {
+        entries_.erase(it);
+        throw;
+    }
     entry.handler = std::move(handler);
-    entries_.emplace(meta_data.name, std::move(entry));
 
     spdlog::info("FeatureSystem::registerHandler: Registered feature '{}'", meta_data.name);
     on_feature_infos_changed_();
@@ -129,6 +143,15 @@ const FeatureParams* FeatureSystem::params(const std::string& unique_name) const
 {
     auto it = entries_.find(unique_name);
     return it == entries_.end() ? nullptr : it->second.params.get();
+}
+
+interaction::InteractionState* FeatureSystem::interaction(const std::string& unique_name)
+{
+    auto it = entries_.find(unique_name);
+    if (it == entries_.end() || !it->second.info->interactive) {
+        return nullptr;
+    }
+    return &it->second.interaction_state;
 }
 
 void FeatureSystem::setOnFeatureInfosChanged(std::function<void()> callback)
