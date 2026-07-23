@@ -22,6 +22,10 @@ namespace systems::io {
 std::optional<ModelPayload> InpModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     try {
+        if (path.string().find("..") != std::string::npos) {
+            spdlog::error("InpModelHandler::read_model: relative paths with .. are not allowed");
+            return std::nullopt;
+        }
         Mesh_meshIO abaqus_mesh = read_abaqus(path.string());
         auto mesh = std::make_unique<MeshData>();
         mesh->init();
@@ -50,6 +54,10 @@ void InpModelHandler::write_components(const ModelLayer& mgr,
     const std::vector<std::any>& /*args*/)
 {
     try {
+        if (path.string().find("..") != std::string::npos) {
+            spdlog::error("InpModelHandler::write_components: relative paths with .. are not allowed");
+            return;
+        }
         if (component_ids.empty()) {
             spdlog::error("InpModelHandler::write_components called with empty component_ids");
             return;

@@ -207,6 +207,10 @@ static Mesh_meshIO read_buffer(std::istream& in, const fs::path& current_file)
         key = upper_copy(key);
         if (key == "NODE") {
             // read nodes
+            if (points.empty()) {
+                points.reserve(1024);
+                point_id_map.reserve(1024);
+            }
             while (true) {
                 std::string l = readline_trimmed(in);
                 if (l.empty() || l[0] == '*') {
@@ -261,9 +265,12 @@ static Mesh_meshIO read_buffer(std::istream& in, const fs::path& current_file)
 
             // parse lines, accumulate tokens and extract elements when enough tokens
             std::vector<int> token_buf;
+            token_buf.reserve(static_cast<size_t>(num_data) * 64);
             std::string l;
             std::vector<std::vector<int>> elems;
+            elems.reserve(512);
             std::unordered_map<int, int> local_ids;
+            local_ids.reserve(512);
             int counter = 0;
             while (true) {
                 l = readline_trimmed(in);
