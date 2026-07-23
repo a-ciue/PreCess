@@ -11,10 +11,9 @@ var searchData=
   ['block_5fcapacity_5fhard_5flimits_8',['block_capacity_hard_limits',['../classplf_1_1colony.html#a80fd09d17d3fcf4a6faf74da8725b6b7',1,'plf::colony']]],
   ['block_5fcapacity_5flimits_9',['block_capacity_limits',['../classplf_1_1colony.html#a67ace0eb62e6009dbd9b9a5707f873f2',1,'plf::colony']]],
   ['block_5fmetadata_5fmemory_10',['block_metadata_memory',['../classplf_1_1colony.html#a97b7823580326732a38cee3f5e45fa62',1,'plf::colony']]],
-  ['blockselectorhighlight_11',['BlockSelectorHighlight',['../classBlockSelectorHighlight.html#ac5f572874af4623783aad341182ed821',1,'BlockSelectorHighlight']]],
-  ['blocksmerged_12',['blocksMerged',['../classQModelObserver.html#ac1bdada16a5cc4b6ad8fe7cda93cb1b5',1,'QModelObserver']]],
-  ['blockupdated_13',['blockUpdated',['../classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581',1,'QModelObserver']]],
-  ['boundary_14',['boundary',['../classMeshLib_1_1CEdge.html#a5fb31e9605d9f59fd89f74039bf4f9d9',1,'MeshLib::CEdge::boundary()'],['../classMeshLib_1_1CVertex.html#af2b03defeb092cd172d0011762e9b3cf',1,'MeshLib::CVertex::boundary()']]],
-  ['build_15',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
-  ['buildhighlight_16',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]]
+  ['blocksmerged_11',['blocksMerged',['../classQModelObserver.html#ac1bdada16a5cc4b6ad8fe7cda93cb1b5',1,'QModelObserver']]],
+  ['blockupdated_12',['blockUpdated',['../classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581',1,'QModelObserver']]],
+  ['boundary_13',['boundary',['../classMeshLib_1_1CEdge.html#a5fb31e9605d9f59fd89f74039bf4f9d9',1,'MeshLib::CEdge::boundary()'],['../classMeshLib_1_1CVertex.html#af2b03defeb092cd172d0011762e9b3cf',1,'MeshLib::CVertex::boundary()']]],
+  ['build_14',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
+  ['buildhighlight_15',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]]
 ];

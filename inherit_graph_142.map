@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classsystems_1_1feature_1_1FeatureParams.html" title="功能的持久参数集：参数类型与当前值一一对应" alt="" coords="5,5,195,45"/>
+<area shape="rect" id="Node000000" href="$classsystems_1_1feature_1_1FeatureRegistrar.html" title="功能注册器：功能在 setup() 中通过它声明参数、菜单项与按键绑定" alt="" coords="5,5,195,45"/>
 </map>

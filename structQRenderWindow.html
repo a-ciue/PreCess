@@ -242,8 +242,6 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:aff08516b52543d74321c19ce583f329d"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空Selection  <br /></td></tr>
 <tr class="memitem:a3e099c2f3a937898f4aa8f85d30e73fa" id="r_a3e099c2f3a937898f4aa8f85d30e73fa"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e099c2f3a937898f4aa8f85d30e73fa">setScaleBarVisible</a> (bool on)</td></tr>
 <tr class="memdesc:a3e099c2f3a937898f4aa8f85d30e73fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">显示/隐藏比例尺（随相机缩放自动更新刻度）  <br /></td></tr>
-<tr class="memitem:a20f10004f8efd372d80da726b3528326" id="r_a20f10004f8efd372d80da726b3528326"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20f10004f8efd372d80da726b3528326">setRenderMode</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, QString render_mode)</td></tr>
-<tr class="memdesc:a20f10004f8efd372d80da726b3528326"><td class="mdescLeft">&#160;</td><td class="mdescRight">改变渲染模式  <br /></td></tr>
 <tr class="memitem:ab20c623c14869a49ca881fc95a04c067" id="r_ab20c623c14869a49ca881fc95a04c067"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab20c623c14869a49ca881fc95a04c067">setEdgeRender</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, bool is_render)</td></tr>
 <tr class="memdesc:ab20c623c14869a49ca881fc95a04c067"><td class="mdescLeft">&#160;</td><td class="mdescRight">边渲染  <br /></td></tr>
 <tr class="memitem:a73c25ddcb48657b9e4d0218be8190cf5" id="r_a73c25ddcb48657b9e4d0218be8190cf5"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73c25ddcb48657b9e4d0218be8190cf5">setComponentEdgeRender</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, bool is_render)</td></tr>
@@ -279,7 +277,6 @@ Private 成员函数</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
 <tr class="memitem:ab385b44900ccce062106522f7a05bfbc" id="r_ab385b44900ccce062106522f7a05bfbc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab385b44900ccce062106522f7a05bfbc">edge_render_</a> {}</td></tr>
-<tr class="memitem:ae64072c10dfeebd08eea3c0b7da41e09" id="r_ae64072c10dfeebd08eea3c0b7da41e09"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31">ModelRenderMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae64072c10dfeebd08eea3c0b7da41e09">renderMode_</a> {}</td></tr>
 <tr class="memitem:a76af644d33dc5c1d094558d83a83c049" id="r_a76af644d33dc5c1d094558d83a83c049"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkCamera &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76af644d33dc5c1d094558d83a83c049">_camera</a></td></tr>
 <tr class="memitem:ad81a9c7728bd2939db0b4eb3958c6deb" id="r_ad81a9c7728bd2939db0b4eb3958c6deb"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classSelectManager.html">SelectManager</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad81a9c7728bd2939db0b4eb3958c6deb">select_manager_</a></td></tr>
 <tr class="memitem:a3f810a45cdd8e37d3beb60229f40626a" id="r_a3f810a45cdd8e37d3beb60229f40626a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshActor.html">MeshActor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3f810a45cdd8e37d3beb60229f40626a">cur_actor_</a> {}</td></tr>
@@ -951,35 +948,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a20f10004f8efd372d80da726b3528326" name="a20f10004f8efd372d80da726b3528326"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a20f10004f8efd372d80da726b3528326">&#9670;&#160;</a></span>setRenderMode()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void QRenderWindow::setRenderMode </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>render_mode</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>改变渲染模式 </p>
-<dl class="params"><dt>参数</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">select_mode</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a3e099c2f3a937898f4aa8f85d30e73fa" name="a3e099c2f3a937898f4aa8f85d30e73fa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3e099c2f3a937898f4aa8f85d30e73fa">&#9670;&#160;</a></span>setScaleBarVisible()</h2>
 
@@ -1270,28 +1238,6 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classQModelQuery.html">QModelQuery</a>* QRenderWindow::model_query_ {}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae64072c10dfeebd08eea3c0b7da41e09" name="ae64072c10dfeebd08eea3c0b7da41e09"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae64072c10dfeebd08eea3c0b7da41e09">&#9670;&#160;</a></span>renderMode_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Core_8h.html#a367e3492fe9b0a0966e34771d1173b31">ModelRenderMode</a> QRenderWindow::renderMode_ {}</td>
         </tr>
       </table>
   </td>

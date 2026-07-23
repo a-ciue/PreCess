@@ -1,13 +1,11 @@
 <map id="SelectorHighlight" name="SelectorHighlight">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,104,140,129"/>
-<area shape="rect" id="Node000002" href="$classBlockSelectorHighlight.html" title=" " alt="" coords="191,5,361,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,93,140,66,187,40,218,28,220,33,189,44,143,70,103,98"/>
-<area shape="rect" id="Node000003" href="$classEdgeSelectorHighlight.html" title=" " alt="" coords="193,55,359,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="138,98,222,77,223,83,139,103"/>
-<area shape="rect" id="Node000004" href="$classFaceSelectorHighlight.html" title=" " alt="" coords="195,104,357,129"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="154,114,195,114,195,119,154,119"/>
-<area shape="rect" id="Node000005" href="$classSolidSelectorHighlight.html" title=" " alt="" coords="193,153,359,179"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="139,130,223,151,222,156,138,135"/>
-<area shape="rect" id="Node000006" href="$classVertexSelectorHighlight.html" title=" " alt="" coords="188,203,364,228"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="103,136,143,162,189,188,223,200,221,205,187,192,140,167,100,140"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,80,140,105"/>
+<area shape="rect" id="Node000002" href="$classEdgeSelectorHighlight.html" title=" " alt="" coords="193,5,359,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,72,187,39,223,28,225,33,189,45,113,77"/>
+<area shape="rect" id="Node000003" href="$classFaceSelectorHighlight.html" title=" " alt="" coords="195,55,357,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="153,80,194,75,195,80,154,85"/>
+<area shape="rect" id="Node000004" href="$classSolidSelectorHighlight.html" title=" " alt="" coords="193,104,359,129"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="154,100,193,104,192,109,153,105"/>
+<area shape="rect" id="Node000005" href="$classVertexSelectorHighlight.html" title=" " alt="" coords="188,153,364,179"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="115,109,189,138,228,151,227,156,187,143,113,113"/>
 </map>

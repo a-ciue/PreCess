@@ -18,6 +18,5 @@ var searchData=
   ['hasmodel_15',['hasModel',['../classQModelQuery.html#a35056e21c07e3fe3e307fa17fef3763c',1,'QModelQuery']]],
   ['he_5fnext_16',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
   ['he_5fprev_17',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
-  ['he_5fsym_18',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
-  ['highlightblockbycellcolor_19',['highlightBlockByCellColor',['../classBlockSelectorHighlight.html#a3bda01a0e127cae5ab71505b43785e85',1,'BlockSelectorHighlight']]]
+  ['he_5fsym_18',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]]
 ];
