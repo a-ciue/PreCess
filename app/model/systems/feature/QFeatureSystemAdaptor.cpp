@@ -130,9 +130,7 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
                 QString::fromStdString(menu.icon),
                 std::move(args),
                 QString::fromStdString(feature_info->result_display),
-                feature_info->interactive,
-                QString::fromStdString(feature_info->execute_text),
-                QString::fromStdString(feature_info->interaction_guide)));
+                feature_info->interactive));
         }
     }
     return infos;

@@ -38,8 +38,6 @@ struct HandlerMetaData {
     std::string description {}; //> 功能描述
     std::string result_display {}; //> 结果展示方式："popup" 弹窗展示，空或其他值默认侧栏展示
     bool interactive {}; //> 是否声明视口交互能力（功能经 interaction 上下文订阅交互回调）
-    std::string execute_text {}; //> 参数执行模式的 UI 名称（interactive 功能专用）
-    std::string interaction_guide {}; //> 交互模式的操作说明文字（interactive 功能专用）
 };
 
 /**

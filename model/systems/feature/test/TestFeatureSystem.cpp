@@ -253,8 +253,6 @@ TEST_CASE("FeatureSystem propagates result_display and interactive metadata to F
     auto meta_data = makeMetaData();
     meta_data.result_display = "popup";
     meta_data.interactive = true;
-    meta_data.execute_text = "尺寸标注";
-    meta_data.interaction_guide = "点击两点成线";
     FeatureSystem::SystemHandlerPtr handler { new FakeFeatureHandler };
     REQUIRE(system.registerHandler(meta_data, std::move(handler)));
 
@@ -262,8 +260,6 @@ TEST_CASE("FeatureSystem propagates result_display and interactive metadata to F
     REQUIRE(infos.size() == 1);
     REQUIRE(infos[0]->result_display == "popup");
     REQUIRE(infos[0]->interactive);
-    REQUIRE(infos[0]->execute_text == "尺寸标注");
-    REQUIRE(infos[0]->interaction_guide == "点击两点成线");
 
     // 未声明时为空串与 false
     FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
@@ -276,8 +272,6 @@ TEST_CASE("FeatureSystem propagates result_display and interactive metadata to F
         if (info->name == "PlainFeature") {
             REQUIRE(info->result_display.empty());
             REQUIRE_FALSE(info->interactive);
-            REQUIRE(info->execute_text.empty());
-            REQUIRE(info->interaction_guide.empty());
         }
     }
 }

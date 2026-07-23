@@ -155,7 +155,7 @@
 - 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
 - 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：在 `setup(FeatureRegistrar&)` 中注册参数、菜单项、按键绑定；在 `activate(FeatureContext&)` 中经 `ctx.events` 订阅事件（`KeyEvent`、`ParameterChangedEvent`、`ModelEvent`）；菜单触发 `execute()`。功能可修改的范围仅限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`），示例见 `plugins/feature/FeatureDemoPlugin/`。
 - **功能与界面解耦（声明 / 事件 / 上下文三原则）**：通用界面（`SideBar`、菜单、渲染窗口等）禁止按插件名 / 功能名特判。
-  - **静态能力走声明链**：结果展示方式（`result_display`）、视口交互能力（`interactive`）、模式名称（`execute_text`）、操作说明（`interaction_guide`）等一律经 json → `HandlerMetaData` → `FeatureInfo` → `QFeatureInfo` → QML 按声明渲染；新增交互功能不得改动通用界面代码。
+  - **静态能力走声明链**：结果展示方式（`result_display`）、视口交互能力（`interactive`）等一律经 json → `HandlerMetaData` → `FeatureInfo` → `QFeatureInfo` → QML 按声明渲染；新增交互功能不得改动通用界面代码。
   - **动态状态走事件回调**：交互结果、进度等经事件 / 信号传递（如 `interactionUpdated`、`EventBus` 事件），界面不轮询插件内部状态。
   - **环境状态走上下文访问**：活动模型 / 组件、选择集经 `FeatureContext` provider 与 `App.selection` 获取，功能不反向依赖 app 层。
   - 启停类逻辑做成幂等的状态应用（以目标状态为守卫，重复触发无副作用），避免多触发源的命令式调用堆积。

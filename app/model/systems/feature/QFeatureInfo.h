@@ -18,11 +18,9 @@ class QFeatureInfo : public QObject {
     Q_PROPERTY(QList<QArgType*> arg_types READ argTypes CONSTANT)
     Q_PROPERTY(QString result_display READ resultDisplay CONSTANT)
     Q_PROPERTY(bool interactive READ interactive CONSTANT)
-    Q_PROPERTY(QString execute_text READ executeText CONSTANT)
-    Q_PROPERTY(QString interaction_guide READ interactionGuide CONSTANT)
 public:
     QFeatureInfo(QString name, QString display_name, QString description, QString menu_path, QString icon, QList<QArgType*> arg_types,
-        QString result_display = {}, bool interactive = false, QString execute_text = {}, QString interaction_guide = {}, QObject* parent = nullptr)
+        QString result_display = {}, bool interactive = false, QObject* parent = nullptr)
         : QObject(parent)
         , name_(std::move(name))
         , display_name_(std::move(display_name))
@@ -32,8 +30,6 @@ public:
         , arg_types_(std::move(arg_types))
         , result_display_(std::move(result_display))
         , interactive_(interactive)
-        , execute_text_(std::move(execute_text))
-        , interaction_guide_(std::move(interaction_guide))
     {
     }
     QString name() const { return name_; }
@@ -44,8 +40,6 @@ public:
     QList<QArgType*> argTypes() const { return arg_types_; }
     QString resultDisplay() const { return result_display_; }
     bool interactive() const { return interactive_; }
-    QString executeText() const { return execute_text_; }
-    QString interactionGuide() const { return interaction_guide_; }
 
 private:
     QString name_; //> 功能唯一名称，用作索引
@@ -56,7 +50,5 @@ private:
     QList<QArgType*> arg_types_; //> 功能参数类型列表
     QString result_display_; //> 结果展示方式："popup" 弹窗展示，空或其他值默认侧栏展示
     bool interactive_ = false; //> 是否声明视口交互能力
-    QString execute_text_; //> 参数执行模式的 UI 名称（interactive 功能专用）
-    QString interaction_guide_; //> 交互模式的操作说明文字（interactive 功能专用）
 };
 #endif // !Q_FEATURE_INFO_H

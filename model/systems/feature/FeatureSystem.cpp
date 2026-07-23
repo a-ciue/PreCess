@@ -8,6 +8,7 @@
 
 #include <spdlog/spdlog.h>
 
+
 namespace systems::feature {
 const std::string FeatureSystem::name = "FeatureSystem";
 
@@ -49,8 +50,6 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     info->description = meta_data.description;
     info->result_display = meta_data.result_display;
     info->interactive = meta_data.interactive;
-    info->execute_text = meta_data.execute_text;
-    info->interaction_guide = meta_data.interaction_guide;
     info->arg_types = registrar.argTypes();
     info->menus = registrar.menuItems();
     info->key_bindings = registrar.keyBindings();
