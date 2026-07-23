@@ -100,6 +100,16 @@ void SelectManager::refreshComponentHighlight()
     geom_->clearSelection();
 }
 
+void SelectManager::setVertexSnapActive(bool on)
+{
+    geom_->setVertexSnapActive(on);
+}
+
+std::optional<std::pair<Index, std::array<double, 3>>> SelectManager::snapGeometryVertex(double posx, double posy)
+{
+    return geom_->snapGeometryVertex(posx, posy);
+}
+
 std::unique_ptr<Selection> SelectManager::getSelection()
 {
     if (select_mode_ == SelectMode::Component) {

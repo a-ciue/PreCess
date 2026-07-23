@@ -291,6 +291,8 @@ Page {
 
     Component.onCompleted: {
         App.registry.renderWindow = myItem
+        // 注入功能系统适配器：startInteraction 按名称获取 InteractionState
+        myItem.setFeatureAdaptor(QModelManager.featureSystem)
         Qt.callLater(function() { myItem.resetCamera() })
     }
 }

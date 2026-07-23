@@ -25,6 +25,19 @@ public:
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
 
+    /**
+     * @brief 进入/退出几何顶点吸附模式（交互服务开始/结束时调用）
+     *
+     * 内部把拾取模式切到几何顶点/还原，调用方无需感知 picker 的存在。
+     * 与选择互斥由 UI 层保证（交互激活期间选择模式为 None）。
+     */
+    void setVertexSnapActive(bool on);
+    /**
+     * @brief 吸附几何顶点：拾取并解析为几何顶点
+     * @return 命中时返回 {GeometryRegistry 顶点 id, 世界坐标}，未命中返回 std::nullopt
+     */
+    std::optional<std::pair<Index, std::array<double, 3>>> snapGeometryVertex(double posx, double posy);
+
 private:
     GeometrySelectorHighlight* getOrCreateSelector(Index component_id);
 

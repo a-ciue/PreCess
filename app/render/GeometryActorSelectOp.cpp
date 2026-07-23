@@ -4,6 +4,7 @@
 #include "GeometrySubshapeIndex.h"
 #include "Selection.h"
 
+#include <BRep_Tool.hxx>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
@@ -11,7 +12,10 @@
 #include <NCollection_List.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <gp_Pnt.hxx>
 #include <vtkActor.h>
 #include <vtkDataArray.h>
 #include <vtkPolyData.h>
@@ -176,6 +180,20 @@ std::optional<Index> GeometryActorSelectOp::resolvePickedSubshape(IVtkTools_Shap
 
     ElementEnum::Type elemType = ElementEnum::None;
     return mapSubshapeToGeomId(geometry_actor_->occ_shape_, *geomIndex, wantType, out_sub_id, elemType);
+}
+
+std::optional<std::array<double, 3>> GeometryActorSelectOp::vertexPoint(IVtk_IdType sub_id) const
+{
+    const OccShapeHandle& occ = geometry_actor_->occ_shape_;
+    if (occ.IsNull())
+        return std::nullopt;
+
+    const TopoDS_Shape& sub = occ->GetSubShape(sub_id);
+    if (sub.IsNull() || sub.ShapeType() != TopAbs_VERTEX)
+        return std::nullopt;
+
+    const gp_Pnt p = BRep_Tool::Pnt(TopoDS::Vertex(sub));
+    return std::array<double, 3> { p.X(), p.Y(), p.Z() };
 }
 
 bool GeometryActorSelectOp::resolvePickedSolid(IVtkTools_ShapePicker* picker, IVtk_IdType shapeId,
