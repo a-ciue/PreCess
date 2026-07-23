@@ -41,6 +41,31 @@ ColumnLayout {
         "GmshPlugin": "qrc:/images/toolbar/gmsh.svg",
         "cmdExecutePlugin": "qrc:/images/toolbar/cmd.svg"
     })
+    // 几何页按钮定义：当前使用默认插件图标。
+    readonly property var geometryOperationButtons: [
+        { text: qsTr("点"), operation: "startCreatePoint",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("直线边（坐标）"), operation: "startCreateLineByCoordinates",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("直线边（选点）"), operation: "startCreateLineFromVertices",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("矩形面"), operation: "startCreateRectangleFace",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("圆盘/扇形面"), operation: "startCreateDiskFace",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("闭合边成面"), operation: "startCreateFaceFromEdges",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("长方体"), operation: "startCreateBox",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("圆柱体"), operation: "startCreateCylinder",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("圆锥/圆台"), operation: "startCreateCone",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("球体/部分球体"), operation: "startCreateSphere",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("拉伸面"), operation: "startExtrudeFace",
+          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" }
+    ]
 
     function getIconForPlugin(pluginName) {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/PreCess_extra_plugin.svg"
@@ -309,91 +334,21 @@ ColumnLayout {
             Item { Layout.fillWidth: true }
         }
 
-        // 3: 几何 → 复用基础几何操作入口，按点、边、面、体分组。
+        // 3: 几何 → 创建几何。
         RowLayout {
             anchors.fill: parent
 
-            ToolButton {
-                text: qsTr("创建点")
-                Layout.fillHeight: true
-                onClicked: root.geometryOperationActions.startCreatePoint()
-            }
-
-            ToolSeparator {
-                orientation: Qt.Vertical
-                Layout.fillHeight: true
-            }
-
-            ToolButton {
-                id: edgeGeometryButton
-                text: qsTr("直线边")
-                Layout.fillHeight: true
-                onClicked: edgeGeometryMenu.popup(edgeGeometryButton, 0, edgeGeometryButton.height)
-
-                Menu {
-                    id: edgeGeometryMenu
-                    MenuItem {
-                        text: qsTr("输入两点坐标")
-                        onTriggered: root.geometryOperationActions.startCreateLineByCoordinates()
-                    }
-                    MenuItem {
-                        text: qsTr("选择两个已有点")
-                        onTriggered: root.geometryOperationActions.startCreateLineFromVertices()
-                    }
-                }
-            }
-
-            ToolButton {
-                id: faceGeometryButton
-                text: qsTr("面")
-                Layout.fillHeight: true
-                onClicked: faceGeometryMenu.popup(faceGeometryButton, 0, faceGeometryButton.height)
-
-                Menu {
-                    id: faceGeometryMenu
-                    MenuItem {
-                        text: qsTr("矩形面")
-                        onTriggered: root.geometryOperationActions.startCreateRectangleFace()
-                    }
-                    MenuItem {
-                        text: qsTr("圆盘/扇形面")
-                        onTriggered: root.geometryOperationActions.startCreateDiskFace()
-                    }
-                    MenuItem {
-                        text: qsTr("选择闭合边创建面")
-                        onTriggered: root.geometryOperationActions.startCreateFaceFromEdges()
-                    }
-                }
-            }
-
-            ToolButton {
-                id: solidGeometryButton
-                text: qsTr("体")
-                Layout.fillHeight: true
-                onClicked: solidGeometryMenu.popup(solidGeometryButton, 0, solidGeometryButton.height)
-
-                Menu {
-                    id: solidGeometryMenu
-                    MenuItem {
-                        text: qsTr("长方体")
-                        onTriggered: root.geometryOperationActions.startCreateBox()
-                    }
-                    MenuItem {
-                        text: qsTr("圆柱体")
-                        onTriggered: root.geometryOperationActions.startCreateCylinder()
-                    }
-                    MenuItem {
-                        text: qsTr("圆锥/圆台")
-                        onTriggered: root.geometryOperationActions.startCreateCone()
-                    }
-                    MenuItem {
-                        text: qsTr("球体/部分球体")
-                        onTriggered: root.geometryOperationActions.startCreateSphere()
-                    }
-                    MenuItem {
-                        text: qsTr("拉伸面为实体")
-                        onTriggered: root.geometryOperationActions.startExtrudeFace()
-                    }
+            Repeater {
+                model: root.geometryOperationButtons
+                ToolButton {
+                    required property var modelData
+                    icon.source: root.getIconForFeature(modelData)
+                    icon.width: parent.height * 0.65
+                    icon.height: parent.height * 0.65
+                    Layout.fillHeight: true
+                    display: ToolButton.TextUnderIcon
+                    text: modelData.text
+                    onClicked: root.geometryOperationActions[modelData.operation]()
                 }
             }
 

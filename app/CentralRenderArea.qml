@@ -27,7 +27,7 @@ Page {
                 Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
-                      myItem.setComponentEdgeRender(App.selection.activeComponentId, !myItem.cur_edge_render)
+                     myItem.setComponentEdgeRender(App.selection.activeComponentId, !myItem.cur_edge_render)
                 }
             }
             ToolButton {
