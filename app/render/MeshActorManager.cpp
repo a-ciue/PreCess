@@ -73,6 +73,7 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
     }
     auto& actor = this->component_actors_[component_id];
     actor->loadModelData(model_data);
+    actor->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor);
 }
 
@@ -106,6 +107,19 @@ bool MeshActorManager::getIsEdgeRender(Index component_id)
     if (this->component_actors_.count(component_id))
         return this->component_actors_[component_id]->getIsEdgeRender();
     return false;
+}
+
+void MeshActorManager::setCurrentRenderStyle(MeshRenderStyle style)
+{
+    current_style_ = style;
+    for (auto& [id, actor] : component_actors_) {
+        actor->setRenderStyle(style);
+    }
+}
+
+MeshRenderStyle MeshActorManager::getCurrentRenderStyle() const
+{
+    return current_style_;
 }
 
 void MeshActorManager::setAttriMode(

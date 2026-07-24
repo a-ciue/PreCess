@@ -103,6 +103,88 @@ Page {
                 }
             }
             ToolButton {
+                text: "网格面"
+                checked: myItem.meshStyle === 0 || myItem.meshStyle === 1
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: meshFaceMenu.open()
+                Menu {
+                    id: meshFaceMenu
+                    MenuItem {
+                        text: "带网格线"
+                        checkable: true
+                        checked: myItem.meshStyle === 0
+                        onTriggered: myItem.setMeshStyle(0)
+                    }
+                    MenuItem {
+                        text: "无线"
+                        checkable: true
+                        checked: myItem.meshStyle === 1
+                        onTriggered: myItem.setMeshStyle(1)
+                    }
+                }
+            }
+            ToolButton {
+                text: "网格透"
+                checked: myItem.meshStyle >= 2 && myItem.meshStyle <= 4
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: meshTransMenu.open()
+                Menu {
+                    id: meshTransMenu
+                    MenuItem {
+                        text: "75%"
+                        checkable: true
+                        checked: myItem.meshStyle === 2
+                        onTriggered: myItem.setMeshStyle(2)
+                    }
+                    MenuItem {
+                        text: "50%"
+                        checkable: true
+                        checked: myItem.meshStyle === 3
+                        onTriggered: myItem.setMeshStyle(3)
+                    }
+                    MenuItem {
+                        text: "25%"
+                        checkable: true
+                        checked: myItem.meshStyle === 4
+                        onTriggered: myItem.setMeshStyle(4)
+                    }
+                }
+            }
+            ToolButton {
+                text: "网格线"
+                checked: myItem.meshStyle === 5 || myItem.meshStyle === 6
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: meshWireMenu.open()
+                Menu {
+                    id: meshWireMenu
+                    MenuItem {
+                        text: "带内部线"
+                        checkable: true
+                        checked: myItem.meshStyle === 5
+                        onTriggered: myItem.setMeshStyle(5)
+                    }
+                    MenuItem {
+                        text: "仅表面线"
+                        checkable: true
+                        checked: myItem.meshStyle === 6
+                        onTriggered: myItem.setMeshStyle(6)
+                    }
+                }
+            }
+            ToolButton {
+                text: "网格隐"
+                checkable: true
+                checked: myItem.meshStyle === 7
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: {
+                    myItem.setMeshStyle(myItem.meshStyle === 7 ? 0 : 7)
+                }
+            }
+            ToolButton {
                 text: "裁剪"
                 checkable: true
                 Layout.preferredWidth: 50

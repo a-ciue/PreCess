@@ -6,6 +6,7 @@
 #include <optional>
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
+#include <vtkExtractEdges.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include <vtkPropCollection.h>
@@ -53,6 +54,8 @@ public:
      */
     void setClipPlane(vtkPlane* plane);
     void setRenderEdge(bool is_render);
+    void setRenderStyle(MeshRenderStyle style);
+    MeshRenderStyle getRenderStyle() const;
 
     bool getIsEdgeRender();
     /**
@@ -76,7 +79,10 @@ public:
     void ensureOriginalPointIds();
 
 private:
+    void applyStyle();
+
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
+    MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
     bool edge_render_ { true };
     bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
@@ -87,6 +93,7 @@ private:
     vtkNew<vtkExtractGeometry> solid_clipper_;
 
     vtkNew<vtkGeometryFilter> solid_filter_;
+    vtkNew<vtkExtractEdges> solid_edge_extractor_;
 
     vtkNew<vtkPolyDataMapper> edge_mapper_;
     vtkNew<vtkPolyDataMapper> face_mapper_;

@@ -645,4 +645,21 @@ int QRenderWindow::getGeometryStyle()
     return static_cast<int>(geometry_style_);
 }
 
+void QRenderWindow::setMeshStyle(int style)
+{
+    mesh_style_ = static_cast<MeshRenderStyle>(style);
+    dispatch_async([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->setCurrentRenderStyle(static_cast<MeshRenderStyle>(style));
+        }
+    });
+    emit meshStyleChanged();
+}
+
+int QRenderWindow::getMeshStyle()
+{
+    return static_cast<int>(mesh_style_);
+}
+
 vtkStandardNewMacro(QRenderWindow::Data);
