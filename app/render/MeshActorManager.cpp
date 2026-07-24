@@ -65,7 +65,7 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
 {
     if (!this->component_actors_.count(component_id))
         this->component_actors_[component_id] = std::make_shared<MeshActor>(
-            renderer, global_points_, true);
+            renderer, global_points_);
 
     if (scalar_bar_component_id_ == component_id) {
         scalar_bar_->SetVisibility(false);
@@ -83,12 +83,6 @@ void MeshActorManager::setVisibility(Index component_id, bool visibility)
         this->component_actors_[component_id]->setVisibility(visibility);
 }
 
-void MeshActorManager::setRenderEdge(Index component_id, bool is_render)
-{
-    if (this->component_actors_.count(component_id))
-        this->component_actors_[component_id]->setRenderEdge(is_render);
-}
-
 void MeshActorManager::setClipPlane(vtkPlane* plane)
 {
     for (auto&& [idx, mesh_actor] : this->component_actors_) {
@@ -101,13 +95,6 @@ bool MeshActorManager::getCount(Index component_id)
     return this->component_actors_.count(component_id);
 }
 
-
-bool MeshActorManager::getIsEdgeRender(Index component_id)
-{
-    if (this->component_actors_.count(component_id))
-        return this->component_actors_[component_id]->getIsEdgeRender();
-    return false;
-}
 
 void MeshActorManager::setCurrentRenderStyle(MeshRenderStyle style)
 {

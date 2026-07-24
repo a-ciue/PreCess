@@ -116,10 +116,8 @@ void addCellAttributes(
 
 MeshActor::MeshActor(
     vtkRenderer* renderer,
-    vtkPoints* global_points,
-    bool is_edge_render)
-    : edge_render_(is_edge_render)
-    , renderer_(renderer)
+    vtkPoints* global_points)
+    : renderer_(renderer)
     , global_points_(global_points)
 {
     if (!global_points_) {
@@ -131,8 +129,6 @@ MeshActor::MeshActor(
     this->renderer_->AddActor(this->face_actor_);
     this->renderer_->AddActor(this->edge_actor_);
     this->renderer_->AddActor(this->glyph3D_actor_);
-
-    this->setRenderEdge(is_edge_render);
 
     this->edge_actor_->GetProperty()->SetLineWidth(2);
 
@@ -283,12 +279,6 @@ void MeshActor::setClipPlane(vtkPlane* plane)
     clip_plane_ = plane;
 }
 
-void MeshActor::setRenderEdge(bool is_render)
-{
-    this->edge_render_ = is_render;
-    applyStyle();
-}
-
 void MeshActor::setRenderStyle(MeshRenderStyle style)
 {
     this->style_ = style;
@@ -395,11 +385,6 @@ void MeshActor::applyStyle()
     default:
         break;
     }
-}
-
-bool MeshActor::getIsEdgeRender()
-{
-    return this->edge_render_;
 }
 
 void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)

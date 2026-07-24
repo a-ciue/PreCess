@@ -20,13 +20,11 @@ public:
         vtkRenderer* renderer);
 
     void setVisibility(Index component_id, bool visibility);
-    void setRenderEdge(Index component_id, bool is_render);
     void setClipPlane(vtkPlane* plane);
     void setCurrentRenderStyle(MeshRenderStyle style);
     MeshRenderStyle getCurrentRenderStyle() const;
 
     bool getCount(Index component_id);
-    bool getIsEdgeRender(Index component_id);
 
     void setAttriMode(
         Index component_id,

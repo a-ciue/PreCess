@@ -22,13 +22,10 @@ public:
     GeometryActor(vtkRenderer* renderer);
     ~GeometryActor();
 
-    bool getIsEdgeRender();
-
     void loadShape(const GeometryDataVtk& geometry_data);
 
     void setVisibility(bool visibility);
     bool isVisible() const;
-    void setRenderEdge(bool is_render);
     void setRenderStyle(GeometryRenderStyle style);
     GeometryRenderStyle getRenderStyle() const;
 
@@ -37,7 +34,6 @@ private:
     void applyStyle();
 
     GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
-    bool edge_render;
     bool visibility_;
     OccShapeHandle occ_shape_;
     const GeometrySubshapeIndex* geometry_index_;

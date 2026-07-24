@@ -89,7 +89,6 @@ QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
-    edge_render_ = false;
 }
 
 QRenderWindow::~QRenderWindow() = default;
@@ -467,32 +466,6 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
-void QRenderWindow::setCurEdgeRender(bool edge_render)
-{
-    edge_render_ = edge_render;
-    emit curEdgeRenderChanged();
-}
-
-bool QRenderWindow::getCurEdgeRender()
-{
-    return this->edge_render_;
-}
-
-bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
-{
-    if (component_id < 0) return false;
-
-    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
-        return vtk.mesh_actor_manager_->getIsEdgeRender(component_id);
-    }
-    if (vtk.geometry_actor_manager_ && vtk.geometry_actor_manager_->hasComponent(component_id)) {
-        return vtk.geometry_actor_manager_->getIsEdgeRender(component_id);
-    }
-
-    spdlog::error("QRenderWindow::getIsEdgeRender: error getting edge render mode");
-    return false;
-}
-
 void QRenderWindow::setSelectComponent(Index component_id)
 {
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -501,7 +474,6 @@ void QRenderWindow::setSelectComponent(Index component_id)
             return;
 
         this->cur_component_id_ = component_id;
-        this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
     });
 }
 
@@ -537,39 +509,6 @@ void QRenderWindow::setScaleBarVisible(bool on)
         Data* vtk = Data::SafeDownCast(userData);
         vtk->scale_bar_axis_->SetVisibility(on);
         });
-}
-
-void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
-{
-    dispatch_async([model_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-        vtk->mesh_actor_manager_->setRenderEdge(model_id, is_render);
-
-        auto component_ids = model_query_->getComponentIds(model_id);
-        for (Index component_id : component_ids) {
-            vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
-            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
-        }
-
-        this->setCurEdgeRender(is_render);
-    });
-}
-
-void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
-{
-    dispatch_async([component_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        if (vtk->mesh_actor_manager_) {
-            vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
-        }
-
-        if (vtk->geometry_actor_manager_) {
-            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
-        }
-
-        this->setCurEdgeRender(is_render);
-    });
 }
 
 void QRenderWindow::setClick()

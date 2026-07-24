@@ -40,8 +40,7 @@ public:
 
     MeshActor(
         vtkRenderer* renderer,
-        vtkPoints* global_points,
-        bool is_edge_render = true);
+        vtkPoints* global_points);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -53,11 +52,9 @@ public:
      * @param plane 裁剪平面，传入nullptr则取消裁剪
      */
     void setClipPlane(vtkPlane* plane);
-    void setRenderEdge(bool is_render);
     void setRenderStyle(MeshRenderStyle style);
     MeshRenderStyle getRenderStyle() const;
 
-    bool getIsEdgeRender();
     /**
      * @brief 取消属性渲染
      */
@@ -83,7 +80,6 @@ private:
 
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
-    bool edge_render_ { true };
     bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
 

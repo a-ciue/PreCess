@@ -256,7 +256,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    gmgr.setRenderEdge(component_id, true);
     gmgr.setVisibility(component_id, true);
 
     vtkNew<vtkActor> highlightActor;

@@ -25,17 +25,6 @@ std::shared_ptr<GeometryActor> GeometryActorManager::getComponentActor(Index com
     return nullptr;
 }
 
-bool GeometryActorManager::getIsEdgeRender(Index component_id)
-{
-    auto it = component_actors_.find(component_id);
-    if (it != component_actors_.end()) {
-        return it->second->getIsEdgeRender();
-    }
-
-    spdlog::error("get is edge render mode error");
-    return false;
-}
-
 bool GeometryActorManager::hasComponent(Index component_id) const
 {
     return component_actors_.count(component_id) != 0;
@@ -74,14 +63,6 @@ void GeometryActorManager::setVisibility(Index component_id, bool visibility)
     if (it != component_actors_.end()) {
         it->second->setVisibility(visibility);
         op_.setShapePickingEnabled(it->second, visibility);
-    }
-}
-
-void GeometryActorManager::setRenderEdge(Index component_id, bool is_render)
-{
-    auto it = component_actors_.find(component_id);
-    if (it != component_actors_.end()) {
-        it->second->setRenderEdge(is_render);
     }
 }
 
