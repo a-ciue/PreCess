@@ -155,7 +155,6 @@ systems::interaction::InteractionState* InteractionService::syncState()
         current_->clearSession();
         clearActors();
         select_manager_->setSelectMode("None");
-        emitResult(); // clearSession 后为空串
     }
     // 新状态上线：选择模式切到几何顶点、on_activate、刷新标注与结果
     current_ = state;
@@ -164,7 +163,6 @@ systems::interaction::InteractionState* InteractionService::syncState()
         if (current_->on_activate)
             current_->on_activate();
         refreshAnnotations();
-        emitResult();
     }
     return current_;
 }
@@ -179,7 +177,6 @@ void InteractionService::pick(double posx, double posy)
         return;
     if (state->on_pick && state->on_pick(info)) {
         refreshAnnotations();
-        emitResult();
     }
 }
 
@@ -195,16 +192,6 @@ void InteractionService::hover(double posx, double posy)
     }
 }
 
-void InteractionService::clear()
-{
-    if (!current_)
-        return;
-    if (current_->on_clear)
-        current_->on_clear();
-    refreshAnnotations();
-    emitResult();
-}
-
 void InteractionService::clearActors()
 {
     points_poly_->Initialize();
@@ -217,11 +204,6 @@ void InteractionService::clearActors()
         t->SetVisibility(false);
 }
 
-void InteractionService::emitResult()
-{
-    if (onResultChanged)
-        onResultChanged(current_ ? current_->result_text : std::string());
-}
 
 bool InteractionService::snapToPickInfo(double posx, double posy, PickInfo& out)
 {

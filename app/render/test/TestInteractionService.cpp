@@ -49,7 +49,6 @@ struct FakeInteraction {
 
     int activate_count = 0;
     int deactivate_count = 0;
-    int clear_count = 0;
     int hover_count = 0;
     std::vector<PickInfo> picks;
 
@@ -57,7 +56,6 @@ struct FakeInteraction {
     {
         state.on_activate = [this] { ++activate_count; };
         state.on_deactivate = [this] { ++deactivate_count; };
-        state.on_clear = [this] { ++clear_count; };
         state.on_pick = [this](const PickInfo& pick) {
             picks.push_back(pick);
             return true;
@@ -67,7 +65,6 @@ struct FakeInteraction {
             return true;
         };
         state.annotations.points.push_back({ { 0.0, 0.0, 0.0 } }); //> 一个标注点，验证服务拉取
-        state.result_text = "fake-result";
     }
 };
 
@@ -167,10 +164,6 @@ int main(int argc, char* argv[])
 
     FakeInteraction fake;
     InteractionService service(*renderer, *overlay_renderer, mesh_manager.op(), sel_mgr);
-    std::vector<std::string> emitted_texts;
-    service.onResultChanged = [&emitted_texts](const std::string& text) {
-        emitted_texts.push_back(text);
-    };
 
     // 交互状态经 provider 提供：开关开启前无激活状态，pick 不转发
     bool interaction_enabled = false;
@@ -200,8 +193,6 @@ int main(int argc, char* argv[])
             "PickInfo.mesh_id 为全局顶点 id");
         check(p.geom_id < 0, "网格拾取不填 geom_id");
     }
-    check(!emitted_texts.empty() && emitted_texts.back() == "fake-result",
-        "结果文本经 onResultChanged 转发");
 
     // ---- 悬停转发 ----
     const int hover_before = fake.hover_count;
@@ -215,10 +206,6 @@ int main(int argc, char* argv[])
     const std::size_t picks_before = fake.picks.size();
     service.pick(5000, 5000); // 窗口外坐标，拾取器必然未命中
     check(fake.picks.size() == picks_before, "未命中吸附点时不调用 onPick");
-
-    // ---- clear ----
-    service.clear();
-    check(fake.clear_count == 1, "clear() 转发到处理器");
 
     // ---- 几何（OCC）顶点拾取：geom_id 填充 ----
     {
@@ -254,7 +241,6 @@ int main(int argc, char* argv[])
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]); // 驱动一次 syncState
     check(fake.deactivate_count == 1, "下线时调用 onDeactivate 一次");
     check(!service.hasActiveState(), "开关关闭后无激活交互");
-    check(!emitted_texts.empty() && emitted_texts.back().empty(), "下线后转发空结果文本");
 
     spdlog::info("==== InteractionService self-check: {} ====",
         g_failures == 0 ? "ALL PASS" : "HAS FAILURES");

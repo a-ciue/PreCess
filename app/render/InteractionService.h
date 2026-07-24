@@ -41,8 +41,6 @@ public:
 
     //! @brief 交互状态提供者（由 QRenderWindow 注入，转发 FeatureSystem::activeInteraction）
     std::function<systems::interaction::InteractionState*()> state_provider;
-    //! @brief 结果文本变化回调（由 QRenderWindow 设置为发 Qt 信号），渲染线程内触发
-    std::function<void(const std::string&)> onResultChanged;
 
     //! @brief 当前是否存在激活的交互（鼠标路由用）
     bool hasActiveState() { return state_provider && state_provider() != nullptr; }
@@ -51,9 +49,6 @@ public:
     void pick(double posx, double posy);
     //! @brief 悬停：同步激活状态，调用 on_hover 回调做动态预览
     void hover(double posx, double posy);
-    //! @brief 面板"清除"：调用当前状态的 on_clear 回调并刷新标注与结果
-    void clear();
-
 private:
     //! @brief 同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）
     systems::interaction::InteractionState* syncState();
@@ -62,7 +57,6 @@ private:
     //! @brief 拉取标注集并刷新全部 actor
     void refreshAnnotations();
     void clearActors();
-    void emitResult();
 
     vtkRenderer* renderer_ {};
     vtkRenderer* overlay_renderer_ {};

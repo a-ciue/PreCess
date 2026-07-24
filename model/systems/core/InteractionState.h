@@ -24,20 +24,17 @@ struct InteractionState {
     bool active = false; //> 交互激活态：功能经 setActive 写入（GUI 线程），渲染层读取路由拾取
     std::function<void()> on_activate; //> 交互会话开始（通常清空功能内部状态）
     std::function<void()> on_deactivate; //> 交互会话结束
-    std::function<void()> on_clear; //> 面板"清除"按钮：清空当前会话状态
     //! @brief 左键拾取：返回是否有状态变化（需要刷新标注与结果文本）
     std::function<bool(const PickInfo&)> on_pick;
     //! @brief 悬停：返回是否更新了预览（需要刷新标注）
     std::function<bool(const PickInfo&)> on_hover;
 
     AnnotationBatch annotations; //> 功能在回调中直接更新，渲染层事件后拉取绘制
-    std::string result_text; //> 面板展示文本（无结果时为空串）
 
-    //! @brief 会话结束时的渲染层清理：清空标注与结果（不动订阅，订阅随功能常驻）
+    //! @brief 会话结束时的渲染层清理：清空标注（不动订阅，订阅随功能常驻）
     void clearSession()
     {
         annotations.clear();
-        result_text.clear();
     }
 };
 

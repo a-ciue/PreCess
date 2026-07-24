@@ -112,11 +112,6 @@ public:
     Q_INVOKABLE void setFeatureAdaptor(QObject* adaptor);
 
     /**
-     * @brief 清空当前交互状态与视图内标注（面板"清除"按钮）
-     */
-    Q_INVOKABLE void clearInteraction();
-
-    /**
      * @brief 显示/隐藏比例尺（测量插件激活时启用，随相机缩放自动更新刻度）
      * @param on 是否显示
      */
@@ -203,8 +198,6 @@ signals:
     void curEdgeRenderChanged();
     void clicked();
     void rightClicked();
-    //! @brief 交互结果文本变化（渲染线程触发，Qt 自动排队到 GUI 线程）
-    void interactionUpdated(QString resultText);
 
 private:
     bool edge_render_ {};

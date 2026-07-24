@@ -161,9 +161,6 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         auto* feature_system = feature_adaptor_ ? feature_adaptor_->featureSystem() : nullptr;
         return feature_system ? feature_system->activeInteraction() : nullptr;
     };
-    interaction_service_->onResultChanged = [this](const std::string& text) {
-        emit interactionUpdated(QString::fromStdString(text));
-    };
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
@@ -515,13 +512,6 @@ void QRenderWindow::clearSelection()
 void QRenderWindow::setFeatureAdaptor(QObject* adaptor)
 {
     feature_adaptor_ = qobject_cast<systems::feature::QFeatureSystemAdaptor*>(adaptor);
-}
-
-void QRenderWindow::clearInteraction()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        interaction_service_->clear();
-    });
 }
 
 void QRenderWindow::setScaleBarVisible(bool on)

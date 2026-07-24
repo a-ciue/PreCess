@@ -31,8 +31,6 @@ public:
     void onActivate(std::function<void()> cb) { state_->on_activate = std::move(cb); }
     //! @brief 订阅交互会话结束（渲染线程）
     void onDeactivate(std::function<void()> cb) { state_->on_deactivate = std::move(cb); }
-    //! @brief 订阅"清除"（面板清除按钮，渲染线程）
-    void onClear(std::function<void()> cb) { state_->on_clear = std::move(cb); }
     //! @brief 订阅左键拾取（渲染线程；返回是否有状态变化需要刷新标注与结果）
     void onPick(std::function<bool(const systems::interaction::PickInfo&)> cb) { state_->on_pick = std::move(cb); }
     //! @brief 订阅悬停（渲染线程；返回是否更新预览需要刷新标注）
@@ -40,9 +38,6 @@ public:
 
     //! @brief 标注集：功能在回调中直接更新，渲染层拉取绘制
     systems::interaction::AnnotationBatch& annotations() { return state_->annotations; }
-    //! @brief 设置面板结果文本（无结果设为空串）
-    void setResultText(std::string text) { state_->result_text = std::move(text); }
-
     //! @brief 设置本功能交互激活态（单激活：激活自己时会先下线其他功能的交互）
     void setActive(bool on)
     {

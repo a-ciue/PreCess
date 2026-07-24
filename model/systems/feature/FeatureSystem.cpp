@@ -8,7 +8,6 @@
 
 #include <spdlog/spdlog.h>
 
-
 namespace systems::feature {
 const std::string FeatureSystem::name = "FeatureSystem";
 
