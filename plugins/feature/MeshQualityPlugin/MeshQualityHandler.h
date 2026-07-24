@@ -20,7 +20,7 @@ public:
     void setup(FeatureRegistrar& reg) override;
 
     /**
-     * @brief 计算当前组件的选定质量指标并写入面、体属性
+     * @brief 计算质量属性，并将统计文本和待显示属性名返回给 UI
      */
     std::any execute(FeatureContext& ctx) override;
 };

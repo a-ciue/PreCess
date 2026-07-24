@@ -6,6 +6,7 @@
 #include "FeatureRegistrar.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
+#include "ScalarAttributeDisplayResult.h"
 
 #include <vtkCellData.h>
 #include <vtkCellType.h>
@@ -453,16 +454,19 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
 
     const std::string attribute_key = metricKey(metric);
+    std::string display_attribute;
     if (face_result) {
         const std::string face_attribute = "f_" + attribute_key + "_1";
         mesh.face_attributes_[face_attribute] = face_result->values;
+        display_attribute = face_attribute;
     }
     if (solid_result) {
         const std::string solid_attribute = "s_" + attribute_key + "_1";
         mesh.solid_attributes_[solid_attribute] = solid_result->values;
+        display_attribute = solid_attribute;
     }
 
-    // 通知属性面板和渲染数据刷新，用户随后自行选择需要显示的质量属性。
+    // 先通知属性面板和渲染数据刷新，再由执行结果把属性名交给 UI 显示。
     component->notifyChanged();
 
     std::ostringstream output;
@@ -477,7 +481,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     } else if (!solid_error.empty()) {
         output << "体：" << solid_error << '\n';
     }
-    return output.str();
+    return ScalarAttributeDisplayResult { output.str(), display_attribute };
 }
 
 }

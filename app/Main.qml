@@ -128,6 +128,7 @@ ApplicationWindow {
             title: "属性列表"
             SideBar {
                 anchors.fill: parent
+                onAttributeRenderRequested: attributeRenderDock.show()
             }
         }
 

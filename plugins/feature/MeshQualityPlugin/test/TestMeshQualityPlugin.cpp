@@ -5,6 +5,7 @@
 #include "MeshData.h"
 #include "MeshQualityHandler.h"
 #include "ModelLayer.h"
+#include "ScalarAttributeDisplayResult.h"
 
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -77,7 +78,10 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
         [component_id]() { return std::optional<Index> { component_id }; });
 
     const std::any execution_result = feature_system.invoke("MeshQuality");
-    REQUIRE(execution_result.type() == typeid(std::string));
+    REQUIRE(execution_result.type() == typeid(ScalarAttributeDisplayResult));
+    const auto& feature_result = std::any_cast<const ScalarAttributeDisplayResult&>(execution_result);
+    REQUIRE(feature_result.attribute_name == "s_mesh_quality_scaled_jacobian_1");
+    REQUIRE(feature_result.message.find("Scaled Jacobian") != std::string::npos);
 
     const ComponentData* component = model_layer.findComponent(component_id);
     REQUIRE(component != nullptr);
@@ -93,7 +97,10 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     // 切换指标后保留之前的质量属性，方便用户在属性列表中比较不同指标。
     REQUIRE(feature_system.setParameter(
         "MeshQuality", 0, core::ArgObject::create<ArgTypeEnum::Combo>(1)));
-    REQUIRE_NOTHROW(feature_system.invoke("MeshQuality"));
+    const std::any skew_result = feature_system.invoke("MeshQuality");
+    REQUIRE(skew_result.type() == typeid(ScalarAttributeDisplayResult));
+    REQUIRE(std::any_cast<const ScalarAttributeDisplayResult&>(skew_result).attribute_name
+        == "s_mesh_quality_equiangle_skew_1");
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 1);
