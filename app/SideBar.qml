@@ -102,6 +102,7 @@ Item{
                     Loader{
                         required property var model
                         required property int index
+                        property bool initialized: status === Loader.Ready
                         sourceComponent:{
                             if(model.type === QArgType.Path){           //文件
                                 return fileComponent
@@ -143,10 +144,10 @@ Item{
     Component{
         id:componentComboBox
         RowLayout{
+            id: comboRow
             spacing: 5
             width: parameterList.width
             property var value: null
-            property bool initialized: false
             ListModel{
                 id: comboModel
             }
@@ -163,7 +164,7 @@ Item{
                 id:parameterComboBox
                 model: comboModel
                 onCurrentIndexChanged: {
-                    if (parent.initialized) {
+                    if (comboRow.parent.initialized) {
                         value = currentIndex
                         root.setParam(index, value)
                     }
@@ -189,7 +190,6 @@ Item{
                     parameterComboBox.currentIndex = defaultIndex
                     value = defaultIndex
                 }
-                initialized = true
                 value = parameterComboBox.currentIndex
                 root.setParam(index, value)
             }
