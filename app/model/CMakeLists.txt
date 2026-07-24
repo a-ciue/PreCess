@@ -23,6 +23,8 @@ qt_add_qml_module(modelQml
         "${CMAKE_CURRENT_BINARY_DIR}/QArgType.h"
         QArgObject.h
         QArgObject.cpp
+        QGeometryOperations.h
+        QGeometryOperations.cpp
 )
 target_include_directories(modelQml PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径

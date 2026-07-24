@@ -1,4 +1,5 @@
 #include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "ModelLayer.h"
 #include "GeometryData.h"
 
@@ -7,7 +8,39 @@
 #include <memory>
 
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRep_Builder.hxx>
+#include <gp_Pnt.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+
+TEST_CASE("Geometry root is normalized to a flat compound")
+{
+    BRep_Builder builder;
+    TopoDS_Compound inner;
+    builder.MakeCompound(inner);
+    builder.Add(inner, BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
+
+    TopoDS_Compound outer;
+    builder.MakeCompound(outer);
+    builder.Add(outer, inner);
+    builder.Add(outer, BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 5.0, 6.0)).Shape());
+
+    GeometryData geometry;
+    geometry.setRootShape(outer);
+
+    REQUIRE(geometry.rootShape != nullptr);
+    REQUIRE(geometry.rootShape->ShapeType() == TopAbs_COMPOUND);
+
+    int direct_child_count = 0;
+    for (TopoDS_Iterator it(*geometry.rootShape); it.More(); it.Next()) {
+        REQUIRE(it.Value().ShapeType() != TopAbs_COMPOUND);
+        ++direct_child_count;
+    }
+    REQUIRE(direct_child_count == 2);
+}
 
 TEST_CASE("Geometry index build for single component")
 {
@@ -105,4 +138,115 @@ TEST_CASE("Geometry index build for multiple components")
     const GeomFaceId comp1FaceId = comp1->geometry->index.faceGlobalId(1);
     REQUIRE(manager.findComponentIdByGeometryFaceId(comp0FaceId) == 0);
     REQUIRE(manager.findComponentIdByGeometryFaceId(comp1FaceId) == 1);
+}
+
+TEST_CASE("Add geometry component to an existing model")
+{
+    using namespace std;
+
+    ModelLayer manager;
+    const Index model_id = manager.addModel("geometry", ComponentDatas {});
+
+    auto geometry = make_unique<GeometryData>();
+    geometry->rootShape = make_unique<TopoDS_Shape>(
+        BRepPrimAPI_MakeBox(1.0, 2.0, 3.0).Shape());
+
+    auto component = make_unique<ComponentData>();
+    component->name = "Box_1";
+    component->geometry = move(geometry);
+
+    auto model_operator = manager.getModelOperator(model_id);
+    REQUIRE(model_operator);
+    const Index component_id = model_operator->addGeometryComponent(move(component));
+    ComponentData* inserted = manager.findComponent(component_id);
+
+    REQUIRE(inserted != nullptr);
+    REQUIRE(inserted->geometry != nullptr);
+    REQUIRE(inserted->geometry->index.built);
+    REQUIRE(manager.modelById(model_id)->componentIds() == vector<Index> { component_id });
+}
+
+TEST_CASE("Append geometry shapes to an existing component")
+{
+    using namespace std;
+
+    ModelLayer manager;
+    auto geometry = make_unique<GeometryData>();
+    geometry->rootShape = make_unique<TopoDS_Shape>(
+        BRepPrimAPI_MakeBox(1.0, 1.0, 1.0).Shape());
+
+    auto component = make_unique<ComponentData>();
+    component->name = "Geometry_1";
+    component->geometry = move(geometry);
+
+    ComponentDatas components;
+    components.push_back(move(component));
+    const Index model_id = manager.addModel("geometry", move(components));
+    const Index component_id = manager.modelById(model_id)->componentIds().front();
+
+    auto component_operator = manager.getComponentOperator(component_id);
+    REQUIRE(component_operator);
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(2.0, 2.0, 2.0)).Shape());
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(3.0, 3.0, 3.0)).Shape());
+
+    ComponentData* updated = manager.findComponent(component_id);
+    REQUIRE(updated != nullptr);
+    REQUIRE(updated->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+    REQUIRE(updated->geometry->index.built);
+    REQUIRE(updated->geometry->index.type_maps[
+        GeometrySubshapeIndex::typeIndex(TopAbs_VERTEX)].Extent() == 10);
+
+    // Box 与两个 Point 应作为根 Compound 的三个直接子形状。
+    int direct_child_count = 0;
+    for (TopoDS_Iterator it(*updated->geometry->rootShape); it.More(); it.Next())
+        ++direct_child_count;
+    REQUIRE(direct_child_count == 3);
+    REQUIRE(manager.modelById(model_id)->componentIds() == vector<Index> { component_id });
+}
+
+TEST_CASE("Initialize and append geometry in a mesh-only component")
+{
+    using namespace std;
+
+    ModelLayer manager;
+    auto component = make_unique<ComponentData>();
+    component->name = "Mesh_1";
+    component->mesh = make_unique<MeshData>();
+
+    ComponentDatas components;
+    components.push_back(move(component));
+    const Index model_id = manager.addModel("mesh", move(components));
+    const Index component_id = manager.modelById(model_id)->componentIds().front();
+
+    auto component_operator = manager.getComponentOperator(component_id);
+    REQUIRE(component_operator);
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
+
+    ComponentData* initialized = manager.findComponent(component_id);
+    REQUIRE(initialized != nullptr);
+    REQUIRE(initialized->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+    int initial_child_count = 0;
+    for (TopoDS_Iterator it(*initialized->geometry->rootShape); it.More(); it.Next()) {
+        REQUIRE(it.Value().ShapeType() != TopAbs_COMPOUND);
+        ++initial_child_count;
+    }
+    REQUIRE(initial_child_count == 1);
+
+    component_operator->appendGeometryShape(
+        BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 5.0, 6.0)).Shape());
+
+    ComponentData* updated = manager.findComponent(component_id);
+    REQUIRE(updated != nullptr);
+    REQUIRE(updated->mesh != nullptr);
+    REQUIRE(updated->geometry != nullptr);
+    REQUIRE(updated->geometry->rootShape != nullptr);
+    REQUIRE(updated->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+    for (TopoDS_Iterator it(*updated->geometry->rootShape); it.More(); it.Next())
+        REQUIRE(it.Value().ShapeType() != TopAbs_COMPOUND);
+    REQUIRE(updated->geometry->index.built);
+    REQUIRE(updated->geometry->index.type_maps[
+        GeometrySubshapeIndex::typeIndex(TopAbs_VERTEX)].Extent() == 2);
 }

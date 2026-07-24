@@ -20,7 +20,10 @@ Item{
     readonly property var activeOp: App.activeOperation
 
     onActiveOpChanged: {
-        parameters = []
+        App.selection.listeningSelectorIndex = -1
+        // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
+        parameters = root.activeOp && root.activeOp.defaultParameters
+                ? root.activeOp.defaultParameters.slice() : []
         resultText = ""
     }
 
@@ -49,8 +52,16 @@ Item{
         anchors.right: parent.right
         height:30
         onClicked:{
-            if (root.activeOp && root.activeOp.execute)
-                root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+            if (root.activeOp && root.activeOp.execute) {
+                try {
+                    const result = root.activeOp.execute(
+                        App.selection.activeComponentId, root.parameters)
+                    root.resultText = result === undefined || result === null
+                                    ? "" : String(result)
+                } catch (error) {
+                    root.resultText = qsTr("执行失败：") + error
+                }
+            }
             if (App.registry.renderWindow)
                 App.registry.renderWindow.clearSelection()
         }
@@ -91,6 +102,7 @@ Item{
                     Loader{
                         required property var model
                         required property int index
+                        property bool initialized: status === Loader.Ready
                         sourceComponent:{
                             if(model.type === QArgType.Path){           //文件
                                 return fileComponent
@@ -132,6 +144,7 @@ Item{
     Component{
         id:componentComboBox
         RowLayout{
+            id: comboRow
             spacing: 5
             width: parameterList.width
             property var value: null
@@ -151,8 +164,10 @@ Item{
                 id:parameterComboBox
                 model: comboModel
                 onCurrentIndexChanged: {
-                    value = currentIndex
-                    root.setParam(index, value)
+                    if (comboRow.parent.initialized) {
+                        value = currentIndex
+                        root.setParam(index, value)
+                    }
                 }
             }
 
@@ -164,13 +179,16 @@ Item{
                     for(let i=0; i<items.length; i++){
                         comboModel.append({"text":items[i]})
                     }
-                    let defaultIndex = parts.length > 1 ? parseInt(parts[1]) : 0
+                    const parameterValue = root.parameters[index]
+                    let defaultIndex = parameterValue !== undefined
+                            && parameterValue !== null
+                            ? Number(parameterValue)
+                            : (parts.length > 1 ? parseInt(parts[1]) : 0)
                     if (isNaN(defaultIndex) || defaultIndex < 0 || defaultIndex >= items.length) {
                         defaultIndex = 0
                     }
                     parameterComboBox.currentIndex = defaultIndex
                     value = defaultIndex
-                    root.setParam(index, value)
                 }
                 value = parameterComboBox.currentIndex
                 root.setParam(index, value)

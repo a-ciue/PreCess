@@ -116,11 +116,11 @@ void ModelLayer::removeComponent(Index component_id)
         observer_->notifyComponentRemoved(component_id);
 }
 
-std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
+std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id)
 {
     ModelData* m = modelById(model_id);
     if (m) {
-        return ModelOperator(model_id, *m, observer_);
+        return ModelOperator(model_id, *m, *this, observer_);
     }
     return {};
 }

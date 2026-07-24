@@ -32,7 +32,13 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("PreCess")
 
+    GeometryOperationActions {
+        id: geometryActions
+        onOperationActivated: sideBarDock.show()
+    }
+
     header: AppToolbar {
+        geometryOperationActions: geometryActions
         windowHeight: root.height
         objectTreeOpen: objectTreeDock.isOpen
         propertyListOpen: sideBarDock.isOpen
