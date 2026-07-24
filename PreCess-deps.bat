@@ -248,8 +248,16 @@ git clone --single-branch --depth 1 --branch v6.0.1 https://github.com/CGAL/cgal
 )
 
 REM ============ Boost 1.87.0（仅需头文件，无需编译） ============
-curl -L -o boost_1_87_0.zip --connect-timeout 30 https://archives.boost.io/release/1.87.0/source/boost_1_87_0.zip
-tar -xf boost_1_87_0.zip -C "%depsPath%"
+curl -L -o boost_1_87_0.zip --connect-timeout 30 https://archives.boost.io/release/1.87.0/source/boost_1_87_0.zip || (
+    echo Boost 头文件包下载失败。
+    pause
+    exit /b 1
+)
+tar -xf boost_1_87_0.zip -C "%depsPath%" || (
+    echo Boost 头文件包解压失败。
+    pause
+    exit /b 1
+)
 
 REM Boost 源树不带安装态 CMake 包（CMake 4.x 已移除 FindBoost 模块，必须走 CONFIG 模式），
 REM 生成极简 BoostConfig，供 find_package(Boost) 命中；升级 Boost 需同步版本号与目录名
