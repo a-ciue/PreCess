@@ -79,8 +79,21 @@ GeometryFaceSelectorHighlight::~GeometryFaceSelectorHighlight()
 
 void GeometryFaceSelectorHighlight::clear()
 {
+    clearHighlight();
     selections_.clear();
+}
+
+void GeometryFaceSelectorHighlight::clearHighlight()
+{
     updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
+}
+
+void GeometryFaceSelectorHighlight::applyHighlight()
+{
+    NCollection_List<IVtk_IdType> ids;
+    for (const auto& [sid, gid] : selections_)
+        ids.Append(sid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
 }
 
 GeometrySelectionVtk GeometryFaceSelectorHighlight::get() const
@@ -133,8 +146,21 @@ GeometryEdgeSelectorHighlight::~GeometryEdgeSelectorHighlight()
 
 void GeometryEdgeSelectorHighlight::clear()
 {
+    clearHighlight();
     selections_.clear();
+}
+
+void GeometryEdgeSelectorHighlight::clearHighlight()
+{
     updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
+}
+
+void GeometryEdgeSelectorHighlight::applyHighlight()
+{
+    NCollection_List<IVtk_IdType> ids;
+    for (const auto& [sid, gid] : selections_)
+        ids.Append(sid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
 }
 
 GeometrySelectionVtk GeometryEdgeSelectorHighlight::get() const
@@ -187,8 +213,21 @@ GeometryVertexSelectorHighlight::~GeometryVertexSelectorHighlight()
 
 void GeometryVertexSelectorHighlight::clear()
 {
+    clearHighlight();
     selections_.clear();
+}
+
+void GeometryVertexSelectorHighlight::clearHighlight()
+{
     updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
+}
+
+void GeometryVertexSelectorHighlight::applyHighlight()
+{
+    NCollection_List<IVtk_IdType> ids;
+    for (const auto& [sid, gid] : selections_)
+        ids.Append(sid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
 }
 
 GeometrySelectionVtk GeometryVertexSelectorHighlight::get() const
@@ -241,9 +280,22 @@ GeometrySolidSelectorHighlight::~GeometrySolidSelectorHighlight()
 
 void GeometrySolidSelectorHighlight::clear()
 {
+    clearHighlight();
     selections_.clear();
     highlighted_face_ids_.clear();
+}
+
+void GeometrySolidSelectorHighlight::clearHighlight()
+{
     updateFilterAndNotify(hl_filter_, NCollection_List<IVtk_IdType>(), highlight_data_);
+}
+
+void GeometrySolidSelectorHighlight::applyHighlight()
+{
+    NCollection_List<IVtk_IdType> ids;
+    for (const auto& fid : highlighted_face_ids_)
+        ids.Append(fid);
+    updateFilterAndNotify(hl_filter_, ids, highlight_data_);
 }
 
 GeometrySelectionVtk GeometrySolidSelectorHighlight::get() const

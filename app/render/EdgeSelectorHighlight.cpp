@@ -65,8 +65,22 @@ EdgeSelectorHighlight::~EdgeSelectorHighlight()
 
 void EdgeSelectorHighlight::clear()
 {
+    clearHighlight();
     selections_.clear();
+}
+
+void EdgeSelectorHighlight::clearHighlight()
+{
     selections_poly_->Initialize();
+    highlight_data_->Modified();
+}
+
+void EdgeSelectorHighlight::applyHighlight()
+{
+    if (selections_.empty())
+        return;
+    auto edge_poly_data = select_op_.extractEdge(selections_);
+    selections_poly_->ShallowCopy(edge_poly_data);
     highlight_data_->Modified();
 }
 

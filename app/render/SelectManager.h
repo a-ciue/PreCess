@@ -35,6 +35,10 @@ public:
     std::optional<std::pair<Index, std::array<double, 3>>> snapGeometryVertex(double posx, double posy);
     void clearSelection();
     void refreshComponentHighlight();
+    void setGeometryHighlightVisible(bool visible);
+    void setGeometryHighlightVisible(Index component_id, bool visible);
+    void setMeshHighlightVisible(bool visible);
+    void setMeshHighlightVisible(Index component_id, bool visible);
     std::unique_ptr<Selection> getSelection();
 
 private:
@@ -43,7 +47,6 @@ private:
     std::unique_ptr<ComponentSelectorHighlight> component_selector_;
     SelectMode select_mode_ { SelectMode::None };
     vtkRenderer* renderer_ {};
-    vtkNew<vtkActor> highlight_actor_;
 };
 
 #endif

@@ -394,6 +394,8 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
+            select_manager_->setMeshHighlightVisible(component_id, visibility);
+            select_manager_->setGeometryHighlightVisible(component_id, visibility);
         }
         select_manager_->refreshComponentHighlight();
     });
@@ -411,6 +413,8 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->setMeshHighlightVisible(component_id, visibility);
+        select_manager_->setGeometryHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
 }
@@ -423,6 +427,7 @@ void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->setMeshHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
 }
@@ -435,6 +440,7 @@ void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->setGeometryHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
 }
@@ -636,6 +642,10 @@ void QRenderWindow::setGeometryStyle(int style)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setCurrentRenderStyle(static_cast<GeometryRenderStyle>(style));
         }
+        if (select_manager_) {
+            select_manager_->setGeometryHighlightVisible(style != 7);
+            select_manager_->refreshComponentHighlight();
+        }
     });
     emit geometryStyleChanged();
 }
@@ -652,6 +662,10 @@ void QRenderWindow::setMeshStyle(int style)
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->setCurrentRenderStyle(static_cast<MeshRenderStyle>(style));
+        }
+        if (select_manager_) {
+            select_manager_->setMeshHighlightVisible(style != 7);
+            select_manager_->refreshComponentHighlight();
         }
     });
     emit meshStyleChanged();

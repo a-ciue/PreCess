@@ -14,10 +14,9 @@
 #include <utility>
 #include <vtkRenderer.h>
 
-GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op)
+GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, GeometryActorManagerSelectOp& op)
     : op_(&op)
     , renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
 {
     highlight_data_ = vtkSmartPointer<vtkPartitionedDataSet>::New();
     highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
@@ -28,6 +27,9 @@ GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& hi
     picker_->SetAreaSelection(false);
 
     op_->observeShapePicker(picker_.Get());
+
+    highlight_actor_->PickableOff();
+    renderer.AddActor(highlight_actor_);
 }
 
 void GeometrySelectManager::select(double posx, double posy)
@@ -138,6 +140,22 @@ std::optional<std::pair<Index, std::array<double, 3>>> GeometrySelectManager::sn
         return std::nullopt;
     }
     return std::pair<Index, std::array<double, 3>> { *geom_id, *point };
+}
+
+void GeometrySelectManager::setHighlightVisible(bool visible)
+{
+    highlight_actor_->SetVisibility(visible);
+}
+
+void GeometrySelectManager::setHighlightVisible(Index component_id, bool visible)
+{
+    auto it = component_selectors_.find(component_id);
+    if (it == component_selectors_.end())
+        return;
+    if (visible)
+        it->second->applyHighlight();
+    else
+        it->second->clearHighlight();
 }
 
 std::unique_ptr<Selection> GeometrySelectManager::getSelection()

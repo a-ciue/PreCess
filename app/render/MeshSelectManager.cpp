@@ -7,10 +7,9 @@
 #include <vtkPartitionedDataSet.h>
 #include <vtkRenderer.h>
 
-MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorManagerSelectOp& op)
+MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, MeshActorManagerSelectOp& op)
     : op_(&op)
     , renderer_(&renderer)
-    , highlight_actor_(&highlight_actor)
 {
     component_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
     highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
@@ -19,6 +18,9 @@ MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_
     highlight_mapper_->SetInputDataObject(highlight_data_);
     component_picker_->PickFromListOn();
     op_->observePickList(component_picker_->GetPickList());
+
+    highlight_actor_->PickableOff();
+    renderer.AddActor(highlight_actor_);
 }
 
 void MeshSelectManager::select(double posx, double posy)
@@ -139,4 +141,20 @@ void MeshSelectManager::applyHighlightStyle(SelectMode mode)
         VertexSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
         break;
     }
+}
+
+void MeshSelectManager::setHighlightVisible(bool visible)
+{
+    highlight_actor_->SetVisibility(visible);
+}
+
+void MeshSelectManager::setHighlightVisible(Index component_id, bool visible)
+{
+    auto it = component_selectors_.find(component_id);
+    if (it == component_selectors_.end())
+        return;
+    if (visible)
+        it->second->applyHighlight();
+    else
+        it->second->clearHighlight();
 }

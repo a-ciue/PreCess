@@ -18,12 +18,14 @@ class GeometryActorManagerSelectOp;
 
 class GeometrySelectManager {
 public:
-    GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op);
+    GeometrySelectManager(vtkRenderer& renderer, GeometryActorManagerSelectOp& op);
 
     void select(double posx, double posy);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
+    void setHighlightVisible(bool visible);
+    void setHighlightVisible(Index component_id, bool visible);
 
     /**
      * @brief 吸附几何顶点：拾取并解析为几何顶点
@@ -39,7 +41,7 @@ private:
     vtkRenderer* renderer_;
     vtkSmartPointer<IVtkTools_ShapePicker> picker_;
 
-    vtkActor* highlight_actor_ {};
+    vtkNew<vtkActor> highlight_actor_;
     vtkSmartPointer<vtkPartitionedDataSet> highlight_data_;
     vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;
 

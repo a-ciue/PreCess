@@ -263,7 +263,7 @@ int main(int argc, char** argv)
     highlightActor->PickableOff();
     renderer->AddActor(highlightActor);
 
-    GeometrySelectManager selMgr(*renderer, *highlightActor, gmgr.op());
+    GeometrySelectManager selMgr(*renderer, gmgr.op());
 
     selMgr.setSelectMode(mode);
 

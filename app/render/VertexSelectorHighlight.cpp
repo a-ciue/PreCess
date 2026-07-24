@@ -67,6 +67,19 @@ void VertexSelectorHighlight::clear()
     highlight_data_->Modified();
 }
 
+void VertexSelectorHighlight::clearHighlight()
+{
+    highlight_data_->SetPartition(partition_id_, nullptr);
+    highlight_data_->Modified();
+}
+
+void VertexSelectorHighlight::applyHighlight()
+{
+    geom_filter_->Update();
+    highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
+    highlight_data_->Modified();
+}
+
 void VertexSelectorHighlight::select(double posx, double posy)
 {
     // 获取 picked_point_id

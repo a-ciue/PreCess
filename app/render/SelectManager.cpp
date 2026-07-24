@@ -11,12 +11,9 @@ SelectManager::SelectManager(vtkRenderer& renderer,
     MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op)
     : renderer_(&renderer)
 {
-    mesh_ = std::make_unique<MeshSelectManager>(renderer, *highlight_actor_, mesh_op);
-    geom_ = std::make_unique<GeometrySelectManager>(renderer, *highlight_actor_, geom_op);
+    mesh_ = std::make_unique<MeshSelectManager>(renderer, mesh_op);
+    geom_ = std::make_unique<GeometrySelectManager>(renderer, geom_op);
     component_selector_ = std::make_unique<ComponentSelectorHighlight>(renderer, mesh_op, geom_op);
-    highlight_actor_->PickableOff();
-    highlight_actor_->SetVisibility(true);
-    renderer.AddActor(highlight_actor_);
 }
 
 SelectManager::~SelectManager() = default;
@@ -94,8 +91,26 @@ void SelectManager::clearSelection()
 void SelectManager::refreshComponentHighlight()
 {
     component_selector_->refreshHighlight();
-    mesh_->clearSelection();
-    geom_->clearSelection();
+}
+
+void SelectManager::setGeometryHighlightVisible(bool visible)
+{
+    geom_->setHighlightVisible(visible);
+}
+
+void SelectManager::setGeometryHighlightVisible(Index component_id, bool visible)
+{
+    geom_->setHighlightVisible(component_id, visible);
+}
+
+void SelectManager::setMeshHighlightVisible(bool visible)
+{
+    mesh_->setHighlightVisible(visible);
+}
+
+void SelectManager::setMeshHighlightVisible(Index component_id, bool visible)
+{
+    mesh_->setHighlightVisible(component_id, visible);
 }
 
 std::optional<std::pair<Index, std::array<double, 3>>> SelectManager::snapGeometryVertex(double posx, double posy)

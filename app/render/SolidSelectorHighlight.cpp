@@ -70,6 +70,19 @@ void SolidSelectorHighlight::clear()
     highlight_data_->Modified();
 }
 
+void SolidSelectorHighlight::clearHighlight()
+{
+    highlight_data_->SetPartition(partition_id_, nullptr);
+    highlight_data_->Modified();
+}
+
+void SolidSelectorHighlight::applyHighlight()
+{
+    geom_filter_->Update();
+    highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
+    highlight_data_->Modified();
+}
+
 void SolidSelectorHighlight::select(double posx, double posy)
 {
     // 获取 picked_cell_id和picked_data_set

@@ -257,7 +257,7 @@ void MeshActor::setVisibility(bool visibility)
 
 bool MeshActor::isVisible() const
 { 
-    return visibility_; 
+    return visibility_ && style_ != MeshRenderStyle::Hidden; 
 }
 
 void MeshActor::setClipPlane(vtkPlane* plane)

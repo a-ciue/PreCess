@@ -157,7 +157,7 @@ void GeometryActor::setVisibility(bool visibility)
 
 bool GeometryActor::isVisible() const
 {
-    return visibility_;
+    return visibility_ && style_ != GeometryRenderStyle::Hidden;
 }
 
 void GeometryActor::setRenderEdge(bool is_render)
