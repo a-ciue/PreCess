@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/GeometryBuilder.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">GeometryBuilder.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="GeometryBuilder_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;TopoDS_Shape.hxx&gt;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="keyword">class </span>TopoDS_Edge;</div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">class </span>TopoDS_Face;</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">class </span>TopoDS_Vertex;</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span></div>
+<div class="foldopen" id="foldopen00013" data-start="{" data-end="};">
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">   13</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a> {</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1fa74c53bcd3dcb2bb79993b2fec37d362a">   14</a></span>    <a class="code hl_enumvalue" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1fa74c53bcd3dcb2bb79993b2fec37d362a">XY</a> = 0,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1faffa4ba973372c3650fd0881abeca6512">   15</a></span>    <a class="code hl_enumvalue" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1faffa4ba973372c3650fd0881abeca6512">YZ</a> = 1,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1fa27db3b98d01e664c17a6620b222c6469">   16</a></span>    <a class="code hl_enumvalue" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1fa27db3b98d01e664c17a6620b222c6469">XZ</a> = 2</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>};</div>
+</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span></div>
+<div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classGeometryBuilder.html">   22</a></span><span class="keyword">class </span><a class="code hl_class" href="classGeometryBuilder.html">GeometryBuilder</a> {</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#ad049f8fe810312de0b4aabd875871b17">makePoint</a>(<span class="keywordtype">double</span> x, <span class="keywordtype">double</span> y, <span class="keywordtype">double</span> z);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#a15d1facf3f85cb833437c10d63ad2954">makeLine</a>(</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        <span class="keywordtype">double</span> start_x,</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keywordtype">double</span> start_y,</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        <span class="keywordtype">double</span> start_z,</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        <span class="keywordtype">double</span> end_x,</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keywordtype">double</span> end_y,</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        <span class="keywordtype">double</span> end_z);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#a15d1facf3f85cb833437c10d63ad2954">makeLine</a>(</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="keyword">const</span> TopoDS_Vertex&amp; start,</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keyword">const</span> TopoDS_Vertex&amp; end);</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#a854f007f773b9cbc2c40437d628dfb88">makeRectangleFace</a>(</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        <span class="keywordtype">double</span> origin_x,</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        <span class="keywordtype">double</span> origin_y,</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        <span class="keywordtype">double</span> origin_z,</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        <span class="keywordtype">double</span> width,</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        <span class="keywordtype">double</span> height,</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <a class="code hl_enumeration" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a> plane);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#ad1035e7dd0b523e1b202e3cd48bc03b2">makeDiskFace</a>(</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        <span class="keywordtype">double</span> center_x,</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>        <span class="keywordtype">double</span> center_y,</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keywordtype">double</span> center_z,</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keywordtype">double</span> radius,</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <a class="code hl_enumeration" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a> plane,</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        <span class="keywordtype">double</span> start_angle,</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        <span class="keywordtype">double</span> sweep_angle);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#a60bc97f25e52971a77fb402484d132ef">makeFaceFromEdges</a>(</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keyword">const</span> std::vector&lt;TopoDS_Edge&gt;&amp; edges);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#acb82d2a822eb64278261bdb57ee8235f">makeBox</a>(</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <span class="keywordtype">double</span> origin_x,</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordtype">double</span> origin_y,</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <span class="keywordtype">double</span> origin_z,</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordtype">double</span> length_x,</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        <span class="keywordtype">double</span> length_y,</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        <span class="keywordtype">double</span> length_z);</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#ab7a2cbf60dc968b8a45342937889c2a8">makeCylinder</a>(</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordtype">double</span> center_x,</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        <span class="keywordtype">double</span> center_y,</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        <span class="keywordtype">double</span> center_z,</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        <span class="keywordtype">double</span> radius,</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        <span class="keywordtype">double</span> height,</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keywordtype">double</span> direction_x,</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keywordtype">double</span> direction_y,</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="keywordtype">double</span> direction_z,</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        <span class="keywordtype">double</span> sweep_angle);</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span></div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#a0bf9884952517896640a98da686bc83f">makeCone</a>(</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        <span class="keywordtype">double</span> center_x,</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>        <span class="keywordtype">double</span> center_y,</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>        <span class="keywordtype">double</span> center_z,</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        <span class="keywordtype">double</span> bottom_radius,</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        <span class="keywordtype">double</span> top_radius,</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        <span class="keywordtype">double</span> height,</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>        <span class="keywordtype">double</span> direction_x,</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        <span class="keywordtype">double</span> direction_y,</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        <span class="keywordtype">double</span> direction_z,</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        <span class="keywordtype">double</span> sweep_angle);</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span></div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#ae06bc65dc25b4b5d052d43430615d550">makeSphere</a>(</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        <span class="keywordtype">double</span> center_x,</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <span class="keywordtype">double</span> center_y,</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        <span class="keywordtype">double</span> center_z,</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>        <span class="keywordtype">double</span> radius,</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        <span class="keywordtype">double</span> direction_x,</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>        <span class="keywordtype">double</span> direction_y,</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>        <span class="keywordtype">double</span> direction_z,</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>        <span class="keywordtype">double</span> minimum_latitude,</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        <span class="keywordtype">double</span> maximum_latitude,</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        <span class="keywordtype">double</span> longitude_sweep);</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="keyword">static</span> TopoDS_Shape <a class="code hl_function" href="classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de">extrudeFace</a>(</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <span class="keyword">const</span> TopoDS_Face&amp; face,</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>        <span class="keywordtype">double</span> direction_x,</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>        <span class="keywordtype">double</span> direction_y,</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        <span class="keywordtype">double</span> direction_z,</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        <span class="keywordtype">double</span> length);</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>};</div>
+</div>
+<div class="ttc" id="aGeometryBuilder_8h_html_a17fb906691ca490c60d8e6ebbb994d1f"><div class="ttname"><a href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a></div><div class="ttdeci">CoordinatePlane</div><div class="ttdoc">参数创建平面几何时使用的全局坐标平面。</div><div class="ttdef"><b>定义</b> GeometryBuilder.h:13</div></div>
+<div class="ttc" id="aGeometryBuilder_8h_html_a17fb906691ca490c60d8e6ebbb994d1fa27db3b98d01e664c17a6620b222c6469"><div class="ttname"><a href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1fa27db3b98d01e664c17a6620b222c6469">CoordinatePlane::XZ</a></div><div class="ttdeci">@ XZ</div><div class="ttdef"><b>定义</b> GeometryBuilder.h:16</div></div>
+<div class="ttc" id="aGeometryBuilder_8h_html_a17fb906691ca490c60d8e6ebbb994d1fa74c53bcd3dcb2bb79993b2fec37d362a"><div class="ttname"><a href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1fa74c53bcd3dcb2bb79993b2fec37d362a">CoordinatePlane::XY</a></div><div class="ttdeci">@ XY</div><div class="ttdef"><b>定义</b> GeometryBuilder.h:14</div></div>
+<div class="ttc" id="aGeometryBuilder_8h_html_a17fb906691ca490c60d8e6ebbb994d1faffa4ba973372c3650fd0881abeca6512"><div class="ttname"><a href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1faffa4ba973372c3650fd0881abeca6512">CoordinatePlane::YZ</a></div><div class="ttdeci">@ YZ</div><div class="ttdef"><b>定义</b> GeometryBuilder.h:15</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html"><div class="ttname"><a href="classGeometryBuilder.html">GeometryBuilder</a></div><div class="ttdoc">提供不依赖界面和模型管理的基础 OCC 几何构造函数。</div><div class="ttdef"><b>定义</b> GeometryBuilder.h:22</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_a0bf9884952517896640a98da686bc83f"><div class="ttname"><a href="classGeometryBuilder.html#a0bf9884952517896640a98da686bc83f">GeometryBuilder::makeCone</a></div><div class="ttdeci">static TopoDS_Shape makeCone(double center_x, double center_y, double center_z, double bottom_radius, double top_radius, double height, double direction_x, double direction_y, double direction_z, double sweep_angle)</div><div class="ttdoc">根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:473</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_a15d1facf3f85cb833437c10d63ad2954"><div class="ttname"><a href="classGeometryBuilder.html#a15d1facf3f85cb833437c10d63ad2954">GeometryBuilder::makeLine</a></div><div class="ttdeci">static TopoDS_Shape makeLine(double start_x, double start_y, double start_z, double end_x, double end_y, double end_z)</div><div class="ttdoc">根据起点和终点坐标创建直线边。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:127</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_a60bc97f25e52971a77fb402484d132ef"><div class="ttname"><a href="classGeometryBuilder.html#a60bc97f25e52971a77fb402484d132ef">GeometryBuilder::makeFaceFromEdges</a></div><div class="ttdeci">static TopoDS_Shape makeFaceFromEdges(const std::vector&lt; TopoDS_Edge &gt; &amp;edges)</div><div class="ttdoc">使用一组已有几何边构造单一闭合 Face。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:334</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_a6f9b41899204abc39c8a2fa5297900de"><div class="ttname"><a href="classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de">GeometryBuilder::extrudeFace</a></div><div class="ttdeci">static TopoDS_Shape extrudeFace(const TopoDS_Face &amp;face, double direction_x, double direction_y, double direction_z, double length)</div><div class="ttdoc">将已有面沿指定方向和长度拉伸为实体，构造时复制源面。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:626</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_a854f007f773b9cbc2c40437d628dfb88"><div class="ttname"><a href="classGeometryBuilder.html#a854f007f773b9cbc2c40437d628dfb88">GeometryBuilder::makeRectangleFace</a></div><div class="ttdeci">static TopoDS_Shape makeRectangleFace(double origin_x, double origin_y, double origin_z, double width, double height, CoordinatePlane plane)</div><div class="ttdoc">根据角点、宽度、高度和全局坐标平面创建矩形平面。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:167</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_ab7a2cbf60dc968b8a45342937889c2a8"><div class="ttname"><a href="classGeometryBuilder.html#ab7a2cbf60dc968b8a45342937889c2a8">GeometryBuilder::makeCylinder</a></div><div class="ttdeci">static TopoDS_Shape makeCylinder(double center_x, double center_y, double center_z, double radius, double height, double direction_x, double direction_y, double direction_z, double sweep_angle)</div><div class="ttdoc">根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:421</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_acb82d2a822eb64278261bdb57ee8235f"><div class="ttname"><a href="classGeometryBuilder.html#acb82d2a822eb64278261bdb57ee8235f">GeometryBuilder::makeBox</a></div><div class="ttdeci">static TopoDS_Shape makeBox(double origin_x, double origin_y, double origin_z, double length_x, double length_y, double length_z)</div><div class="ttdoc">根据原点和三个轴向尺寸创建长方体。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:381</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_ad049f8fe810312de0b4aabd875871b17"><div class="ttname"><a href="classGeometryBuilder.html#ad049f8fe810312de0b4aabd875871b17">GeometryBuilder::makePoint</a></div><div class="ttdeci">static TopoDS_Shape makePoint(double x, double y, double z)</div><div class="ttdoc">根据三维坐标创建独立几何点。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:37</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_ad1035e7dd0b523e1b202e3cd48bc03b2"><div class="ttname"><a href="classGeometryBuilder.html#ad1035e7dd0b523e1b202e3cd48bc03b2">GeometryBuilder::makeDiskFace</a></div><div class="ttdeci">static TopoDS_Shape makeDiskFace(double center_x, double center_y, double center_z, double radius, CoordinatePlane plane, double start_angle, double sweep_angle)</div><div class="ttdoc">根据圆心、半径、坐标平面和角度创建圆盘或扇形面。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:243</div></div>
+<div class="ttc" id="aclassGeometryBuilder_html_ae06bc65dc25b4b5d052d43430615d550"><div class="ttname"><a href="classGeometryBuilder.html#ae06bc65dc25b4b5d052d43430615d550">GeometryBuilder::makeSphere</a></div><div class="ttdeci">static TopoDS_Shape makeSphere(double center_x, double center_y, double center_z, double radius, double direction_x, double direction_y, double direction_z, double minimum_latitude, double maximum_latitude, double longitude_sweep)</div><div class="ttdoc">根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。</div><div class="ttdef"><b>定义</b> GeometryBuilder.cpp:537</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

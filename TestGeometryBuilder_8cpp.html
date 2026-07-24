@@ -1,0 +1,638 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/test/TestGeometryBuilder.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li><li class="navelem"><a href="dir_b1c6ebd7ce52cc5375ef042e6a1d0c67.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestGeometryBuilder.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="GeometryBuilder_8h_source.html">GeometryBuilder.h</a>&quot;</code><br />
+<code>#include &lt;BRepCheck_Analyzer.hxx&gt;</code><br />
+<code>#include &lt;TopExp.hxx&gt;</code><br />
+<code>#include &lt;TopExp_Explorer.hxx&gt;</code><br />
+<code>#include &lt;TopAbs_ShapeEnum.hxx&gt;</code><br />
+<code>#include &lt;TopoDS.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Edge.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Face.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Vertex.hxx&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestGeometryBuilder.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestGeometryBuilder_8cpp__incl.png" border="0" usemap="#amodel_2ops_2test_2TestGeometryBuilder_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2test_2TestGeometryBuilder_8cpp" id="amodel_2ops_2test_2TestGeometryBuilder_8cpp">
+<area shape="rect" title=" " alt="" coords="1044,5,1259,45"/>
+<area shape="rect" href="GeometryBuilder_8h.html" title=" " alt="" coords="25,93,169,119"/>
+<area shape="poly" title=" " alt="" coords="1044,35,665,58,188,96,182,96,182,91,187,91,665,52,1044,29"/>
+<area shape="rect" title=" " alt="" coords="175,167,237,192"/>
+<area shape="poly" title=" " alt="" coords="1044,30,829,35,575,46,455,54,353,65,275,79,249,87,233,95,222,107,215,122,209,153,204,152,210,120,218,104,230,91,247,82,274,74,352,60,455,49,575,40,829,30,1044,25"/>
+<area shape="rect" title=" " alt="" coords="243,93,430,119"/>
+<area shape="poly" title=" " alt="" coords="1044,39,444,96,444,90,1043,34"/>
+<area shape="rect" title=" " alt="" coords="454,93,550,119"/>
+<area shape="poly" title=" " alt="" coords="1044,39,822,63,564,96,563,96,563,91,563,91,822,57,1043,34"/>
+<area shape="rect" title=" " alt="" coords="575,93,731,119"/>
+<area shape="poly" title=" " alt="" coords="1044,46,740,94,739,89,1043,41"/>
+<area shape="rect" title=" " alt="" coords="755,93,935,119"/>
+<area shape="poly" title=" " alt="" coords="1079,48,904,92,902,87,1077,43"/>
+<area shape="rect" title=" " alt="" coords="959,93,1058,119"/>
+<area shape="poly" title=" " alt="" coords="1118,48,1043,89,1040,84,1116,43"/>
+<area shape="rect" title=" " alt="" coords="1083,93,1220,119"/>
+<area shape="poly" title=" " alt="" coords="1154,46,1154,79,1149,79,1149,46"/>
+<area shape="rect" title=" " alt="" coords="1244,93,1379,119"/>
+<area shape="poly" title=" " alt="" coords="1191,43,1277,85,1274,90,1188,48"/>
+<area shape="rect" title=" " alt="" coords="1403,93,1550,119"/>
+<area shape="poly" title=" " alt="" coords="1230,43,1417,88,1415,93,1229,48"/>
+<area shape="rect" title=" " alt="" coords="1574,93,1793,119"/>
+<area shape="poly" title=" " alt="" coords="1259,40,1593,89,1592,94,1259,45"/>
+<area shape="rect" title=" " alt="" coords="1817,93,1873,119"/>
+<area shape="poly" title=" " alt="" coords="1259,29,1505,49,1652,67,1803,91,1802,96,1652,72,1504,54,1259,35"/>
+<area shape="rect" title=" " alt="" coords="1897,93,1960,119"/>
+<area shape="poly" title=" " alt="" coords="1259,28,1538,48,1709,66,1884,91,1883,96,1709,71,1538,53,1259,34"/>
+<area shape="rect" title=" " alt="" coords="1985,93,2043,119"/>
+<area shape="poly" title=" " alt="" coords="1259,26,1399,32,1575,43,1772,62,1972,91,1971,96,1771,68,1575,49,1399,37,1259,32"/>
+<area shape="rect" title=" " alt="" coords="2068,93,2155,119"/>
+<area shape="poly" title=" " alt="" coords="1259,28,1609,47,1829,65,2054,91,2054,96,1829,70,1608,52,1259,33"/>
+<area shape="rect" title=" " alt="" coords="5,167,151,192"/>
+<area shape="poly" title=" " alt="" coords="96,120,87,154,82,153,91,118"/>
+<area shape="poly" title=" " alt="" coords="116,116,178,157,175,161,113,121"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:aa04f143662e5c0f73148ae2ecc76cd4a" id="r_aa04f143662e5c0f73148ae2ecc76cd4a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa04f143662e5c0f73148ae2ecc76cd4a">TEST_CASE</a> (&quot;GeometryBuilder creates a valid point&quot;)</td></tr>
+<tr class="memitem:af3558d7f4c512424d2c0779287398e52" id="r_af3558d7f4c512424d2c0779287398e52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3558d7f4c512424d2c0779287398e52">TEST_CASE</a> (&quot;GeometryBuilder rejects non-finite point coordinates&quot;)</td></tr>
+<tr class="memitem:a3d59d1ec868316bdfa2998f5426887e6" id="r_a3d59d1ec868316bdfa2998f5426887e6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3d59d1ec868316bdfa2998f5426887e6">TEST_CASE</a> (&quot;GeometryBuilder creates a valid line from coordinates&quot;)</td></tr>
+<tr class="memitem:aef68769743bfb5d93644556159013341" id="r_aef68769743bfb5d93644556159013341"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef68769743bfb5d93644556159013341">TEST_CASE</a> (&quot;GeometryBuilder line reuses selected vertices&quot;)</td></tr>
+<tr class="memitem:a3bc29754e2a78c62293ff73a26a8fad1" id="r_a3bc29754e2a78c62293ff73a26a8fad1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3bc29754e2a78c62293ff73a26a8fad1">TEST_CASE</a> (&quot;GeometryBuilder rejects coincident line endpoints&quot;)</td></tr>
+<tr class="memitem:abaef5e22899b91b358aae91647855c76" id="r_abaef5e22899b91b358aae91647855c76"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abaef5e22899b91b358aae91647855c76">TEST_CASE</a> (&quot;GeometryBuilder creates valid rectangular faces in supported planes&quot;)</td></tr>
+<tr class="memitem:a44ccbc0832bcdc2c8ea2c9f2f640d078" id="r_a44ccbc0832bcdc2c8ea2c9f2f640d078"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44ccbc0832bcdc2c8ea2c9f2f640d078">TEST_CASE</a> (&quot;GeometryBuilder rejects non-positive rectangle face dimensions&quot;)</td></tr>
+<tr class="memitem:ae5c5dc18060407f818dabd668d613e02" id="r_ae5c5dc18060407f818dabd668d613e02"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5c5dc18060407f818dabd668d613e02">TEST_CASE</a> (&quot;GeometryBuilder creates valid disk faces in supported planes&quot;)</td></tr>
+<tr class="memitem:a6cdb2af2bd251d97dbb9758c65fe32e5" id="r_a6cdb2af2bd251d97dbb9758c65fe32e5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6cdb2af2bd251d97dbb9758c65fe32e5">TEST_CASE</a> (&quot;GeometryBuilder creates a valid sector face&quot;)</td></tr>
+<tr class="memitem:a67e91e856da623dcd90261c3fe17fac9" id="r_a67e91e856da623dcd90261c3fe17fac9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67e91e856da623dcd90261c3fe17fac9">TEST_CASE</a> (&quot;GeometryBuilder rejects non-positive disk face radius&quot;)</td></tr>
+<tr class="memitem:a4238a9a6ce7b0f4c3fd1d0daa965910d" id="r_a4238a9a6ce7b0f4c3fd1d0daa965910d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4238a9a6ce7b0f4c3fd1d0daa965910d">TEST_CASE</a> (&quot;GeometryBuilder rejects invalid disk face sweep angles&quot;)</td></tr>
+<tr class="memitem:a1a2eec26096772a6a0a1030f79ee96bd" id="r_a1a2eec26096772a6a0a1030f79ee96bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a2eec26096772a6a0a1030f79ee96bd">TEST_CASE</a> (&quot;GeometryBuilder creates a planar face from unordered closed edges&quot;)</td></tr>
+<tr class="memitem:ab59c64286367c0bdc8837ade6b787328" id="r_ab59c64286367c0bdc8837ade6b787328"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab59c64286367c0bdc8837ade6b787328">TEST_CASE</a> (&quot;GeometryBuilder creates a filling face from non-planar closed edges&quot;)</td></tr>
+<tr class="memitem:abd4465851feb77cebf12b3fa1bcdf2bd" id="r_abd4465851feb77cebf12b3fa1bcdf2bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd4465851feb77cebf12b3fa1bcdf2bd">TEST_CASE</a> (&quot;GeometryBuilder rejects an open edge chain&quot;)</td></tr>
+<tr class="memitem:a86a2a59f03c1ba8e02a5e69f452c3f9e" id="r_a86a2a59f03c1ba8e02a5e69f452c3f9e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a86a2a59f03c1ba8e02a5e69f452c3f9e">TEST_CASE</a> (&quot;GeometryBuilder creates a valid box&quot;)</td></tr>
+<tr class="memitem:a1d5b7485d7837d4299513b73aa123f5f" id="r_a1d5b7485d7837d4299513b73aa123f5f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d5b7485d7837d4299513b73aa123f5f">TEST_CASE</a> (&quot;GeometryBuilder rejects non-positive box dimensions&quot;)</td></tr>
+<tr class="memitem:a63ff4f221f2b1d23c3ba1fd7aea664ad" id="r_a63ff4f221f2b1d23c3ba1fd7aea664ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63ff4f221f2b1d23c3ba1fd7aea664ad">TEST_CASE</a> (&quot;GeometryBuilder creates a valid cylinder&quot;)</td></tr>
+<tr class="memitem:a6bf9b26c70c39bdaa4e72723d1359935" id="r_a6bf9b26c70c39bdaa4e72723d1359935"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6bf9b26c70c39bdaa4e72723d1359935">TEST_CASE</a> (&quot;GeometryBuilder creates a valid partial cylinder&quot;)</td></tr>
+<tr class="memitem:aff2d0e69e9a69a678190210f3b4203b6" id="r_aff2d0e69e9a69a678190210f3b4203b6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff2d0e69e9a69a678190210f3b4203b6">TEST_CASE</a> (&quot;GeometryBuilder rejects invalid cylinder parameters&quot;)</td></tr>
+<tr class="memitem:a9d26187b3f02a6dc3baf8b08cc003b68" id="r_a9d26187b3f02a6dc3baf8b08cc003b68"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d26187b3f02a6dc3baf8b08cc003b68">TEST_CASE</a> (&quot;GeometryBuilder creates valid cone and frustum solids&quot;)</td></tr>
+<tr class="memitem:a81bd1124188f839239bb339ce632dd34" id="r_a81bd1124188f839239bb339ce632dd34"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a81bd1124188f839239bb339ce632dd34">TEST_CASE</a> (&quot;GeometryBuilder creates a valid partial frustum&quot;)</td></tr>
+<tr class="memitem:aca7ed9f306d6faf169f3ec74bcf8c2e2" id="r_aca7ed9f306d6faf169f3ec74bcf8c2e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca7ed9f306d6faf169f3ec74bcf8c2e2">TEST_CASE</a> (&quot;GeometryBuilder rejects invalid cone parameters&quot;)</td></tr>
+<tr class="memitem:aa6c76f11b6622b9354663dc92782b492" id="r_aa6c76f11b6622b9354663dc92782b492"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6c76f11b6622b9354663dc92782b492">TEST_CASE</a> (&quot;GeometryBuilder creates a valid full sphere&quot;)</td></tr>
+<tr class="memitem:a22c3b0073f3a592745ed9dcee85b5597" id="r_a22c3b0073f3a592745ed9dcee85b5597"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22c3b0073f3a592745ed9dcee85b5597">TEST_CASE</a> (&quot;GeometryBuilder creates valid sphere portions&quot;)</td></tr>
+<tr class="memitem:a782b804122487b07c0959d69bc54c5cf" id="r_a782b804122487b07c0959d69bc54c5cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a782b804122487b07c0959d69bc54c5cf">TEST_CASE</a> (&quot;GeometryBuilder rejects invalid sphere parameters&quot;)</td></tr>
+<tr class="memitem:a4e827073329ecf4f74a24b1a84d27d39" id="r_a4e827073329ecf4f74a24b1a84d27d39"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4e827073329ecf4f74a24b1a84d27d39">TEST_CASE</a> (&quot;GeometryBuilder extrudes a copied face into a valid solid&quot;)</td></tr>
+<tr class="memitem:a3938b344fd78dd70b7e9fcc2d768e7e2" id="r_a3938b344fd78dd70b7e9fcc2d768e7e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3938b344fd78dd70b7e9fcc2d768e7e2">TEST_CASE</a> (&quot;GeometryBuilder rejects invalid face extrusion parameters&quot;)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="ab59c64286367c0bdc8837ade6b787328" name="ab59c64286367c0bdc8837ade6b787328"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab59c64286367c0bdc8837ade6b787328">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a filling face from non-planar closed edges&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a2eec26096772a6a0a1030f79ee96bd" name="a1a2eec26096772a6a0a1030f79ee96bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a2eec26096772a6a0a1030f79ee96bd">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a planar face from unordered closed edges&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a86a2a59f03c1ba8e02a5e69f452c3f9e" name="a86a2a59f03c1ba8e02a5e69f452c3f9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86a2a59f03c1ba8e02a5e69f452c3f9e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid box&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a63ff4f221f2b1d23c3ba1fd7aea664ad" name="a63ff4f221f2b1d23c3ba1fd7aea664ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63ff4f221f2b1d23c3ba1fd7aea664ad">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid cylinder&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa6c76f11b6622b9354663dc92782b492" name="aa6c76f11b6622b9354663dc92782b492"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6c76f11b6622b9354663dc92782b492">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid full sphere&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3d59d1ec868316bdfa2998f5426887e6" name="a3d59d1ec868316bdfa2998f5426887e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d59d1ec868316bdfa2998f5426887e6">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid line from coordinates&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6bf9b26c70c39bdaa4e72723d1359935" name="a6bf9b26c70c39bdaa4e72723d1359935"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bf9b26c70c39bdaa4e72723d1359935">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid partial cylinder&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a81bd1124188f839239bb339ce632dd34" name="a81bd1124188f839239bb339ce632dd34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81bd1124188f839239bb339ce632dd34">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid partial frustum&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa04f143662e5c0f73148ae2ecc76cd4a" name="aa04f143662e5c0f73148ae2ecc76cd4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa04f143662e5c0f73148ae2ecc76cd4a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid point&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6cdb2af2bd251d97dbb9758c65fe32e5" name="a6cdb2af2bd251d97dbb9758c65fe32e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cdb2af2bd251d97dbb9758c65fe32e5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates a valid sector face&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9d26187b3f02a6dc3baf8b08cc003b68" name="a9d26187b3f02a6dc3baf8b08cc003b68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d26187b3f02a6dc3baf8b08cc003b68">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates valid cone and frustum solids&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5c5dc18060407f818dabd668d613e02" name="ae5c5dc18060407f818dabd668d613e02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5c5dc18060407f818dabd668d613e02">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates valid disk faces in supported planes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abaef5e22899b91b358aae91647855c76" name="abaef5e22899b91b358aae91647855c76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abaef5e22899b91b358aae91647855c76">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[13/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates valid rectangular faces in supported planes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a22c3b0073f3a592745ed9dcee85b5597" name="a22c3b0073f3a592745ed9dcee85b5597"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22c3b0073f3a592745ed9dcee85b5597">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[14/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder creates valid sphere portions&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4e827073329ecf4f74a24b1a84d27d39" name="a4e827073329ecf4f74a24b1a84d27d39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e827073329ecf4f74a24b1a84d27d39">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[15/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder extrudes a copied face into a valid solid&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aef68769743bfb5d93644556159013341" name="aef68769743bfb5d93644556159013341"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef68769743bfb5d93644556159013341">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[16/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder line reuses selected vertices&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abd4465851feb77cebf12b3fa1bcdf2bd" name="abd4465851feb77cebf12b3fa1bcdf2bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd4465851feb77cebf12b3fa1bcdf2bd">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[17/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects an open edge chain&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3bc29754e2a78c62293ff73a26a8fad1" name="a3bc29754e2a78c62293ff73a26a8fad1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bc29754e2a78c62293ff73a26a8fad1">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[18/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects coincident line endpoints&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aca7ed9f306d6faf169f3ec74bcf8c2e2" name="aca7ed9f306d6faf169f3ec74bcf8c2e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca7ed9f306d6faf169f3ec74bcf8c2e2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[19/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects invalid cone parameters&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aff2d0e69e9a69a678190210f3b4203b6" name="aff2d0e69e9a69a678190210f3b4203b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff2d0e69e9a69a678190210f3b4203b6">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[20/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects invalid cylinder parameters&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4238a9a6ce7b0f4c3fd1d0daa965910d" name="a4238a9a6ce7b0f4c3fd1d0daa965910d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4238a9a6ce7b0f4c3fd1d0daa965910d">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[21/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects invalid disk face sweep angles&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3938b344fd78dd70b7e9fcc2d768e7e2" name="a3938b344fd78dd70b7e9fcc2d768e7e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3938b344fd78dd70b7e9fcc2d768e7e2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[22/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects invalid face extrusion parameters&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a782b804122487b07c0959d69bc54c5cf" name="a782b804122487b07c0959d69bc54c5cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a782b804122487b07c0959d69bc54c5cf">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[23/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects invalid sphere parameters&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af3558d7f4c512424d2c0779287398e52" name="af3558d7f4c512424d2c0779287398e52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3558d7f4c512424d2c0779287398e52">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[24/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects non-finite point coordinates&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1d5b7485d7837d4299513b73aa123f5f" name="a1d5b7485d7837d4299513b73aa123f5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d5b7485d7837d4299513b73aa123f5f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[25/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects non-positive box dimensions&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a67e91e856da623dcd90261c3fe17fac9" name="a67e91e856da623dcd90261c3fe17fac9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67e91e856da623dcd90261c3fe17fac9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[26/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects non-positive disk face radius&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a44ccbc0832bcdc2c8ea2c9f2f640d078" name="a44ccbc0832bcdc2c8ea2c9f2f640d078"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44ccbc0832bcdc2c8ea2c9f2f640d078">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[27/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryBuilder rejects non-positive rectangle face dimensions&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

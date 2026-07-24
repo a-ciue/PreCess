@@ -1,0 +1,11 @@
+<map id="app/model/QGeometryOperations.h" name="app/model/QGeometryOperations.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="145,5,398,31"/>
+<area shape="rect" id="Node000002" href="$QGeometryOperations_8cpp.html" title=" " alt="" coords="5,79,273,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,39,162,81,160,76,237,35"/>
+<area shape="rect" id="Node000003" href="$QModelManager_8h.html" title=" " alt="" coords="298,79,511,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="306,35,384,76,382,81,303,39"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="252,152,363,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="379,114,325,154,322,150,376,110"/>
+<area shape="rect" id="Node000005" href="$QModelManager_8cpp.html" title=" " alt="" coords="387,152,615,177"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="433,110,487,150,483,154,430,114"/>
+</map>

@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/GeometryBuilder.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#enum-members">枚举</a>  </div>
+  <div class="headertitle"><div class="title">GeometryBuilder.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &lt;TopoDS_Shape.hxx&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+GeometryBuilder.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="GeometryBuilder_8h__incl.png" border="0" usemap="#amodel_2ops_2GeometryBuilder_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2GeometryBuilder_8h" id="amodel_2ops_2GeometryBuilder_8h">
+<area shape="rect" title=" " alt="" coords="34,5,250,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,151,104"/>
+<area shape="poly" title=" " alt="" coords="133,33,99,70,95,67,129,29"/>
+<area shape="rect" title=" " alt="" coords="175,79,237,104"/>
+<area shape="poly" title=" " alt="" coords="155,29,189,67,185,70,151,33"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="GeometryBuilder_8h__dep__incl.png" border="0" usemap="#amodel_2ops_2GeometryBuilder_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2GeometryBuilder_8hdep" id="amodel_2ops_2GeometryBuilder_8hdep">
+<area shape="rect" title=" " alt="" coords="305,5,521,31"/>
+<area shape="rect" href="QGeometryOperations_8cpp.html" title=" " alt="" coords="5,86,273,111"/>
+<area shape="poly" title=" " alt="" coords="361,37,180,89,178,83,359,32"/>
+<area shape="rect" href="GeometryBuilder_8cpp.html" title=" " alt="" coords="297,86,528,111"/>
+<area shape="poly" title=" " alt="" coords="415,44,415,86,410,86,410,44"/>
+<area shape="rect" href="TestGeometryBuilder_8cpp.html" title=" " alt="" coords="552,79,767,119"/>
+<area shape="poly" title=" " alt="" coords="462,32,601,76,599,81,461,37"/>
+</map>
+</div>
+</div>
+<p><a href="GeometryBuilder_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:GeometryBuilder" id="r_GeometryBuilder"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGeometryBuilder.html">GeometryBuilder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">提供不依赖界面和模型管理的基础 OCC 几何构造函数。  <a href="classGeometryBuilder.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a17fb906691ca490c60d8e6ebbb994d1f" id="r_a17fb906691ca490c60d8e6ebbb994d1f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a> { <a class="el" href="#a17fb906691ca490c60d8e6ebbb994d1fa74c53bcd3dcb2bb79993b2fec37d362a">XY</a> = 0
+, <a class="el" href="#a17fb906691ca490c60d8e6ebbb994d1faffa4ba973372c3650fd0881abeca6512">YZ</a> = 1
+, <a class="el" href="#a17fb906691ca490c60d8e6ebbb994d1fa27db3b98d01e664c17a6620b222c6469">XZ</a> = 2
+ }</td></tr>
+<tr class="memdesc:a17fb906691ca490c60d8e6ebbb994d1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">参数创建平面几何时使用的全局坐标平面。  <a href="#a17fb906691ca490c60d8e6ebbb994d1f">更多...</a><br /></td></tr>
+</table>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">枚举类型说明</h2>
+<a id="a17fb906691ca490c60d8e6ebbb994d1f" name="a17fb906691ca490c60d8e6ebbb994d1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17fb906691ca490c60d8e6ebbb994d1f">&#9670;&#160;</a></span>CoordinatePlane</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>参数创建平面几何时使用的全局坐标平面。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a17fb906691ca490c60d8e6ebbb994d1fa74c53bcd3dcb2bb79993b2fec37d362a" name="a17fb906691ca490c60d8e6ebbb994d1fa74c53bcd3dcb2bb79993b2fec37d362a"></a>XY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a17fb906691ca490c60d8e6ebbb994d1faffa4ba973372c3650fd0881abeca6512" name="a17fb906691ca490c60d8e6ebbb994d1faffa4ba973372c3650fd0881abeca6512"></a>YZ&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a17fb906691ca490c60d8e6ebbb994d1fa27db3b98d01e664c17a6620b222c6469" name="a17fb906691ca490c60d8e6ebbb994d1fa27db3b98d01e664c17a6620b222c6469"></a>XZ&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

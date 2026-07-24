@@ -1,0 +1,760 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: GeometryBuilder类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="classGeometryBuilder-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">GeometryBuilder类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>提供不依赖界面和模型管理的基础 OCC 几何构造函数。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="GeometryBuilder_8h_source.html">GeometryBuilder.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:ad049f8fe810312de0b4aabd875871b17" id="r_ad049f8fe810312de0b4aabd875871b17"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad049f8fe810312de0b4aabd875871b17">makePoint</a> (double x, double y, double z)</td></tr>
+<tr class="memdesc:ad049f8fe810312de0b4aabd875871b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据三维坐标创建独立几何点。  <br /></td></tr>
+<tr class="memitem:a15d1facf3f85cb833437c10d63ad2954" id="r_a15d1facf3f85cb833437c10d63ad2954"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15d1facf3f85cb833437c10d63ad2954">makeLine</a> (double start_x, double start_y, double start_z, double end_x, double end_y, double end_z)</td></tr>
+<tr class="memdesc:a15d1facf3f85cb833437c10d63ad2954"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据起点和终点坐标创建直线边。  <br /></td></tr>
+<tr class="memitem:a8dc408939d0065e1a3a7bd6899145c3d" id="r_a8dc408939d0065e1a3a7bd6899145c3d"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8dc408939d0065e1a3a7bd6899145c3d">makeLine</a> (const TopoDS_Vertex &amp;start, const TopoDS_Vertex &amp;end)</td></tr>
+<tr class="memdesc:a8dc408939d0065e1a3a7bd6899145c3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">使用两个已有拓扑点创建共享端点的直线边。  <br /></td></tr>
+<tr class="memitem:a854f007f773b9cbc2c40437d628dfb88" id="r_a854f007f773b9cbc2c40437d628dfb88"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a854f007f773b9cbc2c40437d628dfb88">makeRectangleFace</a> (double origin_x, double origin_y, double origin_z, double width, double height, <a class="el" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a> plane)</td></tr>
+<tr class="memdesc:a854f007f773b9cbc2c40437d628dfb88"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据角点、宽度、高度和全局坐标平面创建矩形平面。  <br /></td></tr>
+<tr class="memitem:ad1035e7dd0b523e1b202e3cd48bc03b2" id="r_ad1035e7dd0b523e1b202e3cd48bc03b2"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1035e7dd0b523e1b202e3cd48bc03b2">makeDiskFace</a> (double center_x, double center_y, double center_z, double radius, <a class="el" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a> plane, double start_angle, double sweep_angle)</td></tr>
+<tr class="memdesc:ad1035e7dd0b523e1b202e3cd48bc03b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据圆心、半径、坐标平面和角度创建圆盘或扇形面。  <br /></td></tr>
+<tr class="memitem:a60bc97f25e52971a77fb402484d132ef" id="r_a60bc97f25e52971a77fb402484d132ef"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a60bc97f25e52971a77fb402484d132ef">makeFaceFromEdges</a> (const std::vector&lt; TopoDS_Edge &gt; &amp;edges)</td></tr>
+<tr class="memdesc:a60bc97f25e52971a77fb402484d132ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">使用一组已有几何边构造单一闭合 Face。  <br /></td></tr>
+<tr class="memitem:acb82d2a822eb64278261bdb57ee8235f" id="r_acb82d2a822eb64278261bdb57ee8235f"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acb82d2a822eb64278261bdb57ee8235f">makeBox</a> (double origin_x, double origin_y, double origin_z, double length_x, double length_y, double length_z)</td></tr>
+<tr class="memdesc:acb82d2a822eb64278261bdb57ee8235f"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据原点和三个轴向尺寸创建长方体。  <br /></td></tr>
+<tr class="memitem:ab7a2cbf60dc968b8a45342937889c2a8" id="r_ab7a2cbf60dc968b8a45342937889c2a8"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab7a2cbf60dc968b8a45342937889c2a8">makeCylinder</a> (double center_x, double center_y, double center_z, double radius, double height, double direction_x, double direction_y, double direction_z, double sweep_angle)</td></tr>
+<tr class="memdesc:ab7a2cbf60dc968b8a45342937889c2a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体。  <br /></td></tr>
+<tr class="memitem:a0bf9884952517896640a98da686bc83f" id="r_a0bf9884952517896640a98da686bc83f"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0bf9884952517896640a98da686bc83f">makeCone</a> (double center_x, double center_y, double center_z, double bottom_radius, double top_radius, double height, double direction_x, double direction_y, double direction_z, double sweep_angle)</td></tr>
+<tr class="memdesc:a0bf9884952517896640a98da686bc83f"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。  <br /></td></tr>
+<tr class="memitem:ae06bc65dc25b4b5d052d43430615d550" id="r_ae06bc65dc25b4b5d052d43430615d550"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae06bc65dc25b4b5d052d43430615d550">makeSphere</a> (double center_x, double center_y, double center_z, double radius, double direction_x, double direction_y, double direction_z, double minimum_latitude, double maximum_latitude, double longitude_sweep)</td></tr>
+<tr class="memdesc:ae06bc65dc25b4b5d052d43430615d550"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。  <br /></td></tr>
+<tr class="memitem:a6f9b41899204abc39c8a2fa5297900de" id="r_a6f9b41899204abc39c8a2fa5297900de"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f9b41899204abc39c8a2fa5297900de">extrudeFace</a> (const TopoDS_Face &amp;face, double direction_x, double direction_y, double direction_z, double length)</td></tr>
+<tr class="memdesc:a6f9b41899204abc39c8a2fa5297900de"><td class="mdescLeft">&#160;</td><td class="mdescRight">将已有面沿指定方向和长度拉伸为实体，构造时复制源面。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>提供不依赖界面和模型管理的基础 OCC 几何构造函数。 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a6f9b41899204abc39c8a2fa5297900de" name="a6f9b41899204abc39c8a2fa5297900de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f9b41899204abc39c8a2fa5297900de">&#9670;&#160;</a></span>extrudeFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::extrudeFace </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Face &amp;</td>          <td class="paramname"><span class="paramname"><em>face</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>length</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将已有面沿指定方向和长度拉伸为实体，构造时复制源面。 </p>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>源面为空、输入包含非有限数值、长度过小或方向为零。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败、未生成实体或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acb82d2a822eb64278261bdb57ee8235f" name="acb82d2a822eb64278261bdb57ee8235f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb82d2a822eb64278261bdb57ee8235f">&#9670;&#160;</a></span>makeBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeBox </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>origin_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>origin_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>origin_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>length_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>length_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>length_z</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据原点和三个轴向尺寸创建长方体。 </p>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入包含非有限数值或尺寸不大于零。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0bf9884952517896640a98da686bc83f" name="a0bf9884952517896640a98da686bc83f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bf9884952517896640a98da686bc83f">&#9670;&#160;</a></span>makeCone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeCone </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>bottom_radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>top_radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>sweep_angle</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。 </p>
+<p>半径允许一个为零以创建尖圆锥；扫掠角单位为弧度，完整角度创建完整体，其余角度创建封闭的部分体。 </p><dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入包含非有限数值、尺寸无效、轴向为零或角度越界。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab7a2cbf60dc968b8a45342937889c2a8" name="ab7a2cbf60dc968b8a45342937889c2a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7a2cbf60dc968b8a45342937889c2a8">&#9670;&#160;</a></span>makeCylinder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeCylinder </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>sweep_angle</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体。 </p>
+<p>扫掠角单位为弧度；完整角度创建整圆柱，其余角度创建封闭的部分圆柱。 </p><dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入包含非有限数值、尺寸过小、轴向为零或角度越界。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad1035e7dd0b523e1b202e3cd48bc03b2" name="ad1035e7dd0b523e1b202e3cd48bc03b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1035e7dd0b523e1b202e3cd48bc03b2">&#9670;&#160;</a></span>makeDiskFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeDiskFace </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a></td>          <td class="paramname"><span class="paramname"><em>plane</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>start_angle</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>sweep_angle</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据圆心、半径、坐标平面和角度创建圆盘或扇形面。 </p>
+<p>角度单位为弧度；完整圆盘忽略起始角，局部扇形从起始角沿正方向扫掠。 </p><dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入包含非有限数值、半径过小、角度越界或平面无效。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a60bc97f25e52971a77fb402484d132ef" name="a60bc97f25e52971a77fb402484d132ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60bc97f25e52971a77fb402484d132ef">&#9670;&#160;</a></span>makeFaceFromEdges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeFaceFromEdges </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Edge &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>edges</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>使用一组已有几何边构造单一闭合 Face。 </p>
+<p>输入边可以不按连接顺序排列；共面轮廓创建精确平面，非共面轮廓创建 C0 填充曲面。 </p><dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>边集合为空、包含空边或不能组成闭合轮廓。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造 Wire/Face 失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8dc408939d0065e1a3a7bd6899145c3d" name="a8dc408939d0065e1a3a7bd6899145c3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dc408939d0065e1a3a7bd6899145c3d">&#9670;&#160;</a></span>makeLine() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeLine </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Vertex &amp;</td>          <td class="paramname"><span class="paramname"><em>start</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Vertex &amp;</td>          <td class="paramname"><span class="paramname"><em>end</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>使用两个已有拓扑点创建共享端点的直线边。 </p>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>顶点为空或两点重合。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a15d1facf3f85cb833437c10d63ad2954" name="a15d1facf3f85cb833437c10d63ad2954"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15d1facf3f85cb833437c10d63ad2954">&#9670;&#160;</a></span>makeLine() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeLine </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>start_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>start_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>start_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>end_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>end_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>end_z</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据起点和终点坐标创建直线边。 </p>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>坐标不是有限数或两点重合。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad049f8fe810312de0b4aabd875871b17" name="ad049f8fe810312de0b4aabd875871b17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad049f8fe810312de0b4aabd875871b17">&#9670;&#160;</a></span>makePoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makePoint </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>z</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据三维坐标创建独立几何点。 </p>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入包含非有限数值。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a854f007f773b9cbc2c40437d628dfb88" name="a854f007f773b9cbc2c40437d628dfb88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a854f007f773b9cbc2c40437d628dfb88">&#9670;&#160;</a></span>makeRectangleFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeRectangleFace </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>origin_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>origin_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>origin_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>width</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="GeometryBuilder_8h.html#a17fb906691ca490c60d8e6ebbb994d1f">CoordinatePlane</a></td>          <td class="paramname"><span class="paramname"><em>plane</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据角点、宽度、高度和全局坐标平面创建矩形平面。 </p>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入包含非有限数值、尺寸过小或平面无效。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae06bc65dc25b4b5d052d43430615d550" name="ae06bc65dc25b4b5d052d43430615d550"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae06bc65dc25b4b5d052d43430615d550">&#9670;&#160;</a></span>makeSphere()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryBuilder::makeSphere </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>center_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>direction_z</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>minimum_latitude</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>maximum_latitude</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>longitude_sweep</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。 </p>
+<p>角度单位为弧度；纬度范围为 [-PI/2, PI/2]，经度扫掠范围为 (0, 2*PI]。 </p><dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入包含非有限数值、尺寸无效、轴向为零或角度越界。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 构造失败或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/ops/<a class="el" href="GeometryBuilder_8h_source.html">GeometryBuilder.h</a></li>
+<li>model/ops/<a class="el" href="GeometryBuilder_8cpp.html">GeometryBuilder.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

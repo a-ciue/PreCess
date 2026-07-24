@@ -108,6 +108,10 @@ GeometryData 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a1e3f6620346418ca083b54b8211c25ca" id="r_a1e3f6620346418ca083b54b8211c25ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1e3f6620346418ca083b54b8211c25ca">GeometryData</a> ()</td></tr>
 <tr class="memitem:a71e7ad60a393be4d9b55262795031699" id="r_a71e7ad60a393be4d9b55262795031699"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71e7ad60a393be4d9b55262795031699">~GeometryData</a> ()</td></tr>
+<tr class="memitem:a2179d66f942a3e24ad93dc84f1829f7f" id="r_a2179d66f942a3e24ad93dc84f1829f7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2179d66f942a3e24ad93dc84f1829f7f">setRootShape</a> (TopoDS_Shape shape)</td></tr>
+<tr class="memdesc:a2179d66f942a3e24ad93dc84f1829f7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">将单个形状设置为严格一层扁平的根 Compound。  <br /></td></tr>
+<tr class="memitem:a384920d3e9373156b44529e8df23e0ee" id="r_a384920d3e9373156b44529e8df23e0ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a384920d3e9373156b44529e8df23e0ee">appendRootShape</a> (TopoDS_Shape shape)</td></tr>
+<tr class="memdesc:a384920d3e9373156b44529e8df23e0ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">将形状追加到根 Compound，并保持根节点严格一层扁平。  <br /></td></tr>
 <tr class="memitem:a813025254425b3382c788103d2a432e6" id="r_a813025254425b3382c788103d2a432e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a813025254425b3382c788103d2a432e6">ensureIndexBuilt</a> (<a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> &amp;reg)</td></tr>
 <tr class="memitem:a5f12ecfafab18dc82eff09223b80cab2" id="r_a5f12ecfafab18dc82eff09223b80cab2"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structGeometryDataVtk.html">GeometryDataVtk</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f12ecfafab18dc82eff09223b80cab2">getGeometryData</a> ()</td></tr>
 </table><table class="memberdecls">
@@ -168,6 +172,26 @@ Public 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a384920d3e9373156b44529e8df23e0ee" name="a384920d3e9373156b44529e8df23e0ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a384920d3e9373156b44529e8df23e0ee">&#9670;&#160;</a></span>appendRootShape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryData::appendRootShape </td>
+          <td>(</td>
+          <td class="paramtype">TopoDS_Shape</td>          <td class="paramname"><span class="paramname"><em>shape</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>将形状追加到根 Compound，并保持根节点严格一层扁平。 </p>
+<p>调用方需要在追加前释放已经建立的子形状索引。 </p>
+
+</div>
+</div>
 <a id="a813025254425b3382c788103d2a432e6" name="a813025254425b3382c788103d2a432e6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a813025254425b3382c788103d2a432e6">&#9670;&#160;</a></span>ensureIndexBuilt()</h2>
 
@@ -199,6 +223,26 @@ Public 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2179d66f942a3e24ad93dc84f1829f7f" name="a2179d66f942a3e24ad93dc84f1829f7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2179d66f942a3e24ad93dc84f1829f7f">&#9670;&#160;</a></span>setRootShape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryData::setRootShape </td>
+          <td>(</td>
+          <td class="paramtype">TopoDS_Shape</td>          <td class="paramname"><span class="paramname"><em>shape</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>将单个形状设置为严格一层扁平的根 Compound。 </p>
+<p>输入中的 Compound 会递归展开，保证根节点的直接子节点不再包含 Compound。 </p>
 
 </div>
 </div>

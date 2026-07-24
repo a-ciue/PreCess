@@ -1,0 +1,1095 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: QGeometryOperations类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classQGeometryOperations-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">QGeometryOperations类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="QGeometryOperations_8h_source.html">QGeometryOperations.h</a>&gt;</code></p>
+<div class="dynheader">
+类 QGeometryOperations 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQGeometryOperations__inherit__graph.png" border="0" usemap="#aQGeometryOperations_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aQGeometryOperations_inherit__map" id="aQGeometryOperations_inherit__map">
+<area shape="rect" title="几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。" alt="" coords="5,79,173,104"/>
+<area shape="rect" title=" " alt="" coords="52,5,127,31"/>
+<area shape="poly" title=" " alt="" coords="92,44,92,79,87,79,87,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+QGeometryOperations 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQGeometryOperations__coll__graph.png" border="0" usemap="#aQGeometryOperations_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aQGeometryOperations_coll__map" id="aQGeometryOperations_coll__map">
+<area shape="rect" title="几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。" alt="" coords="3192,1114,3360,1139"/>
+<area shape="rect" title=" " alt="" coords="2960,1090,3035,1115"/>
+<area shape="poly" title=" " alt="" coords="3048,1104,3192,1117,3191,1122,3048,1110"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2948,1139,3047,1165"/>
+<area shape="poly" title=" " alt="" coords="3061,1149,3168,1143,3210,1137,3210,1142,3168,1148,3061,1154"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="2573,810,2714,835"/>
+<area shape="poly" title=" " alt="" coords="2724,836,2776,853,2831,878,2883,911,2906,932,2926,956,2939,979,2943,1001,2939,1042,2935,1082,2939,1103,2950,1125,2964,1137,2960,1141,2946,1128,2934,1105,2929,1083,2934,1041,2938,1001,2934,981,2922,959,2902,936,2880,916,2828,882,2774,858,2722,841"/>
+<area shape="rect" title=" " alt="" coords="2154,795,2341,850"/>
+<area shape="poly" title=" " alt="" coords="2354,820,2572,820,2572,825,2354,825"/>
+<area shape="rect" title=" " alt="" coords="2159,874,2335,929"/>
+<area shape="poly" title=" " alt="" coords="2349,881,2519,848,2588,833,2589,838,2521,853,2350,886"/>
+<area shape="rect" title=" " alt="" coords="2161,638,2334,693"/>
+<area shape="poly" title=" " alt="" coords="2348,682,2434,705,2521,738,2582,773,2628,808,2625,812,2579,778,2519,742,2432,710,2347,687"/>
+<area shape="rect" title=" " alt="" coords="2159,717,2335,771"/>
+<area shape="poly" title=" " alt="" coords="2350,759,2521,792,2589,807,2588,813,2519,797,2349,764"/>
+<area shape="rect" title=" " alt="" coords="1655,371,1817,426"/>
+<area shape="poly" title=" " alt="" coords="1761,437,1937,755,2030,909,2063,956,2082,974,2645,973,2730,977,2766,982,2798,991,2829,1004,2859,1022,2926,1075,2935,1088,2939,1101,2942,1113,2950,1125,2966,1137,2963,1141,2946,1128,2937,1115,2934,1102,2931,1091,2922,1079,2856,1026,2826,1009,2796,996,2765,987,2730,982,2645,979,2080,978,2059,960,2025,912,1932,757,1756,439"/>
+<area shape="rect" title=" " alt="" coords="1079,374,1299,399"/>
+<area shape="poly" title=" " alt="" coords="1313,392,1323,392,1655,396,1654,402,1323,397,1312,397"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="712,327,805,353"/>
+<area shape="poly" title=" " alt="" coords="820,344,1079,372,1078,377,819,349"/>
+<area shape="rect" title=" " alt="" coords="281,855,368,881"/>
+<area shape="poly" title=" " alt="" coords="334,841,374,752,442,625,487,556,538,489,595,425,658,370,684,355,711,346,713,351,686,360,662,374,599,429,542,492,491,560,447,628,378,754,339,843"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1869,1014,1997,1039"/>
+<area shape="poly" title=" " alt="" coords="355,887,409,923,483,967,569,1010,615,1028,661,1041,710,1051,770,1058,916,1066,1086,1067,1268,1063,1618,1046,1868,1029,1869,1034,1618,1052,1268,1069,1086,1073,915,1071,769,1063,709,1056,659,1047,613,1033,567,1015,480,972,406,928,352,891"/>
+<area shape="rect" title=" " alt="" coords="667,848,851,888"/>
+<area shape="poly" title=" " alt="" coords="382,865,667,865,667,871,382,871"/>
+<area shape="rect" title=" " alt="" coords="5,848,144,888"/>
+<area shape="poly" title=" " alt="" coords="158,865,281,865,281,871,158,871"/>
+<area shape="rect" title=" " alt="" coords="246,331,403,357"/>
+<area shape="poly" title=" " alt="" coords="417,341,636,340,712,339,712,344,636,345,417,347"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="1145,946,1233,971"/>
+<area shape="poly" title=" " alt="" coords="342,367,387,437,458,530,502,579,551,627,604,669,661,704,717,726,767,734,814,732,860,726,905,721,952,721,1002,732,1056,758,1083,778,1106,802,1144,855,1170,907,1185,945,1181,947,1165,909,1139,858,1102,805,1079,782,1053,762,1000,737,951,726,905,726,860,732,814,737,767,739,715,731,659,709,601,673,547,631,498,583,454,534,383,440,338,370"/>
+<area shape="rect" title=" " alt="" coords="660,249,857,303"/>
+<area shape="poly" title=" " alt="" coords="417,327,660,289,660,294,417,332"/>
+<area shape="rect" title=" " alt="" coords="2544,1058,2743,1113"/>
+<area shape="poly" title=" " alt="" coords="2757,1100,2925,1131,2950,1137,2949,1142,2923,1136,2756,1105"/>
+<area shape="rect" title=" " alt="" coords="2143,1025,2352,1065"/>
+<area shape="poly" title=" " alt="" coords="2366,1055,2544,1073,2543,1078,2365,1060"/>
+<area shape="poly" title=" " alt="" coords="2011,1029,2142,1036,2142,1042,2010,1034"/>
+<area shape="rect" title=" " alt="" coords="1416,969,1631,994"/>
+<area shape="poly" title=" " alt="" coords="1645,992,1869,1017,1868,1022,1644,997"/>
+<area shape="poly" title=" " alt="" coords="1247,960,1416,971,1416,977,1246,965"/>
+<area shape="rect" title=" " alt="" coords="675,1132,843,1172"/>
+<area shape="poly" title=" " alt="" coords="856,1149,1187,1149,2645,1149,2948,1149,2948,1155,2645,1155,1187,1155,856,1155"/>
+<area shape="poly" title=" " alt="" coords="831,1125,937,1085,1053,1034,1116,1000,1166,969,1169,974,1118,1005,1056,1038,939,1089,833,1130"/>
+<area shape="rect" title=" " alt="" coords="237,1153,412,1178"/>
+<area shape="poly" title=" " alt="" coords="426,1165,636,1161,674,1159,675,1164,636,1167,426,1170"/>
+<area shape="rect" title=" " alt="" coords="676,992,841,1032"/>
+<area shape="poly" title=" " alt="" coords="855,1006,952,1000,1054,988,1144,968,1145,974,1055,993,952,1005,855,1012"/>
+<area shape="rect" title=" " alt="" coords="682,769,835,823"/>
+<area shape="poly" title=" " alt="" coords="849,785,898,785,951,790,1005,800,1056,819,1099,847,1135,882,1163,917,1182,944,1177,947,1159,920,1131,885,1095,851,1053,824,1003,806,950,795,898,791,849,790"/>
+<area shape="rect" title=" " alt="" coords="682,913,835,967"/>
+<area shape="poly" title=" " alt="" coords="849,951,882,955,1026,959,1144,958,1144,963,1026,965,881,960,849,957"/>
+<area shape="poly" title=" " alt="" coords="836,889,882,901,968,918,1055,932,1145,948,1144,953,1054,937,967,924,881,907,835,894"/>
+<area shape="rect" title=" " alt="" coords="242,1099,407,1125"/>
+<area shape="poly" title=" " alt="" coords="352,1089,481,999,568,946,659,898,688,886,690,891,661,902,570,950,484,1004,355,1093"/>
+<area shape="rect" title=" " alt="" coords="1424,479,1623,519"/>
+<area shape="poly" title=" " alt="" coords="1571,524,1630,565,1699,623,1766,693,1795,733,1820,775,1831,807,1834,836,1826,890,1821,915,1821,940,1827,966,1843,993,1855,1004,1870,1012,1867,1017,1852,1008,1839,996,1822,968,1815,941,1816,915,1820,889,1828,836,1826,808,1815,777,1791,736,1762,697,1696,627,1627,570,1568,528"/>
+<area shape="rect" href="structGeometryData.html" title=" " alt="" coords="1129,185,1248,210"/>
+<area shape="poly" title=" " alt="" coords="1247,212,1321,243,1359,265,1394,291,1437,338,1472,390,1499,439,1516,477,1511,480,1494,442,1467,393,1433,341,1390,295,1356,270,1318,248,1245,217"/>
+<area shape="rect" title=" " alt="" coords="667,177,850,217"/>
+<area shape="poly" title=" " alt="" coords="864,195,1129,195,1129,200,864,200"/>
+<area shape="rect" href="structGeometrySubshapeIndex.html" title=" " alt="" coords="665,121,852,146"/>
+<area shape="poly" title=" " alt="" coords="866,143,1055,169,1129,183,1128,188,1054,175,865,148"/>
+<area shape="rect" title=" " alt="" coords="193,56,456,96"/>
+<area shape="poly" title=" " alt="" coords="470,83,636,103,709,118,708,123,636,108,469,88"/>
+<area shape="rect" title=" " alt="" coords="217,121,432,146"/>
+<area shape="poly" title=" " alt="" coords="446,131,665,131,665,136,446,136"/>
+<area shape="rect" title=" " alt="" coords="223,171,427,197"/>
+<area shape="poly" title=" " alt="" coords="440,177,536,170,636,159,709,143,710,149,636,164,536,176,441,183"/>
+<area shape="rect" title=" " alt="" coords="224,225,425,250"/>
+<area shape="poly" title=" " alt="" coords="439,247,488,245,539,239,589,225,634,203,643,195,646,185,650,174,658,163,695,144,698,148,662,167,654,177,651,187,647,198,638,207,591,230,540,244,488,251,439,252"/>
+<area shape="rect" title=" " alt="" coords="223,6,427,31"/>
+<area shape="poly" title=" " alt="" coords="440,20,537,32,588,43,637,58,697,87,743,118,740,123,694,92,635,62,587,48,537,38,440,25"/>
+<area shape="rect" title=" " alt="" coords="1424,647,1623,687"/>
+<area shape="poly" title=" " alt="" coords="1557,695,1819,966,1830,981,1843,992,1883,1011,1880,1016,1840,997,1826,984,1815,970,1553,699"/>
+<area shape="rect" href="structGeometryMeshMap.html" title=" " alt="" coords="1113,279,1264,305"/>
+<area shape="poly" title=" " alt="" coords="1256,306,1337,332,1372,348,1394,365,1408,386,1414,407,1413,445,1409,485,1411,506,1418,530,1436,563,1458,595,1502,645,1498,648,1454,598,1432,566,1414,532,1406,507,1404,484,1408,445,1409,407,1403,388,1390,368,1369,353,1335,337,1254,311"/>
+<area shape="poly" title=" " alt="" coords="871,277,1113,287,1113,292,871,283"/>
+<area shape="rect" title=" " alt="" coords="2567,1189,2719,1229"/>
+<area shape="poly" title=" " alt="" coords="2733,1212,2826,1208,2875,1202,2923,1191,2952,1178,2977,1163,2980,1167,2955,1183,2925,1196,2876,1207,2827,1214,2733,1217"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="2594,1254,2693,1279"/>
+<area shape="poly" title=" " alt="" coords="2706,1272,2756,1274,2812,1272,2869,1261,2923,1240,2945,1224,2963,1204,2988,1164,2992,1167,2967,1207,2948,1228,2925,1245,2870,1266,2812,1277,2756,1280,2706,1277"/>
+<area shape="rect" title=" " alt="" coords="2141,1220,2353,1260"/>
+<area shape="poly" title=" " alt="" coords="2367,1245,2594,1261,2594,1266,2367,1251"/>
+<area shape="rect" title=" " alt="" coords="1841,1220,2024,1260"/>
+<area shape="poly" title=" " alt="" coords="2038,1237,2141,1237,2141,1243,2038,1243"/>
+<area shape="rect" title=" " alt="" coords="2176,1284,2319,1324"/>
+<area shape="poly" title=" " alt="" coords="2333,1298,2520,1284,2593,1273,2594,1278,2520,1289,2333,1303"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="2583,1303,2704,1329"/>
+<area shape="poly" title=" " alt="" coords="2709,1329,2759,1335,2815,1335,2871,1326,2898,1317,2923,1303,2939,1289,2953,1272,2974,1233,2986,1194,2992,1164,2997,1165,2991,1196,2979,1235,2958,1275,2943,1293,2925,1308,2900,1321,2873,1331,2815,1341,2759,1340,2708,1334"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ac29e5b5d8148a9b853f40639f4bff2c8" id="r_ac29e5b5d8148a9b853f40639f4bff2c8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac29e5b5d8148a9b853f40639f4bff2c8">QGeometryOperations</a> (<a class="el" href="classModelLayer.html">ModelLayer</a> &amp;model_layer, QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a6a37c80afd25b9009a55e45286f0a473" id="r_a6a37c80afd25b9009a55e45286f0a473"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a37c80afd25b9009a55e45286f0a473">createPoint</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double x, double y, double z)</td></tr>
+<tr class="memdesc:a6a37c80afd25b9009a55e45286f0a473"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建独立几何点，并根据当前 Model/Component 选择确定写入位置。  <br /></td></tr>
+<tr class="memitem:a216e44e7847963ee0da5d180c85b1f4f" id="r_a216e44e7847963ee0da5d180c85b1f4f"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a216e44e7847963ee0da5d180c85b1f4f">createLineByCoordinates</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double startX, double startY, double startZ, double endX, double endY, double endZ)</td></tr>
+<tr class="memdesc:a216e44e7847963ee0da5d180c85b1f4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据两个坐标点创建直线边，并按当前 Model/Component 目标写入。  <br /></td></tr>
+<tr class="memitem:a4e8c87eff9d65b77c2ac34f0512c8782" id="r_a4e8c87eff9d65b77c2ac34f0512c8782"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4e8c87eff9d65b77c2ac34f0512c8782">createLineFromVertices</a> (int componentId, <a class="el" href="classQSelection.html">QSelection</a> *selection)</td></tr>
+<tr class="memdesc:a4e8c87eff9d65b77c2ac34f0512c8782"><td class="mdescLeft">&#160;</td><td class="mdescRight">使用当前组件中选中的两个 Geometry Vertex 创建共享拓扑的直线边。  <br /></td></tr>
+<tr class="memitem:aaf5bbc0d21ad91e0cad0df1a9faa0fcf" id="r_aaf5bbc0d21ad91e0cad0df1a9faa0fcf"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf5bbc0d21ad91e0cad0df1a9faa0fcf">createRectangleFace</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double originX, double originY, double originZ, double width, double height, int plane)</td></tr>
+<tr class="memdesc:aaf5bbc0d21ad91e0cad0df1a9faa0fcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据角点、宽度、高度和全局坐标平面创建矩形面。  <br /></td></tr>
+<tr class="memitem:ab6390877738a3d600e44c84bf183ee19" id="r_ab6390877738a3d600e44c84bf183ee19"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab6390877738a3d600e44c84bf183ee19">createDiskFace</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double centerX, double centerY, double centerZ, double radius, int plane, double startAngle, double sweepAngle)</td></tr>
+<tr class="memdesc:ab6390877738a3d600e44c84bf183ee19"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据圆心、半径、全局坐标平面和角度创建圆盘或扇形面。  <br /></td></tr>
+<tr class="memitem:a62bb65f5d4d6255fede26288d7abd0a4" id="r_a62bb65f5d4d6255fede26288d7abd0a4"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62bb65f5d4d6255fede26288d7abd0a4">createFaceFromEdges</a> (int componentId, <a class="el" href="classQSelection.html">QSelection</a> *selection)</td></tr>
+<tr class="memdesc:a62bb65f5d4d6255fede26288d7abd0a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">使用当前组件中选中的几何边创建单一闭合 Face。  <br /></td></tr>
+<tr class="memitem:a1340c979f202a2c1aaa531fd50fc882b" id="r_a1340c979f202a2c1aaa531fd50fc882b"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1340c979f202a2c1aaa531fd50fc882b">createBox</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double originX, double originY, double originZ, double lengthX, double lengthY, double lengthZ)</td></tr>
+<tr class="memdesc:a1340c979f202a2c1aaa531fd50fc882b"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建长方体，并根据当前 Model/Component 选择确定写入位置。  <br /></td></tr>
+<tr class="memitem:a60554f2f56855676fe1fd94856596e83" id="r_a60554f2f56855676fe1fd94856596e83"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a60554f2f56855676fe1fd94856596e83">createCylinder</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double centerX, double centerY, double centerZ, double radius, double height, double directionX, double directionY, double directionZ, double sweepAngle)</td></tr>
+<tr class="memdesc:a60554f2f56855676fe1fd94856596e83"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体。  <br /></td></tr>
+<tr class="memitem:aa370b31fdf12ab52eedc073447c50f8c" id="r_aa370b31fdf12ab52eedc073447c50f8c"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa370b31fdf12ab52eedc073447c50f8c">createCone</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double centerX, double centerY, double centerZ, double bottomRadius, double topRadius, double height, double directionX, double directionY, double directionZ, double sweepAngle)</td></tr>
+<tr class="memdesc:aa370b31fdf12ab52eedc073447c50f8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。  <br /></td></tr>
+<tr class="memitem:a22f1cc9dc4a8e02e484f308b84f53173" id="r_a22f1cc9dc4a8e02e484f308b84f53173"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22f1cc9dc4a8e02e484f308b84f53173">createSphere</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double centerX, double centerY, double centerZ, double radius, double directionX, double directionY, double directionZ, double minimumLatitude, double maximumLatitude, double longitudeSweep)</td></tr>
+<tr class="memdesc:a22f1cc9dc4a8e02e484f308b84f53173"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。  <br /></td></tr>
+<tr class="memitem:aa4684e4b8b1e8314b6494c41abb2b8b6" id="r_aa4684e4b8b1e8314b6494c41abb2b8b6"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4684e4b8b1e8314b6494c41abb2b8b6">extrudeFace</a> (int componentId, <a class="el" href="classQSelection.html">QSelection</a> *selection, double directionX, double directionY, double directionZ, double length)</td></tr>
+<tr class="memdesc:aa4684e4b8b1e8314b6494c41abb2b8b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:aedfaffcab7b42bd3517108ea90d8ccaf" id="r_aedfaffcab7b42bd3517108ea90d8ccaf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aedfaffcab7b42bd3517108ea90d8ccaf">addGeometryShape</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, std::string component_name, TopoDS_Shape shape)</td></tr>
+<tr class="memdesc:aedfaffcab7b42bd3517108ea90d8ccaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据目标 Model/Component 将 OCC Shape 新建或追加到模型层。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a94158880a74c9a917c4aafef7412ae41" id="r_a94158880a74c9a917c4aafef7412ae41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelLayer.html">ModelLayer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94158880a74c9a917c4aafef7412ae41">model_layer_</a> {}</td></tr>
+<tr class="memitem:ae01c085c25858039f70c58d4b2760bfc" id="r_ae01c085c25858039f70c58d4b2760bfc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae01c085c25858039f70c58d4b2760bfc">next_point_number_</a> { 1 }</td></tr>
+<tr class="memitem:a40d6b7ef15ccfad30acb419d7cf49ff2" id="r_a40d6b7ef15ccfad30acb419d7cf49ff2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40d6b7ef15ccfad30acb419d7cf49ff2">next_line_number_</a> { 1 }</td></tr>
+<tr class="memitem:a8fe3144c859228ce3fb1d46c52de1e01" id="r_a8fe3144c859228ce3fb1d46c52de1e01"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8fe3144c859228ce3fb1d46c52de1e01">next_rectangle_face_number_</a> { 1 }</td></tr>
+<tr class="memitem:a78f0b691ac42fc8ffd1ff7b736a0f213" id="r_a78f0b691ac42fc8ffd1ff7b736a0f213"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78f0b691ac42fc8ffd1ff7b736a0f213">next_disk_face_number_</a> { 1 }</td></tr>
+<tr class="memitem:a8c8b26226fd8f052da5cd7ba17682a92" id="r_a8c8b26226fd8f052da5cd7ba17682a92"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c8b26226fd8f052da5cd7ba17682a92">next_box_number_</a> { 1 }</td></tr>
+<tr class="memitem:a7a95c9d841a42abeaf89fe519dcca352" id="r_a7a95c9d841a42abeaf89fe519dcca352"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a95c9d841a42abeaf89fe519dcca352">next_cylinder_number_</a> { 1 }</td></tr>
+<tr class="memitem:ac0ed7e6b5f75410f95a6c83bf24e546d" id="r_ac0ed7e6b5f75410f95a6c83bf24e546d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0ed7e6b5f75410f95a6c83bf24e546d">next_cone_number_</a> { 1 }</td></tr>
+<tr class="memitem:a80baa07eb5ad8a17c22aa819199f6d5d" id="r_a80baa07eb5ad8a17c22aa819199f6d5d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80baa07eb5ad8a17c22aa819199f6d5d">next_sphere_number_</a> { 1 }</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。 </p>
+<p>该类调用 <a class="el" href="classGeometryBuilder.html" title="提供不依赖界面和模型管理的基础 OCC 几何构造函数。">GeometryBuilder</a> 构造 OCC Shape，再根据 Model/Component 目标 将结果新建或追加到 ModelLayer，不参与底层几何算法和渲染。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ac29e5b5d8148a9b853f40639f4bff2c8" name="ac29e5b5d8148a9b853f40639f4bff2c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac29e5b5d8148a9b853f40639f4bff2c8">&#9670;&#160;</a></span>QGeometryOperations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QGeometryOperations::QGeometryOperations </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model_layer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="aedfaffcab7b42bd3517108ea90d8ccaf" name="aedfaffcab7b42bd3517108ea90d8ccaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedfaffcab7b42bd3517108ea90d8ccaf">&#9670;&#160;</a></span>addGeometryShape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> QGeometryOperations::addGeometryShape </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>component_name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TopoDS_Shape</td>          <td class="paramname"><span class="paramname"><em>shape</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据目标 Model/Component 将 OCC Shape 新建或追加到模型层。 </p>
+
+</div>
+</div>
+<a id="a1340c979f202a2c1aaa531fd50fc882b" name="a1340c979f202a2c1aaa531fd50fc882b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1340c979f202a2c1aaa531fd50fc882b">&#9670;&#160;</a></span>createBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createBox </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>originX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>originY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>originZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lengthX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lengthY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lengthZ</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>创建长方体，并根据当前 Model/Component 选择确定写入位置。 </p>
+<dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="aa370b31fdf12ab52eedc073447c50f8c" name="aa370b31fdf12ab52eedc073447c50f8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa370b31fdf12ab52eedc073447c50f8c">&#9670;&#160;</a></span>createCone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createCone </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>bottomRadius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>topRadius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>sweepAngle</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。 </p>
+<p>QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。 </p><dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="a60554f2f56855676fe1fd94856596e83" name="a60554f2f56855676fe1fd94856596e83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60554f2f56855676fe1fd94856596e83">&#9670;&#160;</a></span>createCylinder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createCylinder </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>sweepAngle</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体。 </p>
+<p>QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。 </p><dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="ab6390877738a3d600e44c84bf183ee19" name="ab6390877738a3d600e44c84bf183ee19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6390877738a3d600e44c84bf183ee19">&#9670;&#160;</a></span>createDiskFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createDiskFace </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>plane</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>startAngle</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>sweepAngle</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据圆心、半径、全局坐标平面和角度创建圆盘或扇形面。 </p>
+<p>QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。 </p><dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="a62bb65f5d4d6255fede26288d7abd0a4" name="a62bb65f5d4d6255fede26288d7abd0a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62bb65f5d4d6255fede26288d7abd0a4">&#9670;&#160;</a></span>createFaceFromEdges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createFaceFromEdges </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classQSelection.html">QSelection</a> *</td>          <td class="paramname"><span class="paramname"><em>selection</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>使用当前组件中选中的几何边创建单一闭合 Face。 </p>
+<dl class="section return"><dt>返回</dt><dd>被更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="a216e44e7847963ee0da5d180c85b1f4f" name="a216e44e7847963ee0da5d180c85b1f4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a216e44e7847963ee0da5d180c85b1f4f">&#9670;&#160;</a></span>createLineByCoordinates()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createLineByCoordinates </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>startX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>startY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>startZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>endX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>endY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>endZ</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据两个坐标点创建直线边，并按当前 Model/Component 目标写入。 </p>
+<dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="a4e8c87eff9d65b77c2ac34f0512c8782" name="a4e8c87eff9d65b77c2ac34f0512c8782"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e8c87eff9d65b77c2ac34f0512c8782">&#9670;&#160;</a></span>createLineFromVertices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createLineFromVertices </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classQSelection.html">QSelection</a> *</td>          <td class="paramname"><span class="paramname"><em>selection</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>使用当前组件中选中的两个 Geometry Vertex 创建共享拓扑的直线边。 </p>
+<dl class="section return"><dt>返回</dt><dd>被更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="a6a37c80afd25b9009a55e45286f0a473" name="a6a37c80afd25b9009a55e45286f0a473"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a37c80afd25b9009a55e45286f0a473">&#9670;&#160;</a></span>createPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createPoint </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>z</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>创建独立几何点，并根据当前 Model/Component 选择确定写入位置。 </p>
+<dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="aaf5bbc0d21ad91e0cad0df1a9faa0fcf" name="aaf5bbc0d21ad91e0cad0df1a9faa0fcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf5bbc0d21ad91e0cad0df1a9faa0fcf">&#9670;&#160;</a></span>createRectangleFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createRectangleFace </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>originX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>originY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>originZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>width</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>height</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>plane</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据角点、宽度、高度和全局坐标平面创建矩形面。 </p>
+<dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="a22f1cc9dc4a8e02e484f308b84f53173" name="a22f1cc9dc4a8e02e484f308b84f53173"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22f1cc9dc4a8e02e484f308b84f53173">&#9670;&#160;</a></span>createSphere()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::createSphere </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modelId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>centerZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>radius</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>minimumLatitude</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>maximumLatitude</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>longitudeSweep</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。 </p>
+<p>QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。 </p><dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="aa4684e4b8b1e8314b6494c41abb2b8b6" name="aa4684e4b8b1e8314b6494c41abb2b8b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4684e4b8b1e8314b6494c41abb2b8b6">&#9670;&#160;</a></span>extrudeFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::extrudeFace </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>componentId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classQSelection.html">QSelection</a> *</td>          <td class="paramname"><span class="paramname"><em>selection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionX</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionY</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>directionZ</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>length</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。 </p>
+<p>源 Face 保留，拉伸结果使用截面副本并追加回源组件。 </p><dl class="section return"><dt>返回</dt><dd>被更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a94158880a74c9a917c4aafef7412ae41" name="a94158880a74c9a917c4aafef7412ae41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94158880a74c9a917c4aafef7412ae41">&#9670;&#160;</a></span>model_layer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelLayer.html">ModelLayer</a>* QGeometryOperations::model_layer_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8c8b26226fd8f052da5cd7ba17682a92" name="a8c8b26226fd8f052da5cd7ba17682a92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c8b26226fd8f052da5cd7ba17682a92">&#9670;&#160;</a></span>next_box_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_box_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac0ed7e6b5f75410f95a6c83bf24e546d" name="ac0ed7e6b5f75410f95a6c83bf24e546d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0ed7e6b5f75410f95a6c83bf24e546d">&#9670;&#160;</a></span>next_cone_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_cone_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7a95c9d841a42abeaf89fe519dcca352" name="a7a95c9d841a42abeaf89fe519dcca352"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a95c9d841a42abeaf89fe519dcca352">&#9670;&#160;</a></span>next_cylinder_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_cylinder_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a78f0b691ac42fc8ffd1ff7b736a0f213" name="a78f0b691ac42fc8ffd1ff7b736a0f213"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78f0b691ac42fc8ffd1ff7b736a0f213">&#9670;&#160;</a></span>next_disk_face_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_disk_face_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a40d6b7ef15ccfad30acb419d7cf49ff2" name="a40d6b7ef15ccfad30acb419d7cf49ff2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40d6b7ef15ccfad30acb419d7cf49ff2">&#9670;&#160;</a></span>next_line_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_line_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae01c085c25858039f70c58d4b2760bfc" name="ae01c085c25858039f70c58d4b2760bfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae01c085c25858039f70c58d4b2760bfc">&#9670;&#160;</a></span>next_point_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_point_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8fe3144c859228ce3fb1d46c52de1e01" name="a8fe3144c859228ce3fb1d46c52de1e01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fe3144c859228ce3fb1d46c52de1e01">&#9670;&#160;</a></span>next_rectangle_face_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_rectangle_face_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a80baa07eb5ad8a17c22aa819199f6d5d" name="a80baa07eb5ad8a17c22aa819199f6d5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80baa07eb5ad8a17c22aa819199f6d5d">&#9670;&#160;</a></span>next_sphere_number_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::next_sphere_number_ { 1 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/model/<a class="el" href="QGeometryOperations_8h_source.html">QGeometryOperations.h</a></li>
+<li>app/model/<a class="el" href="QGeometryOperations_8cpp.html">QGeometryOperations.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -106,5 +106,6 @@ var searchData=
   ['extract_5ffilter_5f_103',['extract_filter_',['../classSolidSelectorHighlight.html#a01649527e51122f2925ace2e03532701',1,'SolidSelectorHighlight::extract_filter_'],['../classVertexSelectorHighlight.html#a66021a8e9dd4edc9770e6e7866034ca7',1,'VertexSelectorHighlight::extract_filter_']]],
   ['extractedge_104',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
   ['extractsolid_105',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
-  ['extractvertex_106',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]]
+  ['extractvertex_106',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
+  ['extrudeface_107',['extrudeFace',['../classQGeometryOperations.html#aa4684e4b8b1e8314b6494c41abb2b8b6',1,'QGeometryOperations::extrudeFace()'],['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder::extrudeFace()']]]
 ];
