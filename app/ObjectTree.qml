@@ -286,8 +286,8 @@ Pane {
                             App.selection.activeModelId = -1
                         } else {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
-                            App.selection.activeModelId = QModelManager.query.findModelIdByComponent(compId)
                             App.selection.activeComponentId = compId
+                            App.selection.activeModelId = QModelManager.query.findModelIdByComponent(compId)
                         }
                     }
                 }
@@ -402,9 +402,6 @@ Pane {
                     }
 
                     onTriggered: {
-                        viewDelegate.treeView.selectionModel.clear()
-                        App.selection.activeComponentId = -1
-                        App.selection.activeModelId = -1
                         contextMenu.close()
                         objectTree.deleteNode(
                             viewDelegate.model.nodeId, viewDelegate.depth,
@@ -469,15 +466,33 @@ Pane {
     }
 
     function deleteNode(nodeId, depth, nodeType, componentId) {
-        treeView.selectionModel.clear()
-        if (depth === 0)
+        if (depth === 0) {
+            // 删除当前 Model 时，其关联的 Component 也会一并失效。
+            if (App.selection.activeModelId === nodeId) {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+                App.selection.activeModelId = -1
+            }
             QModelManager.removeModel(nodeId)
-        else if (depth === 1)
+        } else if (depth === 1) {
+            // 删除当前 Component 后保留所属 Model，并选中剩余的第一个 Component。
+            const deletingActiveComponent = App.selection.activeComponentId === nodeId
+            const ownerModelId = deletingActiveComponent
+                ? QModelManager.query.findModelIdByComponent(nodeId) : -1
+            if (deletingActiveComponent) {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+            }
             QModelManager.removeComponent(nodeId)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeMesh)
+            if (deletingActiveComponent) {
+                App.selection.activeModelId = ownerModelId
+                App.selection.activeComponentId = objectTree.firstComponentId(ownerModelId)
+            }
+        } else if (depth === 2 && nodeType === objectTree._nodeTypeMesh) {
             QModelManager.removeMesh(componentId)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry)
+        } else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry) {
             QModelManager.removeGeometry(componentId)
+        }
     }
 
     function hideAllNodes() {
