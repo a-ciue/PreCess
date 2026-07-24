@@ -47,11 +47,10 @@ Item{
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 30
+        height:30
         onClicked:{
-            if (root.activeOp && root.activeOp.execute) {
+            if (root.activeOp && root.activeOp.execute)
                 root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
-            }
             if (App.registry.renderWindow)
                 App.registry.renderWindow.clearSelection()
         }
