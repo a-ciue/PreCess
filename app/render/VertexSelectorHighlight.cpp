@@ -120,9 +120,8 @@ void VertexSelectorHighlight::select(double posx, double posy)
         spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
     }
 
-    selected_ids_->Modified(); // 通知 VTK 数据已更改，进行刷新
-    geom_filter_->Update();
-    highlight_data_->Modified();
+    selected_ids_->Modified();
+    applyHighlight();
 }
 
 void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
