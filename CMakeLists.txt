@@ -20,6 +20,7 @@ find_package(VTK REQUIRED COMPONENTS
         CommonCore
         GUISupportQtQuick
         InteractionStyle
+        FiltersVerdict
         RenderingAnnotation
 )
 
