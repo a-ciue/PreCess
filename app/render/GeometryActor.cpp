@@ -1,10 +1,8 @@
 #include "GeometryActor.h"
 #include "Core.h"
-#include <BRep_Builder.hxx>
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
-#include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <vtkPolyDataMapper.h>
@@ -16,20 +14,6 @@
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
 #include <vtkCellData.h>
-
-// 将独立点、边、面包装成仅用于显示拾取的 Compound，使根形状进入 OCCT 的子形状选择流程。
-static TopoDS_Shape makeSelectableShape(const TopoDS_Shape& shape)
-{
-    const TopAbs_ShapeEnum type = shape.ShapeType();
-    if (type != TopAbs_VERTEX && type != TopAbs_EDGE && type != TopAbs_FACE)
-        return shape;
-
-    BRep_Builder builder;
-    TopoDS_Compound compound;
-    builder.MakeCompound(compound);
-    builder.Add(compound, shape);
-    return compound;
-}
 
 // 按 OCCT 约定的正式名称获取单元对应的子形状 ID 数组。
 static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* poly_data)
@@ -63,9 +47,8 @@ bool GeometryActor::getIsEdgeRender()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    // GeometryData 仍保留原始根形状；临时 Compound 只服务于 VTK 显示和拾取。
-    const TopoDS_Shape selectable_shape = makeSelectableShape(geometry_data.shape);
-    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(selectable_shape);
+    // GeometryData 保证根形状已经是严格一层扁平的 Compound。
+    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
     aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     this->occ_shape_ = aShapeImpl;
     this->geometry_index_ = geometry_data.geometry_index;

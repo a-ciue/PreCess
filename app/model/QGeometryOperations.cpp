@@ -473,7 +473,7 @@ Index QGeometryOperations::addGeometryShape(
     const std::string model_name = "temp_" + component_name;
 
     auto geometry = std::make_unique<GeometryData>();
-    geometry->rootShape = std::make_unique<TopoDS_Shape>(std::move(shape));
+    geometry->setRootShape(std::move(shape));
 
     auto component = std::make_unique<ComponentData>();
     component->name = std::move(component_name);

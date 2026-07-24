@@ -9,10 +9,38 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRep_Builder.hxx>
 #include <gp_Pnt.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+
+TEST_CASE("Geometry root is normalized to a flat compound")
+{
+    BRep_Builder builder;
+    TopoDS_Compound inner;
+    builder.MakeCompound(inner);
+    builder.Add(inner, BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
+
+    TopoDS_Compound outer;
+    builder.MakeCompound(outer);
+    builder.Add(outer, inner);
+    builder.Add(outer, BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 5.0, 6.0)).Shape());
+
+    GeometryData geometry;
+    geometry.setRootShape(outer);
+
+    REQUIRE(geometry.rootShape != nullptr);
+    REQUIRE(geometry.rootShape->ShapeType() == TopAbs_COMPOUND);
+
+    int direct_child_count = 0;
+    for (TopoDS_Iterator it(*geometry.rootShape); it.More(); it.Next()) {
+        REQUIRE(it.Value().ShapeType() != TopAbs_COMPOUND);
+        ++direct_child_count;
+    }
+    REQUIRE(direct_child_count == 2);
+}
 
 TEST_CASE("Geometry index build for single component")
 {
@@ -196,6 +224,17 @@ TEST_CASE("Initialize and append geometry in a mesh-only component")
     REQUIRE(component_operator);
     component_operator->appendGeometryShape(
         BRepBuilderAPI_MakeVertex(gp_Pnt(1.0, 2.0, 3.0)).Shape());
+
+    ComponentData* initialized = manager.findComponent(component_id);
+    REQUIRE(initialized != nullptr);
+    REQUIRE(initialized->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+    int initial_child_count = 0;
+    for (TopoDS_Iterator it(*initialized->geometry->rootShape); it.More(); it.Next()) {
+        REQUIRE(it.Value().ShapeType() != TopAbs_COMPOUND);
+        ++initial_child_count;
+    }
+    REQUIRE(initial_child_count == 1);
+
     component_operator->appendGeometryShape(
         BRepBuilderAPI_MakeVertex(gp_Pnt(4.0, 5.0, 6.0)).Shape());
 
@@ -205,6 +244,8 @@ TEST_CASE("Initialize and append geometry in a mesh-only component")
     REQUIRE(updated->geometry != nullptr);
     REQUIRE(updated->geometry->rootShape != nullptr);
     REQUIRE(updated->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+    for (TopoDS_Iterator it(*updated->geometry->rootShape); it.More(); it.Next())
+        REQUIRE(it.Value().ShapeType() != TopAbs_COMPOUND);
     REQUIRE(updated->geometry->index.built);
     REQUIRE(updated->geometry->index.type_maps[
         GeometrySubshapeIndex::typeIndex(TopAbs_VERTEX)].Extent() == 2);
