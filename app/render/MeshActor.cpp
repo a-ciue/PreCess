@@ -312,6 +312,12 @@ void MeshActor::applyStyle()
 
     glyph3D_actor_->SetVisibility(true);
 
+    if (style_ == MeshRenderStyle::WireframeInternal) {
+        solid_mapper_->SetInputConnection(solid_edge_extractor_->GetOutputPort());
+    } else {
+        solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
+    }
+
     switch (style_) {
     case MeshRenderStyle::FaceWithEdges:
         solid_actor_->SetVisibility(true);
@@ -369,7 +375,6 @@ void MeshActor::applyStyle()
         edge_actor_->SetVisibility(this->visibility_);
         break;
     case MeshRenderStyle::WireframeInternal:
-        solid_mapper_->SetInputConnection(solid_edge_extractor_->GetOutputPort());
         solid_actor_->SetVisibility(true);
         solid_actor_->GetProperty()->SetRepresentationToWireframe();
         solid_actor_->GetProperty()->SetOpacity(1.0);
@@ -379,7 +384,6 @@ void MeshActor::applyStyle()
         edge_actor_->SetVisibility(this->visibility_);
         break;
     case MeshRenderStyle::WireframeSurface:
-        solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
         solid_actor_->SetVisibility(true);
         solid_actor_->GetProperty()->SetRepresentationToWireframe();
         solid_actor_->GetProperty()->SetOpacity(1.0);
@@ -389,7 +393,6 @@ void MeshActor::applyStyle()
         edge_actor_->SetVisibility(false);
         break;
     default:
-        solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
         break;
     }
 }
