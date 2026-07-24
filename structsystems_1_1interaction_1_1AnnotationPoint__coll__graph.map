@@ -1,0 +1,5 @@
+<map id="systems::interaction::AnnotationPoint" name="systems::interaction::AnnotationPoint">
+<area shape="rect" id="Node000001" title="标注点（颜色分量 0~1，默认红色）" alt="" coords="15,101,170,141"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,180,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,45,95,101,90,101,90,45"/>
+</map>

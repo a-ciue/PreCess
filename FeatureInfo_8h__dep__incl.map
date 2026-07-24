@@ -1,19 +1,21 @@
 <map id="model/systems/feature/FeatureInfo.h" name="model/systems/feature/FeatureInfo.h">
-<area shape="rect" id="Node000001" title="功能的描述信息与注册声明（菜单、按键）" alt="" coords="335,5,509,45"/>
-<area shape="rect" id="Node000002" href="$FeatureRegistrar_8h.html" title="功能声明的收集器" alt="" coords="237,93,410,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="392,56,347,95,343,91,388,52"/>
-<area shape="rect" id="Node000005" href="$FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="447,93,621,133"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="460,52,511,91,508,95,456,56"/>
-<area shape="rect" id="Node000003" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="237,181,410,221"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="326,147,326,181,321,181,321,147"/>
-<area shape="rect" id="Node000004" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="5,181,212,221"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="265,141,157,184,155,179,263,136"/>
-<area shape="poly" id="edge7_Node000005_Node000003" title=" " alt="" coords="476,141,370,184,368,179,474,136"/>
-<area shape="poly" id="edge9_Node000005_Node000004" title=" " alt="" coords="434,137,202,184,201,179,433,132"/>
-<area shape="rect" id="Node000006" href="$QModelManager_8cpp.html" title=" " alt="" coords="435,189,663,214"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="542,146,549,188,544,189,537,147"/>
-<area shape="rect" id="Node000007" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="687,181,898,221"/>
-<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="605,135,737,179,735,184,603,140"/>
-<area shape="rect" id="Node000008" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="923,181,1127,221"/>
-<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="635,129,923,180,922,185,634,135"/>
+<area shape="rect" id="Node000001" title="功能的描述信息与注册声明（菜单、按键）" alt="" coords="341,5,515,45"/>
+<area shape="rect" id="Node000002" href="$FeatureRegistrar_8h.html" title="功能声明的收集器" alt="" coords="220,93,393,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="392,55,335,95,332,91,389,51"/>
+<area shape="rect" id="Node000005" href="$FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="463,93,636,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="467,51,524,91,521,95,464,55"/>
+<area shape="rect" id="Node000003" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="5,181,179,221"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="248,141,140,184,138,179,246,136"/>
+<area shape="rect" id="Node000004" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="203,181,410,221"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="309,147,309,181,304,181,304,147"/>
+<area shape="poly" id="edge8_Node000005_Node000003" title=" " alt="" coords="449,136,191,184,180,186,179,181,190,179,448,131"/>
+<area shape="poly" id="edge10_Node000005_Node000004" title=" " alt="" coords="484,140,361,184,359,179,482,135"/>
+<area shape="rect" id="Node000006" href="$QModelManager_8cpp.html" title=" " alt="" coords="917,189,1145,214"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="650,130,967,186,966,191,649,135"/>
+<area shape="rect" id="Node000007" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="1169,181,1380,221"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="650,122,882,146,1158,179,1170,180,1169,186,1157,184,882,151,649,127"/>
+<area shape="rect" id="Node000008" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="434,189,665,214"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="552,147,552,188,547,188,547,147"/>
+<area shape="rect" id="Node000009" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="689,181,893,221"/>
+<area shape="poly" id="edge9_Node000005_Node000009" title=" " alt="" coords="616,135,739,179,737,184,614,140"/>
 </map>

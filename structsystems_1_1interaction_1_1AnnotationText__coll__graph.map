@@ -1,0 +1,9 @@
+<map id="systems::interaction::AnnotationText" name="systems::interaction::AnnotationText">
+<area shape="rect" id="Node000001" title="标注文本（默认白色）" alt="" coords="69,191,223,231"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,95,180,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,131,138,189,134,192,103,134"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="204,95,291,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="228,132,167,192,163,188,224,128"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="178,5,317,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="250,59,250,94,245,94,245,59"/>
+</map>

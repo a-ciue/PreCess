@@ -114,6 +114,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a966d8b0ce74edd31cac53a61cb32fb47" id="r_a966d8b0ce74edd31cac53a61cb32fb47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a966d8b0ce74edd31cac53a61cb32fb47">disableSelectionModes</a> (IVtkTools_ShapePicker *picker) const</td></tr>
 <tr class="memitem:a2edb7246a4b585b5635a3c872eeb4818" id="r_a2edb7246a4b585b5635a3c872eeb4818"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2edb7246a4b585b5635a3c872eeb4818">enableSelectionMode</a> (IVtkTools_ShapePicker *picker, <a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> mode) const</td></tr>
 <tr class="memitem:a90f6b6edfcbc1bae86fc960740ad6815" id="r_a90f6b6edfcbc1bae86fc960740ad6815"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90f6b6edfcbc1bae86fc960740ad6815">resolvePickedSubshape</a> (IVtkTools_ShapePicker *picker, IVtk_IdType shapeId, <a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> mode, IVtk_IdType &amp;out_sub_id) const</td></tr>
+<tr class="memitem:a000cce0569d797a6c6c84cd884151579" id="r_a000cce0569d797a6c6c84cd884151579"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::array&lt; double, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a000cce0569d797a6c6c84cd884151579">vertexPoint</a> (IVtk_IdType sub_id) const</td></tr>
+<tr class="memdesc:a000cce0569d797a6c6c84cd884151579"><td class="mdescLeft">&#160;</td><td class="mdescRight">取几何顶点子形状的世界坐标  <br /></td></tr>
 <tr class="memitem:a369060c025e32dc66d8ebd43746a575d" id="r_a369060c025e32dc66d8ebd43746a575d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a369060c025e32dc66d8ebd43746a575d">resolvePickedSolid</a> (IVtkTools_ShapePicker *picker, IVtk_IdType shapeId, <a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a> &amp;out_solid_id, std::vector&lt; IVtk_IdType &gt; &amp;out_face_sub_ids) const</td></tr>
 <tr class="memitem:a1b944073d9d1cb680389fa7b0a5d6645" id="r_a1b944073d9d1cb680389fa7b0a5d6645"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; IVtkTools_SubPolyDataFilter &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b944073d9d1cb680389fa7b0a5d6645">buildHighlight</a> (<a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> mode)</td></tr>
 <tr class="memitem:a859953f8fa63667adb77dde08d12b567" id="r_a859953f8fa63667adb77dde08d12b567"><td class="memItemLeft" align="right" valign="top">vtkActor &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a859953f8fa63667adb77dde08d12b567">getPolyActor</a> ()</td></tr>
@@ -337,6 +339,32 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a000cce0569d797a6c6c84cd884151579" name="a000cce0569d797a6c6c84cd884151579"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a000cce0569d797a6c6c84cd884151579">&#9670;&#160;</a></span>vertexPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; std::array&lt; double, 3 &gt; &gt; GeometryActorSelectOp::vertexPoint </td>
+          <td>(</td>
+          <td class="paramtype">IVtk_IdType</td>          <td class="paramname"><span class="paramname"><em>sub_id</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>取几何顶点子形状的世界坐标 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sub_id</td><td>IVtk 子形状 id（由 SM_Vertex 模式拾取得到） </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>顶点坐标；子形状无效或不是顶点时返回 std::nullopt </dd></dl>
 
 </div>
 </div>

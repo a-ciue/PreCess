@@ -1,73 +1,76 @@
 <map id="app/render/renderStrategy/IAttributeRenderStrategy.h" name="app/render/renderStrategy/IAttributeRenderStrategy.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="2674,5,2873,45"/>
-<area shape="rect" id="Node000002" href="$MeshActor_8h.html" title=" " alt="" coords="1280,93,1456,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2661,36,1456,102,1456,97,2660,30"/>
-<area shape="rect" id="Node000011" href="$AttriRenderStrategyRGB_8h.html" title=" " alt="" coords="2165,255,2360,295"/>
-<area shape="poly" id="edge39_Node000001_Node000011" title=" " alt="" coords="2701,52,2567,101,2491,133,2417,169,2345,214,2288,257,2284,252,2342,210,2415,164,2489,128,2565,96,2700,47"/>
-<area shape="rect" id="Node000014" href="$AttriRenderStrategyScalar_8h.html" title=" " alt="" coords="2602,255,2809,295"/>
-<area shape="poly" id="edge40_Node000001_Node000014" title=" " alt="" coords="2767,59,2713,255,2708,254,2762,58"/>
-<area shape="rect" id="Node000016" href="$AttriRenderStrategyUV_8h.html" title=" " alt="" coords="2833,255,3026,295"/>
-<area shape="poly" id="edge41_Node000001_Node000016" title=" " alt="" coords="2795,56,2920,253,2915,256,2790,58"/>
-<area shape="rect" id="Node000018" href="$AttriRenderStrategyVector_8h.html" title=" " alt="" coords="3050,255,3257,295"/>
-<area shape="poly" id="edge42_Node000001_Node000018" title=" " alt="" coords="2816,51,3126,252,3123,257,2813,55"/>
-<area shape="rect" id="Node000021" href="$IAttributeRenderStrategy_8cpp.html" title=" " alt="" coords="3281,255,3495,295"/>
-<area shape="poly" id="edge43_Node000001_Node000021" title=" " alt="" coords="2834,48,3342,252,3340,257,2832,53"/>
-<area shape="rect" id="Node000003" href="$EdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="235,174,501,199"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1266,115,932,135,514,169,450,177,449,171,513,164,931,130,1266,110"/>
-<area shape="rect" id="Node000004" href="$MeshActor_8cpp.html" title=" " alt="" coords="1950,262,2141,287"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1429,119,1613,164,2000,259,1999,265,1611,169,1427,124"/>
-<area shape="rect" id="Node000005" href="$MeshActorManager_8h.html" title=" " alt="" coords="526,174,759,199"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1267,121,749,177,748,171,1266,116"/>
-<area shape="rect" id="Node000007" href="$MeshActorManagerSelectOp_8cpp.html" title=" " alt="" coords="386,255,609,295"/>
-<area shape="poly" id="edge8_Node000002_Node000007" title=" " alt="" coords="1295,124,596,257,595,252,1294,119"/>
-<area shape="rect" id="Node000009" href="$MeshActorSelectOp_8cpp.html" title=" " alt="" coords="5,167,211,207"/>
-<area shape="poly" id="edge9_Node000002_Node000009" title=" " alt="" coords="1266,112,813,126,520,144,223,169,211,171,211,165,222,164,519,138,813,121,1266,106"/>
-<area shape="rect" id="Node000010" href="$AttributeOperator_8h.html" title=" " alt="" coords="2429,167,2622,207"/>
-<area shape="poly" id="edge10_Node000002_Node000010" title=" " alt="" coords="1470,112,2429,176,2428,181,1470,117"/>
-<area shape="rect" id="Node000022" href="$MakeMeshDataVtk_8h.html" title=" " alt="" coords="1271,167,1465,207"/>
-<area shape="poly" id="edge30_Node000002_Node000022" title=" " alt="" coords="1371,132,1371,167,1365,167,1365,132"/>
-<area shape="rect" id="Node000026" href="$TestMeshActor_8cpp.html" title=" " alt="" coords="1739,255,1925,295"/>
-<area shape="poly" id="edge38_Node000002_Node000026" title=" " alt="" coords="1414,121,1781,252,1779,257,1412,126"/>
-<area shape="rect" id="Node000006" href="$MeshActorManager_8cpp.html" title=" " alt="" coords="2228,350,2476,375"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="553,204,514,209,440,215,359,215,202,214,142,219,120,225,104,232,96,242,95,254,103,271,120,292,149,299,218,306,455,316,1161,330,2216,340,2281,347,2280,353,2216,345,1161,335,455,322,218,311,148,305,117,297,98,274,90,255,91,240,101,228,118,220,141,214,202,209,359,210,440,209,513,204,552,199"/>
-<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="613,209,531,257,528,252,610,204"/>
-<area shape="rect" id="Node000008" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="131,262,362,287"/>
-<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="577,205,300,265,299,259,576,200"/>
-<area shape="poly" id="edge11_Node000010_Node000004" title=" " alt="" coords="2415,210,2110,265,2109,259,2414,205"/>
-<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="2456,213,2321,257,2319,252,2454,208"/>
-<area shape="poly" id="edge16_Node000010_Node000014" title=" " alt="" coords="2578,210,2667,252,2665,257,2576,215"/>
-<area shape="poly" id="edge20_Node000010_Node000016" title=" " alt="" coords="2628,207,2841,252,2840,257,2627,212"/>
-<area shape="poly" id="edge24_Node000010_Node000018" title=" " alt="" coords="2636,199,3038,252,3050,254,3049,259,3037,257,2635,204"/>
-<area shape="rect" id="Node000020" href="$AttributeOperator_8cpp.html" title=" " alt="" coords="2385,255,2578,295"/>
-<area shape="poly" id="edge28_Node000010_Node000020" title=" " alt="" coords="2512,220,2493,256,2489,253,2507,218"/>
-<area shape="poly" id="edge29_Node000010_Node000021" title=" " alt="" coords="2636,193,2923,216,3268,252,3281,254,3280,259,3268,257,2922,222,2636,198"/>
-<area shape="poly" id="edge13_Node000011_Node000006" title=" " alt="" coords="2294,303,2341,348,2338,351,2291,306"/>
-<area shape="rect" id="Node000012" href="$AttriRenderStrategyRGB_8cpp.html" title=" " alt="" coords="1993,343,2204,383"/>
-<area shape="poly" id="edge14_Node000011_Node000012" title=" " alt="" coords="2216,303,2136,345,2133,340,2213,299"/>
-<area shape="rect" id="Node000013" href="$TestMeshData_8cpp.html" title=" " alt="" coords="2745,343,2932,383"/>
-<area shape="poly" id="edge15_Node000011_Node000013" title=" " alt="" coords="2374,292,2556,316,2734,340,2746,342,2745,347,2733,345,2555,321,2373,298"/>
-<area shape="poly" id="edge17_Node000014_Node000006" title=" " alt="" coords="2615,300,2400,353,2398,347,2614,295"/>
-<area shape="poly" id="edge19_Node000014_Node000013" title=" " alt="" coords="2748,300,2811,340,2808,345,2745,305"/>
-<area shape="rect" id="Node000015" href="$AttriRenderStrategyScalar_8cpp.html" title=" " alt="" coords="2500,343,2721,383"/>
-<area shape="poly" id="edge18_Node000014_Node000015" title=" " alt="" coords="2676,306,2633,344,2630,340,2672,302"/>
-<area shape="poly" id="edge21_Node000016_Node000006" title=" " alt="" coords="2819,297,2434,353,2433,347,2819,292"/>
-<area shape="poly" id="edge23_Node000016_Node000013" title=" " alt="" coords="2901,306,2861,344,2857,341,2898,302"/>
-<area shape="rect" id="Node000017" href="$AttriRenderStrategyUV_8cpp.html" title=" " alt="" coords="2957,343,3155,383"/>
-<area shape="poly" id="edge22_Node000016_Node000017" title=" " alt="" coords="2970,300,3029,340,3026,345,2967,305"/>
-<area shape="poly" id="edge25_Node000018_Node000006" title=" " alt="" coords="3037,297,2881,314,2760,322,2640,331,2488,345,2430,353,2430,347,2488,340,2640,325,2760,317,2881,308,3036,292"/>
-<area shape="poly" id="edge27_Node000018_Node000013" title=" " alt="" coords="3072,301,2908,345,2907,340,3070,296"/>
-<area shape="rect" id="Node000019" href="$AttriRenderStrategyVector_8cpp.html" title=" " alt="" coords="3179,343,3402,383"/>
-<area shape="poly" id="edge26_Node000018_Node000019" title=" " alt="" coords="3197,300,3262,340,3259,345,3194,304"/>
-<area shape="poly" id="edge35_Node000022_Node000013" title=" " alt="" coords="1479,197,1577,218,1627,233,1676,252,1692,263,1702,274,1712,284,1728,292,1771,305,1822,315,1942,329,2079,335,2225,336,2512,333,2635,334,2734,340,2745,341,2745,347,2733,345,2635,339,2512,338,2225,341,2079,340,1941,334,1821,320,1770,310,1726,297,1709,288,1698,277,1688,267,1673,257,1626,238,1576,223,1478,203"/>
-<area shape="rect" id="Node000023" href="$MakeMeshDataVtk_8cpp.html" title=" " alt="" coords="1057,255,1252,295"/>
-<area shape="poly" id="edge31_Node000022_Node000023" title=" " alt="" coords="1310,214,1202,257,1200,252,1308,209"/>
-<area shape="rect" id="Node000024" href="$TestEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="1277,255,1459,295"/>
-<area shape="poly" id="edge32_Node000022_Node000024" title=" " alt="" coords="1371,221,1371,254,1365,254,1365,221"/>
-<area shape="rect" id="Node000025" href="$TestFaceSelectorHighlight_8cpp.html" title=" " alt="" coords="1483,255,1663,295"/>
-<area shape="poly" id="edge33_Node000022_Node000025" title=" " alt="" coords="1427,209,1529,252,1527,257,1425,214"/>
-<area shape="poly" id="edge34_Node000022_Node000026" title=" " alt="" coords="1480,206,1739,254,1738,259,1479,211"/>
-<area shape="rect" id="Node000027" href="$TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="633,255,815,295"/>
-<area shape="poly" id="edge36_Node000022_Node000027" title=" " alt="" coords="1257,202,1057,226,827,257,816,259,815,254,826,252,1056,221,1257,197"/>
-<area shape="rect" id="Node000028" href="$TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="839,255,1033,295"/>
-<area shape="poly" id="edge37_Node000022_Node000028" title=" " alt="" coords="1260,212,1031,257,1030,252,1259,207"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="2621,5,2820,45"/>
+<area shape="rect" id="Node000002" href="$MeshActor_8h.html" title=" " alt="" coords="2306,93,2482,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2630,51,2442,96,2441,91,2629,46"/>
+<area shape="rect" id="Node000012" href="$AttriRenderStrategyRGB_8h.html" title=" " alt="" coords="1567,255,1762,295"/>
+<area shape="poly" id="edge41_Node000001_Node000012" title=" " alt="" coords="2607,34,2280,56,2117,73,2051,84,2000,96,1908,131,1820,176,1746,221,1692,257,1689,252,1743,216,1818,171,1905,126,1999,91,2050,79,2116,68,2279,51,2607,29"/>
+<area shape="rect" id="Node000015" href="$AttriRenderStrategyScalar_8h.html" title=" " alt="" coords="2033,255,2240,295"/>
+<area shape="poly" id="edge42_Node000001_Node000015" title=" " alt="" coords="2608,32,2429,42,2327,51,2223,64,2125,82,2039,105,1970,134,1944,150,1926,168,1918,186,1925,205,1942,219,1969,231,2040,252,2039,257,1967,236,1939,223,1921,208,1912,186,1921,165,1941,146,1968,129,2037,100,2124,77,2222,59,2326,46,2429,36,2608,26"/>
+<area shape="rect" id="Node000017" href="$AttriRenderStrategyUV_8h.html" title=" " alt="" coords="3003,255,3196,295"/>
+<area shape="poly" id="edge43_Node000001_Node000017" title=" " alt="" coords="2797,47,2851,67,2909,93,2969,126,3024,165,3046,186,3065,210,3092,253,3087,256,3060,213,3042,189,3020,169,2966,130,2907,98,2849,72,2796,52"/>
+<area shape="rect" id="Node000019" href="$AttriRenderStrategyVector_8h.html" title=" " alt="" coords="3220,255,3427,295"/>
+<area shape="poly" id="edge44_Node000001_Node000019" title=" " alt="" coords="2809,47,2877,67,2947,91,3046,132,3143,177,3290,252,3288,257,3140,182,3044,137,2945,96,2875,72,2807,52"/>
+<area shape="rect" id="Node000022" href="$IAttributeRenderStrategy_8cpp.html" title=" " alt="" coords="3451,255,3665,295"/>
+<area shape="poly" id="edge45_Node000001_Node000022" title=" " alt="" coords="2818,46,2996,91,3284,178,3505,252,3503,257,3282,184,2995,96,2817,51"/>
+<area shape="rect" id="Node000003" href="$EdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="1935,174,2202,199"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="2334,124,2117,177,2115,171,2333,119"/>
+<area shape="rect" id="Node000004" href="$MeshActor_8cpp.html" title=" " alt="" coords="2571,262,2761,287"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="2437,122,2479,141,2523,164,2550,184,2576,205,2652,260,2648,264,2572,209,2547,188,2521,169,2477,146,2435,126"/>
+<area shape="rect" id="Node000005" href="$MeshActorManager_8h.html" title=" " alt="" coords="2277,174,2511,199"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="2397,132,2397,174,2391,174,2391,132"/>
+<area shape="rect" id="Node000007" href="$MeshActorManagerSelectOp_8cpp.html" title=" " alt="" coords="1787,255,2009,295"/>
+<area shape="poly" id="edge9_Node000002_Node000007" title=" " alt="" coords="2352,126,2310,145,2266,169,2242,190,2231,200,2215,209,2178,222,2127,235,2010,258,2009,253,2126,230,2177,217,2213,204,2228,195,2238,186,2263,164,2307,141,2350,121"/>
+<area shape="rect" id="Node000010" href="$MeshActorSelectOp_8cpp.html" title=" " alt="" coords="2805,167,3010,207"/>
+<area shape="poly" id="edge10_Node000002_Node000010" title=" " alt="" coords="2486,118,2792,164,2805,166,2804,171,2791,169,2485,123"/>
+<area shape="rect" id="Node000011" href="$AttributeOperator_8h.html" title=" " alt="" coords="2587,167,2780,207"/>
+<area shape="poly" id="edge11_Node000002_Node000011" title=" " alt="" coords="2450,120,2614,164,2613,169,2449,125"/>
+<area shape="rect" id="Node000023" href="$MakeMeshDataVtk_8h.html" title=" " alt="" coords="694,167,889,207"/>
+<area shape="poly" id="edge31_Node000002_Node000023" title=" " alt="" coords="2292,115,889,183,889,178,2292,110"/>
+<area shape="rect" id="Node000027" href="$TestMeshActor_8cpp.html" title=" " alt="" coords="1111,255,1298,295"/>
+<area shape="poly" id="edge40_Node000002_Node000027" title=" " alt="" coords="2293,122,1865,177,1589,215,1310,257,1299,259,1298,254,1310,252,1588,210,1864,172,2292,117"/>
+<area shape="rect" id="Node000006" href="$MeshActorManager_8cpp.html" title=" " alt="" coords="2271,350,2519,375"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2356,208,2328,228,2306,256,2300,275,2306,294,2318,311,2334,326,2369,348,2366,352,2331,330,2314,315,2301,296,2295,275,2301,253,2324,224,2353,204"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="2315,204,2007,257,2006,252,2314,199"/>
+<area shape="rect" id="Node000008" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="2316,262,2547,287"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="2407,211,2429,260,2424,263,2402,213"/>
+<area shape="rect" id="Node000009" href="$TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="1322,255,1543,295"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="2277,203,2214,209,2029,223,1885,231,1740,240,1556,257,1544,259,1543,253,1555,252,1740,234,1884,225,2029,218,2214,204,2276,198"/>
+<area shape="poly" id="edge12_Node000011_Node000004" title=" " alt="" coords="2679,221,2671,262,2666,261,2674,220"/>
+<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="2573,204,2522,209,2312,224,2148,230,1984,238,1774,257,1763,259,1762,253,1774,252,1984,232,2148,225,2312,219,2522,204,2573,199"/>
+<area shape="poly" id="edge17_Node000011_Node000015" title=" " alt="" coords="2573,208,2241,260,2240,255,2572,203"/>
+<area shape="poly" id="edge21_Node000011_Node000017" title=" " alt="" coords="2788,207,3009,252,3008,257,2787,212"/>
+<area shape="poly" id="edge25_Node000011_Node000019" title=" " alt="" coords="2794,204,3003,229,3208,252,3220,254,3219,259,3207,257,3002,234,2794,209"/>
+<area shape="rect" id="Node000021" href="$AttributeOperator_8cpp.html" title=" " alt="" coords="2785,255,2979,295"/>
+<area shape="poly" id="edge29_Node000011_Node000021" title=" " alt="" coords="2741,210,2840,252,2837,257,2738,215"/>
+<area shape="poly" id="edge30_Node000011_Node000022" title=" " alt="" coords="2794,204,2976,221,3118,229,3259,236,3438,252,3451,254,3450,259,3438,257,3259,241,3118,234,2976,227,2794,209"/>
+<area shape="poly" id="edge14_Node000012_Node000006" title=" " alt="" coords="1776,292,1913,308,2020,317,2260,340,2317,347,2316,353,2259,345,2019,323,1912,314,1776,298"/>
+<area shape="rect" id="Node000013" href="$AttriRenderStrategyRGB_8cpp.html" title=" " alt="" coords="1559,343,1770,383"/>
+<area shape="poly" id="edge15_Node000012_Node000013" title=" " alt="" coords="1667,309,1667,342,1662,342,1662,309"/>
+<area shape="rect" id="Node000014" href="$TestMeshData_8cpp.html" title=" " alt="" coords="1815,343,2002,383"/>
+<area shape="poly" id="edge16_Node000012_Node000014" title=" " alt="" coords="1732,297,1856,340,1854,345,1730,302"/>
+<area shape="poly" id="edge18_Node000015_Node000006" title=" " alt="" coords="2207,296,2362,347,2360,353,2206,302"/>
+<area shape="poly" id="edge20_Node000015_Node000014" title=" " alt="" coords="2075,302,1960,345,1958,340,2073,297"/>
+<area shape="rect" id="Node000016" href="$AttriRenderStrategyScalar_8cpp.html" title=" " alt="" coords="2026,343,2247,383"/>
+<area shape="poly" id="edge19_Node000015_Node000016" title=" " alt="" coords="2139,309,2139,342,2134,342,2134,309"/>
+<area shape="poly" id="edge22_Node000017_Node000006" title=" " alt="" coords="2989,297,2731,330,2515,353,2514,347,2731,324,2988,292"/>
+<area shape="poly" id="edge24_Node000017_Node000014" title=" " alt="" coords="2989,297,2840,311,2714,318,2499,321,2286,324,2161,331,2014,345,2003,347,2002,341,2014,340,2161,326,2286,319,2499,315,2714,312,2840,305,2988,292"/>
+<area shape="rect" id="Node000018" href="$AttriRenderStrategyUV_8cpp.html" title=" " alt="" coords="2995,343,3193,383"/>
+<area shape="poly" id="edge23_Node000017_Node000018" title=" " alt="" coords="3100,309,3098,343,3093,342,3095,308"/>
+<area shape="poly" id="edge26_Node000019_Node000006" title=" " alt="" coords="3206,297,2827,335,2520,357,2519,351,2827,329,3206,292"/>
+<area shape="poly" id="edge28_Node000019_Node000014" title=" " alt="" coords="3207,297,3025,312,2870,319,2608,320,2347,321,2194,329,2014,345,2003,347,2002,341,2014,340,2194,324,2347,316,2608,314,2870,313,3024,307,3206,292"/>
+<area shape="rect" id="Node000020" href="$AttriRenderStrategyVector_8cpp.html" title=" " alt="" coords="3217,343,3440,383"/>
+<area shape="poly" id="edge27_Node000019_Node000020" title=" " alt="" coords="3328,308,3330,342,3325,343,3323,309"/>
+<area shape="poly" id="edge35_Node000023_Node000009" title=" " alt="" coords="903,199,1310,252,1322,254,1321,259,1310,257,902,204"/>
+<area shape="poly" id="edge37_Node000023_Node000014" title=" " alt="" coords="681,194,588,204,544,211,505,222,475,235,458,251,455,260,456,269,470,293,492,301,537,309,685,321,887,329,1117,333,1553,337,1782,340,1815,344,1815,349,1782,345,1553,342,1117,339,887,334,685,326,536,314,490,306,467,297,451,271,450,259,454,248,473,230,503,217,542,206,587,198,680,189"/>
+<area shape="rect" id="Node000024" href="$MakeMeshDataVtk_8cpp.html" title=" " alt="" coords="481,255,675,295"/>
+<area shape="poly" id="edge32_Node000023_Node000024" title=" " alt="" coords="733,214,626,257,624,252,731,209"/>
+<area shape="rect" id="Node000025" href="$TestEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="700,255,883,295"/>
+<area shape="poly" id="edge33_Node000023_Node000025" title=" " alt="" coords="794,221,794,254,789,254,789,221"/>
+<area shape="rect" id="Node000026" href="$TestFaceSelectorHighlight_8cpp.html" title=" " alt="" coords="907,255,1087,295"/>
+<area shape="poly" id="edge34_Node000023_Node000026" title=" " alt="" coords="850,209,953,252,951,257,848,214"/>
+<area shape="poly" id="edge36_Node000023_Node000027" title=" " alt="" coords="896,207,1115,252,1114,257,895,212"/>
+<area shape="rect" id="Node000028" href="$TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="5,255,188,295"/>
+<area shape="poly" id="edge38_Node000023_Node000028" title=" " alt="" coords="680,201,458,224,200,257,189,259,188,254,199,252,457,219,680,196"/>
+<area shape="rect" id="Node000029" href="$TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="212,255,405,295"/>
+<area shape="poly" id="edge39_Node000023_Node000029" title=" " alt="" coords="681,210,406,259,405,254,680,205"/>
 </map>

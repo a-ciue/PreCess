@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/core/InteractiveTypes.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_50d45cd9bdd66cc9f345a21a971cefc8.html">core</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">InteractiveTypes.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="InteractiveTypes_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#ifndef INTERACTIVE_TYPES_H</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define INTERACTIVE_TYPES_H</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;array&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1interaction.html">systems::interaction</a> {</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span></div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structPickInfo.html">   17</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1interaction_1_1PickInfo.html">PickInfo</a> {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1PickInfo.html#af66509f302857c0f8a712ed520eafdaa">   18</a></span>    std::array&lt;double, 3&gt; <a class="code hl_variable" href="structsystems_1_1interaction_1_1PickInfo.html#af66509f302857c0f8a712ed520eafdaa">world_pos</a> {};</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1PickInfo.html#a35d443cda86884984be7167cd480105f">   19</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsystems_1_1interaction_1_1PickInfo.html#a35d443cda86884984be7167cd480105f">mesh_id</a> = -1; <span class="comment">//&gt; 网格全局顶点 id（vtkOriginalPointIds），非网格点为 -1</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1PickInfo.html#ae1d6174f2529013b38e82ea009dc9832">   20</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsystems_1_1interaction_1_1PickInfo.html#ae1d6174f2529013b38e82ea009dc9832">geom_id</a> = -1; <span class="comment">//&gt; 几何全局顶点 id（GeometryRegistry id），非几何点为 -1</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1PickInfo.html#af23648a21fe5503c18cc600c28022c1b">   21</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structsystems_1_1interaction_1_1PickInfo.html#af23648a21fe5503c18cc600c28022c1b">valid</a> = <span class="keyword">false</span>; <span class="comment">//&gt; 是否命中吸附点（悬停未命中时为 false，供 handler 清预览）</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>};</div>
+</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span></div>
+<div class="foldopen" id="foldopen00025" data-start="{" data-end="};">
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationPoint.html">   25</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1interaction_1_1AnnotationPoint.html">AnnotationPoint</a> {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationPoint.html#adf719ce6272f4f877710b11a76a15ea4">   26</a></span>    std::array&lt;double, 3&gt; <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationPoint.html#adf719ce6272f4f877710b11a76a15ea4">pos</a>;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationPoint.html#a07191d947fbfe83d43f9308c4398f0ec">   27</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationPoint.html#af032200419240a3d0bdc63341016f134">r</a> = 1, <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationPoint.html#a384839d227579fb296feaf9059dedb17">g</a> = 0, <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationPoint.html#a07191d947fbfe83d43f9308c4398f0ec">b</a> = 0;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>};</div>
+</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="foldopen" id="foldopen00031" data-start="{" data-end="};">
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationLine.html">   31</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1interaction_1_1AnnotationLine.html">AnnotationLine</a> {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationLine.html#a9b008aa2d21eb320f797d6f4fa64b02a">   32</a></span>    std::array&lt;double, 3&gt; <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationLine.html#a9b008aa2d21eb320f797d6f4fa64b02a">p0</a>, <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationLine.html#a360291121fe5bb03814c036af6975828">p1</a>;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationLine.html#a4b9acffbd1d2061720f3153d951f5c28">   33</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationLine.html#ac6ded0a48d25e66323bd3637b2dca789">r</a> = 0.2, <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationLine.html#a771250d6bce310f26ecd58a3a279c12e">g</a> = 0.85, <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationLine.html#a4b9acffbd1d2061720f3153d951f5c28">b</a> = 0.2;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationLine.html#a82d919d5615d703c9825f43736f78ea0">   34</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationLine.html#a82d919d5615d703c9825f43736f78ea0">dashed</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>};</div>
+</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span></div>
+<div class="foldopen" id="foldopen00038" data-start="{" data-end="};">
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationText.html">   38</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1interaction_1_1AnnotationText.html">AnnotationText</a> {</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationText.html#a8eefc19ae2c25a0dd380999b4f38b4e8">   39</a></span>    std::array&lt;double, 3&gt; <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationText.html#a8eefc19ae2c25a0dd380999b4f38b4e8">pos</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationText.html#ab7e8a79485155cca6d775d10c05d6429">   40</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationText.html#ab7e8a79485155cca6d775d10c05d6429">text</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationText.html#af66bd27e33d6399e28d9c26d4eeb382d">   41</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationText.html#a106881268abaab3e7b196913f2e9ce61">r</a> = 1, <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationText.html#ae3f4dce412952b99bfa7c0ab40263d72">g</a> = 1, <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationText.html#af66bd27e33d6399e28d9c26d4eeb382d">b</a> = 1;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>};</div>
+</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span></div>
+<div class="foldopen" id="foldopen00045" data-start="{" data-end="};">
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structAnnotationBatch.html">   45</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1interaction_1_1AnnotationBatch.html">AnnotationBatch</a> {</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationBatch.html#a26c26d16504b87a0d8a4960692518caa">   46</a></span>    std::vector&lt;AnnotationPoint&gt; <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationBatch.html#a26c26d16504b87a0d8a4960692518caa">points</a>;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0">   47</a></span>    std::vector&lt;AnnotationLine&gt; <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0">lines</a>;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationBatch.html#ab72b3f817769bdcbb49ad6502161cb9f">   48</a></span>    std::vector&lt;AnnotationText&gt; <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationBatch.html#ab72b3f817769bdcbb49ad6502161cb9f">texts</a>;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="foldopen" id="foldopen00050" data-start="{" data-end="}">
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="structsystems_1_1interaction_1_1AnnotationBatch.html#a5e77a5ef8429afcc993d3c6a48d018bd">   50</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="structsystems_1_1interaction_1_1AnnotationBatch.html#a5e77a5ef8429afcc993d3c6a48d018bd">clear</a>()</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    {</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationBatch.html#a26c26d16504b87a0d8a4960692518caa">points</a>.clear();</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0">lines</a>.clear();</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <a class="code hl_variable" href="structsystems_1_1interaction_1_1AnnotationBatch.html#ab72b3f817769bdcbb49ad6502161cb9f">texts</a>.clear();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    }</div>
+</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>};</div>
+</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>} <span class="comment">// namespace systems::interaction</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="preprocessor">#endif </span><span class="comment">// INTERACTIVE_TYPES_H</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:25</div></div>
+<div class="ttc" id="anamespacesystems_1_1interaction_html"><div class="ttname"><a href="namespacesystems_1_1interaction.html">systems::interaction</a></div><div class="ttdef"><b>定义</b> InteractionService.h:22</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationBatch_html"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationBatch.html">systems::interaction::AnnotationBatch</a></div><div class="ttdoc">一帧标注集：插件按当前状态回传，渲染层统一绘制</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:45</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationBatch_html_a26c26d16504b87a0d8a4960692518caa"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationBatch.html#a26c26d16504b87a0d8a4960692518caa">systems::interaction::AnnotationBatch::points</a></div><div class="ttdeci">std::vector&lt; AnnotationPoint &gt; points</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:46</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationBatch_html_a5e77a5ef8429afcc993d3c6a48d018bd"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationBatch.html#a5e77a5ef8429afcc993d3c6a48d018bd">systems::interaction::AnnotationBatch::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:50</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationBatch_html_ab72b3f817769bdcbb49ad6502161cb9f"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationBatch.html#ab72b3f817769bdcbb49ad6502161cb9f">systems::interaction::AnnotationBatch::texts</a></div><div class="ttdeci">std::vector&lt; AnnotationText &gt; texts</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:48</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationBatch_html_adb78eea70f7cfb6d0ebd39ae0426a9f0"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0">systems::interaction::AnnotationBatch::lines</a></div><div class="ttdeci">std::vector&lt; AnnotationLine &gt; lines</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:47</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationLine_html"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationLine.html">systems::interaction::AnnotationLine</a></div><div class="ttdoc">标注线段（默认绿色实线；dashed 用于悬停动态预览）</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:31</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationLine_html_a360291121fe5bb03814c036af6975828"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationLine.html#a360291121fe5bb03814c036af6975828">systems::interaction::AnnotationLine::p1</a></div><div class="ttdeci">std::array&lt; double, 3 &gt; p1</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:32</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationLine_html_a4b9acffbd1d2061720f3153d951f5c28"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationLine.html#a4b9acffbd1d2061720f3153d951f5c28">systems::interaction::AnnotationLine::b</a></div><div class="ttdeci">double b</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:33</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationLine_html_a771250d6bce310f26ecd58a3a279c12e"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationLine.html#a771250d6bce310f26ecd58a3a279c12e">systems::interaction::AnnotationLine::g</a></div><div class="ttdeci">double g</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:33</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationLine_html_a82d919d5615d703c9825f43736f78ea0"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationLine.html#a82d919d5615d703c9825f43736f78ea0">systems::interaction::AnnotationLine::dashed</a></div><div class="ttdeci">bool dashed</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:34</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationLine_html_a9b008aa2d21eb320f797d6f4fa64b02a"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationLine.html#a9b008aa2d21eb320f797d6f4fa64b02a">systems::interaction::AnnotationLine::p0</a></div><div class="ttdeci">std::array&lt; double, 3 &gt; p0</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:32</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationLine_html_ac6ded0a48d25e66323bd3637b2dca789"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationLine.html#ac6ded0a48d25e66323bd3637b2dca789">systems::interaction::AnnotationLine::r</a></div><div class="ttdeci">double r</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:33</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationPoint_html"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationPoint.html">systems::interaction::AnnotationPoint</a></div><div class="ttdoc">标注点（颜色分量 0~1，默认红色）</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:25</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationPoint_html_a07191d947fbfe83d43f9308c4398f0ec"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationPoint.html#a07191d947fbfe83d43f9308c4398f0ec">systems::interaction::AnnotationPoint::b</a></div><div class="ttdeci">double b</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:27</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationPoint_html_a384839d227579fb296feaf9059dedb17"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationPoint.html#a384839d227579fb296feaf9059dedb17">systems::interaction::AnnotationPoint::g</a></div><div class="ttdeci">double g</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:27</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationPoint_html_adf719ce6272f4f877710b11a76a15ea4"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationPoint.html#adf719ce6272f4f877710b11a76a15ea4">systems::interaction::AnnotationPoint::pos</a></div><div class="ttdeci">std::array&lt; double, 3 &gt; pos</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:26</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationPoint_html_af032200419240a3d0bdc63341016f134"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationPoint.html#af032200419240a3d0bdc63341016f134">systems::interaction::AnnotationPoint::r</a></div><div class="ttdeci">double r</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:27</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationText_html"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationText.html">systems::interaction::AnnotationText</a></div><div class="ttdoc">标注文本（默认白色）</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:38</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationText_html_a106881268abaab3e7b196913f2e9ce61"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationText.html#a106881268abaab3e7b196913f2e9ce61">systems::interaction::AnnotationText::r</a></div><div class="ttdeci">double r</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:41</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationText_html_a8eefc19ae2c25a0dd380999b4f38b4e8"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationText.html#a8eefc19ae2c25a0dd380999b4f38b4e8">systems::interaction::AnnotationText::pos</a></div><div class="ttdeci">std::array&lt; double, 3 &gt; pos</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:39</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationText_html_ab7e8a79485155cca6d775d10c05d6429"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationText.html#ab7e8a79485155cca6d775d10c05d6429">systems::interaction::AnnotationText::text</a></div><div class="ttdeci">std::string text</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:40</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationText_html_ae3f4dce412952b99bfa7c0ab40263d72"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationText.html#ae3f4dce412952b99bfa7c0ab40263d72">systems::interaction::AnnotationText::g</a></div><div class="ttdeci">double g</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:41</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1AnnotationText_html_af66bd27e33d6399e28d9c26d4eeb382d"><div class="ttname"><a href="structsystems_1_1interaction_1_1AnnotationText.html#af66bd27e33d6399e28d9c26d4eeb382d">systems::interaction::AnnotationText::b</a></div><div class="ttdeci">double b</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:41</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1PickInfo_html"><div class="ttname"><a href="structsystems_1_1interaction_1_1PickInfo.html">systems::interaction::PickInfo</a></div><div class="ttdoc">拾取结果：渲染层解析好的吸附点（世界坐标 + 两套全局顶点 id）</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:17</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1PickInfo_html_a35d443cda86884984be7167cd480105f"><div class="ttname"><a href="structsystems_1_1interaction_1_1PickInfo.html#a35d443cda86884984be7167cd480105f">systems::interaction::PickInfo::mesh_id</a></div><div class="ttdeci">Index mesh_id</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:19</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1PickInfo_html_ae1d6174f2529013b38e82ea009dc9832"><div class="ttname"><a href="structsystems_1_1interaction_1_1PickInfo.html#ae1d6174f2529013b38e82ea009dc9832">systems::interaction::PickInfo::geom_id</a></div><div class="ttdeci">Index geom_id</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:20</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1PickInfo_html_af23648a21fe5503c18cc600c28022c1b"><div class="ttname"><a href="structsystems_1_1interaction_1_1PickInfo.html#af23648a21fe5503c18cc600c28022c1b">systems::interaction::PickInfo::valid</a></div><div class="ttdeci">bool valid</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:21</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1PickInfo_html_af66509f302857c0f8a712ed520eafdaa"><div class="ttname"><a href="structsystems_1_1interaction_1_1PickInfo.html#af66509f302857c0f8a712ed520eafdaa">systems::interaction::PickInfo::world_pos</a></div><div class="ttdeci">std::array&lt; double, 3 &gt; world_pos</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:18</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

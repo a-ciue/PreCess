@@ -38,12 +38,13 @@ var searchData=
   ['notifymodelchanged_35',['notifyModelChanged',['../classQModelObserver.html#afd7605c63a216faa10fa4da27143e2d1',1,'QModelObserver::notifyModelChanged()'],['../classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d',1,'ModelObserver::notifyModelChanged()'],['../structDummyObserver.html#af34c6dc00fa78b7a26e2dbaaed82b6fd',1,'DummyObserver::notifyModelChanged(Index) override'],['../structDummyObserver.html#af34c6dc00fa78b7a26e2dbaaed82b6fd',1,'DummyObserver::notifyModelChanged(Index) override']]],
   ['notifymodelnamechanged_36',['notifyModelNameChanged',['../classQModelObserver.html#a60298e5dae88e4ddae135243ce28bad4',1,'QModelObserver::notifyModelNameChanged()'],['../classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c',1,'ModelObserver::notifyModelNameChanged()'],['../structDummyObserver.html#ac23515bf8bd8c35e1f952aa8ff2209cd',1,'DummyObserver::notifyModelNameChanged(Index, const std::string &amp;) override'],['../structDummyObserver.html#ac23515bf8bd8c35e1f952aa8ff2209cd',1,'DummyObserver::notifyModelNameChanged(Index, const std::string &amp;) override']]],
   ['notifymodelremoved_37',['notifyModelRemoved',['../classQModelObserver.html#aacbfe7aa17fb1b4b6f844bec28b28927',1,'QModelObserver::notifyModelRemoved()'],['../classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e',1,'ModelObserver::notifyModelRemoved()'],['../structDummyObserver.html#a845490b88fe06a424329b87d670cf523',1,'DummyObserver::notifyModelRemoved(Index) override'],['../structDummyObserver.html#a845490b88fe06a424329b87d670cf523',1,'DummyObserver::notifyModelRemoved(Index) override']]],
-  ['num_5fface_5fvertices_38',['num_face_vertices',['../structtinyobj_1_1mesh__t.html#a0b3e989fbc944b29a4e67a288490ec07',1,'tinyobj::mesh_t']]],
-  ['num_5fline_5fvertices_39',['num_line_vertices',['../structtinyobj_1_1lines__t.html#a97270228c686b420540510c138df7ab3',1,'tinyobj::lines_t']]],
-  ['number_40',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]],
-  ['number_5fof_5fblocks_41',['number_of_blocks',['../structplf_1_1colony_1_1colony__data.html#a3a204f82213a409fd4fec5d77dc9bb0c',1,'plf::colony::colony_data']]],
-  ['numberrole_42',['NumberRole',['../classTreeModel.html#aab6367624db733c58760195c14f7c4b5a6191c5b5d65179da8aabb55b65768920',1,'TreeModel']]],
-  ['numedges_43',['numEdges',['../classMeshLib_1_1CBaseMesh.html#a59246eb0edbe1ad11f0e6ecb41444135',1,'MeshLib::CBaseMesh']]],
-  ['numfaces_44',['numFaces',['../classMeshLib_1_1CBaseMesh.html#ac750e49625e3ebbc50a135f77cbbdf87',1,'MeshLib::CBaseMesh']]],
-  ['numvertices_45',['numVertices',['../classMeshLib_1_1CBaseMesh.html#a180ba1fbde1e68a4a2201928e6573dc7',1,'MeshLib::CBaseMesh']]]
+  ['notifyparameterchanged_38',['notifyParameterChanged',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a94ce177fbb6883c08e3de52ed942aa42',1,'systems::feature::QFeatureSystemAdaptor']]],
+  ['num_5fface_5fvertices_39',['num_face_vertices',['../structtinyobj_1_1mesh__t.html#a0b3e989fbc944b29a4e67a288490ec07',1,'tinyobj::mesh_t']]],
+  ['num_5fline_5fvertices_40',['num_line_vertices',['../structtinyobj_1_1lines__t.html#a97270228c686b420540510c138df7ab3',1,'tinyobj::lines_t']]],
+  ['number_41',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]],
+  ['number_5fof_5fblocks_42',['number_of_blocks',['../structplf_1_1colony_1_1colony__data.html#a3a204f82213a409fd4fec5d77dc9bb0c',1,'plf::colony::colony_data']]],
+  ['numberrole_43',['NumberRole',['../classTreeModel.html#aab6367624db733c58760195c14f7c4b5a6191c5b5d65179da8aabb55b65768920',1,'TreeModel']]],
+  ['numedges_44',['numEdges',['../classMeshLib_1_1CBaseMesh.html#a59246eb0edbe1ad11f0e6ecb41444135',1,'MeshLib::CBaseMesh']]],
+  ['numfaces_45',['numFaces',['../classMeshLib_1_1CBaseMesh.html#ac750e49625e3ebbc50a135f77cbbdf87',1,'MeshLib::CBaseMesh']]],
+  ['numvertices_46',['numVertices',['../classMeshLib_1_1CBaseMesh.html#a180ba1fbde1e68a4a2201928e6573dc7',1,'MeshLib::CBaseMesh']]]
 ];

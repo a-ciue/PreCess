@@ -83,8 +83,11 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Selection_8h_source.html">Selection.h</a>&quot;</code><br />
+<code>#include &lt;array&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;optional&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;vtkNew.h&gt;</code><br />
 <code>#include &lt;vtkActor.h&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -92,29 +95,34 @@ SelectManager.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="SelectManager_8h__incl.png" border="0" usemap="#aapp_2render_2SelectManager_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2SelectManager_8h" id="aapp_2render_2SelectManager_8h">
-<area shape="rect" title=" " alt="" coords="234,5,438,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="177,152,241,177"/>
-<area shape="poly" title=" " alt="" coords="305,33,269,52,237,80,222,109,215,139,209,138,217,107,233,77,266,48,303,28"/>
-<area shape="rect" title=" " alt="" coords="5,225,83,251"/>
-<area shape="poly" title=" " alt="" coords="308,33,264,54,217,81,173,115,130,152,66,217,62,213,127,148,169,111,215,76,262,49,306,28"/>
+<area shape="rect" title=" " alt="" coords="226,5,430,31"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="167,152,231,177"/>
+<area shape="poly" title=" " alt="" coords="314,33,261,80,215,142,211,139,257,77,310,29"/>
+<area shape="rect" title=" " alt="" coords="5,225,61,251"/>
+<area shape="poly" title=" " alt="" coords="243,33,148,53,109,66,83,81,61,111,47,146,39,182,36,212,31,211,34,181,42,144,56,108,80,77,107,61,147,48,242,28"/>
+<area shape="rect" title=" " alt="" coords="248,225,325,251"/>
+<area shape="poly" title=" " alt="" coords="326,32,312,79,299,151,292,212,286,211,294,150,307,78,321,30"/>
 <area shape="rect" title=" " alt="" coords="349,225,408,251"/>
-<area shape="poly" title=" " alt="" coords="342,30,356,78,378,211,373,212,351,79,337,32"/>
-<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="246,79,341,104"/>
-<area shape="poly" title=" " alt="" coords="331,32,309,68,305,66,327,30"/>
-<area shape="rect" title=" " alt="" coords="416,79,499,104"/>
-<area shape="poly" title=" " alt="" coords="357,28,427,69,425,74,354,33"/>
-<area shape="rect" title=" " alt="" coords="523,79,611,104"/>
-<area shape="poly" title=" " alt="" coords="374,28,517,72,516,77,372,33"/>
-<area shape="rect" title=" " alt="" coords="181,225,237,251"/>
-<area shape="poly" title=" " alt="" coords="212,178,212,212,207,212,207,178"/>
-<area shape="rect" title=" " alt="" coords="107,225,157,251"/>
-<area shape="poly" title=" " alt="" coords="199,179,157,218,153,214,195,175"/>
-<area shape="poly" title=" " alt="" coords="184,180,85,222,82,217,182,175"/>
-<area shape="poly" title=" " alt="" coords="238,175,339,217,337,222,236,180"/>
-<area shape="rect" title=" " alt="" coords="262,225,325,251"/>
-<area shape="poly" title=" " alt="" coords="225,175,271,214,267,218,221,179"/>
-<area shape="poly" title=" " alt="" coords="282,106,235,145,232,141,278,102"/>
-<area shape="poly" title=" " alt="" coords="296,104,296,212,291,212,291,104"/>
+<area shape="poly" title=" " alt="" coords="333,30,375,211,370,212,328,32"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="94,79,189,104"/>
+<area shape="poly" title=" " alt="" coords="299,33,185,76,184,71,297,28"/>
+<area shape="rect" title=" " alt="" coords="365,79,440,104"/>
+<area shape="poly" title=" " alt="" coords="342,29,382,67,379,71,338,33"/>
+<area shape="rect" title=" " alt="" coords="465,79,525,104"/>
+<area shape="poly" title=" " alt="" coords="356,28,456,71,454,76,354,33"/>
+<area shape="rect" title=" " alt="" coords="549,79,632,104"/>
+<area shape="poly" title=" " alt="" coords="371,28,536,73,535,78,370,33"/>
+<area shape="rect" title=" " alt="" coords="656,79,744,104"/>
+<area shape="poly" title=" " alt="" coords="390,28,643,76,642,81,389,33"/>
+<area shape="poly" title=" " alt="" coords="173,180,74,222,72,217,171,175"/>
+<area shape="rect" title=" " alt="" coords="173,225,224,251"/>
+<area shape="poly" title=" " alt="" coords="201,178,201,212,196,212,196,178"/>
+<area shape="poly" title=" " alt="" coords="214,175,263,214,260,219,211,179"/>
+<area shape="poly" title=" " alt="" coords="229,175,338,218,336,223,227,180"/>
+<area shape="rect" title=" " alt="" coords="86,225,149,251"/>
+<area shape="poly" title=" " alt="" coords="187,179,143,218,139,214,184,175"/>
+<area shape="poly" title=" " alt="" coords="153,103,183,139,179,143,149,106"/>
+<area shape="poly" title=" " alt="" coords="142,105,124,212,119,211,137,104"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -122,13 +130,17 @@ SelectManager.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="SelectManager_8h__dep__incl.png" border="0" usemap="#aapp_2render_2SelectManager_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2SelectManager_8hdep" id="aapp_2render_2SelectManager_8hdep">
-<area shape="rect" title=" " alt="" coords="260,5,464,31"/>
-<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="5,86,236,111"/>
-<area shape="poly" title=" " alt="" coords="315,37,157,89,155,83,313,32"/>
-<area shape="rect" href="QRenderWindowStyle_8cpp.html" title=" " alt="" coords="260,79,464,119"/>
-<area shape="poly" title=" " alt="" coords="365,44,365,79,359,79,359,44"/>
-<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="489,86,707,111"/>
-<area shape="poly" title=" " alt="" coords="410,32,564,83,563,89,408,37"/>
+<area shape="rect" title=" " alt="" coords="525,5,729,31"/>
+<area shape="rect" href="InteractionService_8cpp.html" title="通用视口交互服务实现：拾取解析、标注绘制、事件路由" alt="" coords="5,86,247,111"/>
+<area shape="poly" title=" " alt="" coords="542,35,199,89,199,83,541,30"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="271,86,501,111"/>
+<area shape="poly" title=" " alt="" coords="580,37,422,89,420,83,578,32"/>
+<area shape="rect" href="QRenderWindowStyle_8cpp.html" title=" " alt="" coords="525,79,729,119"/>
+<area shape="poly" title=" " alt="" coords="630,44,630,79,625,79,625,44"/>
+<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="754,86,973,111"/>
+<area shape="poly" title=" " alt="" coords="675,32,830,83,828,89,674,37"/>
+<area shape="rect" href="TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="997,79,1218,119"/>
+<area shape="poly" title=" " alt="" coords="711,30,997,77,996,82,710,35"/>
 </map>
 </div>
 </div>

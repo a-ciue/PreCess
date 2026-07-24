@@ -1,13 +1,15 @@
 <map id="app/model/systems/feature/QFeatureSystemAdaptor.h" name="app/model/systems/feature/QFeatureSystemAdaptor.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="289,5,490,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="385,5,586,45"/>
 <area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="167,93,231,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="345,48,240,91,238,86,343,43"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="417,48,245,95,243,90,416,43"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="255,93,334,119"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="368,48,321,86,318,82,365,43"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="441,48,336,91,334,86,439,43"/>
 <area shape="rect" id="Node000009" title=" " alt="" coords="358,93,613,119"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="414,43,462,82,459,87,411,48"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="637,93,712,119"/>
-<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="458,43,625,88,623,93,457,48"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="488,46,488,79,483,79,483,46"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="637,93,707,119"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="531,43,633,85,631,90,529,48"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="732,93,807,119"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="554,43,720,88,718,93,553,48"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,167,61,192"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="173,121,74,164,72,159,171,116"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="85,167,136,192"/>

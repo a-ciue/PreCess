@@ -1,17 +1,19 @@
 <map id="app/render/test/MakeMeshDataVtk.h" name="app/render/test/MakeMeshDataVtk.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="632,5,827,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="763,5,957,45"/>
 <area shape="rect" id="Node000002" href="$MakeMeshDataVtk_8cpp.html" title=" " alt="" coords="5,93,200,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="618,42,212,96,201,98,200,92,212,91,618,37"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="749,38,503,62,212,96,201,98,200,92,212,91,502,56,749,33"/>
 <area shape="rect" id="Node000003" href="$TestEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="225,93,407,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="626,51,407,96,406,91,625,46"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="750,45,419,96,408,98,407,93,418,91,749,40"/>
 <area shape="rect" id="Node000004" href="$TestFaceSelectorHighlight_8cpp.html" title=" " alt="" coords="431,93,611,133"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="672,53,568,96,566,91,670,48"/>
-<area shape="rect" id="Node000005" href="$TestMeshActor_8cpp.html" title=" " alt="" coords="636,93,823,133"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="732,59,732,93,727,93,727,59"/>
-<area shape="rect" id="Node000006" href="$TestMeshData_8cpp.html" title=" " alt="" coords="847,93,1033,133"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="789,48,895,91,893,96,787,53"/>
-<area shape="rect" id="Node000007" href="$TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="1058,93,1241,133"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="835,46,1058,91,1057,96,834,51"/>
-<area shape="rect" id="Node000008" href="$TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="1265,93,1458,133"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="841,37,1034,60,1254,91,1265,92,1264,98,1253,96,1033,66,840,42"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="773,51,596,96,595,91,772,46"/>
+<area shape="rect" id="Node000005" href="$TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="636,93,857,133"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="826,56,773,95,770,91,823,52"/>
+<area shape="rect" id="Node000006" href="$TestMeshActor_8cpp.html" title=" " alt="" coords="881,93,1068,133"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="898,52,951,91,948,95,895,56"/>
+<area shape="rect" id="Node000007" href="$TestMeshData_8cpp.html" title=" " alt="" coords="1092,93,1279,133"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="945,46,1115,91,1113,96,944,51"/>
+<area shape="rect" id="Node000008" href="$TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="1303,93,1486,133"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="972,41,1291,91,1303,93,1302,98,1290,96,971,46"/>
+<area shape="rect" id="Node000009" href="$TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="1510,93,1703,133"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="971,33,1214,57,1499,91,1510,92,1509,98,1498,96,1213,62,971,39"/>
 </map>

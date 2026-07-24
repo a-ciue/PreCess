@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::interaction::InteractionState结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1interaction.html">interaction</a></li><li class="navelem"><a href="structsystems_1_1interaction_1_1InteractionState.html">InteractionState</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structsystems_1_1interaction_1_1InteractionState-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::interaction::InteractionState结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="InteractionState_8h_source.html">InteractionState.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::interaction::InteractionState 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structsystems_1_1interaction_1_1InteractionState__coll__graph.png" border="0" usemap="#asystems_1_1interaction_1_1InteractionState_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1interaction_1_1InteractionState_coll__map" id="asystems_1_1interaction_1_1InteractionState_coll__map">
+<area shape="rect" title="单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）" alt="" coords="1335,73,1489,113"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationBatch.html" title="一帧标注集：插件按当前状态回传，渲染层统一绘制" alt="" coords="1047,73,1201,113"/>
+<area shape="poly" title=" " alt="" coords="1215,91,1334,91,1334,96,1215,96"/>
+<area shape="rect" title=" " alt="" coords="723,9,949,49"/>
+<area shape="poly" title=" " alt="" coords="962,49,1023,63,1055,71,1053,76,1022,68,961,55"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationPoint.html" title="标注点（颜色分量 0~1，默认红色）" alt="" coords="451,7,605,47"/>
+<area shape="poly" title=" " alt="" coords="619,25,723,26,722,31,619,30"/>
+<area shape="rect" title=" " alt="" coords="193,85,368,110"/>
+<area shape="poly" title=" " alt="" coords="322,76,391,51,450,37,451,42,393,56,324,81"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationLine.html" title="标注线段（默认绿色实线；dashed 用于悬停动态预览）" alt="" coords="451,73,605,113"/>
+<area shape="poly" title=" " alt="" coords="382,94,427,93,450,93,450,98,427,99,382,99"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationText.html" title="标注文本（默认白色）" alt="" coords="451,137,605,177"/>
+<area shape="poly" title=" " alt="" coords="345,111,393,123,451,137,450,142,391,128,344,116"/>
+<area shape="rect" title=" " alt="" coords="725,73,947,113"/>
+<area shape="poly" title=" " alt="" coords="960,91,1047,91,1047,96,960,96"/>
+<area shape="poly" title=" " alt="" coords="619,91,725,91,725,96,619,96"/>
+<area shape="rect" title=" " alt="" coords="725,137,947,177"/>
+<area shape="poly" title=" " alt="" coords="960,132,1022,119,1053,111,1055,116,1023,124,961,137"/>
+<area shape="poly" title=" " alt="" coords="619,155,725,155,725,160,619,160"/>
+<area shape="rect" title=" " alt="" coords="237,191,324,217"/>
+<area shape="poly" title=" " alt="" coords="338,206,381,206,426,200,460,189,491,175,493,180,462,194,427,205,382,211,338,212"/>
+<area shape="rect" title=" " alt="" coords="5,184,144,224"/>
+<area shape="poly" title=" " alt="" coords="158,201,237,201,237,207,158,207"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a864f118216eeeece1bc9fabd2eb1ab3f" id="r_a864f118216eeeece1bc9fabd2eb1ab3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a864f118216eeeece1bc9fabd2eb1ab3f">clearSession</a> ()</td></tr>
+<tr class="memdesc:a864f118216eeeece1bc9fabd2eb1ab3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">会话结束时的渲染层清理：清空标注（不动订阅，订阅随功能常驻）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a857ccab0b872048567304ba321712d02" id="r_a857ccab0b872048567304ba321712d02"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a857ccab0b872048567304ba321712d02">active</a> = false</td></tr>
+<tr class="memitem:a39d03b81c38f7b64611d5e00410a5706" id="r_a39d03b81c38f7b64611d5e00410a5706"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39d03b81c38f7b64611d5e00410a5706">on_activate</a></td></tr>
+<tr class="memitem:a12565b87b4158d3d6131742e9bf5ddfa" id="r_a12565b87b4158d3d6131742e9bf5ddfa"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12565b87b4158d3d6131742e9bf5ddfa">on_deactivate</a></td></tr>
+<tr class="memitem:a9af7a4837d01f1046e7945412727dc26" id="r_a9af7a4837d01f1046e7945412727dc26"><td class="memItemLeft" align="right" valign="top">std::function&lt; bool(const <a class="el" href="structsystems_1_1interaction_1_1PickInfo.html">PickInfo</a> &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9af7a4837d01f1046e7945412727dc26">on_pick</a></td></tr>
+<tr class="memdesc:a9af7a4837d01f1046e7945412727dc26"><td class="mdescLeft">&#160;</td><td class="mdescRight">左键拾取：返回是否有状态变化（需要刷新标注）  <br /></td></tr>
+<tr class="memitem:a10a6adcc236a088bec23edad54a43673" id="r_a10a6adcc236a088bec23edad54a43673"><td class="memItemLeft" align="right" valign="top">std::function&lt; bool(const <a class="el" href="structsystems_1_1interaction_1_1PickInfo.html">PickInfo</a> &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a10a6adcc236a088bec23edad54a43673">on_hover</a></td></tr>
+<tr class="memdesc:a10a6adcc236a088bec23edad54a43673"><td class="mdescLeft">&#160;</td><td class="mdescRight">悬停：返回是否更新了预览（需要刷新标注）  <br /></td></tr>
+<tr class="memitem:a8478431598a49b771f93b88279f05dc0" id="r_a8478431598a49b771f93b88279f05dc0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsystems_1_1interaction_1_1AnnotationBatch.html">AnnotationBatch</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8478431598a49b771f93b88279f05dc0">annotations</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取） </p>
+<p>线程约定（与 <a class="el" href="classEventBus.html" title="类型安全的轻量级事件总线，以事件类型为键分发事件">EventBus</a> 不同，修改前必读）：</p><ul>
+<li>全部回调由 <b>渲染线程**调用（InteractionService 经 dispatch_async 驱动）；</b></li>
+<li><b>功能在 **GUI 线程</b> 的 activate() 中经 InteractionContext 注册回调与初始状态；</li>
+<li>注册先行、调用在后，会话启停与选择系统的互斥由 UI 层保证（同原 InteractiveHandler 约定）。 </li>
+</ul>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a864f118216eeeece1bc9fabd2eb1ab3f" name="a864f118216eeeece1bc9fabd2eb1ab3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a864f118216eeeece1bc9fabd2eb1ab3f">&#9670;&#160;</a></span>clearSession()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::interaction::InteractionState::clearSession </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>会话结束时的渲染层清理：清空标注（不动订阅，订阅随功能常驻） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a857ccab0b872048567304ba321712d02" name="a857ccab0b872048567304ba321712d02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a857ccab0b872048567304ba321712d02">&#9670;&#160;</a></span>active</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::interaction::InteractionState::active = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8478431598a49b771f93b88279f05dc0" name="a8478431598a49b771f93b88279f05dc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8478431598a49b771f93b88279f05dc0">&#9670;&#160;</a></span>annotations</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsystems_1_1interaction_1_1AnnotationBatch.html">AnnotationBatch</a> systems::interaction::InteractionState::annotations</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a39d03b81c38f7b64611d5e00410a5706" name="a39d03b81c38f7b64611d5e00410a5706"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39d03b81c38f7b64611d5e00410a5706">&#9670;&#160;</a></span>on_activate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::interaction::InteractionState::on_activate</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a12565b87b4158d3d6131742e9bf5ddfa" name="a12565b87b4158d3d6131742e9bf5ddfa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12565b87b4158d3d6131742e9bf5ddfa">&#9670;&#160;</a></span>on_deactivate</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::interaction::InteractionState::on_deactivate</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a10a6adcc236a088bec23edad54a43673" name="a10a6adcc236a088bec23edad54a43673"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10a6adcc236a088bec23edad54a43673">&#9670;&#160;</a></span>on_hover</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;bool(const <a class="el" href="structsystems_1_1interaction_1_1PickInfo.html">PickInfo</a>&amp;)&gt; systems::interaction::InteractionState::on_hover</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>悬停：返回是否更新了预览（需要刷新标注） </p>
+
+</div>
+</div>
+<a id="a9af7a4837d01f1046e7945412727dc26" name="a9af7a4837d01f1046e7945412727dc26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9af7a4837d01f1046e7945412727dc26">&#9670;&#160;</a></span>on_pick</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;bool(const <a class="el" href="structsystems_1_1interaction_1_1PickInfo.html">PickInfo</a>&amp;)&gt; systems::interaction::InteractionState::on_pick</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>左键拾取：返回是否有状态变化（需要刷新标注） </p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/systems/core/<a class="el" href="InteractionState_8h_source.html">InteractionState.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

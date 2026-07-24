@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/feature/InteractionContext.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_05585d2a38afe5c243e9dcc7f0f8321f.html">feature</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">InteractionContext.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>视口交互上下文：功能订阅拾取/悬停回调、产出标注的入口  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="InteractionState_8h_source.html">InteractionState.h</a>&quot;</code><br />
+<code>#include &lt;functional&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+InteractionContext.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="InteractionContext_8h__incl.png" border="0" usemap="#amodel_2systems_2feature_2InteractionContext_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2feature_2InteractionContext_8h" id="amodel_2systems_2feature_2InteractionContext_8h">
+<area shape="rect" title="视口交互上下文：功能订阅拾取/悬停回调、产出标注的入口" alt="" coords="248,5,421,45"/>
+<area shape="rect" href="InteractionState_8h.html" title="视口交互状态：功能经上下文订阅回调、产出标注；渲染层据此驱动与拉取" alt="" coords="212,93,351,119"/>
+<area shape="poly" title=" " alt="" coords="324,47,299,83,295,80,320,44"/>
+<area shape="rect" title=" " alt="" coords="345,167,431,192"/>
+<area shape="poly" title=" " alt="" coords="346,45,365,92,384,152,379,154,360,94,341,47"/>
+<area shape="rect" href="InteractiveTypes_8h.html" title="视口交互的纯数据类型：拾取结果与标注图元（无 VTK 依赖，供渲染层与插件两侧共用）" alt="" coords="179,167,320,192"/>
+<area shape="poly" title=" " alt="" coords="278,120,262,155,258,153,274,118"/>
+<area shape="poly" title=" " alt="" coords="300,116,361,157,358,161,297,121"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="183,240,247,265"/>
+<area shape="poly" title=" " alt="" coords="246,194,229,229,224,226,241,191"/>
+<area shape="rect" title=" " alt="" coords="5,313,61,339"/>
+<area shape="poly" title=" " alt="" coords="234,194,63,308,60,303,231,190"/>
+<area shape="rect" title=" " alt="" coords="261,313,320,339"/>
+<area shape="poly" title=" " alt="" coords="255,192,286,299,281,301,250,193"/>
+<area shape="rect" title=" " alt="" coords="345,313,407,339"/>
+<area shape="poly" title=" " alt="" coords="262,191,359,301,355,305,258,194"/>
+<area shape="poly" title=" " alt="" coords="187,268,75,311,74,306,185,263"/>
+<area shape="rect" title=" " alt="" coords="187,313,237,339"/>
+<area shape="poly" title=" " alt="" coords="217,266,216,300,210,300,212,266"/>
+<area shape="rect" title=" " alt="" coords="85,313,163,339"/>
+<area shape="poly" title=" " alt="" coords="202,267,151,307,148,302,198,263"/>
+<area shape="poly" title=" " alt="" coords="229,263,270,302,266,306,225,267"/>
+<area shape="poly" title=" " alt="" coords="242,263,338,305,336,310,240,268"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="InteractionContext_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2feature_2InteractionContext_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2feature_2InteractionContext_8hdep" id="amodel_2systems_2feature_2InteractionContext_8hdep">
+<area shape="rect" title="视口交互上下文：功能订阅拾取/悬停回调、产出标注的入口" alt="" coords="734,5,907,45"/>
+<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="635,93,809,133"/>
+<area shape="poly" title=" " alt="" coords="790,56,746,95,742,91,787,52"/>
+<area shape="rect" href="InteractionContext_8cpp.html" title="视口交互上下文实现" alt="" coords="833,93,1008,133"/>
+<area shape="poly" title=" " alt="" coords="855,52,900,91,897,95,851,56"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="5,189,233,214"/>
+<area shape="poly" title=" " alt="" coords="622,131,246,184,196,191,195,186,246,179,622,126"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="258,181,469,221"/>
+<area shape="poly" title=" " alt="" coords="631,139,442,184,441,179,629,134"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="493,189,724,214"/>
+<area shape="poly" title=" " alt="" coords="687,144,626,190,623,186,684,140"/>
+<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="749,181,922,221"/>
+<area shape="poly" title=" " alt="" coords="759,140,812,179,809,183,756,144"/>
+<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="947,181,1151,221"/>
+<area shape="poly" title=" " alt="" coords="807,134,978,179,976,184,806,139"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="1175,181,1381,221"/>
+<area shape="poly" title=" " alt="" coords="822,131,822,131,993,155,1164,179,1175,180,1174,186,1163,184,992,161,822,136,821,136"/>
+</map>
+</div>
+</div>
+<p><a href="InteractionContext_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Afeature_3A_3AInteractionContext" id="r_systems_3A_3Afeature_3A_3AInteractionContext"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1feature_1_1InteractionContext.html">systems::feature::InteractionContext</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">视口交互上下文（FeatureContext 成员）：功能在 activate() 中经它订阅交互回调  <a href="classsystems_1_1feature_1_1InteractionContext.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Afeature" id="r_systems_3A_3Afeature"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1feature.html">systems::feature</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>视口交互上下文：功能订阅拾取/悬停回调、产出标注的入口 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

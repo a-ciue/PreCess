@@ -204,6 +204,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a295c8f98625c2653cb76be4e39c94b8b" id="r_a295c8f98625c2653cb76be4e39c94b8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a295c8f98625c2653cb76be4e39c94b8b">setSelectMode</a> (const std::string &amp;select_mode)</td></tr>
 <tr class="memitem:a4edd29afd01113124084355e019f9690" id="r_a4edd29afd01113124084355e019f9690"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4edd29afd01113124084355e019f9690">setFaceSelectionByAngle</a> (bool enabled, double angle_deg)</td></tr>
 <tr class="memdesc:a4edd29afd01113124084355e019f9690"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置网格面选择的角度扩散参数  <br /></td></tr>
+<tr class="memitem:ac9a9fbc24489cdf355eb574a54480b9c" id="r_ac9a9fbc24489cdf355eb574a54480b9c"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::pair&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::array&lt; double, 3 &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac9a9fbc24489cdf355eb574a54480b9c">snapGeometryVertex</a> (double posx, double posy)</td></tr>
+<tr class="memdesc:ac9a9fbc24489cdf355eb574a54480b9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">吸附几何顶点：命中返回 {<a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> 顶点 id, 世界坐标}（转发给几何选择管理器）  <br /></td></tr>
 <tr class="memitem:add78e91313321159a48aab6d2bc74341" id="r_add78e91313321159a48aab6d2bc74341"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add78e91313321159a48aab6d2bc74341">clearSelection</a> ()</td></tr>
 <tr class="memitem:a318d3c468ba00ddd1bafa1f9aa510511" id="r_a318d3c468ba00ddd1bafa1f9aa510511"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a318d3c468ba00ddd1bafa1f9aa510511">refreshComponentHighlight</a> ()</td></tr>
 <tr class="memitem:a99a52fe239dd1906a0d6ac54418f2d02" id="r_a99a52fe239dd1906a0d6ac54418f2d02"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99a52fe239dd1906a0d6ac54418f2d02">getSelection</a> ()</td></tr>
@@ -386,6 +388,29 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac9a9fbc24489cdf355eb574a54480b9c" name="ac9a9fbc24489cdf355eb574a54480b9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9a9fbc24489cdf355eb574a54480b9c">&#9670;&#160;</a></span>snapGeometryVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; std::pair&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::array&lt; double, 3 &gt; &gt; &gt; SelectManager::snapGeometryVertex </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>吸附几何顶点：命中返回 {<a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> 顶点 id, 世界坐标}（转发给几何选择管理器） </p>
 
 </div>
 </div>

@@ -1,0 +1,796 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: InteractionService类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classInteractionService-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">InteractionService类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>通用视口交互服务  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="InteractionService_8h_source.html">InteractionService.h</a>&gt;</code></p>
+<div class="dynheader">
+InteractionService 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classInteractionService__coll__graph.png" border="0" usemap="#aInteractionService_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aInteractionService_coll__map" id="aInteractionService_coll__map">
+<area shape="rect" title="通用视口交互服务" alt="" coords="2366,398,2506,423"/>
+<area shape="rect" href="classMeshActorManagerSelectOp.html" title=" " alt="" coords="758,401,965,426"/>
+<area shape="poly" title=" " alt="" coords="979,414,1525,424,1768,424,2006,420,2366,411,2366,416,2006,426,1768,429,1525,429,978,419"/>
+<area shape="rect" href="classMeshActorManager.html" title=" " alt="" coords="3008,487,3156,513"/>
+<area shape="poly" title=" " alt="" coords="940,394,969,380,994,361,1003,345,1005,329,1007,312,1018,294,1053,261,1086,235,1118,216,1150,202,1185,193,1222,187,1313,184,2745,184,2778,187,2810,195,2841,207,2870,223,2923,264,2969,313,3008,365,3039,414,3077,486,3073,489,3035,417,3004,368,2965,317,2919,268,2867,228,2838,212,2808,200,2777,192,2745,189,1313,189,1223,192,1186,198,1152,207,1120,220,1089,239,1057,265,1022,298,1013,314,1011,330,1008,347,998,364,972,385,942,399"/>
+<area shape="rect" href="classMeshSelectManager.html" title=" " alt="" coords="1237,101,1392,126"/>
+<area shape="poly" title=" " alt="" coords="948,394,973,380,994,361,1007,337,1011,313,1009,290,1003,266,998,242,996,219,1002,194,1018,170,1045,161,1100,149,1238,123,1239,129,1101,154,1046,166,1022,174,1007,196,1002,219,1003,242,1009,265,1014,289,1017,313,1012,339,998,364,976,384,950,398"/>
+<area shape="rect" href="classComponentSelectorHighlight.html" title=" " alt="" coords="1210,561,1419,586"/>
+<area shape="poly" title=" " alt="" coords="884,434,942,489,980,517,1021,539,1054,548,1101,556,1210,566,1210,571,1101,561,1053,553,1019,544,977,521,939,493,881,438"/>
+<area shape="poly" title=" " alt="" coords="2994,503,2745,503,1313,503,1165,505,1101,500,1019,484,944,458,884,428,886,424,946,453,1021,479,1101,494,1165,499,1313,497,2745,497,2994,497"/>
+<area shape="rect" title=" " alt="" coords="2663,542,2824,597"/>
+<area shape="poly" title=" " alt="" coords="2838,562,2910,554,2983,539,3022,526,3055,510,3057,515,3024,530,2985,544,2910,559,2838,567"/>
+<area shape="rect" title=" " alt="" coords="2327,579,2545,605"/>
+<area shape="poly" title=" " alt="" coords="2559,580,2662,573,2663,578,2559,586"/>
+<area shape="rect" href="classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2001,1419,2091,1445"/>
+<area shape="poly" title=" " alt="" coords="2056,1406,2426,604,2431,606,2061,1408"/>
+<area shape="rect" title=" " alt="" coords="1533,1497,1727,1537"/>
+<area shape="poly" title=" " alt="" coords="1741,1511,1824,1503,1909,1487,1969,1466,2019,1442,2022,1447,1971,1471,1910,1492,1825,1508,1742,1517"/>
+<area shape="rect" href="classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="1223,1505,1407,1530"/>
+<area shape="poly" title=" " alt="" coords="1420,1515,1532,1515,1532,1520,1420,1520"/>
+<area shape="rect" title=" " alt="" coords="1530,1383,1730,1423"/>
+<area shape="poly" title=" " alt="" coords="1744,1408,2000,1426,2000,1432,1743,1413"/>
+<area shape="rect" href="structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="1259,1423,1370,1449"/>
+<area shape="poly" title=" " alt="" coords="1383,1426,1530,1411,1530,1416,1384,1431"/>
+<area shape="rect" title=" " alt="" coords="779,1416,944,1456"/>
+<area shape="poly" title=" " alt="" coords="958,1433,1259,1433,1259,1439,958,1439"/>
+<area shape="rect" title=" " alt="" coords="783,907,940,933"/>
+<area shape="poly" title=" " alt="" coords="954,918,978,928,998,944,1007,959,1014,977,1018,1024,1016,1080,1010,1140,1005,1200,1002,1255,1007,1300,1013,1318,1022,1332,1039,1346,1056,1354,1073,1356,1091,1354,1131,1350,1154,1350,1178,1356,1246,1388,1297,1421,1294,1426,1243,1393,1176,1361,1153,1356,1131,1355,1092,1360,1073,1361,1055,1359,1036,1351,1018,1335,1008,1320,1002,1302,997,1255,999,1199,1005,1139,1011,1080,1013,1024,1008,979,1003,961,994,947,975,932,952,923"/>
+<area shape="poly" title=" " alt="" coords="952,913,975,905,994,893,1003,880,1006,867,1008,852,1018,837,1039,823,1060,817,1101,817,1139,816,1157,809,1175,794,1185,780,1190,767,1191,740,1189,711,1192,695,1199,677,1220,648,1245,622,1292,584,1295,588,1248,626,1224,651,1204,680,1197,696,1194,711,1196,740,1195,768,1190,783,1179,798,1160,813,1140,821,1101,822,1061,822,1042,828,1022,841,1013,854,1011,867,1008,882,998,897,977,909,954,918"/>
+<area shape="rect" title=" " alt="" coords="769,1556,953,1596"/>
+<area shape="poly" title=" " alt="" coords="946,1596,1002,1604,1063,1605,1122,1594,1150,1583,1176,1567,1187,1551,1189,1533,1189,1513,1199,1492,1232,1464,1269,1446,1271,1451,1235,1469,1203,1495,1195,1514,1194,1534,1192,1553,1179,1571,1153,1588,1124,1599,1063,1610,1002,1609,946,1601"/>
+<area shape="rect" title=" " alt="" coords="341,1483,428,1509"/>
+<area shape="poly" title=" " alt="" coords="442,1503,769,1558,769,1563,441,1508"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationText.html" title="标注文本（默认白色）" alt="" coords="784,1352,939,1392"/>
+<area shape="poly" title=" " alt="" coords="441,1478,726,1401,783,1387,784,1392,727,1407,442,1483"/>
+<area shape="rect" title=" " alt="" coords="35,1476,174,1516"/>
+<area shape="poly" title=" " alt="" coords="188,1493,341,1493,341,1499,188,1499"/>
+<area shape="rect" title=" " alt="" coords="750,1481,973,1506"/>
+<area shape="poly" title=" " alt="" coords="986,1482,1177,1461,1259,1446,1260,1451,1178,1467,987,1488"/>
+<area shape="rect" href="structFaceAttributeOffsetState.html" title=" " alt="" coords="1539,1447,1721,1473"/>
+<area shape="poly" title=" " alt="" coords="1734,1460,1820,1459,1909,1453,2000,1439,2001,1444,1910,1459,1820,1464,1734,1465"/>
+<area shape="rect" title=" " alt="" coords="306,479,463,519"/>
+<area shape="poly" title=" " alt="" coords="478,501,586,499,645,493,702,483,741,471,778,455,838,424,840,428,780,460,743,476,703,488,646,499,586,505,478,507"/>
+<area shape="rect" href="classGeometryActorManagerSelectOp.html" title=" " alt="" coords="743,583,979,609"/>
+<area shape="poly" title=" " alt="" coords="473,519,515,529,657,558,783,581,782,586,656,563,514,535,472,525"/>
+<area shape="rect" title=" " alt="" coords="279,401,491,441"/>
+<area shape="poly" title=" " alt="" coords="504,407,515,407,641,404,758,406,758,412,641,410,515,412,505,413"/>
+<area shape="poly" title=" " alt="" coords="505,434,704,460,751,487,793,521,851,581,847,585,790,525,748,492,702,465,504,439"/>
+<area shape="rect" href="classSelectManager.html" title=" " alt="" coords="1987,359,2105,385"/>
+<area shape="poly" title=" " alt="" coords="2120,377,2366,401,2366,406,2119,382"/>
+<area shape="rect" title=" " alt="" coords="1525,224,1735,264"/>
+<area shape="poly" title=" " alt="" coords="1749,240,1790,245,1833,255,1874,271,1911,294,1921,307,1924,321,1927,333,1935,345,1960,358,1987,366,1986,371,1958,363,1932,349,1922,335,1919,322,1916,309,1908,298,1871,276,1831,260,1789,250,1748,245"/>
+<area shape="poly" title=" " alt="" coords="1360,129,1582,222,1580,226,1358,134"/>
+<area shape="rect" href="structFaceSelectionSpreadOptions.html" title="面选择的角度扩散配置，用于控制是否沿共享边扩展到相邻面" alt="" coords="758,18,965,43"/>
+<area shape="poly" title=" " alt="" coords="979,39,1076,52,1178,71,1276,98,1275,103,1177,76,1075,58,978,45"/>
+<area shape="rect" title=" " alt="" coords="759,67,963,122"/>
+<area shape="poly" title=" " alt="" coords="977,97,1237,108,1237,113,977,102"/>
+<area shape="rect" title=" " alt="" coords="291,75,478,115"/>
+<area shape="poly" title=" " alt="" coords="492,92,759,92,759,97,492,97"/>
+<area shape="rect" href="classSelectorHighlight.html" title=" " alt="" coords="37,82,172,107"/>
+<area shape="poly" title=" " alt="" coords="186,92,291,92,291,97,186,97"/>
+<area shape="rect" title=" " alt="" coords="1531,288,1729,328"/>
+<area shape="poly" title=" " alt="" coords="1743,318,1910,341,1989,357,1988,362,1909,347,1742,323"/>
+<area shape="rect" href="classGeometrySelectManager.html" title=" " alt="" coords="1223,311,1407,337"/>
+<area shape="poly" title=" " alt="" coords="1420,316,1530,310,1531,316,1420,321"/>
+<area shape="poly" title=" " alt="" coords="894,574,1291,334,1294,339,897,578"/>
+<area shape="rect" href="classGeometryActorManager.html" title=" " alt="" coords="1225,690,1404,715"/>
+<area shape="poly" title=" " alt="" coords="889,616,947,658,983,678,1021,693,1072,705,1125,711,1225,710,1225,716,1125,716,1071,710,1019,699,980,683,944,662,886,620"/>
+<area shape="poly" title=" " alt="" coords="993,597,1084,597,1177,592,1245,583,1246,589,1178,597,1084,602,993,603"/>
+<area shape="poly" title=" " alt="" coords="1246,689,916,611,917,606,1247,684"/>
+<area shape="rect" title=" " alt="" coords="766,734,957,789"/>
+<area shape="poly" title=" " alt="" coords="970,765,1071,764,1125,760,1177,752,1237,734,1287,713,1289,718,1239,739,1178,757,1125,765,1071,770,970,771"/>
+<area shape="rect" title=" " alt="" coords="285,748,484,788"/>
+<area shape="poly" title=" " alt="" coords="498,764,766,760,766,765,498,769"/>
+<area shape="rect" title=" " alt="" coords="299,569,470,609"/>
+<area shape="poly" title=" " alt="" coords="484,589,515,589,743,592,743,598,515,595,484,594"/>
+<area shape="rect" title=" " alt="" coords="317,634,453,659"/>
+<area shape="poly" title=" " alt="" coords="466,639,702,619,789,606,789,611,703,624,467,645"/>
+<area shape="rect" title=" " alt="" coords="279,684,491,724"/>
+<area shape="poly" title=" " alt="" coords="504,696,602,685,702,664,777,636,836,606,839,611,779,641,703,669,602,690,505,701"/>
+<area shape="rect" title=" " alt="" coords="727,297,996,351"/>
+<area shape="poly" title=" " alt="" coords="1009,321,1222,321,1222,327,1009,327"/>
+<area shape="rect" title=" " alt="" coords="285,304,484,344"/>
+<area shape="poly" title=" " alt="" coords="498,321,726,321,726,327,498,327"/>
+<area shape="rect" href="classGeometrySelectorHighlight.html" title=" " alt="" coords="5,311,204,337"/>
+<area shape="poly" title=" " alt="" coords="218,321,285,321,285,327,218,327"/>
+<area shape="rect" title=" " alt="" coords="1525,352,1735,392"/>
+<area shape="poly" title=" " alt="" coords="1749,369,1986,369,1986,375,1749,375"/>
+<area shape="poly" title=" " alt="" coords="1338,549,1417,481,1469,443,1524,408,1564,390,1567,395,1527,413,1472,447,1420,486,1341,553"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1InteractionState.html" title="单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）" alt="" coords="1969,712,2123,752"/>
+<area shape="poly" title=" " alt="" coords="2080,701,2417,422,2421,426,2084,705"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationBatch.html" title="一帧标注集：插件按当前状态回传，渲染层统一绘制" alt="" coords="1553,869,1707,909"/>
+<area shape="poly" title=" " alt="" coords="1696,862,1991,750,1993,755,1698,867"/>
+<area shape="rect" title=" " alt="" coords="1201,837,1428,877"/>
+<area shape="poly" title=" " alt="" coords="1442,868,1553,879,1552,884,1442,873"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationPoint.html" title="标注点（颜色分量 0~1，默认红色）" alt="" coords="784,843,939,883"/>
+<area shape="poly" title=" " alt="" coords="952,860,1177,859,1201,858,1201,864,1177,864,952,866"/>
+<area shape="rect" title=" " alt="" coords="297,965,472,990"/>
+<area shape="poly" title=" " alt="" coords="427,957,514,927,656,893,783,871,784,876,657,899,515,932,429,962"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationLine.html" title="标注线段（默认绿色实线；dashed 用于悬停动态预览）" alt="" coords="784,957,939,997"/>
+<area shape="poly" title=" " alt="" coords="486,975,784,975,784,980,486,980"/>
+<area shape="poly" title=" " alt="" coords="413,997,837,1350,834,1354,410,1001"/>
+<area shape="rect" title=" " alt="" coords="1204,901,1425,941"/>
+<area shape="poly" title=" " alt="" coords="1439,908,1501,901,1552,896,1553,901,1502,907,1440,913"/>
+<area shape="poly" title=" " alt="" coords="952,955,1020,943,1204,925,1204,930,1020,948,953,960"/>
+<area shape="rect" title=" " alt="" coords="1204,1159,1425,1199"/>
+<area shape="poly" title=" " alt="" coords="1346,1147,1605,908,1609,912,1350,1151"/>
+<area shape="poly" title=" " alt="" coords="953,1382,1080,1391,1137,1389,1176,1379,1202,1362,1225,1340,1262,1290,1288,1239,1304,1198,1309,1200,1293,1241,1267,1293,1229,1344,1205,1366,1178,1384,1138,1394,1080,1396,952,1387"/>
+<area shape="rect" title=" " alt="" coords="1933,295,2159,335"/>
+<area shape="poly" title=" " alt="" coords="2173,328,2238,340,2303,356,2360,375,2408,395,2406,400,2358,380,2302,361,2237,346,2172,334"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a583cdb1ce749b39ab7835ccaf553ef7e" id="r_a583cdb1ce749b39ab7835ccaf553ef7e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a583cdb1ce749b39ab7835ccaf553ef7e">InteractionService</a> (vtkRenderer &amp;renderer, vtkRenderer &amp;overlay_renderer, <a class="el" href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a> &amp;mesh_op, <a class="el" href="classSelectManager.html">SelectManager</a> &amp;select_manager)</td></tr>
+<tr class="memitem:af2c84a5e5505d846a4bdccd43dc94c57" id="r_af2c84a5e5505d846a4bdccd43dc94c57"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af2c84a5e5505d846a4bdccd43dc94c57">~InteractionService</a> ()</td></tr>
+<tr class="memitem:a8da4a000b10eb0b3c0cd5fd185c30f51" id="r_a8da4a000b10eb0b3c0cd5fd185c30f51"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8da4a000b10eb0b3c0cd5fd185c30f51">hasActiveState</a> ()</td></tr>
+<tr class="memdesc:a8da4a000b10eb0b3c0cd5fd185c30f51"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前是否存在激活的交互（鼠标路由用）  <br /></td></tr>
+<tr class="memitem:a4aceed79d9fe63c69372afb46c107adc" id="r_a4aceed79d9fe63c69372afb46c107adc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4aceed79d9fe63c69372afb46c107adc">pick</a> (double posx, double posy)</td></tr>
+<tr class="memdesc:a4aceed79d9fe63c69372afb46c107adc"><td class="mdescLeft">&#160;</td><td class="mdescRight">左键点击：同步激活状态，解析吸附点并调用 on_pick 回调  <br /></td></tr>
+<tr class="memitem:ad2cdcf33577308c30832d6a08b416750" id="r_ad2cdcf33577308c30832d6a08b416750"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad2cdcf33577308c30832d6a08b416750">hover</a> (double posx, double posy)</td></tr>
+<tr class="memdesc:ad2cdcf33577308c30832d6a08b416750"><td class="mdescLeft">&#160;</td><td class="mdescRight">悬停：同步激活状态，调用 on_hover 回调做动态预览  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a86a52da4aaf501bd807365e228ec0e90" id="r_a86a52da4aaf501bd807365e228ec0e90"><td class="memItemLeft" align="right" valign="top">std::function&lt; <a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a> *()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a86a52da4aaf501bd807365e228ec0e90">state_provider</a></td></tr>
+<tr class="memdesc:a86a52da4aaf501bd807365e228ec0e90"><td class="mdescLeft">&#160;</td><td class="mdescRight">交互状态提供者（由 <a class="el" href="structQRenderWindow.html">QRenderWindow</a> 注入，转发 FeatureSystem::activeInteraction）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:accb11da884fc3efccbeae97d2a654527" id="r_accb11da884fc3efccbeae97d2a654527"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accb11da884fc3efccbeae97d2a654527">syncState</a> ()</td></tr>
+<tr class="memdesc:accb11da884fc3efccbeae97d2a654527"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）  <br /></td></tr>
+<tr class="memitem:a2737aca0a6df2e26c51ff2baaf2d04c1" id="r_a2737aca0a6df2e26c51ff2baaf2d04c1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2737aca0a6df2e26c51ff2baaf2d04c1">snapToPickInfo</a> (double posx, double posy, <a class="el" href="structsystems_1_1interaction_1_1PickInfo.html">systems::interaction::PickInfo</a> &amp;out)</td></tr>
+<tr class="memdesc:a2737aca0a6df2e26c51ff2baaf2d04c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">网格顶点优先、几何顶点兜底的吸附解析；命中时 out.valid 置 true  <br /></td></tr>
+<tr class="memitem:a2e754518e42012ac0468b3c56d2c3f81" id="r_a2e754518e42012ac0468b3c56d2c3f81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e754518e42012ac0468b3c56d2c3f81">refreshAnnotations</a> ()</td></tr>
+<tr class="memdesc:a2e754518e42012ac0468b3c56d2c3f81"><td class="mdescLeft">&#160;</td><td class="mdescRight">拉取标注集并刷新全部 actor  <br /></td></tr>
+<tr class="memitem:a37dd8da4da2089b5b285c7d6b65a0c87" id="r_a37dd8da4da2089b5b285c7d6b65a0c87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37dd8da4da2089b5b285c7d6b65a0c87">clearActors</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:abe68049c43a1bcd5d20f0275b3c9a698" id="r_abe68049c43a1bcd5d20f0275b3c9a698"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe68049c43a1bcd5d20f0275b3c9a698">renderer_</a> {}</td></tr>
+<tr class="memitem:a18993e07e2943e932c224d8e9a83c029" id="r_a18993e07e2943e932c224d8e9a83c029"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18993e07e2943e932c224d8e9a83c029">overlay_renderer_</a> {}</td></tr>
+<tr class="memitem:a05d4521d491029dc7a3d870466d24d3f" id="r_a05d4521d491029dc7a3d870466d24d3f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a05d4521d491029dc7a3d870466d24d3f">mesh_op_</a> {}</td></tr>
+<tr class="memitem:a6cad6f9ba0c6e252a3453b8d8d48a696" id="r_a6cad6f9ba0c6e252a3453b8d8d48a696"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSelectManager.html">SelectManager</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6cad6f9ba0c6e252a3453b8d8d48a696">select_manager_</a> {}</td></tr>
+<tr class="memitem:a63850f71db99f6655c7bdffb781afe46" id="r_a63850f71db99f6655c7bdffb781afe46"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63850f71db99f6655c7bdffb781afe46">current_</a> {}</td></tr>
+<tr class="memitem:a1721166592a42b30895f53c411a11c07" id="r_a1721166592a42b30895f53c411a11c07"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkHardwarePicker &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1721166592a42b30895f53c411a11c07">mesh_picker_</a></td></tr>
+<tr class="memitem:ac18207f211a52e5ad233a1170227f973" id="r_ac18207f211a52e5ad233a1170227f973"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac18207f211a52e5ad233a1170227f973">points_poly_</a></td></tr>
+<tr class="memitem:a65e39fbab2911e8a9785e6ee23f21e84" id="r_a65e39fbab2911e8a9785e6ee23f21e84"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65e39fbab2911e8a9785e6ee23f21e84">points_actor_</a></td></tr>
+<tr class="memitem:ab62bc52ccdcf8e9542967184cf1c5778" id="r_ab62bc52ccdcf8e9542967184cf1c5778"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab62bc52ccdcf8e9542967184cf1c5778">lines_poly_</a></td></tr>
+<tr class="memitem:ae9afa3db7f8a465184dec3d3e70d2736" id="r_ae9afa3db7f8a465184dec3d3e70d2736"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae9afa3db7f8a465184dec3d3e70d2736">lines_actor_</a></td></tr>
+<tr class="memitem:a4554e075e6421a53c37f3310431581e2" id="r_a4554e075e6421a53c37f3310431581e2"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4554e075e6421a53c37f3310431581e2">dashed_poly_</a></td></tr>
+<tr class="memitem:a548e22e6b9ff54747ea609ca0b8b23c2" id="r_a548e22e6b9ff54747ea609ca0b8b23c2"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkActor &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a548e22e6b9ff54747ea609ca0b8b23c2">dashed_actor_</a></td></tr>
+<tr class="memitem:ab4635a46dbc7f4a3c600cab618b66efe" id="r_ab4635a46dbc7f4a3c600cab618b66efe"><td class="memItemLeft" align="right" valign="top">std::vector&lt; vtkSmartPointer&lt; vtkBillboardTextActor3D &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab4635a46dbc7f4a3c600cab618b66efe">text_pool_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>通用视口交互服务 </p>
+<p>经 state_provider 获取当前激活的 InteractionState（FeatureSystem::activeInteraction）， 将左键/悬停解析为 <a class="el" href="structPickInfo.html" title="拾取结果：渲染层解析好的吸附点（世界坐标 + 两套全局顶点 id）">PickInfo</a> 调用其回调，并按其 annotations 统一绘制标注。 无会话概念：激活状态迁移（功能参数开关驱动）在 pick/hover 入口自动同步。 与选择系统的互斥由 <a class="el" href="classQRenderWindowStyle.html">QRenderWindowStyle</a> 按 <a class="el" href="#a8da4a000b10eb0b3c0cd5fd185c30f51" title="当前是否存在激活的交互（鼠标路由用）">hasActiveState()</a> 路由； 几何顶点吸附经 <a class="el" href="classSelectManager.html">SelectManager</a> 封装接口完成，不直接接触 picker。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a583cdb1ce749b39ab7835ccaf553ef7e" name="a583cdb1ce749b39ab7835ccaf553ef7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a583cdb1ce749b39ab7835ccaf553ef7e">&#9670;&#160;</a></span>InteractionService()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">InteractionService::InteractionService </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer &amp;</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkRenderer &amp;</td>          <td class="paramname"><span class="paramname"><em>overlay_renderer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>mesh_op</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classSelectManager.html">SelectManager</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>select_manager</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af2c84a5e5505d846a4bdccd43dc94c57" name="af2c84a5e5505d846a4bdccd43dc94c57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2c84a5e5505d846a4bdccd43dc94c57">&#9670;&#160;</a></span>~InteractionService()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">InteractionService::~InteractionService </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a37dd8da4da2089b5b285c7d6b65a0c87" name="a37dd8da4da2089b5b285c7d6b65a0c87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37dd8da4da2089b5b285c7d6b65a0c87">&#9670;&#160;</a></span>clearActors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InteractionService::clearActors </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8da4a000b10eb0b3c0cd5fd185c30f51" name="a8da4a000b10eb0b3c0cd5fd185c30f51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8da4a000b10eb0b3c0cd5fd185c30f51">&#9670;&#160;</a></span>hasActiveState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool InteractionService::hasActiveState </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>当前是否存在激活的交互（鼠标路由用） </p>
+
+</div>
+</div>
+<a id="ad2cdcf33577308c30832d6a08b416750" name="ad2cdcf33577308c30832d6a08b416750"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2cdcf33577308c30832d6a08b416750">&#9670;&#160;</a></span>hover()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InteractionService::hover </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>悬停：同步激活状态，调用 on_hover 回调做动态预览 </p>
+
+</div>
+</div>
+<a id="a4aceed79d9fe63c69372afb46c107adc" name="a4aceed79d9fe63c69372afb46c107adc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4aceed79d9fe63c69372afb46c107adc">&#9670;&#160;</a></span>pick()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InteractionService::pick </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>左键点击：同步激活状态，解析吸附点并调用 on_pick 回调 </p>
+
+</div>
+</div>
+<a id="a2e754518e42012ac0468b3c56d2c3f81" name="a2e754518e42012ac0468b3c56d2c3f81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e754518e42012ac0468b3c56d2c3f81">&#9670;&#160;</a></span>refreshAnnotations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void InteractionService::refreshAnnotations </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>拉取标注集并刷新全部 actor </p>
+
+</div>
+</div>
+<a id="a2737aca0a6df2e26c51ff2baaf2d04c1" name="a2737aca0a6df2e26c51ff2baaf2d04c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2737aca0a6df2e26c51ff2baaf2d04c1">&#9670;&#160;</a></span>snapToPickInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool InteractionService::snapToPickInfo </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1interaction_1_1PickInfo.html">systems::interaction::PickInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>网格顶点优先、几何顶点兜底的吸附解析；命中时 out.valid 置 true </p>
+
+</div>
+</div>
+<a id="accb11da884fc3efccbeae97d2a654527" name="accb11da884fc3efccbeae97d2a654527"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accb11da884fc3efccbeae97d2a654527">&#9670;&#160;</a></span>syncState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a> * InteractionService::syncState </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a63850f71db99f6655c7bdffb781afe46" name="a63850f71db99f6655c7bdffb781afe46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63850f71db99f6655c7bdffb781afe46">&#9670;&#160;</a></span>current_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a>* InteractionService::current_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a548e22e6b9ff54747ea609ca0b8b23c2" name="a548e22e6b9ff54747ea609ca0b8b23c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a548e22e6b9ff54747ea609ca0b8b23c2">&#9670;&#160;</a></span>dashed_actor_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkActor&gt; InteractionService::dashed_actor_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4554e075e6421a53c37f3310431581e2" name="a4554e075e6421a53c37f3310431581e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4554e075e6421a53c37f3310431581e2">&#9670;&#160;</a></span>dashed_poly_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkPolyData&gt; InteractionService::dashed_poly_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae9afa3db7f8a465184dec3d3e70d2736" name="ae9afa3db7f8a465184dec3d3e70d2736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9afa3db7f8a465184dec3d3e70d2736">&#9670;&#160;</a></span>lines_actor_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkActor&gt; InteractionService::lines_actor_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab62bc52ccdcf8e9542967184cf1c5778" name="ab62bc52ccdcf8e9542967184cf1c5778"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab62bc52ccdcf8e9542967184cf1c5778">&#9670;&#160;</a></span>lines_poly_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkPolyData&gt; InteractionService::lines_poly_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a05d4521d491029dc7a3d870466d24d3f" name="a05d4521d491029dc7a3d870466d24d3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05d4521d491029dc7a3d870466d24d3f">&#9670;&#160;</a></span>mesh_op_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a>* InteractionService::mesh_op_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1721166592a42b30895f53c411a11c07" name="a1721166592a42b30895f53c411a11c07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1721166592a42b30895f53c411a11c07">&#9670;&#160;</a></span>mesh_picker_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkHardwarePicker&gt; InteractionService::mesh_picker_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a18993e07e2943e932c224d8e9a83c029" name="a18993e07e2943e932c224d8e9a83c029"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18993e07e2943e932c224d8e9a83c029">&#9670;&#160;</a></span>overlay_renderer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkRenderer* InteractionService::overlay_renderer_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a65e39fbab2911e8a9785e6ee23f21e84" name="a65e39fbab2911e8a9785e6ee23f21e84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65e39fbab2911e8a9785e6ee23f21e84">&#9670;&#160;</a></span>points_actor_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkActor&gt; InteractionService::points_actor_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac18207f211a52e5ad233a1170227f973" name="ac18207f211a52e5ad233a1170227f973"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac18207f211a52e5ad233a1170227f973">&#9670;&#160;</a></span>points_poly_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkPolyData&gt; InteractionService::points_poly_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abe68049c43a1bcd5d20f0275b3c9a698" name="abe68049c43a1bcd5d20f0275b3c9a698"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe68049c43a1bcd5d20f0275b3c9a698">&#9670;&#160;</a></span>renderer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkRenderer* InteractionService::renderer_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6cad6f9ba0c6e252a3453b8d8d48a696" name="a6cad6f9ba0c6e252a3453b8d8d48a696"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cad6f9ba0c6e252a3453b8d8d48a696">&#9670;&#160;</a></span>select_manager_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSelectManager.html">SelectManager</a>* InteractionService::select_manager_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a86a52da4aaf501bd807365e228ec0e90" name="a86a52da4aaf501bd807365e228ec0e90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86a52da4aaf501bd807365e228ec0e90">&#9670;&#160;</a></span>state_provider</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;<a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a>*()&gt; InteractionService::state_provider</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>交互状态提供者（由 <a class="el" href="structQRenderWindow.html">QRenderWindow</a> 注入，转发 FeatureSystem::activeInteraction） </p>
+
+</div>
+</div>
+<a id="ab4635a46dbc7f4a3c600cab618b66efe" name="ab4635a46dbc7f4a3c600cab618b66efe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4635a46dbc7f4a3c600cab618b66efe">&#9670;&#160;</a></span>text_pool_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;vtkSmartPointer&lt;vtkBillboardTextActor3D&gt; &gt; InteractionService::text_pool_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/<a class="el" href="InteractionService_8h_source.html">InteractionService.h</a></li>
+<li>app/render/<a class="el" href="InteractionService_8cpp.html">InteractionService.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -137,6 +137,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:accd6412ae019d8e33710f21e12e0a5a4" id="r_accd6412ae019d8e33710f21e12e0a5a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accd6412ae019d8e33710f21e12e0a5a4">setSelectMode</a> (<a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> select_mode)</td></tr>
 <tr class="memitem:aa6fb352ba1bf242a7de34ee69232f3c9" id="r_aa6fb352ba1bf242a7de34ee69232f3c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6fb352ba1bf242a7de34ee69232f3c9">clearSelection</a> ()</td></tr>
 <tr class="memitem:ac72461b0c47ec15d7a4c0efa56ea13e5" id="r_ac72461b0c47ec15d7a4c0efa56ea13e5"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac72461b0c47ec15d7a4c0efa56ea13e5">getSelection</a> ()</td></tr>
+<tr class="memitem:a48b6e054d0b5c4cc0bd41244425ce05b" id="r_a48b6e054d0b5c4cc0bd41244425ce05b"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::pair&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::array&lt; double, 3 &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48b6e054d0b5c4cc0bd41244425ce05b">snapGeometryVertex</a> (double posx, double posy)</td></tr>
+<tr class="memdesc:a48b6e054d0b5c4cc0bd41244425ce05b"><td class="mdescLeft">&#160;</td><td class="mdescRight">吸附几何顶点：拾取并解析为几何顶点  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
@@ -275,6 +277,30 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a48b6e054d0b5c4cc0bd41244425ce05b" name="a48b6e054d0b5c4cc0bd41244425ce05b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48b6e054d0b5c4cc0bd41244425ce05b">&#9670;&#160;</a></span>snapGeometryVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; std::pair&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::array&lt; double, 3 &gt; &gt; &gt; GeometrySelectManager::snapGeometryVertex </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>吸附几何顶点：拾取并解析为几何顶点 </p>
+<dl class="section return"><dt>返回</dt><dd>命中时返回 {<a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> 顶点 id, 世界坐标}，未命中返回 std::nullopt </dd></dl>
 
 </div>
 </div>

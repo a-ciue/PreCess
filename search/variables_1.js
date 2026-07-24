@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['active_0',['active',['../structFaceAttributeOffsetState.html#aae9baa37942eca8ce04d7b034bd6c829',1,'FaceAttributeOffsetState']]],
+  ['active_0',['active',['../structFaceAttributeOffsetState.html#aae9baa37942eca8ce04d7b034bd6c829',1,'FaceAttributeOffsetState::active'],['../structsystems_1_1interaction_1_1InteractionState.html#a857ccab0b872048567304ba321712d02',1,'systems::interaction::InteractionState::active']]],
   ['active_5fcomponent_5fid_5f_1',['active_component_id_',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#aaaa7abe24ef25754e93520de5a68d88f',1,'systems::feature::QFeatureSystemAdaptor']]],
   ['active_5fcomponent_5fprovider_5f_2',['active_component_provider_',['../classsystems_1_1feature_1_1FeatureSystem.html#a0b352a8da17086f9ac43c8002d125b82',1,'systems::feature::FeatureSystem']]],
   ['active_5fmodel_5fid_5f_3',['active_model_id_',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#acbc63b0ae588b702612cdbdb767611fb',1,'systems::feature::QFeatureSystemAdaptor']]],
@@ -20,9 +20,10 @@ var searchData=
   ['angle_5fdeg_17',['angle_deg',['../structFaceSelectionSpreadOptions.html#a5ed01083c9ce3b0462a6a2925e034fb2',1,'FaceSelectionSpreadOptions']]],
   ['anisotropy_18',['anisotropy',['../structtinyobj_1_1material__t.html#a0bd6ee79907285b19365849ba50965b1',1,'tinyobj::material_t']]],
   ['anisotropy_5frotation_19',['anisotropy_rotation',['../structtinyobj_1_1material__t.html#ab1b9216b525cc02d2f6392db71ce0f59',1,'tinyobj::material_t']]],
-  ['arg_5ftypes_20',['arg_types',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a8c05d4a869a62930788cc4b17f7e796b',1,'systems::algo::AlgorithmInfo::arg_types'],['../structsystems_1_1edit_1_1EditInfo.html#a46952091b7b5d951c78a005ed98c57ba',1,'systems::edit::EditInfo::arg_types'],['../structsystems_1_1feature_1_1FeatureInfo.html#ae2fd774abefa9270199c5dd9cd4ec6dc',1,'systems::feature::FeatureInfo::arg_types']]],
-  ['arg_5ftypes_5f_21',['arg_types_',['../classQAlgorithmInfo.html#ae8522dde9690962c72b0041ce759d312',1,'QAlgorithmInfo::arg_types_'],['../classQEditInfo.html#a2e1b4c32db1231f9d7332a1a8dd8fb96',1,'QEditInfo::arg_types_'],['../classQFeatureInfo.html#a714730e875a7da9b95e569df1c3e5f04',1,'QFeatureInfo::arg_types_'],['../classsystems_1_1feature_1_1FeatureRegistrar.html#a51be2044ac65e6f75e77303d7dbbfd92',1,'systems::feature::FeatureRegistrar::arg_types_']]],
-  ['argv0_22',['argv0',['../classQModelManager.html#a94d5dd6802ae5ec9f4c3dce2332933ec',1,'QModelManager']]],
-  ['attrib_5f_23',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]],
-  ['attributeoperator_24',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]]
+  ['annotations_20',['annotations',['../structsystems_1_1interaction_1_1InteractionState.html#a8478431598a49b771f93b88279f05dc0',1,'systems::interaction::InteractionState']]],
+  ['arg_5ftypes_21',['arg_types',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a8c05d4a869a62930788cc4b17f7e796b',1,'systems::algo::AlgorithmInfo::arg_types'],['../structsystems_1_1edit_1_1EditInfo.html#a46952091b7b5d951c78a005ed98c57ba',1,'systems::edit::EditInfo::arg_types'],['../structsystems_1_1feature_1_1FeatureInfo.html#ae2fd774abefa9270199c5dd9cd4ec6dc',1,'systems::feature::FeatureInfo::arg_types']]],
+  ['arg_5ftypes_5f_22',['arg_types_',['../classQAlgorithmInfo.html#ae8522dde9690962c72b0041ce759d312',1,'QAlgorithmInfo::arg_types_'],['../classQEditInfo.html#a2e1b4c32db1231f9d7332a1a8dd8fb96',1,'QEditInfo::arg_types_'],['../classQFeatureInfo.html#a714730e875a7da9b95e569df1c3e5f04',1,'QFeatureInfo::arg_types_'],['../classsystems_1_1feature_1_1FeatureRegistrar.html#a51be2044ac65e6f75e77303d7dbbfd92',1,'systems::feature::FeatureRegistrar::arg_types_']]],
+  ['argv0_23',['argv0',['../classQModelManager.html#a94d5dd6802ae5ec9f4c3dce2332933ec',1,'QModelManager']]],
+  ['attrib_5f_24',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]],
+  ['attributeoperator_25',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]]
 ];

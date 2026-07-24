@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: AnnotationBatch结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structAnnotationBatch-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">AnnotationBatch结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>一帧标注集：插件按当前状态回传，渲染层统一绘制  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="InteractiveTypes_8h_source.html">InteractiveTypes.h</a>&gt;</code></p>
+<div class="dynheader">
+AnnotationBatch 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structAnnotationBatch__coll__graph.png" border="0" usemap="#aAnnotationBatch_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aAnnotationBatch_coll__map" id="aAnnotationBatch_coll__map">
+<area shape="rect" title="一帧标注集：插件按当前状态回传，渲染层统一绘制" alt="" coords="1047,81,1177,106"/>
+<area shape="rect" title=" " alt="" coords="723,9,949,49"/>
+<area shape="poly" title=" " alt="" coords="963,49,1023,63,1075,78,1073,83,1022,68,962,54"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationPoint.html" title="标注点（颜色分量 0~1，默认红色）" alt="" coords="451,7,605,47"/>
+<area shape="poly" title=" " alt="" coords="619,25,723,26,722,31,619,30"/>
+<area shape="rect" title=" " alt="" coords="193,85,368,110"/>
+<area shape="poly" title=" " alt="" coords="322,76,391,51,450,37,451,42,393,56,324,81"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationLine.html" title="标注线段（默认绿色实线；dashed 用于悬停动态预览）" alt="" coords="451,73,605,113"/>
+<area shape="poly" title=" " alt="" coords="382,94,427,93,450,93,450,98,427,99,382,99"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationText.html" title="标注文本（默认白色）" alt="" coords="451,137,605,177"/>
+<area shape="poly" title=" " alt="" coords="345,111,393,123,451,137,450,142,391,128,344,116"/>
+<area shape="rect" title=" " alt="" coords="725,73,947,113"/>
+<area shape="poly" title=" " alt="" coords="960,91,1046,91,1046,96,960,96"/>
+<area shape="poly" title=" " alt="" coords="619,91,725,91,725,96,619,96"/>
+<area shape="rect" title=" " alt="" coords="725,137,947,177"/>
+<area shape="poly" title=" " alt="" coords="960,133,1022,119,1073,103,1075,109,1023,124,961,138"/>
+<area shape="poly" title=" " alt="" coords="619,155,725,155,725,160,619,160"/>
+<area shape="rect" title=" " alt="" coords="237,191,324,217"/>
+<area shape="poly" title=" " alt="" coords="338,206,381,206,426,200,460,189,491,175,493,180,462,194,427,205,382,211,338,212"/>
+<area shape="rect" title=" " alt="" coords="5,184,144,224"/>
+<area shape="poly" title=" " alt="" coords="158,201,237,201,237,207,158,207"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a5e77a5ef8429afcc993d3c6a48d018bd" id="r_a5e77a5ef8429afcc993d3c6a48d018bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e77a5ef8429afcc993d3c6a48d018bd">clear</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a26c26d16504b87a0d8a4960692518caa" id="r_a26c26d16504b87a0d8a4960692518caa"><td class="memItemLeft" align="right" valign="top">std::vector&lt; AnnotationPoint &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a26c26d16504b87a0d8a4960692518caa">points</a></td></tr>
+<tr class="memitem:adb78eea70f7cfb6d0ebd39ae0426a9f0" id="r_adb78eea70f7cfb6d0ebd39ae0426a9f0"><td class="memItemLeft" align="right" valign="top">std::vector&lt; AnnotationLine &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb78eea70f7cfb6d0ebd39ae0426a9f0">lines</a></td></tr>
+<tr class="memitem:ab72b3f817769bdcbb49ad6502161cb9f" id="r_ab72b3f817769bdcbb49ad6502161cb9f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; AnnotationText &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab72b3f817769bdcbb49ad6502161cb9f">texts</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>一帧标注集：插件按当前状态回传，渲染层统一绘制 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a5e77a5ef8429afcc993d3c6a48d018bd" name="a5e77a5ef8429afcc993d3c6a48d018bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e77a5ef8429afcc993d3c6a48d018bd">&#9670;&#160;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::interaction::AnnotationBatch::clear </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="adb78eea70f7cfb6d0ebd39ae0426a9f0" name="adb78eea70f7cfb6d0ebd39ae0426a9f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb78eea70f7cfb6d0ebd39ae0426a9f0">&#9670;&#160;</a></span>lines</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;AnnotationLine&gt; systems::interaction::AnnotationBatch::lines</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a26c26d16504b87a0d8a4960692518caa" name="a26c26d16504b87a0d8a4960692518caa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26c26d16504b87a0d8a4960692518caa">&#9670;&#160;</a></span>points</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;AnnotationPoint&gt; systems::interaction::AnnotationBatch::points</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab72b3f817769bdcbb49ad6502161cb9f" name="ab72b3f817769bdcbb49ad6502161cb9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab72b3f817769bdcbb49ad6502161cb9f">&#9670;&#160;</a></span>texts</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;AnnotationText&gt; systems::interaction::AnnotationBatch::texts</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/systems/core/<a class="el" href="InteractiveTypes_8h_source.html">InteractiveTypes.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/InteractionService.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">InteractionService.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="InteractionService_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#ifndef INTERACTION_SERVICE_H</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define INTERACTION_SERVICE_H</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="InteractiveTypes_8h.html">InteractiveTypes.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span>vtkRenderer;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">class </span>vtkActor;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">class </span>vtkPolyData;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">class </span>vtkHardwarePicker;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">class </span>vtkBillboardTextActor3D;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">class </span><a class="code hl_class" href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a>;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">class </span><a class="code hl_class" href="classSelectManager.html">SelectManager</a>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="foldopen" id="foldopen00022" data-start="{" data-end="}">
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="namespacesystems_1_1interaction.html">   22</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1interaction.html">systems::interaction</a> {</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1interaction_1_1InteractionState.html">InteractionState</a>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>}</div>
+</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span></div>
+<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classInteractionService.html">   35</a></span><span class="keyword">class </span><a class="code hl_function" href="classInteractionService.html#a583cdb1ce749b39ab7835ccaf553ef7e">InteractionService</a> {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_function" href="classInteractionService.html#a583cdb1ce749b39ab7835ccaf553ef7e">InteractionService</a>(vtkRenderer&amp; renderer, vtkRenderer&amp; overlay_renderer,</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <a class="code hl_class" href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a>&amp; mesh_op, <a class="code hl_class" href="classSelectManager.html">SelectManager</a>&amp; select_manager);</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_function" href="classInteractionService.html#af2c84a5e5505d846a4bdccd43dc94c57">~InteractionService</a>();</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classInteractionService.html#a86a52da4aaf501bd807365e228ec0e90">   42</a></span>    std::function&lt;<a class="code hl_struct" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a>*()&gt; <a class="code hl_variable" href="classInteractionService.html#a86a52da4aaf501bd807365e228ec0e90">state_provider</a>;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classInteractionService.html#a8da4a000b10eb0b3c0cd5fd185c30f51">hasActiveState</a>();</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classInteractionService.html#a4aceed79d9fe63c69372afb46c107adc">pick</a>(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classInteractionService.html#ad2cdcf33577308c30832d6a08b416750">hover</a>(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <a class="code hl_struct" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a>* <a class="code hl_function" href="classInteractionService.html#accb11da884fc3efccbeae97d2a654527">syncState</a>();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classInteractionService.html#a2737aca0a6df2e26c51ff2baaf2d04c1">snapToPickInfo</a>(<span class="keywordtype">double</span> posx, <span class="keywordtype">double</span> posy, <a class="code hl_struct" href="structsystems_1_1interaction_1_1PickInfo.html">systems::interaction::PickInfo</a>&amp; out);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classInteractionService.html#a2e754518e42012ac0468b3c56d2c3f81">refreshAnnotations</a>();</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classInteractionService.html#a37dd8da4da2089b5b285c7d6b65a0c87">clearActors</a>();</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classInteractionService.html#abe68049c43a1bcd5d20f0275b3c9a698">   60</a></span>    vtkRenderer* <a class="code hl_variable" href="classInteractionService.html#abe68049c43a1bcd5d20f0275b3c9a698">renderer_</a> {};</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classInteractionService.html#a18993e07e2943e932c224d8e9a83c029">   61</a></span>    vtkRenderer* <a class="code hl_variable" href="classInteractionService.html#a18993e07e2943e932c224d8e9a83c029">overlay_renderer_</a> {};</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="classInteractionService.html#a05d4521d491029dc7a3d870466d24d3f">   62</a></span>    <a class="code hl_class" href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a>* <a class="code hl_variable" href="classInteractionService.html#a05d4521d491029dc7a3d870466d24d3f">mesh_op_</a> {};</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classInteractionService.html#a6cad6f9ba0c6e252a3453b8d8d48a696">   63</a></span>    <a class="code hl_class" href="classSelectManager.html">SelectManager</a>* <a class="code hl_variable" href="classInteractionService.html#a6cad6f9ba0c6e252a3453b8d8d48a696">select_manager_</a> {};</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classInteractionService.html#a63850f71db99f6655c7bdffb781afe46">   65</a></span>    <a class="code hl_struct" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a>* <a class="code hl_variable" href="classInteractionService.html#a63850f71db99f6655c7bdffb781afe46">current_</a> {}; <span class="comment">//&gt; 当前已上线的交互状态</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classInteractionService.html#a1721166592a42b30895f53c411a11c07">   67</a></span>    vtkSmartPointer&lt;vtkHardwarePicker&gt; <a class="code hl_variable" href="classInteractionService.html#a1721166592a42b30895f53c411a11c07">mesh_picker_</a>;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="classInteractionService.html#ac18207f211a52e5ad233a1170227f973">   69</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="classInteractionService.html#ac18207f211a52e5ad233a1170227f973">points_poly_</a>;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="classInteractionService.html#a65e39fbab2911e8a9785e6ee23f21e84">   70</a></span>    vtkSmartPointer&lt;vtkActor&gt; <a class="code hl_variable" href="classInteractionService.html#a65e39fbab2911e8a9785e6ee23f21e84">points_actor_</a>;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classInteractionService.html#ab62bc52ccdcf8e9542967184cf1c5778">   71</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="classInteractionService.html#ab62bc52ccdcf8e9542967184cf1c5778">lines_poly_</a>;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classInteractionService.html#ae9afa3db7f8a465184dec3d3e70d2736">   72</a></span>    vtkSmartPointer&lt;vtkActor&gt; <a class="code hl_variable" href="classInteractionService.html#ae9afa3db7f8a465184dec3d3e70d2736">lines_actor_</a>;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classInteractionService.html#a4554e075e6421a53c37f3310431581e2">   73</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="classInteractionService.html#a4554e075e6421a53c37f3310431581e2">dashed_poly_</a>;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classInteractionService.html#a548e22e6b9ff54747ea609ca0b8b23c2">   74</a></span>    vtkSmartPointer&lt;vtkActor&gt; <a class="code hl_variable" href="classInteractionService.html#a548e22e6b9ff54747ea609ca0b8b23c2">dashed_actor_</a>;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classInteractionService.html#ab4635a46dbc7f4a3c600cab618b66efe">   76</a></span>    std::vector&lt;vtkSmartPointer&lt;vtkBillboardTextActor3D&gt;&gt; <a class="code hl_variable" href="classInteractionService.html#ab4635a46dbc7f4a3c600cab618b66efe">text_pool_</a>;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>};</div>
+</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">#endif </span><span class="comment">// INTERACTION_SERVICE_H</span></div>
+<div class="ttc" id="aInteractiveTypes_8h_html"><div class="ttname"><a href="InteractiveTypes_8h.html">InteractiveTypes.h</a></div><div class="ttdoc">视口交互的纯数据类型：拾取结果与标注图元（无 VTK 依赖，供渲染层与插件两侧共用）</div></div>
+<div class="ttc" id="aclassInteractionService_html_a05d4521d491029dc7a3d870466d24d3f"><div class="ttname"><a href="classInteractionService.html#a05d4521d491029dc7a3d870466d24d3f">InteractionService::mesh_op_</a></div><div class="ttdeci">MeshActorManagerSelectOp * mesh_op_</div><div class="ttdef"><b>定义</b> InteractionService.h:62</div></div>
+<div class="ttc" id="aclassInteractionService_html_a1721166592a42b30895f53c411a11c07"><div class="ttname"><a href="classInteractionService.html#a1721166592a42b30895f53c411a11c07">InteractionService::mesh_picker_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkHardwarePicker &gt; mesh_picker_</div><div class="ttdef"><b>定义</b> InteractionService.h:67</div></div>
+<div class="ttc" id="aclassInteractionService_html_a18993e07e2943e932c224d8e9a83c029"><div class="ttname"><a href="classInteractionService.html#a18993e07e2943e932c224d8e9a83c029">InteractionService::overlay_renderer_</a></div><div class="ttdeci">vtkRenderer * overlay_renderer_</div><div class="ttdef"><b>定义</b> InteractionService.h:61</div></div>
+<div class="ttc" id="aclassInteractionService_html_a2737aca0a6df2e26c51ff2baaf2d04c1"><div class="ttname"><a href="classInteractionService.html#a2737aca0a6df2e26c51ff2baaf2d04c1">InteractionService::snapToPickInfo</a></div><div class="ttdeci">bool snapToPickInfo(double posx, double posy, systems::interaction::PickInfo &amp;out)</div><div class="ttdoc">网格顶点优先、几何顶点兜底的吸附解析；命中时 out.valid 置 true</div><div class="ttdef"><b>定义</b> InteractionService.cpp:213</div></div>
+<div class="ttc" id="aclassInteractionService_html_a2e754518e42012ac0468b3c56d2c3f81"><div class="ttname"><a href="classInteractionService.html#a2e754518e42012ac0468b3c56d2c3f81">InteractionService::refreshAnnotations</a></div><div class="ttdeci">void refreshAnnotations()</div><div class="ttdoc">拉取标注集并刷新全部 actor</div><div class="ttdef"><b>定义</b> InteractionService.cpp:247</div></div>
+<div class="ttc" id="aclassInteractionService_html_a37dd8da4da2089b5b285c7d6b65a0c87"><div class="ttname"><a href="classInteractionService.html#a37dd8da4da2089b5b285c7d6b65a0c87">InteractionService::clearActors</a></div><div class="ttdeci">void clearActors()</div><div class="ttdef"><b>定义</b> InteractionService.cpp:200</div></div>
+<div class="ttc" id="aclassInteractionService_html_a4554e075e6421a53c37f3310431581e2"><div class="ttname"><a href="classInteractionService.html#a4554e075e6421a53c37f3310431581e2">InteractionService::dashed_poly_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; dashed_poly_</div><div class="ttdef"><b>定义</b> InteractionService.h:73</div></div>
+<div class="ttc" id="aclassInteractionService_html_a4aceed79d9fe63c69372afb46c107adc"><div class="ttname"><a href="classInteractionService.html#a4aceed79d9fe63c69372afb46c107adc">InteractionService::pick</a></div><div class="ttdeci">void pick(double posx, double posy)</div><div class="ttdoc">左键点击：同步激活状态，解析吸附点并调用 on_pick 回调</div><div class="ttdef"><b>定义</b> InteractionService.cpp:175</div></div>
+<div class="ttc" id="aclassInteractionService_html_a548e22e6b9ff54747ea609ca0b8b23c2"><div class="ttname"><a href="classInteractionService.html#a548e22e6b9ff54747ea609ca0b8b23c2">InteractionService::dashed_actor_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkActor &gt; dashed_actor_</div><div class="ttdef"><b>定义</b> InteractionService.h:74</div></div>
+<div class="ttc" id="aclassInteractionService_html_a583cdb1ce749b39ab7835ccaf553ef7e"><div class="ttname"><a href="classInteractionService.html#a583cdb1ce749b39ab7835ccaf553ef7e">InteractionService::InteractionService</a></div><div class="ttdeci">InteractionService(vtkRenderer &amp;renderer, vtkRenderer &amp;overlay_renderer, MeshActorManagerSelectOp &amp;mesh_op, SelectManager &amp;select_manager)</div><div class="ttdef"><b>定义</b> InteractionService.cpp:71</div></div>
+<div class="ttc" id="aclassInteractionService_html_a63850f71db99f6655c7bdffb781afe46"><div class="ttname"><a href="classInteractionService.html#a63850f71db99f6655c7bdffb781afe46">InteractionService::current_</a></div><div class="ttdeci">systems::interaction::InteractionState * current_</div><div class="ttdef"><b>定义</b> InteractionService.h:65</div></div>
+<div class="ttc" id="aclassInteractionService_html_a65e39fbab2911e8a9785e6ee23f21e84"><div class="ttname"><a href="classInteractionService.html#a65e39fbab2911e8a9785e6ee23f21e84">InteractionService::points_actor_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkActor &gt; points_actor_</div><div class="ttdef"><b>定义</b> InteractionService.h:70</div></div>
+<div class="ttc" id="aclassInteractionService_html_a6cad6f9ba0c6e252a3453b8d8d48a696"><div class="ttname"><a href="classInteractionService.html#a6cad6f9ba0c6e252a3453b8d8d48a696">InteractionService::select_manager_</a></div><div class="ttdeci">SelectManager * select_manager_</div><div class="ttdef"><b>定义</b> InteractionService.h:63</div></div>
+<div class="ttc" id="aclassInteractionService_html_a86a52da4aaf501bd807365e228ec0e90"><div class="ttname"><a href="classInteractionService.html#a86a52da4aaf501bd807365e228ec0e90">InteractionService::state_provider</a></div><div class="ttdeci">std::function&lt; systems::interaction::InteractionState *()&gt; state_provider</div><div class="ttdoc">交互状态提供者（由 QRenderWindow 注入，转发 FeatureSystem::activeInteraction）</div><div class="ttdef"><b>定义</b> InteractionService.h:42</div></div>
+<div class="ttc" id="aclassInteractionService_html_a8da4a000b10eb0b3c0cd5fd185c30f51"><div class="ttname"><a href="classInteractionService.html#a8da4a000b10eb0b3c0cd5fd185c30f51">InteractionService::hasActiveState</a></div><div class="ttdeci">bool hasActiveState()</div><div class="ttdoc">当前是否存在激活的交互（鼠标路由用）</div><div class="ttdef"><b>定义</b> InteractionService.cpp:145</div></div>
+<div class="ttc" id="aclassInteractionService_html_ab4635a46dbc7f4a3c600cab618b66efe"><div class="ttname"><a href="classInteractionService.html#ab4635a46dbc7f4a3c600cab618b66efe">InteractionService::text_pool_</a></div><div class="ttdeci">std::vector&lt; vtkSmartPointer&lt; vtkBillboardTextActor3D &gt; &gt; text_pool_</div><div class="ttdef"><b>定义</b> InteractionService.h:76</div></div>
+<div class="ttc" id="aclassInteractionService_html_ab62bc52ccdcf8e9542967184cf1c5778"><div class="ttname"><a href="classInteractionService.html#ab62bc52ccdcf8e9542967184cf1c5778">InteractionService::lines_poly_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; lines_poly_</div><div class="ttdef"><b>定义</b> InteractionService.h:71</div></div>
+<div class="ttc" id="aclassInteractionService_html_abe68049c43a1bcd5d20f0275b3c9a698"><div class="ttname"><a href="classInteractionService.html#abe68049c43a1bcd5d20f0275b3c9a698">InteractionService::renderer_</a></div><div class="ttdeci">vtkRenderer * renderer_</div><div class="ttdef"><b>定义</b> InteractionService.h:60</div></div>
+<div class="ttc" id="aclassInteractionService_html_ac18207f211a52e5ad233a1170227f973"><div class="ttname"><a href="classInteractionService.html#ac18207f211a52e5ad233a1170227f973">InteractionService::points_poly_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; points_poly_</div><div class="ttdef"><b>定义</b> InteractionService.h:69</div></div>
+<div class="ttc" id="aclassInteractionService_html_accb11da884fc3efccbeae97d2a654527"><div class="ttname"><a href="classInteractionService.html#accb11da884fc3efccbeae97d2a654527">InteractionService::syncState</a></div><div class="ttdeci">systems::interaction::InteractionState * syncState()</div><div class="ttdoc">同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）</div><div class="ttdef"><b>定义</b> InteractionService.cpp:150</div></div>
+<div class="ttc" id="aclassInteractionService_html_ad2cdcf33577308c30832d6a08b416750"><div class="ttname"><a href="classInteractionService.html#ad2cdcf33577308c30832d6a08b416750">InteractionService::hover</a></div><div class="ttdeci">void hover(double posx, double posy)</div><div class="ttdoc">悬停：同步激活状态，调用 on_hover 回调做动态预览</div><div class="ttdef"><b>定义</b> InteractionService.cpp:188</div></div>
+<div class="ttc" id="aclassInteractionService_html_ae9afa3db7f8a465184dec3d3e70d2736"><div class="ttname"><a href="classInteractionService.html#ae9afa3db7f8a465184dec3d3e70d2736">InteractionService::lines_actor_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkActor &gt; lines_actor_</div><div class="ttdef"><b>定义</b> InteractionService.h:72</div></div>
+<div class="ttc" id="aclassInteractionService_html_af2c84a5e5505d846a4bdccd43dc94c57"><div class="ttname"><a href="classInteractionService.html#af2c84a5e5505d846a4bdccd43dc94c57">InteractionService::~InteractionService</a></div><div class="ttdeci">~InteractionService()</div><div class="ttdef"><b>定义</b> InteractionService.cpp:131</div></div>
+<div class="ttc" id="aclassMeshActorManagerSelectOp_html"><div class="ttname"><a href="classMeshActorManagerSelectOp.html">MeshActorManagerSelectOp</a></div><div class="ttdef"><b>定义</b> MeshActorManagerSelectOp.h:18</div></div>
+<div class="ttc" id="aclassSelectManager_html"><div class="ttname"><a href="classSelectManager.html">SelectManager</a></div><div class="ttdef"><b>定义</b> SelectManager.h:21</div></div>
+<div class="ttc" id="anamespacesystems_1_1interaction_html"><div class="ttname"><a href="namespacesystems_1_1interaction.html">systems::interaction</a></div><div class="ttdef"><b>定义</b> InteractionService.h:22</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1InteractionState_html"><div class="ttname"><a href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a></div><div class="ttdoc">单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）</div><div class="ttdef"><b>定义</b> InteractionState.h:22</div></div>
+<div class="ttc" id="astructsystems_1_1interaction_1_1PickInfo_html"><div class="ttname"><a href="structsystems_1_1interaction_1_1PickInfo.html">systems::interaction::PickInfo</a></div><div class="ttdoc">拾取结果：渲染层解析好的吸附点（世界坐标 + 两套全局顶点 id）</div><div class="ttdef"><b>定义</b> InteractiveTypes.h:17</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

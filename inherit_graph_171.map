@@ -1,11 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,109,225,134"/>
-<area shape="rect" id="Node000001" href="$classsystems_1_1algo_1_1AlgorithmSystemRegister.html" title="算法系统的操作器，负责注册和注销算法插件" alt="" coords="285,5,470,45"/>
-<area shape="poly" id="edge67_Node000000_Node000001" title=" " alt="" coords="157,101,272,55,308,43,310,48,274,60,159,106"/>
-<area shape="rect" id="Node000002" href="$classsystems_1_1edit_1_1EditSystemRegister.html" title="模型编辑系统的操作器，负责注册和注销模型编辑插件" alt="" coords="281,69,473,109"/>
-<area shape="poly" id="edge68_Node000000_Node000002" title=" " alt="" coords="233,104,281,98,282,104,233,110"/>
-<area shape="rect" id="Node000003" href="$classsystems_1_1feature_1_1FeatureSystemRegister.html" title="功能系统的注册器，负责注册和注销功能插件" alt="" coords="283,133,472,173"/>
-<area shape="poly" id="edge69_Node000000_Node000003" title=" " alt="" coords="233,133,283,139,282,144,232,138"/>
-<area shape="rect" id="Node000004" href="$classsystems_1_1io_1_1ModelIOSystemRegister.html" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="273,197,481,237"/>
-<area shape="poly" id="edge70_Node000000_Node000004" title=" " alt="" coords="159,137,274,183,310,195,308,200,272,188,157,142"/>
+<area shape="rect" id="Node000000" href="$classsystems_1_1io_1_1string_1_1reverse__iterator.html" title="STL iterator class" alt="" coords="5,5,148,45"/>
 </map>
