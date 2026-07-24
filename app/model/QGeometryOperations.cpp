@@ -480,9 +480,10 @@ Index QGeometryOperations::addGeometryShape(
     component->geometry = std::move(geometry);
 
     if (model_id >= 0) {
-        if (!model_layer_->modelById(model_id))
+        auto model_operator = model_layer_->getModelOperator(model_id);
+        if (!model_operator)
             throw std::invalid_argument("Target model does not exist");
-        return model_layer_->addGeometryComponent(model_id, std::move(component));
+        return model_operator->addGeometryComponent(std::move(component));
     }
 
     ComponentDatas components;

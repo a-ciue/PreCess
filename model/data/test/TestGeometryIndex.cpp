@@ -127,7 +127,9 @@ TEST_CASE("Add geometry component to an existing model")
     component->name = "Box_1";
     component->geometry = move(geometry);
 
-    const Index component_id = manager.addGeometryComponent(model_id, move(component));
+    auto model_operator = manager.getModelOperator(model_id);
+    REQUIRE(model_operator);
+    const Index component_id = model_operator->addGeometryComponent(move(component));
     ComponentData* inserted = manager.findComponent(component_id);
 
     REQUIRE(inserted != nullptr);

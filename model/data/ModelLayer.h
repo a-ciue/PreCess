@@ -50,12 +50,6 @@ public:
     Index addModel(const std::string& model_name, ComponentDatas components);
 
     /**
-     * @brief 向已有模型增加一个几何组件，并初始化几何子形状索引。
-     * @return 新组件的全局 ID。
-     */
-    Index addGeometryComponent(Index model_id, std::unique_ptr<ComponentData> component);
-
-    /**
      * @brief 移除指定名称的模型
      *
      * @param model_id 需要移除的模型 ID
@@ -72,7 +66,7 @@ public:
      * @param model_id 模型 ID
      * @return 对应模型名称的 ModelOperator 对象指针
      */
-    std::optional<ModelOperator> getModelOperator(Index model_id) const;
+    std::optional<ModelOperator> getModelOperator(Index model_id);
     ModelData* modelById(Index model_id) const;
     std::optional<ComponentOperator> getComponentOperator(Index component_id);
 
@@ -121,5 +115,6 @@ private:
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
 
     friend class QModelQuery;
+    friend class ModelOperator;
 };
 #endif // MODEL_MANAGER_H

@@ -71,30 +71,6 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
     return model_id;
 }
 
-Index ModelLayer::addGeometryComponent(Index model_id, std::unique_ptr<ComponentData> component)
-{
-    ModelData* model = modelById(model_id);
-    if (!model)
-        throw std::runtime_error("Model not exist");
-    if (!component || !component->geometry)
-        throw std::invalid_argument("Geometry component must contain GeometryData");
-
-    component->id = allocateComponentId();
-    const Index component_id = component->id;
-    spdlog::info("insert component: final_id={}, exists_before={}",
-        component_id, components_.count(component_id) != 0);
-
-    component_to_model_[component_id] = model_id;
-    model->componentIds().push_back(component_id);
-    components_[component_id] = std::move(component);
-    components_[component_id]->geometry->ensureIndexBuilt(geom_registry_);
-
-    // 这里只新增了一个 Component，通知渲染层按组件加载，避免重载 Model 内已有几何。
-    if (observer_)
-        observer_->notifyComponentChanged(component_id);
-    return component_id;
-}
-
 void ModelLayer::removeModel(Index model_id) {
     auto it = models_.find(model_id);
     if (it == models_.end())
@@ -140,11 +116,11 @@ void ModelLayer::removeComponent(Index component_id)
         observer_->notifyComponentRemoved(component_id);
 }
 
-std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id) const
+std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id)
 {
     ModelData* m = modelById(model_id);
     if (m) {
-        return ModelOperator(model_id, *m, observer_);
+        return ModelOperator(model_id, *m, *this, observer_);
     }
     return {};
 }
