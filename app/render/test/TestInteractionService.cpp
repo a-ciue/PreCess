@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 
     MeshActorManager mesh_manager(pts.GetPointer());
     mesh_manager.bindRender(renderer.GetPointer());
-    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer(), ModelRenderMode::Face);
+    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     GeometryActorManager geometry_manager;
     geometry_manager.bindRender(renderer.GetPointer());
