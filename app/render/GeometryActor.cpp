@@ -223,12 +223,17 @@ void GeometryActor::applyStyle()
         break;
     case GeometryRenderStyle::WireframeWithLines:
         poly_actor_->SetVisibility(true);
-        poly_actor_->GetProperty()->SetRepresentationToWireframe();
-        poly_actor_->GetProperty()->SetOpacity(1.0);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(true);
+        poly_actor_->GetProperty()->SetLineWidth(1);
+        poly_actor_->GetProperty()->SetOpacity(0.1);
         line_actor_->SetVisibility(true);
         break;
     case GeometryRenderStyle::Wireframe:
-        poly_actor_->SetVisibility(false);
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.001);
         line_actor_->SetVisibility(true);
         break;
     default:
