@@ -25,6 +25,12 @@ public:
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
 
+    /**
+     * @brief 吸附几何顶点：拾取并解析为几何顶点
+     * @return 命中时返回 {GeometryRegistry 顶点 id, 世界坐标}，未命中返回 std::nullopt
+     */
+    std::optional<std::pair<Index, std::array<double, 3>>> snapGeometryVertex(double posx, double posy);
+
 private:
     GeometrySelectorHighlight* getOrCreateSelector(Index component_id);
 

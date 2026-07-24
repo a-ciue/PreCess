@@ -1,4 +1,4 @@
-add_library(FeatureSystem STATIC FeatureSystem.cpp FeatureSystemRegister.cpp FeatureParams.cpp)
+add_library(FeatureSystem STATIC FeatureSystem.cpp FeatureSystemRegister.cpp FeatureParams.cpp InteractionContext.cpp)
 target_link_libraries(FeatureSystem PRIVATE
     Data
     Qt6::Core

@@ -78,3 +78,15 @@ vtk_module_autoinit(TARGETS TestCadShapePicker MODULES
     VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2
 )
 install(TARGETS TestCadShapePicker)
+
+# TestInteractionService（通用视口交互服务独立测试，FakeInteraction 替代真实插件）
+add_executable(TestInteractionService TestInteractionService.cpp)
+target_link_libraries(TestInteractionService PRIVATE
+    vtkPart TestDeps
+    spdlog::spdlog
+    VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
+
+    TKIVtk
+    TKPrim TKBRep TKGeomBase TKMath TKernel TKTopAlgo
+)
+vtk_module_autoinit(TARGETS TestInteractionService MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)

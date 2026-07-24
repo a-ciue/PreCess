@@ -1,6 +1,10 @@
 #include "QRenderWindow.h"
 #include "renderStrategy/AttributeCommon.h"
+#include "FeatureSystem.h"
+#include "InteractionService.h"
+#include "InteractionState.h"
 #include "MeshActorManager.h"
+#include "QFeatureSystemAdaptor.h"
 #include "QModelQuery.h"
 #include "QRenderWindowStyle.h"
 #include "QSelection.h"
@@ -23,7 +27,6 @@
 
 namespace {
 //! @brief 每帧渲染前把比例尺段的像素长度换算为世界长度写入 Range，使刻度值随相机缩放更新
-//! （与 vtkLegendScaleActor::UpdateAxisRange 同法：按相机焦点深度反投影轴两端点）
 class ScaleBarRangeUpdater : public vtkCommand {
 public:
     static ScaleBarRangeUpdater* New() { return new ScaleBarRangeUpdater; }
@@ -113,8 +116,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
     renderWindow->AddRenderer(vtk->renderer_);
 
-    // 叠加渲染层：标尺/标注置顶显示（SetLayer(1) 自动 PreserveColorBuffer，
-    // 每帧只清深度、保留颜色，不被模型遮挡）
+    // 叠加渲染层：测量文字标注置顶显示（SetLayer(1) 自动 PreserveColorBuffer，
+    // 每帧只清深度、保留颜色，文字不被模型遮挡）
     renderWindow->SetNumberOfLayers(2);
     vtk->overlay_renderer_->SetLayer(1);
     vtk->overlay_renderer_->InteractiveOff();
@@ -148,6 +151,16 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     select_manager_ = std::make_unique<SelectManager>(*vtk->renderer_,
         vtk->mesh_actor_manager_->op(), vtk->geometry_actor_manager_->op());
     vtk->style_->SetSelectManager(this->select_manager_.get());
+
+    // 通用交互服务：几何顶点吸附经选择系统封装接口完成，不接触 picker
+    interaction_service_ = std::make_unique<InteractionService>(*vtk->renderer_, *vtk->overlay_renderer_,
+        vtk->mesh_actor_manager_->op(), *select_manager_);
+    vtk->style_->SetInteractionService(interaction_service_.get());
+    // 交互状态由功能参数开关驱动（FeatureSystem::activeInteraction），渲染层随取随用
+    interaction_service_->state_provider = [this]() -> systems::interaction::InteractionState* {
+        auto* feature_system = feature_adaptor_ ? feature_adaptor_->featureSystem() : nullptr;
+        return feature_system ? feature_system->activeInteraction() : nullptr;
+    };
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
@@ -494,6 +507,11 @@ void QRenderWindow::clearSelection()
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         this->select_manager_->clearSelection();
     });
+}
+
+void QRenderWindow::setFeatureAdaptor(QObject* adaptor)
+{
+    feature_adaptor_ = qobject_cast<systems::feature::QFeatureSystemAdaptor*>(adaptor);
 }
 
 void QRenderWindow::setScaleBarVisible(bool on)
