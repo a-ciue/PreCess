@@ -8,7 +8,6 @@
 #include "InteractiveTypes.h"
 
 #include <functional>
-#include <string>
 #include <vector>
 #include <vtkSmartPointer.h>
 

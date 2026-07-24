@@ -156,7 +156,7 @@ systems::interaction::InteractionState* InteractionService::syncState()
         clearActors();
         select_manager_->setSelectMode("None");
     }
-    // 新状态上线：选择模式切到几何顶点、on_activate、刷新标注与结果
+    // 新状态上线：选择模式切到几何顶点、on_activate、刷新标注
     current_ = state;
     if (current_) {
         select_manager_->setSelectMode("GeometryVertex");

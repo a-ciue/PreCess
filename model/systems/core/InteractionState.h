@@ -1,6 +1,6 @@
 /**
  * @file InteractionState.h
- * @brief 视口交互状态：功能经上下文订阅回调、产出标注与结果；渲染层据此驱动与拉取
+ * @brief 视口交互状态：功能经上下文订阅回调、产出标注；渲染层据此驱动与拉取
  */
 #ifndef INTERACTION_STATE_H
 #define INTERACTION_STATE_H
@@ -8,7 +8,6 @@
 #include "InteractiveTypes.h"
 
 #include <functional>
-#include <string>
 
 namespace systems::interaction {
 
@@ -24,7 +23,7 @@ struct InteractionState {
     bool active = false; //> 交互激活态：功能经 setActive 写入（GUI 线程），渲染层读取路由拾取
     std::function<void()> on_activate; //> 交互会话开始（通常清空功能内部状态）
     std::function<void()> on_deactivate; //> 交互会话结束
-    //! @brief 左键拾取：返回是否有状态变化（需要刷新标注与结果文本）
+    //! @brief 左键拾取：返回是否有状态变化（需要刷新标注）
     std::function<bool(const PickInfo&)> on_pick;
     //! @brief 悬停：返回是否更新了预览（需要刷新标注）
     std::function<bool(const PickInfo&)> on_hover;

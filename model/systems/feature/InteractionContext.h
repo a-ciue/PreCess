@@ -1,6 +1,6 @@
 /**
  * @file InteractionContext.h
- * @brief 视口交互上下文：功能订阅拾取/悬停回调、产出标注与结果的入口
+ * @brief 视口交互上下文：功能订阅拾取/悬停回调、产出标注的入口
  */
 #ifndef INTERACTION_CONTEXT_H
 #define INTERACTION_CONTEXT_H
@@ -8,7 +8,6 @@
 #include "InteractionState.h"
 
 #include <functional>
-#include <string>
 #include <utility>
 
 namespace systems::feature {
@@ -17,7 +16,7 @@ namespace systems::feature {
  * @brief 视口交互上下文（FeatureContext 成员）：功能在 activate() 中经它订阅交互回调
  *
  * 与 ctx.events（EventBus，仅 GUI 线程）不同：交互回调由 **渲染线程** 直调，
- * 标注与结果文本由功能在回调中直接更新，渲染层事件后拉取绘制（见 InteractionState 注释）。
+ * 标注由功能在回调中直接更新，渲染层事件后拉取绘制（见 InteractionState 注释）。
  * 功能只需订阅关心的事件，无需继承任何接口。
  */
 class InteractionContext {
@@ -31,7 +30,7 @@ public:
     void onActivate(std::function<void()> cb) { state_->on_activate = std::move(cb); }
     //! @brief 订阅交互会话结束（渲染线程）
     void onDeactivate(std::function<void()> cb) { state_->on_deactivate = std::move(cb); }
-    //! @brief 订阅左键拾取（渲染线程；返回是否有状态变化需要刷新标注与结果）
+    //! @brief 订阅左键拾取（渲染线程；返回是否有状态变化需要刷新标注）
     void onPick(std::function<bool(const systems::interaction::PickInfo&)> cb) { state_->on_pick = std::move(cb); }
     //! @brief 订阅悬停（渲染线程；返回是否更新预览需要刷新标注）
     void onHover(std::function<bool(const systems::interaction::PickInfo&)> cb) { state_->on_hover = std::move(cb); }
