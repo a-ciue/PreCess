@@ -13,7 +13,8 @@ CgalMesh toSurfaceMesh(const MeshData& mesh, const std::vector<std::array<double
 {
     CgalMesh sm;
 
-    const bool is_global = !mesh.local_to_global_.empty();
+    // 与 InpModelHandler 一致：仅当 vertex_positions_ 已清空且 local_to_global_ 非空时按全局约定解析
+    const bool is_global = mesh.vertex_positions_.empty() && !mesh.local_to_global_.empty();
 
     // 顶点坐标：全局约定下 vertex_positions_ 已被 ModelLayer 清空，需从全局点数组取；
     // 按序加入，Surface_mesh 顶点索引与 MeshData 局部索引保持一致
@@ -65,11 +66,12 @@ CgalMesh toSurfaceMesh(const MeshData& mesh, const std::vector<std::array<double
 
 void fromSurfaceMesh(const CgalMesh& sm, MeshData& out)
 {
-    out.vertex_positions_.clear();
-    out.face_vertices_.clear();
-    out.face_vertices_offset_.clear();
-    // 输出统一为局部索引约定，清空全局映射防止误用
-    out.local_to_global_.clear();
+    // 清空旧数据（含边/体/patch/属性），避免复用 out 时残留；clear() 会清空所有 offset 数组，
+    // 按 MeshData 约定补回 {0} 哨兵表示无对应单元（输出为局部索引约定，local_to_global_ 保持空）
+    out.clear();
+    out.solid_vertices_offset_ = { 0 };
+    out.solid_faces_vertices_offset_ = { 0 };
+    out.solid_faces_offset_ = { 0 };
 
     // 源网格经删除操作后索引可能不连续，按遍历序建立到紧凑索引的重排表
     std::vector<Index> remap(sm.num_vertices(), -1);
