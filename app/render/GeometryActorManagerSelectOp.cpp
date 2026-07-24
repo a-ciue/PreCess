@@ -91,6 +91,7 @@ void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared
 {
     GeometryActorSelectOp op(actor);
     prop_to_component_[&op.getPolyActor()] = component_id;
+
     addToAllLists(&op.getPolyActor());
 
     registered_component_ids_.insert(component_id);

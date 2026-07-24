@@ -58,7 +58,6 @@ public:
     vtkActor& getPolyActor();
     bool isVisible() const;
 
-
 private:
     std::shared_ptr<GeometryActor> geometry_actor_;
 };

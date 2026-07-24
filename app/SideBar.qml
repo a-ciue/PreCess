@@ -46,42 +46,29 @@ Item{
     Button{
         id: commitButton
         text: "执行"
-        enabled: !!(root.activeOp && root.activeOp.info
-                    && (root.activeOp.isFeature
-                        || (root.activeOp.targetPolicy === "component"
-                            ? App.selection.activeComponentId >= 0
-                            : root.activeOp.targetPolicy === "any"
-                              || App.selection.activeModelId >= 0)))
+        enabled: !!(root.activeOp && root.activeOp.info)
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height:30
         onClicked:{
-            if (root.activeOp && root.activeOp.execute)
-                root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+            if (root.activeOp && root.activeOp.execute) {
+                try {
+                    const result = root.activeOp.execute(
+                        App.selection.activeComponentId, root.parameters)
+                    root.resultText = result === undefined || result === null
+                                    ? "" : String(result)
+                } catch (error) {
+                    root.resultText = qsTr("执行失败：") + error
+                }
+            }
             if (App.registry.renderWindow)
                 App.registry.renderWindow.clearSelection()
         }
     }
-    Label {
-        id: targetLabel
-        anchors.top: commitButton.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        visible: !!(root.activeOp && root.activeOp.targetPolicy)
-        height: visible ? 24 : 0
-        leftPadding: 6
-        verticalAlignment: Text.AlignVCenter
-        elide: Text.ElideRight
-        text: App.selection.activeComponentId >= 0
-              ? qsTr("目标：追加到组件 ") + QModelManager.query.getComponentName(App.selection.activeComponentId)
-              : App.selection.activeModelId >= 0
-                ? qsTr("目标：在模型中新建组件 ") + QModelManager.query.getModelName(App.selection.activeModelId)
-                : qsTr("目标：新建模型")
-    }
     TextArea {
         id: resultArea
-        anchors.top: targetLabel.bottom
+        anchors.top: commitButton.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         // 不可见时不占锚定布局高度，避免留下空白
@@ -159,6 +146,7 @@ Item{
             spacing: 5
             width: parameterList.width
             property var value: null
+            property bool initialized: false
             ListModel{
                 id: comboModel
             }
@@ -175,8 +163,10 @@ Item{
                 id:parameterComboBox
                 model: comboModel
                 onCurrentIndexChanged: {
-                    value = currentIndex
-                    root.setParam(index, value)
+                    if (parent.initialized) {
+                        value = currentIndex
+                        root.setParam(index, value)
+                    }
                 }
             }
 
@@ -188,14 +178,18 @@ Item{
                     for(let i=0; i<items.length; i++){
                         comboModel.append({"text":items[i]})
                     }
-                    let defaultIndex = parts.length > 1 ? parseInt(parts[1]) : 0
+                    const parameterValue = root.parameters[index]
+                    let defaultIndex = parameterValue !== undefined
+                            && parameterValue !== null
+                            ? Number(parameterValue)
+                            : (parts.length > 1 ? parseInt(parts[1]) : 0)
                     if (isNaN(defaultIndex) || defaultIndex < 0 || defaultIndex >= items.length) {
                         defaultIndex = 0
                     }
                     parameterComboBox.currentIndex = defaultIndex
                     value = defaultIndex
-                    root.setParam(index, value)
                 }
+                initialized = true
                 value = parameterComboBox.currentIndex
                 root.setParam(index, value)
             }

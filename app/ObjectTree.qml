@@ -30,12 +30,10 @@ Pane {
         interval: 100
         repeat: false
         onTriggered: {
-            let selectedModelId = App.selection.activeModelId
-            let selectedComponentId = App.selection.activeComponentId
             treeModel.refresh()
             // 选中项仍然有效时保留，不重置为 -1
-            let compId = selectedComponentId
-            let modelId = selectedModelId
+            let compId = App.selection.activeComponentId
+            let modelId = App.selection.activeModelId
             if (compId >= 0 && !QModelManager.query.hasComponent(compId))
                 compId = -1
             if (compId >= 0) {
@@ -271,27 +269,21 @@ Pane {
                             return
                         } else if (viewDelegate.depth === 0
                                    && App.selection.activeModelId === viewDelegate.model.nodeId) {
-                            // Component 必须依附于 Model；取消 Model 时同步取消 Component。
+                            // Model 与 Component 是同一业务目标，取消时同步清空。
                             viewDelegate.treeView.selectionModel.clear()
                             App.selection.activeComponentId = -1
                             App.selection.activeModelId = -1
                         } else if (viewDelegate.depth === 0) {
-                            // Model 选中后默认选中其第一个 Component。
+                            // 选择 Model 时同步关联其第一个 Component。
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                             App.selection.activeModelId = viewDelegate.model.nodeId
                             App.selection.activeComponentId = objectTree.firstComponentId(viewDelegate.model.nodeId)
                         } else if (viewDelegate.depth === 1
                                    && App.selection.activeComponentId === compId) {
-                            // 单独取消 Component，保留所属 Model 作为几何创建目标。
-                            let modelId = QModelManager.query.findModelIdByComponent(compId)
-                            let modelIdx = treeModel.findIndexByNodeId(modelId, 0)
-                            if (modelIdx.valid)
-                                viewDelegate.treeView.selectionModel.setCurrentIndex(
-                                    modelIdx, ItemSelectionModel.ClearAndSelect)
-                            else
-                                viewDelegate.treeView.selectionModel.clear()
+                            // Component 与所属 Model 同步取消。
+                            viewDelegate.treeView.selectionModel.clear()
                             App.selection.activeComponentId = -1
-                            App.selection.activeModelId = modelId
+                            App.selection.activeModelId = -1
                         } else {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                             App.selection.activeModelId = QModelManager.query.findModelIdByComponent(compId)

@@ -13,6 +13,11 @@ QtObject {
 
     signal operationActivated()
 
+    // “写入目标”下拉框的固定索引，需与参数选项顺序保持一致。
+    readonly property int appendToCurrentComponent: 0
+    readonly property int createNewComponent: 1
+    readonly property int createNewModel: 2
+
     readonly property var createPointInfo: ({
         name: "create_point",
         display_name: qsTr("创建点"),
@@ -20,7 +25,8 @@ QtObject {
         arg_types: [
             { type: QArgType.Float, name: qsTr("X 坐标"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("Y 坐标"), content: "0", description: "" },
-            { type: QArgType.Float, name: qsTr("Z 坐标"), content: "0", description: "" }
+            { type: QArgType.Float, name: qsTr("Z 坐标"), content: "0", description: "" },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -34,7 +40,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("原点 Z"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("X 方向长度"), content: "10", description: qsTr("必须大于 0") },
             { type: QArgType.Float, name: qsTr("Y 方向长度"), content: "10", description: qsTr("必须大于 0") },
-            { type: QArgType.Float, name: qsTr("Z 方向长度"), content: "10", description: qsTr("必须大于 0") }
+            { type: QArgType.Float, name: qsTr("Z 方向长度"), content: "10", description: qsTr("必须大于 0") },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -51,7 +58,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("轴向 X"), content: "0", description: qsTr("轴向不能为零向量") },
             { type: QArgType.Float, name: qsTr("轴向 Y"), content: "0", description: qsTr("轴向不能为零向量") },
             { type: QArgType.Float, name: qsTr("轴向 Z"), content: "1", description: qsTr("轴向不能为零向量") },
-            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") }
+            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -69,7 +77,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("轴向 X"), content: "0", description: qsTr("轴向不能为零向量") },
             { type: QArgType.Float, name: qsTr("轴向 Y"), content: "0", description: qsTr("轴向不能为零向量") },
             { type: QArgType.Float, name: qsTr("轴向 Z"), content: "1", description: qsTr("轴向不能为零向量") },
-            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") }
+            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -87,7 +96,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("极轴 Z"), content: "1", description: qsTr("极轴不能为零向量") },
             { type: QArgType.Float, name: qsTr("最小纬度（度）"), content: "-90", description: qsTr("范围为 [-90, 90)，且小于最大纬度") },
             { type: QArgType.Float, name: qsTr("最大纬度（度）"), content: "90", description: qsTr("范围为 (-90, 90]，且大于最小纬度") },
-            { type: QArgType.Float, name: qsTr("经度扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") }
+            { type: QArgType.Float, name: qsTr("经度扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -101,7 +111,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("起点 Z"), content: "0", description: "" },
             { type: QArgType.Float, name: qsTr("终点 X"), content: "10", description: "" },
             { type: QArgType.Float, name: qsTr("终点 Y"), content: "0", description: "" },
-            { type: QArgType.Float, name: qsTr("终点 Z"), content: "0", description: "" }
+            { type: QArgType.Float, name: qsTr("终点 Z"), content: "0", description: "" },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -124,7 +135,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("原点 Z"), content: "0", description: qsTr("矩形的一个角点") },
             { type: QArgType.Float, name: qsTr("宽度"), content: "10", description: qsTr("沿平面第一个坐标轴的长度") },
             { type: QArgType.Float, name: qsTr("高度"), content: "10", description: qsTr("沿平面第二个坐标轴的长度") },
-            { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("矩形所在的全局坐标平面") }
+            { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("矩形所在的全局坐标平面") },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -139,7 +151,8 @@ QtObject {
             { type: QArgType.Float, name: qsTr("半径"), content: "10", description: qsTr("必须大于几何容差") },
             { type: QArgType.Combo, name: qsTr("平面"), content: "XY,YZ,XZ|0", description: qsTr("圆面所在的全局坐标平面") },
             { type: QArgType.Float, name: qsTr("起始角（度）"), content: "0", description: qsTr("完整圆盘时忽略") },
-            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") }
+            { type: QArgType.Float, name: qsTr("扫掠角（度）"), content: "360", description: qsTr("范围为 (0, 360]") },
+            { type: QArgType.Combo, name: qsTr("写入目标"), content: "添加到当前 Component,新建 Component,新建 Model|0", description: qsTr("选择几何创建结果的组织位置") }
         ]
     })
 
@@ -167,14 +180,58 @@ QtObject {
 
     // 启动参数侧栏操作，并在需要拾取时设置选择模式和参数下标。
     function activate(operation, selectMode, selectorIndex) {
-        // 坐标创建允许新建 Model；选择创建必须写回所选 Component。
-        operation.targetPolicy = selectorIndex >= 0 ? "component" : "any"
         App.activeOperation = operation
         if (selectMode)
             App.selection.selectMode = selectMode
         if (selectorIndex >= 0)
             App.selection.listeningSelectorIndex = selectorIndex
         root.operationActivated()
+    }
+
+    // 根据当前业务选择计算独立几何操作的默认写入目标。
+    function defaultGeometryTarget() {
+        if (App.selection.activeComponentId >= 0)
+            return root.appendToCurrentComponent
+        if (App.selection.activeModelId >= 0)
+            return root.createNewComponent
+        return root.createNewModel
+    }
+
+    // 根据下拉框选择解析 Model/Component 目标，再调用具体几何创建函数。
+    function createIndependentGeometry(componentId, args, targetIndex, createShape) {
+        const writeTarget = args[targetIndex]
+        let targetModelId = App.selection.activeModelId
+        let targetComponentId = componentId
+
+        if (writeTarget === root.appendToCurrentComponent) {
+            if (targetComponentId < 0)
+                return qsTr("请选择当前 Component，或修改写入目标。")
+        } else if (writeTarget === root.createNewComponent) {
+            if (targetModelId < 0)
+                return qsTr("请选择当前 Model，或将写入目标改为“新建 Model”。")
+            targetComponentId = -1
+        } else if (writeTarget === root.createNewModel) {
+            targetModelId = -1
+            targetComponentId = -1
+        } else {
+            return qsTr("写入目标参数无效。")
+        }
+
+        return root.finishGeometryOperation(
+            createShape(targetModelId, targetComponentId), false)
+    }
+
+    // 依赖已有拓扑的操作必须写回其来源 Component。
+    function requireComponent(componentId) {
+        return componentId >= 0 ? "" : qsTr("请先选择目标 Component。")
+    }
+
+    // 统一处理几何操作结果；失败详情继续由 C++ 写入日志。
+    function finishGeometryOperation(componentId, clearRenderSelection) {
+        if (componentId < 0)
+            return qsTr("几何操作失败，详细原因请查看日志。")
+        root.selectCreatedComponent(componentId, clearRenderSelection)
+        return ""
     }
 
     // 创建成功后统一更新当前 Model 和 Component，清理选择并在 Actor 更新后重置视角。
@@ -195,11 +252,14 @@ QtObject {
     function startCreatePoint() {
         activate({
             info: root.createPointInfo,
-            defaultParameters: [0, 0, 0],
+            defaultParameters: [0, 0, 0, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createPoint(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 3, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createPoint(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2])
+                    })
             }
         }, "", -1)
     }
@@ -208,12 +268,15 @@ QtObject {
     function startCreateLineByCoordinates() {
         activate({
             info: root.createLineByCoordinatesInfo,
-            defaultParameters: [0, 0, 0, 10, 0, 0],
+            defaultParameters: [0, 0, 0, 10, 0, 0, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createLineByCoordinates(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2],
-                    args[3], args[4], args[5]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 6, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createLineByCoordinates(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2],
+                            args[3], args[4], args[5])
+                    })
             }
         }, "", -1)
     }
@@ -224,8 +287,14 @@ QtObject {
             info: root.createLineFromVerticesInfo,
             defaultParameters: [null],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createLineFromVertices(
-                    componentId, args[0]), true)
+                const error = root.requireComponent(componentId)
+                if (error)
+                    return error
+                if (!args[0] || args[0].size() !== 2)
+                    return qsTr("请选择两个几何点。")
+                return root.finishGeometryOperation(
+                    QModelManager.geometry.createLineFromVertices(
+                        componentId, args[0]), true)
             }
         }, "GeometryVertex", 0)
     }
@@ -234,12 +303,15 @@ QtObject {
     function startCreateRectangleFace() {
         activate({
             info: root.createRectangleFaceInfo,
-            defaultParameters: [0, 0, 0, 10, 10, 0],
+            defaultParameters: [0, 0, 0, 10, 10, 0, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createRectangleFace(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2],
-                    args[3], args[4], args[5]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 6, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createRectangleFace(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2],
+                            args[3], args[4], args[5])
+                    })
             }
         }, "", -1)
     }
@@ -248,12 +320,15 @@ QtObject {
     function startCreateDiskFace() {
         activate({
             info: root.createDiskFaceInfo,
-            defaultParameters: [0, 0, 0, 10, 0, 0, 360],
+            defaultParameters: [0, 0, 0, 10, 0, 0, 360, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createDiskFace(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2], args[3],
-                    args[4], args[5], args[6]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 7, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createDiskFace(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2], args[3],
+                            args[4], args[5], args[6])
+                    })
             }
         }, "", -1)
     }
@@ -264,8 +339,14 @@ QtObject {
             info: root.createFaceFromEdgesInfo,
             defaultParameters: [null],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createFaceFromEdges(
-                    componentId, args[0]), true)
+                const error = root.requireComponent(componentId)
+                if (error)
+                    return error
+                if (!args[0] || args[0].size() < 1)
+                    return qsTr("请选择闭合轮廓边。")
+                return root.finishGeometryOperation(
+                    QModelManager.geometry.createFaceFromEdges(
+                        componentId, args[0]), true)
             }
         }, "GeometryEdge", 0)
     }
@@ -274,12 +355,15 @@ QtObject {
     function startCreateBox() {
         activate({
             info: root.createBoxInfo,
-            defaultParameters: [0, 0, 0, 10, 10, 10],
+            defaultParameters: [0, 0, 0, 10, 10, 10, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createBox(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2],
-                    args[3], args[4], args[5]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 6, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createBox(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2],
+                            args[3], args[4], args[5])
+                    })
             }
         }, "", -1)
     }
@@ -288,12 +372,15 @@ QtObject {
     function startCreateCylinder() {
         activate({
             info: root.createCylinderInfo,
-            defaultParameters: [0, 0, 0, 10, 20, 0, 0, 1, 360],
+            defaultParameters: [0, 0, 0, 10, 20, 0, 0, 1, 360, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createCylinder(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2],
-                    args[3], args[4], args[5], args[6], args[7], args[8]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 9, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createCylinder(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2],
+                            args[3], args[4], args[5], args[6], args[7], args[8])
+                    })
             }
         }, "", -1)
     }
@@ -302,12 +389,15 @@ QtObject {
     function startCreateCone() {
         activate({
             info: root.createConeInfo,
-            defaultParameters: [0, 0, 0, 10, 5, 20, 0, 0, 1, 360],
+            defaultParameters: [0, 0, 0, 10, 5, 20, 0, 0, 1, 360, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createCone(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2], args[3], args[4],
-                    args[5], args[6], args[7], args[8], args[9]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 10, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createCone(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2], args[3], args[4],
+                            args[5], args[6], args[7], args[8], args[9])
+                    })
             }
         }, "", -1)
     }
@@ -316,12 +406,15 @@ QtObject {
     function startCreateSphere() {
         activate({
             info: root.createSphereInfo,
-            defaultParameters: [0, 0, 0, 10, 0, 0, 1, -90, 90, 360],
+            defaultParameters: [0, 0, 0, 10, 0, 0, 1, -90, 90, 360, root.defaultGeometryTarget()],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.createSphere(
-                    App.selection.activeModelId, componentId,
-                    args[0], args[1], args[2], args[3], args[4],
-                    args[5], args[6], args[7], args[8], args[9]), false)
+                return root.createIndependentGeometry(
+                    componentId, args, 10, function(targetModelId, targetComponentId) {
+                        return QModelManager.geometry.createSphere(
+                            targetModelId, targetComponentId,
+                            args[0], args[1], args[2], args[3], args[4],
+                            args[5], args[6], args[7], args[8], args[9])
+                    })
             }
         }, "", -1)
     }
@@ -332,9 +425,15 @@ QtObject {
             info: root.extrudeFaceInfo,
             defaultParameters: [null, 0, 0, 1, 10],
             execute: function(componentId, args) {
-                root.selectCreatedComponent(QModelManager.geometry.extrudeFace(
-                    componentId,
-                    args[0], args[1], args[2], args[3], args[4]), true)
+                const error = root.requireComponent(componentId)
+                if (error)
+                    return error
+                if (!args[0] || args[0].size() !== 1)
+                    return qsTr("请选择一个几何面。")
+                return root.finishGeometryOperation(
+                    QModelManager.geometry.extrudeFace(
+                        componentId,
+                        args[0], args[1], args[2], args[3], args[4]), true)
             }
         }, "GeometryFace", 0)
     }
