@@ -247,37 +247,29 @@ git clone --single-branch --depth 1 --branch v6.0.1 https://github.com/CGAL/cgal
     curl -L -o cgal.tar.xz --connect-timeout 30 https://deb.debian.org/debian/pool/main/c/cgal/cgal_6.0.1.orig.tar.xz && tar -xf cgal.tar.xz -C "%depsPath%"
 )
 
-REM ============ Boost 1.87.0（仅需头文件，无需编译） ============
-curl -L -o boost_1_87_0.zip --connect-timeout 30 https://archives.boost.io/release/1.87.0/source/boost_1_87_0.zip || (
-    echo Boost 头文件包下载失败。
+REM ============ Boost 1.87.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
+REM CGAL 官方文档确认仅需 Boost 头文件；CGAL_Core 依赖 Boost.Multiprecision（纯头文件）。
+REM boostorg/cmake 的 CMake 基础设施不兼容官方 release zip（头文件被扁平化进 boost/ 目录），
+REM 需使用 GitHub 的 cmake 布局压缩包；升级 Boost 需同步版本号、包名与安装目录名
+curl -L -o boost-1.87.0-cmake.tar.xz --connect-timeout 30 https://github.com/boostorg/boost/releases/download/boost-1.87.0/boost-1.87.0-cmake.tar.xz || (
+    echo Boost cmake 布局包下载失败。
     pause
     exit /b 1
 )
-tar -xf boost_1_87_0.zip -C "%depsPath%" || (
-    echo Boost 头文件包解压失败。
+tar -xf boost-1.87.0-cmake.tar.xz -C "%sourcePath%" || (
+    echo Boost cmake 布局包解压失败。
     pause
     exit /b 1
 )
 
-REM Boost 源树不带安装态 CMake 包（CMake 4.x 已移除 FindBoost 模块，必须走 CONFIG 模式），
-REM 生成极简 BoostConfig，供 find_package(Boost) 命中；升级 Boost 需同步版本号与目录名
-set "boostCmakeDir=%depsPath%\boost_1_87_0\lib\cmake\Boost-1.87.0"
-mkdir "!boostCmakeDir!"
-echo get_filename_component(_BOOST_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE^)> "!boostCmakeDir!\BoostConfig.cmake"
-echo set(Boost_INCLUDE_DIRS "${_BOOST_ROOT}"^)>> "!boostCmakeDir!\BoostConfig.cmake"
-echo set(Boost_LIBRARIES ""^)>> "!boostCmakeDir!\BoostConfig.cmake"
-echo set(Boost_VERSION "1.87.0"^)>> "!boostCmakeDir!\BoostConfig.cmake"
-echo add_library(Boost::headers INTERFACE IMPORTED^)>> "!boostCmakeDir!\BoostConfig.cmake"
-echo set_target_properties(Boost::headers PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}"^)>> "!boostCmakeDir!\BoostConfig.cmake"
-echo add_library(Boost::boost INTERFACE IMPORTED^)>> "!boostCmakeDir!\BoostConfig.cmake"
-echo set_target_properties(Boost::boost PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}"^)>> "!boostCmakeDir!\BoostConfig.cmake"
-echo set(PACKAGE_VERSION 1.87.0^)> "!boostCmakeDir!\BoostConfigVersion.cmake"
-echo if(NOT PACKAGE_VERSION VERSION_LESS PACKAGE_FIND_VERSION^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
-echo     set(PACKAGE_VERSION_COMPATIBLE TRUE^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
-echo     if(PACKAGE_VERSION VERSION_EQUAL PACKAGE_FIND_VERSION^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
-echo         set(PACKAGE_VERSION_EXACT TRUE^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
-echo     endif(^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
-echo endif(^)>> "!boostCmakeDir!\BoostConfigVersion.cmake"
+REM BOOST_INCLUDE_LIBRARIES 按 CGAL 6.0.1 include/ 树实际 #include 的组件裁剪（依赖闭包自动带上），
+REM 闭包内仅 container、program_options、random、thread、chrono 等附带小型静态库编译（实测秒级，
+REM 单配置 Release），其余均为纯头文件安装；未列入 filesystem/iostreams/timer/spirit 等：CGAL 中
+REM 仅 ImageIO/Classification 等本项目不可达的包引用它们。CGAL 新增 Boost 组件引用时需扩充此清单
+pushd "%sourcePath%\boost-1.87.0"
+cmake -S . -B ./build -GNinja "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.87.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
+cmake --build ./build --target install
+popd
 
 echo 处理完成！
 

@@ -8,9 +8,10 @@ endif()
 set(CGAL_DISABLE_GMP ON)
 find_package(CGAL REQUIRED)
 
-# CGAL 仅需 Boost 头文件；boost 源树不带 config 包，按路径搜索（自动检索 CMAKE_PREFIX_PATH）
+# CGAL 仅需 Boost 头文件；按路径搜索（自动检索 CMAKE_PREFIX_PATH），
+# 兼容 boost-1.87.0（CMake install 布局）与 boost_1_87_0（压缩包解压布局）两种依赖目录
 find_path(BOOST_INCLUDE_DIR boost/version.hpp
-    PATH_SUFFIXES boost_1_87_0 boost
+    PATH_SUFFIXES boost-1.87.0/include boost_1_87_0 boost
     REQUIRED)
 
 add_library(CgalSupport STATIC
