@@ -80,6 +80,27 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
     return component_id_;
 }
 
+Index ComponentOperator::replaceGeometryRoot(TopoDS_Shape shape)
+{
+    if (!component_ || !component_->geometry || !component_->geometry->rootShape)
+        throw std::invalid_argument("Target component has no geometry");
+    if (component_->mapping && !component_->mapping->empty())
+        throw std::invalid_argument("Target component already contains geometry-mesh mapping");
+
+    // 根形状变化会使原有业务 ID 失效，先释放旧索引再写入新拓扑。
+    component_->geometry->index.release(mgr_->geomRegistry());
+    if (shape.IsNull()) {
+        component_->geometry.reset();
+    } else {
+        // 复用几何创建入口，统一维持严格一层扁平的根 Compound 约束。
+        component_->geometry->setRootShape(std::move(shape));
+        component_->geometry->ensureIndexBuilt(mgr_->geomRegistry());
+    }
+
+    notifyChanged();
+    return component_id_;
+}
+
 void ComponentOperator::removeMesh()
 {
     if (!component_ || !component_->mesh)

@@ -4,6 +4,7 @@
 #include "ComponentOperator.h"
 #include "GeometryBuilder.h"
 #include "GeometryData.h"
+#include "GeometryTopologyEditor.h"
 #include "ModelLayer.h"
 #include "QSelection.h"
 
@@ -402,6 +403,85 @@ int QGeometryOperations::createSphere(
             detail ? detail : "OpenCASCADE error");
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createSphere: {}", error.what());
+    }
+    return -1;
+}
+
+int QGeometryOperations::deleteGeometry(
+    int componentId,
+    QSelection* selection,
+    bool deleteChildren)
+{
+    try {
+        if (componentId < 0)
+            throw std::invalid_argument("Select a target component first");
+        if (!selection || !selection->get())
+            throw std::invalid_argument("Select one geometry shape");
+
+        const std::shared_ptr<Selection> selected = selection->get();
+        if (selected->ids.size() != 1)
+            throw std::invalid_argument("Exactly one geometry shape is required");
+
+        ComponentData* component = model_layer_->findComponent(componentId);
+        if (!component || !component->geometry || !component->geometry->rootShape)
+            throw std::invalid_argument("Target component has no geometry");
+        component->geometry->ensureIndexBuilt(model_layer_->geomRegistry());
+
+        const Index shape_id = selected->ids.front();
+        const std::vector<Index>* component_shape_ids = nullptr;
+        const TopoDS_Shape* selected_shape = nullptr;
+
+        // 选择类型决定使用哪一类业务 ID 和 OCC Shape 注册表。
+        switch (selected->type) {
+        case ElementEnum::GeometryVertex:
+            component_shape_ids =
+                &component->geometry->index.vertex_local_to_global;
+            selected_shape = model_layer_->geomRegistry().getVertex(shape_id);
+            break;
+        case ElementEnum::GeometryEdge:
+            component_shape_ids =
+                &component->geometry->index.edge_local_to_global;
+            selected_shape = model_layer_->geomRegistry().getEdge(shape_id);
+            break;
+        case ElementEnum::GeometryFace:
+            component_shape_ids =
+                &component->geometry->index.face_local_to_global;
+            selected_shape = model_layer_->geomRegistry().getFace(shape_id);
+            break;
+        case ElementEnum::GeometrySolid:
+            component_shape_ids =
+                &component->geometry->index.solid_local_to_global;
+            selected_shape = model_layer_->geomRegistry().getSolid(shape_id);
+            break;
+        default:
+            throw std::invalid_argument(
+                "Selection must be a geometry vertex, edge, face or solid");
+        }
+
+        if (std::find(component_shape_ids->begin(), component_shape_ids->end(), shape_id)
+            == component_shape_ids->end())
+            throw std::invalid_argument(
+                "Selected geometry shape must belong to the target component");
+        if (!selected_shape)
+            throw std::invalid_argument("Selected geometry shape is no longer valid");
+
+        // 在释放旧索引前复制 OCC Shape 句柄，并先完成纯 OCC 根拓扑重建。
+        const TopoDS_Shape target = *selected_shape;
+        TopoDS_Shape result = GeometryTopologyEditor::removeTopLevelShape(
+            *component->geometry->rootShape, target, deleteChildren);
+
+        auto component_operator =
+            model_layer_->getComponentOperator(componentId);
+        if (!component_operator)
+            throw std::invalid_argument("Target component does not exist");
+        return component_operator->replaceGeometryRoot(std::move(result));
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::deleteGeometry: {}",
+            detail ? detail : "OpenCASCADE error");
+    } catch (const std::exception& error) {
+        spdlog::error(
+            "QGeometryOperations::deleteGeometry: {}", error.what());
     }
     return -1;
 }

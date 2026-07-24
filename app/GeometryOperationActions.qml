@@ -1,6 +1,6 @@
 /**
  * @file GeometryOperationActions.qml
- * @brief 集中管理基础几何操作的参数定义、启动状态和后端调用。
+ * @brief 集中管理基础几何创建和编辑操作的参数定义、启动状态和后端调用。
  */
 
 import QtQuick
@@ -162,6 +162,16 @@ QtObject {
         description: qsTr("选择当前组件中组成单一闭合轮廓的几何边创建平面或填充曲面"),
         arg_types: [
             { type: QArgType.Selector, name: qsTr("轮廓边"), content: "", description: qsTr("请选择一条或多条闭合轮廓边") }
+        ]
+    })
+
+    readonly property var deleteGeometryInfo: ({
+        name: "delete_geometry",
+        display_name: qsTr("删除几何"),
+        description: qsTr("删除一个顶层独立几何点、边、面或体，可选择是否同时删除其独占下级拓扑"),
+        arg_types: [
+            { type: QArgType.Selector, name: qsTr("目标几何"), content: "", description: qsTr("请在顶部选择器中切换几何点、边、面或体模式") },
+            { type: QArgType.Bool, name: qsTr("同时删除下级拓扑"), content: "false", description: qsTr("关闭时保留直接下级拓扑，开启时不影响其他形状共享的拓扑") }
         ]
     })
 
@@ -349,6 +359,25 @@ QtObject {
                         componentId, args[0]), true)
             }
         }, "GeometryEdge", 0)
+    }
+
+    // 启动删除顶层独立几何操作，并保留用户当前使用的几何选择模式。
+    function startDeleteGeometry() {
+        const geometryModes = ["GeometryVertex", "GeometryEdge",
+                               "GeometryFace", "GeometrySolid"]
+        const selectMode = geometryModes.indexOf(App.selection.selectMode) >= 0
+                         ? App.selection.selectMode : "GeometryFace"
+        activate({
+            info: root.deleteGeometryInfo,
+            defaultParameters: [null, false],
+            execute: function(componentId, args) {
+                const resultComponentId =
+                    QModelManager.geometry.deleteGeometry(
+                        componentId, args[0], args[1])
+                if (resultComponentId >= 0)
+                    App.selection.selectionInvalidated()
+            }
+        }, selectMode, 0)
     }
 
     // 启动长方体创建操作。
