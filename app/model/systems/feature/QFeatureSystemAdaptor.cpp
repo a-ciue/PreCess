@@ -54,6 +54,11 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     });
 }
 
+FeatureSystem* QFeatureSystemAdaptor::featureSystem() const
+{
+    return feature_system_;
+}
+
 QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
 {
     return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));

@@ -42,7 +42,7 @@ public:
     std::function<systems::interaction::InteractionState*()> state_provider;
 
     //! @brief 当前是否存在激活的交互（鼠标路由用）
-    bool hasActiveState() { return state_provider && state_provider() != nullptr; }
+    bool hasActiveState();
 
     //! @brief 左键点击：同步激活状态，解析吸附点并调用 on_pick 回调
     void pick(double posx, double posy);

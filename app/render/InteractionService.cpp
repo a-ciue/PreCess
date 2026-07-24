@@ -142,6 +142,11 @@ InteractionService::~InteractionService()
     }
 }
 
+bool InteractionService::hasActiveState()
+{
+    return state_provider && state_provider() != nullptr;
+}
+
 systems::interaction::InteractionState* InteractionService::syncState()
 {
     auto* state = state_provider ? state_provider() : nullptr;

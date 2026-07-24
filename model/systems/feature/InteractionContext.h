@@ -8,7 +8,6 @@
 #include "InteractionState.h"
 
 #include <functional>
-#include <utility>
 
 namespace systems::feature {
 
@@ -21,30 +20,22 @@ namespace systems::feature {
  */
 class InteractionContext {
 public:
-    explicit InteractionContext(systems::interaction::InteractionState& state)
-        : state_(&state)
-    {
-    }
+    explicit InteractionContext(systems::interaction::InteractionState& state);
 
     //! @brief 订阅交互会话开始（渲染线程；通常在此清空功能内部状态）
-    void onActivate(std::function<void()> cb) { state_->on_activate = std::move(cb); }
+    void onActivate(std::function<void()> cb);
     //! @brief 订阅交互会话结束（渲染线程）
-    void onDeactivate(std::function<void()> cb) { state_->on_deactivate = std::move(cb); }
+    void onDeactivate(std::function<void()> cb);
     //! @brief 订阅左键拾取（渲染线程；返回是否有状态变化需要刷新标注）
-    void onPick(std::function<bool(const systems::interaction::PickInfo&)> cb) { state_->on_pick = std::move(cb); }
+    void onPick(std::function<bool(const systems::interaction::PickInfo&)> cb);
     //! @brief 订阅悬停（渲染线程；返回是否更新预览需要刷新标注）
-    void onHover(std::function<bool(const systems::interaction::PickInfo&)> cb) { state_->on_hover = std::move(cb); }
+    void onHover(std::function<bool(const systems::interaction::PickInfo&)> cb);
 
     //! @brief 标注集：功能在回调中直接更新，渲染层拉取绘制
-    systems::interaction::AnnotationBatch& annotations() { return state_->annotations; }
+    systems::interaction::AnnotationBatch& annotations();
+
     //! @brief 设置本功能交互激活态（单激活：激活自己时会先下线其他功能的交互）
-    void setActive(bool on)
-    {
-        if (on && deactivate_others_) {
-            deactivate_others_();
-        }
-        state_->active = on;
-    }
+    void setActive(bool on);
 
     //! @brief 由 FeatureSystem 装配时注入：激活本功能前下线其他功能的交互（单激活约定）
     std::function<void()> deactivate_others_;
