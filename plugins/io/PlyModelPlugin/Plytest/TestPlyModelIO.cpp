@@ -1,6 +1,5 @@
-// Test for PlyModelHandler: read PLY files, snapshot mesh, commit to ModelLayer, write out, read back and compare
+// Test for PlyModelHandler: read PLY files, verify mesh content, write out and verify written file
 #include "PlyModelHandler.h"
-
 #include "ComponentData.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
@@ -8,157 +7,156 @@
 #include "TempFile.h"
 
 #include <catch2/catch_test_macros.hpp>
-
-#include <cmath>
 #include <filesystem>
-#include <memory>
-#include <optional>
+#include <fstream>
 #include <string>
-#include <vector>
+#include <cmath>
+#include <optional>
 
 using namespace systems::io;
 namespace fs = std::filesystem;
 
-struct MeshSnapshot {
-    std::vector<std::array<double, 3>> vertex_positions;
-    std::vector<Index> face_vertices;
-    std::vector<Index> face_offsets; // size = nFaces+1
-};
-
-static MeshData* first_component_mesh(ModelPayload& p)
+namespace {
+static bool meshes_equal(const MeshData& a, const MeshData& b, double eps = 1e-6)
 {
-    auto& comps = p.components;
-    if (comps.empty() || !comps[0] || !comps[0]->mesh)
-        return nullptr;
-    return comps[0]->mesh.get();
-}
+    if (a.vertex_positions_.size() != b.vertex_positions_.size()) return false;
+    if (a.face_vertices_offset_.size() != b.face_vertices_offset_.size()) return false;
+    if (a.face_vertices_.size() != b.face_vertices_.size()) return false;
 
-static const MeshData* first_component_mesh(const ModelPayload& p)
-{
-    const auto& comps = p.components;
-    if (comps.empty() || !comps[0] || !comps[0]->mesh)
-        return nullptr;
-    return comps[0]->mesh.get();
-}
-
-static MeshSnapshot snapshot_from_mesh(const MeshData& mesh)
-{
-    MeshSnapshot s;
-    s.vertex_positions = mesh.vertex_positions_;
-    s.face_vertices = mesh.face_vertices_;
-    s.face_offsets = mesh.face_vertices_offset_;
-    return s;
-}
-
-static bool snapshot_equal_mesh(const MeshSnapshot& s, const MeshData& mesh, double eps = 1e-6)
-{
-    if (s.vertex_positions.size() != mesh.vertex_positions_.size())
-        return false;
-    if (s.face_offsets.size() != mesh.face_vertices_offset_.size())
-        return false;
-    if (s.face_vertices.size() != mesh.face_vertices_.size())
-        return false;
-
-    for (size_t i = 0; i < s.vertex_positions.size(); ++i) {
+    for (size_t i = 0; i < a.vertex_positions_.size(); ++i) {
         for (int k = 0; k < 3; ++k) {
-            double a = s.vertex_positions[i][k];
-            double b = mesh.vertex_positions_[i][k];
-            if (std::fabs(a - b) > eps)
-                return false;
+            double va = a.vertex_positions_[i][k];
+            double vb = b.vertex_positions_[i][k];
+            if (std::fabs(va - vb) > eps) return false;
         }
     }
 
-    for (size_t i = 0; i < s.face_offsets.size(); ++i) {
-        if (s.face_offsets[i] != mesh.face_vertices_offset_[i])
-            return false;
+    for (size_t i = 0; i < a.face_vertices_offset_.size(); ++i) {
+        if (a.face_vertices_offset_[i] != b.face_vertices_offset_[i]) return false;
     }
-    for (size_t i = 0; i < s.face_vertices.size(); ++i) {
-        if (s.face_vertices[i] != mesh.face_vertices_[i])
-            return false;
+
+    for (size_t i = 0; i < a.face_vertices_.size(); ++i) {
+        if (a.face_vertices_[i] != b.face_vertices_[i]) return false;
     }
+
     return true;
 }
 
 static fs::path test_dir_from_source()
 {
-    return fs::path(__FILE__).parent_path();
+    fs::path p = fs::path(__FILE__).parent_path();
+    return p;
 }
 
-TEST_CASE("PlyModelHandler ReadWrite simple.ply (read_model + write_components)")
+static std::vector<Index> addMeshModelAndGetComponentIds(
+    ModelLayer& layer,
+    std::unique_ptr<MeshData> mesh)
+{
+    ComponentDatas comps;
+    auto comp = std::make_unique<ComponentData>();
+    comp->id = -1;
+    comp->mesh = std::move(mesh);
+    comps.push_back(std::move(comp));
+    const Index modelId = layer.addModel("model", std::move(comps));
+    REQUIRE(modelId >= 0);
+
+    std::vector<Index> componentIds = layer.modelById(modelId)->componentIds();
+    REQUIRE(!componentIds.empty());
+
+    return componentIds;
+}
+
+static const MeshData* requireReadableMeshModel(const ModelPayload& payload)
+{
+    const auto& components = payload.components;
+    REQUIRE(!components.empty());
+
+    for (const auto& component : components) {
+        if (component && component->mesh) {
+            return component->mesh.get();
+        }
+    }
+
+    FAIL("read model does not contain MeshData component");
+    return nullptr;
+}
+} // namespace
+
+TEST_CASE("PlyModelHandler ReadWrite simple.ply")
 {
     PlyModelHandler handler;
-
     fs::path dir = test_dir_from_source();
     fs::path infile = dir / "simple.ply";
     REQUIRE(fs::exists(infile));
 
-    auto payload = handler.read_model(infile, {});
+    std::optional<ModelPayload> payload = handler.read_model(infile, {});
     REQUIRE(payload.has_value());
+    const MeshData* mesh = requireReadableMeshModel(*payload);
+    REQUIRE(mesh != nullptr);
 
-    MeshData* mesh0 = first_component_mesh(*payload);
-    REQUIRE(mesh0 != nullptr);
+    REQUIRE(mesh->vertex_positions_.size() == 5u);
+    REQUIRE(mesh->face_vertices_offset_.size() == 4u);
+    REQUIRE(mesh->face_vertices_.size() == 3u * 3u);
 
-    REQUIRE(mesh0->vertex_positions_.size() == 5u);
-    REQUIRE(mesh0->face_vertices_offset_.size() == 4u); // 0 + 3 faces
-    REQUIRE(mesh0->face_vertices_.size() == 3u * 3u);
+    fs::path out = core::TempFile::instance().path().string() + "_simple_write.ply";
 
-    MeshSnapshot snap = snapshot_from_mesh(*mesh0);
+    MeshData mesh_copy;
+    mesh_copy.init();
+    mesh_copy.vertex_positions_ = mesh->vertex_positions_;
+    mesh_copy.face_vertices_ = mesh->face_vertices_;
+    mesh_copy.face_vertices_offset_ = mesh->face_vertices_offset_;
 
-    ModelLayer mgr;
-    Index model_id = mgr.addModel(payload->model_name, std::move(payload->components));
-    auto cids = mgr.modelById(model_id)->componentIds();
-    REQUIRE(cids.size() == 1);
+    ModelLayer layer;
+    std::vector<Index> componentIds = addMeshModelAndGetComponentIds(
+        layer,
+        std::make_unique<MeshData>(std::move(mesh_copy)));
 
-    fs::path out = core::TempFile::instance().path();
-    out.replace_extension(".ply");
-
-    REQUIRE_NOTHROW(handler.write_components(mgr, cids, out, {}));
+    REQUIRE_NOTHROW(handler.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    auto payload2 = handler.read_model(out, {});
+    std::optional<ModelPayload> payload2 = handler.read_model(out, {});
     REQUIRE(payload2.has_value());
-
-    const MeshData* mesh2 = first_component_mesh(*payload2);
+    const MeshData* mesh2 = requireReadableMeshModel(*payload2);
     REQUIRE(mesh2 != nullptr);
 
-    REQUIRE(snapshot_equal_mesh(snap, *mesh2));
+    REQUIRE(meshes_equal(*mesh, *mesh2));
 }
 
-TEST_CASE("PlyModelHandler ReadWrite test.ply (read_model + write_components)")
+TEST_CASE("PlyModelHandler ReadWrite test.ply")
 {
     PlyModelHandler handler;
-
     fs::path dir = test_dir_from_source();
     fs::path infile = dir / "test.ply";
     REQUIRE(fs::exists(infile));
 
-    auto payload = handler.read_model(infile, {});
+    std::optional<ModelPayload> payload = handler.read_model(infile, {});
     REQUIRE(payload.has_value());
+    const MeshData* mesh = requireReadableMeshModel(*payload);
+    REQUIRE(mesh != nullptr);
 
-    MeshData* mesh0 = first_component_mesh(*payload);
-    REQUIRE(mesh0 != nullptr);
+    REQUIRE(mesh->vertex_positions_.size() == 10u);
+    REQUIRE(mesh->face_vertices_offset_.size() == 8u);
 
-    REQUIRE(mesh0->vertex_positions_.size() == 10u);
-    REQUIRE(mesh0->face_vertices_offset_.size() == 8u); // 0 + 7 faces
+    fs::path out = core::TempFile::instance().path().string() + "_test_write.ply";
 
-    MeshSnapshot snap = snapshot_from_mesh(*mesh0);
+    MeshData mesh_copy;
+    mesh_copy.init();
+    mesh_copy.vertex_positions_ = mesh->vertex_positions_;
+    mesh_copy.face_vertices_ = mesh->face_vertices_;
+    mesh_copy.face_vertices_offset_ = mesh->face_vertices_offset_;
 
-    ModelLayer mgr;
-    Index model_id = mgr.addModel(payload->model_name, std::move(payload->components));
-    auto cids = mgr.modelById(model_id)->componentIds();
-    REQUIRE(cids.size() == 1);
+    ModelLayer layer;
+    std::vector<Index> componentIds = addMeshModelAndGetComponentIds(
+        layer,
+        std::make_unique<MeshData>(std::move(mesh_copy)));
 
-    fs::path out = core::TempFile::instance().path();
-    out.replace_extension(".ply");
-
-    REQUIRE_NOTHROW(handler.write_components(mgr, cids, out, {}));
+    REQUIRE_NOTHROW(handler.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    auto payload2 = handler.read_model(out, {});
+    std::optional<ModelPayload> payload2 = handler.read_model(out, {});
     REQUIRE(payload2.has_value());
-
-    const MeshData* mesh2 = first_component_mesh(*payload2);
+    const MeshData* mesh2 = requireReadableMeshModel(*payload2);
     REQUIRE(mesh2 != nullptr);
 
-    REQUIRE(snapshot_equal_mesh(snap, *mesh2));
+    REQUIRE(meshes_equal(*mesh, *mesh2));
 }

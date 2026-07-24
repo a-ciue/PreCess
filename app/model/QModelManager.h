@@ -1,4 +1,5 @@
 #pragma once
+#include "EventBus.h"
 #include "QAlgorithmSystemAdaptor.h"
 #include "QEditSystemAdaptor.h"
 #include "QFeatureSystemAdaptor.h"
@@ -81,6 +82,7 @@ private:
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
     std::unique_ptr<systems::edit::EditSystem> edit_system_;
     std::unique_ptr<core::EventBus> event_bus_; //> 事件总线，声明在 feature_system_ 之前以保证其更晚析构
+    core::EventBus::Subscription param_bridge_sub_; //> 参数变更桥接订阅（随成员析构自动退订）
     std::unique_ptr<systems::feature::FeatureSystem> feature_system_;
     std::unique_ptr<systems::algo::QAlgorithmSystemAdaptor> algo_adaptor_;
     std::unique_ptr<systems::io::QModelIOSystemAdaptor> io_adaptor_;

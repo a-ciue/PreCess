@@ -1,21 +1,18 @@
-/**
- * @file PlyModelHandler.h
- * @author 龚正(1740124400@qq.com)
- * 支持ASCII和二进制格式的PLY文件
- */
-#ifndef PLY_MODEL_HANDLER_H
-#define PLY_MODEL_HANDLER_H
+#ifndef INP_MODEL_HANDLER_H
+#define INP_MODEL_HANDLER_H
 #include "ModelIOHandler.h"
-#include <tinyply.h>
+
+#include "AbaqusPrecessConverter.h"
+#include "abaqus_io.h"
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace systems::io {
-/**
- * @brief PLY模型文件处理器
- */
-class PlyModelHandler : public ModelIOHandler {
+class InpModelHandler : public ModelIOHandler {
 public:
-    PlyModelHandler() = default;
-    ~PlyModelHandler() override = default;
+    InpModelHandler() = default;
+    ~InpModelHandler() override = default;
 
     std::optional<ModelPayload> read_model(const fs::path& path, const std::vector<std::any>& args) override;
     void write_components(const ModelLayer& mgr,
@@ -27,4 +24,4 @@ public:
 };
 
 }
-#endif // !PLY_MODEL_HANDLER_H 
+#endif // !INP_MODEL_HANDLER_H

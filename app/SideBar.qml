@@ -34,6 +34,15 @@ Item{
             QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
     }
 
+    // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
+    Connections {
+        target: QModelManager.featureSystem
+        function onParamValueChanged(feature, index, value) {
+            if (root.activeOp && root.activeOp.info && root.activeOp.info.name === feature)
+                root.parameters[index] = value
+        }
+    }
+
     Button{
         id: commitButton
         text: "执行"
@@ -300,8 +309,15 @@ Item{
                 ToolTip.visible: hovered && model.description.length > 0
                 ToolTip.text: model.description
 
+                // 中间属性承接显示值（避免 text 绑定被用户输入摧毁）：
+                // 优先取参数当前值（功能回写的结果等），未赋值时取 content 默认
+                property string sourceText: {
+                    const v = root.parameters[index]
+                    return (v !== undefined && v !== null && v !== "") ? String(v) : (model.content || "")
+                }
+                onSourceTextChanged: text = sourceText
                 Component.onCompleted: {
-                    fileText.text = model.content
+                    text = sourceText
                     root.setParam(index, fileText.text)
                 }
                 onEditingFinished: {

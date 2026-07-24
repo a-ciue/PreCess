@@ -4,6 +4,7 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "InteractionState.h"
 #include "ModelLayer.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -78,6 +79,7 @@ HandlerMetaData makeMetaData()
     meta_data.description = "测试用功能";
     return meta_data;
 }
+
 }
 
 TEST_CASE("FeatureSystem::registerHandler collects declarations and activates", "[FeatureSystem]")
@@ -240,4 +242,74 @@ TEST_CASE("FeatureSystem re-registering same name replaces old handler", "[Featu
     REQUIRE(first_deactivate_count == 1);
     REQUIRE(raw_second->activate_count == 1);
     REQUIRE(system.getFeatureInfos().size() == 1);
+}
+
+TEST_CASE("FeatureSystem propagates interactive metadata to FeatureInfo", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    auto meta_data = makeMetaData();
+    meta_data.interactive = true;
+    FeatureSystem::SystemHandlerPtr handler { new FakeFeatureHandler };
+    REQUIRE(system.registerHandler(meta_data, std::move(handler)));
+
+    auto infos = system.getFeatureInfos();
+    REQUIRE(infos.size() == 1);
+    REQUIRE(infos[0]->interactive);
+
+    // 未声明时为空串与 false
+    FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
+    auto plain_meta = makeMetaData();
+    plain_meta.name = "PlainFeature";
+    REQUIRE(system.registerHandler(plain_meta, std::move(plain)));
+    infos = system.getFeatureInfos();
+    REQUIRE(infos.size() == 2);
+    for (const FeatureInfo* info : infos) {
+        if (info->name == "PlainFeature") {
+            REQUIRE_FALSE(info->interactive);
+        }
+    }
+}
+
+TEST_CASE("FeatureSystem::activeInteraction tracks interactive activation", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    auto make_interactive = [](const std::string& name) {
+        auto meta_data = makeMetaData();
+        meta_data.name = name;
+        meta_data.interactive = true;
+        return meta_data;
+    };
+
+    auto* raw1 = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr first { raw1 };
+    REQUIRE(system.registerHandler(make_interactive("FeatureA"), std::move(first)));
+    auto* raw2 = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr second { raw2 };
+    REQUIRE(system.registerHandler(make_interactive("FeatureB"), std::move(second)));
+
+    // 初始无激活交互
+    REQUIRE(system.activeInteraction() == nullptr);
+
+    // 功能经 interaction 上下文激活自己后可被查到
+    raw1->context->interaction.setActive(true);
+    auto* active = system.activeInteraction();
+    REQUIRE(active != nullptr);
+    REQUIRE(active->active);
+
+    // 单激活约定：第二个功能激活时，第一个被自动下线
+    raw2->context->interaction.setActive(true);
+    auto* active2 = system.activeInteraction();
+    REQUIRE(active2 != nullptr);
+    REQUIRE(active2 != active);
+    REQUIRE_FALSE(active->active);
+
+    // 取消激活后回到无激活状态
+    raw2->context->interaction.setActive(false);
+    REQUIRE(system.activeInteraction() == nullptr);
 }

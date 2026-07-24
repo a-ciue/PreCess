@@ -54,9 +54,30 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     });
 }
 
+FeatureSystem* QFeatureSystemAdaptor::featureSystem() const
+{
+    return feature_system_;
+}
+
 QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
 {
     return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
+}
+
+void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)
+{
+    // ArgObject → QVariant（覆盖常用显示类型，其余为空 QVariant）
+    QVariant q_value;
+    if (const auto* v = value.get<ArgTypeEnum::Text>()) {
+        q_value = QString::fromStdString(*v);
+    } else if (const auto* v = value.get<ArgTypeEnum::Bool>()) {
+        q_value = *v;
+    } else if (const auto* v = value.get<ArgTypeEnum::Int>()) {
+        q_value = static_cast<qlonglong>(*v);
+    } else if (const auto* v = value.get<ArgTypeEnum::Float>()) {
+        q_value = *v;
+    }
+    emit paramValueChanged(QString::fromStdString(feature), static_cast<int>(index), q_value);
 }
 
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)
@@ -112,7 +133,8 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
                 QString::fromStdString(feature_info->description),
                 QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
                 QString::fromStdString(menu.icon),
-                std::move(args)));
+                std::move(args),
+                feature_info->interactive));
         }
     }
     return infos;

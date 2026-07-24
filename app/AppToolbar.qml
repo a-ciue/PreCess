@@ -22,12 +22,14 @@ ColumnLayout {
     signal exportRequested()
     signal objectTreeToggled()
     signal propertyListToggled()
+    signal attributeRenderToggled()
     signal consoleToggled()
     signal outputLogToggled()
     signal preferencesToggled()
 
     property bool objectTreeOpen: false
     property bool propertyListOpen: false
+    property bool attributeRenderOpen: false
     property bool consoleOpen: false
     property bool outputLogOpen: false
     property bool preferencesOpen: false
@@ -214,6 +216,12 @@ ColumnLayout {
                         checkable: true
                         checked: propertyListOpen
                         onToggled: propertyListToggled()
+                    }
+                    Action {
+                        text: "属性渲染"
+                        checkable: true
+                        checked: attributeRenderOpen
+                        onToggled: attributeRenderToggled()
                     }
                     Action {
                         text: "控制台"

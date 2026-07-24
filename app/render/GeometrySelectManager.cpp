@@ -3,10 +3,15 @@
 #include "GeometryActorSelectOp.h"
 #include "GeometrySelectorHighlight.h"
 #include "Selection.h"
+
 #include <IVtkTools_ShapePicker.hxx>
 #include <NCollection_List.hxx>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkPartitionedDataSet.h>
+#include <vtkRenderer.h>
+
+#include <array>
+#include <utility>
 #include <vtkRenderer.h>
 
 GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op)
@@ -104,6 +109,35 @@ void GeometrySelectManager::clearSelection()
 {
     this->component_selectors_.clear();
     highlight_data_->Initialize();
+}
+
+std::optional<std::pair<Index, std::array<double, 3>>> GeometrySelectManager::snapGeometryVertex(double posx, double posy)
+{
+    if (picker_->Pick(posx, posy, 0.0, renderer_) <= 0) {
+        return std::nullopt;
+    }
+    const auto& picked_shapes = picker_->GetPickedShapesIds(false);
+    if (picked_shapes.IsEmpty()) {
+        return std::nullopt;
+    }
+
+    const IVtk_IdType shape_id = picked_shapes.First();
+    auto component_id = op_->getComponentIdByShapeId(shape_id);
+    auto select_op = component_id ? op_->getSelectOp(*component_id) : std::nullopt;
+    if (!select_op) {
+        return std::nullopt;
+    }
+
+    IVtk_IdType sub_id = -1;
+    auto geom_id = select_op->resolvePickedSubshape(picker_.Get(), shape_id, SelectMode::GeometryVertex, sub_id);
+    if (!geom_id) {
+        return std::nullopt;
+    }
+    auto point = select_op->vertexPoint(sub_id);
+    if (!point) {
+        return std::nullopt;
+    }
+    return std::pair<Index, std::array<double, 3>> { *geom_id, *point };
 }
 
 std::unique_ptr<Selection> GeometrySelectManager::getSelection()

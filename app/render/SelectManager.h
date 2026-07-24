@@ -3,8 +3,11 @@
 #include "Core.h"
 #include "Selection.h"
 
+#include <array>
 #include <memory>
+#include <optional>
 #include <string>
+#include <utility>
 #include <vtkNew.h>
 #include <vtkActor.h>
 
@@ -28,6 +31,8 @@ public:
      * @param angle_deg 相邻面法向夹角阈值，单位为度
      */
     void setFaceSelectionByAngle(bool enabled, double angle_deg);
+    //! @brief 吸附几何顶点：命中返回 {GeometryRegistry 顶点 id, 世界坐标}（转发给几何选择管理器）
+    std::optional<std::pair<Index, std::array<double, 3>>> snapGeometryVertex(double posx, double posy);
     void clearSelection();
     void refreshComponentHighlight();
     std::unique_ptr<Selection> getSelection();

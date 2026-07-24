@@ -42,6 +42,7 @@ ApplicationWindow {
         windowHeight: root.height
         objectTreeOpen: objectTreeDock.isOpen
         propertyListOpen: sideBarDock.isOpen
+        attributeRenderOpen: attributeRenderDock.isOpen
         consoleOpen: consoleDock.isOpen
         outputLogOpen: outputLogDock.isOpen
         preferencesOpen: preferencesDock.isOpen
@@ -54,6 +55,10 @@ ApplicationWindow {
         onPropertyListToggled: {
             if (sideBarDock.isOpen) sideBarDock.close()
             else sideBarDock.show()
+        }
+        onAttributeRenderToggled: {
+            if (attributeRenderDock.isOpen) attributeRenderDock.close()
+            else attributeRenderDock.show()
         }
         onConsoleToggled: {
             if (consoleDock.isOpen) consoleDock.close()
@@ -127,6 +132,15 @@ ApplicationWindow {
         }
 
         KDDW.DockWidget {
+            id: attributeRenderDock
+            uniqueName: "attributeRender"
+            title: "属性渲染"
+            AttributeRenderPanel {
+                anchors.fill: parent
+            }
+        }
+
+        KDDW.DockWidget {
             id: consoleDock
             uniqueName: "console"
             title: "控制台"
@@ -159,6 +173,7 @@ ApplicationWindow {
         Component.onCompleted: {
             addDockWidget(objectTreeDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
             addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
+            addDockWidget(attributeRenderDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(outputLogDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(preferencesDock, KDDW.KDDockWidgets.Location_OnTop, objectTreeDock, Qt.size(0, 200), KDDW.KDDockWidgets.StartHidden)

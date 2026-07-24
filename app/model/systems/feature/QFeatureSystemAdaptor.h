@@ -4,9 +4,13 @@
 #include "Core.h"
 #include <QVariant>
 #include <QtQmlIntegration/qqmlintegration.h>
+#include <cstddef>
 #include <optional>
 
 class QFeatureInfo;
+namespace core {
+class ArgObject;
+}
 namespace systems::feature {
 class FeatureSystem;
 
@@ -51,12 +55,25 @@ public:
      */
     QList<QFeatureInfo*> getFeaturesInfo() const;
 
+    /**
+     * @brief 获取底层功能系统指针（interaction 交互状态等系统级接口用）
+     */
+    FeatureSystem* featureSystem() const;
+
     // 功能上下文 provider 的后端实现，由 QModelManager 注入 FeatureSystem
     std::optional<Index> activeModel() const;
     std::optional<Index> activeComponent() const;
 
+    /**
+     * @brief 参数变更通知入口（QModelManager 桥接 EventBus 的 ParameterChangedEvent 调用）
+     * @note 转换 ArgObject 为 QVariant 后发射 paramValueChanged
+     */
+    void notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value);
+
 signals:
     void featuresInfoChanged();
+    //! @brief 功能参数值变化（功能侧回写结果等场景，QML 据此同步显示）
+    void paramValueChanged(QString feature, int index, QVariant value);
 
 private:
     FeatureSystem* feature_system_; //> 功能系统的引用
