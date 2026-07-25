@@ -66,13 +66,16 @@ Item{
             }
         }
         Button{
-            id: clearButton
-            text: "清除"
-            visible: root.hasInteractive
+            id: confirmButton
+            text: "确认"
+            enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
+            // 确认 = 结束当前操作：交互功能先及时清理交互系统（标注立即消失），
+            // 再取消操作选中（停用交互）；再次执行需重新点选算法
             onClicked:{
-                if (App.registry.renderWindow)
+                if (root.hasInteractive && App.registry.renderWindow)
                     App.registry.renderWindow.clearInteraction()
+                App.activeOperation = null
             }
         }
     }
