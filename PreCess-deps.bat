@@ -154,8 +154,8 @@ cmake --build . --target install --config Debug
 
 REM Clone and build OpenCASCADE 8.0.0
 pushd "%sourcePath%/OCCT"
-"%SystemRoot%\System32\tar.exe" -xf ./3rdparty-vc14-64-temp.zip -C .
-"%SystemRoot%\System32\tar.exe" -xf ./3rdparty-vc14-64.zip -C .
+tar -xf ./3rdparty-vc14-64-temp.zip -C .
+tar -xf ./3rdparty-vc14-64.zip -C .
 cmake -S . -B ./build "-GNinja Multi-Config" "-DINSTALL_DIR:PATH=%depsPath%\OpenCASCADE8.0.0" "-D3RDPARTY_DIR:PATH=%cd%/3rdparty-vc14-64" "-D3RDPARTY_FREETYPE_DIR:PATH=%depsPath%\freetype2.14.1" -DUSE_VTK:BOOL=1 "-D3RDPARTY_VTK_DIR:PATH=%depsPath%\VTK9.6.2" -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
@@ -243,26 +243,26 @@ if errorlevel 1 (
 popd
 popd
 
-REM CGAL 6.2（header-only，解压后剔除数据/示例/文档即可用）
-"%SystemRoot%\System32\tar.exe" -xf CGAL-6.2.zip -C "%depsPath%" || (
+REM Extract CGAL 6.2 (header-only) and strip data/demo/examples/doc_html
+tar -xf CGAL-6.2.zip -C "%depsPath%" || (
     echo CGAL 压缩包解压失败。
     pause
     exit /b 1
 )
 for %%D in (data demo examples doc_html) do rmdir /s /q "%depsPath%\CGAL-6.2\%%D"
 
-REM ============ Boost 1.91.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
-REM CGAL 仅需 Boost 头文件；闭包内编译产物按范式构建多配置动态库，消费方 PATH 需含 boost-1.91.0/bin
+REM ============ Boost 1.91.0 (header-only, install official BoostConfig via CMake) ============
+REM CGAL needs Boost headers only; compiled closure libs are built as multi-config shared libs; consumers need boost-1.91.0/bin on PATH
 mkdir boost-src
-REM 排除压缩包内 doc 符号链接（Windows 自带 tar 无权限创建会中断）
-"%SystemRoot%\System32\tar.exe" -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude=*/libs/decimal/doc/modules/ROOT/examples" || (
+REM Exclude the doc symlink in the archive (Windows tar cannot create symlinks without developer mode)
+tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude=*/libs/decimal/doc/modules/ROOT/examples" || (
     echo Boost 压缩包解压失败。
     pause
     exit /b 1
 )
 pushd boost-src
 
-REM BOOST_INCLUDE_LIBRARIES 按 CGAL 6.2 实际引用的组件裁剪（闭包自动带上），CGAL 新增引用时需扩充
+REM BOOST_INCLUDE_LIBRARIES is trimmed to what CGAL 6.2 actually includes; extend it when CGAL references new Boost components
 cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i -DCMAKE_DEBUG_POSTFIX=d -DBUILD_SHARED_LIBS=ON "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.91.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;container_hash;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;stl_interfaces;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
