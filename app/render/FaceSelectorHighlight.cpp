@@ -222,8 +222,42 @@ SelectionVtk FaceSelectorHighlight::get()
 
 void FaceSelectorHighlight::clear()
 {
+    disableHighlight();
     selections_.clear();
+}
+
+void FaceSelectorHighlight::disableHighlight()
+{
     selections_poly_->Initialize();
+    highlight_data_->Modified();
+}
+
+void FaceSelectorHighlight::enableHighlight()
+{
+    if (selections_.empty())
+        return;
+    auto* face_actor = vtkActor::SafeDownCast(&select_op_.getFaceActor());
+    if (!face_actor)
+        return;
+    auto* mapper = vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper());
+    if (!mapper)
+        return;
+    auto* poly = mapper->GetInput();
+    if (!poly)
+        return;
+
+    vtkNew<vtkCellArray> cell_array;
+    for (const auto& face : selections_) {
+        vtkIdType point_count = 0;
+        const vtkIdType* point_ids = nullptr;
+        poly->GetCellPoints(face, point_count, point_ids);
+        cell_array->InsertNextCell(point_count, point_ids);
+    }
+
+    vtkNew<vtkPolyData> highlight_poly;
+    highlight_poly->SetPoints(poly->GetPoints());
+    highlight_poly->SetPolys(cell_array);
+    selections_poly_->ShallowCopy(highlight_poly);
     highlight_data_->Modified();
 }
 
@@ -276,19 +310,7 @@ void FaceSelectorHighlight::select(double posx, double posy)
     else
         addSelected(picked_faces, selections_);
 
-    vtkNew<vtkCellArray> cell_array;
-    for (const auto& face : selections_) {
-        vtkIdType point_count = 0;
-        const vtkIdType* point_ids = nullptr;
-        picked_poly->GetCellPoints(face, point_count, point_ids);
-        cell_array->InsertNextCell(point_count, point_ids);
-    }
-
-    vtkNew<vtkPolyData> highlight_poly;
-    highlight_poly->SetPoints(picked_poly->GetPoints()); // 使用原始数据的点集
-    highlight_poly->SetPolys(cell_array); // 设置面单元
-    selections_poly_->ShallowCopy(highlight_poly);
-    highlight_data_->Modified();
+    enableHighlight();
 }
 
 void FaceSelectorHighlight::setSpreadOptions(FaceSelectionSpreadOptions options)

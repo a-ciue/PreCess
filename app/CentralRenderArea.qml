@@ -21,13 +21,167 @@ Page {
         RowLayout {
             anchors.fill: parent
             ToolButton {
-                text: "边渲染"
+                text: "几何面"
+                checked: myItem.geometryStyle === 0 || myItem.geometryStyle === 1
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: geometryFaceMenu.open()
+                Menu {
+                    id: geometryFaceMenu
+                    MenuItem {
+                        text: "有边"
+                        checkable: true
+                        checked: myItem.geometryStyle === 0
+                        onTriggered: myItem.setGeometryStyle(0)
+                    }
+                    MenuItem {
+                        text: "无边"
+                        checkable: true
+                        checked: myItem.geometryStyle === 1
+                        onTriggered: myItem.setGeometryStyle(1)
+                    }
+                }
+            }
+            ToolButton {
+                text: "几何透"
+                checked: myItem.geometryStyle >= 2 && myItem.geometryStyle <= 4
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: geometryTransMenu.open()
+                Menu {
+                    id: geometryTransMenu
+                    MenuItem {
+                        text: "75%"
+                        checkable: true
+                        checked: myItem.geometryStyle === 2
+                        onTriggered: myItem.setGeometryStyle(2)
+                    }
+                    MenuItem {
+                        text: "50%"
+                        checkable: true
+                        checked: myItem.geometryStyle === 3
+                        onTriggered: myItem.setGeometryStyle(3)
+                    }
+                    MenuItem {
+                        text: "25%"
+                        checkable: true
+                        checked: myItem.geometryStyle === 4
+                        onTriggered: myItem.setGeometryStyle(4)
+                    }
+                }
+            }
+            ToolButton {
+                text: "几何线"
+                checked: myItem.geometryStyle === 5 || myItem.geometryStyle === 6
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: geometryWireMenu.open()
+                Menu {
+                    id: geometryWireMenu
+                    MenuItem {
+                        text: "带曲面线"
+                        checkable: true
+                        checked: myItem.geometryStyle === 5
+                        onTriggered: myItem.setGeometryStyle(5)
+                    }
+                    MenuItem {
+                        text: "无曲面线"
+                        checkable: true
+                        checked: myItem.geometryStyle === 6
+                        onTriggered: myItem.setGeometryStyle(6)
+                    }
+                }
+            }
+            ToolButton {
+                text: "几何隐"
                 checkable: true
-                checked: myItem.cur_edge_render
+                checked: myItem.geometryStyle === 7
                 Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
-                    myItem.setComponentEdgeRender(App.selection.activeComponentId, !myItem.cur_edge_render)
+                    myItem.setGeometryStyle(myItem.geometryStyle === 7 ? 0 : 7)
+                }
+            }
+            ToolButton {
+                text: "网格面"
+                checked: myItem.meshStyle === 0 || myItem.meshStyle === 1
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: meshFaceMenu.open()
+                Menu {
+                    id: meshFaceMenu
+                    MenuItem {
+                        text: "带网格线"
+                        checkable: true
+                        checked: myItem.meshStyle === 0
+                        onTriggered: myItem.setMeshStyle(0)
+                    }
+                    MenuItem {
+                        text: "无线"
+                        checkable: true
+                        checked: myItem.meshStyle === 1
+                        onTriggered: myItem.setMeshStyle(1)
+                    }
+                }
+            }
+            ToolButton {
+                text: "网格透"
+                checked: myItem.meshStyle >= 2 && myItem.meshStyle <= 4
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: meshTransMenu.open()
+                Menu {
+                    id: meshTransMenu
+                    MenuItem {
+                        text: "75%"
+                        checkable: true
+                        checked: myItem.meshStyle === 2
+                        onTriggered: myItem.setMeshStyle(2)
+                    }
+                    MenuItem {
+                        text: "50%"
+                        checkable: true
+                        checked: myItem.meshStyle === 3
+                        onTriggered: myItem.setMeshStyle(3)
+                    }
+                    MenuItem {
+                        text: "25%"
+                        checkable: true
+                        checked: myItem.meshStyle === 4
+                        onTriggered: myItem.setMeshStyle(4)
+                    }
+                }
+            }
+            ToolButton {
+                text: "网格线"
+                checked: myItem.meshStyle === 5 || myItem.meshStyle === 6
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: meshWireMenu.open()
+                Menu {
+                    id: meshWireMenu
+                    MenuItem {
+                        text: "带内部线"
+                        checkable: true
+                        checked: myItem.meshStyle === 5
+                        onTriggered: myItem.setMeshStyle(5)
+                    }
+                    MenuItem {
+                        text: "仅表面线"
+                        checkable: true
+                        checked: myItem.meshStyle === 6
+                        onTriggered: myItem.setMeshStyle(6)
+                    }
+                }
+            }
+            ToolButton {
+                text: "网格隐"
+                checkable: true
+                checked: myItem.meshStyle === 7
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: {
+                    myItem.setMeshStyle(myItem.meshStyle === 7 ? 0 : 7)
                 }
             }
             ToolButton {

@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     }
 
     // 创建MeshActor
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, pts, true);
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, pts);
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 

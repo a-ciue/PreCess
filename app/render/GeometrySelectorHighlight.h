@@ -18,6 +18,8 @@ class GeometrySelectorHighlight {
 public:
     virtual ~GeometrySelectorHighlight() = default;
     virtual void clear() = 0;
+    virtual void disableHighlight() = 0;
+    virtual void enableHighlight() = 0;
     virtual GeometrySelectionVtk get() const = 0;
 };
 
@@ -30,6 +32,8 @@ public:
     ~GeometryFaceSelectorHighlight() override;
     void toggle(IVtk_IdType subId, Index geomId);
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:
@@ -49,6 +53,8 @@ public:
     ~GeometryEdgeSelectorHighlight() override;
     void toggle(IVtk_IdType subId, Index geomId);
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:
@@ -68,6 +74,8 @@ public:
     ~GeometryVertexSelectorHighlight() override;
     void toggle(IVtk_IdType subId, Index geomId);
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:
@@ -87,6 +95,8 @@ public:
     ~GeometrySolidSelectorHighlight() override;
     void toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds);
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:
