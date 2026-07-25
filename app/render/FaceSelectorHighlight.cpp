@@ -222,17 +222,17 @@ SelectionVtk FaceSelectorHighlight::get()
 
 void FaceSelectorHighlight::clear()
 {
-    clearHighlight();
+    disableHighlight();
     selections_.clear();
 }
 
-void FaceSelectorHighlight::clearHighlight()
+void FaceSelectorHighlight::disableHighlight()
 {
     selections_poly_->Initialize();
     highlight_data_->Modified();
 }
 
-void FaceSelectorHighlight::applyHighlight()
+void FaceSelectorHighlight::enableHighlight()
 {
     if (selections_.empty())
         return;
@@ -310,7 +310,7 @@ void FaceSelectorHighlight::select(double posx, double posy)
     else
         addSelected(picked_faces, selections_);
 
-    applyHighlight();
+    enableHighlight();
 }
 
 void FaceSelectorHighlight::setSpreadOptions(FaceSelectionSpreadOptions options)

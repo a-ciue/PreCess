@@ -47,11 +47,11 @@ public:
     /**
      * @brief 仅清除 partition 高亮数据，保留内部选择数据
      */
-    virtual void clearHighlight() = 0;
+    virtual void disableHighlight() = 0;
     /**
      * @brief 从保留的选择数据重新下发 partition 高亮
      */
-    virtual void applyHighlight() = 0;
+    virtual void enableHighlight() = 0;
     virtual SelectionVtk get() = 0;
 };
 
@@ -64,8 +64,8 @@ public:
     ~FaceSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
-    void clearHighlight() override;
-    void applyHighlight() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
     /**
@@ -110,8 +110,8 @@ public:
     ~EdgeSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
-    void clearHighlight() override;
-    void applyHighlight() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
 private:
@@ -132,8 +132,8 @@ public:
     ~SolidSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
-    void clearHighlight() override;
-    void applyHighlight() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
 private:
@@ -155,8 +155,8 @@ public:
     ~VertexSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
-    void clearHighlight() override;
-    void applyHighlight() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
 private:

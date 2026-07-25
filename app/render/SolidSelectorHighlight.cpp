@@ -70,13 +70,13 @@ void SolidSelectorHighlight::clear()
     highlight_data_->Modified();
 }
 
-void SolidSelectorHighlight::clearHighlight()
+void SolidSelectorHighlight::disableHighlight()
 {
     highlight_data_->SetPartition(partition_id_, nullptr);
     highlight_data_->Modified();
 }
 
-void SolidSelectorHighlight::applyHighlight()
+void SolidSelectorHighlight::enableHighlight()
 {
     geom_filter_->Update();
     highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
@@ -120,7 +120,7 @@ void SolidSelectorHighlight::select(double posx, double posy)
         spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
     }
     this->selected_ids_->Modified();
-    applyHighlight();
+    enableHighlight();
 }
 
 void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)

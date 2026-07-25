@@ -157,9 +157,9 @@ void GeometrySelectManager::setHighlightVisible(Index component_id, bool visible
     if (it == component_selectors_.end())
         return;
     if (visible)
-        it->second->applyHighlight();
+        it->second->enableHighlight();
     else
-        it->second->clearHighlight();
+        it->second->disableHighlight();
 }
 
 std::unique_ptr<Selection> GeometrySelectManager::getSelection()

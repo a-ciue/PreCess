@@ -67,13 +67,13 @@ void VertexSelectorHighlight::clear()
     highlight_data_->Modified();
 }
 
-void VertexSelectorHighlight::clearHighlight()
+void VertexSelectorHighlight::disableHighlight()
 {
     highlight_data_->SetPartition(partition_id_, nullptr);
     highlight_data_->Modified();
 }
 
-void VertexSelectorHighlight::applyHighlight()
+void VertexSelectorHighlight::enableHighlight()
 {
     geom_filter_->Update();
     highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
@@ -121,7 +121,7 @@ void VertexSelectorHighlight::select(double posx, double posy)
     }
 
     selected_ids_->Modified();
-    applyHighlight();
+    enableHighlight();
 }
 
 void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)
