@@ -35,5 +35,6 @@ var searchData=
   ['cur_5fcomponent_5fid_5f_32',['cur_component_id_',['../structQRenderWindow.html#ab8603fd67111125e7e479b99a965f640',1,'QRenderWindow']]],
   ['current_33',['current',['../classplf_1_1colony_1_1colony__reverse__iterator.html#a35aa7733f487c9891fadd51feba91627',1,'plf::colony::colony_reverse_iterator']]],
   ['current_5f_34',['current_',['../classInteractionService.html#a63850f71db99f6655c7bdffb781afe46',1,'InteractionService']]],
-  ['current_5fmode_5f_35',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]]
+  ['current_5fmode_5f_35',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
+  ['current_5fstyle_5f_36',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]]
 ];

@@ -152,10 +152,9 @@ var searchData=
   ['cur_5factor_5f_149',['cur_actor_',['../structQRenderWindow.html#a3f810a45cdd8e37d3beb60229f40626a',1,'QRenderWindow']]],
   ['cur_5fcomponent_150',['cur_component',['../structsystems_1_1algo_1_1HandlerContext.html#a44cba908ae4dc46b741e0bd284dde0c2',1,'systems::algo::HandlerContext']]],
   ['cur_5fcomponent_5fid_5f_151',['cur_component_id_',['../structQRenderWindow.html#ab8603fd67111125e7e479b99a965f640',1,'QRenderWindow']]],
-  ['cur_5fedge_5frender_152',['cur_edge_render',['../structQRenderWindow.html#a205fd9b5c2b874e457129a1fb3391ab0',1,'QRenderWindow']]],
-  ['curedgerenderchanged_153',['curEdgeRenderChanged',['../structQRenderWindow.html#a01da5f11050ffea8864cfc1f02cc1784',1,'QRenderWindow']]],
-  ['current_154',['current',['../classplf_1_1colony_1_1colony__reverse__iterator.html#a35aa7733f487c9891fadd51feba91627',1,'plf::colony::colony_reverse_iterator']]],
-  ['current_5f_155',['current_',['../classInteractionService.html#a63850f71db99f6655c7bdffb781afe46',1,'InteractionService']]],
-  ['current_5fmode_5f_156',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
-  ['cvertex_157',['CVertex',['../classMeshLib_1_1CVertex.html',1,'MeshLib::CVertex'],['../classMeshLib_1_1CToolMesh.html#a7651bea4572e18d6e1a088faf14068a7',1,'MeshLib::CToolMesh::CVertex'],['../classMeshLib_1_1CVertex.html#ac97920fc9fe1786a2199b02e0bdcea27',1,'MeshLib::CVertex::CVertex()']]]
+  ['current_152',['current',['../classplf_1_1colony_1_1colony__reverse__iterator.html#a35aa7733f487c9891fadd51feba91627',1,'plf::colony::colony_reverse_iterator']]],
+  ['current_5f_153',['current_',['../classInteractionService.html#a63850f71db99f6655c7bdffb781afe46',1,'InteractionService']]],
+  ['current_5fmode_5f_154',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
+  ['current_5fstyle_5f_155',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]],
+  ['cvertex_156',['CVertex',['../classMeshLib_1_1CVertex.html',1,'MeshLib::CVertex'],['../classMeshLib_1_1CToolMesh.html#a7651bea4572e18d6e1a088faf14068a7',1,'MeshLib::CToolMesh::CVertex'],['../classMeshLib_1_1CVertex.html#ac97920fc9fe1786a2199b02e0bdcea27',1,'MeshLib::CVertex::CVertex()']]]
 ];

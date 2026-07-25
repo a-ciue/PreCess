@@ -167,6 +167,10 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:aace8feb95c02fb87dac0994478ba8989" id="r_aace8feb95c02fb87dac0994478ba8989"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aace8feb95c02fb87dac0994478ba8989">select</a> (double posx, double posy) override</td></tr>
 <tr class="memitem:a68126ce958a1798d371dd7ca8cb4d008" id="r_a68126ce958a1798d371dd7ca8cb4d008"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68126ce958a1798d371dd7ca8cb4d008">clear</a> () override</td></tr>
 <tr class="memdesc:a68126ce958a1798d371dd7ca8cb4d008"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
+<tr class="memitem:a4b4231e002e29032e14025326d816ed7" id="r_a4b4231e002e29032e14025326d816ed7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4b4231e002e29032e14025326d816ed7">disableHighlight</a> () override</td></tr>
+<tr class="memdesc:a4b4231e002e29032e14025326d816ed7"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅清除 partition 高亮数据，保留内部选择数据  <br /></td></tr>
+<tr class="memitem:a0ce421062d227f6ad53c9f5d9d9b61ff" id="r_a0ce421062d227f6ad53c9f5d9d9b61ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ce421062d227f6ad53c9f5d9d9b61ff">enableHighlight</a> () override</td></tr>
+<tr class="memdesc:a0ce421062d227f6ad53c9f5d9d9b61ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">从保留的选择数据重新下发 partition 高亮  <br /></td></tr>
 <tr class="memitem:aa76562ed0c1c967d69f226ad2719ff6a" id="r_aa76562ed0c1c967d69f226ad2719ff6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ComponentSelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa76562ed0c1c967d69f226ad2719ff6a">get</a> () override</td></tr>
 <tr class="memitem:aee117bfc67f837efc4fba8484ef695de" id="r_aee117bfc67f837efc4fba8484ef695de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aee117bfc67f837efc4fba8484ef695de">setSpreadOptions</a> (<a class="el" href="structFaceSelectionSpreadOptions.html">FaceSelectionSpreadOptions</a> options)</td></tr>
 <tr class="memdesc:aee117bfc67f837efc4fba8484ef695de"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置面选择的扩散开关和角度阈值  <br /></td></tr>
@@ -277,6 +281,64 @@ Private 属性</h2></td></tr>
 <p>清空选中元素，并取消高亮 </p>
 
 <p>实现了 <a class="el" href="classSelectorHighlight.html#a848c28c9db33a22a74d31fa1be332581">SelectorHighlight</a>.</p>
+
+</div>
+</div>
+<a id="a4b4231e002e29032e14025326d816ed7" name="a4b4231e002e29032e14025326d816ed7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b4231e002e29032e14025326d816ed7">&#9670;&#160;</a></span>disableHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FaceSelectorHighlight::disableHighlight </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>仅清除 partition 高亮数据，保留内部选择数据 </p>
+
+<p>实现了 <a class="el" href="classSelectorHighlight.html#ae6da7769f8706c9d0a64fe2bdd931831">SelectorHighlight</a>.</p>
+
+</div>
+</div>
+<a id="a0ce421062d227f6ad53c9f5d9d9b61ff" name="a0ce421062d227f6ad53c9f5d9d9b61ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ce421062d227f6ad53c9f5d9d9b61ff">&#9670;&#160;</a></span>enableHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FaceSelectorHighlight::enableHighlight </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>从保留的选择数据重新下发 partition 高亮 </p>
+
+<p>实现了 <a class="el" href="classSelectorHighlight.html#a07ecb0da1684849cf9757830179de9d4">SelectorHighlight</a>.</p>
 
 </div>
 </div>

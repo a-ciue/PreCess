@@ -154,6 +154,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a0463c24a22dcf0f5ddee42a3c3ceba6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置面选择的角度扩散参数，并同步到已创建的面选择器  <br /></td></tr>
 <tr class="memitem:a2fb1b1b8c3198f9d97f24b7e4f17b8e0" id="r_a2fb1b1b8c3198f9d97f24b7e4f17b8e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2fb1b1b8c3198f9d97f24b7e4f17b8e0">clearSelection</a> ()</td></tr>
 <tr class="memitem:abde62734796304b50c465a9746f8d5f6" id="r_abde62734796304b50c465a9746f8d5f6"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abde62734796304b50c465a9746f8d5f6">getSelection</a> ()</td></tr>
+<tr class="memitem:ae9c4d9a273ca2e4cc49795fd9a73eff2" id="r_ae9c4d9a273ca2e4cc49795fd9a73eff2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae9c4d9a273ca2e4cc49795fd9a73eff2">setHighlightVisible</a> (bool visible)</td></tr>
+<tr class="memitem:a3845059c160ec7ed680655fce3469b59" id="r_a3845059c160ec7ed680655fce3469b59"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3845059c160ec7ed680655fce3469b59">setHighlightVisible</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, bool visible)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
@@ -169,6 +171,7 @@ Private 属性</h2></td></tr>
 <tr class="memitem:a275896954eab63312f182f8326d0639e" id="r_a275896954eab63312f182f8326d0639e"><td class="memItemLeft" align="right" valign="top">vtkActor *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a275896954eab63312f182f8326d0639e">highlight_actor_</a> { }</td></tr>
 <tr class="memitem:adc99d0df3f69f8ca049ec9e9a18ec0ef" id="r_adc99d0df3f69f8ca049ec9e9a18ec0ef"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkCompositePolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc99d0df3f69f8ca049ec9e9a18ec0ef">highlight_mapper_</a></td></tr>
 <tr class="memitem:af8efdbb40acdb1c6d3ac3ba6a69eaf98" id="r_af8efdbb40acdb1c6d3ac3ba6a69eaf98"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPartitionedDataSet &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af8efdbb40acdb1c6d3ac3ba6a69eaf98">highlight_data_</a></td></tr>
+<tr class="memitem:a4701f96ae971940e2a93c4d546e67ad6" id="r_a4701f96ae971940e2a93c4d546e67ad6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4701f96ae971940e2a93c4d546e67ad6">highlight_visible_</a> { true }</td></tr>
 <tr class="memitem:a474fb81cb5efe46b559e5da27540ab5f" id="r_a474fb81cb5efe46b559e5da27540ab5f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structFaceSelectionSpreadOptions.html">FaceSelectionSpreadOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a474fb81cb5efe46b559e5da27540ab5f">face_selection_spread_options_</a></td></tr>
 <tr class="memitem:a190f0874c2ba07127a123660aacb70dc" id="r_a190f0874c2ba07127a123660aacb70dc"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::unique_ptr&lt; <a class="el" href="classSelectorHighlight.html">SelectorHighlight</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a190f0874c2ba07127a123660aacb70dc">component_selectors_</a></td></tr>
 </table>
@@ -335,6 +338,44 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="ae9c4d9a273ca2e4cc49795fd9a73eff2" name="ae9c4d9a273ca2e4cc49795fd9a73eff2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9c4d9a273ca2e4cc49795fd9a73eff2">&#9670;&#160;</a></span>setHighlightVisible() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshSelectManager::setHighlightVisible </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3845059c160ec7ed680655fce3469b59" name="a3845059c160ec7ed680655fce3469b59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3845059c160ec7ed680655fce3469b59">&#9670;&#160;</a></span>setHighlightVisible() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshSelectManager::setHighlightVisible </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a13d0fb7d09cb973ad4fa4d35ea662d8d" name="a13d0fb7d09cb973ad4fa4d35ea662d8d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a13d0fb7d09cb973ad4fa4d35ea662d8d">&#9670;&#160;</a></span>setSelectMode()</h2>
 
@@ -474,6 +515,28 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">vtkSmartPointer&lt;vtkCompositePolyDataMapper&gt; MeshSelectManager::highlight_mapper_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4701f96ae971940e2a93c4d546e67ad6" name="a4701f96ae971940e2a93c4d546e67ad6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4701f96ae971940e2a93c4d546e67ad6">&#9670;&#160;</a></span>highlight_visible_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshSelectManager::highlight_visible_ { true }</td>
         </tr>
       </table>
   </td>

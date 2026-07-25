@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['priority_0',['priority',['../namespaceplf.html#af4e761553ae1a085755c051a82496a05',1,'plf']]]
+  ['nodetype_0',['NodeType',['../structTreeNode.html#a62f65fbb26a3d18a773f8e7f201303b3',1,'TreeNode']]]
 ];

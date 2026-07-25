@@ -103,6 +103,10 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a5512ff700657deaa5f27c88045b4dde4" id="r_a5512ff700657deaa5f27c88045b4dde4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5512ff700657deaa5f27c88045b4dde4">select</a> (double posx, double posy)=0</td></tr>
 <tr class="memitem:a848c28c9db33a22a74d31fa1be332581" id="r_a848c28c9db33a22a74d31fa1be332581"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a848c28c9db33a22a74d31fa1be332581">clear</a> ()=0</td></tr>
 <tr class="memdesc:a848c28c9db33a22a74d31fa1be332581"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
+<tr class="memitem:ae6da7769f8706c9d0a64fe2bdd931831" id="r_ae6da7769f8706c9d0a64fe2bdd931831"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6da7769f8706c9d0a64fe2bdd931831">disableHighlight</a> ()=0</td></tr>
+<tr class="memdesc:ae6da7769f8706c9d0a64fe2bdd931831"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅清除 partition 高亮数据，保留内部选择数据  <br /></td></tr>
+<tr class="memitem:a07ecb0da1684849cf9757830179de9d4" id="r_a07ecb0da1684849cf9757830179de9d4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07ecb0da1684849cf9757830179de9d4">enableHighlight</a> ()=0</td></tr>
+<tr class="memdesc:a07ecb0da1684849cf9757830179de9d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">从保留的选择数据重新下发 partition 高亮  <br /></td></tr>
 <tr class="memitem:a386ff86768e0faea151c2babca4c7d69" id="r_a386ff86768e0faea151c2babca4c7d69"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="ComponentSelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691">SelectionVtk</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a386ff86768e0faea151c2babca4c7d69">get</a> ()=0</td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
@@ -158,6 +162,64 @@ Public 成员函数</h2></td></tr>
 <p>清空选中元素，并取消高亮 </p>
 
 <p>在 <a class="el" href="classEdgeSelectorHighlight.html#af71996a5002742103866e5c826479d0f">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#a68126ce958a1798d371dd7ca8cb4d008">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#a27bff5a3f4f3359e747262ddb28fd03f">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#a91e7ac3714d5ed149e529715db458fa5">VertexSelectorHighlight</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="ae6da7769f8706c9d0a64fe2bdd931831" name="ae6da7769f8706c9d0a64fe2bdd931831"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6da7769f8706c9d0a64fe2bdd931831">&#9670;&#160;</a></span>disableHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void SelectorHighlight::disableHighlight </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>仅清除 partition 高亮数据，保留内部选择数据 </p>
+
+<p>在 <a class="el" href="classEdgeSelectorHighlight.html#abc07d0f31a2fe01d3f77e4562f30193e">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#a4b4231e002e29032e14025326d816ed7">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#a8f85fbe850b11e8821d3ab820a6ce187">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#a0b1d4a177b67a368a192051f2b3cb7ad">VertexSelectorHighlight</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a07ecb0da1684849cf9757830179de9d4" name="a07ecb0da1684849cf9757830179de9d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07ecb0da1684849cf9757830179de9d4">&#9670;&#160;</a></span>enableHighlight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void SelectorHighlight::enableHighlight </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>从保留的选择数据重新下发 partition 高亮 </p>
+
+<p>在 <a class="el" href="classEdgeSelectorHighlight.html#a660875fb0e2f72d6994ad2ead8e8d983">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#a0ce421062d227f6ad53c9f5d9d9b61ff">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#a79f80bea9572bee2b6a9c6814e77715c">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#a2130ccf5d5b0539e05ae8f7a84c342e3">VertexSelectorHighlight</a> 内被实现.</p>
 
 </div>
 </div>
