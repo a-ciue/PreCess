@@ -114,6 +114,8 @@ Pane {
             readonly property real _padding: 5
             readonly property real _rowHeight: 18
             readonly property real _indentWidth: 20
+            leftPadding: _padding + depth * _indentWidth + 18
+            rightPadding: 0
 
             TableView.onPooled: indicatorAnim.complete()
             TableView.onReused: {
@@ -167,8 +169,7 @@ Pane {
                 Text {
                     id: nameText
                     Layout.fillWidth: true
-                    Layout.maximumWidth: implicitWidth
-                    Layout.leftMargin: viewDelegate._padding + 2
+                    Layout.minimumWidth: 50
                     text: viewDelegate.model.name || "N/A"
                     color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
                     font.pixelSize: 13
