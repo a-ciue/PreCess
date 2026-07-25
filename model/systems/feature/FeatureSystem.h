@@ -96,6 +96,14 @@ public:
      */
     interaction::InteractionState* activeInteraction();
     /**
+     * @brief 设置指定功能的交互激活态（声明 interactive 的功能专用，UI 模式切换驱动）
+     *
+     * 单激活约定：激活一个功能会经 InteractionContext 下线其他功能的交互；
+     * 启停为幂等的状态应用，重复设置无副作用。
+     * @return 功能存在且声明 interactive 时为 true
+     */
+    bool setInteractionActive(const std::string& unique_name, bool on);
+    /**
      * @brief 设置功能信息变更回调函数
      */
     void setOnFeatureInfosChanged(std::function<void()> callback);

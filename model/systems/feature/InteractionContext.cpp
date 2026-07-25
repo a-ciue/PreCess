@@ -21,6 +21,11 @@ void InteractionContext::onDeactivate(std::function<void()> cb)
     state_->on_deactivate = std::move(cb);
 }
 
+void InteractionContext::onClear(std::function<void()> cb)
+{
+    state_->on_clear = std::move(cb);
+}
+
 void InteractionContext::onPick(std::function<bool(const systems::interaction::PickInfo&)> cb)
 {
     state_->on_pick = std::move(cb);

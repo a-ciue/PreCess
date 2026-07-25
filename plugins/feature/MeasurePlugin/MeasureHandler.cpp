@@ -47,6 +47,10 @@ namespace systems::feature {
 namespace {
 using Vec3 = std::array<double, 3>;
 
+// 参数下标：测量类型 / 选择对象（与 setup() 注册顺序一致）
+constexpr std::size_t kTypeParam = 0;
+constexpr std::size_t kSelectionParam = 1;
+
 Vec3 operator-(const Vec3& a, const Vec3& b)
 {
     return { a[0] - b[0], a[1] - b[1], a[2] - b[2] };
@@ -911,13 +915,13 @@ std::any MeasureHandler::execute(FeatureContext& ctx)
 {
     assertExecuteThread();
 
-    const int* type_index = ctx.params.value(0).get<ArgTypeEnum::Combo>();
+    const int* type_index = ctx.params.value(kTypeParam).get<ArgTypeEnum::Combo>();
     if (!type_index) {
         spdlog::error("MeasureHandler::execute: 测量类型参数无效");
         return std::string("错误：测量类型参数无效");
     }
 
-    const auto selection_ptr = ctx.params.value(1).get<ArgTypeEnum::Selector>();
+    const auto selection_ptr = ctx.params.value(kSelectionParam).get<ArgTypeEnum::Selector>();
     if (!selection_ptr || !*selection_ptr) {
         spdlog::error("MeasureHandler::execute: 选择对象参数无效");
         return std::string("错误：选择对象参数无效");
@@ -964,8 +968,11 @@ std::any MeasureHandler::execute(FeatureContext& ctx)
 void MeasureHandler::activate(FeatureContext& ctx)
 {
     assertExecuteThread();
+    // 标注集绑定到交互状态：渲染层事件后从 InteractionState.annotations 拉取绘制
+    annotations_ = &ctx.interaction.annotations();
     ctx.interaction.onActivate([this]() { this->clear(); });
     ctx.interaction.onDeactivate([this]() { this->clear(); });
+    ctx.interaction.onClear([this]() { this->clear(); });
     ctx.interaction.onPick([this](const PickInfo& p) { return this->onPick(p); });
     ctx.interaction.onHover([this](const PickInfo& p) { return this->onHover(p); });
 }
@@ -1069,21 +1076,21 @@ void MeasureHandler::addLine(const PickInfo& a, const PickInfo& b)
 
 void MeasureHandler::refreshAnnotations()
 {
-    annotations_.clear();
+    annotations_->clear();
 
     // 已确认线的端点与线段（红色端点、绿色实线）
     for (const MeasureLine& l : lines_) {
-        annotations_.points.push_back({ l.a.world_pos });
-        annotations_.points.push_back({ l.b.world_pos });
-        annotations_.lines.push_back({ l.a.world_pos, l.b.world_pos });
+        annotations_->points.push_back({ l.a.world_pos });
+        annotations_->points.push_back({ l.b.world_pos });
+        annotations_->lines.push_back({ l.a.world_pos, l.b.world_pos });
     }
     if (pending_)
-        annotations_.points.push_back({ pending_->world_pos });
+        annotations_->points.push_back({ pending_->world_pos });
 
     // 长度文本：每线一个，放线段中点（白色）
     for (const MeasureLine& l : lines_) {
         const Vec3 mid = midpoint(l.a.world_pos, l.b.world_pos);
-        annotations_.texts.push_back({ mid, "L: " + toString(length(l.b.world_pos - l.a.world_pos), 2), 1.0, 1.0, 1.0 });
+        annotations_->texts.push_back({ mid, "L: " + toString(length(l.b.world_pos - l.a.world_pos), 2), 1.0, 1.0, 1.0 });
     }
 
     // 夹角文本：放共点沿角平分线偏移（青色）；同一点多个夹角按序号加大偏移防重叠
@@ -1114,7 +1121,7 @@ void MeasureHandler::refreshAnnotations()
             }
         }
         const double dist = 0.25 * std::min(lu, lv) * (1.0 + 0.3 * stack);
-        annotations_.texts.push_back({ { ang.at[0] + dir[0] * dist, ang.at[1] + dir[1] * dist,
+        annotations_->texts.push_back({ { ang.at[0] + dir[0] * dist, ang.at[1] + dir[1] * dist,
                                            ang.at[2] + dir[2] * dist },
             "Ang: " + toString(ang.angle, 2), 0.3, 0.9, 1.0 });
     }
@@ -1128,32 +1135,12 @@ void MeasureHandler::refreshAnnotations()
         preview.g = 0.9;
         preview.b = 0.1;
         preview.dashed = true;
-        annotations_.lines.push_back(preview);
+        annotations_->lines.push_back(preview);
 
         const Vec3 mid = midpoint(pending_->world_pos, preview_.world_pos);
-        annotations_.texts.push_back({ mid,
+        annotations_->texts.push_back({ mid,
             "L: " + toString(length(preview_.world_pos - pending_->world_pos), 2), 1.0, 0.9, 0.1 });
     }
-}
-
-std::string MeasureHandler::resultText() const
-{
-    assertInteractiveThread();
-    if (lines_.empty() && !pending_)
-        return {};
-
-    std::string out = "已完成直线: " + std::to_string(lines_.size()) + " 条";
-    if (pending_)
-        out += "（已选第 1 点，再点第 2 点成线）";
-    for (size_t i = 0; i < lines_.size(); ++i) {
-        out += "\nL" + std::to_string(i + 1) + ": "
-            + toString(length(lines_[i].b.world_pos - lines_[i].a.world_pos), 6);
-    }
-    for (const MeasureAngle& ang : angles_) {
-        out += "\n夹角(L" + std::to_string(ang.line1 + 1) + ",L" + std::to_string(ang.line2 + 1)
-            + "): " + toString(ang.angle, 6);
-    }
-    return out;
 }
 
 void MeasureHandler::clear()

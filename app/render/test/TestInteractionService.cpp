@@ -49,6 +49,7 @@ struct FakeInteraction {
 
     int activate_count = 0;
     int deactivate_count = 0;
+    int clear_count = 0;
     int hover_count = 0;
     std::vector<PickInfo> picks;
 
@@ -56,6 +57,7 @@ struct FakeInteraction {
     {
         state.on_activate = [this] { ++activate_count; };
         state.on_deactivate = [this] { ++deactivate_count; };
+        state.on_clear = [this] { ++clear_count; };
         state.on_pick = [this](const PickInfo& pick) {
             picks.push_back(pick);
             return true;
@@ -154,7 +156,6 @@ int main(int argc, char* argv[])
 
     MeshActorManager mesh_manager(pts.GetPointer());
     mesh_manager.bindRender(renderer.GetPointer());
-    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     GeometryActorManager geometry_manager;
     geometry_manager.bindRender(renderer.GetPointer());
@@ -164,6 +165,10 @@ int main(int argc, char* argv[])
 
     FakeInteraction fake;
     InteractionService service(*renderer, *overlay_renderer, mesh_manager.op(), sel_mgr);
+
+    // 拾取列表在服务构造时登记观察，网格须在此之后加载才会进入拾取列表
+    // （与应用一致：服务于 initializeVTK 创建，模型其后加载）
+    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     // 交互状态经 provider 提供：开关开启前无激活状态，pick 不转发
     bool interaction_enabled = false;
@@ -206,6 +211,10 @@ int main(int argc, char* argv[])
     const std::size_t picks_before = fake.picks.size();
     service.pick(5000, 5000); // 窗口外坐标，拾取器必然未命中
     check(fake.picks.size() == picks_before, "未命中吸附点时不调用 onPick");
+
+    // ---- clear：面板"清除"转发到处理器 ----
+    service.clear();
+    check(fake.clear_count == 1, "clear() 转发到处理器");
 
     // ---- 几何（OCC）顶点拾取：geom_id 填充 ----
     {

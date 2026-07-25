@@ -319,3 +319,37 @@ TEST_CASE("FeatureSystem::activeInteraction tracks interactive activation", "[Fe
     raw2->context->interaction.setActive(false);
     REQUIRE(system.activeInteraction() == nullptr);
 }
+
+TEST_CASE("FeatureSystem::setInteractionActive drives activation by feature name", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    auto interactive_meta = makeMetaData();
+    interactive_meta.name = "InteractiveFeature";
+    interactive_meta.interactive = true;
+    FeatureSystem::SystemHandlerPtr interactive { new FakeFeatureHandler };
+    REQUIRE(system.registerHandler(interactive_meta, std::move(interactive)));
+
+    auto plain_meta = makeMetaData();
+    plain_meta.name = "PlainFeature";
+    FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
+    REQUIRE(system.registerHandler(plain_meta, std::move(plain)));
+
+    // 未注册功能与未声明 interactive 的功能不可激活
+    REQUIRE_FALSE(system.setInteractionActive("Unknown", true));
+    REQUIRE_FALSE(system.setInteractionActive("PlainFeature", true));
+    REQUIRE(system.activeInteraction() == nullptr);
+
+    // 按名激活（幂等：重复设置无副作用）
+    REQUIRE(system.setInteractionActive("InteractiveFeature", true));
+    REQUIRE(system.setInteractionActive("InteractiveFeature", true));
+    auto* active = system.activeInteraction();
+    REQUIRE(active != nullptr);
+    REQUIRE(active->active);
+
+    // 按名下线
+    REQUIRE(system.setInteractionActive("InteractiveFeature", false));
+    REQUIRE(system.activeInteraction() == nullptr);
+}

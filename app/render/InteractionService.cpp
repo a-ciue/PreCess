@@ -197,6 +197,15 @@ void InteractionService::hover(double posx, double posy)
     }
 }
 
+void InteractionService::clear()
+{
+    if (!current_)
+        return;
+    if (current_->on_clear)
+        current_->on_clear();
+    refreshAnnotations();
+}
+
 void InteractionService::clearActors()
 {
     points_poly_->Initialize();

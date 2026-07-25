@@ -48,6 +48,8 @@ public:
     void pick(double posx, double posy);
     //! @brief 悬停：同步激活状态，调用 on_hover 回调做动态预览
     void hover(double posx, double posy);
+    //! @brief 面板"清除"：调用当前状态的 on_clear 回调并刷新标注
+    void clear();
 private:
     //! @brief 同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）
     systems::interaction::InteractionState* syncState();

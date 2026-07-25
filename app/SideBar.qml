@@ -18,10 +18,28 @@ Item{
     property var resultText: ""
 
     readonly property var activeOp: App.activeOperation
+    readonly property bool hasInteractive: !!(activeOp && activeOp.info && activeOp.info.interactive)
+    readonly property bool inInteraction: hasInteractive && interactionMode === 0
+    property int interactionMode: 0 
+    property string _interactionName: ""
 
     onActiveOpChanged: {
         parameters = []
         resultText = ""
+        applyInteractionMode()
+    }
+    onInteractionModeChanged: applyInteractionMode()
+    onHasInteractiveChanged: applyInteractionMode()
+
+    function applyInteractionMode() {
+        var want = (hasInteractive && interactionMode === 0 && activeOp) ? activeOp.info.name : ""
+        if (want === _interactionName)
+            return
+        if (_interactionName)
+            QModelManager.featureSystem.setInteractionActive(_interactionName, false)
+        _interactionName = want
+        if (want)
+            QModelManager.featureSystem.setInteractionActive(want, true)
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
@@ -40,24 +58,60 @@ Item{
         }
     }
 
-    Button{
-        id: commitButton
-        text: "执行"
-        enabled: !!(root.activeOp && root.activeOp.info)
+    Row{
+        id: interactionModeSwitch
+        visible: root.hasInteractive
+        height: visible ? 34 : 0
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height:30
-        onClicked:{
-            if (root.activeOp && root.activeOp.execute)
-                root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
-            if (App.registry.renderWindow)
-                App.registry.renderWindow.clearSelection()
+        spacing: 8
+        RadioButton{
+            text: "交互模式"
+            autoExclusive: false
+            checked: root.interactionMode === 0
+            onClicked: root.interactionMode = 0
+        }
+        RadioButton{
+            text: (root.activeOp && root.activeOp.info && root.activeOp.info.execute_text) ? root.activeOp.info.execute_text : "参数执行"
+            autoExclusive: false
+            checked: root.interactionMode === 1
+            onClicked: root.interactionMode = 1
+        }
+    }
+    RowLayout{
+        id: buttonRow
+        anchors.top: interactionModeSwitch.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 30
+        Button{
+            id: commitButton
+            text: "执行"
+            visible: !root.inInteraction
+            enabled: !!(root.activeOp && root.activeOp.info)
+            Layout.fillWidth: true
+            onClicked:{
+                if (root.activeOp && root.activeOp.execute)
+                    root.resultText = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+                if (App.registry.renderWindow)
+                    App.registry.renderWindow.clearSelection()
+            }
+        }
+        Button{
+            id: clearButton
+            text: "清除"
+            visible: root.inInteraction
+            Layout.fillWidth: true
+            onClicked:{
+                if (App.registry.renderWindow)
+                    App.registry.renderWindow.clearInteraction()
+            }
         }
     }
     TextArea {
         id: resultArea
-        anchors.top: commitButton.bottom
+        anchors.top: buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         // 不可见时不占锚定布局高度，避免留下空白
@@ -65,7 +119,7 @@ Item{
         readOnly: true
         text: root.resultText
         wrapMode: TextEdit.Wrap
-        visible: text.length > 0
+        visible: text.length > 0 && !root.inInteraction
         background: Rectangle {
             color: "#f0f0f0"
             border.color: "#d0d0d0"
@@ -78,6 +132,7 @@ Item{
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         clip: true
+        visible: !root.inInteraction
         ColumnLayout{
             anchors.fill: parent
             ListView{

@@ -163,6 +163,17 @@ interaction::InteractionState* FeatureSystem::activeInteraction()
     return nullptr;
 }
 
+bool FeatureSystem::setInteractionActive(const std::string& unique_name, bool on)
+{
+    auto it = entries_.find(unique_name);
+    if (it == entries_.end() || !it->second.info->interactive) {
+        spdlog::warn("FeatureSystem::setInteractionActive: feature '{}' not found or not interactive", unique_name);
+        return false;
+    }
+    it->second.interaction_context.setActive(on);
+    return true;
+}
+
 void FeatureSystem::setOnFeatureInfosChanged(std::function<void()> callback)
 {
     on_feature_infos_changed_ = std::move(callback);

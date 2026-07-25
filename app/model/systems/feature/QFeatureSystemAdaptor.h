@@ -42,6 +42,12 @@ public:
      */
     Q_INVOKABLE bool postKeyEvent(int key, int modifiers, bool pressed);
     /**
+     * @brief 设置声明视口交互能力功能的交互激活态（侧栏交互模式切换驱动，幂等）
+     * @param unique_name 功能唯一名称
+     * @param on 是否进入交互模式
+     */
+    Q_INVOKABLE bool setInteractionActive(const QString& unique_name, bool on);
+    /**
      * @brief QML侧同步当前活动模型id，供功能上下文动态获取
      */
     Q_INVOKABLE void setActiveModel(int id);
