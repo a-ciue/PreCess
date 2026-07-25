@@ -39,9 +39,6 @@ void MeshSelectManager::select(double posx, double posy)
 
 void MeshSelectManager::setSelectMode(SelectMode select_mode)
 {
-    if (this->select_mode_ == select_mode)
-        return;
-
     this->select_mode_ = select_mode;
     this->component_selectors_.clear();
 
@@ -139,4 +136,23 @@ void MeshSelectManager::applyHighlightStyle(SelectMode mode)
         VertexSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
         break;
     }
+}
+
+void MeshSelectManager::setHighlightVisible(bool visible)
+{
+    if (highlight_visible_ == visible)
+        return;
+    highlight_visible_ = visible;
+    highlight_mapper_->SetInputDataObject(visible ? highlight_data_.Get() : nullptr);
+}
+
+void MeshSelectManager::setHighlightVisible(Index component_id, bool visible)
+{
+    auto it = component_selectors_.find(component_id);
+    if (it == component_selectors_.end())
+        return;
+    if (visible)
+        it->second->enableHighlight();
+    else
+        it->second->disableHighlight();
 }

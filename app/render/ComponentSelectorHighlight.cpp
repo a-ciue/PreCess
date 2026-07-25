@@ -122,9 +122,8 @@ void ComponentSelectorHighlight::updateHighlight()
         auto pid = [comp = static_cast<unsigned int>(component_id)](unsigned int off) {
             return comp * k_partitions_per_component + off;
         };
-        if (auto select_op = mesh_op_.getSelectOp(component_id)) {
-            if (!select_op->isVisible())
-                continue;
+        if (auto select_op = mesh_op_.getSelectOp(component_id);
+            select_op && select_op->isVisible()) {
             if (auto* poly_data = _get_poly_data(select_op->getSolidActor()))
                 highlight_data_->SetPartition(pid(0), poly_data);
             if (auto* poly_data = _get_poly_data(select_op->getFaceActor()))
@@ -133,9 +132,8 @@ void ComponentSelectorHighlight::updateHighlight()
                 highlight_data_->SetPartition(pid(2), poly_data);
         }
 
-        if (auto select_op = geom_op_.getSelectOp(component_id)) {
-            if (!select_op->isVisible())
-                continue;
+        if (auto select_op = geom_op_.getSelectOp(component_id);
+            select_op && select_op->isVisible()) {
             if (auto* poly_data = _get_poly_data(select_op->getPolyActor()))
                 highlight_data_->SetPartition(pid(3), poly_data);
         }

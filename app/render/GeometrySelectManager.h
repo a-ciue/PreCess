@@ -24,6 +24,8 @@ public:
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
+    void setHighlightVisible(bool visible);
+    void setHighlightVisible(Index component_id, bool visible);
 
     /**
      * @brief 吸附几何顶点：拾取并解析为几何顶点
@@ -33,6 +35,7 @@ public:
 
 private:
     GeometrySelectorHighlight* getOrCreateSelector(Index component_id);
+    void applyHighlightStyle(SelectMode mode);
 
     GeometryActorManagerSelectOp* op_;
     SelectMode select_mode_ { SelectMode::None };
@@ -42,6 +45,7 @@ private:
     vtkActor* highlight_actor_ {};
     vtkSmartPointer<vtkPartitionedDataSet> highlight_data_;
     vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;
+    bool highlight_visible_ { true };
 
     std::unordered_map<Index, std::unique_ptr<GeometrySelectorHighlight>> component_selectors_;
 };

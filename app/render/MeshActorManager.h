@@ -20,11 +20,11 @@ public:
         vtkRenderer* renderer);
 
     void setVisibility(Index component_id, bool visibility);
-    void setRenderEdge(Index component_id, bool is_render);
     void setClipPlane(vtkPlane* plane);
+    void setCurrentRenderStyle(MeshRenderStyle style);
+    MeshRenderStyle getCurrentRenderStyle() const;
 
     bool getCount(Index component_id);
-    bool getIsEdgeRender(Index component_id);
 
     void setAttriMode(
         Index component_id,
@@ -43,6 +43,7 @@ private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
     vtkPoints* global_points_ {};
+    MeshRenderStyle current_style_ { MeshRenderStyle::FaceWithEdges };
 
     // 渲染窗口共享的标量颜色表，同一时刻只显示当前标量属性的颜色和值域。
     vtkNew<vtkScalarBarActor> scalar_bar_;
