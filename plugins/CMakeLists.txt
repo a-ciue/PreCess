@@ -189,7 +189,7 @@ function(precess_plugin_link_libraries TARGET)
     )
 endfunction()
 
-add_subdirectory(cgal_support)
+add_subdirectory(shared/cgal_support)
 add_subdirectory(io)
 add_subdirectory(algo)
 add_subdirectory(edit)
