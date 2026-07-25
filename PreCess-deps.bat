@@ -241,9 +241,14 @@ if errorlevel 1 (
 )
 
 popd
+popd
 
 REM CGAL 6.2（header-only，解压后剔除数据/示例/文档即可用）
-"%SystemRoot%\System32\tar.exe" -xf CGAL-6.2.zip -C "%depsPath%"
+"%SystemRoot%\System32\tar.exe" -xf CGAL-6.2.zip -C "%depsPath%" || (
+    echo CGAL 压缩包解压失败。
+    pause
+    exit /b 1
+)
 for %%D in (data demo examples doc_html) do rmdir /s /q "%depsPath%\CGAL-6.2\%%D"
 
 REM ============ Boost 1.91.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
