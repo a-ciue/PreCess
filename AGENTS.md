@@ -135,6 +135,7 @@
 - **新特性必须配套测试用例**；修 bug 时尽量补可复现的回归测试。
 - 不要向无测试的模块强行塞测试框架；遵循该模块既有测试模式。
 - 工具检测用 PowerShell：例如 `Get-Command makensis`（不要用 `where makensis`）。
+- **插件共享头文件需全量构建**：修改被插件共享的 `core/`、`model/` 头文件（如 `InteractionState.h`、`InteractiveTypes.h`）后必须全量构建（含插件目标）再做手动验证：插件 DLL 运行时动态加载、不是 `PreCess.exe` 的链接依赖，`cmake --build --target PreCess` 不会让插件随之重建；新旧 ABI 混用会产生难以排查的内存错乱（如"测量崩溃"即此原因）。
 
 ---
 
