@@ -100,7 +100,7 @@ pushd gmsh-occ8
 git checkout --detach 86596d7902a1b00e23641ac5c904b7c1f880ce9f
 popd
 curl -L -o OCCT/3rdparty-vc14-64-temp.zip --connect-timeout 30 https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip
-git clone --single-branch --depth 1 --branch v6.2 https://github.com/CGAL/cgal.git "%depsPath%\CGAL-6.2"
+curl -L -o CGAL-6.2.zip --connect-timeout 30 https://github.com/CGAL/cgal/releases/download/v6.2/CGAL-6.2.zip
 curl -L -o boost-1.91.0-1-cmake.tar.xz --connect-timeout 30 https://github.com/boostorg/boost/releases/download/boost-1.91.0-1/boost-1.91.0-1-cmake.tar.xz
 
 if not defined qtPath (
@@ -242,12 +242,14 @@ if errorlevel 1 (
 
 popd
 
+REM CGAL 6.2（header-only，解压后剔除数据/示例/文档即可用）
+tar -xf CGAL-6.2.zip -C "%depsPath%"
+for %%D in (data demo examples doc_html) do rmdir /s /q "%depsPath%\CGAL-6.2\%%D"
+
 REM ============ Boost 1.91.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
-REM CGAL 官方文档确认仅需 Boost 头文件；CGAL_Core 依赖 Boost.Multiprecision（纯头文件）。
-REM 压缩包已随其他依赖在脚本前部统一下载；升级 Boost 需同步版本号、文件名与安装目录名
+REM CGAL 仅需 Boost 头文件；闭包内编译产物按范式构建多配置动态库，消费方 PATH 需含 boost-1.91.0/bin
 mkdir boost-src
-REM 压缩包内仅 libs/decimal/doc/modules/ROOT/examples 一个符号链接（指向文档示例目录），
-REM Windows 自带 tar 在非开发者模式下创建符号链接会报 Invalid argument 中断，直接排除
+REM 排除压缩包内 doc 符号链接（Windows 自带 tar 无权限创建会中断）
 tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude=*/libs/decimal/doc/modules/ROOT/examples" || (
     echo Boost 压缩包解压失败。
     pause
@@ -255,14 +257,7 @@ tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude
 )
 pushd boost-src
 
-REM BOOST_INCLUDE_LIBRARIES 按 CGAL include/ 树实际 #include 的组件裁剪（依赖闭包自动带上，
-REM 对 CGAL 6.2 树实测核对过），闭包内仅 container、program_options、random、thread、chrono 等
-REM 附带小型编译型库（其余均为纯头文件安装）；未列入
-REM filesystem/iostreams/timer/spirit 等：CGAL 中仅 ImageIO/Classification 等本项目不可达的包
-REM 引用它们。CGAL 新增 Boost 组件引用时需扩充此清单
-REM 虽然 CGAL 仅需头文件，但闭包内有编译产物，按脚本统一范式构建多配置（默认 RelWithDebInfo + Debug）；
-REM 编译型库构建为动态库（BUILD_SHARED_LIBS=ON），避免多插件静态链接导致代码重复与全局状态分裂，
-REM 注意消费方运行时 PATH 需包含 boost-1.91.0/bin（见 CMakeUserPresets.json）
+REM BOOST_INCLUDE_LIBRARIES 按 CGAL 6.2 实际引用的组件裁剪（闭包自动带上），CGAL 新增引用时需扩充
 cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i -DCMAKE_DEBUG_POSTFIX=d -DBUILD_SHARED_LIBS=ON "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.91.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;container_hash;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;stl_interfaces;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
