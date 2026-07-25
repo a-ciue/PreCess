@@ -14,9 +14,10 @@
 #include <utility>
 #include <vtkRenderer.h>
 
-GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, GeometryActorManagerSelectOp& op)
+GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, GeometryActorManagerSelectOp& op, vtkActor* highlight_actor)
     : op_(&op)
     , renderer_(&renderer)
+    , highlight_actor_(highlight_actor)
 {
     highlight_data_ = vtkSmartPointer<vtkPartitionedDataSet>::New();
     highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
@@ -27,9 +28,6 @@ GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, GeometryActo
     picker_->SetAreaSelection(false);
 
     op_->observeShapePicker(picker_.Get());
-
-    highlight_actor_->PickableOff();
-    renderer.AddActor(highlight_actor_);
 }
 
 void GeometrySelectManager::select(double posx, double posy)
@@ -84,14 +82,17 @@ void GeometrySelectManager::select(double posx, double posy)
 
 void GeometrySelectManager::setSelectMode(SelectMode select_mode)
 {
-    if (select_mode == this->select_mode_)
-        return;
     this->select_mode_ = select_mode;
     this->clearSelection();
 
     op_->setShapePickerMode(select_mode);
 
-    switch (select_mode) {
+    applyHighlightStyle(select_mode);
+}
+
+void GeometrySelectManager::applyHighlightStyle(SelectMode mode)
+{
+    switch (mode) {
     case SelectMode::GeometryFace:
         GeometryFaceSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
         break;
@@ -105,6 +106,7 @@ void GeometrySelectManager::setSelectMode(SelectMode select_mode)
         GeometrySolidSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
         break;
     }
+    highlight_actor_->SetVisibility(highlight_visible_);
 }
 
 void GeometrySelectManager::clearSelection()
@@ -144,7 +146,11 @@ std::optional<std::pair<Index, std::array<double, 3>>> GeometrySelectManager::sn
 
 void GeometrySelectManager::setHighlightVisible(bool visible)
 {
-    highlight_actor_->SetVisibility(visible);
+    if (highlight_visible_ == visible)
+        return;
+    highlight_visible_ = visible;
+    if (highlight_actor_->GetMapper() == highlight_mapper_.Get())
+        highlight_actor_->SetVisibility(visible);
 }
 
 void GeometrySelectManager::setHighlightVisible(Index component_id, bool visible)

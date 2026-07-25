@@ -17,7 +17,7 @@ class MeshActorManagerSelectOp;
 
 class MeshSelectManager {
 public:
-    MeshSelectManager(vtkRenderer& renderer, MeshActorManagerSelectOp& op);
+    MeshSelectManager(vtkRenderer& renderer, MeshActorManagerSelectOp& op, vtkActor* highlight_actor);
 
     void select(double posx, double posy);
     void setSelectMode(SelectMode select_mode);
@@ -36,9 +36,10 @@ private:
     vtkRenderer* renderer_ { };
     vtkSmartPointer<vtkHardwarePicker> component_picker_;
 
-    vtkNew<vtkActor> highlight_actor_;
+    vtkActor* highlight_actor_;
     vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;
     vtkSmartPointer<vtkPartitionedDataSet> highlight_data_; //> 高亮部分的 Data
+    bool highlight_visible_ { true };
 
     FaceSelectionSpreadOptions face_selection_spread_options_;
     std::unordered_map<Index, std::unique_ptr<SelectorHighlight>> component_selectors_; //> 每个 component 对应的选择器

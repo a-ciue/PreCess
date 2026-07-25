@@ -11,8 +11,11 @@ SelectManager::SelectManager(vtkRenderer& renderer,
     MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op)
     : renderer_(&renderer)
 {
-    mesh_ = std::make_unique<MeshSelectManager>(renderer, mesh_op);
-    geom_ = std::make_unique<GeometrySelectManager>(renderer, geom_op);
+    highlight_actor_->PickableOff();
+    renderer.AddActor(highlight_actor_);
+
+    mesh_ = std::make_unique<MeshSelectManager>(renderer, mesh_op, highlight_actor_.Get());
+    geom_ = std::make_unique<GeometrySelectManager>(renderer, geom_op, highlight_actor_.Get());
     component_selector_ = std::make_unique<ComponentSelectorHighlight>(renderer, mesh_op, geom_op);
 }
 

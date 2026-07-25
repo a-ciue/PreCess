@@ -47,6 +47,7 @@ private:
     std::unique_ptr<ComponentSelectorHighlight> component_selector_;
     SelectMode select_mode_ { SelectMode::None };
     vtkRenderer* renderer_ {};
+    vtkNew<vtkActor> highlight_actor_;
 };
 
 #endif
