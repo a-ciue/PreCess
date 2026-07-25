@@ -240,8 +240,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-popd
-popd
+pushd "%sourcePath%"
 
 REM Extract CGAL 6.2 (header-only) and strip data/demo/examples/doc_html
 tar -xf CGAL-6.2.zip -C "%depsPath%" || (
