@@ -258,7 +258,9 @@ curl -L -o boost-1.91.0-1-cmake.tar.xz --connect-timeout 30 -C - https://github.
     exit /b 1
 )
 mkdir boost-src
-tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 || (
+REM 压缩包内仅 libs/decimal/doc/modules/ROOT/examples 一个符号链接（指向文档示例目录），
+REM Windows 自带 tar 在非开发者模式下创建符号链接会报 Invalid argument 中断，直接排除
+tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude=*/libs/decimal/doc/modules/ROOT/examples" || (
     echo Boost 压缩包解压失败。
     pause
     exit /b 1
