@@ -12,7 +12,6 @@
 
 #include <array>
 #include <utility>
-#include <vtkRenderer.h>
 
 GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op)
     : op_(&op)
