@@ -68,6 +68,8 @@ double angleBetween(const Vec3& u, const Vec3& v)
 
 void MeasureHandler::setup(FeatureRegistrar& reg)
 {
+    // "清除"按钮参数：无值触发器，点击经 on_action 于渲染线程回到本功能
+    reg.addParameter({ ArgTypeEnum::Button, "清除", "" });
     reg.addMenuItem({ "工具", "测量" });
 }
 
@@ -78,6 +80,7 @@ void MeasureHandler::activate(FeatureContext& ctx)
     ctx.interaction.onActivate([this]() { this->clear(); });
     ctx.interaction.onDeactivate([this]() { this->clear(); });
     ctx.interaction.onClear([this]() { this->clear(); });
+    ctx.interaction.onAction([this](int) { this->clear(); });
     ctx.interaction.onPick([this](const PickInfo& p) { return this->onPick(p); });
     ctx.interaction.onHover([this](const PickInfo& p) { return this->onHover(p); });
 }

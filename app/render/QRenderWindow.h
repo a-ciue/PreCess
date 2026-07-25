@@ -112,9 +112,15 @@ public:
     Q_INVOKABLE void setFeatureAdaptor(QObject* adaptor);
 
     /**
-     * @brief 清空当前交互状态与视图内标注（面板"清除"按钮）
+     * @brief 清空当前交互状态与视图内标注（面板"确认"按钮的会话清理）
      */
     Q_INVOKABLE void clearInteraction();
+
+    /**
+     * @brief 向当前激活交互投递面板动作按钮事件（Button 参数，渲染线程执行）
+     * @param param_index 按钮参数下标，作为动作 id 透传给功能
+     */
+    Q_INVOKABLE void postInteractionAction(int param_index);
 
     /**
      * @brief 显示/隐藏比例尺（测量插件激活时启用，随相机缩放自动更新刻度）

@@ -206,6 +206,15 @@ void InteractionService::clear()
     refreshAnnotations();
 }
 
+void InteractionService::postAction(int param_index)
+{
+    if (!current_)
+        return;
+    if (current_->on_action)
+        current_->on_action(param_index);
+    refreshAnnotations();
+}
+
 void InteractionService::clearActors()
 {
     points_poly_->Initialize();

@@ -50,6 +50,8 @@ struct FakeInteraction {
     int activate_count = 0;
     int deactivate_count = 0;
     int clear_count = 0;
+    int action_count = 0;
+    int last_action = -1;
     int hover_count = 0;
     std::vector<PickInfo> picks;
 
@@ -58,6 +60,10 @@ struct FakeInteraction {
         state.on_activate = [this] { ++activate_count; };
         state.on_deactivate = [this] { ++deactivate_count; };
         state.on_clear = [this] { ++clear_count; };
+        state.on_action = [this](int param_index) {
+            ++action_count;
+            last_action = param_index;
+        };
         state.on_pick = [this](const PickInfo& pick) {
             picks.push_back(pick);
             return true;
@@ -212,9 +218,13 @@ int main(int argc, char* argv[])
     service.pick(5000, 5000); // 窗口外坐标，拾取器必然未命中
     check(fake.picks.size() == picks_before, "未命中吸附点时不调用 onPick");
 
-    // ---- clear：面板"清除"转发到处理器 ----
+    // ---- clear：面板"确认"的会话清理转发到处理器 ----
     service.clear();
     check(fake.clear_count == 1, "clear() 转发到处理器");
+
+    // ---- postAction：面板动作按钮转发到处理器并携带参数下标 ----
+    service.postAction(2);
+    check(fake.action_count == 1 && fake.last_action == 2, "postAction() 转发到处理器并携带参数下标");
 
     // ---- 几何（OCC）顶点拾取：geom_id 填充 ----
     {

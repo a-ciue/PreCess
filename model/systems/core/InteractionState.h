@@ -23,7 +23,9 @@ struct InteractionState {
     bool active = false; //> 交互激活态：功能经 setActive 写入（GUI 线程），渲染层读取路由拾取
     std::function<void()> on_activate; //> 交互会话开始（通常清空功能内部状态）
     std::function<void()> on_deactivate; //> 交互会话结束
-    std::function<void()> on_clear; //> 面板"清除"按钮：清空当前会话状态
+    std::function<void()> on_clear; //> 面板"确认"按钮的会话清理：清空当前会话状态
+    //! @brief 面板动作按钮（Button 参数）：参数下标为动作 id，动作语义由功能自定义
+    std::function<void(int)> on_action;
     //! @brief 左键拾取：返回是否有状态变化（需要刷新标注）
     std::function<bool(const PickInfo&)> on_pick;
     //! @brief 悬停：返回是否更新了预览（需要刷新标注）

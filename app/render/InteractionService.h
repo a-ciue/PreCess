@@ -48,8 +48,11 @@ public:
     void pick(double posx, double posy);
     //! @brief 悬停：同步激活状态，调用 on_hover 回调做动态预览
     void hover(double posx, double posy);
-    //! @brief 面板"清除"：调用当前状态的 on_clear 回调并刷新标注
+    //! @brief 面板"确认"按钮：调用当前状态的 on_clear 回调并刷新标注
     void clear();
+    //! @brief 面板动作按钮（Button 参数）：调用当前状态的 on_action 回调并刷新标注
+    //! @param param_index 按钮参数下标，作为动作 id 透传给功能
+    void postAction(int param_index);
 private:
     //! @brief 同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）
     systems::interaction::InteractionState* syncState();

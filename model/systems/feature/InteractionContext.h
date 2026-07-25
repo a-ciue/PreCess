@@ -26,8 +26,10 @@ public:
     void onActivate(std::function<void()> cb);
     //! @brief 订阅交互会话结束（渲染线程）
     void onDeactivate(std::function<void()> cb);
-    //! @brief 订阅"清除"（面板清除按钮，渲染线程）
+    //! @brief 订阅会话清理（面板"确认"按钮，渲染线程）
     void onClear(std::function<void()> cb);
+    //! @brief 订阅面板动作按钮（Button 参数，渲染线程；参数下标为动作 id，语义由功能自定义）
+    void onAction(std::function<void(int)> cb);
     //! @brief 订阅左键拾取（渲染线程；返回是否有状态变化需要刷新标注）
     void onPick(std::function<bool(const systems::interaction::PickInfo&)> cb);
     //! @brief 订阅悬停（渲染线程；返回是否更新预览需要刷新标注）

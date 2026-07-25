@@ -27,9 +27,9 @@ public:
     MeasureHandler() = default;
     ~MeasureHandler() override = default;
 
-    //! @brief 声明菜单项
+    //! @brief 声明"清除"按钮参数与菜单项
     void setup(FeatureRegistrar& reg) override;
-    //! @brief 激活：经 ctx.interaction 注册交互回调（拾取/悬停/激活/停用/清除）
+    //! @brief 激活：经 ctx.interaction 注册交互回调（拾取/悬停/激活/停用/会话清理/动作按钮）
     void activate(FeatureContext& ctx) override;
 
     //! @brief 交互测量状态查询（测试与面板用）

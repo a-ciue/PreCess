@@ -131,6 +131,9 @@ Item{
                             if(model.type === QArgType.Bool){           //布尔值
                                 return boolComponent
                             }
+                            if(model.type === QArgType.Button){           //按钮
+                                return buttonComponent
+                            }
                         }
                     }
                 }
@@ -414,6 +417,27 @@ Item{
                 }
                 onCheckedChanged: {
                     root.setParam(index, checked)
+                }
+            }
+        }
+    }
+    Component{
+        id: buttonComponent
+        RowLayout{
+            spacing: 5
+            width: parameterList.width
+            Button{
+                // Button 是无值触发器：交互功能的动作经渲染线程投递（on_action，线程模型约定）；
+                // 普通功能走参数事件广播（计数器载荷，功能约定忽略值只读参数下标）
+                text: model.name
+                Layout.fillWidth: true
+                onClicked:{
+                    if (root.hasInteractive) {
+                        if (App.registry.renderWindow)
+                            App.registry.renderWindow.postInteractionAction(index)
+                    } else {
+                        root.setParam(index, (root.parameters[index] || 0) + 1)
+                    }
                 }
             }
         }

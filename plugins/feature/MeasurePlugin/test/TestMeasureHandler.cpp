@@ -54,14 +54,15 @@ struct FeatureTestEnv {
 
 } // namespace
 
-TEST_CASE("MeasureHandler setup declares menu only")
+TEST_CASE("MeasureHandler setup declares clear button parameter and menu")
 {
     MeasureHandler handler;
     FeatureRegistrar reg;
     handler.setup(reg);
 
-    // 纯交互功能：无参数，仅菜单项
-    CHECK(reg.argTypes().empty());
+    // 纯交互功能：仅"清除"按钮参数（无值触发器）与菜单项
+    REQUIRE(reg.argTypes().size() == 1);
+    CHECK(reg.argTypes()[0].type == ArgTypeEnum::Button);
     REQUIRE(reg.menuItems().size() == 1);
 }
 
@@ -91,9 +92,21 @@ TEST_CASE("MeasureHandler: interactive picks update state annotations and onClea
     CHECK(env.interaction_state_.annotations.points.size() == 2);
     CHECK(env.interaction_state_.annotations.texts.size() == 1);
 
-    // 面板"清除"：on_clear 清空会话状态与标注
+    // 面板"确认"的会话清理：on_clear 清空会话状态与标注
     REQUIRE(env.interaction_state_.on_clear);
     env.interaction_state_.on_clear();
+    CHECK(env.handler.lineCount() == 0);
+    CHECK(!env.handler.hasPending());
+    CHECK(env.interaction_state_.annotations.lines.empty());
+    CHECK(env.interaction_state_.annotations.points.empty());
+    CHECK(env.interaction_state_.annotations.texts.empty());
+
+    // 面板动作按钮（"清除"参数）：on_action 同样清空会话状态与标注
+    env.interaction_state_.on_pick(p1);
+    env.interaction_state_.on_pick(p2);
+    CHECK(env.handler.lineCount() == 1);
+    REQUIRE(env.interaction_state_.on_action);
+    env.interaction_state_.on_action(0);
     CHECK(env.handler.lineCount() == 0);
     CHECK(!env.handler.hasPending());
     CHECK(env.interaction_state_.annotations.lines.empty());
