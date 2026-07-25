@@ -18,7 +18,7 @@ class GeometryActorManagerSelectOp;
 
 class GeometrySelectManager {
 public:
-    GeometrySelectManager(vtkRenderer& renderer, GeometryActorManagerSelectOp& op, vtkActor* highlight_actor);
+    GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op);
 
     void select(double posx, double posy);
     void setSelectMode(SelectMode select_mode);
@@ -42,7 +42,7 @@ private:
     vtkRenderer* renderer_;
     vtkSmartPointer<IVtkTools_ShapePicker> picker_;
 
-    vtkActor* highlight_actor_;
+    vtkActor* highlight_actor_ {};
     vtkSmartPointer<vtkPartitionedDataSet> highlight_data_;
     vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;
     bool highlight_visible_ { true };

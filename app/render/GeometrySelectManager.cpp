@@ -14,10 +14,10 @@
 #include <utility>
 #include <vtkRenderer.h>
 
-GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, GeometryActorManagerSelectOp& op, vtkActor* highlight_actor)
+GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op)
     : op_(&op)
     , renderer_(&renderer)
-    , highlight_actor_(highlight_actor)
+    , highlight_actor_(&highlight_actor)
 {
     highlight_data_ = vtkSmartPointer<vtkPartitionedDataSet>::New();
     highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
@@ -106,7 +106,6 @@ void GeometrySelectManager::applyHighlightStyle(SelectMode mode)
         GeometrySolidSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
         break;
     }
-    highlight_actor_->SetVisibility(highlight_visible_);
 }
 
 void GeometrySelectManager::clearSelection()
@@ -149,8 +148,7 @@ void GeometrySelectManager::setHighlightVisible(bool visible)
     if (highlight_visible_ == visible)
         return;
     highlight_visible_ = visible;
-    if (highlight_actor_->GetMapper() == highlight_mapper_.Get())
-        highlight_actor_->SetVisibility(visible);
+    highlight_mapper_->SetInputDataObject(visible ? highlight_data_.Get() : nullptr);
 }
 
 void GeometrySelectManager::setHighlightVisible(Index component_id, bool visible)

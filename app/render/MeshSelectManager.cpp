@@ -7,10 +7,10 @@
 #include <vtkPartitionedDataSet.h>
 #include <vtkRenderer.h>
 
-MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, MeshActorManagerSelectOp& op, vtkActor* highlight_actor)
+MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorManagerSelectOp& op)
     : op_(&op)
     , renderer_(&renderer)
-    , highlight_actor_(highlight_actor)
+    , highlight_actor_(&highlight_actor)
 {
     component_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
     highlight_mapper_ = vtkSmartPointer<vtkCompositePolyDataMapper>::New();
@@ -136,7 +136,6 @@ void MeshSelectManager::applyHighlightStyle(SelectMode mode)
         VertexSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
         break;
     }
-    highlight_actor_->SetVisibility(highlight_visible_);
 }
 
 void MeshSelectManager::setHighlightVisible(bool visible)
@@ -144,8 +143,7 @@ void MeshSelectManager::setHighlightVisible(bool visible)
     if (highlight_visible_ == visible)
         return;
     highlight_visible_ = visible;
-    if (highlight_actor_->GetMapper() == highlight_mapper_.Get())
-        highlight_actor_->SetVisibility(visible);
+    highlight_mapper_->SetInputDataObject(visible ? highlight_data_.Get() : nullptr);
 }
 
 void MeshSelectManager::setHighlightVisible(Index component_id, bool visible)
