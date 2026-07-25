@@ -5,18 +5,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-enum class ModelRenderMode {
-    Face,
-    Block,
-    Group
-};
-
-enum class GeometryRenderMode {
-    Face,
-    Block,
-    Group
-};
-
 enum class SelectMode {
     None,
     Vertex,

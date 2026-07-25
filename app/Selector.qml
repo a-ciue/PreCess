@@ -14,64 +14,75 @@ RowLayout {
     signal confirmButtonClicked
     property QSelection selection
 
+    // 当前角度扩散参数，由渲染区域传入。
+    property bool faceSelectByAngle
+    property real faceSelectAngle
+
+    // 将用户编辑后的参数通知给渲染区域。
+    signal faceSelectionSpreadEdited(bool enabled, real angle)
+
     ComboBox{
         id: selectModeComboBox
-        model: ListModel {
-            ListElement { text: "..." }
-            ListElement { text: "点" }
-            ListElement { text: "边" }
-            ListElement { text: "面" }
-            ListElement { text: "体" }
-            ListElement { text: "块" }
-            ListElement{text: "几何点"}
-            ListElement{text: "几何边"}
-            ListElement{text: "几何面"}
-            ListElement{text: "几何体"}
-            ListElement{text: "组件"}
+        model: [
+            { text: "...", value: "None" },
+            { text: "组件", value: "Component" },
+            { text: "点", value: "Vertex" },
+            { text: "边", value: "Edge" },
+            { text: "面", value: "Face" },
+            { text: "体", value: "Solid" },
+            { text: "几何点", value: "GeometryVertex" },
+            { text: "几何边", value: "GeometryEdge" },
+            { text: "几何面", value: "GeometryFace" },
+            { text: "几何体", value: "GeometrySolid" },
+        ]
+        textRole: "text"
+        valueRole: "value"
+
+        // 绑定建立在自己的属性上——ComboBox 内部不会碰它，绑定不会被用户交互破坏
+        property string sourceMode: App.selection.selectMode
+
+        // 外部值变化 → 更新显示（初始化时也会触发一次，不用 Component.onCompleted）
+        onSourceModeChanged: {
+            const idx = indexOfValue(sourceMode)
+            if (idx >= 0)
+                currentIndex = idx
         }
-        onCurrentTextChanged: {
-            if(currentText === "..."){
-                App.selection.selectMode = "None"
-            }
-            if(currentText === "点"){
-                App.selection.selectMode = "Vertex"
-            }
-            if(currentText === "边"){
-                App.selection.selectMode = "Edge"
-            }
-            if(currentText === "面"){
-                App.selection.selectMode = "Face"
-            }
-            if(currentText === "块"){
-                App.selection.selectMode = "Block"
-            }
-            if(currentText === "体"){
-                App.selection.selectMode = "Solid"
-            }
-            if(currentText === "几何点"){
-                App.selection.selectMode = "GeometryVertex"
-            }
-            if(currentText === "几何边"){
-                App.selection.selectMode = "GeometryEdge"
-            }
-            if(currentText === "几何面"){
-                App.selection.selectMode = "GeometryFace"
-            }
-            if(currentText === "几何体"){
-                App.selection.selectMode = "GeometrySolid"
-            }
-            if(currentText === "组件"){
-                App.selection.selectMode = "Component"
-            }
-        }
+
+        // 用户选择 → 写回数据源
+        onActivated: App.selection.selectMode = currentValue
+
         opacity: enabled ? 1.0 : 0.6
-        currentIndex: enabled ? currentIndex: 0
     }
     Button{
         id: selectClearButton
         text: "清除选择"
         onClicked: root.clearButtonClicked()
         opacity: enabled ? 1.0 : 0.6
+    }
+    CheckBox {
+        text: "按角度扩散"
+        checked: root.faceSelectByAngle
+        visible: App.selection.selectMode === "Face"
+        onClicked: root.faceSelectionSpreadEdited(checked, root.faceSelectAngle)
+    }
+    Label {
+        text: "角度"
+        visible: App.selection.selectMode === "Face" && root.faceSelectByAngle
+    }
+    TextField {
+        text: root.faceSelectAngle.toFixed(1)
+        visible: App.selection.selectMode === "Face" && root.faceSelectByAngle
+        Layout.preferredWidth: 56
+        validator: DoubleValidator {
+            bottom: 0.0
+            top: 180.0
+            decimals: 2
+        }
+        onEditingFinished: {
+            var value = Number(text)
+            if (!isNaN(value))
+                root.faceSelectionSpreadEdited(root.faceSelectByAngle,Math.max(0.0, Math.min(180.0, value)))
+        }
     }
     Button{
         text: "确认"

@@ -11,6 +11,10 @@ Page {
     background: null
     anchors.fill: parent
 
+    // 当前渲染区域的面选择角度扩散参数。
+    property bool faceSelectByAngle: false
+    property real faceSelectAngle: 30.0
+
     footer: ToolBar {
         id: toolbar
         height: 25
@@ -27,25 +31,21 @@ Page {
                 }
             }
             ToolButton {
-                text: "块渲染"
-                checkable: true
-                Layout.preferredWidth: 50
-                Layout.fillHeight: true
-                onClicked: {
-                    if (checked) {
-                        myItem.setRenderMode(App.selection.activeModelId, "Block")
-                    } else {
-                        myItem.setRenderMode(App.selection.activeModelId, "Face")
-                    }
-                }
-            }
-            ToolButton {
                 text: "裁剪"
                 checkable: true
                 Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
                     myItem.setMeshClip(checked)
+                }
+            }
+            ToolButton {
+                text: "比例尺"
+                checkable: true
+                Layout.preferredWidth: 50
+                Layout.fillHeight: true
+                onClicked: {
+                    myItem.setScaleBarVisible(checked)
                 }
             }
             ToolButton {
@@ -80,6 +80,20 @@ Page {
             anchors.margins: 3
             query: QModelManager.query
 
+            Component.onCompleted: {
+                myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
+            }
+
+            Connections {
+                target: root
+                function onFaceSelectByAngleChanged() {
+                    myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
+                }
+                function onFaceSelectAngleChanged() {
+                    myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
+                }
+            }
+
             onRightClicked: { viewportMenu.popup() }
 
             Connections {
@@ -100,6 +114,10 @@ Page {
                         myItem.clearSelection()
                 }
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
+                function onSelectionInvalidated() {
+                    myItem.clearSelection()
+                    selector.selection = null
+                }
             }
 
             Connections {
@@ -118,6 +136,14 @@ Page {
             anchors.left: parent.left
             anchors.topMargin: 10
             anchors.leftMargin: 10
+
+            faceSelectByAngle: root.faceSelectByAngle
+            faceSelectAngle: root.faceSelectAngle
+
+            onFaceSelectionSpreadEdited: function(enabled, angle) {
+                root.faceSelectByAngle = enabled
+                root.faceSelectAngle = angle
+            }
 
             onClearButtonClicked: {
                 myItem.clearSelection()
@@ -252,6 +278,8 @@ Page {
 
     Component.onCompleted: {
         App.registry.renderWindow = myItem
+        // 注入功能系统适配器：startInteraction 按名称获取 InteractionState
+        myItem.setFeatureAdaptor(QModelManager.featureSystem)
         Qt.callLater(function() { myItem.resetCamera() })
     }
 }

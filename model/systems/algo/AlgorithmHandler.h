@@ -8,12 +8,14 @@
 #include "ComponentOperator.h"
 
 #include <any>
+#include <optional>
 #include <string>
 #include <vector>
 
 namespace core {
 class ArgObject;
 }
+class ModelLayer;
 namespace systems::io
 {
 class ModelIOSystemBase;
@@ -30,6 +32,27 @@ struct HandlerContext {
 class AlgorithmHandler {
 public:
     virtual ~AlgorithmHandler() = default;
+    /**
+     * @brief 在执行前解析算法实际使用的 Component
+     *
+     * 默认使用对象树传入的 Component；需要根据参数定位目标的插件可覆盖该函数。
+     *
+     * @param model_layer 模型数据层
+     * @param fallback_component_id 对象树当前 Component ID
+     * @param args 算法参数
+     * @return 实际目标 Component ID；无法确定时返回空
+     */
+    virtual std::optional<Index> resolveComponentId(
+        ModelLayer& model_layer,
+        Index fallback_component_id,
+        const std::vector<core::ArgObject>& args) const
+    {
+        (void)model_layer;
+        (void)args;
+        if (fallback_component_id < 0)
+            return std::nullopt;
+        return fallback_component_id;
+    }
     /**
      * @brief 执行算法功能
      * @param context

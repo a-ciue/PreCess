@@ -49,6 +49,18 @@ void MeshSelectManager::setSelectMode(SelectMode select_mode)
     applyHighlightStyle(select_mode);
 }
 
+void MeshSelectManager::setFaceSelectionByAngle(bool enabled, double angle_deg)
+{
+    face_selection_spread_options_.enabled = enabled;
+    face_selection_spread_options_.angle_deg = angle_deg;
+
+    // 每个 Component 拥有独立选择器，需要同步更新已经创建的面选择器。
+    for (auto& component_selector : component_selectors_) {
+        if (auto* face_selector = dynamic_cast<FaceSelectorHighlight*>(component_selector.second.get()))
+            face_selector->setSpreadOptions(face_selection_spread_options_);
+    }
+}
+
 void MeshSelectManager::clearSelection()
 {
     this->component_selectors_.clear();
@@ -86,9 +98,13 @@ SelectorHighlight* MeshSelectManager::getOrCreateSelector(Index component_id)
     unsigned int pid = component_selectors_.size();
     std::unique_ptr<SelectorHighlight> sel;
     switch (select_mode_) {
-    case SelectMode::Face:
-        sel = std::make_unique<FaceSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
+    case SelectMode::Face: {
+        auto face_selector = std::make_unique<FaceSelectorHighlight>(
+            *renderer_, *highlight_data_, pid, std::move(*select_op));
+        face_selector->setSpreadOptions(face_selection_spread_options_);
+        sel = std::move(face_selector);
         break;
+    }
     case SelectMode::Edge:
         sel = std::make_unique<EdgeSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
         break;
@@ -97,9 +113,6 @@ SelectorHighlight* MeshSelectManager::getOrCreateSelector(Index component_id)
         break;
     case SelectMode::Vertex:
         sel = std::make_unique<VertexSelectorHighlight>(*renderer_, *highlight_data_, pid, std::move(*select_op));
-        break;
-    case SelectMode::Block:
-        sel = std::make_unique<BlockSelectorHighlight>(*renderer_, *highlight_actor_, std::move(*select_op));
         break;
     default:
         return nullptr;

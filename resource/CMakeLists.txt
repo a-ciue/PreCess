@@ -10,6 +10,7 @@ qt_add_resources(${MYNAME} "images"
         toolbar/TetGen.svg
         toolbar/cmd.svg
         toolbar/gmsh.svg
+        toolbar/PreCess_extra_plugin.svg
         modeltree/show.svg
         modeltree/hide.svg
 )

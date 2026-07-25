@@ -16,6 +16,8 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
 #include <catch2/catch_test_macros.hpp>
 
@@ -67,6 +69,9 @@ static void requireReadableGeometryModel(const ModelPayload& payload)
             && component->geometry
             && component->geometry->rootShape
             && !component->geometry->rootShape->IsNull()) {
+            REQUIRE(component->geometry->rootShape->ShapeType() == TopAbs_COMPOUND);
+            for (TopoDS_Iterator it(*component->geometry->rootShape); it.More(); it.Next())
+                REQUIRE(it.Value().ShapeType() != TopAbs_COMPOUND);
             hasValidGeometry = true;
             break;
         }

@@ -47,27 +47,47 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     info->name = meta_data.name;
     info->display_name = meta_data.display_name;
     info->description = meta_data.description;
+    info->interactive = meta_data.interactive;
     info->arg_types = registrar.argTypes();
     info->menus = registrar.menuItems();
     info->key_bindings = registrar.keyBindings();
 
-    // 装配功能上下文：参数集 + 动态 provider（经系统转发，provider 后设置也生效）
-    FeatureEntry entry;
+    // 条目就地入库再装配：InteractionContext 持有本条目 InteractionState 的指针，
+    // 先移动入库会使指针悬垂，故先 try_emplace 再装配上下文
+    auto [it, inserted] = entries_.try_emplace(meta_data.name);
+    FeatureEntry& entry = it->second;
+    (void)inserted;
+
+    // 装配功能上下文：参数集 + 交互上下文 + 动态 provider（经系统转发，provider 后设置也生效）
     entry.params = std::make_unique<FeatureParams>(info->arg_types);
     entry.context = std::make_unique<FeatureContext>(FeatureContext {
         *model_layer_,
         *event_bus_,
         *entry.params,
+        entry.interaction_context,
         [this]() { return active_model_provider_ ? active_model_provider_() : std::optional<Index> {}; },
         [this]() { return active_component_provider_ ? active_component_provider_() : std::optional<Index> {}; },
         [this](Index component_id) { return model_layer_->getComponentOperator(component_id); },
     });
     entry.info = std::move(info);
 
-    // 先激活再入库：激活中抛异常不会留下半注册状态
-    handler->activate(*entry.context);
+    // 注入单激活约定：本功能 setActive(true) 时先下线其他功能的交互
+    entry.interaction_context.deactivate_others_ = [this, feature_name = meta_data.name] {
+        for (auto&& [other_name, other] : entries_) {
+            if (other_name != feature_name) {
+                other.interaction_state.active = false;
+            }
+        }
+    };
+
+    // 激活失败则撤掉整个条目，不留下半注册状态
+    try {
+        handler->activate(*entry.context);
+    } catch (...) {
+        entries_.erase(it);
+        throw;
+    }
     entry.handler = std::move(handler);
-    entries_.emplace(meta_data.name, std::move(entry));
 
     spdlog::info("FeatureSystem::registerHandler: Registered feature '{}'", meta_data.name);
     on_feature_infos_changed_();
@@ -129,6 +149,16 @@ const FeatureParams* FeatureSystem::params(const std::string& unique_name) const
 {
     auto it = entries_.find(unique_name);
     return it == entries_.end() ? nullptr : it->second.params.get();
+}
+
+interaction::InteractionState* FeatureSystem::activeInteraction()
+{
+    for (auto&& [feature_name, entry] : entries_) {
+        if (entry.info->interactive && entry.interaction_state.active) {
+            return &entry.interaction_state;
+        }
+    }
+    return nullptr;
 }
 
 void FeatureSystem::setOnFeatureInfosChanged(std::function<void()> callback)
