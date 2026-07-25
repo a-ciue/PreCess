@@ -154,8 +154,8 @@ cmake --build . --target install --config Debug
 
 REM Clone and build OpenCASCADE 8.0.0
 pushd "%sourcePath%/OCCT"
-tar -xf ./3rdparty-vc14-64-temp.zip -C .
-tar -xf ./3rdparty-vc14-64.zip -C .
+"%SystemRoot%\System32\tar.exe" -xf ./3rdparty-vc14-64-temp.zip -C .
+"%SystemRoot%\System32\tar.exe" -xf ./3rdparty-vc14-64.zip -C .
 cmake -S . -B ./build "-GNinja Multi-Config" "-DINSTALL_DIR:PATH=%depsPath%\OpenCASCADE8.0.0" "-D3RDPARTY_DIR:PATH=%cd%/3rdparty-vc14-64" "-D3RDPARTY_FREETYPE_DIR:PATH=%depsPath%\freetype2.14.1" -DUSE_VTK:BOOL=1 "-D3RDPARTY_VTK_DIR:PATH=%depsPath%\VTK9.6.2" -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
@@ -243,14 +243,14 @@ if errorlevel 1 (
 popd
 
 REM CGAL 6.2（header-only，解压后剔除数据/示例/文档即可用）
-tar -xf CGAL-6.2.zip -C "%depsPath%"
+"%SystemRoot%\System32\tar.exe" -xf CGAL-6.2.zip -C "%depsPath%"
 for %%D in (data demo examples doc_html) do rmdir /s /q "%depsPath%\CGAL-6.2\%%D"
 
 REM ============ Boost 1.91.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
 REM CGAL 仅需 Boost 头文件；闭包内编译产物按范式构建多配置动态库，消费方 PATH 需含 boost-1.91.0/bin
 mkdir boost-src
 REM 排除压缩包内 doc 符号链接（Windows 自带 tar 无权限创建会中断）
-tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude=*/libs/decimal/doc/modules/ROOT/examples" || (
+"%SystemRoot%\System32\tar.exe" -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude=*/libs/decimal/doc/modules/ROOT/examples" || (
     echo Boost 压缩包解压失败。
     pause
     exit /b 1
