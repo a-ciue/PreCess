@@ -37,8 +37,6 @@ struct HandlerMetaData {
     std::string display_name {}; //> 功能 UI 展示用名称
     std::string description {}; //> 功能描述
     bool interactive {}; //> 是否声明视口交互能力（功能经 interaction 上下文订阅交互回调）
-    std::string execute_text {}; //> 参数执行模式的 UI 名称（interactive 功能专用，空时 UI 用默认"参数执行"）
-    std::string interaction_guide {}; //> 交互模式的操作说明文字（interactive 功能专用）
 };
 
 /**
@@ -96,13 +94,14 @@ public:
      */
     interaction::InteractionState* activeInteraction();
     /**
-     * @brief 设置指定功能的交互激活态（声明 interactive 的功能专用，UI 模式切换驱动）
+     * @brief 设置当前活动功能的交互激活态（声明 interactive 的功能专用，活动操作切换驱动）
      *
      * 单激活约定：激活一个功能会经 InteractionContext 下线其他功能的交互；
-     * 启停为幂等的状态应用，重复设置无副作用。
-     * @return 功能存在且声明 interactive 时为 true
+     * 启停为幂等的状态应用（InteractionContext 以目标状态为守卫），重复设置无副作用。
+     * @param unique_name 要激活的功能唯一名称；空串表示全部下线（活动操作无交互能力）
+     * @return 名称为空，或功能存在且声明 interactive 时为 true
      */
-    bool setInteractionActive(const std::string& unique_name, bool on);
+    bool setInteractionActive(const std::string& unique_name);
     /**
      * @brief 设置功能信息变更回调函数
      */

@@ -244,7 +244,7 @@ TEST_CASE("FeatureSystem re-registering same name replaces old handler", "[Featu
     REQUIRE(system.getFeatureInfos().size() == 1);
 }
 
-TEST_CASE("FeatureSystem propagates interactive and text metadata to FeatureInfo", "[FeatureSystem]")
+TEST_CASE("FeatureSystem propagates interactive metadata to FeatureInfo", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -252,18 +252,14 @@ TEST_CASE("FeatureSystem propagates interactive and text metadata to FeatureInfo
 
     auto meta_data = makeMetaData();
     meta_data.interactive = true;
-    meta_data.execute_text = "尺寸标注";
-    meta_data.interaction_guide = "点击两点成线";
     FeatureSystem::SystemHandlerPtr handler { new FakeFeatureHandler };
     REQUIRE(system.registerHandler(meta_data, std::move(handler)));
 
     auto infos = system.getFeatureInfos();
     REQUIRE(infos.size() == 1);
     REQUIRE(infos[0]->interactive);
-    REQUIRE(infos[0]->execute_text == "尺寸标注");
-    REQUIRE(infos[0]->interaction_guide == "点击两点成线");
 
-    // 未声明时为空串与 false
+    // 未声明时为 false
     FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
     auto plain_meta = makeMetaData();
     plain_meta.name = "PlainFeature";
@@ -273,8 +269,6 @@ TEST_CASE("FeatureSystem propagates interactive and text metadata to FeatureInfo
     for (const FeatureInfo* info : infos) {
         if (info->name == "PlainFeature") {
             REQUIRE_FALSE(info->interactive);
-            REQUIRE(info->execute_text.empty());
-            REQUIRE(info->interaction_guide.empty());
         }
     }
 }
@@ -338,18 +332,18 @@ TEST_CASE("FeatureSystem::setInteractionActive drives activation by feature name
     REQUIRE(system.registerHandler(plain_meta, std::move(plain)));
 
     // 未注册功能与未声明 interactive 的功能不可激活
-    REQUIRE_FALSE(system.setInteractionActive("Unknown", true));
-    REQUIRE_FALSE(system.setInteractionActive("PlainFeature", true));
+    REQUIRE_FALSE(system.setInteractionActive("Unknown"));
+    REQUIRE_FALSE(system.setInteractionActive("PlainFeature"));
     REQUIRE(system.activeInteraction() == nullptr);
 
     // 按名激活（幂等：重复设置无副作用）
-    REQUIRE(system.setInteractionActive("InteractiveFeature", true));
-    REQUIRE(system.setInteractionActive("InteractiveFeature", true));
+    REQUIRE(system.setInteractionActive("InteractiveFeature"));
+    REQUIRE(system.setInteractionActive("InteractiveFeature"));
     auto* active = system.activeInteraction();
     REQUIRE(active != nullptr);
     REQUIRE(active->active);
 
-    // 按名下线
-    REQUIRE(system.setInteractionActive("InteractiveFeature", false));
+    // 活动操作切到无交互能力的功能：空串全部下线
+    REQUIRE(system.setInteractionActive(""));
     REQUIRE(system.activeInteraction() == nullptr);
 }

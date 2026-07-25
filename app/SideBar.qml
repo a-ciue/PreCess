@@ -19,27 +19,12 @@ Item{
 
     readonly property var activeOp: App.activeOperation
     readonly property bool hasInteractive: !!(activeOp && activeOp.info && activeOp.info.interactive)
-    readonly property bool inInteraction: hasInteractive && interactionMode === 0
-    property int interactionMode: 0 
-    property string _interactionName: ""
 
     onActiveOpChanged: {
         parameters = []
         resultText = ""
-        applyInteractionMode()
-    }
-    onInteractionModeChanged: applyInteractionMode()
-    onHasInteractiveChanged: applyInteractionMode()
-
-    function applyInteractionMode() {
-        var want = (hasInteractive && interactionMode === 0 && activeOp) ? activeOp.info.name : ""
-        if (want === _interactionName)
-            return
-        if (_interactionName)
-            QModelManager.featureSystem.setInteractionActive(_interactionName, false)
-        _interactionName = want
-        if (want)
-            QModelManager.featureSystem.setInteractionActive(want, true)
+        // 活动操作声明视口交互能力则激活其交互，否则全部下线（幂等，守卫在功能系统内）
+        QModelManager.featureSystem.setInteractionActive(hasInteractive ? activeOp.info.name : "")
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
@@ -58,37 +43,16 @@ Item{
         }
     }
 
-    Row{
-        id: interactionModeSwitch
-        visible: root.hasInteractive
-        height: visible ? 34 : 0
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        spacing: 8
-        RadioButton{
-            text: "交互模式"
-            autoExclusive: false
-            checked: root.interactionMode === 0
-            onClicked: root.interactionMode = 0
-        }
-        RadioButton{
-            text: (root.activeOp && root.activeOp.info && root.activeOp.info.execute_text) ? root.activeOp.info.execute_text : "参数执行"
-            autoExclusive: false
-            checked: root.interactionMode === 1
-            onClicked: root.interactionMode = 1
-        }
-    }
     RowLayout{
         id: buttonRow
-        anchors.top: interactionModeSwitch.bottom
+        anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height: 30
         Button{
             id: commitButton
             text: "执行"
-            visible: !root.inInteraction
+            visible: !root.hasInteractive
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
             onClicked:{
@@ -101,7 +65,7 @@ Item{
         Button{
             id: clearButton
             text: "清除"
-            visible: root.inInteraction
+            visible: root.hasInteractive
             Layout.fillWidth: true
             onClicked:{
                 if (App.registry.renderWindow)
@@ -119,7 +83,7 @@ Item{
         readOnly: true
         text: root.resultText
         wrapMode: TextEdit.Wrap
-        visible: text.length > 0 && !root.inInteraction
+        visible: text.length > 0
         background: Rectangle {
             color: "#f0f0f0"
             border.color: "#d0d0d0"
@@ -132,7 +96,6 @@ Item{
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         clip: true
-        visible: !root.inInteraction
         ColumnLayout{
             anchors.fill: parent
             ListView{

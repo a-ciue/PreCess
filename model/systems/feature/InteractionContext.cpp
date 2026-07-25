@@ -43,6 +43,9 @@ systems::interaction::AnnotationBatch& InteractionContext::annotations()
 
 void InteractionContext::setActive(bool on)
 {
+    // 幂等守卫：目标状态已达则直接返回，重复启停无副作用
+    if (state_->active == on)
+        return;
     // 单激活约定：激活自己前先下线其他功能的交互
     if (on && deactivate_others_) {
         deactivate_others_();

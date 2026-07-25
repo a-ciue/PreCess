@@ -48,8 +48,6 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     info->display_name = meta_data.display_name;
     info->description = meta_data.description;
     info->interactive = meta_data.interactive;
-    info->execute_text = meta_data.execute_text;
-    info->interaction_guide = meta_data.interaction_guide;
     info->arg_types = registrar.argTypes();
     info->menus = registrar.menuItems();
     info->key_bindings = registrar.keyBindings();
@@ -163,14 +161,21 @@ interaction::InteractionState* FeatureSystem::activeInteraction()
     return nullptr;
 }
 
-bool FeatureSystem::setInteractionActive(const std::string& unique_name, bool on)
+bool FeatureSystem::setInteractionActive(const std::string& unique_name)
 {
+    // 空串 = 活动操作无交互能力：全部下线（重复调用由 InteractionContext 的目标状态守卫兜底）
+    if (unique_name.empty()) {
+        for (auto&& [name, entry] : entries_)
+            entry.interaction_context.setActive(false);
+        return true;
+    }
+
     auto it = entries_.find(unique_name);
     if (it == entries_.end() || !it->second.info->interactive) {
         spdlog::warn("FeatureSystem::setInteractionActive: feature '{}' not found or not interactive", unique_name);
         return false;
     }
-    it->second.interaction_context.setActive(on);
+    it->second.interaction_context.setActive(true); // 单激活约定：自动下线其他功能
     return true;
 }
 

@@ -17,11 +17,9 @@ class QFeatureInfo : public QObject {
     Q_PROPERTY(QString icon READ icon CONSTANT)
     Q_PROPERTY(QList<QArgType*> arg_types READ argTypes CONSTANT)
     Q_PROPERTY(bool interactive READ interactive CONSTANT)
-    Q_PROPERTY(QString execute_text READ executeText CONSTANT)
-    Q_PROPERTY(QString interaction_guide READ interactionGuide CONSTANT)
 public:
     QFeatureInfo(QString name, QString display_name, QString description, QString menu_path, QString icon, QList<QArgType*> arg_types,
-        bool interactive = false, QString execute_text = {}, QString interaction_guide = {}, QObject* parent = nullptr)
+        bool interactive = false, QObject* parent = nullptr)
         : QObject(parent)
         , name_(std::move(name))
         , display_name_(std::move(display_name))
@@ -30,8 +28,6 @@ public:
         , icon_(std::move(icon))
         , arg_types_(std::move(arg_types))
         , interactive_(interactive)
-        , execute_text_(std::move(execute_text))
-        , interaction_guide_(std::move(interaction_guide))
     {
     }
     QString name() const { return name_; }
@@ -41,8 +37,6 @@ public:
     QString icon() const { return icon_; }
     QList<QArgType*> argTypes() const { return arg_types_; }
     bool interactive() const { return interactive_; }
-    QString executeText() const { return execute_text_; }
-    QString interactionGuide() const { return interaction_guide_; }
 
 private:
     QString name_; //> 功能唯一名称，用作索引
@@ -52,7 +46,5 @@ private:
     QString icon_; //> 自定义图标的 qrc 资源路径，为空时按插件名映射默认图标
     QList<QArgType*> arg_types_; //> 功能参数类型列表
     bool interactive_ = false; //> 是否声明视口交互能力
-    QString execute_text_; //> 参数执行模式的 UI 名称（interactive 功能专用）
-    QString interaction_guide_; //> 交互模式的操作说明文字（interactive 功能专用）
 };
 #endif // !Q_FEATURE_INFO_H

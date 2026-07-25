@@ -103,9 +103,9 @@ bool QFeatureSystemAdaptor::postKeyEvent(int key, int modifiers, bool pressed)
     return feature_system_->dispatchKeyEvent(KeyEvent { key, modifiers, pressed });
 }
 
-bool QFeatureSystemAdaptor::setInteractionActive(const QString& unique_name, bool on)
+bool QFeatureSystemAdaptor::setInteractionActive(const QString& unique_name)
 {
-    return feature_system_->setInteractionActive(unique_name.toStdString(), on);
+    return feature_system_->setInteractionActive(unique_name.toStdString());
 }
 
 void QFeatureSystemAdaptor::setActiveModel(int id)
@@ -139,9 +139,7 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
                 QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
                 QString::fromStdString(menu.icon),
                 std::move(args),
-                feature_info->interactive,
-                QString::fromStdString(feature_info->execute_text),
-                QString::fromStdString(feature_info->interaction_guide)));
+                feature_info->interactive));
         }
     }
     return infos;
