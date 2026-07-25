@@ -100,6 +100,8 @@ pushd gmsh-occ8
 git checkout --detach 86596d7902a1b00e23641ac5c904b7c1f880ce9f
 popd
 curl -L -o OCCT/3rdparty-vc14-64-temp.zip --connect-timeout 30 https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip
+git clone --single-branch --depth 1 --branch v6.2 https://github.com/CGAL/cgal.git "%depsPath%\CGAL-6.2"
+curl -L -o boost-1.91.0-1-cmake.tar.xz --connect-timeout 30 https://github.com/boostorg/boost/releases/download/boost-1.91.0-1/boost-1.91.0-1-cmake.tar.xz
 
 if not defined qtPath (
     REM Clone and build Qt 6.8.3 source code
@@ -240,23 +242,9 @@ if errorlevel 1 (
 
 popd
 
-REM ============ CGAL 6.2（header-only，无需编译） ============
-REM 直接克隆到依赖目录；GitHub 不可达时回退 Debian 镜像
-git clone --single-branch --depth 1 --branch v6.2 https://github.com/CGAL/cgal.git "%depsPath%\CGAL-6.2" || (
-    echo GitHub 克隆失败，改用 Debian 镜像下载 CGAL...
-    curl -L -o cgal.tar.xz --connect-timeout 30 https://deb.debian.org/debian/pool/main/c/cgal/cgal_6.2.orig.tar.xz && tar -xf cgal.tar.xz -C "%depsPath%"
-)
-
 REM ============ Boost 1.91.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
 REM CGAL 官方文档确认仅需 Boost 头文件；CGAL_Core 依赖 Boost.Multiprecision（纯头文件）。
-REM 使用 GitHub 发布页的 -cmake 压缩包（保留 libs/<lib>/include 布局并附带 tools/cmake；
-REM 普通 b2 压缩包布局不兼容 CMake 安装，git 克隆则需拉 172 个子模块、慢且易断）；
-REM curl -C - 支持断点续传；升级 Boost 需同步版本号、文件名与安装目录名
-curl -L -o boost-1.91.0-1-cmake.tar.xz --connect-timeout 30 -C - https://github.com/boostorg/boost/releases/download/boost-1.91.0-1/boost-1.91.0-1-cmake.tar.xz || (
-    echo Boost 压缩包下载失败。
-    pause
-    exit /b 1
-)
+REM 压缩包已随其他依赖在脚本前部统一下载；升级 Boost 需同步版本号、文件名与安装目录名
 mkdir boost-src
 REM 压缩包内仅 libs/decimal/doc/modules/ROOT/examples 一个符号链接（指向文档示例目录），
 REM Windows 自带 tar 在非开发者模式下创建符号链接会报 Invalid argument 中断，直接排除
@@ -269,7 +257,7 @@ pushd boost-src
 
 REM BOOST_INCLUDE_LIBRARIES 按 CGAL include/ 树实际 #include 的组件裁剪（依赖闭包自动带上，
 REM 对 CGAL 6.2 树实测核对过），闭包内仅 container、program_options、random、thread、chrono 等
-REM 附带小型静态库编译（其余均为纯头文件安装）；未列入
+REM 附带小型编译型库（其余均为纯头文件安装）；未列入
 REM filesystem/iostreams/timer/spirit 等：CGAL 中仅 ImageIO/Classification 等本项目不可达的包
 REM 引用它们。CGAL 新增 Boost 组件引用时需扩充此清单
 REM 虽然 CGAL 仅需头文件，但闭包内有编译产物，按脚本统一范式构建多配置（默认 RelWithDebInfo + Debug）；
@@ -282,9 +270,6 @@ cmake --build . --target install --config Debug
 if "!buildRelease!"=="1" cmake --build . --target install --config Release
 popd
 popd
-
-REM 安装成功后源树（数 GB）不再需要，删除释放空间；压缩包保留以便重装
-rmdir /s /q boost-src
 
 echo 处理完成！
 
