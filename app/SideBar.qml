@@ -24,7 +24,10 @@ Item{
         parameters = []
         resultText = ""
         // 活动操作声明视口交互能力则激活其交互，否则全部下线（幂等，守卫在功能系统内）
-        QModelManager.featureSystem.setInteractionActive(hasInteractive ? activeOp.info.name : "")
+        // 必须直接读 activeOp 判定：本处理器与 hasInteractive 绑定由同一变更驱动，
+        // 求值次序无保证，读绑定可能拿到旧值导致激活被跳过
+        var interactive = !!(activeOp && activeOp.info && activeOp.info.interactive)
+        QModelManager.featureSystem.setInteractionActive(interactive ? activeOp.info.name : "")
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
