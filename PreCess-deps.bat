@@ -273,8 +273,15 @@ REM 附带小型静态库编译（实测秒级，单配置 Release），其余�
 REM filesystem/iostreams/timer/spirit 等：CGAL 中仅 ImageIO/Classification 等本项目不可达的包
 REM 引用它们。CGAL 新增 Boost 组件引用时需扩充此清单
 cmake -S . -B ./build -GNinja "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.91.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;container_hash;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;stl_interfaces;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
-cmake --build ./build --target install
+cmake --build ./build --target install || (
+    echo Boost 安装失败。
+    pause
+    exit /b 1
+)
 popd
+
+REM 安装成功后源树（数 GB）不再需要，删除释放空间；压缩包保留以便重装
+rmdir /s /q boost-src
 
 echo 处理完成！
 
