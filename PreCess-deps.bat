@@ -269,15 +269,16 @@ pushd boost-src
 
 REM BOOST_INCLUDE_LIBRARIES 按 CGAL include/ 树实际 #include 的组件裁剪（依赖闭包自动带上，
 REM 对 CGAL 6.2 树实测核对过），闭包内仅 container、program_options、random、thread、chrono 等
-REM 附带小型静态库编译（实测秒级，单配置 Release），其余均为纯头文件安装；未列入
+REM 附带小型静态库编译（其余均为纯头文件安装）；未列入
 REM filesystem/iostreams/timer/spirit 等：CGAL 中仅 ImageIO/Classification 等本项目不可达的包
 REM 引用它们。CGAL 新增 Boost 组件引用时需扩充此清单
-cmake -S . -B ./build -GNinja "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.91.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;container_hash;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;stl_interfaces;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
-cmake --build ./build --target install || (
-    echo Boost 安装失败。
-    pause
-    exit /b 1
-)
+REM 虽然 CGAL 仅需头文件，但闭包内有编译产物，按脚本统一范式构建多配置（默认 RelWithDebInfo + Debug）
+cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i -DCMAKE_DEBUG_POSTFIX=d "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.91.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;container_hash;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;stl_interfaces;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
+pushd build
+if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
+cmake --build . --target install --config Debug
+if "!buildRelease!"=="1" cmake --build . --target install --config Release
+popd
 popd
 
 REM 安装成功后源树（数 GB）不再需要，删除释放空间；压缩包保留以便重装
