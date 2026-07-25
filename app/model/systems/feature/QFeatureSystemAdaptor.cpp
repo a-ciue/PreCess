@@ -134,7 +134,9 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
                 QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
                 QString::fromStdString(menu.icon),
                 std::move(args),
-                feature_info->interactive));
+                feature_info->interactive,
+                QString::fromStdString(feature_info->execute_text),
+                QString::fromStdString(feature_info->interaction_guide)));
         }
     }
     return infos;

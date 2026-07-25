@@ -1,0 +1,2 @@
+precess_add_test(TestMeasureHandler TestMeasureHandler.cpp)
+precess_test_link_libraries(TestMeasureHandler MeasurePluginlib DataTest TKPrim TKBRep TKTopAlgo TKernel)

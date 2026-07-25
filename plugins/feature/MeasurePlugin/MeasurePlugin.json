@@ -1,0 +1,11 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "MeasurePlugin",
+    "display_name": "测量",
+    "description": "交互式测量与尺寸标注：两点成线、共点夹角、距离/角度/半径/长度/面积/体积/包围盒/重心",
+    "interactive": true,
+    "execute_text": "尺寸标注",
+    "interaction_guide": "依次点击拾取两点构成一条直线并显示长度；可连续画多条线，两线共端点时自动显示夹角；同一点连点两次取消当前起笔。"
+  }
+}
