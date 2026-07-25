@@ -240,34 +240,37 @@ if errorlevel 1 (
 
 popd
 
-REM ============ CGAL 6.0.1（header-only，无需编译） ============
+REM ============ CGAL 6.2（header-only，无需编译） ============
 REM 直接克隆到依赖目录；GitHub 不可达时回退 Debian 镜像
-git clone --single-branch --depth 1 --branch v6.0.1 https://github.com/CGAL/cgal.git "%depsPath%\CGAL-6.0.1" || (
+git clone --single-branch --depth 1 --branch v6.2 https://github.com/CGAL/cgal.git "%depsPath%\CGAL-6.2" || (
     echo GitHub 克隆失败，改用 Debian 镜像下载 CGAL...
-    curl -L -o cgal.tar.xz --connect-timeout 30 https://deb.debian.org/debian/pool/main/c/cgal/cgal_6.0.1.orig.tar.xz && tar -xf cgal.tar.xz -C "%depsPath%"
+    curl -L -o cgal.tar.xz --connect-timeout 30 https://deb.debian.org/debian/pool/main/c/cgal/cgal_6.2.orig.tar.xz && tar -xf cgal.tar.xz -C "%depsPath%"
 )
 
-REM ============ Boost 1.87.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
+REM ============ Boost 1.91.0（header-only，经 CMake 安装生成官方 BoostConfig） ============
 REM CGAL 官方文档确认仅需 Boost 头文件；CGAL_Core 依赖 Boost.Multiprecision（纯头文件）。
-REM boostorg/cmake 的 CMake 基础设施不兼容官方 release zip（头文件被扁平化进 boost/ 目录），
-REM 需使用 GitHub 的 cmake 布局压缩包；升级 Boost 需同步版本号、包名与安装目录名
-curl -L -o boost-1.87.0-cmake.tar.xz --connect-timeout 30 https://github.com/boostorg/boost/releases/download/boost-1.87.0/boost-1.87.0-cmake.tar.xz || (
-    echo Boost cmake 布局包下载失败。
+REM 使用 GitHub 发布页的 -cmake 压缩包（保留 libs/<lib>/include 布局并附带 tools/cmake；
+REM 普通 b2 压缩包布局不兼容 CMake 安装，git 克隆则需拉 172 个子模块、慢且易断）；
+REM curl -C - 支持断点续传；升级 Boost 需同步版本号、文件名与安装目录名
+curl -L -o boost-1.91.0-1-cmake.tar.xz --connect-timeout 30 -C - https://github.com/boostorg/boost/releases/download/boost-1.91.0-1/boost-1.91.0-1-cmake.tar.xz || (
+    echo Boost 压缩包下载失败。
     pause
     exit /b 1
 )
-tar -xf boost-1.87.0-cmake.tar.xz -C "%sourcePath%" || (
-    echo Boost cmake 布局包解压失败。
+mkdir boost-src
+tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 || (
+    echo Boost 压缩包解压失败。
     pause
     exit /b 1
 )
+pushd boost-src
 
-REM BOOST_INCLUDE_LIBRARIES 按 CGAL 6.0.1 include/ 树实际 #include 的组件裁剪（依赖闭包自动带上），
-REM 闭包内仅 container、program_options、random、thread、chrono 等附带小型静态库编译（实测秒级，
-REM 单配置 Release），其余均为纯头文件安装；未列入 filesystem/iostreams/timer/spirit 等：CGAL 中
-REM 仅 ImageIO/Classification 等本项目不可达的包引用它们。CGAL 新增 Boost 组件引用时需扩充此清单
-pushd "%sourcePath%\boost-1.87.0"
-cmake -S . -B ./build -GNinja "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.87.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
+REM BOOST_INCLUDE_LIBRARIES 按 CGAL include/ 树实际 #include 的组件裁剪（依赖闭包自动带上，
+REM 对 CGAL 6.2 树实测核对过），闭包内仅 container、program_options、random、thread、chrono 等
+REM 附带小型静态库编译（实测秒级，单配置 Release），其余均为纯头文件安装；未列入
+REM filesystem/iostreams/timer/spirit 等：CGAL 中仅 ImageIO/Classification 等本项目不可达的包
+REM 引用它们。CGAL 新增 Boost 组件引用时需扩充此清单
+cmake -S . -B ./build -GNinja "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.91.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;container_hash;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;stl_interfaces;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
 cmake --build ./build --target install
 popd
 
