@@ -555,20 +555,6 @@ void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
     });
 }
 
-void QRenderWindow::clearInteraction()
-{
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        interaction_service_->clear();
-    });
-}
-
-void QRenderWindow::postInteractionAction(int param_index)
-{
-    dispatch_async([this, param_index](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        interaction_service_->postAction(param_index);
-    });
-}
-
 void QRenderWindow::setClick()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {

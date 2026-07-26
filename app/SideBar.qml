@@ -18,14 +18,11 @@ Item{
     property var resultText: ""
 
     readonly property var activeOp: App.activeOperation
-    readonly property bool hasInteractive: !!(activeOp && activeOp.info && activeOp.info.interactive)
 
     onActiveOpChanged: {
         parameters = []
         resultText = ""
         // 活动操作声明视口交互能力则激活其交互，否则全部下线（幂等，守卫在功能系统内）
-        // 必须直接读 activeOp 判定：本处理器与 hasInteractive 绑定由同一变更驱动，
-        // 求值次序无保证，读绑定可能拿到旧值导致激活被跳过
         var interactive = !!(activeOp && activeOp.info && activeOp.info.interactive)
         QModelManager.featureSystem.setInteractionActive(interactive ? activeOp.info.name : "")
     }
@@ -55,7 +52,6 @@ Item{
         Button{
             id: commitButton
             text: "执行"
-            visible: !root.hasInteractive
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
             onClicked:{
@@ -70,13 +66,8 @@ Item{
             text: "确认"
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
-            // 确认 = 结束当前操作：交互功能先及时清理交互系统（标注立即消失），
-            // 再取消操作选中（停用交互）；再次执行需重新点选算法
-            onClicked:{
-                if (root.hasInteractive && App.registry.renderWindow)
-                    App.registry.renderWindow.clearInteraction()
-                App.activeOperation = null
-            }
+            // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
+            onClicked: App.activeOperation = null
         }
     }
     TextArea {
@@ -430,18 +421,10 @@ Item{
             spacing: 5
             width: parameterList.width
             Button{
-                // Button 是无值触发器：交互功能的动作经渲染线程投递（on_action，线程模型约定）；
-                // 普通功能走参数事件广播（计数器载荷，功能约定忽略值只读参数下标）
+                // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标
                 text: model.name
                 Layout.fillWidth: true
-                onClicked:{
-                    if (root.hasInteractive) {
-                        if (App.registry.renderWindow)
-                            App.registry.renderWindow.postInteractionAction(index)
-                    } else {
-                        root.setParam(index, (root.parameters[index] || 0) + 1)
-                    }
-                }
+                onClicked: root.setParam(index, (root.parameters[index] || 0) + 1)
             }
         }
     }
