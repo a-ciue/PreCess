@@ -314,7 +314,7 @@ TEST_CASE("FeatureSystem::activeInteraction tracks interactive activation", "[Fe
     REQUIRE(system.activeInteraction() == nullptr);
 }
 
-TEST_CASE("FeatureSystem::setInteractionActive drives activation by feature name", "[FeatureSystem]")
+TEST_CASE("FeatureSystem::setFeatureActive drives activation by feature name", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -332,18 +332,18 @@ TEST_CASE("FeatureSystem::setInteractionActive drives activation by feature name
     REQUIRE(system.registerHandler(plain_meta, std::move(plain)));
 
     // 未注册功能与未声明 interactive 的功能不可激活
-    REQUIRE_FALSE(system.setInteractionActive("Unknown"));
-    REQUIRE_FALSE(system.setInteractionActive("PlainFeature"));
+    REQUIRE_FALSE(system.setFeatureActive("Unknown"));
+    REQUIRE_FALSE(system.setFeatureActive("PlainFeature"));
     REQUIRE(system.activeInteraction() == nullptr);
 
     // 按名激活（幂等：重复设置无副作用）
-    REQUIRE(system.setInteractionActive("InteractiveFeature"));
-    REQUIRE(system.setInteractionActive("InteractiveFeature"));
+    REQUIRE(system.setFeatureActive("InteractiveFeature"));
+    REQUIRE(system.setFeatureActive("InteractiveFeature"));
     auto* active = system.activeInteraction();
     REQUIRE(active != nullptr);
     REQUIRE(active->active);
 
     // 活动操作切到无交互能力的功能：空串全部下线
-    REQUIRE(system.setInteractionActive(""));
+    REQUIRE(system.setFeatureActive(""));
     REQUIRE(system.activeInteraction() == nullptr);
 }

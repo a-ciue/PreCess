@@ -161,7 +161,7 @@ interaction::InteractionState* FeatureSystem::activeInteraction()
     return nullptr;
 }
 
-bool FeatureSystem::setInteractionActive(const std::string& unique_name)
+bool FeatureSystem::setFeatureActive(const std::string& unique_name)
 {
     // 空串 = 活动操作无交互能力：全部下线（重复调用由 InteractionContext 的目标状态守卫兜底）
     if (unique_name.empty()) {
@@ -172,7 +172,7 @@ bool FeatureSystem::setInteractionActive(const std::string& unique_name)
 
     auto it = entries_.find(unique_name);
     if (it == entries_.end() || !it->second.info->interactive) {
-        spdlog::warn("FeatureSystem::setInteractionActive: feature '{}' not found or not interactive", unique_name);
+        spdlog::warn("FeatureSystem::setFeatureActive: feature '{}' not found or not interactive", unique_name);
         return false;
     }
     it->second.interaction_context.setActive(true); // 单激活约定：自动下线其他功能

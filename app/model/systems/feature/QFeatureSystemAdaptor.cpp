@@ -103,9 +103,9 @@ bool QFeatureSystemAdaptor::postKeyEvent(int key, int modifiers, bool pressed)
     return feature_system_->dispatchKeyEvent(KeyEvent { key, modifiers, pressed });
 }
 
-bool QFeatureSystemAdaptor::setInteractionActive(const QString& unique_name)
+bool QFeatureSystemAdaptor::setFeatureActive(const QString& unique_name)
 {
-    return feature_system_->setInteractionActive(unique_name.toStdString());
+    return feature_system_->setFeatureActive(unique_name.toStdString());
 }
 
 void QFeatureSystemAdaptor::setActiveModel(int id)

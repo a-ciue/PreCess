@@ -24,7 +24,7 @@ Item{
         resultText = ""
         // 活动操作声明视口交互能力则激活其交互，否则全部下线（幂等，守卫在功能系统内）
         var interactive = !!(activeOp && activeOp.info && activeOp.info.interactive)
-        QModelManager.featureSystem.setInteractionActive(interactive ? activeOp.info.name : "")
+        QModelManager.featureSystem.setFeatureActive(interactive ? activeOp.info.name : "")
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
