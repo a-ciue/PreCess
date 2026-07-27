@@ -26,7 +26,8 @@
 #include <cmath>
 
 namespace {
-//! @brief 每帧按 1-2-5 整数档反算精确段长并居中重设端点，使标尺段长与刻度值随相机缩放联动更新
+//! @brief 相机/视口输入未变则整段跳过；变化时按 1-2-5 整数档反算精确段长并居中重设端点，
+//!        使标尺段长与刻度值随相机缩放联动更新
 class ScaleBarRangeUpdater : public vtkCommand {
 public:
     static ScaleBarRangeUpdater* New() { return new ScaleBarRangeUpdater; }
@@ -43,14 +44,34 @@ public:
         if (!size || size[0] <= 0 || size[1] <= 0)
             return;
 
+        // 相机/视口输入未变则整段跳过（含 std::tan 与 niceNumber 的超越函数），
+        // 空闲时几乎零开销；仅在缩放/调窗口时重算
+        const bool parallel = cam->GetParallelProjection() != 0;
+        const double parallel_scale = cam->GetParallelScale();
+        const double distance = cam->GetDistance();
+        const double view_angle = cam->GetViewAngle();
+        if (parallel == last_parallel_
+            && parallel_scale == last_parallel_scale_
+            && distance == last_distance_
+            && view_angle == last_view_angle_
+            && size[0] == last_size_x_
+            && size[1] == last_size_y_)
+            return;
+        last_parallel_ = parallel;
+        last_parallel_scale_ = parallel_scale;
+        last_distance_ = distance;
+        last_view_angle_ = view_angle;
+        last_size_x_ = size[0];
+        last_size_y_ = size[1];
+
         // 解析式求世界/像素比，避免每帧三次投影/反投影矩阵运算：
         // 平行投影窗口世界高度 = 2*parallelScale；透视投影焦平面世界高度 = 2*距离*tan(fov/2)
         double world_per_pixel;
-        if (cam->GetParallelProjection()) {
-            world_per_pixel = 2.0 * cam->GetParallelScale() / size[1];
+        if (parallel) {
+            world_per_pixel = 2.0 * parallel_scale / size[1];
         } else {
-            world_per_pixel = 2.0 * cam->GetDistance()
-                * std::tan(vtkMath::RadiansFromDegrees(cam->GetViewAngle()) / 2.0) / size[1];
+            world_per_pixel = 2.0 * distance
+                * std::tan(vtkMath::RadiansFromDegrees(view_angle) / 2.0) / size[1];
         }
 
         // 以视口宽度 22% 为参考段长，换算为参考世界长度后取 1-2-5 整数档
@@ -58,10 +79,10 @@ public:
         const double ref_world = kTargetFrac * size[0] * world_per_pixel;
         const double nice = niceNumber(ref_world);
 
-        // 按 nice 整数值反算精确像素段长，使标尺始终精确代表 nice 个世界单位（消除固定段长
-        // 的量化误差）；缩放时段长连续伸缩，刻度视觉反馈平滑。段长变化才重设端点，避免无缩放
-        // 时逐帧重建轴几何
-        const double needed_frac = nice / world_per_pixel / size[0];
+        // 按 nice 整数值反算精确像素段长（除数合并为一次乘法，省一次浮点除法），
+        // 使标尺始终精确代表 nice 个世界单位；缩放时段长连续伸缩。段长变化才重设端点，
+        // 避免无缩放时逐帧重建轴几何
+        const double needed_frac = nice / (world_per_pixel * size[0]);
         const double half = needed_frac * 0.5;
         if (needed_frac != last_frac_) {
             last_frac_ = needed_frac;
@@ -91,6 +112,14 @@ private:
         return nice_frac * base;
     }
 
+    // 相机/视口输入缓存（早退判定，空闲时跳过 std::tan 与 niceNumber 的超越函数运算）
+    bool last_parallel_ = false;
+    double last_parallel_scale_ = 0.0;
+    double last_distance_ = 0.0;
+    double last_view_angle_ = 0.0;
+    int last_size_x_ = 0;
+    int last_size_y_ = 0;
+    // 输出缓存（段长/刻度未变则跳过轴几何与文本重建）
     double last_frac_ = -1.0; //> 上次写入的段长（归一化视口宽度，初始必触发一次）
     double last_range_ = -1.0; //> 上次写入的刻度值（初始必触发一次）
 };
