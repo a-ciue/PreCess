@@ -63,7 +63,7 @@ public:
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
 
-        vtkNew<vtkAxisActor2D> scale_bar_axis_; //> 比例尺标尺轴（叠加层左下角，刻度随相机缩放更新）
+        vtkNew<vtkAxisActor2D> scale_bar_axis_; //> 比例尺标尺轴（叠加层底部中央，段长与刻度随相机缩放联动更新）
 
         vtkNew<vtkPoints> global_points_;
     };

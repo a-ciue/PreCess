@@ -26,7 +26,7 @@
 #include <cmath>
 
 namespace {
-//! @brief 每帧渲染前把比例尺段的像素长度换算为世界长度写入 Range，使刻度值随相机缩放更新
+//! @brief 每帧按 1-2-5 整数档反算精确段长并居中重设端点，使标尺段长与刻度值随相机缩放联动更新
 class ScaleBarRangeUpdater : public vtkCommand {
 public:
     static ScaleBarRangeUpdater* New() { return new ScaleBarRangeUpdater; }
@@ -40,15 +40,10 @@ public:
         if (!axis_ || !cam)
             return;
         const int* size = renderer_->GetSize();
-        if (!size || size[1] <= 0)
+        if (!size || size[0] <= 0 || size[1] <= 0)
             return;
 
-        // 段像素长度（轴两端点为归一化视口坐标）
-        const double* v1 = axis_->GetPositionCoordinate()->GetValue();
-        const double* v2 = axis_->GetPosition2Coordinate()->GetValue();
-        const double pixel_len = std::abs(v2[0] - v1[0]) * size[0];
-
-        // 解析式求世界长度，避免每帧三次投影/反投影矩阵运算：
+        // 解析式求世界/像素比，避免每帧三次投影/反投影矩阵运算：
         // 平行投影窗口世界高度 = 2*parallelScale；透视投影焦平面世界高度 = 2*距离*tan(fov/2)
         double world_per_pixel;
         if (cam->GetParallelProjection()) {
@@ -57,10 +52,25 @@ public:
             world_per_pixel = 2.0 * cam->GetDistance()
                 * std::tan(vtkMath::RadiansFromDegrees(cam->GetViewAngle()) / 2.0) / size[1];
         }
-        const double nice = niceNumber(pixel_len * world_per_pixel);
+
+        // 以视口宽度 22% 为参考段长，换算为参考世界长度后取 1-2-5 整数档
+        constexpr double kTargetFrac = 0.22;
+        const double ref_world = kTargetFrac * size[0] * world_per_pixel;
+        const double nice = niceNumber(ref_world);
+
+        // 按 nice 整数值反算精确像素段长，使标尺始终精确代表 nice 个世界单位（消除固定段长
+        // 的量化误差）；缩放时段长连续伸缩，刻度视觉反馈平滑。段长变化才重设端点，避免无缩放
+        // 时逐帧重建轴几何
+        const double needed_frac = nice / world_per_pixel / size[0];
+        const double half = needed_frac * 0.5;
+        if (needed_frac != last_frac_) {
+            last_frac_ = needed_frac;
+            axis_->GetPositionCoordinate()->SetValue(0.5 - half, 0.05);
+            axis_->GetPosition2Coordinate()->SetValue(0.5 + half, 0.05);
+        }
 
         // 刻度值跨档才 SetRange：vtkAxisActor2D 每次 SetRange 都会重建刻度文本，
-        // 连续缩放时逐帧重建是主要帧率开销
+        // 同一档位内段长虽变但 nice 值不变，跳过以避免冗余文本重建
         if (nice == last_range_)
             return;
         last_range_ = nice;
@@ -81,6 +91,7 @@ private:
         return nice_frac * base;
     }
 
+    double last_frac_ = -1.0; //> 上次写入的段长（归一化视口宽度，初始必触发一次）
     double last_range_ = -1.0; //> 上次写入的刻度值（初始必触发一次）
 };
 }
@@ -124,8 +135,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->overlay_renderer_->SetActiveCamera(vtk->renderer_->GetActiveCamera()); // 共享相机，免逐帧同步
     renderWindow->AddRenderer(vtk->overlay_renderer_);
 
-    // 比例尺（叠加层底部中央的一段标尺轴）：端点视口位置固定，ScaleBarRangeUpdater
-    // 每帧把段长换算为世界长度写入 Range，刻度值随缩放自动更新
+    // 比例尺（叠加层底部中央的一段标尺轴）：端点坐标系为归一化视口，初始段长占视口 22%；
+    // ScaleBarRangeUpdater 每帧按 1-2-5 整数档反算精确段长并居中重设端点，使标尺始终精确
+    // 代表显示的整数世界长度，刻度值与段长随缩放联动更新
     vtk->scale_bar_axis_->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
     vtk->scale_bar_axis_->GetPositionCoordinate()->SetValue(0.39, 0.05);
     vtk->scale_bar_axis_->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
