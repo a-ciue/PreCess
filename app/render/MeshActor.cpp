@@ -116,10 +116,8 @@ void addCellAttributes(
 
 MeshActor::MeshActor(
     vtkRenderer* renderer,
-    vtkPoints* global_points,
-    bool is_edge_render)
-    : edge_render_(is_edge_render)
-    , renderer_(renderer)
+    vtkPoints* global_points)
+    : renderer_(renderer)
     , global_points_(global_points)
 {
     if (!global_points_) {
@@ -131,8 +129,6 @@ MeshActor::MeshActor(
     this->renderer_->AddActor(this->face_actor_);
     this->renderer_->AddActor(this->edge_actor_);
     this->renderer_->AddActor(this->glyph3D_actor_);
-
-    this->setRenderEdge(is_edge_render);
 
     this->edge_actor_->GetProperty()->SetLineWidth(2);
 
@@ -236,6 +232,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     }
 
     solid_filter_->SetInputData(solid_ugird);
+    solid_edge_extractor_->SetInputData(solid_ugird);
 
     // mappers
     edge_mapper_->SetInputData(edge_poly);
@@ -251,15 +248,12 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 void MeshActor::setVisibility(bool visibility)
 {
     this->visibility_ = visibility;
-    this->solid_actor_->SetVisibility(visibility);
-    this->face_actor_->SetVisibility(visibility);
-    this->edge_actor_->SetVisibility(visibility && this->edge_render_);
-    this->glyph3D_actor_->SetVisibility(visibility);
+    applyStyle();
 }
 
 bool MeshActor::isVisible() const
 { 
-    return visibility_; 
+    return visibility_ && style_ != MeshRenderStyle::Hidden; 
 }
 
 void MeshActor::setClipPlane(vtkPlane* plane)
@@ -285,17 +279,112 @@ void MeshActor::setClipPlane(vtkPlane* plane)
     clip_plane_ = plane;
 }
 
-void MeshActor::setRenderEdge(bool is_render)
+void MeshActor::setRenderStyle(MeshRenderStyle style)
 {
-    this->edge_render_ = is_render;
-    this->solid_actor_->GetProperty()->SetEdgeVisibility(is_render);
-    this->face_actor_->GetProperty()->SetEdgeVisibility(is_render);
-    this->edge_actor_->SetVisibility(is_render && this->visibility_);
+    this->style_ = style;
+    applyStyle();
 }
 
-bool MeshActor::getIsEdgeRender()
+MeshRenderStyle MeshActor::getRenderStyle() const
 {
-    return this->edge_render_;
+    return style_;
+}
+
+void MeshActor::applyStyle()
+{
+    if (style_ == MeshRenderStyle::Hidden || !visibility_) {
+        solid_actor_->SetVisibility(false);
+        face_actor_->SetVisibility(false);
+        edge_actor_->SetVisibility(false);
+        glyph3D_actor_->SetVisibility(false);
+        return;
+    }
+
+    glyph3D_actor_->SetVisibility(true);
+
+    if (style_ == MeshRenderStyle::WireframeInternal) {
+        solid_mapper_->SetInputConnection(solid_edge_extractor_->GetOutputPort());
+    } else {
+        solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
+    }
+
+    switch (style_) {
+    case MeshRenderStyle::FaceWithEdges:
+        solid_actor_->SetVisibility(true);
+        solid_actor_->GetProperty()->SetRepresentationToSurface();
+        solid_actor_->GetProperty()->SetEdgeVisibility(true);
+        solid_actor_->GetProperty()->SetOpacity(1.0);
+        face_actor_->SetVisibility(true);
+        face_actor_->GetProperty()->SetRepresentationToSurface();
+        face_actor_->GetProperty()->SetEdgeVisibility(true);
+        face_actor_->GetProperty()->SetOpacity(1.0);
+        edge_actor_->SetVisibility(this->visibility_);
+        break;
+    case MeshRenderStyle::Face:
+        solid_actor_->SetVisibility(true);
+        solid_actor_->GetProperty()->SetRepresentationToSurface();
+        solid_actor_->GetProperty()->SetEdgeVisibility(false);
+        solid_actor_->GetProperty()->SetOpacity(1.0);
+        face_actor_->SetVisibility(true);
+        face_actor_->GetProperty()->SetRepresentationToSurface();
+        face_actor_->GetProperty()->SetEdgeVisibility(false);
+        face_actor_->GetProperty()->SetOpacity(1.0);
+        edge_actor_->SetVisibility(false);
+        break;
+    case MeshRenderStyle::Transparent75:
+        solid_actor_->SetVisibility(true);
+        solid_actor_->GetProperty()->SetRepresentationToSurface();
+        solid_actor_->GetProperty()->SetEdgeVisibility(true);
+        solid_actor_->GetProperty()->SetOpacity(0.75);
+        face_actor_->SetVisibility(true);
+        face_actor_->GetProperty()->SetRepresentationToSurface();
+        face_actor_->GetProperty()->SetEdgeVisibility(true);
+        face_actor_->GetProperty()->SetOpacity(0.75);
+        edge_actor_->SetVisibility(this->visibility_);
+        break;
+    case MeshRenderStyle::Transparent50:
+        solid_actor_->SetVisibility(true);
+        solid_actor_->GetProperty()->SetRepresentationToSurface();
+        solid_actor_->GetProperty()->SetEdgeVisibility(true);
+        solid_actor_->GetProperty()->SetOpacity(0.50);
+        face_actor_->SetVisibility(true);
+        face_actor_->GetProperty()->SetRepresentationToSurface();
+        face_actor_->GetProperty()->SetEdgeVisibility(true);
+        face_actor_->GetProperty()->SetOpacity(0.50);
+        edge_actor_->SetVisibility(this->visibility_);
+        break;
+    case MeshRenderStyle::Transparent25:
+        solid_actor_->SetVisibility(true);
+        solid_actor_->GetProperty()->SetRepresentationToSurface();
+        solid_actor_->GetProperty()->SetEdgeVisibility(true);
+        solid_actor_->GetProperty()->SetOpacity(0.25);
+        face_actor_->SetVisibility(true);
+        face_actor_->GetProperty()->SetRepresentationToSurface();
+        face_actor_->GetProperty()->SetEdgeVisibility(true);
+        face_actor_->GetProperty()->SetOpacity(0.25);
+        edge_actor_->SetVisibility(this->visibility_);
+        break;
+    case MeshRenderStyle::WireframeInternal:
+        solid_actor_->SetVisibility(true);
+        solid_actor_->GetProperty()->SetRepresentationToWireframe();
+        solid_actor_->GetProperty()->SetOpacity(1.0);
+        face_actor_->SetVisibility(true);
+        face_actor_->GetProperty()->SetRepresentationToWireframe();
+        face_actor_->GetProperty()->SetOpacity(1.0);
+        edge_actor_->SetVisibility(this->visibility_);
+        break;
+    case MeshRenderStyle::WireframeSurface:
+        solid_actor_->SetVisibility(true);
+        solid_actor_->GetProperty()->SetRepresentationToWireframe();
+        solid_actor_->GetProperty()->SetOpacity(1.0);
+        face_actor_->SetVisibility(true);
+        face_actor_->GetProperty()->SetRepresentationToWireframe();
+        face_actor_->GetProperty()->SetOpacity(1.0);
+        edge_actor_->SetVisibility(false);
+        break;
+    default:
+        break;
+    }
 }
 
 void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)

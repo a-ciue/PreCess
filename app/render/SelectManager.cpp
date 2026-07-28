@@ -94,8 +94,26 @@ void SelectManager::clearSelection()
 void SelectManager::refreshComponentHighlight()
 {
     component_selector_->refreshHighlight();
-    mesh_->clearSelection();
-    geom_->clearSelection();
+}
+
+void SelectManager::setGeometryHighlightVisible(bool visible)
+{
+    geom_->setHighlightVisible(visible);
+}
+
+void SelectManager::setGeometryHighlightVisible(Index component_id, bool visible)
+{
+    geom_->setHighlightVisible(component_id, visible);
+}
+
+void SelectManager::setMeshHighlightVisible(bool visible)
+{
+    mesh_->setHighlightVisible(visible);
+}
+
+void SelectManager::setMeshHighlightVisible(Index component_id, bool visible)
+{
+    mesh_->setHighlightVisible(component_id, visible);
 }
 
 std::optional<std::pair<Index, std::array<double, 3>>> SelectManager::snapGeometryVertex(double posx, double posy)

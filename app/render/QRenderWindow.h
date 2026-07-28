@@ -41,7 +41,8 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_OBJECT
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
-    Q_PROPERTY(bool cur_edge_render READ getCurEdgeRender NOTIFY curEdgeRenderChanged)
+    Q_PROPERTY(int geometryStyle READ getGeometryStyle WRITE setGeometryStyle NOTIFY geometryStyleChanged)
+    Q_PROPERTY(int meshStyle READ getMeshStyle WRITE setMeshStyle NOTIFY meshStyleChanged)
     QML_ELEMENT
 public:
     QRenderWindow(); // 槽函数，改变边框重置相机
@@ -75,10 +76,6 @@ public:
 
     QSelection* selectedIDs();
     void setModelQuery(QModelQuery* query);
-    void setCurEdgeRender(bool edge_render);
-    bool getCurEdgeRender();
-
-    bool getIsEdgeRender(Data& vtk, Index component_id);
 
     /**
      * @brief 选择模型
@@ -118,13 +115,6 @@ public:
     Q_INVOKABLE void setScaleBarVisible(bool on);
 
     /**
-     * @brief 边渲染
-     * @param select_mode
-     */
-    Q_INVOKABLE void setEdgeRender(Index model_id, bool is_render);
-    Q_INVOKABLE void setComponentEdgeRender(Index component_id, bool is_render);
-
-    /**
      * @brief 改变可见性
      * @param select_mode
      */
@@ -132,6 +122,12 @@ public:
     Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
     Q_INVOKABLE void setMeshVisibility(Index component_id, bool visibility);
     Q_INVOKABLE void setGeometryVisibility(Index component_id, bool visibility);
+
+    Q_INVOKABLE void setGeometryStyle(int style);
+    int getGeometryStyle();
+
+    Q_INVOKABLE void setMeshStyle(int style);
+    int getMeshStyle();
 
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
@@ -189,12 +185,14 @@ public:
 
 signals:
     void selectedChanged();
-    void curEdgeRenderChanged();
+    void geometryStyleChanged();
+    void meshStyleChanged();
     void clicked();
     void rightClicked();
 
 private:
-    bool edge_render_ {};
+    GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
+    MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
     vtkNew<vtkCamera> _camera;
 
