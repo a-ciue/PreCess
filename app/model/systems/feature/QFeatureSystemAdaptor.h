@@ -2,6 +2,7 @@
 #define Q_FEATURE_SYSTEM_ADAPTOR_H
 
 #include "Core.h"
+#include "EventBus.h"
 #include <QVariant>
 #include <QtQmlIntegration/qqmlintegration.h>
 #include <cstddef>
@@ -23,7 +24,7 @@ class QFeatureSystemAdaptor : public QObject {
     QML_ELEMENT
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
 public:
-    QFeatureSystemAdaptor(FeatureSystem& feature_system);
+    QFeatureSystemAdaptor(FeatureSystem& feature_system, core::EventBus& event_bus);
     /**
      * @brief 菜单触发的功能调用
      * @param unique_name 功能唯一名称
@@ -72,11 +73,14 @@ public:
 
 signals:
     void featuresInfoChanged();
+    //! @brief 功能请求渲染指定的标量属性
+    void scalarAttributeDisplayRequested(QString attribute_name);
     //! @brief 功能参数值变化（功能侧回写结果等场景，QML 据此同步显示）
     void paramValueChanged(QString feature, int index, QVariant value);
 
 private:
     FeatureSystem* feature_system_; //> 功能系统的引用
+    core::EventBus::Subscription scalar_attribute_display_sub_; //> 标量属性显示请求桥接订阅
     Index active_model_id_ { -1 };
     Index active_component_id_ { -1 };
 };

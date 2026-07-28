@@ -4,7 +4,6 @@
 #include "FeatureSystem.h"
 #include "QArgObject.h"
 #include "QFeatureInfo.h"
-#include "ScalarAttributeDisplayResult.h"
 #include <spdlog/spdlog.h>
 
 #include <any>
@@ -34,14 +33,6 @@ QVariant anyToQVariant(const std::any& value)
     if (value.type() == typeid(bool))
         return std::any_cast<bool>(value);
 
-    if (value.type() == typeid(ScalarAttributeDisplayResult)) {
-        const auto& result = std::any_cast<const ScalarAttributeDisplayResult&>(value);
-        QVariantMap map;
-        map["message"] = QString::fromStdString(result.message);
-        map["attributeName"] = QString::fromStdString(result.attribute_name);
-        return map;
-    }
-
     if (value.type() == typeid(std::vector<double>)) {
         const auto& vec = std::any_cast<const std::vector<double>&>(value);
         QVariantList list;
@@ -55,12 +46,16 @@ QVariant anyToQVariant(const std::any& value)
 }
 }
 
-QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
+QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system, core::EventBus& event_bus)
     : feature_system_(&feature_system)
 {
     feature_system.setOnFeatureInfosChanged([this]() {
         emit featuresInfoChanged();
     });
+    scalar_attribute_display_sub_ = event_bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [this](const ScalarAttributeDisplayRequestedEvent& event) {
+            emit scalarAttributeDisplayRequested(QString::fromStdString(event.attribute_name));
+        });
 }
 
 FeatureSystem* QFeatureSystemAdaptor::featureSystem() const

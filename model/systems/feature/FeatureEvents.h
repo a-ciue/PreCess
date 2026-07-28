@@ -41,6 +41,13 @@ struct ParameterChangedEvent {
 };
 
 /**
+ * @brief 请求界面渲染指定的标量属性
+ */
+struct ScalarAttributeDisplayRequestedEvent {
+    std::string attribute_name; //> 模型中的标量属性名
+};
+
+/**
  * @brief 模型变更事件，由 app 层桥接 ModelObserver 通知后发布
  */
 struct ModelEvent {

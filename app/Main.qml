@@ -106,6 +106,15 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: QModelManager.featureSystem
+        function onScalarAttributeDisplayRequested(attributeName) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.setAttriMode(attributeName, 1, {})
+            attributeRenderDock.show()
+        }
+    }
+
     KDDW.DockingArea {
         id: dockingArea
         anchors.fill: parent
@@ -128,7 +137,6 @@ ApplicationWindow {
             title: "属性列表"
             SideBar {
                 anchors.fill: parent
-                onAttributeRenderRequested: attributeRenderDock.show()
             }
         }
 

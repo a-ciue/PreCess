@@ -1,12 +1,13 @@
 #include "MeshQualityHandler.h"
 
 #include "ComponentOperator.h"
+#include "EventBus.h"
 #include "FeatureContext.h"
+#include "FeatureEvents.h"
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
-#include "ScalarAttributeDisplayResult.h"
 
 #include <vtkCellData.h>
 #include <vtkCellType.h>
@@ -466,8 +467,9 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         display_attribute = solid_attribute;
     }
 
-    // 先通知属性面板和渲染数据刷新，再由执行结果把属性名交给 UI 显示。
+    // 先刷新模型观察者，再请求 app 层显示已写入的标量属性。
     component->notifyChanged();
+    ctx.events.publish(ScalarAttributeDisplayRequestedEvent { display_attribute });
 
     std::ostringstream output;
     output << std::setprecision(6) << metricDisplayName(metric) << '\n';
@@ -481,7 +483,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     } else if (!solid_error.empty()) {
         output << "体：" << solid_error << '\n';
     }
-    return ScalarAttributeDisplayResult { output.str(), display_attribute };
+    return output.str();
 }
 
 }

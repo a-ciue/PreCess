@@ -17,8 +17,6 @@ Item{
     property var parameters: []
     property var resultText: ""
 
-    signal attributeRenderRequested()
-
     readonly property var activeOp: App.activeOperation
 
     onActiveOpChanged: {
@@ -58,16 +56,8 @@ Item{
                 try {
                     const result = root.activeOp.execute(
                         App.selection.activeComponentId, root.parameters)
-                    if (result && result.attributeName !== undefined) {
-                        root.resultText = result.message || ""
-                        if (result.attributeName.length > 0 && App.registry.renderWindow)
-                            App.registry.renderWindow.setAttriMode(result.attributeName, 1, {})
-                        //打开渲染属性窗口
-                        root.attributeRenderRequested()
-                    } else {
-                        root.resultText = result === undefined || result === null
-                                        ? "" : String(result)
-                    }
+                    root.resultText = result === undefined || result === null
+                                    ? "" : String(result)
                 } catch (error) {
                     root.resultText = qsTr("执行失败：") + error
                 }
