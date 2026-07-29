@@ -95,7 +95,7 @@ std::optional<ModelPayload> StepXdeComponentBuilder::buildModelData(
             TopoDS_Shape s = shapeTool->GetShape(freeShapes.Value(i));
             if (!s.IsNull()) {
                 auto geometry_data = std::make_unique<GeometryData>();
-                geometry_data->rootShape = std::make_unique<TopoDS_Shape>(s);
+                geometry_data->setRootShape(s);
 
                 auto c = std::make_unique<ComponentData>();
                 c->id = -1;
@@ -118,7 +118,7 @@ std::optional<ModelPayload> StepXdeComponentBuilder::buildModelData(
     int leafIndex = 0;
     for (const auto& [label, shape] : leaves) {
         auto geometry_data = std::make_unique<GeometryData>();
-        geometry_data->rootShape = std::make_unique<TopoDS_Shape>(shape);
+        geometry_data->setRootShape(shape);
 
         std::string compName = labelName(label);
         if (compName.empty()) {

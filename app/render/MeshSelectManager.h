@@ -29,6 +29,8 @@ public:
     void setFaceSelectionByAngle(bool enabled, double angle_deg);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();
+    void setHighlightVisible(bool visible);
+    void setHighlightVisible(Index component_id, bool visible);
 
 private:
     SelectorHighlight* getOrCreateSelector(Index component_id);
@@ -39,9 +41,10 @@ private:
     vtkRenderer* renderer_ { };
     vtkSmartPointer<vtkHardwarePicker> component_picker_;
 
-    vtkActor* highlight_actor_ { }; //> 高亮部分的 Actor
-    vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_; //> 高亮部分的 Mapper
+    vtkActor* highlight_actor_ { };
+    vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;
     vtkSmartPointer<vtkPartitionedDataSet> highlight_data_; //> 高亮部分的 Data
+    bool highlight_visible_ { true };
 
     FaceSelectionSpreadOptions face_selection_spread_options_;
     std::unordered_map<Index, std::unique_ptr<SelectorHighlight>> component_selectors_; //> 每个 component 对应的选择器

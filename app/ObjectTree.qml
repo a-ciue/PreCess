@@ -16,6 +16,12 @@ Pane {
         modelQuery: QModelManager.query
     }
 
+    // 选择 Model 时默认关联其第一个 Component，二者共同组成当前操作目标。
+    function firstComponentId(modelId) {
+        let components = QModelManager.query.getComponentsSummary(modelId)
+        return components.length > 0 ? components[0].component_id : -1
+    }
+
     readonly property int _nodeTypeMesh: 2
     readonly property int _nodeTypeGeometry: 3
 
@@ -114,6 +120,14 @@ Pane {
             readonly property real _padding: 5
             readonly property real _rowHeight: 18
             readonly property real _indentWidth: 20
+            readonly property bool _isActiveModel:
+                viewDelegate.depth === 0
+                && viewDelegate.model.nodeId === App.selection.activeModelId
+            readonly property bool _isActiveComponent:
+                viewDelegate.depth === 1
+                && viewDelegate.model.nodeId === App.selection.activeComponentId
+            leftPadding: _padding + depth * _indentWidth + 18
+            rightPadding: 0
 
             TableView.onPooled: indicatorAnim.complete()
             TableView.onReused: {
@@ -167,13 +181,14 @@ Pane {
                 Text {
                     id: nameText
                     Layout.fillWidth: true
-                    Layout.maximumWidth: implicitWidth
-                    Layout.leftMargin: viewDelegate._padding + 2
+                    Layout.minimumWidth: 50
                     text: viewDelegate.model.name || "N/A"
                     color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
                     font.pixelSize: 13
                     font.family: "Consolas"
-                    font.weight: viewDelegate.current ? Font.Bold : Font.Normal
+                    font.weight: viewDelegate._isActiveModel
+                                 || viewDelegate._isActiveComponent
+                                 ? Font.Bold : Font.Normal
                     font.italic: !viewDelegate.model.isVisible
                     elide: Text.ElideRight
 
@@ -251,11 +266,26 @@ Pane {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         let compId = viewDelegate.model.componentId
 
-                        if (viewDelegate.current || compId < 0) {
+                        if (!idx.valid) {
+                            return
+                        } else if (viewDelegate.depth === 0
+                                   && App.selection.activeModelId === viewDelegate.model.nodeId) {
+                            // Model 与 Component 是同一业务目标，取消时同步清空。
                             viewDelegate.treeView.selectionModel.clear()
                             App.selection.activeComponentId = -1
                             App.selection.activeModelId = -1
-                        } else if (idx.valid) {
+                        } else if (viewDelegate.depth === 0) {
+                            // 选择 Model 时同步关联其第一个 Component。
+                            viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
+                            App.selection.activeModelId = viewDelegate.model.nodeId
+                            App.selection.activeComponentId = objectTree.firstComponentId(viewDelegate.model.nodeId)
+                        } else if (viewDelegate.depth === 1
+                                   && App.selection.activeComponentId === compId) {
+                            // Component 与所属 Model 同步取消。
+                            viewDelegate.treeView.selectionModel.clear()
+                            App.selection.activeComponentId = -1
+                            App.selection.activeModelId = -1
+                        } else {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                             App.selection.activeComponentId = compId
                             App.selection.activeModelId = QModelManager.query.findModelIdByComponent(compId)
@@ -437,15 +467,33 @@ Pane {
     }
 
     function deleteNode(nodeId, depth, nodeType, componentId) {
-        treeView.selectionModel.clear()
-        if (depth === 0)
+        if (depth === 0) {
+            // 删除当前 Model 时，其关联的 Component 也会一并失效。
+            if (App.selection.activeModelId === nodeId) {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+                App.selection.activeModelId = -1
+            }
             QModelManager.removeModel(nodeId)
-        else if (depth === 1)
+        } else if (depth === 1) {
+            // 删除当前 Component 后保留所属 Model，并选中剩余的第一个 Component。
+            const deletingActiveComponent = App.selection.activeComponentId === nodeId
+            const ownerModelId = deletingActiveComponent
+                ? QModelManager.query.findModelIdByComponent(nodeId) : -1
+            if (deletingActiveComponent) {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+            }
             QModelManager.removeComponent(nodeId)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeMesh)
+            if (deletingActiveComponent) {
+                App.selection.activeModelId = ownerModelId
+                App.selection.activeComponentId = objectTree.firstComponentId(ownerModelId)
+            }
+        } else if (depth === 2 && nodeType === objectTree._nodeTypeMesh) {
             QModelManager.removeMesh(componentId)
-        else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry)
+        } else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry) {
             QModelManager.removeGeometry(componentId)
+        }
     }
 
     function hideAllNodes() {

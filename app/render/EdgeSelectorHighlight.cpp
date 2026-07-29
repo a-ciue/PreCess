@@ -65,8 +65,22 @@ EdgeSelectorHighlight::~EdgeSelectorHighlight()
 
 void EdgeSelectorHighlight::clear()
 {
+    disableHighlight();
     selections_.clear();
+}
+
+void EdgeSelectorHighlight::disableHighlight()
+{
     selections_poly_->Initialize();
+    highlight_data_->Modified();
+}
+
+void EdgeSelectorHighlight::enableHighlight()
+{
+    if (selections_.empty())
+        return;
+    auto edge_poly_data = select_op_.extractEdge(selections_);
+    selections_poly_->ShallowCopy(edge_poly_data);
     highlight_data_->Modified();
 }
 
@@ -124,9 +138,7 @@ void EdgeSelectorHighlight::select(double posx, double posy)
         selections_.push_back(original_id);
     }
 
-    auto edge_poly_data = select_op_.extractEdge(selections_);
-    selections_poly_->ShallowCopy(edge_poly_data);
-    highlight_data_->Modified();
+    enableHighlight();
 }
 
 void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)

@@ -26,7 +26,8 @@
 #include <cmath>
 
 namespace {
-//! @brief 每帧渲染前把比例尺段的像素长度换算为世界长度写入 Range，使刻度值随相机缩放更新
+//! @brief 相机/视口输入未变则整段跳过；变化时按 1-2-5 整数档反算精确段长并居中重设端点，
+//!        使标尺段长与刻度值随相机缩放联动更新
 class ScaleBarRangeUpdater : public vtkCommand {
 public:
     static ScaleBarRangeUpdater* New() { return new ScaleBarRangeUpdater; }
@@ -40,27 +41,57 @@ public:
         if (!axis_ || !cam)
             return;
         const int* size = renderer_->GetSize();
-        if (!size || size[1] <= 0)
+        if (!size || size[0] <= 0 || size[1] <= 0)
             return;
 
-        // 段像素长度（轴两端点为归一化视口坐标）
-        const double* v1 = axis_->GetPositionCoordinate()->GetValue();
-        const double* v2 = axis_->GetPosition2Coordinate()->GetValue();
-        const double pixel_len = std::abs(v2[0] - v1[0]) * size[0];
+        // 相机/视口输入未变则整段跳过（含 std::tan 与 niceNumber 的超越函数），
+        // 空闲时几乎零开销；仅在缩放/调窗口时重算
+        const bool parallel = cam->GetParallelProjection() != 0;
+        const double parallel_scale = cam->GetParallelScale();
+        const double distance = cam->GetDistance();
+        const double view_angle = cam->GetViewAngle();
+        if (parallel == last_parallel_
+            && parallel_scale == last_parallel_scale_
+            && distance == last_distance_
+            && view_angle == last_view_angle_
+            && size[0] == last_size_x_
+            && size[1] == last_size_y_)
+            return;
+        last_parallel_ = parallel;
+        last_parallel_scale_ = parallel_scale;
+        last_distance_ = distance;
+        last_view_angle_ = view_angle;
+        last_size_x_ = size[0];
+        last_size_y_ = size[1];
 
-        // 解析式求世界长度，避免每帧三次投影/反投影矩阵运算：
+        // 解析式求世界/像素比，避免每帧三次投影/反投影矩阵运算：
         // 平行投影窗口世界高度 = 2*parallelScale；透视投影焦平面世界高度 = 2*距离*tan(fov/2)
         double world_per_pixel;
-        if (cam->GetParallelProjection()) {
-            world_per_pixel = 2.0 * cam->GetParallelScale() / size[1];
+        if (parallel) {
+            world_per_pixel = 2.0 * parallel_scale / size[1];
         } else {
-            world_per_pixel = 2.0 * cam->GetDistance()
-                * std::tan(vtkMath::RadiansFromDegrees(cam->GetViewAngle()) / 2.0) / size[1];
+            world_per_pixel = 2.0 * distance
+                * std::tan(vtkMath::RadiansFromDegrees(view_angle) / 2.0) / size[1];
         }
-        const double nice = niceNumber(pixel_len * world_per_pixel);
+
+        // 以视口宽度 22% 为参考段长，换算为参考世界长度后取 1-2-5 整数档
+        constexpr double kTargetFrac = 0.22;
+        const double ref_world = kTargetFrac * size[0] * world_per_pixel;
+        const double nice = niceNumber(ref_world);
+
+        // 按 nice 整数值反算精确像素段长（除数合并为一次乘法，省一次浮点除法），
+        // 使标尺始终精确代表 nice 个世界单位；缩放时段长连续伸缩。段长变化才重设端点，
+        // 避免无缩放时逐帧重建轴几何
+        const double needed_frac = nice / (world_per_pixel * size[0]);
+        const double half = needed_frac * 0.5;
+        if (needed_frac != last_frac_) {
+            last_frac_ = needed_frac;
+            axis_->GetPositionCoordinate()->SetValue(0.5 - half, 0.05);
+            axis_->GetPosition2Coordinate()->SetValue(0.5 + half, 0.05);
+        }
 
         // 刻度值跨档才 SetRange：vtkAxisActor2D 每次 SetRange 都会重建刻度文本，
-        // 连续缩放时逐帧重建是主要帧率开销
+        // 同一档位内段长虽变但 nice 值不变，跳过以避免冗余文本重建
         if (nice == last_range_)
             return;
         last_range_ = nice;
@@ -81,6 +112,15 @@ private:
         return nice_frac * base;
     }
 
+    // 相机/视口输入缓存（早退判定，空闲时跳过 std::tan 与 niceNumber 的超越函数运算）
+    bool last_parallel_ = false;
+    double last_parallel_scale_ = 0.0;
+    double last_distance_ = 0.0;
+    double last_view_angle_ = 0.0;
+    int last_size_x_ = 0;
+    int last_size_y_ = 0;
+    // 输出缓存（段长/刻度未变则跳过轴几何与文本重建）
+    double last_frac_ = -1.0; //> 上次写入的段长（归一化视口宽度，初始必触发一次）
     double last_range_ = -1.0; //> 上次写入的刻度值（初始必触发一次）
 };
 }
@@ -89,7 +129,6 @@ QRenderWindow::QRenderWindow()
 {
     connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
     connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
-    edge_render_ = false;
 }
 
 QRenderWindow::~QRenderWindow() = default;
@@ -124,8 +163,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->overlay_renderer_->SetActiveCamera(vtk->renderer_->GetActiveCamera()); // 共享相机，免逐帧同步
     renderWindow->AddRenderer(vtk->overlay_renderer_);
 
-    // 比例尺（叠加层底部中央的一段标尺轴）：端点视口位置固定，ScaleBarRangeUpdater
-    // 每帧把段长换算为世界长度写入 Range，刻度值随缩放自动更新
+    // 比例尺（叠加层底部中央的一段标尺轴）：端点坐标系为归一化视口，初始段长占视口 22%；
+    // ScaleBarRangeUpdater 每帧按 1-2-5 整数档反算精确段长并居中重设端点，使标尺始终精确
+    // 代表显示的整数世界长度，刻度值与段长随缩放联动更新
     vtk->scale_bar_axis_->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
     vtk->scale_bar_axis_->GetPositionCoordinate()->SetValue(0.39, 0.05);
     vtk->scale_bar_axis_->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
@@ -295,7 +335,9 @@ void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
 
     vtkNew<vtkDoubleArray> arr;
     arr->SetNumberOfComponents(3);
-    arr->SetArray(const_cast<double*>(pts.data()->data()), totalVals, 1);
+    // 纯几何模型没有全局网格点，不能对空 vector 的 data() 继续解引用。
+    if (!pts.empty())
+        arr->SetArray(const_cast<double*>(pts.front().data()), totalVals, 1);
 
     vtk->global_points_->SetData(arr);
 
@@ -331,7 +373,11 @@ void QRenderWindow::onModelChanged(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !this->model_query_)
+            return;
 
+        // Actor 即将重新加载，先释放引用旧 PolyData 和 OCC Shape 的选择器。
+        this->select_manager_->clearSelection();
         auto component_ids = model_query_->getComponentIds(model_id);
         updateGlobalVtkPointsImpl(vtk);
 
@@ -354,9 +400,11 @@ void QRenderWindow::onComponentChanged(Index component_id)
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
-        if (!this->model_query_)
+        if (!vtk || !this->model_query_)
             return;
 
+        // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
+        this->select_manager_->clearSelection();
         updateGlobalVtkPointsImpl(vtk);
 
         if (vtk->mesh_actor_manager_) {
@@ -388,6 +436,8 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
+            select_manager_->setMeshHighlightVisible(component_id, visibility);
+            select_manager_->setGeometryHighlightVisible(component_id, visibility);
         }
         select_manager_->refreshComponentHighlight();
     });
@@ -405,6 +455,8 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->setMeshHighlightVisible(component_id, visibility);
+        select_manager_->setGeometryHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
 }
@@ -417,6 +469,7 @@ void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->setMeshHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
 }
@@ -429,6 +482,7 @@ void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
         }
+        select_manager_->setGeometryHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
 }
@@ -455,38 +509,14 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     model_query_ = query;
 }
 
-void QRenderWindow::setCurEdgeRender(bool edge_render)
-{
-    edge_render_ = edge_render;
-    emit curEdgeRenderChanged();
-}
-
-bool QRenderWindow::getCurEdgeRender()
-{
-    return this->edge_render_;
-}
-
-bool QRenderWindow::getIsEdgeRender(Data& vtk, Index component_id)
-{
-    if (component_id < 0) return false;
-
-    if (vtk.mesh_actor_manager_ && vtk.mesh_actor_manager_->hasComponent(component_id)) {
-        return vtk.mesh_actor_manager_->getIsEdgeRender(component_id);
-    }
-    if (vtk.geometry_actor_manager_ && vtk.geometry_actor_manager_->hasComponent(component_id)) {
-        return vtk.geometry_actor_manager_->getIsEdgeRender(component_id);
-    }
-
-    spdlog::error("QRenderWindow::getIsEdgeRender: error getting edge render mode");
-    return false;
-}
-
 void QRenderWindow::setSelectComponent(Index component_id)
 {
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk)
+            return;
+
         this->cur_component_id_ = component_id;
-        this->setCurEdgeRender(this->getIsEdgeRender(*vtk, component_id));
     });
 }
 
@@ -524,39 +554,6 @@ void QRenderWindow::setScaleBarVisible(bool on)
         Data* vtk = Data::SafeDownCast(userData);
         vtk->scale_bar_axis_->SetVisibility(on);
         });
-}
-
-void QRenderWindow::setEdgeRender(Index model_id, bool is_render)
-{
-    dispatch_async([model_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-        vtk->mesh_actor_manager_->setRenderEdge(model_id, is_render);
-
-        auto component_ids = model_query_->getComponentIds(model_id);
-        for (Index component_id : component_ids) {
-            vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
-            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
-        }
-
-        this->setCurEdgeRender(is_render);
-    });
-}
-
-void QRenderWindow::setComponentEdgeRender(Index component_id, bool is_render)
-{
-    dispatch_async([component_id, is_render, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        if (vtk->mesh_actor_manager_) {
-            vtk->mesh_actor_manager_->setRenderEdge(component_id, is_render);
-        }
-
-        if (vtk->geometry_actor_manager_) {
-            vtk->geometry_actor_manager_->setRenderEdge(component_id, is_render);
-        }
-
-        this->setCurEdgeRender(is_render);
-    });
 }
 
 void QRenderWindow::setClick()
@@ -619,6 +616,48 @@ void QRenderWindow::cancelAttri()
         }
         spdlog::info("--------cancelAttri-----------");
     });
+}
+
+void QRenderWindow::setGeometryStyle(int style)
+{
+    geometry_style_ = static_cast<GeometryRenderStyle>(style);
+    dispatch_async([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->setCurrentRenderStyle(static_cast<GeometryRenderStyle>(style));
+        }
+        if (select_manager_) {
+            select_manager_->setGeometryHighlightVisible(style != 7);
+            select_manager_->refreshComponentHighlight();
+        }
+    });
+    emit geometryStyleChanged();
+}
+
+int QRenderWindow::getGeometryStyle()
+{
+    return static_cast<int>(geometry_style_);
+}
+
+void QRenderWindow::setMeshStyle(int style)
+{
+    mesh_style_ = static_cast<MeshRenderStyle>(style);
+    dispatch_async([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->setCurrentRenderStyle(static_cast<MeshRenderStyle>(style));
+        }
+        if (select_manager_) {
+            select_manager_->setMeshHighlightVisible(style != 7);
+            select_manager_->refreshComponentHighlight();
+        }
+    });
+    emit meshStyleChanged();
+}
+
+int QRenderWindow::getMeshStyle()
+{
+    return static_cast<int>(mesh_style_);
 }
 
 vtkStandardNewMacro(QRenderWindow::Data);

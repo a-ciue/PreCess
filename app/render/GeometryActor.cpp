@@ -2,6 +2,7 @@
 #include "Core.h"
 #include <IVTKTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
+#include <IVtkVTK_ShapeData.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopExp_Explorer.hxx>
 #include <vtkPolyDataMapper.h>
@@ -14,92 +15,22 @@
 #include <vtkSelectionNode.h>
 #include <vtkCellData.h>
 
-#include <cstring>
-#include <spdlog/spdlog.h>
-
-static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* pd, const OccShapeHandle& occShape)
+// 按 OCCT 约定的正式名称获取单元对应的子形状 ID 数组。
+static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* poly_data)
 {
-    if (!pd || occShape.IsNull())
+    if (!poly_data)
         return nullptr;
 
-    vtkCellData* cd = pd->GetCellData();
-    if (!cd)
+    vtkCellData* cell_data = poly_data->GetCellData();
+    if (!cell_data)
         return nullptr;
 
-    const vtkIdType nCells = pd->GetNumberOfCells();
-    if (nCells <= 0)
-        return nullptr;
-
-    vtkDataArray* best = nullptr;
-    vtkIdType bestValidCount = 0;
-    bool bestHasLineValid = false;
-
-    for (int i = 0; i < cd->GetNumberOfArrays(); ++i) {
-        vtkDataArray* a = cd->GetArray(i);
-        if (!a)
-            continue;
-        if (a->GetNumberOfComponents() != 1)
-            continue;
-        if (a->GetNumberOfTuples() != nCells)
-            continue;
-
-        const char* name = a->GetName();
-        if (name) {
-            if (std::strcmp(name, "vtkOriginalCellIds") == 0)
-                continue;
-            if (std::strcmp(name, "vtkOriginalPointIds") == 0)
-                continue;
-        }
-
-        vtkIdType validCount = 0;
-        bool hasLineValid = false;
-        for (vtkIdType c = 0; c < nCells; ++c) {
-            IVtk_IdType sid = static_cast<IVtk_IdType>(a->GetTuple1(c));
-            if (sid > 0) {
-                try {
-                    if (!occShape->GetSubShape(sid).IsNull()) {
-                        ++validCount;
-                        if (!hasLineValid && pd->GetCellType(c) == VTK_LINE)
-                            hasLineValid = true;
-                    }
-                } catch (...) {
-                }
-            }
-        }
-
-        bool better = false;
-        if (!best) {
-            better = true;
-        } else if (hasLineValid && !bestHasLineValid) {
-            better = true;
-        } else if (!hasLineValid && bestHasLineValid) {
-        } else if (validCount > bestValidCount) {
-            better = true;
-        }
-
-        if (better) {
-            bestValidCount = validCount;
-            bestHasLineValid = hasLineValid;
-            best = a;
-        }
-    }
-
-    if (best && bestValidCount > 0) {
-        spdlog::info("[GeometryActor] found subId array '{}' valid={}/{} hasLine={}",
-            (best->GetName() ? best->GetName() : "(null)"),
-            static_cast<int>(bestValidCount), static_cast<int>(nCells),
-            bestHasLineValid ? "yes" : "no");
-        return best;
-    }
-
-    spdlog::warn("[GeometryActor] no valid subId array found in polydata with {} cells", static_cast<int>(nCells));
-    return nullptr;
+    return cell_data->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
 }
 
 GeometryActor::GeometryActor(vtkRenderer* renderer)
 {
     this->renderer_ = renderer;
-    this->edge_render = false;
     this->visibility_ = true;
 }
 
@@ -108,13 +39,9 @@ GeometryActor::~GeometryActor()
     deleteGeometryActor();
 }
 
-bool GeometryActor::getIsEdgeRender()
-{
-    return this->edge_render;
-}
-
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
+    // GeometryData 保证根形状已经是严格一层扁平的 Compound。
     OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
     aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     this->occ_shape_ = aShapeImpl;
@@ -127,9 +54,6 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     const vtkIdType nV = src->GetNumberOfVerts();
     const vtkIdType nL = src->GetNumberOfLines();
     const vtkIdType nP = src->GetNumberOfPolys();
-
-    spdlog::info("[GeometryActor] loadShape component={} verts={} lines={} polys={}",
-        geometry_data.component_id, static_cast<int>(nV), static_cast<int>(nL), static_cast<int>(nP));
 
     auto ExtractCellRangeToPolyData = [](vtkPolyData* in, vtkIdType start, vtkIdType count) -> vtkSmartPointer<vtkPolyData> {
         vtkNew<vtkIdTypeArray> ids;
@@ -169,8 +93,8 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     this->line_only_ = line_only;
     this->poly_only_ = poly_only;
 
-    line_sub_id_array_ = findSubIdArray(line_only, occ_shape_);
-    poly_sub_id_array_ = findSubIdArray(poly_only, occ_shape_);
+    line_sub_id_array_ = findSubIdArray(line_only);
+    poly_sub_id_array_ = findSubIdArray(poly_only);
 
     NCollection_Map<IVtk_IdType> edgeVertexIds;
     for (TopExp_Explorer exp(geometry_data.shape, TopAbs_EDGE); exp.More(); exp.Next()) {
@@ -209,9 +133,6 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_actor_->GetProperty()->SetPointSize(6.0);
     line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
     renderer_->AddActor(line_actor_);
-
-    spdlog::info("[GeometryActor] component={} actors added, face_cells={} line_cells={}",
-        geometry_data.component_id, static_cast<int>(poly_only->GetNumberOfCells()), static_cast<int>(line_only->GetNumberOfCells()));
 }
 
 void GeometryActor::deleteGeometryActor()
@@ -224,18 +145,86 @@ void GeometryActor::deleteGeometryActor()
 
 void GeometryActor::setVisibility(bool visibility)
 {
-    this->poly_actor_->SetVisibility(visibility);
-    this->line_actor_->SetVisibility(visibility);
     this->visibility_ = visibility;
+    applyStyle();
 }
 
 bool GeometryActor::isVisible() const
 {
-    return visibility_;
+    return visibility_ && style_ != GeometryRenderStyle::Hidden;
 }
 
-void GeometryActor::setRenderEdge(bool is_render)
+void GeometryActor::setRenderStyle(GeometryRenderStyle style)
 {
-    this->edge_render = is_render;
-    this->line_actor_->SetVisibility(is_render && this->visibility_);
+    this->style_ = style;
+    applyStyle();
+}
+
+GeometryRenderStyle GeometryActor::getRenderStyle() const
+{
+    return style_;
+}
+
+void GeometryActor::applyStyle()
+{
+    if (style_ == GeometryRenderStyle::Hidden || !visibility_) {
+        poly_actor_->SetVisibility(false);
+        line_actor_->SetVisibility(false);
+        return;
+    }
+
+    switch (style_) {
+    case GeometryRenderStyle::SurfaceWithEdges:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(1.0);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Surface:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(1.0);
+        line_actor_->SetVisibility(false);
+        break;
+    case GeometryRenderStyle::Transparent75:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.75);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Transparent50:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.50);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Transparent25:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.25);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::WireframeWithLines:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(true);
+        poly_actor_->GetProperty()->SetLineWidth(1);
+        poly_actor_->GetProperty()->SetOpacity(0.1);
+        line_actor_->SetVisibility(true);
+        break;
+    case GeometryRenderStyle::Wireframe:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.001);
+        line_actor_->SetVisibility(true);
+        break;
+    default:
+        break;
+    }
 }

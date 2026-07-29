@@ -5,6 +5,29 @@
 #include <memory>
 #include <string>
 #include <vector>
+
+enum class GeometryRenderStyle {
+    SurfaceWithEdges,
+    Surface,
+    Transparent75,
+    Transparent50,
+    Transparent25,
+    WireframeWithLines,
+    Wireframe,
+    Hidden
+};
+
+enum class MeshRenderStyle {
+    FaceWithEdges,
+    Face,
+    Transparent75,
+    Transparent50,
+    Transparent25,
+    WireframeInternal,
+    WireframeSurface,
+    Hidden
+};
+
 enum class SelectMode {
     None,
     Vertex,

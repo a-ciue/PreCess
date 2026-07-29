@@ -3,11 +3,14 @@
 #include "QAlgorithmSystemAdaptor.h"
 #include "QEditSystemAdaptor.h"
 #include "QFeatureSystemAdaptor.h"
+#include "QGeometryOperations.h"
 #include "QModelIOSystemAdaptor.h"
 #include "QModelObserver.h"
 #include "QModelQuery.h"
 #include "QSystemPluginManager.h"
 #include <memory>
+#include <string>
+#include <string_view>
 
 namespace core {
 class EventBus;
@@ -37,6 +40,7 @@ class QModelManager : public QObject {
     Q_PROPERTY(systems::io::QModelIOSystemAdaptor* ioSystem READ getModelIOSystemAdaptor CONSTANT)
     Q_PROPERTY(systems::edit::QEditSystemAdaptor* editSystem READ getEditSystemAdaptor CONSTANT)
     Q_PROPERTY(systems::feature::QFeatureSystemAdaptor* featureSystem READ getFeatureSystemAdaptor CONSTANT)
+    Q_PROPERTY(QGeometryOperations* geometry READ getGeometryOperations CONSTANT)
 public:
     explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
     ~QModelManager();
@@ -54,6 +58,7 @@ public:
     systems::io::QModelIOSystemAdaptor* getModelIOSystemAdaptor() const;
     systems::feature::QFeatureSystemAdaptor* getFeatureSystemAdaptor() const;
     systems::QSystemPluginManager* getSystemPluginManager() const;
+    QGeometryOperations* getGeometryOperations() const;
 
     static std::string_view argv0; //> 命令行参数 argv[0]，用于插件加载等需要程序路径的场景，由 main 函数在程序启动时设置，被传入 ModelManager 构造函数以供其使用
     /**
@@ -72,6 +77,7 @@ private:
     std::unique_ptr<ModelLayer> core_;
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
+    std::unique_ptr<QGeometryOperations> geometry_operations_;
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
     std::unique_ptr<systems::edit::EditSystem> edit_system_;

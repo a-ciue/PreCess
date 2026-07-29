@@ -67,6 +67,19 @@ void VertexSelectorHighlight::clear()
     highlight_data_->Modified();
 }
 
+void VertexSelectorHighlight::disableHighlight()
+{
+    highlight_data_->SetPartition(partition_id_, nullptr);
+    highlight_data_->Modified();
+}
+
+void VertexSelectorHighlight::enableHighlight()
+{
+    geom_filter_->Update();
+    highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
+    highlight_data_->Modified();
+}
+
 void VertexSelectorHighlight::select(double posx, double posy)
 {
     // 获取 picked_point_id
@@ -107,9 +120,8 @@ void VertexSelectorHighlight::select(double posx, double posy)
         spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
     }
 
-    selected_ids_->Modified(); // 通知 VTK 数据已更改，进行刷新
-    geom_filter_->Update();
-    highlight_data_->Modified();
+    selected_ids_->Modified();
+    enableHighlight();
 }
 
 void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)

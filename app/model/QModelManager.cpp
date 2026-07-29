@@ -26,6 +26,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
         /*observer=*/observer_.get());
 
     query_ = std::make_unique<QModelQuery>(core_.get(), this);
+    geometry_operations_ = std::make_unique<QGeometryOperations>(*core_);
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
@@ -177,6 +178,11 @@ systems::feature::QFeatureSystemAdaptor* QModelManager::getFeatureSystemAdaptor(
 systems::QSystemPluginManager* QModelManager::getSystemPluginManager() const
 {
     return q_plugin_manager_.get();
+}
+
+QGeometryOperations* QModelManager::getGeometryOperations() const
+{
+    return geometry_operations_.get();
 }
 
 std::string_view QModelManager::argv0 = "./PreCess.exe";
