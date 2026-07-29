@@ -78,8 +78,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public 成员函数</a> &#124;
-<a href="#pub-attribs">Public 属性</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
+<a href="#friends">友元</a> &#124;
 <a href="classsystems_1_1feature_1_1InteractionContext-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">systems::feature::InteractionContext类 参考</div></div>
 </div><!--header-->
@@ -94,29 +94,31 @@ systems::feature::InteractionContext 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsystems_1_1feature_1_1InteractionContext__coll__graph.png" border="0" usemap="#asystems_1_1feature_1_1InteractionContext_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="asystems_1_1feature_1_1InteractionContext_coll__map" id="asystems_1_1feature_1_1InteractionContext_coll__map">
-<area shape="rect" title="视口交互上下文（FeatureContext 成员）：功能在 activate() 中经它订阅交互回调" alt="" coords="1587,73,1797,113"/>
-<area shape="rect" href="structsystems_1_1interaction_1_1InteractionState.html" title="单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）" alt="" coords="1335,73,1489,113"/>
-<area shape="poly" title=" " alt="" coords="1503,91,1587,91,1587,96,1503,96"/>
-<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationBatch.html" title="一帧标注集：插件按当前状态回传，渲染层统一绘制" alt="" coords="1047,73,1201,113"/>
-<area shape="poly" title=" " alt="" coords="1215,91,1334,91,1334,96,1215,96"/>
-<area shape="rect" title=" " alt="" coords="723,9,949,49"/>
-<area shape="poly" title=" " alt="" coords="962,49,1023,63,1055,71,1053,76,1022,68,961,55"/>
+<area shape="rect" title="视口交互上下文（FeatureContext 成员）：功能在 activate() 中经它订阅交互回调" alt="" coords="1603,45,1813,85"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1InteractionState.html" title="单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）" alt="" coords="1351,45,1505,85"/>
+<area shape="poly" title=" " alt="" coords="1519,63,1603,63,1603,68,1519,68"/>
+<area shape="rect" title=" " alt="" coords="1047,25,1201,50"/>
+<area shape="poly" title=" " alt="" coords="1215,43,1351,56,1350,61,1214,48"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationBatch.html" title="一帧标注集：插件按当前状态回传，渲染层统一绘制" alt="" coords="1047,75,1201,115"/>
+<area shape="poly" title=" " alt="" coords="1215,90,1326,81,1350,78,1351,83,1327,87,1215,95"/>
+<area shape="rect" title=" " alt="" coords="723,11,949,51"/>
+<area shape="poly" title=" " alt="" coords="962,51,1023,64,1055,72,1053,77,1022,69,961,56"/>
 <area shape="rect" href="structsystems_1_1interaction_1_1AnnotationPoint.html" title="标注点（颜色分量 0~1，默认红色）" alt="" coords="451,7,605,47"/>
-<area shape="poly" title=" " alt="" coords="619,25,723,26,722,31,619,30"/>
+<area shape="poly" title=" " alt="" coords="619,25,723,27,722,32,619,31"/>
 <area shape="rect" title=" " alt="" coords="193,85,368,110"/>
 <area shape="poly" title=" " alt="" coords="322,76,391,51,450,37,451,42,393,56,324,81"/>
-<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationLine.html" title="标注线段（默认绿色实线；dashed 用于悬停动态预览）" alt="" coords="451,73,605,113"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationLine.html" title="标注线段（默认绿色实线；dashed 用于悬停动态预览）" alt="" coords="451,75,605,115"/>
 <area shape="poly" title=" " alt="" coords="382,94,427,93,450,93,450,98,427,99,382,99"/>
-<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationText.html" title="标注文本（默认白色）" alt="" coords="451,137,605,177"/>
-<area shape="poly" title=" " alt="" coords="345,111,393,123,451,137,450,142,391,128,344,116"/>
-<area shape="rect" title=" " alt="" coords="725,73,947,113"/>
-<area shape="poly" title=" " alt="" coords="960,91,1047,91,1047,96,960,96"/>
-<area shape="poly" title=" " alt="" coords="619,91,725,91,725,96,619,96"/>
-<area shape="rect" title=" " alt="" coords="725,137,947,177"/>
-<area shape="poly" title=" " alt="" coords="960,132,1022,119,1053,111,1055,116,1023,124,961,137"/>
-<area shape="poly" title=" " alt="" coords="619,155,725,155,725,160,619,160"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1AnnotationText.html" title="标注文本（默认白色）" alt="" coords="451,139,605,179"/>
+<area shape="poly" title=" " alt="" coords="346,111,393,123,451,137,450,142,391,128,344,116"/>
+<area shape="rect" title=" " alt="" coords="725,75,947,115"/>
+<area shape="poly" title=" " alt="" coords="960,92,1047,92,1047,97,960,97"/>
+<area shape="poly" title=" " alt="" coords="619,92,725,92,725,97,619,97"/>
+<area shape="rect" title=" " alt="" coords="725,139,947,179"/>
+<area shape="poly" title=" " alt="" coords="960,134,1022,120,1053,112,1055,117,1023,125,961,139"/>
+<area shape="poly" title=" " alt="" coords="619,156,725,156,725,161,619,161"/>
 <area shape="rect" title=" " alt="" coords="237,191,324,217"/>
-<area shape="poly" title=" " alt="" coords="338,206,381,206,426,200,460,189,491,175,493,180,462,194,427,205,382,211,338,212"/>
+<area shape="poly" title=" " alt="" coords="338,206,381,206,426,200,459,190,490,176,492,181,461,195,427,205,382,211,338,211"/>
 <area shape="rect" title=" " alt="" coords="5,184,144,224"/>
 <area shape="poly" title=" " alt="" coords="158,201,237,201,237,207,158,207"/>
 </map>
@@ -135,17 +137,24 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ab40bda70afbfe73240dc341267b2bb30"><td class="mdescLeft">&#160;</td><td class="mdescRight">订阅悬停（渲染线程；返回是否更新预览需要刷新标注）  <br /></td></tr>
 <tr class="memitem:aa22d480e95e53473d098c3991436e1e3" id="r_aa22d480e95e53473d098c3991436e1e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsystems_1_1interaction_1_1AnnotationBatch.html">systems::interaction::AnnotationBatch</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa22d480e95e53473d098c3991436e1e3">annotations</a> ()</td></tr>
 <tr class="memdesc:aa22d480e95e53473d098c3991436e1e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">标注集：功能在回调中直接更新，渲染层拉取绘制  <br /></td></tr>
+<tr class="memitem:adb541d05921fddd876ddb0258e2a8ee6" id="r_adb541d05921fddd876ddb0258e2a8ee6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adb541d05921fddd876ddb0258e2a8ee6">requestRefresh</a> ()</td></tr>
+<tr class="memdesc:adb541d05921fddd876ddb0258e2a8ee6"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 线程交互状态/标注变更后请求渲染刷新（渲染层 syncPending 拉取并复位 needs_refresh）  <br /></td></tr>
+<tr class="memitem:af9196e0591e8499ed8811fb6a0751616" id="r_af9196e0591e8499ed8811fb6a0751616"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9196e0591e8499ed8811fb6a0751616">deferRefresh</a> (std::function&lt; void()&gt; pre_op)</td></tr>
+<tr class="memdesc:af9196e0591e8499ed8811fb6a0751616"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 线程延迟刷新：将刷新前置操作存入 InteractionState，经 requestRefresh 通知渲染线程执行后拉取标注  <br /></td></tr>
 <tr class="memitem:ae9d0f101a04db9c98358ad7d19e3fcf6" id="r_ae9d0f101a04db9c98358ad7d19e3fcf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae9d0f101a04db9c98358ad7d19e3fcf6">setActive</a> (bool on)</td></tr>
 <tr class="memdesc:ae9d0f101a04db9c98358ad7d19e3fcf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置本功能交互激活态（单激活：激活自己时会先下线其他功能的交互）  <br /></td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public 属性</h2></td></tr>
-<tr class="memitem:ae4c8144a9b9bf068bea91c867cc76465" id="r_ae4c8144a9b9bf068bea91c867cc76465"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4c8144a9b9bf068bea91c867cc76465">deactivate_others_</a></td></tr>
-<tr class="memdesc:ae4c8144a9b9bf068bea91c867cc76465"><td class="mdescLeft">&#160;</td><td class="mdescRight">由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配时注入：激活本功能前下线其他功能的交互（单激活约定）  <br /></td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
+<tr class="memitem:ae4c8144a9b9bf068bea91c867cc76465" id="r_ae4c8144a9b9bf068bea91c867cc76465"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4c8144a9b9bf068bea91c867cc76465">deactivate_others_</a></td></tr>
+<tr class="memdesc:ae4c8144a9b9bf068bea91c867cc76465"><td class="mdescLeft">&#160;</td><td class="mdescRight">由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配时注入：激活本功能前下线其他功能的交互（单激活约定）  <br /></td></tr>
+<tr class="memitem:ae710490c7a8c41f55e2c15b30188d8a5" id="r_ae710490c7a8c41f55e2c15b30188d8a5"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae710490c7a8c41f55e2c15b30188d8a5">render_refresh_</a></td></tr>
+<tr class="memdesc:ae710490c7a8c41f55e2c15b30188d8a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配时注入：通知渲染层拉取标注并刷新视口  <br /></td></tr>
 <tr class="memitem:a4c577e64195de81168921393411da701" id="r_a4c577e64195de81168921393411da701"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c577e64195de81168921393411da701">state_</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
+友元</h2></td></tr>
+<tr class="memitem:a2a77b0465e82b5c139c5fab113d1a75d" id="r_a2a77b0465e82b5c139c5fab113d1a75d"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2a77b0465e82b5c139c5fab113d1a75d">FeatureSystem</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>视口交互上下文（FeatureContext 成员）：功能在 activate() 中经它订阅交互回调 </p>
@@ -193,6 +202,31 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>标注集：功能在回调中直接更新，渲染层拉取绘制 </p>
+
+</div>
+</div>
+<a id="af9196e0591e8499ed8811fb6a0751616" name="af9196e0591e8499ed8811fb6a0751616"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9196e0591e8499ed8811fb6a0751616">&#9670;&#160;</a></span>deferRefresh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::InteractionContext::deferRefresh </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; void()&gt;</td>          <td class="paramname"><span class="paramname"><em>pre_op</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>GUI 线程延迟刷新：将刷新前置操作存入 InteractionState，经 requestRefresh 通知渲染线程执行后拉取标注 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pre_op</td><td>刷新前需在渲染线程执行的操作（如清理功能交互状态；覆盖语义，须幂等） </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -272,6 +306,26 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="adb541d05921fddd876ddb0258e2a8ee6" name="adb541d05921fddd876ddb0258e2a8ee6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb541d05921fddd876ddb0258e2a8ee6">&#9670;&#160;</a></span>requestRefresh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::InteractionContext::requestRefresh </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>GUI 线程交互状态/标注变更后请求渲染刷新（渲染层 syncPending 拉取并复位 needs_refresh） </p>
+<dl class="section note"><dt>注解</dt><dd>合并语义：needs_refresh 已置位（渲染侧尚未消费）时跳过重复 notify，由在途刷新一并拉取 </dd></dl>
+
+</div>
+</div>
 <a id="ae9d0f101a04db9c98358ad7d19e3fcf6" name="ae9d0f101a04db9c98358ad7d19e3fcf6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae9d0f101a04db9c98358ad7d19e3fcf6">&#9670;&#160;</a></span>setActive()</h2>
 
@@ -291,20 +345,75 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
+<a id="a2a77b0465e82b5c139c5fab113d1a75d" name="a2a77b0465e82b5c139c5fab113d1a75d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a77b0465e82b5c139c5fab113d1a75d">&#9670;&#160;</a></span>FeatureSystem</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
 <a id="ae4c8144a9b9bf068bea91c867cc76465" name="ae4c8144a9b9bf068bea91c867cc76465"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae4c8144a9b9bf068bea91c867cc76465">&#9670;&#160;</a></span>deactivate_others_</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::function&lt;void()&gt; systems::feature::InteractionContext::deactivate_others_</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配时注入：激活本功能前下线其他功能的交互（单激活约定） </p>
+
+</div>
+</div>
+<a id="ae710490c7a8c41f55e2c15b30188d8a5" name="ae710490c7a8c41f55e2c15b30188d8a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae710490c7a8c41f55e2c15b30188d8a5">&#9670;&#160;</a></span>render_refresh_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::feature::InteractionContext::render_refresh_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配时注入：通知渲染层拉取标注并刷新视口 </p>
 
 </div>
 </div>

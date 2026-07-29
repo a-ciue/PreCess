@@ -58,7 +58,7 @@ var searchData=
   ['featureregistrar_2eh_55',['FeatureRegistrar.h',['../FeatureRegistrar_8h.html',1,'']]],
   ['featuresinfo_56',['featuresInfo',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a067d8649880bec56dc4a91843d28257a',1,'systems::feature::QFeatureSystemAdaptor']]],
   ['featuresinfochanged_57',['featuresInfoChanged',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a3a7b99b10cab0fecdb1a39824b05c20d',1,'systems::feature::QFeatureSystemAdaptor']]],
-  ['featuresystem_58',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature::FeatureSystem'],['../classsystems_1_1feature_1_1FeatureSystem.html#ad2aa12d73c8df89bcd4d4b264b5e5b1a',1,'systems::feature::FeatureSystem::FeatureSystem()']]],
+  ['featuresystem_58',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature::FeatureSystem'],['../classsystems_1_1feature_1_1InteractionContext.html#a2a77b0465e82b5c139c5fab113d1a75d',1,'systems::feature::InteractionContext::FeatureSystem()'],['../classsystems_1_1feature_1_1FeatureSystem.html#ad2aa12d73c8df89bcd4d4b264b5e5b1a',1,'systems::feature::FeatureSystem::FeatureSystem()']]],
   ['featuresystem_59',['featureSystem',['../classQModelManager.html#aeb6e740e450da642f792481e9a145d56',1,'QModelManager::featureSystem'],['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#af39ef0cfadc4c98138dd2d135840bd61',1,'systems::feature::QFeatureSystemAdaptor::featureSystem()']]],
   ['featuresystem_2ecpp_60',['FeatureSystem.cpp',['../FeatureSystem_8cpp.html',1,'']]],
   ['featuresystem_2eh_61',['FeatureSystem.h',['../FeatureSystem_8h.html',1,'']]],
