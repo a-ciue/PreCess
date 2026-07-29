@@ -7,6 +7,7 @@
 #include "MeasureHandler.h"
 #include "EventBus.h"
 #include "FeatureContext.h"
+#include "FeatureEvents.h"
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "InteractionContext.h"
@@ -66,7 +67,7 @@ TEST_CASE("MeasureHandler setup declares clear button parameter and menu")
     REQUIRE(reg.menuItems().size() == 1);
 }
 
-TEST_CASE("MeasureHandler: interactive picks update state annotations and onClear resets")
+TEST_CASE("MeasureHandler: interactive picks update state annotations and ParameterChangedEvent clears")
 {
     FeatureTestEnv env;
     env.handler.activate(*env.ctx);
@@ -92,21 +93,19 @@ TEST_CASE("MeasureHandler: interactive picks update state annotations and onClea
     CHECK(env.interaction_state_.annotations.points.size() == 2);
     CHECK(env.interaction_state_.annotations.texts.size() == 1);
 
-    // 面板"确认"的会话清理：on_clear 清空会话状态与标注
-    REQUIRE(env.interaction_state_.on_clear);
-    env.interaction_state_.on_clear();
-    CHECK(env.handler.lineCount() == 0);
-    CHECK(!env.handler.hasPending());
-    CHECK(env.interaction_state_.annotations.lines.empty());
-    CHECK(env.interaction_state_.annotations.points.empty());
-    CHECK(env.interaction_state_.annotations.texts.empty());
+    // 其他功能的参数变更不触发本功能清空（按功能名过滤，注册名见插件 json）
+    env.bus.publish(ParameterChangedEvent { "OtherFeature", 0, core::ArgObject {} });
+    CHECK_FALSE(env.interaction_state_.needs_refresh);
+    CHECK_FALSE(env.interaction_state_.deferred_op);
 
-    // 面板动作按钮（"清除"参数）：on_action 同样清空会话状态与标注
-    env.interaction_state_.on_pick(p1);
-    env.interaction_state_.on_pick(p2);
-    CHECK(env.handler.lineCount() == 1);
-    REQUIRE(env.interaction_state_.on_action);
-    env.interaction_state_.on_action(0);
+    // 面板"清除"按钮参数：通过 ParameterChangedEvent 触发延迟清空（GUI 线程置位，渲染线程执行）
+    env.bus.publish(ParameterChangedEvent { "MeasurePlugin", 0, core::ArgObject {} });
+    // GUI 线程只置位延迟清空回调与刷新标志，不直接修改功能状态
+    CHECK(env.interaction_state_.needs_refresh);
+    REQUIRE(env.interaction_state_.deferred_op);
+    // 模拟渲染线程 syncPending：执行延迟清空后检查状态
+    env.interaction_state_.deferred_op();
+    env.interaction_state_.deferred_op = nullptr;
     CHECK(env.handler.lineCount() == 0);
     CHECK(!env.handler.hasPending());
     CHECK(env.interaction_state_.annotations.lines.empty());

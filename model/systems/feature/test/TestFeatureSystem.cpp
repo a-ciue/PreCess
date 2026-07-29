@@ -347,3 +347,49 @@ TEST_CASE("FeatureSystem::setFeatureActive drives activation by feature name", "
     REQUIRE(system.setFeatureActive(""));
     REQUIRE(system.activeInteraction() == nullptr);
 }
+
+TEST_CASE("InteractionContext::setActive notifies render refresh in both directions", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    auto meta = makeMetaData();
+    meta.name = "NotifyTest";
+    meta.interactive = true;
+    auto* raw = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr handler { raw };
+    REQUIRE(system.registerHandler(meta, std::move(handler)));
+
+    int notify_count = 0;
+    system.setRenderRefreshCallback([&notify_count] { ++notify_count; });
+
+    // 激活：置位 needs_refresh 并 notify（渲染层 syncPending 经 syncState 上线）
+    raw->context->interaction.setActive(true);
+    auto* state = system.activeInteraction();
+    REQUIRE(state != nullptr);
+    CHECK(state->needs_refresh);
+    CHECK(notify_count == 1);
+
+    // 停用：同样置位 + notify（渲染层 syncPending 检测迁移并执行下线清理）
+    state->needs_refresh = false;
+    raw->context->interaction.setActive(false);
+    CHECK_FALSE(state->active);
+    CHECK(state->needs_refresh);
+    CHECK(notify_count == 2);
+
+    // 幂等守卫：重复调用不重复置位/通知
+    state->needs_refresh = false;
+    raw->context->interaction.setActive(false);
+    CHECK_FALSE(state->needs_refresh);
+    CHECK(notify_count == 2);
+
+    // 合并语义：挂起刷新未消费时重复 requestRefresh 跳过 notify，消费后可再次 notify
+    raw->context->interaction.requestRefresh();
+    CHECK(notify_count == 3);
+    raw->context->interaction.requestRefresh();
+    CHECK(notify_count == 3);
+    state->needs_refresh = false; // 模拟渲染层消费
+    raw->context->interaction.requestRefresh();
+    CHECK(notify_count == 4);
+}

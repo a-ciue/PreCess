@@ -210,5 +210,7 @@ private:
     QModelQuery* model_query_ {};
 
     void updateGlobalVtkPointsImpl(Data* vtk);
+    //! @brief 注入渲染刷新回调到 FeatureSystem（initializeVTK 与 setFeatureAdaptor 各调一次，确保初始化顺序无关）
+    void injectRenderRefreshCallback();
 };
 #endif // Q_RENDER_WINDOW_H

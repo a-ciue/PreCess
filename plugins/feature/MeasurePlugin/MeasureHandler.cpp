@@ -5,7 +5,9 @@
  */
 
 #include "MeasureHandler.h"
+#include "EventBus.h"
 #include "FeatureContext.h"
+#include "FeatureEvents.h"
 #include "FeatureRegistrar.h"
 #include "InteractionContext.h"
 
@@ -20,6 +22,8 @@ namespace systems::feature {
 
 namespace {
 using Vec3 = std::array<double, 3>;
+
+constexpr const char* kFeatureName = "MeasurePlugin"; //> 插件 json 注册名，过滤 ParameterChangedEvent 用
 
 constexpr double kEps = 1e-9;
 
@@ -44,11 +48,12 @@ double length(const Vec3& v)
     return std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
-std::string toString(double value, int precision = 6)
+//! @brief 数值转两位小数字符串（测量值显示精度）
+std::string toString(double value)
 {
     std::ostringstream oss;
     oss.setf(std::ios::fixed, std::ios::floatfield);
-    oss.precision(precision);
+    oss.precision(2);
     oss << value;
     return oss.str();
 }
@@ -64,11 +69,21 @@ double angleBetween(const Vec3& u, const Vec3& v)
     cos_theta = std::max(-1.0, std::min(1.0, cos_theta));
     return std::acos(cos_theta) * 180.0 / 3.14159265358979323846;
 }
+
+//! @brief 两点是否同一吸附点：全局顶点 id 优先，同源顶点坐标位级一致兜底
+bool samePoint(const systems::interaction::PickInfo& a, const systems::interaction::PickInfo& b)
+{
+    if (a.mesh_id >= 0 && a.mesh_id == b.mesh_id)
+        return true;
+    if (a.geom_id >= 0 && a.geom_id == b.geom_id)
+        return true;
+    return a.world_pos == b.world_pos;
+}
 }
 
 void MeasureHandler::setup(FeatureRegistrar& reg)
 {
-    // "清除"按钮参数：无值触发器，点击经 on_action 于渲染线程回到本功能
+    // "清除"按钮参数：无值触发器，点击发布 ParameterChangedEvent，功能内部订阅并清空
     reg.addParameter({ ArgTypeEnum::Button, "清除", "" });
     reg.addMenuItem({ "工具", "测量" });
 }
@@ -79,23 +94,19 @@ void MeasureHandler::activate(FeatureContext& ctx)
     annotations_ = &ctx.interaction.annotations();
     ctx.interaction.onActivate([this]() { this->clear(); });
     ctx.interaction.onDeactivate([this]() { this->clear(); });
-    ctx.interaction.onClear([this]() { this->clear(); });
-    ctx.interaction.onAction([this](int) { this->clear(); });
     ctx.interaction.onPick([this](const PickInfo& p) { return this->onPick(p); });
     ctx.interaction.onHover([this](const PickInfo& p) { return this->onHover(p); });
+
+    // "清除"按钮经 ParameterChangedEvent 触发：清理作为刷新前置操作，延迟到渲染线程安全执行
+    param_sub_ = ctx.events.subscribe<ParameterChangedEvent>([this, interaction = &ctx.interaction](const ParameterChangedEvent& e) {
+        // 按功能名过滤：其他功能的参数变更不触发本功能清空
+        if (e.feature != kFeatureName || e.param_index != 0)
+            return;
+        interaction->deferRefresh([this] { this->clear(); });
+    });
 }
 
 // ---------------- 交互回调（经 InteractionContext 注册，渲染线程驱动） ----------------
-
-bool MeasureHandler::samePoint(const PickInfo& a, const PickInfo& b)
-{
-    if (a.mesh_id >= 0 && a.mesh_id == b.mesh_id)
-        return true;
-    if (a.geom_id >= 0 && a.geom_id == b.geom_id)
-        return true;
-    // 同源顶点再次拾取坐标位级一致，作无 id 时的兜底
-    return a.world_pos == b.world_pos;
-}
 
 bool MeasureHandler::onPick(const PickInfo& pick)
 {
@@ -119,14 +130,13 @@ bool MeasureHandler::onHover(const PickInfo& pick)
 {
     // 未吸附或无起笔：清除已有预览；本来无预览则无需刷新
     if (!pending_ || !pick.valid) {
-        if (!has_preview_)
+        if (!preview_)
             return false;
-        has_preview_ = false;
+        preview_.reset();
         refreshAnnotations();
         return true;
     }
 
-    has_preview_ = true;
     preview_ = pick;
     refreshAnnotations();
     return true;
@@ -141,16 +151,12 @@ void MeasureHandler::addLine(const PickInfo& a, const PickInfo& b)
     }
 
     // 与每条已有线做端点匹配，共端点即记录一组夹角
-    const int new_idx = static_cast<int>(lines_.size());
-    for (size_t i = 0; i < lines_.size(); ++i) {
-        const MeasureLine& l = lines_[i];
+    for (const MeasureLine& l : lines_) {
         auto try_share = [&](const PickInfo& old_shared, const PickInfo& old_other,
                              const PickInfo& new_shared, const PickInfo& new_other) {
             if (!samePoint(old_shared, new_shared))
                 return;
             MeasureAngle ang;
-            ang.line1 = static_cast<int>(i);
-            ang.line2 = new_idx;
             ang.at = old_shared.world_pos;
             ang.p = old_other.world_pos;
             ang.q = new_other.world_pos;
@@ -181,7 +187,7 @@ void MeasureHandler::refreshAnnotations()
     // 长度文本：每线一个，放线段中点（白色）
     for (const MeasureLine& l : lines_) {
         const Vec3 mid = midpoint(l.a.world_pos, l.b.world_pos);
-        annotations_->texts.push_back({ mid, "L: " + toString(length(l.b.world_pos - l.a.world_pos), 2), 1.0, 1.0, 1.0 });
+        annotations_->texts.push_back({ mid, "L: " + toString(length(l.b.world_pos - l.a.world_pos)), 1.0, 1.0, 1.0 });
     }
 
     // 夹角文本：放共点沿角平分线偏移（青色）；同一点多个夹角按序号加大偏移防重叠
@@ -214,32 +220,33 @@ void MeasureHandler::refreshAnnotations()
         const double dist = 0.25 * std::min(lu, lv) * (1.0 + 0.3 * stack);
         annotations_->texts.push_back({ { ang.at[0] + dir[0] * dist, ang.at[1] + dir[1] * dist,
                                            ang.at[2] + dir[2] * dist },
-            "Ang: " + toString(ang.angle, 2), 0.3, 0.9, 1.0 });
+            "Ang: " + toString(ang.angle), 0.3, 0.9, 1.0 });
     }
 
     // 悬停动态预览：黄色虚线 + 黄色长度文本
-    if (pending_ && has_preview_) {
+    if (pending_ && preview_) {
         AnnotationLine preview;
         preview.p0 = pending_->world_pos;
-        preview.p1 = preview_.world_pos;
+        preview.p1 = preview_->world_pos;
         preview.r = 1.0;
         preview.g = 0.9;
         preview.b = 0.1;
         preview.dashed = true;
         annotations_->lines.push_back(preview);
 
-        const Vec3 mid = midpoint(pending_->world_pos, preview_.world_pos);
+        const Vec3 mid = midpoint(pending_->world_pos, preview_->world_pos);
         annotations_->texts.push_back({ mid,
-            "L: " + toString(length(preview_.world_pos - pending_->world_pos), 2), 1.0, 0.9, 0.1 });
+            "L: " + toString(length(preview_->world_pos - pending_->world_pos)), 1.0, 0.9, 0.1 });
     }
 }
 
 void MeasureHandler::clear()
 {
     pending_.reset();
-    has_preview_ = false;
+    preview_.reset();
     lines_.clear();
     angles_.clear();
+    // 调用方（on_activate/on_deactivate/deferRefresh 前置操作）均在渲染线程，重建空标注后由框架拉取刷新
     refreshAnnotations();
 }
 

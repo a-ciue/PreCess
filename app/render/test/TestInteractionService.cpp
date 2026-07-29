@@ -49,9 +49,6 @@ struct FakeInteraction {
 
     int activate_count = 0;
     int deactivate_count = 0;
-    int clear_count = 0;
-    int action_count = 0;
-    int last_action = -1;
     int hover_count = 0;
     std::vector<PickInfo> picks;
 
@@ -59,11 +56,6 @@ struct FakeInteraction {
     {
         state.on_activate = [this] { ++activate_count; };
         state.on_deactivate = [this] { ++deactivate_count; };
-        state.on_clear = [this] { ++clear_count; };
-        state.on_action = [this](int param_index) {
-            ++action_count;
-            last_action = param_index;
-        };
         state.on_pick = [this](const PickInfo& pick) {
             picks.push_back(pick);
             return true;
@@ -218,14 +210,6 @@ int main(int argc, char* argv[])
     service.pick(5000, 5000); // 窗口外坐标，拾取器必然未命中
     check(fake.picks.size() == picks_before, "未命中吸附点时不调用 onPick");
 
-    // ---- clear：面板"确认"的会话清理转发到处理器 ----
-    service.clear();
-    check(fake.clear_count == 1, "clear() 转发到处理器");
-
-    // ---- postAction：面板动作按钮转发到处理器并携带参数下标 ----
-    service.postAction(2);
-    check(fake.action_count == 1 && fake.last_action == 2, "postAction() 转发到处理器并携带参数下标");
-
     // ---- 几何（OCC）顶点拾取：geom_id 填充 ----
     {
         TopoDS_Shape box = BRepPrimAPI_MakeBox(gp_Pnt(500.0, 500.0, 0.0), 1000.0, 800.0, 600.0).Shape();
@@ -260,6 +244,17 @@ int main(int argc, char* argv[])
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]); // 驱动一次 syncState
     check(fake.deactivate_count == 1, "下线时调用 onDeactivate 一次");
     check(!service.hasActiveState(), "开关关闭后无激活交互");
+
+    // ---- syncPending：模拟 GUI 线程 setActive 置位 + notify 到达，驱动激活迁移 ----
+    interaction_enabled = true;
+    fake.state.needs_refresh = true; // setActive(true)：置位 + notify
+    service.syncPending();
+    check(fake.activate_count == 2, "syncPending 驱动上线（onActivate 再次调用）");
+    interaction_enabled = false;
+    fake.state.needs_refresh = true; // setActive(false)：置位 + notify
+    service.syncPending();
+    check(fake.deactivate_count == 2, "syncPending 驱动下线（onDeactivate 再次调用）");
+    check(!service.hasActiveState(), "syncPending 下线后无激活交互");
 
     spdlog::info("==== InteractionService self-check: {} ====",
         g_failures == 0 ? "ALL PASS" : "HAS FAILURES");

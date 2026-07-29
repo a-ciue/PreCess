@@ -79,6 +79,11 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
             }
         }
     };
+    // 注入渲染刷新回调：功能经 requestRefresh() 通知 app 层拉取标注并重绘视口
+    entry.interaction_context.render_refresh_ = [this] {
+        if (render_refresh_callback_)
+            render_refresh_callback_();
+    };
 
     // 激活失败则撤掉整个条目，不留下半注册状态
     try {
@@ -192,6 +197,11 @@ void FeatureSystem::setActiveModelProvider(std::function<std::optional<Index>()>
 void FeatureSystem::setActiveComponentProvider(std::function<std::optional<Index>()> provider)
 {
     active_component_provider_ = std::move(provider);
+}
+
+void FeatureSystem::setRenderRefreshCallback(std::function<void()> callback)
+{
+    render_refresh_callback_ = std::move(callback);
 }
 
 bool FeatureSystem::dispatchKeyEvent(const KeyEvent& event)

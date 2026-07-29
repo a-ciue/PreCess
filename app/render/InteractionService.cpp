@@ -197,22 +197,18 @@ void InteractionService::hover(double posx, double posy)
     }
 }
 
-void InteractionService::clear()
+void InteractionService::syncPending()
 {
-    if (!current_)
-        return;
-    if (current_->on_clear)
-        current_->on_clear();
-    refreshAnnotations();
-}
-
-void InteractionService::postAction(int param_index)
-{
-    if (!current_)
-        return;
-    if (current_->on_action)
-        current_->on_action(param_index);
-    refreshAnnotations();
+    // 激活迁移：GUI 线程 setActive 经 notify 到达，syncState 执行上线/下线（幂等，无迁移时零成本）
+    syncState();
+    if (current_ && current_->needs_refresh.exchange(false)) {
+        // GUI 线程经 deferred_op 延迟的操作，在渲染线程安全执行
+        if (current_->deferred_op) {
+            current_->deferred_op();
+            current_->deferred_op = nullptr;
+        }
+        refreshAnnotations();
+    }
 }
 
 void InteractionService::clearActors()
