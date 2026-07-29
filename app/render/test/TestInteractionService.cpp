@@ -154,7 +154,6 @@ int main(int argc, char* argv[])
 
     MeshActorManager mesh_manager(pts.GetPointer());
     mesh_manager.bindRender(renderer.GetPointer());
-    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     GeometryActorManager geometry_manager;
     geometry_manager.bindRender(renderer.GetPointer());
@@ -164,6 +163,10 @@ int main(int argc, char* argv[])
 
     FakeInteraction fake;
     InteractionService service(*renderer, *overlay_renderer, mesh_manager.op(), sel_mgr);
+
+    // 拾取列表在服务构造时登记观察，网格须在此之后加载才会进入拾取列表
+    // （与应用一致：服务于 initializeVTK 创建，模型其后加载）
+    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     // 交互状态经 provider 提供：开关开启前无激活状态，pick 不转发
     bool interaction_enabled = false;
@@ -241,6 +244,30 @@ int main(int argc, char* argv[])
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]); // 驱动一次 syncState
     check(fake.deactivate_count == 1, "下线时调用 onDeactivate 一次");
     check(!service.hasActiveState(), "开关关闭后无激活交互");
+
+    // ---- syncPending：模拟 GUI 线程 setActive 置位 + notify 到达，驱动激活迁移 ----
+    interaction_enabled = true;
+    fake.state.needs_refresh = true; // setActive(true)：置位 + notify
+    service.syncPending();
+    check(fake.activate_count == 2, "syncPending 驱动上线（onActivate 再次调用）");
+    interaction_enabled = false;
+    fake.state.needs_refresh = true; // setActive(false)：置位 + notify
+    service.syncPending();
+    check(fake.deactivate_count == 2, "syncPending 驱动下线（onDeactivate 再次调用）");
+    check(!service.hasActiveState(), "syncPending 下线后无激活交互");
+
+    // ---- 下线即消费挂起状态：needs_refresh/deferred_op 随 clearSession 失效，不堵死后续 notify ----
+    interaction_enabled = true;
+    fake.state.needs_refresh = true;
+    service.syncPending();
+    check(fake.activate_count == 3, "syncPending 再次驱动上线");
+    interaction_enabled = false;
+    fake.state.needs_refresh = true;      // setActive(false) 置位
+    fake.state.deferred_op = [] { };      // 尚未执行的延迟操作
+    service.syncPending();                // 下线：clearSession 应消费挂起状态
+    check(fake.deactivate_count == 3, "syncPending 再次驱动下线");
+    check(!fake.state.needs_refresh, "下线时 needs_refresh 被消费（不堵死后续 notify）");
+    check(!fake.state.deferred_op, "下线时 deferred_op 随会话清理");
 
     spdlog::info("==== InteractionService self-check: {} ====",
         g_failures == 0 ? "ALL PASS" : "HAS FAILURES");

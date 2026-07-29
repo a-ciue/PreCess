@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "DimensionPlugin",
+    "display_name": "尺寸标注",
+    "description": "参数化尺寸标注：按测量类型（距离/角度/半径/长度/面积/体积/包围盒/重心）与选择对象执行并返回结果文本"
+  }
+}

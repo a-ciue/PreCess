@@ -16,5 +16,6 @@ enum class ArgTypeEnum {
      // OBJECT, // 对象类型
      // ARRAY, // 数组类型
      // MAP, // 映射类型
-     Selector // 选择器类型
+     Selector, // 选择器类型
+     Button // 按钮类型（无值触发器：点击即动作，语义由功能自定义；载荷为点击计数器，功能约定忽略值只读下标）
  };

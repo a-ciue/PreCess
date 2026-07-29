@@ -42,6 +42,11 @@ public:
      */
     Q_INVOKABLE bool postKeyEvent(int key, int modifiers, bool pressed);
     /**
+     * @brief 启用当前活动功能（活动操作切换驱动，幂等）
+     * @param unique_name 要激活的功能唯一名称（须声明 interactive）；空串表示全部下线
+     */
+    Q_INVOKABLE bool setFeatureActive(const QString& unique_name);
+    /**
      * @brief QML侧同步当前活动模型id，供功能上下文动态获取
      */
     Q_INVOKABLE void setActiveModel(int id);

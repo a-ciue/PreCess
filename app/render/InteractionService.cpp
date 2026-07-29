@@ -197,6 +197,20 @@ void InteractionService::hover(double posx, double posy)
     }
 }
 
+void InteractionService::syncPending()
+{
+    // 激活迁移：GUI 线程 setActive 经 notify 到达，syncState 执行上线/下线（幂等，无迁移时零成本）
+    syncState();
+    if (current_ && current_->needs_refresh.exchange(false)) {
+        // GUI 线程经 deferred_op 延迟的操作，在渲染线程安全执行
+        if (current_->deferred_op) {
+            current_->deferred_op();
+            current_->deferred_op = nullptr;
+        }
+        refreshAnnotations();
+    }
+}
+
 void InteractionService::clearActors()
 {
     points_poly_->Initialize();

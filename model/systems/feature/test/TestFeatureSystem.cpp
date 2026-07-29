@@ -259,7 +259,7 @@ TEST_CASE("FeatureSystem propagates interactive metadata to FeatureInfo", "[Feat
     REQUIRE(infos.size() == 1);
     REQUIRE(infos[0]->interactive);
 
-    // 未声明时为空串与 false
+    // 未声明时为 false
     FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
     auto plain_meta = makeMetaData();
     plain_meta.name = "PlainFeature";
@@ -312,4 +312,84 @@ TEST_CASE("FeatureSystem::activeInteraction tracks interactive activation", "[Fe
     // 取消激活后回到无激活状态
     raw2->context->interaction.setActive(false);
     REQUIRE(system.activeInteraction() == nullptr);
+}
+
+TEST_CASE("FeatureSystem::setFeatureActive drives activation by feature name", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    auto interactive_meta = makeMetaData();
+    interactive_meta.name = "InteractiveFeature";
+    interactive_meta.interactive = true;
+    FeatureSystem::SystemHandlerPtr interactive { new FakeFeatureHandler };
+    REQUIRE(system.registerHandler(interactive_meta, std::move(interactive)));
+
+    auto plain_meta = makeMetaData();
+    plain_meta.name = "PlainFeature";
+    FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
+    REQUIRE(system.registerHandler(plain_meta, std::move(plain)));
+
+    // 未注册功能与未声明 interactive 的功能不可激活
+    REQUIRE_FALSE(system.setFeatureActive("Unknown"));
+    REQUIRE_FALSE(system.setFeatureActive("PlainFeature"));
+    REQUIRE(system.activeInteraction() == nullptr);
+
+    // 按名激活（幂等：重复设置无副作用）
+    REQUIRE(system.setFeatureActive("InteractiveFeature"));
+    REQUIRE(system.setFeatureActive("InteractiveFeature"));
+    auto* active = system.activeInteraction();
+    REQUIRE(active != nullptr);
+    REQUIRE(active->active);
+
+    // 活动操作切到无交互能力的功能：空串全部下线
+    REQUIRE(system.setFeatureActive(""));
+    REQUIRE(system.activeInteraction() == nullptr);
+}
+
+TEST_CASE("InteractionContext::setActive notifies render refresh in both directions", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    auto meta = makeMetaData();
+    meta.name = "NotifyTest";
+    meta.interactive = true;
+    auto* raw = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr handler { raw };
+    REQUIRE(system.registerHandler(meta, std::move(handler)));
+
+    int notify_count = 0;
+    system.setRenderRefreshCallback([&notify_count] { ++notify_count; });
+
+    // 激活：置位 needs_refresh 并 notify（渲染层 syncPending 经 syncState 上线）
+    raw->context->interaction.setActive(true);
+    auto* state = system.activeInteraction();
+    REQUIRE(state != nullptr);
+    CHECK(state->needs_refresh);
+    CHECK(notify_count == 1);
+
+    // 停用：同样置位 + notify（渲染层 syncPending 检测迁移并执行下线清理）
+    state->needs_refresh = false;
+    raw->context->interaction.setActive(false);
+    CHECK_FALSE(state->active);
+    CHECK(state->needs_refresh);
+    CHECK(notify_count == 2);
+
+    // 幂等守卫：重复调用不重复置位/通知
+    state->needs_refresh = false;
+    raw->context->interaction.setActive(false);
+    CHECK_FALSE(state->needs_refresh);
+    CHECK(notify_count == 2);
+
+    // 合并语义：挂起刷新未消费时重复 requestRefresh 跳过 notify，消费后可再次 notify
+    raw->context->interaction.requestRefresh();
+    CHECK(notify_count == 3);
+    raw->context->interaction.requestRefresh();
+    CHECK(notify_count == 3);
+    state->needs_refresh = false; // 模拟渲染层消费
+    raw->context->interaction.requestRefresh();
+    CHECK(notify_count == 4);
 }

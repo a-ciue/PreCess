@@ -48,6 +48,9 @@ public:
     void pick(double posx, double posy);
     //! @brief 悬停：同步激活状态，调用 on_hover 回调做动态预览
     void hover(double posx, double posy);
+    //! @brief 由 notify 回调驱动（GUI 线程 setActive/requestRefresh 后）：同步激活迁移并拉取标注刷新 VTK actor
+    void syncPending();
+
 private:
     //! @brief 同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）
     systems::interaction::InteractionState* syncState();

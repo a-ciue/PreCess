@@ -201,6 +201,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         auto* feature_system = feature_adaptor_ ? feature_adaptor_->featureSystem() : nullptr;
         return feature_system ? feature_system->activeInteraction() : nullptr;
     };
+    // 注入渲染刷新回调（与 setFeatureAdaptor 互补，确保两者先后顺序均能生效）
+    injectRenderRefreshCallback();
 
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
@@ -542,6 +544,8 @@ void QRenderWindow::clearSelection()
 void QRenderWindow::setFeatureAdaptor(QObject* adaptor)
 {
     feature_adaptor_ = qobject_cast<systems::feature::QFeatureSystemAdaptor*>(adaptor);
+    // 注入渲染刷新回调：功能经 requestRefresh() 触发 VTK 重绘
+    injectRenderRefreshCallback();
 }
 
 void QRenderWindow::setScaleBarVisible(bool on)
@@ -657,3 +661,19 @@ int QRenderWindow::getMeshStyle()
 }
 
 vtkStandardNewMacro(QRenderWindow::Data);
+
+void QRenderWindow::injectRenderRefreshCallback()
+{
+    if (!feature_adaptor_ || !feature_adaptor_->featureSystem() || !interaction_service_)
+        return;
+    auto refresh = [this]() {
+        dispatch_async([this](vtkRenderWindow* rw, vtkUserData) {
+            interaction_service_->syncPending(); // 同步激活迁移并拉取标注到 VTK actor
+            rw->Render();
+        });
+    };
+    feature_adaptor_->featureSystem()->setRenderRefreshCallback(refresh);
+    // 注入即排空一次：requestRefresh 的合并跳过以"置位必有在途消费者"为前提，
+    // 兜底注入前（回调缺失期）置位而未被消费的挂起刷新
+    refresh();
+}
