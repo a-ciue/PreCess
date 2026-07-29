@@ -256,6 +256,19 @@ int main(int argc, char* argv[])
     check(fake.deactivate_count == 2, "syncPending 驱动下线（onDeactivate 再次调用）");
     check(!service.hasActiveState(), "syncPending 下线后无激活交互");
 
+    // ---- 下线即消费挂起状态：needs_refresh/deferred_op 随 clearSession 失效，不堵死后续 notify ----
+    interaction_enabled = true;
+    fake.state.needs_refresh = true;
+    service.syncPending();
+    check(fake.activate_count == 3, "syncPending 再次驱动上线");
+    interaction_enabled = false;
+    fake.state.needs_refresh = true;      // setActive(false) 置位
+    fake.state.deferred_op = [] { };      // 尚未执行的延迟操作
+    service.syncPending();                // 下线：clearSession 应消费挂起状态
+    check(fake.deactivate_count == 3, "syncPending 再次驱动下线");
+    check(!fake.state.needs_refresh, "下线时 needs_refresh 被消费（不堵死后续 notify）");
+    check(!fake.state.deferred_op, "下线时 deferred_op 随会话清理");
+
     spdlog::info("==== InteractionService self-check: {} ====",
         g_failures == 0 ? "ALL PASS" : "HAS FAILURES");
 

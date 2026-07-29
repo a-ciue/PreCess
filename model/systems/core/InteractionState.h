@@ -37,10 +37,13 @@ struct InteractionState {
     //!（覆盖语义：重复置位仅保留最新，操作须幂等）
     std::function<void()> deferred_op;
 
-    //! @brief 会话结束时的渲染层清理：清空标注（不动订阅，订阅随功能常驻）
+    //! @brief 会话结束时的渲染层清理：清空标注、消费挂起刷新与延迟操作（不动订阅，订阅随功能常驻）
     void clearSession()
     {
         annotations.clear();
+        // 挂起状态随会话失效：残留 true 会堵死本功能后续 requestRefresh 的 notify（合并语义以"置位必有在途消费者"为前提）
+        needs_refresh = false;
+        deferred_op = nullptr;
     }
 };
 
