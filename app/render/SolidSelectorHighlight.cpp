@@ -70,6 +70,19 @@ void SolidSelectorHighlight::clear()
     highlight_data_->Modified();
 }
 
+void SolidSelectorHighlight::disableHighlight()
+{
+    highlight_data_->SetPartition(partition_id_, nullptr);
+    highlight_data_->Modified();
+}
+
+void SolidSelectorHighlight::enableHighlight()
+{
+    geom_filter_->Update();
+    highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
+    highlight_data_->Modified();
+}
+
 void SolidSelectorHighlight::select(double posx, double posy)
 {
     // 获取 picked_cell_id和picked_data_set
@@ -106,9 +119,8 @@ void SolidSelectorHighlight::select(double posx, double posy)
         selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
         spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
     }
-    this->selected_ids_->Modified(); // 触发highlight_actor_更新
-    geom_filter_->Update();
-    highlight_data_->Modified();
+    this->selected_ids_->Modified();
+    enableHighlight();
 }
 
 void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)

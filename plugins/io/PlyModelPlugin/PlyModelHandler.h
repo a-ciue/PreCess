@@ -7,7 +7,6 @@
 #define PLY_MODEL_HANDLER_H
 #include "ModelIOHandler.h"
 #include <tinyply.h>
-class ModelData;
 
 namespace systems::io {
 /**

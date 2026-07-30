@@ -60,6 +60,9 @@ namespace {
             return core::ArgObject::create<ArgTypeEnum::Combo>(parseComboIndex(type.content));
         case ArgTypeEnum::Selector:
             return core::ArgObject::create<ArgTypeEnum::Selector>({});
+        case ArgTypeEnum::Button:
+            // Button 为无值触发器：默认 0 次点击，载荷仅作触发事件的计数器
+            return core::ArgObject::create<ArgTypeEnum::Button>(0);
         case ArgTypeEnum::None:
         default:
             spdlog::warn("FeatureParams: param '{}' has None type, storing empty value", type.name);

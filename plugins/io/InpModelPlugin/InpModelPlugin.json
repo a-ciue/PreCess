@@ -1,0 +1,7 @@
+{
+  "system": "ModelIOSystem",
+  "handler": {
+    "file_type": "Abaqus Input File",
+    "extensions": [ "inp" ]
+  }
+}

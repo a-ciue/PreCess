@@ -5,15 +5,15 @@ QtObject {
     property QtObject selection: QtObject {
         property int activeModelId: -1
         property int activeComponentId: -1
-        property string selectMode: ""
+        property string selectMode: "None"
         property int listeningSelectorIndex: -1
-
         signal confirmed(var sel)
+        signal selectionInvalidated()
     }
 
     property var activeOperation: null
     property var registry: ({})
 
     signal modelVisibilityUpdated(int modelId, bool visible)
-    signal componentVisibilityUpdated(int componentId, bool visible)
+    signal componentVisibilityUpdated(int componentId, bool meshVisible, bool geometryVisible)
 }

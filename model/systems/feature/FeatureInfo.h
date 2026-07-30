@@ -14,8 +14,9 @@ namespace systems::feature {
  * @brief 菜单贡献项：声明功能要挂到哪个菜单下
  */
 struct MenuContribution {
-    std::string menu_path; //> 顶层菜单名（如 "工具"），为空时归入默认 "功能" 菜单
+    std::string menu_path; //> 菜单路径，以 '/' 分隔，约定两级（"菜单/分组"）：菜单作为 ribbon 分页，分组用于页内归组功能按钮；仅一段时归入该菜单的默认分组，为空时归入默认 "功能" 菜单
     std::string text; //> 菜单项文本，为空时使用功能 display_name
+    std::string icon; //> 自定义图标的 qrc 资源路径（如 "qrc:/images/toolbar/xxx.svg"），为空时按插件名映射默认图标
 };
 
 /**
@@ -33,6 +34,7 @@ struct FeatureInfo {
     std::string name; //> 功能唯一名称，用作索引
     std::string display_name; //> 功能 UI 展示用名称
     std::string description; //> 功能描述
+    bool interactive = false; //> 是否声明视口交互能力（功能经 interaction 上下文订阅交互回调）
     std::vector<core::ArgType> arg_types; //> 功能参数类型列表
     std::vector<MenuContribution> menus; //> 菜单贡献项列表
     std::vector<KeyBinding> key_bindings; //> 按键绑定列表

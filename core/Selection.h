@@ -30,6 +30,6 @@ struct Selection {
     std::vector<Index> ids;
     //! @brief 选择对象的类型
     ElementEnum::Type type;
-    Index component_id;
+    Index component_id { -1 };
 };
 #endif // SELECTION_H

@@ -6,7 +6,46 @@
 #include "QFeatureInfo.h"
 #include <spdlog/spdlog.h>
 
+#include <any>
+#include <string>
+#include <vector>
+
 namespace systems::feature {
+namespace {
+//! @brief 功能结果 std::any → QVariant
+QVariant anyToQVariant(const std::any& value)
+{
+    if (!value.has_value())
+        return {};
+
+    if (value.type() == typeid(std::string))
+        return QString::fromStdString(std::any_cast<std::string>(value));
+
+    if (value.type() == typeid(double))
+        return std::any_cast<double>(value);
+
+    if (value.type() == typeid(long long))
+        return static_cast<qlonglong>(std::any_cast<long long>(value));
+
+    if (value.type() == typeid(int))
+        return std::any_cast<int>(value);
+
+    if (value.type() == typeid(bool))
+        return std::any_cast<bool>(value);
+
+    if (value.type() == typeid(std::vector<double>)) {
+        const auto& vec = std::any_cast<const std::vector<double>&>(value);
+        QVariantList list;
+        list.reserve((int)vec.size());
+        for (double v : vec)
+            list.append(v);
+        return list;
+    }
+
+    return {};
+}
+}
+
 QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     : feature_system_(&feature_system)
 {
@@ -15,10 +54,30 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     });
 }
 
+FeatureSystem* QFeatureSystemAdaptor::featureSystem() const
+{
+    return feature_system_;
+}
+
 QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
 {
-    feature_system_->invoke(unique_name.toStdString());
-    return {};
+    return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
+}
+
+void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)
+{
+    // ArgObject → QVariant（覆盖常用显示类型，其余为空 QVariant）
+    QVariant q_value;
+    if (const auto* v = value.get<ArgTypeEnum::Text>()) {
+        q_value = QString::fromStdString(*v);
+    } else if (const auto* v = value.get<ArgTypeEnum::Bool>()) {
+        q_value = *v;
+    } else if (const auto* v = value.get<ArgTypeEnum::Int>()) {
+        q_value = static_cast<qlonglong>(*v);
+    } else if (const auto* v = value.get<ArgTypeEnum::Float>()) {
+        q_value = *v;
+    }
+    emit paramValueChanged(QString::fromStdString(feature), static_cast<int>(index), q_value);
 }
 
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)
@@ -44,6 +103,11 @@ bool QFeatureSystemAdaptor::postKeyEvent(int key, int modifiers, bool pressed)
     return feature_system_->dispatchKeyEvent(KeyEvent { key, modifiers, pressed });
 }
 
+bool QFeatureSystemAdaptor::setFeatureActive(const QString& unique_name)
+{
+    return feature_system_->setFeatureActive(unique_name.toStdString());
+}
+
 void QFeatureSystemAdaptor::setActiveModel(int id)
 {
     active_model_id_ = id;
@@ -58,24 +122,25 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
 {
     QList<QFeatureInfo*> infos;
     for (const FeatureInfo* feature_info : feature_system_->getFeatureInfos()) {
-        // 菜单归属取第一个菜单贡献项，未声明时归入默认"功能"菜单
-        QString menu_path;
-        if (!feature_info->menus.empty()) {
-            menu_path = QString::fromStdString(feature_info->menus.front().menu_path);
+        // 每个菜单贡献项生成一条功能信息（同一功能可挂到多个菜单），未声明时归入默认"功能"菜单
+        std::vector<MenuContribution> menus = feature_info->menus;
+        if (menus.empty()) {
+            menus.push_back({ "功能", "", "" });
         }
-        if (menu_path.isEmpty()) {
-            menu_path = QStringLiteral("功能");
+        for (const auto& menu : menus) {
+            QList<QArgType*> args;
+            for (const auto& arg_type : feature_info->arg_types) {
+                args << new QArgType(arg_type);
+            }
+            infos.append(new QFeatureInfo(
+                QString::fromStdString(feature_info->name),
+                QString::fromStdString(feature_info->display_name),
+                QString::fromStdString(feature_info->description),
+                QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
+                QString::fromStdString(menu.icon),
+                std::move(args),
+                feature_info->interactive));
         }
-        QList<QArgType*> args;
-        for (const auto& arg_type : feature_info->arg_types) {
-            args << new QArgType(arg_type);
-        }
-        infos.append(new QFeatureInfo(
-            QString::fromStdString(feature_info->name),
-            QString::fromStdString(feature_info->display_name),
-            QString::fromStdString(feature_info->description),
-            std::move(menu_path),
-            std::move(args)));
     }
     return infos;
 }

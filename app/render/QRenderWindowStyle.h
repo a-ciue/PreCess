@@ -9,6 +9,7 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 
 class SelectManager;
+class InteractionService;
 
 class QRenderWindowStyle : public vtkInteractorStyleTrackballCamera {
 public:
@@ -16,10 +17,14 @@ public:
     vtkTypeMacro(QRenderWindowStyle, vtkInteractorStyleTrackballCamera);
     void SetClick();
     void SetSelectManager(SelectManager* select_manager);
+    //! @brief 交互服务激活时点击/悬停走交互拾取，否则走选择系统
+    void SetInteractionService(InteractionService* service);
     void OnLeftButtonUp() override;
-     
-private:    
+    void OnMouseMove() override;
+
+private:
     bool click_ {};
     SelectManager* select_manager_{};
+    InteractionService* interaction_service_{};
 };
 #endif // Q_RENDER_WINDOW_STYLE_H

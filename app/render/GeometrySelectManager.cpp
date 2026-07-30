@@ -3,11 +3,15 @@
 #include "GeometryActorSelectOp.h"
 #include "GeometrySelectorHighlight.h"
 #include "Selection.h"
+
 #include <IVtkTools_ShapePicker.hxx>
 #include <NCollection_List.hxx>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkRenderer.h>
+
+#include <array>
+#include <utility>
 
 GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op)
     : op_(&op)
@@ -77,14 +81,17 @@ void GeometrySelectManager::select(double posx, double posy)
 
 void GeometrySelectManager::setSelectMode(SelectMode select_mode)
 {
-    if (select_mode == this->select_mode_)
-        return;
     this->select_mode_ = select_mode;
     this->clearSelection();
 
     op_->setShapePickerMode(select_mode);
 
-    switch (select_mode) {
+    applyHighlightStyle(select_mode);
+}
+
+void GeometrySelectManager::applyHighlightStyle(SelectMode mode)
+{
+    switch (mode) {
     case SelectMode::GeometryFace:
         GeometryFaceSelectorHighlight::setupHighlightStyle(*highlight_actor_, *highlight_mapper_);
         break;
@@ -104,6 +111,54 @@ void GeometrySelectManager::clearSelection()
 {
     this->component_selectors_.clear();
     highlight_data_->Initialize();
+}
+
+std::optional<std::pair<Index, std::array<double, 3>>> GeometrySelectManager::snapGeometryVertex(double posx, double posy)
+{
+    if (picker_->Pick(posx, posy, 0.0, renderer_) <= 0) {
+        return std::nullopt;
+    }
+    const auto& picked_shapes = picker_->GetPickedShapesIds(false);
+    if (picked_shapes.IsEmpty()) {
+        return std::nullopt;
+    }
+
+    const IVtk_IdType shape_id = picked_shapes.First();
+    auto component_id = op_->getComponentIdByShapeId(shape_id);
+    auto select_op = component_id ? op_->getSelectOp(*component_id) : std::nullopt;
+    if (!select_op) {
+        return std::nullopt;
+    }
+
+    IVtk_IdType sub_id = -1;
+    auto geom_id = select_op->resolvePickedSubshape(picker_.Get(), shape_id, SelectMode::GeometryVertex, sub_id);
+    if (!geom_id) {
+        return std::nullopt;
+    }
+    auto point = select_op->vertexPoint(sub_id);
+    if (!point) {
+        return std::nullopt;
+    }
+    return std::pair<Index, std::array<double, 3>> { *geom_id, *point };
+}
+
+void GeometrySelectManager::setHighlightVisible(bool visible)
+{
+    if (highlight_visible_ == visible)
+        return;
+    highlight_visible_ = visible;
+    highlight_mapper_->SetInputDataObject(visible ? highlight_data_.Get() : nullptr);
+}
+
+void GeometrySelectManager::setHighlightVisible(Index component_id, bool visible)
+{
+    auto it = component_selectors_.find(component_id);
+    if (it == component_selectors_.end())
+        return;
+    if (visible)
+        it->second->enableHighlight();
+    else
+        it->second->disableHighlight();
 }
 
 std::unique_ptr<Selection> GeometrySelectManager::getSelection()

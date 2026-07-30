@@ -69,8 +69,29 @@ EdgeSelectorHighlight::~EdgeSelectorHighlight()
 
 void EdgeSelectorHighlight::clear()
 {
+    disableHighlight();
     selections_.clear();
+}
+
+void EdgeSelectorHighlight::disableHighlight()
+{
     selections_poly_->Initialize();
+    highlight_data_->Modified();
+}
+
+void EdgeSelectorHighlight::enableHighlight()
+{
+    if (selections_.empty())
+        return;
+
+    // 高亮仍按端点对画线
+    std::vector<std::array<vtkIdType, 2>> highlight_edges;
+    highlight_edges.reserve(selections_.size());
+    for (const auto& e : selections_)
+        highlight_edges.push_back(e.endpoints);
+
+    auto edge_poly_data = select_op_.extractEdge(highlight_edges);
+    selections_poly_->ShallowCopy(edge_poly_data);
     highlight_data_->Modified();
 }
 
@@ -143,15 +164,7 @@ void EdgeSelectorHighlight::select(double posx, double posy)
         selections_.push_back({ original_id, edge_id });
     }
 
-    // 高亮仍按端点对画线
-    std::vector<std::array<vtkIdType, 2>> highlight_edges;
-    highlight_edges.reserve(selections_.size());
-    for (const auto& e : selections_)
-        highlight_edges.push_back(e.endpoints);
-
-    auto edge_poly_data = select_op_.extractEdge(highlight_edges);
-    selections_poly_->ShallowCopy(edge_poly_data);
-    highlight_data_->Modified();
+    enableHighlight();
 }
 
 void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapper)

@@ -7,6 +7,7 @@ struct ComponentData;
 struct MeshData;
 struct GeometryData;
 class ModelData;
+class TopoDS_Shape;
 
 class ComponentOperator {
 public:
@@ -43,6 +44,15 @@ public:
     Index materializeEdge(Index p0, Index p1);
 
     void notifyChanged() const;
+
+    /**
+     * @brief 将新形状写入当前组件；无几何时初始化，否则追加并重建子形状索引。
+     * @return 当前组件 ID。
+     */
+    Index appendGeometryShape(TopoDS_Shape shape);
+
+    void removeMesh();
+    void removeGeometry();
 
 private:
     Index component_id_ { -1 };

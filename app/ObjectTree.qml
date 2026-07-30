@@ -16,6 +16,15 @@ Pane {
         modelQuery: QModelManager.query
     }
 
+    // 选择 Model 时默认关联其第一个 Component，二者共同组成当前操作目标。
+    function firstComponentId(modelId) {
+        let components = QModelManager.query.getComponentsSummary(modelId)
+        return components.length > 0 ? components[0].component_id : -1
+    }
+
+    readonly property int _nodeTypeMesh: 2
+    readonly property int _nodeTypeGeometry: 3
+
     Timer {
         id: refreshTimer
         interval: 100
@@ -111,6 +120,14 @@ Pane {
             readonly property real _padding: 5
             readonly property real _rowHeight: 18
             readonly property real _indentWidth: 20
+            readonly property bool _isActiveModel:
+                viewDelegate.depth === 0
+                && viewDelegate.model.nodeId === App.selection.activeModelId
+            readonly property bool _isActiveComponent:
+                viewDelegate.depth === 1
+                && viewDelegate.model.nodeId === App.selection.activeComponentId
+            leftPadding: _padding + depth * _indentWidth + 18
+            rightPadding: 0
 
             TableView.onPooled: indicatorAnim.complete()
             TableView.onReused: {
@@ -164,13 +181,14 @@ Pane {
                 Text {
                     id: nameText
                     Layout.fillWidth: true
-                    Layout.maximumWidth: implicitWidth
-                    Layout.leftMargin: viewDelegate._padding + 2
+                    Layout.minimumWidth: 50
                     text: viewDelegate.model.name || "N/A"
                     color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
                     font.pixelSize: 13
                     font.family: "Consolas"
-                    font.weight: viewDelegate.current ? Font.Bold : Font.Normal
+                    font.weight: viewDelegate._isActiveModel
+                                 || viewDelegate._isActiveComponent
+                                 ? Font.Bold : Font.Normal
                     font.italic: !viewDelegate.model.isVisible
                     elide: Text.ElideRight
 
@@ -195,7 +213,7 @@ Pane {
 
                 Image {
                     id: eyeIcon
-                    visible: viewDelegate.depth <= 1
+                    visible: viewDelegate.depth <= 2
                     Layout.preferredWidth: 16
                     Layout.preferredHeight: 16
                     source: viewDelegate.model.isVisible
@@ -221,7 +239,7 @@ Pane {
 
                 readonly property bool _overEye:
                     treeMouseArea.containsMouse
-                    && viewDelegate.depth <= 1
+                    && viewDelegate.depth <= 2
                     && mouseX > treeMouseArea.width - 22
 
                 cursorShape: treeMouseArea._overEye ? Qt.PointingHandCursor : Qt.ArrowCursor
@@ -234,22 +252,40 @@ Pane {
                         treeModel.setVisibility(idx, newVis)
                         if (viewDelegate.depth === 0)
                             App.modelVisibilityUpdated(viewDelegate.model.nodeId, newVis)
-                        else
-                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, newVis)
+                        else if (viewDelegate.depth === 1)
+                            App.componentVisibilityUpdated(viewDelegate.model.nodeId, newVis, newVis)
+                        else if (viewDelegate.depth === 2 && (viewDelegate.model.nodeType === objectTree._nodeTypeMesh
+                            || viewDelegate.model.nodeType === objectTree._nodeTypeGeometry))
+                            objectTree.emitComponentVisibility(viewDelegate.model.componentId)
                         return
                     }
                     if (mouse.button === Qt.RightButton) {
-                        if (viewDelegate.depth > 1) return
+                        if (viewDelegate.depth > 2) return
                         contextMenu.popup()
                     } else {
                         let idx = treeModel.findIndexByNodeId(viewDelegate.model.nodeId, viewDelegate.depth)
                         let compId = viewDelegate.model.componentId
 
-                        if (viewDelegate.current || compId < 0) {
+                        if (!idx.valid) {
+                            return
+                        } else if (viewDelegate.depth === 0
+                                   && App.selection.activeModelId === viewDelegate.model.nodeId) {
+                            // Model 与 Component 是同一业务目标，取消时同步清空。
                             viewDelegate.treeView.selectionModel.clear()
                             App.selection.activeComponentId = -1
                             App.selection.activeModelId = -1
-                        } else if (idx.valid) {
+                        } else if (viewDelegate.depth === 0) {
+                            // 选择 Model 时同步关联其第一个 Component。
+                            viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
+                            App.selection.activeModelId = viewDelegate.model.nodeId
+                            App.selection.activeComponentId = objectTree.firstComponentId(viewDelegate.model.nodeId)
+                        } else if (viewDelegate.depth === 1
+                                   && App.selection.activeComponentId === compId) {
+                            // Component 与所属 Model 同步取消。
+                            viewDelegate.treeView.selectionModel.clear()
+                            App.selection.activeComponentId = -1
+                            App.selection.activeModelId = -1
+                        } else {
                             viewDelegate.treeView.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect)
                             App.selection.activeComponentId = compId
                             App.selection.activeModelId = QModelManager.query.findModelIdByComponent(compId)
@@ -287,7 +323,9 @@ Pane {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    onTriggered: objectTree.hideNode(viewDelegate.model.nodeId, viewDelegate.depth)
+                    onTriggered: objectTree.hideNode(
+                        viewDelegate.model.nodeId, viewDelegate.depth,
+                        viewDelegate.model.nodeType, viewDelegate.model.componentId)
                 }
 
                 MenuItem {
@@ -311,8 +349,13 @@ Pane {
                     onTriggered: {
                         if (viewDelegate.depth === 0)
                             objectTree.isolateModel(viewDelegate.model.nodeId)
-                        else
+                        else if (viewDelegate.depth === 1)
                             objectTree.isolateNode(viewDelegate.model.nodeId)
+                        else if (viewDelegate.depth === 2)
+                            objectTree.isolateSubNode(
+                                viewDelegate.model.nodeId,
+                                viewDelegate.model.nodeType,
+                                viewDelegate.model.componentId)
                     }
                 }
 
@@ -334,7 +377,9 @@ Pane {
                         verticalAlignment: Text.AlignVCenter
                     }
 
-                    onTriggered: objectTree.showNode(viewDelegate.model.nodeId, viewDelegate.depth)
+                    onTriggered: objectTree.showNode(
+                        viewDelegate.model.nodeId, viewDelegate.depth,
+                        viewDelegate.model.nodeType, viewDelegate.model.componentId)
                 }
 
                 MenuSeparator {}
@@ -359,7 +404,9 @@ Pane {
 
                     onTriggered: {
                         contextMenu.close()
-                        objectTree.deleteNode(viewDelegate.model.nodeId, viewDelegate.depth)
+                        objectTree.deleteNode(
+                            viewDelegate.model.nodeId, viewDelegate.depth,
+                            viewDelegate.model.nodeType, viewDelegate.model.componentId)
                     }
                 }
             }
@@ -381,32 +428,72 @@ Pane {
         }
     }
 
-    function hideNode(nodeId, depth) {
+    function emitComponentVisibility(componentId) {
+        let compIdx = treeModel.findIndexByNodeId(componentId, 1)
+        if (!compIdx || !compIdx.valid) return
+        let meshVis = false, geomVis = false
+        for (let i = 0; i < treeModel.rowCount(compIdx); i++) {
+            let childIdx = treeModel.index(i, 0, compIdx)
+            let cType = treeModel.data(childIdx, TreeModel.NodeTypeRole)
+            let cVis = treeModel.data(childIdx, TreeModel.IsVisibleRole)
+            if (cType === objectTree._nodeTypeMesh) meshVis = cVis
+            else if (cType === objectTree._nodeTypeGeometry) geomVis = cVis
+        }
+        App.componentVisibilityUpdated(componentId, meshVis, geomVis)
+    }
+
+    function hideNode(nodeId, depth, nodeType, componentId) {
         let idx = treeModel.findIndexByNodeId(nodeId, depth)
         if (!idx || !idx.valid) return
         treeModel.setVisibility(idx, false)
         if (depth === 0)
             App.modelVisibilityUpdated(nodeId, false)
-        else
-            App.componentVisibilityUpdated(nodeId, false)
+        else if (depth === 1)
+            App.componentVisibilityUpdated(nodeId, false, false)
+        else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry))
+            emitComponentVisibility(componentId)
     }
 
-    function showNode(nodeId, depth) {
+    function showNode(nodeId, depth, nodeType, componentId) {
         let idx = treeModel.findIndexByNodeId(nodeId, depth)
         if (!idx || !idx.valid) return
         treeModel.setVisibility(idx, true)
         if (depth === 0)
             App.modelVisibilityUpdated(nodeId, true)
-        else
-            App.componentVisibilityUpdated(nodeId, true)
+        else if (depth === 1)
+            App.componentVisibilityUpdated(nodeId, true, true)
+        else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry))
+            emitComponentVisibility(componentId)
     }
 
-    function deleteNode(nodeId, depth) {
-        treeView.selectionModel.clear()
-        if (depth === 0)
+    function deleteNode(nodeId, depth, nodeType, componentId) {
+        if (depth === 0) {
+            // 删除当前 Model 时，其关联的 Component 也会一并失效。
+            if (App.selection.activeModelId === nodeId) {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+                App.selection.activeModelId = -1
+            }
             QModelManager.removeModel(nodeId)
-        else
+        } else if (depth === 1) {
+            // 删除当前 Component 后保留所属 Model，并选中剩余的第一个 Component。
+            const deletingActiveComponent = App.selection.activeComponentId === nodeId
+            const ownerModelId = deletingActiveComponent
+                ? QModelManager.query.findModelIdByComponent(nodeId) : -1
+            if (deletingActiveComponent) {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+            }
             QModelManager.removeComponent(nodeId)
+            if (deletingActiveComponent) {
+                App.selection.activeModelId = ownerModelId
+                App.selection.activeComponentId = objectTree.firstComponentId(ownerModelId)
+            }
+        } else if (depth === 2 && nodeType === objectTree._nodeTypeMesh) {
+            QModelManager.removeMesh(componentId)
+        } else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry) {
+            QModelManager.removeGeometry(componentId)
+        }
     }
 
     function hideAllNodes() {
@@ -438,9 +525,42 @@ Pane {
                 let idx = treeModel.findIndexByNodeId(cid, 1)
                 if (idx && idx.valid) {
                     treeModel.setVisibility(idx, visible)
-                    App.componentVisibilityUpdated(cid, visible)
+                    App.componentVisibilityUpdated(cid, visible, visible)
                 }
             }
+        }
+    }
+
+    function isolateSubNode(nodeId, nodeType, componentId) {
+        let models = QModelManager.query.listModels()
+        for (let i = 0; i < models.length; i++) {
+            let mid = models[i].model_id
+            let comps = QModelManager.query.getComponentsSummary(mid)
+            for (let j = 0; j < comps.length; j++) {
+                let cid = comps[j].component_id
+                let vis = (cid === componentId)
+                let idx = treeModel.findIndexByNodeId(cid, 1)
+                if (idx && idx.valid) {
+                    treeModel.setVisibility(idx, vis)
+                    App.componentVisibilityUpdated(cid, vis, vis)
+                }
+            }
+        }
+
+        let compIdx = treeModel.findIndexByNodeId(componentId, 1)
+        if (compIdx && compIdx.valid) {
+            let childCount = treeModel.rowCount(compIdx)
+            for (let ci = 0; ci < childCount; ci++) {
+                let childIdx = treeModel.index(ci, 0, compIdx)
+                let childNodeId = treeModel.data(childIdx, TreeModel.NodeIdRole)
+                let childNodeType = treeModel.data(childIdx, TreeModel.NodeTypeRole)
+                if (childNodeId !== nodeId
+                    && (childNodeType === objectTree._nodeTypeMesh
+                        || childNodeType === objectTree._nodeTypeGeometry)) {
+                    treeModel.setVisibility(childIdx, false)
+                }
+            }
+            emitComponentVisibility(componentId)
         }
     }
 
@@ -468,7 +588,7 @@ Pane {
                 let idx = treeModel.findIndexByNodeId(cid, 1)
                 if (idx && idx.valid) {
                     treeModel.setVisibility(idx, visible)
-                    App.componentVisibilityUpdated(cid, visible)
+                    App.componentVisibilityUpdated(cid, visible, visible)
                 }
             }
         }
@@ -484,7 +604,7 @@ Pane {
                 let cid = treeModel.data(compIdx, TreeModel.NodeIdRole)
                 let isVis = treeModel.data(compIdx, TreeModel.IsVisibleRole)
                 treeModel.setVisibility(compIdx, !isVis)
-                App.componentVisibilityUpdated(cid, !isVis)
+                App.componentVisibilityUpdated(cid, !isVis, !isVis)
             }
         }
     }

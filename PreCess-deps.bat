@@ -63,12 +63,12 @@ for /f "tokens=3" %%i in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVer
 if "!ProxyEnable!"=="0x1" (
     echo [状态] 系统代理已启用
     echo.
-    
+
     REM 获取代理服务器地址
     for /f "tokens=2,*" %%i in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyServer 2^>nul') do (
         set "ProxyServer=%%j"
     )
-    
+
     if defined ProxyServer (
         echo [代理地址] !ProxyServer!
         set "HTTP_PROXY=!ProxyServer!"
@@ -76,7 +76,7 @@ if "!ProxyEnable!"=="0x1" (
     ) else (
         echo [代理地址] 未设置具体地址
     )
-    
+
 )
 
 REM 你的操作在这里
@@ -100,6 +100,8 @@ pushd gmsh-occ8
 git checkout --detach 86596d7902a1b00e23641ac5c904b7c1f880ce9f
 popd
 curl -L -o OCCT/3rdparty-vc14-64-temp.zip --connect-timeout 30 https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip
+curl -L -o CGAL-6.2.zip --connect-timeout 30 https://github.com/CGAL/cgal/releases/download/v6.2/CGAL-6.2.zip
+curl -L -o boost-1.91.0-1-cmake.tar.xz --connect-timeout 30 https://github.com/boostorg/boost/releases/download/boost-1.91.0-1/boost-1.91.0-1-cmake.tar.xz
 
 if not defined qtPath (
     REM Clone and build Qt 6.8.3 source code
@@ -160,15 +162,6 @@ if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInf
 cmake --build . --target install --config Debug
 if "!buildRelease!"=="1" cmake --build . --target install --config Release
 
-REM Clone and build Gmsh OCC8
-set "CASROOT=%depsPath%\OpenCASCADE8.0.0"
-pushd "%sourcePath%/gmsh-occ8"
-cmake -S . -B ./build "-GNinja Multi-Config" "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;RelWithDebInfo" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=ON -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
-pushd build
-if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
-cmake --build . --target install --config Debug
-if "!buildRelease!"=="1" cmake --build . --target install --config Release
-
 REM Clone and build Catch2 3.11.0
 pushd "%sourcePath%/Catch2"
 cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\Catch2-3.11.0" -DCMAKE_INSTALL_MESSAGE=LAZY
@@ -196,6 +189,80 @@ echo target_include_directories(tet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}^)>> CMake
 echo install(TARGETS tet ARCHIVE DESTINATION lib^)>> CMakeLists.txt
 echo install(FILES tetgen.h DESTINATION include^)>> CMakeLists.txt
 cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i -DCMAKE_DEBUG_POSTFIX=d "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\tetgen1.6.0" -DCMAKE_INSTALL_MESSAGE=LAZY
+pushd build
+if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
+cmake --build . --target install --config Debug
+if "!buildRelease!"=="1" cmake --build . --target install --config Release
+
+REM Clone and build Gmsh OCC8
+set "CASROOT=%depsPath%\OpenCASCADE8.0.0"
+set "casRootCmake=%CASROOT:\=/%"
+set "occLibs="
+
+REM OCC 8 的导入库：Debug 在 libd，Release 在 lib，RelWithDebInfo 在 libi。
+for %%L in (TKDESTEP TKDEIGES TKXSBase TKOffset TKFeat TKFillet TKBool TKMesh TKHLR TKBO TKPrim TKShHealing TKTopAlgo TKGeomAlgo TKBRep TKGeomBase TKG3d TKG2d TKMath TKernel) do (
+    if defined occLibs set "occLibs=!occLibs!;"
+    set "occLibs=!occLibs!$<IF:$<CONFIG:Debug>,!casRootCmake!/win64/vc14/libd/%%L.lib,$<IF:$<CONFIG:RelWithDebInfo>,!casRootCmake!/win64/vc14/libi/%%L.lib,!casRootCmake!/win64/vc14/lib/%%L.lib>>"
+)
+
+pushd "%sourcePath%\gmsh-occ8"
+
+cmake -S . -B ./build ^
+    "-GNinja Multi-Config" "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug;Release;RelWithDebInfo" "-DCMAKE_DEBUG_POSTFIX:STRING=d" "-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING=i" "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\gmsh-occ8" -DENABLE_OCC:BOOL=ON "-DOCC_LIBS:STRING=!occLibs!" -DENABLE_OPENMP:BOOL=OFF -DBUILD_TESTING:BOOL=OFF -DENABLE_BUILD_DYNAMIC:BOOL=OFF -DENABLE_BUILD_LIB:BOOL=OFF -DENABLE_BUILD_SHARED:BOOL=ON -DCMAKE_INSTALL_MESSAGE=LAZY
+pushd build
+
+cmake --build . --target install --config Debug
+if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
+if "!buildRelease!"=="1" cmake --build . --target install --config Release
+
+REM 把 gmshTargets.cmake 中的 OpenCASCADE 绝对路径改为相对路径
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+    "$path = '%depsPath%\gmsh-occ8\share\gmsh\gmshTargets.cmake';" ^
+    "$oldForward = '%depsPath:\=/%/OpenCASCADE8.0.0';" ^
+    "$oldBackward = '%depsPath%\OpenCASCADE8.0.0';" ^
+    "$newPath = '${_IMPORT_PREFIX}/../OpenCASCADE8.0.0';" ^
+    "$content = [System.IO.File]::ReadAllText($path);" ^
+    "$updated = $content.Replace($oldForward, $newPath).Replace($oldBackward, $newPath);" ^
+    "if ($updated -eq $content) {" ^
+    "    if ($content.Contains($newPath)) {" ^
+    "        Write-Host 'OpenCASCADE 路径已经是相对路径。';" ^
+    "        exit 0;" ^
+    "    }" ^
+    "    throw '没有在 gmshTargets.cmake 中找到指定的 OpenCASCADE 绝对路径。';" ^
+    "}" ^
+    "[System.IO.File]::WriteAllText($path, $updated, [System.Text.UTF8Encoding]::new($false));" ^
+    "Write-Host 'OpenCASCADE 路径修改成功。';"
+
+if errorlevel 1 (
+    echo.
+    echo 修改失败。
+    pause
+    exit /b 1
+)
+
+pushd "%sourcePath%"
+
+REM Extract CGAL 6.2 (header-only) and strip data/demo/examples/doc_html
+tar -xf CGAL-6.2.zip -C "%depsPath%" || (
+    echo CGAL 压缩包解压失败。
+    pause
+    exit /b 1
+)
+for %%D in (data demo examples doc_html) do rmdir /s /q "%depsPath%\CGAL-6.2\%%D"
+
+REM ============ Boost 1.91.0 (header-only, install official BoostConfig via CMake) ============
+REM CGAL needs Boost headers only; compiled closure libs are built as multi-config shared libs; consumers need boost-1.91.0/bin on PATH
+mkdir boost-src
+REM Exclude the doc symlink in the archive (Windows tar cannot create symlinks without developer mode)
+tar -xf boost-1.91.0-1-cmake.tar.xz -C boost-src --strip-components=1 "--exclude=*/libs/decimal/doc/modules/ROOT/examples" || (
+    echo Boost 压缩包解压失败。
+    pause
+    exit /b 1
+)
+pushd boost-src
+
+REM BOOST_INCLUDE_LIBRARIES is trimmed to what CGAL 6.2 actually includes; extend it when CGAL references new Boost components
+cmake -S . -B ./build "-GNinja Multi-Config" -DCMAKE_RELWITHDEBINFO_POSTFIX=i -DCMAKE_DEBUG_POSTFIX=d -DBUILD_SHARED_LIBS=ON "-DCMAKE_INSTALL_PREFIX:PATH=%depsPath%\boost-1.91.0" -DBOOST_INSTALL_LAYOUT=system -DBOOST_INCLUDE_LIBRARIES="algorithm;any;bimap;bind;callable_traits;concept_check;config;container;container_hash;core;dynamic_bitset;foreach;format;function;functional;graph;heap;intrusive;iterator;lexical_cast;logic;math;mpl;multi_array;multi_index;multiprecision;optional;predef;preprocessor;program_options;property_map;ptr_container;random;range;smart_ptr;static_assert;stl_interfaces;tuple;type_traits;unordered;utility;variant" -DCMAKE_INSTALL_MESSAGE=LAZY
 pushd build
 if "!buildRelInfo!"=="1" cmake --build . --target install --config RelWithDebInfo
 cmake --build . --target install --config Debug

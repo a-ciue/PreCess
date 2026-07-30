@@ -10,7 +10,8 @@
 ## 0. 给 AI 助手的元指令（最高优先级）
 
 - **先理解，再动手**：修改前先阅读相关目录的代码与依赖关系（见第 2 节），不要凭猜测改动。
-- **最小化改动**：只做与当前任务直接相关的修改，保持与现有代码风格一致；不顺手重命名、不重排无关文件、不“顺便”修无关 bug（可在结论里提示）。
+- **最小化改动（默认）**：只做与当前任务直接相关的修改，保持与现有代码风格一致；不顺手重命名、不重排无关文件、不“顺便”修无关 bug（可在结论里提示）。
+- **适时提出重构建议**：最小化改动不等于回避结构性问题。任务中发现现有代码存在结构性缺陷（模式误用、职责错位、重复实现、隐患级联修补等）时，先完成最小修复，同时在结论中向用户说明根因、给出重构方案与影响范围；经用户明确同意后实施的重构不受最小化改动限制，未获同意不得擅自扩大改动范围。评估优先级时以**是否引入新的复杂性维度**为重要判据：现有实现或拟议改动会引入新的复杂性维度（新概念、新状态、新依赖方向）的，优先考虑重构；不引入新维度的"整齐化"重构可暂缓。
 - **根因优先**：从根本原因修复，避免表层补丁。
 - **不臆造**：不确定的 API、路径、依赖必须先在仓库中检索确认；找不到就说明，不要编造。
 - **尊重许可证边界**：`core/`、`model/`、`cmake/` 使用 **LGPLv3**（保留闭源二次开发能力），`app/`、`plugins/`、`resource/` 及其余目录使用 **AGPLv3**；不要把 AGPL/GPL 代码引入 LGPL 目录，新增依赖前必须确认许可证与所在目录兼容（见第 7 节）。
@@ -39,7 +40,7 @@
   - `model/data/`：底层数据结构（`ModelData`、`MeshData`、`ModelManager` 等）。
   - `model/ops/`：基于数据结构的操作，依赖 `model/data`。
   - `model/systems/`：系统层（算法系统、模型 IO 系统、编辑系统、功能系统），负责插件注册与按字符串分发调用，依赖 `model/data`、`core`。
-    - `model/systems/feature/`：功能系统 `FeatureSystem`，事件驱动的功能注册与调用：功能可注册参数/菜单/按键绑定，经 `EventBus` 订阅按键、参数变更、模型事件，通过 `FeatureContext` 访问模型层。
+    - `model/systems/feature/`：功能系统 `FeatureSystem`，事件驱动的功能注册与调用：功能可注册参数/菜单/按键绑定，经 `EventBus` 订阅按键、参数变更、模型事件，通过 `FeatureContext` 访问模型层；声明 `interactive` 的功能另经 `InteractionContext` 订阅渲染线程驱动的视口交互（见第 10 节线程约定）。
 - `app/`：程序与界面实现，依赖 `model`、`core`。
   - `app/core/` → `core`
   - `app/model/` → `model`、`core`、`app/core`（model 的 Qt 接口、数据绑定）
@@ -130,10 +131,12 @@
   - 构建：`cmake --build out/build/x64-debug`
   - 测试：先以 `-DBUILD_TESTING=ON` 配置（默认 OFF），再 `ctest --test-dir out/build/x64-debug --output-on-failure`
   - 注意：`CMakeUserPresets.json` 含 `//` 注释，VS 的 CMake 集成可以容忍，但命令行 `cmake --preset` 会因解析失败而报错；命令行场景请手动传参（参照 preset 中的变量）或直接复用已配置好的构建目录。
+  - 注意：命令行构建须先加载 MSVC 环境（`vcvars64.bat` 或 VS Developer PowerShell），否则报标准库头文件缺失（C1083 `fstream`/`array`）；Git Bash 中调用 `cmd.exe` 需防路径转换（`MSYS_NO_PATHCONV=1`，`/c` 否则被转为 `C:/`）。
 - 测试框架：模块单元测试用 **Catch2**（`cmake/test.cmake` 的 `precess_add_test` / `precess_test_link_libraries`），测试代码见各模块 `test/` 目录（如 `model/data/test/`、`model/systems/feature/test/`）。
 - **新特性必须配套测试用例**；修 bug 时尽量补可复现的回归测试。
 - 不要向无测试的模块强行塞测试框架；遵循该模块既有测试模式。
 - 工具检测用 PowerShell：例如 `Get-Command makensis`（不要用 `where makensis`）。
+- **插件共享头文件需全量构建**：修改被插件共享的 `core/`、`model/` 头文件（如 `InteractionState.h`、`InteractiveTypes.h`）后必须全量构建（含插件目标）再做手动验证：插件 DLL 运行时动态加载、不是 `PreCess.exe` 的链接依赖，`cmake --build --target PreCess` 不会让插件随之重建；新旧 ABI 混用会产生难以排查的内存错乱（如"测量崩溃"即此原因）。
 
 ---
 
@@ -152,7 +155,15 @@
 - 功能 `Handler` 封装进插件 `PluginHandler`，由 `SystemPluginManager` 注册到对应系统。
 - 每类插件须实现对应系统接口完成数据交换；算法系统目前通过模型 IO 系统以文件读写交换模型数据。
 - 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
-- 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：在 `setup(FeatureRegistrar&)` 中注册参数、菜单项、按键绑定；在 `activate(FeatureContext&)` 中经 `ctx.events` 订阅事件（`KeyEvent`、`ParameterChangedEvent`、`ModelEvent`）；菜单触发 `execute()`。功能可修改的范围仅限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`），示例见 `plugins/feature/FeatureDemoPlugin/`。
+- 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：在 `setup(FeatureRegistrar&)` 中注册参数、菜单项、按键绑定；在 `activate(FeatureContext&)` 中经 `ctx.events` 订阅事件（`KeyEvent`、`ParameterChangedEvent`、`ModelEvent`）；菜单触发 `execute()`。功能可修改的范围限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`）与自身视口交互状态（经 `ctx.interaction`）；示例见 `plugins/feature/FeatureDemoPlugin/`，交互功能示例见 `plugins/feature/MeasurePlugin/`。
+  - 订阅 `ParameterChangedEvent` **必须按 `e.feature` 过滤**本功能注册名（与 json 一致，参照 FeatureDemoPlugin 的 `kFeatureName` 常量），否则将响应其他功能的参数变更。
+  - `Button` 类型参数为无值触发器：计数器载荷，功能约定忽略值、只读参数下标；点击经 `ParameterChangedEvent` 回到功能（GUI 线程）。
+- **视口交互线程约定**（声明 `interactive` 的功能，改动前先读 `InteractionState.h` 注释）：交互回调（`onPick`/`onHover`/`onActivate`/`onDeactivate`）由 **渲染线程** 调用，`annotations` 为拉取契约（功能在回调中直写、渲染层拉取绘制）；**GUI 线程不得直接修改交互状态与标注**，变更经 `requestRefresh()`（纯刷新通知，重复置位自动合并）或 `deferRefresh(op)`（操作延迟到渲染线程执行后再刷新）通知，渲染线程 `InteractionService::syncPending()` 统一消费；`setActive` 启停均自动 notify，单激活约定由 FeatureSystem 装配。
+- **功能与界面解耦（声明 / 事件 / 上下文三原则）**：通用界面（`SideBar`、菜单、渲染窗口等）禁止按插件名 / 功能名特判。
+  - **静态能力走声明链**：视口交互能力（`interactive`）等一律经 json → `HandlerMetaData` → `FeatureInfo` → `QFeatureInfo` → QML 按声明渲染；新增交互功能不得改动通用界面代码。
+  - **动态状态走事件回调**：交互结果、进度等经事件 / 信号传递（如功能回写参数经 `ParameterChangedEvent` → `paramValueChanged` 信号同步 QML 显示），界面不轮询插件内部状态。
+  - **环境状态走上下文访问**：活动模型 / 组件、选择集经 `FeatureContext` provider 与 `App.selection` 获取，功能不反向依赖 app 层。
+  - 启停类逻辑做成幂等的状态应用（以目标状态为守卫，重复触发无副作用），避免多触发源的命令式调用堆积。
 
 ---
 
@@ -163,5 +174,7 @@
 - [ ] 文件 UTF-8 无 BOM、CRLF 行尾。
 - [ ] 依赖方向正确，无循环/反向依赖；`core/` / `model/` / `cmake/` 未引入 AGPL/GPL 代码，`app/` / `plugins/` / `resource/` 新增依赖与 AGPLv3 兼容。
 - [ ] 头文件按需前向声明 / include，无相对路径 include。
+- [ ] 通用界面无插件名 / 功能名特判；插件静态能力、动态状态、环境状态分别经声明链、事件回调、上下文访问（第 10 节三原则）。
+- [ ] 视口交互状态仅由渲染线程修改；GUI 线程变更经 `requestRefresh` / `deferRefresh` 通知（第 10 节线程约定）。
 - [ ] 能通过构建；涉及逻辑改动已（或建议）跑测试，新特性带测试。
 - [ ] Commit 类型正确、单一职责、信息清晰。

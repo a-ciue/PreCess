@@ -24,7 +24,8 @@ bool FeatureSystemRegister::registerPlugin(const QJsonObject& meta_data, PluginB
         return false;
     }
     // 转换元数据并注册处理器
-    return system_->registerHandler(toMetaData(meta_data), std::move(handler));
+    auto md = toMetaData(meta_data);
+    return system_->registerHandler(md, std::move(handler));
 }
 
 void FeatureSystemRegister::unregisterPlugin(const QJsonObject& meta_data)
@@ -38,6 +39,7 @@ HandlerMetaData FeatureSystemRegister::toMetaData(const QJsonObject& meta_data) 
     handler_data.name = meta_data.value("name").toString().toStdString();
     handler_data.display_name = meta_data.value("display_name").toString().toStdString();
     handler_data.description = meta_data.value("description").toString().toStdString();
+    handler_data.interactive = meta_data.value("interactive").toBool(false);
     return handler_data;
 }
 }

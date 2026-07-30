@@ -45,11 +45,6 @@ vtkProp& MeshActorSelectOp::getEdgeActor()
     return *mesh_actor_->edge_actor_;
 }
 
-vtkProp& MeshActorSelectOp::getBlockActor()
-{
-    return *mesh_actor_->actor_;
-}
-
 bool MeshActorSelectOp::isVisible() const
 {
     return mesh_actor_->isVisible();

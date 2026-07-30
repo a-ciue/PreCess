@@ -14,6 +14,7 @@
 #include <vector>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
+#include <vtkType.h>
 
 class vtkRenderer;
 class vtkActor;
@@ -23,10 +24,19 @@ class vtkCell;
 class vtkPartitionedDataSet;
 class vtkExtractSelection;
 class vtkGeometryFilter;
+class vtkPolyData;
 class vtkCompositePolyDataMapper;
 class IMeshIdQuery;
 
 using SelectionVtk = Selection;
+
+/**
+ * @brief 面选择的角度扩散配置，用于控制是否沿共享边扩展到相邻面
+ */
+struct FaceSelectionSpreadOptions {
+    bool enabled { false };
+    double angle_deg { 30.0 };
+};
 
 class SelectorHighlight {
 public:
@@ -36,32 +46,15 @@ public:
      * @brief 清空选中元素，并取消高亮
      */
     virtual void clear() = 0;
+    /**
+     * @brief 仅清除 partition 高亮数据，保留内部选择数据
+     */
+    virtual void disableHighlight() = 0;
+    /**
+     * @brief 从保留的选择数据重新下发 partition 高亮
+     */
+    virtual void enableHighlight() = 0;
     virtual SelectionVtk get() = 0;
-};
-
-class BlockSelectorHighlight : public SelectorHighlight {
-public:
-    BlockSelectorHighlight(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorSelectOp select_op);
-    ~BlockSelectorHighlight() override { clear(); }
-    //! @brief 清空selections并取消高亮
-    void clear() override;
-    SelectionVtk get() override;
-    void select(double posx, double posy) override;
-    void highlightBlockByCellColor(vtkCompositePolyDataMapper* mapper, unsigned int block_index,
-        unsigned char r, unsigned char g, unsigned char b);
-
-private:
-    //! @brief 存储选中的actor和每个actor原本的颜色渲染设置，用于取消高亮
-    struct Block {
-        vtkIdType block_id;
-        double backup_color[3] { };
-    };
-    std::vector<Block> selections_;
-    vtkRenderer* renderer_;
-    MeshActorSelectOp select_op_;
-    vtkCompositePolyDataMapper* mapper_;
-    void _cancel_highlight(Block& selection);
-    static std::optional<size_t> _is_selected(const vtkIdType block_id, const std::vector<Block>& selections);
 };
 
 class FaceSelectorHighlight : public SelectorHighlight {
@@ -73,14 +66,40 @@ public:
     ~FaceSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
+    /**
+     * @brief 设置面选择的扩散开关和角度阈值
+     * @param options 面选择扩散配置
+     */
+    void setSpreadOptions(FaceSelectionSpreadOptions options);
+
 private:
+    /**
+     * @brief 缓存当前面数据的邻接关系和法向，避免每次点击全量重建
+     */
+    struct FaceSpreadCache {
+        vtkPolyData* poly_data {};
+        vtkMTimeType mtime {};
+        std::vector<std::vector<vtkIdType>> adjacency;
+        std::vector<std::array<double, 3>> normals;
+    };
+
+    /**
+     * @brief 当面数据发生变化时重建角度扩散缓存
+     * @param poly 当前选择器使用的面数据
+     */
+    void updateSpreadCache(vtkPolyData& poly);
+
     vtkRenderer* renderer_;
     MeshActorSelectOp select_op_;
     vtkPartitionedDataSet* highlight_data_;
     unsigned int partition_id_;
     std::vector<vtkIdType> selections_;
+    FaceSelectionSpreadOptions spread_options_;
+    FaceSpreadCache spread_cache_;
     vtkSmartPointer<vtkPolyData> selections_poly_;
 };
 
@@ -94,6 +113,8 @@ public:
     ~EdgeSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
 private:
@@ -122,6 +143,8 @@ public:
     ~SolidSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
 private:
@@ -143,6 +166,8 @@ public:
     ~VertexSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
+    void disableHighlight() override;
+    void enableHighlight() override;
     SelectionVtk get() override;
 
 private:

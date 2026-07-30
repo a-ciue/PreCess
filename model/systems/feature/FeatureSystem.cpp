@@ -47,27 +47,52 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     info->name = meta_data.name;
     info->display_name = meta_data.display_name;
     info->description = meta_data.description;
+    info->interactive = meta_data.interactive;
     info->arg_types = registrar.argTypes();
     info->menus = registrar.menuItems();
     info->key_bindings = registrar.keyBindings();
 
-    // 装配功能上下文：参数集 + 动态 provider（经系统转发，provider 后设置也生效）
-    FeatureEntry entry;
+    // 条目就地入库再装配：InteractionContext 持有本条目 InteractionState 的指针，
+    // 先移动入库会使指针悬垂，故先 try_emplace 再装配上下文
+    auto [it, inserted] = entries_.try_emplace(meta_data.name);
+    FeatureEntry& entry = it->second;
+    (void)inserted;
+
+    // 装配功能上下文：参数集 + 交互上下文 + 动态 provider（经系统转发，provider 后设置也生效）
     entry.params = std::make_unique<FeatureParams>(info->arg_types);
     entry.context = std::make_unique<FeatureContext>(FeatureContext {
         *model_layer_,
         *event_bus_,
         *entry.params,
+        entry.interaction_context,
         [this]() { return active_model_provider_ ? active_model_provider_() : std::optional<Index> {}; },
         [this]() { return active_component_provider_ ? active_component_provider_() : std::optional<Index> {}; },
         [this](Index component_id) { return model_layer_->getComponentOperator(component_id); },
     });
     entry.info = std::move(info);
 
-    // 先激活再入库：激活中抛异常不会留下半注册状态
-    handler->activate(*entry.context);
+    // 注入单激活约定：本功能 setActive(true) 时先下线其他功能的交互
+    entry.interaction_context.deactivate_others_ = [this, feature_name = meta_data.name] {
+        for (auto&& [other_name, other] : entries_) {
+            if (other_name != feature_name) {
+                other.interaction_state.active = false;
+            }
+        }
+    };
+    // 注入渲染刷新回调：功能经 requestRefresh() 通知 app 层拉取标注并重绘视口
+    entry.interaction_context.render_refresh_ = [this] {
+        if (render_refresh_callback_)
+            render_refresh_callback_();
+    };
+
+    // 激活失败则撤掉整个条目，不留下半注册状态
+    try {
+        handler->activate(*entry.context);
+    } catch (...) {
+        entries_.erase(it);
+        throw;
+    }
     entry.handler = std::move(handler);
-    entries_.emplace(meta_data.name, std::move(entry));
 
     spdlog::info("FeatureSystem::registerHandler: Registered feature '{}'", meta_data.name);
     on_feature_infos_changed_();
@@ -131,6 +156,34 @@ const FeatureParams* FeatureSystem::params(const std::string& unique_name) const
     return it == entries_.end() ? nullptr : it->second.params.get();
 }
 
+interaction::InteractionState* FeatureSystem::activeInteraction()
+{
+    for (auto&& [feature_name, entry] : entries_) {
+        if (entry.info->interactive && entry.interaction_state.active) {
+            return &entry.interaction_state;
+        }
+    }
+    return nullptr;
+}
+
+bool FeatureSystem::setFeatureActive(const std::string& unique_name)
+{
+    // 空串 = 活动操作无交互能力：全部下线（重复调用由 InteractionContext 的目标状态守卫兜底）
+    if (unique_name.empty()) {
+        for (auto&& [name, entry] : entries_)
+            entry.interaction_context.setActive(false);
+        return true;
+    }
+
+    auto it = entries_.find(unique_name);
+    if (it == entries_.end() || !it->second.info->interactive) {
+        spdlog::warn("FeatureSystem::setFeatureActive: feature '{}' not found or not interactive", unique_name);
+        return false;
+    }
+    it->second.interaction_context.setActive(true); // 单激活约定：自动下线其他功能
+    return true;
+}
+
 void FeatureSystem::setOnFeatureInfosChanged(std::function<void()> callback)
 {
     on_feature_infos_changed_ = std::move(callback);
@@ -144,6 +197,11 @@ void FeatureSystem::setActiveModelProvider(std::function<std::optional<Index>()>
 void FeatureSystem::setActiveComponentProvider(std::function<std::optional<Index>()> provider)
 {
     active_component_provider_ = std::move(provider);
+}
+
+void FeatureSystem::setRenderRefreshCallback(std::function<void()> callback)
+{
+    render_refresh_callback_ = std::move(callback);
 }
 
 bool FeatureSystem::dispatchKeyEvent(const KeyEvent& event)

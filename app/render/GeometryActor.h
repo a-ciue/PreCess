@@ -19,24 +19,21 @@ class GeometryActor {
     friend GeometryActorSelectOp;
 
 public:
-    GeometryActor(vtkRenderer* renderer, GeometryRenderMode render_mode);
+    GeometryActor(vtkRenderer* renderer);
     ~GeometryActor();
-
-    GeometryRenderMode getGeometryRenderMode();
-    bool getIsEdgeRender();
 
     void loadShape(const GeometryDataVtk& geometry_data);
 
     void setVisibility(bool visibility);
     bool isVisible() const;
-    void setRenderMode(GeometryRenderMode render_mode);
-    void setRenderEdge(bool is_render);
+    void setRenderStyle(GeometryRenderStyle style);
+    GeometryRenderStyle getRenderStyle() const;
 
 private:
     void deleteGeometryActor();
+    void applyStyle();
 
-    GeometryRenderMode render_mode_;
-    bool edge_render;
+    GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
     bool visibility_;
     OccShapeHandle occ_shape_;
     const GeometrySubshapeIndex* geometry_index_;

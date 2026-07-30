@@ -21,7 +21,7 @@ SelectManager::SelectManager(vtkRenderer& renderer,
 
 SelectManager::~SelectManager() = default;
 
-static bool is_mesh_mode(SelectMode m) { return m >= SelectMode::Vertex && m <= SelectMode::Block; }
+static bool is_mesh_mode(SelectMode m) { return m >= SelectMode::Vertex && m <= SelectMode::Solid; }
 static bool is_geom_mode(SelectMode m) { return m >= SelectMode::GeometryVertex && m <= SelectMode::GeometrySolid; }
 
 void SelectManager::select(double posx, double posy)
@@ -45,8 +45,6 @@ void SelectManager::setSelectMode(const std::string& select_mode)
         mode = SelectMode::Face;
     } else if (select_mode == "Edge") {
         mode = SelectMode::Edge;
-    } else if (select_mode == "Block") {
-        mode = SelectMode::Block;
     } else if (select_mode == "Solid") {
         mode = SelectMode::Solid;
     } else if (select_mode == "GeometryVertex") {
@@ -81,6 +79,11 @@ void SelectManager::setSelectMode(const std::string& select_mode)
         geom_->clearSelection();
 }
 
+void SelectManager::setFaceSelectionByAngle(bool enabled, double angle_deg)
+{
+    mesh_->setFaceSelectionByAngle(enabled, angle_deg);
+}
+
 void SelectManager::clearSelection()
 {
     component_selector_->clear();
@@ -96,8 +99,31 @@ void SelectManager::setMeshIdQuery(const IMeshIdQuery* id_query)
 void SelectManager::refreshComponentHighlight()
 {
     component_selector_->refreshHighlight();
-    mesh_->clearSelection();
-    geom_->clearSelection();
+}
+
+void SelectManager::setGeometryHighlightVisible(bool visible)
+{
+    geom_->setHighlightVisible(visible);
+}
+
+void SelectManager::setGeometryHighlightVisible(Index component_id, bool visible)
+{
+    geom_->setHighlightVisible(component_id, visible);
+}
+
+void SelectManager::setMeshHighlightVisible(bool visible)
+{
+    mesh_->setHighlightVisible(visible);
+}
+
+void SelectManager::setMeshHighlightVisible(Index component_id, bool visible)
+{
+    mesh_->setHighlightVisible(component_id, visible);
+}
+
+std::optional<std::pair<Index, std::array<double, 3>>> SelectManager::snapGeometryVertex(double posx, double posy)
+{
+    return geom_->snapGeometryVertex(posx, posy);
 }
 
 std::unique_ptr<Selection> SelectManager::getSelection()

@@ -26,6 +26,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
         /*observer=*/observer_.get());
 
     query_ = std::make_unique<QModelQuery>(core_.get(), this);
+    geometry_operations_ = std::make_unique<QGeometryOperations>(*core_);
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
@@ -42,6 +43,12 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     // 功能上下文的活动模型/组件由 UI 同步到适配器，功能经 provider 动态获取
     feature_system_->setActiveModelProvider([this]() { return feature_adaptor_->activeModel(); });
     feature_system_->setActiveComponentProvider([this]() { return feature_adaptor_->activeComponent(); });
+
+    // 参数变更桥接：功能回写参数值（如交互结果）经事件总线转发到 QML 同步显示
+    param_bridge_sub_ = event_bus_->subscribe<systems::feature::ParameterChangedEvent>(
+        [this](const systems::feature::ParameterChangedEvent& e) {
+            feature_adaptor_->notifyParameterChanged(e.feature, e.param_index, e.value);
+        });
 
     // 模型事件桥接到事件总线：功能可订阅 ModelEvent 实时响应模型增删改
     using systems::feature::ModelEvent;
@@ -107,6 +114,20 @@ void QModelManager::removeComponent(int id)
     core_->removeComponent(id);
 }
 
+void QModelManager::removeMesh(int componentId)
+{
+    auto op = core_->getComponentOperator(componentId);
+    if (op)
+        op->removeMesh();
+}
+
+void QModelManager::removeGeometry(int componentId)
+{
+    auto op = core_->getComponentOperator(componentId);
+    if (op)
+        op->removeGeometry();
+}
+
 QObject* QModelManager::getOperator(int id)
 {
     auto maybeOp = core_->getModelOperator(id);
@@ -157,6 +178,11 @@ systems::feature::QFeatureSystemAdaptor* QModelManager::getFeatureSystemAdaptor(
 systems::QSystemPluginManager* QModelManager::getSystemPluginManager() const
 {
     return q_plugin_manager_.get();
+}
+
+QGeometryOperations* QModelManager::getGeometryOperations() const
+{
+    return geometry_operations_.get();
 }
 
 std::string_view QModelManager::argv0 = "./PreCess.exe";

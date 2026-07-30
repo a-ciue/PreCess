@@ -1,0 +1,9 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "MeasurePlugin",
+    "display_name": "测量",
+    "description": "交互式测量：依次点击拾取两点构成一条直线并显示长度；可连续画多条线，两线共端点时自动显示夹角；同一点连点两次取消当前起笔。",
+    "interactive": true
+  }
+}

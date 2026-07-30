@@ -43,11 +43,9 @@ int main(int argc, char** argv)
         pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
     }
 
-    MeshActor meshActor(renderer, pts, true, ModelRenderMode::Face);
+    MeshActor meshActor(renderer, pts);
     meshActor.loadModelData(test_mesh_data);
-    meshActor.setRenderMode(ModelRenderMode::Face);
     meshActor.setVisibility(true);
-    meshActor.setRenderEdge(true);
 
     renderer->SetBackground(0.1, 0.2, 0.4);
     renderWindow->Render();

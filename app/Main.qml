@@ -21,10 +21,8 @@ import com.kdab.dockwidgets as KDDW
 import app.model
 import app.core
 import app.model.systems
-import app.model.systems.algo
 import app.model.systems.io
-import app.model.systems.edit
-import app.model.systems.feature
+
 import app.render
 
 ApplicationWindow {
@@ -34,105 +32,45 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("PreCess")
 
-    menuBar: MenuBar{
-        id: menuBar
-        Menu{
-            title: "文件"
-            MenuItem{
-                text: "导入..."
-                onClicked: openPatchDialog.open()
-            }
-            MenuItem{
-                text: "导出..."
-                onClicked: saveFaceDialog.open()
-            }
-            MenuSeparator{}
-            MenuItem{
-                text: qsTr("偏好设置")
-                onClicked: preferencesDock.show()
-            }
+    GeometryOperationActions {
+        id: geometryActions
+        onOperationActivated: sideBarDock.show()
+    }
+
+    header: AppToolbar {
+        geometryOperationActions: geometryActions
+        windowHeight: root.height
+        objectTreeOpen: objectTreeDock.isOpen
+        propertyListOpen: sideBarDock.isOpen
+        attributeRenderOpen: attributeRenderDock.isOpen
+        consoleOpen: consoleDock.isOpen
+        outputLogOpen: outputLogDock.isOpen
+        preferencesOpen: preferencesDock.isOpen
+        onImportRequested: openPatchDialog.open()
+        onExportRequested: saveFaceDialog.open()
+        onObjectTreeToggled: {
+            if (objectTreeDock.isOpen) objectTreeDock.close()
+            else objectTreeDock.show()
         }
-        Menu {
-            id: editMenu
-            title: qsTr("编辑")
-            Repeater {
-                model: QModelManager.editSystem.editsInfo
-                MenuItem {
-                    text: modelData.display_name
-                    onTriggered: {
-                        var info = modelData
-                        App.activeOperation = {
-                            info: info,
-                            execute: function(model, args) { QModelManager.editSystem.call(info.name, model, args) }
-                        }
-                    }
-                }
-            }
+        onPropertyListToggled: {
+            if (sideBarDock.isOpen) sideBarDock.close()
+            else sideBarDock.show()
         }
-        Menu{
-            title: "视图"
-            Action {
-                text: "对象树"
-                checkable: true
-                checked: objectTreeDock.isOpen
-                onToggled: {
-                    if (objectTreeDock.isOpen) objectTreeDock.close()
-                    else objectTreeDock.show()
-                }
-            }
-            Action {
-                text: "属性列表"
-                checkable: true
-                checked: sideBarDock.isOpen
-                onToggled: {
-                    if (sideBarDock.isOpen) sideBarDock.close()
-                    else sideBarDock.show()
-                }
-            }
-            Action {
-                text: "控制台"
-                checkable: true
-                checked: consoleDock.isOpen
-                onToggled: {
-                    if (consoleDock.isOpen) consoleDock.close()
-                    else consoleDock.show()
-                }
-            }
-            Action {
-                text: "日志"
-                checkable: true
-                checked: outputLogDock.isOpen
-                onToggled: {
-                    if (outputLogDock.isOpen) outputLogDock.close()
-                    else outputLogDock.show()
-                }
-            }
-            Action {
-                text: "偏好设置"
-                checkable: true
-                checked: preferencesDock.isOpen
-                onToggled: {
-                    if (preferencesDock.isOpen) preferencesDock.close()
-                    else preferencesDock.show()
-                }
-            }
+        onAttributeRenderToggled: {
+            if (attributeRenderDock.isOpen) attributeRenderDock.close()
+            else attributeRenderDock.show()
         }
-        Menu {
-            id: commandMenu
-            title: qsTr("算法")
-            Repeater {
-                model: QModelManager.algorithmSystem.algorithmsInfo
-                MenuItem {
-                    text: modelData.display_name
-                    onTriggered: {
-                        var info = modelData
-                        App.activeOperation = {
-                            info: info,
-                            execute: function(model, args) { QModelManager.algorithmSystem.call(info.name, model, args) }
-                        }
-                    }
-                }
-            }
+        onConsoleToggled: {
+            if (consoleDock.isOpen) consoleDock.close()
+            else consoleDock.show()
+        }
+        onOutputLogToggled: {
+            if (outputLogDock.isOpen) outputLogDock.close()
+            else outputLogDock.show()
+        }
+        onPreferencesToggled: {
+            if (preferencesDock.isOpen) preferencesDock.close()
+            else preferencesDock.show()
         }
     }
 
@@ -146,62 +84,6 @@ ApplicationWindow {
         }
     }
 
-    // 功能菜单：按功能声明的 menu_path 分组动态生成（功能注册/注销时重建）
-    property var _featureMenus: []
-
-    function rebuildFeatureMenus() {
-        // 移除旧的功能菜单
-        for (let old_menu of root._featureMenus) {
-            menuBar.removeMenu(old_menu)
-            old_menu.destroy()
-        }
-        root._featureMenus = []
-
-        // 按 menu_path 分组
-        let groups = {}
-        for (let info of QModelManager.featureSystem.featuresInfo) {
-            let path = info.menu_path || "功能"
-            if (!groups[path])
-                groups[path] = []
-            groups[path].push(info)
-        }
-        for (let path in groups) {
-            let menu = featureMenuComponent.createObject(menuBar, { "title": path })
-            for (let info of groups[path]) {
-                let item = featureMenuItemComponent.createObject(menu, { "text": info.display_name })
-                item.triggered.connect(function() {
-                    App.activeOperation = {
-                        info: info,
-                        isFeature: true,
-                        execute: function() { return QModelManager.featureSystem.invoke(info.name) }
-                    }
-                })
-                menu.addItem(item)
-            }
-            menuBar.addMenu(menu)
-            root._featureMenus.push(menu)
-        }
-    }
-
-    Component {
-        id: featureMenuComponent
-        Menu {
-        }
-    }
-    Component {
-        id: featureMenuItemComponent
-        MenuItem {
-        }
-    }
-
-    Connections {
-        target: QModelManager.featureSystem
-        function onFeaturesInfoChanged() {
-            root.rebuildFeatureMenus()
-        }
-    }
-
-    // 同步当前活动模型/组件到功能系统，供功能上下文动态获取
     Connections {
         target: App.selection
         function onActiveModelIdChanged() {
@@ -209,6 +91,18 @@ ApplicationWindow {
         }
         function onActiveComponentIdChanged() {
             QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
+        }
+    }
+
+    Connections {
+        target: QModelManager
+        function onModelAdded(id) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.clearSelection()
+        }
+        function onModelRemoved(id) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.clearSelection()
         }
     }
 
@@ -233,6 +127,15 @@ ApplicationWindow {
             uniqueName: "sideBar"
             title: "属性列表"
             SideBar {
+                anchors.fill: parent
+            }
+        }
+
+        KDDW.DockWidget {
+            id: attributeRenderDock
+            uniqueName: "attributeRender"
+            title: "属性渲染"
+            AttributeRenderPanel {
                 anchors.fill: parent
             }
         }
@@ -270,6 +173,7 @@ ApplicationWindow {
         Component.onCompleted: {
             addDockWidget(objectTreeDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
             addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
+            addDockWidget(attributeRenderDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(outputLogDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(preferencesDock, KDDW.KDDockWidgets.Location_OnTop, objectTreeDock, Qt.size(0, 200), KDDW.KDDockWidgets.StartHidden)
@@ -307,8 +211,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        // 构建功能菜单并同步当前活动模型/组件到功能系统
-        rebuildFeatureMenus()
+        // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
         QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
         QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
 

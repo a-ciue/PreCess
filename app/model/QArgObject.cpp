@@ -46,6 +46,10 @@ std::optional<ArgObject> QArgObject::getValue() const
         }
         break;
     }
+    case ArgTypeEnum::Button:
+        // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标
+        ret = ArgObject::create<ArgTypeEnum::Button>(value_.toInt(&canConvert));
+        break;
     default:
         canConvert = false;
         break;
