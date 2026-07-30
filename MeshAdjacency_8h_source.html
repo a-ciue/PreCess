@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/MeshAdjacency.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">MeshAdjacency.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="MeshAdjacency_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;array&gt;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">struct </span><a class="code hl_struct" href="structMeshData.html">MeshData</a>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">class </span><a class="code hl_class" href="classMeshIDMap.html">MeshIDMap</a>;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="foldopen" id="foldopen00037" data-start="{" data-end="};">
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classEdgeHandle.html">   37</a></span><span class="keyword">class </span><a class="code hl_function" href="classEdgeHandle.html#a71076e38b395a56a55b2e83ca879418c">EdgeHandle</a> {</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classEdgeHandle.html#a997e99347bfd44ab208cfd341dc38208">   38</a></span>    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_friend" href="classEdgeHandle.html#a997e99347bfd44ab208cfd341dc38208">MeshAdjacency</a>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="foldopen" id="foldopen00040" data-start="{" data-end="}">
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classEdgeHandle.html#a71076e38b395a56a55b2e83ca879418c">   40</a></span>    <a class="code hl_function" href="classEdgeHandle.html#a71076e38b395a56a55b2e83ca879418c">EdgeHandle</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> row, std::uint32_t generation) noexcept</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        : <a class="code hl_variable" href="classEdgeHandle.html#a745941792832f5c4b1a2013790bc2e78">row_</a>(row)</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        , <a class="code hl_variable" href="classEdgeHandle.html#a9688492fd8dced57573fc8f2cc8e8a92">generation_</a>(generation)</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    }</div>
+</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classEdgeHandle.html#a745941792832f5c4b1a2013790bc2e78">   46</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="classEdgeHandle.html#a745941792832f5c4b1a2013790bc2e78">row_</a> { -1 }; <span class="comment">//&gt; 当轮边表行号</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classEdgeHandle.html#a9688492fd8dced57573fc8f2cc8e8a92">   47</a></span>    std::uint32_t <a class="code hl_variable" href="classEdgeHandle.html#a9688492fd8dced57573fc8f2cc8e8a92">generation_</a> { 0 }; <span class="comment">//&gt; 签发时的边表构建世代（重建即失效）</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="classEdgeHandle.html#a48353deb8a8d0328a5cd90869c6a8627">   50</a></span>    <a class="code hl_function" href="classEdgeHandle.html#a48353deb8a8d0328a5cd90869c6a8627">EdgeHandle</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>};</div>
+</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="foldopen" id="foldopen00053" data-start="{" data-end="};">
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html">   53</a></span><span class="keyword">class </span><a class="code hl_class" href="classMeshAdjacency.html">MeshAdjacency</a> {</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="comment">// —— 稳定 id 接口（公共契约，跨拓扑编辑有效）——</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    std::optional&lt;Index&gt; <a class="code hl_function" href="classMeshAdjacency.html#a5e4f29f8a8c022eabf26b0a790b274a7">edgeStableId</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh, <a class="code hl_class" href="classEdgeHandle.html">EdgeHandle</a> edge);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    std::optional&lt;Index&gt; <a class="code hl_function" href="classMeshAdjacency.html#ab69e4be4016c506264f857a21c94c526">edgeGlobalId</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> stable_id);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keyword">const</span> std::vector&lt;Index&gt;&amp; <a class="code hl_function" href="classMeshAdjacency.html#a2e1fb9693b7e85a7557b70beefed2e88">faceEdgeStableIds</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="comment">// —— 句柄签发与消费（当轮操作工具，EdgeHandle 只能经 MeshAdjacency 进出）——</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    std::optional&lt;EdgeHandle&gt; <a class="code hl_function" href="classMeshAdjacency.html#a8984fd3629fecb35a0a02168156e5dd3">findEdgeByEndpoints</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p0, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p1);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    std::optional&lt;EdgeHandle&gt; <a class="code hl_function" href="classMeshAdjacency.html#a35e31272f7eb6726e37d7da843521371">findEdgeByStableId</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> stable_id);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_function" href="classMeshAdjacency.html#ad5b6d1992469b73d536ce3db34dec2fa">edgeCellIndex</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh, <a class="code hl_class" href="classEdgeHandle.html">EdgeHandle</a> edge);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_function" href="classMeshAdjacency.html#a044ed4ae58ce9ed72ac9db5e5648c010">edgeCount</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="comment">// —— 全局 id 同步与生命周期 ——</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span></div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshAdjacency.html#ac53565ba70f06b5d93a6f867b789cca8">ensureEdgeGlobalIds</a>(<a class="code hl_class" href="classMeshIDMap.html">MeshIDMap</a>&amp; map, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span></div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshAdjacency.html#ad772f20bb0bb25ec122c2ce3929ced12">releaseEdgeGlobalIds</a>(<a class="code hl_class" href="classMeshIDMap.html">MeshIDMap</a>&amp; map);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span></div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshAdjacency.html#a096c68e2ba945edea2fa361ce279c20e">invalidate</a>() <span class="keyword">noexcept</span>;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="keyword">private</span>:</div>
+<div class="foldopen" id="foldopen00107" data-start="{" data-end="};">
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="structMeshAdjacency_1_1EdgeRow.html">  107</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structMeshAdjacency_1_1EdgeRow.html">EdgeRow</a> {</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="structMeshAdjacency_1_1EdgeRow.html#a5fca66bc34f8a5699f94aad05f6b6586">  108</a></span>        std::array&lt;Index, 2&gt; <a class="code hl_variable" href="structMeshAdjacency_1_1EdgeRow.html#a5fca66bc34f8a5699f94aad05f6b6586">endpoints</a>; <span class="comment">//&gt; 排序端点对（小在前），唯一键</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="structMeshAdjacency_1_1EdgeRow.html#a5d8704e2291ff03403fbf6d9791204b6">  109</a></span>        <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structMeshAdjacency_1_1EdgeRow.html#a5d8704e2291ff03403fbf6d9791204b6">cell_index</a> { -1 }; <span class="comment">//&gt; 物化边在 edge_vertices_ 中的 cell 序号，-1 表示纯面边</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="structMeshAdjacency_1_1EdgeRow.html#a85e77bd84d77d8b7c7e7a91a81ada767">  110</a></span>        <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structMeshAdjacency_1_1EdgeRow.html#a85e77bd84d77d8b7c7e7a91a81ada767">stable_id</a> { -1 }; <span class="comment">//&gt; 稳定局部边 id</span></div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    };</div>
+</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshAdjacency.html#a0924607a2d92b94c6af9165718f4b9f9">ensureBuilt</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh);</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classMeshAdjacency.html#a0787dc08c047d67bfd37f6bcdd2a494a">isCurrent</a>(<a class="code hl_class" href="classEdgeHandle.html">EdgeHandle</a> edge) <span class="keyword">const</span> <span class="keyword">noexcept</span>;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="comment">// —— 懒重建部分（invalidate 后重建）——</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#a037729cdc2d38fd87bf4cc2ea6b712e1">  118</a></span>    <span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>* <a class="code hl_variable" href="classMeshAdjacency.html#a037729cdc2d38fd87bf4cc2ea6b712e1">built_mesh_</a> {}; <span class="comment">//&gt; 上次构建所基于的 mesh 对象，指针不同即重建</span></div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#aa9a3d6e9e8b5f4b4725cd2ddc756d82f">  119</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classMeshAdjacency.html#aa9a3d6e9e8b5f4b4725cd2ddc756d82f">dirty_</a> { <span class="keyword">true</span> }; <span class="comment">//&gt; 失效标记</span></div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#aaec27a7390086fa641a0151361344306">  120</a></span>    std::uint32_t <a class="code hl_variable" href="classMeshAdjacency.html#aaec27a7390086fa641a0151361344306">generation_</a> { 0 }; <span class="comment">//&gt; 边表构建世代，每次重建递增</span></div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#afe65254353785dc4a0ef9d561e1252e9">  121</a></span>    std::vector&lt;EdgeRow&gt; <a class="code hl_variable" href="classMeshAdjacency.html#afe65254353785dc4a0ef9d561e1252e9">rows_</a>; <span class="comment">//&gt; 边表</span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#ad1228a59a7c69530b20d66194670f04d">  122</a></span>    std::unordered_map&lt;std::uint64_t, Index&gt; <a class="code hl_variable" href="classMeshAdjacency.html#ad1228a59a7c69530b20d66194670f04d">row_by_endpoints_</a>; <span class="comment">//&gt; key=(min&lt;&lt;32)|max，值为行号</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#a170b17e9f95ae2a4b99f74569c5a7394">  123</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="classMeshAdjacency.html#a170b17e9f95ae2a4b99f74569c5a7394">face_edge_stable_ids_</a>; <span class="comment">//&gt; 与 face_vertices_ 等长，面单元的边稳定 id</span></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#a8e5ae81289c9df675db79fe1edaea941">  124</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="classMeshAdjacency.html#a8e5ae81289c9df675db79fe1edaea941">row_by_stable_id_</a>; <span class="comment">//&gt; 稳定 id -&gt; 行号（-1 空洞：已消亡的边）</span></div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    <span class="comment">// —— 持久部分（invalidate 时保留，releaseEdgeGlobalIds 才重置）——</span></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#a220bcf6a3ca101335ab52f66faf3ee28">  127</a></span>    std::unordered_map&lt;std::uint64_t, Index&gt; <a class="code hl_variable" href="classMeshAdjacency.html#a220bcf6a3ca101335ab52f66faf3ee28">stable_id_by_endpoints_</a>; <span class="comment">//&gt; 端点对 -&gt; 稳定局部边 id</span></div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno"><a class="line" href="classMeshAdjacency.html#ad8a2a97a99011be43c58c760a648e332">  128</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="classMeshAdjacency.html#ad8a2a97a99011be43c58c760a648e332">gid_by_stable_id_</a>; <span class="comment">//&gt; 稳定局部边 id -&gt; 全局边 id（-1 = 待分配）</span></div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>};</div>
+</div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:48</div></div>
+<div class="ttc" id="aclassEdgeHandle_html"><div class="ttname"><a href="classEdgeHandle.html">EdgeHandle</a></div><div class="ttdoc">边表行号的不透明句柄（仅当轮边表有效）</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:37</div></div>
+<div class="ttc" id="aclassEdgeHandle_html_a48353deb8a8d0328a5cd90869c6a8627"><div class="ttname"><a href="classEdgeHandle.html#a48353deb8a8d0328a5cd90869c6a8627">EdgeHandle::EdgeHandle</a></div><div class="ttdeci">EdgeHandle()=default</div></div>
+<div class="ttc" id="aclassEdgeHandle_html_a71076e38b395a56a55b2e83ca879418c"><div class="ttname"><a href="classEdgeHandle.html#a71076e38b395a56a55b2e83ca879418c">EdgeHandle::EdgeHandle</a></div><div class="ttdeci">EdgeHandle(Index row, std::uint32_t generation) noexcept</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:40</div></div>
+<div class="ttc" id="aclassEdgeHandle_html_a745941792832f5c4b1a2013790bc2e78"><div class="ttname"><a href="classEdgeHandle.html#a745941792832f5c4b1a2013790bc2e78">EdgeHandle::row_</a></div><div class="ttdeci">Index row_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:46</div></div>
+<div class="ttc" id="aclassEdgeHandle_html_a9688492fd8dced57573fc8f2cc8e8a92"><div class="ttname"><a href="classEdgeHandle.html#a9688492fd8dced57573fc8f2cc8e8a92">EdgeHandle::generation_</a></div><div class="ttdeci">std::uint32_t generation_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:47</div></div>
+<div class="ttc" id="aclassEdgeHandle_html_a997e99347bfd44ab208cfd341dc38208"><div class="ttname"><a href="classEdgeHandle.html#a997e99347bfd44ab208cfd341dc38208">EdgeHandle::MeshAdjacency</a></div><div class="ttdeci">friend class MeshAdjacency</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:38</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html"><div class="ttname"><a href="classMeshAdjacency.html">MeshAdjacency</a></div><div class="ttdef"><b>定义</b> MeshAdjacency.h:53</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a037729cdc2d38fd87bf4cc2ea6b712e1"><div class="ttname"><a href="classMeshAdjacency.html#a037729cdc2d38fd87bf4cc2ea6b712e1">MeshAdjacency::built_mesh_</a></div><div class="ttdeci">const MeshData * built_mesh_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:118</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a044ed4ae58ce9ed72ac9db5e5648c010"><div class="ttname"><a href="classMeshAdjacency.html#a044ed4ae58ce9ed72ac9db5e5648c010">MeshAdjacency::edgeCount</a></div><div class="ttdeci">Index edgeCount(const MeshData &amp;mesh)</div><div class="ttdoc">当轮边表行数（物化边 + 面边，重合归并后）</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:79</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a0787dc08c047d67bfd37f6bcdd2a494a"><div class="ttname"><a href="classMeshAdjacency.html#a0787dc08c047d67bfd37f6bcdd2a494a">MeshAdjacency::isCurrent</a></div><div class="ttdeci">bool isCurrent(EdgeHandle edge) const noexcept</div><div class="ttdoc">句柄是否属于当轮边表（世代匹配且行号在界内）</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:112</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a0924607a2d92b94c6af9165718f4b9f9"><div class="ttname"><a href="classMeshAdjacency.html#a0924607a2d92b94c6af9165718f4b9f9">MeshAdjacency::ensureBuilt</a></div><div class="ttdeci">void ensureBuilt(const MeshData &amp;mesh)</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:118</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a096c68e2ba945edea2fa361ce279c20e"><div class="ttname"><a href="classMeshAdjacency.html#a096c68e2ba945edea2fa361ce279c20e">MeshAdjacency::invalidate</a></div><div class="ttdeci">void invalidate() noexcept</div><div class="ttdoc">使懒重建部分失效，下次查询时基于最新拓扑重建（持久稳定 id 层保留）</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:107</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a170b17e9f95ae2a4b99f74569c5a7394"><div class="ttname"><a href="classMeshAdjacency.html#a170b17e9f95ae2a4b99f74569c5a7394">MeshAdjacency::face_edge_stable_ids_</a></div><div class="ttdeci">std::vector&lt; Index &gt; face_edge_stable_ids_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:123</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a220bcf6a3ca101335ab52f66faf3ee28"><div class="ttname"><a href="classMeshAdjacency.html#a220bcf6a3ca101335ab52f66faf3ee28">MeshAdjacency::stable_id_by_endpoints_</a></div><div class="ttdeci">std::unordered_map&lt; std::uint64_t, Index &gt; stable_id_by_endpoints_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:127</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a2e1fb9693b7e85a7557b70beefed2e88"><div class="ttname"><a href="classMeshAdjacency.html#a2e1fb9693b7e85a7557b70beefed2e88">MeshAdjacency::faceEdgeStableIds</a></div><div class="ttdeci">const std::vector&lt; Index &gt; &amp; faceEdgeStableIds(const MeshData &amp;mesh)</div><div class="ttdoc">面单元的边稳定 id 表（懒构建）</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:39</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a35e31272f7eb6726e37d7da843521371"><div class="ttname"><a href="classMeshAdjacency.html#a35e31272f7eb6726e37d7da843521371">MeshAdjacency::findEdgeByStableId</a></div><div class="ttdeci">std::optional&lt; EdgeHandle &gt; findEdgeByStableId(const MeshData &amp;mesh, Index stable_id)</div><div class="ttdoc">稳定局部边 id -&gt; 边句柄；该边已消亡或 id 越界返回 std::nullopt</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:58</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a5e4f29f8a8c022eabf26b0a790b274a7"><div class="ttname"><a href="classMeshAdjacency.html#a5e4f29f8a8c022eabf26b0a790b274a7">MeshAdjacency::edgeStableId</a></div><div class="ttdeci">std::optional&lt; Index &gt; edgeStableId(const MeshData &amp;mesh, EdgeHandle edge)</div><div class="ttdoc">边句柄 -&gt; 稳定局部边 id；句柄无效（含边表已重建）返回 std::nullopt</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:18</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a8984fd3629fecb35a0a02168156e5dd3"><div class="ttname"><a href="classMeshAdjacency.html#a8984fd3629fecb35a0a02168156e5dd3">MeshAdjacency::findEdgeByEndpoints</a></div><div class="ttdeci">std::optional&lt; EdgeHandle &gt; findEdgeByEndpoints(const MeshData &amp;mesh, Index p0, Index p1)</div><div class="ttdoc">按两端点反查边句柄</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:45</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_a8e5ae81289c9df675db79fe1edaea941"><div class="ttname"><a href="classMeshAdjacency.html#a8e5ae81289c9df675db79fe1edaea941">MeshAdjacency::row_by_stable_id_</a></div><div class="ttdeci">std::vector&lt; Index &gt; row_by_stable_id_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:124</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_aa9a3d6e9e8b5f4b4725cd2ddc756d82f"><div class="ttname"><a href="classMeshAdjacency.html#aa9a3d6e9e8b5f4b4725cd2ddc756d82f">MeshAdjacency::dirty_</a></div><div class="ttdeci">bool dirty_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:119</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_aaec27a7390086fa641a0151361344306"><div class="ttname"><a href="classMeshAdjacency.html#aaec27a7390086fa641a0151361344306">MeshAdjacency::generation_</a></div><div class="ttdeci">std::uint32_t generation_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:120</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_ab69e4be4016c506264f857a21c94c526"><div class="ttname"><a href="classMeshAdjacency.html#ab69e4be4016c506264f857a21c94c526">MeshAdjacency::edgeGlobalId</a></div><div class="ttdeci">std::optional&lt; Index &gt; edgeGlobalId(const MeshData &amp;mesh, Index stable_id)</div><div class="ttdoc">稳定局部边 id -&gt; 全局边 id；尚未分配（见 ensureEdgeGlobalIds）或越界返回 std::nullopt</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:27</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_ac53565ba70f06b5d93a6f867b789cca8"><div class="ttname"><a href="classMeshAdjacency.html#ac53565ba70f06b5d93a6f867b789cca8">MeshAdjacency::ensureEdgeGlobalIds</a></div><div class="ttdeci">void ensureEdgeGlobalIds(MeshIDMap &amp;map, Index component_id, const MeshData &amp;mesh)</div><div class="ttdoc">为全部稳定 id 分配全局边 id（幂等，仅补缺）</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:85</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_ad1228a59a7c69530b20d66194670f04d"><div class="ttname"><a href="classMeshAdjacency.html#ad1228a59a7c69530b20d66194670f04d">MeshAdjacency::row_by_endpoints_</a></div><div class="ttdeci">std::unordered_map&lt; std::uint64_t, Index &gt; row_by_endpoints_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:122</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_ad5b6d1992469b73d536ce3db34dec2fa"><div class="ttname"><a href="classMeshAdjacency.html#ad5b6d1992469b73d536ce3db34dec2fa">MeshAdjacency::edgeCellIndex</a></div><div class="ttdeci">Index edgeCellIndex(const MeshData &amp;mesh, EdgeHandle edge)</div><div class="ttdoc">边句柄 -&gt; 物化边 cell 序号；未物化（纯面边）或句柄无效返回 -1</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:70</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_ad772f20bb0bb25ec122c2ce3929ced12"><div class="ttname"><a href="classMeshAdjacency.html#ad772f20bb0bb25ec122c2ce3929ced12">MeshAdjacency::releaseEdgeGlobalIds</a></div><div class="ttdeci">void releaseEdgeGlobalIds(MeshIDMap &amp;map)</div><div class="ttdoc">释放全部全局边 id 并重置持久身份层（组件移除/整网格替换时调用）</div><div class="ttdef"><b>定义</b> MeshAdjacency.cpp:96</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_ad8a2a97a99011be43c58c760a648e332"><div class="ttname"><a href="classMeshAdjacency.html#ad8a2a97a99011be43c58c760a648e332">MeshAdjacency::gid_by_stable_id_</a></div><div class="ttdeci">std::vector&lt; Index &gt; gid_by_stable_id_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:128</div></div>
+<div class="ttc" id="aclassMeshAdjacency_html_afe65254353785dc4a0ef9d561e1252e9"><div class="ttname"><a href="classMeshAdjacency.html#afe65254353785dc4a0ef9d561e1252e9">MeshAdjacency::rows_</a></div><div class="ttdeci">std::vector&lt; EdgeRow &gt; rows_</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:121</div></div>
+<div class="ttc" id="aclassMeshIDMap_html"><div class="ttname"><a href="classMeshIDMap.html">MeshIDMap</a></div><div class="ttdef"><b>定义</b> MeshIDMap.h:8</div></div>
+<div class="ttc" id="astructMeshAdjacency_1_1EdgeRow_html"><div class="ttname"><a href="structMeshAdjacency_1_1EdgeRow.html">MeshAdjacency::EdgeRow</a></div><div class="ttdef"><b>定义</b> MeshAdjacency.h:107</div></div>
+<div class="ttc" id="astructMeshAdjacency_1_1EdgeRow_html_a5d8704e2291ff03403fbf6d9791204b6"><div class="ttname"><a href="structMeshAdjacency_1_1EdgeRow.html#a5d8704e2291ff03403fbf6d9791204b6">MeshAdjacency::EdgeRow::cell_index</a></div><div class="ttdeci">Index cell_index</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:109</div></div>
+<div class="ttc" id="astructMeshAdjacency_1_1EdgeRow_html_a5fca66bc34f8a5699f94aad05f6b6586"><div class="ttname"><a href="structMeshAdjacency_1_1EdgeRow.html#a5fca66bc34f8a5699f94aad05f6b6586">MeshAdjacency::EdgeRow::endpoints</a></div><div class="ttdeci">std::array&lt; Index, 2 &gt; endpoints</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:108</div></div>
+<div class="ttc" id="astructMeshAdjacency_1_1EdgeRow_html_a85e77bd84d77d8b7c7e7a91a81ada767"><div class="ttname"><a href="structMeshAdjacency_1_1EdgeRow.html#a85e77bd84d77d8b7c7e7a91a81ada767">MeshAdjacency::EdgeRow::stable_id</a></div><div class="ttdeci">Index stable_id</div><div class="ttdef"><b>定义</b> MeshAdjacency.h:110</div></div>
+<div class="ttc" id="astructMeshData_html"><div class="ttname"><a href="structMeshData.html">MeshData</a></div><div class="ttdef"><b>定义</b> MeshData.h:39</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

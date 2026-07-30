@@ -1,109 +1,108 @@
 <map id="SelectManager" name="SelectManager">
-<area shape="rect" id="Node000001" title=" " alt="" coords="1691,1715,1809,1740"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="1936,1604,2145,1644"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1975,1651,1784,1717,1782,1712,1973,1646"/>
-<area shape="rect" id="Node000003" href="$classMeshSelectManager.html" title=" " alt="" coords="2118,1508,2273,1533"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="2168,1543,2071,1606,2068,1601,2165,1539"/>
-<area shape="rect" id="Node000004" href="$classMeshActorManagerSelectOp.html" title=" " alt="" coords="1048,1377,1255,1403"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1203,1405,1233,1420,1260,1439,1269,1451,1272,1463,1276,1473,1284,1482,1622,1497,2118,1514,2118,1519,1622,1502,1282,1486,1271,1476,1267,1465,1264,1454,1256,1443,1230,1424,1201,1410"/>
-<area shape="rect" id="Node000005" href="$classMeshActorManager.html" title=" " alt="" coords="941,1508,1089,1533"/>
-<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="1140,1416,1115,1456,1092,1486,1072,1500,1050,1510,1048,1505,1069,1495,1088,1482,1111,1453,1136,1413"/>
-<area shape="rect" id="Node000050" href="$classComponentSelectorHighlight.html" title=" " alt="" coords="1176,1508,1385,1533"/>
-<area shape="poly" id="edge55_Node000050_Node000004" title=" " alt="" coords="1157,1416,1166,1450,1174,1467,1185,1482,1203,1496,1224,1505,1222,1510,1201,1500,1181,1486,1169,1470,1161,1452,1151,1417"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="1006,1494,1005,1467,1014,1440,1041,1415,1074,1400,1076,1405,1044,1420,1019,1443,1010,1468,1012,1494"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="560,1363,721,1417"/>
-<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="647,1430,656,1459,674,1482,711,1493,779,1502,941,1513,941,1519,779,1507,709,1498,671,1486,652,1461,642,1432"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="407,1259,626,1285"/>
-<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="541,1292,614,1361,611,1365,538,1296"/>
-<area shape="rect" id="Node000008" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="293,1156,383,1181"/>
-<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="371,1186,498,1257,495,1262,369,1190"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="221,1045,415,1085"/>
-<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="327,1098,338,1155,333,1157,322,1099"/>
-<area shape="rect" id="Node000010" href="$classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="226,942,410,967"/>
-<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="321,981,321,1045,315,1045,315,981"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="439,1045,639,1085"/>
-<area shape="poly" id="edge11_Node000008_Node000011" title=" " alt="" coords="511,1097,485,1117,457,1134,420,1150,384,1160,383,1155,418,1145,454,1130,482,1112,507,1092"/>
-<area shape="rect" id="Node000012" href="$structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="459,942,569,967"/>
-<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="522,980,538,1045,532,1046,517,981"/>
-<area shape="rect" id="Node000013" title=" " alt="" coords="251,764,417,804"/>
-<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="334,817,338,865,346,888,360,909,398,923,463,939,461,945,396,928,356,913,342,891,333,866,329,818"/>
-<area shape="rect" id="Node000014" title=" " alt="" coords="583,5,741,31"/>
-<area shape="poly" id="edge14_Node000012_Node000014" title=" " alt="" coords="665,45,665,113,665,785,669,853,664,882,645,912,629,927,611,938,571,951,569,946,609,933,626,923,641,909,659,880,664,853,659,785,659,113,659,45"/>
-<area shape="rect" id="Node000022" href="$structBlockData.html" title=" " alt="" coords="532,101,621,127"/>
-<area shape="poly" id="edge23_Node000022_Node000014" title=" " alt="" coords="616,39,595,56,584,79,580,102,575,101,579,77,591,53,613,35"/>
-<area shape="poly" id="edge57_Node000050_Node000014" title=" " alt="" coords="746,32,777,44,804,61,823,83,830,112,830,1391,832,1403,839,1415,864,1436,903,1455,952,1470,1065,1494,1176,1508,1175,1513,1064,1499,951,1475,901,1460,861,1441,835,1418,827,1405,825,1392,825,113,818,86,800,65,774,49,744,37"/>
-<area shape="rect" id="Node000015" title=" " alt="" coords="441,764,625,804"/>
-<area shape="poly" id="edge15_Node000012_Node000015" title=" " alt="" coords="521,818,518,828,513,892,515,942,510,942,507,892,513,828,516,816"/>
-<area shape="rect" id="Node000016" title=" " alt="" coords="345,668,432,693"/>
-<area shape="poly" id="edge16_Node000015_Node000016" title=" " alt="" coords="418,699,507,762,504,766,415,704"/>
-<area shape="rect" id="Node000017" title=" " alt="" coords="319,197,458,237"/>
-<area shape="poly" id="edge17_Node000016_Node000017" title=" " alt="" coords="391,251,391,668,386,668,386,251"/>
-<area shape="rect" id="Node000018" title=" " alt="" coords="457,668,622,693"/>
-<area shape="poly" id="edge18_Node000015_Node000018" title=" " alt="" coords="540,707,537,764,531,764,535,707"/>
-<area shape="rect" id="Node000019" title=" " alt="" coords="5,771,228,797"/>
-<area shape="poly" id="edge19_Node000012_Node000019" title=" " alt="" coords="131,807,168,860,193,887,223,908,251,921,275,928,318,931,365,928,422,932,462,939,461,945,422,937,365,934,318,936,274,933,249,926,221,913,190,891,163,864,127,810"/>
-<area shape="rect" id="Node000020" href="$structBlockDatas.html" title=" " alt="" coords="115,668,211,693"/>
-<area shape="poly" id="edge20_Node000019_Node000020" title=" " alt="" coords="155,707,124,772,120,770,150,705"/>
-<area shape="rect" id="Node000021" title=" " alt="" coords="101,205,289,230"/>
-<area shape="poly" id="edge21_Node000020_Node000021" title=" " alt="" coords="196,244,167,668,161,668,191,243"/>
-<area shape="poly" id="edge22_Node000021_Node000022" title=" " alt="" coords="521,133,239,207,238,202,520,128"/>
-<area shape="rect" id="Node000023" href="$structFaceAttributeOffsetState.html" title=" " alt="" coords="15,1053,197,1078"/>
-<area shape="poly" id="edge24_Node000008_Node000023" title=" " alt="" coords="125,1087,146,1110,173,1130,202,1143,234,1152,293,1162,292,1167,232,1157,200,1148,170,1134,142,1114,121,1091"/>
-<area shape="rect" id="Node000024" title=" " alt="" coords="901,1252,1058,1292"/>
-<area shape="poly" id="edge25_Node000004_Node000024" title=" " alt="" coords="895,1300,881,1308,872,1317,870,1326,875,1337,901,1354,943,1366,1048,1381,1047,1386,942,1372,899,1359,871,1340,864,1327,868,1314,878,1304,893,1295"/>
-<area shape="rect" id="Node000032" href="$classGeometryActorManagerSelectOp.html" title=" " alt="" coords="1339,1377,1575,1403"/>
-<area shape="poly" id="edge45_Node000032_Node000024" title=" " alt="" coords="1008,1300,1045,1336,1075,1349,1102,1356,1151,1360,1202,1357,1266,1360,1377,1375,1377,1380,1266,1365,1202,1363,1151,1365,1102,1362,1074,1354,1042,1341,1004,1304"/>
-<area shape="rect" id="Node000025" title=" " alt="" coords="1117,1252,1329,1292"/>
-<area shape="poly" id="edge26_Node000004_Node000025" title=" " alt="" coords="1214,1306,1196,1340,1165,1379,1161,1375,1192,1337,1209,1304"/>
-<area shape="poly" id="edge46_Node000032_Node000025" title=" " alt="" coords="1275,1296,1435,1375,1432,1380,1272,1300"/>
-<area shape="rect" id="Node000026" href="$structFaceSelectionSpreadOptions.html" title="面选择的角度扩散配置，用于控制是否沿共享边扩展到相邻面" alt="" coords="2124,1377,2331,1403"/>
-<area shape="poly" id="edge27_Node000003_Node000026" title=" " alt="" coords="2224,1416,2201,1508,2196,1507,2219,1415"/>
-<area shape="rect" id="Node000027" title=" " alt="" coords="2391,1363,2595,1417"/>
-<area shape="poly" id="edge28_Node000003_Node000027" title=" " alt="" coords="2458,1429,2420,1460,2375,1486,2325,1504,2274,1515,2272,1509,2323,1499,2373,1482,2417,1455,2455,1425"/>
-<area shape="rect" id="Node000028" title=" " alt="" coords="2418,1252,2605,1292"/>
-<area shape="poly" id="edge29_Node000027_Node000028" title=" " alt="" coords="2509,1306,2500,1363,2494,1362,2503,1305"/>
-<area shape="rect" id="Node000029" href="$classSelectorHighlight.html" title=" " alt="" coords="2444,1156,2579,1181"/>
-<area shape="poly" id="edge30_Node000028_Node000029" title=" " alt="" coords="2514,1195,2514,1252,2509,1252,2509,1195"/>
-<area shape="rect" id="Node000030" title=" " alt="" coords="1651,1604,1849,1644"/>
-<area shape="poly" id="edge31_Node000001_Node000030" title=" " alt="" coords="1753,1658,1753,1715,1747,1715,1747,1658"/>
-<area shape="rect" id="Node000031" href="$classGeometrySelectManager.html" title=" " alt="" coords="1658,1508,1842,1533"/>
-<area shape="poly" id="edge32_Node000030_Node000031" title=" " alt="" coords="1753,1547,1753,1604,1747,1604,1747,1547"/>
-<area shape="poly" id="edge33_Node000031_Node000032" title=" " alt="" coords="1500,1405,1583,1439,1727,1505,1725,1510,1581,1444,1498,1410"/>
-<area shape="rect" id="Node000033" href="$classGeometryActorManager.html" title=" " alt="" coords="1455,1508,1634,1533"/>
-<area shape="poly" id="edge35_Node000033_Node000032" title=" " alt="" coords="1497,1407,1517,1421,1534,1440,1542,1457,1546,1476,1548,1508,1543,1508,1541,1477,1537,1459,1529,1443,1514,1425,1494,1412"/>
-<area shape="poly" id="edge56_Node000050_Node000032" title=" " alt="" coords="1421,1411,1368,1443,1344,1464,1323,1486,1296,1510,1292,1506,1319,1482,1341,1460,1364,1439,1419,1407"/>
-<area shape="poly" id="edge34_Node000032_Node000033" title=" " alt="" coords="1476,1504,1456,1486,1447,1464,1445,1441,1450,1402,1456,1403,1450,1441,1452,1463,1460,1482,1479,1500"/>
-<area shape="rect" id="Node000034" title=" " alt="" coords="1909,1363,2100,1417"/>
-<area shape="poly" id="edge36_Node000033_Node000034" title=" " alt="" coords="1979,1430,1949,1461,1911,1486,1886,1494,1855,1500,1780,1506,1646,1511,1634,1512,1634,1507,1646,1505,1780,1500,1854,1495,1885,1489,1909,1482,1946,1457,1976,1426"/>
-<area shape="rect" id="Node000035" title=" " alt="" coords="2195,1252,2393,1292"/>
-<area shape="poly" id="edge37_Node000034_Node000035" title=" " alt="" coords="2235,1300,2071,1365,2069,1360,2233,1295"/>
-<area shape="rect" id="Node000036" href="$classGeometryActor.html" title=" " alt="" coords="2233,1156,2355,1181"/>
-<area shape="poly" id="edge38_Node000035_Node000036" title=" " alt="" coords="2297,1195,2297,1252,2291,1252,2291,1195"/>
-<area shape="rect" id="Node000037" href="$structGeometrySubshapeIndex.html" title=" " alt="" coords="2201,1053,2387,1078"/>
-<area shape="poly" id="edge39_Node000036_Node000037" title=" " alt="" coords="2297,1092,2297,1156,2291,1156,2291,1092"/>
-<area shape="rect" id="Node000038" title=" " alt="" coords="2647,935,2909,975"/>
-<area shape="poly" id="edge40_Node000037_Node000038" title=" " alt="" coords="2731,983,2681,1005,2625,1024,2565,1038,2502,1049,2388,1061,2387,1056,2502,1043,2563,1033,2624,1019,2679,1000,2729,978"/>
-<area shape="rect" id="Node000039" title=" " alt="" coords="1727,942,1941,967"/>
-<area shape="poly" id="edge41_Node000037_Node000039" title=" " alt="" coords="1863,973,1904,998,1952,1019,2015,1036,2081,1048,2201,1059,2200,1065,2080,1053,2014,1041,1950,1024,1901,1002,1860,977"/>
-<area shape="rect" id="Node000040" title=" " alt="" coords="1965,942,2169,967"/>
-<area shape="poly" id="edge42_Node000037_Node000040" title=" " alt="" coords="2089,975,2114,998,2145,1019,2188,1037,2232,1050,2230,1055,2186,1042,2142,1024,2111,1003,2085,979"/>
-<area shape="rect" id="Node000041" title=" " alt="" coords="2193,942,2395,967"/>
-<area shape="poly" id="edge43_Node000037_Node000041" title=" " alt="" coords="2297,981,2297,1052,2291,1052,2291,981"/>
-<area shape="rect" id="Node000042" title=" " alt="" coords="2419,942,2623,967"/>
-<area shape="poly" id="edge44_Node000037_Node000042" title=" " alt="" coords="2502,979,2475,1002,2442,1024,2398,1042,2354,1055,2352,1050,2396,1037,2439,1019,2471,998,2498,975"/>
-<area shape="rect" id="Node000043" title=" " alt="" coords="1354,1252,1525,1292"/>
-<area shape="poly" id="edge47_Node000032_Node000043" title=" " alt="" coords="1441,1306,1443,1338,1454,1376,1449,1378,1438,1339,1435,1306"/>
-<area shape="rect" id="Node000044" title=" " alt="" coords="1575,1259,1711,1285"/>
-<area shape="poly" id="edge48_Node000032_Node000044" title=" " alt="" coords="1640,1299,1631,1321,1616,1341,1578,1365,1536,1380,1534,1375,1576,1360,1612,1337,1626,1318,1635,1297"/>
-<area shape="rect" id="Node000045" title=" " alt="" coords="1736,1252,1948,1292"/>
-<area shape="poly" id="edge49_Node000032_Node000045" title=" " alt="" coords="1843,1307,1837,1325,1825,1341,1806,1351,1780,1357,1718,1363,1653,1363,1604,1365,1516,1380,1515,1375,1603,1360,1653,1358,1717,1357,1780,1352,1804,1346,1822,1337,1832,1323,1838,1305"/>
-<area shape="rect" id="Node000046" title=" " alt="" coords="1615,1363,1885,1417"/>
-<area shape="poly" id="edge50_Node000031_Node000046" title=" " alt="" coords="1753,1431,1753,1507,1747,1507,1747,1431"/>
-<area shape="rect" id="Node000047" title=" " alt="" coords="1972,1252,2171,1292"/>
-<area shape="poly" id="edge51_Node000046_Node000047" title=" " alt="" coords="2040,1303,2010,1323,1976,1341,1939,1353,1886,1366,1885,1360,1937,1348,1974,1336,2007,1319,2037,1298"/>
-<area shape="rect" id="Node000048" href="$classGeometrySelectorHighlight.html" title=" " alt="" coords="1972,1156,2171,1181"/>
-<area shape="poly" id="edge52_Node000047_Node000048" title=" " alt="" coords="2074,1195,2074,1252,2069,1252,2069,1195"/>
-<area shape="rect" id="Node000049" title=" " alt="" coords="1357,1604,1567,1644"/>
-<area shape="poly" id="edge53_Node000001_Node000049" title=" " alt="" coords="1509,1648,1551,1669,1598,1688,1691,1713,1690,1718,1596,1693,1549,1674,1506,1653"/>
-<area shape="poly" id="edge54_Node000049_Node000050" title=" " alt="" coords="1314,1538,1429,1601,1427,1606,1312,1542"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="1153,1463,1271,1488"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="774,1352,983,1392"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="954,1393,1175,1460,1173,1465,953,1398"/>
+<area shape="rect" id="Node000003" href="$classMeshSelectManager.html" title=" " alt="" coords="397,1256,552,1281"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="534,1282,804,1349,803,1355,533,1287"/>
+<area shape="rect" id="Node000004" href="$classMeshActorManagerSelectOp.html" title=" " alt="" coords="810,1125,1017,1151"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="896,1163,856,1205,820,1234,770,1248,701,1258,552,1268,552,1263,700,1253,769,1243,817,1230,853,1201,892,1159"/>
+<area shape="rect" id="Node000005" href="$classMeshActorManager.html" title=" " alt="" coords="837,1256,985,1281"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="955,1155,973,1169,988,1188,995,1211,988,1233,974,1248,956,1258,954,1254,970,1244,983,1231,990,1211,983,1191,970,1173,952,1160"/>
+<area shape="rect" id="Node000051" href="$classComponentSelectorHighlight.html" title=" " alt="" coords="1113,1256,1322,1281"/>
+<area shape="poly" id="edge54_Node000051_Node000004" title=" " alt="" coords="954,1153,1191,1254,1189,1258,952,1158"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="908,1242,909,1189,910,1151,916,1151,915,1189,914,1242"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="601,1111,762,1165"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="674,1179,674,1207,678,1219,685,1230,708,1244,745,1254,837,1263,836,1269,745,1259,706,1249,681,1234,673,1221,669,1207,669,1179"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="508,1007,727,1033"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="633,1043,669,1109,665,1112,628,1046"/>
+<area shape="rect" id="Node000008" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="591,904,681,929"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="634,943,622,1008,617,1007,629,942"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="580,793,775,833"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="667,847,643,905,638,903,662,845"/>
+<area shape="rect" id="Node000010" href="$classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="585,690,769,715"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="680,729,680,793,675,793,675,729"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="807,793,1007,833"/>
+<area shape="poly" id="edge11_Node000008_Node000011" title=" " alt="" coords="866,843,827,864,784,882,732,899,682,910,681,905,730,894,782,878,824,859,863,838"/>
+<area shape="rect" id="Node000012" href="$structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="853,690,963,715"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="910,729,910,793,904,793,905,729"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="825,212,991,252"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="911,266,911,690,905,690,905,266"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1287,219,1444,245"/>
+<area shape="poly" id="edge14_Node000012_Node000014" title=" " alt="" coords="1301,252,1283,263,1269,277,1256,310,1251,356,1255,470,1258,529,1258,583,1251,628,1244,646,1234,661,1215,674,1187,684,1116,697,1036,703,964,705,964,699,1035,698,1115,692,1186,679,1212,669,1230,657,1239,644,1246,627,1253,582,1253,529,1250,470,1246,356,1251,309,1264,275,1280,259,1298,248"/>
+<area shape="poly" id="edge56_Node000051_Node000014" title=" " alt="" coords="1396,252,1414,275,1438,335,1451,388,1456,436,1454,482,1442,579,1436,636,1433,701,1433,1139,1435,1191,1430,1212,1414,1234,1374,1247,1306,1259,1305,1253,1373,1242,1410,1230,1425,1210,1430,1190,1428,1139,1428,701,1430,636,1436,579,1449,482,1450,436,1446,389,1433,337,1410,277,1392,255"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1015,212,1199,252"/>
+<area shape="poly" id="edge15_Node000012_Node000015" title=" " alt="" coords="1107,266,1087,493,1075,605,1064,660,1042,679,1017,691,964,703,963,698,1015,686,1039,674,1059,657,1070,604,1082,493,1102,266"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1151,116,1238,141"/>
+<area shape="poly" id="edge16_Node000015_Node000016" title=" " alt="" coords="1178,153,1125,213,1121,210,1174,150"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1125,5,1264,45"/>
+<area shape="poly" id="edge17_Node000016_Node000017" title=" " alt="" coords="1197,59,1197,116,1192,116,1192,59"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="961,116,1127,141"/>
+<area shape="poly" id="edge18_Node000015_Node000018" title=" " alt="" coords="1056,153,1073,187,1091,210,1087,214,1068,189,1051,155"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="579,219,802,245"/>
+<area shape="poly" id="edge19_Node000012_Node000019" title=" " alt="" coords="692,258,693,334,706,440,719,498,738,555,765,609,799,657,824,676,853,689,851,693,821,681,795,661,760,611,733,557,714,499,700,441,688,335,687,258"/>
+<area shape="rect" id="Node000020" href="$structBlockDatas.html" title=" " alt="" coords="643,116,739,141"/>
+<area shape="poly" id="edge20_Node000019_Node000020" title=" " alt="" coords="693,155,693,219,688,219,688,155"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="597,13,785,38"/>
+<area shape="poly" id="edge21_Node000020_Node000021" title=" " alt="" coords="693,52,693,116,688,116,688,52"/>
+<area shape="rect" id="Node000023" href="$structFaceAttributeOffsetState.html" title=" " alt="" coords="375,801,556,826"/>
+<area shape="poly" id="edge22_Node000008_Node000023" title=" " alt="" coords="473,838,481,860,495,878,517,892,541,902,591,912,590,917,540,907,514,897,492,882,476,862,468,840"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="1211,1000,1368,1040"/>
+<area shape="poly" id="edge23_Node000004_Node000024" title=" " alt="" coords="1216,1047,951,1128,950,1123,1214,1042"/>
+<area shape="rect" id="Node000033" href="$classGeometryActorManagerSelectOp.html" title=" " alt="" coords="1467,1125,1703,1151"/>
+<area shape="poly" id="edge44_Node000033_Node000024" title=" " alt="" coords="1325,1046,1355,1066,1388,1084,1453,1107,1516,1123,1515,1128,1451,1112,1386,1089,1352,1071,1322,1051"/>
+<area shape="rect" id="Node000025" title=" " alt="" coords="751,1000,963,1040"/>
+<area shape="poly" id="edge24_Node000004_Node000025" title=" " alt="" coords="794,1049,775,1066,773,1075,777,1085,802,1108,834,1123,831,1128,799,1113,772,1088,768,1076,771,1064,791,1045"/>
+<area shape="poly" id="edge45_Node000033_Node000025" title=" " alt="" coords="873,1051,886,1070,904,1084,931,1092,980,1097,1113,1103,1327,1108,1483,1123,1483,1128,1327,1113,1112,1109,979,1102,930,1097,901,1089,883,1073,869,1054"/>
+<area shape="rect" id="Node000026" href="$classIMeshIdQuery.html" title=" " alt="" coords="5,1125,117,1151"/>
+<area shape="poly" id="edge25_Node000003_Node000026" title=" " alt="" coords="85,1157,135,1195,166,1214,198,1230,248,1245,300,1255,397,1264,397,1270,300,1260,247,1250,196,1234,163,1219,132,1200,82,1162"/>
+<area shape="rect" id="Node000027" href="$structFaceSelectionSpreadOptions.html" title="面选择的角度扩散配置，用于控制是否沿共享边扩展到相邻面" alt="" coords="142,1125,349,1151"/>
+<area shape="poly" id="edge26_Node000003_Node000027" title=" " alt="" coords="259,1162,283,1198,299,1215,317,1230,356,1248,398,1258,396,1264,354,1253,315,1234,295,1219,279,1201,255,1165"/>
+<area shape="rect" id="Node000028" title=" " alt="" coords="373,1111,577,1165"/>
+<area shape="poly" id="edge27_Node000003_Node000028" title=" " alt="" coords="477,1179,477,1255,472,1255,472,1179"/>
+<area shape="rect" id="Node000029" title=" " alt="" coords="297,1000,484,1040"/>
+<area shape="poly" id="edge28_Node000028_Node000029" title=" " alt="" coords="415,1050,458,1109,453,1112,411,1053"/>
+<area shape="rect" id="Node000030" href="$classSelectorHighlight.html" title=" " alt="" coords="323,904,458,929"/>
+<area shape="poly" id="edge29_Node000029_Node000030" title=" " alt="" coords="393,943,393,1000,388,1000,388,943"/>
+<area shape="rect" id="Node000031" title=" " alt="" coords="1341,1352,1539,1392"/>
+<area shape="poly" id="edge30_Node000001_Node000031" title=" " alt="" coords="1416,1404,1393,1424,1367,1441,1319,1459,1272,1470,1271,1465,1318,1454,1364,1436,1390,1420,1412,1400"/>
+<area shape="rect" id="Node000032" href="$classGeometrySelectManager.html" title=" " alt="" coords="1348,1256,1532,1281"/>
+<area shape="poly" id="edge31_Node000031_Node000032" title=" " alt="" coords="1443,1295,1443,1352,1437,1352,1437,1295"/>
+<area shape="poly" id="edge32_Node000032_Node000033" title=" " alt="" coords="1585,1165,1575,1200,1566,1218,1554,1234,1534,1248,1512,1258,1509,1253,1531,1244,1550,1230,1562,1215,1570,1198,1580,1163"/>
+<area shape="rect" id="Node000034" href="$classGeometryActorManager.html" title=" " alt="" coords="1659,1256,1837,1281"/>
+<area shape="poly" id="edge34_Node000034_Node000033" title=" " alt="" coords="1661,1152,1693,1167,1721,1187,1733,1204,1741,1222,1749,1255,1744,1256,1736,1224,1728,1206,1717,1191,1690,1171,1659,1157"/>
+<area shape="poly" id="edge55_Node000051_Node000033" title=" " alt="" coords="1531,1158,1500,1172,1473,1191,1465,1202,1461,1212,1457,1224,1447,1234,1398,1247,1317,1259,1316,1253,1397,1241,1444,1230,1452,1221,1456,1211,1460,1199,1469,1187,1498,1167,1529,1153"/>
+<area shape="poly" id="edge33_Node000033_Node000034" title=" " alt="" coords="1680,1254,1644,1234,1615,1197,1589,1152,1594,1150,1620,1194,1647,1230,1682,1249"/>
+<area shape="rect" id="Node000035" title=" " alt="" coords="1967,1111,2158,1165"/>
+<area shape="poly" id="edge35_Node000034_Node000035" title=" " alt="" coords="1987,1173,1777,1258,1775,1253,1985,1168"/>
+<area shape="rect" id="Node000036" title=" " alt="" coords="2093,1000,2291,1040"/>
+<area shape="poly" id="edge36_Node000035_Node000036" title=" " alt="" coords="2162,1051,2094,1112,2091,1108,2159,1048"/>
+<area shape="rect" id="Node000037" href="$classGeometryActor.html" title=" " alt="" coords="2131,904,2253,929"/>
+<area shape="poly" id="edge37_Node000036_Node000037" title=" " alt="" coords="2195,943,2195,1000,2189,1000,2189,943"/>
+<area shape="rect" id="Node000038" href="$structGeometrySubshapeIndex.html" title=" " alt="" coords="2099,801,2285,826"/>
+<area shape="poly" id="edge38_Node000037_Node000038" title=" " alt="" coords="2195,840,2195,904,2189,904,2189,840"/>
+<area shape="rect" id="Node000039" title=" " alt="" coords="1798,683,2061,723"/>
+<area shape="poly" id="edge39_Node000038_Node000039" title=" " alt="" coords="1988,725,2165,798,2163,803,1986,730"/>
+<area shape="rect" id="Node000040" title=" " alt="" coords="2085,690,2299,715"/>
+<area shape="poly" id="edge40_Node000038_Node000040" title=" " alt="" coords="2195,729,2195,800,2189,800,2189,729"/>
+<area shape="rect" id="Node000041" title=" " alt="" coords="2323,690,2527,715"/>
+<area shape="poly" id="edge41_Node000038_Node000041" title=" " alt="" coords="2409,727,2384,751,2355,772,2310,791,2265,803,2264,798,2308,786,2352,767,2381,747,2405,724"/>
+<area shape="rect" id="Node000042" title=" " alt="" coords="2551,690,2753,715"/>
+<area shape="poly" id="edge42_Node000038_Node000042" title=" " alt="" coords="2626,725,2584,750,2534,772,2471,789,2406,801,2286,812,2285,807,2405,795,2470,784,2532,767,2581,746,2623,721"/>
+<area shape="rect" id="Node000043" title=" " alt="" coords="1570,690,1774,715"/>
+<area shape="poly" id="edge43_Node000038_Node000043" title=" " alt="" coords="1717,717,1795,743,1886,767,1996,787,2099,800,2098,806,1995,792,1885,772,1794,748,1716,722"/>
+<area shape="rect" id="Node000044" title=" " alt="" coords="1468,1000,1639,1040"/>
+<area shape="poly" id="edge46_Node000033_Node000044" title=" " alt="" coords="1543,1053,1541,1070,1544,1086,1556,1107,1573,1123,1569,1127,1552,1110,1539,1088,1536,1070,1538,1053"/>
+<area shape="rect" id="Node000045" title=" " alt="" coords="1676,1007,1812,1033"/>
+<area shape="poly" id="edge47_Node000033_Node000045" title=" " alt="" coords="1740,1047,1731,1069,1717,1089,1681,1113,1643,1128,1641,1123,1679,1108,1713,1085,1727,1066,1736,1045"/>
+<area shape="rect" id="Node000046" title=" " alt="" coords="1857,1000,2069,1040"/>
+<area shape="poly" id="edge48_Node000033_Node000046" title=" " alt="" coords="1953,1054,1941,1073,1924,1089,1886,1105,1831,1117,1704,1132,1703,1127,1830,1112,1884,1100,1921,1084,1937,1070,1948,1051"/>
+<area shape="rect" id="Node000047" title=" " alt="" coords="1045,1111,1315,1165"/>
+<area shape="poly" id="edge49_Node000032_Node000047" title=" " alt="" coords="1216,1173,1251,1204,1292,1230,1326,1244,1362,1253,1361,1259,1325,1249,1289,1234,1248,1208,1213,1177"/>
+<area shape="rect" id="Node000048" title=" " alt="" coords="987,1000,1186,1040"/>
+<area shape="poly" id="edge50_Node000047_Node000048" title=" " alt="" coords="1013,1048,999,1056,991,1065,988,1075,993,1085,1013,1099,1046,1111,1044,1116,1010,1104,989,1088,983,1075,986,1063,996,1052,1010,1044"/>
+<area shape="rect" id="Node000049" href="$classGeometrySelectorHighlight.html" title=" " alt="" coords="987,904,1186,929"/>
+<area shape="poly" id="edge51_Node000048_Node000049" title=" " alt="" coords="1089,943,1089,1000,1084,1000,1084,943"/>
+<area shape="rect" id="Node000050" title=" " alt="" coords="1107,1352,1317,1392"/>
+<area shape="poly" id="edge52_Node000001_Node000050" title=" " alt="" coords="1215,1406,1215,1463,1209,1463,1209,1406"/>
+<area shape="poly" id="edge53_Node000050_Node000051" title=" " alt="" coords="1219,1295,1216,1352,1210,1352,1213,1295"/>
 </map>

@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structPickInfo.html" title="拾取结果：渲染层解析好的吸附点（世界坐标 + 两套全局顶点 id）" alt="" coords="5,5,80,31"/>
+<area shape="rect" id="Node000000" href="$classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="5,5,104,31"/>
 </map>

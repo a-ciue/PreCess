@@ -1,19 +1,19 @@
 <map id="EdgeSelectorHighlight" name="EdgeSelectorHighlight">
-<area shape="rect" id="Node000001" title=" " alt="" coords="3029,397,3196,422"/>
-<area shape="rect" id="Node000002" href="$classSelectorHighlight.html" title=" " alt="" coords="2749,347,2883,373"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2897,364,3006,379,3069,394,3068,399,3005,384,2897,369"/>
-<area shape="rect" id="Node000003" href="$classMeshActorSelectOp.html" title="MeshActor在选择过程中的操作类，作为临时对象使用" alt="" coords="2741,397,2891,422"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="2904,407,3029,407,3029,412,2904,412"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="2373,397,2592,422"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2606,407,2741,407,2741,412,2606,412"/>
-<area shape="rect" id="Node000005" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2208,397,2299,422"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="2313,407,2373,407,2373,412,2313,412"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="3203,421,3369,446"/>
+<area shape="rect" id="Node000002" href="$classSelectorHighlight.html" title=" " alt="" coords="2910,347,3045,373"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3058,366,3118,376,3179,389,3258,418,3256,423,3178,395,3117,381,3058,371"/>
+<area shape="rect" id="Node000003" href="$classMeshActorSelectOp.html" title="MeshActor在选择过程中的操作类，作为临时对象使用" alt="" coords="2903,397,3052,422"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="3066,414,3203,424,3202,430,3066,419"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="2523,397,2741,422"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="2755,407,2902,407,2902,412,2755,412"/>
+<area shape="rect" id="Node000005" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="2259,397,2350,422"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="2364,407,2523,407,2523,412,2364,412"/>
 <area shape="rect" id="Node000006" title=" " alt="" coords="1812,325,2007,365"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2020,351,2101,361,2185,379,2226,394,2225,399,2183,384,2101,367,2020,356"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2021,355,2184,379,2259,395,2258,400,2184,384,2021,360"/>
 <area shape="rect" id="Node000007" href="$classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="1551,333,1735,358"/>
 <area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="1748,343,1812,343,1812,348,1748,348"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="1809,389,2009,429"/>
-<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="2023,407,2208,407,2208,412,2023,412"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="2023,407,2259,407,2259,412,2023,412"/>
 <area shape="rect" id="Node000009" href="$structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="1587,397,1698,422"/>
 <area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="1712,407,1809,407,1809,412,1712,412"/>
 <area shape="rect" id="Node000010" title=" " alt="" coords="1161,311,1326,351"/>
@@ -23,7 +23,7 @@
 <area shape="rect" id="Node000019" href="$structBlockData.html" title=" " alt="" coords="261,426,351,451"/>
 <area shape="poly" id="edge19_Node000019_Node000011" title=" " alt="" coords="175,425,187,427,261,433,261,439,186,432,175,431"/>
 <area shape="rect" id="Node000012" title=" " alt="" coords="1151,524,1335,564"/>
-<area shape="poly" id="edge11_Node000009_Node000012" title=" " alt="" coords="1349,552,1392,551,1438,547,1483,538,1526,523,1561,501,1591,473,1631,420,1636,424,1595,476,1564,505,1528,528,1484,543,1438,552,1392,557,1349,557"/>
+<area shape="poly" id="edge11_Node000009_Node000012" title=" " alt="" coords="1349,552,1392,552,1438,548,1483,539,1526,524,1561,502,1591,473,1631,421,1636,424,1595,477,1564,506,1528,529,1484,545,1438,554,1392,558,1349,558"/>
 <area shape="rect" id="Node000013" title=" " alt="" coords="889,509,975,534"/>
 <area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="989,523,1151,535,1151,540,989,528"/>
 <area shape="rect" id="Node000014" title=" " alt="" coords="493,501,631,541"/>
@@ -38,9 +38,13 @@
 <area shape="poly" id="edge17_Node000017_Node000018" title=" " alt="" coords="669,437,884,437,884,443,669,443"/>
 <area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="364,436,468,437,468,442,364,442"/>
 <area shape="rect" id="Node000020" href="$structFaceAttributeOffsetState.html" title=" " alt="" coords="1819,454,2000,479"/>
-<area shape="poly" id="edge20_Node000005_Node000020" title=" " alt="" coords="2014,460,2097,451,2183,435,2225,420,2227,425,2185,440,2098,456,2014,465"/>
-<area shape="rect" id="Node000021" title=" " alt="" coords="2732,447,2900,487"/>
-<area shape="poly" id="edge21_Node000001_Node000021" title=" " alt="" coords="2913,451,3005,435,3067,419,3068,425,3006,440,2914,456"/>
-<area shape="rect" id="Node000022" title=" " alt="" coords="2386,454,2579,479"/>
-<area shape="poly" id="edge22_Node000021_Node000022" title=" " alt="" coords="2593,464,2732,464,2732,469,2593,469"/>
+<area shape="poly" id="edge20_Node000005_Node000020" title=" " alt="" coords="2013,456,2184,435,2258,419,2259,424,2184,440,2014,461"/>
+<area shape="rect" id="Node000021" href="$classIMeshIdQuery.html" title=" " alt="" coords="2921,447,3033,473"/>
+<area shape="poly" id="edge21_Node000001_Node000021" title=" " alt="" coords="3047,458,3178,451,3226,443,3226,449,3179,456,3047,463"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="2881,497,3073,537"/>
+<area shape="poly" id="edge22_Node000001_Node000022" title=" " alt="" coords="3086,505,3133,497,3178,485,3225,466,3264,444,3266,448,3227,470,3180,491,3134,503,3087,511"/>
+<area shape="rect" id="Node000023" href="$structEdgeSelectorHighlight_1_1SelectedEdge.html" title="选中的一条边：端点对用于高亮，edge_id 记录稳定局部边 id" alt="" coords="2549,497,2715,537"/>
+<area shape="poly" id="edge23_Node000022_Node000023" title=" " alt="" coords="2729,515,2881,515,2881,520,2729,520"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="2208,505,2401,530"/>
+<area shape="poly" id="edge24_Node000023_Node000024" title=" " alt="" coords="2416,515,2548,515,2548,520,2416,520"/>
 </map>

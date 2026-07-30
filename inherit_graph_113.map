@@ -1,3 +1,11 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structsystems_1_1algo_1_1AlgorithmInfo.html" title=" " alt="" coords="5,5,216,31"/>
+<area shape="rect" id="Node000000" href="$classSelectorHighlight.html" title=" " alt="" coords="5,80,140,105"/>
+<area shape="rect" id="Node000001" href="$classEdgeSelectorHighlight.html" title=" " alt="" coords="193,5,359,31"/>
+<area shape="poly" id="edge41_Node000000_Node000001" title=" " alt="" coords="111,72,187,39,223,28,225,33,189,45,113,77"/>
+<area shape="rect" id="Node000002" href="$classFaceSelectorHighlight.html" title=" " alt="" coords="195,55,357,80"/>
+<area shape="poly" id="edge42_Node000000_Node000002" title=" " alt="" coords="153,80,194,75,195,80,154,85"/>
+<area shape="rect" id="Node000003" href="$classSolidSelectorHighlight.html" title=" " alt="" coords="193,104,359,129"/>
+<area shape="poly" id="edge43_Node000000_Node000003" title=" " alt="" coords="154,100,193,104,192,109,153,105"/>
+<area shape="rect" id="Node000004" href="$classVertexSelectorHighlight.html" title=" " alt="" coords="188,153,364,179"/>
+<area shape="poly" id="edge44_Node000000_Node000004" title=" " alt="" coords="115,109,189,138,228,151,227,156,187,143,113,113"/>
 </map>

@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/test/TestMeshAdjacency.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li><li class="navelem"><a href="dir_a2500666a617fcb70f7565c3cb90ec66.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestMeshAdjacency.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="MeshAdjacency_8h_source.html">MeshAdjacency.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshData_8h_source.html">MeshData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshIDMap_8h_source.html">MeshIDMap.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestMeshAdjacency_8cpp__incl.png" border="0" usemap="#amodel_2data_2test_2TestMeshAdjacency_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2test_2TestMeshAdjacency_8cpp" id="amodel_2data_2test_2TestMeshAdjacency_8cpp">
+<area shape="rect" title=" " alt="" coords="518,5,709,45"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="193,93,327,119"/>
+<area shape="poly" title=" " alt="" coords="529,48,325,93,324,88,528,43"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="499,93,599,119"/>
+<area shape="poly" title=" " alt="" coords="600,47,570,84,566,81,596,44"/>
+<area shape="rect" href="MeshIDMap_8h.html" title=" " alt="" coords="666,93,777,119"/>
+<area shape="poly" title=" " alt="" coords="641,43,695,83,692,87,638,48"/>
+<area shape="rect" title=" " alt="" coords="801,93,1020,119"/>
+<area shape="poly" title=" " alt="" coords="685,43,855,87,854,92,684,48"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="496,167,560,192"/>
+<area shape="poly" title=" " alt="" coords="304,116,483,163,482,169,302,121"/>
+<area shape="rect" title=" " alt="" coords="316,240,372,265"/>
+<area shape="poly" title=" " alt="" coords="218,121,185,134,155,150,145,159,139,169,138,179,143,190,168,208,210,222,303,242,302,248,208,227,166,212,139,194,133,180,134,167,141,156,152,146,182,129,216,116"/>
+<area shape="rect" title=" " alt="" coords="397,240,459,265"/>
+<area shape="poly" title=" " alt="" coords="239,121,216,135,195,153,184,172,184,181,189,190,208,211,228,223,249,230,271,232,321,232,383,237,383,243,321,237,270,237,248,235,226,228,205,215,184,194,179,182,179,171,191,150,213,131,236,117"/>
+<area shape="rect" title=" " alt="" coords="5,167,72,192"/>
+<area shape="poly" title=" " alt="" coords="225,121,86,166,84,161,224,116"/>
+<area shape="rect" title=" " alt="" coords="347,167,421,192"/>
+<area shape="poly" title=" " alt="" coords="281,116,353,157,351,162,279,121"/>
+<area shape="rect" title=" " alt="" coords="198,167,322,192"/>
+<area shape="poly" title=" " alt="" coords="263,119,263,153,257,153,257,119"/>
+<area shape="poly" title=" " alt="" coords="499,195,386,238,384,233,497,190"/>
+<area shape="rect" title=" " alt="" coords="484,240,535,265"/>
+<area shape="poly" title=" " alt="" coords="527,193,518,228,513,226,522,192"/>
+<area shape="rect" title=" " alt="" coords="559,240,636,265"/>
+<area shape="poly" title=" " alt="" coords="541,190,579,228,575,232,538,194"/>
+<area shape="rect" title=" " alt="" coords="660,240,719,265"/>
+<area shape="poly" title=" " alt="" coords="555,190,652,232,649,237,553,194"/>
+<area shape="poly" title=" " alt="" coords="513,194,457,234,454,230,510,190"/>
+<area shape="poly" title=" " alt="" coords="548,120,538,154,533,153,543,118"/>
+<area shape="poly" title=" " alt="" coords="536,121,435,194,375,235,372,230,432,190,533,117"/>
+<area shape="poly" title=" " alt="" coords="557,118,575,166,593,226,588,227,569,168,552,120"/>
+<area shape="poly" title=" " alt="" coords="563,117,671,228,667,232,559,121"/>
+<area shape="poly" title=" " alt="" coords="524,121,425,164,422,159,522,116"/>
+<area shape="poly" title=" " alt="" coords="503,121,321,166,319,161,502,116"/>
+<area shape="rect" title=" " alt="" coords="685,167,800,192"/>
+<area shape="poly" title=" " alt="" coords="581,116,699,159,698,164,579,121"/>
+<area shape="poly" title=" " alt="" coords="691,121,573,164,571,159,689,116"/>
+<area shape="poly" title=" " alt="" coords="751,116,780,131,805,149,820,170,820,182,814,194,789,212,753,223,709,231,660,235,559,238,473,243,473,238,559,232,660,229,708,225,752,218,786,207,810,190,815,181,815,172,802,152,777,135,749,121"/>
+<area shape="poly" title=" " alt="" coords="727,118,738,153,733,154,722,120"/>
+<area shape="rect" title=" " alt="" coords="875,167,935,192"/>
+<area shape="poly" title=" " alt="" coords="752,116,863,159,861,164,750,121"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a962bdca6b4a283aac624366395cabedc" id="r_a962bdca6b4a283aac624366395cabedc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a962bdca6b4a283aac624366395cabedc">TEST_CASE</a> (&quot;MeshAdjacency findEdgeByEndpoints resolves standalone edges&quot;)</td></tr>
+<tr class="memitem:a22404d21dd0a57fe1f191d3433c48e99" id="r_a22404d21dd0a57fe1f191d3433c48e99"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22404d21dd0a57fe1f191d3433c48e99">TEST_CASE</a> (&quot;MeshAdjacency findEdgeByEndpoints misses unknown pairs&quot;)</td></tr>
+<tr class="memitem:ac5f9ac272cd0d049909567da32b42889" id="r_ac5f9ac272cd0d049909567da32b42889"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5f9ac272cd0d049909567da32b42889">TEST_CASE</a> (&quot;MeshAdjacency rebuilds after invalidate&quot;)</td></tr>
+<tr class="memitem:a9696edd32e4bb98e5bc27a0a6cf620ce" id="r_a9696edd32e4bb98e5bc27a0a6cf620ce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9696edd32e4bb98e5bc27a0a6cf620ce">TEST_CASE</a> (&quot;MeshAdjacency handles empty and malformed edge data&quot;)</td></tr>
+<tr class="memitem:a253e9d1bca2ecdaeace937da16af8a6b" id="r_a253e9d1bca2ecdaeace937da16af8a6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a253e9d1bca2ecdaeace937da16af8a6b">TEST_CASE</a> (&quot;MeshAdjacency indexes face edges and merges shared edges&quot;)</td></tr>
+<tr class="memitem:ac0e868aba5630a1387cdfa392e28850b" id="r_ac0e868aba5630a1387cdfa392e28850b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0e868aba5630a1387cdfa392e28850b">TEST_CASE</a> (&quot;MeshAdjacency merges coincident face edge into materialized edge row&quot;)</td></tr>
+<tr class="memitem:aa537592d63e6296e1e53582a207e0895" id="r_aa537592d63e6296e1e53582a207e0895"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa537592d63e6296e1e53582a207e0895">TEST_CASE</a> (&quot;MeshAdjacency collapses duplicated edge cells, first cell wins&quot;)</td></tr>
+<tr class="memitem:a304750903c2b3bba58e6ae67326df6ff" id="r_a304750903c2b3bba58e6ae67326df6ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a304750903c2b3bba58e6ae67326df6ff">TEST_CASE</a> (&quot;MeshAdjacency stable <a class="el" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a> survive topology edits&quot;)</td></tr>
+<tr class="memitem:ae7d505434a84bc0a956b42acdd03a9ff" id="r_ae7d505434a84bc0a956b42acdd03a9ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7d505434a84bc0a956b42acdd03a9ff">TEST_CASE</a> (&quot;MeshAdjacency assigns and releases global edge ids&quot;)</td></tr>
+<tr class="memitem:a4c03a430f65cc91bb36512ff62a18566" id="r_a4c03a430f65cc91bb36512ff62a18566"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c03a430f65cc91bb36512ff62a18566">TEST_CASE</a> (&quot;MeshAdjacency edge handles expire after rebuild&quot;)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="ae7d505434a84bc0a956b42acdd03a9ff" name="ae7d505434a84bc0a956b42acdd03a9ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7d505434a84bc0a956b42acdd03a9ff">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency assigns and releases global edge ids&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa537592d63e6296e1e53582a207e0895" name="aa537592d63e6296e1e53582a207e0895"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa537592d63e6296e1e53582a207e0895">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency collapses duplicated edge</td>          <td class="paramname"><span class="paramname"><em>cells</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">first cell wins&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4c03a430f65cc91bb36512ff62a18566" name="a4c03a430f65cc91bb36512ff62a18566"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c03a430f65cc91bb36512ff62a18566">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency edge handles expire after rebuild&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a22404d21dd0a57fe1f191d3433c48e99" name="a22404d21dd0a57fe1f191d3433c48e99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22404d21dd0a57fe1f191d3433c48e99">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency findEdgeByEndpoints misses unknown pairs&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a962bdca6b4a283aac624366395cabedc" name="a962bdca6b4a283aac624366395cabedc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a962bdca6b4a283aac624366395cabedc">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency findEdgeByEndpoints resolves standalone edges&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9696edd32e4bb98e5bc27a0a6cf620ce" name="a9696edd32e4bb98e5bc27a0a6cf620ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9696edd32e4bb98e5bc27a0a6cf620ce">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency handles empty and malformed edge data&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a253e9d1bca2ecdaeace937da16af8a6b" name="a253e9d1bca2ecdaeace937da16af8a6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a253e9d1bca2ecdaeace937da16af8a6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency indexes face edges and merges shared edges&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac0e868aba5630a1387cdfa392e28850b" name="ac0e868aba5630a1387cdfa392e28850b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0e868aba5630a1387cdfa392e28850b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency merges coincident face edge into materialized edge row&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac5f9ac272cd0d049909567da32b42889" name="ac5f9ac272cd0d049909567da32b42889"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5f9ac272cd0d049909567da32b42889">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency rebuilds after invalidate&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a304750903c2b3bba58e6ae67326df6ff" name="a304750903c2b3bba58e6ae67326df6ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a304750903c2b3bba58e6ae67326df6ff">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency stable <a class="el" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a> survive topology edits&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

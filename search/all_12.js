@@ -34,7 +34,7 @@ var searchData=
   ['registerplugin_31',['registerPlugin',['../classsystems_1_1QSystemPluginManager.html#a8ef1c1a58b7ac7a686605d73d3bb3d90',1,'systems::QSystemPluginManager::registerPlugin()'],['../classsystems_1_1algo_1_1AlgorithmSystemRegister.html#a420ab8d48a59f9b78f00f8900d8a8827',1,'systems::algo::AlgorithmSystemRegister::registerPlugin()'],['../classsystems_1_1SystemRegisterBase.html#a537af28be223a0289d919e3f62b2bc1b',1,'systems::SystemRegisterBase::registerPlugin()'],['../classsystems_1_1edit_1_1EditSystemRegister.html#ac66493259cf96e97107d529581d2b21e',1,'systems::edit::EditSystemRegister::registerPlugin()'],['../classsystems_1_1feature_1_1FeatureSystemRegister.html#a25793eae674a0a941550857970156900',1,'systems::feature::FeatureSystemRegister::registerPlugin()'],['../classsystems_1_1io_1_1ModelIOSystemRegister.html#ad34c3a88a762f93f0c68d57c253ebd0f',1,'systems::io::ModelIOSystemRegister::registerPlugin()'],['../classsystems_1_1SystemPluginManager.html#ac4c814ad11821c12603f6407545e8d5b',1,'systems::SystemPluginManager::registerPlugin()']]],
   ['registerprops_32',['registerProps',['../classGeometryActorManagerSelectOp.html#a65377d76b5c6713f050b5191f16067c8',1,'GeometryActorManagerSelectOp::registerProps()'],['../classMeshActorManagerSelectOp.html#a8fb1b11c3f39cfa6677d0d50e5660be0',1,'MeshActorManagerSelectOp::registerProps()']]],
   ['release_33',['release',['../structGeometrySubshapeIndex.html#af0ea8267b30f007d24b84468cba33a2b',1,'GeometrySubshapeIndex']]],
-  ['releaseedgeidmap_34',['releaseEdgeIdMap',['../structMeshData.html#a8a6af82f56fd8c61b73f1580590118ac',1,'MeshData']]],
+  ['releaseedgeglobalids_34',['releaseEdgeGlobalIds',['../classMeshAdjacency.html#ad772f20bb0bb25ec122c2ce3929ced12',1,'MeshAdjacency']]],
   ['remove_35',['remove',['../classMeshIDMap.html#afbbc1277e33960652cb27143c7dadfe7',1,'MeshIDMap']]],
   ['remove_5ffrom_5fgroups_5fwith_5ferasures_5flist_36',['remove_from_groups_with_erasures_list',['../classplf_1_1colony.html#ac64c3e8ac66e59e70c22ddc50bb29144',1,'plf::colony']]],
   ['removecomponent_37',['removeComponent',['../classQModelManager.html#a28531612c8be376236f30d0906fe09cc',1,'QModelManager::removeComponent()'],['../classModelLayer.html#aa3741c81ab533d0c98001c81a0f4064f',1,'ModelLayer::removeComponent()']]],
@@ -81,5 +81,9 @@ var searchData=
   ['roughness_5ftexname_78',['roughness_texname',['../structtinyobj_1_1material__t.html#a7d7a7791ad94f2a5eadc2c8ee8c9a902',1,'tinyobj::material_t']]],
   ['roughness_5ftexopt_79',['roughness_texopt',['../structtinyobj_1_1material__t.html#aa02a56f4de95ab212e19a5d77b1f2d91',1,'tinyobj::material_t']]],
   ['routekeyevent_80',['routeKeyEvent',['../classsystems_1_1feature_1_1FeatureSystem.html#a5f09d2fbafef0d92ec53329594f17b80',1,'systems::feature::FeatureSystem']]],
-  ['rowcount_81',['rowCount',['../classTreeModel.html#a6aa892d5029263b35e5b1438b7e18bef',1,'TreeModel']]]
+  ['row_5f_81',['row_',['../classEdgeHandle.html#a745941792832f5c4b1a2013790bc2e78',1,'EdgeHandle']]],
+  ['row_5fby_5fendpoints_5f_82',['row_by_endpoints_',['../classMeshAdjacency.html#ad1228a59a7c69530b20d66194670f04d',1,'MeshAdjacency']]],
+  ['row_5fby_5fstable_5fid_5f_83',['row_by_stable_id_',['../classMeshAdjacency.html#a8e5ae81289c9df675db79fe1edaea941',1,'MeshAdjacency']]],
+  ['rowcount_84',['rowCount',['../classTreeModel.html#a6aa892d5029263b35e5b1438b7e18bef',1,'TreeModel']]],
+  ['rows_5f_85',['rows_',['../classMeshAdjacency.html#afe65254353785dc4a0ef9d561e1252e9',1,'MeshAdjacency']]]
 ];

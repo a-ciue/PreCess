@@ -16,11 +16,13 @@ var searchData=
   ['interactioncontext_13',['InteractionContext',['../classsystems_1_1feature_1_1InteractionContext.html#ae2efdb890f9ea3a95ce9a914367bdef2',1,'systems::feature::InteractionContext']]],
   ['interactionservice_14',['InteractionService',['../classInteractionService.html#a583cdb1ce749b39ab7835ccaf553ef7e',1,'InteractionService']]],
   ['interactive_15',['interactive',['../classQFeatureInfo.html#abebaf54e7c1b827bb34ee5852c162a16',1,'QFeatureInfo']]],
-  ['invoke_16',['invoke',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#af847c5b57910dc89a5632e8992e976e3',1,'systems::feature::QFeatureSystemAdaptor::invoke()'],['../classsystems_1_1feature_1_1FeatureSystem.html#ad20ab57c00cd78afbcd5397e2190668b',1,'systems::feature::FeatureSystem::invoke()']]],
-  ['is_5factive_17',['is_active',['../classplf_1_1colony.html#a78b96ad09b8e85ab862d398961f9e331',1,'plf::colony']]],
-  ['is_5fedge_18',['is_edge',['../classMeshLib_1_1CToolVertex.html#a12c467af869c8c5caf60c73b507957a5',1,'MeshLib::CToolVertex']]],
-  ['is_5fin_5fsame_5fface_19',['is_in_same_face',['../classMeshLib_1_1CToolHalfEdge.html#ad88d5e9bafd89fab59a12a6c6ace7a58',1,'MeshLib::CToolHalfEdge']]],
-  ['isboundary_20',['isBoundary',['../classMeshLib_1_1CBaseMesh.html#a74e917019ff789ac7e4e402de81cbe94',1,'MeshLib::CBaseMesh::isBoundary(tVertex v)'],['../classMeshLib_1_1CBaseMesh.html#a9cd94b0e1dd28c2aecce5c15975e0bd8',1,'MeshLib::CBaseMesh::isBoundary(tEdge e)'],['../classMeshLib_1_1CBaseMesh.html#a8d60d481e391e80b3ef710811fe83352',1,'MeshLib::CBaseMesh::isBoundary(tHalfEdge he)']]],
-  ['isvisible_21',['isVisible',['../classGeometryActor.html#a759354bf71834f77ef7b454503da7b89',1,'GeometryActor::isVisible()'],['../classGeometryActorSelectOp.html#a265e3b2255dac5ef6b2052373d3952b6',1,'GeometryActorSelectOp::isVisible()'],['../classMeshActor.html#ab282e66574859c8e77ed021be2903cfa',1,'MeshActor::isVisible()'],['../classMeshActorSelectOp.html#aa8b745bea4e35603b91fbaa658c0d0b1',1,'MeshActorSelectOp::isVisible()']]],
-  ['item_5findex_5ftuple_22',['item_index_tuple',['../structplf_1_1colony_1_1item__index__tuple.html#a15ee31f5d6287424c5942e337f4104b2',1,'plf::colony::item_index_tuple']]]
+  ['invalidate_16',['invalidate',['../classMeshAdjacency.html#a096c68e2ba945edea2fa361ce279c20e',1,'MeshAdjacency']]],
+  ['invoke_17',['invoke',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#af847c5b57910dc89a5632e8992e976e3',1,'systems::feature::QFeatureSystemAdaptor::invoke()'],['../classsystems_1_1feature_1_1FeatureSystem.html#ad20ab57c00cd78afbcd5397e2190668b',1,'systems::feature::FeatureSystem::invoke()']]],
+  ['is_5factive_18',['is_active',['../classplf_1_1colony.html#a78b96ad09b8e85ab862d398961f9e331',1,'plf::colony']]],
+  ['is_5fedge_19',['is_edge',['../classMeshLib_1_1CToolVertex.html#a12c467af869c8c5caf60c73b507957a5',1,'MeshLib::CToolVertex']]],
+  ['is_5fin_5fsame_5fface_20',['is_in_same_face',['../classMeshLib_1_1CToolHalfEdge.html#ad88d5e9bafd89fab59a12a6c6ace7a58',1,'MeshLib::CToolHalfEdge']]],
+  ['isboundary_21',['isBoundary',['../classMeshLib_1_1CBaseMesh.html#a74e917019ff789ac7e4e402de81cbe94',1,'MeshLib::CBaseMesh::isBoundary(tVertex v)'],['../classMeshLib_1_1CBaseMesh.html#a9cd94b0e1dd28c2aecce5c15975e0bd8',1,'MeshLib::CBaseMesh::isBoundary(tEdge e)'],['../classMeshLib_1_1CBaseMesh.html#a8d60d481e391e80b3ef710811fe83352',1,'MeshLib::CBaseMesh::isBoundary(tHalfEdge he)']]],
+  ['iscurrent_22',['isCurrent',['../classMeshAdjacency.html#a0787dc08c047d67bfd37f6bcdd2a494a',1,'MeshAdjacency']]],
+  ['isvisible_23',['isVisible',['../classGeometryActor.html#a759354bf71834f77ef7b454503da7b89',1,'GeometryActor::isVisible()'],['../classGeometryActorSelectOp.html#a265e3b2255dac5ef6b2052373d3952b6',1,'GeometryActorSelectOp::isVisible()'],['../classMeshActor.html#ab282e66574859c8e77ed021be2903cfa',1,'MeshActor::isVisible()'],['../classMeshActorSelectOp.html#aa8b745bea4e35603b91fbaa658c0d0b1',1,'MeshActorSelectOp::isVisible()']]],
+  ['item_5findex_5ftuple_24',['item_index_tuple',['../structplf_1_1colony_1_1item__index__tuple.html#a15ee31f5d6287424c5942e337f4104b2',1,'plf::colony::item_index_tuple']]]
 ];

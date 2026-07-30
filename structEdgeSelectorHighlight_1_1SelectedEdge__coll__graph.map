@@ -1,0 +1,5 @@
+<map id="EdgeSelectorHighlight::SelectedEdge" name="EdgeSelectorHighlight::SelectedEdge">
+<area shape="rect" id="Node000001" title="选中的一条边：端点对用于高亮，edge_id 记录稳定局部边 id" alt="" coords="19,101,185,141"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,199,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,45,105,101,99,101,99,45"/>
+</map>
