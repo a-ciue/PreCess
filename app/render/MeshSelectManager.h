@@ -14,6 +14,7 @@ class vtkHardwarePicker;
 class vtkCompositePolyDataMapper;
 class vtkPartitionedDataSet;
 class MeshActorManagerSelectOp;
+class IMeshIdQuery;
 
 class MeshSelectManager {
 public:
@@ -28,6 +29,7 @@ public:
      */
     void setFaceSelectionByAngle(bool enabled, double angle_deg);
     void clearSelection();
+    void setMeshIdQuery(const IMeshIdQuery* id_query);
     std::unique_ptr<Selection> getSelection();
     void setHighlightVisible(bool visible);
     void setHighlightVisible(Index component_id, bool visible);
@@ -37,6 +39,7 @@ private:
     void applyHighlightStyle(SelectMode mode);
 
     MeshActorManagerSelectOp* op_;
+    const IMeshIdQuery* id_query_ {};
     SelectMode select_mode_ { SelectMode::None };
     vtkRenderer* renderer_ { };
     vtkSmartPointer<vtkHardwarePicker> component_picker_;

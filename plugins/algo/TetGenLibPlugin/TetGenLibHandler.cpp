@@ -163,7 +163,7 @@ bool replaceComponentMesh(ComponentOperator& comp, std::unique_ptr<MeshData> mes
     }
 
     if (component->mesh) {
-        component->mesh->releaseEdgeIdMap(mgr.edgeIdMap());
+        component->mesh_adjacency.releaseEdgeGlobalIds(mgr.edgeIdMap());
     }
 
     const Index base = mgr.appendGlobalPoints(mesh->vertex_positions_);
@@ -174,7 +174,7 @@ bool replaceComponentMesh(ComponentOperator& comp, std::unique_ptr<MeshData> mes
     }
     mesh->makePointIdsGlobal();
     std::vector<std::array<double, 3>> {}.swap(mesh->vertex_positions_);
-    mesh->ensureEdgeIdMapBuilt(mgr.edgeIdMap(), component_id);
+    component->mesh_adjacency.ensureEdgeGlobalIds(mgr.edgeIdMap(), component_id, *mesh);
 
     component->mesh = std::move(mesh);
     comp.notifyChanged();

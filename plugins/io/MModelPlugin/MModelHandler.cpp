@@ -103,8 +103,6 @@ static std::unique_ptr<MeshData> buildLocalMeshForExport(const ModelLayer& mgr, 
     out->edge_attributes_ = src.edge_attributes_;
     out->solid_attributes_ = src.solid_attributes_;
 
-    out->local_to_global_edge_id.clear();
-
     return out;
 }
 

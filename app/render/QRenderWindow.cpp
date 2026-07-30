@@ -12,6 +12,7 @@
 #include "Selection.h"
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
+#include "MeshIdQuery.h"
 
 #include <spdlog/spdlog.h>
 #include <vtkDoubleArray.h>
@@ -123,6 +124,25 @@ private:
     double last_frac_ = -1.0; //> 上次写入的段长（归一化视口宽度，初始必触发一次）
     double last_range_ = -1.0; //> 上次写入的刻度值（初始必触发一次）
 };
+
+//! @brief IMeshIdQuery 到 QModelQuery 的桥接适配器，使 vtkPart 无需感知 Qt/QML 类型
+class QModelIdQueryAdapter : public IMeshIdQuery {
+public:
+    explicit QModelIdQueryAdapter(QModelQuery* query) noexcept
+        : query_(query)
+    {
+    }
+
+    std::optional<Index> findEdgeByEndpoints(Index component_id, Index p0, Index p1) const override
+    {
+        if (!query_)
+            return std::nullopt;
+        return query_->findEdgeByEndpoints(component_id, p0, p1);
+    }
+
+private:
+    QModelQuery* query_ {};
+};
 }
 
 QRenderWindow::QRenderWindow()
@@ -190,6 +210,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
     select_manager_ = std::make_unique<SelectManager>(*vtk->renderer_,
         vtk->mesh_actor_manager_->op(), vtk->geometry_actor_manager_->op());
+    if (mesh_id_query_)
+        select_manager_->setMeshIdQuery(mesh_id_query_.get());
     vtk->style_->SetSelectManager(this->select_manager_.get());
 
     // 通用交互服务：几何顶点吸附经选择系统封装接口完成，不接触 picker
@@ -507,6 +529,9 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
 {
     assert(query != nullptr);
     model_query_ = query;
+    mesh_id_query_ = std::make_unique<QModelIdQueryAdapter>(query);
+    if (select_manager_)
+        select_manager_->setMeshIdQuery(mesh_id_query_.get());
 }
 
 void QRenderWindow::setSelectComponent(Index component_id)

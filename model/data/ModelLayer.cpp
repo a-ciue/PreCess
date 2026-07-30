@@ -60,7 +60,7 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
             }
             md.makePointIdsGlobal();
             std::vector<std::array<double, 3>> {}.swap(md.vertex_positions_);
-            md.ensureEdgeIdMapBuilt(edge_id_map_, cid);
+            cp->mesh_adjacency.ensureEdgeGlobalIds(edge_id_map_, cid, md);
         }
     }
 
@@ -102,7 +102,7 @@ void ModelLayer::removeComponent(Index component_id)
 
     if (ComponentData* c = findComponent(component_id)) {
         if (c->mesh) {
-            c->mesh->releaseEdgeIdMap(edge_id_map_);
+            c->mesh_adjacency.releaseEdgeGlobalIds(edge_id_map_);
         }
         if (c->geometry) {
             c->geometry->index.release(geom_registry_);

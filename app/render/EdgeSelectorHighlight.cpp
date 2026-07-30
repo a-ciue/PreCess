@@ -1,6 +1,7 @@
 #include "CoincidentTopology.h"
 #include "MeshActor.h"
 #include "MeshActorSelectOp.h"
+#include "MeshIdQuery.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
 #include <optional>
@@ -49,11 +50,14 @@ bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::
 }
 
 EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
-    unsigned int partition_id, MeshActorSelectOp select_op)
+    unsigned int partition_id, MeshActorSelectOp select_op,
+    Index component_id, const IMeshIdQuery* id_query)
     : renderer_(&renderer)
     , select_op_(std::move(select_op))
     , highlight_data_(&highlight_data)
     , partition_id_(partition_id)
+    , component_id_(component_id)
+    , id_query_(id_query)
 {
     highlight_data_->SetPartition(partition_id_, selections_poly_);
 }
@@ -79,7 +83,14 @@ void EdgeSelectorHighlight::enableHighlight()
 {
     if (selections_.empty())
         return;
-    auto edge_poly_data = select_op_.extractEdge(selections_);
+
+    // 高亮仍按端点对画线
+    std::vector<std::array<vtkIdType, 2>> highlight_edges;
+    highlight_edges.reserve(selections_.size());
+    for (const auto& e : selections_)
+        highlight_edges.push_back(e.endpoints);
+
+    auto edge_poly_data = select_op_.extractEdge(highlight_edges);
     selections_poly_->ShallowCopy(edge_poly_data);
     highlight_data_->Modified();
 }
@@ -89,9 +100,15 @@ SelectionVtk EdgeSelectorHighlight::get()
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Edge;
 
+    // 稳定 id 语义：回传稳定局部边 id（跨拓扑编辑有效）；
+    // id 查询缺失（防御路径）时回退为两个端点 id 顺次排列。
     for (const auto& edge : selections_) {
-        back_selection.ids.push_back(edge[0]);
-        back_selection.ids.push_back(edge[1]);
+        if (edge.edge_id >= 0) {
+            back_selection.ids.push_back(edge.edge_id);
+        } else {
+            back_selection.ids.push_back(static_cast<Index>(edge.endpoints[0]));
+            back_selection.ids.push_back(static_cast<Index>(edge.endpoints[1]));
+        }
     }
 
     return back_selection;
@@ -126,16 +143,25 @@ void EdgeSelectorHighlight::select(double posx, double posy)
     // 边端点的原始id
     std::array<vtkIdType, 2> original_id = _find_selected_edge(*picker, *picked_cell, *picked_poly);
 
-    // 检查是否已选中
+    // 经模型层统一边表解析稳定局部边 id；id 查询缺失（防御路径）时记 -1 按端点对兜底
+    Index edge_id = -1;
+    if (id_query_) {
+        auto resolved = id_query_->findEdgeByEndpoints(component_id_,
+            static_cast<Index>(original_id[0]), static_cast<Index>(original_id[1]));
+        if (resolved)
+            edge_id = *resolved;
+    }
+
+    // 检查是否已选中（端点对在交换意义下相同即为同一条边）
     auto it = std::find_if(selections_.begin(), selections_.end(),
-        [&](const std::array<vtkIdType, 2>& id) {
-            return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(id));
+        [&](const SelectedEdge& e) {
+            return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(e.endpoints));
         });
 
     if (it != selections_.end()) { // 已选中，取消选中
         selections_.erase(it);
     } else { // 未选中，添加
-        selections_.push_back(original_id);
+        selections_.push_back({ original_id, edge_id });
     }
 
     enableHighlight();

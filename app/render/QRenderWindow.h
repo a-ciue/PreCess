@@ -33,6 +33,7 @@ class GeometryActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
+class IMeshIdQuery;
 namespace systems::feature {
 class QFeatureSystemAdaptor;
 }
@@ -206,6 +207,8 @@ private:
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
+
+    std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
 
     void updateGlobalVtkPointsImpl(Data* vtk);
     //! @brief 注入渲染刷新回调到 FeatureSystem（initializeVTK 与 setFeatureAdaptor 各调一次，确保初始化顺序无关）

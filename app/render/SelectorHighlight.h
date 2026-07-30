@@ -25,6 +25,8 @@ class vtkPartitionedDataSet;
 class vtkExtractSelection;
 class vtkGeometryFilter;
 class vtkPolyData;
+class vtkCompositePolyDataMapper;
+class IMeshIdQuery;
 
 using SelectionVtk = Selection;
 
@@ -106,7 +108,8 @@ public:
     static void setupHighlightStyle(vtkActor& actor, vtkMapper& mapper);
 
     EdgeSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
-        unsigned int partition_id, MeshActorSelectOp select_op);
+        unsigned int partition_id, MeshActorSelectOp select_op,
+        Index component_id, const IMeshIdQuery* id_query);
     ~EdgeSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
@@ -115,11 +118,19 @@ public:
     SelectionVtk get() override;
 
 private:
+    //! @brief 选中的一条边：端点对用于高亮，edge_id 记录稳定局部边 id
+    struct SelectedEdge {
+        std::array<vtkIdType, 2> endpoints; //> 全局点 id（高亮按端点对画线）
+        Index edge_id { -1 }; //> 稳定局部边 id；id 查询缺失时为 -1
+    };
+
     vtkRenderer* renderer_;
     MeshActorSelectOp select_op_;
     vtkPartitionedDataSet* highlight_data_;
     unsigned int partition_id_;
-    std::vector<std::array<vtkIdType, 2>> selections_;
+    Index component_id_ { -1 };
+    const IMeshIdQuery* id_query_ {};
+    std::vector<SelectedEdge> selections_;
     vtkNew<vtkPolyData> selections_poly_;
 };
 
