@@ -97,10 +97,10 @@ public:
     SelectionVtk get() override;
 
 private:
-    //! @brief 选中的一条边：端点对用于高亮，edge_id 记录统一边表行号
+    //! @brief 选中的一条边：端点对用于高亮，edge_id 记录稳定局部边 id
     struct SelectedEdge {
         std::array<vtkIdType, 2> endpoints; //> 全局点 id（高亮按端点对画线）
-        Index edge_id { -1 }; //> 边表行号（component 局部边 id）；id 查询缺失时为 -1
+        Index edge_id { -1 }; //> 稳定局部边 id；id 查询缺失时为 -1
     };
 
     vtkRenderer* renderer_;

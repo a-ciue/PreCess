@@ -55,11 +55,11 @@ public :
     std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
     /**
-     * @brief 按两端点反查组件网格的边表行号
+     * @brief 按两端点反查组件网格边的稳定局部 id
      * @param component_id 组件 ID
      * @param p0 边端点 id（与 MeshData 连通性同一键空间，当前为全局点 id）
      * @param p1 边另一端点 id（与 p0 无序）
-     * @return 命中返回边表行号（统一边 id 的 component 局部形式，物化边与面边同表）；
+     * @return 命中返回稳定局部边 id（跨拓扑编辑有效，物化边与面边同表）；
      *         未命中、无网格或数据异常返回 std::nullopt
      */
     std::optional<Index> findEdgeByEndpoints(Index component_id, Index p0, Index p1);

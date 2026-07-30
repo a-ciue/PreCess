@@ -1,5 +1,6 @@
 #include "MeshAdjacency.h"
 #include "MeshData.h"
+#include "MeshIDMap.h"
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -124,4 +125,85 @@ TEST_CASE("MeshAdjacency collapses duplicated edge cells, first cell wins")
     const auto row = adj.findEdgeByEndpoints(mesh, 0, 1);
     REQUIRE(row.has_value());
     REQUIRE(adj.edgeCellIndex(mesh, *row) == 0);
+}
+
+TEST_CASE("MeshAdjacency stable ids survive topology edits")
+{
+    // 两个三角形面共享边 (0,2)，另有独立物化边 (4,5)
+    MeshData mesh;
+    mesh.edge_vertices_ = { 4, 5 };
+    mesh.face_vertices_ = { 0, 1, 2, 0, 2, 3 };
+    mesh.face_vertices_offset_ = { 0, 3, 6 };
+
+    MeshAdjacency adj;
+
+    const auto sid_standalone = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 4, 5).value());
+    const auto sid_shared = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 0, 2).value());
+    const auto sid_f01 = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 0, 1).value());
+    const auto sid_dead = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 2, 3).value());
+    REQUIRE(sid_standalone.has_value());
+    REQUIRE(sid_shared.has_value());
+    REQUIRE(sid_f01.has_value());
+    REQUIRE(sid_dead.has_value());
+
+    // 拓扑编辑：删除第二个面（(2,3) 随之消亡），新增一条物化边 (6,7)
+    mesh.face_vertices_ = { 0, 1, 2 };
+    mesh.face_vertices_offset_ = { 0, 3 };
+    mesh.edge_vertices_ = { 4, 5, 6, 7 };
+    adj.invalidate();
+
+    // 存活的边：稳定 id 不变，且可经稳定 id 反查当轮行号
+    REQUIRE(adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 2, 0).value()) == sid_shared);
+    REQUIRE(adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 4, 5).value()) == sid_standalone);
+    REQUIRE(adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 0, 1).value()) == sid_f01);
+    REQUIRE(adj.findEdgeRowByStableId(mesh, *sid_shared).has_value());
+
+    // 消亡的边：稳定 id 反查不到行
+    REQUIRE_FALSE(adj.findEdgeRowByStableId(mesh, *sid_dead).has_value());
+
+    // 新增边获得全新稳定 id（不复用旧值）
+    const auto sid_new = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 6, 7).value());
+    REQUIRE(sid_new.has_value());
+    REQUIRE(*sid_new != *sid_standalone);
+    REQUIRE(*sid_new != *sid_shared);
+    REQUIRE(*sid_new != *sid_f01);
+    REQUIRE(*sid_new != *sid_dead);
+}
+
+TEST_CASE("MeshAdjacency assigns and releases global edge ids")
+{
+    MeshIDMap map;
+    const Index component_id = 7;
+
+    MeshData mesh;
+    mesh.edge_vertices_ = { 0, 1 };
+    mesh.face_vertices_ = { 0, 1, 2 };
+    mesh.face_vertices_offset_ = { 0, 3 };
+
+    MeshAdjacency adj;
+
+    // 分配前查询为空
+    const Index sid0 = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 0, 1).value()).value();
+    REQUIRE_FALSE(adj.edgeGlobalId(mesh, sid0).has_value());
+
+    // 分配：物化边与纯面边都有 gid，且全局映射回指 (component, sid)
+    adj.ensureEdgeGlobalIds(map, component_id, mesh);
+    REQUIRE(map.size() == 3);
+    REQUIRE(map.freeSize() == 0);
+    for (Index sid = 0; sid < 3; ++sid) {
+        auto gid = adj.edgeGlobalId(mesh, sid);
+        REQUIRE(gid.has_value());
+        auto [cid, lid] = map.getLocal(*gid);
+        REQUIRE(cid == component_id);
+        REQUIRE(lid == sid);
+    }
+
+    // 幂等：再次分配不新增 gid
+    adj.ensureEdgeGlobalIds(map, component_id, mesh);
+    REQUIRE(map.size() == 3);
+
+    // 释放：全部 gid 入复用池，持久层重置（sid 重新从 0 起）
+    adj.releaseEdgeGlobalIds(map);
+    REQUIRE(map.freeSize() == 3);
+    REQUIRE(adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 0, 1).value()).value() == 0);
 }

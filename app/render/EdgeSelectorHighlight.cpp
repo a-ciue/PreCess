@@ -79,8 +79,8 @@ SelectionVtk EdgeSelectorHighlight::get()
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Edge;
 
-    // 统一边表语义：回传边表行号（component 局部边 id）；
-    // id 查询缺失（防御路径）时回退为两个端点 id 顺次排列。后续接稳定边 id。
+    // 稳定 id 语义：回传稳定局部边 id（跨拓扑编辑有效）；
+    // id 查询缺失（防御路径）时回退为两个端点 id 顺次排列。
     for (const auto& edge : selections_) {
         if (edge.edge_id >= 0) {
             back_selection.ids.push_back(edge.edge_id);
@@ -122,7 +122,7 @@ void EdgeSelectorHighlight::select(double posx, double posy)
     // 边端点的原始id
     std::array<vtkIdType, 2> original_id = _find_selected_edge(*picker, *picked_cell, *picked_poly);
 
-    // 经模型层统一边表解析边表行号；id 查询缺失（防御路径）时记 -1 按端点对兜底
+    // 经模型层统一边表解析稳定局部边 id；id 查询缺失（防御路径）时记 -1 按端点对兜底
     Index edge_id = -1;
     if (id_query_) {
         auto resolved = id_query_->findEdgeByEndpoints(component_id_,

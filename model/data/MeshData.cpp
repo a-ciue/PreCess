@@ -2,7 +2,6 @@
 // Created by 徐昊阳 on 5/20/25.
 //
 #include "MeshData.h"
-#include "MeshIDMap.h"
 #include <spdlog/spdlog.h>
 
 void MeshData::clear()
@@ -13,7 +12,6 @@ void MeshData::clear()
     face_vertices_.clear();
     face_vertices_offset_.clear();
     edge_vertices_.clear();
-    local_to_global_edge_id.clear();
     solid_types_.clear();
     solid_vertices_.clear();
     solid_vertices_offset_.clear();
@@ -77,31 +75,4 @@ void MeshData::makePointIdsGlobal()
     shift(face_vertices_);
     shift(solid_vertices_);
     shift(solid_faces_vertices_);
-}
-
-void MeshData::ensureEdgeIdMapBuilt(MeshIDMap& map, Index component_id)
-{
-    if (edge_vertices_.size() % 2 != 0) {
-        spdlog::error("MeshData::ensureEdgeIdMapBuilt: edge_vertices_ size is odd, component_id={}", component_id);
-        return;
-    }
-
-    const Index nEdges = static_cast<Index>(edge_vertices_.size() / 2);
-    local_to_global_edge_id.resize(nEdges, -1);
-
-    for (Index local_eid = 0; local_eid < nEdges; ++local_eid) {
-        Index& gid = local_to_global_edge_id[local_eid];
-        if (gid < 0) {
-            gid = map.insert(component_id, local_eid);
-        }
-    }
-}
-
-void MeshData::releaseEdgeIdMap(MeshIDMap& map)
-{
-    for (Index gid : local_to_global_edge_id) {
-        if (gid >= 0)
-            map.remove(gid);
-    }
-    local_to_global_edge_id.clear();
 }

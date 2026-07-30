@@ -1,6 +1,7 @@
 #include "MeshAdjacency.h"
 
 #include "MeshData.h"
+#include "MeshIDMap.h"
 
 #include <spdlog/spdlog.h>
 
@@ -36,6 +37,39 @@ Index MeshAdjacency::edgeCellIndex(const MeshData& mesh, Index edge_row)
     return rows_[edge_row].cell_index;
 }
 
+std::optional<Index> MeshAdjacency::edgeStableId(const MeshData& mesh, Index edge_row)
+{
+    ensureBuilt(mesh);
+
+    if (edge_row < 0 || edge_row >= static_cast<Index>(rows_.size()))
+        return std::nullopt;
+    return rows_[edge_row].stable_id;
+}
+
+std::optional<Index> MeshAdjacency::findEdgeRowByStableId(const MeshData& mesh, Index stable_id)
+{
+    ensureBuilt(mesh);
+
+    if (stable_id < 0 || stable_id >= static_cast<Index>(row_by_stable_id_.size()))
+        return std::nullopt;
+    const Index row = row_by_stable_id_[stable_id];
+    if (row < 0) // 该边在当前拓扑中已消亡
+        return std::nullopt;
+    return row;
+}
+
+std::optional<Index> MeshAdjacency::edgeGlobalId(const MeshData& mesh, Index stable_id)
+{
+    ensureBuilt(mesh);
+
+    if (stable_id < 0 || stable_id >= static_cast<Index>(gid_by_stable_id_.size()))
+        return std::nullopt;
+    const Index gid = gid_by_stable_id_[stable_id];
+    if (gid < 0) // 尚未经 ensureEdgeGlobalIds 分配
+        return std::nullopt;
+    return gid;
+}
+
 const std::vector<Index>& MeshAdjacency::faceEdgeRows(const MeshData& mesh)
 {
     ensureBuilt(mesh);
@@ -46,6 +80,28 @@ Index MeshAdjacency::edgeCount(const MeshData& mesh)
 {
     ensureBuilt(mesh);
     return static_cast<Index>(rows_.size());
+}
+
+void MeshAdjacency::ensureEdgeGlobalIds(MeshIDMap& map, Index component_id, const MeshData& mesh)
+{
+    ensureBuilt(mesh);
+
+    // 幂等补缺：只为尚未分配的稳定 id 申请 gid
+    for (Index sid = 0; sid < static_cast<Index>(gid_by_stable_id_.size()); ++sid) {
+        if (gid_by_stable_id_[sid] < 0)
+            gid_by_stable_id_[sid] = map.insert(component_id, sid);
+    }
+}
+
+void MeshAdjacency::releaseEdgeGlobalIds(MeshIDMap& map)
+{
+    for (Index gid : gid_by_stable_id_) {
+        if (gid >= 0)
+            map.remove(gid);
+    }
+    gid_by_stable_id_.clear();
+    stable_id_by_endpoints_.clear();
+    invalidate();
 }
 
 void MeshAdjacency::invalidate() noexcept
@@ -64,13 +120,26 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
     built_mesh_ = &mesh;
     dirty_ = false;
 
-    // 端点对归并建行：已存在则复用行号，否则开新行。返回行号。
+    // 端点对归并建行：持久稳定 id + 当轮行号。返回行号。
     auto resolve_row = [&](Index p0, Index p1) -> Index {
-        auto [it, inserted] = row_by_endpoints_.try_emplace(packEndpoints(p0, p1),
-            static_cast<Index>(rows_.size()));
+        const std::uint64_t key = packEndpoints(p0, p1);
+
+        // 持久身份：首次见到的端点对单调分配稳定 id（不复用、不回收，见文件头说明）
+        Index sid;
+        if (auto sid_it = stable_id_by_endpoints_.find(key); sid_it != stable_id_by_endpoints_.end()) {
+            sid = sid_it->second;
+        } else {
+            sid = static_cast<Index>(gid_by_stable_id_.size());
+            stable_id_by_endpoints_.emplace(key, sid);
+            gid_by_stable_id_.push_back(-1);
+        }
+
+        // 当轮边表行
+        auto [it, inserted] = row_by_endpoints_.try_emplace(key, static_cast<Index>(rows_.size()));
         if (inserted) {
             EdgeRow row;
             row.endpoints = { p0 < p1 ? p0 : p1, p0 < p1 ? p1 : p0 };
+            row.stable_id = sid;
             rows_.push_back(row);
         }
         return it->second;
@@ -79,7 +148,7 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
     // 源一：边数组（物化边）。先灌入以保 cell 顺序，重复边合并到先见行
     const auto& edge_vertices = mesh.edge_vertices_;
     if (edge_vertices.size() % 2 != 0) {
-        // 异常数据跳过该源，与 MeshData::ensureEdgeIdMapBuilt 的错误口径一致
+        // 异常数据跳过该源（按无有效边处理）
         spdlog::error("MeshAdjacency::ensureBuilt: edge_vertices_ size is odd ({})", edge_vertices.size());
     } else {
         const Index cell_count = static_cast<Index>(edge_vertices.size() / 2);
@@ -103,24 +172,30 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
     // 源二：面单元的边（含与物化边重合者，经 resolve_row 自动归并）
     const auto& face_vertices = mesh.face_vertices_;
     const auto& offsets = mesh.face_vertices_offset_;
-    if (offsets.size() < 2)
-        return; // 无面单元
-
-    face_edge_rows_.assign(face_vertices.size(), -1);
-    const Index face_count = static_cast<Index>(offsets.size() - 1);
-    for (Index f = 0; f < face_count; ++f) {
-        const Index begin = offsets[f];
-        const Index n = offsets[f + 1] - begin;
-        if (n < 2) // 无法成边的退化面
-            continue;
-
-        // 面顶点环绕展开边：(v0,v1), (v1,v2), ..., (v_{n-1},v0)
-        for (Index j = 0; j < n; ++j) {
-            const Index p0 = face_vertices[begin + j];
-            const Index p1 = face_vertices[begin + (j + 1) % n];
-            if (p0 < 0 || p1 < 0)
+    if (offsets.size() < 2) {
+        // 无面单元，仍要回填 row_by_stable_id_
+    } else {
+        face_edge_rows_.assign(face_vertices.size(), -1);
+        const Index face_count = static_cast<Index>(offsets.size() - 1);
+        for (Index f = 0; f < face_count; ++f) {
+            const Index begin = offsets[f];
+            const Index n = offsets[f + 1] - begin;
+            if (n < 2) // 无法成边的退化面
                 continue;
-            face_edge_rows_[begin + j] = resolve_row(p0, p1);
+
+            // 面顶点环绕展开边：(v0,v1), (v1,v2), ..., (v_{n-1},v0)
+            for (Index j = 0; j < n; ++j) {
+                const Index p0 = face_vertices[begin + j];
+                const Index p1 = face_vertices[begin + (j + 1) % n];
+                if (p0 < 0 || p1 < 0)
+                    continue;
+                face_edge_rows_[begin + j] = resolve_row(p0, p1);
+            }
         }
     }
+
+    // 回填稳定 id -> 行号（消亡边留 -1 空洞）
+    row_by_stable_id_.assign(gid_by_stable_id_.size(), -1);
+    for (Index r = 0; r < static_cast<Index>(rows_.size()); ++r)
+        row_by_stable_id_[rows_[r].stable_id] = r;
 }

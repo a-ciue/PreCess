@@ -8,7 +8,7 @@
 class MeshIDMap {
 public:
     using ComponentID = Index;
-    using LocalID = Index; // localEdgeId
+    using LocalID = Index; // 稳定局部 id（如稳定局部边 id，非数组下标）
     using GlobalID = Index; // globalEdgeId
 
     static constexpr ComponentID kInvalidComponent = -1;

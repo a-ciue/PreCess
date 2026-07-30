@@ -151,7 +151,12 @@ std::optional<Index> QModelQuery::findEdgeByEndpoints(Index component_id, Index 
     if (!comp || !comp->mesh)
         return std::nullopt;
 
-    return comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, p0, p1);
+    auto& adjacency = comp->mesh_adjacency;
+    auto row = adjacency.findEdgeByEndpoints(*comp->mesh, p0, p1);
+    if (!row)
+        return std::nullopt;
+    // 行号随拓扑重建重排，对外统一给稳定局部边 id
+    return adjacency.edgeStableId(*comp->mesh, *row);
 }
 
 const std::vector<std::array<double, 3>>& QModelQuery::globalPoints() const

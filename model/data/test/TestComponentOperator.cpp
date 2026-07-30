@@ -56,15 +56,23 @@ TEST_CASE("Edge global id map is built for true 1D edges", "[MeshIDMap][MeshData
 
     auto& md = *comp->mesh;
     REQUIRE(md.edge_vertices_.size() == 4);
-    REQUIRE(md.local_to_global_edge_id.size() == 2);
 
-    for (Index local_eid = 0; local_eid < (Index)md.local_to_global_edge_id.size(); ++local_eid) {
-        Index gid = md.local_to_global_edge_id[local_eid];
-        REQUIRE(gid >= 0);
+    // 两条边经统一边表获得稳定 id 与全局 id，全局映射回指 (component, sid)
+    auto& adj = comp->mesh_adjacency;
+    for (Index cell = 0; cell < 2; ++cell) {
+        const Index p0 = md.edge_vertices_[2 * cell];
+        const Index p1 = md.edge_vertices_[2 * cell + 1];
 
-        auto [cid, lid] = mgr.edgeIdMap().getLocal(gid);
+        auto row = adj.findEdgeByEndpoints(md, p0, p1);
+        REQUIRE(row.has_value());
+        auto sid = adj.edgeStableId(md, *row);
+        REQUIRE(sid.has_value());
+        auto gid = adj.edgeGlobalId(md, *sid);
+        REQUIRE(gid.has_value());
+
+        auto [cid, lid] = mgr.edgeIdMap().getLocal(*gid);
         REQUIRE(cid == component_id);
-        REQUIRE(lid == local_eid);
+        REQUIRE(lid == *sid);
     }
 
     // 删除 component 后回收 gid
@@ -118,18 +126,28 @@ TEST_CASE("materializeEdge appends edge cell and assigns global edge id", "[Comp
     auto row = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, g0, g1);
     REQUIRE(row.has_value());
     REQUIRE(comp->mesh_adjacency.edgeCellIndex(*comp->mesh, *row) == -1);
+    const auto sid = comp->mesh_adjacency.edgeStableId(*comp->mesh, *row);
+    REQUIRE(sid.has_value());
 
-    // 物化：写入 edge_vertices_ 并分配全局边 id
+    // 物化：写入 edge_vertices_
     const Index cell = op->materializeEdge(g0, g1);
     REQUIRE(cell == 0);
     REQUIRE(comp->mesh->edge_vertices_.size() == 2);
-    REQUIRE(comp->mesh->local_to_global_edge_id.size() == 1);
-    REQUIRE(comp->mesh->local_to_global_edge_id[0] >= 0);
 
-    // 物化后邻接索引已失效重建，同一行携上 cell 序号
+    // 物化后邻接索引已失效重建，同一行携上 cell 序号，稳定 id 保持不变
     row = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, g0, g1);
     REQUIRE(row.has_value());
     REQUIRE(comp->mesh_adjacency.edgeCellIndex(*comp->mesh, *row) == 0);
+    REQUIRE(comp->mesh_adjacency.edgeStableId(*comp->mesh, *row) == sid);
+
+    // 稳定 id 的全局映射回指 (component, sid)
+    const auto gid = comp->mesh_adjacency.edgeGlobalId(*comp->mesh, *sid);
+    REQUIRE(gid.has_value());
+    {
+        auto [cid, lid] = mgr.edgeIdMap().getLocal(*gid);
+        REQUIRE(cid == component_id);
+        REQUIRE(lid == *sid);
+    }
 
     // 幂等：再次物化返回同一 cell，不重复追加
     REQUIRE(op->materializeEdge(g1, g0) == 0);

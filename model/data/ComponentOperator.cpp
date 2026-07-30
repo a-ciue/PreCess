@@ -62,7 +62,7 @@ Index ComponentOperator::materializeEdge(Index p0, Index p1)
     mesh_data->edge_vertices_.push_back(p1);
 
     // 同步分配全局边 id
-    mesh_data->ensureEdgeIdMapBuilt(mgr_->edgeIdMap(), component_id_);
+    component_->mesh_adjacency.ensureEdgeGlobalIds(mgr_->edgeIdMap(), component_id_, *mesh_data);
 
     // 失效邻接索引并通知观察者
     notifyChanged();
