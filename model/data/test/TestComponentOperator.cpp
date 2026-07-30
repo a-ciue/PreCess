@@ -63,9 +63,9 @@ TEST_CASE("Edge global id map is built for true 1D edges", "[MeshIDMap][MeshData
         const Index p0 = md.edge_vertices_[2 * cell];
         const Index p1 = md.edge_vertices_[2 * cell + 1];
 
-        auto row = adj.findEdgeByEndpoints(md, p0, p1);
-        REQUIRE(row.has_value());
-        auto sid = adj.edgeStableId(md, *row);
+        auto edge = adj.findEdgeByEndpoints(md, p0, p1);
+        REQUIRE(edge.has_value());
+        auto sid = adj.edgeStableId(md, *edge);
         REQUIRE(sid.has_value());
         auto gid = adj.edgeGlobalId(md, *sid);
         REQUIRE(gid.has_value());
@@ -122,11 +122,11 @@ TEST_CASE("materializeEdge appends edge cell and assigns global edge id", "[Comp
     auto op = mgr.getComponentOperator(component_id);
     REQUIRE(op.has_value());
 
-    // 物化前：面边在统一边表中可查行号，但 cell 序号为 -1
-    auto row = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, g0, g1);
-    REQUIRE(row.has_value());
-    REQUIRE(comp->mesh_adjacency.edgeCellIndex(*comp->mesh, *row) == -1);
-    const auto sid = comp->mesh_adjacency.edgeStableId(*comp->mesh, *row);
+    // 物化前：面边在统一边表中可查，但 cell 序号为 -1
+    auto edge = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, g0, g1);
+    REQUIRE(edge.has_value());
+    REQUIRE(comp->mesh_adjacency.edgeCellIndex(*comp->mesh, *edge) == -1);
+    const auto sid = comp->mesh_adjacency.edgeStableId(*comp->mesh, *edge);
     REQUIRE(sid.has_value());
 
     // 物化：写入 edge_vertices_
@@ -134,11 +134,11 @@ TEST_CASE("materializeEdge appends edge cell and assigns global edge id", "[Comp
     REQUIRE(cell == 0);
     REQUIRE(comp->mesh->edge_vertices_.size() == 2);
 
-    // 物化后邻接索引已失效重建，同一行携上 cell 序号，稳定 id 保持不变
-    row = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, g0, g1);
-    REQUIRE(row.has_value());
-    REQUIRE(comp->mesh_adjacency.edgeCellIndex(*comp->mesh, *row) == 0);
-    REQUIRE(comp->mesh_adjacency.edgeStableId(*comp->mesh, *row) == sid);
+    // 物化后邻接索引已失效重建，重新签发句柄：携上 cell 序号，稳定 id 保持不变
+    edge = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, g0, g1);
+    REQUIRE(edge.has_value());
+    REQUIRE(comp->mesh_adjacency.edgeCellIndex(*comp->mesh, *edge) == 0);
+    REQUIRE(comp->mesh_adjacency.edgeStableId(*comp->mesh, *edge) == sid);
 
     // 稳定 id 的全局映射回指 (component, sid)
     const auto gid = comp->mesh_adjacency.edgeGlobalId(*comp->mesh, *sid);

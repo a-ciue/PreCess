@@ -51,8 +51,8 @@ Index ComponentOperator::materializeEdge(Index p0, Index p1)
         throw std::invalid_argument("ComponentOperator::materializeEdge: invalid endpoints");
 
     // 已物化则幂等返回既有 cell 序号
-    if (auto row = component_->mesh_adjacency.findEdgeByEndpoints(*mesh_data, p0, p1)) {
-        const Index cell = component_->mesh_adjacency.edgeCellIndex(*mesh_data, *row);
+    if (auto edge = component_->mesh_adjacency.findEdgeByEndpoints(*mesh_data, p0, p1)) {
+        const Index cell = component_->mesh_adjacency.edgeCellIndex(*mesh_data, *edge);
         if (cell >= 0)
             return cell;
     }

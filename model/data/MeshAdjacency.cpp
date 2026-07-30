@@ -15,47 +15,13 @@ std::uint64_t packEndpoints(Index p0, Index p1)
 }
 }
 
-std::optional<Index> MeshAdjacency::findEdgeByEndpoints(const MeshData& mesh, Index p0, Index p1)
-{
-    if (p0 < 0 || p1 < 0)
-        return std::nullopt;
-
-    ensureBuilt(mesh);
-
-    auto it = row_by_endpoints_.find(packEndpoints(p0, p1));
-    if (it == row_by_endpoints_.end())
-        return std::nullopt;
-    return it->second;
-}
-
-Index MeshAdjacency::edgeCellIndex(const MeshData& mesh, Index edge_row)
+std::optional<Index> MeshAdjacency::edgeStableId(const MeshData& mesh, EdgeHandle edge)
 {
     ensureBuilt(mesh);
 
-    if (edge_row < 0 || edge_row >= static_cast<Index>(rows_.size()))
-        return -1;
-    return rows_[edge_row].cell_index;
-}
-
-std::optional<Index> MeshAdjacency::edgeStableId(const MeshData& mesh, Index edge_row)
-{
-    ensureBuilt(mesh);
-
-    if (edge_row < 0 || edge_row >= static_cast<Index>(rows_.size()))
+    if (!isCurrent(edge))
         return std::nullopt;
-    return rows_[edge_row].stable_id;
-}
-
-std::optional<Index> MeshAdjacency::findEdgeRowByStableId(const MeshData& mesh, Index stable_id)
-{
-    ensureBuilt(mesh);
-
-    if (stable_id < 0 || stable_id >= static_cast<Index>(row_by_stable_id_.size()))
-        return std::nullopt;
-    const Index row = row_by_stable_id_[stable_id];
-    if (row < 0) // 该边在当前拓扑中已消亡
-        return std::nullopt;
-    return row;
+    return rows_[edge.row_].stable_id;
 }
 
 std::optional<Index> MeshAdjacency::edgeGlobalId(const MeshData& mesh, Index stable_id)
@@ -70,10 +36,44 @@ std::optional<Index> MeshAdjacency::edgeGlobalId(const MeshData& mesh, Index sta
     return gid;
 }
 
-const std::vector<Index>& MeshAdjacency::faceEdgeRows(const MeshData& mesh)
+const std::vector<Index>& MeshAdjacency::faceEdgeStableIds(const MeshData& mesh)
 {
     ensureBuilt(mesh);
-    return face_edge_rows_;
+    return face_edge_stable_ids_;
+}
+
+std::optional<EdgeHandle> MeshAdjacency::findEdgeByEndpoints(const MeshData& mesh, Index p0, Index p1)
+{
+    if (p0 < 0 || p1 < 0)
+        return std::nullopt;
+
+    ensureBuilt(mesh);
+
+    auto it = row_by_endpoints_.find(packEndpoints(p0, p1));
+    if (it == row_by_endpoints_.end())
+        return std::nullopt;
+    return EdgeHandle(it->second, generation_);
+}
+
+std::optional<EdgeHandle> MeshAdjacency::findEdgeByStableId(const MeshData& mesh, Index stable_id)
+{
+    ensureBuilt(mesh);
+
+    if (stable_id < 0 || stable_id >= static_cast<Index>(row_by_stable_id_.size()))
+        return std::nullopt;
+    const Index row = row_by_stable_id_[stable_id];
+    if (row < 0) // 该边在当前拓扑中已消亡
+        return std::nullopt;
+    return EdgeHandle(row, generation_);
+}
+
+Index MeshAdjacency::edgeCellIndex(const MeshData& mesh, EdgeHandle edge)
+{
+    ensureBuilt(mesh);
+
+    if (!isCurrent(edge))
+        return -1;
+    return rows_[edge.row_].cell_index;
 }
 
 Index MeshAdjacency::edgeCount(const MeshData& mesh)
@@ -109,6 +109,12 @@ void MeshAdjacency::invalidate() noexcept
     dirty_ = true;
 }
 
+bool MeshAdjacency::isCurrent(EdgeHandle edge) const noexcept
+{
+    return edge.row_ >= 0 && edge.generation_ == generation_
+        && edge.row_ < static_cast<Index>(rows_.size());
+}
+
 void MeshAdjacency::ensureBuilt(const MeshData& mesh)
 {
     if (!dirty_ && built_mesh_ == &mesh)
@@ -116,7 +122,7 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
 
     rows_.clear();
     row_by_endpoints_.clear();
-    face_edge_rows_.clear();
+    face_edge_stable_ids_.clear();
     built_mesh_ = &mesh;
     dirty_ = false;
 
@@ -172,10 +178,8 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
     // 源二：面单元的边（含与物化边重合者，经 resolve_row 自动归并）
     const auto& face_vertices = mesh.face_vertices_;
     const auto& offsets = mesh.face_vertices_offset_;
-    if (offsets.size() < 2) {
-        // 无面单元，仍要回填 row_by_stable_id_
-    } else {
-        face_edge_rows_.assign(face_vertices.size(), -1);
+    if (offsets.size() >= 2) {
+        face_edge_stable_ids_.assign(face_vertices.size(), -1);
         const Index face_count = static_cast<Index>(offsets.size() - 1);
         for (Index f = 0; f < face_count; ++f) {
             const Index begin = offsets[f];
@@ -189,7 +193,8 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
                 const Index p1 = face_vertices[begin + (j + 1) % n];
                 if (p0 < 0 || p1 < 0)
                     continue;
-                face_edge_rows_[begin + j] = resolve_row(p0, p1);
+                const Index row_id = resolve_row(p0, p1);
+                face_edge_stable_ids_[begin + j] = rows_[row_id].stable_id;
             }
         }
     }
@@ -198,4 +203,7 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
     row_by_stable_id_.assign(gid_by_stable_id_.size(), -1);
     for (Index r = 0; r < static_cast<Index>(rows_.size()); ++r)
         row_by_stable_id_[rows_[r].stable_id] = r;
+
+    // 世代递增：此前签发的句柄全部失效
+    ++generation_;
 }
