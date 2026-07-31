@@ -13,7 +13,9 @@
 #include <utility>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
+#include <vtkCellData.h>
 #include <vtkHardwarePicker.h>
+#include <vtkIdTypeArray.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -213,8 +215,20 @@ SelectionVtk FaceSelectorHighlight::get()
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Face;
 
+    // 经 face polydata 的面索引数组换算模型面 id：
+    // 不裁剪时数组为恒等（索引即面 id）；裁剪开启时 cell 重排，数组随裁剪链透传仍指向原模型面。
+    auto* face_actor = vtkActor::SafeDownCast(&select_op_.getFaceActor());
+    auto* mapper = face_actor ? vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper()) : nullptr;
+    auto* poly = mapper ? mapper->GetInput() : nullptr;
+    auto* face_ids = poly
+        ? vtkIdTypeArray::SafeDownCast(poly->GetCellData()->GetArray("PrecessFaceIds"))
+        : nullptr;
+
     for (const auto& face : selections_) {
-        back_selection.ids.push_back(face);
+        if (face_ids && face >= 0 && face < face_ids->GetNumberOfTuples())
+            back_selection.ids.push_back(static_cast<Index>(face_ids->GetValue(face)));
+        else
+            back_selection.ids.push_back(static_cast<Index>(face)); // 数组缺失时按索引即 id 兜底
     }
 
     return back_selection;
