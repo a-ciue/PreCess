@@ -174,6 +174,19 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 
         face_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
 
+        // 面索引数组：不裁剪时索引即模型面 id；随裁剪链透传，裁剪开启时拾取仍能映射回模型面
+        vtkNew<vtkIdTypeArray> face_ids;
+        face_ids->SetNumberOfComponents(1);
+        face_ids->SetName("PrecessFaceIds");
+        face_ids->SetNumberOfTuples(face_poly->GetNumberOfCells());
+        vtkSMPTools::For(0, face_poly->GetNumberOfCells(),
+            [&](vtkIdType begin, vtkIdType end) {
+                for (vtkIdType id = begin; id < end; ++id) {
+                    face_ids->SetValue(id, id);
+                }
+            });
+        face_poly->GetCellData()->AddArray(face_ids);
+
         // 处理面属性
         addPointAttributes(*face_poly->GetPointData(), model_data.vertex_attributes_,
             global_points_->GetNumberOfPoints(), model_data.local_to_global_);
