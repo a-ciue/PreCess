@@ -18,6 +18,7 @@ class vtkHardwarePicker;
 class vtkBillboardTextActor3D;
 class MeshActorManagerSelectOp;
 class SelectManager;
+class IMeshIdQuery;
 
 namespace systems::interaction {
 struct InteractionState;
@@ -40,6 +41,9 @@ public:
 
     //! @brief 交互状态提供者（由 QRenderWindow 注入，转发 FeatureSystem::activeInteraction）
     std::function<systems::interaction::InteractionState*()> state_provider;
+
+    //! @brief 注入模型层 id 查询（局部点 id -> 全局点 id 换算，随 setModelQuery 桥接）
+    void setMeshIdQuery(const IMeshIdQuery* id_query) { id_query_ = id_query; }
 
     //! @brief 当前是否存在激活的交互（鼠标路由用）
     bool hasActiveState();
@@ -64,6 +68,7 @@ private:
     vtkRenderer* overlay_renderer_ {};
     MeshActorManagerSelectOp* mesh_op_ {};
     SelectManager* select_manager_ {};
+    const IMeshIdQuery* id_query_ {};
 
     systems::interaction::InteractionState* current_ {}; //> 当前已上线的交互状态
 

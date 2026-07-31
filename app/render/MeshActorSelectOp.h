@@ -54,14 +54,14 @@ public:
 
     /**
      * @brief 根据点id，提取点数据
-     * @param ids 点id数组
+     * @param ids 组件内局部点 id 数组（VTK 点索引；选择列表为活引用，数组内容更新后随管线重取生效）
      * @return 提取出的点数据 Filter
      */
     vtkSmartPointer<vtkExtractSelection> extractVertex(vtkIdTypeArray* ids);
 
     /**
      * @brief 根据边的点id对，提取边数据
-     * @param ids 每个元素表示一条边（起始点ID，结束点ID）
+     * @param ids 每个元素表示一条边（组件内局部点 id 对）
      * @return 提取出的边数据 Filter
      */
     vtkSmartPointer<vtkPolyData> extractEdge(std::vector<std::array<vtkIdType, 2>>& ids);

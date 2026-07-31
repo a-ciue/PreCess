@@ -7,6 +7,7 @@
 
 #include "CoincidentTopology.h"
 #include "MeshActorManagerSelectOp.h"
+#include "MeshIdQuery.h"
 #include "SelectManager.h"
 #include "InteractionState.h"
 
@@ -239,10 +240,14 @@ bool InteractionService::snapToPickInfo(double posx, double posy, PickInfo& out)
         double p[3];
         data_set->GetPoint(picked_point_id, p);
         out.world_pos = { p[0], p[1], p[2] };
-        // 取全局顶点 id 作为附加判据
+        // 取局部点 id（vtkOriginalPointIds），经 id 查询桥换算全局点 id 作为附加判据（跨层身份）
         if (auto ids = vtkIdTypeArray::SafeDownCast(
                 data_set->GetPointData()->GetArray("vtkOriginalPointIds"))) {
-            out.mesh_id = ids->GetValue(picked_point_id);
+            const Index local_id = static_cast<Index>(ids->GetValue(picked_point_id));
+            if (id_query_ && mesh_op_) {
+                if (auto component_id = mesh_op_->getComponentId(mesh_picker_->GetActor()))
+                    out.mesh_id = id_query_->pointGlobalId(*component_id, local_id);
+            }
         }
         out.valid = true;
         return true;

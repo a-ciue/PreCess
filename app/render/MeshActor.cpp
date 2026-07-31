@@ -139,18 +139,17 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         point_array->SetArray(const_cast<double*>(positions.front().data()), point_count * 3, 1);
     points_->SetData(point_array);
 
-    // 拾取标签：局部点 id -> 全局点 id（选择集跨层携带全局点 id），并建反向索引
-    const auto& point_gids = model_data.point_global_ids_;
+    // 拾取标签 vtkOriginalPointIds：存局部点 id，高亮提取直接作 VTK 点索引；
+    // 与提取过滤器自动生成的同名数组同语义（均为局部点下标），裁剪链上被覆盖也不影响取值
     original_point_ids_->SetName("vtkOriginalPointIds");
     original_point_ids_->SetNumberOfComponents(1);
     original_point_ids_->SetNumberOfTuples(point_count);
-    local_point_id_by_global_.clear();
-    for (vtkIdType i = 0; i < point_count; ++i) {
-        const Index gid = i < static_cast<vtkIdType>(point_gids.size()) ? point_gids[static_cast<size_t>(i)] : -1;
-        original_point_ids_->SetValue(i, gid);
-        if (gid >= 0)
-            local_point_id_by_global_[gid] = static_cast<Index>(i);
-    }
+    vtkSMPTools::For(0, point_count,
+        [&](vtkIdType begin, vtkIdType end) {
+            for (vtkIdType id = begin; id < end; ++id) {
+                original_point_ids_->SetValue(id, static_cast<Index>(id));
+            }
+        });
     original_point_ids_->Modified();
 
     // face data

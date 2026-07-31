@@ -11,6 +11,7 @@
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
 #include "GeometryRegistry.h"
+#include "MeshIdQuery.h"
 #include "SelectManager.h"
 #include "GeometrySubshapeIndex.h"
 #include "MeshActorManager.h"
@@ -102,6 +103,13 @@ private:
 
 vtkStandardNewMacro(PickInteractorStyle);
 
+//! @brief id 查询桩：测试数据 gid 为 iota 恒等，pointGlobalId 直通局部 id
+class StubMeshIdQuery : public IMeshIdQuery {
+public:
+    std::optional<Index> findEdgeByEndpoints(Index, Index, Index) const override { return std::nullopt; }
+    Index pointGlobalId(Index, Index local_point_id) const override { return local_point_id; }
+};
+
 int g_failures = 0;
 void check(bool cond, const std::string& name)
 {
@@ -123,8 +131,7 @@ void pickWorld(InteractionService& service, vtkRenderer* renderer, const std::ar
 int main(int argc, char* argv[])
 {
     MeshData mesh;
-    std::vector<Index> point_gids; //> 全局点 id（iota 恒等），须与 test_mesh_data 同生命周期
-    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh, point_gids);
+    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh);
 
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->SetBackground(0.2, 0.3, 0.4);
@@ -158,6 +165,8 @@ int main(int argc, char* argv[])
 
     FakeInteraction fake;
     InteractionService service(*renderer, *overlay_renderer, mesh_manager.op(), sel_mgr);
+    StubMeshIdQuery id_query;
+    service.setMeshIdQuery(&id_query);
 
     // 拾取列表在服务构造时登记观察，网格须在此之后加载才会进入拾取列表
     // （与应用一致：服务于 initializeVTK 创建，模型其后加载）

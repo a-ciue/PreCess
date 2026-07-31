@@ -47,11 +47,10 @@ int main(int argc, char* argv[])
     }
 
     MeshData mesh;
-    std::vector<Index> point_gids; //> 全局点 id（iota 恒等），须与 test_mesh_data 同生命周期
 
     MeshDataVtk test_mesh_data = inputFile.empty()
-        ? MakeMeshDataVtk(mesh, point_gids)
-        : MakeMeshDataVtkFromFile(inputFile, mesh, point_gids);
+        ? MakeMeshDataVtk(mesh)
+        : MakeMeshDataVtkFromFile(inputFile, mesh);
 
     vtkNew<vtkRenderer> renderer;
     renderer->SetBackground(0.15, 0.2, 0.3);

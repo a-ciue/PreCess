@@ -73,10 +73,8 @@ int main(int argc, char* argv[])
     // 使用 MakeMeshDataWithAtri() 创建带属性的 MeshData
     MeshData mesh = MakeMeshDataWithAtri();
     MeshData mesh2 = MakeMeshDataWithUV();
-    std::vector<Index> point_gids;  //> mesh 的全局点 id（iota 恒等），须与 test_mesh_data 同生命周期
-    std::vector<Index> point_gids2; //> mesh2 的全局点 id（iota 恒等），须与 test_mesh_data2 同生命周期
-    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh, point_gids);
-    MeshDataVtk test_mesh_data2 = MakeMeshDataVtk(mesh2, point_gids2);
+    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh);
+    MeshDataVtk test_mesh_data2 = MakeMeshDataVtk(mesh2);
 
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->SetBackground(0.2, 0.3, 0.4);

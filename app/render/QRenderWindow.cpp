@@ -140,6 +140,13 @@ public:
         return query_->findEdgeByEndpoints(component_id, p0, p1);
     }
 
+    Index pointGlobalId(Index component_id, Index local_point_id) const override
+    {
+        if (!query_)
+            return -1;
+        return query_->pointGlobalId(component_id, local_point_id);
+    }
+
 private:
     QModelQuery* query_ {};
 };
@@ -217,6 +224,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // 通用交互服务：几何顶点吸附经选择系统封装接口完成，不接触 picker
     interaction_service_ = std::make_unique<InteractionService>(*vtk->renderer_, *vtk->overlay_renderer_,
         vtk->mesh_actor_manager_->op(), *select_manager_);
+    if (mesh_id_query_)
+        interaction_service_->setMeshIdQuery(mesh_id_query_.get());
     vtk->style_->SetInteractionService(interaction_service_.get());
     // 交互状态由功能参数开关驱动（FeatureSystem::activeInteraction），渲染层随取随用
     interaction_service_->state_provider = [this]() -> systems::interaction::InteractionState* {
@@ -506,6 +515,8 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     mesh_id_query_ = std::make_unique<QModelIdQueryAdapter>(query);
     if (select_manager_)
         select_manager_->setMeshIdQuery(mesh_id_query_.get());
+    if (interaction_service_)
+        interaction_service_->setMeshIdQuery(mesh_id_query_.get());
 }
 
 void QRenderWindow::setSelectComponent(Index component_id)

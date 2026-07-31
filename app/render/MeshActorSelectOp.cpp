@@ -69,20 +69,10 @@ vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractSolid(vtkIdTypeAr
 
 vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractVertex(vtkIdTypeArray* ids)
 {
-    // 选择集携带全局点 id，换算为本 actor 的局部点 id（VTK 点索引）后再提取
-    vtkNew<vtkIdTypeArray> local_ids;
-    local_ids->SetNumberOfComponents(1);
-    const auto& reverse = mesh_actor_->local_point_id_by_global_;
-    for (vtkIdType i = 0; i < ids->GetNumberOfTuples(); ++i) {
-        auto it = reverse.find(static_cast<Index>(ids->GetValue(i)));
-        if (it != reverse.end())
-            local_ids->InsertNextValue(it->second);
-    }
-
     vtkNew<vtkSelectionNode> selectionNode;
     selectionNode->SetFieldType(vtkSelectionNode::POINT); // 从 points 中选取点
     selectionNode->SetContentType(vtkSelectionNode::INDICES);
-    selectionNode->SetSelectionList(local_ids);
+    selectionNode->SetSelectionList(ids);
 
     vtkNew<vtkSelection> selection;
     selection->SetNode("v", selectionNode);
@@ -110,14 +100,8 @@ vtkSmartPointer<vtkPolyData> MeshActorSelectOp::extractEdge(std::vector<std::arr
     // 添加选中的边
     vtkIdType numIds = ids.size();
     for (vtkIdType i = 0; i < numIds; i++) {
-        // 选择集携带全局点 id，换算为局部点 id 后从组件私有点集取坐标
-        const auto& reverse = mesh_actor_->local_point_id_by_global_;
-        auto it1 = reverse.find(static_cast<Index>(ids.at(i)[0]));
-        auto it2 = reverse.find(static_cast<Index>(ids.at(i)[1]));
-        if (it1 == reverse.end() || it2 == reverse.end())
-            continue;
-        vtkIdType ptId1 = it1->second;
-        vtkIdType ptId2 = it2->second;
+        vtkIdType ptId1 = ids.at(i)[0];
+        vtkIdType ptId2 = ids.at(i)[1];
 
         // 检查点ID是否有效
         if (ptId1 >= 0 && ptId1 < originalPoints->GetNumberOfPoints() && ptId2 >= 0 && ptId2 < originalPoints->GetNumberOfPoints()) {

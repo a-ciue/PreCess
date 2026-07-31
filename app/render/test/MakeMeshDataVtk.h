@@ -7,8 +7,7 @@
 #include <vector>
 
 // 生成内置演示用数据
-// point_gids 输出全局点 id（iota 恒等填充），由调用方持有并须活得与返回的 MeshDataVtk 一样久
-MeshDataVtk MakeMeshDataVtk(MeshData& data, std::vector<Index>& point_gids);
+MeshDataVtk MakeMeshDataVtk(MeshData& data);
 
 // 从外部 vtk/vtu/vtp 文件导入，并尽可能填充 MeshDataVtk
 // 当前实现：
@@ -18,8 +17,7 @@ MeshDataVtk MakeMeshDataVtk(MeshData& data, std::vector<Index>& point_gids);
 //  - face block 生成单一 block，包含全部面；若需要更复杂 block 划分，可在此函数外再修改 block_datas
 MeshDataVtk MakeMeshDataVtkFromFile(
     std::string_view file_path,
-    MeshData& data,
-    std::vector<Index>& point_gids
+    MeshData& data
 );
 
 #endif

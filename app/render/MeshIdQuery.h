@@ -18,10 +18,16 @@ public:
     /**
      * @brief 按两端点反查边的稳定局部 id
      * @param component_id 组件 ID
-     * @param p0 边端点 id（与 MeshData 连通性同一键空间，当前为全局点 id）
+     * @param p0 边端点 id（与 MeshData 连通性同一键空间，组件内局部点 id）
      * @param p1 边另一端点 id（与 p0 无序）
      * @return 命中返回稳定局部边 id（跨拓扑编辑有效）；未命中返回 std::nullopt
      */
     virtual std::optional<Index> findEdgeByEndpoints(Index component_id, Index p0, Index p1) const = 0;
+
+    /**
+     * @brief 组件内局部点 id -> 全局点 id（MeshIDMap gid，跨层身份）
+     * @return 命中返回全局点 id；组件不存在、局部点越界或未分配返回 -1
+     */
+    virtual Index pointGlobalId(Index component_id, Index local_point_id) const = 0;
 };
 #endif

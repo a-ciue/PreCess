@@ -26,7 +26,7 @@ std::array<vtkIdType, 2> _find_selected_edge(vtkHardwarePicker& picker, vtkCell&
     vtkNew<vtkIdList> cellIds;
     picked_cell.CellBoundary(0, pPos, cellIds);
 
-    // 边端点的原始id
+    // 边端点的局部点 id
     std::array<vtkIdType, 2> original_id;
     auto point_id_array = vtkIdTypeArray::SafeDownCast(pickedPoly.GetPointData()->GetArray("vtkOriginalPointIds"));
     assert(point_id_array);
@@ -101,13 +101,17 @@ SelectionVtk EdgeSelectorHighlight::get()
     back_selection.type = ElementEnum::Edge;
 
     // 稳定 id 语义：回传稳定局部边 id（跨拓扑编辑有效）；
-    // id 查询缺失（防御路径）时回退为两个端点 id 顺次排列。
+    // id 查询缺失（防御路径）时回退为两个端点 id 顺次排列，端点在出口经 id 查询桥统一换算全局点 id。
     for (const auto& edge : selections_) {
         if (edge.edge_id >= 0) {
             back_selection.ids.push_back(edge.edge_id);
         } else {
-            back_selection.ids.push_back(static_cast<Index>(edge.endpoints[0]));
-            back_selection.ids.push_back(static_cast<Index>(edge.endpoints[1]));
+            const Index gid0 = id_query_ ? id_query_->pointGlobalId(component_id_, static_cast<Index>(edge.endpoints[0])) : -1;
+            const Index gid1 = id_query_ ? id_query_->pointGlobalId(component_id_, static_cast<Index>(edge.endpoints[1])) : -1;
+            if (gid0 >= 0 && gid1 >= 0) {
+                back_selection.ids.push_back(gid0);
+                back_selection.ids.push_back(gid1);
+            }
         }
     }
 

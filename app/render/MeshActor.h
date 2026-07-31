@@ -114,8 +114,10 @@ private:
     // 组件私有点集：坐标随 loadModelData 从 MeshData::vertex_positions_ 同步，
     // 连通性数组直接以组件内局部点 id 作 VTK 点索引。
     vtkNew<vtkPoints> points_;
-    vtkNew<vtkIdTypeArray> original_point_ids_; //> 拾取标签：局部点 id -> 全局点 id
-    std::unordered_map<Index, Index> local_point_id_by_global_; //> 全局点 id -> 局部点 id 反查（选择集携带全局 id）
+    //> 拾取标签 vtkOriginalPointIds：存局部点 id，高亮提取直接作 VTK 点索引；
+    //> 与提取过滤器自动生成的同名数组同语义（均为局部点下标），无需担心覆盖。
+    //> 全局点 id 不随数据集散发，跨层身份在出口（get()/PickInfo）经 id 查询桥统一换算。
+    vtkNew<vtkIdTypeArray> original_point_ids_;
 
     static void _createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data);
 };
