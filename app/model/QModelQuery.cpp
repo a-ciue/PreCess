@@ -73,14 +73,13 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
         return {};
     MeshData* md = comp->mesh.get();
 
-    // 构造 ModelData
-    MeshDataVtk model_data { 
+    MeshDataVtk model_data {
         md->solid_types_, md->solid_vertices_, md->solid_vertices_offset_,
         md->solid_faces_vertices_, md->solid_faces_vertices_offset_,
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
         md->edge_vertices_,
-        md->local_to_global_,
+        md->vertex_positions_, comp->point_global_ids_,
         md->vertex_attributes_,md->edge_attributes_,md->face_attributes_,md->solid_attributes_,{},-1 };
 
     // 添加所有块
@@ -118,7 +117,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
         md->edge_vertices_,
-        md->local_to_global_,
+        md->vertex_positions_, comp->point_global_ids_,
         md->vertex_attributes_,
         md->edge_attributes_,
         md->face_attributes_,
@@ -151,17 +150,24 @@ std::optional<Index> QModelQuery::findEdgeByEndpoints(Index component_id, Index 
     if (!comp || !comp->mesh)
         return std::nullopt;
 
+    // 入参为全局点 id（拾取链携带），换算为组件内局部点 id 后查邻接索引
+    auto to_local = [&](Index gid) -> std::optional<Index> {
+        auto [cid, local] = m_manager->pointIdMap().getLocal(gid);
+        if (cid != component_id || local < 0)
+            return std::nullopt;
+        return local;
+    };
+    const auto l0 = to_local(p0);
+    const auto l1 = to_local(p1);
+    if (!l0 || !l1)
+        return std::nullopt;
+
     auto& adjacency = comp->mesh_adjacency;
-    auto edge = adjacency.findEdgeByEndpoints(*comp->mesh, p0, p1);
+    auto edge = adjacency.findEdgeByEndpoints(*comp->mesh, *l0, *l1);
     if (!edge)
         return std::nullopt;
     // 句柄仅供当轮中转，对外统一给稳定局部边 id
     return adjacency.edgeStableId(*comp->mesh, *edge);
-}
-
-const std::vector<std::array<double, 3>>& QModelQuery::globalPoints() const
-{
-    return m_manager->globalPoints();
 }
 
 std::vector<GeometryDataVtk> QModelQuery::getGeometryVtkData(Index model_id)
@@ -225,8 +231,8 @@ QVariantList QModelQuery::getGeometryEdgeMappedPointIds(Index component_id, int 
     if (!comp->mapping)
         return out;
 
-    auto it = comp->mapping->geometry_edge_to_mesh_point_gids.find(*gidOpt);
-    if (it == comp->mapping->geometry_edge_to_mesh_point_gids.end())
+    auto it = comp->mapping->geometry_edge_to_mesh_point_ids.find(*gidOpt);
+    if (it == comp->mapping->geometry_edge_to_mesh_point_ids.end())
         return out;
 
     for (Index pid : it->second)

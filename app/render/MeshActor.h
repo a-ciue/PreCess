@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "renderStrategy/IAttributeRenderStrategy.h"
 #include <optional>
+#include <unordered_map>
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkExtractEdges.h>
@@ -38,9 +39,7 @@ public:
     static vtkNew<vtkMinimalStandardRandomSequence> randomSequence;
     static vtkNew<vtkNamedColors> colors;
 
-    MeshActor(
-        vtkRenderer* renderer,
-        vtkPoints* global_points);
+    explicit MeshActor(vtkRenderer* renderer);
     ~MeshActor();
 
     void loadModelData(const MeshDataVtk& model_data);
@@ -72,8 +71,6 @@ public:
     void renderAttribute(
         const std::string& attr_name,
         std::map<std::string, std::any> args);
-
-    void ensureOriginalPointIds();
 
 private:
     void applyStyle();
@@ -114,8 +111,11 @@ private:
 
     vtkRenderer* renderer_;
 
-    vtkPoints* global_points_ {};
-    vtkNew<vtkIdTypeArray> original_point_ids_;
+    // 组件私有点集：坐标随 loadModelData 从 MeshData::vertex_positions_ 同步，
+    // 连通性数组直接以组件内局部点 id 作 VTK 点索引。
+    vtkNew<vtkPoints> points_;
+    vtkNew<vtkIdTypeArray> original_point_ids_; //> 拾取标签：局部点 id -> 全局点 id
+    std::unordered_map<Index, Index> local_point_id_by_global_; //> 全局点 id -> 局部点 id 反查（选择集携带全局 id）
 
     static void _createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data);
 };

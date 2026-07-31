@@ -5,7 +5,6 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "MeshData.h"
-#include "ModelLayer.h"
 
 #include <spdlog/spdlog.h>
 
@@ -110,13 +109,11 @@ void FeatureDemoHandler::applyScale(FeatureContext& ctx)
         spdlog::warn("FeatureDemo: component {} has no mesh", *component_id);
         return;
     }
-    // 顶点坐标保存在全局点池，按组件的 local_to_global_ 映射逐个缩放
-    for (Index gid : mesh->local_to_global_) {
-        auto point = ctx.model.globalPoints()[gid];
+    // 顶点坐标常驻组件 MeshData，就地缩放后通知组件变更
+    for (auto& point : mesh->vertex_positions_) {
         point[0] *= scale_;
         point[1] *= scale_;
         point[2] *= scale_;
-        ctx.model.setGlobalPoint(gid, point);
     }
     op->notifyChanged();
     spdlog::info("FeatureDemo: scaled component {} by {}", *component_id, scale_);

@@ -123,7 +123,8 @@ void pickWorld(InteractionService& service, vtkRenderer* renderer, const std::ar
 int main(int argc, char* argv[])
 {
     MeshData mesh;
-    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh);
+    std::vector<Index> point_gids; //> 全局点 id（iota 恒等），须与 test_mesh_data 同生命周期
+    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh, point_gids);
 
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->SetBackground(0.2, 0.3, 0.4);
@@ -146,13 +147,7 @@ int main(int argc, char* argv[])
     vtkSmartPointer<PickInteractorStyle> style = vtkSmartPointer<PickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
-    vtkNew<vtkPoints> pts;
-    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
-    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
-        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
-    }
-
-    MeshActorManager mesh_manager(pts.GetPointer());
+    MeshActorManager mesh_manager;
     mesh_manager.bindRender(renderer.GetPointer());
 
     GeometryActorManager geometry_manager;
@@ -192,8 +187,7 @@ int main(int argc, char* argv[])
     if (!fake.picks.empty()) {
         const PickInfo& p = fake.picks.front();
         check(p.valid, "PickInfo.valid 为 true");
-        check(!mesh.local_to_global_.empty() && p.mesh_id == mesh.local_to_global_[0],
-            "PickInfo.mesh_id 为全局顶点 id");
+        check(p.mesh_id == 0, "PickInfo.mesh_id 为全局点 id（iota 恒等填充）");
         check(p.geom_id < 0, "网格拾取不填 geom_id");
     }
 

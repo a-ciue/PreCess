@@ -42,12 +42,13 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
         MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);
 
-        const Index base = mesh->local_to_global_[0];
-        REQUIRE(base >= 0);
+        // 选择 id 使用组件入池时分配的全局点 id（point_global_ids_）
 
     
         auto selection = std::make_shared<Selection>(
-            Selection { std::vector<Index> { base + 0, base + 1, base + 2 }, ElementEnum::Vertex, 0 });
+            Selection { std::vector<Index> { c->point_global_ids_[0], c->point_global_ids_[1],
+                            c->point_global_ids_[2] },
+                ElementEnum::Vertex, 0 });
 
         core::ArgObject arg0 = core::ArgObject::create<ArgTypeEnum::Selector>(selection);
 
@@ -78,11 +79,12 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
         MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);
 
-        const Index base = mesh->local_to_global_[0];
-        REQUIRE(base >= 0);
+        // 选择 id 使用组件入池时分配的全局点 id（point_global_ids_）
 
         auto selection = std::make_shared<Selection>(
-            Selection { std::vector<Index> { base + 0, base + 1, base + 2, base + 3 }, ElementEnum::Vertex, 0 });
+            Selection { std::vector<Index> { c->point_global_ids_[0], c->point_global_ids_[1],
+                            c->point_global_ids_[2], c->point_global_ids_[3] },
+                ElementEnum::Vertex, 0 });
 
         core::ArgObject arg0 = core::ArgObject::create<ArgTypeEnum::Selector>(selection);
 

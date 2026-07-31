@@ -38,8 +38,9 @@ vtkStandardNewMacro(VertexPickInteractorStyle);
 int main(int argc, char* argv[])
 {
     MeshData mesh;
+    std::vector<Index> point_gids; //> 全局点 id（iota 恒等），须与 test_mesh_data 同生命周期
 
-    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh);
+    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh, point_gids);
 
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->SetBackground(0.2, 0.3, 0.4);
@@ -54,14 +55,8 @@ int main(int argc, char* argv[])
     vtkSmartPointer<VertexPickInteractorStyle> style = vtkSmartPointer<VertexPickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
-    vtkNew<vtkPoints> pts;
-    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
-    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
-        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
-    }
-
-    // 创建MeshActor
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, pts);
+    // 创建MeshActor（点集由 actor 从 model_data.vertex_positions_ 自建）
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer);
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 

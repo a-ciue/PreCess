@@ -115,18 +115,14 @@ static void mesh_from_ugrid(vtkUnstructuredGrid& ugrid, MeshData& out)
 }
 
 static void add_cells_from_mesh(vtkUnstructuredGrid& ugrid,
-    const std::vector<std::array<double, 3>>& points,
     const MeshData& mesh,
-    const std::unordered_map<Index, Index>& global_to_local,
     vtkIdType file_point_offset)
 {
     // points already added outside
 
-    auto toPid = [&](Index global_pid) -> vtkIdType {
-        auto it = global_to_local.find(global_pid);
-        if (it == global_to_local.end())
-            return -1;
-        return file_point_offset + (vtkIdType)it->second;
+    // 连通性存组件内局部点索引，文件点序号 = 文件偏移 + 局部 id
+    auto toPid = [&](Index local_pid) -> vtkIdType {
+        return file_point_offset + (vtkIdType)local_pid;
     };
 
     // 1) edges -> VTK_LINE
@@ -273,7 +269,6 @@ void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,
     vtkNew<vtkUnstructuredGrid> ugrid;
     vtkNew<vtkPoints> points;
 
-    const auto& gp = mgr.globalPoints();
     vtkIdType file_point_offset = 0;
 
     for (Index cid : component_ids) {
@@ -286,20 +281,14 @@ void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,
         if (cnt <= 0)
             continue;
 
-        std::unordered_map<Index, Index> global_to_local;
+        // MeshData 自包含，vertex_positions_ 常驻坐标，直接写入
         for (Index i = 0; i < cnt; ++i) {
-            global_to_local[m.local_to_global_[i]] = i;
-        }
-
-        // add points
-        for (Index i = 0; i < cnt; ++i) {
-            const Index gid = m.local_to_global_[i];
-            const auto& p = gp[(size_t)gid];
+            const auto& p = m.vertex_positions_[(size_t)i];
             points->InsertNextPoint(p[0], p[1], p[2]);
         }
 
         // add cells (edge/face/solid)
-        add_cells_from_mesh(*ugrid, gp, m, global_to_local, file_point_offset);
+        add_cells_from_mesh(*ugrid, m, file_point_offset);
 
         file_point_offset += (vtkIdType)cnt;
     }

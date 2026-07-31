@@ -1,8 +1,11 @@
 #include "IncrementalMeshTools.h"
 
+#include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "GeometryRegistry.h"
 #include "GmshMeshOptions.h"
 #include "MeshData.h"
+#include "MeshIDMap.h"
 #include "ModelLayer.h"
 
 #include <BRepGProp.hxx>
@@ -32,17 +35,17 @@ class TempNodeLookup {
 public:
     explicit TempNodeLookup(
         MeshData& mesh_data,
-        ModelLayer& model_layer,
+        ComponentOperator& component_op,
         double tolerance = 1e-7)
         : _mesh_data(mesh_data)
-        , _model_layer(model_layer)
+        , _component_op(component_op)
         , _tolerance(tolerance)
     {
+        // 坐标 -> 组件内局部点索引去重表，只查 MeshData 自持坐标
         const auto& vertices = _mesh_data.vertex_positions_;
-        const auto& global_ids = _mesh_data.local_to_global_;
-        for (size_t i = 0; i < vertices.size() && i < global_ids.size(); ++i) {
+        for (size_t i = 0; i < vertices.size(); ++i) {
             auto qc = _quantize(vertices[i][0], vertices[i][1], vertices[i][2]);
-            _map[qc] = global_ids[i];
+            _map[qc] = static_cast<Index>(i);
         }
     }
 
@@ -53,13 +56,15 @@ public:
         if (it != _map.end())
             return it->second;
 
+        // 新点：追加坐标，并同步在 gid 伴生表（ComponentData::point_global_ids_）分配全局点 id
         std::array<double, 3> point { x, y, z };
-        Index global_id = _model_layer.appendGlobalPoints({ point });
+        const Index local_id = static_cast<Index>(_mesh_data.vertex_positions_.size());
         _mesh_data.vertex_positions_.push_back(point);
         _mesh_data.vertex_count_ = static_cast<Index>(_mesh_data.vertex_positions_.size());
-        _mesh_data.local_to_global_.push_back(global_id);
-        _map[qc] = global_id;
-        return global_id;
+        _component_op.component().point_global_ids_.push_back(
+            _component_op.manager().pointIdMap().insert(_component_op.componentId(), local_id));
+        _map[qc] = local_id;
+        return local_id;
     }
 
 private:
@@ -92,7 +97,7 @@ private:
     }
 
     MeshData& _mesh_data;
-    ModelLayer& _model_layer;
+    ComponentOperator& _component_op;
     double _tolerance;
     std::unordered_map<QuantizedCoord, Index, CoordHash> _map;
 };
@@ -620,7 +625,7 @@ void storeNewEdges(GmshIncrementalMeshState& state, const std::map<int, GeomEdge
 
 void mergeMeshResult(
     MeshData& mesh_data,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     SingleFaceMeshResult& result)
 {
     if (!result.success)
@@ -629,11 +634,12 @@ void mergeMeshResult(
     if (mesh_data.face_vertices_offset_.empty())
         mesh_data.face_vertices_offset_.push_back(0);
 
-    TempNodeLookup lookup(mesh_data, model_layer, 1e-7);
+    TempNodeLookup lookup(mesh_data, component_op, 1e-7);
 
-    std::vector<Index> localToGlobal(result.vertices.size());
+    // Gmsh 结果顶点 -> 组件内局部点 id（同坐标点去重复用）
+    std::vector<Index> resultToLocal(result.vertices.size());
     for (size_t i = 0; i < result.vertices.size(); ++i) {
-        localToGlobal[i] = lookup.getOrInsert(
+        resultToLocal[i] = lookup.getOrInsert(
             result.vertices[i][0],
             result.vertices[i][1],
             result.vertices[i][2]);
@@ -646,9 +652,9 @@ void mergeMeshResult(
         size_t start = result.face_vertices_offset[i];
         size_t end = result.face_vertices_offset[i + 1];
         for (size_t j = start; j < end; ++j) {
-            Index globalPointId = localToGlobal[result.face_vertices[j]];
-            result.global_face_vertices.push_back(globalPointId);
-            mesh_data.face_vertices_.push_back(globalPointId);
+            Index localPointId = resultToLocal[result.face_vertices[j]];
+            result.global_face_vertices.push_back(localPointId);
+            mesh_data.face_vertices_.push_back(localPointId);
         }
         mesh_data.face_vertices_offset_.push_back(
             static_cast<Index>(mesh_data.face_vertices_.size()));
@@ -741,7 +747,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters)
@@ -753,7 +759,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
         faceId, meshSize,
         surfaceMeshTypeName(meshType));
 
-    TopoDS_Face face = getFaceById(model_layer.geomRegistry(), faceId);
+    TopoDS_Face face = getFaceById(component_op.manager().geomRegistry(), faceId);
     if (face.IsNull()) {
         spdlog::error("Face {} is null or invalid", faceId);
         return result;
@@ -829,7 +835,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     result = extractFaceMesh(faceTag);
     if (result.success) {
         storeNewEdges(state, gmshToOcc);
-        mergeMeshResult(mesh_data, model_layer, result);
+        mergeMeshResult(mesh_data, component_op, result);
         state.meshedFacesCache[faceId] = result;
     }
     return result;
@@ -889,14 +895,14 @@ SingleFaceMeshResult IncrementalMeshTools::remeshSingleFace(
     MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters)
 {
     if (state.meshedFacesCache.find(faceId) != state.meshedFacesCache.end())
-        deleteFaceMesh(mesh_data, geometry, state, model_layer, faceId);
+        deleteFaceMesh(mesh_data, geometry, state, component_op.manager(), faceId);
 
     return meshSingleFace(
-        mesh_data, geometry, state, model_layer, faceId, meshSize, parameters);
+        mesh_data, geometry, state, component_op, faceId, meshSize, parameters);
 }

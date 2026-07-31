@@ -47,10 +47,11 @@ int main(int argc, char* argv[])
     }
 
     MeshData mesh;
+    std::vector<Index> point_gids; //> 全局点 id（iota 恒等），须与 test_mesh_data 同生命周期
 
     MeshDataVtk test_mesh_data = inputFile.empty()
-        ? MakeMeshDataVtk(mesh)
-        : MakeMeshDataVtkFromFile(inputFile, mesh);
+        ? MakeMeshDataVtk(mesh, point_gids)
+        : MakeMeshDataVtkFromFile(inputFile, mesh, point_gids);
 
     vtkNew<vtkRenderer> renderer;
     renderer->SetBackground(0.15, 0.2, 0.3);
@@ -65,14 +66,8 @@ int main(int argc, char* argv[])
     vtkNew<SolidPickInteractorStyle> style;
     interactor->SetInteractorStyle(style);
 
-    vtkNew<vtkPoints> pts;
-    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
-    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
-        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
-    }
-
-    // 创建 MeshActor 并加载数据
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer, pts);
+    // 创建 MeshActor 并加载数据（点集由 actor 从 model_data.vertex_positions_ 自建）
+    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer);
     meshActor->loadModelData(test_mesh_data);
 
     // 体元高亮选择器

@@ -35,7 +35,7 @@ public:
      * 幂等：该边已物化时直接返回既有 cell 序号。同步分配全局边 id（MeshIDMap），
      * 并调用 notifyChanged()（失效邻接索引、通知观察者）。
      *
-     * @param p0 边端点 id（与 MeshData 连通性同一键空间，当前为全局点 id）
+     * @param p0 边端点 id（与 MeshData 连通性同一键空间，组件内局部点 id）
      * @param p1 边另一端点 id
      * @return 物化边在 edge_vertices_ 中的 cell 序号
      * @throw std::runtime_error 组件无网格

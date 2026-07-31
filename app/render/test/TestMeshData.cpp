@@ -73,8 +73,10 @@ int main(int argc, char* argv[])
     // 使用 MakeMeshDataWithAtri() 创建带属性的 MeshData
     MeshData mesh = MakeMeshDataWithAtri();
     MeshData mesh2 = MakeMeshDataWithUV();
-    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh);
-    MeshDataVtk test_mesh_data2 = MakeMeshDataVtk(mesh2);
+    std::vector<Index> point_gids;  //> mesh 的全局点 id（iota 恒等），须与 test_mesh_data 同生命周期
+    std::vector<Index> point_gids2; //> mesh2 的全局点 id（iota 恒等），须与 test_mesh_data2 同生命周期
+    MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh, point_gids);
+    MeshDataVtk test_mesh_data2 = MakeMeshDataVtk(mesh2, point_gids2);
 
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->SetBackground(0.2, 0.3, 0.4);
@@ -86,23 +88,11 @@ int main(int argc, char* argv[])
     vtkSmartPointer<vtkRenderWindowInteractor> interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
     interactor->SetRenderWindow(renderWindow);
 
-    vtkNew<vtkPoints> pts;
-    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
-    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
-        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
-    }
-
-    vtkNew<vtkPoints> pts2;
-    pts2->SetNumberOfPoints(static_cast<vtkIdType>(mesh2.vertex_positions_.size()));
-    for (size_t i = 0; i < mesh2.vertex_positions_.size(); ++i) {
-        pts2->SetPoint(static_cast<vtkIdType>(i), mesh2.vertex_positions_[i].data());
-    }
-
-    // 创建 MeshActor
-    std::shared_ptr<MeshActor> meshActor = std::make_shared<MeshActor>(renderer, pts);
+    // 创建 MeshActor（点集由 actor 从 model_data.vertex_positions_ 自建）
+    std::shared_ptr<MeshActor> meshActor = std::make_shared<MeshActor>(renderer);
     meshActor->loadModelData(test_mesh_data);
 
-    std::shared_ptr<MeshActor> meshActor2 = std::make_shared<MeshActor>(renderer, pts2);
+    std::shared_ptr<MeshActor> meshActor2 = std::make_shared<MeshActor>(renderer);
     meshActor2->loadModelData(test_mesh_data2);
     // 按键交互逻辑
     vtkSmartPointer<vtkCallbackCommand> key_press_callback = vtkSmartPointer<vtkCallbackCommand>::New();

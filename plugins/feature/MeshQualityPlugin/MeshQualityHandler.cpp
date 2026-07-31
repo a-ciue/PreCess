@@ -5,7 +5,6 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "MeshData.h"
-#include "ModelLayer.h"
 
 #include <vtkCellData.h>
 #include <vtkCellType.h>
@@ -140,16 +139,16 @@ namespace {
     }
 
     /**
-     * @brief 将模型层全局点池挂到 VTK 网格
+     * @brief 将组件网格的顶点坐标挂到 VTK 网格
      */
-    void setGlobalPoints(
+    void setLocalPoints(
         vtkUnstructuredGrid& grid,
-        const std::vector<std::array<double, 3>>& global_points)
+        const std::vector<std::array<double, 3>>& vertex_positions)
     {
         auto points = vtkSmartPointer<vtkPoints>::New();
-        points->SetNumberOfPoints(static_cast<vtkIdType>(global_points.size()));
-        for (vtkIdType point_id = 0; point_id < static_cast<vtkIdType>(global_points.size()); ++point_id) {
-            points->SetPoint(point_id, global_points[static_cast<std::size_t>(point_id)].data());
+        points->SetNumberOfPoints(static_cast<vtkIdType>(vertex_positions.size()));
+        for (vtkIdType point_id = 0; point_id < static_cast<vtkIdType>(vertex_positions.size()); ++point_id) {
+            points->SetPoint(point_id, vertex_positions[static_cast<std::size_t>(point_id)].data());
         }
         grid.SetPoints(points);
     }
@@ -161,7 +160,6 @@ namespace {
      */
     vtkSmartPointer<vtkUnstructuredGrid> buildFaceGrid(
         const MeshData& mesh,
-        const std::vector<std::array<double, 3>>& global_points,
         QualityMetric metric,
         std::string& error)
     {
@@ -170,7 +168,7 @@ namespace {
         }
 
         auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-        setGlobalPoints(*grid, global_points);
+        setLocalPoints(*grid, mesh.vertex_positions_);
 
         for (std::size_t face_id = 0; face_id + 1 < mesh.face_vertices_offset_.size(); ++face_id) {
             const Index begin = mesh.face_vertices_offset_[face_id];
@@ -190,8 +188,8 @@ namespace {
             point_ids.reserve(static_cast<std::size_t>(point_count));
             for (Index offset = begin; offset < end; ++offset) {
                 const Index point_id = mesh.face_vertices_[static_cast<std::size_t>(offset)];
-                if (point_id < 0 || point_id >= static_cast<Index>(global_points.size())) {
-                    error = "面单元包含无效的全局点 ID";
+                if (point_id < 0 || point_id >= mesh.vertex_count_) {
+                    error = "面单元包含无效的点索引";
                     return {};
                 }
                 point_ids.push_back(static_cast<vtkIdType>(point_id));
@@ -246,7 +244,6 @@ namespace {
      */
     vtkSmartPointer<vtkUnstructuredGrid> buildSolidGrid(
         const MeshData& mesh,
-        const std::vector<std::array<double, 3>>& global_points,
         QualityMetric metric,
         std::string& error)
     {
@@ -259,7 +256,7 @@ namespace {
         }
 
         auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
-        setGlobalPoints(*grid, global_points);
+        setLocalPoints(*grid, mesh.vertex_positions_);
 
         for (std::size_t solid_id = 0; solid_id < mesh.solid_types_.size(); ++solid_id) {
             const unsigned char cell_type = mesh.solid_types_[solid_id];
@@ -279,8 +276,8 @@ namespace {
             point_ids.reserve(static_cast<std::size_t>(end - begin));
             for (Index offset = begin; offset < end; ++offset) {
                 const Index point_id = mesh.solid_vertices_[static_cast<std::size_t>(offset)];
-                if (point_id < 0 || point_id >= static_cast<Index>(global_points.size())) {
-                    error = "体单元包含无效的全局点 ID";
+                if (point_id < 0 || point_id >= mesh.vertex_count_) {
+                    error = "体单元包含无效的点索引";
                     return {};
                 }
                 point_ids.push_back(static_cast<vtkIdType>(point_id));
@@ -418,12 +415,11 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
     const QualityMetric metric = metricFromIndex(metric_index);
     MeshData& mesh = *component->mesh();
-    const auto& global_points = ctx.model.globalPoints();
 
     std::string face_error;
     std::string solid_error;
-    auto face_grid = buildFaceGrid(mesh, global_points, metric, face_error);
-    auto solid_grid = buildSolidGrid(mesh, global_points, metric, solid_error);
+    auto face_grid = buildFaceGrid(mesh, metric, face_error);
+    auto solid_grid = buildSolidGrid(mesh, metric, solid_error);
 
     std::optional<QualityResult> face_result;
     std::optional<QualityResult> solid_result;

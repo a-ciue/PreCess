@@ -203,7 +203,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->overlay_renderer_->AddObserver(vtkCommand::StartEvent, scale_bar_updater);
 
     this->data_ = vtk.GetPointer();
-    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>(vtk->global_points_.GetPointer());
+    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
@@ -346,30 +346,6 @@ void QRenderWindow::deleteComponent(Index component_id)
     });
 }
 
-void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
-{
-    if (!vtk || !model_query_)
-        return;
-
-    const auto& pts = model_query_->globalPoints();
-    auto count = static_cast<vtkIdType>(pts.size());
-    vtkIdType totalVals = count * 3;
-
-    vtkNew<vtkDoubleArray> arr;
-    arr->SetNumberOfComponents(3);
-    // 纯几何模型没有全局网格点，不能对空 vector 的 data() 继续解引用。
-    if (!pts.empty())
-        arr->SetArray(const_cast<double*>(pts.front().data()), totalVals, 1);
-
-    vtk->global_points_->SetData(arr);
-
-    if (vtk->mesh_actor_manager_) {
-        vtk->mesh_actor_manager_->syncOriginalPointIds();
-    }
-
-    spdlog::info("[VTK GlobalPoints] updated: N={}", (int)vtk->global_points_->GetNumberOfPoints());
-}
-
 void QRenderWindow::setMeshClip(bool on)
 {
     dispatch_async([on, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -401,7 +377,6 @@ void QRenderWindow::onModelChanged(Index model_id)
         // Actor 即将重新加载，先释放引用旧 PolyData 和 OCC Shape 的选择器。
         this->select_manager_->clearSelection();
         auto component_ids = model_query_->getComponentIds(model_id);
-        updateGlobalVtkPointsImpl(vtk);
 
         for (Index component_id : component_ids) {
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
@@ -427,7 +402,6 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
         this->select_manager_->clearSelection();
-        updateGlobalVtkPointsImpl(vtk);
 
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);

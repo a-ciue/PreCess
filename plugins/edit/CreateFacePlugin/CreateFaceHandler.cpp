@@ -2,6 +2,7 @@
 #include "ArgObject.h"
 #include "ArgType.h"
 #include "MeshData.h"
+#include "ModelLayer.h"
 #include "ComponentData.h"         
 #include "ComponentOperator.h"  
 #include "Selection.h" 
@@ -35,8 +36,21 @@ std::any CreateFaceHandler::execute(ComponentOperator& op, const std::vector<cor
     spdlog::debug("CreateFaceHandler::execute: Creating face on component {} with points ID {}",
         op.componentId(), selection->ids);
 
+    // 选择集携带全局点 id，换算为本组件局部点索引（face_vertices_ 的键空间）后再写入
+    std::vector<Index> local_ids;
+    local_ids.reserve(selection->ids.size());
+    for (Index gid : selection->ids) {
+        const auto [cid, local] = op.manager().pointIdMap().getLocal(gid);
+        if (cid != op.componentId()) {
+            spdlog::error("CreateFaceHandler::execute: Selected point {} does not belong to component {}.",
+                gid, op.componentId());
+            return {};
+        }
+        local_ids.push_back(local);
+    }
+
     // 追加面对应的顶点索引 face_vertices_
-    mesh->face_vertices_.insert(mesh->face_vertices_.end(), selection->ids.begin(), selection->ids.end());
+    mesh->face_vertices_.insert(mesh->face_vertices_.end(), local_ids.begin(), local_ids.end());
 
     // 更新 face_vertices_offset_
     mesh->face_vertices_offset_.push_back(static_cast<Index>(mesh->face_vertices_.size()));

@@ -16,7 +16,7 @@
 #include <vtkXMLPolyDataReader.h>
 #include <vtkXMLUnstructuredGridReader.h>
 
-MeshDataVtk MakeMeshDataVtk(MeshData& data)
+MeshDataVtk MakeMeshDataVtk(MeshData& data, std::vector<Index>& point_gids)
 {
 
     if (data.vertex_positions_.empty()) {
@@ -24,9 +24,9 @@ MeshDataVtk MakeMeshDataVtk(MeshData& data)
     }
 
     data.vertex_count_ = data.vertex_count_ > 0 ? data.vertex_count_ : static_cast<Index>(data.vertex_positions_.size());
-    if (data.local_to_global_.empty()) {
-        data.local_to_global_.resize(static_cast<size_t>(data.vertex_count_));
-        std::iota(data.local_to_global_.begin(), data.local_to_global_.end(), 0);
+    if (point_gids.empty()) {
+        point_gids.resize(static_cast<size_t>(data.vertex_count_));
+        std::iota(point_gids.begin(), point_gids.end(), 0);
     }
 
     // Block: 根据删减后的面索引重新划分
@@ -60,7 +60,8 @@ MeshDataVtk MakeMeshDataVtk(MeshData& data)
         data.face_vertices_,
         data.face_vertices_offset_,
         data.edge_vertices_,
-        data.local_to_global_,
+        data.vertex_positions_,
+        point_gids,
         data.vertex_attributes_,
         data.edge_attributes_,
         data.face_attributes_,
@@ -111,27 +112,28 @@ bool readFileToGrid(std::string_view file, vtkSmartPointer<vtkUnstructuredGrid>&
 }
 
 MeshDataVtk MakeMeshDataVtkFromFile(
-    std::string_view file_path, MeshData& data)
+    std::string_view file_path, MeshData& data, std::vector<Index>& point_gids)
 {
     // 确保容器干净
     data.clear();
+    point_gids.clear();
 
     vtkSmartPointer<vtkUnstructuredGrid> ug;
     vtkSmartPointer<vtkPolyData> pd;
     if (!readFileToGrid(file_path, ug, pd)) {
         std::cerr << "Cannot read file: " << file_path << ", fallback to built-in demo.\n";
-        return MakeMeshDataVtk(data);
+        return MakeMeshDataVtk(data, point_gids);
     }
 
     vtkPoints* pts = ug ? ug->GetPoints() : (pd ? pd->GetPoints() : nullptr);
     if (!pts) {
         std::cerr << "No points in file, fallback demo.\n";
-        return MakeMeshDataVtk(data);
+        return MakeMeshDataVtk(data, point_gids);
     }
     data.vertex_positions_.resize(static_cast<size_t>(pts->GetNumberOfPoints()));
     data.vertex_count_ = static_cast<Index>(data.vertex_positions_.size());
-    data.local_to_global_.resize(data.vertex_positions_.size());
-    std::iota(data.local_to_global_.begin(), data.local_to_global_.end(), 0);
+    point_gids.resize(data.vertex_positions_.size());
+    std::iota(point_gids.begin(), point_gids.end(), 0);
     double p[3];
     for (vtkIdType i = 0; i < pts->GetNumberOfPoints(); ++i) {
         pts->GetPoint(i, p);
@@ -221,7 +223,8 @@ MeshDataVtk MakeMeshDataVtkFromFile(
         data.face_vertices_,
         data.face_vertices_offset_,
         data.edge_vertices_,
-        data.local_to_global_,
+        data.vertex_positions_,
+        point_gids,
         data.vertex_attributes_,
         data.edge_attributes_,
         data.face_attributes_,

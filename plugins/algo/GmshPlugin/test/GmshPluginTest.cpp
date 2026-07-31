@@ -91,7 +91,8 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     REQUIRE(comp != nullptr);
     REQUIRE(comp->mesh != nullptr);
     REQUIRE(comp->geometry != nullptr);
-    REQUIRE_FALSE(comp->mesh->local_to_global_.empty());
+    REQUIRE_FALSE(comp->point_global_ids_.empty());
+    REQUIRE(comp->point_global_ids_.size() == comp->mesh->vertex_positions_.size());
     REQUIRE_FALSE(comp->mesh->face_vertices_.empty());
     REQUIRE(comp->mesh->face_vertices_offset_.size() > 1);
 }

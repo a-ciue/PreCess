@@ -175,9 +175,9 @@ TEST_CASE("DimensionHandler: distance between two vertices")
 
     MeshData* mesh_ptr = comp->asMeshData();
     REQUIRE(mesh_ptr);
-    const Index base = mesh_ptr->local_to_global_[0];
 
-    auto selection = makeVertexSelection({ base + 0, base + 1 });
+    // 选择集顶点 id 为全局点 id，取组件入池时分配的真实 gid
+    auto selection = makeVertexSelection({ comp->point_global_ids_[0], comp->point_global_ids_[1] });
     selection->component_id = cids[0];
     const std::string result = env.executeDimension(0, selection); // 距离
     CHECK(result.find("Distance") != std::string::npos);
@@ -206,10 +206,10 @@ TEST_CASE("DimensionHandler: length of edges selected as endpoint vertex id pair
 
     MeshData* mesh_ptr = comp->asMeshData();
     REQUIRE(mesh_ptr);
-    const Index base = mesh_ptr->local_to_global_[0];
 
-    // 边选择的 ids 是端点顶点 id 对：{12,13} 与 {0,1} 长度均为 1
-    auto selection = makeEdgeSelection({ base + 12, base + 13, base + 0, base + 1 });
+    // 边选择的 ids 是端点顶点 id 对（全局点 id）：{12,13} 与 {0,1} 长度均为 1
+    auto selection = makeEdgeSelection({ comp->point_global_ids_[12], comp->point_global_ids_[13],
+        comp->point_global_ids_[0], comp->point_global_ids_[1] });
     selection->component_id = cids[0];
     const std::string result = env.executeDimension(3, selection); // 长度
     CHECK(result.find("累计长度: 2.000000") != std::string::npos);
@@ -237,10 +237,10 @@ TEST_CASE("DimensionHandler: angle between two edges selected as endpoint vertex
 
     MeshData* mesh_ptr = comp->asMeshData();
     REQUIRE(mesh_ptr);
-    const Index base = mesh_ptr->local_to_global_[0];
 
-    // 边 {0,1} 方向 (1,0,0)，边 {0,3} 方向 (0,1,0)，夹角 90°
-    auto selection = makeEdgeSelection({ base + 0, base + 1, base + 0, base + 3 });
+    // 边 {0,1} 方向 (1,0,0)，边 {0,3} 方向 (0,1,0)，夹角 90°（id 为全局点 id）
+    auto selection = makeEdgeSelection({ comp->point_global_ids_[0], comp->point_global_ids_[1],
+        comp->point_global_ids_[0], comp->point_global_ids_[3] });
     selection->component_id = cids[0];
     const std::string result = env.executeDimension(1, selection); // 角度
     CHECK(result.find("Angle: 90.000000 deg") != std::string::npos);

@@ -17,21 +17,11 @@
 #include <optional>
 
 namespace systems::io {
-static inline std::optional<Index>
-toFileVertexIdChecked(Index global_pid, const std::unordered_map<Index, Index>& global_to_local, Index file_vertex_offset)
-{
-    auto it = global_to_local.find(global_pid);
-    if (it == global_to_local.end())
-        return std::nullopt;
-    return file_vertex_offset + it->second;
-}
-
 /**
- * @brief 把运行期某个 component 的 MeshData（点索引是全局点池编号、且 vertex_positions_ 已被清空）
- *        追加合并到 merged（merged 是导出用的“局部 mesh”，vertex_positions_ 有坐标、索引是文件内局部）。
+ * @brief 把某个 component 的 MeshData（自包含：vertex_positions_ 常驻坐标、连通性存局部点索引）
+ *        追加合并到 merged，连通性按 io_file_vertex_offset 换算为文件内点序号。
  */
-static bool appendComponentMeshToMerged(const ModelLayer& mgr,
-    const ComponentData& comp,
+static bool appendComponentMeshToMerged(const ComponentData& comp,
     MeshData& merged,
     Index& io_file_vertex_offset /*in/out*/)
 {
@@ -46,28 +36,20 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
         return false;
     }
 
-    std::unordered_map<Index, Index> global_to_local;
-    for (Index i = 0; i < cnt; ++i) {
-        global_to_local[src.local_to_global_[i]] = i;
-    }
-
-    const auto& gp = mgr.globalPoints();
-
-    // 1) 追加顶点坐标：从 globalPoints 通过 local_to_global_ 拷贝进 merged.vertex_positions_
+    // 1) 追加顶点坐标：MeshData 自包含，直接拷贝 src.vertex_positions_
     merged.vertex_positions_.reserve(merged.vertex_positions_.size() + cnt);
     for (Index i = 0; i < cnt; ++i) {
-        merged.vertex_positions_.push_back(gp[static_cast<size_t>(src.local_to_global_[i])]);
+        merged.vertex_positions_.push_back(src.vertex_positions_[static_cast<size_t>(i)]);
     }
 
-    // 2) 追加边：src.edge_vertices_ 每两个为一条边，点索引是“全局点 id”
+    // 2) 追加边：src.edge_vertices_ 每两个为一条边，点索引是组件内局部索引
     if (!src.edge_vertices_.empty()) {
         if (src.edge_vertices_.size() % 2 != 0) {
             spdlog::warn("MeshMeditModelHandler: edge_vertices_ size odd, skip edges, cid={}", comp.id);
         } else {
             merged.edge_vertices_.reserve(merged.edge_vertices_.size() + src.edge_vertices_.size());
-            for (Index gid : src.edge_vertices_) {
-                auto out = toFileVertexIdChecked(gid, global_to_local, io_file_vertex_offset);
-                merged.edge_vertices_.push_back(*out);
+            for (Index local_pid : src.edge_vertices_) {
+                merged.edge_vertices_.push_back(io_file_vertex_offset + local_pid);
             }
         }
     }
@@ -77,11 +59,10 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
     if (src.face_vertices_offset_.size() >= 2) {
         const Index old_face_vert_size = static_cast<Index>(merged.face_vertices_.size());
 
-        // 3.1 顶点索引追加
+        // 3.1 顶点索引追加（局部索引 + 文件偏移）
         merged.face_vertices_.reserve(merged.face_vertices_.size() + src.face_vertices_.size());
-        for (Index gid : src.face_vertices_) {
-            auto out = toFileVertexIdChecked(gid, global_to_local, io_file_vertex_offset);
-            merged.face_vertices_.push_back(*out);
+        for (Index local_pid : src.face_vertices_) {
+            merged.face_vertices_.push_back(io_file_vertex_offset + local_pid);
         }
 
         // 3.2 offset 追加：跳过 src 的第一个 0，从第二个开始逐个 + old_face_vert_size
@@ -98,9 +79,8 @@ static bool appendComponentMeshToMerged(const ModelLayer& mgr,
         const Index old_solid_vert_size = static_cast<Index>(merged.solid_vertices_.size());
 
         merged.solid_vertices_.reserve(merged.solid_vertices_.size() + src.solid_vertices_.size());
-        for (Index gid : src.solid_vertices_) {
-            auto out = toFileVertexIdChecked(gid, global_to_local, io_file_vertex_offset);
-            merged.solid_vertices_.push_back(*out);
+        for (Index local_pid : src.solid_vertices_) {
+            merged.solid_vertices_.push_back(io_file_vertex_offset + local_pid);
         }
 
         merged.solid_types_.reserve(merged.solid_types_.size() + src.solid_types_.size());
@@ -204,7 +184,7 @@ void MeshMeditModelHandler::write_components(const ModelLayer& mgr,
             continue;
         }
 
-        if (appendComponentMeshToMerged(mgr, *comp, merged, file_vertex_offset))
+        if (appendComponentMeshToMerged(*comp, merged, file_vertex_offset))
             ++merged_count;
     }
 

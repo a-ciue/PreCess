@@ -16,7 +16,6 @@
 #include <fstream>
 #include <vector>
 #include <memory>
-#include <unordered_map>
 
 namespace systems::io {
 
@@ -272,8 +271,6 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             return;
         }
 
-        const auto& gp = mgr.globalPoints();
-
         std::vector<float> all_vertices;
         std::vector<int32_t> all_face_indices;
         size_t total_vertex_count = 0;
@@ -296,21 +293,9 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
                 continue;
             }
 
-            std::unordered_map<Index, Index> global_to_local;
-            global_to_local.reserve(static_cast<size_t>(cnt));
-
+            // MeshData 自包含，vertex_positions_ 常驻坐标，直接拷贝
             for (Index i = 0; i < cnt; ++i) {
-                if (i >= static_cast<Index>(m.local_to_global_.size())) {
-                    spdlog::error("PlyModelHandler: local_to_global size mismatch, cid={}", cid);
-                    return;
-                }
-                const Index gid = m.local_to_global_[i];
-                if (gid < 0 || static_cast<size_t>(gid) >= gp.size()) {
-                    spdlog::error("PlyModelHandler: global point id out of range, cid={}, gid={}", cid, gid);
-                    return;
-                }
-                global_to_local[gid] = i;
-                const auto& p = gp[(size_t)gid];
+                const auto& p = m.vertex_positions_[static_cast<size_t>(i)];
                 all_vertices.push_back(static_cast<float>(p[0]));
                 all_vertices.push_back(static_cast<float>(p[1]));
                 all_vertices.push_back(static_cast<float>(p[2]));
@@ -327,14 +312,9 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
                     Index nv = b - a;
                     all_face_indices.push_back(static_cast<int32_t>(nv));
 
+                    // 面顶点为组件内局部点索引，文件序号 = 已有点数 + 局部 id
                     for (Index k = a; k < b; ++k) {
-                        const Index gid = m.face_vertices_[static_cast<size_t>(k)];
-                        auto it = global_to_local.find(gid);
-                        if (it == global_to_local.end()) {
-                            spdlog::error("PlyModelHandler: face references vertex not in component, cid={}, gid={}", cid, gid);
-                            return;
-                        }
-                        all_face_indices.push_back(static_cast<int32_t>(total_vertex_count + it->second));
+                        all_face_indices.push_back(static_cast<int32_t>(total_vertex_count + m.face_vertices_[static_cast<size_t>(k)]));
                     }
                 }
             }
