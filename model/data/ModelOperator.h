@@ -7,13 +7,12 @@
 
 class ModelObserver;
 class ModelLayer;
-class QSelection; // 前向声明选择类
 /**
  * @brief ModelOperator 模型对象基类
  *
  * ModelOperator 是模型基类。
  * 持有一个 ModelData 指针，以及一个可选的模型观察者，用于在模型数据发生更改时通知外部。
- * 通过 ModelOperator，可以对模型数据执行修改操作（通常通过各具体 ICommand 子类实现），并在操作后通知观察者以更新界面等。
+ * 通过 ModelOperator，可以对模型数据执行修改操作，并在操作后通知观察者以更新界面等。
  */
 class ModelOperator : public ModelOperatorBase {
 public:
@@ -41,10 +40,7 @@ public:
      */
     ModelObserver* observer() const;
 
-    //! @brief 根据给定id找到mesh的edge，进行边分割
-    //! @param patch_id 边所在的patch
-    //! @param edge_v_id1 其中一个边点id
-    //! @param edge_v_id2 另一个边点id
+    //! @brief 通知观察者当前模型已更改（notifyModelChanged）
     void notifyChanged();
 
     /**
@@ -53,13 +49,6 @@ public:
      * @return 新组件的全局 ID。
      */
     Index addGeometryComponent(std::unique_ptr<ComponentData> component);
-
-    //! @brief 合并给定group，并更新group actor，依赖ModelActor
-    //! @param group_ids
-    // void merge_groups(QSelection* selection);
-
-    //! @brief remesh指定group，依赖MeshUtil、update_patches、update_actors
-    // void remesh_group(QSelection* selection);
 
     Index getId() const override;
 

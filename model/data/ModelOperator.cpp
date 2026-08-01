@@ -1,7 +1,4 @@
-#ifndef Model_OPERATOR_H
-#define Model_OPERATOR_H
 #include "ModelOperator.h"
-//#include "../FileHandler.h"
 #include "GeometryData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
@@ -53,5 +50,3 @@ Index ModelOperator::getId() const
 {
     return this->id_;
 }
-
-#endif // Model_OPERATOR_H
