@@ -1,5 +1,7 @@
 #include <gmsh.h>
 
+#include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "GeometryData.h"
 #include "IncrementalMeshTools.h"
 #include "MeshData.h"
@@ -13,7 +15,6 @@
 #include <filesystem>
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 #include <vtkActor.h>
@@ -31,15 +32,20 @@
 
 // VTK 按键回调和示例主循环共享的运行状态。
 struct AppContext {
-    GeometryData geometry;
     GmshIncrementalMeshState gmshState;
-    MeshData meshData;
     ModelLayer modelLayer;
+    Index componentId { -1 }; //> 几何与网格所属组件（注册在 ModelLayer 中）
     vtkSmartPointer<vtkPolyData> polyData;
     vtkRenderWindow* window {};
     std::size_t currentIndex { 0 };
     double meshSize { 10.0 };
 };
+
+// 访问示例唯一组件：CAD 几何与 Gmsh 结果网格都挂在其上。
+static ComponentData* currentComponent(AppContext& ctx)
+{
+    return ctx.modelLayer.findComponent(ctx.componentId);
+}
 
 // 示例加载 STEP，
 static bool loadStepGeometry(const std::string& path, GeometryData& geometry, GeometryRegistry& registry)
@@ -57,43 +63,33 @@ static bool loadStepGeometry(const std::string& path, GeometryData& geometry, Ge
     return true;
 }
 
-// 根据当前 MeshData 的局部到全局点映射，生成“全局点 ID -> 本地点序号”的查询表。
-static std::unordered_map<Index, std::size_t> buildGlobalToLocalPointMap(const MeshData& mesh)
-{
-    std::unordered_map<Index, std::size_t> globalToLocal;
-    const auto& globalIds = mesh.local_to_global_;
-    for (std::size_t i = 0; i < globalIds.size(); ++i) {
-        globalToLocal[globalIds[i]] = i;
-    }
-    return globalToLocal;
-}
-
 // 从 MeshData 重建 vtkPolyData，避免示例程序依赖 app/render 层。
 static void reloadPolyData(AppContext& ctx)
 {
+    MeshData& mesh = *currentComponent(ctx)->mesh;
+
     auto points = vtkSmartPointer<vtkPoints>::New();
-    for (const auto& p : ctx.meshData.vertex_positions_) {
+    for (const auto& p : mesh.vertex_positions_) {
         points->InsertNextPoint(p[0], p[1], p[2]);
     }
 
+    // 连通性数组存组件内局部点索引，即 vertex_positions_ 下标，直接使用
     auto polys = vtkSmartPointer<vtkCellArray>::New();
-    auto globalToLocal = buildGlobalToLocalPointMap(ctx.meshData);
-
-    for (std::size_t i = 0; i + 1 < ctx.meshData.face_vertices_offset_.size(); ++i) {
-        std::size_t begin = ctx.meshData.face_vertices_offset_[i];
-        std::size_t end = ctx.meshData.face_vertices_offset_[i + 1];
+    for (std::size_t i = 0; i + 1 < mesh.face_vertices_offset_.size(); ++i) {
+        std::size_t begin = mesh.face_vertices_offset_[i];
+        std::size_t end = mesh.face_vertices_offset_[i + 1];
         vtkIdType count = static_cast<vtkIdType>(end - begin);
         if (count <= 0)
             continue;
 
         polys->InsertNextCell(count);
         for (std::size_t j = begin; j < end; ++j) {
-            auto it = globalToLocal.find(ctx.meshData.face_vertices_[j]);
-            if (it == globalToLocal.end()) {
-                spdlog::warn("Missing local point for global id {}", ctx.meshData.face_vertices_[j]);
+            const Index local_id = mesh.face_vertices_[j];
+            if (local_id < 0 || local_id >= static_cast<Index>(mesh.vertex_positions_.size())) {
+                spdlog::warn("Invalid local point id {}", local_id);
                 polys->InsertCellPoint(0);
             } else {
-                polys->InsertCellPoint(static_cast<vtkIdType>(it->second));
+                polys->InsertCellPoint(static_cast<vtkIdType>(local_id));
             }
         }
     }
@@ -107,16 +103,19 @@ static void reloadPolyData(AppContext& ctx)
 // 清空已生成网格和 Gmsh 缓存，但保留已经加载的 CAD 形体。
 static void resetGeneratedMesh(AppContext& ctx)
 {
-    ctx.meshData.init();
+    ComponentData* comp = currentComponent(ctx);
+    // 先回收旧网格占用的全局点 id 再清空网格，保持 gid 伴生表一致
+    comp->releasePointGlobalIds(ctx.modelLayer.pointIdMap());
+    comp->mesh->init();
     ctx.gmshState = {};
-    if (ctx.geometry.rootShape)
-        ctx.geometry.ensureIndexBuilt(ctx.modelLayer.geomRegistry());
+    if (comp->geometry->rootShape)
+        comp->geometry->ensureIndexBuilt(ctx.modelLayer.geomRegistry());
     ctx.currentIndex = 0;
-    ctx.meshSize = IncrementalMeshTools::estimateMeshSize(ctx.geometry);
+    ctx.meshSize = IncrementalMeshTools::estimateMeshSize(*comp->geometry);
     reloadPolyData(ctx);
 }
 
-// 保存示例网格时，把全局点 ID 转回文件内的局部点编号。
+// 保存示例网格；连通性即局部点序号，写文件时转为 1-based 节点编号。
 static void saveMesh(const MeshData& mesh, const std::string& filename)
 {
     if (mesh.vertex_positions_.empty()) {
@@ -131,7 +130,6 @@ static void saveMesh(const MeshData& mesh, const std::string& filename)
 
         std::vector<std::size_t> nodeTags(mesh.vertex_positions_.size());
         std::vector<double> nodeCoords(mesh.vertex_positions_.size() * 3);
-        auto globalToLocal = buildGlobalToLocalPointMap(mesh);
 
         for (std::size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
             nodeTags[i] = i + 1;
@@ -154,13 +152,13 @@ static void saveMesh(const MeshData& mesh, const std::string& filename)
             auto& nodes = count == 3 ? triNodes : quadNodes;
             tags.push_back(elemTag++);
             for (std::size_t j = begin; j < end; ++j) {
-                auto it = globalToLocal.find(mesh.face_vertices_[j]);
-                if (it == globalToLocal.end()) {
-                    spdlog::error("Missing local node for global id {}", mesh.face_vertices_[j]);
+                const Index local_id = mesh.face_vertices_[j];
+                if (local_id < 0 || local_id >= static_cast<Index>(mesh.vertex_positions_.size())) {
+                    spdlog::error("Invalid local node id {}", local_id);
                     gmsh::finalize();
                     return;
                 }
-                nodes.push_back(it->second + 1);
+                nodes.push_back(static_cast<std::size_t>(local_id) + 1);
             }
         }
 
@@ -185,7 +183,8 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
     auto* interactor = static_cast<vtkRenderWindowInteractor*>(caller);
     std::string key = interactor->GetKeySym();
 
-    std::size_t total = IncrementalMeshTools::faceCount(ctx->geometry);
+    ComponentData* comp = currentComponent(*ctx);
+    std::size_t total = IncrementalMeshTools::faceCount(*comp->geometry);
 
     if (key == "space") {
         if (ctx->currentIndex >= total) {
@@ -193,16 +192,22 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             return;
         }
 
+        auto componentOp = ctx->modelLayer.getComponentOperator(ctx->componentId);
+        if (!componentOp) {
+            spdlog::error("Component {} not found.", ctx->componentId);
+            return;
+        }
+
         IncrementalMeshTools::GmshMeshParameters parameters;
         parameters.targetMeshSize = ctx->meshSize;
         const GeomFaceId faceId =
-            ctx->geometry.index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
+            comp->geometry->index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
 
         auto result = IncrementalMeshTools::meshSingleFace(
-            ctx->meshData,
-            ctx->geometry,
+            *comp->mesh,
+            *comp->geometry,
             ctx->gmshState,
-            ctx->modelLayer,
+            *componentOp,
             faceId,
             ctx->meshSize,
             parameters);
@@ -214,12 +219,12 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             if (ctx->meshSize < 50.0)
                 ctx->meshSize *= 1.5;
             spdlog::info("nodes={}, cached_edges={}, next_size={:.4f}",
-                ctx->meshData.vertex_positions_.size(),
+                comp->mesh->vertex_positions_.size(),
                 ctx->gmshState.meshedEdgeRefCounts.size(),
                 ctx->meshSize);
         }
     } else if (key == "s" || key == "S") {
-        saveMesh(ctx->meshData, "final_mesh.msh");
+        saveMesh(*comp->mesh, "final_mesh.msh");
     } else if (key == "r" || key == "R") {
         resetGeneratedMesh(*ctx);
         spdlog::info("Reset mesh, size={:.4f}", ctx->meshSize);
@@ -236,9 +241,9 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
         }
         ctx->currentIndex--;
         const GeomFaceId faceId =
-            ctx->geometry.index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
+            comp->geometry->index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
         if (IncrementalMeshTools::deleteFaceMesh(
-                ctx->meshData, ctx->geometry, ctx->gmshState,
+                *comp->mesh, *comp->geometry, ctx->gmshState,
                 ctx->modelLayer, faceId)) {
             reloadPolyData(*ctx);
         }
@@ -256,13 +261,24 @@ int main(int argc, char* argv[])
 
     AppContext ctx;
     ctx.polyData = vtkSmartPointer<vtkPolyData>::New();
-    ctx.meshData.init();
 
-    if (!loadStepGeometry(path, ctx.geometry, ctx.modelLayer.geomRegistry())) {
+    // 几何与网格挂到 ModelLayer 的组件上，与插件运行时的数据结构保持一致
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->name = "demo";
+    component->geometry = std::make_unique<GeometryData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->mesh->init();
+    components.push_back(std::move(component));
+    const Index modelId = ctx.modelLayer.addModel("demo", std::move(components));
+    ctx.componentId = ctx.modelLayer.modelById(modelId)->componentIds().front();
+
+    ComponentData* comp = currentComponent(ctx);
+    if (!loadStepGeometry(path, *comp->geometry, ctx.modelLayer.geomRegistry())) {
         spdlog::error("Cannot import: {}", path);
         return 1;
     }
-    ctx.meshSize = IncrementalMeshTools::estimateMeshSize(ctx.geometry);
+    ctx.meshSize = IncrementalMeshTools::estimateMeshSize(*comp->geometry);
 
     auto renderer = vtkSmartPointer<vtkRenderer>::New();
     renderer->SetBackground(0.1, 0.15, 0.2);

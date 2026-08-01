@@ -2,6 +2,7 @@
 #include "ModelLayer.h"
 #include "ComponentData.h"
 #include "MeshData.h"
+#include "MeshIDMap.h"
 #include "ModelObserver.h"
 #include <memory>
 
@@ -15,7 +16,7 @@ struct DummyObserver : ModelObserver {
     void notifyGeometryLoadFailed(const std::string&) override {}
 };
 
-TEST_CASE("Global points pool + globalized indices + vertex_positions swapped out", "[GlobalPoints]")
+TEST_CASE("Mesh self-contained points + point gid allocation on addModel", "[PointGlobalIds]")
 {
     DummyObserver obs;
     ModelLayer mgr(&obs);
@@ -41,7 +42,7 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
     ComponentDatas comps;
     comps.push_back(std::move(c));
 
-    Index mid = mgr.addModel("global_points_test", std::move(comps));
+    Index mid = mgr.addModel("point_global_ids_test", std::move(comps));
     REQUIRE(mid >= 0);
 
     auto compIds = mgr.modelById(mid)->componentIds();
@@ -54,24 +55,43 @@ TEST_CASE("Global points pool + globalized indices + vertex_positions swapped ou
 
     const MeshData& md = *comp->mesh;
 
-    REQUIRE(md.vertex_positions_.empty());
+    // 入库后 MeshData 自包含：坐标保留，连通性保持局部点 id
+    REQUIRE(md.vertex_positions_.size() == 4);
     REQUIRE(md.vertex_count_ == 4);
-    REQUIRE(md.local_to_global_.size() == 4);
+    REQUIRE(md.face_vertices_ == std::vector<Index> { 0, 1, 2 });
+    REQUIRE(md.edge_vertices_ == std::vector<Index> { 0, 1 });
 
-    const Index base = md.local_to_global_[0];
-    REQUIRE(base >= 0);
-    REQUIRE((int)mgr.globalPoints().size() >= base + md.vertex_count_);
+    // 局部点 id -> gid 已分配，且全局映射回指 (component, local)
+    REQUIRE(comp->point_global_ids_.size() == 4);
+    for (Index local = 0; local < md.vertex_count_; ++local) {
+        const Index gid = comp->point_global_ids_[local];
+        REQUIRE(gid >= 0);
+        auto [gcid, glocal] = mgr.pointIdMap().getLocal(gid);
+        REQUIRE(gcid == cid);
+        REQUIRE(glocal == local);
+    }
 
-    REQUIRE(md.face_vertices_[0] == base + 0);
-    REQUIRE(md.face_vertices_[1] == base + 1);
-    REQUIRE(md.face_vertices_[2] == base + 2);
+    // 幂等：再次分配不改变既有 gid
+    const auto gids_before = comp->point_global_ids_;
+    comp->ensurePointGlobalIds(mgr.pointIdMap());
+    REQUIRE(comp->point_global_ids_ == gids_before);
 
-    REQUIRE(md.edge_vertices_[0] == base + 0);
-    REQUIRE(md.edge_vertices_[1] == base + 1);
+    // 运行期加点后补缺：新点获得 gid，旧点 gid 不变
+    comp->mesh->vertex_positions_.push_back({ 0, 0, 1 });
+    comp->mesh->vertex_count_ = 5;
+    comp->ensurePointGlobalIds(mgr.pointIdMap());
+    REQUIRE(comp->point_global_ids_.size() == 5);
+    for (Index local = 0; local < 4; ++local) {
+        REQUIRE(comp->point_global_ids_[local] == gids_before[local]);
+    }
+    {
+        auto [gcid, glocal] = mgr.pointIdMap().getLocal(comp->point_global_ids_[4]);
+        REQUIRE(gcid == cid);
+        REQUIRE(glocal == 4);
+    }
 
-    auto check = [&](const std::vector<Index>& a){
-        for (Index v: a) {REQUIRE(v >= 0); REQUIRE(v < (Index)mgr.globalPoints().size());
-    } };
-    check(md.face_vertices_);
-    check(md.edge_vertices_);
+    // 移除组件后回收全部点 gid
+    const size_t free_before = mgr.pointIdMap().freeSize();
+    mgr.removeComponent(cid);
+    REQUIRE(mgr.pointIdMap().freeSize() >= free_before + 5);
 }

@@ -140,6 +140,13 @@ public:
         return query_->findEdgeByEndpoints(component_id, p0, p1);
     }
 
+    Index pointGlobalId(Index component_id, Index local_point_id) const override
+    {
+        if (!query_)
+            return -1;
+        return query_->pointGlobalId(component_id, local_point_id);
+    }
+
 private:
     QModelQuery* query_ {};
 };
@@ -203,7 +210,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->overlay_renderer_->AddObserver(vtkCommand::StartEvent, scale_bar_updater);
 
     this->data_ = vtk.GetPointer();
-    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>(vtk->global_points_.GetPointer());
+    vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
@@ -217,6 +224,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // 通用交互服务：几何顶点吸附经选择系统封装接口完成，不接触 picker
     interaction_service_ = std::make_unique<InteractionService>(*vtk->renderer_, *vtk->overlay_renderer_,
         vtk->mesh_actor_manager_->op(), *select_manager_);
+    if (mesh_id_query_)
+        interaction_service_->setMeshIdQuery(mesh_id_query_.get());
     vtk->style_->SetInteractionService(interaction_service_.get());
     // 交互状态由功能参数开关驱动（FeatureSystem::activeInteraction），渲染层随取随用
     interaction_service_->state_provider = [this]() -> systems::interaction::InteractionState* {
@@ -346,30 +355,6 @@ void QRenderWindow::deleteComponent(Index component_id)
     });
 }
 
-void QRenderWindow::updateGlobalVtkPointsImpl(Data* vtk)
-{
-    if (!vtk || !model_query_)
-        return;
-
-    const auto& pts = model_query_->globalPoints();
-    auto count = static_cast<vtkIdType>(pts.size());
-    vtkIdType totalVals = count * 3;
-
-    vtkNew<vtkDoubleArray> arr;
-    arr->SetNumberOfComponents(3);
-    // 纯几何模型没有全局网格点，不能对空 vector 的 data() 继续解引用。
-    if (!pts.empty())
-        arr->SetArray(const_cast<double*>(pts.front().data()), totalVals, 1);
-
-    vtk->global_points_->SetData(arr);
-
-    if (vtk->mesh_actor_manager_) {
-        vtk->mesh_actor_manager_->syncOriginalPointIds();
-    }
-
-    spdlog::info("[VTK GlobalPoints] updated: N={}", (int)vtk->global_points_->GetNumberOfPoints());
-}
-
 void QRenderWindow::setMeshClip(bool on)
 {
     dispatch_async([on, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
@@ -401,7 +386,6 @@ void QRenderWindow::onModelChanged(Index model_id)
         // Actor 即将重新加载，先释放引用旧 PolyData 和 OCC Shape 的选择器。
         this->select_manager_->clearSelection();
         auto component_ids = model_query_->getComponentIds(model_id);
-        updateGlobalVtkPointsImpl(vtk);
 
         for (Index component_id : component_ids) {
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
@@ -427,7 +411,6 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
         this->select_manager_->clearSelection();
-        updateGlobalVtkPointsImpl(vtk);
 
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
@@ -532,6 +515,8 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
     mesh_id_query_ = std::make_unique<QModelIdQueryAdapter>(query);
     if (select_manager_)
         select_manager_->setMeshIdQuery(mesh_id_query_.get());
+    if (interaction_service_)
+        interaction_service_->setMeshIdQuery(mesh_id_query_.get());
 }
 
 void QRenderWindow::setSelectComponent(Index component_id)

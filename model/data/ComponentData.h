@@ -11,18 +11,19 @@
 
 struct MeshData;
 struct GeometryData;
+class MeshIDMap;
 
 struct ComponentData;
 using ComponentDatas = std::vector<std::unique_ptr<ComponentData>>;
 
 // 日后在这里补充 Geometry↔网格的映射结构
 struct GeometryMeshMap {
-    // Geometry 几何边(全局 GeomEdgeId) -> 网格点(全局点池下标)序列
+    // Geometry 几何边(全局 GeomEdgeId) -> 网格点(组件内局部点 id)序列
     // 语义：一条 Geometry 边对应一条折线/采样点序列（顺序有意义）
-    std::unordered_map<GeomEdgeId, std::vector<Index>> geometry_edge_to_mesh_point_gids;
+    std::unordered_map<GeomEdgeId, std::vector<Index>> geometry_edge_to_mesh_point_ids;
 
-    void clear() { geometry_edge_to_mesh_point_gids.clear(); }
-    bool empty() const { return geometry_edge_to_mesh_point_gids.empty(); }
+    void clear() { geometry_edge_to_mesh_point_ids.clear(); }
+    bool empty() const { return geometry_edge_to_mesh_point_ids.empty(); }
 };
 
 /**
@@ -43,6 +44,16 @@ struct ComponentData {
 
     MeshAdjacency mesh_adjacency; ///< 网格邻接查询索引（派生缓存，拓扑变更后由 ComponentOperator::notifyChanged 失效）
 
+    /**
+     * @brief 局部点 id -> 全局点 id（gid 经 ModelLayer::pointIdMap() 分配，-1 = 待分配）
+     *
+     * 组件级伴生身份数据（与 mesh_adjacency 的全局边 id 层同机制），不属于 MeshData，
+     * 保证 MeshData 可独立快照/恢复。仅在受控点同步：模型入池（ModelLayer::addModel）、
+     * 整网格替换、运行期向 mesh 加点后（ensurePointGlobalIds）、组件/网格移除（releasePointGlobalIds）。
+     * gid 空转复用策略同 MeshIDMap（free-list），回收策略随 undo/redo 设计定稿。
+     */
+    std::vector<Index> point_global_ids_;
+
     // 组件级属性（后续会扩展 Property/Material）
     Index material_id { -1 }; ///< 材料/属性 ID（先留个 int 占位）
     Index source_xde_leaf_id { -1 };
@@ -61,4 +72,15 @@ struct ComponentData {
     const GeometryData* asGeometryData() const noexcept { return geometry.get(); }
 
     GeometryMeshMap& ensureMapping();
+
+    /**
+     * @brief 为全部局部点分配全局点 id（幂等，仅补缺）
+     *
+     * 在受控点调用：模型入池（ModelLayer::addModel）、整网格替换、运行期加点后。
+     * gid -> (component_id, 局部点 id) 写入 MeshIDMap。
+     */
+    void ensurePointGlobalIds(MeshIDMap& map);
+
+    //! @brief 释放全部全局点 id 并清空映射（组件移除/整网格替换/网格移除时调用）
+    void releasePointGlobalIds(MeshIDMap& map);
 };

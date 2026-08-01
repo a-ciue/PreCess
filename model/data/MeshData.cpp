@@ -8,7 +8,6 @@ void MeshData::clear()
 {
     vertex_positions_.clear();
     vertex_count_ = 0;
-    local_to_global_.clear();
     face_vertices_.clear();
     face_vertices_offset_.clear();
     edge_vertices_.clear();
@@ -57,22 +56,4 @@ std::optional<Index> MeshData::patch_block_id(int patch_id)
         }
     }
     return {};
-}
-
-void MeshData::makePointIdsGlobal()
-{
-    if (local_to_global_.empty())
-        return;
-
-    auto shift = [&](std::vector<Index>& a) {
-        for (auto& x : a) {
-            if (x >= 0 && x < (Index)local_to_global_.size())
-                x = local_to_global_[x];
-        }
-    };
-
-    shift(edge_vertices_);
-    shift(face_vertices_);
-    shift(solid_vertices_);
-    shift(solid_faces_vertices_);
 }

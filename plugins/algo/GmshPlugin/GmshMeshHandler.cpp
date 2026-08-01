@@ -254,7 +254,7 @@ std::any systems::algo::GmshMeshHandler::execute(
             }
 
             auto result = IncrementalMeshTools::meshSingleFace(
-                *meshData, *geometry, state, modelLayer,
+                *meshData, *geometry, state, context.cur_component,
                 faceId, parameters.targetMeshSize, parameters);
             if (!result.success) {
                 spdlog::warn("GmshMesh: face {} meshing failed", faceId);
@@ -270,7 +270,7 @@ std::any systems::algo::GmshMeshHandler::execute(
             }
         } else {
             auto result = IncrementalMeshTools::remeshSingleFace(
-                *meshData, *geometry, state, modelLayer,
+                *meshData, *geometry, state, context.cur_component,
                 faceId, parameters.targetMeshSize, parameters);
             if (!result.success) {
                 spdlog::warn("GmshMesh: face {} remeshing failed", faceId);

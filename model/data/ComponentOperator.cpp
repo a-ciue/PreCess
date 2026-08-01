@@ -116,6 +116,7 @@ void ComponentOperator::removeMesh()
     if (!component_ || !component_->mesh)
         return;
 
+    component_->releasePointGlobalIds(mgr_->pointIdMap());
     component_->mesh_adjacency.releaseEdgeGlobalIds(mgr_->edgeIdMap());
     component_->mesh.reset();
 

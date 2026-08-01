@@ -11,6 +11,7 @@
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
 #include "GeometryRegistry.h"
+#include "MeshIdQuery.h"
 #include "SelectManager.h"
 #include "GeometrySubshapeIndex.h"
 #include "MeshActorManager.h"
@@ -102,6 +103,13 @@ private:
 
 vtkStandardNewMacro(PickInteractorStyle);
 
+//! @brief id 查询桩：测试数据 gid 为 iota 恒等，pointGlobalId 直通局部 id
+class StubMeshIdQuery : public IMeshIdQuery {
+public:
+    std::optional<Index> findEdgeByEndpoints(Index, Index, Index) const override { return std::nullopt; }
+    Index pointGlobalId(Index, Index local_point_id) const override { return local_point_id; }
+};
+
 int g_failures = 0;
 void check(bool cond, const std::string& name)
 {
@@ -146,13 +154,7 @@ int main(int argc, char* argv[])
     vtkSmartPointer<PickInteractorStyle> style = vtkSmartPointer<PickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
-    vtkNew<vtkPoints> pts;
-    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
-    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
-        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
-    }
-
-    MeshActorManager mesh_manager(pts.GetPointer());
+    MeshActorManager mesh_manager;
     mesh_manager.bindRender(renderer.GetPointer());
 
     GeometryActorManager geometry_manager;
@@ -163,6 +165,8 @@ int main(int argc, char* argv[])
 
     FakeInteraction fake;
     InteractionService service(*renderer, *overlay_renderer, mesh_manager.op(), sel_mgr);
+    StubMeshIdQuery id_query;
+    service.setMeshIdQuery(&id_query);
 
     // 拾取列表在服务构造时登记观察，网格须在此之后加载才会进入拾取列表
     // （与应用一致：服务于 initializeVTK 创建，模型其后加载）
@@ -192,8 +196,7 @@ int main(int argc, char* argv[])
     if (!fake.picks.empty()) {
         const PickInfo& p = fake.picks.front();
         check(p.valid, "PickInfo.valid 为 true");
-        check(!mesh.local_to_global_.empty() && p.mesh_id == mesh.local_to_global_[0],
-            "PickInfo.mesh_id 为全局顶点 id");
+        check(p.mesh_id == 0, "PickInfo.mesh_id 为全局点 id（iota 恒等填充）");
         check(p.geom_id < 0, "网格拾取不填 geom_id");
     }
 

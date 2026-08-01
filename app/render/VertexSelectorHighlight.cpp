@@ -1,5 +1,6 @@
 #include "CoincidentTopology.h"
 #include "MeshActorSelectOp.h"
+#include "MeshIdQuery.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
 #include <optional>
@@ -30,11 +31,14 @@ vtkIdType _is_selected(vtkIdType new_vertex, const vtkIdTypeArray& selected_ids_
 }
 
 VertexSelectorHighlight::VertexSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
-    unsigned int partition_id, MeshActorSelectOp select_op)
+    unsigned int partition_id, MeshActorSelectOp select_op,
+    Index component_id, const IMeshIdQuery* id_query)
     : renderer_(&renderer)
     , select_op_(std::move(select_op))
     , highlight_data_(&highlight_data)
     , partition_id_(partition_id)
+    , component_id_(component_id)
+    , id_query_(id_query)
 {
     this->selected_ids_->SetNumberOfTuples(1);
     this->selected_ids_->SetNumberOfValues(0);
@@ -54,8 +58,12 @@ SelectionVtk VertexSelectorHighlight::get()
 {
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Vertex;
+    // 选中状态存局部点 id（高亮提取键空间），出口经 id 查询桥统一换算为全局点 id（跨层身份）
     for (vtkIdType i = 0; i < selected_ids_->GetNumberOfValues(); ++i) {
-        back_selection.ids.push_back(selected_ids_->GetValue(i));
+        const auto local = static_cast<Index>(selected_ids_->GetValue(i));
+        const Index gid = id_query_ ? id_query_->pointGlobalId(component_id_, local) : -1;
+        if (gid >= 0)
+            back_selection.ids.push_back(gid);
     }
     return back_selection;
 }

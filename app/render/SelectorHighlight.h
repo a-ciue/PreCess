@@ -120,7 +120,7 @@ public:
 private:
     //! @brief 选中的一条边：端点对用于高亮，edge_id 记录稳定局部边 id
     struct SelectedEdge {
-        std::array<vtkIdType, 2> endpoints; //> 全局点 id（高亮按端点对画线）
+        std::array<vtkIdType, 2> endpoints; //> 局部点 id（高亮按端点对画线；get() 出口统一换算全局点 id）
         Index edge_id { -1 }; //> 稳定局部边 id；id 查询缺失时为 -1
     };
 
@@ -162,7 +162,8 @@ public:
     static void setupHighlightStyle(vtkActor& actor, vtkMapper& mapper);
 
     VertexSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
-        unsigned int partition_id, MeshActorSelectOp select_op);
+        unsigned int partition_id, MeshActorSelectOp select_op,
+        Index component_id, const IMeshIdQuery* id_query);
     ~VertexSelectorHighlight() override;
     void select(double posx, double posy) override;
     void clear() override;
@@ -175,7 +176,9 @@ private:
     MeshActorSelectOp select_op_;
     vtkPartitionedDataSet* highlight_data_;
     unsigned int partition_id_;
-    vtkNew<vtkIdTypeArray> selected_ids_; //> 存储选中的点id，绑定到了mapper，用于触发高亮顶点修改
+    Index component_id_ { -1 };
+    const IMeshIdQuery* id_query_ {};
+    vtkNew<vtkIdTypeArray> selected_ids_; //> 选中的局部点 id，作为提取选择列表的活数组；get() 出口统一换算全局点 id
     vtkSmartPointer<vtkExtractSelection> extract_filter_;
     vtkNew<vtkGeometryFilter> geom_filter_;
 };

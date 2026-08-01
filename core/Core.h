@@ -86,7 +86,7 @@ struct MeshDataVtk {
 
     const std::vector<Index>& vtk_edge_cells_; //> 表示边顶点索引的数组，对应 MeshData::edge_vertices_
 
-    const std::vector<Index>& local_to_global_; //> 对应 MeshData::local_to_global_
+    const std::vector<std::array<double, 3>>& vertex_positions_; //> 对应 MeshData::vertex_positions_（组件自持坐标）
 
     const std::map<std::string, std::vector<double>>& vertex_attributes_; //> 表示点属性的数组，对应 MeshData::vertex_attributes_
     const std::map<std::string, std::vector<double>>& edge_attributes_; //> 表示边属性的数组，对应 MeshData::edge_attributes_

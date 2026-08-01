@@ -73,14 +73,13 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
         return {};
     MeshData* md = comp->mesh.get();
 
-    // 构造 ModelData
-    MeshDataVtk model_data { 
+    MeshDataVtk model_data {
         md->solid_types_, md->solid_vertices_, md->solid_vertices_offset_,
         md->solid_faces_vertices_, md->solid_faces_vertices_offset_,
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
         md->edge_vertices_,
-        md->local_to_global_,
+        md->vertex_positions_,
         md->vertex_attributes_,md->edge_attributes_,md->face_attributes_,md->solid_attributes_,{},-1 };
 
     // 添加所有块
@@ -118,7 +117,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
         md->solid_faces_, md->solid_faces_offset_,
         md->face_vertices_, md->face_vertices_offset_,
         md->edge_vertices_,
-        md->local_to_global_,
+        md->vertex_positions_,
         md->vertex_attributes_,
         md->edge_attributes_,
         md->face_attributes_,
@@ -159,9 +158,13 @@ std::optional<Index> QModelQuery::findEdgeByEndpoints(Index component_id, Index 
     return adjacency.edgeStableId(*comp->mesh, *edge);
 }
 
-const std::vector<std::array<double, 3>>& QModelQuery::globalPoints() const
+Index QModelQuery::pointGlobalId(Index component_id, Index local_point_id) const
 {
-    return m_manager->globalPoints();
+    ComponentData* comp = m_manager->findComponent(component_id);
+    if (!comp || local_point_id < 0
+        || local_point_id >= static_cast<Index>(comp->point_global_ids_.size()))
+        return -1;
+    return comp->point_global_ids_[static_cast<size_t>(local_point_id)];
 }
 
 std::vector<GeometryDataVtk> QModelQuery::getGeometryVtkData(Index model_id)
@@ -225,8 +228,8 @@ QVariantList QModelQuery::getGeometryEdgeMappedPointIds(Index component_id, int 
     if (!comp->mapping)
         return out;
 
-    auto it = comp->mapping->geometry_edge_to_mesh_point_gids.find(*gidOpt);
-    if (it == comp->mapping->geometry_edge_to_mesh_point_gids.end())
+    auto it = comp->mapping->geometry_edge_to_mesh_point_ids.find(*gidOpt);
+    if (it == comp->mapping->geometry_edge_to_mesh_point_ids.end())
         return out;
 
     for (Index pid : it->second)

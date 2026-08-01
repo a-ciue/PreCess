@@ -52,14 +52,8 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
 
         if (cp->mesh) {
             MeshData& md = *cp->mesh;
-            const Index base = appendGlobalPoints(md.vertex_positions_);
             md.vertex_count_ = (Index)md.vertex_positions_.size();
-            md.local_to_global_.resize(md.vertex_count_);
-            for (Index i = 0; i < md.vertex_count_; ++i) {
-                md.local_to_global_[i] = base + i;
-            }
-            md.makePointIdsGlobal();
-            std::vector<std::array<double, 3>> {}.swap(md.vertex_positions_);
+            cp->ensurePointGlobalIds(point_id_map_);
             cp->mesh_adjacency.ensureEdgeGlobalIds(edge_id_map_, cid, md);
         }
     }
@@ -102,6 +96,7 @@ void ModelLayer::removeComponent(Index component_id)
 
     if (ComponentData* c = findComponent(component_id)) {
         if (c->mesh) {
+            c->releasePointGlobalIds(point_id_map_);
             c->mesh_adjacency.releaseEdgeGlobalIds(edge_id_map_);
         }
         if (c->geometry) {
@@ -173,17 +168,14 @@ std::optional<Index> ModelLayer::findComponentIdByGeometryFaceId(GeomFaceId face
     return std::nullopt;
 }
 
-const std::vector<std::array<double, 3>>& ModelLayer::globalPoints() const
+MeshIDMap& ModelLayer::pointIdMap()
 {
-    return global_points_;
+    return point_id_map_;
 }
 
-void ModelLayer::setGlobalPoint(Index global_id, const std::array<double, 3>& point)
+const MeshIDMap& ModelLayer::pointIdMap() const
 {
-    if (global_id < 0 || global_id >= static_cast<Index>(global_points_.size())) {
-        throw std::out_of_range("ModelLayer::setGlobalPoint: global point id out of range");
-    }
-    global_points_[global_id] = point;
+    return point_id_map_;
 }
 
 MeshIDMap& ModelLayer::edgeIdMap()
@@ -204,11 +196,4 @@ GeometryRegistry& ModelLayer::geomRegistry()
 const GeometryRegistry& ModelLayer::geomRegistry() const
 {
     return geom_registry_;
-}
-
-Index ModelLayer::appendGlobalPoints(const std::vector<std::array<double, 3>>& pts)
-{
-    Index base = (Index)global_points_.size();
-    global_points_.insert(global_points_.end(), pts.begin(), pts.end());
-    return base;
 }

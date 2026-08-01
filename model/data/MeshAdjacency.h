@@ -72,7 +72,7 @@ public:
     /**
      * @brief 按两端点反查边句柄
      * @param mesh 目标网格数据（懒构建的数据源）
-     * @param p0 边端点 id（与 MeshData 连通性同一键空间，当前为全局点 id）
+     * @param p0 边端点 id（与 MeshData 连通性同一键空间，组件内局部点 id）
      * @param p1 边另一端点 id（与 p0 无序）
      * @return 命中返回边句柄；未命中或数据异常返回 std::nullopt
      */

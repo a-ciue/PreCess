@@ -63,12 +63,9 @@ void InpModelHandler::write_components(const ModelLayer& mgr,
             return;
         }
 
-        const auto& gp = mgr.globalPoints();
-
         Mesh_meshIO abaqus_mesh;
 
         size_t total_vertex_count = 0;
-        std::unordered_map<Index, Index> global_to_local;
 
         for (Index cid : component_ids) {
             const ComponentData* comp = mgr.findComponent(cid);
@@ -88,15 +85,14 @@ void InpModelHandler::write_components(const ModelLayer& mgr,
                 continue;
             }
 
-            bool use_global_points = m.vertex_positions_.empty() && !m.local_to_global_.empty();
-
+            // MeshData 自包含：坐标直接拷贝；连通性为组件内局部点索引，
+            // 文件序号 = 本组件基址 vertex_base + 局部 id
+            const Index vertex_base = static_cast<Index>(total_vertex_count);
             for (Index i = 0; i < cnt; ++i) {
-                const Index gid = use_global_points ? m.local_to_global_[static_cast<size_t>(i)] : i;
-                const auto& p = use_global_points ? gp[static_cast<size_t>(gid)] : m.vertex_positions_[static_cast<size_t>(i)];
+                const auto& p = m.vertex_positions_[static_cast<size_t>(i)];
                 abaqus_mesh.points.push_back({ p[0], p[1], p[2] });
-                global_to_local[gid] = static_cast<Index>(total_vertex_count);
-                total_vertex_count++;
             }
+            total_vertex_count += cnt;
 
             if (!m.solid_vertices_offset_.empty()) {
                 const auto& offsets = m.solid_vertices_offset_;
@@ -109,14 +105,7 @@ void InpModelHandler::write_components(const ModelLayer& mgr,
                     std::vector<int> nodes;
                     nodes.reserve(end - start);
                     for (Index k = start; k < end; ++k) {
-                        Index gid = m.solid_vertices_[static_cast<size_t>(k)];
-                        auto it = global_to_local.find(gid);
-                        if (it != global_to_local.end()) {
-                            nodes.push_back(static_cast<int>(it->second));
-                        } else {
-                            spdlog::error("InpModelHandler: solid references vertex not in component, cid={}, gid={}", cid, gid);
-                            return;
-                        }
+                        nodes.push_back(static_cast<int>(vertex_base + m.solid_vertices_[static_cast<size_t>(k)]));
                     }
 
                     unsigned char vtk_type = 0;
@@ -161,14 +150,7 @@ void InpModelHandler::write_components(const ModelLayer& mgr,
                         std::vector<int> nodes;
                         nodes.reserve(cnt);
                         for (Index k = s; k < e; ++k) {
-                            Index gid = m.face_vertices_[static_cast<size_t>(k)];
-                            auto it = global_to_local.find(gid);
-                            if (it != global_to_local.end()) {
-                                nodes.push_back(static_cast<int>(it->second));
-                            } else {
-                                spdlog::error("InpModelHandler: face references vertex not in component, cid={}, gid={}", cid, gid);
-                                return;
-                            }
+                            nodes.push_back(static_cast<int>(vertex_base + m.face_vertices_[static_cast<size_t>(k)]));
                         }
 
                         size_t idx;
@@ -212,16 +194,8 @@ void InpModelHandler::write_components(const ModelLayer& mgr,
                     }
                     for (size_t i = 0; i < nedges; ++i) {
                         std::vector<int> nodes;
-                        Index gid0 = m.edge_vertices_[2 * i];
-                        Index gid1 = m.edge_vertices_[2 * i + 1];
-                        auto it0 = global_to_local.find(gid0);
-                        auto it1 = global_to_local.find(gid1);
-                        if (it0 == global_to_local.end() || it1 == global_to_local.end()) {
-                            spdlog::error("InpModelHandler: edge references vertex not in component, cid={}", cid);
-                            return;
-                        }
-                        nodes.push_back(static_cast<int>(it0->second));
-                        nodes.push_back(static_cast<int>(it1->second));
+                        nodes.push_back(static_cast<int>(vertex_base + m.edge_vertices_[2 * i]));
+                        nodes.push_back(static_cast<int>(vertex_base + m.edge_vertices_[2 * i + 1]));
                         abaqus_mesh.cells[idx].data.push_back(std::move(nodes));
                     }
                 }

@@ -100,8 +100,7 @@ TEST_CASE("FeatureDemo execute scales active component mesh via context", "[Feat
     const auto* component = model_layer.findComponent(component_id);
     REQUIRE(component != nullptr);
     REQUIRE(component->mesh != nullptr);
-    // 入库后顶点坐标保存在全局点池，经组件的 local_to_global_ 映射验证缩放结果
-    REQUIRE(component->mesh->local_to_global_.size() == 1);
-    const Index gid = component->mesh->local_to_global_[0];
-    REQUIRE(model_layer.globalPoints()[gid] == std::array<double, 3> { 2.0, 4.0, 6.0 });
+    // 顶点坐标常驻组件 MeshData，直接验证就地缩放结果
+    REQUIRE(component->mesh->vertex_positions_.size() == 1);
+    REQUIRE(component->mesh->vertex_positions_[0] == std::array<double, 3> { 2.0, 4.0, 6.0 });
 }
