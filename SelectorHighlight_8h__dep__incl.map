@@ -4,23 +4,34 @@
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="971,29,659,49,284,81,221,89,221,83,284,76,659,44,971,24"/>
 <area shape="rect" id="Node000003" href="$FaceSelectorHighlight_8cpp.html" title=" " alt="" coords="296,86,560,111"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="980,35,579,81,519,89,518,83,578,76,980,30"/>
-<area shape="rect" id="Node000004" href="$MeshSelectManager_8cpp.html" title=" " alt="" coords="470,167,725,192"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="971,22,873,27,771,37,683,54,650,66,626,81,611,100,603,124,599,167,594,166,598,122,606,98,622,77,647,61,682,49,770,31,872,21,971,17"/>
+<area shape="rect" id="Node000004" href="$MeshSelectManager_8cpp.html" title=" " alt="" coords="466,167,721,192"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="971,23,872,27,771,37,682,54,648,66,624,81,609,100,601,124,596,167,590,166,595,122,605,97,621,77,646,61,681,49,770,32,872,22,971,17"/>
 <area shape="rect" id="Node000005" href="$MeshSelectManager_8h.html" title=" " alt="" coords="635,86,874,111"/>
 <area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1033,36,805,89,804,83,1032,31"/>
-<area shape="rect" id="Node000007" href="$SolidSelectorHighlight_8cpp.html" title=" " alt="" coords="899,79,1080,119"/>
-<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="1070,41,1016,81,1013,76,1067,37"/>
-<area shape="rect" id="Node000008" href="$VertexSelectorHighlight_8cpp.html" title=" " alt="" coords="1105,79,1295,119"/>
-<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="1123,37,1176,76,1173,81,1120,41"/>
-<area shape="rect" id="Node000009" href="$TestEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="1319,79,1502,119"/>
-<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="1154,31,1335,76,1334,81,1153,37"/>
-<area shape="rect" id="Node000010" href="$TestFaceSelectorHighlight_8cpp.html" title=" " alt="" coords="1526,79,1706,119"/>
-<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="1197,30,1515,76,1526,78,1526,83,1514,81,1196,35"/>
-<area shape="rect" id="Node000011" href="$TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="1730,79,1913,119"/>
-<area shape="poly" id="edge11_Node000001_Node000011" title=" " alt="" coords="1219,25,1451,45,1719,76,1730,78,1729,83,1718,81,1451,51,1218,31"/>
-<area shape="rect" id="Node000012" href="$TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="1937,79,2130,119"/>
-<area shape="poly" id="edge12_Node000001_Node000012" title=" " alt="" coords="1219,22,1539,40,1733,56,1926,76,1937,77,1936,83,1925,81,1732,61,1539,46,1218,27"/>
-<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="721,120,621,169,619,164,718,115"/>
-<area shape="rect" id="Node000006" href="$SelectManager_8cpp.html" title=" " alt="" coords="749,167,968,192"/>
-<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="782,117,845,164,842,169,779,122"/>
+<area shape="rect" id="Node000012" href="$SolidSelectorHighlight_8cpp.html" title=" " alt="" coords="899,79,1080,119"/>
+<area shape="poly" id="edge13_Node000001_Node000012" title=" " alt="" coords="1070,41,1016,81,1013,76,1067,37"/>
+<area shape="rect" id="Node000013" href="$VertexSelectorHighlight_8cpp.html" title=" " alt="" coords="1105,79,1295,119"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="1123,37,1176,76,1173,81,1120,41"/>
+<area shape="rect" id="Node000014" href="$TestEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="1319,79,1502,119"/>
+<area shape="poly" id="edge15_Node000001_Node000014" title=" " alt="" coords="1154,31,1335,76,1334,81,1153,37"/>
+<area shape="rect" id="Node000015" href="$TestFaceSelectorHighlight_8cpp.html" title=" " alt="" coords="1526,79,1706,119"/>
+<area shape="poly" id="edge16_Node000001_Node000015" title=" " alt="" coords="1197,30,1515,76,1526,78,1526,83,1514,81,1196,35"/>
+<area shape="rect" id="Node000016" href="$TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="1730,79,1913,119"/>
+<area shape="poly" id="edge17_Node000001_Node000016" title=" " alt="" coords="1219,25,1451,45,1719,76,1730,78,1729,83,1718,81,1451,51,1218,31"/>
+<area shape="rect" id="Node000017" href="$TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="1937,79,2130,119"/>
+<area shape="poly" id="edge18_Node000001_Node000017" title=" " alt="" coords="1219,22,1539,40,1733,56,1926,76,1937,77,1936,83,1925,81,1732,61,1539,46,1218,27"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="720,120,618,169,616,164,718,115"/>
+<area shape="rect" id="Node000006" href="$SelectManager_8cpp.html" title=" " alt="" coords="592,247,811,273"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="752,125,735,193,710,248,705,246,729,191,747,124"/>
+<area shape="rect" id="Node000007" href="$SelectManager_8h.html" title=" " alt="" coords="983,167,1187,192"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="816,112,1038,164,1037,169,815,117"/>
+<area shape="poly" id="edge11_Node000007_Node000006" title=" " alt="" coords="1017,197,758,250,757,245,1016,192"/>
+<area shape="rect" id="Node000008" href="$InteractionService_8cpp.html" title="通用视口交互服务实现：拾取解析、标注绘制、事件路由" alt="" coords="835,247,1077,273"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="1056,201,977,249,974,245,1053,197"/>
+<area shape="rect" id="Node000009" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="1101,247,1331,273"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="1118,197,1198,245,1195,249,1115,201"/>
+<area shape="rect" id="Node000010" href="$QRenderWindowStyle_8cpp.html" title=" " alt="" coords="1355,240,1559,280"/>
+<area shape="poly" id="edge10_Node000007_Node000010" title=" " alt="" coords="1153,192,1369,237,1368,243,1152,197"/>
+<area shape="rect" id="Node000011" href="$TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="1584,240,1805,280"/>
+<area shape="poly" id="edge12_Node000007_Node000011" title=" " alt="" coords="1200,191,1572,237,1584,239,1583,244,1572,243,1199,196"/>
 </map>

@@ -205,6 +205,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a4edd29afd01113124084355e019f9690"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置网格面选择的角度扩散参数  <br /></td></tr>
 <tr class="memitem:ac9a9fbc24489cdf355eb574a54480b9c" id="r_ac9a9fbc24489cdf355eb574a54480b9c"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::pair&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::array&lt; double, 3 &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac9a9fbc24489cdf355eb574a54480b9c">snapGeometryVertex</a> (double posx, double posy)</td></tr>
 <tr class="memdesc:ac9a9fbc24489cdf355eb574a54480b9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">吸附几何顶点：命中返回 {<a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> 顶点 id, 世界坐标}（转发给几何选择管理器）  <br /></td></tr>
+<tr class="memitem:af569319154edd46f9fc6befb7e49b544" id="r_af569319154edd46f9fc6befb7e49b544"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structMeshVertexSnap.html">MeshVertexSnap</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af569319154edd46f9fc6befb7e49b544">snapMeshVertex</a> (double posx, double posy)</td></tr>
+<tr class="memdesc:af569319154edd46f9fc6befb7e49b544"><td class="mdescLeft">&#160;</td><td class="mdescRight">吸附网格顶点：命中返回组件 id、局部点 id 与世界坐标（转发给网格选择管理器）  <br /></td></tr>
 <tr class="memitem:add78e91313321159a48aab6d2bc74341" id="r_add78e91313321159a48aab6d2bc74341"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add78e91313321159a48aab6d2bc74341">clearSelection</a> ()</td></tr>
 <tr class="memitem:afdf7283a61ca0a18494019a2b322c1bc" id="r_afdf7283a61ca0a18494019a2b322c1bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdf7283a61ca0a18494019a2b322c1bc">setMeshIdQuery</a> (const <a class="el" href="classIMeshIdQuery.html">IMeshIdQuery</a> *id_query)</td></tr>
 <tr class="memdesc:afdf7283a61ca0a18494019a2b322c1bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">注入模型层 id 查询接口，供选择器解析单元 id（如边端点对 -&gt; 边 id）  <br /></td></tr>
@@ -511,6 +513,29 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>吸附几何顶点：命中返回 {<a class="el" href="classGeometryRegistry.html">GeometryRegistry</a> 顶点 id, 世界坐标}（转发给几何选择管理器） </p>
+
+</div>
+</div>
+<a id="af569319154edd46f9fc6befb7e49b544" name="af569319154edd46f9fc6befb7e49b544"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af569319154edd46f9fc6befb7e49b544">&#9670;&#160;</a></span>snapMeshVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="structMeshVertexSnap.html">MeshVertexSnap</a> &gt; SelectManager::snapMeshVertex </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>吸附网格顶点：命中返回组件 id、局部点 id 与世界坐标（转发给网格选择管理器） </p>
 
 </div>
 </div>

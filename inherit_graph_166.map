@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structsystems_1_1interaction_1_1AnnotationPoint.html" title="标注点（颜色分量 0~1，默认红色）" alt="" coords="5,5,160,45"/>
+<area shape="rect" id="Node000000" href="$structsystems_1_1interaction_1_1AnnotationLine.html" title="标注线段（默认绿色实线；dashed 用于悬停动态预览）" alt="" coords="5,5,160,45"/>
 </map>
