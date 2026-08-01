@@ -165,6 +165,7 @@
   - **环境状态走上下文访问**：活动模型 / 组件、选择集经 `FeatureContext` provider 与 `App.selection` 获取，功能不反向依赖 app 层。
   - 启停类逻辑做成幂等的状态应用（以目标状态为守卫，重复触发无副作用），避免多触发源的命令式调用堆积。
 - **网格数据与点 id 约定**（详见 `MeshData.h` / `ComponentData.h` 注释）：`MeshData` 自包含（坐标常驻 `vertex_positions_`，连通性数组存组件内局部点索引）；局部点索引只增不改号、不重排（`MeshAdjacency` 持久边身份与快照恢复依赖）；`Selection` / `PickInfo` 携带全局点 id（gid），写连通性前经 `ModelLayer::pointIdMap()` 换算；整网格替换或运行期加点后须 `ComponentData::ensurePointGlobalIds` 补缺。
+- **快照原语约定**：组件级 `ComponentOperator::takeSnapshot/restoreSnapshot`、模型级 `ModelLayer::takeModelSnapshot/restoreModel/restoreComponent` 为快照/恢复统一入口；快照只装源数据与身份数据（派生缓存——邻接边表、几何子形状索引——不进快照、恢复后重建），恢复含 gid 对账（`reclaim` 按原值拿回点/边 gid、组件/模型按原 id 插回）；几何 gid 跨 undo 不保持，undo 后选择集清空（Selection 持有的 gid/稳定 id 不作跨 undo 保证）。
 
 ---
 

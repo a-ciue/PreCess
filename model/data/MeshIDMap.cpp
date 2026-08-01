@@ -1,5 +1,7 @@
 #include "MeshIDMap.h"
 
+#include <stdexcept>
+
 MeshIDMap::GlobalID MeshIDMap::insert(ComponentID component_id, LocalID local_id)
 {
     GlobalID gid = -1;
@@ -25,6 +27,19 @@ std::vector<MeshIDMap::GlobalID> MeshIDMap::insertRange(ComponentID component_id
         out.push_back(insert(component_id, local_begin + i));
     }
     return out;
+}
+
+void MeshIDMap::reclaim(GlobalID global_id, ComponentID component_id, LocalID local_id)
+{
+    if (global_id < 0 || (size_t)global_id >= global_to_local_.size())
+        throw std::runtime_error("MeshIDMap::reclaim: global id out of range");
+
+    auto it = free_ids_.find(global_id);
+    if (it == free_ids_.end())
+        throw std::runtime_error("MeshIDMap::reclaim: global id is occupied");
+
+    free_ids_.erase(it);
+    global_to_local_[(size_t)global_id] = { component_id, local_id };
 }
 
 bool MeshIDMap::remove(GlobalID global_id)

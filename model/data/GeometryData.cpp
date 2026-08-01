@@ -62,6 +62,15 @@ TopoDS_Shape makeFlatRootCompound(const TopoDS_Shape& shape)
 GeometryData::GeometryData() = default;
 GeometryData::~GeometryData() = default;
 
+std::unique_ptr<GeometryData> GeometryData::clone() const
+{
+    auto copy = std::make_unique<GeometryData>();
+    if (rootShape)
+        copy->rootShape = std::make_unique<TopoDS_Shape>(*rootShape);
+    // index 是派生缓存，不进快照：保持未建，由恢复路径 ensureIndexBuilt 重建
+    return copy;
+}
+
 void GeometryData::setRootShape(TopoDS_Shape shape)
 {
     rootShape = std::make_unique<TopoDS_Shape>(

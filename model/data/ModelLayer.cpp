@@ -11,6 +11,7 @@
  */
 #include "ModelLayer.h"
 #include "ModelObserver.h"
+#include "ModelSnapshot.h"
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ComponentOperator.h"
@@ -26,43 +27,106 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
 
     auto model = std::make_unique<ModelData>();
     model->model_name_ = model_name;
-
-    for (auto& c : components) {
-        if (!c)
-            continue;
-        c->id = allocateComponentId();
-    }
-
-    for (auto& c : components) {
-        if (!c)
-            continue;
-        Index cid = c->id;
-        spdlog::info("insert component: final_id={}, exists_before={}",
-            cid, components_.count(cid) != 0);
-
-        component_to_model_[cid] = model_id;
-        model->componentIds().push_back(cid);
-
-        components_[cid] = std::move(c);
-        ComponentData* cp = components_[cid].get();
-
-        if (cp->geometry) {
-            cp->geometry->ensureIndexBuilt(geom_registry_);
-        }
-
-        if (cp->mesh) {
-            MeshData& md = *cp->mesh;
-            md.vertex_count_ = (Index)md.vertex_positions_.size();
-            cp->ensurePointGlobalIds(point_id_map_);
-            cp->mesh_adjacency.ensureEdgeGlobalIds(edge_id_map_, cid, md);
-        }
-    }
-
     models_[model_id] = std::move(model);
 
+    // 发号 + adoptComponent：组件 gid 尚未分配，adoptComponent 内 reclaim 自然无操作、ensure 补缺
+    for (auto& c : components) {
+        if (!c)
+            continue;
+        adoptComponent(allocateComponentId(), std::move(c), model_id);
+    }
+
     if (observer_)
-        observer_->notifyModelAdded(max_index_);
+        observer_->notifyModelAdded(model_id);
     return model_id;
+}
+
+std::unique_ptr<ModelSnapshot> ModelLayer::takeModelSnapshot(Index model_id) const
+{
+    ModelData* model = modelById(model_id);
+    if (!model)
+        throw std::runtime_error("Model not exist");
+
+    auto snapshot = std::make_unique<ModelSnapshot>();
+    snapshot->model_id = model_id;
+    snapshot->name = model->model_name_;
+    snapshot->components.reserve(model->componentIds().size());
+    for (Index cid : model->componentIds()) {
+        if (ComponentData* c = findComponent(cid))
+            snapshot->components.push_back(c->clone());
+    }
+    return snapshot;
+}
+
+Index ModelLayer::restoreModel(const ModelSnapshot& snapshot)
+{
+    if (snapshot.model_id < 0)
+        throw std::invalid_argument("ModelLayer::restoreModel: invalid model id");
+    if (models_.count(snapshot.model_id) != 0)
+        throw std::runtime_error("ModelLayer::restoreModel: model id occupied");
+
+    // 按原 id 插回；发号器 max_index_ 保持只增不回滚（原 id 必然小于当前水位）
+    const Index model_id = snapshot.model_id;
+    auto model = std::make_unique<ModelData>();
+    model->model_name_ = snapshot.name;
+    models_[model_id] = std::move(model);
+
+    // 逐组件按原 id adopt（快照为 const，clone 出副本入池；component_ids_ 顺序随快照还原）
+    for (const auto& c : snapshot.components) {
+        if (!c)
+            continue;
+        adoptComponent(c->id, c->clone(), model_id);
+    }
+
+    if (observer_)
+        observer_->notifyModelAdded(model_id);
+    return model_id;
+}
+
+void ModelLayer::restoreComponent(Index model_id, std::unique_ptr<ComponentData> component)
+{
+    if (!component)
+        throw std::invalid_argument("ModelLayer::restoreComponent: null component");
+
+    const Index component_id = component->id;
+    adoptComponent(component_id, std::move(component), model_id);
+
+    // 与 addGeometryComponent 的通知一致：只新增组件，通知渲染层按组件加载
+    if (observer_)
+        observer_->notifyComponentChanged(component_id);
+}
+
+void ModelLayer::adoptComponent(Index component_id, std::unique_ptr<ComponentData> component, Index model_id)
+{
+    auto mit = models_.find(model_id);
+    if (mit == models_.end() || !mit->second)
+        throw std::runtime_error("ModelLayer::adoptComponent: model not exist");
+    if (components_.count(component_id) != 0)
+        throw std::runtime_error("ModelLayer::adoptComponent: component id occupied");
+
+    spdlog::info("insert component: final_id={}, exists_before={}",
+        component_id, components_.count(component_id) != 0);
+
+    component->id = component_id;
+    component_to_model_[component_id] = model_id;
+    mit->second->componentIds().push_back(component_id);
+
+    ComponentData* cp = component.get();
+    components_[component_id] = std::move(component);
+
+    if (cp->geometry) {
+        cp->geometry->ensureIndexBuilt(geom_registry_);
+    }
+
+    if (cp->mesh) {
+        MeshData& md = *cp->mesh;
+        md.vertex_count_ = (Index)md.vertex_positions_.size();
+        // 先按原值 reclaim 已有 gid（快照恢复），再 ensure 补缺（新入池），两者幂等兼容
+        cp->reclaimPointGlobalIds(point_id_map_);
+        cp->ensurePointGlobalIds(point_id_map_);
+        cp->mesh_adjacency.reclaimEdgeGlobalIds(edge_id_map_, component_id);
+        cp->mesh_adjacency.ensureEdgeGlobalIds(edge_id_map_, component_id, md);
+    }
 }
 
 void ModelLayer::removeModel(Index model_id) {

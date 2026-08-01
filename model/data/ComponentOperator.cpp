@@ -83,6 +83,35 @@ void ComponentOperator::notifyChanged() const
     observer_->notifyComponentChanged(component_id_);
 }
 
+std::unique_ptr<ComponentData> ComponentOperator::takeSnapshot() const
+{
+    if (!component_)
+        throw std::runtime_error("ComponentOperator::takeSnapshot: null component");
+    return component_->clone();
+}
+
+void ComponentOperator::restoreSnapshot(const ComponentData& snapshot)
+{
+    if (!component_)
+        throw std::runtime_error("ComponentOperator::restoreSnapshot: null component");
+
+    // gid 对账：先释放现有点/边 gid 与旧几何索引，再按快照原值 reclaim
+    component_->releasePointGlobalIds(mgr_->pointIdMap());
+    component_->mesh_adjacency.releaseEdgeGlobalIds(mgr_->edgeIdMap());
+    if (component_->geometry)
+        component_->geometry->index.release(mgr_->geomRegistry()); // 防止 registry 残留旧 gid->shape
+
+    component_->restoreFrom(snapshot);
+
+    component_->reclaimPointGlobalIds(mgr_->pointIdMap());
+    component_->mesh_adjacency.reclaimEdgeGlobalIds(mgr_->edgeIdMap(), component_id_);
+    if (component_->geometry)
+        component_->geometry->ensureIndexBuilt(mgr_->geomRegistry()); // 克隆体索引未建，此处重建领新 gid
+
+    // 失效邻接索引并通知观察者
+    notifyChanged();
+}
+
 Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
 {
     if (shape.IsNull())

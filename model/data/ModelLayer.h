@@ -23,6 +23,7 @@
 class ModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
 class ComponentOperator;
+struct ModelSnapshot;   // 前向声明模型级结构快照
 
 /**
  * @brief 负责管理多个 ModelData 实例的类
@@ -48,6 +49,22 @@ public:
      * @param model 需要添加的模型对象
      */
     Index addModel(const std::string& model_name, ComponentDatas components);
+
+    //! @brief 取整模型深拷贝快照（撤销 removeModel / 重做 addModel 用）
+    std::unique_ptr<ModelSnapshot> takeModelSnapshot(Index model_id) const;
+
+    /**
+     * @brief 按快照原 id 恢复模型（组件入池、component_to_model_、gid reclaim、几何索引重建）
+     * @return 恢复出的模型 id（即快照原 id）
+     * @throw std::runtime_error 原 model_id/component_id 已被占用，或 gid reclaim 冲突
+     */
+    Index restoreModel(const ModelSnapshot& snapshot);
+
+    /**
+     * @brief 按组件自带 id 把组件插回指定模型（撤销 removeComponent / 重做 addGeometryComponent 用）
+     * @throw std::runtime_error model 不存在或 component id 已被占用，或 gid reclaim 冲突
+     */
+    void restoreComponent(Index model_id, std::unique_ptr<ComponentData> component);
 
     /**
      * @brief 移除指定名称的模型
@@ -90,6 +107,17 @@ public:
 
 private:
     Index allocateComponentId() noexcept;
+
+    /**
+     * @brief 按给定 id 把组件纳入指定模型（入全局池、登记 component_to_model_、gid 对账）
+     *
+     * gid 对账顺序：几何索引 ensureIndexBuilt（快照克隆体索引未建，此处重建领新 gid）→
+     * 点 gid 先 reclaimPointGlobalIds 按原值回收再 ensurePointGlobalIds 补缺 →
+     * 边 gid 先 reclaimEdgeGlobalIds 再 ensureEdgeGlobalIds 补缺；reclaim 与 ensure 幂等兼容，
+     * addModel（gid 尚未分配，reclaim 自然无操作）与快照恢复共用本路径。
+     * @throw std::runtime_error model 不存在或 component id 已被占用，或 gid reclaim 冲突
+     */
+    void adoptComponent(Index component_id, std::unique_ptr<ComponentData> component, Index model_id);
 
     GeometryRegistry geom_registry_;
 

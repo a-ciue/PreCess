@@ -1,6 +1,8 @@
 #pragma once
 #include "Core.h"
 
+#include <memory>
+
 class ModelLayer;
 class ModelObserver;
 struct ComponentData;
@@ -44,6 +46,18 @@ public:
     Index materializeEdge(Index p0, Index p1);
 
     void notifyChanged() const;
+
+    //! @brief 取组件当前状态的深拷贝快照（撤销重做/预览机制的统一原语）
+    std::unique_ptr<ComponentData> takeSnapshot() const;
+
+    /**
+     * @brief 恢复快照：gid 对账（释放现有点/边 gid → 覆盖数据 → 按快照原值 reclaim）后 notifyChanged()
+     * @note 若组件带几何，几何子形状索引经重建领新 gid（索引是派生缓存，gid 身份载体在
+     *       GeometryRegistry 且无法 reclaim 原值），几何 gid 跨 undo 不保持——由"undo 后
+     *       选择集清空"约定覆盖；mesh 侧点/边 gid 身份由 reclaim 保证。
+     * @throw std::runtime_error gid 对账失败（reclaim 冲突）
+     */
+    void restoreSnapshot(const ComponentData& snapshot);
 
     /**
      * @brief 将新形状写入当前组件；无几何时初始化，否则追加并重建子形状索引。
