@@ -164,12 +164,12 @@ int main(int argc, char* argv[])
     SelectManager sel_mgr(*renderer, mesh_manager.op(), geometry_manager.op());
 
     FakeInteraction fake;
-    InteractionService service(*renderer, *overlay_renderer, mesh_manager.op(), sel_mgr);
+    InteractionService service(*renderer, *overlay_renderer, sel_mgr);
     StubMeshIdQuery id_query;
     service.setMeshIdQuery(&id_query);
 
-    // 拾取列表在服务构造时登记观察，网格须在此之后加载才会进入拾取列表
-    // （与应用一致：服务于 initializeVTK 创建，模型其后加载）
+    // 拾取列表在选择系统构造时登记观察，网格须在此之后加载才会进入拾取列表
+    // （与应用一致：选择系统与服务先于模型加载创建）
     mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     // 交互状态经 provider 提供：开关开启前无激活状态，pick 不转发

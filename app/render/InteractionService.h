@@ -14,9 +14,7 @@
 class vtkRenderer;
 class vtkActor;
 class vtkPolyData;
-class vtkHardwarePicker;
 class vtkBillboardTextActor3D;
-class MeshActorManagerSelectOp;
 class SelectManager;
 class IMeshIdQuery;
 
@@ -31,12 +29,12 @@ struct InteractionState;
  * 将左键/悬停解析为 PickInfo 调用其回调，并按其 annotations 统一绘制标注。
  * 无会话概念：激活状态迁移（功能参数开关驱动）在 pick/hover 入口自动同步。
  * 与选择系统的互斥由 QRenderWindowStyle 按 hasActiveState() 路由；
- * 几何顶点吸附经 SelectManager 封装接口完成，不直接接触 picker。
+ * 网格/几何顶点吸附均经 SelectManager 封装接口完成，不直接接触 picker。
  */
 class InteractionService {
 public:
     InteractionService(vtkRenderer& renderer, vtkRenderer& overlay_renderer,
-        MeshActorManagerSelectOp& mesh_op, SelectManager& select_manager);
+        SelectManager& select_manager);
     ~InteractionService();
 
     //! @brief 交互状态提供者（由 QRenderWindow 注入，转发 FeatureSystem::activeInteraction）
@@ -66,13 +64,10 @@ private:
 
     vtkRenderer* renderer_ {};
     vtkRenderer* overlay_renderer_ {};
-    MeshActorManagerSelectOp* mesh_op_ {};
     SelectManager* select_manager_ {};
     const IMeshIdQuery* id_query_ {};
 
     systems::interaction::InteractionState* current_ {}; //> 当前已上线的交互状态
-
-    vtkSmartPointer<vtkHardwarePicker> mesh_picker_;
 
     vtkSmartPointer<vtkPolyData> points_poly_;
     vtkSmartPointer<vtkActor> points_actor_;

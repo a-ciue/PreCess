@@ -6,7 +6,6 @@
 #include "InteractionService.h"
 
 #include "CoincidentTopology.h"
-#include "MeshActorManagerSelectOp.h"
 #include "MeshIdQuery.h"
 #include "SelectManager.h"
 #include "InteractionState.h"
@@ -14,9 +13,6 @@
 #include <vtkActor.h>
 #include <vtkBillboardTextActor3D.h>
 #include <vtkCellArray.h>
-#include <vtkDataSet.h>
-#include <vtkHardwarePicker.h>
-#include <vtkIdTypeArray.h>
 #include <vtkNew.h>
 #include <vtkPointData.h>
 #include <vtkCellData.h>
@@ -70,19 +66,11 @@ void appendColor(vtkUnsignedCharArray* colors, double r, double g, double b)
 } // namespace
 
 InteractionService::InteractionService(vtkRenderer& renderer, vtkRenderer& overlay_renderer,
-    MeshActorManagerSelectOp& mesh_op, SelectManager& select_manager)
+    SelectManager& select_manager)
     : renderer_(&renderer)
     , overlay_renderer_(&overlay_renderer)
-    , mesh_op_(&mesh_op)
     , select_manager_(&select_manager)
 {
-    // 网格顶点拾取器：复用选择系统的 pick list，吸附网格顶点
-    mesh_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
-    mesh_picker_->SnapToMeshPointOn();
-    mesh_picker_->SetPixelTolerance(5);
-    mesh_picker_->PickFromListOn();
-    mesh_op_->observePickList(mesh_picker_->GetPickList());
-
     // 标注点（按 DTO 逐点上色）
     points_poly_ = vtkSmartPointer<vtkPolyData>::New();
     vtkNew<vtkPolyDataMapper> points_mapper;
@@ -131,7 +119,6 @@ InteractionService::InteractionService(vtkRenderer& renderer, vtkRenderer& overl
 
 InteractionService::~InteractionService()
 {
-    mesh_op_->unobservePickList(mesh_picker_->GetPickList());
     if (renderer_) {
         renderer_->RemoveActor(points_actor_);
         renderer_->RemoveActor(lines_actor_);
@@ -229,26 +216,13 @@ bool InteractionService::snapToPickInfo(double posx, double posy, PickInfo& out)
 {
     out = PickInfo {};
 
-    // 优先吸附网格顶点
-    mesh_picker_->Pick(posx, posy, 0, renderer_);
-    const vtkIdType picked_point_id = mesh_picker_->GetPointId();
-    if (picked_point_id != -1) {
-        vtkDataSet* data_set = mesh_picker_->GetDataSet();
-        if (!data_set)
-            return false;
-        // 位置取数据集存储的精确坐标：同一顶点跨次拾取位级一致，判同一点可靠
-        double p[3];
-        data_set->GetPoint(picked_point_id, p);
-        out.world_pos = { p[0], p[1], p[2] };
-        // 取局部点 id（vtkOriginalPointIds），经 id 查询桥换算全局点 id 作为附加判据（跨层身份）
-        if (auto ids = vtkIdTypeArray::SafeDownCast(
-                data_set->GetPointData()->GetArray("vtkOriginalPointIds"))) {
-            const Index local_id = static_cast<Index>(ids->GetValue(picked_point_id));
-            if (id_query_ && mesh_op_) {
-                if (auto component_id = mesh_op_->getComponentId(mesh_picker_->GetActor()))
-                    out.mesh_id = id_query_->pointGlobalId(*component_id, local_id);
-            }
-        }
+    // 优先吸附网格顶点（经选择系统封装接口，不接触 picker）
+    if (auto hit = select_manager_->snapMeshVertex(posx, posy)) {
+        // 位置为数据集存储的精确坐标：同一顶点跨次拾取位级一致，判同一点可靠
+        out.world_pos = hit->world_pos;
+        // 局部点 id 经 id 查询桥换算全局点 id 作为附加判据（跨层身份）
+        if (id_query_)
+            out.mesh_id = id_query_->pointGlobalId(hit->component_id, hit->point_id);
         out.valid = true;
         return true;
     }

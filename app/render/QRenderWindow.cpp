@@ -221,9 +221,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         select_manager_->setMeshIdQuery(mesh_id_query_.get());
     vtk->style_->SetSelectManager(this->select_manager_.get());
 
-    // 通用交互服务：几何顶点吸附经选择系统封装接口完成，不接触 picker
+    // 通用交互服务：网格/几何顶点吸附均经选择系统封装接口完成，不接触 picker
     interaction_service_ = std::make_unique<InteractionService>(*vtk->renderer_, *vtk->overlay_renderer_,
-        vtk->mesh_actor_manager_->op(), *select_manager_);
+        *select_manager_);
     if (mesh_id_query_)
         interaction_service_->setMeshIdQuery(mesh_id_query_.get());
     vtk->style_->SetInteractionService(interaction_service_.get());
