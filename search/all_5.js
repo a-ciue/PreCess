@@ -86,7 +86,7 @@ var searchData=
   ['ensureedgeglobalids_83',['ensureEdgeGlobalIds',['../classMeshAdjacency.html#ac53565ba70f06b5d93a6f867b789cca8',1,'MeshAdjacency']]],
   ['ensureindexbuilt_84',['ensureIndexBuilt',['../structGeometryData.html#a813025254425b3382c788103d2a432e6',1,'GeometryData']]],
   ['ensuremapping_85',['ensureMapping',['../structComponentData.html#af632ecd07d41a3e447653491111963a9',1,'ComponentData']]],
-  ['ensureoriginalpointids_86',['ensureOriginalPointIds',['../classMeshActor.html#ad6323d9128d99c7a608a7913bfc496da',1,'MeshActor']]],
+  ['ensurepointglobalids_86',['ensurePointGlobalIds',['../structComponentData.html#a9776d498ae3fbbfe53152da5337a361a',1,'ComponentData']]],
   ['entries_5f_87',['entries_',['../classsystems_1_1feature_1_1FeatureSystem.html#a175c6e151ef13beedba062dccd4a3052',1,'systems::feature::FeatureSystem']]],
   ['equal_5fto_88',['equal_to',['../structplf_1_1equal__to.html',1,'plf::equal_to&lt; element_type &gt;'],['../structplf_1_1equal__to.html#ac23121922416d58c8b065b07611087ef',1,'plf::equal_to::equal_to()']]],
   ['equalsignorecase_89',['equalsIgnoreCase',['../namespacestrutil.html#a4038560d84d6462679bcd4aaf7499d0e',1,'strutil']]],

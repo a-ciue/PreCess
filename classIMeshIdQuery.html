@@ -86,6 +86,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a6973614c3834c38a1f9c9d22879e3cc7" id="r_a6973614c3834c38a1f9c9d22879e3cc7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6973614c3834c38a1f9c9d22879e3cc7">~IMeshIdQuery</a> ()=default</td></tr>
 <tr class="memitem:a63aeca7ae8df4c8bc34a8ec6ae2ab426" id="r_a63aeca7ae8df4c8bc34a8ec6ae2ab426"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63aeca7ae8df4c8bc34a8ec6ae2ab426">findEdgeByEndpoints</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p0, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p1) const =0</td></tr>
 <tr class="memdesc:a63aeca7ae8df4c8bc34a8ec6ae2ab426"><td class="mdescLeft">&#160;</td><td class="mdescRight">按两端点反查边的稳定局部 id  <br /></td></tr>
+<tr class="memitem:a0331a0268002b5f72a1fef19eee6baec" id="r_a0331a0268002b5f72a1fef19eee6baec"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0331a0268002b5f72a1fef19eee6baec">pointGlobalId</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> local_point_id) const =0</td></tr>
+<tr class="memdesc:a0331a0268002b5f72a1fef19eee6baec"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件内局部点 id -&gt; 全局点 id（MeshIDMap gid，跨层身份）  <br /></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a6973614c3834c38a1f9c9d22879e3cc7" name="a6973614c3834c38a1f9c9d22879e3cc7"></a>
@@ -150,12 +152,44 @@ Public 成员函数</h2></td></tr>
 <dl class="params"><dt>参数</dt><dd>
   <table class="params">
     <tr><td class="paramname">component_id</td><td>组件 ID </td></tr>
-    <tr><td class="paramname">p0</td><td>边端点 id（与 <a class="el" href="structMeshData.html">MeshData</a> 连通性同一键空间，当前为全局点 id） </td></tr>
+    <tr><td class="paramname">p0</td><td>边端点 id（与 <a class="el" href="structMeshData.html">MeshData</a> 连通性同一键空间，组件内局部点 id） </td></tr>
     <tr><td class="paramname">p1</td><td>边另一端点 id（与 p0 无序） </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>返回</dt><dd>命中返回稳定局部边 id（跨拓扑编辑有效）；未命中返回 std::nullopt </dd></dl>
+
+</div>
+</div>
+<a id="a0331a0268002b5f72a1fef19eee6baec" name="a0331a0268002b5f72a1fef19eee6baec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0331a0268002b5f72a1fef19eee6baec">&#9670;&#160;</a></span>pointGlobalId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> IMeshIdQuery::pointGlobalId </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>local_point_id</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>组件内局部点 id -&gt; 全局点 id（MeshIDMap gid，跨层身份） </p>
+<dl class="section return"><dt>返回</dt><dd>命中返回全局点 id；组件不存在、局部点越界或未分配返回 -1 </dd></dl>
 
 </div>
 </div>

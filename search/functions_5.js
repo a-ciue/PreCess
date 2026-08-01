@@ -34,7 +34,7 @@ var searchData=
   ['ensureedgeglobalids_31',['ensureEdgeGlobalIds',['../classMeshAdjacency.html#ac53565ba70f06b5d93a6f867b789cca8',1,'MeshAdjacency']]],
   ['ensureindexbuilt_32',['ensureIndexBuilt',['../structGeometryData.html#a813025254425b3382c788103d2a432e6',1,'GeometryData']]],
   ['ensuremapping_33',['ensureMapping',['../structComponentData.html#af632ecd07d41a3e447653491111963a9',1,'ComponentData']]],
-  ['ensureoriginalpointids_34',['ensureOriginalPointIds',['../classMeshActor.html#ad6323d9128d99c7a608a7913bfc496da',1,'MeshActor']]],
+  ['ensurepointglobalids_34',['ensurePointGlobalIds',['../structComponentData.html#a9776d498ae3fbbfe53152da5337a361a',1,'ComponentData']]],
   ['equal_5fto_35',['equal_to',['../structplf_1_1equal__to.html#ac23121922416d58c8b065b07611087ef',1,'plf::equal_to']]],
   ['equalsignorecase_36',['equalsIgnoreCase',['../namespacestrutil.html#a4038560d84d6462679bcd4aaf7499d0e',1,'strutil']]],
   ['erase_37',['erase',['../classplf_1_1colony.html#aba1bb9f0f366dc1b72dfcd204b976417',1,'plf::colony::erase(const const_iterator it)'],['../classplf_1_1colony.html#a290a87147f74a56f19ace24ee272b541',1,'plf::colony::erase(const const_iterator iterator1, const const_iterator iterator2)'],['../namespacestd.html#a35d152c6ecb4a596d374a54f7a821ba1',1,'std::erase(plf::colony&lt; element_type, allocator_type &gt; &amp;container, const element_type &amp;value)']]],

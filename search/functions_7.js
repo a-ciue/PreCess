@@ -107,8 +107,7 @@ var searchData=
   ['getvertex_104',['getVertex',['../classGeometryRegistry.html#a10921a3fcf2ece4c81d035ad393fbe76',1,'GeometryRegistry']]],
   ['getvertexweights_105',['GetVertexWeights',['../structtinyobj_1_1attrib__t.html#a7b676e796e30ea4515da7ce12ff17897',1,'tinyobj::attrib_t']]],
   ['getvertices_106',['GetVertices',['../structtinyobj_1_1attrib__t.html#a07a1cf5682169df457a264c390ffd204',1,'tinyobj::attrib_t']]],
-  ['globalpoints_107',['globalPoints',['../classQModelQuery.html#a37146c12e55a7af6fd2ce8064868e7f2',1,'QModelQuery::globalPoints()'],['../classModelLayer.html#ac27658f886aae3df685d179c34ea0656',1,'ModelLayer::globalPoints()']]],
-  ['group_108',['group',['../structplf_1_1colony_1_1group.html#ade5f3f92fd04539e94916ee2533270b1',1,'plf::colony::group::group(aligned_struct_allocator_type &amp;aligned_struct_allocator, const skipfield_type elements_per_group, const group_pointer_type previous) PLF_NOEXCEPT'],['../structplf_1_1colony_1_1group.html#a036921611b987c987e5c350ca102f0ae',1,'plf::colony::group::group(const group &amp;source)']]],
-  ['groupmerged_109',['groupMerged',['../classQModelObserver.html#a00d8f03db26de49ba041a9455fba60e7',1,'QModelObserver']]],
-  ['groupupdated_110',['groupUpdated',['../classQModelObserver.html#ab1b6f878f7c9814a275165c6f4d9aee2',1,'QModelObserver']]]
+  ['group_107',['group',['../structplf_1_1colony_1_1group.html#ade5f3f92fd04539e94916ee2533270b1',1,'plf::colony::group::group(aligned_struct_allocator_type &amp;aligned_struct_allocator, const skipfield_type elements_per_group, const group_pointer_type previous) PLF_NOEXCEPT'],['../structplf_1_1colony_1_1group.html#a036921611b987c987e5c350ca102f0ae',1,'plf::colony::group::group(const group &amp;source)']]],
+  ['groupmerged_108',['groupMerged',['../classQModelObserver.html#a00d8f03db26de49ba041a9455fba60e7',1,'QModelObserver']]],
+  ['groupupdated_109',['groupUpdated',['../classQModelObserver.html#ab1b6f878f7c9814a275165c6f4d9aee2',1,'QModelObserver']]]
 ];

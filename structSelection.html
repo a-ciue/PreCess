@@ -132,7 +132,7 @@ Public 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>选择对象的id序列 </p>
-<dl class="section note"><dt>注解</dt><dd>Edge 类型为稳定局部边 id（跨拓扑编辑有效，物化边与面边同表）； id 查询缺失（防御路径）时为两个端点 id 两两排列。 </dd></dl>
+<dl class="section note"><dt>注解</dt><dd>Vertex 类型为全局点 id（MeshIDMap 分配，经 <a class="el" href="classModelLayer.html#a19ed3df9982488b982f865c9b3ebfa2a">ModelLayer::pointIdMap()</a> 可解析为 (component_id, 局部点 id)）； Edge 类型为稳定局部边 id（跨拓扑编辑有效，物化边与面边同表）， id 查询缺失（防御路径）时为两个端点局部点 id 两两排列。 </dd></dl>
 
 </div>
 </div>
