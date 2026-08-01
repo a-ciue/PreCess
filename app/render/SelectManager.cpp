@@ -126,6 +126,11 @@ std::optional<std::pair<Index, std::array<double, 3>>> SelectManager::snapGeomet
     return geom_->snapGeometryVertex(posx, posy);
 }
 
+std::optional<MeshVertexSnap> SelectManager::snapMeshVertex(double posx, double posy)
+{
+    return mesh_->snapMeshVertex(posx, posy);
+}
+
 std::unique_ptr<Selection> SelectManager::getSelection()
 {
     if (select_mode_ == SelectMode::Component) {

@@ -2,9 +2,13 @@
 #include "MeshActorManagerSelectOp.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
+#include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
+#include <vtkDataSet.h>
 #include <vtkHardwarePicker.h>
+#include <vtkIdTypeArray.h>
 #include <vtkPartitionedDataSet.h>
+#include <vtkPointData.h>
 #include <vtkRenderer.h>
 
 MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorManagerSelectOp& op)
@@ -19,6 +23,13 @@ MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_
     highlight_mapper_->SetInputDataObject(highlight_data_);
     component_picker_->PickFromListOn();
     op_->observePickList(component_picker_->GetPickList());
+
+    // 顶点吸附专用拾取器：与组件拾取分离（SnapToMeshPoint 会改变拾取语义）
+    vertex_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
+    vertex_picker_->SnapToMeshPointOn();
+    vertex_picker_->SetPixelTolerance(5);
+    vertex_picker_->PickFromListOn();
+    op_->observePickList(vertex_picker_->GetPickList());
 }
 
 void MeshSelectManager::select(double posx, double posy)
@@ -66,6 +77,35 @@ void MeshSelectManager::clearSelection()
 void MeshSelectManager::setMeshIdQuery(const IMeshIdQuery* id_query)
 {
     id_query_ = id_query;
+}
+
+std::optional<MeshVertexSnap> MeshSelectManager::snapMeshVertex(double posx, double posy)
+{
+    vertex_picker_->Pick(posx, posy, 0, renderer_);
+    const vtkIdType picked_point_id = vertex_picker_->GetPointId();
+    if (picked_point_id == -1)
+        return std::nullopt;
+
+    vtkDataSet* data_set = vertex_picker_->GetDataSet();
+    vtkActor* picked_actor = vertex_picker_->GetActor();
+    if (!data_set || !picked_actor)
+        return std::nullopt;
+
+    auto component_id = op_->getComponentId(picked_actor);
+    if (!component_id)
+        return std::nullopt;
+
+    // 局部点 id：vtkOriginalPointIds 与数据集点下标同语义（裁剪链上被覆盖亦成立）
+    Index local_id = -1;
+    if (auto ids = vtkIdTypeArray::SafeDownCast(
+            data_set->GetPointData()->GetArray("vtkOriginalPointIds")))
+        local_id = static_cast<Index>(ids->GetValue(picked_point_id));
+
+    // 位置取数据集存储的精确坐标：同一顶点跨次拾取位级一致，判同一点可靠
+    double p[3];
+    data_set->GetPoint(picked_point_id, p);
+
+    return MeshVertexSnap { *component_id, local_id, { p[0], p[1], p[2] } };
 }
 
 std::unique_ptr<Selection> MeshSelectManager::getSelection()
