@@ -39,7 +39,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     algo_adaptor_ = std::make_unique<systems::algo::QAlgorithmSystemAdaptor>(*algo_system_);
     io_adaptor_ = std::make_unique<systems::io::QModelIOSystemAdaptor>(*io_system_);
     edit_adaptor_ = std::make_unique<systems::edit::QEditSystemAdaptor>(*edit_system_);
-    feature_adaptor_ = std::make_unique<systems::feature::QFeatureSystemAdaptor>(*feature_system_, *event_bus_);
+    feature_adaptor_ = std::make_unique<systems::feature::QFeatureSystemAdaptor>(*feature_system_);
     // 功能上下文的活动模型/组件由 UI 同步到适配器，功能经 provider 动态获取
     feature_system_->setActiveModelProvider([this]() { return feature_adaptor_->activeModel(); });
     feature_system_->setActiveComponentProvider([this]() { return feature_adaptor_->activeComponent(); });

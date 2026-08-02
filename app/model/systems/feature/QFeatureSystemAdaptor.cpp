@@ -46,13 +46,13 @@ QVariant anyToQVariant(const std::any& value)
 }
 }
 
-QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system, core::EventBus& event_bus)
+QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     : feature_system_(&feature_system)
 {
     feature_system.setOnFeatureInfosChanged([this]() {
         emit featuresInfoChanged();
     });
-    scalar_attribute_display_sub_ = event_bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+    scalar_attribute_display_sub_ = feature_system.events().subscribe<ScalarAttributeDisplayRequestedEvent>(
         [this](const ScalarAttributeDisplayRequestedEvent& event) {
             emit scalarAttributeDisplayRequested(QString::fromStdString(event.attribute_name));
         });

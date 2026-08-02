@@ -24,7 +24,7 @@ class QFeatureSystemAdaptor : public QObject {
     QML_ELEMENT
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
 public:
-    QFeatureSystemAdaptor(FeatureSystem& feature_system, core::EventBus& event_bus);
+    QFeatureSystemAdaptor(FeatureSystem& feature_system);
     /**
      * @brief 菜单触发的功能调用
      * @param unique_name 功能唯一名称
