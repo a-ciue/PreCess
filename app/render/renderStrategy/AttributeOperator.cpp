@@ -189,7 +189,7 @@ void AttributeOperator::disableFaceAttributeOffset()
 
 double AttributeOperator::getMeshScale() const noexcept
 {
-    vtkPoints* points = mesh_actor_->global_points_;
+    vtkPoints* points = mesh_actor_->points_;
     const auto& model_data = mesh_actor_->model_data_;
     if (!points || !model_data)
         return 1.0;
@@ -238,9 +238,9 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getPointGlyphInput(const std::st
     if (!array)
         return nullptr;
 
-    vtkPoints* global_points = mesh_actor_->global_points_;
+    vtkPoints* component_points = mesh_actor_->points_;
     const auto& model_data = mesh_actor_->model_data_;
-    if (!global_points || !model_data || model_data->local_to_global_.empty())
+    if (!component_points || !model_data)
         return nullptr;
 
     const int component_count = array->GetNumberOfComponents();
@@ -248,21 +248,19 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getPointGlyphInput(const std::st
     vectors->SetName(attr_name.c_str());
     vectors->SetNumberOfComponents(component_count);
 
-    // 点属性数组按全局点池存放；glyph 只需要当前 component 的局部点，避免遍历无关组件的零向量。
+    // 点属性数组与组件私有点集同为局部约定，tuple 与局部点 id 一一对应，直接顺序取。
     auto points = vtkSmartPointer<vtkPoints>::New();
     std::vector<double> tuple(static_cast<size_t>(component_count));
-    for (size_t local_point_id = 0; local_point_id < model_data->local_to_global_.size(); ++local_point_id) {
-        const Index global_point_id = model_data->local_to_global_[local_point_id];
-        if (global_point_id < 0 || global_point_id >= global_points->GetNumberOfPoints()
-            || global_point_id >= array->GetNumberOfTuples()) {
-            continue;
-        }
+    const vtkIdType point_count = component_points->GetNumberOfPoints();
+    for (vtkIdType local_point_id = 0; local_point_id < point_count; ++local_point_id) {
+        if (local_point_id >= array->GetNumberOfTuples())
+            break;
 
         double point[3] {};
-        global_points->GetPoint(global_point_id, point);
+        component_points->GetPoint(local_point_id, point);
         points->InsertNextPoint(point);
 
-        array->GetTuple(global_point_id, tuple.data());
+        array->GetTuple(local_point_id, tuple.data());
         vectors->InsertNextTuple(tuple.data());
     }
 

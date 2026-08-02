@@ -77,7 +77,14 @@ struct ArgType::TypeMap<ArgTypeEnum::Combo> {
 template <>
 struct ArgType::TypeMap<ArgTypeEnum::Selector> {
     using type = std::shared_ptr<Selection>;
-}; 
+};
+/**
+ * @brief 按钮类型，内容为点击计数器（无值触发器，仅作事件触发载荷，功能约定忽略值只读参数下标）
+ */
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Button> {
+    using type = int;
+};
 }
 
 #endif // !ARG_TYPE_H

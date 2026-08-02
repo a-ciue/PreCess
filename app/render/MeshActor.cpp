@@ -27,54 +27,35 @@ vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
 namespace {
-// 将组件局部点属性写入全局 PointData，供面/体 mapper 按点属性渲染。
+// 将组件局部点属性写入 PointData，供面/体 mapper 按点属性渲染。
 void addPointAttributes(
     vtkPointData& point_data,
     const std::map<std::string, std::vector<double>>& attributes,
-    vtkIdType global_point_count,
-    const std::vector<Index>& local_to_global)
+    vtkIdType point_count)
 {
-    // 全局点池未同步时不能挂载点属性。
-    if (global_point_count <= 0)
+    if (point_count <= 0)
         return;
 
-    // component 重构后，点属性仍是组件局部数组，必须依赖局部点到全局点的映射。
-    if (local_to_global.empty())
-        return;
-
-    const size_t local_point_count = local_to_global.size();
+    const size_t num_points = static_cast<size_t>(point_count);
     for (const auto& [attr_name, attr_values] : attributes) {
         if (attr_values.empty())
             continue;
 
         // 属性数组按 [point0 分量..., point1 分量...] 存放，总长度必须是点数的整数倍。
-        if (attr_values.size() % local_point_count != 0) {
+        if (attr_values.size() % num_points != 0) {
             spdlog::error("Attribute {} size mismatch: {} values for {} points",
-                attr_name, attr_values.size(), local_point_count);
+                attr_name, attr_values.size(), num_points);
             continue;
         }
 
-        // VTK PointData 挂在共享的全局点池上，tuple 数量必须按全局点数创建。
-        const size_t ncomp = attr_values.size() / local_point_count;
+        // PointData 是当前 VTK 数据对象自己的局部点数组，tuple 与局部点 id 一一对应。
+        const size_t ncomp = attr_values.size() / num_points;
         auto array = vtkSmartPointer<vtkDoubleArray>::New();
         array->SetNumberOfComponents(static_cast<int>(ncomp));
         array->SetName(attr_name.c_str());
-        array->SetNumberOfTuples(global_point_count);
-        // 非本组件的点也需要占位，否则 tuple id 无法和全局点 id 对齐。
-        for (int comp = 0; comp < static_cast<int>(ncomp); ++comp)
-            array->FillComponent(comp, 0.0);
-
-        // 将组件局部第 i 个点属性写到 local_to_global[i] 指向的全局 tuple 上。
-        for (size_t i = 0; i < local_point_count; ++i) {
-            const Index global_point_id = local_to_global[i];
-            if (global_point_id < 0 || global_point_id >= static_cast<Index>(global_point_count)) {
-                spdlog::error("Attribute {} point id {} exceeds global point count {}",
-                    attr_name, global_point_id, global_point_count);
-                continue;
-            }
-            const vtkIdType tuple_id = static_cast<vtkIdType>(global_point_id);
-            array->SetTuple(tuple_id, &attr_values[i * ncomp]);
-        }
+        array->SetNumberOfTuples(point_count);
+        for (size_t i = 0; i < num_points; ++i)
+            array->SetTuple(static_cast<vtkIdType>(i), &attr_values[i * ncomp]);
         point_data.AddArray(array);
     }
 }
@@ -114,14 +95,11 @@ void addCellAttributes(
 }
 }
 
-MeshActor::MeshActor(
-    vtkRenderer* renderer,
-    vtkPoints* global_points)
+MeshActor::MeshActor(vtkRenderer* renderer)
     : renderer_(renderer)
-    , global_points_(global_points)
 {
-    if (!global_points_) {
-        throw std::invalid_argument("MeshActor: global_points cannot be null");
+    if (!renderer_) {
+        throw std::invalid_argument("MeshActor: renderer cannot be null");
     }
     vtkNew<vtkNamedColors> colors;
 
@@ -150,9 +128,29 @@ MeshActor::~MeshActor()
 
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
-    ensureOriginalPointIds();
-
     this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
+
+    // 组件私有点集：坐标自持，连通性数组直接以局部点 id 作 VTK 点索引
+    const auto& positions = model_data.vertex_positions_;
+    const vtkIdType point_count = static_cast<vtkIdType>(positions.size());
+    vtkNew<vtkAOSDataArrayTemplate<double>> point_array;
+    point_array->SetNumberOfComponents(3);
+    if (point_count > 0)
+        point_array->SetArray(const_cast<double*>(positions.front().data()), point_count * 3, 1);
+    points_->SetData(point_array);
+
+    // 拾取标签 vtkOriginalPointIds：存局部点 id，高亮提取直接作 VTK 点索引；
+    // 与提取过滤器自动生成的同名数组同语义（均为局部点下标），裁剪链上被覆盖也不影响取值
+    original_point_ids_->SetName("vtkOriginalPointIds");
+    original_point_ids_->SetNumberOfComponents(1);
+    original_point_ids_->SetNumberOfTuples(point_count);
+    vtkSMPTools::For(0, point_count,
+        [&](vtkIdType begin, vtkIdType end) {
+            for (vtkIdType id = begin; id < end; ++id) {
+                original_point_ids_->SetValue(id, static_cast<Index>(id));
+            }
+        });
+    original_point_ids_->Modified();
 
     // face data
     vtkPolyData* face_poly = this->face_data_;
@@ -169,14 +167,26 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         poly_data->SetData(offset_array, index_array);
 
         // face poly data
-        face_poly->SetPoints(global_points_);
+        face_poly->SetPoints(points_);
         face_poly->SetPolys(poly_data);
 
         face_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
 
+        // 面索引数组：不裁剪时索引即模型面 id；随裁剪链透传，裁剪开启时拾取仍能映射回模型面
+        vtkNew<vtkIdTypeArray> face_ids;
+        face_ids->SetNumberOfComponents(1);
+        face_ids->SetName("PrecessFaceIds");
+        face_ids->SetNumberOfTuples(face_poly->GetNumberOfCells());
+        vtkSMPTools::For(0, face_poly->GetNumberOfCells(),
+            [&](vtkIdType begin, vtkIdType end) {
+                for (vtkIdType id = begin; id < end; ++id) {
+                    face_ids->SetValue(id, id);
+                }
+            });
+        face_poly->GetCellData()->AddArray(face_ids);
+
         // 处理面属性
-        addPointAttributes(*face_poly->GetPointData(), model_data.vertex_attributes_,
-            global_points_->GetNumberOfPoints(), model_data.local_to_global_);
+        addPointAttributes(*face_poly->GetPointData(), model_data.vertex_attributes_, point_count);
         addCellAttributes(*face_poly->GetCellData(), model_data.face_attributes_,
             face_poly->GetNumberOfCells(), "face");
     }
@@ -190,7 +200,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
         edge_cells->SetData(2, index_array);
 
-        edge_poly->SetPoints(global_points_);
+        edge_poly->SetPoints(points_);
         edge_poly->SetLines(edge_cells);
 
         edge_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
@@ -198,7 +208,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 
     // solid data
     vtkUnstructuredGrid* solid_ugird = this->solid_data_;
-    _createSolidUGird(*this->model_data_, *global_points_, *solid_ugird);
+    _createSolidUGird(*this->model_data_, *points_, *solid_ugird);
     vtkIdType solid_cells_count = solid_ugird->GetNumberOfCells();
     vtkNew<vtkIdTypeArray> originalCellIds;
     originalCellIds->SetNumberOfComponents(1);
@@ -214,8 +224,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     solid_ugird->GetCellData()->AddArray(originalCellIds);
     solid_ugird->GetPointData()->AddArray(original_point_ids_.GetPointer());
     // 处理体属性
-    addPointAttributes(*solid_ugird->GetPointData(), model_data.vertex_attributes_,
-        global_points_->GetNumberOfPoints(), model_data.local_to_global_);
+    addPointAttributes(*solid_ugird->GetPointData(), model_data.vertex_attributes_, point_count);
     addCellAttributes(*solid_ugird->GetCellData(), model_data.solid_attributes_, solid_cells_count, "solid");
 
     // 单元中心点只和几何拓扑有关，在加载数据时统一计算并缓存，属性渲染阶段直接复用。 
@@ -454,19 +463,4 @@ void MeshActor::renderAttribute(
         AttributeOperator op(this);
         render_strategy_->render(op, attr_name, args);
     }
-}
-
-void MeshActor::ensureOriginalPointIds()
-{
-    vtkIdType n = global_points_->GetNumberOfPoints();
-    original_point_ids_->SetName("vtkOriginalPointIds");
-    original_point_ids_->SetNumberOfComponents(1);
-    original_point_ids_->SetNumberOfTuples(n);
-    vtkSMPTools::For(0, n,
-        [&](vtkIdType begin, vtkIdType end) {
-            for (vtkIdType i = begin; i < end; ++i) {
-                original_point_ids_->SetValue(i, i);
-            }
-        });
-    original_point_ids_->Modified();
 }

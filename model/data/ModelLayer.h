@@ -87,21 +87,11 @@ public:
     GeometryRegistry& geomRegistry();
     const GeometryRegistry& geomRegistry() const;
 
-    const std::vector<std::array<double, 3>>& globalPoints() const;
-
-    /**
-     * @brief 修改指定全局点的坐标
-     * @param global_id 全局点 ID
-     * @param point 新坐标
-     * @throw std::out_of_range global_id 越界
-     */
-    void setGlobalPoint(Index global_id, const std::array<double, 3>& point);
+    MeshIDMap& pointIdMap();
+    const MeshIDMap& pointIdMap() const;
 
     MeshIDMap& edgeIdMap();
     const MeshIDMap& edgeIdMap() const;
-
-    // 将运行期新生成的点追加到全局点池，返回这批点的第一个全局点 ID。
-    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
 
 private:
     Index allocateComponentId() noexcept;
@@ -114,8 +104,8 @@ private:
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
 
-    std::vector<std::array<double, 3>> global_points_;
-    MeshIDMap edge_id_map_; // 先只维护 edge 的 global->local
+    MeshIDMap point_id_map_; // 点的 global<->local（gid 为纯身份标识，坐标由组件 MeshData 自持）
+    MeshIDMap edge_id_map_; // 边的 global->local
 
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
 

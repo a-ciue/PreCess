@@ -40,8 +40,6 @@ void OBJModelHandler::write_components(const ModelLayer& mgr,
         return;
     }
 
-    const auto& gp = mgr.globalPoints();
-
     // OBJ vertex indices are 1-based and file-global, need accumulated offset
     Index v_offset_1based = 1;
 
@@ -64,46 +62,29 @@ void OBJModelHandler::write_components(const ModelLayer& mgr,
             continue;
         }
 
-        std::unordered_map<Index, Index> global_to_local;
-        for (Index i = 0; i < cnt; ++i) {
-            global_to_local[m.local_to_global_[i]] = i;
-        }
-
         // object name
         ofs << "o " << (comp->name.empty() ? ("component_" + std::to_string(cid)) : comp->name) << "\n";
 
-        // vertices
+        // MeshData 自包含，vertex_positions_ 常驻坐标，直接写入
         for (Index i = 0; i < cnt; ++i) {
-            const Index gid = m.local_to_global_[i];
-            const auto& p = gp[(size_t)gid];
+            const auto& p = m.vertex_positions_[(size_t)i];
             ofs << "v " << p[0] << " " << p[1] << " " << p[2] << "\n";
         }
 
-        bool component_ok = true;
         if (m.face_vertices_offset_.size() >= 2) {
             const Index nFaces = static_cast<Index>(m.face_vertices_offset_.size() - 1);
-            for (Index f = 0; f < nFaces && component_ok; ++f) {
+            for (Index f = 0; f < nFaces; ++f) {
                 const Index a = m.face_vertices_offset_[static_cast<size_t>(f)];
                 const Index b = m.face_vertices_offset_[static_cast<size_t>(f + 1)];
                 if (a < 0 || b < a || b > static_cast<Index>(m.face_vertices_.size()))
                     continue;
 
+                // 面顶点为组件内局部点索引，文件序号 = 1-based 偏移 + 局部 id
                 ofs << "f";
                 for (Index k = a; k < b; ++k) {
-                    const Index gid = m.face_vertices_[static_cast<size_t>(k)];
-                    auto it = global_to_local.find(gid);
-                    if (it == global_to_local.end()) {
-                        spdlog::error("OBJModelHandler: face references vertex not in component, cid={}, gid={}",
-                            cid, gid);
-                        ofs << "\n";
-                        component_ok = false;
-                        break;
-                    }
-                    ofs << " " << (v_offset_1based + it->second);
+                    ofs << " " << (v_offset_1based + m.face_vertices_[static_cast<size_t>(k)]);
                 }
-                if (component_ok) {
-                    ofs << "\n";
-                }
+                ofs << "\n";
             }
         }
 

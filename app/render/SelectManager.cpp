@@ -91,6 +91,11 @@ void SelectManager::clearSelection()
     geom_->clearSelection();
 }
 
+void SelectManager::setMeshIdQuery(const IMeshIdQuery* id_query)
+{
+    mesh_->setMeshIdQuery(id_query);
+}
+
 void SelectManager::refreshComponentHighlight()
 {
     component_selector_->refreshHighlight();
@@ -119,6 +124,11 @@ void SelectManager::setMeshHighlightVisible(Index component_id, bool visible)
 std::optional<std::pair<Index, std::array<double, 3>>> SelectManager::snapGeometryVertex(double posx, double posy)
 {
     return geom_->snapGeometryVertex(posx, posy);
+}
+
+std::optional<MeshVertexSnap> SelectManager::snapMeshVertex(double posx, double posy)
+{
+    return mesh_->snapMeshVertex(posx, posy);
 }
 
 std::unique_ptr<Selection> SelectManager::getSelection()

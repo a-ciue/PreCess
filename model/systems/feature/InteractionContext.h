@@ -34,13 +34,25 @@ public:
     //! @brief 标注集：功能在回调中直接更新，渲染层拉取绘制
     systems::interaction::AnnotationBatch& annotations();
 
+    //! @brief GUI 线程交互状态/标注变更后请求渲染刷新（渲染层 syncPending 拉取并复位 needs_refresh）
+    //! @note 合并语义：needs_refresh 已置位（渲染侧尚未消费）时跳过重复 notify，由在途刷新一并拉取
+    void requestRefresh();
+    //! @brief GUI 线程延迟刷新：将刷新前置操作存入 InteractionState，经 requestRefresh 通知渲染线程执行后拉取标注
+    //! @param pre_op 刷新前需在渲染线程执行的操作（如清理功能交互状态；覆盖语义，须幂等）
+    void deferRefresh(std::function<void()> pre_op);
+
     //! @brief 设置本功能交互激活态（单激活：激活自己时会先下线其他功能的交互）
     void setActive(bool on);
 
+private:
+    // 装配注入仅 FeatureSystem 可用：功能只调用、不可覆盖系统接线（冻结后渲染线程调用无重赋值竞争）
+    friend class FeatureSystem;
+
     //! @brief 由 FeatureSystem 装配时注入：激活本功能前下线其他功能的交互（单激活约定）
     std::function<void()> deactivate_others_;
+    //! @brief 由 FeatureSystem 装配时注入：通知渲染层拉取标注并刷新视口
+    std::function<void()> render_refresh_;
 
-private:
     systems::interaction::InteractionState* state_;
 };
 

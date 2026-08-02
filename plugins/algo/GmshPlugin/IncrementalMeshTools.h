@@ -7,6 +7,7 @@
 
 struct MeshData;
 class ModelLayer;
+class ComponentOperator;
 
 namespace IncrementalMeshTools {
 
@@ -28,7 +29,7 @@ SingleFaceMeshResult meshSingleFace(
     MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters);
@@ -38,7 +39,7 @@ SingleFaceMeshResult remeshSingleFace(
     MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters);

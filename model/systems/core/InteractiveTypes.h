@@ -16,7 +16,7 @@ namespace systems::interaction {
 //! @brief 拾取结果：渲染层解析好的吸附点（世界坐标 + 两套全局顶点 id）
 struct PickInfo {
     std::array<double, 3> world_pos {};
-    Index mesh_id = -1; //> 网格全局顶点 id（vtkOriginalPointIds），非网格点为 -1
+    Index mesh_id = -1; //> 网格全局顶点 id（MeshIDMap gid，拾取点局部 id 经 id 查询桥换算），非网格点为 -1
     Index geom_id = -1; //> 几何全局顶点 id（GeometryRegistry id），非几何点为 -1
     bool valid = false; //> 是否命中吸附点（悬停未命中时为 false，供 handler 清预览）
 };

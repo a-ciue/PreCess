@@ -94,6 +94,15 @@ public:
      */
     interaction::InteractionState* activeInteraction();
     /**
+     * @brief 启用当前活动功能（声明 interactive 的功能专用，活动操作切换驱动）
+     *
+     * 单激活约定：激活一个功能会经 InteractionContext 下线其他功能的交互；
+     * 启停为幂等的状态应用（InteractionContext 以目标状态为守卫），重复设置无副作用。
+     * @param unique_name 要激活的功能唯一名称；空串表示全部下线（活动操作无交互能力）
+     * @return 名称为空，或功能存在且声明 interactive 时为 true
+     */
+    bool setFeatureActive(const std::string& unique_name);
+    /**
      * @brief 设置功能信息变更回调函数
      */
     void setOnFeatureInfosChanged(std::function<void()> callback);
@@ -103,6 +112,10 @@ public:
      */
     void setActiveModelProvider(std::function<std::optional<Index>()> provider);
     void setActiveComponentProvider(std::function<std::optional<Index>()> provider);
+    /**
+     * @brief 设置视口渲染刷新回调（app 层注入，功能经 InteractionContext::requestRefresh 触发）
+     */
+    void setRenderRefreshCallback(std::function<void()> callback);
 
 private:
     struct FeatureEntry {
@@ -122,6 +135,7 @@ private:
     std::function<std::optional<Index>()> active_model_provider_;
     std::function<std::optional<Index>()> active_component_provider_;
     std::function<void()> on_feature_infos_changed_;
+    std::function<void()> render_refresh_callback_; //> app 层注入：通知渲染窗口拉取标注并重绘
 };
 }
 #endif // FEATURE_SYSTEM_H

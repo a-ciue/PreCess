@@ -4,6 +4,7 @@
 #include "MeshActor.h"
 #include "MeshData.h"
 #include <string_view>
+#include <vector>
 
 // 生成内置演示用数据
 MeshDataVtk MakeMeshDataVtk(MeshData& data);

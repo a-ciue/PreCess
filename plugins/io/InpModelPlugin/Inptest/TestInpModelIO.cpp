@@ -22,7 +22,7 @@ static bool approx_eq(double a, double b, double eps = 1e-9)
     return std::fabs(a - b) <= eps;
 }
 
-static void require_vertices_equal(const MeshData& mesh, const std::vector<std::array<double, 3>>& global_points)
+static void require_vertices_equal(const MeshData& mesh)
 {
     const std::vector<std::array<double, 3>> expected = {
         { -0.5, -0.5, 1.0 },
@@ -40,11 +40,9 @@ static void require_vertices_equal(const MeshData& mesh, const std::vector<std::
 
     REQUIRE(mesh.vertex_count_ == static_cast<Index>(expected.size()));
 
-    bool use_global_points = mesh.vertex_positions_.empty() && !mesh.local_to_global_.empty();
-
+    // MeshData 自包含，坐标直接取 vertex_positions_
     for (Index i = 0; i < mesh.vertex_count_; ++i) {
-        const Index gid = use_global_points ? mesh.local_to_global_[static_cast<size_t>(i)] : i;
-        const auto& v = use_global_points ? global_points[static_cast<size_t>(gid)] : mesh.vertex_positions_[static_cast<size_t>(i)];
+        const auto& v = mesh.vertex_positions_[static_cast<size_t>(i)];
         REQUIRE(approx_eq(v[0], expected[i][0]));
         REQUIRE(approx_eq(v[1], expected[i][1]));
         REQUIRE(approx_eq(v[2], expected[i][2]));
@@ -150,7 +148,7 @@ static fs::path test_dir_from_source()
     return p;
 }
 
-static void require_vertices_equal_for_allfile(const MeshData& mesh, const std::vector<std::array<double, 3>>& global_points, fs::path infile)
+static void require_vertices_equal_for_allfile(const MeshData& mesh, fs::path infile)
 {
     REQUIRE(fs::exists(infile));
 
@@ -216,11 +214,9 @@ static void require_vertices_equal_for_allfile(const MeshData& mesh, const std::
     REQUIRE(!expected.empty());
     REQUIRE(mesh.vertex_count_ == static_cast<Index>(expected.size()));
 
-    bool use_global_points = mesh.vertex_positions_.empty() && !mesh.local_to_global_.empty();
-
+    // MeshData 自包含，坐标直接取 vertex_positions_
     for (Index i = 0; i < mesh.vertex_count_; ++i) {
-        const Index gid = use_global_points ? mesh.local_to_global_[static_cast<size_t>(i)] : i;
-        const auto& v = use_global_points ? global_points[static_cast<size_t>(gid)] : mesh.vertex_positions_[static_cast<size_t>(i)];
+        const auto& v = mesh.vertex_positions_[static_cast<size_t>(i)];
         REQUIRE(approx_eq(v[0], expected[i][0]));
         REQUIRE(approx_eq(v[1], expected[i][1]));
         REQUIRE(approx_eq(v[2], expected[i][2]));
@@ -255,10 +251,10 @@ TEST_CASE("InpModelHandler plugin Read test.inp ")
     REQUIRE(comp_in->hasMesh());
     const MeshData* mesh = comp_in->asMeshData();
     REQUIRE(mesh != nullptr);
-    spdlog::info("asMeshData success, vertex_count={}, local_to_global_.size()={}", 
-        mesh->vertex_count_, mesh->local_to_global_.size());
+    spdlog::info("asMeshData success, vertex_count={}, vertex_positions_.size()={}",
+        mesh->vertex_count_, mesh->vertex_positions_.size());
 
-    require_vertices_equal(*mesh, mgr.globalPoints());
+    require_vertices_equal(*mesh);
 
     if (mesh->solid_vertices_offset_.size() >= 2 && (mesh->solid_vertices_offset_[1] - mesh->solid_vertices_offset_[0]) == 8) {
         require_solid_element_matches_test_inp(*mesh);
@@ -281,7 +277,7 @@ TEST_CASE("InpModelHandler plugin Read test.inp ")
     const auto* mesh_out = comp_out->asMeshData();
     REQUIRE(mesh_out != nullptr);
 
-    require_vertices_equal(*mesh_out, mgr.globalPoints());
+    require_vertices_equal(*mesh_out);
 
     if (mesh_out->solid_vertices_offset_.size() >= 2 && (mesh_out->solid_vertices_offset_[1] - mesh_out->solid_vertices_offset_[0]) == 8) {
         require_solid_element_matches_test_inp(*mesh_out);
@@ -545,7 +541,7 @@ TEST_CASE("InpModelHandler ReadWrite MixedTi_LuoShuan.inp")
     const MeshData* mesh_in = comp_in->asMeshData();
     REQUIRE(mesh_in != nullptr);
 
-    require_vertices_equal_for_allfile(*mesh_in, mgr.globalPoints(), infile);
+    require_vertices_equal_for_allfile(*mesh_in, infile);
 
     std::vector<Index> component_ids = { 0 };
     handler.write_components(mgr, component_ids, outfile, {});

@@ -25,6 +25,9 @@ Item{
         parameters = root.activeOp && root.activeOp.defaultParameters
                 ? root.activeOp.defaultParameters.slice() : []
         resultText = ""
+        // 活动操作声明视口交互能力则激活其交互，否则全部下线（幂等，守卫在功能系统内）
+        var interactive = !!(activeOp && activeOp.info && activeOp.info.interactive)
+        QModelManager.featureSystem.setFeatureActive(interactive ? activeOp.info.name : "")
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
@@ -43,32 +46,43 @@ Item{
         }
     }
 
-    Button{
-        id: commitButton
-        text: "执行"
-        enabled: !!(root.activeOp && root.activeOp.info)
+    RowLayout{
+        id: buttonRow
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height:30
-        onClicked:{
-            if (root.activeOp && root.activeOp.execute) {
-                try {
-                    const result = root.activeOp.execute(
-                        App.selection.activeComponentId, root.parameters)
-                    root.resultText = result === undefined || result === null
-                                    ? "" : String(result)
-                } catch (error) {
-                    root.resultText = qsTr("执行失败：") + error
+        height: 30
+        Button{
+            id: commitButton
+            text: "执行"
+            enabled: !!(root.activeOp && root.activeOp.info)
+            Layout.fillWidth: true
+            onClicked:{
+                if (root.activeOp && root.activeOp.execute) {
+                    try {
+                        const result = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
+                        root.resultText = result === undefined || result === null
+                                        ? "" : String(result)
+                    } catch (error) {
+                        root.resultText = qsTr("执行失败：") + error
+                    }
                 }
+                if (App.registry.renderWindow)
+                    App.registry.renderWindow.clearSelection()
             }
-            if (App.registry.renderWindow)
-                App.registry.renderWindow.clearSelection()
+        }
+        Button{
+            id: confirmButton
+            text: "确认"
+            enabled: !!(root.activeOp && root.activeOp.info)
+            Layout.fillWidth: true
+            // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
+            onClicked: App.activeOperation = null
         }
     }
     TextArea {
         id: resultArea
-        anchors.top: commitButton.bottom
+        anchors.top: buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         // 不可见时不占锚定布局高度，避免留下空白
@@ -121,6 +135,9 @@ Item{
                             }
                             if(model.type === QArgType.Bool){           //布尔值
                                 return boolComponent
+                            }
+                            if(model.type === QArgType.Button){           //按钮
+                                return buttonComponent
                             }
                         }
                     }
@@ -412,6 +429,19 @@ Item{
                 onCheckedChanged: {
                     root.setParam(index, checked)
                 }
+            }
+        }
+    }
+    Component{
+        id: buttonComponent
+        RowLayout{
+            spacing: 5
+            width: parameterList.width
+            Button{
+                // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标
+                text: model.name
+                Layout.fillWidth: true
+                onClicked: root.setParam(index, (root.parameters[index] || 0) + 1)
             }
         }
     }
