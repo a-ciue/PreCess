@@ -11,6 +11,7 @@
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
 #include "GeometryRegistry.h"
+#include "MeshIdQuery.h"
 #include "SelectManager.h"
 #include "GeometrySubshapeIndex.h"
 #include "MeshActorManager.h"
@@ -102,6 +103,13 @@ private:
 
 vtkStandardNewMacro(PickInteractorStyle);
 
+//! @brief id 查询桩：测试数据 gid 为 iota 恒等，pointGlobalId 直通局部 id
+class StubMeshIdQuery : public IMeshIdQuery {
+public:
+    std::optional<Index> findEdgeByEndpoints(Index, Index, Index) const override { return std::nullopt; }
+    Index pointGlobalId(Index, Index local_point_id) const override { return local_point_id; }
+};
+
 int g_failures = 0;
 void check(bool cond, const std::string& name)
 {
@@ -146,15 +154,8 @@ int main(int argc, char* argv[])
     vtkSmartPointer<PickInteractorStyle> style = vtkSmartPointer<PickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
-    vtkNew<vtkPoints> pts;
-    pts->SetNumberOfPoints(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
-    for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
-        pts->SetPoint(static_cast<vtkIdType>(i), mesh.vertex_positions_[i].data());
-    }
-
-    MeshActorManager mesh_manager(pts.GetPointer());
+    MeshActorManager mesh_manager;
     mesh_manager.bindRender(renderer.GetPointer());
-    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     GeometryActorManager geometry_manager;
     geometry_manager.bindRender(renderer.GetPointer());
@@ -163,7 +164,13 @@ int main(int argc, char* argv[])
     SelectManager sel_mgr(*renderer, mesh_manager.op(), geometry_manager.op());
 
     FakeInteraction fake;
-    InteractionService service(*renderer, *overlay_renderer, mesh_manager.op(), sel_mgr);
+    InteractionService service(*renderer, *overlay_renderer, sel_mgr);
+    StubMeshIdQuery id_query;
+    service.setMeshIdQuery(&id_query);
+
+    // 拾取列表在选择系统构造时登记观察，网格须在此之后加载才会进入拾取列表
+    // （与应用一致：选择系统与服务先于模型加载创建）
+    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
 
     // 交互状态经 provider 提供：开关开启前无激活状态，pick 不转发
     bool interaction_enabled = false;
@@ -189,8 +196,7 @@ int main(int argc, char* argv[])
     if (!fake.picks.empty()) {
         const PickInfo& p = fake.picks.front();
         check(p.valid, "PickInfo.valid 为 true");
-        check(!mesh.local_to_global_.empty() && p.mesh_id == mesh.local_to_global_[0],
-            "PickInfo.mesh_id 为全局顶点 id");
+        check(p.mesh_id == 0, "PickInfo.mesh_id 为全局点 id（iota 恒等填充）");
         check(p.geom_id < 0, "网格拾取不填 geom_id");
     }
 
@@ -241,6 +247,30 @@ int main(int argc, char* argv[])
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]); // 驱动一次 syncState
     check(fake.deactivate_count == 1, "下线时调用 onDeactivate 一次");
     check(!service.hasActiveState(), "开关关闭后无激活交互");
+
+    // ---- syncPending：模拟 GUI 线程 setActive 置位 + notify 到达，驱动激活迁移 ----
+    interaction_enabled = true;
+    fake.state.needs_refresh = true; // setActive(true)：置位 + notify
+    service.syncPending();
+    check(fake.activate_count == 2, "syncPending 驱动上线（onActivate 再次调用）");
+    interaction_enabled = false;
+    fake.state.needs_refresh = true; // setActive(false)：置位 + notify
+    service.syncPending();
+    check(fake.deactivate_count == 2, "syncPending 驱动下线（onDeactivate 再次调用）");
+    check(!service.hasActiveState(), "syncPending 下线后无激活交互");
+
+    // ---- 下线即消费挂起状态：needs_refresh/deferred_op 随 clearSession 失效，不堵死后续 notify ----
+    interaction_enabled = true;
+    fake.state.needs_refresh = true;
+    service.syncPending();
+    check(fake.activate_count == 3, "syncPending 再次驱动上线");
+    interaction_enabled = false;
+    fake.state.needs_refresh = true;      // setActive(false) 置位
+    fake.state.deferred_op = [] { };      // 尚未执行的延迟操作
+    service.syncPending();                // 下线：clearSession 应消费挂起状态
+    check(fake.deactivate_count == 3, "syncPending 再次驱动下线");
+    check(!fake.state.needs_refresh, "下线时 needs_refresh 被消费（不堵死后续 notify）");
+    check(!fake.state.deferred_op, "下线时 deferred_op 随会话清理");
 
     spdlog::info("==== InteractionService self-check: {} ====",
         g_failures == 0 ? "ALL PASS" : "HAS FAILURES");

@@ -7,37 +7,17 @@
 
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
 
-CgalMesh toSurfaceMesh(const MeshData& mesh, const std::vector<std::array<double, 3>>& global_points)
+CgalMesh toSurfaceMesh(const MeshData& mesh)
 {
     CgalMesh sm;
 
-    // 与 InpModelHandler 一致：仅当 vertex_positions_ 已清空且 local_to_global_ 非空时按全局约定解析
-    const bool is_global = mesh.vertex_positions_.empty() && !mesh.local_to_global_.empty();
-
-    // 顶点坐标：全局约定下 vertex_positions_ 已被 ModelLayer 清空，需从全局点数组取；
+    // 顶点坐标：MeshData 自包含，直读 vertex_positions_；
     // 按序加入，Surface_mesh 顶点索引与 MeshData 局部索引保持一致
-    if (is_global) {
-        for (const Index gid : mesh.local_to_global_) {
-            if (gid < 0 || static_cast<size_t>(gid) >= global_points.size())
-                throw std::runtime_error("全局点 id 越界: " + std::to_string(gid));
-            const auto& p = global_points[gid];
-            sm.add_vertex(CgalPoint3(p[0], p[1], p[2]));
-        }
-    } else {
-        for (const auto& p : mesh.vertex_positions_)
-            sm.add_vertex(CgalPoint3(p[0], p[1], p[2]));
-    }
+    for (const auto& p : mesh.vertex_positions_)
+        sm.add_vertex(CgalPoint3(p[0], p[1], p[2]));
 
-    // face_vertices_ 索引约定：全局约定下存全局点 id，经逆映射换回局部索引
-    std::unordered_map<Index, Index> global_to_local;
-    if (is_global) {
-        for (size_t i = 0; i < mesh.local_to_global_.size(); ++i)
-            global_to_local[mesh.local_to_global_[i]] = static_cast<Index>(i);
-    }
-
-    // 面仅接受三角面
+    // 面仅接受三角面；face_vertices_ 存组件内局部点索引
     for (size_t f = 0; f + 1 < mesh.face_vertices_offset_.size(); ++f) {
         const Index begin = mesh.face_vertices_offset_[f];
         const Index end = mesh.face_vertices_offset_[f + 1];
@@ -48,16 +28,9 @@ CgalMesh toSurfaceMesh(const MeshData& mesh, const std::vector<std::array<double
         face.reserve(3);
         for (Index i = begin; i < end; ++i) {
             const Index id = mesh.face_vertices_[i];
-            if (is_global) {
-                const auto it = global_to_local.find(id);
-                if (it == global_to_local.end())
-                    throw std::runtime_error("面引用的顶点不在组件内，全局 id: " + std::to_string(id));
-                face.push_back(CgalMesh::Vertex_index(static_cast<size_t>(it->second)));
-            } else {
-                if (id < 0 || static_cast<size_t>(id) >= mesh.vertex_positions_.size())
-                    throw std::runtime_error("面顶点索引越界: " + std::to_string(id));
-                face.push_back(CgalMesh::Vertex_index(static_cast<size_t>(id)));
-            }
+            if (id < 0 || static_cast<size_t>(id) >= mesh.vertex_positions_.size())
+                throw std::runtime_error("面顶点索引越界: " + std::to_string(id));
+            face.push_back(CgalMesh::Vertex_index(static_cast<size_t>(id)));
         }
         sm.add_face(face);
     }
@@ -67,7 +40,7 @@ CgalMesh toSurfaceMesh(const MeshData& mesh, const std::vector<std::array<double
 void fromSurfaceMesh(const CgalMesh& sm, MeshData& out)
 {
     // 清空旧数据（含边/体/patch/属性），避免复用 out 时残留；clear() 会清空所有 offset 数组，
-    // 按 MeshData 约定补回 {0} 哨兵表示无对应单元（输出为局部索引约定，local_to_global_ 保持空）
+    // 按 MeshData 约定补回 {0} 哨兵表示无对应单元（输出为局部索引约定）
     out.clear();
     out.solid_vertices_offset_ = { 0 };
     out.solid_faces_vertices_offset_ = { 0 };

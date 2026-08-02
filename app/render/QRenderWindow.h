@@ -33,6 +33,7 @@ class GeometryActorManager;
 class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
+class IMeshIdQuery;
 namespace systems::feature {
 class QFeatureSystemAdaptor;
 }
@@ -64,9 +65,7 @@ public:
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
 
-        vtkNew<vtkAxisActor2D> scale_bar_axis_; //> 比例尺标尺轴（叠加层左下角，刻度随相机缩放更新）
-
-        vtkNew<vtkPoints> global_points_;
+        vtkNew<vtkAxisActor2D> scale_bar_axis_; //> 比例尺标尺轴（叠加层底部中央，段长与刻度随相机缩放联动更新）
     };
 
     vtkUserData initializeVTK(vtkRenderWindow* renderWindow) override;
@@ -134,8 +133,6 @@ public:
 
     Q_INVOKABLE void deleteModel(Index mode_id);
     Q_INVOKABLE void deleteComponent(Index component_id);
-
-    void updateGlobalVtkPoints();
 
     /**
      * @brief 对网格对象设置全局裁剪模式
@@ -207,6 +204,9 @@ private:
 
     QModelQuery* model_query_ {};
 
-    void updateGlobalVtkPointsImpl(Data* vtk);
+    std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
+
+    //! @brief 注入渲染刷新回调到 FeatureSystem（initializeVTK 与 setFeatureAdaptor 各调一次，确保初始化顺序无关）
+    void injectRenderRefreshCallback();
 };
 #endif // Q_RENDER_WINDOW_H

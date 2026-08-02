@@ -1,0 +1,2 @@
+precess_add_test(TestDimensionHandler TestDimensionHandler.cpp)
+precess_test_link_libraries(TestDimensionHandler DimensionPluginlib DataTest TKPrim TKBRep TKTopAlgo TKernel)

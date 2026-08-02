@@ -3,8 +3,8 @@
  * @brief M (MeshLib CTMesh) 模型文件处理器单元测试
  *
  * MModelHandler 用 MeshLib::CTMesh 读写 .m 文件，当前写出入口为组件化
- * write_components()。源 MeshData 需要先进入 ModelLayer，由 ModelLayer 维护全局点池
- * 与组件 MeshData 的 local_to_global_/vertex_count_，再交给 MModelHandler 导出。
+ * write_components()。MeshData 自包含（vertex_positions_ 常驻坐标、连通性存组件内局部点索引），
+ * 测试将源 MeshData 加入 ModelLayer 后即可直接导出，无需全局点池换算。
  * .m 格式以表面三角网格为主，不支持体单元，写出后体信息不会回流。
  */
 #include "MModelHandler.h"

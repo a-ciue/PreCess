@@ -79,6 +79,11 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
             }
         }
     };
+    // 注入渲染刷新回调：功能经 requestRefresh() 通知 app 层拉取标注并重绘视口
+    entry.interaction_context.render_refresh_ = [this] {
+        if (render_refresh_callback_)
+            render_refresh_callback_();
+    };
 
     // 激活失败则撤掉整个条目，不留下半注册状态
     try {
@@ -166,6 +171,24 @@ interaction::InteractionState* FeatureSystem::activeInteraction()
     return nullptr;
 }
 
+bool FeatureSystem::setFeatureActive(const std::string& unique_name)
+{
+    // 空串 = 活动操作无交互能力：全部下线（重复调用由 InteractionContext 的目标状态守卫兜底）
+    if (unique_name.empty()) {
+        for (auto&& [name, entry] : entries_)
+            entry.interaction_context.setActive(false);
+        return true;
+    }
+
+    auto it = entries_.find(unique_name);
+    if (it == entries_.end() || !it->second.info->interactive) {
+        spdlog::warn("FeatureSystem::setFeatureActive: feature '{}' not found or not interactive", unique_name);
+        return false;
+    }
+    it->second.interaction_context.setActive(true); // 单激活约定：自动下线其他功能
+    return true;
+}
+
 void FeatureSystem::setOnFeatureInfosChanged(std::function<void()> callback)
 {
     on_feature_infos_changed_ = std::move(callback);
@@ -179,6 +202,11 @@ void FeatureSystem::setActiveModelProvider(std::function<std::optional<Index>()>
 void FeatureSystem::setActiveComponentProvider(std::function<std::optional<Index>()> provider)
 {
     active_component_provider_ = std::move(provider);
+}
+
+void FeatureSystem::setRenderRefreshCallback(std::function<void()> callback)
+{
+    render_refresh_callback_ = std::move(callback);
 }
 
 bool FeatureSystem::dispatchKeyEvent(const KeyEvent& event)
