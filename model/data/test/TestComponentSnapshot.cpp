@@ -163,13 +163,12 @@ TEST_CASE("restoreSnapshot restores data and reclaims gids", "[ComponentOperator
     const std::vector<Index> gids_before = comp->point_global_ids_;
     REQUIRE(gids_before.size() == 3);
 
-    // 就地编辑：删面 + 加点
-    MeshData& md = *comp->mesh;
+    // 就地编辑：删面 + 加点（经可写入口，Topology 标脏即时失效邻接懒表）
+    MeshData& md = op->editableMesh();
     md.face_vertices_.clear();
     md.face_vertices_offset_ = { 0 };
     md.vertex_positions_.push_back({ 2.0, 0.0, 0.0 });
     md.vertex_count_ = (Index)md.vertex_positions_.size();
-    op->notifyChanged();
     REQUIRE(comp->mesh->vertex_positions_.size() == 4);
 
     op->restoreSnapshot(*snapshot);
@@ -213,7 +212,7 @@ TEST_CASE("restoreSnapshot after removeMesh reclaims gids from free-list", "[Com
     auto snapshot = op->takeSnapshot();
     const std::vector<Index> gids_before = comp->point_global_ids_;
 
-    // removeMesh 释放全部 gid 进 free-list
+    // removeMesh 释放全部 gid 进 free-list（标脏但通知延迟到操作边界 flush）
     op->removeMesh();
     REQUIRE(!comp->mesh);
     REQUIRE(mgr.pointIdMap().freeSize() >= 3);
@@ -231,7 +230,8 @@ TEST_CASE("restoreSnapshot after removeMesh reclaims gids from free-list", "[Com
         REQUIRE(lid == local);
     }
 
-    // observer 收到 notifyComponentChanged
+    // 写必脏 + 操作边界 flush：removeMesh/restoreSnapshot 的标脏经 flush 去重后通知一次
+    mgr.flushNotifications();
     REQUIRE(obs.component_changed_count == changed_after_remove + 1);
     REQUIRE(obs.last_component_changed == component_id);
 }

@@ -119,6 +119,8 @@ void QModelManager::removeMesh(int componentId)
     auto op = core_->getComponentOperator(componentId);
     if (op)
         op->removeMesh();
+    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知
+    core_->flushNotifications();
 }
 
 void QModelManager::removeGeometry(int componentId)
@@ -126,6 +128,8 @@ void QModelManager::removeGeometry(int componentId)
     auto op = core_->getComponentOperator(componentId);
     if (op)
         op->removeGeometry();
+    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知
+    core_->flushNotifications();
 }
 
 ModelLayer* QModelManager::getModelManager()

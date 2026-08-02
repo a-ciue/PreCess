@@ -179,7 +179,7 @@ std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id)
 {
     ModelData* m = modelById(model_id);
     if (m) {
-        return ModelOperator(model_id, *m, *this, observer_);
+        return ModelOperator(model_id, *m, *this);
     }
     return {};
 }
@@ -200,7 +200,7 @@ std::optional<ComponentOperator> ModelLayer::getComponentOperator(Index componen
 
     auto mit = component_to_model_.find(component_id);
     Index model_id = mit != component_to_model_.end() ? mit->second : -1;
-    return ComponentOperator(component_id, *c, *this, observer_, model_id);
+    return ComponentOperator(component_id, *c, *this, model_id);
 }
 
 Index ModelLayer::allocateComponentId() noexcept
@@ -250,6 +250,38 @@ MeshIDMap& ModelLayer::edgeIdMap()
 const MeshIDMap& ModelLayer::edgeIdMap() const
 {
     return edge_id_map_;
+}
+
+void ModelLayer::markComponentDirty(Index component_id, MeshEditKind kind)
+{
+    ComponentData* c = findComponent(component_id);
+    if (!c)
+        return;
+
+    // Topology 类修改立即失效邻接懒表，保证查询即时正确；通知延迟到操作边界 flush
+    if (kind == MeshEditKind::Topology)
+        c->mesh_adjacency.invalidate();
+
+    // 去重记入待通知集合
+    if (std::find(pending_notify_.begin(), pending_notify_.end(), component_id) == pending_notify_.end())
+        pending_notify_.push_back(component_id);
+}
+
+void ModelLayer::flushNotifications()
+{
+    if (pending_notify_.empty())
+        return;
+
+    // 先交换取出并清空再通知：通知链会经 observer → Qt 信号 → EventBus ModelEvent →
+    // 功能事件回调（FeatureEventGateway 包装）重入本函数，重入时集合已空即空转，
+    // 防止"遍历未清空 → 重入 flush → 再通知"的无限递归。
+    // 通知期间产生的新标脏记入 pending_notify_，由下一个操作边界 flush 发出。
+    std::vector<Index> pending;
+    pending.swap(pending_notify_);
+    if (observer_) {
+        for (Index component_id : pending)
+            observer_->notifyComponentChanged(component_id);
+    }
 }
 
 GeometryRegistry& ModelLayer::geomRegistry()

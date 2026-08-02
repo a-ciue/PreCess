@@ -42,7 +42,7 @@ struct ComponentData {
     std::unique_ptr<GeometryData> geometry; ///< Geometry 数据（来自 STEP 等）
     std::unique_ptr<GeometryMeshMap> mapping; ///< Geometry↔网格对应关系（可选，后续实现）
 
-    MeshAdjacency mesh_adjacency; ///< 网格邻接查询索引（派生缓存，拓扑变更后由 ComponentOperator::notifyChanged 失效）
+    MeshAdjacency mesh_adjacency; ///< 网格邻接查询索引（派生缓存，Topology 类标脏时经 ModelLayer::markComponentDirty 失效）
 
     /**
      * @brief 局部点 id -> 全局点 id（gid 经 ModelLayer::pointIdMap() 分配，-1 = 待分配）

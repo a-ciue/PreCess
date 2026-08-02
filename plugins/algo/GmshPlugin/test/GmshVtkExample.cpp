@@ -204,7 +204,6 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             comp->geometry->index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
 
         auto result = IncrementalMeshTools::meshSingleFace(
-            *comp->mesh,
             *comp->geometry,
             ctx->gmshState,
             *componentOp,
@@ -242,9 +241,13 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
         ctx->currentIndex--;
         const GeomFaceId faceId =
             comp->geometry->index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
+        auto componentOp = ctx->modelLayer.getComponentOperator(ctx->componentId);
+        if (!componentOp) {
+            spdlog::error("Component {} not found.", ctx->componentId);
+            return;
+        }
         if (IncrementalMeshTools::deleteFaceMesh(
-                *comp->mesh, *comp->geometry, ctx->gmshState,
-                ctx->modelLayer, faceId)) {
+                *comp->geometry, ctx->gmshState, *componentOp, faceId)) {
             reloadPolyData(*ctx);
         }
     } else if (key == "h" || key == "H") {

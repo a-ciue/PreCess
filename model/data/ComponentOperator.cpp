@@ -2,7 +2,6 @@
 
 #include "ComponentData.h"
 #include "ModelLayer.h"
-#include "ModelObserver.h"
 #include "MeshData.h"
 #include "GeometryData.h"
 #include "ModelData.h"
@@ -15,17 +14,15 @@
 ComponentOperator::ComponentOperator(Index component_id,
     ComponentData& component,
     ModelLayer& mgr,
-    ModelObserver* observer,
     Index model_id) noexcept
     : component_id_(component_id)
     , model_id_(model_id)
     , component_(&component)
     , mgr_(&mgr)
-    , observer_(observer)
 {
 }
 
-MeshData* ComponentOperator::mesh() const noexcept
+const MeshData* ComponentOperator::mesh() const noexcept
 {
     return component_ && component_->mesh ? component_->mesh.get() : nullptr;
 }
@@ -45,9 +42,83 @@ ModelData* ComponentOperator::model() const
     return mgr_->modelById(model_id_);
 }
 
+MeshData& ComponentOperator::editableMesh(MeshEditKind kind)
+{
+    if (!component_ || !component_->mesh)
+        throw std::runtime_error("ComponentOperator::editableMesh: component has no mesh");
+
+    // 写必脏：获取可写入口即标脏（Topology 失效邻接懒表 + 记入待通知集合）
+    mgr_->markComponentDirty(component_id_, kind);
+    return *component_->mesh;
+}
+
+Index ComponentOperator::appendPoint(std::array<double, 3> pos)
+{
+    if (!component_ || !component_->mesh)
+        throw std::runtime_error("ComponentOperator::appendPoint: component has no mesh");
+
+    // 运行期加点原子四连：坐标、vertex_count_、gid 分配、gid 伴生表追加
+    MeshData& mesh_data = *component_->mesh;
+    const Index local_id = static_cast<Index>(mesh_data.vertex_positions_.size());
+    mesh_data.vertex_positions_.push_back(pos);
+    mesh_data.vertex_count_ = static_cast<Index>(mesh_data.vertex_positions_.size());
+    component_->point_global_ids_.push_back(
+        mgr_->pointIdMap().insert(component_id_, local_id));
+
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    return local_id;
+}
+
+Index ComponentOperator::appendFace(const std::vector<Index>& local_point_ids)
+{
+    if (!component_ || !component_->mesh)
+        throw std::runtime_error("ComponentOperator::appendFace: component has no mesh");
+    if (local_point_ids.empty())
+        throw std::invalid_argument("ComponentOperator::appendFace: empty point list");
+
+    MeshData& mesh_data = *component_->mesh;
+    for (Index local_id : local_point_ids) {
+        if (local_id < 0 || local_id >= static_cast<Index>(mesh_data.vertex_positions_.size()))
+            throw std::invalid_argument("ComponentOperator::appendFace: local point id out of range");
+    }
+
+    // 空 offset 数组先补 {0}，保持 offset 单调序列完整
+    if (mesh_data.face_vertices_offset_.empty())
+        mesh_data.face_vertices_offset_.push_back(0);
+
+    const Index face_id = static_cast<Index>(mesh_data.face_vertices_offset_.size() - 1);
+    mesh_data.face_vertices_.insert(
+        mesh_data.face_vertices_.end(), local_point_ids.begin(), local_point_ids.end());
+    mesh_data.face_vertices_offset_.push_back(static_cast<Index>(mesh_data.face_vertices_.size()));
+
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    return face_id;
+}
+
+void ComponentOperator::replaceMesh(std::unique_ptr<MeshData> mesh)
+{
+    if (!mesh)
+        throw std::invalid_argument("ComponentOperator::replaceMesh: null mesh");
+
+    // 释放旧网格占用的点/边 gid
+    if (component_->mesh) {
+        component_->mesh_adjacency.releaseEdgeGlobalIds(mgr_->edgeIdMap());
+        component_->releasePointGlobalIds(mgr_->pointIdMap());
+    }
+
+    // 新网格就位后按受控点纪律补分配点/边 gid（与 ModelLayer::addModel 的同步流程一致）
+    mesh->vertex_count_ = static_cast<Index>(mesh->vertex_positions_.size());
+    component_->mesh_adjacency.ensureEdgeGlobalIds(mgr_->edgeIdMap(), component_id_, *mesh);
+
+    component_->mesh = std::move(mesh);
+    component_->ensurePointGlobalIds(mgr_->pointIdMap());
+
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+}
+
 Index ComponentOperator::materializeEdge(Index p0, Index p1)
 {
-    MeshData* mesh_data = mesh();
+    MeshData* mesh_data = component_ && component_->mesh ? component_->mesh.get() : nullptr;
     if (!mesh_data)
         throw std::runtime_error("ComponentOperator::materializeEdge: component has no mesh");
     if (p0 < 0 || p1 < 0 || p0 == p1)
@@ -67,20 +138,9 @@ Index ComponentOperator::materializeEdge(Index p0, Index p1)
     // 同步分配全局边 id
     component_->mesh_adjacency.ensureEdgeGlobalIds(mgr_->edgeIdMap(), component_id_, *mesh_data);
 
-    // 失效邻接索引并通知观察者
-    notifyChanged();
+    // 标脏：失效邻接懒表，通知延迟到操作边界 flush
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     return cell_index;
-}
-
-void ComponentOperator::notifyChanged() const
-{
-    // 网格拓扑可能已变更，派生的邻接索引随通知一并失效
-    if (component_)
-        component_->mesh_adjacency.invalidate();
-
-    if (!observer_) return;
-
-    observer_->notifyComponentChanged(component_id_);
 }
 
 std::unique_ptr<ComponentData> ComponentOperator::takeSnapshot() const
@@ -108,8 +168,8 @@ void ComponentOperator::restoreSnapshot(const ComponentData& snapshot)
     if (component_->geometry)
         component_->geometry->ensureIndexBuilt(mgr_->geomRegistry()); // 克隆体索引未建，此处重建领新 gid
 
-    // 失效邻接索引并通知观察者
-    notifyChanged();
+    // 标脏：失效邻接懒表，通知延迟到操作边界 flush
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }
 
 Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
@@ -125,7 +185,7 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
             component_->geometry->index.release(mgr_->geomRegistry());
         component_->geometry->setRootShape(std::move(shape));
         component_->geometry->ensureIndexBuilt(mgr_->geomRegistry());
-        notifyChanged();
+        mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
         return component_id_;
     }
 
@@ -136,7 +196,7 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry->appendRootShape(std::move(shape));
     component_->geometry->ensureIndexBuilt(mgr_->geomRegistry());
-    notifyChanged();
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     return component_id_;
 }
 
@@ -149,8 +209,8 @@ void ComponentOperator::removeMesh()
     component_->mesh_adjacency.releaseEdgeGlobalIds(mgr_->edgeIdMap());
     component_->mesh.reset();
 
-    if (observer_)
-        observer_->notifyComponentChanged(component_id_);
+    // 标脏（顺带获得邻接失效），通知延迟到操作边界 flush
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }
 
 void ComponentOperator::removeGeometry()
@@ -161,6 +221,5 @@ void ComponentOperator::removeGeometry()
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry.reset();
 
-    if (observer_)
-        observer_->notifyComponentChanged(component_id_);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }

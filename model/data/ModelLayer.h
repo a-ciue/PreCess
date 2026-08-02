@@ -12,6 +12,7 @@
 #include "ModelData.h"
 
 #include "ModelOperator.h"
+#include "ComponentOperator.h" // MeshEditKind（markComponentDirty 默认参数）
 #include "GeometryRegistry.h"
 #include "MeshIDMap.h"
 
@@ -22,7 +23,6 @@
 
 class ModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
-class ComponentOperator;
 struct ModelSnapshot;   // 前向声明模型级结构快照
 
 /**
@@ -105,6 +105,15 @@ public:
     MeshIDMap& edgeIdMap();
     const MeshIDMap& edgeIdMap() const;
 
+    /**
+     * @brief 标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）
+     * @note 通知不即时发出，由操作边界 flushNotifications() 统一发 notifyComponentChanged
+     */
+    void markComponentDirty(Index component_id, MeshEditKind kind = MeshEditKind::Topology);
+
+    //! @brief 对待通知集合逐组件发 notifyComponentChanged 并清空（操作边界调用；空集合无操作）
+    void flushNotifications();
+
 private:
     Index allocateComponentId() noexcept;
 
@@ -131,6 +140,7 @@ private:
     MeshIDMap edge_id_map_; // 边的 global->local
 
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
+    std::vector<Index> pending_notify_; //!< 本次操作内被标脏的组件（去重；undo 操作记录的预留拦截点）
 
     friend class QModelQuery;
     friend class ModelOperator;

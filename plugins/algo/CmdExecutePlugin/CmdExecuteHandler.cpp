@@ -24,7 +24,7 @@ std::any systems::algo::CmdExecuteHandler::execute(HandlerContext& context, cons
     exe_dir.remove_filename();
 
     // ====== component 粒度判断输入类型 ======
-    ComponentData& comp = context.cur_component.component();
+    const ComponentData& comp = context.cur_component.component();
 
     bool hasMesh = (comp.mesh != nullptr);
     bool hasGeometry = (comp.geometry != nullptr);

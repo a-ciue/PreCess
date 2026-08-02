@@ -16,9 +16,7 @@ using namespace core;
 std::any CreateFaceHandler::execute(ComponentOperator& op, const std::vector<core::ArgObject>& args)
 {
     // 参数检查
-    ComponentData& comp = op.component();
-    MeshData* mesh = comp.mesh.get();
-    if (!mesh) {
+    if (!op.mesh()) {
         spdlog::error("CreateFaceHandler::execute: Current component has no mesh.");
         return {}; // 返回空
     }
@@ -49,11 +47,8 @@ std::any CreateFaceHandler::execute(ComponentOperator& op, const std::vector<cor
         local_ids.push_back(local);
     }
 
-    // 追加面对应的顶点索引 face_vertices_
-    mesh->face_vertices_.insert(mesh->face_vertices_.end(), local_ids.begin(), local_ids.end());
-
-    // 更新 face_vertices_offset_
-    mesh->face_vertices_offset_.push_back(static_cast<Index>(mesh->face_vertices_.size()));
+    // 追加面单元（写必脏：标脏 + 通知由操作边界 flush 统一发出）
+    op.appendFace(local_ids);
 
     return {};
 }

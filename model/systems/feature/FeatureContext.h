@@ -6,15 +6,12 @@
 #define FEATURE_CONTEXT_H
 #include "ComponentOperator.h" // std::optional<ComponentOperator> 需要完整类型
 #include "Core.h"
+#include "FeatureEventGateway.h" // events 成员类型（功能经其订阅事件，调用点需完整类型）
 
 #include <functional>
 #include <optional>
 
 class ModelLayer;
-
-namespace core {
-class EventBus;
-}
 
 namespace systems::feature {
 class FeatureParams;
@@ -28,7 +25,7 @@ class InteractionContext;
  */
 struct FeatureContext {
     ModelLayer& model; //> 模型层入口
-    core::EventBus& events; //> 事件总线，功能在 activate() 中订阅事件
+    FeatureEventGateway& events; //> 事件网关，功能在 activate() 中订阅事件（回调返回后自动 flush 组件变更通知）
     FeatureParams& params; //> 本功能的持久参数集
     InteractionContext& interaction; //> 视口交互入口，功能在 activate() 中订阅拾取/悬停回调
     std::function<std::optional<Index>()> activeModel; //> 动态获取当前活动模型 id
