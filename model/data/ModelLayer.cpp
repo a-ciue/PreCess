@@ -157,16 +157,41 @@ ComponentData* ModelLayer::findComponent(Index component_id) const
 
 std::optional<Index> ModelLayer::findComponentIdByGeometryFaceId(GeomFaceId face_id) const
 {
-    if (face_id == kInvalidGeomFaceId)
+    return findComponentIdByGeometryShapeId(TopAbs_FACE, face_id);
+}
+
+std::optional<Index> ModelLayer::findComponentIdByGeometryShapeId(
+    TopAbs_ShapeEnum shape_type,
+    Index shape_id) const
+{
+    if (shape_id < 0)
         return std::nullopt;
 
-    // 全局面 ID 保存在各 Component 的几何索引中，找到后即可确定所有者。
+    // 四类几何 ID 独立编号，必须根据形状类型选择对应索引。
     for (const auto& [component_id, component] : components_) {
         if (!component || !component->geometry)
             continue;
 
-        const auto& face_ids = component->geometry->index.face_local_to_global;
-        if (std::find(face_ids.begin(), face_ids.end(), face_id) != face_ids.end())
+        const std::vector<Index>* shape_ids = nullptr;
+        switch (shape_type) {
+        case TopAbs_VERTEX:
+            shape_ids = &component->geometry->index.vertex_local_to_global;
+            break;
+        case TopAbs_EDGE:
+            shape_ids = &component->geometry->index.edge_local_to_global;
+            break;
+        case TopAbs_FACE:
+            shape_ids = &component->geometry->index.face_local_to_global;
+            break;
+        case TopAbs_SOLID:
+            shape_ids = &component->geometry->index.solid_local_to_global;
+            break;
+        default:
+            return std::nullopt;
+        }
+
+        if (std::find(shape_ids->begin(), shape_ids->end(), shape_id)
+            != shape_ids->end())
             return component_id;
     }
 

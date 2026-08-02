@@ -370,10 +370,10 @@ QtObject {
         activate({
             info: root.deleteGeometryInfo,
             defaultParameters: [null, false],
-            execute: function(componentId, args) {
+            execute: function(_, args) {
                 const resultComponentId =
                     QModelManager.geometry.deleteGeometry(
-                        componentId, args[0], args[1])
+                        args[0], args[1])
                 if (resultComponentId >= 0)
                     App.selection.selectionInvalidated()
             }

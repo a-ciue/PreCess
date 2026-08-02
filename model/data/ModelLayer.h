@@ -15,6 +15,8 @@
 #include "GeometryRegistry.h"
 #include "MeshIDMap.h"
 
+#include <TopAbs_ShapeEnum.hxx>
+
 #include <array>
 #include <vector>
 #include <unordered_map>
@@ -71,6 +73,16 @@ public:
     std::optional<ComponentOperator> getComponentOperator(Index component_id);
 
     ComponentData* findComponent(Index component_id) const;
+
+    /**
+     * @brief 根据几何形状类型和全局 ID 查找所属 Component。
+     * @param shape_type 几何形状类型，支持 Vertex、Edge、Face 和 Solid。
+     * @param shape_id 几何形状的全局 ID。
+     * @return 所属 Component ID；类型不支持或未找到时返回空。
+     */
+    std::optional<Index> findComponentIdByGeometryShapeId(
+        TopAbs_ShapeEnum shape_type,
+        Index shape_id) const;
 
     /**
      * @brief 根据全局几何面 ID 查找所属 Component

@@ -408,13 +408,10 @@ int QGeometryOperations::createSphere(
 }
 
 int QGeometryOperations::deleteGeometry(
-    int componentId,
     QSelection* selection,
     bool deleteChildren)
 {
     try {
-        if (componentId < 0)
-            throw std::invalid_argument("Select a target component first");
         if (!selection || !selection->get())
             throw std::invalid_argument("Select one geometry shape");
 
@@ -422,35 +419,26 @@ int QGeometryOperations::deleteGeometry(
         if (selected->ids.size() != 1)
             throw std::invalid_argument("Exactly one geometry shape is required");
 
-        ComponentData* component = model_layer_->findComponent(componentId);
-        if (!component || !component->geometry || !component->geometry->rootShape)
-            throw std::invalid_argument("Target component has no geometry");
-        component->geometry->ensureIndexBuilt(model_layer_->geomRegistry());
-
         const Index shape_id = selected->ids.front();
-        const std::vector<Index>* component_shape_ids = nullptr;
+        TopAbs_ShapeEnum shape_type = TopAbs_SHAPE;
         const TopoDS_Shape* selected_shape = nullptr;
 
-        // 选择类型决定使用哪一类业务 ID 和 OCC Shape 注册表。
+        // 选择类型决定全局几何 ID 的类别以及对应的 OCC Shape 注册表。
         switch (selected->type) {
         case ElementEnum::GeometryVertex:
-            component_shape_ids =
-                &component->geometry->index.vertex_local_to_global;
+            shape_type = TopAbs_VERTEX;
             selected_shape = model_layer_->geomRegistry().getVertex(shape_id);
             break;
         case ElementEnum::GeometryEdge:
-            component_shape_ids =
-                &component->geometry->index.edge_local_to_global;
+            shape_type = TopAbs_EDGE;
             selected_shape = model_layer_->geomRegistry().getEdge(shape_id);
             break;
         case ElementEnum::GeometryFace:
-            component_shape_ids =
-                &component->geometry->index.face_local_to_global;
+            shape_type = TopAbs_FACE;
             selected_shape = model_layer_->geomRegistry().getFace(shape_id);
             break;
         case ElementEnum::GeometrySolid:
-            component_shape_ids =
-                &component->geometry->index.solid_local_to_global;
+            shape_type = TopAbs_SOLID;
             selected_shape = model_layer_->geomRegistry().getSolid(shape_id);
             break;
         default:
@@ -458,12 +446,18 @@ int QGeometryOperations::deleteGeometry(
                 "Selection must be a geometry vertex, edge, face or solid");
         }
 
-        if (std::find(component_shape_ids->begin(), component_shape_ids->end(), shape_id)
-            == component_shape_ids->end())
-            throw std::invalid_argument(
-                "Selected geometry shape must belong to the target component");
         if (!selected_shape)
             throw std::invalid_argument("Selected geometry shape is no longer valid");
+
+        const auto component_id =
+            model_layer_->findComponentIdByGeometryShapeId(shape_type, shape_id);
+        if (!component_id)
+            throw std::invalid_argument(
+                "Selected geometry shape does not belong to a component");
+
+        ComponentData* component = model_layer_->findComponent(*component_id);
+        if (!component || !component->geometry || !component->geometry->rootShape)
+            throw std::invalid_argument("Target component has no geometry");
 
         // 在释放旧索引前复制 OCC Shape 句柄，并先完成纯 OCC 根拓扑重建。
         const TopoDS_Shape target = *selected_shape;
@@ -471,7 +465,7 @@ int QGeometryOperations::deleteGeometry(
             *component->geometry->rootShape, target, deleteChildren);
 
         auto component_operator =
-            model_layer_->getComponentOperator(componentId);
+            model_layer_->getComponentOperator(*component_id);
         if (!component_operator)
             throw std::invalid_argument("Target component does not exist");
         return component_operator->replaceGeometryRoot(std::move(result));

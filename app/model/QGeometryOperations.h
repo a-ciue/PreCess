@@ -170,15 +170,15 @@ public:
         double longitudeSweep);
 
     /**
-     * @brief 删除当前组件中选中的一个顶层独立几何形状。
+     * @brief 删除选中的一个顶层独立几何形状。
      *
      * 支持 GeometryVertex、GeometryEdge、GeometryFace 和 GeometrySolid。
+     * @param selection 几何选择对象，操作目标 Component 由所选形状反查得到。
      * @param deleteChildren 为 false 时保留并提升目标的直接下级拓扑；
      * 为 true 时同时删除其未被其他形状使用的下级拓扑。
      * @return 被更新的组件 ID，失败时返回 -1。
      */
     Q_INVOKABLE int deleteGeometry(
-        int componentId,
         QSelection* selection,
         bool deleteChildren);
 

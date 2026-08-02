@@ -138,6 +138,19 @@ TEST_CASE("Geometry index build for multiple components")
     const GeomFaceId comp1FaceId = comp1->geometry->index.faceGlobalId(1);
     REQUIRE(manager.findComponentIdByGeometryFaceId(comp0FaceId) == 0);
     REQUIRE(manager.findComponentIdByGeometryFaceId(comp1FaceId) == 1);
+
+    REQUIRE(manager.findComponentIdByGeometryShapeId(
+                TopAbs_VERTEX, comp0->geometry->index.vertexGlobalId(1))
+        == 0);
+    REQUIRE(manager.findComponentIdByGeometryShapeId(
+                TopAbs_EDGE, comp1->geometry->index.edgeGlobalId(1))
+        == 1);
+    REQUIRE(manager.findComponentIdByGeometryShapeId(
+                TopAbs_FACE, comp0FaceId)
+        == 0);
+    REQUIRE(manager.findComponentIdByGeometryShapeId(
+                TopAbs_SOLID, comp1->geometry->index.solidGlobalId(1))
+        == 1);
 }
 
 TEST_CASE("Add geometry component to an existing model")
