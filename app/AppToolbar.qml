@@ -36,37 +36,40 @@ ColumnLayout {
 
     // 已知插件名 → 图标映射，未命中则使用 PreCess_extra_plugin.svg
     readonly property var pluginIconMap: ({
-        "CreateFacePlugin": "qrc:/images/toolbar/create_face.svg",
-        "DeleteFacePlugin": "qrc:/images/toolbar/delete_face.svg",
-        "TetGenPlugin": "qrc:/images/toolbar/TetGen.svg",
-        "TetGenLibPlugin": "qrc:/images/toolbar/TetGen.svg",
-        "GmshPlugin": "qrc:/images/toolbar/gmsh.svg",
-        "cmdExecutePlugin": "qrc:/images/toolbar/cmd.svg"
+        "CreateFacePlugin": "qrc:/images/toolbar/Edit/create_face.svg",
+        "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete_face.svg",
+        "TetGenPlugin": "qrc:/images/toolbar/Algorithm/TetGen.svg",
+        "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/TetGen.svg",
+        "GmshPlugin": "qrc:/images/toolbar/Algorithm/gmsh.svg",
+        "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg",
+        "MeasurePlugin": "qrc:/images/toolbar/Tools/Measure.svg",
+        "DimensionPlugin": "qrc:/images/toolbar/Tools/Size_marking.svg",
+        "MeshQuality": "qrc:/images/toolbar/Function/grid_quality.svg"
     })
     // 几何页按钮定义：当前使用默认插件图标。
     readonly property var geometryOperationButtons: [
         { text: qsTr("点"), operation: "startCreatePoint",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Point.svg" },
         { text: qsTr("直线边（坐标）"), operation: "startCreateLineByCoordinates",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Line_coord.svg" },
         { text: qsTr("直线边（选点）"), operation: "startCreateLineFromVertices",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Line_points.svg" },
         { text: qsTr("矩形面"), operation: "startCreateRectangleFace",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Rectangle.svg" },
         { text: qsTr("圆盘/扇形面"), operation: "startCreateDiskFace",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Sector_or_Circle.svg" },
         { text: qsTr("闭合边成面"), operation: "startCreateFaceFromEdges",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Close_edges_to_form_surface.svg" },
         { text: qsTr("长方体"), operation: "startCreateBox",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Cubit.svg" },
         { text: qsTr("圆柱体"), operation: "startCreateCylinder",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Cylinder.svg" },
         { text: qsTr("圆锥/圆台"), operation: "startCreateCone",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Cone_or_Conical_stage.svg" },
         { text: qsTr("球体/部分球体"), operation: "startCreateSphere",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/Sphere.svg" },
         { text: qsTr("拉伸面"), operation: "startExtrudeFace",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" }
+          icon: "qrc:/images/toolbar/Geometry/Stretched_surface.svg" }
     ]
 
     function getIconForPlugin(pluginName) {
@@ -259,7 +262,7 @@ ColumnLayout {
             anchors.fill: parent
 
             ToolButton {
-                icon.source: "qrc:/images/toolbar/import.svg"
+                icon.source: "qrc:/images/toolbar/File/import.svg"
                 icon.width: parent.height * 0.65
                 icon.height: parent.height * 0.65
                 Layout.fillHeight: true
@@ -269,7 +272,7 @@ ColumnLayout {
             }
 
             ToolButton {
-                icon.source: "qrc:/images/toolbar/export.svg"
+                icon.source: "qrc:/images/toolbar/File/export.svg"
                 icon.width: parent.height * 0.65
                 icon.height: parent.height * 0.65
                 Layout.fillHeight: true
@@ -279,7 +282,7 @@ ColumnLayout {
             }
 
             ToolButton {
-                icon.source: "qrc:/images/toolbar/preference.svg"
+                icon.source: "qrc:/images/toolbar/File/preference.svg"
                 icon.width: parent.height * 0.65
                 icon.height: parent.height * 0.65
                 Layout.fillHeight: true

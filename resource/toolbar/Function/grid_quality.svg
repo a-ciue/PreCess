@@ -1,0 +1,44 @@
+<!-- 14. 网格质量 -->
+<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" fill="#ffffff"/>
+  <g stroke="#d0d0d0" stroke-width="0.5">
+    <line x1="0" y1="10" x2="60" y2="10"/>
+    <line x1="0" y1="20" x2="60" y2="20"/>
+    <line x1="0" y1="30" x2="60" y2="30"/>
+    <line x1="0" y1="40" x2="60" y2="40"/>
+    <line x1="0" y1="50" x2="60" y2="50"/>
+    <line x1="10" y1="0" x2="10" y2="60"/>
+    <line x1="20" y1="0" x2="20" y2="60"/>
+    <line x1="30" y1="0" x2="30" y2="60"/>
+    <line x1="40" y1="0" x2="40" y2="60"/>
+    <line x1="50" y1="0" x2="50" y2="60"/>
+  </g>
+  <!-- 网格单元，用不同颜色表示质量 -->
+  <!-- 高质量（绿色） -->
+  <rect x="10" y="10" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="20" y="10" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="10" y="20" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="20" y="20" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <!-- 中等质量（黄色） -->
+  <rect x="30" y="10" width="10" height="10" fill="#ffcc00" stroke="#cc9900" stroke-width="0.5"/>
+  <rect x="30" y="20" width="10" height="10" fill="#ffcc00" stroke="#cc9900" stroke-width="0.5"/>
+  <rect x="40" y="20" width="10" height="10" fill="#ffcc00" stroke="#cc9900" stroke-width="0.5"/>
+  <!-- 低质量（红色/扭曲） -->
+  <polygon points="40,10 50,12 48,20 38,18" fill="#ff4444" stroke="#cc0000" stroke-width="0.5"/>
+  <polygon points="10,30 22,32 20,42 8,40" fill="#ff4444" stroke="#cc0000" stroke-width="0.5"/>
+  <!-- 正常网格 -->
+  <rect x="22" y="30" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="32" y="30" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="42" y="30" width="10" height="10" fill="#ffcc00" stroke="#cc9900" stroke-width="0.5"/>
+  <rect x="10" y="42" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="22" y="42" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="32" y="42" width="10" height="10" fill="#00cc44" stroke="#009933" stroke-width="0.5"/>
+  <rect x="42" y="42" width="10" height="10" fill="#ffcc00" stroke="#cc9900" stroke-width="0.5"/>
+  <!-- 质量图例 -->
+  <rect x="2" y="52" width="6" height="6" fill="#00cc44"/>
+  <rect x="10" y="52" width="6" height="6" fill="#ffcc00"/>
+  <rect x="18" y="52" width="6" height="6" fill="#ff4444"/>
+  <text x="2" y="60" font-size="4" fill="#333333">Good</text>
+  <text x="10" y="60" font-size="4" fill="#333333">Warn</text>
+  <text x="18" y="60" font-size="4" fill="#333333">Fail</text>
+</svg>

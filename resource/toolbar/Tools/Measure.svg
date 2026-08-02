@@ -1,0 +1,26 @@
+<!-- 12. 测量 -->
+<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" fill="#ffffff"/>
+  <g stroke="#d0d0d0" stroke-width="0.5">
+    <line x1="0" y1="10" x2="60" y2="10"/>
+    <line x1="0" y1="20" x2="60" y2="20"/>
+    <line x1="0" y1="30" x2="60" y2="30"/>
+    <line x1="0" y1="40" x2="60" y2="40"/>
+    <line x1="0" y1="50" x2="60" y2="50"/>
+    <line x1="10" y1="0" x2="10" y2="60"/>
+    <line x1="20" y1="0" x2="20" y2="60"/>
+    <line x1="30" y1="0" x2="30" y2="60"/>
+    <line x1="40" y1="0" x2="40" y2="60"/>
+    <line x1="50" y1="0" x2="50" y2="60"/>
+  </g>
+  <!-- 两个测量点 -->
+  <circle cx="12" cy="42" r="3" fill="#ff0000" stroke="#cc0000" stroke-width="1.5"/>
+  <circle cx="48" cy="18" r="3" fill="#ff0000" stroke="#cc0000" stroke-width="1.5"/>
+  <!-- 测量虚线 -->
+  <line x1="12" y1="42" x2="48" y2="18" stroke="#0066cc" stroke-width="1" stroke-dasharray="3,2"/>
+  <!-- 测量标注线和数值 -->
+  <line x1="12" y1="46" x2="48" y2="22" stroke="#cc6600" stroke-width="0.8"/>
+  <line x1="12" y1="44" x2="12" y2="48" stroke="#cc6600" stroke-width="0.8"/>
+  <line x1="48" y1="20" x2="48" y2="24" stroke="#cc6600" stroke-width="0.8"/>
+  <text x="22" y="38" font-size="6" fill="#cc6600" font-weight="bold">25.3</text>
+</svg>
