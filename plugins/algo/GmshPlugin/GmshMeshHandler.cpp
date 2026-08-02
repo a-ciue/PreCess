@@ -131,7 +131,8 @@ std::optional<Index> systems::algo::GmshMeshHandler::resolveComponentId(
 
     std::optional<Index> component_id;
     for (GeomFaceId face_id : (*selection)->ids) {
-        const auto owner_id = model_layer.findComponentIdByGeometryFaceId(face_id);
+        const auto owner_id = model_layer.findComponentIdByGeometryShapeId(
+            TopAbs_FACE, face_id);
         if (!owner_id) {
             spdlog::error("GmshMesh: component owning geometry face {} was not found", face_id);
             return std::nullopt;

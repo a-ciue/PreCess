@@ -84,13 +84,6 @@ public:
         TopAbs_ShapeEnum shape_type,
         Index shape_id) const;
 
-    /**
-     * @brief 根据全局几何面 ID 查找所属 Component
-     * @param face_id 全局几何面 ID
-     * @return 所属 Component ID；未找到时返回空
-     */
-    std::optional<Index> findComponentIdByGeometryFaceId(GeomFaceId face_id) const;
-
     GeometryRegistry& geomRegistry();
     const GeometryRegistry& geomRegistry() const;
 

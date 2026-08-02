@@ -155,11 +155,6 @@ ComponentData* ModelLayer::findComponent(Index component_id) const
     return it == components_.end() ? nullptr : it->second.get();
 }
 
-std::optional<Index> ModelLayer::findComponentIdByGeometryFaceId(GeomFaceId face_id) const
-{
-    return findComponentIdByGeometryShapeId(TopAbs_FACE, face_id);
-}
-
 std::optional<Index> ModelLayer::findComponentIdByGeometryShapeId(
     TopAbs_ShapeEnum shape_type,
     Index shape_id) const
