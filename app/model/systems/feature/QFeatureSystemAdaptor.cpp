@@ -54,7 +54,9 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     });
     scalar_attribute_display_sub_ = feature_system.events().subscribe<ScalarAttributeDisplayRequestedEvent>(
         [this](const ScalarAttributeDisplayRequestedEvent& event) {
-            emit scalarAttributeDisplayRequested(QString::fromStdString(event.attribute_name));
+            // 空属性名仅用于通知功能释放自动属性显示，不转发给 QML。
+            if (!event.attribute_name.empty())
+                emit scalarAttributeDisplayRequested(QString::fromStdString(event.attribute_name));
         });
 }
 
@@ -109,6 +111,8 @@ bool QFeatureSystemAdaptor::postKeyEvent(int key, int modifiers, bool pressed)
 
 bool QFeatureSystemAdaptor::setFeatureActive(const QString& unique_name)
 {
+    // 活动操作变化时释放上一个功能自动开启的属性显示。
+    feature_system_->events().publish(ScalarAttributeDisplayRequestedEvent { "" });
     return feature_system_->setFeatureActive(unique_name.toStdString());
 }
 

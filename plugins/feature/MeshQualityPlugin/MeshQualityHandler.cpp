@@ -400,6 +400,16 @@ void MeshQualityHandler::setup(FeatureRegistrar& reg)
     reg.addMenuItem({ "功能/网格", "网格质量" });
 }
 
+void MeshQualityHandler::activate(FeatureContext& ctx)
+{
+    attribute_display_sub_ = ctx.events.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [this, context = &ctx](const ScalarAttributeDisplayRequestedEvent& event) {
+            // 空属性名表示活动操作已切换，清理本次生成的全部质量属性。
+            if (event.attribute_name.empty())
+                clearGeneratedAttributes(*context);
+        });
+}
+
 std::any MeshQualityHandler::execute(FeatureContext& ctx)
 {
     const auto component_id = ctx.activeComponent ? ctx.activeComponent() : std::nullopt;
@@ -452,15 +462,18 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
 
     const std::string attribute_key = metricKey(metric);
     std::string display_attribute;
+    GeneratedAttributes& generated = generated_attributes_[*component_id];
     if (face_result) {
         const std::string face_attribute = "f_" + attribute_key + "_1";
         mesh.face_attributes_[face_attribute] = face_result->values;
+        generated.face_names.push_back(face_attribute);
         display_attribute = face_attribute;
     }
     // 面、体质量同时生成时默认显示体属性，面属性仍保留供用户手动选择。
     if (solid_result) {
         const std::string solid_attribute = "s_" + attribute_key + "_1";
         mesh.solid_attributes_[solid_attribute] = solid_result->values;
+        generated.solid_names.push_back(solid_attribute);
         display_attribute = solid_attribute;
     }
 
@@ -481,6 +494,27 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         output << "体：" << solid_error << '\n';
     }
     return output.str();
+}
+
+void MeshQualityHandler::clearGeneratedAttributes(FeatureContext& ctx)
+{
+    for (const auto& [component_id, attributes] : generated_attributes_) {
+        auto component = ctx.componentOperator ? ctx.componentOperator(component_id) : std::nullopt;
+        if (!component || !component->mesh())
+            continue;
+
+        MeshData& mesh = *component->mesh();
+        bool changed = false;
+        for (const std::string& name : attributes.face_names) {
+            changed = mesh.face_attributes_.erase(name) > 0 || changed;
+        }
+        for (const std::string& name : attributes.solid_names) {
+            changed = mesh.solid_attributes_.erase(name) > 0 || changed;
+        }
+        if (changed)
+            component->notifyChanged();
+    }
+    generated_attributes_.clear();
 }
 
 }

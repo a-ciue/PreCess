@@ -100,7 +100,7 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     REQUIRE(face_quality.front() == Catch::Approx(1.0));
     REQUIRE(solid_quality.front() == Catch::Approx(1.0));
 
-    // 切换指标后保留之前的质量属性，方便用户在属性列表中比较不同指标。
+    // 操作进行期间保留不同指标，方便用户在属性列表中比较。
     REQUIRE(feature_system.setParameter(
         "MeshQuality", 0, core::ArgObject::create<ArgTypeEnum::Combo>(1)));
     const std::any skew_result = feature_system.invoke("MeshQuality");
@@ -111,6 +111,13 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 1);
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_equiangle_skew_1") == 1);
+
+    // 结束属性显示后，清除本次操作生成的全部面、体质量属性。
+    bus.publish(ScalarAttributeDisplayRequestedEvent { "" });
+    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 0);
+    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 0);
+    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 0);
+    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_equiangle_skew_1") == 0);
 }
 
 TEST_CASE("MeshQuality exposes metric selection parameter", "[MeshQualityPlugin]")
