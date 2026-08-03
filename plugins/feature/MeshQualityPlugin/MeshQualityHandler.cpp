@@ -457,6 +457,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         mesh.face_attributes_[face_attribute] = face_result->values;
         display_attribute = face_attribute;
     }
+    // 面、体质量同时生成时默认显示体属性，面属性仍保留供用户手动选择。
     if (solid_result) {
         const std::string solid_attribute = "s_" + attribute_key + "_1";
         mesh.solid_attributes_[solid_attribute] = solid_result->values;
