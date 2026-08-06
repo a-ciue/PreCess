@@ -33,5 +33,6 @@ var searchData=
   ['modelobserver_30',['ModelObserver',['../classModelObserver.html',1,'']]],
   ['modeloperator_31',['ModelOperator',['../classModelOperator.html',1,'']]],
   ['modeloperatorbase_32',['ModelOperatorBase',['../classModelOperatorBase.html',1,'']]],
-  ['modelpayload_33',['ModelPayload',['../structModelPayload.html',1,'']]]
+  ['modelpayload_33',['ModelPayload',['../structModelPayload.html',1,'']]],
+  ['modelsnapshot_34',['ModelSnapshot',['../structModelSnapshot.html',1,'']]]
 ];

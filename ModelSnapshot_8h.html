@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/ModelSnapshot.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">ModelSnapshot.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>模型级结构快照（undo/redo 原语）  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ComponentData_8h_source.html">ComponentData.h</a>&quot;</code><br />
+<code>#include &lt;string&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+ModelSnapshot.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelSnapshot_8h__incl.png" border="0" usemap="#amodel_2data_2ModelSnapshot_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2ModelSnapshot_8h" id="amodel_2data_2ModelSnapshot_8h">
+<area shape="rect" title="模型级结构快照（undo/redo 原语）" alt="" coords="5,5,217,31"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="281,79,421,104"/>
+<area shape="poly" title=" " alt="" coords="151,28,300,72,298,77,149,33"/>
+<area shape="rect" title=" " alt="" coords="22,299,81,324"/>
+<area shape="poly" title=" " alt="" coords="112,31,59,286,54,285,106,30"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="329,225,393,251"/>
+<area shape="poly" title=" " alt="" coords="348,105,337,138,334,157,335,177,349,212,344,214,330,178,328,157,332,136,343,103"/>
+<area shape="rect" title=" " alt="" coords="234,299,311,324"/>
+<area shape="poly" title=" " alt="" coords="309,107,264,123,214,148,166,182,146,203,130,227,125,240,127,252,135,263,147,272,182,288,221,299,220,304,180,293,145,277,131,266,122,254,120,240,125,224,142,200,163,178,211,143,262,118,307,102"/>
+<area shape="poly" title=" " alt="" coords="282,106,223,124,193,138,166,154,132,185,104,221,65,287,60,285,99,218,128,181,163,150,191,133,221,119,281,101"/>
+<area shape="rect" title=" " alt="" coords="839,299,901,324"/>
+<area shape="poly" title=" " alt="" coords="422,94,568,110,652,127,735,149,814,172,845,190,872,224,879,239,881,255,879,285,874,285,876,255,873,240,868,227,841,194,812,177,733,155,651,132,567,116,421,99"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="345,152,445,177"/>
+<area shape="poly" title=" " alt="" coords="361,103,383,139,379,142,356,106"/>
+<area shape="rect" title=" " alt="" coords="468,225,592,251"/>
+<area shape="poly" title=" " alt="" coords="378,102,417,122,458,150,491,181,516,213,512,216,487,185,455,154,415,127,376,106"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="587,152,721,177"/>
+<area shape="poly" title=" " alt="" coords="401,101,592,146,591,151,399,107"/>
+<area shape="rect" title=" " alt="" coords="410,299,466,324"/>
+<area shape="poly" title=" " alt="" coords="375,249,417,287,413,291,371,253"/>
+<area shape="rect" title=" " alt="" coords="335,299,386,324"/>
+<area shape="poly" title=" " alt="" coords="363,251,363,285,358,285,358,251"/>
+<area shape="poly" title=" " alt="" coords="348,253,299,292,296,288,345,249"/>
+<area shape="poly" title=" " alt="" coords="329,249,95,303,93,298,328,244"/>
+<area shape="poly" title=" " alt="" coords="393,241,825,301,825,306,393,246"/>
+<area shape="poly" title=" " alt="" coords="392,179,375,214,370,212,387,176"/>
+<area shape="poly" title=" " alt="" coords="401,177,433,285,428,286,396,179"/>
+<area shape="poly" title=" " alt="" coords="377,180,348,200,319,227,299,257,284,287,279,285,294,254,315,224,344,196,374,175"/>
+<area shape="poly" title=" " alt="" coords="345,171,297,176,241,186,183,203,129,228,94,257,68,289,64,285,90,253,126,223,181,198,240,181,296,170,345,165"/>
+<area shape="poly" title=" " alt="" coords="418,175,497,216,495,221,416,180"/>
+<area shape="rect" title=" " alt="" coords="139,225,254,251"/>
+<area shape="poly" title=" " alt="" coords="364,180,243,223,241,218,363,175"/>
+<area shape="rect" title=" " alt="" coords="617,225,691,251"/>
+<area shape="poly" title=" " alt="" coords="438,175,604,220,603,225,436,180"/>
+<area shape="poly" title=" " alt="" coords="607,180,406,228,405,223,606,175"/>
+<area shape="poly" title=" " alt="" coords="671,175,688,191,704,210,712,231,711,242,705,252,690,265,667,276,607,292,540,303,480,310,479,304,539,298,606,287,665,271,687,260,701,249,706,241,706,232,699,213,684,194,667,179"/>
+<area shape="poly" title=" " alt="" coords="722,169,754,175,787,186,819,202,847,223,857,237,864,253,871,284,866,286,859,255,852,240,843,227,816,206,785,191,753,181,721,174"/>
+<area shape="poly" title=" " alt="" coords="635,180,563,221,561,216,633,175"/>
+<area shape="poly" title=" " alt="" coords="657,178,657,212,651,212,651,178"/>
+<area shape="rect" title=" " alt="" coords="766,225,833,251"/>
+<area shape="poly" title=" " alt="" coords="679,175,765,217,762,222,676,180"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="ModelSnapshot_8h__dep__incl.png" border="0" usemap="#amodel_2data_2ModelSnapshot_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2ModelSnapshot_8hdep" id="amodel_2data_2ModelSnapshot_8hdep">
+<area shape="rect" title="模型级结构快照（undo/redo 原语）" alt="" coords="121,5,333,31"/>
+<area shape="rect" href="ModelLayer_8cpp.html" title="实现 ModelLayer 类，用于管理多个网格模型" alt="" coords="5,86,208,111"/>
+<area shape="poly" title=" " alt="" coords="199,41,126,88,123,84,196,36"/>
+<area shape="rect" href="TestComponentSnapshot_8cpp.html" title=" " alt="" coords="233,79,463,119"/>
+<area shape="poly" title=" " alt="" coords="258,36,320,76,317,81,255,41"/>
+</map>
+</div>
+</div>
+<p><a href="ModelSnapshot_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:ModelSnapshot" id="r_ModelSnapshot"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structModelSnapshot.html">ModelSnapshot</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型级结构快照：整模型的深拷贝，用于撤销/恢复结构操作  <a href="structModelSnapshot.html#details">更多...</a><br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>模型级结构快照（undo/redo 原语） </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

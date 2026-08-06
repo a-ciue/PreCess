@@ -20,7 +20,7 @@ var searchData=
   ['component_5fselectors_5f_17',['component_selectors_',['../classGeometrySelectManager.html#a243a0353be7f380b6c936f907b720243',1,'GeometrySelectManager::component_selectors_'],['../classMeshSelectManager.html#a190f0874c2ba07127a123660aacb70dc',1,'MeshSelectManager::component_selectors_']]],
   ['component_5fto_5fmodel_5f_18',['component_to_model_',['../classModelLayer.html#a56b47e9d3a29f3ad907ab271f7e7c373',1,'ModelLayer']]],
   ['componentoperator_19',['componentOperator',['../structsystems_1_1feature_1_1FeatureContext.html#a84719620735d15c74794c0fb34ececc1',1,'systems::feature::FeatureContext']]],
-  ['components_20',['components',['../structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0',1,'ModelPayload']]],
+  ['components_20',['components',['../structModelSnapshot.html#a398ee71b7fd9f1729f55ceaae0428609',1,'ModelSnapshot::components'],['../structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0',1,'ModelPayload::components']]],
   ['components_5f_21',['components_',['../classModelLayer.html#a86d1df23b5fee134a12e89485bff8f4c',1,'ModelLayer']]],
   ['components_5fvisibility_5f_22',['components_visibility_',['../classTreeModel.html#a12106fcc009752bf64722ca427f55e03',1,'TreeModel']]],
   ['comps_23',['comps',['../TestComponentModel_8cpp.html#ad0af7cb104b2c68d116595194ccbda41',1,'TestComponentModel.cpp']]],

@@ -129,6 +129,10 @@ MeshAdjacency 的协作图:</div>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
+<tr class="memitem:ae5313718475c88aec6b640898899628f" id="r_ae5313718475c88aec6b640898899628f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5313718475c88aec6b640898899628f">MeshAdjacency</a> ()=default</td></tr>
+<tr class="memitem:aa03dd372ecb48dd2c8d5409d170d0e3a" id="r_aa03dd372ecb48dd2c8d5409d170d0e3a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa03dd372ecb48dd2c8d5409d170d0e3a">MeshAdjacency</a> (const <a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> &amp;other)</td></tr>
+<tr class="memdesc:aa03dd372ecb48dd2c8d5409d170d0e3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">自定义拷贝：只拷持久身份层（稳定边 id/gid 表）  <br /></td></tr>
+<tr class="memitem:af28d8bf3b58425e20fde6e6045992604" id="r_af28d8bf3b58425e20fde6e6045992604"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af28d8bf3b58425e20fde6e6045992604">operator=</a> (const <a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> &amp;other)</td></tr>
 <tr class="memitem:a5e4f29f8a8c022eabf26b0a790b274a7" id="r_a5e4f29f8a8c022eabf26b0a790b274a7"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e4f29f8a8c022eabf26b0a790b274a7">edgeStableId</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh, <a class="el" href="classEdgeHandle.html">EdgeHandle</a> edge)</td></tr>
 <tr class="memdesc:a5e4f29f8a8c022eabf26b0a790b274a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">边句柄 -&gt; 稳定局部边 id；句柄无效（含边表已重建）返回 std::nullopt  <br /></td></tr>
 <tr class="memitem:ab69e4be4016c506264f857a21c94c526" id="r_ab69e4be4016c506264f857a21c94c526"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab69e4be4016c506264f857a21c94c526">edgeGlobalId</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> stable_id)</td></tr>
@@ -147,6 +151,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ac53565ba70f06b5d93a6f867b789cca8"><td class="mdescLeft">&#160;</td><td class="mdescRight">为全部稳定 id 分配全局边 id（幂等，仅补缺）  <br /></td></tr>
 <tr class="memitem:ad772f20bb0bb25ec122c2ce3929ced12" id="r_ad772f20bb0bb25ec122c2ce3929ced12"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad772f20bb0bb25ec122c2ce3929ced12">releaseEdgeGlobalIds</a> (<a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;map)</td></tr>
 <tr class="memdesc:ad772f20bb0bb25ec122c2ce3929ced12"><td class="mdescLeft">&#160;</td><td class="mdescRight">释放全部全局边 id 并重置持久身份层（组件移除/整网格替换时调用）  <br /></td></tr>
+<tr class="memitem:ae5ef1f455a6c1843130a5b9a36043a06" id="r_ae5ef1f455a6c1843130a5b9a36043a06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5ef1f455a6c1843130a5b9a36043a06">reclaimEdgeGlobalIds</a> (<a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;map, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
+<tr class="memdesc:ae5ef1f455a6c1843130a5b9a36043a06"><td class="mdescLeft">&#160;</td><td class="mdescRight">按 gid_by_stable_id_ 原值定向回收边 gid（配合快照恢复，仅作用持久层，不触发边表重建）  <br /></td></tr>
 <tr class="memitem:a096c68e2ba945edea2fa361ce279c20e" id="r_a096c68e2ba945edea2fa361ce279c20e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a096c68e2ba945edea2fa361ce279c20e">invalidate</a> () noexcept</td></tr>
 <tr class="memdesc:a096c68e2ba945edea2fa361ce279c20e"><td class="mdescLeft">&#160;</td><td class="mdescRight">使懒重建部分失效，下次查询时基于最新拓扑重建（持久稳定 id 层保留）  <br /></td></tr>
 </table><table class="memberdecls">
@@ -168,6 +174,52 @@ Private 属性</h2></td></tr>
 <tr class="memitem:a220bcf6a3ca101335ab52f66faf3ee28" id="r_a220bcf6a3ca101335ab52f66faf3ee28"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::uint64_t, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a220bcf6a3ca101335ab52f66faf3ee28">stable_id_by_endpoints_</a></td></tr>
 <tr class="memitem:ad8a2a97a99011be43c58c760a648e332" id="r_ad8a2a97a99011be43c58c760a648e332"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8a2a97a99011be43c58c760a648e332">gid_by_stable_id_</a></td></tr>
 </table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ae5313718475c88aec6b640898899628f" name="ae5313718475c88aec6b640898899628f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5313718475c88aec6b640898899628f">&#9670;&#160;</a></span>MeshAdjacency() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshAdjacency::MeshAdjacency </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa03dd372ecb48dd2c8d5409d170d0e3a" name="aa03dd372ecb48dd2c8d5409d170d0e3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa03dd372ecb48dd2c8d5409d170d0e3a">&#9670;&#160;</a></span>MeshAdjacency() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MeshAdjacency::MeshAdjacency </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>自定义拷贝：只拷持久身份层（稳定边 id/gid 表） </p>
+<p>懒重建部分（边表/世代/构建指针）清零并置 dirty，下次查询自动重建。 快照恢复语义即"身份延续、缓存重建"：既避免派生缓存进快照，也杜绝 "拷贝来的 built_mesh_ 悬指针恰好等于新 mesh 地址"的误判。 </p>
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
 <a id="ad5b6d1992469b73d536ce3db34dec2fa" name="ad5b6d1992469b73d536ce3db34dec2fa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad5b6d1992469b73d536ce3db34dec2fa">&#9670;&#160;</a></span>edgeCellIndex()</h2>
@@ -442,6 +494,46 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>句柄是否属于当轮边表（世代匹配且行号在界内） </p>
+
+</div>
+</div>
+<a id="af28d8bf3b58425e20fde6e6045992604" name="af28d8bf3b58425e20fde6e6045992604"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af28d8bf3b58425e20fde6e6045992604">&#9670;&#160;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> &amp; MeshAdjacency::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5ef1f455a6c1843130a5b9a36043a06" name="ae5ef1f455a6c1843130a5b9a36043a06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5ef1f455a6c1843130a5b9a36043a06">&#9670;&#160;</a></span>reclaimEdgeGlobalIds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshAdjacency::reclaimEdgeGlobalIds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>map</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按 gid_by_stable_id_ 原值定向回收边 gid（配合快照恢复，仅作用持久层，不触发边表重建） </p>
 
 </div>
 </div>

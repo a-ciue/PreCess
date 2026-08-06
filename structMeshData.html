@@ -118,6 +118,8 @@ Public 类型</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
+<tr class="memitem:a1fafe843b8ac8aeb6643b3ce4355f96f" id="r_a1fafe843b8ac8aeb6643b3ce4355f96f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fafe843b8ac8aeb6643b3ce4355f96f">clone</a> () const</td></tr>
+<tr class="memdesc:a1fafe843b8ac8aeb6643b3ce4355f96f"><td class="mdescLeft">&#160;</td><td class="mdescRight">深拷贝网格数据（坐标/连通性/属性；不含待删的 patches_/blocks_），用于快照/恢复  <br /></td></tr>
 <tr class="memitem:a441899feec76257ac227a6786fe9aea9" id="r_a441899feec76257ac227a6786fe9aea9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a441899feec76257ac227a6786fe9aea9">clear</a> ()</td></tr>
 <tr class="memdesc:a441899feec76257ac227a6786fe9aea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">清除所有数据，即使offset数组起码也要保留一个元素0  <br /></td></tr>
 <tr class="memitem:adf69187de57678fe40d821885a600aa8" id="r_adf69187de57678fe40d821885a600aa8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf69187de57678fe40d821885a600aa8">init</a> ()</td></tr>
@@ -205,6 +207,25 @@ Public 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>清除所有数据，即使offset数组起码也要保留一个元素0 </p>
+
+</div>
+</div>
+<a id="a1fafe843b8ac8aeb6643b3ce4355f96f" name="a1fafe843b8ac8aeb6643b3ce4355f96f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fafe843b8ac8aeb6643b3ce4355f96f">&#9670;&#160;</a></span>clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt; MeshData::clone </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>深拷贝网格数据（坐标/连通性/属性；不含待删的 patches_/blocks_），用于快照/恢复 </p>
 
 </div>
 </div>

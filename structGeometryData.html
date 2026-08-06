@@ -108,6 +108,8 @@ GeometryData 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a1e3f6620346418ca083b54b8211c25ca" id="r_a1e3f6620346418ca083b54b8211c25ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1e3f6620346418ca083b54b8211c25ca">GeometryData</a> ()</td></tr>
 <tr class="memitem:a71e7ad60a393be4d9b55262795031699" id="r_a71e7ad60a393be4d9b55262795031699"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71e7ad60a393be4d9b55262795031699">~GeometryData</a> ()</td></tr>
+<tr class="memitem:a075ed678d9549f94c18ac18802b2aef4" id="r_a075ed678d9549f94c18ac18802b2aef4"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structGeometryData.html">GeometryData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a075ed678d9549f94c18ac18802b2aef4">clone</a> () const</td></tr>
+<tr class="memdesc:a075ed678d9549f94c18ac18802b2aef4"><td class="mdescLeft">&#160;</td><td class="mdescRight">克隆几何数据（TopoDS_Shape 句柄拷贝共享底层 TShape，开销小）  <br /></td></tr>
 <tr class="memitem:a2179d66f942a3e24ad93dc84f1829f7f" id="r_a2179d66f942a3e24ad93dc84f1829f7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2179d66f942a3e24ad93dc84f1829f7f">setRootShape</a> (TopoDS_Shape shape)</td></tr>
 <tr class="memdesc:a2179d66f942a3e24ad93dc84f1829f7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">将单个形状设置为严格一层扁平的根 Compound。  <br /></td></tr>
 <tr class="memitem:a384920d3e9373156b44529e8df23e0ee" id="r_a384920d3e9373156b44529e8df23e0ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a384920d3e9373156b44529e8df23e0ee">appendRootShape</a> (TopoDS_Shape shape)</td></tr>
@@ -189,6 +191,26 @@ Public 属性</h2></td></tr>
 
 <p>将形状追加到根 Compound，并保持根节点严格一层扁平。 </p>
 <p>调用方需要在追加前释放已经建立的子形状索引。 </p>
+
+</div>
+</div>
+<a id="a075ed678d9549f94c18ac18802b2aef4" name="a075ed678d9549f94c18ac18802b2aef4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a075ed678d9549f94c18ac18802b2aef4">&#9670;&#160;</a></span>clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="structGeometryData.html">GeometryData</a> &gt; GeometryData::clone </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>克隆几何数据（TopoDS_Shape 句柄拷贝共享底层 TShape，开销小） </p>
+<dl class="section note"><dt>注解</dt><dd>子形状索引是派生缓存，不进快照：克隆体的 index 保持未建，由恢复路径 ensureIndexBuilt 重建 </dd></dl>
 
 </div>
 </div>

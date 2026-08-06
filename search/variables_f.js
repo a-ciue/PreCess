@@ -2,7 +2,7 @@ var searchData=
 [
   ['object_5f_0',['object_',['../classcore_1_1ArgObject.html#a42420c737aece76a870fc1e287c09897',1,'core::ArgObject::object_'],['../classsystems_1_1edit_1_1ArgObject.html#a42420c737aece76a870fc1e287c09897',1,'systems::edit::ArgObject::object_'],['../classsystems_1_1algo_1_1ArgObject.html#a42420c737aece76a870fc1e287c09897',1,'systems::algo::ArgObject::object_']]],
   ['object_5fcb_1',['object_cb',['../structtinyobj_1_1callback__t.html#a905e0452b155afa871b8ed4bfd45d51f',1,'tinyobj::callback_t']]],
-  ['observer_5f_2',['observer_',['../classQModelManager.html#a3e6a2a98d5ec6d18ff86e04c12d2841d',1,'QModelManager::observer_'],['../classComponentOperator.html#af544a3855bc7b048d798ed7967adb3f3',1,'ComponentOperator::observer_'],['../classModelLayer.html#a70b5e3ea417a6dee3546d2e8947f3c10',1,'ModelLayer::observer_'],['../classModelOperator.html#a7f68955b886a941687b5eebf76096fdc',1,'ModelOperator::observer_']]],
+  ['observer_5f_2',['observer_',['../classQModelManager.html#a3e6a2a98d5ec6d18ff86e04c12d2841d',1,'QModelManager::observer_'],['../classModelLayer.html#a70b5e3ea417a6dee3546d2e8947f3c10',1,'ModelLayer::observer_']]],
   ['occ_5fshape_5f_3',['occ_shape_',['../classGeometryActor.html#aa6d20972966531ad52080409874f2bc3',1,'GeometryActor']]],
   ['on_5factivate_4',['on_activate',['../structsystems_1_1interaction_1_1InteractionState.html#a39d03b81c38f7b64611d5e00410a5706',1,'systems::interaction::InteractionState']]],
   ['on_5falgorithm_5finfos_5fchanged_5f_5',['on_algorithm_infos_changed_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a19a4f53b1731b8d984f005dbe7f04cce',1,'systems::algo::AlgorithmSystem']]],

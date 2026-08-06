@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/ModelSnapshot.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">ModelSnapshot.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ModelSnapshot_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="ComponentData_8h.html">ComponentData.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span></div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structModelSnapshot.html">   17</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structModelSnapshot.html">ModelSnapshot</a> {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structModelSnapshot.html#aa496078f1186736c7e87d7c2ec99adbf">   18</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structModelSnapshot.html#aa496078f1186736c7e87d7c2ec99adbf">model_id</a> { -1 };</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="structModelSnapshot.html#a0cb1fbeb48b1d33c6f6c9a22234bb5bd">   19</a></span>    std::string <a class="code hl_variable" href="structModelSnapshot.html#a0cb1fbeb48b1d33c6f6c9a22234bb5bd">name</a>;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structModelSnapshot.html#a398ee71b7fd9f1729f55ceaae0428609">   20</a></span>    <a class="code hl_typedef" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> <a class="code hl_variable" href="structModelSnapshot.html#a398ee71b7fd9f1729f55ceaae0428609">components</a>; <span class="comment">//&gt; 各组件 clone，id 为原值</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>};</div>
+</div>
+<div class="ttc" id="aComponentData_8h_html"><div class="ttname"><a href="ComponentData_8h.html">ComponentData.h</a></div></div>
+<div class="ttc" id="aComponentData_8h_html_a728074d968d490d75144bc04c1ef092d"><div class="ttname"><a href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; ComponentData &gt; &gt; ComponentDatas</div><div class="ttdef"><b>定义</b> ComponentData.h:17</div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:48</div></div>
+<div class="ttc" id="astructModelSnapshot_html"><div class="ttname"><a href="structModelSnapshot.html">ModelSnapshot</a></div><div class="ttdoc">模型级结构快照：整模型的深拷贝，用于撤销/恢复结构操作</div><div class="ttdef"><b>定义</b> ModelSnapshot.h:17</div></div>
+<div class="ttc" id="astructModelSnapshot_html_a0cb1fbeb48b1d33c6f6c9a22234bb5bd"><div class="ttname"><a href="structModelSnapshot.html#a0cb1fbeb48b1d33c6f6c9a22234bb5bd">ModelSnapshot::name</a></div><div class="ttdeci">std::string name</div><div class="ttdef"><b>定义</b> ModelSnapshot.h:19</div></div>
+<div class="ttc" id="astructModelSnapshot_html_a398ee71b7fd9f1729f55ceaae0428609"><div class="ttname"><a href="structModelSnapshot.html#a398ee71b7fd9f1729f55ceaae0428609">ModelSnapshot::components</a></div><div class="ttdeci">ComponentDatas components</div><div class="ttdef"><b>定义</b> ModelSnapshot.h:20</div></div>
+<div class="ttc" id="astructModelSnapshot_html_aa496078f1186736c7e87d7c2ec99adbf"><div class="ttname"><a href="structModelSnapshot.html#aa496078f1186736c7e87d7c2ec99adbf">ModelSnapshot::model_id</a></div><div class="ttdeci">Index model_id</div><div class="ttdef"><b>定义</b> ModelSnapshot.h:18</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

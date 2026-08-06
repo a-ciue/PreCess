@@ -28,8 +28,9 @@ var searchData=
   ['erasures_5flist_5fprevious_5fgroup_25',['erasures_list_previous_group',['../structplf_1_1colony_1_1group.html#a9777a5ee5f408d2bea4b0a4629c05ed1',1,'plf::colony::group']]],
   ['error_5f_26',['error_',['../classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec',1,'tinyobj::ObjReader']]],
   ['event_5fbus_5f_27',['event_bus_',['../classQModelManager.html#a86bcecbeacd137410691b25bcdfe6f11',1,'QModelManager::event_bus_'],['../classsystems_1_1feature_1_1FeatureSystem.html#aba8b654496a220e2cb145bc305552141',1,'systems::feature::FeatureSystem::event_bus_']]],
-  ['events_28',['events',['../structsystems_1_1feature_1_1FeatureContext.html#a3df2529e626582a6c3d0bb341cb36e0a',1,'systems::feature::FeatureContext']]],
-  ['extensions_29',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
-  ['extensions_5f_30',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]],
-  ['extract_5ffilter_5f_31',['extract_filter_',['../classSolidSelectorHighlight.html#a01649527e51122f2925ace2e03532701',1,'SolidSelectorHighlight::extract_filter_'],['../classVertexSelectorHighlight.html#a66021a8e9dd4edc9770e6e7866034ca7',1,'VertexSelectorHighlight::extract_filter_']]]
+  ['event_5fgateway_5f_28',['event_gateway_',['../classsystems_1_1feature_1_1FeatureSystem.html#a76b28144144a404f95d1c19d326d8bdb',1,'systems::feature::FeatureSystem']]],
+  ['events_29',['events',['../structsystems_1_1feature_1_1FeatureContext.html#a76998da867c9a37ea2c9721d24692256',1,'systems::feature::FeatureContext']]],
+  ['extensions_30',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
+  ['extensions_5f_31',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]],
+  ['extract_5ffilter_5f_32',['extract_filter_',['../classSolidSelectorHighlight.html#a01649527e51122f2925ace2e03532701',1,'SolidSelectorHighlight::extract_filter_'],['../classVertexSelectorHighlight.html#a66021a8e9dd4edc9770e6e7866034ca7',1,'VertexSelectorHighlight::extract_filter_']]]
 ];

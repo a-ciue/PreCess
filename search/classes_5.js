@@ -10,10 +10,11 @@ var searchData=
   ['facevertexiterator_7',['FaceVertexIterator',['../classMeshLib_1_1FaceVertexIterator.html',1,'MeshLib']]],
   ['featurecontext_8',['FeatureContext',['../structsystems_1_1feature_1_1FeatureContext.html',1,'systems::feature']]],
   ['featureentry_9',['FeatureEntry',['../structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html',1,'systems::feature::FeatureSystem']]],
-  ['featurehandler_10',['FeatureHandler',['../classsystems_1_1feature_1_1FeatureHandler.html',1,'systems::feature']]],
-  ['featureinfo_11',['FeatureInfo',['../structsystems_1_1feature_1_1FeatureInfo.html',1,'systems::feature']]],
-  ['featureparams_12',['FeatureParams',['../classsystems_1_1feature_1_1FeatureParams.html',1,'systems::feature']]],
-  ['featureregistrar_13',['FeatureRegistrar',['../classsystems_1_1feature_1_1FeatureRegistrar.html',1,'systems::feature']]],
-  ['featuresystem_14',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature']]],
-  ['featuresystemregister_15',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]]
+  ['featureeventgateway_10',['FeatureEventGateway',['../classsystems_1_1feature_1_1FeatureEventGateway.html',1,'systems::feature']]],
+  ['featurehandler_11',['FeatureHandler',['../classsystems_1_1feature_1_1FeatureHandler.html',1,'systems::feature']]],
+  ['featureinfo_12',['FeatureInfo',['../structsystems_1_1feature_1_1FeatureInfo.html',1,'systems::feature']]],
+  ['featureparams_13',['FeatureParams',['../classsystems_1_1feature_1_1FeatureParams.html',1,'systems::feature']]],
+  ['featureregistrar_14',['FeatureRegistrar',['../classsystems_1_1feature_1_1FeatureRegistrar.html',1,'systems::feature']]],
+  ['featuresystem_15',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature']]],
+  ['featuresystemregister_16',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]]
 ];

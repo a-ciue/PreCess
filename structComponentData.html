@@ -160,6 +160,12 @@ ComponentData 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a58d21ac297fef353e38c3aa1c2f3c992" id="r_a58d21ac297fef353e38c3aa1c2f3c992"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a58d21ac297fef353e38c3aa1c2f3c992">ComponentData</a> ()</td></tr>
 <tr class="memitem:ab265652cf7fba90fc0f7d151be0b8f3c" id="r_ab265652cf7fba90fc0f7d151be0b8f3c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab265652cf7fba90fc0f7d151be0b8f3c">~ComponentData</a> ()</td></tr>
+<tr class="memitem:a1de8c7c2ac533aaff71da67c9bd87b9b" id="r_a1de8c7c2ac533aaff71da67c9bd87b9b"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structComponentData.html">ComponentData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1de8c7c2ac533aaff71da67c9bd87b9b">clone</a> () const</td></tr>
+<tr class="memdesc:a1de8c7c2ac533aaff71da67c9bd87b9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">深拷贝整个组件（mesh/geometry/mapping/gid 伴生表/邻接持久层），id 一并复制  <br /></td></tr>
+<tr class="memitem:a42d32bf161eb9c46bd3f80e8f9252dcb" id="r_a42d32bf161eb9c46bd3f80e8f9252dcb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42d32bf161eb9c46bd3f80e8f9252dcb">restoreFrom</a> (const <a class="el" href="structComponentData.html">ComponentData</a> &amp;snapshot)</td></tr>
+<tr class="memdesc:a42d32bf161eb9c46bd3f80e8f9252dcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">用快照覆盖本组件数据（保留本组件 id 不变）  <br /></td></tr>
+<tr class="memitem:a398e6924a97fa3eb14eb902b83f12a54" id="r_a398e6924a97fa3eb14eb902b83f12a54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a398e6924a97fa3eb14eb902b83f12a54">reclaimPointGlobalIds</a> (<a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;map)</td></tr>
+<tr class="memdesc:a398e6924a97fa3eb14eb902b83f12a54"><td class="mdescLeft">&#160;</td><td class="mdescRight">按 point_global_ids_ 原值定向回收点 gid（配合 restoreFrom 使用）  <br /></td></tr>
 <tr class="memitem:adf67c038a108088ce936973b012b57a0" id="r_adf67c038a108088ce936973b012b57a0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf67c038a108088ce936973b012b57a0">hasMesh</a> () const noexcept</td></tr>
 <tr class="memitem:a89b5b7d048461de0b087c6c1e9ecc0d9" id="r_a89b5b7d048461de0b087c6c1e9ecc0d9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89b5b7d048461de0b087c6c1e9ecc0d9">hasGeometry</a> () const noexcept</td></tr>
 <tr class="memitem:adba5099eb72aa819577f79ea053fd0ba" id="r_adba5099eb72aa819577f79ea053fd0ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMeshData.html">MeshData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adba5099eb72aa819577f79ea053fd0ba">asMeshData</a> () noexcept</td></tr>
@@ -183,7 +189,7 @@ Public 属性</h2></td></tr>
 <tr class="memitem:a69aba3b53d3d9ed3d7460a81e05d6ea9" id="r_a69aba3b53d3d9ed3d7460a81e05d6ea9"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structGeometryMeshMap.html">GeometryMeshMap</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69aba3b53d3d9ed3d7460a81e05d6ea9">mapping</a></td></tr>
 <tr class="memdesc:a69aba3b53d3d9ed3d7460a81e05d6ea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Geometry↔网格对应关系（可选，后续实现）  <br /></td></tr>
 <tr class="memitem:a7654b30242b6cdd684e4dd0f6b11b2ce" id="r_a7654b30242b6cdd684e4dd0f6b11b2ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshAdjacency.html">MeshAdjacency</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7654b30242b6cdd684e4dd0f6b11b2ce">mesh_adjacency</a></td></tr>
-<tr class="memdesc:a7654b30242b6cdd684e4dd0f6b11b2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">网格邻接查询索引（派生缓存，拓扑变更后由 <a class="el" href="classComponentOperator.html#a3b2c6f2d517b029b9af641dda94cd4bf">ComponentOperator::notifyChanged</a> 失效）  <br /></td></tr>
+<tr class="memdesc:a7654b30242b6cdd684e4dd0f6b11b2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">网格邻接查询索引（派生缓存，Topology 类标脏时经 <a class="el" href="classModelLayer.html#acd0aab202acc541ca43338fef559234c" title="标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）">ModelLayer::markComponentDirty</a> 失效）  <br /></td></tr>
 <tr class="memitem:a3de48b085bbf22ce958762d5aa15354b" id="r_a3de48b085bbf22ce958762d5aa15354b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3de48b085bbf22ce958762d5aa15354b">point_global_ids_</a></td></tr>
 <tr class="memdesc:a3de48b085bbf22ce958762d5aa15354b"><td class="mdescLeft">&#160;</td><td class="mdescRight">局部点 id -&gt; 全局点 id（gid 经 <a class="el" href="classModelLayer.html#a19ed3df9982488b982f865c9b3ebfa2a">ModelLayer::pointIdMap()</a> 分配，-1 = 待分配）  <br /></td></tr>
 <tr class="memitem:afae3de55f858f6cbe90434711f9f7436" id="r_afae3de55f858f6cbe90434711f9f7436"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afae3de55f858f6cbe90434711f9f7436">material_id</a> { -1 }</td></tr>
@@ -349,6 +355,25 @@ Public 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a1de8c7c2ac533aaff71da67c9bd87b9b" name="a1de8c7c2ac533aaff71da67c9bd87b9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1de8c7c2ac533aaff71da67c9bd87b9b">&#9670;&#160;</a></span>clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="structComponentData.html">ComponentData</a> &gt; ComponentData::clone </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>深拷贝整个组件（mesh/geometry/mapping/gid 伴生表/邻接持久层），id 一并复制 </p>
+
+</div>
+</div>
 <a id="af632ecd07d41a3e447653491111963a9" name="af632ecd07d41a3e447653491111963a9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af632ecd07d41a3e447653491111963a9">&#9670;&#160;</a></span>ensureMapping()</h2>
 
@@ -436,6 +461,25 @@ Public 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a398e6924a97fa3eb14eb902b83f12a54" name="a398e6924a97fa3eb14eb902b83f12a54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a398e6924a97fa3eb14eb902b83f12a54">&#9670;&#160;</a></span>reclaimPointGlobalIds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ComponentData::reclaimPointGlobalIds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>map</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按 point_global_ids_ 原值定向回收点 gid（配合 restoreFrom 使用） </p>
+
+</div>
+</div>
 <a id="a68e6a63e4b824e3694876f120de773f9" name="a68e6a63e4b824e3694876f120de773f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a68e6a63e4b824e3694876f120de773f9">&#9670;&#160;</a></span>releasePointGlobalIds()</h2>
 
@@ -452,6 +496,26 @@ Public 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>释放全部全局点 id 并清空映射（组件移除/整网格替换/网格移除时调用） </p>
+
+</div>
+</div>
+<a id="a42d32bf161eb9c46bd3f80e8f9252dcb" name="a42d32bf161eb9c46bd3f80e8f9252dcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42d32bf161eb9c46bd3f80e8f9252dcb">&#9670;&#160;</a></span>restoreFrom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ComponentData::restoreFrom </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structComponentData.html">ComponentData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>snapshot</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>用快照覆盖本组件数据（保留本组件 id 不变） </p>
+<dl class="section note"><dt>注解</dt><dd>不触碰 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 的 MeshIDMap；gid 对账由 <a class="el" href="classComponentOperator.html#ac6f99d3fdc52bdf62e32c3dbd153ea9a" title="恢复快照：gid 对账（释放现有点/边 gid → 覆盖数据 → 按快照原值 reclaim）后标脏">ComponentOperator::restoreSnapshot</a> 负责。 mesh_adjacency 拷贝只带持久身份层，懒表自动置 dirty（见 <a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> 拷贝语义）。 </dd></dl>
 
 </div>
 </div>
@@ -546,7 +610,7 @@ Public 属性</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>网格邻接查询索引（派生缓存，拓扑变更后由 <a class="el" href="classComponentOperator.html#a3b2c6f2d517b029b9af641dda94cd4bf">ComponentOperator::notifyChanged</a> 失效） </p>
+<p>网格邻接查询索引（派生缓存，Topology 类标脏时经 <a class="el" href="classModelLayer.html#acd0aab202acc541ca43338fef559234c" title="标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）">ModelLayer::markComponentDirty</a> 失效） </p>
 
 </div>
 </div>
@@ -577,7 +641,7 @@ Public 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>局部点 id -&gt; 全局点 id（gid 经 <a class="el" href="classModelLayer.html#a19ed3df9982488b982f865c9b3ebfa2a">ModelLayer::pointIdMap()</a> 分配，-1 = 待分配） </p>
-<p>组件级伴生身份数据（与 mesh_adjacency 的全局边 id 层同机制），不属于 MeshData， 保证 <a class="el" href="structMeshData.html">MeshData</a> 可独立快照/恢复。仅在受控点同步：模型入池（ModelLayer::addModel）、 整网格替换、运行期向 mesh 加点后（ensurePointGlobalIds）、组件/网格移除（releasePointGlobalIds）。 gid 空转复用策略同 MeshIDMap（free-list），回收策略随 undo/redo 设计定稿。 </p>
+<p>组件级伴生身份数据（与 mesh_adjacency 的全局边 id 层同机制），不属于 MeshData， 保证 <a class="el" href="structMeshData.html">MeshData</a> 可独立快照/恢复。仅在受控点同步：模型入池（ModelLayer::addModel）、 整网格替换、运行期向 mesh 加点后（ensurePointGlobalIds）、组件/网格移除（releasePointGlobalIds）。 gid 复用策略同 MeshIDMap（free-list 保留），快照恢复经 reclaim 按原值定向拿回 gid； undo 后选择集清空（Selection 持有的 gid/稳定 id 不作跨 undo 保证）。 </p>
 
 </div>
 </div>

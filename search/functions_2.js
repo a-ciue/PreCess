@@ -15,5 +15,6 @@ var searchData=
   ['blockupdated_12',['blockUpdated',['../classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581',1,'QModelObserver']]],
   ['boundary_13',['boundary',['../classMeshLib_1_1CEdge.html#a5fb31e9605d9f59fd89f74039bf4f9d9',1,'MeshLib::CEdge::boundary()'],['../classMeshLib_1_1CVertex.html#af2b03defeb092cd172d0011762e9b3cf',1,'MeshLib::CVertex::boundary()']]],
   ['build_14',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
-  ['buildhighlight_15',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]]
+  ['buildhighlight_15',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
+  ['bus_16',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]]
 ];

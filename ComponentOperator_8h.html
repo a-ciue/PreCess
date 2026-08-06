@@ -77,29 +77,36 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">类</a>  </div>
+<a href="#nested-classes">类</a> &#124;
+<a href="#enum-members">枚举</a>  </div>
   <div class="headertitle"><div class="title">ComponentOperator.h 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 ComponentOperator.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ComponentOperator_8h__incl.png" border="0" usemap="#amodel_2data_2ComponentOperator_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2data_2ComponentOperator_8h" id="amodel_2data_2ComponentOperator_8h">
-<area shape="rect" title=" " alt="" coords="77,5,320,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="167,79,231,104"/>
-<area shape="poly" title=" " alt="" coords="201,31,201,65,196,65,196,31"/>
+<area shape="rect" title=" " alt="" coords="111,5,353,31"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="165,79,229,104"/>
+<area shape="poly" title=" " alt="" coords="229,32,211,67,207,65,224,30"/>
 <area shape="rect" title=" " alt="" coords="5,152,61,177"/>
-<area shape="poly" title=" " alt="" coords="173,106,74,149,72,144,171,102"/>
-<area shape="rect" title=" " alt="" coords="85,152,136,177"/>
-<area shape="poly" title=" " alt="" coords="186,106,137,145,134,141,183,102"/>
-<area shape="rect" title=" " alt="" coords="160,152,237,177"/>
-<area shape="poly" title=" " alt="" coords="201,104,201,138,196,138,196,104"/>
-<area shape="rect" title=" " alt="" coords="261,152,320,177"/>
-<area shape="poly" title=" " alt="" coords="215,102,267,141,263,146,212,106"/>
+<area shape="poly" title=" " alt="" coords="218,33,62,146,59,141,215,29"/>
+<area shape="rect" title=" " alt="" coords="243,152,320,177"/>
+<area shape="poly" title=" " alt="" coords="239,30,276,138,271,140,234,32"/>
 <area shape="rect" title=" " alt="" coords="345,152,407,177"/>
-<area shape="poly" title=" " alt="" coords="228,102,336,144,334,149,226,106"/>
+<area shape="poly" title=" " alt="" coords="246,29,357,140,353,144,242,33"/>
+<area shape="poly" title=" " alt="" coords="172,106,74,149,71,144,170,102"/>
+<area shape="rect" title=" " alt="" coords="168,152,219,177"/>
+<area shape="poly" title=" " alt="" coords="199,104,197,139,192,138,194,104"/>
+<area shape="poly" title=" " alt="" coords="213,102,259,141,255,145,209,106"/>
+<area shape="rect" title=" " alt="" coords="85,152,144,177"/>
+<area shape="poly" title=" " alt="" coords="186,106,140,145,137,141,182,102"/>
+<area shape="poly" title=" " alt="" coords="227,102,335,144,333,149,225,107"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -107,47 +114,86 @@ ComponentOperator.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ComponentOperator_8h__dep__incl.png" border="0" usemap="#amodel_2data_2ComponentOperator_8hdep" loading="lazy" alt=""/></div>
 <map name="amodel_2data_2ComponentOperator_8hdep" id="amodel_2data_2ComponentOperator_8hdep">
-<area shape="rect" title=" " alt="" coords="1051,5,1294,31"/>
-<area shape="rect" href="QGeometryOperations_8cpp.html" title=" " alt="" coords="5,86,273,111"/>
-<area shape="poly" title=" " alt="" coords="1038,29,696,49,286,81,222,89,222,83,286,76,696,43,1037,23"/>
-<area shape="rect" href="ComponentOperator_8cpp.html" title=" " alt="" coords="298,86,557,111"/>
-<area shape="poly" title=" " alt="" coords="1038,34,569,81,510,89,510,83,568,76,1037,29"/>
-<area shape="rect" href="ModelLayer_8cpp.html" title="实现 ModelLayer 类，用于管理多个网格模型" alt="" coords="581,86,783,111"/>
-<area shape="poly" title=" " alt="" coords="1086,35,796,81,751,89,750,83,795,76,1085,30"/>
-<area shape="rect" href="TestComponentOperator_8cpp.html" title=" " alt="" coords="808,79,1039,119"/>
-<area shape="poly" title=" " alt="" coords="1124,37,984,81,982,76,1123,32"/>
-<area shape="rect" href="TestGeometryIndex_8cpp.html" title=" " alt="" coords="1063,79,1283,119"/>
-<area shape="poly" title=" " alt="" coords="1175,44,1175,79,1170,79,1170,44"/>
-<area shape="rect" href="AlgorithmHandler_8h.html" title=" " alt="" coords="1307,79,1462,119"/>
-<area shape="poly" title=" " alt="" coords="1217,33,1335,76,1333,81,1215,38"/>
-<area shape="rect" href="EditHandler_8h.html" title=" " alt="" coords="1487,79,1637,119"/>
-<area shape="poly" title=" " alt="" coords="1245,31,1475,76,1487,79,1486,84,1473,81,1244,36"/>
-<area shape="rect" href="TrivialEditHandler_8h.html" title=" " alt="" coords="1585,167,1766,207"/>
-<area shape="poly" title=" " alt="" coords="1308,17,1406,21,1506,31,1593,49,1626,61,1650,77,1666,97,1675,121,1679,166,1674,167,1669,122,1661,100,1647,81,1624,66,1591,54,1505,37,1406,27,1308,22"/>
-<area shape="rect" href="FeatureContext_8h.html" title="功能上下文：功能访问软件环境的入口" alt="" coords="2049,79,2222,119"/>
-<area shape="poly" title=" " alt="" coords="1308,28,2049,88,2048,93,1307,33"/>
-<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="1219,167,1385,207"/>
-<area shape="poly" title=" " alt="" coords="1359,131,1322,168,1318,165,1355,127"/>
-<area shape="rect" href="EditSystem_8cpp.html" title=" " alt="" coords="1409,167,1560,207"/>
-<area shape="poly" title=" " alt="" coords="1538,131,1504,168,1500,165,1534,127"/>
-<area shape="poly" title=" " alt="" coords="1599,125,1652,164,1649,169,1596,129"/>
-<area shape="rect" href="TestEditSystem_8cpp.html" title=" " alt="" coords="1212,255,1395,295"/>
-<area shape="poly" title=" " alt="" coords="1581,212,1385,257,1384,252,1580,207"/>
-<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="2049,167,2222,207"/>
-<area shape="poly" title=" " alt="" coords="2138,133,2138,166,2133,166,2133,133"/>
-<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="2588,255,2795,295"/>
-<area shape="poly" title=" " alt="" coords="2209,120,2632,252,2630,257,2208,125"/>
-<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="1419,262,1647,287"/>
-<area shape="poly" title=" " alt="" coords="2036,204,1660,257,1609,265,1609,259,1659,252,2035,199"/>
-<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="1671,255,1882,295"/>
-<area shape="poly" title=" " alt="" coords="2044,212,1856,257,1855,252,2043,207"/>
-<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="1907,262,2137,287"/>
-<area shape="poly" title=" " alt="" coords="2101,217,2039,264,2036,259,2098,213"/>
-<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="2162,255,2335,295"/>
-<area shape="poly" title=" " alt="" coords="2173,213,2225,252,2222,257,2170,217"/>
-<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="2360,255,2564,295"/>
-<area shape="poly" title=" " alt="" coords="2221,208,2391,252,2390,257,2219,213"/>
-<area shape="poly" title=" " alt="" coords="2236,200,2577,252,2588,254,2587,259,2576,257,2235,205"/>
+<area shape="rect" title=" " alt="" coords="2775,5,3018,31"/>
+<area shape="rect" href="QGeometryOperations_8cpp.html" title=" " alt="" coords="48,174,316,199"/>
+<area shape="poly" title=" " alt="" coords="2761,21,2441,22,1993,30,1478,48,1214,62,956,81,752,102,552,129,247,177,247,171,552,124,752,97,955,76,1214,57,1478,43,1993,24,2440,17,2761,16"/>
+<area shape="rect" href="ComponentOperator_8cpp.html" title=" " alt="" coords="341,174,599,199"/>
+<area shape="poly" title=" " alt="" coords="2762,23,2149,38,1749,55,1345,81,1116,103,891,129,546,177,545,171,890,124,1116,98,1345,76,1749,50,2148,33,2762,18"/>
+<area shape="rect" href="ModelLayer_8cpp.html" title="实现 ModelLayer 类，用于管理多个网格模型" alt="" coords="623,174,826,199"/>
+<area shape="poly" title=" " alt="" coords="2762,27,2425,43,1950,71,1402,112,1121,139,845,169,793,177,792,171,844,164,1120,134,1401,107,1949,65,2424,38,2761,22"/>
+<area shape="rect" href="ModelLayer_8h.html" title="负责管理多个模型实例的类" alt="" coords="1881,86,2067,111"/>
+<area shape="poly" title=" " alt="" coords="2762,33,2068,92,2068,87,2762,28"/>
+<area shape="rect" href="TestComponentOperator_8cpp.html" title=" " alt="" coords="2781,167,3012,207"/>
+<area shape="poly" title=" " alt="" coords="2899,44,2899,166,2894,166,2894,44"/>
+<area shape="rect" href="TestComponentSnapshot_8cpp.html" title=" " alt="" coords="3036,167,3267,207"/>
+<area shape="poly" title=" " alt="" coords="2927,36,3124,164,3121,169,2924,40"/>
+<area shape="rect" href="TestDirtyNotify_8cpp.html" title=" " alt="" coords="3291,167,3478,207"/>
+<area shape="poly" title=" " alt="" coords="2944,33,3331,164,3329,169,2942,38"/>
+<area shape="rect" href="TestGeometryIndex_8cpp.html" title=" " alt="" coords="3503,167,3723,207"/>
+<area shape="poly" title=" " alt="" coords="2960,31,3153,76,3533,164,3532,169,3152,81,2959,36"/>
+<area shape="rect" href="FeatureContext_8h.html" title="功能上下文：功能访问软件环境的入口" alt="" coords="685,255,858,295"/>
+<area shape="poly" title=" " alt="" coords="2761,23,1236,42,447,59,190,70,115,75,82,81,44,107,17,138,10,154,8,171,13,188,24,205,36,213,56,221,118,234,202,245,299,253,508,264,685,269,684,275,508,270,299,259,201,250,117,239,55,226,33,218,20,209,8,190,3,172,5,153,13,135,41,103,80,76,114,70,190,64,447,54,1236,37,2761,18"/>
+<area shape="rect" href="TestFeatureEventGateway_8cpp.html" title=" " alt="" coords="882,255,1133,295"/>
+<area shape="poly" title=" " alt="" coords="2762,23,1685,40,1065,57,806,68,610,81,518,84,435,77,289,60,224,61,192,67,161,76,130,90,99,110,69,136,38,168,29,187,31,196,37,205,55,216,86,225,180,239,303,247,442,250,710,250,870,252,882,253,881,259,870,257,710,256,442,255,303,252,179,244,85,230,53,221,34,209,26,198,24,187,33,165,65,132,96,105,128,85,159,71,191,61,223,56,289,55,436,72,518,78,610,76,806,63,1064,52,1685,34,2762,18"/>
+<area shape="rect" href="AlgorithmHandler_8h.html" title=" " alt="" coords="3622,79,3777,119"/>
+<area shape="poly" title=" " alt="" coords="3027,29,3622,87,3622,92,3027,35"/>
+<area shape="rect" href="EditHandler_8h.html" title=" " alt="" coords="3937,79,4088,119"/>
+<area shape="poly" title=" " alt="" coords="3032,25,3789,76,3937,88,3937,93,3789,81,3032,30"/>
+<area shape="rect" href="TrivialEditHandler_8h.html" title=" " alt="" coords="4113,167,4294,207"/>
+<area shape="poly" title=" " alt="" coords="3032,18,3310,22,3641,32,3935,49,4040,61,4102,76,4132,95,4158,118,4194,165,4190,168,4154,122,4129,99,4100,81,4039,66,3935,54,3641,37,3310,27,3032,23"/>
+<area shape="poly" title=" " alt="" coords="1867,104,1597,109,1217,120,777,139,329,169,262,177,261,171,329,164,776,134,1216,114,1597,103,1867,98"/>
+<area shape="poly" title=" " alt="" coords="1867,105,1328,123,972,142,612,169,548,177,547,171,611,164,972,137,1328,118,1867,100"/>
+<area shape="poly" title=" " alt="" coords="1867,106,1421,125,1134,143,845,169,791,177,790,171,844,164,1134,138,1421,119,1867,100"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="15,438,243,463"/>
+<area shape="poly" title=" " alt="" coords="1867,108,1296,137,1024,154,933,162,890,169,875,178,865,188,855,198,839,209,791,229,752,238,712,245,662,257,512,308,367,360,158,440,156,435,365,355,510,302,660,252,710,239,751,233,790,224,837,204,851,194,861,184,872,173,888,164,933,157,1023,149,1295,131,1867,102"/>
+<area shape="rect" href="QModelQuery_8cpp.html" title=" " alt="" coords="1259,174,1468,199"/>
+<area shape="poly" title=" " alt="" coords="1871,116,1480,169,1432,177,1432,171,1479,164,1871,110"/>
+<area shape="rect" href="ModelOperator_8cpp.html" title=" " alt="" coords="1492,174,1715,199"/>
+<area shape="poly" title=" " alt="" coords="1912,117,1653,177,1652,171,1911,112"/>
+<area shape="rect" href="TestComponentModel_8cpp.html" title=" " alt="" coords="1739,167,1969,207"/>
+<area shape="poly" title=" " alt="" coords="1948,122,1882,169,1879,164,1945,117"/>
+<area shape="poly" title=" " alt="" coords="2082,104,2391,127,2769,164,2782,166,2781,171,2768,169,2390,133,2081,110"/>
+<area shape="poly" title=" " alt="" coords="2082,101,2495,122,2758,140,3024,164,3036,165,3036,171,3023,169,2758,145,2495,127,2081,107"/>
+<area shape="poly" title=" " alt="" coords="2081,98,2300,103,2598,114,2936,133,3278,164,3292,166,3291,171,3278,169,2936,138,2597,119,2300,108,2081,104"/>
+<area shape="poly" title=" " alt="" coords="2081,98,2332,102,2681,113,3083,132,3490,164,3503,165,3502,171,3490,169,3082,138,2681,118,2332,108,2081,103"/>
+<area shape="rect" href="TestGlobalPoints_8cpp.html" title=" " alt="" coords="1994,167,2191,207"/>
+<area shape="poly" title=" " alt="" coords="2003,117,2068,164,2065,169,2000,122"/>
+<area shape="rect" href="TestModelManager_8cpp.html" title=" " alt="" coords="2215,167,2410,207"/>
+<area shape="poly" title=" " alt="" coords="2033,112,2239,164,2238,169,2032,117"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="3747,167,3913,207"/>
+<area shape="poly" title=" " alt="" coords="2081,99,2911,120,3387,139,3585,151,3736,164,3747,165,3746,171,3735,169,3585,156,3387,144,2911,125,2081,105"/>
+<area shape="rect" href="EditSystem_8cpp.html" title=" " alt="" coords="3937,167,4088,207"/>
+<area shape="poly" title=" " alt="" coords="2082,98,2469,104,3001,116,3535,135,3758,149,3926,164,3938,166,3937,171,3926,169,3757,154,3535,141,3001,121,2468,110,2082,104"/>
+<area shape="rect" href="TestEditSystem_8cpp.html" title=" " alt="" coords="3233,255,3416,295"/>
+<area shape="poly" title=" " alt="" coords="2081,98,2159,103,2246,115,2336,134,2423,164,2439,174,2449,185,2459,196,2474,204,2537,222,2623,237,2833,256,3053,266,3233,270,3233,276,3053,272,2833,262,2622,242,2536,227,2472,209,2456,200,2445,189,2436,178,2421,169,2335,139,2245,120,2158,109,2081,103"/>
+<area shape="rect" href="FeatureEventGateway_8h.html" title="功能事件网关：功能事件回调的操作边界" alt="" coords="901,167,1081,207"/>
+<area shape="poly" title=" " alt="" coords="1867,108,1526,129,1314,147,1101,169,1082,172,1082,167,1100,164,1313,141,1525,124,1867,102"/>
+<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="1217,431,1390,471"/>
+<area shape="poly" title=" " alt="" coords="1867,109,1490,135,1324,152,1271,161,1248,169,1229,199,1221,233,1223,270,1232,308,1262,378,1293,429,1288,432,1257,380,1227,309,1218,271,1216,233,1224,197,1244,165,1270,155,1324,147,1490,130,1867,103"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="985,431,1192,471"/>
+<area shape="poly" title=" " alt="" coords="1867,106,1691,114,1489,127,1315,145,1255,156,1221,169,1211,182,1196,208,1160,283,1099,431,1094,429,1156,281,1191,205,1206,179,1218,164,1253,151,1315,140,1489,122,1690,109,1867,101"/>
+<area shape="poly" title=" " alt="" coords="1867,104,1692,109,1486,120,1291,139,1212,153,1153,169,1102,204,1033,257,1030,252,1099,199,1150,164,1211,148,1290,134,1485,115,1692,104,1867,99"/>
+<area shape="rect" href="ModelIOSystem_8cpp.html" title=" " alt="" coords="2485,174,2757,199"/>
+<area shape="poly" title=" " alt="" coords="2074,111,2535,171,2534,177,2073,116"/>
+<area shape="poly" title=" " alt="" coords="932,214,821,257,819,252,930,209"/>
+<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="659,343,833,383"/>
+<area shape="poly" title=" " alt="" coords="889,209,750,236,697,248,674,257,669,267,668,277,677,300,697,322,719,341,716,345,693,326,673,303,663,278,664,265,671,253,696,243,749,231,888,204"/>
+<area shape="poly" title=" " alt="" coords="1000,220,1006,254,1001,255,995,221"/>
+<area shape="poly" title=" " alt="" coords="765,309,754,343,749,342,759,307"/>
+<area shape="poly" title=" " alt="" coords="819,299,1056,428,1053,433,816,304"/>
+<area shape="poly" title=" " alt="" coords="646,381,616,385,254,433,204,441,203,435,254,428,615,380,645,376"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="495,431,706,471"/>
+<area shape="poly" title=" " alt="" coords="704,392,634,433,631,428,701,387"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="731,438,961,463"/>
+<area shape="poly" title=" " alt="" coords="780,390,834,436,831,440,777,394"/>
+<area shape="poly" title=" " alt="" coords="847,375,1204,428,1217,430,1216,436,1203,433,846,380"/>
+<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="267,431,471,471"/>
+<area shape="poly" title=" " alt="" coords="651,388,452,433,451,428,649,383"/>
+<area shape="poly" title=" " alt="" coords="835,383,1014,428,1013,433,834,389"/>
+<area shape="poly" title=" " alt="" coords="3741,124,3803,164,3800,169,3738,128"/>
+<area shape="poly" title=" " alt="" coords="4015,133,4015,166,4010,166,4010,133"/>
+<area shape="poly" title=" " alt="" coords="4068,122,4163,164,4161,169,4066,127"/>
+<area shape="poly" title=" " alt="" coords="4099,209,3905,232,3716,250,3417,271,3416,266,3716,244,3905,227,4099,204"/>
 </map>
 </div>
 </div>
@@ -156,7 +202,46 @@ ComponentOperator.h 的引用(Include)关系图:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 类</h2></td></tr>
 <tr class="memitem:ComponentOperator" id="r_ComponentOperator"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classComponentOperator.html">ComponentOperator</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件数据的统一写入口：写必脏  <a href="classComponentOperator.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:aaa4581396b959b0a0f7d487174d19308" id="r_aaa4581396b959b0a0f7d487174d19308"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaa4581396b959b0a0f7d487174d19308">MeshEditKind</a> { <a class="el" href="#aaa4581396b959b0a0f7d487174d19308a99571eecaa5c5d622bb0d1f855752d5f">Topology</a>
+, <a class="el" href="#aaa4581396b959b0a0f7d487174d19308a8bbaff4a7b7cc5b924fbc5f285586951">NonTopology</a>
+ }</td></tr>
+<tr class="memdesc:aaa4581396b959b0a0f7d487174d19308"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件数据修改类别：决定标脏时是否立即失效网格邻接懒表  <a href="#aaa4581396b959b0a0f7d487174d19308">更多...</a><br /></td></tr>
 </table>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">枚举类型说明</h2>
+<a id="aaa4581396b959b0a0f7d487174d19308" name="aaa4581396b959b0a0f7d487174d19308"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa4581396b959b0a0f7d487174d19308">&#9670;&#160;</a></span>MeshEditKind</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#aaa4581396b959b0a0f7d487174d19308">MeshEditKind</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>组件数据修改类别：决定标脏时是否立即失效网格邻接懒表 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="aaa4581396b959b0a0f7d487174d19308a99571eecaa5c5d622bb0d1f855752d5f" name="aaa4581396b959b0a0f7d487174d19308a99571eecaa5c5d622bb0d1f855752d5f"></a>Topology&#160;</td><td class="fielddoc"><p>拓扑/坐标变更：立即失效 mesh_adjacency 懒表（查询即时正确） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa4581396b959b0a0f7d487174d19308a8bbaff4a7b7cc5b924fbc5f285586951" name="aaa4581396b959b0a0f7d487174d19308a8bbaff4a7b7cc5b924fbc5f285586951"></a>NonTopology&#160;</td><td class="fielddoc"><p>仅属性等附着数据变更：不动拓扑，邻接懒表保持有效 </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
