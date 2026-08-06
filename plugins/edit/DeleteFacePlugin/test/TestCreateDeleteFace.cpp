@@ -32,9 +32,9 @@ TEST_CASE("DeleteFace and CreateFace, Delete -> Create(Recover) -> Delete -> Cre
 
     ComponentData* comp = mgr.findComponent(cids[0]);
     REQUIRE(comp);
-    ComponentOperator op(cids[0], *comp, mgr, nullptr);
+    ComponentOperator op(cids[0], *comp, mgr);
 
-    MeshData* mesh = op.mesh();
+    const MeshData* mesh = op.mesh();
     REQUIRE(mesh != nullptr);
     REQUIRE(mesh->face_vertices_offset_.size() >= 2);
 

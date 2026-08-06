@@ -14,6 +14,12 @@ struct GeometryData {
     GeometrySubshapeIndex index;
 
     /**
+     * @brief 克隆几何数据（TopoDS_Shape 句柄拷贝共享底层 TShape，开销小）
+     * @note 子形状索引是派生缓存，不进快照：克隆体的 index 保持未建，由恢复路径 ensureIndexBuilt 重建
+     */
+    std::unique_ptr<GeometryData> clone() const;
+
+    /**
      * @brief 将单个形状设置为严格一层扁平的根 Compound。
      *
      * 输入中的 Compound 会递归展开，保证根节点的直接子节点不再包含 Compound。

@@ -7,6 +7,7 @@
 #include "MeasureHandler.h"
 #include "EventBus.h"
 #include "FeatureContext.h"
+#include "FeatureEventGateway.h"
 #include "FeatureEvents.h"
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
@@ -27,6 +28,7 @@ namespace {
 struct FeatureTestEnv {
     ModelLayer mgr;
     core::EventBus bus;
+    FeatureEventGateway gateway { bus, mgr }; //> 事件网关（声明顺序须在 mgr/bus 之后）
     MeasureHandler handler;
     FeatureRegistrar registrar;
     std::optional<Index> active_component;
@@ -43,7 +45,7 @@ struct FeatureTestEnv {
         params = std::make_unique<FeatureParams>(registrar.argTypes());
         ctx = std::make_unique<FeatureContext>(FeatureContext {
             mgr,
-            bus,
+            gateway,
             *params,
             interaction_ctx_,
             []() -> std::optional<Index> { return std::nullopt; },

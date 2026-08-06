@@ -164,7 +164,10 @@
   - **动态状态走事件回调**：交互结果、进度等经事件 / 信号传递（如功能回写参数经 `ParameterChangedEvent` → `paramValueChanged` 信号同步 QML 显示），界面不轮询插件内部状态。
   - **环境状态走上下文访问**：活动模型 / 组件、选择集经 `FeatureContext` provider 与 `App.selection` 获取，功能不反向依赖 app 层。
   - 启停类逻辑做成幂等的状态应用（以目标状态为守卫，重复触发无副作用），避免多触发源的命令式调用堆积。
-- **网格数据与点 id 约定**（详见 `MeshData.h` / `ComponentData.h` 注释）：`MeshData` 自包含（坐标常驻 `vertex_positions_`，连通性数组存组件内局部点索引）；局部点索引只增不改号、不重排（`MeshAdjacency` 持久边身份与快照恢复依赖）；`Selection` / `PickInfo` 携带全局点 id（gid），写连通性前经 `ModelLayer::pointIdMap()` 换算；整网格替换或运行期加点后须 `ComponentData::ensurePointGlobalIds` 补缺。
+- **写路径收口（写必脏 + 操作边界 flush）**：写模型数据必须经 `ComponentOperator` 语义接口（`appendPoint`/`appendFace`/`replaceMesh`/`materializeEdge` 等）或可写入口 `editableMesh(kind)`；**获取可写入口即标脏**（Topology 类立即失效邻接懒表并记入待通知集合（去重），NonTopology 仅记集合不失效懒表），**通知由操作边界 `ModelLayer::flushNotifications()` 统一发出，插件不得手调通知**（`ComponentOperator::notifyChanged` 已删除）；`component()`/`mesh()` 只读（返回 const），只读访问不标脏。结构操作（`addGeometryComponent`/`addModel`/`removeModel`/`removeComponent`）保持即时通知，不进待通知集合。
+- **操作边界清单**：`EditSystem::call`、`AlgorithmSystem::call`、`FeatureSystem::invoke`（含 `dispatchKeyEvent` 按键路由）、`FeatureEventGateway` 包装的事件回调（功能经 `ctx.events` 订阅的回调返回后自动 flush，异常时先 flush 再重抛）、app 层 QML 入口（`QModelManager::removeMesh/removeGeometry`、`QGeometryOperations::addGeometryShape` 组件分支）；Edit/Algo/QML 入口的 flush 为过渡 shim（随系统迁移消亡），FeatureSystem 的 invoke flush 与 `FeatureEventGateway` 为长期设施。**新增插件代码执行路径须纳入边界**，否则标脏的通知不会发出。
+- **网格数据与点 id 约定**（详见 `MeshData.h` / `ComponentData.h` 注释）：`MeshData` 自包含（坐标常驻 `vertex_positions_`，连通性数组存组件内局部点索引）；局部点索引只增不改号、不重排（`MeshAdjacency` 持久边身份与快照恢复依赖）；`Selection` / `PickInfo` 携带全局点 id（gid），写连通性前经 `ModelLayer::pointIdMap()` 换算；整网格替换经 `ComponentOperator::replaceMesh`（gid 纪律内建），运行期加点经 `ComponentOperator::appendPoint`（原子四连），其余 gid 伴生表受控点经 `ComponentData::ensurePointGlobalIds` 补缺。
+- **快照原语约定**：组件级 `ComponentOperator::takeSnapshot/restoreSnapshot`、模型级 `ModelLayer::takeModelSnapshot/restoreModel/restoreComponent` 为快照/恢复统一入口；快照只装源数据与身份数据（派生缓存——邻接边表、几何子形状索引——不进快照、恢复后重建），恢复含 gid 对账（`reclaim` 按原值拿回点/边 gid、组件/模型按原 id 插回）；`restoreSnapshot` 恢复后标脏（Topology），通知延迟到操作边界 flush 统一发出；几何 gid 跨 undo 不保持，undo 后选择集清空（Selection 持有的 gid/稳定 id 不作跨 undo 保证）。
 
 ---
 

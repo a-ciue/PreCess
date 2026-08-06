@@ -33,11 +33,17 @@ std::any EditSystem::call(const string& unique_name, Index component_id, const v
     }
     auto it = handlers_.find(unique_name);
     if (it != handlers_.end() && it->second) {
-        std::any result = it->second->execute(*comp_op, args);
-
-        comp_op->notifyChanged();
-
-        return result;
+        // 过渡 shim（随系统迁移消亡）：操作边界统一 flush 组件变更通知，
+        // handler 写路径经 ComponentOperator 写必脏记入待通知集合；无写入则 flush 空转。
+        // 异常时先 flush 再重抛，保证部分写入的通知不丢。
+        try {
+            std::any result = it->second->execute(*comp_op, args);
+            model_manager_->flushNotifications();
+            return result;
+        } catch (...) {
+            model_manager_->flushNotifications();
+            throw;
+        }
     }
 
     spdlog::warn("EditSystem::call: Handler '{}' not found.", unique_name);

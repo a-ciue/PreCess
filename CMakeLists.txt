@@ -7,6 +7,12 @@ project(${MYNAME} VERSION 0.3.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 项目以异常作错误处理机制：MSVC 缺省（无 /EH）下 catch 能捕获但不展开栈（C4530），
+# 捕获异常后继续执行会状态错乱（如 unordered_set 迭代器损坏），须显式启用 /EHsc
+if(MSVC)
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/EHsc>)
+endif()
+
 list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
 
 option(BUILD_TESTING "是否启用并构建测试用例" OFF)
