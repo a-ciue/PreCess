@@ -1,6 +1,7 @@
 #ifndef SELECT_MANAGER_H
 #define SELECT_MANAGER_H
 #include "Core.h"
+#include "MeshSelectManager.h"
 #include "Selection.h"
 
 #include <array>
@@ -12,7 +13,6 @@
 #include <vtkActor.h>
 
 class vtkRenderer;
-class MeshSelectManager;
 class GeometrySelectManager;
 class MeshActorManagerSelectOp;
 class GeometryActorManagerSelectOp;
@@ -34,6 +34,8 @@ public:
     void setFaceSelectionByAngle(bool enabled, double angle_deg);
     //! @brief 吸附几何顶点：命中返回 {GeometryRegistry 顶点 id, 世界坐标}（转发给几何选择管理器）
     std::optional<std::pair<Index, std::array<double, 3>>> snapGeometryVertex(double posx, double posy);
+    //! @brief 吸附网格顶点：命中返回组件 id、局部点 id 与世界坐标（转发给网格选择管理器）
+    std::optional<MeshVertexSnap> snapMeshVertex(double posx, double posy);
     void clearSelection();
     //! @brief 注入模型层 id 查询接口，供选择器解析单元 id（如边端点对 -> 边 id）
     void setMeshIdQuery(const IMeshIdQuery* id_query);

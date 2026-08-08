@@ -12,8 +12,11 @@
 #include "ModelData.h"
 
 #include "ModelOperator.h"
+#include "ComponentOperator.h" // MeshEditKind（markComponentDirty 默认参数）
 #include "GeometryRegistry.h"
 #include "MeshIDMap.h"
+
+#include <TopAbs_ShapeEnum.hxx>
 
 #include <array>
 #include <vector>
@@ -22,7 +25,7 @@
 
 class ModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
-class ComponentOperator;
+struct ModelSnapshot;   // 前向声明模型级结构快照
 
 /**
  * @brief 负责管理多个 ModelData 实例的类
@@ -49,6 +52,22 @@ public:
      */
     Index addModel(const std::string& model_name, ComponentDatas components);
 
+    //! @brief 取整模型深拷贝快照（撤销 removeModel / 重做 addModel 用）
+    std::unique_ptr<ModelSnapshot> takeModelSnapshot(Index model_id) const;
+
+    /**
+     * @brief 按快照原 id 恢复模型（组件入池、component_to_model_、gid reclaim、几何索引重建）
+     * @return 恢复出的模型 id（即快照原 id）
+     * @throw std::runtime_error 原 model_id/component_id 已被占用，或 gid reclaim 冲突
+     */
+    Index restoreModel(const ModelSnapshot& snapshot);
+
+    /**
+     * @brief 按组件自带 id 把组件插回指定模型（撤销 removeComponent / 重做 addGeometryComponent 用）
+     * @throw std::runtime_error model 不存在或 component id 已被占用，或 gid reclaim 冲突
+     */
+    void restoreComponent(Index model_id, std::unique_ptr<ComponentData> component);
+
     /**
      * @brief 移除指定名称的模型
      *
@@ -73,33 +92,46 @@ public:
     ComponentData* findComponent(Index component_id) const;
 
     /**
-     * @brief 根据全局几何面 ID 查找所属 Component
-     * @param face_id 全局几何面 ID
-     * @return 所属 Component ID；未找到时返回空
+     * @brief 根据几何形状类型和全局 ID 查找所属 Component。
+     * @param shape_type 几何形状类型，支持 Vertex、Edge、Face 和 Solid。
+     * @param shape_id 几何形状的全局 ID。
+     * @return 所属 Component ID；类型不支持或未找到时返回空。
      */
-    std::optional<Index> findComponentIdByGeometryFaceId(GeomFaceId face_id) const;
+    std::optional<Index> findComponentIdByGeometryShapeId(
+        TopAbs_ShapeEnum shape_type,
+        Index shape_id) const;
 
     GeometryRegistry& geomRegistry();
     const GeometryRegistry& geomRegistry() const;
 
-    const std::vector<std::array<double, 3>>& globalPoints() const;
-
-    /**
-     * @brief 修改指定全局点的坐标
-     * @param global_id 全局点 ID
-     * @param point 新坐标
-     * @throw std::out_of_range global_id 越界
-     */
-    void setGlobalPoint(Index global_id, const std::array<double, 3>& point);
+    MeshIDMap& pointIdMap();
+    const MeshIDMap& pointIdMap() const;
 
     MeshIDMap& edgeIdMap();
     const MeshIDMap& edgeIdMap() const;
 
-    // 将运行期新生成的点追加到全局点池，返回这批点的第一个全局点 ID。
-    Index appendGlobalPoints(const std::vector<std::array<double, 3>>& pts);
+    /**
+     * @brief 标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）
+     * @note 通知不即时发出，由操作边界 flushNotifications() 统一发 notifyComponentChanged
+     */
+    void markComponentDirty(Index component_id, MeshEditKind kind = MeshEditKind::Topology);
+
+    //! @brief 对待通知集合逐组件发 notifyComponentChanged 并清空（操作边界调用；空集合无操作）
+    void flushNotifications();
 
 private:
     Index allocateComponentId() noexcept;
+
+    /**
+     * @brief 按给定 id 把组件纳入指定模型（入全局池、登记 component_to_model_、gid 对账）
+     *
+     * gid 对账顺序：几何索引 ensureIndexBuilt（快照克隆体索引未建，此处重建领新 gid）→
+     * 点 gid 先 reclaimPointGlobalIds 按原值回收再 ensurePointGlobalIds 补缺 →
+     * 边 gid 先 reclaimEdgeGlobalIds 再 ensureEdgeGlobalIds 补缺；reclaim 与 ensure 幂等兼容，
+     * addModel（gid 尚未分配，reclaim 自然无操作）与快照恢复共用本路径。
+     * @throw std::runtime_error model 不存在或 component id 已被占用，或 gid reclaim 冲突
+     */
+    void adoptComponent(Index component_id, std::unique_ptr<ComponentData> component, Index model_id);
 
     GeometryRegistry geom_registry_;
 
@@ -109,10 +141,11 @@ private:
     Index max_index_{ -1 }; //!< 最大索引值，用于唯一标识模型
     Index next_component_id_ { 0 }; //!< component_id 全局发号器（只增不减）
 
-    std::vector<std::array<double, 3>> global_points_;
-    MeshIDMap edge_id_map_; // 先只维护 edge 的 global->local
+    MeshIDMap point_id_map_; // 点的 global<->local（gid 为纯身份标识，坐标由组件 MeshData 自持）
+    MeshIDMap edge_id_map_; // 边的 global->local
 
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
+    std::vector<Index> pending_notify_; //!< 本次操作内被标脏的组件（去重；undo 操作记录的预留拦截点）
 
     friend class QModelQuery;
     friend class ModelOperator;

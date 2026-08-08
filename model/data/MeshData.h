@@ -41,16 +41,23 @@ struct MeshData {
     using BlockMap = std::unordered_map<Index, std::unique_ptr<Block>>;
 
     /**
-     * @brief 存储顶点的三维坐标。
+     * @brief 顶点的三维坐标（组件自持）。
+     *
+     * MeshData 为自包含数据：坐标常驻本数组，face_vertices_ / edge_vertices_ /
+     * solid_vertices_ / solid_faces_vertices_ 等连通性数组均存储本数组的局部下标
+     * （局部点 id），可整体快照/恢复（撤销重做依赖此性质）。
      *
      *  { 0.000000, 2.000000, 2.000000 }, { 0.000000, 0.000000, 2.000000 },
      *  { 2.000000, 0.000000, 2.000000 }, { 2.000000, 2.000000, 2.000000 },
      *  { 0.000000, 2.000000, 0.000000 }, { 0.000000, 0.000000, 0.000000 },
      *  { 2.000000, 0.000000, 0.000000 }, { 2.000000, 2.000000, 0.000000 }
+     *
+     * @note 局部点 id 在组件生命周期内保持稳定：只增不改号、不重排、不压实
+     *       （MeshAdjacency 持久边身份层以端点对为键，依赖此不变式）；
+     *       全局点 id 由 ComponentData::point_global_ids_ 经 MeshIDMap 分配。
      */
     std::vector<std::array<double, 3>> vertex_positions_;
-    Index vertex_count_ { 0 };
-    std::vector<Index> local_to_global_;
+    Index vertex_count_ { 0 }; //> 恒等于 vertex_positions_.size()
 
     /**
      * @brief 面的点索引，存储构成网格面单元的顶点索引。可以表示独立于体单元之外单独定义的面单元。
@@ -140,6 +147,10 @@ struct MeshData {
     std::map<std::string, std::vector<double>> solid_attributes_;
  
     /**
+     * @brief 深拷贝网格数据（坐标/连通性/属性；不含待删的 patches_/blocks_），用于快照/恢复
+     */
+    std::unique_ptr<MeshData> clone() const;
+    /**
      * @brief 清除所有数据，即使offset数组起码也要保留一个元素0
      */
     void clear();
@@ -159,6 +170,4 @@ struct MeshData {
      * @return 如果找到对应的Block ID，则返回该ID，否则返回std::nullopt
      */
     std::optional<Index> patch_block_id(int patch_id);
-
-    void makePointIdsGlobal();
 };

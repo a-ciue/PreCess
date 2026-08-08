@@ -44,11 +44,11 @@ TetGenLibPlugin/
 ## 处理流程
 
 1. 从 `ComponentOperator::component()` 获取当前 `ComponentData`
-2. 从 `ModelLayer::globalPoints()` 还原顶点全局坐标
+2. 直读 `MeshData::vertex_positions_` 顶点坐标（MeshData 自包含，连通性数组存组件内局部点 id）
 3. 将 `MeshData::face_vertices_` / `face_vertices_offset_` 转换为 `tetgenio::facetlist`
 4. 调用 `tetrahedralize(switches, &in, &out)` 完成剖分
 5. 将 TetGen 输出的 `pointlist`、`trifacelist`、`tetrahedronlist` 转回 `MeshData`
-6. 通过 `ModelLayer::addModel()` 添加为新模型
+6. 通过 `ModelLayer::addModel()` 添加为新模型，或替换当前 Component 的 mesh（替换后调 `ComponentData::ensurePointGlobalIds` 补分配全局点 id）
 
 ## 与 TetGenPlugin 的区别
 

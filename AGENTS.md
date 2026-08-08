@@ -37,7 +37,7 @@
 
 - `core/`：项目通用基础类型，所有层都可依赖（含 `EventBus` 事件总线）。
 - `model/`：业务逻辑层，依赖 `core`。
-  - `model/data/`：底层数据结构（`ModelData`、`MeshData`、`ModelManager` 等）。
+  - `model/data/`：底层数据结构（`ModelData`、`MeshData`、`ModelLayer` 等）。
   - `model/ops/`：基于数据结构的操作，依赖 `model/data`。
   - `model/systems/`：系统层（算法系统、模型 IO 系统、编辑系统、功能系统），负责插件注册与按字符串分发调用，依赖 `model/data`、`core`。
     - `model/systems/feature/`：功能系统 `FeatureSystem`，事件驱动的功能注册与调用：功能可注册参数/菜单/按键绑定，经 `EventBus` 订阅按键、参数变更、模型事件，通过 `FeatureContext` 访问模型层；声明 `interactive` 的功能另经 `InteractionContext` 订阅渲染线程驱动的视口交互（见第 10 节线程约定）。
@@ -131,12 +131,12 @@
   - 构建：`cmake --build out/build/x64-debug`
   - 测试：先以 `-DBUILD_TESTING=ON` 配置（默认 OFF），再 `ctest --test-dir out/build/x64-debug --output-on-failure`
   - 注意：`CMakeUserPresets.json` 含 `//` 注释，VS 的 CMake 集成可以容忍，但命令行 `cmake --preset` 会因解析失败而报错；命令行场景请手动传参（参照 preset 中的变量）或直接复用已配置好的构建目录。
-  - 注意：命令行构建须先加载 MSVC 环境（`vcvars64.bat` 或 VS Developer PowerShell），否则报标准库头文件缺失（C1083 `fstream`/`array`）；Git Bash 中调用 `cmd.exe` 需防路径转换（`MSYS_NO_PATHCONV=1`，`/c` 否则被转为 `C:/`）。
+  - 注意：命令行构建须先加载 MSVC 环境（`vcvars64.bat` 或 VS Developer PowerShell），否则报标准库头文件缺失（C1083 `fstream`/`array`）；Git Bash 中调用 `cmd.exe` 需防路径转换（`MSYS_NO_PATHCONV=1`，`/c` 否则被转为 `C:/`），内联引号易出错时可改写成临时 `.bat` 调用。
 - 测试框架：模块单元测试用 **Catch2**（`cmake/test.cmake` 的 `precess_add_test` / `precess_test_link_libraries`），测试代码见各模块 `test/` 目录（如 `model/data/test/`、`model/systems/feature/test/`）。
 - **新特性必须配套测试用例**；修 bug 时尽量补可复现的回归测试。
 - 不要向无测试的模块强行塞测试框架；遵循该模块既有测试模式。
 - 工具检测用 PowerShell：例如 `Get-Command makensis`（不要用 `where makensis`）。
-- **插件共享头文件需全量构建**：修改被插件共享的 `core/`、`model/` 头文件（如 `InteractionState.h`、`InteractiveTypes.h`）后必须全量构建（含插件目标）再做手动验证：插件 DLL 运行时动态加载、不是 `PreCess.exe` 的链接依赖，`cmake --build --target PreCess` 不会让插件随之重建；新旧 ABI 混用会产生难以排查的内存错乱（如"测量崩溃"即此原因）。
+- **插件共享头文件需全量构建**：修改被插件共享的 `core/`、`model/` 头文件（如 `InteractionState.h`、`InteractiveTypes.h`）后必须全量构建（含插件目标）再做手动验证：插件 DLL 运行时动态加载、不是 `PreCess.exe` 的链接依赖，`cmake --build --target PreCess` 不会让插件随之重建；新旧 ABI 混用会产生难以排查的内存错乱（如"测量崩溃"即此原因）。ninja 偶见头文件变更不重编（同类 ABI 混用），构建后行为异常时先 `--target clean` 全量重编再排查。
 
 ---
 
@@ -154,6 +154,10 @@
 
 - 功能 `Handler` 封装进插件 `PluginHandler`，由 `SystemPluginManager` 注册到对应系统。
 - 每类插件须实现对应系统接口完成数据交换；算法系统目前通过模型 IO 系统以文件读写交换模型数据。
+- **目标组件不依赖对象树选中态**：按组件执行的操作，框架允许时不要强制要求用户在执行功能前于对象树中选中 component，插件不得依赖该行为；对象树传入的组件身份一律不优先依赖、只视作一种提示，目标组件应优先由参数中的选择器让用户自行选择并解析（`Selection` 的全局点 id 经 `ModelLayer::pointIdMap()` 反查所属组件，面/边类局部 id 选择携带 `component_id`）。各系统落点：
+  - 编辑系统：`EditHandler::execute` 接收 `ModelLayer&` 与 `fallback_component_id`（对象树当前组件，仅提示、可为 -1）；目标组件由选择器参数解析，fallback 仅在选择未携带组件身份时兜底；示例见 `plugins/edit/CreateFacePlugin/`、`plugins/edit/DeleteFacePlugin/`。
+  - 算法系统：覆盖 `AlgorithmHandler::resolveComponentId` 按参数解析目标组件，不依赖对象树传入的 `fallback_component_id`；`HandlerContext::cur_component` 同样只视作提示。
+  - 功能系统：`FeatureContext::activeModel` / `activeComponent` 是对象树选中态的动态查询，只作提示；优先注册 `Selector` 类型参数（`FeatureParams`）让用户显式选择目标。
 - 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
 - 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：在 `setup(FeatureRegistrar&)` 中注册参数、菜单项、按键绑定；在 `activate(FeatureContext&)` 中经 `ctx.events` 订阅事件（`KeyEvent`、`ParameterChangedEvent`、`ModelEvent`）；菜单触发 `execute()`。功能可修改的范围限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`）与自身视口交互状态（经 `ctx.interaction`）；示例见 `plugins/feature/FeatureDemoPlugin/`，交互功能示例见 `plugins/feature/MeasurePlugin/`。
   - 订阅 `ParameterChangedEvent` **必须按 `e.feature` 过滤**本功能注册名（与 json 一致，参照 FeatureDemoPlugin 的 `kFeatureName` 常量），否则将响应其他功能的参数变更。
@@ -164,6 +168,10 @@
   - **动态状态走事件回调**：交互结果、进度等经事件 / 信号传递（如功能回写参数经 `ParameterChangedEvent` → `paramValueChanged` 信号同步 QML 显示），界面不轮询插件内部状态。
   - **环境状态走上下文访问**：活动模型 / 组件、选择集经 `FeatureContext` provider 与 `App.selection` 获取，功能不反向依赖 app 层。
   - 启停类逻辑做成幂等的状态应用（以目标状态为守卫，重复触发无副作用），避免多触发源的命令式调用堆积。
+- **写路径收口（写必脏 + 操作边界 flush）**：写模型数据必须经 `ComponentOperator` 语义接口（`appendPoint`/`appendFace`/`replaceMesh`/`materializeEdge` 等）或可写入口 `editableMesh(kind)`；**获取可写入口即标脏**（Topology 类立即失效邻接懒表并记入待通知集合（去重），NonTopology 仅记集合不失效懒表），**通知由操作边界 `ModelLayer::flushNotifications()` 统一发出，插件不得手调通知**（`ComponentOperator::notifyChanged` 已删除）；`component()`/`mesh()` 只读（返回 const），只读访问不标脏。结构操作（`addGeometryComponent`/`addModel`/`removeModel`/`removeComponent`）保持即时通知，不进待通知集合。
+- **操作边界清单**：`EditSystem::call`、`AlgorithmSystem::call`、`FeatureSystem::invoke`（含 `dispatchKeyEvent` 按键路由）、`FeatureEventGateway` 包装的事件回调（功能经 `ctx.events` 订阅的回调返回后自动 flush，异常时先 flush 再重抛）、app 层 QML 入口（`QModelManager::removeMesh/removeGeometry`、`QGeometryOperations::addGeometryShape` 组件分支）；Edit/Algo/QML 入口的 flush 为过渡 shim（随系统迁移消亡），FeatureSystem 的 invoke flush 与 `FeatureEventGateway` 为长期设施。**新增插件代码执行路径须纳入边界**，否则标脏的通知不会发出。
+- **网格数据与点 id 约定**（详见 `MeshData.h` / `ComponentData.h` 注释）：`MeshData` 自包含（坐标常驻 `vertex_positions_`，连通性数组存组件内局部点索引）；局部点索引只增不改号、不重排（`MeshAdjacency` 持久边身份与快照恢复依赖）；`Selection` / `PickInfo` 携带全局点 id（gid），写连通性前经 `ModelLayer::pointIdMap()` 换算；整网格替换经 `ComponentOperator::replaceMesh`（gid 纪律内建），运行期加点经 `ComponentOperator::appendPoint`（原子四连），其余 gid 伴生表受控点经 `ComponentData::ensurePointGlobalIds` 补缺。
+- **快照原语约定**：组件级 `ComponentOperator::takeSnapshot/restoreSnapshot`、模型级 `ModelLayer::takeModelSnapshot/restoreModel/restoreComponent` 为快照/恢复统一入口；快照只装源数据与身份数据（派生缓存——邻接边表、几何子形状索引——不进快照、恢复后重建），恢复含 gid 对账（`reclaim` 按原值拿回点/边 gid、组件/模型按原 id 插回）；`restoreSnapshot` 恢复后标脏（Topology），通知延迟到操作边界 flush 统一发出；几何 gid 跨 undo 不保持，undo 后选择集清空（Selection 持有的 gid/稳定 id 不作跨 undo 保证）。
 
 ---
 

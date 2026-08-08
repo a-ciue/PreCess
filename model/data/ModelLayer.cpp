@@ -11,6 +11,7 @@
  */
 #include "ModelLayer.h"
 #include "ModelObserver.h"
+#include "ModelSnapshot.h"
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ComponentOperator.h"
@@ -26,49 +27,106 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
 
     auto model = std::make_unique<ModelData>();
     model->model_name_ = model_name;
-
-    for (auto& c : components) {
-        if (!c)
-            continue;
-        c->id = allocateComponentId();
-    }
-
-    for (auto& c : components) {
-        if (!c)
-            continue;
-        Index cid = c->id;
-        spdlog::info("insert component: final_id={}, exists_before={}",
-            cid, components_.count(cid) != 0);
-
-        component_to_model_[cid] = model_id;
-        model->componentIds().push_back(cid);
-
-        components_[cid] = std::move(c);
-        ComponentData* cp = components_[cid].get();
-
-        if (cp->geometry) {
-            cp->geometry->ensureIndexBuilt(geom_registry_);
-        }
-
-        if (cp->mesh) {
-            MeshData& md = *cp->mesh;
-            const Index base = appendGlobalPoints(md.vertex_positions_);
-            md.vertex_count_ = (Index)md.vertex_positions_.size();
-            md.local_to_global_.resize(md.vertex_count_);
-            for (Index i = 0; i < md.vertex_count_; ++i) {
-                md.local_to_global_[i] = base + i;
-            }
-            md.makePointIdsGlobal();
-            std::vector<std::array<double, 3>> {}.swap(md.vertex_positions_);
-            cp->mesh_adjacency.ensureEdgeGlobalIds(edge_id_map_, cid, md);
-        }
-    }
-
     models_[model_id] = std::move(model);
 
+    // 发号 + adoptComponent：组件 gid 尚未分配，adoptComponent 内 reclaim 自然无操作、ensure 补缺
+    for (auto& c : components) {
+        if (!c)
+            continue;
+        adoptComponent(allocateComponentId(), std::move(c), model_id);
+    }
+
     if (observer_)
-        observer_->notifyModelAdded(max_index_);
+        observer_->notifyModelAdded(model_id);
     return model_id;
+}
+
+std::unique_ptr<ModelSnapshot> ModelLayer::takeModelSnapshot(Index model_id) const
+{
+    ModelData* model = modelById(model_id);
+    if (!model)
+        throw std::runtime_error("Model not exist");
+
+    auto snapshot = std::make_unique<ModelSnapshot>();
+    snapshot->model_id = model_id;
+    snapshot->name = model->model_name_;
+    snapshot->components.reserve(model->componentIds().size());
+    for (Index cid : model->componentIds()) {
+        if (ComponentData* c = findComponent(cid))
+            snapshot->components.push_back(c->clone());
+    }
+    return snapshot;
+}
+
+Index ModelLayer::restoreModel(const ModelSnapshot& snapshot)
+{
+    if (snapshot.model_id < 0)
+        throw std::invalid_argument("ModelLayer::restoreModel: invalid model id");
+    if (models_.count(snapshot.model_id) != 0)
+        throw std::runtime_error("ModelLayer::restoreModel: model id occupied");
+
+    // 按原 id 插回；发号器 max_index_ 保持只增不回滚（原 id 必然小于当前水位）
+    const Index model_id = snapshot.model_id;
+    auto model = std::make_unique<ModelData>();
+    model->model_name_ = snapshot.name;
+    models_[model_id] = std::move(model);
+
+    // 逐组件按原 id adopt（快照为 const，clone 出副本入池；component_ids_ 顺序随快照还原）
+    for (const auto& c : snapshot.components) {
+        if (!c)
+            continue;
+        adoptComponent(c->id, c->clone(), model_id);
+    }
+
+    if (observer_)
+        observer_->notifyModelAdded(model_id);
+    return model_id;
+}
+
+void ModelLayer::restoreComponent(Index model_id, std::unique_ptr<ComponentData> component)
+{
+    if (!component)
+        throw std::invalid_argument("ModelLayer::restoreComponent: null component");
+
+    const Index component_id = component->id;
+    adoptComponent(component_id, std::move(component), model_id);
+
+    // 与 addGeometryComponent 的通知一致：只新增组件，通知渲染层按组件加载
+    if (observer_)
+        observer_->notifyComponentChanged(component_id);
+}
+
+void ModelLayer::adoptComponent(Index component_id, std::unique_ptr<ComponentData> component, Index model_id)
+{
+    auto mit = models_.find(model_id);
+    if (mit == models_.end() || !mit->second)
+        throw std::runtime_error("ModelLayer::adoptComponent: model not exist");
+    if (components_.count(component_id) != 0)
+        throw std::runtime_error("ModelLayer::adoptComponent: component id occupied");
+
+    spdlog::info("insert component: final_id={}, exists_before={}",
+        component_id, components_.count(component_id) != 0);
+
+    component->id = component_id;
+    component_to_model_[component_id] = model_id;
+    mit->second->componentIds().push_back(component_id);
+
+    ComponentData* cp = component.get();
+    components_[component_id] = std::move(component);
+
+    if (cp->geometry) {
+        cp->geometry->ensureIndexBuilt(geom_registry_);
+    }
+
+    if (cp->mesh) {
+        MeshData& md = *cp->mesh;
+        md.vertex_count_ = (Index)md.vertex_positions_.size();
+        // 先按原值 reclaim 已有 gid（快照恢复），再 ensure 补缺（新入池），两者幂等兼容
+        cp->reclaimPointGlobalIds(point_id_map_);
+        cp->ensurePointGlobalIds(point_id_map_);
+        cp->mesh_adjacency.reclaimEdgeGlobalIds(edge_id_map_, component_id);
+        cp->mesh_adjacency.ensureEdgeGlobalIds(edge_id_map_, component_id, md);
+    }
 }
 
 void ModelLayer::removeModel(Index model_id) {
@@ -102,6 +160,7 @@ void ModelLayer::removeComponent(Index component_id)
 
     if (ComponentData* c = findComponent(component_id)) {
         if (c->mesh) {
+            c->releasePointGlobalIds(point_id_map_);
             c->mesh_adjacency.releaseEdgeGlobalIds(edge_id_map_);
         }
         if (c->geometry) {
@@ -120,7 +179,7 @@ std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id)
 {
     ModelData* m = modelById(model_id);
     if (m) {
-        return ModelOperator(model_id, *m, *this, observer_);
+        return ModelOperator(model_id, *m, *this);
     }
     return {};
 }
@@ -141,7 +200,7 @@ std::optional<ComponentOperator> ModelLayer::getComponentOperator(Index componen
 
     auto mit = component_to_model_.find(component_id);
     Index model_id = mit != component_to_model_.end() ? mit->second : -1;
-    return ComponentOperator(component_id, *c, *this, observer_, model_id);
+    return ComponentOperator(component_id, *c, *this, model_id);
 }
 
 Index ModelLayer::allocateComponentId() noexcept
@@ -155,35 +214,52 @@ ComponentData* ModelLayer::findComponent(Index component_id) const
     return it == components_.end() ? nullptr : it->second.get();
 }
 
-std::optional<Index> ModelLayer::findComponentIdByGeometryFaceId(GeomFaceId face_id) const
+std::optional<Index> ModelLayer::findComponentIdByGeometryShapeId(
+    TopAbs_ShapeEnum shape_type,
+    Index shape_id) const
 {
-    if (face_id == kInvalidGeomFaceId)
+    if (shape_id < 0)
         return std::nullopt;
 
-    // 全局面 ID 保存在各 Component 的几何索引中，找到后即可确定所有者。
+    // 四类几何 ID 独立编号，必须根据形状类型选择对应索引。
     for (const auto& [component_id, component] : components_) {
         if (!component || !component->geometry)
             continue;
 
-        const auto& face_ids = component->geometry->index.face_local_to_global;
-        if (std::find(face_ids.begin(), face_ids.end(), face_id) != face_ids.end())
+        const std::vector<Index>* shape_ids = nullptr;
+        switch (shape_type) {
+        case TopAbs_VERTEX:
+            shape_ids = &component->geometry->index.vertex_local_to_global;
+            break;
+        case TopAbs_EDGE:
+            shape_ids = &component->geometry->index.edge_local_to_global;
+            break;
+        case TopAbs_FACE:
+            shape_ids = &component->geometry->index.face_local_to_global;
+            break;
+        case TopAbs_SOLID:
+            shape_ids = &component->geometry->index.solid_local_to_global;
+            break;
+        default:
+            return std::nullopt;
+        }
+
+        if (std::find(shape_ids->begin(), shape_ids->end(), shape_id)
+            != shape_ids->end())
             return component_id;
     }
 
     return std::nullopt;
 }
 
-const std::vector<std::array<double, 3>>& ModelLayer::globalPoints() const
+MeshIDMap& ModelLayer::pointIdMap()
 {
-    return global_points_;
+    return point_id_map_;
 }
 
-void ModelLayer::setGlobalPoint(Index global_id, const std::array<double, 3>& point)
+const MeshIDMap& ModelLayer::pointIdMap() const
 {
-    if (global_id < 0 || global_id >= static_cast<Index>(global_points_.size())) {
-        throw std::out_of_range("ModelLayer::setGlobalPoint: global point id out of range");
-    }
-    global_points_[global_id] = point;
+    return point_id_map_;
 }
 
 MeshIDMap& ModelLayer::edgeIdMap()
@@ -196,6 +272,38 @@ const MeshIDMap& ModelLayer::edgeIdMap() const
     return edge_id_map_;
 }
 
+void ModelLayer::markComponentDirty(Index component_id, MeshEditKind kind)
+{
+    ComponentData* c = findComponent(component_id);
+    if (!c)
+        return;
+
+    // Topology 类修改立即失效邻接懒表，保证查询即时正确；通知延迟到操作边界 flush
+    if (kind == MeshEditKind::Topology)
+        c->mesh_adjacency.invalidate();
+
+    // 去重记入待通知集合
+    if (std::find(pending_notify_.begin(), pending_notify_.end(), component_id) == pending_notify_.end())
+        pending_notify_.push_back(component_id);
+}
+
+void ModelLayer::flushNotifications()
+{
+    if (pending_notify_.empty())
+        return;
+
+    // 先交换取出并清空再通知：通知链会经 observer → Qt 信号 → EventBus ModelEvent →
+    // 功能事件回调（FeatureEventGateway 包装）重入本函数，重入时集合已空即空转，
+    // 防止"遍历未清空 → 重入 flush → 再通知"的无限递归。
+    // 通知期间产生的新标脏记入 pending_notify_，由下一个操作边界 flush 发出。
+    std::vector<Index> pending;
+    pending.swap(pending_notify_);
+    if (observer_) {
+        for (Index component_id : pending)
+            observer_->notifyComponentChanged(component_id);
+    }
+}
+
 GeometryRegistry& ModelLayer::geomRegistry()
 {
     return geom_registry_;
@@ -204,11 +312,4 @@ GeometryRegistry& ModelLayer::geomRegistry()
 const GeometryRegistry& ModelLayer::geomRegistry() const
 {
     return geom_registry_;
-}
-
-Index ModelLayer::appendGlobalPoints(const std::vector<std::array<double, 3>>& pts)
-{
-    Index base = (Index)global_points_.size();
-    global_points_.insert(global_points_.end(), pts.begin(), pts.end());
-    return base;
 }

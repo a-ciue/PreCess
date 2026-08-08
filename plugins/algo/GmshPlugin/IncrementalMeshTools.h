@@ -5,8 +5,7 @@
 #include "GmshIncrementalMeshState.h"
 #include "GeometryData.h"
 
-struct MeshData;
-class ModelLayer;
+class ComponentOperator;
 
 namespace IncrementalMeshTools {
 
@@ -24,30 +23,28 @@ struct GmshMeshParameters {
     int structuredEdgeDivisions {};
 };
 
+// 网格写入统一经 ComponentOperator 可写入口（写必脏：标脏 + gid 纪律内建）
 SingleFaceMeshResult meshSingleFace(
-    MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters);
 
 
 SingleFaceMeshResult remeshSingleFace(
-    MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
     const GmshMeshParameters& parameters);
 
 bool deleteFaceMesh(
-    MeshData& mesh_data,
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
-    ModelLayer& model_layer,
+    ComponentOperator& component_op,
     GeomFaceId faceId);
 
 double estimateMeshSize(const GeometryData& geometry);

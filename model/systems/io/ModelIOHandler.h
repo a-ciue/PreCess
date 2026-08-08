@@ -39,7 +39,7 @@ public:
     virtual std::optional<ModelPayload> read_model(const fs::path& path, const std::vector<std::any>& args) = 0;
         /**
          * @brief 写出组件集合到文件
-         * @param mgr ModelLayer（运行期权威：component pool + globalPoints）
+         * @param mgr ModelLayer（运行期权威：component pool + 点/边全局 id 映射）
          * @param component_ids 要写出的组件 id 集合
          * @param path 写出文件目标路径
          * @param args 写出文件要传入参数

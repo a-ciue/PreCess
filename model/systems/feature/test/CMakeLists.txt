@@ -3,3 +3,6 @@ precess_test_link_libraries(TestEventBus Core)
 
 precess_add_test(TestFeatureSystem TestFeatureSystem.cpp)
 precess_test_link_libraries(TestFeatureSystem FeatureSystem Data)
+
+precess_add_test(TestFeatureEventGateway TestFeatureEventGateway.cpp)
+precess_test_link_libraries(TestFeatureEventGateway FeatureSystem Data)

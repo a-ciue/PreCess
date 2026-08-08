@@ -8,8 +8,7 @@
 #include <vtkRenderer.h>
 #include <vtkTextProperty.h>
 
-MeshActorManager::MeshActorManager(vtkPoints* global_points)
-    : global_points_(global_points)
+MeshActorManager::MeshActorManager()
 {
     scalar_bar_->SetOrientationToVertical(); // 使用竖向颜色表。
     scalar_bar_->SetPosition(0.90, 0.05); // 归一化视口坐标，原点位于渲染窗口左下角。
@@ -64,8 +63,7 @@ bool MeshActorManager::hasComponent(Index component_id) const
 void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_data, vtkRenderer* renderer)
 {
     if (!this->component_actors_.count(component_id))
-        this->component_actors_[component_id] = std::make_shared<MeshActor>(
-            renderer, global_points_);
+        this->component_actors_[component_id] = std::make_shared<MeshActor>(renderer);
 
     if (scalar_bar_component_id_ == component_id) {
         scalar_bar_->SetVisibility(false);
@@ -152,14 +150,5 @@ void MeshActorManager::cancelAttri(Index component_id)
             scalar_bar_->SetVisibility(false);
             scalar_bar_component_id_ = -1;
         }
-    }
-}
-
-void MeshActorManager::syncOriginalPointIds()
-{
-    for (auto& [cid, actor] : component_actors_) {
-        if (!actor)
-            continue;
-        actor->ensureOriginalPointIds(); 
     }
 }

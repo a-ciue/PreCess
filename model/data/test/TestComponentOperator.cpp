@@ -115,7 +115,7 @@ TEST_CASE("materializeEdge appends edge cell and assigns global edge id", "[Comp
     REQUIRE(comp);
     REQUIRE(comp->mesh);
 
-    // 入池后连通性已改写为全局点 id，从数据本身取键
+    // 连通性存组件内局部点 id，从数据本身取键
     const Index g0 = comp->mesh->face_vertices_[0];
     const Index g1 = comp->mesh->face_vertices_[1];
 

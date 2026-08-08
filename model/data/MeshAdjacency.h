@@ -13,7 +13,8 @@
  * - 端点对 -> 稳定局部边 id（sid）单调分配、不复用，是跨层传递的公共身份（Selection 等携带）；
  * - sid -> 全局边 id（gid，经 MeshIDMap 分配）在受控点（入池/物化/整网格替换）同步；
  * - 持久层只随 releaseEdgeGlobalIds()（组件移除/整网格替换）重置。
- *   消亡边的 sid/gid 不回收（保留为空洞），回收策略随 undo/redo 设计定稿。
+ *   消亡边的 sid/gid 不回收（保留为空洞）；free-list 复用保留，快照恢复经 reclaim
+ *   按原值定向拿回 gid；undo 后选择集清空（Selection 持有的 gid/稳定 id 不作跨 undo 保证）。
  */
 #pragma once
 #include "Core.h"
@@ -52,6 +53,18 @@ public:
 
 class MeshAdjacency {
 public:
+    MeshAdjacency() = default;
+
+    /**
+     * @brief 自定义拷贝：只拷持久身份层（稳定边 id/gid 表）
+     *
+     * 懒重建部分（边表/世代/构建指针）清零并置 dirty，下次查询自动重建。
+     * 快照恢复语义即"身份延续、缓存重建"：既避免派生缓存进快照，也杜绝
+     * "拷贝来的 built_mesh_ 悬指针恰好等于新 mesh 地址"的误判。
+     */
+    MeshAdjacency(const MeshAdjacency& other);
+    MeshAdjacency& operator=(const MeshAdjacency& other);
+
     // —— 稳定 id 接口（公共契约，跨拓扑编辑有效）——
 
     //! @brief 边句柄 -> 稳定局部边 id；句柄无效（含边表已重建）返回 std::nullopt
@@ -72,7 +85,7 @@ public:
     /**
      * @brief 按两端点反查边句柄
      * @param mesh 目标网格数据（懒构建的数据源）
-     * @param p0 边端点 id（与 MeshData 连通性同一键空间，当前为全局点 id）
+     * @param p0 边端点 id（与 MeshData 连通性同一键空间，组件内局部点 id）
      * @param p1 边另一端点 id（与 p0 无序）
      * @return 命中返回边句柄；未命中或数据异常返回 std::nullopt
      */
@@ -99,6 +112,9 @@ public:
 
     //! @brief 释放全部全局边 id 并重置持久身份层（组件移除/整网格替换时调用）
     void releaseEdgeGlobalIds(MeshIDMap& map);
+
+    //! @brief 按 gid_by_stable_id_ 原值定向回收边 gid（配合快照恢复，仅作用持久层，不触发边表重建）
+    void reclaimEdgeGlobalIds(MeshIDMap& map, Index component_id);
 
     //! @brief 使懒重建部分失效，下次查询时基于最新拓扑重建（持久稳定 id 层保留）
     void invalidate() noexcept;

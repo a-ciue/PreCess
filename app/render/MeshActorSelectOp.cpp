@@ -78,7 +78,7 @@ vtkSmartPointer<vtkExtractSelection> MeshActorSelectOp::extractVertex(vtkIdTypeA
     selection->SetNode("v", selectionNode);
 
     vtkNew<vtkExtractSelection> extractSelection;
-    extractSelection->SetInputData(0, mesh_actor_->solid_data_.GetPointer()); // 因为点数据 vertex_positions_ 是被所有数据共享的，这里谁都行
+    extractSelection->SetInputData(0, mesh_actor_->solid_data_.GetPointer()); // 面/边/体数据共享同一组件私有点集，这里谁都行
     extractSelection->SetInputData(1, selection);
 
     return extractSelection;

@@ -31,7 +31,7 @@ TEST_CASE("CgalMeshAdapter round-trip conversion is consistent", "[cgal_support]
 {
     const MeshData src = makeTriangleMesh();
 
-    const CgalMesh sm = toSurfaceMesh(src, {});
+    const CgalMesh sm = toSurfaceMesh(src);
     REQUIRE(sm.number_of_vertices() == src.vertex_positions_.size());
     REQUIRE(sm.number_of_faces() == 2);
 
@@ -49,42 +49,30 @@ TEST_CASE("CgalMeshAdapter throws on non-triangle faces", "[cgal_support]")
     mesh.face_vertices_ = { 0, 1, 2, 3 };
     mesh.face_vertices_offset_ = { 0, 4 };
 
-    REQUIRE_THROWS_AS(toSurfaceMesh(mesh, {}), std::runtime_error);
+    REQUIRE_THROWS_AS(toSurfaceMesh(mesh), std::runtime_error);
 }
 
-TEST_CASE("CgalMeshAdapter converts global vertex ids via local_to_global", "[cgal_support]")
+TEST_CASE("CgalMeshAdapter passes local vertex indices through", "[cgal_support]")
 {
-    // IO 组件约定：local_to_global_ 非空且 vertex_positions_ 已清空（坐标存于全局点数组），
-    // face_vertices_ 存全局点 id
+    // 局部约定：坐标直读 vertex_positions_，face_vertices_ 即组件内局部点索引
     MeshData mesh = makeTriangleMesh();
-    const auto positions = mesh.vertex_positions_; // 暂存坐标用于构造全局点数组
-    mesh.local_to_global_ = { 10, 11, 12, 13 };
-    mesh.face_vertices_ = { 10, 11, 12, 10, 12, 13 };
-    mesh.vertex_positions_.clear(); // 全局约定下局部坐标已由 ModelLayer 清空
-    // 全局点数组：组件坐标放在 id 10-13 处（模拟 ModelLayer 的全局点布局）
-    std::vector<std::array<double, 3>> global_points(14, { 0.0, 0.0, 0.0 });
-    for (size_t i = 0; i < positions.size(); ++i)
-        global_points[10 + i] = positions[i];
+    mesh.face_vertices_ = { 3, 2, 0, 2, 1, 0 }; // 与顶点顺序不同的局部索引引用
 
-    const CgalMesh sm = toSurfaceMesh(mesh, global_points);
+    const CgalMesh sm = toSurfaceMesh(mesh);
     REQUIRE(sm.number_of_vertices() == 4);
     REQUIRE(sm.number_of_faces() == 2);
 
-    // 回转后为局部索引约定，local_to_global_ 清空
+    // 回转后仍为局部索引约定，逐面顶点索引保持不变
     MeshData back;
     fromSurfaceMesh(sm, back);
-    REQUIRE(back.vertex_positions_ == positions);
-    REQUIRE(back.face_vertices_ == std::vector<Index> { 0, 1, 2, 0, 2, 3 });
-    REQUIRE(back.local_to_global_.empty());
+    REQUIRE(back.vertex_positions_ == mesh.vertex_positions_);
+    REQUIRE(back.face_vertices_ == std::vector<Index> { 3, 2, 0, 2, 1, 0 });
 }
 
-TEST_CASE("CgalMeshAdapter throws on global id outside the component", "[cgal_support]")
+TEST_CASE("CgalMeshAdapter throws on local vertex index out of range", "[cgal_support]")
 {
     MeshData mesh = makeTriangleMesh();
-    mesh.local_to_global_ = { 10, 11, 12, 13 };
-    mesh.face_vertices_ = { 10, 11, 99, 10, 12, 13 }; // 99 不在组件内
-    mesh.vertex_positions_.clear(); // 全局约定下局部坐标已清空
+    mesh.face_vertices_ = { 0, 1, 99, 0, 2, 3 }; // 99 超出局部点索引范围
 
-    REQUIRE_THROWS_AS(toSurfaceMesh(mesh, std::vector<std::array<double, 3>>(14, { 0.0, 0.0, 0.0 })),
-        std::runtime_error);
+    REQUIRE_THROWS_AS(toSurfaceMesh(mesh), std::runtime_error);
 }

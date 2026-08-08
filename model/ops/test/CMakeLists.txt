@@ -1,2 +1,5 @@
 precess_add_test(TestGeometryBuilder TestGeometryBuilder.cpp)
 precess_test_link_libraries(TestGeometryBuilder DataOps TKBRep TKPrim TKTopAlgo)
+
+precess_add_test(TestGeometryTopologyEditor TestGeometryTopologyEditor.cpp)
+precess_test_link_libraries(TestGeometryTopologyEditor DataOps TKBRep TKPrim TKTopAlgo)

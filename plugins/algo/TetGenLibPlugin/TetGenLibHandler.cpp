@@ -145,43 +145,6 @@ std::string makeResultModelName(const ComponentData& input_component,
 }
 
 /**
- * @brief 替换当前 Component 的 mesh，维护全局点索引与边 ID 映射
- * @param comp 目标 Component 操作接口
- * @param mesh 新网格数据
- * @return true 成功；false 失败（Component 不存在或 mesh 为空）
- *
- * 释放旧 mesh 的 edge id map、追加新顶点到全局点池、转换本地→全局索引、
- * 重建 edge id map，最后通知 observer。与 ModelLayer::addModel 的 mesh 入池流程一致。
- */
-bool replaceComponentMesh(ComponentOperator& comp, std::unique_ptr<MeshData> mesh)
-{
-    ModelLayer& mgr = comp.manager();
-    const Index component_id = comp.componentId();
-    ComponentData* component = mgr.findComponent(component_id);
-    if (!component || !mesh) {
-        return false;
-    }
-
-    if (component->mesh) {
-        component->mesh_adjacency.releaseEdgeGlobalIds(mgr.edgeIdMap());
-    }
-
-    const Index base = mgr.appendGlobalPoints(mesh->vertex_positions_);
-    mesh->vertex_count_ = static_cast<Index>(mesh->vertex_positions_.size());
-    mesh->local_to_global_.resize(mesh->vertex_count_);
-    for (Index i = 0; i < mesh->vertex_count_; ++i) {
-        mesh->local_to_global_[static_cast<size_t>(i)] = base + i;
-    }
-    mesh->makePointIdsGlobal();
-    std::vector<std::array<double, 3>> {}.swap(mesh->vertex_positions_);
-    component->mesh_adjacency.ensureEdgeGlobalIds(mgr.edgeIdMap(), component_id, *mesh);
-
-    component->mesh = std::move(mesh);
-    comp.notifyChanged();
-    return true;
-}
-
-/**
  * @brief 使用 BFS 找出网格表面中最大的连通分量（壳）
  *        通过顶点邻接表扩散连通面，跳过不相连的小腔体
  * @param mesh 输入网格
@@ -277,19 +240,18 @@ std::vector<Index> collectAllSurfaceFaces(const MeshData& mesh)
  * @brief 将 PreCess MeshData 转换为 TetGen tetgenio 输入结构
  *        处理顶点坐标复制、面转换、最大壳筛选
  * @param component 输入的 ComponentData（需有 MeshData）
- * @param manager ModelLayer 引用，用于获取全局点坐标
  * @param input 输出的 tetgenio 结构
  * @param use_largest_surface_shell 是否仅使用最大表面壳
  * @return true 成功；false 失败（无 mesh 或数据无效）
  */
-bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager, tetgenio& input, bool use_largest_surface_shell)
+bool buildTetGenInput(const ComponentData& component, tetgenio& input, bool use_largest_surface_shell)
 {
     const MeshData* mesh = component.asMeshData();
     if (!mesh) {
         spdlog::error("TetGenLibHandler: component has no mesh data");
         return false;
     }
-    if (mesh->vertex_count_ <= 0 || mesh->local_to_global_.empty()) {
+    if (mesh->vertex_count_ <= 0 || mesh->vertex_positions_.empty()) {
         spdlog::error("TetGenLibHandler: component mesh has no vertices");
         return false;
     }
@@ -298,25 +260,15 @@ bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager,
         return false;
     }
 
-    const auto& global_points = manager.globalPoints();
     input.firstnumber = 0;
     input.mesh_dim = 3;
     input.numberofpoints = static_cast<int>(mesh->vertex_count_);
     input.pointlist = new REAL[input.numberofpoints * 3];
     input.pointmarkerlist = new int[input.numberofpoints];
 
-    std::unordered_map<Index, Index> global_to_local;
-    global_to_local.reserve(static_cast<size_t>(mesh->vertex_count_));
-
+    // MeshData 自包含坐标，连通性即组件内局部点 id，直接拷贝
     for (Index local_id = 0; local_id < mesh->vertex_count_; ++local_id) {
-        const Index global_id = mesh->local_to_global_[static_cast<size_t>(local_id)];
-        if (global_id < 0 || static_cast<size_t>(global_id) >= global_points.size()) {
-            spdlog::error("TetGenLibHandler: invalid global point id {}", global_id);
-            return false;
-        }
-
-        global_to_local[global_id] = local_id;
-        const auto& point = global_points[static_cast<size_t>(global_id)];
+        const auto& point = mesh->vertex_positions_[static_cast<size_t>(local_id)];
         const int base = static_cast<int>(local_id * 3);
         input.pointlist[base] = point[0];
         input.pointlist[base + 1] = point[1];
@@ -363,14 +315,9 @@ bool buildTetGenInput(const ComponentData& component, const ModelLayer& manager,
         polygon.vertexlist = new int[polygon.numberofvertices];
 
         for (Index offset = 0; offset < vertex_count; ++offset) {
-            const Index stored_id = mesh->face_vertices_[static_cast<size_t>(begin + offset)];
-            auto it = global_to_local.find(stored_id);
-            Index local_id = stored_id;
-            if (it != global_to_local.end()) {
-                local_id = it->second;
-            }
+            const Index local_id = mesh->face_vertices_[static_cast<size_t>(begin + offset)];
             if (local_id < 0 || local_id >= mesh->vertex_count_) {
-                spdlog::error("TetGenLibHandler: face {} has invalid vertex id {}", face_id, stored_id);
+                spdlog::error("TetGenLibHandler: face {} has invalid vertex id {}", face_id, local_id);
                 return false;
             }
             polygon.vertexlist[offset] = static_cast<int>(local_id);
@@ -467,7 +414,7 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         return {};
     }
 
-    ComponentData& input_component = context.cur_component.component();
+    const ComponentData& input_component = context.cur_component.component();
     if (!input_component.mesh) {
         spdlog::error("TetGenLibHandler: current component {} has no mesh, not supported by TetGen.",
             context.cur_component.componentId());
@@ -477,7 +424,7 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
     tetgenio input;
     tetgenio output;
     const bool use_largest_surface_shell = *largest_shell_idx == 0;
-    if (!buildTetGenInput(input_component, context.cur_component.manager(), input, use_largest_surface_shell)) {
+    if (!buildTetGenInput(input_component, input, use_largest_surface_shell)) {
         return {};
     }
 
@@ -530,9 +477,9 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         ComponentDatas components;
         components.push_back(std::move(output_component));
         context.cur_component.manager().addModel(result_model_name, std::move(components));
-    } else if (!replaceComponentMesh(context.cur_component, std::move(output_mesh))) {
-        spdlog::error("TetGenLibHandler: failed to replace mesh for component {}", context.cur_component.componentId());
-        return {};
+    } else {
+        // 替换当前组件的网格：gid 纪律内建于 replaceMesh（释放旧 gid → 就位 → ensure → 标脏）
+        context.cur_component.replaceMesh(std::move(output_mesh));
     }
 
     return {};

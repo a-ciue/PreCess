@@ -13,6 +13,7 @@
 #include "GeometryData.h"
 #include "GeometryRegistry.h"
 #include "MeshData.h"
+#include "MeshIDMap.h"
 #include "ModelLayer.h"
 #include "Selection.h"
 
@@ -120,20 +121,26 @@ struct MeasureOp {
     GeomExecFn geom_exec; //> 几何实现（nullptr 表示暂不支持几何模型）
 };
 
-bool isValidVertexId(const MeshData& mesh, const ModelLayer& manager, Index id)
+/**
+ * @brief 取选择集中全局点 id 对应的顶点坐标
+ *
+ * 选择集携带的顶点 id 为全局点 id（core/Selection.h 约定），经 pointIdMap 换算到所属
+ * 组件的局部点后取坐标，跨组件选择因此天然支持；连通性数组内的局部点索引直接索引
+ * mesh.vertex_positions_，不走此接口。
+ *
+ * @return 坐标指针；id 无映射、组件无网格或局部点越界时返回 nullptr
+ */
+const Vec3* getPosition(const ModelLayer& manager, Index id)
 {
-    if (id < 0)
-        return false;
-    if (mesh.local_to_global_.empty())
-        return id < static_cast<Index>(mesh.vertex_positions_.size());
-    return id < static_cast<Index>(manager.globalPoints().size());
-}
-
-const Vec3& getPosition(const MeshData& mesh, const ModelLayer& manager, Index id)
-{
-    if (!mesh.local_to_global_.empty() && !manager.globalPoints().empty())
-        return manager.globalPoints()[id];
-    return mesh.vertex_positions_[id];
+    const auto [component_id, local] = manager.pointIdMap().getLocal(id);
+    if (component_id == MeshIDMap::kInvalidComponent)
+        return nullptr;
+    const ComponentData* comp = manager.findComponent(component_id);
+    if (!comp || !comp->mesh)
+        return nullptr;
+    if (local < 0 || local >= comp->mesh->vertex_count_)
+        return nullptr;
+    return &comp->mesh->vertex_positions_[static_cast<std::size_t>(local)];
 }
 
 std::string toString(double value, int precision = 6)
@@ -184,7 +191,7 @@ double tetraVolume(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& d)
     return std::abs(dot(b - a, cross(c - a, d - a))) / 6.0;
 }
 
-double polyhedronVolume(const MeshData& mesh, const ModelLayer& manager, Index solid_id)
+double polyhedronVolume(const MeshData& mesh, Index solid_id)
 {
     if (solid_id + 1 >= static_cast<Index>(mesh.solid_faces_offset_.size()))
         return 0.0;
@@ -203,10 +210,10 @@ double polyhedronVolume(const MeshData& mesh, const ModelLayer& manager, Index s
         if (vert_end - vert_start < 3)
             continue;
 
-        const Vec3& v0 = getPosition(mesh, manager, mesh.solid_faces_vertices_[vert_start]);
+        const Vec3& v0 = mesh.vertex_positions_[static_cast<std::size_t>(mesh.solid_faces_vertices_[vert_start])];
         for (Index i = vert_start + 1; i + 1 < vert_end; ++i) {
-            const Vec3& vi = getPosition(mesh, manager, mesh.solid_faces_vertices_[i]);
-            const Vec3& vj = getPosition(mesh, manager, mesh.solid_faces_vertices_[i + 1]);
+            const Vec3& vi = mesh.vertex_positions_[static_cast<std::size_t>(mesh.solid_faces_vertices_[i])];
+            const Vec3& vj = mesh.vertex_positions_[static_cast<std::size_t>(mesh.solid_faces_vertices_[i + 1])];
             volume += dot(v0, cross(vi, vj)) / 6.0;
         }
     }
@@ -214,7 +221,7 @@ double polyhedronVolume(const MeshData& mesh, const ModelLayer& manager, Index s
     return std::abs(volume);
 }
 
-double solidVolume(const MeshData& mesh, const ModelLayer& manager, Index solid_id)
+double solidVolume(const MeshData& mesh, Index solid_id)
 {
     if (solid_id < 0 || solid_id + 1 >= static_cast<Index>(mesh.solid_vertices_offset_.size()))
         return 0.0;
@@ -229,16 +236,16 @@ double solidVolume(const MeshData& mesh, const ModelLayer& manager, Index solid_
     if (cell_type == 10) {
         if (end - start != 4)
             return 0.0;
-        const Vec3& a = getPosition(mesh, manager, mesh.solid_vertices_[start]);
-        const Vec3& b = getPosition(mesh, manager, mesh.solid_vertices_[start + 1]);
-        const Vec3& c = getPosition(mesh, manager, mesh.solid_vertices_[start + 2]);
-        const Vec3& d = getPosition(mesh, manager, mesh.solid_vertices_[start + 3]);
+        const Vec3& a = mesh.vertex_positions_[static_cast<std::size_t>(mesh.solid_vertices_[start])];
+        const Vec3& b = mesh.vertex_positions_[static_cast<std::size_t>(mesh.solid_vertices_[start + 1])];
+        const Vec3& c = mesh.vertex_positions_[static_cast<std::size_t>(mesh.solid_vertices_[start + 2])];
+        const Vec3& d = mesh.vertex_positions_[static_cast<std::size_t>(mesh.solid_vertices_[start + 3])];
         return tetraVolume(a, b, c, d);
     }
 
     // VTK_POLYHEDRON = 42
     if (cell_type == 42)
-        return polyhedronVolume(mesh, manager, solid_id);
+        return polyhedronVolume(mesh, solid_id);
 
     return 0.0;
 }
@@ -252,10 +259,11 @@ std::vector<Vec3> collectPositions(const MeshData& mesh, const ModelLayer& manag
     switch (type) {
     case ElementEnum::Vertex:
     case ElementEnum::Edge:
-        // 边选择的 ids 即每条边端点的顶点 id（EdgeSelectorHighlight 约定），与点一样按顶点处理
+        // 边选择的 ids 即每条边端点的顶点 id（EdgeSelectorHighlight 约定），与点一样按顶点处理；
+        // 选择集顶点 id 为全局点 id，经 pointIdMap 换算取坐标
         for (Index id : ids) {
-            if (isValidVertexId(mesh, manager, id))
-                positions.push_back(getPosition(mesh, manager, id));
+            if (const Vec3* p = getPosition(manager, id))
+                positions.push_back(*p);
         }
         break;
     case ElementEnum::Face:
@@ -264,8 +272,8 @@ std::vector<Vec3> collectPositions(const MeshData& mesh, const ModelLayer& manag
                 continue;
             for (Index i = mesh.face_vertices_offset_[id]; i < mesh.face_vertices_offset_[id + 1]; ++i) {
                 const Index v = mesh.face_vertices_[i];
-                if (isValidVertexId(mesh, manager, v))
-                    positions.push_back(getPosition(mesh, manager, v));
+                if (v >= 0 && v < mesh.vertex_count_)
+                    positions.push_back(mesh.vertex_positions_[static_cast<std::size_t>(v)]);
             }
         }
         break;
@@ -275,8 +283,8 @@ std::vector<Vec3> collectPositions(const MeshData& mesh, const ModelLayer& manag
                 continue;
             for (Index i = mesh.solid_vertices_offset_[id]; i < mesh.solid_vertices_offset_[id + 1]; ++i) {
                 const Index v = mesh.solid_vertices_[i];
-                if (isValidVertexId(mesh, manager, v))
-                    positions.push_back(getPosition(mesh, manager, v));
+                if (v >= 0 && v < mesh.vertex_count_)
+                    positions.push_back(mesh.vertex_positions_[static_cast<std::size_t>(v)]);
             }
         }
         break;
@@ -324,22 +332,24 @@ std::string formatRadius(const Vec3& a, const Vec3& b, const Vec3& c)
     return oss.str();
 }
 
-std::string formatEdgeLength(const MeshData& mesh, const ModelLayer& manager, const std::vector<Index>& ids)
+std::string formatEdgeLength(const ModelLayer& manager, const std::vector<Index>& ids)
 {
     double total = 0.0;
     std::ostringstream oss;
 
-    // 边选择的 ids 是每条边两个端点的顶点 id 对，逐对计算长度
+    // 边选择的 ids 是每条边两个端点的顶点 id 对（全局点 id），逐对计算长度
     for (size_t i = 0; i + 1 < ids.size(); i += 2) {
         const Index v0 = ids[i];
         const Index v1 = ids[i + 1];
         const size_t edge_no = i / 2;
-        if (!isValidVertexId(mesh, manager, v0) || !isValidVertexId(mesh, manager, v1)) {
+        const Vec3* p0 = getPosition(manager, v0);
+        const Vec3* p1 = getPosition(manager, v1);
+        if (!p0 || !p1) {
             oss << "边 " << edge_no << ": 无效顶点\n";
             continue;
         }
 
-        const double len = length(getPosition(mesh, manager, v1) - getPosition(mesh, manager, v0));
+        const double len = length(*p1 - *p0);
         total += len;
         oss << "边 " << edge_no << ": " << toString(len) << "\n";
     }
@@ -348,7 +358,7 @@ std::string formatEdgeLength(const MeshData& mesh, const ModelLayer& manager, co
     return oss.str();
 }
 
-std::string formatFaceArea(const MeshData& mesh, const ModelLayer& manager, const std::vector<Index>& ids)
+std::string formatFaceArea(const MeshData& mesh, const std::vector<Index>& ids)
 {
     double total = 0.0;
     std::ostringstream oss;
@@ -361,7 +371,7 @@ std::string formatFaceArea(const MeshData& mesh, const ModelLayer& manager, cons
 
         std::vector<Vec3> points;
         for (Index i = mesh.face_vertices_offset_[id]; i < mesh.face_vertices_offset_[id + 1]; ++i)
-            points.push_back(getPosition(mesh, manager, mesh.face_vertices_[i]));
+            points.push_back(mesh.vertex_positions_[static_cast<std::size_t>(mesh.face_vertices_[i])]);
 
         const double area = polygonArea(points);
         total += area;
@@ -372,13 +382,13 @@ std::string formatFaceArea(const MeshData& mesh, const ModelLayer& manager, cons
     return oss.str();
 }
 
-std::string formatSolidVolume(const MeshData& mesh, const ModelLayer& manager, const std::vector<Index>& ids)
+std::string formatSolidVolume(const MeshData& mesh, const std::vector<Index>& ids)
 {
     double total = 0.0;
     std::ostringstream oss;
 
     for (Index id : ids) {
-        const double volume = solidVolume(mesh, manager, id);
+        const double volume = solidVolume(mesh, id);
         if (volume <= 0.0) {
             oss << "体 " << id << ": 不支持的体类型或无体积\n";
             continue;
@@ -749,33 +759,40 @@ std::string geomCentroid(const GeometryRegistry& reg, const Selection& selection
 
 // ---------------- 网格测量实现 ----------------
 
-std::string meshDistance(const MeshData& mesh, const ModelLayer& manager, const Selection& selection)
+std::string meshDistance(const MeshData&, const ModelLayer& manager, const Selection& selection)
 {
     if (selection.type != ElementEnum::Vertex || selection.ids.size() != 2) {
         spdlog::error("DimensionHandler::execute: 距离测量需要选择两个点");
         return std::string("错误：距离测量需要选择两个点");
     }
-    const Vec3& a = getPosition(mesh, manager, selection.ids[0]);
-    const Vec3& b = getPosition(mesh, manager, selection.ids[1]);
-    return formatDistance(a, b);
+    const Vec3* a = getPosition(manager, selection.ids[0]);
+    const Vec3* b = getPosition(manager, selection.ids[1]);
+    if (!a || !b) {
+        spdlog::error("DimensionHandler::execute: 距离测量包含无效的顶点 id");
+        return std::string("错误：无效的顶点 id");
+    }
+    return formatDistance(*a, *b);
 }
 
-std::string meshAngle(const MeshData& mesh, const ModelLayer& manager, const Selection& selection)
+std::string meshAngle(const MeshData&, const ModelLayer& manager, const Selection& selection)
 {
     if (selection.type == ElementEnum::Vertex && selection.ids.size() == 3) {
-        const Vec3& a = getPosition(mesh, manager, selection.ids[0]);
-        const Vec3& b = getPosition(mesh, manager, selection.ids[1]);
-        const Vec3& c = getPosition(mesh, manager, selection.ids[2]);
-        return formatAngle(a, b, c);
+        const Vec3* a = getPosition(manager, selection.ids[0]);
+        const Vec3* b = getPosition(manager, selection.ids[1]);
+        const Vec3* c = getPosition(manager, selection.ids[2]);
+        if (a && b && c)
+            return formatAngle(*a, *b, *c);
     }
     if (selection.type == ElementEnum::Edge && selection.ids.size() == 4) {
         // 边选择的 ids 是每条边两个端点的顶点 id（EdgeSelectorHighlight 约定）
         const auto& ids = selection.ids;
-        const bool valid = isValidVertexId(mesh, manager, ids[0]) && isValidVertexId(mesh, manager, ids[1])
-            && isValidVertexId(mesh, manager, ids[2]) && isValidVertexId(mesh, manager, ids[3]);
-        if (valid) {
-            const Vec3 u = getPosition(mesh, manager, ids[1]) - getPosition(mesh, manager, ids[0]);
-            const Vec3 v = getPosition(mesh, manager, ids[3]) - getPosition(mesh, manager, ids[2]);
+        const Vec3* p0 = getPosition(manager, ids[0]);
+        const Vec3* p1 = getPosition(manager, ids[1]);
+        const Vec3* p2 = getPosition(manager, ids[2]);
+        const Vec3* p3 = getPosition(manager, ids[3]);
+        if (p0 && p1 && p2 && p3) {
+            const Vec3 u = *p1 - *p0;
+            const Vec3 v = *p3 - *p2;
             std::ostringstream oss;
             oss << "Angle: " << toString(angleBetween(u, v)) << " deg";
             return oss.str();
@@ -785,44 +802,48 @@ std::string meshAngle(const MeshData& mesh, const ModelLayer& manager, const Sel
     return std::string("错误：角度测量需要选择三个点或两条边");
 }
 
-std::string meshRadius(const MeshData& mesh, const ModelLayer& manager, const Selection& selection)
+std::string meshRadius(const MeshData&, const ModelLayer& manager, const Selection& selection)
 {
     if (selection.type != ElementEnum::Vertex || selection.ids.size() != 3) {
         spdlog::error("DimensionHandler::execute: 半径测量需要选择三个点");
         return std::string("错误：半径测量需要选择三个点");
     }
-    const Vec3& a = getPosition(mesh, manager, selection.ids[0]);
-    const Vec3& b = getPosition(mesh, manager, selection.ids[1]);
-    const Vec3& c = getPosition(mesh, manager, selection.ids[2]);
-    return formatRadius(a, b, c);
+    const Vec3* a = getPosition(manager, selection.ids[0]);
+    const Vec3* b = getPosition(manager, selection.ids[1]);
+    const Vec3* c = getPosition(manager, selection.ids[2]);
+    if (!a || !b || !c) {
+        spdlog::error("DimensionHandler::execute: 半径测量包含无效的顶点 id");
+        return std::string("错误：无效的顶点 id");
+    }
+    return formatRadius(*a, *b, *c);
 }
 
-std::string meshLength(const MeshData& mesh, const ModelLayer& manager, const Selection& selection)
+std::string meshLength(const MeshData&, const ModelLayer& manager, const Selection& selection)
 {
     // 边选择的 ids 是每条边两个端点的顶点 id 对，数量应为正偶数
     if (selection.type != ElementEnum::Edge || selection.ids.empty() || selection.ids.size() % 2 != 0) {
         spdlog::error("DimensionHandler::execute: 长度测量需要选择边");
         return std::string("错误：长度测量需要选择边");
     }
-    return formatEdgeLength(mesh, manager, selection.ids);
+    return formatEdgeLength(manager, selection.ids);
 }
 
-std::string meshArea(const MeshData& mesh, const ModelLayer& manager, const Selection& selection)
+std::string meshArea(const MeshData& mesh, const ModelLayer&, const Selection& selection)
 {
     if (selection.type != ElementEnum::Face) {
         spdlog::error("DimensionHandler::execute: 面积测量需要选择面");
         return std::string("错误：面积测量需要选择面");
     }
-    return formatFaceArea(mesh, manager, selection.ids);
+    return formatFaceArea(mesh, selection.ids);
 }
 
-std::string meshVolume(const MeshData& mesh, const ModelLayer& manager, const Selection& selection)
+std::string meshVolume(const MeshData& mesh, const ModelLayer&, const Selection& selection)
 {
     if (selection.type != ElementEnum::Solid) {
         spdlog::error("DimensionHandler::execute: 体积测量需要选择体");
         return std::string("错误：体积测量需要选择体");
     }
-    return formatSolidVolume(mesh, manager, selection.ids);
+    return formatSolidVolume(mesh, selection.ids);
 }
 
 std::string meshBoundingBox(const MeshData& mesh, const ModelLayer& manager, const Selection& selection)
