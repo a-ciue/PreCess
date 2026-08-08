@@ -35,14 +35,12 @@ ApplicationWindow {
     // 标记由功能自动开启的属性渲染，避免影响用户手动打开的属性渲染面板。
     property bool featureAttributeRenderingActive: false
 
-    // 结束当前功能自动开启的属性渲染，并关闭对应面板。
+    // 结束当前功能自动开启的属性渲染，不影响用户手动控制的属性渲染面板。
     function cancelFeatureAttributeRendering() {
         if (!featureAttributeRenderingActive)
             return
         if (App.registry.renderWindow)
             App.registry.renderWindow.cancelAttri()
-        if (attributeRenderDock.isOpen)
-            attributeRenderDock.close()
         featureAttributeRenderingActive = false
     }
 
@@ -134,7 +132,6 @@ ApplicationWindow {
             if (App.registry.renderWindow)
                 // 使用标量模式显示质量属性，空参数表示采用默认标量范围。
                 App.registry.renderWindow.setAttriMode(attributeName, 1, {})
-            attributeRenderDock.show()
         }
     }
 
