@@ -13,18 +13,31 @@ Item {
 
     property var attributes: []
     property int selectedIndex: -1
+    property int componentId: -1
     property string componentName: ""
+    property string componentSelectionMessage: ""
+    // 与 SideBar 参数索引错开，避免两个选择器同时接收视口确认结果。
+    readonly property int componentSelectorIndex: 2147483647
 
-    // 根据当前选中组件重新读取属性列表，并清空已选属性。
+    // 根据属性面板自己的目标组件重新读取属性列表，并清空已选属性。
     function refreshAttributes() {
         selectedIndex = -1
-        if (App.selection.activeComponentId >= 0) {
-            componentName = QModelManager.query.getComponentName(App.selection.activeComponentId)
-            attributes = QModelManager.query.getComponentAttriInfo(App.selection.activeComponentId)
+        if (componentId >= 0) {
+            componentName = QModelManager.query.getComponentName(componentId)
+            attributes = QModelManager.query.getComponentAttriInfo(componentId)
         } else {
             componentName = ""
             attributes = []
         }
+    }
+
+    // 设置属性列表和渲染操作共同使用的目标 Component。
+    function setComponent(targetComponentId) {
+        if (App.selection.listeningSelectorIndex === componentSelectorIndex)
+            App.selection.listeningSelectorIndex = -1
+        componentId = targetComponentId
+        componentSelectionMessage = ""
+        refreshAttributes()
     }
 
     // 返回当前选中的属性条目，未选中时返回 null。
@@ -74,7 +87,7 @@ Item {
 
     function canApply() {
         let attr = selectedAttribute()
-        if (!attr || !attr.renderable || !App.registry.renderWindow)
+        if (componentId < 0 || !attr || !attr.renderable || !App.registry.renderWindow)
             return false
 
         if (modeCombo.currentIndex === 0 && attr.componentCount !== 3)
@@ -101,21 +114,6 @@ Item {
         anchors.fill: parent
         anchors.margins: 6
         spacing: 6
-
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 4
-            Label {
-                text: "组件"
-                Layout.preferredWidth: 32
-            }
-            Label {
-                Layout.fillWidth: true
-                Layout.minimumWidth: 0
-                text: root.componentName.length > 0 ? root.componentName : "未选择"
-                elide: Text.ElideRight
-            }
-        }
 
         ListView {
             id: attributeList
@@ -203,6 +201,68 @@ Item {
             rowSpacing: 6
             columnSpacing: 6
 
+           RowLayout {
+                Layout.columnSpan: 2
+                Layout.fillWidth: true
+                Layout.preferredHeight: componentSelectStartButton.implicitHeight
+                Layout.maximumHeight: componentSelectStartButton.implicitHeight
+                spacing: 5
+
+                Text {
+                    text: "组件"
+                }
+                Rectangle {
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 1
+                    color: "black"
+                }
+                Text {
+                    text: root.componentName.length > 0 ? root.componentName : "无"
+                }
+                Button {
+                    id: componentSelectStartButton
+                    text: "开始选择"
+                    checked: App.selection.listeningSelectorIndex === root.componentSelectorIndex
+                    onClicked: {
+                        if (!checked) {
+                            root.componentSelectionMessage = ""
+                            App.selection.listeningSelectorIndex = root.componentSelectorIndex
+                            App.selection.selectMode = "Component"
+                        } else {
+                            App.selection.listeningSelectorIndex = -1
+                        }
+                    }
+                }
+
+                Connections {
+                    target: App.selection
+                    enabled: componentSelectStartButton.checked
+                    function onConfirmed(selection) {
+                        const componentIds = selection ? selection.getAsComponentIds() : []
+                        if (componentIds.length === 1)
+                            root.setComponent(componentIds[0])
+                        else
+                            root.componentSelectionMessage = "只能选择一个 Component"
+                        App.selection.listeningSelectorIndex = -1
+                    }
+                }
+
+                Connections {
+                    target: App.selection
+                    function onSelectionInvalidated() {
+                        if (App.selection.listeningSelectorIndex === root.componentSelectorIndex)
+                            App.selection.listeningSelectorIndex = -1
+                    }
+                }
+            }
+
+            Label {
+                Layout.columnSpan: 2
+                visible: root.componentSelectionMessage.length > 0
+                text: root.componentSelectionMessage
+                color: "#c62828"
+            }
+
             Label {
                 text: "渲染策略"
             }
@@ -283,14 +343,15 @@ Item {
                 onClicked: {
                     let attr = root.selectedAttribute()
                     if (attr)
-                        App.registry.renderWindow.setAttriMode(attr.name, modeCombo.currentIndex, root.renderArgs())
+                        App.registry.renderWindow.setAttriMode(
+                            root.componentId, attr.name, modeCombo.currentIndex, root.renderArgs())
                 }
             }
 
             Button {
                 text: "取消属性渲染"
-                enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
-                onClicked: App.registry.renderWindow.cancelAttri()
+                enabled: root.componentId >= 0 && App.registry.renderWindow
+                onClicked: App.registry.renderWindow.cancelComponentAttri(root.componentId)
             }
         }
     }
@@ -304,17 +365,14 @@ Item {
     }
 
     Connections {
-        target: App.selection
-        function onActiveComponentIdChanged() {
-            root.refreshAttributes()
-        }
-    }
-
-    Connections {
         target: QModelManager.observer
         function onComponentChanged(component_id) {
-            if (component_id === App.selection.activeComponentId)
+            if (component_id === root.componentId)
                 root.refreshAttributes()
+        }
+        function onComponentRemoved(component_id) {
+            if (component_id === root.componentId)
+                root.setComponent(-1)
         }
     }
 

@@ -498,7 +498,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
 
     // Qt 桥接延迟发送显示信号，保证操作边界 flush 后再应用标量渲染。
-    ctx.events.bus().publish(ScalarAttributeDisplayRequestedEvent { display_attribute });
+    ctx.events.bus().publish(ScalarAttributeDisplayRequestedEvent { display_attribute, component_id });
 
     std::ostringstream output;
     output << std::setprecision(6) << metricDisplayName(metric) << '\n';

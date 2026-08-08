@@ -84,9 +84,11 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     FeatureSystem feature_system(model_layer, bus);
     const Index component_id = addQualityTestComponent(model_layer);
     std::vector<std::string> display_requests;
+    std::vector<Index> display_component_ids;
     auto display_subscription = bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
-        [&display_requests](const ScalarAttributeDisplayRequestedEvent& event) {
+        [&display_requests, &display_component_ids](const ScalarAttributeDisplayRequestedEvent& event) {
             display_requests.push_back(event.attribute_name);
+            display_component_ids.push_back(event.component_id);
         });
     REQUIRE(static_cast<bool>(display_subscription));
 
@@ -100,6 +102,7 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     REQUIRE(execution_result.type() == typeid(std::string));
     REQUIRE(std::any_cast<const std::string&>(execution_result).find("Scaled Jacobian") != std::string::npos);
     REQUIRE(display_requests == std::vector<std::string> { "s_mesh_quality_scaled_jacobian_1" });
+    REQUIRE(display_component_ids == std::vector<Index> { component_id });
 
     const ComponentData* component = model_layer.findComponent(component_id);
     REQUIRE(component != nullptr);
@@ -119,6 +122,7 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     REQUIRE(skew_result.type() == typeid(std::string));
     REQUIRE(display_requests.back() == "s_mesh_quality_equiangle_skew_1");
     REQUIRE(display_requests.size() == 2);
+    REQUIRE(display_component_ids.back() == component_id);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 1);

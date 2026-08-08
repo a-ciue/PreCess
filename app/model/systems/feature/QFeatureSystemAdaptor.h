@@ -78,8 +78,8 @@ public:
 
 signals:
     void featuresInfoChanged();
-    //! @brief 功能请求渲染指定的标量属性
-    void scalarAttributeDisplayRequested(QString attribute_name);
+    //! @brief 功能请求在指定 Component 上渲染标量属性
+    void scalarAttributeDisplayRequested(int component_id, QString attribute_name);
     //! @brief 功能参数值变化（功能侧回写结果等场景，QML 据此同步显示）
     void paramValueChanged(QString feature, int index, QVariant value);
 

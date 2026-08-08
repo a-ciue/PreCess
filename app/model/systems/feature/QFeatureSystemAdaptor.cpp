@@ -60,10 +60,13 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
             if (event.attribute_name.empty())
                 return;
 
+            const Index component_id = event.component_id;
             const QString attribute_name = QString::fromStdString(event.attribute_name);
             // FeatureSystem 在 execute 返回后统一 flush，排队发送可保证 QML 在模型刷新后设置渲染属性。
             QMetaObject::invokeMethod(this,
-                [this, attribute_name]() { emit scalarAttributeDisplayRequested(attribute_name); },
+                [this, component_id, attribute_name]() {
+                    emit scalarAttributeDisplayRequested(component_id, attribute_name);
+                },
                 Qt::QueuedConnection);
         });
 }

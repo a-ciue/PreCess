@@ -45,6 +45,7 @@ struct ParameterChangedEvent {
  */
 struct ScalarAttributeDisplayRequestedEvent {
     std::string attribute_name; //> 模型中的标量属性名
+    Index component_id { -1 }; //> 属性所属的 Component ID；空属性名事件不使用
 };
 
 /**
