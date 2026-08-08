@@ -217,7 +217,7 @@ Index ComponentOperator::replaceGeometryRoot(TopoDS_Shape shape)
         component_->geometry->ensureIndexBuilt(mgr_->geomRegistry());
     }
 
-    notifyChanged();
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     return component_id_;
 }
 

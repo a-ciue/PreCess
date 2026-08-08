@@ -468,7 +468,11 @@ int QGeometryOperations::deleteGeometry(
             model_layer_->getComponentOperator(*component_id);
         if (!component_operator)
             throw std::invalid_argument("Target component does not exist");
-        return component_operator->replaceGeometryRoot(std::move(result));
+        const Index result_component_id =
+            component_operator->replaceGeometryRoot(std::move(result));
+        // QML 入口是本次几何编辑的操作边界，统一发送组件变更通知。
+        model_layer_->flushNotifications();
+        return result_component_id;
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::deleteGeometry: {}",

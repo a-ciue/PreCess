@@ -374,8 +374,10 @@ QtObject {
                 const resultComponentId =
                     QModelManager.geometry.deleteGeometry(
                         args[0], args[1])
-                if (resultComponentId >= 0)
-                    App.selection.selectionInvalidated()
+                if (resultComponentId < 0)
+                    return qsTr("删除几何失败，详细原因请查看日志。")
+                App.selection.selectionInvalidated()
+                return ""
             }
         }, selectMode, 0)
     }
