@@ -4,6 +4,7 @@
 #include "ComponentOperator.h"
 #include "GeometryBuilder.h"
 #include "GeometryData.h"
+#include "GeometryTopologyEditor.h"
 #include "ModelLayer.h"
 #include "QSelection.h"
 
@@ -402,6 +403,83 @@ int QGeometryOperations::createSphere(
             detail ? detail : "OpenCASCADE error");
     } catch (const std::exception& error) {
         spdlog::error("QGeometryOperations::createSphere: {}", error.what());
+    }
+    return -1;
+}
+
+int QGeometryOperations::deleteGeometry(
+    QSelection* selection,
+    bool deleteChildren)
+{
+    try {
+        if (!selection || !selection->get())
+            throw std::invalid_argument("Select one geometry shape");
+
+        const std::shared_ptr<Selection> selected = selection->get();
+        if (selected->ids.size() != 1)
+            throw std::invalid_argument("Exactly one geometry shape is required");
+
+        const Index shape_id = selected->ids.front();
+        TopAbs_ShapeEnum shape_type = TopAbs_SHAPE;
+        const TopoDS_Shape* selected_shape = nullptr;
+
+        // 选择类型决定全局几何 ID 的类别以及对应的 OCC Shape 注册表。
+        switch (selected->type) {
+        case ElementEnum::GeometryVertex:
+            shape_type = TopAbs_VERTEX;
+            selected_shape = model_layer_->geomRegistry().getVertex(shape_id);
+            break;
+        case ElementEnum::GeometryEdge:
+            shape_type = TopAbs_EDGE;
+            selected_shape = model_layer_->geomRegistry().getEdge(shape_id);
+            break;
+        case ElementEnum::GeometryFace:
+            shape_type = TopAbs_FACE;
+            selected_shape = model_layer_->geomRegistry().getFace(shape_id);
+            break;
+        case ElementEnum::GeometrySolid:
+            shape_type = TopAbs_SOLID;
+            selected_shape = model_layer_->geomRegistry().getSolid(shape_id);
+            break;
+        default:
+            throw std::invalid_argument(
+                "Selection must be a geometry vertex, edge, face or solid");
+        }
+
+        if (!selected_shape)
+            throw std::invalid_argument("Selected geometry shape is no longer valid");
+
+        const auto component_id =
+            model_layer_->findComponentIdByGeometryShapeId(shape_type, shape_id);
+        if (!component_id)
+            throw std::invalid_argument(
+                "Selected geometry shape does not belong to a component");
+
+        ComponentData* component = model_layer_->findComponent(*component_id);
+        if (!component || !component->geometry || !component->geometry->rootShape)
+            throw std::invalid_argument("Target component has no geometry");
+
+        // 在释放旧索引前复制 OCC Shape 句柄，并先完成纯 OCC 根拓扑重建。
+        const TopoDS_Shape target = *selected_shape;
+        TopoDS_Shape result = GeometryTopologyEditor::removeTopLevelShape(
+            *component->geometry->rootShape, target, deleteChildren);
+
+        auto component_operator =
+            model_layer_->getComponentOperator(*component_id);
+        if (!component_operator)
+            throw std::invalid_argument("Target component does not exist");
+        const Index result_component_id =
+            component_operator->replaceGeometryRoot(std::move(result));
+        // QML 入口是本次几何编辑的操作边界，统一发送组件变更通知。
+        model_layer_->flushNotifications();
+        return result_component_id;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        spdlog::error("QGeometryOperations::deleteGeometry: {}",
+            detail ? detail : "OpenCASCADE error");
+    } catch (const std::exception& error) {
+        spdlog::error(
+            "QGeometryOperations::deleteGeometry: {}", error.what());
     }
     return -1;
 }

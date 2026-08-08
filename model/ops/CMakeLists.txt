@@ -3,6 +3,7 @@ add_library(DataOps STATIC
 	CTMeshModel.cpp
 	UGridModel.cpp
 	GeometryBuilder.cpp
+	GeometryTopologyEditor.cpp
 )
 target_include_directories(DataOps PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径

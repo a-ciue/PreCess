@@ -66,7 +66,9 @@ ColumnLayout {
         { text: qsTr("球体/部分球体"), operation: "startCreateSphere",
           icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
         { text: qsTr("拉伸面"), operation: "startExtrudeFace",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" }
+         icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+        { text: qsTr("删除几何"), operation: "startDeleteGeometry",
+         icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" }
     ]
 
     function getIconForPlugin(pluginName) {
