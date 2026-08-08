@@ -1,6 +1,6 @@
 /**
  * @file MeshQualityHandler.h
- * @brief 当前组件网格质量计算功能
+ * @brief 所选组件网格质量计算功能
  */
 #ifndef MESH_QUALITY_HANDLER_H
 #define MESH_QUALITY_HANDLER_H
@@ -16,7 +16,7 @@
 namespace systems::feature {
 
 /**
- * @brief 计算当前组件的网格质量并生成可渲染的面、体标量属性
+ * @brief 计算选择器指定组件的网格质量并生成可渲染的面、体标量属性
  */
 class MeshQualityHandler : public FeatureHandler {
 public:

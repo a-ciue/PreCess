@@ -7,6 +7,7 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "MeshData.h"
+#include "Selection.h"
 
 #include <vtkCellData.h>
 #include <vtkCellType.h>
@@ -19,6 +20,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstddef>
 #include <iomanip>
 #include <limits>
 #include <optional>
@@ -28,6 +30,9 @@
 
 namespace systems::feature {
 namespace {
+
+    constexpr std::size_t kMetricParam = 0; //> 质量指标参数下标
+    constexpr std::size_t kComponentParam = 1; //> 目标 Component 选择器参数下标
 
     /**
      * @brief 插件支持的质量指标，与参数 Combo 的选项顺序一致
@@ -397,6 +402,12 @@ void MeshQualityHandler::setup(FeatureRegistrar& reg)
         "Scaled Jacobian,Equiangle Skew,Edge Ratio,最小角,最大角,Warpage,Tet Collapse|0",
         "选择要计算并写入面、体属性的网格质量指标",
     });
+    reg.addParameter({
+        ArgTypeEnum::Selector,
+        "目标 Component",
+        "Component",
+        "选择一个需要计算网格质量的 Component",
+    });
     reg.addMenuItem({ "功能/网格", "网格质量" });
 }
 
@@ -412,17 +423,24 @@ void MeshQualityHandler::activate(FeatureContext& ctx)
 
 std::any MeshQualityHandler::execute(FeatureContext& ctx)
 {
-    const auto component_id = ctx.activeComponent ? ctx.activeComponent() : std::nullopt;
-    if (!component_id) {
-        return std::string("未选择 Component");
+    const auto* selection_ptr = ctx.params.value(kComponentParam).get<ArgTypeEnum::Selector>();
+    if (!selection_ptr || !*selection_ptr) {
+        return std::string("请选择一个 Component");
     }
-    auto component = ctx.componentOperator ? ctx.componentOperator(*component_id) : std::nullopt;
+
+    const Selection& selection = **selection_ptr;
+    if (selection.type != ElementEnum::Component || selection.ids.size() != 1) {
+        return std::string("只能选择一个 Component");
+    }
+
+    const Index component_id = selection.ids.front();
+    auto component = ctx.componentOperator ? ctx.componentOperator(component_id) : std::nullopt;
     if (!component || !component->mesh()) {
-        return std::string("当前 Component 没有网格");
+        return std::string("所选 Component 没有网格");
     }
 
     int metric_index = 0;
-    if (const auto* value = ctx.params.value(0).get<ArgTypeEnum::Combo>()) {
+    if (const auto* value = ctx.params.value(kMetricParam).get<ArgTypeEnum::Combo>()) {
         metric_index = *value;
     }
     const QualityMetric metric = metricFromIndex(metric_index);
@@ -464,7 +482,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     // 只写属性不动拓扑：NonTopology 标脏（邻接懒表不失效），通知由操作边界 flush 统一发出。
     MeshData& editable_mesh = component->editableMesh(MeshEditKind::NonTopology);
     std::string display_attribute;
-    GeneratedAttributes& generated = generated_attributes_[*component_id];
+    GeneratedAttributes& generated = generated_attributes_[component_id];
     if (face_result) {
         const std::string face_attribute = "f_" + attribute_key + "_1";
         editable_mesh.face_attributes_[face_attribute] = face_result->values;

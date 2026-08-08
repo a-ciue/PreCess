@@ -3,6 +3,6 @@
   "handler": {
     "name": "MeshQuality",
     "display_name": "网格质量",
-    "description": "计算当前 Component 的网格质量并生成标量属性"
+    "description": "计算所选 Component 的网格质量并生成标量属性"
   }
 }
