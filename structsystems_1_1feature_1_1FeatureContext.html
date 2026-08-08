@@ -215,7 +215,8 @@ Public 属性</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>功能上下文，由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配并在 activate()/execute() 时传给功能 </p>
-<p>组合而非单例：依赖以引用或 std::function 动态获取函数注入（后者由 app 层提供）， 功能层不反向依赖 app 层。当前功能可修改的范围仅限模型层对象。 </p>
+<p>组合而非单例：依赖以引用或 std::function 动态获取函数注入（后者由 app 层提供）， 功能层不反向依赖 app 层。当前功能可修改的范围仅限模型层对象。</p>
+<dl class="section note"><dt>注解</dt><dd>activeModel/activeComponent 是对象树选中态的动态查询，只视作一种提示： 不要强制要求用户执行功能前在对象树中选中 component；目标组件优先经 <span class="tt">Selector</span> 类型参数（FeatureParams）让用户显式选择后解析。 </dd></dl>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
 <a id="aa5ca6e206ed01adc927f33aceca3dd5a" name="aa5ca6e206ed01adc927f33aceca3dd5a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa5ca6e206ed01adc927f33aceca3dd5a">&#9670;&#160;</a></span>activeComponent</h2>

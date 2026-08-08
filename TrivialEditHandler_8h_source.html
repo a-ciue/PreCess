@@ -82,47 +82,46 @@ $(function() {
 <a href="TrivialEditHandler_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef TRIVIAL_EDIT_HANDLER_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define TRIVIAL_EDIT_HANDLER_H</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="ComponentOperator_8h.html">ComponentOperator.h</a>&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="EditHandler_8h.html">EditHandler.h</a>&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;any&gt;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1edit.html">systems::edit</a> {</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="foldopen" id="foldopen00011" data-start="{" data-end="};">
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html">   11</a></span><span class="keyword">class </span><a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a4418782fbf4b6e37ca12619b48e6d298">TrivialEditHandler</a> : <span class="keyword">public</span> <a class="code hl_class" href="classsystems_1_1edit_1_1EditHandler.html">EditHandler</a> {</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a4418782fbf4b6e37ca12619b48e6d298">   13</a></span>    <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a4418782fbf4b6e37ca12619b48e6d298">TrivialEditHandler</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e">   14</a></span>    <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e">~TrivialEditHandler</a>() <span class="keyword">override</span> = <span class="keywordflow">default</span>;</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="foldopen" id="foldopen00016" data-start="{" data-end="}">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a0b863c0edad08afb51c310a644ce31d9">   16</a></span>    std::any <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a0b863c0edad08afb51c310a644ce31d9">execute</a>(<a class="code hl_class" href="classComponentOperator.html">ComponentOperator</a>&amp; <span class="comment">/*op*/</span>,</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        <span class="keyword">const</span> std::vector&lt;core::ArgObject&gt;&amp; <span class="comment">/*args*/</span>)<span class="keyword"> override</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <span class="keywordflow">return</span> {};</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    }</div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="EditHandler_8h.html">EditHandler.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;any&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1edit.html">systems::edit</a> {</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="foldopen" id="foldopen00010" data-start="{" data-end="};">
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html">   10</a></span><span class="keyword">class </span><a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a4418782fbf4b6e37ca12619b48e6d298">TrivialEditHandler</a> : <span class="keyword">public</span> <a class="code hl_class" href="classsystems_1_1edit_1_1EditHandler.html">EditHandler</a> {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a4418782fbf4b6e37ca12619b48e6d298">   12</a></span>    <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a4418782fbf4b6e37ca12619b48e6d298">TrivialEditHandler</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e">   13</a></span>    <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e">~TrivialEditHandler</a>() <span class="keyword">override</span> = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="foldopen" id="foldopen00015" data-start="{" data-end="}">
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#acdaaa1c9f9b777281a3d48594aeab2c5">   15</a></span>    std::any <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#acdaaa1c9f9b777281a3d48594aeab2c5">execute</a>(<a class="code hl_class" href="classModelLayer.html">ModelLayer</a>&amp; <span class="comment">/*model*/</span>, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <span class="comment">/*fallback_component_id*/</span>,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        <span class="keyword">const</span> std::vector&lt;core::ArgObject&gt;&amp; <span class="comment">/*args*/</span>)<span class="keyword"> override</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        <span class="keywordflow">return</span> {};</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    }</div>
 </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="foldopen" id="foldopen00022" data-start="{" data-end="}">
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a829f4dbbf0d60096d4139c073c78eaf9">   22</a></span>    std::vector&lt;core::ArgType&gt; <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a829f4dbbf0d60096d4139c073c78eaf9">args_type</a>()<span class="keyword"> const override</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <span class="keywordflow">return</span> {};</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    }</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="}">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a829f4dbbf0d60096d4139c073c78eaf9">   21</a></span>    std::vector&lt;core::ArgType&gt; <a class="code hl_function" href="classsystems_1_1edit_1_1TrivialEditHandler.html#a829f4dbbf0d60096d4139c073c78eaf9">args_type</a>()<span class="keyword"> const override</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keywordflow">return</span> {};</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    }</div>
 </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>};</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>};</div>
 </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>} <span class="comment">// namespace systems::edit</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#endif </span><span class="comment">// TRIVIAL_EDIT_HANDLER_H</span></div>
-<div class="ttc" id="aComponentOperator_8h_html"><div class="ttname"><a href="ComponentOperator_8h.html">ComponentOperator.h</a></div></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>} <span class="comment">// namespace systems::edit</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#endif </span><span class="comment">// TRIVIAL_EDIT_HANDLER_H</span></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:48</div></div>
 <div class="ttc" id="aEditHandler_8h_html"><div class="ttname"><a href="EditHandler_8h.html">EditHandler.h</a></div></div>
-<div class="ttc" id="aclassComponentOperator_html"><div class="ttname"><a href="classComponentOperator.html">ComponentOperator</a></div><div class="ttdoc">组件数据的统一写入口：写必脏</div><div class="ttdef"><b>定义</b> ComponentOperator.h:31</div></div>
-<div class="ttc" id="aclasssystems_1_1edit_1_1EditHandler_html"><div class="ttname"><a href="classsystems_1_1edit_1_1EditHandler.html">systems::edit::EditHandler</a></div><div class="ttdoc">模型编辑系统的功能接口，继承他来实现具体的编辑功能</div><div class="ttdef"><b>定义</b> EditHandler.h:22</div></div>
-<div class="ttc" id="aclasssystems_1_1edit_1_1TrivialEditHandler_html_a0b863c0edad08afb51c310a644ce31d9"><div class="ttname"><a href="classsystems_1_1edit_1_1TrivialEditHandler.html#a0b863c0edad08afb51c310a644ce31d9">systems::edit::TrivialEditHandler::execute</a></div><div class="ttdeci">std::any execute(ComponentOperator &amp;, const std::vector&lt; core::ArgObject &gt; &amp;) override</div><div class="ttdoc">执行模型编辑功能</div><div class="ttdef"><b>定义</b> TrivialEditHandler.h:16</div></div>
+<div class="ttc" id="aclassModelLayer_html"><div class="ttname"><a href="classModelLayer.html">ModelLayer</a></div><div class="ttdoc">负责管理多个 ModelData 实例的类</div><div class="ttdef"><b>定义</b> ModelLayer.h:34</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1EditHandler_html"><div class="ttname"><a href="classsystems_1_1edit_1_1EditHandler.html">systems::edit::EditHandler</a></div><div class="ttdoc">模型编辑系统的功能接口，继承他来实现具体的编辑功能</div><div class="ttdef"><b>定义</b> EditHandler.h:24</div></div>
 <div class="ttc" id="aclasssystems_1_1edit_1_1TrivialEditHandler_html_a4418782fbf4b6e37ca12619b48e6d298"><div class="ttname"><a href="classsystems_1_1edit_1_1TrivialEditHandler.html#a4418782fbf4b6e37ca12619b48e6d298">systems::edit::TrivialEditHandler::TrivialEditHandler</a></div><div class="ttdeci">TrivialEditHandler()=default</div></div>
-<div class="ttc" id="aclasssystems_1_1edit_1_1TrivialEditHandler_html_a829f4dbbf0d60096d4139c073c78eaf9"><div class="ttname"><a href="classsystems_1_1edit_1_1TrivialEditHandler.html#a829f4dbbf0d60096d4139c073c78eaf9">systems::edit::TrivialEditHandler::args_type</a></div><div class="ttdeci">std::vector&lt; core::ArgType &gt; args_type() const override</div><div class="ttdoc">模型编辑参数类型，交给UI使用</div><div class="ttdef"><b>定义</b> TrivialEditHandler.h:22</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1TrivialEditHandler_html_a829f4dbbf0d60096d4139c073c78eaf9"><div class="ttname"><a href="classsystems_1_1edit_1_1TrivialEditHandler.html#a829f4dbbf0d60096d4139c073c78eaf9">systems::edit::TrivialEditHandler::args_type</a></div><div class="ttdeci">std::vector&lt; core::ArgType &gt; args_type() const override</div><div class="ttdoc">模型编辑参数类型，交给UI使用</div><div class="ttdef"><b>定义</b> TrivialEditHandler.h:21</div></div>
 <div class="ttc" id="aclasssystems_1_1edit_1_1TrivialEditHandler_html_aba87eb2994851c02c720ade417af944e"><div class="ttname"><a href="classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e">systems::edit::TrivialEditHandler::~TrivialEditHandler</a></div><div class="ttdeci">~TrivialEditHandler() override=default</div></div>
+<div class="ttc" id="aclasssystems_1_1edit_1_1TrivialEditHandler_html_acdaaa1c9f9b777281a3d48594aeab2c5"><div class="ttname"><a href="classsystems_1_1edit_1_1TrivialEditHandler.html#acdaaa1c9f9b777281a3d48594aeab2c5">systems::edit::TrivialEditHandler::execute</a></div><div class="ttdeci">std::any execute(ModelLayer &amp;, Index, const std::vector&lt; core::ArgObject &gt; &amp;) override</div><div class="ttdoc">执行模型编辑功能</div><div class="ttdef"><b>定义</b> TrivialEditHandler.h:15</div></div>
 <div class="ttc" id="anamespacesystems_1_1edit_html"><div class="ttname"><a href="namespacesystems_1_1edit.html">systems::edit</a></div><div class="ttdef"><b>定义</b> QModelManager.h:24</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
