@@ -37,9 +37,9 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
 
         ComponentData* c = mgr.findComponent(cids[0]);
         REQUIRE(c);
-        ComponentOperator comp_op(cids[0], *c, mgr, nullptr);
+        ComponentOperator comp_op(cids[0], *c, mgr);
 
-        MeshData* mesh = comp_op.mesh();
+        const MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);
 
         // 选择 id 使用组件入池时分配的全局点 id（point_global_ids_）
@@ -58,7 +58,7 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
             : 0;
 
         CreateFaceHandler h;
-        REQUIRE_NOTHROW(h.execute(comp_op, { arg0 }));
+        REQUIRE_NOTHROW(h.execute(mgr, cids[0], { arg0 }));
 
         REQUIRE((Index)mesh->face_vertices_.size() == old_face_vert_size + 3);
         REQUIRE((Index)mesh->face_vertices_offset_.size() == old_face_count + 2); // faces+1 => offsets size = faces+1
@@ -74,9 +74,9 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
 
         ComponentData* c = mgr.findComponent(cids[0]);
         REQUIRE(c);
-        ComponentOperator comp_op(cids[0], *c, mgr, nullptr);
+        ComponentOperator comp_op(cids[0], *c, mgr);
 
-        MeshData* mesh = comp_op.mesh();
+        const MeshData* mesh = comp_op.mesh();
         REQUIRE(mesh != nullptr);
 
         // 选择 id 使用组件入池时分配的全局点 id（point_global_ids_）
@@ -94,7 +94,7 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
             : 0;
 
         CreateFaceHandler h;
-        REQUIRE_NOTHROW(h.execute(comp_op, { arg0 }));
+        REQUIRE_NOTHROW(h.execute(mgr, cids[0], { arg0 }));
 
         REQUIRE((Index)mesh->face_vertices_.size() == old_face_vert_size + 4);
         REQUIRE((Index)mesh->face_vertices_offset_.size() == old_face_count + 2);

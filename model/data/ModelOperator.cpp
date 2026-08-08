@@ -1,7 +1,4 @@
-#ifndef Model_OPERATOR_H
-#define Model_OPERATOR_H
 #include "ModelOperator.h"
-//#include "../FileHandler.h"
 #include "GeometryData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
@@ -16,15 +13,10 @@ ModelData& ModelOperator::data() const
     return *model_;
 }
 
-ModelObserver* ModelOperator::observer() const
-{
-    return observer_;
-}
-
 void ModelOperator::notifyChanged()
 {
-    if (this->observer_) {
-        observer_->notifyModelChanged(this->id_);
+    if (manager_->observer_) {
+        manager_->observer_->notifyModelChanged(this->id_);
     }
 }
 
@@ -44,8 +36,9 @@ Index ModelOperator::addGeometryComponent(std::unique_ptr<ComponentData> compone
     manager_->components_[component_id]->geometry->ensureIndexBuilt(manager_->geom_registry_);
 
     // 这里只新增一个 Component，通知渲染层按组件加载，避免重载当前 Model。
-    if (observer_)
-        observer_->notifyComponentChanged(component_id);
+    // 结构操作保持即时通知，不进待通知集合。
+    if (manager_->observer_)
+        manager_->observer_->notifyComponentChanged(component_id);
     return component_id;
 }
 
@@ -53,5 +46,3 @@ Index ModelOperator::getId() const
 {
     return this->id_;
 }
-
-#endif // Model_OPERATOR_H

@@ -7,6 +7,7 @@
 #include "Core.h"
 #include "EventBus.h"
 #include "FeatureContext.h"
+#include "FeatureEventGateway.h"
 #include "FeatureEvents.h"
 #include "FeatureInfo.h"
 #include "FeatureParams.h"
@@ -131,6 +132,7 @@ private:
 
     ModelLayer* model_layer_; //< 模型层引用，用于装配功能上下文
     core::EventBus* event_bus_; //< 事件总线引用
+    FeatureEventGateway event_gateway_; //< 功能事件网关（回调边界自动 flush；声明顺序须在 model_layer_/event_bus_ 之后）
     std::unordered_map<std::string, FeatureEntry> entries_; //< 功能条目，key 为功能唯一名称
     std::function<std::optional<Index>()> active_model_provider_;
     std::function<std::optional<Index>()> active_component_provider_;

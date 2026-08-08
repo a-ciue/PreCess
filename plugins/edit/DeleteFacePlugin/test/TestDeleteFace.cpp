@@ -29,9 +29,9 @@ TEST_CASE("DeleteFaceHandler: delete face 0")
 
     ComponentData* comp = mgr.findComponent(cids[0]);
     REQUIRE(comp);
-    ComponentOperator op(cids[0], *comp, mgr, nullptr);
+    ComponentOperator op(cids[0], *comp, mgr);
 
-    MeshData* mesh = op.mesh();
+    const MeshData* mesh = op.mesh();
     REQUIRE(mesh != nullptr);
     REQUIRE(mesh->face_vertices_offset_.size() >= 2);
 
@@ -42,7 +42,7 @@ TEST_CASE("DeleteFaceHandler: delete face 0")
         Selection { std::vector<Index> { 0 }, ElementEnum::Face, 0 });
     core::ArgObject arg = core::ArgObject::create<ArgTypeEnum::Selector>(selection);
 
-    REQUIRE_NOTHROW(del_face.execute(op, { arg }));
+    REQUIRE_NOTHROW(del_face.execute(mgr, cids[0], { arg }));
 
     const Index new_face_count = (Index)mesh->face_vertices_offset_.size() - 1;
     REQUIRE(new_face_count == old_face_count - 1);

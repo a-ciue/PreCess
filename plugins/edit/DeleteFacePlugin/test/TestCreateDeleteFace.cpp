@@ -32,9 +32,9 @@ TEST_CASE("DeleteFace and CreateFace, Delete -> Create(Recover) -> Delete -> Cre
 
     ComponentData* comp = mgr.findComponent(cids[0]);
     REQUIRE(comp);
-    ComponentOperator op(cids[0], *comp, mgr, nullptr);
+    ComponentOperator op(cids[0], *comp, mgr);
 
-    MeshData* mesh = op.mesh();
+    const MeshData* mesh = op.mesh();
     REQUIRE(mesh != nullptr);
     REQUIRE(mesh->face_vertices_offset_.size() >= 2);
 
@@ -63,12 +63,12 @@ TEST_CASE("DeleteFace and CreateFace, Delete -> Create(Recover) -> Delete -> Cre
     auto sel_del_1 = std::make_shared<Selection>(
         Selection { std::vector<Index> { face_to_delete_at }, ElementEnum::Face, 0 });
     core::ArgObject arg_del_1 = core::ArgObject::create<ArgTypeEnum::Selector>(sel_del_1);
-    REQUIRE_NOTHROW(del_face.execute(op, { arg_del_1 }));
+    REQUIRE_NOTHROW(del_face.execute(mgr, cids[0], { arg_del_1 }));
 
     auto sel_create = std::make_shared<Selection>(
         Selection { vertices_to_recover, ElementEnum::Vertex, 0 });
     core::ArgObject arg_create = core::ArgObject::create<ArgTypeEnum::Selector>(sel_create);
-    REQUIRE_NOTHROW(create_face.execute(op, { arg_create }));
+    REQUIRE_NOTHROW(create_face.execute(mgr, cids[0], { arg_create }));
 
     REQUIRE(mesh->face_vertices_offset_.size() >= 2);
     Index last_face_now = (Index)mesh->face_vertices_offset_.size() - 2;
@@ -76,9 +76,9 @@ TEST_CASE("DeleteFace and CreateFace, Delete -> Create(Recover) -> Delete -> Cre
     auto sel_del_2 = std::make_shared<Selection>(
         Selection { std::vector<Index> { last_face_now }, ElementEnum::Face, 0 });
     core::ArgObject arg_del_2 = core::ArgObject::create<ArgTypeEnum::Selector>(sel_del_2);
-    REQUIRE_NOTHROW(del_face.execute(op, { arg_del_2 }));
+    REQUIRE_NOTHROW(del_face.execute(mgr, cids[0], { arg_del_2 }));
 
-    REQUIRE_NOTHROW(create_face.execute(op, { arg_create }));
+    REQUIRE_NOTHROW(create_face.execute(mgr, cids[0], { arg_create }));
 
     REQUIRE(mesh->vertex_count_ == (Index)baseline.vertex_positions_.size());
 

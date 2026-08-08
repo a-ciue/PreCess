@@ -104,18 +104,18 @@ void FeatureDemoHandler::applyScale(FeatureContext& ctx)
         spdlog::warn("FeatureDemo: component {} not found", *component_id);
         return;
     }
-    MeshData* mesh = op->mesh();
-    if (!mesh) {
+    if (!op->mesh()) {
         spdlog::warn("FeatureDemo: component {} has no mesh", *component_id);
         return;
     }
-    // 顶点坐标常驻组件 MeshData，就地缩放后通知组件变更
-    for (auto& point : mesh->vertex_positions_) {
+    // 只改坐标不动拓扑：NonTopology 标脏（邻接懒表不失效）；
+    // 顶点坐标常驻组件 MeshData 就地缩放，通知由操作边界 flush 统一发出
+    MeshData& mesh = op->editableMesh(MeshEditKind::NonTopology);
+    for (auto& point : mesh.vertex_positions_) {
         point[0] *= scale_;
         point[1] *= scale_;
         point[2] *= scale_;
     }
-    op->notifyChanged();
     spdlog::info("FeatureDemo: scaled component {} by {}", *component_id, scale_);
 }
 }

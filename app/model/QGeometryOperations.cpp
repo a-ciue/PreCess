@@ -541,7 +541,10 @@ Index QGeometryOperations::addGeometryShape(
         auto component_operator = model_layer_->getComponentOperator(component_id);
         if (!component_operator)
             throw std::invalid_argument("Target component does not exist");
-        return component_operator->appendGeometryShape(std::move(shape));
+        const Index result = component_operator->appendGeometryShape(std::move(shape));
+        // 过渡 shim（随系统迁移消亡）：QML 入口组件分支作为操作边界统一 flush 组件变更通知
+        model_layer_->flushNotifications();
+        return result;
     }
 
     const std::string model_name = "temp_" + component_name;

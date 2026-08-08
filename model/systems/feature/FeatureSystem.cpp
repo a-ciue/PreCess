@@ -14,6 +14,7 @@ const std::string FeatureSystem::name = "FeatureSystem";
 FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus)
     : model_layer_(&model_layer)
     , event_bus_(&event_bus)
+    , event_gateway_(event_bus, model_layer)
 {
     on_feature_infos_changed_ = []() { };
 }
@@ -62,7 +63,7 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     entry.params = std::make_unique<FeatureParams>(info->arg_types);
     entry.context = std::make_unique<FeatureContext>(FeatureContext {
         *model_layer_,
-        *event_bus_,
+        event_gateway_,
         *entry.params,
         entry.interaction_context,
         [this]() { return active_model_provider_ ? active_model_provider_() : std::optional<Index> {}; },
@@ -121,7 +122,17 @@ std::any FeatureSystem::invoke(const std::string& unique_name)
         spdlog::error("FeatureSystem::invoke: Feature '{}' not found", unique_name);
         return {};
     }
-    return it->second.handler->execute(*it->second.context);
+
+    // 操作边界（长期设施）：execute 返回后统一 flush 本次操作的组件变更通知；
+    // 异常时先 flush 再重抛，保证部分写入的通知不丢
+    try {
+        std::any result = it->second.handler->execute(*it->second.context);
+        model_layer_->flushNotifications();
+        return result;
+    } catch (...) {
+        model_layer_->flushNotifications();
+        throw;
+    }
 }
 
 bool FeatureSystem::setParameter(const std::string& unique_name, std::size_t index, core::ArgObject value)
@@ -206,9 +217,18 @@ void FeatureSystem::setRenderRefreshCallback(std::function<void()> callback)
 
 bool FeatureSystem::dispatchKeyEvent(const KeyEvent& event)
 {
-    // 原始事件流先广播，观察者总能收到；再做按键绑定路由并返回消费结果
+    // 原始事件流先广播，观察者总能收到；再做按键绑定路由并返回消费结果。
+    // 按键绑定路由的 onKeyEvent 可能写模型（如 FeatureDemo 的缩放），
+    // 路由返回后统一 flush（操作边界；异常时先 flush 再重抛）
     event_bus_->publish(event);
-    return routeKeyEvent(event);
+    try {
+        const bool consumed = routeKeyEvent(event);
+        model_layer_->flushNotifications();
+        return consumed;
+    } catch (...) {
+        model_layer_->flushNotifications();
+        throw;
+    }
 }
 
 bool FeatureSystem::routeKeyEvent(const KeyEvent& event)

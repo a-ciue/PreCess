@@ -119,6 +119,8 @@ void QModelManager::removeMesh(int componentId)
     auto op = core_->getComponentOperator(componentId);
     if (op)
         op->removeMesh();
+    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知
+    core_->flushNotifications();
 }
 
 void QModelManager::removeGeometry(int componentId)
@@ -126,18 +128,8 @@ void QModelManager::removeGeometry(int componentId)
     auto op = core_->getComponentOperator(componentId);
     if (op)
         op->removeGeometry();
-}
-
-QObject* QModelManager::getOperator(int id)
-{
-    auto maybeOp = core_->getModelOperator(id);
-    if (!maybeOp)
-        return nullptr;
-
-    // 暂时不做包装器，直接返回 nullptr
-    return nullptr;
-    // 如果以后要 QML 操作 ModelOperator，请启用下面这行并实现包装器：
-    // return new QModelOperatorWrapper(std::move(*maybeOp), this);
+    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知
+    core_->flushNotifications();
 }
 
 ModelLayer* QModelManager::getModelManager()
