@@ -22,6 +22,7 @@ qt_add_resources(${MYNAME} "images"
         toolbar/Geometry/Cone_or_Conical_stage.svg
         toolbar/Geometry/Sphere.svg
         toolbar/Geometry/Stretched_surface.svg
+        toolbar/Geometry/Delete_geometry.svg
         toolbar/Function/grid_quality.svg
         toolbar/Tools/Measure.svg
         toolbar/Tools/Size_marking.svg
