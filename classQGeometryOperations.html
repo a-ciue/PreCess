@@ -81,7 +81,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。  
+<p>几何操作的 QML 适配器，负责几何创建、基础编辑以及写入目标的选择。  
  <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="QGeometryOperations_8h_source.html">QGeometryOperations.h</a>&gt;</code></p>
@@ -90,7 +90,7 @@ $(function() {
 <div class="dyncontent">
 <div class="center"><img src="classQGeometryOperations__inherit__graph.png" border="0" usemap="#aQGeometryOperations_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
 <map name="aQGeometryOperations_inherit__map" id="aQGeometryOperations_inherit__map">
-<area shape="rect" title="几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。" alt="" coords="5,79,173,104"/>
+<area shape="rect" title="几何操作的 QML 适配器，负责几何创建、基础编辑以及写入目标的选择。" alt="" coords="5,79,173,104"/>
 <area shape="rect" title=" " alt="" coords="52,5,127,31"/>
 <area shape="poly" title=" " alt="" coords="92,44,92,79,87,79,87,44"/>
 </map>
@@ -100,7 +100,7 @@ QGeometryOperations 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classQGeometryOperations__coll__graph.png" border="0" usemap="#aQGeometryOperations_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aQGeometryOperations_coll__map" id="aQGeometryOperations_coll__map">
-<area shape="rect" title="几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。" alt="" coords="3292,1258,3460,1283"/>
+<area shape="rect" title="几何操作的 QML 适配器，负责几何创建、基础编辑以及写入目标的选择。" alt="" coords="3292,1258,3460,1283"/>
 <area shape="rect" title=" " alt="" coords="3060,1234,3135,1259"/>
 <area shape="poly" title=" " alt="" coords="3148,1248,3292,1261,3291,1266,3148,1254"/>
 <area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="3048,1283,3147,1309"/>
@@ -231,6 +231,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:aa370b31fdf12ab52eedc073447c50f8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台。  <br /></td></tr>
 <tr class="memitem:a22f1cc9dc4a8e02e484f308b84f53173" id="r_a22f1cc9dc4a8e02e484f308b84f53173"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22f1cc9dc4a8e02e484f308b84f53173">createSphere</a> (int <a class="el" href="TestComponentModel_8cpp.html#a4a62db4723cb2e77a503f064a837eefa">modelId</a>, int componentId, double centerX, double centerY, double centerZ, double radius, double directionX, double directionY, double directionZ, double minimumLatitude, double maximumLatitude, double longitudeSweep)</td></tr>
 <tr class="memdesc:a22f1cc9dc4a8e02e484f308b84f53173"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。  <br /></td></tr>
+<tr class="memitem:a9855811862f20ead35e4232dce58ab91" id="r_a9855811862f20ead35e4232dce58ab91"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9855811862f20ead35e4232dce58ab91">deleteGeometry</a> (<a class="el" href="classQSelection.html">QSelection</a> *selection, bool deleteChildren)</td></tr>
+<tr class="memdesc:a9855811862f20ead35e4232dce58ab91"><td class="mdescLeft">&#160;</td><td class="mdescRight">删除选中的一个顶层独立几何形状。  <br /></td></tr>
 <tr class="memitem:aa4684e4b8b1e8314b6494c41abb2b8b6" id="r_aa4684e4b8b1e8314b6494c41abb2b8b6"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4684e4b8b1e8314b6494c41abb2b8b6">extrudeFace</a> (int componentId, <a class="el" href="classQSelection.html">QSelection</a> *selection, double directionX, double directionY, double directionZ, double length)</td></tr>
 <tr class="memdesc:aa4684e4b8b1e8314b6494c41abb2b8b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。  <br /></td></tr>
 </table><table class="memberdecls">
@@ -252,8 +254,8 @@ Private 属性</h2></td></tr>
 <tr class="memitem:a80baa07eb5ad8a17c22aa819199f6d5d" id="r_a80baa07eb5ad8a17c22aa819199f6d5d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a80baa07eb5ad8a17c22aa819199f6d5d">next_sphere_number_</a> { 1 }</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。 </p>
-<p>该类调用 <a class="el" href="classGeometryBuilder.html" title="提供不依赖界面和模型管理的基础 OCC 几何构造函数。">GeometryBuilder</a> 构造 OCC Shape，再根据 Model/Component 目标 将结果新建或追加到 ModelLayer，不参与底层几何算法和渲染。 </p>
+<div class="textblock"><p>几何操作的 QML 适配器，负责几何创建、基础编辑以及写入目标的选择。 </p>
+<p>该类调用 <a class="el" href="classGeometryBuilder.html" title="提供不依赖界面和模型管理的基础 OCC 几何构造函数。">GeometryBuilder</a> 和 <a class="el" href="classGeometryTopologyEditor.html" title="提供不依赖界面和模型管理的基础 OCC 拓扑编辑函数。">GeometryTopologyEditor</a> 完成 OCC 操作，再根据 Model/Component 目标读写 ModelLayer，不参与底层几何算法和渲染。 </p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="ac29e5b5d8148a9b853f40639f4bff2c8" name="ac29e5b5d8148a9b853f40639f4bff2c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac29e5b5d8148a9b853f40639f4bff2c8">&#9670;&#160;</a></span>QGeometryOperations()</h2>
@@ -848,6 +850,37 @@ Private 属性</h2></td></tr>
 
 <p>根据球心、半径、轴向、纬度范围和经度扫掠角创建球体或部分球体。 </p>
 <p>QML 输入角度使用度数，由该适配器转换成 OCC 使用的弧度。 </p><dl class="section return"><dt>返回</dt><dd>新建或更新的组件 ID，失败时返回 -1。 </dd></dl>
+
+</div>
+</div>
+<a id="a9855811862f20ead35e4232dce58ab91" name="a9855811862f20ead35e4232dce58ab91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9855811862f20ead35e4232dce58ab91">&#9670;&#160;</a></span>deleteGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QGeometryOperations::deleteGeometry </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classQSelection.html">QSelection</a> *</td>          <td class="paramname"><span class="paramname"><em>selection</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>deleteChildren</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>删除选中的一个顶层独立几何形状。 </p>
+<p>支持 GeometryVertex、GeometryEdge、GeometryFace 和 GeometrySolid。 </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">selection</td><td>几何选择对象，操作目标 Component 由所选形状反查得到。 </td></tr>
+    <tr><td class="paramname">deleteChildren</td><td>为 false 时保留并提升目标的直接下级拓扑； 为 true 时同时删除其未被其他形状使用的下级拓扑。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>被更新的组件 ID，失败时返回 -1。 </dd></dl>
 
 </div>
 </div>

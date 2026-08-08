@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/test/TestGeometryTopologyEditor.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li><li class="navelem"><a href="dir_b1c6ebd7ce52cc5375ef042e6a1d0c67.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestGeometryTopologyEditor.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="GeometryBuilder_8h_source.html">GeometryBuilder.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryData_8h_source.html">GeometryData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryTopologyEditor_8h_source.html">GeometryTopologyEditor.h</a>&quot;</code><br />
+<code>#include &lt;BRepCheck_Analyzer.hxx&gt;</code><br />
+<code>#include &lt;BRep_Builder.hxx&gt;</code><br />
+<code>#include &lt;TopAbs_ShapeEnum.hxx&gt;</code><br />
+<code>#include &lt;TopExp.hxx&gt;</code><br />
+<code>#include &lt;TopExp_Explorer.hxx&gt;</code><br />
+<code>#include &lt;TopoDS.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Compound.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Face.hxx&gt;</code><br />
+<code>#include &lt;TopTools_IndexedMapOfShape.hxx&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestGeometryTopologyEditor.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestGeometryTopologyEditor_8cpp__incl.png" border="0" usemap="#amodel_2ops_2test_2TestGeometryTopologyEditor_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2test_2TestGeometryTopologyEditor_8cpp" id="amodel_2ops_2test_2TestGeometryTopologyEditor_8cpp">
+<area shape="rect" title=" " alt="" coords="1085,5,1299,45"/>
+<area shape="rect" href="GeometryBuilder_8h.html" title=" " alt="" coords="224,93,368,119"/>
+<area shape="poly" title=" " alt="" coords="1085,39,382,100,381,95,1084,33"/>
+<area shape="rect" href="GeometryData_8h.html" title=" " alt="" coords="455,93,585,119"/>
+<area shape="poly" title=" " alt="" coords="1085,42,599,98,599,93,1084,37"/>
+<area shape="rect" title=" " alt="" coords="497,240,677,265"/>
+<area shape="poly" title=" " alt="" coords="1085,37,894,58,807,75,772,85,747,96,718,117,701,140,686,165,662,194,615,234,611,230,658,190,682,162,697,137,715,113,744,91,771,80,806,70,893,53,1084,31"/>
+<area shape="rect" title=" " alt="" coords="701,240,947,265"/>
+<area shape="poly" title=" " alt="" coords="1085,31,992,36,896,47,814,66,784,79,763,95,754,110,752,127,754,145,760,163,781,199,805,228,801,231,777,202,755,166,749,146,746,127,749,109,759,92,781,75,812,61,895,42,991,30,1084,25"/>
+<area shape="rect" href="GeometryTopologyEditor_8h.html" title=" " alt="" coords="5,93,200,119"/>
+<area shape="poly" title=" " alt="" coords="1085,35,705,59,214,96,214,91,704,54,1084,30"/>
+<area shape="rect" title=" " alt="" coords="773,93,960,119"/>
+<area shape="poly" title=" " alt="" coords="1115,48,928,93,927,88,1113,43"/>
+<area shape="rect" title=" " alt="" coords="984,93,1120,119"/>
+<area shape="poly" title=" " alt="" coords="1160,48,1086,89,1084,84,1157,43"/>
+<area shape="rect" title=" " alt="" coords="1144,93,1240,119"/>
+<area shape="poly" title=" " alt="" coords="1195,46,1195,79,1189,79,1189,46"/>
+<area shape="rect" title=" " alt="" coords="1265,93,1421,119"/>
+<area shape="poly" title=" " alt="" coords="1229,43,1309,84,1307,89,1227,48"/>
+<area shape="rect" title=" " alt="" coords="1445,93,1544,119"/>
+<area shape="poly" title=" " alt="" coords="1265,43,1438,87,1437,92,1264,48"/>
+<area shape="rect" title=" " alt="" coords="1569,93,1743,119"/>
+<area shape="poly" title=" " alt="" coords="1300,42,1576,88,1575,94,1299,47"/>
+<area shape="rect" title=" " alt="" coords="1767,93,1902,119"/>
+<area shape="poly" title=" " alt="" coords="1300,36,1754,90,1754,96,1299,41"/>
+<area shape="rect" title=" " alt="" coords="1927,93,2145,119"/>
+<area shape="poly" title=" " alt="" coords="1300,34,1913,90,1912,96,1300,39"/>
+<area shape="rect" title=" " alt="" coords="2170,93,2257,119"/>
+<area shape="poly" title=" " alt="" coords="1300,27,1675,45,1913,64,2156,91,2156,96,1912,69,1674,50,1299,32"/>
+<area shape="rect" title=" " alt="" coords="2281,93,2341,119"/>
+<area shape="poly" title=" " alt="" coords="1300,23,1481,26,1721,35,1992,56,2131,71,2268,91,2267,96,2130,76,1991,61,1720,41,1481,31,1299,29"/>
+<area shape="rect" title=" " alt="" coords="30,167,175,192"/>
+<area shape="poly" title=" " alt="" coords="266,121,148,164,146,159,264,116"/>
+<area shape="rect" title=" " alt="" coords="182,313,245,339"/>
+<area shape="poly" title=" " alt="" coords="294,120,225,301,220,299,289,118"/>
+<area shape="rect" title=" " alt="" coords="269,313,347,339"/>
+<area shape="poly" title=" " alt="" coords="455,115,425,122,394,132,365,147,341,168,322,199,312,235,308,269,308,299,303,299,303,269,307,234,317,197,337,165,362,143,392,127,423,117,454,110"/>
+<area shape="rect" title=" " alt="" coords="573,167,648,192"/>
+<area shape="poly" title=" " alt="" coords="536,117,587,156,583,160,533,121"/>
+<area shape="rect" href="GeometrySubshapeIndex_8h.html" title=" " alt="" coords="351,167,550,192"/>
+<area shape="poly" title=" " alt="" coords="510,121,473,159,469,155,507,117"/>
+<area shape="poly" title=" " alt="" coords="431,194,347,242,244,308,241,303,344,238,428,190"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="357,240,421,265"/>
+<area shape="poly" title=" " alt="" coords="443,194,410,231,406,228,439,191"/>
+<area shape="rect" title=" " alt="" coords="528,313,584,339"/>
+<area shape="poly" title=" " alt="" coords="456,192,466,226,486,264,506,285,528,303,524,307,502,289,482,267,462,228,451,193"/>
+<area shape="poly" title=" " alt="" coords="474,190,554,231,551,236,471,194"/>
+<area shape="poly" title=" " alt="" coords="511,189,751,235,750,240,510,195"/>
+<area shape="poly" title=" " alt="" coords="362,268,256,310,254,306,360,263"/>
+<area shape="poly" title=" " alt="" coords="378,267,333,306,330,302,375,263"/>
+<area shape="poly" title=" " alt="" coords="417,263,517,305,515,310,415,268"/>
+<area shape="rect" title=" " alt="" coords="371,313,421,339"/>
+<area shape="poly" title=" " alt="" coords="393,265,396,300,391,300,388,266"/>
+<area shape="rect" title=" " alt="" coords="445,313,504,339"/>
+<area shape="poly" title=" " alt="" coords="405,263,452,302,449,307,401,267"/>
+<area shape="poly" title=" " alt="" coords="105,119,105,153,100,153,100,119"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a2be5230b41374f29752b4bb0a385bfb9" id="r_a2be5230b41374f29752b4bb0a385bfb9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2be5230b41374f29752b4bb0a385bfb9">TEST_CASE</a> (&quot;GeometryTopologyEditor keeps rectangle boundary when deleting a face&quot;)</td></tr>
+<tr class="memitem:a000471fd4f813a1d1037d63bffb5aa41" id="r_a000471fd4f813a1d1037d63bffb5aa41"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a000471fd4f813a1d1037d63bffb5aa41">TEST_CASE</a> (&quot;GeometryTopologyEditor cascades deletion of an isolated face&quot;)</td></tr>
+<tr class="memitem:a8d5a426c1efd1f0d9768617806f97cce" id="r_a8d5a426c1efd1f0d9768617806f97cce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d5a426c1efd1f0d9768617806f97cce">TEST_CASE</a> (&quot;GeometryTopologyEditor preserves other root compound children&quot;)</td></tr>
+<tr class="memitem:a6fbe9bba5951d17c42dd91f4b16ef662" id="r_a6fbe9bba5951d17c42dd91f4b16ef662"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6fbe9bba5951d17c42dd91f4b16ef662">TEST_CASE</a> (&quot;GeometryTopologyEditor rejects a face nested in a solid&quot;)</td></tr>
+<tr class="memitem:afc4af6b0c391cd4fd180002d3537e3a4" id="r_afc4af6b0c391cd4fd180002d3537e3a4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc4af6b0c391cd4fd180002d3537e3a4">TEST_CASE</a> (&quot;GeometryTopologyEditor keeps edge vertices&quot;)</td></tr>
+<tr class="memitem:ab98307af5fae934318f59519d0d21f87" id="r_ab98307af5fae934318f59519d0d21f87"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab98307af5fae934318f59519d0d21f87">TEST_CASE</a> (&quot;GeometryTopologyEditor deletes one top-level vertex&quot;)</td></tr>
+<tr class="memitem:aa1ee78a6fbf5b5bd136bec8119cd70ca" id="r_aa1ee78a6fbf5b5bd136bec8119cd70ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1ee78a6fbf5b5bd136bec8119cd70ca">TEST_CASE</a> (&quot;GeometryTopologyEditor keeps solid boundary faces&quot;)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a000471fd4f813a1d1037d63bffb5aa41" name="a000471fd4f813a1d1037d63bffb5aa41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a000471fd4f813a1d1037d63bffb5aa41">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryTopologyEditor cascades deletion of an isolated face&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab98307af5fae934318f59519d0d21f87" name="ab98307af5fae934318f59519d0d21f87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab98307af5fae934318f59519d0d21f87">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryTopologyEditor deletes one top-level vertex&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afc4af6b0c391cd4fd180002d3537e3a4" name="afc4af6b0c391cd4fd180002d3537e3a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc4af6b0c391cd4fd180002d3537e3a4">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryTopologyEditor keeps edge vertices&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2be5230b41374f29752b4bb0a385bfb9" name="a2be5230b41374f29752b4bb0a385bfb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2be5230b41374f29752b4bb0a385bfb9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryTopologyEditor keeps rectangle boundary when deleting a face&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa1ee78a6fbf5b5bd136bec8119cd70ca" name="aa1ee78a6fbf5b5bd136bec8119cd70ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1ee78a6fbf5b5bd136bec8119cd70ca">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryTopologyEditor keeps solid boundary faces&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8d5a426c1efd1f0d9768617806f97cce" name="a8d5a426c1efd1f0d9768617806f97cce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d5a426c1efd1f0d9768617806f97cce">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryTopologyEditor preserves other root compound children&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6fbe9bba5951d17c42dd91f4b16ef662" name="a6fbe9bba5951d17c42dd91f4b16ef662"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fbe9bba5951d17c42dd91f4b16ef662">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryTopologyEditor rejects a face nested in a solid&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

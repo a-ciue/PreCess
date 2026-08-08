@@ -22,7 +22,7 @@
 <area shape="poly" id="edge8_Node000002_Node000005" title=" " alt="" coords="67,386,75,334,93,266,107,231,124,197,146,166,173,139,192,127,212,119,253,113,254,118,214,124,194,132,176,143,150,169,129,200,112,233,98,268,80,335,72,387"/>
 <area shape="rect" id="Node000006" href="$classQFeatureInfo.html" title="向Qml暴露的功能信息，Qml据此构造功能菜单与参数面板" alt="" coords="242,153,349,179"/>
 <area shape="poly" id="edge9_Node000002_Node000006" title=" " alt="" coords="70,385,81,342,101,288,131,234,150,209,173,188,206,171,241,164,242,169,208,176,176,192,154,213,135,237,105,290,86,343,75,387"/>
-<area shape="rect" id="Node000007" href="$classQGeometryOperations.html" title="几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。" alt="" coords="211,203,379,228"/>
+<area shape="rect" id="Node000007" href="$classQGeometryOperations.html" title="几何操作的 QML 适配器，负责几何创建、基础编辑以及写入目标的选择。" alt="" coords="211,203,379,228"/>
 <area shape="poly" id="edge10_Node000002_Node000007" title=" " alt="" coords="73,386,87,351,108,311,137,271,173,237,210,220,212,225,176,242,141,274,113,314,92,354,78,388"/>
 <area shape="rect" id="Node000008" href="$classQLogManager.html" title=" " alt="" coords="239,252,351,277"/>
 <area shape="poly" id="edge11_Node000002_Node000008" title=" " alt="" coords="80,386,117,335,143,308,173,286,205,273,238,266,240,271,207,278,176,291,147,312,121,338,84,389"/>

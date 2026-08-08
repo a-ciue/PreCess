@@ -75,7 +75,7 @@ var searchData=
   ['fill_5fskipblock_72',['fill_skipblock',['../classplf_1_1colony.html#a8215c8a35b74b8f846323d7839f19285',1,'plf::colony']]],
   ['fill_5funused_5fgroups_73',['fill_unused_groups',['../classplf_1_1colony.html#a68c63fba3ac39d1aa8825d02fdf97a52',1,'plf::colony']]],
   ['findcomponent_74',['findComponent',['../classModelLayer.html#aa112be1e71059cdc6abc597a57e24484',1,'ModelLayer']]],
-  ['findcomponentidbygeometryfaceid_75',['findComponentIdByGeometryFaceId',['../classModelLayer.html#a01ffb6670b9bd5c413b94510ce12def2',1,'ModelLayer']]],
+  ['findcomponentidbygeometryshapeid_75',['findComponentIdByGeometryShapeId',['../classModelLayer.html#afd4edfab3841011e162e6f672fc7c28f',1,'ModelLayer']]],
   ['findedgebyendpoints_76',['findEdgeByEndpoints',['../classQModelQuery.html#afad7b5d85628887b8ac086da1ee581ef',1,'QModelQuery::findEdgeByEndpoints()'],['../classIMeshIdQuery.html#a63aeca7ae8df4c8bc34a8ec6ae2ab426',1,'IMeshIdQuery::findEdgeByEndpoints()'],['../classMeshAdjacency.html#a8984fd3629fecb35a0a02168156e5dd3',1,'MeshAdjacency::findEdgeByEndpoints(const MeshData &amp;mesh, Index p0, Index p1)']]],
   ['findedgebystableid_77',['findEdgeByStableId',['../classMeshAdjacency.html#a35e31272f7eb6726e37d7da843521371',1,'MeshAdjacency']]],
   ['findindexbynodeid_78',['findIndexByNodeId',['../classTreeModel.html#a856e0a0770784805a92c4c2ec1ead38a',1,'TreeModel']]],

@@ -1,5 +1,5 @@
 <map id="QGeometryOperations" name="QGeometryOperations">
-<area shape="rect" id="Node000001" title="几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。" alt="" coords="3292,1258,3460,1283"/>
+<area shape="rect" id="Node000001" title="几何操作的 QML 适配器，负责几何创建、基础编辑以及写入目标的选择。" alt="" coords="3292,1258,3460,1283"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="3060,1234,3135,1259"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3148,1248,3292,1261,3291,1266,3148,1254"/>
 <area shape="rect" id="Node000003" href="$classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="3048,1283,3147,1309"/>

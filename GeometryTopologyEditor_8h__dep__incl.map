@@ -1,0 +1,9 @@
+<map id="model/ops/GeometryTopologyEditor.h" name="model/ops/GeometryTopologyEditor.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="297,5,515,45"/>
+<area shape="rect" id="Node000002" href="$QGeometryOperations_8cpp.html" title=" " alt="" coords="5,101,273,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="336,52,176,103,174,98,334,47"/>
+<area shape="rect" id="Node000003" href="$GeometryTopologyEditor_8cpp.html" title=" " alt="" coords="297,93,515,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="409,59,409,93,403,93,403,59"/>
+<area shape="rect" id="Node000004" href="$TestGeometryTopologyEditor_8cpp.html" title=" " alt="" coords="539,93,753,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="472,47,594,91,593,96,470,52"/>
+</map>

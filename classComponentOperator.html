@@ -222,6 +222,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ac6f99d3fdc52bdf62e32c3dbd153ea9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">恢复快照：gid 对账（释放现有点/边 gid → 覆盖数据 → 按快照原值 reclaim）后标脏  <br /></td></tr>
 <tr class="memitem:a3cc80372ed1cd3a253860dc09c0bcb64" id="r_a3cc80372ed1cd3a253860dc09c0bcb64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cc80372ed1cd3a253860dc09c0bcb64">appendGeometryShape</a> (TopoDS_Shape shape)</td></tr>
 <tr class="memdesc:a3cc80372ed1cd3a253860dc09c0bcb64"><td class="mdescLeft">&#160;</td><td class="mdescRight">将新形状写入当前组件；无几何时初始化，否则追加并重建子形状索引。  <br /></td></tr>
+<tr class="memitem:af475f2062ef8e36b61b70e1f024d072b" id="r_af475f2062ef8e36b61b70e1f024d072b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af475f2062ef8e36b61b70e1f024d072b">replaceGeometryRoot</a> (TopoDS_Shape shape)</td></tr>
+<tr class="memdesc:af475f2062ef8e36b61b70e1f024d072b"><td class="mdescLeft">&#160;</td><td class="mdescRight">替换当前组件的几何根形状，并重建子形状索引；空 Shape 表示移除 Geometry。  <br /></td></tr>
 <tr class="memitem:ac267cd6e6dc3f28a7f7b85525c9af387" id="r_ac267cd6e6dc3f28a7f7b85525c9af387"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac267cd6e6dc3f28a7f7b85525c9af387">removeMesh</a> ()</td></tr>
 <tr class="memitem:a08f6d4bda611dcb791f395b183361fc2" id="r_a08f6d4bda611dcb791f395b183361fc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08f6d4bda611dcb791f395b183361fc2">removeGeometry</a> ()</td></tr>
 </table><table class="memberdecls">
@@ -615,6 +617,26 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="af475f2062ef8e36b61b70e1f024d072b" name="af475f2062ef8e36b61b70e1f024d072b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af475f2062ef8e36b61b70e1f024d072b">&#9670;&#160;</a></span>replaceGeometryRoot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> ComponentOperator::replaceGeometryRoot </td>
+          <td>(</td>
+          <td class="paramtype">TopoDS_Shape</td>          <td class="paramname"><span class="paramname"><em>shape</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>替换当前组件的几何根形状，并重建子形状索引；空 Shape 表示移除 Geometry。 </p>
+<dl class="section return"><dt>返回</dt><dd>当前组件 ID。 </dd></dl>
 
 </div>
 </div>
