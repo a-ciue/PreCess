@@ -145,39 +145,6 @@ std::string makeResultModelName(const ComponentData& input_component,
 }
 
 /**
- * @brief 替换当前 Component 的 mesh，维护全局点 id 与边 ID 映射
- * @param comp 目标 Component 操作接口
- * @param mesh 新网格数据
- * @return true 成功；false 失败（Component 不存在或 mesh 为空）
- *
- * 释放旧 mesh 的 edge id map 与全局点 id、重建 edge id map，
- * mesh 就位后按受控点纪律补分配全局点 id，最后通知 observer。
- * 与 ModelLayer::addModel 的受控点同步流程一致。
- */
-bool replaceComponentMesh(ComponentOperator& comp, std::unique_ptr<MeshData> mesh)
-{
-    ModelLayer& mgr = comp.manager();
-    const Index component_id = comp.componentId();
-    ComponentData* component = mgr.findComponent(component_id);
-    if (!component || !mesh) {
-        return false;
-    }
-
-    if (component->mesh) {
-        component->mesh_adjacency.releaseEdgeGlobalIds(mgr.edgeIdMap());
-        component->releasePointGlobalIds(mgr.pointIdMap());
-    }
-
-    mesh->vertex_count_ = static_cast<Index>(mesh->vertex_positions_.size());
-    component->mesh_adjacency.ensureEdgeGlobalIds(mgr.edgeIdMap(), component_id, *mesh);
-
-    component->mesh = std::move(mesh);
-    component->ensurePointGlobalIds(mgr.pointIdMap());
-    comp.notifyChanged();
-    return true;
-}
-
-/**
  * @brief 使用 BFS 找出网格表面中最大的连通分量（壳）
  *        通过顶点邻接表扩散连通面，跳过不相连的小腔体
  * @param mesh 输入网格
@@ -447,7 +414,7 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         return {};
     }
 
-    ComponentData& input_component = context.cur_component.component();
+    const ComponentData& input_component = context.cur_component.component();
     if (!input_component.mesh) {
         spdlog::error("TetGenLibHandler: current component {} has no mesh, not supported by TetGen.",
             context.cur_component.componentId());
@@ -510,9 +477,9 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         ComponentDatas components;
         components.push_back(std::move(output_component));
         context.cur_component.manager().addModel(result_model_name, std::move(components));
-    } else if (!replaceComponentMesh(context.cur_component, std::move(output_mesh))) {
-        spdlog::error("TetGenLibHandler: failed to replace mesh for component {}", context.cur_component.componentId());
-        return {};
+    } else {
+        // 替换当前组件的网格：gid 纪律内建于 replaceMesh（释放旧 gid → 就位 → ensure → 标脏）
+        context.cur_component.replaceMesh(std::move(output_mesh));
     }
 
     return {};

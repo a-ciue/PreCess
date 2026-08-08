@@ -4,6 +4,35 @@
 #include "MeshData.h"
 #include <spdlog/spdlog.h>
 
+std::unique_ptr<MeshData> MeshData::clone() const
+{
+    auto copy = std::make_unique<MeshData>();
+
+    // 坐标与连通性
+    copy->vertex_positions_ = vertex_positions_;
+    copy->vertex_count_ = vertex_count_;
+    copy->face_vertices_ = face_vertices_;
+    copy->face_vertices_offset_ = face_vertices_offset_;
+    copy->edge_vertices_ = edge_vertices_;
+    copy->solid_types_ = solid_types_;
+    copy->solid_vertices_ = solid_vertices_;
+    copy->solid_vertices_offset_ = solid_vertices_offset_;
+    copy->solid_faces_vertices_ = solid_faces_vertices_;
+    copy->solid_faces_vertices_offset_ = solid_faces_vertices_offset_;
+    copy->solid_faces_ = solid_faces_;
+    copy->solid_faces_offset_ = solid_faces_offset_;
+
+    // patches_/blocks_ 为待删的陈旧设施，不进快照
+
+    // 属性 map
+    copy->vertex_attributes_ = vertex_attributes_;
+    copy->face_attributes_ = face_attributes_;
+    copy->edge_attributes_ = edge_attributes_;
+    copy->solid_attributes_ = solid_attributes_;
+
+    return copy;
+}
+
 void MeshData::clear()
 {
     vertex_positions_.clear();

@@ -426,7 +426,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         metric_index = *value;
     }
     const QualityMetric metric = metricFromIndex(metric_index);
-    MeshData& mesh = *component->mesh();
+    const MeshData& mesh = *component->mesh();
 
     std::string face_error;
     std::string solid_error;
@@ -461,10 +461,14 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
 
     const std::string attribute_key = metricKey(metric);
+    // 只写属性不动拓扑：NonTopology 标脏（邻接懒表不失效），通知由操作边界 flush 统一发出，
+    // 属性面板和渲染数据随通知刷新，用户随后自行选择需要显示的质量属性。
+    MeshData& editable_mesh = component->editableMesh(MeshEditKind::NonTopology);
     std::string display_attribute;
     GeneratedAttributes& generated = generated_attributes_[*component_id];
     if (face_result) {
         const std::string face_attribute = "f_" + attribute_key + "_1";
+        editable_mesh.face_attributes_[face_attribute] = face_result->values;
         mesh.face_attributes_[face_attribute] = face_result->values;
         generated.face_names.push_back(face_attribute);
         display_attribute = face_attribute;
@@ -472,6 +476,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     // 面、体质量同时生成时默认显示体属性，面属性仍保留供用户手动选择。
     if (solid_result) {
         const std::string solid_attribute = "s_" + attribute_key + "_1";
+        editable_mesh.solid_attributes_[solid_attribute] = solid_result->values;
         mesh.solid_attributes_[solid_attribute] = solid_result->values;
         generated.solid_names.push_back(solid_attribute);
         display_attribute = solid_attribute;

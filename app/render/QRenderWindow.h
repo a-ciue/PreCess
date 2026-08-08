@@ -17,7 +17,6 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
 #include <vtkActor.h>
-#include <vtkCamera.h>
 #include <vtkCameraOrientationWidget.h>
 #include <vtkAxisActor2D.h>
 #include <vtkPolyDataMapper.h>
@@ -190,8 +189,6 @@ signals:
 private:
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
-
-    vtkNew<vtkCamera> _camera;
 
     std::unique_ptr<SelectManager> select_manager_;
     std::unique_ptr<InteractionService> interaction_service_;

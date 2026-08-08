@@ -15,6 +15,33 @@ std::uint64_t packEndpoints(Index p0, Index p1)
 }
 }
 
+MeshAdjacency::MeshAdjacency(const MeshAdjacency& other)
+    : stable_id_by_endpoints_(other.stable_id_by_endpoints_)
+    , gid_by_stable_id_(other.gid_by_stable_id_)
+{
+    // 懒重建部分保持默认初始状态（空表 + dirty），下次查询自动重建
+}
+
+MeshAdjacency& MeshAdjacency::operator=(const MeshAdjacency& other)
+{
+    if (this == &other)
+        return *this;
+
+    // 只拷持久身份层
+    stable_id_by_endpoints_ = other.stable_id_by_endpoints_;
+    gid_by_stable_id_ = other.gid_by_stable_id_;
+
+    // 懒重建部分清零并置 dirty
+    built_mesh_ = nullptr;
+    dirty_ = true;
+    generation_ = 0;
+    rows_.clear();
+    row_by_endpoints_.clear();
+    face_edge_stable_ids_.clear();
+    row_by_stable_id_.clear();
+    return *this;
+}
+
 std::optional<Index> MeshAdjacency::edgeStableId(const MeshData& mesh, EdgeHandle edge)
 {
     ensureBuilt(mesh);
@@ -102,6 +129,16 @@ void MeshAdjacency::releaseEdgeGlobalIds(MeshIDMap& map)
     gid_by_stable_id_.clear();
     stable_id_by_endpoints_.clear();
     invalidate();
+}
+
+void MeshAdjacency::reclaimEdgeGlobalIds(MeshIDMap& map, Index component_id)
+{
+    // 仅作用持久层：按原值定向回收 gid，不触发边表重建
+    for (Index sid = 0; sid < static_cast<Index>(gid_by_stable_id_.size()); ++sid) {
+        const Index gid = gid_by_stable_id_[static_cast<size_t>(sid)];
+        if (gid >= 0)
+            map.reclaim(gid, component_id, sid);
+    }
 }
 
 void MeshAdjacency::invalidate() noexcept

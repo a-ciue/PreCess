@@ -17,6 +17,12 @@ public:
     GlobalID insert(ComponentID component_id, LocalID local_id);
     std::vector<GlobalID> insertRange(ComponentID component_id, LocalID local_begin, LocalID count);
 
+    /**
+     * @brief 定向回收指定 gid（撤销/恢复快照时用，保持 gid 身份不变）
+     * @throw std::runtime_error gid 越界或当前被占用（不在 free-list 中）
+     */
+    void reclaim(GlobalID global_id, ComponentID component_id, LocalID local_id);
+
     bool remove(GlobalID global_id);
     std::pair<ComponentID, LocalID> getLocal(GlobalID global_id) const;
 

@@ -1,7 +1,6 @@
 #ifndef TRIVIAL_EDIT_HANDLER_H
 #define TRIVIAL_EDIT_HANDLER_H
 
-#include "ComponentOperator.h"
 #include "EditHandler.h"
 
 #include <any>
@@ -13,7 +12,7 @@ public:
     TrivialEditHandler() = default;
     ~TrivialEditHandler() override = default;
 
-    std::any execute(ComponentOperator& /*op*/,
+    std::any execute(ModelLayer& /*model*/, Index /*fallback_component_id*/,
         const std::vector<core::ArgObject>& /*args*/) override
     {
         return {};

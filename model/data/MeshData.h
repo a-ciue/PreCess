@@ -147,6 +147,10 @@ struct MeshData {
     std::map<std::string, std::vector<double>> solid_attributes_;
  
     /**
+     * @brief 深拷贝网格数据（坐标/连通性/属性；不含待删的 patches_/blocks_），用于快照/恢复
+     */
+    std::unique_ptr<MeshData> clone() const;
+    /**
      * @brief 清除所有数据，即使offset数组起码也要保留一个元素0
      */
     void clear();
