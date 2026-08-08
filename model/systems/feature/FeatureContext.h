@@ -22,6 +22,10 @@ class InteractionContext;
  *
  * 组合而非单例：依赖以引用或 std::function 动态获取函数注入（后者由 app 层提供），
  * 功能层不反向依赖 app 层。当前功能可修改的范围仅限模型层对象。
+ *
+ * @note activeModel/activeComponent 是对象树选中态的动态查询，只视作一种提示：
+ *       不要强制要求用户执行功能前在对象树中选中 component；目标组件优先经
+ *       `Selector` 类型参数（FeatureParams）让用户显式选择后解析。
  */
 struct FeatureContext {
     ModelLayer& model; //> 模型层入口
