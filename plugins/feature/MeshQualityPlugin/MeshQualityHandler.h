@@ -31,7 +31,7 @@ public:
     void activate(FeatureContext& ctx) override;
 
     /**
-     * @brief 计算质量属性，并将统计文本和待显示属性名返回给 UI
+     * @brief 计算质量属性，返回统计文本并通过事件请求显示标量属性
      */
     std::any execute(FeatureContext& ctx) override;
 
@@ -45,7 +45,7 @@ private:
     };
 
     /**
-     * @brief 删除当前操作生成的全部质量属性并通知模型刷新
+     * @brief 删除当前操作生成的全部质量属性并标记组件属性变化
      */
     void clearGeneratedAttributes(FeatureContext& ctx);
 

@@ -4,6 +4,8 @@
 #include "FeatureSystem.h"
 #include "QArgObject.h"
 #include "QFeatureInfo.h"
+
+#include <QMetaObject>
 #include <spdlog/spdlog.h>
 
 #include <any>
@@ -55,8 +57,14 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     scalar_attribute_display_sub_ = feature_system.events().subscribe<ScalarAttributeDisplayRequestedEvent>(
         [this](const ScalarAttributeDisplayRequestedEvent& event) {
             // 空属性名仅用于通知功能释放自动属性显示，不转发给 QML。
-            if (!event.attribute_name.empty())
-                emit scalarAttributeDisplayRequested(QString::fromStdString(event.attribute_name));
+            if (event.attribute_name.empty())
+                return;
+
+            const QString attribute_name = QString::fromStdString(event.attribute_name);
+            // FeatureSystem 在 execute 返回后统一 flush，排队发送可保证 QML 在模型刷新后设置渲染属性。
+            QMetaObject::invokeMethod(this,
+                [this, attribute_name]() { emit scalarAttributeDisplayRequested(attribute_name); },
+                Qt::QueuedConnection);
         });
 }
 
