@@ -54,6 +54,9 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     scalar_attribute_display_bridge_sub_
         = event_bus_->subscribe<systems::feature::ScalarAttributeDisplayRequestedEvent>(
             [this](const systems::feature::ScalarAttributeDisplayRequestedEvent& event) {
+                // 空属性名只在功能内部表示结束自动标量显示，不转发给 QML 渲染。
+                if (event.attribute_name.empty())
+                    return;
                 feature_adaptor_->notifyScalarAttributeDisplayRequested(
                     event.component_id, event.attribute_name);
             });
@@ -110,6 +113,12 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 }
 
 QModelManager::~QModelManager() = default;
+
+void QModelManager::notifyActiveOperationChanged()
+{
+    // 复用标量显示事件：空属性名通知功能结束本次自动标量显示并清理临时属性。
+    event_bus_->publish(systems::feature::ScalarAttributeDisplayRequestedEvent { "", -1 });
+}
 
 void QModelManager::removeModel(int id)
 {

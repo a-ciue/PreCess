@@ -127,6 +127,13 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 1);
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_equiangle_skew_1") == 1);
+
+    // 空属性名表示确认结束当前操作或切换到其他操作，删除本次写入的全部质量属性。
+    bus.publish(ScalarAttributeDisplayRequestedEvent { "", -1 });
+    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 0);
+    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 0);
+    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 0);
+    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_equiangle_skew_1") == 0);
 }
 
 TEST_CASE("MeshQuality exposes component selection and metric parameters", "[MeshQualityPlugin]")

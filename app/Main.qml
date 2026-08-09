@@ -123,6 +123,7 @@ ApplicationWindow {
     Connections {
         target: App
         function onActiveOperationChanged() {
+            QModelManager.notifyActiveOperationChanged()
             root.cancelFeatureAttributeRendering()
         }
     }
