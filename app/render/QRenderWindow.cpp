@@ -620,26 +620,15 @@ void QRenderWindow::setAttriMode(
     });
 }
 
-void QRenderWindow::cancelAttri()
-{
-    cancelAttriForComponent(-1);
-}
-
 void QRenderWindow::cancelComponentAttri(Index component_id)
 {
     if (component_id < 0)
         return;
-    cancelAttriForComponent(component_id);
-}
-
-void QRenderWindow::cancelAttriForComponent(Index component_id)
-{
-    dispatch_async([this, component_id](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        const Index target_component_id = component_id >= 0 ? component_id : cur_component_id_;
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(target_component_id)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(component_id)) {
             vtk->mesh_actor_manager_->cancelAttri(
-                target_component_id);
+                component_id);
         }
         spdlog::info("--------cancelAttri-----------");
     });

@@ -173,14 +173,9 @@ public:
         int mode,
         QVariantMap args);
     /**
-     * @brief 取消属性渲染
-     * 在控制台中调用示例：
-     * myItem.cancelAttri()
-     */
-    Q_INVOKABLE void cancelAttri();
-
-    /**
      * @brief 取消指定 Component 的属性渲染
+     * 在控制台中调用示例：
+     * myItem.cancelComponentAttri(App.selection.activeComponentId)
      * @param component_id 目标 Component ID
      */
     Q_INVOKABLE void cancelComponentAttri(Index component_id);
@@ -213,10 +208,5 @@ private:
 
     //! @brief 注入渲染刷新回调到 FeatureSystem（initializeVTK 与 setFeatureAdaptor 各调一次，确保初始化顺序无关）
     void injectRenderRefreshCallback();
-
-    /**
-     * @brief 将取消属性渲染请求派发到渲染线程；component_id 为 -1 时使用当前组件
-     */
-    void cancelAttriForComponent(Index component_id);
 };
 #endif // Q_RENDER_WINDOW_H

@@ -294,7 +294,7 @@ Item {
             Button {
                 text: "取消属性渲染"
                 enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
-                onClicked: App.registry.renderWindow.cancelAttri()
+                onClicked: App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId)
             }
         }
     }
