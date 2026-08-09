@@ -15,6 +15,37 @@ Page {
     property bool faceSelectByAngle: false
     property real faceSelectAngle: 30.0
 
+    // 标记由功能自动开启的属性渲染，避免影响用户手动打开的属性渲染面板。
+    property bool featureAttributeRenderingActive: false
+    property int featureAttributeRenderingComponentId: -1
+
+    // 结束当前功能自动开启的属性渲染，不影响用户手动控制的属性渲染面板。
+    function cancelFeatureAttributeRendering() {
+        if (!featureAttributeRenderingActive)
+            return
+        if (featureAttributeRenderingComponentId >= 0)
+            myItem.cancelComponentAttri(featureAttributeRenderingComponentId)
+        featureAttributeRenderingActive = false
+        featureAttributeRenderingComponentId = -1
+    }
+
+    Connections {
+        target: App
+        function onActiveOperationChanged() {
+            root.cancelFeatureAttributeRendering()
+        }
+    }
+
+    Connections {
+        target: QModelManager.featureSystem
+        function onScalarAttributeDisplayRequested(componentId, attributeName) {
+            root.featureAttributeRenderingActive = true
+            root.featureAttributeRenderingComponentId = componentId
+            // 使用标量模式显示质量属性，空参数表示采用默认标量范围。
+            myItem.setAttriMode(componentId, attributeName, 1, {})
+        }
+    }
+
     footer: ToolBar {
         id: toolbar
         height: 25

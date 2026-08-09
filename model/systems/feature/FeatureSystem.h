@@ -68,6 +68,7 @@ public:
      * @return 功能返回的结果，功能不存在时为空 std::any
      */
     std::any invoke(const std::string& unique_name);
+
     /**
      * @brief 修改功能参数并广播 ParameterChangedEvent
      * @return 功能与参数下标均有效时返回 true

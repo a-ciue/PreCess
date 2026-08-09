@@ -50,6 +50,14 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
             feature_adaptor_->notifyParameterChanged(e.feature, e.param_index, e.value);
         });
 
+    // 标量属性显示桥接：功能请求经 Qt 排队信号转发，保证模型操作边界 flush 后再设置渲染属性。
+    scalar_attribute_display_bridge_sub_
+        = event_bus_->subscribe<systems::feature::ScalarAttributeDisplayRequestedEvent>(
+            [this](const systems::feature::ScalarAttributeDisplayRequestedEvent& event) {
+                feature_adaptor_->notifyScalarAttributeDisplayRequested(
+                    event.component_id, event.attribute_name);
+            });
+
     // 模型事件桥接到事件总线：功能可订阅 ModelEvent 实时响应模型增删改
     using systems::feature::ModelEvent;
     connect(observer_.get(), &QModelObserver::modelAdded, this, [this](Index id) {

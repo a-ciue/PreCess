@@ -1,9 +1,10 @@
 #include "QFeatureSystemAdaptor.h"
-#include "FeatureEvents.h"
 #include "FeatureParams.h"
 #include "FeatureSystem.h"
 #include "QArgObject.h"
 #include "QFeatureInfo.h"
+
+#include <QMetaObject>
 #include <spdlog/spdlog.h>
 
 #include <any>
@@ -78,6 +79,19 @@ void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, s
         q_value = *v;
     }
     emit paramValueChanged(QString::fromStdString(feature), static_cast<int>(index), q_value);
+}
+
+void QFeatureSystemAdaptor::notifyScalarAttributeDisplayRequested(
+    Index component_id,
+    const std::string& attribute_name)
+{
+    const QString q_attribute_name = QString::fromStdString(attribute_name);
+    // FeatureSystem 在 execute 返回后统一 flush，排队发送可保证 QML 在模型刷新后设置渲染属性。
+    QMetaObject::invokeMethod(this,
+        [this, component_id, q_attribute_name]() {
+            emit scalarAttributeDisplayRequested(component_id, q_attribute_name);
+        },
+        Qt::QueuedConnection);
 }
 
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)

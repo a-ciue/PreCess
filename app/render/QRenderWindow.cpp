@@ -26,6 +26,7 @@
 #include <vtkPlane.h>
 
 #include <cmath>
+#include <utility>
 
 namespace {
 //! @brief 相机/视口输入未变则整段跳过；变化时按 1-2-5 整数档反算精确段长并居中重设端点，
@@ -575,11 +576,14 @@ void QRenderWindow::setClick()
 }
 
 void QRenderWindow::setAttriMode(
+    Index component_id,
     QString attr_name,
     int mode,
     QVariantMap args)
 {
-    dispatch_async([this, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    if (component_id < 0)
+        return;
+    dispatch_async([this, component_id, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         Mode mode_enum = static_cast<Mode>(mode);
 
@@ -605,9 +609,9 @@ void QRenderWindow::setAttriMode(
             }
         }
         spdlog::info("modeEnum: {}", static_cast<int>(mode_enum));
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(component_id)) {
             vtk->mesh_actor_manager_->setAttriMode(
-                cur_component_id_,
+                component_id,
                 attr_name.toStdString(),
                 mode_enum,
                 std_args);
@@ -616,13 +620,15 @@ void QRenderWindow::setAttriMode(
     });
 }
 
-void QRenderWindow::cancelAttri()
+void QRenderWindow::cancelComponentAttri(Index component_id)
 {
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    if (component_id < 0)
+        return;
+    dispatch_async([component_id](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(component_id)) {
             vtk->mesh_actor_manager_->cancelAttri(
-                cur_component_id_);
+                component_id);
         }
         spdlog::info("--------cancelAttri-----------");
     });
