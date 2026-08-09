@@ -219,7 +219,7 @@ TEST_CASE("MModelHandler::multi-patch round-trip")
     REQUIRE(!read_mesh->patches_.empty());
 }
 
-TEST_CASE("MModelHandler::write_components() without patches produces empty file")
+TEST_CASE("MModelHandler::write_components() without patches preserves faces")
 {
     systems::io::MModelHandler io;
     fs::path out = core::TempFile::instance().path().string() + "_empty.m";
@@ -229,7 +229,7 @@ TEST_CASE("MModelHandler::write_components() without patches produces empty file
     m.vertex_positions_ = { { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 } };
     m.face_vertices_ = { 0, 1, 2 };
     m.face_vertices_offset_ = { 0, 3 };
-    // 注意：没有 patches_
+    // 注意：没有 patches_（patches_/blocks_ 已废弃，写出不再依赖分组信息）
 
     ModelLayer layer;
     std::vector<Index> componentIds = addMeshModelAndGetComponentIds(
@@ -239,14 +239,14 @@ TEST_CASE("MModelHandler::write_components() without patches produces empty file
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
-    // 无 patch 时读回应为空或基本空网格
+    // 无 patch 时面数据仍应完整写出并读回
     std::optional<ModelPayload> payload;
     REQUIRE_NOTHROW(payload = io.read_model(out, {}));
     REQUIRE(payload.has_value());
 
     const MeshData* read_mesh = requireReadableMeshModel(*payload);
-    // 读回的面数应为 0（CTMesh 读 .m 后无面）
-    REQUIRE(read_mesh->face_vertices_offset_.size() <= 1); // 只有 {0} 或空
+    // 读回应保留写出的 1 个三角形面
+    REQUIRE(read_mesh->face_vertices_offset_.size() == 2);
 }
 
 TEST_CASE("MModelHandler::read_model() - model_name preserved")
