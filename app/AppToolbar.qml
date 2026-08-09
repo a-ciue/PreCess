@@ -38,44 +38,44 @@ ColumnLayout {
     readonly property var pluginIconMap: ({
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create_face.svg",
         "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete_face.svg",
-        "TetGenPlugin": "qrc:/images/toolbar/Algorithm/TetGen.svg",
-        "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/TetGen.svg",
+        "TetGenPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
+        "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
         "GmshPlugin": "qrc:/images/toolbar/Algorithm/gmsh.svg",
         "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg",
-        "MeasurePlugin": "qrc:/images/toolbar/Tools/Measure.svg",
-        "DimensionPlugin": "qrc:/images/toolbar/Tools/Size_marking.svg",
+        "MeasurePlugin": "qrc:/images/toolbar/Tools/measure.svg",
+        "DimensionPlugin": "qrc:/images/toolbar/Tools/size_marking.svg",
         "MeshQuality": "qrc:/images/toolbar/Function/grid_quality.svg"
     })
     // 几何页按钮定义：当前使用默认插件图标。
     readonly property var geometryOperationButtons: [
         { text: qsTr("点"), operation: "startCreatePoint",
-          icon: "qrc:/images/toolbar/Geometry/Point.svg" },
+          icon: "qrc:/images/toolbar/Geometry/point.svg" },
         { text: qsTr("直线边（坐标）"), operation: "startCreateLineByCoordinates",
-          icon: "qrc:/images/toolbar/Geometry/Line_coord.svg" },
+          icon: "qrc:/images/toolbar/Geometry/line_coord.svg" },
         { text: qsTr("直线边（选点）"), operation: "startCreateLineFromVertices",
-          icon: "qrc:/images/toolbar/Geometry/Line_points.svg" },
+          icon: "qrc:/images/toolbar/Geometry/line_points.svg" },
         { text: qsTr("矩形面"), operation: "startCreateRectangleFace",
-          icon: "qrc:/images/toolbar/Geometry/Rectangle.svg" },
+          icon: "qrc:/images/toolbar/Geometry/rectangle.svg" },
         { text: qsTr("圆盘/扇形面"), operation: "startCreateDiskFace",
-          icon: "qrc:/images/toolbar/Geometry/Sector_or_Circle.svg" },
+          icon: "qrc:/images/toolbar/Geometry/sector_or_circle.svg" },
         { text: qsTr("闭合边成面"), operation: "startCreateFaceFromEdges",
-          icon: "qrc:/images/toolbar/Geometry/Close_edges_to_form_surface.svg" },
+          icon: "qrc:/images/toolbar/Geometry/close_edges_to_form_surface.svg" },
         { text: qsTr("长方体"), operation: "startCreateBox",
-          icon: "qrc:/images/toolbar/Geometry/Cubit.svg" },
+          icon: "qrc:/images/toolbar/Geometry/cuboid.svg" },
         { text: qsTr("圆柱体"), operation: "startCreateCylinder",
-          icon: "qrc:/images/toolbar/Geometry/Cylinder.svg" },
+          icon: "qrc:/images/toolbar/Geometry/cylinder.svg" },
         { text: qsTr("圆锥/圆台"), operation: "startCreateCone",
-          icon: "qrc:/images/toolbar/Geometry/Cone_or_Conical_stage.svg" },
+          icon: "qrc:/images/toolbar/Geometry/cone_or_conical_stage.svg" },
         { text: qsTr("球体/部分球体"), operation: "startCreateSphere",
-          icon: "qrc:/images/toolbar/Geometry/Sphere.svg" },
+          icon: "qrc:/images/toolbar/Geometry/sphere.svg" },
         { text: qsTr("拉伸面"), operation: "startExtrudeFace",
-          icon: "qrc:/images/toolbar/Geometry/Stretched_surface.svg" },
+          icon: "qrc:/images/toolbar/Geometry/stretched_surface.svg" },
         { text: qsTr("删除几何"), operation: "startDeleteGeometry",
-          icon: "qrc:/images/toolbar/Geometry/Delete_geometry.svg" }
+          icon: "qrc:/images/toolbar/Geometry/delete_geometry.svg" }
     ]
 
     function getIconForPlugin(pluginName) {
-        return pluginIconMap[pluginName] || "qrc:/images/toolbar/PreCess_extra_plugin.svg"
+        return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
 
     // 功能图标：优先菜单声明的自定义 qrc 图标，未指定时按插件名映射默认图标
