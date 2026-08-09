@@ -34,14 +34,16 @@ ApplicationWindow {
 
     // 标记由功能自动开启的属性渲染，避免影响用户手动打开的属性渲染面板。
     property bool featureAttributeRenderingActive: false
+    property int featureAttributeRenderingComponentId: -1
 
     // 结束当前功能自动开启的属性渲染，不影响用户手动控制的属性渲染面板。
     function cancelFeatureAttributeRendering() {
         if (!featureAttributeRenderingActive)
             return
-        if (App.registry.renderWindow)
-            App.registry.renderWindow.cancelAttri()
+        if (App.registry.renderWindow && featureAttributeRenderingComponentId >= 0)
+            App.registry.renderWindow.cancelComponentAttri(featureAttributeRenderingComponentId)
         featureAttributeRenderingActive = false
+        featureAttributeRenderingComponentId = -1
     }
 
     GeometryOperationActions {
@@ -127,11 +129,12 @@ ApplicationWindow {
 
     Connections {
         target: QModelManager.featureSystem
-        function onScalarAttributeDisplayRequested(attributeName) {
+        function onScalarAttributeDisplayRequested(componentId, attributeName) {
             root.featureAttributeRenderingActive = true
+            root.featureAttributeRenderingComponentId = componentId
             if (App.registry.renderWindow)
                 // 使用标量模式显示质量属性，空参数表示采用默认标量范围。
-                App.registry.renderWindow.setAttriMode(attributeName, 1, {})
+                App.registry.renderWindow.setAttriMode(componentId, attributeName, 1, {})
         }
     }
 

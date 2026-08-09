@@ -2,11 +2,11 @@
 #define Q_FEATURE_SYSTEM_ADAPTOR_H
 
 #include "Core.h"
-#include "EventBus.h"
 #include <QVariant>
 #include <QtQmlIntegration/qqmlintegration.h>
 #include <cstddef>
 #include <optional>
+#include <string>
 
 class QFeatureInfo;
 namespace core {
@@ -76,16 +76,22 @@ public:
      */
     void notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value);
 
+    /**
+     * @brief 将标量属性显示请求转换为排队发送的 Qt 信号
+     * @param component_id 属性所属的 Component ID
+     * @param attribute_name 模型中的标量属性名
+     */
+    void notifyScalarAttributeDisplayRequested(Index component_id, const std::string& attribute_name);
+
 signals:
     void featuresInfoChanged();
-    //! @brief 功能请求渲染指定的标量属性
-    void scalarAttributeDisplayRequested(QString attribute_name);
+    //! @brief 功能请求在指定 Component 上渲染标量属性
+    void scalarAttributeDisplayRequested(int component_id, QString attribute_name);
     //! @brief 功能参数值变化（功能侧回写结果等场景，QML 据此同步显示）
     void paramValueChanged(QString feature, int index, QVariant value);
 
 private:
     FeatureSystem* feature_system_; //> 功能系统的引用
-    core::EventBus::Subscription scalar_attribute_display_sub_; //> 标量属性显示请求桥接订阅
     Index active_model_id_ { -1 };
     Index active_component_id_ { -1 };
 };

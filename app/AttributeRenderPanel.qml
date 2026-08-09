@@ -15,7 +15,7 @@ Item {
     property int selectedIndex: -1
     property string componentName: ""
 
-    // 根据当前选中组件重新读取属性列表，并清空已选属性。
+    // 根据对象树当前选中组件重新读取属性列表，并清空已选属性。
     function refreshAttributes() {
         selectedIndex = -1
         if (App.selection.activeComponentId >= 0) {
@@ -283,7 +283,11 @@ Item {
                 onClicked: {
                     let attr = root.selectedAttribute()
                     if (attr)
-                        App.registry.renderWindow.setAttriMode(attr.name, modeCombo.currentIndex, root.renderArgs())
+                        App.registry.renderWindow.setAttriMode(
+                            App.selection.activeComponentId,
+                            attr.name,
+                            modeCombo.currentIndex,
+                            root.renderArgs())
                 }
             }
 

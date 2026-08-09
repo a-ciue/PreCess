@@ -31,8 +31,8 @@
 namespace systems::feature {
 namespace {
 
-    constexpr std::size_t kMetricParam = 0; //> 质量指标参数下标
-    constexpr std::size_t kComponentParam = 1; //> 目标 Component 选择器参数下标
+    constexpr std::size_t kComponentParam = 0; //> 目标 Component 选择器参数下标
+    constexpr std::size_t kMetricParam = 1; //> 质量指标参数下标
 
     /**
      * @brief 插件支持的质量指标，与参数 Combo 的选项顺序一致
@@ -397,28 +397,18 @@ namespace {
 void MeshQualityHandler::setup(FeatureRegistrar& reg)
 {
     reg.addParameter({
-        ArgTypeEnum::Combo,
-        "质量指标",
-        "Scaled Jacobian,Equiangle Skew,Edge Ratio,最小角,最大角,Warpage,Tet Collapse|0",
-        "选择要计算并写入面、体属性的网格质量指标",
-    });
-    reg.addParameter({
         ArgTypeEnum::Selector,
         "目标 Component",
         "Component",
         "选择一个需要计算网格质量的 Component",
     });
+    reg.addParameter({
+        ArgTypeEnum::Combo,
+        "质量指标",
+        "Scaled Jacobian,Equiangle Skew,Edge Ratio,最小角,最大角,Warpage,Tet Collapse|0",
+        "选择要计算并写入面、体属性的网格质量指标",
+    });
     reg.addMenuItem({ "功能/网格", "网格质量" });
-}
-
-void MeshQualityHandler::activate(FeatureContext& ctx)
-{
-    attribute_display_sub_ = ctx.events.subscribe<ScalarAttributeDisplayRequestedEvent>(
-        [this, context = &ctx](const ScalarAttributeDisplayRequestedEvent& event) {
-            // 空属性名表示活动操作已切换，清理本次生成的全部质量属性。
-            if (event.attribute_name.empty())
-                clearGeneratedAttributes(*context);
-        });
 }
 
 std::any MeshQualityHandler::execute(FeatureContext& ctx)
@@ -482,23 +472,20 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     // 只写属性不动拓扑：NonTopology 标脏（邻接懒表不失效），通知由操作边界 flush 统一发出。
     MeshData& editable_mesh = component->editableMesh(MeshEditKind::NonTopology);
     std::string display_attribute;
-    GeneratedAttributes& generated = generated_attributes_[component_id];
     if (face_result) {
         const std::string face_attribute = "f_" + attribute_key + "_1";
         editable_mesh.face_attributes_[face_attribute] = face_result->values;
-        generated.face_names.push_back(face_attribute);
         display_attribute = face_attribute;
     }
     // 面、体质量同时生成时默认显示体属性，面属性仍保留供用户手动选择。
     if (solid_result) {
         const std::string solid_attribute = "s_" + attribute_key + "_1";
         editable_mesh.solid_attributes_[solid_attribute] = solid_result->values;
-        generated.solid_names.push_back(solid_attribute);
         display_attribute = solid_attribute;
     }
 
     // Qt 桥接延迟发送显示信号，保证操作边界 flush 后再应用标量渲染。
-    ctx.events.bus().publish(ScalarAttributeDisplayRequestedEvent { display_attribute });
+    ctx.events.bus().publish(ScalarAttributeDisplayRequestedEvent { display_attribute, component_id });
 
     std::ostringstream output;
     output << std::setprecision(6) << metricDisplayName(metric) << '\n';
@@ -513,24 +500,6 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         output << "体：" << solid_error << '\n';
     }
     return output.str();
-}
-
-void MeshQualityHandler::clearGeneratedAttributes(FeatureContext& ctx)
-{
-    for (const auto& [component_id, attributes] : generated_attributes_) {
-        auto component = ctx.componentOperator ? ctx.componentOperator(component_id) : std::nullopt;
-        if (!component || !component->mesh())
-            continue;
-
-        MeshData& mesh = component->editableMesh(MeshEditKind::NonTopology);
-        for (const std::string& name : attributes.face_names) {
-            mesh.face_attributes_.erase(name);
-        }
-        for (const std::string& name : attributes.solid_names) {
-            mesh.solid_attributes_.erase(name);
-        }
-    }
-    generated_attributes_.clear();
 }
 
 }

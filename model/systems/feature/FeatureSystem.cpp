@@ -135,11 +135,6 @@ std::any FeatureSystem::invoke(const std::string& unique_name)
     }
 }
 
-core::EventBus& FeatureSystem::events() const
-{
-    return *event_bus_;
-}
-
 bool FeatureSystem::setParameter(const std::string& unique_name, std::size_t index, core::ArgObject value)
 {
     auto it = entries_.find(unique_name);

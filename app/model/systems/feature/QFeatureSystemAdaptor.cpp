@@ -1,5 +1,4 @@
 #include "QFeatureSystemAdaptor.h"
-#include "FeatureEvents.h"
 #include "FeatureParams.h"
 #include "FeatureSystem.h"
 #include "QArgObject.h"
@@ -54,18 +53,6 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     feature_system.setOnFeatureInfosChanged([this]() {
         emit featuresInfoChanged();
     });
-    scalar_attribute_display_sub_ = feature_system.events().subscribe<ScalarAttributeDisplayRequestedEvent>(
-        [this](const ScalarAttributeDisplayRequestedEvent& event) {
-            // 空属性名仅用于通知功能释放自动属性显示，不转发给 QML。
-            if (event.attribute_name.empty())
-                return;
-
-            const QString attribute_name = QString::fromStdString(event.attribute_name);
-            // FeatureSystem 在 execute 返回后统一 flush，排队发送可保证 QML 在模型刷新后设置渲染属性。
-            QMetaObject::invokeMethod(this,
-                [this, attribute_name]() { emit scalarAttributeDisplayRequested(attribute_name); },
-                Qt::QueuedConnection);
-        });
 }
 
 FeatureSystem* QFeatureSystemAdaptor::featureSystem() const
@@ -94,6 +81,19 @@ void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, s
     emit paramValueChanged(QString::fromStdString(feature), static_cast<int>(index), q_value);
 }
 
+void QFeatureSystemAdaptor::notifyScalarAttributeDisplayRequested(
+    Index component_id,
+    const std::string& attribute_name)
+{
+    const QString q_attribute_name = QString::fromStdString(attribute_name);
+    // FeatureSystem 在 execute 返回后统一 flush，排队发送可保证 QML 在模型刷新后设置渲染属性。
+    QMetaObject::invokeMethod(this,
+        [this, component_id, q_attribute_name]() {
+            emit scalarAttributeDisplayRequested(component_id, q_attribute_name);
+        },
+        Qt::QueuedConnection);
+}
+
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)
 {
     const FeatureParams* params = feature_system_->params(unique_name.toStdString());
@@ -119,8 +119,6 @@ bool QFeatureSystemAdaptor::postKeyEvent(int key, int modifiers, bool pressed)
 
 bool QFeatureSystemAdaptor::setFeatureActive(const QString& unique_name)
 {
-    // 活动操作变化时释放上一个功能自动开启的属性显示。
-    feature_system_->events().publish(ScalarAttributeDisplayRequestedEvent { "" });
     return feature_system_->setFeatureActive(unique_name.toStdString());
 }
 
