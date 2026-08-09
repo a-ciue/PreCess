@@ -49,10 +49,6 @@ public:
     Q_INVOKABLE void removeComponent(int id);
     Q_INVOKABLE void removeMesh(int componentId);
     Q_INVOKABLE void removeGeometry(int componentId);
-    /**
-     * @brief 当前操作变化时通知功能结束自动标量显示
-     */
-    Q_INVOKABLE void notifyActiveOperationChanged();
     ModelLayer* getModelManager();
     QModelObserver* getModelObserver() const;
     QModelQuery* getModelQuery() const;

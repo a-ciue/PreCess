@@ -114,12 +114,6 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 
 QModelManager::~QModelManager() = default;
 
-void QModelManager::notifyActiveOperationChanged()
-{
-    // 复用标量显示事件：空属性名通知功能结束本次自动标量显示并清理临时属性。
-    event_bus_->publish(systems::feature::ScalarAttributeDisplayRequestedEvent { "", -1 });
-}
-
 void QModelManager::removeModel(int id)
 {
     core_->removeModel(id);
