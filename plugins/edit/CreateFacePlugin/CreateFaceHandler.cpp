@@ -67,7 +67,7 @@ std::any CreateFaceHandler::execute(ModelLayer& model, Index /*fallback_componen
 std::vector<ArgType> CreateFaceHandler::args_type() const
 {
     return {
-        ArgType { ArgTypeEnum::Selector, "选择点", "" }
+        ArgType { ArgTypeEnum::Selector, "选择点", "Vertex" }
     };
 }
 }
