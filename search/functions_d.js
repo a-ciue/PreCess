@@ -18,7 +18,8 @@ var searchData=
   ['notifymodelnamechanged_15',['notifyModelNameChanged',['../classQModelObserver.html#a60298e5dae88e4ddae135243ce28bad4',1,'QModelObserver::notifyModelNameChanged()'],['../classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c',1,'ModelObserver::notifyModelNameChanged()'],['../structDummyObserver.html#ac23515bf8bd8c35e1f952aa8ff2209cd',1,'DummyObserver::notifyModelNameChanged(Index, const std::string &amp;) override'],['../structDummyObserver.html#ac23515bf8bd8c35e1f952aa8ff2209cd',1,'DummyObserver::notifyModelNameChanged(Index, const std::string &amp;) override']]],
   ['notifymodelremoved_16',['notifyModelRemoved',['../classQModelObserver.html#aacbfe7aa17fb1b4b6f844bec28b28927',1,'QModelObserver::notifyModelRemoved()'],['../classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e',1,'ModelObserver::notifyModelRemoved()'],['../structDummyObserver.html#a845490b88fe06a424329b87d670cf523',1,'DummyObserver::notifyModelRemoved(Index) override'],['../structDummyObserver.html#a845490b88fe06a424329b87d670cf523',1,'DummyObserver::notifyModelRemoved(Index) override']]],
   ['notifyparameterchanged_17',['notifyParameterChanged',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a94ce177fbb6883c08e3de52ed942aa42',1,'systems::feature::QFeatureSystemAdaptor']]],
-  ['numedges_18',['numEdges',['../classMeshLib_1_1CBaseMesh.html#a59246eb0edbe1ad11f0e6ecb41444135',1,'MeshLib::CBaseMesh']]],
-  ['numfaces_19',['numFaces',['../classMeshLib_1_1CBaseMesh.html#ac750e49625e3ebbc50a135f77cbbdf87',1,'MeshLib::CBaseMesh']]],
-  ['numvertices_20',['numVertices',['../classMeshLib_1_1CBaseMesh.html#a180ba1fbde1e68a4a2201928e6573dc7',1,'MeshLib::CBaseMesh']]]
+  ['notifyscalarattributedisplayrequested_18',['notifyScalarAttributeDisplayRequested',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a92ed231e4bb4221bc0d05b6da3865a50',1,'systems::feature::QFeatureSystemAdaptor']]],
+  ['numedges_19',['numEdges',['../classMeshLib_1_1CBaseMesh.html#a59246eb0edbe1ad11f0e6ecb41444135',1,'MeshLib::CBaseMesh']]],
+  ['numfaces_20',['numFaces',['../classMeshLib_1_1CBaseMesh.html#ac750e49625e3ebbc50a135f77cbbdf87',1,'MeshLib::CBaseMesh']]],
+  ['numvertices_21',['numVertices',['../classMeshLib_1_1CBaseMesh.html#a180ba1fbde1e68a4a2201928e6573dc7',1,'MeshLib::CBaseMesh']]]
 ];

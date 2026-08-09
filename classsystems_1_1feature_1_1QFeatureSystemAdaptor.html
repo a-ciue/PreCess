@@ -225,6 +225,8 @@ systems::feature::QFeatureSystemAdaptor 的协作图:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 信号</h2></td></tr>
 <tr class="memitem:a3a7b99b10cab0fecdb1a39824b05c20d" id="r_a3a7b99b10cab0fecdb1a39824b05c20d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a7b99b10cab0fecdb1a39824b05c20d">featuresInfoChanged</a> ()</td></tr>
+<tr class="memitem:af0ac7efa6a48377b10df37e2fdca140a" id="r_af0ac7efa6a48377b10df37e2fdca140a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0ac7efa6a48377b10df37e2fdca140a">scalarAttributeDisplayRequested</a> (int component_id, QString attribute_name)</td></tr>
+<tr class="memdesc:af0ac7efa6a48377b10df37e2fdca140a"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能请求在指定 Component 上渲染标量属性  <br /></td></tr>
 <tr class="memitem:aef859cf3d3950a2c9cd16ed6bbd6047c" id="r_aef859cf3d3950a2c9cd16ed6bbd6047c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef859cf3d3950a2c9cd16ed6bbd6047c">paramValueChanged</a> (QString feature, int index, QVariant value)</td></tr>
 <tr class="memdesc:aef859cf3d3950a2c9cd16ed6bbd6047c"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能参数值变化（功能侧回写结果等场景，QML 据此同步显示）  <br /></td></tr>
 </table><table class="memberdecls">
@@ -251,6 +253,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a1f2d0132a3f33a7846edd7ccd30a9c84" id="r_a1f2d0132a3f33a7846edd7ccd30a9c84"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f2d0132a3f33a7846edd7ccd30a9c84">activeComponent</a> () const</td></tr>
 <tr class="memitem:a94ce177fbb6883c08e3de52ed942aa42" id="r_a94ce177fbb6883c08e3de52ed942aa42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94ce177fbb6883c08e3de52ed942aa42">notifyParameterChanged</a> (const std::string &amp;feature, std::size_t index, const <a class="el" href="classcore_1_1ArgObject.html">core::ArgObject</a> &amp;value)</td></tr>
 <tr class="memdesc:a94ce177fbb6883c08e3de52ed942aa42"><td class="mdescLeft">&#160;</td><td class="mdescRight">参数变更通知入口（QModelManager 桥接 <a class="el" href="classEventBus.html" title="类型安全的轻量级事件总线，以事件类型为键分发事件">EventBus</a> 的 <a class="el" href="structsystems_1_1feature_1_1ParameterChangedEvent.html" title="功能参数变更事件，FeatureSystem::setParameter 成功后发布">ParameterChangedEvent</a> 调用）  <br /></td></tr>
+<tr class="memitem:a92ed231e4bb4221bc0d05b6da3865a50" id="r_a92ed231e4bb4221bc0d05b6da3865a50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92ed231e4bb4221bc0d05b6da3865a50">notifyScalarAttributeDisplayRequested</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const std::string &amp;attribute_name)</td></tr>
+<tr class="memdesc:a92ed231e4bb4221bc0d05b6da3865a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">将标量属性显示请求转换为排队发送的 Qt 信号  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 属性</h2></td></tr>
@@ -434,6 +438,36 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a92ed231e4bb4221bc0d05b6da3865a50" name="a92ed231e4bb4221bc0d05b6da3865a50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92ed231e4bb4221bc0d05b6da3865a50">&#9670;&#160;</a></span>notifyScalarAttributeDisplayRequested()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::QFeatureSystemAdaptor::notifyScalarAttributeDisplayRequested </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>attribute_name</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>将标量属性显示请求转换为排队发送的 Qt 信号 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">component_id</td><td>属性所属的 Component ID </td></tr>
+    <tr><td class="paramname">attribute_name</td><td>模型中的标量属性名 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aef859cf3d3950a2c9cd16ed6bbd6047c" name="aef859cf3d3950a2c9cd16ed6bbd6047c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aef859cf3d3950a2c9cd16ed6bbd6047c">&#9670;&#160;</a></span>paramValueChanged</h2>
 
@@ -496,6 +530,37 @@ Private 属性</h2></td></tr>
 
 <p>UI层向功能系统派发按键事件 </p>
 <dl class="section return"><dt>返回</dt><dd>事件已被功能消费（应 accept）时为 true </dd></dl>
+
+</div>
+</div>
+<a id="af0ac7efa6a48377b10df37e2fdca140a" name="af0ac7efa6a48377b10df37e2fdca140a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0ac7efa6a48377b10df37e2fdca140a">&#9670;&#160;</a></span>scalarAttributeDisplayRequested</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::QFeatureSystemAdaptor::scalarAttributeDisplayRequested </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QString</td>          <td class="paramname"><span class="paramname"><em>attribute_name</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>功能请求在指定 Component 上渲染标量属性 </p>
 
 </div>
 </div>
