@@ -81,42 +81,72 @@ $(function() {
   <div class="headertitle"><div class="title">ObjMeshIO.h 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="MeshData_8h_source.html">MeshData.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="ComponentData_8h_source.html">ComponentData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshData_8h_source.html">MeshData.h</a>&quot;</code><br />
 <code>#include &lt;filesystem&gt;</code><br />
 <code>#include &lt;iosfwd&gt;</code><br />
+<code>#include &lt;optional&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 ObjMeshIO.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ObjMeshIO_8h__incl.png" border="0" usemap="#amodel_2ops_2ObjMeshIO_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2ops_2ObjMeshIO_8h" id="amodel_2ops_2ObjMeshIO_8h">
-<area shape="rect" title=" " alt="" coords="315,5,493,31"/>
-<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="234,79,334,104"/>
-<area shape="poly" title=" " alt="" coords="386,33,317,74,314,69,383,28"/>
-<area shape="rect" title=" " alt="" coords="359,79,449,104"/>
-<area shape="poly" title=" " alt="" coords="407,31,407,65,401,65,401,31"/>
-<area shape="rect" title=" " alt="" coords="473,79,537,104"/>
-<area shape="poly" title=" " alt="" coords="422,28,479,68,476,73,419,33"/>
-<area shape="rect" title=" " alt="" coords="5,225,83,251"/>
-<area shape="poly" title=" " alt="" coords="252,107,202,127,149,154,105,186,68,218,64,214,101,182,147,150,200,122,250,102"/>
-<area shape="rect" title=" " alt="" coords="322,152,446,177"/>
-<area shape="poly" title=" " alt="" coords="302,102,358,142,355,146,299,106"/>
-<area shape="rect" title=" " alt="" coords="471,152,585,177"/>
-<area shape="poly" title=" " alt="" coords="324,101,476,146,475,151,322,107"/>
-<area shape="rect" title=" " alt="" coords="107,225,163,251"/>
-<area shape="poly" title=" " alt="" coords="249,107,210,125,173,154,154,183,143,213,138,211,149,180,169,150,207,121,247,102"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="183,152,247,177"/>
-<area shape="poly" title=" " alt="" coords="274,106,237,144,233,140,271,102"/>
-<area shape="rect" title=" " alt="" coords="349,225,408,251"/>
-<area shape="poly" title=" " alt="" coords="288,104,296,138,313,176,331,197,352,215,348,219,327,201,308,179,291,139,283,105"/>
-<area shape="rect" title=" " alt="" coords="609,152,684,177"/>
-<area shape="poly" title=" " alt="" coords="335,99,596,149,595,154,334,105"/>
-<area shape="poly" title=" " alt="" coords="188,180,85,222,83,218,186,175"/>
-<area shape="poly" title=" " alt="" coords="204,179,160,218,156,214,200,175"/>
-<area shape="rect" title=" " alt="" coords="275,225,325,251"/>
-<area shape="poly" title=" " alt="" coords="230,175,277,214,274,219,227,179"/>
-<area shape="poly" title=" " alt="" coords="242,175,341,217,338,222,240,180"/>
-<area shape="rect" title=" " alt="" coords="187,225,250,251"/>
-<area shape="poly" title=" " alt="" coords="218,178,220,212,215,212,213,178"/>
+<area shape="rect" title=" " alt="" coords="604,5,781,31"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="417,79,557,104"/>
+<area shape="poly" title=" " alt="" coords="661,33,534,77,533,72,659,28"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="555,152,655,177"/>
+<area shape="poly" title=" " alt="" coords="688,33,621,142,616,139,683,30"/>
+<area shape="rect" title=" " alt="" coords="794,225,869,251"/>
+<area shape="poly" title=" " alt="" coords="697,30,705,64,720,103,741,135,765,166,811,214,807,218,761,169,737,138,716,105,700,65,692,31"/>
+<area shape="rect" title=" " alt="" coords="730,79,821,104"/>
+<area shape="poly" title=" " alt="" coords="708,29,753,67,750,72,704,33"/>
+<area shape="rect" title=" " alt="" coords="845,79,909,104"/>
+<area shape="poly" title=" " alt="" coords="723,28,835,71,833,76,721,33"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="365,225,429,251"/>
+<area shape="poly" title=" " alt="" coords="482,106,413,215,409,212,478,103"/>
+<area shape="rect" title=" " alt="" coords="478,299,555,324"/>
+<area shape="poly" title=" " alt="" coords="492,104,516,285,511,285,486,105"/>
+<area shape="rect" title=" " alt="" coords="727,299,786,324"/>
+<area shape="poly" title=" " alt="" coords="558,91,637,99,727,120,771,137,813,160,851,188,883,224,889,238,888,251,880,263,868,273,836,290,800,302,799,297,834,285,865,269,876,259,883,249,884,239,878,227,848,192,811,164,769,142,725,125,636,104,557,96"/>
+<area shape="rect" title=" " alt="" coords="5,299,68,324"/>
+<area shape="poly" title=" " alt="" coords="417,105,317,123,203,150,150,166,104,185,67,205,44,227,38,240,34,255,35,285,29,285,29,255,33,239,40,224,64,201,101,180,148,161,202,145,316,118,416,100"/>
+<area shape="poly" title=" " alt="" coords="508,102,575,142,572,147,505,106"/>
+<area shape="rect" title=" " alt="" coords="216,225,340,251"/>
+<area shape="poly" title=" " alt="" coords="472,106,308,219,305,215,469,102"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="211,152,345,177"/>
+<area shape="poly" title=" " alt="" coords="455,107,326,150,324,145,453,101"/>
+<area shape="rect" title=" " alt="" coords="307,299,363,324"/>
+<area shape="poly" title=" " alt="" coords="389,253,356,290,352,286,385,249"/>
+<area shape="rect" title=" " alt="" coords="387,299,438,324"/>
+<area shape="poly" title=" " alt="" coords="402,250,410,285,405,286,397,252"/>
+<area shape="poly" title=" " alt="" coords="417,248,486,289,484,294,415,253"/>
+<area shape="poly" title=" " alt="" coords="430,243,714,299,713,304,429,248"/>
+<area shape="poly" title=" " alt="" coords="365,250,352,253,82,305,81,300,351,248,364,245"/>
+<area shape="poly" title=" " alt="" coords="572,180,443,224,441,219,570,175"/>
+<area shape="poly" title=" " alt="" coords="584,180,370,295,367,290,582,175"/>
+<area shape="poly" title=" " alt="" coords="600,179,533,288,528,286,595,176"/>
+<area shape="poly" title=" " alt="" coords="652,175,695,193,715,207,733,224,750,253,757,284,752,285,745,255,729,227,712,211,692,198,650,180"/>
+<area shape="poly" title=" " alt="" coords="555,179,344,225,343,220,554,174"/>
+<area shape="rect" title=" " alt="" coords="605,225,719,251"/>
+<area shape="poly" title=" " alt="" coords="616,176,646,213,642,216,612,179"/>
+<area shape="poly" title=" " alt="" coords="642,175,782,219,781,224,640,180"/>
+<area shape="poly" title=" " alt="" coords="298,175,367,216,364,220,296,180"/>
+<area shape="poly" title=" " alt="" coords="256,180,234,193,213,211,202,230,202,239,206,249,223,269,245,283,294,301,293,306,243,288,220,273,201,252,196,240,197,228,209,207,231,189,253,175"/>
+<area shape="poly" title=" " alt="" coords="211,171,173,176,134,187,96,203,64,227,54,240,47,255,40,285,35,284,42,253,50,237,60,223,94,199,132,182,172,171,210,165"/>
+<area shape="poly" title=" " alt="" coords="281,178,281,212,275,212,275,178"/>
+<area shape="poly" title=" " alt="" coords="346,172,781,228,780,233,346,177"/>
+<area shape="rect" title=" " alt="" coords="74,225,141,251"/>
+<area shape="poly" title=" " alt="" coords="252,180,149,222,147,218,250,175"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="ObjMeshIO_8h__dep__incl.png" border="0" usemap="#amodel_2ops_2ObjMeshIO_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2ObjMeshIO_8hdep" id="amodel_2ops_2ObjMeshIO_8hdep">
+<area shape="rect" title=" " alt="" coords="20,5,197,31"/>
+<area shape="rect" href="TestObjMeshIO_8cpp.html" title="ObjMeshIO 组件级读写（ComponentDatas）回环测试" alt="" coords="5,79,212,119"/>
+<area shape="poly" title=" " alt="" coords="111,44,111,79,106,79,106,44"/>
 </map>
 </div>
 </div>

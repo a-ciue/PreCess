@@ -83,14 +83,18 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
-<tr class="memitem:a92c532874baa1ace4b65605f130afbcd" id="r_a92c532874baa1ace4b65605f130afbcd"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92c532874baa1ace4b65605f130afbcd">loadFromFile</a> (const std::filesystem::path &amp;filename)</td></tr>
-<tr class="memdesc:a92c532874baa1ace4b65605f130afbcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">从文件加载 <a class="el" href="structMeshData.html">MeshData</a> 对象。  <br /></td></tr>
+<tr class="memitem:a40e4e86597efe759ff1b4ff89a2279f9" id="r_a40e4e86597efe759ff1b4ff89a2279f9"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40e4e86597efe759ff1b4ff89a2279f9">loadFromFile</a> (const std::filesystem::path &amp;filename)</td></tr>
+<tr class="memdesc:a40e4e86597efe759ff1b4ff89a2279f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">从文件加载 OBJ 模型，按 shape(group) 分组拆分为多个组件。  <br /></td></tr>
 <tr class="memitem:a05a01fd73b8e8cbf8f5698395c281d98" id="r_a05a01fd73b8e8cbf8f5698395c281d98"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a05a01fd73b8e8cbf8f5698395c281d98">saveToFile</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh, std::ostream &amp;os)</td></tr>
-<tr class="memdesc:a05a01fd73b8e8cbf8f5698395c281d98"><td class="mdescLeft">&#160;</td><td class="mdescRight">输出MeshData。  <br /></td></tr>
+<tr class="memdesc:a05a01fd73b8e8cbf8f5698395c281d98"><td class="mdescLeft">&#160;</td><td class="mdescRight">将单个 <a class="el" href="structMeshData.html">MeshData</a> 保存到指定的输出流（如文件输出流）中。  <br /></td></tr>
+<tr class="memitem:a08ad07266dc7983359546e023d53cde3" id="r_a08ad07266dc7983359546e023d53cde3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08ad07266dc7983359546e023d53cde3">saveToFile</a> (const <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &amp;components, std::ostream &amp;os)</td></tr>
+<tr class="memdesc:a08ad07266dc7983359546e023d53cde3"><td class="mdescLeft">&#160;</td><td class="mdescRight">将组件列表保存到指定的输出流（如文件输出流）中。  <br /></td></tr>
+<tr class="memitem:a33ef8d1bd3605aabfd23d538ae423326" id="r_a33ef8d1bd3605aabfd23d538ae423326"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a33ef8d1bd3605aabfd23d538ae423326">saveToFile</a> (const std::vector&lt; const <a class="el" href="structComponentData.html">ComponentData</a> * &gt; &amp;components, std::ostream &amp;os)</td></tr>
+<tr class="memdesc:a33ef8d1bd3605aabfd23d538ae423326"><td class="mdescLeft">&#160;</td><td class="mdescRight">同上，入参为只读指针视图。  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a92c532874baa1ace4b65605f130afbcd" name="a92c532874baa1ace4b65605f130afbcd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92c532874baa1ace4b65605f130afbcd">&#9670;&#160;</a></span>loadFromFile()</h2>
+<a id="a40e4e86597efe759ff1b4ff89a2279f9" name="a40e4e86597efe759ff1b4ff89a2279f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40e4e86597efe759ff1b4ff89a2279f9">&#9670;&#160;</a></span>loadFromFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -99,7 +103,7 @@ $(function() {
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt; <a class="el" href="structMeshData.html">MeshData</a> &gt; ObjMeshIO::loadFromFile </td>
+          <td class="memname">std::optional&lt; <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &gt; ObjMeshIO::loadFromFile </td>
           <td>(</td>
           <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>filename</em></span></td><td>)</td>
           <td></td>
@@ -112,19 +116,57 @@ $(function() {
 </table>
 </div><div class="memdoc">
 
-<p>从文件加载 <a class="el" href="structMeshData.html">MeshData</a> 对象。 </p>
-<dl class="params"><dt>参数</dt><dd>
+<p>从文件加载 OBJ 模型，按 shape(group) 分组拆分为多个组件。 </p>
+<p>每个 shape 生成一个 ComponentData，其 <a class="el" href="structMeshData.html">MeshData</a> 自包含： 只携带本组面实际引用的顶点（全局点索引重映射为组件内局部点索引）。 </p><dl class="params"><dt>参数</dt><dd>
   <table class="params">
     <tr><td class="paramname">filename</td><td>要加载的文件的路径。 </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>返回</dt><dd>加载的 MeshData。如果加载失败，则返回空指针。 </dd></dl>
+<dl class="section return"><dt>返回</dt><dd>加载的组件列表；文件解析失败时返回 std::nullopt。 </dd></dl>
+
+</div>
+</div>
+<a id="a08ad07266dc7983359546e023d53cde3" name="a08ad07266dc7983359546e023d53cde3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08ad07266dc7983359546e023d53cde3">&#9670;&#160;</a></span>saveToFile() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ObjMeshIO::saveToFile </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>components</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ostream &amp;</td>          <td class="paramname"><span class="paramname"><em>os</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将组件列表保存到指定的输出流（如文件输出流）中。 </p>
+<p>每个组件写为一个 OBJ object（组件名作为 object 名）， 与 loadFromFile 按 shape 拆回组件对应；点索引按 OBJ 约定 1-based 且全文件连续，跨组件自动累加偏移。 </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">components</td><td>要保存的组件列表（无网格的组件会被跳过）。 </td></tr>
+    <tr><td class="paramname">os</td><td>用于写入数据的输出流。 </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <a id="a05a01fd73b8e8cbf8f5698395c281d98" name="a05a01fd73b8e8cbf8f5698395c281d98"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a05a01fd73b8e8cbf8f5698395c281d98">&#9670;&#160;</a></span>saveToFile()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a05a01fd73b8e8cbf8f5698395c281d98">&#9670;&#160;</a></span>saveToFile() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,14 +192,46 @@ $(function() {
 </table>
 </div><div class="memdoc">
 
-<p>输出MeshData。 </p>
-<p>将 <a class="el" href="structMeshData.html">MeshData</a> 保存到指定的输出流（如文件输出流）中。 </p><dl class="params"><dt>参数</dt><dd>
+<p>将单个 <a class="el" href="structMeshData.html">MeshData</a> 保存到指定的输出流（如文件输出流）中。 </p>
+<p>零拷贝写出全部点与面（点索引 1-based），不写 object 分组行； 适合 CTMesh 转换等只有单网格、无需组件语义的场合。 </p><dl class="params"><dt>参数</dt><dd>
   <table class="params">
     <tr><td class="paramname">mesh</td><td>要保存的 <a class="el" href="structMeshData.html">MeshData</a> 对象。 </td></tr>
     <tr><td class="paramname">os</td><td>用于写入数据的输出流。 </td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a33ef8d1bd3605aabfd23d538ae423326" name="a33ef8d1bd3605aabfd23d538ae423326"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33ef8d1bd3605aabfd23d538ae423326">&#9670;&#160;</a></span>saveToFile() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ObjMeshIO::saveToFile </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; const <a class="el" href="structComponentData.html">ComponentData</a> * &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>components</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ostream &amp;</td>          <td class="paramname"><span class="paramname"><em>os</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>同上，入参为只读指针视图。 </p>
+<p>供只持有 const ComponentData* 的调用方（如按 id 从 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 查询）零拷贝复用。 </p>
 
 </div>
 </div>

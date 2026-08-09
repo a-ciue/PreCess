@@ -1,15 +1,13 @@
 <map id="model/ops/ObjMeshIO.cpp" name="model/ops/ObjMeshIO.cpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="260,5,452,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="183,5,375,31"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,79,112,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="309,33,121,78,119,73,308,28"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="244,33,108,77,106,72,243,28"/>
 <area shape="rect" id="Node000003" href="$tiny__obj__loader_8h.html" title=" " alt="" coords="136,79,269,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="332,33,241,75,239,70,330,28"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="268,33,227,71,223,67,265,29"/>
 <area shape="rect" id="Node000007" title=" " alt="" coords="294,79,418,104"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="359,31,359,65,353,65,353,31"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="443,79,517,104"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="377,28,449,69,447,74,375,33"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="542,79,615,104"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="393,28,531,72,529,77,391,33"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="293,29,335,67,331,71,289,33"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="442,79,566,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="316,28,455,72,454,77,314,33"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="99,152,149,177"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="192,106,149,145,145,141,188,102"/>
 <area shape="rect" id="Node000005" title=" " alt="" coords="173,152,232,177"/>

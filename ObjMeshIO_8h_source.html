@@ -81,23 +81,31 @@ $(function() {
 <div class="contents">
 <a href="ObjMeshIO_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef OBJ_MESH_IO_H</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define OBJ_MESH_IO_H</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="MeshData_8h.html">MeshData.h</a>&quot;</span></div>
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;filesystem&gt;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;iosfwd&gt;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="foldopen" id="foldopen00007" data-start="{" data-end="};">
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="classObjMeshIO.html">    7</a></span><span class="keyword">class </span><a class="code hl_class" href="classObjMeshIO.html">ObjMeshIO</a> {</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <span class="keyword">static</span> std::unique_ptr&lt;MeshData&gt; <a class="code hl_function" href="classObjMeshIO.html#a92c532874baa1ace4b65605f130afbcd">loadFromFile</a>(<span class="keyword">const</span> std::filesystem::path&amp; filename);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classObjMeshIO.html#a05a01fd73b8e8cbf8f5698395c281d98">saveToFile</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh, std::ostream&amp; os);</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>};</div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &quot;<a class="code" href="ComponentData_8h.html">ComponentData.h</a>&quot;</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="MeshData_8h.html">MeshData.h</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;filesystem&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;iosfwd&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="foldopen" id="foldopen00009" data-start="{" data-end="};">
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="classObjMeshIO.html">    9</a></span><span class="keyword">class </span><a class="code hl_class" href="classObjMeshIO.html">ObjMeshIO</a> {</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">static</span> std::optional&lt;ComponentDatas&gt; <a class="code hl_function" href="classObjMeshIO.html#a40e4e86597efe759ff1b4ff89a2279f9">loadFromFile</a>(<span class="keyword">const</span> std::filesystem::path&amp; filename);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classObjMeshIO.html#a05a01fd73b8e8cbf8f5698395c281d98">saveToFile</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshData.html">MeshData</a>&amp; mesh, std::ostream&amp; os);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classObjMeshIO.html#a05a01fd73b8e8cbf8f5698395c281d98">saveToFile</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a>&amp; components, std::ostream&amp; os);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classObjMeshIO.html#a05a01fd73b8e8cbf8f5698395c281d98">saveToFile</a>(<span class="keyword">const</span> std::vector&lt;const ComponentData*&gt;&amp; components, std::ostream&amp; os);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>};</div>
 </div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#endif </span><span class="comment">// !OBJ_MESH_IO_H</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#endif </span><span class="comment">// !OBJ_MESH_IO_H</span></div>
+<div class="ttc" id="aComponentData_8h_html"><div class="ttname"><a href="ComponentData_8h.html">ComponentData.h</a></div></div>
+<div class="ttc" id="aComponentData_8h_html_a728074d968d490d75144bc04c1ef092d"><div class="ttname"><a href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; ComponentData &gt; &gt; ComponentDatas</div><div class="ttdef"><b>定义</b> ComponentData.h:17</div></div>
 <div class="ttc" id="aMeshData_8h_html"><div class="ttname"><a href="MeshData_8h.html">MeshData.h</a></div></div>
-<div class="ttc" id="aclassObjMeshIO_html"><div class="ttname"><a href="classObjMeshIO.html">ObjMeshIO</a></div><div class="ttdef"><b>定义</b> ObjMeshIO.h:7</div></div>
-<div class="ttc" id="aclassObjMeshIO_html_a05a01fd73b8e8cbf8f5698395c281d98"><div class="ttname"><a href="classObjMeshIO.html#a05a01fd73b8e8cbf8f5698395c281d98">ObjMeshIO::saveToFile</a></div><div class="ttdeci">static void saveToFile(const MeshData &amp;mesh, std::ostream &amp;os)</div><div class="ttdoc">输出MeshData。</div><div class="ttdef"><b>定义</b> ObjMeshIO.cpp:78</div></div>
-<div class="ttc" id="aclassObjMeshIO_html_a92c532874baa1ace4b65605f130afbcd"><div class="ttname"><a href="classObjMeshIO.html#a92c532874baa1ace4b65605f130afbcd">ObjMeshIO::loadFromFile</a></div><div class="ttdeci">static std::unique_ptr&lt; MeshData &gt; loadFromFile(const std::filesystem::path &amp;filename)</div><div class="ttdoc">从文件加载 MeshData 对象。</div><div class="ttdef"><b>定义</b> ObjMeshIO.cpp:10</div></div>
+<div class="ttc" id="aclassObjMeshIO_html"><div class="ttname"><a href="classObjMeshIO.html">ObjMeshIO</a></div><div class="ttdef"><b>定义</b> ObjMeshIO.h:9</div></div>
+<div class="ttc" id="aclassObjMeshIO_html_a05a01fd73b8e8cbf8f5698395c281d98"><div class="ttname"><a href="classObjMeshIO.html#a05a01fd73b8e8cbf8f5698395c281d98">ObjMeshIO::saveToFile</a></div><div class="ttdeci">static void saveToFile(const MeshData &amp;mesh, std::ostream &amp;os)</div><div class="ttdoc">将单个 MeshData 保存到指定的输出流（如文件输出流）中。</div><div class="ttdef"><b>定义</b> ObjMeshIO.cpp:101</div></div>
+<div class="ttc" id="aclassObjMeshIO_html_a40e4e86597efe759ff1b4ff89a2279f9"><div class="ttname"><a href="classObjMeshIO.html#a40e4e86597efe759ff1b4ff89a2279f9">ObjMeshIO::loadFromFile</a></div><div class="ttdeci">static std::optional&lt; ComponentDatas &gt; loadFromFile(const std::filesystem::path &amp;filename)</div><div class="ttdoc">从文件加载 OBJ 模型，按 shape(group) 分组拆分为多个组件。</div><div class="ttdef"><b>定义</b> ObjMeshIO.cpp:9</div></div>
 <div class="ttc" id="astructMeshData_html"><div class="ttname"><a href="structMeshData.html">MeshData</a></div><div class="ttdef"><b>定义</b> MeshData.h:39</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
