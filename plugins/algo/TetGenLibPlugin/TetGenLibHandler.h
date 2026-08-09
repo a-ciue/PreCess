@@ -14,8 +14,8 @@ namespace systems::algo {
 /**
  * @brief 基于 TetGen 库接口的四面体剖分
  *
- * 通过 args[0] 的 Selector（Vertex 全局点 id）解析目标 component，覆盖
- * @c AlgorithmHandler::resolveComponentId 按选择器选中的点反查所属 component，
+ * 通过 args[0] 的 Selector（Component 类型选择）解析目标 component，覆盖
+ * @c AlgorithmHandler::resolveComponentId 按选择器选中的组件直接解析，
  * 不依赖对象树传入的 fallback_component_id。
  */
 class TetGenLibHandler : public AlgorithmHandler {

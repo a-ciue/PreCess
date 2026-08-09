@@ -7,7 +7,6 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
 #include "MeshData.h"
-#include "MeshIDMap.h"
 #include "ModelLayer.h"
 #include "Selection.h"
 
@@ -58,6 +57,17 @@ Index addMeshComponent(ModelLayer& model_layer, const std::string& name)
 }
 
 /**
+ * @brief 构造只包含一个目标 Component 的选择器参数（与 pr_83 组件选择器风格一致）
+ */
+std::shared_ptr<Selection> makeComponentSelection(Index component_id)
+{
+    auto selection = std::make_shared<Selection>();
+    selection->type = ElementEnum::Component;
+    selection->ids = { component_id };
+    return selection;
+}
+
+/**
  * @brief 构造与 TetGenLibHandler::args_type() 等长（8 个）的占位参数向量
  *        第一个元素替换为传入的 Selector；其余 7 个默认 Combo(0)
  */
@@ -80,11 +90,11 @@ TEST_CASE("TetGenLibHandler::args_type() returns correct parameter count and typ
 
     REQUIRE(args.size() == 8);
 
-    SECTION("Parameter 0 (Selector): target component via picked vertices")
+    SECTION("Parameter 0 (Selector): target component via component selection")
     {
         CHECK(args[0].type == ArgTypeEnum::Selector);
-        CHECK(args[0].name == "目标 component（点选）");
-        CHECK(args[0].content == "Vertex");
+        CHECK(args[0].name == "目标 Component");
+        CHECK(args[0].content == "Component");
     }
 
     SECTION("Parameter 1 (Combo): keep only largest surface shell")
@@ -139,93 +149,57 @@ TEST_CASE("TetGenLibHandler::args_type() returns correct parameter count and typ
     }
 }
 
-TEST_CASE("TetGenLibHandler::resolveComponentId - Path A: selection.component_id takes precedence")
+TEST_CASE("TetGenLibHandler::resolveComponentId - Path A: Component selection resolves directly")
 {
-    // 用户已在对象树或 Selector 中选中了具体 component，但不在视口选点：
-    // 算法系统应优先使用 selection.component_id，不再回退到对象树 fallback_component_id。
+    // 用户在选择器"组件"模式下点选了具体 component：
+    // 算法系统应直接使用 selection.ids 中的 component_id，不再回退到对象树 fallback_component_id。
     ModelLayer model_layer;
     const Index cid_a = addMeshComponent(model_layer, "compA");
     const Index cid_b = addMeshComponent(model_layer, "compB");
     REQUIRE(cid_a != cid_b);
 
-    auto selection_a = std::make_shared<Selection>();
-    selection_a->type = ElementEnum::Vertex;
-    selection_a->component_id = cid_a;
-    selection_a->ids.clear(); // 路径 A 不依赖 ids
-
-    auto args_a = makeArgsWithSelector(selection_a);
     TetGenLibHandler handler;
 
-    // 即便 fallback 指向其他 component，selection.component_id 应被优先生效
-    REQUIRE(handler.resolveComponentId(model_layer, cid_b, args_a) == cid_a);
-
-    selection_a->component_id = cid_b;
-    args_a = makeArgsWithSelector(selection_a);
-    REQUIRE(handler.resolveComponentId(model_layer, cid_a, args_a) == cid_b);
-}
-
-TEST_CASE("TetGenLibHandler::resolveComponentId - Path B: vertex gid reverse-resolved via pointIdMap")
-{
-    // 用户在视口选 vertex（component_id 未由拾取器填写或为 -1）：
-    // 算法系统按 gid 经 pointIdMap.getLocal 反查所在 component，多点必须同 component。
-    ModelLayer model_layer;
-    const Index cid_a = addMeshComponent(model_layer, "compA");
-    const Index cid_b = addMeshComponent(model_layer, "compB");
-    REQUIRE(cid_a != cid_b);
-
-    // 先取出 compA / compB 实际分配的 gid 起点（addModel 自动 ensurePointGlobalIds）
-    const Index gid_a0 = model_layer.findComponent(cid_a)->point_global_ids_[0];
-    const Index gid_a1 = model_layer.findComponent(cid_a)->point_global_ids_[1];
-    const Index gid_b0 = model_layer.findComponent(cid_b)->point_global_ids_[0];
-
-    TetGenLibHandler handler;
-
-    SECTION("Single vertex from compA resolves to cid_a")
+    SECTION("Single component selection takes precedence over fallback")
     {
-        auto sel = std::make_shared<Selection>();
-        sel->type = ElementEnum::Vertex;
-        sel->component_id = -1;
-        sel->ids = { gid_a0 };
-        auto args = makeArgsWithSelector(sel);
-        REQUIRE(handler.resolveComponentId(model_layer, -1, args) == cid_a);
+        // 即便 fallback 指向其他 component，选择器选中的 component 应优先生效
+        auto args_a = makeArgsWithSelector(makeComponentSelection(cid_a));
+        REQUIRE(handler.resolveComponentId(model_layer, cid_b, args_a) == cid_a);
+
+        auto args_b = makeArgsWithSelector(makeComponentSelection(cid_b));
+        REQUIRE(handler.resolveComponentId(model_layer, cid_a, args_b) == cid_b);
     }
 
-    SECTION("Multiple vertices from same component resolve to that component")
+    SECTION("Multiple component selection is rejected")
     {
         auto sel = std::make_shared<Selection>();
-        sel->type = ElementEnum::Vertex;
-        sel->component_id = -1;
-        sel->ids = { gid_a0, gid_a1 };
+        sel->type = ElementEnum::Component;
+        sel->ids = { cid_a, cid_b };
         auto args = makeArgsWithSelector(sel);
-        REQUIRE(handler.resolveComponentId(model_layer, -1, args) == cid_a);
-    }
-
-    SECTION("Vertices across multiple components are rejected")
-    {
-        auto sel = std::make_shared<Selection>();
-        sel->type = ElementEnum::Vertex;
-        sel->component_id = -1;
-        sel->ids = { gid_a0, gid_b0 };
-        auto args = makeArgsWithSelector(sel);
-        // 跨 component 必然拒收，与 GmshMeshHandler 一致
-        auto resolved = handler.resolveComponentId(model_layer, -1, args);
+        // TetGen 输入须为整张 surface，多选 component 必然拒收
+        auto resolved = handler.resolveComponentId(model_layer, cid_a, args);
         CHECK_FALSE(resolved.has_value());
     }
 
-    SECTION("All-invalidated gids fall back to fallback_component_id when available")
+    SECTION("Empty component selection falls back to fallback_component_id")
+    {
+        auto sel = std::make_shared<Selection>();
+        sel->type = ElementEnum::Component;
+        auto args = makeArgsWithSelector(sel);
+        REQUIRE(handler.resolveComponentId(model_layer, cid_a, args) == cid_a);
+    }
+
+    SECTION("Non-component selection type falls back to fallback_component_id")
     {
         auto sel = std::make_shared<Selection>();
         sel->type = ElementEnum::Vertex;
-        sel->component_id = -1;
-        // gid_a0 后续被 release 后再反查会失效；这里用一个极大无效 gid 模拟
-        sel->ids = { 99999999 };
+        sel->ids = { 0 };
         auto args = makeArgsWithSelector(sel);
-        // 全部 gid 失效 → 落入路径 C（fallback）
         REQUIRE(handler.resolveComponentId(model_layer, cid_a, args) == cid_a);
     }
 }
 
-TEST_CASE("TetGenLibHandler::resolveComponentId - Path C: fallback to fallback_component_id")
+TEST_CASE("TetGenLibHandler::resolveComponentId - Path B: fallback to fallback_component_id")
 {
     ModelLayer model_layer;
     const Index cid_a = addMeshComponent(model_layer, "compA");
@@ -276,12 +250,12 @@ TEST_CASE("TetGenLibHandler::resolveComponentId - total failure returns nullopt 
         CHECK_FALSE(resolved.has_value());
     }
 
-    SECTION("Selection with all invalid gids, no fallback → nullopt")
+    SECTION("Multiple component selection, no fallback → nullopt")
     {
+        const Index cid_b = addMeshComponent(model_layer, "compB");
         auto sel = std::make_shared<Selection>();
-        sel->type = ElementEnum::Vertex;
-        sel->component_id = -1;
-        sel->ids = { 99999998, 99999999 };
+        sel->type = ElementEnum::Component;
+        sel->ids = { cid_a, cid_b };
         auto args = makeArgsWithSelector(sel);
         auto resolved = handler.resolveComponentId(model_layer, -1, args);
         CHECK_FALSE(resolved.has_value());

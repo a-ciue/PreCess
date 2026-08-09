@@ -25,24 +25,24 @@ TetGenLibPlugin/
 对所选面网格组件执行四面体剖分，生成包含三角表面和四面体体的新模型，直接加入当前项目。
 
 > 依据 [AGENTS.md](../AGENTS.md) 第 10 节算法系统约定，目标 component **不依赖对象树选中态**：
-> 用户可通过参数 0 的 Selector 直接选定目标 component，**无需在对象树预先点选**。
+> 用户可通过参数 0 的 Selector（`Component` 内容，与 MeshQualityPlugin 组件选择器风格一致）
+> 在视口"组件"模式下直接点选目标 component，**无需在对象树预先点选**。
 >
-> 解析目标 component 的三路径（`TetGenLibHandler::resolveComponentId`）：
+> 解析目标 component 的两路径（`TetGenLibHandler::resolveComponentId`）：
 >
 > | 优先级 | 路径 | 来源 | 典型场景 |
 > |--------|------|------|----------|
-> | A（首选） | `selection.component_id` | 拾取器/Selector 填充的 component 身份 | "选择组件类型"参数，或 Vertex 拾取后端的 `selectedIDs` |
-> | B（次选） | `selection.ids[Vertex]` → `pointIdMap().getLocal(gid)` | 视口点选 Vertex gid | "开始选择 → 在视口选点 → 确认"标准流程 |
-> | C（兜底） | `fallback_component_id` | `App.selection.activeComponentId`（对象树） | 向后兼容保留；不再推荐 |
+> | A（首选） | `selection.ids[Component]` | 选择器"组件"模式视口点选（`ComponentSelectorHighlight`） | "开始选择 → 在视口点选组件 → 确认"标准流程 |
+> | B（兜底） | `fallback_component_id` | `App.selection.activeComponentId`（对象树） | 向后兼容保留；不再推荐 |
 >
-> **跨 component 多点选则直接拒收**（TetGen 输入须为整张 surface，无法跨组件）。
-> 三个来源都不可用时返回 `nullopt` 并打印明确的 spdlog error，便于定位。
+> **多选 component 直接拒收**（TetGen 输入须为整张 surface，无法跨组件）。
+> 两个来源都不可用时返回 `nullopt` 并打印明确的 spdlog error，便于定位。
 
 ### 参数说明
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| 目标 component（点选） | Selector（Vertex） | 空 | 视口点选顶点；选点 gid 经 `pointIdMap()` 反查 component，多点须同 component |
+| 目标 Component | Selector（Component） | 空 | 视口"组件"模式点选目标组件；仅允许单选，多选拒收 |
 | 是否仅使用最大表面壳 | Combo（是/否） | 否 | 开启后通过 BFS 连通分析只取面数最多的表面壳，过滤孤立小腔体 |
 | 质量参数 q | Float | 1.2 | TetGen 质量约束（半径/边长比上限），设为 0 关闭 |
 | 最大单元体积 a | Float | 0 | 限制四面体最大体积，设为 0 关闭 |
@@ -59,9 +59,8 @@ TetGenLibPlugin/
 ## 处理流程
 
 1. **目标 component 解析**：用户激活算法 → `AlgorithmSystem::call` 调 `resolveComponentId`：
-   - 选择器自带 `component_id` → 直接返回（路径 A）
-   - 选择器填的是 Vertex gid → 经 `pointIdMap().getLocal(gid)` 反查（路径 B，多点须同 component）
-   - 上述都未拿到 → 回退到对象树选中态（路径 C，仅向后兼容）
+   - 选择器为 Component 类型单选 → 直接返回 `ids.front()`（路径 A）
+   - 未提供有效选择 → 回退到对象树选中态（路径 B，仅向后兼容）
 2. `AlgorithmSystem::call` 基于解析出的 `component_id` 获取 `ComponentOperator` 装入 `HandlerContext`
 3. 从 `ComponentOperator::component()` 获取目标 `ComponentData`
 4. 直读 `MeshData::vertex_positions_` 顶点坐标（MeshData 自包含，连通性数组存组件内局部点 id）

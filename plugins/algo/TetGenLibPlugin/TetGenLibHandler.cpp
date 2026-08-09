@@ -10,7 +10,6 @@
 #include "ComponentData.h"
 #include "ComponentOperator.h"
 #include "MeshData.h"
-#include "MeshIDMap.h"
 #include "ModelLayer.h"
 #include "Selection.h"
 
@@ -35,7 +34,7 @@
 namespace {
 
 // 参数下标（与 args_type() 注册顺序一一对应；同步见 README.md）
-constexpr std::size_t kSelectorParam = 0;       //> 选择点：Vertex 全局点 id，用于解析目标 component
+constexpr std::size_t kSelectorParam = 0;       //> 目标 component 选择器（Component 类型选择）
 constexpr std::size_t kLargestShellParam = 1;   //> 是否仅使用最大表面壳
 constexpr std::size_t kQualityBoundParam = 2;   //> 质量参数 q
 constexpr std::size_t kMaxVolumeParam = 3;      //> 最大单元体积 a
@@ -410,69 +409,47 @@ std::optional<Index> systems::algo::TetGenLibHandler::resolveComponentId(
     Index fallback_component_id,
     const std::vector<core::ArgObject>& args) const
 {
-    // 三路径解析目标 component，严格遵循 AGENTS.md 第 10 节"算法系统不应依赖对象树选中态"：
-    //   路径 A（首选）：selection.component_id 合法（用户选 Component 类型 / Vertex 拾取器填充）
-    //   路径 B（次选）：用户选 Vertex gid → pointIdMap 反查所在 component（多点必须同 component）
-    //   路径 C（兜底向后兼容）：fallback_component_id ≥ 0（用户在对象树选中态，仅供兼容保留）
-    // 三条都失败时返回 nullopt + spdlog error 让用户立刻看到原因。
+    (void)model_layer;
+
+    // 两路径解析目标 component，严格遵循 AGENTS.md 第 10 节"算法系统不应依赖对象树选中态"：
+    //   路径 A（首选）：选择器直接选定 Component 类型（用户在视口"组件"模式点选）
+    //   路径 B（兜底向后兼容）：fallback_component_id ≥ 0（对象树选中态，仅供兼容保留）
+    // 两条都失败时返回 nullopt + spdlog error 让用户立刻看到原因。
     if (args.size() > kSelectorParam) {
         const auto* selection_ptr = args[kSelectorParam].get<ArgTypeEnum::Selector>();
         if (selection_ptr && *selection_ptr) {
             const auto& sel = **selection_ptr;
 
-            // 路径 A：selection 自带 component_id
-            if (sel.component_id >= 0) {
-                return sel.component_id;
+            // 路径 A：Component 类型选择，仅允许单选（TetGen 输入须为整张 surface）；
+            // 空选择视作"未选择"落入路径 B
+            if (sel.type == ElementEnum::Component && !sel.ids.empty()) {
+                if (sel.ids.size() == 1) {
+                    return sel.ids.front();
+                }
+                spdlog::error(
+                    "TetGenLibHandler: 只能选择一个 component（当前选中 {} 个），"
+                    "TetGen 输入须为整张 surface",
+                    sel.ids.size());
+                return std::nullopt;
             }
 
-            // 路径 B：Vertex gid 反查
-            if (sel.type == ElementEnum::Vertex && !sel.ids.empty()) {
-                std::optional<Index> target;
-                bool any_resolved = false;
-                for (Index gid : sel.ids) {
-                    const auto [comp_id, local_id] = model_layer.pointIdMap().getLocal(gid);
-                    if (comp_id == MeshIDMap::kInvalidComponent) {
-                        spdlog::warn("TetGenLibHandler: 点 gid {} 已失效，跳过该点", gid);
-                        continue;
-                    }
-                    any_resolved = true;
-                    if (target && *target != comp_id) {
-                        spdlog::error(
-                            "TetGenLibHandler: 所选点跨多个 component（{} vs {}），"
-                            "TetGen 输入须为整张 surface，请仅在同一组件内选点",
-                            *target, comp_id);
-                        return std::nullopt;
-                    }
-                    target = comp_id;
-                    (void)local_id;
-                }
-                if (target) {
-                    return *target;
-                }
-                if (!any_resolved) {
-                    spdlog::warn(
-                        "TetGenLibHandler: 用户所选 Vertex gid 全部失效，未选择任何 component");
-                }
-            } else {
-                spdlog::warn(
-                    "TetGenLibHandler: Selector 内容不匹配（type={}, component_id={}, ids={}），"
-                    "期望 Vertex 选点或 Component 类型选择",
-                    static_cast<int>(sel.type), sel.component_id, sel.ids.size());
-            }
+            spdlog::warn(
+                "TetGenLibHandler: Selector 内容不匹配（type={}），期望 Component 类型选择",
+                static_cast<int>(sel.type));
         }
     }
 
-    // 路径 C：回退到对象树当前选中 component（向后兼容保留）
+    // 路径 B：回退到对象树当前选中 component（向后兼容保留）
     if (fallback_component_id < 0) {
         spdlog::error(
-            "TetGenLibHandler: 解析目标 component 失败：未通过选择器选 vertex / 未指定 component 类型、"
+            "TetGenLibHandler: 解析目标 component 失败：未通过选择器选中 component、"
             "也未在对象树选中 component（fallback_component_id={}）。"
-            "请在视口选点或选中对象树中的 component 后再执行。",
+            "请在选择器中切换\"组件\"模式点选目标组件后再执行。",
             fallback_component_id);
         return std::nullopt;
     }
     spdlog::info(
-        "TetGenLibHandler: 选择器未提供 component_id，回退到对象树选中态 component_id={}",
+        "TetGenLibHandler: 选择器未提供目标 component，回退到对象树选中态 component_id={}",
         fallback_component_id);
     return fallback_component_id;
 }
@@ -484,9 +461,9 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
         return {};
     }
 
-    // args[0] 是选择器；用户主动选择后由 AlgorithmSystem::call 经 resolveComponentId 解析并写入
+    // args[0] 是目标 component 选择器；用户主动选择后由 AlgorithmSystem::call 经 resolveComponentId 解析并写入
     // HandlerContext：context.cur_component 即用户选中的 component，不再依赖对象树选中态。
-    // 用户未选点 / 选择器初始化失败时回退由 resolveComponentId 完成（参见该实现）。
+    // 用户未选组件 / 选择器初始化失败时回退由 resolveComponentId 完成（参见该实现）。
 
     const int* largest_shell_idx = args[kLargestShellParam].get<ArgTypeEnum::Combo>();
     const double* quality_bound = args[kQualityBoundParam].get<ArgTypeEnum::Float>();
@@ -580,7 +557,7 @@ std::any systems::algo::TetGenLibHandler::execute(HandlerContext& context, const
 std::vector<core::ArgType> systems::algo::TetGenLibHandler::args_type() const
 {
     return {
-        core::ArgType { ArgTypeEnum::Selector, "目标 component（点选）", "Vertex" },
+        core::ArgType { ArgTypeEnum::Selector, "目标 Component", "Component", "选择需要执行四面体剖分的 Component" },
         core::ArgType { ArgTypeEnum::Combo, "是否仅使用最大表面壳", "是,否" },
         core::ArgType { ArgTypeEnum::Float, "质量参数 q（0表示关闭）", "1.2" },
         core::ArgType { ArgTypeEnum::Float, "最大单元体积 a（0表示关闭）", "0" },
