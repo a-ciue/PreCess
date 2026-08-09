@@ -54,9 +54,6 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     scalar_attribute_display_bridge_sub_
         = event_bus_->subscribe<systems::feature::ScalarAttributeDisplayRequestedEvent>(
             [this](const systems::feature::ScalarAttributeDisplayRequestedEvent& event) {
-                // 空属性名只在功能内部表示结束自动标量显示，不转发给 QML 渲染。
-                if (event.attribute_name.empty())
-                    return;
                 feature_adaptor_->notifyScalarAttributeDisplayRequested(
                     event.component_id, event.attribute_name);
             });
