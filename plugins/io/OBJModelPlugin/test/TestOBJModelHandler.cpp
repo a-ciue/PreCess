@@ -3,9 +3,8 @@
  * @brief OBJ 模型文件处理器单元测试
  *
  * 由于 OBJ 仅支持表面三角/多边形网格（不支持体单元 solid_*），
- * 且 OBJModelHandler 的写出依赖 MeshData::patches_（按 patch 写出 group），
  * 这里不直接复用 MakeMeshData()（其 solid 部分会在 OBJ 写出/读回过程中丢失），
- * 而是构造一个仅含点 + 面 + patch/block 的最小网格，做读写回环验证。
+ * 而是构造一个仅含点 + 面的最小网格，做读写回环验证。
  */
 #include "ComponentData.h"
 #include "MeshData.h"
@@ -15,6 +14,7 @@
 #include "TempFile.h"
 #include <catch2/catch_test_macros.hpp>
 #include <filesystem>
+#include <fstream>
 #include <memory>
 #include <optional>
 #include <vector>
@@ -27,7 +27,6 @@ namespace {
  *
  * - 4 个顶点（一个四面体的 4 个角点）
  * - 4 个三角形面
- * - 单个 patch，单个 block
  */
 MeshData MakeSurfaceMesh()
 {
@@ -46,16 +45,6 @@ MeshData MakeSurfaceMesh()
         1, 2, 3,
     };
     m.face_vertices_offset_ = { 0, 3, 6, 9, 12 };
-
-    // 1 个 patch（id=1）覆盖 4 个面
-    auto patch = std::make_unique<Patch>(1, 1);
-    patch->faces = { 0, 1, 2, 3 };
-    m.patches_[1] = std::move(patch);
-
-    auto block = std::make_unique<Block>();
-    block->id = 1;
-    block->patchIDs = { 1 };
-    m.blocks_[1] = std::move(block);
 
     return m;
 }
@@ -157,6 +146,36 @@ TEST_CASE("OBJModelHandler::read_model() - model_name preserved")
     REQUIRE_NOTHROW(payload = io.read_model(out, {}));
     REQUIRE(payload.has_value());
     REQUIRE(payload->model_name == out.filename().string());
+}
+
+TEST_CASE("OBJModelHandler::read_model() - shapes split into components")
+{
+    // 按 shape(group) 拆分：每个组读为一个独立组件，MeshData 自包含（点索引重映射）
+    systems::io::OBJModelHandler io;
+    fs::path in = core::TempFile::instance().path().string() + "_groups.obj";
+
+    {
+        std::ofstream ofs(in);
+        ofs << "v 0 0 0\nv 1 0 0\nv 0 1 0\nv 0 0 1\n";
+        ofs << "g first\nf 1 2 3\n";
+        ofs << "g second\nf 2 3 4\nf 1 2 4\n";
+    }
+
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(in, {}));
+    REQUIRE(payload.has_value());
+    REQUIRE(payload->components.size() == 2);
+
+    const auto& first = payload->components[0];
+    const auto& second = payload->components[1];
+    REQUIRE(first->name == "first");
+    REQUIRE(second->name == "second");
+
+    // first：1 个面、3 个顶点；second：2 个面、4 个顶点（均为组件内局部点索引）
+    REQUIRE(first->mesh->face_vertices_offset_.size() == 2);
+    REQUIRE(first->mesh->vertex_count_ == 3);
+    REQUIRE(second->mesh->face_vertices_offset_.size() == 3);
+    REQUIRE(second->mesh->vertex_count_ == 4);
 }
 
 TEST_CASE("OBJModelHandler::write_components() - empty MeshData gracefully")
