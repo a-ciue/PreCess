@@ -215,7 +215,6 @@ TEST_CASE("TetGenLibHandler::resolveComponentId - Path B: fallback to fallback_c
     SECTION("Empty selection → resolveComponentId uses fallback")
     {
         auto empty = std::make_shared<Selection>(); // 默认空
-        empty->component_id = -1;
         auto args = makeArgsWithSelector(empty);
         REQUIRE(handler.resolveComponentId(model_layer, cid_a, args) == cid_a);
     }
