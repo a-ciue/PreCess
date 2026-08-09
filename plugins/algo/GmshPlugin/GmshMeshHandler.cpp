@@ -312,7 +312,7 @@ void systems::algo::GmshMeshHandler::removeExpiredStates(const ModelLayer& model
 std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
 {
     return {
-        ArgType { ArgTypeEnum::Selector, "选择几何面", "" },
+        ArgType { ArgTypeEnum::Selector, "选择几何面", "GeometryFace" },
         ArgType { ArgTypeEnum::Combo, "操作模式", "划分,删除,重划分" },
         ArgType { ArgTypeEnum::Text, "目标网格尺寸(留空自动)", "" },
         ArgType { ArgTypeEnum::Text, "最小网格尺寸(留空默认)", "" },

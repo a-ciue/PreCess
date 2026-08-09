@@ -121,7 +121,7 @@ std::any DeleteFaceHandler::execute(ModelLayer& model, Index fallback_component_
 std::vector<ArgType> DeleteFaceHandler::args_type() const
 {
     return {
-        ArgType { ArgTypeEnum::Selector, "选择面", "" }
+        ArgType { ArgTypeEnum::Selector, "选择面", "Face" }
     };
 }
 }
