@@ -284,8 +284,12 @@ std::vector<Vec3> collectPositions(const MeshData& mesh, ModelLayer& manager, co
     case ElementEnum::Vertex:
         // 选择集顶点 id 为全局点 id，经 pointIdMap 换算取坐标
         for (Index id : selection.ids) {
-            if (const Vec3* p = getPosition(manager, id))
-                positions.push_back(*p);
+            const Vec3* p = getPosition(manager, id);
+            if (!p) {
+                spdlog::warn("DimensionHandler::execute: 顶点 id={} 无效", id);
+                continue;
+            }
+            positions.push_back(*p);
         }
         break;
     case ElementEnum::Edge: {
