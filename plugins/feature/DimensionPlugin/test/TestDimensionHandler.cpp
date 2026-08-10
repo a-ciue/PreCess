@@ -16,6 +16,7 @@
 #include "InteractionContext.h"
 #include "InteractionState.h"
 #include "MakeMeshData.h"
+#include "MeshAdjacency.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
@@ -186,7 +187,7 @@ TEST_CASE("DimensionHandler: distance between two vertices")
     CHECK(result.find("1.000000") != std::string::npos);
 }
 
-TEST_CASE("DimensionHandler: length of edges selected as endpoint vertex id pairs")
+TEST_CASE("DimensionHandler: length of edges selected by stable edge ids")
 {
     auto mesh = std::make_unique<MeshData>(MakeMeshData());
     auto c = std::make_unique<ComponentData>();
@@ -209,15 +210,24 @@ TEST_CASE("DimensionHandler: length of edges selected as endpoint vertex id pair
     MeshData* mesh_ptr = comp->asMeshData();
     REQUIRE(mesh_ptr);
 
-    // 边选择的 ids 是端点顶点 id 对（全局点 id）：{12,13} 与 {0,1} 长度均为 1
-    auto selection = makeEdgeSelection({ comp->point_global_ids_[12], comp->point_global_ids_[13],
-        comp->point_global_ids_[0], comp->point_global_ids_[1] });
+    // 边选择的 ids 为稳定局部边 id（Selection.h 契约）：边 (12,13) 与 (0,1) 长度均为 1
+    MeshAdjacency& adj = comp->mesh_adjacency;
+    const auto e0 = adj.findEdgeByEndpoints(*mesh_ptr, 12, 13);
+    const auto e1 = adj.findEdgeByEndpoints(*mesh_ptr, 0, 1);
+    REQUIRE(e0.has_value());
+    REQUIRE(e1.has_value());
+    const auto sid0 = adj.edgeStableId(*mesh_ptr, *e0);
+    const auto sid1 = adj.edgeStableId(*mesh_ptr, *e1);
+    REQUIRE(sid0.has_value());
+    REQUIRE(sid1.has_value());
+
+    auto selection = makeEdgeSelection({ *sid0, *sid1 });
     selection->component_id = cids[0];
     const std::string result = env.executeDimension(3, selection); // 长度
     CHECK(result.find("累计长度: 2.000000") != std::string::npos);
 }
 
-TEST_CASE("DimensionHandler: angle between two edges selected as endpoint vertex id pairs")
+TEST_CASE("DimensionHandler: angle between two edges selected by stable edge ids")
 {
     auto mesh = std::make_unique<MeshData>(MakeMeshData());
     auto c = std::make_unique<ComponentData>();
@@ -240,9 +250,18 @@ TEST_CASE("DimensionHandler: angle between two edges selected as endpoint vertex
     MeshData* mesh_ptr = comp->asMeshData();
     REQUIRE(mesh_ptr);
 
-    // 边 {0,1} 方向 (1,0,0)，边 {0,3} 方向 (0,1,0)，夹角 90°（id 为全局点 id）
-    auto selection = makeEdgeSelection({ comp->point_global_ids_[0], comp->point_global_ids_[1],
-        comp->point_global_ids_[0], comp->point_global_ids_[3] });
+    // 边 (0,1) 方向 (1,0,0)，边 (0,3) 方向 (0,1,0)，夹角 90°（ids 为稳定局部边 id）
+    MeshAdjacency& adj = comp->mesh_adjacency;
+    const auto e0 = adj.findEdgeByEndpoints(*mesh_ptr, 0, 1);
+    const auto e1 = adj.findEdgeByEndpoints(*mesh_ptr, 0, 3);
+    REQUIRE(e0.has_value());
+    REQUIRE(e1.has_value());
+    const auto sid0 = adj.edgeStableId(*mesh_ptr, *e0);
+    const auto sid1 = adj.edgeStableId(*mesh_ptr, *e1);
+    REQUIRE(sid0.has_value());
+    REQUIRE(sid1.has_value());
+
+    auto selection = makeEdgeSelection({ *sid0, *sid1 });
     selection->component_id = cids[0];
     const std::string result = env.executeDimension(1, selection); // 角度
     CHECK(result.find("Angle: 90.000000 deg") != std::string::npos);
