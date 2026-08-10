@@ -343,10 +343,7 @@ std::string formatDistance(const Vec3& a, const Vec3& b)
 {
     const Vec3 d = b - a;
     std::ostringstream oss;
-    oss << "Distance: " << toString(length(d)) << "\n"
-        << "Dx: " << toString(d[0]) << "\n"
-        << "Dy: " << toString(d[1]) << "\n"
-        << "Dz: " << toString(d[2]);
+    oss << "Distance: " << toString(length(d));
     return oss.str();
 }
 
