@@ -1,0 +1,13 @@
+<!-- 8. 圆柱体 -->
+<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" fill="#ffffff"/>
+  <ellipse cx="30" cy="20" rx="15" ry="6" fill="none" stroke="#0066cc" stroke-width="1.5"/>
+  <ellipse cx="30" cy="45" rx="15" ry="6" fill="none" stroke="#0066cc" stroke-width="1.5"/>
+  <line x1="15" y1="20" x2="15" y2="45" stroke="#0066cc" stroke-width="1.5"/>
+  <line x1="45" y1="20" x2="45" y2="45" stroke="#0066cc" stroke-width="1.5"/>
+  <circle cx="30" cy="20" r="2.5" fill="#ffffff" stroke="#0066cc" stroke-width="1.5"/>
+  <line x1="30" y1="20" x2="45" y2="20" stroke="#cc6600" stroke-width="0.8"/>
+  <text x="35" y="17" font-size="5" fill="#cc6600">R</text>
+  <line x1="48" y1="20" x2="48" y2="45" stroke="#cc6600" stroke-width="0.8"/>
+  <text x="50" y="33" font-size="5" fill="#cc6600">H</text>
+</svg>

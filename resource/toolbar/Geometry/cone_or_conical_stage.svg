@@ -1,0 +1,13 @@
+<!-- 9. 圆锥/圆台 -->
+<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" fill="#ffffff"/>
+  <ellipse cx="30" cy="45" rx="18" ry="7" fill="none" stroke="#0066cc" stroke-width="1.5"/>
+  <ellipse cx="30" cy="20" rx="8" ry="3" fill="none" stroke="#0066cc" stroke-width="1.5"/>
+  <line x1="12" y1="45" x2="22" y2="20" stroke="#0066cc" stroke-width="1.5"/>
+  <line x1="48" y1="45" x2="38" y2="20" stroke="#0066cc" stroke-width="1.5"/>
+  <circle cx="30" cy="45" r="2.5" fill="#ffffff" stroke="#0066cc" stroke-width="1.5"/>
+  <line x1="30" y1="45" x2="48" y2="45" stroke="#cc6600" stroke-width="0.8"/>
+  <text x="36" y="52" font-size="5" fill="#cc6600">R</text>
+  <line x1="51" y1="20" x2="51" y2="45" stroke="#cc6600" stroke-width="0.8"/>
+  <text x="53" y="33" font-size="5" fill="#cc6600">H</text>
+</svg>

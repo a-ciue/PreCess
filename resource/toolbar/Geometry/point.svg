@@ -1,0 +1,5 @@
+<!-- 1. 点 -->
+<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" fill="#ffffff"/>
+  <circle cx="30" cy="30" r="4" fill="#ffffff" stroke="#0066cc" stroke-width="2"/>
+</svg>

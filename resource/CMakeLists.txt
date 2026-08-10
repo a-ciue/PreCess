@@ -2,15 +2,30 @@ qt_add_resources(${MYNAME} "images"
     PREFIX /images
     FILES
         PreCess.ico
-        toolbar/import.svg
-        toolbar/export.svg
-        toolbar/preference.svg
-        toolbar/create_face.svg
-        toolbar/delete_face.svg
-        toolbar/TetGen.svg
-        toolbar/cmd.svg
-        toolbar/gmsh.svg
-        toolbar/PreCess_extra_plugin.svg
+        toolbar/File/import.svg
+        toolbar/File/export.svg
+        toolbar/File/preference.svg
+        toolbar/Edit/create_face.svg
+        toolbar/Edit/delete_face.svg
+        toolbar/Algorithm/tetgen.svg
+        toolbar/Algorithm/cmd.svg
+        toolbar/Algorithm/gmsh.svg
+        toolbar/precess_extra_plugin.svg
+        toolbar/Geometry/point.svg
+        toolbar/Geometry/line_coord.svg
+        toolbar/Geometry/line_points.svg
+        toolbar/Geometry/rectangle.svg
+        toolbar/Geometry/sector_or_circle.svg
+        toolbar/Geometry/close_edges_to_form_surface.svg
+        toolbar/Geometry/cuboid.svg
+        toolbar/Geometry/cylinder.svg
+        toolbar/Geometry/cone_or_conical_stage.svg
+        toolbar/Geometry/sphere.svg
+        toolbar/Geometry/stretched_surface.svg
+        toolbar/Geometry/delete_geometry.svg
+        toolbar/Function/grid_quality.svg
+        toolbar/Tools/measure.svg
+        toolbar/Tools/size_marking.svg
         modeltree/show.svg
         modeltree/hide.svg
 )
