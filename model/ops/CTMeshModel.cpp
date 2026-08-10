@@ -164,7 +164,7 @@ void CTMeshModel::update(MeshData& mesh_data)
         patch->faces.clear(); // 清空之前的面片信息
         patch->faces.reserve(faces.size()); // 预留空间以提高性能
         for (auto& face : faces) {
-            patch->faces.emplace_back(mesh_data.face_vertices_offset_.size() - 1); // 存面索引
+            patch->faces.emplace_back(static_cast<Index>(mesh_data.face_vertices_offset_.size() - 1)); // 存面索引
 
             int i = 0;
             // 添加新面的点

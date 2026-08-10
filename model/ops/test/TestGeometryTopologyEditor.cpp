@@ -9,8 +9,9 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopoDS_Face.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -30,7 +31,7 @@ TopoDS_Shape makeGeometryRoot(TopoDS_Shape shape)
 
 int countSubshapes(const TopoDS_Shape& shape, TopAbs_ShapeEnum type)
 {
-    TopTools_IndexedMapOfShape shapes;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shapes;
     TopExp::MapShapes(shape, type, shapes);
     return shapes.Extent();
 }
