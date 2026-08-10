@@ -23,14 +23,12 @@ Page {
 
             ToolButton {
                 id: geoBtn
-                function getGeoLabel(style) {
-                    var labels = [
-                        "几何·面·有边", "几何·面·无边", "几何·透·75%", "几何·透·50%",
-                        "几何·透·25%", "几何·线·带曲面线", "几何·线·无曲面线", "几何·隐"
-                    ]
-                    return labels[style] || "几何"
-                }
-                text: myItem ? getGeoLabel(myItem.geometryStyle) : "几何"
+                readonly property var geoLabels: [
+                    "几何·面·有边", "几何·面·无边", "几何·透·75%", "几何·透·50%",
+                    "几何·透·25%", "几何·线·带曲面线", "几何·线·无曲面线", "几何·隐"
+                ]
+                readonly property int menuItemHeight: 28
+                text: myItem ? geoLabels[myItem.geometryStyle] || "几何" : "几何"
                 Layout.fillHeight: true
                 onClicked: geoMenu.open()
 
@@ -54,12 +52,12 @@ Page {
                                 geoSubCloseTimer.stop()
                                 geoTransMenu.close()
                                 geoWireMenu.close()
-                                geoFaceMenu.popup(geoBtn, geoMenu.width, geoMenu.y + 4)
+                                geoFaceMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding)
                             } else {
                                 geoSubCloseTimer.restart()
                             }
                         }
-                        onTriggered: geoFaceMenu.popup(geoBtn, geoMenu.width, geoMenu.y + 4)
+                        onTriggered: geoFaceMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding)
                     }
                     MenuItem {
                         id: geoTransCat
@@ -69,12 +67,12 @@ Page {
                                 geoSubCloseTimer.stop()
                                 geoFaceMenu.close()
                                 geoWireMenu.close()
-                                geoTransMenu.popup(geoBtn, geoMenu.width, geoMenu.y + 32)
+                                geoTransMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding + geoBtn.menuItemHeight)
                             } else {
                                 geoSubCloseTimer.restart()
                             }
                         }
-                        onTriggered: geoTransMenu.popup(geoBtn, geoMenu.width, geoMenu.y + 32)
+                        onTriggered: geoTransMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding + geoBtn.menuItemHeight)
                     }
                     MenuItem {
                         id: geoWireCat
@@ -84,12 +82,12 @@ Page {
                                 geoSubCloseTimer.stop()
                                 geoFaceMenu.close()
                                 geoTransMenu.close()
-                                geoWireMenu.popup(geoBtn, geoMenu.width, geoMenu.y + 60)
+                                geoWireMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding + 2 * geoBtn.menuItemHeight)
                             } else {
                                 geoSubCloseTimer.restart()
                             }
                         }
-                        onTriggered: geoWireMenu.popup(geoBtn, geoMenu.width, geoMenu.y + 60)
+                        onTriggered: geoWireMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding + 2 * geoBtn.menuItemHeight)
                     }
                     MenuItem {
                         text: "隐"
@@ -154,14 +152,12 @@ Page {
 
             ToolButton {
                 id: meshBtn
-                function getMeshLabel(style) {
-                    var labels = [
-                        "网格·面·带网格线", "网格·面·无线", "网格·透·75%", "网格·透·50%",
-                        "网格·透·25%", "网格·线·带内部线", "网格·线·仅表面线", "网格·隐"
-                    ]
-                    return labels[style] || "网格"
-                }
-                text: myItem ? getMeshLabel(myItem.meshStyle) : "网格"
+                readonly property var meshLabels: [
+                    "网格·面·带网格线", "网格·面·无线", "网格·透·75%", "网格·透·50%",
+                    "网格·透·25%", "网格·线·带内部线", "网格·线·仅表面线", "网格·隐"
+                ]
+                readonly property int menuItemHeight: 28
+                text: myItem ? meshLabels[myItem.meshStyle] || "网格" : "网格"
                 Layout.fillHeight: true
                 onClicked: meshMenu.open()
 
@@ -185,12 +181,12 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshTransMenu.close()
                                 meshWireMenu.close()
-                                meshFaceMenu.popup(meshBtn, meshMenu.width, meshMenu.y + 4)
+                                meshFaceMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding)
                             } else {
                                 meshSubCloseTimer.restart()
                             }
                         }
-                        onTriggered: meshFaceMenu.popup(meshBtn, meshMenu.width, meshMenu.y + 4)
+                        onTriggered: meshFaceMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding)
                     }
                     MenuItem {
                         id: meshTransCat
@@ -200,12 +196,12 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshFaceMenu.close()
                                 meshWireMenu.close()
-                                meshTransMenu.popup(meshBtn, meshMenu.width, meshMenu.y + 32)
+                                meshTransMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + meshBtn.menuItemHeight)
                             } else {
                                 meshSubCloseTimer.restart()
                             }
                         }
-                        onTriggered: meshTransMenu.popup(meshBtn, meshMenu.width, meshMenu.y + 32)
+                        onTriggered: meshTransMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + meshBtn.menuItemHeight)
                     }
                     MenuItem {
                         id: meshWireCat
@@ -215,12 +211,12 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshFaceMenu.close()
                                 meshTransMenu.close()
-                                meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + 60)
+                                meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + 2 * meshBtn.menuItemHeight)
                             } else {
                                 meshSubCloseTimer.restart()
                             }
                         }
-                        onTriggered: meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + 60)
+                        onTriggered: meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + 2 * meshBtn.menuItemHeight)
                     }
                     MenuItem {
                         text: "隐"
