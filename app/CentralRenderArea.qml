@@ -28,11 +28,12 @@ Page {
                     "几何·透·25%", "几何·线·带曲面线", "几何·线·无曲面线", "几何·隐"
                 ]
                 readonly property int menuItemHeight: 28
-                text: myItem ? geoLabels[myItem.geometryStyle] || "几何" : "几何"
+                readonly property int subMenuCloseDelay: 500
+                text: myItem ? (myItem.geometryStyle >= 0 && myItem.geometryStyle < geoLabels.length ? geoLabels[myItem.geometryStyle] : "几何") : "几何"
                 Layout.fillHeight: true
                 onClicked: geoMenu.open()
 
-                Timer { id: geoSubCloseTimer; interval: 500; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
+                Timer { id: geoSubCloseTimer; interval: subMenuCloseDelay; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
 
                 Menu {
                     id: geoMenu
@@ -101,13 +102,15 @@ Page {
                     id: geoFaceMenu
                     MenuItem {
                         text: "有边"
-                        checkable: true; checked: myItem.geometryStyle === 0
+                        checkable: true
+                        checked: myItem.geometryStyle === 0
                         onHoveredChanged: { if (hovered) geoSubCloseTimer.stop() }
                         onTriggered: myItem.setGeometryStyle(0)
                     }
                     MenuItem {
                         text: "无边"
-                        checkable: true; checked: myItem.geometryStyle === 1
+                        checkable: true
+                        checked: myItem.geometryStyle === 1
                         onHoveredChanged: { if (hovered) geoSubCloseTimer.stop() }
                         onTriggered: myItem.setGeometryStyle(1)
                     }
@@ -116,19 +119,22 @@ Page {
                     id: geoTransMenu
                     MenuItem {
                         text: "75%"
-                        checkable: true; checked: myItem.geometryStyle === 2
+                        checkable: true
+                        checked: myItem.geometryStyle === 2
                         onHoveredChanged: { if (hovered) geoSubCloseTimer.stop() }
                         onTriggered: myItem.setGeometryStyle(2)
                     }
                     MenuItem {
                         text: "50%"
-                        checkable: true; checked: myItem.geometryStyle === 3
+                        checkable: true
+                        checked: myItem.geometryStyle === 3
                         onHoveredChanged: { if (hovered) geoSubCloseTimer.stop() }
                         onTriggered: myItem.setGeometryStyle(3)
                     }
                     MenuItem {
                         text: "25%"
-                        checkable: true; checked: myItem.geometryStyle === 4
+                        checkable: true
+                        checked: myItem.geometryStyle === 4
                         onHoveredChanged: { if (hovered) geoSubCloseTimer.stop() }
                         onTriggered: myItem.setGeometryStyle(4)
                     }
@@ -137,13 +143,15 @@ Page {
                     id: geoWireMenu
                     MenuItem {
                         text: "带曲面线"
-                        checkable: true; checked: myItem.geometryStyle === 5
+                        checkable: true
+                        checked: myItem.geometryStyle === 5
                         onHoveredChanged: { if (hovered) geoSubCloseTimer.stop() }
                         onTriggered: myItem.setGeometryStyle(5)
                     }
                     MenuItem {
                         text: "无曲面线"
-                        checkable: true; checked: myItem.geometryStyle === 6
+                        checkable: true
+                        checked: myItem.geometryStyle === 6
                         onHoveredChanged: { if (hovered) geoSubCloseTimer.stop() }
                         onTriggered: myItem.setGeometryStyle(6)
                     }
@@ -157,11 +165,12 @@ Page {
                     "网格·透·25%", "网格·线·带内部线", "网格·线·仅表面线", "网格·隐"
                 ]
                 readonly property int menuItemHeight: 28
-                text: myItem ? meshLabels[myItem.meshStyle] || "网格" : "网格"
+                readonly property int subMenuCloseDelay: 500
+                text: myItem ? (myItem.meshStyle >= 0 && myItem.meshStyle < meshLabels.length ? meshLabels[myItem.meshStyle] : "网格") : "网格"
                 Layout.fillHeight: true
                 onClicked: meshMenu.open()
 
-                Timer { id: meshSubCloseTimer; interval: 500; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
+                Timer { id: meshSubCloseTimer; interval: subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
 
                 Menu {
                     id: meshMenu
@@ -230,13 +239,15 @@ Page {
                     id: meshFaceMenu
                     MenuItem {
                         text: "带网格线"
-                        checkable: true; checked: myItem.meshStyle === 0
+                        checkable: true
+                        checked: myItem.meshStyle === 0
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(0)
                     }
                     MenuItem {
                         text: "无线"
-                        checkable: true; checked: myItem.meshStyle === 1
+                        checkable: true
+                        checked: myItem.meshStyle === 1
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(1)
                     }
@@ -245,19 +256,22 @@ Page {
                     id: meshTransMenu
                     MenuItem {
                         text: "75%"
-                        checkable: true; checked: myItem.meshStyle === 2
+                        checkable: true
+                        checked: myItem.meshStyle === 2
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(2)
                     }
                     MenuItem {
                         text: "50%"
-                        checkable: true; checked: myItem.meshStyle === 3
+                        checkable: true
+                        checked: myItem.meshStyle === 3
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(3)
                     }
                     MenuItem {
                         text: "25%"
-                        checkable: true; checked: myItem.meshStyle === 4
+                        checkable: true
+                        checked: myItem.meshStyle === 4
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(4)
                     }
@@ -266,13 +280,15 @@ Page {
                     id: meshWireMenu
                     MenuItem {
                         text: "带内部线"
-                        checkable: true; checked: myItem.meshStyle === 5
+                        checkable: true
+                        checked: myItem.meshStyle === 5
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(5)
                     }
                     MenuItem {
                         text: "仅表面线"
-                        checkable: true; checked: myItem.meshStyle === 6
+                        checkable: true
+                        checked: myItem.meshStyle === 6
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(6)
                     }
