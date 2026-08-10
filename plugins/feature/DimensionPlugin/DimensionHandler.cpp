@@ -291,14 +291,18 @@ std::vector<Vec3> collectPositions(const MeshData& mesh, ModelLayer& manager, co
     case ElementEnum::Edge: {
         // 边 id 为稳定局部边 id，经所属组件邻接表解析端点坐标
         ComponentData* comp = manager.findComponent(selection.component_id);
-        if (comp) {
-            for (Index id : selection.ids) {
-                Vec3 p0, p1;
-                if (edgeEndpointPositions(*comp, mesh, id, p0, p1)) {
-                    positions.push_back(p0);
-                    positions.push_back(p1);
-                }
+        if (!comp) {
+            spdlog::warn("DimensionHandler::execute: 边选择未找到所属组件 id={}", selection.component_id);
+            break;
+        }
+        for (Index id : selection.ids) {
+            Vec3 p0, p1;
+            if (!edgeEndpointPositions(*comp, mesh, id, p0, p1)) {
+                spdlog::warn("DimensionHandler::execute: 边 id={} 解析失败", id);
+                continue;
             }
+            positions.push_back(p0);
+            positions.push_back(p1);
         }
         break;
     }
@@ -792,19 +796,25 @@ std::string meshAngle(const MeshData& mesh, ModelLayer& manager, const Selection
         const Vec3* c = getPosition(manager, selection.ids[2]);
         if (a && b && c)
             return formatAngle(*a, *b, *c);
+        spdlog::error("DimensionHandler::execute: 角度测量包含无效的顶点 id");
+        return std::string("错误：无效的顶点 id");
     }
     if (selection.type == ElementEnum::Edge && selection.ids.size() == 2) {
         // 边选择的 ids 为稳定局部边 id，两条边各自解析端点坐标构成方向
         ComponentData* comp = manager.findComponent(selection.component_id);
-        if (comp) {
-            Vec3 a0, a1, b0, b1;
-            if (edgeEndpointPositions(*comp, mesh, selection.ids[0], a0, a1)
-                && edgeEndpointPositions(*comp, mesh, selection.ids[1], b0, b1)) {
-                std::ostringstream oss;
-                oss << "Angle: " << toString(angleBetween(a1 - a0, b1 - b0)) << " deg";
-                return oss.str();
-            }
+        if (!comp) {
+            spdlog::error("DimensionHandler::execute: 角度测量找不到组件 id={}", selection.component_id);
+            return std::string("错误：找不到所选边所在的组件");
         }
+        Vec3 a0, a1, b0, b1;
+        if (edgeEndpointPositions(*comp, mesh, selection.ids[0], a0, a1)
+            && edgeEndpointPositions(*comp, mesh, selection.ids[1], b0, b1)) {
+            std::ostringstream oss;
+            oss << "Angle: " << toString(angleBetween(a1 - a0, b1 - b0)) << " deg";
+            return oss.str();
+        }
+        spdlog::error("DimensionHandler::execute: 角度测量边 id={} 或 id={} 无效", selection.ids[0], selection.ids[1]);
+        return std::string("错误：所选边 id 无效或已消亡");
     }
     spdlog::error("DimensionHandler::execute: 角度测量需要选择三个点或两条边");
     return std::string("错误：角度测量需要选择三个点或两条边");
