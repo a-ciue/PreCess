@@ -9,8 +9,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 项目以异常作错误处理机制：MSVC 缺省（无 /EH）下 catch 能捕获但不展开栈（C4530），
 # 捕获异常后继续执行会状态错乱（如 unordered_set 迭代器损坏），须显式启用 /EHsc
+# 源码统一 UTF-8 无 BOM：MSVC 在代码页 936 下按 GBK 误读会报 C4819，须显式指定源字符集；
+# Qt6（Qt6Targets.cmake）与 VTK::fmt 已对 MSVC 目标强制传播 -utf-8，
+# 与 /source-charset:utf-8 不兼容（D8016），故 MSVC 统一用 /utf-8
 if(MSVC)
-    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/EHsc>)
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/EHsc> $<$<COMPILE_LANGUAGE:CXX>:/utf-8>)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-finput-charset=UTF-8>)
 endif()
 
 list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
