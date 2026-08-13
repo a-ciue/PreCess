@@ -148,7 +148,8 @@ ColumnLayout {
 
     ToolBar {
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             spacing: 0
 
             ToolButton {
@@ -261,7 +262,8 @@ ColumnLayout {
 
         // 0: 文件
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             ToolButton {
                 icon.source: "qrc:/images/toolbar/File/import.svg"
@@ -298,7 +300,8 @@ ColumnLayout {
 
         // 1: 编辑 → 数据驱动，图标按名映射
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: QModelManager.editSystem.editsInfo
@@ -328,7 +331,8 @@ ColumnLayout {
 
         // 2: 算法 → 数据驱动，图标按名映射
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: QModelManager.algorithmSystem.algorithmsInfo
@@ -349,7 +353,8 @@ ColumnLayout {
 
         // 3: 几何 → 创建几何。
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: root.geometryOperationButtons
@@ -374,7 +379,8 @@ ColumnLayout {
             RowLayout {
                 id: featureMenuPage
                 required property var modelData
-                anchors.fill: parent
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
                 Repeater {
                     model: featureMenuPage.modelData.groups

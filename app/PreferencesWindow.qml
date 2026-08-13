@@ -72,7 +72,8 @@ Item {
                 }
 
                 ColumnLayout {
-                    anchors.fill: parent
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
 
                     ListView {
                         id: pluginListView
