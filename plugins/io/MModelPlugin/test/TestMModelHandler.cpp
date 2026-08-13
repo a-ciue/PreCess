@@ -1,8 +1,8 @@
 /**
  * @file TestMModelHandler.cpp
- * @brief M (MeshLib CTMesh) 模型文件处理器单元测试
+ * @brief M (.m) 网格文件处理器单元测试
  *
- * MModelHandler 用 MeshLib::CTMesh 读写 .m 文件，当前写出入口为组件化
+ * MModelHandler 直接解析 / 生成 .m 文本读写网格，当前写出入口为组件化
  * write_components()。MeshData 自包含（vertex_positions_ 常驻坐标、连通性存组件内局部点索引），
  * 测试将源 MeshData 加入 ModelLayer 后即可直接导出，无需全局点池换算。
  * .m 格式以表面三角网格为主，不支持体单元，写出后体信息不会回流。
@@ -176,8 +176,8 @@ TEST_CASE("MModelHandler::write_components()/read_model() round-trip")
         }
     }
 
-    // .m 格式内部经 CTMesh 转换，patch / block ID 不保证原样保留，
-    // 但面数据应完整回流，且至少存在一个 patch 包含所有面。
+    // .m 以 g 属性记录面所属 patch，patch / block ID 经 g 分组回流，
+    // 面数据应完整回流，且至少存在一个 patch 包含所有面。
     size_t total_faces = 0;
     for (const auto& [pid, patch] : read_mesh->patches_) {
         total_faces += patch->faces.size();
@@ -209,8 +209,7 @@ TEST_CASE("MModelHandler::multi-patch round-trip")
     REQUIRE(read_mesh->vertex_positions_.size() == ref.vertex_positions_.size());
     REQUIRE(read_mesh->face_vertices_offset_.size() == ref.face_vertices_offset_.size());
 
-    // .m 内部经 CTMesh 转换，patch / block 分组信息可能合并或丢失，
-    // 但面数据必须完整保留。
+    // .m 以 g 属性记录面所属 patch，面数据必须完整保留。
     size_t total_faces = 0;
     for (const auto& [pid, patch] : read_mesh->patches_) {
         total_faces += patch->faces.size();

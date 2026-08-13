@@ -7,7 +7,6 @@
 #include "ModelIOHandler.h"
 
 class ModelData;
-class CTMeshModel;
 
 namespace systems::io {
 /**

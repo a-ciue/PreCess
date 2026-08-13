@@ -1,6 +1,5 @@
 add_library(DataOps STATIC
 	ObjMeshIO.cpp
-	CTMeshModel.cpp
 	UGridModel.cpp
 	GeometryBuilder.cpp
 	GeometryTopologyEditor.cpp

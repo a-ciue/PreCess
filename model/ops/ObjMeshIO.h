@@ -22,7 +22,7 @@ public:
 	 * @brief 将单个 MeshData 保存到指定的输出流（如文件输出流）中。
 	 *
 	 * 零拷贝写出全部点与面（点索引 1-based），不写 object 分组行；
-	 * 适合 CTMesh 转换等只有单网格、无需组件语义的场合。
+	 * 适合只有单网格、无需组件语义的场合。
 	 * @param mesh 要保存的 MeshData 对象。
 	 * @param os 用于写入数据的输出流。
 	 */
