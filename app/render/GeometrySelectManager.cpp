@@ -34,6 +34,10 @@ void GeometrySelectManager::select(double posx, double posy)
     if (this->select_mode_ == SelectMode::None)
         return;
 
+    // 无已注册几何组件时不触碰 picker，避免空拾取崩溃
+    if (!op_->hasRegisteredComponents())
+        return;
+
     const int n = picker_->Pick(posx, posy, 0.0, renderer_);
     if (n <= 0)
         return;
@@ -115,6 +119,10 @@ void GeometrySelectManager::clearSelection()
 
 std::optional<std::pair<Index, std::array<double, 3>>> GeometrySelectManager::snapGeometryVertex(double posx, double posy)
 {
+    // 无已注册几何组件时不触碰 picker，避免空拾取崩溃
+    if (!op_->hasRegisteredComponents())
+        return std::nullopt;
+
     if (picker_->Pick(posx, posy, 0.0, renderer_) <= 0) {
         return std::nullopt;
     }

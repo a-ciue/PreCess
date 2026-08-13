@@ -33,6 +33,8 @@ public:
     void registerProps(Index component_id, std::shared_ptr<GeometryActor> actor);
     void unregisterProps(std::shared_ptr<GeometryActor> actor);
     void setShapePickingEnabled(std::shared_ptr<GeometryActor> actor, bool enabled);
+    //! @brief 是否有已注册的几何组件（几何拾取在无几何时跳过，避免空拾取崩溃）
+    bool hasRegisteredComponents() const;
 
 private:
     void addToAllLists(vtkProp* prop);
