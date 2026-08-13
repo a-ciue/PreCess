@@ -11,6 +11,7 @@
 class QArgObject : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QArgObject instances are created by C++")
 
     Q_PROPERTY(const QArgType* type READ type CONSTANT)
     Q_PROPERTY(QVariant value MEMBER value_ WRITE setValue NOTIFY valueChanged)

@@ -11,6 +11,7 @@ class SystemPluginManager;
 class QSystemPluginManager : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QSystemPluginManager is provided by C++")
     Q_PROPERTY(const QStringList& pluginNames READ getPluginNames NOTIFY pluginNamesChanged)
 public:
     QSystemPluginManager(SystemPluginManager* system_plugin_manager_);
