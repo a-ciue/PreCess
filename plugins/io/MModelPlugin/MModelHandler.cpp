@@ -98,21 +98,24 @@ std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const
 }
 
 /**
- * @brief 将解析出的顶点属性按 v_<key>_<分量数> 命名写入 vertex_attributes，缺失顶点补 0
+ * @brief 将解析出的属性按 <前缀><key>_<分量数> 命名写入属性表，缺失元素补 0
+ *
+ * 前缀约定同 MeshData：顶点属性 "v_"、面属性 "f_"。
  */
-void appendVertexAttributes(
-    std::map<std::string, std::vector<double>>& vertex_attributes,
+void appendAttributes(
+    const std::string& prefix,
+    std::map<std::string, std::vector<double>>& attributes,
     std::unordered_map<std::string, size_t>& component_counts,
     const std::unordered_map<std::string, std::vector<double>>& parsed_attributes,
-    size_t vertex_index)
+    size_t element_index)
 {
-    for (auto& [name, values] : vertex_attributes) {
+    for (auto& [name, values] : attributes) {
         const size_t component_count = component_counts[name];
-        values.resize((vertex_index + 1) * component_count, 0.0);
+        values.resize((element_index + 1) * component_count, 0.0);
     }
 
     for (const auto& [key, tuple] : parsed_attributes) {
-        const std::string name = "v_" + key + "_" + std::to_string(tuple.size());
+        const std::string name = prefix + key + "_" + std::to_string(tuple.size());
         const size_t component_count = tuple.size();
         auto component_iter = component_counts.find(name);
         if (component_iter == component_counts.end()) {
@@ -121,10 +124,77 @@ void appendVertexAttributes(
             continue;
         }
 
-        auto& values = vertex_attributes[name];
-        values.resize((vertex_index + 1) * component_count, 0.0);
-        std::copy(tuple.begin(), tuple.end(), values.begin() + vertex_index * component_count);
+        auto& values = attributes[name];
+        values.resize((element_index + 1) * component_count, 0.0);
+        std::copy(tuple.begin(), tuple.end(), values.begin() + element_index * component_count);
     }
+}
+
+/**
+ * @brief .m 属性段中的一个属性：key=(v1 v2 ...) 的还原形式
+ */
+struct MAttribute {
+    std::string key;
+    size_t components;
+    const std::vector<double>* values;
+};
+
+/**
+ * @brief 从 MeshData 属性表还原 .m 属性段属性列表
+ *
+ * 仅识别 <前缀><key>_<分量数> 命名且长度与元素数一致的属性，其余跳过。
+ */
+std::vector<MAttribute> collectAttributes(
+    const std::map<std::string, std::vector<double>>& attributes,
+    const std::string& prefix,
+    size_t element_count)
+{
+    std::vector<MAttribute> result;
+    for (const auto& [name, values] : attributes) {
+        if (name.rfind(prefix, 0) != 0)
+            continue;
+
+        const size_t sep = name.rfind('_');
+        if (sep == std::string::npos || sep <= prefix.size() || sep + 1 >= name.size())
+            continue;
+
+        // 末段须为全数字的分量数
+        const std::string count_text = name.substr(sep + 1);
+        if (!std::all_of(count_text.begin(), count_text.end(),
+                [](unsigned char ch) { return std::isdigit(ch) != 0; }))
+            continue;
+        const size_t components = std::stoul(count_text);
+        if (components == 0 || values.size() != element_count * components)
+            continue;
+
+        result.push_back({ name.substr(prefix.size(), sep - prefix.size()), components, &values });
+    }
+    return result;
+}
+
+/**
+ * @brief 写出单个元素的 {...} 属性段（无属性时不写）
+ */
+void writeTrait(std::ostream& os, const std::vector<MAttribute>& attributes, size_t element_index)
+{
+    if (attributes.empty())
+        return;
+
+    os << " {";
+    bool first = true;
+    for (const MAttribute& attribute : attributes) {
+        if (!first)
+            os << " ";
+        os << attribute.key << "=(";
+        for (size_t k = 0; k < attribute.components; ++k) {
+            if (k > 0)
+                os << " ";
+            os << (*attribute.values)[element_index * attribute.components + k];
+        }
+        os << ")";
+        first = false;
+    }
+    os << "}";
 }
 }
 
@@ -143,7 +213,7 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     // .m 顶点/面 id 为文件内编号（通常从 1 开始），读入时重映射为组件内局部点索引
     std::unordered_map<Index, Index> vertex_index_map;
     std::unordered_map<std::string, size_t> vertex_attribute_components;
-    std::map<Index, std::vector<Index>> patch_faces; //> patch id -> 面索引列表
+    std::unordered_map<std::string, size_t> face_attribute_components;
 
     std::string line;
     while (std::getline(ifs, line)) {
@@ -163,7 +233,8 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
             const size_t local_index = mesh_data->vertex_positions_.size();
             vertex_index_map[vid] = static_cast<Index>(local_index);
             mesh_data->vertex_positions_.push_back(point);
-            appendVertexAttributes(
+            appendAttributes(
+                "v_",
                 mesh_data->vertex_attributes_,
                 vertex_attribute_components,
                 parseStringAttributes(traitText(line)),
@@ -191,39 +262,28 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
             if (!valid || face_vertices.empty())
                 continue;
 
-            // g 属性表示面所属 patch 分组，缺省归入 patch 0
-            Index patch_id = 0;
-            const auto face_attributes = parseStringAttributes(traitText(line));
-            if (const auto iter = face_attributes.find("g");
-                iter != face_attributes.end() && !iter->second.empty())
-                patch_id = static_cast<Index>(iter->second.front());
-
             const Index face_index = static_cast<Index>(mesh_data->face_vertices_offset_.size() - 1);
             mesh_data->face_vertices_.insert(
                 mesh_data->face_vertices_.end(), face_vertices.begin(), face_vertices.end());
             mesh_data->face_vertices_offset_.push_back(
                 static_cast<Index>(mesh_data->face_vertices_.size()));
-            patch_faces[patch_id].push_back(face_index);
+            appendAttributes(
+                "f_",
+                mesh_data->face_attributes_,
+                face_attribute_components,
+                parseStringAttributes(traitText(line)),
+                face_index);
         }
         // 其余行（Edge / Corner 等仅承载属性的记录）不携带几何信息，忽略
     }
 
     mesh_data->vertex_count_ = static_cast<Index>(mesh_data->vertex_positions_.size());
-    // 顶点属性数组补齐：未声明该属性的顶点补 0
+    // 属性数组补齐：未声明该属性的元素补 0
     for (auto& [name, values] : mesh_data->vertex_attributes_)
         values.resize(mesh_data->vertex_positions_.size() * vertex_attribute_components[name], 0.0);
-
-    // 按 g 分组构建 Patch / Block，默认 block id 与 patch id 相同
-    for (auto& [patch_id, faces] : patch_faces) {
-        auto patch = std::make_unique<Patch>(patch_id, patch_id);
-        patch->faces = std::move(faces);
-        mesh_data->patches_[patch_id] = std::move(patch);
-
-        auto block = std::make_unique<Block>();
-        block->id = patch_id;
-        block->patchIDs.insert(patch_id);
-        mesh_data->blocks_[patch_id] = std::move(block);
-    }
+    const size_t face_count = mesh_data->face_vertices_offset_.size() - 1;
+    for (auto& [name, values] : mesh_data->face_attributes_)
+        values.resize(face_count * face_attribute_components[name], 0.0);
 
     auto c = std::make_unique<ComponentData>();
     c->id = -1;
@@ -271,27 +331,25 @@ void MModelHandler::write_components(const ModelLayer& mgr,
         return;
     }
 
-    // 面索引 -> patch id（无分组信息的面归入 patch 0），写出为面的 g 属性
-    const size_t face_count = mesh.face_vertices_offset_.empty() ? 0 : mesh.face_vertices_offset_.size() - 1;
-    std::vector<Index> face_patch(face_count, 0);
-    for (const auto& [patch_id, patch] : mesh.patches_) {
-        for (const Index face_index : patch->faces) {
-            if (face_index >= 0 && static_cast<size_t>(face_index) < face_count)
-                face_patch[face_index] = patch_id;
-        }
-    }
-
     // MeshData 自包含（vertex_positions_ 常驻坐标、连通性存局部点索引），
-    // .m 顶点/面 id 从 1 开始，局部点索引 +1 即为文件顶点 id
+    // .m 顶点/面 id 从 1 开始，局部点索引 +1 即为文件顶点 id；
+    // 点/面属性按 v_<key>_<分量数> / f_<key>_<分量数> 命名还原为 {...} 属性段
+    const size_t face_count = mesh.face_vertices_offset_.empty() ? 0 : mesh.face_vertices_offset_.size() - 1;
+    const std::vector<MAttribute> vertex_attributes = collectAttributes(mesh.vertex_attributes_, "v_", mesh.vertex_positions_.size());
+    const std::vector<MAttribute> face_attributes = collectAttributes(mesh.face_attributes_, "f_", face_count);
+
     for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
         const auto& p = mesh.vertex_positions_[i];
-        ofs << "Vertex " << i + 1 << " " << p[0] << " " << p[1] << " " << p[2] << "\n";
+        ofs << "Vertex " << i + 1 << " " << p[0] << " " << p[1] << " " << p[2];
+        writeTrait(ofs, vertex_attributes, i);
+        ofs << "\n";
     }
     for (size_t f = 0; f < face_count; ++f) {
         ofs << "Face " << f + 1;
         for (Index k = mesh.face_vertices_offset_[f]; k < mesh.face_vertices_offset_[f + 1]; ++k)
             ofs << " " << mesh.face_vertices_[k] + 1;
-        ofs << " {g=(" << face_patch[f] << ")}\n";
+        writeTrait(ofs, face_attributes, f);
+        ofs << "\n";
     }
 }
 

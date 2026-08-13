@@ -6,6 +6,7 @@
  * write_components()。MeshData 自包含（vertex_positions_ 常驻坐标、连通性存组件内局部点索引），
  * 测试将源 MeshData 加入 ModelLayer 后即可直接导出，无需全局点池换算。
  * .m 格式以表面三角网格为主，不支持体单元，写出后体信息不会回流。
+ * 点/面 {...} 属性段经 v_<key>_<分量数> / f_<key>_<分量数> 命名的属性表回环。
  */
 #include "MModelHandler.h"
 #include "ComponentData.h"
@@ -23,7 +24,9 @@ namespace fs = std::filesystem;
 
 namespace {
 /**
- * @brief 构造一个仅含表面三角形的最小 MeshData（含 patch/block）
+ * @brief 构造一个仅含表面三角形的最小 MeshData
+ *
+ * 源数据仍带一个 patch/block，用于验证写出不依赖（也不再保留）分组信息。
  */
 MeshData MakeSurfaceTriMesh()
 {
@@ -51,50 +54,6 @@ MeshData MakeSurfaceTriMesh()
     block->id = 1;
     block->patchIDs = { 1 };
     m.blocks_[1] = std::move(block);
-    return m;
-}
-
-/**
- * @brief 构造含两个 Patch / 两个 Block 的 MeshData
- */
-MeshData MakeMultiPatchMesh()
-{
-    MeshData m;
-    m.init();
-    m.vertex_positions_ = {
-        { 0.0, 0.0, 0.0 },
-        { 1.0, 0.0, 0.0 },
-        { 0.0, 1.0, 0.0 },
-        { 0.0, 0.0, 1.0 },
-    };
-    m.face_vertices_ = {
-        0, 2, 1,
-        0, 1, 3,
-        0, 3, 2,
-        1, 2, 3,
-    };
-    m.face_vertices_offset_ = { 0, 3, 6, 9, 12 };
-
-    // Patch 1 -> Block 1，前两个面
-    auto patch1 = std::make_unique<Patch>(1, 1);
-    patch1->faces = { 0, 1 };
-    m.patches_[1] = std::move(patch1);
-
-    auto block1 = std::make_unique<Block>();
-    block1->id = 1;
-    block1->patchIDs = { 1 };
-    m.blocks_[1] = std::move(block1);
-
-    // Patch 2 -> Block 2，后两个面
-    auto patch2 = std::make_unique<Patch>(2, 2);
-    patch2->faces = { 2, 3 };
-    m.patches_[2] = std::move(patch2);
-
-    auto block2 = std::make_unique<Block>();
-    block2->id = 2;
-    block2->patchIDs = { 2 };
-    m.blocks_[2] = std::move(block2);
-
     return m;
 }
 
@@ -176,25 +135,33 @@ TEST_CASE("MModelHandler::write_components()/read_model() round-trip")
         }
     }
 
-    // .m 以 g 属性记录面所属 patch，patch / block ID 经 g 分组回流，
-    // 面数据应完整回流，且至少存在一个 patch 包含所有面。
-    size_t total_faces = 0;
-    for (const auto& [pid, patch] : read_mesh->patches_) {
-        total_faces += patch->faces.size();
-    }
-    REQUIRE(total_faces == ref.face_vertices_offset_.size() - 1);
-    REQUIRE(!read_mesh->patches_.empty());
+    // patches_/blocks_ 已废弃，.m 读写不再维护 patch 分组，
+    // 读回网格不重建 patches_，面数据完整回流即可。
+    REQUIRE(read_mesh->patches_.empty());
 }
 
-TEST_CASE("MModelHandler::multi-patch round-trip")
+TEST_CASE("MModelHandler::attribute round-trip")
 {
     systems::io::MModelHandler io;
-    fs::path out = core::TempFile::instance().path().string() + "_multi.m";
+    fs::path out = core::TempFile::instance().path().string() + "_attr.m";
+
+    // 点/面属性按 v_<key>_<分量数> / f_<key>_<分量数> 命名，
+    // 经 .m {...} 属性段写出并读回后应原样保留
+    MeshData m = MakeSurfaceTriMesh();
+    m.vertex_attributes_["v_rgb_3"] = {
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        0.5, 0.5, 0.5,
+    };
+    m.face_attributes_["f_g_1"] = { 1.0, 1.0, 2.0, 2.0 };
+    const std::vector<double> ref_rgb = m.vertex_attributes_["v_rgb_3"];
+    const std::vector<double> ref_g = m.face_attributes_["f_g_1"];
 
     ModelLayer layer;
     std::vector<Index> componentIds = addMeshModelAndGetComponentIds(
         layer,
-        std::make_unique<MeshData>(MakeMultiPatchMesh()));
+        std::make_unique<MeshData>(std::move(m)));
 
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
@@ -204,18 +171,10 @@ TEST_CASE("MModelHandler::multi-patch round-trip")
     REQUIRE(payload.has_value());
 
     const MeshData* read_mesh = requireReadableMeshModel(*payload);
-
-    const MeshData ref = MakeMultiPatchMesh();
-    REQUIRE(read_mesh->vertex_positions_.size() == ref.vertex_positions_.size());
-    REQUIRE(read_mesh->face_vertices_offset_.size() == ref.face_vertices_offset_.size());
-
-    // .m 以 g 属性记录面所属 patch，面数据必须完整保留。
-    size_t total_faces = 0;
-    for (const auto& [pid, patch] : read_mesh->patches_) {
-        total_faces += patch->faces.size();
-    }
-    REQUIRE(total_faces == ref.face_vertices_offset_.size() - 1);
-    REQUIRE(!read_mesh->patches_.empty());
+    REQUIRE(read_mesh->vertex_attributes_.count("v_rgb_3") == 1);
+    REQUIRE(read_mesh->vertex_attributes_.at("v_rgb_3") == ref_rgb);
+    REQUIRE(read_mesh->face_attributes_.count("f_g_1") == 1);
+    REQUIRE(read_mesh->face_attributes_.at("f_g_1") == ref_g);
 }
 
 TEST_CASE("MModelHandler::write_components() without patches preserves faces")
