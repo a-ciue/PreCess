@@ -22,15 +22,6 @@ Item {
                 policy: ScrollBar.AsNeeded
                 topPadding: 0
                 bottomPadding: 0
-                background: Rectangle {
-                    implicitWidth: 8
-                    color: "transparent"
-                }
-                contentItem: Rectangle {
-                    implicitWidth: 8
-                    radius: 4
-                    color: parent.hovered ? "#c0c0c0" : "#e0e0e0"
-                }
             }
 
             TextArea {
@@ -41,11 +32,6 @@ Item {
                 font.family: "Courier New"
                 font.pixelSize: 12
                 wrapMode: TextArea.Wrap
-                background: Rectangle {
-                    color: "#f0f0f0"
-                    border.color: "#d0d0d0"
-                    border.width: 1
-                }
                 text: ""
 
                 Component.onCompleted: {
