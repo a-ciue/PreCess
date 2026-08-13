@@ -15,6 +15,10 @@ ColumnLayout {
     property int activeCategory: -1
     property real windowHeight: 600
 
+    // ribbon 页内按钮图标尺寸。页高即 windowHeight/12；图标若绑定 parent.height，
+    // 会与布局隐式尺寸形成反馈环（图标异步加载后触发 recursive rearrange 警告）。
+    readonly property real ribbonIconSize: windowHeight / 12 * 0.65
+
     // 基础几何创建入口，由 Main.qml 中的 GeometryOperationActions 提供。
     property var geometryOperationActions
 
@@ -267,8 +271,8 @@ ColumnLayout {
 
             ToolButton {
                 icon.source: "qrc:/images/toolbar/File/import.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导入"
@@ -277,8 +281,8 @@ ColumnLayout {
 
             ToolButton {
                 icon.source: "qrc:/images/toolbar/File/export.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导出"
@@ -287,8 +291,8 @@ ColumnLayout {
 
             ToolButton {
                 icon.source: "qrc:/images/toolbar/File/preference.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "偏好设置"
@@ -308,8 +312,8 @@ ColumnLayout {
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -339,8 +343,8 @@ ColumnLayout {
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -361,8 +365,8 @@ ColumnLayout {
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForFeature(modelData)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.text
@@ -396,8 +400,8 @@ ColumnLayout {
                             ToolButton {
                                 required property var modelData
                                 icon.source: root.getIconForFeature(modelData)
-                                icon.width: parent.height * 0.65
-                                icon.height: parent.height * 0.65
+                                icon.width: root.ribbonIconSize
+                                icon.height: root.ribbonIconSize
                                 Layout.fillHeight: true
                                 display: ToolButton.TextUnderIcon
                                 text: modelData.display_name
