@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['e_0',['E',['../classMeshLib_1_1CToolMesh.html#a2f1d1aaeb17cff5485349de4fa22c716',1,'MeshLib::CToolMesh::E'],['../classMeshLib_1_1CFaceSplitter.html#a6e472d39cf5a80ae9616408f8c2cffd2',1,'MeshLib::CFaceSplitter::E']]],
-  ['erasedhandler_1',['ErasedHandler',['../classcore_1_1EventBus.html#aeafb3e302ab2f31b9a6f79de865c7a64',1,'core::EventBus::ErasedHandler'],['../classEventBus.html#aeafb3e302ab2f31b9a6f79de865c7a64',1,'EventBus::ErasedHandler']]]
+  ['geomedgeid_0',['GeomEdgeId',['../Core_8h.html#a2c620d553d3620740a24da5c348c7a70',1,'Core.h']]],
+  ['geometryselectionvtk_1',['GeometrySelectionVtk',['../GeometrySelectorHighlight_8h.html#ac326fa7688042f57d37e2dffc01ddbac',1,'GeometrySelectorHighlight.h']]],
+  ['geomfaceid_2',['GeomFaceId',['../Core_8h.html#ab5877cbde257d16ef48544f6e31bca90',1,'Core.h']]],
+  ['geomsolidid_3',['GeomSolidId',['../Core_8h.html#a09b977d80717477b28230209e7cc183f',1,'Core.h']]],
+  ['geomvertexid_4',['GeomVertexId',['../Core_8h.html#aefd45ef2a67b50be304576981920f50a',1,'Core.h']]],
+  ['globalid_5',['GlobalID',['../classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb',1,'MeshIDMap']]]
 ];

@@ -1,7 +1,5 @@
 <map id="MeshModelBase" name="MeshModelBase">
-<area shape="rect" id="Node000001" title="辅助网格数据结构，用于更新核心网格数据结构" alt="" coords="63,5,193,31"/>
-<area shape="rect" id="Node000002" href="$classCTMeshModel.html" title="模型层辅助数据结构 CTMesh" alt="" coords="5,79,120,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="110,43,75,80,71,77,106,39"/>
-<area shape="rect" id="Node000003" href="$classUGridModel.html" title="模型层辅助数据结构 UGrid" alt="" coords="144,79,243,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="150,39,185,77,181,80,146,43"/>
+<area shape="rect" id="Node000001" title="辅助网格数据结构，用于更新核心网格数据结构" alt="" coords="5,5,135,31"/>
+<area shape="rect" id="Node000002" href="$classUGridModel.html" title="模型层辅助数据结构 UGrid" alt="" coords="21,79,119,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,44,73,79,67,79,67,44"/>
 </map>

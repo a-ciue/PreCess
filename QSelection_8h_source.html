@@ -104,7 +104,7 @@ $(function() {
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">   24</a></span>    <a class="code hl_function" href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection</a>() { }</div>
 <div class="foldopen" id="foldopen00025" data-start="{" data-end="}">
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">   25</a></span>    <a class="code hl_function" href="classQSelection.html#aaee984386736e7fe5f7e65c2d318466d">QSelection</a>(std::unique_ptr&lt;Selection&gt; data)</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        : <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>(<a class="code hl_namespace" href="namespacestd.html">std</a>::move(data))</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        : <a class="code hl_variable" href="classQSelection.html#ae17a23b67b7c87bdb604e930769d517a">data_</a>(std::move(data))</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    }</div>
 </div>
@@ -186,7 +186,6 @@ $(function() {
 <div class="ttc" id="aclassQSelection_html_aea3afa5f66180811ffea9161debd6d8d"><div class="ttname"><a href="classQSelection.html#aea3afa5f66180811ffea9161debd6d8d">QSelection::set</a></div><div class="ttdeci">void set(std::shared_ptr&lt; Selection &gt; data)</div><div class="ttdef"><b>定义</b> QSelection.h:34</div></div>
 <div class="ttc" id="aclassQSelection_html_af271af99a1501effea84e88617aac5c0"><div class="ttname"><a href="classQSelection.html#af271af99a1501effea84e88617aac5c0">QSelection::QSelection</a></div><div class="ttdeci">QSelection()</div><div class="ttdef"><b>定义</b> QSelection.h:24</div></div>
 <div class="ttc" id="aclassQSelection_html_afd038d7a143ba159b14545379e67e871"><div class="ttname"><a href="classQSelection.html#afd038d7a143ba159b14545379e67e871">QSelection::getComponentId</a></div><div class="ttdeci">Q_INVOKABLE Index getComponentId()</div><div class="ttdoc">返回选中对象的模型 ID</div><div class="ttdef"><b>定义</b> QSelection.h:82</div></div>
-<div class="ttc" id="anamespacestd_html"><div class="ttname"><a href="namespacestd.html">std</a></div><div class="ttdoc">STL namespace</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

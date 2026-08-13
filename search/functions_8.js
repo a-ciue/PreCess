@@ -1,24 +1,11 @@
 var searchData=
 [
-  ['halfedge_0',['halfedge',['../classMeshLib_1_1CEdge.html#a56d16baa1f8333b3cc874b8001680d8c',1,'MeshLib::CEdge::halfedge()'],['../classMeshLib_1_1CFace.html#ae9d22fbd132054c640ee7b45e3899881',1,'MeshLib::CFace::halfedge()'],['../classMeshLib_1_1CVertex.html#aa6a88f7ef25f9586ad2f8c9e06161105',1,'MeshLib::CVertex::halfedge()']]],
-  ['halfedgeedge_1',['halfedgeEdge',['../classMeshLib_1_1CBaseMesh.html#ada3fa889304e08af51bc8734512ab38e',1,'MeshLib::CBaseMesh']]],
-  ['halfedgeface_2',['halfedgeFace',['../classMeshLib_1_1CBaseMesh.html#ad244041d5d03f443128eec0c589e6a5c',1,'MeshLib::CBaseMesh']]],
-  ['halfedgenext_3',['halfedgeNext',['../classMeshLib_1_1CBaseMesh.html#a172ab9124d1c0236a66e104fe1cce404',1,'MeshLib::CBaseMesh']]],
-  ['halfedgeprev_4',['halfedgePrev',['../classMeshLib_1_1CBaseMesh.html#a9d89bff17b86a5d8f0dc13f4eb7f5b6f',1,'MeshLib::CBaseMesh']]],
-  ['halfedges_5',['halfedges',['../classMeshLib_1_1CBaseMesh.html#afcfda5fcd6c3f6d8fd39016b109c4053',1,'MeshLib::CBaseMesh::halfedges()'],['../classMeshLib_1_1CLoop.html#abeaf36b1f56492514cafe684f423d4c0',1,'MeshLib::CLoop::halfedges()']]],
-  ['halfedgesource_6',['halfedgeSource',['../classMeshLib_1_1CBaseMesh.html#aa3e98fc14c2dae20fd4fada65c5d13a2',1,'MeshLib::CBaseMesh']]],
-  ['halfedgesym_7',['halfedgeSym',['../classMeshLib_1_1CBaseMesh.html#a4905fc3ff11c836e07395dd424d37ece',1,'MeshLib::CBaseMesh']]],
-  ['halfedgetarget_8',['halfedgeTarget',['../classMeshLib_1_1CBaseMesh.html#a019148ba8fcdc951366bb297f7cf706d',1,'MeshLib::CBaseMesh']]],
-  ['halfedgevertex_9',['halfedgeVertex',['../classMeshLib_1_1CBaseMesh.html#ab306584de9fde74de2038c0b0113d0a0',1,'MeshLib::CBaseMesh']]],
-  ['handle_10',['Handle',['../GeometryActor_8h.html#acb9d39434207f27c7d476d3606bc60db',1,'GeometryActor.h']]],
-  ['handlercreatordestroyer_11',['HandlerCreatorDestroyer',['../structsystems_1_1HandlerCreatorDestroyer.html#af985924c0a494b7dfef3d95742f7bab1',1,'systems::HandlerCreatorDestroyer']]],
-  ['hasactivestate_12',['hasActiveState',['../classInteractionService.html#a8da4a000b10eb0b3c0cd5fd185c30f51',1,'InteractionService']]],
-  ['hascomponent_13',['hasComponent',['../classQModelQuery.html#afc97a0a71730b8ba54152f15ddc0cf86',1,'QModelQuery::hasComponent()'],['../classGeometryActorManager.html#a34957ce93a72aee7ed198cc5f21fb42e',1,'GeometryActorManager::hasComponent()'],['../classMeshActorManager.html#afdb5c94a7051977099f18737f8f697c8',1,'MeshActorManager::hasComponent()']]],
-  ['hasgeometry_14',['hasGeometry',['../structComponentData.html#a89b5b7d048461de0b087c6c1e9ecc0d9',1,'ComponentData']]],
-  ['hasmesh_15',['hasMesh',['../structComponentData.html#adf67c038a108088ce936973b012b57a0',1,'ComponentData']]],
-  ['hasmodel_16',['hasModel',['../classQModelQuery.html#a35056e21c07e3fe3e307fa17fef3763c',1,'QModelQuery']]],
-  ['he_5fnext_17',['he_next',['../classMeshLib_1_1CHalfEdge.html#a78d7c2f3e520f3bd5c90a7f93186d1fe',1,'MeshLib::CHalfEdge']]],
-  ['he_5fprev_18',['he_prev',['../classMeshLib_1_1CHalfEdge.html#a4d1a3280e15e7268b279f7bd2f40ac29',1,'MeshLib::CHalfEdge']]],
-  ['he_5fsym_19',['he_sym',['../classMeshLib_1_1CHalfEdge.html#a2e51f02c577eeee8dad486cdab39d421',1,'MeshLib::CHalfEdge']]],
-  ['hover_20',['hover',['../classInteractionService.html#ad2cdcf33577308c30832d6a08b416750',1,'InteractionService']]]
+  ['handle_0',['Handle',['../GeometryActor_8h.html#acb9d39434207f27c7d476d3606bc60db',1,'GeometryActor.h']]],
+  ['handlercreatordestroyer_1',['HandlerCreatorDestroyer',['../structsystems_1_1HandlerCreatorDestroyer.html#af985924c0a494b7dfef3d95742f7bab1',1,'systems::HandlerCreatorDestroyer']]],
+  ['hasactivestate_2',['hasActiveState',['../classInteractionService.html#a8da4a000b10eb0b3c0cd5fd185c30f51',1,'InteractionService']]],
+  ['hascomponent_3',['hasComponent',['../classQModelQuery.html#afc97a0a71730b8ba54152f15ddc0cf86',1,'QModelQuery::hasComponent()'],['../classGeometryActorManager.html#a34957ce93a72aee7ed198cc5f21fb42e',1,'GeometryActorManager::hasComponent()'],['../classMeshActorManager.html#afdb5c94a7051977099f18737f8f697c8',1,'MeshActorManager::hasComponent()']]],
+  ['hasgeometry_4',['hasGeometry',['../structComponentData.html#a89b5b7d048461de0b087c6c1e9ecc0d9',1,'ComponentData']]],
+  ['hasmesh_5',['hasMesh',['../structComponentData.html#adf67c038a108088ce936973b012b57a0',1,'ComponentData']]],
+  ['hasmodel_6',['hasModel',['../classQModelQuery.html#a35056e21c07e3fe3e307fa17fef3763c',1,'QModelQuery']]],
+  ['hover_7',['hover',['../classInteractionService.html#ad2cdcf33577308c30832d6a08b416750',1,'InteractionService']]]
 ];

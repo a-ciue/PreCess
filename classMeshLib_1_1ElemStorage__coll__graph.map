@@ -1,9 +1,0 @@
-<map id="MeshLib::ElemStorage&lt; CElement &gt;" name="MeshLib::ElemStorage&lt; CElement &gt;">
-<area shape="rect" id="Node000001" title=" " alt="" coords="13,251,180,291"/>
-<area shape="rect" id="Node000002" href="$classplf_1_1colony.html" title=" " alt="" coords="5,176,188,201"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,215,99,251,94,251,94,215"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="24,101,169,127"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="99,141,99,176,94,176,94,141"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="77,5,116,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="99,45,99,101,94,101,94,45"/>
-</map>

@@ -52,7 +52,6 @@ var searchData=
   ['qtlogsink_49',['QtLogSink',['../classQtLogSink.html',1,'']]],
   ['qtlogsink_3c_20std_3a_3amutex_20_3e_50',['QtLogSink&lt; std::mutex &gt;',['../classQtLogSink.html',1,'']]],
   ['qtlogsink_5fmt_51',['QtLogSink_mt',['../QLogManager_8cpp.html#a0b97978c57fb16b5b3a72628fa59c7fe',1,'QLogManager.cpp']]],
-  ['quat_2eh_52',['quat.h',['../quat_8h.html',1,'']]],
-  ['query_53',['query',['../classQModelManager.html#afab38d2de8a7aba39444a3ba26290098',1,'QModelManager::query'],['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow::query']]],
-  ['query_5f_54',['query_',['../classQModelManager.html#a99ca7f7ca124277e834c170903b2074b',1,'QModelManager']]]
+  ['query_52',['query',['../classQModelManager.html#afab38d2de8a7aba39444a3ba26290098',1,'QModelManager::query'],['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow::query']]],
+  ['query_5f_53',['query_',['../classQModelManager.html#a99ca7f7ca124277e834c170903b2074b',1,'QModelManager']]]
 ];

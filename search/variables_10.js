@@ -36,7 +36,6 @@ var searchData=
   ['polygon_5funits_33',['POLYGON_UNITS',['../namespacehighlight.html#a846d3053a29ba2562d28086d2b8471b2',1,'highlight']]],
   ['pos_34',['pos',['../structsystems_1_1interaction_1_1AnnotationPoint.html#adf719ce6272f4f877710b11a76a15ea4',1,'systems::interaction::AnnotationPoint::pos'],['../structsystems_1_1interaction_1_1AnnotationText.html#a8eefc19ae2c25a0dd380999b4f38b4e8',1,'systems::interaction::AnnotationText::pos']]],
   ['pressed_35',['pressed',['../structsystems_1_1feature_1_1KeyEvent.html#ac0904a803e0893b8de9d7067fdeca568',1,'systems::feature::KeyEvent']]],
-  ['previous_5fgroup_36',['previous_group',['../structplf_1_1colony_1_1group.html#ae19449b38e52d52880a6d7ab152a2ae3',1,'plf::colony::group']]],
-  ['prop_5fto_5fcomponent_5f_37',['prop_to_component_',['../classGeometryActorManagerSelectOp.html#a0d4f19ac52577626453dcd49d6fc429c',1,'GeometryActorManagerSelectOp::prop_to_component_'],['../classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641',1,'MeshActorManagerSelectOp::prop_to_component_']]],
-  ['ptr_38',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
+  ['prop_5fto_5fcomponent_5f_36',['prop_to_component_',['../classGeometryActorManagerSelectOp.html#a0d4f19ac52577626453dcd49d6fc429c',1,'GeometryActorManagerSelectOp::prop_to_component_'],['../classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641',1,'MeshActorManagerSelectOp::prop_to_component_']]],
+  ['ptr_37',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
 ];
