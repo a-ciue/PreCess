@@ -1,0 +1,13 @@
+<!-- 删除几何 -->
+<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" fill="#ffffff"/>
+  <g fill="none" stroke="#0066cc" stroke-width="1.5">
+    <polygon points="15,35 35,35 45,25 25,25"/>
+    <polygon points="15,35 15,45 25,35 25,25"/>
+    <polygon points="35,35 35,45 45,35 45,25"/>
+    <line x1="15" y1="45" x2="35" y2="45"/>
+    <line x1="35" y1="45" x2="45" y2="35"/>
+  </g>
+  <line x1="12" y1="22" x2="38" y2="48" stroke="#cc0000" stroke-width="2.5"/>
+  <line x1="38" y1="22" x2="12" y2="48" stroke="#cc0000" stroke-width="2.5"/>
+</svg>
