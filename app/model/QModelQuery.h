@@ -41,6 +41,7 @@ public:
 class QModelQuery : public QObject, IModelQuery {
     Q_OBJECT
     QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
+    QML_UNCREATABLE("QModelQuery is provided by C++")
 
 public :
     /**

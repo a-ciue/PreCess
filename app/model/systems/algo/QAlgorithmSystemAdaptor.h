@@ -16,6 +16,7 @@ class AlgorithmSystem;
 class QAlgorithmSystemAdaptor : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QAlgorithmSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QAlgorithmInfo*> algorithmsInfo READ getAlgorithmsInfo NOTIFY algorithmsInfoChanged)
 public:
     QAlgorithmSystemAdaptor(AlgorithmSystem& algo_system);

@@ -15,6 +15,10 @@ ColumnLayout {
     property int activeCategory: -1
     property real windowHeight: 600
 
+    // ribbon 页内按钮图标尺寸。页高即 windowHeight/12；图标若绑定 parent.height，
+    // 会与布局隐式尺寸形成反馈环（图标异步加载后触发 recursive rearrange 警告）。
+    readonly property real ribbonIconSize: windowHeight / 12 * 0.65
+
     // 基础几何创建入口，由 Main.qml 中的 GeometryOperationActions 提供。
     property var geometryOperationActions
 
@@ -148,7 +152,8 @@ ColumnLayout {
 
     ToolBar {
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             spacing: 0
 
             ToolButton {
@@ -261,12 +266,13 @@ ColumnLayout {
 
         // 0: 文件
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             ToolButton {
                 icon.source: "qrc:/images/toolbar/File/import.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导入"
@@ -275,8 +281,8 @@ ColumnLayout {
 
             ToolButton {
                 icon.source: "qrc:/images/toolbar/File/export.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导出"
@@ -285,8 +291,8 @@ ColumnLayout {
 
             ToolButton {
                 icon.source: "qrc:/images/toolbar/File/preference.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "偏好设置"
@@ -298,15 +304,16 @@ ColumnLayout {
 
         // 1: 编辑 → 数据驱动，图标按名映射
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: QModelManager.editSystem.editsInfo
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -328,15 +335,16 @@ ColumnLayout {
 
         // 2: 算法 → 数据驱动，图标按名映射
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: QModelManager.algorithmSystem.algorithmsInfo
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -349,15 +357,16 @@ ColumnLayout {
 
         // 3: 几何 → 创建几何。
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: root.geometryOperationButtons
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForFeature(modelData)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.text
@@ -374,7 +383,8 @@ ColumnLayout {
             RowLayout {
                 id: featureMenuPage
                 required property var modelData
-                anchors.fill: parent
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
                 Repeater {
                     model: featureMenuPage.modelData.groups
@@ -390,8 +400,8 @@ ColumnLayout {
                             ToolButton {
                                 required property var modelData
                                 icon.source: root.getIconForFeature(modelData)
-                                icon.width: parent.height * 0.65
-                                icon.height: parent.height * 0.65
+                                icon.width: root.ribbonIconSize
+                                icon.height: root.ribbonIconSize
                                 Layout.fillHeight: true
                                 display: ToolButton.TextUnderIcon
                                 text: modelData.display_name

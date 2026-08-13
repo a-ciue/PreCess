@@ -4,9 +4,10 @@
 #include <vector>
 
 #include <TopAbs_ShapeEnum.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <NCollection_IndexedMap.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <TopoDS_Shape.hxx>
 
-class TopoDS_Shape;
 class GeometryRegistry;
 
 struct GeometrySubshapeIndex {
@@ -14,7 +15,7 @@ struct GeometrySubshapeIndex {
 
     // 按 OCC 类型的局部索引
     static constexpr int kTypeCount = 8; // TopAbs_COMPOUND..TopAbs_VERTEX
-    std::array<TopTools_IndexedMapOfShape, kTypeCount> type_maps;
+    std::array<NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>, kTypeCount> type_maps;
 
     // 按业务主类型分开的全局 id 映射
     std::vector<GeomVertexId> vertex_local_to_global;

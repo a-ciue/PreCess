@@ -7,8 +7,8 @@
 #include "GeometryData.h"
 
 #include <TCollection_ExtendedString.hxx>
+#include <NCollection_Sequence.hxx>
 #include <TDF_Label.hxx>
-#include <TDF_LabelSequence.hxx>
 #include <TDataStd_Name.hxx>
 #include <TDocStd_Document.hxx>
 #include <XCAFDoc_DocumentTool.hxx>
@@ -54,7 +54,7 @@ static void collectLeafShapes(
     }
 
     if (shapeTool->IsAssembly(refLabel)) {
-        TDF_LabelSequence children;
+        NCollection_Sequence<TDF_Label> children;
         shapeTool->GetComponents(refLabel, children);
 
         for (Standard_Integer i = 1; i <= children.Length(); ++i) {
@@ -81,7 +81,7 @@ std::optional<ModelPayload> IgesXdeComponentBuilder::buildModelData(
 
     ComponentDatas comps;
 
-    TDF_LabelSequence freeShapes;
+    NCollection_Sequence<TDF_Label> freeShapes;
     shapeTool->GetFreeShapes(freeShapes);
 
     std::vector<std::pair<TDF_Label, TopoDS_Shape>> leaves;
