@@ -7,11 +7,10 @@
 #include "ModelIOHandler.h"
 
 class ModelData;
-class CTMeshModel;
 
 namespace systems::io {
 /**
- * @brief OBJ模型文件处理器
+ * @brief M (.m) 网格文件处理器
  */
 class MModelHandler : public ModelIOHandler {
 public:
