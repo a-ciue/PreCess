@@ -7,5 +7,6 @@ var searchData=
   ['hasgeometry_4',['hasGeometry',['../structComponentData.html#a89b5b7d048461de0b087c6c1e9ecc0d9',1,'ComponentData']]],
   ['hasmesh_5',['hasMesh',['../structComponentData.html#adf67c038a108088ce936973b012b57a0',1,'ComponentData']]],
   ['hasmodel_6',['hasModel',['../classQModelQuery.html#a35056e21c07e3fe3e307fa17fef3763c',1,'QModelQuery']]],
-  ['hover_7',['hover',['../classInteractionService.html#ad2cdcf33577308c30832d6a08b416750',1,'InteractionService']]]
+  ['hasregisteredcomponents_7',['hasRegisteredComponents',['../classGeometryActorManagerSelectOp.html#a545904e56307a3f5ba79be835b7af371',1,'GeometryActorManagerSelectOp']]],
+  ['hover_8',['hover',['../classInteractionService.html#ad2cdcf33577308c30832d6a08b416750',1,'InteractionService']]]
 ];

@@ -137,6 +137,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a5e4f29f8a8c022eabf26b0a790b274a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">边句柄 -&gt; 稳定局部边 id；句柄无效（含边表已重建）返回 std::nullopt  <br /></td></tr>
 <tr class="memitem:ab69e4be4016c506264f857a21c94c526" id="r_ab69e4be4016c506264f857a21c94c526"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab69e4be4016c506264f857a21c94c526">edgeGlobalId</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> stable_id)</td></tr>
 <tr class="memdesc:ab69e4be4016c506264f857a21c94c526"><td class="mdescLeft">&#160;</td><td class="mdescRight">稳定局部边 id -&gt; 全局边 id；尚未分配（见 ensureEdgeGlobalIds）或越界返回 std::nullopt  <br /></td></tr>
+<tr class="memitem:a231c40ae7653ea6b308896016ecaee31" id="r_a231c40ae7653ea6b308896016ecaee31"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::array&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, 2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a231c40ae7653ea6b308896016ecaee31">edgeEndpoints</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> stable_id)</td></tr>
+<tr class="memdesc:a231c40ae7653ea6b308896016ecaee31"><td class="mdescLeft">&#160;</td><td class="mdescRight">稳定局部边 id -&gt; 端点（组件内局部点 id，小在前）  <br /></td></tr>
 <tr class="memitem:a2e1fb9693b7e85a7557b70beefed2e88" id="r_a2e1fb9693b7e85a7557b70beefed2e88"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e1fb9693b7e85a7557b70beefed2e88">faceEdgeStableIds</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh)</td></tr>
 <tr class="memdesc:a2e1fb9693b7e85a7557b70beefed2e88"><td class="mdescLeft">&#160;</td><td class="mdescRight">面单元的边稳定 id 表（懒构建）  <br /></td></tr>
 <tr class="memitem:a8984fd3629fecb35a0a02168156e5dd3" id="r_a8984fd3629fecb35a0a02168156e5dd3"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classEdgeHandle.html">EdgeHandle</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8984fd3629fecb35a0a02168156e5dd3">findEdgeByEndpoints</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p0, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p1)</td></tr>
@@ -260,6 +262,30 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>当轮边表行数（物化边 + 面边，重合归并后） </p>
+
+</div>
+</div>
+<a id="a231c40ae7653ea6b308896016ecaee31" name="a231c40ae7653ea6b308896016ecaee31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a231c40ae7653ea6b308896016ecaee31">&#9670;&#160;</a></span>edgeEndpoints()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; std::array&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, 2 &gt; &gt; MeshAdjacency::edgeEndpoints </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structMeshData.html">MeshData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>mesh</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>stable_id</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>稳定局部边 id -&gt; 端点（组件内局部点 id，小在前） </p>
+<dl class="section return"><dt>返回</dt><dd>该边已消亡或 id 越界返回 std::nullopt </dd></dl>
 
 </div>
 </div>

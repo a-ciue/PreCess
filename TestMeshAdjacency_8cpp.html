@@ -145,12 +145,13 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 <tr class="memitem:ac0e868aba5630a1387cdfa392e28850b" id="r_ac0e868aba5630a1387cdfa392e28850b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0e868aba5630a1387cdfa392e28850b">TEST_CASE</a> (&quot;MeshAdjacency merges coincident face edge into materialized edge row&quot;)</td></tr>
 <tr class="memitem:aa537592d63e6296e1e53582a207e0895" id="r_aa537592d63e6296e1e53582a207e0895"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa537592d63e6296e1e53582a207e0895">TEST_CASE</a> (&quot;MeshAdjacency collapses duplicated edge cells, first cell wins&quot;)</td></tr>
 <tr class="memitem:a304750903c2b3bba58e6ae67326df6ff" id="r_a304750903c2b3bba58e6ae67326df6ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a304750903c2b3bba58e6ae67326df6ff">TEST_CASE</a> (&quot;MeshAdjacency stable <a class="el" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a> survive topology edits&quot;)</td></tr>
+<tr class="memitem:aace395fdc1265e6976669b951ec6ec5c" id="r_aace395fdc1265e6976669b951ec6ec5c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aace395fdc1265e6976669b951ec6ec5c">TEST_CASE</a> (&quot;MeshAdjacency edgeEndpoints resolves stable <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a> to endpoint pair&quot;)</td></tr>
 <tr class="memitem:ae7d505434a84bc0a956b42acdd03a9ff" id="r_ae7d505434a84bc0a956b42acdd03a9ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7d505434a84bc0a956b42acdd03a9ff">TEST_CASE</a> (&quot;MeshAdjacency assigns and releases global edge ids&quot;)</td></tr>
 <tr class="memitem:a4c03a430f65cc91bb36512ff62a18566" id="r_a4c03a430f65cc91bb36512ff62a18566"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c03a430f65cc91bb36512ff62a18566">TEST_CASE</a> (&quot;MeshAdjacency edge handles expire after rebuild&quot;)</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
 <a id="ae7d505434a84bc0a956b42acdd03a9ff" name="ae7d505434a84bc0a956b42acdd03a9ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7d505434a84bc0a956b42acdd03a9ff">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7d505434a84bc0a956b42acdd03a9ff">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,7 +168,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="aa537592d63e6296e1e53582a207e0895" name="aa537592d63e6296e1e53582a207e0895"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa537592d63e6296e1e53582a207e0895">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa537592d63e6296e1e53582a207e0895">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -188,7 +189,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a4c03a430f65cc91bb36512ff62a18566" name="a4c03a430f65cc91bb36512ff62a18566"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4c03a430f65cc91bb36512ff62a18566">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c03a430f65cc91bb36512ff62a18566">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -204,8 +205,25 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 
 </div>
 </div>
+<a id="aace395fdc1265e6976669b951ec6ec5c" name="aace395fdc1265e6976669b951ec6ec5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aace395fdc1265e6976669b951ec6ec5c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/11]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshAdjacency edgeEndpoints resolves stable <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a> to endpoint pair&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a22404d21dd0a57fe1f191d3433c48e99" name="a22404d21dd0a57fe1f191d3433c48e99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22404d21dd0a57fe1f191d3433c48e99">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a22404d21dd0a57fe1f191d3433c48e99">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,7 +240,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a962bdca6b4a283aac624366395cabedc" name="a962bdca6b4a283aac624366395cabedc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a962bdca6b4a283aac624366395cabedc">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a962bdca6b4a283aac624366395cabedc">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -239,7 +257,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a9696edd32e4bb98e5bc27a0a6cf620ce" name="a9696edd32e4bb98e5bc27a0a6cf620ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9696edd32e4bb98e5bc27a0a6cf620ce">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9696edd32e4bb98e5bc27a0a6cf620ce">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -256,7 +274,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a253e9d1bca2ecdaeace937da16af8a6b" name="a253e9d1bca2ecdaeace937da16af8a6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a253e9d1bca2ecdaeace937da16af8a6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a253e9d1bca2ecdaeace937da16af8a6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -273,7 +291,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="ac0e868aba5630a1387cdfa392e28850b" name="ac0e868aba5630a1387cdfa392e28850b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0e868aba5630a1387cdfa392e28850b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0e868aba5630a1387cdfa392e28850b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,7 +308,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="ac5f9ac272cd0d049909567da32b42889" name="ac5f9ac272cd0d049909567da32b42889"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac5f9ac272cd0d049909567da32b42889">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5f9ac272cd0d049909567da32b42889">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -307,7 +325,7 @@ TestMeshAdjacency.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a304750903c2b3bba58e6ae67326df6ff" name="a304750903c2b3bba58e6ae67326df6ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a304750903c2b3bba58e6ae67326df6ff">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/10]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a304750903c2b3bba58e6ae67326df6ff">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
