@@ -1,6 +1,7 @@
 #include "MeshActorManagerSelectOp.h"
 #include "MeshActor.h"
 #include "MeshActorManager.h"
+#include "TopologyDiagnosticActor.h"
 #include <set>
 #include <vtkHardwarePicker.h>
 
@@ -50,6 +51,16 @@ void MeshActorManagerSelectOp::registerProps(Index component_id, std::shared_ptr
     addToAllLists(&op.getSolidActor());
     addToAllLists(&op.getFaceActor());
     addToAllLists(&op.getEdgeActor());
+
+    // 注册拓扑诊断 actor（非流形边、边界面等）
+    auto& topo_diag = actor->topologyDiagnostics();
+    for (size_t i = 0; i < static_cast<size_t>(TopologyDiagnosticCategory::Count); ++i) {
+        auto category = static_cast<TopologyDiagnosticCategory>(i);
+        if (auto* topo_actor = topo_diag.getActor(category)) {
+            prop_to_component_[topo_actor] = component_id;
+            addToAllLists(topo_actor);
+        }
+    }
 }
 
 void MeshActorManagerSelectOp::unregisterProps(std::shared_ptr<MeshActor> actor)
@@ -62,7 +73,20 @@ void MeshActorManagerSelectOp::unregisterProps(std::shared_ptr<MeshActor> actor)
     prop_to_component_.erase(face);
     prop_to_component_.erase(edge);
 
+    // 注销拓扑诊断 actor
+    std::set<vtkProp*> topo_actors;
+    auto& topo_diag = actor->topologyDiagnostics();
+    for (size_t i = 0; i < static_cast<size_t>(TopologyDiagnosticCategory::Count); ++i) {
+        auto category = static_cast<TopologyDiagnosticCategory>(i);
+        if (auto* topo_actor = topo_diag.getActor(category)) {
+            prop_to_component_.erase(topo_actor);
+            topo_actors.insert(topo_actor);
+        }
+    }
+
     removeFromAllLists({ solid, face, edge });
+    if (!topo_actors.empty())
+        removeFromAllLists(topo_actors);
 }
 
 void MeshActorManagerSelectOp::addToAllLists(vtkProp* prop)

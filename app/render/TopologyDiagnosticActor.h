@@ -48,6 +48,9 @@ public:
     /** @brief 设置二面角边筛选范围，单位为度 */
     void setDihedralAngleRange(double minimum, double maximum);
 
+    /** @brief 获取指定诊断类别的 actor，用于注册到拾取列表 */
+    vtkActor* getActor(TopologyDiagnosticCategory category) const;
+
 private:
     static constexpr size_t category_count_ = static_cast<size_t>(TopologyDiagnosticCategory::Count);
 
