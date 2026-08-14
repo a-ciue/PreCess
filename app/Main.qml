@@ -182,13 +182,16 @@ ApplicationWindow {
 
     KDDW.LayoutSaver { id: layoutSaver }
     
-    //打开文件对话框
+    //打开文件对话框（支持多选，逐个导入所选文件）
     FileDialog {
         id: openPatchDialog
         nameFilters: QModelManager.ioSystem.dialogNameFilters
+        fileMode: FileDialog.OpenFiles
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
-                QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
+                for (const file of selectedFiles) {
+                    QModelManager.ioSystem.read(selectedNameFilter.name, file, [])
+                }
                 App.registry.renderWindow.resetCamera()
             } else {
                 console.exception("No valid file type selected.")
