@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 import app.core
 import app.model
@@ -22,8 +23,6 @@ ColumnLayout {
     // 基础几何创建入口，由 Main.qml 中的 GeometryOperationActions 提供。
     property var geometryOperationActions
 
-    signal importRequested()
-    signal exportRequested()
     signal objectTreeToggled()
     signal propertyListToggled()
     signal attributeRenderToggled()
@@ -149,6 +148,37 @@ ColumnLayout {
     }
 
     Component.onCompleted: rebuildFeatureMenus()
+
+    // 导入模型对话框（支持多选，逐个导入所选文件）
+    FileDialog {
+        id: importModelDialog
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
+        fileMode: FileDialog.OpenFiles
+        onAccepted: {
+            if (selectedNameFilter.index >= 0) {
+                for (const file of selectedFiles) {
+                    QModelManager.ioSystem.read(selectedNameFilter.name, file, [])
+                }
+                App.registry.renderWindow.resetCamera()
+            } else {
+                console.exception("No valid file type selected.")
+            }
+        }
+    }
+
+    // 导出模型对话框
+    FileDialog {
+        id: exportModelDialog
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
+        fileMode: FileDialog.SaveFile
+        onAccepted: {
+            if (selectedNameFilter.index >= 0) {
+                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
+            } else {
+                console.exception("No valid file type selected.")
+            }
+        }
+    }
 
     ToolBar {
         RowLayout {
@@ -276,7 +306,7 @@ ColumnLayout {
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导入"
-                onClicked: importRequested()
+                onClicked: importModelDialog.open()
             }
 
             ToolButton {
@@ -286,7 +316,7 @@ ColumnLayout {
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导出"
-                onClicked: exportRequested()
+                onClicked: exportModelDialog.open()
             }
 
             ToolButton {

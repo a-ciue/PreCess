@@ -27,7 +27,6 @@
 #include <BRep_Tool.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <TopExp.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
@@ -282,7 +281,7 @@ double dot3(const std::array<double, 3>& a, const std::array<double, 3>& b)
 //! @brief 按与 GeometrySubshapeIndex 相同的枚举顺序取几何顶点坐标（local id 从 1 起）
 std::vector<std::array<double, 3>> listVertexPoints(const TopoDS_Shape& shape)
 {
-    TopTools_IndexedMapOfShape map;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> map;
     TopExp::MapShapes(shape, TopAbs_VERTEX, map);
 
     std::vector<std::array<double, 3>> points(static_cast<size_t>(map.Extent() + 1));
@@ -664,7 +663,7 @@ TEST_CASE("DimensionHandler: geometry angle between two edges on OCC box")
     const TopoDS_Shape box = box_maker.Shape();
 
     // 按索引序找一对正交的直线边
-    TopTools_IndexedMapOfShape map;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> map;
     TopExp::MapShapes(box, TopAbs_EDGE, map);
     int id_a = -1, id_b = -1;
     for (int i = 1; i <= map.Extent() && id_a < 0; ++i) {
@@ -701,7 +700,7 @@ TEST_CASE("DimensionHandler: geometry radius of circular edge on OCC cylinder")
     const TopoDS_Shape cyl = cyl_maker.Shape();
 
     // 找第一条圆弧边（圆柱上下底面各有一条），半径应为 2
-    TopTools_IndexedMapOfShape map;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> map;
     TopExp::MapShapes(cyl, TopAbs_EDGE, map);
     int circle_id = -1;
     for (int i = 1; i <= map.Extent(); ++i) {
