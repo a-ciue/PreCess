@@ -81,8 +81,8 @@ TopologyDiagnosticActor::TopologyDiagnosticActor(vtkRenderer* renderer)
     for (size_t i = 0; i < category_count_; ++i) {
         mappers_[i]->SetInputData(data_[i]);
         mappers_[i]->SetScalarVisibility(false);
-        mappers_[i]->SetRelativeCoincidentTopologyLineOffsetParameters(0, highlight::LINE_UNITS + 2);
-        mappers_[i]->SetRelativeCoincidentTopologyPointOffsetParameter(highlight::POINT_UNITS + 2);
+        mappers_[i]->SetRelativeCoincidentTopologyLineOffsetParameters(0, highlight::LINE_UNITS);
+        mappers_[i]->SetRelativeCoincidentTopologyPointOffsetParameter(highlight::POINT_UNITS);
         mappers_[i]->SetRelativeCoincidentTopologyPolygonOffsetParameters(0, highlight::POLYGON_UNITS - 1);
         actors_[i]->SetMapper(mappers_[i]);
         actors_[i]->GetProperty()->SetColor(colors[i][0], colors[i][1], colors[i][2]);
@@ -142,10 +142,15 @@ void TopologyDiagnosticActor::setMeshVisible(bool visible)
 
 void TopologyDiagnosticActor::setClipPlane(vtkPlane* plane)
 {
-    for (auto& mapper : mappers_) {
-        mapper->RemoveAllClippingPlanes();
-        if (plane)
-            mapper->AddClippingPlane(plane);
+    for (size_t i = 0; i < category_count_; ++i) {
+        if (plane) {
+            // 与主网格面使用同一种提取裁剪管线，保证保留侧的深度和重合拓扑偏移一致。
+            clippers_[i]->SetInputData(data_[i]);
+            clippers_[i]->SetImplicitFunction(plane);
+            mappers_[i]->SetInputConnection(clippers_[i]->GetOutputPort());
+        } else {
+            mappers_[i]->SetInputData(data_[i]);
+        }
     }
 }
 

@@ -8,6 +8,7 @@
 
 #include <array>
 #include <vtkActor.h>
+#include <vtkExtractPolyDataGeometry.h>
 #include <vtkNew.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -63,6 +64,7 @@ private:
     double dihedral_maximum_ { 180.0 };
     std::array<bool, category_count_> category_visible_ {};
     std::array<vtkNew<vtkPolyData>, category_count_> data_;
+    std::array<vtkNew<vtkExtractPolyDataGeometry>, category_count_> clippers_;
     std::array<vtkNew<vtkPolyDataMapper>, category_count_> mappers_;
     std::array<vtkNew<vtkActor>, category_count_> actors_;
     std::unique_ptr<MeshDataVtk> model_data_;
