@@ -161,14 +161,6 @@ void TopologyDiagnosticActor::setDihedralAngleRange(double minimum, double maxim
     rebuildDihedralEdges();
 }
 
-vtkActor* TopologyDiagnosticActor::getActor(TopologyDiagnosticCategory category) const
-{
-    const size_t index = categoryIndex(category);
-    if (index >= category_count_)
-        return nullptr;
-    return actors_[index];
-}
-
 void TopologyDiagnosticActor::rebuildDihedralEdges()
 {
     if (!model_data_ || !model_data_->topology_diagnostics_)
