@@ -676,6 +676,24 @@ int QRenderWindow::getMeshStyle()
     return static_cast<int>(mesh_style_);
 }
 
+void QRenderWindow::setTopologyDiagnosticVisible(int category, bool visible)
+{
+    dispatch_async([category, visible](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_)
+            vtk->mesh_actor_manager_->setTopologyDiagnosticVisible(category, visible);
+    });
+}
+
+void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
+{
+    dispatch_async([minimum, maximum](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->mesh_actor_manager_)
+            vtk->mesh_actor_manager_->setDihedralAngleRange(minimum, maximum);
+    });
+}
+
 vtkStandardNewMacro(QRenderWindow::Data);
 
 void QRenderWindow::injectRenderRefreshCallback()

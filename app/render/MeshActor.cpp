@@ -1,4 +1,5 @@
 #include "MeshActor.h"
+#include "TopologyDiagnosticActor.h"
 #include "renderStrategy/AttributeOperator.h"
 #include "Core.h"
 #include <spdlog/spdlog.h>
@@ -114,6 +115,7 @@ MeshActor::MeshActor(vtkRenderer* renderer)
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
     this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
+    topology_diagnostics_ = std::make_unique<TopologyDiagnosticActor>(renderer_);
 }
 
 MeshActor::~MeshActor()
@@ -252,6 +254,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     edge_mapper_->SetScalarVisibility(0);
     face_mapper_->SetScalarVisibility(0);
     solid_mapper_->SetScalarVisibility(0);
+    topology_diagnostics_->loadModelData(model_data);
 }
 
 void MeshActor::setVisibility(bool visibility)
@@ -267,6 +270,7 @@ bool MeshActor::isVisible() const
 
 void MeshActor::setClipPlane(vtkPlane* plane)
 {
+    topology_diagnostics_->setClipPlane(plane);
     if (plane) {
         if (!clip_plane_) {
             solid_clipper_->SetInputData(this->solid_data_);
@@ -301,6 +305,7 @@ MeshRenderStyle MeshActor::getRenderStyle() const
 
 void MeshActor::applyStyle()
 {
+    topology_diagnostics_->setMeshVisible(visibility_ && style_ != MeshRenderStyle::Hidden);
     if (style_ == MeshRenderStyle::Hidden || !visibility_) {
         solid_actor_->SetVisibility(false);
         face_actor_->SetVisibility(false);
@@ -394,6 +399,11 @@ void MeshActor::applyStyle()
     default:
         break;
     }
+}
+
+TopologyDiagnosticActor& MeshActor::topologyDiagnostics()
+{
+    return *topology_diagnostics_;
 }
 
 void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)

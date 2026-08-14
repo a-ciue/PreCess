@@ -51,6 +51,15 @@ public:
     EdgeHandle() = default;
 };
 
+/**
+ * @brief 统一边表中一条边的只读拓扑快照
+ */
+struct MeshEdgeTopology {
+    std::array<Index, 2> endpoints; //> 排序后的组件内局部点 id
+    std::vector<Index> adjacent_faces; //> 使用该边的面单元 id
+    bool is_materialized { false }; //> 是否同时存在于 MeshData::edge_vertices_
+};
+
 class MeshAdjacency {
 public:
     MeshAdjacency() = default;
@@ -100,6 +109,12 @@ public:
     //! @brief 当轮边表行数（物化边 + 面边，重合归并后）
     Index edgeCount(const MeshData& mesh);
 
+    /**
+     * @brief 获取统一边表的只读拓扑快照
+     * @return 每条当前有效边的端点、相邻面和物化状态，不暴露内部行号
+     */
+    std::vector<MeshEdgeTopology> edgeTopologies(const MeshData& mesh);
+
     // —— 全局 id 同步与生命周期 ——
 
     /**
@@ -124,6 +139,7 @@ private:
         std::array<Index, 2> endpoints; //> 排序端点对（小在前），唯一键
         Index cell_index { -1 }; //> 物化边在 edge_vertices_ 中的 cell 序号，-1 表示纯面边
         Index stable_id { -1 }; //> 稳定局部边 id
+        std::vector<Index> adjacent_faces; //> 使用该边的面单元 id
     };
 
     void ensureBuilt(const MeshData& mesh);

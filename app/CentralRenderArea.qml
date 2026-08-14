@@ -15,6 +15,10 @@ Page {
     property bool faceSelectByAngle: false
     property real faceSelectAngle: 30.0
 
+    // 当前渲染区域的拓扑诊断开关和二面角筛选范围。
+    property real dihedralMinimumAngle: 30.0
+    property real dihedralMaximumAngle: 180.0
+
     // 标记由功能自动开启的属性渲染，避免影响用户手动打开的属性渲染面板。
     property bool featureAttributeRenderingActive: false
     property int featureAttributeRenderingComponentId: -1
@@ -201,7 +205,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: meshMenu.open()
 
-                Timer { id: meshSubCloseTimer; interval: subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
+                Timer { id: meshSubCloseTimer; interval: subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close(); meshTopologyMenu.close() } }
 
                 Menu {
                     id: meshMenu
@@ -211,6 +215,7 @@ Page {
                         meshFaceMenu.close()
                         meshTransMenu.close()
                         meshWireMenu.close()
+                        meshTopologyMenu.close()
                     }
 
                     MenuItem {
@@ -221,6 +226,7 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshTransMenu.close()
                                 meshWireMenu.close()
+                                meshTopologyMenu.close()
                                 meshFaceMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding)
                             } else {
                                 meshSubCloseTimer.restart()
@@ -236,6 +242,7 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshFaceMenu.close()
                                 meshWireMenu.close()
+                                meshTopologyMenu.close()
                                 meshTransMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + meshBtn.menuItemHeight)
                             } else {
                                 meshSubCloseTimer.restart()
@@ -251,12 +258,31 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshFaceMenu.close()
                                 meshTransMenu.close()
+                                meshTopologyMenu.close()
                                 meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + 2 * meshBtn.menuItemHeight)
                             } else {
                                 meshSubCloseTimer.restart()
                             }
                         }
                         onTriggered: meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + 2 * meshBtn.menuItemHeight)
+                    }
+                    MenuItem {
+                        id: meshTopologyCat
+                        text: "拓扑诊断 ▶"
+                        onHoveredChanged: {
+                            if (hovered) {
+                                meshSubCloseTimer.stop()
+                                meshFaceMenu.close()
+                                meshTransMenu.close()
+                                meshWireMenu.close()
+                                meshTopologyMenu.popup(meshBtn, meshMenu.width,
+                                                       meshMenu.y + meshMenu.topPadding + 3 * meshBtn.menuItemHeight)
+                            } else {
+                                meshSubCloseTimer.restart()
+                            }
+                        }
+                        onTriggered: meshTopologyMenu.popup(meshBtn, meshMenu.width,
+                                                            meshMenu.y + meshMenu.topPadding + 3 * meshBtn.menuItemHeight)
                     }
                     MenuItem {
                         text: "隐"
@@ -322,6 +348,95 @@ Page {
                         checked: myItem.meshStyle === 6
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onTriggered: myItem.setMeshStyle(6)
+                    }
+                }
+                Menu {
+                    id: meshTopologyMenu
+
+                    MenuItem {
+                        text: "边界边"
+                        checkable: true
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onToggled: myItem.setTopologyDiagnosticVisible(0, checked)
+                    }
+                    MenuItem {
+                        text: "边界面"
+                        checkable: true
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onToggled: myItem.setTopologyDiagnosticVisible(1, checked)
+                    }
+                    MenuItem {
+                        text: "非流形边"
+                        checkable: true
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onToggled: myItem.setTopologyDiagnosticVisible(2, checked)
+                    }
+                    MenuItem {
+                        text: "非流形点"
+                        checkable: true
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onToggled: myItem.setTopologyDiagnosticVisible(3, checked)
+                    }
+                    MenuItem {
+                        text: "孤立边"
+                        checkable: true
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onToggled: myItem.setTopologyDiagnosticVisible(4, checked)
+                    }
+                    MenuItem {
+                        text: "孤立点"
+                        checkable: true
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onToggled: myItem.setTopologyDiagnosticVisible(5, checked)
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        text: "二面角边"
+                        checkable: true
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onToggled: myItem.setTopologyDiagnosticVisible(6, checked)
+                    }
+                    MenuItem {
+                        id: minimumDihedralItem
+                        text: "最小二面角"
+                        contentItem: RowLayout {
+                            Label { text: minimumDihedralItem.text; Layout.fillWidth: true }
+                            SpinBox {
+                                from: 0
+                                to: 180
+                                editable: true
+                                value: root.dihedralMinimumAngle
+                                onValueModified: {
+                                    root.dihedralMinimumAngle = value
+                                    if (root.dihedralMaximumAngle < value)
+                                        root.dihedralMaximumAngle = value
+                                    myItem.setDihedralAngleRange(root.dihedralMinimumAngle,
+                                                                 root.dihedralMaximumAngle)
+                                }
+                            }
+                        }
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                    }
+                    MenuItem {
+                        id: maximumDihedralItem
+                        text: "最大二面角"
+                        contentItem: RowLayout {
+                            Label { text: maximumDihedralItem.text; Layout.fillWidth: true }
+                            SpinBox {
+                                from: 0
+                                to: 180
+                                editable: true
+                                value: root.dihedralMaximumAngle
+                                onValueModified: {
+                                    root.dihedralMaximumAngle = value
+                                    if (root.dihedralMinimumAngle > value)
+                                        root.dihedralMinimumAngle = value
+                                    myItem.setDihedralAngleRange(root.dihedralMinimumAngle,
+                                                                 root.dihedralMaximumAngle)
+                                }
+                            }
+                        }
+                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                     }
                 }
             }

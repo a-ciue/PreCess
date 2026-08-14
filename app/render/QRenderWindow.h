@@ -127,6 +127,16 @@ public:
     Q_INVOKABLE void setMeshStyle(int style);
     int getMeshStyle();
 
+    /**
+     * @brief 显示或隐藏一种网格拓扑诊断实体
+     * @param category 类别序号，依次为边界边、边界面、非流形边、非流形点、孤立边、孤立点、二面角边
+     * @param visible 是否显示
+     */
+    Q_INVOKABLE void setTopologyDiagnosticVisible(int category, bool visible);
+
+    /** @brief 设置二面角诊断边的角度范围，单位为度 */
+    Q_INVOKABLE void setDihedralAngleRange(double minimum, double maximum);
+
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 

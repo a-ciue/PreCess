@@ -109,6 +109,17 @@ Index MeshAdjacency::edgeCount(const MeshData& mesh)
     return static_cast<Index>(rows_.size());
 }
 
+std::vector<MeshEdgeTopology> MeshAdjacency::edgeTopologies(const MeshData& mesh)
+{
+    ensureBuilt(mesh);
+    std::vector<MeshEdgeTopology> result;
+    result.reserve(rows_.size());
+    for (const EdgeRow& row : rows_) {
+        result.push_back({ row.endpoints, row.adjacent_faces, row.cell_index >= 0 });
+    }
+    return result;
+}
+
 void MeshAdjacency::ensureEdgeGlobalIds(MeshIDMap& map, Index component_id, const MeshData& mesh)
 {
     ensureBuilt(mesh);
@@ -232,6 +243,9 @@ void MeshAdjacency::ensureBuilt(const MeshData& mesh)
                     continue;
                 const Index row_id = resolve_row(p0, p1);
                 face_edge_stable_ids_[begin + j] = rows_[row_id].stable_id;
+                auto& adjacent_faces = rows_[row_id].adjacent_faces;
+                if (adjacent_faces.empty() || adjacent_faces.back() != f)
+                    adjacent_faces.push_back(f);
             }
         }
     }

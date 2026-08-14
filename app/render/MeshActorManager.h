@@ -4,6 +4,7 @@
 #include "MeshActor.h"
 #include "MeshActorManagerSelectOp.h"
 #include <unordered_map>
+#include <array>
 #include <vtkScalarBarActor.h>
 
 class vtkRenderer;
@@ -32,6 +33,11 @@ public:
         std::map<std::string, std::any> args);
     void cancelAttri(Index component_id);
 
+    /** @brief 设置一种拓扑诊断类别的窗口级显示状态 */
+    void setTopologyDiagnosticVisible(int category, bool visible);
+    /** @brief 设置二面角诊断边的筛选范围，单位为度 */
+    void setDihedralAngleRange(double minimum, double maximum);
+
     MeshActorManagerSelectOp& op() { return op_; }
     const MeshActorManagerSelectOp& op() const { return op_; }
 
@@ -40,6 +46,9 @@ private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
     MeshRenderStyle current_style_ { MeshRenderStyle::FaceWithEdges };
+    std::array<bool, 7> topology_diagnostic_visibility_ {};
+    double dihedral_minimum_ { 30.0 };
+    double dihedral_maximum_ { 180.0 };
 
     // 渲染窗口共享的标量颜色表，同一时刻只显示当前标量属性的颜色和值域。
     vtkNew<vtkScalarBarActor> scalar_bar_;

@@ -47,6 +47,27 @@ enum class SelectMode {
  */
 using Index = int;
 
+/**
+ * @brief 一条可直接用于诊断渲染的网格边
+ */
+struct TopologyDiagnosticEdge {
+    std::array<Index, 2> endpoints; //> 组件内局部点 id
+    double dihedral_angle_degrees { -1.0 }; //> 无有效二面角时为 -1
+};
+
+/**
+ * @brief 保存一次网格拓扑诊断得到的特殊实体集合
+ */
+struct MeshTopologyDiagnosticResult {
+    std::vector<TopologyDiagnosticEdge> boundary_edges;
+    std::vector<Index> boundary_faces;
+    std::vector<TopologyDiagnosticEdge> non_manifold_edges;
+    std::vector<Index> non_manifold_vertices;
+    std::vector<TopologyDiagnosticEdge> isolated_edges;
+    std::vector<Index> isolated_vertices;
+    std::vector<TopologyDiagnosticEdge> manifold_edges; //> 恰好邻接两个面的边，保存二面角供范围筛选
+};
+
 using GeomVertexId = int;
 using GeomEdgeId = int;
 using GeomFaceId = int;
@@ -96,6 +117,8 @@ struct MeshDataVtk {
     std::shared_ptr<BlockDatas> model_blocks_;
 
     Index component_id { -1 };
+
+    std::shared_ptr<const MeshTopologyDiagnosticResult> topology_diagnostics_; //> 只读派生诊断结果，供渲染层叠加显示
 
     Index model_block_id(Index block_id) const
     {
