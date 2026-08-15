@@ -212,6 +212,65 @@ TEST_CASE("FeatureEventGateway wraps callbacks with undo boundary per mode", "[F
     REQUIRE(f.obs.component_changed_count == notify_before + 1); // 通知照发
 }
 
+TEST_CASE("Auto feature read-only event callback does not cancel an open staged session", "[FeatureSystem][undo]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr);
+    f.stack.clear();
+
+    // 模拟 ScalePreview 场景：Manual 功能已开 staged 会话并写入预览（会话保持打开）
+    REQUIRE(f.stack.beginStaged("预览", cid));
+    {
+        auto op = f.mgr.getComponentOperator(cid);
+        REQUIRE(op.has_value());
+        op->editableMesh().vertex_positions_[0] = { 5.0, 5.0, 5.0 };
+    }
+
+    // Auto 功能的只读事件订阅（如 FeatureDemo 打日志）：经网关包操作边界但无写入
+    auto* raw = new EventWritingFeatureHandler; // component_id 默认 -1：只读回调
+    FeatureSystem::SystemHandlerPtr handler { raw };
+    REQUIRE(f.system.registerHandler(makeMeta("BystanderFeature", false), std::move(handler)));
+
+    f.bus.publish(TestEvent {});
+    // 旁观回调不得误杀 staged：会话与预览状态保持，且空边界不成记录
+    REQUIRE(f.stack.stagedActive());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0]
+        == std::array<double, 3> { 5.0, 5.0, 5.0 });
+    REQUIRE(f.stack.undoLabel() == "预览");
+
+    f.stack.cancelStaged(); // 清理会话，避免影响后续断言
+}
+
+TEST_CASE("Auto feature event callback that writes cancels staged and records before-image", "[FeatureSystem][undo]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr);
+    f.stack.clear();
+
+    REQUIRE(f.stack.beginStaged("预览", cid));
+    {
+        auto op = f.mgr.getComponentOperator(cid);
+        REQUIRE(op.has_value());
+        op->editableMesh().vertex_positions_[0] = { 5.0, 5.0, 5.0 };
+    }
+
+    // Auto 功能事件回调真实写模型：隐式 cancel 旧预览，写操作正常成记录
+    auto* raw = new EventWritingFeatureHandler;
+    raw->component_id = cid;
+    FeatureSystem::SystemHandlerPtr handler { raw };
+    REQUIRE(f.system.registerHandler(makeMeta("WritingEvent", false), std::move(handler)));
+
+    f.bus.publish(TestEvent {});
+    REQUIRE_FALSE(f.stack.stagedActive());
+    REQUIRE(f.stack.canUndo());
+    REQUIRE(f.stack.undoLabel() == "显示_WritingEvent");
+
+    // before-image 是回滚后的 before₀：undo 后无预览残留
+    f.stack.undo();
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0]
+        == std::array<double, 3> { 0.0, 0.0, 0.0 });
+}
+
 TEST_CASE("Manual feature controls recording via ctx.undo staged session", "[FeatureSystem][undo]")
 {
     FeatureUndoFixture f;

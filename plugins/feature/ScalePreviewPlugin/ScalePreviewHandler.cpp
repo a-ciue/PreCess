@@ -67,7 +67,7 @@ void ScalePreviewHandler::activate(FeatureContext& ctx)
 
 void ScalePreviewHandler::deactivate()
 {
-    // 插件职责：功能停用时关闭 staged 会话（AGENTS.md 约定；新操作边界另有隐式 cancel 兜底）
+    // 插件职责：功能停用时关闭 staged 会话（AGENTS.md 约定；真实写入点另有隐式 cancel 兜底）
     if (ctx_ && ctx_->undo.stagedActive()) {
         ctx_->undo.cancelStaged();
     }

@@ -15,11 +15,12 @@
  * staged 会话规则（v1 单组件，无快照链——逐步回退需求由 Auto 模式"每次执行一条记录"覆盖）：
  * - staged 打开时 undo() = cancelStaged()（恢复 before₀ 并关闭，消费本次，全局栈不动）；
  *   redo() 空转。
- * - 新操作边界（beginOperation）发现 staged 打开 → 隐式 cancelStaged() 后开始新操作；
- *   旧功能后续 staged 调用发现会话已关 → 空转容忍（beginStaged 除外：会话冲突抛
- *   std::runtime_error）。
+ * - staged 打开时的隐式 cancelStaged() 兜底挂在真实写入点（onComponentDirty 首次标脏、
+ *   四个结构钩子），而非 beginOperation：纯旁观回调（只读事件订阅同样走
+ *   操作边界）不误杀进行中的预览；旧功能后续 staged 调用发现会话已关 → 空转容忍
+ *   （beginStaged 除外：会话冲突抛 std::runtime_error）。
  * - 导出为只读所见即所得（含预览态）；stagedActive() 暴露 QML 供界面禁用入口。
- * - staged 未关功能被停用属插件职责（deactivate 时关闭），新边界隐式 cancel 兜底。
+ * - staged 未关功能被停用属插件职责（deactivate 时关闭），写入点隐式 cancel 兜底。
  */
 #pragma once
 #include "Core.h"
@@ -44,7 +45,7 @@ public:
     explicit UndoStack(ModelLayer& model);
 
     // —— 操作边界（自动模式）——
-    //! @brief 嵌套深度+1（边界可嵌套，最外层生效）；staged 打开时先隐式 cancelStaged
+    //! @brief 嵌套深度+1（边界可嵌套，最外层生效）；不做 staged 隐式 cancel（推迟到真实写入点）
     void beginOperation(std::string label);
     //! @brief 深度-1；归零时：空操作丢弃，否则补 after-image、入栈、清空 redo
     void commitOperation();
@@ -73,7 +74,7 @@ public:
     void clear();
 
     // —— UndoRecorder 钩子（ModelLayer 回调）——
-    void onComponentDirty(Index component_id, const ComponentData& data) override; //!< 操作内首次标脏捕获 before
+    void onComponentDirty(Index component_id, const ComponentData& data) override; //!< 操作内首次标脏捕获 before；staged 打开先隐式 cancel
     void onModelAdded(Index model_id) override;
     void onModelRemoving(const ModelData& model) override; //!< removeModel 前捕获 ModelSnapshot
     void onComponentAdded(Index model_id, Index component_id) override;
@@ -94,6 +95,8 @@ private:
     void pushRecord(UndoRecord record);
     //! @brief 结构钩子归属：边界内并入当前操作（一次用户动作一条记录）；边界外即时自成记录
     void recordStructural(StructuralEntry entry);
+    //! @brief staged 打开则隐式 cancelStaged（真实写入点兜底，见文件头注释）
+    void cancelStagedIfActive();
     //! @brief 组件存在则恢复快照（gid 对账内建于 restoreSnapshot），返回是否恢复
     bool restoreComponentSnapshot(Index component_id, const ComponentData& snapshot);
 

@@ -306,7 +306,28 @@ TEST_CASE("UndoStack undo during staged session cancels it without touching glob
     REQUIRE(f.stack.undoLabel() == "前置编辑");
 }
 
-TEST_CASE("UndoStack beginOperation implicitly cancels an open staged session", "[UndoStack][staged]")
+TEST_CASE("UndoStack read-only operation boundary does not cancel an open staged session", "[UndoStack][staged]")
+{
+    UndoFixture f;
+    const auto [model_id, cid] = f.addTriangle();
+    f.stack.clear();
+
+    REQUIRE(f.stack.beginStaged("预览", cid));
+    writeVertex(f.mgr, cid, 0, { 5.0, 5.0, 5.0 });
+
+    // 纯旁观回调（只读事件订阅同样走操作边界）：不得误杀进行中的预览
+    f.stack.beginOperation("旁观回调");
+    f.stack.commitOperation();
+    REQUIRE(f.stack.stagedActive());
+    REQUIRE(vertexAt(f.mgr, cid, 0) == std::array<double, 3> { 5.0, 5.0, 5.0 });
+    REQUIRE(f.stack.undoLabel() == "预览"); // 空操作丢弃，无新记录
+
+    // 会话仍可正常收尾
+    f.stack.cancelStaged();
+    REQUIRE(vertexAt(f.mgr, cid, 0) == std::array<double, 3> { 0.0, 0.0, 0.0 });
+}
+
+TEST_CASE("UndoStack real write inside a boundary implicitly cancels an open staged session", "[UndoStack][staged]")
 {
     UndoFixture f;
     const auto [model_id, cid] = f.addTriangle();
@@ -315,18 +336,64 @@ TEST_CASE("UndoStack beginOperation implicitly cancels an open staged session", 
     REQUIRE(f.stack.beginStaged("旧预览", cid));
     writeVertex(f.mgr, cid, 0, { 5.0, 5.0, 5.0 });
 
-    // staged 打开时新 beginOperation（模拟切换算法）：旧预览隐式回滚，新操作正常成记录
+    // staged 打开时新操作发生真实写入（模拟切换算法）：旧预览隐式回滚，新操作正常成记录
     f.stack.beginOperation("新操作");
-    REQUIRE_FALSE(f.stack.stagedActive());
-    REQUIRE(vertexAt(f.mgr, cid, 0) == std::array<double, 3> { 0.0, 0.0, 0.0 });
+    REQUIRE(f.stack.stagedActive()); // 边界本身不杀 staged，写入点才杀
     writeVertex(f.mgr, cid, 1, { 6.0, 6.0, 6.0 });
+    REQUIRE_FALSE(f.stack.stagedActive());
+    REQUIRE(vertexAt(f.mgr, cid, 0) == std::array<double, 3> { 0.0, 0.0, 0.0 }); // before₀ 已恢复
     f.stack.commitOperation();
     REQUIRE(f.stack.canUndo());
     REQUIRE(f.stack.undoLabel() == "新操作");
 
+    // undo 一步回到 before₀（before-image 是恢复后的状态，不含旧预览残留）
+    f.stack.undo();
+    REQUIRE(vertexAt(f.mgr, cid, 0) == std::array<double, 3> { 0.0, 0.0, 0.0 });
+    REQUIRE(vertexAt(f.mgr, cid, 1) == std::array<double, 3> { 1.0, 0.0, 0.0 });
+
     // 旧功能后续 staged 调用发现会话已关：空转容忍不崩
+    f.stack.redo();
     f.stack.commitStaged();
     f.stack.cancelStaged();
     f.stack.revertStaged();
     REQUIRE(f.stack.undoLabel() == "新操作");
+}
+
+TEST_CASE("UndoStack write after implicit cancel still notifies at boundary flush", "[UndoStack][staged]")
+{
+    UndoFixture f;
+    const auto [model_id, cid] = f.addTriangle();
+    f.stack.clear();
+
+    REQUIRE(f.stack.beginStaged("旧预览", cid));
+    writeVertex(f.mgr, cid, 0, { 5.0, 5.0, 5.0 });
+    f.mgr.flushNotifications(); // 清掉预览写的待通知，只观察后续通知
+
+    // 隐式 cancelStaged 内部 flush（恢复通知）不得吞掉本次写入的待通知
+    const int notify_before = f.obs.component_changed_count;
+    f.stack.beginOperation("新操作");
+    writeVertex(f.mgr, cid, 1, { 6.0, 6.0, 6.0 });
+    f.mgr.flushNotifications(); // 操作边界收尾 flush
+    // 恢复 before₀ 一次 + 本次写入一次（去重前各自入过待通知集合）
+    REQUIRE(f.obs.component_changed_count == notify_before + 2);
+}
+
+TEST_CASE("UndoStack structural operation implicitly cancels an open staged session", "[UndoStack][staged]")
+{
+    UndoFixture f;
+    const auto [model_id, cid] = f.addTriangle();
+    f.stack.clear();
+
+    REQUIRE(f.stack.beginStaged("预览", cid));
+    writeVertex(f.mgr, cid, 0, { 5.0, 5.0, 5.0 });
+
+    // 边界外结构操作（如 QML 删除模型）：真实写入点，先隐式回滚预览再记录
+    f.mgr.removeModel(model_id);
+    REQUIRE_FALSE(f.stack.stagedActive());
+    REQUIRE(f.stack.canUndo());
+    REQUIRE(f.stack.undoLabel() == "删除模型");
+
+    // undo 恢复的是 before₀（预览已回滚），不含预览残留
+    f.stack.undo();
+    REQUIRE(vertexAt(f.mgr, cid, 0) == std::array<double, 3> { 0.0, 0.0, 0.0 });
 }

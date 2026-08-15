@@ -34,10 +34,9 @@ UndoStack::UndoStack(ModelLayer& model)
 
 void UndoStack::beginOperation(std::string label)
 {
-    // 未确认切换算法的兜底：staged 打开时先隐式回滚旧预览
-    if (staged_)
-        cancelStaged();
-
+    // 注意：此处不做 staged 隐式 cancel——纯旁观回调（只读事件订阅）同样走边界，
+    // 不能误杀进行中的预览；隐式 cancel 推迟到真实写入点（onComponentDirty /
+    // 四个结构钩子）执行，只读边界 commit 时按空操作丢弃。
     if (++op_depth_ == 1) {
         // 最外层边界生效：接管操作标签并清空暂存
         op_label_ = std::move(label);
@@ -288,6 +287,9 @@ void UndoStack::onComponentDirty(Index component_id, const ComponentData& data)
     // applying_（恢复中）与边界外（staged 会话由链自持）不记录
     if (applying_ || op_depth_ <= 0)
         return;
+    // staged 隐式 cancel 的真实写入点之一：新操作的首次写入证明旧预览已被放弃，
+    // 先回滚 before₀ 再捕获 before-image（before₀ 即新操作的写前状态）
+    cancelStagedIfActive();
     for (const auto& entry : op_components_) {
         if (entry.component_id == component_id)
             return;
@@ -299,6 +301,7 @@ void UndoStack::onModelAdded(Index model_id)
 {
     if (applying_)
         return;
+    cancelStagedIfActive();
     StructuralEntry entry;
     entry.kind = StructuralEntry::Kind::ModelAdded;
     entry.model_id = model_id;
@@ -309,6 +312,8 @@ void UndoStack::onModelRemoving(const ModelData& model)
 {
     if (applying_)
         return;
+    // 先于快照捕获隐式 cancel：删除快照应与回滚后的可见状态一致（不含预览残留）
+    cancelStagedIfActive();
     const Index model_id = model_->findModelId(model);
     if (model_id < 0)
         return;
@@ -323,6 +328,7 @@ void UndoStack::onComponentAdded(Index model_id, Index component_id)
 {
     if (applying_)
         return;
+    cancelStagedIfActive();
     StructuralEntry entry;
     entry.kind = StructuralEntry::Kind::ComponentAdded;
     entry.model_id = model_id;
@@ -334,6 +340,8 @@ void UndoStack::onComponentRemoving(const ComponentData& component)
 {
     if (applying_)
         return;
+    // 先于快照捕获隐式 cancel：删除快照应与回滚后的可见状态一致（不含预览残留）
+    cancelStagedIfActive();
     StructuralEntry entry;
     entry.kind = StructuralEntry::Kind::ComponentRemoved;
     if (auto op = model_->getComponentOperator(component.id))
@@ -377,6 +385,14 @@ void UndoStack::recordStructural(StructuralEntry entry)
     }
     record.structural.push_back(std::move(entry));
     pushRecord(std::move(record));
+}
+
+void UndoStack::cancelStagedIfActive()
+{
+    // staged 隐式 cancel 兜底：挂在真实写入点（onComponentDirty / 四个结构钩子），
+    // 纯旁观回调（只读事件订阅）走的空边界不触发
+    if (staged_)
+        cancelStaged();
 }
 
 bool UndoStack::restoreComponentSnapshot(Index component_id, const ComponentData& snapshot)

@@ -313,13 +313,15 @@ void ModelLayer::markComponentDirty(Index component_id, MeshEditKind kind)
     if (kind == MeshEditKind::Topology)
         c->mesh_adjacency.invalidate();
 
+    // undo 记录钩子：写前回调（数据尚未修改），操作边界内首次标脏捕获 before-image。
+    // 先于 pending_notify_ 记入调用：钩子在 staged 打开时会隐式 cancelStaged（恢复
+    // before₀ 并自行 flush），若先记入，本次标脏会被该 flush 吞掉导致通知丢失。
+    if (undo_recorder_)
+        undo_recorder_->onComponentDirty(component_id, *c);
+
     // 去重记入待通知集合
     if (std::find(pending_notify_.begin(), pending_notify_.end(), component_id) == pending_notify_.end())
         pending_notify_.push_back(component_id);
-
-    // undo 记录钩子：写前回调（数据尚未修改），操作边界内首次标脏捕获 before-image
-    if (undo_recorder_)
-        undo_recorder_->onComponentDirty(component_id, *c);
 }
 
 void ModelLayer::flushNotifications()

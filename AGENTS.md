@@ -176,7 +176,7 @@
   - **默认边界自动记录**：操作边界（`beginOperation/commitOperation`，挂点同第 10 节"操作边界清单"）内组件**首次标脏**经写前钩子克隆 before-image，commit 补 after-image 成一条记录；空操作丢弃，栈深上限 `kMaxDepth=32` 溢出丢最旧。简单操作零插件代码。
   - **Manual 插件自控**：功能 json 声明 `"undo": "manual"`（→ `HandlerMetaData::undo_manual`）后，`invoke`/按键路由/事件网关边界不再自动捕获/提交（只 flush），插件经 `ctx.undo`（`UndoContext`）的 **staged 会话**显式控制，before-image 由栈持有（非插件自持）。
   - **staged 会话（v1 单组件、无快照链）**：`beginStaged`（栈捕获 before₀）→ `editableMesh` 预览写，重试经 `revertStaged` 回滚再改 → 确认 `commitStaged`（before₀+当前状态成一条记录）/ 取消 `cancelStaged`（恢复 before₀ 不成记录）。逐步回退需求由 Auto 模式"每次执行一条记录"覆盖。
-  - **执行路径规则**：staged 打开时 undo=`cancelStaged`（恢复 before₀ 并关闭会话，不动全局栈）、redo 空转；新操作边界发现 staged 打开 → 隐式 `cancelStaged` 兜底，旧功能后续 staged 调用空转容忍；导出为只读所见即所得（含预览态），`stagedActive` 已暴露 QML 供界面禁用入口；功能 `deactivate` 时须自行关闭 staged 会话。
+  - **执行路径规则**：staged 打开时 undo=`cancelStaged`（恢复 before₀ 并关闭会话，不动全局栈）、redo 空转；隐式 `cancelStaged` 兜底挂在**真实写入点**（边界内首次标脏、结构操作）而非 `beginOperation`——纯旁观回调（只读事件订阅同样走操作边界）不得误杀进行中的预览，旧功能后续 staged 调用空转容忍；导出为只读所见即所得（含预览态），`stagedActive` 已暴露 QML 供界面禁用入口；功能 `deactivate` 时须自行关闭 staged 会话。
   - **undo 后选择集清空已机制化**：`QUndoStackAdaptor::applied` 信号 → QML 统一 `clearSelection`（CentralRenderArea）。
   - **结构操作即时成记录**：`addModel`/`removeModel`/`removeComponent`/`addGeometryComponent` 由钩子即时成记录；边界内发生的结构操作并入当前操作（一次用户动作一条记录）。
 
