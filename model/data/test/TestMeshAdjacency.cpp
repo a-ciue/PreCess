@@ -171,6 +171,41 @@ TEST_CASE("MeshAdjacency stable ids survive topology edits")
     REQUIRE(*sid_new != *sid_dead);
 }
 
+TEST_CASE("MeshAdjacency edgeEndpoints resolves stable id to endpoint pair")
+{
+    // 物化边 (4,5) 与纯面边 (0,2)，端点均以小在前返回
+    MeshData mesh;
+    mesh.edge_vertices_ = { 4, 5 };
+    mesh.face_vertices_ = { 0, 1, 2 };
+    mesh.face_vertices_offset_ = { 0, 3 };
+
+    MeshAdjacency adj;
+
+    const auto sid_materialized = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 5, 4).value());
+    const auto sid_face = adj.edgeStableId(mesh, adj.findEdgeByEndpoints(mesh, 2, 0).value());
+    REQUIRE(sid_materialized.has_value());
+    REQUIRE(sid_face.has_value());
+
+    const auto ep0 = adj.edgeEndpoints(mesh, *sid_materialized);
+    REQUIRE(ep0.has_value());
+    CHECK((*ep0)[0] == 4);
+    CHECK((*ep0)[1] == 5);
+
+    const auto ep1 = adj.edgeEndpoints(mesh, *sid_face);
+    REQUIRE(ep1.has_value());
+    CHECK((*ep1)[0] == 0);
+    CHECK((*ep1)[1] == 2);
+
+    // 越界与消亡边均返回 nullopt
+    REQUIRE_FALSE(adj.edgeEndpoints(mesh, -1).has_value());
+    REQUIRE_FALSE(adj.edgeEndpoints(mesh, 9999).has_value());
+
+    mesh.face_vertices_ = { 0, 1, 2 };
+    mesh.edge_vertices_ = {};
+    adj.invalidate();
+    REQUIRE_FALSE(adj.edgeEndpoints(mesh, *sid_materialized).has_value());
+}
+
 TEST_CASE("MeshAdjacency assigns and releases global edge ids")
 {
     MeshIDMap map;

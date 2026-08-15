@@ -22,6 +22,7 @@ class FeatureSystem;
 class QFeatureSystemAdaptor : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QFeatureSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
 public:
     QFeatureSystemAdaptor(FeatureSystem& feature_system);

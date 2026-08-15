@@ -4,9 +4,10 @@
 #include <BRep_Builder.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Iterator.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 
 #include <stdexcept>
 #include <vector>
@@ -65,7 +66,7 @@ TopoDS_Shape GeometryTopologyEditor::removeTopLevelShape(
         throw std::invalid_argument("Only a top-level independent geometry shape can be deleted");
 
     const TopAbs_ShapeEnum lower_type = lowerShapeType(target.ShapeType());
-    TopTools_IndexedMapOfShape retained_lower_shapes;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> retained_lower_shapes;
     if (lower_type != TopAbs_SHAPE) {
         for (const TopoDS_Shape& shape : retained_shapes)
             TopExp::MapShapes(shape, lower_type, retained_lower_shapes);
@@ -83,7 +84,7 @@ TopoDS_Shape GeometryTopologyEditor::removeTopLevelShape(
 
     // 非级联删除时，仅提升没有被其他保留形状引用的直接下级拓扑。
     if (!delete_children && lower_type != TopAbs_SHAPE) {
-        TopTools_IndexedMapOfShape lower_shapes;
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> lower_shapes;
         TopExp::MapShapes(target, lower_type, lower_shapes);
         for (int index = 1; index <= lower_shapes.Extent(); ++index) {
             const TopoDS_Shape& lower_shape = lower_shapes.FindKey(index);

@@ -69,6 +69,14 @@ const std::vector<Index>& MeshAdjacency::faceEdgeStableIds(const MeshData& mesh)
     return face_edge_stable_ids_;
 }
 
+std::optional<std::array<Index, 2>> MeshAdjacency::edgeEndpoints(const MeshData& mesh, Index stable_id)
+{
+    const auto edge = findEdgeByStableId(mesh, stable_id);
+    if (!edge)
+        return std::nullopt;
+    return rows_[edge->row_].endpoints;
+}
+
 std::optional<EdgeHandle> MeshAdjacency::findEdgeByEndpoints(const MeshData& mesh, Index p0, Index p1)
 {
     if (p0 < 0 || p1 < 0)

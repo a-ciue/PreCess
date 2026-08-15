@@ -82,6 +82,12 @@ public:
     std::optional<Index> edgeGlobalId(const MeshData& mesh, Index stable_id);
 
     /**
+     * @brief 稳定局部边 id -> 端点（组件内局部点 id，小在前）
+     * @return 该边已消亡或 id 越界返回 std::nullopt
+     */
+    std::optional<std::array<Index, 2>> edgeEndpoints(const MeshData& mesh, Index stable_id);
+
+    /**
      * @brief 面单元的边稳定 id 表（懒构建）
      * @return 与 MeshData::face_vertices_ 等长对齐的表：face 的第 j 条边
      *         对应 faceEdgeStableIds[face_vertices_offset_[f] + j]（边序按面顶点环绕顺序）

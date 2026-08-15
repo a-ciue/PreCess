@@ -68,7 +68,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: geoMenu.open()
 
-                Timer { id: geoSubCloseTimer; interval: subMenuCloseDelay; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
+                Timer { id: geoSubCloseTimer; interval: geoBtn.subMenuCloseDelay; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
 
                 Menu {
                     id: geoMenu
@@ -205,7 +205,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: meshMenu.open()
 
-                Timer { id: meshSubCloseTimer; interval: subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close(); meshTopologyMenu.close() } }
+                Timer { id: meshSubCloseTimer; interval: meshBtn.subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close(); meshTopologyMenu.close()} }
 
                 Menu {
                     id: meshMenu

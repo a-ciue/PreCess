@@ -91,11 +91,6 @@ Item{
         text: root.resultText
         wrapMode: TextEdit.Wrap
         visible: text.length > 0
-        background: Rectangle {
-            color: "#f0f0f0"
-            border.color: "#d0d0d0"
-            border.width: 1
-        }
     }
     Item{
         anchors.top: resultArea.bottom
@@ -144,15 +139,6 @@ Item{
                 }
                 ScrollBar.vertical: ScrollBar {
                     policy: ScrollBar.AsNeeded
-                    background: Rectangle {
-                        implicitWidth: 8
-                        color: "transparent"
-                    }
-                    contentItem: Rectangle {
-                        implicitWidth: 8
-                        radius: 4
-                        color: parent.hovered ? "#c0c0c0" : "#e0e0e0"
-                    }
                 }
             }
         }

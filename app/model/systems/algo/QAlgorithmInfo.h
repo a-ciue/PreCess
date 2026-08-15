@@ -10,6 +10,7 @@
 class QAlgorithmInfo : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QAlgorithmInfo instances are created by C++")
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString display_name READ displayName CONSTANT)
     Q_PROPERTY(QString description READ description CONSTANT)
