@@ -19,7 +19,7 @@ namespace {
  * @throw std::runtime_error 预填充向量长度与子形状数不匹配（局部下标约定被破坏）
  */
 template <typename GeomId>
-void assignGlobalIds(GeometryRegistry& reg, const TopTools_IndexedMapOfShape& map,
+void assignGlobalIds(GeometryRegistry& reg, const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& map,
     std::vector<GeomId>& local_to_global,
     GeomId (GeometryRegistry::*alloc)(const TopoDS_Shape&),
     void (GeometryRegistry::*reclaim)(GeomId, const TopoDS_Shape&),
