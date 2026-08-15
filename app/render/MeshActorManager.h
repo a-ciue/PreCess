@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "MeshActor.h"
 #include "MeshActorManagerSelectOp.h"
+#include "TopologyDiagnosticCategory.h"
 #include <unordered_map>
 #include <array>
 #include <vtkScalarBarActor.h>
@@ -46,7 +47,7 @@ private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
     MeshRenderStyle current_style_ { MeshRenderStyle::FaceWithEdges };
-    std::array<bool, 7> topology_diagnostic_visibility_ {};
+    std::array<bool, kTopologyDiagnosticCategoryCount> topology_diagnostic_visibility_ {};
     double dihedral_minimum_ { 30.0 };
     double dihedral_maximum_ { 180.0 };
 

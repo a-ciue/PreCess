@@ -105,25 +105,24 @@ TopologyDiagnosticActor::~TopologyDiagnosticActor()
 
 void TopologyDiagnosticActor::loadModelData(const MeshDataVtk& model_data)
 {
-    model_data_ = std::make_unique<MeshDataVtk>(model_data);
-    vtkNew<vtkPoints> points;
+    diagnostics_ = model_data.topology_diagnostics_;
+    points_->Reset();
     for (const auto& position : model_data.vertex_positions_)
-        points->InsertNextPoint(position.data());
+        points_->InsertNextPoint(position.data());
 
-    const auto diagnostics = model_data.topology_diagnostics_;
-    if (!diagnostics) {
+    if (!diagnostics_) {
         for (auto& data : data_)
             data->Initialize();
         applyVisibility();
         return;
     }
 
-    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::BoundaryEdge)], *points, diagnostics->boundary_edges);
-    buildFaceData(*data_[categoryIndex(TopologyDiagnosticCategory::BoundaryFace)], *points, model_data, diagnostics->boundary_faces);
-    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::NonManifoldEdge)], *points, diagnostics->non_manifold_edges);
-    buildPointData(*data_[categoryIndex(TopologyDiagnosticCategory::NonManifoldVertex)], *points, diagnostics->non_manifold_vertices);
-    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::IsolatedEdge)], *points, diagnostics->isolated_edges);
-    buildPointData(*data_[categoryIndex(TopologyDiagnosticCategory::IsolatedVertex)], *points, diagnostics->isolated_vertices);
+    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::BoundaryEdge)], *points_, diagnostics_->boundary_edges);
+    buildFaceData(*data_[categoryIndex(TopologyDiagnosticCategory::BoundaryFace)], *points_, model_data, diagnostics_->boundary_faces);
+    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::NonManifoldEdge)], *points_, diagnostics_->non_manifold_edges);
+    buildPointData(*data_[categoryIndex(TopologyDiagnosticCategory::NonManifoldVertex)], *points_, diagnostics_->non_manifold_vertices);
+    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::IsolatedEdge)], *points_, diagnostics_->isolated_edges);
+    buildPointData(*data_[categoryIndex(TopologyDiagnosticCategory::IsolatedVertex)], *points_, diagnostics_->isolated_vertices);
     rebuildDihedralEdges();
     applyVisibility();
 }
@@ -163,20 +162,17 @@ void TopologyDiagnosticActor::setDihedralAngleRange(double minimum, double maxim
 
 void TopologyDiagnosticActor::rebuildDihedralEdges()
 {
-    if (!model_data_ || !model_data_->topology_diagnostics_)
+    if (!diagnostics_)
         return;
 
     std::vector<TopologyDiagnosticEdge> filtered;
-    for (const auto& edge : model_data_->topology_diagnostics_->manifold_edges) {
+    for (const auto& edge : diagnostics_->manifold_edges) {
         if (edge.dihedral_angle_degrees >= dihedral_minimum_
             && edge.dihedral_angle_degrees <= dihedral_maximum_) {
             filtered.push_back(edge);
         }
     }
-    vtkNew<vtkPoints> points;
-    for (const auto& position : model_data_->vertex_positions_)
-        points->InsertNextPoint(position.data());
-    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::DihedralEdge)], *points, filtered);
+    buildEdgeData(*data_[categoryIndex(TopologyDiagnosticCategory::DihedralEdge)], *points_, filtered);
 }
 
 void TopologyDiagnosticActor::applyVisibility()

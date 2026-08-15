@@ -5,30 +5,18 @@
 #pragma once
 
 #include "Core.h"
+#include "TopologyDiagnosticCategory.h"
 
 #include <array>
 #include <vtkActor.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkNew.h>
+#include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 
 class vtkRenderer;
 class vtkPlane;
-
-/**
- * @brief 可独立开关的拓扑诊断类别
- */
-enum class TopologyDiagnosticCategory {
-    BoundaryEdge,
-    BoundaryFace,
-    NonManifoldEdge,
-    NonManifoldVertex,
-    IsolatedEdge,
-    IsolatedVertex,
-    DihedralEdge,
-    Count
-};
 
 /**
  * @brief 把拓扑诊断集合渲染为独立的边、点和面 Actor
@@ -50,7 +38,7 @@ public:
     void setDihedralAngleRange(double minimum, double maximum);
 
 private:
-    static constexpr size_t category_count_ = static_cast<size_t>(TopologyDiagnosticCategory::Count);
+    static constexpr std::size_t category_count_ = kTopologyDiagnosticCategoryCount;
 
     void rebuildDihedralEdges();
     void applyVisibility();
@@ -64,5 +52,6 @@ private:
     std::array<vtkNew<vtkExtractPolyDataGeometry>, category_count_> clippers_;
     std::array<vtkNew<vtkPolyDataMapper>, category_count_> mappers_;
     std::array<vtkNew<vtkActor>, category_count_> actors_;
-    std::unique_ptr<MeshDataVtk> model_data_;
+    vtkNew<vtkPoints> points_; //> 当前组件诊断几何共用的点坐标
+    std::shared_ptr<const MeshTopologyDiagnosticResult> diagnostics_; //> 二面角范围变化时重新筛选的只读结果
 };

@@ -115,7 +115,7 @@ std::vector<MeshEdgeTopology> MeshAdjacency::edgeTopologies(const MeshData& mesh
     std::vector<MeshEdgeTopology> result;
     result.reserve(rows_.size());
     for (const EdgeRow& row : rows_) {
-        result.push_back({ row.endpoints, row.adjacent_faces, row.cell_index >= 0 });
+        result.push_back({ row.endpoints, row.adjacent_faces });
     }
     return result;
 }

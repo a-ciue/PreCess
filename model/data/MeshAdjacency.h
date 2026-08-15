@@ -57,7 +57,6 @@ public:
 struct MeshEdgeTopology {
     std::array<Index, 2> endpoints; //> 排序后的组件内局部点 id
     std::vector<Index> adjacent_faces; //> 使用该边的面单元 id
-    bool is_materialized { false }; //> 是否在 edge_vertices_ 中存在显式边单元，供后续边编辑和修复使用
 };
 
 class MeshAdjacency {
