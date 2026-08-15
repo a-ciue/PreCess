@@ -17,6 +17,7 @@ class QModelIOInfo;
 class QModelIOSystemAdaptor : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QModelIOSystemAdaptor is provided by C++")
     Q_PROPERTY(QStringList dialogNameFilters READ getDialogNameFilters NOTIFY dialogNameFiltersChanged)
 public:
     QModelIOSystemAdaptor(ModelIOSystem& io_system);

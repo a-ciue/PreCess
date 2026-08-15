@@ -100,6 +100,12 @@ public:
      */
     Index appendGeometryShape(TopoDS_Shape shape);
 
+    /**
+     * @brief 替换当前组件的几何根形状，并重建子形状索引；空 Shape 表示移除 Geometry。
+     * @return 当前组件 ID。
+     */
+    Index replaceGeometryRoot(TopoDS_Shape shape);
+
     void removeMesh();
     void removeGeometry();
 

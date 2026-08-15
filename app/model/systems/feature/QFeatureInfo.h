@@ -10,6 +10,7 @@
 class QFeatureInfo : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QFeatureInfo instances are created by C++")
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString display_name READ displayName CONSTANT)
     Q_PROPERTY(QString description READ description CONSTANT)

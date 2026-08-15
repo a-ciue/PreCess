@@ -42,7 +42,7 @@ public:
     /**
      * @brief 模型编辑操作调用接口
      * @param unique_name 模型编辑操作唯一名称
-     * @param model
+     * @param component_id 对象树当前组件 ID（仅作提示透传给 handler，可为 -1；目标组件由 handler 按参数解析）
      * @param args 模型编辑操作参数
      */
     std::any call(const std::string& unique_name, Index component_id, const std::vector<core::ArgObject>& args);

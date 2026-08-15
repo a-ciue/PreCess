@@ -41,6 +41,9 @@ public:
      * @param fallback_component_id 对象树当前 Component ID
      * @param args 算法参数
      * @return 实际目标 Component ID；无法确定时返回空
+     * @note 推荐插件覆盖本函数、按参数（选择器的全局 id / component_id）解析目标组件，
+     *       不强制要求用户执行前在对象树中选中 component；
+     *       fallback_component_id 与 execute 中的 HandlerContext::cur_component 只视作一种提示。
      */
     virtual std::optional<Index> resolveComponentId(
         ModelLayer& model_layer,

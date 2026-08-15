@@ -1,10 +1,12 @@
 #include "ArgObject.h"
 #include "ComponentData.h"
 #include "EventBus.h"
+#include "FeatureEvents.h"
 #include "FeatureSystem.h"
 #include "MeshData.h"
 #include "MeshQualityHandler.h"
 #include "ModelLayer.h"
+#include "Selection.h"
 
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -12,8 +14,8 @@
 #include <any>
 #include <cmath>
 #include <memory>
-#include <optional>
 #include <string>
+#include <vector>
 
 using namespace systems;
 using namespace systems::feature;
@@ -62,6 +64,17 @@ HandlerMetaData qualityMetaData()
     return metadata;
 }
 
+/**
+ * @brief 创建只包含一个目标 Component 的选择器参数
+ */
+std::shared_ptr<Selection> makeComponentSelection(Index component_id)
+{
+    auto selection = std::make_shared<Selection>();
+    selection->type = ElementEnum::Component;
+    selection->ids = { component_id };
+    return selection;
+}
+
 }
 
 TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
@@ -70,14 +83,26 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     ModelLayer model_layer;
     FeatureSystem feature_system(model_layer, bus);
     const Index component_id = addQualityTestComponent(model_layer);
+    std::vector<std::string> display_requests;
+    std::vector<Index> display_component_ids;
+    auto display_subscription = bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [&display_requests, &display_component_ids](const ScalarAttributeDisplayRequestedEvent& event) {
+            display_requests.push_back(event.attribute_name);
+            display_component_ids.push_back(event.component_id);
+        });
+    REQUIRE(static_cast<bool>(display_subscription));
 
     FeatureSystem::SystemHandlerPtr handler { new MeshQualityHandler };
     REQUIRE(feature_system.registerHandler(qualityMetaData(), std::move(handler)));
-    feature_system.setActiveComponentProvider(
-        [component_id]() { return std::optional<Index> { component_id }; });
+    REQUIRE(feature_system.setParameter(
+        "MeshQuality", 0,
+        core::ArgObject::create<ArgTypeEnum::Selector>(makeComponentSelection(component_id))));
 
     const std::any execution_result = feature_system.invoke("MeshQuality");
     REQUIRE(execution_result.type() == typeid(std::string));
+    REQUIRE(std::any_cast<const std::string&>(execution_result).find("Scaled Jacobian") != std::string::npos);
+    REQUIRE(display_requests == std::vector<std::string> { "s_mesh_quality_scaled_jacobian_1" });
+    REQUIRE(display_component_ids == std::vector<Index> { component_id });
 
     const ComponentData* component = model_layer.findComponent(component_id);
     REQUIRE(component != nullptr);
@@ -90,17 +115,28 @@ TEST_CASE("MeshQuality computes scalar attributes", "[MeshQualityPlugin]")
     REQUIRE(face_quality.front() == Catch::Approx(1.0));
     REQUIRE(solid_quality.front() == Catch::Approx(1.0));
 
-    // 切换指标后保留之前的质量属性，方便用户在属性列表中比较不同指标。
+    // 操作进行期间保留不同指标，方便用户在属性列表中比较。
     REQUIRE(feature_system.setParameter(
-        "MeshQuality", 0, core::ArgObject::create<ArgTypeEnum::Combo>(1)));
-    REQUIRE_NOTHROW(feature_system.invoke("MeshQuality"));
+        "MeshQuality", 1, core::ArgObject::create<ArgTypeEnum::Combo>(1)));
+    const std::any skew_result = feature_system.invoke("MeshQuality");
+    REQUIRE(skew_result.type() == typeid(std::string));
+    REQUIRE(display_requests.back() == "s_mesh_quality_equiangle_skew_1");
+    REQUIRE(display_requests.size() == 2);
+    REQUIRE(display_component_ids.back() == component_id);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 1);
     REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 1);
     REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_equiangle_skew_1") == 1);
+
+    // 空属性名表示确认结束当前操作或切换到其他操作，删除本次写入的全部质量属性。
+    bus.publish(ScalarAttributeDisplayRequestedEvent { "", -1 });
+    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_scaled_jacobian_1") == 0);
+    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_scaled_jacobian_1") == 0);
+    REQUIRE(component->mesh->face_attributes_.count("f_mesh_quality_equiangle_skew_1") == 0);
+    REQUIRE(component->mesh->solid_attributes_.count("s_mesh_quality_equiangle_skew_1") == 0);
 }
 
-TEST_CASE("MeshQuality exposes metric selection parameter", "[MeshQualityPlugin]")
+TEST_CASE("MeshQuality exposes component selection and metric parameters", "[MeshQualityPlugin]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -111,7 +147,32 @@ TEST_CASE("MeshQuality exposes metric selection parameter", "[MeshQualityPlugin]
 
     const auto infos = feature_system.getFeatureInfos();
     REQUIRE(infos.size() == 1);
-    REQUIRE(infos.front()->arg_types.size() == 1);
-    REQUIRE(infos.front()->arg_types.front().type == ArgTypeEnum::Combo);
-    REQUIRE(infos.front()->arg_types.front().content.find("Tet Collapse") != std::string::npos);
+    REQUIRE(infos.front()->arg_types.size() == 2);
+    REQUIRE(infos.front()->arg_types.front().type == ArgTypeEnum::Selector);
+    REQUIRE(infos.front()->arg_types.front().content == "Component");
+    REQUIRE(infos.front()->arg_types[1].type == ArgTypeEnum::Combo);
+    REQUIRE(infos.front()->arg_types[1].content.find("Tet Collapse") != std::string::npos);
+}
+
+TEST_CASE("MeshQuality requires exactly one selected component", "[MeshQualityPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem feature_system(model_layer, bus);
+    const Index component_id = addQualityTestComponent(model_layer);
+
+    FeatureSystem::SystemHandlerPtr handler { new MeshQualityHandler };
+    REQUIRE(feature_system.registerHandler(qualityMetaData(), std::move(handler)));
+
+    const std::any empty_result = feature_system.invoke("MeshQuality");
+    REQUIRE(std::any_cast<const std::string&>(empty_result).find("请选择一个 Component") != std::string::npos);
+
+    auto multiple_selection = makeComponentSelection(component_id);
+    multiple_selection->ids.push_back(component_id);
+    REQUIRE(feature_system.setParameter(
+        "MeshQuality", 0,
+        core::ArgObject::create<ArgTypeEnum::Selector>(std::move(multiple_selection))));
+
+    const std::any multiple_result = feature_system.invoke("MeshQuality");
+    REQUIRE(std::any_cast<const std::string&>(multiple_result).find("只能选择一个 Component") != std::string::npos);
 }

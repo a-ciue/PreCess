@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 import app.core
 import app.model
@@ -15,11 +16,13 @@ ColumnLayout {
     property int activeCategory: -1
     property real windowHeight: 600
 
+    // ribbon 页内按钮图标尺寸。页高即 windowHeight/12；图标若绑定 parent.height，
+    // 会与布局隐式尺寸形成反馈环（图标异步加载后触发 recursive rearrange 警告）。
+    readonly property real ribbonIconSize: windowHeight / 12 * 0.65
+
     // 基础几何创建入口，由 Main.qml 中的 GeometryOperationActions 提供。
     property var geometryOperationActions
 
-    signal importRequested()
-    signal exportRequested()
     signal objectTreeToggled()
     signal propertyListToggled()
     signal attributeRenderToggled()
@@ -36,41 +39,46 @@ ColumnLayout {
 
     // 已知插件名 → 图标映射，未命中则使用 PreCess_extra_plugin.svg
     readonly property var pluginIconMap: ({
-        "CreateFacePlugin": "qrc:/images/toolbar/create_face.svg",
-        "DeleteFacePlugin": "qrc:/images/toolbar/delete_face.svg",
-        "TetGenPlugin": "qrc:/images/toolbar/TetGen.svg",
-        "TetGenLibPlugin": "qrc:/images/toolbar/TetGen.svg",
-        "GmshPlugin": "qrc:/images/toolbar/gmsh.svg",
-        "cmdExecutePlugin": "qrc:/images/toolbar/cmd.svg"
+        "CreateFacePlugin": "qrc:/images/toolbar/Edit/create_face.svg",
+        "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete_face.svg",
+        "TetGenPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
+        "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
+        "GmshPlugin": "qrc:/images/toolbar/Algorithm/gmsh.svg",
+        "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg",
+        "MeasurePlugin": "qrc:/images/toolbar/Tools/measure.svg",
+        "DimensionPlugin": "qrc:/images/toolbar/Tools/size_marking.svg",
+        "MeshQuality": "qrc:/images/toolbar/Function/grid_quality.svg"
     })
     // 几何页按钮定义：当前使用默认插件图标。
     readonly property var geometryOperationButtons: [
         { text: qsTr("点"), operation: "startCreatePoint",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/point.svg" },
         { text: qsTr("直线边（坐标）"), operation: "startCreateLineByCoordinates",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/line_coord.svg" },
         { text: qsTr("直线边（选点）"), operation: "startCreateLineFromVertices",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/line_points.svg" },
         { text: qsTr("矩形面"), operation: "startCreateRectangleFace",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/rectangle.svg" },
         { text: qsTr("圆盘/扇形面"), operation: "startCreateDiskFace",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/sector_or_circle.svg" },
         { text: qsTr("闭合边成面"), operation: "startCreateFaceFromEdges",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/close_edges_to_form_surface.svg" },
         { text: qsTr("长方体"), operation: "startCreateBox",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/cuboid.svg" },
         { text: qsTr("圆柱体"), operation: "startCreateCylinder",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/cylinder.svg" },
         { text: qsTr("圆锥/圆台"), operation: "startCreateCone",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/cone_or_conical_stage.svg" },
         { text: qsTr("球体/部分球体"), operation: "startCreateSphere",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" },
+          icon: "qrc:/images/toolbar/Geometry/sphere.svg" },
         { text: qsTr("拉伸面"), operation: "startExtrudeFace",
-          icon: "qrc:/images/toolbar/PreCess_extra_plugin.svg" }
+          icon: "qrc:/images/toolbar/Geometry/stretched_surface.svg" },
+        { text: qsTr("删除几何"), operation: "startDeleteGeometry",
+          icon: "qrc:/images/toolbar/Geometry/delete_geometry.svg" }
     ]
 
     function getIconForPlugin(pluginName) {
-        return pluginIconMap[pluginName] || "qrc:/images/toolbar/PreCess_extra_plugin.svg"
+        return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
 
     // 功能图标：优先菜单声明的自定义 qrc 图标，未指定时按插件名映射默认图标
@@ -141,9 +149,41 @@ ColumnLayout {
 
     Component.onCompleted: rebuildFeatureMenus()
 
+    // 导入模型对话框（支持多选，逐个导入所选文件）
+    FileDialog {
+        id: importModelDialog
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
+        fileMode: FileDialog.OpenFiles
+        onAccepted: {
+            if (selectedNameFilter.index >= 0) {
+                for (const file of selectedFiles) {
+                    QModelManager.ioSystem.read(selectedNameFilter.name, file, [])
+                }
+                App.registry.renderWindow.resetCamera()
+            } else {
+                console.exception("No valid file type selected.")
+            }
+        }
+    }
+
+    // 导出模型对话框
+    FileDialog {
+        id: exportModelDialog
+        nameFilters: QModelManager.ioSystem.dialogNameFilters
+        fileMode: FileDialog.SaveFile
+        onAccepted: {
+            if (selectedNameFilter.index >= 0) {
+                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
+            } else {
+                console.exception("No valid file type selected.")
+            }
+        }
+    }
+
     ToolBar {
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             spacing: 0
 
             ToolButton {
@@ -256,32 +296,33 @@ ColumnLayout {
 
         // 0: 文件
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             ToolButton {
-                icon.source: "qrc:/images/toolbar/import.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.source: "qrc:/images/toolbar/File/import.svg"
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导入"
-                onClicked: importRequested()
+                onClicked: importModelDialog.open()
             }
 
             ToolButton {
-                icon.source: "qrc:/images/toolbar/export.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.source: "qrc:/images/toolbar/File/export.svg"
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导出"
-                onClicked: exportRequested()
+                onClicked: exportModelDialog.open()
             }
 
             ToolButton {
-                icon.source: "qrc:/images/toolbar/preference.svg"
-                icon.width: parent.height * 0.65
-                icon.height: parent.height * 0.65
+                icon.source: "qrc:/images/toolbar/File/preference.svg"
+                icon.width: root.ribbonIconSize
+                icon.height: root.ribbonIconSize
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "偏好设置"
@@ -293,7 +334,8 @@ ColumnLayout {
 
         // 1: 编辑 → 撤销/重做 + 数据驱动，图标按名映射
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             ToolButton {
                 text: qsTr("撤销")
@@ -327,8 +369,8 @@ ColumnLayout {
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -350,15 +392,16 @@ ColumnLayout {
 
         // 2: 算法 → 数据驱动，图标按名映射
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: QModelManager.algorithmSystem.algorithmsInfo
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -371,15 +414,16 @@ ColumnLayout {
 
         // 3: 几何 → 创建几何。
         RowLayout {
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
             Repeater {
                 model: root.geometryOperationButtons
                 ToolButton {
                     required property var modelData
                     icon.source: root.getIconForFeature(modelData)
-                    icon.width: parent.height * 0.65
-                    icon.height: parent.height * 0.65
+                    icon.width: root.ribbonIconSize
+                    icon.height: root.ribbonIconSize
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.text
@@ -396,7 +440,8 @@ ColumnLayout {
             RowLayout {
                 id: featureMenuPage
                 required property var modelData
-                anchors.fill: parent
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
                 Repeater {
                     model: featureMenuPage.modelData.groups
@@ -412,8 +457,8 @@ ColumnLayout {
                             ToolButton {
                                 required property var modelData
                                 icon.source: root.getIconForFeature(modelData)
-                                icon.width: parent.height * 0.65
-                                icon.height: parent.height * 0.65
+                                icon.width: root.ribbonIconSize
+                                icon.height: root.ribbonIconSize
                                 Layout.fillHeight: true
                                 display: ToolButton.TextUnderIcon
                                 text: modelData.display_name

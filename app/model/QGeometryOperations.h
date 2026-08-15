@@ -12,10 +12,10 @@ class TopoDS_Shape;
 class UndoStack;
 
 /**
- * @brief 几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。
+ * @brief 几何操作的 QML 适配器，负责几何创建、基础编辑以及写入目标的选择。
  *
- * 该类调用 GeometryBuilder 构造 OCC Shape，再根据 Model/Component 目标
- * 将结果新建或追加到 ModelLayer，不参与底层几何算法和渲染。
+ * 该类调用 GeometryBuilder 和 GeometryTopologyEditor 完成 OCC 操作，再根据
+ * Model/Component 目标读写 ModelLayer，不参与底层几何算法和渲染。
  */
 class QGeometryOperations : public QObject {
     Q_OBJECT
@@ -171,13 +171,24 @@ public:
         double longitudeSweep);
 
     /**
+     * @brief 删除选中的一个顶层独立几何形状。
+     *
+     * 支持 GeometryVertex、GeometryEdge、GeometryFace 和 GeometrySolid。
+     * @param selection 几何选择对象，操作目标 Component 由所选形状反查得到。
+     * @param deleteChildren 为 false 时保留并提升目标的直接下级拓扑；
+     * 为 true 时同时删除其未被其他形状使用的下级拓扑。
+     * @return 被更新的组件 ID，失败时返回 -1。
+     */
+    Q_INVOKABLE int deleteGeometry(
+        QSelection* selection,
+        bool deleteChildren);
+
+    /**
      * @brief 将当前组件中选中的一个 Geometry Face 沿指定方向拉伸为实体。
      *
      * 源 Face 保留，拉伸结果使用截面副本并追加回源组件。
      * @return 被更新的组件 ID，失败时返回 -1。
      */
-
-
     Q_INVOKABLE int extrudeFace(
         int componentId,
         QSelection* selection,

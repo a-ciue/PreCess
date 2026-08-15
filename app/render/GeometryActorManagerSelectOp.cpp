@@ -134,6 +134,10 @@ void GeometryActorManagerSelectOp::setShapePickingEnabled(std::shared_ptr<Geomet
         }
     }
 }
+bool GeometryActorManagerSelectOp::hasRegisteredComponents() const
+{
+    return !registered_component_ids_.empty();
+}
 
 void GeometryActorManagerSelectOp::addToAllLists(vtkProp* prop)
 {

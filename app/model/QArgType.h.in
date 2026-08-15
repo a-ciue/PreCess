@@ -18,6 +18,7 @@ class QArgType : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QArgType instances are created by C++")
     Q_PROPERTY(QArgType::ArgTypeEnum type READ type CONSTANT)
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(QString content READ content CONSTANT)

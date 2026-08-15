@@ -13,8 +13,9 @@
 #include <TopoDS_Shape.hxx>
 
 #include <BRep_Builder.hxx>
+#include <NCollection_Sequence.hxx>
 #include <STEPCAFControl_Reader.hxx>
-#include <TDF_LabelSequence.hxx>
+#include <TDF_Label.hxx>
 #include <TDocStd_Document.hxx>
 #include <TopoDS_Compound.hxx>
 #include <XCAFApp_Application.hxx>
@@ -64,7 +65,7 @@ static std::optional<TopoDS_Shape> loadStepAsSingleShape_XDE(const std::filesyst
         return std::nullopt;
     }
 
-    TDF_LabelSequence freeShapes;
+    NCollection_Sequence<TDF_Label> freeShapes;
     shapeTool->GetFreeShapes(freeShapes);
     if (freeShapes.Length() <= 0) {
         spdlog::error("No free shapes in STEP: {}", path.string());

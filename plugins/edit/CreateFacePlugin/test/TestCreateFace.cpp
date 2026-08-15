@@ -58,7 +58,7 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
             : 0;
 
         CreateFaceHandler h;
-        REQUIRE_NOTHROW(h.execute(comp_op, { arg0 }));
+        REQUIRE_NOTHROW(h.execute(mgr, cids[0], { arg0 }));
 
         REQUIRE((Index)mesh->face_vertices_.size() == old_face_vert_size + 3);
         REQUIRE((Index)mesh->face_vertices_offset_.size() == old_face_count + 2); // faces+1 => offsets size = faces+1
@@ -94,7 +94,7 @@ TEST_CASE("CreateFaceHandler: create triangle/quad on component mesh")
             : 0;
 
         CreateFaceHandler h;
-        REQUIRE_NOTHROW(h.execute(comp_op, { arg0 }));
+        REQUIRE_NOTHROW(h.execute(mgr, cids[0], { arg0 }));
 
         REQUIRE((Index)mesh->face_vertices_.size() == old_face_vert_size + 4);
         REQUIRE((Index)mesh->face_vertices_offset_.size() == old_face_count + 2);

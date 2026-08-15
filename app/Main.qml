@@ -13,7 +13,6 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 import QtQuick.Controls.Fusion
 
 import com.kdab.dockwidgets as KDDW
@@ -46,8 +45,6 @@ ApplicationWindow {
         consoleOpen: consoleDock.isOpen
         outputLogOpen: outputLogDock.isOpen
         preferencesOpen: preferencesDock.isOpen
-        onImportRequested: openPatchDialog.open()
-        onExportRequested: saveFaceDialog.open()
         onObjectTreeToggled: {
             if (objectTreeDock.isOpen) objectTreeDock.close()
             else objectTreeDock.show()
@@ -191,34 +188,6 @@ ApplicationWindow {
     }
 
     KDDW.LayoutSaver { id: layoutSaver }
-    
-    //打开文件对话框
-    FileDialog {
-        id: openPatchDialog
-        nameFilters: QModelManager.ioSystem.dialogNameFilters
-        onAccepted: {
-            if (selectedNameFilter.index >= 0) {
-                QModelManager.ioSystem.read(selectedNameFilter.name, selectedFile, [])
-                App.registry.renderWindow.resetCamera()
-            } else {
-                console.exception("No valid file type selected.")
-            }
-        }
-    }
-
-    //保存文件对话框
-    FileDialog {
-        id: saveFaceDialog
-        nameFilters: QModelManager.ioSystem.dialogNameFilters
-        fileMode: FileDialog.SaveFile
-        onAccepted: {
-            if (selectedNameFilter.index >= 0) {
-                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
-            } else {
-                console.exception("No valid file type selected.")
-            }
-        }
-    }
 
     Component.onCompleted: {
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）

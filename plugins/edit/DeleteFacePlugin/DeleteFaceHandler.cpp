@@ -1,35 +1,42 @@
 #include "DeleteFaceHandler.h"
 #include "ArgObject.h"
 #include "ArgType.h"
-#include "MeshData.h"
-#include "Selection.h"
 #include "ComponentData.h"
 #include "ComponentOperator.h"
+#include "MeshData.h"
+#include "ModelLayer.h"
+#include "Selection.h"
 
-#include <filesystem>
 #include <execution>
+#include <filesystem>
 #include <iostream>
-#include <spdlog/spdlog.h>
 #include <spdlog/fmt/ranges.h>
+#include <spdlog/spdlog.h>
 
 namespace systems::edit {
 using namespace core;
-std::any DeleteFaceHandler::execute(ComponentOperator& op, const std::vector<core::ArgObject>& args)
+std::any DeleteFaceHandler::execute(ModelLayer& model, Index fallback_component_id, const std::vector<core::ArgObject>& args)
 {
     // 参数检查
-    if (!op.mesh()) {
-        spdlog::error("DeleteFaceHandler::execute: Current component has no mesh.");
-        return {};
-    }
     auto selection_p = args[0].get<ArgTypeEnum::Selector>();
     if (!selection_p || !*selection_p) {
         spdlog::error("DeleteFaceHandler::execute: Argument 1 is missing or of wrong type.");
-        return {};
+        return { };
     }
     auto selection = *selection_p;
     if (selection->type != ElementEnum::Face || selection->ids.empty()) {
         spdlog::error("DeleteFaceHandler::execute: Selection type is not Face or no faces selected.");
-        return {};
+        return { };
+    }
+
+    // 面 id 为组件内局部 id：目标组件由选择集携带的 component_id 决定，
+    // 选择未携带组件身份时以对象树传入的 fallback_component_id 兜底
+    const Index component_id = selection->component_id >= 0 ? selection->component_id : fallback_component_id;
+    auto target_op = model.getComponentOperator(component_id);
+    if (!target_op || !target_op->mesh()) {
+        spdlog::error("DeleteFaceHandler::execute: Component {} not found or has no mesh.",
+            component_id);
+        return { };
     }
 
     // 获取所有需要删除的面ID并按降序排序，以便从后往前删除
@@ -37,21 +44,21 @@ std::any DeleteFaceHandler::execute(ComponentOperator& op, const std::vector<cor
     std::sort(face_ids.begin(), face_ids.end(), std::greater<Index>());
 
     // 验证所有面ID都在有效范围内
-    const MeshData* mesh_read = op.mesh();
+    const MeshData* mesh_read = target_op->mesh();
     for (Index face_id : face_ids) {
         if (face_id < 0 || face_id >= static_cast<Index>(mesh_read->face_vertices_offset_.size() - 1)) {
             spdlog::error("DeleteFaceHandler::execute: Face ID {} is out of bounds.", face_id);
-            return {};
+            return { };
         }
     }
 
     spdlog::debug("DeleteFaceHandler::execute: Deleting faces ID {} on component {}",
-        face_ids, op.componentId());
+        face_ids, component_id);
 
     // 写必脏：获取可写网格即标脏，通知由操作边界 flush 统一发出
-    MeshData& mesh = op.editableMesh();
+    MeshData& mesh = target_op->editableMesh();
 
-   // 预先收集所有面的顶点数量（因为face_vertices_offset_会在删除过程中变化）
+    // 预先收集所有面的顶点数量（因为face_vertices_offset_会在删除过程中变化）
     std::vector<std::pair<Index, Index>> face_vertex_counts; // <face_id, vertices_count>
     for (Index face_id : face_ids) {
         Index vertices_count = mesh.face_vertices_offset_[face_id + 1] - mesh.face_vertices_offset_[face_id];
@@ -108,13 +115,13 @@ std::any DeleteFaceHandler::execute(ComponentOperator& op, const std::vector<cor
             });
     }
 
-    return {};
+    return { };
 }
 
 std::vector<ArgType> DeleteFaceHandler::args_type() const
 {
     return {
-        ArgType { ArgTypeEnum::Selector, "选择面", "" }
+        ArgType { ArgTypeEnum::Selector, "选择面", "Face" }
     };
 }
 }

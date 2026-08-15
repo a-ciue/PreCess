@@ -22,12 +22,27 @@ TetGenLibPlugin/
 
 ## 功能
 
-对当前选中的面网格组件执行四面体剖分，生成包含三角表面和四面体体的新模型，直接加入当前项目。
+对所选面网格组件执行四面体剖分，生成包含三角表面和四面体体的新模型，直接加入当前项目。
+
+> 依据 [AGENTS.md](../AGENTS.md) 第 10 节算法系统约定，目标 component **不依赖对象树选中态**：
+> 用户可通过参数 0 的 Selector（`Component` 内容，与 MeshQualityPlugin 组件选择器风格一致）
+> 在视口"组件"模式下直接点选目标 component，**无需在对象树预先点选**。
+>
+> 解析目标 component 的两路径（`TetGenLibHandler::resolveComponentId`）：
+>
+> | 优先级 | 路径 | 来源 | 典型场景 |
+> |--------|------|------|----------|
+> | A（首选） | `selection.ids[Component]` | 选择器"组件"模式视口点选（`ComponentSelectorHighlight`） | "开始选择 → 在视口点选组件 → 确认"标准流程 |
+> | B（兜底） | `fallback_component_id` | `App.selection.activeComponentId`（对象树） | 向后兼容保留；不再推荐 |
+>
+> **多选 component 直接拒收**（TetGen 输入须为整张 surface，无法跨组件）。
+> 两个来源都不可用时返回 `nullopt` 并打印明确的 spdlog error，便于定位。
 
 ### 参数说明
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
+| 目标 Component | Selector（Component） | 空 | 视口"组件"模式点选目标组件；仅允许单选，多选拒收 |
 | 是否仅使用最大表面壳 | Combo（是/否） | 否 | 开启后通过 BFS 连通分析只取面数最多的表面壳，过滤孤立小腔体 |
 | 质量参数 q | Float | 1.2 | TetGen 质量约束（半径/边长比上限），设为 0 关闭 |
 | 最大单元体积 a | Float | 0 | 限制四面体最大体积，设为 0 关闭 |
@@ -43,12 +58,16 @@ TetGenLibPlugin/
 
 ## 处理流程
 
-1. 从 `ComponentOperator::component()` 获取当前 `ComponentData`
-2. 直读 `MeshData::vertex_positions_` 顶点坐标（MeshData 自包含，连通性数组存组件内局部点 id）
-3. 将 `MeshData::face_vertices_` / `face_vertices_offset_` 转换为 `tetgenio::facetlist`
-4. 调用 `tetrahedralize(switches, &in, &out)` 完成剖分
-5. 将 TetGen 输出的 `pointlist`、`trifacelist`、`tetrahedronlist` 转回 `MeshData`
-6. 通过 `ModelLayer::addModel()` 添加为新模型，或替换当前 Component 的 mesh（替换后调 `ComponentData::ensurePointGlobalIds` 补分配全局点 id）
+1. **目标 component 解析**：用户激活算法 → `AlgorithmSystem::call` 调 `resolveComponentId`：
+   - 选择器为 Component 类型单选 → 直接返回 `ids.front()`（路径 A）
+   - 未提供有效选择 → 回退到对象树选中态（路径 B，仅向后兼容）
+2. `AlgorithmSystem::call` 基于解析出的 `component_id` 获取 `ComponentOperator` 装入 `HandlerContext`
+3. 从 `ComponentOperator::component()` 获取目标 `ComponentData`
+4. 直读 `MeshData::vertex_positions_` 顶点坐标（MeshData 自包含，连通性数组存组件内局部点 id）
+5. 将 `MeshData::face_vertices_` / `face_vertices_offset_` 转换为 `tetgenio::facetlist`
+6. 调用 `tetrahedralize(switches, &in, &out)` 完成剖分
+7. 将 TetGen 输出的 `pointlist`、`trifacelist`、`tetrahedronlist` 转回 `MeshData`
+8. 通过 `ModelLayer::addModel()` 添加为新模型，或替换所选 Component 的 mesh（替换后 `ComponentOperator::replaceMesh` 内建 gid 纪律 + 标脏）
 
 ## 与 TetGenPlugin 的区别
 

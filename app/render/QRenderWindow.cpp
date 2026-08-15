@@ -15,6 +15,7 @@
 #include "MeshIdQuery.h"
 
 #include <spdlog/spdlog.h>
+#include <vtkCamera.h>
 #include <vtkDoubleArray.h>
 #include <vtkCallbackCommand.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
@@ -25,6 +26,7 @@
 #include <vtkPlane.h>
 
 #include <cmath>
+#include <utility>
 
 namespace {
 //! @brief 相机/视口输入未变则整段跳过；变化时按 1-2-5 整数档反算精确段长并居中重设端点，
@@ -164,10 +166,10 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 {
     vtkNew<Data> vtk;
 
-    // Note:  It is okay to store some non-graphical VTK objects in the QQuickVTKItem instead of the
-    // vtkUserData but ONLY if they are accessed from the qml-render-thread. (i.e. only in the
-    // initializeVTK, destroyingVTK or dispatch_async methods)
-    // vtk->renderer->GetActiveCamera()->DeepCopy(_camera);
+    // 渲染窗口统一使用平行投影：高放大倍数下避免透视投影的视锥非线性误差，
+    // 测量与比例尺按世界坐标计算天然准确。SetParallelProjection 需在 AddRenderer
+    // 之前设置，确保首帧渲染即生效。
+    vtk->renderer_->GetActiveCamera()->SetParallelProjection(true);
 
     // VTK 的 CoincidentTopology 是进程级全局状态，在渲染窗口初始化阶段统一设置。
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
@@ -268,7 +270,6 @@ void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData use
 {
     auto* vtk = Data::SafeDownCast(userData);
     if (vtk->renderer_) {
-        _camera->DeepCopy(vtk->renderer_->GetActiveCamera());
         vtk->renderer_->RemoveAllViewProps();
     }
 }
@@ -575,11 +576,14 @@ void QRenderWindow::setClick()
 }
 
 void QRenderWindow::setAttriMode(
+    Index component_id,
     QString attr_name,
     int mode,
     QVariantMap args)
 {
-    dispatch_async([this, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    if (component_id < 0)
+        return;
+    dispatch_async([this, component_id, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         Mode mode_enum = static_cast<Mode>(mode);
 
@@ -605,9 +609,9 @@ void QRenderWindow::setAttriMode(
             }
         }
         spdlog::info("modeEnum: {}", static_cast<int>(mode_enum));
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(component_id)) {
             vtk->mesh_actor_manager_->setAttriMode(
-                cur_component_id_,
+                component_id,
                 attr_name.toStdString(),
                 mode_enum,
                 std_args);
@@ -616,13 +620,15 @@ void QRenderWindow::setAttriMode(
     });
 }
 
-void QRenderWindow::cancelAttri()
+void QRenderWindow::cancelComponentAttri(Index component_id)
 {
-    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    if (component_id < 0)
+        return;
+    dispatch_async([component_id](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(cur_component_id_)) {
+        if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(component_id)) {
             vtk->mesh_actor_manager_->cancelAttri(
-                cur_component_id_);
+                component_id);
         }
         spdlog::info("--------cancelAttri-----------");
     });

@@ -16,6 +16,7 @@ class EditSystem;
 class QEditSystemAdaptor : public QObject {
     Q_OBJECT
     QML_ELEMENT
+    QML_UNCREATABLE("QEditSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QEditInfo*> editsInfo READ getEditsInfo NOTIFY editInfoChanged)
 public:
     QEditSystemAdaptor(EditSystem& edit_system);

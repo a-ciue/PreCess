@@ -154,6 +154,10 @@
 
 - 功能 `Handler` 封装进插件 `PluginHandler`，由 `SystemPluginManager` 注册到对应系统。
 - 每类插件须实现对应系统接口完成数据交换；算法系统目前通过模型 IO 系统以文件读写交换模型数据。
+- **目标组件不依赖对象树选中态**：按组件执行的操作，框架允许时不要强制要求用户在执行功能前于对象树中选中 component，插件不得依赖该行为；对象树传入的组件身份一律不优先依赖、只视作一种提示，目标组件应优先由参数中的选择器让用户自行选择并解析（`Selection` 的全局点 id 经 `ModelLayer::pointIdMap()` 反查所属组件，面/边类局部 id 选择携带 `component_id`）。各系统落点：
+  - 编辑系统：`EditHandler::execute` 接收 `ModelLayer&` 与 `fallback_component_id`（对象树当前组件，仅提示、可为 -1）；目标组件由选择器参数解析，fallback 仅在选择未携带组件身份时兜底；示例见 `plugins/edit/CreateFacePlugin/`、`plugins/edit/DeleteFacePlugin/`。
+  - 算法系统：覆盖 `AlgorithmHandler::resolveComponentId` 按参数解析目标组件，不依赖对象树传入的 `fallback_component_id`；`HandlerContext::cur_component` 同样只视作提示。
+  - 功能系统：`FeatureContext::activeModel` / `activeComponent` 是对象树选中态的动态查询，只作提示；优先注册 `Selector` 类型参数（`FeatureParams`）让用户显式选择目标。
 - 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
 - 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：在 `setup(FeatureRegistrar&)` 中注册参数、菜单项、按键绑定；在 `activate(FeatureContext&)` 中经 `ctx.events` 订阅事件（`KeyEvent`、`ParameterChangedEvent`、`ModelEvent`）；菜单触发 `execute()`。功能可修改的范围限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`）与自身视口交互状态（经 `ctx.interaction`）；示例见 `plugins/feature/FeatureDemoPlugin/`，交互功能示例见 `plugins/feature/MeasurePlugin/`。
   - 订阅 `ParameterChangedEvent` **必须按 `e.feature` 过滤**本功能注册名（与 json 一致，参照 FeatureDemoPlugin 的 `kFeatureName` 常量），否则将响应其他功能的参数变更。

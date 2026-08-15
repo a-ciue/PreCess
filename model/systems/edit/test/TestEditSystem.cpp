@@ -31,9 +31,11 @@ struct CountingObserver : ModelObserver {
 //! @brief 写模型的编辑 handler：经可写入口写一次（写必脏，通知待操作边界 flush）
 class WritingEditHandler : public EditHandler {
 public:
-    std::any execute(ComponentOperator& op, const std::vector<core::ArgObject>& /*args*/) override
+    std::any execute(ModelLayer& model, Index fallback_component_id, const std::vector<core::ArgObject>& /*args*/) override
     {
-        op.appendPoint({ 2.0, 0.0, 0.0 });
+        auto op = model.getComponentOperator(fallback_component_id);
+        if (op)
+            op->appendPoint({ 2.0, 0.0, 0.0 });
         return {};
     }
 
