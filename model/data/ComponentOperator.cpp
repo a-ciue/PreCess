@@ -166,7 +166,7 @@ void ComponentOperator::restoreSnapshot(const ComponentData& snapshot)
     component_->reclaimPointGlobalIds(mgr_->pointIdMap());
     component_->mesh_adjacency.reclaimEdgeGlobalIds(mgr_->edgeIdMap(), component_id_);
     if (component_->geometry)
-        component_->geometry->ensureIndexBuilt(mgr_->geomRegistry()); // 克隆体索引未建，此处重建领新 gid
+        component_->geometry->ensureIndexBuilt(mgr_->geomRegistry()); // gid 向量随快照保留，此处按原值 reclaim
 
     // 标脏：失效邻接懒表，通知延迟到操作边界 flush
     mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);

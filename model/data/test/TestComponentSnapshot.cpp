@@ -8,11 +8,16 @@
 #include "MeshData.h"
 #include "MeshIDMap.h"
 #include "ComponentData.h"
+#include "GeometryData.h"
+#include "GeometryRegistry.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
 #include "ModelSnapshot.h"
 #include "ComponentOperator.h"
 #include "MakeMeshData.h"
+
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <TopoDS_Shape.hxx>
 
 namespace {
 struct CountingObserver : ModelObserver {
@@ -349,4 +354,79 @@ TEST_CASE("restoreComponent re-inserts component with original id", "[ModelLayer
 
     // 占用冲突：组件 id 已占用时 restoreComponent 抛异常
     REQUIRE_THROWS_AS(mgr.restoreComponent(model_id, c->clone()), std::runtime_error);
+}
+
+namespace {
+//! @brief 构造一个 OCC box 几何组件
+std::unique_ptr<ComponentData> makeBoxComponent(const std::string& name, double size = 1.0)
+{
+    auto geom = std::make_unique<GeometryData>();
+    geom->rootShape = std::make_unique<TopoDS_Shape>(BRepPrimAPI_MakeBox(size, size, size).Shape());
+    auto c = std::make_unique<ComponentData>();
+    c->name = name;
+    c->geometry = std::move(geom);
+    return c;
+}
+}
+
+TEST_CASE("restoreSnapshot reclaims geometry gids at original values", "[snapshot][geometry]")
+{
+    CountingObserver obs;
+    ModelLayer mgr(&obs);
+
+    ComponentDatas comps;
+    comps.push_back(makeBoxComponent("Comp_geom"));
+    const Index model_id = mgr.addModel("geom_reclaim", std::move(comps));
+    const Index cid = mgr.modelById(model_id)->componentIds()[0];
+
+    ComponentData* comp = mgr.findComponent(cid);
+    REQUIRE(comp->geometry->index.built);
+    const std::vector<GeomFaceId> original_gids = comp->geometry->index.face_local_to_global;
+    REQUIRE(original_gids.size() > 1);
+    const TopoDS_Shape original_face = *mgr.geomRegistry().getFace(original_gids[1]);
+
+    auto op = mgr.getComponentOperator(cid);
+    auto snapshot = op->takeSnapshot();
+
+    // 中途变更：追加几何形状（release 旧索引 + 重建领新 gid），原 gid 成空洞
+    op->appendGeometryShape(BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape());
+    REQUIRE(comp->geometry->index.face_local_to_global != original_gids);
+    REQUIRE(mgr.geomRegistry().getFace(original_gids[1]) == nullptr);
+
+    // 恢复快照：几何 gid 按原值 reclaim，且指向原形状（句柄共享 TShape）
+    op->restoreSnapshot(*snapshot);
+    REQUIRE(comp->geometry->index.built);
+    REQUIRE(comp->geometry->index.face_local_to_global == original_gids);
+    const TopoDS_Shape* restored_face = mgr.geomRegistry().getFace(original_gids[1]);
+    REQUIRE(restored_face != nullptr);
+    REQUIRE(restored_face->IsSame(original_face));
+}
+
+TEST_CASE("restoreModel reclaims geometry gids without conflicting with newer allocations", "[snapshot][geometry]")
+{
+    CountingObserver obs;
+    ModelLayer mgr(&obs);
+
+    ComponentDatas comps;
+    comps.push_back(makeBoxComponent("Comp_geom"));
+    const Index model_id = mgr.addModel("geom_struct", std::move(comps));
+    const Index cid = mgr.modelById(model_id)->componentIds()[0];
+    const std::vector<GeomFaceId> original_gids = mgr.findComponent(cid)->geometry->index.face_local_to_global;
+
+    auto snapshot = mgr.takeModelSnapshot(model_id);
+    mgr.removeModel(model_id);
+    REQUIRE(mgr.geomRegistry().getFace(original_gids[1]) == nullptr); // 原 gid 已释放
+
+    // 间隙中插入另一个模型：消费新 gid，不与原 gid 冲突
+    ComponentDatas other;
+    other.push_back(makeBoxComponent("Comp_other", 3.0));
+    mgr.addModel("other", std::move(other));
+
+    mgr.restoreModel(*snapshot);
+
+    // 原 model/component id 复原，几何 gid 原值 reclaim（发号水位不回滚，原值是空洞必然空闲）
+    ComponentData* c = mgr.findComponent(cid);
+    REQUIRE(c);
+    REQUIRE(c->geometry->index.face_local_to_global == original_gids);
+    REQUIRE(mgr.geomRegistry().getFace(original_gids[1]) != nullptr);
 }

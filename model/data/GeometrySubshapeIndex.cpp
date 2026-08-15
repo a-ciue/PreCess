@@ -6,6 +6,42 @@
 #include <TopExp.hxx>
 #include <TopoDS_Shape.hxx>
 #include <algorithm>
+#include <stdexcept>
+#include <string>
+
+namespace {
+/**
+ * @brief 为某类子形状分配/回收全局 id
+ *
+ * local_to_global 预填充（快照恢复路径）时按原值 reclaim——gid 向量是身份数据，
+ * 发号只增不复用，原值必然空闲；为空时全新分配。
+ *
+ * @throw std::runtime_error 预填充向量长度与子形状数不匹配（局部下标约定被破坏）
+ */
+template <typename GeomId>
+void assignGlobalIds(GeometryRegistry& reg, const TopTools_IndexedMapOfShape& map,
+    std::vector<GeomId>& local_to_global,
+    GeomId (GeometryRegistry::*alloc)(const TopoDS_Shape&),
+    void (GeometryRegistry::*reclaim)(GeomId, const TopoDS_Shape&),
+    GeomId invalid_id, const char* type_name)
+{
+    const int n = map.Extent();
+    if (!local_to_global.empty()) {
+        if (static_cast<int>(local_to_global.size()) != n + 1)
+            throw std::runtime_error(std::string("GeometrySubshapeIndex::build: saved ") + type_name
+                + " gid count mismatches subshape count");
+        for (int local = 1; local <= n; ++local) {
+            const GeomId gid = local_to_global[local];
+            if (gid != invalid_id)
+                (reg.*reclaim)(gid, map.FindKey(local));
+        }
+        return;
+    }
+    local_to_global.assign(n + 1, invalid_id);
+    for (int local = 1; local <= n; ++local)
+        local_to_global[local] = (reg.*alloc)(map.FindKey(local));
+}
+}
 
 int GeometrySubshapeIndex::typeIndex(TopAbs_ShapeEnum type)
 {
@@ -42,49 +78,19 @@ void GeometrySubshapeIndex::build(const TopoDS_Shape& root, GeometryRegistry& re
             nVertices, nEdges, nWires, nFaces, nShells, nSolids, nCompSolids, nCompounds);
     }
 
-    // 2) Vertex: localTypeId -> GeomVertexId
-    {
-        const int ti = typeIndex(TopAbs_VERTEX);
-        vertex_local_to_global.assign(type_maps[ti].Extent() + 1, kInvalidGeomVertexId);
-
-        for (int localTypeId = 1; localTypeId <= type_maps[ti].Extent(); ++localTypeId) {
-            const TopoDS_Shape& sub = type_maps[ti].FindKey(localTypeId);
-            vertex_local_to_global[localTypeId] = reg.allocVertex(sub);
-        }
-    }
-
-    // 3) Edge: localTypeId -> GeomEdgeId
-    {
-        const int ti = typeIndex(TopAbs_EDGE);
-        edge_local_to_global.assign(type_maps[ti].Extent() + 1, kInvalidGeomEdgeId);
-
-        for (int localTypeId = 1; localTypeId <= type_maps[ti].Extent(); ++localTypeId) {
-            const TopoDS_Shape& sub = type_maps[ti].FindKey(localTypeId);
-            edge_local_to_global[localTypeId] = reg.allocEdge(sub);
-        }
-    }
-
-    // 4) Face: localTypeId -> GeomFaceId
-    {
-        const int ti = typeIndex(TopAbs_FACE);
-        face_local_to_global.assign(type_maps[ti].Extent() + 1, kInvalidGeomFaceId);
-
-        for (int localTypeId = 1; localTypeId <= type_maps[ti].Extent(); ++localTypeId) {
-            const TopoDS_Shape& sub = type_maps[ti].FindKey(localTypeId);
-            face_local_to_global[localTypeId] = reg.allocFace(sub);
-        }
-    }
-
-    // 5) Solid: localTypeId -> GeomSolidId
-    {
-        const int ti = typeIndex(TopAbs_SOLID);
-        solid_local_to_global.assign(type_maps[ti].Extent() + 1, kInvalidGeomSolidId);
-
-        for (int localTypeId = 1; localTypeId <= type_maps[ti].Extent(); ++localTypeId) {
-            const TopoDS_Shape& sub = type_maps[ti].FindKey(localTypeId);
-            solid_local_to_global[localTypeId] = reg.allocSolid(sub);
-        }
-    }
+    // 2) 业务主类型的 localTypeId -> 全局 id（快照恢复时按原值 reclaim，见 assignGlobalIds）
+    assignGlobalIds(reg, type_maps[typeIndex(TopAbs_VERTEX)], vertex_local_to_global,
+        &GeometryRegistry::allocVertex, &GeometryRegistry::reclaimVertex,
+        kInvalidGeomVertexId, "vertex");
+    assignGlobalIds(reg, type_maps[typeIndex(TopAbs_EDGE)], edge_local_to_global,
+        &GeometryRegistry::allocEdge, &GeometryRegistry::reclaimEdge,
+        kInvalidGeomEdgeId, "edge");
+    assignGlobalIds(reg, type_maps[typeIndex(TopAbs_FACE)], face_local_to_global,
+        &GeometryRegistry::allocFace, &GeometryRegistry::reclaimFace,
+        kInvalidGeomFaceId, "face");
+    assignGlobalIds(reg, type_maps[typeIndex(TopAbs_SOLID)], solid_local_to_global,
+        &GeometryRegistry::allocSolid, &GeometryRegistry::reclaimSolid,
+        kInvalidGeomSolidId, "solid");
 
     built = true;
 }

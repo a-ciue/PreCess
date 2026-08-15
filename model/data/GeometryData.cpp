@@ -67,7 +67,12 @@ std::unique_ptr<GeometryData> GeometryData::clone() const
     auto copy = std::make_unique<GeometryData>();
     if (rootShape)
         copy->rootShape = std::make_unique<TopoDS_Shape>(*rootShape);
-    // index 是派生缓存，不进快照：保持未建，由恢复路径 ensureIndexBuilt 重建
+    // gid 向量是身份数据随快照保留（恢复路径 build 时按原值 reclaim）；
+    // type_maps 是派生缓存不进快照（保持未建，由恢复路径 ensureIndexBuilt 重建）
+    copy->index.vertex_local_to_global = index.vertex_local_to_global;
+    copy->index.edge_local_to_global = index.edge_local_to_global;
+    copy->index.face_local_to_global = index.face_local_to_global;
+    copy->index.solid_local_to_global = index.solid_local_to_global;
     return copy;
 }
 

@@ -15,7 +15,9 @@ struct GeometryData {
 
     /**
      * @brief 克隆几何数据（TopoDS_Shape 句柄拷贝共享底层 TShape，开销小）
-     * @note 子形状索引是派生缓存，不进快照：克隆体的 index 保持未建，由恢复路径 ensureIndexBuilt 重建
+     * @note gid 向量（local→global）是身份数据随克隆保留，恢复路径 ensureIndexBuilt 时按原值
+     *       reclaim（GeometryRegistry 发号只增不复用，原值必然空闲）；type_maps 局部索引是
+     *       派生缓存，不进快照，由恢复路径重建。
      */
     std::unique_ptr<GeometryData> clone() const;
 
