@@ -27,7 +27,7 @@ TEST_CASE("MeshTopologyDiagnostics classifies boundary and dihedral edges")
     REQUIRE(result.non_manifold_vertices.empty());
 }
 
-TEST_CASE("MeshTopologyDiagnostics classifies non manifold edge and vertices")
+TEST_CASE("MeshTopologyDiagnostics excludes non manifold edge endpoints from non manifold vertices")
 {
     MeshData mesh;
     mesh.vertex_positions_ = {
@@ -42,7 +42,7 @@ TEST_CASE("MeshTopologyDiagnostics classifies non manifold edge and vertices")
     const MeshTopologyDiagnosticResult result = MeshTopologyDiagnostics::analyze(adjacency, mesh);
 
     REQUIRE(result.non_manifold_edges.size() == 1);
-    REQUIRE(result.non_manifold_vertices.size() == 2);
+    REQUIRE(result.non_manifold_vertices.empty());
 }
 
 TEST_CASE("MeshTopologyDiagnostics classifies isolated edge and vertex")

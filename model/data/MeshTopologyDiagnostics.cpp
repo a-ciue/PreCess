@@ -67,8 +67,9 @@ bool isNonManifoldVertex(const std::vector<MeshEdgeTopology>& incident_edges)
     std::unordered_map<Index, std::vector<Index>> face_graph;
     Index boundary_edge_count = 0;
     for (const MeshEdgeTopology& edge : incident_edges) {
+        // 将非流形边及其端点归入边类别，非流形点仅表示独立的一环面扇异常。
         if (edge.adjacent_faces.size() > 2)
-            return true;
+            return false;
         if (edge.adjacent_faces.size() == 1)
             ++boundary_edge_count;
         if (edge.adjacent_faces.size() == 2) {

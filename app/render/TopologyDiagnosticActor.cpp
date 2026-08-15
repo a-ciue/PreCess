@@ -75,8 +75,13 @@ TopologyDiagnosticActor::TopologyDiagnosticActor(vtkRenderer* renderer)
         throw std::invalid_argument("TopologyDiagnosticActor: renderer cannot be null");
 
     const std::array<std::array<double, 3>, category_count_> colors { {
-        { 0.1, 0.45, 1.0 }, { 0.1, 0.45, 1.0 }, { 1.0, 0.1, 0.1 },
-        { 1.0, 0.0, 0.8 }, { 1.0, 0.5, 0.0 }, { 1.0, 0.5, 0.0 }, { 1.0, 0.9, 0.0 }
+        { 0.1, 0.8, 0.2 }, // 边界边：绿色
+        { 0.55, 1.0, 0.65 }, // 边界面：淡绿色
+        { 1.0, 0.0, 0.0 }, // 非流形边：红色
+        { 1.0, 0.0, 0.8 }, // 非流形点：品红色
+        { 1.0, 0.5, 0.0 }, // 孤立边：橙色
+        { 1.0, 0.5, 0.0 }, // 孤立点：橙色
+        { 1.0, 0.9, 0.0 } // 二面角边：黄色
     } };
     for (size_t i = 0; i < category_count_; ++i) {
         mappers_[i]->SetInputData(data_[i]);
