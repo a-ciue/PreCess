@@ -6,6 +6,7 @@
 #include "GeometryData.h"
 #include "ModelLayer.h"
 #include "QSelection.h"
+#include "UndoStack.h"
 
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -29,9 +30,10 @@ double degreesToRadians(double angle_degrees)
 }
 }
 
-QGeometryOperations::QGeometryOperations(ModelLayer& model_layer, QObject* parent)
+QGeometryOperations::QGeometryOperations(ModelLayer& model_layer, UndoStack* undo_stack, QObject* parent)
     : QObject(parent)
     , model_layer_(&model_layer)
+    , undo_stack_(undo_stack)
 {
 }
 
@@ -467,10 +469,22 @@ Index QGeometryOperations::addGeometryShape(
         auto component_operator = model_layer_->getComponentOperator(component_id);
         if (!component_operator)
             throw std::invalid_argument("Target component does not exist");
-        const Index result = component_operator->appendGeometryShape(std::move(shape));
-        // 过渡 shim（随系统迁移消亡）：QML 入口组件分支作为操作边界统一 flush 组件变更通知
-        model_layer_->flushNotifications();
-        return result;
+        // 过渡 shim（随系统迁移消亡）：QML 入口组件分支作为操作边界统一 flush 组件变更通知 + undo 自动记录。
+        // 异常时先提交（部分写入可撤销）+ flush 再重抛。
+        if (undo_stack_)
+            undo_stack_->beginOperation(component_name);
+        try {
+            const Index result = component_operator->appendGeometryShape(std::move(shape));
+            if (undo_stack_)
+                undo_stack_->commitOperation();
+            model_layer_->flushNotifications();
+            return result;
+        } catch (...) {
+            if (undo_stack_)
+                undo_stack_->commitOperation();
+            model_layer_->flushNotifications();
+            throw;
+        }
     }
 
     const std::string model_name = "temp_" + component_name;

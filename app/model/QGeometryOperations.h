@@ -9,6 +9,7 @@
 
 class ModelLayer;
 class TopoDS_Shape;
+class UndoStack;
 
 /**
  * @brief 几何操作的 QML 适配器，负责几何创建流程以及写入目标的选择。
@@ -22,7 +23,7 @@ class QGeometryOperations : public QObject {
     QML_UNCREATABLE("QGeometryOperations is provided by QModelManager")
 
 public:
-    explicit QGeometryOperations(ModelLayer& model_layer, QObject* parent = nullptr);
+    explicit QGeometryOperations(ModelLayer& model_layer, UndoStack* undo_stack = nullptr, QObject* parent = nullptr);
 
     /**
      * @brief 创建独立几何点，并根据当前 Model/Component 选择确定写入位置。
@@ -196,6 +197,7 @@ private:
         TopoDS_Shape shape);
 
     ModelLayer* model_layer_ {};
+    UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：组件分支操作边界自动记录）
     int next_point_number_ { 1 };
     int next_line_number_ { 1 };
     int next_rectangle_face_number_ { 1 };

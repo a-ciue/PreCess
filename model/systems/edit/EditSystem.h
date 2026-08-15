@@ -19,6 +19,7 @@ namespace core {
 class ArgObject;
 }
 class ModelLayer;
+class UndoStack;
 
 namespace systems::edit {
 class EditHandler;
@@ -36,7 +37,7 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>; //> 处理器的智能指针，支持自定义析构函数。特别是兼容跨dll边界获取的析构函数。
     static const std::string name; //> 系统唯一名称，用于插件注册时的识别
 
-    EditSystem(ModelLayer& model_manager);
+    EditSystem(ModelLayer& model_manager, UndoStack* undo_stack = nullptr);
     ~EditSystem();
     /**
      * @brief 模型编辑操作调用接口
@@ -70,6 +71,7 @@ public:
 
 private:
     ModelLayer* model_manager_; //< 模型管理器引用，用于获取模型操作接口
+    UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：无栈时操作边界退化为仅 flush）
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //< 模型编辑操作处理器插件列表，key为模型编辑操作唯一名称name
     std::unordered_map<std::string, std::unique_ptr<EditInfo>> edit_infos_; //< 模型编辑操作信息列表，key为模型编辑操作唯一名称name
 

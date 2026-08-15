@@ -23,6 +23,7 @@
 
 class ModelObserver;  // 前向声明模型观察者类
 class QModelQuery;      // 前向声明 QModelQuery 类
+class UndoRecorder;     // 前向声明 undo 记录钩子接口
 struct ModelSnapshot;   // 前向声明模型级结构快照
 
 /**
@@ -114,6 +115,12 @@ public:
     //! @brief 对待通知集合逐组件发 notifyComponentChanged 并清空（操作边界调用；空集合无操作）
     void flushNotifications();
 
+    //! @brief 挂接 undo 记录钩子（默认 nullptr，测试/无栈场景零开销）
+    void setUndoRecorder(UndoRecorder* recorder) { undo_recorder_ = recorder; }
+
+    //! @brief 按引用反查模型 id（undo 记录钩子等场景）；未找到返回 -1
+    Index findModelId(const ModelData& model) const;
+
 private:
     Index allocateComponentId() noexcept;
 
@@ -141,6 +148,8 @@ private:
 
     ModelObserver* observer_{ nullptr };                     //!< 全局模型观察者，用于捕获模型事件
     std::vector<Index> pending_notify_; //!< 本次操作内被标脏的组件（去重；undo 操作记录的预留拦截点）
+    UndoRecorder* undo_recorder_ { nullptr }; //!< undo 记录钩子（写前/结构操作时机回调，由 UndoStack 实现）
+    bool component_remove_hook_suspended_ { false }; //!< removeModel 期间抑制组件级移除钩子（组件随模型快照整体记录，避免重复）
 
     friend class QModelQuery;
     friend class ModelOperator;

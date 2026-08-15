@@ -291,9 +291,36 @@ ColumnLayout {
             Item { Layout.fillWidth: true }
         }
 
-        // 1: 编辑 → 数据驱动，图标按名映射
+        // 1: 编辑 → 撤销/重做 + 数据驱动，图标按名映射
         RowLayout {
             anchors.fill: parent
+
+            ToolButton {
+                text: qsTr("撤销")
+                enabled: QModelManager.undoStack.canUndo
+                Layout.fillHeight: true
+                ToolTip.visible: hovered
+                ToolTip.text: QModelManager.undoStack.undoLabel.length > 0
+                              ? qsTr("撤销 ") + QModelManager.undoStack.undoLabel
+                              : qsTr("撤销")
+                onClicked: QModelManager.undoStack.undo()
+            }
+
+            ToolButton {
+                text: qsTr("重做")
+                enabled: QModelManager.undoStack.canRedo
+                Layout.fillHeight: true
+                ToolTip.visible: hovered
+                ToolTip.text: QModelManager.undoStack.redoLabel.length > 0
+                              ? qsTr("重做 ") + QModelManager.undoStack.redoLabel
+                              : qsTr("重做")
+                onClicked: QModelManager.undoStack.redo()
+            }
+
+            ToolSeparator {
+                orientation: Qt.Vertical
+                Layout.fillHeight: true
+            }
 
             Repeater {
                 model: QModelManager.editSystem.editsInfo

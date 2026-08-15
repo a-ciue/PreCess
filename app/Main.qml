@@ -84,6 +84,16 @@ ApplicationWindow {
         }
     }
 
+    // 撤销/重做快捷键（栈空时适配器内部空转）
+    Shortcut {
+        sequence: "Ctrl+Z"
+        onActivated: QModelManager.undoStack.undo()
+    }
+    Shortcut {
+        sequence: "Ctrl+Y"
+        onActivated: QModelManager.undoStack.redo()
+    }
+
     Connections {
         target: App.selection
         function onActiveModelIdChanged() {

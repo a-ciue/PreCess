@@ -8,6 +8,7 @@
 #include "QModelObserver.h"
 #include "QModelQuery.h"
 #include "QSystemPluginManager.h"
+#include "QUndoStackAdaptor.h"
 #include <memory>
 #include <string>
 #include <string_view>
@@ -28,6 +29,7 @@ namespace systems::feature {
 class FeatureSystem;
 }
 class ModelLayer;
+class UndoStack;
 
 class QModelManager : public QObject {
     Q_OBJECT
@@ -41,6 +43,7 @@ class QModelManager : public QObject {
     Q_PROPERTY(systems::edit::QEditSystemAdaptor* editSystem READ getEditSystemAdaptor CONSTANT)
     Q_PROPERTY(systems::feature::QFeatureSystemAdaptor* featureSystem READ getFeatureSystemAdaptor CONSTANT)
     Q_PROPERTY(QGeometryOperations* geometry READ getGeometryOperations CONSTANT)
+    Q_PROPERTY(QUndoStackAdaptor* undoStack READ getUndoStackAdaptor CONSTANT)
 public:
     explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
     ~QModelManager();
@@ -58,6 +61,7 @@ public:
     systems::feature::QFeatureSystemAdaptor* getFeatureSystemAdaptor() const;
     systems::QSystemPluginManager* getSystemPluginManager() const;
     QGeometryOperations* getGeometryOperations() const;
+    QUndoStackAdaptor* getUndoStackAdaptor() const;
 
     static std::string_view argv0; //> 命令行参数 argv[0]，用于插件加载等需要程序路径的场景，由 main 函数在程序启动时设置，被传入 ModelManager 构造函数以供其使用
     /**
@@ -76,6 +80,7 @@ private:
     std::unique_ptr<ModelLayer> core_;
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
+    std::unique_ptr<UndoStack> undo_stack_; //> undo 栈（声明在 core_ 之后、各系统之前：系统先析构，栈再析构）
     std::unique_ptr<QGeometryOperations> geometry_operations_;
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
@@ -87,6 +92,7 @@ private:
     std::unique_ptr<systems::io::QModelIOSystemAdaptor> io_adaptor_;
     std::unique_ptr<systems::edit::QEditSystemAdaptor> edit_adaptor_;
     std::unique_ptr<systems::feature::QFeatureSystemAdaptor> feature_adaptor_;
+    std::unique_ptr<QUndoStackAdaptor> undo_adaptor_;
     std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
 };

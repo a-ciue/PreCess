@@ -6,6 +6,7 @@
 #include "ArgObject.h"
 #include "EditHandler.h"
 #include "ModelLayer.h"
+#include "UndoStack.h"
 
 #include <spdlog/spdlog.h>
 
@@ -16,8 +17,9 @@ using std::vector;
 
 const string EditSystem::name = "EditSystem";
 
-EditSystem::EditSystem(ModelLayer& model_manager)
+EditSystem::EditSystem(ModelLayer& model_manager, UndoStack* undo_stack)
     : model_manager_(&model_manager)
+    , undo_stack_(undo_stack)
 {
     on_edit_info_changed_ = []() { };
 }
@@ -33,14 +35,22 @@ std::any EditSystem::call(const string& unique_name, Index component_id, const v
     }
     auto it = handlers_.find(unique_name);
     if (it != handlers_.end() && it->second) {
-        // 过渡 shim（随系统迁移消亡）：操作边界统一 flush 组件变更通知，
-        // handler 写路径经 ComponentOperator 写必脏记入待通知集合；无写入则 flush 空转。
-        // 异常时先 flush 再重抛，保证部分写入的通知不丢。
+        // 过渡 shim（随系统迁移消亡）：操作边界统一 flush 组件变更通知 + undo 自动记录，
+        // handler 写路径经 ComponentOperator 写必脏记入待通知集合；无写入则 flush 空转、空操作丢弃。
+        // 异常时先提交（部分写入可撤销）+ flush 再重抛，保证部分写入的通知不丢。
+        if (undo_stack_) {
+            const std::string& display_name = edit_infos_[unique_name]->display_name;
+            undo_stack_->beginOperation(display_name.empty() ? unique_name : display_name);
+        }
         try {
             std::any result = it->second->execute(*comp_op, args);
+            if (undo_stack_)
+                undo_stack_->commitOperation();
             model_manager_->flushNotifications();
             return result;
         } catch (...) {
+            if (undo_stack_)
+                undo_stack_->commitOperation();
             model_manager_->flushNotifications();
             throw;
         }

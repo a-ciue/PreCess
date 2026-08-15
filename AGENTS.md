@@ -168,6 +168,13 @@
 - **操作边界清单**：`EditSystem::call`、`AlgorithmSystem::call`、`FeatureSystem::invoke`（含 `dispatchKeyEvent` 按键路由）、`FeatureEventGateway` 包装的事件回调（功能经 `ctx.events` 订阅的回调返回后自动 flush，异常时先 flush 再重抛）、app 层 QML 入口（`QModelManager::removeMesh/removeGeometry`、`QGeometryOperations::addGeometryShape` 组件分支）；Edit/Algo/QML 入口的 flush 为过渡 shim（随系统迁移消亡），FeatureSystem 的 invoke flush 与 `FeatureEventGateway` 为长期设施。**新增插件代码执行路径须纳入边界**，否则标脏的通知不会发出。
 - **网格数据与点 id 约定**（详见 `MeshData.h` / `ComponentData.h` 注释）：`MeshData` 自包含（坐标常驻 `vertex_positions_`，连通性数组存组件内局部点索引）；局部点索引只增不改号、不重排（`MeshAdjacency` 持久边身份与快照恢复依赖）；`Selection` / `PickInfo` 携带全局点 id（gid），写连通性前经 `ModelLayer::pointIdMap()` 换算；整网格替换经 `ComponentOperator::replaceMesh`（gid 纪律内建），运行期加点经 `ComponentOperator::appendPoint`（原子四连），其余 gid 伴生表受控点经 `ComponentData::ensurePointGlobalIds` 补缺。
 - **快照原语约定**：组件级 `ComponentOperator::takeSnapshot/restoreSnapshot`、模型级 `ModelLayer::takeModelSnapshot/restoreModel/restoreComponent` 为快照/恢复统一入口；快照只装源数据与身份数据（派生缓存——邻接边表、几何子形状索引——不进快照、恢复后重建），恢复含 gid 对账（`reclaim` 按原值拿回点/边 gid、组件/模型按原 id 插回）；`restoreSnapshot` 恢复后标脏（Topology），通知延迟到操作边界 flush 统一发出；几何 gid 跨 undo 不保持，undo 后选择集清空（Selection 持有的 gid/稳定 id 不作跨 undo 保证）。
+- **undo/redo 系统（混合记录模式）**：`model/data/UndoStack` 实现 `UndoRecorder` 钩子挂接 `ModelLayer::setUndoRecorder`；app 层 `QModelManager` 构造栈并注入 Edit/Algo/Feature 系统，QML 经 `QModelManager.undoStack`（`QUndoStackAdaptor`）访问。
+  - **默认边界自动记录**：操作边界（`beginOperation/commitOperation`，挂点同第 10 节"操作边界清单"）内组件**首次标脏**经写前钩子克隆 before-image，commit 补 after-image 成一条记录；空操作丢弃，栈深上限 `kMaxDepth=32` 溢出丢最旧。简单操作零插件代码。
+  - **Manual 插件自控**：功能 json 声明 `"undo": "manual"`（→ `HandlerMetaData::undo_manual`）后，`invoke`/按键路由/事件网关边界不再自动捕获/提交（只 flush），插件经 `ctx.undo`（`UndoContext`）的 **staged 会话**显式控制，before-image 由栈持有（非插件自持）。
+  - **staged 会话（v1 单组件、无快照链）**：`beginStaged`（栈捕获 before₀）→ `editableMesh` 预览写，重试经 `revertStaged` 回滚再改 → 确认 `commitStaged`（before₀+当前状态成一条记录）/ 取消 `cancelStaged`（恢复 before₀ 不成记录）。逐步回退需求由 Auto 模式"每次执行一条记录"覆盖。
+  - **执行路径规则**：staged 打开时 undo=`cancelStaged`（恢复 before₀ 并关闭会话，不动全局栈）、redo 空转；新操作边界发现 staged 打开 → 隐式 `cancelStaged` 兜底，旧功能后续 staged 调用空转容忍；导出为只读所见即所得（含预览态），`stagedActive` 已暴露 QML 供界面禁用入口；功能 `deactivate` 时须自行关闭 staged 会话。
+  - **undo 后选择集清空已机制化**：`QUndoStackAdaptor::applied` 信号 → QML 统一 `clearSelection`（CentralRenderArea）。
+  - **结构操作即时成记录**：`addModel`/`removeModel`/`removeComponent`/`addGeometryComponent` 由钩子即时成记录；边界内发生的结构操作并入当前操作（一次用户动作一条记录）。
 
 ---
 

@@ -25,6 +25,8 @@ qt_add_qml_module(modelQml
         QArgObject.cpp
         QGeometryOperations.h
         QGeometryOperations.cpp
+        QUndoStackAdaptor.h
+        QUndoStackAdaptor.cpp
 )
 target_include_directories(modelQml PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径

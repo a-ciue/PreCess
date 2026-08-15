@@ -31,3 +31,6 @@ precess_test_link_libraries(TestComponentSnapshot DataTest Data)
 
 precess_add_test(TestDirtyNotify TestDirtyNotify.cpp)
 precess_test_link_libraries(TestDirtyNotify Data)
+
+precess_add_test(TestUndoStack TestUndoStack.cpp)
+precess_test_link_libraries(TestUndoStack Data)

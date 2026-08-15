@@ -7,6 +7,7 @@
 #include "ArgObject.h"
 #include "ModelIOSystem.h"
 #include "ModelLayer.h"
+#include "UndoStack.h"
 #include <cassert>
 #include <spdlog/spdlog.h>
 
@@ -17,9 +18,10 @@ using std::vector;
 
 const string AlgorithmSystem::name = "AlgorithmSystem";
 
-AlgorithmSystem::AlgorithmSystem(io::ModelIOSystem& io_system, ModelLayer& model_manager)
+AlgorithmSystem::AlgorithmSystem(io::ModelIOSystem& io_system, ModelLayer& model_manager, UndoStack* undo_stack)
     : io_system_(&io_system)
     , model_manager_(&model_manager)
+    , undo_stack_(undo_stack)
 {
     on_algorithm_infos_changed_ = []() { };
 }
@@ -54,14 +56,22 @@ std::any AlgorithmSystem::call(const string& unique_name, Index component_id, co
         *this->io_system_,
         *comp_op
     };
-    // 过渡 shim（随系统迁移消亡）：操作边界统一 flush 组件变更通知，
-    // handler 写路径经 ComponentOperator 写必脏记入待通知集合；无写入则 flush 空转。
-    // 异常时先 flush 再重抛，保证部分写入的通知不丢。
+    // 过渡 shim（随系统迁移消亡）：操作边界统一 flush 组件变更通知 + undo 自动记录，
+    // handler 写路径经 ComponentOperator 写必脏记入待通知集合；无写入则 flush 空转、空操作丢弃。
+    // 异常时先提交（部分写入可撤销）+ flush 再重抛，保证部分写入的通知不丢。
+    if (undo_stack_) {
+        const std::string& display_name = algorithm_infos_[unique_name]->display_name;
+        undo_stack_->beginOperation(display_name.empty() ? unique_name : display_name);
+    }
     try {
         std::any result = it->second->execute(context, args);
+        if (undo_stack_)
+            undo_stack_->commitOperation();
         model_manager_->flushNotifications();
         return result;
     } catch (...) {
+        if (undo_stack_)
+            undo_stack_->commitOperation();
         model_manager_->flushNotifications();
         throw;
     }

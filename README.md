@@ -183,7 +183,12 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
   * [ ] 菜单栏视图或窗口header按钮或窗口header右键菜单可以管理窗口状态：开关、选项页等。参考HyperMesh、Ansys，激进点的参考Visual Studio与Blender
   * [ ] 类Blender的自定义窗口布局预设
 * [ ] 任务执行  
-  * [ ] 任务的失败恢复与撤销重做
+  * [x] 撤销重做 v1：边界自动记录（Auto）+ Manual staged 预览会话（beginStaged/commitStaged/cancelStaged/revertStaged），线性历史；设计约定见 AGENTS.md 第 10 节
+  * [ ] 插件 undo/redo 感知与公共设施（暂不实现）：主程序数据回退时插件内部状态（剖分缓存、标注、会话进度）不随之回退
+    * [ ] L1 感知：模型层 undo/redo/staged 隐式取消时经 EventBus 广播（携带影响的组件/模型 id），插件自行重建可重算缓存；区分"undo 恢复"与"普通编辑"（现有 ModelEvent 通道可复用，语义区分待设计）。注意 gid reclaim 红利：持 gid 的缓存跨 undo 有效，仅持局部下标/内容派生缓存需重建
+    * [ ] L2 协同快照：插件把不可重算的状态（如逐面剖分的用户参数进度）注册进 undo 记录（自定义 memento + 恢复回调）；与快照链同属 undo v2 深度扩展候选
+    * 指引：能放模型层的状态优先放模型层（如 MeshQuality 写属性），随快照免费一致；插件只保留可重算缓存或纯会话状态
+  * [ ] 任务的失败恢复
   * [ ] 任务暂停或断点：算法执行过程中的调试。一般都是每次执行输出一个结果到文件再打开模型查看情况，也许可以做到更精细的算法控制
   * [ ] UI的更新机制：数据更新还挺困难。比如数据更新可能会导致当前操作不合法，需要考虑避免
 * [ ] 从软件中剥离业务逻辑：这服务于以下几点
