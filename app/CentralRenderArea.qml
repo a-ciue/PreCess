@@ -16,8 +16,8 @@ Page {
     property real faceSelectAngle: 30.0
 
     // 当前渲染区域的拓扑诊断开关和二面角筛选范围。
-    property real dihedralMinimumAngle: 30.0
-    property real dihedralMaximumAngle: 180.0
+    property real dihedralMinimumAngle: 0.0
+    property real dihedralMaximumAngle: 150.0
 
     // 标记由功能自动开启的属性渲染，避免影响用户手动打开的属性渲染面板。
     property bool featureAttributeRenderingActive: false

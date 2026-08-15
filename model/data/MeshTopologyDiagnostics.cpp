@@ -48,7 +48,7 @@ std::array<double, 3> faceNormal(const MeshData& mesh, Index face)
     return {};
 }
 
-//! @brief 计算两个相邻面单位法向的无符号夹角，范围为 [0, 180]
+//! @brief 计算两个相邻面的内二面角：180°减去单位法向夹角，范围为 [0, 180]
 double dihedralAngle(const std::array<double, 3>& first, const std::array<double, 3>& second)
 {
     const double first_length = std::sqrt(first[0] * first[0] + first[1] * first[1] + first[2] * first[2]);
@@ -58,7 +58,8 @@ double dihedralAngle(const std::array<double, 3>& first, const std::array<double
 
     const double dot = std::clamp(first[0] * second[0] + first[1] * second[1] + first[2] * second[2], -1.0, 1.0);
     constexpr double radians_to_degrees = 180.0 / 3.14159265358979323846;
-    return std::acos(dot) * radians_to_degrees;
+    const double normal_angle = std::acos(dot) * radians_to_degrees;
+    return 180.0 - normal_angle;
 }
 
 //! @brief 判断一个点的一环面是否由一条连通扇或闭合环组成

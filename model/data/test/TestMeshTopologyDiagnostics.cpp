@@ -22,9 +22,27 @@ TEST_CASE("MeshTopologyDiagnostics classifies boundary and dihedral edges")
     REQUIRE(result.boundary_edges.size() == 4);
     REQUIRE(result.boundary_faces.size() == 2);
     REQUIRE(result.manifold_edges.size() == 1);
-    REQUIRE(result.manifold_edges.front().dihedral_angle_degrees == Catch::Approx(0.0));
+    REQUIRE(result.manifold_edges.front().dihedral_angle_degrees == Catch::Approx(180.0));
     REQUIRE(result.non_manifold_edges.empty());
     REQUIRE(result.non_manifold_vertices.empty());
+}
+
+TEST_CASE("MeshTopologyDiagnostics computes a right interior dihedral angle")
+{
+    MeshData mesh;
+    mesh.vertex_positions_ = {
+        { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 },
+        { 0.0, 1.0, 0.0 }, { 0.0, 0.0, 1.0 }
+    };
+    // 两个正交三角形共享边 (0,1)，内二面角为 90°。
+    mesh.face_vertices_ = { 0, 1, 2, 1, 0, 3 };
+    mesh.face_vertices_offset_ = { 0, 3, 6 };
+
+    MeshAdjacency adjacency;
+    const MeshTopologyDiagnosticResult result = MeshTopologyDiagnostics::analyze(adjacency, mesh);
+
+    REQUIRE(result.manifold_edges.size() == 1);
+    REQUIRE(result.manifold_edges.front().dihedral_angle_degrees == Catch::Approx(90.0));
 }
 
 TEST_CASE("MeshTopologyDiagnostics excludes non manifold edge endpoints from non manifold vertices")
