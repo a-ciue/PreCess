@@ -3,7 +3,7 @@
   "handler": {
     "name": "ScalePreview",
     "display_name": "缩放预览演示",
-    "description": "演示 staged 预览机制：预览不入栈、确认记一条、取消回滚",
+    "description": "演示 staged 预览机制：预览按钮开会话不入栈、菜单确认记一条、取消回滚",
     "undo": "manual"
   }
 }

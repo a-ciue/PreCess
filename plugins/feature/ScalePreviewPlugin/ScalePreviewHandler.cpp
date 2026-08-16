@@ -13,9 +13,9 @@
 namespace systems::feature {
 namespace {
     constexpr const char* kFeatureName = "ScalePreview";
-    // 参数下标：0 缩放因子（Float），1 确认（Button），2 取消（Button）
+    // 参数下标：0 缩放因子（Float），1 预览（Button），2 取消（Button）
     constexpr std::size_t kParamScale = 0;
-    constexpr std::size_t kParamConfirm = 1;
+    constexpr std::size_t kParamPreview = 1;
     constexpr std::size_t kParamCancel = 2;
 }
 
@@ -24,9 +24,9 @@ void ScalePreviewHandler::setup(FeatureRegistrar& reg)
     // 功能参数注册
     reg.addParameter({ ArgTypeEnum::Float, "缩放因子", "1.0", "网格顶点坐标的缩放倍数（预览按绝对因子应用，不累计）" });
     // Button 为无值触发器：计数器载荷，功能约定忽略值、只读参数下标
-    reg.addParameter({ ArgTypeEnum::Button, "确认", "", "确认预览：before₀ + 当前状态记一条 undo 记录" });
+    reg.addParameter({ ArgTypeEnum::Button, "预览", "", "开启预览：beginStaged 捕获 before₀ 并开始监听参数变化" });
     reg.addParameter({ ArgTypeEnum::Button, "取消", "", "取消预览：回滚到 before₀，不成记录" });
-    // 菜单选项注册：归入 "示例" 菜单分页的默认分组
+    // 菜单选项注册：归入 "示例" 菜单分页的默认分组（菜单触发 = 确认预览成一条 undo 记录）
     reg.addMenuItem({ "示例", "缩放预览演示" });
 }
 
@@ -35,7 +35,7 @@ void ScalePreviewHandler::activate(FeatureContext& ctx)
     ctx_ = &ctx;
     syncParams(ctx);
 
-    // 订阅参数变更事件：因子变更重试预览，确认/取消按钮收尾 staged 会话
+    // 订阅参数变更事件：预览按钮开启会话（开始监听），因子变更重试预览，取消按钮收尾
     param_sub_ = ctx.events.subscribe<ParameterChangedEvent>([this](const ParameterChangedEvent& e) {
         if (e.feature != kFeatureName || !ctx_) {
             return;
@@ -51,10 +51,10 @@ void ScalePreviewHandler::activate(FeatureContext& ctx)
             } else {
                 spdlog::info("ScalePreview: scale factor changed to {} without staged session, model untouched", scale_);
             }
-        } else if (e.param_index == kParamConfirm) {
-            // 确认：before₀ + 当前状态成一条记录（无会话时空转容忍）
-            spdlog::info("ScalePreview: confirm (staged={})", ctx.undo.stagedActive());
-            ctx.undo.commitStaged();
+        } else if (e.param_index == kParamPreview) {
+            // 预览：开 staged 会话开始监听参数变化（已有会话 = 按当前因子重预览）
+            spdlog::info("ScalePreview: start preview (staged={})", ctx.undo.stagedActive());
+            startPreview(ctx);
         } else if (e.param_index == kParamCancel) {
             // 取消：恢复 before₀ 并关闭会话，不成记录（无会话时空转容忍）
             spdlog::info("ScalePreview: cancel (staged={})", ctx.undo.stagedActive());
@@ -78,27 +78,34 @@ void ScalePreviewHandler::deactivate()
 
 std::any ScalePreviewHandler::execute(FeatureContext& ctx)
 {
+    // 菜单触发 = 确认预览：before₀ + 当前状态成一条 undo 记录（无会话时空转容忍）
+    spdlog::info("ScalePreview: confirm via execute (staged={})", ctx.undo.stagedActive());
+    ctx.undo.commitStaged();
+    return {};
+}
+
+void ScalePreviewHandler::startPreview(FeatureContext& ctx)
+{
     // 组件与网格检查在 beginStaged 之前：预览无从应用时不开会话
     auto component_id = ctx.activeComponent ? ctx.activeComponent() : std::nullopt;
     if (!component_id) {
         spdlog::warn("ScalePreview: no active component");
-        return {};
+        return;
     }
     auto op = ctx.componentOperator ? ctx.componentOperator(*component_id) : std::nullopt;
     if (!op || !op->mesh()) {
         spdlog::warn("ScalePreview: component {} not found or has no mesh", *component_id);
-        return {};
+        return;
     }
-    // 已有会话先回滚到 before₀（菜单重入 = 按当前因子重预览）；
+    // 已有会话先回滚到 before₀（重按预览 = 按当前因子重预览）；
     // 无 UndoStack 注入时 beginStaged 返回 false，降级为警告并跳过预览
     if (ctx.undo.stagedActive()) {
         ctx.undo.revertStaged();
     } else if (!ctx.undo.beginStaged("缩放预览", *component_id)) {
         spdlog::warn("ScalePreview: beginStaged failed (component missing or no undo stack), preview skipped");
-        return {};
+        return;
     }
     applyPreview(ctx);
-    return {};
 }
 
 void ScalePreviewHandler::syncParams(FeatureContext& ctx)

@@ -27,9 +27,9 @@ using namespace systems::feature;
 
 namespace {
 constexpr const char* kFeatureName = "ScalePreview";
-// 参数下标：0 缩放因子（Float），1 确认（Button），2 取消（Button）
+// 参数下标：0 缩放因子（Float），1 预览（Button），2 取消（Button）
 constexpr std::size_t kParamScale = 0;
-constexpr std::size_t kParamConfirm = 1;
+constexpr std::size_t kParamPreview = 1;
 constexpr std::size_t kParamCancel = 2;
 const std::array<double, 3> kOriginal { 1.0, 2.0, 3.0 };
 
@@ -128,11 +128,11 @@ TEST_CASE("ScalePreviewPlugin dll registers into FeatureSystem via SystemPluginM
     REQUIRE(infos[0]->menus.size() == 1);
     REQUIRE(infos[0]->menus[0].menu_path == "示例");
 
-    // json 的 "undo": "manual" 生效的行为证据：invoke 开启 staged 会话且边界不自动提交
+    // json 的 "undo": "manual" 生效的行为证据：预览按钮开启 staged 会话且边界不自动提交
     const Index component_id = addSingleComponentModel(model_layer);
     stack.clear();
     feature_system.setActiveComponentProvider([component_id]() { return std::optional<Index> { component_id }; });
-    feature_system.invoke(kFeatureName);
+    REQUIRE(feature_system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
     REQUIRE(stack.stagedActive());
     // 栈内无记录：undo 指向 staged 会话本身（此时 undo = 回滚预览）
     REQUIRE(stack.undoLabel() == "缩放预览");
@@ -149,16 +149,16 @@ TEST_CASE("ScalePreviewPlugin dll registers into FeatureSystem via SystemPluginM
     REQUIRE(feature_system.getFeatureInfos().empty());
 }
 
-TEST_CASE("ScalePreview manual invoke previews without record but still flushes", "[ScalePreviewPlugin]")
+TEST_CASE("ScalePreview preview button opens session without record but still flushes", "[ScalePreviewPlugin]")
 {
     ScalePreviewFixture f;
     const Index cid = f.setupFeature();
     const int notify_before = f.obs.component_changed_count;
 
     // 默认因子 1.0：预览不改坐标，但 editableMesh 获取即标脏
-    f.system.invoke(kFeatureName);
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
 
-    // Manual 边界只 flush 不成记录；staged 会话保持打开（通知照发）
+    // Manual 网关只 flush 不成记录；staged 会话保持打开（通知照发）
     REQUIRE(f.stack.stagedActive());
     REQUIRE(f.obs.component_changed_count == notify_before + 1);
     // canUndo 在 staged 打开时表示"可取消预览"（undo=cancelStaged），记录有无须在会话
@@ -167,7 +167,7 @@ TEST_CASE("ScalePreview manual invoke previews without record but still flushes"
     REQUIRE_FALSE(f.stack.canUndo());
 }
 
-TEST_CASE("ScalePreview full cycle: preview, retry with new factor, commit, undo", "[ScalePreviewPlugin]")
+TEST_CASE("ScalePreview full cycle: preview, retry with new factor, confirm via menu, undo", "[ScalePreviewPlugin]")
 {
     ScalePreviewFixture f;
     const Index cid = f.setupFeature();
@@ -176,8 +176,8 @@ TEST_CASE("ScalePreview full cycle: preview, retry with new factor, commit, undo
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
     REQUIRE(firstVertex(f.mgr, cid) == kOriginal);
 
-    // 菜单触发：开 staged 会话并按 2.0 预览
-    f.system.invoke(kFeatureName);
+    // 预览按钮：开 staged 会话并按 2.0 预览
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
     REQUIRE(f.stack.stagedActive());
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
 
@@ -188,8 +188,8 @@ TEST_CASE("ScalePreview full cycle: preview, retry with new factor, commit, undo
     // 预览期不成记录由收尾的"恰一条记录"断言覆盖（staged 打开时 canUndo 恒 true，
     // 语义为"可取消预览"，不能用于判记录有无）
 
-    // 确认：before₀ + 当前状态恰记一条
-    REQUIRE(f.system.setParameter(kFeatureName, kParamConfirm, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    // 菜单触发 execute = 确认：before₀ + 当前状态恰记一条
+    f.system.invoke(kFeatureName);
     REQUIRE_FALSE(f.stack.stagedActive());
     REQUIRE(f.stack.canUndo());
     REQUIRE(f.stack.undoLabel() == "缩放预览");
@@ -206,7 +206,7 @@ TEST_CASE("ScalePreview cancel rolls back preview without record", "[ScalePrevie
     const Index cid = f.setupFeature();
 
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
-    f.system.invoke(kFeatureName);
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
 
     // 取消：回滚到 before₀ 并关闭会话，不成记录
@@ -222,7 +222,7 @@ TEST_CASE("ScalePreview deactivate cancels an open staged session", "[ScalePrevi
     const Index cid = f.setupFeature();
 
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
-    f.system.invoke(kFeatureName);
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
     REQUIRE(f.stack.stagedActive());
 
     // 功能注销触发 deactivate：staged 未关须 cancelStaged 兜底（插件职责，AGENTS.md 约定）
