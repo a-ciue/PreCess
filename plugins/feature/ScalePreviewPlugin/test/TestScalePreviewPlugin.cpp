@@ -231,3 +231,34 @@ TEST_CASE("ScalePreview deactivate cancels an open staged session", "[ScalePrevi
     REQUIRE(firstVertex(f.mgr, cid) == kOriginal);
     REQUIRE_FALSE(f.stack.canUndo());
 }
+
+TEST_CASE("ScalePreview teardown with open staged session is safe", "[ScalePreviewPlugin]")
+{
+    // 对应程序退出路径：staged 未关时宿主析构——~FeatureSystem 停用 handler，
+    // deactivate 经 ctx.undo.cancelStaged() 回滚预览。本用例用作用域模拟宿主的
+    // 显式有序拆解（见 QModelManager 析构注释）：FeatureSystem 先析构，
+    // UndoStack / ModelLayer 存活，拆解链不崩且预览被回滚
+    CountingObserver obs;
+    ModelLayer mgr { &obs };
+    core::EventBus bus;
+    UndoStack stack { mgr };
+    mgr.setUndoRecorder(&stack);
+    const Index cid = addSingleComponentModel(mgr);
+    stack.clear();
+
+    {
+        FeatureSystem system { mgr, bus, &stack };
+        FeatureSystem::SystemHandlerPtr handler { new ScalePreviewHandler };
+        REQUIRE(system.registerHandler(scalePreviewMetaData(), std::move(handler)));
+        system.setActiveComponentProvider([cid]() { return std::optional<Index> { cid }; });
+
+        REQUIRE(system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+        REQUIRE(system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+        REQUIRE(stack.stagedActive());
+        // 作用域结束：~FeatureSystem → deactivate → cancelStaged（栈与模型层仍存活）
+    }
+
+    REQUIRE_FALSE(stack.stagedActive());
+    REQUIRE(firstVertex(mgr, cid) == kOriginal);
+    REQUIRE_FALSE(stack.canUndo());
+}

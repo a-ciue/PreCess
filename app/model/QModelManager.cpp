@@ -116,7 +116,19 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     }
 }
 
-QModelManager::~QModelManager() = default;
+QModelManager::~QModelManager()
+{
+    // 显式有序拆解：成员逆声明析构表达不了跨成员的回调依赖。~FeatureSystem 会停用所有
+    // handler，deactivate 内经 ctx.undo.cancelStaged() 关闭 staged 会话——该路径访问
+    // UndoStack、flush 模型通知、并经 on_changed_ 回调 undo_adaptor_ 发信号；隐式析构
+    // 顺序中 undo_adaptor_ 先于 feature_system_ 析构（回调悬挂），故显式提前拆解。
+    // 1) 先停功能系统：此刻 UndoStack / observer_ / undo_adaptor_ 均存活，deactivate 安全
+    feature_system_.reset();
+    // 2) 断开栈与模型层的互指钩子：此后成员按任意顺序析构都不会回触已析构对象
+    undo_stack_->setOnChanged(nullptr);
+    core_->setUndoRecorder(nullptr);
+    // 3) 其余成员按声明逆序自动析构（undo_stack_ 声明在各系统之前，最后析构）
+}
 
 void QModelManager::removeModel(int id)
 {

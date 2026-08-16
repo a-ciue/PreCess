@@ -80,7 +80,7 @@ private:
     std::unique_ptr<ModelLayer> core_;
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
-    std::unique_ptr<UndoStack> undo_stack_; //> undo 栈（声明在 core_ 之后、各系统之前：系统先析构，栈再析构）
+    std::unique_ptr<UndoStack> undo_stack_; //> undo 栈（声明在 core_ 之后、各系统之前：系统先析构，栈再析构；析构序列见 ~QModelManager 的显式拆解）
     std::unique_ptr<QGeometryOperations> geometry_operations_;
     std::unique_ptr<systems::io::ModelIOSystem> io_system_;
     std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
