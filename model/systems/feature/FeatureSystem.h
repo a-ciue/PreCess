@@ -134,6 +134,9 @@ private:
     };
 
     bool routeKeyEvent(const KeyEvent& event); //> 按键绑定路由，返回事件是否被消费
+    //! @brief 生命周期回调边界（activate/deactivate/teardown）：回调返回后统一 flush（异常时先 flush 再重抛）；
+    //! 不成 undo 记录——退出清理（如删除功能生成的属性）若可撤销，撤销后会留下功能已停止跟踪的游离状态
+    void flushAfterCallback(const std::function<void()>& fn);
 
     ModelLayer* model_layer_; //< 模型层引用，用于装配功能上下文
     core::EventBus* event_bus_; //< 事件总线引用

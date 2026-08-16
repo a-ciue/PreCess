@@ -21,13 +21,14 @@ FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus)
 
 FeatureSystem::~FeatureSystem()
 {
-    // 系统析构前先退出当前功能、再停用所有功能，让其清理状态
+    // 系统析构前先退出当前功能、再停用所有功能，让其清理状态（teardown 清理可能写模型，统一 flush）
     setFeatureActive("");
     for (auto&& [feature_name, entry] : entries_) {
         if (entry.handler) {
             entry.handler->teardown(*entry.context);
         }
     }
+    model_layer_->flushNotifications();
 }
 
 bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHandlerPtr handler)
@@ -109,12 +110,12 @@ void FeatureSystem::unregisterHandler(const HandlerMetaData& meta_data)
         spdlog::warn("FeatureSystem::unregisterHandler: Feature '{}' not found", meta_data.name);
         return;
     }
-    // 当前功能先按退出路径 deactivate（含交互下线），再 teardown
+    // 当前功能先按退出路径 deactivate（含交互下线），再 teardown（清理可能写模型，统一 flush）
     if (current_feature_ == meta_data.name) {
         setFeatureActive("");
     }
     if (it->second.handler) {
-        it->second.handler->teardown(*it->second.context);
+        flushAfterCallback([&] { it->second.handler->teardown(*it->second.context); });
     }
     entries_.erase(it);
     spdlog::info("FeatureSystem::unregisterHandler: Unregistered feature '{}'", meta_data.name);
@@ -135,6 +136,17 @@ std::any FeatureSystem::invoke(const std::string& unique_name)
         std::any result = it->second.handler->execute(*it->second.context);
         model_layer_->flushNotifications();
         return result;
+    } catch (...) {
+        model_layer_->flushNotifications();
+        throw;
+    }
+}
+
+void FeatureSystem::flushAfterCallback(const std::function<void()>& fn)
+{
+    try {
+        fn();
+        model_layer_->flushNotifications();
     } catch (...) {
         model_layer_->flushNotifications();
         throw;
@@ -200,11 +212,12 @@ bool FeatureSystem::setFeatureActive(const std::string& unique_name)
     }
 
     // 退出当前功能。定序：先功能回调再扳交互开关——deactivate() 中经 deferRefresh
-    // 挂的渲染线程清理先于下线迁移的 notify 挂上，两种线程交错下都会被消费
+    // 挂的渲染线程清理先于下线迁移的 notify 挂上，两种线程交错下都会被消费。
+    // 回调可能写模型（如功能退出清理现场），经生命周期回调边界统一 flush
     if (!current_feature_.empty()) {
         auto cur = entries_.find(current_feature_);
         if (cur != entries_.end() && cur->second.handler) {
-            cur->second.handler->deactivate(*cur->second.context);
+            flushAfterCallback([&] { cur->second.handler->deactivate(*cur->second.context); });
             if (cur->second.info->interactive)
                 cur->second.interaction_context.setActive(false);
         }
@@ -215,7 +228,7 @@ bool FeatureSystem::setFeatureActive(const std::string& unique_name)
 
     // 进入新功能（同一定序：先功能回调备好现场，再上线交互）
     FeatureEntry& entry = target->second;
-    entry.handler->activate(*entry.context);
+    flushAfterCallback([&] { entry.handler->activate(*entry.context); });
     if (entry.info->interactive)
         entry.interaction_context.setActive(true);
     current_feature_ = unique_name;

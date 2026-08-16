@@ -24,6 +24,8 @@ struct KeyEvent;
  * 安排到渲染线程执行。框架定序保证：退出时 deactivate() 先于交互下线（setActive(false)）、
  * 进入时 activate() 先于交互上线（setActive(true)），deactivate() 中经 deferRefresh
  * 挂的清理在下线迁移时必被消费并触发视口重绘。
+ * activate()/deactivate()/teardown() 中的模型写在回调返回后由框架统一 flush
+ * （生命周期通知不成 undo 记录）。
  */
 class FeatureHandler {
 public:
