@@ -44,8 +44,8 @@ public:
      */
     Q_INVOKABLE bool postKeyEvent(int key, int modifiers, bool pressed);
     /**
-     * @brief 启用当前活动功能（活动操作切换驱动，幂等）
-     * @param unique_name 要激活的功能唯一名称（须声明 interactive）；空串表示全部下线
+     * @brief 切换当前进入的功能（活动操作切换驱动，幂等）
+     * @param unique_name 要进入的功能唯一名称；空串表示退出当前功能
      */
     Q_INVOKABLE bool setFeatureActive(const QString& unique_name);
     /**

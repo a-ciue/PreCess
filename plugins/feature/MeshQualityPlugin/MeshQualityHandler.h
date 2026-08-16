@@ -24,14 +24,9 @@ namespace systems::feature {
 class MeshQualityHandler : public FeatureHandler {
 public:
     /**
-     * @brief 注册目标组件、质量指标参数和功能菜单
+     * @brief 注册目标组件、质量指标参数和功能菜单，并订阅标量显示事件（功能自动显示结束时清理本次生成的质量属性）
      */
-    void setup(FeatureRegistrar& reg) override;
-
-    /**
-     * @brief 订阅标量显示事件，在功能自动显示结束时清理本次生成的质量属性
-     */
-    void activate(FeatureContext& ctx) override;
+    void setup(FeatureRegistrar& reg, FeatureContext& ctx) override;
 
     /**
      * @brief 计算质量属性，返回统计文本并通过事件请求显示标量属性

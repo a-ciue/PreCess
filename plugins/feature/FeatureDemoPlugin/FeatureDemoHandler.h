@@ -8,9 +8,9 @@ namespace systems::feature {
  */
 class FeatureDemoHandler : public FeatureHandler {
 public:
-    void setup(FeatureRegistrar& reg) override;
+    void setup(FeatureRegistrar& reg, FeatureContext& ctx) override;
+    void teardown(FeatureContext& ctx) override;
     void activate(FeatureContext& ctx) override;
-    void deactivate() override;
     std::any execute(FeatureContext& ctx) override;
     bool onKeyEvent(const KeyEvent& event) override;
 

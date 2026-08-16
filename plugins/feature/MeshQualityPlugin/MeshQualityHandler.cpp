@@ -394,7 +394,7 @@ namespace {
 
 }
 
-void MeshQualityHandler::setup(FeatureRegistrar& reg)
+void MeshQualityHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
 {
     reg.addParameter({
         ArgTypeEnum::Selector,
@@ -409,10 +409,7 @@ void MeshQualityHandler::setup(FeatureRegistrar& reg)
         "选择要计算并写入面、体属性的网格质量指标",
     });
     reg.addMenuItem({ "功能/网格", "网格质量" });
-}
 
-void MeshQualityHandler::activate(FeatureContext& ctx)
-{
     // 复制上下文提供的 ComponentOperator 申请函数，避免事件回调依赖 FeatureContext 地址。
     const ComponentOperatorProvider component_operator = ctx.componentOperator;
     attribute_display_sub_ = ctx.events.subscribe<ScalarAttributeDisplayRequestedEvent>(

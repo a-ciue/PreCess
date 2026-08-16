@@ -20,7 +20,7 @@ public:
     ~DimensionHandler() override = default;
 
     //! @brief 声明功能参数（测量类型、选择对象）与菜单项
-    void setup(FeatureRegistrar& reg) override;
+    void setup(FeatureRegistrar& reg, FeatureContext& ctx) override;
     //! @brief 尺寸标注：按参数中的测量类型与选择对象执行，返回结果文本
     std::any execute(FeatureContext& ctx) override;
 };
