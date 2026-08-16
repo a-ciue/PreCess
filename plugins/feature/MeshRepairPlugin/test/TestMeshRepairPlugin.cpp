@@ -258,3 +258,56 @@ TEST_CASE("MeshRepair removeDegenerateFaces reports none on closed cube", "[Mesh
     REQUIRE(result.type() == typeid(std::string));
     REQUIRE(std::any_cast<const std::string&>(result) == "未发现退化面");
 }
+
+/**
+ * @brief 构造引用越界顶点的坏网格（面顶点 99 超出局部点索引范围）
+ */
+Index addBrokenMeshComponent(ModelLayer& model_layer)
+{
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = {
+        { 0.0, 0.0, 0.0 }, // 0
+        { 1.0, 0.0, 0.0 }, // 1
+        { 0.5, 1.0, 0.0 }, // 2
+    };
+    // 故意让面引用 99（远超出 3 个顶点的范围）
+    mesh->face_vertices_ = { 0, 1, 99 };
+    mesh->face_vertices_offset_ = { 0, 3 };
+
+    auto component = std::make_unique<ComponentData>();
+    component->name = "BrokenMeshComponent";
+    component->mesh = std::move(mesh);
+    ComponentDatas components;
+    components.push_back(std::move(component));
+
+    const Index model_id = model_layer.addModel("BrokenMeshModel", std::move(components));
+    return model_layer.modelById(model_id)->componentIds().front();
+}
+
+TEST_CASE("MeshRepair converts CgalMeshAdapter exception to friendly text", "[MeshRepairPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem feature_system(model_layer, bus);
+    const Index component_id = addBrokenMeshComponent(model_layer);
+
+    FeatureSystem::SystemHandlerPtr handler { new MeshRepairHandler };
+    REQUIRE(feature_system.registerHandler(repairMetaData(), std::move(handler)));
+    REQUIRE(feature_system.setParameter(
+        "MeshRepair", 0,
+        core::ArgObject::create<ArgTypeEnum::Selector>(makeComponentSelection(component_id))));
+    REQUIRE(feature_system.setParameter(
+        "MeshRepair", 1,
+        core::ArgObject::create<ArgTypeEnum::Combo>(0))); // 补洞
+
+    // 越界顶点 → toSurfaceMesh 抛 std::runtime_error → 应被 catch 转温和文案
+    const std::any result = feature_system.invoke("MeshRepair");
+    REQUIRE(result.type() == typeid(std::string));
+    const std::string text = std::any_cast<const std::string&>(result);
+    REQUIRE(text.find("网格修复失败") != std::string::npos);
+    // 不应包含 CGAL 内部表达式
+    REQUIRE(text.find("Expr:") == std::string::npos);
+    REQUIRE(text.find("File:") == std::string::npos);
+    REQUIRE(text.find("Line:") == std::string::npos);
+}

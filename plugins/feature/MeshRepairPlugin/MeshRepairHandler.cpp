@@ -11,6 +11,9 @@
 #include <CGAL/Polygon_mesh_processing/self_intersections.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 
+#include <CGAL/assertions_behaviour.h>
+#include <CGAL/exceptions.h>
+
 #include "MeshRepairHandler.h"
 
 #include "ArgObject.h"
@@ -43,6 +46,32 @@ enum class Operation {
     FillHoles = 0,
     DetectSelfIntersections = 1,
     RemoveDegenerateFaces = 2,
+};
+
+/**
+ * @brief RAII 守卫：作用域内将 CGAL 断言失败行为改为抛 C++ 异常
+ *
+ * CGAL 默认失败行为是 ABORT（直接 std::abort + stderr 打印内部表达式），对 UI
+ * 用户极不友好。在本功能执行期间临时切到 THROW_EXCEPTION，使所有
+ * CGAL_assertion / CGAL_error 触发时抛 CGAL::Failure_exception 链（如
+ * Assertion_exception / Precondition_exception），被外层 try/catch 统一
+ * 捕获并转成温和文案。作用域结束自动恢复 ABORT，避免影响其他使用 CGAL 的代码。
+ */
+class CgalExceptionGuard {
+public:
+    CgalExceptionGuard()
+        : prev_behaviour_(CGAL::set_error_behaviour(CGAL::THROW_EXCEPTION))
+    {
+    }
+    ~CgalExceptionGuard()
+    {
+        CGAL::set_error_behaviour(prev_behaviour_);
+    }
+    CgalExceptionGuard(const CgalExceptionGuard&) = delete;
+    CgalExceptionGuard& operator=(const CgalExceptionGuard&) = delete;
+
+private:
+    CGAL::Failure_behaviour prev_behaviour_;
 };
 
 /**
@@ -185,6 +214,9 @@ std::any MeshRepairHandler::execute(FeatureContext& ctx)
 
     const MeshData& mesh = *comp_op->mesh();
 
+    // 作用域内 CGAL 断言失败 → 抛 C++ 异常（详见 CgalExceptionGuard 注释）
+    CgalExceptionGuard cgal_guard;
+
     try {
         // MeshData 自包含（vertex_positions_ 常驻），转 CGAL 后调 PMP
         CgalMesh sm = toSurfaceMesh(mesh);
@@ -198,9 +230,16 @@ std::any MeshRepairHandler::execute(FeatureContext& ctx)
         default:
             return std::string("错误：未知操作类型");
         }
+    } catch (const CGAL::Failure_exception& e) {
+        // PMP 内部拓扑/几何不变量违反（如 non-manifold、self-intersection 探测期
+        // 间触发），CGAL::Failure_exception::what() 含内部表达式，对 UI 用户不友好：
+        // spdlog 留底便于开发定位，UI 仅返回固定温和文案。
+        spdlog::error("[MeshRepair] CGAL 拓扑不变量违反: op_index={}, lib={}, expr={}, file={}:{}",
+            op_index, e.library(), e.expression(), e.filename(), e.line_number());
+        return std::string("网格修复失败：当前网格拓扑不符合 PMP 前提（建议重新导入或重新网格化）");
     } catch (const std::exception& e) {
         spdlog::error("[MeshRepair] CGAL 操作异常: op_index={}, error={}", op_index, e.what());
-        return std::string("错误：") + e.what();
+        return std::string("网格修复失败：") + e.what();
     }
 }
 
