@@ -1,11 +1,15 @@
 #pragma once
 
 #include <array>
+#include <optional>
 #include <vector>
 #include "GmshIncrementalMeshState.h"
 #include "GeometryData.h"
 
 class ComponentOperator;
+class GeometryRegistry;
+struct GeometryMeshMap;
+struct MeshData;
 
 namespace IncrementalMeshTools {
 
@@ -22,6 +26,23 @@ struct GmshMeshParameters {
     double quadMinQuality {};
     int structuredEdgeDivisions {};
 };
+
+/**
+ * @brief 从通用 Geometry↔Mesh 映射重建本次操作使用的 Gmsh 临时状态
+ */
+std::optional<GmshIncrementalMeshState> buildStateFromGeometryMeshMap(
+    const GeometryMeshMap* mapping,
+    const MeshData& mesh,
+    const GeometryData& geometry,
+    const GeometryRegistry& registry);
+
+/**
+ * @brief 将 Gmsh 临时状态转换并提交为通用 Geometry↔Mesh 映射
+ * @return 转换是否完整成功；失败时保留原映射
+ */
+bool storeStateToGeometryMeshMap(
+    const GmshIncrementalMeshState& state,
+    ComponentOperator& component_op);
 
 // 网格写入统一经 ComponentOperator 可写入口（写必脏：标脏 + gid 纪律内建）
 SingleFaceMeshResult meshSingleFace(
