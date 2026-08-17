@@ -11,13 +11,11 @@
 #include <CGAL/Polygon_mesh_processing/self_intersections.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
 
-#include <CGAL/assertions_behaviour.h>
-#include <CGAL/exceptions.h>
-
 #include "MeshRepairHandler.h"
 
 #include "ArgObject.h"
 #include "ArgType.h"
+#include "CgalExceptionGuard.h"
 #include "CgalMeshAdapter.h"
 #include "ComponentData.h"
 #include "FeatureContext.h"
@@ -47,38 +45,6 @@ enum class Operation {
     DetectSelfIntersections = 1,
     RemoveDegenerateFaces = 2,
 };
-
-/**
- * @brief RAII 守卫：作用域内将 CGAL 断言失败行为改为抛 C++ 异常
- *
- * CGAL 默认失败行为是 ABORT（直接 std::abort + stderr 打印内部表达式），对 UI
- * 用户极不友好。在本功能执行期间临时切到 THROW_EXCEPTION，使所有
- * CGAL_assertion / CGAL_error 触发时抛 CGAL::Failure_exception 链（如
- * Assertion_exception / Precondition_exception），被外层 try/catch 统一
- * 捕获并转成温和文案。作用域结束自动恢复 ABORT，避免影响其他使用 CGAL 的代码。
- *
- * @note CGAL 的 Failure_behaviour 是进程/线程级全局状态，本守卫切换全局并
- *       在析构时还原。**当前假设本功能在 GUI 线程单入口执行**；若将来
- *       出现其他 CGAL 入口（多线程 / 多插件并行调用 PMP），
- *       必须在调用方用锁或线程局部存储隔离，否则会互相覆盖 error_behaviour。
- */
-class CgalExceptionGuard {
-public:
-    CgalExceptionGuard()
-        : prev_behaviour_(CGAL::set_error_behaviour(CGAL::THROW_EXCEPTION))
-    {
-    }
-    ~CgalExceptionGuard()
-    {
-        CGAL::set_error_behaviour(prev_behaviour_);
-    }
-    CgalExceptionGuard(const CgalExceptionGuard&) = delete;
-    CgalExceptionGuard& operator=(const CgalExceptionGuard&) = delete;
-
-private:
-    CGAL::Failure_behaviour prev_behaviour_;
-};
-
 /**
  * @brief 通过 ComponentOperator::replaceMesh 写回 CGAL 修复结果
  *
@@ -263,7 +229,7 @@ std::any MeshRepairHandler::execute(FeatureContext& ctx)
         return std::string("网格修复仅支持纯三角表面网格（当前 Component 含非三角面，请先转换为全三角网格）");
 
     // 作用域内 CGAL 断言失败 → 抛 C++ 异常（详见 CgalExceptionGuard 注释）
-    CgalExceptionGuard cgal_guard;
+    cgalsupport::CgalExceptionGuard cgal_guard;
 
     try {
         // MeshData 自包含（vertex_positions_ 常驻），转 CGAL 后调 PMP
