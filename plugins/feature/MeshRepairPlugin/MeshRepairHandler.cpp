@@ -78,7 +78,7 @@ std::string fillHoles(ComponentOperator& comp_op, CgalMesh& sm)
     namespace PMP = CGAL::Polygon_mesh_processing;
 
     std::vector<CgalMesh::Halfedge_index> border_cycles;
-    PMP::extract_boundary_cycles(sm, std::back_inserter(border_cycles));
+    CGAL::extract_boundary_cycles(sm, std::back_inserter(border_cycles));
     if (border_cycles.empty())
         return std::string("网格无孔洞（未发现边界环）");
 
@@ -178,7 +178,7 @@ bool isAllTriangular(const MeshData& mesh)
 
 } // namespace
 
-void MeshRepairHandler::setup(FeatureRegistrar& reg)
+void MeshRepairHandler::setup(FeatureRegistrar& reg, FeatureContext&)
 {
     reg.addParameter({
         ArgTypeEnum::Selector,

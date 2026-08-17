@@ -25,7 +25,7 @@ public:
     /**
      * @brief 注册目标 Component 选择器、操作类型参数与功能菜单
      */
-    void setup(FeatureRegistrar& reg) override;
+    void setup(FeatureRegistrar& reg, FeatureContext&) override;
 
     /**
      * @brief 执行所选修复操作并返回结果文本
