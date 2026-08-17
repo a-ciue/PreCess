@@ -17,17 +17,13 @@ namespace {
  */
 class FakeFeatureHandler : public FeatureHandler {
 public:
-    void setup(FeatureRegistrar& reg) override
+    void setup(FeatureRegistrar& reg, FeatureContext& ctx) override
     {
         ++setup_count;
         reg.addParameter({ ArgTypeEnum::Float, "尺寸", "1.5", "网格尺寸" });
         reg.addParameter({ ArgTypeEnum::Int, "次数", "3", "" });
         reg.addMenuItem({ "工具", "假功能" });
         reg.addKeyBinding({ 'A', 0 });
-    }
-    void activate(FeatureContext& ctx) override
-    {
-        ++activate_count;
         context = &ctx;
         // 订阅本功能的参数变更事件
         param_sub = ctx.events.subscribe<ParameterChangedEvent>(
@@ -38,9 +34,20 @@ public:
                 }
             });
     }
-    void deactivate() override
+    void teardown(FeatureContext&) override
     {
-        ++deactivate_count;
+        ++teardown_count;
+        if (external_teardown_count) {
+            ++*external_teardown_count; // 注销后 handler 已销毁，经外部计数器观测
+        }
+    }
+    void activate(FeatureContext&) override
+    {
+        ++activate_count; // 功能进入（活动操作切换驱动）
+    }
+    void deactivate(FeatureContext&) override
+    {
+        ++deactivate_count; // 功能退出
         if (external_deactivate_count) {
             ++*external_deactivate_count; // 注销后 handler 已销毁，经外部计数器观测
         }
@@ -58,12 +65,14 @@ public:
     }
 
     int setup_count = 0;
-    int activate_count = 0;
-    int deactivate_count = 0;
+    int teardown_count = 0;
+    int activate_count = 0; //> 功能进入计数
+    int deactivate_count = 0; //> 功能退出计数
     int execute_count = 0;
     int key_event_count = 0;
     int last_key = 0;
     bool handle_key = true; //> onKeyEvent 是否消费事件
+    int* external_teardown_count = nullptr;
     int* external_deactivate_count = nullptr;
     FeatureContext* context = nullptr;
     core::EventBus::Subscription param_sub;
@@ -82,7 +91,7 @@ HandlerMetaData makeMetaData()
 
 }
 
-TEST_CASE("FeatureSystem::registerHandler collects declarations and activates", "[FeatureSystem]")
+TEST_CASE("FeatureSystem::registerHandler collects declarations and sets up", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -93,8 +102,10 @@ TEST_CASE("FeatureSystem::registerHandler collects declarations and activates", 
     REQUIRE(system.registerHandler(makeMetaData(), std::move(handler)));
 
     REQUIRE(raw->setup_count == 1);
-    REQUIRE(raw->activate_count == 1);
     REQUIRE(raw->context != nullptr);
+    // 注册期不触发进入/退出回调：activate/deactivate 由活动操作切换驱动
+    REQUIRE(raw->activate_count == 0);
+    REQUIRE(raw->deactivate_count == 0);
 
     auto infos = system.getFeatureInfos();
     REQUIRE(infos.size() == 1);
@@ -125,7 +136,7 @@ TEST_CASE("FeatureSystem::setParameter updates value and publishes event", "[Fea
     REQUIRE(system.registerHandler(makeMetaData(), std::move(handler)));
 
     REQUIRE(system.setParameter("FakeFeature", 0, core::ArgObject::create<ArgTypeEnum::Float>(2.5)));
-    // 功能在 activate 中订阅了参数变更事件，实时收到新值
+    // 功能在 setup 中订阅了参数变更事件，实时收到新值
     REQUIRE(raw->last_param_index == 0);
     REQUIRE(raw->last_float_value == 2.5);
     REQUIRE(*system.params("FakeFeature")->value(0).get<ArgTypeEnum::Float>() == 2.5);
@@ -204,7 +215,7 @@ TEST_CASE("FeatureSystem context providers work when injected after registration
     REQUIRE_FALSE(raw->context->activeComponent().has_value());
 }
 
-TEST_CASE("FeatureSystem::unregisterHandler deactivates and removes", "[FeatureSystem]")
+TEST_CASE("FeatureSystem::unregisterHandler tears down and removes", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -212,7 +223,7 @@ TEST_CASE("FeatureSystem::unregisterHandler deactivates and removes", "[FeatureS
 
     int external_count = 0;
     auto* raw = new FakeFeatureHandler;
-    raw->external_deactivate_count = &external_count;
+    raw->external_teardown_count = &external_count;
     FeatureSystem::SystemHandlerPtr handler { raw };
     REQUIRE(system.registerHandler(makeMetaData(), std::move(handler)));
     REQUIRE(system.getFeatureInfos().size() == 1);
@@ -223,15 +234,40 @@ TEST_CASE("FeatureSystem::unregisterHandler deactivates and removes", "[FeatureS
     REQUIRE(system.params("FakeFeature") == nullptr);
 }
 
+TEST_CASE("FeatureSystem::unregisterHandler exits current feature before teardown", "[FeatureSystem]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem system(model_layer, bus);
+
+    int external_teardown = 0;
+    int external_deactivate = 0;
+    auto* raw = new FakeFeatureHandler;
+    raw->external_teardown_count = &external_teardown;
+    raw->external_deactivate_count = &external_deactivate;
+    FeatureSystem::SystemHandlerPtr handler { raw };
+    REQUIRE(system.registerHandler(makeMetaData(), std::move(handler)));
+
+    // 进入后注销当前功能：先 deactivate 退出，再 teardown（注销后 handler 已销毁，经外部计数器观测）
+    REQUIRE(system.setFeatureActive("FakeFeature"));
+    REQUIRE(raw->activate_count == 1);
+    system.unregisterHandler(makeMetaData());
+    REQUIRE(external_deactivate == 1);
+    REQUIRE(external_teardown == 1);
+
+    // 注销后当前功能已清空：空串退出为幂等空转
+    REQUIRE(system.setFeatureActive(""));
+}
+
 TEST_CASE("FeatureSystem re-registering same name replaces old handler", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
     FeatureSystem system(model_layer, bus);
 
-    int first_deactivate_count = 0;
+    int first_teardown_count = 0;
     auto* raw_first = new FakeFeatureHandler;
-    raw_first->external_deactivate_count = &first_deactivate_count;
+    raw_first->external_teardown_count = &first_teardown_count;
     FeatureSystem::SystemHandlerPtr first { raw_first };
     REQUIRE(system.registerHandler(makeMetaData(), std::move(first)));
 
@@ -239,8 +275,8 @@ TEST_CASE("FeatureSystem re-registering same name replaces old handler", "[Featu
     FeatureSystem::SystemHandlerPtr second { raw_second };
     REQUIRE(system.registerHandler(makeMetaData(), std::move(second)));
 
-    REQUIRE(first_deactivate_count == 1);
-    REQUIRE(raw_second->activate_count == 1);
+    REQUIRE(first_teardown_count == 1);
+    REQUIRE(raw_second->setup_count == 1);
     REQUIRE(system.getFeatureInfos().size() == 1);
 }
 
@@ -314,7 +350,7 @@ TEST_CASE("FeatureSystem::activeInteraction tracks interactive activation", "[Fe
     REQUIRE(system.activeInteraction() == nullptr);
 }
 
-TEST_CASE("FeatureSystem::setFeatureActive drives activation by feature name", "[FeatureSystem]")
+TEST_CASE("FeatureSystem::setFeatureActive drives feature enter/exit by name", "[FeatureSystem]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -323,29 +359,45 @@ TEST_CASE("FeatureSystem::setFeatureActive drives activation by feature name", "
     auto interactive_meta = makeMetaData();
     interactive_meta.name = "InteractiveFeature";
     interactive_meta.interactive = true;
-    FeatureSystem::SystemHandlerPtr interactive { new FakeFeatureHandler };
+    auto* raw_interactive = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr interactive { raw_interactive };
     REQUIRE(system.registerHandler(interactive_meta, std::move(interactive)));
 
     auto plain_meta = makeMetaData();
     plain_meta.name = "PlainFeature";
-    FeatureSystem::SystemHandlerPtr plain { new FakeFeatureHandler };
+    auto* raw_plain = new FakeFeatureHandler;
+    FeatureSystem::SystemHandlerPtr plain { raw_plain };
     REQUIRE(system.registerHandler(plain_meta, std::move(plain)));
 
-    // 未注册功能与未声明 interactive 的功能不可激活
+    // 未注册功能不可进入，且不改变现状
     REQUIRE_FALSE(system.setFeatureActive("Unknown"));
-    REQUIRE_FALSE(system.setFeatureActive("PlainFeature"));
+    REQUIRE(raw_plain->activate_count == 0);
+
+    // 非 interactive 功能也可进入（进入/退出感知不限 interactive）
+    REQUIRE(system.setFeatureActive("PlainFeature"));
+    REQUIRE(raw_plain->activate_count == 1);
     REQUIRE(system.activeInteraction() == nullptr);
 
-    // 按名激活（幂等：重复设置无副作用）
+    // 幂等：同名重复设置无副作用
+    REQUIRE(system.setFeatureActive("PlainFeature"));
+    REQUIRE(raw_plain->activate_count == 1);
+
+    // 切换：旧功能退出、新功能进入，interactive 的交互随之一并上线
     REQUIRE(system.setFeatureActive("InteractiveFeature"));
-    REQUIRE(system.setFeatureActive("InteractiveFeature"));
+    REQUIRE(raw_plain->deactivate_count == 1);
+    REQUIRE(raw_interactive->activate_count == 1);
     auto* active = system.activeInteraction();
     REQUIRE(active != nullptr);
     REQUIRE(active->active);
 
-    // 活动操作切到无交互能力的功能：空串全部下线
+    // 空串退出当前功能，interactive 的交互随之下线
     REQUIRE(system.setFeatureActive(""));
+    REQUIRE(raw_interactive->deactivate_count == 1);
     REQUIRE(system.activeInteraction() == nullptr);
+
+    // 空串幂等空转
+    REQUIRE(system.setFeatureActive(""));
+    REQUIRE(raw_interactive->deactivate_count == 1);
 }
 
 TEST_CASE("InteractionContext::setActive notifies render refresh in both directions", "[FeatureSystem]")

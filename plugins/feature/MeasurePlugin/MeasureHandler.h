@@ -21,25 +21,26 @@ using systems::interaction::PickInfo;
  * @brief 测量处理器：交互式两点成线测距与共端点两线夹角标注
  *
  * 纯视口交互功能："清除"按钮参数经 ParameterChangedEvent 触发清空，
- * 交互回调（拾取/悬停/激活/停用）由渲染线程经 InteractionService 驱动，
- * 全部状态成员仅被交互回调访问。
+ * 交互回调（拾取/悬停）由渲染线程经 InteractionService 驱动，
+ * 全部状态成员仅被交互回调访问；功能退出（deactivate）时经 deferRefresh
+ * 把清空延迟到渲染线程执行。
  */
 class MeasureHandler : public FeatureHandler {
 public:
     MeasureHandler() = default;
     ~MeasureHandler() override = default;
 
-    //! @brief 声明"清除"按钮参数与菜单项
-    void setup(FeatureRegistrar& reg) override;
-    //! @brief 激活：经 ctx.interaction 注册交互回调（拾取/悬停/激活/停用），订阅参数变更事件
-    void activate(FeatureContext& ctx) override;
+    //! @brief 声明"清除"按钮参数与菜单项，注册交互回调（拾取/悬停），订阅参数变更事件
+    void setup(FeatureRegistrar& reg, FeatureContext& ctx) override;
+    //! @brief 功能退出：经 deferRefresh 把清空现场延迟到渲染线程安全执行
+    void deactivate(FeatureContext& ctx) override;
 
     //! @brief 交互测量状态查询（测试与面板用）
     int lineCount() const { return static_cast<int>(lines_.size()); }
     bool hasPending() const { return pending_.has_value(); }
 
 private:
-    // ---- 交互回调（由 activate() 注册到 InteractionContext，渲染线程驱动） ----
+    // ---- 交互回调（由 setup() 注册到 InteractionContext，渲染线程驱动） ----
     bool onPick(const PickInfo& pick);
     bool onHover(const PickInfo& pick);
     void clear();
@@ -64,7 +65,7 @@ private:
     std::optional<PickInfo> preview_; //> 悬停预览吸附点
     std::vector<MeasureLine> lines_;
     std::vector<MeasureAngle> angles_;
-    // 标注集契约：功能在回调中直接更新 InteractionState.annotations（activate 时绑定），
+    // 标注集契约：功能在回调中直接更新 InteractionState.annotations（setup 时绑定），
     // 渲染层事件后拉取绘制；自持成员会导致渲染层永远拉到空标注
     AnnotationBatch* annotations_ { nullptr };
     core::EventBus::Subscription param_sub_; //> ParameterChangedEvent 订阅句柄（析构自动退订）

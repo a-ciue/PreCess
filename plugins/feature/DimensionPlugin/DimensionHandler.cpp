@@ -963,7 +963,7 @@ std::string selectorContent()
 }
 }
 
-void DimensionHandler::setup(FeatureRegistrar& reg)
+void DimensionHandler::setup(FeatureRegistrar& reg, FeatureContext&)
 {
     // Combo 内容全部由测量操作注册表生成，名称与下标天然一致
     reg.addParameter({ ArgTypeEnum::Combo, "测量类型", comboContent() + "|0" });

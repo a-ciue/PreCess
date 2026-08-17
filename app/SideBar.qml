@@ -25,9 +25,10 @@ Item{
         parameters = root.activeOp && root.activeOp.defaultParameters
                 ? root.activeOp.defaultParameters.slice() : []
         resultText = ""
-        // 活动操作声明视口交互能力则激活其交互，否则全部下线（幂等，守卫在功能系统内）
-        var interactive = !!(activeOp && activeOp.info && activeOp.info.interactive)
-        QModelManager.featureSystem.setFeatureActive(interactive ? activeOp.info.name : "")
+        // 活动操作是功能则进入该功能（interactive 的交互随之一并上线），否则退出当前功能
+        // （幂等，守卫在功能系统内；进入/退出经 FeatureHandler::activate/deactivate 通知功能）
+        var isFeature = !!(activeOp && activeOp.isFeature)
+        QModelManager.featureSystem.setFeatureActive(isFeature ? activeOp.info.name : "")
     }
 
     // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效

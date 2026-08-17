@@ -89,9 +89,8 @@ struct FeatureTestEnv {
     FeatureTestEnv()
         : interaction_ctx_(interaction_state_)
     {
-        // 参数声明直接取自被测功能的 setup，避免测试中重复维护一份
-        handler.setup(registrar);
-        params = std::make_unique<FeatureParams>(registrar.argTypes());
+        // 装配顺序同 FeatureSystem：先空参数集装配 ctx，setup 收集声明后载入默认值
+        params = std::make_unique<FeatureParams>(std::vector<core::ArgType> {});
         ctx = std::make_unique<FeatureContext>(FeatureContext {
             mgr,
             gateway,
@@ -101,6 +100,9 @@ struct FeatureTestEnv {
             [this]() { return active_component; },
             [this](Index component_id) { return mgr.getComponentOperator(component_id); },
         });
+        // 参数声明直接取自被测功能的 setup，避免测试中重复维护一份
+        handler.setup(registrar, *ctx);
+        *params = FeatureParams(registrar.argTypes());
     }
 
     //! @brief 写入功能参数并执行尺寸标注，返回结果字符串（下标 0=测量类型 1=选择对象，见 setup）
@@ -304,14 +306,12 @@ std::array<double, 3> lineEdgeDirection(const TopoDS_Shape& edge)
 
 TEST_CASE("DimensionHandler setup declares measure parameters and menu")
 {
-    DimensionHandler handler;
-    FeatureRegistrar reg;
-    handler.setup(reg);
+    FeatureTestEnv env;
 
-    REQUIRE(reg.argTypes().size() == 2);
-    CHECK(reg.argTypes()[0].type == ArgTypeEnum::Combo);
-    CHECK(reg.argTypes()[1].type == ArgTypeEnum::Selector);
-    REQUIRE(reg.menuItems().size() == 1);
+    REQUIRE(env.registrar.argTypes().size() == 2);
+    CHECK(env.registrar.argTypes()[0].type == ArgTypeEnum::Combo);
+    CHECK(env.registrar.argTypes()[1].type == ArgTypeEnum::Selector);
+    REQUIRE(env.registrar.menuItems().size() == 1);
 }
 
 TEST_CASE("DimensionHandler: distance between two vertices")
