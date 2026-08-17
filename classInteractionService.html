@@ -225,7 +225,7 @@ Public 属性</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
 <tr class="memitem:accb11da884fc3efccbeae97d2a654527" id="r_accb11da884fc3efccbeae97d2a654527"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsystems_1_1interaction_1_1InteractionState.html">systems::interaction::InteractionState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accb11da884fc3efccbeae97d2a654527">syncState</a> ()</td></tr>
-<tr class="memdesc:accb11da884fc3efccbeae97d2a654527"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）  <br /></td></tr>
+<tr class="memdesc:accb11da884fc3efccbeae97d2a654527"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步激活状态：迁移时执行下线（消费 deferred_op/清标注/还原吸附）与上线（吸附/刷新）  <br /></td></tr>
 <tr class="memitem:a2737aca0a6df2e26c51ff2baaf2d04c1" id="r_a2737aca0a6df2e26c51ff2baaf2d04c1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2737aca0a6df2e26c51ff2baaf2d04c1">snapToPickInfo</a> (double posx, double posy, <a class="el" href="structsystems_1_1interaction_1_1PickInfo.html">systems::interaction::PickInfo</a> &amp;out)</td></tr>
 <tr class="memdesc:a2737aca0a6df2e26c51ff2baaf2d04c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">网格顶点优先、几何顶点兜底的吸附解析；命中时 out.valid 置 true  <br /></td></tr>
 <tr class="memitem:a2e754518e42012ac0468b3c56d2c3f81" id="r_a2e754518e42012ac0468b3c56d2c3f81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e754518e42012ac0468b3c56d2c3f81">refreshAnnotations</a> ()</td></tr>
@@ -517,7 +517,7 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新） </p>
+<p>同步激活状态：迁移时执行下线（消费 deferred_op/清标注/还原吸附）与上线（吸附/刷新） </p>
 
 </div>
 </div>

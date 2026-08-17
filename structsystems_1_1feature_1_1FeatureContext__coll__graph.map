@@ -1,5 +1,5 @@
 <map id="systems::feature::FeatureContext" name="systems::feature::FeatureContext">
-<area shape="rect" id="Node000001" title="功能上下文，由 FeatureSystem 装配并在 activate()/execute() 时传给功能" alt="" coords="2912,869,3101,909"/>
+<area shape="rect" id="Node000001" title="功能上下文，由 FeatureSystem 装配并在 setup()/activate()/execute() 时传给功能" alt="" coords="2912,869,3101,909"/>
 <area shape="rect" id="Node000002" href="$classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2343,659,2441,685"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2443,687,2950,867,2948,872,2441,692"/>
 <area shape="rect" id="Node000049" href="$classsystems_1_1feature_1_1FeatureEventGateway.html" title="功能事件网关：包装 EventBus 订阅，回调返回后自动 flushNotifications（操作边界）" alt="" coords="2585,652,2775,692"/>
@@ -88,7 +88,7 @@
 <area shape="poly" id="edge46_Node000054_Node000057" title=" " alt="" coords="1637,1112,1850,1084,1897,1076,1898,1081,1851,1089,1638,1117"/>
 <area shape="rect" id="Node000058" href="$classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="1149,1110,1272,1135"/>
 <area shape="poly" id="edge47_Node000057_Node000058" title=" " alt="" coords="1286,1120,1481,1120,1481,1125,1286,1125"/>
-<area shape="rect" id="Node000059" href="$classsystems_1_1feature_1_1InteractionContext.html" title="视口交互上下文（FeatureContext 成员）：功能在 activate() 中经它订阅交互回调" alt="" coords="2575,1063,2785,1103"/>
+<area shape="rect" id="Node000059" href="$classsystems_1_1feature_1_1InteractionContext.html" title="视口交互上下文（FeatureContext 成员）：功能在 setup() 中经它订阅交互回调" alt="" coords="2575,1063,2785,1103"/>
 <area shape="poly" id="edge48_Node000001_Node000059" title=" " alt="" coords="2799,1088,2844,1080,2887,1063,2908,1048,2927,1029,2959,987,2982,944,2996,909,3001,911,2986,946,2963,990,2931,1033,2911,1052,2889,1068,2846,1085,2800,1093"/>
 <area shape="rect" id="Node000060" href="$structsystems_1_1interaction_1_1InteractionState.html" title="单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）" alt="" coords="2315,1100,2469,1140"/>
 <area shape="poly" id="edge49_Node000059_Node000060" title=" " alt="" coords="2483,1106,2574,1094,2575,1099,2483,1111"/>

@@ -34,6 +34,7 @@ var searchData=
   ['cur_5fcomponent_31',['cur_component',['../structsystems_1_1algo_1_1HandlerContext.html#a44cba908ae4dc46b741e0bd284dde0c2',1,'systems::algo::HandlerContext']]],
   ['cur_5fcomponent_5fid_5f_32',['cur_component_id_',['../structQRenderWindow.html#ab8603fd67111125e7e479b99a965f640',1,'QRenderWindow']]],
   ['current_5f_33',['current_',['../classInteractionService.html#a63850f71db99f6655c7bdffb781afe46',1,'InteractionService']]],
-  ['current_5fmode_5f_34',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
-  ['current_5fstyle_5f_35',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]]
+  ['current_5ffeature_5f_34',['current_feature_',['../classsystems_1_1feature_1_1FeatureSystem.html#ac20c7d6f717c274103574cd9c924f719',1,'systems::feature::FeatureSystem']]],
+  ['current_5fmode_5f_35',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
+  ['current_5fstyle_5f_36',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]]
 ];

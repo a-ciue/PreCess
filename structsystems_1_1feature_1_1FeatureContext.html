@@ -83,7 +83,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>功能上下文，由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配并在 activate()/execute() 时传给功能  
+<p>功能上下文，由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配并在 setup()/activate()/execute() 时传给功能  
  <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a>&gt;</code></p>
@@ -92,7 +92,7 @@ systems::feature::FeatureContext 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="structsystems_1_1feature_1_1FeatureContext__coll__graph.png" border="0" usemap="#asystems_1_1feature_1_1FeatureContext_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="asystems_1_1feature_1_1FeatureContext_coll__map" id="asystems_1_1feature_1_1FeatureContext_coll__map">
-<area shape="rect" title="功能上下文，由 FeatureSystem 装配并在 activate()/execute() 时传给功能" alt="" coords="2912,869,3101,909"/>
+<area shape="rect" title="功能上下文，由 FeatureSystem 装配并在 setup()/activate()/execute() 时传给功能" alt="" coords="2912,869,3101,909"/>
 <area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2343,659,2441,685"/>
 <area shape="poly" title=" " alt="" coords="2443,687,2950,867,2948,872,2441,692"/>
 <area shape="rect" href="classsystems_1_1feature_1_1FeatureEventGateway.html" title="功能事件网关：包装 EventBus 订阅，回调返回后自动 flushNotifications（操作边界）" alt="" coords="2585,652,2775,692"/>
@@ -181,7 +181,7 @@ systems::feature::FeatureContext 的协作图:</div>
 <area shape="poly" title=" " alt="" coords="1637,1112,1850,1084,1897,1076,1898,1081,1851,1089,1638,1117"/>
 <area shape="rect" href="classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="1149,1110,1272,1135"/>
 <area shape="poly" title=" " alt="" coords="1286,1120,1481,1120,1481,1125,1286,1125"/>
-<area shape="rect" href="classsystems_1_1feature_1_1InteractionContext.html" title="视口交互上下文（FeatureContext 成员）：功能在 activate() 中经它订阅交互回调" alt="" coords="2575,1063,2785,1103"/>
+<area shape="rect" href="classsystems_1_1feature_1_1InteractionContext.html" title="视口交互上下文（FeatureContext 成员）：功能在 setup() 中经它订阅交互回调" alt="" coords="2575,1063,2785,1103"/>
 <area shape="poly" title=" " alt="" coords="2799,1088,2844,1080,2887,1063,2908,1048,2927,1029,2959,987,2982,944,2996,909,3001,911,2986,946,2963,990,2931,1033,2911,1052,2889,1068,2846,1085,2800,1093"/>
 <area shape="rect" href="structsystems_1_1interaction_1_1InteractionState.html" title="单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）" alt="" coords="2315,1100,2469,1140"/>
 <area shape="poly" title=" " alt="" coords="2483,1106,2574,1094,2575,1099,2483,1111"/>
@@ -214,7 +214,7 @@ Public 属性</h2></td></tr>
 <tr class="memitem:a84719620735d15c74794c0fb34ececc1" id="r_a84719620735d15c74794c0fb34ececc1"><td class="memItemLeft" align="right" valign="top">std::function&lt; std::optional&lt; <a class="el" href="classComponentOperator.html">ComponentOperator</a> &gt;(<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84719620735d15c74794c0fb34ececc1">componentOperator</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>功能上下文，由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配并在 activate()/execute() 时传给功能 </p>
+<div class="textblock"><p>功能上下文，由 <a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由">FeatureSystem</a> 装配并在 setup()/activate()/execute() 时传给功能 </p>
 <p>组合而非单例：依赖以引用或 std::function 动态获取函数注入（后者由 app 层提供）， 功能层不反向依赖 app 层。当前功能可修改的范围仅限模型层对象。</p>
 <dl class="section note"><dt>注解</dt><dd>activeModel/activeComponent 是对象树选中态的动态查询，只视作一种提示： 不要强制要求用户执行功能前在对象树中选中 component；目标组件优先经 <span class="tt">Selector</span> 类型参数（FeatureParams）让用户显式选择后解析。 </dd></dl>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>

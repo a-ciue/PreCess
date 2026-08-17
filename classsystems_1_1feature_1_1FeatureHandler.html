@@ -91,12 +91,14 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a84b6194f25ab74d7614d9f86f03dda9f" id="r_a84b6194f25ab74d7614d9f86f03dda9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84b6194f25ab74d7614d9f86f03dda9f">~FeatureHandler</a> ()=default</td></tr>
-<tr class="memitem:a92c4e4bd8c8304a80ca51db789e3ac34" id="r_a92c4e4bd8c8304a80ca51db789e3ac34"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92c4e4bd8c8304a80ca51db789e3ac34">setup</a> (<a class="el" href="classsystems_1_1feature_1_1FeatureRegistrar.html">FeatureRegistrar</a> &amp;reg)</td></tr>
-<tr class="memdesc:a92c4e4bd8c8304a80ca51db789e3ac34"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明功能的参数、菜单项与按键绑定（注册时调用一次）  <br /></td></tr>
+<tr class="memitem:a71009d40ef0cbf38c4952a623016770e" id="r_a71009d40ef0cbf38c4952a623016770e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71009d40ef0cbf38c4952a623016770e">setup</a> (<a class="el" href="classsystems_1_1feature_1_1FeatureRegistrar.html">FeatureRegistrar</a> &amp;reg, <a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a71009d40ef0cbf38c4952a623016770e"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册时调用一次：声明参数、菜单项与按键绑定，并经 ctx.events 订阅事件、建立常驻状态  <br /></td></tr>
+<tr class="memitem:aa266443433ad14db37c074c054c90e1d" id="r_aa266443433ad14db37c074c054c90e1d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa266443433ad14db37c074c054c90e1d">teardown</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;ctx)</td></tr>
+<tr class="memdesc:aa266443433ad14db37c074c054c90e1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销时调用一次：清理常驻状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现）  <br /></td></tr>
 <tr class="memitem:a47d8bbe060bc4973ccbf54dda673f1b8" id="r_a47d8bbe060bc4973ccbf54dda673f1b8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8">activate</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;ctx)</td></tr>
-<tr class="memdesc:a47d8bbe060bc4973ccbf54dda673f1b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能激活，在此通过 ctx.events 订阅事件  <br /></td></tr>
-<tr class="memitem:a8238bad62fedc02828b68b78ed1c1e83" id="r_a8238bad62fedc02828b68b78ed1c1e83"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8238bad62fedc02828b68b78ed1c1e83">deactivate</a> ()</td></tr>
-<tr class="memdesc:a8238bad62fedc02828b68b78ed1c1e83"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能停用，清理状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现）  <br /></td></tr>
+<tr class="memdesc:a47d8bbe060bc4973ccbf54dda673f1b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能进入（用户点选本功能为活动操作，GUI 线程）  <br /></td></tr>
+<tr class="memitem:a9498bb04af8f3fe8fe11fa03564161a8" id="r_a9498bb04af8f3fe8fe11fa03564161a8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9498bb04af8f3fe8fe11fa03564161a8">deactivate</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a9498bb04af8f3fe8fe11fa03564161a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能退出（活动操作切走或取消，GUI 线程）  <br /></td></tr>
 <tr class="memitem:a4314d6417cfd92c9728656ffb3b55518" id="r_a4314d6417cfd92c9728656ffb3b55518"><td class="memItemLeft" align="right" valign="top">virtual std::any&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4314d6417cfd92c9728656ffb3b55518">execute</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a4314d6417cfd92c9728656ffb3b55518"><td class="mdescLeft">&#160;</td><td class="mdescRight">菜单触发的功能执行  <br /></td></tr>
 <tr class="memitem:a4927e4524ca08fccc9e8b785da8dd189" id="r_a4927e4524ca08fccc9e8b785da8dd189"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4927e4524ca08fccc9e8b785da8dd189">onKeyEvent</a> (const <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html">KeyEvent</a> &amp;event)</td></tr>
@@ -104,7 +106,8 @@ Public 成员函数</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>功能系统的功能接口，插件继承它实现具体功能 </p>
-<p>生命周期：注册时先 <a class="el" href="#a92c4e4bd8c8304a80ca51db789e3ac34" title="声明功能的参数、菜单项与按键绑定（注册时调用一次）">setup()</a> 声明参数/菜单/按键绑定，再 <a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能激活，在此通过 ctx.events 订阅事件">activate()</a> 订阅事件、 建立功能状态；注销时 <a class="el" href="#a8238bad62fedc02828b68b78ed1c1e83" title="功能停用，清理状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现）">deactivate()</a> 清理。 菜单项触发 <a class="el" href="#a4314d6417cfd92c9728656ffb3b55518" title="菜单触发的功能执行">execute()</a>；按键绑定命中时回调 <a class="el" href="#a4927e4524ca08fccc9e8b785da8dd189" title="按键绑定命中后的回调（仅按下时触发）">onKeyEvent()</a>。 功能也可在 <a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能激活，在此通过 ctx.events 订阅事件">activate()</a> 中直接订阅 <a class="el" href="structsystems_1_1feature_1_1FeatureContext.html#a76998da867c9a37ea2c9721d24692256">FeatureContext::events</a> 上的原始事件 （如 <a class="el" href="structsystems_1_1feature_1_1KeyEvent.html" title="键盘按键事件">KeyEvent</a> 的按下/释放流、ParameterChangedEvent、ModelEvent）。 </p>
+<p>生命周期：注册时 <a class="el" href="#a71009d40ef0cbf38c4952a623016770e" title="注册时调用一次：声明参数、菜单项与按键绑定，并经 ctx.events 订阅事件、建立常驻状态">setup()</a> 一次（声明参数/菜单/按键绑定 + 订阅事件、建立常驻状态）； 随后功能随活动操作切换被反复 进入 <a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能进入（用户点选本功能为活动操作，GUI 线程）">activate()</a> / 退出 <a class="el" href="#a9498bb04af8f3fe8fe11fa03564161a8" title="功能退出（活动操作切走或取消，GUI 线程）">deactivate()</a>； 注销时 <a class="el" href="#aa266443433ad14db37c074c054c90e1d" title="注销时调用一次：清理常驻状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现）">teardown()</a> 一次。 菜单项触发 <a class="el" href="#a4314d6417cfd92c9728656ffb3b55518" title="菜单触发的功能执行">execute()</a>；按键绑定命中时回调 <a class="el" href="#a4927e4524ca08fccc9e8b785da8dd189" title="按键绑定命中后的回调（仅按下时触发）">onKeyEvent()</a>。</p>
+<p><a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能进入（用户点选本功能为活动操作，GUI 线程）">activate()</a>/deactivate() 在 <b>GUI 线程</b> 调用，不得直接触碰交互状态与标注 （线程约定见 InteractionState.h）；交互现场清理经 <a class="el" href="classsystems_1_1feature_1_1InteractionContext.html#af9196e0591e8499ed8811fb6a0751616" title="GUI 线程延迟刷新：将刷新前置操作存入 InteractionState，经 requestRefresh 通知渲染线程执行后拉取标注">InteractionContext::deferRefresh</a> 安排到渲染线程执行。框架定序保证：退出时 <a class="el" href="#a9498bb04af8f3fe8fe11fa03564161a8" title="功能退出（活动操作切走或取消，GUI 线程）">deactivate()</a> 先于交互下线（setActive(false)）、 进入时 <a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能进入（用户点选本功能为活动操作，GUI 线程）">activate()</a> 先于交互上线（setActive(true)），deactivate() 中经 deferRefresh 挂的清理在下线迁移时必被消费并触发视口重绘。 <a class="el" href="#a47d8bbe060bc4973ccbf54dda673f1b8" title="功能进入（用户点选本功能为活动操作，GUI 线程）">activate()</a>/deactivate()/teardown() 中的模型写在回调返回后由框架统一 flush （生命周期通知不成 undo 记录）。 </p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a84b6194f25ab74d7614d9f86f03dda9f" name="a84b6194f25ab74d7614d9f86f03dda9f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a84b6194f25ab74d7614d9f86f03dda9f">&#9670;&#160;</a></span>~FeatureHandler()</h2>
@@ -155,12 +158,12 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>功能激活，在此通过 ctx.events 订阅事件 </p>
+<p>功能进入（用户点选本功能为活动操作，GUI 线程） </p>
 
 </div>
 </div>
-<a id="a8238bad62fedc02828b68b78ed1c1e83" name="a8238bad62fedc02828b68b78ed1c1e83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8238bad62fedc02828b68b78ed1c1e83">&#9670;&#160;</a></span>deactivate()</h2>
+<a id="a9498bb04af8f3fe8fe11fa03564161a8" name="a9498bb04af8f3fe8fe11fa03564161a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9498bb04af8f3fe8fe11fa03564161a8">&#9670;&#160;</a></span>deactivate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -171,7 +174,7 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="memname">virtual void systems::feature::FeatureHandler::deactivate </td>
           <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -182,7 +185,7 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>功能停用，清理状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现） </p>
+<p>功能退出（活动操作切走或取消，GUI 线程） </p>
 
 </div>
 </div>
@@ -242,8 +245,8 @@ Public 成员函数</h2></td></tr>
 
 </div>
 </div>
-<a id="a92c4e4bd8c8304a80ca51db789e3ac34" name="a92c4e4bd8c8304a80ca51db789e3ac34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a92c4e4bd8c8304a80ca51db789e3ac34">&#9670;&#160;</a></span>setup()</h2>
+<a id="a71009d40ef0cbf38c4952a623016770e" name="a71009d40ef0cbf38c4952a623016770e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71009d40ef0cbf38c4952a623016770e">&#9670;&#160;</a></span>setup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -254,7 +257,39 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="memname">virtual void systems::feature::FeatureHandler::setup </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classsystems_1_1feature_1_1FeatureRegistrar.html">FeatureRegistrar</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>reg</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1feature_1_1FeatureRegistrar.html">FeatureRegistrar</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>reg</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注册时调用一次：声明参数、菜单项与按键绑定，并经 ctx.events 订阅事件、建立常驻状态 </p>
+<dl class="section note"><dt>注解</dt><dd>实现内不得读取 ctx.params 的值：参数默认值在 <a class="el" href="#a71009d40ef0cbf38c4952a623016770e" title="注册时调用一次：声明参数、菜单项与按键绑定，并经 ctx.events 订阅事件、建立常驻状态">setup()</a> 返回后由系统载入 </dd></dl>
+
+</div>
+</div>
+<a id="aa266443433ad14db37c074c054c90e1d" name="aa266443433ad14db37c074c054c90e1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa266443433ad14db37c074c054c90e1d">&#9670;&#160;</a></span>teardown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void systems::feature::FeatureHandler::teardown </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>ctx</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -265,7 +300,7 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>声明功能的参数、菜单项与按键绑定（注册时调用一次） </p>
+<p>注销时调用一次：清理常驻状态（事件订阅句柄随 Subscription 析构自动退订时可为空实现） </p>
 
 </div>
 </div>

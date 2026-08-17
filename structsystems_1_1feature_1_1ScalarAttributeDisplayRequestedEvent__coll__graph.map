@@ -1,5 +1,5 @@
 <map id="systems::feature::ScalarAttributeDisplayRequestedEvent" name="systems::feature::ScalarAttributeDisplayRequestedEvent">
-<area shape="rect" id="Node000001" title="请求界面渲染指定的标量属性；空属性名表示结束功能自动标量显示" alt="" coords="5,191,240,231"/>
+<area shape="rect" id="Node000001" title="请求界面渲染指定的标量属性（界面在活动操作切换时自行取消渲染，无需空名事件）" alt="" coords="5,191,240,231"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="79,95,166,120"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,134,125,190,120,190,120,134"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="53,5,192,45"/>
