@@ -43,8 +43,9 @@ struct HandlerMetaData {
 /**
  * @brief 功能系统：管理功能插件的注册、注销、调用与事件路由
  *
- * 非单例，由 app 层组合持有。与算法/编辑系统不同，功能在注册后即处于
- * 激活状态，可持续响应按键、参数变更与模型事件。
+ * 非单例，由 app 层组合持有。与算法/编辑系统不同，功能在注册后即常驻，
+ * 可持续响应按键、参数变更与模型事件；并随活动操作切换被反复
+ * 进入 activate() / 退出 deactivate()（见 setFeatureActive）。
  */
 class FeatureSystem {
 public:
@@ -56,11 +57,11 @@ public:
     ~FeatureSystem();
 
     /**
-     * @brief 注册功能处理器插件：setup() 收集声明 → 装配上下文 → activate()
+     * @brief 注册功能处理器插件：装配上下文 → setup() 收集声明并订阅事件 → 载入参数默认值
      */
     bool registerHandler(const HandlerMetaData& meta_data, SystemHandlerPtr handler);
     /**
-     * @brief 注销功能处理器插件：deactivate() 后移除
+     * @brief 注销功能处理器插件：当前功能先 deactivate() 退出，teardown() 后移除
      */
     void unregisterHandler(const HandlerMetaData& meta_data);
     /**
@@ -96,12 +97,15 @@ public:
      */
     interaction::InteractionState* activeInteraction();
     /**
-     * @brief 启用当前活动功能（声明 interactive 的功能专用，活动操作切换驱动）
+     * @brief 切换当前进入的功能（活动操作切换驱动，所有功能可感知进入/退出）
      *
-     * 单激活约定：激活一个功能会经 InteractionContext 下线其他功能的交互；
-     * 启停为幂等的状态应用（InteractionContext 以目标状态为守卫），重复设置无副作用。
-     * @param unique_name 要激活的功能唯一名称；空串表示全部下线（活动操作无交互能力）
-     * @return 名称为空，或功能存在且声明 interactive 时为 true
+     * 退出旧功能（定序：先功能回调后扳交互开关）：先 handler->deactivate()，
+     * 再 interactive 则下线其交互（功能在 deactivate() 中经 deferRefresh 挂的
+     * 渲染线程清理由此保证在下线迁移时被消费）；
+     * 进入新功能（同一定序）：先 handler->activate(ctx)，再 interactive 则上线其交互。
+     * 启停为幂等的状态应用：与当前功能同名时直接返回。
+     * @param unique_name 要进入的功能唯一名称；空串表示退出当前功能（活动操作无功能身份）
+     * @return 名称为空，或功能存在时为 true；功能不存在为 false 且不改变现状
      */
     bool setFeatureActive(const std::string& unique_name);
     /**
@@ -130,11 +134,15 @@ private:
     };
 
     bool routeKeyEvent(const KeyEvent& event); //> 按键绑定路由，返回事件是否被消费
+    //! @brief 生命周期回调边界（activate/deactivate/teardown）：回调返回后统一 flush（异常时先 flush 再重抛）；
+    //! 不成 undo 记录——退出清理（如删除功能生成的属性）若可撤销，撤销后会留下功能已停止跟踪的游离状态
+    void flushAfterCallback(const std::function<void()>& fn);
 
     ModelLayer* model_layer_; //< 模型层引用，用于装配功能上下文
     core::EventBus* event_bus_; //< 事件总线引用
     FeatureEventGateway event_gateway_; //< 功能事件网关（回调边界自动 flush；声明顺序须在 model_layer_/event_bus_ 之后）
     std::unordered_map<std::string, FeatureEntry> entries_; //< 功能条目，key 为功能唯一名称
+    std::string current_feature_; //< 当前进入的功能名（空=无；setFeatureActive 驱动进入/退出）
     std::function<std::optional<Index>()> active_model_provider_;
     std::function<std::optional<Index>()> active_component_provider_;
     std::function<void()> on_feature_infos_changed_;

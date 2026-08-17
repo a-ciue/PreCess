@@ -16,7 +16,7 @@ namespace {
     constexpr int kControlModifier = 0x04000000;
 }
 
-void FeatureDemoHandler::setup(FeatureRegistrar& reg)
+void FeatureDemoHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
 {
     // 功能参数注册
     reg.addParameter({ ArgTypeEnum::Float, "缩放因子", "1.0", "网格顶点坐标的缩放倍数" });
@@ -30,12 +30,8 @@ void FeatureDemoHandler::setup(FeatureRegistrar& reg)
     reg.addMenuItem({ "示例", "功能示例" });
     // 按键事件注册：Ctrl+D
     reg.addKeyBinding({ kKeyD, kControlModifier });
-}
 
-void FeatureDemoHandler::activate(FeatureContext& ctx)
-{
     ctx_ = &ctx;
-    syncParams(ctx);
 
     // 订阅参数变更事件：功能对参数改变实时做出响应
     param_sub_ = ctx.events.subscribe<ParameterChangedEvent>([this](const ParameterChangedEvent& e) {
@@ -56,14 +52,20 @@ void FeatureDemoHandler::activate(FeatureContext& ctx)
             static_cast<int>(e.kind), e.model_id, e.component_id);
     });
 
-    spdlog::info("FeatureDemo: activated");
+    spdlog::info("FeatureDemo: setup");
 }
 
-void FeatureDemoHandler::deactivate()
+void FeatureDemoHandler::teardown(FeatureContext&)
 {
     // 事件订阅句柄随成员析构自动退订，这里只需清理自身状态
     ctx_ = nullptr;
-    spdlog::info("FeatureDemo: deactivated");
+    spdlog::info("FeatureDemo: teardown");
+}
+
+void FeatureDemoHandler::activate(FeatureContext& ctx)
+{
+    // 进入功能时同步参数当前值：setup 返回后系统才载入参数默认值，故不在 setup 中同步
+    syncParams(ctx);
 }
 
 std::any FeatureDemoHandler::execute(FeatureContext& ctx)

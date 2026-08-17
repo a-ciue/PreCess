@@ -81,19 +81,14 @@ bool samePoint(const systems::interaction::PickInfo& a, const systems::interacti
 }
 }
 
-void MeasureHandler::setup(FeatureRegistrar& reg)
+void MeasureHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
 {
     // "清除"按钮参数：无值触发器，点击发布 ParameterChangedEvent，功能内部订阅并清空
     reg.addParameter({ ArgTypeEnum::Button, "清除", "" });
     reg.addMenuItem({ "工具", "测量" });
-}
 
-void MeasureHandler::activate(FeatureContext& ctx)
-{
     // 标注集绑定到交互状态：渲染层事件后从 InteractionState.annotations 拉取绘制
     annotations_ = &ctx.interaction.annotations();
-    ctx.interaction.onActivate([this]() { this->clear(); });
-    ctx.interaction.onDeactivate([this]() { this->clear(); });
     ctx.interaction.onPick([this](const PickInfo& p) { return this->onPick(p); });
     ctx.interaction.onHover([this](const PickInfo& p) { return this->onHover(p); });
 
@@ -104,6 +99,13 @@ void MeasureHandler::activate(FeatureContext& ctx)
             return;
         interaction->deferRefresh([this] { this->clear(); });
     });
+}
+
+void MeasureHandler::deactivate(FeatureContext& ctx)
+{
+    // 功能退出即清现场：清理作为刷新前置操作，延迟到渲染线程安全执行
+    //（框架定序保证：deactivate() 先于交互下线，下线迁移时消费本操作）
+    ctx.interaction.deferRefresh([this] { this->clear(); });
 }
 
 // ---------------- 交互回调（经 InteractionContext 注册，渲染线程驱动） ----------------
@@ -246,7 +248,7 @@ void MeasureHandler::clear()
     preview_.reset();
     lines_.clear();
     angles_.clear();
-    // 调用方（on_activate/on_deactivate/deferRefresh 前置操作）均在渲染线程，重建空标注后由框架拉取刷新
+    // 调用方（交互回调/deferRefresh 前置操作）均在渲染线程，重建空标注后由框架拉取刷新
     refreshAnnotations();
 }
 

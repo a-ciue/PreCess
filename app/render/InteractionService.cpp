@@ -141,20 +141,21 @@ systems::interaction::InteractionState* InteractionService::syncState()
     if (state == current_)
         return current_;
 
-    // 旧状态下线：on_deactivate、清产出与标注、还原选择模式为 None
+    // 旧状态下线：先消费 deferred_op（功能在 feature 级 deactivate() 中经 deferRefresh
+    // 挂的现场清理由此保证执行），再清产出与标注、还原选择模式为 None
     if (current_) {
-        if (current_->on_deactivate)
-            current_->on_deactivate();
+        if (current_->deferred_op) {
+            current_->deferred_op();
+            current_->deferred_op = nullptr;
+        }
         current_->clearSession();
         clearActors();
         select_manager_->setSelectMode("None");
     }
-    // 新状态上线：选择模式切到几何顶点、on_activate、刷新标注
+    // 新状态上线：选择模式切到几何顶点、刷新标注
     current_ = state;
     if (current_) {
         select_manager_->setSelectMode("GeometryVertex");
-        if (current_->on_activate)
-            current_->on_activate();
         refreshAnnotations();
     }
     return current_;

@@ -394,7 +394,7 @@ namespace {
 
 }
 
-void MeshQualityHandler::setup(FeatureRegistrar& reg)
+void MeshQualityHandler::setup(FeatureRegistrar& reg, FeatureContext&)
 {
     reg.addParameter({
         ArgTypeEnum::Selector,
@@ -411,16 +411,17 @@ void MeshQualityHandler::setup(FeatureRegistrar& reg)
     reg.addMenuItem({ "功能/网格", "网格质量" });
 }
 
-void MeshQualityHandler::activate(FeatureContext& ctx)
+void MeshQualityHandler::deactivate(FeatureContext& ctx)
 {
-    // 复制上下文提供的 ComponentOperator 申请函数，避免事件回调依赖 FeatureContext 地址。
-    const ComponentOperatorProvider component_operator = ctx.componentOperator;
-    attribute_display_sub_ = ctx.events.subscribe<ScalarAttributeDisplayRequestedEvent>(
-        [this, component_operator](const ScalarAttributeDisplayRequestedEvent& event) {
-            // 空属性名表示当前功能操作结束，删除本次生成的全部质量属性。
-            if (event.attribute_name.empty())
-                clearGeneratedAttributes(component_operator);
-        });
+    // 功能退出即清理现场：删除本次操作生成的全部质量属性（GUI 线程模型写，
+    // 通知由 setFeatureActive 的操作边界 flush 统一发出）
+    clearGeneratedAttributes(ctx.componentOperator);
+}
+
+void MeshQualityHandler::teardown(FeatureContext& ctx)
+{
+    // 注销兜底：退出路径（deactivate）已清理，此处仅容错空转
+    clearGeneratedAttributes(ctx.componentOperator);
 }
 
 std::any MeshQualityHandler::execute(FeatureContext& ctx)
