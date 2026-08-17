@@ -107,7 +107,11 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     comp->material_id = 3;
     comp->source_xde_leaf_id = 5;
     comp->point_global_ids_ = { 10, 11, 12 };
-    comp->ensureMapping().geometry_edge_to_mesh_point_ids[100] = { 0, 1 };
+    auto& mapping = comp->ensureMapping();
+    mapping.geometry_edge_to_mesh_point_ids[100] = { 0, 1 };
+    mapping.geometry_face_to_mesh_topology[200] = {
+        { 0, 1, 2 }, { 0, 3 }
+    };
 
     // 建立邻接持久身份层（触发稳定边 id 分配）
     MeshData& md = *comp->mesh;
@@ -124,6 +128,10 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     REQUIRE(snapshot->source_xde_leaf_id == 5);
     REQUIRE(snapshot->mapping);
     REQUIRE(snapshot->mapping->geometry_edge_to_mesh_point_ids == comp->mapping->geometry_edge_to_mesh_point_ids);
+    REQUIRE(snapshot->mapping->geometry_face_to_mesh_topology.at(200).face_vertices
+        == std::vector<Index> { 0, 1, 2 });
+    REQUIRE(snapshot->mapping->geometry_face_to_mesh_topology.at(200).face_vertices_offset
+        == std::vector<Index> { 0, 3 });
 
     // 克隆体的邻接懒表不带入，但持久身份层随拷贝延续：同一端点对给出同一稳定边 id
     auto cloned_edge = snapshot->mesh_adjacency.findEdgeByEndpoints(*snapshot->mesh, 0, 1);
@@ -133,6 +141,7 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     // 改原组件（删面），再 restoreFrom 还原；id 不随快照覆盖
     md.face_vertices_.clear();
     md.face_vertices_offset_ = { 0 };
+    comp->mapping.reset();
     comp->mesh_adjacency.invalidate();
     snapshot->id = 99; // restoreFrom 不得覆盖本组件 id
 
@@ -142,6 +151,9 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     REQUIRE(comp->mesh->face_vertices_offset_ == std::vector<Index> { 0, 3 });
     REQUIRE(comp->point_global_ids_ == std::vector<Index> { 10, 11, 12 });
     REQUIRE(comp->material_id == 3);
+    REQUIRE(comp->mapping);
+    REQUIRE(comp->mapping->geometry_face_to_mesh_topology.at(200).face_vertices
+        == std::vector<Index> { 0, 1, 2 });
 
     // 懒表不带入但下次查询自动重建，结果与快照前一致
     auto restored_edge = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, 0, 1);

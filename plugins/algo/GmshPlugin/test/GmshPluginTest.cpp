@@ -41,7 +41,7 @@ public:
 
 } // namespace
 
-TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
+TEST_CASE("GmshMeshHandler rebuilds shared edge state across executions", "[GmshPlugin]")
 {
     spdlog::set_level(spdlog::level::info);
 
@@ -74,10 +74,7 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     comp->geometry->ensureIndexBuilt(modelLayer.geomRegistry());
     auto selection = std::make_shared<Selection>();
     selection->type = ElementEnum::GeometryFace;
-    selection->ids = {
-        comp->geometry->index.faceGlobalId(1),
-        comp->geometry->index.faceGlobalId(2)
-    };
+    selection->ids = { comp->geometry->index.faceGlobalId(1) };
 
     std::vector<core::ArgObject> args;
     args.push_back(core::ArgObject::create<ArgTypeEnum::Selector>(selection));
@@ -90,11 +87,25 @@ TEST_CASE("GmshMeshHandler Execution Test", "[GmshPlugin]")
     comp = modelLayer.findComponent(componentIds[0]);
     REQUIRE(comp != nullptr);
     REQUIRE(comp->mesh != nullptr);
+    REQUIRE(comp->mapping != nullptr);
+    const std::size_t first_face_cell_count = comp->mesh->face_vertices_offset_.size() - 1;
+    REQUIRE(first_face_cell_count > 0);
+    REQUIRE(comp->mapping->geometry_face_to_mesh_topology.size() == 1);
+
+    // 第二次独立执行划分相邻面，必须由 GeometryMeshMap 重建共享边状态。
+    selection->ids = { comp->geometry->index.faceGlobalId(3) };
+    handler.execute(context, args);
+
+    comp = modelLayer.findComponent(componentIds[0]);
+    REQUIRE(comp != nullptr);
+    REQUIRE(comp->mesh != nullptr);
     REQUIRE(comp->geometry != nullptr);
+    REQUIRE(comp->mapping != nullptr);
     REQUIRE_FALSE(comp->point_global_ids_.empty());
     REQUIRE(comp->point_global_ids_.size() == comp->mesh->vertex_positions_.size());
     REQUIRE_FALSE(comp->mesh->face_vertices_.empty());
-    REQUIRE(comp->mesh->face_vertices_offset_.size() > 1);
+    REQUIRE(comp->mesh->face_vertices_offset_.size() - 1 > first_face_cell_count);
+    REQUIRE(comp->mapping->geometry_face_to_mesh_topology.size() == 2);
 }
 
 TEST_CASE("GmshMeshHandler rejects invalid current parameters", "[GmshPlugin]")

@@ -432,18 +432,8 @@ bool injectConstrainedEdge(int gmshTag,
             rev[i * 3 + 2] = orderedCoords[ri * 3 + 2];
         }
         orderedCoords = rev;
+        // 方向改变后原参数顺序不再可用，统一在内部节点收集完成后批量重新参数化。
         orderedParams.clear();
-        for (std::size_t i = 1; i + 1 < nc; ++i) {
-            try {
-                std::vector<double> cc, cp;
-                gmsh::model::getClosestPoint(1, gmshTag,
-                    { orderedCoords[i * 3], orderedCoords[i * 3 + 1], orderedCoords[i * 3 + 2] }, cc, cp);
-                if (!cp.empty())
-                    orderedParams.push_back(cp[0]);
-            } catch (...) {
-                orderedParams.push_back(double(i) / double(nc - 1));
-            }
-        }
     }
 
     // 起点
@@ -485,17 +475,31 @@ bool injectConstrainedEdge(int gmshTag,
     if (orderedParams.size() == innerTags.size()) {
         innerParams = orderedParams;
     } else {
-        innerParams.clear();
-        for (std::size_t i = 0; i < innerTags.size(); ++i) {
-            std::size_t ci = i + 1;
-            try {
-                std::vector<double> cc, cp;
-                gmsh::model::getClosestPoint(1, gmshTag,
-                    { orderedCoords[ci * 3], orderedCoords[ci * 3 + 1], orderedCoords[ci * 3 + 2] }, cc, cp);
-                if (!cp.empty())
-                    innerParams.push_back(cp[0]);
-            } catch (...) {
-                innerParams.push_back(double(i + 1) / double(nc - 1));
+        // 从通用 Geometry↔Mesh 映射恢复时没有 Gmsh 私有参数坐标，
+        // 由当前导入的 OCC 曲线一次性重新计算，避免逐点投影产生重复参数。
+        try {
+            gmsh::model::getParametrization(1, gmshTag, innerCoords, innerParams);
+        } catch (...) {
+            innerParams.clear();
+        }
+
+        // 个别曲线无法批量参数化时逐点回退，并保证每个内部节点都有参数值。
+        if (innerParams.size() != innerTags.size()) {
+            innerParams.clear();
+            for (std::size_t i = 0; i < innerTags.size(); ++i) {
+                const std::size_t ci = i + 1;
+                double parameter = double(i + 1) / double(nc - 1);
+                try {
+                    std::vector<double> closest_coords;
+                    std::vector<double> closest_params;
+                    gmsh::model::getClosestPoint(1, gmshTag,
+                        { orderedCoords[ci * 3], orderedCoords[ci * 3 + 1], orderedCoords[ci * 3 + 2] },
+                        closest_coords, closest_params);
+                    if (!closest_params.empty())
+                        parameter = closest_params[0];
+                } catch (...) {
+                }
+                innerParams.push_back(parameter);
             }
         }
     }
@@ -504,7 +508,7 @@ bool injectConstrainedEdge(int gmshTag,
         gmsh::model::mesh::addNodes(1, gmshTag, innerTags, innerCoords, innerParams);
 
     // 线单元
-std::vector<std::size_t> allN;
+    std::vector<std::size_t> allN;
     allN.push_back(tagV0);
     for (auto t : innerTags)
         allN.push_back(t);

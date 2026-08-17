@@ -9,6 +9,7 @@ class ModelLayer;
 struct ComponentData;
 struct MeshData;
 struct GeometryData;
+struct GeometryMeshMap;
 class ModelData;
 class TopoDS_Shape;
 
@@ -41,6 +42,9 @@ public:
     const MeshData* mesh() const noexcept;
     GeometryData* geometry() const noexcept;
 
+    //! @brief 只读访问 Geometry↔Mesh 映射；尚未创建时返回 nullptr
+    const GeometryMeshMap* geometryMeshMap() const noexcept;
+
     ModelLayer& manager() const noexcept { return *mgr_; }
 
     Index modelId() const noexcept;
@@ -52,6 +56,9 @@ public:
      * @throw std::runtime_error 组件无网格
      */
     MeshData& editableMesh(MeshEditKind kind = MeshEditKind::Topology);
+
+    //! @brief 申请可写 Geometry↔Mesh 映射（获取即标脏，确保映射修改进入 Undo 快照）
+    GeometryMeshMap& editableGeometryMeshMap();
 
     //! @brief 运行期加点（原子四连：push、vertex_count_ 同步、pointIdMap 分配 gid、point_global_ids_ 追加）并标脏
     Index appendPoint(std::array<double, 3> pos);

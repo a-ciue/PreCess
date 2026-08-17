@@ -16,14 +16,37 @@ class MeshIDMap;
 struct ComponentData;
 using ComponentDatas = std::vector<std::unique_ptr<ComponentData>>;
 
-// 日后在这里补充 Geometry↔网格的映射结构
-struct GeometryMeshMap {
-    // Geometry 几何边(全局 GeomEdgeId) -> 网格点(组件内局部点 id)序列
-    // 语义：一条 Geometry 边对应一条折线/采样点序列（顺序有意义）
-    std::unordered_map<GeomEdgeId, std::vector<Index>> geometry_edge_to_mesh_point_ids;
+/**
+ * @brief 一个几何面对应的网格单元拓扑
+ *
+ * 点编号使用 MeshData 的组件内局部点 id；offset 与 MeshData::face_vertices_offset_
+ * 采用相同布局，可在不保存算法私有状态的情况下定位该几何面生成的单元。
+ */
+struct GeometryFaceMeshTopology {
+    std::vector<Index> face_vertices;
+    std::vector<Index> face_vertices_offset;
+};
 
-    void clear() { geometry_edge_to_mesh_point_ids.clear(); }
-    bool empty() const { return geometry_edge_to_mesh_point_ids.empty(); }
+/**
+ * @brief Geometry 子形状与 MeshData 局部拓扑之间的通用映射
+ */
+struct GeometryMeshMap {
+    //! @brief 几何边全局 id -> 有序的组件内局部网格点 id
+    std::unordered_map<GeomEdgeId, std::vector<Index>> geometry_edge_to_mesh_point_ids;
+    //! @brief 几何面全局 id -> 该面生成的组件内局部网格单元拓扑
+    std::unordered_map<GeomFaceId, GeometryFaceMeshTopology> geometry_face_to_mesh_topology;
+
+    void clear()
+    {
+        geometry_edge_to_mesh_point_ids.clear();
+        geometry_face_to_mesh_topology.clear();
+    }
+
+    bool empty() const
+    {
+        return geometry_edge_to_mesh_point_ids.empty()
+            && geometry_face_to_mesh_topology.empty();
+    }
 };
 
 /**
@@ -40,7 +63,7 @@ struct ComponentData {
     // 数据部分：一个组件可以有 Geometry，也可以有网格，也可以都有/都没有（初始化阶段）
     std::unique_ptr<MeshData> mesh; ///< 网格数据（来自网格导入或由 Geometry 网格化生成）
     std::unique_ptr<GeometryData> geometry; ///< Geometry 数据（来自 STEP 等）
-    std::unique_ptr<GeometryMeshMap> mapping; ///< Geometry↔网格对应关系（可选，后续实现）
+    std::unique_ptr<GeometryMeshMap> mapping; ///< Geometry↔网格对应关系（可选，随快照保存）
 
     MeshAdjacency mesh_adjacency; ///< 网格邻接查询索引（派生缓存，Topology 类标脏时经 ModelLayer::markComponentDirty 失效）
 
