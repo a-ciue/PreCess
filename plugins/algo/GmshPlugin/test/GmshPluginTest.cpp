@@ -106,6 +106,17 @@ TEST_CASE("GmshMeshHandler rebuilds shared edge state across executions", "[Gmsh
     REQUIRE_FALSE(comp->mesh->face_vertices_.empty());
     REQUIRE(comp->mesh->face_vertices_offset_.size() - 1 > first_face_cell_count);
     REQUIRE(comp->mapping->geometry_face_to_mesh_topology.size() == 2);
+
+    // 删除第二个面时直接使用通用面映射，并只保留第一个面仍在使用的边缓存。
+    const std::size_t two_face_edge_count =
+        comp->mapping->geometry_edge_to_mesh_point_ids.size();
+    args.push_back(core::ArgObject::create<ArgTypeEnum::Text>("2"));
+    handler.execute(context, args);
+
+    comp = modelLayer.findComponent(componentIds[0]);
+    REQUIRE(comp->mesh->face_vertices_offset_.size() - 1 == first_face_cell_count);
+    REQUIRE(comp->mapping->geometry_face_to_mesh_topology.size() == 1);
+    REQUIRE(comp->mapping->geometry_edge_to_mesh_point_ids.size() < two_face_edge_count);
 }
 
 TEST_CASE("GmshMeshHandler rejects invalid current parameters", "[GmshPlugin]")

@@ -42,12 +42,14 @@ std::optional<GmshIncrementalMeshState> buildStateFromGeometryMeshMap(
  */
 bool storeStateToGeometryMeshMap(
     const GmshIncrementalMeshState& state,
+    const GeometryMeshMap& working_mapping,
     ComponentOperator& component_op);
 
 // 网格写入统一经 ComponentOperator 可写入口（写必脏：标脏 + gid 纪律内建）
 SingleFaceMeshResult meshSingleFace(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
+    GeometryMeshMap& working_mapping,
     ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
@@ -57,6 +59,7 @@ SingleFaceMeshResult meshSingleFace(
 SingleFaceMeshResult remeshSingleFace(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
+    GeometryMeshMap& working_mapping,
     ComponentOperator& component_op,
     GeomFaceId faceId,
     double meshSize,
@@ -65,6 +68,7 @@ SingleFaceMeshResult remeshSingleFace(
 bool deleteFaceMesh(
     GeometryData& geometry,
     GmshIncrementalMeshState& state,
+    GeometryMeshMap& working_mapping,
     ComponentOperator& component_op,
     GeomFaceId faceId);
 
