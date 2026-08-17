@@ -83,10 +83,10 @@ public:
     bool automatic_mode { false };
 };
 
-//! @brief activate 内经 ctx.events 订阅事件、回调内写模型的功能
+//! @brief setup 内经 ctx.events 订阅事件、回调内写模型的功能
 class EventWritingFeatureHandler : public FeatureHandler {
 public:
-    void activate(FeatureContext& ctx) override
+    void setup(FeatureRegistrar&, FeatureContext& ctx) override
     {
         context = &ctx;
         sub = ctx.events.subscribe<TestEvent>([this](const TestEvent&) {

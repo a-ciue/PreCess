@@ -216,7 +216,7 @@ TEST_CASE("ScalePreview cancel rolls back preview without record", "[ScalePrevie
     REQUIRE_FALSE(f.stack.canUndo());
 }
 
-TEST_CASE("ScalePreview deactivate cancels an open staged session", "[ScalePreviewPlugin]")
+TEST_CASE("ScalePreview teardown cancels an open staged session", "[ScalePreviewPlugin]")
 {
     ScalePreviewFixture f;
     const Index cid = f.setupFeature();
@@ -225,7 +225,7 @@ TEST_CASE("ScalePreview deactivate cancels an open staged session", "[ScalePrevi
     REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
     REQUIRE(f.stack.stagedActive());
 
-    // 功能注销触发 deactivate：staged 未关须 cancelStaged 兜底（插件职责，AGENTS.md 约定）
+    // 功能注销触发 teardown：staged 未关须 cancelStaged 兜底（插件职责，AGENTS.md 约定）
     f.system.unregisterHandler(scalePreviewMetaData());
     REQUIRE_FALSE(f.stack.stagedActive());
     REQUIRE(firstVertex(f.mgr, cid) == kOriginal);
@@ -235,7 +235,7 @@ TEST_CASE("ScalePreview deactivate cancels an open staged session", "[ScalePrevi
 TEST_CASE("ScalePreview teardown with open staged session is safe", "[ScalePreviewPlugin]")
 {
     // 对应程序退出路径：staged 未关时宿主析构——~FeatureSystem 停用 handler，
-    // deactivate 经 ctx.undo.cancelStaged() 回滚预览。本用例用作用域模拟宿主的
+    // teardown 经 ctx.undo.cancelStaged() 回滚预览。本用例用作用域模拟宿主的
     // 显式有序拆解（见 QModelManager 析构注释）：FeatureSystem 先析构，
     // UndoStack / ModelLayer 存活，拆解链不崩且预览被回滚
     CountingObserver obs;
@@ -255,7 +255,7 @@ TEST_CASE("ScalePreview teardown with open staged session is safe", "[ScalePrevi
         REQUIRE(system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
         REQUIRE(system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
         REQUIRE(stack.stagedActive());
-        // 作用域结束：~FeatureSystem → deactivate → cancelStaged（栈与模型层仍存活）
+        // 作用域结束：~FeatureSystem → teardown → cancelStaged（栈与模型层仍存活）
     }
 
     REQUIRE_FALSE(stack.stagedActive());

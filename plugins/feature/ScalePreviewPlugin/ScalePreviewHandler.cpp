@@ -19,7 +19,7 @@ namespace {
     constexpr std::size_t kParamCancel = 2;
 }
 
-void ScalePreviewHandler::setup(FeatureRegistrar& reg)
+void ScalePreviewHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
 {
     // 功能参数注册
     reg.addParameter({ ArgTypeEnum::Float, "缩放因子", "1.0", "网格顶点坐标的缩放倍数（预览按绝对因子应用，不累计）" });
@@ -28,12 +28,8 @@ void ScalePreviewHandler::setup(FeatureRegistrar& reg)
     reg.addParameter({ ArgTypeEnum::Button, "取消", "", "取消预览：回滚到 before₀，不成记录" });
     // 菜单选项注册：归入 "示例" 菜单分页的默认分组（菜单触发 = 确认预览成一条 undo 记录）
     reg.addMenuItem({ "示例", "缩放预览演示" });
-}
 
-void ScalePreviewHandler::activate(FeatureContext& ctx)
-{
     ctx_ = &ctx;
-    syncParams(ctx);
 
     // 订阅参数变更事件：预览按钮开启会话（开始监听），因子变更重试预览，取消按钮收尾
     param_sub_ = ctx.events.subscribe<ParameterChangedEvent>([this](const ParameterChangedEvent& e) {
@@ -62,18 +58,26 @@ void ScalePreviewHandler::activate(FeatureContext& ctx)
         }
     });
 
-    spdlog::info("ScalePreview: activated");
+    spdlog::info("ScalePreview: setup");
 }
 
-void ScalePreviewHandler::deactivate()
+void ScalePreviewHandler::teardown(FeatureContext& ctx)
 {
-    // 插件职责：功能停用时关闭 staged 会话（AGENTS.md 约定；真实写入点另有隐式 cancel 兜底）
-    if (ctx_ && ctx_->undo.stagedActive()) {
-        ctx_->undo.cancelStaged();
+    // 注销兜底：退出路径（deactivate）已关闭 staged 会话，此处仅容错空转
+    if (ctx.undo.stagedActive()) {
+        ctx.undo.cancelStaged();
     }
     // 事件订阅句柄随成员析构自动退订，这里只需清理自身状态
     ctx_ = nullptr;
-    spdlog::info("ScalePreview: deactivated");
+    spdlog::info("ScalePreview: teardown");
+}
+
+void ScalePreviewHandler::deactivate(FeatureContext& ctx)
+{
+    // 插件职责：功能退出时关闭 staged 会话（AGENTS.md 约定；真实写入点另有隐式 cancel 兜底）
+    if (ctx.undo.stagedActive()) {
+        ctx.undo.cancelStaged();
+    }
 }
 
 std::any ScalePreviewHandler::execute(FeatureContext& ctx)

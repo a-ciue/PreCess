@@ -14,9 +14,9 @@ namespace systems::feature {
  */
 class ScalePreviewHandler : public FeatureHandler {
 public:
-    void setup(FeatureRegistrar& reg) override;
-    void activate(FeatureContext& ctx) override;
-    void deactivate() override;
+    void setup(FeatureRegistrar& reg, FeatureContext& ctx) override;
+    void teardown(FeatureContext& ctx) override;
+    void deactivate(FeatureContext& ctx) override;
     std::any execute(FeatureContext& ctx) override;
 
 private:
