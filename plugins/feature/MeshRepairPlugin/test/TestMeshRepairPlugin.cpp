@@ -311,3 +311,110 @@ TEST_CASE("MeshRepair converts CgalMeshAdapter exception to friendly text", "[Me
     REQUIRE(text.find("File:") == std::string::npos);
     REQUIRE(text.find("Line:") == std::string::npos);
 }
+
+/**
+ * @brief 构造含 1 个四面体的网格：在封闭立方体表面的基础上叠加 1 个 solid 单元
+ *
+ * 表面仍是 12 三角面（满足 PMP 三角网格语义），但 solid_vertices_offset_ 标记 1 个体，
+ * 触发入口预检 "含体单元"。
+ */
+Index addMeshWithSolidsComponent(ModelLayer& model_layer)
+{
+    const Index component_id = addClosedCubeComponent(model_layer);
+    ComponentData* comp = model_layer.findComponent(component_id);
+    REQUIRE(comp != nullptr);
+    REQUIRE(comp->mesh != nullptr);
+
+    // 用 4 顶点定义 1 个 VTK_TETRA (= 10) 体单元；预检只看 offset 长度，不校验拓扑
+    comp->mesh->solid_types_.push_back(10);
+    comp->mesh->solid_vertices_ = { 0, 1, 2, 3 };
+    comp->mesh->solid_vertices_offset_ = { 0, 4 };
+    return component_id;
+}
+
+/**
+ * @brief 构造含 1 个四边形面的网格：在封闭立方体表面的基础上把某三角面合并为四边形
+ *
+ * 仍走"面选择"路径：6 个面有 1 个是 4 顶点（4 边形），其余 5 个三角面；
+ * 触发入口预检 "含非三角面"。
+ */
+Index addMeshWithQuadFaceComponent(ModelLayer& model_layer)
+{
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = {
+        { 0.0, 0.0, 0.0 }, // 0
+        { 1.0, 0.0, 0.0 }, // 1
+        { 1.0, 1.0, 0.0 }, // 2
+        { 0.0, 1.0, 0.0 }, // 3
+    };
+    // 1 个四边形面 (0,1,2,3) + 1 个三角面 (0,2,3)：故意非全三角，触发预检
+    mesh->face_vertices_ = {
+        0, 1, 2, 3, // 四边形
+        0, 2, 3,    // 三角面
+    };
+    mesh->face_vertices_offset_ = { 0, 4, 7 };
+
+    auto component = std::make_unique<ComponentData>();
+    component->name = "QuadFaceComponent";
+    component->mesh = std::move(mesh);
+    ComponentDatas components;
+    components.push_back(std::move(component));
+
+    const Index model_id = model_layer.addModel("QuadFaceModel", std::move(components));
+    return model_layer.modelById(model_id)->componentIds().front();
+}
+
+TEST_CASE("MeshRepair rejects components that contain solid cells", "[MeshRepairPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem feature_system(model_layer, bus);
+    const Index component_id = addMeshWithSolidsComponent(model_layer);
+
+    FeatureSystem::SystemHandlerPtr handler { new MeshRepairHandler };
+    REQUIRE(feature_system.registerHandler(repairMetaData(), std::move(handler)));
+    REQUIRE(feature_system.setParameter(
+        "MeshRepair", 0,
+        core::ArgObject::create<ArgTypeEnum::Selector>(makeComponentSelection(component_id))));
+    REQUIRE(feature_system.setParameter(
+        "MeshRepair", 1,
+        core::ArgObject::create<ArgTypeEnum::Combo>(0))); // 补洞（任意 op，预检在 op 之前）
+
+    // 含体单元 → 入口预检直接返回，不进入 CGAL 路径
+    const std::any result = feature_system.invoke("MeshRepair");
+    REQUIRE(result.type() == typeid(std::string));
+    const std::string expected
+        = "网格修复仅支持纯三角表面网格（当前 Component 含体单元，请改用其他工具）";
+    REQUIRE(std::any_cast<const std::string&>(result) == expected);
+
+    // 兜底：网格数据应保持不变（无 CGAL 副作用）
+    const ComponentData* after = model_layer.findComponent(component_id);
+    REQUIRE(after != nullptr);
+    REQUIRE(after->mesh != nullptr);
+    REQUIRE(after->mesh->solid_vertices_offset_.size() == 2);
+}
+
+TEST_CASE("MeshRepair rejects components with non-triangular faces", "[MeshRepairPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem feature_system(model_layer, bus);
+    const Index component_id = addMeshWithQuadFaceComponent(model_layer);
+
+    FeatureSystem::SystemHandlerPtr handler { new MeshRepairHandler };
+    REQUIRE(feature_system.registerHandler(repairMetaData(), std::move(handler)));
+    REQUIRE(feature_system.setParameter(
+        "MeshRepair", 0,
+        core::ArgObject::create<ArgTypeEnum::Selector>(makeComponentSelection(component_id))));
+    REQUIRE(feature_system.setParameter(
+        "MeshRepair", 1,
+        core::ArgObject::create<ArgTypeEnum::Combo>(1))); // 自交检测（任意 op，预检在 op 之前）
+
+    // 含非三角面 → 入口预检直接返回，不进入 CGAL 路径
+    const std::any result = feature_system.invoke("MeshRepair");
+    REQUIRE(result.type() == typeid(std::string));
+    const std::string expected
+        = "网格修复仅支持纯三角表面网格（当前 Component 含非三角面，请先转换为全三角网格）";
+    REQUIRE(std::any_cast<const std::string&>(result) == expected);
+}

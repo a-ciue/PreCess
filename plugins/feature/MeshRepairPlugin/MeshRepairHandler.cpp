@@ -56,6 +56,11 @@ enum class Operation {
  * CGAL_assertion / CGAL_error 触发时抛 CGAL::Failure_exception 链（如
  * Assertion_exception / Precondition_exception），被外层 try/catch 统一
  * 捕获并转成温和文案。作用域结束自动恢复 ABORT，避免影响其他使用 CGAL 的代码。
+ *
+ * @note CGAL 的 Failure_behaviour 是进程/线程级全局状态，本守卫切换全局并
+ *       在析构时还原。**当前假设本功能在 GUI 线程单入口执行**；若将来
+ *       出现其他 CGAL 入口（多线程 / 多插件并行调用 PMP），
+ *       必须在调用方用锁或线程局部存储隔离，否则会互相覆盖 error_behaviour。
  */
 class CgalExceptionGuard {
 public:
@@ -79,14 +84,14 @@ private:
  *
  * fromSurfaceMesh 输出临时 MeshData（vertex_positions_ 自包含）；replaceMesh 内部
  * 完成 gid 释放/重建与 Topology 标脏，通知由 FeatureSystem::invoke 边界 flush 统一发出。
- * @return 写回成功返回 true
+ * fromSurfaceMesh 内部异常会向外抛出，由 execute 的 try/catch 兜底，此处不再做
+ * 错误码返回（保留 bool 返回值会导致调用点出现永远不进入的死分支）。
  */
-bool writeBack(ComponentOperator& comp_op, const CgalMesh& sm)
+void writeBack(ComponentOperator& comp_op, const CgalMesh& sm)
 {
     auto out_mesh = std::make_unique<MeshData>();
     fromSurfaceMesh(sm, *out_mesh);
     comp_op.replaceMesh(std::move(out_mesh));
-    return true;
 }
 
 /**
@@ -94,6 +99,13 @@ bool writeBack(ComponentOperator& comp_op, const CgalMesh& sm)
  *
  * 部分孔洞因非流形无法三角化时返回 "已修补 M/N 个孔洞"，避免原实现仅看 new_faces
  * 是否非空就视为全部成功的误报；孔洞的逐次三角化是幂等的（CGAL 仅增面、不删旧）。
+ *
+ * @note 非原子性语义：
+ *       - border_cycles 在循环前一次性提取；CGAL 增量加面通常不使旧 halfedge 失效，
+ *         因此本实现不在每次迭代前用 is_border() 复核（出于性能考虑）。
+ *       - 若中途某环触发 CGAL 断言（已被 CgalExceptionGuard 转抛 C++ 异常），
+ *         已成功三角化的环留在 sm 中但尚未写回组件——功能表现即为"整体失败、
+ *         网格未更新"，属于部分修改被丢弃的预期行为。
  */
 std::string fillHoles(ComponentOperator& comp_op, CgalMesh& sm)
 {
@@ -119,8 +131,7 @@ std::string fillHoles(ComponentOperator& comp_op, CgalMesh& sm)
     if (success_count == 0)
         return std::string("孔洞修补失败（边界可能为非流形，无法三角化）");
 
-    if (!writeBack(comp_op, sm))
-        return std::string("错误：修复结果写回组件失败");
+    writeBack(comp_op, sm);
 
     std::ostringstream oss;
     oss << "已修补 " << success_count << "/" << border_cycles.size()
@@ -152,6 +163,11 @@ std::string detectSelfIntersections(const CgalMesh& sm)
 
 /**
  * @brief 移除退化面并写回
+ *
+ * @note 计数口径：removed = before - sm.number_of_faces()，即"面数差值"。
+ *       PMP::remove_degenerate_faces 除删除退化面外还会顺带清理退化边可能产生的
+ *       孤立结构，因此差值是面数变化量而非严格意义上的"被删面数"。作为 UI 文案
+ *       的"已移除 X 个退化面"近似足够；如需精确口径请自行在调用点重新统计。
  */
 std::string removeDegenerateFaces(ComponentOperator& comp_op, CgalMesh& sm)
 {
@@ -163,12 +179,35 @@ std::string removeDegenerateFaces(ComponentOperator& comp_op, CgalMesh& sm)
     if (removed == 0)
         return std::string("未发现退化面");
 
-    if (!writeBack(comp_op, sm))
-        return std::string("错误：修复结果写回组件失败");
+    writeBack(comp_op, sm);
 
     std::ostringstream oss;
     oss << "已移除 " << removed << " 个退化面，网格已更新";
     return oss.str();
+}
+
+/**
+ * @brief 判断 MeshData 是否含体单元（约定：solid_*_offset_.size() > 1 即视为"有体"）
+ */
+bool hasSolids(const MeshData& mesh)
+{
+    return mesh.solid_vertices_offset_.size() > 1
+        || mesh.solid_faces_offset_.size() > 1
+        || mesh.solid_faces_vertices_offset_.size() > 1;
+}
+
+/**
+ * @brief 判断 MeshData 是否全三角面（任一非三角面即返回 false）
+ *
+ * 按 MeshData 约定：face_vertices_offset_[i+1] - face_vertices_offset_[i] 为面 i 的顶点数。
+ */
+bool isAllTriangular(const MeshData& mesh)
+{
+    for (std::size_t i = 0; i + 1 < mesh.face_vertices_offset_.size(); ++i) {
+        if (mesh.face_vertices_offset_[i + 1] - mesh.face_vertices_offset_[i] != 3)
+            return false;
+    }
+    return true;
 }
 
 } // namespace
@@ -213,6 +252,15 @@ std::any MeshRepairHandler::execute(FeatureContext& ctx)
         op_index = *v;
 
     const MeshData& mesh = *comp_op->mesh();
+
+    // 入口预检：PMP / Surface_mesh 普遍要求纯三角表面网格。
+    // - 含体单元：toSurfaceMesh 会一并丢弃 solid_* 字段，结果失真；此处直接拒收。
+    // - 含非三角面：toSurfaceMesh 内部已 throw；此处先一步拦下，给出更直白的文案。
+    // 两条都满足后才进入 CGAL 路径，避免在 PMP 内部才暴露失败。
+    if (hasSolids(mesh))
+        return std::string("网格修复仅支持纯三角表面网格（当前 Component 含体单元，请改用其他工具）");
+    if (!isAllTriangular(mesh))
+        return std::string("网格修复仅支持纯三角表面网格（当前 Component 含非三角面，请先转换为全三角网格）");
 
     // 作用域内 CGAL 断言失败 → 抛 C++ 异常（详见 CgalExceptionGuard 注释）
     CgalExceptionGuard cgal_guard;
