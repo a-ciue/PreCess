@@ -1,0 +1,95 @@
+/*
+  CMakeUserPreset.json.example 文件是一个Windows下使用VS开发的示例预设文件。
+
+  要使用这个预设文件，需要将其复制并重命名为CMakeUserPreset.json，并根据实际情况修改里面的路径和环境变量。
+  主要包括以下几个方面：
+  1. 修改PRECESS_DEPS_PATH环境变量为你本地的依赖路径
+  2. 如果使用非依赖包的Qt，需要修改PATH环境变量为你本地的依赖路径
+  3. 注释掉的变量可以根据需要选择性开启，例如地址消毒器、qml导入模块跟踪等
+  4. json注释在一些情况下可能会导致CMake报错，如果遇到问题可以尝试删除注释。在VS里使用Preset文件时，VS一般会自动忽略注释不需要删除。
+*/
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "windows-base",
+      "description": "面向具有 Visual Studio 开发环境的 Windows (64 位)。",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl.exe",
+        "CMAKE_CXX_COMPILER": "cl.exe", // 指定编译器为Visual Studio的cl.exe而不是环境变量中的gcc或clang
+        "CMAKE_PREFIX_PATH": "$env{PRECESS_DEPS_PATH}", // CMake find_package使用的路径，使用了在下面定义的PRECESS_DEPS_PATH环境变量
+        //"CMAKE_PREFIX_PATH": "D:\\dev\\Qt\\6.10.0\\msvc2022_64;$env{PRECESS_DEPS_PATH}", // 如果使用非依赖包的Qt也可以更换Qt的安装路径，但注意更换下面的PATH环境变量中的Qt路径
+        "QT_QML_GENERATE_QMLLS_INI": "ON", // 供qml代码高亮、静态分析、自动补全使用
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true, // 生成compile_commands.json文件供clangd使用
+        "BUILD_TESTING": true // 指定构建测试用例
+      },
+      "environment": {
+        "PRECESS_DEPS_PATH": "D:/dev/PreCess-deps", // 依赖库的安装路径
+        "PATH": "$penv{PATH};$env{PRECESS_DEPS_PATH}/Qt6.8.3/bin;$env{PRECESS_DEPS_PATH}/VTK9.6.2/bin;$env{PRECESS_DEPS_PATH}/spdlog1.16.0/bin;$env{PRECESS_DEPS_PATH}/OpenCASCADE8.0.0/win64/vc14/bin$env{PRECESS_OCC_BIN_POSTFIX};$env{PRECESS_DEPS_PATH}/KDDockWidgets-qt6-2.4.0/bin"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "x64-debug-no-arg",
+      "displayName": "x64 Debug No QML Args",
+      "description": "使用 Visual Studio 开发环境定向到 Windows。(Debug)",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "environment": {
+        //"CFLAGS": "/fsanitize=address",
+        //"CXXFLAGS": "/fsanitize=address", // 选择性开启地址消毒器，调试时可以检测内存泄漏和越界访问，但会降低性能
+        "SPDLOG_LEVEL": "debug", // 调整spdlog日志输出等级，打印debug日志
+        "PRECESS_OCC_BIN_POSTFIX": "d" // 上面PATH环境变量用到的
+      }
+    },
+    {
+      "name": "x64-debug",
+      "displayName": "x64 Debug",
+      "description": "使用 Visual Studio 开发环境定向到 Windows。(Debug) 在VS中安装Qt VS Tools插件即可启用qml代码调试。",
+      "inherits": "x64-debug-no-arg",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-DQT_QML_DEBUG"
+      },
+      "environment": {
+        //"QML_IMPORT_TRACE": "1", // 选择性开启qml导入模块跟踪
+        "QML_DEBUG_ARGS": "-qmljsdebugger=file:{},block"
+      }
+    },
+
+    {
+      "name": "x64-release",
+      "displayName": "x64 Release",
+      "description": "使用 Visual Studio 开发环境定向到 Windows。(Release)",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "x64-relwithdebinfo",
+      "displayName": "x64 RelWithDebInfo",
+      "description": "使用 Visual Studio 开发环境定向到 Windows。(RelWithDebInfo) 此配置不包含在预编译依赖包中，需要自行构建。",
+      "inherits": "windows-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      },
+      "environment": {
+        "PRECESS_OCC_BIN_POSTFIX": "i" // 上面PATH环境变量用到的
+      }
+    }
+  ]
+}
