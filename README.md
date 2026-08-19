@@ -24,6 +24,7 @@
 [![Issues][issues-shield]][issues-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![project_license][license-shield]][license-url]
+[![zread][zread-shield]][zread-url]
 <!-- [![LinkedIn][linkedin-shield]][linkedin-url] -->
 
 <!-- PROJECT LOGO -->
@@ -58,25 +59,20 @@
     <li>
       <a href="#关于项目">关于项目</a>
       <ul>
-        <li><a href="#项目技术">项目技术</a></li>
+        <li><a href="#我们能做什么">我们能做什么</a></li>
+        <li><a href="#%EF%B8%8F项目技术">项目技术</a></li>
       </ul>
     </li>
     <li>
-      <a href="#构建项目">构建项目</a>
+      <a href="#快速构建项目">快速构建项目</a>
       <ul>
-        <li><a href="#准备">准备</a></li>
-        <li>
-            <a href="#构建">构建</a>
-            <ul>
-                <li><a href="#Windows用户">Windows用户</a></li>
-            </ul>
-        </li>
+        <li><a href="#windows用户">Windows用户</a></li>
       </ul>
     </li>
-    <li><a href="#功能用法">功能用法</a></li>
-    <li><a href="#路线图">路线图</a></li>
+    <li><a href="#%EF%B8%8F功能用法">功能用法</a></li>
+    <li><a href="#%EF%B8%8F路线图">路线图</a></li>
     <li><a href="#参与项目">参与项目</a></li>
-    <li><a href="#许可证">许可证</a></li>
+    <li><a href="#%EF%B8%8F许可证">许可证</a></li>
     <li><a href="#联系方式">联系方式</a></li>
     <li><a href="#鸣谢">鸣谢</a></li>
   </ol>
@@ -89,7 +85,7 @@
 
 **"PreCess"** 取自 **Pre-Process** 前处理的英文名。**“前蔚处理”** 取自 **前处理**。
 
-PreCess 是专注网格处理的 CAE 前处理开源软件，面向网格算法开发者与工业界需求。提供可视化交互框架，用户可在渲染窗口中直接拾取点、线、面、体等网格元素作为算法输入，降低验证调试成本。应用于网格算法研发、工业 CAE 前处理及游戏资产处理，致力成为 CAE 前处理开源生态底座。
+**前蔚处理 PreCess** 是专注网格处理的 CAE 前处理开源软件，面向网格算法开发者与工业界需求。提供可视化交互框架，用户可在渲染窗口中直接拾取点、线、面、体在内的网格/几何元素等作为算法输入，可视化展示算法结果，降低验证调试成本。应用于网格算法研发、工业 CAE 前处理及游戏资产处理，致力成为 CAE 前处理开源生态底座。
 
 本项目使用**插件化架构**，将功能都封装在插件中。插件按 IO、算法、编辑、功能（`FeatureSystem` 事件驱动，可声明参数、菜单、按键绑定与视口交互能力）四类系统注册，由主程序运行时按需加载。**核心库** `core/` 与 `model/` 采用 **LGPLv3** 许可，允许在不修改依赖源码前提下被闭源软件链接使用；**应用与插件层**（`app/`、`plugins/` 等）采用 **AGPLv3** 许可。
 
@@ -230,7 +226,7 @@ Contributions are what make the open source community such an amazing place to l
 
 由衷感谢任何你尝试对本项目做出的贡献！无论是贡献代码还是为项目反馈意见建议，甚至只是反馈修复拼写错误等小问题都**十分感谢**！更欢迎您参与项目例会与项目系列课程活动、尝试调试代码解决问题。
 
-> **接口稳定性提示**：项目处于**预览阶段**（当前 0.x 版本），`core/`、`model/` 库与插件接口**随时可能发生二进制级或源代码级的不兼容变更**，不提供稳定性承诺；不同**编译器/编译器版本或构建配置**也可能导致二进制不兼容。插件源码**随主仓库同步构建**是规避该问题最稳妥的方式；独立构建时只要与主程序使用**兼容的编译器、构建配置与依赖库版本**，同样可以保持二进制兼容。无论哪种方式，请勿依赖旧 ABI。
+> **接口稳定性提示**：项目处于**预览阶段**（当前 0.x 版本），`core/`、`model/` 库与插件接口**随时可能发生二进制级或源代码级的不兼容变更**，不提供稳定性承诺；不同**编译器/编译器版本或构建配置**也可能导致软件与插件dll二进制不兼容。插件源码**随主仓库同步构建**是规避该问题最稳妥的方式；独立构建时只要与主程序使用**兼容的编译器、构建配置与依赖库版本**，同样可以保持二进制兼容。无论哪种方式，注意及时更新到与主仓库兼容的最新 API 接口。
 
 在此从简单开始列举可以为项目的**贡献形式**：
 
@@ -315,6 +311,8 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 [issues-url]: https://gitee.com/precess/PreCess/issues
 [license-shield]: https://img.shields.io/badge/license-LGPLv3%2FAGPLv3-blue.svg
 [license-url]: https://gitee.com/precess/PreCess/blob/master/LICENSE.md
+[zread-shield]: https://img.shields.io/badge/Ask_Zread-_.svg?style=flat-square&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff
+[zread-url]: https://zread.ai/a-ciue/PreCess
 [linkedin-shield]: https://img.shields.io/badge/-111-black.svg?colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: resource/PreCess_letter.png
