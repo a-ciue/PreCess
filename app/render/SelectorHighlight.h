@@ -41,7 +41,22 @@ struct FaceSelectionSpreadOptions {
 class SelectorHighlight {
 public:
     virtual ~SelectorHighlight() = default;
+    //! @brief 单点拾取（内部建 picker 做硬件 picking）。生产路径由 MeshSelectManager 预拾后调下面的 picker 重载。
     virtual void select(double posx, double posy) = 0;
+    //! @brief 单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。
+    virtual void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) = 0;
+    /**
+     * @brief 矩形框选入口（Ctrl+左键拖拽）
+     * @param xmin ymin xmax ymax 屏幕像素矩形
+     * @param add_only    Shift 修饰：仅追加，不影响已选
+     * @param remove_only Alt 修饰：仅移除，不影响其他已选
+     * @param toggle      二者皆否：每个 id 单独 toggle（与点选切换语义对齐）
+     */
+    virtual void selectArea(int xmin, int ymin, int xmax, int ymax,
+        bool add_only, bool remove_only)
+        = 0;
     /**
      * @brief 清空选中元素，并取消高亮
      */
@@ -65,6 +80,11 @@ public:
         unsigned int partition_id, MeshActorSelectOp select_op);
     ~FaceSelectorHighlight() override;
     void select(double posx, double posy) override;
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(int xmin, int ymin, int xmax, int ymax,
+        bool add_only, bool remove_only) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -112,6 +132,11 @@ public:
         Index component_id, const IMeshIdQuery* id_query);
     ~EdgeSelectorHighlight() override;
     void select(double posx, double posy) override;
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(int xmin, int ymin, int xmax, int ymax,
+        bool add_only, bool remove_only) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -142,6 +167,11 @@ public:
         unsigned int partition_id, MeshActorSelectOp select_op);
     ~SolidSelectorHighlight() override;
     void select(double posx, double posy) override;
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(int xmin, int ymin, int xmax, int ymax,
+        bool add_only, bool remove_only) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -166,6 +196,11 @@ public:
         Index component_id, const IMeshIdQuery* id_query);
     ~VertexSelectorHighlight() override;
     void select(double posx, double posy) override;
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(int xmin, int ymin, int xmax, int ymax,
+        bool add_only, bool remove_only) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;

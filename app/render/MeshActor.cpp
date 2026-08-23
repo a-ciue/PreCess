@@ -9,6 +9,7 @@
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkExtractGeometry.h>
+#include <vtkFeatureEdges.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkGeometryFilter.h>
 #include <vtkMinimalStandardRandomSequence.h>
@@ -108,6 +109,9 @@ MeshActor::MeshActor(vtkRenderer* renderer)
     this->renderer_->AddActor(this->edge_actor_);
     this->renderer_->AddActor(this->glyph3D_actor_);
 
+    // edge_actor：框选 CELLS 模式依赖 actor 实际把线段渲染到 FBO，picker 才能读到 cell id。
+    // vtkProperty 默认 Representation=SURFACE 会忽略 Lines，因此显式设为 Wireframe。
+    this->edge_actor_->GetProperty()->SetRepresentationToWireframe();
     this->edge_actor_->GetProperty()->SetLineWidth(2);
 
     this->solid_actor_->SetMapper(solid_mapper_);
@@ -204,6 +208,29 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         edge_poly->SetLines(edge_cells);
 
         edge_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
+
+        // 模型未物化边（vtk_edge_cells_ 为空）时，从 face 派生 boundary edges，
+        // 让 edge picker 至少有可拾取的数据。否则整片 Edge 模式失效。
+        if (edge_poly->GetNumberOfLines() == 0 && face_poly->GetNumberOfPolys() > 0) {
+            spdlog::warn("[MeshActor] edge_vertices_ empty, deriving boundary edges from face data "
+                "(component_id={})", this->model_data_->component_id);
+            vtkNew<vtkPolyData> derived;
+            derived->SetPoints(points_);
+            derived->SetPolys(face_poly->GetPolys());
+            derived->GetPointData()->ShallowCopy(face_poly->GetPointData());
+
+            vtkNew<vtkFeatureEdges> feat;
+            feat->SetInputData(derived);
+            feat->BoundaryEdgesOn();
+            feat->FeatureEdgesOff();
+            feat->NonManifoldEdgesOff();
+            feat->ManifoldEdgesOff();
+            feat->Update();
+
+            auto* out = feat->GetOutput();
+            edge_poly->SetLines(out->GetLines());
+            edge_poly->GetPointData()->ShallowCopy(out->GetPointData());
+        }
     }
 
     // solid data

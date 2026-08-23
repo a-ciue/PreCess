@@ -1,3 +1,4 @@
+#include "MeshAreaPick.h"
 #include "CoincidentTopology.h"
 #include "MeshActorSelectOp.h"
 #include "Selection.h"
@@ -14,6 +15,7 @@
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
+#include <vtkDataObject.h>
 #include <vtkHardwarePicker.h>
 #include <vtkIdTypeArray.h>
 #include <vtkPartitionedDataSet.h>
@@ -291,20 +293,25 @@ void FaceSelectorHighlight::updateSpreadCache(vtkPolyData& poly)
 
 void FaceSelectorHighlight::select(double posx, double posy)
 {
+    // 兼容路径：自行构建 picker 并拾取；生产路径由 MeshSelectManager 预拾后调下方的 picker 重载。
     vtkNew<vtkHardwarePicker> picker;
     picker->PickFromListOn();
     picker->AddPickList(&select_op_.getFaceActor());
     picker->Pick(posx, posy, 0, renderer_);
 
-    vtkIdType picked_cell_id = picker->GetCellId();
-    if (picked_cell_id == -1) {
+    select(posx, posy, picker.GetPointer(), picker->GetActor(),
+        picker->GetCellId(), picker->GetPointId());
+}
+
+void FaceSelectorHighlight::select(double posx, double posy,
+    vtkHardwarePicker* /*picker*/, vtkActor* picked_actor,
+    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/)
+{
+    if (!picked_actor || picked_cell_id == -1) {
         clear();
         return;
     }
 
-    // 获取选中的 cell
-    vtkActor* picked_actor = picker->GetActor();
-    assert(picked_actor);
     vtkPolyDataMapper* picked_mapper = vtkPolyDataMapper::SafeDownCast(picked_actor->GetMapper());
     assert(picked_mapper);
     vtkPolyData* picked_poly = picked_mapper->GetInput();
@@ -343,4 +350,40 @@ void FaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
     prop->EdgeVisibilityOn();
     prop->SetEdgeColor(1.0, 0.0, 0.0);
     actor.SetProperty(prop);
+}
+
+void FaceSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax,
+    bool add_only, bool remove_only)
+{
+    // face_actor 是面 primitive：自遮挡足够（face cell 覆盖 viewport），keepVisible=nullptr
+    vtkActor* target = vtkActor::SafeDownCast(&select_op_.getFaceActor());
+    if (!target)
+        return;
+
+    auto picked = area_pick::executeAreaPickWithGuard(renderer_, target,
+        xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS, nullptr);
+
+    spdlog::debug("[FaceArea] picked.size()={}", picked.size());
+    if (picked.empty())
+        return;
+
+    // 与 select 路径对齐：selections_ 存 picker 报的 render cell id（无 clip 时 = 原 face id；
+    // 有 clip 时为 face_clipper_->output 上的 cell 索引，PrecessFaceIds 数组跟着裁剪链透传）
+    std::unordered_set<vtkIdType> cur(selections_.begin(), selections_.end());
+    if (remove_only) {
+        for (auto id : picked)
+            cur.erase(id);
+    } else if (add_only) {
+        for (auto id : picked)
+            cur.insert(id);
+    } else {
+        for (auto id : picked) {
+            if (cur.count(id))
+                cur.erase(id);
+            else
+                cur.insert(id);
+        }
+    }
+    selections_.assign(cur.begin(), cur.end());
+    enableHighlight();
 }

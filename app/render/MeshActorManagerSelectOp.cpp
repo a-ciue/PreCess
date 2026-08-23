@@ -40,6 +40,12 @@ std::optional<MeshActorSelectOp> MeshActorManagerSelectOp::getSelectOp(Index com
     return MeshActorSelectOp(actor);
 }
 
+std::vector<Index> MeshActorManagerSelectOp::getAllComponentIds() const
+{
+    // 组件枚举走 manager 的权威注册表 component_actors_，不从 prop_to_component_ 反向索引推导
+    return manager_->getAllComponentIds();
+}
+
 void MeshActorManagerSelectOp::registerProps(Index component_id, std::shared_ptr<MeshActor> actor)
 {
     MeshActorSelectOp op(actor);

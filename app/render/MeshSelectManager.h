@@ -28,6 +28,13 @@ public:
     MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorManagerSelectOp& op);
 
     void select(double posx, double posy);
+    /**
+     * @brief 矩形框选入口（Ctrl+左键拖拽），遍历所有组件交给具体 selector 处理
+     * @param add_only    Shift 修饰：仅追加，不影响已选
+     * @param remove_only Alt 修饰：仅移除，不影响其他已选
+     */
+    void selectArea(int xmin, int ymin, int xmax, int ymax,
+        bool add_only, bool remove_only);
     void setSelectMode(SelectMode select_mode);
     /**
      * @brief 设置面选择的角度扩散参数，并同步到已创建的面选择器

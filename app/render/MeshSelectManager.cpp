@@ -37,6 +37,15 @@ void MeshSelectManager::select(double posx, double posy)
     if (this->select_mode_ == SelectMode::None)
         return;
 
+    // 仅调一次 picker.Pick：selector 内部再 Pick 一次会污染 Qt FBO 渲染上下文的
+    // picking buffer，导致紧随其后的 executeAreaPick 框选路径失效。
+    if (this->select_mode_ == SelectMode::Vertex) {
+        component_picker_->SnapToMeshPointOn();
+        component_picker_->SetPixelTolerance(5);
+    } else {
+        component_picker_->SnapToMeshPointOff();
+    }
+
     component_picker_->Pick(posx, posy, 0, renderer_);
 
     vtkActor* picked_actor = component_picker_->GetActor();
@@ -45,7 +54,21 @@ void MeshSelectManager::select(double posx, double posy)
         return;
 
     if (auto* sel = getOrCreateSelector(*component_id))
-        sel->select(posx, posy);
+        sel->select(posx, posy, component_picker_.GetPointer(), picked_actor,
+            component_picker_->GetCellId(), component_picker_->GetPointId());
+}
+
+void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax,
+    bool add_only, bool remove_only)
+{
+    if (this->select_mode_ == SelectMode::None)
+        return;
+
+    // 框选遍历全部组件（与点选不同：不依赖 component_picker 锁定单一组件）
+    for (Index comp_id : op_->getAllComponentIds()) {
+        if (auto* sel = getOrCreateSelector(comp_id))
+            sel->selectArea(xmin, ymin, xmax, ymax, add_only, remove_only);
+    }
 }
 
 void MeshSelectManager::setSelectMode(SelectMode select_mode)

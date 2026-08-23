@@ -23,6 +23,8 @@ public:
     void observePickList(vtkPropCollection* pick_list);
     void unobservePickList(vtkPropCollection* pick_list);
     std::optional<MeshActorSelectOp> getSelectOp(Index component_id) const;
+    //! @brief 列出当前已注册的所有组件 id，供框选遍历用
+    std::vector<Index> getAllComponentIds() const;
 
     void registerProps(Index component_id, std::shared_ptr<MeshActor> actor);
     void unregisterProps(std::shared_ptr<MeshActor> actor);
