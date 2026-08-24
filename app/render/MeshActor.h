@@ -102,6 +102,8 @@ private:
     vtkNew<vtkPolyData> face_data_;
     vtkNew<vtkPolyData> edge_data_;
 
+    // 缓存边单元中心点，供边向量 glyph 复用。
+    vtkNew<vtkPolyData> edge_cell_centers_;
     // 缓存面单元中心点。
     vtkNew<vtkPolyData> face_cell_centers_;
     // 缓存体单元中心点。

@@ -123,6 +123,11 @@ vtkPolyDataMapper* AttributeOperator::getFaceMapper() {
     return mesh_actor_->face_mapper_; 
 }
 
+vtkPolyDataMapper* AttributeOperator::getEdgeMapper()
+{
+    return mesh_actor_->edge_mapper_;
+}
+
 vtkPolyDataMapper* AttributeOperator::getSolidMapper()
 {
     return mesh_actor_->solid_mapper_;
@@ -149,6 +154,11 @@ vtkCellData* AttributeOperator::getFaceCellData()
 vtkPointData* AttributeOperator::getFacePointData()
 {
     return mesh_actor_->face_data_->GetPointData();
+}
+
+vtkCellData* AttributeOperator::getEdgeCellData()
+{
+    return mesh_actor_->edge_data_->GetCellData();
 }
 
 vtkCellData* AttributeOperator::getSolidCellData()
@@ -227,6 +237,27 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getFaceGlyphInput(const std::str
     glyphInput->GetPointData()->SetVectors(array);
 
     return glyphInput;
+}
+
+vtkSmartPointer<vtkPolyData> AttributeOperator::getEdgeGlyphInput(const std::string& attr_name)
+{
+    vtkPolyData* edge_data = mesh_actor_->edge_data_;
+    if (!edge_data)
+        return nullptr;
+
+    vtkDataArray* array = edge_data->GetCellData()->GetArray(attr_name.c_str());
+    if (!array)
+        return nullptr;
+
+    // 边向量位于线段中心，直接复用模型加载阶段缓存的中心点。
+    vtkPolyData* centers = mesh_actor_->edge_cell_centers_;
+    if (!centers || !centers->GetPoints())
+        return nullptr;
+
+    vtkSmartPointer<vtkPolyData> glyph_input = vtkSmartPointer<vtkPolyData>::New();
+    glyph_input->SetPoints(centers->GetPoints());
+    glyph_input->GetPointData()->SetVectors(array);
+    return glyph_input;
 }
 
 vtkSmartPointer<vtkPolyData> AttributeOperator::getPointGlyphInput(const std::string& attr_name)
