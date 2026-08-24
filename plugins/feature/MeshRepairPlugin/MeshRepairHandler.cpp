@@ -6,7 +6,7 @@
 // CGAL 头文件必须置于所有 OCC 相关头文件之前：
 // OCC 的 Standard_Handle.hxx 将 Handle 定义为宏（Handle(X) -> opencascade::handle<X>），
 // 若先引入 OCC，宏会污染后续解析的 CGAL/Handle.h 类声明，造成大片级联语法错误
-#include <CGAL/Polygon_mesh_processing/border.h>
+#include <CGAL/boost/graph/border.h>
 #include <CGAL/Polygon_mesh_processing/repair_degeneracies.h>
 #include <CGAL/Polygon_mesh_processing/self_intersections.h>
 #include <CGAL/Polygon_mesh_processing/triangulate_hole.h>
