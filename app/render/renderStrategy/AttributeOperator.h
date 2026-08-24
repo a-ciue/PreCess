@@ -13,6 +13,7 @@ public:
     AttributeOperator(MeshActor* mesh_actor_);
 
     vtkPolyDataMapper* getFaceMapper();
+    vtkPolyDataMapper* getEdgeMapper();
     vtkPolyDataMapper* getSolidMapper();
     vtkPolyDataMapper* getGlyph3DMapper();
 
@@ -21,6 +22,7 @@ public:
 
     vtkCellData* getFaceCellData();
     vtkPointData* getFacePointData();
+    vtkCellData* getEdgeCellData();
     vtkCellData* getSolidCellData();
     vtkPointData* getSolidPointData();
 
@@ -34,6 +36,7 @@ public:
     double getMeshScale() const noexcept;
 
     vtkSmartPointer<vtkPolyData> getFaceGlyphInput(const std::string& attr_name);
+    vtkSmartPointer<vtkPolyData> getEdgeGlyphInput(const std::string& attr_name);
     vtkSmartPointer<vtkPolyData> getPointGlyphInput(const std::string& attr_name);
     vtkSmartPointer<vtkPolyData> getSolidGlyphInput(const std::string& attr_name);
 

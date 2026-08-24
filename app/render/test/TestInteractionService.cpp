@@ -48,15 +48,11 @@ namespace {
 struct FakeInteraction {
     systems::interaction::InteractionState state;
 
-    int activate_count = 0;
-    int deactivate_count = 0;
     int hover_count = 0;
     std::vector<PickInfo> picks;
 
     FakeInteraction()
     {
-        state.on_activate = [this] { ++activate_count; };
-        state.on_deactivate = [this] { ++deactivate_count; };
         state.on_pick = [this](const PickInfo& pick) {
             picks.push_back(pick);
             return true;
@@ -186,11 +182,10 @@ int main(int argc, char* argv[])
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]);
     check(fake.picks.empty(), "无激活状态时 pick 不转发");
 
-    // 开启开关：首次 pick 触发上线（on_activate + 几何吸附切换）
+    // 开启开关：首次 pick 触发上线（几何吸附切换）
     interaction_enabled = true;
     check(service.hasActiveState(), "开关开启后存在激活交互");
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]);
-    check(fake.activate_count == 1, "上线时调用 onActivate 一次");
     renderWindow->Render();
     check(fake.picks.size() == 1, "命中网格顶点后 onPick 被调用一次");
     if (!fake.picks.empty()) {
@@ -242,35 +237,43 @@ int main(int argc, char* argv[])
         }
     }
 
-    // ---- 生命周期：关闭开关触发下线（on_deactivate + 清空产出）----
+    // ---- 生命周期：关闭开关触发下线（清空产出与标注）----
     interaction_enabled = false;
     pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]); // 驱动一次 syncState
-    check(fake.deactivate_count == 1, "下线时调用 onDeactivate 一次");
     check(!service.hasActiveState(), "开关关闭后无激活交互");
+    check(fake.state.annotations.points.empty(), "下线时标注随 clearSession 清空");
 
     // ---- syncPending：模拟 GUI 线程 setActive 置位 + notify 到达，驱动激活迁移 ----
     interaction_enabled = true;
     fake.state.needs_refresh = true; // setActive(true)：置位 + notify
     service.syncPending();
-    check(fake.activate_count == 2, "syncPending 驱动上线（onActivate 再次调用）");
+    const std::size_t picks_before_up = fake.picks.size();
+    pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]);
+    check(fake.picks.size() == picks_before_up + 1, "syncPending 上线后 pick 恢复转发");
     interaction_enabled = false;
     fake.state.needs_refresh = true; // setActive(false)：置位 + notify
+    int cleanup_count = 0;
+    // 功能在 feature 级 deactivate() 中经 deferRefresh 挂的现场清理：下线迁移时先消费再清理
+    fake.state.deferred_op = [&cleanup_count] { ++cleanup_count; };
     service.syncPending();
-    check(fake.deactivate_count == 2, "syncPending 驱动下线（onDeactivate 再次调用）");
+    check(cleanup_count == 1, "syncPending 下线迁移消费 deferred_op（现场清理执行）");
     check(!service.hasActiveState(), "syncPending 下线后无激活交互");
 
-    // ---- 下线即消费挂起状态：needs_refresh/deferred_op 随 clearSession 失效，不堵死后续 notify ----
+    // ---- 下线即消费挂起状态：deferred_op 执行并置空、needs_refresh 复位，不堵死后续 notify ----
     interaction_enabled = true;
     fake.state.needs_refresh = true;
     service.syncPending();
-    check(fake.activate_count == 3, "syncPending 再次驱动上线");
+    const std::size_t picks_before_up2 = fake.picks.size();
+    pickWorld(service, renderer.GetPointer(), mesh.vertex_positions_[0]);
+    check(fake.picks.size() == picks_before_up2 + 1, "syncPending 再次上线后 pick 恢复转发");
     interaction_enabled = false;
-    fake.state.needs_refresh = true;      // setActive(false) 置位
-    fake.state.deferred_op = [] { };      // 尚未执行的延迟操作
-    service.syncPending();                // 下线：clearSession 应消费挂起状态
-    check(fake.deactivate_count == 3, "syncPending 再次驱动下线");
-    check(!fake.state.needs_refresh, "下线时 needs_refresh 被消费（不堵死后续 notify）");
-    check(!fake.state.deferred_op, "下线时 deferred_op 随会话清理");
+    fake.state.needs_refresh = true; // setActive(false) 置位
+    int cleanup_count2 = 0;
+    fake.state.deferred_op = [&cleanup_count2] { ++cleanup_count2; }; // 尚未执行的延迟操作
+    service.syncPending(); // 下线：deferred_op 先消费，clearSession 复位挂起状态
+    check(cleanup_count2 == 1, "下线时 deferred_op 被消费执行");
+    check(!fake.state.needs_refresh, "下线时 needs_refresh 被复位（不堵死后续 notify）");
+    check(!fake.state.deferred_op, "下线时 deferred_op 置空");
 
     spdlog::info("==== InteractionService self-check: {} ====",
         g_failures == 0 ? "ALL PASS" : "HAS FAILURES");

@@ -28,6 +28,16 @@ void AttriRenderStrategyRGB::render(
         solid_mapper->SetColorModeToDirectScalars();
         return;
     }
+    // 判断是否是边属性
+    array = op.getEdgeCellData()->GetArray(attr_name.c_str());
+    if (array) {
+        op.getEdgeCellData()->SetActiveScalars(attr_name.c_str());
+        vtkPolyDataMapper* edge_mapper = op.getEdgeMapper();
+        edge_mapper->SetScalarModeToUseCellData();
+        edge_mapper->SetScalarVisibility(1);
+        edge_mapper->SetColorModeToDirectScalars();
+        return;
+    }
     // 判断是否是面属性
     array = op.getFaceCellData()->GetArray(attr_name.c_str());
     if (array) {
@@ -51,5 +61,5 @@ void AttriRenderStrategyRGB::render(
         return;
     }
 
-    spdlog::error("Attribute {} not found in point, face or solid data.", attr_name);
+    spdlog::error("Attribute {} not found in point, edge, face or solid data.", attr_name);
 }

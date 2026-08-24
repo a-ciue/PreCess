@@ -54,7 +54,7 @@ public:
     void syncPending();
 
 private:
-    //! @brief 同步激活状态：迁移时执行下线（on_deactivate/清标注/还原吸附）与上线（吸附/on_activate/刷新）
+    //! @brief 同步激活状态：迁移时执行下线（消费 deferred_op/清标注/还原吸附）与上线（吸附/刷新）
     systems::interaction::InteractionState* syncState();
     //! @brief 网格顶点优先、几何顶点兜底的吸附解析；命中时 out.valid 置 true
     bool snapToPickInfo(double posx, double posy, systems::interaction::PickInfo& out);

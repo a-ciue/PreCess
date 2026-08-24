@@ -57,6 +57,15 @@ void AttriRenderStrategyVector::render(
         createGlyph3D(op, point_data, { 1.0, 0.0, 0.0 }, glyph_scale);
         return;
     }
+    // 判断是否是边属性
+    array = op.getEdgeCellData()->GetArray(attr_name.c_str());
+    if (array) {
+        if (!isValidVectorArray(array, attr_name))
+            return;
+        vtkSmartPointer<vtkPolyData> glyph_input = op.getEdgeGlyphInput(attr_name);
+        createGlyph3D(op, glyph_input, { 1.0, 0.6, 0.0 }, glyph_scale);
+        return;
+    }
     // 判断是否是面属性
     array = op.getFaceCellData()->GetArray(attr_name.c_str());
     if (array) {
@@ -76,7 +85,7 @@ void AttriRenderStrategyVector::render(
         return;
     }
 
-    spdlog::error("Attribute {} not found in point, face or solid data.", attr_name);
+    spdlog::error("Attribute {} not found in point, edge, face or solid data.", attr_name);
 }
 
 void AttriRenderStrategyVector::createGlyph3D(AttributeOperator& op, vtkDataSet* input, const std::array<double, 3>& color, double scale)

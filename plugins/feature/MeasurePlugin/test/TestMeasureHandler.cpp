@@ -40,9 +40,8 @@ struct FeatureTestEnv {
     FeatureTestEnv()
         : interaction_ctx_(interaction_state_)
     {
-        // 参数声明直接取自被测功能的 setup，避免测试中重复维护一份
-        handler.setup(registrar);
-        params = std::make_unique<FeatureParams>(registrar.argTypes());
+        // 装配顺序同 FeatureSystem：先空参数集装配 ctx，setup 收集声明后载入默认值
+        params = std::make_unique<FeatureParams>(std::vector<core::ArgType> {});
         ctx = std::make_unique<FeatureContext>(FeatureContext {
             mgr,
             gateway,
@@ -52,6 +51,9 @@ struct FeatureTestEnv {
             [this]() { return active_component; },
             [this](Index component_id) { return mgr.getComponentOperator(component_id); },
         });
+        // 参数声明直接取自被测功能的 setup，避免测试中重复维护一份
+        handler.setup(registrar, *ctx);
+        *params = FeatureParams(registrar.argTypes());
     }
 };
 
@@ -59,20 +61,17 @@ struct FeatureTestEnv {
 
 TEST_CASE("MeasureHandler setup declares clear button parameter and menu")
 {
-    MeasureHandler handler;
-    FeatureRegistrar reg;
-    handler.setup(reg);
+    FeatureTestEnv env;
 
     // 纯交互功能：仅"清除"按钮参数（无值触发器）与菜单项
-    REQUIRE(reg.argTypes().size() == 1);
-    CHECK(reg.argTypes()[0].type == ArgTypeEnum::Button);
-    REQUIRE(reg.menuItems().size() == 1);
+    REQUIRE(env.registrar.argTypes().size() == 1);
+    CHECK(env.registrar.argTypes()[0].type == ArgTypeEnum::Button);
+    REQUIRE(env.registrar.menuItems().size() == 1);
 }
 
 TEST_CASE("MeasureHandler: interactive picks update state annotations and ParameterChangedEvent clears")
 {
     FeatureTestEnv env;
-    env.handler.activate(*env.ctx);
     REQUIRE(env.interaction_state_.on_pick);
 
     // 两点成线：(0,0,0) → (1,0,0)
@@ -113,4 +112,34 @@ TEST_CASE("MeasureHandler: interactive picks update state annotations and Parame
     CHECK(env.interaction_state_.annotations.lines.empty());
     CHECK(env.interaction_state_.annotations.points.empty());
     CHECK(env.interaction_state_.annotations.texts.empty());
+}
+
+TEST_CASE("MeasureHandler: deactivate schedules render-thread cleanup via deferRefresh")
+{
+    FeatureTestEnv env;
+
+    // 先制造一条测量线
+    systems::interaction::PickInfo p1;
+    p1.valid = true;
+    p1.world_pos = { 0.0, 0.0, 0.0 };
+    p1.mesh_id = 0;
+    systems::interaction::PickInfo p2;
+    p2.valid = true;
+    p2.world_pos = { 1.0, 0.0, 0.0 };
+    p2.mesh_id = 1;
+    env.interaction_state_.on_pick(p1);
+    env.interaction_state_.on_pick(p2);
+    REQUIRE(env.handler.lineCount() == 1);
+
+    // 功能退出（GUI 线程）：不直接清状态，而是挂起渲染线程清理
+    env.handler.deactivate(*env.ctx);
+    CHECK(env.handler.lineCount() == 1); // GUI 线程不直接触碰交互状态
+    CHECK(env.interaction_state_.needs_refresh);
+    REQUIRE(env.interaction_state_.deferred_op);
+
+    // 模拟渲染线程下线迁移消费 deferred_op（InteractionService::syncState 下线分支）
+    env.interaction_state_.deferred_op();
+    env.interaction_state_.deferred_op = nullptr;
+    CHECK(env.handler.lineCount() == 0);
+    CHECK(env.interaction_state_.annotations.lines.empty());
 }

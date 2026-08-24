@@ -18,7 +18,7 @@ class FeatureParams;
 class InteractionContext;
 
 /**
- * @brief 功能上下文，由 FeatureSystem 装配并在 activate()/execute() 时传给功能
+ * @brief 功能上下文，由 FeatureSystem 装配并在 setup()/activate()/execute() 时传给功能
  *
  * 组合而非单例：依赖以引用或 std::function 动态获取函数注入（后者由 app 层提供），
  * 功能层不反向依赖 app 层。当前功能可修改的范围仅限模型层对象。
@@ -29,9 +29,9 @@ class InteractionContext;
  */
 struct FeatureContext {
     ModelLayer& model; //> 模型层入口
-    FeatureEventGateway& events; //> 事件网关，功能在 activate() 中订阅事件（回调返回后自动 flush 组件变更通知）
+    FeatureEventGateway& events; //> 事件网关，功能在 setup() 中订阅事件（回调返回后自动 flush 组件变更通知）
     FeatureParams& params; //> 本功能的持久参数集
-    InteractionContext& interaction; //> 视口交互入口，功能在 activate() 中订阅拾取/悬停回调
+    InteractionContext& interaction; //> 视口交互入口，功能在 setup() 中订阅拾取/悬停回调
     std::function<std::optional<Index>()> activeModel; //> 动态获取当前活动模型 id
     std::function<std::optional<Index>()> activeComponent; //> 动态获取当前活动组件 id
     std::function<std::optional<ComponentOperator>(Index component_id)> componentOperator; //> 申请组件操作句柄

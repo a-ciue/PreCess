@@ -61,7 +61,7 @@ void addPointAttributes(
     }
 }
 
-// 将面属性或体属性写入对应 VTK 数据对象的 CellData。
+// 将边、面或体属性写入对应 VTK 数据对象的 CellData。
 void addCellAttributes(
     vtkCellData& cell_data,
     const std::map<std::string, std::vector<double>>& attributes,
@@ -206,6 +206,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         edge_poly->SetLines(edge_cells);
 
         edge_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
+        addCellAttributes(*edge_poly->GetCellData(), model_data.edge_attributes_,
+            edge_poly->GetNumberOfCells(), "edge");
     }
 
     // solid data
@@ -231,6 +233,11 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 
     // 单元中心点只和几何拓扑有关，在加载数据时统一计算并缓存，属性渲染阶段直接复用。 
     {
+        vtkNew<vtkCellCenters> edge_centers;
+        edge_centers->SetInputData(edge_poly);
+        edge_centers->Update();
+        edge_cell_centers_->DeepCopy(edge_centers->GetOutput());
+
         vtkNew<vtkCellCenters> face_centers;
         face_centers->SetInputData(face_poly);
         face_centers->Update();

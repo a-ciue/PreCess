@@ -11,16 +11,6 @@ InteractionContext::InteractionContext(systems::interaction::InteractionState& s
 {
 }
 
-void InteractionContext::onActivate(std::function<void()> cb)
-{
-    state_->on_activate = std::move(cb);
-}
-
-void InteractionContext::onDeactivate(std::function<void()> cb)
-{
-    state_->on_deactivate = std::move(cb);
-}
-
 void InteractionContext::onPick(std::function<bool(const systems::interaction::PickInfo&)> cb)
 {
     state_->on_pick = std::move(cb);
@@ -63,7 +53,7 @@ void InteractionContext::setActive(bool on)
         deactivate_others_();
     }
     state_->active = on;
-    // 启停均通知渲染层：syncPending 经 syncState 承接迁移（上线 on_activate/吸附切换，下线 on_deactivate/清理）
+    // 启停均通知渲染层：syncPending 经 syncState 承接迁移（上线吸附切换，下线消费 deferred_op/清理）
     requestRefresh();
 }
 

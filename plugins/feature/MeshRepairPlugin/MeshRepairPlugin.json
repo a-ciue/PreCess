@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "MeshRepair",
+    "display_name": "网格修复",
+    "description": "基于 CGAL PMP 的网格修复：孔洞三角化填补、自相交面检测、退化面清理"
+  }
+}
