@@ -64,7 +64,6 @@ GeometryMeshMap& ComponentOperator::editableGeometryMeshMap()
     if (!component_)
         throw std::runtime_error("ComponentOperator::editableGeometryMeshMap: null component");
 
-    // 映射本身不改变网格拓扑，但必须在写前标脏，让 Undo 捕获旧映射。
     mgr_->markComponentDirty(component_id_, MeshEditKind::NonTopology);
     return component_->ensureMapping();
 }
@@ -117,9 +116,6 @@ void ComponentOperator::replaceMesh(std::unique_ptr<MeshData> mesh)
     if (!mesh)
         throw std::invalid_argument("ComponentOperator::replaceMesh: null mesh");
 
-    // 写前标脏，确保 Undo 同时捕获旧 MeshData 和旧 Geometry↔Mesh 映射。
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
-
     // 释放旧网格占用的点/边 gid
     if (component_->mesh) {
         component_->mesh_adjacency.releaseEdgeGlobalIds(mgr_->edgeIdMap());
@@ -131,8 +127,9 @@ void ComponentOperator::replaceMesh(std::unique_ptr<MeshData> mesh)
     component_->mesh_adjacency.ensureEdgeGlobalIds(mgr_->edgeIdMap(), component_id_, *mesh);
 
     component_->mesh = std::move(mesh);
-    component_->mapping.reset();
     component_->ensurePointGlobalIds(mgr_->pointIdMap());
+    component_->mapping.reset();
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }
 
 Index ComponentOperator::materializeEdge(Index p0, Index p1)
@@ -210,7 +207,7 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
 
     if (component_->mapping && !component_->mapping->empty())
         throw std::invalid_argument("Target component already contains geometry-mesh mapping");
-   
+
     // 根形状改变后旧业务 ID 不再有效，必须释放并重新建立索引。
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry->appendRootShape(std::move(shape));
@@ -245,13 +242,12 @@ void ComponentOperator::removeMesh()
     if (!component_ || !component_->mesh)
         return;
 
-    // 写前标脏，确保 Undo 能恢复被删除网格对应的 Geometry↔Mesh 映射。
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
-
     component_->releasePointGlobalIds(mgr_->pointIdMap());
     component_->mesh_adjacency.releaseEdgeGlobalIds(mgr_->edgeIdMap());
     component_->mesh.reset();
     component_->mapping.reset();
+    // 标脏（顺带获得邻接失效），通知延迟到操作边界 flush
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }
 
 void ComponentOperator::removeGeometry()
@@ -259,10 +255,8 @@ void ComponentOperator::removeGeometry()
     if (!component_ || !component_->geometry)
         return;
 
-    // 写前标脏，确保 Undo 能恢复几何及其 Geometry↔Mesh 映射。
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
-
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry.reset();
     component_->mapping.reset();
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }
