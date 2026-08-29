@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
-#include <vtkCellCenters.h>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkExtractGeometry.h>
@@ -130,6 +129,11 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
     this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
 
+    // 单元中心只依赖当前网格；重新加载后先失效，首次向量渲染时再按需计算。
+    edge_cell_centers_ = nullptr;
+    face_cell_centers_ = nullptr;
+    solid_cell_centers_ = nullptr;
+
     // 组件私有点集：坐标自持，连通性数组直接以局部点 id 作 VTK 点索引
     const auto& positions = model_data.vertex_positions_;
     const vtkIdType point_count = static_cast<vtkIdType>(positions.size());
@@ -228,24 +232,6 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     // 处理体属性
     addPointAttributes(*solid_ugird->GetPointData(), model_data.vertex_attributes_, point_count);
     addCellAttributes(*solid_ugird->GetCellData(), model_data.solid_attributes_, solid_cells_count, "solid");
-
-    // 单元中心点只和几何拓扑有关，在加载数据时统一计算并缓存，属性渲染阶段直接复用。 
-    {
-        vtkNew<vtkCellCenters> edge_centers;
-        edge_centers->SetInputData(edge_poly);
-        edge_centers->Update();
-        edge_cell_centers_->DeepCopy(edge_centers->GetOutput());
-
-        vtkNew<vtkCellCenters> face_centers;
-        face_centers->SetInputData(face_poly);
-        face_centers->Update();
-        face_cell_centers_->DeepCopy(face_centers->GetOutput());
-
-        vtkNew<vtkCellCenters> solid_centers;
-        solid_centers->SetInputData(solid_ugird);
-        solid_centers->Update();
-        solid_cell_centers_->DeepCopy(solid_centers->GetOutput());
-    }
 
     solid_filter_->SetInputData(solid_ugird);
     solid_edge_extractor_->SetInputData(solid_ugird);

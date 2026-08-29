@@ -1,8 +1,11 @@
 #include "AttributeOperator.h"
+#include <vtkCellCenters.h>
 #include <vtkPolyData.h>
 #include <vtkCellData.h>
+#include <vtkDataSet.h>
 #include <vtkDoubleArray.h>
 #include <vtkMapper.h>
+#include <vtkNew.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
 #include <cassert>
@@ -14,6 +17,20 @@
 
 namespace {
 constexpr Index kMaxEdgeSamples = 1000;
+
+//! @brief 首次请求时计算单元中心，后续向量渲染直接复用缓存
+vtkPolyData* ensureCellCenters(vtkDataSet& data, vtkSmartPointer<vtkPolyData>& cache)
+{
+    if (!cache) {
+        vtkNew<vtkCellCenters> centers;
+        centers->SetInputData(&data);
+        centers->Update();
+
+        // vtkSmartPointer 持有输出对象，局部 filter 析构后缓存仍然有效。
+        cache = centers->GetOutput();
+    }
+    return cache.GetPointer();
+}
 
 double distanceBetweenPoints(vtkPoints& points, Index point_id_a, Index point_id_b)
 {
@@ -226,8 +243,7 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getFaceGlyphInput(const std::str
     if (!array)
         return nullptr;
 
-    // 使用加载阶段缓存的面中心点，避免属性切换或重复渲染时重新计算 vtkCellCenters。
-    vtkPolyData* centers = mesh_actor_->face_cell_centers_;
+    vtkPolyData* centers = ensureCellCenters(*face_data, mesh_actor_->face_cell_centers_);
     if (!centers || !centers->GetPoints())
         return nullptr;
 
@@ -249,8 +265,8 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getEdgeGlyphInput(const std::str
     if (!array)
         return nullptr;
 
-    // 边向量位于线段中心，直接复用模型加载阶段缓存的中心点。
-    vtkPolyData* centers = mesh_actor_->edge_cell_centers_;
+    // 边向量位于线段中心，首次请求时计算并缓存中心点。
+    vtkPolyData* centers = ensureCellCenters(*edge_data, mesh_actor_->edge_cell_centers_);
     if (!centers || !centers->GetPoints())
         return nullptr;
 
@@ -311,8 +327,7 @@ vtkSmartPointer<vtkPolyData> AttributeOperator::getSolidGlyphInput(const std::st
     if (!array)
         return nullptr;
 
-    //使用加载阶段缓存的体中心点
-    vtkPolyData* centers = mesh_actor_->solid_cell_centers_;
+    vtkPolyData* centers = ensureCellCenters(*solid_data, mesh_actor_->solid_cell_centers_);
     if (!centers || !centers->GetPoints())
         return nullptr;
 
