@@ -48,8 +48,8 @@ private:
     vtkRenderer* renderer_ {};
     MeshRenderStyle current_style_ { MeshRenderStyle::FaceWithEdges };
     std::array<bool, kTopologyDiagnosticCategoryCount> topology_diagnostic_visibility_ {};
-    double dihedral_minimum_ { 30.0 };
-    double dihedral_maximum_ { 180.0 };
+    double dihedral_minimum_ { 0.0 };
+    double dihedral_maximum_ { 150.0 };
 
     // 渲染窗口共享的标量颜色表，同一时刻只显示当前标量属性的颜色和值域。
     vtkNew<vtkScalarBarActor> scalar_bar_;

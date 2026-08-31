@@ -71,13 +71,13 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
         scalar_bar_component_id_ = -1;
     }
     auto& actor = this->component_actors_[component_id];
-    actor->loadModelData(model_data);
-    actor->setRenderStyle(current_style_);
     for (size_t category = 0; category < topology_diagnostic_visibility_.size(); ++category) {
         actor->topologyDiagnostics().setCategoryVisible(
             static_cast<TopologyDiagnosticCategory>(category), topology_diagnostic_visibility_[category]);
     }
     actor->topologyDiagnostics().setDihedralAngleRange(dihedral_minimum_, dihedral_maximum_);
+    actor->loadModelData(model_data);
+    actor->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor);
 }
 

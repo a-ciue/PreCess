@@ -40,18 +40,28 @@ public:
 private:
     static constexpr std::size_t category_count_ = kTopologyDiagnosticCategoryCount;
 
-    void rebuildDihedralEdges();
+    /** @brief 保存一种图元的诊断数据、裁剪器、映射器和 Actor */
+    struct DiagnosticPipeline {
+        vtkNew<vtkPolyData> data;
+        vtkNew<vtkExtractPolyDataGeometry> clipper;
+        vtkNew<vtkPolyDataMapper> mapper;
+        vtkNew<vtkActor> actor;
+    };
+
+    /** @brief 按当前类别开关重建点诊断数据 */
+    void rebuildPointData();
+    /** @brief 按当前类别开关和角度范围重建边诊断数据 */
+    void rebuildEdgeData();
     void applyVisibility();
 
     vtkRenderer* renderer_ {};
     bool mesh_visible_ { true };
-    double dihedral_minimum_ { 30.0 };
-    double dihedral_maximum_ { 180.0 };
+    double dihedral_minimum_ { 0.0 };
+    double dihedral_maximum_ { 150.0 };
     std::array<bool, category_count_> category_visible_ {};
-    std::array<vtkNew<vtkPolyData>, category_count_> data_;
-    std::array<vtkNew<vtkExtractPolyDataGeometry>, category_count_> clippers_;
-    std::array<vtkNew<vtkPolyDataMapper>, category_count_> mappers_;
-    std::array<vtkNew<vtkActor>, category_count_> actors_;
+    DiagnosticPipeline point_pipeline_;
+    DiagnosticPipeline edge_pipeline_;
+    DiagnosticPipeline face_pipeline_;
     vtkNew<vtkPoints> points_; //> 当前组件诊断几何共用的点坐标
     std::shared_ptr<const MeshTopologyDiagnosticResult> diagnostics_; //> 二面角范围变化时重新筛选的只读结果
 };
