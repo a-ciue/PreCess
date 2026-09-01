@@ -194,25 +194,27 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
         throw std::invalid_argument("Geometry shape is null");
 
     // 当前组件尚无有效几何时，直接用新形状初始化，不额外创建 Component。
-    if (!component_->geometry)
-        component_->geometry = std::make_unique<GeometryData>();
-    if (!component_->geometry->rootShape || component_->geometry->rootShape->IsNull()) {
+    if (!component_->geometry
+        || !component_->geometry->rootShape
+        || component_->geometry->rootShape->IsNull()) {
+        mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+        if (!component_->geometry)
+            component_->geometry = std::make_unique<GeometryData>();
         if (component_->geometry->index.built)
             component_->geometry->index.release(mgr_->geomRegistry());
         component_->geometry->setRootShape(std::move(shape));
         component_->geometry->ensureIndexBuilt(mgr_->geomRegistry());
-        mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
         return component_id_;
     }
 
     if (component_->mapping && !component_->mapping->empty())
         throw std::invalid_argument("Target component already contains geometry-mesh mapping");
 
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     // 根形状改变后旧业务 ID 不再有效，必须释放并重新建立索引。
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry->appendRootShape(std::move(shape));
     component_->geometry->ensureIndexBuilt(mgr_->geomRegistry());
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     return component_id_;
 }
 
@@ -223,6 +225,7 @@ Index ComponentOperator::replaceGeometryRoot(TopoDS_Shape shape)
     if (component_->mapping && !component_->mapping->empty())
         throw std::invalid_argument("Target component already contains geometry-mesh mapping");
 
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     // 根形状变化会使原有业务 ID 失效，先释放旧索引再写入新拓扑。
     component_->geometry->index.release(mgr_->geomRegistry());
     if (shape.IsNull()) {
@@ -232,8 +235,6 @@ Index ComponentOperator::replaceGeometryRoot(TopoDS_Shape shape)
         component_->geometry->setRootShape(std::move(shape));
         component_->geometry->ensureIndexBuilt(mgr_->geomRegistry());
     }
-
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     return component_id_;
 }
 
@@ -255,8 +256,8 @@ void ComponentOperator::removeGeometry()
     if (!component_ || !component_->geometry)
         return;
 
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry.reset();
     component_->mapping.reset();
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }
