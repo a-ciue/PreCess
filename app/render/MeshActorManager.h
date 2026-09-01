@@ -35,7 +35,8 @@ public:
     void cancelAttri(Index component_id);
 
     /** @brief 设置一种拓扑诊断类别的窗口级显示状态 */
-    void setTopologyDiagnosticVisible(int category, bool visible);
+    /** @brief 设置窗口级拓扑诊断类别是否启用；Actor 最终显隐仍跟随所属 MeshActor */
+    void setTopologyDiagnosticCategoryEnabled(int category, bool enabled);
     /** @brief 设置二面角诊断边的筛选范围，单位为度 */
     void setDihedralAngleRange(double minimum, double maximum);
 
@@ -47,7 +48,7 @@ private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
     MeshRenderStyle current_style_ { MeshRenderStyle::FaceWithEdges };
-    std::array<bool, kTopologyDiagnosticCategoryCount> topology_diagnostic_visibility_ {};
+    std::array<bool, kTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
     double dihedral_minimum_ { 0.0 };
     double dihedral_maximum_ { 150.0 };
 

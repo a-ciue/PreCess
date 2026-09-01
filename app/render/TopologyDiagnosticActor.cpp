@@ -157,13 +157,13 @@ void TopologyDiagnosticActor::loadModelData(const MeshDataVtk& model_data)
     applyVisibility();
 }
 
-void TopologyDiagnosticActor::setCategoryVisible(TopologyDiagnosticCategory category, bool visible)
+void TopologyDiagnosticActor::setCategoryEnabled(TopologyDiagnosticCategory category, bool enabled)
 {
     const size_t index = categoryIndex(category);
-    if (category_visible_[index] == visible)
+    if (category_enabled_[index] == enabled)
         return;
 
-    category_visible_[index] = visible;
+    category_enabled_[index] = enabled;
     switch (category) {
     case TopologyDiagnosticCategory::NonManifoldVertex:
     case TopologyDiagnosticCategory::IsolatedVertex:
@@ -223,10 +223,10 @@ void TopologyDiagnosticActor::rebuildPointData()
     colors->SetName("TopologyDiagnosticColors");
     colors->SetNumberOfComponents(3);
 
-    if (category_visible_[categoryIndex(TopologyDiagnosticCategory::NonManifoldVertex)]) {
+    if (category_enabled_[categoryIndex(TopologyDiagnosticCategory::NonManifoldVertex)]) {
         appendPoints(*vertices, *colors, diagnostics_->non_manifold_vertices, kNonManifoldVertexColor);
     }
-    if (category_visible_[categoryIndex(TopologyDiagnosticCategory::IsolatedVertex)])
+    if (category_enabled_[categoryIndex(TopologyDiagnosticCategory::IsolatedVertex)])
         appendPoints(*vertices, *colors, diagnostics_->isolated_vertices, kIsolatedColor);
 
     point_pipeline_.data->SetPoints(points_);
@@ -245,13 +245,13 @@ void TopologyDiagnosticActor::rebuildEdgeData()
     colors->SetName("TopologyDiagnosticColors");
     colors->SetNumberOfComponents(3);
 
-    if (category_visible_[categoryIndex(TopologyDiagnosticCategory::BoundaryEdge)])
+    if (category_enabled_[categoryIndex(TopologyDiagnosticCategory::BoundaryEdge)])
         appendEdges(*lines, *colors, diagnostics_->boundary_edges, kBoundaryEdgeColor);
-    if (category_visible_[categoryIndex(TopologyDiagnosticCategory::NonManifoldEdge)])
+    if (category_enabled_[categoryIndex(TopologyDiagnosticCategory::NonManifoldEdge)])
         appendEdges(*lines, *colors, diagnostics_->non_manifold_edges, kNonManifoldEdgeColor);
-    if (category_visible_[categoryIndex(TopologyDiagnosticCategory::IsolatedEdge)])
+    if (category_enabled_[categoryIndex(TopologyDiagnosticCategory::IsolatedEdge)])
         appendEdges(*lines, *colors, diagnostics_->isolated_edges, kIsolatedColor);
-    if (category_visible_[categoryIndex(TopologyDiagnosticCategory::DihedralEdge)]) {
+    if (category_enabled_[categoryIndex(TopologyDiagnosticCategory::DihedralEdge)]) {
         for (const TopologyDiagnosticEdge& edge : diagnostics_->manifold_edges) {
             if (edge.dihedral_angle_degrees >= dihedral_minimum_
                 && edge.dihedral_angle_degrees <= dihedral_maximum_) {
@@ -268,17 +268,17 @@ void TopologyDiagnosticActor::rebuildEdgeData()
 
 void TopologyDiagnosticActor::applyVisibility()
 {
-    const bool point_visible
-        = category_visible_[categoryIndex(TopologyDiagnosticCategory::NonManifoldVertex)]
-        || category_visible_[categoryIndex(TopologyDiagnosticCategory::IsolatedVertex)];
-    const bool edge_visible
-        = category_visible_[categoryIndex(TopologyDiagnosticCategory::BoundaryEdge)]
-        || category_visible_[categoryIndex(TopologyDiagnosticCategory::NonManifoldEdge)]
-        || category_visible_[categoryIndex(TopologyDiagnosticCategory::IsolatedEdge)]
-        || category_visible_[categoryIndex(TopologyDiagnosticCategory::DihedralEdge)];
-    const bool face_visible = category_visible_[categoryIndex(TopologyDiagnosticCategory::BoundaryFace)];
+    const bool point_enabled
+        = category_enabled_[categoryIndex(TopologyDiagnosticCategory::NonManifoldVertex)]
+        || category_enabled_[categoryIndex(TopologyDiagnosticCategory::IsolatedVertex)];
+    const bool edge_enabled
+        = category_enabled_[categoryIndex(TopologyDiagnosticCategory::BoundaryEdge)]
+        || category_enabled_[categoryIndex(TopologyDiagnosticCategory::NonManifoldEdge)]
+        || category_enabled_[categoryIndex(TopologyDiagnosticCategory::IsolatedEdge)]
+        || category_enabled_[categoryIndex(TopologyDiagnosticCategory::DihedralEdge)];
+    const bool face_enabled = category_enabled_[categoryIndex(TopologyDiagnosticCategory::BoundaryFace)];
 
-    point_pipeline_.actor->SetVisibility(mesh_visible_ && point_visible);
-    edge_pipeline_.actor->SetVisibility(mesh_visible_ && edge_visible);
-    face_pipeline_.actor->SetVisibility(mesh_visible_ && face_visible);
+    point_pipeline_.actor->SetVisibility(mesh_visible_ && point_enabled);
+    edge_pipeline_.actor->SetVisibility(mesh_visible_ && edge_enabled);
+    face_pipeline_.actor->SetVisibility(mesh_visible_ && face_enabled);
 }

@@ -357,44 +357,44 @@ Page {
                         text: "边界边"
                         checkable: true
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
-                        onToggled: myItem.setTopologyDiagnosticVisible(0, checked)
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(0, checked)
                     }
                     MenuItem {
                         text: "边界面"
                         checkable: true
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
-                        onToggled: myItem.setTopologyDiagnosticVisible(1, checked)
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(1, checked)
                     }
                     MenuItem {
                         text: "非流形边"
                         checkable: true
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
-                        onToggled: myItem.setTopologyDiagnosticVisible(2, checked)
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(2, checked)
                     }
                     MenuItem {
                         text: "非流形点"
                         checkable: true
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
-                        onToggled: myItem.setTopologyDiagnosticVisible(3, checked)
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(3, checked)
                     }
                     MenuItem {
                         text: "孤立边"
                         checkable: true
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
-                        onToggled: myItem.setTopologyDiagnosticVisible(4, checked)
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(4, checked)
                     }
                     MenuItem {
                         text: "孤立点"
                         checkable: true
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
-                        onToggled: myItem.setTopologyDiagnosticVisible(5, checked)
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(5, checked)
                     }
                     MenuSeparator {}
                     MenuItem {
                         text: "二面角边"
                         checkable: true
                         onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
-                        onToggled: myItem.setTopologyDiagnosticVisible(6, checked)
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(6, checked)
                     }
                     MenuItem {
                         id: minimumDihedralItem

@@ -28,8 +28,8 @@ public:
 
     /** @brief 根据最新网格和诊断结果重建叠加数据 */
     void loadModelData(const MeshDataVtk& model_data);
-    /** @brief 设置某一诊断类别是否显示 */
-    void setCategoryVisible(TopologyDiagnosticCategory category, bool visible);
+    /** @brief 设置某一诊断类别是否启用 */
+    void setCategoryEnabled(TopologyDiagnosticCategory category, bool enabled);
     /** @brief 设置主网格是否可见，诊断层跟随组件可见性 */
     void setMeshVisible(bool visible);
     /** @brief 设置与主网格一致的裁剪平面，传入 nullptr 时取消裁剪 */
@@ -58,7 +58,7 @@ private:
     bool mesh_visible_ { true };
     double dihedral_minimum_ { 0.0 };
     double dihedral_maximum_ { 150.0 };
-    std::array<bool, category_count_> category_visible_ {};
+    std::array<bool, category_count_> category_enabled_ {};
     DiagnosticPipeline point_pipeline_;
     DiagnosticPipeline edge_pipeline_;
     DiagnosticPipeline face_pipeline_;

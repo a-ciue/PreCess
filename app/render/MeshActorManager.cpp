@@ -71,9 +71,9 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
         scalar_bar_component_id_ = -1;
     }
     auto& actor = this->component_actors_[component_id];
-    for (size_t category = 0; category < topology_diagnostic_visibility_.size(); ++category) {
-        actor->topologyDiagnostics().setCategoryVisible(
-            static_cast<TopologyDiagnosticCategory>(category), topology_diagnostic_visibility_[category]);
+    for (size_t category = 0; category < topology_diagnostic_category_enabled_.size(); ++category) {
+        actor->topologyDiagnostics().setCategoryEnabled(
+            static_cast<TopologyDiagnosticCategory>(category), topology_diagnostic_category_enabled_[category]);
     }
     actor->topologyDiagnostics().setDihedralAngleRange(dihedral_minimum_, dihedral_maximum_);
     actor->loadModelData(model_data);
@@ -159,14 +159,14 @@ void MeshActorManager::cancelAttri(Index component_id)
     }
 }
 
-void MeshActorManager::setTopologyDiagnosticVisible(int category, bool visible)
+void MeshActorManager::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)
 {
-    if (category < 0 || category >= static_cast<int>(topology_diagnostic_visibility_.size()))
+    if (category < 0 || category >= static_cast<int>(topology_diagnostic_category_enabled_.size()))
         return;
-    topology_diagnostic_visibility_[static_cast<size_t>(category)] = visible;
+    topology_diagnostic_category_enabled_[static_cast<size_t>(category)] = enabled;
     for (auto& [id, actor] : component_actors_) {
-        actor->topologyDiagnostics().setCategoryVisible(
-            static_cast<TopologyDiagnosticCategory>(category), visible);
+        actor->topologyDiagnostics().setCategoryEnabled(
+            static_cast<TopologyDiagnosticCategory>(category), enabled);
     }
 }
 
