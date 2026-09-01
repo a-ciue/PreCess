@@ -45,7 +45,6 @@ void appendAttributeInfo(
         item["type"] = static_cast<int>(type);
         item["typeName"] = type_name;
         item["attrType"] = attr_type;
-        item["renderable"] = type != Element::Type::Edge;
         item["componentCount"] = component_count;
         out.append(item);
     }
