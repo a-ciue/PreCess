@@ -205,7 +205,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: meshMenu.open()
 
-                Timer { id: meshSubCloseTimer; interval: meshBtn.subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close(); meshTopologyMenu.close()} }
+                Timer { id: meshSubCloseTimer; interval: meshBtn.subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
 
                 Menu {
                     id: meshMenu
@@ -215,7 +215,6 @@ Page {
                         meshFaceMenu.close()
                         meshTransMenu.close()
                         meshWireMenu.close()
-                        meshTopologyMenu.close()
                     }
 
                     MenuItem {
@@ -226,7 +225,6 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshTransMenu.close()
                                 meshWireMenu.close()
-                                meshTopologyMenu.close()
                                 meshFaceMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding)
                             } else {
                                 meshSubCloseTimer.restart()
@@ -242,7 +240,6 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshFaceMenu.close()
                                 meshWireMenu.close()
-                                meshTopologyMenu.close()
                                 meshTransMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + meshBtn.menuItemHeight)
                             } else {
                                 meshSubCloseTimer.restart()
@@ -258,31 +255,12 @@ Page {
                                 meshSubCloseTimer.stop()
                                 meshFaceMenu.close()
                                 meshTransMenu.close()
-                                meshTopologyMenu.close()
                                 meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + 2 * meshBtn.menuItemHeight)
                             } else {
                                 meshSubCloseTimer.restart()
                             }
                         }
                         onTriggered: meshWireMenu.popup(meshBtn, meshMenu.width, meshMenu.y + meshMenu.topPadding + 2 * meshBtn.menuItemHeight)
-                    }
-                    MenuItem {
-                        id: meshTopologyCat
-                        text: "拓扑诊断 ▶"
-                        onHoveredChanged: {
-                            if (hovered) {
-                                meshSubCloseTimer.stop()
-                                meshFaceMenu.close()
-                                meshTransMenu.close()
-                                meshWireMenu.close()
-                                meshTopologyMenu.popup(meshBtn, meshMenu.width,
-                                                       meshMenu.y + meshMenu.topPadding + 3 * meshBtn.menuItemHeight)
-                            } else {
-                                meshSubCloseTimer.restart()
-                            }
-                        }
-                        onTriggered: meshTopologyMenu.popup(meshBtn, meshMenu.width,
-                                                            meshMenu.y + meshMenu.topPadding + 3 * meshBtn.menuItemHeight)
                     }
                     MenuItem {
                         text: "隐"
@@ -350,51 +328,69 @@ Page {
                         onTriggered: myItem.setMeshStyle(6)
                     }
                 }
+            }
+
+            ToolButton {
+                id: topologyDiagnosticBtn
+                text: "拓扑诊断"
+                Layout.preferredWidth: 70
+                Layout.fillHeight: true
+                onClicked: topologyDiagnosticMenu.open()
+
                 Menu {
-                    id: meshTopologyMenu
+                    id: topologyDiagnosticMenu
+                    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                    onAboutToShow: { y = -height }
+
+                    function keepOpenAfterTrigger() {
+                        Qt.callLater(function() {
+                            if (!topologyDiagnosticMenu.visible)
+                                topologyDiagnosticMenu.open()
+                        })
+                    }
 
                     MenuItem {
                         text: "边界边"
                         checkable: true
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onToggled: myItem.setTopologyDiagnosticCategoryEnabled(0, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
                         text: "边界面"
                         checkable: true
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onToggled: myItem.setTopologyDiagnosticCategoryEnabled(1, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
                         text: "非流形边"
                         checkable: true
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onToggled: myItem.setTopologyDiagnosticCategoryEnabled(2, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
                         text: "非流形点"
                         checkable: true
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onToggled: myItem.setTopologyDiagnosticCategoryEnabled(3, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
                         text: "孤立边"
                         checkable: true
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onToggled: myItem.setTopologyDiagnosticCategoryEnabled(4, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
                         text: "孤立点"
                         checkable: true
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onToggled: myItem.setTopologyDiagnosticCategoryEnabled(5, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuSeparator {}
                     MenuItem {
                         text: "二面角边"
                         checkable: true
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
                         onToggled: myItem.setTopologyDiagnosticCategoryEnabled(6, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
                         id: minimumDihedralItem
@@ -415,7 +411,7 @@ Page {
                                 }
                             }
                         }
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
                         id: maximumDihedralItem
@@ -436,7 +432,7 @@ Page {
                                 }
                             }
                         }
-                        onHoveredChanged: { if (hovered) meshSubCloseTimer.stop() }
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                 }
             }
