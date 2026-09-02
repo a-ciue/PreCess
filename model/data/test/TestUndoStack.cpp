@@ -397,3 +397,173 @@ TEST_CASE("UndoStack structural operation implicitly cancels an open staged sess
     f.stack.undo();
     REQUIRE(vertexAt(f.mgr, cid, 0) == std::array<double, 3> { 0.0, 0.0, 0.0 });
 }
+
+namespace {
+//! @brief VTK_TETRA 的单元类型编号（model 层不链接 VTK，以字面量给出，值见 vtkCellType.h）
+constexpr unsigned char kCellTypeTetra = 10;
+
+/**
+ * @brief 构造带 1 个四面体体单元的替代网格
+ *
+ * 模拟 TetGen「替换当前模型」的产物：2D 面网格 + 3D 体网格（TetGenLibHandler::execute
+ * 的替换分支即产出此类网格）。
+ */
+std::unique_ptr<MeshData> makeTetraMesh()
+{
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = { { 0, 0, 0 }, { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
+    mesh->vertex_count_ = 4;
+    mesh->face_vertices_ = { 0, 1, 2 };
+    mesh->face_vertices_offset_ = { 0, 3 };
+    mesh->solid_types_.push_back(kCellTypeTetra);
+    mesh->solid_vertices_ = { 0, 1, 2, 3 };
+    mesh->solid_vertices_offset_ = { 0, 4 };
+    return mesh;
+}
+} // namespace
+
+TEST_CASE("UndoStack undoes replaceMesh back to the pre-replacement mesh", "[UndoStack][replaceMesh]")
+{
+    UndoFixture f;
+    const auto [model_id, cid] = f.addTriangle();
+    f.stack.clear();
+
+    // 替换前：纯 2D 面网格，无体单元
+    REQUIRE(f.mgr.findComponent(cid)->mesh->solid_types_.empty());
+
+    // 模拟 TetGen「替换当前模型」：2D 面网格替换为 2D 面 + 3D 体网格
+    f.stack.beginOperation("TetGen 体网格剖分");
+    {
+        auto op = f.mgr.getComponentOperator(cid);
+        REQUIRE(op.has_value());
+        op->replaceMesh(makeTetraMesh());
+    }
+    f.stack.commitOperation();
+
+    // 替换已生效：出现 3D 体单元，点数增到 4
+    REQUIRE(f.mgr.findComponent(cid)->mesh->solid_types_.size() == 1);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 4);
+    REQUIRE(f.stack.canUndo());
+
+    // 撤销须退回替换前的纯 2D 网格
+    // 回归点：若标脏晚于网格替换，before-image 会克隆到 2D+3D，撤销后 3D 无法消除
+    f.stack.undo();
+    MeshData* undone = f.mgr.findComponent(cid)->mesh.get();
+    REQUIRE(undone);
+    REQUIRE(undone->solid_types_.empty());
+    REQUIRE(undone->solid_vertices_.empty());
+    REQUIRE(undone->vertex_positions_.size() == 3);
+    REQUIRE(undone->face_vertices_ == std::vector<Index> { 0, 1, 2 });
+
+    // 重做：3D 体网格回来
+    f.stack.redo();
+    MeshData* redone = f.mgr.findComponent(cid)->mesh.get();
+    REQUIRE(redone->solid_types_.size() == 1);
+    REQUIRE(redone->vertex_positions_.size() == 4);
+}
+
+TEST_CASE("UndoStack undoes removeMesh and restores the mesh with gids", "[UndoStack][removeMesh]")
+{
+    UndoFixture f;
+    const auto [model_id, cid] = f.addTriangle();
+    f.stack.clear();
+
+    const std::vector<Index> gids_before = f.mgr.findComponent(cid)->point_global_ids_;
+    REQUIRE(gids_before.size() == 3);
+
+    f.stack.beginOperation("移除网格");
+    {
+        auto op = f.mgr.getComponentOperator(cid);
+        REQUIRE(op.has_value());
+        op->removeMesh();
+    }
+    f.stack.commitOperation();
+
+    REQUIRE(f.mgr.findComponent(cid)->mesh == nullptr);
+    REQUIRE(f.stack.canUndo());
+
+    // 撤销须恢复网格与 gid 伴生表
+    // 回归点：若标脏晚于 mesh 清空，before-image 已无网格，撤销恢复不回
+    f.stack.undo();
+    ComponentData* restored = f.mgr.findComponent(cid);
+    REQUIRE(restored->mesh != nullptr);
+    REQUIRE(restored->mesh->vertex_positions_.size() == 3);
+    REQUIRE(restored->mesh->face_vertices_ == std::vector<Index> { 0, 1, 2 });
+    REQUIRE(restored->point_global_ids_ == gids_before);
+
+    // gid 已按原值 reclaim：全局映射回指本组件
+    for (Index local = 0; local < static_cast<Index>(gids_before.size()); ++local) {
+        const auto [mapped_cid, mapped_local]
+            = f.mgr.pointIdMap().getLocal(gids_before[static_cast<size_t>(local)]);
+        REQUIRE(mapped_cid == cid);
+        REQUIRE(mapped_local == local);
+    }
+
+    // 重做：网格再次移除
+    f.stack.redo();
+    REQUIRE(f.mgr.findComponent(cid)->mesh == nullptr);
+}
+
+TEST_CASE("UndoStack undo after appendPoint and appendFace leaves no residual elements", "[UndoStack][append]")
+{
+    UndoFixture f;
+    const auto [model_id, cid] = f.addTriangle();
+    f.stack.clear();
+
+    f.stack.beginOperation("加点加面");
+    {
+        auto op = f.mgr.getComponentOperator(cid);
+        REQUIRE(op.has_value());
+        op->appendPoint({ 0.0, 0.0, 1.0 });
+        op->appendFace({ 0, 1, 3 }); // 引用刚追加的局部点 3
+    }
+    f.stack.commitOperation();
+
+    MeshData* grown = f.mgr.findComponent(cid)->mesh.get();
+    REQUIRE(grown->vertex_positions_.size() == 4);
+    REQUIRE(grown->face_vertices_offset_.size() == 3); // 2 个面单元
+
+    // 撤销须完全回到加之前：不留新点、新面
+    // 回归点：若标脏晚于写入，before-image 已含新点/新面，撤销后残留
+    f.stack.undo();
+    MeshData* undone = f.mgr.findComponent(cid)->mesh.get();
+    REQUIRE(undone->vertex_positions_.size() == 3);
+    REQUIRE(undone->vertex_count_ == 3);
+    REQUIRE(undone->face_vertices_ == std::vector<Index> { 0, 1, 2 });
+    REQUIRE(undone->face_vertices_offset_ == std::vector<Index> { 0, 3 });
+    REQUIRE(f.mgr.findComponent(cid)->point_global_ids_.size() == 3);
+}
+
+TEST_CASE("materializeEdge idempotent path does not push an empty undo record", "[UndoStack][materializeEdge]")
+{
+    UndoFixture f;
+    const auto [model_id, cid] = f.addTriangle();
+    f.stack.clear();
+
+    // 首次物化：真实写入，入栈一条记录
+    f.stack.beginOperation("物化边");
+    {
+        auto op = f.mgr.getComponentOperator(cid);
+        REQUIRE(op.has_value());
+        op->materializeEdge(0, 1);
+    }
+    f.stack.commitOperation();
+    REQUIRE(f.stack.canUndo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->edge_vertices_.size() == 2);
+
+    // 二次物化同一条边：幂等早退，不应产生新记录
+    // 回归点：若标脏提到幂等早退之前，未改数据却捕获 before-image，会入栈空记录
+    REQUIRE(f.stack.undoLabel().has_value());
+    const std::string label_before = *f.stack.undoLabel();
+    f.stack.beginOperation("物化边（幂等）");
+    {
+        auto op = f.mgr.getComponentOperator(cid);
+        REQUIRE(op.has_value());
+        op->materializeEdge(0, 1);
+    }
+    f.stack.commitOperation();
+
+    REQUIRE(*f.stack.undoLabel() == label_before); // 空操作已丢弃，栈顶仍是首次记录
+    REQUIRE(f.mgr.findComponent(cid)->mesh->edge_vertices_.size() == 2); // 未重复追加
+}
