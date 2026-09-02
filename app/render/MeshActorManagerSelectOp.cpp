@@ -67,16 +67,19 @@ void MeshActorManagerSelectOp::unregisterProps(std::shared_ptr<MeshActor> actor)
 
 void MeshActorManagerSelectOp::addToAllLists(vtkProp* prop)
 {
-    for (auto& list : pick_lists_) {
-        if (!list->IsItemPresent(prop))
-            list->AddItem(prop);
-    }
+    for (auto& list : pick_lists_)
+        list->AddItem(prop);
 }
 
 void MeshActorManagerSelectOp::removeFromAllLists(const std::set<vtkProp*>& props)
 {
     for (auto& list : pick_lists_) {
-        for (vtkProp* prop : props)
-            list->RemoveItem(prop);
+        list->InitTraversal();
+        vtkProp* prop;
+        while ((prop = list->GetNextProp()) != nullptr) {
+            if (props.count(prop)) {
+                list->RemoveItem(prop);
+            }
+        }
     }
 }

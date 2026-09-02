@@ -34,7 +34,6 @@ public:
         std::map<std::string, std::any> args);
     void cancelAttri(Index component_id);
 
-    /** @brief 设置一种拓扑诊断类别的窗口级显示状态 */
     /** @brief 设置窗口级拓扑诊断类别是否启用；Actor 最终显隐仍跟随所属 MeshActor */
     void setTopologyDiagnosticCategoryEnabled(int category, bool enabled);
     /** @brief 设置二面角诊断边的筛选范围，单位为度 */

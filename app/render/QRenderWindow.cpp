@@ -269,28 +269,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
-    if (!vtk)
-        return;
-
-    // 选择与交互服务持有 renderer、manager op 和 pick list，必须在 VTK Data 资源前释放。
-    if (vtk->style_) {
-        vtk->style_->SetInteractionService(nullptr);
-        vtk->style_->SetSelectManager(nullptr);
-    }
-    interaction_service_.reset();
-    select_manager_.reset();
-
-    // 裁剪回调保存 MeshActorManager 裸指针，先停用并移除回调，再销毁 manager。
-    if (vtk->plane_widget_) {
-        vtk->plane_widget_->Off();
-        vtk->plane_widget_->RemoveObservers(vtkCommand::InteractionEvent);
-    }
-    vtk->geometry_actor_manager_.reset();
-    vtk->mesh_actor_manager_.reset();
-
-    if (vtk->renderer_)
+    if (vtk->renderer_) {
         vtk->renderer_->RemoveAllViewProps();
-    data_ = nullptr;
+    }
 }
 
 void QRenderWindow::resetCamera()
