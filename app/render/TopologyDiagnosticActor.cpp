@@ -138,22 +138,21 @@ TopologyDiagnosticActor::~TopologyDiagnosticActor()
 
 void TopologyDiagnosticActor::loadModelData(const MeshDataVtk& model_data)
 {
-    diagnostics_ = model_data.topology_diagnostics_;
+    model_data_ = &model_data;
+    diagnostics_.reset();
     points_->Reset();
     for (const auto& position : model_data.vertex_positions_)
         points_->InsertNextPoint(position.data());
 
-    if (!diagnostics_) {
-        point_pipeline_.data->Initialize();
-        edge_pipeline_.data->Initialize();
-        face_pipeline_.data->Initialize();
-        applyVisibility();
-        return;
+    point_pipeline_.data->Initialize();
+    edge_pipeline_.data->Initialize();
+    face_pipeline_.data->Initialize();
+    if (hasEnabledCategory()) {
+        ensureDiagnostics();
+        rebuildPointData();
+        rebuildEdgeData();
+        rebuildFaceData();
     }
-
-    buildFaceData(*face_pipeline_.data, *points_, model_data, diagnostics_->boundary_faces);
-    rebuildPointData();
-    rebuildEdgeData();
     applyVisibility();
 }
 
@@ -174,6 +173,9 @@ void TopologyDiagnosticActor::setCategoryEnabled(TopologyDiagnosticCategory cate
     case TopologyDiagnosticCategory::IsolatedEdge:
     case TopologyDiagnosticCategory::DihedralEdge:
         rebuildEdgeData();
+        break;
+    case TopologyDiagnosticCategory::BoundaryFace:
+        rebuildFaceData();
         break;
     default:
         break;
@@ -210,11 +212,39 @@ void TopologyDiagnosticActor::setDihedralAngleRange(double minimum, double maxim
 
     dihedral_minimum_ = clamped_minimum;
     dihedral_maximum_ = clamped_maximum;
-    rebuildEdgeData();
+    if (category_enabled_[categoryIndex(TopologyDiagnosticCategory::DihedralEdge)])
+        rebuildEdgeData();
+}
+
+void TopologyDiagnosticActor::ensureDiagnostics()
+{
+    if (!diagnostics_ && model_data_) {
+        diagnostics_ = std::make_unique<MeshTopologyDiagnosticResult>(
+            MeshTopologyDiagnostics::analyze(*model_data_));
+    }
+}
+
+bool TopologyDiagnosticActor::hasEnabledCategory() const
+{
+    return std::any_of(category_enabled_.begin(), category_enabled_.end(), [](bool enabled) { return enabled; });
+}
+
+void TopologyDiagnosticActor::rebuildFaceData()
+{
+    if (!category_enabled_[categoryIndex(TopologyDiagnosticCategory::BoundaryFace)]) {
+        face_pipeline_.data->Initialize();
+        return;
+    }
+
+    ensureDiagnostics();
+    if (!diagnostics_ || !model_data_)
+        return;
+    buildFaceData(*face_pipeline_.data, *points_, *model_data_, diagnostics_->boundary_faces);
 }
 
 void TopologyDiagnosticActor::rebuildPointData()
 {
+    ensureDiagnostics();
     if (!diagnostics_)
         return;
 
@@ -237,6 +267,7 @@ void TopologyDiagnosticActor::rebuildPointData()
 
 void TopologyDiagnosticActor::rebuildEdgeData()
 {
+    ensureDiagnostics();
     if (!diagnostics_)
         return;
 

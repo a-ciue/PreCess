@@ -261,7 +261,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     edge_mapper_->SetScalarVisibility(0);
     face_mapper_->SetScalarVisibility(0);
     solid_mapper_->SetScalarVisibility(0);
-    topology_diagnostics_->loadModelData(model_data);
+    topology_diagnostics_->loadModelData(*model_data_);
 }
 
 void MeshActor::setVisibility(bool visibility)

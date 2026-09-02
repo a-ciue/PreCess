@@ -8,6 +8,7 @@
 #include "TopologyDiagnosticCategory.h"
 
 #include <array>
+#include <memory>
 #include <vtkActor.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkNew.h>
@@ -17,6 +18,7 @@
 
 class vtkRenderer;
 class vtkPlane;
+struct MeshTopologyDiagnosticResult;
 
 /**
  * @brief 把拓扑诊断集合渲染为独立的边、点和面 Actor
@@ -26,7 +28,7 @@ public:
     explicit TopologyDiagnosticActor(vtkRenderer* renderer);
     ~TopologyDiagnosticActor();
 
-    /** @brief 根据最新网格和诊断结果重建叠加数据 */
+    /** @brief 保存最新网格数据，并在类别已启用时重建诊断叠加数据 */
     void loadModelData(const MeshDataVtk& model_data);
     /** @brief 设置某一诊断类别是否启用 */
     void setCategoryEnabled(TopologyDiagnosticCategory category, bool enabled);
@@ -48,6 +50,12 @@ private:
         vtkNew<vtkActor> actor;
     };
 
+    /** @brief 首次需要显示诊断类别时计算并缓存结果 */
+    void ensureDiagnostics();
+    /** @brief 当前是否至少启用了一个诊断类别 */
+    bool hasEnabledCategory() const;
+    /** @brief 按当前边界面开关重建面诊断数据 */
+    void rebuildFaceData();
     /** @brief 按当前类别开关重建点诊断数据 */
     void rebuildPointData();
     /** @brief 按当前类别开关和角度范围重建边诊断数据 */
@@ -63,5 +71,6 @@ private:
     DiagnosticPipeline edge_pipeline_;
     DiagnosticPipeline face_pipeline_;
     vtkNew<vtkPoints> points_; //> 当前组件诊断几何共用的点坐标
-    std::shared_ptr<const MeshTopologyDiagnosticResult> diagnostics_; //> 二面角范围变化时重新筛选的只读结果
+    const MeshDataVtk* model_data_ {}; //> 指向所属 MeshActor 持有的当前渲染数据视图
+    std::unique_ptr<MeshTopologyDiagnosticResult> diagnostics_; //> 当前网格的渲染层懒计算结果
 };

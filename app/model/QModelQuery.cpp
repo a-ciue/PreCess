@@ -1,5 +1,4 @@
 #include "QModelQuery.h"
-#include "MeshTopologyDiagnostics.h"
 #include "ModelLayer.h"
 #include "MeshData.h"
 #include "GeometryData.h"
@@ -80,8 +79,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
         md->face_vertices_, md->face_vertices_offset_,
         md->edge_vertices_,
         md->vertex_positions_,
-        md->vertex_attributes_,md->edge_attributes_,md->face_attributes_,md->solid_attributes_,{},-1,
-        std::make_shared<MeshTopologyDiagnosticResult>(MeshTopologyDiagnostics::analyze(comp->mesh_adjacency, *md)) };
+        md->vertex_attributes_,md->edge_attributes_,md->face_attributes_,md->solid_attributes_,{},-1 };
 
     // 添加所有块
     auto block_datas = std::make_shared<BlockDatas>();
@@ -124,8 +122,7 @@ std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_i
         md->face_attributes_,
         md->solid_attributes_,
         {},
-        component_id,
-        std::make_shared<MeshTopologyDiagnosticResult>(MeshTopologyDiagnostics::analyze(comp->mesh_adjacency, *md))
+        component_id
     };
 
     auto block_datas = std::make_shared<BlockDatas>();

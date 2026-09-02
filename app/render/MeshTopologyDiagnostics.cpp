@@ -1,36 +1,96 @@
 #include "MeshTopologyDiagnostics.h"
 
-#include "MeshData.h"
-#include "MeshAdjacency.h"
-
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <unordered_map>
 #include <unordered_set>
 
 namespace {
-//! @brief 计算多边形前三个非共线顶点定义的单位法向
-std::array<double, 3> faceNormal(const MeshData& mesh, Index face)
+/**
+ * @brief 诊断计算使用的临时边拓扑
+ */
+struct MeshEdgeTopology {
+    std::array<Index, 2> endpoints; //> 排序后的组件内局部点 id
+    std::vector<Index> adjacent_faces; //> 使用该边的面单元 id
+};
+
+//! @brief 端点对打包为无序键：小端点占低 32 位，大端点占高 32 位
+std::uint64_t packEndpoints(Index p0, Index p1)
 {
-    const Index begin = mesh.face_vertices_offset_[face];
-    const Index end = mesh.face_vertices_offset_[face + 1];
+    const std::uint32_t lo = static_cast<std::uint32_t>(p0 < p1 ? p0 : p1);
+    const std::uint32_t hi = static_cast<std::uint32_t>(p0 < p1 ? p1 : p0);
+    return (static_cast<std::uint64_t>(hi) << 32) | lo;
+}
+
+//! @brief 从显式边和面边构建仅供本次诊断使用的临时边表
+std::vector<MeshEdgeTopology> buildEdgeTopologies(const MeshDataVtk& mesh)
+{
+    std::vector<MeshEdgeTopology> edges;
+    std::unordered_map<std::uint64_t, size_t> edge_by_endpoints;
+
+    auto resolve_edge = [&](Index p0, Index p1) -> MeshEdgeTopology& {
+        const std::uint64_t key = packEndpoints(p0, p1);
+        auto [it, inserted] = edge_by_endpoints.try_emplace(key, edges.size());
+        if (inserted)
+            edges.push_back({ { std::min(p0, p1), std::max(p0, p1) }, {} });
+        return edges[it->second];
+    };
+
+    // 显式边先进入边表，没有相邻面时将被识别为孤立边。
+    const auto& edge_vertices = mesh.vtk_edge_cells_;
+    for (size_t i = 0; i + 1 < edge_vertices.size(); i += 2) {
+        const Index p0 = edge_vertices[i];
+        const Index p1 = edge_vertices[i + 1];
+        if (p0 >= 0 && p1 >= 0 && p0 != p1)
+            resolve_edge(p0, p1);
+    }
+
+    // 面边按无序端点归并，并记录使用该边的面单元。
+    const auto& face_vertices = mesh.vtk_face_cells_;
+    const auto& offsets = mesh.vtk_face_cells_offset_;
+    const Index face_count = offsets.empty() ? 0 : static_cast<Index>(offsets.size() - 1);
+    for (Index face = 0; face < face_count; ++face) {
+        const Index begin = offsets[static_cast<size_t>(face)];
+        const Index end = offsets[static_cast<size_t>(face + 1)];
+        if (begin < 0 || end > static_cast<Index>(face_vertices.size()) || end - begin < 2)
+            continue;
+
+        for (Index i = begin; i < end; ++i) {
+            const Index p0 = face_vertices[static_cast<size_t>(i)];
+            const Index p1 = face_vertices[static_cast<size_t>(i + 1 < end ? i + 1 : begin)];
+            if (p0 < 0 || p1 < 0 || p0 == p1)
+                continue;
+            auto& adjacent_faces = resolve_edge(p0, p1).adjacent_faces;
+            if (adjacent_faces.empty() || adjacent_faces.back() != face)
+                adjacent_faces.push_back(face);
+        }
+    }
+    return edges;
+}
+
+//! @brief 计算多边形前三个非共线顶点定义的单位法向
+std::array<double, 3> faceNormal(const MeshDataVtk& mesh, Index face)
+{
+    const Index begin = mesh.vtk_face_cells_offset_[static_cast<size_t>(face)];
+    const Index end = mesh.vtk_face_cells_offset_[static_cast<size_t>(face + 1)];
     if (end - begin < 3)
         return {};
 
-    const Index p0_id = mesh.face_vertices_[begin];
+    const Index p0_id = mesh.vtk_face_cells_[static_cast<size_t>(begin)];
     if (p0_id < 0 || p0_id >= static_cast<Index>(mesh.vertex_positions_.size()))
         return {};
-    const auto& p0 = mesh.vertex_positions_[p0_id];
+    const auto& p0 = mesh.vertex_positions_[static_cast<size_t>(p0_id)];
     for (Index i = begin + 1; i + 1 < end; ++i) {
-        const Index p1_id = mesh.face_vertices_[i];
-        const Index p2_id = mesh.face_vertices_[i + 1];
+        const Index p1_id = mesh.vtk_face_cells_[static_cast<size_t>(i)];
+        const Index p2_id = mesh.vtk_face_cells_[static_cast<size_t>(i + 1)];
         if (p1_id < 0 || p2_id < 0
             || p1_id >= static_cast<Index>(mesh.vertex_positions_.size())
             || p2_id >= static_cast<Index>(mesh.vertex_positions_.size())) {
             continue;
         }
-        const auto& p1 = mesh.vertex_positions_[p1_id];
-        const auto& p2 = mesh.vertex_positions_[p2_id];
+        const auto& p1 = mesh.vertex_positions_[static_cast<size_t>(p1_id)];
+        const auto& p2 = mesh.vertex_positions_[static_cast<size_t>(p2_id)];
         const std::array<double, 3> a { p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2] };
         const std::array<double, 3> b { p2[0] - p0[0], p2[1] - p0[1], p2[2] - p0[2] };
         std::array<double, 3> normal {
@@ -68,7 +128,7 @@ bool isNonManifoldVertex(const std::vector<MeshEdgeTopology>& incident_edges)
     std::unordered_map<Index, std::vector<Index>> face_graph;
     Index boundary_edge_count = 0;
     for (const MeshEdgeTopology& edge : incident_edges) {
-        // 将非流形边及其端点归入边类别，非流形点仅表示独立的一环面扇异常。
+        // 非流形边及其端点归入边类别，非流形点仅表示独立的一环面扇异常。
         if (edge.adjacent_faces.size() > 2)
             return false;
         if (edge.adjacent_faces.size() == 1)
@@ -99,26 +159,26 @@ bool isNonManifoldVertex(const std::vector<MeshEdgeTopology>& incident_edges)
 }
 }
 
-MeshTopologyDiagnosticResult MeshTopologyDiagnostics::analyze(MeshAdjacency& adjacency, const MeshData& mesh)
+MeshTopologyDiagnosticResult MeshTopologyDiagnostics::analyze(const MeshDataVtk& mesh)
 {
     MeshTopologyDiagnosticResult result;
     const Index point_count = static_cast<Index>(mesh.vertex_positions_.size());
     std::vector<bool> point_used(static_cast<size_t>(point_count), false);
 
-    const Index face_count = mesh.face_vertices_offset_.empty()
+    const Index face_count = mesh.vtk_face_cells_offset_.empty()
         ? 0
-        : static_cast<Index>(mesh.face_vertices_offset_.size() - 1);
+        : static_cast<Index>(mesh.vtk_face_cells_offset_.size() - 1);
     std::vector<std::array<double, 3>> normals(static_cast<size_t>(face_count));
     std::vector<bool> boundary_faces(static_cast<size_t>(face_count), false);
     for (Index face = 0; face < face_count; ++face) {
-        const Index begin = mesh.face_vertices_offset_[face];
-        const Index end = mesh.face_vertices_offset_[face + 1];
-        if (begin < 0 || end > static_cast<Index>(mesh.face_vertices_.size()) || end - begin < 2)
+        const Index begin = mesh.vtk_face_cells_offset_[static_cast<size_t>(face)];
+        const Index end = mesh.vtk_face_cells_offset_[static_cast<size_t>(face + 1)];
+        if (begin < 0 || end > static_cast<Index>(mesh.vtk_face_cells_.size()) || end - begin < 2)
             continue;
         normals[static_cast<size_t>(face)] = faceNormal(mesh, face);
     }
 
-    const std::vector<MeshEdgeTopology> edges = adjacency.edgeTopologies(mesh);
+    const std::vector<MeshEdgeTopology> edges = buildEdgeTopologies(mesh);
     std::vector<std::vector<MeshEdgeTopology>> vertex_edges(static_cast<size_t>(point_count));
     for (const MeshEdgeTopology& edge : edges) {
         if (edge.endpoints[0] < 0 || edge.endpoints[1] < 0
