@@ -252,7 +252,7 @@ std::optional<ModelPayload> PlyModelHandler::read_model(const fs::path& path, co
         ComponentDatas comps;
         comps.push_back(std::move(c));
 
-        return ModelPayload{path.filename().string(), std::move(comps)};
+        return ModelPayload{path.filename().u8string(), std::move(comps)};
 
     } catch (const std::exception& e) {
         spdlog::error("PlyModelHandler: error reading {}: {}", path.string().c_str(), e.what());

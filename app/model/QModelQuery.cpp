@@ -243,7 +243,7 @@ QString QModelQuery::getModelName(Index model_id) const
         spdlog::error("模型不存在，无法获取名称,id:{}", model_id);
         return QString();
     }
-    return QString::fromLocal8Bit(model->model_name_);
+    return QString::fromStdString(model->model_name_);
 }
 
 QString QModelQuery::getComponentName(Index component_id) const
@@ -365,7 +365,7 @@ QVariantList QModelQuery::listModels() const
     for (const auto& [mid, modelPtr] : m_manager->models_) {
         QVariantMap m;
         m["model_id"] = mid;
-        m["name"] = modelPtr ? QString::fromLocal8Bit(modelPtr->model_name_) : QString();
+        m["name"] = modelPtr ? QString::fromStdString(modelPtr->model_name_) : QString();
 
         int compCount = 0;
 

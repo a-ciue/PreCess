@@ -47,7 +47,7 @@ public:
     /**
      * @brief 添加一个模型
      *
-     * @param model_name 新模型的名称
+     * @param model_name 新模型的名称（UTF-8 编码）
      * @param model 需要添加的模型对象
      */
     Index addModel(const std::string& model_name, ComponentDatas components);

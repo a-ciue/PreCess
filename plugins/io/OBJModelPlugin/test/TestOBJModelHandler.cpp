@@ -145,7 +145,7 @@ TEST_CASE("OBJModelHandler::read_model() - model_name preserved")
     std::optional<ModelPayload> payload;
     REQUIRE_NOTHROW(payload = io.read_model(out, {}));
     REQUIRE(payload.has_value());
-    REQUIRE(payload->model_name == out.filename().string());
+    REQUIRE(payload->model_name == out.filename().u8string());
 }
 
 TEST_CASE("OBJModelHandler::read_model() - shapes split into components")

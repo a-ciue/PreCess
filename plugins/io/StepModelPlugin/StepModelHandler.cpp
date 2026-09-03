@@ -39,7 +39,7 @@ std::optional<ModelPayload> StepModelHandler::read_model(const fs::path& path, c
         return std::nullopt;
     }
 
-    return StepXdeComponentBuilder::buildModelData(*doc, path.filename().string());
+    return StepXdeComponentBuilder::buildModelData(*doc, path.filename().u8string());
 }
 
 void StepModelHandler::write_components(const ModelLayer& mgr,

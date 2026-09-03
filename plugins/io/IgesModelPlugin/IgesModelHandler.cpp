@@ -46,7 +46,7 @@ std::optional<ModelPayload> IgesModelHandler::read_model(const fs::path& path,
         return std::nullopt;
     }
 
-    return IgesXdeComponentBuilder::buildModelData(*doc, path.filename().string());
+    return IgesXdeComponentBuilder::buildModelData(*doc, path.filename().u8string());
 }
 
 /**
