@@ -13,6 +13,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Dialogs
 import QtQuick.Controls.Fusion
 
 import com.kdab.dockwidgets as KDDW
@@ -178,6 +179,83 @@ ApplicationWindow {
     }
 
     KDDW.LayoutSaver { id: layoutSaver }
+
+    // 拖拽导入：一次可拖入多个文件，按扩展名过滤出可导入的文件后逐个导入
+    DropArea {
+        id: importDropArea
+        anchors.fill: parent
+        z: 1
+
+        // 过滤出可导入的文件，拖拽判定与真正导入共用
+        function filterImportableFiles(urls) {
+            let files = []
+            for (const url of urls) {
+                if (QModelManager.ioSystem.canImport(url))
+                    files.push(url)
+            }
+            return files
+        }
+
+        onEntered: {
+            drag.accepted = filterImportableFiles(drag.urls).length > 0
+        }
+        onDropped: {
+            const files = filterImportableFiles(drop.urls)
+            drop.accepted = files.length > 0
+            if (files.length === 0)
+                return
+
+            // 逐个导入并记录失败项，全部导入结束后统一重置视角
+            let failed = []
+            for (const file of files) {
+                if (!QModelManager.ioSystem.read("All files", file, []))
+                    failed.push(file)
+            }
+            if (failed.length < files.length && App.registry.renderWindow)
+                App.registry.renderWindow.resetCamera()
+            if (failed.length > 0) {
+                importFailedDialog.failedFiles = failed
+                importFailedDialog.open()
+                outputLogDock.show() // 失败原因由日志面板承载，直接打开便于查看
+            }
+        }
+
+        // 拖入可导入文件时的高亮提示
+        Rectangle {
+            anchors.fill: parent
+            visible: importDropArea.containsDrag
+            color: Qt.rgba(0.29, 0.56, 0.89, 0.12)
+            border.color: "#4a90e2"
+            border.width: 2
+
+            Label {
+                anchors.centerIn: parent
+                text: qsTr("松开鼠标以导入模型文件")
+                font.pixelSize: 16
+                color: "#1a6fc4"
+            }
+        }
+    }
+
+    // 拖拽导入失败的文件清单
+    MessageDialog {
+        id: importFailedDialog
+        title: qsTr("导入失败")
+        buttons: MessageDialog.Ok
+        text: qsTr("以下文件未能导入，详细原因见日志面板：")
+
+        property var failedFiles: []
+
+        // 文件过多时只展示前若干条，避免对话框过长
+        informativeText: {
+            let names = []
+            for (let i = 0; i < Math.min(failedFiles.length, 10); ++i)
+                names.push(decodeURIComponent(String(failedFiles[i]).split("/").pop()))
+            if (failedFiles.length > 10)
+                names.push(qsTr("等 %1 个文件").arg(failedFiles.length))
+            return names.join("\n")
+        }
+    }
 
     Component.onCompleted: {
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）

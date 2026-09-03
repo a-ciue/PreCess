@@ -33,18 +33,11 @@ try {
         });
     };
 
+    // 未指定或指定了未知类型时，回退按扩展名解析文件类型
     if (resolved_unique_name == "All files" || !is_registered_name(resolved_unique_name)) {
-        const QString ext = QFileInfo(url.toLocalFile()).suffix().toLower();
-        for (const ModelIOInfo* info : all_infos) {
-            for (const auto& extension : info->extensions) {
-                if (QString::fromStdString(extension).compare(ext, Qt::CaseInsensitive) == 0) {
-                    resolved_unique_name = info->name;
-                    break;
-                }
-            }
-            if (is_registered_name(resolved_unique_name)) {
-                break;
-            }
+        const QString resolved_by_suffix = resolveFileTypeBySuffix(QFileInfo(url.toLocalFile()).suffix().toLower());
+        if (!resolved_by_suffix.isEmpty()) {
+            resolved_unique_name = resolved_by_suffix.toStdString();
         }
     }
 
@@ -60,6 +53,21 @@ try {
     return {};
 } catch (...) {
     spdlog::error("ModelIOSystemAdaptor::read: Unknown exception occurred");
+    return {};
+}
+
+bool QModelIOSystemAdaptor::canImport(const QUrl& url) const
+try {
+    const QFileInfo file_info(url.toLocalFile());
+    if (!file_info.isFile()) {
+        return false;
+    }
+    return !resolveFileTypeBySuffix(file_info.suffix().toLower()).isEmpty();
+} catch (const std::exception& e) {
+    spdlog::error("ModelIOSystemAdaptor::canImport: Exception occurred - {}", e.what());
+    return {};
+} catch (...) {
+    spdlog::error("ModelIOSystemAdaptor::canImport: Unknown exception occurred");
     return {};
 }
 
@@ -104,6 +112,22 @@ try {
     return {};
 } catch (...) {
     spdlog::error("ModelIOSystemAdaptor::getModelIOInfo: Unknown exception occurred");
+    return {};
+}
+
+QString QModelIOSystemAdaptor::resolveFileTypeBySuffix(const QString& suffix) const
+{
+    for (const ModelIOInfo* info : io_system_->registeredFileTypeInfos()) {
+        // 扩展名列表为空表示该类型支持任意扩展名
+        if (info->extensions.empty()) {
+            return QString::fromStdString(info->name);
+        }
+        for (const auto& extension : info->extensions) {
+            if (suffix.compare(QString::fromStdString(extension), Qt::CaseInsensitive) == 0) {
+                return QString::fromStdString(info->name);
+            }
+        }
+    }
     return {};
 }
 
