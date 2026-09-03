@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/TopologyDiagnosticCategory.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">TopologyDiagnosticCategory.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="TopologyDiagnosticCategory_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span></div>
+<div class="foldopen" id="foldopen00012" data-start="{" data-end="};">
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2a">   12</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2a">TopologyDiagnosticCategory</a> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa19681172742a6d255226e6463ca3cfae">   13</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa19681172742a6d255226e6463ca3cfae">BoundaryEdge</a>,</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa373cddef55a1570d51e743e27c0315d7">   14</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa373cddef55a1570d51e743e27c0315d7">BoundaryFace</a>,</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa1adb79d9384c186250f4685e6e359657">   15</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa1adb79d9384c186250f4685e6e359657">NonManifoldEdge</a>,</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aabd4169d5ab68d08bf41948eab41f882f">   16</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aabd4169d5ab68d08bf41948eab41f882f">NonManifoldVertex</a>,</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa34ecf2007f6fc8c6deb288245bc91045">   17</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa34ecf2007f6fc8c6deb288245bc91045">IsolatedEdge</a>,</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa596ac99de218999d50905500c1009a70">   18</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa596ac99de218999d50905500c1009a70">IsolatedVertex</a>,</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa3c649891a1c62e91ed3cb389bd78c231">   19</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa3c649891a1c62e91ed3cb389bd78c231">DihedralEdge</a>,</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aae93f994f01c537c4e2f7d8528c3eb5e9">   20</a></span>    <a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aae93f994f01c537c4e2f7d8528c3eb5e9">Count</a></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>};</div>
+</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57">   24</a></span><span class="keyword">inline</span> <span class="keyword">constexpr</span> std::size_t <a class="code hl_variable" href="TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57">kTopologyDiagnosticCategoryCount</a></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    = <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(<a class="code hl_enumvalue" href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aae93f994f01c537c4e2f7d8528c3eb5e9">TopologyDiagnosticCategory::Count</a>);</div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2a"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2a">TopologyDiagnosticCategory</a></div><div class="ttdeci">TopologyDiagnosticCategory</div><div class="ttdoc">可独立显示的网格拓扑诊断类别</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:12</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aa19681172742a6d255226e6463ca3cfae"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa19681172742a6d255226e6463ca3cfae">TopologyDiagnosticCategory::BoundaryEdge</a></div><div class="ttdeci">@ BoundaryEdge</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:13</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aa1adb79d9384c186250f4685e6e359657"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa1adb79d9384c186250f4685e6e359657">TopologyDiagnosticCategory::NonManifoldEdge</a></div><div class="ttdeci">@ NonManifoldEdge</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:15</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aa34ecf2007f6fc8c6deb288245bc91045"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa34ecf2007f6fc8c6deb288245bc91045">TopologyDiagnosticCategory::IsolatedEdge</a></div><div class="ttdeci">@ IsolatedEdge</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:17</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aa373cddef55a1570d51e743e27c0315d7"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa373cddef55a1570d51e743e27c0315d7">TopologyDiagnosticCategory::BoundaryFace</a></div><div class="ttdeci">@ BoundaryFace</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:14</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aa3c649891a1c62e91ed3cb389bd78c231"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa3c649891a1c62e91ed3cb389bd78c231">TopologyDiagnosticCategory::DihedralEdge</a></div><div class="ttdeci">@ DihedralEdge</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:19</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aa596ac99de218999d50905500c1009a70"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa596ac99de218999d50905500c1009a70">TopologyDiagnosticCategory::IsolatedVertex</a></div><div class="ttdeci">@ IsolatedVertex</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:18</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aabd4169d5ab68d08bf41948eab41f882f"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aabd4169d5ab68d08bf41948eab41f882f">TopologyDiagnosticCategory::NonManifoldVertex</a></div><div class="ttdeci">@ NonManifoldVertex</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:16</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a123c2e1cd3393fbd4ecdad8e737fae2aae93f994f01c537c4e2f7d8528c3eb5e9"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aae93f994f01c537c4e2f7d8528c3eb5e9">TopologyDiagnosticCategory::Count</a></div><div class="ttdeci">@ Count</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:20</div></div>
+<div class="ttc" id="aTopologyDiagnosticCategory_8h_html_a9bed0bb17f9e1b21d556ece03a64cb57"><div class="ttname"><a href="TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57">kTopologyDiagnosticCategoryCount</a></div><div class="ttdeci">constexpr std::size_t kTopologyDiagnosticCategoryCount</div><div class="ttdoc">拓扑诊断类别数量，由枚举末值统一推导</div><div class="ttdef"><b>定义</b> TopologyDiagnosticCategory.h:25</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -10,5 +10,6 @@ var searchData=
   ['kinvalidgeomsolidid_7',['kInvalidGeomSolidId',['../Core_8h.html#a568e78519b186938703f8780b9cc52f1',1,'Core.h']]],
   ['kinvalidgeomvertexid_8',['kInvalidGeomVertexId',['../Core_8h.html#a24cb95d98be446581a9839fbaabbd399',1,'Core.h']]],
   ['kinvalidlocal_9',['kInvalidLocal',['../classMeshIDMap.html#a565446ff3feaedaaa277cbe06ac37c1e',1,'MeshIDMap']]],
-  ['ktypecount_10',['kTypeCount',['../structGeometrySubshapeIndex.html#a8220fb5df165f1baa794452a195d44ce',1,'GeometrySubshapeIndex']]]
+  ['ktopologydiagnosticcategorycount_10',['kTopologyDiagnosticCategoryCount',['../TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57',1,'TopologyDiagnosticCategory.h']]],
+  ['ktypecount_11',['kTypeCount',['../structGeometrySubshapeIndex.html#a8220fb5df165f1baa794452a195d44ce',1,'GeometrySubshapeIndex']]]
 ];

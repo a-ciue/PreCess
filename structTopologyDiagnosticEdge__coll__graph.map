@@ -1,0 +1,5 @@
+<map id="TopologyDiagnosticEdge" name="TopologyDiagnosticEdge">
+<area shape="rect" id="Node000001" title="一条可直接用于诊断渲染的网格边" alt="" coords="5,101,187,127"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="13,5,179,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,45,99,101,93,101,93,45"/>
+</map>

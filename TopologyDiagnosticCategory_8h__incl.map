@@ -1,0 +1,5 @@
+<map id="app/render/TopologyDiagnosticCategory.h" name="app/render/TopologyDiagnosticCategory.h">
+<area shape="rect" id="Node000001" title="定义拓扑诊断可视化类别" alt="" coords="5,5,228,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="81,93,152,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,46,119,79,114,79,114,46"/>
+</map>

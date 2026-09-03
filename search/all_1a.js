@@ -41,9 +41,10 @@ var searchData=
   ['_7esubscription_38',['~Subscription',['../classcore_1_1EventBus_1_1Subscription.html#ac01a59ad2872e30d25f82b3b01f05c6c',1,'core::EventBus::Subscription::~Subscription()'],['../classEventBus_1_1Subscription.html#ac01a59ad2872e30d25f82b3b01f05c6c',1,'EventBus::Subscription::~Subscription()']]],
   ['_7esystemregisterbase_39',['~SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html#aa1646d285893219257d8247b32e2204e',1,'systems::SystemRegisterBase']]],
   ['_7etempfile_40',['~TempFile',['../classcore_1_1TempFile.html#ac5781f09d3d645fcfbe8b35dedb01185',1,'core::TempFile']]],
-  ['_7etreemodel_41',['~TreeModel',['../classTreeModel.html#af0998d55a63c2b18be1f03e4e8567926',1,'TreeModel']]],
-  ['_7etreenode_42',['~TreeNode',['../structTreeNode.html#a138449d182c342d032c78e7037afc151',1,'TreeNode']]],
-  ['_7etrivialedithandler_43',['~TrivialEditHandler',['../classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e',1,'systems::edit::TrivialEditHandler']]],
-  ['_7eugridmodel_44',['~UGridModel',['../classUGridModel.html#aeba96366937e1483eeec6504e1c418b8',1,'UGridModel']]],
-  ['_7evertexselectorhighlight_45',['~VertexSelectorHighlight',['../classVertexSelectorHighlight.html#a1ed2ecf6f65f2a1e7243344dd6eff0ae',1,'VertexSelectorHighlight']]]
+  ['_7etopologydiagnosticactor_41',['~TopologyDiagnosticActor',['../classTopologyDiagnosticActor.html#acde59675d618e98f1fc4449897834026',1,'TopologyDiagnosticActor']]],
+  ['_7etreemodel_42',['~TreeModel',['../classTreeModel.html#af0998d55a63c2b18be1f03e4e8567926',1,'TreeModel']]],
+  ['_7etreenode_43',['~TreeNode',['../structTreeNode.html#a138449d182c342d032c78e7037afc151',1,'TreeNode']]],
+  ['_7etrivialedithandler_44',['~TrivialEditHandler',['../classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e',1,'systems::edit::TrivialEditHandler']]],
+  ['_7eugridmodel_45',['~UGridModel',['../classUGridModel.html#aeba96366937e1483eeec6504e1c418b8',1,'UGridModel']]],
+  ['_7evertexselectorhighlight_46',['~VertexSelectorHighlight',['../classVertexSelectorHighlight.html#a1ed2ecf6f65f2a1e7243344dd6eff0ae',1,'VertexSelectorHighlight']]]
 ];

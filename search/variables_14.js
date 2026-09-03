@@ -9,12 +9,14 @@ var searchData=
   ['text_5fpool_5f_6',['text_pool_',['../classInteractionService.html#ab4635a46dbc7f4a3c600cab618b66efe',1,'InteractionService']]],
   ['texts_7',['texts',['../structsystems_1_1interaction_1_1AnnotationBatch.html#ab72b3f817769bdcbb49ad6502161cb9f',1,'systems::interaction::AnnotationBatch::texts'],['../structAnnotationBatch.html#ab72b3f817769bdcbb49ad6502161cb9f',1,'AnnotationBatch::texts']]],
   ['texture_5fresolution_8',['texture_resolution',['../structtinyobj_1_1texture__option__t.html#ac655b843b6686cdca23bf34b1a995e03',1,'tinyobj::texture_option_t']]],
-  ['transmittance_9',['transmittance',['../structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3',1,'tinyobj::material_t']]],
-  ['triangulate_10',['triangulate',['../structtinyobj_1_1ObjReaderConfig.html#a7ed0a20f5f6fe33fec82cbf8dd1fe8a3',1,'tinyobj::ObjReaderConfig']]],
-  ['triangulation_5fmethod_11',['triangulation_method',['../structtinyobj_1_1ObjReaderConfig.html#a011671d8ae0fd3f0c25fdfc09eb7a18e',1,'tinyobj::ObjReaderConfig']]],
-  ['turbulence_12',['turbulence',['../structtinyobj_1_1texture__option__t.html#a39e0e7cb38178022522df240d31709ec',1,'tinyobj::texture_option_t']]],
-  ['type_13',['type',['../structcore_1_1ArgType.html#a2c7db2406a5a1441fd8ff1aa4c8243a9',1,'core::ArgType::type'],['../structSelection.html#a8d2afce62173810d77bfde03c46e71d7',1,'Selection::type'],['../structtinyobj_1_1texture__option__t.html#ae93ebf5f70b1b3e3c1de58a257157e00',1,'tinyobj::texture_option_t::type']]],
-  ['type_5f_14',['type_',['../classQArgObject.html#ad6c2a2eebf51ac81693c4731ef520e1d',1,'QArgObject::type_'],['../classcore_1_1EventBus_1_1Subscription.html#abe1f0573f8cf2fcad69bc52b1dfc55a0',1,'core::EventBus::Subscription::type_'],['../classEventBus_1_1Subscription.html#abe1f0573f8cf2fcad69bc52b1dfc55a0',1,'EventBus::Subscription::type_']]],
-  ['type_5fmaps_15',['type_maps',['../structGeometrySubshapeIndex.html#a6608769a105d094f35127532228e34ee',1,'GeometrySubshapeIndex']]],
-  ['types_5f_16',['types_',['../classsystems_1_1feature_1_1FeatureParams.html#a4058dad7ee973c7550c7e0e8b856cfc9',1,'systems::feature::FeatureParams']]]
+  ['topology_5fdiagnostic_5fcategory_5fenabled_5f_9',['topology_diagnostic_category_enabled_',['../classMeshActorManager.html#a7e4429a496307504464a10c4f68c11b2',1,'MeshActorManager']]],
+  ['topology_5fdiagnostics_5f_10',['topology_diagnostics_',['../classMeshActor.html#a1913d1fc44e953dcf603cbe143bb9ac7',1,'MeshActor']]],
+  ['transmittance_11',['transmittance',['../structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3',1,'tinyobj::material_t']]],
+  ['triangulate_12',['triangulate',['../structtinyobj_1_1ObjReaderConfig.html#a7ed0a20f5f6fe33fec82cbf8dd1fe8a3',1,'tinyobj::ObjReaderConfig']]],
+  ['triangulation_5fmethod_13',['triangulation_method',['../structtinyobj_1_1ObjReaderConfig.html#a011671d8ae0fd3f0c25fdfc09eb7a18e',1,'tinyobj::ObjReaderConfig']]],
+  ['turbulence_14',['turbulence',['../structtinyobj_1_1texture__option__t.html#a39e0e7cb38178022522df240d31709ec',1,'tinyobj::texture_option_t']]],
+  ['type_15',['type',['../structcore_1_1ArgType.html#a2c7db2406a5a1441fd8ff1aa4c8243a9',1,'core::ArgType::type'],['../structSelection.html#a8d2afce62173810d77bfde03c46e71d7',1,'Selection::type'],['../structtinyobj_1_1texture__option__t.html#ae93ebf5f70b1b3e3c1de58a257157e00',1,'tinyobj::texture_option_t::type']]],
+  ['type_5f_16',['type_',['../classQArgObject.html#ad6c2a2eebf51ac81693c4731ef520e1d',1,'QArgObject::type_'],['../classcore_1_1EventBus_1_1Subscription.html#abe1f0573f8cf2fcad69bc52b1dfc55a0',1,'core::EventBus::Subscription::type_'],['../classEventBus_1_1Subscription.html#abe1f0573f8cf2fcad69bc52b1dfc55a0',1,'EventBus::Subscription::type_']]],
+  ['type_5fmaps_17',['type_maps',['../structGeometrySubshapeIndex.html#a6608769a105d094f35127532228e34ee',1,'GeometrySubshapeIndex']]],
+  ['types_5f_18',['types_',['../classsystems_1_1feature_1_1FeatureParams.html#a4058dad7ee973c7550c7e0e8b856cfc9',1,'systems::feature::FeatureParams']]]
 ];

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/TopologyDiagnosticActor.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">TopologyDiagnosticActor.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="TopologyDiagnosticActor_8h_source.html">TopologyDiagnosticActor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CoincidentTopology_8h_source.html">CoincidentTopology.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshTopologyDiagnostics_8h_source.html">MeshTopologyDiagnostics.h</a>&quot;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;vtkCellArray.h&gt;</code><br />
+<code>#include &lt;vtkCellData.h&gt;</code><br />
+<code>#include &lt;vtkPoints.h&gt;</code><br />
+<code>#include &lt;vtkPlane.h&gt;</code><br />
+<code>#include &lt;vtkProperty.h&gt;</code><br />
+<code>#include &lt;vtkRenderer.h&gt;</code><br />
+<code>#include &lt;vtkUnsignedCharArray.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TopologyDiagnosticActor.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TopologyDiagnosticActor_8cpp__incl.png" border="0" usemap="#aapp_2render_2TopologyDiagnosticActor_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2TopologyDiagnosticActor_8cpp" id="aapp_2render_2TopologyDiagnosticActor_8cpp">
+<area shape="rect" title=" " alt="" coords="981,5,1203,45"/>
+<area shape="rect" href="TopologyDiagnosticActor_8h.html" title="网格拓扑诊断结果的独立叠加渲染对象" alt="" coords="485,93,680,119"/>
+<area shape="poly" title=" " alt="" coords="981,46,671,94,670,89,980,41"/>
+<area shape="rect" title=" " alt="" coords="5,240,61,265"/>
+<area shape="poly" title=" " alt="" coords="981,33,768,42,517,55,296,73,217,84,172,96,130,123,95,159,67,197,48,229,43,226,63,194,91,155,126,119,170,91,216,79,295,68,516,50,767,36,980,28"/>
+<area shape="rect" title=" " alt="" coords="1330,167,1425,192"/>
+<area shape="poly" title=" " alt="" coords="981,36,910,43,840,55,782,72,760,83,746,95,741,106,746,117,757,124,777,131,836,141,1006,154,1316,164,1316,170,1005,159,835,147,775,136,755,129,742,120,736,106,742,92,758,78,780,67,839,50,909,38,980,30"/>
+<area shape="rect" href="CoincidentTopology_8h.html" title=" " alt="" coords="755,93,914,119"/>
+<area shape="poly" title=" " alt="" coords="1031,48,886,92,884,87,1030,43"/>
+<area shape="rect" href="MeshTopologyDiagnostics_8h.html" title="渲染层使用的网格特殊拓扑实体与二面角边诊断" alt="" coords="183,93,385,119"/>
+<area shape="poly" title=" " alt="" coords="981,40,399,96,399,91,980,35"/>
+<area shape="rect" title=" " alt="" coords="939,93,1024,119"/>
+<area shape="poly" title=" " alt="" coords="1067,48,1010,87,1007,83,1064,43"/>
+<area shape="rect" title=" " alt="" coords="1049,93,1135,119"/>
+<area shape="poly" title=" " alt="" coords="1095,46,1095,79,1089,79,1089,46"/>
+<area shape="rect" title=" " alt="" coords="1159,93,1273,119"/>
+<area shape="poly" title=" " alt="" coords="1123,43,1187,84,1185,88,1121,48"/>
+<area shape="rect" title=" " alt="" coords="1297,93,1407,119"/>
+<area shape="poly" title=" " alt="" coords="1155,43,1302,87,1300,92,1154,48"/>
+<area shape="rect" title=" " alt="" coords="1432,93,1523,119"/>
+<area shape="poly" title=" " alt="" coords="1185,43,1419,90,1418,95,1184,48"/>
+<area shape="rect" title=" " alt="" coords="1547,93,1655,119"/>
+<area shape="poly" title=" " alt="" coords="1204,40,1534,91,1534,96,1203,46"/>
+<area shape="rect" title=" " alt="" coords="1679,93,1793,119"/>
+<area shape="poly" title=" " alt="" coords="1204,35,1414,58,1666,90,1665,96,1414,64,1203,41"/>
+<area shape="rect" title=" " alt="" coords="1817,93,1996,119"/>
+<area shape="poly" title=" " alt="" coords="1204,34,1804,90,1803,96,1204,39"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="157,167,221,192"/>
+<area shape="poly" title=" " alt="" coords="511,121,240,169,235,170,234,165,240,164,510,116"/>
+<area shape="poly" title=" " alt="" coords="486,117,297,138,209,152,146,169,96,199,56,232,52,228,93,194,144,164,208,147,296,132,485,112"/>
+<area shape="rect" title=" " alt="" coords="331,240,408,265"/>
+<area shape="poly" title=" " alt="" coords="485,116,425,123,366,134,316,149,298,158,286,168,281,177,281,185,290,202,308,218,331,231,329,236,305,222,286,205,276,186,276,175,282,165,295,154,314,144,364,129,424,118,485,111"/>
+<area shape="rect" href="TopologyDiagnosticCategory_8h.html" title="定义拓扑诊断可视化类别" alt="" coords="296,167,515,192"/>
+<area shape="poly" title=" " alt="" coords="555,121,448,164,446,159,553,116"/>
+<area shape="rect" title=" " alt="" coords="539,167,627,192"/>
+<area shape="poly" title=" " alt="" coords="585,119,585,153,580,153,580,119"/>
+<area shape="rect" title=" " alt="" coords="651,167,874,192"/>
+<area shape="poly" title=" " alt="" coords="613,116,722,159,720,164,611,121"/>
+<area shape="rect" title=" " alt="" coords="897,167,980,192"/>
+<area shape="poly" title=" " alt="" coords="644,116,884,164,883,169,643,121"/>
+<area shape="poly" title=" " alt="" coords="680,114,699,116,871,128,1006,135,1142,145,1317,164,1316,169,1142,150,1006,141,870,134,698,121,680,120"/>
+<area shape="rect" title=" " alt="" coords="1004,167,1119,192"/>
+<area shape="poly" title=" " alt="" coords="665,116,991,164,990,169,664,121"/>
+<area shape="rect" title=" " alt="" coords="1143,167,1305,192"/>
+<area shape="poly" title=" " alt="" coords="681,115,1129,164,1129,169,680,120"/>
+<area shape="poly" title=" " alt="" coords="165,194,72,237,70,232,163,190"/>
+<area shape="rect" title=" " alt="" coords="85,240,136,265"/>
+<area shape="poly" title=" " alt="" coords="178,194,135,233,132,229,175,190"/>
+<area shape="poly" title=" " alt="" coords="219,190,328,232,326,237,217,195"/>
+<area shape="rect" title=" " alt="" coords="160,240,219,265"/>
+<area shape="poly" title=" " alt="" coords="192,192,192,226,187,226,187,192"/>
+<area shape="rect" title=" " alt="" coords="243,240,306,265"/>
+<area shape="poly" title=" " alt="" coords="205,190,252,229,249,233,201,194"/>
+<area shape="rect" title=" " alt="" coords="433,240,503,265"/>
+<area shape="poly" title=" " alt="" coords="418,191,451,228,447,231,414,194"/>
+<area shape="poly" title=" " alt="" coords="270,121,217,160,214,156,267,117"/>
+</map>
+</div>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

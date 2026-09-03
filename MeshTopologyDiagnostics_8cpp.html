@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/MeshTopologyDiagnostics.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">MeshTopologyDiagnostics.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="MeshTopologyDiagnostics_8h_source.html">MeshTopologyDiagnostics.h</a>&quot;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &lt;unordered_set&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+MeshTopologyDiagnostics.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="MeshTopologyDiagnostics_8cpp__incl.png" border="0" usemap="#aapp_2render_2MeshTopologyDiagnostics_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2MeshTopologyDiagnostics_8cpp" id="aapp_2render_2MeshTopologyDiagnostics_8cpp">
+<area shape="rect" title=" " alt="" coords="363,5,655,31"/>
+<area shape="rect" href="MeshTopologyDiagnostics_8h.html" title="渲染层使用的网格特殊拓扑实体与二面角边诊断" alt="" coords="97,79,300,104"/>
+<area shape="poly" title=" " alt="" coords="460,33,263,78,261,73,459,28"/>
+<area shape="rect" title=" " alt="" coords="324,79,409,104"/>
+<area shape="poly" title=" " alt="" coords="488,33,403,75,401,70,485,28"/>
+<area shape="rect" title=" " alt="" coords="434,79,497,104"/>
+<area shape="poly" title=" " alt="" coords="504,32,482,68,477,66,500,30"/>
+<area shape="rect" title=" " alt="" coords="521,79,588,104"/>
+<area shape="poly" title=" " alt="" coords="519,30,542,66,538,69,515,32"/>
+<area shape="rect" title=" " alt="" coords="613,79,737,104"/>
+<area shape="poly" title=" " alt="" coords="537,28,636,71,634,76,535,33"/>
+<area shape="rect" title=" " alt="" coords="761,79,876,104"/>
+<area shape="poly" title=" " alt="" coords="560,28,756,73,755,78,558,33"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="167,152,231,177"/>
+<area shape="poly" title=" " alt="" coords="201,104,201,138,196,138,196,104"/>
+<area shape="rect" title=" " alt="" coords="5,225,61,251"/>
+<area shape="poly" title=" " alt="" coords="173,180,74,222,72,217,171,175"/>
+<area shape="rect" title=" " alt="" coords="85,225,136,251"/>
+<area shape="poly" title=" " alt="" coords="186,179,137,219,134,214,183,175"/>
+<area shape="rect" title=" " alt="" coords="160,225,237,251"/>
+<area shape="poly" title=" " alt="" coords="201,178,201,212,196,212,196,178"/>
+<area shape="rect" title=" " alt="" coords="261,225,320,251"/>
+<area shape="poly" title=" " alt="" coords="215,175,267,215,263,219,212,179"/>
+<area shape="rect" title=" " alt="" coords="345,225,407,251"/>
+<area shape="poly" title=" " alt="" coords="228,175,336,218,334,223,226,180"/>
+</map>
+</div>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

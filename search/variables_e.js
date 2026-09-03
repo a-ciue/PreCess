@@ -19,12 +19,14 @@ var searchData=
   ['next_5fvertex_5fid_5f_16',['next_vertex_id_',['../classGeometryRegistry.html#a0f64006ec0ad6c4acab222a66b146265',1,'GeometryRegistry']]],
   ['nodeid_17',['nodeId',['../structTreeNode.html#a76a2f05c583f9e174afc609b720c6e1c',1,'TreeNode']]],
   ['nodetype_18',['nodeType',['../structTreeNode.html#a32f2204c453b9e9b9b4c7013ee4eb9ce',1,'TreeNode']]],
-  ['normal_5fcb_19',['normal_cb',['../structtinyobj_1_1callback__t.html#aec89406f0dce3b2c27436808d3176c7c',1,'tinyobj::callback_t']]],
-  ['normal_5findex_20',['normal_index',['../structtinyobj_1_1index__t.html#acc544f8c9b23b5093d291dcf787a2d77',1,'tinyobj::index_t']]],
-  ['normal_5ftexname_21',['normal_texname',['../structtinyobj_1_1material__t.html#a7512ccf46044357bea1739d583871578',1,'tinyobj::material_t']]],
-  ['normal_5ftexopt_22',['normal_texopt',['../structtinyobj_1_1material__t.html#aa0087d1bfcaf0a195f8c244970c2ef4e',1,'tinyobj::material_t']]],
-  ['normals_23',['normals',['../structFaceSelectorHighlight_1_1FaceSpreadCache.html#a50cbddbf281df70eac56a306bbe859a6',1,'FaceSelectorHighlight::FaceSpreadCache::normals'],['../structtinyobj_1_1attrib__t.html#ac647590e9a03bec3c6cee5c215781e12',1,'tinyobj::attrib_t::normals']]],
-  ['num_5fface_5fvertices_24',['num_face_vertices',['../structtinyobj_1_1mesh__t.html#a0b3e989fbc944b29a4e67a288490ec07',1,'tinyobj::mesh_t']]],
-  ['num_5fline_5fvertices_25',['num_line_vertices',['../structtinyobj_1_1lines__t.html#a97270228c686b420540510c138df7ab3',1,'tinyobj::lines_t']]],
-  ['number_26',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]]
+  ['non_5fmanifold_5fedges_19',['non_manifold_edges',['../structMeshTopologyDiagnosticResult.html#aaf18c5accb9fdf55bf2f7ea8f3ced52b',1,'MeshTopologyDiagnosticResult']]],
+  ['non_5fmanifold_5fvertices_20',['non_manifold_vertices',['../structMeshTopologyDiagnosticResult.html#abb383fd94ecb260ef2b37528b36c3670',1,'MeshTopologyDiagnosticResult']]],
+  ['normal_5fcb_21',['normal_cb',['../structtinyobj_1_1callback__t.html#aec89406f0dce3b2c27436808d3176c7c',1,'tinyobj::callback_t']]],
+  ['normal_5findex_22',['normal_index',['../structtinyobj_1_1index__t.html#acc544f8c9b23b5093d291dcf787a2d77',1,'tinyobj::index_t']]],
+  ['normal_5ftexname_23',['normal_texname',['../structtinyobj_1_1material__t.html#a7512ccf46044357bea1739d583871578',1,'tinyobj::material_t']]],
+  ['normal_5ftexopt_24',['normal_texopt',['../structtinyobj_1_1material__t.html#aa0087d1bfcaf0a195f8c244970c2ef4e',1,'tinyobj::material_t']]],
+  ['normals_25',['normals',['../structFaceSelectorHighlight_1_1FaceSpreadCache.html#a50cbddbf281df70eac56a306bbe859a6',1,'FaceSelectorHighlight::FaceSpreadCache::normals'],['../structtinyobj_1_1attrib__t.html#ac647590e9a03bec3c6cee5c215781e12',1,'tinyobj::attrib_t::normals']]],
+  ['num_5fface_5fvertices_26',['num_face_vertices',['../structtinyobj_1_1mesh__t.html#a0b3e989fbc944b29a4e67a288490ec07',1,'tinyobj::mesh_t']]],
+  ['num_5fline_5fvertices_27',['num_line_vertices',['../structtinyobj_1_1lines__t.html#a97270228c686b420540510c138df7ab3',1,'tinyobj::lines_t']]],
+  ['number_28',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]]
 ];

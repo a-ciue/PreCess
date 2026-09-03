@@ -23,5 +23,7 @@ var searchData=
   ['io_5fsystem_20',['io_system',['../structsystems_1_1algo_1_1HandlerContext.html#a78b2e1cfbd16511f54f6297602ddeeb3',1,'systems::algo::HandlerContext']]],
   ['io_5fsystem_5f_21',['io_system_',['../classQModelManager.html#aaded691b8acfe185a40e1ce308448b60',1,'QModelManager::io_system_'],['../classsystems_1_1io_1_1QModelIOSystemAdaptor.html#a3ea89b9e3f0d4f33bdedbc06904a23b3',1,'systems::io::QModelIOSystemAdaptor::io_system_'],['../classsystems_1_1algo_1_1AlgorithmSystem.html#a99507878386dc92c1886ecd752f9a18a',1,'systems::algo::AlgorithmSystem::io_system_']]],
   ['ior_22',['ior',['../structtinyobj_1_1material__t.html#ac5d5fed58b485804119ed374ea90709e',1,'tinyobj::material_t']]],
-  ['isvisible_23',['isVisible',['../structTreeNode.html#a469c5a49d69f5006f59dbfcbce8f4280',1,'TreeNode']]]
+  ['isolated_5fedges_23',['isolated_edges',['../structMeshTopologyDiagnosticResult.html#a8eb742c6e07983978e6f364c603d2429',1,'MeshTopologyDiagnosticResult']]],
+  ['isolated_5fvertices_24',['isolated_vertices',['../structMeshTopologyDiagnosticResult.html#ab7de7ffa429169d17c450e97fd113d38',1,'MeshTopologyDiagnosticResult']]],
+  ['isvisible_25',['isVisible',['../structTreeNode.html#a469c5a49d69f5006f59dbfcbce8f4280',1,'TreeNode']]]
 ];

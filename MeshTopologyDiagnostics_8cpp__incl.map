@@ -1,0 +1,27 @@
+<map id="app/render/MeshTopologyDiagnostics.cpp" name="app/render/MeshTopologyDiagnostics.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="363,5,655,31"/>
+<area shape="rect" id="Node000002" href="$MeshTopologyDiagnostics_8h.html" title="渲染层使用的网格特殊拓扑实体与二面角边诊断" alt="" coords="97,79,300,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="460,33,263,78,261,73,459,28"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="324,79,409,104"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="488,33,403,75,401,70,485,28"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="434,79,497,104"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="504,32,482,68,477,66,500,30"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="521,79,588,104"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="519,30,542,66,538,69,515,32"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="613,79,737,104"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="537,28,636,71,634,76,535,33"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="761,79,876,104"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="560,28,756,73,755,78,558,33"/>
+<area shape="rect" id="Node000003" href="$Core_8h.html" title=" " alt="" coords="167,152,231,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="201,104,201,138,196,138,196,104"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,225,61,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="173,180,74,222,72,217,171,175"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="85,225,136,251"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="186,179,137,219,134,214,183,175"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="160,225,237,251"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="201,178,201,212,196,212,196,178"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="261,225,320,251"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="215,175,267,215,263,219,212,179"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="345,225,407,251"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="228,175,336,218,334,223,226,180"/>
+</map>

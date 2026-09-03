@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/MeshTopologyDiagnostics.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">MeshTopologyDiagnostics.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="MeshTopologyDiagnostics_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span></div>
+<div class="foldopen" id="foldopen00012" data-start="{" data-end="};">
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="structTopologyDiagnosticEdge.html">   12</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structTopologyDiagnosticEdge.html">TopologyDiagnosticEdge</a> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="structTopologyDiagnosticEdge.html#a276c15c8cb8f4ff23578a361d7cb61a4">   13</a></span>    std::array&lt;Index, 2&gt; <a class="code hl_variable" href="structTopologyDiagnosticEdge.html#a276c15c8cb8f4ff23578a361d7cb61a4">endpoints</a>; <span class="comment">//&gt; 组件内局部点 id</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="structTopologyDiagnosticEdge.html#ac342e2c4718cda3b15a3a5f836f0d816">   14</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structTopologyDiagnosticEdge.html#ac342e2c4718cda3b15a3a5f836f0d816">dihedral_angle_degrees</a> { -1.0 }; <span class="comment">//&gt; 无有效二面角时为 -1</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>};</div>
+</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span></div>
+<div class="foldopen" id="foldopen00020" data-start="{" data-end="};">
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html">   20</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structMeshTopologyDiagnosticResult.html">MeshTopologyDiagnosticResult</a> {</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html#ac3c00b854af7eeed7d6e7719dc41ff35">   21</a></span>    std::vector&lt;TopologyDiagnosticEdge&gt; <a class="code hl_variable" href="structMeshTopologyDiagnosticResult.html#ac3c00b854af7eeed7d6e7719dc41ff35">boundary_edges</a>;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html#ae83597a96f6f4e20e530c2eb445a6bde">   22</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="structMeshTopologyDiagnosticResult.html#ae83597a96f6f4e20e530c2eb445a6bde">boundary_faces</a>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html#aaf18c5accb9fdf55bf2f7ea8f3ced52b">   23</a></span>    std::vector&lt;TopologyDiagnosticEdge&gt; <a class="code hl_variable" href="structMeshTopologyDiagnosticResult.html#aaf18c5accb9fdf55bf2f7ea8f3ced52b">non_manifold_edges</a>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html#abb383fd94ecb260ef2b37528b36c3670">   24</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="structMeshTopologyDiagnosticResult.html#abb383fd94ecb260ef2b37528b36c3670">non_manifold_vertices</a>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html#a8eb742c6e07983978e6f364c603d2429">   25</a></span>    std::vector&lt;TopologyDiagnosticEdge&gt; <a class="code hl_variable" href="structMeshTopologyDiagnosticResult.html#a8eb742c6e07983978e6f364c603d2429">isolated_edges</a>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html#ab7de7ffa429169d17c450e97fd113d38">   26</a></span>    std::vector&lt;Index&gt; <a class="code hl_variable" href="structMeshTopologyDiagnosticResult.html#ab7de7ffa429169d17c450e97fd113d38">isolated_vertices</a>;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structMeshTopologyDiagnosticResult.html#a10255a18839328849e6d3b93764a7a4e">   27</a></span>    std::vector&lt;TopologyDiagnosticEdge&gt; <a class="code hl_variable" href="structMeshTopologyDiagnosticResult.html#a10255a18839328849e6d3b93764a7a4e">manifold_edges</a>; <span class="comment">//&gt; 恰好邻接两个面的边，保存二面角供范围筛选</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>};</div>
+</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="foldopen" id="foldopen00033" data-start="{" data-end="};">
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classMeshTopologyDiagnostics.html">   33</a></span><span class="keyword">class </span><a class="code hl_class" href="classMeshTopologyDiagnostics.html">MeshTopologyDiagnostics</a> {</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keyword">static</span> <a class="code hl_struct" href="structMeshTopologyDiagnosticResult.html">MeshTopologyDiagnosticResult</a> <a class="code hl_function" href="classMeshTopologyDiagnostics.html#a263a6fdcd4f4021885fd1048b88d8939">analyze</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshDataVtk.html">MeshDataVtk</a>&amp; mesh);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
+</div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aclassMeshTopologyDiagnostics_html"><div class="ttname"><a href="classMeshTopologyDiagnostics.html">MeshTopologyDiagnostics</a></div><div class="ttdoc">基于渲染网格数据计算特殊拓扑实体，不修改模型数据</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:33</div></div>
+<div class="ttc" id="aclassMeshTopologyDiagnostics_html_a263a6fdcd4f4021885fd1048b88d8939"><div class="ttname"><a href="classMeshTopologyDiagnostics.html#a263a6fdcd4f4021885fd1048b88d8939">MeshTopologyDiagnostics::analyze</a></div><div class="ttdeci">static MeshTopologyDiagnosticResult analyze(const MeshDataVtk &amp;mesh)</div><div class="ttdoc">对面网格和显式边执行拓扑诊断</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.cpp:162</div></div>
+<div class="ttc" id="astructMeshDataVtk_html"><div class="ttname"><a href="structMeshDataVtk.html">MeshDataVtk</a></div><div class="ttdoc">用于存储网格数据以供 VTK 渲染使用的结构体</div><div class="ttdef"><b>定义</b> Core.h:75</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html">MeshTopologyDiagnosticResult</a></div><div class="ttdoc">保存一次网格拓扑诊断得到的特殊实体集合</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:20</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html_a10255a18839328849e6d3b93764a7a4e"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html#a10255a18839328849e6d3b93764a7a4e">MeshTopologyDiagnosticResult::manifold_edges</a></div><div class="ttdeci">std::vector&lt; TopologyDiagnosticEdge &gt; manifold_edges</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:27</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html_a8eb742c6e07983978e6f364c603d2429"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html#a8eb742c6e07983978e6f364c603d2429">MeshTopologyDiagnosticResult::isolated_edges</a></div><div class="ttdeci">std::vector&lt; TopologyDiagnosticEdge &gt; isolated_edges</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:25</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html_aaf18c5accb9fdf55bf2f7ea8f3ced52b"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html#aaf18c5accb9fdf55bf2f7ea8f3ced52b">MeshTopologyDiagnosticResult::non_manifold_edges</a></div><div class="ttdeci">std::vector&lt; TopologyDiagnosticEdge &gt; non_manifold_edges</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:23</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html_ab7de7ffa429169d17c450e97fd113d38"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html#ab7de7ffa429169d17c450e97fd113d38">MeshTopologyDiagnosticResult::isolated_vertices</a></div><div class="ttdeci">std::vector&lt; Index &gt; isolated_vertices</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:26</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html_abb383fd94ecb260ef2b37528b36c3670"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html#abb383fd94ecb260ef2b37528b36c3670">MeshTopologyDiagnosticResult::non_manifold_vertices</a></div><div class="ttdeci">std::vector&lt; Index &gt; non_manifold_vertices</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:24</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html_ac3c00b854af7eeed7d6e7719dc41ff35"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html#ac3c00b854af7eeed7d6e7719dc41ff35">MeshTopologyDiagnosticResult::boundary_edges</a></div><div class="ttdeci">std::vector&lt; TopologyDiagnosticEdge &gt; boundary_edges</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:21</div></div>
+<div class="ttc" id="astructMeshTopologyDiagnosticResult_html_ae83597a96f6f4e20e530c2eb445a6bde"><div class="ttname"><a href="structMeshTopologyDiagnosticResult.html#ae83597a96f6f4e20e530c2eb445a6bde">MeshTopologyDiagnosticResult::boundary_faces</a></div><div class="ttdeci">std::vector&lt; Index &gt; boundary_faces</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:22</div></div>
+<div class="ttc" id="astructTopologyDiagnosticEdge_html"><div class="ttname"><a href="structTopologyDiagnosticEdge.html">TopologyDiagnosticEdge</a></div><div class="ttdoc">一条可直接用于诊断渲染的网格边</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:12</div></div>
+<div class="ttc" id="astructTopologyDiagnosticEdge_html_a276c15c8cb8f4ff23578a361d7cb61a4"><div class="ttname"><a href="structTopologyDiagnosticEdge.html#a276c15c8cb8f4ff23578a361d7cb61a4">TopologyDiagnosticEdge::endpoints</a></div><div class="ttdeci">std::array&lt; Index, 2 &gt; endpoints</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:13</div></div>
+<div class="ttc" id="astructTopologyDiagnosticEdge_html_ac342e2c4718cda3b15a3a5f836f0d816"><div class="ttname"><a href="structTopologyDiagnosticEdge.html#ac342e2c4718cda3b15a3a5f836f0d816">TopologyDiagnosticEdge::dihedral_angle_degrees</a></div><div class="ttdeci">double dihedral_angle_degrees</div><div class="ttdef"><b>定义</b> MeshTopologyDiagnostics.h:14</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

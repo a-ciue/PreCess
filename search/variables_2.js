@@ -6,11 +6,13 @@ var searchData=
   ['block_5fdatas_3',['block_datas',['../structBlockDatas.html#a54b235eea820f0aed5e723c39cfa7211',1,'BlockDatas']]],
   ['blockid_4',['blockID',['../structPatch.html#a0f0076e44991d5c7303458285215fdd1',1,'Patch']]],
   ['blocks_5f_5',['blocks_',['../structMeshData.html#ad5bf8ed9eb3e17cfadf3077b00c2fa2a',1,'MeshData']]],
-  ['brightness_6',['brightness',['../structtinyobj_1_1texture__option__t.html#a4aea70d3ffbaa6b439db7447557cbab2',1,'tinyobj::texture_option_t']]],
-  ['built_7',['built',['../structGeometrySubshapeIndex.html#acb1c4a20283d7edd67b1e152766f0b8d',1,'GeometrySubshapeIndex']]],
-  ['built_5fmesh_5f_8',['built_mesh_',['../classMeshAdjacency.html#a037729cdc2d38fd87bf4cc2ea6b712e1',1,'MeshAdjacency']]],
-  ['bump_5fmultiplier_9',['bump_multiplier',['../structtinyobj_1_1texture__option__t.html#ad2e2c79e305189e5d146992c32248d49',1,'tinyobj::texture_option_t']]],
-  ['bump_5ftexname_10',['bump_texname',['../structtinyobj_1_1material__t.html#aceb73086232f1cdd82f956fe8c6efcfb',1,'tinyobj::material_t']]],
-  ['bump_5ftexopt_11',['bump_texopt',['../structtinyobj_1_1material__t.html#a77cb124464a606ad2b649196e72c39a0',1,'tinyobj::material_t']]],
-  ['bus_5f_12',['bus_',['../classcore_1_1EventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'core::EventBus::Subscription::bus_'],['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad8c3d01a24a43127fa162d9c67691901',1,'systems::feature::FeatureEventGateway::bus_'],['../classEventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'EventBus::Subscription::bus_']]]
+  ['boundary_5fedges_6',['boundary_edges',['../structMeshTopologyDiagnosticResult.html#ac3c00b854af7eeed7d6e7719dc41ff35',1,'MeshTopologyDiagnosticResult']]],
+  ['boundary_5ffaces_7',['boundary_faces',['../structMeshTopologyDiagnosticResult.html#ae83597a96f6f4e20e530c2eb445a6bde',1,'MeshTopologyDiagnosticResult']]],
+  ['brightness_8',['brightness',['../structtinyobj_1_1texture__option__t.html#a4aea70d3ffbaa6b439db7447557cbab2',1,'tinyobj::texture_option_t']]],
+  ['built_9',['built',['../structGeometrySubshapeIndex.html#acb1c4a20283d7edd67b1e152766f0b8d',1,'GeometrySubshapeIndex']]],
+  ['built_5fmesh_5f_10',['built_mesh_',['../classMeshAdjacency.html#a037729cdc2d38fd87bf4cc2ea6b712e1',1,'MeshAdjacency']]],
+  ['bump_5fmultiplier_11',['bump_multiplier',['../structtinyobj_1_1texture__option__t.html#ad2e2c79e305189e5d146992c32248d49',1,'tinyobj::texture_option_t']]],
+  ['bump_5ftexname_12',['bump_texname',['../structtinyobj_1_1material__t.html#aceb73086232f1cdd82f956fe8c6efcfb',1,'tinyobj::material_t']]],
+  ['bump_5ftexopt_13',['bump_texopt',['../structtinyobj_1_1material__t.html#a77cb124464a606ad2b649196e72c39a0',1,'tinyobj::material_t']]],
+  ['bus_5f_14',['bus_',['../classcore_1_1EventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'core::EventBus::Subscription::bus_'],['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad8c3d01a24a43127fa162d9c67691901',1,'systems::feature::FeatureEventGateway::bus_'],['../classEventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'EventBus::Subscription::bus_']]]
 ];
