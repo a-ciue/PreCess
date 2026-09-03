@@ -327,6 +327,117 @@ Page {
             }
 
             ToolButton {
+                id: topologyDiagnosticBtn
+                text: "拓扑诊断"
+                Layout.preferredWidth: 70
+                Layout.fillHeight: true
+                onClicked: topologyDiagnosticMenu.open()
+
+                Menu {
+                    id: topologyDiagnosticMenu
+                    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                    onAboutToShow: { y = -height }
+
+                    // 当前渲染区域的拓扑诊断开关和二面角筛选范围。
+                    property real dihedralMinimumAngle: 0.0
+                    property real dihedralMaximumAngle: 150.0                
+
+                    function keepOpenAfterTrigger() {
+                        Qt.callLater(function() {
+                            if (!topologyDiagnosticMenu.visible)
+                                topologyDiagnosticMenu.open()
+                        })
+                    }
+
+                    MenuItem {
+                        text: "边界边"
+                        checkable: true
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(0, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "边界面"
+                        checkable: true
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(1, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "非流形边"
+                        checkable: true
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(2, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "非流形点"
+                        checkable: true
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(3, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "孤立边"
+                        checkable: true
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(4, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "孤立点"
+                        checkable: true
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(5, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        text: "二面角边"
+                        checkable: true
+                        onToggled: myItem.setTopologyDiagnosticCategoryEnabled(6, checked)
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        id: minimumDihedralItem
+                        text: "最小二面角"
+                        contentItem: RowLayout {
+                            Label { text: minimumDihedralItem.text; Layout.fillWidth: true }
+                            SpinBox {
+                                from: 0
+                                to: 180
+                                editable: true
+                                value: topologyDiagnosticMenu.dihedralMinimumAngle
+                                onValueModified: {
+                                    topologyDiagnosticMenu.dihedralMinimumAngle = value
+                                    if (topologyDiagnosticMenu.dihedralMaximumAngle < value)
+                                        topologyDiagnosticMenu.dihedralMaximumAngle = value
+                                    myItem.setDihedralAngleRange(topologyDiagnosticMenu.dihedralMinimumAngle,
+                                                                 topologyDiagnosticMenu.dihedralMaximumAngle)
+                                }
+                            }
+                        }
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        id: maximumDihedralItem
+                        text: "最大二面角"
+                        contentItem: RowLayout {
+                            Label { text: maximumDihedralItem.text; Layout.fillWidth: true }
+                            SpinBox {
+                                from: 0
+                                to: 180
+                                editable: true
+                                value: topologyDiagnosticMenu.dihedralMaximumAngle
+                                onValueModified: {
+                                    topologyDiagnosticMenu.dihedralMaximumAngle = value
+                                    if (topologyDiagnosticMenu.dihedralMinimumAngle > value)
+                                        topologyDiagnosticMenu.dihedralMinimumAngle = value
+                                    myItem.setDihedralAngleRange(topologyDiagnosticMenu.dihedralMinimumAngle,
+                                                                 topologyDiagnosticMenu.dihedralMaximumAngle)
+                                }
+                            }
+                        }
+                        onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                }
+            }
+
+            ToolButton {
                 text: "裁剪"
                 checkable: true
                 Layout.preferredWidth: 50

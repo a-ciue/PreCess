@@ -23,6 +23,7 @@ class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
 class AttributeOperator;
+class TopologyDiagnosticActor;
 
 // 保存面属性渲染临时修改 face_mapper_ 前的相对偏移参数
 struct FaceAttributeOffsetState {
@@ -73,6 +74,9 @@ public:
         const std::string& attr_name,
         std::map<std::string, std::any> args);
 
+    /** @brief 获取本组件独立的拓扑诊断渲染对象 */
+    TopologyDiagnosticActor& topologyDiagnostics();
+
 private:
     void applyStyle();
 
@@ -80,6 +84,7 @@ private:
     MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
     bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
+    std::unique_ptr<TopologyDiagnosticActor> topology_diagnostics_;
 
     vtkPlane* clip_plane_ {};
     vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;

@@ -4,6 +4,7 @@
 #include "renderStrategy/AttriRenderStrategyVector.h"
 #include "renderStrategy/AttriRenderStrategyUV.h"
 #include "renderStrategy/AttriRenderStrategyRGB.h"
+#include "TopologyDiagnosticActor.h"
 #include <spdlog/spdlog.h>
 #include <vtkRenderer.h>
 #include <vtkTextProperty.h>
@@ -70,6 +71,11 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
         scalar_bar_component_id_ = -1;
     }
     auto& actor = this->component_actors_[component_id];
+    for (size_t category = 0; category < topology_diagnostic_category_enabled_.size(); ++category) {
+        actor->topologyDiagnostics().setCategoryEnabled(
+            static_cast<TopologyDiagnosticCategory>(category), topology_diagnostic_category_enabled_[category]);
+    }
+    actor->topologyDiagnostics().setDihedralAngleRange(dihedral_minimum_, dihedral_maximum_);
     actor->loadModelData(model_data);
     actor->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor);
@@ -151,4 +157,23 @@ void MeshActorManager::cancelAttri(Index component_id)
             scalar_bar_component_id_ = -1;
         }
     }
+}
+
+void MeshActorManager::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)
+{
+    if (category < 0 || category >= static_cast<int>(topology_diagnostic_category_enabled_.size()))
+        return;
+    topology_diagnostic_category_enabled_[static_cast<size_t>(category)] = enabled;
+    for (auto& [id, actor] : component_actors_) {
+        actor->topologyDiagnostics().setCategoryEnabled(
+            static_cast<TopologyDiagnosticCategory>(category), enabled);
+    }
+}
+
+void MeshActorManager::setDihedralAngleRange(double minimum, double maximum)
+{
+    dihedral_minimum_ = minimum;
+    dihedral_maximum_ = maximum;
+    for (auto& [id, actor] : component_actors_)
+        actor->topologyDiagnostics().setDihedralAngleRange(minimum, maximum);
 }

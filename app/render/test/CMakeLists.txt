@@ -90,3 +90,6 @@ target_link_libraries(TestInteractionService PRIVATE
     TKPrim TKBRep TKGeomBase TKMath TKernel TKTopAlgo
 )
 vtk_module_autoinit(TARGETS TestInteractionService MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+
+precess_add_test(TestMeshTopologyDiagnostics TestMeshTopologyDiagnostics.cpp)
+precess_test_link_libraries(TestMeshTopologyDiagnostics vtkPart TestDeps)
