@@ -46,8 +46,8 @@ try {
         return false;
     }
 
-    io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(), resolved_unique_name, converted_args);
-    return true;
+    // 透传读取结果：文件类型未注册或文件内容无法解析时返回false，供界面收集失败文件
+    return io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(), resolved_unique_name, converted_args);
 } catch (const std::exception& e) {
     spdlog::error("ModelIOSystemAdaptor::read: Exception occurred - {}", e.what());
     return {};

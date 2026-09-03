@@ -26,25 +26,27 @@ ModelIOSystem::ModelIOSystem(ModelLayer& manager)
 
 ModelIOSystem::~ModelIOSystem() = default;
 
-void ModelIOSystem::read(const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)
+bool ModelIOSystem::read(const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)
 {
     // 检查文件类型是否已注册
     SystemHandler* handler = this->handlers_.count(file_type) ? this->handlers_[file_type].get() : nullptr;
     if (!handler) {
         spdlog::error(R"(file type "{}" not registered when read model file)", file_type);
-        return;
+        return false;
     }
 
     auto payload = handler->read_model(path, args);
-    if (payload) {
-        this->manager_->addModel(payload->model_name, std::move(payload->components));
-    } else {
-        // 文件内容与该文件类型不符（损坏或选错类型）时无法构造模型，此处只记录日志，
-        // 不抛异常：算法插件读回结果文件时依赖"读取失败不中断"的现有行为。
+    if (!payload) {
+        // 文件内容与该文件类型不符（损坏或选错类型）时无法构造模型，此处返回false而不抛异常：
+        // 算法插件读回结果文件时依赖"读取失败不中断"的现有行为，由调用方决定是否中断。
         // 日志经 QtLogSink 进入界面"日志"面板；该面板启动即订阅消息、隐藏时同样累积，
         // 用户打开面板即可看到此处记录的文件路径与文件类型。
         spdlog::error(R"(failed to read model from file "{}" as file type "{}")", path.string(), file_type);
+        return false;
     }
+
+    this->manager_->addModel(payload->model_name, std::move(payload->components));
+    return true;
 }
 
 void ModelIOSystem::write(Index model, const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)

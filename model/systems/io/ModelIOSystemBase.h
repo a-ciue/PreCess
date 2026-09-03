@@ -17,7 +17,12 @@ namespace systems::io {
 class ModelIOSystemBase {
 public:
     virtual ~ModelIOSystemBase() = default;
-    virtual void read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) = 0;
+    /**
+     * @brief 读模型文件
+     * @return 读取并添加模型成功返回true；文件类型未注册或文件内容无法解析为模型时返回false
+     * @note 失败不抛异常，由调用方自行决定是中断还是继续（如算法插件读回结果文件时常选择继续）
+     */
+    virtual bool read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) = 0;
     virtual void write(Index model, const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) = 0;
     virtual void writeComponents(const std::vector<Index>& component_ids,
         const std::filesystem::path& path,
