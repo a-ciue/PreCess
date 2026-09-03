@@ -249,9 +249,16 @@ ApplicationWindow {
         // 文件过多时只展示前若干条，避免对话框过长
         informativeText: {
             let names = []
-            for (let i = 0; i < Math.min(failedFiles.length, 10); ++i)
+            for (let i = 0; i < Math.min(failedFiles.length, 10); ++i) {
                 // 先归一化分隔符，兼容 Windows 本地路径及含 \ 的 URL path 段
-                names.push(decodeURIComponent(String(failedFiles[i]).replace(/\\/g, "/").split("/").pop()))
+                const name = String(failedFiles[i]).replace(/\\/g, "/").split("/").pop()
+                // 文件名含 % 但非合法百分号编码时 decodeURIComponent 会抛 URIError，失败则保留原名
+                try {
+                    names.push(decodeURIComponent(name))
+                } catch (e) {
+                    names.push(name)
+                }
+            }
             if (failedFiles.length > 10)
                 names.push(qsTr("等 %1 个文件").arg(failedFiles.length))
             return names.join("\n")
