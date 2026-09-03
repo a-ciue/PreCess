@@ -114,6 +114,10 @@ try {
 
 QString QModelIOSystemAdaptor::resolveFileTypeBySuffix(const QString& suffix) const
 {
+    // 与 canImport 一致：io_system_ 可能尚未就绪，防御性判空
+    if (!io_system_) {
+        return {};
+    }
     for (const ModelIOInfo* info : io_system_->registeredFileTypeInfos()) {
         // 扩展名列表为空表示该类型支持任意扩展名
         if (info->extensions.empty()) {
