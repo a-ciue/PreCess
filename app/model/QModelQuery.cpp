@@ -252,7 +252,7 @@ QString QModelQuery::getComponentName(Index component_id) const
     if (!component) {
         return QString();
     }
-    return QString::fromLocal8Bit(component->name);
+    return QString::fromStdString(component->name);
 }
 
 Q_INVOKABLE QStringList QModelQuery::getModelAttriName(Index model_id) const
@@ -395,7 +395,7 @@ QVariantList QModelQuery::getComponentsSummary(Index model_id) const
 
         QVariantMap m;
         m["component_id"] = cid;
-        m["name"] = QString::fromLocal8Bit(c->name);
+        m["name"] = QString::fromStdString(c->name);
         m["has_mesh"] = (bool)c->mesh;
         m["has_geometry"] = (bool)c->geometry;
         m["material_id"] = c->material_id;
