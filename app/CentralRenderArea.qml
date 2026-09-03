@@ -15,10 +15,6 @@ Page {
     property bool faceSelectByAngle: false
     property real faceSelectAngle: 30.0
 
-    // 当前渲染区域的拓扑诊断开关和二面角筛选范围。
-    property real dihedralMinimumAngle: 0.0
-    property real dihedralMaximumAngle: 150.0
-
     // 标记由功能自动开启的属性渲染，避免影响用户手动打开的属性渲染面板。
     property bool featureAttributeRenderingActive: false
     property int featureAttributeRenderingComponentId: -1
@@ -342,6 +338,10 @@ Page {
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
 
+                    // 当前渲染区域的拓扑诊断开关和二面角筛选范围。
+                    property real dihedralMinimumAngle: 0.0
+                    property real dihedralMaximumAngle: 150.0                
+
                     function keepOpenAfterTrigger() {
                         Qt.callLater(function() {
                             if (!topologyDiagnosticMenu.visible)
@@ -401,13 +401,13 @@ Page {
                                 from: 0
                                 to: 180
                                 editable: true
-                                value: root.dihedralMinimumAngle
+                                value: topologyDiagnosticMenu.dihedralMinimumAngle
                                 onValueModified: {
-                                    root.dihedralMinimumAngle = value
-                                    if (root.dihedralMaximumAngle < value)
-                                        root.dihedralMaximumAngle = value
-                                    myItem.setDihedralAngleRange(root.dihedralMinimumAngle,
-                                                                 root.dihedralMaximumAngle)
+                                    topologyDiagnosticMenu.dihedralMinimumAngle = value
+                                    if (topologyDiagnosticMenu.dihedralMaximumAngle < value)
+                                        topologyDiagnosticMenu.dihedralMaximumAngle = value
+                                    myItem.setDihedralAngleRange(topologyDiagnosticMenu.dihedralMinimumAngle,
+                                                                 topologyDiagnosticMenu.dihedralMaximumAngle)
                                 }
                             }
                         }
@@ -422,13 +422,13 @@ Page {
                                 from: 0
                                 to: 180
                                 editable: true
-                                value: root.dihedralMaximumAngle
+                                value: topologyDiagnosticMenu.dihedralMaximumAngle
                                 onValueModified: {
-                                    root.dihedralMaximumAngle = value
-                                    if (root.dihedralMinimumAngle > value)
-                                        root.dihedralMinimumAngle = value
-                                    myItem.setDihedralAngleRange(root.dihedralMinimumAngle,
-                                                                 root.dihedralMaximumAngle)
+                                    topologyDiagnosticMenu.dihedralMaximumAngle = value
+                                    if (topologyDiagnosticMenu.dihedralMinimumAngle > value)
+                                        topologyDiagnosticMenu.dihedralMinimumAngle = value
+                                    myItem.setDihedralAngleRange(topologyDiagnosticMenu.dihedralMinimumAngle,
+                                                                 topologyDiagnosticMenu.dihedralMaximumAngle)
                                 }
                             }
                         }
