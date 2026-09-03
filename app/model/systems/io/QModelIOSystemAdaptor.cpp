@@ -57,18 +57,15 @@ try {
 }
 
 bool QModelIOSystemAdaptor::canImport(const QUrl& url) const
-try {
+{
+    if (!io_system_) {
+        return false;
+    }
     const QFileInfo file_info(url.toLocalFile());
     if (!file_info.isFile()) {
         return false;
     }
     return !resolveFileTypeBySuffix(file_info.suffix().toLower()).isEmpty();
-} catch (const std::exception& e) {
-    spdlog::error("ModelIOSystemAdaptor::canImport: Exception occurred - {}", e.what());
-    return {};
-} catch (...) {
-    spdlog::error("ModelIOSystemAdaptor::canImport: Unknown exception occurred");
-    return {};
 }
 
 bool QModelIOSystemAdaptor::write(const QString& unique_name, Index model, const QUrl& url, const QVariantList& args)
