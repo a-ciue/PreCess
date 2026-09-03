@@ -41,7 +41,7 @@ std::optional<ModelPayload> InpModelHandler::read_model(const fs::path& path, co
 
         spdlog::debug("read_model: point_sets.size() = {}", abaqus_mesh.point_sets.size());
         spdlog::debug("read_model: cell_sets.size() = {}", abaqus_mesh.cell_sets.size());
-        return ModelPayload{path.filename().string(), std::move(comps)};
+        return ModelPayload{path.filename().u8string(), std::move(comps)};
     } catch (const std::exception& e) {
         spdlog::error("InpModelHandler::read_model: exception reading {}: {}", path.string(), e.what());
         return std::nullopt;

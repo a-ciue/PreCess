@@ -22,7 +22,7 @@ std::optional<ModelPayload> OBJModelHandler::read_model(const fs::path& path, co
         return std::nullopt;
     }
 
-    return ModelPayload{ path.filename().string(), std::move(*comps) };
+    return ModelPayload{ path.filename().u8string(), std::move(*comps) };
 }
 
 void OBJModelHandler::write_components(const ModelLayer& mgr,
