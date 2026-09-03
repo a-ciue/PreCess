@@ -250,7 +250,8 @@ ApplicationWindow {
         informativeText: {
             let names = []
             for (let i = 0; i < Math.min(failedFiles.length, 10); ++i)
-                names.push(decodeURIComponent(String(failedFiles[i]).split("/").pop()))
+                // 先归一化分隔符，兼容 Windows 本地路径及含 \ 的 URL path 段
+                names.push(decodeURIComponent(String(failedFiles[i]).replace(/\\/g, "/").split("/").pop()))
             if (failedFiles.length > 10)
                 names.push(qsTr("等 %1 个文件").arg(failedFiles.length))
             return names.join("\n")
