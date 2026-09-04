@@ -13,7 +13,6 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 import QtQuick.Controls.Fusion
 
 import com.kdab.dockwidgets as KDDW
@@ -206,18 +205,15 @@ ApplicationWindow {
                 return
 
             // 逐个导入并记录失败项，全部导入结束后统一重置视角
-            let failed = []
+            let failed = 0
             for (const file of files) {
                 if (!QModelManager.ioSystem.read("All files", file, []))
-                    failed.push(file)
+                    ++failed
             }
-            if (failed.length < files.length && App.registry.renderWindow)
+            if (failed < files.length && App.registry.renderWindow)
                 App.registry.renderWindow.resetCamera()
-            if (failed.length > 0) {
-                importFailedDialog.failedFiles = failed
-                importFailedDialog.open()
+            if (failed > 0)
                 outputLogDock.show() // 失败原因由日志面板承载，直接打开便于查看
-            }
         }
 
         // 拖入可导入文件时的高亮提示
@@ -234,34 +230,6 @@ ApplicationWindow {
                 font.pixelSize: 16
                 color: "#1a6fc4"
             }
-        }
-    }
-
-    // 拖拽导入失败的文件清单
-    MessageDialog {
-        id: importFailedDialog
-        title: qsTr("导入失败")
-        buttons: MessageDialog.Ok
-        text: qsTr("以下文件未能导入，详细原因见日志面板：")
-
-        property var failedFiles: []
-
-        // 文件过多时只展示前若干条，避免对话框过长
-        informativeText: {
-            let names = []
-            for (let i = 0; i < Math.min(failedFiles.length, 10); ++i) {
-                // 先归一化分隔符，兼容 Windows 本地路径及含 \ 的 URL path 段
-                const name = String(failedFiles[i]).replace(/\\/g, "/").split("/").pop()
-                // 文件名含 % 但非合法百分号编码时 decodeURIComponent 会抛 URIError，失败则保留原名
-                try {
-                    names.push(decodeURIComponent(name))
-                } catch (e) {
-                    names.push(name)
-                }
-            }
-            if (failedFiles.length > 10)
-                names.push(qsTr("等 %1 个文件").arg(failedFiles.length))
-            return names.join("\n")
         }
     }
 
