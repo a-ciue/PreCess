@@ -107,10 +107,6 @@ QString QModelIOSystemAdaptor::resolveFileTypeBySuffix(const QString& suffix) co
         return {};
     }
     for (const ModelIOInfo* info : io_system_->registeredFileTypeInfos()) {
-        // 扩展名列表为空表示该类型支持任意扩展名
-        if (info->extensions.empty()) {
-            return QString::fromStdString(info->name);
-        }
         for (const auto& extension : info->extensions) {
             if (suffix.compare(QString::fromStdString(extension), Qt::CaseInsensitive) == 0) {
                 return QString::fromStdString(info->name);

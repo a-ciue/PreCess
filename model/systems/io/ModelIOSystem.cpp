@@ -37,10 +37,6 @@ bool ModelIOSystem::read(const std::filesystem::path& path, const string& file_t
 
     auto payload = handler->read_model(path, args);
     if (!payload) {
-        // 文件内容与该文件类型不符（损坏或选错类型）时无法构造模型，此处返回false而不抛异常：
-        // 算法插件读回结果文件时依赖"读取失败不中断"的现有行为，由调用方决定是否中断。
-        // 日志经 QtLogSink 进入界面"日志"面板；该面板启动即订阅消息、隐藏时同样累积，
-        // 用户打开面板即可看到此处记录的文件路径与文件类型。
         spdlog::error(R"(failed to read model from file "{}" as file type "{}")", path.string(), file_type);
         return false;
     }
