@@ -179,6 +179,50 @@ ApplicationWindow {
 
     KDDW.LayoutSaver { id: layoutSaver }
 
+    // 拖拽导入：一次可拖入多个文件，逐个交给 read；能否导入由 C++ 判定并写日志
+    DropArea {
+        id: importDropArea
+        anchors.fill: parent
+        z: 1
+
+        // 不做前置过滤：是否可导入由 C++ read 判定（失败会记 error 日志）
+        onEntered: {
+            drag.accepted = drag.urls.length > 0
+        }
+        onDropped: {
+            drop.accepted = drop.urls.length > 0
+            if (drop.urls.length === 0)
+                return
+
+            // 逐个导入并记录失败项，全部导入结束后统一重置视角
+            let failed = 0
+            for (const url of drop.urls) {
+                if (!QModelManager.ioSystem.read("All files", url, []))
+                    ++failed
+            }
+            if (failed < drop.urls.length && App.registry.renderWindow)
+                App.registry.renderWindow.resetCamera()
+            if (failed > 0)
+                outputLogDock.show() // 失败原因由日志面板承载，直接打开便于查看
+        }
+
+        // 拖入可导入文件时的高亮提示
+        Rectangle {
+            anchors.fill: parent
+            visible: importDropArea.containsDrag
+            color: Qt.rgba(0.29, 0.56, 0.89, 0.12)
+            border.color: "#4a90e2"
+            border.width: 2
+
+            Label {
+                anchors.centerIn: parent
+                text: qsTr("松开鼠标以导入模型文件")
+                font.pixelSize: 16
+                color: "#1a6fc4"
+            }
+        }
+    }
+
     Component.onCompleted: {
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
         QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)

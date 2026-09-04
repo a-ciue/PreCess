@@ -53,6 +53,13 @@ signals:
     void dialogNameFiltersChanged();
 
 private:
+    /**
+     * @brief 按文件扩展名解析出支持该文件类型的注册名
+     * @param suffix 小写的、不含点的文件扩展名
+     * @return 注册的文件类型唯一名称，无匹配时返回空串
+     */
+    QString resolveFileTypeBySuffix(const QString& suffix) const;
+
     ModelIOSystem* io_system_; //> 文件系统的引用
 };
 }

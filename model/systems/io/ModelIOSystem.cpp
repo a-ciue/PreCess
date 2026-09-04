@@ -26,21 +26,23 @@ ModelIOSystem::ModelIOSystem(ModelLayer& manager)
 
 ModelIOSystem::~ModelIOSystem() = default;
 
-void ModelIOSystem::read(const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)
+bool ModelIOSystem::read(const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)
 {
     // 检查文件类型是否已注册
     SystemHandler* handler = this->handlers_.count(file_type) ? this->handlers_[file_type].get() : nullptr;
     if (!handler) {
         spdlog::error(R"(file type "{}" not registered when read model file)", file_type);
-        return;
+        return false;
     }
 
     auto payload = handler->read_model(path, args);
-    if (payload) {
-        this->manager_->addModel(payload->model_name, std::move(payload->components));
-    } else {
-        spdlog::warn(R"(failed to read model from file "{}")", path.string());
+    if (!payload) {
+        spdlog::error(R"(failed to read model from file "{}" as file type "{}")", path.string(), file_type);
+        return false;
     }
+
+    this->manager_->addModel(payload->model_name, std::move(payload->components));
+    return true;
 }
 
 void ModelIOSystem::write(Index model, const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)

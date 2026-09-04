@@ -20,9 +20,10 @@ namespace {
 // 测试用 IO 系统，只记录插件读写请求，避免真实导入导出影响用例状态。
 class MockIOSystem : public systems::io::ModelIOSystemBase {
 public:
-    void read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override
+    bool read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override
     {
         spdlog::info("[MockIO] read file: {}", path.string());
+        return true;
     }
 
     void write(Index model, const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override
