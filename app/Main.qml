@@ -179,38 +179,28 @@ ApplicationWindow {
 
     KDDW.LayoutSaver { id: layoutSaver }
 
-    // 拖拽导入：一次可拖入多个文件，按扩展名过滤出可导入的文件后逐个导入
+    // 拖拽导入：一次可拖入多个文件，逐个交给 read；能否导入由 C++ 判定并写日志
     DropArea {
         id: importDropArea
         anchors.fill: parent
         z: 1
 
-        // 过滤出可导入的文件，拖拽判定与真正导入共用
-        function filterImportableFiles(urls) {
-            let files = []
-            for (const url of urls) {
-                if (QModelManager.ioSystem.canImport(url))
-                    files.push(url)
-            }
-            return files
-        }
-
+        // 不做前置过滤：是否可导入由 C++ read 判定（失败会记 error 日志）
         onEntered: {
-            drag.accepted = filterImportableFiles(drag.urls).length > 0
+            drag.accepted = drag.urls.length > 0
         }
         onDropped: {
-            const files = filterImportableFiles(drop.urls)
-            drop.accepted = files.length > 0
-            if (files.length === 0)
+            drop.accepted = drop.urls.length > 0
+            if (drop.urls.length === 0)
                 return
 
             // 逐个导入并记录失败项，全部导入结束后统一重置视角
             let failed = 0
-            for (const file of files) {
-                if (!QModelManager.ioSystem.read("All files", file, []))
+            for (const url of drop.urls) {
+                if (!QModelManager.ioSystem.read("All files", url, []))
                     ++failed
             }
-            if (failed < files.length && App.registry.renderWindow)
+            if (failed < drop.urls.length && App.registry.renderWindow)
                 App.registry.renderWindow.resetCamera()
             if (failed > 0)
                 outputLogDock.show() // 失败原因由日志面板承载，直接打开便于查看

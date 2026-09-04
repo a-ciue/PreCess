@@ -56,18 +56,6 @@ try {
     return {};
 }
 
-bool QModelIOSystemAdaptor::canImport(const QUrl& url) const
-{
-    if (!io_system_) {
-        return false;
-    }
-    const QFileInfo file_info(url.toLocalFile());
-    if (!file_info.isFile()) {
-        return false;
-    }
-    return !resolveFileTypeBySuffix(file_info.suffix().toLower()).isEmpty();
-}
-
 bool QModelIOSystemAdaptor::write(const QString& unique_name, Index model, const QUrl& url, const QVariantList& args)
 try {
     // 将QArgObject列表转换为std::vector<std::any>
@@ -114,7 +102,7 @@ try {
 
 QString QModelIOSystemAdaptor::resolveFileTypeBySuffix(const QString& suffix) const
 {
-    // 与 canImport 一致：io_system_ 可能尚未就绪，防御性判空
+    // io_system_ 可能尚未就绪，防御性判空
     if (!io_system_) {
         return {};
     }

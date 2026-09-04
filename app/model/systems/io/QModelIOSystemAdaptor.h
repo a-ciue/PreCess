@@ -30,12 +30,6 @@ public:
      */
     Q_INVOKABLE bool read(const QString& unique_name, const QUrl& url, const QVariantList& args);
     /**
-     * @brief 判断指定文件是否可被导入：路径是存在的文件且其扩展名被某个已注册文件类型支持
-     * @param url 文件路径
-     * @return 可导入返回true
-     */
-    Q_INVOKABLE bool canImport(const QUrl& url) const;
-    /**
      * @brief 按照给定文件类型，写出指定模型到指定路径的文件
      * @param unique_name 文件类型唯一名称
      * @param model 模型索引
