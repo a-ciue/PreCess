@@ -41,6 +41,17 @@ public:
 
 } // namespace
 
+TEST_CASE("GmshMeshHandler exposes simplified mesh and recombination modes", "[GmshPlugin]")
+{
+    systems::algo::GmshMeshHandler handler;
+    const auto argTypes = handler.args_type();
+
+    REQUIRE(argTypes.size() == 12);
+    REQUIRE(argTypes[1].content == "划分,删除");
+    REQUIRE(argTypes[6].content == "三角形,四边形主导,纯四边形,结构化四边形");
+    REQUIRE(argTypes[8].content == "Simple,Blossom|1");
+}
+
 TEST_CASE("GmshMeshHandler rebuilds shared edge state across executions", "[GmshPlugin]")
 {
     spdlog::set_level(spdlog::level::info);
@@ -88,9 +99,17 @@ TEST_CASE("GmshMeshHandler rebuilds shared edge state across executions", "[Gmsh
     REQUIRE(comp != nullptr);
     REQUIRE(comp->mesh != nullptr);
     REQUIRE(comp->mapping != nullptr);
-    const std::size_t first_face_cell_count = comp->mesh->face_vertices_offset_.size() - 1;
+    std::size_t first_face_cell_count = comp->mesh->face_vertices_offset_.size() - 1;
     REQUIRE(first_face_cell_count > 0);
     REQUIRE(comp->mapping->geometry_face_to_mesh_topology.size() == 1);
+
+    // “划分”统一承担重划分：同一面已有网格时不再跳过，而是完成替换并保持映射有效。
+    handler.execute(context, args);
+    comp = modelLayer.findComponent(componentIds[0]);
+    REQUIRE(comp != nullptr);
+    REQUIRE(comp->mesh->face_vertices_offset_.size() - 1 > 0);
+    REQUIRE(comp->mapping->geometry_face_to_mesh_topology.size() == 1);
+    first_face_cell_count = comp->mesh->face_vertices_offset_.size() - 1;
 
     // 第二次独立执行划分相邻面，必须由 GeometryMeshMap 重建共享边状态。
     selection->ids = { comp->geometry->index.faceGlobalId(3) };
@@ -171,7 +190,7 @@ TEST_CASE("GmshMeshHandler rejects invalid current parameters", "[GmshPlugin]")
     REQUIRE(comp->mesh == nullptr);
 }
 
-TEST_CASE("GmshMeshHandler keeps full-quad boundary segment counts even", "[GmshPlugin]")
+TEST_CASE("GmshMeshHandler generates pure quads without forcing short edges first", "[GmshPlugin]")
 {
     BRepPrimAPI_MakeBox boxMaker(10.0, 10.0, 10.0);
     boxMaker.Build();
@@ -201,7 +220,7 @@ TEST_CASE("GmshMeshHandler keeps full-quad boundary segment counts even", "[Gmsh
     selection->type = ElementEnum::GeometryFace;
     selection->ids = { comp->geometry->index.faceGlobalId(1) };
 
-    // 边长只有 10，而目标尺寸为 100；未修复时每条边只有 1 段，full-quad 会直接失败。
+    // 边长只有 10，而目标尺寸为 100；纯四边形应先保留单段短边做普通重组，必要时才回退 full-quad。
     std::vector<core::ArgObject> args {
         core::ArgObject::create<ArgTypeEnum::Selector>(selection),
         core::ArgObject::create<ArgTypeEnum::Combo>(0),
@@ -209,9 +228,9 @@ TEST_CASE("GmshMeshHandler keeps full-quad boundary segment counts even", "[Gmsh
         core::ArgObject::create<ArgTypeEnum::Text>(""),
         core::ArgObject::create<ArgTypeEnum::Text>(""),
         core::ArgObject::create<ArgTypeEnum::Combo>(0),
-        core::ArgObject::create<ArgTypeEnum::Combo>(1),
+        core::ArgObject::create<ArgTypeEnum::Combo>(2),
         core::ArgObject::create<ArgTypeEnum::Text>(""),
-        core::ArgObject::create<ArgTypeEnum::Combo>(3),
+        core::ArgObject::create<ArgTypeEnum::Combo>(1),
         core::ArgObject::create<ArgTypeEnum::Text>(""),
         core::ArgObject::create<ArgTypeEnum::Text>(""),
         core::ArgObject::create<ArgTypeEnum::Bool>(false)

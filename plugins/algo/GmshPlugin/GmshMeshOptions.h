@@ -9,8 +9,10 @@ enum class GmshSurfaceMeshType {
     Triangle = 0,
     // 1：四边形主导网格，先生成二维网格，再通过 Recombine 尽量重组成四边形。
     QuadDominant = 1,
-    // 2：结构化四边形网格，使用 Transfinite Curve/Surface 约束生成行列结构。
-    StructuredQuadrilateral = 2
+    // 2：纯四边形网格，先普通重组，存在残余三角形时再尝试 full-quad。
+    PureQuadrilateral = 2,
+    // 3：结构化四边形网格，使用 Transfinite Curve/Surface 约束生成行列结构。
+    StructuredQuadrilateral = 3
 };
 
 // Gmsh 二维曲面网格算法，对应 Mesh.Algorithm 的官方取值。
@@ -49,7 +51,7 @@ enum class GmshRecombinationAlgorithm {
 
 // 前端 Combo 文案和下面的取值数组必须保持同一顺序。
 inline constexpr const char* kGmshSurfaceMeshTypeComboText =
-    "三角形,四边形主导,结构化四边形";
+    "三角形,四边形主导,纯四边形,结构化四边形";
 
 inline constexpr const char* kGmshMeshAlgorithmComboText =
     "默认(Frontal-Delaunay),MeshAdapt,Automatic,Delaunay,"
@@ -68,14 +70,11 @@ inline constexpr std::array<int, 8> kGmshMeshAlgorithmComboValues {
 };
 
 inline constexpr const char* kGmshRecombinationAlgorithmComboText =
-    "默认(Blossom),Simple,Blossom,Simple full-quad,Blossom full-quad";
+    "Simple,Blossom|1";
 
-inline constexpr std::array<int, 5> kGmshRecombinationAlgorithmComboValues {
-    static_cast<int>(GmshRecombinationAlgorithm::Blossom),
+inline constexpr std::array<int, 2> kGmshRecombinationAlgorithmComboValues {
     static_cast<int>(GmshRecombinationAlgorithm::Simple),
-    static_cast<int>(GmshRecombinationAlgorithm::Blossom),
-    static_cast<int>(GmshRecombinationAlgorithm::SimpleFullQuad),
-    static_cast<int>(GmshRecombinationAlgorithm::BlossomFullQuad)
+    static_cast<int>(GmshRecombinationAlgorithm::Blossom)
 };
 
 // 将 Combo 索引转换为 Gmsh option 的真实取值；索引异常时使用第 0 项默认值。
