@@ -101,7 +101,8 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a89357f22e8f2dc07e321d0b60bcd453f" id="r_a89357f22e8f2dc07e321d0b60bcd453f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89357f22e8f2dc07e321d0b60bcd453f">~ModelIOSystemBase</a> ()=default</td></tr>
-<tr class="memitem:ac26b111ed67730d4413819798755e7aa" id="r_ac26b111ed67730d4413819798755e7aa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac26b111ed67730d4413819798755e7aa">read</a> (const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
+<tr class="memitem:a14fbac2a32d8a9a71c9e462915f2ac68" id="r_a14fbac2a32d8a9a71c9e462915f2ac68"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a14fbac2a32d8a9a71c9e462915f2ac68">read</a> (const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
+<tr class="memdesc:a14fbac2a32d8a9a71c9e462915f2ac68"><td class="mdescLeft">&#160;</td><td class="mdescRight">读模型文件  <br /></td></tr>
 <tr class="memitem:a40d8053366f094fb91c09f868b62683e" id="r_a40d8053366f094fb91c09f868b62683e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40d8053366f094fb91c09f868b62683e">write</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model, const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
 <tr class="memitem:ac46359c49d7c9560f3e7f439d98dc7d9" id="r_ac46359c49d7c9560f3e7f439d98dc7d9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac46359c49d7c9560f3e7f439d98dc7d9">writeComponents</a> (const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;component_ids, const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args)=0</td></tr>
 </table>
@@ -137,8 +138,8 @@ Public 成员函数</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="ac26b111ed67730d4413819798755e7aa" name="ac26b111ed67730d4413819798755e7aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac26b111ed67730d4413819798755e7aa">&#9670;&#160;</a></span>read()</h2>
+<a id="a14fbac2a32d8a9a71c9e462915f2ac68" name="a14fbac2a32d8a9a71c9e462915f2ac68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14fbac2a32d8a9a71c9e462915f2ac68">&#9670;&#160;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -147,7 +148,7 @@ Public 成员函数</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void systems::io::ModelIOSystemBase::read </td>
+          <td class="memname">virtual bool systems::io::ModelIOSystemBase::read </td>
           <td>(</td>
           <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
         </tr>
@@ -169,7 +170,11 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>在 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a7004f0f19816f4147a8bc55f4e384787">systems::io::ModelIOSystem</a> 内被实现.</p>
+<p>读模型文件 </p>
+<dl class="section return"><dt>返回</dt><dd>读取并添加模型成功返回true；文件类型未注册或文件内容无法解析为模型时返回false </dd></dl>
+<dl class="section note"><dt>注解</dt><dd>失败不抛异常，由调用方自行决定是中断还是继续（如算法插件读回结果文件时常选择继续） </dd></dl>
+
+<p>在 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a4a1e2dfc62c8de223436c999d810ccd5">systems::io::ModelIOSystem</a> 内被实现.</p>
 
 </div>
 </div>

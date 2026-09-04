@@ -230,8 +230,8 @@ Public 类型</h2></td></tr>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a8b9a368bb72b25fad5c37360fb0caa6b" id="r_a8b9a368bb72b25fad5c37360fb0caa6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8b9a368bb72b25fad5c37360fb0caa6b">ModelIOSystem</a> (<a class="el" href="classModelLayer.html">ModelLayer</a> &amp;<a class="el" href="TestComponentModel_8cpp.html#a6402cec97b28a6292b45baefb9f38ff2">manager</a>)</td></tr>
 <tr class="memitem:ad1892ea8fc68d3867ec4d1bad4a229aa" id="r_ad1892ea8fc68d3867ec4d1bad4a229aa"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1892ea8fc68d3867ec4d1bad4a229aa">~ModelIOSystem</a> () override</td></tr>
-<tr class="memitem:a7004f0f19816f4147a8bc55f4e384787" id="r_a7004f0f19816f4147a8bc55f4e384787"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7004f0f19816f4147a8bc55f4e384787">read</a> (const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args) override</td></tr>
-<tr class="memdesc:a7004f0f19816f4147a8bc55f4e384787"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统的读模型接口  <br /></td></tr>
+<tr class="memitem:a4a1e2dfc62c8de223436c999d810ccd5" id="r_a4a1e2dfc62c8de223436c999d810ccd5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a1e2dfc62c8de223436c999d810ccd5">read</a> (const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args) override</td></tr>
+<tr class="memdesc:a4a1e2dfc62c8de223436c999d810ccd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统的读模型接口  <br /></td></tr>
 <tr class="memitem:a5b3ca6c65457cf47801ca9fd44ce21db" id="r_a5b3ca6c65457cf47801ca9fd44ce21db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b3ca6c65457cf47801ca9fd44ce21db">write</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model, const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args) override</td></tr>
 <tr class="memdesc:a5b3ca6c65457cf47801ca9fd44ce21db"><td class="mdescLeft">&#160;</td><td class="mdescRight">系统的写模型接口  <br /></td></tr>
 <tr class="memitem:a6b22d6ee8ad557fa06a8f76940c1446c" id="r_a6b22d6ee8ad557fa06a8f76940c1446c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b22d6ee8ad557fa06a8f76940c1446c">writeComponents</a> (const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;component_ids, const std::filesystem::path &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>, const std::string &amp;file_type, const std::vector&lt; std::any &gt; &amp;args) override</td></tr>
@@ -332,8 +332,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a7004f0f19816f4147a8bc55f4e384787" name="a7004f0f19816f4147a8bc55f4e384787"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7004f0f19816f4147a8bc55f4e384787">&#9670;&#160;</a></span>read()</h2>
+<a id="a4a1e2dfc62c8de223436c999d810ccd5" name="a4a1e2dfc62c8de223436c999d810ccd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a1e2dfc62c8de223436c999d810ccd5">&#9670;&#160;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -342,7 +342,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void systems::io::ModelIOSystem::read </td>
+          <td class="memname">bool systems::io::ModelIOSystem::read </td>
           <td>(</td>
           <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
         </tr>
@@ -373,8 +373,9 @@ Private 属性</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>返回</dt><dd>读取并添加模型成功返回true，失败（文件类型未注册或无法解析出模型）返回false </dd></dl>
 
-<p>实现了 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemBase.html#ac26b111ed67730d4413819798755e7aa">systems::io::ModelIOSystemBase</a>.</p>
+<p>实现了 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemBase.html#a14fbac2a32d8a9a71c9e462915f2ac68">systems::io::ModelIOSystemBase</a>.</p>
 
 </div>
 </div>
