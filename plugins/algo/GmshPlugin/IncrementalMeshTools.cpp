@@ -255,6 +255,7 @@ std::map<int, GeomEdgeId> importGmshEdges(const TopoDS_Face& face,
 // 保存结构化划分中一条边的节点数，以及该数量是否由共享边缓存固定。
 struct EdgeTransfiniteInfo {
     int gmshTag {};
+    GeomEdgeId geometryEdgeId { kInvalidGeomEdgeId };
     int pointCount {};
     bool fixedByExistingMesh {};
 };
@@ -320,9 +321,42 @@ void configureMeshingOptions(const IncrementalMeshTools::GmshMeshParameters& par
         setGmshNumberOption("Mesh.RecombineMinimumQuality", parameters.quadMinQuality);
 }
 
-// 根据曲线长度和目标网格尺寸估算结构化曲线节点数；或者指定的划分段数
-int estimateEdgePointCount(int gmshTag, double meshSize, int structuredEdgeDivisions)
+// 判断当前重组算法是否会先把一维边界网格减半；这类算法要求每条边包含偶数个线单元。
+bool isFullQuadRecombination(int recombineAlgorithm)
 {
+    return recombineAlgorithm == static_cast<int>(GmshRecombinationAlgorithm::SimpleFullQuad)
+        || recombineAlgorithm == static_cast<int>(GmshRecombinationAlgorithm::BlossomFullQuad);
+}
+
+// 把节点数调整为奇数，从而保证对应的线单元数为偶数且至少为 2。
+int ensureFullQuadPointCount(int pointCount)
+{
+    pointCount = std::max(3, pointCount);
+    if (pointCount % 2 == 0)
+        ++pointCount;
+    return pointCount;
+}
+
+// 根据曲线长度和目标网格尺寸估算结构化曲线节点数；full-quad 时保证线单元数为偶数。
+int estimateEdgePointCount(
+    int gmshTag,
+    double meshSize,
+    int structuredEdgeDivisions,
+    bool requireEvenSegments)
+{
+    if (requireEvenSegments) {
+        int segmentCount = structuredEdgeDivisions;
+        if (segmentCount <= 0) {
+            double length = 0.0;
+            gmsh::model::occ::getMass(1, gmshTag, length);
+            segmentCount = static_cast<int>(std::ceil(length / meshSize));
+        }
+        segmentCount = std::max(2, segmentCount);
+        if (segmentCount % 2 == 1)
+            ++segmentCount;
+        return segmentCount + 1;
+    }
+
     if (structuredEdgeDivisions > 0)
         return std::max(2, structuredEdgeDivisions + 1);
 
@@ -343,13 +377,15 @@ EdgeTransfiniteInfo makeEdgeTransfiniteInfo(
     const std::map<int, GeomEdgeId>& gmshToOcc,
     const GmshIncrementalMeshState& state,
     double meshSize,
-    int structuredEdgeDivisions)
+    int structuredEdgeDivisions,
+    bool requireEvenSegments)
 {
     EdgeTransfiniteInfo info;
     info.gmshTag = gmshTag;
 
     auto occIt = gmshToOcc.find(gmshTag);
     if (occIt != gmshToOcc.end()) {
+        info.geometryEdgeId = occIt->second;
         auto cacheIt = state.meshedEdgesCache.find(occIt->second);
         if (cacheIt != state.meshedEdgesCache.end() && !cacheIt->second.coords.empty()) {
             info.pointCount = static_cast<int>(cacheIt->second.coords.size() / 3);
@@ -358,15 +394,34 @@ EdgeTransfiniteInfo makeEdgeTransfiniteInfo(
         }
     }
 
-    info.pointCount = estimateEdgePointCount(gmshTag, meshSize, structuredEdgeDivisions);
+    info.pointCount = estimateEdgePointCount(
+        gmshTag, meshSize, structuredEdgeDivisions, requireEvenSegments);
     return info;
+}
+
+// 已有共享边不能在单面划分时改变；full-quad 遇到奇数段时提前给出可操作的诊断。
+bool validateFullQuadCachedEdge(const EdgeTransfiniteInfo& edge)
+{
+    if (!edge.fixedByExistingMesh)
+        return true;
+
+    const int segmentCount = edge.pointCount - 1;
+    if (segmentCount >= 2 && segmentCount % 2 == 0)
+        return true;
+
+    spdlog::warn(
+        "GmshMesh: full-quad rejected, cached geometry edge {} (Gmsh edge {}) has {} points / {} segments; "
+        "delete all meshed faces sharing this edge before remeshing",
+        edge.geometryEdgeId, edge.gmshTag, edge.pointCount, std::max(0, segmentCount));
+    return false;
 }
 
 // 协调一对相对边的节点数；两条共享边节点数不一致时拒绝结构化划分。
 bool resolveOppositeEdgePointCount(
     const EdgeTransfiniteInfo& first,
     const EdgeTransfiniteInfo& opposite,
-    int& pointCount)
+    int& pointCount,
+    bool requireEvenSegments)
 {
     if (first.fixedByExistingMesh && opposite.fixedByExistingMesh) {
         if (first.pointCount != opposite.pointCount) {
@@ -389,6 +444,11 @@ bool resolveOppositeEdgePointCount(
     }
 
     pointCount = static_cast<int>((first.pointCount + opposite.pointCount) * 0.5 + 0.5);
+    if (requireEvenSegments) {
+        pointCount = ensureFullQuadPointCount(pointCount);
+        return true;
+    }
+
     if (pointCount < 2)
         pointCount = 2;
     if (pointCount % 2 == 1)
@@ -408,7 +468,39 @@ bool configureSurfaceMeshType(
     if (meshType == GmshSurfaceMeshType::Triangle)
         return true;
 
+    const bool requireEvenSegments = isFullQuadRecombination(parameters.recombineAlgorithm);
+    const double boundaryMeshSize = parameters.maxMeshSize > 0.0
+        ? parameters.maxMeshSize
+        : meshSize;
+
     if (meshType == GmshSurfaceMeshType::QuadDominant) {
+        if (requireEvenSegments) {
+            gmsh::vectorpair boundary;
+            gmsh::model::getBoundary({ { 2, faceTag } }, boundary, false, false, false);
+
+            gmsh::vectorpair temporaryConstraints;
+            for (const auto& [dim, tag] : boundary) {
+                if (dim != 1)
+                    continue;
+
+                EdgeTransfiniteInfo edge = makeEdgeTransfiniteInfo(
+                    std::abs(tag), gmshToOcc, state, boundaryMeshSize, 0, true);
+                if (!validateFullQuadCachedEdge(edge))
+                    return false;
+                if (edge.fixedByExistingMesh)
+                    continue;
+
+                gmsh::model::mesh::setTransfiniteCurve(edge.gmshTag, edge.pointCount);
+                temporaryConstraints.emplace_back(1, edge.gmshTag);
+            }
+
+            if (!temporaryConstraints.empty()) {
+                // 先生成满足偶数段约束的一维网格，再移除临时约束，避免 full-quad 输出 Transfinite 警告。
+                gmsh::model::mesh::generate(1);
+                gmsh::model::mesh::removeConstraints(temporaryConstraints);
+            }
+        }
+
         gmsh::model::mesh::setRecombine(2, faceTag, 45.0);
         return true;
     }
@@ -430,13 +522,23 @@ bool configureSurfaceMeshType(
     std::array<EdgeTransfiniteInfo, 4> edges {};
     for (std::size_t i = 0; i < edges.size(); ++i)
         edges[i] = makeEdgeTransfiniteInfo(
-            edgeTags[i], gmshToOcc, state, meshSize, parameters.structuredEdgeDivisions);
+            edgeTags[i], gmshToOcc, state, boundaryMeshSize,
+            parameters.structuredEdgeDivisions, requireEvenSegments);
+
+    if (requireEvenSegments) {
+        for (const auto& edge : edges) {
+            if (!validateFullQuadCachedEdge(edge))
+                return false;
+        }
+    }
 
     int firstPairPointCount = 0;
     int secondPairPointCount = 0;
-    if (!resolveOppositeEdgePointCount(edges[0], edges[2], firstPairPointCount))
+    if (!resolveOppositeEdgePointCount(
+            edges[0], edges[2], firstPairPointCount, requireEvenSegments))
         return false;
-    if (!resolveOppositeEdgePointCount(edges[1], edges[3], secondPairPointCount))
+    if (!resolveOppositeEdgePointCount(
+            edges[1], edges[3], secondPairPointCount, requireEvenSegments))
         return false;
 
     gmsh::model::mesh::setTransfiniteCurve(edges[0].gmshTag, firstPairPointCount);
