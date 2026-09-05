@@ -153,10 +153,9 @@ void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& map
 
 void SolidSelectorHighlight::selectArea(
     const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/,
-    bool add_only, bool remove_only)
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
 {
-    // solid actor 的命中即体表面 render cell id（MeshSelectManager 一次多 actor 拾取后分发）
+    // solid actor 的命中即体表面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）
     auto it = hits.find(&select_op_.getSolidActor());
     if (it == hits.end())
         return;
@@ -177,30 +176,17 @@ void SolidSelectorHighlight::selectArea(
     if (!orig_cell_ids)
         return;
 
+    // 框选恒为替换：manager 已先清空，命中即本组件的新选择；先按原 solid id 去重再插入
+    std::set<vtkIdType> to_add;
+    for (vtkIdType cid : picked) {
+        vtkIdType orig = orig_cell_ids->GetValue(cid);
+        if (orig >= 0)
+            to_add.insert(orig);
+    }
     selected_ids_->ClearLookup();
-    if (remove_only) {
-        for (vtkIdType cid : picked) {
-            vtkIdType orig = orig_cell_ids->GetValue(cid);
-            vtkIdType idx = selected_ids_->LookupTypedValue(orig);
-            if (idx >= 0)
-                selected_ids_->RemoveTuple(idx);
-        }
-    } else if (add_only) {
-        for (vtkIdType cid : picked) {
-            vtkIdType orig = orig_cell_ids->GetValue(cid);
-            if (orig >= 0)
-                selected_ids_->InsertNextValue(orig);
-        }
-    } else {
-        // toggle
-        for (vtkIdType cid : picked) {
-            vtkIdType orig = orig_cell_ids->GetValue(cid);
-            vtkIdType idx = selected_ids_->LookupTypedValue(orig);
-            if (idx >= 0)
-                selected_ids_->RemoveTuple(idx);
-            else if (orig >= 0)
-                selected_ids_->InsertNextValue(orig);
-        }
+    for (vtkIdType orig : to_add) {
+        if (_is_selected(orig, *selected_ids_) < 0)
+            selected_ids_->InsertNextValue(orig);
     }
     selected_ids_->Modified();
     enableHighlight();

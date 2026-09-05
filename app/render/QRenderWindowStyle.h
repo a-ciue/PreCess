@@ -48,8 +48,6 @@ private:
     bool box_selecting_ {}; //> 框选拖拽中（Ctrl+左键）
     int box_start_[2] { 0, 0 };
     int box_end_[2] { 0, 0 };
-    bool box_add_only_ {}; //> Shift 修饰：仅追加
-    bool box_remove_only_ {}; //> Alt 修饰：仅移除
 
     // 橡皮筋：用 5 个顶点的折线（首末闭合）画矩形；actor2d 直接坐标用屏幕像素
     vtkNew<vtkPoints> rubber_band_points_;

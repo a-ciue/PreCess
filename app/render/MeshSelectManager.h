@@ -29,13 +29,10 @@ public:
 
     void select(double posx, double posy);
     /**
-     * @brief 矩形框选入口（Ctrl+左键拖拽）：一次拾取全部可见组件的源 actor，
-     *        命中结果按组件分发到各 selector 应用
-     * @param add_only    Shift 修饰：仅追加，不影响已选
-     * @param remove_only Alt 修饰：仅移除，不影响其他已选
+     * @brief 矩形框选入口（Ctrl+左键拖拽）：框选恒为替换——先清空全部组件选择，
+     *        一次拾取全部可见组件的源 actor，命中结果按组件分发到各 selector 应用
      */
-    void selectArea(int xmin, int ymin, int xmax, int ymax,
-        bool add_only, bool remove_only);
+    void selectArea(int xmin, int ymin, int xmax, int ymax);
     void setSelectMode(SelectMode select_mode);
     /**
      * @brief 设置面选择的角度扩散参数，并同步到已创建的面选择器

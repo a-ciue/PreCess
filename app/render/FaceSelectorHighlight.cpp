@@ -355,10 +355,9 @@ void FaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
 
 void FaceSelectorHighlight::selectArea(
     const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/,
-    bool add_only, bool remove_only)
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
 {
-    // face actor 的命中即面 render cell id（MeshSelectManager 一次多 actor 拾取后分发）
+    // face actor 的命中即面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）
     auto it = hits.find(&select_op_.getFaceActor());
     if (it == hits.end())
         return;
@@ -368,23 +367,12 @@ void FaceSelectorHighlight::selectArea(
     if (picked.empty())
         return;
 
+    // 框选恒为替换：manager 已先清空，命中即本组件的新选择（set）
     // 与 select 路径对齐：selections_ 存 picker 报的 render cell id（无 clip 时 = 原 face id；
     // 有 clip 时为 face_clipper_->output 上的 cell 索引，PrecessFaceIds 数组跟着裁剪链透传）
     std::unordered_set<vtkIdType> cur(selections_.begin(), selections_.end());
-    if (remove_only) {
-        for (auto id : picked)
-            cur.erase(id);
-    } else if (add_only) {
-        for (auto id : picked)
-            cur.insert(id);
-    } else {
-        for (auto id : picked) {
-            if (cur.count(id))
-                cur.erase(id);
-            else
-                cur.insert(id);
-        }
-    }
+    for (auto id : picked)
+        cur.insert(id);
     selections_.assign(cur.begin(), cur.end());
     enableHighlight();
 }

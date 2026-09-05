@@ -159,8 +159,7 @@ void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& ma
 
 void VertexSelectorHighlight::selectArea(
     const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-    int xmin, int ymin, int xmax, int ymax,
-    bool add_only, bool remove_only)
+    int xmin, int ymin, int xmax, int ymax)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生点并合并（一次多 actor 拾取结果）。
     std::set<vtkIdType> local_ids;
@@ -233,27 +232,11 @@ void VertexSelectorHighlight::selectArea(
     if (local_ids.empty())
         return;
 
+    // 框选恒为替换：manager 已先清空，命中即本组件的新选择（set）
     selected_ids_->ClearLookup();
-    if (remove_only) {
-        for (vtkIdType v : local_ids) {
-            vtkIdType idx = _is_selected(v, *selected_ids_);
-            if (idx >= 0)
-                selected_ids_->RemoveTuple(idx);
-        }
-    } else if (add_only) {
-        for (vtkIdType v : local_ids) {
-            if (_is_selected(v, *selected_ids_) < 0)
-                selected_ids_->InsertNextValue(v);
-        }
-    } else {
-        // toggle：按点 id 在 selected_ids_ 中查重
-        for (vtkIdType v : local_ids) {
-            vtkIdType idx = _is_selected(v, *selected_ids_);
-            if (idx >= 0)
-                selected_ids_->RemoveTuple(idx);
-            else
-                selected_ids_->InsertNextValue(v);
-        }
+    for (vtkIdType v : local_ids) {
+        if (_is_selected(v, *selected_ids_) < 0)
+            selected_ids_->InsertNextValue(v);
     }
     selected_ids_->Modified();
     enableHighlight();

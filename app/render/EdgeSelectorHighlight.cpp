@@ -195,8 +195,7 @@ void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
 
 void EdgeSelectorHighlight::selectArea(
     const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-    int xmin, int ymin, int xmax, int ymax,
-    bool add_only, bool remove_only)
+    int xmin, int ymin, int xmax, int ymax)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生边并合并端点对。
     // face CELLS 主路径健壮（面表面有 z 遮挡）；edge actor 补独立/物化边；solid 表面补体网格表面边。
@@ -304,7 +303,7 @@ void EdgeSelectorHighlight::selectArea(
         picked_edges.push_back({ { key.first, key.second }, edge_id });
     }
 
-    // 修饰键驱动 add/remove/toggle（与点选"端点对相同即同一条边"语义一致）
+    // 框选恒为替换：manager 已先清空，命中即本组件的新选择（端点对相同即同一条边，set）
     auto match_selected = [&](const SelectedEdge& e) {
         return std::find_if(selections_.begin(), selections_.end(),
             [&](const SelectedEdge& s) {
@@ -312,26 +311,10 @@ void EdgeSelectorHighlight::selectArea(
             });
     };
 
-    if (remove_only) {
-        for (const auto& e : picked_edges) {
-            auto it = match_selected(e);
-            if (it != selections_.end())
-                selections_.erase(it);
-        }
-    } else if (add_only) {
-        for (const auto& e : picked_edges) {
-            auto it = match_selected(e);
-            if (it == selections_.end())
-                selections_.push_back(e);
-        }
-    } else {
-        for (const auto& e : picked_edges) {
-            auto it = match_selected(e);
-            if (it != selections_.end())
-                selections_.erase(it);
-            else
-                selections_.push_back(e);
-        }
+    for (const auto& e : picked_edges) {
+        auto it = match_selected(e);
+        if (it == selections_.end())
+            selections_.push_back(e);
     }
 
     enableHighlight();

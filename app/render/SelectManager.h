@@ -29,8 +29,7 @@ public:
      * @brief 矩形框选入口（Ctrl+左键拖拽），目前仅转发给网格选择管理器；
      *        几何/组件框选后续再补
      */
-    void selectArea(int xmin, int ymin, int xmax, int ymax,
-        bool add_only, bool remove_only);
+    void selectArea(int xmin, int ymin, int xmax, int ymax);
     void setSelectMode(const std::string& select_mode);
     /**
      * @brief 设置网格面选择的角度扩散参数

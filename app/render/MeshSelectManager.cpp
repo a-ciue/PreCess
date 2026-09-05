@@ -60,11 +60,13 @@ void MeshSelectManager::select(double posx, double posy)
             component_picker_->GetCellId(), component_picker_->GetPointId());
 }
 
-void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax,
-    bool add_only, bool remove_only)
+void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
 {
     if (this->select_mode_ == SelectMode::None)
         return;
+
+    // 框选恒为替换：先清空全部组件的网格选择，再只选中本次框内（跨组件）元素
+    this->clearSelection();
 
     // 收集可见组件的源 actor（按模式；隐藏组件不渲染 → 一次拾取不会命中它）
     std::vector<vtkActor*> targets;
@@ -100,10 +102,10 @@ void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax,
     auto hits = area_pick::executeAreaPicks(renderer_, targets,
         xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS);
 
-    // 分发到各组件 selector（无命中时其 selectArea 内部直接返回）
+    // 分发到各组件 selector（已清空 → 命中即该组件新选择；无命中时其 selectArea 内部直接返回）
     for (Index comp_id : op_->getAllComponentIds()) {
         if (auto* sel = getOrCreateSelector(comp_id))
-            sel->selectArea(hits, xmin, ymin, xmax, ymax, add_only, remove_only);
+            sel->selectArea(hits, xmin, ymin, xmax, ymax);
     }
 }
 

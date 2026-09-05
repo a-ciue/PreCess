@@ -36,12 +36,11 @@ void SelectManager::select(double posx, double posy)
         geom_->select(posx, posy);
 }
 
-void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax,
-    bool add_only, bool remove_only)
+void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
 {
     // 几何/组件框选后续再补；当前仅网格支持框选
     if (is_mesh_mode(select_mode_))
-        mesh_->selectArea(xmin, ymin, xmax, ymax, add_only, remove_only);
+        mesh_->selectArea(xmin, ymin, xmax, ymax);
 }
 
 void SelectManager::setSelectMode(const std::string& select_mode)

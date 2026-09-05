@@ -48,14 +48,12 @@ public:
     virtual void select(double posx, double posy,
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) = 0;
-    //! @brief 应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 一次拾取后按组件分发）
+    //! @brief 应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中）
     //! @param hits 各 actor(PROP) 在本框内的命中 render id 集合（本选择器按自身 actor 取用）
     //! @param xmin ymin xmax ymax  屏幕像素矩形（Edge/Vertex 屏幕投影二次过滤用）
-    //! @param add_only Shift：仅追加；remove_only Alt：仅移除；二者皆否=toggle（与点选切换语义一致）
     virtual void selectArea(
         const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-        int xmin, int ymin, int xmax, int ymax,
-        bool add_only, bool remove_only)
+        int xmin, int ymin, int xmax, int ymax)
         = 0;
     /**
      * @brief 清空选中元素，并取消高亮
@@ -86,8 +84,7 @@ public:
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
         const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-        int xmin, int ymin, int xmax, int ymax,
-        bool add_only, bool remove_only) override;
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -141,8 +138,7 @@ public:
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
         const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-        int xmin, int ymin, int xmax, int ymax,
-        bool add_only, bool remove_only) override;
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -179,8 +175,7 @@ public:
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
         const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-        int xmin, int ymin, int xmax, int ymax,
-        bool add_only, bool remove_only) override;
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -211,8 +206,7 @@ public:
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
         const std::map<vtkProp*, std::set<vtkIdType>>& hits,
-        int xmin, int ymin, int xmax, int ymax,
-        bool add_only, bool remove_only) override;
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;

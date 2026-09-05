@@ -99,8 +99,6 @@ void QRenderWindowStyle::OnLeftButtonDown()
     if (iren && iren->GetControlKey()) {
         // Ctrl+左键 → 进入框选模式；不调父类，相机不被旋转/平移
         box_selecting_ = true;
-        box_add_only_ = iren->GetShiftKey();
-        box_remove_only_ = iren->GetAltKey();
         iren->GetEventPosition(box_start_);
         box_end_[0] = box_start_[0];
         box_end_[1] = box_start_[1];
@@ -122,8 +120,7 @@ void QRenderWindowStyle::OnLeftButtonUp()
             int xmax = std::max(box_start_[0], box_end_[0]);
             int ymin = std::min(box_start_[1], box_end_[1]);
             int ymax = std::max(box_start_[1], box_end_[1]);
-            select_manager_->selectArea(xmin, ymin, xmax, ymax,
-                box_add_only_, box_remove_only_);
+            select_manager_->selectArea(xmin, ymin, xmax, ymax);
         }
         detachRubberBand();
         box_selecting_ = false;
