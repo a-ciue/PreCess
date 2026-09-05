@@ -7,6 +7,23 @@
 
 vtkStandardNewMacro(QRenderWindowStyle);
 
+QRenderWindowStyle::QRenderWindowStyle()
+{
+    // 橡皮筋几何/mapper/属性只初始化一次：多次框选复用同一 actor，避免每次 attach 重建
+    rubber_band_points_->SetNumberOfPoints(5);
+    rubber_band_cells_->InsertNextCell(5);
+    for (vtkIdType i = 0; i < 5; ++i)
+        rubber_band_cells_->InsertCellPoint(i);
+    rubber_band_poly_->SetPoints(rubber_band_points_);
+    rubber_band_poly_->SetLines(rubber_band_cells_);
+    rubber_band_mapper_->SetInputData(rubber_band_poly_);
+    rubber_band_actor_->SetMapper(rubber_band_mapper_);
+    vtkNew<vtkProperty2D> prop;
+    prop->SetColor(0.0, 1.0, 0.0);
+    prop->SetLineWidth(2.0);
+    rubber_band_actor_->SetProperty(prop);
+}
+
 void QRenderWindowStyle::SetClick()
 {
 	click_ = true;
@@ -46,19 +63,6 @@ void QRenderWindowStyle::attachRubberBand()
     if (!ren)
         return;
 
-    // 5 个点的折线（首末闭合）画矩形
-    rubber_band_points_->SetNumberOfPoints(5);
-    rubber_band_cells_->InsertNextCell(5);
-    for (vtkIdType i = 0; i < 5; ++i)
-        rubber_band_cells_->InsertCellPoint(i);
-    rubber_band_poly_->SetPoints(rubber_band_points_);
-    rubber_band_poly_->SetLines(rubber_band_cells_);
-    rubber_band_mapper_->SetInputData(rubber_band_poly_);
-    rubber_band_actor_->SetMapper(rubber_band_mapper_);
-    vtkNew<vtkProperty2D> prop;
-    prop->SetColor(0.0, 1.0, 0.0);
-    prop->SetLineWidth(2.0);
-    rubber_band_actor_->SetProperty(prop);
     ren->AddActor2D(rubber_band_actor_);
     rubber_band_attached_ = true;
 }

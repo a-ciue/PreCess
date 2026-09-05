@@ -23,6 +23,7 @@ class InteractionService;
 
 class QRenderWindowStyle : public vtkInteractorStyleTrackballCamera {
 public:
+    QRenderWindowStyle();
 	static QRenderWindowStyle* New();
     vtkTypeMacro(QRenderWindowStyle, vtkInteractorStyleTrackballCamera);
     void SetClick();
