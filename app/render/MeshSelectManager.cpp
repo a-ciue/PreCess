@@ -1,9 +1,11 @@
 #include "MeshSelectManager.h"
 #include "MeshActorManagerSelectOp.h"
+#include "MeshAreaPick.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
+#include <vtkDataObject.h>
 #include <vtkDataSet.h>
 #include <vtkHardwarePicker.h>
 #include <vtkIdTypeArray.h>
@@ -38,7 +40,7 @@ void MeshSelectManager::select(double posx, double posy)
         return;
 
     // 仅调一次 picker.Pick：selector 内部再 Pick 一次会污染 Qt FBO 渲染上下文的
-    // picking buffer，导致紧随其后的 executeAreaPick 框选路径失效。
+    // picking buffer，导致紧随其后的 executeAreaPicks 框选路径失效。
     if (this->select_mode_ == SelectMode::Vertex) {
         component_picker_->SnapToMeshPointOn();
         component_picker_->SetPixelTolerance(5);
@@ -64,10 +66,44 @@ void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax,
     if (this->select_mode_ == SelectMode::None)
         return;
 
-    // 框选遍历全部组件（与点选不同：不依赖 component_picker 锁定单一组件）
+    // 收集可见组件的源 actor（按模式；隐藏组件不渲染 → 一次拾取不会命中它）
+    std::vector<vtkActor*> targets;
+    auto add_if_actor = [&](vtkProp* prop) {
+        if (auto* actor = vtkActor::SafeDownCast(prop))
+            targets.push_back(actor);
+    };
+    for (Index comp_id : op_->getAllComponentIds()) {
+        auto select_op = op_->getSelectOp(comp_id);
+        if (!select_op || !select_op->isVisible())
+            continue;
+        switch (select_mode_) {
+        case SelectMode::Face:
+            add_if_actor(&select_op->getFaceActor());
+            break;
+        case SelectMode::Solid:
+            add_if_actor(&select_op->getSolidActor());
+            break;
+        case SelectMode::Edge:
+        case SelectMode::Vertex:
+            add_if_actor(&select_op->getFaceActor());
+            add_if_actor(&select_op->getEdgeActor());
+            add_if_actor(&select_op->getSolidActor());
+            break;
+        default:
+            break;
+        }
+    }
+    if (targets.empty())
+        return;
+
+    // 一次 HardwareSelector 拾取全部目标 actor，按 actor(PROP) 分组
+    auto hits = area_pick::executeAreaPicks(renderer_, targets,
+        xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS);
+
+    // 分发到各组件 selector（无命中时其 selectArea 内部直接返回）
     for (Index comp_id : op_->getAllComponentIds()) {
         if (auto* sel = getOrCreateSelector(comp_id))
-            sel->selectArea(xmin, ymin, xmax, ymax, add_only, remove_only);
+            sel->selectArea(hits, xmin, ymin, xmax, ymax, add_only, remove_only);
     }
 }
 

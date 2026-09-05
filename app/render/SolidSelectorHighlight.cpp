@@ -151,16 +151,16 @@ void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& map
     actor.SetProperty(prop);
 }
 
-void SolidSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax,
+void SolidSelectorHighlight::selectArea(
+    const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/,
     bool add_only, bool remove_only)
 {
-    // solid_actor 是体表面 primitive：自遮挡足够，keepVisible=nullptr
-    vtkActor* target = vtkActor::SafeDownCast(&select_op_.getSolidActor());
-    if (!target)
+    // solid actor 的命中即体表面 render cell id（MeshSelectManager 一次多 actor 拾取后分发）
+    auto it = hits.find(&select_op_.getSolidActor());
+    if (it == hits.end())
         return;
-
-    auto picked = area_pick::executeAreaPickWithGuard(renderer_, target,
-        xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS, nullptr);
+    const auto& picked = it->second;
 
     spdlog::debug("[SolidArea] picked.size()={}", picked.size());
     if (picked.empty())
@@ -168,6 +168,7 @@ void SolidSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax,
 
     // 反查 render cell id -> 原 solid id：solid_actor mapper 输入 poly data 上挂的
     // vtkOriginalCellIds 跟着 solid_filter_(可能含 clip)透传，索引是 render cell 下标
+    auto* target = vtkActor::SafeDownCast(&select_op_.getSolidActor());
     auto* mapper = vtkPolyDataMapper::SafeDownCast(target->GetMapper());
     vtkPolyData* poly = mapper ? mapper->GetInput() : nullptr;
     auto* orig_cell_ids = poly

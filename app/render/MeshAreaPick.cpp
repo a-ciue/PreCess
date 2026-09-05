@@ -8,23 +8,20 @@
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
 #include <vtkActor2D.h>
-#include <vtkDataObject.h>
 #include <vtkHardwareSelector.h>
 #include <vtkIdTypeArray.h>
 #include <vtkInformation.h>
-#include <vtkMapper.h>
 #include <vtkMatrix4x4.h>
 #include <vtkNew.h>
-#include <vtkPolyData.h>
 #include <vtkProp.h>
 #include <vtkPropCollection.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
-#include <vtkSmartPointer.h>
 
 #include <algorithm>
+#include <map>
 #include <set>
 #include <utility>
 #include <vector>
@@ -32,18 +29,14 @@
 namespace area_pick {
 namespace {
 
-//! @brief 临时把 target/keepVisible 的 opacity 置 1.0，出作用域自动还原。
+//! @brief 临时把 actors 的 opacity 置 1.0，出作用域自动还原。
 //!        规避 Transparent* 半透明 actor 关闭深度写入导致的背面误拾。
 class PickingOpacityGuard {
 public:
-    PickingOpacityGuard(vtkActor* target, const std::vector<vtkActor*>* keep_visible)
+    explicit PickingOpacityGuard(const std::vector<vtkActor*>& actors)
     {
-        if (target)
-            saveAndSet(target);
-        if (keep_visible) {
-            for (auto* a : *keep_visible)
-                saveAndSet(a);
-        }
+        for (auto* a : actors)
+            saveAndSet(a);
     }
     ~PickingOpacityGuard()
     {
@@ -67,49 +60,43 @@ private:
     std::vector<std::pair<vtkActor*, double>> saved_;
 };
 
-//! @brief 在指定屏幕矩形内对 target actor 执行硬件拾取
-std::set<vtkIdType> executeAreaPick(
+} // namespace
+
+std::map<vtkProp*, std::set<vtkIdType>> executeAreaPicks(
     vtkRenderer* renderer,
-    vtkActor* target_actor,
+    const std::vector<vtkActor*>& target_actors,
     int xmin, int ymin, int xmax, int ymax,
-    int field_association,
-    const std::vector<vtkActor*>* keep_visible)
+    int field_association)
 {
-    std::set<vtkIdType> result;
-    if (!renderer || !target_actor)
+    std::map<vtkProp*, std::set<vtkIdType>> result;
+    if (!renderer || target_actors.empty())
         return result;
 
-    spdlog::debug("[AreaPick] target={} rect=({},{},{},{}) fieldAssoc={} keepVis={} target.vis={} target.repr={}",
-        target_actor->GetClassName(), xmin, ymin, xmax, ymax,
-        field_association, keep_visible ? keep_visible->size() : 0,
-        target_actor->GetVisibility(),
-        target_actor->GetProperty()->GetRepresentationAsString());
+    spdlog::debug("[AreaPick] multi targets={} rect=({},{},{},{}) fieldAssoc={}",
+        target_actors.size(), xmin, ymin, xmax, ymax, field_association);
 
-    // 诊断 target actor 的 mapper 数据：pick 行为依赖 mapper 实际写 cell/point id 到 FBO
-    if (auto* mapper = target_actor->GetMapper()) {
-        if (auto* poly = vtkPolyData::SafeDownCast(mapper->GetInput())) {
-            spdlog::debug("[AreaPick]   target.mapper input: points={} verts={} lines={} polys={} strips={}",
-                poly->GetNumberOfPoints(), poly->GetNumberOfVerts(),
-                poly->GetNumberOfLines(), poly->GetNumberOfPolys(),
-                poly->GetNumberOfStrips());
-        } else {
-            spdlog::debug("[AreaPick]   target.mapper input is not vtkPolyData");
-        }
+    // 透明模式下临时把所有 target 的 opacity 置 1.0（RAII 还原）
+    PickingOpacityGuard opacity_guard(target_actors);
+
+    // 记录并临时强制 target 可见：组件可见但其模式相关 actor 可能被 render style 关闭
+    std::vector<std::pair<vtkActor*, int>> saved_target_vis;
+    saved_target_vis.reserve(target_actors.size());
+    for (auto* a : target_actors) {
+        saved_target_vis.emplace_back(a, a->GetVisibility());
+        a->VisibilityOn();
     }
 
-    // 1) 临时隔离：除 target + keepVisible 外的 actor 全部 VisibilityOff；
+    // 1) 临时隔离：除 target 外的 actor 全部 VisibilityOff；
     //    vtkActor2D（如橡皮筋）也临时 VisibilityOff——picker.FBO 不应拾 2D props
-    vtkPropCollection* props = renderer->GetViewProps();
     std::vector<std::pair<vtkProp*, int>> saved_visibility;
     std::vector<std::pair<vtkProp*, int>> saved_actor2d_vis;
-    int saved_target_vis = target_actor->GetVisibility();
-    target_actor->VisibilityOn();
+    vtkPropCollection* props = renderer->GetViewProps();
     for (int i = 0; i < props->GetNumberOfItems(); ++i) {
-        vtkObject* obj = props->GetItemAsObject(i);
-        vtkProp* prop = vtkProp::SafeDownCast(obj);
-        if (!prop || prop == target_actor)
+        vtkProp* prop = vtkProp::SafeDownCast(props->GetItemAsObject(i));
+        if (!prop)
             continue;
-        // 2D props（如橡皮筋 actor2D）单独保存 visibility 后 VisibilityOff
+        if (std::find(target_actors.begin(), target_actors.end(), prop) != target_actors.end())
+            continue; // target：保持可见（互为 z-buffer）
         if (vtkActor2D::SafeDownCast(prop)) {
             saved_actor2d_vis.emplace_back(prop, prop->GetVisibility());
             prop->VisibilityOff();
@@ -118,14 +105,11 @@ std::set<vtkIdType> executeAreaPick(
         auto* actor = vtkActor::SafeDownCast(prop);
         if (!actor)
             continue;
-        if (keep_visible
-            && std::find(keep_visible->begin(), keep_visible->end(), actor) != keep_visible->end())
-            continue; // keepVisible：用于填充 z-buffer，保持可见
         saved_visibility.emplace_back(actor, actor->GetVisibility());
         actor->VisibilityOff();
     }
 
-    // 2) HardwareSelector 拾取
+    // 2) HardwareSelector 一次拾取
     vtkNew<vtkHardwareSelector> shared_selector;
     shared_selector->SetRenderer(renderer);
     shared_selector->SetArea(xmin, ymin, xmax, ymax);
@@ -133,7 +117,9 @@ std::set<vtkIdType> executeAreaPick(
     vtkSelection* sel = shared_selector->Select();
 
     // 3) 恢复 visibility
-    target_actor->SetVisibility(saved_target_vis);
+    for (auto& [actor, vis] : saved_target_vis) {
+        actor->SetVisibility(vis);
+    }
     for (auto& [prop, vis] : saved_visibility) {
         prop->SetVisibility(vis);
     }
@@ -146,51 +132,29 @@ std::set<vtkIdType> executeAreaPick(
         return result;
     }
 
-    spdlog::debug("[AreaPick] sel nodes={} props_in_renderer={}",
-        sel->GetNumberOfNodes(),
-        renderer->GetViewProps()->GetNumberOfItems());
-
-    // 4) 按 PROP 过滤：只保留 targetActor 产生的节点；keepVisible actor 的元素被剔除
+    // 4) 按 PROP 分组；只保留 target_actors 产生的节点（隐藏组件未渲染 → 无节点）
+    std::set<vtkProp*> target_set(target_actors.begin(), target_actors.end());
     for (unsigned int i = 0; i < sel->GetNumberOfNodes(); ++i) {
         vtkSelectionNode* node = sel->GetNode(i);
         if (!node)
             continue;
         vtkProp* node_prop = vtkProp::SafeDownCast(
             node->GetProperties()->Get(vtkSelectionNode::PROP()));
-        auto* list = vtkIdTypeArray::SafeDownCast(node->GetSelectionList());
-        const bool matches_target = (node_prop == target_actor);
-        spdlog::debug("[AreaPick]   node[{}]: prop={} matchesTarget={} listSize={}",
-            i,
-            node_prop ? node_prop->GetClassName() : "(null)",
-            matches_target,
-            list ? list->GetNumberOfTuples() : 0);
-        if (node_prop && !matches_target)
+        if (!node_prop || !target_set.count(node_prop))
             continue;
+        auto* list = vtkIdTypeArray::SafeDownCast(node->GetSelectionList());
         if (!list)
             continue;
+        auto& ids = result[node_prop];
         for (vtkIdType j = 0; j < list->GetNumberOfTuples(); ++j) {
             vtkIdType id = list->GetValue(j);
             if (id >= 0)
-                result.insert(id);
+                ids.insert(id);
         }
     }
-    spdlog::debug("[AreaPick] result.size()={}", result.size());
+    spdlog::debug("[AreaPick] hit actor count={}", result.size());
 
     return result;
-}
-
-} // namespace
-
-std::set<vtkIdType> executeAreaPickWithGuard(
-    vtkRenderer* renderer,
-    vtkActor* target_actor,
-    int xmin, int ymin, int xmax, int ymax,
-    int field_association,
-    const std::vector<vtkActor*>* keep_visible)
-{
-    PickingOpacityGuard guard(target_actor, keep_visible);
-    return executeAreaPick(renderer, target_actor,
-        xmin, ymin, xmax, ymax, field_association, keep_visible);
 }
 
 bool isWorldPointInScreenBox(vtkRenderer* renderer,

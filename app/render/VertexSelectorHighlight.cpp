@@ -157,28 +157,32 @@ void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& ma
     actor.SetProperty(prop);
 }
 
-void VertexSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax,
+void VertexSelectorHighlight::selectArea(
+    const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+    int xmin, int ymin, int xmax, int ymax,
     bool add_only, bool remove_only)
 {
-    // 与点选对齐：框选同样从 face/edge/solid 三个 actor 取点，逐 actor 走 CELLS 拾取后合并。
-    // POINTS pass 不渲染面会穿透（"点选后框选失效"根因），统一走 CELLS + 屏幕投影二次过滤。
+    // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生点并合并（一次多 actor 拾取结果）。
     std::set<vtkIdType> local_ids;
 
-    // 对单个 actor 执行 CELLS 框选并把命中 cell 派生为"组件局部点 id"
-    auto pick_points = [&](vtkActor* target, vtkPolyData* poly,
-        const std::vector<vtkActor*>& keep_visible) {
-        if (!target || !poly || poly->GetNumberOfCells() == 0)
+    // 命中查找：取本 actor 在 hits 中的命中集合（无命中返回 nullptr）
+    auto hit_of = [&](vtkProp* prop) -> const std::set<vtkIdType>* {
+        auto it = hits.find(prop);
+        return it == hits.end() ? nullptr : &it->second;
+    };
+
+    // 从单个 actor 的命中 cell 派生"组件局部点 id"
+    auto derive_points = [&](vtkActor* target, vtkPolyData* poly,
+        const std::set<vtkIdType>* picked) {
+        if (!target || !poly || !picked || picked->empty())
             return;
-        const std::vector<vtkActor*>* pKeep = keep_visible.empty() ? nullptr : &keep_visible;
-        auto picked = area_pick::executeAreaPickWithGuard(renderer_, target,
-            xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS, pKeep);
-        if (picked.empty())
+        if (poly->GetNumberOfCells() == 0)
             return;
 
         // 裁剪链上点 id 会重排：vTK 拾取后经 vtkOriginalPointIds 还原组件局部点 id
         auto* orig_pt_ids = vtkIdTypeArray::SafeDownCast(
             poly->GetPointData()->GetArray("vtkOriginalPointIds"));
-        for (vtkIdType cell_id : picked) {
+        for (vtkIdType cell_id : *picked) {
             if (cell_id < 0 || cell_id >= poly->GetNumberOfCells())
                 continue;
             vtkCell* cell = poly->GetCell(cell_id);
@@ -207,34 +211,22 @@ void VertexSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax,
     auto* face_actor = vtkActor::SafeDownCast(&select_op_.getFaceActor());
     if (auto* face_poly = face_actor ? vtkPolyData::SafeDownCast(
             vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper())->GetInput()) : nullptr) {
-        std::vector<vtkActor*> keep;
-        if (auto* solid_a = vtkActor::SafeDownCast(&select_op_.getSolidActor()))
-            if (solid_a != face_actor)
-                keep.push_back(solid_a);
-        pick_points(face_actor, face_poly, keep);
+        derive_points(face_actor, face_poly, hit_of(&select_op_.getFaceActor()));
     }
 
     // 2) edge actor：独立/物化边上的点（线 cell 端点）
     auto* edge_actor = vtkActor::SafeDownCast(&select_op_.getEdgeActor());
     if (auto* edge_poly = edge_actor ? vtkPolyData::SafeDownCast(
             vtkPolyDataMapper::SafeDownCast(edge_actor->GetMapper())->GetInput()) : nullptr) {
-        if (edge_poly->GetNumberOfLines() > 0) {
-            std::vector<vtkActor*> keep;
-            if (auto* face_a = vtkActor::SafeDownCast(&select_op_.getFaceActor()))
-                if (face_a != edge_actor)
-                    keep.push_back(face_a);
-            if (auto* solid_a = vtkActor::SafeDownCast(&select_op_.getSolidActor()))
-                if (solid_a != edge_actor)
-                    keep.push_back(solid_a);
-            pick_points(edge_actor, edge_poly, keep);
-        }
+        if (edge_poly->GetNumberOfLines() > 0)
+            derive_points(edge_actor, edge_poly, hit_of(&select_op_.getEdgeActor()));
     }
 
     // 3) solid 表面：体网格表面点（face 无 cell 时是主要来源）
     auto* solid_actor = vtkActor::SafeDownCast(&select_op_.getSolidActor());
     if (auto* solid_poly = solid_actor ? vtkPolyData::SafeDownCast(
             vtkPolyDataMapper::SafeDownCast(solid_actor->GetMapper())->GetInput()) : nullptr) {
-        pick_points(solid_actor, solid_poly, {});
+        derive_points(solid_actor, solid_poly, hit_of(&select_op_.getSolidActor()));
     }
 
     spdlog::debug("[VertexArea] local_ids.size()={}", local_ids.size());

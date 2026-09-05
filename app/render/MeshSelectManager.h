@@ -29,7 +29,8 @@ public:
 
     void select(double posx, double posy);
     /**
-     * @brief 矩形框选入口（Ctrl+左键拖拽），遍历所有组件交给具体 selector 处理
+     * @brief 矩形框选入口（Ctrl+左键拖拽）：一次拾取全部可见组件的源 actor，
+     *        命中结果按组件分发到各 selector 应用
      * @param add_only    Shift 修饰：仅追加，不影响已选
      * @param remove_only Alt 修饰：仅移除，不影响其他已选
      */

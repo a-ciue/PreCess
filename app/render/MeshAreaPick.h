@@ -4,39 +4,40 @@
  * @brief 网格框选的拾取与隔离工具
  *
  * vtkHardwareSelector 没有 pick list，会拾取当前可见的全部 actor。为只拿目标 actor
- * 自身的单元，拾取时临时把其它 actor VisibilityOff（keepVisible 列表内的 actor 保留，
- * 用于填充 z-buffer，避免点/边拾取穿透到背后的面/体），再按返回节点 PROP 过滤，
- * 返回目标 actor 的 render id（局部 cell/point id），由各 selector 自行反查为模型 id。
+ * 自身的单元，拾取时临时把其它 actor VisibilityOff，再按返回节点 PROP 过滤，返回各
+ * 目标 actor 的 render id（局部 cell/point id），由各 selector 自行反查为模型 id。
+ * 一次可对多个 target actor 拾取：它们保持可见并互为 z-buffer，可见性决定哪些
+ * target 实际被渲染拾取（隐藏组件不渲染 → 不产生命中）。
  *
  * PreCess 的 Transparent* 渲染模式会让 actor 半透明并关闭深度写入，拾取易误命中背面
- * 元素；拾取期间把 target/keepVisible 的 opacity 临时置 1.0 规避
- * （RAII 实现见 MeshAreaPick.cpp 内 PickingOpacityGuard）。
+ * 元素；拾取期间把 target 的 opacity 临时置 1.0 规避（RAII 见 MeshAreaPick.cpp 内
+ * PickingOpacityGuard）。
  */
 #ifndef MESH_AREA_PICK_H
 #define MESH_AREA_PICK_H
 
+#include <map>
 #include <set>
 #include <vector>
 #include <vtkType.h>
 
 class vtkRenderer;
 class vtkActor;
+class vtkProp;
 
 namespace area_pick {
 
-//! @brief 在指定屏幕矩形内对 target actor 执行硬件拾取（含透明模式的 opacity guard）
+//! @brief 在指定屏幕矩形内同时对多个 target actor 执行一次硬件拾取，按 actor(PROP) 分组返回
 //! @param renderer       渲染器
-//! @param target_actor   拾取目标 actor（其它 actor 临时隐藏，仅 keep_visible 中的保持可见）
+//! @param target_actors  拾取目标 actor 列表（其它 actor 临时隐藏；列表内保持可见并互为 z-buffer）
 //! @param xmin ymin xmax ymax  屏幕像素坐标矩形（一般由 interactor 给出）
 //! @param field_association vtkDataObject::FIELD_ASSOCIATION_POINTS / _CELLS
-//! @param keep_visible   可选：保持可见用于填充 z-buffer 的 actor 列表（点/边拾取填面/体）
-//! @return 命中单元 id 集合（render id，与 target_actor 的 cell/point id 空间一致）
-std::set<vtkIdType> executeAreaPickWithGuard(
+//! @return actor(PROP) -> 命中单元 id 集合（render id，与对应 actor 的 cell/point id 空间一致）
+std::map<vtkProp*, std::set<vtkIdType>> executeAreaPicks(
     vtkRenderer* renderer,
-    vtkActor* target_actor,
+    const std::vector<vtkActor*>& target_actors,
     int xmin, int ymin, int xmax, int ymax,
-    int field_association,
-    const std::vector<vtkActor*>* keep_visible = nullptr);
+    int field_association);
 
 //! @brief 数据空间 (lx,ly,lz) → world → display，测试屏幕投影是否落在框选矩形内。
 //!        用于 face CELLS 拾取后的二次过滤，避免"面只一角进框、所有点/边都高亮"。

@@ -353,16 +353,16 @@ void FaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
     actor.SetProperty(prop);
 }
 
-void FaceSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax,
+void FaceSelectorHighlight::selectArea(
+    const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/,
     bool add_only, bool remove_only)
 {
-    // face_actor 是面 primitive：自遮挡足够（face cell 覆盖 viewport），keepVisible=nullptr
-    vtkActor* target = vtkActor::SafeDownCast(&select_op_.getFaceActor());
-    if (!target)
+    // face actor 的命中即面 render cell id（MeshSelectManager 一次多 actor 拾取后分发）
+    auto it = hits.find(&select_op_.getFaceActor());
+    if (it == hits.end())
         return;
-
-    auto picked = area_pick::executeAreaPickWithGuard(renderer_, target,
-        xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS, nullptr);
+    const auto& picked = it->second;
 
     spdlog::debug("[FaceArea] picked.size()={}", picked.size());
     if (picked.empty())
