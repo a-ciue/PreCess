@@ -4,7 +4,6 @@
 #include "MeshActor.h"
 #include "MeshActorManagerSelectOp.h"
 #include <unordered_map>
-#include <vector>
 #include <vtkScalarBarActor.h>
 
 class vtkRenderer;
@@ -15,8 +14,6 @@ public:
     void bindRender(vtkRenderer* renderer);
     bool hasComponent(Index component_id) const;
     std::shared_ptr<MeshActor> getComponentActor(Index component_id) const;
-    //! @brief 列出所有已加载的网格组件 id（权威注册表 component_actors_）
-    std::vector<Index> getAllComponentIds() const;
     void deleteComponent(Index component_id);
     void loadMesh(Index component_id, const MeshDataVtk& model_data,
         vtkRenderer* renderer);

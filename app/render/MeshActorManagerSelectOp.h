@@ -35,6 +35,7 @@ private:
 
     MeshActorManager* manager_ { };
     std::unordered_map<vtkProp*, Index> prop_to_component_;
+    std::set<Index> registered_component_ids_; //> registerProps/unregisterProps 维护，供框选枚举组件
     std::vector<vtkSmartPointer<vtkPropCollection>> pick_lists_;
 };
 

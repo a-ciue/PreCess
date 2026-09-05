@@ -42,8 +42,8 @@ std::optional<MeshActorSelectOp> MeshActorManagerSelectOp::getSelectOp(Index com
 
 std::vector<Index> MeshActorManagerSelectOp::getAllComponentIds() const
 {
-    // 组件枚举走 manager 的权威注册表 component_actors_，不从 prop_to_component_ 反向索引推导
-    return manager_->getAllComponentIds();
+    // 由 registerProps/unregisterProps 维护的已注册组件集合
+    return { registered_component_ids_.begin(), registered_component_ids_.end() };
 }
 
 void MeshActorManagerSelectOp::registerProps(Index component_id, std::shared_ptr<MeshActor> actor)
@@ -52,6 +52,7 @@ void MeshActorManagerSelectOp::registerProps(Index component_id, std::shared_ptr
     prop_to_component_[&op.getSolidActor()] = component_id;
     prop_to_component_[&op.getFaceActor()] = component_id;
     prop_to_component_[&op.getEdgeActor()] = component_id;
+    registered_component_ids_.insert(component_id);
 
     addToAllLists(&op.getSolidActor());
     addToAllLists(&op.getFaceActor());
@@ -64,6 +65,10 @@ void MeshActorManagerSelectOp::unregisterProps(std::shared_ptr<MeshActor> actor)
     auto* solid = &op.getSolidActor();
     auto* face = &op.getFaceActor();
     auto* edge = &op.getEdgeActor();
+
+    auto comp_it = prop_to_component_.find(solid);
+    if (comp_it != prop_to_component_.end())
+        registered_component_ids_.erase(comp_it->second);
     prop_to_component_.erase(solid);
     prop_to_component_.erase(face);
     prop_to_component_.erase(edge);
