@@ -63,6 +63,26 @@ Index addSingleComponentModel(ModelLayer& model_layer)
     return model_layer.modelById(model_id)->componentIds().front();
 }
 
+//! @brief 构造单三角面组件模型并入池，返回 component_id（单点网格无边可签发，无法断言邻接表有效性）
+Index addTriangleComponentModel(ModelLayer& model_layer)
+{
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = { kOriginal, { 2.0, 0.0, 0.0 }, { 0.0, 2.0, 0.0 } };
+    mesh->face_vertices_ = { 0, 1, 2 };
+    mesh->face_vertices_offset_ = { 0, 3 };
+
+    auto component = std::make_unique<ComponentData>();
+    component->id = -1;
+    component->name = "Comp_0";
+    component->mesh = std::move(mesh);
+    ComponentDatas components;
+    components.push_back(std::move(component));
+
+    Index model_id = model_layer.addModel("test_model_triangle", std::move(components));
+    return model_layer.modelById(model_id)->componentIds().front();
+}
+
 //! @brief 功能元数据：与 ScalePreviewPlugin.json 一致（undo_manual = true）
 HandlerMetaData scalePreviewMetaData()
 {
@@ -88,15 +108,21 @@ struct ScalePreviewFixture {
 
     ScalePreviewFixture() { mgr.setUndoRecorder(&stack); }
 
+    //! @brief 注册功能并注入活动组件 provider（组件由调用方先行入池并清栈）
+    Index setupFeatureOn(Index component_id)
+    {
+        FeatureSystem::SystemHandlerPtr handler { new ScalePreviewHandler };
+        REQUIRE(system.registerHandler(scalePreviewMetaData(), std::move(handler)));
+        system.setActiveComponentProvider([component_id]() { return std::optional<Index> { component_id }; });
+        return component_id;
+    }
+
     //! @brief 建组件、清栈（入池的结构记录不计入断言）、注册功能并注入活动组件 provider
     Index setupFeature()
     {
         const Index component_id = addSingleComponentModel(mgr);
         stack.clear();
-        FeatureSystem::SystemHandlerPtr handler { new ScalePreviewHandler };
-        REQUIRE(system.registerHandler(scalePreviewMetaData(), std::move(handler)));
-        system.setActiveComponentProvider([component_id]() { return std::optional<Index> { component_id }; });
-        return component_id;
+        return setupFeatureOn(component_id);
     }
 };
 }
@@ -230,6 +256,32 @@ TEST_CASE("ScalePreview teardown cancels an open staged session", "[ScalePreview
     REQUIRE_FALSE(f.stack.stagedActive());
     REQUIRE(firstVertex(f.mgr, cid) == kOriginal);
     REQUIRE_FALSE(f.stack.canUndo());
+}
+
+TEST_CASE("ScalePreview preview keeps adjacency handle valid (NonTopology kind)", "[ScalePreviewPlugin]")
+{
+    ScalePreviewFixture f;
+    const Index cid = f.setupFeatureOn(addTriangleComponentModel(f.mgr));
+    f.stack.clear();
+
+    ComponentData* comp = f.mgr.findComponent(cid);
+    REQUIRE(comp);
+    MeshData& md = *comp->mesh;
+
+    // 预览前签发当轮边表句柄：回归护栏——缩放只改坐标，邻接懒表不得失效
+    //（此前 applyPreview 误传 MeshEditKind::Topology，每次预览重试都白重建一次边表）
+    auto edge = comp->mesh_adjacency.findEdgeByEndpoints(md, 0, 1);
+    REQUIRE(edge.has_value());
+    const auto sid = comp->mesh_adjacency.edgeStableId(md, *edge);
+    REQUIRE(sid.has_value());
+
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    REQUIRE(f.stack.stagedActive());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 2.0, 4.0, 6.0 });
+
+    // 坐标缩放不动连通性：预览后句柄仍属当轮边表（Topology 标脏会在此失效）
+    REQUIRE(comp->mesh_adjacency.edgeStableId(md, *edge) == sid);
 }
 
 TEST_CASE("ScalePreview teardown with open staged session is safe", "[ScalePreviewPlugin]")

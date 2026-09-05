@@ -17,8 +17,8 @@ class TopoDS_Shape;
  * @brief 组件数据修改类别：决定标脏时是否立即失效网格邻接懒表
  */
 enum class MeshEditKind {
-    Topology, //!< 拓扑/坐标变更：立即失效 mesh_adjacency 懒表（查询即时正确）
-    NonTopology, //!< 仅属性等附着数据变更：不动拓扑，邻接懒表保持有效
+    Topology, //!< 连通性变更（增删点/面、整网格替换等）：立即失效 mesh_adjacency 懒表（查询即时正确）
+    NonTopology, //!< 仅坐标/属性等附着数据变更：不动连通性，邻接懒表保持有效（边表以端点对为键，不依赖坐标）
 };
 
 /**

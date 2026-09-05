@@ -139,7 +139,7 @@ bool ScalePreviewHandler::applyPreview(FeatureContext& ctx)
     // 只改坐标不动拓扑：NonTopology 标脏（邻接懒表不失效）；revertStaged 保证总是
     // 从 before₀ 起按绝对因子缩放，不累计。预览写的通知由 invoke 边界/事件网关 flush
     // 统一发出（Manual 模式只 flush 不成记录）
-    MeshData& mesh = op->editableMesh(MeshEditKind::Topology);
+    MeshData& mesh = op->editableMesh(MeshEditKind::NonTopology);
     for (auto& point : mesh.vertex_positions_) {
         point[0] *= scale_;
         point[1] *= scale_;
