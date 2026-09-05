@@ -41,8 +41,6 @@ struct FaceSelectionSpreadOptions {
 class SelectorHighlight {
 public:
     virtual ~SelectorHighlight() = default;
-    //! @brief 单点拾取（内部建 picker 做硬件 picking）。生产路径由 MeshSelectManager 预拾后调下面的 picker 重载。
-    virtual void select(double posx, double posy) = 0;
     //! @brief 单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。
     virtual void select(double posx, double posy,
         vtkHardwarePicker* picker, vtkActor* picked_actor,
@@ -79,7 +77,8 @@ public:
     FaceSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, MeshActorSelectOp select_op);
     ~FaceSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
     void select(double posx, double posy,
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
@@ -131,7 +130,8 @@ public:
         unsigned int partition_id, MeshActorSelectOp select_op,
         Index component_id, const IMeshIdQuery* id_query);
     ~EdgeSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
     void select(double posx, double posy,
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
@@ -166,7 +166,8 @@ public:
     SolidSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, MeshActorSelectOp select_op);
     ~SolidSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
     void select(double posx, double posy,
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
@@ -195,7 +196,8 @@ public:
         unsigned int partition_id, MeshActorSelectOp select_op,
         Index component_id, const IMeshIdQuery* id_query);
     ~VertexSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
     void select(double posx, double posy,
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
