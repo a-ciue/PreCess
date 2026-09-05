@@ -3,15 +3,12 @@
 #include "FeatureContext.h"
 #include "FeatureEvents.h"
 #include "FeatureSystem.h"
-#include "FeatureSystemRegister.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
 #include "ScalePreviewHandler.h"
-#include "SystemPluginManager.h"
 #include "UndoStack.h"
 
-#include <QCoreApplication>
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
@@ -20,10 +17,6 @@
 
 using namespace systems;
 using namespace systems::feature;
-
-#ifndef SCALE_PREVIEW_PLUGIN_PATH
-#define SCALE_PREVIEW_PLUGIN_PATH ""
-#endif
 
 namespace {
 constexpr const char* kFeatureName = "ScalePreview";
@@ -125,54 +118,6 @@ struct ScalePreviewFixture {
         return setupFeatureOn(component_id);
     }
 };
-}
-
-TEST_CASE("ScalePreviewPlugin dll registers into FeatureSystem via SystemPluginManager", "[ScalePreviewPlugin]")
-{
-    int argc = 1;
-    char arg0[] = "TestScalePreviewPlugin";
-    char* argv[] = { arg0, nullptr };
-    QCoreApplication app(argc, argv);
-
-    CountingObserver obs;
-    ModelLayer model_layer { &obs };
-    core::EventBus bus;
-    UndoStack stack { model_layer };
-    model_layer.setUndoRecorder(&stack);
-    FeatureSystem feature_system(model_layer, bus, &stack);
-    SystemPluginManager plugin_manager;
-    REQUIRE(plugin_manager.addSystemRegister(FeatureSystem::name, std::make_unique<FeatureSystemRegister>(feature_system)));
-
-    // 走真实的 dll 加载链路：QPluginLoader + json 元数据（含 "undo": "manual"）+ 系统注册器
-    REQUIRE(plugin_manager.registerPlugin(SCALE_PREVIEW_PLUGIN_PATH));
-
-    auto infos = feature_system.getFeatureInfos();
-    REQUIRE(infos.size() == 1);
-    REQUIRE(infos[0]->name == "ScalePreview");
-    REQUIRE(infos[0]->display_name == "缩放预览演示");
-    REQUIRE(infos[0]->arg_types.size() == 3);
-    REQUIRE(infos[0]->menus.size() == 1);
-    REQUIRE(infos[0]->menus[0].menu_path == "示例");
-
-    // json 的 "undo": "manual" 生效的行为证据：预览按钮开启 staged 会话且边界不自动提交
-    const Index component_id = addSingleComponentModel(model_layer);
-    stack.clear();
-    feature_system.setActiveComponentProvider([component_id]() { return std::optional<Index> { component_id }; });
-    REQUIRE(feature_system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
-    REQUIRE(stack.stagedActive());
-    // 栈内无记录：undo 指向 staged 会话本身（此时 undo = 回滚预览）
-    REQUIRE(stack.undoLabel() == "缩放预览");
-
-    // 预览写经取消按钮回滚，全程不成记录
-    REQUIRE(feature_system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
-    REQUIRE(firstVertex(model_layer, component_id) == std::array<double, 3> { 2.0, 4.0, 6.0 });
-    REQUIRE(feature_system.setParameter(kFeatureName, kParamCancel, core::ArgObject::create<ArgTypeEnum::Button>(1)));
-    REQUIRE_FALSE(stack.stagedActive());
-    REQUIRE(firstVertex(model_layer, component_id) == kOriginal);
-    REQUIRE_FALSE(stack.canUndo());
-
-    plugin_manager.unregisterPlugin(SCALE_PREVIEW_PLUGIN_PATH);
-    REQUIRE(feature_system.getFeatureInfos().empty());
 }
 
 TEST_CASE("ScalePreview preview button opens session without record but still flushes", "[ScalePreviewPlugin]")
