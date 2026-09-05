@@ -248,8 +248,10 @@ void FaceSelectorHighlight::disableHighlight()
 
 void FaceSelectorHighlight::enableHighlight()
 {
-    if (selections_.empty())
+    if (selections_.empty()) {
+        disableHighlight();
         return;
+    }
     auto* face_actor = vtkActor::SafeDownCast(&select_op_.getFaceActor());
     if (!face_actor)
         return;

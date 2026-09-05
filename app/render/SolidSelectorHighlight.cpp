@@ -66,8 +66,7 @@ SelectionVtk SolidSelectorHighlight::get()
 void SolidSelectorHighlight::clear()
 {
     _cancel_highlight(this->selected_ids_);
-    geom_filter_->Update();
-    highlight_data_->Modified();
+    disableHighlight();
 }
 
 void SolidSelectorHighlight::disableHighlight()
@@ -78,6 +77,10 @@ void SolidSelectorHighlight::disableHighlight()
 
 void SolidSelectorHighlight::enableHighlight()
 {
+    if (selected_ids_->GetNumberOfValues() == 0) {
+        disableHighlight();
+        return;
+    }
     geom_filter_->Update();
     highlight_data_->SetPartition(partition_id_, geom_filter_->GetOutput());
     highlight_data_->Modified();

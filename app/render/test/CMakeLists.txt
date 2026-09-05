@@ -93,3 +93,10 @@ vtk_module_autoinit(TARGETS TestInteractionService MODULES VTK::InteractionStyle
 
 precess_add_test(TestMeshTopologyDiagnostics TestMeshTopologyDiagnostics.cpp)
 precess_test_link_libraries(TestMeshTopologyDiagnostics vtkPart TestDeps)
+
+# TestSelectorHighlightDeselect（回归：取消最后一个选中后，partition 高亮必须清空而不是残留）
+precess_add_test(TestSelectorHighlightDeselect TestSelectorHighlightDeselect.cpp)
+precess_test_link_libraries(TestSelectorHighlightDeselect vtkPart TestDeps spdlog::spdlog
+    VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
+)
+vtk_module_autoinit(TARGETS TestSelectorHighlightDeselect MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
