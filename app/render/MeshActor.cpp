@@ -109,10 +109,6 @@ MeshActor::MeshActor(vtkRenderer* renderer)
     this->renderer_->AddActor(this->edge_actor_);
     this->renderer_->AddActor(this->glyph3D_actor_);
 
-    // edge_actor：框选 CELLS 模式依赖 actor 实际把线段渲染到 FBO，picker 才能读到 cell id。
-    // vtkProperty 默认 Representation=SURFACE 会忽略 Lines，因此显式设为 Wireframe。
-    this->edge_actor_->GetProperty()->SetRepresentationToWireframe();
-    this->edge_actor_->GetProperty()->SetLineWidth(2);
 
     this->solid_actor_->SetMapper(solid_mapper_);
     this->face_actor_->SetMapper(face_mapper_);
