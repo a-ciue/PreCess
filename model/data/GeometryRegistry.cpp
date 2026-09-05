@@ -3,6 +3,9 @@
 #include <spdlog/spdlog.h>
 #include <TopAbs_ShapeEnum.hxx>
 
+#include <stdexcept>
+#include <string>
+
 GeomVertexId GeometryRegistry::allocVertex(const TopoDS_Shape& s)
 {
     GeomVertexId id = next_vertex_id_++;
@@ -70,4 +73,39 @@ void GeometryRegistry::eraseFace(GeomFaceId id)
 void GeometryRegistry::eraseSolid(GeomSolidId id)
 {
     solid_id_to_shape_.erase(id);
+}
+
+namespace {
+//! @brief reclaim 公共校验与插入：id 须在发号水位内且当前空闲（erase 后的空洞）
+template <typename GeomId>
+void reclaimInto(std::unordered_map<GeomId, TopoDS_Shape>& map, GeomId watermark,
+    GeomId id, const TopoDS_Shape& s, const char* type_name)
+{
+    if (id < 0 || id >= watermark)
+        throw std::runtime_error(std::string("GeometryRegistry::reclaim") + type_name
+            + ": id " + std::to_string(id) + " out of watermark");
+    if (!map.emplace(id, s).second)
+        throw std::runtime_error(std::string("GeometryRegistry::reclaim") + type_name
+            + ": id " + std::to_string(id) + " still occupied");
+}
+}
+
+void GeometryRegistry::reclaimVertex(GeomVertexId id, const TopoDS_Shape& s)
+{
+    reclaimInto(vertex_id_to_shape_, next_vertex_id_, id, s, "Vertex");
+}
+
+void GeometryRegistry::reclaimEdge(GeomEdgeId id, const TopoDS_Shape& s)
+{
+    reclaimInto(edge_id_to_shape_, next_edge_id_, id, s, "Edge");
+}
+
+void GeometryRegistry::reclaimFace(GeomFaceId id, const TopoDS_Shape& s)
+{
+    reclaimInto(face_id_to_shape_, next_face_id_, id, s, "Face");
+}
+
+void GeometryRegistry::reclaimSolid(GeomSolidId id, const TopoDS_Shape& s)
+{
+    reclaimInto(solid_id_to_shape_, next_solid_id_, id, s, "Solid");
 }

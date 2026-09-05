@@ -5,16 +5,17 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "ModelLayer.h"
+#include "UndoStack.h"
 
 #include <spdlog/spdlog.h>
 
 namespace systems::feature {
 const std::string FeatureSystem::name = "FeatureSystem";
 
-FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus)
+FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack)
     : model_layer_(&model_layer)
     , event_bus_(&event_bus)
-    , event_gateway_(event_bus, model_layer)
+    , undo_stack_(undo_stack)
 {
     on_feature_infos_changed_ = []() { };
 }
@@ -50,15 +51,40 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
 
     // 装配功能上下文：参数集（空构造，setup 收集声明后移动赋值载入默认值，ctx 持引用不失效）
     // + 交互上下文 + 动态 provider（经系统转发，provider 后设置也生效）
-    entry.params = std::make_unique<FeatureParams>(std::vector<core::ArgType> {});
+    // 事件网关为每条目持有的视图：构造时绑定本功能的 undo 模式与显示名
+    entry.undo_manual = meta_data.undo_manual;
+    entry.event_gateway = std::make_unique<FeatureEventGateway>(
+        *event_bus_, *model_layer_, undo_stack_, !meta_data.undo_manual, meta_data.display_name);
+    entry.params = std::make_unique<FeatureParams>(std::vector<core::ArgType> { });
+
+    // undo 上下文：Manual 功能经 staged 会话自控记录；无栈时 staged 接口空转容忍
+    UndoContext undo_context;
+    undo_context.automatic = !meta_data.undo_manual;
+    if (UndoStack* stack = undo_stack_) {
+        undo_context.beginStaged = [stack](std::string label, Index component_id) {
+            return stack->beginStaged(std::move(label), component_id);
+        };
+        undo_context.commitStaged = [stack] { stack->commitStaged(); };
+        undo_context.cancelStaged = [stack] { stack->cancelStaged(); };
+        undo_context.revertStaged = [stack] { stack->revertStaged(); };
+        undo_context.stagedActive = [stack] { return stack->stagedActive(); };
+    } else {
+        undo_context.beginStaged = [](std::string, Index) { return false; };
+        undo_context.commitStaged = [] { };
+        undo_context.cancelStaged = [] { };
+        undo_context.revertStaged = [] { };
+        undo_context.stagedActive = [] { return false; };
+    }
+
     entry.context = std::make_unique<FeatureContext>(FeatureContext {
         *model_layer_,
-        event_gateway_,
+        *entry.event_gateway,
         *entry.params,
         entry.interaction_context,
         [this]() { return active_model_provider_ ? active_model_provider_() : std::optional<Index> {}; },
         [this]() { return active_component_provider_ ? active_component_provider_() : std::optional<Index> {}; },
         [this](Index component_id) { return model_layer_->getComponentOperator(component_id); },
+        std::move(undo_context),
     });
 
     // 功能信息：元数据部分先行（setup 声明的参数/菜单/按键在 setup 后补齐）
@@ -131,12 +157,23 @@ std::any FeatureSystem::invoke(const std::string& unique_name)
     }
 
     // 操作边界（长期设施）：execute 返回后统一 flush 本次操作的组件变更通知；
-    // 异常时先 flush 再重抛，保证部分写入的通知不丢
+    // 异常时先 flush 再重抛，保证部分写入的通知不丢。
+    // undo 边界：Auto 功能包 beginOperation/commitOperation（label=功能显示名）；
+    // Manual 功能只 flush（记录由插件经 ctx.undo 的 staged 会话自控）。
+    // 异常路径提交而非丢弃 begin 过的操作：部分写入可撤销，与 flush 语义一致。
+    FeatureEntry& entry = it->second;
+    UndoStack* undo_stack = entry.undo_manual ? nullptr : undo_stack_;
+    if (undo_stack)
+        undo_stack->beginOperation(entry.info->display_name);
     try {
-        std::any result = it->second.handler->execute(*it->second.context);
+        std::any result = entry.handler->execute(*entry.context);
+        if (undo_stack)
+            undo_stack->commitOperation();
         model_layer_->flushNotifications();
         return result;
     } catch (...) {
+        if (undo_stack)
+            undo_stack->commitOperation();
         model_layer_->flushNotifications();
         throw;
     }
@@ -280,7 +317,20 @@ bool FeatureSystem::routeKeyEvent(const KeyEvent& event)
     for (auto&& [feature_name, entry] : entries_) {
         for (const KeyBinding& binding : entry.info->key_bindings) {
             if (binding.key == event.key && binding.modifiers == event.modifiers) {
-                consumed = entry.handler->onKeyEvent(event) || consumed;
+                // undo 边界：按键回调路径按自动模式装配（快捷一次性调用即正确；
+                // 重复调整类功能日后声明 Manual 迁移）。异常路径提交而非丢弃，与 invoke 一致。
+                UndoStack* undo_stack = entry.undo_manual ? nullptr : undo_stack_;
+                if (undo_stack)
+                    undo_stack->beginOperation(entry.info->display_name);
+                try {
+                    consumed = entry.handler->onKeyEvent(event) || consumed;
+                } catch (...) {
+                    if (undo_stack)
+                        undo_stack->commitOperation();
+                    throw;
+                }
+                if (undo_stack)
+                    undo_stack->commitOperation();
             }
         }
     }

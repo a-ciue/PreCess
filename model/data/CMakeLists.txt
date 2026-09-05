@@ -10,6 +10,7 @@ add_library(Data STATIC
 	MeshIDMap.cpp
 	ComponentOperator.cpp
 	MeshAdjacency.cpp
+	UndoStack.cpp
 )
 target_include_directories(Data PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径

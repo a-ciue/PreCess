@@ -10,12 +10,31 @@
 
 #include <functional>
 #include <optional>
+#include <string>
 
 class ModelLayer;
 
 namespace systems::feature {
 class FeatureParams;
 class InteractionContext;
+
+/**
+ * @brief 功能的 undo 上下文（轻量视图，包装 UndoStack + 本功能的 undo 模式）
+ *
+ * Manual 功能（json 声明 "undo": "manual"）经 staged 会话显式控制记录：
+ * beginStaged（栈捕获 before₀）→ editableMesh 预览写（重试经 revertStaged 回滚再改）→
+ * 确认 commitStaged（before₀+当前状态成一条记录）/ 取消 cancelStaged（恢复 before₀ 不成记录）。
+ * 预览写的标脏在 Manual 边界只 flush 不成记录；before-image 由栈持有（非插件自持）。
+ * Auto 功能由操作边界自动记录，不使用本上下文的 staged 接口。
+ */
+struct UndoContext {
+    std::function<bool(std::string label, Index component_id)> beginStaged; //!< 开启 staged 会话（栈捕获 before₀）
+    std::function<void()> commitStaged; //!< 确认：before₀+当前状态成一条记录
+    std::function<void()> cancelStaged; //!< 恢复 before₀ 并关闭会话，不成记录
+    std::function<void()> revertStaged; //!< 恢复 before₀，会话保持打开（预览重试）
+    std::function<bool()> stagedActive; //!< 是否有进行中的 staged 会话
+    bool automatic { true }; //!< 本功能是否自动模式（只读）
+};
 
 /**
  * @brief 功能上下文，由 FeatureSystem 装配并在 setup()/activate()/execute() 时传给功能
@@ -35,6 +54,7 @@ struct FeatureContext {
     std::function<std::optional<Index>()> activeModel; //> 动态获取当前活动模型 id
     std::function<std::optional<Index>()> activeComponent; //> 动态获取当前活动组件 id
     std::function<std::optional<ComponentOperator>(Index component_id)> componentOperator; //> 申请组件操作句柄
+    UndoContext undo; //> undo 上下文（Manual 功能的 staged 会话入口；语义见 UndoContext 注释）
 };
 }
 #endif // FEATURE_CONTEXT_H

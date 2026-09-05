@@ -7,6 +7,7 @@
 #include "GeometryTopologyEditor.h"
 #include "ModelLayer.h"
 #include "QSelection.h"
+#include "UndoStack.h"
 
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -30,9 +31,10 @@ double degreesToRadians(double angle_degrees)
 }
 }
 
-QGeometryOperations::QGeometryOperations(ModelLayer& model_layer, QObject* parent)
+QGeometryOperations::QGeometryOperations(ModelLayer& model_layer, UndoStack* undo_stack, QObject* parent)
     : QObject(parent)
     , model_layer_(&model_layer)
+    , undo_stack_(undo_stack)
 {
 }
 
@@ -468,11 +470,23 @@ int QGeometryOperations::deleteGeometry(
             model_layer_->getComponentOperator(*component_id);
         if (!component_operator)
             throw std::invalid_argument("Target component does not exist");
-        const Index result_component_id =
-            component_operator->replaceGeometryRoot(std::move(result));
-        // QML 入口是本次几何编辑的操作边界，统一发送组件变更通知。
-        model_layer_->flushNotifications();
-        return result_component_id;
+
+        // QML 入口作为独立操作边界，使每次删除各自形成一条 undo 记录。
+        if (undo_stack_)
+            undo_stack_->beginOperation("删除几何");
+        try {
+            const Index result_component_id =
+                component_operator->replaceGeometryRoot(std::move(result));
+            if (undo_stack_)
+                undo_stack_->commitOperation();
+            model_layer_->flushNotifications();
+            return result_component_id;
+        } catch (...) {
+            if (undo_stack_)
+                undo_stack_->commitOperation();
+            model_layer_->flushNotifications();
+            throw;
+        }
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("QGeometryOperations::deleteGeometry: {}",
@@ -545,10 +559,22 @@ Index QGeometryOperations::addGeometryShape(
         auto component_operator = model_layer_->getComponentOperator(component_id);
         if (!component_operator)
             throw std::invalid_argument("Target component does not exist");
-        const Index result = component_operator->appendGeometryShape(std::move(shape));
-        // 过渡 shim（随系统迁移消亡）：QML 入口组件分支作为操作边界统一 flush 组件变更通知
-        model_layer_->flushNotifications();
-        return result;
+        // 过渡 shim（随系统迁移消亡）：QML 入口组件分支作为操作边界统一 flush 组件变更通知 + undo 自动记录。
+        // 异常时先提交（部分写入可撤销）+ flush 再重抛。
+        if (undo_stack_)
+            undo_stack_->beginOperation(component_name);
+        try {
+            const Index result = component_operator->appendGeometryShape(std::move(shape));
+            if (undo_stack_)
+                undo_stack_->commitOperation();
+            model_layer_->flushNotifications();
+            return result;
+        } catch (...) {
+            if (undo_stack_)
+                undo_stack_->commitOperation();
+            model_layer_->flushNotifications();
+            throw;
+        }
     }
 
     const std::string model_name = "temp_" + component_name;

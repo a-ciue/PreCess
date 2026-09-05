@@ -14,10 +14,12 @@
 #include "Selection.h"
 #include "TempFile.h"
 
+#include <TopAbs_ShapeEnum.hxx>
+
 #include <spdlog/spdlog.h>
 
-#include <filesystem>
 #include <cmath>
+#include <filesystem>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -194,8 +196,6 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     const ComponentData& comp = context.cur_component.component();
     ModelLayer& modelLayer = context.cur_component.manager();
-    removeExpiredStates(modelLayer);
-
     GeometryData* geometry = comp.geometry.get();
     if (!geometry || !geometry->rootShape) {
         spdlog::error("GmshMesh: current component {} has no geometry",
@@ -235,7 +235,19 @@ std::any systems::algo::GmshMeshHandler::execute(
         context.cur_component.replaceMesh(std::move(new_mesh));
     }
 
-    GmshIncrementalMeshState& state = component_states_[context.cur_component.componentId()];
+    // 本次操作在通用映射副本上执行，成功路径结束后再统一提交。
+    const GeometryMeshMap* component_mapping = context.cur_component.geometryMeshMap();
+    GeometryMeshMap working_mapping = component_mapping
+        ? *component_mapping
+        : GeometryMeshMap {};
+
+    // Gmsh 私有状态只保留共享边坐标及由通用映射重建的临时引用计数。
+    auto state_result = IncrementalMeshTools::buildStateFromGeometryMeshMap(
+        component_mapping, *context.cur_component.mesh(),
+        *geometry, modelLayer.geomRegistry());
+    if (!state_result)
+        return {};
+    GmshIncrementalMeshState state = std::move(*state_result);
 
     if (parameters.targetMeshSize <= 0.0)
         parameters.targetMeshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
@@ -247,39 +259,59 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     std::size_t successCount = 0;
     std::size_t failedCount = 0;
+    bool state_changed = false;
     for (GeomFaceId faceId : (*selection)->ids) {
         if (operationMode == 1) {
-            if (state.meshedFacesCache.find(faceId) != state.meshedFacesCache.end()) {
+            if (working_mapping.geometry_face_to_mesh_topology.find(faceId)
+                != working_mapping.geometry_face_to_mesh_topology.end()) {
                 spdlog::info("GmshMesh: face {} already meshed, skip mesh mode", faceId);
                 continue;
             }
 
             auto result = IncrementalMeshTools::meshSingleFace(
-                *geometry, state, context.cur_component,
+                *geometry, state, working_mapping, context.cur_component,
                 faceId, parameters.targetMeshSize, parameters);
             if (!result.success) {
                 spdlog::warn("GmshMesh: face {} meshing failed", faceId);
                 ++failedCount;
                 continue;
             }
+            state_changed = true;
         } else if (operationMode == 2) {
             if (!IncrementalMeshTools::deleteFaceMesh(
-                    *geometry, state, context.cur_component, faceId)) {
+                    *geometry, state, working_mapping,
+                    context.cur_component, faceId)) {
                 spdlog::warn("GmshMesh: delete face {} failed", faceId);
                 ++failedCount;
                 continue;
             }
+            state_changed = true;
         } else {
+            const bool had_face =
+                working_mapping.geometry_face_to_mesh_topology.find(faceId)
+                != working_mapping.geometry_face_to_mesh_topology.end();
             auto result = IncrementalMeshTools::remeshSingleFace(
-                *geometry, state, context.cur_component,
+                *geometry, state, working_mapping, context.cur_component,
                 faceId, parameters.targetMeshSize, parameters);
             if (!result.success) {
                 spdlog::warn("GmshMesh: face {} remeshing failed", faceId);
+                state_changed = state_changed
+                    || (had_face
+                        && working_mapping.geometry_face_to_mesh_topology.find(faceId)
+                            == working_mapping.geometry_face_to_mesh_topology.end());
                 ++failedCount;
                 continue;
             }
+            state_changed = true;
         }
         ++successCount;
+    }
+
+    if (state_changed
+        && !IncrementalMeshTools::storeStateToGeometryMeshMap(
+            state, working_mapping, context.cur_component)) {
+        spdlog::error("GmshMesh: failed to update geometry-mesh mapping");
+        return {};
     }
 
     spdlog::info("GmshMesh: {} selected faces processed: {} succeeded, {} failed",
@@ -296,17 +328,6 @@ std::any systems::algo::GmshMeshHandler::execute(
     }
 
     return {};
-}
-
-void systems::algo::GmshMeshHandler::removeExpiredStates(const ModelLayer& model_layer)
-{
-    for (auto it = component_states_.begin(); it != component_states_.end();) {
-        if (!model_layer.findComponent(it->first)) {
-            it = component_states_.erase(it);
-        } else {
-            ++it;
-        }
-    }
 }
 
 std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const

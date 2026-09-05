@@ -8,11 +8,16 @@
 #include "MeshData.h"
 #include "MeshIDMap.h"
 #include "ComponentData.h"
+#include "GeometryData.h"
+#include "GeometryRegistry.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
 #include "ModelSnapshot.h"
 #include "ComponentOperator.h"
 #include "MakeMeshData.h"
+
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <TopoDS_Shape.hxx>
 
 namespace {
 struct CountingObserver : ModelObserver {
@@ -102,7 +107,11 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     comp->material_id = 3;
     comp->source_xde_leaf_id = 5;
     comp->point_global_ids_ = { 10, 11, 12 };
-    comp->ensureMapping().geometry_edge_to_mesh_point_ids[100] = { 0, 1 };
+    auto& mapping = comp->ensureMapping();
+    mapping.geometry_edge_to_mesh_point_ids[100] = { 0, 1 };
+    mapping.geometry_face_to_mesh_topology[200] = {
+        { 0, 1, 2 }, { 0, 3 }
+    };
 
     // 建立邻接持久身份层（触发稳定边 id 分配）
     MeshData& md = *comp->mesh;
@@ -119,6 +128,10 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     REQUIRE(snapshot->source_xde_leaf_id == 5);
     REQUIRE(snapshot->mapping);
     REQUIRE(snapshot->mapping->geometry_edge_to_mesh_point_ids == comp->mapping->geometry_edge_to_mesh_point_ids);
+    REQUIRE(snapshot->mapping->geometry_face_to_mesh_topology.at(200).face_vertices
+        == std::vector<Index> { 0, 1, 2 });
+    REQUIRE(snapshot->mapping->geometry_face_to_mesh_topology.at(200).face_vertices_offset
+        == std::vector<Index> { 0, 3 });
 
     // 克隆体的邻接懒表不带入，但持久身份层随拷贝延续：同一端点对给出同一稳定边 id
     auto cloned_edge = snapshot->mesh_adjacency.findEdgeByEndpoints(*snapshot->mesh, 0, 1);
@@ -128,6 +141,7 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     // 改原组件（删面），再 restoreFrom 还原；id 不随快照覆盖
     md.face_vertices_.clear();
     md.face_vertices_offset_ = { 0 };
+    comp->mapping.reset();
     comp->mesh_adjacency.invalidate();
     snapshot->id = 99; // restoreFrom 不得覆盖本组件 id
 
@@ -137,6 +151,9 @@ TEST_CASE("ComponentData::clone/restoreFrom round-trips data and keeps id", "[Co
     REQUIRE(comp->mesh->face_vertices_offset_ == std::vector<Index> { 0, 3 });
     REQUIRE(comp->point_global_ids_ == std::vector<Index> { 10, 11, 12 });
     REQUIRE(comp->material_id == 3);
+    REQUIRE(comp->mapping);
+    REQUIRE(comp->mapping->geometry_face_to_mesh_topology.at(200).face_vertices
+        == std::vector<Index> { 0, 1, 2 });
 
     // 懒表不带入但下次查询自动重建，结果与快照前一致
     auto restored_edge = comp->mesh_adjacency.findEdgeByEndpoints(*comp->mesh, 0, 1);
@@ -349,4 +366,79 @@ TEST_CASE("restoreComponent re-inserts component with original id", "[ModelLayer
 
     // 占用冲突：组件 id 已占用时 restoreComponent 抛异常
     REQUIRE_THROWS_AS(mgr.restoreComponent(model_id, c->clone()), std::runtime_error);
+}
+
+namespace {
+//! @brief 构造一个 OCC box 几何组件
+std::unique_ptr<ComponentData> makeBoxComponent(const std::string& name, double size = 1.0)
+{
+    auto geom = std::make_unique<GeometryData>();
+    geom->rootShape = std::make_unique<TopoDS_Shape>(BRepPrimAPI_MakeBox(size, size, size).Shape());
+    auto c = std::make_unique<ComponentData>();
+    c->name = name;
+    c->geometry = std::move(geom);
+    return c;
+}
+}
+
+TEST_CASE("restoreSnapshot reclaims geometry gids at original values", "[snapshot][geometry]")
+{
+    CountingObserver obs;
+    ModelLayer mgr(&obs);
+
+    ComponentDatas comps;
+    comps.push_back(makeBoxComponent("Comp_geom"));
+    const Index model_id = mgr.addModel("geom_reclaim", std::move(comps));
+    const Index cid = mgr.modelById(model_id)->componentIds()[0];
+
+    ComponentData* comp = mgr.findComponent(cid);
+    REQUIRE(comp->geometry->index.built);
+    const std::vector<GeomFaceId> original_gids = comp->geometry->index.face_local_to_global;
+    REQUIRE(original_gids.size() > 1);
+    const TopoDS_Shape original_face = *mgr.geomRegistry().getFace(original_gids[1]);
+
+    auto op = mgr.getComponentOperator(cid);
+    auto snapshot = op->takeSnapshot();
+
+    // 中途变更：追加几何形状（release 旧索引 + 重建领新 gid），原 gid 成空洞
+    op->appendGeometryShape(BRepPrimAPI_MakeBox(2.0, 2.0, 2.0).Shape());
+    REQUIRE(comp->geometry->index.face_local_to_global != original_gids);
+    REQUIRE(mgr.geomRegistry().getFace(original_gids[1]) == nullptr);
+
+    // 恢复快照：几何 gid 按原值 reclaim，且指向原形状（句柄共享 TShape）
+    op->restoreSnapshot(*snapshot);
+    REQUIRE(comp->geometry->index.built);
+    REQUIRE(comp->geometry->index.face_local_to_global == original_gids);
+    const TopoDS_Shape* restored_face = mgr.geomRegistry().getFace(original_gids[1]);
+    REQUIRE(restored_face != nullptr);
+    REQUIRE(restored_face->IsSame(original_face));
+}
+
+TEST_CASE("restoreModel reclaims geometry gids without conflicting with newer allocations", "[snapshot][geometry]")
+{
+    CountingObserver obs;
+    ModelLayer mgr(&obs);
+
+    ComponentDatas comps;
+    comps.push_back(makeBoxComponent("Comp_geom"));
+    const Index model_id = mgr.addModel("geom_struct", std::move(comps));
+    const Index cid = mgr.modelById(model_id)->componentIds()[0];
+    const std::vector<GeomFaceId> original_gids = mgr.findComponent(cid)->geometry->index.face_local_to_global;
+
+    auto snapshot = mgr.takeModelSnapshot(model_id);
+    mgr.removeModel(model_id);
+    REQUIRE(mgr.geomRegistry().getFace(original_gids[1]) == nullptr); // 原 gid 已释放
+
+    // 间隙中插入另一个模型：消费新 gid，不与原 gid 冲突
+    ComponentDatas other;
+    other.push_back(makeBoxComponent("Comp_other", 3.0));
+    mgr.addModel("other", std::move(other));
+
+    mgr.restoreModel(*snapshot);
+
+    // 原 model/component id 复原，几何 gid 原值 reclaim（发号水位不回滚，原值是空洞必然空闲）
+    ComponentData* c = mgr.findComponent(cid);
+    REQUIRE(c);
+    REQUIRE(c->geometry->index.face_local_to_global == original_gids);
+    REQUIRE(mgr.geomRegistry().getFace(original_gids[1]) != nullptr);
 }

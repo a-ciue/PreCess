@@ -9,6 +9,7 @@ class ModelLayer;
 struct ComponentData;
 struct MeshData;
 struct GeometryData;
+struct GeometryMeshMap;
 class ModelData;
 class TopoDS_Shape;
 
@@ -16,8 +17,8 @@ class TopoDS_Shape;
  * @brief 组件数据修改类别：决定标脏时是否立即失效网格邻接懒表
  */
 enum class MeshEditKind {
-    Topology, //!< 拓扑/坐标变更：立即失效 mesh_adjacency 懒表（查询即时正确）
-    NonTopology, //!< 仅属性等附着数据变更：不动拓扑，邻接懒表保持有效
+    Topology, //!< 连通性变更（增删点/面、整网格替换等）：立即失效 mesh_adjacency 懒表（查询即时正确）
+    NonTopology, //!< 仅坐标/属性等附着数据变更：不动连通性，邻接懒表保持有效（边表以端点对为键，不依赖坐标）
 };
 
 /**
@@ -27,6 +28,13 @@ enum class MeshEditKind {
  * 标脏——Topology 类立即失效邻接懒表 + 记入待通知集合（去重）；通知不即时发出，
  * 由操作边界 ModelLayer::flushNotifications() 统一发 notifyComponentChanged。
  * 只读访问（component()/mesh()）不标脏；插件不再持有通知职责。
+ *
+ * @note 写前标脏契约（新增写路径必读）：标脏必须发生在任何数据修改**之前**。
+ *   ModelLayer::markComponentDirty 同时是 undo 钩子入口，它在调用点克隆组件作为
+ *   before-image；若等到修改数据后才标脏，撤销栈记录的是修改后状态，撤销将失效
+ *   （整网格替换/整体删除类操作表现为"撤销完全无效"，增量追加类表现为"残留新元素"）。
+ *   函数内标脏应保持在前置校验之后、首个数据修改之前；幂等提前返回路径**不得**标脏，
+ *   否则未改数据却捕获 before-image，会在操作边界 commit 时入栈一条空记录。
  */
 class ComponentOperator {
 public:
@@ -41,6 +49,9 @@ public:
     const MeshData* mesh() const noexcept;
     GeometryData* geometry() const noexcept;
 
+    //! @brief 只读访问 Geometry↔Mesh 映射；尚未创建时返回 nullptr
+    const GeometryMeshMap* geometryMeshMap() const noexcept;
+
     ModelLayer& manager() const noexcept { return *mgr_; }
 
     Index modelId() const noexcept;
@@ -53,25 +64,29 @@ public:
      */
     MeshData& editableMesh(MeshEditKind kind = MeshEditKind::Topology);
 
-    //! @brief 运行期加点（原子四连：push、vertex_count_ 同步、pointIdMap 分配 gid、point_global_ids_ 追加）并标脏
+    //! @brief 申请可写 Geometry↔Mesh 映射（获取即标脏，确保映射修改进入 Undo 快照）
+    GeometryMeshMap& editableGeometryMeshMap();
+
+    //! @brief 运行期加点：写前标脏后执行原子四连（push、vertex_count_ 同步、pointIdMap 分配 gid、point_global_ids_ 追加）
     Index appendPoint(std::array<double, 3> pos);
 
     /**
-     * @brief 追加面单元（空 face_vertices_offset_ 先补 {0}）并标脏
+     * @brief 追加面单元：写前标脏后追加（空 face_vertices_offset_ 先补 {0}）
      * @param local_point_ids 面顶点（组件内局部点 id，与 MeshData 连通性同一键空间）
      * @return 新面单元序号
      * @throw std::invalid_argument 点数为 0 或局部 id 越界
      */
     Index appendFace(const std::vector<Index>& local_point_ids);
 
-    //! @brief 整网格替换（gid 纪律内建：释放旧点/边 gid → 就位 → ensure 点/边 gid → 标脏）
+    //! @brief 整网格替换（gid 纪律内建：写前标脏 → 释放旧点/边 gid → 就位 → ensure 点/边 gid）
     void replaceMesh(std::unique_ptr<MeshData> mesh);
 
     /**
      * @brief 把一条几何边物化为边单元（写入 edge_vertices_），使其可挂属性、参与边渲染
      *
-     * 幂等：该边已物化时直接返回既有 cell 序号。同步分配全局边 id（MeshIDMap），
-     * 并标脏（失效邻接懒表；通知由操作边界 flush 统一发出）。
+     * 幂等：该边已物化时直接返回既有 cell 序号（该路径不标脏，避免入栈空记录）。
+     * 需写入时先写前标脏再追加边单元、同步分配全局边 id（MeshIDMap）；
+     * 通知由操作边界 flush 统一发出。
      *
      * @param p0 边端点 id（与 MeshData 连通性同一键空间，组件内局部点 id）
      * @param p1 边另一端点 id

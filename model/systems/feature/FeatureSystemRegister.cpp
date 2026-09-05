@@ -40,6 +40,7 @@ HandlerMetaData FeatureSystemRegister::toMetaData(const QJsonObject& meta_data) 
     handler_data.display_name = meta_data.value("display_name").toString().toStdString();
     handler_data.description = meta_data.value("description").toString().toStdString();
     handler_data.interactive = meta_data.value("interactive").toBool(false);
+    handler_data.undo_manual = meta_data.value("undo").toString() == QStringLiteral("manual");
     return handler_data;
 }
 }

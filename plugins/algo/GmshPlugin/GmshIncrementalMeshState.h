@@ -12,22 +12,20 @@ struct MeshedEdgeData {
     std::vector<double> paramCoords;
 };
 
-// 保存单个 CAD 面的网格结果，面删除和重划分时用它重建整体 MeshData。
+// 保存本次 CAD 面划分得到的临时结果，用于合并进 MeshData 并生成通用面映射。
 struct SingleFaceMeshResult {
     std::vector<std::array<double, 3>> vertices;
     std::vector<std::size_t> face_vertices;
     std::vector<std::size_t> face_vertices_offset;
-    // 写入 MeshData 的组件内局部点 id 序列（与 face_vertices 一一对应），用于只删除本次 Gmsh 生成的单元。
+    // 写入 MeshData 的组件内局部点 id 序列（与 face_vertices 一一对应）。
     std::vector<Index> global_face_vertices;
     bool success { false };
 };
 
-// 保存一个 component 的 Gmsh 增量网格状态，由 Gmsh 插件管理生命周期。
+// 保存本次操作使用的 Gmsh 共享边临时缓存；面拓扑统一由 GeometryMeshMap 持有。
 struct GmshIncrementalMeshState {
     // 已划分 CAD 边的节点缓存，key 使用 geometry 的全局 CAD 边 ID。
     std::map<GeomEdgeId, MeshedEdgeData> meshedEdgesCache;
-    // 已划分 CAD 面的网格结果，key 使用 geometry 的全局 CAD 面 ID。
-    std::map<GeomFaceId, SingleFaceMeshResult> meshedFacesCache;
-    // 已划分 CAD 边被多少个面复用，用于删除面网格时判断是否清理边缓存。
+    // 由 GeometryMeshMap 重建的临时引用计数，用于快速判断边缓存能否删除。
     std::map<GeomEdgeId, int> meshedEdgeRefCounts;
 };

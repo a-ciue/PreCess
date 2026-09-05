@@ -107,6 +107,7 @@ static void resetGeneratedMesh(AppContext& ctx)
     // 先回收旧网格占用的全局点 id 再清空网格，保持 gid 伴生表一致
     comp->releasePointGlobalIds(ctx.modelLayer.pointIdMap());
     comp->mesh->init();
+    comp->mapping.reset();
     ctx.gmshState = {};
     if (comp->geometry->rootShape)
         comp->geometry->ensureIndexBuilt(ctx.modelLayer.geomRegistry());
@@ -202,10 +203,12 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
         parameters.targetMeshSize = ctx->meshSize;
         const GeomFaceId faceId =
             comp->geometry->index.faceGlobalId(static_cast<int>(ctx->currentIndex) + 1);
+        GeometryMeshMap& workingMapping = comp->ensureMapping();
 
         auto result = IncrementalMeshTools::meshSingleFace(
             *comp->geometry,
             ctx->gmshState,
+            workingMapping,
             *componentOp,
             faceId,
             ctx->meshSize,
@@ -214,12 +217,14 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
         ctx->currentIndex++;
 
         if (result.success) {
+            IncrementalMeshTools::storeStateToGeometryMeshMap(
+                ctx->gmshState, workingMapping, *componentOp);
             reloadPolyData(*ctx);
             if (ctx->meshSize < 50.0)
                 ctx->meshSize *= 1.5;
             spdlog::info("nodes={}, cached_edges={}, next_size={:.4f}",
                 comp->mesh->vertex_positions_.size(),
-                ctx->gmshState.meshedEdgeRefCounts.size(),
+                ctx->gmshState.meshedEdgesCache.size(),
                 ctx->meshSize);
         }
     } else if (key == "s" || key == "S") {
@@ -246,8 +251,12 @@ static void KeyPressCallback(vtkObject* caller, unsigned long, void* clientData,
             spdlog::error("Component {} not found.", ctx->componentId);
             return;
         }
+        GeometryMeshMap& workingMapping = comp->ensureMapping();
         if (IncrementalMeshTools::deleteFaceMesh(
-                *comp->geometry, ctx->gmshState, *componentOp, faceId)) {
+                *comp->geometry, ctx->gmshState,
+                workingMapping, *componentOp, faceId)) {
+            IncrementalMeshTools::storeStateToGeometryMeshMap(
+                ctx->gmshState, workingMapping, *componentOp);
             reloadPolyData(*ctx);
         }
     } else if (key == "h" || key == "H") {

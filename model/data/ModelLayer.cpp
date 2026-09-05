@@ -15,6 +15,7 @@
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ComponentOperator.h"
+#include "UndoRecorder.h"
 
 #include <algorithm>
 #include <filesystem>
@@ -38,6 +39,9 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
 
     if (observer_)
         observer_->notifyModelAdded(model_id);
+    // undo 记录钩子：addModel 完成后回调（结构操作即时成记录或并入当前操作边界）
+    if (undo_recorder_)
+        undo_recorder_->onModelAdded(model_id);
     return model_id;
 }
 
@@ -134,9 +138,21 @@ void ModelLayer::removeModel(Index model_id) {
     if (it == models_.end())
         throw std::runtime_error("Model not exist");
 
-    std::vector<Index> comp_ids = it->second ? it->second->componentIds() : std::vector<Index> {};
-    for (Index cid : comp_ids)
-        removeComponent(cid);
+    // undo 记录钩子：移除前回调（捕获整模型快照）
+    if (undo_recorder_)
+        undo_recorder_->onModelRemoving(*it->second);
+
+    // 组件随模型快照整体记录：移除期间抑制组件级移除钩子，避免重复记录
+    component_remove_hook_suspended_ = true;
+    try {
+        std::vector<Index> comp_ids = it->second ? it->second->componentIds() : std::vector<Index> {};
+        for (Index cid : comp_ids)
+            removeComponent(cid);
+    } catch (...) {
+        component_remove_hook_suspended_ = false;
+        throw;
+    }
+    component_remove_hook_suspended_ = false;
 
     models_.erase(it);
     if (observer_)
@@ -148,6 +164,12 @@ void ModelLayer::removeComponent(Index component_id)
     auto modelIt = component_to_model_.find(component_id);
     if (modelIt == component_to_model_.end())
         throw std::runtime_error("ComponentData not exist");
+
+    // undo 记录钩子：移除前回调（克隆组件快照）；removeModel 期间抑制（随模型快照整体记录）
+    if (undo_recorder_ && !component_remove_hook_suspended_) {
+        if (ComponentData* c = findComponent(component_id))
+            undo_recorder_->onComponentRemoving(*c);
+    }
 
     Index model_id = modelIt->second;
 
@@ -190,6 +212,15 @@ ModelData* ModelLayer::modelById(Index model_id) const
     if (it == models_.end())
         return nullptr;
     return it->second.get();
+}
+
+Index ModelLayer::findModelId(const ModelData& model) const
+{
+    for (const auto& [id, m] : models_) {
+        if (m.get() == &model)
+            return id;
+    }
+    return -1;
 }
 
 std::optional<ComponentOperator> ModelLayer::getComponentOperator(Index component_id)
@@ -281,6 +312,12 @@ void ModelLayer::markComponentDirty(Index component_id, MeshEditKind kind)
     // Topology 类修改立即失效邻接懒表，保证查询即时正确；通知延迟到操作边界 flush
     if (kind == MeshEditKind::Topology)
         c->mesh_adjacency.invalidate();
+
+    // undo 记录钩子：写前回调（数据尚未修改），操作边界内首次标脏捕获 before-image。
+    // 先于 pending_notify_ 记入调用：钩子在 staged 打开时会隐式 cancelStaged（恢复
+    // before₀ 并自行 flush），若先记入，本次标脏会被该 flush 吞掉导致通知丢失。
+    if (undo_recorder_)
+        undo_recorder_->onComponentDirty(component_id, *c);
 
     // 去重记入待通知集合
     if (std::find(pending_notify_.begin(), pending_notify_.end(), component_id) == pending_notify_.end())

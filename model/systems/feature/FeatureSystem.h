@@ -25,6 +25,7 @@
 #include <vector>
 
 class ModelLayer;
+class UndoStack;
 
 namespace core {
 class ArgObject;
@@ -38,6 +39,7 @@ struct HandlerMetaData {
     std::string display_name {}; //> 功能 UI 展示用名称
     std::string description {}; //> 功能描述
     bool interactive {}; //> 是否声明视口交互能力（功能经 interaction 上下文订阅交互回调）
+    bool undo_manual { false }; //> 是否声明 undo 手动模式（json "undo": "manual"；Auto 边界自动记录，Manual 插件经 ctx.undo 的 staged 会话自控）
 };
 
 /**
@@ -53,7 +55,7 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>; //> 兼容跨 dll 边界析构的智能指针
     static const std::string name; //> 系统唯一名称，用于插件注册时的识别
 
-    FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus);
+    FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack = nullptr);
     ~FeatureSystem();
 
     /**
@@ -130,7 +132,9 @@ private:
         std::unique_ptr<FeatureParams> params;
         interaction::InteractionState interaction_state; //> 视口交互状态（回调 + 标注 + 结果）
         InteractionContext interaction_context { interaction_state }; //> 交互上下文（包装本条目状态）
+        std::unique_ptr<FeatureEventGateway> event_gateway; //> 事件网关视图（构造时绑定本功能的 undo 模式）
         std::unique_ptr<FeatureContext> context;
+        bool undo_manual { false }; //> 本功能的 undo 模式（Auto 边界自动记录；Manual 插件经 ctx.undo 自控）
     };
 
     bool routeKeyEvent(const KeyEvent& event); //> 按键绑定路由，返回事件是否被消费
@@ -140,7 +144,7 @@ private:
 
     ModelLayer* model_layer_; //< 模型层引用，用于装配功能上下文
     core::EventBus* event_bus_; //< 事件总线引用
-    FeatureEventGateway event_gateway_; //< 功能事件网关（回调边界自动 flush；声明顺序须在 model_layer_/event_bus_ 之后）
+    UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：无栈时边界退化为仅 flush）
     std::unordered_map<std::string, FeatureEntry> entries_; //< 功能条目，key 为功能唯一名称
     std::string current_feature_; //< 当前进入的功能名（空=无；setFeatureActive 驱动进入/退出）
     std::function<std::optional<Index>()> active_model_provider_;

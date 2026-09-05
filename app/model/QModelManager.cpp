@@ -12,6 +12,7 @@
 #include "ModelLayer.h"
 #include "QModelObserver.h"
 #include "SystemPluginManager.h"
+#include "UndoStack.h"
 
 #include <QUrl>
 #include <filesystem>
@@ -26,20 +27,26 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
         /*observer=*/observer_.get());
 
     query_ = std::make_unique<QModelQuery>(core_.get(), this);
-    geometry_operations_ = std::make_unique<QGeometryOperations>(*core_);
+
+    // undo 栈：构造后挂接 ModelLayer 记录钩子（写前/结构操作时机回调），并注入各系统边界
+    undo_stack_ = std::make_unique<UndoStack>(*core_);
+    core_->setUndoRecorder(undo_stack_.get());
+
+    geometry_operations_ = std::make_unique<QGeometryOperations>(*core_, undo_stack_.get());
 
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
-    algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_);
-    edit_system_ = std::make_unique<systems::edit::EditSystem>(*core_);
+    algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_, undo_stack_.get());
+    edit_system_ = std::make_unique<systems::edit::EditSystem>(*core_, undo_stack_.get());
 
     // 功能系统：事件总线 + 系统本体 + 动态上下文 provider 注入
     event_bus_ = std::make_unique<core::EventBus>();
-    feature_system_ = std::make_unique<systems::feature::FeatureSystem>(*core_, *event_bus_);
+    feature_system_ = std::make_unique<systems::feature::FeatureSystem>(*core_, *event_bus_, undo_stack_.get());
 
     algo_adaptor_ = std::make_unique<systems::algo::QAlgorithmSystemAdaptor>(*algo_system_);
     io_adaptor_ = std::make_unique<systems::io::QModelIOSystemAdaptor>(*io_system_);
     edit_adaptor_ = std::make_unique<systems::edit::QEditSystemAdaptor>(*edit_system_);
     feature_adaptor_ = std::make_unique<systems::feature::QFeatureSystemAdaptor>(*feature_system_);
+    undo_adaptor_ = std::make_unique<QUndoStackAdaptor>(*undo_stack_);
     // 功能上下文的活动模型/组件由 UI 同步到适配器，功能经 provider 动态获取
     feature_system_->setActiveModelProvider([this]() { return feature_adaptor_->activeModel(); });
     feature_system_->setActiveComponentProvider([this]() { return feature_adaptor_->activeComponent(); });
@@ -109,7 +116,19 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     }
 }
 
-QModelManager::~QModelManager() = default;
+QModelManager::~QModelManager()
+{
+    // 显式有序拆解：成员逆声明析构表达不了跨成员的回调依赖。~FeatureSystem 会停用所有
+    // handler，deactivate 内经 ctx.undo.cancelStaged() 关闭 staged 会话——该路径访问
+    // UndoStack、flush 模型通知、并经 on_changed_ 回调 undo_adaptor_ 发信号；隐式析构
+    // 顺序中 undo_adaptor_ 先于 feature_system_ 析构（回调悬挂），故显式提前拆解。
+    // 1) 先停功能系统：此刻 UndoStack / observer_ / undo_adaptor_ 均存活，deactivate 安全
+    feature_system_.reset();
+    // 2) 断开栈与模型层的互指钩子：此后成员按任意顺序析构都不会回触已析构对象
+    undo_stack_->setOnChanged(nullptr);
+    core_->setUndoRecorder(nullptr);
+    // 3) 其余成员按声明逆序自动析构（undo_stack_ 声明在各系统之前，最后析构）
+}
 
 void QModelManager::removeModel(int id)
 {
@@ -124,19 +143,37 @@ void QModelManager::removeComponent(int id)
 
 void QModelManager::removeMesh(int componentId)
 {
-    auto op = core_->getComponentOperator(componentId);
-    if (op)
-        op->removeMesh();
-    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知
+    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知 + undo 自动记录。
+    // 异常时先提交（部分写入可撤销）+ flush 再重抛。
+    undo_stack_->beginOperation("移除网格");
+    try {
+        auto op = core_->getComponentOperator(componentId);
+        if (op)
+            op->removeMesh();
+    } catch (...) {
+        undo_stack_->commitOperation();
+        core_->flushNotifications();
+        throw;
+    }
+    undo_stack_->commitOperation();
     core_->flushNotifications();
 }
 
 void QModelManager::removeGeometry(int componentId)
 {
-    auto op = core_->getComponentOperator(componentId);
-    if (op)
-        op->removeGeometry();
-    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知
+    // 过渡 shim（随系统迁移消亡）：QML 入口作为操作边界统一 flush 组件变更通知 + undo 自动记录。
+    // 异常时先提交（部分写入可撤销）+ flush 再重抛。
+    undo_stack_->beginOperation("移除几何");
+    try {
+        auto op = core_->getComponentOperator(componentId);
+        if (op)
+            op->removeGeometry();
+    } catch (...) {
+        undo_stack_->commitOperation();
+        core_->flushNotifications();
+        throw;
+    }
+    undo_stack_->commitOperation();
     core_->flushNotifications();
 }
 
@@ -183,6 +220,11 @@ systems::QSystemPluginManager* QModelManager::getSystemPluginManager() const
 QGeometryOperations* QModelManager::getGeometryOperations() const
 {
     return geometry_operations_.get();
+}
+
+QUndoStackAdaptor* QModelManager::getUndoStackAdaptor() const
+{
+    return undo_adaptor_.get();
 }
 
 std::string_view QModelManager::argv0 = "./PreCess.exe";

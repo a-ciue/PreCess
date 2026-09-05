@@ -2,6 +2,7 @@
 #include "GeometryData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
+#include "UndoRecorder.h"
 
 #include <spdlog/spdlog.h>
 
@@ -39,6 +40,9 @@ Index ModelOperator::addGeometryComponent(std::unique_ptr<ComponentData> compone
     // 结构操作保持即时通知，不进待通知集合。
     if (manager_->observer_)
         manager_->observer_->notifyComponentChanged(component_id);
+    // undo 记录钩子：组件加入后回调（结构操作即时成记录或并入当前操作边界）
+    if (manager_->undo_recorder_)
+        manager_->undo_recorder_->onComponentAdded(id_, component_id);
     return component_id;
 }
 

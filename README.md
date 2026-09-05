@@ -193,9 +193,9 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
   * [ ] 菜单栏视图或窗口header按钮或窗口header右键菜单可以管理窗口状态：开关、选项页等。参考HyperMesh、Ansys，激进点的参考Visual Studio与Blender
   * [ ] 类Blender的自定义窗口布局预设
 * [ ] 任务执行  
-  * [ ] 任务的失败恢复与撤销重做
+  * [x] 任务的失败恢复与撤销重做
     * [x] 模型层快照/恢复原语（组件/模型级 takeSnapshot/restoreSnapshot）
-    * [ ] 撤销重做
+    * [x] 撤销重做：边界自动记录（Auto）+ Manual staged 预览会话（beginStaged/commitStaged/cancelStaged/revertStaged），线性历史；设计约定见 AGENTS.md 第 10 节
   * [ ] 任务暂停或断点：算法执行过程中的调试。一般都是每次执行输出一个结果到文件再打开模型查看情况，也许可以做到更精细的算法控制
   * [ ] UI的更新机制：数据更新还挺困难。比如数据更新可能会导致当前操作不合法，需要考虑避免
 * [ ] 从软件中剥离业务逻辑：这服务于以下几点
