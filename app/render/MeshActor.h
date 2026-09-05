@@ -13,6 +13,7 @@
 #include <vtkPropCollection.h>
 #include <vtkPoints.h>
 #include <vtkIdTypeArray.h>
+#include <vtkSmartPointer.h>
 class vtkGeometryFilter;
 class vtkExtractGeometry;
 class vtkExtractPolyDataGeometry;
@@ -22,6 +23,7 @@ class vtkUnstructuredGrid;
 class vtkRenderer;
 class MeshActorSelectOp;
 class AttributeOperator;
+class TopologyDiagnosticActor;
 
 // 保存面属性渲染临时修改 face_mapper_ 前的相对偏移参数
 struct FaceAttributeOffsetState {
@@ -72,6 +74,9 @@ public:
         const std::string& attr_name,
         std::map<std::string, std::any> args);
 
+    /** @brief 获取本组件独立的拓扑诊断渲染对象 */
+    TopologyDiagnosticActor& topologyDiagnostics();
+
 private:
     void applyStyle();
 
@@ -79,6 +84,7 @@ private:
     MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
     bool visibility_ { true };
     std::unique_ptr<MeshDataVtk> model_data_;
+    std::unique_ptr<TopologyDiagnosticActor> topology_diagnostics_;
 
     vtkPlane* clip_plane_ {};
     vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;
@@ -102,10 +108,10 @@ private:
     vtkNew<vtkPolyData> face_data_;
     vtkNew<vtkPolyData> edge_data_;
 
-    // 缓存面单元中心点。
-    vtkNew<vtkPolyData> face_cell_centers_;
-    // 缓存体单元中心点。
-    vtkNew<vtkPolyData> solid_cell_centers_;
+    // 边、面、体单元中心点在首次向量渲染时计算，网格重新加载后置空失效。
+    vtkSmartPointer<vtkPolyData> edge_cell_centers_;
+    vtkSmartPointer<vtkPolyData> face_cell_centers_;
+    vtkSmartPointer<vtkPolyData> solid_cell_centers_;
 
     FaceAttributeOffsetState face_attribute_offset_;
 

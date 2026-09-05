@@ -303,6 +303,7 @@ ColumnLayout {
                 icon.source: "qrc:/images/toolbar/File/import.svg"
                 icon.width: root.ribbonIconSize
                 icon.height: root.ribbonIconSize
+                icon.color: "transparent"
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导入"
@@ -313,6 +314,7 @@ ColumnLayout {
                 icon.source: "qrc:/images/toolbar/File/export.svg"
                 icon.width: root.ribbonIconSize
                 icon.height: root.ribbonIconSize
+                icon.color: "transparent"
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导出"
@@ -323,6 +325,7 @@ ColumnLayout {
                 icon.source: "qrc:/images/toolbar/File/preference.svg"
                 icon.width: root.ribbonIconSize
                 icon.height: root.ribbonIconSize
+                icon.color: "transparent"
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "偏好设置"
@@ -371,6 +374,7 @@ ColumnLayout {
                     icon.source: root.getIconForPlugin(modelData.name)
                     icon.width: root.ribbonIconSize
                     icon.height: root.ribbonIconSize
+                    icon.color: "transparent"
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -402,6 +406,7 @@ ColumnLayout {
                     icon.source: root.getIconForPlugin(modelData.name)
                     icon.width: root.ribbonIconSize
                     icon.height: root.ribbonIconSize
+                    icon.color: "transparent"
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.display_name
@@ -424,6 +429,7 @@ ColumnLayout {
                     icon.source: root.getIconForFeature(modelData)
                     icon.width: root.ribbonIconSize
                     icon.height: root.ribbonIconSize
+                    icon.color: "transparent"
                     Layout.fillHeight: true
                     display: ToolButton.TextUnderIcon
                     text: modelData.text
@@ -459,6 +465,7 @@ ColumnLayout {
                                 icon.source: root.getIconForFeature(modelData)
                                 icon.width: root.ribbonIconSize
                                 icon.height: root.ribbonIconSize
+                                icon.color: "transparent"
                                 Layout.fillHeight: true
                                 display: ToolButton.TextUnderIcon
                                 text: modelData.display_name

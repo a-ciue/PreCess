@@ -15,6 +15,8 @@ Item {
             Layout.fillHeight: true
             clip: true
 
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+
             ScrollBar.vertical: ScrollBar {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom

@@ -25,9 +25,11 @@
 
 - **定位**：专注网格处理的 CAE 前处理软件，面向网格算法开发者与工业界需求。
 - **架构**：**插件化架构**，功能封装在插件中，主程序运行时按需加载。
-- **技术栈**：C++17、CMake、Qt Quick 6（QML）、VTK、OpenCASCADE、spdlog、GoogleTest。
+- **技术栈**：C++17、CMake、Qt Quick 6（QML）、VTK、OpenCASCADE、spdlog、Catch2。
 - **目标平台**：跨平台（Windows / Linux / macOS），当前主力为 Windows + MSVC。
 - **错误处理机制**：使用 **异常**（不要用错误码裸返回风格替代）。
+- **迭代计划**：`README.md` 的「🗺️路线图」节是迭代计划与进度的记录；**完成或计划任务时须及时同步更新**（勾选已完成项、为进行中任务拆分小点或新增计划项），避免路线图陈旧。
+- **版本与接口稳定性**：项目处于**预览阶段**（0.x），接口随时可能发生二进制级/源代码级的不兼容变更，不提供稳定性承诺；插件须与主程序**同编译器、同配置、同依赖版本**构建（ABI 混用危害见第 8 节）。
 
 ---
 
@@ -124,13 +126,14 @@
 
 ## 8. 构建、测试与验证
 
-- **构建系统**：CMake + Ninja，预设见 `CMakePresets.json` / `CMakeUserPresets.json`。
+- **构建系统**：CMake + Ninja，预设见 `CMakePresets.json`（仓库模板，机器无关）与 `CMakeUserPresets.json`（本机覆盖，不入库，见 `.gitignore`）。
 - **C++ 标准**：C++17（`CMAKE_CXX_STANDARD 17`，REQUIRED）。
 - **常用命令（Windows，PowerShell）**：
-  - 配置：`cmake --preset x64-debug`（或 `x64-release` / `x64-relwithdebinfo`）
-  - 构建：`cmake --build out/build/x64-debug`
+  - 依赖路径：`CMakePresets.json` 的 `base` 预设按环境变量 `PRECESS_DEPS` 定位依赖根（PreCess-deps）；本机具体路径在 `CMakeUserPresets.json` 的 `local-base` 中覆盖（`x64-debug-local` 等预设继承仓库预设并叠加 `local-base`）。
+  - 配置：`cmake --preset x64-debug`（仓库预设，需先设置 `PRECESS_DEPS`；`x64-release` / `x64-relwithdebinfo` 同理）；本机预设为 `cmake --preset x64-debug-local`
+  - 构建：`cmake --build out/build/x64-debug`（对应本机预设为 `out/build/x64-debug-local`）
   - 测试：先以 `-DBUILD_TESTING=ON` 配置（默认 OFF），再 `ctest --test-dir out/build/x64-debug --output-on-failure`
-  - 注意：`CMakeUserPresets.json` 含 `//` 注释，VS 的 CMake 集成可以容忍，但命令行 `cmake --preset` 会因解析失败而报错；命令行场景请手动传参（参照 preset 中的变量）或直接复用已配置好的构建目录。
+  - 注意：预设文件均为标准 JSON（无 `//` 注释），命令行 `cmake --preset` 可直接使用。
   - 注意：命令行构建须先加载 MSVC 环境（`vcvars64.bat` 或 VS Developer PowerShell），否则报标准库头文件缺失（C1083 `fstream`/`array`）；Git Bash 中调用 `cmd.exe` 需防路径转换（`MSYS_NO_PATHCONV=1`，`/c` 否则被转为 `C:/`），内联引号易出错时可改写成临时 `.bat` 调用。
 - 测试框架：模块单元测试用 **Catch2**（`cmake/test.cmake` 的 `precess_add_test` / `precess_test_link_libraries`），测试代码见各模块 `test/` 目录（如 `model/data/test/`、`model/systems/feature/test/`）。
 - **新特性必须配套测试用例**；修 bug 时尽量补可复现的回归测试。
@@ -192,4 +195,5 @@
 - [ ] 通用界面无插件名 / 功能名特判；插件静态能力、动态状态、环境状态分别经声明链、事件回调、上下文访问（第 10 节三原则）。
 - [ ] 视口交互状态仅由渲染线程修改；GUI 线程变更经 `requestRefresh` / `deferRefresh` 通知（第 10 节线程约定）。
 - [ ] 能通过构建；涉及逻辑改动已（或建议）跑测试，新特性带测试。
+- [ ] 完成或计划任务时已同步更新 `README.md` 路线图（勾选已完成项、为进行中任务拆分小点或新增计划项）。
 - [ ] Commit 类型正确、单一职责、信息清晰。

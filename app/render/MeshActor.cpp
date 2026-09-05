@@ -1,11 +1,11 @@
 #include "MeshActor.h"
+#include "TopologyDiagnosticActor.h"
 #include "renderStrategy/AttributeOperator.h"
 #include "Core.h"
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
-#include <vtkCellCenters.h>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkExtractGeometry.h>
@@ -60,7 +60,7 @@ void addPointAttributes(
     }
 }
 
-// 将面属性或体属性写入对应 VTK 数据对象的 CellData。
+// 将边、面或体属性写入对应 VTK 数据对象的 CellData。
 void addCellAttributes(
     vtkCellData& cell_data,
     const std::map<std::string, std::vector<double>>& attributes,
@@ -114,6 +114,7 @@ MeshActor::MeshActor(vtkRenderer* renderer)
     this->face_actor_->SetMapper(face_mapper_);
     this->edge_actor_->SetMapper(edge_mapper_);
     this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
+    topology_diagnostics_ = std::make_unique<TopologyDiagnosticActor>(renderer_);
 }
 
 MeshActor::~MeshActor()
@@ -129,6 +130,11 @@ MeshActor::~MeshActor()
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
     this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
+
+    // 单元中心只依赖当前网格；重新加载后先失效，首次向量渲染时再按需计算。
+    edge_cell_centers_ = nullptr;
+    face_cell_centers_ = nullptr;
+    solid_cell_centers_ = nullptr;
 
     // 组件私有点集：坐标自持，连通性数组直接以局部点 id 作 VTK 点索引
     const auto& positions = model_data.vertex_positions_;
@@ -204,6 +210,8 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
         edge_poly->SetLines(edge_cells);
 
         edge_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
+        addCellAttributes(*edge_poly->GetCellData(), model_data.edge_attributes_,
+            edge_poly->GetNumberOfCells(), "edge");
     }
 
     // solid data
@@ -227,19 +235,6 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     addPointAttributes(*solid_ugird->GetPointData(), model_data.vertex_attributes_, point_count);
     addCellAttributes(*solid_ugird->GetCellData(), model_data.solid_attributes_, solid_cells_count, "solid");
 
-    // 单元中心点只和几何拓扑有关，在加载数据时统一计算并缓存，属性渲染阶段直接复用。 
-    {
-        vtkNew<vtkCellCenters> face_centers;
-        face_centers->SetInputData(face_poly);
-        face_centers->Update();
-        face_cell_centers_->DeepCopy(face_centers->GetOutput());
-
-        vtkNew<vtkCellCenters> solid_centers;
-        solid_centers->SetInputData(solid_ugird);
-        solid_centers->Update();
-        solid_cell_centers_->DeepCopy(solid_centers->GetOutput());
-    }
-
     solid_filter_->SetInputData(solid_ugird);
     solid_edge_extractor_->SetInputData(solid_ugird);
 
@@ -252,6 +247,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     edge_mapper_->SetScalarVisibility(0);
     face_mapper_->SetScalarVisibility(0);
     solid_mapper_->SetScalarVisibility(0);
+    topology_diagnostics_->loadModelData(*model_data_);
 }
 
 void MeshActor::setVisibility(bool visibility)
@@ -267,6 +263,7 @@ bool MeshActor::isVisible() const
 
 void MeshActor::setClipPlane(vtkPlane* plane)
 {
+    topology_diagnostics_->setClipPlane(plane);
     if (plane) {
         if (!clip_plane_) {
             solid_clipper_->SetInputData(this->solid_data_);
@@ -301,6 +298,7 @@ MeshRenderStyle MeshActor::getRenderStyle() const
 
 void MeshActor::applyStyle()
 {
+    topology_diagnostics_->setMeshVisible(visibility_ && style_ != MeshRenderStyle::Hidden);
     if (style_ == MeshRenderStyle::Hidden || !visibility_) {
         solid_actor_->SetVisibility(false);
         face_actor_->SetVisibility(false);
@@ -394,6 +392,11 @@ void MeshActor::applyStyle()
     default:
         break;
     }
+}
+
+TopologyDiagnosticActor& MeshActor::topologyDiagnostics()
+{
+    return *topology_diagnostics_;
 }
 
 void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)

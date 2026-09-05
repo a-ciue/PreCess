@@ -36,7 +36,7 @@ public:
     ModelData();
     ~ModelData();
 
-    std::string model_name_;
+    std::string model_name_; ///> 模型名，编码约定为 UTF-8
 
     const std::vector<Index>& componentIds() const noexcept;
     std::vector<Index>& componentIds() noexcept;

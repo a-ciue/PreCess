@@ -58,7 +58,7 @@ struct GeometryMeshMap {
  */
 struct ComponentData {
     Index id { -1 };
-    std::string name;
+    std::string name; ///< 组件名，编码约定一律为 UTF-8
 
     // 数据部分：一个组件可以有 Geometry，也可以有网格，也可以都有/都没有（初始化阶段）
     std::unique_ptr<MeshData> mesh; ///< 网格数据（来自网格导入或由 Geometry 网格化生成）

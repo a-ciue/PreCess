@@ -248,7 +248,7 @@ std::optional<ModelPayload> VtkLegacyModelHandler::read_model(const fs::path& pa
     ComponentDatas comps;
     comps.push_back(std::move(c));
 
-    return ModelPayload{path.filename().string(), std::move(comps)};
+    return ModelPayload{path.filename().u8string(), std::move(comps)};
 }
 
 void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,

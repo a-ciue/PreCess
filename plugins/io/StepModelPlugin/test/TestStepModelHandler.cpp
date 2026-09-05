@@ -103,7 +103,7 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - English path (box
     requireReadableGeometryModel(*payload);
 
     // model_name 应被设置为文件名
-    REQUIRE(payload->model_name == out.filename().string());
+    REQUIRE(payload->model_name == out.filename().u8string());
 }
 
 TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese filename")

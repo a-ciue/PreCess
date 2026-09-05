@@ -19,7 +19,12 @@ Item {
             clip: true
 
             ScrollBar.vertical: ScrollBar {
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
                 policy: ScrollBar.AsNeeded
+                topPadding: 0
+                bottomPadding: 0
             }
 
             TextArea {
