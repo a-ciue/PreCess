@@ -19,7 +19,7 @@ var searchData=
   ['qfeaturesystemadaptor_16',['QFeatureSystemAdaptor',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html',1,'systems::feature::QFeatureSystemAdaptor'],['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a183479006d373b1150d2f11542209f43',1,'systems::feature::QFeatureSystemAdaptor::QFeatureSystemAdaptor()']]],
   ['qfeaturesystemadaptor_2ecpp_17',['QFeatureSystemAdaptor.cpp',['../QFeatureSystemAdaptor_8cpp.html',1,'']]],
   ['qfeaturesystemadaptor_2eh_18',['QFeatureSystemAdaptor.h',['../QFeatureSystemAdaptor_8h.html',1,'']]],
-  ['qgeometryoperations_19',['QGeometryOperations',['../classQGeometryOperations.html',1,'QGeometryOperations'],['../classQGeometryOperations.html#ac29e5b5d8148a9b853f40639f4bff2c8',1,'QGeometryOperations::QGeometryOperations()']]],
+  ['qgeometryoperations_19',['QGeometryOperations',['../classQGeometryOperations.html',1,'QGeometryOperations'],['../classQGeometryOperations.html#a62998251f2149c759350d6e9b5fa1583',1,'QGeometryOperations::QGeometryOperations()']]],
   ['qgeometryoperations_2ecpp_20',['QGeometryOperations.cpp',['../QGeometryOperations_8cpp.html',1,'']]],
   ['qgeometryoperations_2eh_21',['QGeometryOperations.h',['../QGeometryOperations_8h.html',1,'']]],
   ['qlogmanager_22',['QLogManager',['../classQLogManager.html',1,'QLogManager'],['../classQLogManager.html#a8c6bdfbe14a7fb76cf713548af60e28c',1,'QLogManager::QLogManager()']]],
@@ -53,5 +53,8 @@ var searchData=
   ['qtlogsink_3c_20std_3a_3amutex_20_3e_50',['QtLogSink&lt; std::mutex &gt;',['../classQtLogSink.html',1,'']]],
   ['qtlogsink_5fmt_51',['QtLogSink_mt',['../QLogManager_8cpp.html#a0b97978c57fb16b5b3a72628fa59c7fe',1,'QLogManager.cpp']]],
   ['query_52',['query',['../classQModelManager.html#afab38d2de8a7aba39444a3ba26290098',1,'QModelManager::query'],['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow::query']]],
-  ['query_5f_53',['query_',['../classQModelManager.html#a99ca7f7ca124277e834c170903b2074b',1,'QModelManager']]]
+  ['query_5f_53',['query_',['../classQModelManager.html#a99ca7f7ca124277e834c170903b2074b',1,'QModelManager']]],
+  ['qundostackadaptor_54',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html',1,'QUndoStackAdaptor'],['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor::QUndoStackAdaptor()']]],
+  ['qundostackadaptor_2ecpp_55',['QUndoStackAdaptor.cpp',['../QUndoStackAdaptor_8cpp.html',1,'']]],
+  ['qundostackadaptor_2eh_56',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]]
 ];

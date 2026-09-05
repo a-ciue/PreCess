@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/UndoStack.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">UndoStack.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="UndoStack_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &quot;<a class="code" href="UndoRecord_8h.html">UndoRecord.h</a>&quot;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &quot;<a class="code" href="UndoRecorder_8h.html">UndoRecorder.h</a>&quot;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &lt;deque&gt;</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keyword">class </span><a class="code hl_class" href="classModelLayer.html">ModelLayer</a>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
+<div class="foldopen" id="foldopen00040" data-start="{" data-end="};">
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classUndoStack.html">   40</a></span><span class="keyword">class </span><a class="code hl_function" href="classUndoStack.html#adcd0d3406ba41362f7a44c8ccaab4b46">UndoStack</a> : <span class="keyword">public</span> <a class="code hl_class" href="classUndoRecorder.html">UndoRecorder</a> {</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classUndoStack.html#a064f911147ae4a7d120bacb38fbee6b0">   43</a></span>    <span class="keyword">static</span> <span class="keyword">constexpr</span> std::size_t <a class="code hl_variable" href="classUndoStack.html#a064f911147ae4a7d120bacb38fbee6b0">kMaxDepth</a> = 32;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classUndoStack.html#adcd0d3406ba41362f7a44c8ccaab4b46">UndoStack</a>(<a class="code hl_class" href="classModelLayer.html">ModelLayer</a>&amp; model);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="comment">// —— 操作边界（自动模式）——</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a1c16052c367fb287fd1e8634cfe5bf44">beginOperation</a>(std::string label);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#aa99bf1c4e83b29f3d895961e71f71ded">commitOperation</a>();</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="comment">// —— staged 会话（Manual 模式，栈持有 before-image）——</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classUndoStack.html#acd116969c65f2edb6499bc8fdd185729">beginStaged</a>(std::string label, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a81391812050ae29214b51aab192eb356">commitStaged</a>();</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a0fed4791f812cffea77de86e824e2ed6">cancelStaged</a>();</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a4459da73ff63f570a8cd145f160ceeff">revertStaged</a>();</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classUndoStack.html#a16a7330ad7d5237a755821bca9956dd8">stagedActive</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="comment">// —— 撤销/重做（自身即边界：恢复后 flushNotifications）——</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classUndoStack.html#acc257e16ce0e48bb0f3b6dd6277e4df5">canUndo</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classUndoStack.html#a2d253e7359bd9ab69cfaab824e1e767e">canRedo</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    std::optional&lt;std::string&gt; <a class="code hl_function" href="classUndoStack.html#a1146107365ea5241f831a72190c116d1">undoLabel</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    std::optional&lt;std::string&gt; <a class="code hl_function" href="classUndoStack.html#afa20922c6ea8c178521f40bfd2b6b266">redoLabel</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a0e900b22a0ccde7b9abd585b1a50b1b6">undo</a>();</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a3958e108a2522ea52420571791625d31">redo</a>();</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a5b06b6aa2e92e5e272ac7bdbce331d94">clear</a>();</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="comment">// —— UndoRecorder 钩子（ModelLayer 回调）——</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a3f37e3e2102f5e93ec590c1291217550">onComponentDirty</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keyword">const</span> <a class="code hl_struct" href="structComponentData.html">ComponentData</a>&amp; data) <span class="keyword">override</span>; </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a70b16f86c95fad0778665a65b1f48b58">onModelAdded</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a8e0a13f50ba9d2361c982fa580f29b30">onModelRemoving</a>(<span class="keyword">const</span> <a class="code hl_class" href="classModelData.html">ModelData</a>&amp; model) <span class="keyword">override</span>; </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#abc921532cc87a346c2826e58168a8e02">onComponentAdded</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a1af099be710a333a097db8706c9b2e72">onComponentRemoving</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structComponentData.html">ComponentData</a>&amp; component) <span class="keyword">override</span>; </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#abbca91451e860cd3a4c99af8f3a8d952">setOnChanged</a>(std::function&lt;<span class="keywordtype">void</span>()&gt; callback);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="keyword">private</span>:</div>
+<div class="foldopen" id="foldopen00088" data-start="{" data-end="};">
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="structUndoStack_1_1StagedSession.html">   88</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structUndoStack_1_1StagedSession.html">StagedSession</a> {</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structUndoStack_1_1StagedSession.html#a48eb2948c2bd93f88072e55936fab205">   89</a></span>        std::string <a class="code hl_variable" href="structUndoStack_1_1StagedSession.html#a48eb2948c2bd93f88072e55936fab205">label</a>;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="structUndoStack_1_1StagedSession.html#a11847f5987509a4c447f8f515b079437">   90</a></span>        <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structUndoStack_1_1StagedSession.html#a11847f5987509a4c447f8f515b079437">component_id</a> { -1 };</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="structUndoStack_1_1StagedSession.html#aafcf3982da20e402d9080c73757bc6e1">   91</a></span>        std::unique_ptr&lt;ComponentData&gt; <a class="code hl_variable" href="structUndoStack_1_1StagedSession.html#aafcf3982da20e402d9080c73757bc6e1">before</a>; </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    };</div>
+</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#a4a886551b28b6e7ac1437a53ea44323f">pushRecord</a>(<a class="code hl_struct" href="structUndoRecord.html">UndoRecord</a> record);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#ac40cd11de37bb6684f4f29c0061e9ede">recordStructural</a>(<a class="code hl_struct" href="structStructuralEntry.html">StructuralEntry</a> entry);</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classUndoStack.html#ab530493846a49425e7e1db497ea8531e">cancelStagedIfActive</a>();</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classUndoStack.html#a4e0ed61b7dc08ca8145b6b47746a36ee">restoreComponentSnapshot</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keyword">const</span> <a class="code hl_struct" href="structComponentData.html">ComponentData</a>&amp; snapshot);</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="classUndoStack.html#a9c020de439aab01792c36eaab3719ad4">  103</a></span>    <a class="code hl_class" href="classModelLayer.html">ModelLayer</a>* <a class="code hl_variable" href="classUndoStack.html#a9c020de439aab01792c36eaab3719ad4">model_</a>;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="classUndoStack.html#a46a2e422255b5122e324e6ea5afb8e63">  104</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classUndoStack.html#a46a2e422255b5122e324e6ea5afb8e63">applying_</a> { <span class="keyword">false</span> }; </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno"><a class="line" href="classUndoStack.html#ab6d1e6a59da633a206c5352ec3dc04a0">  105</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="classUndoStack.html#ab6d1e6a59da633a206c5352ec3dc04a0">op_depth_</a> { 0 };</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="classUndoStack.html#a220667a4420664405e44730a760d4bc8">  106</a></span>    std::string <a class="code hl_variable" href="classUndoStack.html#a220667a4420664405e44730a760d4bc8">op_label_</a>;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="classUndoStack.html#a3e57cd4db9acf9521be78aa184749e6b">  107</a></span>    std::vector&lt;ComponentEntry&gt; <a class="code hl_variable" href="classUndoStack.html#a3e57cd4db9acf9521be78aa184749e6b">op_components_</a>;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classUndoStack.html#a1ef492c62c3fc6edea06da6fcf2324e1">  108</a></span>    std::vector&lt;StructuralEntry&gt; <a class="code hl_variable" href="classUndoStack.html#a1ef492c62c3fc6edea06da6fcf2324e1">op_structural_</a>; </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="classUndoStack.html#a41b76eb54b08054edcdb8b5e187e34a1">  109</a></span>    std::optional&lt;StagedSession&gt; <a class="code hl_variable" href="classUndoStack.html#a41b76eb54b08054edcdb8b5e187e34a1">staged_</a>; </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="classUndoStack.html#aa52cac1fe065a7a83b79a97147ca20f8">  110</a></span>    std::deque&lt;UndoRecord&gt; <a class="code hl_variable" href="classUndoStack.html#a2b8b81caf06bc5c7a6b8959e7d704ddb">undo_</a>, <a class="code hl_variable" href="classUndoStack.html#aa52cac1fe065a7a83b79a97147ca20f8">redo_</a>;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno"><a class="line" href="classUndoStack.html#a2432b93d213aff3084a3ef168e5c9f2e">  111</a></span>    std::function&lt;void()&gt; <a class="code hl_variable" href="classUndoStack.html#a2432b93d213aff3084a3ef168e5c9f2e">on_changed_</a>;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>};</div>
+</div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:48</div></div>
+<div class="ttc" id="aUndoRecord_8h_html"><div class="ttname"><a href="UndoRecord_8h.html">UndoRecord.h</a></div><div class="ttdoc">撤销/重做记录模型：一次操作 = 一条记录</div></div>
+<div class="ttc" id="aUndoRecorder_8h_html"><div class="ttname"><a href="UndoRecorder_8h.html">UndoRecorder.h</a></div><div class="ttdoc">模型层 undo 记录钩子接口</div></div>
+<div class="ttc" id="aclassModelData_html"><div class="ttname"><a href="classModelData.html">ModelData</a></div><div class="ttdoc">Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数</div><div class="ttdef"><b>定义</b> ModelData.h:34</div></div>
+<div class="ttc" id="aclassModelLayer_html"><div class="ttname"><a href="classModelLayer.html">ModelLayer</a></div><div class="ttdoc">负责管理多个 ModelData 实例的类</div><div class="ttdef"><b>定义</b> ModelLayer.h:37</div></div>
+<div class="ttc" id="aclassUndoRecorder_html"><div class="ttname"><a href="classUndoRecorder.html">UndoRecorder</a></div><div class="ttdoc">undo 记录钩子（ModelLayer 回调，UndoStack 实现）</div><div class="ttdef"><b>定义</b> UndoRecorder.h:20</div></div>
+<div class="ttc" id="aclassUndoStack_html_a064f911147ae4a7d120bacb38fbee6b0"><div class="ttname"><a href="classUndoStack.html#a064f911147ae4a7d120bacb38fbee6b0">UndoStack::kMaxDepth</a></div><div class="ttdeci">static constexpr std::size_t kMaxDepth</div><div class="ttdoc">栈深度上限（before+after 双快照，大网格内存受控），溢出丢最旧</div><div class="ttdef"><b>定义</b> UndoStack.h:43</div></div>
+<div class="ttc" id="aclassUndoStack_html_a0e900b22a0ccde7b9abd585b1a50b1b6"><div class="ttname"><a href="classUndoStack.html#a0e900b22a0ccde7b9abd585b1a50b1b6">UndoStack::undo</a></div><div class="ttdeci">void undo()</div><div class="ttdoc">staged 打开 = cancelStaged（恢复 before₀ 并关闭，消费本次，全局栈不动）；否则正常撤销</div><div class="ttdef"><b>定义</b> UndoStack.cpp:177</div></div>
+<div class="ttc" id="aclassUndoStack_html_a0fed4791f812cffea77de86e824e2ed6"><div class="ttname"><a href="classUndoStack.html#a0fed4791f812cffea77de86e824e2ed6">UndoStack::cancelStaged</a></div><div class="ttdeci">void cancelStaged()</div><div class="ttdoc">恢复 before₀ 并关闭会话，不成记录；无 staged 空转</div><div class="ttdef"><b>定义</b> UndoStack.cpp:107</div></div>
+<div class="ttc" id="aclassUndoStack_html_a1146107365ea5241f831a72190c116d1"><div class="ttname"><a href="classUndoStack.html#a1146107365ea5241f831a72190c116d1">UndoStack::undoLabel</a></div><div class="ttdeci">std::optional&lt; std::string &gt; undoLabel() const</div><div class="ttdef"><b>定义</b> UndoStack.cpp:159</div></div>
+<div class="ttc" id="aclassUndoStack_html_a16a7330ad7d5237a755821bca9956dd8"><div class="ttname"><a href="classUndoStack.html#a16a7330ad7d5237a755821bca9956dd8">UndoStack::stagedActive</a></div><div class="ttdeci">bool stagedActive() const</div><div class="ttdoc">是否有进行中的 staged 会话（暴露 QML 供界面禁用导出/切换）</div><div class="ttdef"><b>定义</b> UndoStack.cpp:138</div></div>
+<div class="ttc" id="aclassUndoStack_html_a1af099be710a333a097db8706c9b2e72"><div class="ttname"><a href="classUndoStack.html#a1af099be710a333a097db8706c9b2e72">UndoStack::onComponentRemoving</a></div><div class="ttdeci">void onComponentRemoving(const ComponentData &amp;component) override</div><div class="ttdoc">removeComponent 前克隆</div><div class="ttdef"><b>定义</b> UndoStack.cpp:339</div></div>
+<div class="ttc" id="aclassUndoStack_html_a1c16052c367fb287fd1e8634cfe5bf44"><div class="ttname"><a href="classUndoStack.html#a1c16052c367fb287fd1e8634cfe5bf44">UndoStack::beginOperation</a></div><div class="ttdeci">void beginOperation(std::string label)</div><div class="ttdoc">嵌套深度+1（边界可嵌套，最外层生效）；不做 staged 隐式 cancel（推迟到真实写入点）</div><div class="ttdef"><b>定义</b> UndoStack.cpp:35</div></div>
+<div class="ttc" id="aclassUndoStack_html_a1ef492c62c3fc6edea06da6fcf2324e1"><div class="ttname"><a href="classUndoStack.html#a1ef492c62c3fc6edea06da6fcf2324e1">UndoStack::op_structural_</a></div><div class="ttdeci">std::vector&lt; StructuralEntry &gt; op_structural_</div><div class="ttdoc">边界内结构操作并入当前操作</div><div class="ttdef"><b>定义</b> UndoStack.h:108</div></div>
+<div class="ttc" id="aclassUndoStack_html_a220667a4420664405e44730a760d4bc8"><div class="ttname"><a href="classUndoStack.html#a220667a4420664405e44730a760d4bc8">UndoStack::op_label_</a></div><div class="ttdeci">std::string op_label_</div><div class="ttdef"><b>定义</b> UndoStack.h:106</div></div>
+<div class="ttc" id="aclassUndoStack_html_a2432b93d213aff3084a3ef168e5c9f2e"><div class="ttname"><a href="classUndoStack.html#a2432b93d213aff3084a3ef168e5c9f2e">UndoStack::on_changed_</a></div><div class="ttdeci">std::function&lt; void()&gt; on_changed_</div><div class="ttdef"><b>定义</b> UndoStack.h:111</div></div>
+<div class="ttc" id="aclassUndoStack_html_a2b8b81caf06bc5c7a6b8959e7d704ddb"><div class="ttname"><a href="classUndoStack.html#a2b8b81caf06bc5c7a6b8959e7d704ddb">UndoStack::undo_</a></div><div class="ttdeci">std::deque&lt; UndoRecord &gt; undo_</div><div class="ttdef"><b>定义</b> UndoStack.h:110</div></div>
+<div class="ttc" id="aclassUndoStack_html_a2d253e7359bd9ab69cfaab824e1e767e"><div class="ttname"><a href="classUndoStack.html#a2d253e7359bd9ab69cfaab824e1e767e">UndoStack::canRedo</a></div><div class="ttdeci">bool canRedo() const</div><div class="ttdef"><b>定义</b> UndoStack.cpp:151</div></div>
+<div class="ttc" id="aclassUndoStack_html_a3958e108a2522ea52420571791625d31"><div class="ttname"><a href="classUndoStack.html#a3958e108a2522ea52420571791625d31">UndoStack::redo</a></div><div class="ttdeci">void redo()</div><div class="ttdoc">staged 打开空转；否则正常重做</div><div class="ttdef"><b>定义</b> UndoStack.cpp:227</div></div>
+<div class="ttc" id="aclassUndoStack_html_a3e57cd4db9acf9521be78aa184749e6b"><div class="ttname"><a href="classUndoStack.html#a3e57cd4db9acf9521be78aa184749e6b">UndoStack::op_components_</a></div><div class="ttdeci">std::vector&lt; ComponentEntry &gt; op_components_</div><div class="ttdef"><b>定义</b> UndoStack.h:107</div></div>
+<div class="ttc" id="aclassUndoStack_html_a3f37e3e2102f5e93ec590c1291217550"><div class="ttname"><a href="classUndoStack.html#a3f37e3e2102f5e93ec590c1291217550">UndoStack::onComponentDirty</a></div><div class="ttdeci">void onComponentDirty(Index component_id, const ComponentData &amp;data) override</div><div class="ttdoc">操作内首次标脏捕获 before；staged 打开先隐式 cancel</div><div class="ttdef"><b>定义</b> UndoStack.cpp:284</div></div>
+<div class="ttc" id="aclassUndoStack_html_a41b76eb54b08054edcdb8b5e187e34a1"><div class="ttname"><a href="classUndoStack.html#a41b76eb54b08054edcdb8b5e187e34a1">UndoStack::staged_</a></div><div class="ttdeci">std::optional&lt; StagedSession &gt; staged_</div><div class="ttdoc">全局唯一 staged 会话</div><div class="ttdef"><b>定义</b> UndoStack.h:109</div></div>
+<div class="ttc" id="aclassUndoStack_html_a4459da73ff63f570a8cd145f160ceeff"><div class="ttname"><a href="classUndoStack.html#a4459da73ff63f570a8cd145f160ceeff">UndoStack::revertStaged</a></div><div class="ttdeci">void revertStaged()</div><div class="ttdoc">恢复 before₀，会话保持打开（纯预览重试）；无 staged 空转</div><div class="ttdef"><b>定义</b> UndoStack.cpp:124</div></div>
+<div class="ttc" id="aclassUndoStack_html_a46a2e422255b5122e324e6ea5afb8e63"><div class="ttname"><a href="classUndoStack.html#a46a2e422255b5122e324e6ea5afb8e63">UndoStack::applying_</a></div><div class="ttdeci">bool applying_</div><div class="ttdoc">undo/redo/cancelStaged 应用中：抑制一切记录（恢复会回触钩子）</div><div class="ttdef"><b>定义</b> UndoStack.h:104</div></div>
+<div class="ttc" id="aclassUndoStack_html_a4a886551b28b6e7ac1437a53ea44323f"><div class="ttname"><a href="classUndoStack.html#a4a886551b28b6e7ac1437a53ea44323f">UndoStack::pushRecord</a></div><div class="ttdeci">void pushRecord(UndoRecord record)</div><div class="ttdoc">入栈（超 kMaxDepth 丢最旧）、清空 redo、触发变更回调</div><div class="ttdef"><b>定义</b> UndoStack.cpp:359</div></div>
+<div class="ttc" id="aclassUndoStack_html_a4e0ed61b7dc08ca8145b6b47746a36ee"><div class="ttname"><a href="classUndoStack.html#a4e0ed61b7dc08ca8145b6b47746a36ee">UndoStack::restoreComponentSnapshot</a></div><div class="ttdeci">bool restoreComponentSnapshot(Index component_id, const ComponentData &amp;snapshot)</div><div class="ttdoc">组件存在则恢复快照（gid 对账内建于 restoreSnapshot），返回是否恢复</div><div class="ttdef"><b>定义</b> UndoStack.cpp:398</div></div>
+<div class="ttc" id="aclassUndoStack_html_a5b06b6aa2e92e5e272ac7bdbce331d94"><div class="ttname"><a href="classUndoStack.html#a5b06b6aa2e92e5e272ac7bdbce331d94">UndoStack::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdef"><b>定义</b> UndoStack.cpp:274</div></div>
+<div class="ttc" id="aclassUndoStack_html_a70b16f86c95fad0778665a65b1f48b58"><div class="ttname"><a href="classUndoStack.html#a70b16f86c95fad0778665a65b1f48b58">UndoStack::onModelAdded</a></div><div class="ttdeci">void onModelAdded(Index model_id) override</div><div class="ttdoc">addModel 完成后回调</div><div class="ttdef"><b>定义</b> UndoStack.cpp:300</div></div>
+<div class="ttc" id="aclassUndoStack_html_a81391812050ae29214b51aab192eb356"><div class="ttname"><a href="classUndoStack.html#a81391812050ae29214b51aab192eb356">UndoStack::commitStaged</a></div><div class="ttdeci">void commitStaged()</div><div class="ttdoc">确认：before₀+当前状态成一条记录入栈；无 staged 空转</div><div class="ttdef"><b>定义</b> UndoStack.cpp:87</div></div>
+<div class="ttc" id="aclassUndoStack_html_a8e0a13f50ba9d2361c982fa580f29b30"><div class="ttname"><a href="classUndoStack.html#a8e0a13f50ba9d2361c982fa580f29b30">UndoStack::onModelRemoving</a></div><div class="ttdeci">void onModelRemoving(const ModelData &amp;model) override</div><div class="ttdoc">removeModel 前捕获 ModelSnapshot</div><div class="ttdef"><b>定义</b> UndoStack.cpp:311</div></div>
+<div class="ttc" id="aclassUndoStack_html_a9c020de439aab01792c36eaab3719ad4"><div class="ttname"><a href="classUndoStack.html#a9c020de439aab01792c36eaab3719ad4">UndoStack::model_</a></div><div class="ttdeci">ModelLayer * model_</div><div class="ttdef"><b>定义</b> UndoStack.h:103</div></div>
+<div class="ttc" id="aclassUndoStack_html_aa52cac1fe065a7a83b79a97147ca20f8"><div class="ttname"><a href="classUndoStack.html#aa52cac1fe065a7a83b79a97147ca20f8">UndoStack::redo_</a></div><div class="ttdeci">std::deque&lt; UndoRecord &gt; redo_</div><div class="ttdef"><b>定义</b> UndoStack.h:110</div></div>
+<div class="ttc" id="aclassUndoStack_html_aa99bf1c4e83b29f3d895961e71f71ded"><div class="ttname"><a href="classUndoStack.html#aa99bf1c4e83b29f3d895961e71f71ded">UndoStack::commitOperation</a></div><div class="ttdeci">void commitOperation()</div><div class="ttdoc">深度-1；归零时：空操作丢弃，否则补 after-image、入栈、清空 redo</div><div class="ttdef"><b>定义</b> UndoStack.cpp:48</div></div>
+<div class="ttc" id="aclassUndoStack_html_ab530493846a49425e7e1db497ea8531e"><div class="ttname"><a href="classUndoStack.html#ab530493846a49425e7e1db497ea8531e">UndoStack::cancelStagedIfActive</a></div><div class="ttdeci">void cancelStagedIfActive()</div><div class="ttdoc">staged 打开则隐式 cancelStaged（真实写入点兜底，见文件头注释）</div><div class="ttdef"><b>定义</b> UndoStack.cpp:390</div></div>
+<div class="ttc" id="aclassUndoStack_html_ab6d1e6a59da633a206c5352ec3dc04a0"><div class="ttname"><a href="classUndoStack.html#ab6d1e6a59da633a206c5352ec3dc04a0">UndoStack::op_depth_</a></div><div class="ttdeci">int op_depth_</div><div class="ttdef"><b>定义</b> UndoStack.h:105</div></div>
+<div class="ttc" id="aclassUndoStack_html_abbca91451e860cd3a4c99af8f3a8d952"><div class="ttname"><a href="classUndoStack.html#abbca91451e860cd3a4c99af8f3a8d952">UndoStack::setOnChanged</a></div><div class="ttdeci">void setOnChanged(std::function&lt; void()&gt; callback)</div><div class="ttdoc">设置栈内容变更回调（入栈/撤销/重做/清空/staged 状态变化时触发；app 层 QML 刷新用）</div><div class="ttdef"><b>定义</b> UndoStack.cpp:354</div></div>
+<div class="ttc" id="aclassUndoStack_html_abc921532cc87a346c2826e58168a8e02"><div class="ttname"><a href="classUndoStack.html#abc921532cc87a346c2826e58168a8e02">UndoStack::onComponentAdded</a></div><div class="ttdeci">void onComponentAdded(Index model_id, Index component_id) override</div><div class="ttdoc">组件加入模型后回调（ModelOperator::addGeometryComponent）</div><div class="ttdef"><b>定义</b> UndoStack.cpp:327</div></div>
+<div class="ttc" id="aclassUndoStack_html_ac40cd11de37bb6684f4f29c0061e9ede"><div class="ttname"><a href="classUndoStack.html#ac40cd11de37bb6684f4f29c0061e9ede">UndoStack::recordStructural</a></div><div class="ttdeci">void recordStructural(StructuralEntry entry)</div><div class="ttdoc">结构钩子归属：边界内并入当前操作（一次用户动作一条记录）；边界外即时自成记录</div><div class="ttdef"><b>定义</b> UndoStack.cpp:371</div></div>
+<div class="ttc" id="aclassUndoStack_html_acc257e16ce0e48bb0f3b6dd6277e4df5"><div class="ttname"><a href="classUndoStack.html#acc257e16ce0e48bb0f3b6dd6277e4df5">UndoStack::canUndo</a></div><div class="ttdeci">bool canUndo() const</div><div class="ttdef"><b>定义</b> UndoStack.cpp:145</div></div>
+<div class="ttc" id="aclassUndoStack_html_acd116969c65f2edb6499bc8fdd185729"><div class="ttname"><a href="classUndoStack.html#acd116969c65f2edb6499bc8fdd185729">UndoStack::beginStaged</a></div><div class="ttdeci">bool beginStaged(std::string label, Index component_id)</div><div class="ttdoc">栈捕获 before₀；组件不存在返回 false；已有 staged 抛 std::runtime_error</div><div class="ttdef"><b>定义</b> UndoStack.cpp:73</div></div>
+<div class="ttc" id="aclassUndoStack_html_adcd0d3406ba41362f7a44c8ccaab4b46"><div class="ttname"><a href="classUndoStack.html#adcd0d3406ba41362f7a44c8ccaab4b46">UndoStack::UndoStack</a></div><div class="ttdeci">UndoStack(ModelLayer &amp;model)</div><div class="ttdef"><b>定义</b> UndoStack.cpp:28</div></div>
+<div class="ttc" id="aclassUndoStack_html_afa20922c6ea8c178521f40bfd2b6b266"><div class="ttname"><a href="classUndoStack.html#afa20922c6ea8c178521f40bfd2b6b266">UndoStack::redoLabel</a></div><div class="ttdeci">std::optional&lt; std::string &gt; redoLabel() const</div><div class="ttdef"><b>定义</b> UndoStack.cpp:168</div></div>
+<div class="ttc" id="astructComponentData_html"><div class="ttname"><a href="structComponentData.html">ComponentData</a></div><div class="ttdoc">模型的组成单元：一个 ComponentData 表示模型中的一个物体部件</div><div class="ttdef"><b>定义</b> ComponentData.h:59</div></div>
+<div class="ttc" id="astructStructuralEntry_html"><div class="ttname"><a href="structStructuralEntry.html">StructuralEntry</a></div><div class="ttdoc">结构变更（四选一）</div><div class="ttdef"><b>定义</b> UndoRecord.h:28</div></div>
+<div class="ttc" id="astructUndoRecord_html"><div class="ttname"><a href="structUndoRecord.html">UndoRecord</a></div><div class="ttdoc">一次操作 = 一条记录</div><div class="ttdef"><b>定义</b> UndoRecord.h:38</div></div>
+<div class="ttc" id="astructUndoStack_1_1StagedSession_html"><div class="ttname"><a href="structUndoStack_1_1StagedSession.html">UndoStack::StagedSession</a></div><div class="ttdoc">staged 会话状态（全局唯一，规则见文件头注释）</div><div class="ttdef"><b>定义</b> UndoStack.h:88</div></div>
+<div class="ttc" id="astructUndoStack_1_1StagedSession_html_a11847f5987509a4c447f8f515b079437"><div class="ttname"><a href="structUndoStack_1_1StagedSession.html#a11847f5987509a4c447f8f515b079437">UndoStack::StagedSession::component_id</a></div><div class="ttdeci">Index component_id</div><div class="ttdef"><b>定义</b> UndoStack.h:90</div></div>
+<div class="ttc" id="astructUndoStack_1_1StagedSession_html_a48eb2948c2bd93f88072e55936fab205"><div class="ttname"><a href="structUndoStack_1_1StagedSession.html#a48eb2948c2bd93f88072e55936fab205">UndoStack::StagedSession::label</a></div><div class="ttdeci">std::string label</div><div class="ttdef"><b>定义</b> UndoStack.h:89</div></div>
+<div class="ttc" id="astructUndoStack_1_1StagedSession_html_aafcf3982da20e402d9080c73757bc6e1"><div class="ttname"><a href="structUndoStack_1_1StagedSession.html#aafcf3982da20e402d9080c73757bc6e1">UndoStack::StagedSession::before</a></div><div class="ttdeci">std::unique_ptr&lt; ComponentData &gt; before</div><div class="ttdoc">before₀：会话起点，commit/cancel/revert 时消费</div><div class="ttdef"><b>定义</b> UndoStack.h:91</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

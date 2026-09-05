@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QUndoStackAdaptor.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QUndoStackAdaptor.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="QUndoStackAdaptor_8h_source.html">QUndoStackAdaptor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UndoStack_8h_source.html">UndoStack.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QUndoStackAdaptor.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QUndoStackAdaptor_8cpp__incl.png" border="0" usemap="#aapp_2model_2QUndoStackAdaptor_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2QUndoStackAdaptor_8cpp" id="aapp_2model_2QUndoStackAdaptor_8cpp">
+<area shape="rect" title=" " alt="" coords="453,5,705,31"/>
+<area shape="rect" href="QUndoStackAdaptor_8h.html" title="undo 栈的 QML 适配器：暴露撤销/重做入口与栈状态" alt="" coords="289,79,453,104"/>
+<area shape="poly" title=" " alt="" coords="547,33,419,77,417,72,545,28"/>
+<area shape="rect" href="UndoStack_8h.html" title="撤销/重做栈：混合记录模式（默认边界自动 + Manual 插件自控）" alt="" coords="785,79,889,104"/>
+<area shape="poly" title=" " alt="" coords="621,28,783,72,781,78,620,33"/>
+<area shape="rect" title=" " alt="" coords="285,152,359,177"/>
+<area shape="poly" title=" " alt="" coords="365,106,340,142,336,139,361,103"/>
+<area shape="rect" title=" " alt="" coords="384,152,455,177"/>
+<area shape="poly" title=" " alt="" coords="381,103,406,139,402,142,377,106"/>
+<area shape="rect" title=" " alt="" coords="5,152,260,177"/>
+<area shape="poly" title=" " alt="" coords="334,107,185,151,184,145,332,101"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1077,445,1141,471"/>
+<area shape="poly" title=" " alt="" coords="843,103,870,167,890,209,915,249,958,305,1005,357,1087,434,1083,438,1002,361,954,308,910,252,886,211,865,170,838,105"/>
+<area shape="rect" title=" " alt="" coords="1681,519,1758,544"/>
+<area shape="poly" title=" " alt="" coords="889,91,1067,97,1308,107,1549,125,1649,136,1724,149,1794,159,1858,164,1885,171,1906,184,1920,205,1925,236,1925,386,1921,413,1909,437,1892,457,1871,475,1821,502,1772,520,1771,515,1819,497,1868,470,1888,453,1905,434,1915,411,1919,386,1919,237,1915,207,1902,188,1883,176,1857,169,1793,164,1723,155,1648,141,1549,130,1308,113,1067,102,889,97"/>
+<area shape="rect" title=" " alt="" coords="1563,519,1622,544"/>
+<area shape="poly" title=" " alt="" coords="889,92,1131,103,1459,128,1616,147,1748,171,1799,184,1839,200,1864,217,1872,226,1874,236,1874,313,1872,343,1865,368,1854,389,1840,407,1802,438,1753,473,1725,490,1694,505,1637,523,1635,518,1692,500,1722,486,1750,468,1798,434,1836,403,1850,386,1860,366,1866,342,1869,313,1869,237,1867,229,1861,221,1836,204,1798,189,1747,176,1615,152,1458,133,1131,108,889,97"/>
+<area shape="rect" title=" " alt="" coords="717,519,780,544"/>
+<area shape="poly" title=" " alt="" coords="785,99,715,105,636,116,565,132,538,142,520,154,504,172,497,190,495,237,495,386,501,418,517,445,542,467,572,485,606,499,641,510,704,523,703,528,639,515,604,504,570,490,539,471,513,448,496,420,490,386,490,237,492,189,499,169,516,150,536,138,564,127,635,111,714,100,784,93"/>
+<area shape="rect" href="UndoRecord_8h.html" title="撤销/重做记录模型：一次操作 = 一条记录" alt="" coords="1161,152,1275,177"/>
+<area shape="poly" title=" " alt="" coords="889,100,1148,148,1147,153,888,105"/>
+<area shape="rect" title=" " alt="" coords="978,445,1053,471"/>
+<area shape="poly" title=" " alt="" coords="835,105,821,156,810,232,809,275,814,318,825,359,845,395,860,404,890,416,966,440,964,445,888,421,858,409,841,399,820,361,808,319,804,275,805,232,816,154,830,103"/>
+<area shape="rect" href="UndoRecorder_8h.html" title="模型层 undo 记录钩子接口" alt="" coords="925,225,1050,251"/>
+<area shape="poly" title=" " alt="" coords="853,102,908,150,969,213,965,216,904,154,849,106"/>
+<area shape="rect" title=" " alt="" coords="531,152,601,177"/>
+<area shape="poly" title=" " alt="" coords="794,107,616,153,614,148,793,101"/>
+<area shape="rect" title=" " alt="" coords="625,152,688,177"/>
+<area shape="poly" title=" " alt="" coords="809,107,700,149,698,144,807,102"/>
+<area shape="rect" title=" " alt="" coords="712,152,799,177"/>
+<area shape="poly" title=" " alt="" coords="825,106,781,145,777,141,822,102"/>
+<area shape="rect" title=" " alt="" coords="1119,519,1175,544"/>
+<area shape="poly" title=" " alt="" coords="1117,470,1137,505,1132,508,1113,472"/>
+<area shape="rect" title=" " alt="" coords="1045,519,1095,544"/>
+<area shape="poly" title=" " alt="" coords="1105,472,1085,508,1080,505,1100,470"/>
+<area shape="poly" title=" " alt="" coords="1141,465,1154,468,1288,488,1394,496,1499,503,1634,516,1667,520,1667,525,1634,521,1499,509,1393,502,1288,493,1154,473,1140,471"/>
+<area shape="poly" title=" " alt="" coords="1141,465,1154,468,1377,503,1550,523,1549,528,1376,508,1154,473,1140,470"/>
+<area shape="poly" title=" " alt="" coords="1077,470,1065,473,917,503,794,525,793,520,916,498,1064,468,1076,465"/>
+<area shape="poly" title=" " alt="" coords="1216,179,1167,300,1119,433,1114,431,1162,298,1211,177"/>
+<area shape="poly" title=" " alt="" coords="1275,166,1504,184,1623,200,1671,211,1707,223,1736,237,1757,251,1775,270,1790,298,1799,324,1801,347,1791,398,1781,429,1767,459,1738,508,1734,506,1763,457,1776,427,1786,397,1796,347,1794,325,1785,300,1770,273,1754,255,1733,241,1705,228,1670,216,1622,205,1504,189,1275,171"/>
+<area shape="poly" title=" " alt="" coords="1275,166,1412,177,1494,188,1576,202,1651,220,1714,244,1738,258,1756,273,1768,291,1773,310,1773,386,1769,411,1759,434,1743,454,1724,472,1679,500,1636,519,1634,514,1677,495,1721,468,1739,451,1754,432,1764,410,1767,386,1767,310,1764,293,1753,277,1735,262,1711,249,1650,225,1575,207,1493,193,1412,183,1275,171"/>
+<area shape="poly" title=" " alt="" coords="1199,180,1063,253,990,284,931,304,875,328,846,347,813,374,786,406,769,446,759,476,754,505,749,504,754,475,763,444,781,404,809,370,842,343,873,324,929,299,988,279,1061,248,1196,175"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="1176,299,1316,324"/>
+<area shape="poly" title=" " alt="" coords="1223,177,1244,284,1239,285,1218,178"/>
+<area shape="rect" href="ModelSnapshot_8h.html" title="模型级结构快照（undo/redo 原语）" alt="" coords="1256,225,1391,251"/>
+<area shape="poly" title=" " alt="" coords="1236,175,1296,215,1294,220,1233,180"/>
+<area shape="poly" title=" " alt="" coords="1237,326,1131,437,1127,434,1233,323"/>
+<area shape="poly" title=" " alt="" coords="1308,321,1386,341,1470,370,1506,387,1533,403,1591,443,1692,509,1690,513,1589,448,1530,408,1503,391,1468,374,1384,346,1306,327"/>
+<area shape="poly" title=" " alt="" coords="1295,322,1350,338,1416,364,1483,398,1544,443,1568,473,1585,504,1580,507,1564,476,1540,447,1480,403,1414,369,1349,343,1294,327"/>
+<area shape="poly" title=" " alt="" coords="1176,319,1089,325,992,335,904,352,870,362,845,374,813,403,788,439,770,475,758,507,753,505,765,473,784,436,809,400,842,370,868,357,903,346,991,330,1089,319,1176,313"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="1277,372,1377,397"/>
+<area shape="poly" title=" " alt="" coords="1261,322,1306,361,1302,365,1257,326"/>
+<area shape="rect" title=" " alt="" coords="1165,445,1289,471"/>
+<area shape="poly" title=" " alt="" coords="1247,325,1233,432,1228,431,1242,324"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="856,372,991,397"/>
+<area shape="poly" title=" " alt="" coords="1195,327,989,372,988,366,1194,321"/>
+<area shape="poly" title=" " alt="" coords="1293,400,1155,445,1153,439,1291,395"/>
+<area shape="poly" title=" " alt="" coords="1330,398,1324,434,1316,454,1304,472,1278,494,1248,509,1190,527,1188,522,1246,504,1275,489,1300,469,1311,452,1319,432,1324,397"/>
+<area shape="poly" title=" " alt="" coords="1378,395,1456,415,1543,443,1622,477,1688,510,1686,515,1620,482,1541,448,1455,420,1377,400"/>
+<area shape="poly" title=" " alt="" coords="1337,396,1364,432,1383,452,1405,468,1441,488,1479,502,1550,521,1549,526,1478,508,1439,493,1402,473,1380,456,1360,435,1333,399"/>
+<area shape="poly" title=" " alt="" coords="1313,400,1256,439,1253,435,1310,395"/>
+<area shape="rect" title=" " alt="" coords="1415,445,1530,471"/>
+<area shape="poly" title=" " alt="" coords="1352,395,1438,437,1436,442,1350,400"/>
+<area shape="poly" title=" " alt="" coords="1278,400,1067,448,1065,442,1276,395"/>
+<area shape="poly" title=" " alt="" coords="954,395,1067,438,1065,443,952,400"/>
+<area shape="poly" title=" " alt="" coords="910,399,894,415,879,433,872,452,873,461,877,469,901,492,924,506,949,512,975,514,1034,511,1068,511,1106,516,1106,521,1068,517,1034,516,975,519,948,518,922,511,898,497,873,472,868,462,867,451,875,430,890,411,907,395"/>
+<area shape="poly" title=" " alt="" coords="904,400,870,421,833,447,798,479,769,510,766,506,795,475,830,443,867,416,901,395"/>
+<area shape="poly" title=" " alt="" coords="973,395,1166,440,1164,445,972,400"/>
+<area shape="poly" title=" " alt="" coords="940,395,991,435,988,439,936,399"/>
+<area shape="rect" title=" " alt="" coords="887,445,954,471"/>
+<area shape="poly" title=" " alt="" coords="926,398,924,432,919,432,920,398"/>
+<area shape="poly" title=" " alt="" coords="1346,248,1393,277,1454,321,1518,377,1547,409,1572,444,1586,474,1593,504,1587,505,1581,476,1568,447,1543,413,1514,381,1451,325,1390,281,1343,253"/>
+<area shape="poly" title=" " alt="" coords="1313,253,1271,291,1267,287,1309,249"/>
+<area shape="poly" title=" " alt="" coords="996,250,1098,432,1093,434,992,252"/>
+</map>
+</div>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

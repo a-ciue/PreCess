@@ -6,14 +6,15 @@ var searchData=
   ['keybinding_3',['KeyBinding',['../structsystems_1_1feature_1_1KeyBinding.html',1,'systems::feature']]],
   ['keybindings_4',['keyBindings',['../classsystems_1_1feature_1_1FeatureRegistrar.html#a2798edca4724a88c35fde9ebac999e8a',1,'systems::feature::FeatureRegistrar']]],
   ['keyevent_5',['KeyEvent',['../structsystems_1_1feature_1_1KeyEvent.html',1,'systems::feature']]],
-  ['kind_6',['Kind',['../structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b',1,'systems::feature::ModelEvent']]],
-  ['kind_7',['kind',['../structsystems_1_1feature_1_1ModelEvent.html#a9995be6e6971aea7215d812e325aaf0b',1,'systems::feature::ModelEvent']]],
+  ['kind_6',['Kind',['../structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749',1,'StructuralEntry::Kind'],['../structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b',1,'systems::feature::ModelEvent::Kind']]],
+  ['kind_7',['kind',['../structStructuralEntry.html#adb3cedba5f1dfb948392ffafc740cfcd',1,'StructuralEntry::kind'],['../structsystems_1_1feature_1_1ModelEvent.html#a9995be6e6971aea7215d812e325aaf0b',1,'systems::feature::ModelEvent::kind']]],
   ['kinvalidcomponent_8',['kInvalidComponent',['../classMeshIDMap.html#aeaf508fd7d5909b90310cbad38399796',1,'MeshIDMap']]],
   ['kinvalidgeomedgeid_9',['kInvalidGeomEdgeId',['../Core_8h.html#a3bb54d671f5f88a16049fac0fe2a5758',1,'Core.h']]],
   ['kinvalidgeomfaceid_10',['kInvalidGeomFaceId',['../Core_8h.html#ab42003beeafa19a93736149be2370f2b',1,'Core.h']]],
   ['kinvalidgeomsolidid_11',['kInvalidGeomSolidId',['../Core_8h.html#a568e78519b186938703f8780b9cc52f1',1,'Core.h']]],
   ['kinvalidgeomvertexid_12',['kInvalidGeomVertexId',['../Core_8h.html#a24cb95d98be446581a9839fbaabbd399',1,'Core.h']]],
   ['kinvalidlocal_13',['kInvalidLocal',['../classMeshIDMap.html#a565446ff3feaedaaa277cbe06ac37c1e',1,'MeshIDMap']]],
-  ['ktopologydiagnosticcategorycount_14',['kTopologyDiagnosticCategoryCount',['../TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57',1,'TopologyDiagnosticCategory.h']]],
-  ['ktypecount_15',['kTypeCount',['../structGeometrySubshapeIndex.html#a8220fb5df165f1baa794452a195d44ce',1,'GeometrySubshapeIndex']]]
+  ['kmaxdepth_14',['kMaxDepth',['../classUndoStack.html#a064f911147ae4a7d120bacb38fbee6b0',1,'UndoStack']]],
+  ['ktopologydiagnosticcategorycount_15',['kTopologyDiagnosticCategoryCount',['../TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57',1,'TopologyDiagnosticCategory.h']]],
+  ['ktypecount_16',['kTypeCount',['../structGeometrySubshapeIndex.html#a8220fb5df165f1baa794452a195d44ce',1,'GeometrySubshapeIndex']]]
 ];

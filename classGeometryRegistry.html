@@ -112,6 +112,11 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:aa9f4c79f610d5e9182dc3d84ad7ffcd2" id="r_aa9f4c79f610d5e9182dc3d84ad7ffcd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9f4c79f610d5e9182dc3d84ad7ffcd2">eraseEdge</a> (<a class="el" href="Core_8h.html#a2c620d553d3620740a24da5c348c7a70">GeomEdgeId</a> <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>)</td></tr>
 <tr class="memitem:a834afeeb2884b6e6a8baeadee87d082e" id="r_a834afeeb2884b6e6a8baeadee87d082e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a834afeeb2884b6e6a8baeadee87d082e">eraseFace</a> (<a class="el" href="Core_8h.html#ab5877cbde257d16ef48544f6e31bca90">GeomFaceId</a> <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>)</td></tr>
 <tr class="memitem:a03fe5a3bafa3de7c1b947e3016b43141" id="r_a03fe5a3bafa3de7c1b947e3016b43141"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03fe5a3bafa3de7c1b947e3016b43141">eraseSolid</a> (<a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a> <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>)</td></tr>
+<tr class="memitem:af4b65b97cbd3c90eee2de6fe9af04ca7" id="r_af4b65b97cbd3c90eee2de6fe9af04ca7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4b65b97cbd3c90eee2de6fe9af04ca7">reclaimVertex</a> (<a class="el" href="Core_8h.html#aefd45ef2a67b50be304576981920f50a">GeomVertexId</a> <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>, const TopoDS_Shape &amp;s)</td></tr>
+<tr class="memdesc:af4b65b97cbd3c90eee2de6fe9af04ca7"><td class="mdescLeft">&#160;</td><td class="mdescRight">按原值回收几何 gid（快照恢复用）  <br /></td></tr>
+<tr class="memitem:a6658f785ed9c3f73e558e417779bfbe0" id="r_a6658f785ed9c3f73e558e417779bfbe0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6658f785ed9c3f73e558e417779bfbe0">reclaimEdge</a> (<a class="el" href="Core_8h.html#a2c620d553d3620740a24da5c348c7a70">GeomEdgeId</a> <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>, const TopoDS_Shape &amp;s)</td></tr>
+<tr class="memitem:a3caccf9fd9ab8d8377ae8bdd54c32088" id="r_a3caccf9fd9ab8d8377ae8bdd54c32088"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3caccf9fd9ab8d8377ae8bdd54c32088">reclaimFace</a> (<a class="el" href="Core_8h.html#ab5877cbde257d16ef48544f6e31bca90">GeomFaceId</a> <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>, const TopoDS_Shape &amp;s)</td></tr>
+<tr class="memitem:aa7d4a39a3d5fd2a18f80cfdb8474a63d" id="r_aa7d4a39a3d5fd2a18f80cfdb8474a63d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7d4a39a3d5fd2a18f80cfdb8474a63d">reclaimSolid</a> (<a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a> <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>, const TopoDS_Shape &amp;s)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
@@ -326,6 +331,98 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6658f785ed9c3f73e558e417779bfbe0" name="a6658f785ed9c3f73e558e417779bfbe0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6658f785ed9c3f73e558e417779bfbe0">&#9670;&#160;</a></span>reclaimEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryRegistry::reclaimEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a2c620d553d3620740a24da5c348c7a70">GeomEdgeId</a></td>          <td class="paramname"><span class="paramname"><em>id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3caccf9fd9ab8d8377ae8bdd54c32088" name="a3caccf9fd9ab8d8377ae8bdd54c32088"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3caccf9fd9ab8d8377ae8bdd54c32088">&#9670;&#160;</a></span>reclaimFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryRegistry::reclaimFace </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#ab5877cbde257d16ef48544f6e31bca90">GeomFaceId</a></td>          <td class="paramname"><span class="paramname"><em>id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa7d4a39a3d5fd2a18f80cfdb8474a63d" name="aa7d4a39a3d5fd2a18f80cfdb8474a63d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7d4a39a3d5fd2a18f80cfdb8474a63d">&#9670;&#160;</a></span>reclaimSolid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryRegistry::reclaimSolid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a></td>          <td class="paramname"><span class="paramname"><em>id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af4b65b97cbd3c90eee2de6fe9af04ca7" name="af4b65b97cbd3c90eee2de6fe9af04ca7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4b65b97cbd3c90eee2de6fe9af04ca7">&#9670;&#160;</a></span>reclaimVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryRegistry::reclaimVertex </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#aefd45ef2a67b50be304576981920f50a">GeomVertexId</a></td>          <td class="paramname"><span class="paramname"><em>id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按原值回收几何 gid（快照恢复用） </p>
+<p>发号器只增不减、erase 留空洞不复用，故原 gid 在释放后必然空闲，无需 free-list。 </p><dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>id 越界（&gt;= 发号水位）或仍被占用 </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

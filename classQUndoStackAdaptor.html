@@ -1,0 +1,603 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: QUndoStackAdaptor类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#signals">信号</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#properties">属性</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classQUndoStackAdaptor-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">QUndoStackAdaptor类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>undo 栈的 QML 适配器  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="QUndoStackAdaptor_8h_source.html">QUndoStackAdaptor.h</a>&gt;</code></p>
+<div class="dynheader">
+类 QUndoStackAdaptor 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQUndoStackAdaptor__inherit__graph.png" border="0" usemap="#aQUndoStackAdaptor_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aQUndoStackAdaptor_inherit__map" id="aQUndoStackAdaptor_inherit__map">
+<area shape="rect" title="undo 栈的 QML 适配器" alt="" coords="5,79,159,104"/>
+<area shape="rect" title=" " alt="" coords="45,5,119,31"/>
+<area shape="poly" title=" " alt="" coords="85,44,85,79,79,79,79,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+QUndoStackAdaptor 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQUndoStackAdaptor__coll__graph.png" border="0" usemap="#aQUndoStackAdaptor_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aQUndoStackAdaptor_coll__map" id="aQUndoStackAdaptor_coll__map">
+<area shape="rect" title="undo 栈的 QML 适配器" alt="" coords="4131,643,4284,669"/>
+<area shape="rect" title=" " alt="" coords="3949,619,4023,645"/>
+<area shape="poly" title=" " alt="" coords="4037,635,4131,645,4130,650,4036,640"/>
+<area shape="rect" href="classUndoStack.html" title=" " alt="" coords="3940,669,4032,694"/>
+<area shape="poly" title=" " alt="" coords="4046,676,4106,671,4138,666,4139,671,4107,676,4046,681"/>
+<area shape="rect" href="classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="2647,278,2762,303"/>
+<area shape="poly" title=" " alt="" coords="2776,288,3123,289,3746,289,3777,292,3803,300,3823,312,3838,329,3849,349,3857,372,3866,424,3873,483,3884,543,3905,602,3921,629,3942,654,3958,666,3955,671,3938,658,3917,632,3900,604,3879,544,3868,484,3861,425,3852,373,3844,351,3833,332,3819,316,3801,305,3776,297,3746,295,3123,295,2776,294"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="3075,571,3174,597"/>
+<area shape="poly" title=" " alt="" coords="2777,301,2805,312,2818,322,2829,331,2852,339,2872,343,2909,344,2946,347,2965,354,2987,366,3014,389,3039,415,3079,474,3106,530,3122,570,3117,572,3101,532,3074,477,3035,419,3011,393,2984,370,2963,358,2945,352,2909,349,2871,348,2850,344,2827,336,2814,326,2803,317,2775,306"/>
+<area shape="poly" title=" " alt="" coords="3188,588,3916,671,3940,673,3940,679,3916,676,3187,594"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="2634,327,2775,353"/>
+<area shape="poly" title=" " alt="" coords="2748,356,2829,388,2873,400,2910,406,2945,415,2987,435,3030,468,3067,506,3117,570,3113,573,3063,509,3026,472,2984,440,2943,420,2909,411,2872,405,2827,393,2746,361"/>
+<area shape="rect" title=" " alt="" coords="2210,313,2397,367"/>
+<area shape="poly" title=" " alt="" coords="2411,337,2634,337,2634,343,2411,343"/>
+<area shape="rect" title=" " alt="" coords="2215,77,2391,131"/>
+<area shape="poly" title=" " alt="" coords="2406,97,2452,102,2500,114,2545,133,2583,164,2596,183,2601,202,2596,240,2592,277,2596,295,2607,313,2620,323,2635,330,2633,335,2617,328,2603,316,2591,297,2586,277,2591,239,2596,202,2591,185,2579,167,2542,138,2498,119,2451,108,2405,103"/>
+<area shape="rect" title=" " alt="" coords="2217,155,2390,210"/>
+<area shape="poly" title=" " alt="" coords="2404,185,2449,194,2497,207,2542,227,2583,255,2593,270,2596,286,2598,300,2607,313,2635,328,2633,333,2604,317,2593,302,2591,286,2588,272,2579,259,2540,232,2495,212,2448,199,2403,191"/>
+<area shape="rect" title=" " alt="" coords="2215,234,2391,289"/>
+<area shape="poly" title=" " alt="" coords="2405,276,2582,309,2651,325,2649,330,2581,315,2404,281"/>
+<area shape="rect" title=" " alt="" coords="2011,502,2173,557"/>
+<area shape="poly" title=" " alt="" coords="2187,528,2539,536,2761,547,2986,563,3075,574,3075,579,2985,568,2761,552,2538,542,2187,533"/>
+<area shape="rect" title=" " alt="" coords="1419,511,1639,537"/>
+<area shape="poly" title=" " alt="" coords="1652,522,2010,526,2010,531,1652,528"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="971,511,1064,537"/>
+<area shape="poly" title=" " alt="" coords="1078,521,1418,521,1418,527,1078,527"/>
+<area shape="rect" title=" " alt="" coords="249,1346,336,1371"/>
+<area shape="poly" title=" " alt="" coords="292,1332,306,1050,324,838,353,610,372,498,394,391,420,292,451,205,486,131,525,75,547,54,570,38,595,29,621,25,3746,25,3786,28,3819,38,3845,52,3865,72,3880,96,3891,124,3901,191,3903,267,3902,351,3906,437,3919,524,3923,562,3923,593,3926,622,3942,654,3955,666,3952,670,3938,658,3921,624,3917,594,3918,562,3913,524,3900,438,3897,351,3898,267,3896,191,3886,126,3876,98,3861,75,3842,56,3817,42,3785,34,3746,31,622,31,597,34,573,43,551,58,529,78,490,134,456,207,425,294,399,392,377,499,358,611,329,838,311,1050,297,1333"/>
+<area shape="poly" title=" " alt="" coords="291,1332,299,1201,310,1107,330,1002,359,892,400,782,426,728,456,677,489,629,527,585,551,563,576,545,633,518,694,502,757,494,819,493,877,497,971,511,970,516,877,502,819,498,757,499,695,507,635,523,579,550,554,568,531,589,494,632,460,680,431,731,405,784,364,893,335,1004,316,1108,304,1202,297,1332"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1831,1014,1959,1039"/>
+<area shape="poly" title=" " alt="" coords="350,1365,441,1378,566,1391,719,1402,891,1405,1077,1398,1172,1390,1268,1377,1363,1360,1457,1338,1549,1311,1638,1278,1683,1254,1724,1225,1763,1191,1797,1155,1852,1087,1884,1038,1889,1041,1856,1090,1801,1158,1766,1195,1728,1229,1685,1259,1640,1282,1551,1316,1458,1343,1364,1365,1268,1383,1172,1395,1077,1404,891,1411,718,1407,566,1397,440,1383,349,1371"/>
+<area shape="rect" title=" " alt="" coords="531,1220,715,1260"/>
+<area shape="poly" title=" " alt="" coords="341,1339,528,1271,565,1258,567,1263,530,1276,343,1344"/>
+<area shape="rect" href="structModelSnapshot.html" title="模型级结构快照：整模型的深拷贝，用于撤销/恢复结构操作" alt="" coords="561,1450,684,1475"/>
+<area shape="poly" title=" " alt="" coords="317,1380,360,1418,388,1437,417,1451,453,1461,490,1466,561,1467,561,1472,490,1471,452,1466,415,1456,385,1441,357,1423,313,1384"/>
+<area shape="rect" href="structUndoRecord.html" title="一次操作 = 一条记录" alt="" coords="3377,802,3479,827"/>
+<area shape="poly" title=" " alt="" coords="314,1381,357,1428,386,1452,417,1472,471,1496,515,1507,562,1511,621,1511,3126,1511,3180,1504,3227,1485,3268,1456,3303,1418,3332,1372,3356,1320,3376,1264,3392,1205,3413,1086,3422,974,3425,884,3425,827,3430,827,3431,884,3428,975,3418,1086,3397,1206,3381,1266,3361,1322,3337,1375,3307,1421,3271,1460,3230,1490,3181,1509,3126,1516,621,1516,562,1516,514,1513,469,1501,415,1477,383,1457,354,1432,310,1384"/>
+<area shape="rect" title=" " alt="" coords="5,1339,144,1379"/>
+<area shape="poly" title=" " alt="" coords="158,1356,249,1356,249,1361,158,1361"/>
+<area shape="rect" title=" " alt="" coords="544,599,701,625"/>
+<area shape="poly" title=" " alt="" coords="716,599,740,597,1119,580,1415,576,2091,581,2706,581,3075,581,3075,587,2706,587,2091,587,1415,582,1120,586,740,603,716,604"/>
+<area shape="poly" title=" " alt="" coords="661,591,739,561,801,547,864,536,970,524,971,530,865,542,802,552,741,567,663,596"/>
+<area shape="poly" title=" " alt="" coords="715,622,825,641,868,651,891,662,909,690,914,719,910,747,903,775,895,803,892,829,898,855,915,881,932,893,952,904,1006,919,1071,927,1143,930,1285,931,1347,931,1395,935,1588,961,1781,996,1847,1011,1845,1017,1779,1001,1588,967,1394,940,1346,937,1285,936,1142,936,1071,932,1005,924,950,909,929,898,911,884,893,857,887,830,890,802,898,774,905,746,909,719,904,692,888,666,866,656,824,646,714,627"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="973,1018,1061,1043"/>
+<area shape="poly" title=" " alt="" coords="628,638,636,698,654,776,669,817,688,857,712,893,742,925,760,937,777,944,810,947,847,946,867,948,890,955,952,985,999,1016,997,1020,949,990,888,960,866,954,846,951,810,952,775,949,757,942,738,929,708,897,683,859,664,819,649,778,630,699,623,639"/>
+<area shape="rect" href="classMeshAdjacency.html" title=" " alt="" coords="1467,838,1591,863"/>
+<area shape="poly" title=" " alt="" coords="715,604,818,607,862,615,891,629,904,646,909,664,904,701,899,736,903,753,915,769,932,781,953,791,1007,805,1072,812,1144,815,1286,815,1347,816,1395,820,1474,835,1473,841,1394,825,1347,821,1286,820,1144,821,1072,818,1006,810,951,796,929,786,911,773,899,755,894,737,899,700,904,664,900,648,888,633,860,620,818,612,715,610"/>
+<area shape="rect" title=" " alt="" coords="2605,622,2804,677"/>
+<area shape="poly" title=" " alt="" coords="2818,642,2900,635,2985,623,3039,609,3087,594,3089,599,3040,615,2986,628,2901,640,2818,648"/>
+<area shape="rect" title=" " alt="" coords="2199,841,2408,881"/>
+<area shape="poly" title=" " alt="" coords="2347,832,2462,763,2604,687,2632,674,2634,679,2607,692,2464,768,2349,836"/>
+<area shape="rect" href="structComponentEntry.html" title="组件数据变更（双向快照）" alt="" coords="2639,882,2770,907"/>
+<area shape="poly" title=" " alt="" coords="2374,883,2434,896,2487,901,2542,903,2639,899,2639,904,2542,908,2487,907,2433,901,2373,888"/>
+<area shape="rect" href="structStructuralEntry.html" title="结构变更（四选一）" alt="" coords="2645,817,2764,842"/>
+<area shape="poly" title=" " alt="" coords="2422,849,2645,831,2645,837,2422,855"/>
+<area shape="poly" title=" " alt="" coords="1939,1006,2252,879,2254,884,1941,1011"/>
+<area shape="rect" title=" " alt="" coords="1421,1014,1636,1039"/>
+<area shape="poly" title=" " alt="" coords="1650,1024,1831,1024,1831,1029,1650,1029"/>
+<area shape="poly" title=" " alt="" coords="1075,1028,1421,1025,1421,1030,1075,1033"/>
+<area shape="poly" title=" " alt="" coords="1074,1013,1145,996,1216,987,1273,985,1328,980,1358,971,1394,958,1431,936,1466,910,1515,861,1518,865,1469,914,1434,941,1396,962,1360,976,1328,985,1273,991,1216,992,1146,1001,1076,1018"/>
+<area shape="rect" title=" " alt="" coords="539,1148,707,1188"/>
+<area shape="poly" title=" " alt="" coords="720,1166,763,1160,807,1150,849,1134,888,1110,896,1098,899,1086,902,1072,912,1058,941,1041,972,1032,974,1037,943,1046,915,1062,907,1074,904,1087,901,1101,891,1114,852,1138,808,1155,764,1165,721,1171"/>
+<area shape="rect" title=" " alt="" coords="540,925,705,965"/>
+<area shape="poly" title=" " alt="" coords="701,967,741,977,867,1004,974,1022,973,1027,866,1009,739,983,699,972"/>
+<area shape="rect" title=" " alt="" coords="546,990,699,1045"/>
+<area shape="poly" title=" " alt="" coords="713,1028,740,1031,867,1034,973,1030,973,1036,867,1039,740,1036,713,1033"/>
+<area shape="rect" title=" " alt="" coords="546,1069,699,1123"/>
+<area shape="poly" title=" " alt="" coords="713,1086,798,1076,889,1061,973,1041,974,1046,890,1067,799,1081,713,1091"/>
+<area shape="poly" title=" " alt="" coords="729,1257,824,1265,863,1262,888,1251,904,1230,910,1208,908,1185,902,1160,895,1135,892,1110,896,1084,911,1058,924,1047,940,1038,972,1030,974,1035,942,1043,927,1051,915,1062,901,1086,898,1110,901,1134,907,1159,913,1184,915,1208,909,1232,891,1255,864,1267,824,1270,728,1262"/>
+<area shape="rect" title=" " alt="" coords="1429,1228,1628,1268"/>
+<area shape="poly" title=" " alt="" coords="1575,1219,1779,1096,1872,1037,1875,1042,1781,1101,1578,1223"/>
+<area shape="rect" href="structGeometryData.html" title=" " alt="" coords="958,1295,1077,1321"/>
+<area shape="poly" title=" " alt="" coords="1090,1297,1429,1257,1430,1262,1091,1302"/>
+<area shape="rect" title=" " alt="" coords="531,1335,714,1375"/>
+<area shape="poly" title=" " alt="" coords="727,1349,807,1344,889,1335,969,1318,970,1323,890,1340,807,1349,728,1354"/>
+<area shape="rect" href="structGeometrySubshapeIndex.html" title=" " alt="" coords="529,1285,716,1310"/>
+<area shape="poly" title=" " alt="" coords="730,1304,740,1304,958,1306,958,1312,740,1309,730,1309"/>
+<area shape="rect" title=" " alt="" coords="1429,1064,1628,1104"/>
+<area shape="poly" title=" " alt="" coords="1642,1071,1780,1052,1847,1037,1848,1042,1780,1057,1643,1076"/>
+<area shape="rect" href="structGeometryMeshMap.html" title="Geometry 子形状与 MeshData 局部拓扑之间的通用映射" alt="" coords="942,1071,1093,1097"/>
+<area shape="poly" title=" " alt="" coords="1107,1081,1429,1081,1429,1087,1107,1087"/>
+<area shape="poly" title=" " alt="" coords="1605,846,1647,849,1692,856,1738,868,1781,887,1819,916,1850,951,1890,1012,1885,1015,1846,954,1816,920,1779,892,1736,873,1691,861,1646,854,1604,851"/>
+<area shape="rect" title=" " alt="" coords="913,831,1121,871"/>
+<area shape="poly" title=" " alt="" coords="1135,848,1466,848,1466,853,1135,853"/>
+<area shape="rect" title=" " alt="" coords="929,616,1106,656"/>
+<area shape="poly" title=" " alt="" coords="1109,657,1246,700,1322,729,1396,762,1462,800,1512,836,1509,840,1459,804,1393,766,1320,734,1245,706,1108,662"/>
+<area shape="rect" title=" " alt="" coords="2629,701,2781,741"/>
+<area shape="poly" title=" " alt="" coords="2794,712,2888,697,2937,685,2984,670,3020,653,3054,632,3106,595,3109,599,3057,637,3023,657,2986,674,2938,690,2889,702,2795,717"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="2655,463,2754,489"/>
+<area shape="poly" title=" " alt="" coords="2768,476,2871,487,2929,497,2986,512,3052,540,3104,569,3102,574,3050,545,2984,517,2928,503,2871,492,2768,481"/>
+<area shape="rect" title=" " alt="" coords="2197,456,2409,496"/>
+<area shape="poly" title=" " alt="" coords="2423,473,2655,473,2655,479,2423,479"/>
+<area shape="rect" title=" " alt="" coords="1804,447,1987,487"/>
+<area shape="poly" title=" " alt="" coords="2001,466,2197,471,2197,476,2000,472"/>
+<area shape="rect" title=" " alt="" coords="2232,392,2375,432"/>
+<area shape="poly" title=" " alt="" coords="2389,418,2582,445,2655,461,2654,466,2581,451,2388,423"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="2644,766,2765,791"/>
+<area shape="poly" title=" " alt="" coords="2779,779,2827,777,2880,770,2934,757,2984,736,3029,704,3066,664,3095,625,3114,595,3119,598,3100,628,3070,668,3032,708,2987,741,2935,762,2881,775,2828,782,2780,784"/>
+<area shape="rect" title=" " alt="" coords="3009,861,3240,886"/>
+<area shape="poly" title=" " alt="" coords="3254,877,3379,877,3528,872,3687,855,3766,842,3843,825,3882,814,3914,793,3936,768,3954,741,3977,693,3982,695,3959,743,3941,772,3918,797,3884,819,3845,831,3767,848,3688,861,3528,877,3379,883,3254,882"/>
+<area shape="poly" title=" " alt="" coords="3214,856,3353,829,3376,824,3378,829,3354,835,3215,861"/>
+<area shape="poly" title=" " alt="" coords="2784,889,2985,879,3009,877,3009,883,2985,884,2784,894"/>
+<area shape="rect" title=" " alt="" coords="3015,763,3234,789"/>
+<area shape="poly" title=" " alt="" coords="3248,760,3940,684,3940,689,3248,765"/>
+<area shape="poly" title=" " alt="" coords="3239,788,3377,806,3377,811,3238,793"/>
+<area shape="poly" title=" " alt="" coords="2778,833,2877,835,2931,833,2985,825,3046,808,3097,786,3099,791,3048,813,2986,831,2932,838,2877,841,2778,839"/>
+<area shape="rect" title=" " alt="" coords="1145,1438,1395,1463"/>
+<area shape="poly" title=" " alt="" coords="1409,1444,1720,1440,2304,1440,2312,1435,2325,1418,2361,1355,2456,1165,2550,969,2584,901,2603,869,2628,852,2655,840,2657,844,2631,856,2607,872,2589,904,2555,971,2461,1167,2365,1358,2329,1421,2316,1438,2305,1445,1720,1445,1409,1450"/>
+<area shape="poly" title=" " alt="" coords="697,1459,1145,1450,1145,1456,698,1464"/>
+<area shape="rect" title=" " alt="" coords="193,1536,392,1576"/>
+<area shape="poly" title=" " alt="" coords="405,1533,505,1508,593,1473,595,1478,506,1513,406,1539"/>
+<area shape="rect" title=" " alt="" coords="3645,790,3844,815"/>
+<area shape="poly" title=" " alt="" coords="3857,790,3887,781,3915,767,3935,751,3952,731,3976,693,3981,696,3957,734,3939,755,3917,772,3889,786,3859,795"/>
+<area shape="poly" title=" " alt="" coords="3492,810,3645,804,3645,809,3492,815"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:ac201ec1baba683006fa24d9dc2da32da" id="r_ac201ec1baba683006fa24d9dc2da32da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac201ec1baba683006fa24d9dc2da32da">stackChanged</a> ()</td></tr>
+<tr class="memdesc:ac201ec1baba683006fa24d9dc2da32da"><td class="mdescLeft">&#160;</td><td class="mdescRight">栈内容变化（入栈/撤销/重做/清空/staged 状态变化）  <br /></td></tr>
+<tr class="memitem:a33537f6e15a6d4abdb9f1bbda0e35d50" id="r_a33537f6e15a6d4abdb9f1bbda0e35d50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a33537f6e15a6d4abdb9f1bbda0e35d50">applied</a> ()</td></tr>
+<tr class="memdesc:a33537f6e15a6d4abdb9f1bbda0e35d50"><td class="mdescLeft">&#160;</td><td class="mdescRight">undo/redo 已应用（QML 统一清空选择集）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a06067baaa5944d16d6bf80439f59a03b" id="r_a06067baaa5944d16d6bf80439f59a03b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a06067baaa5944d16d6bf80439f59a03b">QUndoStackAdaptor</a> (<a class="el" href="classUndoStack.html">UndoStack</a> &amp;stack, QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a6d097b595bac370cb34a1c0c7f72788b" id="r_a6d097b595bac370cb34a1c0c7f72788b"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d097b595bac370cb34a1c0c7f72788b">undo</a> ()</td></tr>
+<tr class="memitem:aba221811ea86cd068b1cff24bb74fe48" id="r_aba221811ea86cd068b1cff24bb74fe48"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba221811ea86cd068b1cff24bb74fe48">redo</a> ()</td></tr>
+<tr class="memitem:aa9407feada67b4e8625ffd3d80a91e72" id="r_aa9407feada67b4e8625ffd3d80a91e72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9407feada67b4e8625ffd3d80a91e72">canUndo</a> () const</td></tr>
+<tr class="memitem:ab5d22a7989c47c1655235238e8133a7e" id="r_ab5d22a7989c47c1655235238e8133a7e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5d22a7989c47c1655235238e8133a7e">canRedo</a> () const</td></tr>
+<tr class="memitem:a12cdac7a1f2370c901b0f593cb19a703" id="r_a12cdac7a1f2370c901b0f593cb19a703"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12cdac7a1f2370c901b0f593cb19a703">undoLabel</a> () const</td></tr>
+<tr class="memitem:ac4b26fc73384bb0bb097aeb21a4bbab8" id="r_ac4b26fc73384bb0bb097aeb21a4bbab8"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac4b26fc73384bb0bb097aeb21a4bbab8">redoLabel</a> () const</td></tr>
+<tr class="memitem:afd49b1ebc10e5de1c917b6d2af7c4a9d" id="r_afd49b1ebc10e5de1c917b6d2af7c4a9d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afd49b1ebc10e5de1c917b6d2af7c4a9d">stagedActive</a> () const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
+属性</h2></td></tr>
+<tr class="memitem:a0b411f77f9104ae55f405484ec15c337" id="r_a0b411f77f9104ae55f405484ec15c337"><td class="memItemLeft" align="right" valign="top">QML_ELEMENTbool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b411f77f9104ae55f405484ec15c337">canUndo</a></td></tr>
+<tr class="memitem:a7a094db7939767dfa574cd1defdccd2c" id="r_a7a094db7939767dfa574cd1defdccd2c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a094db7939767dfa574cd1defdccd2c">canRedo</a></td></tr>
+<tr class="memitem:ae5f23f409712e8b2535c02405f7f63f5" id="r_ae5f23f409712e8b2535c02405f7f63f5"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5f23f409712e8b2535c02405f7f63f5">undoLabel</a></td></tr>
+<tr class="memitem:a59b8b69578d014c10408f17ab24b892b" id="r_a59b8b69578d014c10408f17ab24b892b"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59b8b69578d014c10408f17ab24b892b">redoLabel</a></td></tr>
+<tr class="memitem:abc23bf7e7ff04267281f2ba0378badc1" id="r_abc23bf7e7ff04267281f2ba0378badc1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc23bf7e7ff04267281f2ba0378badc1">stagedActive</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:ac7caafb5ac3ebe80c49f01998d240654" id="r_ac7caafb5ac3ebe80c49f01998d240654"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUndoStack.html">UndoStack</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7caafb5ac3ebe80c49f01998d240654">stack_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>undo 栈的 QML 适配器 </p>
+<p>canUndo/canRedo/undoLabel/redoLabel/stagedActive 经 stackChanged 信号刷新 （栈内容变化含系统边界自动入栈）；stagedActive 供界面禁用导出/切换算法等入口。 applied 信号在 undo/redo 应用后发出，QML 侧统一清空选择集 （Selection 持有的 gid/稳定 id 不作跨 undo 保证）。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a06067baaa5944d16d6bf80439f59a03b" name="a06067baaa5944d16d6bf80439f59a03b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06067baaa5944d16d6bf80439f59a03b">&#9670;&#160;</a></span>QUndoStackAdaptor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QUndoStackAdaptor::QUndoStackAdaptor </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classUndoStack.html">UndoStack</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>stack</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a33537f6e15a6d4abdb9f1bbda0e35d50" name="a33537f6e15a6d4abdb9f1bbda0e35d50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33537f6e15a6d4abdb9f1bbda0e35d50">&#9670;&#160;</a></span>applied</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QUndoStackAdaptor::applied </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>undo/redo 已应用（QML 统一清空选择集） </p>
+
+</div>
+</div>
+<a id="ab5d22a7989c47c1655235238e8133a7e" name="ab5d22a7989c47c1655235238e8133a7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5d22a7989c47c1655235238e8133a7e">&#9670;&#160;</a></span>canRedo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QUndoStackAdaptor::canRedo </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa9407feada67b4e8625ffd3d80a91e72" name="aa9407feada67b4e8625ffd3d80a91e72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9407feada67b4e8625ffd3d80a91e72">&#9670;&#160;</a></span>canUndo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QUndoStackAdaptor::canUndo </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aba221811ea86cd068b1cff24bb74fe48" name="aba221811ea86cd068b1cff24bb74fe48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba221811ea86cd068b1cff24bb74fe48">&#9670;&#160;</a></span>redo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QUndoStackAdaptor::redo </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac4b26fc73384bb0bb097aeb21a4bbab8" name="ac4b26fc73384bb0bb097aeb21a4bbab8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4b26fc73384bb0bb097aeb21a4bbab8">&#9670;&#160;</a></span>redoLabel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QUndoStackAdaptor::redoLabel </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac201ec1baba683006fa24d9dc2da32da" name="ac201ec1baba683006fa24d9dc2da32da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac201ec1baba683006fa24d9dc2da32da">&#9670;&#160;</a></span>stackChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QUndoStackAdaptor::stackChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>栈内容变化（入栈/撤销/重做/清空/staged 状态变化） </p>
+
+</div>
+</div>
+<a id="afd49b1ebc10e5de1c917b6d2af7c4a9d" name="afd49b1ebc10e5de1c917b6d2af7c4a9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd49b1ebc10e5de1c917b6d2af7c4a9d">&#9670;&#160;</a></span>stagedActive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QUndoStackAdaptor::stagedActive </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6d097b595bac370cb34a1c0c7f72788b" name="a6d097b595bac370cb34a1c0c7f72788b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d097b595bac370cb34a1c0c7f72788b">&#9670;&#160;</a></span>undo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QUndoStackAdaptor::undo </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a12cdac7a1f2370c901b0f593cb19a703" name="a12cdac7a1f2370c901b0f593cb19a703"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12cdac7a1f2370c901b0f593cb19a703">&#9670;&#160;</a></span>undoLabel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QUndoStackAdaptor::undoLabel </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ac7caafb5ac3ebe80c49f01998d240654" name="ac7caafb5ac3ebe80c49f01998d240654"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7caafb5ac3ebe80c49f01998d240654">&#9670;&#160;</a></span>stack_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classUndoStack.html">UndoStack</a>* QUndoStackAdaptor::stack_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
+<a id="a7a094db7939767dfa574cd1defdccd2c" name="a7a094db7939767dfa574cd1defdccd2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a094db7939767dfa574cd1defdccd2c">&#9670;&#160;</a></span>canRedo</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QUndoStackAdaptor::canRedo</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0b411f77f9104ae55f405484ec15c337" name="a0b411f77f9104ae55f405484ec15c337"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b411f77f9104ae55f405484ec15c337">&#9670;&#160;</a></span>canUndo</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QML_ELEMENTbool QUndoStackAdaptor::canUndo</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a59b8b69578d014c10408f17ab24b892b" name="a59b8b69578d014c10408f17ab24b892b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59b8b69578d014c10408f17ab24b892b">&#9670;&#160;</a></span>redoLabel</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QUndoStackAdaptor::redoLabel</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abc23bf7e7ff04267281f2ba0378badc1" name="abc23bf7e7ff04267281f2ba0378badc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc23bf7e7ff04267281f2ba0378badc1">&#9670;&#160;</a></span>stagedActive</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QUndoStackAdaptor::stagedActive</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5f23f409712e8b2535c02405f7f63f5" name="ae5f23f409712e8b2535c02405f7f63f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5f23f409712e8b2535c02405f7f63f5">&#9670;&#160;</a></span>undoLabel</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QUndoStackAdaptor::undoLabel</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/model/<a class="el" href="QUndoStackAdaptor_8h_source.html">QUndoStackAdaptor.h</a></li>
+<li>app/model/<a class="el" href="QUndoStackAdaptor_8cpp.html">QUndoStackAdaptor.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

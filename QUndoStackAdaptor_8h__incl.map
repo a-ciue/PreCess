@@ -1,0 +1,9 @@
+<map id="app/model/QUndoStackAdaptor.h" name="app/model/QUndoStackAdaptor.h">
+<area shape="rect" id="Node000001" title="undo 栈的 QML 适配器：暴露撤销/重做入口与栈状态" alt="" coords="21,5,259,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,80,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,33,71,72,68,68,123,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="105,79,175,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="143,31,143,65,137,65,137,31"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="199,79,454,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="171,28,284,71,283,76,169,33"/>
+</map>

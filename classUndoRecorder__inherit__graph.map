@@ -1,0 +1,5 @@
+<map id="UndoRecorder" name="UndoRecorder">
+<area shape="rect" id="Node000001" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="5,5,120,31"/>
+<area shape="rect" id="Node000002" href="$classUndoStack.html" title=" " alt="" coords="17,79,109,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,44,65,79,60,79,60,44"/>
+</map>

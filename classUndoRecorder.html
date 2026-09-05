@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: UndoRecorder类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classUndoRecorder-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">UndoRecorder类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>undo 记录钩子（ModelLayer 回调，UndoStack 实现）  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="UndoRecorder_8h_source.html">UndoRecorder.h</a>&gt;</code></p>
+<div class="dynheader">
+类 UndoRecorder 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classUndoRecorder__inherit__graph.png" border="0" usemap="#aUndoRecorder_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aUndoRecorder_inherit__map" id="aUndoRecorder_inherit__map">
+<area shape="rect" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="5,5,120,31"/>
+<area shape="rect" href="classUndoStack.html" title=" " alt="" coords="17,79,109,104"/>
+<area shape="poly" title=" " alt="" coords="65,44,65,79,60,79,60,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:aeab708d1704c16dc3253ff0c6f4fdad7" id="r_aeab708d1704c16dc3253ff0c6f4fdad7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeab708d1704c16dc3253ff0c6f4fdad7">~UndoRecorder</a> ()=default</td></tr>
+<tr class="memitem:a9c8287f6a18cfbd63056cd6f4984ca04" id="r_a9c8287f6a18cfbd63056cd6f4984ca04"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9c8287f6a18cfbd63056cd6f4984ca04">onComponentDirty</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const <a class="el" href="structComponentData.html">ComponentData</a> &amp;data)=0</td></tr>
+<tr class="memdesc:a9c8287f6a18cfbd63056cd6f4984ca04"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件写前标脏回调（数据尚未修改，操作边界内首次标脏捕获 before-image）  <br /></td></tr>
+<tr class="memitem:a72fd83aaf5a46ac3c3243c5f935fa3d1" id="r_a72fd83aaf5a46ac3c3243c5f935fa3d1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72fd83aaf5a46ac3c3243c5f935fa3d1">onModelAdded</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)=0</td></tr>
+<tr class="memdesc:a72fd83aaf5a46ac3c3243c5f935fa3d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">addModel 完成后回调  <br /></td></tr>
+<tr class="memitem:a9883c8e665c8f03ee61e70a3eb78ec95" id="r_a9883c8e665c8f03ee61e70a3eb78ec95"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9883c8e665c8f03ee61e70a3eb78ec95">onModelRemoving</a> (const <a class="el" href="classModelData.html">ModelData</a> &amp;model)=0</td></tr>
+<tr class="memdesc:a9883c8e665c8f03ee61e70a3eb78ec95"><td class="mdescLeft">&#160;</td><td class="mdescRight">removeModel 执行前回调（可捕获整模型快照）  <br /></td></tr>
+<tr class="memitem:a01f6b16f4d86e378f0c03ed6d8498bf2" id="r_a01f6b16f4d86e378f0c03ed6d8498bf2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a01f6b16f4d86e378f0c03ed6d8498bf2">onComponentAdded</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)=0</td></tr>
+<tr class="memdesc:a01f6b16f4d86e378f0c03ed6d8498bf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件加入模型后回调（ModelOperator::addGeometryComponent）  <br /></td></tr>
+<tr class="memitem:a2af0a05d5105bec5ddc7e0745ba377cc" id="r_a2af0a05d5105bec5ddc7e0745ba377cc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2af0a05d5105bec5ddc7e0745ba377cc">onComponentRemoving</a> (const <a class="el" href="structComponentData.html">ComponentData</a> &amp;component)=0</td></tr>
+<tr class="memdesc:a2af0a05d5105bec5ddc7e0745ba377cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">removeComponent 执行前回调（可克隆组件快照）  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>undo 记录钩子（ModelLayer 回调，UndoStack 实现） </p>
+<p>回调时机约定：写路径在数据修改前回调（可捕获 before-image）； removeXxx 在执行前回调（可捕获快照），addXxx 在执行后回调。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aeab708d1704c16dc3253ff0c6f4fdad7" name="aeab708d1704c16dc3253ff0c6f4fdad7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeab708d1704c16dc3253ff0c6f4fdad7">&#9670;&#160;</a></span>~UndoRecorder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual UndoRecorder::~UndoRecorder </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a01f6b16f4d86e378f0c03ed6d8498bf2" name="a01f6b16f4d86e378f0c03ed6d8498bf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01f6b16f4d86e378f0c03ed6d8498bf2">&#9670;&#160;</a></span>onComponentAdded()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void UndoRecorder::onComponentAdded </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>组件加入模型后回调（ModelOperator::addGeometryComponent） </p>
+
+<p>在 <a class="el" href="classUndoStack.html#abc921532cc87a346c2826e58168a8e02">UndoStack</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a9c8287f6a18cfbd63056cd6f4984ca04" name="a9c8287f6a18cfbd63056cd6f4984ca04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c8287f6a18cfbd63056cd6f4984ca04">&#9670;&#160;</a></span>onComponentDirty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void UndoRecorder::onComponentDirty </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structComponentData.html">ComponentData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>data</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>组件写前标脏回调（数据尚未修改，操作边界内首次标脏捕获 before-image） </p>
+
+<p>在 <a class="el" href="classUndoStack.html#a3f37e3e2102f5e93ec590c1291217550">UndoStack</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a2af0a05d5105bec5ddc7e0745ba377cc" name="a2af0a05d5105bec5ddc7e0745ba377cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2af0a05d5105bec5ddc7e0745ba377cc">&#9670;&#160;</a></span>onComponentRemoving()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void UndoRecorder::onComponentRemoving </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structComponentData.html">ComponentData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>component</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>removeComponent 执行前回调（可克隆组件快照） </p>
+
+<p>在 <a class="el" href="classUndoStack.html#a1af099be710a333a097db8706c9b2e72">UndoStack</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a72fd83aaf5a46ac3c3243c5f935fa3d1" name="a72fd83aaf5a46ac3c3243c5f935fa3d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72fd83aaf5a46ac3c3243c5f935fa3d1">&#9670;&#160;</a></span>onModelAdded()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void UndoRecorder::onModelAdded </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>addModel 完成后回调 </p>
+
+<p>在 <a class="el" href="classUndoStack.html#a70b16f86c95fad0778665a65b1f48b58">UndoStack</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a9883c8e665c8f03ee61e70a3eb78ec95" name="a9883c8e665c8f03ee61e70a3eb78ec95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9883c8e665c8f03ee61e70a3eb78ec95">&#9670;&#160;</a></span>onModelRemoving()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void UndoRecorder::onModelRemoving </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classModelData.html">ModelData</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>removeModel 执行前回调（可捕获整模型快照） </p>
+
+<p>在 <a class="el" href="classUndoStack.html#a8e0a13f50ba9d2361c982fa580f29b30">UndoStack</a> 内被实现.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="UndoRecorder_8h_source.html">UndoRecorder.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QUndoStackAdaptor.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QUndoStackAdaptor.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="QUndoStackAdaptor_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;QtQmlIntegration/qqmlintegration.h&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">class </span><a class="code hl_class" href="classUndoStack.html">UndoStack</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span></div>
+<div class="foldopen" id="foldopen00020" data-start="{" data-end="};">
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html">   20</a></span><span class="keyword">class </span><a class="code hl_function" href="classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b">QUndoStackAdaptor</a> : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    Q_OBJECT</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    QML_ELEMENT</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    QML_UNCREATABLE(<span class="stringliteral">&quot;QUndoStackAdaptor is provided by QModelManager&quot;</span>)</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#a0b411f77f9104ae55f405484ec15c337">   24</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classQUndoStackAdaptor.html#a0b411f77f9104ae55f405484ec15c337">canUndo</a> READ <a class="code hl_property" href="classQUndoStackAdaptor.html#a0b411f77f9104ae55f405484ec15c337">canUndo</a> NOTIFY <a class="code hl_signal" href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">stackChanged</a>)</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#a7a094db7939767dfa574cd1defdccd2c">   25</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classQUndoStackAdaptor.html#a7a094db7939767dfa574cd1defdccd2c">canRedo</a> READ <a class="code hl_property" href="classQUndoStackAdaptor.html#a7a094db7939767dfa574cd1defdccd2c">canRedo</a> NOTIFY <a class="code hl_signal" href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">stackChanged</a>)</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#ae5f23f409712e8b2535c02405f7f63f5">   26</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classQUndoStackAdaptor.html#ae5f23f409712e8b2535c02405f7f63f5">undoLabel</a> READ <a class="code hl_property" href="classQUndoStackAdaptor.html#ae5f23f409712e8b2535c02405f7f63f5">undoLabel</a> NOTIFY <a class="code hl_signal" href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">stackChanged</a>)</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#a59b8b69578d014c10408f17ab24b892b">   27</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classQUndoStackAdaptor.html#a59b8b69578d014c10408f17ab24b892b">redoLabel</a> READ <a class="code hl_property" href="classQUndoStackAdaptor.html#a59b8b69578d014c10408f17ab24b892b">redoLabel</a> NOTIFY <a class="code hl_signal" href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">stackChanged</a>)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#abc23bf7e7ff04267281f2ba0378badc1">   28</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classQUndoStackAdaptor.html#abc23bf7e7ff04267281f2ba0378badc1">stagedActive</a> READ <a class="code hl_property" href="classQUndoStackAdaptor.html#abc23bf7e7ff04267281f2ba0378badc1">stagedActive</a> NOTIFY <a class="code hl_signal" href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">stackChanged</a>)</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>public:</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    explicit <a class="code hl_function" href="classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b">QUndoStackAdaptor</a>(<a class="code hl_class" href="classUndoStack.html">UndoStack</a>&amp; stack, QObject* parent = <span class="keywordtype">nullptr</span>);</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQUndoStackAdaptor.html#a6d097b595bac370cb34a1c0c7f72788b">undo</a>();</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQUndoStackAdaptor.html#aba221811ea86cd068b1cff24bb74fe48">redo</a>();</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordtype">bool</span> <a class="code hl_property" href="classQUndoStackAdaptor.html#a0b411f77f9104ae55f405484ec15c337">canUndo</a>() const;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keywordtype">bool</span> <a class="code hl_property" href="classQUndoStackAdaptor.html#a7a094db7939767dfa574cd1defdccd2c">canRedo</a>() const;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    QString <a class="code hl_property" href="classQUndoStackAdaptor.html#ae5f23f409712e8b2535c02405f7f63f5">undoLabel</a>() const;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    QString <a class="code hl_property" href="classQUndoStackAdaptor.html#a59b8b69578d014c10408f17ab24b892b">redoLabel</a>() const;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">bool</span> <a class="code hl_property" href="classQUndoStackAdaptor.html#abc23bf7e7ff04267281f2ba0378badc1">stagedActive</a>() const;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>signals:</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">   42</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">stackChanged</a>(); </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#a33537f6e15a6d4abdb9f1bbda0e35d50">   43</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQUndoStackAdaptor.html#a33537f6e15a6d4abdb9f1bbda0e35d50">applied</a>(); </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>private:</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classQUndoStackAdaptor.html#ac7caafb5ac3ebe80c49f01998d240654">   46</a></span>    <a class="code hl_class" href="classUndoStack.html">UndoStack</a>* <a class="code hl_variable" href="classQUndoStackAdaptor.html#ac7caafb5ac3ebe80c49f01998d240654">stack_</a>;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>};</div>
+</div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_a06067baaa5944d16d6bf80439f59a03b"><div class="ttname"><a href="classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b">QUndoStackAdaptor::QUndoStackAdaptor</a></div><div class="ttdeci">QUndoStackAdaptor(UndoStack &amp;stack, QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.cpp:7</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_a0b411f77f9104ae55f405484ec15c337"><div class="ttname"><a href="classQUndoStackAdaptor.html#a0b411f77f9104ae55f405484ec15c337">QUndoStackAdaptor::canUndo</a></div><div class="ttdeci">QML_ELEMENTbool canUndo</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.h:24</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_a33537f6e15a6d4abdb9f1bbda0e35d50"><div class="ttname"><a href="classQUndoStackAdaptor.html#a33537f6e15a6d4abdb9f1bbda0e35d50">QUndoStackAdaptor::applied</a></div><div class="ttdeci">void applied()</div><div class="ttdoc">undo/redo 已应用（QML 统一清空选择集）</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_a59b8b69578d014c10408f17ab24b892b"><div class="ttname"><a href="classQUndoStackAdaptor.html#a59b8b69578d014c10408f17ab24b892b">QUndoStackAdaptor::redoLabel</a></div><div class="ttdeci">QString redoLabel</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.h:27</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_a6d097b595bac370cb34a1c0c7f72788b"><div class="ttname"><a href="classQUndoStackAdaptor.html#a6d097b595bac370cb34a1c0c7f72788b">QUndoStackAdaptor::undo</a></div><div class="ttdeci">Q_INVOKABLE void undo()</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.cpp:15</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_a7a094db7939767dfa574cd1defdccd2c"><div class="ttname"><a href="classQUndoStackAdaptor.html#a7a094db7939767dfa574cd1defdccd2c">QUndoStackAdaptor::canRedo</a></div><div class="ttdeci">bool canRedo</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.h:25</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_aba221811ea86cd068b1cff24bb74fe48"><div class="ttname"><a href="classQUndoStackAdaptor.html#aba221811ea86cd068b1cff24bb74fe48">QUndoStackAdaptor::redo</a></div><div class="ttdeci">Q_INVOKABLE void redo()</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.cpp:23</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_abc23bf7e7ff04267281f2ba0378badc1"><div class="ttname"><a href="classQUndoStackAdaptor.html#abc23bf7e7ff04267281f2ba0378badc1">QUndoStackAdaptor::stagedActive</a></div><div class="ttdeci">bool stagedActive</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.h:28</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_ac201ec1baba683006fa24d9dc2da32da"><div class="ttname"><a href="classQUndoStackAdaptor.html#ac201ec1baba683006fa24d9dc2da32da">QUndoStackAdaptor::stackChanged</a></div><div class="ttdeci">void stackChanged()</div><div class="ttdoc">栈内容变化（入栈/撤销/重做/清空/staged 状态变化）</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_ac7caafb5ac3ebe80c49f01998d240654"><div class="ttname"><a href="classQUndoStackAdaptor.html#ac7caafb5ac3ebe80c49f01998d240654">QUndoStackAdaptor::stack_</a></div><div class="ttdeci">UndoStack * stack_</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.h:46</div></div>
+<div class="ttc" id="aclassQUndoStackAdaptor_html_ae5f23f409712e8b2535c02405f7f63f5"><div class="ttname"><a href="classQUndoStackAdaptor.html#ae5f23f409712e8b2535c02405f7f63f5">QUndoStackAdaptor::undoLabel</a></div><div class="ttdeci">QString undoLabel</div><div class="ttdef"><b>定义</b> QUndoStackAdaptor.h:26</div></div>
+<div class="ttc" id="aclassUndoStack_html"><div class="ttname"><a href="classUndoStack.html">UndoStack</a></div><div class="ttdef"><b>定义</b> UndoStack.h:40</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -24,7 +24,7 @@ var searchData=
   ['entries_5f_21',['entries_',['../classsystems_1_1feature_1_1FeatureSystem.html#a175c6e151ef13beedba062dccd4a3052',1,'systems::feature::FeatureSystem']]],
   ['error_5f_22',['error_',['../classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec',1,'tinyobj::ObjReader']]],
   ['event_5fbus_5f_23',['event_bus_',['../classQModelManager.html#a86bcecbeacd137410691b25bcdfe6f11',1,'QModelManager::event_bus_'],['../classsystems_1_1feature_1_1FeatureSystem.html#aba8b654496a220e2cb145bc305552141',1,'systems::feature::FeatureSystem::event_bus_']]],
-  ['event_5fgateway_5f_24',['event_gateway_',['../classsystems_1_1feature_1_1FeatureSystem.html#a76b28144144a404f95d1c19d326d8bdb',1,'systems::feature::FeatureSystem']]],
+  ['event_5fgateway_24',['event_gateway',['../structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html#ac130c4e6c2b8f7ce2d81e7e5432fb67a',1,'systems::feature::FeatureSystem::FeatureEntry']]],
   ['events_25',['events',['../structsystems_1_1feature_1_1FeatureContext.html#a76998da867c9a37ea2c9721d24692256',1,'systems::feature::FeatureContext']]],
   ['extensions_26',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
   ['extensions_5f_27',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]],

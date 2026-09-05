@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: UndoStack::StagedSession结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="classUndoStack.html">UndoStack</a></li><li class="navelem"><a href="structUndoStack_1_1StagedSession.html">StagedSession</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structUndoStack_1_1StagedSession-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">UndoStack::StagedSession结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>staged 会话状态（全局唯一，规则见文件头注释）  
+ <a href="#details">更多...</a></p>
+<div class="dynheader">
+UndoStack::StagedSession 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structUndoStack_1_1StagedSession__coll__graph.png" border="0" usemap="#aUndoStack_1_1StagedSession_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aUndoStack_1_1StagedSession_coll__map" id="aUndoStack_1_1StagedSession_coll__map">
+<area shape="rect" title="staged 会话状态（全局唯一，规则见文件头注释）" alt="" coords="2571,1203,2765,1229"/>
+<area shape="rect" title=" " alt="" coords="419,1163,505,1189"/>
+<area shape="poly" title=" " alt="" coords="519,1186,700,1217,813,1230,927,1235,2369,1235,2473,1231,2570,1224,2571,1229,2473,1237,2369,1240,927,1240,812,1235,699,1222,519,1191"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="2060,694,2188,719"/>
+<area shape="poly" title=" " alt="" coords="519,1173,927,1173,1789,1173,1830,1169,1867,1157,1902,1138,1934,1113,1963,1084,1989,1050,2033,975,2067,896,2092,822,2118,719,2123,720,2097,824,2072,898,2038,977,1993,1053,1967,1087,1937,1117,1905,1143,1870,1162,1831,1174,1789,1179,927,1179,519,1179"/>
+<area shape="rect" title=" " alt="" coords="836,955,1020,995"/>
+<area shape="poly" title=" " alt="" coords="498,1154,636,1084,726,1042,818,1004,852,992,854,997,820,1009,728,1047,638,1089,500,1159"/>
+<area shape="rect" title=" " alt="" coords="15,1156,153,1196"/>
+<area shape="poly" title=" " alt="" coords="167,1173,418,1173,418,1179,167,1179"/>
+<area shape="rect" title=" " alt="" coords="2263,921,2472,961"/>
+<area shape="poly" title=" " alt="" coords="2402,969,2655,1201,2651,1205,2399,973"/>
+<area shape="poly" title=" " alt="" coords="2151,728,2347,919,2343,923,2147,731"/>
+<area shape="rect" title=" " alt="" coords="1680,829,1895,854"/>
+<area shape="poly" title=" " alt="" coords="1831,821,2090,717,2092,722,1833,826"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="1315,859,1403,885"/>
+<area shape="poly" title=" " alt="" coords="1416,868,1656,855,1689,851,1690,857,1656,860,1416,873"/>
+<area shape="rect" href="classMeshAdjacency.html" title=" " alt="" coords="1725,694,1849,719"/>
+<area shape="poly" title=" " alt="" coords="1415,853,1655,779,1716,747,1765,717,1768,722,1719,752,1657,784,1417,858"/>
+<area shape="rect" title=" " alt="" coords="844,740,1012,780"/>
+<area shape="poly" title=" " alt="" coords="1026,766,1126,782,1231,808,1290,832,1337,857,1334,862,1287,837,1230,813,1125,787,1025,772"/>
+<area shape="rect" title=" " alt="" coords="375,625,549,650"/>
+<area shape="poly" title=" " alt="" coords="563,630,630,630,697,633,756,641,779,648,796,657,807,670,810,684,813,698,821,712,839,726,860,738,858,742,836,731,817,715,808,700,805,685,803,672,793,661,777,653,754,646,697,638,630,635,563,635"/>
+<area shape="rect" title=" " alt="" coords="5,469,163,494"/>
+<area shape="poly" title=" " alt="" coords="101,456,137,417,160,397,185,380,257,346,318,328,381,321,461,320,1789,320,1826,323,1861,333,1893,349,1924,369,1978,421,2024,482,2061,546,2089,607,2121,693,2116,695,2084,609,2056,548,2019,485,1974,424,1921,373,1891,354,1859,338,1825,329,1789,325,461,325,381,326,319,333,259,351,188,385,163,401,141,420,105,459"/>
+<area shape="poly" title=" " alt="" coords="104,504,172,592,223,651,283,713,352,776,429,835,511,886,598,924,641,934,698,939,754,937,777,932,793,924,800,917,803,910,804,891,805,872,809,862,817,854,849,835,878,826,905,824,933,827,991,840,1024,846,1061,848,1146,845,1231,848,1315,860,1314,866,1230,853,1146,851,1061,853,1023,851,990,846,932,832,905,829,879,831,851,840,820,858,813,865,810,873,809,892,809,911,805,920,796,929,778,937,755,942,698,944,640,939,597,929,508,891,425,840,349,780,280,717,219,654,168,595,100,507"/>
+<area shape="rect" title=" " alt="" coords="597,454,795,509"/>
+<area shape="poly" title=" " alt="" coords="177,479,597,479,597,484,177,484"/>
+<area shape="rect" href="structGeometryFaceMeshTopology.html" title="一个几何面对应的网格单元拓扑" alt="" coords="357,399,567,425"/>
+<area shape="poly" title=" " alt="" coords="139,462,186,451,356,422,357,427,187,456,140,468"/>
+<area shape="poly" title=" " alt="" coords="134,496,233,528,351,557,395,562,450,564,580,564,646,567,706,573,758,584,796,603,808,620,809,638,810,655,820,668,1194,684,1725,702,1725,707,1194,689,817,673,805,656,804,638,803,622,793,607,756,589,706,578,645,572,580,570,450,569,394,568,350,563,232,533,132,501"/>
+<area shape="rect" title=" " alt="" coords="845,1019,1011,1059"/>
+<area shape="poly" title=" " alt="" coords="1025,1049,1074,1051,1127,1047,1180,1037,1229,1019,1271,989,1306,951,1332,913,1349,884,1353,886,1337,916,1310,955,1275,993,1232,1024,1181,1043,1127,1053,1074,1056,1024,1054"/>
+<area shape="rect" title=" " alt="" coords="851,867,1005,922"/>
+<area shape="poly" title=" " alt="" coords="1018,887,1314,872,1315,877,1019,893"/>
+<area shape="rect" title=" " alt="" coords="851,1083,1005,1138"/>
+<area shape="poly" title=" " alt="" coords="1019,1119,1070,1119,1125,1114,1179,1101,1229,1078,1255,1058,1278,1033,1314,978,1338,924,1351,884,1356,886,1343,926,1319,980,1282,1037,1259,1062,1232,1082,1181,1106,1126,1119,1070,1125,1019,1124"/>
+<area shape="poly" title=" " alt="" coords="1034,989,1081,992,1131,991,1181,985,1230,972,1266,954,1299,930,1345,883,1349,887,1302,934,1269,959,1232,977,1182,990,1131,996,1081,997,1033,994"/>
+<area shape="rect" title=" " alt="" coords="379,963,545,989"/>
+<area shape="poly" title=" " alt="" coords="559,973,836,972,836,978,559,978"/>
+<area shape="rect" title=" " alt="" coords="1688,235,1887,275"/>
+<area shape="poly" title=" " alt="" coords="1902,249,1938,254,1974,264,2008,279,2038,302,2058,333,2076,379,2090,435,2101,496,2117,614,2124,693,2119,694,2112,615,2096,497,2085,436,2070,381,2054,336,2034,306,2005,284,1972,269,1937,259,1901,254"/>
+<area shape="rect" href="structGeometryData.html" title=" " alt="" coords="1299,215,1418,241"/>
+<area shape="poly" title=" " alt="" coords="1432,230,1688,246,1688,251,1432,235"/>
+<area shape="rect" title=" " alt="" coords="837,208,1019,248"/>
+<area shape="poly" title=" " alt="" coords="1033,225,1299,225,1299,231,1033,231"/>
+<area shape="rect" href="structGeometrySubshapeIndex.html" title=" " alt="" coords="835,155,1021,181"/>
+<area shape="poly" title=" " alt="" coords="1036,175,1231,200,1299,213,1298,218,1230,205,1035,181"/>
+<area shape="rect" title=" " alt="" coords="351,5,573,75"/>
+<area shape="poly" title=" " alt="" coords="587,47,690,63,744,75,796,91,860,121,910,153,907,157,858,126,794,96,742,80,689,68,586,52"/>
+<area shape="rect" title=" " alt="" coords="355,99,569,125"/>
+<area shape="poly" title=" " alt="" coords="583,117,687,126,795,139,872,153,871,158,794,144,686,131,583,122"/>
+<area shape="rect" title=" " alt="" coords="360,153,564,178"/>
+<area shape="poly" title=" " alt="" coords="578,163,834,165,834,170,578,169"/>
+<area shape="rect" title=" " alt="" coords="361,206,563,231"/>
+<area shape="poly" title=" " alt="" coords="576,212,682,205,794,193,874,178,875,183,795,199,683,211,577,218"/>
+<area shape="rect" title=" " alt="" coords="360,259,564,285"/>
+<area shape="poly" title=" " alt="" coords="551,283,609,286,673,282,736,268,766,256,793,241,802,231,805,219,808,206,817,194,844,178,847,183,820,198,812,209,810,221,806,233,796,245,768,261,737,273,673,288,610,292,551,289"/>
+<area shape="rect" title=" " alt="" coords="1688,513,1887,553"/>
+<area shape="poly" title=" " alt="" coords="1841,557,2099,692,2097,696,1838,562"/>
+<area shape="rect" href="structGeometryMeshMap.html" title="Geometry 子形状与 MeshData 局部拓扑之间的通用映射" alt="" coords="1283,470,1434,495"/>
+<area shape="poly" title=" " alt="" coords="1448,490,1688,519,1688,524,1447,496"/>
+<area shape="poly" title=" " alt="" coords="808,479,1283,480,1283,485,808,484"/>
+<area shape="rect" title=" " alt="" coords="819,361,1037,415"/>
+<area shape="poly" title=" " alt="" coords="1051,412,1301,467,1299,473,1050,417"/>
+<area shape="poly" title=" " alt="" coords="580,403,818,391,818,396,580,409"/>
+<area shape="poly" title=" " alt="" coords="1863,704,2060,704,2060,709,1863,709"/>
+<area shape="rect" title=" " alt="" coords="1255,560,1463,600"/>
+<area shape="poly" title=" " alt="" coords="1446,601,1657,663,1748,691,1746,696,1655,668,1444,606"/>
+<area shape="rect" href="structMeshAdjacency_1_1EdgeRow.html" title=" " alt="" coords="833,531,1023,557"/>
+<area shape="poly" title=" " alt="" coords="1038,550,1255,569,1254,574,1037,556"/>
+<area shape="rect" title=" " alt="" coords="379,523,545,549"/>
+<area shape="poly" title=" " alt="" coords="559,539,597,540,833,542,833,547,597,545,559,544"/>
+<area shape="rect" title=" " alt="" coords="1270,727,1447,767"/>
+<area shape="poly" title=" " alt="" coords="1461,751,1556,751,1656,743,1707,731,1752,717,1754,722,1708,737,1656,748,1556,756,1461,756"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a48eb2948c2bd93f88072e55936fab205" id="r_a48eb2948c2bd93f88072e55936fab205"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48eb2948c2bd93f88072e55936fab205">label</a></td></tr>
+<tr class="memitem:a11847f5987509a4c447f8f515b079437" id="r_a11847f5987509a4c447f8f515b079437"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11847f5987509a4c447f8f515b079437">component_id</a> { -1 }</td></tr>
+<tr class="memitem:aafcf3982da20e402d9080c73757bc6e1" id="r_aafcf3982da20e402d9080c73757bc6e1"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structComponentData.html">ComponentData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aafcf3982da20e402d9080c73757bc6e1">before</a></td></tr>
+<tr class="memdesc:aafcf3982da20e402d9080c73757bc6e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">before₀：会话起点，commit/cancel/revert 时消费  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>staged 会话状态（全局唯一，规则见文件头注释） </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="aafcf3982da20e402d9080c73757bc6e1" name="aafcf3982da20e402d9080c73757bc6e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafcf3982da20e402d9080c73757bc6e1">&#9670;&#160;</a></span>before</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structComponentData.html">ComponentData</a>&gt; UndoStack::StagedSession::before</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>before₀：会话起点，commit/cancel/revert 时消费 </p>
+
+</div>
+</div>
+<a id="a11847f5987509a4c447f8f515b079437" name="a11847f5987509a4c447f8f515b079437"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11847f5987509a4c447f8f515b079437">&#9670;&#160;</a></span>component_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> UndoStack::StagedSession::component_id { -1 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a48eb2948c2bd93f88072e55936fab205" name="a48eb2948c2bd93f88072e55936fab205"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48eb2948c2bd93f88072e55936fab205">&#9670;&#160;</a></span>label</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string UndoStack::StagedSession::label</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="UndoStack_8h_source.html">UndoStack.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -46,5 +46,6 @@ var searchData=
   ['_7etreenode_43',['~TreeNode',['../structTreeNode.html#a138449d182c342d032c78e7037afc151',1,'TreeNode']]],
   ['_7etrivialedithandler_44',['~TrivialEditHandler',['../classsystems_1_1edit_1_1TrivialEditHandler.html#aba87eb2994851c02c720ade417af944e',1,'systems::edit::TrivialEditHandler']]],
   ['_7eugridmodel_45',['~UGridModel',['../classUGridModel.html#aeba96366937e1483eeec6504e1c418b8',1,'UGridModel']]],
-  ['_7evertexselectorhighlight_46',['~VertexSelectorHighlight',['../classVertexSelectorHighlight.html#a1ed2ecf6f65f2a1e7243344dd6eff0ae',1,'VertexSelectorHighlight']]]
+  ['_7eundorecorder_46',['~UndoRecorder',['../classUndoRecorder.html#aeab708d1704c16dc3253ff0c6f4fdad7',1,'UndoRecorder']]],
+  ['_7evertexselectorhighlight_47',['~VertexSelectorHighlight',['../classVertexSelectorHighlight.html#a1ed2ecf6f65f2a1e7243344dd6eff0ae',1,'VertexSelectorHighlight']]]
 ];

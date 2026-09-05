@@ -29,5 +29,7 @@ var searchData=
   ['qrenderwindowstyle_2eh_26',['QRenderWindowStyle.h',['../QRenderWindowStyle_8h.html',1,'']]],
   ['qselection_2eh_27',['QSelection.h',['../QSelection_8h.html',1,'']]],
   ['qsystempluginmanager_2ecpp_28',['QSystemPluginManager.cpp',['../QSystemPluginManager_8cpp.html',1,'']]],
-  ['qsystempluginmanager_2eh_29',['QSystemPluginManager.h',['../QSystemPluginManager_8h.html',1,'']]]
+  ['qsystempluginmanager_2eh_29',['QSystemPluginManager.h',['../QSystemPluginManager_8h.html',1,'']]],
+  ['qundostackadaptor_2ecpp_30',['QUndoStackAdaptor.cpp',['../QUndoStackAdaptor_8cpp.html',1,'']]],
+  ['qundostackadaptor_2eh_31',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]]
 ];

@@ -106,7 +106,7 @@ Public 属性</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>模型级结构快照：整模型的深拷贝，用于撤销/恢复结构操作 </p>
-<dl class="section note"><dt>注解</dt><dd>携带原 model_id/component_id；恢复时按原 id 插回（发号器只增不减，不会撞号）。 已知限制：几何子形状索引重建时领新 gid（索引是派生缓存，GeometryRegistry 发号 无法 reclaim 原值），几何 gid 身份跨 undo 不保持；mesh 侧点/边 gid 身份由 reclaim 保证。 </dd></dl>
+<dl class="section note"><dt>注解</dt><dd>携带原 model_id/component_id；恢复时按原 id 插回（发号器只增不减，不会撞号）。 点/边 gid 经 reclaim 按原值拿回；几何 gid 向量随克隆保留、索引重建时按原值 reclaim（GeometryRegistry 发号只增不复用），gid 身份跨 undo 保持。 </dd></dl>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
 <a id="a398ee71b7fd9f1729f55ceaae0428609" name="a398ee71b7fd9f1729f55ceaae0428609"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a398ee71b7fd9f1729f55ceaae0428609">&#9670;&#160;</a></span>components</h2>

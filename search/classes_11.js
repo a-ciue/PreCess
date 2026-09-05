@@ -9,9 +9,11 @@ var searchData=
   ['skin_5fweight_5ft_6',['skin_weight_t',['../structtinyobj_1_1skin__weight__t.html',1,'tinyobj']]],
   ['solidpickinteractorstyle_7',['SolidPickInteractorStyle',['../classSolidPickInteractorStyle.html',1,'']]],
   ['solidselectorhighlight_8',['SolidSelectorHighlight',['../classSolidSelectorHighlight.html',1,'']]],
-  ['string_9',['string',['../classsystems_1_1algo_1_1string.html',1,'systems::algo::string'],['../classsystems_1_1edit_1_1string.html',1,'systems::edit::string'],['../classsystems_1_1io_1_1string.html',1,'systems::io::string']]],
-  ['subscription_10',['Subscription',['../classcore_1_1EventBus_1_1Subscription.html',1,'core::EventBus::Subscription'],['../classEventBus_1_1Subscription.html',1,'EventBus::Subscription']]],
-  ['systemhandlerdestroyer_11',['SystemHandlerDestroyer',['../structsystems_1_1SystemHandlerDestroyer.html',1,'systems']]],
-  ['systempluginmanager_12',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
-  ['systemregisterbase_13',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
+  ['stagedsession_9',['StagedSession',['../structUndoStack_1_1StagedSession.html',1,'UndoStack']]],
+  ['string_10',['string',['../classsystems_1_1algo_1_1string.html',1,'systems::algo::string'],['../classsystems_1_1edit_1_1string.html',1,'systems::edit::string'],['../classsystems_1_1io_1_1string.html',1,'systems::io::string']]],
+  ['structuralentry_11',['StructuralEntry',['../structStructuralEntry.html',1,'']]],
+  ['subscription_12',['Subscription',['../classcore_1_1EventBus_1_1Subscription.html',1,'core::EventBus::Subscription'],['../classEventBus_1_1Subscription.html',1,'EventBus::Subscription']]],
+  ['systemhandlerdestroyer_13',['SystemHandlerDestroyer',['../structsystems_1_1SystemHandlerDestroyer.html',1,'systems']]],
+  ['systempluginmanager_14',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
+  ['systemregisterbase_15',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
 ];

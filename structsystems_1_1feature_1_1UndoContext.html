@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::UndoContext结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="structsystems_1_1feature_1_1UndoContext.html">UndoContext</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structsystems_1_1feature_1_1UndoContext-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::UndoContext结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>功能的 undo 上下文（轻量视图，包装 <a class="el" href="classUndoStack.html">UndoStack</a> + 本功能的 undo 模式）  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a982690ea65b1e02bff3f66d1d552ff28" id="r_a982690ea65b1e02bff3f66d1d552ff28"><td class="memItemLeft" align="right" valign="top">std::function&lt; bool(std::string label, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a982690ea65b1e02bff3f66d1d552ff28">beginStaged</a></td></tr>
+<tr class="memdesc:a982690ea65b1e02bff3f66d1d552ff28"><td class="mdescLeft">&#160;</td><td class="mdescRight">开启 staged 会话（栈捕获 before₀）  <br /></td></tr>
+<tr class="memitem:a53b3d3705f74a146abad8913e68885ac" id="r_a53b3d3705f74a146abad8913e68885ac"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53b3d3705f74a146abad8913e68885ac">commitStaged</a></td></tr>
+<tr class="memdesc:a53b3d3705f74a146abad8913e68885ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">确认：before₀+当前状态成一条记录  <br /></td></tr>
+<tr class="memitem:a526e48d8ddbfe92ffd51ff8d99086c36" id="r_a526e48d8ddbfe92ffd51ff8d99086c36"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a526e48d8ddbfe92ffd51ff8d99086c36">cancelStaged</a></td></tr>
+<tr class="memdesc:a526e48d8ddbfe92ffd51ff8d99086c36"><td class="mdescLeft">&#160;</td><td class="mdescRight">恢复 before₀ 并关闭会话，不成记录  <br /></td></tr>
+<tr class="memitem:ae335e9fe558b32d66606859c7d300712" id="r_ae335e9fe558b32d66606859c7d300712"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae335e9fe558b32d66606859c7d300712">revertStaged</a></td></tr>
+<tr class="memdesc:ae335e9fe558b32d66606859c7d300712"><td class="mdescLeft">&#160;</td><td class="mdescRight">恢复 before₀，会话保持打开（预览重试）  <br /></td></tr>
+<tr class="memitem:a98069729646ee01fe6cc6a28448e1e64" id="r_a98069729646ee01fe6cc6a28448e1e64"><td class="memItemLeft" align="right" valign="top">std::function&lt; bool()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a98069729646ee01fe6cc6a28448e1e64">stagedActive</a></td></tr>
+<tr class="memdesc:a98069729646ee01fe6cc6a28448e1e64"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否有进行中的 staged 会话  <br /></td></tr>
+<tr class="memitem:a85d03f41b63b27464c271575e9b1915e" id="r_a85d03f41b63b27464c271575e9b1915e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a85d03f41b63b27464c271575e9b1915e">automatic</a> { true }</td></tr>
+<tr class="memdesc:a85d03f41b63b27464c271575e9b1915e"><td class="mdescLeft">&#160;</td><td class="mdescRight">本功能是否自动模式（只读）  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>功能的 undo 上下文（轻量视图，包装 <a class="el" href="classUndoStack.html">UndoStack</a> + 本功能的 undo 模式） </p>
+<p>Manual 功能（json 声明 "undo": "manual"）经 staged 会话显式控制记录： beginStaged（栈捕获 before₀）→ editableMesh 预览写（重试经 revertStaged 回滚再改）→ 确认 commitStaged（before₀+当前状态成一条记录）/ 取消 cancelStaged（恢复 before₀ 不成记录）。 预览写的标脏在 Manual 边界只 flush 不成记录；before-image 由栈持有（非插件自持）。 Auto 功能由操作边界自动记录，不使用本上下文的 staged 接口。 </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a85d03f41b63b27464c271575e9b1915e" name="a85d03f41b63b27464c271575e9b1915e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85d03f41b63b27464c271575e9b1915e">&#9670;&#160;</a></span>automatic</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::feature::UndoContext::automatic { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>本功能是否自动模式（只读） </p>
+
+</div>
+</div>
+<a id="a982690ea65b1e02bff3f66d1d552ff28" name="a982690ea65b1e02bff3f66d1d552ff28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a982690ea65b1e02bff3f66d1d552ff28">&#9670;&#160;</a></span>beginStaged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;bool(std::string label, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)&gt; systems::feature::UndoContext::beginStaged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>开启 staged 会话（栈捕获 before₀） </p>
+
+</div>
+</div>
+<a id="a526e48d8ddbfe92ffd51ff8d99086c36" name="a526e48d8ddbfe92ffd51ff8d99086c36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a526e48d8ddbfe92ffd51ff8d99086c36">&#9670;&#160;</a></span>cancelStaged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::feature::UndoContext::cancelStaged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>恢复 before₀ 并关闭会话，不成记录 </p>
+
+</div>
+</div>
+<a id="a53b3d3705f74a146abad8913e68885ac" name="a53b3d3705f74a146abad8913e68885ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53b3d3705f74a146abad8913e68885ac">&#9670;&#160;</a></span>commitStaged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::feature::UndoContext::commitStaged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>确认：before₀+当前状态成一条记录 </p>
+
+</div>
+</div>
+<a id="ae335e9fe558b32d66606859c7d300712" name="ae335e9fe558b32d66606859c7d300712"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae335e9fe558b32d66606859c7d300712">&#9670;&#160;</a></span>revertStaged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void()&gt; systems::feature::UndoContext::revertStaged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>恢复 before₀，会话保持打开（预览重试） </p>
+
+</div>
+</div>
+<a id="a98069729646ee01fe6cc6a28448e1e64" name="a98069729646ee01fe6cc6a28448e1e64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98069729646ee01fe6cc6a28448e1e64">&#9670;&#160;</a></span>stagedActive</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;bool()&gt; systems::feature::UndoContext::stagedActive</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>是否有进行中的 staged 会话 </p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/UndoRecord.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">UndoRecord.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="UndoRecord_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="ComponentData_8h.html">ComponentData.h</a>&quot;</span> <span class="comment">// unique_ptr&lt;ComponentData&gt; 值成员需要完整类型</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="ModelSnapshot_8h.html">ModelSnapshot.h</a>&quot;</span> <span class="comment">// unique_ptr&lt;ModelSnapshot&gt; 值成员需要完整类型</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span></div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structComponentEntry.html">   21</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structComponentEntry.html">ComponentEntry</a> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structComponentEntry.html#aaeb1c84a3be25bd865d0b9dc665611ec">   22</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structComponentEntry.html#aaeb1c84a3be25bd865d0b9dc665611ec">component_id</a> { -1 };</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structComponentEntry.html#ac94f753a00bad4c77a22dc72d74a12dc">   23</a></span>    std::unique_ptr&lt;ComponentData&gt; <a class="code hl_variable" href="structComponentEntry.html#ac94f753a00bad4c77a22dc72d74a12dc">before</a>; </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structComponentEntry.html#a54bbc98a3b691d1fad43ef8550c02079">   24</a></span>    std::unique_ptr&lt;ComponentData&gt; <a class="code hl_variable" href="structComponentEntry.html#a54bbc98a3b691d1fad43ef8550c02079">after</a>; </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>};</div>
+</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span></div>
+<div class="foldopen" id="foldopen00028" data-start="{" data-end="};">
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structStructuralEntry.html">   28</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structStructuralEntry.html">StructuralEntry</a> {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749a6143032316f6704bbc1275b159277c92">   29</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749">Kind</a> { <a class="code hl_enumvalue" href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749aa460229890a66282fb44b83870040dd1">ModelAdded</a>, <a class="code hl_enumvalue" href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749ab81acc16fa4f8eea0ea0eb68a3b5e403">ModelRemoved</a>, <a class="code hl_enumvalue" href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749a6143032316f6704bbc1275b159277c92">ComponentAdded</a>, <a class="code hl_enumvalue" href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749a82032b3786c9cdfce3efaf8fd11d2ede">ComponentRemoved</a> };</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structStructuralEntry.html#adb3cedba5f1dfb948392ffafc740cfcd">   30</a></span>    <a class="code hl_enumeration" href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749">Kind</a> <a class="code hl_variable" href="structStructuralEntry.html#adb3cedba5f1dfb948392ffafc740cfcd">kind</a>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structStructuralEntry.html#ad670917a842a2ba276afee7af13e0245">   31</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structStructuralEntry.html#ad670917a842a2ba276afee7af13e0245">model_id</a> { -1 };</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structStructuralEntry.html#a9d5575dc490b128296fe036799fd75ac">   32</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structStructuralEntry.html#a9d5575dc490b128296fe036799fd75ac">component_id</a> { -1 };</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structStructuralEntry.html#aaea8af5f38aaf90539609f9fe8f41fe8">   33</a></span>    std::unique_ptr&lt;ModelSnapshot&gt; <a class="code hl_variable" href="structStructuralEntry.html#aaea8af5f38aaf90539609f9fe8f41fe8">model_snapshot</a>; </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structStructuralEntry.html#a73310b12eb9cf0d04eff1a5f3bca80f3">   34</a></span>    std::unique_ptr&lt;ComponentData&gt; <a class="code hl_variable" href="structStructuralEntry.html#a73310b12eb9cf0d04eff1a5f3bca80f3">component_snapshot</a>; </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>};</div>
+</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span></div>
+<div class="foldopen" id="foldopen00038" data-start="{" data-end="};">
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structUndoRecord.html">   38</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structUndoRecord.html">UndoRecord</a> {</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structUndoRecord.html#a20455d43c363ab41bf610e38b9ecdd4a">   39</a></span>    std::string <a class="code hl_variable" href="structUndoRecord.html#a20455d43c363ab41bf610e38b9ecdd4a">label</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structUndoRecord.html#a1fa26fb70eb4efa3675b1b25216eeb6d">   40</a></span>    std::vector&lt;ComponentEntry&gt; <a class="code hl_variable" href="structUndoRecord.html#a1fa26fb70eb4efa3675b1b25216eeb6d">components</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structUndoRecord.html#a8f75d0a24137ecd6173358ed4418ffb1">   41</a></span>    std::vector&lt;StructuralEntry&gt; <a class="code hl_variable" href="structUndoRecord.html#a8f75d0a24137ecd6173358ed4418ffb1">structural</a>;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structUndoRecord.html#a11565fe1c1c95c32b2ffb776798321b6">   43</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="structUndoRecord.html#a11565fe1c1c95c32b2ffb776798321b6">empty</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="structUndoRecord.html#a1fa26fb70eb4efa3675b1b25216eeb6d">components</a>.empty() &amp;&amp; <a class="code hl_variable" href="structUndoRecord.html#a8f75d0a24137ecd6173358ed4418ffb1">structural</a>.empty(); }</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
+</div>
+<div class="ttc" id="aComponentData_8h_html"><div class="ttname"><a href="ComponentData_8h.html">ComponentData.h</a></div></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:48</div></div>
+<div class="ttc" id="aModelSnapshot_8h_html"><div class="ttname"><a href="ModelSnapshot_8h.html">ModelSnapshot.h</a></div><div class="ttdoc">模型级结构快照（undo/redo 原语）</div></div>
+<div class="ttc" id="astructComponentEntry_html"><div class="ttname"><a href="structComponentEntry.html">ComponentEntry</a></div><div class="ttdoc">组件数据变更（双向快照）</div><div class="ttdef"><b>定义</b> UndoRecord.h:21</div></div>
+<div class="ttc" id="astructComponentEntry_html_a54bbc98a3b691d1fad43ef8550c02079"><div class="ttname"><a href="structComponentEntry.html#a54bbc98a3b691d1fad43ef8550c02079">ComponentEntry::after</a></div><div class="ttdeci">std::unique_ptr&lt; ComponentData &gt; after</div><div class="ttdoc">commit 时克隆（写后状态）</div><div class="ttdef"><b>定义</b> UndoRecord.h:24</div></div>
+<div class="ttc" id="astructComponentEntry_html_aaeb1c84a3be25bd865d0b9dc665611ec"><div class="ttname"><a href="structComponentEntry.html#aaeb1c84a3be25bd865d0b9dc665611ec">ComponentEntry::component_id</a></div><div class="ttdeci">Index component_id</div><div class="ttdef"><b>定义</b> UndoRecord.h:22</div></div>
+<div class="ttc" id="astructComponentEntry_html_ac94f753a00bad4c77a22dc72d74a12dc"><div class="ttname"><a href="structComponentEntry.html#ac94f753a00bad4c77a22dc72d74a12dc">ComponentEntry::before</a></div><div class="ttdeci">std::unique_ptr&lt; ComponentData &gt; before</div><div class="ttdoc">first-dirty 时克隆（写前状态）</div><div class="ttdef"><b>定义</b> UndoRecord.h:23</div></div>
+<div class="ttc" id="astructStructuralEntry_html"><div class="ttname"><a href="structStructuralEntry.html">StructuralEntry</a></div><div class="ttdoc">结构变更（四选一）</div><div class="ttdef"><b>定义</b> UndoRecord.h:28</div></div>
+<div class="ttc" id="astructStructuralEntry_html_a13ddf8991a341b935c1f72da3fe46749"><div class="ttname"><a href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749">StructuralEntry::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdef"><b>定义</b> UndoRecord.h:29</div></div>
+<div class="ttc" id="astructStructuralEntry_html_a13ddf8991a341b935c1f72da3fe46749a6143032316f6704bbc1275b159277c92"><div class="ttname"><a href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749a6143032316f6704bbc1275b159277c92">StructuralEntry::Kind::ComponentAdded</a></div><div class="ttdeci">@ ComponentAdded</div><div class="ttdef"><b>定义</b> UndoRecord.h:29</div></div>
+<div class="ttc" id="astructStructuralEntry_html_a13ddf8991a341b935c1f72da3fe46749a82032b3786c9cdfce3efaf8fd11d2ede"><div class="ttname"><a href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749a82032b3786c9cdfce3efaf8fd11d2ede">StructuralEntry::Kind::ComponentRemoved</a></div><div class="ttdeci">@ ComponentRemoved</div><div class="ttdef"><b>定义</b> UndoRecord.h:29</div></div>
+<div class="ttc" id="astructStructuralEntry_html_a13ddf8991a341b935c1f72da3fe46749aa460229890a66282fb44b83870040dd1"><div class="ttname"><a href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749aa460229890a66282fb44b83870040dd1">StructuralEntry::Kind::ModelAdded</a></div><div class="ttdeci">@ ModelAdded</div><div class="ttdef"><b>定义</b> UndoRecord.h:29</div></div>
+<div class="ttc" id="astructStructuralEntry_html_a13ddf8991a341b935c1f72da3fe46749ab81acc16fa4f8eea0ea0eb68a3b5e403"><div class="ttname"><a href="structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749ab81acc16fa4f8eea0ea0eb68a3b5e403">StructuralEntry::Kind::ModelRemoved</a></div><div class="ttdeci">@ ModelRemoved</div><div class="ttdef"><b>定义</b> UndoRecord.h:29</div></div>
+<div class="ttc" id="astructStructuralEntry_html_a73310b12eb9cf0d04eff1a5f3bca80f3"><div class="ttname"><a href="structStructuralEntry.html#a73310b12eb9cf0d04eff1a5f3bca80f3">StructuralEntry::component_snapshot</a></div><div class="ttdeci">std::unique_ptr&lt; ComponentData &gt; component_snapshot</div><div class="ttdoc">ComponentRemoved 记录时捕获；ComponentAdded undo 时捕获（供 redo）</div><div class="ttdef"><b>定义</b> UndoRecord.h:34</div></div>
+<div class="ttc" id="astructStructuralEntry_html_a9d5575dc490b128296fe036799fd75ac"><div class="ttname"><a href="structStructuralEntry.html#a9d5575dc490b128296fe036799fd75ac">StructuralEntry::component_id</a></div><div class="ttdeci">Index component_id</div><div class="ttdef"><b>定义</b> UndoRecord.h:32</div></div>
+<div class="ttc" id="astructStructuralEntry_html_aaea8af5f38aaf90539609f9fe8f41fe8"><div class="ttname"><a href="structStructuralEntry.html#aaea8af5f38aaf90539609f9fe8f41fe8">StructuralEntry::model_snapshot</a></div><div class="ttdeci">std::unique_ptr&lt; ModelSnapshot &gt; model_snapshot</div><div class="ttdoc">ModelRemoved 记录时捕获；ModelAdded undo 时捕获（供 redo）</div><div class="ttdef"><b>定义</b> UndoRecord.h:33</div></div>
+<div class="ttc" id="astructStructuralEntry_html_ad670917a842a2ba276afee7af13e0245"><div class="ttname"><a href="structStructuralEntry.html#ad670917a842a2ba276afee7af13e0245">StructuralEntry::model_id</a></div><div class="ttdeci">Index model_id</div><div class="ttdef"><b>定义</b> UndoRecord.h:31</div></div>
+<div class="ttc" id="astructStructuralEntry_html_adb3cedba5f1dfb948392ffafc740cfcd"><div class="ttname"><a href="structStructuralEntry.html#adb3cedba5f1dfb948392ffafc740cfcd">StructuralEntry::kind</a></div><div class="ttdeci">Kind kind</div><div class="ttdef"><b>定义</b> UndoRecord.h:30</div></div>
+<div class="ttc" id="astructUndoRecord_html"><div class="ttname"><a href="structUndoRecord.html">UndoRecord</a></div><div class="ttdoc">一次操作 = 一条记录</div><div class="ttdef"><b>定义</b> UndoRecord.h:38</div></div>
+<div class="ttc" id="astructUndoRecord_html_a11565fe1c1c95c32b2ffb776798321b6"><div class="ttname"><a href="structUndoRecord.html#a11565fe1c1c95c32b2ffb776798321b6">UndoRecord::empty</a></div><div class="ttdeci">bool empty() const</div><div class="ttdef"><b>定义</b> UndoRecord.h:43</div></div>
+<div class="ttc" id="astructUndoRecord_html_a1fa26fb70eb4efa3675b1b25216eeb6d"><div class="ttname"><a href="structUndoRecord.html#a1fa26fb70eb4efa3675b1b25216eeb6d">UndoRecord::components</a></div><div class="ttdeci">std::vector&lt; ComponentEntry &gt; components</div><div class="ttdef"><b>定义</b> UndoRecord.h:40</div></div>
+<div class="ttc" id="astructUndoRecord_html_a20455d43c363ab41bf610e38b9ecdd4a"><div class="ttname"><a href="structUndoRecord.html#a20455d43c363ab41bf610e38b9ecdd4a">UndoRecord::label</a></div><div class="ttdeci">std::string label</div><div class="ttdef"><b>定义</b> UndoRecord.h:39</div></div>
+<div class="ttc" id="astructUndoRecord_html_a8f75d0a24137ecd6173358ed4418ffb1"><div class="ttname"><a href="structUndoRecord.html#a8f75d0a24137ecd6173358ed4418ffb1">UndoRecord::structural</a></div><div class="ttdeci">std::vector&lt; StructuralEntry &gt; structural</div><div class="ttdef"><b>定义</b> UndoRecord.h:41</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
