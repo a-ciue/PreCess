@@ -67,6 +67,24 @@ const char* boolOpDisplayName(BoolOp op)
     return "未知运算";
 }
 
+//! @brief 运算的短名（用于结果模型命名，只含 ASCII 安全的字符）
+const char* boolOpShortName(BoolOp op)
+{
+    switch (op) {
+    case BoolOp::Union:          return "并集";
+    case BoolOp::Intersection:   return "交集";
+    case BoolOp::DifferenceAB:   return "差集A-B";
+    case BoolOp::DifferenceBA:   return "差集B-A";
+    }
+    return "布尔结果";
+}
+
+//! @brief 结果模型名：<对象A>_<运算>_<对象B>，便于在对象树中追溯来源
+std::string resultName(const std::string& a_name, BoolOp op, const std::string& b_name)
+{
+    return a_name + "_" + boolOpShortName(op) + "_" + b_name;
+}
+
 /**
  * @brief 判断 MeshData 是否含体单元（约定：solid_*_offset_.size() > 1 即视为"有体"）
  */
@@ -127,32 +145,53 @@ std::optional<std::string> surfaceMeshPrecheck(const MeshData& mesh, const char*
     return std::nullopt;
 }
 
-//! @brief 目标对象名（用于结果文案）
-std::string componentLabel(const ComponentOperator& comp_op, const char* label)
+//! @brief 组装"已生成新模型"的成功文案
+std::string buildSuccessText(BoolOp op, const std::string& name, const MeshData& mesh)
 {
-    return std::string("对象 ") + label + "（" + comp_op.component().name + "）";
-}
-
-//! @brief 组装"已写回对象 A"的成功文案：布尔结果 → A 网格 → replaceMesh
-std::string buildSuccessText(BoolOp op, ComponentOperator& comp_op_a)
-{
-    const auto* mesh = comp_op_a.mesh();
-    const std::size_t faces = mesh && !mesh->face_vertices_offset_.empty()
-        ? mesh->face_vertices_offset_.size() - 1 : 0;
+    const std::size_t faces = mesh.face_vertices_offset_.empty()
+        ? 0 : mesh.face_vertices_offset_.size() - 1;
     std::ostringstream oss;
-    oss << boolOpDisplayName(op) << "完成："
-        << componentLabel(comp_op_a, "A")
-        << " 的网格已更新（顶点 " << (mesh ? mesh->vertex_count_ : 0)
-        << " / 三角面 " << faces << "）";
+    oss << boolOpDisplayName(op) << "完成：已生成新模型「" << name
+        << "」（顶点 " << mesh.vertex_count_ << " / 三角面 " << faces << "）";
     return oss.str();
 }
 
-//! @brief 布尔结果网格写回对象 A（ComponentOperator::replaceMesh 内建 gid 纪律与写前标脏）
-void writeBackExact(ComponentOperator& comp_op_a, const CgalExactMesh& result)
+/**
+ * @brief 用布尔结果创建一个独立的新模型（模型名 = 组件名），返回新模型 id
+ *
+ * 结果不覆盖任何操作数：对象 A / B 保持原样，结果以新模型的形式加入模型层，
+ * 便于与原对象对比、单独导出或删除。addModel 属结构操作，通知与 undo 记录即时生成。
+ */
+Index createResultModel(FeatureContext& ctx, const std::string& name, std::unique_ptr<MeshData> mesh)
+{
+    auto component = std::make_unique<ComponentData>();
+    component->name = name;
+    component->mesh = std::move(mesh);
+
+    ComponentDatas components;
+    components.push_back(std::move(component));
+    return ctx.model.addModel(name, std::move(components));
+}
+
+//! @brief 布尔结果网格（EPECK 精确网格）→ 新模型
+std::string writeBackExact(FeatureContext& ctx, BoolOp op,
+    const std::string& name, const CgalExactMesh& result)
 {
     auto out_mesh = std::make_unique<MeshData>();
     fromSurfaceMesh(result, *out_mesh);
-    comp_op_a.replaceMesh(std::move(out_mesh));
+    std::string text = buildSuccessText(op, name, *out_mesh);
+    createResultModel(ctx, name, std::move(out_mesh));
+    return text;
+}
+
+//! @brief 以某个操作数的网格副本作为结果新建模型（"结果即 A" / "结果即 B" 的场景）
+std::string writeBackCopy(FeatureContext& ctx, BoolOp op,
+    const std::string& name, const MeshData& src)
+{
+    auto mesh_copy = src.clone();
+    std::string text = buildSuccessText(op, name, *mesh_copy);
+    createResultModel(ctx, name, std::move(mesh_copy));
+    return text;
 }
 
 /**
@@ -198,19 +237,11 @@ std::unique_ptr<MeshData> mergeSurfaceShells(const MeshData& lhs, const MeshData
 }
 
 /**
- * @brief 以对象 B 的网格整体替换对象 A（用于"并集结果即 B / 交集结果即 B"等场景）
- */
-void writeBackCopyOfB(ComponentOperator& comp_op_a, const MeshData& mesh_b)
-{
-    comp_op_a.replaceMesh(mesh_b.clone());
-}
-
-/**
  * @brief 布尔运算主路径：两表面相交 → CGAL corefinement 精确求解
  *
  * @pre 已通过闭合/自交/朝向规整校验；两表面存在相交
  */
-std::string computeIntersecting(BoolOp op, ComponentOperator& comp_op_a,
+std::string computeIntersecting(FeatureContext& ctx, BoolOp op, const std::string& name,
     CgalExactMesh& sm_a, CgalExactMesh& sm_b)
 {
     namespace PMP = CGAL::Polygon_mesh_processing;
@@ -238,11 +269,10 @@ std::string computeIntersecting(BoolOp op, ComponentOperator& comp_op_a,
 
     if (!ok || out.number_of_vertices() == 0 || out.number_of_faces() == 0) {
         return std::string("布尔运算失败：结果为空或将为非流形结构"
-            "（两对象可能仅相切/共面接触），网格未修改");
+            "（两对象可能仅相切/共面接触），未生成新模型");
     }
 
-    writeBackExact(comp_op_a, out);
-    return buildSuccessText(op, comp_op_a);
+    return writeBackExact(ctx, op, name, out);
 }
 
 /**
@@ -250,9 +280,9 @@ std::string computeIntersecting(BoolOp op, ComponentOperator& comp_op_a,
  *
  * 输入为闭合壳体且边界互不相交时，二者关系只可能是：A 含 B、B 含 A、相互分离
  * （凭"一顶点是否落入另一闭合壳体内部"判定，边界无交点时整壳同侧，取首顶点即可）。
- * 每种运算按体积语义推导结果；结果等于 A/B 或为空时不修改网格，仅提示。
+ * 每种运算按体积语义推导结果：有结果则新建模型承载，结果为空则不创建。
  */
-std::string computeNonIntersecting(BoolOp op, ComponentOperator& comp_op_a,
+std::string computeNonIntersecting(FeatureContext& ctx, BoolOp op, const std::string& name,
     const MeshData& mesh_a, const MeshData& mesh_b,
     const CgalExactMesh& sm_a, const CgalExactMesh& sm_b)
 {
@@ -272,18 +302,19 @@ std::string computeNonIntersecting(BoolOp op, ComponentOperator& comp_op_a,
     if (!b_inside_a && !a_inside_b) {
         switch (op) {
         case BoolOp::Union: {
-            comp_op_a.replaceMesh(mergeSurfaceShells(mesh_a, mesh_b));
-            std::string text = buildSuccessText(op, comp_op_a);
+            auto merged = mergeSurfaceShells(mesh_a, mesh_b);
+            std::string text = buildSuccessText(op, name, *merged);
+            createResultModel(ctx, name, std::move(merged));
             return text + "（" + sep_note + "，结果含两个独立壳体）";
         }
         case BoolOp::Intersection:
-            return std::string("交集为空：") + sep_note + "，网格未修改";
+            return std::string("交集为空：") + sep_note + "，未生成新模型";
         case BoolOp::DifferenceAB:
-            return std::string("差集(A−B) 即对象 A：") + sep_note + "，网格未修改";
+            return writeBackCopy(ctx, op, name, mesh_a)
+                + "（" + sep_note + "，结果即对象 A）";
         case BoolOp::DifferenceBA:
-            writeBackCopyOfB(comp_op_a, mesh_b);
-            return std::string("差集(B−A) 即对象 B：") + sep_note
-                + "，已将结果写回对象 A";
+            return writeBackCopy(ctx, op, name, mesh_b)
+                + "（" + sep_note + "，结果即对象 B）";
         }
     }
 
@@ -291,32 +322,38 @@ std::string computeNonIntersecting(BoolOp op, ComponentOperator& comp_op_a,
     if (b_inside_a) {
         switch (op) {
         case BoolOp::Union:
-            return std::string("并集结果即对象 A：对象 B 完全位于对象 A 内部，网格未修改");
+            return writeBackCopy(ctx, op, name, mesh_a)
+                + "（对象 B 完全位于对象 A 内部，结果即对象 A）";
         case BoolOp::Intersection:
-            writeBackCopyOfB(comp_op_a, mesh_b);
-            return std::string("交集结果即对象 B：对象 B 完全位于对象 A 内部，已写回对象 A");
-        case BoolOp::DifferenceAB:
-            comp_op_a.replaceMesh(mergeSurfaceShells(mesh_a, mesh_b));
-            return buildSuccessText(op, comp_op_a)
-                + "（对象 B 完全位于对象 A 内部，结果为挖去 B 的空腔壳体）";
+            return writeBackCopy(ctx, op, name, mesh_b)
+                + "（对象 B 完全位于对象 A 内部，结果即对象 B）";
+        case BoolOp::DifferenceAB: {
+            auto merged = mergeSurfaceShells(mesh_a, mesh_b);
+            std::string text = buildSuccessText(op, name, *merged);
+            createResultModel(ctx, name, std::move(merged));
+            return text + "（对象 B 完全位于对象 A 内部，结果为挖去 B 的空腔壳体）";
+        }
         case BoolOp::DifferenceBA:
-            return std::string("差集(B−A) 为空：对象 B 完全位于对象 A 内部，网格未修改");
+            return std::string("差集(B−A) 为空：对象 B 完全位于对象 A 内部，未生成新模型");
         }
     }
 
     // A 完全位于 B 内部（B 含 A）
     switch (op) {
     case BoolOp::Union:
-        writeBackCopyOfB(comp_op_a, mesh_b);
-        return std::string("并集结果即对象 B：对象 A 完全位于对象 B 内部，已写回对象 A");
+        return writeBackCopy(ctx, op, name, mesh_b)
+            + "（对象 A 完全位于对象 B 内部，结果即对象 B）";
     case BoolOp::Intersection:
-        return std::string("交集结果即对象 A：对象 A 完全位于对象 B 内部，网格未修改");
+        return writeBackCopy(ctx, op, name, mesh_a)
+            + "（对象 A 完全位于对象 B 内部，结果即对象 A）";
     case BoolOp::DifferenceAB:
-        return std::string("差集(A−B) 为空：对象 A 完全位于对象 B 内部，网格未修改");
-    case BoolOp::DifferenceBA:
-        comp_op_a.replaceMesh(mergeSurfaceShells(mesh_b, mesh_a));
-        return buildSuccessText(op, comp_op_a)
-            + "（对象 A 完全位于对象 B 内部，结果为挖去 A 的空腔壳体）";
+        return std::string("差集(A−B) 为空：对象 A 完全位于对象 B 内部，未生成新模型");
+    case BoolOp::DifferenceBA: {
+        auto merged = mergeSurfaceShells(mesh_b, mesh_a);
+        std::string text = buildSuccessText(op, name, *merged);
+        createResultModel(ctx, name, std::move(merged));
+        return text + "（对象 A 完全位于对象 B 内部，结果为挖去 A 的空腔壳体）";
+    }
     }
 
     return std::string("未知运算");
@@ -330,7 +367,7 @@ void MeshBooleanHandler::setup(FeatureRegistrar& reg, FeatureContext&)
         ArgTypeEnum::Selector,
         "对象 A",
         "Component",
-        "选择第一个操作对象：布尔运算结果将写回该对象（建议先选被保留的一方）",
+        "选择第一个操作对象：布尔结果会作为新模型生成，不会修改该对象",
     });
     reg.addParameter({
         ArgTypeEnum::Selector,
@@ -421,10 +458,14 @@ std::any MeshBooleanHandler::execute(FeatureContext& ctx)
         CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_a);
         CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_b);
 
+        // 结果模型名：<对象A>_<运算>_<对象B>，便于在对象树中追溯来源
+        const std::string result_name = resultName(
+            comp_op_a->component().name, op, comp_op_b->component().name);
+
         // 两表面相交 → corefinement 主路径；不相交 → 包含/分离退化场景
         if (CGAL::Polygon_mesh_processing::do_intersect(sm_a, sm_b))
-            return computeIntersecting(op, *comp_op_a, sm_a, sm_b);
-        return computeNonIntersecting(op, *comp_op_a, mesh_a, mesh_b, sm_a, sm_b);
+            return computeIntersecting(ctx, op, result_name, sm_a, sm_b);
+        return computeNonIntersecting(ctx, op, result_name, mesh_a, mesh_b, sm_a, sm_b);
     } catch (const CGAL::Polygon_mesh_processing::Corefinement::Self_intersection_exception& e) {
         // 输入在相交带内存在自交时由 throw_on_self_intersection(true) 抛出
         spdlog::error("[MeshBoolean] 自交异常: op={}, error={}", boolOpDisplayName(op), e.what());

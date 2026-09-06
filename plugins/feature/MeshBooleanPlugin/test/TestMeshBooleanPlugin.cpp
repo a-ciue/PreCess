@@ -5,9 +5,10 @@
  * FeatureSystem 驱动模式：通过两个 Selector 参数显式传入对象 A / B，验证
  *   1) 参数声明（两个 Selector + 运算 Combo）
  *   2) 未选对象 / 选择相同对象的兜底提示
- *   3) 并集 / 交集 / 差集(A−B) 在规则重叠盒体上的几何正确性
+ *   3) 并集 / 交集 / 差集(A−B) 在规则重叠盒体上的几何正确性（结果均为独立新模型）
  *   4) 表面不相交时的退化场景：分离 → 合并壳体 / 空；包含 → 结果即被包含方
- *   5) 非闭合网格被预检拒绝
+ *      （有结果则新建模型，结果为空则不创建）
+ *   5) 非闭合网格被预检拒绝（不生成新模型）
  *
  * 测试网格为封闭三角盒体（8 顶点 / 12 三角面），通过平移生成 A、B 两个操作对象。
  */
@@ -21,6 +22,7 @@
 #include "FeatureSystem.h"
 #include "MeshBooleanHandler.h"
 #include "MeshData.h"
+#include "ModelData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
 
@@ -220,6 +222,27 @@ struct Fixture {
     }
 };
 
+//! @brief 按模型名查找模型（模型 id 由模型层分配，测试以名字定位布尔结果）
+ModelData* findModelByName(ModelLayer& model_layer, const std::string& name)
+{
+    for (Index i = 0; i < 64; ++i) {
+        ModelData* model = model_layer.modelById(i);
+        if (model && model->model_name_ == name)
+            return model;
+    }
+    return nullptr;
+}
+
+//! @brief 取结果模型中唯一组件的网格；模型不存在或组件数不为 1 时返回 nullptr
+const MeshData* resultMeshOf(ModelLayer& model_layer, const std::string& name)
+{
+    const ModelData* model = findModelByName(model_layer, name);
+    if (!model || model->componentIds().size() != 1)
+        return nullptr;
+    const ComponentData* component = model_layer.findComponent(model->componentIds().front());
+    return component ? component->mesh.get() : nullptr;
+}
+
 } // namespace
 
 TEST_CASE("MeshBoolean exposes two Selectors and operation Combo parameters", "[MeshBooleanPlugin]")
@@ -261,7 +284,7 @@ TEST_CASE("MeshBoolean returns guidance when operands are missing or identical",
     REQUIRE(fx.invokeText().find("请选择两个不同的 Component") != std::string::npos);
 }
 
-TEST_CASE("MeshBoolean union of overlapping boxes writes back to object A", "[MeshBooleanPlugin]")
+TEST_CASE("MeshBoolean union of overlapping boxes generates a separate result model", "[MeshBooleanPlugin]")
 {
     Fixture fx;
     // A = [0,1]^3, B = [0.5,1.5]^3（三维均重叠 0.5）
@@ -274,24 +297,21 @@ TEST_CASE("MeshBoolean union of overlapping boxes writes back to object A", "[Me
     const std::string text = fx.invokeText();
 
     REQUIRE(text.find("并集完成") != std::string::npos);
-    REQUIRE(text.find("网格已更新") != std::string::npos);
+    REQUIRE(text.find("已生成新模型") != std::string::npos);
 
-    // A 被替换为并集体：包围盒 = [0, 1.5]^3
-    const ComponentData* after = fx.model_layer.findComponent(a);
-    REQUIRE(after != nullptr);
-    REQUIRE(after->mesh != nullptr);
-    const BBox box = meshBBox(*after->mesh);
+    // 结果落在独立的新模型中：包围盒 = [0, 1.5]^3
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_并集_B");
+    REQUIRE(result != nullptr);
+    const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
         REQUIRE(box.mn[d] == Catch::Approx(0.0).margin(1e-6));
         REQUIRE(box.mx[d] == Catch::Approx(1.5).margin(1e-6));
     }
     // 顶点数应多于任一输入盒体（并集体包含 0.5 交线角点）
-    REQUIRE(after->mesh->vertex_count_ > 8);
-    // B 保持不变
-    const ComponentData* b_after = fx.model_layer.findComponent(b);
-    REQUIRE(b_after != nullptr);
-    REQUIRE(b_after->mesh != nullptr);
-    REQUIRE(b_after->mesh->vertex_count_ == 8);
+    REQUIRE(result->vertex_count_ > 8);
+    // 两个操作数均保持原样
+    REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
+    REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
 }
 
 TEST_CASE("MeshBoolean intersection of overlapping boxes", "[MeshBooleanPlugin]")
@@ -306,18 +326,21 @@ TEST_CASE("MeshBoolean intersection of overlapping boxes", "[MeshBooleanPlugin]"
     const std::string text = fx.invokeText();
 
     REQUIRE(text.find("交集完成") != std::string::npos);
+    REQUIRE(text.find("已生成新模型") != std::string::npos);
 
     // 交集 = [0.5, 1]^3：所有顶点都应落在此包围盒内，两个对角点应存在
-    const ComponentData* after = fx.model_layer.findComponent(a);
-    REQUIRE(after != nullptr);
-    REQUIRE(after->mesh != nullptr);
-    const BBox box = meshBBox(*after->mesh);
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_交集_B");
+    REQUIRE(result != nullptr);
+    const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
         REQUIRE(box.mn[d] >= 0.5 - 1e-6);
         REQUIRE(box.mx[d] <= 1.0 + 1e-6);
     }
-    REQUIRE(hasVertexNear(*after->mesh, { 0.5, 0.5, 0.5 }));
-    REQUIRE(hasVertexNear(*after->mesh, { 1.0, 1.0, 1.0 }));
+    REQUIRE(hasVertexNear(*result, { 0.5, 0.5, 0.5 }));
+    REQUIRE(hasVertexNear(*result, { 1.0, 1.0, 1.0 }));
+    // 两个操作数均保持原样
+    REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
+    REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
 }
 
 TEST_CASE("MeshBoolean difference (A minus B) removes the overlapped corner", "[MeshBooleanPlugin]")
@@ -332,21 +355,24 @@ TEST_CASE("MeshBoolean difference (A minus B) removes the overlapped corner", "[
     const std::string text = fx.invokeText();
 
     REQUIRE(text.find("差集(A−B)完成") != std::string::npos);
+    REQUIRE(text.find("已生成新模型") != std::string::npos);
 
-    const ComponentData* after = fx.model_layer.findComponent(a);
-    REQUIRE(after != nullptr);
-    REQUIRE(after->mesh != nullptr);
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_差集A-B_B");
+    REQUIRE(result != nullptr);
     // 顶点都在 A 的包围盒内
-    const BBox box = meshBBox(*after->mesh);
+    const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
         REQUIRE(box.mn[d] >= -1e-6);
         REQUIRE(box.mx[d] <= 1.0 + 1e-6);
     }
     // (0,0,0) 角保留；(1,1,1) 角位于 B 内被挖除
-    REQUIRE(hasVertexNear(*after->mesh, { 0.0, 0.0, 0.0 }));
-    REQUIRE_FALSE(hasVertexNear(*after->mesh, { 1.0, 1.0, 1.0 }));
+    REQUIRE(hasVertexNear(*result, { 0.0, 0.0, 0.0 }));
+    REQUIRE_FALSE(hasVertexNear(*result, { 1.0, 1.0, 1.0 }));
     // 结果不再是原始 8 顶点盒体
-    REQUIRE(after->mesh->vertex_count_ > 8);
+    REQUIRE(result->vertex_count_ > 8);
+    // 两个操作数均保持原样
+    REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
+    REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
 }
 
 TEST_CASE("MeshBoolean union of separated boxes keeps two shells", "[MeshBooleanPlugin]")
@@ -363,16 +389,18 @@ TEST_CASE("MeshBoolean union of separated boxes keeps two shells", "[MeshBoolean
     REQUIRE(text.find("并集完成") != std::string::npos);
     REQUIRE(text.find("两个独立壳体") != std::string::npos);
 
-    // 两壳并入 A：面数 12+12=24，包围盒跨越两盒
-    const ComponentData* after = fx.model_layer.findComponent(a);
-    REQUIRE(after != nullptr);
-    REQUIRE(after->mesh != nullptr);
-    REQUIRE(faceCount(*after->mesh) == 24);
-    const BBox box = meshBBox(*after->mesh);
+    // 两壳并入结果模型：面数 12+12=24，包围盒跨越两盒
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_并集_B");
+    REQUIRE(result != nullptr);
+    REQUIRE(faceCount(*result) == 24);
+    const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
         REQUIRE(box.mn[d] == Catch::Approx(0.0).margin(1e-6));
         REQUIRE(box.mx[d] == Catch::Approx(4.0).margin(1e-6));
     }
+    // 两个操作数均保持原样
+    REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
+    REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
 }
 
 TEST_CASE("MeshBoolean intersection of separated boxes reports empty without modification", "[MeshBooleanPlugin]")
@@ -388,10 +416,11 @@ TEST_CASE("MeshBoolean intersection of separated boxes reports empty without mod
 
     REQUIRE(text.find("交集为空") != std::string::npos);
 
-    const ComponentData* after = fx.model_layer.findComponent(a);
-    REQUIRE(after != nullptr);
-    REQUIRE(after->mesh != nullptr);
-    REQUIRE(after->mesh->vertex_count_ == 8);
+    // 结果为空 → 不生成新模型
+    REQUIRE(resultMeshOf(fx.model_layer, "A_交集_B") == nullptr);
+    // 两个操作数均保持原样
+    REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
+    REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
 }
 
 TEST_CASE("MeshBoolean intersection where B is fully inside A equals B", "[MeshBooleanPlugin]")
@@ -406,16 +435,19 @@ TEST_CASE("MeshBoolean intersection where B is fully inside A equals B", "[MeshB
     fx.setOp(1); // 交集
     const std::string text = fx.invokeText();
 
-    REQUIRE(text.find("交集结果即对象 B") != std::string::npos);
+    REQUIRE(text.find("结果即对象 B") != std::string::npos);
 
-    const ComponentData* after = fx.model_layer.findComponent(a);
-    REQUIRE(after != nullptr);
-    REQUIRE(after->mesh != nullptr);
-    const BBox box = meshBBox(*after->mesh);
+    // 交集 = B，作为新模型生成
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_交集_B");
+    REQUIRE(result != nullptr);
+    const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
         REQUIRE(box.mn[d] == Catch::Approx(1.0).margin(1e-6));
         REQUIRE(box.mx[d] == Catch::Approx(2.0).margin(1e-6));
     }
+    // 两个操作数均保持原样
+    REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
+    REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
 }
 
 TEST_CASE("MeshBoolean union where B is fully inside A keeps A unchanged", "[MeshBooleanPlugin]")
@@ -429,12 +461,19 @@ TEST_CASE("MeshBoolean union where B is fully inside A keeps A unchanged", "[Mes
     fx.setOp(0); // 并集
     const std::string text = fx.invokeText();
 
-    REQUIRE(text.find("并集结果即对象 A") != std::string::npos);
+    REQUIRE(text.find("结果即对象 A") != std::string::npos);
 
-    const ComponentData* after = fx.model_layer.findComponent(a);
-    REQUIRE(after != nullptr);
-    REQUIRE(after->mesh != nullptr);
-    REQUIRE(after->mesh->vertex_count_ == 8);
+    // 并集 = A，作为新模型生成（内容为大盒 A）
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_并集_B");
+    REQUIRE(result != nullptr);
+    const BBox box = meshBBox(*result);
+    for (int d = 0; d < 3; ++d) {
+        REQUIRE(box.mn[d] == Catch::Approx(0.0).margin(1e-6));
+        REQUIRE(box.mx[d] == Catch::Approx(3.0).margin(1e-6));
+    }
+    // 两个操作数均保持原样
+    REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
+    REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
 }
 
 TEST_CASE("MeshBoolean rejects non-closed meshes before CGAL computation", "[MeshBooleanPlugin]")
@@ -450,7 +489,8 @@ TEST_CASE("MeshBoolean rejects non-closed meshes before CGAL computation", "[Mes
 
     REQUIRE(text.find("对象 A 不是闭合") != std::string::npos);
 
-    // 网格未被修改
+    // 预检拒绝 → 不生成新模型，且原网格未被修改
+    REQUIRE(resultMeshOf(fx.model_layer, "OpenA_并集_B") == nullptr);
     const ComponentData* after = fx.model_layer.findComponent(a);
     REQUIRE(after != nullptr);
     REQUIRE(after->mesh != nullptr);

@@ -6,8 +6,8 @@
  *   - 并集 / 交集 / 差集(A−B) / 差集(B−A)
  *
  * 对象 A 与对象 B 均由 Selector 参数显式指定（互不依赖对象树选中态）；
- * 内部使用 EPECK 精确内核，保证求交点的精确构造；结果写回对象 A，写路径
- * 经 ComponentOperator::replaceMesh 由系统层统一 flush 通知。
+ * 内部使用 EPECK 精确内核，保证求交点的精确构造；结果不覆盖任何操作数，
+ * 而是经 ModelLayer::addModel 生成一个独立的新模型承载。
  */
 #pragma once
 #include "HandlerCreatorDestroyerFactory.h"

@@ -17,7 +17,8 @@ namespace systems::feature {
  * @brief 基于 CGAL Polygon Mesh Processing corefinement 的网格布尔功能
  *
  * 支持并集 / 交集 / 差集（A−B）/ 差集（B−A）四种运算；对象 A 与对象 B 均由
- * Selector 参数显式选择，结果写回对象 A（ComponentOperator::replaceMesh）。
+ * Selector 参数显式选择，结果以**新模型**的形式加入模型层（ModelLayer::addModel），
+ * 两个操作对象都保持原样，便于与原对象对比、单独导出或删除。
  * 内部使用 EPECK 精确内核（相交点精确构造），避免 EPIC 浮点舍入导致的结果错误。
  *
  * 前提约束（违反时返回温和中文提示，不进入 CGAL）：
