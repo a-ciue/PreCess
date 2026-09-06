@@ -118,6 +118,8 @@ QString QModelIOSystemAdaptor::resolveFileType(const QString& unique_name, const
         return {};
     }
 
+    // 注册类型为个位数，线性扫描即可：构造哈希集合的开销在此规模下更大，
+    // 且相对随后的磁盘 IO 完全可忽略（注册类型若增长到数百个再改为哈希查找）
     const auto all_infos = io_system_->registeredFileTypeInfos();
     auto is_registered_name = [&all_infos](const std::string& name) {
         return std::any_of(all_infos.begin(), all_infos.end(), [&name](const ModelIOInfo* info) {
