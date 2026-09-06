@@ -119,6 +119,41 @@ TEST_CASE("OffMeshIO reads ASCII variants with comments and attributes")
         REQUIRE(mesh.face_vertices_.size() == 7);
         REQUIRE(mesh.face_vertices_offset_ == std::vector<Index> { 0, 4, 7 });
     }
+
+    SECTION("齐次分量被忽略（4OFF）")
+    {
+        const std::string content = "4OFF\n"
+                                    "3 1 0\n"
+                                    "0 0 0 1\n"
+                                    "1 0 0 1\n"
+                                    "0 1 0 1\n"
+                                    "3 0 1 2\n";
+        writeTextFile(path, content);
+
+        REQUIRE(OffMeshIO::read(path, mesh));
+        REQUIRE(mesh.vertex_positions_.size() == 3);
+        // 前 3 个分量作为坐标，第 4 个（齐次 w）丢弃
+        REQUIRE(mesh.vertex_positions_[0] == std::array<double, 3> { 0.0, 0.0, 0.0 });
+        REQUIRE(mesh.vertex_positions_[2] == std::array<double, 3> { 0.0, 1.0, 0.0 });
+        REQUIRE(mesh.face_vertices_ == std::vector<Index> { 0, 1, 2 });
+    }
+
+    SECTION("维度在计数行且带齐次分量（4nOFF）")
+    {
+        // 计数行首个数字为维度 3，坐标分量为 dim + 1 = 4
+        const std::string content = "4nOFF\n"
+                                    "3 3 1 0\n"
+                                    "0 0 0 1\n"
+                                    "1 0 0 1\n"
+                                    "0 1 0 1\n"
+                                    "3 0 1 2\n";
+        writeTextFile(path, content);
+
+        REQUIRE(OffMeshIO::read(path, mesh));
+        REQUIRE(mesh.vertex_positions_.size() == 3);
+        REQUIRE(mesh.vertex_positions_[1] == std::array<double, 3> { 1.0, 0.0, 0.0 });
+        REQUIRE(mesh.face_vertices_ == std::vector<Index> { 0, 1, 2 });
+    }
 }
 
 TEST_CASE("OffMeshIO reads binary OFF")
@@ -193,6 +228,19 @@ TEST_CASE("OffMeshIO rejects corrupt or invalid files")
     SECTION("头部不是 OFF 关键字")
     {
         writeTextFile(path, "STL\n0 0 0\n");
+        REQUIRE_FALSE(OffMeshIO::read(path, mesh));
+    }
+
+    SECTION("关键字前缀含非规范标志")
+    {
+        // 标志必须取自规范集合：非标准关键字不被猜布局解析
+        const std::string content = "AnythingOFF\n"
+                                    "3 1 0\n"
+                                    "0 0 0\n"
+                                    "1 0 0\n"
+                                    "0 1 0\n"
+                                    "3 0 1 2\n";
+        writeTextFile(path, content);
         REQUIRE_FALSE(OffMeshIO::read(path, mesh));
     }
 

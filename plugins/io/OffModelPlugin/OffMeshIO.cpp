@@ -6,7 +6,9 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <array>
+#include <cctype>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
@@ -36,11 +38,9 @@ std::string trimLine(const std::string& line)
 
 std::string toUpper(std::string text)
 {
-    for (char& c : text) {
-        if (c >= 'a' && c <= 'z') {
-            c = static_cast<char>(c - 'a' + 'A');
-        }
-    }
+    // 只用于 OFF 关键字这类 ASCII 文本；std::toupper 需转 unsigned char 避免负值入参的未定义行为
+    std::transform(text.begin(), text.end(), text.begin(),
+        [](unsigned char c) { return static_cast<char>(std::toupper(c)); });
     return text;
 }
 
@@ -60,13 +60,19 @@ bool nextRecordLine(std::istream& input, std::string& line)
     return false;
 }
 
+//! @brief 关键字前缀允许出现的规范标志（Geomview OFF），各至多出现一次
+const std::string kOffKeywordFlags = "4nNCST";
+
 /**
  * @brief 解析头部关键字，确定每条顶点记录的坐标分量个数
  *
- * 关键字形如 [前缀]OFF：后缀判定不区分大小写，前缀按原大小写判定——
- * 小写 'n' 表示维度写在计数行上（nOFF），'4' 表示带齐次分量（4OFF）。
- * 其余大写字母（N 法向、C 颜色、ST 纹理）标识的附加属性位于行尾，读取时丢弃，
- * 不影响分量个数，故无需区分。
+ * 关键字形如 [标志]OFF：后缀判定不区分大小写，标志按原大小写判定（大小写语义不同）：
+ * - '4'：顶点记录带齐次分量 w，坐标分量多一个（4OFF / 4nOFF）
+ * - 'n'：维度写在计数行的首个数字上（nOFF / 4nOFF），故 'n' 未必是前缀首字符
+ * - 'N' 顶点法向、'C' 颜色、'S'/'T' 纹理坐标：均为行尾附加属性，读取时丢弃
+ *
+ * 标志必须全部取自 kOffKeywordFlags 且不重复；出现集合外字符（如非标准关键字
+ * "AnythingOFF"）一律拒绝，避免按猜错的布局解析出无意义数据。
  */
 bool parseKeyword(const std::string& keyword, AsciiLayout& layout)
 {
@@ -78,8 +84,15 @@ bool parseKeyword(const std::string& keyword, AsciiLayout& layout)
     }
 
     const std::string prefix = keyword.substr(0, keyword.size() - suffix.size());
-    layout.dimension_in_counts = prefix.find('n') != std::string::npos;
+    for (char flag : prefix) {
+        if (kOffKeywordFlags.find(flag) == std::string::npos
+            || std::count(prefix.begin(), prefix.end(), flag) > 1) {
+            return false;
+        }
+    }
+
     layout.has_homogeneous = prefix.find('4') != std::string::npos;
+    layout.dimension_in_counts = prefix.find('n') != std::string::npos;
     layout.coords_per_vertex = 3 + (layout.has_homogeneous ? 1 : 0);
     return true;
 }
