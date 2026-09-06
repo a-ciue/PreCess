@@ -12,6 +12,7 @@
 #include "OffMeshIO.h"
 
 #include <spdlog/spdlog.h>
+#include <vector>
 
 namespace {
 /**
@@ -37,22 +38,44 @@ bool appendComponentMesh(const ComponentData& component, MeshData& merged, Index
     merged.vertex_positions_.insert(merged.vertex_positions_.end(),
         source->vertex_positions_.begin(), source->vertex_positions_.end());
 
-    // 面：跳过越界的脏面；退化面与点索引越界的面由 OffMeshIO::write 统一过滤
+    // 面：合并前校验并跳过越界的脏面与退化面（OffMeshIO::write 侧仍保留兜底过滤）
     if (source->face_vertices_offset_.size() >= 2) {
         const Index face_count = static_cast<Index>(source->face_vertices_offset_.size() - 1);
         const Index corner_count = static_cast<Index>(source->face_vertices_.size());
 
+        // 越界的脏面整面跳过并计数，不带入合并结果
+        Index skipped_faces = 0;
         for (Index f = 0; f < face_count; ++f) {
             const Index begin = source->face_vertices_offset_[static_cast<size_t>(f)];
             const Index end = source->face_vertices_offset_[static_cast<size_t>(f) + 1];
-            if (begin < 0 || end < begin || end > corner_count) {
+            if (begin < 0 || end < begin || end > corner_count || end - begin < 3) {
+                ++skipped_faces;
                 continue;
             }
 
+            // 先收集到局部缓冲，整面逐点校验通过后再追加，避免脏面污染已合并的数据
+            std::vector<Index> local_face;
+            local_face.reserve(static_cast<size_t>(end - begin));
+            bool face_ok = true;
             for (Index c = begin; c < end; ++c) {
-                merged.face_vertices_.push_back(vertex_offset + source->face_vertices_[static_cast<size_t>(c)]);
+                const Index src_point_id = source->face_vertices_[static_cast<size_t>(c)];
+                if (src_point_id < 0 || src_point_id >= point_count) {
+                    face_ok = false;
+                    break;
+                }
+                local_face.push_back(vertex_offset + src_point_id);
             }
+            if (!face_ok) {
+                ++skipped_faces;
+                continue;
+            }
+
+            merged.face_vertices_.insert(merged.face_vertices_.end(),
+                local_face.begin(), local_face.end());
             merged.face_vertices_offset_.push_back(static_cast<Index>(merged.face_vertices_.size()));
+        }
+        if (skipped_faces > 0) {
+            spdlog::warn("OffModelHandler: component {} has {} dirty face(s), skip", component.id, skipped_faces);
         }
     }
 

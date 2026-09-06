@@ -240,7 +240,7 @@ bool readBinary(std::istream& input, MeshData& mesh)
     const std::streamoff data_begin = input.tellg();
     input.seekg(0, std::ios::end);
     const std::streamoff file_end = input.tellg();
-    input.seekg(data_begin, std::ios::beg); // 回到数据起点，注意 seekg(off) 默认是相对当前位置
+    input.seekg(data_begin, std::ios::beg); // 回到数据起点（相对文件开头定位）
     if (data_begin < 0 || file_end < data_begin || !input) {
         spdlog::error("OffMeshIO: cannot locate binary OFF payload");
         return false;
