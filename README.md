@@ -145,7 +145,7 @@ cmake --build ./build --target install
 <!-- USAGE EXAMPLES -->
 ## ⚙️功能用法
 
-- **模型导入与展示**：支持 IGES、STEP、OBJ、PLY、`.m`、Medit `.mesh`、Abaqus `.inp`、VTK `.vtk` 等格式导入与展示，支持多文件同时导入；几何与网格分层组织、网格/几何渲染风格切换（如「网格·面·带网格线」「网格·线·带内部线」等）、体网格切面裁剪。
+- **模型导入与展示**：支持 IGES、STEP、OBJ、PLY、`.m`、Medit `.mesh`、Abaqus `.inp`、VTK `.vtk`、`.off` 等格式导入与展示，支持多文件同时导入；几何与网格分层组织、网格/几何渲染风格切换（如「网格·面·带网格线」「网格·线·带内部线」等）、体网格切面裁剪。
 - **交互式选择与算法调用**：组件/点/边/面/体/几何点线面体选择器，网格面支持按角度扩散多选；对选择结果调用网格算法插件（Gmsh 渐进式划分、TetGen/TetGenLib 体网格剖分、CCGMeshToNURBS、执行 cmd 命令等）。
 - **几何处理**：几何基本形状创建、几何删除。
 - **网格编辑**：创建面、删除面等编辑插件。
@@ -171,6 +171,8 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
     * [x] Doxygen 文档自动生成、自动构建与单元测试 CI
     * [ ] 代码静态检查 CI
 * [x] **网格类型支持**：做到能导入并可视化三角形网格、四边形网格、更广义的多边形网格、体网格
+* [ ] **文件格式支持**：按 Issue 需求扩展模型导入导出的格式覆盖
+  * [x] `.off`（Geomview Object File Format）读写插件：ASCII 读写 + 二进制读；附加属性（法向/颜色/纹理）暂不存储
 * [x] **渲染窗口的基础交互支持**：支持各种网格元素的拾取：点、边、面、体及几何元素，网格面支持按角度扩散多选
   * [x] 体网格的切面支持，实现切平面裁剪网格的可视化效果
   * [ ] 更便捷的切面可视化与可视化，效果参考[HexaLab](https://www.hexalab.net/)

@@ -1,0 +1,9 @@
+{
+    "system": "ModelIOSystem",
+    "handler": {
+        "file_type": "OFF file format",
+        "extensions": [
+            "off"
+        ]
+    }
+}

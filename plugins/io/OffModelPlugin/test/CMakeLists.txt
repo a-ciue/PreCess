@@ -1,0 +1,2 @@
+precess_add_test(TestOffMeshIO TestOffMeshIO.cpp)
+precess_test_link_libraries(TestOffMeshIO OffModelPluginlib DataTest)
