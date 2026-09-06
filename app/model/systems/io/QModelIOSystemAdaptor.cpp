@@ -5,6 +5,7 @@
 #include "QModelIOInfo.h"
 #include <QFileInfo>
 #include <QUrl>
+#include <algorithm>
 #include <spdlog/fmt/ranges.h>
 #include <spdlog/spdlog.h>
 
@@ -24,30 +25,15 @@ try {
     std::vector<std::any> converted_args;
     // TODO: 暂时不对args处理
 
-    std::string resolved_unique_name = unique_name.toStdString();
-    const auto all_infos = io_system_->registeredFileTypeInfos();
-
-    auto is_registered_name = [&](const std::string& name) {
-        return std::any_of(all_infos.begin(), all_infos.end(), [&](const ModelIOInfo* info) {
-            return info->name == name;
-        });
-    };
-
-    // 未指定或指定了未知类型时，回退按扩展名解析文件类型
-    if (resolved_unique_name == "All files" || !is_registered_name(resolved_unique_name)) {
-        const QString resolved_by_suffix = resolveFileTypeBySuffix(QFileInfo(url.toLocalFile()).suffix().toLower());
-        if (!resolved_by_suffix.isEmpty()) {
-            resolved_unique_name = resolved_by_suffix.toStdString();
-        }
-    }
-
-    if (!is_registered_name(resolved_unique_name)) {
+    const QString resolved_unique_name = resolveFileType(unique_name, url);
+    if (resolved_unique_name.isEmpty()) {
         spdlog::error("ModelIOSystemAdaptor::read: file type '{}' not registered", unique_name.toStdString());
         return false;
     }
 
     // 透传读取结果：文件类型未注册或文件内容无法解析时返回false，供界面收集失败文件
-    return io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(), resolved_unique_name, converted_args);
+    return io_system_->read(url.toLocalFile().toLocal8Bit().toStdString(),
+        resolved_unique_name.toStdString(), converted_args);
 } catch (const std::exception& e) {
     spdlog::error("ModelIOSystemAdaptor::read: Exception occurred - {}", e.what());
     return {};
@@ -61,7 +47,16 @@ try {
     // 将QArgObject列表转换为std::vector<std::any>
     std::vector<std::any> any_args;
     // TODO: 暂时不对args处理
-    io_system_->write(model, url.toLocalFile().toLocal8Bit().toStdString(), unique_name.toStdString(), std::move(any_args));
+
+    // 与读侧对称地解析文件类型：注册名优先，界面传入 "All files" 或未知类型时按目标文件扩展名回退
+    const QString resolved_unique_name = resolveFileType(unique_name, url);
+    if (resolved_unique_name.isEmpty()) {
+        spdlog::error("ModelIOSystemAdaptor::write: file type '{}' not registered", unique_name.toStdString());
+        return false;
+    }
+
+    io_system_->write(model, url.toLocalFile().toLocal8Bit().toStdString(),
+        resolved_unique_name.toStdString(), std::move(any_args));
     return true;
 } catch (const std::exception& e) {
     spdlog::error("ModelIOSystemAdaptor::write: Exception occurred - {}", e.what());
@@ -114,6 +109,33 @@ QString QModelIOSystemAdaptor::resolveFileTypeBySuffix(const QString& suffix) co
         }
     }
     return {};
+}
+
+QString QModelIOSystemAdaptor::resolveFileType(const QString& unique_name, const QUrl& url) const
+{
+    // io_system_ 可能尚未就绪，防御性判空
+    if (!io_system_) {
+        return {};
+    }
+
+    const auto all_infos = io_system_->registeredFileTypeInfos();
+    auto is_registered_name = [&all_infos](const std::string& name) {
+        return std::any_of(all_infos.begin(), all_infos.end(), [&name](const ModelIOInfo* info) {
+            return info->name == name;
+        });
+    };
+
+    std::string resolved_unique_name = unique_name.toStdString();
+
+    // 未指定或指定了未知类型时，回退按扩展名解析文件类型
+    if (resolved_unique_name == "All files" || !is_registered_name(resolved_unique_name)) {
+        const QString resolved_by_suffix = resolveFileTypeBySuffix(QFileInfo(url.toLocalFile()).suffix().toLower());
+        if (!resolved_by_suffix.isEmpty()) {
+            resolved_unique_name = resolved_by_suffix.toStdString();
+        }
+    }
+
+    return is_registered_name(resolved_unique_name) ? QString::fromStdString(resolved_unique_name) : QString {};
 }
 
 QStringList QModelIOSystemAdaptor::getDialogNameFilters() const
