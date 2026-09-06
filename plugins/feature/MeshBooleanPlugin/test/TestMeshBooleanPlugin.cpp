@@ -300,7 +300,7 @@ TEST_CASE("MeshBoolean union of overlapping boxes generates a separate result mo
     REQUIRE(text.find("已生成新模型") != std::string::npos);
 
     // 结果落在独立的新模型中：包围盒 = [0, 1.5]^3
-    const MeshData* result = resultMeshOf(fx.model_layer, "A_并集_B");
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_Model_并集_B_Model");
     REQUIRE(result != nullptr);
     const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
@@ -329,7 +329,7 @@ TEST_CASE("MeshBoolean intersection of overlapping boxes", "[MeshBooleanPlugin]"
     REQUIRE(text.find("已生成新模型") != std::string::npos);
 
     // 交集 = [0.5, 1]^3：所有顶点都应落在此包围盒内，两个对角点应存在
-    const MeshData* result = resultMeshOf(fx.model_layer, "A_交集_B");
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_Model_交集_B_Model");
     REQUIRE(result != nullptr);
     const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
@@ -357,7 +357,7 @@ TEST_CASE("MeshBoolean difference (A minus B) removes the overlapped corner", "[
     REQUIRE(text.find("差集(A−B)完成") != std::string::npos);
     REQUIRE(text.find("已生成新模型") != std::string::npos);
 
-    const MeshData* result = resultMeshOf(fx.model_layer, "A_差集A-B_B");
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_Model_差集A-B_B_Model");
     REQUIRE(result != nullptr);
     // 顶点都在 A 的包围盒内
     const BBox box = meshBBox(*result);
@@ -390,7 +390,7 @@ TEST_CASE("MeshBoolean union of separated boxes keeps two shells", "[MeshBoolean
     REQUIRE(text.find("两个独立壳体") != std::string::npos);
 
     // 两壳并入结果模型：面数 12+12=24，包围盒跨越两盒
-    const MeshData* result = resultMeshOf(fx.model_layer, "A_并集_B");
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_Model_并集_B_Model");
     REQUIRE(result != nullptr);
     REQUIRE(faceCount(*result) == 24);
     const BBox box = meshBBox(*result);
@@ -417,7 +417,7 @@ TEST_CASE("MeshBoolean intersection of separated boxes reports empty without mod
     REQUIRE(text.find("交集为空") != std::string::npos);
 
     // 结果为空 → 不生成新模型
-    REQUIRE(resultMeshOf(fx.model_layer, "A_交集_B") == nullptr);
+    REQUIRE(resultMeshOf(fx.model_layer, "A_Model_交集_B_Model") == nullptr);
     // 两个操作数均保持原样
     REQUIRE(fx.model_layer.findComponent(a)->mesh->vertex_count_ == 8);
     REQUIRE(fx.model_layer.findComponent(b)->mesh->vertex_count_ == 8);
@@ -438,7 +438,7 @@ TEST_CASE("MeshBoolean intersection where B is fully inside A equals B", "[MeshB
     REQUIRE(text.find("结果即对象 B") != std::string::npos);
 
     // 交集 = B，作为新模型生成
-    const MeshData* result = resultMeshOf(fx.model_layer, "A_交集_B");
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_Model_交集_B_Model");
     REQUIRE(result != nullptr);
     const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {
@@ -464,7 +464,7 @@ TEST_CASE("MeshBoolean union where B is fully inside A keeps A unchanged", "[Mes
     REQUIRE(text.find("结果即对象 A") != std::string::npos);
 
     // 并集 = A，作为新模型生成（内容为大盒 A）
-    const MeshData* result = resultMeshOf(fx.model_layer, "A_并集_B");
+    const MeshData* result = resultMeshOf(fx.model_layer, "A_Model_并集_B_Model");
     REQUIRE(result != nullptr);
     const BBox box = meshBBox(*result);
     for (int d = 0; d < 3; ++d) {

@@ -29,6 +29,7 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "MeshData.h"
+#include "ModelData.h"
 #include "Selection.h"
 
 #include <spdlog/spdlog.h>
@@ -79,10 +80,27 @@ const char* boolOpShortName(BoolOp op)
     return "布尔结果";
 }
 
-//! @brief 结果模型名：<对象A>_<运算>_<对象B>，便于在对象树中追溯来源
-std::string resultName(const std::string& a_name, BoolOp op, const std::string& b_name)
+/**
+ * @brief 操作数的命名标签
+ *
+ * 优先可读性：跨模型时用模型名（来自文件名）；同一模型内用组件名区分。
+ * 原因是 OBJ 的 o/g 组名常是导出软件写出的无意义名（如把中文名转成 ???），
+ * 而模型名取自文件名，通常可读。
+ */
+std::string operandLabel(const ComponentOperator& op, bool use_component_name)
 {
-    return a_name + "_" + boolOpShortName(op) + "_" + b_name;
+    if (use_component_name)
+        return op.component().name;
+
+    const ModelData* model = op.model();
+    return (model && !model->model_name_.empty()) ? model->model_name_ : op.component().name;
+}
+
+//! @brief 结果模型名：<操作数A>_<运算>_<操作数B>，便于在对象树中追溯来源
+std::string resultName(const ComponentOperator& op_a, BoolOp op, const ComponentOperator& op_b)
+{
+    const bool same_model = op_a.modelId() >= 0 && op_a.modelId() == op_b.modelId();
+    return operandLabel(op_a, same_model) + "_" + boolOpShortName(op) + "_" + operandLabel(op_b, same_model);
 }
 
 /**
@@ -458,9 +476,8 @@ std::any MeshBooleanHandler::execute(FeatureContext& ctx)
         CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_a);
         CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_b);
 
-        // 结果模型名：<对象A>_<运算>_<对象B>，便于在对象树中追溯来源
-        const std::string result_name = resultName(
-            comp_op_a->component().name, op, comp_op_b->component().name);
+        // 结果模型名：跨模型取模型名、同模型取组件名，避免 OBJ 组名（常为 ???）进入名字
+        const std::string result_name = resultName(*comp_op_a, op, *comp_op_b);
 
         // 两表面相交 → corefinement 主路径；不相交 → 包含/分离退化场景
         if (CGAL::Polygon_mesh_processing::do_intersect(sm_a, sm_b))
