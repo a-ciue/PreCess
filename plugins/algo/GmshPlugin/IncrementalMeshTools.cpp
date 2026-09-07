@@ -511,10 +511,7 @@ bool resolveOppositeEdgePointCount(
         return true;
     }
 
-    if (pointCount < 2)
-        pointCount = 2;
-    if (pointCount % 2 == 1)
-        ++pointCount;
+    pointCount = std::max(2, pointCount);
     return true;
 }
 
@@ -1169,6 +1166,8 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
 
         result = extractFaceMesh(faceTag);
         if (result.success) {
+            result.triangle_count = summary.triangleCount;
+            result.quadrangle_count = summary.quadrangleCount;
             storeNewEdges(state, gmshToOcc);
             mergeMeshResult(component_op, result);
 
@@ -1178,6 +1177,13 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
             for (std::size_t offset : result.face_vertices_offset)
                 topology.face_vertices_offset.push_back(static_cast<Index>(offset));
             working_mapping.geometry_face_to_mesh_topology[faceId] = std::move(topology);
+
+            spdlog::info(
+                "GmshMesh: face {} meshed: {} elements ({} triangles, {} quadrangles)",
+                faceId,
+                result.triangle_count + result.quadrangle_count,
+                result.triangle_count,
+                result.quadrangle_count);
         }
         return result;
     }

@@ -287,6 +287,8 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     std::size_t successCount = 0;
     std::size_t failedCount = 0;
+    std::size_t triangle_count = 0;
+    std::size_t quadrangle_count = 0;
     bool state_changed = false;
 
     if (operationMode == GmshMeshOperation::Mesh) {
@@ -317,6 +319,8 @@ std::any systems::algo::GmshMeshHandler::execute(
                 return {};
             }
             meshOperationChanged = true;
+            triangle_count += result.triangle_count;
+            quadrangle_count += result.quadrangle_count;
             ++successCount;
         }
         state_changed = successCount > 0;
@@ -344,6 +348,13 @@ std::any systems::algo::GmshMeshHandler::execute(
 
     spdlog::info("GmshMesh: {} selected faces processed: {} succeeded, {} failed",
         (*selection)->ids.size(), successCount, failedCount);
+    if (operationMode == GmshMeshOperation::Mesh) {
+        spdlog::info(
+            "GmshMesh: mesh summary: {} elements ({} triangles, {} quadrangles)",
+            triangle_count + quadrangle_count,
+            triangle_count,
+            quadrangle_count);
+    }
 
     if (writeModel && successCount > 0) {
         std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh.obj";

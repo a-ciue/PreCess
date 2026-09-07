@@ -19,6 +19,9 @@ struct SingleFaceMeshResult {
     std::vector<std::size_t> face_vertices_offset;
     // 写入 MeshData 的组件内局部点 id 序列（与 face_vertices 一一对应）。
     std::vector<Index> global_face_vertices;
+    // 本面成功生成的一阶三角形、四边形单元数量
+    std::size_t triangle_count {};
+    std::size_t quadrangle_count {};
     bool success { false };
 };
 
