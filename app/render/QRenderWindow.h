@@ -20,6 +20,7 @@
 #include <vtkCameraOrientationWidget.h>
 #include <vtkAxisActor2D.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPlane.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
@@ -45,7 +46,7 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_PROPERTY(int meshStyle READ getMeshStyle WRITE setMeshStyle NOTIFY meshStyleChanged)
     QML_ELEMENT
 public:
-    QRenderWindow(); // 槽函数，改变边框重置相机
+    QRenderWindow();
     ~QRenderWindow() override;
 
     struct Data : vtkObject { // 结构体继承vtkObject
@@ -63,6 +64,9 @@ public:
         std::unique_ptr<GeometryActorManager> geometry_actor_manager_;
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
+        
+        vtkNew<vtkPlane> clip_plane_; // 视口当前裁剪平面，由窗口统一持有并同步给网格 Actor
+        bool clip_enabled_ { false }; // 视口裁剪是否开启，用于组件重载后恢复裁剪状态
 
         vtkNew<vtkAxisActor2D> scale_bar_axis_; //> 比例尺标尺轴（叠加层底部中央，段长与刻度随相机缩放联动更新）
     };
