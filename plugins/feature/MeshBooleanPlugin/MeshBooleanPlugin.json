@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "MeshBoolean",
+    "display_name": "网格布尔",
+    "description": "基于 CGAL PMP corefinement 的网格布尔运算：并集、交集、差集（需两个闭合的三角网格；结果生成为独立的新模型，不修改原有对象）"
+  }
+}
