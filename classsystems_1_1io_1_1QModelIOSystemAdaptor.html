@@ -243,6 +243,8 @@ Public 成员函数</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
+<tr class="memitem:a88ef0138fba2a60ee2ebe85b6c470d9f" id="r_a88ef0138fba2a60ee2ebe85b6c470d9f"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a88ef0138fba2a60ee2ebe85b6c470d9f">resolveFileType</a> (const QString &amp;unique_name, const QUrl &amp;url) const</td></tr>
+<tr class="memdesc:a88ef0138fba2a60ee2ebe85b6c470d9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">解析出实际使用的文件类型注册名：注册名优先，未指定或未知时按文件扩展名回退  <br /></td></tr>
 <tr class="memitem:ab5e4bc9dea7642544d339bf28b837a66" id="r_ab5e4bc9dea7642544d339bf28b837a66"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5e4bc9dea7642544d339bf28b837a66">resolveFileTypeBySuffix</a> (const QString &amp;suffix) const</td></tr>
 <tr class="memdesc:ab5e4bc9dea7642544d339bf28b837a66"><td class="mdescLeft">&#160;</td><td class="mdescRight">按文件扩展名解析出支持该文件类型的注册名  <br /></td></tr>
 </table><table class="memberdecls">
@@ -370,6 +372,45 @@ Private 属性</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>返回</dt><dd>是否读取成功 </dd></dl>
+
+</div>
+</div>
+<a id="a88ef0138fba2a60ee2ebe85b6c470d9f" name="a88ef0138fba2a60ee2ebe85b6c470d9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88ef0138fba2a60ee2ebe85b6c470d9f">&#9670;&#160;</a></span>resolveFileType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QModelIOSystemAdaptor::resolveFileType </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>unique_name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QUrl &amp;</td>          <td class="paramname"><span class="paramname"><em>url</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>解析出实际使用的文件类型注册名：注册名优先，未指定或未知时按文件扩展名回退 </p>
+<p>界面文件对话框传入的是过滤器名，它未必等于注册名：用户选中默认项时是 "All files"， 名字本身也可能与注册名不一致。读写两侧共用本函数，保证解析规则一致。 </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">unique_name</td><td>界面传入的文件类型名，允许未注册 </td></tr>
+    <tr><td class="paramname">url</td><td>目标文件 URL，回退时按其扩展名匹配（导出时不要求文件已存在） </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>已注册的文件类型唯一名称，无法解析时返回空串 </dd></dl>
 
 </div>
 </div>
