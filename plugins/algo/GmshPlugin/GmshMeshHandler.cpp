@@ -301,7 +301,7 @@ std::any systems::algo::GmshMeshHandler::execute(
             if (!IncrementalMeshTools::deleteFaceMesh(
                     *geometry, state, working_mapping,
                     context.cur_component, faceId)) {
-                spdlog::warn("GmshMesh: failed to prepare face {} for remeshing", faceId);
+                spdlog::error("GmshMesh: failed to prepare face {} for remeshing", faceId);
                 restoreMeshOperation();
                 return {};
             }
@@ -313,7 +313,7 @@ std::any systems::algo::GmshMeshHandler::execute(
                 *geometry, state, working_mapping, context.cur_component,
                 faceId, parameters.targetMeshSize, parameters);
             if (!result.success) {
-                spdlog::warn("GmshMesh: face {} meshing failed", faceId);
+                spdlog::error("GmshMesh: face {} meshing failed", faceId);
                 restoreMeshOperation();
                 spdlog::info("GmshMesh: selected faces restored after meshing failure");
                 return {};

@@ -471,7 +471,7 @@ bool validateFullQuadCachedEdge(const EdgeTransfiniteInfo& edge)
     if (segmentCount >= 2 && segmentCount % 2 == 0)
         return true;
 
-    spdlog::warn(
+    spdlog::error(
         "GmshMesh: full-quad rejected, cached geometry edge {} (Gmsh edge {}) has {} points / {} segments; "
         "delete all meshed faces sharing this edge before remeshing",
         edge.geometryEdgeId, edge.gmshTag, edge.pointCount, std::max(0, segmentCount));
@@ -487,7 +487,7 @@ bool resolveOppositeEdgePointCount(
 {
     if (first.fixedByExistingMesh && opposite.fixedByExistingMesh) {
         if (first.pointCount != opposite.pointCount) {
-            spdlog::warn("GmshMesh: structured quad rejected, opposite edges {} and {} have {} / {} points",
+            spdlog::error("GmshMesh: structured quad rejected, opposite edges {} and {} have {} / {} points",
                 first.gmshTag, opposite.gmshTag,
                 first.pointCount, opposite.pointCount);
             return false;
@@ -573,7 +573,7 @@ bool configureSurfaceMeshType(
             edgeTags.push_back(std::abs(tag));
     }
     if (edgeTags.size() != 4) {
-        spdlog::warn("GmshMesh: structured quad requires 4 boundary edges, surface {} has {}",
+        spdlog::error("GmshMesh: structured quad requires 4 boundary edges, surface {} has {}",
             faceTag, edgeTags.size());
         return false;
     }
@@ -1122,7 +1122,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
             if (!configureSurfaceMeshType(
                     faceTag, attemptMeshType, gmshToOcc, state,
                     meshSize, attemptParameters)) {
-                spdlog::warn("  Cannot configure {} mesh",
+                spdlog::error("  Cannot configure {} mesh",
                     surfaceMeshTypeName(meshType));
                 return result;
             }
@@ -1134,18 +1134,18 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
 
         const SurfaceElementSummary summary = summarizeSurfaceElements(faceTag);
         if (!summary.hasSupportedElements()) {
-            spdlog::warn("  No supported surface elements");
+            spdlog::error("  No supported surface elements");
             return result;
         }
         if (summary.unsupportedCount > 0) {
-            spdlog::warn("  Surface contains {} unsupported elements",
+            spdlog::error("  Surface contains {} unsupported elements",
                 summary.unsupportedCount);
             return result;
         }
 
         if (requirePureQuadrilateral && !summary.isPureQuadrilateral()) {
             if (attempt == 0 && periodicOrSeam) {
-                spdlog::warn(
+                spdlog::error(
                     "GmshMesh: pure-quad rejected on periodic/seam face {}; "
                     "ordinary recombination left {} triangles and full-quad is unavailable",
                     faceId, summary.triangleCount);
@@ -1158,7 +1158,7 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
                 continue;
             }
 
-            spdlog::warn(
+            spdlog::error(
                 "GmshMesh: pure-quad failed on face {}; full-quad left {} triangles",
                 faceId, summary.triangleCount);
             return result;
