@@ -41,8 +41,9 @@ public:
      * @param path 读取路径，本地系统环境编码
      * @param file_type 文件类型，应在注册的文件类型中
      * @param args 读操作的参数，传给Handler
+     * @return 读取并添加模型成功返回true，失败（文件类型未注册或无法解析出模型）返回false
      */
-    void read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override;
+    bool read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override;
     /**
      * @brief 系统的写模型接口
      * @param model 模型id

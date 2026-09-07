@@ -81,8 +81,10 @@ void EdgeSelectorHighlight::disableHighlight()
 
 void EdgeSelectorHighlight::enableHighlight()
 {
-    if (selections_.empty())
+    if (selections_.empty()) {
+        disableHighlight();
         return;
+    }
 
     // 高亮仍按端点对画线
     std::vector<std::array<vtkIdType, 2>> highlight_edges;
