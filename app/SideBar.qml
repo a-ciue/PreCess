@@ -280,16 +280,22 @@ Item{
     Component{
         id:textComponent
         RowLayout{
+            id: textRow
             spacing: 5
             width: parameterList.width
             property var value: fileText.text
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: 120
+                // 参数栏变宽时同步展开名称列，较窄时为输入框保留至少一半空间。
+                Layout.preferredWidth: Math.min(implicitWidth, textRow.width / 2)
                 elide: Text.ElideRight
-                ToolTip.visible: nameHover.hovered && model.description.length > 0
-                ToolTip.text: model.description
+                ToolTip.visible: nameHover.hovered
+                        && (truncated || model.description.length > 0)
+                ToolTip.text: truncated
+                        ? (model.description.length > 0
+                            ? model.name + "\n" + model.description : model.name)
+                        : model.description
                 HoverHandler {
                     id: nameHover
                 }
