@@ -283,12 +283,15 @@ Item{
             id: textRow
             spacing: 5
             width: parameterList.width
+            readonly property int separatorWidth: 1
+            readonly property real columnWidth: Math.max(0,
+                (width - separatorWidth - 2 * spacing) / 2)
             property var value: fileText.text
             Text{
                 id:nametext
                 text: model.name
-                // 参数栏变宽时同步展开名称列，较窄时为输入框保留至少一半空间。
-                Layout.preferredWidth: Math.min(implicitWidth, textRow.width / 2)
+                // 名称与输入框各占可用宽度的一半，拉伸面板后同步扩大。
+                Layout.preferredWidth: textRow.columnWidth
                 elide: Text.ElideRight
                 ToolTip.visible: nameHover.hovered
                         && (truncated || model.description.length > 0)
@@ -302,12 +305,13 @@ Item{
             }
             Rectangle{
                 Layout.fillHeight: true
-                Layout.preferredWidth: 1
+                Layout.preferredWidth: textRow.separatorWidth
                 color: "black"
             }
             TextArea{
                 id:fileText
                 wrapMode: TextEdit.Wrap
+                Layout.preferredWidth: textRow.columnWidth
                 Layout.fillWidth: true
                 placeholderText: model.description
                 ToolTip.visible: hovered && model.description.length > 0
