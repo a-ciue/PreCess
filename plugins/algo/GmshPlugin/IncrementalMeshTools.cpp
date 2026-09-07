@@ -1062,8 +1062,14 @@ SingleFaceMeshResult IncrementalMeshTools::meshSingleFace(
     // 纯四边形先保留自然边界做普通重组；非周期面存在残余三角形时才重建模型并尝试 full-quad。
     const int attemptCount = requirePureQuadrilateral && !periodicOrSeam ? 2 : 1;
     for (int attempt = 0; attempt < attemptCount; ++attempt) {
-        if (attempt > 0)
-            gmsh::clear();
+        if (attempt > 0) {
+            try {
+                gmsh::clear();
+            } catch (const std::exception& e) {
+                spdlog::error("GmshMesh: failed to clear model before full-quad retry: {}", e.what());
+                return result;
+            }
+        }
         gmsh::model::add("face_model");
 
         // 先逐边导入并记录返回 tag，再导入整个面；面导入会复用相同 OCC 边的 tag。
