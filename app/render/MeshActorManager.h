@@ -47,6 +47,7 @@ private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
     MeshRenderStyle current_style_ { MeshRenderStyle::FaceWithEdges };
+    vtkPlane* clip_plane_ { };
     std::array<bool, kTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
     double dihedral_minimum_ { 0.0 };
     double dihedral_maximum_ { 150.0 };

@@ -76,6 +76,7 @@ void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_dat
             static_cast<TopologyDiagnosticCategory>(category), topology_diagnostic_category_enabled_[category]);
     }
     actor->topologyDiagnostics().setDihedralAngleRange(dihedral_minimum_, dihedral_maximum_);
+    actor->setClipPlane(clip_plane_);
     actor->loadModelData(model_data);
     actor->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor);
@@ -89,6 +90,7 @@ void MeshActorManager::setVisibility(Index component_id, bool visibility)
 
 void MeshActorManager::setClipPlane(vtkPlane* plane)
 {
+    clip_plane_ = plane;
     for (auto&& [idx, mesh_actor] : this->component_actors_) {
         mesh_actor->setClipPlane(plane);
     }
