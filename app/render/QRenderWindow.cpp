@@ -154,7 +154,11 @@ private:
 };
 }
 
-QRenderWindow::QRenderWindow() = default;
+QRenderWindow::QRenderWindow()
+{
+    connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
+    connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
+}
 
 QRenderWindow::~QRenderWindow() = default;
 
@@ -250,11 +254,10 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
             rep->GetPlane(plane_);
             mesh_actor_manager_->setClipPlane(plane_);
         }
-        vtkPlane* plane_ {}; // 借用 QRenderWindow::Data 持有的裁剪平面
+        vtkNew<vtkPlane> plane_;
         MeshActorManager* mesh_actor_manager_ {};
     };
     vtkNew<PlaneCallback> callback;
-    callback->plane_ = vtk->clip_plane_.GetPointer();
     callback->mesh_actor_manager_ = vtk->mesh_actor_manager_.get();
     vtk->plane_widget_->SetInteractor(renderWindow->GetInteractor());
     vtk->plane_widget_->SetRepresentation(rep);
@@ -365,11 +368,9 @@ void QRenderWindow::setMeshClip(bool on)
             double origin[3] { (bound[0] + bound[1]) / 2, (bound[2] + bound[3]) / 2, (bound[4] + bound[5]) / 2 };
             vtk->plane_widget_->GetDisplaySizedImplicitPlaneRepresentation()->SetOrigin(origin);
 
-            vtk->clip_enabled_ = true;
             vtk->plane_widget_->InvokeEvent(vtkCommand::InteractionEvent);
             vtk->plane_widget_->On();
         } else {
-            vtk->clip_enabled_ = false;
             vtk->plane_widget_->Off();
             vtk->mesh_actor_manager_->setClipPlane(nullptr);
         }
@@ -398,8 +399,6 @@ void QRenderWindow::onModelChanged(Index model_id)
                 vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
             }
         }
-        vtk->mesh_actor_manager_->setClipPlane(
-            vtk->clip_enabled_ ? vtk->clip_plane_.GetPointer() : nullptr);
     });
 }
 
@@ -421,8 +420,6 @@ void QRenderWindow::onComponentChanged(Index component_id)
             } else {
                 vtk->mesh_actor_manager_->deleteComponent(component_id);
             }
-            vtk->mesh_actor_manager_->setClipPlane(
-                vtk->clip_enabled_ ? vtk->clip_plane_.GetPointer() : nullptr);
         }
 
         if (vtk->geometry_actor_manager_) {

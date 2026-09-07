@@ -248,8 +248,6 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     face_mapper_->SetScalarVisibility(0);
     solid_mapper_->SetScalarVisibility(0);
     topology_diagnostics_->loadModelData(*model_data_);
-    // Actor 数据重载后恢复自身原有裁剪连接；新 Actor 的状态由渲染窗口统一同步。
-    setClipPlane(clip_plane_);
 }
 
 void MeshActor::setVisibility(bool visibility)
@@ -267,14 +265,15 @@ void MeshActor::setClipPlane(vtkPlane* plane)
 {
     topology_diagnostics_->setClipPlane(plane);
     if (plane) {
-        // 网格重载会把 mapper 接回原始数据，因此每次应用裁剪平面都重新建立裁剪管线。
-        solid_clipper_->SetInputData(this->solid_data_);
-        face_clipper_->SetInputData(this->face_data_);
-        edge_clipper_->SetInputData(this->edge_data_);
+        if (!clip_plane_) {
+            solid_clipper_->SetInputData(this->solid_data_);
+            face_clipper_->SetInputData(this->face_data_);
+            edge_clipper_->SetInputData(this->edge_data_);
 
-        solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
-        face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
-        edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
+            solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
+            face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
+            edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
+        }
         solid_clipper_->SetImplicitFunction(plane);
         face_clipper_->SetImplicitFunction(plane);
         edge_clipper_->SetImplicitFunction(plane);
