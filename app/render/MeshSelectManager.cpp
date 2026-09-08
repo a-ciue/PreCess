@@ -1,9 +1,11 @@
 #include "MeshSelectManager.h"
 #include "MeshActorManagerSelectOp.h"
+#include "MeshAreaPick.h"
 #include "Selection.h"
 #include "SelectorHighlight.h"
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
+#include <vtkDataObject.h>
 #include <vtkDataSet.h>
 #include <vtkHardwarePicker.h>
 #include <vtkIdTypeArray.h>
@@ -37,6 +39,13 @@ void MeshSelectManager::select(double posx, double posy)
     if (this->select_mode_ == SelectMode::None)
         return;
 
+    if (this->select_mode_ == SelectMode::Vertex) {
+        component_picker_->SnapToMeshPointOn();
+        component_picker_->SetPixelTolerance(5);
+    } else {
+        component_picker_->SnapToMeshPointOff();
+    }
+
     component_picker_->Pick(posx, posy, 0, renderer_);
 
     vtkActor* picked_actor = component_picker_->GetActor();
@@ -45,7 +54,57 @@ void MeshSelectManager::select(double posx, double posy)
         return;
 
     if (auto* sel = getOrCreateSelector(*component_id))
-        sel->select(posx, posy);
+        sel->select(posx, posy, component_picker_.GetPointer(), picked_actor,
+            component_picker_->GetCellId(), component_picker_->GetPointId());
+}
+
+void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
+{
+    if (this->select_mode_ == SelectMode::None)
+        return;
+
+    // 框选恒为替换：先清空全部组件的网格选择，再只选中本次框内（跨组件）元素
+    this->clearSelection();
+
+    // 收集可见组件的源 actor（按模式；隐藏组件不渲染 → 一次拾取不会命中它）
+    std::vector<vtkActor*> targets;
+    auto add_if_actor = [&](vtkProp* prop) {
+        if (auto* actor = vtkActor::SafeDownCast(prop))
+            targets.push_back(actor);
+    };
+    for (Index comp_id : op_->getAllComponentIds()) {
+        auto select_op = op_->getSelectOp(comp_id);
+        if (!select_op || !select_op->isVisible())
+            continue;
+        switch (select_mode_) {
+        case SelectMode::Face:
+            add_if_actor(&select_op->getFaceActor());
+            break;
+        case SelectMode::Solid:
+            add_if_actor(&select_op->getSolidActor());
+            break;
+        case SelectMode::Edge:
+        case SelectMode::Vertex:
+            add_if_actor(&select_op->getFaceActor());
+            add_if_actor(&select_op->getEdgeActor());
+            add_if_actor(&select_op->getSolidActor());
+            break;
+        default:
+            break;
+        }
+    }
+    if (targets.empty())
+        return;
+
+    // 一次 HardwareSelector 拾取全部目标 actor，按 actor(PROP) 分组
+    auto hits = area_pick::executeAreaPicks(renderer_, targets,
+        xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS);
+
+    // 分发到各组件 selector（已清空 → 命中即该组件新选择；无命中时其 selectArea 内部直接返回）
+    for (Index comp_id : op_->getAllComponentIds()) {
+        if (auto* sel = getOrCreateSelector(comp_id))
+            sel->selectArea(hits, xmin, ymin, xmax, ymax);
+    }
 }
 
 void MeshSelectManager::setSelectMode(SelectMode select_mode)

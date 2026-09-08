@@ -11,6 +11,8 @@
 
 #include <array>
 #include <optional>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
@@ -18,6 +20,7 @@
 
 class vtkRenderer;
 class vtkActor;
+class vtkProp;
 class vtkMapper;
 class vtkHardwarePicker;
 class vtkCell;
@@ -41,7 +44,17 @@ struct FaceSelectionSpreadOptions {
 class SelectorHighlight {
 public:
     virtual ~SelectorHighlight() = default;
-    virtual void select(double posx, double posy) = 0;
+    //! @brief 单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。
+    virtual void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) = 0;
+    //! @brief 应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中）
+    //! @param hits 各 actor(PROP) 在本框内的命中 render id 集合（本选择器按自身 actor 取用）
+    //! @param xmin ymin xmax ymax  屏幕像素矩形（Edge/Vertex 屏幕投影二次过滤用）
+    virtual void selectArea(
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
+        int xmin, int ymin, int xmax, int ymax)
+        = 0;
     /**
      * @brief 清空选中元素，并取消高亮
      */
@@ -64,7 +77,14 @@ public:
     FaceSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, MeshActorSelectOp select_op);
     ~FaceSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -111,7 +131,14 @@ public:
         unsigned int partition_id, MeshActorSelectOp select_op,
         Index component_id, const IMeshIdQuery* id_query);
     ~EdgeSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -141,7 +168,14 @@ public:
     SolidSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, MeshActorSelectOp select_op);
     ~SolidSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -165,7 +199,14 @@ public:
         unsigned int partition_id, MeshActorSelectOp select_op,
         Index component_id, const IMeshIdQuery* id_query);
     ~VertexSelectorHighlight() override;
-    void select(double posx, double posy) override;
+    //! @brief 自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 MeshSelectManager 预拾后调下面的 picker 重载）
+    void select(double posx, double posy);
+    void select(double posx, double posy,
+        vtkHardwarePicker* picker, vtkActor* picked_actor,
+        vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
+    void selectArea(
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
+        int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;

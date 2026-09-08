@@ -1,9 +1,13 @@
+#include "MeshAreaPick.h"
 #include "CoincidentTopology.h"
 #include "MeshActorSelectOp.h"
 #include "SelectorHighlight.h"
 
+#include <unordered_set>
+
 #include <vtkActor.h>
 #include <vtkCellData.h>
+#include <vtkDataObject.h>
 #include <vtkDataSet.h>
 #include <vtkExtractSelection.h>
 #include <vtkGeometryFilter.h>
@@ -11,6 +15,7 @@
 #include <vtkIdTypeArray.h>
 #include <vtkMapper.h>
 #include <vtkPartitionedDataSet.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
@@ -88,18 +93,30 @@ void SolidSelectorHighlight::enableHighlight()
 
 void SolidSelectorHighlight::select(double posx, double posy)
 {
-    // 获取 picked_cell_id和picked_data_set
+    // 兼容路径：自行构建 picker 并拾取；生产路径由 MeshSelectManager 预拾后调下方的 picker 重载。
     vtkNew<vtkHardwarePicker> picker;
     picker->PickFromListOn();
     picker->AddPickList(&select_op_.getSolidActor());
     picker->Pick(posx, posy, 0, renderer_);
-    vtkIdType picked_cell_id = picker->GetCellId();
-    if (picked_cell_id < 0) {
+
+    select(posx, posy, picker.GetPointer(), picker->GetActor(),
+        picker->GetCellId(), picker->GetPointId());
+}
+
+void SolidSelectorHighlight::select(double posx, double posy,
+    vtkHardwarePicker* picker, vtkActor* picked_actor,
+    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/)
+{
+    if (!picked_actor || picked_cell_id < 0) {
         clear();
         spdlog::debug("No cell picked, selection cleared.");
         return;
     }
-    vtkDataSet* picked_data_set = picker->GetDataSet();
+    vtkDataSet* picked_data_set = picker ? picker->GetDataSet() : nullptr;
+    if (!picked_data_set) {
+        clear();
+        return;
+    }
 
     // 获取对应的体id selected_solid_id
     auto solid_id_array = vtkIdTypeArray::SafeDownCast(picked_data_set->GetCellData()->GetArray("vtkOriginalCellIds"));
@@ -137,4 +154,45 @@ void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& map
     prop->SetEdgeColor(1.0, 0.0, 0.0); // 红色边框
     prop->SetLineWidth(2.0);
     actor.SetProperty(prop);
+}
+
+void SolidSelectorHighlight::selectArea(
+    const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
+{
+    // solid actor 的命中即体表面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）
+    auto it = hits.find(&select_op_.getSolidActor());
+    if (it == hits.end())
+        return;
+    const auto& picked = it->second;
+
+    spdlog::debug("[SolidArea] picked.size()={}", picked.size());
+    if (picked.empty())
+        return;
+
+    // 反查 render cell id -> 原 solid id：solid_actor mapper 输入 poly data 上挂的
+    // vtkOriginalCellIds 跟着 solid_filter_(可能含 clip)透传，索引是 render cell 下标
+    auto* target = vtkActor::SafeDownCast(&select_op_.getSolidActor());
+    auto* mapper = vtkPolyDataMapper::SafeDownCast(target->GetMapper());
+    vtkPolyData* poly = mapper ? mapper->GetInput() : nullptr;
+    auto* orig_cell_ids = poly
+        ? vtkIdTypeArray::SafeDownCast(poly->GetCellData()->GetArray("vtkOriginalCellIds"))
+        : nullptr;
+    if (!orig_cell_ids)
+        return;
+
+    // 框选恒为替换：manager 已先清空，命中即本组件的新选择；先按原 solid id 去重再插入
+    std::unordered_set<vtkIdType> to_add;
+    for (vtkIdType cid : picked) {
+        vtkIdType orig = orig_cell_ids->GetValue(cid);
+        if (orig >= 0)
+            to_add.insert(orig);
+    }
+    selected_ids_->ClearLookup();
+    for (vtkIdType orig : to_add) {
+        if (_is_selected(orig, *selected_ids_) < 0)
+            selected_ids_->InsertNextValue(orig);
+    }
+    selected_ids_->Modified();
+    enableHighlight();
 }
