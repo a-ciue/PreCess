@@ -3,6 +3,8 @@
 #include "MeshActorSelectOp.h"
 #include "SelectorHighlight.h"
 
+#include <unordered_set>
+
 #include <vtkActor.h>
 #include <vtkCellData.h>
 #include <vtkDataObject.h>
@@ -152,7 +154,7 @@ void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& map
 }
 
 void SolidSelectorHighlight::selectArea(
-    const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+    const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
     int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
 {
     // solid actor 的命中即体表面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）
@@ -177,7 +179,7 @@ void SolidSelectorHighlight::selectArea(
         return;
 
     // 框选恒为替换：manager 已先清空，命中即本组件的新选择；先按原 solid id 去重再插入
-    std::set<vtkIdType> to_add;
+    std::unordered_set<vtkIdType> to_add;
     for (vtkIdType cid : picked) {
         vtkIdType orig = orig_cell_ids->GetValue(cid);
         if (orig >= 0)

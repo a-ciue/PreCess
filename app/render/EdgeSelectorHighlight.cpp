@@ -7,7 +7,7 @@
 #include "SelectorHighlight.h"
 #include <algorithm>
 #include <optional>
-#include <set>
+#include <unordered_set>
 #include <spdlog/spdlog.h>
 #include <utility>
 #include <vtkCell.h>
@@ -55,6 +55,18 @@ bool _is_selected(std::array<vtkIdType, 2> v_local_id, const std::optional<std::
     }
     return false;
 }
+
+//! @brief 无序化端点对（min,max）的哈希，供框选端点对集合用
+struct EdgePairHash {
+    std::size_t operator()(const std::pair<vtkIdType, vtkIdType>& p) const
+    {
+        std::size_t h1 = std::hash<vtkIdType> {}(p.first);
+        std::size_t h2 = std::hash<vtkIdType> {}(p.second);
+        std::size_t seed = h1;
+        seed ^= h2 + 0x9e3779b9U + (seed << 6) + (seed >> 2);
+        return seed;
+    }
+};
 }
 
 EdgeSelectorHighlight::EdgeSelectorHighlight(vtkRenderer& renderer, vtkPartitionedDataSet& highlight_data,
@@ -194,22 +206,22 @@ void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
 }
 
 void EdgeSelectorHighlight::selectArea(
-    const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+    const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
     int xmin, int ymin, int xmax, int ymax)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生边并合并端点对。
     // face CELLS 主路径健壮（面表面有 z 遮挡）；edge actor 补独立/物化边；solid 表面补体网格表面边。
-    std::set<std::pair<vtkIdType, vtkIdType>> picked_edge_set;
+    std::unordered_set<std::pair<vtkIdType, vtkIdType>, EdgePairHash> picked_edge_set;
 
     // 命中查找：取本 actor 在 hits 中的命中集合（无命中返回 nullptr）
-    auto hit_of = [&](vtkProp* prop) -> const std::set<vtkIdType>* {
+    auto hit_of = [&](vtkProp* prop) -> const std::unordered_set<vtkIdType>* {
         auto it = hits.find(prop);
         return it == hits.end() ? nullptr : &it->second;
     };
 
     // 从单个 actor 的命中 cell 派生"局部点 id 端点对"
     auto derive_edges = [&](vtkActor* target, vtkPolyData* poly,
-        const std::set<vtkIdType>* picked) {
+        const std::unordered_set<vtkIdType>* picked) {
         if (!target || !poly || !picked || picked->empty())
             return;
         if (poly->GetNumberOfCells() == 0)

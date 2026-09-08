@@ -16,8 +16,8 @@
 #ifndef MESH_AREA_PICK_H
 #define MESH_AREA_PICK_H
 
-#include <map>
-#include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <vtkType.h>
 
@@ -33,7 +33,7 @@ namespace area_pick {
 //! @param xmin ymin xmax ymax  屏幕像素坐标矩形（一般由 interactor 给出）
 //! @param field_association vtkDataObject::FIELD_ASSOCIATION_POINTS / _CELLS
 //! @return actor(PROP) -> 命中单元 id 集合（render id，与对应 actor 的 cell/point id 空间一致）
-std::map<vtkProp*, std::set<vtkIdType>> executeAreaPicks(
+std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>> executeAreaPicks(
     vtkRenderer* renderer,
     const std::vector<vtkActor*>& target_actors,
     int xmin, int ymin, int xmax, int ymax,

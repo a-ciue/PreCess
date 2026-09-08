@@ -22,8 +22,8 @@
 #include <vtkSelectionNode.h>
 
 #include <algorithm>
-#include <map>
-#include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -63,13 +63,13 @@ private:
 
 } // namespace
 
-std::map<vtkProp*, std::set<vtkIdType>> executeAreaPicks(
+std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>> executeAreaPicks(
     vtkRenderer* renderer,
     const std::vector<vtkActor*>& target_actors,
     int xmin, int ymin, int xmax, int ymax,
     int field_association)
 {
-    std::map<vtkProp*, std::set<vtkIdType>> result;
+    std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>> result;
     if (!renderer || target_actors.empty())
         return result;
 
@@ -139,7 +139,7 @@ std::map<vtkProp*, std::set<vtkIdType>> executeAreaPicks(
     }
 
     // 5) 按 PROP 分组；只保留 target_actors 产生的节点（隐藏组件未渲染 → 无节点）
-    std::set<vtkProp*> target_set(target_actors.begin(), target_actors.end());
+    std::unordered_set<vtkProp*> target_set(target_actors.begin(), target_actors.end());
     for (unsigned int i = 0; i < sel->GetNumberOfNodes(); ++i) {
         vtkSelectionNode* node = sel->GetNode(i);
         if (!node)

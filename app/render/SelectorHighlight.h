@@ -10,9 +10,9 @@
 #include "Selection.h"
 
 #include <array>
-#include <map>
 #include <optional>
-#include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
@@ -52,7 +52,7 @@ public:
     //! @param hits 各 actor(PROP) 在本框内的命中 render id 集合（本选择器按自身 actor 取用）
     //! @param xmin ymin xmax ymax  屏幕像素矩形（Edge/Vertex 屏幕投影二次过滤用）
     virtual void selectArea(
-        const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
         int xmin, int ymin, int xmax, int ymax)
         = 0;
     /**
@@ -83,7 +83,7 @@ public:
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
-        const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
         int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
@@ -137,7 +137,7 @@ public:
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
-        const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
         int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
@@ -174,7 +174,7 @@ public:
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
-        const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
         int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;
@@ -205,7 +205,7 @@ public:
         vtkHardwarePicker* picker, vtkActor* picked_actor,
         vtkIdType picked_cell_id, vtkIdType picked_point_id) override;
     void selectArea(
-        const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+        const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
         int xmin, int ymin, int xmax, int ymax) override;
     void clear() override;
     void disableHighlight() override;

@@ -354,7 +354,7 @@ void FaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
 }
 
 void FaceSelectorHighlight::selectArea(
-    const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+    const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
     int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
 {
     // face actor 的命中即面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）

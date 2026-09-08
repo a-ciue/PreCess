@@ -5,7 +5,7 @@
 #include "Selection.h"
 #include "SelectorHighlight.h"
 #include <optional>
-#include <set>
+#include <unordered_set>
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
 #include <vtkCell.h>
@@ -158,21 +158,21 @@ void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& ma
 }
 
 void VertexSelectorHighlight::selectArea(
-    const std::map<vtkProp*, std::set<vtkIdType>>& hits,
+    const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
     int xmin, int ymin, int xmax, int ymax)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生点并合并（一次多 actor 拾取结果）。
-    std::set<vtkIdType> local_ids;
+    std::unordered_set<vtkIdType> local_ids;
 
     // 命中查找：取本 actor 在 hits 中的命中集合（无命中返回 nullptr）
-    auto hit_of = [&](vtkProp* prop) -> const std::set<vtkIdType>* {
+    auto hit_of = [&](vtkProp* prop) -> const std::unordered_set<vtkIdType>* {
         auto it = hits.find(prop);
         return it == hits.end() ? nullptr : &it->second;
     };
 
     // 从单个 actor 的命中 cell 派生"组件局部点 id"
     auto derive_points = [&](vtkActor* target, vtkPolyData* poly,
-        const std::set<vtkIdType>* picked) {
+        const std::unordered_set<vtkIdType>* picked) {
         if (!target || !poly || !picked || picked->empty())
             return;
         if (poly->GetNumberOfCells() == 0)
