@@ -154,11 +154,7 @@ private:
 };
 }
 
-QRenderWindow::QRenderWindow()
-{
-    connect(this, &QQuickItem::widthChanged, this, &QRenderWindow::resetCamera);
-    connect(this, &QQuickItem::heightChanged, this, &QRenderWindow::resetCamera);
-}
+QRenderWindow::QRenderWindow() = default;
 
 QRenderWindow::~QRenderWindow() = default;
 

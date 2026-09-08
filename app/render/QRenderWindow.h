@@ -45,7 +45,7 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_PROPERTY(int meshStyle READ getMeshStyle WRITE setMeshStyle NOTIFY meshStyleChanged)
     QML_ELEMENT
 public:
-    QRenderWindow(); // 槽函数，改变边框重置相机
+    QRenderWindow();
     ~QRenderWindow() override;
 
     struct Data : vtkObject { // 结构体继承vtkObject
