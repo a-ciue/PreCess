@@ -20,6 +20,7 @@
 
 #include <cmath>
 #include <filesystem>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -27,6 +28,12 @@
 using core::ArgType;
 
 namespace {
+
+// Gmsh 网格操作模式。Combo 顺序与枚举值保持一致，默认执行划分。
+enum class GmshMeshOperation {
+    Mesh = 0,
+    Delete = 1
+};
 
 // 从 Text 参数读取可选 double；空字符串表示用户不设置，后续使用默认值。
 std::optional<double> readOptionalDouble(const std::vector<core::ArgObject>& args, std::size_t index)
@@ -153,7 +160,7 @@ std::any systems::algo::GmshMeshHandler::execute(
     HandlerContext& context,
     const std::vector<core::ArgObject>& args)
 {
-    int operationMode = 1;
+    GmshMeshOperation operationMode = GmshMeshOperation::Mesh;
     IncrementalMeshTools::GmshMeshParameters parameters;
 
     if (args.size() <= 4) {
@@ -163,9 +170,12 @@ std::any systems::algo::GmshMeshHandler::execute(
             const std::string* opStr = args[2].get<ArgTypeEnum::Text>();
             if (opStr && !opStr->empty()) {
                 try {
-                    operationMode = std::stoi(*opStr);
+                    // 兼容旧接口：1/3 都表示划分，2 表示删除。
+                    operationMode = std::stoi(*opStr) == 2
+                        ? GmshMeshOperation::Delete
+                        : GmshMeshOperation::Mesh;
                 } catch (...) {
-                    spdlog::warn("GmshMesh: invalid operation mode '{}', using default 1 (Mesh)", *opStr);
+                    spdlog::warn("GmshMesh: invalid operation mode '{}', using Mesh", *opStr);
                 }
             }
         }
@@ -175,7 +185,9 @@ std::any systems::algo::GmshMeshHandler::execute(
                 parameters.meshTypeIndex = *value;
         }
     } else {
-        operationMode = readComboIndex(args, 1) + 1;
+        operationMode = readComboIndex(args, 1) == static_cast<int>(GmshMeshOperation::Delete)
+            ? GmshMeshOperation::Delete
+            : GmshMeshOperation::Mesh;
         parameters.targetMeshSize = readOptionalDouble(args, 2).value_or(0.0);
         parameters.minMeshSize = readOptionalDouble(args, 3).value_or(0.0);
         parameters.maxMeshSize = readOptionalDouble(args, 4).value_or(0.0);
@@ -185,14 +197,16 @@ std::any systems::algo::GmshMeshHandler::execute(
         parameters.algorithmSwitchOnFailure = 0;
         parameters.smoothingSteps = readOptionalInt(args, 7).value_or(0);
         parameters.recombineAlgorithm = gmshComboValue(
-            kGmshRecombinationAlgorithmComboValues, readComboIndex(args, 8));
+            kGmshRecombinationAlgorithmComboValues, readComboIndex(args, 8, 1));
         parameters.quadMinQuality = readOptionalDouble(args, 9).value_or(0.0);
         parameters.structuredEdgeDivisions = readOptionalInt(args, 10).value_or(0);
     }
     bool writeModel = readBoolArg(args, 11, true);
 
-    if (!validateMeshingParameters(parameters))
+    if (operationMode == GmshMeshOperation::Mesh
+        && !validateMeshingParameters(parameters)) {
         return {};
+    }
 
     const ComponentData& comp = context.cur_component.component();
     ModelLayer& modelLayer = context.cur_component.manager();
@@ -226,13 +240,28 @@ std::any systems::algo::GmshMeshHandler::execute(
         }
     }
 
-    // 获取或创建当前 component 的 MeshData，Gmsh 生成结果直接写回该 component。
+    // 划分按整组选中面提交：任一面失败时恢复操作前组件，避免留下部分重划分结果。
+    std::unique_ptr<ComponentData> meshOperationSnapshot;
+    if (operationMode == GmshMeshOperation::Mesh)
+        meshOperationSnapshot = context.cur_component.takeSnapshot();
+    bool meshOperationChanged = false;
+    const auto restoreMeshOperation = [&]() {
+        if (meshOperationSnapshot && meshOperationChanged)
+            context.cur_component.restoreSnapshot(*meshOperationSnapshot);
+    };
+
+    // 划分时获取或创建当前 component 的 MeshData；删除空网格组件时直接结束。
     // 创建经 replaceMesh（gid 纪律内建 + 标脏）；后续逐面循环经 ComponentOperator 可写入口写入
     if (!comp.mesh) {
+        if (operationMode == GmshMeshOperation::Delete) {
+            spdlog::warn("GmshMesh: current component has no mesh to delete");
+            return {};
+        }
         spdlog::info("GmshMesh: mesh_data is null, create a new one");
         auto new_mesh = std::make_unique<MeshData>();
         new_mesh->init();
         context.cur_component.replaceMesh(std::move(new_mesh));
+        meshOperationChanged = true;
     }
 
     // 本次操作在通用映射副本上执行，成功路径结束后再统一提交。
@@ -245,39 +274,58 @@ std::any systems::algo::GmshMeshHandler::execute(
     auto state_result = IncrementalMeshTools::buildStateFromGeometryMeshMap(
         component_mapping, *context.cur_component.mesh(),
         *geometry, modelLayer.geomRegistry());
-    if (!state_result)
+    if (!state_result) {
+        restoreMeshOperation();
         return {};
+    }
     GmshIncrementalMeshState state = std::move(*state_result);
 
-    if (parameters.targetMeshSize <= 0.0)
+    if (operationMode == GmshMeshOperation::Mesh
+        && parameters.targetMeshSize <= 0.0) {
         parameters.targetMeshSize = IncrementalMeshTools::estimateMeshSize(*geometry);
-
-    if (operationMode < 1 || operationMode > 3) {
-        spdlog::warn("GmshMesh: unknown operation mode {}, skip", operationMode);
-        return {};
     }
 
     std::size_t successCount = 0;
     std::size_t failedCount = 0;
+    std::size_t triangle_count = 0;
+    std::size_t quadrangle_count = 0;
     bool state_changed = false;
-    for (GeomFaceId faceId : (*selection)->ids) {
-        if (operationMode == 1) {
+
+    if (operationMode == GmshMeshOperation::Mesh) {
+        // 先统一移除所选面的旧网格，使选中相邻面之间的共享边可以共同重新离散。
+        for (GeomFaceId faceId : (*selection)->ids) {
             if (working_mapping.geometry_face_to_mesh_topology.find(faceId)
-                != working_mapping.geometry_face_to_mesh_topology.end()) {
-                spdlog::info("GmshMesh: face {} already meshed, skip mesh mode", faceId);
+                == working_mapping.geometry_face_to_mesh_topology.end()) {
                 continue;
             }
+            if (!IncrementalMeshTools::deleteFaceMesh(
+                    *geometry, state, working_mapping,
+                    context.cur_component, faceId)) {
+                spdlog::error("GmshMesh: failed to prepare face {} for remeshing", faceId);
+                restoreMeshOperation();
+                return {};
+            }
+            meshOperationChanged = true;
+        }
 
+        for (GeomFaceId faceId : (*selection)->ids) {
             auto result = IncrementalMeshTools::meshSingleFace(
                 *geometry, state, working_mapping, context.cur_component,
                 faceId, parameters.targetMeshSize, parameters);
             if (!result.success) {
-                spdlog::warn("GmshMesh: face {} meshing failed", faceId);
-                ++failedCount;
-                continue;
+                spdlog::error("GmshMesh: face {} meshing failed", faceId);
+                restoreMeshOperation();
+                spdlog::info("GmshMesh: selected faces restored after meshing failure");
+                return {};
             }
-            state_changed = true;
-        } else if (operationMode == 2) {
+            meshOperationChanged = true;
+            triangle_count += result.triangle_count;
+            quadrangle_count += result.quadrangle_count;
+            ++successCount;
+        }
+        state_changed = successCount > 0;
+    } else {
+        for (GeomFaceId faceId : (*selection)->ids) {
             if (!IncrementalMeshTools::deleteFaceMesh(
                     *geometry, state, working_mapping,
                     context.cur_component, faceId)) {
@@ -286,36 +334,27 @@ std::any systems::algo::GmshMeshHandler::execute(
                 continue;
             }
             state_changed = true;
-        } else {
-            const bool had_face =
-                working_mapping.geometry_face_to_mesh_topology.find(faceId)
-                != working_mapping.geometry_face_to_mesh_topology.end();
-            auto result = IncrementalMeshTools::remeshSingleFace(
-                *geometry, state, working_mapping, context.cur_component,
-                faceId, parameters.targetMeshSize, parameters);
-            if (!result.success) {
-                spdlog::warn("GmshMesh: face {} remeshing failed", faceId);
-                state_changed = state_changed
-                    || (had_face
-                        && working_mapping.geometry_face_to_mesh_topology.find(faceId)
-                            == working_mapping.geometry_face_to_mesh_topology.end());
-                ++failedCount;
-                continue;
-            }
-            state_changed = true;
+            ++successCount;
         }
-        ++successCount;
     }
 
     if (state_changed
         && !IncrementalMeshTools::storeStateToGeometryMeshMap(
             state, working_mapping, context.cur_component)) {
         spdlog::error("GmshMesh: failed to update geometry-mesh mapping");
+        restoreMeshOperation();
         return {};
     }
 
     spdlog::info("GmshMesh: {} selected faces processed: {} succeeded, {} failed",
         (*selection)->ids.size(), successCount, failedCount);
+    if (operationMode == GmshMeshOperation::Mesh) {
+        spdlog::info(
+            "GmshMesh: mesh summary: {} elements ({} triangles, {} quadrangles)",
+            triangle_count + quadrangle_count,
+            triangle_count,
+            quadrangle_count);
+    }
 
     if (writeModel && successCount > 0) {
         std::string meshOut = core::TempFile::instance().path().string() + "_total_mesh.obj";
@@ -334,7 +373,7 @@ std::vector<ArgType> systems::algo::GmshMeshHandler::args_type() const
 {
     return {
         ArgType { ArgTypeEnum::Selector, "选择几何面", "GeometryFace" },
-        ArgType { ArgTypeEnum::Combo, "操作模式", "划分,删除,重划分" },
+        ArgType { ArgTypeEnum::Combo, "操作模式", "划分,删除" },
         ArgType { ArgTypeEnum::Text, "目标网格尺寸(留空自动)", "" },
         ArgType { ArgTypeEnum::Text, "最小网格尺寸(留空默认)", "" },
         ArgType { ArgTypeEnum::Text, "最大网格尺寸(留空默认)", "" },
