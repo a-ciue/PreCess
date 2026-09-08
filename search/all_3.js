@@ -23,7 +23,7 @@ var searchData=
   ['clearsession_20',['clearSession',['../structsystems_1_1interaction_1_1InteractionState.html#a864f118216eeeece1bc9fabd2eb1ab3f',1,'systems::interaction::InteractionState']]],
   ['click_5f_21',['click_',['../classQRenderWindowStyle.html#af4f0e2391c4db538112fa0ccb76e96cf',1,'QRenderWindowStyle']]],
   ['clicked_22',['clicked',['../structQRenderWindow.html#abc3c5e233da3a03cb681e14438e44f05',1,'QRenderWindow']]],
-  ['clip_5fplane_5f_23',['clip_plane_',['../classMeshActor.html#aef69d9e95a452055e5c9f268b386a933',1,'MeshActor']]],
+  ['clip_5fplane_5f_23',['clip_plane_',['../classMeshActor.html#aef69d9e95a452055e5c9f268b386a933',1,'MeshActor::clip_plane_'],['../classMeshActorManager.html#af3900deb0a1de68e17ea5271ea502dd0',1,'MeshActorManager::clip_plane_']]],
   ['clipper_24',['clipper',['../structTopologyDiagnosticActor_1_1DiagnosticPipeline.html#ab1112bd1dd477da93b29f77ce8269010',1,'TopologyDiagnosticActor::DiagnosticPipeline']]],
   ['clone_25',['clone',['../structComponentData.html#a1de8c7c2ac533aaff71da67c9bd87b9b',1,'ComponentData::clone()'],['../structGeometryData.html#a075ed678d9549f94c18ac18802b2aef4',1,'GeometryData::clone()'],['../structMeshData.html#a1fafe843b8ac8aeb6643b3ce4355f96f',1,'MeshData::clone()']]],
   ['coincidenttopology_2eh_26',['CoincidentTopology.h',['../CoincidentTopology_8h.html',1,'']]],

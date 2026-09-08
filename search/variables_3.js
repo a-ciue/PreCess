@@ -9,7 +9,7 @@ var searchData=
   ['clearcoat_5froughness_6',['clearcoat_roughness',['../structtinyobj_1_1material__t.html#a0856eb3210823262539af42aa2f5a63e',1,'tinyobj::material_t']]],
   ['clearcoat_5fthickness_7',['clearcoat_thickness',['../structtinyobj_1_1material__t.html#a324dd4bb8475271e31aeb0a5959af745',1,'tinyobj::material_t']]],
   ['click_5f_8',['click_',['../classQRenderWindowStyle.html#af4f0e2391c4db538112fa0ccb76e96cf',1,'QRenderWindowStyle']]],
-  ['clip_5fplane_5f_9',['clip_plane_',['../classMeshActor.html#aef69d9e95a452055e5c9f268b386a933',1,'MeshActor']]],
+  ['clip_5fplane_5f_9',['clip_plane_',['../classMeshActor.html#aef69d9e95a452055e5c9f268b386a933',1,'MeshActor::clip_plane_'],['../classMeshActorManager.html#af3900deb0a1de68e17ea5271ea502dd0',1,'MeshActorManager::clip_plane_']]],
   ['clipper_10',['clipper',['../structTopologyDiagnosticActor_1_1DiagnosticPipeline.html#ab1112bd1dd477da93b29f77ce8269010',1,'TopologyDiagnosticActor::DiagnosticPipeline']]],
   ['colors_11',['colors',['../classMeshActor.html#a780070ae950cbd0e2799be889fe9b5f5',1,'MeshActor::colors'],['../structtinyobj_1_1attrib__t.html#aad0a3d4f2e6f1ff89671dd3d4b2dff2e',1,'tinyobj::attrib_t::colors']]],
   ['colorspace_12',['colorspace',['../structtinyobj_1_1texture__option__t.html#a1181af8c61dd09fe74c0e8dfff8df804',1,'tinyobj::texture_option_t']]],
