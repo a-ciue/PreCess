@@ -39,8 +39,6 @@ void MeshSelectManager::select(double posx, double posy)
     if (this->select_mode_ == SelectMode::None)
         return;
 
-    // 仅调一次 picker.Pick：selector 内部再 Pick 一次会污染 Qt FBO 渲染上下文的
-    // picking buffer，导致紧随其后的 executeAreaPicks 框选路径失效。
     if (this->select_mode_ == SelectMode::Vertex) {
         component_picker_->SnapToMeshPointOn();
         component_picker_->SetPixelTolerance(5);

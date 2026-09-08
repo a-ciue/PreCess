@@ -8,6 +8,7 @@
 #include <spdlog/spdlog.h>
 #include <vtkActor.h>
 #include <vtkActor2D.h>
+#include <vtkHardwarePicker.h>
 #include <vtkHardwareSelector.h>
 #include <vtkIdTypeArray.h>
 #include <vtkInformation.h>
@@ -109,14 +110,19 @@ std::map<vtkProp*, std::set<vtkIdType>> executeAreaPicks(
         actor->VisibilityOff();
     }
 
-    // 2) HardwareSelector 一次拾取
+    // 2) 预热：新组件 GPU 资源首次 Select() 时未就绪，需同步渲染一次。
+    //    用 Pick() 而非 Render()——后者是调度式的，从交互线程调用异步空转。
+    vtkNew<vtkHardwarePicker> prewarm;
+    prewarm->Pick((xmin + xmax) / 2, (ymin + ymax) / 2, 0, renderer);
+
+    // 3) HardwareSelector 一次拾取
     vtkNew<vtkHardwareSelector> shared_selector;
     shared_selector->SetRenderer(renderer);
     shared_selector->SetArea(xmin, ymin, xmax, ymax);
     shared_selector->SetFieldAssociation(field_association);
     vtkSelection* sel = shared_selector->Select();
 
-    // 3) 恢复 visibility
+    // 4) 恢复 visibility
     for (auto& [actor, vis] : saved_target_vis) {
         actor->SetVisibility(vis);
     }
@@ -132,7 +138,7 @@ std::map<vtkProp*, std::set<vtkIdType>> executeAreaPicks(
         return result;
     }
 
-    // 4) 按 PROP 分组；只保留 target_actors 产生的节点（隐藏组件未渲染 → 无节点）
+    // 5) 按 PROP 分组；只保留 target_actors 产生的节点（隐藏组件未渲染 → 无节点）
     std::set<vtkProp*> target_set(target_actors.begin(), target_actors.end());
     for (unsigned int i = 0; i < sel->GetNumberOfNodes(); ++i) {
         vtkSelectionNode* node = sel->GetNode(i);

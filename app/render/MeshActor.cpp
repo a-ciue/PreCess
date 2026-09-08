@@ -108,6 +108,7 @@ MeshActor::MeshActor(vtkRenderer* renderer)
     this->renderer_->AddActor(this->edge_actor_);
     this->renderer_->AddActor(this->glyph3D_actor_);
 
+    this->edge_actor_->GetProperty()->SetLineWidth(2);
 
     this->solid_actor_->SetMapper(solid_mapper_);
     this->face_actor_->SetMapper(face_mapper_);
