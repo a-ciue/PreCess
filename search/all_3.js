@@ -104,5 +104,6 @@ var searchData=
   ['current_5f_101',['current_',['../classInteractionService.html#a63850f71db99f6655c7bdffb781afe46',1,'InteractionService']]],
   ['current_5ffeature_5f_102',['current_feature_',['../classsystems_1_1feature_1_1FeatureSystem.html#ac20c7d6f717c274103574cd9c924f719',1,'systems::feature::FeatureSystem']]],
   ['current_5fmode_5f_103',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
-  ['current_5fstyle_5f_104',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]]
+  ['current_5fstyle_5f_104',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]],
+  ['currentrenderer_105',['currentRenderer',['../classQRenderWindowStyle.html#a04a172fa3461c9a27eda48a67ed738f8',1,'QRenderWindowStyle']]]
 ];

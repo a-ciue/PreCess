@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/MeshAreaPick.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">MeshAreaPick.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="MeshAreaPick_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// SPDX-License-Identifier: AGPL-3.0-or-later</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#ifndef MESH_AREA_PICK_H</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#define MESH_AREA_PICK_H</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;unordered_set&gt;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;vtkType.h&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">class </span>vtkRenderer;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">class </span>vtkActor;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">class </span>vtkProp;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacearea__pick.html">area_pick</a> {</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>std::unordered_map&lt;vtkProp*, std::unordered_set&lt;vtkIdType&gt;&gt; <a class="code hl_function" href="namespacearea__pick.html#a59c04552b33d1e1e211c894f48e535da">executeAreaPicks</a>(</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    vtkRenderer* renderer,</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">const</span> std::vector&lt;vtkActor*&gt;&amp; target_actors,</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">int</span> xmin, <span class="keywordtype">int</span> ymin, <span class="keywordtype">int</span> xmax, <span class="keywordtype">int</span> ymax,</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordtype">int</span> field_association);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacearea__pick.html#a7df035eaa21f6bccef3ab356a7118c9d">isWorldPointInScreenBox</a>(vtkRenderer* renderer,</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    vtkActor* transform_actor,</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">double</span> lx, <span class="keywordtype">double</span> ly, <span class="keywordtype">double</span> lz,</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordtype">int</span> xmin, <span class="keywordtype">int</span> ymin, <span class="keywordtype">int</span> xmax, <span class="keywordtype">int</span> ymax);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacearea__pick.html#af019d164d5f7518ada75874ea9006db6">isScreenSegmentIntersectsBox</a>(vtkRenderer* renderer,</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    vtkActor* transform_actor,</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">double</span> lx0, <span class="keywordtype">double</span> ly0, <span class="keywordtype">double</span> lz0,</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">double</span> lx1, <span class="keywordtype">double</span> ly1, <span class="keywordtype">double</span> lz1,</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">int</span> xmin, <span class="keywordtype">int</span> ymin, <span class="keywordtype">int</span> xmax, <span class="keywordtype">int</span> ymax);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>} <span class="comment">// namespace area_pick</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="preprocessor">#endif </span><span class="comment">// MESH_AREA_PICK_H</span></div>
+<div class="ttc" id="anamespacearea__pick_html"><div class="ttname"><a href="namespacearea__pick.html">area_pick</a></div><div class="ttdef"><b>定义</b> MeshAreaPick.cpp:30</div></div>
+<div class="ttc" id="anamespacearea__pick_html_a59c04552b33d1e1e211c894f48e535da"><div class="ttname"><a href="namespacearea__pick.html#a59c04552b33d1e1e211c894f48e535da">area_pick::executeAreaPicks</a></div><div class="ttdeci">std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; executeAreaPicks(vtkRenderer *renderer, const std::vector&lt; vtkActor * &gt; &amp;target_actors, int xmin, int ymin, int xmax, int ymax, int field_association)</div><div class="ttdoc">在指定屏幕矩形内同时对多个 target actor 执行一次硬件拾取，按 actor(PROP) 分组返回</div><div class="ttdef"><b>定义</b> MeshAreaPick.cpp:66</div></div>
+<div class="ttc" id="anamespacearea__pick_html_a7df035eaa21f6bccef3ab356a7118c9d"><div class="ttname"><a href="namespacearea__pick.html#a7df035eaa21f6bccef3ab356a7118c9d">area_pick::isWorldPointInScreenBox</a></div><div class="ttdeci">bool isWorldPointInScreenBox(vtkRenderer *renderer, vtkActor *transform_actor, double lx, double ly, double lz, int xmin, int ymin, int xmax, int ymax)</div><div class="ttdoc">数据空间 (lx,ly,lz) → world → display，测试屏幕投影是否落在框选矩形内。 用于 face CELLS 拾取后的二次过滤，避免&quot;面只一角进框、所有点/边都高亮&quot;。</div><div class="ttdef"><b>定义</b> MeshAreaPick.cpp:166</div></div>
+<div class="ttc" id="anamespacearea__pick_html_af019d164d5f7518ada75874ea9006db6"><div class="ttname"><a href="namespacearea__pick.html#af019d164d5f7518ada75874ea9006db6">area_pick::isScreenSegmentIntersectsBox</a></div><div class="ttdeci">bool isScreenSegmentIntersectsBox(vtkRenderer *renderer, vtkActor *transform_actor, double lx0, double ly0, double lz0, double lx1, double ly1, double lz1, int xmin, int ymin, int xmax, int ymax)</div><div class="ttdoc">线段（world→display 投影后）是否与框选矩形相交。 任一端点在框内、或线段穿过矩形（含擦边）均视为相交（&quot;与边相交即选中&quot;语义）。</div><div class="ttdef"><b>定义</b> MeshAreaPick.cpp:184</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

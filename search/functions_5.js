@@ -31,9 +31,10 @@ var searchData=
   ['error_28',['Error',['../classtinyobj_1_1ObjReader.html#a7f1029f8dfac167a65dae98e7837b611',1,'tinyobj::ObjReader']]],
   ['event_29',['event',['../structQRenderWindow.html#acb350e137abe53836f74a1568abec6df',1,'QRenderWindow']]],
   ['execute_30',['execute',['../classsystems_1_1algo_1_1AlgorithmHandler.html#a2887850d5a6dc5a355eacd783cd9514b',1,'systems::algo::AlgorithmHandler::execute()'],['../classsystems_1_1edit_1_1EditHandler.html#a6ec9dbe1060bfc9aa13f73026d84065f',1,'systems::edit::EditHandler::execute()'],['../classsystems_1_1edit_1_1TrivialEditHandler.html#acdaaa1c9f9b777281a3d48594aeab2c5',1,'systems::edit::TrivialEditHandler::execute()'],['../classsystems_1_1feature_1_1FeatureHandler.html#a4314d6417cfd92c9728656ffb3b55518',1,'systems::feature::FeatureHandler::execute()']]],
-  ['extensions_31',['extensions',['../classsystems_1_1io_1_1QModelIOInfo.html#aef3d661de2a8e8915c3c946d22dce897',1,'systems::io::QModelIOInfo']]],
-  ['extractedge_32',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
-  ['extractsolid_33',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
-  ['extractvertex_34',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
-  ['extrudeface_35',['extrudeFace',['../classQGeometryOperations.html#aa4684e4b8b1e8314b6494c41abb2b8b6',1,'QGeometryOperations::extrudeFace()'],['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder::extrudeFace()']]]
+  ['executeareapicks_31',['executeAreaPicks',['../namespacearea__pick.html#a59c04552b33d1e1e211c894f48e535da',1,'area_pick']]],
+  ['extensions_32',['extensions',['../classsystems_1_1io_1_1QModelIOInfo.html#aef3d661de2a8e8915c3c946d22dce897',1,'systems::io::QModelIOInfo']]],
+  ['extractedge_33',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
+  ['extractsolid_34',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
+  ['extractvertex_35',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
+  ['extrudeface_36',['extrudeFace',['../classQGeometryOperations.html#aa4684e4b8b1e8314b6494c41abb2b8b6',1,'QGeometryOperations::extrudeFace()'],['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder::extrudeFace()']]]
 ];

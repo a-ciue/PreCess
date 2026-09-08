@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: area_pick 命名空间参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">area_pick 命名空间参考</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a59c04552b33d1e1e211c894f48e535da" id="r_a59c04552b33d1e1e211c894f48e535da"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59c04552b33d1e1e211c894f48e535da">executeAreaPicks</a> (vtkRenderer *renderer, const std::vector&lt; vtkActor * &gt; &amp;target_actors, int xmin, int ymin, int xmax, int ymax, int field_association)</td></tr>
+<tr class="memdesc:a59c04552b33d1e1e211c894f48e535da"><td class="mdescLeft">&#160;</td><td class="mdescRight">在指定屏幕矩形内同时对多个 target actor 执行一次硬件拾取，按 actor(PROP) 分组返回  <br /></td></tr>
+<tr class="memitem:a7df035eaa21f6bccef3ab356a7118c9d" id="r_a7df035eaa21f6bccef3ab356a7118c9d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7df035eaa21f6bccef3ab356a7118c9d">isWorldPointInScreenBox</a> (vtkRenderer *renderer, vtkActor *transform_actor, double lx, double ly, double lz, int xmin, int ymin, int xmax, int ymax)</td></tr>
+<tr class="memdesc:a7df035eaa21f6bccef3ab356a7118c9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">数据空间 (lx,ly,lz) → world → display，测试屏幕投影是否落在框选矩形内。 用于 face CELLS 拾取后的二次过滤，避免"面只一角进框、所有点/边都高亮"。  <br /></td></tr>
+<tr class="memitem:af019d164d5f7518ada75874ea9006db6" id="r_af019d164d5f7518ada75874ea9006db6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af019d164d5f7518ada75874ea9006db6">isScreenSegmentIntersectsBox</a> (vtkRenderer *renderer, vtkActor *transform_actor, double lx0, double ly0, double lz0, double lx1, double ly1, double lz1, int xmin, int ymin, int xmax, int ymax)</td></tr>
+<tr class="memdesc:af019d164d5f7518ada75874ea9006db6"><td class="mdescLeft">&#160;</td><td class="mdescRight">线段（world→display 投影后）是否与框选矩形相交。 任一端点在框内、或线段穿过矩形（含擦边）均视为相交（"与边相交即选中"语义）。  <br /></td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a59c04552b33d1e1e211c894f48e535da" name="a59c04552b33d1e1e211c894f48e535da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59c04552b33d1e1e211c894f48e535da">&#9670;&#160;</a></span>executeAreaPicks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; area_pick::executeAreaPicks </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; vtkActor * &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>target_actors</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>field_association</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>在指定屏幕矩形内同时对多个 target actor 执行一次硬件拾取，按 actor(PROP) 分组返回 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">renderer</td><td>渲染器 </td></tr>
+    <tr><td class="paramname">target_actors</td><td>拾取目标 actor 列表（其它 actor 临时隐藏；列表内保持可见并互为 z-buffer） </td></tr>
+    <tr><td class="paramname">xmin</td><td>ymin xmax ymax 屏幕像素坐标矩形（一般由 interactor 给出） </td></tr>
+    <tr><td class="paramname">field_association</td><td>vtkDataObject::FIELD_ASSOCIATION_POINTS / _CELLS </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>actor(PROP) -&gt; 命中单元 id 集合（render id，与对应 actor 的 cell/point id 空间一致） </dd></dl>
+
+</div>
+</div>
+<a id="af019d164d5f7518ada75874ea9006db6" name="af019d164d5f7518ada75874ea9006db6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af019d164d5f7518ada75874ea9006db6">&#9670;&#160;</a></span>isScreenSegmentIntersectsBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool area_pick::isScreenSegmentIntersectsBox </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkActor *</td>          <td class="paramname"><span class="paramname"><em>transform_actor</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lx0</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>ly0</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lz0</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lx1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>ly1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lz1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>线段（world→display 投影后）是否与框选矩形相交。 任一端点在框内、或线段穿过矩形（含擦边）均视为相交（"与边相交即选中"语义）。 </p>
+
+</div>
+</div>
+<a id="a7df035eaa21f6bccef3ab356a7118c9d" name="a7df035eaa21f6bccef3ab356a7118c9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7df035eaa21f6bccef3ab356a7118c9d">&#9670;&#160;</a></span>isWorldPointInScreenBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool area_pick::isWorldPointInScreenBox </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkActor *</td>          <td class="paramname"><span class="paramname"><em>transform_actor</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>ly</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>lz</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>数据空间 (lx,ly,lz) → world → display，测试屏幕投影是否落在框选矩形内。 用于 face CELLS 拾取后的二次过滤，避免"面只一角进框、所有点/边都高亮"。 </p>
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

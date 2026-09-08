@@ -14,7 +14,8 @@ var searchData=
   ['qmodelmanager_11',['QModelManager',['../classQModelManager.html#a7dd7e8f47065b6aa31653ab6aceb9976',1,'QModelManager']]],
   ['qmodelquery_12',['QModelQuery',['../classQModelQuery.html#a978ca4b2b7bdecdca051fa5b41985a36',1,'QModelQuery']]],
   ['qrenderwindow_13',['QRenderWindow',['../structQRenderWindow.html#a74f8adff8942153a695cbd56e53e13d2',1,'QRenderWindow']]],
-  ['qselection_14',['QSelection',['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]],
-  ['qsystempluginmanager_15',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html#abedb39985f7bd1fe6c8d02a131596d86',1,'systems::QSystemPluginManager']]],
-  ['qundostackadaptor_16',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]]
+  ['qrenderwindowstyle_14',['QRenderWindowStyle',['../classQRenderWindowStyle.html#a43929773631c408dce1c44303ab5c5a0',1,'QRenderWindowStyle']]],
+  ['qselection_15',['QSelection',['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]],
+  ['qsystempluginmanager_16',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html#abedb39985f7bd1fe6c8d02a131596d86',1,'systems::QSystemPluginManager']]],
+  ['qundostackadaptor_17',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]]
 ];

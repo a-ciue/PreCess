@@ -1,5 +1,25 @@
 <map id="app/render/QRenderWindowStyle.h" name="app/render/QRenderWindowStyle.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,209,45"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="9,93,206,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="110,46,110,79,105,79,105,46"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="678,5,882,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,112,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="678,34,425,54,274,72,125,96,108,100,107,95,123,91,274,66,424,49,677,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="137,101,250,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="678,38,485,60,263,96,246,100,245,95,262,91,484,55,677,33"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="275,93,472,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="691,48,476,93,475,88,690,43"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="496,101,579,126"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="728,48,584,99,582,94,726,43"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="603,101,698,126"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="753,48,681,95,678,91,750,43"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="723,101,837,126"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="783,46,783,87,777,87,777,46"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="861,101,1043,126"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="819,43,918,92,916,97,817,48"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="1067,101,1195,126"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="858,43,1055,91,1072,95,1071,100,1054,96,857,48"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1219,101,1333,126"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="883,37,1036,59,1207,91,1224,95,1223,100,1206,96,1035,65,882,42"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1357,101,1509,126"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="882,33,1096,56,1346,91,1371,95,1370,101,1345,96,1095,61,882,39"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="1534,101,1749,126"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="882,31,1170,54,1522,91,1560,96,1559,101,1521,96,1170,60,882,36"/>
 </map>

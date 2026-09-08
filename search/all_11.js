@@ -41,7 +41,7 @@ var searchData=
   ['qrenderwindow_38',['QRenderWindow',['../structQRenderWindow.html',1,'QRenderWindow'],['../structQRenderWindow.html#a74f8adff8942153a695cbd56e53e13d2',1,'QRenderWindow::QRenderWindow()']]],
   ['qrenderwindow_2ecpp_39',['QRenderWindow.cpp',['../QRenderWindow_8cpp.html',1,'']]],
   ['qrenderwindow_2eh_40',['QRenderWindow.h',['../QRenderWindow_8h.html',1,'']]],
-  ['qrenderwindowstyle_41',['QRenderWindowStyle',['../classQRenderWindowStyle.html',1,'']]],
+  ['qrenderwindowstyle_41',['QRenderWindowStyle',['../classQRenderWindowStyle.html',1,'QRenderWindowStyle'],['../classQRenderWindowStyle.html#a43929773631c408dce1c44303ab5c5a0',1,'QRenderWindowStyle::QRenderWindowStyle()']]],
   ['qrenderwindowstyle_2ecpp_42',['QRenderWindowStyle.cpp',['../QRenderWindowStyle_8cpp.html',1,'']]],
   ['qrenderwindowstyle_2eh_43',['QRenderWindowStyle.h',['../QRenderWindowStyle_8h.html',1,'']]],
   ['qselection_44',['QSelection',['../classQSelection.html',1,'QSelection'],['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]],

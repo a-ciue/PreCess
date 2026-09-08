@@ -14,5 +14,6 @@ var searchData=
   ['update_11',['update',['../classMeshModelBase.html#a2c0e29adc20f91af3055492fdb04efb4',1,'MeshModelBase::update()'],['../classUGridModel.html#a9b473812c00cdc4ee778b5cb4ec0b938',1,'UGridModel::update()']]],
   ['updatefrom_12',['updateFrom',['../classMeshModelBase.html#af40bc51d2f847e6a4a927b92181da705',1,'MeshModelBase::updateFrom()'],['../classUGridModel.html#a3a58712607af0719b85b4dc167d99a7b',1,'UGridModel::updateFrom()']]],
   ['updatehighlight_13',['updateHighlight',['../classComponentSelectorHighlight.html#aca183f4c287a4ed3fa2d826b1a743c23',1,'ComponentSelectorHighlight']]],
-  ['updatespreadcache_14',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]]
+  ['updaterubberband_14',['updateRubberBand',['../classQRenderWindowStyle.html#a6100f44a2b1388628da205f453e7c646',1,'QRenderWindowStyle']]],
+  ['updatespreadcache_15',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]]
 ];

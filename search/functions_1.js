@@ -37,7 +37,8 @@ var searchData=
   ['argtypes_34',['argTypes',['../classQAlgorithmInfo.html#afd8c6de97a172331ab0ffb1dc6d39faf',1,'QAlgorithmInfo::argTypes()'],['../classQEditInfo.html#a8e79cf34bd5c60a3837bd6a07c600a67',1,'QEditInfo::argTypes()'],['../classQFeatureInfo.html#a6b30541c8c1438458adc995700e30e27',1,'QFeatureInfo::argTypes()'],['../classsystems_1_1feature_1_1FeatureRegistrar.html#ad2fb1c3ee0265abf1c839add3fe390c3',1,'systems::feature::FeatureRegistrar::argTypes()']]],
   ['asgeometrydata_35',['asGeometryData',['../structComponentData.html#a16bd3b7d7ebb924c7566661d7e2a8444',1,'ComponentData::asGeometryData() noexcept'],['../structComponentData.html#aedef6341a2e1f64ae270b5567e2e4bd6',1,'ComponentData::asGeometryData() const noexcept']]],
   ['asmeshdata_36',['asMeshData',['../structComponentData.html#adba5099eb72aa819577f79ea053fd0ba',1,'ComponentData::asMeshData() noexcept'],['../structComponentData.html#a2dfad9e8c6c5b112015a471fa678b92d',1,'ComponentData::asMeshData() const noexcept']]],
-  ['attrib_5ft_37',['attrib_t',['../structtinyobj_1_1attrib__t.html#a0a8a5af6a3021079dc5d82a0e44b1f1f',1,'tinyobj::attrib_t']]],
-  ['attributeoperator_38',['AttributeOperator',['../classAttributeOperator.html#aacea0bc8e97f54d2f76f1d0dc147bc27',1,'AttributeOperator']]],
-  ['attrirenderstrategyscalar_39',['AttriRenderStrategyScalar',['../classAttriRenderStrategyScalar.html#a25c8c24987c285ae989bf6ddaae4a7ac',1,'AttriRenderStrategyScalar']]]
+  ['attachrubberband_37',['attachRubberBand',['../classQRenderWindowStyle.html#a8ea5f9532c8e82bc7c2bd23c2ad66ba5',1,'QRenderWindowStyle']]],
+  ['attrib_5ft_38',['attrib_t',['../structtinyobj_1_1attrib__t.html#a0a8a5af6a3021079dc5d82a0e44b1f1f',1,'tinyobj::attrib_t']]],
+  ['attributeoperator_39',['AttributeOperator',['../classAttributeOperator.html#aacea0bc8e97f54d2f76f1d0dc147bc27',1,'AttributeOperator']]],
+  ['attrirenderstrategyscalar_40',['AttriRenderStrategyScalar',['../classAttriRenderStrategyScalar.html#a25c8c24987c285ae989bf6ddaae4a7ac',1,'AttriRenderStrategyScalar']]]
 ];

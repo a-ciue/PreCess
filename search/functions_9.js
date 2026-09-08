@@ -16,5 +16,7 @@ var searchData=
   ['invalidate_13',['invalidate',['../classMeshAdjacency.html#a096c68e2ba945edea2fa361ce279c20e',1,'MeshAdjacency']]],
   ['invoke_14',['invoke',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#af847c5b57910dc89a5632e8992e976e3',1,'systems::feature::QFeatureSystemAdaptor::invoke()'],['../classsystems_1_1feature_1_1FeatureSystem.html#ad20ab57c00cd78afbcd5397e2190668b',1,'systems::feature::FeatureSystem::invoke()']]],
   ['iscurrent_15',['isCurrent',['../classMeshAdjacency.html#a0787dc08c047d67bfd37f6bcdd2a494a',1,'MeshAdjacency']]],
-  ['isvisible_16',['isVisible',['../classGeometryActor.html#a759354bf71834f77ef7b454503da7b89',1,'GeometryActor::isVisible()'],['../classGeometryActorSelectOp.html#a265e3b2255dac5ef6b2052373d3952b6',1,'GeometryActorSelectOp::isVisible()'],['../classMeshActor.html#ab282e66574859c8e77ed021be2903cfa',1,'MeshActor::isVisible()'],['../classMeshActorSelectOp.html#aa8b745bea4e35603b91fbaa658c0d0b1',1,'MeshActorSelectOp::isVisible()']]]
+  ['isscreensegmentintersectsbox_16',['isScreenSegmentIntersectsBox',['../namespacearea__pick.html#af019d164d5f7518ada75874ea9006db6',1,'area_pick']]],
+  ['isvisible_17',['isVisible',['../classGeometryActor.html#a759354bf71834f77ef7b454503da7b89',1,'GeometryActor::isVisible()'],['../classGeometryActorSelectOp.html#a265e3b2255dac5ef6b2052373d3952b6',1,'GeometryActorSelectOp::isVisible()'],['../classMeshActor.html#ab282e66574859c8e77ed021be2903cfa',1,'MeshActor::isVisible()'],['../classMeshActorSelectOp.html#aa8b745bea4e35603b91fbaa658c0d0b1',1,'MeshActorSelectOp::isVisible()']]],
+  ['isworldpointinscreenbox_18',['isWorldPointInScreenBox',['../namespacearea__pick.html#a7df035eaa21f6bccef3ab356a7118c9d',1,'area_pick']]]
 ];

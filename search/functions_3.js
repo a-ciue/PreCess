@@ -39,5 +39,6 @@ var searchData=
   ['createlinefromvertices_36',['createLineFromVertices',['../classQGeometryOperations.html#a4e8c87eff9d65b77c2ac34f0512c8782',1,'QGeometryOperations']]],
   ['createpoint_37',['createPoint',['../classQGeometryOperations.html#a6a37c80afd25b9009a55e45286f0a473',1,'QGeometryOperations']]],
   ['createrectangleface_38',['createRectangleFace',['../classQGeometryOperations.html#aaf5bbc0d21ad91e0cad0df1a9faa0fcf',1,'QGeometryOperations']]],
-  ['createsphere_39',['createSphere',['../classQGeometryOperations.html#a22f1cc9dc4a8e02e484f308b84f53173',1,'QGeometryOperations']]]
+  ['createsphere_39',['createSphere',['../classQGeometryOperations.html#a22f1cc9dc4a8e02e484f308b84f53173',1,'QGeometryOperations']]],
+  ['currentrenderer_40',['currentRenderer',['../classQRenderWindowStyle.html#a04a172fa3461c9a27eda48a67ed738f8',1,'QRenderWindowStyle']]]
 ];

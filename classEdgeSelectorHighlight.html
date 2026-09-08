@@ -182,7 +182,12 @@ EdgeSelectorHighlight 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a0fc8cf358cd6d58a8b43c8268b725c6b" id="r_a0fc8cf358cd6d58a8b43c8268b725c6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0fc8cf358cd6d58a8b43c8268b725c6b">EdgeSelectorHighlight</a> (vtkRenderer &amp;renderer, vtkPartitionedDataSet &amp;highlight_data, unsigned int partition_id, <a class="el" href="classMeshActorSelectOp.html">MeshActorSelectOp</a> select_op, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const <a class="el" href="classIMeshIdQuery.html">IMeshIdQuery</a> *id_query)</td></tr>
 <tr class="memitem:afdb85c28368cd8fcdf956cfcf34e693e" id="r_afdb85c28368cd8fcdf956cfcf34e693e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdb85c28368cd8fcdf956cfcf34e693e">~EdgeSelectorHighlight</a> () override</td></tr>
-<tr class="memitem:afa6bafa87e80b347e5c5c03124dce5e7" id="r_afa6bafa87e80b347e5c5c03124dce5e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa6bafa87e80b347e5c5c03124dce5e7">select</a> (double posx, double posy) override</td></tr>
+<tr class="memitem:ad4878fe7d661ab85696416aee7596d44" id="r_ad4878fe7d661ab85696416aee7596d44"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4878fe7d661ab85696416aee7596d44">select</a> (double posx, double posy)</td></tr>
+<tr class="memdesc:ad4878fe7d661ab85696416aee7596d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 <a class="el" href="classMeshSelectManager.html">MeshSelectManager</a> 预拾后调下面的 picker 重载）  <br /></td></tr>
+<tr class="memitem:a34086333be45f22124732833cc2e0d58" id="r_a34086333be45f22124732833cc2e0d58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34086333be45f22124732833cc2e0d58">select</a> (double posx, double posy, vtkHardwarePicker *picker, vtkActor *picked_actor, vtkIdType picked_cell_id, vtkIdType picked_point_id) override</td></tr>
+<tr class="memdesc:a34086333be45f22124732833cc2e0d58"><td class="mdescLeft">&#160;</td><td class="mdescRight">单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。  <br /></td></tr>
+<tr class="memitem:a6402cd9615165a243cd7e828b2c2f3c0" id="r_a6402cd9615165a243cd7e828b2c2f3c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6402cd9615165a243cd7e828b2c2f3c0">selectArea</a> (const std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; &amp;hits, int xmin, int ymin, int xmax, int ymax) override</td></tr>
+<tr class="memdesc:a6402cd9615165a243cd7e828b2c2f3c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中）  <br /></td></tr>
 <tr class="memitem:af71996a5002742103866e5c826479d0f" id="r_af71996a5002742103866e5c826479d0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af71996a5002742103866e5c826479d0f">clear</a> () override</td></tr>
 <tr class="memdesc:af71996a5002742103866e5c826479d0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
 <tr class="memitem:abc07d0f31a2fe01d3f77e4562f30193e" id="r_abc07d0f31a2fe01d3f77e4562f30193e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc07d0f31a2fe01d3f77e4562f30193e">disableHighlight</a> () override</td></tr>
@@ -390,8 +395,31 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="afa6bafa87e80b347e5c5c03124dce5e7" name="afa6bafa87e80b347e5c5c03124dce5e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa6bafa87e80b347e5c5c03124dce5e7">&#9670;&#160;</a></span>select()</h2>
+<a id="ad4878fe7d661ab85696416aee7596d44" name="ad4878fe7d661ab85696416aee7596d44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4878fe7d661ab85696416aee7596d44">&#9670;&#160;</a></span>select() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EdgeSelectorHighlight::select </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 <a class="el" href="classMeshSelectManager.html">MeshSelectManager</a> 预拾后调下面的 picker 重载） </p>
+
+</div>
+</div>
+<a id="a34086333be45f22124732833cc2e0d58" name="a34086333be45f22124732833cc2e0d58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34086333be45f22124732833cc2e0d58">&#9670;&#160;</a></span>select() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -407,7 +435,27 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkHardwarePicker *</td>          <td class="paramname"><span class="paramname"><em>picker</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkActor *</td>          <td class="paramname"><span class="paramname"><em>picked_actor</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>picked_cell_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>picked_point_id</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -417,7 +465,64 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>实现了 <a class="el" href="classSelectorHighlight.html#a5512ff700657deaa5f27c88045b4dde4">SelectorHighlight</a>.</p>
+<p>单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。 </p>
+
+<p>实现了 <a class="el" href="classSelectorHighlight.html#af8001f12a2d6a9604e17b7d256486e9b">SelectorHighlight</a>.</p>
+
+</div>
+</div>
+<a id="a6402cd9615165a243cd7e828b2c2f3c0" name="a6402cd9615165a243cd7e828b2c2f3c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6402cd9615165a243cd7e828b2c2f3c0">&#9670;&#160;</a></span>selectArea()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EdgeSelectorHighlight::selectArea </td>
+          <td>(</td>
+          <td class="paramtype">const std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>hits</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中） </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hits</td><td>各 actor(PROP) 在本框内的命中 render id 集合（本选择器按自身 actor 取用） </td></tr>
+    <tr><td class="paramname">xmin</td><td>ymin xmax ymax 屏幕像素矩形（Edge/Vertex 屏幕投影二次过滤用） </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>实现了 <a class="el" href="classSelectorHighlight.html#ab668ad9c17debae16c0bc66258e0f9e8">SelectorHighlight</a>.</p>
 
 </div>
 </div>

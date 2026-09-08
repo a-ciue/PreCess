@@ -34,7 +34,8 @@ var searchData=
   ['update_31',['update',['../classMeshModelBase.html#a2c0e29adc20f91af3055492fdb04efb4',1,'MeshModelBase::update()'],['../classUGridModel.html#a9b473812c00cdc4ee778b5cb4ec0b938',1,'UGridModel::update()']]],
   ['updatefrom_32',['updateFrom',['../classMeshModelBase.html#af40bc51d2f847e6a4a927b92181da705',1,'MeshModelBase::updateFrom()'],['../classUGridModel.html#a3a58712607af0719b85b4dc167d99a7b',1,'UGridModel::updateFrom()']]],
   ['updatehighlight_33',['updateHighlight',['../classComponentSelectorHighlight.html#aca183f4c287a4ed3fa2d826b1a743c23',1,'ComponentSelectorHighlight']]],
-  ['updatespreadcache_34',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
-  ['usemtl_5fcb_35',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
-  ['uv_36',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
+  ['updaterubberband_34',['updateRubberBand',['../classQRenderWindowStyle.html#a6100f44a2b1388628da205f453e7c646',1,'QRenderWindowStyle']]],
+  ['updatespreadcache_35',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
+  ['usemtl_5fcb_36',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
+  ['uv_37',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
 ];
