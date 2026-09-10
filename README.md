@@ -201,6 +201,10 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
 * [ ] 从软件中剥离业务逻辑：这服务于以下几点
   * [x] C++类库：模型层已抽象为 `core/`、`model/` 静态库
   * [ ] 对模型层做Python Wrapper接口层，可以像Blender将模型层打包成wheel与UI解释器调用接口
+    * [ ] Qt-free 会话层 `model/session`：Session 组合根 + SessionQuery 原生查询（QML 适配器瘦身为纯包装，签名不变）
+    * [ ] pybind11 绑定模块 `precess`（顶层 `python/` 目录，LGPLv3；参数经 ArgType 元数据驱动的 kwargs，调用走 invoke/call 统一入口）
+    * [ ] app 内嵌 Python 运行环境：PythonRuntime + Python 控制台（Python ≡ GUI 线程执行约定）
+    * [ ] 无头 CLI 与 wheel 打包（含插件加载的 Qt 解耦）
   * [ ] 无头软件：软件不是必须得要一个UI吧！命令行也是一种调用接口方法
   * [ ] C/S架构：模型层打包成服务器上的服务，类ParaView
 * [ ] 插件管理
