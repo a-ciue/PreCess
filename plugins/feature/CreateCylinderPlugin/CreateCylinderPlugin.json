@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateCylinder",
+    "display_name": "创建圆柱体",
+    "description": "根据底面圆心、半径、高度、轴向和扫掠角创建圆柱体"
+  }
+}

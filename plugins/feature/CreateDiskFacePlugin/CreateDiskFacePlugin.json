@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateDiskFace",
+    "display_name": "创建圆盘/扇形面",
+    "description": "根据圆心、半径、坐标平面和角度创建圆盘或扇形面"
+  }
+}

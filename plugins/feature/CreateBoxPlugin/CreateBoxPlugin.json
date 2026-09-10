@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateBox",
+    "display_name": "创建长方体",
+    "description": "根据原点和三个轴向尺寸创建长方体"
+  }
+}

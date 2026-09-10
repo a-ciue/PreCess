@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateCone",
+    "display_name": "创建圆锥/圆台",
+    "description": "根据底面圆心、底/顶半径、高度、轴向和扫掠角创建圆锥或圆台"
+  }
+}

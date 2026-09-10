@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreatePoint",
+    "display_name": "创建点",
+    "description": "根据三维坐标创建独立几何点"
+  }
+}

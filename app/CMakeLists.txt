@@ -18,7 +18,6 @@ qt_add_qml_module(${MYNAME}
         QML_FILES
             Main.qml
             AppToolbar.qml
-            GeometryOperationActions.qml
             AttributeRenderPanel.qml
             CentralRenderArea.qml
             SideBar.qml

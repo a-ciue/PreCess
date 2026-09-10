@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateFaceFromEdges",
+    "display_name": "选择闭合边创建面",
+    "description": "选择当前组件中组成单一闭合轮廓的几何边创建平面或填充曲面"
+  }
+}

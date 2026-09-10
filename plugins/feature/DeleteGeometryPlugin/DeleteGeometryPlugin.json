@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "DeleteGeometry",
+    "display_name": "删除几何",
+    "description": "删除一个顶层独立几何点、边、面或体，可选择是否同时删除其独占下级拓扑"
+  }
+}
