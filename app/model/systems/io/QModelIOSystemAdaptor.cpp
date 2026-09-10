@@ -66,6 +66,24 @@ try {
     return {};
 }
 
+QUrl QModelIOSystemAdaptor::suggestFileUrl(const QString& model_name, const QString& unique_name, const QUrl& folder) const
+{
+    const std::string suggested = io_system_->suggestFileName(model_name.toStdString(), unique_name.toStdString());
+    if (suggested.empty() || folder.isEmpty())
+        return {};
+
+    return QUrl::fromLocalFile(folder.toLocalFile() + "/" + QString::fromStdString(suggested));
+}
+
+QUrl QModelIOSystemAdaptor::adaptFileExtension(const QUrl& file, const QString& unique_name) const
+{
+    // 路径按本地编码进出，与读写侧的转换保持一致
+    const std::filesystem::path adapted = io_system_->adaptFileExtension(
+        file.toLocalFile().toLocal8Bit().toStdString(), unique_name.toStdString());
+
+    return QUrl::fromLocalFile(QString::fromLocal8Bit(adapted.string().c_str()));
+}
+
 QList<QModelIOInfo*> QModelIOSystemAdaptor::getModelIOInfo() const
 try {
     QList<QModelIOInfo*> infos;

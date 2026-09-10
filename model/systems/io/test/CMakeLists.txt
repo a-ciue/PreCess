@@ -1,0 +1,2 @@
+precess_add_test(TestModelIOFileName TestModelIOFileName.cpp)
+precess_test_link_libraries(TestModelIOFileName IOSystem Data)

@@ -1,3 +1,4 @@
+import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -29,6 +30,9 @@ ColumnLayout {
     signal consoleToggled()
     signal outputLogToggled()
     signal preferencesToggled()
+
+    // 文件对话框所在目录：默认落在文档目录，导入/导出后沿用上次所在目录
+    property url fileDialogFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
 
     property bool objectTreeOpen: false
     property bool propertyListOpen: false
@@ -155,6 +159,7 @@ ColumnLayout {
         nameFilters: QModelManager.ioSystem.dialogNameFilters
         fileMode: FileDialog.OpenFiles
         onAccepted: {
+            root.fileDialogFolder = currentFolder
             if (selectedNameFilter.index >= 0) {
                 for (const file of selectedFiles) {
                     QModelManager.ioSystem.read(selectedNameFilter.name, file, [])
@@ -171,9 +176,30 @@ ColumnLayout {
         id: exportModelDialog
         nameFilters: QModelManager.ioSystem.dialogNameFilters
         fileMode: FileDialog.SaveFile
+
+        // 以活动模型名（多来自导入文件名）为主干预填文件名，避免用户从空白输入框开始；
+        // 扩展名按对话框当前选中的文件类型推导，用户改选类型后由写出前的校正兜底
+        function prefillFileName() {
+            const model_id = App.selection.activeModelId
+            if (model_id < 0)
+                return
+            const suggested = QModelManager.ioSystem.suggestFileUrl(
+                QModelManager.query.getModelName(model_id), selectedNameFilter.name, currentFolder)
+            if (suggested.toString() !== "")
+                selectedFile = suggested
+        }
+
+        function openExport() {
+            currentFolder = root.fileDialogFolder
+            prefillFileName()
+            open()
+        }
+
         onAccepted: {
+            root.fileDialogFolder = currentFolder
             if (selectedNameFilter.index >= 0) {
-                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
+                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId,
+                    QModelManager.ioSystem.adaptFileExtension(selectedFile, selectedNameFilter.name), [])
             } else {
                 console.exception("No valid file type selected.")
             }
@@ -307,7 +333,10 @@ ColumnLayout {
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导入"
-                onClicked: importModelDialog.open()
+                onClicked: {
+                    importModelDialog.currentFolder = root.fileDialogFolder
+                    importModelDialog.open()
+                }
             }
 
             ToolButton {
@@ -318,7 +347,7 @@ ColumnLayout {
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导出"
-                onClicked: exportModelDialog.open()
+                onClicked: exportModelDialog.openExport()
             }
 
             ToolButton {

@@ -75,8 +75,42 @@ public:
      * @brief 设置算法信息变更回调函数
      */
     void setOnDialogNameFiltersChanged(std::function<void()> callback);
+    /**
+     * @brief 推导导出建议文件名：以模型名为主干，换成目标文件类型的首选扩展名
+     *
+     * 模型名多来自导入文件名（自带扩展名）：目标类型已注册时先剥掉原有扩展名再换上目标扩展名，
+     * 避免叠出 "a.obj.stl" 这类名字；目标类型未注册（如界面默认的 "All files"）时原样返回模型名，
+     * 此时模型名自带的扩展名是唯一能反查文件类型的线索，不能被抹掉。
+     * @param model_name 模型名（文件名，不含目录），允许为空
+     * @param file_type 目标文件类型，应在注册的文件类型中，允许未注册
+     * @return 建议文件名（含扩展名），模型名为空或目标类型无首选扩展名时返回入参模型名
+     */
+    std::string suggestFileName(const std::string& model_name, const std::string& file_type) const;
+    /**
+     * @brief 写出前按目标文件类型校正路径扩展名
+     *
+     * 文件对话框的预填名可能不随用户改选的文件类型变化，这里按最终选中的类型校正：
+     * 扩展名缺失或属于其他已注册类型时换成目标类型的首选扩展名，
+     * 扩展名已属于目标类型、或属于未注册的自定义扩展名（用户显式指定）时保持不动。
+     * @param path 待写出的文件路径，本地系统环境编码
+     * @param file_type 目标文件类型，应在注册的文件类型中，允许未注册
+     * @return 校正后的路径，无需校正或目标类型无首选扩展名时原样返回
+     */
+    std::filesystem::path adaptFileExtension(const std::filesystem::path& path, const std::string& file_type) const;
 
 private:
+    /**
+     * @brief 取文件类型的首选（第一个）扩展名
+     * @param file_type 文件类型，允许未注册
+     * @return 扩展名（不含点），文件类型未注册或未声明扩展名时返回空串
+     */
+    std::string preferredExtension(const std::string& file_type) const;
+    /**
+     * @brief 判断扩展名是否被某个已注册文件类型支持
+     * @param extension 扩展名（不含点），大小写不敏感
+     */
+    bool isRegisteredExtension(const std::string& extension) const;
+
     ModelLayer* manager_;
     std::unordered_map<std::string, SystemHandlerPtr> handlers_; //> 键是文件类型
     std::unordered_map<std::string, std::unique_ptr<ModelIOInfo>> file_type_infos_; //> 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
