@@ -31,7 +31,7 @@ void ExtrudeFaceHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     // 参数声明与原 GeometryOperationActions.qml 中 extrudeFaceInfo 保持一致；
     // 菜单与图标复用原"几何"页"拉伸面"按钮的声明
-    reg.addParameter({ ArgTypeEnum::Selector, "截面", "", "请选择一个几何面" });
+    reg.addParameter({ ArgTypeEnum::Selector, "截面", "GeometryFace", "请选择一个几何面" });
     reg.addParameter({ ArgTypeEnum::Float, "方向 X", "0", "方向不能为零向量" });
     reg.addParameter({ ArgTypeEnum::Float, "方向 Y", "0", "方向不能为零向量" });
     reg.addParameter({ ArgTypeEnum::Float, "方向 Z", "1", "方向不能为零向量" });

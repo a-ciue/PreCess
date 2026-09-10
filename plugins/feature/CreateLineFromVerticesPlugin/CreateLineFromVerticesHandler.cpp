@@ -19,7 +19,7 @@ void CreateLineFromVerticesHandler::setup(FeatureRegistrar& reg, FeatureContext&
 {
     // 参数声明与原 GeometryOperationActions.qml 中 createLineFromVerticesInfo 保持一致；
     // 菜单与图标复用原"几何"页"直线边（选点）"按钮的声明
-    reg.addParameter({ ArgTypeEnum::Selector, "端点", "", "请选择两个几何点" });
+    reg.addParameter({ ArgTypeEnum::Selector, "端点", "GeometryVertex", "请选择两个几何点" });
     reg.addMenuItem({ "几何", "创建直线边（选择两点）", "qrc:/images/toolbar/Geometry/line_points.svg" });
 }
 

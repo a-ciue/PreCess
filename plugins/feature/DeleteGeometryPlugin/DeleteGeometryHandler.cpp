@@ -17,8 +17,11 @@ void DeleteGeometryHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/
 {
     // 参数声明与原 GeometryOperationActions.qml 中 deleteGeometryInfo 保持一致；
     // 菜单与图标复用原"几何"页"删除几何"按钮的声明
-    reg.addParameter({ ArgTypeEnum::Selector, "目标几何", "",
-        "请在顶部选择器中切换几何点、边、面或体模式" });
+    // content 声明可选的拾取类型，首个为开始选择时的默认模式（与原几何界面默认一致）；
+    // 删除目标组件由所选形状反查，无需在对象树中选中组件
+    reg.addParameter({ ArgTypeEnum::Selector, "目标几何",
+        "GeometryFace,GeometryVertex,GeometryEdge,GeometrySolid",
+        "请选择一个顶层几何点、边、面或体" });
     reg.addParameter({ ArgTypeEnum::Bool, "同时删除下级拓扑", "false",
         "关闭时保留直接下级拓扑，开启时不影响其他形状共享的拓扑" });
     reg.addMenuItem({ "几何", "删除几何", "qrc:/images/toolbar/Geometry/delete_geometry.svg" });
