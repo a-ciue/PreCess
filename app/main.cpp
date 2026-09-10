@@ -7,6 +7,20 @@
 #include <QtQml/QQmlContext>
 #include <kddockwidgets/qtquick/Platform.h>
 #include <spdlog/cfg/env.h>
+#ifdef __EMSCRIPTEN__
+#include <QtGui/QFontDatabase>
+#include <QtQuick/QQuickWindow>
+#include <QtQuick/QSGRendererInterface>
+#include <QtQuickControls2/QQuickStyle>
+#include "QWasmBridge.h"
+#endif
+
+#ifdef __EMSCRIPTEN__
+// wasm 下将 Qt 相关对象提升为全局变量，避免在 main 函数返回后被销毁
+#define WASM_GLOBAL static
+#else
+#define WASM_GLOBAL
+#endif
 
 namespace {
 /**
@@ -45,16 +59,28 @@ private:
 int main(int argc, char* argv[])
 {
     spdlog::cfg::load_env_levels();
+    // WebGL/OpenGLES 不支持 OpenGL 3.2
+#ifndef __EMSCRIPTEN__
     QQuickVTKItem::setGraphicsApi();
+#endif
     QModelManager::argv0 = argv[0];
 
-    QGuiApplication app(argc, argv);
+    WASM_GLOBAL QGuiApplication app(argc, argv);
     app.setWindowIcon(QIcon(":/images/PreCess.ico"));
+#ifdef __EMSCRIPTEN__
+    // wasm 平台需手动加载捆绑的字体，否则无法显示中文
+    int font_id = QFontDatabase::addApplicationFont(":/fonts/appfont.bin");
+    QStringList font_families = QFontDatabase::applicationFontFamilies(font_id);
+    if (!font_families.isEmpty()) {
+        app.setFont(QFont(font_families.first()));
+    }
+    QQuickStyle::setStyle("Fusion");
+#endif
     KDDockWidgets::initFrontend(KDDockWidgets::FrontendType::QtQuick);
 
     QLogManager::initialize();
 
-    QQmlApplicationEngine engine;
+    WASM_GLOBAL QQmlApplicationEngine engine;
     KDDockWidgets::QtQuick::Platform::instance()->setQmlEngine(&engine);
 
     // 收集命令行参数（跳过第一个参数，它是程序路径）
@@ -65,7 +91,9 @@ int main(int argc, char* argv[])
     }
 
     engine.rootContext()->setContextProperty("QLogManager", QLogManager::instance());
-
+#ifdef __EMSCRIPTEN__
+    engine.rootContext()->setContextProperty("QWasmBridge", new QWasmBridge(&app));
+#endif
     // 将参数列表暴露给QML
     engine.rootContext()->setContextProperty("commandLineArgs", QVariant::fromValue(arguments));
 
@@ -80,5 +108,10 @@ int main(int argc, char* argv[])
         }
     }
 
+#ifdef __EMSCRIPTEN__
+    // wasm 平台由浏览器管理事件循环，main 函数直接返回即可
+    return 0;
+#else
     return app.exec();
+#endif
 }

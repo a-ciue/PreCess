@@ -25,11 +25,12 @@ import app.model.systems.io
 import app.render
 
 ApplicationWindow {
-    id: root 
+    id: root
     width: 800
     height: 600
     visibility: Window.Maximized
     title: qsTr("PreCess")
+    flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
     GeometryOperationActions {
         id: geometryActions

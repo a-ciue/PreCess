@@ -32,7 +32,7 @@
         "BUILD_TESTING": true // 指定构建测试用例
       },
       "environment": {
-        "PRECESS_DEPS_PATH": "D:/dev/PreCess-deps", // 依赖库的安装路径
+        "PRECESS_DEPS_PATH": "D:/dev/PreCess-deps/windows_x64", // 依赖库的安装路径
         "PATH": "$penv{PATH};$env{PRECESS_DEPS_PATH}/Qt6.8.3/bin;$env{PRECESS_DEPS_PATH}/VTK9.6.2/bin;$env{PRECESS_DEPS_PATH}/spdlog1.16.0/bin;$env{PRECESS_DEPS_PATH}/OpenCASCADE8.0.0/win64/vc14/bin$env{PRECESS_OCC_BIN_POSTFIX};$env{PRECESS_DEPS_PATH}/KDDockWidgets-qt6-2.4.0/bin"
       },
       "condition": {

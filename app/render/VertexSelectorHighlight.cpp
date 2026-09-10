@@ -16,6 +16,7 @@
 #include <vtkMapper.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPointData.h>
+#include <vtkPointPicker.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
@@ -99,17 +100,26 @@ void VertexSelectorHighlight::enableHighlight()
 void VertexSelectorHighlight::select(double posx, double posy)
 {
     // 兼容路径：自行构建 picker 并拾取；生产路径由 MeshSelectManager 预拾后调下方的 picker 重载。
+#ifdef __EMSCRIPTEN__
+    // GLES3/WebGL2 未实现 glPointSize，硬件点拾取不正确，改用纯软件拾取的 vtkPointPicker
+    vtkNew<vtkPointPicker> picker;
+    picker->SetTolerance(0.004);
+#else
     vtkNew<vtkHardwarePicker> picker;
     picker->SnapToMeshPointOn(); // 启用贴近网格点
     picker->SetPixelTolerance(5); // 设置点拾取像素容差
+#endif
     picker->PickFromListOn();
     picker->AddPickList(&select_op_.getSolidActor());
     picker->AddPickList(&select_op_.getFaceActor());
     picker->AddPickList(&select_op_.getEdgeActor());
     picker->Pick(posx, posy, 0, renderer_);
 
-    select(posx, posy, picker.GetPointer(), picker->GetActor(),
-        picker->GetCellId(), picker->GetPointId());
+    if (!picker->GetActor() || picker->GetPointId() == -1) {
+        spdlog::debug("VertexSelectorHighlight::select: no point picked.");
+        return;
+    }
+    selectPickedPoint(picker->GetDataSet(), picker->GetPointId());
 }
 
 void VertexSelectorHighlight::select(double posx, double posy,
@@ -121,8 +131,11 @@ void VertexSelectorHighlight::select(double posx, double posy,
         spdlog::debug("VertexSelectorHighlight::select: no point picked.");
         return;
     }
-    vtkDataSet* picked_data_set = picker->GetDataSet();
+    selectPickedPoint(picker->GetDataSet(), picked_point_id);
+}
 
+void VertexSelectorHighlight::selectPickedPoint(vtkDataSet* picked_data_set, vtkIdType picked_point_id)
+{
     // 获取对应的点id selected_vertex_id
     auto vertex_id_array = vtkIdTypeArray::SafeDownCast(picked_data_set->GetPointData()->GetArray("vtkOriginalPointIds"));
     if (!vertex_id_array) {

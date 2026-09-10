@@ -35,6 +35,7 @@ target_link_libraries(${MYNAME}
     Qt${VTK_QT_VERSION}::Quick
     KDAB::kddockwidgets
     spdlog::spdlog
+    "$<TARGET_NAME_IF_EXISTS:StaticPlugins>"
 )
 
 # - Prevent the creation of a console window on Windows.
@@ -48,6 +49,29 @@ target_compile_definitions(${MYNAME} PRIVATE
         "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
 )
 
+if(EMSCRIPTEN)
+target_sources(${MYNAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/QWasmBridge.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/QWasmBridge.h"
+)
+# 静态 wasm 构建需要显式导入图片格式插件
+target_link_libraries(${MYNAME} PRIVATE Qt6::Svg)
+qt_import_plugins(${MYNAME} INCLUDE
+    Qt6::QSvgPlugin
+    Qt6::QSvgIconPlugin
+    Qt6::QJpegPlugin
+    Qt6::QGifPlugin
+    Qt6::QICOPlugin
+)
+# OCCT 8.0 起 BRepMesh_IncrementalMeshFactory 使用静态初始化器注册，
+# 但会被 wasm 链接器优化掉，这里强制链接 TKMesh 静态库解决。
+target_link_options(${MYNAME} PRIVATE
+    "LINKER:--whole-archive"
+    "$<TARGET_FILE:TKMesh>"
+    "LINKER:--no-whole-archive"
+)
+endif()
+
 # 2) 安装 .app 到指定前缀下
 include(InstallRequiredSystemLibraries)
 install(TARGETS ${MYNAME}
@@ -59,7 +83,9 @@ install(TARGETS ${MYNAME}
 
 # 3) 安装依赖库 (RUNTIME_DEPENDENCIES)
 #    - 这里要列举实际用到的模块动态库目录，否则无法复制对应的运行时依赖
-set(DEPENDENCY_DIRECTORIES 
+#    - wasm 全静态链接，无动态库依赖扫描与 QML 部署脚本
+if(NOT EMSCRIPTEN)
+set(DEPENDENCY_DIRECTORIES
     $<TARGET_FILE_DIR:VTK::CommonCore>
     $<TARGET_FILE_DIR:TKernel>
     $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
@@ -91,6 +117,7 @@ install(
     SCRIPT ${deploy_script}
     COMPONENT ${MYNAME}
 )
+endif()
 
 # 5) 使用 fixup_bundle 将所有依赖“收拢”进 .app，并修正引用路径（仅在 macOS 下执行）
 if(APPLE)
@@ -107,4 +134,73 @@ if(APPLE)
       \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/Frameworks;/opt/homebrew/lib;/usr/local/lib\"
     )
   ")
+endif()
+
+# 6) 构建 wasm 平台，捆绑字体，生成 HTML 壳，并安装网页侧全部产物
+if(EMSCRIPTEN)
+set(APPNAME ${MYNAME})
+# 与 Qt6WasmMacros 的默认导出名规则保持一致（<target>_entry）
+string(REGEX REPLACE "[^a-zA-Z0-9_]" "_" wasm_target_name "${MYNAME}")
+set(APPEXPORTNAME "${wasm_target_name}_entry")
+string(TIMESTAMP CACHE_ID "%Y%m%d%H%M%S" UTC)
+configure_file("${CMAKE_SOURCE_DIR}/resource/pwa/index.html" "${CMAKE_CURRENT_BINARY_DIR}/index.html" @ONLY)
+configure_file("${CMAKE_SOURCE_DIR}/resource/pwa/sw.js" "${CMAKE_CURRENT_BINARY_DIR}/sw.js" @ONLY)
+
+# 捆绑字体资源，生成 qrc:/fonts/appfont.bin
+set(WASM_FONT_FILE "" CACHE FILEPATH "嵌入资源的字体文件（默认使用思源黑体）")
+if(NOT WASM_FONT_FILE)
+    if(EXISTS "${WASM_QT_DIR}/../fonts/SourceHanSansCN-Regular.otf")
+        set(WASM_FONT_FILE "${WASM_QT_DIR}/../fonts/SourceHanSansCN-Regular.otf")
+    endif()
+endif()
+if(WASM_FONT_FILE)
+    message(STATUS "wasm use font: ${WASM_FONT_FILE}")
+    set(WASM_FONT_EMBEDDED "${CMAKE_CURRENT_BINARY_DIR}/appfont.bin")
+    file(COPY_FILE "${WASM_FONT_FILE}" "${WASM_FONT_EMBEDDED}")
+    set_source_files_properties("${WASM_FONT_EMBEDDED}" PROPERTIES
+        QT_RESOURCE_ALIAS "appfont.bin")
+    qt_add_resources(${MYNAME} "appfont"
+        FILES "${WASM_FONT_EMBEDDED}"
+        PREFIX "/fonts"
+    )
+else()
+    message(WARNING "未找到可嵌入的字体，中文将显示为方框，请将 WASM_FONT_FILE 设置为指定的字体路径")
+endif()
+
+# 安装其他产物
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/qtloader.js"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT ${MYNAME}
+)
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${MYNAME}.wasm"
+    "${CMAKE_CURRENT_BINARY_DIR}/${MYNAME}.data"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT ${MYNAME}
+    OPTIONAL
+)
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${MYNAME}.worker.js"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT ${MYNAME}
+    OPTIONAL
+)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/index.html"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT ${MYNAME}
+)
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../resource/PreCess.ico"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT ${MYNAME}
+)
+install(FILES
+    "${CMAKE_SOURCE_DIR}/resource/pwa/manifest.json"
+    "${CMAKE_CURRENT_BINARY_DIR}/sw.js"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT ${MYNAME}
+)
+install(DIRECTORY "${CMAKE_SOURCE_DIR}/resource/pwa/icons/"
+    DESTINATION "${CMAKE_INSTALL_BINDIR}/icons"
+    COMPONENT ${MYNAME}
+)
 endif()

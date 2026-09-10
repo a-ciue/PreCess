@@ -13,6 +13,27 @@
 Q_DECLARE_INTERFACE(systems::PluginBase, "com.PreCess.systems.PluginBase/1.0")
 
 namespace systems {
+void SystemPluginManager::registerStaticPlugins()
+{
+    const auto static_plugins = QPluginLoader::staticPlugins();
+    for (const QStaticPlugin& static_plugin : static_plugins) {
+        QObject* plugin_instance = static_plugin.instance();
+        if (!qobject_cast<PluginBase*>(plugin_instance)) {
+            continue;
+        }
+
+        QJsonObject meta_data = static_plugin.metaData();
+        QString iid = meta_data.value("IID").toString();
+        qsizetype slash_pos = iid.indexOf(u'/');
+        QString iid_body = slash_pos >= 0 ? iid.left(slash_pos) : iid;
+        qsizetype dot_pos = iid_body.lastIndexOf(u'.');
+        std::string plugin_name = (dot_pos >= 0 ? iid_body.mid(dot_pos + 1) : iid_body).toStdString();
+
+        QJsonObject system_meta_data = meta_data.value("MetaData").toObject();
+        this->loadPlugin(system_meta_data, *plugin_instance, plugin_name);
+    }
+}
+
 bool SystemPluginManager::registerPlugin(const std::filesystem::path& plugin_path)
 {
     std::string plugin_name = plugin_path.stem().string();
@@ -31,24 +52,32 @@ bool SystemPluginManager::registerPlugin(const std::filesystem::path& plugin_pat
     }
 
     QJsonObject system_meta_data = plugin_loader.metaData().value("MetaData").toObject();
+    return this->loadPlugin(system_meta_data, *plugin_instance, plugin_name);
+}
+
+bool SystemPluginManager::loadPlugin(const QJsonObject& system_meta_data, QObject& plugin_instance, const std::string& plugin_name)
+{
+    if (this->plugin_names_.count(plugin_name)) {
+        spdlog::warn("Plugin '{}' already registered, no need to register again", plugin_name);
+        return false;
+    }
+
     std::string system_name = system_meta_data.value("system").toString().toStdString();
-    if (!this->system_registers_.count(system_name))
-    {
+    if (!this->system_registers_.count(system_name)) {
         spdlog::error("System '{}' not found when registering system", system_name);
         return false;
     }
 
     // 插件对象实例化并获取插件的处理器 Handler
-    PluginBase* plugin = qobject_cast<PluginBase*>(plugin_instance);
-    if (!plugin)
-    {
-        spdlog::error("Plugin '{}' does not inherit from PluginBase", plugin_path_q.toStdString());
+    PluginBase* plugin = qobject_cast<PluginBase*>(&plugin_instance);
+    if (!plugin) {
+        spdlog::error("Plugin '{}' does not inherit from PluginBase", plugin_name);
         return false;
     }
 
-	SystemRegisterBase* cur_system = this->system_registers_[system_name].get();
+    SystemRegisterBase* cur_system = this->system_registers_[system_name].get();
     QJsonObject handler_data = system_meta_data.value("handler").toObject();
-	if (cur_system->registerPlugin(handler_data, *plugin)) {
+    if (cur_system->registerPlugin(handler_data, *plugin)) {
         this->plugin_names_.insert(plugin_name);
         return true;
     }
@@ -65,7 +94,7 @@ void SystemPluginManager::unregisterPlugin(const std::filesystem::path& plugin_p
     }
 
     // 读取插件元数据，找对应的系统注册器执行注销
-	QString plugin_path_q = QString::fromStdString(plugin_path.string());
+    QString plugin_path_q = QString::fromStdString(plugin_path.string());
     QPluginLoader plugin_loader(plugin_path_q);
     QJsonObject system_meta_data = plugin_loader.metaData().value("MetaData").toObject();
     std::string system_name = system_meta_data.value("system").toString().toStdString();
@@ -77,7 +106,7 @@ void SystemPluginManager::unregisterPlugin(const std::filesystem::path& plugin_p
     SystemRegisterBase* cur_system = this->system_registers_[system_name].get();
     QJsonObject handler_data = system_meta_data.value("handler").toObject();
 
-	cur_system->unregisterPlugin(handler_data);
+    cur_system->unregisterPlugin(handler_data);
     this->plugin_names_.erase(plugin_name);
 }
 

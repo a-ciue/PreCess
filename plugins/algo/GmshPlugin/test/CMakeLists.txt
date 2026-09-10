@@ -11,9 +11,11 @@ precess_test_link_libraries(GmshPluginTest
     GmshPluginlib
 )
 
+if(NOT EMSCRIPTEN)
+
 add_executable(GmshVtkExample "GmshVtkExample.cpp")
 target_link_libraries(GmshVtkExample PRIVATE
-    gmsh::shared
+    ${GMSH_TARGET}
     Data
     GmshPluginlib
     TKDESTEP
@@ -28,7 +30,7 @@ target_link_libraries(GmshVtkExample PRIVATE
 
 add_executable(GmshDemo "GmshDemo.cpp")
 target_link_libraries(GmshDemo PRIVATE
-    gmsh::shared
+    ${GMSH_TARGET}
     Data
     GmshPluginlib
     VTK::InteractionStyle
@@ -40,7 +42,7 @@ target_link_libraries(GmshDemo PRIVATE
 )
 add_custom_command(TARGET GmshDemo POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:gmsh::shared>
+        $<TARGET_FILE:${GMSH_TARGET}>
         $<TARGET_FILE_DIR:GmshDemo>
     COMMENT "Copying gmsh.dll to GmshDemo output directory"
 )
@@ -55,7 +57,9 @@ vtk_module_autoinit(TARGETS GmshVtkExample MODULES
 )
 add_custom_command(TARGET GmshVtkExample POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:gmsh::shared>
+        $<TARGET_FILE:${GMSH_TARGET}>
         $<TARGET_FILE_DIR:GmshVtkExample>
     COMMENT "Copying gmsh.dll to GmshVtkExample output directory"
 )
+
+endif()

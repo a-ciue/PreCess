@@ -124,6 +124,7 @@ Item {
         RowLayout {
             Layout.fillWidth: true
             visible: panelStack.currentIndex === 1
+                && QModelManager.systemPluginManager.canLoadExternalPlugins
 
             Item { Layout.fillWidth: true }
 

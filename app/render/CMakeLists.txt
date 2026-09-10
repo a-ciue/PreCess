@@ -57,4 +57,6 @@ target_link_libraries(renderQml PRIVATE
 vtk_module_autoinit(TARGETS renderQml MODULES 
     VTK::GUISupportQtQuick VTK::CommonColor VTK::RenderingAnnotation
 )
+if(BUILD_TESTING)
 add_subdirectory(test)
+endif()

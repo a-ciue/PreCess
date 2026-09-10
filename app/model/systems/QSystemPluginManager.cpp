@@ -11,10 +11,16 @@ namespace systems {
 QSystemPluginManager::QSystemPluginManager(SystemPluginManager* system_plugin_manager_)
     : system_plugin_manager_(system_plugin_manager_)
 {
-    std::vector<std::string> names = system_plugin_manager_->getPluginNames();
-    for (const auto& name : names) {
+}
+
+void QSystemPluginManager::registerStaticPlugins()
+{
+    system_plugin_manager_->registerStaticPlugins();
+    plugin_names_.clear();
+    for (const auto& name : system_plugin_manager_->getPluginNames()) {
         plugin_names_.append(QString::fromStdString(name));
     }
+    emit pluginNamesChanged();
 }
 
 bool QSystemPluginManager::registerPlugin(const QUrl& plugin_path)
@@ -42,6 +48,15 @@ void QSystemPluginManager::unregisterPlugin(const QString& plugin_path)
 const QStringList& QSystemPluginManager::getPluginNames() const
 {
     return plugin_names_;
+}
+
+bool QSystemPluginManager::getCanLoadExternalPlugins() const
+{
+#ifdef __EMSCRIPTEN__ // wasm 平台暂不支持动态插件
+    return false;
+#else
+    return true;
+#endif
 }
 
 QString QSystemPluginManager::getPluginPath(const QString& plugin_name) const

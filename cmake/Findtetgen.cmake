@@ -59,6 +59,7 @@ set(TETGEN_FIND_ARGS
 find_path(TETGEN_INCLUDE_DIR
   tetgen.h
   ${TETGEN_FIND_ARGS}
+  NO_CMAKE_FIND_ROOT_PATH
 )
 
 find_library(TETGEN_LIBRARY_RELEASE
@@ -71,6 +72,7 @@ find_library(TETGEN_LIBRARY_RELEASE
   PATH_SUFFIXES
     tetgen1.6.0/lib
     lib
+  NO_CMAKE_FIND_ROOT_PATH
 )
 
 find_library(TETGEN_LIBRARY_DEBUG
@@ -83,6 +85,7 @@ find_library(TETGEN_LIBRARY_DEBUG
   PATH_SUFFIXES
     tetgen1.6.0/lib
     lib
+  NO_CMAKE_FIND_ROOT_PATH
 )
 
 find_library(TETGEN_LIBRARY_RELWITHDEBINFO
@@ -95,6 +98,7 @@ find_library(TETGEN_LIBRARY_RELWITHDEBINFO
   PATH_SUFFIXES
     tetgen1.6.0/lib
     lib
+  NO_CMAKE_FIND_ROOT_PATH
 )
 
 include(SelectLibraryConfigurations)

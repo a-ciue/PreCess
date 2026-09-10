@@ -175,3 +175,21 @@ try {
     spdlog::error("ModelIOSystemAdaptor::getDialogNameFilters: Unknown exception occurred");
     return {};
 }
+
+QString QModelIOSystemAdaptor::getDialogExtFilters() const
+try {
+    QStringList filters;
+    for (ModelIOInfo* file_type_info : io_system_->registeredFileTypeInfos()) {
+        if (file_type_info->extensions.empty()) {
+            continue;
+        }
+        filters << QString::fromStdString(fmt::format(".{}", fmt::join(file_type_info->extensions, ",.")));
+    }
+    return filters.join(QLatin1Char(','));
+} catch (const std::exception& e) {
+    spdlog::error("ModelIOSystemAdaptor::getDialogExtFilters: Exception occurred - {}", e.what());
+    return {};
+} catch (...) {
+    spdlog::error("ModelIOSystemAdaptor::getDialogExtFilters: Unknown exception occurred");
+    return {};
+}

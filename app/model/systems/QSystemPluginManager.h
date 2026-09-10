@@ -13,8 +13,11 @@ class QSystemPluginManager : public QObject {
     QML_ELEMENT
     QML_UNCREATABLE("QSystemPluginManager is provided by C++")
     Q_PROPERTY(const QStringList& pluginNames READ getPluginNames NOTIFY pluginNamesChanged)
+    Q_PROPERTY(bool canLoadExternalPlugins READ getCanLoadExternalPlugins CONSTANT)
 public:
     QSystemPluginManager(SystemPluginManager* system_plugin_manager_);
+
+    Q_INVOKABLE void registerStaticPlugins();
 
     Q_INVOKABLE bool registerPlugin(const QUrl& plugin_path);
 
@@ -23,6 +26,8 @@ public:
     const QStringList& getPluginNames() const;
 
     Q_INVOKABLE QString getPluginPath(const QString& plugin_name) const;
+
+    bool getCanLoadExternalPlugins() const;
 
 signals:
     void pluginNamesChanged();
