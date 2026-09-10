@@ -85,5 +85,5 @@ var searchData=
   ['extractedge_82',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
   ['extractsolid_83',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
   ['extractvertex_84',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
-  ['extrudeface_85',['extrudeFace',['../classQGeometryOperations.html#aa4684e4b8b1e8314b6494c41abb2b8b6',1,'QGeometryOperations::extrudeFace()'],['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder::extrudeFace()']]]
+  ['extrudeface_85',['extrudeFace',['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder']]]
 ];
