@@ -5,7 +5,6 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "GeometryBuilder.h"
-#include "GeometryShapeWriter.h"
 
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -79,9 +78,10 @@ std::any ExtrudeFaceHandler::execute(FeatureContext& ctx)
         const TopoDS_Face source = TopoDS::Face(*source_shape);
         TopoDS_Shape solid = GeometryBuilder::extrudeFace(
             source, direction_x, direction_y, direction_z, length);
-        return GeometryShapeWriter::writeShape(ctx.model,
-            GeometryShapeWriter::WriteTarget { -1, *component_id },
-            "Extrude", std::move(solid));
+        auto component_operator = ctx.model.getComponentOperator(*component_id);
+        if (!component_operator)
+            return std::string("几何操作失败，详细原因请查看日志。");
+        return component_operator->appendGeometryShape(std::move(solid));
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("ExtrudeFace: {}", detail ? detail : "OpenCASCADE error");

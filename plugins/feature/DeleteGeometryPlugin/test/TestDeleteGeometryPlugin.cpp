@@ -5,7 +5,7 @@
 #include "FeatureSystem.h"
 #include "FeatureSystemRegister.h"
 #include "GeometryBuilder.h"
-#include "GeometryShapeWriter.h"
+#include "ModelOperator.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
@@ -35,9 +35,15 @@ HandlerMetaData handlerMetaData()
 //! @brief 临时模型承载一个长方体几何组件，并建好几何索引
 Index addBoxGeometryComponent(ModelLayer& model_layer)
 {
-    const Index component_id = GeometryShapeWriter::writeShape(model_layer,
-        GeometryShapeWriter::WriteTarget {}, "Fixture",
-        GeometryBuilder::makeBox(0.0, 0.0, 0.0, 10.0, 10.0, 10.0));
+    const Index model_id = model_layer.addModel("temp_Fixture", {});
+    auto model_operator = model_layer.getModelOperator(model_id);
+    REQUIRE(model_operator.has_value());
+    auto geometry = std::make_unique<GeometryData>();
+    geometry->setRootShape(GeometryBuilder::makeBox(0.0, 0.0, 0.0, 10.0, 10.0, 10.0));
+    auto component = std::make_unique<ComponentData>();
+    component->name = "Fixture";
+    component->geometry = std::move(geometry);
+    const Index component_id = model_operator->addGeometryComponent(std::move(component));
     model_layer.findComponent(component_id)->geometry->ensureIndexBuilt(model_layer.geomRegistry());
     return component_id;
 }

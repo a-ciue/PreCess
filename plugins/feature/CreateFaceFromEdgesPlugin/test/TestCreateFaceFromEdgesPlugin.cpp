@@ -8,7 +8,6 @@
 #include "FeatureSystemRegister.h"
 #include "GeometryBuilder.h"
 #include "GeometryData.h"
-#include "GeometryShapeWriter.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
@@ -54,20 +53,27 @@ Index addSquareLoopComponent(ModelLayer& model_layer)
     BRepBuilderAPI_MakeEdge b2(v2, v3);
     BRepBuilderAPI_MakeEdge b3(v3, v0);
 
-    const Index component_id = GeometryShapeWriter::writeShape(model_layer,
-        GeometryShapeWriter::WriteTarget {}, "Fixture", b0.Shape());
+    const Index model_id = model_layer.addModel("temp_Fixture", {});
+    auto model_operator = model_layer.getModelOperator(model_id);
+    REQUIRE(model_operator.has_value());
+    auto geometry = std::make_unique<GeometryData>();
+    geometry->setRootShape(b0.Shape());
+    auto component = std::make_unique<ComponentData>();
+    component->name = "Fixture";
+    component->geometry = std::move(geometry);
+    const Index component_id = model_operator->addGeometryComponent(std::move(component));
     auto component_operator = model_layer.getComponentOperator(component_id);
     REQUIRE(component_operator.has_value());
     REQUIRE(component_operator->appendGeometryShape(b1.Shape()) >= 0);
     REQUIRE(component_operator->appendGeometryShape(b2.Shape()) >= 0);
     REQUIRE(component_operator->appendGeometryShape(b3.Shape()) >= 0);
 
-    auto* component = model_layer.findComponent(component_id);
-    REQUIRE(component != nullptr);
-    component->geometry->ensureIndexBuilt(model_layer.geomRegistry());
+    auto* fixture_component = model_layer.findComponent(component_id);
+    REQUIRE(fixture_component != nullptr);
+    fixture_component->geometry->ensureIndexBuilt(model_layer.geomRegistry());
     // 共享顶点：4 条边、4 个顶点（向量含 0 号保留槽，局部 id 从 1 起）
-    REQUIRE(component->geometry->index.edge_local_to_global.size() == 4 + 1);
-    REQUIRE(component->geometry->index.vertex_local_to_global.size() == 4 + 1);
+    REQUIRE(fixture_component->geometry->index.edge_local_to_global.size() == 4 + 1);
+    REQUIRE(fixture_component->geometry->index.vertex_local_to_global.size() == 4 + 1);
     return component_id;
 }
 }

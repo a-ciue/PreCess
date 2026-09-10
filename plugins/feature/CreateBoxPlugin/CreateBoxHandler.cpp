@@ -3,7 +3,10 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "GeometryBuilder.h"
-#include "GeometryShapeWriter.h"
+#include "ComponentData.h"
+#include "GeometryData.h"
+#include "ModelLayer.h"
+#include "ModelOperator.h"
 
 #include <Standard_Failure.hxx>
 #include <TopoDS_Shape.hxx>
@@ -53,17 +56,18 @@ std::any CreateBoxHandler::execute(FeatureContext& ctx)
     // 活动模型/组件是对象树选中态提示，仅作缺省目标；提示语与原几何界面一致
     const auto active_model = ctx.activeModel ? ctx.activeModel() : std::nullopt;
     const auto active_component = ctx.activeComponent ? ctx.activeComponent() : std::nullopt;
-    GeometryShapeWriter::WriteTarget target;
+    Index target_model_id = -1;
+    Index target_component_id = -1;
     if (write_target == 0) {
         if (!active_component)
             return std::string("请选择当前 Component，或修改写入目标。");
-        target = { active_model.value_or(-1), *active_component };
+        target_model_id = active_model.value_or(-1);
+        target_component_id = *active_component;
     } else if (write_target == 1) {
         if (!active_model)
             return std::string("请选择当前 Model，或将写入目标改为“新建 Model”。");
-        target = { *active_model, -1 };
+        target_model_id = *active_model;
     } else if (write_target == 2) {
-        target = { -1, -1 };
     } else {
         return std::string("写入目标参数无效。");
     }
@@ -71,10 +75,27 @@ std::any CreateBoxHandler::execute(FeatureContext& ctx)
     try {
         TopoDS_Shape shape = GeometryBuilder::makeBox(
             origin_x, origin_y, origin_z, length_x, length_y, length_z);
-        const Index component_id = GeometryShapeWriter::writeShape(
-            ctx.model, target, "Box_" + std::to_string(next_box_number_), std::move(shape));
-        if (target.component_id < 0)
-            ++next_box_number_;
+        // 组件目标优先：追加到既有组件几何（写入即标脏，通知由操作边界 flush）
+        if (target_component_id >= 0) {
+            auto component_operator = ctx.model.getComponentOperator(target_component_id);
+            if (!component_operator)
+                return std::string("几何操作失败，详细原因请查看日志。");
+            return component_operator->appendGeometryShape(std::move(shape));
+        }
+
+        // 新建几何组件；无目标模型时先经 addModel 新建临时模型承载
+        if (target_model_id < 0)
+            target_model_id = ctx.model.addModel("temp_Box_" + std::to_string(next_box_number_), {});
+        auto geometry = std::make_unique<GeometryData>();
+        geometry->setRootShape(std::move(shape));
+        auto component = std::make_unique<ComponentData>();
+        component->name = "Box_" + std::to_string(next_box_number_);
+        component->geometry = std::move(geometry);
+        auto model_operator = ctx.model.getModelOperator(target_model_id);
+        if (!model_operator)
+            return std::string("几何操作失败，详细原因请查看日志。");
+        const Index component_id = model_operator->addGeometryComponent(std::move(component));
+        ++next_box_number_; // 新建组件，推进编号
         return component_id;
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();

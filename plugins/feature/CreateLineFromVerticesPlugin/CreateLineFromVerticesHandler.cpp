@@ -5,7 +5,6 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "GeometryBuilder.h"
-#include "GeometryShapeWriter.h"
 
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -62,11 +61,11 @@ std::any CreateLineFromVerticesHandler::execute(FeatureContext& ctx)
         const TopoDS_Vertex start = TopoDS::Vertex(*start_shape);
         const TopoDS_Vertex end = TopoDS::Vertex(*end_shape);
         TopoDS_Shape line = GeometryBuilder::makeLine(start, end);
-        const Index result_component_id = GeometryShapeWriter::writeShape(ctx.model,
-            GeometryShapeWriter::WriteTarget { -1, *component_id },
-            "Line_" + std::to_string(next_line_number_), std::move(line));
+        auto component_operator = ctx.model.getComponentOperator(*component_id);
+        if (!component_operator)
+            return std::string("几何操作失败，详细原因请查看日志。");
         ++next_line_number_;
-        return result_component_id;
+        return component_operator->appendGeometryShape(std::move(line));
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("CreateLineFromVertices: {}", detail ? detail : "OpenCASCADE error");

@@ -5,7 +5,6 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "GeometryBuilder.h"
-#include "GeometryShapeWriter.h"
 
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -61,9 +60,10 @@ std::any CreateFaceFromEdgesHandler::execute(FeatureContext& ctx)
         }
 
         TopoDS_Shape face = GeometryBuilder::makeFaceFromEdges(edges);
-        return GeometryShapeWriter::writeShape(ctx.model,
-            GeometryShapeWriter::WriteTarget { -1, *component_id },
-            "FaceFromEdges", std::move(face));
+        auto component_operator = ctx.model.getComponentOperator(*component_id);
+        if (!component_operator)
+            return std::string("几何操作失败，详细原因请查看日志。");
+        return component_operator->appendGeometryShape(std::move(face));
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("CreateFaceFromEdges: {}", detail ? detail : "OpenCASCADE error");
