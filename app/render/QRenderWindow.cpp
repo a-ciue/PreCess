@@ -29,6 +29,9 @@
 #include <utility>
 
 namespace {
+//! @brief 比例尺刻度字号因子（vtkAxisActor2D::FontFactor，默认 1.0，取值区间 0.1~2.0）
+constexpr double kScaleBarFontFactor = 0.7;
+
 //! @brief 相机/视口输入未变则整段跳过；变化时按 1-2-5 整数档反算精确段长并居中重设端点，
 //!        使标尺段长与刻度值随相机缩放联动更新
 class ScaleBarRangeUpdater : public vtkCommand {
@@ -195,6 +198,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->scale_bar_axis_->GetPositionCoordinate()->SetValue(0.39, 0.05);
     vtk->scale_bar_axis_->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
     vtk->scale_bar_axis_->GetPosition2Coordinate()->SetValue(0.61, 0.05);
+    // 刻度字号取默认的一半：FontFactor 默认 1.0（取值区间 0.1~2.0），与 LabelFactor 共同决定
+    // 标注字号；直接改 TextProperty 的字号会被轴重建刻度时的内部计算覆盖，故走 FontFactor
+    vtk->scale_bar_axis_->SetFontFactor(kScaleBarFontFactor);
     vtk->scale_bar_axis_->SetNumberOfLabels(3);
     vtk->scale_bar_axis_->SetLabelFormat("%.6g");
     vtk->scale_bar_axis_->SetTitleVisibility(false);
