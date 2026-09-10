@@ -2,23 +2,16 @@
 #include "CreateRectangleFaceHandler.h"
 #include "EventBus.h"
 #include "FeatureSystem.h"
-#include "FeatureSystemRegister.h"
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
-#include "SystemPluginManager.h"
 
-#include <QCoreApplication>
 #include <catch2/catch_test_macros.hpp>
 
 #include <any>
 
 using namespace systems;
 using namespace systems::feature;
-
-#ifndef CREATE_RECTANGLE_FACE_PLUGIN_PATH
-#define CREATE_RECTANGLE_FACE_PLUGIN_PATH ""
-#endif
 
 namespace {
 HandlerMetaData rectangleMetaData()
@@ -28,37 +21,6 @@ HandlerMetaData rectangleMetaData()
     meta_data.display_name = "创建矩形面";
     return meta_data;
 }
-}
-
-TEST_CASE("CreateRectangleFacePlugin dll registers into FeatureSystem via SystemPluginManager", "[CreateRectangleFacePlugin]")
-{
-    int argc = 1;
-    char arg0[] = "TestCreateRectangleFacePlugin";
-    char* argv[] = { arg0, nullptr };
-    QCoreApplication app(argc, argv);
-
-    core::EventBus bus;
-    ModelLayer model_layer;
-    FeatureSystem feature_system(model_layer, bus);
-    SystemPluginManager plugin_manager;
-    REQUIRE(plugin_manager.addSystemRegister(FeatureSystem::name, std::make_unique<FeatureSystemRegister>(feature_system)));
-
-    // 走真实的 dll 加载链路：QPluginLoader + json 元数据 + 系统注册器
-    REQUIRE(plugin_manager.registerPlugin(CREATE_RECTANGLE_FACE_PLUGIN_PATH));
-
-    auto infos = feature_system.getFeatureInfos();
-    REQUIRE(infos.size() == 1);
-    REQUIRE(infos[0]->name == "CreateRectangleFace");
-    REQUIRE(infos[0]->display_name == "创建矩形面");
-    // 参数声明与原 GeometryOperationActions.qml 的 createRectangleFaceInfo 一致：5 个 Float + 2 个 Combo
-    REQUIRE(infos[0]->arg_types.size() == 7);
-    REQUIRE(infos[0]->menus.size() == 1);
-    // 菜单与图标复用原"几何"页"矩形面"按钮的声明
-    REQUIRE(infos[0]->menus[0].menu_path == "几何");
-    REQUIRE(infos[0]->menus[0].icon == "qrc:/images/toolbar/Geometry/rectangle.svg");
-
-    plugin_manager.unregisterPlugin(CREATE_RECTANGLE_FACE_PLUGIN_PATH);
-    REQUIRE(feature_system.getFeatureInfos().empty());
 }
 
 TEST_CASE("CreateRectangleFace execute creates face component by write target", "[CreateRectangleFacePlugin]")

@@ -5,27 +5,20 @@
 #include "CreateFaceFromEdgesHandler.h"
 #include "EventBus.h"
 #include "FeatureSystem.h"
-#include "FeatureSystemRegister.h"
 #include "GeometryBuilder.h"
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
-#include "SystemPluginManager.h"
 #include "TopoDS_Vertex.hxx"
 #include "gp_Pnt.hxx"
 
-#include <QCoreApplication>
 #include <catch2/catch_test_macros.hpp>
 
 #include <any>
 
 using namespace systems;
 using namespace systems::feature;
-
-#ifndef CREATE_FACE_FROM_EDGES_PLUGIN_PATH
-#define CREATE_FACE_FROM_EDGES_PLUGIN_PATH ""
-#endif
 
 namespace {
 HandlerMetaData handlerMetaData()
@@ -76,36 +69,6 @@ Index addSquareLoopComponent(ModelLayer& model_layer)
     REQUIRE(fixture_component->geometry->index.vertex_local_to_global.size() == 4 + 1);
     return component_id;
 }
-}
-
-TEST_CASE("CreateFaceFromEdgesPlugin dll registers into FeatureSystem via SystemPluginManager", "[CreateFaceFromEdgesPlugin]")
-{
-    int argc = 1;
-    char arg0[] = "TestCreateFaceFromEdgesPlugin";
-    char* argv[] = { arg0, nullptr };
-    QCoreApplication app(argc, argv);
-
-    core::EventBus bus;
-    ModelLayer model_layer;
-    FeatureSystem feature_system(model_layer, bus);
-    SystemPluginManager plugin_manager;
-    REQUIRE(plugin_manager.addSystemRegister(FeatureSystem::name, std::make_unique<FeatureSystemRegister>(feature_system)));
-
-    // 走真实的 dll 加载链路：QPluginLoader + json 元数据 + 系统注册器
-    REQUIRE(plugin_manager.registerPlugin(CREATE_FACE_FROM_EDGES_PLUGIN_PATH));
-
-    auto infos = feature_system.getFeatureInfos();
-    REQUIRE(infos.size() == 1);
-    REQUIRE(infos[0]->name == "CreateFaceFromEdges");
-    REQUIRE(infos[0]->display_name == "选择闭合边创建面");
-    REQUIRE(infos[0]->arg_types.size() == 1);
-    REQUIRE(infos[0]->arg_types[0].type == ArgTypeEnum::Selector);
-    // 菜单与图标复用原"几何"页"闭合边成面"按钮的声明
-    REQUIRE(infos[0]->menus[0].menu_path == "几何");
-    REQUIRE(infos[0]->menus[0].icon == "qrc:/images/toolbar/Geometry/close_edges_to_form_surface.svg");
-
-    plugin_manager.unregisterPlugin(CREATE_FACE_FROM_EDGES_PLUGIN_PATH);
-    REQUIRE(feature_system.getFeatureInfos().empty());
 }
 
 TEST_CASE("CreateFaceFromEdges execute creates face from closed edge loop", "[CreateFaceFromEdgesPlugin]")

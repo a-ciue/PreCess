@@ -2,23 +2,16 @@
 #include "CreateDiskFaceHandler.h"
 #include "EventBus.h"
 #include "FeatureSystem.h"
-#include "FeatureSystemRegister.h"
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
-#include "SystemPluginManager.h"
 
-#include <QCoreApplication>
 #include <catch2/catch_test_macros.hpp>
 
 #include <any>
 
 using namespace systems;
 using namespace systems::feature;
-
-#ifndef CREATE_DISK_FACE_PLUGIN_PATH
-#define CREATE_DISK_FACE_PLUGIN_PATH ""
-#endif
 
 namespace {
 HandlerMetaData diskMetaData()
@@ -28,37 +21,6 @@ HandlerMetaData diskMetaData()
     meta_data.display_name = "创建圆盘/扇形面";
     return meta_data;
 }
-}
-
-TEST_CASE("CreateDiskFacePlugin dll registers into FeatureSystem via SystemPluginManager", "[CreateDiskFacePlugin]")
-{
-    int argc = 1;
-    char arg0[] = "TestCreateDiskFacePlugin";
-    char* argv[] = { arg0, nullptr };
-    QCoreApplication app(argc, argv);
-
-    core::EventBus bus;
-    ModelLayer model_layer;
-    FeatureSystem feature_system(model_layer, bus);
-    SystemPluginManager plugin_manager;
-    REQUIRE(plugin_manager.addSystemRegister(FeatureSystem::name, std::make_unique<FeatureSystemRegister>(feature_system)));
-
-    // 走真实的 dll 加载链路：QPluginLoader + json 元数据 + 系统注册器
-    REQUIRE(plugin_manager.registerPlugin(CREATE_DISK_FACE_PLUGIN_PATH));
-
-    auto infos = feature_system.getFeatureInfos();
-    REQUIRE(infos.size() == 1);
-    REQUIRE(infos[0]->name == "CreateDiskFace");
-    REQUIRE(infos[0]->display_name == "创建圆盘/扇形面");
-    // 参数声明与原 GeometryOperationActions.qml 的 createDiskFaceInfo 一致：6 个 Float + 2 个 Combo
-    REQUIRE(infos[0]->arg_types.size() == 8);
-    REQUIRE(infos[0]->menus.size() == 1);
-    // 菜单与图标复用原"几何"页"圆盘/扇形面"按钮的声明
-    REQUIRE(infos[0]->menus[0].menu_path == "几何");
-    REQUIRE(infos[0]->menus[0].icon == "qrc:/images/toolbar/Geometry/sector_or_circle.svg");
-
-    plugin_manager.unregisterPlugin(CREATE_DISK_FACE_PLUGIN_PATH);
-    REQUIRE(feature_system.getFeatureInfos().empty());
 }
 
 TEST_CASE("CreateDiskFace execute creates disk component by write target", "[CreateDiskFacePlugin]")

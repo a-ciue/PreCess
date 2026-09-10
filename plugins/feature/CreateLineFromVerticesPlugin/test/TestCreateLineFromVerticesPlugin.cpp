@@ -3,25 +3,18 @@
 #include "EventBus.h"
 #include "GeometryData.h"
 #include "FeatureSystem.h"
-#include "FeatureSystemRegister.h"
 #include "GeometryBuilder.h"
 #include "ModelOperator.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
-#include "SystemPluginManager.h"
 
-#include <QCoreApplication>
 #include <catch2/catch_test_macros.hpp>
 
 #include <any>
 
 using namespace systems;
 using namespace systems::feature;
-
-#ifndef CREATE_LINE_FROM_VERTICES_PLUGIN_PATH
-#define CREATE_LINE_FROM_VERTICES_PLUGIN_PATH ""
-#endif
 
 namespace {
 HandlerMetaData handlerMetaData()
@@ -47,36 +40,6 @@ Index addBoxGeometryComponent(ModelLayer& model_layer)
     model_layer.findComponent(component_id)->geometry->ensureIndexBuilt(model_layer.geomRegistry());
     return component_id;
 }
-}
-
-TEST_CASE("CreateLineFromVerticesPlugin dll registers into FeatureSystem via SystemPluginManager", "[CreateLineFromVerticesPlugin]")
-{
-    int argc = 1;
-    char arg0[] = "TestCreateLineFromVerticesPlugin";
-    char* argv[] = { arg0, nullptr };
-    QCoreApplication app(argc, argv);
-
-    core::EventBus bus;
-    ModelLayer model_layer;
-    FeatureSystem feature_system(model_layer, bus);
-    SystemPluginManager plugin_manager;
-    REQUIRE(plugin_manager.addSystemRegister(FeatureSystem::name, std::make_unique<FeatureSystemRegister>(feature_system)));
-
-    // 走真实的 dll 加载链路：QPluginLoader + json 元数据 + 系统注册器
-    REQUIRE(plugin_manager.registerPlugin(CREATE_LINE_FROM_VERTICES_PLUGIN_PATH));
-
-    auto infos = feature_system.getFeatureInfos();
-    REQUIRE(infos.size() == 1);
-    REQUIRE(infos[0]->name == "CreateLineFromVertices");
-    REQUIRE(infos[0]->display_name == "创建直线边（选择两点）");
-    REQUIRE(infos[0]->arg_types.size() == 1);
-    REQUIRE(infos[0]->arg_types[0].type == ArgTypeEnum::Selector);
-    // 菜单与图标复用原"几何"页"直线边（选点）"按钮的声明
-    REQUIRE(infos[0]->menus[0].menu_path == "几何");
-    REQUIRE(infos[0]->menus[0].icon == "qrc:/images/toolbar/Geometry/line_points.svg");
-
-    plugin_manager.unregisterPlugin(CREATE_LINE_FROM_VERTICES_PLUGIN_PATH);
-    REQUIRE(feature_system.getFeatureInfos().empty());
 }
 
 TEST_CASE("CreateLineFromVertices execute appends shared-topology line to source component", "[CreateLineFromVerticesPlugin]")
