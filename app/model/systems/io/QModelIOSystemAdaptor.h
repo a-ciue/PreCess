@@ -47,6 +47,15 @@ public:
      */
     Q_INVOKABLE QUrl suggestFileUrl(const QString& model_name, const QString& unique_name, const QUrl& folder) const;
     /**
+     * @brief 按模型名与文件类型推导导出文件名（不含目录）
+     *
+     * 供不使用文件对话框的界面（如网页端导出弹窗）预填文件名，规则同 suggestFileUrl 的文件名部分。
+     * @param model_name 模型名，通常来自导入文件名（可带扩展名）
+     * @param unique_name 文件类型唯一名称，允许未注册
+     * @return 建议文件名，模型名为空时返回空串
+     */
+    Q_INVOKABLE QString suggestFileName(const QString& model_name, const QString& unique_name) const;
+    /**
      * @brief 写出前按文件类型校正目标文件的扩展名
      *
      * 对话框里的文件名不随用户改选的文件类型变化，写出前据此校正，避免内容与扩展名不符。

@@ -104,6 +104,16 @@ ColumnLayout {
         }
     }
 
+    // 导出默认文件名：以活动模型名（多来自导入文件名）为主干，按目标文件类型换成对应扩展名。
+    // 原生文件对话框与网页端导出弹窗共用，保证两条路径的默认名一致
+    function suggestedExportFileName(file_type) {
+        const model_id = App.selection.activeModelId
+        if (model_id < 0)
+            return ""
+        return QModelManager.ioSystem.suggestFileName(
+            QModelManager.query.getModelName(model_id), file_type)
+    }
+
     // 功能触发入口：ribbon 功能按钮共用
     function activateFeature(info) {
         App.activeOperation = {
@@ -231,6 +241,11 @@ ColumnLayout {
         function openDialog() {
             typeCombo.model = QModelManager.ioSystem.getModelIOInfo()
             typeCombo.currentIndex = 0
+            // 按活动模型名预填（无活动模型时保留既有默认值）
+            const info = typeCombo.model[typeCombo.currentIndex]
+            const suggested = info ? root.suggestedExportFileName(info.name) : ""
+            if (suggested !== "")
+                nameField.text = suggested
             open()
         }
 

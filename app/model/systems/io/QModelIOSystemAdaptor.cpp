@@ -75,6 +75,11 @@ QUrl QModelIOSystemAdaptor::suggestFileUrl(const QString& model_name, const QStr
     return QUrl::fromLocalFile(folder.toLocalFile() + "/" + QString::fromStdString(suggested));
 }
 
+QString QModelIOSystemAdaptor::suggestFileName(const QString& model_name, const QString& unique_name) const
+{
+    return QString::fromStdString(io_system_->suggestFileName(model_name.toStdString(), unique_name.toStdString()));
+}
+
 QUrl QModelIOSystemAdaptor::adaptFileExtension(const QUrl& file, const QString& unique_name) const
 {
     // 路径按本地编码进出，与读写侧的转换保持一致
