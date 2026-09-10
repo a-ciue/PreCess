@@ -11,36 +11,43 @@
 #include <string>
 #include <filesystem>
 #include <memory>
+#include <QJsonObject>
 
 namespace systems {
 class SystemPluginManager {
 public:
-	/**
-	 * @brief 注册一个插件
+    /**
+     * @brief 注册全部静态插件
+     */
+    void registerStaticPlugins();
+    /**
+     * @brief 注册一个插件
      * @param plugin_path 待注册插件的路径，通常指.dll文件路径
-	 * @return 注册是否成功
-	 *
+     * @return 注册是否成功
+     *
      * 解析插件元数据，获取插件名称和系统名称，并将插件注册到对应的系统注册器中。
-	 */
-	bool registerPlugin(const std::filesystem::path& plugin_path);
-	/**
-	 * @brief 注销一个插件
-	 * @param plugin_path 待注销的插件的路径，通常指.dll文件路径
-	 *
-	 * 解析插件元数据，获取插件名称和系统名称，并从对应的系统注册器中注销插件。
-	 */
-	void unregisterPlugin(const std::filesystem::path& plugin_path);
-	/**
-	 * @brief 获取已注册的插件名称列表
-	 */
-	[[nodiscard]]std::vector<std::string> getPluginNames() const;
+     */
+    bool registerPlugin(const std::filesystem::path& plugin_path);
+    /**
+     * @brief 注销一个插件
+     * @param plugin_path 待注销的插件的路径，通常指.dll文件路径
+     *
+     * 解析插件元数据，获取插件名称和系统名称，并从对应的系统注册器中注销插件。
+     */
+    void unregisterPlugin(const std::filesystem::path& plugin_path);
+    /**
+     * @brief 获取已注册的插件名称列表
+     */
+    [[nodiscard]]std::vector<std::string> getPluginNames() const;
 
     bool addSystemRegister(const std::string& system_name, std::unique_ptr<SystemRegisterBase> system_register);
     void removeSystemRegister(const std::string& system_name);
 
 private:
+    bool loadPlugin(const QJsonObject& system_meta_data, QObject& plugin_instance, const std::string& plugin_name);
+
     std::unordered_map<std::string, std::unique_ptr<SystemRegisterBase>> system_registers_;
-	// TODO: 基于插件dll名称识别是否读取过插件并不鲁棒，待对dll插件文件取md5hash作为插件标识
+    // TODO: 基于插件dll名称识别是否读取过插件并不鲁棒，待对dll插件文件取md5hash作为插件标识
     std::unordered_set<std::string> plugin_names_;	//> 已注册的插件名称列表（不包括路径和拓展名）
 };
 }

@@ -97,6 +97,8 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     q_plugin_manager_ = std::make_unique<systems::QSystemPluginManager>(plugin_manager_.get());
 
     // 3) 注册插件
+    q_plugin_manager_->registerStaticPlugins();
+#ifndef __EMSCRIPTEN__
     using std::filesystem::path;
     path exe_dir = std::filesystem::absolute(argv0).parent_path();
     path plugin_dir = exe_dir / "plugins"; // 对应 开发调试 时的目录结构，相对严格
@@ -104,16 +106,17 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
         plugin_dir = exe_dir / "../plugins"; // 对应 install 后的目录结构，相对宽松
     }
     if (!std::filesystem::is_directory(plugin_dir)) {
-        spdlog::error("QModelManager::QModelManager: 插件目录 {} 不存在", plugin_dir.string());
+        spdlog::info("QModelManager::QModelManager: 插件目录 {} 不存在，跳过动态插件加载", plugin_dir.string());
         return;
     }
     // 遍历插件目录，加载所有插件
     for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
         if (entry.is_regular_file()) {
             QUrl plugin_url = QUrl::fromLocalFile(QString::fromLocal8Bit(entry.path().string()));
-            getSystemPluginManager()->registerPlugin(plugin_url);
+            q_plugin_manager_->registerPlugin(plugin_url);
         }
     }
+#endif
 }
 
 QModelManager::~QModelManager()

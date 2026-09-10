@@ -11,6 +11,7 @@
 #include <vtkIdTypeArray.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPointData.h>
+#include <vtkPointPicker.h>
 #include <vtkRenderer.h>
 
 MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorManagerSelectOp& op)
@@ -26,11 +27,18 @@ MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_
     component_picker_->PickFromListOn();
     op_->observePickList(component_picker_->GetPickList());
 
+#ifdef __EMSCRIPTEN__
+    // GLES3/WebGL2 未实现 glPointSize，硬件点拾取不正确，改用纯软件拾取的 vtkPointPicker
+    vertex_picker_ = vtkSmartPointer<vtkPointPicker>::New();
+    vertex_picker_->SetTolerance(0.004);
+    vertex_picker_->PickFromListOn();
+#else
     // 顶点吸附专用拾取器：与组件拾取分离（SnapToMeshPoint 会改变拾取语义）
     vertex_picker_ = vtkSmartPointer<vtkHardwarePicker>::New();
     vertex_picker_->SnapToMeshPointOn();
     vertex_picker_->SetPixelTolerance(5);
     vertex_picker_->PickFromListOn();
+#endif
     op_->observePickList(vertex_picker_->GetPickList());
 }
 
@@ -38,6 +46,19 @@ void MeshSelectManager::select(double posx, double posy)
 {
     if (this->select_mode_ == SelectMode::None)
         return;
+
+#ifdef __EMSCRIPTEN__
+    if (this->select_mode_ == SelectMode::Vertex) {
+        vertex_picker_->Pick(posx, posy, 0, renderer_);
+        vtkActor* picked_actor = vertex_picker_->GetActor();
+        auto component_id = op_->getComponentId(picked_actor);
+        if (!component_id)
+            return;
+        if (auto* sel = dynamic_cast<VertexSelectorHighlight*>(getOrCreateSelector(*component_id)))
+            sel->selectPickedPoint(vertex_picker_->GetDataSet(), vertex_picker_->GetPointId());
+        return;
+    }
+#endif
 
     if (this->select_mode_ == SelectMode::Vertex) {
         component_picker_->SnapToMeshPointOn();

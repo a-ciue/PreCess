@@ -23,6 +23,7 @@ class vtkActor;
 class vtkProp;
 class vtkMapper;
 class vtkHardwarePicker;
+class vtkDataSet;
 class vtkCell;
 class vtkPartitionedDataSet;
 class vtkExtractSelection;
@@ -211,6 +212,7 @@ public:
     void disableHighlight() override;
     void enableHighlight() override;
     SelectionVtk get() override;
+    void selectPickedPoint(vtkDataSet* picked_data_set, vtkIdType picked_point_id);
 
 private:
     vtkRenderer* renderer_;

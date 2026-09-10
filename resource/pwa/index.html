@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=0"/>
+    <title>@APPNAME@</title>
+    <link rel="icon" type="image/x-icon" href="PreCess.ico">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#1e1f22">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <style>
+        html, body { padding: 0; margin: 0; overflow: hidden; height: 100%; background: #1e1f22; }
+        #screen { width: 100%; height: 100%; }
+
+        #qtspinner {
+            width: 100%; height: 100%; margin: 0; display: flex;
+            flex-direction: column; align-items: center; justify-content: center; gap: 28px;
+            color: #c9cdd4; background: #1e1f22;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif; user-select: none;
+        }
+        #qtstatus { font-size: 14px; color: #9aa0a6; min-height: 1.5em; white-space: pre-wrap; }
+        #qtspinner.error #qtstatus { color: #f28b82; }
+        #qtspinner.error #qtlogo, #qtspinner.error #qtprogress { display: none; }
+
+        /* logo：P 字标按 resource/PreCess_letter.png 逐像素拟合（圆弧 r=55.6 / r=49.9、
+            45° 斜切，几何见各 path 的 d）。--i 为书写 P 的笔画序（错相 0.3s），--dx/--dy
+            为飞入起点（页面像素，keyframes 内除以 0.55 换算回视框坐标）。
+            循环：四散飞入 -> 落位闪亮 -> 熄暗保持 -> 淡出再飞入 */
+        #qtlogo { display: block; width: 126.5px; height: 149.6px; }  /* 230x272 x 0.55 */
+        #qtlogo .tile {
+            fill: #4b8bf5; transform-box: fill-box; transform-origin: center;
+            animation: tile-loop 3.6s ease-in-out infinite backwards;
+            animation-delay: calc(var(--i) * 0.3s);
+        }
+        @keyframes tile-loop {
+            0%   { opacity: 0; transform: translate(calc(var(--dx, 0px) / 0.55), calc(var(--dy, 0px) / 0.55)) scale(0.5); }
+            7%   { opacity: 1; transform: none; }
+            14%  { opacity: 0.38; }
+            82%  { opacity: 0.38; transform: none; }
+            90%  { opacity: 0; transform: none; }
+            100% { opacity: 0; transform: translate(calc(var(--dx, 0px) / 0.55), calc(var(--dy, 0px) / 0.55)) scale(0.5); }
+        }
+
+        #qtprogress { width: 240px; height: 4px; border-radius: 2px; background: #3c4043; overflow: hidden; }
+        #qtprogressbar { width: 0; height: 100%; border-radius: 2px; background: #4b8bf5; transition: width 0.15s linear; }
+        #qtprogress.indeterminate #qtprogressbar {
+            width: 30%; transition: none;
+            animation: progress-slide 1.2s ease-in-out infinite;
+        }
+        @keyframes progress-slide { from { transform: translateX(-100%); } to { transform: translateX(430%); } }
+    </style>
+</head>
+<body onload="init()">
+    <figure id="qtspinner">
+        <svg id="qtlogo" viewBox="0 0 230 272" aria-hidden="true">
+            <path class="tile" style="--i:0; --dx:-28px; --dy:-20px" d="M0 0h70v84H0Z"/>
+            <path class="tile" style="--i:1; --dx:0px; --dy:-30px" d="M79 0h70v59H79Z"/>
+            <path class="tile" style="--i:2; --dx:28px; --dy:-20px" d="M158 0h72v83h-49A55.6 55.6 0 0 0 158 61Z"/>
+            <path class="tile" style="--i:3; --dx:34px; --dy:4px" d="M184 92h46v61l-36 35H158v-49A49.9 49.9 0 0 0 184 109.5Z"/>
+            <path class="tile" style="--i:4; --dx:8px; --dy:28px" d="M79 140h70v48H79Z"/>
+            <path class="tile" style="--i:5; --dx:-30px; --dy:6px" d="M0 93h70v94H0Z"/>
+            <path class="tile" style="--i:6; --dx:-24px; --dy:28px" d="M0 195h70v77H0Z"/>
+        </svg>
+        <div id="qtstatus">正在加载 @APPNAME@ ...</div>
+        <div id="qtprogress"><div id="qtprogressbar"></div></div>
+        <noscript>JavaScript 已禁用，请启用 JavaScript 后使用本应用。</noscript>
+    </figure>
+    <div id="screen"></div>
+
+    <script type="text/javascript">
+        async function setupServiceWorker() {
+            if (!('serviceWorker' in navigator))
+                return;
+            const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+            try {
+                await navigator.serviceWorker.register('sw.js');
+                await Promise.race([navigator.serviceWorker.ready, timeout(5000)]);
+                if (!navigator.serviceWorker.controller) {
+                    const claimed = new Promise(resolve =>
+                        navigator.serviceWorker.addEventListener('controllerchange', resolve, {once: true}));
+                    await Promise.race([claimed, timeout(3000)]);
+                }
+            } catch (e) {
+                console.warn('Service Worker 注册失败，跳过离线缓存：', e);
+            }
+        }
+
+        async function init() {
+            const spinner = document.querySelector('#qtspinner');
+            const screen = document.querySelector('#screen');
+            const status = document.querySelector('#qtstatus');
+            const progress = document.querySelector('#qtprogress');
+            const bar = document.querySelector('#qtprogressbar');
+
+            const showUi = (ui) => {
+                [spinner, screen].forEach(element => element.style.display = 'none');
+                if (screen === ui) screen.style.position = 'default';
+                ui.style.display = 'block';
+            }
+
+            const showError = (message) => {
+                spinner.classList.add('error');
+                status.textContent = message;
+                showUi(spinner);
+            }
+
+            const downloadWasm = async (url) => {
+                const response = await fetch(url);
+                if (!response.ok)
+                    throw new Error(`下载 ${url} 失败（HTTP ${response.status}）`);
+                const total = parseInt(response.headers.get('Content-Length'));
+                progress.classList.toggle('indeterminate', !total);
+                if (!total)
+                    return new Uint8Array(await response.arrayBuffer());
+                const chunks = [];
+                let received = 0;
+                const reader = response.body.getReader();
+                for (;;) {
+                    const {done, value} = await reader.read();
+                    if (done)
+                        break;
+                    chunks.push(value);
+                    received += value.length;
+                    bar.style.width = Math.round(received / total * 100) + '%';
+                }
+                const bytes = new Uint8Array(received);
+                let offset = 0;
+                for (const chunk of chunks) {
+                    bytes.set(chunk, offset);
+                    offset += chunk.length;
+                }
+                return bytes;
+            }
+
+            try {
+                status.textContent = '正在加载 @APPNAME@ ...';
+                await setupServiceWorker();
+                const module = WebAssembly.compile(await downloadWasm('@APPNAME@.wasm'));
+                const instance = await qtLoad({
+                    qt: {
+                        containerElements: [screen],
+                        module: module,
+                        entryFunction: window.@APPEXPORTNAME@,
+                        onLoaded: () => showUi(screen),
+                        onExit: (exitData) => {
+                            status.textContent = '应用已退出';
+                            status.textContent += exitData.code !== undefined ? `，code ${exitData.code}` : '';
+                            status.textContent += exitData.text !== undefined ? ` (${exitData.text})` : '';
+                            showUi(spinner);
+                        }
+                    }
+                });
+                window.__qtInstance = instance; // for debug
+            } catch (e) {
+                console.error(e);
+                showError('加载失败：' + (e && e.message ? e.message : e));
+            }
+        }
+    </script>
+    <script type="text/javascript" src="@APPNAME@.js"></script>
+    <script type="text/javascript" src="qtloader.js"></script>
+</body>
+</html>

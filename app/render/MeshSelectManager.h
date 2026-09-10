@@ -10,7 +10,11 @@
 
 class vtkRenderer;
 class vtkActor;
+#ifdef __EMSCRIPTEN__
+class vtkPointPicker;
+#else
 class vtkHardwarePicker;
+#endif
 class vtkCompositePolyDataMapper;
 class vtkPartitionedDataSet;
 class MeshActorManagerSelectOp;
@@ -57,7 +61,11 @@ private:
     SelectMode select_mode_ { SelectMode::None };
     vtkRenderer* renderer_ { };
     vtkSmartPointer<vtkHardwarePicker> component_picker_;
+#ifdef __EMSCRIPTEN__
+    vtkSmartPointer<vtkPointPicker> vertex_picker_; //> GLES3/WebGL2 未实现 glPointSize，硬件点拾取不可用，用纯软件拾取的 vtkPointPicker
+#else
     vtkSmartPointer<vtkHardwarePicker> vertex_picker_; //> 顶点吸附专用（SnapToMeshPoint，独立于组件拾取模式）
+#endif
 
     vtkActor* highlight_actor_ { };
     vtkSmartPointer<vtkCompositePolyDataMapper> highlight_mapper_;

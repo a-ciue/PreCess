@@ -42,6 +42,8 @@
     <a href="https://gitee.com/precess/PreCess/wikis/Home"><strong>项目文档 »</strong></a>
     <br />
     <br />
+    <a href="https://precess.dawncraft.cc/">在线体验</a>
+    &middot;
     <a href="https://gitee.com/precess/PreCess/releases">发行版</a>
     &middot;
     <a href="https://gitee.com/precess/PreCess/issues/new?template=1-bug%E6%8A%A5%E5%91%8A.yml">Bug 报告</a>
@@ -116,7 +118,7 @@
 * [![Catch2][Catch2]][Catch2-url]
 * [![KDDockWidgets][KDDockWidgets]][KDDockWidgets-url]
 
-**插件层功能依赖**（由 `PreCess-deps.bat` 获取，随对应插件按需构建）：
+**插件层功能依赖**（由 `PreCess-deps.bat` 或 `PreCess-deps.sh` 获取，随对应插件按需构建）：
 
 * [![CGAL][CGAL]][CGAL-url]：插件共用网格转换层 `plugins/shared/cgal_support` 与网格修复插件（CGAL PMP）
 * [![Gmsh][Gmsh]][Gmsh-url]：Gmsh 渐进式网格划分插件（`gmsh::shared`）
@@ -170,6 +172,14 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
   * [ ] 配置远程托管平台的自动测试与检查
     * [x] Doxygen 文档自动生成、自动构建与单元测试 CI
     * [ ] 代码静态检查 CI
+* [ ] **跨平台构建**：
+  * [x] 依赖下载脚本迁移到 Python，并提供 bat/sh 入口和 fetch/build 分段
+  * [x] 依赖及主程序的交叉编译（依赖产物按平台分目录存放）
+    * [ ] linux/mac 交叉编译
+    * [x] WebAssembly 交叉编译
+  * [x] Qt 插件支持静态链接，以便 WebAssembly 等仅支持静态链接的平台使用
+  * [x] WebAssembly 适配，包括壳网页、捆绑字体、浏览器文件导入导出等
+    * [x] PWA 应用（manifest + Service Worker 离线缓存，可安装、可离线启动）
 * [x] **网格类型支持**：做到能导入并可视化三角形网格、四边形网格、更广义的多边形网格、体网格
 * [x] **渲染窗口的基础交互支持**：支持各种网格元素的拾取：点、边、面、体及几何元素，网格面支持按角度扩散多选
   * [x] 体网格的切面支持，实现切平面裁剪网格的可视化效果
@@ -207,7 +217,7 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
   * [x] 插件管理界面：偏好设置中提供插件注册/注销管理
   * [ ] 完善动态插件机制：ABI稳定过于抽象，在用户的插件使用过程中逐渐完善
   * [ ] 插件化的还不够彻底，目前只是实现了业务逻辑的插件化，没有考虑渲染或者UI的插件化
-  * [ ] 静态插件机制设计：使用constexpr静态注册，元数据在插件编译时嵌入。尽量兼容动态插件接口
+  * [x] 静态插件机制设计：使用constexpr静态注册，元数据在插件编译时嵌入。尽量兼容动态插件接口
 * [ ] 多任务管理
   * [ ] 算法不阻塞UI，区分工作线程与界面线程
   * [ ] 任务资源占用识别与任务的多线程调度：模型A正在运行某个拓扑操作，此时不能同时对A进行另一个拓扑操作。并行的资源占用、任务暂停。考虑使用std::execution实现UE5的任务图的可行性。

@@ -13,6 +13,8 @@ ColumnLayout {
     id: root
     spacing: 0
 
+    readonly property bool isWasm: Qt.platform.os === "wasm"
+
     property int activeCategory: -1
     property real windowHeight: 600
 
@@ -149,6 +151,17 @@ ColumnLayout {
 
     Component.onCompleted: rebuildFeatureMenus()
 
+    // 网页端导入模型
+    Connections {
+        target: root.isWasm ? QWasmBridge : null
+        function onFilesImported(paths) {
+            for (var i = 0; i < paths.length; ++i) {
+                QModelManager.ioSystem.read("All files", "file://" + paths[i], [])
+            }
+            App.registry.renderWindow.resetCamera()
+        }
+    }
+
     // 导入模型对话框（支持多选，逐个导入所选文件）
     FileDialog {
         id: importModelDialog
@@ -176,6 +189,83 @@ ColumnLayout {
                 QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
             } else {
                 console.exception("No valid file type selected.")
+            }
+        }
+    }
+
+    // 网页端导出模型
+    Popup {
+        id: wasmExportDialog
+        modal: true
+        anchors.centerIn: Overlay.overlay
+        width: 380
+        padding: 12
+        background: Rectangle { color: "#f0f0f0"; border.color: "#ccc" }
+
+        function openDialog() {
+            typeCombo.model = QModelManager.ioSystem.getModelIOInfo()
+            typeCombo.currentIndex = 0
+            open()
+        }
+
+        function confirmExport() {
+            var info = typeCombo.model[typeCombo.currentIndex]
+            if (!info) return
+            var file_name = nameField.text.trim()
+            if (file_name.length === 0) return
+            if (file_name.indexOf(".") < 0 && info.extensions.length > 0)
+                file_name += "." + info.extensions[0]
+            var path = "/tmp/" + file_name
+            QModelManager.ioSystem.write(info.name, App.selection.activeModelId, "file://" + path, [])
+            QWasmBridge.downloadFile(file_name, path)
+            close()
+        }
+
+        ColumnLayout {
+            width: parent.width
+            spacing: 8
+
+            Label { text: "导出模型" }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Label { text: "类型:" }
+                ComboBox {
+                    id: typeCombo
+                    Layout.fillWidth: true
+                    textRole: "name"
+                    onCurrentIndexChanged: {
+                        var info = typeCombo.model ? typeCombo.model[typeCombo.currentIndex] : null
+                        if (!info || !nameField) return
+                        var ext = info.extensions.length > 0 ? "." + info.extensions[0] : ""
+                        var base = nameField.text.split(".")[0]
+                        if (base.length > 0) nameField.text = base + ext
+                    }
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Label { text: "文件名:" }
+                TextField {
+                    id: nameField
+                    Layout.fillWidth: true
+                    text: "model.obj"
+                }
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Item { Layout.fillWidth: true }
+                Button {
+                    text: "取消"
+                    onClicked: wasmExportDialog.close()
+                }
+                Button {
+                    text: "下载"
+                    highlighted: true
+                    onClicked: wasmExportDialog.confirmExport()
+                }
             }
         }
     }
@@ -307,7 +397,12 @@ ColumnLayout {
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导入"
-                onClicked: importModelDialog.open()
+                onClicked: {
+                    if (root.isWasm)
+                        QWasmBridge.pickFile(QModelManager.ioSystem.getDialogExtFilters(), true)
+                    else
+                        importModelDialog.open()
+                }
             }
 
             ToolButton {
@@ -318,7 +413,12 @@ ColumnLayout {
                 Layout.fillHeight: true
                 display: ToolButton.TextUnderIcon
                 text: "导出"
-                onClicked: exportModelDialog.open()
+                onClicked: {
+                    if (root.isWasm)
+                        wasmExportDialog.openDialog()
+                    else
+                        exportModelDialog.open()
+                }
             }
 
             ToolButton {

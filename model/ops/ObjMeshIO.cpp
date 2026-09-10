@@ -1,6 +1,13 @@
-#include "OBJMeshIO.h"
+#include "ObjMeshIO.h"
 
+#ifdef __EMSCRIPTEN__
+// 静态链接下使用 gmsh 自带的 tinyobj 实现
+// 注意：gmsh 的 GModelIO_OBJ.cpp 定义了 TINYOBJLOADER_USE_DOUBLE
+#define TINYOBJLOADER_USE_DOUBLE
+#else
+// 动态链接下使用本项目提供的 tinyobj 实现
 #define TINYOBJLOADER_IMPLEMENTATION
+#endif
 #include "tiny_obj_loader.h"
 
 #include <spdlog/spdlog.h>
