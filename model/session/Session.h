@@ -10,12 +10,15 @@
  */
 #ifndef SESSION_H
 #define SESSION_H
+#include "ComponentOperator.h" // boundaryWrite 参数需完整类型
 #include "EventBus.h" // 成员为值类型，需完整定义
 #include "ModelLayer.h" // 成员为值类型，需完整定义
 #include "SessionQuery.h"
 
 #include <filesystem>
+#include <functional>
 #include <memory>
+#include <string>
 
 namespace systems {
 class SystemPluginManager;
@@ -83,6 +86,9 @@ private:
      * @brief 内部转发观察者：模型层通知先转发宿主观察者，再桥接为 ModelEvent
      */
     class ObserverRelay;
+
+    //! @brief 组件写操作的操作边界包装（undo 自动记录 + 异常先提交再 flush 重抛）
+    void boundaryWrite(Index component_id, std::string label, const std::function<void(ComponentOperator&)>& write);
 
     // 声明序即依赖序（析构为逆序）：event_bus_ 最先构造、最后析构，
     // relay 转发桥与功能系统在拆解期始终可用

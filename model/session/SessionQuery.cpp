@@ -112,12 +112,12 @@ SessionQuery::SessionQuery(ModelLayer& model)
 {
 }
 
-std::optional<MeshDataVtk> SessionQuery::meshData(Index model_id) const
+std::optional<Index> SessionQuery::firstMeshComponentId(Index model_id) const
 {
     ComponentData* comp = firstMeshComponent(model_, model_id);
     if (!comp)
         return std::nullopt;
-    return makeMeshView(*comp, -1);
+    return comp->id;
 }
 
 std::optional<MeshDataVtk> SessionQuery::meshDataByComponent(Index component_id) const
@@ -128,7 +128,7 @@ std::optional<MeshDataVtk> SessionQuery::meshDataByComponent(Index component_id)
     return makeMeshView(*comp, component_id);
 }
 
-std::vector<GeometryDataVtk> SessionQuery::geometryData(Index model_id) const
+std::vector<GeometryDataVtk> SessionQuery::geometryDataByModel(Index model_id) const
 {
     std::vector<GeometryDataVtk> result;
     for (Index cid : componentIds(model_id)) {
@@ -323,25 +323,6 @@ std::vector<AttributeInfo> SessionQuery::componentAttributeInfos(Index component
     appendAttributeInfos(out, mesh.edge_attributes_, ElementEnum::Type::Edge, "边", 1, edge_count);
     appendAttributeInfos(out, mesh.face_attributes_, ElementEnum::Type::Face, "面", 2, face_count);
     appendAttributeInfos(out, mesh.solid_attributes_, ElementEnum::Type::Solid, "体", 3, solid_count);
-    return out;
-}
-
-std::vector<ModelAttribute> SessionQuery::modelAttributes(Index model_id) const
-{
-    std::vector<ModelAttribute> out;
-    ComponentData* comp = firstMeshComponent(model_, model_id);
-    if (!comp)
-        return out;
-
-    const MeshData& mesh = *comp->mesh;
-    for (const auto& [name, data] : mesh.vertex_attributes_)
-        out.push_back({ name, ElementEnum::Type::Vertex });
-    for (const auto& [name, data] : mesh.edge_attributes_)
-        out.push_back({ name, ElementEnum::Type::Edge });
-    for (const auto& [name, data] : mesh.face_attributes_)
-        out.push_back({ name, ElementEnum::Type::Face });
-    for (const auto& [name, data] : mesh.solid_attributes_)
-        out.push_back({ name, ElementEnum::Type::Solid });
     return out;
 }
 

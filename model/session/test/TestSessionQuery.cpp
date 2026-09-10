@@ -136,7 +136,7 @@ TEST_CASE("SessionQuery geometry summary and local id resolution", "[session][qu
         CHECK(query.pointGlobalId(comp_id, 0) == -1);
         CHECK(query.findEdgeByEndpoints(comp_id, 0, 1).has_value() == false);
         CHECK(query.componentAttributeInfos(comp_id).empty());
-        CHECK(query.modelAttributes(model_id).empty());
+        CHECK(query.firstMeshComponentId(model_id).has_value() == false);
     }
 }
 
@@ -147,7 +147,7 @@ TEST_CASE("SessionQuery render data views", "[session][query]")
     const Index model_id = layer.addModel("Geom", { });
     const Index comp_id = makeGeometryComponent(layer, model_id, "Box");
 
-    auto geometries = query.geometryData(model_id);
+    auto geometries = query.geometryDataByModel(model_id);
     REQUIRE(geometries.size() == 1);
     CHECK(geometries[0].component_id == comp_id);
     CHECK(&geometries[0].shape == layer.findComponent(comp_id)->geometry->rootShape.get());
@@ -157,5 +157,5 @@ TEST_CASE("SessionQuery render data views", "[session][query]")
     CHECK(by_component->component_id == comp_id);
 
     CHECK(query.geometryDataByComponent(-1).has_value() == false);
-    CHECK(query.meshData(model_id).has_value() == false);
+    CHECK(query.meshDataByComponent(-1).has_value() == false);
 }

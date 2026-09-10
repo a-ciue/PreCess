@@ -12,7 +12,6 @@
 #pragma once
 #include "Core.h"
 
-#include "QSelection.h"
 #include <QObject>
 #include <QQmlEngine> // 提供 QML 元素导出宏 (Qt6)
 #include <QVariant>
@@ -24,19 +23,12 @@ namespace session {
 class SessionQuery;
 }
 
-class IModelQuery {
-public:
-    virtual ~IModelQuery() = default;
-
-    virtual std::optional<MeshDataVtk> getMeshData(Index model_id) = 0;
-};
-
 /**
  * @brief ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分的 QML 适配器）
  *
  * 查询逻辑委托给 SessionQuery，本类以 Q_INVOKABLE 方法暴露各个查询接口给 QML 使用。
  */
-class QModelQuery : public QObject, IModelQuery {
+class QModelQuery : public QObject {
     Q_OBJECT
 QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
     QML_UNCREATABLE("QModelQuery is provided by C++")
@@ -50,7 +42,6 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
      */
     explicit QModelQuery(session::SessionQuery* query, QObject* parent = nullptr);
 
-    std::optional<MeshDataVtk> getMeshData(Index model_id) override;
     std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
 
     /**
@@ -69,7 +60,6 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
      */
     Index pointGlobalId(Index component_id, Index local_point_id) const;
 
-    std::vector<GeometryDataVtk> getGeometryVtkData(Index model_id);
     std::optional<GeometryDataVtk> getGeometryVtkDataByComponent(Index component_id);
 
     std::vector<Index> getComponentIds(Index model_id) const;
@@ -85,26 +75,11 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
      */
     Q_INVOKABLE bool hasComponent(Index component_id) const;
 
-    Q_INVOKABLE QVariantList getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId);
-
-    Q_INVOKABLE QString getModelName(Index model_id) const;
-
     /**
      * @brief 获取指定组件的显示名称，保持和对象树中的组件名称一致
      * @param component_id 组件 ID
      */
     Q_INVOKABLE QString getComponentName(Index component_id) const;
-    /**
-     * @brief 获取模型的属性名列表
-     * @param model_id
-     */
-    Q_INVOKABLE QStringList getModelAttriName(Index model_id) const;
-    /**
-     * @brief 获取模型的属性类型列表
-     * 现在有bug返回到控制台ui那边似乎拿不到
-     * @param model_id
-     */
-    Q_INVOKABLE QList<Element::Type> getModelAttriType(Index model_id) const;
 
     /**
      * @brief 获取指定组件的属性渲染条目，供 QML 直接展示属性名、属性类型和分量数
@@ -116,11 +91,6 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
     Q_INVOKABLE QVariantList getComponentsSummary(Index model_id) const;
     Q_INVOKABLE QVariantMap getMeshSummary(Index component_id) const;
     Q_INVOKABLE QVariantMap getGeometrySummary(Index component_id) const;
-
-    std::optional<GeomFaceId> resolveGeometryFaceLocalId(Index component_id, int localFaceId);
-    std::optional<GeomEdgeId> resolveGeometryEdgeLocalId(Index component_id, int localEdgeId);
-    std::optional<GeomVertexId> resolveGeometryVertexLocalId(Index component_id, int localVertexId);
-    std::optional<GeomSolidId> resolveGeometrySolidLocalId(Index component_id, int localSolidId);
 
 private:
     session::SessionQuery* m_query; //> 会话层查询（逻辑所在，本类不拥有）

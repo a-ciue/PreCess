@@ -155,7 +155,7 @@ public:
      * @brief 设置属性渲染方式
      *
      * 在控制台中调用示例：
-     * QModelManager.query.getModelAttriName(0)
+     * QModelManager.query.getComponentAttriInfo(0)
      * App.registry.renderWindow.setAttriMode(0, "f_pressure_1", 1, {})
      * App.registry.renderWindow.setAttriMode(0, "f_color_3", 0, {})
      * App.registry.renderWindow.setAttriMode(0, "f_vectors_3", 3, {})

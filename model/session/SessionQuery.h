@@ -57,12 +57,6 @@ struct GeometrySummary {
     int solid_count { 0 };
 };
 
-/** @brief 模型属性条目（属性名 + 实体类型） */
-struct ModelAttribute {
-    std::string name;
-    ElementEnum::Type type { ElementEnum::Type::None };
-};
-
 /** @brief 组件属性渲染条目（原始名、展示名、类型与分量数） */
 struct AttributeInfo {
     std::string name; //> 原始属性名（含 v_/e_/f_/s_ 前缀与分量数后缀）
@@ -83,15 +77,15 @@ public:
     explicit SessionQuery(ModelLayer& model);
 
     // —— 渲染数据视图 ——
-    //! @brief 模型内首个带网格组件的渲染视图（组件 id 置 -1）；无网格返回空
-    std::optional<MeshDataVtk> meshData(Index model_id) const;
     std::optional<MeshDataVtk> meshDataByComponent(Index component_id) const;
     //! @brief 模型内全部几何组件的渲染视图
-    std::vector<GeometryDataVtk> geometryData(Index model_id) const;
+    std::vector<GeometryDataVtk> geometryDataByModel(Index model_id) const;
     std::optional<GeometryDataVtk> geometryDataByComponent(Index component_id) const;
 
     // —— 身份与存在性 ——
     std::vector<Index> componentIds(Index model_id) const;
+    //! @brief 模型内首个带网格组件的 id；无网格组件返回空（模型级查询的落点复用本查询）
+    std::optional<Index> firstMeshComponentId(Index model_id) const;
     //! @brief 组件所属模型 id；未知组件返回 -1
     Index findModelIdByComponent(Index component_id) const;
     bool hasModel(Index model_id) const;
@@ -112,10 +106,8 @@ public:
     std::vector<ComponentSummary> componentSummaries(Index model_id) const;
     MeshSummary meshSummary(Index component_id) const;
     GeometrySummary geometrySummary(Index component_id) const;
-    //! @brief 组件网格的全部属性渲染条目（四张属性表顺序遍历）
+    //! @brief 组件网格的全部属性渲染条目（四张属性表顺序遍历；属性名/类型查询复用本条目）
     std::vector<AttributeInfo> componentAttributeInfos(Index component_id) const;
-    //! @brief 模型首个带网格组件的属性名与实体类型（四张属性表顺序遍历）
-    std::vector<ModelAttribute> modelAttributes(Index model_id) const;
 
     // —— 几何局部 id -> 全局 id ——
     std::optional<GeomFaceId> resolveGeometryFaceLocalId(Index component_id, int local_face_id) const;

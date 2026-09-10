@@ -7,7 +7,6 @@
 
 #include <QString>
 #include <QVariantList>
-#include <spdlog/spdlog.h>
 
 #include <string>
 #include <vector>
@@ -16,11 +15,6 @@ QModelQuery::QModelQuery(session::SessionQuery* query, QObject* parent)
     : QObject(parent)
     , m_query(query)
 {
-}
-
-std::optional<MeshDataVtk> QModelQuery::getMeshData(Index model_id)
-{
-    return m_query->meshData(model_id);
 }
 
 std::optional<MeshDataVtk> QModelQuery::getMeshDataByComponent(Index component_id)
@@ -36,11 +30,6 @@ std::optional<Index> QModelQuery::findEdgeByEndpoints(Index component_id, Index 
 Index QModelQuery::pointGlobalId(Index component_id, Index local_point_id) const
 {
     return m_query->pointGlobalId(component_id, local_point_id);
-}
-
-std::vector<GeometryDataVtk> QModelQuery::getGeometryVtkData(Index model_id)
-{
-    return m_query->geometryData(model_id);
 }
 
 std::optional<GeometryDataVtk> QModelQuery::getGeometryVtkDataByComponent(Index component_id)
@@ -68,52 +57,10 @@ bool QModelQuery::hasComponent(Index component_id) const
     return m_query->hasComponent(component_id);
 }
 
-QVariantList QModelQuery::getGeometryEdgeMappedPointIds(Index component_id, int localGeometryEdgeId)
-{
-    QVariantList out;
-    for (Index pid : m_query->geometryEdgeMappedPointIds(component_id, localGeometryEdgeId))
-        out.push_back(pid);
-    return out;
-}
-
-QString QModelQuery::getModelName(Index model_id) const
-{
-    const auto name = m_query->modelName(model_id);
-    if (!name) {
-        spdlog::error("模型不存在，无法获取名称,id:{}", model_id);
-        return QString();
-    }
-    return QString::fromStdString(*name);
-}
-
 QString QModelQuery::getComponentName(Index component_id) const
 {
     const auto name = m_query->componentName(component_id);
     return name ? QString::fromStdString(*name) : QString();
-}
-
-QStringList QModelQuery::getModelAttriName(Index model_id) const
-{
-    if (!m_query->hasModel(model_id)) {
-        spdlog::error("模型不存在，无法获取属性名，id:{}", model_id);
-        return { };
-    }
-    QStringList attri_list;
-    for (const auto& attr : m_query->modelAttributes(model_id))
-        attri_list.append(QString::fromStdString(attr.name));
-    return attri_list;
-}
-
-QList<Element::Type> QModelQuery::getModelAttriType(Index model_id) const
-{
-    if (!m_query->hasModel(model_id)) {
-        spdlog::error("模型不存在，无法获取属性类型，id:{}", model_id);
-        return { };
-    }
-    QList<Element::Type> type_list;
-    for (const auto& attr : m_query->modelAttributes(model_id))
-        type_list.append(attr.type);
-    return type_list;
 }
 
 QVariantList QModelQuery::getComponentAttriInfo(Index component_id) const
@@ -188,24 +135,4 @@ QVariantMap QModelQuery::getGeometrySummary(Index component_id) const
     m["face_count"] = summary.face_count;
     m["solid_count"] = summary.solid_count;
     return m;
-}
-
-std::optional<GeomFaceId> QModelQuery::resolveGeometryFaceLocalId(Index component_id, int localFaceId)
-{
-    return m_query->resolveGeometryFaceLocalId(component_id, localFaceId);
-}
-
-std::optional<GeomEdgeId> QModelQuery::resolveGeometryEdgeLocalId(Index component_id, int localEdgeId)
-{
-    return m_query->resolveGeometryEdgeLocalId(component_id, localEdgeId);
-}
-
-std::optional<GeomVertexId> QModelQuery::resolveGeometryVertexLocalId(Index component_id, int localVertexId)
-{
-    return m_query->resolveGeometryVertexLocalId(component_id, localVertexId);
-}
-
-std::optional<GeomSolidId> QModelQuery::resolveGeometrySolidLocalId(Index component_id, int localSolidId)
-{
-    return m_query->resolveGeometrySolidLocalId(component_id, localSolidId);
 }

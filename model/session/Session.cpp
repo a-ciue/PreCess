@@ -138,14 +138,13 @@ void Session::removeComponent(Index component_id)
     model_.removeComponent(component_id);
 }
 
-void Session::removeMesh(Index component_id)
+void Session::boundaryWrite(Index component_id, std::string label, const std::function<void(ComponentOperator&)>& write)
 {
     // 操作边界：undo 自动记录 + 通知统一 flush；异常时先提交（部分写入可撤销）再 flush 重抛
-    undo_stack_->beginOperation("移除网格");
+    undo_stack_->beginOperation(std::move(label));
     try {
-        auto op = model_.getComponentOperator(component_id);
-        if (op)
-            op->removeMesh();
+        if (auto op = model_.getComponentOperator(component_id))
+            write(*op);
     } catch (...) {
         undo_stack_->commitOperation();
         model_.flushNotifications();
@@ -155,21 +154,14 @@ void Session::removeMesh(Index component_id)
     model_.flushNotifications();
 }
 
+void Session::removeMesh(Index component_id)
+{
+    boundaryWrite(component_id, "移除网格", [](ComponentOperator& op) { op.removeMesh(); });
+}
+
 void Session::removeGeometry(Index component_id)
 {
-    // 操作边界：undo 自动记录 + 通知统一 flush；异常时先提交（部分写入可撤销）再 flush 重抛
-    undo_stack_->beginOperation("移除几何");
-    try {
-        auto op = model_.getComponentOperator(component_id);
-        if (op)
-            op->removeGeometry();
-    } catch (...) {
-        undo_stack_->commitOperation();
-        model_.flushNotifications();
-        throw;
-    }
-    undo_stack_->commitOperation();
-    model_.flushNotifications();
+    boundaryWrite(component_id, "移除几何", [](ComponentOperator& op) { op.removeGeometry(); });
 }
 
 void Session::teardown()
