@@ -568,6 +568,11 @@ Page {
             onConfirmButtonClicked: {
                 selector.selection = myItem.selectedIDs
             }
+
+            // 确认后复位选择集：确认即本轮选择结束，避免残留高亮被下一次确认带走
+            onSelectionConfirmed: {
+                myItem.clearSelection()
+            }
         }
 
         Menu {
