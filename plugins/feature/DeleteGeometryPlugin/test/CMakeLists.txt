@@ -1,0 +1,2 @@
+precess_add_test(TestDeleteGeometryPlugin TestDeleteGeometryPlugin.cpp)
+precess_test_link_libraries(TestDeleteGeometryPlugin DeleteGeometryPluginlib FeatureSystem Data)

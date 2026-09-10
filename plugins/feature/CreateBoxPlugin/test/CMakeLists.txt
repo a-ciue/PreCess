@@ -1,0 +1,2 @@
+precess_add_test(TestCreateBoxPlugin TestCreateBoxPlugin.cpp)
+precess_test_link_libraries(TestCreateBoxPlugin CreateBoxPluginlib FeatureSystem Data)

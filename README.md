@@ -149,7 +149,7 @@ cmake --build ./build --target install
 
 - **模型导入与展示**：支持 IGES、STEP、OBJ、PLY、`.m`、Medit `.mesh`、Abaqus `.inp`、VTK `.vtk`、`.off` 等格式导入与展示，支持多文件同时导入；几何与网格分层组织、网格/几何渲染风格切换（如「网格·面·带网格线」「网格·线·带内部线」等）、体网格切面裁剪。
 - **交互式选择与算法调用**：组件/点/边/面/体/几何点线面体选择器，网格面支持按角度扩散多选；对选择结果调用网格算法插件（Gmsh 渐进式划分、TetGen/TetGenLib 体网格剖分、CCGMeshToNURBS、执行 cmd 命令等）。
-- **几何处理**：几何基本形状创建、几何删除。
+- **几何处理**：基础图元创建——点、直线边（坐标/选点）、矩形面、圆盘/扇形面、长方体、圆柱、圆锥/圆台、球体/部分球体；几何编辑——闭合边成面、面拉伸为实体、删除几何。以功能系统插件提供，菜单点选后经参数侧栏执行。
 - **网格编辑**：创建面、删除面等编辑插件。
 - **测量与尺寸标注**：视口交互测量与参数化尺寸标注（距离/角度/半径/长度/面积/体积/包围盒/重心）。
 - **网格质量分析**：计算所选组件的网格质量并生成标量属性，支持属性渲染与颜色表。
@@ -211,6 +211,10 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
 * [ ] 从软件中剥离业务逻辑：这服务于以下几点
   * [x] C++类库：模型层已抽象为 `core/`、`model/` 静态库
   * [ ] 对模型层做Python Wrapper接口层，可以像Blender将模型层打包成wheel与UI解释器调用接口
+    * [ ] Qt-free 会话层 `model/session`：Session 组合根 + SessionQuery 原生查询（QML 适配器瘦身为纯包装，签名不变）
+    * [ ] pybind11 绑定模块 `precess`（顶层 `python/` 目录，LGPLv3；参数经 ArgType 元数据驱动的 kwargs，调用走 invoke/call 统一入口）
+    * [ ] app 内嵌 Python 运行环境：PythonRuntime + Python 控制台（Python ≡ GUI 线程执行约定）
+    * [ ] 无头 CLI 与 wheel 打包（含插件加载的 Qt 解耦）
   * [ ] 无头软件：软件不是必须得要一个UI吧！命令行也是一种调用接口方法
   * [ ] C/S架构：模型层打包成服务器上的服务，类ParaView
 * [ ] 插件管理

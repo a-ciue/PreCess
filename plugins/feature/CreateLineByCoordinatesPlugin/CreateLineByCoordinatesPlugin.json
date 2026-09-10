@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateLineByCoordinates",
+    "display_name": "创建直线边（坐标）",
+    "description": "根据起点和终点坐标创建直线边"
+  }
+}

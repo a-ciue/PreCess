@@ -1,0 +1,2 @@
+precess_add_test(TestCreateLineFromVerticesPlugin TestCreateLineFromVerticesPlugin.cpp)
+precess_test_link_libraries(TestCreateLineFromVerticesPlugin CreateLineFromVerticesPluginlib FeatureSystem Data)

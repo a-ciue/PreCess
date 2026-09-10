@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateSphere",
+    "display_name": "创建球体/部分球体",
+    "description": "根据球心、半径、轴向、纬度范围和经度扫掠角创建球体"
+  }
+}

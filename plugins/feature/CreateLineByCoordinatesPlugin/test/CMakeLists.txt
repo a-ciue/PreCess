@@ -1,0 +1,2 @@
+precess_add_test(TestCreateLineByCoordinatesPlugin TestCreateLineByCoordinatesPlugin.cpp)
+precess_test_link_libraries(TestCreateLineByCoordinatesPlugin CreateLineByCoordinatesPluginlib FeatureSystem Data)

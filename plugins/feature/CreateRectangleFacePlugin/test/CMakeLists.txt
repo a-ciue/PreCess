@@ -1,0 +1,2 @@
+precess_add_test(TestCreateRectangleFacePlugin TestCreateRectangleFacePlugin.cpp)
+precess_test_link_libraries(TestCreateRectangleFacePlugin CreateRectangleFacePluginlib FeatureSystem Data)

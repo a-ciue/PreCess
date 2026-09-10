@@ -23,8 +23,6 @@ qt_add_qml_module(modelQml
         "${CMAKE_CURRENT_BINARY_DIR}/QArgType.h"
         QArgObject.h
         QArgObject.cpp
-        QGeometryOperations.h
-        QGeometryOperations.cpp
         QUndoStackAdaptor.h
         QUndoStackAdaptor.cpp
 )

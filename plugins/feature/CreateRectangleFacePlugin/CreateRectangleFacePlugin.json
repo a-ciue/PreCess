@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateRectangleFace",
+    "display_name": "创建矩形面",
+    "description": "根据角点、宽度、高度和坐标平面创建矩形面"
+  }
+}

@@ -1,0 +1,2 @@
+precess_add_test(TestCreateSpherePlugin TestCreateSpherePlugin.cpp)
+precess_test_link_libraries(TestCreateSpherePlugin CreateSpherePluginlib FeatureSystem Data)

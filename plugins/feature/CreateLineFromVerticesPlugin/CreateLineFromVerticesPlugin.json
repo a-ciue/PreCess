@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "CreateLineFromVertices",
+    "display_name": "创建直线边（选择两点）",
+    "description": "选择当前组件中的两个已有几何点创建共享拓扑的直线边"
+  }
+}

@@ -1,0 +1,2 @@
+precess_add_test(TestCreateCylinderPlugin TestCreateCylinderPlugin.cpp)
+precess_test_link_libraries(TestCreateCylinderPlugin CreateCylinderPluginlib FeatureSystem Data)

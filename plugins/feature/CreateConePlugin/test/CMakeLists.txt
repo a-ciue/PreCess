@@ -1,0 +1,2 @@
+precess_add_test(TestCreateConePlugin TestCreateConePlugin.cpp)
+precess_test_link_libraries(TestCreateConePlugin CreateConePluginlib FeatureSystem Data)

@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "ExtrudeFace",
+    "display_name": "拉伸面为实体",
+    "description": "选择一个几何面，沿指定方向和长度拉伸为实体；源面保留"
+  }
+}

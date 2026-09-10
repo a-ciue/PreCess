@@ -1,0 +1,2 @@
+precess_add_test(TestCreateDiskFacePlugin TestCreateDiskFacePlugin.cpp)
+precess_test_link_libraries(TestCreateDiskFacePlugin CreateDiskFacePluginlib FeatureSystem Data)

@@ -22,9 +22,6 @@ ColumnLayout {
     // 会与布局隐式尺寸形成反馈环（图标异步加载后触发 recursive rearrange 警告）。
     readonly property real ribbonIconSize: windowHeight / 12 * 0.65
 
-    // 基础几何创建入口，由 Main.qml 中的 GeometryOperationActions 提供。
-    property var geometryOperationActions
-
     signal objectTreeToggled()
     signal propertyListToggled()
     signal attributeRenderToggled()
@@ -51,34 +48,6 @@ ColumnLayout {
         "DimensionPlugin": "qrc:/images/toolbar/Tools/size_marking.svg",
         "MeshQuality": "qrc:/images/toolbar/Function/grid_quality.svg"
     })
-    // 几何页按钮定义：当前使用默认插件图标。
-    readonly property var geometryOperationButtons: [
-        { text: qsTr("点"), operation: "startCreatePoint",
-          icon: "qrc:/images/toolbar/Geometry/point.svg" },
-        { text: qsTr("直线边（坐标）"), operation: "startCreateLineByCoordinates",
-          icon: "qrc:/images/toolbar/Geometry/line_coord.svg" },
-        { text: qsTr("直线边（选点）"), operation: "startCreateLineFromVertices",
-          icon: "qrc:/images/toolbar/Geometry/line_points.svg" },
-        { text: qsTr("矩形面"), operation: "startCreateRectangleFace",
-          icon: "qrc:/images/toolbar/Geometry/rectangle.svg" },
-        { text: qsTr("圆盘/扇形面"), operation: "startCreateDiskFace",
-          icon: "qrc:/images/toolbar/Geometry/sector_or_circle.svg" },
-        { text: qsTr("闭合边成面"), operation: "startCreateFaceFromEdges",
-          icon: "qrc:/images/toolbar/Geometry/close_edges_to_form_surface.svg" },
-        { text: qsTr("长方体"), operation: "startCreateBox",
-          icon: "qrc:/images/toolbar/Geometry/cuboid.svg" },
-        { text: qsTr("圆柱体"), operation: "startCreateCylinder",
-          icon: "qrc:/images/toolbar/Geometry/cylinder.svg" },
-        { text: qsTr("圆锥/圆台"), operation: "startCreateCone",
-          icon: "qrc:/images/toolbar/Geometry/cone_or_conical_stage.svg" },
-        { text: qsTr("球体/部分球体"), operation: "startCreateSphere",
-          icon: "qrc:/images/toolbar/Geometry/sphere.svg" },
-        { text: qsTr("拉伸面"), operation: "startExtrudeFace",
-          icon: "qrc:/images/toolbar/Geometry/stretched_surface.svg" },
-        { text: qsTr("删除几何"), operation: "startDeleteGeometry",
-          icon: "qrc:/images/toolbar/Geometry/delete_geometry.svg" }
-    ]
-
     function getIconForPlugin(pluginName) {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
@@ -297,14 +266,7 @@ ColumnLayout {
                 onClicked: activeCategory = (activeCategory === 2) ? -1 : 2
             }
 
-            ToolButton {
-                text: qsTr("几何")
-                checkable: true
-                checked: activeCategory === 3
-                onClicked: activeCategory = (activeCategory === 3) ? -1 : 3
-            }
-
-            // 功能菜单分页：按 menu_path 第一段（菜单）动态生成分页按钮，页序对应 StackLayout 索引 4 起
+            // 功能菜单分页：按 menu_path 第一段（菜单）动态生成分页按钮，页序对应 StackLayout 索引 3 起
             Repeater {
                 model: root.featureMenus
                 ToolButton {
@@ -312,8 +274,8 @@ ColumnLayout {
                     required property int index
                     text: modelData.name
                     checkable: true
-                    checked: activeCategory === 4 + index
-                    onClicked: activeCategory = (activeCategory === 4 + index) ? -1 : 4 + index
+                    checked: activeCategory === 3 + index
+                    onClicked: activeCategory = (activeCategory === 3 + index) ? -1 : 3 + index
                 }
             }
 
@@ -517,30 +479,7 @@ ColumnLayout {
             Item { Layout.fillWidth: true }
         }
 
-        // 3: 几何 → 创建几何。
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            Repeater {
-                model: root.geometryOperationButtons
-                ToolButton {
-                    required property var modelData
-                    icon.source: root.getIconForFeature(modelData)
-                    icon.width: root.ribbonIconSize
-                    icon.height: root.ribbonIconSize
-                    icon.color: "transparent"
-                    Layout.fillHeight: true
-                    display: ToolButton.TextUnderIcon
-                    text: modelData.text
-                    onClicked: root.geometryOperationActions[modelData.operation]()
-                }
-            }
-
-            Item { Layout.fillWidth: true }
-        }
-
-        // 功能菜单页（索引 4 起）：页内按 menu_path 第二段（分组）排列功能按钮，同组排在一起，组间以竖线分隔
+        // 功能菜单页（索引 3 起）：页内按 menu_path 第二段（分组）排列功能按钮，同组排在一起，组间以竖线分隔
         Repeater {
             model: root.featureMenus
             RowLayout {

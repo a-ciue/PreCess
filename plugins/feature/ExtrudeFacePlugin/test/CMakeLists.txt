@@ -1,0 +1,2 @@
+precess_add_test(TestExtrudeFacePlugin TestExtrudeFacePlugin.cpp)
+precess_test_link_libraries(TestExtrudeFacePlugin ExtrudeFacePluginlib FeatureSystem Data)

@@ -32,8 +32,6 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     undo_stack_ = std::make_unique<UndoStack>(*core_);
     core_->setUndoRecorder(undo_stack_.get());
 
-    geometry_operations_ = std::make_unique<QGeometryOperations>(*core_, undo_stack_.get());
-
     io_system_ = std::make_unique<systems::io::ModelIOSystem>(*core_);
     algo_system_ = std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, *core_, undo_stack_.get());
     edit_system_ = std::make_unique<systems::edit::EditSystem>(*core_, undo_stack_.get());
@@ -218,11 +216,6 @@ systems::feature::QFeatureSystemAdaptor* QModelManager::getFeatureSystemAdaptor(
 systems::QSystemPluginManager* QModelManager::getSystemPluginManager() const
 {
     return q_plugin_manager_.get();
-}
-
-QGeometryOperations* QModelManager::getGeometryOperations() const
-{
-    return geometry_operations_.get();
 }
 
 QUndoStackAdaptor* QModelManager::getUndoStackAdaptor() const

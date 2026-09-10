@@ -32,13 +32,7 @@ ApplicationWindow {
     title: qsTr("PreCess")
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
-    GeometryOperationActions {
-        id: geometryActions
-        onOperationActivated: sideBarDock.show()
-    }
-
     header: AppToolbar {
-        geometryOperationActions: geometryActions
         windowHeight: root.height
         objectTreeOpen: objectTreeDock.isOpen
         propertyListOpen: sideBarDock.isOpen

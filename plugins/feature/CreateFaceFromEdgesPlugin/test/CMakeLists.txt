@@ -1,0 +1,2 @@
+precess_add_test(TestCreateFaceFromEdgesPlugin TestCreateFaceFromEdgesPlugin.cpp)
+precess_test_link_libraries(TestCreateFaceFromEdgesPlugin CreateFaceFromEdgesPluginlib FeatureSystem Data)
