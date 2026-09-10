@@ -43,6 +43,7 @@
   - `model/ops/`：基于数据结构的操作，依赖 `model/data`。
   - `model/systems/`：系统层（算法系统、模型 IO 系统、编辑系统、功能系统），负责插件注册与按字符串分发调用，依赖 `model/data`、`core`。
     - `model/systems/feature/`：功能系统 `FeatureSystem`，事件驱动的功能注册与调用：功能可注册参数/菜单/按键绑定，经 `EventBus` 订阅按键、参数变更、模型事件，通过 `FeatureContext` 访问模型层；声明 `interactive` 的功能另经 `InteractionContext` 订阅渲染线程驱动的视口交互（见第 10 节线程约定）。
+  - `model/session/`：会话层，无 Qt 的组合根 `Session`（装配模型层 / undo 栈 / `EventBus` / 四系统并有序拆解，内部转发观察者把模型通知桥接为 `ModelEvent`）与原生查询 `SessionQuery`（返回类型化结构体），供 QML 适配层与脚本宿主共用，依赖 `model/data`、`model/ops`、`model/systems`、`core`。
 - `app/`：程序与界面实现，依赖 `model`、`core`。
   - `app/core/` → `core`
   - `app/model/` → `model`、`core`、`app/core`（model 的 Qt 接口、数据绑定）

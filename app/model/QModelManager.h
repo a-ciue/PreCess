@@ -12,23 +12,10 @@
 #include <string>
 #include <string_view>
 
-namespace core {
-class EventBus;
-}
-namespace systems {
-class SystemPluginManager;
-}
-namespace systems::io {
-class ModelIOSystem;
-}
-namespace systems::edit {
-class EditSystem;
-}
-namespace systems::feature {
-class FeatureSystem;
+namespace session {
+class Session;
 }
 class ModelLayer;
-class UndoStack;
 
 class QModelManager : public QObject {
     Q_OBJECT
@@ -74,22 +61,15 @@ signals:
     void geometryLoadFailed(const QString& message);
 
 private:
-    std::unique_ptr<ModelLayer> core_;
+    std::unique_ptr<session::Session> session_; //> 会话组合根（模型层/undo 栈/事件总线/四系统），析构先于 Qt 适配器（见 ~QModelManager）
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
-    std::unique_ptr<UndoStack> undo_stack_; //> undo 栈（声明在 core_ 之后、各系统之前：系统先析构，栈再析构；析构序列见 ~QModelManager 的显式拆解）
-    std::unique_ptr<systems::io::ModelIOSystem> io_system_;
-    std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
-    std::unique_ptr<systems::edit::EditSystem> edit_system_;
-    std::unique_ptr<core::EventBus> event_bus_; //> 事件总线，声明在 feature_system_ 之前以保证其更晚析构
     core::EventBus::Subscription param_bridge_sub_; //> 参数变更桥接订阅（随成员析构自动退订）
     core::EventBus::Subscription scalar_attribute_display_bridge_sub_; //> 标量属性显示请求桥接订阅
-    std::unique_ptr<systems::feature::FeatureSystem> feature_system_;
     std::unique_ptr<systems::algo::QAlgorithmSystemAdaptor> algo_adaptor_;
     std::unique_ptr<systems::io::QModelIOSystemAdaptor> io_adaptor_;
     std::unique_ptr<systems::edit::QEditSystemAdaptor> edit_adaptor_;
     std::unique_ptr<systems::feature::QFeatureSystemAdaptor> feature_adaptor_;
     std::unique_ptr<QUndoStackAdaptor> undo_adaptor_;
     std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
-    std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
 };

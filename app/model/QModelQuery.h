@@ -1,11 +1,10 @@
 /**
- * @file ModelQuery.h
- * @brief 封装 ModelData 查询操作接口，支持对网格数据进行各种查询
+ * @file QModelQuery.h
+ * @brief 模型层查询的 QML 适配器
  *
- * QModelQuery 类提供了一系列接口用于从 ModelData 中查询网格数据，
- * 包括 Patch、Block、Group 和 Vertex 等信息的读取。通过将查询逻辑从 ModelData 的命令操作中分离，
- * 实现了读写分离。该类通过 Q_INVOKABLE 方法暴露给 QML 层使用，返回的结果以 QVariantMap 或 QVariantList 形式呈现，
- * 便于前端快速获得并展示数据。
+ * QModelQuery 将会话层 SessionQuery 的原生查询结果转换为 QVariantMap / QVariantList
+ * 等呈现给 QML。查询逻辑已下沉至 model/session/SessionQuery（不依赖 Qt，供脚本绑定
+ * 复用），本类只做类型转换与 QML 暴露，保持既有 QML 接口签名不变。
  *
  * @author 徐昊阳 haoyangxu06@gmail.com
  * @date 2025/4/11
@@ -13,16 +12,17 @@
 #pragma once
 #include "Core.h"
 
+#include "QSelection.h"
 #include <QObject>
+#include <QQmlEngine> // 提供 QML 元素导出宏 (Qt6)
 #include <QVariant>
 #include <QtGlobal>
-#include <QQmlEngine> // 提供 QML 元素导出宏 (Qt6)
-#include "QSelection.h"
-
 
 struct GeometryDataVtk;
 struct MeshDataVtk;
-class ModelLayer;
+namespace session {
+class SessionQuery;
+}
 
 class IModelQuery {
 public:
@@ -32,25 +32,23 @@ public:
 };
 
 /**
- * @brief ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）
+ * @brief ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分的 QML 适配器）
  *
- * 通过将查询逻辑与 ModelData 的命令操作分离，QModelQuery 实现了读写分离，专注于数据的查询。
- * 该类可以直接访问 ModelData 的私有数据（因为 ModelData 声明其为友元类），
- * 并以 Q_INVOKABLE 方法暴露各个查询接口给 QML 使用。
+ * 查询逻辑委托给 SessionQuery，本类以 Q_INVOKABLE 方法暴露各个查询接口给 QML 使用。
  */
 class QModelQuery : public QObject, IModelQuery {
     Q_OBJECT
-    QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
+QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType）
     QML_UNCREATABLE("QModelQuery is provided by C++")
 
-public :
+        public :
     /**
      * @brief 构造函数
      *
-     * @param mgr 指向 ModelLayer 实例，用于管理并查找多个 ModelData
+     * @param query 会话层查询对象（不拥有，须比本对象存活更久）
      * @param parent 父 QObject（默认为 nullptr），可用于 Qt 对象树内存管理
      */
-    explicit QModelQuery(ModelLayer* mgr, QObject* parent = nullptr);
+    explicit QModelQuery(session::SessionQuery* query, QObject* parent = nullptr);
 
     std::optional<MeshDataVtk> getMeshData(Index model_id) override;
     std::optional<MeshDataVtk> getMeshDataByComponent(Index component_id);
@@ -125,5 +123,5 @@ public :
     std::optional<GeomSolidId> resolveGeometrySolidLocalId(Index component_id, int localSolidId);
 
 private:
-    ModelLayer* m_manager;
+    session::SessionQuery* m_query; //> 会话层查询（逻辑所在，本类不拥有）
 };
