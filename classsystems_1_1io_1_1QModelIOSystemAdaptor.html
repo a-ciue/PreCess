@@ -234,8 +234,10 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a87026b27812abe6703ab8f822d856b62"><td class="mdescLeft">&#160;</td><td class="mdescRight">按照给定文件类型，写出指定模型到指定路径的文件  <br /></td></tr>
 <tr class="memitem:adc057ee7550640ca63e882b791f892c9" id="r_adc057ee7550640ca63e882b791f892c9"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QList&lt; <a class="el" href="classsystems_1_1io_1_1QModelIOInfo.html">QModelIOInfo</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc057ee7550640ca63e882b791f892c9">getModelIOInfo</a> () const</td></tr>
 <tr class="memdesc:adc057ee7550640ca63e882b791f892c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取所有支持的文件类型信息  <br /></td></tr>
-<tr class="memitem:a9bdb1d03075af65a27f20197daf4f88e" id="r_a9bdb1d03075af65a27f20197daf4f88e"><td class="memItemLeft" align="right" valign="top">QStringList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bdb1d03075af65a27f20197daf4f88e">getDialogNameFilters</a> () const</td></tr>
+<tr class="memitem:a9bdb1d03075af65a27f20197daf4f88e" id="r_a9bdb1d03075af65a27f20197daf4f88e"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QStringList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bdb1d03075af65a27f20197daf4f88e">getDialogNameFilters</a> () const</td></tr>
 <tr class="memdesc:a9bdb1d03075af65a27f20197daf4f88e"><td class="mdescLeft">&#160;</td><td class="mdescRight">供文件对话框使用，获取所有支持的文件类型过滤器  <br /></td></tr>
+<tr class="memitem:a548bab5f671c93a63e79bf8d738f0dcb" id="r_a548bab5f671c93a63e79bf8d738f0dcb"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a548bab5f671c93a63e79bf8d738f0dcb">getDialogExtFilters</a> () const</td></tr>
+<tr class="memdesc:a548bab5f671c93a63e79bf8d738f0dcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">供特定平台的文件选择器使用（如浏览器），获取所有支持的文件扩展名过滤器  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 属性</h2></td></tr>
@@ -295,6 +297,26 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a548bab5f671c93a63e79bf8d738f0dcb" name="a548bab5f671c93a63e79bf8d738f0dcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a548bab5f671c93a63e79bf8d738f0dcb">&#9670;&#160;</a></span>getDialogExtFilters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QModelIOSystemAdaptor::getDialogExtFilters </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>供特定平台的文件选择器使用（如浏览器），获取所有支持的文件扩展名过滤器 </p>
+<dl class="section return"><dt>返回</dt><dd>文件扩展名过滤器，如 ".obj,.mesh" </dd></dl>
 
 </div>
 </div>

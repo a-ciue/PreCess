@@ -31,5 +31,7 @@ var searchData=
   ['qsystempluginmanager_2ecpp_28',['QSystemPluginManager.cpp',['../QSystemPluginManager_8cpp.html',1,'']]],
   ['qsystempluginmanager_2eh_29',['QSystemPluginManager.h',['../QSystemPluginManager_8h.html',1,'']]],
   ['qundostackadaptor_2ecpp_30',['QUndoStackAdaptor.cpp',['../QUndoStackAdaptor_8cpp.html',1,'']]],
-  ['qundostackadaptor_2eh_31',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]]
+  ['qundostackadaptor_2eh_31',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]],
+  ['qwasmbridge_2ecpp_32',['QWasmBridge.cpp',['../QWasmBridge_8cpp.html',1,'']]],
+  ['qwasmbridge_2eh_33',['QWasmBridge.h',['../QWasmBridge_8h.html',1,'']]]
 ];

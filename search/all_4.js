@@ -45,6 +45,7 @@ var searchData=
   ['display_5fname_5f_42',['display_name_',['../classQAlgorithmInfo.html#a581849a72618576791b98b266f657e37',1,'QAlgorithmInfo::display_name_'],['../classQEditInfo.html#adf6d67496c8224250be9d65d6a0ba7f6',1,'QEditInfo::display_name_'],['../classQFeatureInfo.html#aa808c58b486376a2081e79dfc725f14a',1,'QFeatureInfo::display_name_']]],
   ['displayname_43',['displayName',['../classQAlgorithmInfo.html#aec11817fbd38188a5a8efb6e24d4f8aa',1,'QAlgorithmInfo::displayName()'],['../classQEditInfo.html#a4bea9967d53ce515b004cca217e1ff69',1,'QEditInfo::displayName()'],['../classQFeatureInfo.html#a2c03a2d3dd09979b611f0e355879f688',1,'QFeatureInfo::displayName()']]],
   ['dissolve_44',['dissolve',['../structtinyobj_1_1material__t.html#a61e3561bf67f6faec6ac4f551f9956cb',1,'tinyobj::material_t']]],
-  ['dummy_45',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]],
-  ['dummyobserver_46',['DummyObserver',['../structDummyObserver.html',1,'']]]
+  ['downloadfile_45',['downloadFile',['../classQWasmBridge.html#abcc5059315605a465a259cf2544804d6',1,'QWasmBridge']]],
+  ['dummy_46',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]],
+  ['dummyobserver_47',['DummyObserver',['../structDummyObserver.html',1,'']]]
 ];

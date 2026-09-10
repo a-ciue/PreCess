@@ -9,7 +9,7 @@ var searchData=
   ['injectrenderrefreshcallback_6',['injectRenderRefreshCallback',['../structQRenderWindow.html#a8e5655b1ac1ac24ee4497359a8aa1d2a',1,'QRenderWindow']]],
   ['insert_7',['insert',['../classMeshIDMap.html#ab212ad471ffb9384e1096cebf1ac1982',1,'MeshIDMap']]],
   ['insertrange_8',['insertRange',['../classMeshIDMap.html#a462c11a41623c193d4999f6d5165ddf3',1,'MeshIDMap']]],
-  ['instance_9',['instance',['../classQLogManager.html#a2c0e1866534d3a822db7ad7cc7495cb5',1,'QLogManager::instance()'],['../classcore_1_1TempFile.html#ad7b165d514fabed96df608dab8622fd9',1,'core::TempFile::instance()']]],
+  ['instance_9',['instance',['../classQLogManager.html#a2c0e1866534d3a822db7ad7cc7495cb5',1,'QLogManager::instance()'],['../classQWasmBridge.html#a334d73597959db7ba6bec1709913c0ec',1,'QWasmBridge::instance()'],['../classcore_1_1TempFile.html#ad7b165d514fabed96df608dab8622fd9',1,'core::TempFile::instance()']]],
   ['interactioncontext_10',['InteractionContext',['../classsystems_1_1feature_1_1InteractionContext.html#ae2efdb890f9ea3a95ce9a914367bdef2',1,'systems::feature::InteractionContext']]],
   ['interactionservice_11',['InteractionService',['../classInteractionService.html#a31a76b59e24f4a6b00726e36d4823eec',1,'InteractionService']]],
   ['interactive_12',['interactive',['../classQFeatureInfo.html#abebaf54e7c1b827bb34ee5852c162a16',1,'QFeatureInfo']]],

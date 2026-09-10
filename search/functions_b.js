@@ -7,6 +7,7 @@ var searchData=
   ['loadmodeldata_4',['loadModelData',['../classMeshActor.html#a70be0e3ea4dc333f6454667209f68f98',1,'MeshActor::loadModelData()'],['../classTopologyDiagnosticActor.html#a9013c89b1dd6191a711917c3d6e4f0e6',1,'TopologyDiagnosticActor::loadModelData()']]],
   ['loadmtl_5',['LoadMtl',['../namespacetinyobj.html#a861cd417f27a4cb95f005a3e1a178f87',1,'tinyobj']]],
   ['loadobj_6',['LoadObj',['../namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3',1,'tinyobj']]],
-  ['loadshape_7',['loadShape',['../classGeometryActor.html#aef1bf238b45d59679f9c3e2199ca48ab',1,'GeometryActor']]],
-  ['lock_8',['lock',['../classGeometryActorSelectOpFactory.html#a00b635976b810da2b8f65665f154aef9',1,'GeometryActorSelectOpFactory::lock()'],['../classMeshActorSelectOpFactory.html#a13ab4a11c68be637479ab067aecd2525',1,'MeshActorSelectOpFactory::lock()']]]
+  ['loadplugin_7',['loadPlugin',['../classsystems_1_1SystemPluginManager.html#aa79fbff90589e3f0512416d5d65d9bb1',1,'systems::SystemPluginManager']]],
+  ['loadshape_8',['loadShape',['../classGeometryActor.html#aef1bf238b45d59679f9c3e2199ca48ab',1,'GeometryActor']]],
+  ['lock_9',['lock',['../classGeometryActorSelectOpFactory.html#a00b635976b810da2b8f65665f154aef9',1,'GeometryActorSelectOpFactory::lock()'],['../classMeshActorSelectOpFactory.html#a13ab4a11c68be637479ab067aecd2525',1,'MeshActorSelectOpFactory::lock()']]]
 ];

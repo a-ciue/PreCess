@@ -20,5 +20,6 @@ var searchData=
   ['qsystempluginmanager_17',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html',1,'systems']]],
   ['qtlogsink_18',['QtLogSink',['../classQtLogSink.html',1,'']]],
   ['qtlogsink_3c_20std_3a_3amutex_20_3e_19',['QtLogSink&lt; std::mutex &gt;',['../classQtLogSink.html',1,'']]],
-  ['qundostackadaptor_20',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html',1,'']]]
+  ['qundostackadaptor_20',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html',1,'']]],
+  ['qwasmbridge_21',['QWasmBridge',['../classQWasmBridge.html',1,'']]]
 ];

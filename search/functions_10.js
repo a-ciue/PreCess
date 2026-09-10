@@ -17,5 +17,6 @@ var searchData=
   ['qrenderwindowstyle_14',['QRenderWindowStyle',['../classQRenderWindowStyle.html#a43929773631c408dce1c44303ab5c5a0',1,'QRenderWindowStyle']]],
   ['qselection_15',['QSelection',['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]],
   ['qsystempluginmanager_16',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html#abedb39985f7bd1fe6c8d02a131596d86',1,'systems::QSystemPluginManager']]],
-  ['qundostackadaptor_17',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]]
+  ['qundostackadaptor_17',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]],
+  ['qwasmbridge_18',['QWasmBridge',['../classQWasmBridge.html#a777a95b186baf4db42e8f295edaa83de',1,'QWasmBridge']]]
 ];
