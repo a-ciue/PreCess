@@ -6,6 +6,7 @@
 #include "ModelIOSystem.h"
 #include "ModelLayer.h"
 #include "QModelObserver.h"
+#include "QPythonRuntime.h"
 #include "Session.h"
 #include "SystemPluginManager.h"
 #include "UndoStack.h"
@@ -51,7 +52,10 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 
     q_plugin_manager_ = std::make_unique<systems::QSystemPluginManager>(&session_->pluginManager());
 
-    // 4) 注册插件：静态插件经适配器注册以同步 QML 插件名列表
+    // 4) 内嵌 Python 运行时：懒初始化（控制台首次使用时启动解释器），持有活会话引用
+    python_runtime_ = std::make_unique<QPythonRuntime>(session_.get(), this);
+
+    // 5) 注册插件：静态插件经适配器注册以同步 QML 插件名列表
     q_plugin_manager_->registerStaticPlugins();
 #ifndef __EMSCRIPTEN__
     using std::filesystem::path;
@@ -76,7 +80,10 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 
 QModelManager::~QModelManager()
 {
-    // 显式先拆会话（停功能系统、断 undo 钩子）：此刻 Qt 适配器均存活，
+    // 先关 Python 运行时（丢弃 precess.current 活会话引用并终结解释器）：
+    // Python 侧以引用策略持有活会话，会话先析构会在终结前留下悬垂
+    python_runtime_.reset();
+    // 显式再拆会话（停功能系统、断 undo 钩子）：此刻 Qt 适配器均存活，
     // staged 清理路径经 on_changed_ 回调 undo_adaptor_ 发信号安全；其余成员按声明逆序析构
     session_.reset();
 }
@@ -145,6 +152,11 @@ systems::QSystemPluginManager* QModelManager::getSystemPluginManager() const
 QUndoStackAdaptor* QModelManager::getUndoStackAdaptor() const
 {
     return undo_adaptor_.get();
+}
+
+QPythonRuntime* QModelManager::getPythonRuntime() const
+{
+    return python_runtime_.get();
 }
 
 std::string_view QModelManager::argv0 = "./PreCess.exe";

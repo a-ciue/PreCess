@@ -6,6 +6,7 @@
 #include "QModelIOSystemAdaptor.h"
 #include "QModelObserver.h"
 #include "QModelQuery.h"
+#include "QPythonRuntime.h"
 #include "QSystemPluginManager.h"
 #include "QUndoStackAdaptor.h"
 #include <memory>
@@ -29,6 +30,7 @@ class QModelManager : public QObject {
     Q_PROPERTY(systems::edit::QEditSystemAdaptor* editSystem READ getEditSystemAdaptor CONSTANT)
     Q_PROPERTY(systems::feature::QFeatureSystemAdaptor* featureSystem READ getFeatureSystemAdaptor CONSTANT)
     Q_PROPERTY(QUndoStackAdaptor* undoStack READ getUndoStackAdaptor CONSTANT)
+    Q_PROPERTY(QPythonRuntime* pythonRuntime READ getPythonRuntime CONSTANT)
 public:
     explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
     ~QModelManager();
@@ -46,6 +48,7 @@ public:
     systems::feature::QFeatureSystemAdaptor* getFeatureSystemAdaptor() const;
     systems::QSystemPluginManager* getSystemPluginManager() const;
     QUndoStackAdaptor* getUndoStackAdaptor() const;
+    QPythonRuntime* getPythonRuntime() const;
 
     static std::string_view argv0; //> 命令行参数 argv[0]，用于插件加载等需要程序路径的场景，由 main 函数在程序启动时设置，被传入 ModelManager 构造函数以供其使用
     /**
@@ -62,6 +65,7 @@ signals:
 
 private:
     std::unique_ptr<session::Session> session_; //> 会话组合根（模型层/undo 栈/事件总线/四系统），析构先于 Qt 适配器（见 ~QModelManager）
+    std::unique_ptr<QPythonRuntime> python_runtime_; //> 内嵌 Python 运行时（懒初始化；声明在 session_ 之后保证先于会话析构，见 ~QModelManager）
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
     core::EventBus::Subscription param_bridge_sub_; //> 参数变更桥接订阅（随成员析构自动退订）

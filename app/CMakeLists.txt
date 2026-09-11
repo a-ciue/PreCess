@@ -24,6 +24,7 @@ qt_add_qml_module(${MYNAME}
             ObjectTree.qml
             Selector.qml
             JavaScriptConsole.qml
+            PythonConsole.qml
             PreferencesWindow.qml
             OutputLog.qml
 )

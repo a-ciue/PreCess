@@ -76,6 +76,16 @@ ApplicationWindow {
         }
     }
 
+    Shortcut {
+        sequence: "F11"
+        onActivated: {
+            if (pythonConsoleDock.isOpen)
+                pythonConsoleDock.close()
+            else
+                pythonConsoleDock.show()
+        }
+    }
+
     // 撤销/重做快捷键（栈空时适配器内部空转）
     Shortcut {
         sequence: "Ctrl+Z"
@@ -153,6 +163,16 @@ ApplicationWindow {
         }
 
         KDDW.DockWidget {
+            id: pythonConsoleDock
+            uniqueName: "pythonConsole"
+            title: "Python 控制台"
+
+            PythonConsole {
+                anchors.fill: parent
+            }
+        }
+
+        KDDW.DockWidget {
             id: outputLogDock
             uniqueName: "outputLog"
             title: "日志"
@@ -177,6 +197,7 @@ ApplicationWindow {
             addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
             addDockWidget(attributeRenderDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
+            addDockWidget(pythonConsoleDock, KDDW.KDDockWidgets.Location_OnRight, null, Qt.size(450, 0), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(outputLogDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(preferencesDock, KDDW.KDDockWidgets.Location_OnTop, objectTreeDock, Qt.size(0, 200), KDDW.KDDockWidgets.StartHidden)
         }
