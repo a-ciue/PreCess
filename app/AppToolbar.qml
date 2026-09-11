@@ -104,14 +104,11 @@ ColumnLayout {
         }
     }
 
-    // 导出默认文件名：以活动模型名（多来自导入文件名）为主干，按目标文件类型换成对应扩展名。
-    // 原生文件对话框与网页端导出弹窗共用，保证两条路径的默认名一致
-    function suggestedExportFileName(file_type) {
+    // 导出默认文件名：活动模型名（导入模型即为导入文件名，自带扩展名）。
+    // 扩展名交给对话框按所选文件类型适配（Windows IFileDialog 会随类型切换改写），此处不推导
+    function suggestedExportFileName() {
         const model_id = App.selection.activeModelId
-        if (model_id < 0)
-            return ""
-        return QModelManager.ioSystem.suggestFileName(
-            QModelManager.query.getModelName(model_id), file_type)
+        return model_id < 0 ? "" : QModelManager.query.getModelName(model_id)
     }
 
     // 功能触发入口：ribbon 功能按钮共用
@@ -200,29 +197,19 @@ ColumnLayout {
         nameFilters: QModelManager.ioSystem.dialogNameFilters
         fileMode: FileDialog.SaveFile
 
-        // 以活动模型名（多来自导入文件名）为主干预填文件名，避免用户从空白输入框开始；
-        // 扩展名按对话框当前选中的文件类型推导，用户改选类型后由写出前的校正兜底
-        function prefillFileName() {
-            const model_id = App.selection.activeModelId
-            if (model_id < 0)
-                return
-            const suggested = QModelManager.ioSystem.suggestFileUrl(
-                QModelManager.query.getModelName(model_id), selectedNameFilter.name, currentFolder)
-            if (suggested.toString() !== "")
-                selectedFile = suggested
-        }
-
+        // 以活动模型名预填文件名，避免用户从空白输入框开始；扩展名由对话框按所选类型适配
         function openExport() {
             currentFolder = root.fileDialogFolder
-            prefillFileName()
+            const name = root.suggestedExportFileName()
+            if (name !== "")
+                selectedFile = currentFolder + "/" + name
             open()
         }
 
         onAccepted: {
             root.fileDialogFolder = currentFolder
             if (selectedNameFilter.index >= 0) {
-                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId,
-                    QModelManager.ioSystem.adaptFileExtension(selectedFile, selectedNameFilter.name), [])
+                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
             } else {
                 console.exception("No valid file type selected.")
             }
@@ -241,9 +228,8 @@ ColumnLayout {
         function openDialog() {
             typeCombo.model = QModelManager.ioSystem.getModelIOInfo()
             typeCombo.currentIndex = 0
-            // 按活动模型名预填（无活动模型时保留既有默认值）
-            const info = typeCombo.model[typeCombo.currentIndex]
-            const suggested = info ? root.suggestedExportFileName(info.name) : ""
+            // 按活动模型名预填（无活动模型时保留既有默认值）；扩展名由类型下拉的联动逻辑适配
+            const suggested = root.suggestedExportFileName()
             if (suggested !== "")
                 nameField.text = suggested
             open()

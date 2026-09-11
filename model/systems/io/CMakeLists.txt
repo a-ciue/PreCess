@@ -8,5 +8,3 @@ target_link_libraries(IOSystem PUBLIC Core SystemCore)
 target_include_directories(IOSystem PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 当前文件所在路径
 )
-
-add_subdirectory(test)

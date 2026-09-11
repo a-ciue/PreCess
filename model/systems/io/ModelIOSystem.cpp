@@ -7,8 +7,6 @@
 #include "ModelIOInfo.h"
 #include "ModelLayer.h"
 
-#include <algorithm>
-#include <cctype>
 #include <optional>
 #include <spdlog/fmt/ranges.h>
 #include <spdlog/spdlog.h>
@@ -17,17 +15,6 @@ namespace systems::io {
 using std::string;
 using std::unique_ptr;
 using std::vector;
-
-namespace {
-    //! @brief 忽略大小写比较两个扩展名（均不含前置点）
-    bool equalsIgnoreCase(const string& lhs, const string& rhs)
-    {
-        return lhs.size() == rhs.size()
-            && std::equal(lhs.begin(), lhs.end(), rhs.begin(), [](unsigned char a, unsigned char b) {
-                   return std::tolower(a) == std::tolower(b);
-               });
-    }
-}
 
 const string ModelIOSystem::name = "ModelIOSystem";
 
@@ -138,66 +125,5 @@ std::vector<ModelIOInfo*> ModelIOSystem::registeredFileTypeInfos()
 void ModelIOSystem::setOnDialogNameFiltersChanged(std::function<void()> callback)
 {
     on_dialog_name_filters_changed_ = std::move(callback);
-}
-
-string ModelIOSystem::preferredExtension(const string& file_type) const
-{
-    const auto info_it = file_type_infos_.find(file_type);
-    if (info_it == file_type_infos_.end() || info_it->second->extensions.empty())
-        return {};
-    return info_it->second->extensions.front();
-}
-
-bool ModelIOSystem::isRegisteredExtension(const string& extension) const
-{
-    if (extension.empty())
-        return false;
-
-    // 注册类型为个位数，线性扫描即可（与读写侧的文件类型解析策略一致）
-    for (const auto& entry : file_type_infos_) {
-        for (const auto& registered : entry.second->extensions) {
-            if (equalsIgnoreCase(extension, registered))
-                return true;
-        }
-    }
-    return false;
-}
-
-string ModelIOSystem::suggestFileName(const string& model_name, const string& file_type) const
-{
-    const string target_extension = preferredExtension(file_type);
-    // 目标类型未知时无法给出扩展名，原样返回：模型名自带的扩展名是反查文件类型的唯一线索
-    if (model_name.empty() || target_extension.empty())
-        return model_name;
-
-    // 只剥掉"看起来是已注册扩展名"的后缀，普通带点名字（如 "part.v2"）保持完整
-    const auto dot_pos = model_name.rfind('.');
-    const bool has_suffix = dot_pos != string::npos && dot_pos > 0 && dot_pos + 1 < model_name.size();
-    const string base_name = has_suffix && isRegisteredExtension(model_name.substr(dot_pos + 1))
-        ? model_name.substr(0, dot_pos)
-        : model_name;
-
-    return base_name + "." + target_extension;
-}
-
-std::filesystem::path ModelIOSystem::adaptFileExtension(const std::filesystem::path& path, const string& file_type) const
-{
-    const string target_extension = preferredExtension(file_type);
-    if (path.empty() || target_extension.empty())
-        return path;
-
-    string current_extension = path.extension().string();
-    if (!current_extension.empty() && current_extension.front() == '.')
-        current_extension.erase(current_extension.begin());
-
-    if (equalsIgnoreCase(current_extension, target_extension))
-        return path;
-    // 非空且未注册的扩展名视为用户显式指定（如 "out.dat"），不擅自改写
-    if (!current_extension.empty() && !isRegisteredExtension(current_extension))
-        return path;
-
-    std::filesystem::path adapted = path;
-    adapted.replace_extension(target_extension);
-    return adapted;
 }
 }
