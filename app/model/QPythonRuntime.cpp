@@ -1,200 +1,78 @@
 /**
  * @file QPythonRuntime.cpp
- * @brief QPythonRuntime 实现：pybind11 嵌入式解释器宿主
+ * @brief QPythonRuntime 实现：precess::Runtime 之上的 QObject/QML 薄壳
  *
- * 仅在 PRECESS_EMBED_PYTHON（app/model/CMakeLists 检测到 Python3 + pybind11 且
- * 非 wasm 构建）下编译真实实现，否则降级为恒不可用。线程与生命周期约定见
- * QPythonRuntime.h 类注释。
+ * 解释器宿主逻辑在 python/src/runtime.cpp（无 Qt）；本文件只做线程断言、
+ * 字符串编解码、日志与信号桥接。仅在 PRECESS_EMBED_PYTHON（app/model/
+ * CMakeLists 检测到 precess_runtime 目标且非 wasm 构建）下持有宿主实例，
+ * 否则降级为恒不可用。
  */
 #include "QPythonRuntime.h"
 
 #ifdef PRECESS_EMBED_PYTHON
 
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-// Qt 的 qobjectdefs.h 把 slots/signals/emit 定义为宏，会破坏 CPython 头文件中
-// 的 PyType_Spec::slots 成员与 pybind11 的 PyType_Spec 初始化——引入 Python 期间
-// 取消，处理完 Python/pybind11 头后原样还原（本编译单元其后仍用 Qt 关键字宏）
-#pragma push_macro("slots")
-#pragma push_macro("signals")
-#pragma push_macro("emit")
-#undef slots
-#undef signals
-#undef emit
-#include <pybind11/embed.h>
-#pragma pop_macro("emit")
-#pragma pop_macro("signals")
-#pragma pop_macro("slots")
-
-#include "Session.h"
+#include <precess/runtime.h>
 
 #include <QCoreApplication>
 #include <QThread>
 #include <spdlog/spdlog.h>
 
-#include <vector>
-
-namespace py = pybind11;
+#include <filesystem>
 
 namespace {
 
-//> precess 扩展模块的 sys.path 注入候选：优先部署形态 <exe_dir>/python，
-//> 其次构建树 precess 目标输出目录（CMake 期给定）
-std::vector<std::string> moduleDirCandidates()
+//> 宿主配置：标准库根取 CMake 期绑定的解释器目录（正斜杠，跨机器为构建机
+//> 路径，安装分发场景见后续打包阶段）；precess 扩展模块目录候选依次为
+//> 部署形态 <exe_dir>/python 与构建树 precess 目标输出目录
+precess::Runtime::Config makeRuntimeConfig()
 {
-    return {
-        (QCoreApplication::applicationDirPath() + QStringLiteral("/python")).toStdString(),
-        std::string(PRECESS_PYTHON_MODULE_DIR),
+    precess::Runtime::Config config;
+    const QString exe_dir = QCoreApplication::applicationDirPath();
+    config.python_home = PRECESS_PYTHON_HOME;
+    config.module_dirs = {
+        std::filesystem::path((exe_dir + QStringLiteral("/python")).toStdString()),
+        std::filesystem::path(PRECESS_PYTHON_MODULE_DIR),
     };
+    return config;
 }
 
 } // namespace
 
-struct QPythonRuntime::State {
-    session::Session* session = nullptr; //> 活会话（不持有所有权，QModelManager 保证生命周期）
-    bool initialized = false; //> 解释器就绪且 precess 已导入
-    bool executing = false; //> 重入守卫：Python 执行期间拒绝再次进入
-    QString last_error; //> 初始化失败描述；非空时不再重试
-    py::object precess_module; //> 已导入的 precess 绑定模块（current 挂活会话）
-};
-
 QPythonRuntime::QPythonRuntime(session::Session* session, QObject* parent)
     : QObject(parent)
-    , state_(std::make_unique<State>())
+    , runtime_(std::make_unique<precess::Runtime>(session, makeRuntimeConfig()))
 {
-    state_->session = session;
 }
 
-QPythonRuntime::~QPythonRuntime()
-{
-    if (!state_->initialized)
-        return;
-    // 先丢弃 Python 侧活会话引用再终结解释器。GIL 自初始化起归本线程（GUI 线程）
-    // 所有：acquire 守卫在同线程为无操作配对，块结束时 GIL 仍被持有，可直接
-    // Finalize；终结之后不再触碰任何 Python API
-    {
-        py::gil_scoped_acquire gil;
-        state_->precess_module.attr("current") = py::none();
-        state_->precess_module = py::object();
-    }
-    Py_FinalizeEx();
-}
+QPythonRuntime::~QPythonRuntime() = default;
 
 bool QPythonRuntime::isAvailable() const
 {
-    return state_->initialized;
+    return runtime_->isAvailable();
 }
 
 QString QPythonRuntime::lastError() const
 {
-    return state_->last_error;
+    return QString::fromStdString(runtime_->lastError());
 }
 
 void QPythonRuntime::initialize()
 {
-    Q_ASSERT(QThread::currentThread() == thread()); // Python ≡ GUI 线程（类注释）
-    ensureInitialized();
+    Q_ASSERT(QThread::currentThread() == thread()); // Python ≡ GUI 线程
+    if (runtime_->isAvailable() || !runtime_->lastError().empty())
+        return;
+    runtime_->initialize();
+    if (runtime_->isAvailable())
+        spdlog::info("QPythonRuntime: Python 运行环境就绪，活动会话已注入 precess.current");
+    else
+        spdlog::error("QPythonRuntime: {}", runtime_->lastError());
+    emit availableChanged();
 }
 
 void QPythonRuntime::ensureInitialized()
 {
-    if (state_->initialized || !state_->last_error.isEmpty())
-        return;
-
-    // 1) 解释器初始化：标准库根经 PyConfig 固定为 CMake 期绑定的解释器目录。
-    //    嵌入场景主程序不是 python.exe，不显式给 home 时标准库定位依赖环境变量
-    //    等启发式，跨部署形态不可靠；路径以正斜杠给出，可安全嵌入 C 字符串
-    PyConfig config;
-    PyConfig_InitPythonConfig(&config);
-    const std::wstring home = QString::fromUtf8(PRECESS_PYTHON_HOME).toStdWString();
-    PyConfig_SetString(&config, &config.home, home.c_str());
-    const std::wstring program_name = QStringLiteral("PreCess").toStdWString();
-    PyConfig_SetString(&config, &config.program_name, program_name.c_str());
-    const PyStatus status = Py_InitializeFromConfig(&config);
-    PyConfig_Clear(&config);
-    if (PyStatus_Exception(status)) {
-        state_->last_error = QStringLiteral("Python 解释器初始化失败：")
-            + QString::fromUtf8(status.err_msg ? status.err_msg : "未知错误");
-        spdlog::error("QPythonRuntime: {}", state_->last_error.toStdString());
-        emit availableChanged();
-        return;
-    }
-
-    // 2) sys.path 注入模块目录后导入 precess，并注入活会话（引用策略，无所有权）。
-    //    初始化后 GIL 归本线程（GUI 线程），此后同线程的 gil 守卫均为无操作配对
-    py::gil_scoped_acquire gil;
-    try {
-        py::module_ sys = py::module_::import("sys");
-        for (const std::string& dir : moduleDirCandidates())
-            sys.attr("path").attr("insert")(0, dir);
-        state_->precess_module = py::module_::import("precess");
-        state_->precess_module.attr("current")
-            = py::cast(state_->session, py::return_value_policy::reference);
-        state_->initialized = true;
-        spdlog::info("QPythonRuntime: Python 运行环境就绪，活动会话已注入 precess.current");
-    } catch (const py::error_already_set& e) {
-        state_->last_error = QStringLiteral("precess 模块导入失败：")
-            + QString::fromUtf8(e.what())
-            + QStringLiteral("\n（请确认构建目录 python/ 下已生成 precess 扩展模块，"
-                             "或经 PreCess-deps.py 安装 Python/pybind11 依赖）");
-        state_->precess_module = py::object();
-        spdlog::error("QPythonRuntime: {}", state_->last_error.toStdString());
-        emit availableChanged();
-        return;
-    }
-
-    // 3) 控制台交互为纯 Python 模型：输入行不做任何界面级命令拦截，help/clear/
-    //    exit 以 Python 函数注入 __main__。覆盖 site 默认的 help/exit 是因为
-    //    pydoc 的交互模式依赖 stdin——嵌入环境没有可交互 stdin；裸 help 的
-    //    "Type help()..." 提示语也会误导用户。clear() 经输出换页符 \f、由界面
-    //    识别清屏。注入失败不影响可用性（控制台核心功能不受损）
-    try {
-        py::exec(R"PY(
-def _console_guide():
-    return (
-        "PreCess Python 控制台:\n"
-        "- 输入即 Python，回车执行；def/for/if 未完时提示 ... 续行，Esc 放弃\n"
-        "- import precess 后 precess.current 即当前 GUI 会话\n"
-        "- 查询: precess.current.query.list_models()\n"
-        "- 功能: precess.current.call('CreateBox', 0, 0, 0, 5, 5, 5, 2)\n"
-        "- 自省: precess.current.feature_params('CreateBox')\n"
-        "- 撤销/重做: precess.current.undo_stack.undo() / redo()\n"
-        "- clear() 清空窗口；help(对象) 查看文档（如 help(str)）\n"
-        "- exit()/quit() 仅作提示，GUI 程序请直接关闭窗口退出")
-
-class _ConsoleHelp:
-    def __call__(self, *args):
-        import pydoc
-        if args:
-            pydoc.doc(*args)
-        else:
-            print(_console_guide())
-
-    def __repr__(self):
-        return _console_guide()
-
-class _ConsoleExit:
-    def __call__(self):
-        print("PreCess 是 GUI 程序，请直接关闭窗口退出")
-
-    def __repr__(self):
-        return "PreCess 是 GUI 程序，请直接关闭窗口退出"
-
-def _console_clear():
-    import sys
-    sys.stdout.write('\f')
-
-help = _ConsoleHelp()
-exit = quit = _ConsoleExit()
-clear = _console_clear
-del _ConsoleHelp, _ConsoleExit, _console_clear
-)PY",
-            py::module_::import("__main__").attr("__dict__"));
-    } catch (const py::error_already_set& e) {
-        spdlog::error("QPythonRuntime: 控制台辅助注入失败: {}", e.what());
-    }
-    emit availableChanged();
+    if (!runtime_->isAvailable() && runtime_->lastError().empty())
+        initialize();
 }
 
 QVariantMap QPythonRuntime::execute(const QString& source)
@@ -204,86 +82,26 @@ QVariantMap QPythonRuntime::execute(const QString& source)
     result["incomplete"] = false;
     result["output"] = QString();
     result["error"] = QString();
-    Q_ASSERT(QThread::currentThread() == thread()); // Python ≡ GUI 线程（类注释）
+    Q_ASSERT(QThread::currentThread() == thread()); // Python ≡ GUI 线程
 
     ensureInitialized();
-    if (!state_->initialized) {
-        result["error"] = state_->last_error;
-        return result;
-    }
-    if (state_->executing) {
-        result["error"] = QStringLiteral("Python 正在执行中，拒绝重入调用");
-        return result;
-    }
-
-    py::gil_scoped_acquire gil;
-    state_->executing = true;
-    QString captured;
-    try {
-        // Python 侧 sys.stdout/sys.stderr 临时换成 StringIO 捕获输出（含表达式
-        // 结果的 displayhook 打印），还原后经 getvalue() 取回内容
-        py::module_ sys = py::module_::import("sys");
-        py::object buffer = py::module_::import("io").attr("StringIO")();
-        py::object old_stdout = sys.attr("stdout");
-        py::object old_stderr = sys.attr("stderr");
-        sys.attr("stdout") = buffer;
-        sys.attr("stderr") = buffer;
-        try {
-            // 与交互式解释器同判定：codeop.compile_command 未完返回 None，
-            // 语法错误抛 SyntaxError/ValueError/OverflowError
-            py::object code = py::module_::import("codeop").attr("compile_command")(
-                source.toStdString(), "<console>", "single");
-            if (code.is_none()) {
-                result["incomplete"] = true;
-            } else {
-                // 控制台共享 __main__ 命名空间，变量跨多次执行存活
-                py::module_::import("builtins").attr("exec")(code, py::module_::import("__main__").attr("__dict__"));
-                result["ok"] = true;
-            }
-        } catch (const py::error_already_set& e) {
-            // traceback 全量格式化（含语法错误定位），观感与交互式解释器一致
-            try {
-                py::object formatted = py::module_::import("traceback").attr("format_exception")(e.type(), e.value(), e.trace());
-                result["error"] = QString::fromStdString(
-                    static_cast<std::string>(py::str(py::str("\n").attr("join")(formatted))));
-            } catch (const py::error_already_set&) {
-                result["error"] = QString::fromUtf8(e.what());
-            }
-        }
-        // 无论成败都还原标准流并取回捕获内容
-        sys.attr("stdout") = old_stdout;
-        sys.attr("stderr") = old_stderr;
-        captured = QString::fromStdString(
-            static_cast<std::string>(py::str(buffer.attr("getvalue")())));
-    } catch (const py::error_already_set& e) {
-        // 兜底：流管理自身出错时保证错误可见
-        result["error"] = QString::fromUtf8(e.what());
-    }
-    state_->executing = false;
-    result["output"] = captured;
+    const precess::Runtime::ExecutionResult executed = runtime_->execute(source.toStdString());
+    result["ok"] = executed.ok;
+    result["incomplete"] = executed.incomplete;
+    result["output"] = QString::fromStdString(executed.output);
+    result["error"] = QString::fromStdString(executed.error);
     return result;
 }
 
 QString QPythonRuntime::version() const
 {
-    if (!state_->initialized)
-        return QString();
-    py::gil_scoped_acquire gil;
-    try {
-        return QString::fromStdString(
-            static_cast<std::string>(py::str(py::module_::import("sys").attr("version"))));
-    } catch (const py::error_already_set&) {
-        return QString();
-    }
+    return QString::fromStdString(runtime_->version());
 }
 
 #else // 非 PRECESS_EMBED_PYTHON：无 Python 环境的降级实现（如 wasm 构建）
 
-struct QPythonRuntime::State { };
-
 QPythonRuntime::QPythonRuntime(session::Session* session, QObject* parent)
     : QObject(parent)
-    , state_(std::make_unique<State>())
 {
     Q_UNUSED(session)
 }

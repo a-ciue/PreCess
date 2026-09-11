@@ -50,6 +50,7 @@
   - `app/render/` → `app/model`（VTK 渲染窗口控件）
   - `app/*.qml` → `app/model`、`app/render`、`app/core`（界面布局与更新，仅做轻量数据处理，不承载主业务逻辑）
 - `plugins/`：插件示例与二次开发，依赖 `model/systems`、`model/data`、`core`，与 `app` 独立构建。
+- `python/`：precess Python 绑定模块（pyd）与内嵌解释器宿主 `precess::Runtime`（LGPLv3，无 Qt；依赖 `model/session`）。
   - `plugins/algo/`：算法插件；`plugins/io/`：模型 IO 插件；`plugins/edit/`：编辑插件；`plugins/feature/`：功能插件（`FeatureHandler`，json 的 `system` 字段为 `FeatureSystem`）。
 
 **依赖速记**：`app → model → core`；`plugins → model + core`；QML 只调依赖包功能、不写主业务逻辑。
@@ -183,7 +184,7 @@
   - **执行路径规则**：staged 打开时 undo=`cancelStaged`（恢复 before₀ 并关闭会话，不动全局栈）、redo 空转；隐式 `cancelStaged` 兜底挂在**真实写入点**（边界内首次标脏、结构操作）而非 `beginOperation`——纯旁观回调（只读事件订阅同样走操作边界）不得误杀进行中的预览，旧功能后续 staged 调用空转容忍；导出为只读所见即所得（含预览态），`stagedActive` 已暴露 QML 供界面禁用入口；功能 `deactivate` 时须自行关闭 staged 会话。
   - **undo 后选择集清空已机制化**：`QUndoStackAdaptor::applied` 信号 → QML 统一 `clearSelection`（CentralRenderArea）。
   - **结构操作即时成记录**：`addModel`/`removeModel`/`removeComponent`/`addGeometryComponent` 由钩子即时成记录；边界内发生的结构操作并入当前操作（一次用户动作一条记录）。
-- **Python 嵌入约定**（`app/model/QPythonRuntime`，CMake 选项 `PRECESS_EMBED_PYTHON`，需 Python3 + pybind11 且非 wasm）：**Python 与 GUI 线程绑定**，所有 Python 入口须在 GUI 线程调用，渲染线程不得触碰 Python；解释器懒初始化（控制台首次使用时启动），标准库根经 `PRECESS_PYTHON_HOME` 固定为 CMake 期绑定的解释器目录，`sys.path` 注入 precess 扩展模块目录（候选 `<exe_dir>/python` 与构建树输出目录）；**活会话以引用策略注入 `precess.current`**（Python 不持有所有权），故 `~QModelManager` 必须先终结解释器、再析构会话；QPythonRuntime.cpp 引入 Python/pybind11 头前须取消并随后还原 Qt 的 `slots/signals/emit` 宏（否则破坏 CPython `PyType_Spec::slots`）；precess pyd 与插件同理，须与主程序同编译器、同配置、同依赖版本构建。
+- **Python 嵌入约定**（宿主为 `python/` 的 `precess::Runtime` 无 Qt 静态库，GUI 的 `QPythonRuntime` 仅 QObject/QML 薄壳、无头 CLI 将复用同一宿主；接入开关为 `precess_runtime` 目标是否存在，需 Python3 + pybind11 且非 wasm）：**Python 与 GUI 线程绑定**，所有 Python 入口须在 GUI 线程调用，渲染线程不得触碰 Python；解释器懒初始化（控制台首次使用时启动），标准库根经构建期导出的 `PRECESS_PYTHON_HOME_DIR` 固定（解释器可经环境变量 `PRECESS_PYTHON_PATH` 指定，留空用系统 PATH），`sys.path` 注入 precess 扩展模块目录（候选 `<exe_dir>/python` 与构建树输出目录）；**活会话以引用策略注入 `precess.current`**（Python 不持有所有权），故宿主析构必须先终结解释器、再析构会话；同时含 Qt 头与 Python/pybind11 头的编译单元，须取消并随后还原 Qt 的 `slots/signals/emit` 宏（否则破坏 CPython `PyType_Spec::slots`）；precess pyd 与插件同理，须与主程序同编译器、同配置、同依赖版本构建。
 
 ---
 

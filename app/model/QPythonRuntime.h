@@ -10,23 +10,26 @@
 namespace session {
 class Session;
 }
+namespace precess {
+class Runtime;
+}
 
 /**
- * @brief app 内嵌 Python 运行环境：解释器生命周期管理与 Python 控制台执行入口
+ * @brief app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是
+ * python/precess::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳
  *
- * 线程约定（重要）：Python 与 GUI 线程绑定，所有入口（initialize/execute/version）
- * 必须在 GUI 线程调用，渲染线程不得触碰 Python。GIL 自解释器初始化起归本线程
- * （GUI 线程）所有，pybind11 的 gil 守卫在同线程为无操作配对，保留它以约束未来
- * 可能的跨线程扩展。
+ * 职责限于：QML 属性/信号桥接（available/availableChanged）、GUI 线程断言、
+ * 字符串编解码（QString ↔ UTF-8）与日志。解释器生命周期、precess 导入、
+ * 活会话注入（precess.current）、控制台执行与输出捕获均在 precess::Runtime。
  *
- * 初始化为幂等懒式（首次 initialize 或 execute 触发）：经 PyConfig 把标准库根
- * 固定为 CMake 期绑定的解释器目录（PRECESS_PYTHON_HOME），向 sys.path 注入
- * precess 绑定模块目录后导入，并把 QModelManager 持有的活会话以引用策略注入
- * precess.current——Python 侧不持有其所有权，生命周期由 ~QModelManager 保证
- * （先终结解释器、再析构会话）。Python/pybind11 不可用（未定义
- * PRECESS_EMBED_PYTHON，如 wasm 构建）时整类降级为不可用态，available 恒 false。
+ * 线程约定：Python 与 GUI 线程绑定，所有入口须在 GUI 线程调用（断言把关），
+ * 渲染线程不得触碰 Python。
+ *
+ * Python 嵌入不可用（未定义 PRECESS_EMBED_PYTHON，如 wasm 构建）时编译
+ * 降级实现，available 恒 false。
  *
  * @sa QModelManager::pythonRuntime
+ * @sa precess::Runtime
  */
 class QPythonRuntime : public QObject {
     Q_OBJECT
@@ -35,13 +38,13 @@ class QPythonRuntime : public QObject {
     Q_PROPERTY(bool available READ isAvailable NOTIFY availableChanged)
 public:
     /**
-     * @brief 构造运行时，仅记录活会话指针，不启动解释器（懒初始化）
+     * @brief 构造接入层，仅组装宿主配置，不启动解释器（懒初始化）
      * @param session QModelManager 持有的会话组合根，须比本对象活得久
      * @param parent Qt 对象树父节点
      */
     explicit QPythonRuntime(session::Session* session, QObject* parent = nullptr);
     /**
-     * @brief 析构：丢弃 Python 侧活会话引用并终结解释器
+     * @brief 析构：终结解释器（经宿主）并丢弃 Python 侧活会话引用
      */
     ~QPythonRuntime() override;
 
@@ -80,8 +83,7 @@ signals:
 private:
     void ensureInitialized(); //> execute 的懒初始化入口，仅未初始化且无失败记录时才真正初始化
 
-    struct State; //> PIMPL：隔离 pybind11/CPython 头文件，避免污染 app/model 其他编译单元
-    std::unique_ptr<State> state_; //> 解释器与模块句柄（仅 PRECESS_EMBED_PYTHON 下有实际内容）
+    std::unique_ptr<precess::Runtime> runtime_; //> 无 Qt 解释器宿主（python/）；未启用嵌入时为空
 };
 
 #endif
