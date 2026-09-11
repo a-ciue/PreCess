@@ -2,9 +2,12 @@
  * @file PythonConsole.qml
  * @brief Python 控制台：经 QModelManager.pythonRuntime 驱动内嵌解释器
  *
- * 执行约定：Python ≡ GUI 线程，execute 同步返回 {ok, incomplete, output, error}。
+ * 交互模型：输入行是纯 Python，无界面级命令；help/clear/exit 由运行时以
+ * Python 函数注入（QPythonRuntime::ensureInitialized）。执行约定：
+ * Python ≡ GUI 线程，execute 同步返回 {ok, incomplete, output, error}。
  * 输入未完（incomplete，如 def/for/if 块）时提示符切为 "..." 并续行拼接，
- * Esc 放弃续行；上下箭头翻历史；help/clear 为内建命令。
+ * Esc 放弃续行；上下箭头翻历史；clear() 经输出换页符 \f 由本组件识别清屏；
+ * 帮助按钮等价于执行 help()。
  * @sa JavaScriptConsole.qml
  * @sa QPythonRuntime
  */
@@ -106,6 +109,16 @@ Item {
             }
 
             Button {
+                text: "帮助"
+                onClicked: {
+                    // 与输入 help() 等价：以命令形式执行，展示交互方式
+                    inputField.text = "help()"
+                    submitInput()
+                    inputField.forceActiveFocus()
+                }
+            }
+
+            Button {
                 text: "执行"
                 highlighted: true
                 onClicked: {
@@ -148,7 +161,7 @@ Item {
             appendOutput("解释器: " + runtime.version() + "\n")
             appendOutput("----------------------------\n")
             appendOutput("import precess 后经 precess.current 操作当前会话\n")
-            appendOutput("输入 help 查看快速命令\n\n")
+            appendOutput("输入 help() 查看控制台指南（help(对象) 查看文档）\n\n")
         } else {
             appendOutput("----------------------------\n")
             appendOutput("✗ " + runtime.lastError() + "\n\n")
@@ -163,12 +176,6 @@ Item {
 
     function submitInput() {
         const line = inputField.text
-        // 界面级内建命令：清空输出窗口（help 等交由 Python 自身响应）
-        if (line.trim() === "clear") {
-            outputText.text = ""
-            inputField.text = ""
-            return
-        }
         appendOutput(prompt() + " " + line + "\n")
         inputField.text = ""
         history.push(line)
@@ -185,25 +192,17 @@ Item {
 
         pyConsole.buffer = ""
         promptText.text = ">"
-        if (result.output.length > 0)
+        // 输入行是纯 Python，没有界面级命令：clear() 以输出换页符 \f 约定清屏
+        if (result.output.indexOf("\f") >= 0) {
+            outputText.text = ""
+            const rest = result.output.substring(result.output.lastIndexOf("\f") + 1)
+            if (rest.length > 0)
+                outputText.text = rest
+        } else if (result.output.length > 0) {
             appendOutput(result.output)
+        }
         if (!result.ok && result.error.length > 0)
             appendOutput("✗ " + result.error.trim() + "\n")
         appendOutput("\n")
-    }
-
-    function showQuickHelp() {
-        appendOutput(
-            "快速命令:\n" +
-            "• help - 显示此帮助\n" +
-            "• clear - 清空窗口\n" +
-            "• Esc - 放弃未完成的续行\n\n" +
-            "会话访问:\n" +
-            "• import precess；precess.current 即当前 GUI 会话\n" +
-            "• 查询: precess.current.query.list_models()\n" +
-            "• 功能: precess.current.call(\"CreateBox\", 0, 0, 0, 5, 5, 5, 2)（按声明序，Combo 用选项下标）\n" +
-            "• 自省: precess.current.feature_params(\"CreateBox\") 查看参数顺序与选项下标\n" +
-            "• 撤销: precess.current.undo_stack.undo()\n\n" +
-            "提示: 多行块（def/for/if...）输入未完时提示符为 ...，继续输入即可\n\n")
     }
 }
