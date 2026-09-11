@@ -6,6 +6,16 @@
 
 set(PRECESS_BUILD_PYTHON ON CACHE BOOL "构建 Python 绑定模块 precess")
 
+# 解释器选择：默认由 FindPython 在系统 PATH 等常规位置发现；经环境变量
+# PRECESS_PYTHON_PATH 指定 python.exe 所在目录时优先采用（该变量同时前置
+# 进运行时 PATH，保证构建与运行使用同一解释器，避免混用）
+file(TO_CMAKE_PATH "$ENV{PRECESS_PYTHON_PATH}" _precess_python_dir)
+if(_precess_python_dir AND EXISTS "${_precess_python_dir}/python.exe")
+    set(Python3_EXECUTABLE "${_precess_python_dir}/python.exe"
+        CACHE FILEPATH "构建与运行所用 Python 解释器（经 PRECESS_PYTHON_PATH 指定）" FORCE)
+endif()
+unset(_precess_python_dir)
+
 find_package(Python3 COMPONENTS Interpreter Development.Module QUIET)
 if (NOT PRECESS_BUILD_PYTHON)
     return()
