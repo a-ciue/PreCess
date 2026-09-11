@@ -4,9 +4,12 @@
   要使用这个预设文件，需要将其复制并重命名为CMakeUserPreset.json，并根据实际情况修改里面的路径和环境变量。
   主要包括以下几个方面：
   1. 修改PRECESS_DEPS_PATH环境变量为你本地的依赖路径
-  2. 如果使用非依赖包的Qt，需要修改PATH环境变量为你本地的依赖路径
-  3. 注释掉的变量可以根据需要选择性开启，例如地址消毒器、qml导入模块跟踪等
-  4. json注释在一些情况下可能会导致CMake报错，如果遇到问题可以尝试删除注释。在VS里使用Preset文件时，VS一般会自动忽略注释不需要删除。
+  2. 修改PRECESS_PYTHON_PATH环境变量为你电脑上python.exe（也就是python313.dll）所在
+     目录，例如"C:/Program Files/Python313"。PreCess.exe 内嵌了 Python 运行环境，启动时
+     需要加载 python313.dll；如果运行/调试时提示缺少 python313.dll，就是这一项没配对
+  3. 如果使用非依赖包的Qt，需要修改PATH环境变量为你本地的Qt路径
+  4. 注释掉的变量可以根据需要选择性开启，例如地址消毒器、qml导入模块跟踪等
+  5. json注释在一些情况下可能会导致CMake报错，如果遇到问题可以尝试删除注释。在VS里使用Preset文件时，VS一般会自动忽略注释不需要删除。
 */
 {
   "version": 3,
@@ -33,7 +36,8 @@
       },
       "environment": {
         "PRECESS_DEPS_PATH": "D:/dev/PreCess-deps/windows_x64", // 依赖库的安装路径
-        "PATH": "$penv{PATH};$env{PRECESS_DEPS_PATH}/Qt6.8.3/bin;$env{PRECESS_DEPS_PATH}/VTK9.6.2/bin;$env{PRECESS_DEPS_PATH}/spdlog1.16.0/bin;$env{PRECESS_DEPS_PATH}/OpenCASCADE8.0.0/win64/vc14/bin$env{PRECESS_OCC_BIN_POSTFIX};$env{PRECESS_DEPS_PATH}/KDDockWidgets-qt6-2.4.0/bin"
+        "PRECESS_PYTHON_PATH": "C:/Program Files/Python313", // 你电脑上 python.exe（python313.dll）所在目录；运行时提示缺少 python313.dll 就是这里没配对
+        "PATH": "$penv{PATH};$env{PRECESS_DEPS_PATH}/Qt6.8.3/bin;$env{PRECESS_DEPS_PATH}/VTK9.6.2/bin;$env{PRECESS_DEPS_PATH}/spdlog1.16.0/bin;$env{PRECESS_DEPS_PATH}/OpenCASCADE8.0.0/win64/vc14/bin$env{PRECESS_OCC_BIN_POSTFIX};$env{PRECESS_DEPS_PATH}/KDDockWidgets-qt6-2.4.0/bin;$env{PRECESS_PYTHON_PATH}"
       },
       "condition": {
         "type": "equals",
