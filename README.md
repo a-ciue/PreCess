@@ -212,7 +212,7 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
   * [x] C++类库：模型层已抽象为 `core/`、`model/` 静态库
   * [ ] 对模型层做Python Wrapper接口层，可以像Blender将模型层打包成wheel与UI解释器调用接口
     * [x] Qt-free 会话层 `model/session`：Session 组合根 + SessionQuery 原生查询（QML 适配器瘦身为纯包装，签名不变）
-    * [ ] pybind11 绑定模块 `precess`（顶层 `python/` 目录，LGPLv3；初版已可经 `Session.invoke/set_parameter` 驱动功能，kwargs 风格与 wheel 打包待后续完善）
+    * [x] pybind11 绑定模块 `precess`（顶层 `python/` 目录，LGPLv3；顺序传参调用 `call(feature, *args)` + `feature_params` 自省，Combo 按选项下标；wheel 打包待后续）
     * [x] app 内嵌 Python 运行环境：QPythonRuntime + Python 控制台（F11；活会话注入 `precess.current`，Python ≡ GUI 线程执行约定）
     * [ ] 无头 CLI 与 wheel 打包（含插件加载的 Qt 解耦）
   * [ ] 无头软件：软件不是必须得要一个UI吧！命令行也是一种调用接口方法

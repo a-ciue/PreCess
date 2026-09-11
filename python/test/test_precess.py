@@ -47,6 +47,13 @@ if plugins_dir.is_dir():
     names = session.feature_names()
     assert "CreateBox" in names, names
 
+    # 参数自省：确定 call 顺序传参的含义与取值，Combo 带选项清单
+    box_params = session.feature_params("CreateBox")
+    assert [p["name"] for p in box_params] == ["原点 X", "原点 Y", "原点 Z", "X 方向长度",
+                                               "Y 方向长度", "Z 方向长度", "写入目标"]
+    assert [p["type"] for p in box_params] == ["Float"] * 6 + ["Combo"]
+    assert box_params[-1]["options"] == ["添加到当前 Component", "新建 Component", "新建 Model"]
+
     # 写入目标 = 新建 Model（Combo 参数下标 6 的选项下标 2）
     assert session.set_parameter("CreateBox", 6, 2)
     component_id = session.invoke("CreateBox")
@@ -66,6 +73,35 @@ if plugins_dir.is_dir():
     assert undo_stack.can_redo()
     undo_stack.redo()
     assert query.has_component(component_id)
+
+    # —— call 顺序传参：实参按声明序映射，前缀之外的参数保留当前值 ——
+    # 上一步已把"写入目标"设为新建 Model，这里只传前三个 Float（原点）也合法
+    kw_component_id = session.call("CreateBox", 0.0, 0.0, 0.0)
+    assert isinstance(kw_component_id, int) and kw_component_id >= 0, kw_component_id
+    assert query.geometry_summary(kw_component_id).face_count == 6
+
+    # 完整传参：六个 Float + 末位 Combo 按选项下标（2 = 新建 Model，映射见
+    # feature_params 返回的 options 清单）
+    sized_component_id = session.call("CreateBox", 10.0, 0.0, 0.0, 4.0, 3.0, 2.0, 2)
+    assert isinstance(sized_component_id, int) and sized_component_id >= 0, sized_component_id
+    assert query.component_name(sized_component_id) != query.component_name(kw_component_id)
+
+    # 错误路径：未知功能 / 超出声明数量的实参 / Combo 误传非整型
+    for bad_call in (
+        lambda: session.feature_params("NoSuchFeature"),
+        lambda: session.call("NoSuchFeature"),
+        lambda: session.call("CreateBox", 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 2, "多余实参"),
+    ):
+        try:
+            bad_call()
+            raise AssertionError("expected ValueError")
+        except ValueError:
+            pass
+    try:
+        session.call("CreateBox", 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, "新建 Model")
+        raise AssertionError("expected RuntimeError for non-int combo")
+    except RuntimeError:
+        pass
     print("plugin e2e ok")
 else:
     print("plugins dir not found, skip feature e2e")

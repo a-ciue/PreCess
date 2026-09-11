@@ -47,6 +47,54 @@ py::object anyToPython(const std::any& value)
     return py::none();
 }
 
+// 参数类型枚举的展示名（与 private_ArgTypeEnum.h 的枚举一致）
+std::string argTypeName(ArgTypeEnum type)
+{
+    switch (type) {
+    case ArgTypeEnum::None:
+        return "None";
+    case ArgTypeEnum::Int:
+        return "Int";
+    case ArgTypeEnum::Float:
+        return "Float";
+    case ArgTypeEnum::Text:
+        return "Text";
+    case ArgTypeEnum::Bool:
+        return "Bool";
+    case ArgTypeEnum::Path:
+        return "Path";
+    case ArgTypeEnum::Combo:
+        return "Combo";
+    case ArgTypeEnum::Selector:
+        return "Selector";
+    case ArgTypeEnum::Button:
+        return "Button";
+    }
+    return "Unknown";
+}
+
+// Combo 选项解析：content 形如 "选项1,选项2|默认下标"（与 SideBar.qml 同约定），
+// 供 feature_params 自省暴露下标到选项文本的映射
+std::vector<std::string> comboOptions(const core::ArgType& type)
+{
+    std::vector<std::string> options;
+    std::string content = type.content;
+    const auto pipe = content.find('|');
+    if (pipe != std::string::npos)
+        content.resize(pipe);
+    std::size_t begin = 0;
+    while (true) {
+        const auto comma = content.find(',', begin);
+        if (comma == std::string::npos) {
+            options.push_back(content.substr(begin));
+            break;
+        }
+        options.push_back(content.substr(begin, comma - begin));
+        begin = comma + 1;
+    }
+    return options;
+}
+
 // 按参数声明类型把 Python 值转换为 ArgObject（与 QFeatureSystemAdaptor::setParameter 同约定）
 core::ArgObject pythonToArgObject(const core::ArgType& type, py::handle value)
 {
@@ -62,6 +110,7 @@ core::ArgObject pythonToArgObject(const core::ArgType& type, py::handle value)
     case ArgTypeEnum::Path:
         return core::ArgObject::create<ArgTypeEnum::Path>(std::filesystem::path(value.cast<std::string>()));
     case ArgTypeEnum::Combo:
+        // Combo 按选项下标设置（下标到选项文本的映射经 feature_params 自省查询）
         return core::ArgObject::create<ArgTypeEnum::Combo>(value.cast<int>());
     default:
         throw py::type_error("参数 \"" + type.name + "\" 的类型暂不支持从 Python 设置");
@@ -72,7 +121,8 @@ core::ArgObject pythonToArgObject(const core::ArgType& type, py::handle value)
 
 PYBIND11_MODULE(precess, m)
 {
-    m.doc() = "PreCess 会话层绑定：模型查询、结构操作、undo 与功能调用（无 Qt 依赖）";
+    m.doc() = "PreCess 会话层绑定：模型查询、结构操作、undo 与功能调用（无 Qt 依赖）；"
+              "功能调用按声明顺序传参 call(feature, *args)，参数含义经 feature_params 自省";
 
     // —— 查询结果结构体（只读视图）——
     py::class_<ModelSummary>(m, "ModelSummary")
@@ -167,5 +217,44 @@ PYBIND11_MODULE(precess, m)
             const systems::feature::FeatureParams* params = s.featureSystem().params(unique_name);
             if (!params || index >= params->count())
                 throw py::value_error("功能 \"" + unique_name + "\" 不存在参数下标 " + std::to_string(index));
-            return s.featureSystem().setParameter(unique_name, index, pythonToArgObject(params->types()[index], value)); });
+            return s.featureSystem().setParameter(unique_name, index, pythonToArgObject(params->types()[index], value)); })
+        // —— 顺序位置传参（参数含义与顺序经 feature_params 查看）——
+        // 参数自省：返回声明序的参数描述（类型/默认值/Combo 选项），脚本据此确定
+        // call 的传参顺序与取值
+        .def("feature_params", [](Session& s, const std::string& unique_name) {
+            const systems::feature::FeatureParams* params = s.featureSystem().params(unique_name);
+            if (!params)
+                throw py::value_error("功能 \"" + unique_name + "\" 不存在");
+            py::list result;
+            const std::vector<core::ArgType>& types = params->types();
+            for (std::size_t i = 0; i < types.size(); ++i) {
+                const core::ArgType& type = types[i];
+                py::dict item;
+                item["index"] = i;
+                item["name"] = type.name;
+                item["type"] = argTypeName(type.type);
+                item["desc"] = type.desc;
+                item["default"] = type.content; // 原始 content（Combo 含选项串）
+                if (type.type == ArgTypeEnum::Combo)
+                    item["options"] = comboOptions(type);
+                result.append(item);
+            }
+            return result;
+        }, py::arg("feature"), "参数自省：按声明序返回 [{index, name, type, desc, default, options?}, ...]")
+        // 顺序传参调用：实参按声明序映射到参数（前缀可省略，省略者保留当前值），
+        // 完成后 invoke——invoke 是操作边界（undo 自动记录 + 通知 flush）
+        .def("call", [](Session& s, const std::string& unique_name, py::args args) {
+            const systems::feature::FeatureParams* params = s.featureSystem().params(unique_name);
+            if (!params)
+                throw py::value_error("功能 \"" + unique_name + "\" 不存在");
+            const std::vector<core::ArgType>& types = params->types();
+            if (args.size() > types.size())
+                throw py::value_error("功能 \"" + unique_name + "\" 至多接受 " + std::to_string(types.size())
+                                      + " 个参数（按声明顺序），收到 " + std::to_string(args.size()) + " 个");
+            for (std::size_t i = 0; i < args.size(); ++i)
+                s.featureSystem().setParameter(unique_name, i, pythonToArgObject(types[i], args[i]));
+            return anyToPython(s.featureSystem().invoke(unique_name));
+        }, py::arg("feature"),
+           "顺序传参调用：call(\"CreateBox\", 0, 0, 0, 5, 5, 5, \"新建 Model\")；"
+           "前缀之外的参数保留当前值，参数含义经 feature_params 查看");
 }

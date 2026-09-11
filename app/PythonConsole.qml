@@ -201,7 +201,8 @@ Item {
             "会话访问:\n" +
             "• import precess；precess.current 即当前 GUI 会话\n" +
             "• 查询: precess.current.query.list_models()\n" +
-            "• 功能: precess.current.feature_names() / set_parameter(...) / invoke(...)\n" +
+            "• 功能: precess.current.call(\"CreateBox\", 0, 0, 0, 5, 5, 5, 2)（按声明序，Combo 用选项下标）\n" +
+            "• 自省: precess.current.feature_params(\"CreateBox\") 查看参数顺序与选项下标\n" +
             "• 撤销: precess.current.undo_stack.undo()\n\n" +
             "提示: 多行块（def/for/if...）输入未完时提示符为 ...，继续输入即可\n\n")
     }
