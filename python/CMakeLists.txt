@@ -1,7 +1,8 @@
 # precess Python 绑定模块（LGPLv3）
 #
-# pybind11 优先经 pip 安装包提供（python -m pybind11 --cmakedir 定位），
-# 未安装时回退 FetchContent 拉取；Python 不可达时整目录静默跳过。
+# pybind11 优先经依赖包提供（CMAKE_PREFIX_PATH），其次本机 pip 安装包
+# （python -m pybind11 --cmakedir 定位）；均未命中时配置失败。
+# Python 不可达时整目录静默跳过。
 
 set(PRECESS_BUILD_PYTHON ON CACHE BOOL "构建 Python 绑定模块 precess")
 
