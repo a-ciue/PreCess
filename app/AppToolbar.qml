@@ -1,4 +1,3 @@
-import QtCore
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -32,9 +31,6 @@ ColumnLayout {
     signal consoleToggled()
     signal outputLogToggled()
     signal preferencesToggled()
-
-    // 文件对话框所在目录：默认落在文档目录，导入/导出后沿用上次所在目录
-    property url fileDialogFolder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
 
     property bool objectTreeOpen: false
     property bool propertyListOpen: false
@@ -179,7 +175,6 @@ ColumnLayout {
         nameFilters: QModelManager.ioSystem.dialogNameFilters
         fileMode: FileDialog.OpenFiles
         onAccepted: {
-            root.fileDialogFolder = currentFolder
             if (selectedNameFilter.index >= 0) {
                 for (const file of selectedFiles) {
                     QModelManager.ioSystem.read(selectedNameFilter.name, file, [])
@@ -199,7 +194,6 @@ ColumnLayout {
 
         // 以活动模型名预填文件名，避免用户从空白输入框开始；扩展名由对话框按所选类型适配
         function openExport() {
-            currentFolder = root.fileDialogFolder
             const name = root.suggestedExportFileName()
             if (name !== "")
                 selectedFile = currentFolder + "/" + name
@@ -207,7 +201,6 @@ ColumnLayout {
         }
 
         onAccepted: {
-            root.fileDialogFolder = currentFolder
             if (selectedNameFilter.index >= 0) {
                 QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
             } else {
@@ -427,10 +420,8 @@ ColumnLayout {
                 onClicked: {
                     if (root.isWasm)
                         QWasmBridge.pickFile(QModelManager.ioSystem.getDialogExtFilters(), true)
-                    else {
-                        importModelDialog.currentFolder = root.fileDialogFolder
+                    else
                         importModelDialog.open()
-                    }
                 }
             }
 
