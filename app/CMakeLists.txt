@@ -95,6 +95,15 @@ set(DEPENDENCY_DIRECTORIES
 if(freetype_FOUND)
     list(APPEND DEPENDENCY_DIRECTORIES $<TARGET_FILE_DIR:freetype>)
 endif()
+# 内嵌 Python 运行环境时，把构建所用解释器目录加入依赖搜索，
+# 使 install 能收拢 python313.dll（及其随带的 vcruntime 释放版运行库）
+if(PRECESS_BUILD_PYTHON)
+    find_package(Python3 COMPONENTS Interpreter QUIET)
+    if(Python3_Interpreter_FOUND)
+        get_filename_component(PYTHON_BIN_DIR "${Python3_EXECUTABLE}" DIRECTORY)
+        list(APPEND DEPENDENCY_DIRECTORIES "${PYTHON_BIN_DIR}")
+    endif()
+endif()
 install(
     TARGETS ${MYNAME}
     RUNTIME_DEPENDENCIES
