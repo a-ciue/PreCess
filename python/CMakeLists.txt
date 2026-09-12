@@ -6,8 +6,8 @@
 #   pybind11 可用且非 wasm 时编译 runtime.cpp（真实现），否则编译 stub.cpp
 #   （桩：available 恒 false、错误信息说明原因），宿主（GUI/CLI）无需条件编译
 
-set(PRECESS_BUILD_PYTHON ON CACHE BOOL
-    "构建 precess 真实 Python 绑定与内嵌解释器（OFF 或依赖缺失时 precess_runtime 自动降级为桩实现）")
+option(PRECESS_BUILD_PYTHON
+    "构建 precess 真实 Python 绑定与内嵌解释器（OFF 或依赖缺失时 precess_runtime 自动降级为桩实现）" ON)
 
 # 解释器选择：默认由 FindPython 在系统 PATH 等常规位置发现；经环境变量
 # PRECESS_PYTHON_PATH 指定 python.exe 所在目录时优先采用（该变量同时前置
@@ -60,8 +60,10 @@ if(_precess_real)
 else()
     set(PRECESS_PYTHON_HOME_DIR "")
 endif()
+# FORCE：set(CACHE) 对已存在条目默认不覆盖——依赖发现失败的某次配置写入
+# 空值/旧值后会永久粘住（含 CMake 自动 re-configure 的第二遍），必须可写回
 set(PRECESS_PYTHON_HOME_DIR "${PRECESS_PYTHON_HOME_DIR}" CACHE INTERNAL
-    "构建所用 Python 解释器目录（标准库根；桩模式为空）")
+    "构建所用 Python 解释器目录（标准库根；桩模式为空）" FORCE)
 
 # 内嵌解释器宿主（静态库，无 Qt）：目标恒存在，真实现/桩按可用性二选一
 add_library(precess_runtime STATIC)
