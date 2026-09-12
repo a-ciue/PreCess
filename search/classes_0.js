@@ -11,9 +11,10 @@ var searchData=
   ['argobject_8',['ArgObject',['../classcore_1_1ArgObject.html',1,'core::ArgObject'],['../classsystems_1_1algo_1_1ArgObject.html',1,'systems::algo::ArgObject'],['../classsystems_1_1edit_1_1ArgObject.html',1,'systems::edit::ArgObject']]],
   ['argtype_9',['ArgType',['../structcore_1_1ArgType.html',1,'core']]],
   ['attrib_5ft_10',['attrib_t',['../structtinyobj_1_1attrib__t.html',1,'tinyobj']]],
-  ['attributeoperator_11',['AttributeOperator',['../classAttributeOperator.html',1,'']]],
-  ['attrirenderstrategyrgb_12',['AttriRenderStrategyRGB',['../classAttriRenderStrategyRGB.html',1,'']]],
-  ['attrirenderstrategyscalar_13',['AttriRenderStrategyScalar',['../classAttriRenderStrategyScalar.html',1,'']]],
-  ['attrirenderstrategyuv_14',['AttriRenderStrategyUV',['../classAttriRenderStrategyUV.html',1,'']]],
-  ['attrirenderstrategyvector_15',['AttriRenderStrategyVector',['../classAttriRenderStrategyVector.html',1,'']]]
+  ['attributeinfo_11',['AttributeInfo',['../structsession_1_1AttributeInfo.html',1,'session']]],
+  ['attributeoperator_12',['AttributeOperator',['../classAttributeOperator.html',1,'']]],
+  ['attrirenderstrategyrgb_13',['AttriRenderStrategyRGB',['../classAttriRenderStrategyRGB.html',1,'']]],
+  ['attrirenderstrategyscalar_14',['AttriRenderStrategyScalar',['../classAttriRenderStrategyScalar.html',1,'']]],
+  ['attrirenderstrategyuv_15',['AttriRenderStrategyUV',['../classAttriRenderStrategyUV.html',1,'']]],
+  ['attrirenderstrategyvector_16',['AttriRenderStrategyVector',['../classAttriRenderStrategyVector.html',1,'']]]
 ];

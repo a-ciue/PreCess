@@ -90,25 +90,27 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="TestEventBus_8cpp__incl.png" border="0" usemap="#amodel_2systems_2feature_2test_2TestEventBus_8cpp" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2feature_2test_2TestEventBus_8cpp" id="amodel_2systems_2feature_2test_2TestEventBus_8cpp">
-<area shape="rect" title=" " alt="" coords="364,5,537,45"/>
-<area shape="rect" href="EventBus_8h.html" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="313,93,407,119"/>
-<area shape="poly" title=" " alt="" coords="430,48,386,86,382,82,427,44"/>
-<area shape="rect" title=" " alt="" coords="432,93,651,119"/>
-<area shape="poly" title=" " alt="" coords="474,44,519,82,516,86,471,48"/>
+<area shape="rect" title=" " alt="" coords="413,5,587,45"/>
+<area shape="rect" href="EventBus_8h.html" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="362,93,457,119"/>
+<area shape="poly" title=" " alt="" coords="480,48,435,86,431,82,476,44"/>
+<area shape="rect" title=" " alt="" coords="481,93,700,119"/>
+<area shape="poly" title=" " alt="" coords="524,44,569,82,565,86,520,48"/>
 <area shape="rect" title=" " alt="" coords="5,167,91,192"/>
-<area shape="poly" title=" " alt="" coords="313,121,105,168,103,163,312,115"/>
+<area shape="poly" title=" " alt="" coords="362,119,105,169,104,164,361,114"/>
 <area shape="rect" title=" " alt="" coords="115,167,181,192"/>
-<area shape="poly" title=" " alt="" coords="327,121,195,165,194,160,325,116"/>
+<area shape="poly" title=" " alt="" coords="368,121,195,168,194,163,367,116"/>
 <area shape="rect" title=" " alt="" coords="206,167,293,192"/>
-<area shape="poly" title=" " alt="" coords="344,121,281,161,278,157,341,116"/>
-<area shape="rect" title=" " alt="" coords="317,167,403,192"/>
-<area shape="poly" title=" " alt="" coords="363,119,363,153,357,153,357,119"/>
-<area shape="rect" title=" " alt="" coords="427,167,551,192"/>
-<area shape="poly" title=" " alt="" coords="382,116,457,157,455,162,380,121"/>
-<area shape="rect" title=" " alt="" coords="575,167,635,192"/>
-<area shape="poly" title=" " alt="" coords="400,116,563,163,561,168,399,121"/>
-<area shape="rect" title=" " alt="" coords="659,167,722,192"/>
-<area shape="poly" title=" " alt="" coords="408,114,646,164,645,169,407,119"/>
+<area shape="poly" title=" " alt="" coords="385,121,289,163,287,159,383,116"/>
+<area shape="rect" title=" " alt="" coords="317,167,395,192"/>
+<area shape="poly" title=" " alt="" coords="403,121,375,157,371,154,398,117"/>
+<area shape="rect" title=" " alt="" coords="419,167,506,192"/>
+<area shape="poly" title=" " alt="" coords="420,117,448,154,444,157,416,121"/>
+<area shape="rect" title=" " alt="" coords="530,167,654,192"/>
+<area shape="poly" title=" " alt="" coords="440,116,550,159,548,164,438,121"/>
+<area shape="rect" title=" " alt="" coords="678,167,738,192"/>
+<area shape="poly" title=" " alt="" coords="458,115,665,164,664,169,456,120"/>
+<area shape="rect" title=" " alt="" coords="762,167,825,192"/>
+<area shape="poly" title=" " alt="" coords="458,114,470,116,608,138,749,164,748,169,607,143,469,121,457,119"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -128,6 +130,7 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 <tr class="memitem:a2a08d1277353978a21df5a225ab873c7" id="r_a2a08d1277353978a21df5a225ab873c7"><td class="memItemLeft" align="right" valign="top">bus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2a08d1277353978a21df5a225ab873c7">publish</a> (TestEvent {})</td></tr>
 <tr class="memitem:a795d6cfc112237610361e6c504169381" id="r_a795d6cfc112237610361e6c504169381"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a795d6cfc112237610361e6c504169381">REQUIRE</a> (<a class="el" href="#ad297f5935bd3cad22c28b70e70f0b422">count_a</a>==1)</td></tr>
 <tr class="memitem:a93456cb57b8a3047d25bea34121130f7" id="r_a93456cb57b8a3047d25bea34121130f7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93456cb57b8a3047d25bea34121130f7">REQUIRE</a> (<a class="el" href="#a57a65d84fada0138814368105b4bcd3a">count_b</a>==1)</td></tr>
+<tr class="memitem:a83f9135c3bfa450c4439560ac682e0e9" id="r_a83f9135c3bfa450c4439560ac682e0e9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a83f9135c3bfa450c4439560ac682e0e9">TEST_CASE</a> (&quot;EventBus subscription outliving bus is safe&quot;, &quot;[EventBus]&quot;)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 变量</h2></td></tr>
@@ -189,7 +192,7 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a748d5aa71e37b986f2f6512cc4fb2c28" name="a748d5aa71e37b986f2f6512cc4fb2c28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a748d5aa71e37b986f2f6512cc4fb2c28">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a748d5aa71e37b986f2f6512cc4fb2c28">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -210,7 +213,7 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a72b047aa3d55c9be3d1def1b6b83de0b" name="a72b047aa3d55c9be3d1def1b6b83de0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72b047aa3d55c9be3d1def1b6b83de0b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a72b047aa3d55c9be3d1def1b6b83de0b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,7 +234,7 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="aed99cea208e70a6832aa184bd7f85511" name="aed99cea208e70a6832aa184bd7f85511"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed99cea208e70a6832aa184bd7f85511">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aed99cea208e70a6832aa184bd7f85511">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -252,7 +255,7 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a903098bb959708a255af68c0c546d9f2" name="a903098bb959708a255af68c0c546d9f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a903098bb959708a255af68c0c546d9f2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a903098bb959708a255af68c0c546d9f2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -272,8 +275,29 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 
 </div>
 </div>
+<a id="a83f9135c3bfa450c4439560ac682e0e9" name="a83f9135c3bfa450c4439560ac682e0e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83f9135c3bfa450c4439560ac682e0e9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;EventBus subscription outliving bus is safe&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[EventBus]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aba1eaab7af0680f64563a18b9c9ec03f" name="aba1eaab7af0680f64563a18b9c9ec03f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba1eaab7af0680f64563a18b9c9ec03f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aba1eaab7af0680f64563a18b9c9ec03f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -294,7 +318,7 @@ TestEventBus.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a2d645adf279ede4e85d5b077cb916320" name="a2d645adf279ede4e85d5b077cb916320"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d645adf279ede4e85d5b077cb916320">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d645adf279ede4e85d5b077cb916320">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

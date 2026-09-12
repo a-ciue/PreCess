@@ -77,53 +77,45 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">类</a>  </div>
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
   <div class="headertitle"><div class="title">QModelQuery.h 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>模型层查询的 QML 适配器  
+<a href="#details">更多...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
 <code>#include &lt;QObject&gt;</code><br />
+<code>#include &lt;QQmlEngine&gt;</code><br />
 <code>#include &lt;QVariant&gt;</code><br />
 <code>#include &lt;QtGlobal&gt;</code><br />
-<code>#include &lt;QQmlEngine&gt;</code><br />
-<code>#include &quot;<a class="el" href="QSelection_8h_source.html">QSelection.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 QModelQuery.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QModelQuery_8h__incl.png" border="0" usemap="#aapp_2model_2QModelQuery_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QModelQuery_8h" id="aapp_2model_2QModelQuery_8h">
-<area shape="rect" title=" " alt="" coords="25,5,220,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="279,225,343,251"/>
-<area shape="poly" title=" " alt="" coords="79,33,42,51,26,64,13,80,9,92,8,105,17,134,31,160,43,175,82,194,141,209,265,229,264,234,140,215,80,199,40,179,26,163,12,136,3,106,4,91,8,77,22,60,39,47,77,28"/>
-<area shape="rect" title=" " alt="" coords="53,152,128,177"/>
-<area shape="poly" title=" " alt="" coords="85,33,50,51,35,64,23,80,19,97,26,114,41,129,59,143,56,147,38,133,22,117,14,98,18,78,31,61,47,47,83,28"/>
-<area shape="rect" title=" " alt="" coords="33,79,111,104"/>
-<area shape="poly" title=" " alt="" coords="117,33,90,69,86,66,112,29"/>
-<area shape="rect" title=" " alt="" coords="135,79,214,104"/>
-<area shape="poly" title=" " alt="" coords="134,29,160,66,156,69,129,33"/>
-<area shape="rect" title=" " alt="" coords="238,79,341,104"/>
-<area shape="poly" title=" " alt="" coords="151,28,251,71,249,76,149,33"/>
-<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="365,79,469,104"/>
-<area shape="poly" title=" " alt="" coords="171,28,357,73,356,78,170,33"/>
-<area shape="rect" title=" " alt="" coords="117,299,173,324"/>
-<area shape="poly" title=" " alt="" coords="285,253,186,296,184,291,283,248"/>
-<area shape="rect" title=" " alt="" coords="197,299,248,324"/>
-<area shape="poly" title=" " alt="" coords="298,253,250,292,246,288,295,249"/>
-<area shape="rect" title=" " alt="" coords="272,299,349,324"/>
-<area shape="poly" title=" " alt="" coords="313,251,313,285,308,285,308,251"/>
-<area shape="rect" title=" " alt="" coords="373,299,432,324"/>
-<area shape="poly" title=" " alt="" coords="327,249,379,288,375,292,324,253"/>
-<area shape="rect" title=" " alt="" coords="457,299,519,324"/>
-<area shape="poly" title=" " alt="" coords="340,248,448,291,446,296,338,253"/>
-<area shape="poly" title=" " alt="" coords="366,106,142,154,141,149,365,101"/>
-<area shape="rect" title=" " alt="" coords="152,152,253,177"/>
-<area shape="poly" title=" " alt="" coords="384,107,251,150,250,145,382,101"/>
-<area shape="rect" title=" " alt="" coords="277,152,416,177"/>
-<area shape="poly" title=" " alt="" coords="408,106,370,144,366,140,404,102"/>
-<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="441,152,535,177"/>
-<area shape="poly" title=" " alt="" coords="431,102,469,140,465,144,427,106"/>
-<area shape="poly" title=" " alt="" coords="461,180,353,223,351,218,459,175"/>
-<area shape="poly" title=" " alt="" coords="491,178,491,285,485,285,485,178"/>
+<area shape="rect" title="模型层查询的 QML 适配器" alt="" coords="308,5,503,31"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="167,79,231,104"/>
+<area shape="poly" title=" " alt="" coords="373,33,245,77,243,72,371,28"/>
+<area shape="rect" title=" " alt="" coords="255,79,329,104"/>
+<area shape="poly" title=" " alt="" coords="389,33,323,74,320,69,386,28"/>
+<area shape="rect" title=" " alt="" coords="354,79,457,104"/>
+<area shape="poly" title=" " alt="" coords="408,31,408,65,403,65,403,31"/>
+<area shape="rect" title=" " alt="" coords="481,79,559,104"/>
+<area shape="poly" title=" " alt="" coords="425,28,491,69,488,74,422,33"/>
+<area shape="rect" title=" " alt="" coords="583,79,662,104"/>
+<area shape="poly" title=" " alt="" coords="441,28,575,72,574,77,439,33"/>
+<area shape="rect" title=" " alt="" coords="5,152,61,177"/>
+<area shape="poly" title=" " alt="" coords="173,106,74,149,72,144,171,102"/>
+<area shape="rect" title=" " alt="" coords="85,152,136,177"/>
+<area shape="poly" title=" " alt="" coords="186,106,137,145,134,141,183,102"/>
+<area shape="rect" title=" " alt="" coords="160,152,237,177"/>
+<area shape="poly" title=" " alt="" coords="201,104,201,138,196,138,196,104"/>
+<area shape="rect" title=" " alt="" coords="261,152,320,177"/>
+<area shape="poly" title=" " alt="" coords="215,102,267,141,263,146,212,106"/>
+<area shape="rect" title=" " alt="" coords="345,152,407,177"/>
+<area shape="poly" title=" " alt="" coords="228,102,336,144,334,149,226,106"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -131,14 +123,14 @@ QModelQuery.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QModelQuery_8h__dep__incl.png" border="0" usemap="#aapp_2model_2QModelQuery_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QModelQuery_8hdep" id="aapp_2model_2QModelQuery_8hdep">
-<area shape="rect" title=" " alt="" coords="335,5,529,31"/>
+<area shape="rect" title="模型层查询的 QML 适配器" alt="" coords="335,5,529,31"/>
 <area shape="rect" href="TreeModel_8cpp.html" title=" " alt="" coords="5,152,149,177"/>
 <area shape="poly" title=" " alt="" coords="321,23,239,28,156,38,86,55,61,67,43,80,37,97,42,116,54,134,67,150,63,153,50,138,37,118,32,97,39,77,58,62,85,50,155,33,239,23,321,18"/>
 <area shape="rect" href="TreeModel_8h.html" title=" " alt="" coords="54,79,183,104"/>
 <area shape="poly" title=" " alt="" coords="369,36,170,81,169,76,368,31"/>
 <area shape="rect" href="QModelManager_8h.html" title=" " alt="" coords="208,79,421,104"/>
 <area shape="poly" title=" " alt="" coords="403,40,335,81,332,76,400,35"/>
-<area shape="rect" href="QModelQuery_8cpp.html" title=" " alt="" coords="446,79,655,104"/>
+<area shape="rect" href="QModelQuery_8cpp.html" title="模型层查询的 QML 适配器实现（逻辑委托给 SessionQuery）" alt="" coords="446,79,655,104"/>
 <area shape="poly" title=" " alt="" coords="464,35,533,76,530,81,462,40"/>
 <area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="619,152,850,177"/>
 <area shape="poly" title=" " alt="" coords="544,30,607,47,639,60,668,76,689,93,707,114,731,150,726,153,703,117,685,97,665,81,636,65,606,52,542,35"/>
@@ -157,11 +149,19 @@ QModelQuery.h 的引用(Include)关系图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 类</h2></td></tr>
-<tr class="memitem:IModelQuery" id="r_IModelQuery"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIModelQuery.html">IModelQuery</a></td></tr>
 <tr class="memitem:QModelQuery" id="r_QModelQuery"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classQModelQuery.html">QModelQuery</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分）  <a href="classQModelQuery.html#details">更多...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分的 QML 适配器）  <a href="classQModelQuery.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:session" id="r_session"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesession.html">session</a></td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>模型层查询的 QML 适配器 </p>
+<p><a class="el" href="classQModelQuery.html" title="ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分的 QML 适配器）">QModelQuery</a> 将会话层 SessionQuery 的原生查询结果转换为 QVariantMap / QVariantList 等呈现给 QML。查询逻辑已下沉至 model/session/SessionQuery（不依赖 Qt，供脚本绑定 复用），本类只做类型转换与 QML 暴露，保持既有 QML 接口签名不变。</p>
+<dl class="section author"><dt>作者</dt><dd>徐昊阳 <a href="#" onclick="location.href='mai'+'lto:'+'hao'+'ya'+'ngx'+'u0'+'6@g'+'ma'+'il.'+'co'+'m'; return false;">haoya<span class="obfuscator">.nosp@m.</span>ngxu<span class="obfuscator">.nosp@m.</span>06@gm<span class="obfuscator">.nosp@m.</span>ail.<span class="obfuscator">.nosp@m.</span>com</a> </dd></dl>
+<dl class="section date"><dt>日期</dt><dd>2025/4/11 </dd></dl>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0

@@ -1,0 +1,5 @@
+<map id="session::Session::ObserverRelay" name="session::Session::ObserverRelay">
+<area shape="rect" id="Node000001" title="内部转发观察者：宿主观察者（可为 nullptr）照常收到模型层通知， 同时把通知桥接为 ModelEvent 发布到事件总线（与原 app 层 Qt connect 等价）" alt="" coords="5,79,201,119"/>
+<area shape="rect" id="Node000002" href="$classModelObserver.html" title=" " alt="" coords="43,5,164,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="106,44,106,79,101,79,101,44"/>
+</map>

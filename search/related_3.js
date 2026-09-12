@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['qmodelquery_0',['QModelQuery',['../classModelLayer.html#a8068bdef10f16414943fe7feaad34b8f',1,'ModelLayer']]]
+  ['session_3a_3asessionquery_0',['SessionQuery',['../classModelLayer.html#ad4e70668b1a1bd1051e233b733ce384c',1,'ModelLayer']]]
 ];

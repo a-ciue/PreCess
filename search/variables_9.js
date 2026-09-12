@@ -22,7 +22,7 @@ var searchData=
   ['intvalues_19',['intValues',['../structtinyobj_1_1tag__t.html#adc6a6682263abaa11e3ec62b910bb80d',1,'tinyobj::tag_t']]],
   ['io_5fadaptor_5f_20',['io_adaptor_',['../classQModelManager.html#a0db69a0b47943e8d9c5c9888ee5d2027',1,'QModelManager']]],
   ['io_5fsystem_21',['io_system',['../structsystems_1_1algo_1_1HandlerContext.html#a78b2e1cfbd16511f54f6297602ddeeb3',1,'systems::algo::HandlerContext']]],
-  ['io_5fsystem_5f_22',['io_system_',['../classQModelManager.html#aaded691b8acfe185a40e1ce308448b60',1,'QModelManager::io_system_'],['../classsystems_1_1io_1_1QModelIOSystemAdaptor.html#a3ea89b9e3f0d4f33bdedbc06904a23b3',1,'systems::io::QModelIOSystemAdaptor::io_system_'],['../classsystems_1_1algo_1_1AlgorithmSystem.html#a99507878386dc92c1886ecd752f9a18a',1,'systems::algo::AlgorithmSystem::io_system_']]],
+  ['io_5fsystem_5f_22',['io_system_',['../classsystems_1_1io_1_1QModelIOSystemAdaptor.html#a3ea89b9e3f0d4f33bdedbc06904a23b3',1,'systems::io::QModelIOSystemAdaptor::io_system_'],['../classsession_1_1Session.html#acd0601c054245261f8df2f36dc84d9ca',1,'session::Session::io_system_'],['../classsystems_1_1algo_1_1AlgorithmSystem.html#a99507878386dc92c1886ecd752f9a18a',1,'systems::algo::AlgorithmSystem::io_system_']]],
   ['ior_23',['ior',['../structtinyobj_1_1material__t.html#ac5d5fed58b485804119ed374ea90709e',1,'tinyobj::material_t']]],
   ['isolated_5fedges_24',['isolated_edges',['../structMeshTopologyDiagnosticResult.html#a8eb742c6e07983978e6f364c603d2429',1,'MeshTopologyDiagnosticResult']]],
   ['isolated_5fvertices_25',['isolated_vertices',['../structMeshTopologyDiagnosticResult.html#ab7de7ffa429169d17c450e97fd113d38',1,'MeshTopologyDiagnosticResult']]],

@@ -11,7 +11,7 @@ var searchData=
   ['adjacency_8',['adjacency',['../structFaceSelectorHighlight_1_1FaceSpreadCache.html#a42c551412552be2a7e8f167bcdc3c166',1,'FaceSelectorHighlight::FaceSpreadCache']]],
   ['after_9',['after',['../structComponentEntry.html#a54bbc98a3b691d1fad43ef8550c02079',1,'ComponentEntry']]],
   ['algo_5fadaptor_5f_10',['algo_adaptor_',['../classQModelManager.html#a63fbd04bfc812551a41d9ad4213d3694',1,'QModelManager']]],
-  ['algo_5fsystem_5f_11',['algo_system_',['../classQModelManager.html#ac167e11314e1610b10ccfac73bb28cab',1,'QModelManager::algo_system_'],['../classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html#ac6c5f592f6001b72affb744fee4e055d',1,'systems::algo::QAlgorithmSystemAdaptor::algo_system_']]],
+  ['algo_5fsystem_5f_11',['algo_system_',['../classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html#ac6c5f592f6001b72affb744fee4e055d',1,'systems::algo::QAlgorithmSystemAdaptor::algo_system_'],['../classsession_1_1Session.html#a098ed6b10144be5ae684fc781a911910',1,'session::Session::algo_system_']]],
   ['algorithm_5finfos_5f_12',['algorithm_infos_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#af21c79bc9ebe036e27fa392e3ee82b6a',1,'systems::algo::AlgorithmSystem']]],
   ['alpha_5ftexname_13',['alpha_texname',['../structtinyobj_1_1material__t.html#a1b0225fd76de506f089fdedbf2c66dec',1,'tinyobj::material_t']]],
   ['alpha_5ftexopt_14',['alpha_texopt',['../structtinyobj_1_1material__t.html#adb6fdf38b462c4bd91fc2927282a3fc1',1,'tinyobj::material_t']]],
@@ -26,8 +26,9 @@ var searchData=
   ['arg_5ftypes_23',['arg_types',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a8c05d4a869a62930788cc4b17f7e796b',1,'systems::algo::AlgorithmInfo::arg_types'],['../structsystems_1_1edit_1_1EditInfo.html#a46952091b7b5d951c78a005ed98c57ba',1,'systems::edit::EditInfo::arg_types'],['../structsystems_1_1feature_1_1FeatureInfo.html#ae2fd774abefa9270199c5dd9cd4ec6dc',1,'systems::feature::FeatureInfo::arg_types']]],
   ['arg_5ftypes_5f_24',['arg_types_',['../classQAlgorithmInfo.html#ae8522dde9690962c72b0041ce759d312',1,'QAlgorithmInfo::arg_types_'],['../classQEditInfo.html#a2e1b4c32db1231f9d7332a1a8dd8fb96',1,'QEditInfo::arg_types_'],['../classQFeatureInfo.html#a714730e875a7da9b95e569df1c3e5f04',1,'QFeatureInfo::arg_types_'],['../classsystems_1_1feature_1_1FeatureRegistrar.html#a51be2044ac65e6f75e77303d7dbbfd92',1,'systems::feature::FeatureRegistrar::arg_types_']]],
   ['argv0_25',['argv0',['../classQModelManager.html#a94d5dd6802ae5ec9f4c3dce2332933ec',1,'QModelManager']]],
-  ['attrib_5f_26',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]],
-  ['attribute_5fname_27',['attribute_name',['../structsystems_1_1feature_1_1ScalarAttributeDisplayRequestedEvent.html#a1a8632e199b5c59da2f3c5dce23d8db5',1,'systems::feature::ScalarAttributeDisplayRequestedEvent']]],
-  ['attributeoperator_28',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]],
-  ['automatic_29',['automatic',['../structsystems_1_1feature_1_1UndoContext.html#a85d03f41b63b27464c271575e9b1915e',1,'systems::feature::UndoContext']]]
+  ['attr_5ftype_26',['attr_type',['../structsession_1_1AttributeInfo.html#a53970606258ba4d15d92dfa325bd570e',1,'session::AttributeInfo']]],
+  ['attrib_5f_27',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]],
+  ['attribute_5fname_28',['attribute_name',['../structsystems_1_1feature_1_1ScalarAttributeDisplayRequestedEvent.html#a1a8632e199b5c59da2f3c5dce23d8db5',1,'systems::feature::ScalarAttributeDisplayRequestedEvent']]],
+  ['attributeoperator_29',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]],
+  ['automatic_30',['automatic',['../structsystems_1_1feature_1_1UndoContext.html#a85d03f41b63b27464c271575e9b1915e',1,'systems::feature::UndoContext']]]
 ];

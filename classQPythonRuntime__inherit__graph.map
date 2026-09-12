@@ -1,0 +1,5 @@
+<map id="QPythonRuntime" name="QPythonRuntime">
+<area shape="rect" id="Node000001" title="app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是 python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳" alt="" coords="5,79,137,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="34,5,109,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,44,74,79,69,79,69,44"/>
+</map>

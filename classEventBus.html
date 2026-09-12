@@ -93,18 +93,23 @@ EventBus 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classEventBus__coll__graph.png" border="0" usemap="#aEventBus_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aEventBus_coll__map" id="aEventBus_coll__map">
-<area shape="rect" title="类型安全的轻量级事件总线，以事件类型为键分发事件" alt="" coords="1061,27,1144,53"/>
+<area shape="rect" title="类型安全的轻量级事件总线，以事件类型为键分发事件" alt="" coords="1061,67,1144,93"/>
 <area shape="rect" title=" " alt="" coords="689,5,924,75"/>
-<area shape="poly" title=" " alt="" coords="938,37,1061,37,1061,43,938,43"/>
+<area shape="poly" title=" " alt="" coords="938,55,1062,72,1061,77,938,60"/>
 <area shape="rect" title=" " alt="" coords="309,20,572,60"/>
 <area shape="poly" title=" " alt="" coords="586,37,689,37,689,43,586,43"/>
 <area shape="rect" title=" " alt="" coords="5,20,192,60"/>
 <area shape="poly" title=" " alt="" coords="206,37,309,37,309,43,206,43"/>
+<area shape="rect" title=" " alt="" coords="704,99,909,139"/>
+<area shape="poly" title=" " alt="" coords="923,110,1037,96,1062,90,1063,95,1038,101,923,116"/>
+<area shape="rect" href="structcore_1_1EventBus_1_1LifetimeToken.html" title=" " alt="" coords="350,99,531,139"/>
+<area shape="poly" title=" " alt="" coords="545,116,703,116,703,121,545,121"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 类</h2></td></tr>
+<tr class="memitem:LifetimeToken" id="r_LifetimeToken"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventBus_1_1LifetimeToken.html">LifetimeToken</a></td></tr>
 <tr class="memitem:Subscription" id="r_Subscription"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEventBus_1_1Subscription.html">Subscription</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">订阅句柄，析构时自动退订；仅可移动  <a href="classEventBus_1_1Subscription.html#details">更多...</a><br /></td></tr>
 </table><table class="memberdecls">
@@ -133,10 +138,11 @@ Private 成员函数</h2></td></tr>
 Private 属性</h2></td></tr>
 <tr class="memitem:a5cdbb1eb8dd2fcb52f0d3682f40538db" id="r_a5cdbb1eb8dd2fcb52f0d3682f40538db"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::type_index, std::vector&lt; std::pair&lt; <a class="el" href="#a7a540118e7e4ff6ea441137e382905ad">SubscriptionId</a>, <a class="el" href="#aeafb3e302ab2f31b9a6f79de865c7a64">ErasedHandler</a> &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5cdbb1eb8dd2fcb52f0d3682f40538db">subscribers_</a></td></tr>
 <tr class="memitem:af7fdf00d6c3935371ea4cce88943a396" id="r_af7fdf00d6c3935371ea4cce88943a396"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a7a540118e7e4ff6ea441137e382905ad">SubscriptionId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af7fdf00d6c3935371ea4cce88943a396">next_id_</a> { 1 }</td></tr>
+<tr class="memitem:af56b8996ac99a234df7b712f976a536c" id="r_af56b8996ac99a234df7b712f976a536c"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structEventBus_1_1LifetimeToken.html">LifetimeToken</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af56b8996ac99a234df7b712f976a536c">lifetime_</a> { std::make_shared&lt;<a class="el" href="structEventBus_1_1LifetimeToken.html">LifetimeToken</a>&gt;() }</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>类型安全的轻量级事件总线，以事件类型为键分发事件 </p>
-<p>订阅返回 RAII 句柄，句柄析构（或 reset）时自动退订，避免悬挂回调。 采用组合而非单例：由上层持有实例并以引用注入各使用方。</p>
+<p>订阅返回 RAII 句柄，句柄析构（或 reset）时自动退订，避免悬挂回调。 句柄可比总线活得久（如 UI 桥接订阅先于持有总线的会话析构）：总线析构后 句柄退订自动失效，不再访问已析构的总线。 采用组合而非单例：由上层持有实例并以引用注入各使用方。</p>
 <dl class="section note"><dt>注解</dt><dd>非线程安全，约定仅在 GUI 线程发布与订阅（与 <a class="el" href="classModelObserver.html">ModelObserver</a> 的通知模型一致）。 </dd></dl>
 </div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">成员类型定义说明</h2>
 <a id="aeafb3e302ab2f31b9a6f79de865c7a64" name="aeafb3e302ab2f31b9a6f79de865c7a64"></a>
@@ -284,6 +290,28 @@ template&lt;typename Event&gt; </div>
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="af56b8996ac99a234df7b712f976a536c" name="af56b8996ac99a234df7b712f976a536c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af56b8996ac99a234df7b712f976a536c">&#9670;&#160;</a></span>lifetime_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="structEventBus_1_1LifetimeToken.html">LifetimeToken</a>&gt; core::EventBus::lifetime_ { std::make_shared&lt;<a class="el" href="structEventBus_1_1LifetimeToken.html">LifetimeToken</a>&gt;() }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af7fdf00d6c3935371ea4cce88943a396" name="af7fdf00d6c3935371ea4cce88943a396"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af7fdf00d6c3935371ea4cce88943a396">&#9670;&#160;</a></span>next_id_</h2>
 

@@ -18,7 +18,7 @@ var searchData=
   ['pick_5flists_5f_15',['pick_lists_',['../classGeometryActorManagerSelectOp.html#aa1045219a0da8bb76cfca141667e3320',1,'GeometryActorManagerSelectOp::pick_lists_'],['../classMeshActorManagerSelectOp.html#a01ab645a47129070b912bc99ffab072c',1,'MeshActorManagerSelectOp::pick_lists_']]],
   ['picker_5f_16',['picker_',['../classGeometrySelectManager.html#aee4b6e025d6ed28b915a4d963e766536',1,'GeometrySelectManager']]],
   ['plane_5fwidget_5f_17',['plane_widget_',['../structQRenderWindow_1_1Data.html#a77a80fc9ff914217acdbf4c76ab818d7',1,'QRenderWindow::Data']]],
-  ['plugin_5fmanager_5f_18',['plugin_manager_',['../classQModelManager.html#a9d3616377c0dcec9f90cf336d8863e7c',1,'QModelManager']]],
+  ['plugin_5fmanager_5f_18',['plugin_manager_',['../classsession_1_1Session.html#a98370f006637d1f49042c357f7845101',1,'session::Session']]],
   ['plugin_5fnames_5f_19',['plugin_names_',['../classsystems_1_1QSystemPluginManager.html#a71e1d79c793fd2c7cb1cab06af6da69c',1,'systems::QSystemPluginManager::plugin_names_'],['../classsystems_1_1SystemPluginManager.html#ad6de683aaf6d73a18c7c020bc25700a0',1,'systems::SystemPluginManager::plugin_names_']]],
   ['plugin_5fpaths_5f_20',['plugin_paths_',['../classsystems_1_1QSystemPluginManager.html#a1d7af422bb8f5eda7ab9cec696acd623',1,'systems::QSystemPluginManager']]],
   ['point_5fglobal_5fids_5f_21',['point_global_ids_',['../structComponentData.html#a3de48b085bbf22ce958762d5aa15354b',1,'ComponentData']]],
@@ -38,5 +38,6 @@ var searchData=
   ['pos_35',['pos',['../structsystems_1_1interaction_1_1AnnotationPoint.html#adf719ce6272f4f877710b11a76a15ea4',1,'systems::interaction::AnnotationPoint::pos'],['../structsystems_1_1interaction_1_1AnnotationText.html#a8eefc19ae2c25a0dd380999b4f38b4e8',1,'systems::interaction::AnnotationText::pos']]],
   ['pressed_36',['pressed',['../structsystems_1_1feature_1_1KeyEvent.html#ac0904a803e0893b8de9d7067fdeca568',1,'systems::feature::KeyEvent']]],
   ['prop_5fto_5fcomponent_5f_37',['prop_to_component_',['../classGeometryActorManagerSelectOp.html#a0d4f19ac52577626453dcd49d6fc429c',1,'GeometryActorManagerSelectOp::prop_to_component_'],['../classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641',1,'MeshActorManagerSelectOp::prop_to_component_']]],
-  ['ptr_38',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]]
+  ['ptr_38',['ptr',['../classsystems_1_1io_1_1unique__ptr.html#adae741234450c126c1260d389e1720b9',1,'systems::io::unique_ptr']]],
+  ['python_5fruntime_5f_39',['python_runtime_',['../classQModelManager.html#a4bc6fbcfeff224978dd0bd7062c2db3d',1,'QModelManager']]]
 ];

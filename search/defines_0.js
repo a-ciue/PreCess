@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['tinyobj_5foverride_0',['TINYOBJ_OVERRIDE',['../tiny__obj__loader_8h.html#a753f77799f2358606593480b4e83a14f',1,'tiny_obj_loader.h']]],
-  ['tinyobjloader_5fimplementation_1',['TINYOBJLOADER_IMPLEMENTATION',['../ObjMeshIO_8cpp.html#af14fac7fbc250522a78849d58d5b0811',1,'ObjMeshIO.cpp']]]
+  ['precess_5fpython_5fhome_0',['PRECESS_PYTHON_HOME',['../QPythonRuntime_8cpp.html#a21e5fa6d7fb52c2c094d81861a4b92d0',1,'QPythonRuntime.cpp']]],
+  ['precess_5fpython_5fmodule_5fdir_1',['PRECESS_PYTHON_MODULE_DIR',['../QPythonRuntime_8cpp.html#a03ad18e300b02a94761e43a3a5b459f6',1,'QPythonRuntime.cpp']]]
 ];

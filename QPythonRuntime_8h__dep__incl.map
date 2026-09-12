@@ -1,0 +1,12 @@
+<map id="app/model/QPythonRuntime.h" name="app/model/QPythonRuntime.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="155,5,372,31"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,152,233,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,38,176,56,147,80,136,98,129,117,123,152,117,151,124,116,131,95,143,77,173,51,207,33"/>
+<area shape="rect" id="Node000003" href="$QModelManager_8h.html" title=" " alt="" coords="157,79,370,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="266,44,266,79,261,79,261,44"/>
+<area shape="rect" id="Node000005" href="$QPythonRuntime_8cpp.html" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="394,79,626,104"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="317,32,471,76,469,81,315,37"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="229,112,144,154,142,149,227,108"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="257,152,368,177"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="281,114,307,150,302,153,277,117"/>
+</map>

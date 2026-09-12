@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/session/SessionQuery.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_9b326045796f068f6c5428c37e92519e.html">session</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">SessionQuery.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="SessionQuery_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#ifndef SESSION_QUERY_H</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define SESSION_QUERY_H</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;<a class="code" href="GeometryDataVtk_8h.html">GeometryDataVtk.h</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="Selection_8h.html">Selection.h</a>&quot;</span> <span class="comment">// ElementEnum::Type</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">class </span><a class="code hl_class" href="classModelLayer.html">ModelLayer</a>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesession.html">session</a> {</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span></div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structsession_1_1ModelSummary.html">   27</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsession_1_1ModelSummary.html">ModelSummary</a> {</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structsession_1_1ModelSummary.html#af6a1394c6a176c939bb81d8b6cbd462a">   28</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsession_1_1ModelSummary.html#af6a1394c6a176c939bb81d8b6cbd462a">model_id</a> { -1 };</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structsession_1_1ModelSummary.html#a88925d32af88ae5733f9658cddc22b98">   29</a></span>    std::string <a class="code hl_variable" href="structsession_1_1ModelSummary.html#a88925d32af88ae5733f9658cddc22b98">name</a>; <span class="comment">//&gt; 模型名称（UTF-8）</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structsession_1_1ModelSummary.html#aab750435971a6aef3a9c5b846f8525dc">   30</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsession_1_1ModelSummary.html#aab750435971a6aef3a9c5b846f8525dc">component_count</a> { 0 };</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
+</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
+<div class="foldopen" id="foldopen00034" data-start="{" data-end="};">
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structsession_1_1ComponentSummary.html">   34</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsession_1_1ComponentSummary.html">ComponentSummary</a> {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structsession_1_1ComponentSummary.html#a39fa48257c2aa30ac0af0da50e74a2d6">   35</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsession_1_1ComponentSummary.html#a39fa48257c2aa30ac0af0da50e74a2d6">component_id</a> { -1 };</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structsession_1_1ComponentSummary.html#ae56b5cfe0d2922c823e307ceb5f83832">   36</a></span>    std::string <a class="code hl_variable" href="structsession_1_1ComponentSummary.html#ae56b5cfe0d2922c823e307ceb5f83832">name</a>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structsession_1_1ComponentSummary.html#ae16945b0bf384795b17080778d298193">   37</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structsession_1_1ComponentSummary.html#ae16945b0bf384795b17080778d298193">has_mesh</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structsession_1_1ComponentSummary.html#a68de673ef5db80c9fbe095211638efcf">   38</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structsession_1_1ComponentSummary.html#a68de673ef5db80c9fbe095211638efcf">has_geometry</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structsession_1_1ComponentSummary.html#a539ba3365f6a2b3ebc66515cda302db4">   39</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsession_1_1ComponentSummary.html#a539ba3365f6a2b3ebc66515cda302db4">material_id</a> { -1 };</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>};</div>
+</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span></div>
+<div class="foldopen" id="foldopen00043" data-start="{" data-end="};">
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structsession_1_1MeshSummary.html">   43</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsession_1_1MeshSummary.html">MeshSummary</a> {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structsession_1_1MeshSummary.html#a553a3de6355cdf9af318ecebe02ca9e5">   44</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structsession_1_1MeshSummary.html#a553a3de6355cdf9af318ecebe02ca9e5">has_mesh</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structsession_1_1MeshSummary.html#a41fb05868feb0d16251adcfb64bb601c">   45</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsession_1_1MeshSummary.html#a41fb05868feb0d16251adcfb64bb601c">vertex_count</a> { 0 };</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structsession_1_1MeshSummary.html#ae952757e29341c56d8220e56a4f96a9d">   46</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsession_1_1MeshSummary.html#ae952757e29341c56d8220e56a4f96a9d">edge_count</a> { 0 };</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structsession_1_1MeshSummary.html#a0bd1e9c09bbe5b395a7533f5bb99c784">   47</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsession_1_1MeshSummary.html#a0bd1e9c09bbe5b395a7533f5bb99c784">face_count</a> { 0 };</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="structsession_1_1MeshSummary.html#a22336914f267dd8a3fba14b83427eef2">   48</a></span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_variable" href="structsession_1_1MeshSummary.html#a22336914f267dd8a3fba14b83427eef2">solid_count</a> { 0 };</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>};</div>
+</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span></div>
+<div class="foldopen" id="foldopen00052" data-start="{" data-end="};">
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="structsession_1_1GeometrySummary.html">   52</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsession_1_1GeometrySummary.html">GeometrySummary</a> {</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="structsession_1_1GeometrySummary.html#a0ab9fe39a0c4f0a00921172d962a5cdf">   53</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structsession_1_1GeometrySummary.html#a0ab9fe39a0c4f0a00921172d962a5cdf">has_geometry</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="structsession_1_1GeometrySummary.html#a4aa13994e48f69d35a7c67a381536c10">   54</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsession_1_1GeometrySummary.html#a4aa13994e48f69d35a7c67a381536c10">vertex_count</a> { 0 };</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="structsession_1_1GeometrySummary.html#a9924deb09c59e2ee8ef6447c2110c44d">   55</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsession_1_1GeometrySummary.html#a9924deb09c59e2ee8ef6447c2110c44d">edge_count</a> { 0 };</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structsession_1_1GeometrySummary.html#a15f3600b293108768622e002a4f6171a">   56</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsession_1_1GeometrySummary.html#a15f3600b293108768622e002a4f6171a">face_count</a> { 0 };</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structsession_1_1GeometrySummary.html#a3957419695757d9d4e7eaf74f5e1a874">   57</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsession_1_1GeometrySummary.html#a3957419695757d9d4e7eaf74f5e1a874">solid_count</a> { 0 };</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>};</div>
+</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span></div>
+<div class="foldopen" id="foldopen00061" data-start="{" data-end="};">
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="structsession_1_1AttributeInfo.html">   61</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsession_1_1AttributeInfo.html">AttributeInfo</a> {</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="structsession_1_1AttributeInfo.html#a21f4bf883cfbc0b039cacdf1d0ef807f">   62</a></span>    std::string <a class="code hl_variable" href="structsession_1_1AttributeInfo.html#a21f4bf883cfbc0b039cacdf1d0ef807f">name</a>; <span class="comment">//&gt; 原始属性名（含 v_/e_/f_/s_ 前缀与分量数后缀）</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="structsession_1_1AttributeInfo.html#a41de638ece541279873640997079db5c">   63</a></span>    std::string <a class="code hl_variable" href="structsession_1_1AttributeInfo.html#a41de638ece541279873640997079db5c">display_name</a>; <span class="comment">//&gt; 展示名（去除前缀与分量数后缀）</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="structsession_1_1AttributeInfo.html#a3f553fcd8eaccc9f048ae76df874fd40">   64</a></span>    <a class="code hl_enumeration" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">ElementEnum::Type</a> <a class="code hl_variable" href="structsession_1_1AttributeInfo.html#a3f553fcd8eaccc9f048ae76df874fd40">type</a> { <a class="code hl_enumvalue" href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a26f8a7af5dafb6cbd3fa3e6e1f627aba">ElementEnum::Type::None</a> };</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="structsession_1_1AttributeInfo.html#a6f5169d17c558e3440351579b90e70a6">   65</a></span>    std::string <a class="code hl_variable" href="structsession_1_1AttributeInfo.html#a6f5169d17c558e3440351579b90e70a6">type_name</a>; <span class="comment">//&gt; 实体类型展示名（点/边/面/体）</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structsession_1_1AttributeInfo.html#a53970606258ba4d15d92dfa325bd570e">   66</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsession_1_1AttributeInfo.html#a53970606258ba4d15d92dfa325bd570e">attr_type</a> { 0 }; <span class="comment">//&gt; 属性表序号（点 0、边 1、面 2、体 3）</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="structsession_1_1AttributeInfo.html#a74669967a9feadaef93aaa9f53049ea0">   67</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsession_1_1AttributeInfo.html#a74669967a9feadaef93aaa9f53049ea0">component_count</a> { 0 }; <span class="comment">//&gt; 分量数（按元组大小换算）</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>};</div>
+</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span></div>
+<div class="foldopen" id="foldopen00075" data-start="{" data-end="};">
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classsession_1_1SessionQuery.html">   75</a></span><span class="keyword">class </span><a class="code hl_function" href="classsession_1_1SessionQuery.html#ab7487c56ff37e39dcb90666aacb351d2">SessionQuery</a> {</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classsession_1_1SessionQuery.html#ab7487c56ff37e39dcb90666aacb351d2">SessionQuery</a>(<a class="code hl_class" href="classModelLayer.html">ModelLayer</a>&amp; model);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="comment">// —— 渲染数据视图 ——</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    std::optional&lt;MeshDataVtk&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#aad53b346500cdd24d44c586127d00fc4">meshDataByComponent</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    std::vector&lt;GeometryDataVtk&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a5b1ffccf5292a8d0af3d20bccb478d58">geometryDataByModel</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    std::optional&lt;GeometryDataVtk&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#aeb50cc4bef5541e4a8454bb6a73e3570">geometryDataByComponent</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="comment">// —— 身份与存在性 ——</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    std::vector&lt;Index&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#ab2a3a43dfd47be79fd0e61648feb5b21">componentIds</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    std::optional&lt;Index&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a576c9a8534d8b91b0473c8e0fbecd067">firstMeshComponentId</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_function" href="classsession_1_1SessionQuery.html#aefb8b5819e18554ac2bc2de963459f39">findModelIdByComponent</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classsession_1_1SessionQuery.html#a5e4518fc1894c0271be814dcdd198d2f">hasModel</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classsession_1_1SessionQuery.html#a37985358f1686f919330a3b3c680c306">hasComponent</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    std::optional&lt;std::string&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#abcee7e7659644e7e5ffdb279b1ad294b">modelName</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    std::optional&lt;std::string&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a972bfa7c646c83ecc1ab6b69ff7837c5">componentName</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> <a class="code hl_function" href="classsession_1_1SessionQuery.html#a2a0e93566869df5d605e60381e940354">pointGlobalId</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> local_point_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    std::optional&lt;Index&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a9053b935b7be3b3824917bebc2c81414">findEdgeByEndpoints</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p0, <a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> p1) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    std::vector&lt;Index&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#ae0eec4412dc3dfa1607d4f7326aa8a83">geometryEdgeMappedPointIds</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keywordtype">int</span> local_geometry_edge_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    <span class="comment">// —— 摘要查询 ——</span></div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    std::vector&lt;ModelSummary&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a14f4cc091e9afdb7f6dc94483375a305">listModels</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    std::vector&lt;ComponentSummary&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a1f8238a385d2ca07196649c6ebff559d">componentSummaries</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <a class="code hl_struct" href="structsession_1_1MeshSummary.html">MeshSummary</a> <a class="code hl_function" href="classsession_1_1SessionQuery.html#a8dc6fe280033e19ade7c14b33695a83a">meshSummary</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <a class="code hl_struct" href="structsession_1_1GeometrySummary.html">GeometrySummary</a> <a class="code hl_function" href="classsession_1_1SessionQuery.html#a0d2f44d3ae9f080eecf7f509d600d441">geometrySummary</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    std::vector&lt;AttributeInfo&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a78da2d1e9d06b39ad93b096902fb785b">componentAttributeInfos</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <span class="comment">// —— 几何局部 id -&gt; 全局 id ——</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    std::optional&lt;GeomFaceId&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a0ed83f59240487d4cf30f76c6470170c">resolveGeometryFaceLocalId</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keywordtype">int</span> local_face_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    std::optional&lt;GeomEdgeId&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a934923a813498f932086ad2da716d69d">resolveGeometryEdgeLocalId</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keywordtype">int</span> local_edge_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    std::optional&lt;GeomVertexId&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a38f59449d8fd06789a4a6ba890593207">resolveGeometryVertexLocalId</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keywordtype">int</span> local_vertex_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    std::optional&lt;GeomSolidId&gt; <a class="code hl_function" href="classsession_1_1SessionQuery.html#a7b4cb6a863c0b09f416da7e6b2b7fe3b">resolveGeometrySolidLocalId</a>(<a class="code hl_typedef" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, <span class="keywordtype">int</span> local_solid_id) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno"><a class="line" href="classsession_1_1SessionQuery.html#a5d4072fd6bd1f678cc5b1954dd15efca">  119</a></span>    <a class="code hl_class" href="classModelLayer.html">ModelLayer</a>&amp; <a class="code hl_variable" href="classsession_1_1SessionQuery.html#a5d4072fd6bd1f678cc5b1954dd15efca">model_</a>;</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>};</div>
+</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>}</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="preprocessor">#endif </span><span class="comment">// SESSION_QUERY_H</span></div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aCore_8h_html_a1673229bf7fec9388ac2a829a52d69b3"><div class="ttname"><a href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></div><div class="ttdeci">int Index</div><div class="ttdoc">基本索引类型定义</div><div class="ttdef"><b>定义</b> Core.h:48</div></div>
+<div class="ttc" id="aGeometryDataVtk_8h_html"><div class="ttname"><a href="GeometryDataVtk_8h.html">GeometryDataVtk.h</a></div></div>
+<div class="ttc" id="aSelection_8h_html"><div class="ttname"><a href="Selection_8h.html">Selection.h</a></div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953">ElementEnum::Type</a></div><div class="ttdeci">Type</div><div class="ttdef"><b>定义</b> Selection.h:9</div></div>
+<div class="ttc" id="aclassElementEnum_html_a348e24319977174506bd4fc7f9e9a953a26f8a7af5dafb6cbd3fa3e6e1f627aba"><div class="ttname"><a href="classElementEnum.html#a348e24319977174506bd4fc7f9e9a953a26f8a7af5dafb6cbd3fa3e6e1f627aba">ElementEnum::None</a></div><div class="ttdeci">@ None</div><div class="ttdef"><b>定义</b> Selection.h:10</div></div>
+<div class="ttc" id="aclassModelLayer_html"><div class="ttname"><a href="classModelLayer.html">ModelLayer</a></div><div class="ttdoc">负责管理多个 ModelData 实例的类</div><div class="ttdef"><b>定义</b> ModelLayer.h:39</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a0d2f44d3ae9f080eecf7f509d600d441"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a0d2f44d3ae9f080eecf7f509d600d441">session::SessionQuery::geometrySummary</a></div><div class="ttdeci">GeometrySummary geometrySummary(Index component_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:279</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a0ed83f59240487d4cf30f76c6470170c"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a0ed83f59240487d4cf30f76c6470170c">session::SessionQuery::resolveGeometryFaceLocalId</a></div><div class="ttdeci">std::optional&lt; GeomFaceId &gt; resolveGeometryFaceLocalId(Index component_id, int local_face_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:329</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a14f4cc091e9afdb7f6dc94483375a305"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a14f4cc091e9afdb7f6dc94483375a305">session::SessionQuery::listModels</a></div><div class="ttdeci">std::vector&lt; ModelSummary &gt; listModels() const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:231</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a1f8238a385d2ca07196649c6ebff559d"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a1f8238a385d2ca07196649c6ebff559d">session::SessionQuery::componentSummaries</a></div><div class="ttdeci">std::vector&lt; ComponentSummary &gt; componentSummaries(Index model_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:244</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a2a0e93566869df5d605e60381e940354"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a2a0e93566869df5d605e60381e940354">session::SessionQuery::pointGlobalId</a></div><div class="ttdeci">Index pointGlobalId(Index component_id, Index local_point_id) const</div><div class="ttdoc">组件内局部点 id -&gt; 全局点 id（MeshIDMap gid）；越界或未分配返回 -1</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:189</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a37985358f1686f919330a3b3c680c306"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a37985358f1686f919330a3b3c680c306">session::SessionQuery::hasComponent</a></div><div class="ttdeci">bool hasComponent(Index component_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:168</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a38f59449d8fd06789a4a6ba890593207"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a38f59449d8fd06789a4a6ba890593207">session::SessionQuery::resolveGeometryVertexLocalId</a></div><div class="ttdeci">std::optional&lt; GeomVertexId &gt; resolveGeometryVertexLocalId(Index component_id, int local_vertex_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:357</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a576c9a8534d8b91b0473c8e0fbecd067"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a576c9a8534d8b91b0473c8e0fbecd067">session::SessionQuery::firstMeshComponentId</a></div><div class="ttdeci">std::optional&lt; Index &gt; firstMeshComponentId(Index model_id) const</div><div class="ttdoc">模型内首个带网格组件的 id；无网格组件返回空（模型级查询的落点复用本查询）</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:115</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a5b1ffccf5292a8d0af3d20bccb478d58"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a5b1ffccf5292a8d0af3d20bccb478d58">session::SessionQuery::geometryDataByModel</a></div><div class="ttdeci">std::vector&lt; GeometryDataVtk &gt; geometryDataByModel(Index model_id) const</div><div class="ttdoc">模型内全部几何组件的渲染视图</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:131</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a5d4072fd6bd1f678cc5b1954dd15efca"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a5d4072fd6bd1f678cc5b1954dd15efca">session::SessionQuery::model_</a></div><div class="ttdeci">ModelLayer &amp; model_</div><div class="ttdef"><b>定义</b> SessionQuery.h:119</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a5e4518fc1894c0271be814dcdd198d2f"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a5e4518fc1894c0271be814dcdd198d2f">session::SessionQuery::hasModel</a></div><div class="ttdeci">bool hasModel(Index model_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:163</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a78da2d1e9d06b39ad93b096902fb785b"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a78da2d1e9d06b39ad93b096902fb785b">session::SessionQuery::componentAttributeInfos</a></div><div class="ttdeci">std::vector&lt; AttributeInfo &gt; componentAttributeInfos(Index component_id) const</div><div class="ttdoc">组件网格的全部属性渲染条目（四张属性表顺序遍历；属性名/类型查询复用本条目）</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:305</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a7b4cb6a863c0b09f416da7e6b2b7fe3b"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a7b4cb6a863c0b09f416da7e6b2b7fe3b">session::SessionQuery::resolveGeometrySolidLocalId</a></div><div class="ttdeci">std::optional&lt; GeomSolidId &gt; resolveGeometrySolidLocalId(Index component_id, int local_solid_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:371</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a8dc6fe280033e19ade7c14b33695a83a"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a8dc6fe280033e19ade7c14b33695a83a">session::SessionQuery::meshSummary</a></div><div class="ttdeci">MeshSummary meshSummary(Index component_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:263</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a9053b935b7be3b3824917bebc2c81414"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a9053b935b7be3b3824917bebc2c81414">session::SessionQuery::findEdgeByEndpoints</a></div><div class="ttdeci">std::optional&lt; Index &gt; findEdgeByEndpoints(Index component_id, Index p0, Index p1) const</div><div class="ttdoc">按两端点反查稳定局部边 id（跨拓扑编辑有效）；未命中返回空</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:198</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a934923a813498f932086ad2da716d69d"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a934923a813498f932086ad2da716d69d">session::SessionQuery::resolveGeometryEdgeLocalId</a></div><div class="ttdeci">std::optional&lt; GeomEdgeId &gt; resolveGeometryEdgeLocalId(Index component_id, int local_edge_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:343</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_a972bfa7c646c83ecc1ab6b69ff7837c5"><div class="ttname"><a href="classsession_1_1SessionQuery.html#a972bfa7c646c83ecc1ab6b69ff7837c5">session::SessionQuery::componentName</a></div><div class="ttdeci">std::optional&lt; std::string &gt; componentName(Index component_id) const</div><div class="ttdoc">组件名称；不存在返回空</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:181</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_aad53b346500cdd24d44c586127d00fc4"><div class="ttname"><a href="classsession_1_1SessionQuery.html#aad53b346500cdd24d44c586127d00fc4">session::SessionQuery::meshDataByComponent</a></div><div class="ttdeci">std::optional&lt; MeshDataVtk &gt; meshDataByComponent(Index component_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:123</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_ab2a3a43dfd47be79fd0e61648feb5b21"><div class="ttname"><a href="classsession_1_1SessionQuery.html#ab2a3a43dfd47be79fd0e61648feb5b21">session::SessionQuery::componentIds</a></div><div class="ttdeci">std::vector&lt; Index &gt; componentIds(Index model_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:151</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_ab7487c56ff37e39dcb90666aacb351d2"><div class="ttname"><a href="classsession_1_1SessionQuery.html#ab7487c56ff37e39dcb90666aacb351d2">session::SessionQuery::SessionQuery</a></div><div class="ttdeci">SessionQuery(ModelLayer &amp;model)</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:110</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_abcee7e7659644e7e5ffdb279b1ad294b"><div class="ttname"><a href="classsession_1_1SessionQuery.html#abcee7e7659644e7e5ffdb279b1ad294b">session::SessionQuery::modelName</a></div><div class="ttdeci">std::optional&lt; std::string &gt; modelName(Index model_id) const</div><div class="ttdoc">模型名称；不存在返回空</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:173</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_ae0eec4412dc3dfa1607d4f7326aa8a83"><div class="ttname"><a href="classsession_1_1SessionQuery.html#ae0eec4412dc3dfa1607d4f7326aa8a83">session::SessionQuery::geometryEdgeMappedPointIds</a></div><div class="ttdeci">std::vector&lt; Index &gt; geometryEdgeMappedPointIds(Index component_id, int local_geometry_edge_id) const</div><div class="ttdoc">几何边映射的网格点 id 列表；无映射返回空</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:212</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_aeb50cc4bef5541e4a8454bb6a73e3570"><div class="ttname"><a href="classsession_1_1SessionQuery.html#aeb50cc4bef5541e4a8454bb6a73e3570">session::SessionQuery::geometryDataByComponent</a></div><div class="ttdeci">std::optional&lt; GeometryDataVtk &gt; geometryDataByComponent(Index component_id) const</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:143</div></div>
+<div class="ttc" id="aclasssession_1_1SessionQuery_html_aefb8b5819e18554ac2bc2de963459f39"><div class="ttname"><a href="classsession_1_1SessionQuery.html#aefb8b5819e18554ac2bc2de963459f39">session::SessionQuery::findModelIdByComponent</a></div><div class="ttdeci">Index findModelIdByComponent(Index component_id) const</div><div class="ttdoc">组件所属模型 id；未知组件返回 -1</div><div class="ttdef"><b>定义</b> SessionQuery.cpp:157</div></div>
+<div class="ttc" id="anamespacesession_html"><div class="ttname"><a href="namespacesession.html">session</a></div><div class="ttdef"><b>定义</b> QModelManager.h:16</div></div>
+<div class="ttc" id="astructsession_1_1AttributeInfo_html"><div class="ttname"><a href="structsession_1_1AttributeInfo.html">session::AttributeInfo</a></div><div class="ttdoc">组件属性渲染条目（原始名、展示名、类型与分量数）</div><div class="ttdef"><b>定义</b> SessionQuery.h:61</div></div>
+<div class="ttc" id="astructsession_1_1AttributeInfo_html_a21f4bf883cfbc0b039cacdf1d0ef807f"><div class="ttname"><a href="structsession_1_1AttributeInfo.html#a21f4bf883cfbc0b039cacdf1d0ef807f">session::AttributeInfo::name</a></div><div class="ttdeci">std::string name</div><div class="ttdef"><b>定义</b> SessionQuery.h:62</div></div>
+<div class="ttc" id="astructsession_1_1AttributeInfo_html_a3f553fcd8eaccc9f048ae76df874fd40"><div class="ttname"><a href="structsession_1_1AttributeInfo.html#a3f553fcd8eaccc9f048ae76df874fd40">session::AttributeInfo::type</a></div><div class="ttdeci">ElementEnum::Type type</div><div class="ttdef"><b>定义</b> SessionQuery.h:64</div></div>
+<div class="ttc" id="astructsession_1_1AttributeInfo_html_a41de638ece541279873640997079db5c"><div class="ttname"><a href="structsession_1_1AttributeInfo.html#a41de638ece541279873640997079db5c">session::AttributeInfo::display_name</a></div><div class="ttdeci">std::string display_name</div><div class="ttdef"><b>定义</b> SessionQuery.h:63</div></div>
+<div class="ttc" id="astructsession_1_1AttributeInfo_html_a53970606258ba4d15d92dfa325bd570e"><div class="ttname"><a href="structsession_1_1AttributeInfo.html#a53970606258ba4d15d92dfa325bd570e">session::AttributeInfo::attr_type</a></div><div class="ttdeci">int attr_type</div><div class="ttdef"><b>定义</b> SessionQuery.h:66</div></div>
+<div class="ttc" id="astructsession_1_1AttributeInfo_html_a6f5169d17c558e3440351579b90e70a6"><div class="ttname"><a href="structsession_1_1AttributeInfo.html#a6f5169d17c558e3440351579b90e70a6">session::AttributeInfo::type_name</a></div><div class="ttdeci">std::string type_name</div><div class="ttdef"><b>定义</b> SessionQuery.h:65</div></div>
+<div class="ttc" id="astructsession_1_1AttributeInfo_html_a74669967a9feadaef93aaa9f53049ea0"><div class="ttname"><a href="structsession_1_1AttributeInfo.html#a74669967a9feadaef93aaa9f53049ea0">session::AttributeInfo::component_count</a></div><div class="ttdeci">int component_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:67</div></div>
+<div class="ttc" id="astructsession_1_1ComponentSummary_html"><div class="ttname"><a href="structsession_1_1ComponentSummary.html">session::ComponentSummary</a></div><div class="ttdoc">组件摘要（componentSummaries 条目）</div><div class="ttdef"><b>定义</b> SessionQuery.h:34</div></div>
+<div class="ttc" id="astructsession_1_1ComponentSummary_html_a39fa48257c2aa30ac0af0da50e74a2d6"><div class="ttname"><a href="structsession_1_1ComponentSummary.html#a39fa48257c2aa30ac0af0da50e74a2d6">session::ComponentSummary::component_id</a></div><div class="ttdeci">Index component_id</div><div class="ttdef"><b>定义</b> SessionQuery.h:35</div></div>
+<div class="ttc" id="astructsession_1_1ComponentSummary_html_a539ba3365f6a2b3ebc66515cda302db4"><div class="ttname"><a href="structsession_1_1ComponentSummary.html#a539ba3365f6a2b3ebc66515cda302db4">session::ComponentSummary::material_id</a></div><div class="ttdeci">Index material_id</div><div class="ttdef"><b>定义</b> SessionQuery.h:39</div></div>
+<div class="ttc" id="astructsession_1_1ComponentSummary_html_a68de673ef5db80c9fbe095211638efcf"><div class="ttname"><a href="structsession_1_1ComponentSummary.html#a68de673ef5db80c9fbe095211638efcf">session::ComponentSummary::has_geometry</a></div><div class="ttdeci">bool has_geometry</div><div class="ttdef"><b>定义</b> SessionQuery.h:38</div></div>
+<div class="ttc" id="astructsession_1_1ComponentSummary_html_ae16945b0bf384795b17080778d298193"><div class="ttname"><a href="structsession_1_1ComponentSummary.html#ae16945b0bf384795b17080778d298193">session::ComponentSummary::has_mesh</a></div><div class="ttdeci">bool has_mesh</div><div class="ttdef"><b>定义</b> SessionQuery.h:37</div></div>
+<div class="ttc" id="astructsession_1_1ComponentSummary_html_ae56b5cfe0d2922c823e307ceb5f83832"><div class="ttname"><a href="structsession_1_1ComponentSummary.html#ae56b5cfe0d2922c823e307ceb5f83832">session::ComponentSummary::name</a></div><div class="ttdeci">std::string name</div><div class="ttdef"><b>定义</b> SessionQuery.h:36</div></div>
+<div class="ttc" id="astructsession_1_1GeometrySummary_html"><div class="ttname"><a href="structsession_1_1GeometrySummary.html">session::GeometrySummary</a></div><div class="ttdoc">几何拓扑规模摘要（ensureIndexBuilt 后统计）</div><div class="ttdef"><b>定义</b> SessionQuery.h:52</div></div>
+<div class="ttc" id="astructsession_1_1GeometrySummary_html_a0ab9fe39a0c4f0a00921172d962a5cdf"><div class="ttname"><a href="structsession_1_1GeometrySummary.html#a0ab9fe39a0c4f0a00921172d962a5cdf">session::GeometrySummary::has_geometry</a></div><div class="ttdeci">bool has_geometry</div><div class="ttdef"><b>定义</b> SessionQuery.h:53</div></div>
+<div class="ttc" id="astructsession_1_1GeometrySummary_html_a15f3600b293108768622e002a4f6171a"><div class="ttname"><a href="structsession_1_1GeometrySummary.html#a15f3600b293108768622e002a4f6171a">session::GeometrySummary::face_count</a></div><div class="ttdeci">int face_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:56</div></div>
+<div class="ttc" id="astructsession_1_1GeometrySummary_html_a3957419695757d9d4e7eaf74f5e1a874"><div class="ttname"><a href="structsession_1_1GeometrySummary.html#a3957419695757d9d4e7eaf74f5e1a874">session::GeometrySummary::solid_count</a></div><div class="ttdeci">int solid_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:57</div></div>
+<div class="ttc" id="astructsession_1_1GeometrySummary_html_a4aa13994e48f69d35a7c67a381536c10"><div class="ttname"><a href="structsession_1_1GeometrySummary.html#a4aa13994e48f69d35a7c67a381536c10">session::GeometrySummary::vertex_count</a></div><div class="ttdeci">int vertex_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:54</div></div>
+<div class="ttc" id="astructsession_1_1GeometrySummary_html_a9924deb09c59e2ee8ef6447c2110c44d"><div class="ttname"><a href="structsession_1_1GeometrySummary.html#a9924deb09c59e2ee8ef6447c2110c44d">session::GeometrySummary::edge_count</a></div><div class="ttdeci">int edge_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:55</div></div>
+<div class="ttc" id="astructsession_1_1MeshSummary_html"><div class="ttname"><a href="structsession_1_1MeshSummary.html">session::MeshSummary</a></div><div class="ttdoc">网格规模摘要</div><div class="ttdef"><b>定义</b> SessionQuery.h:43</div></div>
+<div class="ttc" id="astructsession_1_1MeshSummary_html_a0bd1e9c09bbe5b395a7533f5bb99c784"><div class="ttname"><a href="structsession_1_1MeshSummary.html#a0bd1e9c09bbe5b395a7533f5bb99c784">session::MeshSummary::face_count</a></div><div class="ttdeci">Index face_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:47</div></div>
+<div class="ttc" id="astructsession_1_1MeshSummary_html_a22336914f267dd8a3fba14b83427eef2"><div class="ttname"><a href="structsession_1_1MeshSummary.html#a22336914f267dd8a3fba14b83427eef2">session::MeshSummary::solid_count</a></div><div class="ttdeci">Index solid_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:48</div></div>
+<div class="ttc" id="astructsession_1_1MeshSummary_html_a41fb05868feb0d16251adcfb64bb601c"><div class="ttname"><a href="structsession_1_1MeshSummary.html#a41fb05868feb0d16251adcfb64bb601c">session::MeshSummary::vertex_count</a></div><div class="ttdeci">Index vertex_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:45</div></div>
+<div class="ttc" id="astructsession_1_1MeshSummary_html_a553a3de6355cdf9af318ecebe02ca9e5"><div class="ttname"><a href="structsession_1_1MeshSummary.html#a553a3de6355cdf9af318ecebe02ca9e5">session::MeshSummary::has_mesh</a></div><div class="ttdeci">bool has_mesh</div><div class="ttdef"><b>定义</b> SessionQuery.h:44</div></div>
+<div class="ttc" id="astructsession_1_1MeshSummary_html_ae952757e29341c56d8220e56a4f96a9d"><div class="ttname"><a href="structsession_1_1MeshSummary.html#ae952757e29341c56d8220e56a4f96a9d">session::MeshSummary::edge_count</a></div><div class="ttdeci">Index edge_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:46</div></div>
+<div class="ttc" id="astructsession_1_1ModelSummary_html"><div class="ttname"><a href="structsession_1_1ModelSummary.html">session::ModelSummary</a></div><div class="ttdoc">模型摘要（listModels 条目）</div><div class="ttdef"><b>定义</b> SessionQuery.h:27</div></div>
+<div class="ttc" id="astructsession_1_1ModelSummary_html_a88925d32af88ae5733f9658cddc22b98"><div class="ttname"><a href="structsession_1_1ModelSummary.html#a88925d32af88ae5733f9658cddc22b98">session::ModelSummary::name</a></div><div class="ttdeci">std::string name</div><div class="ttdef"><b>定义</b> SessionQuery.h:29</div></div>
+<div class="ttc" id="astructsession_1_1ModelSummary_html_aab750435971a6aef3a9c5b846f8525dc"><div class="ttname"><a href="structsession_1_1ModelSummary.html#aab750435971a6aef3a9c5b846f8525dc">session::ModelSummary::component_count</a></div><div class="ttdeci">int component_count</div><div class="ttdef"><b>定义</b> SessionQuery.h:30</div></div>
+<div class="ttc" id="astructsession_1_1ModelSummary_html_af6a1394c6a176c939bb81d8b6cbd462a"><div class="ttname"><a href="structsession_1_1ModelSummary.html#af6a1394c6a176c939bb81d8b6cbd462a">session::ModelSummary::model_id</a></div><div class="ttdeci">Index model_id</div><div class="ttdef"><b>定义</b> SessionQuery.h:28</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

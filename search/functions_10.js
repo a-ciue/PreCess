@@ -11,11 +11,13 @@ var searchData=
   ['qmodelioinfo_8',['QModelIOInfo',['../classsystems_1_1io_1_1QModelIOInfo.html#ace054571bb7b50a1dbb55bc09d434572',1,'systems::io::QModelIOInfo']]],
   ['qmodeliosystemadaptor_9',['QModelIOSystemAdaptor',['../classsystems_1_1io_1_1QModelIOSystemAdaptor.html#a842b3499a2004d3fc3b67143a85364ce',1,'systems::io::QModelIOSystemAdaptor']]],
   ['qmodelmanager_10',['QModelManager',['../classQModelManager.html#a7dd7e8f47065b6aa31653ab6aceb9976',1,'QModelManager']]],
-  ['qmodelquery_11',['QModelQuery',['../classQModelQuery.html#a978ca4b2b7bdecdca051fa5b41985a36',1,'QModelQuery']]],
-  ['qrenderwindow_12',['QRenderWindow',['../structQRenderWindow.html#a74f8adff8942153a695cbd56e53e13d2',1,'QRenderWindow']]],
-  ['qrenderwindowstyle_13',['QRenderWindowStyle',['../classQRenderWindowStyle.html#a43929773631c408dce1c44303ab5c5a0',1,'QRenderWindowStyle']]],
-  ['qselection_14',['QSelection',['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]],
-  ['qsystempluginmanager_15',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html#abedb39985f7bd1fe6c8d02a131596d86',1,'systems::QSystemPluginManager']]],
-  ['qundostackadaptor_16',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]],
-  ['qwasmbridge_17',['QWasmBridge',['../classQWasmBridge.html#a777a95b186baf4db42e8f295edaa83de',1,'QWasmBridge']]]
+  ['qmodelquery_11',['QModelQuery',['../classQModelQuery.html#ad9586c1d39ee616dc2818eb74fe32d27',1,'QModelQuery']]],
+  ['qpythonruntime_12',['QPythonRuntime',['../classQPythonRuntime.html#a607e9d84d42ce8dfcfa44476f63ae0cf',1,'QPythonRuntime']]],
+  ['qrenderwindow_13',['QRenderWindow',['../structQRenderWindow.html#a74f8adff8942153a695cbd56e53e13d2',1,'QRenderWindow']]],
+  ['qrenderwindowstyle_14',['QRenderWindowStyle',['../classQRenderWindowStyle.html#a43929773631c408dce1c44303ab5c5a0',1,'QRenderWindowStyle']]],
+  ['qselection_15',['QSelection',['../classQSelection.html#af271af99a1501effea84e88617aac5c0',1,'QSelection::QSelection()'],['../classQSelection.html#aaee984386736e7fe5f7e65c2d318466d',1,'QSelection::QSelection(std::unique_ptr&lt; Selection &gt; data)']]],
+  ['qsystempluginmanager_16',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html#abedb39985f7bd1fe6c8d02a131596d86',1,'systems::QSystemPluginManager']]],
+  ['query_17',['query',['../classsession_1_1Session.html#a4f59a80d06e76a55e96783b1c96570fa',1,'session::Session']]],
+  ['qundostackadaptor_18',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]],
+  ['qwasmbridge_19',['QWasmBridge',['../classQWasmBridge.html#a777a95b186baf4db42e8f295edaa83de',1,'QWasmBridge']]]
 ];

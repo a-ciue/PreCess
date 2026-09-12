@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QPythonRuntime.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#define-members">宏定义</a>  </div>
+  <div class="headertitle"><div class="title">QPythonRuntime.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classQPythonRuntime.html" title="app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是 python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳">QPythonRuntime</a> 实现：python::Runtime 之上的 QObject/QML 薄壳  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="QPythonRuntime_8h_source.html">QPythonRuntime.h</a>&quot;</code><br />
+<code>#include &quot;python/runtime.h&quot;</code><br />
+<code>#include &lt;QCoreApplication&gt;</code><br />
+<code>#include &lt;QThread&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QPythonRuntime.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QPythonRuntime_8cpp__incl.png" border="0" usemap="#aapp_2model_2QPythonRuntime_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2QPythonRuntime_8cpp" id="aapp_2model_2QPythonRuntime_8cpp">
+<area shape="rect" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="525,5,757,31"/>
+<area shape="rect" href="QPythonRuntime_8h.html" title=" " alt="" coords="181,79,325,104"/>
+<area shape="poly" title=" " alt="" coords="579,33,330,79,329,74,579,28"/>
+<area shape="rect" title=" " alt="" coords="350,79,485,104"/>
+<area shape="poly" title=" " alt="" coords="606,33,467,77,466,72,605,28"/>
+<area shape="rect" title=" " alt="" coords="509,79,643,104"/>
+<area shape="poly" title=" " alt="" coords="633,33,598,70,594,67,629,29"/>
+<area shape="rect" title=" " alt="" coords="668,79,745,104"/>
+<area shape="poly" title=" " alt="" coords="654,29,689,67,685,70,650,33"/>
+<area shape="rect" title=" " alt="" coords="770,79,894,104"/>
+<area shape="poly" title=" " alt="" coords="673,28,789,71,787,76,671,33"/>
+<area shape="rect" title=" " alt="" coords="919,79,1009,104"/>
+<area shape="poly" title=" " alt="" coords="694,28,906,75,905,80,693,33"/>
+<area shape="rect" title=" " alt="" coords="5,152,80,177"/>
+<area shape="poly" title=" " alt="" coords="220,107,90,150,89,145,219,101"/>
+<area shape="rect" title=" " alt="" coords="105,152,175,177"/>
+<area shape="poly" title=" " alt="" coords="237,106,171,147,168,142,234,102"/>
+<area shape="rect" title=" " alt="" coords="200,152,307,177"/>
+<area shape="poly" title=" " alt="" coords="256,104,256,138,251,138,251,104"/>
+<area shape="rect" title=" " alt="" coords="331,152,445,177"/>
+<area shape="poly" title=" " alt="" coords="276,102,355,143,353,148,274,106"/>
+<area shape="rect" title=" " alt="" coords="469,152,547,177"/>
+<area shape="poly" title=" " alt="" coords="295,101,457,146,456,152,294,107"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
+宏定义</h2></td></tr>
+<tr class="memitem:a21e5fa6d7fb52c2c094d81861a4b92d0" id="r_a21e5fa6d7fb52c2c094d81861a4b92d0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21e5fa6d7fb52c2c094d81861a4b92d0">PRECESS_PYTHON_HOME</a>&#160;&#160;&#160;&quot;&quot;</td></tr>
+<tr class="memitem:a03ad18e300b02a94761e43a3a5b459f6" id="r_a03ad18e300b02a94761e43a3a5b459f6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03ad18e300b02a94761e43a3a5b459f6">PRECESS_PYTHON_MODULE_DIR</a>&#160;&#160;&#160;&quot;&quot;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p><a class="el" href="classQPythonRuntime.html" title="app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是 python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳">QPythonRuntime</a> 实现：python::Runtime 之上的 QObject/QML 薄壳 </p>
+<p>解释器宿主逻辑在 python/（runtime.cpp 真实现 / stub.cpp 桩，precess_runtime 目标恒存在、无需条件编译）；本文件只做线程断言、字符串编解码、日志与信号 桥接。"不可用"是运行时状态：桩实现 available 恒 false、错误信息说明原因。 </p>
+</div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">宏定义说明</h2>
+<a id="a21e5fa6d7fb52c2c094d81861a4b92d0" name="a21e5fa6d7fb52c2c094d81861a4b92d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21e5fa6d7fb52c2c094d81861a4b92d0">&#9670;&#160;</a></span>PRECESS_PYTHON_HOME</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PRECESS_PYTHON_HOME&#160;&#160;&#160;&quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a03ad18e300b02a94761e43a3a5b459f6" name="a03ad18e300b02a94761e43a3a5b459f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03ad18e300b02a94761e43a3a5b459f6">&#9670;&#160;</a></span>PRECESS_PYTHON_MODULE_DIR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PRECESS_PYTHON_MODULE_DIR&#160;&#160;&#160;&quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

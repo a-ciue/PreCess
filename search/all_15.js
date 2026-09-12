@@ -10,7 +10,7 @@ var searchData=
   ['undo_5flabel_5f_7',['undo_label_',['../classsystems_1_1feature_1_1FeatureEventGateway.html#a8cde80a47094aa45bb5d0a73d6783cba',1,'systems::feature::FeatureEventGateway']]],
   ['undo_5fmanual_8',['undo_manual',['../structsystems_1_1feature_1_1HandlerMetaData.html#ab4aad9a9ac18ce31066ddee34c5a04c0',1,'systems::feature::HandlerMetaData::undo_manual'],['../structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html#a6a374b52aa4dcd42a6aa72685e05eccd',1,'systems::feature::FeatureSystem::FeatureEntry::undo_manual']]],
   ['undo_5frecorder_5f_9',['undo_recorder_',['../classModelLayer.html#a25b4f6b60e3cd981d19e31f38bf0f2d6',1,'ModelLayer']]],
-  ['undo_5fstack_5f_10',['undo_stack_',['../classQModelManager.html#a7f266f2e2a0f4d3762da8611c266f953',1,'QModelManager::undo_stack_'],['../classsystems_1_1algo_1_1AlgorithmSystem.html#a9220adfec4e5b070b7591ceb89476762',1,'systems::algo::AlgorithmSystem::undo_stack_'],['../classsystems_1_1edit_1_1EditSystem.html#a8a59f799b0d634fbb6c358938bfd9002',1,'systems::edit::EditSystem::undo_stack_'],['../classsystems_1_1feature_1_1FeatureEventGateway.html#a3bb833e3e6d71412f81c60c657c43730',1,'systems::feature::FeatureEventGateway::undo_stack_'],['../classsystems_1_1feature_1_1FeatureSystem.html#a9cb49fcc559c8edff249e1a644c260a6',1,'systems::feature::FeatureSystem::undo_stack_']]],
+  ['undo_5fstack_5f_10',['undo_stack_',['../classsession_1_1Session.html#a2174e67a3eba740286f78a2de0544494',1,'session::Session::undo_stack_'],['../classsystems_1_1algo_1_1AlgorithmSystem.html#a9220adfec4e5b070b7591ceb89476762',1,'systems::algo::AlgorithmSystem::undo_stack_'],['../classsystems_1_1edit_1_1EditSystem.html#a8a59f799b0d634fbb6c358938bfd9002',1,'systems::edit::EditSystem::undo_stack_'],['../classsystems_1_1feature_1_1FeatureEventGateway.html#a3bb833e3e6d71412f81c60c657c43730',1,'systems::feature::FeatureEventGateway::undo_stack_'],['../classsystems_1_1feature_1_1FeatureSystem.html#a9cb49fcc559c8edff249e1a644c260a6',1,'systems::feature::FeatureSystem::undo_stack_']]],
   ['undocontext_11',['UndoContext',['../structsystems_1_1feature_1_1UndoContext.html',1,'systems::feature']]],
   ['undolabel_12',['undoLabel',['../classQUndoStackAdaptor.html#ae5f23f409712e8b2535c02405f7f63f5',1,'QUndoStackAdaptor::undoLabel'],['../classQUndoStackAdaptor.html#a12cdac7a1f2370c901b0f593cb19a703',1,'QUndoStackAdaptor::undoLabel() const'],['../classUndoStack.html#a1146107365ea5241f831a72190c116d1',1,'UndoStack::undoLabel()']]],
   ['undorecord_13',['UndoRecord',['../structUndoRecord.html',1,'']]],
@@ -18,7 +18,7 @@ var searchData=
   ['undorecorder_15',['UndoRecorder',['../classUndoRecorder.html',1,'']]],
   ['undorecorder_2eh_16',['UndoRecorder.h',['../UndoRecorder_8h.html',1,'']]],
   ['undostack_17',['UndoStack',['../classUndoStack.html',1,'UndoStack'],['../classUndoStack.html#adcd0d3406ba41362f7a44c8ccaab4b46',1,'UndoStack::UndoStack()']]],
-  ['undostack_18',['undoStack',['../classQModelManager.html#af6ffce88cef35bb362bca8720b61a22f',1,'QModelManager']]],
+  ['undostack_18',['undoStack',['../classQModelManager.html#af6ffce88cef35bb362bca8720b61a22f',1,'QModelManager::undoStack'],['../classsession_1_1Session.html#a04b807002240c762a252a3e698711ef2',1,'session::Session::undoStack()']]],
   ['undostack_2ecpp_19',['UndoStack.cpp',['../UndoStack_8cpp.html',1,'']]],
   ['undostack_2eh_20',['UndoStack.h',['../UndoStack_8h.html',1,'']]],
   ['uniq_21',['uniq',['../TestComponentModel_8cpp.html#a3805d8cb8e7a5a71c1565ad05a1c03c9',1,'TestComponentModel.cpp']]],
@@ -37,5 +37,6 @@ var searchData=
   ['updaterubberband_34',['updateRubberBand',['../classQRenderWindowStyle.html#a6100f44a2b1388628da205f453e7c646',1,'QRenderWindowStyle']]],
   ['updatespreadcache_35',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
   ['usemtl_5fcb_36',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
-  ['uv_37',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
+  ['user_5f_37',['user_',['../classsession_1_1Session_1_1ObserverRelay.html#a46899841927eafce300cbceeba250d00',1,'session::Session::ObserverRelay']]],
+  ['uv_38',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
 ];

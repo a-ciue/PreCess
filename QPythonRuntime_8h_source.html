@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QPythonRuntime.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QPythonRuntime.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="QPythonRuntime_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#ifndef Q_PYTHON_RUNTIME_H</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define Q_PYTHON_RUNTIME_H</span></div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;QVariantMap&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;QtQml/qqml.h&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesession.html">session</a> {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">class </span><a class="code hl_class" href="classsession_1_1Session.html">Session</a>;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>}</div>
+<div class="foldopen" id="foldopen00013" data-start="{" data-end="}">
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="namespacepython.html">   13</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacepython.html">python</a> {</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span>Runtime;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>}</div>
+</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span></div>
+<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classQPythonRuntime.html">   35</a></span><span class="keyword">class </span><a class="code hl_function" href="classQPythonRuntime.html#a607e9d84d42ce8dfcfa44476f63ae0cf">QPythonRuntime</a> : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    Q_OBJECT</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    QML_ELEMENT</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    QML_UNCREATABLE(<span class="stringliteral">&quot;经 QModelManager.pythonRuntime 访问&quot;</span>)</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classQPythonRuntime.html#a0e10b4e2c77d4dd1ca4870f43c938c82">   39</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classQPythonRuntime.html#a0e10b4e2c77d4dd1ca4870f43c938c82">available</a> READ <a class="code hl_function" href="classQPythonRuntime.html#a7981734b1bedf2f85c149e22fcfdd7c2">isAvailable</a> NOTIFY <a class="code hl_signal" href="classQPythonRuntime.html#af7661c2a65c74be0f9f9ea8e6aaa46c8">availableChanged</a>)</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>public:</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    explicit <a class="code hl_function" href="classQPythonRuntime.html#a607e9d84d42ce8dfcfa44476f63ae0cf">QPythonRuntime</a>(<a class="code hl_namespace" href="namespacesession.html">session</a>::Session* <a class="code hl_namespace" href="namespacesession.html">session</a>, QObject* parent = <span class="keywordtype">nullptr</span>);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="classQPythonRuntime.html#a25651d5c639997b3e30ebf7692abf6c5">   50</a></span>    ~<a class="code hl_function" href="classQPythonRuntime.html#a607e9d84d42ce8dfcfa44476f63ae0cf">QPythonRuntime</a>() override;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classQPythonRuntime.html#a7981734b1bedf2f85c149e22fcfdd7c2">isAvailable</a>() const;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    Q_INVOKABLE QString <a class="code hl_function" href="classQPythonRuntime.html#a21992eed62d9bc519fa2dfd2202f635e">lastError</a>() const;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>public slots:</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">void</span> <a class="code hl_slot" href="classQPythonRuntime.html#a4adb320e767b513ce61ab3841a93ead5">initialize</a>();</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    QVariantMap <a class="code hl_slot" href="classQPythonRuntime.html#a690ad035c15a28800d3f732e2cb37257">execute</a>(const QString&amp; source);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    QString <a class="code hl_slot" href="classQPythonRuntime.html#af323d37be6c8dcf9c5b1a11e9f554bbe">version</a>() const;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>signals:</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="classQPythonRuntime.html#af7661c2a65c74be0f9f9ea8e6aaa46c8">   82</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQPythonRuntime.html#af7661c2a65c74be0f9f9ea8e6aaa46c8">availableChanged</a>();</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>private:</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQPythonRuntime.html#a9eb75fafe223eebaf870026ba5eced5e">ensureInitialized</a>(); <span class="comment">//&gt; execute 的懒初始化入口，仅未初始化且无失败记录时才真正初始化</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="classQPythonRuntime.html#a26dc8d29969285fb27ef9f0b81cd0cda">   87</a></span>    std::unique_ptr&lt;<a class="code hl_namespace" href="namespacepython.html">python</a>::Runtime&gt; <a class="code hl_variable" href="classQPythonRuntime.html#a26dc8d29969285fb27ef9f0b81cd0cda">runtime_</a>; <span class="comment">//&gt; 无 Qt 解释器宿主（python/）；未启用嵌入时为空</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>};</div>
+</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a0e10b4e2c77d4dd1ca4870f43c938c82"><div class="ttname"><a href="classQPythonRuntime.html#a0e10b4e2c77d4dd1ca4870f43c938c82">QPythonRuntime::available</a></div><div class="ttdeci">QML_ELEMENTbool available</div><div class="ttdef"><b>定义</b> QPythonRuntime.h:39</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a21992eed62d9bc519fa2dfd2202f635e"><div class="ttname"><a href="classQPythonRuntime.html#a21992eed62d9bc519fa2dfd2202f635e">QPythonRuntime::lastError</a></div><div class="ttdeci">Q_INVOKABLE QString lastError() const</div><div class="ttdoc">最近一次初始化失败的描述（界面提示用），空串表示无失败记录</div><div class="ttdef"><b>定义</b> QPythonRuntime.cpp:64</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a26dc8d29969285fb27ef9f0b81cd0cda"><div class="ttname"><a href="classQPythonRuntime.html#a26dc8d29969285fb27ef9f0b81cd0cda">QPythonRuntime::runtime_</a></div><div class="ttdeci">std::unique_ptr&lt; python::Runtime &gt; runtime_</div><div class="ttdef"><b>定义</b> QPythonRuntime.h:87</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a4adb320e767b513ce61ab3841a93ead5"><div class="ttname"><a href="classQPythonRuntime.html#a4adb320e767b513ce61ab3841a93ead5">QPythonRuntime::initialize</a></div><div class="ttdeci">void initialize()</div><div class="ttdoc">初始化解释器并导入 precess 模块（幂等；失败后不重试）</div><div class="ttdef"><b>定义</b> QPythonRuntime.cpp:69</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a607e9d84d42ce8dfcfa44476f63ae0cf"><div class="ttname"><a href="classQPythonRuntime.html#a607e9d84d42ce8dfcfa44476f63ae0cf">QPythonRuntime::QPythonRuntime</a></div><div class="ttdeci">QPythonRuntime(session::Session *session, QObject *parent=nullptr)</div><div class="ttdoc">构造接入层，仅组装宿主配置，不启动解释器（懒初始化）</div><div class="ttdef"><b>定义</b> QPythonRuntime.cpp:51</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a690ad035c15a28800d3f732e2cb37257"><div class="ttname"><a href="classQPythonRuntime.html#a690ad035c15a28800d3f732e2cb37257">QPythonRuntime::execute</a></div><div class="ttdeci">QVariantMap execute(const QString &amp;source)</div><div class="ttdoc">执行一段控制台源码（与交互式解释器同判定规则）</div><div class="ttdef"><b>定义</b> QPythonRuntime.cpp:88</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a7981734b1bedf2f85c149e22fcfdd7c2"><div class="ttname"><a href="classQPythonRuntime.html#a7981734b1bedf2f85c149e22fcfdd7c2">QPythonRuntime::isAvailable</a></div><div class="ttdeci">bool isAvailable() const</div><div class="ttdoc">解释器是否就绪（初始化成功且 precess 模块可用）</div><div class="ttdef"><b>定义</b> QPythonRuntime.cpp:59</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_a9eb75fafe223eebaf870026ba5eced5e"><div class="ttname"><a href="classQPythonRuntime.html#a9eb75fafe223eebaf870026ba5eced5e">QPythonRuntime::ensureInitialized</a></div><div class="ttdeci">void ensureInitialized()</div><div class="ttdef"><b>定义</b> QPythonRuntime.cpp:82</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_af323d37be6c8dcf9c5b1a11e9f554bbe"><div class="ttname"><a href="classQPythonRuntime.html#af323d37be6c8dcf9c5b1a11e9f554bbe">QPythonRuntime::version</a></div><div class="ttdeci">QString version() const</div><div class="ttdoc">解释器版本串（sys.version），不可用时返回空串</div><div class="ttdef"><b>定义</b> QPythonRuntime.cpp:106</div></div>
+<div class="ttc" id="aclassQPythonRuntime_html_af7661c2a65c74be0f9f9ea8e6aaa46c8"><div class="ttname"><a href="classQPythonRuntime.html#af7661c2a65c74be0f9f9ea8e6aaa46c8">QPythonRuntime::availableChanged</a></div><div class="ttdeci">void availableChanged()</div><div class="ttdoc">可用状态变化（初始化成功或失败后发出）</div></div>
+<div class="ttc" id="aclasssession_1_1Session_html"><div class="ttname"><a href="classsession_1_1Session.html">session::Session</a></div><div class="ttdef"><b>定义</b> Session.h:42</div></div>
+<div class="ttc" id="anamespacepython_html"><div class="ttname"><a href="namespacepython.html">python</a></div><div class="ttdef"><b>定义</b> QPythonRuntime.h:13</div></div>
+<div class="ttc" id="anamespacesession_html"><div class="ttname"><a href="namespacesession.html">session</a></div><div class="ttdef"><b>定义</b> QModelManager.h:16</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -17,6 +17,7 @@ var searchData=
   ['geometryselectorhighlight_14',['GeometrySelectorHighlight',['../classGeometrySelectorHighlight.html',1,'']]],
   ['geometrysolidselectorhighlight_15',['GeometrySolidSelectorHighlight',['../classGeometrySolidSelectorHighlight.html',1,'']]],
   ['geometrysubshapeindex_16',['GeometrySubshapeIndex',['../structGeometrySubshapeIndex.html',1,'']]],
-  ['geometrytopologyeditor_17',['GeometryTopologyEditor',['../classGeometryTopologyEditor.html',1,'']]],
-  ['geometryvertexselectorhighlight_18',['GeometryVertexSelectorHighlight',['../classGeometryVertexSelectorHighlight.html',1,'']]]
+  ['geometrysummary_17',['GeometrySummary',['../structsession_1_1GeometrySummary.html',1,'session']]],
+  ['geometrytopologyeditor_18',['GeometryTopologyEditor',['../classGeometryTopologyEditor.html',1,'']]],
+  ['geometryvertexselectorhighlight_19',['GeometryVertexSelectorHighlight',['../classGeometryVertexSelectorHighlight.html',1,'']]]
 ];

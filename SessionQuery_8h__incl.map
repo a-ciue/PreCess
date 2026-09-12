@@ -1,0 +1,27 @@
+<map id="model/session/SessionQuery.h" name="model/session/SessionQuery.h">
+<area shape="rect" id="Node000001" title="会话层查询接口：模型层只读查询的原生（非 Qt）视图" alt="" coords="162,5,381,31"/>
+<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="145,152,209,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="264,32,230,80,192,141,188,139,225,77,260,29"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="173,225,223,251"/>
+<area shape="poly" id="edge11_Node000001_Node000004" title=" " alt="" coords="270,32,223,178,210,213,205,211,218,176,265,30"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="247,225,325,251"/>
+<area shape="poly" id="edge12_Node000001_Node000005" title=" " alt="" coords="275,31,287,211,282,211,269,31"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="349,225,407,251"/>
+<area shape="poly" id="edge14_Node000001_Node000006" title=" " alt="" coords="279,30,369,212,364,214,275,32"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="5,225,68,251"/>
+<area shape="poly" id="edge15_Node000001_Node000007" title=" " alt="" coords="193,33,108,53,73,66,52,80,35,111,29,147,29,182,33,212,28,212,24,182,24,146,30,110,48,77,71,61,106,48,192,28"/>
+<area shape="rect" id="Node000008" href="$GeometryDataVtk_8h.html" title=" " alt="" coords="385,79,537,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="303,28,418,71,416,76,301,33"/>
+<area shape="rect" id="Node000009" href="$Selection_8h.html" title=" " alt="" coords="63,79,157,104"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="246,33,150,75,148,71,244,28"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="561,79,635,104"/>
+<area shape="poly" id="edge13_Node000001_Node000010" title=" " alt="" coords="326,28,548,76,547,81,325,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="93,225,149,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="170,179,140,216,136,213,165,176"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="183,177,193,211,188,213,178,178"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="196,175,258,215,255,220,193,180"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="210,175,337,219,335,224,208,180"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="155,180,73,221,70,217,153,175"/>
+<area shape="poly" id="edge10_Node000009_Node000002" title=" " alt="" coords="123,103,158,140,155,144,119,106"/>
+<area shape="poly" id="edge9_Node000009_Node000007" title=" " alt="" coords="106,106,51,214,46,212,102,103"/>
+</map>

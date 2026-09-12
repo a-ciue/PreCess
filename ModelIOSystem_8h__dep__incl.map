@@ -1,13 +1,15 @@
 <map id="model/systems/io/ModelIOSystem.h" name="model/systems/io/ModelIOSystem.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="453,5,711,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="571,5,828,31"/>
 <area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,86,233,111"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="502,36,187,89,186,83,501,30"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="596,35,246,81,195,89,195,83,246,76,595,30"/>
 <area shape="rect" id="Node000003" href="$QModelIOSystemAdaptor_8cpp.html" title=" " alt="" coords="258,79,474,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="539,38,419,81,417,76,537,33"/>
-<area shape="rect" id="Node000004" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="499,79,665,119"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="585,44,585,79,579,79,579,44"/>
-<area shape="rect" id="Node000005" href="$ModelIOSystem_8cpp.html" title=" " alt="" coords="690,86,962,111"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="632,32,791,83,790,89,630,37"/>
-<area shape="rect" id="Node000006" href="$ModelIOSystemRegister_8cpp.html" title=" " alt="" coords="986,79,1231,119"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="672,30,986,76,985,82,672,35"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="638,36,447,81,446,76,637,31"/>
+<area shape="rect" id="Node000004" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="498,86,695,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="675,41,613,88,610,84,671,37"/>
+<area shape="rect" id="Node000005" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="720,79,887,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="727,37,780,76,777,81,724,41"/>
+<area shape="rect" id="Node000006" href="$ModelIOSystem_8cpp.html" title=" " alt="" coords="911,86,1183,111"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="764,31,997,83,996,89,763,36"/>
+<area shape="rect" id="Node000007" href="$ModelIOSystemRegister_8cpp.html" title=" " alt="" coords="1207,79,1453,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="813,30,1196,76,1207,78,1207,83,1195,81,813,35"/>
 </map>

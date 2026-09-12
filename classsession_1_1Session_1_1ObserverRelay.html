@@ -1,0 +1,473 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: session::Session::ObserverRelay类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesession.html">session</a></li><li class="navelem"><a href="classsession_1_1Session.html">Session</a></li><li class="navelem"><a href="classsession_1_1Session_1_1ObserverRelay.html">ObserverRelay</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classsession_1_1Session_1_1ObserverRelay-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">session::Session::ObserverRelay类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>内部转发观察者：宿主观察者（可为 nullptr）照常收到模型层通知， 同时把通知桥接为 ModelEvent 发布到事件总线（与原 app 层 Qt connect 等价）  
+ <a href="#details">更多...</a></p>
+<div class="dynheader">
+类 session::Session::ObserverRelay 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsession_1_1Session_1_1ObserverRelay__inherit__graph.png" border="0" usemap="#asession_1_1Session_1_1ObserverRelay_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="asession_1_1Session_1_1ObserverRelay_inherit__map" id="asession_1_1Session_1_1ObserverRelay_inherit__map">
+<area shape="rect" title="内部转发观察者：宿主观察者（可为 nullptr）照常收到模型层通知， 同时把通知桥接为 ModelEvent 发布到事件总线（与原 app 层 Qt connect 等价）" alt="" coords="5,79,201,119"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="43,5,164,31"/>
+<area shape="poly" title=" " alt="" coords="106,44,106,79,101,79,101,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+session::Session::ObserverRelay 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsession_1_1Session_1_1ObserverRelay__coll__graph.png" border="0" usemap="#asession_1_1Session_1_1ObserverRelay_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asession_1_1Session_1_1ObserverRelay_coll__map" id="asession_1_1Session_1_1ObserverRelay_coll__map">
+<area shape="rect" title="内部转发观察者：宿主观察者（可为 nullptr）照常收到模型层通知， 同时把通知桥接为 ModelEvent 发布到事件总线（与原 app 层 Qt connect 等价）" alt="" coords="1275,19,1471,59"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="1061,5,1183,31"/>
+<area shape="poly" title=" " alt="" coords="1196,13,1207,13,1251,13,1281,17,1280,22,1250,18,1207,18,1196,18"/>
+<area shape="poly" title=" " alt="" coords="1171,32,1207,41,1274,45,1274,50,1206,46,1169,37"/>
+<area shape="rect" href="classcore_1_1EventBus.html" title="类型安全的轻量级事件总线，以事件类型为键分发事件" alt="" coords="1063,80,1181,105"/>
+<area shape="poly" title=" " alt="" coords="1195,82,1250,73,1310,57,1311,62,1251,78,1195,88"/>
+<area shape="rect" title=" " alt="" coords="689,18,924,87"/>
+<area shape="poly" title=" " alt="" coords="938,67,1063,83,1062,88,937,72"/>
+<area shape="rect" title=" " alt="" coords="309,33,572,73"/>
+<area shape="poly" title=" " alt="" coords="586,50,689,50,689,55,586,55"/>
+<area shape="rect" title=" " alt="" coords="5,33,192,73"/>
+<area shape="poly" title=" " alt="" coords="206,50,309,50,309,55,206,55"/>
+<area shape="rect" title=" " alt="" coords="704,111,909,151"/>
+<area shape="poly" title=" " alt="" coords="922,122,1037,109,1068,103,1069,108,1038,114,923,127"/>
+<area shape="rect" href="structcore_1_1EventBus_1_1LifetimeToken.html" title=" " alt="" coords="350,111,531,151"/>
+<area shape="poly" title=" " alt="" coords="545,129,703,129,703,134,545,134"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a25f97eac843e1d68841bed1cd633b177" id="r_a25f97eac843e1d68841bed1cd633b177"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25f97eac843e1d68841bed1cd633b177">ObserverRelay</a> (<a class="el" href="classModelObserver.html">ModelObserver</a> *user, <a class="el" href="classcore_1_1EventBus.html">core::EventBus</a> &amp;bus)</td></tr>
+<tr class="memitem:a1b6b037bf068a4bf74a96293cd9d642d" id="r_a1b6b037bf068a4bf74a96293cd9d642d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b6b037bf068a4bf74a96293cd9d642d">notifyModelAdded</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) override</td></tr>
+<tr class="memdesc:a1b6b037bf068a4bf74a96293cd9d642d"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被添加的通知函数  <br /></td></tr>
+<tr class="memitem:a0b7129ea96e906d4820e424ef1430b25" id="r_a0b7129ea96e906d4820e424ef1430b25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b7129ea96e906d4820e424ef1430b25">notifyModelRemoved</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) override</td></tr>
+<tr class="memdesc:a0b7129ea96e906d4820e424ef1430b25"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型被移除的通知函数  <br /></td></tr>
+<tr class="memitem:a169faa99a4236baff655acc43acb3855" id="r_a169faa99a4236baff655acc43acb3855"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a169faa99a4236baff655acc43acb3855">notifyModelChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) override</td></tr>
+<tr class="memdesc:a169faa99a4236baff655acc43acb3855"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型数据变更的通知函数  <br /></td></tr>
+<tr class="memitem:a3d7a8e7393a1b69cdf8397ed85bf59ad" id="r_a3d7a8e7393a1b69cdf8397ed85bf59ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3d7a8e7393a1b69cdf8397ed85bf59ad">notifyModelNameChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id, const std::string &amp;new_name) override</td></tr>
+<tr class="memdesc:a3d7a8e7393a1b69cdf8397ed85bf59ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收模型名称变更的通知函数  <br /></td></tr>
+<tr class="memitem:a24cd498cf1498f8d36b0c2cfd51ee832" id="r_a24cd498cf1498f8d36b0c2cfd51ee832"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24cd498cf1498f8d36b0c2cfd51ee832">notifyComponentChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) override</td></tr>
+<tr class="memitem:ab799a07a0f7b8e38926e5d065c0f71cf" id="r_ab799a07a0f7b8e38926e5d065c0f71cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab799a07a0f7b8e38926e5d065c0f71cf">notifyComponentRemoved</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) override</td></tr>
+<tr class="memitem:aa1c9481864e3c719fe0345e817a7dab4" id="r_aa1c9481864e3c719fe0345e817a7dab4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1c9481864e3c719fe0345e817a7dab4">notifyGeometryLoadFailed</a> (const std::string &amp;message) override</td></tr>
+<tr class="memdesc:aa1c9481864e3c719fe0345e817a7dab4"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收几何曲线加载失败的通知函数  <br /></td></tr>
+<tr class="inherit_header pub_methods_classModelObserver"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classModelObserver')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classModelObserver.html">ModelObserver</a></td></tr>
+<tr class="memitem:ab87bc0098d28fb53f4d2d38f8a2e991e inherit pub_methods_classModelObserver" id="r_ab87bc0098d28fb53f4d2d38f8a2e991e"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModelObserver.html#ab87bc0098d28fb53f4d2d38f8a2e991e">~ModelObserver</a> ()=default</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a46899841927eafce300cbceeba250d00" id="r_a46899841927eafce300cbceeba250d00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelObserver.html">ModelObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46899841927eafce300cbceeba250d00">user_</a></td></tr>
+<tr class="memitem:a9431263a2e4019993f2494db7e3d6b79" id="r_a9431263a2e4019993f2494db7e3d6b79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9431263a2e4019993f2494db7e3d6b79">bus_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>内部转发观察者：宿主观察者（可为 nullptr）照常收到模型层通知， 同时把通知桥接为 ModelEvent 发布到事件总线（与原 app 层 Qt connect 等价） </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a25f97eac843e1d68841bed1cd633b177" name="a25f97eac843e1d68841bed1cd633b177"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25f97eac843e1d68841bed1cd633b177">&#9670;&#160;</a></span>ObserverRelay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">session::Session::ObserverRelay::ObserverRelay </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classModelObserver.html">ModelObserver</a> *</td>          <td class="paramname"><span class="paramname"><em>user</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>bus</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a24cd498cf1498f8d36b0c2cfd51ee832" name="a24cd498cf1498f8d36b0c2cfd51ee832"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24cd498cf1498f8d36b0c2cfd51ee832">&#9670;&#160;</a></span>notifyComponentChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void session::Session::ObserverRelay::notifyComponentChanged </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>实现了 <a class="el" href="classModelObserver.html#aef488fa50bd0c7136c7a6f873bb4b38d">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="ab799a07a0f7b8e38926e5d065c0f71cf" name="ab799a07a0f7b8e38926e5d065c0f71cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab799a07a0f7b8e38926e5d065c0f71cf">&#9670;&#160;</a></span>notifyComponentRemoved()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void session::Session::ObserverRelay::notifyComponentRemoved </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>实现了 <a class="el" href="classModelObserver.html#a0eebd49986dbc508b292d04e16a634b1">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="aa1c9481864e3c719fe0345e817a7dab4" name="aa1c9481864e3c719fe0345e817a7dab4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1c9481864e3c719fe0345e817a7dab4">&#9670;&#160;</a></span>notifyGeometryLoadFailed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void session::Session::ObserverRelay::notifyGeometryLoadFailed </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收几何曲线加载失败的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">message</td><td>失败信息</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在几何曲线加载失败时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#ab3e5c3b0e3b27393370a37bae6b41d69">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="a1b6b037bf068a4bf74a96293cd9d642d" name="a1b6b037bf068a4bf74a96293cd9d642d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b6b037bf068a4bf74a96293cd9d642d">&#9670;&#160;</a></span>notifyModelAdded()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void session::Session::ObserverRelay::notifyModelAdded </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型被添加的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>新添加的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型被导入到软件中时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#a90a2ab815ca62393d808bb457063756f">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="a169faa99a4236baff655acc43acb3855" name="a169faa99a4236baff655acc43acb3855"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a169faa99a4236baff655acc43acb3855">&#9670;&#160;</a></span>notifyModelChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void session::Session::ObserverRelay::notifyModelChanged </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型数据变更的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>发生变化的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该槽函数由模型层在模型数据发生更改时调用，以便触发相应的信号通知。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#af70f9df2aca91d6cca529f6e628df87d">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="a3d7a8e7393a1b69cdf8397ed85bf59ad" name="a3d7a8e7393a1b69cdf8397ed85bf59ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d7a8e7393a1b69cdf8397ed85bf59ad">&#9670;&#160;</a></span>notifyModelNameChanged()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void session::Session::ObserverRelay::notifyModelNameChanged </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>new_name</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型名称变更的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>模型 ID </td></tr>
+    <tr><td class="paramname">new_name</td><td>新模型名称</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型名称发生变化时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#a50ab34f21b3d15aa55e765b86a4c365c">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a id="a0b7129ea96e906d4820e424ef1430b25" name="a0b7129ea96e906d4820e424ef1430b25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b7129ea96e906d4820e424ef1430b25">&#9670;&#160;</a></span>notifyModelRemoved()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void session::Session::ObserverRelay::notifyModelRemoved </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>接收模型被移除的通知函数 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model_id</td><td>移除的模型 ID</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>该通知函数用于在模型被从软件中移除时发出信号，通知外部组件。 </p>
+
+<p>实现了 <a class="el" href="classModelObserver.html#adaa628f9822c6c8250117917d8a52d4e">ModelObserver</a>.</p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a9431263a2e4019993f2494db7e3d6b79" name="a9431263a2e4019993f2494db7e3d6b79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9431263a2e4019993f2494db7e3d6b79">&#9670;&#160;</a></span>bus_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcore_1_1EventBus.html">core::EventBus</a>&amp; session::Session::ObserverRelay::bus_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a46899841927eafce300cbceeba250d00" name="a46899841927eafce300cbceeba250d00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46899841927eafce300cbceeba250d00">&#9670;&#160;</a></span>user_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelObserver.html">ModelObserver</a>* session::Session::ObserverRelay::user_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/session/<a class="el" href="Session_8cpp.html">Session.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
