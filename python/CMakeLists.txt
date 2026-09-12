@@ -57,7 +57,7 @@ if (NOT pybind11_FOUND)
     )
 endif()
 
-pybind11_add_module(precess src/precess_module.cpp)
+pybind11_add_module(precess precess_module.cpp)
 target_link_libraries(precess PRIVATE
     Session
 )
@@ -66,7 +66,7 @@ target_link_libraries(precess PRIVATE
 # 控制台执行。wasm 不构建（Embed 缺失时整个 python 目录已提前跳过）
 if(Python3_Development.Embed_FOUND AND NOT EMSCRIPTEN)
     add_library(precess_runtime STATIC)
-    target_sources(precess_runtime PRIVATE src/runtime.cpp)
+    target_sources(precess_runtime PRIVATE runtime.cpp)
     target_include_directories(precess_runtime PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
     target_link_libraries(precess_runtime
         PUBLIC Session

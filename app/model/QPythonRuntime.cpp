@@ -11,7 +11,7 @@
 
 #ifdef PRECESS_EMBED_PYTHON
 
-#include <python/runtime.h>
+#include "python/runtime.h"
 
 #include <QCoreApplication>
 #include <QThread>
