@@ -12,6 +12,8 @@
 
 #include "Session.h"
 
+#include <spdlog/spdlog.h>
+
 #include <utility>
 
 namespace py = pybind11;
@@ -99,6 +101,58 @@ void Runtime::initialize()
             + e.what()
             + "\n（请确认构建已生成 precess 扩展模块，且位于 module_dirs 候选目录之一）";
         state_->precess_module = py::object();
+        return;
+    }
+
+    // 3) 控制台辅助注入（失败仅记日志，不影响运行时可用性）：控制台输入行是
+    //    纯 Python、无界面级命令，help/clear/exit 以 Python 函数覆盖 site 默认——
+    //    pydoc 的交互模式依赖 stdin，嵌入环境没有可交互 stdin（help() 会以
+    //    "lost sys.stdin" 崩出），裸 help 的 "Type help()..." 提示语也会误导用户；
+    //    clear() 经输出换页符 \f、由界面识别清屏
+    try {
+        py::exec(R"PY(
+def _console_guide():
+    return (
+        "PreCess Python 控制台:\n"
+        "- 输入即 Python，回车执行；def/for/if 未完时提示 ... 续行，Esc 放弃\n"
+        "- import precess 后 precess.current 即当前 GUI 会话\n"
+        "- 查询: precess.current.query.list_models()\n"
+        "- 功能: precess.current.call('CreateBox', 0, 0, 0, 5, 5, 5, 2)\n"
+        "- 自省: precess.current.feature_params('CreateBox')\n"
+        "- 撤销/重做: precess.current.undo_stack.undo() / redo()\n"
+        "- clear() 清空窗口；help(对象) 查看文档（如 help(str)）\n"
+        "- exit()/quit() 仅作提示，GUI 程序请直接关闭窗口退出")
+
+class _ConsoleHelp:
+    def __call__(self, *args):
+        import pydoc
+        if args:
+            pydoc.doc(*args)
+        else:
+            print(_console_guide())
+
+    def __repr__(self):
+        return _console_guide()
+
+class _ConsoleExit:
+    def __call__(self):
+        print("PreCess 是 GUI 程序，请直接关闭窗口退出")
+
+    def __repr__(self):
+        return "PreCess 是 GUI 程序，请直接关闭窗口退出"
+
+def _console_clear():
+    import sys
+    sys.stdout.write('\f')
+
+help = _ConsoleHelp()
+exit = quit = _ConsoleExit()
+clear = _console_clear
+del _ConsoleHelp, _ConsoleExit, _console_clear
+)PY",
+            py::module_::import("__main__").attr("__dict__"));
+    } catch (const py::error_already_set& e) {
+        spdlog::error("python::Runtime: 控制台辅助注入失败: {}", e.what());
     }
 }
 

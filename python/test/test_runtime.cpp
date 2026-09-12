@@ -64,6 +64,15 @@ TEST_CASE("precess Runtime hosts embedded interpreter", "[python][runtime]")
     REQUIRE(result.ok);
     CHECK(result.output.find("42") != std::string::npos);
 
+    // —— 控制台辅助注入：help/clear 覆盖 site 默认（pydoc 交互模式依赖
+    //    stdin，嵌入环境会以 lost sys.stdin 崩出）。回归宿主下沉时丢失注入 ——
+    result = runtime.execute("help");
+    REQUIRE(result.ok);
+    CHECK(result.output.find("PreCess Python 控制台") != std::string::npos);
+    result = runtime.execute("clear()");
+    REQUIRE(result.ok);
+    CHECK(result.output.find('\f') != std::string::npos);
+
     // —— 活会话调用：precess.current 即构造时注入的 session ——
     const std::filesystem::path plugin_dir(PRECESS_PLUGIN_DIR);
     if (std::filesystem::is_directory(plugin_dir)) {

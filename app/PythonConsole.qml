@@ -62,6 +62,36 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
+            spacing: 4
+
+            Button {
+                text: "帮助"
+                flat: true
+                onClicked: {
+                    // 与输入 help() 等价：以命令形式执行，展示交互方式
+                    inputField.text = "help()"
+                    submitInput()
+                    inputField.forceActiveFocus()
+                }
+            }
+
+            Button {
+                text: "清空窗口"
+                flat: true
+                onClicked: {
+                    outputText.text = ""
+                    pyConsole.buffer = ""
+                    promptText.text = ">"
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
             spacing: 8
 
             Text {
@@ -109,16 +139,6 @@ Item {
             }
 
             Button {
-                text: "帮助"
-                onClicked: {
-                    // 与输入 help() 等价：以命令形式执行，展示交互方式
-                    inputField.text = "help()"
-                    submitInput()
-                    inputField.forceActiveFocus()
-                }
-            }
-
-            Button {
                 text: "执行"
                 highlighted: true
                 onClicked: {
@@ -126,15 +146,6 @@ Item {
                         submitInput()
                         inputField.forceActiveFocus()
                     }
-                }
-            }
-
-            Button {
-                text: "清空窗口"
-                onClicked: {
-                    outputText.text = ""
-                    pyConsole.buffer = ""
-                    promptText.text = ">"
                 }
             }
         }

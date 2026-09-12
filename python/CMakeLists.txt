@@ -70,7 +70,7 @@ if(Python3_Development.Embed_FOUND AND NOT EMSCRIPTEN)
     target_include_directories(precess_runtime PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
     target_link_libraries(precess_runtime
         PUBLIC Session
-        PRIVATE pybind11::embed
+        PRIVATE pybind11::embed spdlog::spdlog
     )
 endif()
 
