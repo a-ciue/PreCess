@@ -3,6 +3,8 @@
 #include "MeshActor.h"
 #include "MeshActorSelectOp.h"
 #include "SelectorHighlight.h"
+#include "renderStrategy/AttributeOperator.h"
+#include "renderStrategy/AttriRenderStrategyScalar.h"
 #include <catch2/catch_test_macros.hpp>
 #include <vtkNew.h>
 #include <vtkPartitionedDataSet.h>
@@ -59,6 +61,24 @@ std::size_t partitionCellCount(vtkPartitionedDataSet& highlight_data)
 }
 
 } // namespace
+
+TEST_CASE("Canceling attribute rendering clears active mesh scalars")
+{
+    OffscreenMesh env;
+    AttributeOperator op(env.actor.get());
+    AttriRenderStrategyScalar strategy;
+
+    // 模拟网格质量渲染留下的面、体 active scalar。
+    REQUIRE(op.getFaceCellData()->SetActiveScalars("PrecessFaceIds") >= 0);
+    REQUIRE(op.getSolidCellData()->SetActiveScalars("vtkOriginalCellIds") >= 0);
+    REQUIRE(op.getFaceCellData()->GetScalars() != nullptr);
+    REQUIRE(op.getSolidCellData()->GetScalars() != nullptr);
+
+    strategy.cancelActiveAttribute(op);
+
+    REQUIRE(op.getFaceCellData()->GetScalars() == nullptr);
+    REQUIRE(op.getSolidCellData()->GetScalars() == nullptr);
+}
 
 TEST_CASE("FaceSelectorHighlight clears highlight when last face is deselected")
 {

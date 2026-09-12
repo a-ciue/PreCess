@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
 import argparse
 import os
 import platform
@@ -191,10 +192,16 @@ class DependenciesSettings:
     @property
     def prefix_paths(self) -> str:
         prefixes = [str(self.install_dir)]
-        # 交叉编译时 --qt 指向宿主平台 Qt，不能混入目标平台的查找路径。
-        if self.qt_path is not None and not self.is_cross:
-            prefixes.append(str(self.qt_path))
-        return os.pathsep.join(prefixes)
+        if not self.is_cross:
+            # Qt 的包配置在 install_dir 的 Qt6.8.3 子目录下；依赖根目录本身
+            # 命不中 find_package，且本机若装有系统 Qt6 会混用两套 Qt 配置，
+            # 故显式把 Qt 安装目录加入查找前缀。
+            if self.qt_path is not None:
+                prefixes.append(str(self.qt_path))
+            else:
+                prefixes.append(str(self.install_dir / "Qt6.8.3"))
+        # CMake 列表分隔符是 ";"，不能用 os.pathsep（Linux 下为 ":" 会被当成单一路径）
+        return ";".join(prefixes)
 
     def build_directory(self, source: Path) -> Path:
         """源码树内的构建目录；交叉平台与宿主构建互不污染。"""
@@ -389,6 +396,7 @@ def download_file(url: str, destination: Path) -> None:
 def download_archives(settings: DependenciesSettings) -> None:
     downloads = [
         (
+            # OCCT 的 Windows 预编译第三方库（freetype 等），仅 windows 原生构建需要。
             "https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip",
             settings.source_dir / "OCCT" / "3rdparty-vc14-64-temp.zip",
         ),
@@ -401,6 +409,8 @@ def download_archives(settings: DependenciesSettings) -> None:
             settings.source_dir / "boost-1.91.0-1-cmake.tar.xz",
         ),
     ]
+    if settings.platform.system != "windows":
+        downloads = downloads[1:]
     for url, destination in downloads:
         download_file(url, destination)
 
@@ -454,18 +464,21 @@ def extract_boost_archive(archive: Path, destination: Path) -> None:
             archive_file.extractall(destination, members=stripped_members)
 
 def prepare_archives(settings: DependenciesSettings) -> None:
-    occt_source = settings.source_dir / "OCCT"
-    third_party_dir = occt_source / "3rdparty-vc14-64"
-    outer_archive = occt_source / "3rdparty-vc14-64-temp.zip"
-    inner_archive = occt_source / "3rdparty-vc14-64.zip"
-    if not third_party_dir.exists():
-        if not inner_archive.exists():
-            extract_zip(outer_archive, occt_source)
-        if not inner_archive.exists():
-            raise DependencyError("OCCT 第三方压缩包中缺少 3rdparty-vc14-64.zip")
-        extract_zip(inner_archive, occt_source)
-    else:
-        print(f"[跳过] 已解压：{third_party_dir}")
+    # OCCT 的 vc14 第三方包与解压仅 windows 原生构建需要；Linux 下 freetype
+    # 由本项目 freetype2.14.1 安装提供，其余第三方组件默认关闭。
+    if settings.platform.system == "windows":
+        occt_source = settings.source_dir / "OCCT"
+        third_party_dir = occt_source / "3rdparty-vc14-64"
+        outer_archive = occt_source / "3rdparty-vc14-64-temp.zip"
+        inner_archive = occt_source / "3rdparty-vc14-64.zip"
+        if not third_party_dir.exists():
+            if not inner_archive.exists():
+                extract_zip(outer_archive, occt_source)
+            if not inner_archive.exists():
+                raise DependencyError("OCCT 第三方压缩包中缺少 3rdparty-vc14-64.zip")
+            extract_zip(inner_archive, occt_source)
+        else:
+            print(f"[跳过] 已解压：{third_party_dir}")
 
     # CGAL 为纯头文件库，按平台各解压一份，保证 CMAKE_PREFIX_PATH 指向平台目录即可发现。
     cgal_destination = settings.install_dir / "CGAL-6.2"
@@ -525,6 +538,9 @@ def configure_cmake_project(
             build_directory,
             "-G",
             "Ninja Multi-Config",
+            # CMake 4 起移除了对 <3.5 的兼容；个别依赖（tetgen 自生成工程等）
+            # 声明的最低版本过低，统一放开下限。
+            "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
             *(
                 toolchain_arguments(settings) if use_toolchain else []
             ),
@@ -580,6 +596,11 @@ def build_qt(settings: DependenciesSettings) -> None:
         print(f"[跳过] 使用外部 Qt：{settings.qt_path}")
         return
 
+    installed_qmake = settings.install_dir / "Qt6.8.3" / "bin" / "qmake"
+    if installed_qmake.exists():
+        print(f"[跳过] Qt 已安装：{installed_qmake.parent.parent}")
+        return
+
     source = settings.source_dir / "qt5"
     build_directory = settings.build_directory(source)
     build_directory.mkdir(exist_ok=True)
@@ -587,6 +608,13 @@ def build_qt(settings: DependenciesSettings) -> None:
     qt_config = "-debug-and-release"
     if not settings.build_release and not settings.build_relwithdebinfo:
         qt_config = "-debug"
+    if settings.platform.system == "macos":
+        # macOS 惯例为 release-only Qt（Homebrew 同款）：debug-and-release 会在框架与
+        # 插件目录同时存在 QtCore_debug 与 QtCore 两套二进制，QFactoryLoader 对同 key
+        # 插件的变体仲裁在版本相同时保留先扫到的 release 项（目录名序 .dylib 在
+        # _debug.dylib 之前），Debug 应用启动即混入两套 Qt 而 moveToThread 崩溃；
+        # 各配置的应用统一链 release Qt 是 macOS 的标准形态。
+        qt_config = "-release"
     configure_script_name = (
         "configure.bat" if settings.host.system == "windows" else "configure"
     )
@@ -600,6 +628,9 @@ def build_qt(settings: DependenciesSettings) -> None:
         settings.install_dir / "Qt6.8.3",
         "CMAKE_INSTALL_MESSAGE=LAZY",
     ]
+    if settings.platform.system == "macos":
+        # Xcode clang 默认对部分 Qt 源码警告启用 -Werror，随 SDK 版本波动易误伤，关闭。
+        qt_arguments.append("-no-warnings-are-errors")
     if not qt_submodules_initialized(source):
         qt_arguments.insert(0, "-init-submodules")
     run([configure_script, *qt_arguments], build_directory)
@@ -656,11 +687,15 @@ def build_vtk(settings: DependenciesSettings) -> None:
 def build_freetype(settings: DependenciesSettings) -> None:
     source = settings.source_dir / "freetype"
     build_directory = settings.build_directory(source)
+    definitions = [("-DCMAKE_PREFIX_PATH:PATH", settings.prefix_paths)]
+    if settings.platform.system != "windows":
+        # Linux/macOS 下 OCCT 默认以共享库构建，要求第三方库同为共享形态。
+        definitions.append(("-DBUILD_SHARED_LIBS", "ON"))
     configure_cmake_project(
         source,
         build_directory,
         settings.install_dir / "freetype2.14.1",
-        [("-DCMAKE_PREFIX_PATH:PATH", settings.prefix_paths)],
+        definitions,
         settings,
     )
     install_configs(("Release", "Debug"), build_directory)
@@ -668,26 +703,40 @@ def build_freetype(settings: DependenciesSettings) -> None:
 def build_occt(settings: DependenciesSettings) -> None:
     source = settings.source_dir / "OCCT"
     build_directory = settings.build_directory(source)
+    definitions = [
+        ("-DINSTALL_DIR:PATH", settings.install_dir / "OpenCASCADE8.0.0"),
+        (
+            "-D3RDPARTY_FREETYPE_DIR:PATH",
+            settings.install_dir / "freetype2.14.1",
+        ),
+        ("-DUSE_VTK:BOOL", "1"),
+        (
+            "-D3RDPARTY_VTK_DIR:PATH",
+            settings.install_dir / "VTK9.6.2",
+        ),
+    ]
+    if settings.platform.system == "windows":
+        definitions.append(
+            (
+                "-D3RDPARTY_DIR:PATH",
+                source / "3rdparty-vc14-64",
+            )
+        )
+    else:
+        # Linux/macOS 无 vc14 预编译第三方包：freetype 用本项目安装版本，
+        # Tcl/Tk（仅 DRAW 使用）与 FreeImage/FFMPEG 等可选组件关闭。
+        definitions += [
+            ("-DUSE_TCL:BOOL", "OFF"),
+            ("-DUSE_TK:BOOL", "OFF"),
+            ("-DBUILD_MODULE_Draw:BOOL", "OFF"),
+            ("-DUSE_FREEIMAGE:BOOL", "OFF"),
+            ("-DUSE_FFMPEG:BOOL", "OFF"),
+        ]
     configure_cmake_project(
         source,
         build_directory,
         settings.install_dir / "OpenCASCADE8.0.0",
-        [
-            ("-DINSTALL_DIR:PATH", settings.install_dir / "OpenCASCADE8.0.0"),
-            (
-                "-D3RDPARTY_DIR:PATH",
-                source / "3rdparty-vc14-64",
-            ),
-            (
-                "-D3RDPARTY_FREETYPE_DIR:PATH",
-                settings.install_dir / "freetype2.14.1",
-            ),
-            ("-DUSE_VTK:BOOL", "1"),
-            (
-                "-D3RDPARTY_VTK_DIR:PATH",
-                settings.install_dir / "VTK9.6.2",
-            ),
-        ],
+        definitions,
         settings,
     )
     install_configs(settings.install_configs, build_directory)
@@ -725,9 +774,20 @@ def build_libmeshb(settings: DependenciesSettings) -> None:
         source,
         build_directory,
         settings.install_dir / "libMeshb7.80",
-        [("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i")],
+        [
+            ("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i"),
+            # Fortran 封装为可选组件，禁用以免依赖 gfortran；同时必须给
+            # Fortran 模块目录非空值，否则其 install(DIRECTORY <空>/) 会把
+            # 根目录整个安装进 include。
+            ("-DCMAKE_Fortran_COMPILER:STRING", "OFF"),
+            ("-DCMAKE_Fortran_MODULE_DIRECTORY:PATH", build_directory / "fmod"),
+            # libMeshb 是静态库且会被链入本项目的动态插件库（.so/.dylib），须 PIC。
+            ("-DCMAKE_POSITION_INDEPENDENT_CODE", "ON"),
+        ],
         settings,
     )
+    # Fortran 被禁用时该目录不会生成，而其 install 规则要求它存在。
+    (build_directory / "fmod").mkdir(parents=True, exist_ok=True)
     install_configs(settings.install_configs, build_directory)
 
 def prepare_tetgen_project(source: Path) -> None:
@@ -735,6 +795,8 @@ def prepare_tetgen_project(source: Path) -> None:
         [
             "cmake_minimum_required(VERSION 3.5)",
             "project(tetgen CXX)",
+            # tet 静态库会被链入本项目的动态插件库（.so/.dylib），须 PIC。
+            "set(CMAKE_POSITION_INDEPENDENT_CODE ON)",
             "add_library(tet STATIC tetgen.cxx predicates.cxx)",
             "target_compile_definitions(tet PUBLIC TETLIBRARY)",
             "target_include_directories(tet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})",
@@ -771,12 +833,53 @@ def occ_import_libraries(settings: DependenciesSettings) -> str:
         for library in OCC_TOOLKIT_LIBRARIES
     )
 
+# 非 Windows 原生平台下 gmsh 链接 OCCT 共享库时各配置候选的优先顺序：
+# RelWithDebInfo（i 后缀）、Release（无后缀）、Debug（d 后缀），
+# 与 Windows 侧统一指向 libi 的取舍一致。
+OCC_SHARED_LIBRARY_SUFFIX_PRIORITY = {
+    "linux": ("i.so", ".so", "d.so"),
+    "macos": ("i.dylib", ".dylib", "d.dylib"),
+}
+
+def occ_shared_library_candidates(cas_root: Path, library: str, suffix: str) -> list[Path]:
+    """按单一配置后缀收集某工具箱的共享库候选。
+
+    macOS 的版本化命名（如 libTKerneli.8.0.0.dylib）后缀位于版本号之前，
+    须同时按「后缀在前」与「后缀收尾」两种形态匹配。"""
+
+    candidates: set[Path] = set()
+    for pattern in (f"**/lib{library}{suffix}*", f"**/lib{library}*{suffix}"):
+        candidates.update(cas_root.glob(pattern))
+    return sorted(candidates)
+
+def occ_shared_libraries(settings: DependenciesSettings) -> str:
+    """Linux/macOS 下逐工具箱定位 OCCT 共享库（libTKxxx*.so/.dylib），按配置后缀优先级取第一个命中。"""
+    cas_root = settings.install_dir / "OpenCASCADE8.0.0"
+    suffix_priority = OCC_SHARED_LIBRARY_SUFFIX_PRIORITY[settings.platform.system]
+    library_paths = []
+    for library in OCC_TOOLKIT_LIBRARIES:
+        for suffix in suffix_priority:
+            candidates = occ_shared_library_candidates(cas_root, library, suffix)
+            if candidates:
+                library_paths.append(candidates[0].as_posix())
+                break
+        else:
+            raise DependencyError(
+                f"未找到 OpenCASCADE 共享库：{cas_root} 下的 lib{library}{suffix_priority[1]}"
+            )
+    return ";".join(library_paths)
+
 def build_gmsh(settings: DependenciesSettings) -> None:
     source = settings.source_dir / "gmsh-occ8"
     build_directory = settings.build_directory(source)
     # Gmsh 只认 CASROOT 环境变量探测 OpenCASCADE（find_path HINTS ENV CASROOT），
     # 不消费任何 OCC_INCLUDE_DIR 定义；探测失败时静默关闭 HAVE_OCC，只编译桩实现。
     environment = {**os.environ, "CASROOT": str(settings.install_dir / "OpenCASCADE8.0.0")}
+    occ_libraries = (
+        occ_import_libraries(settings)
+        if settings.platform.system == "windows"
+        else occ_shared_libraries(settings)
+    )
     configure_cmake_project(
         source,
         build_directory,
@@ -786,7 +889,7 @@ def build_gmsh(settings: DependenciesSettings) -> None:
             ("-DCMAKE_DEBUG_POSTFIX:STRING", "d"),
             ("-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING", "i"),
             ("-DENABLE_OCC:BOOL", "ON"),
-            ("-DOCC_LIBS:STRING", occ_import_libraries(settings)),
+            ("-DOCC_LIBS:STRING", occ_libraries),
             ("-DENABLE_OPENMP:BOOL", "OFF"),
             ("-DBUILD_TESTING:BOOL", "OFF"),
             ("-DENABLE_BUILD_DYNAMIC:BOOL", "OFF"),
@@ -847,22 +950,30 @@ def build_boost(settings: DependenciesSettings) -> None:
 def build_native(settings: DependenciesSettings) -> None:
     """构建原生（非 wasm）平台的依赖。"""
 
-    if settings.platform.system != "windows":
+    if settings.platform.system not in ("windows", "linux", "macos"):
         raise DependencyError(
             f"{settings.platform.name} 原生依赖构建配方尚未适配，"
-            "当前支持 windows 原生构建与 wasm 交叉构建"
+            "当前支持 windows/linux/macos 原生构建与 wasm 交叉构建"
         )
     if settings.is_cross and settings.toolchain_path is None:
         raise DependencyError(
             f"在 {settings.host.name} 宿主上构建 {settings.platform.name} "
             "需要 --toolchain 指定交叉编译工具链文件"
         )
-    if shutil.which("cl.exe") is None:
-        raise DependencyError("未找到 cl.exe，请在 Visual Studio x64 构建环境中运行")
     if shutil.which("cmake") is None:
         raise DependencyError("未找到 cmake，请先将其加入 PATH")
     if shutil.which("ninja") is None:
         raise DependencyError("未找到 ninja，请先将其加入 PATH")
+    if settings.platform.system == "windows":
+        if shutil.which("cl.exe") is None:
+            raise DependencyError("未找到 cl.exe，请在 Visual Studio x64 构建环境中运行")
+    elif settings.platform.system == "macos":
+        if shutil.which("clang++") is None:
+            raise DependencyError(
+                "未找到 clang++，请先安装 Xcode Command Line Tools（xcode-select --install）"
+            )
+    elif shutil.which("g++") is None:
+        raise DependencyError("未找到 g++，请先安装 GCC 并将其加入 PATH")
 
     print(f"[阶段] 构建原生依赖 -> {settings.install_dir}")
     build_qt(settings)
@@ -1077,6 +1188,29 @@ def patch_occt_wasm_convert_signals(settings: DependenciesSettings) -> None:
     target_file.write_bytes(content.replace(old_bytes, new_bytes, 1))
     print(f"[补丁] 已按 EMSCRIPTEN 条件跳过 OCC_CONVERT_SIGNALS：{target_file}")
 
+def patch_vtk_wasm_tiff_linkage(settings: DependenciesSettings) -> None:
+    """去除 vtkTIFFReaderInternal.h 对 vtk_tiff.h 的 extern "C" 包裹（幂等）。
+
+    Qt 内置 tiff 的 tiffconf.h 无条件包含 qglobal.h（C++ 头），外层 extern "C"
+    会让其中的模板以 C 链接编译而报错；libtiff 的 tiffio.h 自带 __cplusplus
+    守卫，无需外层包裹。原生平台用系统 freetype/tiff 不受影响，仅 wasm 需要。
+    """
+
+    target_file = (
+        settings.source_dir / "vtk" / "IO" / "Image" / "vtkTIFFReaderInternal.h"
+    )
+    content = target_file.read_bytes()
+    old = b'extern "C"\n{\n#include "vtk_tiff.h"\n}\n'
+    new = b'#include "vtk_tiff.h"\n'
+    newline = b"\r\n" if b"\r\n" in content else b"\n"
+    old_bytes = old.replace(b"\n", newline)
+    new_bytes = new.replace(b"\n", newline)
+    if old_bytes not in content:
+        print(f"[跳过] VTK wasm tiff 链接补丁已存在或文件形态已变化：{target_file}")
+        return
+    target_file.write_bytes(content.replace(old_bytes, new_bytes, 1))
+    print(f"[补丁] 已去除 VTK tiff 内部头的 extern \"C\" 包裹：{target_file}")
+
 def build_vtk_wasm(
     settings: DependenciesSettings,
     wasm_qt: Path,
@@ -1104,8 +1238,12 @@ def build_vtk_wasm(
         "libtiff 头文件目录",
     )
     definitions = [
-        ("-DCMAKE_C_FLAGS", wasm_compile_flags(settings)),
-        ("-DCMAKE_CXX_FLAGS", wasm_compile_flags(settings)),
+        # qtimageformats 源码树提交的 tiffconf.h 头部包含 qglobal.h（字节序宏），
+        # 消费 tiff 的 VTK 目标（IO/Image 等）不带 Qt 头文件路径，须在公共旗标补上。
+        ("-DCMAKE_C_FLAGS", wasm_compile_flags(
+            settings, f"-I{wasm_qt.as_posix()}/include/QtCore", f"-I{wasm_qt.as_posix()}/include")),
+        ("-DCMAKE_CXX_FLAGS", wasm_compile_flags(
+            settings, f"-I{wasm_qt.as_posix()}/include/QtCore", f"-I{wasm_qt.as_posix()}/include")),
         ("-DCMAKE_PREFIX_PATH:PATH", wasm_qt),
         ("-DBUILD_SHARED_LIBS:BOOL", "OFF"),
         ("-DVTK_GROUP_ENABLE_Qt:STRING", "WANT"),
@@ -1306,12 +1444,16 @@ def build_libmeshb_wasm(settings: DependenciesSettings, environment: dict[str, s
         [
             ("-DCMAKE_C_FLAGS", wasm_compile_flags(settings, "-sSUPPORT_LONGJMP=wasm")),
             ("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i"),
-            # 交叉构建时禁用其自动探测到的宿主 gfortran（Fortran 封装为可选组件）。
+            # 交叉构建时禁用其自动探测到的宿主 gfortran（Fortran 封装为可选组件），
+            # 模块目录给非空值，避免其 install(DIRECTORY <空>/) 安装根目录。
             ("-DCMAKE_Fortran_COMPILER:STRING", "OFF"),
+            ("-DCMAKE_Fortran_MODULE_DIRECTORY:PATH", build_directory / "fmod"),
         ],
         settings,
         environment=environment,
     )
+    # Fortran 被禁用时该目录不会生成，而其 install 规则要求它存在。
+    (build_directory / "fmod").mkdir(parents=True, exist_ok=True)
     install_configs(("Release",), build_directory, environment)
 
 def build_tetgen_wasm(settings: DependenciesSettings, environment: dict[str, str]) -> None:
@@ -1449,6 +1591,7 @@ def build_wasm(settings: DependenciesSettings) -> None:
     wasm_qt = require_path(settings.install_dir / "Qt6.8.3", "交叉 Qt 安装目录")
 
     patch_vtk_wasm_gl_compat(settings)
+    patch_vtk_wasm_tiff_linkage(settings)
     build_vtk_wasm(settings, wasm_qt, environment)
     patch_occt_wasm_toolkit_gl2ps(settings)
     patch_occt_wasm_convert_signals(settings)

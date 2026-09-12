@@ -1,6 +1,6 @@
 #include "GeometryActor.h"
 #include "Core.h"
-#include <IVTKTools_ShapeDataSource.hxx>
+#include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
 #include <TopoDS_Shape.hxx>

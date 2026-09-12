@@ -69,6 +69,13 @@ ColumnLayout {
         }
     }
 
+    // 导出默认文件名：活动模型名（导入模型即为导入文件名，自带扩展名）。
+    // 扩展名交给对话框按所选文件类型适配（Windows IFileDialog 会随类型切换改写），此处不推导
+    function suggestedExportFileName() {
+        const model_id = App.selection.activeModelId
+        return model_id < 0 ? "" : QModelManager.query.getModelName(model_id)
+    }
+
     // 功能触发入口：ribbon 功能按钮共用
     function activateFeature(info) {
         App.activeOperation = {
@@ -153,6 +160,15 @@ ColumnLayout {
         id: exportModelDialog
         nameFilters: QModelManager.ioSystem.dialogNameFilters
         fileMode: FileDialog.SaveFile
+
+        // 以活动模型名预填文件名，避免用户从空白输入框开始；扩展名由对话框按所选类型适配
+        function openExport() {
+            const name = root.suggestedExportFileName()
+            if (name !== "")
+                selectedFile = currentFolder + "/" + name
+            open()
+        }
+
         onAccepted: {
             if (selectedNameFilter.index >= 0) {
                 QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
@@ -174,6 +190,10 @@ ColumnLayout {
         function openDialog() {
             typeCombo.model = QModelManager.ioSystem.getModelIOInfo()
             typeCombo.currentIndex = 0
+            // 按活动模型名预填（无活动模型时保留既有默认值）；扩展名由类型下拉的联动逻辑适配
+            const suggested = root.suggestedExportFileName()
+            if (suggested !== "")
+                nameField.text = suggested
             open()
         }
 
@@ -379,7 +399,7 @@ ColumnLayout {
                     if (root.isWasm)
                         wasmExportDialog.openDialog()
                     else
-                        exportModelDialog.open()
+                        exportModelDialog.openExport()
                 }
             }
 

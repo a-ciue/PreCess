@@ -70,10 +70,16 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     }
     // 遍历插件目录，加载所有插件（经适配器注册以同步 QML 插件名列表）
     for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
-        if (entry.is_regular_file()) {
-            QUrl plugin_url = QUrl::fromLocalFile(QString::fromLocal8Bit(entry.path().string()));
-            q_plugin_manager_->registerPlugin(plugin_url);
+        if (!entry.is_regular_file()) {
+            continue;
         }
+        const path& entry_path = entry.path();
+        const path extension = entry_path.extension();
+        if (extension != ".dll" && extension != ".so" && extension != ".dylib") {
+            continue;
+        }
+        QUrl plugin_url = QUrl::fromLocalFile(QString::fromLocal8Bit(entry_path.string()));
+        q_plugin_manager_->registerPlugin(plugin_url);
     }
 #endif
 }
@@ -159,7 +165,11 @@ QPythonRuntime* QModelManager::getPythonRuntime() const
     return python_runtime_.get();
 }
 
+#ifdef _WIN32
 std::string_view QModelManager::argv0 = "./PreCess.exe";
+#else
+std::string_view QModelManager::argv0 = "./PreCess";
+#endif
 
 QModelManager* QModelManager::create(QQmlEngine*, QJSEngine*)
 {

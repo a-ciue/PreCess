@@ -20,7 +20,6 @@
 #include <vtkSmartPointer.h>
 #include <vtkTriangle.h>
 #include <vtkUnstructuredGrid.h>
-#include <vtkWin32OpenGLRenderWindow.h>
 
 // 自定义交互器，响应鼠标左键点击
 class FacePickInteractorStyle : public vtkInteractorStyleTrackballCamera {

@@ -217,7 +217,7 @@ void UGridModel::updateFrom(const MeshData& mesh_data)
             [last_offset = solid_vertices_offset.back()](Index cur) { return cur + last_offset; });
 
         Index* edge_offset_start = vtk_offsets.get() + solid_vertices_offset.size() + face_vertices_offset.size() - 1;
-        std::generate_n(std::execution::par, edge_offset_start, mesh_data.edge_vertices_.size() / 2,
+        std::generate_n(edge_offset_start, mesh_data.edge_vertices_.size() / 2,
             [last_offset = *(edge_offset_start - 1), n = 0]() mutable { n += 2; return last_offset + n; });
 
         offset_array->SetArray(vtk_offsets.release(), solid_vertices_offset.size() + face_vertices_offset.size() - 1 + mesh_data.edge_vertices_.size() / 2, 0);

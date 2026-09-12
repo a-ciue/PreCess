@@ -2,6 +2,7 @@
 // Created by 徐昊阳 on 5/20/25.
 //
 #include "MeshData.h"
+#include <algorithm>
 #include <spdlog/spdlog.h>
 
 std::unique_ptr<MeshData> MeshData::clone() const

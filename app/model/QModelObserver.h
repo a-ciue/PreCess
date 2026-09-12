@@ -110,8 +110,6 @@ signals:
     void modelRemoved(Index model_id);
     void componentRemoved(Index component_id);
 
-#pragma region ModelDataSignals
-
     /**
      * @brief 模型数据发生变化时发出的信号
      * @param model_id 发生变化的模型 ID
@@ -184,5 +182,4 @@ signals:
     void groupMerged(Index model_id, const std::vector<int>& group_ids,
         int father_group,
         const std::unordered_set<int>& father_group_blocks);
-#pragma endregion // ModelData
 };
