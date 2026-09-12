@@ -38,6 +38,7 @@ ApplicationWindow {
         propertyListOpen: sideBarDock.isOpen
         attributeRenderOpen: attributeRenderDock.isOpen
         consoleOpen: consoleDock.isOpen
+        pythonConsoleOpen: pythonConsoleDock.isOpen
         outputLogOpen: outputLogDock.isOpen
         preferencesOpen: preferencesDock.isOpen
         onObjectTreeToggled: {
@@ -55,6 +56,10 @@ ApplicationWindow {
         onConsoleToggled: {
             if (consoleDock.isOpen) consoleDock.close()
             else consoleDock.show()
+        }
+        onPythonConsoleToggled: {
+            if (pythonConsoleDock.isOpen) pythonConsoleDock.close()
+            else pythonConsoleDock.show()
         }
         onOutputLogToggled: {
             if (outputLogDock.isOpen) outputLogDock.close()
@@ -155,7 +160,7 @@ ApplicationWindow {
         KDDW.DockWidget {
             id: consoleDock
             uniqueName: "console"
-            title: "控制台"
+            title: "JavaScript 控制台"
 
             JavaScriptConsole {
                 anchors.fill: parent
