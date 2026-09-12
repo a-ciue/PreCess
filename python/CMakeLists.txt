@@ -99,4 +99,36 @@ if(_precess_real)
             PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess>"
             PRECESS_PLUGIN_DIR="${CMAKE_BINARY_DIR}/plugins")
     endif()
+
+    # 安装规则（安装树自包含）：precess 扩展模块装到 <exe_dir>/python（运行时
+    # 宿主的首选模块目录候选）；随包分发构建所用解释器的标准库（<exe_dir>/Lib）
+    # 与二进制扩展模块（<exe_dir>/DLLs，_socket 等非内建扩展），python313.dll
+    # 本体已由 app 的依赖收拢放入 <exe_dir>——三者凑齐即运行期探测可就地定位
+    # 标准库（宿主 python_home 探测顺序见 QPythonRuntime::makeRuntimeConfig）。
+    # 排除纯开发/测试内容控制体积；解释器非标准布局（无 Lib 目录）时跳过并提示
+    install(TARGETS precess
+        LIBRARY DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
+    )
+    if(EXISTS "${PRECESS_PYTHON_HOME_DIR}/Lib")
+        install(DIRECTORY "${PRECESS_PYTHON_HOME_DIR}/Lib"
+            DESTINATION "${CMAKE_INSTALL_BINDIR}"
+            PATTERN "__pycache__" EXCLUDE
+            PATTERN "site-packages" EXCLUDE
+            PATTERN "idlelib" EXCLUDE
+            PATTERN "tkinter" EXCLUDE
+            PATTERN "tcl" EXCLUDE
+            PATTERN "test" EXCLUDE
+            PATTERN "tests" EXCLUDE
+        )
+        if(EXISTS "${PRECESS_PYTHON_HOME_DIR}/DLLs")
+            install(DIRECTORY "${PRECESS_PYTHON_HOME_DIR}/DLLs"
+                DESTINATION "${CMAKE_INSTALL_BINDIR}"
+                PATTERN "__pycache__" EXCLUDE
+            )
+        endif()
+    else()
+        message(STATUS
+            "解释器目录 ${PRECESS_PYTHON_HOME_DIR} 下无标准库 Lib/，安装树将不随包分发 Python 标准库（依赖目标机器的 Python 安装）")
+    endif()
 endif()
