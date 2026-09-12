@@ -43,12 +43,14 @@
   - `model/ops/`：基于数据结构的操作，依赖 `model/data`。
   - `model/systems/`：系统层（算法系统、模型 IO 系统、编辑系统、功能系统），负责插件注册与按字符串分发调用，依赖 `model/data`、`core`。
     - `model/systems/feature/`：功能系统 `FeatureSystem`，事件驱动的功能注册与调用：功能可注册参数/菜单/按键绑定，经 `EventBus` 订阅按键、参数变更、模型事件，通过 `FeatureContext` 访问模型层；声明 `interactive` 的功能另经 `InteractionContext` 订阅渲染线程驱动的视口交互（见第 10 节线程约定）。
+  - `model/session/`：会话层，无 Qt 的组合根 `Session`（装配模型层 / undo 栈 / `EventBus` / 四系统并有序拆解，内部转发观察者把模型通知桥接为 `ModelEvent`）与原生查询 `SessionQuery`（返回类型化结构体），供 QML 适配层与脚本宿主共用，依赖 `model/data`、`model/ops`、`model/systems`、`core`。
 - `app/`：程序与界面实现，依赖 `model`、`core`。
   - `app/core/` → `core`
-  - `app/model/` → `model`、`core`、`app/core`（model 的 Qt 接口、数据绑定）
+  - `app/model/` → `model`、`core`、`app/core`（model 的 Qt 接口、数据绑定；可选内嵌 Python 运行时 `QPythonRuntime`，见第 10 节 Python 嵌入约定）
   - `app/render/` → `app/model`（VTK 渲染窗口控件）
   - `app/*.qml` → `app/model`、`app/render`、`app/core`（界面布局与更新，仅做轻量数据处理，不承载主业务逻辑）
 - `plugins/`：插件示例与二次开发，依赖 `model/systems`、`model/data`、`core`，与 `app` 独立构建。
+- `python/`：precess Python 绑定模块（pyd）与内嵌解释器宿主 `python::Runtime`（LGPLv3，无 Qt；依赖 `model/session`）。
   - `plugins/algo/`：算法插件；`plugins/io/`：模型 IO 插件；`plugins/edit/`：编辑插件；`plugins/feature/`：功能插件（`FeatureHandler`，json 的 `system` 字段为 `FeatureSystem`）。
 
 **依赖速记**：`app → model → core`；`plugins → model + core`；QML 只调依赖包功能、不写主业务逻辑。
@@ -182,6 +184,7 @@
   - **执行路径规则**：staged 打开时 undo=`cancelStaged`（恢复 before₀ 并关闭会话，不动全局栈）、redo 空转；隐式 `cancelStaged` 兜底挂在**真实写入点**（边界内首次标脏、结构操作）而非 `beginOperation`——纯旁观回调（只读事件订阅同样走操作边界）不得误杀进行中的预览，旧功能后续 staged 调用空转容忍；导出为只读所见即所得（含预览态），`stagedActive` 已暴露 QML 供界面禁用入口；功能 `deactivate` 时须自行关闭 staged 会话。
   - **undo 后选择集清空已机制化**：`QUndoStackAdaptor::applied` 信号 → QML 统一 `clearSelection`（CentralRenderArea）。
   - **结构操作即时成记录**：`addModel`/`removeModel`/`removeComponent`/`addGeometryComponent` 由钩子即时成记录；边界内发生的结构操作并入当前操作（一次用户动作一条记录）。
+- **Python 嵌入约定**（宿主为 `python/` 的 `python::Runtime` 无 Qt 静态库，GUI 的 `QPythonRuntime` 仅 QObject/QML 薄壳、无头 CLI 将复用同一宿主；`precess_runtime` 目标恒存在，Python3 + pybind11 缺失、`PRECESS_BUILD_PYTHON=OFF` 或 wasm 时自动降级为桩实现——"不可用"是运行时状态（available 恒 false），宿主侧不写条件编译）：**Python 与 GUI 线程绑定**，所有 Python 入口须在 GUI 线程调用，渲染线程不得触碰 Python；解释器懒初始化（控制台首次使用时启动），标准库根（python_home）由宿主运行期探测：随包分发的可移植标准库 `<exe_dir>/Lib` → 构建期导出的 `PRECESS_PYTHON_HOME_DIR`（存在才用）；安装规则把 pyd 装到 `<exe_dir>/python`、`Lib/`/`DLLs/` 随包分发到 exe 目录，构建树由 `precess_bindings` 构建后把解释器运行库（Windows 的 python3xx.dll，经 FindPython 导入目标求值、不硬编码版本）拷至构建根目录——Qt 工程运行时产物统一在此，运行/调试不依赖 PATH（类 Unix 的 libpython 由 rpath 解析，无需拷贝），解释器选择经可选缓存变量 `PRECESS_PYTHON_PATH`（解释器所在目录，经 `Python3_ROOT_DIR` 转交 FindPython、平台命名差异由模块处理，仅构建期生效，留空用系统 PATH 发现），`sys.path` 注入 precess 扩展模块目录（候选 `<exe_dir>/python` 与构建树输出目录）；**活会话以引用策略注入 `precess.current`**（Python 不持有所有权），故宿主析构必须先终结解释器、再析构会话；同时含 Qt 头与 Python/pybind11 头的编译单元，须取消并随后还原 Qt 的 `slots/signals/emit` 宏（否则破坏 CPython `PyType_Spec::slots`）；precess pyd 与插件同理，须与主程序同编译器、同配置、同依赖版本构建。
 
 ---
 

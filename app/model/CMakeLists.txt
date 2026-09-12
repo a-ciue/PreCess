@@ -20,6 +20,8 @@ qt_add_qml_module(modelQml
         QModelQuery.cpp
         QModelManager.h
         QModelManager.cpp
+        QPythonRuntime.h
+        QPythonRuntime.cpp
         "${CMAKE_CURRENT_BINARY_DIR}/QArgType.h"
         QArgObject.h
         QArgObject.cpp
@@ -37,8 +39,22 @@ target_link_libraries(modelQmlplugin PUBLIC
 target_link_libraries(modelQml PUBLIC 
     coreQml SystemQml
 )
-target_link_libraries(modelQml PRIVATE 
-    modelPart QArgType
+# 内嵌 Python 运行环境：precess_runtime 目标恒存在（python/ 提供，Python
+# 依赖缺失时自动降级为桩实现，"不可用"是运行时状态），宿主无需条件编译
+target_link_libraries(modelQml PRIVATE
+    modelPart QArgType precess_runtime
 )
+
+# 运行时宿主配置宏：仅真实模式（precess_bindings 扩展模块目标存在）定义，
+# 桩模式下 QPythonRuntime.cpp 以空值兜底（桩忽略 config）
+if(TARGET precess_bindings)
+    target_compile_definitions(modelQml PRIVATE
+        # 嵌入式解释器的标准库根：构建机解释器目录（python/ 导出的缓存变量，
+        # 运行期另作捆绑 Lib 探测，见 QPythonRuntime::makeRuntimeConfig）
+        PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"
+        # 构建树中 precess 扩展模块输出目录（运行时另一候选为 <exe_dir>/python）
+        PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>"
+    )
+endif()
 
 add_subdirectory(systems)

@@ -38,6 +38,7 @@ ApplicationWindow {
         propertyListOpen: sideBarDock.isOpen
         attributeRenderOpen: attributeRenderDock.isOpen
         consoleOpen: consoleDock.isOpen
+        pythonConsoleOpen: pythonConsoleDock.isOpen
         outputLogOpen: outputLogDock.isOpen
         preferencesOpen: preferencesDock.isOpen
         onObjectTreeToggled: {
@@ -56,6 +57,10 @@ ApplicationWindow {
             if (consoleDock.isOpen) consoleDock.close()
             else consoleDock.show()
         }
+        onPythonConsoleToggled: {
+            if (pythonConsoleDock.isOpen) pythonConsoleDock.close()
+            else pythonConsoleDock.show()
+        }
         onOutputLogToggled: {
             if (outputLogDock.isOpen) outputLogDock.close()
             else outputLogDock.show()
@@ -73,6 +78,16 @@ ApplicationWindow {
                 consoleDock.close()
             else
                 consoleDock.show()
+        }
+    }
+
+    Shortcut {
+        sequence: "F11"
+        onActivated: {
+            if (pythonConsoleDock.isOpen)
+                pythonConsoleDock.close()
+            else
+                pythonConsoleDock.show()
         }
     }
 
@@ -145,9 +160,19 @@ ApplicationWindow {
         KDDW.DockWidget {
             id: consoleDock
             uniqueName: "console"
-            title: "控制台"
+            title: "JavaScript 控制台"
 
             JavaScriptConsole {
+                anchors.fill: parent
+            }
+        }
+
+        KDDW.DockWidget {
+            id: pythonConsoleDock
+            uniqueName: "pythonConsole"
+            title: "Python 控制台"
+
+            PythonConsole {
                 anchors.fill: parent
             }
         }
@@ -177,6 +202,7 @@ ApplicationWindow {
             addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
             addDockWidget(attributeRenderDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
+            addDockWidget(pythonConsoleDock, KDDW.KDDockWidgets.Location_OnRight, null, Qt.size(450, 0), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(outputLogDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
             addDockWidget(preferencesDock, KDDW.KDDockWidgets.Location_OnTop, objectTreeDock, Qt.size(0, 200), KDDW.KDDockWidgets.StartHidden)
         }

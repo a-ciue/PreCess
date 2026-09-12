@@ -103,3 +103,18 @@ TEST_CASE("EventBus unsubscribing inside handler is safe (snapshot semantics)", 
     REQUIRE(count_a == 2);
     REQUIRE(count_b == 1);
 }
+
+TEST_CASE("EventBus subscription outliving bus is safe", "[EventBus]")
+{
+    // 回归：句柄比总线活得久时（如 QModelManager 的 UI 桥接订阅在显式
+    // session_.reset() 之后才析构），句柄的 reset/析构不得访问已析构总线。
+    // 内存安全性由 ASAN 构建（x64-debug-no-arg 预设）保障，此处验证行为契约
+    EventBus::Subscription orphan;
+    {
+        EventBus bus;
+        orphan = bus.subscribe<TestEvent>([](const TestEvent&) { });
+    } // 总线先于句柄析构
+    CHECK_NOTHROW(orphan.reset());
+    orphan = EventBus::Subscription {}; // 重复退订同样安全
+    REQUIRE_FALSE(orphan);
+}

@@ -27,6 +27,7 @@ qt_add_qml_module(${MYNAME}
             ObjectTree.qml
             Selector.qml
             JavaScriptConsole.qml
+            PythonConsole.qml
             PreferencesWindow.qml
             OutputLog.qml
 )
@@ -109,6 +110,11 @@ set(DEPENDENCY_DIRECTORIES
 )
 if(freetype_FOUND)
     list(APPEND DEPENDENCY_DIRECTORIES $<TARGET_FILE_DIR:freetype>)
+endif()
+# 内嵌 Python 时把构建所用解释器目录（python/ 导出的缓存变量）加入依赖搜索，
+# 使 install 能收拢解释器运行库
+if(PRECESS_PYTHON_HOME_DIR)
+    list(APPEND DEPENDENCY_DIRECTORIES "${PRECESS_PYTHON_HOME_DIR}")
 endif()
 set(DEPENDENCY_POST_EXCLUDE_REGEXES ".*system32/.*\\.dll")
 if(APPLE)

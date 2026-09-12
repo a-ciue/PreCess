@@ -24,7 +24,9 @@
 #include <optional>
 
 class ModelObserver;  // 前向声明模型观察者类
-class QModelQuery;      // 前向声明 QModelQuery 类
+namespace session {
+class SessionQuery; // 会话层查询（友元，访问 models_ / component_to_model_ 私有表）
+}
 class UndoRecorder;     // 前向声明 undo 记录钩子接口
 struct ModelSnapshot;   // 前向声明模型级结构快照
 
@@ -156,7 +158,7 @@ private:
     UndoRecorder* undo_recorder_ { nullptr }; //!< undo 记录钩子（写前/结构操作时机回调，由 UndoStack 实现）
     bool component_remove_hook_suspended_ { false }; //!< removeModel 期间抑制组件级移除钩子（组件随模型快照整体记录，避免重复）
 
-    friend class QModelQuery;
+    friend class session::SessionQuery;
     friend class ModelOperator;
 };
 #endif // MODEL_MANAGER_H

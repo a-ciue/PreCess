@@ -26,6 +26,7 @@ ColumnLayout {
     signal propertyListToggled()
     signal attributeRenderToggled()
     signal consoleToggled()
+    signal pythonConsoleToggled()
     signal outputLogToggled()
     signal preferencesToggled()
 
@@ -33,6 +34,7 @@ ColumnLayout {
     property bool propertyListOpen: false
     property bool attributeRenderOpen: false
     property bool consoleOpen: false
+    property bool pythonConsoleOpen: false
     property bool outputLogOpen: false
     property bool preferencesOpen: false
 
@@ -336,10 +338,16 @@ ColumnLayout {
                         onToggled: attributeRenderToggled()
                     }
                     Action {
-                        text: "控制台"
+                        text: "JavaScript 控制台"
                         checkable: true
                         checked: consoleOpen
                         onToggled: consoleToggled()
+                    }
+                    Action {
+                        text: "Python 控制台"
+                        checkable: true
+                        checked: pythonConsoleOpen
+                        onToggled: pythonConsoleToggled()
                     }
                     Action {
                         text: "日志"

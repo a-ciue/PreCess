@@ -6,29 +6,17 @@
 #include "QModelIOSystemAdaptor.h"
 #include "QModelObserver.h"
 #include "QModelQuery.h"
+#include "QPythonRuntime.h"
 #include "QSystemPluginManager.h"
 #include "QUndoStackAdaptor.h"
 #include <memory>
 #include <string>
 #include <string_view>
 
-namespace core {
-class EventBus;
-}
-namespace systems {
-class SystemPluginManager;
-}
-namespace systems::io {
-class ModelIOSystem;
-}
-namespace systems::edit {
-class EditSystem;
-}
-namespace systems::feature {
-class FeatureSystem;
+namespace session {
+class Session;
 }
 class ModelLayer;
-class UndoStack;
 
 class QModelManager : public QObject {
     Q_OBJECT
@@ -42,6 +30,7 @@ class QModelManager : public QObject {
     Q_PROPERTY(systems::edit::QEditSystemAdaptor* editSystem READ getEditSystemAdaptor CONSTANT)
     Q_PROPERTY(systems::feature::QFeatureSystemAdaptor* featureSystem READ getFeatureSystemAdaptor CONSTANT)
     Q_PROPERTY(QUndoStackAdaptor* undoStack READ getUndoStackAdaptor CONSTANT)
+    Q_PROPERTY(QPythonRuntime* pythonRuntime READ getPythonRuntime CONSTANT)
 public:
     explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
     ~QModelManager();
@@ -59,6 +48,7 @@ public:
     systems::feature::QFeatureSystemAdaptor* getFeatureSystemAdaptor() const;
     systems::QSystemPluginManager* getSystemPluginManager() const;
     QUndoStackAdaptor* getUndoStackAdaptor() const;
+    QPythonRuntime* getPythonRuntime() const;
 
     static std::string_view argv0; //> 命令行参数 argv[0]，用于插件加载等需要程序路径的场景，由 main 函数在程序启动时设置，被传入 ModelManager 构造函数以供其使用
     /**
@@ -74,22 +64,16 @@ signals:
     void geometryLoadFailed(const QString& message);
 
 private:
-    std::unique_ptr<ModelLayer> core_;
+    std::unique_ptr<session::Session> session_; //> 会话组合根（模型层/undo 栈/事件总线/四系统），析构先于 Qt 适配器（见 ~QModelManager）
+    std::unique_ptr<QPythonRuntime> python_runtime_; //> 内嵌 Python 运行时（懒初始化；声明在 session_ 之后保证先于会话析构，见 ~QModelManager）
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
-    std::unique_ptr<UndoStack> undo_stack_; //> undo 栈（声明在 core_ 之后、各系统之前：系统先析构，栈再析构；析构序列见 ~QModelManager 的显式拆解）
-    std::unique_ptr<systems::io::ModelIOSystem> io_system_;
-    std::unique_ptr<systems::algo::AlgorithmSystem> algo_system_;
-    std::unique_ptr<systems::edit::EditSystem> edit_system_;
-    std::unique_ptr<core::EventBus> event_bus_; //> 事件总线，声明在 feature_system_ 之前以保证其更晚析构
     core::EventBus::Subscription param_bridge_sub_; //> 参数变更桥接订阅（随成员析构自动退订）
     core::EventBus::Subscription scalar_attribute_display_bridge_sub_; //> 标量属性显示请求桥接订阅
-    std::unique_ptr<systems::feature::FeatureSystem> feature_system_;
     std::unique_ptr<systems::algo::QAlgorithmSystemAdaptor> algo_adaptor_;
     std::unique_ptr<systems::io::QModelIOSystemAdaptor> io_adaptor_;
     std::unique_ptr<systems::edit::QEditSystemAdaptor> edit_adaptor_;
     std::unique_ptr<systems::feature::QFeatureSystemAdaptor> feature_adaptor_;
     std::unique_ptr<QUndoStackAdaptor> undo_adaptor_;
     std::unique_ptr<systems::QSystemPluginManager> q_plugin_manager_;
-    std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
 };

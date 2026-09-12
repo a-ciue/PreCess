@@ -269,6 +269,11 @@ GIT_REPOSITORIES = [
         "v3.11.0",
     ),
     GitRepository(
+        "pybind11",
+        "https://github.com/pybind/pybind11.git",
+        "v3.1.0",
+    ),
+    GitRepository(
         "libMeshb",
         "https://github.com/LoicMarechal/libMeshb.git",
         "v7.80",
@@ -748,6 +753,20 @@ def build_catch2(settings: DependenciesSettings) -> None:
     )
     install_configs(settings.install_configs, build_directory)
 
+def build_pybind11(settings: DependenciesSettings) -> None:
+    """pybind11 为头文件库，无需编译产物，安装头文件与 CMake 包即可（Python 绑定模块用）。"""
+
+    source = settings.source_dir / "pybind11"
+    build_directory = settings.build_directory(source)
+    configure_cmake_project(
+        source,
+        build_directory,
+        settings.install_dir / "pybind11-3.1.0",
+        [("-DPYBIND11_TEST:BOOL", "OFF")],
+        settings,
+    )
+    install_configs(settings.install_configs, build_directory)
+
 def build_libmeshb(settings: DependenciesSettings) -> None:
     source = settings.source_dir / "libMeshb"
     build_directory = settings.build_directory(source)
@@ -968,6 +987,7 @@ def build_native(settings: DependenciesSettings) -> None:
     build_tetgen(settings)
     build_gmsh(settings)
     build_boost(settings)
+    build_pybind11(settings)
 
 REQUIRED_EMSDK_VERSION = "3.1.56"
 
