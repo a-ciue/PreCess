@@ -10,14 +10,6 @@ configure_file("QArgType.h.in" "QArgType.h")
 add_library(QArgType INTERFACE)
 target_include_directories(QArgType INTERFACE "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
-# 内嵌 Python 运行环境：python/ 提供的解释器宿主目标 precess_runtime 可用
-# （且非 wasm）时编译 QPythonRuntime 真实实现，否则编译降级实现，运行时
-# available 恒 false
-set(PRECESS_EMBED_PYTHON OFF)
-if(TARGET precess_runtime AND NOT EMSCRIPTEN)
-    set(PRECESS_EMBED_PYTHON ON)
-endif()
-
 # modelQml目标
 qt_add_qml_module(modelQml 
     URI app.model
@@ -47,20 +39,16 @@ target_link_libraries(modelQmlplugin PUBLIC
 target_link_libraries(modelQml PUBLIC 
     coreQml SystemQml
 )
-target_link_libraries(modelQml PRIVATE 
-    modelPart QArgType
-)
-# 宿主头目录无条件可见：QPythonRuntime.cpp 两个分支都包含 python/runtime.h
-# （unique_ptr<Runtime> 成员析构要求完整类型）；降级时 precess_runtime 目标
-# 不存在、include 无法经链接传递，须在此直接给出
-target_include_directories(modelQml PRIVATE
-    "${CMAKE_SOURCE_DIR}/python/include"
+# 内嵌 Python 运行环境：precess_runtime 目标恒存在（python/ 提供，Python
+# 依赖缺失时自动降级为桩实现，"不可用"是运行时状态），宿主无需条件编译
+target_link_libraries(modelQml PRIVATE
+    modelPart QArgType precess_runtime
 )
 
-if(PRECESS_EMBED_PYTHON)
-    target_link_libraries(modelQml PRIVATE precess_runtime)
+# 运行时宿主配置宏：仅真实模式（precess 模块存在）定义，桩模式下
+# QPythonRuntime.cpp 以空值兜底（桩忽略 config）
+if(TARGET precess)
     target_compile_definitions(modelQml PRIVATE
-        PRECESS_EMBED_PYTHON
         # 嵌入式解释器的标准库根：构建机解释器目录（python/ 导出的缓存变量，
         # 安装分发场景见后续打包阶段）
         PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"

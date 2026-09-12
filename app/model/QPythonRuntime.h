@@ -25,8 +25,9 @@ class Runtime;
  * 线程约定：Python 与 GUI 线程绑定，所有入口须在 GUI 线程调用（断言把关），
  * 渲染线程不得触碰 Python。
  *
- * Python 嵌入不可用（未定义 PRECESS_EMBED_PYTHON，如 wasm 构建）时编译
- * 降级实现，available 恒 false。
+ * 本类无编译期降级分支：precess_runtime 目标恒存在，Python 嵌入不可用
+ * （缺 Python3/pybind11、PRECESS_BUILD_PYTHON=OFF 或 wasm）时宿主为桩实现，
+ * available 恒 false、lastError() 说明原因。
  *
  * @sa QModelManager::pythonRuntime
  * @sa python::Runtime

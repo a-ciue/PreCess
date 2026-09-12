@@ -2,25 +2,28 @@
  * @file QPythonRuntime.cpp
  * @brief QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳
  *
- * 解释器宿主逻辑在 python/src/runtime.cpp（无 Qt）；本文件只做线程断言、
- * 字符串编解码、日志与信号桥接。仅在 PRECESS_EMBED_PYTHON（app/model/
- * CMakeLists 检测到 precess_runtime 目标且非 wasm 构建）下持有宿主实例，
- * 否则降级为恒不可用。
+ * 解释器宿主逻辑在 python/（runtime.cpp 真实现 / stub.cpp 桩，precess_runtime
+ * 目标恒存在、无需条件编译）；本文件只做线程断言、字符串编解码、日志与信号
+ * 桥接。"不可用"是运行时状态：桩实现 available 恒 false、错误信息说明原因。
  */
 #include "QPythonRuntime.h"
 
-// 无条件包含：runtime.h 是纯 C++ 声明（PIMPL 的 pybind11/CPython 头隔离在
-// runtime.cpp），但 unique_ptr<Runtime> 成员的析构要求完整类型——降级分支
-// （无 Python，runtime_ 恒空）同样不能缺它
 #include "python/runtime.h"
-
-#ifdef PRECESS_EMBED_PYTHON
 
 #include <QCoreApplication>
 #include <QThread>
 #include <spdlog/spdlog.h>
 
 #include <filesystem>
+
+// 宿主配置宏由 app/model 仅在真实模式（precess 模块存在）下定义；桩模式下
+// Runtime 忽略 config，空值兜底即可
+#ifndef PRECESS_PYTHON_HOME
+#define PRECESS_PYTHON_HOME ""
+#endif
+#ifndef PRECESS_PYTHON_MODULE_DIR
+#define PRECESS_PYTHON_MODULE_DIR ""
+#endif
 
 namespace {
 
@@ -100,44 +103,3 @@ QString QPythonRuntime::version() const
 {
     return QString::fromStdString(runtime_->version());
 }
-
-#else // 非 PRECESS_EMBED_PYTHON：无 Python 环境的降级实现（如 wasm 构建）
-
-QPythonRuntime::QPythonRuntime(session::Session* session, QObject* parent)
-    : QObject(parent)
-{
-    Q_UNUSED(session)
-}
-
-QPythonRuntime::~QPythonRuntime() = default;
-
-bool QPythonRuntime::isAvailable() const
-{
-    return false;
-}
-
-QString QPythonRuntime::lastError() const
-{
-    return QStringLiteral(
-        "编译时未启用内嵌 Python 运行环境（需要 Python3 与 pybind11；wasm 构建不支持）");
-}
-
-void QPythonRuntime::initialize() { }
-
-QVariantMap QPythonRuntime::execute(const QString& source)
-{
-    Q_UNUSED(source)
-    QVariantMap result;
-    result["ok"] = false;
-    result["incomplete"] = false;
-    result["output"] = QString();
-    result["error"] = lastError();
-    return result;
-}
-
-QString QPythonRuntime::version() const
-{
-    return QString();
-}
-
-#endif
