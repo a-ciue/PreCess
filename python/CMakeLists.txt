@@ -9,20 +9,26 @@
 option(PRECESS_BUILD_PYTHON
     "构建 precess 真实 Python 绑定与内嵌解释器（OFF 或依赖缺失时 precess_runtime 自动降级为桩实现）" ON)
 
-# 解释器选择：默认由 FindPython 在系统 PATH 等常规位置发现；经环境变量
-# PRECESS_PYTHON_PATH 指定 python.exe 所在目录时优先采用（该变量同时前置
-# 进运行时 PATH，保证构建与运行使用同一解释器，避免混用）
-file(TO_CMAKE_PATH "$ENV{PRECESS_PYTHON_PATH}" _precess_python_dir)
-if(_precess_python_dir AND EXISTS "${_precess_python_dir}/python.exe")
-    set(Python3_EXECUTABLE "${_precess_python_dir}/python.exe"
-        CACHE FILEPATH "构建与运行所用 Python 解释器（经 PRECESS_PYTHON_PATH 指定）" FORCE)
+# 解释器选择：默认由 FindPython 经系统 PATH 发现；经可选缓存变量指定时转交
+# Python3_ROOT_DIR（平台命名差异由 FindPython 处理），并清掉粘性的解释器
+# 缓存使新目录生效
+set(PRECESS_PYTHON_PATH "" CACHE PATH
+    "构建所用 Python 解释器目录（可选；留空用系统 PATH 发现）")
+if(PRECESS_PYTHON_PATH)
+    set(Python3_ROOT_DIR "${PRECESS_PYTHON_PATH}" CACHE PATH
+        "FindPython 解释器发现根目录（经 PRECESS_PYTHON_PATH 指定）" FORCE)
+    unset(Python3_EXECUTABLE CACHE)
 endif()
-unset(_precess_python_dir)
 
 # Development.Embed（内嵌宿主需要）：须在本文件内、find_package(pybind11) 之前
 # 一并请求——pybind11::embed 仅在 Python3::Python 目标已存在时才把 Python 链接
 # 接口挂入自身，时序颠倒会导致宿主消费者缺库
 find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed QUIET)
+
+if(NOT Python3_Interpreter_FOUND)
+    message(WARNING
+        "请确认 Python 被正确加入环境变量中，或者手动指定解释器所在目录 PRECESS_PYTHON_PATH=\"${PRECESS_PYTHON_PATH}\"")
+endif()
 
 set(_precess_real OFF)
 if(PRECESS_BUILD_PYTHON AND Python3_FOUND AND NOT EMSCRIPTEN
@@ -53,7 +59,7 @@ if(_precess_real)
     endif()
 endif()
 
-# 导出构建所用解释器目录（标准库根/python313.dll 所在），运行时宿主配置
+# 导出构建所用解释器目录（标准库根/解释器运行库所在），运行时宿主配置
 # 与 app 安装依赖收拢共用（跨目录可见的缓存变量；桩模式下为空）
 if(_precess_real)
     get_filename_component(PRECESS_PYTHON_HOME_DIR "${Python3_EXECUTABLE}" DIRECTORY)
@@ -85,6 +91,17 @@ if(_precess_real)
         Session
     )
 
+    # 构建树自包含（仅 Windows）：把解释器运行库（版本相关，经导入目标求值）
+    # 拷到可执行文件目录（Qt 工程运行时产物统一在构建根目录），运行/调试不再
+    # 依赖 PATH 中的 Python；类 Unix 由 rpath 解析 libpython，无需拷贝
+    if(WIN32)
+        add_custom_command(TARGET precess_bindings POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                "$<TARGET_FILE:Python3::Python>"
+                "${CMAKE_BINARY_DIR}"
+        )
+    endif()
+
     if (BUILD_TESTING)
         add_test(NAME precess_python_smoke
             COMMAND Python3::Interpreter "${CMAKE_CURRENT_SOURCE_DIR}/test/test_precess.py" --plugins "${CMAKE_BINARY_DIR}/plugins")
@@ -103,12 +120,9 @@ if(_precess_real)
             PRECESS_PLUGIN_DIR="${CMAKE_BINARY_DIR}/plugins")
     endif()
 
-    # 安装规则（安装树自包含）：precess 扩展模块装到 <exe_dir>/python（运行时
-    # 宿主的首选模块目录候选）；随包分发构建所用解释器的标准库（<exe_dir>/Lib）
-    # 与二进制扩展模块（<exe_dir>/DLLs，_socket 等非内建扩展），python313.dll
-    # 本体已由 app 的依赖收拢放入 <exe_dir>——三者凑齐即运行期探测可就地定位
-    # 标准库（宿主 python_home 探测顺序见 QPythonRuntime::makeRuntimeConfig）。
-    # 排除纯开发/测试内容控制体积；解释器非标准布局（无 Lib 目录）时跳过并提示
+    # 安装树自包含：pyd 装到宿主首选模块目录 <exe_dir>/python，解释器标准库
+    # 与二进制扩展随包分发到 exe 目录（运行库本身由 app 依赖收拢放入）；
+    # 排除开发/测试内容控制体积，非标准布局（无 Lib/）时跳过
     install(TARGETS precess_bindings
         LIBRARY DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}/python"

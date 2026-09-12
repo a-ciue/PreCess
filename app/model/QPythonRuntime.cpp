@@ -27,23 +27,15 @@
 
 namespace {
 
-//> 宿主配置：python_home 按优先级运行期探测——
-//> 1) 环境变量 PRECESS_PYTHON_PATH（python.exe/python313.dll 所在目录，与
-//>    构建期语义一致，供特殊环境显式指定）；
-//> 2) 随包分发的可移植标准库：<exe_dir>/Lib 存在（安装规则把 Lib/、DLLs/ 与
-//>    python313.dll 收拢到 exe 目录，标准库根即 exe 目录）；
-//> 3) 构建期绑定的解释器目录（宏，存在才采用——构建树直跑场景；跨机器安装
-//>    时该路径不存在，留空交由解释器就地定位）。
-//> precess 扩展模块目录候选依次为部署形态 <exe_dir>/python 与构建树 precess
-//> 目标输出目录
+//> python_home 运行期探测（按优先级）：随包分发的可移植标准库 <exe_dir>/Lib
+//> → 构建期绑定的解释器目录（宏，存在才用）。precess 扩展模块目录候选依次
+//> 为 <exe_dir>/python 与构建树 precess 目标输出目录
 python::Runtime::Config makeRuntimeConfig()
 {
     python::Runtime::Config config;
     const std::filesystem::path exe_dir
         = QCoreApplication::applicationDirPath().toStdString();
-    if (const QString env_home = qEnvironmentVariable("PRECESS_PYTHON_PATH"); !env_home.isEmpty())
-        config.python_home = env_home.toStdString();
-    else if (std::filesystem::exists(exe_dir / "Lib"))
+    if (std::filesystem::exists(exe_dir / "Lib"))
         config.python_home = exe_dir;
     else if (std::filesystem::exists(std::filesystem::path(PRECESS_PYTHON_HOME)))
         config.python_home = PRECESS_PYTHON_HOME;
