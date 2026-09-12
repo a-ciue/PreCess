@@ -1,5 +1,5 @@
-#ifndef PRECESS_RUNTIME_H
-#define PRECESS_RUNTIME_H
+#ifndef PYTHON_RUNTIME_H
+#define PYTHON_RUNTIME_H
 
 #include <filesystem>
 #include <memory>
@@ -10,7 +10,7 @@ namespace session {
 class Session;
 }
 
-namespace precess {
+namespace python {
 
 /**
  * @brief 内嵌 Python 运行时宿主：解释器生命周期、precess 导入与控制台执行

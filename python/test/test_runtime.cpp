@@ -1,12 +1,12 @@
 /**
  * @file test_runtime.cpp
- * @brief precess::Runtime 内嵌宿主测试：初始化、控制台执行与活会话调用
+ * @brief python::Runtime 内嵌宿主测试：初始化、控制台执行与活会话调用
  *
  * 单进程只构造一个 Runtime 实例且全用例线性推进（Catch2 SECTION 会重跑
  * 用例装配，解释器 Initialize/Finalize 循环重入叠加 pybind11 内部状态不可
  * 靠）；插件目录缺失时跳过会话调用段。
  */
-#include "precess/runtime.h"
+#include "python/runtime.h"
 
 #include "Session.h"
 
@@ -15,7 +15,7 @@
 #include <filesystem>
 #include <string>
 
-using precess::Runtime;
+using python::Runtime;
 
 TEST_CASE("precess Runtime hosts embedded interpreter", "[python][runtime]")
 {

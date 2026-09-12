@@ -1,12 +1,12 @@
 /**
  * @file runtime.cpp
- * @brief precess::Runtime 实现：pybind11 嵌入式解释器宿主（无 Qt）
+ * @brief python::Runtime 实现：pybind11 嵌入式解释器宿主（无 Qt）
  *
  * 本编译单元不含 Qt 头文件，无 slots/signals/emit 宏冲突问题；上层宿主
  * （如 QPythonRuntime）经 PIMPL 头文件隔离，同样不受影响。线程与生命周期
- * 约定见 precess/runtime.h 类注释。
+ * 约定见 python/runtime.h 类注释。
  */
-#include "precess/runtime.h"
+#include "python/runtime.h"
 
 #include <pybind11/embed.h>
 
@@ -16,7 +16,7 @@
 
 namespace py = pybind11;
 
-namespace precess {
+namespace python {
 
 struct Runtime::State {
     session::Session* session = nullptr; //> 活会话（不持有所有权，宿主保证生命周期）

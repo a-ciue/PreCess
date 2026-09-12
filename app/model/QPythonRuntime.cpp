@@ -1,6 +1,6 @@
 /**
  * @file QPythonRuntime.cpp
- * @brief QPythonRuntime 实现：precess::Runtime 之上的 QObject/QML 薄壳
+ * @brief QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳
  *
  * 解释器宿主逻辑在 python/src/runtime.cpp（无 Qt）；本文件只做线程断言、
  * 字符串编解码、日志与信号桥接。仅在 PRECESS_EMBED_PYTHON（app/model/
@@ -11,7 +11,7 @@
 
 #ifdef PRECESS_EMBED_PYTHON
 
-#include <precess/runtime.h>
+#include <python/runtime.h>
 
 #include <QCoreApplication>
 #include <QThread>
@@ -24,9 +24,9 @@ namespace {
 //> 宿主配置：标准库根取 CMake 期绑定的解释器目录（正斜杠，跨机器为构建机
 //> 路径，安装分发场景见后续打包阶段）；precess 扩展模块目录候选依次为
 //> 部署形态 <exe_dir>/python 与构建树 precess 目标输出目录
-precess::Runtime::Config makeRuntimeConfig()
+python::Runtime::Config makeRuntimeConfig()
 {
-    precess::Runtime::Config config;
+    python::Runtime::Config config;
     const QString exe_dir = QCoreApplication::applicationDirPath();
     config.python_home = PRECESS_PYTHON_HOME;
     config.module_dirs = {
@@ -40,7 +40,7 @@ precess::Runtime::Config makeRuntimeConfig()
 
 QPythonRuntime::QPythonRuntime(session::Session* session, QObject* parent)
     : QObject(parent)
-    , runtime_(std::make_unique<precess::Runtime>(session, makeRuntimeConfig()))
+    , runtime_(std::make_unique<python::Runtime>(session, makeRuntimeConfig()))
 {
 }
 
@@ -85,7 +85,7 @@ QVariantMap QPythonRuntime::execute(const QString& source)
     Q_ASSERT(QThread::currentThread() == thread()); // Python ≡ GUI 线程
 
     ensureInitialized();
-    const precess::Runtime::ExecutionResult executed = runtime_->execute(source.toStdString());
+    const python::Runtime::ExecutionResult executed = runtime_->execute(source.toStdString());
     result["ok"] = executed.ok;
     result["incomplete"] = executed.incomplete;
     result["output"] = QString::fromStdString(executed.output);
