@@ -77,8 +77,11 @@ else()
 endif()
 
 if(_precess_real)
-    pybind11_add_module(precess precess_module.cpp)
-    target_link_libraries(precess PRIVATE
+    # CMake 目标名取 precess_bindings 与主程序 PreCess 区分；Python 导入名
+    # 保持 precess 不变（经 OUTPUT_NAME 固定输出文件名）
+    pybind11_add_module(precess_bindings precess_module.cpp)
+    set_target_properties(precess_bindings PROPERTIES OUTPUT_NAME "precess")
+    target_link_libraries(precess_bindings PRIVATE
         Session
     )
 
@@ -88,15 +91,15 @@ if(_precess_real)
         # Python 3.8 起扩展模块的依赖 DLL 不再经 PATH 解析，须经脚本侧
         # os.add_dll_directory 注册：DLL 目录清单经 PRECESS_DLL_DIRS 传递
         set_tests_properties(precess_python_smoke PROPERTIES
-            ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:precess>"
-            ENVIRONMENT_MODIFICATION "$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess>,PREPEND,PATH=path_list_prepend:>;$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess>,PREPEND,PRECESS_DLL_DIRS=path_list_append:>")
+            ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:precess_bindings>"
+            ENVIRONMENT_MODIFICATION "$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess_bindings>,PREPEND,PATH=path_list_prepend:>;$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess_bindings>,PREPEND,PRECESS_DLL_DIRS=path_list_append:>")
         # C++ 嵌入测试：验证宿主初始化、控制台执行与活会话调用（依赖真实
         # 宿主与 precess 模块，桩模式无意义）
         precess_add_test(TestPrecessRuntime test/test_runtime.cpp)
         target_link_libraries(TestPrecessRuntime PRIVATE precess_runtime)
         target_compile_definitions(TestPrecessRuntime PRIVATE
             PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"
-            PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess>"
+            PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>"
             PRECESS_PLUGIN_DIR="${CMAKE_BINARY_DIR}/plugins")
     endif()
 
@@ -106,7 +109,7 @@ if(_precess_real)
     # 本体已由 app 的依赖收拢放入 <exe_dir>——三者凑齐即运行期探测可就地定位
     # 标准库（宿主 python_home 探测顺序见 QPythonRuntime::makeRuntimeConfig）。
     # 排除纯开发/测试内容控制体积；解释器非标准布局（无 Lib 目录）时跳过并提示
-    install(TARGETS precess
+    install(TARGETS precess_bindings
         LIBRARY DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
     )

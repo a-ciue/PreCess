@@ -45,15 +45,15 @@ target_link_libraries(modelQml PRIVATE
     modelPart QArgType precess_runtime
 )
 
-# 运行时宿主配置宏：仅真实模式（precess 模块存在）定义，桩模式下
-# QPythonRuntime.cpp 以空值兜底（桩忽略 config）
-if(TARGET precess)
+# 运行时宿主配置宏：仅真实模式（precess_bindings 扩展模块目标存在）定义，
+# 桩模式下 QPythonRuntime.cpp 以空值兜底（桩忽略 config）
+if(TARGET precess_bindings)
     target_compile_definitions(modelQml PRIVATE
         # 嵌入式解释器的标准库根：构建机解释器目录（python/ 导出的缓存变量，
-        # 安装分发场景见后续打包阶段）
+        # 运行期另作捆绑 Lib 探测，见 QPythonRuntime::makeRuntimeConfig）
         PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"
         # 构建树中 precess 扩展模块输出目录（运行时另一候选为 <exe_dir>/python）
-        PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess>"
+        PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>"
     )
 endif()
 
