@@ -9,9 +9,12 @@
  */
 #include "QPythonRuntime.h"
 
-#ifdef PRECESS_EMBED_PYTHON
-
+// 无条件包含：runtime.h 是纯 C++ 声明（PIMPL 的 pybind11/CPython 头隔离在
+// runtime.cpp），但 unique_ptr<Runtime> 成员的析构要求完整类型——降级分支
+// （无 Python，runtime_ 恒空）同样不能缺它
 #include "python/runtime.h"
+
+#ifdef PRECESS_EMBED_PYTHON
 
 #include <QCoreApplication>
 #include <QThread>

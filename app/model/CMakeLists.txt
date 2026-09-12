@@ -50,6 +50,12 @@ target_link_libraries(modelQml PUBLIC
 target_link_libraries(modelQml PRIVATE 
     modelPart QArgType
 )
+# 宿主头目录无条件可见：QPythonRuntime.cpp 两个分支都包含 python/runtime.h
+# （unique_ptr<Runtime> 成员析构要求完整类型）；降级时 precess_runtime 目标
+# 不存在、include 无法经链接传递，须在此直接给出
+target_include_directories(modelQml PRIVATE
+    "${CMAKE_SOURCE_DIR}/python/include"
+)
 
 if(PRECESS_EMBED_PYTHON)
     target_link_libraries(modelQml PRIVATE precess_runtime)
