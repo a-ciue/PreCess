@@ -5,8 +5,11 @@ add_subdirectory(model)
 add_subdirectory(render)
 
 # 1) 生成 App Bundle（macOS 上的 .app 目录结构）
-set(app_icon_resource_windows "${CMAKE_SOURCE_DIR}/resource/PreCess.rc")
-qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_icon_resource_windows})
+set(app_resource "")
+if(WIN32)
+    set(app_resource "${CMAKE_SOURCE_DIR}/resource/PreCess.rc")
+endif()
+qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_resource})
 # 设置编译完成的组件在 qrc:/qt/qml
 qt_add_qml_module(${MYNAME}
         URI app
@@ -32,9 +35,14 @@ target_link_libraries(${MYNAME}
     renderQml renderQmlplugin modelQml modelQmlplugin
     VTK::GUISupportQtQuick
     Qt${VTK_QT_VERSION}::Quick
+    Qt${VTK_QT_VERSION}::Svg
     KDAB::kddockwidgets
     spdlog::spdlog
     "$<TARGET_NAME_IF_EXISTS:StaticPlugins>"
+)
+
+target_compile_definitions(${MYNAME} PRIVATE
+    "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
 )
 
 # - Prevent the creation of a console window on Windows.
@@ -44,9 +52,18 @@ set_target_properties(${MYNAME} PROPERTIES
     MACOSX_BUNDLE ON
 )
 
-target_compile_definitions(${MYNAME} PRIVATE
-        "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
-)
+if(APPLE)
+    set(app_icon_macos "${CMAKE_SOURCE_DIR}/resource/PreCess.icns")
+    target_sources(${MYNAME} PRIVATE ${app_icon_macos})
+    set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    set_target_properties(${MYNAME} PROPERTIES
+        MACOSX_BUNDLE_ICON_FILE PreCess.icns
+        MACOSX_BUNDLE_GUI_IDENTIFIER com.precess.PreCess
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
+        INSTALL_RPATH "@executable_path/../Frameworks"
+    )
+endif()
 
 if(EMSCRIPTEN)
 target_sources(${MYNAME} PRIVATE
@@ -54,7 +71,6 @@ target_sources(${MYNAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/QWasmBridge.h"
 )
 # 静态 wasm 构建需要显式导入图片格式插件
-target_link_libraries(${MYNAME} PRIVATE Qt6::Svg)
 qt_import_plugins(${MYNAME} INCLUDE
     Qt6::QSvgPlugin
     Qt6::QSvgIconPlugin
@@ -94,13 +110,42 @@ set(DEPENDENCY_DIRECTORIES
 if(freetype_FOUND)
     list(APPEND DEPENDENCY_DIRECTORIES $<TARGET_FILE_DIR:freetype>)
 endif()
+set(DEPENDENCY_POST_EXCLUDE_REGEXES ".*system32/.*\\.dll")
+if(APPLE)
+    list(APPEND DEPENDENCY_POST_EXCLUDE_REGEXES
+        "/usr/lib/.*"
+        "/System/Library/.*"
+    )
+elseif(UNIX)
+    list(APPEND DEPENDENCY_POST_EXCLUDE_REGEXES
+        ".*libc\\.so.*"
+        ".*libm\\.so.*"
+        ".*libdl\\.so.*"
+        ".*libpthread\\.so.*"
+        ".*librt\\.so.*"
+        ".*libnsl\\.so.*"
+        ".*libstdc\\+\\+\\.so.*"
+        ".*libgcc_s\\.so.*"
+        ".*libGL\\.so.*"
+        ".*libEGL\\.so.*"
+        ".*libOpenGL\\.so.*"
+        ".*libGLX\\.so.*"
+        ".*libxkbcommon\\.so.*"
+        ".*libwayland-.*\\.so.*"
+        ".*libX[a-zA-Z0-9]*\\.so.*"
+        ".*libfontconfig\\.so.*"
+        ".*libglib-2\\.0\\.so.*"
+    )
+endif()
 install(
     TARGETS ${MYNAME}
     RUNTIME_DEPENDENCIES
     DIRECTORIES ${DEPENDENCY_DIRECTORIES}
-    PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"  # don't install Windows-provided libs
-    POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"  # don't install Windows-provided libs
-    FRAMEWORK DESTINATION Frameworks
+    PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" # don't install system provided libs
+    POST_EXCLUDE_REGEXES ${DEPENDENCY_POST_EXCLUDE_REGEXES}
+    FRAMEWORK DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/Frameworks,Frameworks>
+    LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/Frameworks,lib>
+    RUNTIME DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/MacOS,bin>
     BUNDLE DESTINATION .
     COMPONENT ${MYNAME}
 )
@@ -120,17 +165,18 @@ endif()
 
 # 5) 使用 fixup_bundle 将所有依赖“收拢”进 .app，并修正引用路径（仅在 macOS 下执行）
 if(APPLE)
-  set(APP_BUNDLE_EXECUTABLE "${CMAKE_INSTALL_PREFIX}/${MYNAME}.app/Contents/MacOS/${MYNAME}")
-
   install(CODE "
     include(BundleUtilities)
     # 使用 $ENV{DESTDIR} 拼接最终路径
     set(BUNDLE_PATH \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${MYNAME}.app/Contents/MacOS/${MYNAME}\")
+    # 插件经运行期加载、不在主程序链接依赖内，一并交给 fixup_bundle 解析依赖并改写引用
+    file(GLOB plugin_libraries
+        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${MYNAME}.app/Contents/plugins/*.dylib\")
     message(STATUS \"fixup_bundle: processing \${BUNDLE_PATH}\")
     fixup_bundle(
       \"\${BUNDLE_PATH}\"
-      \"\"
-      \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/Frameworks;/opt/homebrew/lib;/usr/local/lib\"
+      \"\${plugin_libraries}\"
+      \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${MYNAME}.app/Contents/Frameworks;\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/lib;/opt/homebrew/lib;/usr/local/lib\"
     )
   ")
 endif()

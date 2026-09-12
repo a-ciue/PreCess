@@ -1,6 +1,14 @@
 add_custom_target(AllPlugins)
 set(PLUGINS_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
+if(APPLE)
+    set(plugins_destination "${MYNAME}.app/Contents/plugins")
+    set(plugins_output_dir "${CMAKE_BINARY_DIR}/app/${MYNAME}.app/Contents/plugins")
+else()
+    set(plugins_destination "plugins")
+    set(plugins_output_dir "${PLUGINS_BUILD_DIR}")
+endif()
+
 # 从插件头文件解析插件类名（IID 形如 com.PreCess.systems.<分类>.<类名>/1.0）。
 function(_get_plugin_class_name PLUGIN_H OUT_VAR)
     if(NOT IS_ABSOLUTE "${PLUGIN_H}")
@@ -34,6 +42,7 @@ function(_add_plugin TARGET)
 
     # 静态库，供测试链接使用
     add_library(${target_lib} STATIC ${plug_SOURCES})
+    set_target_properties(${target_lib} PROPERTIES POSITION_INDEPENDENT_CODE ON)
     target_link_libraries(${target_lib} PUBLIC
         Core Data DataOps ${plug_LIBS}
         spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
@@ -50,10 +59,13 @@ function(_add_plugin TARGET)
     else()
         qt_add_plugin(${TARGET} ${plug_PLUGIN_H})
         set_target_properties(${TARGET} PROPERTIES
-            LIBRARY_OUTPUT_DIRECTORY "${PLUGINS_BUILD_DIR}"
+            LIBRARY_OUTPUT_DIRECTORY "${plugins_output_dir}"
         )
+        if(APPLE)
+            set_property(TARGET ${TARGET} APPEND PROPERTY INSTALL_RPATH "@loader_path/../Frameworks")
+        endif()
         install(TARGETS ${TARGET}
-            LIBRARY DESTINATION plugins
+            LIBRARY DESTINATION ${plugins_destination}
             COMPONENT AllPlugins
         )
     endif()
@@ -126,16 +138,44 @@ function(precess_plugin_link_libraries TARGET)
     endif()
     list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
     list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")
+
+    set(plugin_post_exclude_regexes ".*system32/.*\\.dll" "Qt${VTK_QT_VERSION}Core")
+    if(APPLE)
+        list(APPEND plugin_post_exclude_regexes
+            "/usr/lib/.*"
+            "/System/Library/.*"
+        )
+    elseif(UNIX)
+        list(APPEND plugin_post_exclude_regexes
+            ".*libc\\.so.*"
+            ".*libm\\.so.*"
+            ".*libdl\\.so.*"
+            ".*libpthread\\.so.*"
+            ".*librt\\.so.*"
+            ".*libnsl\\.so.*"
+            ".*libstdc\\+\\+\\.so.*"
+            ".*libgcc_s\\.so.*"
+            ".*libGL\\.so.*"
+            ".*libEGL\\.so.*"
+            ".*libOpenGL\\.so.*"
+            ".*libGLX\\.so.*"
+            ".*libxkbcommon\\.so.*"
+            ".*libwayland-.*\\.so.*"
+            ".*libX[a-zA-Z0-9]*\\.so.*"
+            ".*libfontconfig\\.so.*"
+            ".*libglib-2\\.0\\.so.*"
+        )
+    endif()
     install(
-            TARGETS ${TARGET}
-            RUNTIME_DEPENDENCIES
-            DIRECTORIES $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core> ${DEPENDENT_LIBRARIES}
-            PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "spdlog" "freetype" # don't install Windows-provided libs
-            POST_EXCLUDE_REGEXES ".*system32/.*\\.dll" "Qt${VTK_QT_VERSION}Core"  # don't install Windows-provided libs
-            FRAMEWORK DESTINATION Frameworks
-            BUNDLE DESTINATION .
-            LIBRARY DESTINATION plugins
-            COMPONENT AllPlugins
+        TARGETS ${TARGET}
+        RUNTIME_DEPENDENCIES
+        DIRECTORIES $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core> ${DEPENDENT_LIBRARIES}
+        PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "spdlog" "freetype" # don't install Windows-provided libs
+        POST_EXCLUDE_REGEXES ${plugin_post_exclude_regexes}
+        FRAMEWORK DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/Frameworks,Frameworks>
+        LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/Frameworks,plugins>
+        BUNDLE DESTINATION .
+        COMPONENT AllPlugins
     )
 endfunction()
 

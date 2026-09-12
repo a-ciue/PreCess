@@ -18,4 +18,14 @@ target_link_libraries(DataOps PRIVATE
 	TKTopAlgo
 )
 
+# std::execution 并行策略：GCC 的 pstl 后端为 TBB，须显式链接；
+# AppleClang 须显式链接 libc++experimental.a
+# MSVC 使用自带的 Windows 线程池后端，无需引入
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	find_package(TBB REQUIRED)
+	target_link_libraries(DataOps PRIVATE TBB::tbb)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+	target_link_libraries(DataOps PRIVATE c++experimental)
+endif()
+
 add_subdirectory(test)

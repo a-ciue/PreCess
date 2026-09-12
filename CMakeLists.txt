@@ -18,7 +18,22 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-finput-charset=UTF-8>)
 endif()
 
-list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
+if(UNIX)
+    # 链接到动态库的静态库必须启用 PIC
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+    add_link_options($<$<PLATFORM_ID:Linux>:-Wl,--disable-new-dtags>)
+endif()
+
+if(APPLE)
+    # Apple libc++ 的 std::execution 并行算法属实验特性，须显式开启
+    add_compile_options(-fexperimental-library)
+    # 构建时注入 rpath 用于调试和测试，安装时的 rpath 由 fixup_bundle 处理
+    foreach(_prefix IN LISTS CMAKE_PREFIX_PATH)
+        if(EXISTS "${_prefix}/lib")
+            list(APPEND CMAKE_BUILD_RPATH "${_prefix}/lib")
+        endif()
+    endforeach()
+endif()
 
 if(EMSCRIPTEN)
     # for std::execution
@@ -44,6 +59,8 @@ endif()
 
 option(BUILD_TESTING "是否启用并构建测试用例" OFF)
 
+list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/cmake")
+
 find_package(spdlog REQUIRED)
 
 find_package(OpenCASCADE REQUIRED)
@@ -67,7 +84,7 @@ if(NOT freetype_FOUND)
     endif()
 endif()
 
-find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick QuickControls2)
+find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick QuickControls2 Svg)
 message(STATUS "QT_VERSION: Qt${VTK_QT_VERSION}")
 qt_policy(SET QTP0001 NEW)
 qt_standard_project_setup()
