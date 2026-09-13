@@ -58,7 +58,8 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     REQUIRE(mgr != nullptr);
     const QStringList messages = mgr->messages();
 
-    // 统一格式：[时间] [QML] [级别] 消息；[QML] 标签用来源蓝，正文按级别着色
+    // 统一格式：[时间] [QML] [级别] 消息；[QML] 标签用来源蓝，正文按级别着色。
+    // spdlog %e 固定 3 位毫秒，精度/格式变化属契约变更，应让用例显式失败
     const QRegularExpression timestamp(QStringLiteral("\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\]"));
 
     const QString warning = findMessage(messages, "qlog-test-warning");

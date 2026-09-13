@@ -19,6 +19,10 @@ constexpr char kQmlLoggerName[] = "QML";
 constexpr char kSourceColor[] = "#1976d2";
 
 //! @brief 默认 spdlog 格式行首的时间戳（[%Y-%m-%d %H:%M:%S.%e]），用于定位来源段
+//!
+//! 来源标签着色依赖默认格式化模式的 %n（logger 名）段：本函数定位时间戳，
+//! appendMessage 据此确认 [来源] 紧随时间戳。若外部改用不含 %n 的自定义 pattern，
+//! 标签将退化为普通文本（无着色），并由 TestQLogManager 的精确格式断言拦截。
 const QRegularExpression& timestampEndRegex()
 {
     static const QRegularExpression rx(
@@ -164,7 +168,8 @@ void QLogManager::initialize()
     logger->set_level(spdlog::get_level());
     spdlog::set_default_logger(logger);
 
-    // QML/Qt 消息专用 logger：与主日志共用 sink 与格式，级别 trace 保证调试信息不被过滤
+    // QML/Qt 消息专用 logger：与主日志共用 sink 与格式，级别 trace 保证调试信息不被过滤；
+    // logger 名兼作默认 pattern 的 [QML] 来源标签（标签着色见 appendMessage）
     g_qt_logger = std::make_shared<spdlog::logger>(kQmlLoggerName, sink);
     g_qt_logger->set_level(spdlog::level::trace);
 
