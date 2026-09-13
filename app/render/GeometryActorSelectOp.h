@@ -3,6 +3,7 @@
 #include <array>
 #include <memory>
 #include <optional>
+#include <utility>
 #include <vector>
 
 #include <vtkSmartPointer.h>
@@ -42,6 +43,9 @@ public:
 
     std::optional<Index> resolvePickedSubshape(IVtkTools_ShapePicker* picker, IVtk_IdType shapeId,
         SelectMode mode, IVtk_IdType& out_sub_id) const;
+
+    std::vector<std::pair<IVtk_IdType, Index>> resolvePickedSubshapes(
+        IVtkTools_ShapePicker* picker, IVtk_IdType shapeId, SelectMode mode) const;
 
     /**
      * @brief 取几何顶点子形状的世界坐标
