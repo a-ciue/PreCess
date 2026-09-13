@@ -1,6 +1,7 @@
 #include "QLogManager.h"
 
 #include <QMetaObject>
+#include <QRegularExpression>
 #include <QtLogging>
 
 #include <cstdio>
@@ -16,6 +17,14 @@ constexpr char kQmlLoggerName[] = "QML";
 
 //! @brief 来源标签色（与 JavaScriptConsole 主题蓝一致）
 constexpr char kSourceColor[] = "#1976d2";
+
+//! @brief 默认 spdlog 格式行首的时间戳（[%Y-%m-%d %H:%M:%S.%e]），用于定位来源段
+const QRegularExpression& timestampEndRegex()
+{
+    static const QRegularExpression rx(
+        QStringLiteral("^\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\]"));
+    return rx;
+}
 
 //! @brief 安装本处理器时返回的上一级处理器，用于保留 Qt/宿主的既有输出行为
 QtMessageHandler g_previous_handler = nullptr;
@@ -70,7 +79,8 @@ void qtMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
         text = QStringLiteral("[%1] %2").arg(QString::fromUtf8(context.category), message);
     }
 
-    if (QLogManager::instance())
+    // 防御：初始化完成前/退出期 g_qt_logger 可能为空（正常路径下与 instance() 同生共死）
+    if (QLogManager::instance() && g_qt_logger)
         g_qt_logger->log(level, "{}", text.toStdString());
 }
 
@@ -84,7 +94,7 @@ protected:
         spdlog::memory_buf_t formatted;
         spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
         QString text = QString::fromUtf8(formatted.data(), static_cast<int>(formatted.size()));
-        // 去掉格式化器追加的平台行尾（Windows 下为 CRLF）
+        // 去掉格式化器追加的平台行尾：spdlog 默认 EOL 为 SPDLOG_EOL（Windows 为 "\r\n"）
         if (text.endsWith(QLatin1String("\r\n")))
             text.chop(2);
         else if (text.endsWith(QLatin1Char('\n')))
@@ -197,8 +207,8 @@ void QLogManager::appendMessage(const QString& level, const QString& message, co
     if (!source.isEmpty()) {
         const QString tag = QStringLiteral("[%1]").arg(source.toHtmlEscaped());
         const qsizetype tag_pos = html.indexOf(tag);
-        const qsizetype header_end = html.indexOf(QStringLiteral("] ")); // 时间戳结束位置
-        if (tag_pos >= 0 && header_end >= 0 && tag_pos == header_end + 2) {
+        const QRegularExpressionMatch match = timestampEndRegex().match(html);
+        if (tag_pos >= 0 && match.hasMatch() && tag_pos == match.capturedEnd() + 1) {
             html.replace(tag_pos, tag.size(),
                 QStringLiteral("<span style='color:%1; white-space:pre;'>%2</span>")
                     .arg(QString::fromLatin1(kSourceColor), tag));

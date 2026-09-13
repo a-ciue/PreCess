@@ -1,4 +1,6 @@
 # QLogManager Qt/QML 消息桥接测试
+# app 层无库目标（QLogManager 仅编入 PreCess 可执行目标，测试无法链接），
+# 故直接编译源文件并启用 AUTOMOC
 precess_add_test(TestQLogManager
     TestQLogManager.cpp
     "${CMAKE_CURRENT_SOURCE_DIR}/../QLogManager.cpp"
