@@ -3,6 +3,9 @@ find_package(KDDockWidgets-qt6 REQUIRED)
 add_subdirectory(core)
 add_subdirectory(model)
 add_subdirectory(render)
+if(BUILD_TESTING)
+add_subdirectory(test)
+endif()
 
 # 1) 生成 App Bundle（macOS 上的 .app 目录结构）
 set(app_resource "")

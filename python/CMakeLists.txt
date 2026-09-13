@@ -49,6 +49,9 @@ if(_precess_real)
             ERROR_QUIET
             RESULT_VARIABLE _pybind11_result
         )
+        # pybind11 3.1 起 --cmakedir 对含空格的路径会输出带双引号的路径，
+        # 去引号后再交给 find_package，否则 HINTS 解析失败误判未找到
+        string(REPLACE "\"" "" _pybind11_dir "${_pybind11_dir}")
         find_package(pybind11 CONFIG QUIET HINTS "${_pybind11_dir}")
     endif()
     if(NOT pybind11_FOUND)
