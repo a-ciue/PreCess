@@ -11,6 +11,12 @@
 
 namespace {
 
+//! @brief QML/Qt 消息专用 logger 名与 [QML] 来源标签的单一来源
+constexpr char kQmlLoggerName[] = "QML";
+
+//! @brief 来源标签色（与 JavaScriptConsole 主题蓝一致）
+constexpr char kSourceColor[] = "#1976d2";
+
 //! @brief 安装本处理器时返回的上一级处理器，用于保留 Qt/宿主的既有输出行为
 QtMessageHandler g_previous_handler = nullptr;
 
@@ -64,7 +70,7 @@ void qtMessageHandler(QtMsgType type, const QMessageLogContext& context, const Q
         text = QStringLiteral("[%1] %2").arg(QString::fromUtf8(context.category), message);
     }
 
-    if (QLogManager::instance() && g_qt_logger)
+    if (QLogManager::instance())
         g_qt_logger->log(level, "{}", text.toStdString());
 }
 
@@ -109,17 +115,10 @@ protected:
             break;
         }
 
-        // 转义后给 [QML] 来源标签上专属色，其余正文按级别着色
-        QString html = text.toHtmlEscaped();
-        if (msg.logger_name == spdlog::string_view_t("QML")) {
-            const QString tag = QStringLiteral("[QML]");
-            const qsizetype pos = html.indexOf(tag);
-            if (pos >= 0) {
-                html.replace(pos, tag.size(),
-                    QStringLiteral("<span style='color:#1976d2; white-space:pre;'>%1</span>")
-                        .arg(tag));
-            }
-        }
+        // 来源名交由 appendMessage 转义并着色，此处仅标识来源
+        const QString source = (msg.logger_name == spdlog::string_view_t(kQmlLoggerName))
+            ? QString::fromLatin1(kQmlLoggerName)
+            : QString();
 
         auto* mgr = QLogManager::instance();
         if (!mgr)
@@ -127,7 +126,8 @@ protected:
 
         QMetaObject::invokeMethod(mgr, "appendMessage", Qt::QueuedConnection,
             Q_ARG(QString, levelStr),
-            Q_ARG(QString, html));
+            Q_ARG(QString, text),
+            Q_ARG(QString, source));
     }
 
     void flush_() override { }
@@ -155,7 +155,7 @@ void QLogManager::initialize()
     spdlog::set_default_logger(logger);
 
     // QML/Qt 消息专用 logger：与主日志共用 sink 与格式，级别 trace 保证调试信息不被过滤
-    g_qt_logger = std::make_shared<spdlog::logger>("QML", sink);
+    g_qt_logger = std::make_shared<spdlog::logger>(kQmlLoggerName, sink);
     g_qt_logger->set_level(spdlog::level::trace);
 
     // 接管 Qt/QML 消息（QML 报错、console.*、绑定警告等），汇入同一日志面板
@@ -172,7 +172,7 @@ QStringList QLogManager::messages() const
     return messages_;
 }
 
-void QLogManager::appendMessage(const QString& level, const QString& message)
+void QLogManager::appendMessage(const QString& level, const QString& message, const QString& source)
 {
     if (messages_.size() >= MaxMessages)
         messages_.removeFirst();
@@ -191,9 +191,20 @@ void QLogManager::appendMessage(const QString& level, const QString& message)
     else
         color = QStringLiteral("#333333");
 
-    QString html = QStringLiteral(
-        "<span style='color:%1; white-space:pre;'>%2</span>")
-                       .arg(color, message);
+    // 原始文本统一转义；来源标签单独着色，正文按级别着色
+    QString html = message.toHtmlEscaped();
+    if (!source.isEmpty()) {
+        const QString tag = QStringLiteral("[%1]").arg(source.toHtmlEscaped());
+        const qsizetype pos = html.indexOf(tag);
+        if (pos >= 0) {
+            html.replace(pos, tag.size(),
+                QStringLiteral("<span style='color:%1; white-space:pre;'>%2</span>")
+                    .arg(QString::fromLatin1(kSourceColor), tag));
+        }
+    }
+
+    html = QStringLiteral("<span style='color:%1; white-space:pre;'>%2</span>")
+               .arg(color, html);
 
     messages_.append(html);
     emit newMessage(level, html);

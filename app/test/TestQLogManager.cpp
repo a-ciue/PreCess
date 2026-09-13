@@ -30,14 +30,21 @@ QString findMessage(const QStringList& messages, const QString& text)
     return QString();
 }
 
+//! @brief 进程内唯一的 QCoreApplication：Catch2 单进程不可重复构造，静态化以兼容后续用例
+QCoreApplication& ensureApplication()
+{
+    static int argc = 1;
+    static char app_name[] = "TestQLogManager";
+    static char* argv[] = { app_name, nullptr };
+    static QCoreApplication app(argc, argv);
+    return app;
+}
+
 } // namespace
 
 TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
 {
-    int argc = 1;
-    char app_name[] = "TestQLogManager";
-    char* argv[] = { app_name, nullptr };
-    QCoreApplication app(argc, argv);
+    (void)ensureApplication();
     QLogManager::initialize();
 
     qWarning("qlog-test-warning");
@@ -77,6 +84,13 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     REQUIRE(spdlog_message.contains(timestamp));
     REQUIRE_FALSE(spdlog_message.contains("[QML]"));
     REQUIRE(spdlog_message.contains("#e65100"));
+
+    // appendMessage 对原始文本统一转义，避免 HTML 注入
+    QLogManager::instance()->appendMessage(
+        QStringLiteral("INFO"), QStringLiteral("<b>qlog-test-raw</b>"));
+    const QString escaped = findMessage(QLogManager::instance()->messages(), "qlog-test-raw");
+    REQUIRE_FALSE(escaped.isEmpty());
+    REQUIRE(escaped.contains(QStringLiteral("&lt;b&gt;qlog-test-raw&lt;/b&gt;")));
 
     // QML 运行时报错（绑定表达式引用未定义标识符）经 qWarning 汇入日志面板
     QQmlEngine engine;
