@@ -1,9 +1,74 @@
 #include "QLogManager.h"
 
 #include <QMetaObject>
+#include <QtLogging>
+
+#include <cstdio>
+#include <cstring>
 
 #include <spdlog/sinks/base_sink.h>
 #include <spdlog/spdlog.h>
+
+namespace {
+
+//! @brief 安装本处理器时返回的上一级处理器，用于保留 Qt/宿主的既有输出行为
+QtMessageHandler g_previous_handler = nullptr;
+
+//! @brief QML/Qt 消息专用 logger：与主日志共用 sink、格式一致；级别恒为 trace，
+//!        避免 QML 调试信息被 SPDLOG_LEVEL 默认的 info 档过滤
+std::shared_ptr<spdlog::logger> g_qt_logger;
+
+//! @brief 将 Qt/QML 消息桥接到日志面板
+//!
+//! QML 运行时报错、console.log/warn/error、属性绑定警告与 Qt 内部警告都经
+//! qDebug/qWarning 输出，统一映射为 spdlog 级别后由 "QML" logger 格式化，与主日志
+//! 共用时间戳/级别/来源格式；同时调用上一级处理器（Qt 6.8 起无自定义处理器时返回
+//! 默认处理器，旧版本可能为 nullptr），保留终端与调试器的既有输出；无上一级处理器
+//! 时自行补写 stderr。
+void qtMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message)
+{
+    // 保留既有处理器（如调试器/宿主安装的处理器）的行为
+    if (g_previous_handler) {
+        g_previous_handler(type, context, message);
+    } else {
+        QString formatted = qFormatLogMessage(type, context, message);
+        if (formatted.endsWith(QLatin1Char('\n')))
+            formatted.chop(1);
+        std::fprintf(stderr, "%s\n", formatted.toLocal8Bit().constData());
+        std::fflush(stderr);
+    }
+
+    spdlog::level::level_enum level = spdlog::level::debug;
+    switch (type) {
+    case QtDebugMsg:
+        level = spdlog::level::debug;
+        break;
+    case QtInfoMsg:
+        level = spdlog::level::info;
+        break;
+    case QtWarningMsg:
+        level = spdlog::level::warn;
+        break;
+    case QtCriticalMsg:
+        level = spdlog::level::err;
+        break;
+    case QtFatalMsg:
+        level = spdlog::level::critical;
+        break;
+    }
+
+    // 非默认 category（如 qt.qpa.*）保留来源前缀；qml 已由 [QML] 标签标识
+    QString text = message;
+    if (context.category && std::strcmp(context.category, "default") != 0
+        && std::strcmp(context.category, "qml") != 0) {
+        text = QStringLiteral("[%1] %2").arg(QString::fromUtf8(context.category), message);
+    }
+
+    if (QLogManager::instance() && g_qt_logger)
+        g_qt_logger->log(level, "{}", text.toStdString());
+}
+
+} // namespace
 
 template <typename Mutex>
 class QtLogSink : public spdlog::sinks::base_sink<Mutex> {
@@ -13,7 +78,10 @@ protected:
         spdlog::memory_buf_t formatted;
         spdlog::sinks::base_sink<Mutex>::formatter_->format(msg, formatted);
         QString text = QString::fromUtf8(formatted.data(), static_cast<int>(formatted.size()));
-        if (text.endsWith('\n'))
+        // 去掉格式化器追加的平台行尾（Windows 下为 CRLF）
+        if (text.endsWith(QLatin1String("\r\n")))
+            text.chop(2);
+        else if (text.endsWith(QLatin1Char('\n')))
             text.chop(1);
 
         QString levelStr;
@@ -41,13 +109,25 @@ protected:
             break;
         }
 
+        // 转义后给 [QML] 来源标签上专属色，其余正文按级别着色
+        QString html = text.toHtmlEscaped();
+        if (msg.logger_name == spdlog::string_view_t("QML")) {
+            const QString tag = QStringLiteral("[QML]");
+            const qsizetype pos = html.indexOf(tag);
+            if (pos >= 0) {
+                html.replace(pos, tag.size(),
+                    QStringLiteral("<span style='color:#1976d2; white-space:pre;'>%1</span>")
+                        .arg(tag));
+            }
+        }
+
         auto* mgr = QLogManager::instance();
         if (!mgr)
             return;
 
         QMetaObject::invokeMethod(mgr, "appendMessage", Qt::QueuedConnection,
             Q_ARG(QString, levelStr),
-            Q_ARG(QString, text));
+            Q_ARG(QString, html));
     }
 
     void flush_() override { }
@@ -73,6 +153,13 @@ void QLogManager::initialize()
     auto logger = std::make_shared<spdlog::logger>("PreCess", sink);
     logger->set_level(spdlog::get_level());
     spdlog::set_default_logger(logger);
+
+    // QML/Qt 消息专用 logger：与主日志共用 sink 与格式，级别 trace 保证调试信息不被过滤
+    g_qt_logger = std::make_shared<spdlog::logger>("QML", sink);
+    g_qt_logger->set_level(spdlog::level::trace);
+
+    // 接管 Qt/QML 消息（QML 报错、console.*、绑定警告等），汇入同一日志面板
+    g_previous_handler = qInstallMessageHandler(qtMessageHandler);
 }
 
 QLogManager* QLogManager::instance()
@@ -106,7 +193,7 @@ void QLogManager::appendMessage(const QString& level, const QString& message)
 
     QString html = QStringLiteral(
         "<span style='color:%1; white-space:pre;'>%2</span>")
-                       .arg(color, message.toHtmlEscaped());
+                       .arg(color, message);
 
     messages_.append(html);
     emit newMessage(level, html);
