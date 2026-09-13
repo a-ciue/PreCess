@@ -54,7 +54,9 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     spdlog::warn("qlog-test-spdlog");
     QCoreApplication::processEvents();
 
-    const QStringList messages = QLogManager::instance()->messages();
+    auto* mgr = QLogManager::instance();
+    REQUIRE(mgr != nullptr);
+    const QStringList messages = mgr->messages();
 
     // 统一格式：[时间] [QML] [级别] 消息；[QML] 标签用来源蓝，正文按级别着色
     const QRegularExpression timestamp(QStringLiteral("\\[\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\]"));
@@ -86,11 +88,18 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     REQUIRE(spdlog_message.contains("#e65100"));
 
     // appendMessage 对原始文本统一转义，避免 HTML 注入
-    QLogManager::instance()->appendMessage(
-        QStringLiteral("INFO"), QStringLiteral("<b>qlog-test-raw</b>"));
-    const QString escaped = findMessage(QLogManager::instance()->messages(), "qlog-test-raw");
+    mgr->appendMessage(QStringLiteral("INFO"), QStringLiteral("<b>qlog-test-raw</b>"));
+    const QString escaped = findMessage(mgr->messages(), "qlog-test-raw");
     REQUIRE_FALSE(escaped.isEmpty());
     REQUIRE(escaped.contains(QStringLiteral("&lt;b&gt;qlog-test-raw&lt;/b&gt;")));
+
+    // 正文包含与来源标签相同的子串时，仅着色紧随时间戳的 header 段
+    qWarning("[QML] qlog-test-body");
+    QCoreApplication::processEvents();
+    const QString body_line = findMessage(mgr->messages(), "qlog-test-body");
+    REQUIRE_FALSE(body_line.isEmpty());
+    REQUIRE(body_line.count(QStringLiteral("#1976d2")) == 1);
+    REQUIRE(body_line.contains(QStringLiteral("[warning] [QML] qlog-test-body")));
 
     // QML 运行时报错（绑定表达式引用未定义标识符）经 qWarning 汇入日志面板
     QQmlEngine engine;
@@ -102,7 +111,7 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     QCoreApplication::processEvents();
 
     REQUIRE(qml_object != nullptr);
-    const QString qml_error = findMessage(QLogManager::instance()->messages(), "TestQLogManager.qml");
+    const QString qml_error = findMessage(mgr->messages(), "TestQLogManager.qml");
     REQUIRE_FALSE(qml_error.isEmpty());
     REQUIRE(qml_error.contains("[QML]"));
     REQUIRE(qml_error.contains("[warning]"));

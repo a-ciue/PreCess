@@ -191,13 +191,15 @@ void QLogManager::appendMessage(const QString& level, const QString& message, co
     else
         color = QStringLiteral("#333333");
 
-    // 原始文本统一转义；来源标签单独着色，正文按级别着色
+    // 原始文本统一转义；来源标签单独着色，正文按级别着色。
+    // 仅着色紧随时间戳的来源段（"[时间] [来源] [级别] …"），避免误改正文中的同名子串
     QString html = message.toHtmlEscaped();
     if (!source.isEmpty()) {
         const QString tag = QStringLiteral("[%1]").arg(source.toHtmlEscaped());
-        const qsizetype pos = html.indexOf(tag);
-        if (pos >= 0) {
-            html.replace(pos, tag.size(),
+        const qsizetype tag_pos = html.indexOf(tag);
+        const qsizetype header_end = html.indexOf(QStringLiteral("] ")); // 时间戳结束位置
+        if (tag_pos >= 0 && header_end >= 0 && tag_pos == header_end + 2) {
+            html.replace(tag_pos, tag.size(),
                 QStringLiteral("<span style='color:%1; white-space:pre;'>%2</span>")
                     .arg(QString::fromLatin1(kSourceColor), tag));
         }
