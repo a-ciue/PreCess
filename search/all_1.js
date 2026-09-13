@@ -58,7 +58,7 @@ var searchData=
   ['app_2eqml_55',['App.qml',['../App_8qml.html',1,'']]],
   ['appendface_56',['appendFace',['../classComponentOperator.html#adc4b2162296d80a6371abbb1c7f67e08',1,'ComponentOperator']]],
   ['appendgeometryshape_57',['appendGeometryShape',['../classComponentOperator.html#a3cc80372ed1cd3a253860dc09c0bcb64',1,'ComponentOperator']]],
-  ['appendmessage_58',['appendMessage',['../classQLogManager.html#af4b0c0c2a592df1ffdb5963d27d8985e',1,'QLogManager']]],
+  ['appendmessage_58',['appendMessage',['../classQLogManager.html#a4beb4fc78f8774b652b4d62c19f4f1b3',1,'QLogManager']]],
   ['appendpoint_59',['appendPoint',['../classComponentOperator.html#a1f7e33b8f767e01ca38fe50aee6250bc',1,'ComponentOperator']]],
   ['appendrootshape_60',['appendRootShape',['../structGeometryData.html#a384920d3e9373156b44529e8df23e0ee',1,'GeometryData']]],
   ['applied_61',['applied',['../classQUndoStackAdaptor.html#a33537f6e15a6d4abdb9f1bbda0e35d50',1,'QUndoStackAdaptor']]],

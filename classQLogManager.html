@@ -118,7 +118,8 @@ QLogManager 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a8c6bdfbe14a7fb76cf713548af60e28c" id="r_a8c6bdfbe14a7fb76cf713548af60e28c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c6bdfbe14a7fb76cf713548af60e28c">QLogManager</a> (QObject *parent=nullptr)</td></tr>
 <tr class="memitem:a1062e7827a41cbd9b6dfe0d5ab2da94c" id="r_a1062e7827a41cbd9b6dfe0d5ab2da94c"><td class="memItemLeft" align="right" valign="top">QStringList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1062e7827a41cbd9b6dfe0d5ab2da94c">messages</a> () const</td></tr>
-<tr class="memitem:af4b0c0c2a592df1ffdb5963d27d8985e" id="r_af4b0c0c2a592df1ffdb5963d27d8985e"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4b0c0c2a592df1ffdb5963d27d8985e">appendMessage</a> (const QString &amp;level, const QString &amp;message)</td></tr>
+<tr class="memitem:a4beb4fc78f8774b652b4d62c19f4f1b3" id="r_a4beb4fc78f8774b652b4d62c19f4f1b3"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4beb4fc78f8774b652b4d62c19f4f1b3">appendMessage</a> (const QString &amp;level, const QString &amp;message, const QString &amp;source=QString())</td></tr>
+<tr class="memdesc:a4beb4fc78f8774b652b4d62c19f4f1b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">追加一条日志并由 QML 面板展示  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
@@ -165,8 +166,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="af4b0c0c2a592df1ffdb5963d27d8985e" name="af4b0c0c2a592df1ffdb5963d27d8985e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4b0c0c2a592df1ffdb5963d27d8985e">&#9670;&#160;</a></span>appendMessage()</h2>
+<a id="a4beb4fc78f8774b652b4d62c19f4f1b3" name="a4beb4fc78f8774b652b4d62c19f4f1b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4beb4fc78f8774b652b4d62c19f4f1b3">&#9670;&#160;</a></span>appendMessage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,10 +180,25 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span>&#160;)</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>message</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>source</em></span><span class="paramdefsep"> = </span><span class="paramdefval">QString()</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>追加一条日志并由 QML 面板展示 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">level</td><td>级别名（DEBUG/INFO/WARN/ERROR/FATAL 等），决定整行主色 </td></tr>
+    <tr><td class="paramname">message</td><td>原始文本，内部统一转义，避免 HTML 注入 </td></tr>
+    <tr><td class="paramname">source</td><td>来源名（如 QML）；非空时行内 [source] 标签以来源色标出 </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
