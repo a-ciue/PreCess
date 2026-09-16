@@ -1,5 +1,6 @@
 #include "GeometryActor.h"
 #include "Core.h"
+#include "GeometryTopologyDiagnosticActor.h"
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
@@ -32,6 +33,7 @@ GeometryActor::GeometryActor(vtkRenderer* renderer)
 {
     this->renderer_ = renderer;
     this->visibility_ = true;
+    topology_diagnostics_ = std::make_unique<GeometryTopologyDiagnosticActor>(renderer_);
 }
 
 GeometryActor::~GeometryActor()
@@ -96,6 +98,9 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_sub_id_array_ = findSubIdArray(line_only);
     poly_sub_id_array_ = findSubIdArray(poly_only);
 
+    topology_diagnostics_->loadShape(geometry_data.shape, occ_shape_,
+        line_only_, line_sub_id_array_, poly_only_, poly_sub_id_array_);
+
     NCollection_Map<IVtk_IdType> edgeVertexIds;
     for (TopExp_Explorer exp(geometry_data.shape, TopAbs_EDGE); exp.More(); exp.Next()) {
         IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
@@ -147,6 +152,7 @@ void GeometryActor::setVisibility(bool visibility)
 {
     this->visibility_ = visibility;
     applyStyle();
+    topology_diagnostics_->setGeometryVisible(isVisible());
 }
 
 bool GeometryActor::isVisible() const
@@ -158,11 +164,17 @@ void GeometryActor::setRenderStyle(GeometryRenderStyle style)
 {
     this->style_ = style;
     applyStyle();
+    topology_diagnostics_->setGeometryVisible(isVisible());
 }
 
 GeometryRenderStyle GeometryActor::getRenderStyle() const
 {
     return style_;
+}
+
+GeometryTopologyDiagnosticActor& GeometryActor::topologyDiagnostics()
+{
+    return *topology_diagnostics_;
 }
 
 void GeometryActor::applyStyle()

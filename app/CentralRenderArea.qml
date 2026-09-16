@@ -328,7 +328,7 @@ Page {
 
             ToolButton {
                 id: topologyDiagnosticBtn
-                text: "拓扑诊断"
+                text: "网格诊断"
                 Layout.preferredWidth: 70
                 Layout.fillHeight: true
                 onClicked: topologyDiagnosticMenu.open()
@@ -433,6 +433,97 @@ Page {
                             }
                         }
                         onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                }
+            }
+
+            ToolButton {
+                id: geometryTopologyDiagnosticBtn
+                text: "几何诊断"
+                Layout.preferredWidth: 70
+                Layout.fillHeight: true
+                onClicked: geometryTopologyDiagnosticMenu.open()
+
+                Menu {
+                    id: geometryTopologyDiagnosticMenu
+                    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                    onAboutToShow: { y = -height }
+
+                    function keepOpenAfterTrigger() {
+                        Qt.callLater(function() {
+                            if (!geometryTopologyDiagnosticMenu.visible)
+                                geometryTopologyDiagnosticMenu.open()
+                        })
+                    }
+
+                    MenuItem {
+                        text: "边界边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(0, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "孤立边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(1, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "非流形边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(2, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        text: "重复面"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(3, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "退化面"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(4, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "相交面"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(5, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "无效拓扑"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(6, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        id: geometryCleanupToleranceItem
+                        text: "清理容差"
+                        contentItem: RowLayout {
+                            Label {
+                                text: geometryCleanupToleranceItem.text
+                                Layout.fillWidth: true
+                            }
+                            TextField {
+                                Layout.preferredWidth: 100
+                                text: "0.000001"
+                                selectByMouse: true
+                                validator: DoubleValidator {
+                                    bottom: 0.0
+                                    notation: DoubleValidator.ScientificNotation
+                                }
+                                onEditingFinished: {
+                                    const tolerance = Number(text)
+                                    if (tolerance > 0)
+                                        myItem.setGeometryTopologyDiagnosticTolerance(tolerance)
+                                }
+                            }
+                        }
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                 }
             }

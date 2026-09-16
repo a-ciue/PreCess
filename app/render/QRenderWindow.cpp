@@ -696,6 +696,24 @@ void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
     });
 }
 
+void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled)
+{
+    dispatch_async([category, enabled](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->geometry_actor_manager_)
+            vtk->geometry_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticTolerance(double tolerance)
+{
+    dispatch_async([tolerance](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->geometry_actor_manager_)
+            vtk->geometry_actor_manager_->setTopologyDiagnosticTolerance(tolerance);
+    });
+}
+
 vtkStandardNewMacro(QRenderWindow::Data);
 
 void QRenderWindow::injectRenderRefreshCallback()

@@ -1,9 +1,11 @@
 #include "GeometryActorManager.h"
 #include "GeometryActor.h"
+#include "GeometryTopologyDiagnosticActor.h"
 
 #include "Core.h"
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <spdlog/spdlog.h>
 
@@ -52,6 +54,12 @@ void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
     }
 
     auto& actor_ptr = component_actors_[component_id];
+    for (size_t category = 0; category < topology_diagnostic_category_enabled_.size(); ++category) {
+        actor_ptr->topologyDiagnostics().setCategoryEnabled(
+            static_cast<GeometryTopologyDiagnosticCategory>(category),
+            topology_diagnostic_category_enabled_[category]);
+    }
+    actor_ptr->topologyDiagnostics().setCleanupTolerance(topology_diagnostic_tolerance_);
     actor_ptr->loadShape(geometry_data);
     actor_ptr->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor_ptr);
@@ -77,4 +85,24 @@ void GeometryActorManager::setCurrentRenderStyle(GeometryRenderStyle style)
 GeometryRenderStyle GeometryActorManager::getCurrentRenderStyle() const
 {
     return current_style_;
+}
+
+void GeometryActorManager::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)
+{
+    if (category < 0 || category >= static_cast<int>(topology_diagnostic_category_enabled_.size()))
+        return;
+    topology_diagnostic_category_enabled_[static_cast<size_t>(category)] = enabled;
+    for (auto& [id, actor] : component_actors_) {
+        actor->topologyDiagnostics().setCategoryEnabled(
+            static_cast<GeometryTopologyDiagnosticCategory>(category), enabled);
+    }
+}
+
+void GeometryActorManager::setTopologyDiagnosticTolerance(double tolerance)
+{
+    if (!std::isfinite(tolerance) || tolerance <= 0.0)
+        return;
+    topology_diagnostic_tolerance_ = tolerance;
+    for (auto& [id, actor] : component_actors_)
+        actor->topologyDiagnostics().setCleanupTolerance(tolerance);
 }

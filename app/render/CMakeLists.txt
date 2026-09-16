@@ -9,6 +9,7 @@ add_library(vtkPart STATIC
     GeometrySelectManager.cpp
     MeshSelectManager.cpp
     GeometryActor.cpp
+    GeometryTopologyDiagnosticActor.cpp
     MeshActorManager.cpp
     GeometryActorManager.cpp
     SolidSelectorHighlight.cpp
@@ -35,7 +36,7 @@ target_link_libraries(vtkPart PUBLIC Core)
 target_link_libraries(vtkPart PUBLIC AlgorithmSystem) # 交互公共类型头文件随 vtkPart 头文件传播（经 SystemCore）
 target_link_libraries(vtkPart
     PRIVATE
-        Data
+        Data DataOps
         TKIVtk TKDESTEP
         VTK::InteractionStyle VTK::FiltersGeometry VTK::FiltersExtraction
         VTK::FiltersSources
