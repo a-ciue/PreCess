@@ -13,8 +13,9 @@ enum class GeometryTopologyDiagnosticCategory {
     BoundaryEdge,
     IsolatedEdge,
     NonManifoldEdge,
+    SmallEdge,
+    SmallFace,
     DuplicateFace,
-    DegeneratedFace,
     IntersectingFace,
     InvalidTopology,
     Count

@@ -3,8 +3,12 @@
 #include "CoincidentTopology.h"
 #include "GeometryTopologyEditor.h"
 
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 #include <IVtk_Types.hxx>
 #include <NCollection_Map.hxx>
+#include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -12,9 +16,12 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <vtkDataArray.h>
+#include <vtkCellArray.h>
+#include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
+#include <gp_Pnt.hxx>
 
 #include <algorithm>
 #include <array>
@@ -29,14 +36,16 @@ constexpr std::array<DiagnosticColor, kGeometryTopologyDiagnosticCategoryCount> 
     { 0.10, 0.80, 0.20 }, // 边界边
     { 1.00, 0.50, 0.00 }, // 孤立边
     { 1.00, 0.00, 0.00 }, // 非流形边
+    { 1.00, 0.35, 0.70 }, // 细小边
+    { 1.00, 0.00, 0.80 }, // 细小面
     { 0.00, 0.80, 1.00 }, // 重复面
-    { 1.00, 0.00, 0.80 }, // 退化面
     { 1.00, 0.90, 0.00 }, // 相交面
     { 0.55, 0.15, 1.00 }, // 无效拓扑
 } };
 
 constexpr double kDiagnosticLineUnits = highlight::LINE_UNITS + 1.0;
 constexpr double kDiagnosticPolygonUnits = highlight::POLYGON_UNITS + 0.5;
+constexpr double kDiagnosticPointUnits = highlight::POINT_UNITS + 1.0;
 
 size_t categoryIndex(GeometryTopologyDiagnosticCategory category)
 {
@@ -47,7 +56,8 @@ bool isEdgeCategory(GeometryTopologyDiagnosticCategory category)
 {
     return category == GeometryTopologyDiagnosticCategory::BoundaryEdge
         || category == GeometryTopologyDiagnosticCategory::IsolatedEdge
-        || category == GeometryTopologyDiagnosticCategory::NonManifoldEdge;
+        || category == GeometryTopologyDiagnosticCategory::NonManifoldEdge
+        || category == GeometryTopologyDiagnosticCategory::SmallEdge;
 }
 
 void appendShapeId(NCollection_Map<IVtk_IdType>& ids,
@@ -92,6 +102,25 @@ GeometryTopologyDiagnosticActor::GeometryTopologyDiagnosticActor(vtkRenderer* re
     }
     setup_pipeline(invalid_edge_pipeline_,
         categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology), true);
+
+    auto setup_marker = [this](SizeMarkerPipeline& marker, size_t color_index, float point_size) {
+        marker.mapper->SetInputData(marker.data);
+        marker.mapper->SetScalarVisibility(false);
+        marker.mapper->SetRelativeCoincidentTopologyPointOffsetParameter(kDiagnosticPointUnits);
+        marker.actor->SetMapper(marker.mapper);
+        const DiagnosticColor& color = kCategoryColors[color_index];
+        marker.actor->GetProperty()->SetColor(color[0], color[1], color[2]);
+        marker.actor->GetProperty()->SetPointSize(point_size);
+        marker.actor->GetProperty()->RenderPointsAsSpheresOn();
+        marker.actor->GetProperty()->LightingOff();
+        marker.actor->PickableOff();
+        marker.actor->SetVisibility(false);
+        renderer_->AddActor(marker.actor);
+    };
+    setup_marker(small_edge_marker_,
+        categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge), 10.0F);
+    setup_marker(small_face_marker_,
+        categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace), 12.0F);
 }
 
 GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor()
@@ -101,6 +130,8 @@ GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor()
     for (DiagnosticPipeline& pipeline : pipelines_)
         renderer_->RemoveActor(pipeline.actor);
     renderer_->RemoveActor(invalid_edge_pipeline_.actor);
+    renderer_->RemoveActor(small_edge_marker_.actor);
+    renderer_->RemoveActor(small_face_marker_.actor);
 }
 
 void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
@@ -155,11 +186,27 @@ void GeometryTopologyDiagnosticActor::setGeometryVisible(bool visible)
     applyVisibility();
 }
 
-void GeometryTopologyDiagnosticActor::setCleanupTolerance(double tolerance)
+void GeometryTopologyDiagnosticActor::setSmallEdgeLengthThreshold(double threshold)
 {
-    if (!std::isfinite(tolerance) || tolerance <= 0.0 || cleanup_tolerance_ == tolerance)
+    if (!std::isfinite(threshold) || threshold <= 0.0
+        || small_edge_length_threshold_ == threshold) {
         return;
-    cleanup_tolerance_ = tolerance;
+    }
+    small_edge_length_threshold_ = threshold;
+    diagnostics_.reset();
+    for (size_t index = 0; index < category_enabled_.size(); ++index) {
+        if (category_enabled_[index])
+            rebuildCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
+    }
+}
+
+void GeometryTopologyDiagnosticActor::setSmallFaceAreaThreshold(double threshold)
+{
+    if (!std::isfinite(threshold) || threshold <= 0.0
+        || small_face_area_threshold_ == threshold) {
+        return;
+    }
+    small_face_area_threshold_ = threshold;
     diagnostics_.reset();
     for (size_t index = 0; index < category_enabled_.size(); ++index) {
         if (category_enabled_[index])
@@ -175,16 +222,19 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics()
             = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::BoundaryEdge)]
             || category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::IsolatedEdge)]
             || category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::NonManifoldEdge)];
+        options.small_edges
+            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge)];
+        options.small_faces
+            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace)];
         options.duplicate_faces
             = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)];
-        options.degenerated_faces
-            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::DegeneratedFace)];
         options.intersecting_faces
             = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::IntersectingFace)];
         options.invalid_topology
             = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)];
         diagnostics_ = std::make_unique<GeometryTopologyDiagnosticResult>(
-            GeometryTopologyEditor::diagnoseTopology(*shape_, cleanup_tolerance_, options));
+            GeometryTopologyEditor::diagnoseTopology(*shape_,
+                small_edge_length_threshold_, small_face_area_threshold_, options));
     }
 }
 
@@ -209,15 +259,19 @@ void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnostic
         for (const TopoDS_Edge& edge : diagnostics_->non_manifold_edges)
             appendShapeId(ids, occ_shape_, edge);
         break;
+    case GeometryTopologyDiagnosticCategory::SmallEdge:
+        for (const TopoDS_Edge& edge : diagnostics_->small_edges)
+            appendShapeId(ids, occ_shape_, edge);
+        break;
+    case GeometryTopologyDiagnosticCategory::SmallFace:
+        for (const TopoDS_Face& face : diagnostics_->small_faces)
+            appendShapeId(ids, occ_shape_, face);
+        break;
     case GeometryTopologyDiagnosticCategory::DuplicateFace:
         for (const GeometryDuplicateFaceGroup& group : diagnostics_->duplicate_face_groups) {
             for (const TopoDS_Face& face : group.faces)
                 appendShapeId(ids, occ_shape_, face);
         }
-        break;
-    case GeometryTopologyDiagnosticCategory::DegeneratedFace:
-        for (const TopoDS_Face& face : diagnostics_->degenerated_faces)
-            appendShapeId(ids, occ_shape_, face);
         break;
     case GeometryTopologyDiagnosticCategory::IntersectingFace:
         for (const GeometryIntersectingFacePair& pair : diagnostics_->intersecting_face_pairs) {
@@ -242,6 +296,52 @@ void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnostic
         break;
     }
     pipelines_[categoryIndex(category)].filter->SetData(ids);
+    rebuildSizeMarker(category);
+}
+
+void GeometryTopologyDiagnosticActor::rebuildSizeMarker(
+    GeometryTopologyDiagnosticCategory category)
+{
+    if (category != GeometryTopologyDiagnosticCategory::SmallEdge
+        && category != GeometryTopologyDiagnosticCategory::SmallFace) {
+        return;
+    }
+
+    SizeMarkerPipeline& marker = category == GeometryTopologyDiagnosticCategory::SmallEdge
+        ? small_edge_marker_
+        : small_face_marker_;
+    vtkNew<vtkPoints> points;
+    vtkNew<vtkCellArray> vertices;
+    auto append_point = [&points, &vertices](const gp_Pnt& point) {
+        const vtkIdType point_id = points->InsertNextPoint(point.X(), point.Y(), point.Z());
+        vertices->InsertNextCell(1, &point_id);
+    };
+
+    if (category == GeometryTopologyDiagnosticCategory::SmallEdge) {
+        for (const TopoDS_Edge& edge : diagnostics_->small_edges) {
+            try {
+                BRepAdaptor_Curve curve(edge);
+                const double parameter = (curve.FirstParameter() + curve.LastParameter()) * 0.5;
+                append_point(curve.Value(parameter));
+            } catch (const Standard_Failure&) {
+                // 无法计算中点的边仍保留原始着色，不额外生成标记。
+            }
+        }
+    } else {
+        for (const TopoDS_Face& face : diagnostics_->small_faces) {
+            try {
+                GProp_GProps properties;
+                BRepGProp::SurfaceProperties(face, properties);
+                append_point(properties.CentreOfMass());
+            } catch (const Standard_Failure&) {
+                // 无法计算质心的面仍保留原始着色，不额外生成标记。
+            }
+        }
+    }
+
+    marker.data->SetPoints(points);
+    marker.data->SetVerts(vertices);
+    marker.data->Modified();
 }
 
 void GeometryTopologyDiagnosticActor::applyVisibility()
@@ -250,4 +350,8 @@ void GeometryTopologyDiagnosticActor::applyVisibility()
         pipelines_[index].actor->SetVisibility(geometry_visible_ && category_enabled_[index]);
     invalid_edge_pipeline_.actor->SetVisibility(
         geometry_visible_ && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)]);
+    small_edge_marker_.actor->SetVisibility(
+        geometry_visible_ && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge)]);
+    small_face_marker_.actor->SetVisibility(
+        geometry_visible_ && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace)]);
 }

@@ -10,7 +10,7 @@ class TopoDS_Vertex;
 class gp_Pnt;
 
 /**
- * @brief 一组在清理容差内覆盖相同几何区域的面。
+ * @brief 一组在 OCC 数值精度内覆盖相同几何区域的面。
  */
 struct GeometryDuplicateFaceGroup {
     std::vector<TopoDS_Face> faces;
@@ -31,8 +31,9 @@ struct GeometryTopologyDiagnosticResult {
     std::vector<TopoDS_Edge> boundary_edges;
     std::vector<TopoDS_Edge> isolated_edges;
     std::vector<TopoDS_Edge> non_manifold_edges;
+    std::vector<TopoDS_Edge> small_edges;
+    std::vector<TopoDS_Face> small_faces;
     std::vector<GeometryDuplicateFaceGroup> duplicate_face_groups;
-    std::vector<TopoDS_Face> degenerated_faces;
     std::vector<GeometryIntersectingFacePair> intersecting_face_pairs;
     std::vector<TopoDS_Shape> invalid_shapes;
 };
@@ -42,8 +43,9 @@ struct GeometryTopologyDiagnosticResult {
  */
 struct GeometryTopologyDiagnosticOptions {
     bool edge_topology { true };
+    bool small_edges { true };
+    bool small_faces { true };
     bool duplicate_faces { true };
-    bool degenerated_faces { true };
     bool intersecting_faces { true };
     bool invalid_topology { true };
 };
@@ -56,17 +58,19 @@ public:
     /**
      * @brief 计算用于展示和后续清理的几何拓扑诊断结果。
      *
-     * 边按相邻面的数量分为孤立边、边界边和非流形边；面诊断包括容差内的
-     * 几何重复面、退化面、相交面以及 OCC 判定的无效子形状。
+     * 边按相邻面的数量分为孤立边、边界边和非流形边；尺寸诊断按独立的长度、
+     * 面积阈值筛选细小边和细小面；重复面、相交面和无效拓扑使用 OCC 数值精度。
      *
      * @param root 要诊断的几何根形状。
-     * @param cleanup_tolerance 几何清理容差，必须大于零。
+     * @param small_edge_length_threshold 细小边长度阈值，必须大于零。
+     * @param small_face_area_threshold 细小面面积阈值，必须大于零。
      * @param options 本次需要计算的诊断类别。
      * @return 一次计算得到的全部诊断类别。
      */
     static GeometryTopologyDiagnosticResult diagnoseTopology(
         const TopoDS_Shape& root,
-        double cleanup_tolerance,
+        double small_edge_length_threshold,
+        double small_face_area_threshold,
         const GeometryTopologyDiagnosticOptions& options = {});
 
     /**

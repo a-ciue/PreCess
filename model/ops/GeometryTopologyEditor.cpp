@@ -242,7 +242,7 @@ double commonArea(const TopoDS_Face& first, const TopoDS_Face& second, double to
 }
 
 /**
- * @brief 判断两个独立 Face 是否在清理容差内覆盖相同区域。
+ * @brief 判断两个独立 Face 是否在 OCC 数值精度内覆盖相同区域。
  */
 bool areDuplicateFaces(const FaceMetrics& first, const FaceMetrics& second, double tolerance)
 {
@@ -314,17 +314,20 @@ bool facesIntersect(const FaceMetrics& first, const FaceMetrics& second, double 
 
 GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
     const TopoDS_Shape& root,
-    double cleanup_tolerance,
+    double small_edge_length_threshold,
+    double small_face_area_threshold,
     const GeometryTopologyDiagnosticOptions& options)
 {
     if (root.IsNull())
         throw std::invalid_argument("Geometry root must not be null");
-    if (!std::isfinite(cleanup_tolerance) || cleanup_tolerance <= 0.0)
-        throw std::invalid_argument("Cleanup tolerance must be greater than zero");
+    if (!std::isfinite(small_edge_length_threshold) || small_edge_length_threshold <= 0.0)
+        throw std::invalid_argument("Small edge length threshold must be greater than zero");
+    if (!std::isfinite(small_face_area_threshold) || small_face_area_threshold <= 0.0)
+        throw std::invalid_argument("Small face area threshold must be greater than zero");
 
     GeometryTopologyDiagnosticResult result;
 
-    if (options.edge_topology) {
+    if (options.edge_topology || options.small_edges) {
         // 按相邻 Face 数量分类全部 Edge，规则与网格拓扑诊断保持一致。
         NCollection_IndexedDataMap<TopoDS_Shape,
             NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
@@ -334,6 +337,14 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
         TopExp::MapShapes(root, TopAbs_EDGE, edges);
         for (int edge_index = 1; edge_index <= edges.Extent(); ++edge_index) {
             const TopoDS_Edge edge = TopoDS::Edge(edges.FindKey(edge_index));
+            if (options.small_edges) {
+                GProp_GProps properties;
+                BRepGProp::LinearProperties(edge, properties);
+                if (std::abs(properties.Mass()) <= small_edge_length_threshold)
+                    result.small_edges.push_back(edge);
+            }
+            if (!options.edge_topology)
+                continue;
             const int face_count = edge_faces.Contains(edge)
                 ? uniqueFaceCount(edge_faces.FindFromKey(edge))
                 : 0;
@@ -348,26 +359,19 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
 
     std::vector<FaceMetrics> faces;
     const bool needs_face_pairs = options.duplicate_faces || options.intersecting_faces;
-    if (needs_face_pairs || options.degenerated_faces) {
+    if (needs_face_pairs || options.small_faces) {
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> face_map;
         TopExp::MapShapes(root, TopAbs_FACE, face_map);
         faces.reserve(static_cast<size_t>(face_map.Extent()));
-        const double minimum_area = cleanup_tolerance * cleanup_tolerance;
         for (int face_index = 1; face_index <= face_map.Extent(); ++face_index) {
             const TopoDS_Face face = TopoDS::Face(face_map.FindKey(face_index));
             try {
                 FaceMetrics metrics = measureFace(face);
-                if (options.degenerated_faces
-                    && (metrics.area <= minimum_area
-                        || BRepTools::OuterWire(face).IsNull()
-                        || !BRepCheck_Analyzer(face).IsValid())) {
-                    result.degenerated_faces.push_back(face);
-                }
+                if (options.small_faces && metrics.area <= small_face_area_threshold)
+                    result.small_faces.push_back(face);
                 faces.push_back(std::move(metrics));
             } catch (const Standard_Failure&) {
-                // 无法取得基本几何量的 Face 本身就是退化面，不再参与面配对计算。
-                if (options.degenerated_faces)
-                    result.degenerated_faces.push_back(face);
+                // 无法取得基本几何量的 Face 交由无效拓扑诊断处理。
             }
         }
     }
@@ -394,7 +398,7 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
     if (needs_face_pairs) {
         for (size_t first = 0; first < faces.size(); ++first) {
             for (size_t second = first + 1; second < faces.size(); ++second) {
-                if (areDuplicateFaces(faces[first], faces[second], cleanup_tolerance)) {
+                if (areDuplicateFaces(faces[first], faces[second], Precision::Confusion())) {
                     duplicate_pairs.emplace_back(first, second);
                     merge_groups(first, second);
                 }
@@ -426,7 +430,7 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
         for (size_t first = 0; first < faces.size(); ++first) {
             for (size_t second = first + 1; second < faces.size(); ++second) {
                 if (find_parent(first) == find_parent(second)
-                    || !facesIntersect(faces[first], faces[second], cleanup_tolerance)) {
+                    || !facesIntersect(faces[first], faces[second], Precision::Confusion())) {
                     continue;
                 }
                 result.intersecting_face_pairs.push_back(

@@ -121,7 +121,8 @@ TEST_CASE("GeometryTopologyEditor diagnoses boundary and isolated edges")
     builder.Add(compound, isolated_edge);
 
     const GeometryTopologyDiagnosticResult result
-        = GeometryTopologyEditor::diagnoseTopology(makeGeometryRoot(compound), 1.0e-6);
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12);
 
     REQUIRE(result.boundary_edges.size() == 4);
     REQUIRE(result.isolated_edges.size() == 1);
@@ -142,7 +143,8 @@ TEST_CASE("GeometryTopologyEditor groups geometrically duplicate faces")
     builder.Add(compound, second);
 
     const GeometryTopologyDiagnosticResult result
-        = GeometryTopologyEditor::diagnoseTopology(makeGeometryRoot(compound), 1.0e-6);
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12);
 
     REQUIRE(result.duplicate_face_groups.size() == 1);
     REQUIRE(result.duplicate_face_groups.front().faces.size() == 2);
@@ -163,10 +165,52 @@ TEST_CASE("GeometryTopologyEditor diagnoses crossing faces")
     builder.Add(compound, second);
 
     const GeometryTopologyDiagnosticResult result
-        = GeometryTopologyEditor::diagnoseTopology(makeGeometryRoot(compound), 1.0e-6);
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12);
 
     REQUIRE(result.duplicate_face_groups.empty());
     REQUIRE(result.intersecting_face_pairs.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses small edges and small faces independently")
+{
+    const TopoDS_Shape small_edge = GeometryBuilder::makeLine(
+        0.0, 0.0, 0.0, 0.1, 0.0, 0.0);
+    const TopoDS_Shape small_face = GeometryBuilder::makeRectangleFace(
+        2.0, 0.0, 0.0, 1.0, 0.1, CoordinatePlane::XY);
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, small_edge);
+    builder.Add(compound, small_face);
+
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 0.2, 0.2);
+
+    REQUIRE(result.small_edges.size() == 3);
+    REQUIRE(result.small_faces.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor does not treat nearby parallel faces as duplicates")
+{
+    const TopoDS_Shape first = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+    const TopoDS_Shape second = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.2, 10.0, 5.0, CoordinatePlane::XY);
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 0.4, 0.16);
+
+    REQUIRE(result.duplicate_face_groups.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor rejects invalid face split inputs")

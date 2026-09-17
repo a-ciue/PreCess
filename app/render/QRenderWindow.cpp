@@ -705,12 +705,21 @@ void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, b
     });
 }
 
-void QRenderWindow::setGeometryTopologyDiagnosticTolerance(double tolerance)
+void QRenderWindow::setGeometryTopologyDiagnosticSmallEdgeLength(double threshold)
 {
-    dispatch_async([tolerance](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->geometry_actor_manager_)
-            vtk->geometry_actor_manager_->setTopologyDiagnosticTolerance(tolerance);
+            vtk->geometry_actor_manager_->setTopologyDiagnosticSmallEdgeLength(threshold);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticSmallFaceArea(double threshold)
+{
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (vtk->geometry_actor_manager_)
+            vtk->geometry_actor_manager_->setTopologyDiagnosticSmallFaceArea(threshold);
     });
 }
 

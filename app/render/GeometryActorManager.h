@@ -30,8 +30,10 @@ public:
 
     /** @brief 设置窗口级几何拓扑诊断类别是否启用。 */
     void setTopologyDiagnosticCategoryEnabled(int category, bool enabled);
-    /** @brief 设置窗口级几何清理容差。 */
-    void setTopologyDiagnosticTolerance(double tolerance);
+    /** @brief 设置窗口级细小边长度阈值。 */
+    void setTopologyDiagnosticSmallEdgeLength(double threshold);
+    /** @brief 设置窗口级细小面面积阈值。 */
+    void setTopologyDiagnosticSmallFaceArea(double threshold);
 
     GeometryActorManagerSelectOp& op() { return op_; }
     const GeometryActorManagerSelectOp& op() const { return op_; }
@@ -42,6 +44,7 @@ private:
     vtkRenderer* renderer_;
     GeometryRenderStyle current_style_ { GeometryRenderStyle::SurfaceWithEdges };
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
-    double topology_diagnostic_tolerance_ { 1.0e-6 };
+    double topology_diagnostic_small_edge_length_ { 1.0e-6 };
+    double topology_diagnostic_small_face_area_ { 1.0e-12 };
 };
 #endif

@@ -59,7 +59,10 @@ void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
             static_cast<GeometryTopologyDiagnosticCategory>(category),
             topology_diagnostic_category_enabled_[category]);
     }
-    actor_ptr->topologyDiagnostics().setCleanupTolerance(topology_diagnostic_tolerance_);
+    actor_ptr->topologyDiagnostics().setSmallEdgeLengthThreshold(
+        topology_diagnostic_small_edge_length_);
+    actor_ptr->topologyDiagnostics().setSmallFaceAreaThreshold(
+        topology_diagnostic_small_face_area_);
     actor_ptr->loadShape(geometry_data);
     actor_ptr->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor_ptr);
@@ -98,11 +101,20 @@ void GeometryActorManager::setTopologyDiagnosticCategoryEnabled(int category, bo
     }
 }
 
-void GeometryActorManager::setTopologyDiagnosticTolerance(double tolerance)
+void GeometryActorManager::setTopologyDiagnosticSmallEdgeLength(double threshold)
 {
-    if (!std::isfinite(tolerance) || tolerance <= 0.0)
+    if (!std::isfinite(threshold) || threshold <= 0.0)
         return;
-    topology_diagnostic_tolerance_ = tolerance;
+    topology_diagnostic_small_edge_length_ = threshold;
     for (auto& [id, actor] : component_actors_)
-        actor->topologyDiagnostics().setCleanupTolerance(tolerance);
+        actor->topologyDiagnostics().setSmallEdgeLengthThreshold(threshold);
+}
+
+void GeometryActorManager::setTopologyDiagnosticSmallFaceArea(double threshold)
+{
+    if (!std::isfinite(threshold) || threshold <= 0.0)
+        return;
+    topology_diagnostic_small_face_area_ = threshold;
+    for (auto& [id, actor] : component_actors_)
+        actor->topologyDiagnostics().setSmallFaceAreaThreshold(threshold);
 }

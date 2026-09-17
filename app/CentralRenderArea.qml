@@ -476,50 +476,81 @@ Page {
                     }
                     MenuSeparator {}
                     MenuItem {
-                        text: "重复面"
+                        text: "细小边"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(3, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
-                        text: "退化面"
+                        text: "细小面"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(4, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
-                        text: "相交面"
+                        text: "重复面"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(5, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
-                        text: "无效拓扑"
+                        text: "相交面"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(6, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
+                    MenuItem {
+                        text: "无效拓扑"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(7, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
                     MenuSeparator {}
                     MenuItem {
-                        id: geometryCleanupToleranceItem
-                        text: "清理容差"
+                        id: geometrySmallEdgeLengthItem
+                        text: "细小边长度"
                         contentItem: RowLayout {
                             Label {
-                                text: geometryCleanupToleranceItem.text
+                                text: geometrySmallEdgeLengthItem.text
                                 Layout.fillWidth: true
                             }
                             TextField {
                                 Layout.preferredWidth: 100
-                                text: "0.000001"
+                                text: "0.01"
                                 selectByMouse: true
                                 validator: DoubleValidator {
                                     bottom: 0.0
                                     notation: DoubleValidator.ScientificNotation
                                 }
                                 onEditingFinished: {
-                                    const tolerance = Number(text)
-                                    if (tolerance > 0)
-                                        myItem.setGeometryTopologyDiagnosticTolerance(tolerance)
+                                    const threshold = Number(text)
+                                    if (threshold > 0)
+                                        myItem.setGeometryTopologyDiagnosticSmallEdgeLength(threshold)
+                                }
+                            }
+                        }
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        id: geometrySmallFaceAreaItem
+                        text: "细小面面积"
+                        contentItem: RowLayout {
+                            Label {
+                                text: geometrySmallFaceAreaItem.text
+                                Layout.fillWidth: true
+                            }
+                            TextField {
+                                Layout.preferredWidth: 100
+                                text: "0.0001"
+                                selectByMouse: true
+                                validator: DoubleValidator {
+                                    bottom: 0.0
+                                    notation: DoubleValidator.ScientificNotation
+                                }
+                                onEditingFinished: {
+                                    const threshold = Number(text)
+                                    if (threshold > 0)
+                                        myItem.setGeometryTopologyDiagnosticSmallFaceArea(threshold)
                                 }
                             }
                         }
