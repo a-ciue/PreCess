@@ -30,10 +30,17 @@
 #include <ShapeBuild_Edge.hxx>
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopAbs_State.hxx>
 #include <TopExp.hxx>
+#include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
+#include <NCollection_List.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>

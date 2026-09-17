@@ -3,20 +3,26 @@
 #include "GeometryTopologyEditor.h"
 
 #include <BRepCheck_Analyzer.hxx>
+#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopoDS_Face.hxx>
+#include <TopoDS_Vertex.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
+#include <gp_Pnt.hxx>
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cmath>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 namespace {
 /**
