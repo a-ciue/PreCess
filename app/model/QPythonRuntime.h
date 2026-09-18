@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QString>
 #include <QVariantMap>
-#include <QtQml/qqml.h>
 
 #include <memory>
 
@@ -18,6 +17,9 @@ class Runtime;
 /**
  * @brief app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是
  * python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳
+ *
+ * 编入 pythonApp 静态库目标；QML 类型（原 QML_ELEMENT/UNCREATABLE 语义）经
+ * modelQml 的 QPythonRuntimeQml.h 外来包装注册，类本身不携带 QML 宏。
  *
  * 职责限于：QML 属性/信号桥接（available/availableChanged）、GUI 线程断言、
  * 字符串编解码（QString ↔ UTF-8）与日志。解释器就绪后经 python_app
@@ -39,8 +41,6 @@ class Runtime;
  */
 class QPythonRuntime : public QObject {
     Q_OBJECT
-    QML_ELEMENT
-    QML_UNCREATABLE("经 QModelManager.pythonRuntime 访问")
     Q_PROPERTY(bool available READ isAvailable NOTIFY availableChanged)
 public:
     /**

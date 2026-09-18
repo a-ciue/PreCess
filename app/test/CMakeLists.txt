@@ -15,21 +15,12 @@ precess_test_link_libraries(TestQLogManager
 )
 
 # QPythonRuntime 主线程延时回调测试
-# app 层无库目标（QPythonRuntime 编入 modelQml QML 模块），同 TestQLogManager
-# 直接编译源文件并启用 AUTOMOC；QPythonAppModule 编入 pythonAppModule 静态库
-# （真/桩按可用性二选一，含宿主配置宏经 precess_runtime PUBLIC 传递），测试
-# 直接链接、无需判断；Python 嵌入不可用（桩实现）时用例自行跳过
-precess_add_test(TestQPythonRuntime
-    TestQPythonRuntime.cpp
-    "${CMAKE_CURRENT_SOURCE_DIR}/../model/QPythonRuntime.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../model/QPythonRuntime.h"
-)
-set_target_properties(TestQPythonRuntime PROPERTIES AUTOMOC ON)
+# QPythonRuntime 与 precess_app 模块注册均编入 pythonApp 静态库（真/桩按可用性
+# 二选一，宿主配置宏经 precess_runtime PUBLIC 传递），测试直接链接即可；Python
+# 嵌入不可用（桩实现）时用例自行跳过
+precess_add_test(TestQPythonRuntime TestQPythonRuntime.cpp)
 target_include_directories(TestQPythonRuntime PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
 precess_test_link_libraries(TestQPythonRuntime
     Qt${VTK_QT_VERSION}::Core
-    Qt${VTK_QT_VERSION}::Qml
-    spdlog::spdlog
-    precess_runtime
-    pythonAppModule
+    pythonApp
 )

@@ -20,8 +20,7 @@ qt_add_qml_module(modelQml
         QModelQuery.cpp
         QModelManager.h
         QModelManager.cpp
-        QPythonRuntime.h
-        QPythonRuntime.cpp
+        QPythonRuntimeQml.h
         "${CMAKE_CURRENT_BINARY_DIR}/QArgType.h"
         QArgObject.h
         QArgObject.cpp
@@ -42,23 +41,25 @@ target_link_libraries(modelQml PUBLIC
 # 内嵌 Python 运行环境：precess_runtime 目标恒存在（python/ 提供，Python 依赖
 # 缺失时自动降级为桩实现，"不可用"是运行时状态），宿主无需条件编译
 target_link_libraries(modelQml PRIVATE
-    modelPart QArgType precess_runtime pythonAppModule
+    modelPart QArgType precess_runtime pythonApp
 )
 
-# app 侧 Python 模块注册（precess_app）：注册逻辑在 app 经 pybind11 任意签名
-# def（见 QPythonAppModule.cpp）。静态库目标恒存在，真实现/桩按可用性二选一
-# （同 python/ 的 precess_runtime 模式，判断只在目标定义处一次），消费方直接
-# 链接、无需重复判断；桩模式注册为空操作（"不可用"是运行时状态）
-add_library(pythonAppModule STATIC)
+# app 侧 Python 运行时接入（静态库，恒存在）
+qt_add_library(pythonApp STATIC
+    QPythonRuntime.cpp
+    QPythonRuntime.h
+)
 if(TARGET precess_bindings)
     find_package(pybind11 CONFIG QUIET) # python/ 已发现过，此处取回导入目标
-    target_sources(pythonAppModule PRIVATE QPythonAppModule.cpp)
-    target_link_libraries(pythonAppModule PRIVATE pybind11::embed)
+    target_sources(pythonApp PRIVATE QPythonAppModule.cpp)
+    target_link_libraries(pythonApp PRIVATE pybind11::embed)
 else()
-    target_sources(pythonAppModule PRIVATE QPythonAppModule_stub.cpp)
+    target_sources(pythonApp PRIVATE QPythonAppModule_stub.cpp)
 endif()
-target_include_directories(pythonAppModule PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(pythonAppModule PRIVATE
+target_include_directories(pythonApp PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+# PUBLIC：暴露 session::Session*，消费方需 Session 头/链接与宿主配置宏
+target_link_libraries(pythonApp PUBLIC precess_runtime)
+target_link_libraries(pythonApp PRIVATE
     Qt${VTK_QT_VERSION}::Core
     spdlog::spdlog
 )
