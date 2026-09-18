@@ -39,11 +39,22 @@ target_link_libraries(modelQmlplugin PUBLIC
 target_link_libraries(modelQml PUBLIC 
     coreQml SystemQml
 )
-# 内嵌 Python 运行环境：precess_runtime 目标恒存在（python/ 提供，Python
-# 依赖缺失时自动降级为桩实现，"不可用"是运行时状态），宿主无需条件编译
+# 内嵌 Python 运行环境：precess_runtime 目标恒存在（python/ 提供，Python 依赖
+# 缺失时自动降级为桩实现，"不可用"是运行时状态），宿主无需条件编译
 target_link_libraries(modelQml PRIVATE
     modelPart QArgType precess_runtime
 )
+
+# app 侧 Python 模块注册（precess_app）：注册逻辑在 app 经 pybind11 任意签名
+# def（见 QPythonAppModule.cpp）。pybind11 头仅真实模式可用，故按 precess_bindings
+# 目标存在性二选一编译，业务代码无 #ifdef（桩模式注册为空操作）
+if(TARGET precess_bindings)
+    find_package(pybind11 CONFIG QUIET) # python/ 已发现过，此处取回导入目标
+    target_sources(modelQml PRIVATE QPythonAppModule.cpp)
+    target_link_libraries(modelQml PRIVATE pybind11::embed)
+else()
+    target_sources(modelQml PRIVATE QPythonAppModule_stub.cpp)
+endif()
 
 # 运行时宿主配置宏：仅真实模式（precess_bindings 扩展模块目标存在）定义，
 # 桩模式下 QPythonRuntime.cpp 以空值兜底（桩忽略 config）

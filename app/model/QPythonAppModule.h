@@ -1,0 +1,31 @@
+#ifndef Q_PYTHON_APP_MODULE_H
+#define Q_PYTHON_APP_MODULE_H
+
+class QObject;
+
+/**
+ * @brief app 侧 Python 模块注册（precess_app）：真实现编入 QPythonAppModule.cpp
+ * （含 pybind11，任意签名 def），桩模式编入 QPythonAppModule_stub.cpp，由 CMake
+ * 按 precess_bindings 目标存在性二选一编译（业务代码无 #ifdef，"不可用"是运行
+ * 时状态：桩实现注册无效果）
+ *
+ * 后续 app 侧 Python 函数统一收在 precess_app 模块，在真实现内对模块句柄
+ * 继续 def 即可（pybind11 全套类型转换器可用：任意参数个数/类型/返回值、
+ * 多重重载、关键字参数与默认值）。
+ */
+namespace python_app {
+
+/**
+ * @brief 创建 precess_app 模块并注册 app 侧函数（须在解释器就绪后、GUI 主线程调用）
+ * @param owner 定时器 parent 与 GUI 线程归属（QPythonRuntime）
+ */
+void registerAppModule(QObject* owner);
+
+/**
+ * @brief 关停定时器表：停掉全部定时器并释放脚本回调，须在解释器终结前调用
+ */
+void shutdownAppModule();
+
+}
+
+#endif
