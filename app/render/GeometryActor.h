@@ -34,6 +34,12 @@ public:
     /** @brief 获取本组件独立的几何拓扑诊断渲染对象。 */
     GeometryTopologyDiagnosticActor& topologyDiagnostics();
 
+    /**
+     * @brief 应用后台算完的几何拓扑诊断结果；必须由渲染线程调用。
+     * @return 是否应用了新结果（调用方据此决定是否需要重绘）。
+     */
+    bool pumpTopologyDiagnostics();
+
 private:
     void deleteGeometryActor();
     void applyStyle();

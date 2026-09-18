@@ -10,6 +10,7 @@ add_library(vtkPart STATIC
     MeshSelectManager.cpp
     GeometryActor.cpp
     GeometryTopologyDiagnosticActor.cpp
+    GeometryTopologyDiagnosticTaskQueue.cpp
     MeshActorManager.cpp
     GeometryActorManager.cpp
     SolidSelectorHighlight.cpp

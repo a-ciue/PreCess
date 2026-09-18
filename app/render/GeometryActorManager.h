@@ -35,6 +35,15 @@ public:
     /** @brief 设置窗口级细小面面积阈值。 */
     void setTopologyDiagnosticSmallFaceArea(double threshold);
 
+    /**
+     * @brief 应用所有组件后台算完的几何拓扑诊断结果；必须由渲染线程调用。
+     * @return 是否至少有一个组件应用了新结果。
+     */
+    bool pumpTopologyDiagnostics();
+
+    /** @brief 是否有几何拓扑诊断结果已完成、等待渲染线程取走。 */
+    static bool hasPendingTopologyDiagnostics();
+
     GeometryActorManagerSelectOp& op() { return op_; }
     const GeometryActorManagerSelectOp& op() const { return op_; }
 

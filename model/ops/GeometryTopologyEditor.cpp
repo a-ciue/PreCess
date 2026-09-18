@@ -7,10 +7,13 @@
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
+#include <BRepExtrema_SelfIntersection.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepFeat_SplitShape.hxx>
 #include <BRepGProp.hxx>
 #include <BRep_Tool.hxx>
@@ -29,6 +32,7 @@
 #include <Precision.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
+#include <NCollection_DataMap.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <ShapeBuild_Edge.hxx>
@@ -45,6 +49,7 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
@@ -55,15 +60,21 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <TopExp_Explorer.hxx>
 #include <algorithm>
+#include <atomic>
 #include <array>
+#include <chrono>
+#include <cstdint>
 #include <cmath>
 #include <exception>
 #include <execution>
+#include <limits>
+#include <memory>
 #include <numeric>
 #include <stdexcept>
 #include <string>
 #include <tuple>
 #include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -886,6 +897,15 @@ bool facesIntersect(
  * std::execution::par 的并行算法一旦有异常逃出并行体就会直接终止进程，因此并行体
  * 必须自行捕获；只按索引升序重新抛出第一个失败，使调用方观察到的异常与串行实现一致。
  */
+/**
+ * @brief 检查协作式取消标记；置位时抛出取消异常。
+ */
+void throwIfCancelled(const std::atomic<bool>* cancel)
+{
+    if (cancel != nullptr && cancel->load(std::memory_order_relaxed))
+        throw GeometryTopologyDiagnosticCancelled("geometry topology diagnosis cancelled");
+}
+
 class ParallelFailureCollector {
 public:
     explicit ParallelFailureCollector(size_t count)
@@ -913,60 +933,312 @@ private:
 };
 }
 
-GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
-    const TopoDS_Shape& root,
-    double small_edge_length_threshold,
-    double small_face_area_threshold,
-    const GeometryTopologyDiagnosticOptions& options)
-{
-    if (root.IsNull())
-        throw std::invalid_argument("Geometry root must not be null");
-    if (!std::isfinite(small_edge_length_threshold) || small_edge_length_threshold <= 0.0)
-        throw std::invalid_argument("Small edge length threshold must be greater than zero");
-    if (!std::isfinite(small_face_area_threshold) || small_face_area_threshold <= 0.0)
-        throw std::invalid_argument("Small face area threshold must be greater than zero");
+namespace {
 
-    GeometryTopologyDiagnosticResult result;
+//! 面片扫描的网格偏置取模型包围盒对角线的这个比例。实测甜点约 4e-5（约为显示用
+//! 剖分密度的 3～4 倍）：再粗则剪不掉多少候选对，再细则建网格与扫描本身开始超收益。
+constexpr double kFaceSweepDeflectionRatio = 4.0e-5;
+//! 扫描容差相对网格偏置的倍数。必须不小于 2：设三角形到真实曲面距离不超过偏置 δ，
+//! 两面若有公共点 p，则 p 到两张三角形集合的距离都小于 δ，故两集合距离小于 2δ；
+//! 取反即「两集合距离大于容差且容差大于等于 2δ，则两面无公共点」。多出的 0.5 用来
+//! 覆盖网格生成器只按采样点校验偏置的误差。
+constexpr double kFaceSweepToleranceFactor = 2.5;
+//! 三角剖分的弦高容差（弧度），与界面显示用的剖分保持一致。
+constexpr double kFaceSweepAngularDeflection = 0.5;
+//! 用于估计精确判定总代价的探测窗口（对数）。每处理这么多对就用
+//! 「已花时间 / 已处理对数」外推一次总代价。
+constexpr size_t kFaceSweepProbePairs = 32;
+//! 只有当外推出的精确判定总代价超过这个毫秒数时，才值得付一次全局面片扫描。
+constexpr double kFaceSweepMinimumSavingMs = 4000.0;
 
-    if (options.edge_topology || options.small_edges) {
-        // 按相邻 Face 数量分类全部 Edge，规则与网格拓扑诊断保持一致。
-        NCollection_IndexedDataMap<TopoDS_Shape,
-            NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
-            edge_faces;
-        TopExp::MapShapesAndAncestors(root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
-        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edges;
-        TopExp::MapShapes(root, TopAbs_EDGE, edges);
-        for (int edge_index = 1; edge_index <= edges.Extent(); ++edge_index) {
-            const TopoDS_Edge edge = TopoDS::Edge(edges.FindKey(edge_index));
-            if (options.small_edges) {
-                GProp_GProps properties;
-                BRepGProp::LinearProperties(edge, properties);
-                if (std::abs(properties.Mass()) <= small_edge_length_threshold)
-                    result.small_edges.push_back(edge);
+/**
+ * @brief 面片空间扫描：一次求出「两张面在容差内可能接触」的面对白名单。
+ *
+ * 逐对 BRepAlgoAPI_Section 的代价主要由每一对都要重建一遍的拓扑准备（BOPAlgo_PaveFiller）
+ * 决定。这里换成成熟前处理器（如 HyperMesh 的 Geometry Interference Check）的做法：
+ * 把 Shape 浅拷贝一份、按相对偏置三角化，再用 OCC 自带的 BVH 自干涉扫描一次求出全部
+ * 相互重叠的面对，从而把「重复的拓扑准备」替换成「一次全局空间扫描」。
+ *
+ * 保守性由 kFaceSweepToleranceFactor 的推导保证：**只有被扫描报告的对才继续走精确判定，
+ * 未被报告的对被证明相距超过容差**。因此它只可能让判定变慢，不可能改变判定结论。
+ * 若扫描无法可靠建立（拷贝、网格或扫描任一失败），一律退化为逐对精确判定。
+ */
+class FaceProximitySweep {
+public:
+    //! 构建失败时返回 nullptr，调用方退化为逐对精确判定。
+    static std::unique_ptr<FaceProximitySweep> build(const TopoDS_Shape& root,
+        const std::vector<FaceMetrics>& faces, const std::atomic<bool>* cancel)
+    {
+        throwIfCancelled(cancel);
+        if (faces.size() < 2)
+            return nullptr;
+
+        const double diagonal = facesDiagonal(faces);
+        if (!std::isfinite(diagonal) || diagonal <= 0.0)
+            return nullptr;
+        const double deflection = diagonal * kFaceSweepDeflectionRatio;
+        const double tolerance = deflection * kFaceSweepToleranceFactor;
+        if (!std::isfinite(deflection) || deflection <= 0.0)
+            return nullptr;
+
+        try {
+            // 浅拷贝：与原件共享几何，只多一份三角剖分。这样不会覆盖界面上已经用来
+            // 显示的剖分（本函数只用于诊断，不应改变外观或显示精度）。
+            BRepBuilderAPI_Copy copier(root, Standard_False, Standard_False);
+            const TopoDS_Shape swept_shape = copier.Shape();
+            if (swept_shape.IsNull())
+                return nullptr;
+
+            // 面索引对应关系用拷贝器自己的映射取，不依赖遍历顺序。
+            std::vector<TopoDS_Face> swept_faces;
+            swept_faces.reserve(faces.size());
+            for (const FaceMetrics& metrics : faces) {
+                // Modified() 返回的是列表：一个面最多可能被拆成多个结果，这里要求一一对应。
+                const NCollection_List<TopoDS_Shape>& copied = copier.Modified(metrics.face);
+                if (copied.Extent() != 1)
+                    return nullptr;
+                const TopoDS_Shape& copied_face = copied.First();
+                if (copied_face.IsNull() || copied_face.ShapeType() != TopAbs_FACE)
+                    return nullptr;
+                swept_faces.push_back(TopoDS::Face(copied_face));
             }
-            if (!options.edge_topology)
-                continue;
-            const int face_count = edge_faces.Contains(edge)
-                ? uniqueFaceCount(edge_faces.FindFromKey(edge))
-                : 0;
-            if (face_count == 0)
-                result.isolated_edges.push_back(edge);
-            else if (face_count == 1)
-                result.boundary_edges.push_back(edge);
-            else if (face_count >= 3)
-                result.non_manifold_edges.push_back(edge);
+
+            BRepMesh_IncrementalMesh mesher(
+                swept_shape, deflection, Standard_False, kFaceSweepAngularDeflection, Standard_True);
+            (void)mesher;
+
+            BRepExtrema_SelfIntersection scanner(swept_shape);
+            scanner.SetTolerance(tolerance);
+            scanner.Perform();
+            if (!scanner.IsDone())
+                return nullptr;
+
+            NCollection_DataMap<TopoDS_Shape, size_t, TopTools_ShapeMapHasher> face_index;
+            for (size_t index = 0; index < swept_faces.size(); ++index)
+                face_index.Bind(swept_faces[index], index);
+
+            auto sweep = std::unique_ptr<FaceProximitySweep>(new FaceProximitySweep());
+            for (NCollection_DataMap<int, TColStd_PackedMapOfInteger>::Iterator it(
+                     scanner.OverlapElements());
+                it.More(); it.Next()) {
+                const size_t first = lookupFaceIndex(face_index, scanner.GetSubShape(it.Key()));
+                if (first == kInvalidFaceIndex)
+                    return nullptr;
+                for (TColStd_PackedMapOfInteger::Iterator other(it.Value()); other.More();
+                    other.Next()) {
+                    const size_t second
+                        = lookupFaceIndex(face_index, scanner.GetSubShape(other.Key()));
+                    if (second == kInvalidFaceIndex)
+                        return nullptr;
+                    sweep->reported_.insert(packFacePair(first, second));
+                }
+            }
+            return sweep;
+        } catch (const Standard_Failure&) {
+            return nullptr;
+        } catch (const std::exception&) {
+            return nullptr;
         }
     }
 
-    std::vector<FaceMetrics> faces;
-    const bool needs_face_pairs = options.duplicate_faces || options.intersecting_faces;
-    if (needs_face_pairs || options.small_faces) {
+    //! 该对是否需要继续做精确判定；false 表示两面已被证明相距超过容差。
+    bool needsExactTest(size_t first, size_t second) const
+    {
+        return reported_.count(packFacePair(first, second)) != 0;
+    }
+
+private:
+    static constexpr size_t kInvalidFaceIndex = static_cast<size_t>(-1);
+
+    static std::uint64_t packFacePair(size_t first, size_t second)
+    {
+        // 上游已经保证 first < second（candidate_pairs_ 由 overlappingFacePairs 生成）。
+        return (static_cast<std::uint64_t>(first) << 32) | static_cast<std::uint64_t>(second);
+    }
+
+    static size_t lookupFaceIndex(
+        const NCollection_DataMap<TopoDS_Shape, size_t, TopTools_ShapeMapHasher>& face_index,
+        const TopoDS_Face& face)
+    {
+        return face_index.IsBound(face) ? face_index.Find(face) : kInvalidFaceIndex;
+    }
+
+    //! 模型包围盒对角线，取自逐面测量阶段已经算好的包围盒，因此是零成本。
+    static double facesDiagonal(const std::vector<FaceMetrics>& faces)
+    {
+        std::array<double, 3> minimum { std::numeric_limits<double>::max(),
+            std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
+        std::array<double, 3> maximum { std::numeric_limits<double>::lowest(),
+            std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
+        for (const FaceMetrics& metrics : faces) {
+            for (size_t axis = 0; axis < 3; ++axis) {
+                minimum[axis] = std::min(minimum[axis], metrics.minimum[axis]);
+                maximum[axis] = std::max(maximum[axis], metrics.maximum[axis]);
+            }
+        }
+        const double dx = maximum[0] - minimum[0];
+        const double dy = maximum[1] - minimum[1];
+        const double dz = maximum[2] - minimum[2];
+        if (!std::isfinite(dx) || !std::isfinite(dy) || !std::isfinite(dz))
+            return -1.0;
+        return std::sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+    std::unordered_set<std::uint64_t> reported_;
+};
+
+/**
+ * @brief GeometryTopologyDiagnosticSession 的实现。
+ *
+ * 把 diagnoseTopology() 的三段工作（分类 Edge、测量 Face、逐对判定）拆成可按时间片推进的
+ * 步骤。每一步的处理顺序与判据都与一次性实现逐行一致，因此"分片推进"与"一次跑完"得到
+ * 的结果完全相同；分片只是为了能在片与片之间把工作线程让给更紧急的请求。
+ */
+class DiagnosticSessionImpl final : public GeometryTopologyDiagnosticSession {
+public:
+    DiagnosticSessionImpl(const TopoDS_Shape& root, double small_edge_length_threshold,
+        double small_face_area_threshold, const GeometryTopologyDiagnosticOptions& options,
+        const std::atomic<bool>* cancel)
+        : root_(root)
+        , small_edge_length_threshold_(small_edge_length_threshold)
+        , small_face_area_threshold_(small_face_area_threshold)
+        , options_(options)
+        , cancel_(cancel)
+    {
+        validate();
+    }
+
+    bool advance(double budget_ms) override
+    {
+        const auto deadline = std::isfinite(budget_ms)
+            ? std::chrono::steady_clock::now()
+                + std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+                    std::chrono::duration<double, std::milli>(budget_ms))
+            : std::chrono::steady_clock::time_point::max();
+        while (step_ != Step::Done) {
+            if (!runCurrentStep(deadline))
+                return false; // 时间预算用尽，下次接着推进
+            if (std::chrono::steady_clock::now() >= deadline)
+                return step_ == Step::Done;
+        }
+        return true;
+    }
+
+    GeometryTopologyDiagnosticResult takeResult() override { return std::move(result_); }
+
+private:
+    //! 推进阶段；顺序与一次性实现的执行顺序一致。
+    enum class Step {
+        Edges,
+        Faces,
+        PairCandidates,
+        Pairs,
+        DuplicateGroups,
+        InvalidTopology,
+        Done
+    };
+
+    bool needsFacePairs() const
+    {
+        return options_.duplicate_faces || options_.intersecting_faces;
+    }
+
+    void validate()
+    {
+        if (root_.IsNull())
+            throw std::invalid_argument("Geometry root must not be null");
+        if (!std::isfinite(small_edge_length_threshold_) || small_edge_length_threshold_ <= 0.0)
+            throw std::invalid_argument("Small edge length threshold must be greater than zero");
+        if (!std::isfinite(small_face_area_threshold_) || small_face_area_threshold_ <= 0.0)
+            throw std::invalid_argument("Small face area threshold must be greater than zero");
+        throwIfCancelled(cancel_);
+    }
+
+    //! 推进当前阶段；返回 false 表示时间预算用尽、该阶段尚未完成。
+    bool runCurrentStep(const std::chrono::steady_clock::time_point& deadline)
+    {
+        switch (step_) {
+        case Step::Edges:
+            return runEdges(deadline);
+        case Step::Faces:
+            runFaces();
+            step_ = Step::PairCandidates;
+            return true;
+        case Step::PairCandidates:
+            runPairCandidates();
+            step_ = Step::Pairs;
+            return true;
+        case Step::Pairs:
+            return runPairs(deadline);
+        case Step::DuplicateGroups:
+            runDuplicateGroups();
+            step_ = Step::InvalidTopology;
+            return true;
+        case Step::InvalidTopology:
+            // 与一次性实现一致：这一步之前无条件检查一次取消标记。
+            throwIfCancelled(cancel_);
+            runInvalidTopology();
+            step_ = Step::Done;
+            return true;
+        default:
+            return true;
+        }
+    }
+
+    //! 按相邻 Face 数量分类全部 Edge，规则与网格拓扑诊断保持一致。
+    bool runEdges(const std::chrono::steady_clock::time_point& deadline)
+    {
+        if (!options_.edge_topology && !options_.small_edges) {
+            step_ = Step::Faces;
+            return true;
+        }
+        if (edges_.IsEmpty()) {
+            TopExp::MapShapesAndAncestors(root_, TopAbs_EDGE, TopAbs_FACE, edge_faces_);
+            TopExp::MapShapes(root_, TopAbs_EDGE, edges_);
+        }
+
+        const int total = edges_.Extent();
+        for (; edge_cursor_ <= total; ++edge_cursor_) {
+            // 协作式取消与时间片检查都放在每 256 条边处，单次几何计算不中断。
+            if ((edge_cursor_ & 0xFF) == 1) {
+                throwIfCancelled(cancel_);
+                if (std::chrono::steady_clock::now() >= deadline)
+                    return false;
+            }
+            const TopoDS_Edge edge = TopoDS::Edge(edges_.FindKey(edge_cursor_));
+            if (options_.small_edges) {
+                GProp_GProps properties;
+                BRepGProp::LinearProperties(edge, properties);
+                if (std::abs(properties.Mass()) <= small_edge_length_threshold_)
+                    result_.small_edges.push_back(edge);
+            }
+            if (!options_.edge_topology)
+                continue;
+            const int face_count = edge_faces_.Contains(edge)
+                ? uniqueFaceCount(edge_faces_.FindFromKey(edge))
+                : 0;
+            if (face_count == 0)
+                result_.isolated_edges.push_back(edge);
+            else if (face_count == 1)
+                result_.boundary_edges.push_back(edge);
+            else if (face_count >= 3)
+                result_.non_manifold_edges.push_back(edge);
+        }
+        step_ = Step::Faces;
+        return true;
+    }
+
+    //! 逐面几何量互不依赖，先并行测量再按面顺序过滤，保证 faces 与 small_faces 的顺序和
+    //! 内容与串行实现完全相同。
+    void runFaces()
+    {
+        if (!needsFacePairs() && !options_.small_faces)
+            return;
+
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> face_map;
-        TopExp::MapShapes(root, TopAbs_FACE, face_map);
+        TopExp::MapShapes(root_, TopAbs_FACE, face_map);
         const size_t face_count = static_cast<size_t>(face_map.Extent());
 
-        // 逐面几何量互不依赖，先并行测量再按面顺序过滤，保证 faces 与 small_faces
-        // 的顺序和内容与串行实现完全相同。
         std::vector<TopoDS_Face> measured_faces(face_count);
         std::vector<FaceMetrics> measured_metrics(face_count);
         std::vector<char> measurement_valid(face_count, 0);
@@ -979,8 +1251,11 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
         std::vector<size_t> face_indices(face_count);
         std::iota(face_indices.begin(), face_indices.end(), size_t { 0 });
         std::for_each(std::execution::par, face_indices.begin(), face_indices.end(),
-            [&measured_faces, &measured_metrics, &measurement_valid, &measurement_failures](
-                size_t index) {
+            [&measured_faces, &measured_metrics, &measurement_valid, &measurement_failures,
+                this](size_t index) {
+                // 并行体内不能抛异常（会 terminate），取消只做跳过，循环后统一抛出。
+                if (cancel_ != nullptr && cancel_->load(std::memory_order_relaxed))
+                    return;
                 try {
                     measured_metrics[index] = measureFace(measured_faces[index]);
                     measurement_valid[index] = 1;
@@ -991,73 +1266,137 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
                 }
             });
         measurement_failures.rethrowFirst();
+        throwIfCancelled(cancel_);
 
-        faces.reserve(face_count);
+        faces_.reserve(face_count);
         for (size_t face_index = 0; face_index < face_count; ++face_index) {
             if (measurement_valid[face_index] == 0)
                 continue;
-            if (options.small_faces
-                && measured_metrics[face_index].area <= small_face_area_threshold) {
-                result.small_faces.push_back(measured_faces[face_index]);
+            if (options_.small_faces
+                && measured_metrics[face_index].area <= small_face_area_threshold_) {
+                result_.small_faces.push_back(measured_faces[face_index]);
             }
-            faces.push_back(std::move(measured_metrics[face_index]));
+            faces_.push_back(std::move(measured_metrics[face_index]));
         }
     }
 
-    // 并查集将两两相同的面归并为稳定的重复面组。
-    std::vector<size_t> duplicate_parents(faces.size());
-    for (size_t face_index = 0; face_index < faces.size(); ++face_index)
-        duplicate_parents[face_index] = face_index;
-    auto find_parent = [&duplicate_parents](size_t index) {
-        while (duplicate_parents[index] != index) {
-            duplicate_parents[index] = duplicate_parents[duplicate_parents[index]];
-            index = duplicate_parents[index];
+    //! 并查集将两两相同的面归并为稳定的重复面组；两者都在本阶段一次性备好。
+    void runPairCandidates()
+    {
+        if (!needsFacePairs())
+            return;
+        duplicate_parents_.resize(faces_.size());
+        std::iota(duplicate_parents_.begin(), duplicate_parents_.end(), size_t { 0 });
+        candidate_pairs_ = overlappingFacePairs(faces_, Precision::Confusion());
+    }
+
+    bool runPairs(const std::chrono::steady_clock::time_point& deadline)
+    {
+        if (needsFacePairs()) {
+            const double tolerance = Precision::Confusion();
+            if (pair_cursor_ == 0)
+                pair_started_at_ = std::chrono::steady_clock::now();
+            while (pair_cursor_ < candidate_pairs_.size()) {
+                maybeBuildFaceSweep();
+                const size_t first = candidate_pairs_[pair_cursor_].first;
+                const size_t second = candidate_pairs_[pair_cursor_].second;
+                throwIfCancelled(cancel_);
+                // 全局面片扫描已证明两面相距超过容差：既不可能相交，也不可能同域重叠。
+                const bool swept_apart
+                    = sweep_ != nullptr && !sweep_->needsExactTest(first, second);
+                // 保守边界已证明两面相距超过容差时，两面既不可能相交也不可能同域重叠。
+                if (!swept_apart && !facesSeparated(faces_[first], faces_[second], tolerance)) {
+                    // 重复面与相交面互斥；即使不显示重复面，也要先排除重复面误报。
+                    if (areDuplicateFaces(faces_[first], faces_[second], tolerance)) {
+                        if (options_.duplicate_faces) {
+                            duplicate_pairs_.emplace_back(first, second);
+                            mergeDuplicateGroups(first, second);
+                        }
+                    } else if (options_.intersecting_faces
+                        && facesIntersect(faces_[first], faces_[second], tolerance)) {
+                        result_.intersecting_face_pairs.push_back(
+                            { faces_[first].face, faces_[second].face });
+                    }
+                }
+                ++pair_cursor_;
+                // 时间片检查放在一对处理完之后：单次 OCC 运算本身不打断。
+                if (std::chrono::steady_clock::now() >= deadline
+                    && pair_cursor_ < candidate_pairs_.size()) {
+                    return false; // 预算用尽且还有剩余对
+                }
+            }
+        }
+        step_ = Step::DuplicateGroups;
+        return true;
+    }
+
+    /**
+     * @brief 精确判定贵到值得先做一次全局面片扫描时，把它建起来并用于后续所有对。
+     *
+     * 是否值得完全由实测决定：用「已处理对数 / 已花时间」外推精确判定的总代价，只有
+     * 外推值超过 kFaceSweepMinimumSavingMs 才建扫描。这样小负载模型（例如 237 个候选对、
+     * 整个逐对循环只要几百毫秒）不会被卷入一次代价相当的宽相位，而真正昂贵的模型会在
+     * 前 kFaceSweepProbePairs 对之内就被识别出来。构建失败时退化为逐对精确判定。
+     */
+    void maybeBuildFaceSweep()
+    {
+        if (sweep_ != nullptr || sweep_skipped_)
+            return;
+        if (candidate_pairs_.size() <= kFaceSweepProbePairs
+            || pair_cursor_ < next_sweep_probe_) {
+            return;
+        }
+        next_sweep_probe_ = pair_cursor_ + kFaceSweepProbePairs;
+
+        const double elapsed_ms = std::chrono::duration<double, std::milli>(
+            std::chrono::steady_clock::now() - pair_started_at_)
+                                      .count();
+        const double projected_ms = elapsed_ms / static_cast<double>(pair_cursor_)
+            * static_cast<double>(candidate_pairs_.size());
+        if (projected_ms < kFaceSweepMinimumSavingMs)
+            return;
+
+        sweep_ = FaceProximitySweep::build(root_, faces_, cancel_);
+        // 建不起来就不要再反复尝试，直接按原有逐对路径跑完。
+        sweep_skipped_ = sweep_ == nullptr;
+    }
+
+    //! 并查集查找；带路径压缩，因此不能是 const 成员函数。
+    size_t findDuplicateRoot(size_t index)
+    {
+        while (duplicate_parents_[index] != index) {
+            duplicate_parents_[index] = duplicate_parents_[duplicate_parents_[index]];
+            index = duplicate_parents_[index];
         }
         return index;
-    };
-    auto merge_groups = [&duplicate_parents, &find_parent](size_t first, size_t second) {
-        first = find_parent(first);
-        second = find_parent(second);
-        if (first != second)
-            duplicate_parents[second] = first;
-    };
-
-    std::vector<std::pair<size_t, size_t>> duplicate_pairs;
-    if (needs_face_pairs) {
-        const double tolerance = Precision::Confusion();
-        const auto candidate_pairs = overlappingFacePairs(faces, tolerance);
-        for (const auto& [first, second] : candidate_pairs) {
-            // 保守边界已证明两面相距超过容差时，两面既不可能相交也不可能同域重叠。
-            if (facesSeparated(faces[first], faces[second], tolerance))
-                continue;
-            // 重复面与相交面互斥；即使不显示重复面，也要先排除重复面误报。
-            if (areDuplicateFaces(faces[first], faces[second], tolerance)) {
-                if (options.duplicate_faces) {
-                    duplicate_pairs.emplace_back(first, second);
-                    merge_groups(first, second);
-                }
-                continue;
-            }
-            if (options.intersecting_faces
-                && facesIntersect(faces[first], faces[second], tolerance)) {
-                result.intersecting_face_pairs.push_back(
-                    { faces[first].face, faces[second].face });
-            }
-        }
     }
-    if (options.duplicate_faces) {
+
+    void mergeDuplicateGroups(size_t first, size_t second)
+    {
+        first = findDuplicateRoot(first);
+        second = findDuplicateRoot(second);
+        if (first != second)
+            duplicate_parents_[second] = first;
+    }
+
+    void runDuplicateGroups()
+    {
+        if (!options_.duplicate_faces)
+            return;
         std::unordered_map<size_t, size_t> group_indices;
-        for (const auto& [first, second] : duplicate_pairs) {
-            const size_t parent = find_parent(first);
-            auto [group_it, inserted] = group_indices.emplace(parent, result.duplicate_face_groups.size());
+        for (const auto& [first, second] : duplicate_pairs_) {
+            const size_t parent = findDuplicateRoot(first);
+            auto [group_it, inserted]
+                = group_indices.emplace(parent, result_.duplicate_face_groups.size());
             if (inserted)
-                result.duplicate_face_groups.emplace_back();
-            auto& group_faces = result.duplicate_face_groups[group_it->second].faces;
-            auto append_unique = [&group_faces, &faces](size_t index) {
-                if (std::none_of(group_faces.begin(), group_faces.end(), [&faces, index](const TopoDS_Face& face) {
-                        return face.IsSame(faces[index].face);
-                    })) {
-                    group_faces.push_back(faces[index].face);
+                result_.duplicate_face_groups.emplace_back();
+            auto& group_faces = result_.duplicate_face_groups[group_it->second].faces;
+            auto append_unique = [this, &group_faces](size_t index) {
+                if (std::none_of(group_faces.begin(), group_faces.end(),
+                        [this, index](const TopoDS_Face& face) {
+                            return face.IsSame(faces_[index].face);
+                        })) {
+                    group_faces.push_back(faces_[index].face);
                 }
             };
             append_unique(first);
@@ -1065,17 +1404,85 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
         }
     }
 
-    if (options.invalid_topology && !BRepCheck_Analyzer(root).IsValid()) {
+    void runInvalidTopology()
+    {
+        if (!options_.invalid_topology)
+            return;
+        if (BRepCheck_Analyzer(root_).IsValid())
+            return;
         for (TopAbs_ShapeEnum type : { TopAbs_FACE, TopAbs_WIRE, TopAbs_EDGE, TopAbs_VERTEX }) {
-            for (TopExp_Explorer subshape(root, type); subshape.More(); subshape.Next()) {
+            for (TopExp_Explorer subshape(root_, type); subshape.More(); subshape.Next()) {
                 if (!BRepCheck_Analyzer(subshape.Current()).IsValid())
-                    result.invalid_shapes.push_back(subshape.Current());
+                    result_.invalid_shapes.push_back(subshape.Current());
             }
         }
-        if (result.invalid_shapes.empty())
-            result.invalid_shapes.push_back(root);
+        if (result_.invalid_shapes.empty())
+            result_.invalid_shapes.push_back(root_);
     }
-    return result;
+
+    // 输入
+    TopoDS_Shape root_;
+    double small_edge_length_threshold_ { 0.0 };
+    double small_face_area_threshold_ { 0.0 };
+    GeometryTopologyDiagnosticOptions options_ {};
+    const std::atomic<bool>* cancel_ { nullptr };
+
+    Step step_ { Step::Edges };
+
+    // Edge 分类阶段
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>,
+        TopTools_ShapeMapHasher>
+        edge_faces_;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edges_;
+    int edge_cursor_ { 1 };
+
+    // Face 测量阶段
+    std::vector<FaceMetrics> faces_;
+
+    // 逐对判定阶段
+    std::vector<size_t> duplicate_parents_;
+    std::vector<std::pair<size_t, size_t>> candidate_pairs_;
+    size_t pair_cursor_ { 0 };
+    //! 全局一次的面片空间扫描；nullptr 表示本次不使用（未启用或构建失败）。
+    std::unique_ptr<FaceProximitySweep> sweep_;
+    //! 扫描构建失败后不再重试，按原有逐对路径跑完。
+    bool sweep_skipped_ { false };
+    //! 逐对阶段开始时刻，用于外推总代价。
+    std::chrono::steady_clock::time_point pair_started_at_ {};
+    //! 下一次做代价外推的候选对下标。
+    size_t next_sweep_probe_ { kFaceSweepProbePairs };
+    std::vector<std::pair<size_t, size_t>> duplicate_pairs_;
+
+    GeometryTopologyDiagnosticResult result_;
+};
+
+} // namespace
+
+std::unique_ptr<GeometryTopologyDiagnosticSession> GeometryTopologyDiagnosticSession::start(
+    const TopoDS_Shape& root,
+    double small_edge_length_threshold,
+    double small_face_area_threshold,
+    const GeometryTopologyDiagnosticOptions& options,
+    const std::atomic<bool>* cancel)
+{
+    return std::make_unique<DiagnosticSessionImpl>(root, small_edge_length_threshold,
+        small_face_area_threshold, options, cancel);
+}
+
+GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
+    const TopoDS_Shape& root,
+    double small_edge_length_threshold,
+    double small_face_area_threshold,
+    const GeometryTopologyDiagnosticOptions& options,
+    const std::atomic<bool>* cancel)
+{
+    // 与分片推进共用同一套实现：非有限预算表示一次推进到完成。
+    const std::unique_ptr<GeometryTopologyDiagnosticSession> session
+        = GeometryTopologyDiagnosticSession::start(root, small_edge_length_threshold,
+            small_face_area_threshold, options, cancel);
+    while (!session->advance(std::numeric_limits<double>::infinity())) {
+    }
+    return session->takeResult();
 }
 
 TopoDS_Shape GeometryTopologyEditor::splitEdge(

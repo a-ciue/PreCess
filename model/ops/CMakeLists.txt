@@ -18,6 +18,7 @@ target_link_libraries(DataOps PRIVATE
 	TKPrim
 	TKShHealing
 	TKTopAlgo
+	TKMesh          # 面片空间扫描需要 BRepMesh_IncrementalMesh
 )
 
 # std::execution 并行策略：GCC 的 pstl 后端为 TBB，须显式链接；

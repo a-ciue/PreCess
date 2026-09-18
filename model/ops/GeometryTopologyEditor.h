@@ -4,6 +4,9 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 
+#include <atomic>
+#include <exception>
+#include <memory>
 #include <vector>
 
 class TopoDS_Vertex;
@@ -39,6 +42,25 @@ struct GeometryTopologyDiagnosticResult {
 };
 
 /**
+ * @brief 协作式取消信号。
+ *
+ * 只在候选对之间与各阶段边界检查标记，**不强制中断**任何单次 OCC 运算，
+ * 因此取消延迟最坏等于最慢的一对 Face。调用方据此丢弃结果即可。
+ */
+class GeometryTopologyDiagnosticCancelled : public std::exception {
+public:
+    explicit GeometryTopologyDiagnosticCancelled(const char* message) noexcept
+        : message_(message)
+    {
+    }
+
+    const char* what() const noexcept override { return message_; }
+
+private:
+    const char* message_;
+};
+
+/**
  * @brief 控制一次诊断需要计算的类别，避免只看边时执行昂贵的面两两求交。
  */
 struct GeometryTopologyDiagnosticOptions {
@@ -48,6 +70,38 @@ struct GeometryTopologyDiagnosticOptions {
     bool duplicate_faces { true };
     bool intersecting_faces { true };
     bool invalid_topology { true };
+};
+
+/**
+ * @brief 可分段推进的一次几何拓扑诊断。
+ *
+ * 判定顺序、判定谓词与 GeometryTopologyEditor::diagnoseTopology() 完全相同，区别只在于
+ * 工作可以按时间片分批完成：调用方（后台任务队列）因此能在时间片之间让更紧急的请求插队，
+ * 不必等一次长诊断整体跑完。结果只有在 advance() 返回 true 之后才是完整的。
+ */
+class GeometryTopologyDiagnosticSession {
+public:
+    /**
+     * @brief 开始一次诊断。参数校验失败时抛 std::invalid_argument，与 diagnoseTopology() 一致。
+     */
+    static std::unique_ptr<GeometryTopologyDiagnosticSession> start(
+        const TopoDS_Shape& root,
+        double small_edge_length_threshold,
+        double small_face_area_threshold,
+        const GeometryTopologyDiagnosticOptions& options,
+        const std::atomic<bool>* cancel = nullptr);
+
+    virtual ~GeometryTopologyDiagnosticSession() = default;
+
+    /**
+     * @brief 最多推进 budget_ms 毫秒。
+     * @param budget_ms 时间预算；非有限值表示一直推进到完成。
+     * @return 全部工作是否已完成。
+     */
+    virtual bool advance(double budget_ms) = 0;
+
+    //! 取走诊断结果；只应在 advance() 返回 true 之后调用。
+    virtual GeometryTopologyDiagnosticResult takeResult() = 0;
 };
 
 /**
@@ -65,13 +119,19 @@ public:
      * @param small_edge_length_threshold 细小边长度阈值，必须大于零。
      * @param small_face_area_threshold 细小面面积阈值，必须大于零。
      * @param options 本次需要计算的诊断类别。
+     * @param cancel 可选的协作式取消标记；置位后在候选对之间抛出
+     *        GeometryTopologyDiagnosticCancelled，不会中断单次 OCC 运算。
      * @return 一次计算得到的全部诊断类别。
+     *
+     * 等价于用无限预算把 GeometryTopologyDiagnosticSession 一次推进到完成；需要让长诊断
+     * 给其它请求让路时，改用会话接口分片推进。
      */
     static GeometryTopologyDiagnosticResult diagnoseTopology(
         const TopoDS_Shape& root,
         double small_edge_length_threshold,
         double small_face_area_threshold,
-        const GeometryTopologyDiagnosticOptions& options = {});
+        const GeometryTopologyDiagnosticOptions& options = {},
+        const std::atomic<bool>* cancel = nullptr);
 
     /**
      * @brief 将一条 Edge 按归一化比例分成两条 Edge。

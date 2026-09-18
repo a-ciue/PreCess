@@ -13,6 +13,8 @@
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
+#include <QTimer>
+
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
@@ -225,6 +227,9 @@ private:
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
+
+    //! @brief 周期性把后台算完的几何拓扑诊断结果搬回渲染线程应用
+    QTimer* topology_diagnostic_timer_ {};
 
     std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
 
