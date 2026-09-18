@@ -13,8 +13,6 @@
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
-#include <QTimer>
-
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
@@ -141,7 +139,8 @@ public:
 
     /**
      * @brief 启用或停用一种几何拓扑诊断类别。
-     * @param category 类别序号，依次为边界边、孤立边、非流形边、细小边、细小面、重复面、相交面、无效拓扑。
+     * @param category 类别序号，依次为边界边、孤立边、非流形边、细小边、细小面、重复面、
+     *        几何自交、面干涉、无效拓扑。
      * @param enabled 是否启用。
      */
     Q_INVOKABLE void setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled);
@@ -227,9 +226,6 @@ private:
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
-
-    //! @brief 周期性把后台算完的几何拓扑诊断结果搬回渲染线程应用
-    QTimer* topology_diagnostic_timer_ {};
 
     std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
 

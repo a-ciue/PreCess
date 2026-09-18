@@ -16,7 +16,10 @@ enum class GeometryTopologyDiagnosticCategory {
     SmallEdge,
     SmallFace,
     DuplicateFace,
-    IntersectingFace,
+    //! 几何自交：单个零件内部的面自身穿插（对应 Surface Repair > Self Intersections）。
+    SelfIntersectingFace,
+    //! 面干涉：不限零件的面-面互相穿插（对应 Geometry Interference Check）。
+    InterferingFace,
     InvalidTopology,
     Count
 };

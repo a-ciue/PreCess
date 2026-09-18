@@ -177,13 +177,6 @@ GeometryTopologyDiagnosticActor& GeometryActor::topologyDiagnostics()
     return *topology_diagnostics_;
 }
 
-bool GeometryActor::pumpTopologyDiagnostics()
-{
-    if (!topology_diagnostics_)
-        return false;
-    return topology_diagnostics_->pumpCompletedTasks();
-}
-
 void GeometryActor::applyStyle()
 {
     if (style_ == GeometryRenderStyle::Hidden || !visibility_) {

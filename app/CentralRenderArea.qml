@@ -494,15 +494,21 @@ Page {
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
-                        text: "相交面"
+                        text: "几何自交"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(6, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
-                        text: "无效拓扑"
+                        text: "面干涉"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(7, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "无效拓扑"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(8, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuSeparator {}

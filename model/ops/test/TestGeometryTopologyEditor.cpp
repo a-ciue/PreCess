@@ -134,6 +134,24 @@ TopoDS_Face makeCylindricalFace(
 }
 
 /**
+ * @brief 把若干形状里的 Face 取出为自由面，包装成根 Compound。
+ *
+ * 相交面对齐 Self Intersections 语义后只检查同一个 Solid 内的面；把面取出为自由面
+ * 即可让它们同属"无 Solid"一组，从而单独验证内部穿插判定本身。
+ */
+TopoDS_Shape makeFreeFacesRoot(std::initializer_list<const TopoDS_Shape*> shapes)
+{
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    for (const TopoDS_Shape* shape : shapes) {
+        for (TopExp_Explorer it(*shape, TopAbs_FACE); it.More(); it.Next())
+            builder.Add(compound, it.Current());
+    }
+    return makeGeometryRoot(compound);
+}
+
+/**
  * @brief 把两个形状包装为根 Compound，供相交面诊断逐对比较。
  */
 TopoDS_Shape makeShapePairRoot(const TopoDS_Shape& first, const TopoDS_Shape& second)
@@ -164,7 +182,7 @@ TopoDS_Face makePlanarRectangleFace(
  */
 GeometryTopologyDiagnosticOptions facePairOptions()
 {
-    return GeometryTopologyDiagnosticOptions { false, false, false, true, true, false };
+    return GeometryTopologyDiagnosticOptions { false, false, false, true, true, false, false };
 }
 }
 
@@ -232,7 +250,7 @@ TEST_CASE("GeometryTopologyEditor groups geometrically duplicate faces")
 
     REQUIRE(result.duplicate_face_groups.size() == 1);
     REQUIRE(result.duplicate_face_groups.front().faces.size() == 2);
-    REQUIRE(result.intersecting_face_pairs.empty());
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses crossing faces")
@@ -253,7 +271,7 @@ TEST_CASE("GeometryTopologyEditor diagnoses crossing faces")
             makeGeometryRoot(compound), 1.0e-6, 1.0e-12);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.size() == 1);
+    REQUIRE(result.self_intersecting_face_pairs.size() == 1);
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses intersecting curved faces")
@@ -264,20 +282,14 @@ TEST_CASE("GeometryTopologyEditor diagnoses intersecting curved faces")
     const TopoDS_Shape second = GeometryBuilder::makeCylinder(
         -5.0, 0.0, 0.0, 2.0, 10.0, 1.0, 0.0, 0.0, full_angle);
 
-    BRep_Builder builder;
-    TopoDS_Compound compound;
-    builder.MakeCompound(compound);
-    builder.Add(compound, first);
-    builder.Add(compound, second);
-
-    GeometryTopologyDiagnosticOptions options {
-        false, false, false, false, true, false
-    };
+    // 相交面对齐 Self Intersections 语义：两个圆柱是两个 Solid，跨 Solid 的穿插属于
+    // 干涉检查；这里把面取出为自由面，使它们同属一组，单独验证内部穿插判定。
     const GeometryTopologyDiagnosticResult result
         = GeometryTopologyEditor::diagnoseTopology(
-            makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
+            makeFreeFacesRoot({ &first, &second }), 1.0e-6, 1.0e-12,
+            GeometryTopologyDiagnosticOptions { false, false, false, false, true, false, false });
 
-    REQUIRE_FALSE(result.intersecting_face_pairs.empty());
+    REQUIRE_FALSE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor ignores independent faces sharing a geometric edge")
@@ -300,7 +312,7 @@ TEST_CASE("GeometryTopologyEditor ignores independent faces sharing a geometric 
         = GeometryTopologyEditor::diagnoseTopology(
             makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
 
-    REQUIRE(result.intersecting_face_pairs.empty());
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor excludes hidden duplicate faces from intersections")
@@ -324,7 +336,7 @@ TEST_CASE("GeometryTopologyEditor excludes hidden duplicate faces from intersect
             makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.empty());
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses partially overlapping coplanar faces")
@@ -348,7 +360,7 @@ TEST_CASE("GeometryTopologyEditor diagnoses partially overlapping coplanar faces
             makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.size() == 1);
+    REQUIRE(result.self_intersecting_face_pairs.size() == 1);
 }
 
 TEST_CASE("GeometryTopologyEditor ignores coplanar faces touching at one edge")
@@ -372,7 +384,7 @@ TEST_CASE("GeometryTopologyEditor ignores coplanar faces touching at one edge")
             makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.empty());
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses overlapping planar and B-spline support faces")
@@ -393,7 +405,7 @@ TEST_CASE("GeometryTopologyEditor diagnoses overlapping planar and B-spline supp
             makeShapePairRoot(planar, bspline), 1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.size() == 1);
+    REQUIRE(result.self_intersecting_face_pairs.size() == 1);
 }
 
 TEST_CASE("GeometryTopologyEditor ignores disjoint coplanar B-spline support faces")
@@ -412,7 +424,7 @@ TEST_CASE("GeometryTopologyEditor ignores disjoint coplanar B-spline support fac
             makeShapePairRoot(planar, bspline), 1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.empty());
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses overlapping coaxial cylindrical and B-spline faces")
@@ -430,7 +442,7 @@ TEST_CASE("GeometryTopologyEditor diagnoses overlapping coaxial cylindrical and 
             makeShapePairRoot(cylinder, bspline), 1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.size() == 1);
+    REQUIRE(result.self_intersecting_face_pairs.size() == 1);
 }
 
 TEST_CASE("GeometryTopologyEditor ignores coaxial cylindrical faces with disjoint ranges")
@@ -448,7 +460,7 @@ TEST_CASE("GeometryTopologyEditor ignores coaxial cylindrical faces with disjoin
             makeShapePairRoot(cylinder, bspline), 1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.empty());
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses crossing slanted faces far from the origin")
@@ -467,7 +479,7 @@ TEST_CASE("GeometryTopologyEditor diagnoses crossing slanted faces far from the 
             makeShapePairRoot(strip, crossing), 1.0e-6, 1.0e-12, facePairOptions());
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.size() == 1);
+    REQUIRE(result.self_intersecting_face_pairs.size() == 1);
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses a plane crossing a B-spline patch far from the origin")
@@ -487,7 +499,7 @@ TEST_CASE("GeometryTopologyEditor diagnoses a plane crossing a B-spline patch fa
             makeShapePairRoot(patch, plane), 1.0e-6, 1.0e-12, facePairOptions());
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.size() == 1);
+    REQUIRE(result.self_intersecting_face_pairs.size() == 1);
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses intersecting cylinders far from the origin")
@@ -499,11 +511,47 @@ TEST_CASE("GeometryTopologyEditor diagnoses intersecting cylinders far from the 
     const TopoDS_Shape second = GeometryBuilder::makeCylinder(
         offset - 5.0, offset, offset, 2.0, 10.0, 1.0, 0.0, 0.0, full_angle);
 
+    // 把面取出为自由面（同组），在地理坐标量级下验证内部穿插判定不漏。
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeFreeFacesRoot({ &first, &second }), 1.0e-6, 1.0e-12, facePairOptions());
+
+    REQUIRE_FALSE(result.self_intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor reports faces of interpenetrating solids")
+{
+    // 两个实体互相咬穿（谁也没有包住谁）时，前处理器会把它们当作同一个零件，
+    // 因此它们之间的面-面穿插属于 Self Intersections，应当被报告。
+    const double full_angle = 2.0 * std::acos(-1.0);
+    const TopoDS_Shape first = GeometryBuilder::makeCylinder(
+        0.0, 0.0, -5.0, 2.0, 10.0, 0.0, 0.0, 1.0, full_angle);
+    const TopoDS_Shape second = GeometryBuilder::makeCylinder(
+        -5.0, 0.0, 0.0, 2.0, 10.0, 1.0, 0.0, 0.0, full_angle);
+
     const GeometryTopologyDiagnosticResult result
         = GeometryTopologyEditor::diagnoseTopology(
             makeShapePairRoot(first, second), 1.0e-6, 1.0e-12, facePairOptions());
 
-    REQUIRE_FALSE(result.intersecting_face_pairs.empty());
+    REQUIRE_FALSE(result.self_intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor ignores faces of nested solids")
+{
+    // 一个实体完整嵌在另一个内部（内外两层蒙皮）是嵌套，两者仍是不同零件，
+    // Self Intersections 不检查它们之间的面-面关系。注意这里的小圆柱必须**完整**
+    // 落在大圆柱内部：只要有一部分伸出去，两者就变成互相穿透，会被视为同一零件。
+    const double full_angle = 2.0 * std::acos(-1.0);
+    const TopoDS_Shape outer = GeometryBuilder::makeCylinder(
+        0.0, 0.0, -20.0, 20.0, 40.0, 0.0, 0.0, 1.0, full_angle);
+    const TopoDS_Shape inner = GeometryBuilder::makeCylinder(
+        0.0, 0.0, -5.0, 2.0, 10.0, 0.0, 0.0, 1.0, full_angle);
+
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(outer, inner), 1.0e-6, 1.0e-12, facePairOptions());
+
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor ignores regular adjacent box faces")
@@ -518,7 +566,7 @@ TEST_CASE("GeometryTopologyEditor ignores regular adjacent box faces")
             1.0e-6, 1.0e-12, options);
 
     REQUIRE(result.duplicate_face_groups.empty());
-    REQUIRE(result.intersecting_face_pairs.empty());
+    REQUIRE(result.self_intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses small edges and small faces independently")

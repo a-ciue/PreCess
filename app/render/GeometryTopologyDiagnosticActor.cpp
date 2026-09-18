@@ -2,7 +2,8 @@
 
 #include "CoincidentTopology.h"
 #include "GeometryTopologyEditor.h"
-#include "GeometryTopologyDiagnosticTaskQueue.h"
+
+#include <spdlog/spdlog.h>
 
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepGProp.hxx>
@@ -10,7 +11,6 @@
 #include <IVtk_Types.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Failure.hxx>
-#include <spdlog/spdlog.h>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -26,6 +26,7 @@
 #include <gp_Pnt.hxx>
 
 #include <algorithm>
+#include <chrono>
 #include <array>
 #include <cmath>
 #include <stdexcept>
@@ -42,7 +43,8 @@ constexpr std::array<DiagnosticColor, kGeometryTopologyDiagnosticCategoryCount> 
     { 1.00, 0.35, 0.70 }, // 细小边
     { 1.00, 0.00, 0.80 }, // 细小面
     { 0.00, 0.80, 1.00 }, // 重复面
-    { 1.00, 0.90, 0.00 }, // 相交面
+    { 1.00, 0.90, 0.00 }, // 几何自交
+    { 1.00, 0.55, 0.20 }, // 面干涉
     { 0.55, 0.15, 1.00 }, // 无效拓扑
 } };
 
@@ -128,10 +130,6 @@ GeometryTopologyDiagnosticActor::GeometryTopologyDiagnosticActor(vtkRenderer* re
 
 GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor()
 {
-    // 先请后台尽快收手，再丢弃本组件的排队请求与未取走结果。
-    if (outstanding_cancel_)
-        outstanding_cancel_->store(true);
-    GeometryTopologyDiagnosticTaskQueue::shared().discardOwner(this);
     if (!renderer_)
         return;
     for (DiagnosticPipeline& pipeline : pipelines_)
@@ -155,12 +153,11 @@ void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
     face_data_ = face_data;
     line_sub_ids_ = line_sub_ids;
     face_sub_ids_ = face_sub_ids;
-    invalidateTasks();
     diagnostics_.reset();
     category_computed_.fill(false);
 
-    // 旧结果已作废，必须立刻清空全部过滤集合与标记点：否则在新结果回来之前，各 VTK
-    // filter 仍挂着上一份几何的子形状 ID，会在新模型上短暂高亮错误的面和边。
+    // 旧结果的子形状 ID 立即从过滤器里清掉：否则在重新计算完成之前，这些过滤器
+    // 仍指向上一份几何的子形状，会在新模型上短暂高亮错误的面和边。
     {
         NCollection_Map<IVtk_IdType> empty_ids;
         for (DiagnosticPipeline& pipeline : pipelines_)
@@ -219,7 +216,6 @@ void GeometryTopologyDiagnosticActor::setSmallEdgeLengthThreshold(double thresho
     }
     small_edge_length_threshold_ = threshold;
     const size_t category = categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge);
-    invalidateTasks();
     category_computed_[category] = false;
     if (diagnostics_)
         diagnostics_->small_edges.clear();
@@ -236,7 +232,6 @@ void GeometryTopologyDiagnosticActor::setSmallFaceAreaThreshold(double threshold
     }
     small_face_area_threshold_ = threshold;
     const size_t category = categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace);
-    invalidateTasks();
     category_computed_[category] = false;
     if (diagnostics_)
         diagnostics_->small_faces.clear();
@@ -250,212 +245,78 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
 {
     const size_t index = categoryIndex(category);
     if (index >= category_computed_.size() || category_computed_[index]
-        || category_pending_[index] || category_failed_[index]
         || !shape_ || shape_->IsNull()) {
         return;
     }
-    // 真正的计算放在后台线程，渲染线程只登记请求后立刻返回，避免长任务卡住视口。
-    submitDiagnostics();
-}
-
-bool GeometryTopologyDiagnosticActor::pendingOptions(
-    GeometryTopologyDiagnosticOptions& options) const
-{
-    options = GeometryTopologyDiagnosticOptions { false, false, false, false, false, false };
-    auto wants = [this](GeometryTopologyDiagnosticCategory category) {
-        const size_t index = categoryIndex(category);
-        return category_enabled_[index] && !category_computed_[index]
-            && !category_pending_[index] && !category_failed_[index];
-    };
-
-    bool any = false;
-    if (wants(GeometryTopologyDiagnosticCategory::BoundaryEdge)
-        || wants(GeometryTopologyDiagnosticCategory::IsolatedEdge)
-        || wants(GeometryTopologyDiagnosticCategory::NonManifoldEdge)) {
-        options.edge_topology = true;
-        any = true;
-    }
-    if (wants(GeometryTopologyDiagnosticCategory::SmallEdge)) {
-        options.small_edges = true;
-        any = true;
-    }
-    if (wants(GeometryTopologyDiagnosticCategory::SmallFace)) {
-        options.small_faces = true;
-        any = true;
-    }
-    if (wants(GeometryTopologyDiagnosticCategory::DuplicateFace)) {
-        options.duplicate_faces = true;
-        any = true;
-    }
-    if (wants(GeometryTopologyDiagnosticCategory::IntersectingFace)) {
-        // 相交检测同时保存重复面结果，保证两类互斥且后续开关无需重算。
-        options.duplicate_faces = true;
-        options.intersecting_faces = true;
-        any = true;
-    }
-    if (wants(GeometryTopologyDiagnosticCategory::InvalidTopology)) {
-        options.invalid_topology = true;
-        any = true;
-    }
-    return any;
-}
-
-void GeometryTopologyDiagnosticActor::submitDiagnostics()
-{
-    // 每个组件同一时刻只允许一个在途请求：形状或阈值变化时直接作废重来即可，
-    // 不必让多个请求互相覆盖结果。
-    if (outstanding_generation_ != 0 || !shape_ || shape_->IsNull())
-        return;
-
-    GeometryTopologyDiagnosticOptions options;
-    if (!pendingOptions(options))
-        return;
-
-    GeometryTopologyDiagnosticRequest request;
-    request.owner = this;
-    // 值拷贝一份形状：靠 TShape 引用计数保证后台计算期间底层几何有效。
-    request.shape = std::make_shared<const TopoDS_Shape>(*shape_);
-    request.small_edge_length_threshold = small_edge_length_threshold_;
-    request.small_face_area_threshold = small_face_area_threshold_;
-    request.options = options;
-    // 取消标记必须在这里保住一份：请求随后被移入队列，移后源的成员已失效。
-    std::shared_ptr<std::atomic<bool>> cancel = std::make_shared<std::atomic<bool>>(false);
-    request.cancel = cancel;
-
-    outstanding_generation_
-        = GeometryTopologyDiagnosticTaskQueue::shared().submit(std::move(request));
-    if (outstanding_generation_ == 0)
-        return; // 队列已停止，保持"未计算"，不显示误导性的空结果。
-    outstanding_cancel_ = std::move(cancel);
-
-    for (size_t index = 0; index < category_pending_.size(); ++index) {
-        if (category_enabled_[index] && !category_computed_[index] && !category_failed_[index])
-            category_pending_[index] = true;
-    }
-}
-
-void GeometryTopologyDiagnosticActor::invalidateTasks()
-{
-    // 协作式取消：置位标记让后台在候选对之间尽快退出，但不强制中断单次 OCC 运算。
-    // 即使它没能及时退出，结果也会在回传时被 generation 检查丢掉。
-    if (outstanding_cancel_)
-        outstanding_cancel_->store(true);
-    outstanding_cancel_.reset();
-    ++task_generation_;
-    outstanding_generation_ = 0;
-    category_pending_.fill(false);
-    category_failed_.fill(false);
-}
-
-void GeometryTopologyDiagnosticActor::markFailedCategories(
-    const GeometryTopologyDiagnosticOptions& options)
-{
-    auto mark = [this](GeometryTopologyDiagnosticCategory category) {
-        const size_t index = categoryIndex(category);
-        if (category_enabled_[index] && !category_computed_[index])
-            category_failed_[index] = true;
-    };
-    if (options.edge_topology) {
-        mark(GeometryTopologyDiagnosticCategory::BoundaryEdge);
-        mark(GeometryTopologyDiagnosticCategory::IsolatedEdge);
-        mark(GeometryTopologyDiagnosticCategory::NonManifoldEdge);
-    }
-    if (options.small_edges)
-        mark(GeometryTopologyDiagnosticCategory::SmallEdge);
-    if (options.small_faces)
-        mark(GeometryTopologyDiagnosticCategory::SmallFace);
-    if (options.duplicate_faces)
-        mark(GeometryTopologyDiagnosticCategory::DuplicateFace);
-    if (options.intersecting_faces)
-        mark(GeometryTopologyDiagnosticCategory::IntersectingFace);
-    if (options.invalid_topology)
-        mark(GeometryTopologyDiagnosticCategory::InvalidTopology);
-}
-
-void GeometryTopologyDiagnosticActor::mergeOutcome(GeometryTopologyDiagnosticOutcome& outcome)
-{
     if (!diagnostics_)
         diagnostics_ = std::make_unique<GeometryTopologyDiagnosticResult>();
 
-    GeometryTopologyDiagnosticResult& computed = outcome.result;
-    if (outcome.options.edge_topology) {
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, false, false, false
+    };
+    if (category == GeometryTopologyDiagnosticCategory::BoundaryEdge
+        || category == GeometryTopologyDiagnosticCategory::IsolatedEdge
+        || category == GeometryTopologyDiagnosticCategory::NonManifoldEdge) {
+        options.edge_topology = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::SmallEdge) {
+        options.small_edges = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::SmallFace) {
+        options.small_faces = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::DuplicateFace) {
+        options.duplicate_faces = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::SelfIntersectingFace) {
+        // 几何自交与重复面共用一次逐对扫描，同时保存重复面结果，保证两类互斥且
+        // 后续开关无需重算。
+        options.duplicate_faces = true;
+        options.self_intersecting_faces = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::InterferingFace) {
+        options.duplicate_faces = true;
+        options.interfering_faces = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::InvalidTopology) {
+        options.invalid_topology = true;
+    }
+
+    const auto compute_started = std::chrono::steady_clock::now();
+    GeometryTopologyDiagnosticResult computed = GeometryTopologyEditor::diagnoseTopology(
+        *shape_, small_edge_length_threshold_, small_face_area_threshold_, options);
+    spdlog::info("几何拓扑诊断：同步计算耗时 {:.1f} ms",
+        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now()
+            - compute_started)
+            .count());
+    if (options.edge_topology) {
         diagnostics_->boundary_edges = std::move(computed.boundary_edges);
         diagnostics_->isolated_edges = std::move(computed.isolated_edges);
         diagnostics_->non_manifold_edges = std::move(computed.non_manifold_edges);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::BoundaryEdge)] = true;
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::IsolatedEdge)] = true;
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::NonManifoldEdge)] = true;
-    }
-    if (outcome.options.small_edges) {
+    } else if (options.small_edges) {
         diagnostics_->small_edges = std::move(computed.small_edges);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge)] = true;
-    }
-    if (outcome.options.small_faces) {
+    } else if (options.small_faces) {
         diagnostics_->small_faces = std::move(computed.small_faces);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace)] = true;
-    }
-    if (outcome.options.intersecting_faces) {
+    } else if (options.self_intersecting_faces) {
         diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
-        diagnostics_->intersecting_face_pairs = std::move(computed.intersecting_face_pairs);
+        diagnostics_->self_intersecting_face_pairs
+            = std::move(computed.self_intersecting_face_pairs);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
-        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::IntersectingFace)] = true;
-    } else if (outcome.options.duplicate_faces) {
+        category_computed_[categoryIndex(
+            GeometryTopologyDiagnosticCategory::SelfIntersectingFace)]
+            = true;
+    } else if (options.interfering_faces) {
+        diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
+        diagnostics_->interfering_face_pairs = std::move(computed.interfering_face_pairs);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::InterferingFace)]
+            = true;
+    } else if (options.duplicate_faces) {
         diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
-    }
-    if (outcome.options.invalid_topology) {
+    } else if (options.invalid_topology) {
         diagnostics_->invalid_shapes = std::move(computed.invalid_shapes);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)] = true;
     }
-}
-
-bool GeometryTopologyDiagnosticActor::pumpCompletedTasks()
-{
-    std::vector<GeometryTopologyDiagnosticOutcome> outcomes
-        = GeometryTopologyDiagnosticTaskQueue::shared().takeOutcomes(this);
-    bool applied = false;
-    for (GeometryTopologyDiagnosticOutcome& outcome : outcomes) {
-        // 先判世代再动状态：迟到的旧结果不能清掉"更晚那次请求"的在途登记。
-        if (outstanding_generation_ == 0 || outcome.generation != outstanding_generation_) {
-            // 形状或阈值已经变化，这一份结果作废。把丢弃也记下来，否则"结果一直不
-            // 出现"会被误读成"算得很慢"。
-            spdlog::info("几何拓扑诊断：丢弃过期结果（代号 {}，当前在途 {}）", outcome.generation,
-                outstanding_generation_);
-            continue;
-        }
-        outstanding_generation_ = 0;
-        outstanding_cancel_.reset();
-        category_pending_.fill(false);
-        if (outcome.cancelled) {
-            spdlog::info("几何拓扑诊断：本次请求已取消，跳过");
-            continue; // 主动取消：不计失败，后续由 submitDiagnostics() 重新排队。
-        }
-        if (outcome.failed) {
-            // 计算失败时保持"未计算"并记录失败，避免立刻重试造成死循环；
-            // 只标记本次请求覆盖到的类别，计算期间新启用的类别留给下一次请求。
-            // 形状或阈值变化会清掉失败标记，允许重试。
-            markFailedCategories(outcome.options);
-            continue;
-        }
-        mergeOutcome(outcome);
-        applied = true;
-    }
-    if (applied) {
-        size_t refreshed = 0;
-        for (size_t index = 0; index < pipelines_.size(); ++index) {
-            if (category_enabled_[index] && category_computed_[index]) {
-                rebuildCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
-                ++refreshed;
-            }
-        }
-        // 与"用户勾选类别"的同步路径保持一致：结果就位后再同步一次可见性，
-        // 避免只更新了过滤集合而 Actor 仍是隐藏状态。
-        applyVisibility();
-        spdlog::info("几何拓扑诊断：结果已应用到界面（刷新 {} 个类别）", refreshed);
-    }
-    // 计算期间又启用了别的类别就继续排队。
-    submitDiagnostics();
-    return applied;
 }
 
 void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnosticCategory category)
@@ -493,8 +354,15 @@ void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnostic
                 appendShapeId(ids, occ_shape_, face);
         }
         break;
-    case GeometryTopologyDiagnosticCategory::IntersectingFace:
-        for (const GeometryIntersectingFacePair& pair : diagnostics_->intersecting_face_pairs) {
+    case GeometryTopologyDiagnosticCategory::SelfIntersectingFace:
+        for (const GeometryIntersectingFacePair& pair :
+            diagnostics_->self_intersecting_face_pairs) {
+            appendShapeId(ids, occ_shape_, pair.first);
+            appendShapeId(ids, occ_shape_, pair.second);
+        }
+        break;
+    case GeometryTopologyDiagnosticCategory::InterferingFace:
+        for (const GeometryIntersectingFacePair& pair : diagnostics_->interfering_face_pairs) {
             appendShapeId(ids, occ_shape_, pair.first);
             appendShapeId(ids, occ_shape_, pair.second);
         }

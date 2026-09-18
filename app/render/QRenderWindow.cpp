@@ -157,31 +157,7 @@ private:
 };
 }
 
-QRenderWindow::QRenderWindow()
-{
-    // 几何拓扑诊断在后台线程计算，这里周期性把算完的结果搬回渲染线程应用。
-    // 定时器本身只做一次极轻的判断，没有待取结果时不产生任何渲染线程任务。
-    topology_diagnostic_timer_ = new QTimer(this);
-    topology_diagnostic_timer_->setInterval(100);
-    connect(topology_diagnostic_timer_, &QTimer::timeout, this, [this] {
-        if (!GeometryActorManager::hasPendingTopologyDiagnostics())
-            return;
-        dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-            Data* vtk = Data::SafeDownCast(userData);
-            if (!vtk || !vtk->geometry_actor_manager_)
-                return;
-            if (!vtk->geometry_actor_manager_->pumpTopologyDiagnostics())
-                return;
-            // 这条命令是在"本次渲染之前"执行的，而管线数据是在命令里才改的，本帧的绘制
-            // 按经验赶不上这次改动；直接调 scheduleRender() 也会并进同一帧。所以把"再渲染
-            // 一次"投回 GUI 线程的事件队列，等本次渲染结束后必定再出一帧，结果才会显示。
-            QMetaObject::invokeMethod(this, [this] { scheduleRender(); }, Qt::QueuedConnection);
-        });
-        // 上面排入的命令要等到"下一次渲染"才会执行，这里先安排一次渲染把它推起来。
-        scheduleRender();
-    });
-    topology_diagnostic_timer_->start();
-}
+QRenderWindow::QRenderWindow() = default;
 
 QRenderWindow::~QRenderWindow() = default;
 

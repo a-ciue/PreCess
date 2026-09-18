@@ -1,6 +1,4 @@
 #include "GeometryActorManager.h"
-
-#include "GeometryTopologyDiagnosticTaskQueue.h"
 #include "GeometryActor.h"
 #include "GeometryTopologyDiagnosticActor.h"
 
@@ -119,19 +117,4 @@ void GeometryActorManager::setTopologyDiagnosticSmallFaceArea(double threshold)
     topology_diagnostic_small_face_area_ = threshold;
     for (auto& [id, actor] : component_actors_)
         actor->topologyDiagnostics().setSmallFaceAreaThreshold(threshold);
-}
-
-bool GeometryActorManager::hasPendingTopologyDiagnostics()
-{
-    return GeometryTopologyDiagnosticTaskQueue::shared().hasReadyResults();
-}
-
-bool GeometryActorManager::pumpTopologyDiagnostics()
-{
-    bool applied = false;
-    for (auto& [id, actor] : component_actors_) {
-        if (actor && actor->pumpTopologyDiagnostics())
-            applied = true;
-    }
-    return applied;
 }
