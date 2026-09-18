@@ -4,9 +4,9 @@
  *
  * 解释器宿主逻辑在 python/（runtime.cpp 真实现 / stub.cpp 桩，precess_runtime
  * 目标恒存在、无需条件编译）；本文件只做线程断言、字符串编解码、日志与信号
- * 桥接。app 侧 Python 函数注册（precess_app 模块）在 QPythonAppModule（真/桩
- * 由 CMake 二选一）。"不可用"是运行时状态：桩实现 available 恒 false、错误
- * 信息说明原因。
+ * 桥接。app 侧 Python 函数注册（precess_app 模块）编入 pythonAppModule 静态库
+ * （真/桩按可用性二选一）。"不可用"是运行时状态：桩实现 available 恒 false、
+ * 错误信息说明原因。
  */
 #include "QPythonRuntime.h"
 
