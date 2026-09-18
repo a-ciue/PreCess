@@ -11,7 +11,7 @@ namespace dock {
 
 Q_NAMESPACE
 
-//! @brief 停靠位置（与 KDDockWidgets 命名兼容，便于 QML 迁移）
+//! @brief 停靠位置（沿用经典命名，便于 QML 沿用）
 enum Location {
     Location_None,
     Location_OnLeft,

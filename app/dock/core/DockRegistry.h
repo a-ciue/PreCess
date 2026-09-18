@@ -3,7 +3,7 @@
  * @brief 停靠对象注册表（极简版）
  *
  * 仅维护主窗口、停靠面板与浮动窗口的登记，供布局与拖放内部查询；
- * 不提供 KDDockWidgets 的 dockByName/mainDockingAreas/clear 等高级接口。
+ * 不提供按名称查找、多主窗口枚举与清空等高级接口。
  */
 
 #pragma once
