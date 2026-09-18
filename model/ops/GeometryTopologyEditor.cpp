@@ -57,6 +57,8 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <exception>
+#include <execution>
 #include <numeric>
 #include <stdexcept>
 #include <string>
@@ -546,8 +548,11 @@ FaceMetrics measureFace(const TopoDS_Face& face)
 /**
  * @brief 用保守边界证明两面在容差内不可能有公共点。
  *
- * 每个边界盒都完整覆盖它代表的面域，因此只要存在一对边界盒相距超过容差，
- * 两面就必定没有公共点；找不到这样的盒对时返回 false，交由精确判定处理。
+ * 每个边界盒都完整覆盖它代表的面域。只有**每一对**盒组合都能证明分离时，才说明两
+ * 面必定没有公共点，返回 true；只要存在一对盒组合无法分离（两面可能在该区域附近
+ * 相交或同域重叠），就返回 false，交由精确判定处理。
+ *
+ * 注意返回 false 只表示保守边界无法证明分离，不表示两面一定相交。
  */
 bool facesSeparated(const FaceMetrics& first, const FaceMetrics& second, double tolerance)
 {
@@ -874,6 +879,38 @@ bool facesIntersect(
     return mayHaveCommonArea(first, second, tolerance)
         && commonArea(first.face, second.face, tolerance) > tolerance * tolerance;
 }
+
+/**
+ * @brief 收集并行区间内逃逸的异常，并在串行阶段按原顺序重新抛出。
+ *
+ * std::execution::par 的并行算法一旦有异常逃出并行体就会直接终止进程，因此并行体
+ * 必须自行捕获；只按索引升序重新抛出第一个失败，使调用方观察到的异常与串行实现一致。
+ */
+class ParallelFailureCollector {
+public:
+    explicit ParallelFailureCollector(size_t count)
+        : failures_(count)
+    {
+    }
+
+    //! 记录当前正在处理的异常；由并行体在 catch(...) 中调用。
+    void capture(size_t index)
+    {
+        failures_[index] = std::current_exception();
+    }
+
+    //! 串行阶段调用：存在异常时按索引升序抛出第一个。
+    void rethrowFirst() const
+    {
+        for (const std::exception_ptr& failure : failures_) {
+            if (failure)
+                std::rethrow_exception(failure);
+        }
+    }
+
+private:
+    std::vector<std::exception_ptr> failures_;
+};
 }
 
 GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
@@ -926,17 +963,44 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
     if (needs_face_pairs || options.small_faces) {
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> face_map;
         TopExp::MapShapes(root, TopAbs_FACE, face_map);
-        faces.reserve(static_cast<size_t>(face_map.Extent()));
-        for (int face_index = 1; face_index <= face_map.Extent(); ++face_index) {
-            const TopoDS_Face face = TopoDS::Face(face_map.FindKey(face_index));
-            try {
-                FaceMetrics metrics = measureFace(face);
-                if (options.small_faces && metrics.area <= small_face_area_threshold)
-                    result.small_faces.push_back(face);
-                faces.push_back(std::move(metrics));
-            } catch (const Standard_Failure&) {
-                // 无法取得基本几何量的 Face 交由无效拓扑诊断处理。
+        const size_t face_count = static_cast<size_t>(face_map.Extent());
+
+        // 逐面几何量互不依赖，先并行测量再按面顺序过滤，保证 faces 与 small_faces
+        // 的顺序和内容与串行实现完全相同。
+        std::vector<TopoDS_Face> measured_faces(face_count);
+        std::vector<FaceMetrics> measured_metrics(face_count);
+        std::vector<char> measurement_valid(face_count, 0);
+        for (size_t face_index = 0; face_index < face_count; ++face_index) {
+            measured_faces[face_index]
+                = TopoDS::Face(face_map.FindKey(static_cast<int>(face_index) + 1));
+        }
+
+        ParallelFailureCollector measurement_failures(face_count);
+        std::vector<size_t> face_indices(face_count);
+        std::iota(face_indices.begin(), face_indices.end(), size_t { 0 });
+        std::for_each(std::execution::par, face_indices.begin(), face_indices.end(),
+            [&measured_faces, &measured_metrics, &measurement_valid, &measurement_failures](
+                size_t index) {
+                try {
+                    measured_metrics[index] = measureFace(measured_faces[index]);
+                    measurement_valid[index] = 1;
+                } catch (const Standard_Failure&) {
+                    // 无法取得基本几何量的 Face 交由无效拓扑诊断处理。
+                } catch (...) {
+                    measurement_failures.capture(index);
+                }
+            });
+        measurement_failures.rethrowFirst();
+
+        faces.reserve(face_count);
+        for (size_t face_index = 0; face_index < face_count; ++face_index) {
+            if (measurement_valid[face_index] == 0)
+                continue;
+            if (options.small_faces
+                && measured_metrics[face_index].area <= small_face_area_threshold) {
+                result.small_faces.push_back(measured_faces[face_index]);
             }
+            faces.push_back(std::move(measured_metrics[face_index]));
         }
     }
 
