@@ -1,11 +1,12 @@
 #include "QLogManager.h"
 #include "QModelManager.h"
 #include "QFeatureSystemAdaptor.h"
+#include "Docking.h"
+#include <QIcon>
 #include <QKeyEvent>
 #include <QQuickVTKItem.h>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
-#include <kddockwidgets/qtquick/Platform.h>
 #include <spdlog/cfg/env.h>
 #ifdef __EMSCRIPTEN__
 #include <QtGui/QFontDatabase>
@@ -76,12 +77,11 @@ int main(int argc, char* argv[])
     }
     QQuickStyle::setStyle("Fusion");
 #endif
-    KDDockWidgets::initFrontend(KDDockWidgets::FrontendType::QtQuick);
-
     QLogManager::initialize();
 
     WASM_GLOBAL QQmlApplicationEngine engine;
-    KDDockWidgets::QtQuick::Platform::instance()->setQmlEngine(&engine);
+    // 停靠组件：注册 PreCess.Docking 类型、注入 QML 引擎、安装全局鼠标过滤器
+    dock::init(&engine);
 
     // 收集命令行参数（跳过第一个参数，它是程序路径）
     QStringList arguments_str = app.arguments().mid(1);

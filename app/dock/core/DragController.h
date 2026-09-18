@@ -76,6 +76,8 @@ Q_SIGNALS:
     void stateChanged(State state);
     //! @brief 悬停落点变化（视图层刷新指示器）
     void hoverChanged();
+    //! @brief 命令式布局变化（浮动/回停），视图层需重新同步
+    void layoutChanged();
 
 private:
     explicit DragController(QObject* parent = nullptr);

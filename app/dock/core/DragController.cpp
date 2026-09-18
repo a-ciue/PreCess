@@ -111,6 +111,7 @@ bool DragController::floatGroup(Group* group)
     const QRect target(area->globalOrigin() + item->geometry().topLeft(), item->geometry().size());
     floating_window->takeGroup(group, item);
     floating_window->setGeometry(target);
+    Q_EMIT layoutChanged();
     return true;
 }
 
@@ -127,6 +128,8 @@ bool DragController::dockGroup(Group* group)
     const bool restored = main_window->dropArea()->restoreGroupFromFloat(group);
     if (floating_window)
         destroyFloatingWindow(floating_window);
+    if (restored)
+        Q_EMIT layoutChanged();
     return restored;
 }
 

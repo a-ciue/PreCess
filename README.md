@@ -116,7 +116,6 @@
 * [![OCC][OCC]][OCC-url]
 * [![spdlog][spdlog]][spdlog-url]
 * [![Catch2][Catch2]][Catch2-url]
-* [![KDDockWidgets][KDDockWidgets]][KDDockWidgets-url]
 
 **插件层功能依赖**（由 `PreCess-deps.bat` 或 `PreCess-deps.sh` 获取，随对应插件按需构建）：
 
@@ -187,7 +186,7 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
 * [ ] **辅助数据结构系统**：一些网格算法需要依赖某种特定的数据结构如CTMesh等，需要一个系统用于注册插件给定的数据结构类型、拿模型数据构造并存储于内存中，以免每次执行算法对数据结构反复构造
   * [ ] **数据层存储附加数据支持**：可以存储**模型核心数据**外的附加数据，如顶点id、uv纹理坐标等，也可用于存储**辅助数据结构**。**模型核心数据**指模型点的坐标与面构成等模型的核心数据
 * [ ] **现代化UI开发**：
-  * [x] 可停靠的窗口：引入KDDockWidgets
+  * [x] 可停靠的窗口：内嵌停靠组件 `app/dock`（布局引擎 / 停靠语义 / QtQuick 视图）
   * [ ] 优化焦点管理，及时失焦。
     * [ ] 窗口焦点管理：能够选中某个窗口
   * [ ] 右键菜单管理
@@ -344,8 +343,6 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 [spdlog-url]: https://github.com/gabime/spdlog
 [Catch2]: https://img.shields.io/badge/Catch2-000000?style=for-the-badge&logo=catch2&logoColor=white
 [Catch2-url]: https://github.com/catchorg/Catch2
-[KDDockWidgets]: https://img.shields.io/badge/KDDockWidgets-000000?style=for-the-badge&logo=kddockwidgets&logoColor=white
-[KDDockWidgets-url]: https://github.com/KDAB/KDDockWidgets
 [CGAL]: https://img.shields.io/badge/CGAL-000000?style=for-the-badge&logo=cgal&logoColor=white
 [CGAL-url]: https://www.cgal.org/
 [Gmsh]: https://img.shields.io/badge/Gmsh-000000?style=for-the-badge&logo=gmsh&logoColor=white

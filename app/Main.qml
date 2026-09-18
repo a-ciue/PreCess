@@ -1,6 +1,6 @@
 /**
  * @file Main.qml
- * @brief 程序的交互主界面，使用 KDDockWidgets 可停靠窗口架构
+ * @brief 程序的交互主界面，使用内嵌停靠组件架构
  *
  * @sa ObjectTree.qml
  * @sa Selector.qml
@@ -15,7 +15,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Fusion
 
-import com.kdab.dockwidgets as KDDW
+import PreCess.Docking as Docking
 
 import app.model
 import app.core
@@ -123,14 +123,14 @@ ApplicationWindow {
         }
     }
 
-    KDDW.DockingArea {
+    Docking.DockingArea {
         id: dockingArea
         anchors.fill: parent
-        options: KDDW.KDDockWidgets.MainWindowOption_HasCentralWidget
+        options: Docking.Enums.MainWindowOption_HasCentralWidget
         persistentCentralItemFileName: "qrc:/qt/qml/app/CentralRenderArea.qml"
         uniqueName: "PreCessMainLayout"
 
-        KDDW.DockWidget {
+        Docking.DockWidget {
             id: objectTreeDock
             uniqueName: "objectTree"
             title: "对象树"
@@ -139,7 +139,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockWidget {
             id: sideBarDock
             uniqueName: "sideBar"
             title: "属性列表"
@@ -148,7 +148,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockWidget {
             id: attributeRenderDock
             uniqueName: "attributeRender"
             title: "属性渲染"
@@ -157,7 +157,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockWidget {
             id: consoleDock
             uniqueName: "console"
             title: "JavaScript 控制台"
@@ -167,7 +167,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockWidget {
             id: pythonConsoleDock
             uniqueName: "pythonConsole"
             title: "Python 控制台"
@@ -177,7 +177,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockWidget {
             id: outputLogDock
             uniqueName: "outputLog"
             title: "日志"
@@ -187,7 +187,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockWidget {
             id: preferencesDock
             uniqueName: "preferences"
             title: "偏好设置"
@@ -198,17 +198,16 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            addDockWidget(objectTreeDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
-            addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
-            addDockWidget(attributeRenderDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(pythonConsoleDock, KDDW.KDDockWidgets.Location_OnRight, null, Qt.size(450, 0), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(outputLogDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(preferencesDock, KDDW.KDDockWidgets.Location_OnTop, objectTreeDock, Qt.size(0, 200), KDDW.KDDockWidgets.StartHidden)
+            addDockWidget(objectTreeDock, Docking.Enums.Location_OnLeft, null, Qt.size(250, 0))
+            addDockWidget(sideBarDock, Docking.Enums.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
+            addDockWidget(attributeRenderDock, Docking.Enums.Location_OnBottom, objectTreeDock, Qt.size(0, 300), Docking.Enums.StartHidden)
+            addDockWidget(consoleDock, Docking.Enums.Location_OnBottom, null, Qt.size(0, 300), Docking.Enums.StartHidden)
+            addDockWidget(pythonConsoleDock, Docking.Enums.Location_OnRight, null, Qt.size(450, 0), Docking.Enums.StartHidden)
+            addDockWidget(outputLogDock, Docking.Enums.Location_OnBottom, null, Qt.size(0, 300), Docking.Enums.StartHidden)
+            addDockWidget(preferencesDock, Docking.Enums.Location_OnTop, objectTreeDock, Qt.size(0, 200), Docking.Enums.StartHidden)
         }
     }
 
-    KDDW.LayoutSaver { id: layoutSaver }
 
     // 拖拽导入：一次可拖入多个文件，逐个交给 read；能否导入由 C++ 判定并写日志
     DropArea {

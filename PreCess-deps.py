@@ -239,11 +239,6 @@ class DependenciesSettings:
 
 GIT_REPOSITORIES = [
     GitRepository(
-        "KDDockWidgets",
-        "https://github.com/KDAB/KDDockWidgets.git",
-        "v2.4.0",
-    ),
-    GitRepository(
         "vtk",
         "https://gitlab.kitware.com/vtk/vtk.git",
         "v9.6.2",
@@ -652,21 +647,6 @@ def build_spdlog(settings: DependenciesSettings) -> None:
     )
     install_configs(settings.install_configs, build_directory)
 
-def build_kddockwidgets(settings: DependenciesSettings) -> None:
-    source = settings.source_dir / "KDDockWidgets"
-    build_directory = settings.build_directory(source)
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "KDDockWidgets-qt6-2.4.0",
-        [
-            ("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i"),
-            ("-DCMAKE_PREFIX_PATH:PATH", settings.prefix_paths),
-        ],
-        settings,
-    )
-    install_configs(settings.install_configs, build_directory)
-
 def build_vtk(settings: DependenciesSettings) -> None:
     source = settings.source_dir / "vtk"
     build_directory = settings.build_directory(source)
@@ -978,7 +958,6 @@ def build_native(settings: DependenciesSettings) -> None:
     print(f"[阶段] 构建原生依赖 -> {settings.install_dir}")
     build_qt(settings)
     build_spdlog(settings)
-    build_kddockwidgets(settings)
     build_vtk(settings)
     build_freetype(settings)
     build_occt(settings)
@@ -1372,34 +1351,6 @@ def occ_wasm_libraries(lib_dir: Path) -> str:
             raise DependencyError(f"未找到 OpenCASCADE 静态库：{lib_dir / f'lib{library}.a'}")
     return ";".join(library_paths)
 
-def build_kddockwidgets_wasm(
-    settings: DependenciesSettings,
-    wasm_qt: Path,
-    environment: dict[str, str],
-) -> None:
-    source = settings.source_dir / "KDDockWidgets"
-    build_directory = settings.build_directory(source)
-    definitions = [
-        ("-DCMAKE_C_FLAGS", wasm_compile_flags(settings, WASM_EXCEPTION_FLAGS)),
-        ("-DCMAKE_CXX_FLAGS", wasm_compile_flags(settings, WASM_EXCEPTION_FLAGS)),
-        ("-DCMAKE_PREFIX_PATH:PATH", wasm_qt),
-        # KDDW 有自己的静态开关，BUILD_SHARED_LIBS 对它无效。
-        ("-DKDDockWidgets_STATIC:BOOL", "ON"),
-        ("-DKDDockWidgets_EXAMPLES:BOOL", "OFF"),
-        ("-DKDDockWidgets_TESTS:BOOL", "OFF"),
-    ]
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "KDDockWidgets-qt6-2.4.0",
-        definitions,
-        settings,
-        cmake_command=wasm_qt_cmake_command(settings, wasm_qt),
-        use_toolchain=False,
-        environment=environment,
-    )
-    install_configs(("Release",), build_directory, environment)
-
 def build_spdlog_wasm(settings: DependenciesSettings, environment: dict[str, str]) -> None:
     source = settings.source_dir / "spdlog"
     build_directory = settings.build_directory(source)
@@ -1596,7 +1547,6 @@ def build_wasm(settings: DependenciesSettings) -> None:
     patch_occt_wasm_toolkit_gl2ps(settings)
     patch_occt_wasm_convert_signals(settings)
     occ_prefix = build_occt_wasm(settings, wasm_qt, environment)
-    build_kddockwidgets_wasm(settings, wasm_qt, environment)
     build_spdlog_wasm(settings, environment)
     build_catch2_wasm(settings, environment)
     build_libmeshb_wasm(settings, environment)
