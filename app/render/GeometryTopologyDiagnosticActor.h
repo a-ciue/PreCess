@@ -65,8 +65,8 @@ private:
         vtkNew<vtkActor> actor;
     };
 
-    /** @brief 首次需要显示诊断类别时计算并缓存结果。 */
-    void ensureDiagnostics();
+    /** @brief 首次需要显示诊断类别时按类别依赖计算并缓存结果。 */
+    void ensureDiagnostics(GeometryTopologyDiagnosticCategory category);
     /** @brief 按缓存结果更新指定类别的子形状过滤集合。 */
     void rebuildCategory(GeometryTopologyDiagnosticCategory category);
     /** @brief 更新细小边中点或细小面质心的固定屏幕尺寸标记。 */
@@ -79,6 +79,7 @@ private:
     double small_edge_length_threshold_ { 1.0e-6 };
     double small_face_area_threshold_ { 1.0e-12 };
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> category_enabled_ {};
+    std::array<bool, kGeometryTopologyDiagnosticCategoryCount> category_computed_ {};
     std::array<DiagnosticPipeline, kGeometryTopologyDiagnosticCategoryCount> pipelines_;
     DiagnosticPipeline invalid_edge_pipeline_;
     SizeMarkerPipeline small_edge_marker_;

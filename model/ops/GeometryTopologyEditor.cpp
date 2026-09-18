@@ -20,11 +20,15 @@
 #include <Bnd_Box.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <GeomAbs_CurveType.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_BezierSurface.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <ShapeFix_Shape.hxx>
 #include <ShapeBuild_Edge.hxx>
@@ -44,14 +48,21 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <TopExp_Explorer.hxx>
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <numeric>
 #include <stdexcept>
 #include <string>
 #include <tuple>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -169,12 +180,336 @@ int uniqueFaceCount(const NCollection_List<TopoDS_Shape>& ancestors)
 }
 
 /**
+ * @brief 描述一块面域的有向包围盒，用作严格排除不相交面组合的保守边界。
+ *
+ * 边界盒必须完整盖住它代表的面域，因此"两个边界盒相距超过容差"才能证明
+ * 对应的两块面域没有公共点；判定只允许在这个方向上给出结论。
+ */
+struct FaceBoundBox {
+    std::array<double, 3> center {};
+    std::array<std::array<double, 3>, 3> axes { { { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 },
+        { 0.0, 0.0, 1.0 } } };
+    std::array<double, 3> half {};
+};
+
+double dotProduct(const std::array<double, 3>& first, const std::array<double, 3>& second)
+{
+    return first[0] * second[0] + first[1] * second[1] + first[2] * second[2];
+}
+
+std::array<double, 3> crossProduct(
+    const std::array<double, 3>& first, const std::array<double, 3>& second)
+{
+    return { first[1] * second[2] - first[2] * second[1],
+        first[2] * second[0] - first[0] * second[2],
+        first[0] * second[1] - first[1] * second[0] };
+}
+
+double vectorLength(const std::array<double, 3>& vector)
+{
+    return std::sqrt(dotProduct(vector, vector));
+}
+
+std::array<double, 3> normalizedVector(const std::array<double, 3>& vector)
+{
+    const double length = vectorLength(vector);
+    if (length <= 0.0)
+        return { 0.0, 0.0, 0.0 };
+    return { vector[0] / length, vector[1] / length, vector[2] / length };
+}
+
+std::array<double, 3> directionOf(const gp_Dir& direction)
+{
+    return { direction.X(), direction.Y(), direction.Z() };
+}
+
+std::array<double, 3> pointOf(const gp_Pnt& point)
+{
+    return { point.X(), point.Y(), point.Z() };
+}
+
+/**
+ * @brief 构造与坐标轴对齐的保守边界盒，并按给定余量外扩。
+ */
+FaceBoundBox axisAlignedBound(
+    const std::array<double, 3>& minimum,
+    const std::array<double, 3>& maximum,
+    double margin)
+{
+    FaceBoundBox bound;
+    for (size_t axis = 0; axis < 3; ++axis) {
+        bound.center[axis] = 0.5 * (minimum[axis] + maximum[axis]);
+        bound.half[axis] = 0.5 * (maximum[axis] - minimum[axis]) + margin;
+    }
+    return bound;
+}
+
+/**
+ * @brief 把控制点下标区间收拢到有效范围。
+ */
+std::pair<int, int> clampRange(int low, int high, int count)
+{
+    return { std::max(1, low), std::min(count, high) };
+}
+
+/**
+ * @brief 合并相邻的区间，把区间数量压到上限以内，保持区间仍然连续且覆盖原范围。
+ */
+void limitRangeCount(std::vector<std::pair<int, int>>& ranges, int maximum_count)
+{
+    while (static_cast<int>(ranges.size()) > maximum_count) {
+        std::vector<std::pair<int, int>> merged;
+        merged.reserve(ranges.size() / 2 + 1);
+        for (size_t index = 0; index < ranges.size(); index += 2) {
+            const int low = ranges[index].first;
+            const int high = index + 1 < ranges.size() ? ranges[index + 1].second
+                                                      : ranges[index].second;
+            merged.emplace_back(low, high);
+        }
+        ranges.swap(merged);
+    }
+}
+
+/**
+ * @brief 按控制点下标区间逐块生成自由曲面的保守边界盒。
+ *
+ * B-Spline 曲面在单个节点区间上位于其支撑控制点的凸包内，因此按区间取控制点
+ * 的轴向包围盒仍然是该区间曲面的保守边界；合并区间只会让边界变松，不会漏掉曲面。
+ */
+void appendFreeFormBounds(
+    const NCollection_Array2<gp_Pnt>& poles,
+    const std::vector<std::pair<int, int>>& row_ranges,
+    const std::vector<std::pair<int, int>>& column_ranges,
+    double margin,
+    std::vector<FaceBoundBox>& bounds)
+{
+    bounds.reserve(bounds.size() + row_ranges.size() * column_ranges.size());
+    for (const auto& [row_low, row_high] : row_ranges) {
+        for (const auto& [column_low, column_high] : column_ranges) {
+            if (row_low > row_high || column_low > column_high)
+                continue;
+            std::array<double, 3> minimum = { 1e300, 1e300, 1e300 };
+            std::array<double, 3> maximum = { -1e300, -1e300, -1e300 };
+            for (int row = row_low; row <= row_high; ++row) {
+                for (int column = column_low; column <= column_high; ++column) {
+                    const gp_Pnt& point = poles(row, column);
+                    minimum[0] = std::min(minimum[0], point.X());
+                    minimum[1] = std::min(minimum[1], point.Y());
+                    minimum[2] = std::min(minimum[2], point.Z());
+                    maximum[0] = std::max(maximum[0], point.X());
+                    maximum[1] = std::max(maximum[1], point.Y());
+                    maximum[2] = std::max(maximum[2], point.Z());
+                }
+            }
+            bounds.push_back(axisAlignedBound(minimum, maximum, margin));
+        }
+    }
+}
+
+/**
+ * @brief 生成面的保守边界盒集合，用于在执行精确求交前排除不相交的面组合。
+ *
+ * 平面使用支撑平面的零厚度板片和面内矩形（线性函数在包围盒角点上取极值，
+ * 因此角点投影即可盖住整个面）；自由曲面使用节点区间内控制点的凸包；
+ * 其余曲面退化为外扩后的最优包围盒。所有边界盒都按面的形状容差外扩，
+ * 保证"边界盒相距超过容差"蕴含"面域相距超过容差"。
+ */
+std::vector<FaceBoundBox> faceBoundBoxes(
+    const TopoDS_Face& face,
+    const BRepAdaptor_Surface& surface,
+    const std::array<double, 3>& minimum,
+    const std::array<double, 3>& maximum)
+{
+    const double margin = BRep_Tool::Tolerance(face);
+    std::vector<FaceBoundBox> bounds;
+    const occ::handle<Geom_Surface> geometry = BRep_Tool::Surface(face);
+    if (geometry.IsNull()) {
+        bounds.push_back(axisAlignedBound(minimum, maximum, margin));
+        return bounds;
+    }
+
+    if (surface.GetType() == GeomAbs_Plane) {
+        const gp_Ax3 frame = surface.Plane().Position();
+        const std::array<double, 3> normal = directionOf(frame.Direction());
+        const std::array<double, 3> x_direction = directionOf(frame.XDirection());
+        const std::array<double, 3> y_direction = directionOf(frame.YDirection());
+        const std::array<double, 3> origin = pointOf(frame.Location());
+        double u_minimum = 1e300;
+        double u_maximum = -1e300;
+        double v_minimum = 1e300;
+        double v_maximum = -1e300;
+        for (int corner_index = 0; corner_index < 8; ++corner_index) {
+            const std::array<double, 3> corner { (corner_index & 1) ? maximum[0] : minimum[0],
+                (corner_index & 2) ? maximum[1] : minimum[1],
+                (corner_index & 4) ? maximum[2] : minimum[2] };
+            const double u = dotProduct(corner, x_direction);
+            const double v = dotProduct(corner, y_direction);
+            u_minimum = std::min(u_minimum, u);
+            u_maximum = std::max(u_maximum, u);
+            v_minimum = std::min(v_minimum, v);
+            v_maximum = std::max(v_maximum, v);
+        }
+        const double offset = dotProduct(origin, normal);
+        const double u_center = 0.5 * (u_minimum + u_maximum);
+        const double v_center = 0.5 * (v_minimum + v_maximum);
+        FaceBoundBox slab;
+        slab.axes[0] = normal;
+        slab.axes[1] = x_direction;
+        slab.axes[2] = y_direction;
+        for (size_t axis = 0; axis < 3; ++axis) {
+            slab.center[axis]
+                = normal[axis] * offset + x_direction[axis] * u_center + y_direction[axis] * v_center;
+        }
+        slab.half[0] = margin;
+        slab.half[1] = 0.5 * (u_maximum - u_minimum) + margin;
+        slab.half[2] = 0.5 * (v_maximum - v_minimum) + margin;
+        bounds.push_back(slab);
+        return bounds;
+    }
+
+    if (surface.GetType() == GeomAbs_BSplineSurface) {
+        const occ::handle<Geom_BSplineSurface> bspline
+            = occ::handle<Geom_BSplineSurface>::DownCast(geometry);
+        if (!bspline.IsNull()) {
+            const NCollection_Array2<gp_Pnt>& poles = bspline->Poles();
+            // 必须使用带重复节点的节点序列：基函数 N(i) 的支撑区间是
+            // [U(i), U(i + degree + 1)]，下标基于展开后的序列，而不是去重节点表。
+            const NCollection_Array1<double>& knots_u = bspline->UKnotSequence();
+            const NCollection_Array1<double>& knots_v = bspline->VKnotSequence();
+            double u_first = 0.0;
+            double u_last = 0.0;
+            double v_first = 0.0;
+            double v_last = 0.0;
+            BRepTools::UVBounds(face, u_first, u_last, v_first, v_last);
+            const bool valid_bounds = std::isfinite(u_first) && std::isfinite(u_last)
+                && std::isfinite(v_first) && std::isfinite(v_last) && u_first < u_last
+                && v_first < v_last;
+
+            // 只保留与面参数域相交的非退化节点区间。
+            std::vector<std::pair<int, int>> spans_u;
+            std::vector<std::pair<int, int>> spans_v;
+            for (int span = knots_u.Lower(); span < knots_u.Upper(); ++span) {
+                if (knots_u(span + 1) <= knots_u(span))
+                    continue;
+                if (valid_bounds && (knots_u(span + 1) <= u_first || knots_u(span) >= u_last))
+                    continue;
+                spans_u.emplace_back(span, span);
+            }
+            for (int span = knots_v.Lower(); span < knots_v.Upper(); ++span) {
+                if (knots_v(span + 1) <= knots_v(span))
+                    continue;
+                if (valid_bounds && (knots_v(span + 1) <= v_first || knots_v(span) >= v_last))
+                    continue;
+                spans_v.emplace_back(span, span);
+            }
+            if (spans_u.empty())
+                spans_u.emplace_back(knots_u.Lower(), knots_u.Upper() - 1);
+            if (spans_v.empty())
+                spans_v.emplace_back(knots_v.Lower(), knots_v.Upper() - 1);
+
+            // 区间数量决定逐块判定的成本，合并到上限以内只损失紧致度。
+            constexpr int maximum_cells_per_axis = 16;
+            limitRangeCount(spans_u, maximum_cells_per_axis);
+            limitRangeCount(spans_v, maximum_cells_per_axis);
+            std::vector<std::pair<int, int>> row_ranges;
+            std::vector<std::pair<int, int>> column_ranges;
+            row_ranges.reserve(spans_u.size());
+            column_ranges.reserve(spans_v.size());
+            // 区间 [k1, k2] 的曲面位于 N(k1 - degree)..N(k2) 控制点的凸包内。
+            for (const auto& [first_span, last_span] : spans_u) {
+                row_ranges.push_back(clampRange(first_span - bspline->UDegree(), last_span,
+                    bspline->NbUPoles()));
+            }
+            for (const auto& [first_span, last_span] : spans_v) {
+                column_ranges.push_back(clampRange(first_span - bspline->VDegree(), last_span,
+                    bspline->NbVPoles()));
+            }
+            appendFreeFormBounds(poles, row_ranges, column_ranges, margin, bounds);
+            if (bounds.empty())
+                bounds.push_back(axisAlignedBound(minimum, maximum, margin));
+            return bounds;
+        }
+    }
+
+    if (surface.GetType() == GeomAbs_BezierSurface) {
+        const occ::handle<Geom_BezierSurface> bezier
+            = occ::handle<Geom_BezierSurface>::DownCast(geometry);
+        if (!bezier.IsNull()) {
+            const NCollection_Array2<gp_Pnt>& poles = bezier->Poles();
+            const std::vector<std::pair<int, int>> row_ranges {
+                std::make_pair(poles.LowerRow(), poles.UpperRow())
+            };
+            const std::vector<std::pair<int, int>> column_ranges {
+                std::make_pair(poles.LowerCol(), poles.UpperCol())
+            };
+            appendFreeFormBounds(poles, row_ranges, column_ranges, margin, bounds);
+            if (bounds.empty())
+                bounds.push_back(axisAlignedBound(minimum, maximum, margin));
+            return bounds;
+        }
+    }
+
+    bounds.push_back(axisAlignedBound(minimum, maximum, margin));
+    return bounds;
+}
+
+/**
+ * @brief 判断两个保守边界盒的间距是否大于给定容差。
+ *
+ * 只返回"确定分离"的结论：在任一候选方向上投影区间相距超过容差即成立，
+ * 找不到分离方向时返回 false，交由精确判定处理。
+ */
+bool boundBoxesSeparated(const FaceBoundBox& first, const FaceBoundBox& second, double tolerance)
+{
+    std::array<std::array<double, 3>, 15> directions;
+    size_t direction_count = 0;
+    for (size_t axis = 0; axis < 3; ++axis)
+        directions[direction_count++] = first.axes[axis];
+    for (size_t axis = 0; axis < 3; ++axis)
+        directions[direction_count++] = second.axes[axis];
+    for (size_t first_axis = 0; first_axis < 3; ++first_axis) {
+        for (size_t second_axis = 0; second_axis < 3; ++second_axis) {
+            const std::array<double, 3> cross = normalizedVector(
+                crossProduct(first.axes[first_axis], second.axes[second_axis]));
+            if (vectorLength(cross) > 0.5)
+                directions[direction_count++] = cross;
+        }
+    }
+
+    for (size_t index = 0; index < direction_count; ++index) {
+        const std::array<double, 3>& direction = directions[index];
+        double first_low = dotProduct(first.center, direction);
+        double first_high = first_low;
+        double second_low = dotProduct(second.center, direction);
+        double second_high = second_low;
+        for (size_t axis = 0; axis < 3; ++axis) {
+            const double first_radius = first.half[axis] * std::abs(dotProduct(first.axes[axis], direction));
+            first_low -= first_radius;
+            first_high += first_radius;
+            const double second_radius
+                = second.half[axis] * std::abs(dotProduct(second.axes[axis], direction));
+            second_low -= second_radius;
+            second_high += second_radius;
+        }
+        if (first_high + tolerance < second_low || second_high + tolerance < first_low)
+            return true;
+    }
+    return false;
+}
+
+/**
  * @brief 保存重复面和相交面筛选需要的低成本几何量。
  */
 struct FaceMetrics {
     TopoDS_Face face;
     Bnd_Box box;
+    std::vector<FaceBoundBox> bounds;
+    std::vector<TopoDS_Edge> edges;
     gp_Pnt center;
+    gp_Pln plane;
+    gp_Cylinder cylinder;
+    std::array<double, 3> minimum {};
+    std::array<double, 3> maximum {};
     double area { 0.0 };
     double perimeter { 0.0 };
     GeomAbs_SurfaceType surface_type { GeomAbs_OtherSurface };
@@ -185,6 +520,10 @@ FaceMetrics measureFace(const TopoDS_Face& face)
     FaceMetrics metrics;
     metrics.face = face;
     BRepBndLib::AddOptimal(face, metrics.box, false);
+    metrics.box.Get(metrics.minimum[0], metrics.minimum[1], metrics.minimum[2],
+        metrics.maximum[0], metrics.maximum[1], metrics.maximum[2]);
+    for (TopExp_Explorer edge(face, TopAbs_EDGE); edge.More(); edge.Next())
+        metrics.edges.push_back(TopoDS::Edge(edge.Current()));
 
     GProp_GProps surface_properties;
     BRepGProp::SurfaceProperties(face, surface_properties);
@@ -194,8 +533,90 @@ FaceMetrics measureFace(const TopoDS_Face& face)
     GProp_GProps linear_properties;
     BRepGProp::LinearProperties(face, linear_properties);
     metrics.perimeter = std::abs(linear_properties.Mass());
-    metrics.surface_type = BRepAdaptor_Surface(face).GetType();
+    BRepAdaptor_Surface surface(face);
+    metrics.surface_type = surface.GetType();
+    if (metrics.surface_type == GeomAbs_Plane)
+        metrics.plane = surface.Plane();
+    else if (metrics.surface_type == GeomAbs_Cylinder)
+        metrics.cylinder = surface.Cylinder();
+    metrics.bounds = faceBoundBoxes(face, surface, metrics.minimum, metrics.maximum);
     return metrics;
+}
+
+/**
+ * @brief 用保守边界证明两面在容差内不可能有公共点。
+ *
+ * 每个边界盒都完整覆盖它代表的面域，因此只要存在一对边界盒相距超过容差，
+ * 两面就必定没有公共点；找不到这样的盒对时返回 false，交由精确判定处理。
+ */
+bool facesSeparated(const FaceMetrics& first, const FaceMetrics& second, double tolerance)
+{
+    for (const FaceBoundBox& first_bound : first.bounds) {
+        for (const FaceBoundBox& second_bound : second.bounds) {
+            if (!boundBoxesSeparated(first_bound, second_bound, tolerance))
+                return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * @brief 用包围盒扫掠生成可能相交的面组合，避免对全部面执行二次遍历。
+ */
+std::vector<std::pair<size_t, size_t>> overlappingFacePairs(
+    const std::vector<FaceMetrics>& faces,
+    double tolerance)
+{
+    if (faces.empty())
+        return {};
+
+    std::array<double, 3> overall_minimum = faces.front().minimum;
+    std::array<double, 3> overall_maximum = faces.front().maximum;
+    for (const FaceMetrics& face : faces) {
+        for (size_t axis = 0; axis < 3; ++axis) {
+            overall_minimum[axis] = std::min(overall_minimum[axis], face.minimum[axis]);
+            overall_maximum[axis] = std::max(overall_maximum[axis], face.maximum[axis]);
+        }
+    }
+    size_t sweep_axis = 0;
+    for (size_t axis = 1; axis < 3; ++axis) {
+        if (overall_maximum[axis] - overall_minimum[axis]
+            > overall_maximum[sweep_axis] - overall_minimum[sweep_axis]) {
+            sweep_axis = axis;
+        }
+    }
+
+    std::vector<size_t> order(faces.size());
+    std::iota(order.begin(), order.end(), 0);
+    std::sort(order.begin(), order.end(), [&faces, sweep_axis](size_t first, size_t second) {
+        return faces[first].minimum[sweep_axis] < faces[second].minimum[sweep_axis];
+    });
+
+    std::vector<std::pair<size_t, size_t>> pairs;
+    for (size_t first_order = 0; first_order < order.size(); ++first_order) {
+        const size_t first = order[first_order];
+        for (size_t second_order = first_order + 1; second_order < order.size(); ++second_order) {
+            const size_t second = order[second_order];
+            if (faces[second].minimum[sweep_axis]
+                > faces[first].maximum[sweep_axis] + tolerance) {
+                break;
+            }
+            bool overlaps = true;
+            for (size_t axis = 0; axis < 3; ++axis) {
+                if (axis == sweep_axis)
+                    continue;
+                if (faces[first].maximum[axis] + tolerance < faces[second].minimum[axis]
+                    || faces[second].maximum[axis] + tolerance < faces[first].minimum[axis]) {
+                    overlaps = false;
+                    break;
+                }
+            }
+            if (!overlaps)
+                continue;
+            pairs.emplace_back(first, second);
+        }
+    }
+    return pairs;
 }
 
 bool nearlyEqual(double first, double second, double absolute_tolerance)
@@ -281,41 +702,177 @@ bool areDuplicateFaces(const FaceMetrics& first, const FaceMetrics& second, doub
     }
 }
 
-bool shareTopologicalEdge(const TopoDS_Face& first, const TopoDS_Face& second)
+/**
+ * @brief 使用预先收集的 Edge 判断两面是否属于正常拓扑相邻关系。
+ */
+bool shareTopologicalEdge(const FaceMetrics& first, const FaceMetrics& second)
 {
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> first_edges;
-    TopExp::MapShapes(first, TopAbs_EDGE, first_edges);
-    for (TopExp_Explorer edge(second, TopAbs_EDGE); edge.More(); edge.Next()) {
-        if (first_edges.Contains(edge.Current()))
+    const auto& fewer_edges = first.edges.size() <= second.edges.size()
+        ? first.edges
+        : second.edges;
+    const auto& more_edges = first.edges.size() <= second.edges.size()
+        ? second.edges
+        : first.edges;
+    for (const TopoDS_Edge& first_edge : fewer_edges) {
+        if (std::any_of(more_edges.begin(), more_edges.end(), [&first_edge](const TopoDS_Edge& second_edge) {
+                return first_edge.IsSame(second_edge);
+            })) {
             return true;
+        }
     }
     return false;
 }
 
-bool facesIntersect(const FaceMetrics& first, const FaceMetrics& second, double tolerance)
+/**
+ * @brief 判断 Section 边是否进入至少一张面的内部，排除双方都在边界上的相邻接触。
+ */
+bool entersFaceInterior(
+    const TopoDS_Edge& edge,
+    const TopoDS_Face& first,
+    const TopoDS_Face& second,
+    double tolerance)
+{
+    BRepAdaptor_Curve curve(edge);
+    const double first_parameter = curve.FirstParameter();
+    const double last_parameter = curve.LastParameter();
+    if (!std::isfinite(first_parameter) || !std::isfinite(last_parameter)
+        || first_parameter >= last_parameter) {
+        return false;
+    }
+
+    // 避开端点，只判断相交边内部；真正穿过时至少有一张 Face 的分类为 IN。
+    for (double ratio : { 0.25, 0.5, 0.75 }) {
+        const gp_Pnt point = curve.Value(
+            first_parameter + (last_parameter - first_parameter) * ratio);
+        BRepClass_FaceClassifier first_classifier(first, point, tolerance, true);
+        BRepClass_FaceClassifier second_classifier(second, point, tolerance, true);
+        const TopAbs_State first_state = first_classifier.State();
+        const TopAbs_State second_state = second_classifier.State();
+        const bool on_first = first_state == TopAbs_IN || first_state == TopAbs_ON;
+        const bool on_second = second_state == TopAbs_IN || second_state == TopAbs_ON;
+        if (on_first && on_second
+            && (first_state == TopAbs_IN || second_state == TopAbs_IN)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * @brief Section 结果对两张 Face 关系给出的判定能力。
+ */
+enum class FacePairRelation {
+    //! Section 未产生任何 Edge：两面不可能共享 2D 区域，兜底 Common 可以跳过。
+    Separated,
+    //! 存在进入至少一张 Face 内部的交线。
+    Crossing,
+    //! 只有落在边界上的交线，或 Section 失败，需要后续兜底判定。
+    Inconclusive,
+};
+
+/**
+ * @brief 判断经过 Face 边界修剪后的 Section 结果中两面所处的几何关系。
+ *
+ * 两面共享 2D 区域时支撑曲面必然在重合区域内相同，而该重合区域的边界同样属于
+ * Section 结果，因此 Section 完全没有 Edge 就足以排除同域重叠和内部穿插。
+ */
+FacePairRelation classifyFacePair(
+    const TopoDS_Face& first,
+    const TopoDS_Face& second,
+    double tolerance)
+{
+    try {
+        // IntTools_FaceFace 的中间曲线可能包含几何共边，必须用 Section 完成边界修剪。
+        BRepAlgoAPI_Section section(first, second, false);
+        section.SetFuzzyValue(tolerance);
+        section.Build();
+        if (!section.IsDone())
+            return FacePairRelation::Inconclusive;
+
+        bool has_edge = false;
+        for (TopExp_Explorer edge(section.Shape(), TopAbs_EDGE); edge.More(); edge.Next()) {
+            has_edge = true;
+            if (entersFaceInterior(
+                    TopoDS::Edge(edge.Current()), first, second, tolerance)) {
+                return FacePairRelation::Crossing;
+            }
+        }
+        return has_edge ? FacePairRelation::Inconclusive : FacePairRelation::Separated;
+    } catch (const Standard_Failure&) {
+        return FacePairRelation::Inconclusive;
+    }
+}
+
+/**
+ * @brief 判断经过 Face 边界修剪后的 Section 结果中是否存在内部相交边。
+ */
+bool hasIntersectionEdge(const TopoDS_Face& first, const TopoDS_Face& second, double tolerance)
+{
+    return classifyFacePair(first, second, tolerance) == FacePairRelation::Crossing;
+}
+
+/**
+ * @brief 判断两张非平面 Face 是否可能覆盖同一片曲面区域。
+ */
+bool mayHaveCommonArea(const FaceMetrics& first, const FaceMetrics& second, double tolerance)
+{
+    const bool first_analytic = first.surface_type == GeomAbs_Plane
+        || first.surface_type == GeomAbs_Cylinder
+        || first.surface_type == GeomAbs_Cone
+        || first.surface_type == GeomAbs_Sphere
+        || first.surface_type == GeomAbs_Torus;
+    const bool second_analytic = second.surface_type == GeomAbs_Plane
+        || second.surface_type == GeomAbs_Cylinder
+        || second.surface_type == GeomAbs_Cone
+        || second.surface_type == GeomAbs_Sphere
+        || second.surface_type == GeomAbs_Torus;
+    if (first_analytic && second_analytic && first.surface_type != second.surface_type)
+        return false;
+
+    if (first.surface_type == GeomAbs_Cylinder
+        && second.surface_type == GeomAbs_Cylinder) {
+        const gp_Ax1& first_axis = first.cylinder.Axis();
+        const gp_Ax1& second_axis = second.cylinder.Axis();
+        return first_axis.Direction().IsParallel(
+                   second_axis.Direction(), Precision::Angular())
+            && gp_Lin(first_axis).Distance(gp_Lin(second_axis)) <= tolerance
+            && nearlyEqual(first.cylinder.Radius(), second.cylinder.Radius(), tolerance);
+    }
+    return true;
+}
+
+bool facesIntersect(
+    const FaceMetrics& first,
+    const FaceMetrics& second,
+    double tolerance)
 {
     Bnd_Box first_box = first.box;
     Bnd_Box second_box = second.box;
     first_box.Enlarge(tolerance);
     second_box.Enlarge(tolerance);
-    if (first_box.IsOut(second_box) || shareTopologicalEdge(first.face, second.face))
+    if (first_box.IsOut(second_box) || shareTopologicalEdge(first, second))
         return false;
 
-    if (commonArea(first.face, second.face, tolerance) > tolerance * tolerance)
-        return true;
-
-    try {
-        BRepAlgoAPI_Section section(first.face, second.face, false);
-        section.SetFuzzyValue(tolerance);
-        section.Build();
-        if (!section.IsDone())
-            return false;
-        for (TopExp_Explorer edge(section.Shape(), TopAbs_EDGE); edge.More(); edge.Next())
-            return true;
-    } catch (const Standard_Failure&) {
-        return false;
+    if (first.surface_type == GeomAbs_Plane && second.surface_type == GeomAbs_Plane) {
+        const bool parallel = first.plane.Axis().Direction().IsParallel(
+            second.plane.Axis().Direction(), Precision::Angular());
+        if (parallel) {
+            if (first.plane.Distance(second.plane) > tolerance)
+                return false;
+            return commonArea(first.face, second.face, tolerance) > tolerance * tolerance;
+        }
+        return hasIntersectionEdge(first.face, second.face, tolerance);
     }
-    return false;
+
+    const FacePairRelation relation = classifyFacePair(first.face, second.face, tolerance);
+    if (relation == FacePairRelation::Crossing)
+        return true;
+    // Section 没有任何交线时两面既不可能内部穿插，也不可能共享 2D 区域，
+    // 无需再执行昂贵的同域公共面积布尔运算。
+    if (relation == FacePairRelation::Separated)
+        return false;
+    return mayHaveCommonArea(first, second, tolerance)
+        && commonArea(first.face, second.face, tolerance) > tolerance * tolerance;
 }
 }
 
@@ -403,12 +960,24 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
 
     std::vector<std::pair<size_t, size_t>> duplicate_pairs;
     if (needs_face_pairs) {
-        for (size_t first = 0; first < faces.size(); ++first) {
-            for (size_t second = first + 1; second < faces.size(); ++second) {
-                if (areDuplicateFaces(faces[first], faces[second], Precision::Confusion())) {
+        const double tolerance = Precision::Confusion();
+        const auto candidate_pairs = overlappingFacePairs(faces, tolerance);
+        for (const auto& [first, second] : candidate_pairs) {
+            // 保守边界已证明两面相距超过容差时，两面既不可能相交也不可能同域重叠。
+            if (facesSeparated(faces[first], faces[second], tolerance))
+                continue;
+            // 重复面与相交面互斥；即使不显示重复面，也要先排除重复面误报。
+            if (areDuplicateFaces(faces[first], faces[second], tolerance)) {
+                if (options.duplicate_faces) {
                     duplicate_pairs.emplace_back(first, second);
                     merge_groups(first, second);
                 }
+                continue;
+            }
+            if (options.intersecting_faces
+                && facesIntersect(faces[first], faces[second], tolerance)) {
+                result.intersecting_face_pairs.push_back(
+                    { faces[first].face, faces[second].face });
             }
         }
     }
@@ -429,20 +998,6 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
             };
             append_unique(first);
             append_unique(second);
-        }
-    }
-
-    if (options.intersecting_faces) {
-        // 重复面已经有独立类别，不再同时报告为相交面。
-        for (size_t first = 0; first < faces.size(); ++first) {
-            for (size_t second = first + 1; second < faces.size(); ++second) {
-                if (find_parent(first) == find_parent(second)
-                    || !facesIntersect(faces[first], faces[second], Precision::Confusion())) {
-                    continue;
-                }
-                result.intersecting_face_pairs.push_back(
-                    { faces[first].face, faces[second].face });
-            }
         }
     }
 

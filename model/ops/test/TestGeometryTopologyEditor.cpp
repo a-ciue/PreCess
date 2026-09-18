@@ -5,6 +5,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
@@ -16,6 +17,16 @@
 #include <TopoDS_Vertex.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
+#include <GeomConvert.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
+#include <Geom_Surface.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Cylinder.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -87,6 +98,73 @@ TopoDS_Vertex findFaceVertex(const TopoDS_Face& face, double x, double y, double
             return vertex;
     }
     return {};
+}
+
+/**
+ * @brief 构造支撑曲面为 B-Spline 的面，用于验证同域判断不依赖曲面是否为解析曲面。
+ *
+ * GeomConvert 不接受无限曲面，因此先用矩形裁剪，再转换为 B-Spline。
+ */
+TopoDS_Face makeBsplineSupportFace(
+    const occ::handle<Geom_Surface>& surface,
+    double u_min,
+    double u_max,
+    double v_min,
+    double v_max)
+{
+    const occ::handle<Geom_Surface> trimmed
+        = new Geom_RectangularTrimmedSurface(surface, u_min, u_max, v_min, v_max);
+    const occ::handle<Geom_BSplineSurface> bspline
+        = GeomConvert::SurfaceToBSplineSurface(trimmed);
+    return BRepBuilderAPI_MakeFace(bspline, 1.0e-7);
+}
+
+/**
+ * @brief 构造指定轴向、半径与参数范围（u 为角度、v 为高度）的圆柱面。
+ */
+TopoDS_Face makeCylindricalFace(
+    const gp_Ax3& axis,
+    double radius,
+    double u_min,
+    double u_max,
+    double v_min,
+    double v_max)
+{
+    return BRepBuilderAPI_MakeFace(gp_Cylinder(axis, radius), u_min, u_max, v_min, v_max);
+}
+
+/**
+ * @brief 把两个形状包装为根 Compound，供相交面诊断逐对比较。
+ */
+TopoDS_Shape makeShapePairRoot(const TopoDS_Shape& first, const TopoDS_Shape& second)
+{
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+    return makeGeometryRoot(compound);
+}
+
+/**
+ * @brief 在任意支撑平面上构造矩形面，用于验证斜置面与远离原点的面判定。
+ */
+TopoDS_Face makePlanarRectangleFace(
+    const gp_Pln& plane,
+    double u_min,
+    double u_max,
+    double v_min,
+    double v_max)
+{
+    return BRepBuilderAPI_MakeFace(plane, u_min, u_max, v_min, v_max);
+}
+
+/**
+ * @brief 相交面诊断的选项：只保留重复面与相交面判定。
+ */
+GeometryTopologyDiagnosticOptions facePairOptions()
+{
+    return GeometryTopologyDiagnosticOptions { false, false, false, true, true, false };
 }
 }
 
@@ -176,6 +254,271 @@ TEST_CASE("GeometryTopologyEditor diagnoses crossing faces")
 
     REQUIRE(result.duplicate_face_groups.empty());
     REQUIRE(result.intersecting_face_pairs.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses intersecting curved faces")
+{
+    const double full_angle = 2.0 * std::acos(-1.0);
+    const TopoDS_Shape first = GeometryBuilder::makeCylinder(
+        0.0, 0.0, -5.0, 2.0, 10.0, 0.0, 0.0, 1.0, full_angle);
+    const TopoDS_Shape second = GeometryBuilder::makeCylinder(
+        -5.0, 0.0, 0.0, 2.0, 10.0, 1.0, 0.0, 0.0, full_angle);
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, false, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE_FALSE(result.intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor ignores independent faces sharing a geometric edge")
+{
+    const TopoDS_Shape first = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY);
+    const TopoDS_Shape second = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XZ);
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, false, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor excludes hidden duplicate faces from intersections")
+{
+    const TopoDS_Shape first = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+    const TopoDS_Shape second = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, false, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses partially overlapping coplanar faces")
+{
+    const TopoDS_Shape first = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+    const TopoDS_Shape second = GeometryBuilder::makeRectangleFace(
+        5.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, true, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor ignores coplanar faces touching at one edge")
+{
+    const TopoDS_Shape first = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+    const TopoDS_Shape second = GeometryBuilder::makeRectangleFace(
+        10.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, true, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses overlapping planar and B-spline support faces")
+{
+    // 两面共享 2D 区域时支撑曲面必然重合并由 Section 给出重合区域边界，
+    // 该用例锁定这一前提：两张同域面必须被判为相交面。
+    const TopoDS_Shape planar = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+    const TopoDS_Shape bspline = makeBsplineSupportFace(
+        new Geom_Plane(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0))),
+        5.0, 15.0, 0.0, 5.0);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, true, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(planar, bspline), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor ignores disjoint coplanar B-spline support faces")
+{
+    const TopoDS_Shape planar = GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY);
+    const TopoDS_Shape bspline = makeBsplineSupportFace(
+        new Geom_Plane(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0))),
+        20.0, 30.0, 0.0, 5.0);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, true, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(planar, bspline), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses overlapping coaxial cylindrical and B-spline faces")
+{
+    const gp_Ax3 axis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+    const TopoDS_Shape cylinder = makeCylindricalFace(axis, 10.0, 0.0, 3.0, 0.0, 20.0);
+    const TopoDS_Shape bspline = makeBsplineSupportFace(
+        new Geom_CylindricalSurface(axis, 10.0), 0.5, 2.5, 5.0, 15.0);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, true, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(cylinder, bspline), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor ignores coaxial cylindrical faces with disjoint ranges")
+{
+    const gp_Ax3 axis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+    const TopoDS_Shape cylinder = makeCylindricalFace(axis, 10.0, 0.0, 3.0, 0.0, 20.0);
+    const TopoDS_Shape bspline = makeBsplineSupportFace(
+        new Geom_CylindricalSurface(axis, 10.0), 4.0, 6.0, 40.0, 50.0);
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, true, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(cylinder, bspline), 1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses crossing slanted faces far from the origin")
+{
+    // 分离判据必须在带地理坐标量级的模型上保持保守：斜置长条面与穿过它的
+    // 小面真实相交时，不允许被提前判定为分离而漏检。
+    constexpr double offset = 2.4e6;
+    const gp_Pnt origin(offset, offset, offset);
+    const TopoDS_Shape strip = makePlanarRectangleFace(
+        gp_Pln(origin, gp_Dir(1.0, 0.0, 1.0)), -200.0, 200.0, -1.0, 1.0);
+    const TopoDS_Shape crossing = makePlanarRectangleFace(
+        gp_Pln(origin, gp_Dir(1.0, 0.0, -1.0)), -20.0, 20.0, -20.0, 20.0);
+
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(strip, crossing), 1.0e-6, 1.0e-12, facePairOptions());
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses a plane crossing a B-spline patch far from the origin")
+{
+    // 自由曲面的保守边界按节点区间取控制点：多区间曲面在远离原点时仍必须
+    // 完整覆盖曲面，不能因为控制点下标错位而漏掉真实相交。
+    constexpr double offset = 2.4e6;
+    const gp_Ax3 axis(gp_Pnt(offset, offset, offset), gp_Dir(0.0, 0.0, 1.0));
+    const TopoDS_Shape patch = makeBsplineSupportFace(
+        new Geom_CylindricalSurface(axis, 10.0), 0.0, 3.0, 0.0, 20.0);
+    const TopoDS_Shape plane = makePlanarRectangleFace(
+        gp_Pln(gp_Pnt(offset, offset, offset + 10.0), gp_Dir(0.0, 0.0, 1.0)), -40.0, 40.0, -40.0,
+        40.0);
+
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(patch, plane), 1.0e-6, 1.0e-12, facePairOptions());
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.size() == 1);
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses intersecting cylinders far from the origin")
+{
+    constexpr double offset = 2.4e6;
+    const double full_angle = 2.0 * std::acos(-1.0);
+    const TopoDS_Shape first = GeometryBuilder::makeCylinder(
+        offset, offset, offset - 5.0, 2.0, 10.0, 0.0, 0.0, 1.0, full_angle);
+    const TopoDS_Shape second = GeometryBuilder::makeCylinder(
+        offset - 5.0, offset, offset, 2.0, 10.0, 1.0, 0.0, 0.0, full_angle);
+
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeShapePairRoot(first, second), 1.0e-6, 1.0e-12, facePairOptions());
+
+    REQUIRE_FALSE(result.intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor ignores regular adjacent box faces")
+{
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, true, true, false
+    };
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(GeometryBuilder::makeBox(
+                0.0, 0.0, 0.0, 10.0, 20.0, 30.0)),
+            1.0e-6, 1.0e-12, options);
+
+    REQUIRE(result.duplicate_face_groups.empty());
+    REQUIRE(result.intersecting_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses small edges and small faces independently")

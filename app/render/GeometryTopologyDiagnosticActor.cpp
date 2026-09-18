@@ -27,6 +27,7 @@
 #include <array>
 #include <cmath>
 #include <stdexcept>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -149,6 +150,7 @@ void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
     line_sub_ids_ = line_sub_ids;
     face_sub_ids_ = face_sub_ids;
     diagnostics_.reset();
+    category_computed_.fill(false);
 
     for (size_t index = 0; index < pipelines_.size(); ++index) {
         const bool edge = isEdgeCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
@@ -173,10 +175,8 @@ void GeometryTopologyDiagnosticActor::setCategoryEnabled(
     if (index >= category_enabled_.size() || category_enabled_[index] == enabled)
         return;
     category_enabled_[index] = enabled;
-    if (enabled) {
-        diagnostics_.reset();
+    if (enabled)
         rebuildCategory(category);
-    }
     applyVisibility();
 }
 
@@ -193,10 +193,12 @@ void GeometryTopologyDiagnosticActor::setSmallEdgeLengthThreshold(double thresho
         return;
     }
     small_edge_length_threshold_ = threshold;
-    diagnostics_.reset();
-    for (size_t index = 0; index < category_enabled_.size(); ++index) {
-        if (category_enabled_[index])
-            rebuildCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
+    const size_t category = categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge);
+    category_computed_[category] = false;
+    if (diagnostics_)
+        diagnostics_->small_edges.clear();
+    if (category_enabled_[category]) {
+        rebuildCategory(GeometryTopologyDiagnosticCategory::SmallEdge);
     }
 }
 
@@ -207,40 +209,81 @@ void GeometryTopologyDiagnosticActor::setSmallFaceAreaThreshold(double threshold
         return;
     }
     small_face_area_threshold_ = threshold;
-    diagnostics_.reset();
-    for (size_t index = 0; index < category_enabled_.size(); ++index) {
-        if (category_enabled_[index])
-            rebuildCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
+    const size_t category = categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace);
+    category_computed_[category] = false;
+    if (diagnostics_)
+        diagnostics_->small_faces.clear();
+    if (category_enabled_[category]) {
+        rebuildCategory(GeometryTopologyDiagnosticCategory::SmallFace);
     }
 }
 
-void GeometryTopologyDiagnosticActor::ensureDiagnostics()
+void GeometryTopologyDiagnosticActor::ensureDiagnostics(
+    GeometryTopologyDiagnosticCategory category)
 {
-    if (!diagnostics_ && shape_ && !shape_->IsNull()) {
-        GeometryTopologyDiagnosticOptions options;
-        options.edge_topology
-            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::BoundaryEdge)]
-            || category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::IsolatedEdge)]
-            || category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::NonManifoldEdge)];
-        options.small_edges
-            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge)];
-        options.small_faces
-            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace)];
-        options.duplicate_faces
-            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)];
+    const size_t index = categoryIndex(category);
+    if (index >= category_computed_.size() || category_computed_[index]
+        || !shape_ || shape_->IsNull()) {
+        return;
+    }
+    if (!diagnostics_)
+        diagnostics_ = std::make_unique<GeometryTopologyDiagnosticResult>();
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, false, false, false
+    };
+    if (category == GeometryTopologyDiagnosticCategory::BoundaryEdge
+        || category == GeometryTopologyDiagnosticCategory::IsolatedEdge
+        || category == GeometryTopologyDiagnosticCategory::NonManifoldEdge) {
+        options.edge_topology = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::SmallEdge) {
+        options.small_edges = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::SmallFace) {
+        options.small_faces = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::DuplicateFace) {
+        options.duplicate_faces = true;
         options.intersecting_faces
             = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::IntersectingFace)];
-        options.invalid_topology
-            = category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)];
-        diagnostics_ = std::make_unique<GeometryTopologyDiagnosticResult>(
-            GeometryTopologyEditor::diagnoseTopology(*shape_,
-                small_edge_length_threshold_, small_face_area_threshold_, options));
+    } else if (category == GeometryTopologyDiagnosticCategory::IntersectingFace) {
+        // 相交检测同时保存重复面结果，保证两类互斥且后续开关无需重算。
+        options.duplicate_faces = true;
+        options.intersecting_faces = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::InvalidTopology) {
+        options.invalid_topology = true;
+    }
+
+    GeometryTopologyDiagnosticResult computed = GeometryTopologyEditor::diagnoseTopology(
+        *shape_, small_edge_length_threshold_, small_face_area_threshold_, options);
+    if (options.edge_topology) {
+        diagnostics_->boundary_edges = std::move(computed.boundary_edges);
+        diagnostics_->isolated_edges = std::move(computed.isolated_edges);
+        diagnostics_->non_manifold_edges = std::move(computed.non_manifold_edges);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::BoundaryEdge)] = true;
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::IsolatedEdge)] = true;
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::NonManifoldEdge)] = true;
+    } else if (options.small_edges) {
+        diagnostics_->small_edges = std::move(computed.small_edges);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge)] = true;
+    } else if (options.small_faces) {
+        diagnostics_->small_faces = std::move(computed.small_faces);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace)] = true;
+    } else if (options.intersecting_faces) {
+        diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
+        diagnostics_->intersecting_face_pairs = std::move(computed.intersecting_face_pairs);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::IntersectingFace)] = true;
+    } else if (options.duplicate_faces) {
+        diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
+    } else if (options.invalid_topology) {
+        diagnostics_->invalid_shapes = std::move(computed.invalid_shapes);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)] = true;
     }
 }
 
 void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnosticCategory category)
 {
-    ensureDiagnostics();
+    ensureDiagnostics(category);
     if (!diagnostics_)
         return;
 
