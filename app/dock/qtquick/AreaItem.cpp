@@ -172,8 +172,9 @@ void AreaItem::updateIndicators()
         return;
 
     DragController& drag = DragController::self();
-    if (drag.state() != DragController::State::Dragging || drag.hoveredArea() != drop_area_
-        || drag.hoveredLocation() == DropLocation_None) {
+    // drop_area_ 为空说明核心对象已销毁（浮动窗口关闭），不得继续解引用
+    if (!drop_area_ || drag.state() != DragController::State::Dragging
+        || drag.hoveredArea() != drop_area_) {
         overlay->clear(this);
         return;
     }
@@ -183,18 +184,32 @@ void AreaItem::updateIndicators()
     if (drag.hoveredGroup() && drag.hoveredGroup()->layoutItem())
         group_rect = drag.hoveredGroup()->layoutItem()->geometry();
 
+    const DropLocation current = drag.hoveredLocation();
+    const bool has_group = drag.hoveredGroup() != nullptr;
+
     const QList<ClassicIndicators::Indicator> candidates
         = ClassicIndicators::indicatorRects(area_rect, group_rect);
+    const QRect area_global(drop_area_->globalOrigin(), area_rect.size());
+
+    // 外 4 方框常显（贴边可选，不依赖难以对准的空隙）；
+    // 悬停面板时再叠加内 5 方框（上/下/左/右/合并）
+    QList<IndicatorsOverlayWindow::IndicatorHit> hits;
     for (const ClassicIndicators::Indicator& indicator : candidates) {
-        if (indicator.location == drag.hoveredLocation()) {
-            const QRect area_global(drop_area_->globalOrigin(), area_rect.size());
-            const QRect highlight_global(area_global.topLeft() + indicator.rect.topLeft(),
-                indicator.rect.size());
-            overlay->showHighlight(highlight_global, area_global, this);
-            return;
-        }
+        const bool is_inner = indicator.location == DropLocation_Center
+            || (indicator.location & DropLocation_Inner);
+        if (is_inner && !has_group)
+            continue;
+
+        const QRect global_rect(area_global.topLeft() + indicator.rect.topLeft(),
+            indicator.rect.size());
+        hits.append({ indicator.location, global_rect, indicator.location == current });
     }
-    overlay->clear(this);
+
+    if (hits.isEmpty()) {
+        overlay->clear(this);
+        return;
+    }
+    overlay->showIndicators(hits, area_global, this);
 }
 
 }

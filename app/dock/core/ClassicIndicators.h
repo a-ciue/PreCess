@@ -33,6 +33,20 @@ public:
      * @param hovered_group_rect 悬停分组矩形；无效时内指示器以区域中心为准
      */
     static QList<Indicator> indicatorRects(const QRect& area_rect, const QRect& hovered_group_rect);
+
+    /**
+     * @brief 计算分组内的 5 个指示器几何（上/下/左/右/合并）
+     *
+     * 与落点命中判定共用同一布局，保证"画在哪里就能点哪里"。
+     */
+    static QList<Indicator> innerIndicatorRects(const QRect& group_rect);
+
+    /**
+     * @brief 计算区域四边的 4 个外指示器几何（贴边中点）
+     *
+     * 同样供绘制与命中判定共用。
+     */
+    static QList<Indicator> outerIndicatorRects(const QRect& area_rect);
 };
 
 }

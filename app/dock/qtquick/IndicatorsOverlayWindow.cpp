@@ -8,6 +8,8 @@
 #include "Platform.h"
 
 #include <QQuickItem>
+#include <QVariantList>
+#include <QVariantMap>
 
 namespace dock::qtquick {
 
@@ -38,19 +40,28 @@ IndicatorsOverlayWindow::IndicatorsOverlayWindow(QObject* parent)
 
 IndicatorsOverlayWindow::~IndicatorsOverlayWindow() = default;
 
-void IndicatorsOverlayWindow::showHighlight(const QRect& global_rect,
+void IndicatorsOverlayWindow::showIndicators(const QList<IndicatorHit>& indicators,
     const QRect& area_global_rect, QQuickItem* request_owner)
 {
-    if (!root_item_)
+    if (!root_item_ || indicators.isEmpty())
         return;
 
     setGeometry(area_global_rect);
-    const QRect local = global_rect.translated(-area_global_rect.topLeft());
-    root_item_->setProperty("highlightX", local.x());
-    root_item_->setProperty("highlightY", local.y());
-    root_item_->setProperty("highlightWidth", local.width());
-    root_item_->setProperty("highlightHeight", local.height());
-    root_item_->setProperty("active", true);
+
+    QVariantList model;
+    model.reserve(indicators.size());
+    for (const IndicatorHit& hit : indicators) {
+        const QRect local = hit.rect.translated(-area_global_rect.topLeft());
+        QVariantMap entry;
+        entry.insert(QStringLiteral("x"), local.x());
+        entry.insert(QStringLiteral("y"), local.y());
+        entry.insert(QStringLiteral("width"), local.width());
+        entry.insert(QStringLiteral("height"), local.height());
+        entry.insert(QStringLiteral("active"), hit.active);
+        model.append(entry);
+    }
+
+    root_item_->setProperty("indicators", model);
     request_owner_ = request_owner;
 
     if (!isVisible())
@@ -65,13 +76,18 @@ void IndicatorsOverlayWindow::clear(QQuickItem* request_owner)
 
     request_owner_ = nullptr;
     if (root_item_)
-        root_item_->setProperty("active", false);
+        root_item_->setProperty("indicators", QVariantList());
     hide();
 }
 
 bool IndicatorsOverlayWindow::isActive() const
 {
     return request_owner_ != nullptr;
+}
+
+int IndicatorsOverlayWindow::indicatorCount() const
+{
+    return root_item_ ? root_item_->property("indicators").toList().size() : 0;
 }
 
 QQuickItem* IndicatorsOverlayWindow::requestOwner() const

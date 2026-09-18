@@ -296,7 +296,6 @@ void DragController::startDrag(const QPoint& global_pos)
     }
 
     source_area_ = source_area;
-    dragged_size_ = size;
     window_being_dragged_ = new WindowBeingDragged(draggable_, floating_window, global_pos);
 
     state_ = State::Dragging;
@@ -334,6 +333,8 @@ void DragController::updateHover(const QPoint& global_pos)
         if (!area || area == dragged_area)
             return false;
 
+        const QRect area_rect(area->globalOrigin(), area->geometry().size());
+
         if (Group* group = area->groupAt(global_pos)) {
             const QRect item_geometry = group->layoutItem()
                 ? group->layoutItem()->geometry()
@@ -342,19 +343,22 @@ void DragController::updateHover(const QPoint& global_pos)
                 item_geometry.size());
             found_area = area;
             found_group = group;
+            // 内方框优先；未命中则回退到常显的外方框
             found_location = DropIndicatorOverlay::locationInGroup(group_rect, global_pos);
+            if (found_location == DropLocation_None)
+                found_location = DropIndicatorOverlay::locationInArea(area_rect, global_pos);
             return true;
         }
 
-        const QRect area_rect(area->globalOrigin(), area->geometry().size());
-        const DropLocation outer = DropIndicatorOverlay::locationInArea(area_rect, global_pos);
-        if (outer != DropLocation_None) {
-            found_area = area;
-            found_group = nullptr;
-            found_location = outer;
-            return true;
-        }
-        return false;
+        if (!area_rect.contains(global_pos))
+            return false;
+
+        // 区域内的任意位置都视为命中该停靠区域：
+        // 不在分组上时由外指示器方框决定落点（未对准方框则无落点）
+        found_area = area;
+        found_group = nullptr;
+        found_location = DropIndicatorOverlay::locationInArea(area_rect, global_pos);
+        return true;
     };
 
     const QList<FloatingWindow*>& floating_windows = DockRegistry::self().floatingWindows();
@@ -419,7 +423,8 @@ void DragController::applyDrop()
             item = floating_window->releaseGroup(); // 从浮窗摘出，所有权在本控制器
         if (item) {
             group->setLayoutItem(item);
-            hovered_area_->attachGroup(group, hovered_location_, hovered_group_, dragged_size_);
+            // 空尺寸 = 无期望尺寸：按公平份额分空间（两项时各占一半）
+            hovered_area_->attachGroup(group, hovered_location_, hovered_group_, QSize());
             if (temp_group) {
                 // 成为分栏：不再需要回停来源
                 floating_origins_.remove(group);

@@ -24,8 +24,6 @@ struct Config {
     static constexpr int kIndicatorMargin = 10;
     //! @brief 经典指示器箭头尺寸（像素）
     static constexpr int kIndicatorSize = 40;
-    //! @brief 区域边缘触发外指示器的判定带宽度（像素）
-    static constexpr int kOuterDropMargin = 20;
     //! @brief 浮动窗口自绘边框宽度（像素）
     static constexpr int kFloatingWindowBorder = 1;
     //! @brief 浮动窗口边缘缩放的命中宽度（像素）

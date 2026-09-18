@@ -1,6 +1,8 @@
 /**
  * @file DockIndicators.qml
- * @brief 拖放落点高亮（在透明顶层指示器窗口中绘制）
+ * @brief 拖放落点方框（在透明顶层指示器窗口中绘制）
+ *
+ * 同时显示全部候选落点方框，当前命中的一个加深高亮。
  */
 
 import QtQuick
@@ -8,33 +10,34 @@ import QtQuick
 Item {
     id: root
 
-    //! @brief 是否显示高亮
-    property bool active: false
-    //! @brief 高亮矩形（本窗口坐标）
-    property int highlightX: 0
-    property int highlightY: 0
-    property int highlightWidth: 0
-    property int highlightHeight: 0
+    //! @brief 指示器列表：[{x, y, width, height, active}]
+    property var indicators: []
 
-    Rectangle {
-        visible: root.active
-        x: root.highlightX
-        y: root.highlightY
-        width: root.highlightWidth
-        height: root.highlightHeight
-        radius: 3
-        color: "#4a90e2"
-        opacity: 0.75
-        border.color: "#2c6cb0"
-        border.width: 1
+    Repeater {
+        model: root.indicators
 
         Rectangle {
-            anchors.centerIn: parent
-            width: Math.max(6, parent.width / 3)
-            height: width
-            radius: 1
-            color: "#ffffff"
-            opacity: 0.9
+            required property var modelData
+
+            x: modelData.x
+            y: modelData.y
+            width: modelData.width
+            height: modelData.height
+            radius: 3
+            color: modelData.active ? "#2f6fb5" : "#cfe0f3"
+            opacity: modelData.active ? 0.9 : 0.6
+            border.color: modelData.active ? "#ffffff" : "#8fb2d9"
+            border.width: modelData.active ? 2 : 1
+
+            // 位置标记：中心方框画大方块，其余画小方块
+            Rectangle {
+                anchors.centerIn: parent
+                width: Math.max(6, parent.width / 3)
+                height: width
+                radius: 1
+                color: modelData.active ? "#ffffff" : "#9fb9d6"
+                opacity: 0.9
+            }
         }
     }
 }

@@ -165,12 +165,26 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     REQUIRE(overlay != nullptr);
     CHECK_FALSE(overlay->isActive());
 
+    // 先悬停到面板间的分隔条（不属于任何分组，但位于停靠区域内）：
+    // 选择器仍出现，此时为 4 个外方框
+    const QPoint gap_point(target_center.x(),
+        target_rect.top() - dock::kSeparatorThickness / 2);
     drag.onPress(&draggable, target_center + QPoint(-50, -50));
-    drag.onMove(target_center + QPoint(-40, -40));
+    drag.onMove(gap_point);
     REQUIRE(drag.state() == dock::DragController::State::Dragging);
+    CHECK(drag.hoveredArea() != nullptr);
+    CHECK(drag.hoveredGroup() == nullptr);
+    CHECK(overlay->isActive());
+    CHECK(overlay->indicatorCount() == 4);
+
+    // 移到面板上：五个内方框 + 常显的四个外方框
+    drag.onMove(target_center);
+    REQUIRE(drag.state() == dock::DragController::State::Dragging);
+    CHECK(drag.hoveredLocation() == dock::DropLocation_Center);
     // 落点高亮由顶层浮层窗口呈现（不被拖动中的浮窗遮挡）
     CHECK(overlay->isActive());
     CHECK(overlay->isVisible());
+    CHECK(overlay->indicatorCount() == 9);
 
     drag.onRelease(target_center);
     QCoreApplication::processEvents();
@@ -180,6 +194,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     CHECK_FALSE(panel_a->isFloating());
     CHECK(dock::DockRegistry::self().floatingWindows().isEmpty());
     CHECK_FALSE(overlay->isActive());
+    CHECK(overlay->indicatorCount() == 0);
 
     // 合并后成为选项卡：切换为当前页后 guest 可见，且无悬空视图
     CHECK(panel_b->group()->dockWidgets().contains(panel_a));

@@ -5,10 +5,8 @@
 
 #include "DropIndicatorOverlay.h"
 
+#include "ClassicIndicators.h"
 #include "Config.h"
-
-#include <algorithm>
-#include <cstdlib>
 
 namespace dock {
 
@@ -17,22 +15,16 @@ DropLocation DropIndicatorOverlay::locationInGroup(const QRect& group_rect, cons
     if (!group_rect.contains(global_pos))
         return DropLocation_None;
 
-    const QPoint center = group_rect.center();
-    const int dx = global_pos.x() - center.x();
-    const int dy = global_pos.y() - center.y();
-    const int half_width = std::max(1, group_rect.width() / 2);
-    const int half_height = std::max(1, group_rect.height() / 2);
-
-    // 中心区域：分组宽高的 1/4
-    if (std::abs(dx) <= half_width / 2 && std::abs(dy) <= half_height / 2)
-        return DropLocation_Center;
-
-    // 归一化比较，避免宽扁分组总是命中上下方向
-    const long long horizontal_weight = static_cast<long long>(std::abs(dx)) * group_rect.height();
-    const long long vertical_weight = static_cast<long long>(std::abs(dy)) * group_rect.width();
-    if (horizontal_weight >= vertical_weight)
-        return dx < 0 ? DropLocation_Left : DropLocation_Right;
-    return dy < 0 ? DropLocation_Top : DropLocation_Bottom;
+    // 与绘制的方框一致：命中哪个方框即选择哪个落点；
+    // 方框外扩半个间距补齐相邻间隙（方框之间无死区）
+    const int tolerance = Config::kIndicatorMargin / 2;
+    const QList<ClassicIndicators::Indicator> indicators
+        = ClassicIndicators::innerIndicatorRects(group_rect);
+    for (const ClassicIndicators::Indicator& indicator : indicators) {
+        if (indicator.rect.adjusted(-tolerance, -tolerance, tolerance, tolerance).contains(global_pos))
+            return indicator.location;
+    }
+    return DropLocation_None;
 }
 
 DropLocation DropIndicatorOverlay::locationInArea(const QRect& area_rect, const QPoint& global_pos)
@@ -40,21 +32,16 @@ DropLocation DropIndicatorOverlay::locationInArea(const QRect& area_rect, const 
     if (!area_rect.contains(global_pos))
         return DropLocation_None;
 
-    const int left = global_pos.x() - area_rect.left();
-    const int right = area_rect.right() - global_pos.x();
-    const int top = global_pos.y() - area_rect.top();
-    const int bottom = area_rect.bottom() - global_pos.y();
-    const int nearest = std::min(std::min(left, right), std::min(top, bottom));
-    if (nearest > Config::kOuterDropMargin)
-        return DropLocation_None;
-
-    if (nearest == left)
-        return DropLocation_OutterLeft;
-    if (nearest == right)
-        return DropLocation_OutterRight;
-    if (nearest == top)
-        return DropLocation_OutterTop;
-    return DropLocation_OutterBottom;
+    // 与绘制的方框一致：命中哪个外方框即选择哪个落点；
+    // 方框外扩半个间距补齐相邻间隙
+    const int tolerance = Config::kIndicatorMargin / 2;
+    const QList<ClassicIndicators::Indicator> indicators
+        = ClassicIndicators::outerIndicatorRects(area_rect);
+    for (const ClassicIndicators::Indicator& indicator : indicators) {
+        if (indicator.rect.adjusted(-tolerance, -tolerance, tolerance, tolerance).contains(global_pos))
+            return indicator.location;
+    }
+    return DropLocation_None;
 }
 
 }

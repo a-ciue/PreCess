@@ -70,6 +70,7 @@ public:
     //! @brief 把分组布局节点从本区域树上摘除但不删除（所有权交还调用方）
     bool detachGroup(Group* group);
     //! @brief 把已摘除节点的分组停靠到本区域的指定落点
+    //! @note 空 preferred_size 表示无期望尺寸，按公平份额分配（可见子项均分）
     bool attachGroup(Group* group, DropLocation location, Group* target_group,
         const QSize& preferred_size);
 

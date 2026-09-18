@@ -117,7 +117,6 @@ private:
     Group* hovered_group_ = nullptr;
     DropLocation hovered_location_ = DropLocation_None;
     QPoint press_pos_;
-    QSize dragged_size_;
 
     // 单个标签拖拽
     DockWidget* dragged_dock_ = nullptr;

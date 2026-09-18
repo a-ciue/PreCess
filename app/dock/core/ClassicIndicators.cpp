@@ -9,8 +9,29 @@
 
 namespace dock {
 
-QList<ClassicIndicators::Indicator> ClassicIndicators::indicatorRects(const QRect& area_rect,
-    const QRect& hovered_group_rect)
+QList<ClassicIndicators::Indicator> ClassicIndicators::innerIndicatorRects(const QRect& group_rect)
+{
+    QList<Indicator> indicators;
+    if (!group_rect.isValid())
+        return indicators;
+
+    const int size = Config::kIndicatorSize;
+    const int margin = Config::kIndicatorMargin;
+    // QRect 右下为闭区间：用 (size-1)/2 居中，避免偶数尺寸产生 1px 偏移
+    const int half = (size - 1) / 2;
+
+    // 内指示器：以分组中心为中心的 3x3 排列
+    const QPoint center = group_rect.center();
+    const QRect center_rect(center.x() - half, center.y() - half, size, size);
+    indicators.append({ DropLocation_Center, center_rect });
+    indicators.append({ DropLocation_Left, center_rect.translated(-(size + margin), 0) });
+    indicators.append({ DropLocation_Right, center_rect.translated(size + margin, 0) });
+    indicators.append({ DropLocation_Top, center_rect.translated(0, -(size + margin)) });
+    indicators.append({ DropLocation_Bottom, center_rect.translated(0, size + margin) });
+    return indicators;
+}
+
+QList<ClassicIndicators::Indicator> ClassicIndicators::outerIndicatorRects(const QRect& area_rect)
 {
     QList<Indicator> indicators;
     if (!area_rect.isValid())
@@ -18,21 +39,7 @@ QList<ClassicIndicators::Indicator> ClassicIndicators::indicatorRects(const QRec
 
     const int size = Config::kIndicatorSize;
     const int margin = Config::kIndicatorMargin;
-    const QRect group_rect = hovered_group_rect.isValid() ? hovered_group_rect : area_rect;
-    // QRect 右下为闭区间：用 (size-1)/2 居中，避免偶数尺寸产生 1px 偏移
     const int half = (size - 1) / 2;
-
-    // 内指示器：以悬停分组中心为中心的 3x3 排列
-    const QPoint center = group_rect.center();
-    const QRect center_rect(center.x() - half, center.y() - half, size, size);
-    const auto add_inner = [&](DropLocation location, const QRect& rect) {
-        indicators.append({ location, rect });
-    };
-    add_inner(DropLocation_Center, center_rect);
-    add_inner(DropLocation_Left, center_rect.translated(-(size + margin), 0));
-    add_inner(DropLocation_Right, center_rect.translated(size + margin, 0));
-    add_inner(DropLocation_Top, center_rect.translated(0, -(size + margin)));
-    add_inner(DropLocation_Bottom, center_rect.translated(0, size + margin));
 
     // 外指示器：贴区域四条边的中点
     const QPoint area_center = area_rect.center();
@@ -45,6 +52,18 @@ QList<ClassicIndicators::Indicator> ClassicIndicators::indicatorRects(const QRec
     indicators.append({ DropLocation_OutterBottom,
         QRect(area_center.x() - half, area_rect.bottom() - margin - (size - 1), size, size) });
 
+    return indicators;
+}
+
+QList<ClassicIndicators::Indicator> ClassicIndicators::indicatorRects(const QRect& area_rect,
+    const QRect& hovered_group_rect)
+{
+    if (!area_rect.isValid())
+        return {};
+
+    const QRect group_rect = hovered_group_rect.isValid() ? hovered_group_rect : area_rect;
+    QList<Indicator> indicators = innerIndicatorRects(group_rect);
+    indicators.append(outerIndicatorRects(area_rect));
     return indicators;
 }
 
