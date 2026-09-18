@@ -52,7 +52,10 @@ public:
     Q_INVOKABLE void setCurrentIndex(int index);
     Q_INVOKABLE void closeGroup();
     Q_INVOKABLE void toggleFloat();
+    //! @brief 标题栏拖拽：拖动整个分组
     Q_INVOKABLE void beginDrag(const QPointF& global_pos);
+    //! @brief 标签拖拽：只分离该标签面板（index 为打开面板下标）
+    Q_INVOKABLE void beginTabDrag(int index, const QPointF& global_pos);
     Q_INVOKABLE void dragTo(const QPointF& global_pos);
     Q_INVOKABLE void endDrag(const QPointF& global_pos);
 

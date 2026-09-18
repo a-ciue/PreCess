@@ -182,6 +182,30 @@ void GroupView::beginDrag(const QPointF& global_pos)
     DragController::self().onPress(drag_, global_pos.toPoint());
 }
 
+void GroupView::beginTabDrag(int index, const QPointF& global_pos)
+{
+    if (!group_)
+        return;
+
+    const QList<DockWidget*> open = group_->openDockWidgets();
+    if (index < 0 || index >= open.size())
+        return;
+
+    DockWidget* dock_widget = open.at(index);
+    group_->setCurrentDockWidget(dock_widget);
+
+    if (drag_) {
+        DragController::self().cancel();
+        delete drag_;
+        drag_ = nullptr;
+    }
+
+    AreaItem* area = areaItem();
+    FloatingWindow* floating_window = area ? area->floatingWindow() : nullptr;
+    drag_ = new Draggable(this, group_, floating_window, dock_widget);
+    DragController::self().onPress(drag_, global_pos.toPoint());
+}
+
 void GroupView::dragTo(const QPointF& global_pos)
 {
     if (drag_)

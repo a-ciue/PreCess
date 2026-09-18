@@ -6,7 +6,7 @@
 #include "AreaItem.h"
 
 #include "GroupView.h"
-#include "IndicatorsView.h"
+#include "IndicatorsOverlayWindow.h"
 #include "Platform.h"
 #include "SeparatorView.h"
 #include "core/ClassicIndicators.h"
@@ -23,9 +23,6 @@ namespace dock::qtquick {
 AreaItem::AreaItem(QQuickItem* parent)
     : QQuickItem(parent)
 {
-    indicators_ = new IndicatorsView(this);
-    indicators_->setZ(1000);
-
     // 拖拽结束（落点生效或取消）后布局可能已变化，统一重同步
     connect(&DragController::self(), &DragController::stateChanged, this,
         [this](DragController::State state) {
@@ -40,6 +37,9 @@ AreaItem::AreaItem(QQuickItem* parent)
 
 AreaItem::~AreaItem()
 {
+    if (auto* overlay = Platform::instance().indicatorsOverlay())
+        overlay->clear(this);
+
     // 分组视图所有权归 Platform：析构前摘出，避免随本项被级联删除
     for (QQuickItem* child : childItems()) {
         if (auto* view = qobject_cast<GroupView*>(child))
@@ -65,8 +65,8 @@ void AreaItem::setDropArea(DropArea* drop_area)
     connect(drop_area_, &QObject::destroyed, this, [this] {
         drop_area_ = nullptr;
         clearSeparatorViews();
-        if (indicators_)
-            indicators_->clearHighlight();
+        if (auto* overlay = Platform::instance().indicatorsOverlay())
+            overlay->clear(this);
     });
     sync();
 }
@@ -101,6 +101,8 @@ void AreaItem::sync()
             view->setSize(item->geometry().size());
             view->setVisible(item->isVisible());
         }
+        // 显式 z 序：分组在下、分隔条在上，避免残留视图互相遮挡
+        view->setZ(1);
         // guest 可能延迟注册（如中央持久部件）：每次同步刷新挂载与可见性
         view->syncFromGroup();
     }
@@ -128,6 +130,7 @@ void AreaItem::sync()
         view->setPosition(separator->geometry().topLeft());
         view->setSize(separator->geometry().size());
         view->setVisible(true);
+        view->setZ(2);
     }
 
     updateIndicators();
@@ -164,13 +167,14 @@ void AreaItem::collectSeparators(Item* item, QSet<Separator*>& separators) const
 
 void AreaItem::updateIndicators()
 {
-    if (!indicators_)
+    IndicatorsOverlayWindow* overlay = Platform::instance().indicatorsOverlay();
+    if (!overlay)
         return;
 
     DragController& drag = DragController::self();
     if (drag.state() != DragController::State::Dragging || drag.hoveredArea() != drop_area_
         || drag.hoveredLocation() == DropLocation_None) {
-        indicators_->clearHighlight();
+        overlay->clear(this);
         return;
     }
 
@@ -183,11 +187,14 @@ void AreaItem::updateIndicators()
         = ClassicIndicators::indicatorRects(area_rect, group_rect);
     for (const ClassicIndicators::Indicator& indicator : candidates) {
         if (indicator.location == drag.hoveredLocation()) {
-            indicators_->setHighlight(indicator.rect);
+            const QRect area_global(drop_area_->globalOrigin(), area_rect.size());
+            const QRect highlight_global(area_global.topLeft() + indicator.rect.topLeft(),
+                indicator.rect.size());
+            overlay->showHighlight(highlight_global, area_global, this);
             return;
         }
     }
-    indicators_->clearHighlight();
+    overlay->clear(this);
 }
 
 }

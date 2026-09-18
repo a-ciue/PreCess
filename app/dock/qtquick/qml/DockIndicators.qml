@@ -1,6 +1,6 @@
 /**
  * @file DockIndicators.qml
- * @brief 拖放落点高亮（Classic 指示器的可视部分）
+ * @brief 拖放落点高亮（在透明顶层指示器窗口中绘制）
  */
 
 import QtQuick
@@ -8,23 +8,29 @@ import QtQuick
 Item {
     id: root
 
-    //! @brief 关联的 IndicatorsView（C++）
-    property var indicatorView: null
-
-    visible: indicatorView ? indicatorView.active : false
+    //! @brief 是否显示高亮
+    property bool active: false
+    //! @brief 高亮矩形（本窗口坐标）
+    property int highlightX: 0
+    property int highlightY: 0
+    property int highlightWidth: 0
+    property int highlightHeight: 0
 
     Rectangle {
-        x: root.indicatorView ? root.indicatorView.highlightX : 0
-        y: root.indicatorView ? root.indicatorView.highlightY : 0
-        width: root.indicatorView ? root.indicatorView.highlightWidth : 0
-        height: root.indicatorView ? root.indicatorView.highlightHeight : 0
+        visible: root.active
+        x: root.highlightX
+        y: root.highlightY
+        width: root.highlightWidth
+        height: root.highlightHeight
         radius: 3
         color: "#4a90e2"
-        opacity: 0.85
+        opacity: 0.75
+        border.color: "#2c6cb0"
+        border.width: 1
 
         Rectangle {
             anchors.centerIn: parent
-            width: Math.max(4, parent.width / 3)
+            width: Math.max(6, parent.width / 3)
             height: width
             radius: 1
             color: "#ffffff"

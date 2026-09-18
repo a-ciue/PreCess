@@ -207,3 +207,74 @@ TEST_CASE("DockDrag: dropping on group left docks to the side")
     CHECK(object_tree_item->geometry().x() == console_item->geometry().width() + dock::kSeparatorThickness);
     CHECK(dock::DockRegistry::self().floatingWindows().isEmpty());
 }
+
+TEST_CASE("DockDrag: dragging a tab separates one panel and can return")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    placed.object_tree->open();
+    placed.console->open();
+
+    dock::DragController& drag = dock::DragController::self();
+
+    // 先把 console 合并到 objectTree 分组（中心落点）
+    REQUIRE(drag.floatGroup(placed.console->group()));
+    {
+        dock::FloatingWindow* floating_window = dock::DockRegistry::self().floatingWindows().first();
+        dock::Draggable draggable(nullptr, placed.console->group(), floating_window);
+        const QRect target = placed.object_tree->group()->layoutItem()->geometry();
+        const QPoint center = target.center();
+        drag.onPress(&draggable, center + QPoint(-50, -50));
+        drag.onMove(center + QPoint(-40, -40));
+        REQUIRE(drag.state() == dock::DragController::State::Dragging);
+        drag.onRelease(center);
+    }
+    REQUIRE(placed.console->group() == placed.object_tree->group());
+    REQUIRE(placed.object_tree->group()->openDockWidgets().size() == 2);
+
+    const auto tab_press_point = [&] {
+        return placed.object_tree->group()->layoutItem()->geometry().center();
+    };
+
+    // 拖出 console 标签：只分离该面板，源分组保留其余标签
+    dock::Draggable tab_draggable(nullptr, placed.object_tree->group(), nullptr, placed.console);
+    drag.onPress(&tab_draggable, tab_press_point());
+    drag.onMove(tab_press_point() + QPoint(60, 0));
+    REQUIRE(drag.state() == dock::DragController::State::Dragging);
+    REQUIRE(dock::DockRegistry::self().floatingWindows().size() == 1);
+    {
+        dock::Group* floating_group = dock::DockRegistry::self().floatingWindows().first()->group();
+        REQUIRE(floating_group != nullptr);
+        CHECK(floating_group->dockWidgets().contains(placed.console));
+        CHECK_FALSE(floating_group->dockWidgets().contains(placed.object_tree));
+    }
+    CHECK(placed.console->isFloating());
+    CHECK(placed.object_tree->group()->openDockWidgets().size() == 1);
+    CHECK(placed.object_tree->group()->openDockWidgets().contains(placed.object_tree));
+
+    // 取消：归还源分组
+    drag.cancel();
+    CHECK(drag.state() == dock::DragController::State::Idle);
+    CHECK(dock::DockRegistry::self().floatingWindows().isEmpty());
+    CHECK(placed.console->group() == placed.object_tree->group());
+    CHECK(placed.object_tree->group()->openDockWidgets().size() == 2);
+    CHECK_FALSE(placed.console->isFloating());
+
+    // 再次拖出到空白处：保留浮动，回停按钮可归还源分组
+    dock::Draggable tab_draggable2(nullptr, placed.object_tree->group(), nullptr, placed.console);
+    drag.onPress(&tab_draggable2, tab_press_point());
+    drag.onMove(tab_press_point() + QPoint(60, 0));
+    REQUIRE(drag.state() == dock::DragController::State::Dragging);
+    drag.onRelease(QPoint(-1000, -1000));
+    CHECK(drag.state() == dock::DragController::State::Idle);
+    REQUIRE(dock::DockRegistry::self().floatingWindows().size() == 1);
+    {
+        dock::FloatingWindow* floating_window = dock::DockRegistry::self().floatingWindows().first();
+        REQUIRE(floating_window->group() != nullptr);
+        CHECK(floating_window->group()->dockWidgets().contains(placed.console));
+        REQUIRE(drag.dockGroup(floating_window->group()));
+    }
+    CHECK(placed.console->group() == placed.object_tree->group());
+    CHECK(dock::DockRegistry::self().floatingWindows().isEmpty());
+    CHECK_FALSE(placed.console->isFloating());
+}

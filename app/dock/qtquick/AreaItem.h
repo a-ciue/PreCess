@@ -19,7 +19,6 @@ class Separator;
 
 namespace qtquick {
 
-class IndicatorsView;
 class SeparatorView;
 
 /**
@@ -61,7 +60,6 @@ private:
     DropArea* drop_area_ = nullptr;
     FloatingWindow* floating_window_ = nullptr;
     QHash<Separator*, SeparatorView*> separator_views_;
-    IndicatorsView* indicators_ = nullptr;
     bool syncing_ = false;
 };
 

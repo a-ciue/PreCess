@@ -22,7 +22,7 @@ add_library(dock STATIC
     qtquick/FloatingWindowView.cpp
     qtquick/GroupView.cpp
     qtquick/GuestView.cpp
-    qtquick/IndicatorsView.cpp
+    qtquick/IndicatorsOverlayWindow.cpp
     qtquick/MouseGrabber.cpp
     qtquick/Platform.cpp
     qtquick/QmlTypes.cpp

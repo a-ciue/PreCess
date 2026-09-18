@@ -17,10 +17,33 @@
 #include "View.h"
 #include "WindowBeingDragged.h"
 #include "engine/Item.h"
+#include "engine/ItemBoxContainer.h"
 
 #include <utility>
 
 namespace dock {
+
+namespace {
+
+//! @brief 布局树中是否包含指定节点
+bool treeContains(const Item* root, const Item* item)
+{
+    if (!root)
+        return false;
+    if (root == item)
+        return true;
+    if (!root->isContainer())
+        return false;
+
+    const auto* container = static_cast<const ItemBoxContainer*>(root);
+    for (Item* child : container->children()) {
+        if (treeContains(child, item))
+            return true;
+    }
+    return false;
+}
+
+}
 
 DragController& DragController::self()
 {
@@ -80,18 +103,49 @@ void DragController::onRelease(const QPoint& global_pos)
     }
 
     updateHover(global_pos);
-    if (hovered_area_ && hovered_location_ != DropLocation_None)
+    if (hovered_area_ && hovered_location_ != DropLocation_None) {
         applyDrop();
-    // 未命中落点时保留浮动状态
+    } else if (drag_group_ && draggable_ && drag_group_ != draggable_->group() && origin_group_) {
+        // 未命中落点：单标签浮出保留为浮动窗口，登记回停来源
+        parkFloatingGroup(draggedFloatingWindow());
+    }
 
     cleanup();
 }
 
 void DragController::cancel()
 {
-    // 源自停靠分组的拖拽被取消：回到主窗口占位处
-    if (state_ == State::Dragging && draggable_ && draggable_->group() && !draggable_->isFloating())
+    if (state_ == State::Dragging && drag_group_ && draggable_
+        && drag_group_ != draggable_->group()) {
+        // 单标签拖拽取消：归还源分组
+        FloatingWindow* floating_window = draggedFloatingWindow();
+        Group* temp_group = drag_group_;
+        DockWidget* dock = dragged_dock_;
+
+        if (floating_window && floating_window->group() == temp_group)
+            floating_window->releaseGroup();
+
+        if (dock) {
+            temp_group->removeDockWidget(dock);
+            if (origin_group_) {
+                origin_group_->addDockWidget(dock);
+                origin_group_->setCurrentDockWidget(dock);
+            }
+        }
+
+        Item* item = temp_group->layoutItem();
+        delete item;
+        temp_group->setLayoutItem(nullptr);
+        if (floating_window)
+            destroyFloatingWindow(floating_window);
+
+        floating_origins_.remove(temp_group);
+        temp_group->deleteLater();
+        Q_EMIT layoutChanged();
+    } else if (state_ == State::Dragging && draggable_ && draggable_->group()
+        && !draggable_->isFloating()) {
         dockGroup(draggable_->group());
+    }
 
     cleanup();
 }
@@ -117,8 +171,42 @@ bool DragController::floatGroup(Group* group)
 
 bool DragController::dockGroup(Group* group)
 {
+    if (!group)
+        return false;
+
+    // 单标签浮出：归还源分组（无占位可恢复）
+    const auto origin_it = floating_origins_.constFind(group);
+    if (origin_it != floating_origins_.constEnd()) {
+        Group* origin = origin_it->origin_group;
+        if (!origin)
+            return false;
+
+        const QList<DockWidget*> docks = group->dockWidgets();
+        if (docks.isEmpty())
+            return false;
+        DockWidget* dock = docks.first();
+
+        FloatingWindow* floating_window = floatingWindowForGroup(group);
+        if (floating_window)
+            floating_window->releaseGroup();
+
+        group->removeDockWidget(dock);
+        origin->addDockWidget(dock);
+        origin->setCurrentDockWidget(dock);
+
+        Item* item = group->layoutItem();
+        delete item;
+        group->setLayoutItem(nullptr);
+        floating_origins_.remove(group);
+        if (floating_window)
+            destroyFloatingWindow(floating_window);
+
+        Q_EMIT layoutChanged();
+        return true;
+    }
+
     MainWindow* main_window = DockRegistry::self().mainWindow();
-    if (!main_window || !group)
+    if (!main_window)
         return false;
 
     FloatingWindow* floating_window = floatingWindowForGroup(group);
@@ -137,7 +225,7 @@ bool DragController::toggleFloating(Group* group)
 {
     if (!group)
         return false;
-    if (group->placeholderItem())
+    if (group->placeholderItem() || floating_origins_.contains(group))
         return dockGroup(group);
     return floatGroup(group);
 }
@@ -149,32 +237,62 @@ void DragController::startDrag(const QPoint& global_pos)
         return;
     }
 
-    FloatingWindow* floating_window = draggable_->floatingWindow();
-    DropArea* source_area = nullptr;
+    Group* source_group = draggable_->group();
+    DockWidget* dock = draggable_->dockWidget();
+    const bool single_tab = dock && source_group->openDockWidgets().size() > 1;
+
     QSize size;
+    if (draggable_->floatingWindow())
+        size = draggable_->floatingWindow()->geometry().size();
+    else if (source_group->layoutItem())
+        size = source_group->layoutItem()->geometry().size();
+    if (size.isEmpty())
+        size = QSize(300, 200);
 
-    if (floating_window) {
-        source_area = floating_window->dropArea();
-        size = floating_window->geometry().size();
-    } else {
-        MainWindow* main_window = DockRegistry::self().mainWindow();
-        if (!main_window) {
-            cleanup();
-            return;
-        }
+    DropArea* source_area = areaForGroup(source_group);
+    FloatingWindow* floating_window = nullptr;
 
-        source_area = main_window->dropArea();
-        Item* item = source_area->takeGroupForFloat(draggable_->group());
-        if (!item) {
-            cleanup();
-            return;
-        }
+    if (single_tab) {
+        // 从分组中摘出该标签，放入临时分组并浮出
+        origin_group_ = source_group;
+        origin_index_ = source_group->openDockWidgets().indexOf(dock);
+        source_group->removeDockWidget(dock);
 
-        size = item->geometry().size();
+        drag_group_ = new Group(this);
+        drag_group_->addDockWidget(dock);
+        auto* item = new Item(drag_group_);
+        drag_group_->setLayoutItem(item);
+
         floating_window = createFloatingWindow();
         const QPoint window_pos = global_pos - QPoint(size.width() / 2, Config::kTitleBarHeight / 2);
-        floating_window->takeGroup(draggable_->group(), item);
+        floating_window->takeGroup(drag_group_, item);
         floating_window->setGeometry(QRect(window_pos, size));
+        dragged_dock_ = dock;
+    } else {
+        drag_group_ = source_group;
+        if (draggable_->floatingWindow()) {
+            floating_window = draggable_->floatingWindow();
+            source_area = floating_window->dropArea();
+        } else {
+            MainWindow* main_window = DockRegistry::self().mainWindow();
+            if (!main_window) {
+                cleanup();
+                return;
+            }
+
+            source_area = main_window->dropArea();
+            Item* item = source_area->takeGroupForFloat(source_group);
+            if (!item) {
+                cleanup();
+                return;
+            }
+
+            floating_window = createFloatingWindow();
+            const QPoint window_pos = global_pos
+                - QPoint(size.width() / 2, Config::kTitleBarHeight / 2);
+            floating_window->takeGroup(source_group, item);
+            floating_window->setGeometry(QRect(window_pos, size));
+        }
     }
 
     source_area_ = source_area;
@@ -184,6 +302,21 @@ void DragController::startDrag(const QPoint& global_pos)
     state_ = State::Dragging;
     Q_EMIT stateChanged(state_);
     updateHover(global_pos);
+}
+
+void DragController::parkFloatingGroup(FloatingWindow* floating_window)
+{
+    if (!floating_window || !drag_group_)
+        return;
+
+    const FloatOrigin origin { origin_group_, origin_index_ };
+    floating_origins_.insert(drag_group_, origin);
+    drag_group_->setParent(floating_window);
+
+    Group* parked = drag_group_;
+    QObject::connect(parked, &QObject::destroyed, this, [this, parked] {
+        floating_origins_.remove(parked);
+    });
 }
 
 void DragController::updateHover(const QPoint& global_pos)
@@ -244,17 +377,18 @@ void DragController::updateHover(const QPoint& global_pos)
 
 void DragController::applyDrop()
 {
-    Group* group = draggable_ ? draggable_->group() : nullptr;
+    Group* group = drag_group_ ? drag_group_ : (draggable_ ? draggable_->group() : nullptr);
     if (!group || !hovered_area_)
         return;
 
     FloatingWindow* floating_window = draggedFloatingWindow();
+    const bool temp_group = drag_group_ && draggable_ && drag_group_ != draggable_->group();
 
     if (hovered_location_ == DropLocation_Center) {
         if (!hovered_group_ || hovered_group_ == group)
             return;
 
-        // 全部打开的面板并入目标分组
+        // 全部面板并入目标分组
         const QList<DockWidget*> docks = group->dockWidgets();
         for (DockWidget* dock_widget : docks) {
             hovered_group_->addDockWidget(dock_widget);
@@ -271,6 +405,11 @@ void DragController::applyDrop()
             : group->layoutItem();
         delete item;
         group->setLayoutItem(nullptr);
+
+        if (temp_group) {
+            floating_origins_.remove(group);
+            group->deleteLater(); // 临时分组：面板已并入目标
+        }
     } else {
         if (source_area_)
             source_area_->removeGroupPlaceholder(group);
@@ -281,6 +420,11 @@ void DragController::applyDrop()
         if (item) {
             group->setLayoutItem(item);
             hovered_area_->attachGroup(group, hovered_location_, hovered_group_, dragged_size_);
+            if (temp_group) {
+                // 成为分栏：不再需要回停来源
+                floating_origins_.remove(group);
+                group->setParent(hovered_area_);
+            }
         }
     }
 
@@ -293,6 +437,10 @@ void DragController::cleanup()
     window_being_dragged_ = nullptr;
     draggable_ = nullptr;
     source_area_ = nullptr;
+    dragged_dock_ = nullptr;
+    drag_group_ = nullptr;
+    origin_group_ = nullptr;
+    origin_index_ = -1;
 
     if (state_ != State::Idle) {
         state_ = State::Idle;
@@ -333,6 +481,23 @@ FloatingWindow* DragController::floatingWindowForGroup(Group* group)
     for (FloatingWindow* floating_window : DockRegistry::self().floatingWindows()) {
         if (floating_window->group() == group)
             return floating_window;
+    }
+    return nullptr;
+}
+
+DropArea* DragController::areaForGroup(Group* group)
+{
+    if (!group || !group->layoutItem())
+        return nullptr;
+
+    const Item* target = group->layoutItem();
+    if (MainWindow* main_window = DockRegistry::self().mainWindow()) {
+        if (treeContains(main_window->dropArea()->rootItem(), target))
+            return main_window->dropArea();
+    }
+    for (FloatingWindow* floating_window : DockRegistry::self().floatingWindows()) {
+        if (treeContains(floating_window->dropArea()->rootItem(), target))
+            return floating_window->dropArea();
     }
     return nullptr;
 }

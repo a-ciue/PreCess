@@ -6,9 +6,11 @@
 #include "Platform.h"
 
 #include "GroupView.h"
+#include "IndicatorsOverlayWindow.h"
 #include "core/DockWidget.h"
 #include "core/Group.h"
 
+#include <QCoreApplication>
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
@@ -96,8 +98,20 @@ void Platform::forgetGroupView(Group* group, GroupView* view)
 void Platform::destroyGroupView(Group* group)
 {
     GroupView* view = group_views_.take(group);
-    if (view)
-        view->deleteLater();
+    if (!view)
+        return;
+
+    // 立即隐藏，避免等待 deleteLater 期间以旧几何遮挡相邻分组
+    view->setVisible(false);
+    view->deleteLater();
+}
+
+IndicatorsOverlayWindow* Platform::indicatorsOverlay()
+{
+    if (!overlay_ && QCoreApplication::instance()) {
+        overlay_ = new IndicatorsOverlayWindow(QCoreApplication::instance());
+    }
+    return overlay_;
 }
 
 }

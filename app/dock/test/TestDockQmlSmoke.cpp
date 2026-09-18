@@ -21,6 +21,8 @@
 #include "core/MainWindow.h"
 #include "core/View.h"
 #include "engine/Item.h"
+#include "qtquick/GroupView.h"
+#include "qtquick/IndicatorsOverlayWindow.h"
 #include "qtquick/Platform.h"
 
 #include <catch2/catch_test_macros.hpp>
@@ -159,9 +161,17 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     const QRect target_rect = panel_b->group()->layoutItem()->geometry();
     const QPoint target_center = target_rect.center();
 
+    dock::qtquick::IndicatorsOverlayWindow* overlay = platform->indicatorsOverlay();
+    REQUIRE(overlay != nullptr);
+    CHECK_FALSE(overlay->isActive());
+
     drag.onPress(&draggable, target_center + QPoint(-50, -50));
     drag.onMove(target_center + QPoint(-40, -40));
     REQUIRE(drag.state() == dock::DragController::State::Dragging);
+    // 落点高亮由顶层浮层窗口呈现（不被拖动中的浮窗遮挡）
+    CHECK(overlay->isActive());
+    CHECK(overlay->isVisible());
+
     drag.onRelease(target_center);
     QCoreApplication::processEvents();
 
@@ -169,6 +179,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     CHECK(panel_a->group() == panel_b->group());
     CHECK_FALSE(panel_a->isFloating());
     CHECK(dock::DockRegistry::self().floatingWindows().isEmpty());
+    CHECK_FALSE(overlay->isActive());
 
     // 合并后成为选项卡：切换为当前页后 guest 可见，且无悬空视图
     CHECK(panel_b->group()->dockWidgets().contains(panel_a));
@@ -177,6 +188,26 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     panel_b->group()->setCurrentDockWidget(panel_a);
     QCoreApplication::processEvents();
     CHECK(merged_guest->isVisible());
+
+    // 标签拖拽入口（QML 调用路径）：分离单个标签为浮窗并回停
+    dock::qtquick::GroupView* merged_view = platform->groupView(panel_b->group());
+    REQUIRE(merged_view != nullptr);
+    merged_view->beginTabDrag(0, target_center);
+    drag.onMove(target_center + QPoint(-80, -80));
+    REQUIRE(drag.state() == dock::DragController::State::Dragging);
+    CHECK(dock::DockRegistry::self().floatingWindows().size() == 1);
+    drag.onRelease(QPoint(-1000, -1000)); // 空白处释放：保留浮动
+    CHECK(drag.state() == dock::DragController::State::Idle);
+    REQUIRE(dock::DockRegistry::self().floatingWindows().size() == 1);
+    {
+        dock::FloatingWindow* separated = dock::DockRegistry::self().floatingWindows().first();
+        REQUIRE(separated->group() != nullptr);
+        CHECK(separated->group()->dockWidgets().contains(panel_b));
+        CHECK_FALSE(separated->group()->dockWidgets().contains(panel_a));
+        REQUIRE(drag.dockGroup(separated->group()));
+    }
+    CHECK(dock::DockRegistry::self().floatingWindows().isEmpty());
+    CHECK(panel_b->group() == panel_a->group());
 
     delete root;
 }

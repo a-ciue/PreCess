@@ -1,9 +1,10 @@
 /**
  * @file DockGroup.qml
- * @brief 分组视图：标题栏 + 选项卡栏 + 内容宿主
+ * @brief 分组视图：标题栏 + 标签栏 + 内容宿主（外观对齐原依赖库）
  */
 
 import QtQuick
+import QtQuick.Controls
 import PreCess.Docking as Docking
 
 Rectangle {
@@ -15,11 +16,13 @@ Rectangle {
     color: "transparent"
     border.color: "#b8b8b8"
     border.width: 1
+    radius: 2
 
     readonly property bool hasTabs: groupView ? groupView.tabCount > 1 : false
     readonly property bool showTitleBar: groupView ? groupView.titleBarVisible : false
 
-    Item {
+    // 标题栏：常显，标题 + 浮动/关闭按钮，整栏可拖动
+    Rectangle {
         id: titleBar
         objectName: "titleBar"
         anchors {
@@ -30,13 +33,17 @@ Rectangle {
         }
         height: visible ? 30 : 0
         visible: root.showTitleBar
+        color: "#eff0f1"
 
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton
-            onPressed: function(mouse) { root.groupView.beginDrag(root.mapToGlobal(mouse.x, mouse.y)) }
-            onPositionChanged: function(mouse) { if (pressed) root.groupView.dragTo(root.mapToGlobal(mouse.x, mouse.y)) }
-            onReleased: function(mouse) { root.groupView.endDrag(root.mapToGlobal(mouse.x, mouse.y)) }
+            onPressed: function(mouse) { root.groupView.beginDrag(mapToGlobal(mouse.x, mouse.y)) }
+            onPositionChanged: function(mouse) {
+                if (pressed)
+                    root.groupView.dragTo(mapToGlobal(mouse.x, mouse.y))
+            }
+            onReleased: function(mouse) { root.groupView.endDrag(mapToGlobal(mouse.x, mouse.y)) }
             onDoubleClicked: root.groupView.toggleFloat()
         }
 
@@ -65,24 +72,30 @@ Rectangle {
             visible: root.groupView && !root.groupView.central
 
             // 浮动 / 回停
-            Item {
+            Rectangle {
                 width: 20
                 height: 20
+                radius: 2
+                color: floatArea.containsMouse ? "#d8d8d8" : "transparent"
+
                 Rectangle {
                     anchors.centerIn: parent
                     width: 11
                     height: 11
                     color: "transparent"
                     border.width: 1
-                    border.color: floatArea.containsMouse ? "#1a6fc4" : "#555555"
+                    border.color: "#4d4d4d"
                 }
                 Rectangle {
                     visible: root.groupView && root.groupView.floating
-                    anchors.centerIn: parent
-                    anchors.verticalCenterOffset: 6
+                    anchors {
+                        horizontalCenter: parent.horizontalCenter
+                        bottom: parent.bottom
+                        bottomMargin: 3
+                    }
                     width: 11
                     height: 2
-                    color: floatArea.containsMouse ? "#1a6fc4" : "#555555"
+                    color: "#4d4d4d"
                 }
                 MouseArea {
                     id: floatArea
@@ -93,22 +106,25 @@ Rectangle {
             }
 
             // 关闭
-            Item {
+            Rectangle {
                 width: 20
                 height: 20
+                radius: 2
+                color: closeArea.containsMouse ? "#e81123" : "transparent"
+
                 Rectangle {
                     anchors.centerIn: parent
                     width: 12
                     height: 1
                     rotation: 45
-                    color: closeArea.containsMouse ? "#c0392b" : "#555555"
+                    color: closeArea.containsMouse ? "#ffffff" : "#4d4d4d"
                 }
                 Rectangle {
                     anchors.centerIn: parent
                     width: 12
                     height: 1
                     rotation: -45
-                    color: closeArea.containsMouse ? "#c0392b" : "#555555"
+                    color: closeArea.containsMouse ? "#ffffff" : "#4d4d4d"
                 }
                 MouseArea {
                     id: closeArea
@@ -120,54 +136,49 @@ Rectangle {
         }
     }
 
-    Item {
+    // 标签栏：QtQuick Controls TabBar，跟随应用控件样式；拖标签分离单个面板
+    TabBar {
         id: tabBar
         objectName: "tabBar"
         anchors {
             left: parent.left
             right: parent.right
-            top: titleBar.bottom
+            top: titleBar.visible ? titleBar.bottom : parent.top
             margins: 1
         }
-        height: visible ? 28 : 0
+        height: visible ? implicitHeight : 0
         visible: root.hasTabs
+        position: TabBar.Header
+        currentIndex: root.groupView ? root.groupView.currentIndex : -1
 
-        Row {
-            anchors.fill: parent
+        onCurrentIndexChanged: {
+            if (root.groupView && root.groupView.currentIndex !== currentIndex)
+                root.groupView.setCurrentIndex(currentIndex)
+        }
 
-            Repeater {
-                model: root.groupView ? root.groupView.tabTitles : []
+        Repeater {
+            model: root.groupView ? root.groupView.tabTitles : []
 
-                Rectangle {
-                    required property string modelData
-                    required property int index
+            TabButton {
+                id: tabButton
+                required property string modelData
+                required property int index
 
-                    width: Math.max(80, tabText.implicitWidth + 20)
-                    height: parent.height
-                    color: index === root.groupView.currentIndex ? "#ffffff" : "#e4e6e8"
-                    border.color: "#b8b8b8"
-                    border.width: 1
+                text: modelData
+                width: Math.max(80, implicitWidth + 16)
 
-                    Text {
-                        id: tabText
-                        anchors.centerIn: parent
-                        text: parent.modelData
-                        font.pixelSize: 12
-                        color: "#333333"
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton
+                    onPressed: function(mouse) {
+                        root.groupView.beginTabDrag(index, mapToGlobal(mouse.x, mouse.y))
                     }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton
-                        onPressed: function(mouse) {
-                            root.groupView.setCurrentIndex(index)
-                            root.groupView.beginDrag(root.mapToGlobal(mouse.x, mouse.y))
-                        }
-                        onPositionChanged: function(mouse) {
-                            if (pressed)
-                                root.groupView.dragTo(root.mapToGlobal(mouse.x, mouse.y))
-                        }
-                        onReleased: function(mouse) { root.groupView.endDrag(root.mapToGlobal(mouse.x, mouse.y)) }
+                    onPositionChanged: function(mouse) {
+                        if (pressed)
+                            root.groupView.dragTo(mapToGlobal(mouse.x, mouse.y))
+                    }
+                    onReleased: function(mouse) {
+                        root.groupView.endDrag(mapToGlobal(mouse.x, mouse.y))
                     }
                 }
             }

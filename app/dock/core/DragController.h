@@ -7,24 +7,28 @@
 
 #include "DockTypes.h"
 
+#include <QHash>
 #include <QObject>
 #include <QPoint>
+#include <QPointer>
 #include <QSize>
 
 namespace dock {
 
+class DockWidget;
 class Draggable;
 class DropArea;
 class FloatingWindow;
 class Group;
+class Item;
 class WindowBeingDragged;
 
 /**
  * @brief 拖拽状态机
  *
  * 视图层（全局鼠标过滤器 / QML 标题栏）在按下、移动、释放时驱动本控制器；
- * 拖拽开始时把分组摘入浮动窗口，释放时按悬停落点停靠或保留浮动。
- * 本控制器为核心层单例，不依赖 QtQuick。
+ * 拖拽开始时把分组（或单个标签面板）摘入浮动窗口，释放时按悬停落点停靠
+ * 或保留浮动。本控制器为核心层单例，不依赖 QtQuick。
  */
 class DragController : public QObject
 {
@@ -55,7 +59,7 @@ public:
     //! @brief 当前悬停落点
     DropLocation hoveredLocation() const { return hovered_location_; }
 
-    //! @brief 视图层在标题栏/选项卡按下时调用
+    //! @brief 视图层在标题栏/标签按下时调用
     void onPress(Draggable* draggable, const QPoint& global_pos);
     //! @brief 视图层转发鼠标移动
     void onMove(const QPoint& global_pos);
@@ -66,7 +70,7 @@ public:
 
     //! @brief 使分组浮动（浮动按钮/双击）；成功返回 true
     bool floatGroup(Group* group);
-    //! @brief 使浮动分组回停到主窗口占位处
+    //! @brief 使浮动分组回停：有占位则回原位，单标签浮出则归还源分组
     bool dockGroup(Group* group);
     //! @brief 切换分组浮动/停靠状态
     bool toggleFloating(Group* group);
@@ -87,6 +91,8 @@ private:
     void updateHover(const QPoint& global_pos);
     void applyDrop();
     void cleanup();
+    //! @brief 保留浮动：临时组登记回停来源并归属浮动窗口
+    void parkFloatingGroup(FloatingWindow* floating_window);
 
     //! @brief 创建浮动窗口核心对象并通知视图层创建窗口
     static FloatingWindow* createFloatingWindow();
@@ -94,6 +100,14 @@ private:
     static void destroyFloatingWindow(FloatingWindow* floating_window);
     //! @brief 查找承载指定分组的浮动窗口
     static FloatingWindow* floatingWindowForGroup(Group* group);
+    //! @brief 查找分组所在的停靠区域（主窗口或浮动窗口）
+    static DropArea* areaForGroup(Group* group);
+
+    //! @brief 单个标签浮出后的回停来源
+    struct FloatOrigin {
+        QPointer<Group> origin_group;
+        int index = -1;
+    };
 
     State state_ = State::Idle;
     Draggable* draggable_ = nullptr;
@@ -104,6 +118,15 @@ private:
     DropLocation hovered_location_ = DropLocation_None;
     QPoint press_pos_;
     QSize dragged_size_;
+
+    // 单个标签拖拽
+    DockWidget* dragged_dock_ = nullptr;
+    Group* drag_group_ = nullptr; // 实际被拖拽的分组（临时组或源分组）
+    Group* origin_group_ = nullptr;
+    int origin_index_ = -1;
+
+    // 单标签浮出且未停靠时的回停来源（键为临时分组）
+    QHash<Group*, FloatOrigin> floating_origins_;
 };
 
 }

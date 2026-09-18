@@ -21,6 +21,7 @@ class Group;
 namespace qtquick {
 
 class GroupView;
+class IndicatorsOverlayWindow;
 
 /**
  * @brief QtQuick 视图层全局服务
@@ -56,12 +57,16 @@ public:
     //! @brief 删除分组视图（分组销毁时）
     void destroyGroupView(Group* group);
 
+    //! @brief 透明顶层指示器窗口（懒创建，随应用存活）
+    IndicatorsOverlayWindow* indicatorsOverlay();
+
 private:
     Platform() = default;
 
     QQmlEngine* engine_ = nullptr;
     QHash<DockWidget*, QQuickItem*> guest_items_;
     QHash<Group*, GroupView*> group_views_;
+    IndicatorsOverlayWindow* overlay_ = nullptr;
 };
 
 }
