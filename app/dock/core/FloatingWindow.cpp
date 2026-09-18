@@ -24,23 +24,47 @@ FloatingWindow::~FloatingWindow()
     DockRegistry::self().unregisterFloatingWindow(this);
 }
 
-void FloatingWindow::setGroup(Group* group)
+void FloatingWindow::takeGroup(Group* group, Item* item)
 {
-    if (group_ == group)
+    group_ = group;
+    if (!group_) {
+        drop_area_->setRootItem(nullptr);
+        return;
+    }
+
+    drop_area_->setRootItem(item);
+    if (item) {
+        item->setId(group_->title());
+        group_->setLayoutItem(item);
+    }
+    group_->setFloating(true);
+    Q_EMIT titleChanged(title());
+}
+
+Item* FloatingWindow::releaseGroup()
+{
+    if (!group_)
+        return nullptr;
+
+    group_->setFloating(false);
+    group_ = nullptr;
+    return drop_area_->takeRootItem();
+}
+
+bool FloatingWindow::isEmpty() const
+{
+    return !group_ || group_->dockWidgets().isEmpty();
+}
+
+void FloatingWindow::setGeometry(const QRect& geometry)
+{
+    if (geometry_ == geometry)
         return;
 
-    group_ = group;
-    delete group_item_;
-    group_item_ = nullptr;
-
-    if (group_) {
-        group_item_ = new Item(group_);
-        group_item_->setId(group_->title());
-        group_->setLayoutItem(group_item_);
-        drop_area_->setRootItem(group_item_);
-    } else {
-        drop_area_->setRootItem(nullptr);
-    }
+    geometry_ = geometry;
+    drop_area_->setGlobalOrigin(geometry.topLeft());
+    drop_area_->setGeometry(QRect(QPoint(0, 0), geometry.size()));
+    Q_EMIT geometryChanged(geometry_);
 }
 
 QString FloatingWindow::title() const

@@ -76,6 +76,8 @@ public:
 
     //! @brief 由布局层设置打开状态，不触发重排之外的副作用
     void markOpen(bool open);
+    //! @brief 由布局层设置浮动状态（不改开关状态）
+    void markFloating(bool floating);
 
 Q_SIGNALS:
     //! @brief 打开状态变化

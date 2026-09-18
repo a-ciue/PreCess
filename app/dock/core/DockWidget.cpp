@@ -71,4 +71,19 @@ void DockWidget::markOpen(bool open)
         Q_EMIT closed();
 }
 
+void DockWidget::markFloating(bool floating)
+{
+    if (floating) {
+        if (state_ == State::Floating)
+            return;
+        state_ = State::Floating;
+        Q_EMIT isFloatingChanged(true);
+    } else {
+        if (state_ != State::Floating)
+            return;
+        state_ = State::Docked;
+        Q_EMIT isFloatingChanged(false);
+    }
+}
+
 }

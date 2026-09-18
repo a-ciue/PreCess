@@ -3,121 +3,19 @@
  * @brief 停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡
  */
 
+#include "DockTestSupport.h"
+
 #include "core/DockRegistry.h"
 #include "core/DockWidget.h"
 #include "core/DropArea.h"
 #include "core/Group.h"
 #include "core/MainWindow.h"
-#include "core/View.h"
 #include "engine/Item.h"
 #include "engine/ItemBoxContainer.h"
-#include "engine/SizingInfo.h"
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <memory>
-
-namespace {
-
-//! @brief 记录几何与可见性的桩视图
-class StubView : public dock::View
-{
-public:
-    explicit StubView(dock::Controller* controller, QSize min_size = QSize(50, 50))
-        : controller_(controller)
-        , min_size_(min_size)
-    {
-    }
-
-    dock::Controller* controller() const override { return controller_; }
-    void setViewGeometry(const QRect& geometry) override { geometry_ = geometry; }
-    QRect viewGeometry() const override { return geometry_; }
-    void setViewVisible(bool visible) override { visible_ = visible; }
-    bool isViewVisible() const override { return visible_; }
-    QSize viewMinSize() const override { return min_size_; }
-    QSize viewMaxSizeHint() const override { return QSize(dock::kMaxSizeLimit, dock::kMaxSizeLimit); }
-    void setParentView(dock::View* parent) override { parent_ = parent; }
-    dock::View* parentView() const override { return parent_; }
-    void raiseView() override { }
-    void setViewCursor(Qt::CursorShape shape) override { cursor_ = shape; }
-    Qt::CursorShape viewCursor() const override { return cursor_; }
-    QPoint viewGlobalPosition() const override { return QPoint(0, 0); }
-    dock::View* createFloatingWindowView(dock::Controller*) override { return nullptr; }
-
-private:
-    dock::Controller* controller_;
-    QSize min_size_;
-    QRect geometry_;
-    bool visible_ = true;
-    dock::View* parent_ = nullptr;
-    Qt::CursorShape cursor_ = Qt::ArrowCursor;
-};
-
-//! @brief 复刻 Main.qml 启动布局的测试夹具
-struct DockFixture {
-    DockFixture()
-        : main_window(QStringLiteral("PreCessMainLayout"), dock::MainWindowOption_HasCentralWidget)
-        , central_view(&main_window)
-    {
-        main_window.setCentralGuestView(&central_view);
-        main_window.setAreaGeometry(QRect(0, 0, 1600, 900));
-    }
-
-    //! @brief 创建带桩视图的面板
-    dock::DockWidget* makeDock(const QString& name, const QString& title,
-        QSize view_min = QSize(50, 50))
-    {
-        auto* dock_widget = new dock::DockWidget(name, &main_window);
-        dock_widget->setTitle(title);
-        auto view = std::make_unique<StubView>(dock_widget, view_min);
-        dock_widget->setGuestView(view.get());
-        views.push_back(std::move(view));
-        docks.push_back(dock_widget);
-        return dock_widget;
-    }
-
-    dock::MainWindow main_window;
-    StubView central_view;
-    std::vector<std::unique_ptr<StubView>> views;
-    std::vector<dock::DockWidget*> docks;
-};
-
-//! @brief 与 Main.qml Component.onCompleted 等价的停靠调用序列
-struct PlacedDocks {
-    PlacedDocks(DockFixture& f)
-        : object_tree(f.makeDock(QStringLiteral("objectTree"), QStringLiteral("对象树")))
-        , side_bar(f.makeDock(QStringLiteral("sideBar"), QStringLiteral("属性列表")))
-        , attribute_render(f.makeDock(QStringLiteral("attributeRender"), QStringLiteral("属性渲染")))
-        , console(f.makeDock(QStringLiteral("console"), QStringLiteral("JavaScript 控制台")))
-        , python_console(f.makeDock(QStringLiteral("pythonConsole"), QStringLiteral("Python 控制台")))
-        , output_log(f.makeDock(QStringLiteral("outputLog"), QStringLiteral("日志")))
-        , preferences(f.makeDock(QStringLiteral("preferences"), QStringLiteral("偏好设置")))
-    {
-        dock::MainWindow* window = &f.main_window;
-        window->addDockWidget(object_tree, dock::Location_OnLeft, nullptr, QSize(250, 0));
-        window->addDockWidget(side_bar, dock::Location_OnBottom, object_tree, QSize(0, 400));
-        window->addDockWidget(attribute_render, dock::Location_OnBottom, object_tree, QSize(0, 300),
-            dock::StartHidden);
-        window->addDockWidget(console, dock::Location_OnBottom, nullptr, QSize(0, 300),
-            dock::StartHidden);
-        window->addDockWidget(python_console, dock::Location_OnRight, nullptr, QSize(450, 0),
-            dock::StartHidden);
-        window->addDockWidget(output_log, dock::Location_OnBottom, nullptr, QSize(0, 300),
-            dock::StartHidden);
-        window->addDockWidget(preferences, dock::Location_OnTop, object_tree, QSize(0, 200),
-            dock::StartHidden);
-    }
-
-    dock::DockWidget* object_tree;
-    dock::DockWidget* side_bar;
-    dock::DockWidget* attribute_render;
-    dock::DockWidget* console;
-    dock::DockWidget* python_console;
-    dock::DockWidget* output_log;
-    dock::DockWidget* preferences;
-};
-
-}
+using namespace docktest;
 
 TEST_CASE("DockCore: initial layout matches Main.qml placement")
 {
@@ -128,7 +26,7 @@ TEST_CASE("DockCore: initial layout matches Main.qml placement")
     REQUIRE(central != nullptr);
     REQUIRE(central->isOpen());
 
-    // 对象树固定在左侧 250px，纵向与属性列表均分
+    // 对象树固定在左侧 250px，纵向与属性列表分占
     const dock::Item* object_tree_item = placed.object_tree->group()->layoutItem();
     REQUIRE(object_tree_item != nullptr);
     CHECK(object_tree_item->isVisible());

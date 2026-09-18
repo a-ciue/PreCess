@@ -62,8 +62,16 @@ public:
     //! @brief 设置布局节点（由布局层创建后注入）
     void setLayoutItem(Item* item) { layout_item_ = item; }
 
+    //! @brief 浮动期间留在主布局中的隐藏占位节点
+    Item* placeholderItem() const { return placeholder_item_; }
+    //! @brief 设置浮动占位节点（由布局层维护）
+    void setPlaceholderItem(Item* item) { placeholder_item_ = item; }
+
     //! @brief 根据打开面板情况同步分组可见性
     void refreshVisibility();
+
+    //! @brief 同步组内面板的浮动状态
+    void setFloating(bool floating);
 
     // LayoutingGuest
     void setGuestGeometry(const QRect& geometry) override;
@@ -86,6 +94,7 @@ private:
     QList<DockWidget*> dock_widgets_;
     DockWidget* current_ = nullptr;
     Item* layout_item_ = nullptr;
+    Item* placeholder_item_ = nullptr;
     bool central_ = false;
 };
 

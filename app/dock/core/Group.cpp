@@ -125,6 +125,12 @@ void Group::refreshVisibility()
     }
 }
 
+void Group::setFloating(bool floating)
+{
+    for (DockWidget* dock_widget : std::as_const(dock_widgets_))
+        dock_widget->markFloating(floating);
+}
+
 void Group::setGuestGeometry(const QRect& geometry)
 {
     if (view())

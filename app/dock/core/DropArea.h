@@ -34,6 +34,8 @@ public:
     Item* rootItem() const { return root_item_; }
     //! @brief 设置根节点（接管所有权，替换旧根）
     void setRootItem(Item* item);
+    //! @brief 摘出根节点但不删除（所有权交还调用方）
+    Item* takeRootItem();
 
     //! @brief 应用区域几何并重排
     void setGeometry(const QRect& geometry);
@@ -58,6 +60,18 @@ public:
 
     //! @brief 以选项卡方式加入中央分组
     void addDockWidgetAsTab(DockWidget* dock_widget, Group* group);
+
+    //! @brief 把分组从本区域摘出用于浮动；创建隐藏占位并返回分组布局节点
+    Item* takeGroupForFloat(Group* group);
+    //! @brief 把浮动的分组放回本区域（用分组节点替换隐藏占位）
+    bool restoreGroupFromFloat(Group* group);
+    //! @brief 删除分组在 本区域 的隐藏占位
+    void removeGroupPlaceholder(Group* group);
+    //! @brief 把分组布局节点从本区域树上摘除但不删除（所有权交还调用方）
+    bool detachGroup(Group* group);
+    //! @brief 把已摘除节点的分组停靠到本区域的指定落点
+    bool attachGroup(Group* group, DropLocation location, Group* target_group,
+        const QSize& preferred_size);
 
     //! @brief 标记中央持久节点（拖放时不可被替换/移除）
     void setCentralItem(Item* item) { central_item_ = item; }
