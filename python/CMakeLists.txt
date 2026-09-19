@@ -81,6 +81,16 @@ target_link_libraries(precess_runtime PUBLIC Session)
 if(_precess_real)
     target_sources(precess_runtime PRIVATE runtime.cpp)
     target_link_libraries(precess_runtime PRIVATE pybind11::embed spdlog::spdlog)
+    # 宿主配置宏随库 PUBLIC 传递：消费方（app/model 的 QPythonRuntime、测试）
+    # 直接可用，无需各自按模式重复判断；桩模式由 QPythonRuntime.cpp 的 #ifndef
+    # 空值兜底（桩忽略 config）
+    target_compile_definitions(precess_runtime PUBLIC
+        # 嵌入式解释器的标准库根：构建机解释器目录（运行期另作捆绑 Lib 探测，
+        # 见 QPythonRuntime::makeRuntimeConfig）
+        PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"
+        # 构建树中 precess 扩展模块输出目录（运行时另一候选为 <exe_dir>/python）
+        PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>"
+    )
 else()
     target_sources(precess_runtime PRIVATE stub.cpp)
 endif()
@@ -114,12 +124,11 @@ if(_precess_real)
             ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:precess_bindings>"
             ENVIRONMENT_MODIFICATION "$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess_bindings>,PREPEND,PATH=path_list_prepend:>;$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess_bindings>,PREPEND,PRECESS_DLL_DIRS=path_list_append:>")
         # C++ 嵌入测试：验证宿主初始化、控制台执行与活会话调用（依赖真实
-        # 宿主与 precess 模块，桩模式无意义）
+        # 宿主与 precess 模块，桩模式无意义）；宿主配置宏经 precess_runtime
+        # PUBLIC 传递，此处仅补测试专属的插件目录
         precess_add_test(TestPrecessRuntime test/test_runtime.cpp)
         target_link_libraries(TestPrecessRuntime PRIVATE precess_runtime)
         target_compile_definitions(TestPrecessRuntime PRIVATE
-            PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"
-            PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>"
             PRECESS_PLUGIN_DIR="${CMAKE_BINARY_DIR}/plugins")
     endif()
 
