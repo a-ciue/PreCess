@@ -48,7 +48,7 @@
   - `app/core/` → `core`
   - `app/model/` → `model`、`core`、`app/core`（model 的 Qt 接口、数据绑定；可选内嵌 Python 运行时 `QPythonRuntime`，见第 10 节 Python 嵌入约定）
   - `app/render/` → `app/model`（VTK 渲染窗口控件）
-  - `app/dock/`：内嵌停靠组件（`engine/` 布局引擎、`core/` 停靠语义、`qtquick/` 视图与 QML），对外仅暴露 `Docking.h` 的 `dock::init(QQmlEngine*)` 与 `PreCess.Docking` QML 模块；只被 `app` 使用，禁止被 `core/`、`model/`、`plugins/` 依赖
+  - `app/dock/`：内嵌停靠组件（`tree/` 布局树、`docking/` 停靠语义与拖放、`ui/` QtQuick 视图与 QML），对外仅暴露 `Docking.h` 的 `dock::init(QQmlEngine*)` 与 `PreCess.Docking` QML 模块（类型 `DockHost`/`DockPanel`，枚举经 `Tokens`）；只被 `app` 使用，禁止被 `core/`、`model/`、`plugins/` 依赖
   - `app/*.qml` → `app/model`、`app/render`、`app/core`（界面布局与更新，仅做轻量数据处理，不承载主业务逻辑）
 - `plugins/`：插件示例与二次开发，依赖 `model/systems`、`model/data`、`core`，与 `app` 独立构建。
 - `python/`：precess Python 绑定模块（pyd）与内嵌解释器宿主 `python::Runtime`（LGPLv3，无 Qt；依赖 `model/session`）。

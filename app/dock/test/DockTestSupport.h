@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include "core/DockWidget.h"
-#include "core/MainWindow.h"
-#include "core/View.h"
-#include "engine/SizingInfo.h"
+#include "docking/DockPanel.h"
+#include "docking/DockHost.h"
+#include "docking/DockView.h"
+#include "tree/NodeMetrics.h"
 
 #include <QString>
 
@@ -18,34 +18,34 @@
 namespace docktest {
 
 //! @brief 记录几何与可见性的桩视图
-class StubView : public dock::View
+class StubView : public dock::DockView
 {
 public:
-    explicit StubView(dock::Controller* controller = nullptr, QSize min_size = QSize(50, 50))
-        : controller_(controller)
+    explicit StubView(dock::DockObject* controller = nullptr, QSize min_size = QSize(50, 50))
+        : dock_object_(controller)
         , min_size_(min_size)
     {
     }
 
     void setGlobalOrigin(const QPoint& origin) { global_origin_ = origin; }
 
-    dock::Controller* controller() const override { return controller_; }
-    void setViewGeometry(const QRect& geometry) override { geometry_ = geometry; }
-    QRect viewGeometry() const override { return geometry_; }
-    void setViewVisible(bool visible) override { visible_ = visible; }
-    bool isViewVisible() const override { return visible_; }
-    QSize viewMinSize() const override { return min_size_; }
-    QSize viewMaxSizeHint() const override { return QSize(dock::kMaxSizeLimit, dock::kMaxSizeLimit); }
-    void setParentView(dock::View* parent) override { parent_ = parent; }
-    dock::View* parentView() const override { return parent_; }
-    void raiseView() override { }
-    void setViewCursor(Qt::CursorShape shape) override { cursor_ = shape; }
-    Qt::CursorShape viewCursor() const override { return cursor_; }
-    QPoint viewGlobalPosition() const override { return global_origin_ + geometry_.topLeft(); }
-    dock::View* createFloatingWindowView(dock::Controller* controller) override
+    dock::DockObject* dockObject() const override { return dock_object_; }
+    void applyFrame(const QRect& geometry) override { geometry_ = geometry; }
+    QRect frame() const override { return geometry_; }
+    void applyVisibility(bool visible) override { visible_ = visible; }
+    bool isShown() const override { return visible_; }
+    QSize minExtent() const override { return min_size_; }
+    QSize maxExtent() const override { return QSize(dock::kMaxSizeLimit, dock::kMaxSizeLimit); }
+    void setParentDockView(dock::DockView* parent) override { parent_ = parent; }
+    dock::DockView* parentDockView() const override { return parent_; }
+    void bringToFront() override { }
+    void setCursorShape(Qt::CursorShape shape) override { cursor_ = shape; }
+    Qt::CursorShape cursorShape() const override { return cursor_; }
+    QPoint globalOrigin() const override { return global_origin_ + geometry_.topLeft(); }
+    dock::DockView* createDockWindow(dock::DockObject* controller) override
     {
         auto view = std::make_unique<StubView>(controller);
-        dock::View* raw = view.get();
+        dock::DockView* raw = view.get();
         floating_views.push_back(std::move(view));
         return raw;
     }
@@ -53,40 +53,40 @@ public:
     std::vector<std::unique_ptr<StubView>> floating_views;
 
 private:
-    dock::Controller* controller_ = nullptr;
+    dock::DockObject* dock_object_ = nullptr;
     QSize min_size_;
     QRect geometry_;
     QPoint global_origin_;
     bool visible_ = true;
-    dock::View* parent_ = nullptr;
+    dock::DockView* parent_ = nullptr;
     Qt::CursorShape cursor_ = Qt::ArrowCursor;
 };
 
 //! @brief 复刻 Main.qml 启动布局的测试夹具
 struct DockFixture {
     DockFixture()
-        : main_window(QStringLiteral("PreCessMainLayout"), dock::MainWindowOption_HasCentralWidget)
-        , central_view(&main_window)
+        : host { QStringLiteral("PreCessMainLayout") }
+        , central_view(&host)
     {
-        main_window.setView(&main_view);
-        main_window.setCentralGuestView(&central_view);
-        main_window.setAreaGeometry(QRect(0, 0, 1600, 900));
+        host.setView(&main_view);
+        host.setCentralContentView(&central_view);
+        host.setFrame(QRect(0, 0, 1600, 900));
     }
 
     //! @brief 创建带桩视图的面板
-    dock::DockWidget* makeDock(const QString& name, const QString& title,
+    dock::DockPanel* makeDock(const QString& name, const QString& title,
         QSize view_min = QSize(50, 50))
     {
-        auto* dock_widget = new dock::DockWidget(name, &main_window);
-        dock_widget->setTitle(title);
-        auto view = std::make_unique<StubView>(dock_widget, view_min);
-        dock_widget->setGuestView(view.get());
+        auto* panel = new dock::DockPanel(name, &host);
+        panel->setTitle(title);
+        auto view = std::make_unique<StubView>(panel, view_min);
+        panel->setContentView(view.get());
         views.push_back(std::move(view));
-        return dock_widget;
+        return panel;
     }
 
-    dock::MainWindow main_window;
-    StubView main_view { &main_window };
+    dock::DockHost host;
+    StubView main_view { &host };
     StubView central_view;
     std::vector<std::unique_ptr<StubView>> views;
 };
@@ -102,28 +102,28 @@ struct PlacedDocks {
         , output_log(f.makeDock(QStringLiteral("outputLog"), QStringLiteral("日志")))
         , preferences(f.makeDock(QStringLiteral("preferences"), QStringLiteral("偏好设置")))
     {
-        dock::MainWindow* window = &f.main_window;
-        window->addDockWidget(object_tree, dock::Location_OnLeft, nullptr, QSize(250, 0));
-        window->addDockWidget(side_bar, dock::Location_OnBottom, object_tree, QSize(0, 400));
-        window->addDockWidget(attribute_render, dock::Location_OnBottom, object_tree, QSize(0, 300),
-            dock::StartHidden);
-        window->addDockWidget(console, dock::Location_OnBottom, nullptr, QSize(0, 300),
-            dock::StartHidden);
-        window->addDockWidget(python_console, dock::Location_OnRight, nullptr, QSize(450, 0),
-            dock::StartHidden);
-        window->addDockWidget(output_log, dock::Location_OnBottom, nullptr, QSize(0, 300),
-            dock::StartHidden);
-        window->addDockWidget(preferences, dock::Location_OnTop, object_tree, QSize(0, 200),
-            dock::StartHidden);
+        dock::DockHost* window = &f.host;
+        window->placePanel(object_tree, dock::DockEdge::Left, nullptr, QSize(250, 0));
+        window->placePanel(side_bar, dock::DockEdge::Bottom, object_tree, QSize(0, 400));
+        window->placePanel(attribute_render, dock::DockEdge::Bottom, object_tree, QSize(0, 300),
+            dock::PanelLaunch::Hidden);
+        window->placePanel(console, dock::DockEdge::Bottom, nullptr, QSize(0, 300),
+            dock::PanelLaunch::Hidden);
+        window->placePanel(python_console, dock::DockEdge::Right, nullptr, QSize(450, 0),
+            dock::PanelLaunch::Hidden);
+        window->placePanel(output_log, dock::DockEdge::Bottom, nullptr, QSize(0, 300),
+            dock::PanelLaunch::Hidden);
+        window->placePanel(preferences, dock::DockEdge::Top, object_tree, QSize(0, 200),
+            dock::PanelLaunch::Hidden);
     }
 
-    dock::DockWidget* object_tree;
-    dock::DockWidget* side_bar;
-    dock::DockWidget* attribute_render;
-    dock::DockWidget* console;
-    dock::DockWidget* python_console;
-    dock::DockWidget* output_log;
-    dock::DockWidget* preferences;
+    dock::DockPanel* object_tree;
+    dock::DockPanel* side_bar;
+    dock::DockPanel* attribute_render;
+    dock::DockPanel* console;
+    dock::DockPanel* python_console;
+    dock::DockPanel* output_log;
+    dock::DockPanel* preferences;
 };
 
 }

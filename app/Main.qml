@@ -34,60 +34,60 @@ ApplicationWindow {
 
     header: AppToolbar {
         windowHeight: root.height
-        objectTreeOpen: objectTreeDock.isOpen
-        propertyListOpen: sideBarDock.isOpen
-        attributeRenderOpen: attributeRenderDock.isOpen
-        consoleOpen: consoleDock.isOpen
-        pythonConsoleOpen: pythonConsoleDock.isOpen
-        outputLogOpen: outputLogDock.isOpen
-        preferencesOpen: preferencesDock.isOpen
+        objectTreeOpen: objectTreeDock.shown
+        propertyListOpen: sideBarDock.shown
+        attributeRenderOpen: attributeRenderDock.shown
+        consoleOpen: consoleDock.shown
+        pythonConsoleOpen: pythonConsoleDock.shown
+        outputLogOpen: outputLogDock.shown
+        preferencesOpen: preferencesDock.shown
         onObjectTreeToggled: {
-            if (objectTreeDock.isOpen) objectTreeDock.close()
-            else objectTreeDock.show()
+            if (objectTreeDock.shown) objectTreeDock.hidePanel()
+            else objectTreeDock.showPanel()
         }
         onPropertyListToggled: {
-            if (sideBarDock.isOpen) sideBarDock.close()
-            else sideBarDock.show()
+            if (sideBarDock.shown) sideBarDock.hidePanel()
+            else sideBarDock.showPanel()
         }
         onAttributeRenderToggled: {
-            if (attributeRenderDock.isOpen) attributeRenderDock.close()
-            else attributeRenderDock.show()
+            if (attributeRenderDock.shown) attributeRenderDock.hidePanel()
+            else attributeRenderDock.showPanel()
         }
         onConsoleToggled: {
-            if (consoleDock.isOpen) consoleDock.close()
-            else consoleDock.show()
+            if (consoleDock.shown) consoleDock.hidePanel()
+            else consoleDock.showPanel()
         }
         onPythonConsoleToggled: {
-            if (pythonConsoleDock.isOpen) pythonConsoleDock.close()
-            else pythonConsoleDock.show()
+            if (pythonConsoleDock.shown) pythonConsoleDock.hidePanel()
+            else pythonConsoleDock.showPanel()
         }
         onOutputLogToggled: {
-            if (outputLogDock.isOpen) outputLogDock.close()
-            else outputLogDock.show()
+            if (outputLogDock.shown) outputLogDock.hidePanel()
+            else outputLogDock.showPanel()
         }
         onPreferencesToggled: {
-            if (preferencesDock.isOpen) preferencesDock.close()
-            else preferencesDock.show()
+            if (preferencesDock.shown) preferencesDock.hidePanel()
+            else preferencesDock.showPanel()
         }
     }
 
     Shortcut {
         sequence: "F10"
         onActivated: {
-            if (consoleDock.isOpen)
-                consoleDock.close()
+            if (consoleDock.shown)
+                consoleDock.hidePanel()
             else
-                consoleDock.show()
+                consoleDock.showPanel()
         }
     }
 
     Shortcut {
         sequence: "F11"
         onActivated: {
-            if (pythonConsoleDock.isOpen)
-                pythonConsoleDock.close()
+            if (pythonConsoleDock.shown)
+                pythonConsoleDock.hidePanel()
             else
-                pythonConsoleDock.show()
+                pythonConsoleDock.showPanel()
         }
     }
 
@@ -123,14 +123,14 @@ ApplicationWindow {
         }
     }
 
-    Docking.DockingArea {
-        id: dockingArea
+    Docking.DockHost {
+        id: dockHost
         anchors.fill: parent
-        options: Docking.Enums.MainWindowOption_HasCentralWidget
-        persistentCentralItemFileName: "qrc:/qt/qml/app/CentralRenderArea.qml"
+        
+        centralItemFile: "qrc:/qt/qml/app/CentralRenderArea.qml"
         uniqueName: "PreCessMainLayout"
 
-        Docking.DockWidget {
+        Docking.DockPanel {
             id: objectTreeDock
             uniqueName: "objectTree"
             title: "对象树"
@@ -139,7 +139,7 @@ ApplicationWindow {
             }
         }
 
-        Docking.DockWidget {
+        Docking.DockPanel {
             id: sideBarDock
             uniqueName: "sideBar"
             title: "属性列表"
@@ -148,7 +148,7 @@ ApplicationWindow {
             }
         }
 
-        Docking.DockWidget {
+        Docking.DockPanel {
             id: attributeRenderDock
             uniqueName: "attributeRender"
             title: "属性渲染"
@@ -157,7 +157,7 @@ ApplicationWindow {
             }
         }
 
-        Docking.DockWidget {
+        Docking.DockPanel {
             id: consoleDock
             uniqueName: "console"
             title: "JavaScript 控制台"
@@ -167,7 +167,7 @@ ApplicationWindow {
             }
         }
 
-        Docking.DockWidget {
+        Docking.DockPanel {
             id: pythonConsoleDock
             uniqueName: "pythonConsole"
             title: "Python 控制台"
@@ -177,7 +177,7 @@ ApplicationWindow {
             }
         }
 
-        Docking.DockWidget {
+        Docking.DockPanel {
             id: outputLogDock
             uniqueName: "outputLog"
             title: "日志"
@@ -187,7 +187,7 @@ ApplicationWindow {
             }
         }
 
-        Docking.DockWidget {
+        Docking.DockPanel {
             id: preferencesDock
             uniqueName: "preferences"
             title: "偏好设置"
@@ -198,13 +198,13 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            addDockWidget(objectTreeDock, Docking.Enums.Location_OnLeft, null, Qt.size(250, 0))
-            addDockWidget(sideBarDock, Docking.Enums.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
-            addDockWidget(attributeRenderDock, Docking.Enums.Location_OnBottom, objectTreeDock, Qt.size(0, 300), Docking.Enums.StartHidden)
-            addDockWidget(consoleDock, Docking.Enums.Location_OnBottom, null, Qt.size(0, 300), Docking.Enums.StartHidden)
-            addDockWidget(pythonConsoleDock, Docking.Enums.Location_OnRight, null, Qt.size(450, 0), Docking.Enums.StartHidden)
-            addDockWidget(outputLogDock, Docking.Enums.Location_OnBottom, null, Qt.size(0, 300), Docking.Enums.StartHidden)
-            addDockWidget(preferencesDock, Docking.Enums.Location_OnTop, objectTreeDock, Qt.size(0, 200), Docking.Enums.StartHidden)
+            placePanel(objectTreeDock, Docking.Tokens.DockEdge.Left, null, Qt.size(250, 0))
+            placePanel(sideBarDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 400))
+            placePanel(attributeRenderDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+            placePanel(consoleDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+            placePanel(pythonConsoleDock, Docking.Tokens.DockEdge.Right, null, Qt.size(450, 0), Docking.Tokens.PanelLaunch.Hidden)
+            placePanel(outputLogDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+            placePanel(preferencesDock, Docking.Tokens.DockEdge.Top, objectTreeDock, Qt.size(0, 200), Docking.Tokens.PanelLaunch.Hidden)
         }
     }
 
@@ -233,7 +233,7 @@ ApplicationWindow {
             if (failed < drop.urls.length && App.registry.renderWindow)
                 App.registry.renderWindow.resetCamera()
             if (failed > 0)
-                outputLogDock.show() // 失败原因由日志面板承载，直接打开便于查看
+                outputLogDock.showPanel() // 失败原因由日志面板承载，直接打开便于查看
         }
 
         // 拖入可导入文件时的高亮提示
