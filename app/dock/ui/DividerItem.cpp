@@ -76,7 +76,8 @@ void DividerItem::endDrag()
 
 int DividerItem::mainAxisPosition(const QPointF& global_pos) const
 {
-    if (!area_ || !divider_)
+    // container 由 BoxNode::rebuildDividers 注入；判空范围与 isHorizontal() 一致
+    if (!area_ || !divider_ || !divider_->container())
         return 0;
 
     const QPointF local = area_->mapFromGlobal(global_pos);

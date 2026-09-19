@@ -95,6 +95,9 @@ void DragSession::updateAt(const QPoint& global_pos)
     }
 
     if (phase_ == Phase::Dragging) {
+        // 防御：Dragging 仅由 startDrag 创建拖拽代理后置位，代理应恒非空
+        if (!drag_proxy_)
+            return;
         drag_proxy_->moveTo(global_pos);
         updateHover(global_pos);
     }
