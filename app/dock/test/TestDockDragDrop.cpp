@@ -407,3 +407,60 @@ TEST_CASE("DockDrag: dragging a tab separates one panel and can return")
     CHECK(dock::DockCatalog::self().windows().isEmpty());
     CHECK_FALSE(placed.console->isDetached());
 }
+
+TEST_CASE("DockDrag: central group is protected from dragging and center merge")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+
+    dock::DragSession& drag = dock::DragSession::self();
+    dock::PanelGroup* central_group = f.host.centralGroup();
+    REQUIRE(central_group != nullptr);
+
+    // 命令式浮出与布局树摘出均被拒绝
+    CHECK_FALSE(drag.detachGroup(central_group));
+    CHECK(f.host.region()->extractGroupForWindow(central_group) == nullptr);
+
+    // 直接构造的中央拖拽句柄不会进入拖拽状态
+    dock::DragHandle central_handle(nullptr, central_group);
+    drag.beginAt(&central_handle, QPoint(600, 400));
+    drag.updateAt(QPoint(760, 400));
+    CHECK(drag.phase() == dock::DragSession::Phase::Idle);
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+
+    // 浮出面板悬停中央分组中心：无中心落点，释放后保持浮动
+    placed.console->showPanel();
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    dock::DockWindow* window = dock::DockCatalog::self().windows().first();
+    dock::DragHandle handle(nullptr, placed.console->group(), window);
+
+    const QRect central_rect = central_group->node()->geometry();
+    drag.beginAt(&handle, central_rect.center() + QPoint(0, -60));
+    drag.updateAt(central_rect.center());
+    REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+    CHECK(drag.hoveredGroup() == central_group);
+    CHECK(drag.hoveredZone() == dock::DropZone::None);
+
+    drag.endAt(central_rect.center());
+    CHECK(placed.console->isDetached());
+    CHECK(dock::DockCatalog::self().windows().size() == 1);
+
+    // 仅禁中心合并：悬停中央分组左侧内框仍可边缘分栏
+    QPoint left_box;
+    for (const dock::ZoneGeometry::ZoneRect& zone : dock::ZoneGeometry::innerZones(central_rect)) {
+        if (zone.location == dock::DropZone::InnerLeft)
+            left_box = zone.rect.center();
+    }
+    REQUIRE(left_box != QPoint());
+
+    drag.beginAt(&handle, left_box + QPoint(0, -60));
+    drag.updateAt(left_box);
+    REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+    CHECK(drag.hoveredGroup() == central_group);
+    CHECK(drag.hoveredZone() == dock::DropZone::InnerLeft);
+    drag.cancel();
+
+    REQUIRE(drag.reattachGroup(placed.console->group()));
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+}

@@ -5,8 +5,10 @@
 
 #include "DockCatalog.h"
 
+#include "DockHost.h"
 #include "DockPanel.h"
-#include "DockView.h"
+#include "DockRegion.h"
+#include "DockWindow.h"
 #include "PanelGroup.h"
 
 namespace dock {
@@ -39,46 +41,40 @@ void DockCatalog::unregisterWindow(DockWindow* window)
     windows_.removeOne(window);
 }
 
-bool DockCatalog::cyclePanel(bool forward)
+PanelGroup* DockCatalog::groupAtGlobal(const QPoint& global_pos) const
 {
-    // 当前面板所在分组有多个显示面板：先循环切标签
-    PanelGroup* group = focused_panel_ ? focused_panel_->group() : nullptr;
-    if (group) {
-        const QList<DockPanel*> shown = group->shownPanels();
-        if (shown.size() > 1) {
-            int index = shown.indexOf(group->activePanel());
-            if (index < 0)
-                index = 0;
-            index = forward ? (index + 1) % shown.size()
-                            : (index - 1 + shown.size()) % shown.size();
-            group->setActivePanel(shown.at(index));
-            focused_panel_ = shown.at(index);
-            return true;
+    // 浮动窗口后进先出：最近生成的窗口在上层
+    for (auto it = windows_.crbegin(); it != windows_.crend(); ++it) {
+        if (DockWindow* window = *it) {
+            if (DockRegion* region = window->region()) {
+                if (PanelGroup* group = region->groupAt(global_pos))
+                    return group;
+            }
         }
     }
 
-    // 否则按登记顺序切换到下一个显示中的面板
-    QList<DockPanel*> shown_all;
-    for (DockPanel* panel : panels_) {
-        if (panel->isShown())
-            shown_all.append(panel);
-    }
-    if (shown_all.isEmpty())
+    if (host_ && host_->region())
+        return host_->region()->groupAt(global_pos);
+    return nullptr;
+}
+
+bool DockCatalog::cyclePanelAt(const QPoint& global_pos, bool forward)
+{
+    // 严格悬停驱动：仅当悬停分组有多标签时循环切换其标签
+    PanelGroup* group = groupAtGlobal(global_pos);
+    if (!group)
         return false;
 
-    int index = shown_all.indexOf(focused_panel_);
-    if (index < 0)
-        index = forward ? -1 : 0;
-    index = forward ? (index + 1) % shown_all.size()
-                    : (index - 1 + shown_all.size()) % shown_all.size();
+    const QList<DockPanel*> shown = group->shownPanels();
+    if (shown.size() <= 1)
+        return false;
 
-    DockPanel* next = shown_all.at(index);
-    focused_panel_ = next;
-    if (next->group()) {
-        next->group()->setActivePanel(next);
-        if (next->group()->view())
-            next->group()->view()->bringToFront();
-    }
+    int index = shown.indexOf(group->activePanel());
+    if (index < 0)
+        index = 0;
+    index = forward ? (index + 1) % shown.size()
+                    : (index - 1 + shown.size()) % shown.size();
+    group->setActivePanel(shown.at(index));
     return true;
 }
 

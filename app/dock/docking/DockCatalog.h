@@ -9,12 +9,15 @@
 #pragma once
 
 #include <QList>
+#include <QPoint>
 
 namespace dock {
 
 class DockPanel;
 class DockWindow;
 class DockHost;
+class DockRegion;
+class PanelGroup;
 
 class DockCatalog
 {
@@ -41,19 +44,17 @@ public:
     //! @brief 全部独立窗口
     const QList<DockWindow*>& windows() const { return windows_; }
 
-    //! @brief 记录最近获得焦点的面板（Ctrl+Tab 切换用）
-    void setFocusedPanel(DockPanel* panel) { focused_panel_ = panel; }
-    //! @brief 最近获得焦点的面板（可能为空）
-    DockPanel* focusedPanel() const { return focused_panel_; }
+    //! @brief 按屏幕坐标命中分组（浮动窗口优先，其次主区域）
+    PanelGroup* groupAtGlobal(const QPoint& global_pos) const;
 
     /**
-     * @brief 循环切换显示中的面板（键盘导航）
+     * @brief 按鼠标悬停位置循环切换标签（键盘导航）
      *
-     * 当前面板所在分组有多个显示面板时先循环切标签；
-     * 否则按登记顺序切到下一个显示面板并提升其分组。
+     * 光标悬停的分组有多个显示面板时循环切换其标签；
+     * 悬停分组无多标签（含未悬停到任何分组）时不切换。
      * @return 是否发生了切换
      */
-    bool cyclePanel(bool forward);
+    bool cyclePanelAt(const QPoint& global_pos, bool forward);
 
 private:
     DockCatalog() = default;
@@ -61,7 +62,6 @@ private:
     DockHost* host_ = nullptr;
     QList<DockPanel*> panels_;
     QList<DockWindow*> windows_;
-    DockPanel* focused_panel_ = nullptr;
 };
 
 }

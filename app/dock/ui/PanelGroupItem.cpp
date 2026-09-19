@@ -167,7 +167,8 @@ void PanelGroupItem::toggleDetached()
 
 void PanelGroupItem::beginGroupDrag(const QPointF& global_pos)
 {
-    if (!group_)
+    // 中央持久分组不可拖出（其节点受区域保护，拖出会破坏布局树）
+    if (!group_ || group_->isCentral())
         return;
 
     if (drag_) {
@@ -193,6 +194,10 @@ void PanelGroupItem::beginPanelDrag(int index, const QPointF& global_pos)
 
     DockPanel* panel = open.at(index);
     group_->setActivePanel(panel);
+
+    // 中央持久面板不可拖出（点击仅激活其标签）
+    if (panel->isCentral())
+        return;
 
     if (drag_) {
         DragSession::self().cancel();

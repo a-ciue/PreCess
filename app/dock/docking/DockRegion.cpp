@@ -90,6 +90,9 @@ LayoutNode* DockRegion::extractGroupForWindow(PanelGroup* group)
     if (!item || item == root_item_)
         return nullptr; // 根节点（仅剩该分组时）不支持，主窗口含中央部件时不会出现
 
+    if (isCentralNode(item))
+        return nullptr; // 中央持久节点不可摘出
+
     BoxNode* parent = item->parent();
     if (!parent)
         return nullptr;
@@ -118,6 +121,9 @@ bool DockRegion::restoreGroupFromWindow(PanelGroup* group)
     LayoutNode* item = group->node();
     if (!placeholder || !item)
         return false;
+
+    if (isCentralNode(item))
+        return false; // 防御：中央持久节点不应有拆出占位
 
     group->setVacancy(nullptr);
     item->setShare(placeholder->rememberedShare());

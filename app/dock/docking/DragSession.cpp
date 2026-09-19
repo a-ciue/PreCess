@@ -71,6 +71,11 @@ void DragSession::beginAt(DragHandle* handle, const QPoint& global_pos)
     if (!handle || !handle->group())
         return;
 
+    // 中央持久分组/面板不可拖拽（其节点受区域保护，拖出会破坏布局树）
+    if (handle->group()->isCentral()
+        || (handle->panel() && handle->panel()->isCentral()))
+        return;
+
     if (phase_ != Phase::Idle)
         cancel();
 
@@ -153,7 +158,7 @@ void DragSession::cancel()
 bool DragSession::detachGroup(PanelGroup* group)
 {
     DockHost* host = DockCatalog::self().host();
-    if (!host || !group || group->vacancy())
+    if (!host || !group || group->vacancy() || group->isCentral())
         return false;
 
     DockRegion* area = host->region();
@@ -239,6 +244,12 @@ void DragSession::startDrag(const QPoint& global_pos)
 
     PanelGroup* source_group = handle_->group();
     DockPanel* dock = handle_->panel();
+    // 防御：中央持久分组/面板不得进入拖拽流程
+    if (source_group->isCentral() || (dock && dock->isCentral())) {
+        cleanup();
+        return;
+    }
+
     const bool single_tab = dock && source_group->shownPanels().size() > 1;
 
     QSize size;
@@ -345,6 +356,9 @@ void DragSession::updateHover(const QPoint& global_pos)
             found_group = group;
             // 内方框优先；未命中则回退到常显的外方框
             found_location = ZoneResolver::zoneInGroup(group_rect, global_pos);
+            // 中央持久分组不提供中心合并落点（对齐 KDDW NonDockable 语义）
+            if (found_location == DropZone::Merge && group->isCentral())
+                found_location = DropZone::None;
             if (found_location == DropZone::None)
                 found_location = ZoneResolver::zoneInRegion(area_rect, global_pos);
             return true;
@@ -389,7 +403,7 @@ void DragSession::applyDrop()
     const bool temp_group = drag_group_ && handle_ && drag_group_ != handle_->group();
 
     if (hovered_zone_ == DropZone::Merge) {
-        if (!hovered_group_ || hovered_group_ == group)
+        if (!hovered_group_ || hovered_group_ == group || hovered_group_->isCentral())
             return;
 
         // 全部面板并入目标分组

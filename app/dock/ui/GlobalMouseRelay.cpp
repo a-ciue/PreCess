@@ -11,6 +11,7 @@
 #include "docking/DragSession.h"
 #include "docking/PanelGroup.h"
 
+#include <QCursor>
 #include <QKeyEvent>
 #include <QMouseEvent>
 
@@ -69,7 +70,8 @@ bool GlobalMouseRelay::eventFilter(QObject* watched, QEvent* event)
 
 bool GlobalMouseRelay::cyclePanels(bool forward)
 {
-    return dock::DockCatalog::self().cyclePanel(forward);
+    // 切换目标由鼠标悬停的分组决定（严格悬停驱动）
+    return dock::DockCatalog::self().cyclePanelAt(QCursor::pos(), forward);
 }
 
 }

@@ -5,7 +5,6 @@
 
 #include "PanelGroup.h"
 
-#include "DockCatalog.h"
 #include "DockPanel.h"
 #include "DockView.h"
 #include "tree/LayoutNode.h"
@@ -48,10 +47,8 @@ void PanelGroup::addPanel(DockPanel* panel)
             Q_EMIT titleChanged(title());
     });
 
-    if (!active_ || !active_->isShown()) {
+    if (!active_ || !active_->isShown())
         active_ = panel;
-        DockCatalog::self().setFocusedPanel(active_);
-    }
 
     Q_EMIT panelsChanged();
     Q_EMIT activePanelChanged(active_);
@@ -95,7 +92,6 @@ void PanelGroup::setActivePanel(DockPanel* panel)
         return;
 
     active_ = panel;
-    DockCatalog::self().setFocusedPanel(active_);
     Q_EMIT activePanelChanged(active_);
     Q_EMIT titleChanged(title());
 }
@@ -186,7 +182,6 @@ void PanelGroup::refreshActivePanel()
     for (DockPanel* panel : std::as_const(panels_)) {
         if (panel->isShown()) {
             active_ = panel;
-            DockCatalog::self().setFocusedPanel(active_);
             break;
         }
     }

@@ -150,29 +150,29 @@ TEST_CASE("DockCore: dock widgets can tab into the central group")
     CHECK(central_group->title() == QStringLiteral("附加面板"));
 }
 
-TEST_CASE("DockCore: keyboard cycling switches tabs then panels")
+TEST_CASE("DockCore: hovering decides the Ctrl+Tab tab target")
 {
     DockFixture f;
     PlacedDocks placed(f);
 
-    // 同组多标签：循环切换当前标签
+    // 悬停分组多标签：循环切换其标签
     dock::DockPanel* extra = f.makeDock(QStringLiteral("extra"), QStringLiteral("附加面板"));
     placed.object_tree->group()->addPanel(extra);
     extra->showPanel();
-    dock::DockCatalog::self().setFocusedPanel(placed.object_tree);
-
     REQUIRE(placed.object_tree->group()->shownPanels().size() == 2);
-    REQUIRE(dock::DockCatalog::self().cyclePanel(true));
+
+    const QPoint object_tree_center = placed.object_tree->group()->node()->geometry().center();
+    REQUIRE(dock::DockCatalog::self().cyclePanelAt(object_tree_center, true));
     CHECK(placed.object_tree->group()->activePanel() == extra);
-    CHECK(dock::DockCatalog::self().focusedPanel() == extra);
-    REQUIRE(dock::DockCatalog::self().cyclePanel(false));
+    REQUIRE(dock::DockCatalog::self().cyclePanelAt(object_tree_center, false));
     CHECK(placed.object_tree->group()->activePanel() == placed.object_tree);
 
-    // 单标签分组：切换到下一个显示面板
-    placed.object_tree->group()->removePanel(extra);
-    REQUIRE(dock::DockCatalog::self().cyclePanel(true));
-    CHECK(dock::DockCatalog::self().focusedPanel() != nullptr);
-    CHECK(dock::DockCatalog::self().focusedPanel() != placed.object_tree);
+    // 悬停单标签分组：不切换
+    const QPoint side_bar_center = placed.side_bar->group()->node()->geometry().center();
+    CHECK_FALSE(dock::DockCatalog::self().cyclePanelAt(side_bar_center, true));
+
+    // 未悬停到任何分组：不切换
+    CHECK_FALSE(dock::DockCatalog::self().cyclePanelAt(QPoint(-10, -10), true));
 }
 
 TEST_CASE("DockCore: dock registry tracks dock widgets and main window")

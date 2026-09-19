@@ -176,6 +176,14 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     CHECK(overlay->isActive());
     CHECK(overlay->zoneCount() == 4);
 
+    // 悬停中央持久分组：中心合并方框被抑制（内 4 - 1 + 外 4 = 8）
+    const QRect central_rect = host->centralGroup()->node()->geometry();
+    drag.updateAt(central_rect.center());
+    REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+    CHECK(drag.hoveredGroup() == host->centralGroup());
+    CHECK(drag.hoveredZone() == dock::DropZone::None);
+    CHECK(overlay->zoneCount() == 8);
+
     // 移到面板上：五个内方框 + 常显的四个外方框
     drag.updateAt(target_center);
     REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
@@ -222,6 +230,14 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     }
     CHECK(dock::DockCatalog::self().windows().isEmpty());
     CHECK(panel_b->group() == panel_a->group());
+
+    // 中央持久面板标签不可拖拽（拖拽入口守卫，不再产生浮窗）
+    dock::ui::PanelGroupItem* central_view = platform->panelGroupItem(host->centralGroup());
+    REQUIRE(central_view != nullptr);
+    central_view->beginPanelDrag(0, QPoint(400, 300));
+    drag.updateAt(QPoint(500, 300));
+    CHECK(drag.phase() == dock::DragSession::Phase::Idle);
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
 
     delete root;
 }

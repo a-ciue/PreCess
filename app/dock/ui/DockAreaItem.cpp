@@ -198,6 +198,10 @@ void DockAreaItem::updateZoneRects()
         const bool is_inner = isInnerZone(indicator.location);
         if (is_inner && !has_group)
             continue;
+        // 中央持久分组不提供中心合并落点（对齐 KDDW NonDockable 语义）
+        if (indicator.location == DropZone::Merge && has_group
+            && drag.hoveredGroup()->isCentral())
+            continue;
 
         const QRect global_rect(area_global.topLeft() + indicator.rect.topLeft(),
             indicator.rect.size());
