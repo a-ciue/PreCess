@@ -1,12 +1,16 @@
 <map id="app/model/QPythonRuntime.h" name="app/model/QPythonRuntime.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="155,5,372,31"/>
-<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,152,233,177"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,38,176,56,147,80,136,98,129,117,123,152,117,151,124,116,131,95,143,77,173,51,207,33"/>
-<area shape="rect" id="Node000003" href="$QModelManager_8h.html" title=" " alt="" coords="157,79,370,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="266,44,266,79,261,79,261,44"/>
-<area shape="rect" id="Node000005" href="$QPythonRuntime_8cpp.html" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="394,79,626,104"/>
-<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="317,32,471,76,469,81,315,37"/>
-<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="229,112,144,154,142,149,227,108"/>
-<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="257,152,368,177"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="281,114,307,150,302,153,277,117"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="401,5,619,31"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,167,233,192"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="388,28,316,34,245,45,185,60,163,70,147,81,132,100,125,124,121,167,116,166,119,123,128,98,143,77,160,65,184,55,244,40,315,29,387,22"/>
+<area shape="rect" id="Node000003" href="$QModelManager_8h.html" title=" " alt="" coords="157,86,370,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="462,37,300,89,298,83,461,32"/>
+<area shape="rect" id="Node000005" href="$QPythonRuntime_8cpp.html" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="394,86,626,111"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="513,44,513,86,507,86,507,44"/>
+<area shape="rect" id="Node000006" href="$QPythonRuntimeQml_8h.html" title=" " alt="" coords="650,79,855,119"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="559,32,695,76,694,81,558,37"/>
+<area shape="rect" id="Node000007" href="$TestQPythonRuntime_8cpp.html" title="QPythonRuntime 主线程投递测试：precess.app.call_later 的延时回调经 QTimer 回到 GUI 线程执行" alt="" coords="879,86,1122,111"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="595,30,930,83,929,89,594,35"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="232,120,142,169,139,164,229,116"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="257,167,368,192"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="280,122,308,165,303,168,276,124"/>
 </map>

@@ -85,6 +85,7 @@ $(function() {
 <p><a class="el" href="classQPythonRuntime.html" title="app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是 python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳">QPythonRuntime</a> 实现：python::Runtime 之上的 QObject/QML 薄壳  
 <a href="#details">更多...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="QPythonRuntime_8h_source.html">QPythonRuntime.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QPythonAppModule_8h_source.html">QPythonAppModule.h</a>&quot;</code><br />
 <code>#include &quot;python/runtime.h&quot;</code><br />
 <code>#include &lt;QCoreApplication&gt;</code><br />
 <code>#include &lt;QThread&gt;</code><br />
@@ -95,29 +96,29 @@ QPythonRuntime.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QPythonRuntime_8cpp__incl.png" border="0" usemap="#aapp_2model_2QPythonRuntime_8cpp" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QPythonRuntime_8cpp" id="aapp_2model_2QPythonRuntime_8cpp">
-<area shape="rect" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="525,5,757,31"/>
-<area shape="rect" href="QPythonRuntime_8h.html" title=" " alt="" coords="181,79,325,104"/>
-<area shape="poly" title=" " alt="" coords="579,33,330,79,329,74,579,28"/>
-<area shape="rect" title=" " alt="" coords="350,79,485,104"/>
-<area shape="poly" title=" " alt="" coords="606,33,467,77,466,72,605,28"/>
-<area shape="rect" title=" " alt="" coords="509,79,643,104"/>
-<area shape="poly" title=" " alt="" coords="633,33,598,70,594,67,629,29"/>
-<area shape="rect" title=" " alt="" coords="668,79,745,104"/>
-<area shape="poly" title=" " alt="" coords="654,29,689,67,685,70,650,33"/>
-<area shape="rect" title=" " alt="" coords="770,79,894,104"/>
-<area shape="poly" title=" " alt="" coords="673,28,789,71,787,76,671,33"/>
-<area shape="rect" title=" " alt="" coords="919,79,1009,104"/>
-<area shape="poly" title=" " alt="" coords="694,28,906,75,905,80,693,33"/>
+<area shape="rect" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="589,5,821,31"/>
+<area shape="rect" href="QPythonRuntime_8h.html" title=" " alt="" coords="124,79,268,104"/>
+<area shape="poly" title=" " alt="" coords="624,33,282,81,281,75,623,28"/>
+<area shape="rect" href="QPythonAppModule_8h.html" title=" " alt="" coords="292,79,455,104"/>
+<area shape="poly" title=" " alt="" coords="653,33,441,78,440,73,651,28"/>
+<area shape="rect" title=" " alt="" coords="479,79,614,104"/>
+<area shape="poly" title=" " alt="" coords="681,33,586,75,584,71,679,28"/>
+<area shape="rect" title=" " alt="" coords="638,79,773,104"/>
+<area shape="poly" title=" " alt="" coords="708,31,708,65,703,65,703,31"/>
+<area shape="rect" title=" " alt="" coords="797,79,875,104"/>
+<area shape="poly" title=" " alt="" coords="728,28,804,70,802,74,725,33"/>
+<area shape="rect" title=" " alt="" coords="899,79,1023,104"/>
+<area shape="poly" title=" " alt="" coords="747,28,908,72,906,78,746,33"/>
+<area shape="rect" title=" " alt="" coords="1048,79,1139,104"/>
+<area shape="poly" title=" " alt="" coords="771,28,1035,76,1034,81,770,33"/>
 <area shape="rect" title=" " alt="" coords="5,152,80,177"/>
-<area shape="poly" title=" " alt="" coords="220,107,90,150,89,145,219,101"/>
+<area shape="poly" title=" " alt="" coords="172,106,81,149,79,144,170,102"/>
 <area shape="rect" title=" " alt="" coords="105,152,175,177"/>
-<area shape="poly" title=" " alt="" coords="237,106,171,147,168,142,234,102"/>
+<area shape="poly" title=" " alt="" coords="189,106,160,143,155,140,185,103"/>
 <area shape="rect" title=" " alt="" coords="200,152,307,177"/>
-<area shape="poly" title=" " alt="" coords="256,104,256,138,251,138,251,104"/>
-<area shape="rect" title=" " alt="" coords="331,152,445,177"/>
-<area shape="poly" title=" " alt="" coords="276,102,355,143,353,148,274,106"/>
-<area shape="rect" title=" " alt="" coords="469,152,547,177"/>
-<area shape="poly" title=" " alt="" coords="295,101,457,146,456,152,294,107"/>
+<area shape="poly" title=" " alt="" coords="208,103,237,139,233,143,203,106"/>
+<area shape="rect" title=" " alt="" coords="331,152,408,177"/>
+<area shape="poly" title=" " alt="" coords="225,102,329,144,327,149,223,106"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -128,7 +129,7 @@ QPythonRuntime.cpp 的引用(Include)关系图:</div>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p><a class="el" href="classQPythonRuntime.html" title="app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是 python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳">QPythonRuntime</a> 实现：python::Runtime 之上的 QObject/QML 薄壳 </p>
-<p>解释器宿主逻辑在 python/（runtime.cpp 真实现 / stub.cpp 桩，precess_runtime 目标恒存在、无需条件编译）；本文件只做线程断言、字符串编解码、日志与信号 桥接。"不可用"是运行时状态：桩实现 available 恒 false、错误信息说明原因。 </p>
+<p>解释器宿主逻辑在 python/（runtime.cpp 真实现 / stub.cpp 桩，precess_runtime 目标恒存在、无需条件编译）；本文件只做线程断言、字符串编解码、日志与信号 桥接。app 侧 Python 函数注册（precess.app 子模块）编入 pythonApp 静态库 （真/桩按可用性二选一）。"不可用"是运行时状态：桩实现 available 恒 false、 错误信息说明原因。 </p>
 </div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">宏定义说明</h2>
 <a id="a21e5fa6d7fb52c2c094d81861a4b92d0" name="a21e5fa6d7fb52c2c094d81861a4b92d0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a21e5fa6d7fb52c2c094d81861a4b92d0">&#9670;&#160;</a></span>PRECESS_PYTHON_HOME</h2>

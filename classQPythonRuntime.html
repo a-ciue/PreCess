@@ -130,7 +130,7 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a607e9d84d42ce8dfcfa44476f63ae0cf" id="r_a607e9d84d42ce8dfcfa44476f63ae0cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a607e9d84d42ce8dfcfa44476f63ae0cf">QPythonRuntime</a> (<a class="el" href="classsession_1_1Session.html">session::Session</a> *session, QObject *parent=nullptr)</td></tr>
 <tr class="memdesc:a607e9d84d42ce8dfcfa44476f63ae0cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">构造接入层，仅组装宿主配置，不启动解释器（懒初始化）  <br /></td></tr>
 <tr class="memitem:a25651d5c639997b3e30ebf7692abf6c5" id="r_a25651d5c639997b3e30ebf7692abf6c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25651d5c639997b3e30ebf7692abf6c5">~QPythonRuntime</a> () override</td></tr>
-<tr class="memdesc:a25651d5c639997b3e30ebf7692abf6c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">析构：终结解释器（经宿主）并丢弃 Python 侧活会话引用  <br /></td></tr>
+<tr class="memdesc:a25651d5c639997b3e30ebf7692abf6c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">析构：先关停 precess.app 定时器表（释放脚本回调），再终结解释器（经宿主）  <br /></td></tr>
 <tr class="memitem:a7981734b1bedf2f85c149e22fcfdd7c2" id="r_a7981734b1bedf2f85c149e22fcfdd7c2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7981734b1bedf2f85c149e22fcfdd7c2">isAvailable</a> () const</td></tr>
 <tr class="memdesc:a7981734b1bedf2f85c149e22fcfdd7c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">解释器是否就绪（初始化成功且 precess 模块可用）  <br /></td></tr>
 <tr class="memitem:a21992eed62d9bc519fa2dfd2202f635e" id="r_a21992eed62d9bc519fa2dfd2202f635e"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21992eed62d9bc519fa2dfd2202f635e">lastError</a> () const</td></tr>
@@ -138,7 +138,7 @@ Public 成员函数</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 属性</h2></td></tr>
-<tr class="memitem:a0e10b4e2c77d4dd1ca4870f43c938c82" id="r_a0e10b4e2c77d4dd1ca4870f43c938c82"><td class="memItemLeft" align="right" valign="top">QML_ELEMENTbool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e10b4e2c77d4dd1ca4870f43c938c82">available</a></td></tr>
+<tr class="memitem:a246cfae76ff1fce41c943dac1e3b4378" id="r_a246cfae76ff1fce41c943dac1e3b4378"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a246cfae76ff1fce41c943dac1e3b4378">available</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
@@ -150,12 +150,15 @@ Private 属性</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是 python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳 </p>
-<p>职责限于：QML 属性/信号桥接（available/availableChanged）、GUI 线程断言、 字符串编解码（QString ↔ UTF-8）与日志。解释器生命周期、precess 模块导入、 活会话注入（precess.current）、控制台执行与输出捕获均在 python::Runtime。</p>
+<p>编入 pythonApp 静态库目标；QML 类型（原 QML_ELEMENT/UNCREATABLE 语义）经 modelQml 的 <a class="el" href="QPythonRuntimeQml_8h.html">QPythonRuntimeQml.h</a> 外来包装注册，类本身不携带 QML 宏。</p>
+<p>职责限于：QML 属性/信号桥接（available/availableChanged）、GUI 线程断言、 字符串编解码（QString ↔ UTF-8）与日志。解释器就绪后经 <a class="el" href="namespacepython_1_1app.html" title="app 侧 Python 子模块注册（precess.app）：真/桩编入 pythonApp 静态库目标（恒存在，按可用性二选一，判断只在目标定义处），消费方（modelQml、 测试）直接链接（业务...">python::app</a> （QPythonAppModule，app 侧 pybind11 注册逻辑）创建 app 专属子模块 precess.app 并注册任意签名本机函数——app 侧 Python 函数统一收在该模块，定时策略与 生命周期亦由其管理。解释器生命周期、precess 模块导入、活会话注入 （precess.current）、控制台执行与输出捕获均在 python::Runtime。</p>
 <p>线程约定：Python 与 GUI 线程绑定，所有入口须在 GUI 线程调用（断言把关）， 渲染线程不得触碰 Python。</p>
-<p>本类无编译期降级分支：precess_runtime 目标恒存在，Python 嵌入不可用 （缺 Python3/pybind11、PRECESS_BUILD_PYTHON=OFF 或 wasm）时宿主为桩实现， available 恒 false、lastError() 说明原因。</p>
+<p>本类无编译期降级分支：precess_runtime 目标恒存在，Python 嵌入不可用 （缺 Python3/pybind11、PRECESS_BUILD_PYTHON=OFF 或 wasm）时宿主为桩实现， available 恒 false、lastError() 说明原因，模块注册亦为桩空操作。</p>
 <dl class="section see"><dt>参见</dt><dd><a class="el" href="classQModelManager.html#ab755d5b8a295b86a915aa7be045de182">QModelManager::pythonRuntime</a> </dd>
 <dd>
-python::Runtime </dd></dl>
+python::Runtime </dd>
+<dd>
+<a class="el" href="namespacepython_1_1app.html#abcc35db709fd6ea16accad9e06a117be" title="创建 precess.app 子模块并注册 app 侧函数（须在解释器就绪后、GUI 主线程调用）">python::app::registerAppModule</a> </dd></dl>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a607e9d84d42ce8dfcfa44476f63ae0cf" name="a607e9d84d42ce8dfcfa44476f63ae0cf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a607e9d84d42ce8dfcfa44476f63ae0cf">&#9670;&#160;</a></span>QPythonRuntime()</h2>
@@ -213,12 +216,12 @@ python::Runtime </dd></dl>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel default">default</span></span>  </td>
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>析构：终结解释器（经宿主）并丢弃 Python 侧活会话引用 </p>
+<p>析构：先关停 precess.app 定时器表（释放脚本回调），再终结解释器（经宿主） </p>
 
 </div>
 </div>
@@ -425,8 +428,8 @@ python::Runtime </dd></dl>
 </div>
 </div>
 <a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
-<a id="a0e10b4e2c77d4dd1ca4870f43c938c82" name="a0e10b4e2c77d4dd1ca4870f43c938c82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e10b4e2c77d4dd1ca4870f43c938c82">&#9670;&#160;</a></span>available</h2>
+<a id="a246cfae76ff1fce41c943dac1e3b4378" name="a246cfae76ff1fce41c943dac1e3b4378"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a246cfae76ff1fce41c943dac1e3b4378">&#9670;&#160;</a></span>available</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -435,7 +438,7 @@ python::Runtime </dd></dl>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">QML_ELEMENTbool QPythonRuntime::available</td>
+          <td class="memname">bool QPythonRuntime::available</td>
         </tr>
       </table>
   </td>

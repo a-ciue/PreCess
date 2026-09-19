@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QPythonAppModule.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">QPythonAppModule.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>app 侧 Python 子模块注册（precess.app）：pybind11 任意签名 def + QTimer 定时器表  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="QPythonAppModule_8h_source.html">QPythonAppModule.h</a>&quot;</code><br />
+<code>#include &lt;QObject&gt;</code><br />
+<code>#include &lt;QThread&gt;</code><br />
+<code>#include &lt;QTimer&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+<code>#include &lt;pybind11/gil.h&gt;</code><br />
+<code>#include &lt;pybind11/pybind11.h&gt;</code><br />
+<code>#include &lt;climits&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QPythonAppModule.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QPythonAppModule_8cpp__incl.png" border="0" usemap="#aapp_2model_2QPythonAppModule_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2QPythonAppModule_8cpp" id="aapp_2model_2QPythonAppModule_8cpp">
+<area shape="rect" title="app 侧 Python 子模块注册（precess.app）：pybind11 任意签名 def + QTimer 定时器表" alt="" coords="797,5,1048,31"/>
+<area shape="rect" href="QPythonAppModule_8h.html" title=" " alt="" coords="5,79,168,104"/>
+<area shape="poly" title=" " alt="" coords="797,30,519,51,182,81,181,76,519,46,797,25"/>
+<area shape="rect" title=" " alt="" coords="192,79,267,104"/>
+<area shape="poly" title=" " alt="" coords="797,29,561,47,422,62,281,81,280,76,422,56,561,42,797,23"/>
+<area shape="rect" title=" " alt="" coords="291,79,368,104"/>
+<area shape="poly" title=" " alt="" coords="797,32,606,51,382,81,382,76,605,45,797,26"/>
+<area shape="rect" title=" " alt="" coords="393,79,463,104"/>
+<area shape="poly" title=" " alt="" coords="812,33,657,53,477,81,476,76,656,47,811,28"/>
+<area shape="rect" title=" " alt="" coords="487,79,611,104"/>
+<area shape="poly" title=" " alt="" coords="863,33,623,79,622,73,862,28"/>
+<area shape="rect" title=" " alt="" coords="636,79,751,104"/>
+<area shape="poly" title=" " alt="" coords="887,33,745,77,743,72,885,28"/>
+<area shape="rect" title=" " alt="" coords="775,79,934,104"/>
+<area shape="poly" title=" " alt="" coords="913,33,877,70,873,67,910,29"/>
+<area shape="rect" title=" " alt="" coords="959,79,1025,104"/>
+<area shape="poly" title=" " alt="" coords="936,29,973,67,969,71,932,33"/>
+<area shape="rect" title=" " alt="" coords="1049,79,1116,104"/>
+<area shape="poly" title=" " alt="" coords="949,28,1045,71,1043,75,947,33"/>
+<area shape="rect" title=" " alt="" coords="1140,79,1191,104"/>
+<area shape="poly" title=" " alt="" coords="964,28,1127,76,1126,81,962,33"/>
+<area shape="rect" title=" " alt="" coords="1215,79,1292,104"/>
+<area shape="poly" title=" " alt="" coords="978,28,1202,76,1201,81,977,33"/>
+<area shape="rect" title=" " alt="" coords="1317,79,1403,104"/>
+<area shape="poly" title=" " alt="" coords="1003,28,1304,76,1303,81,1002,33"/>
+<area shape="rect" title=" " alt="" coords="1428,79,1487,104"/>
+<area shape="poly" title=" " alt="" coords="1048,27,1219,45,1415,76,1414,81,1218,50,1048,32"/>
+<area shape="rect" title=" " alt="" coords="1511,79,1571,104"/>
+<area shape="poly" title=" " alt="" coords="1048,24,1255,42,1376,57,1498,76,1498,82,1375,62,1255,47,1048,29"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:python" id="r_python"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepython.html">python</a></td></tr>
+<tr class="memitem:python_3A_3Aapp" id="r_python_3A_3Aapp"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepython_1_1app.html">python::app</a></td></tr>
+<tr class="memdesc:namespacepython_1_1app"><td class="mdescLeft">&#160;</td><td class="mdescRight">app 侧 Python 子模块注册（precess.app）：真/桩编入 pythonApp 静态库目标（恒存在，按可用性二选一，判断只在目标定义处），消费方（modelQml、 测试）直接链接（业务代码无 #ifdef，"不可用"是运行时状态：桩实现注册无效果） <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:abcc35db709fd6ea16accad9e06a117be" id="r_abcc35db709fd6ea16accad9e06a117be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepython_1_1app.html#abcc35db709fd6ea16accad9e06a117be">python::app::registerAppModule</a> (QObject *owner)</td></tr>
+<tr class="memdesc:abcc35db709fd6ea16accad9e06a117be"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建 precess.app 子模块并注册 app 侧函数（须在解释器就绪后、GUI 主线程调用）  <br /></td></tr>
+<tr class="memitem:ab5199c9bbfa49fa95038c89d1056dcdc" id="r_ab5199c9bbfa49fa95038c89d1056dcdc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepython_1_1app.html#ab5199c9bbfa49fa95038c89d1056dcdc">python::app::shutdownAppModule</a> ()</td></tr>
+<tr class="memdesc:ab5199c9bbfa49fa95038c89d1056dcdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">关停定时器表：停掉全部定时器并释放脚本回调，须在解释器终结前调用  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>app 侧 Python 子模块注册（precess.app）：pybind11 任意签名 def + QTimer 定时器表 </p>
+<p>注册逻辑全部在 app（真实现编入本文件，桩模式编入 QPythonAppModule_stub.cpp， 由 CMake 按 precess_bindings 目标存在性二选一）：经 PyImport_AddModule 创建 app 专属可 import 子模块 precess.app，本机函数以任意 C++ 签名经 pybind11 类型转换器暴露，脚本回调以 py::function 登记入定时器表。定时策略（QTimer 单发定时器表）、回调唤起与生命周期全由本文件管理：回调约定在 GUI 主线程 执行（解释器 GIL 归初始化线程，acquire 为无操作配对），异常全量格式化记 日志消化；关停须先于解释器终结（py::object 先释放）。</p>
+<p>Qt 与 pybind11 头同编译单元：Qt 的 slots/signals/emit 关键字宏会破坏 CPython 的 PyType_Spec::slots 等声明，include 前取消、后还原（AGENTS.md §10）。 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
