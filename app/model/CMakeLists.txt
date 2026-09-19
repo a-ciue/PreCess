@@ -50,7 +50,6 @@ qt_add_library(pythonApp STATIC
     QPythonRuntime.h
 )
 if(TARGET precess_bindings)
-    find_package(pybind11 CONFIG QUIET) # python/ 已发现过，此处取回导入目标
     target_sources(pythonApp PRIVATE QPythonAppModule.cpp)
     target_link_libraries(pythonApp PRIVATE pybind11::embed)
 else()
