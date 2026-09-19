@@ -114,6 +114,7 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a966d8b0ce74edd31cac53a61cb32fb47" id="r_a966d8b0ce74edd31cac53a61cb32fb47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a966d8b0ce74edd31cac53a61cb32fb47">disableSelectionModes</a> (IVtkTools_ShapePicker *picker) const</td></tr>
 <tr class="memitem:a2edb7246a4b585b5635a3c872eeb4818" id="r_a2edb7246a4b585b5635a3c872eeb4818"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2edb7246a4b585b5635a3c872eeb4818">enableSelectionMode</a> (IVtkTools_ShapePicker *picker, <a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> mode) const</td></tr>
 <tr class="memitem:a90f6b6edfcbc1bae86fc960740ad6815" id="r_a90f6b6edfcbc1bae86fc960740ad6815"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90f6b6edfcbc1bae86fc960740ad6815">resolvePickedSubshape</a> (IVtkTools_ShapePicker *picker, IVtk_IdType shapeId, <a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> mode, IVtk_IdType &amp;out_sub_id) const</td></tr>
+<tr class="memitem:a12f033e70030cd0fb88bf8fea064ceb4" id="r_a12f033e70030cd0fb88bf8fea064ceb4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; IVtk_IdType, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12f033e70030cd0fb88bf8fea064ceb4">resolvePickedSubshapes</a> (IVtkTools_ShapePicker *picker, IVtk_IdType shapeId, <a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> mode) const</td></tr>
 <tr class="memitem:a000cce0569d797a6c6c84cd884151579" id="r_a000cce0569d797a6c6c84cd884151579"><td class="memItemLeft" align="right" valign="top">std::optional&lt; std::array&lt; double, 3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a000cce0569d797a6c6c84cd884151579">vertexPoint</a> (IVtk_IdType sub_id) const</td></tr>
 <tr class="memdesc:a000cce0569d797a6c6c84cd884151579"><td class="mdescLeft">&#160;</td><td class="mdescRight">取几何顶点子形状的世界坐标  <br /></td></tr>
 <tr class="memitem:a369060c025e32dc66d8ebd43746a575d" id="r_a369060c025e32dc66d8ebd43746a575d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a369060c025e32dc66d8ebd43746a575d">resolvePickedSolid</a> (IVtkTools_ShapePicker *picker, IVtk_IdType shapeId, <a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a> &amp;out_solid_id, std::vector&lt; IVtk_IdType &gt; &amp;out_face_sub_ids) const</td></tr>
@@ -311,6 +312,32 @@ Private 属性</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">IVtk_IdType &amp;</td>          <td class="paramname"><span class="paramname"><em>out_sub_id</em></span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a12f033e70030cd0fb88bf8fea064ceb4" name="a12f033e70030cd0fb88bf8fea064ceb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12f033e70030cd0fb88bf8fea064ceb4">&#9670;&#160;</a></span>resolvePickedSubshapes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::pair&lt; IVtk_IdType, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &gt; GeometryActorSelectOp::resolvePickedSubshapes </td>
+          <td>(</td>
+          <td class="paramtype">IVtkTools_ShapePicker *</td>          <td class="paramname"><span class="paramname"><em>picker</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">IVtk_IdType</td>          <td class="paramname"><span class="paramname"><em>shapeId</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a></td>          <td class="paramname"><span class="paramname"><em>mode</em></span>&#160;) const</td>
         </tr>
       </table>
 </div><div class="memdoc">

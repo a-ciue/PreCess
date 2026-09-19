@@ -134,6 +134,8 @@ GeometrySelectManager 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a73666339e686d57050f9fd01c86cb16f" id="r_a73666339e686d57050f9fd01c86cb16f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73666339e686d57050f9fd01c86cb16f">GeometrySelectManager</a> (vtkRenderer &amp;renderer, vtkActor &amp;highlight_actor, <a class="el" href="classGeometryActorManagerSelectOp.html">GeometryActorManagerSelectOp</a> &amp;op)</td></tr>
 <tr class="memitem:a0dbd1d51d886b917ee31059ffd1b85b7" id="r_a0dbd1d51d886b917ee31059ffd1b85b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0dbd1d51d886b917ee31059ffd1b85b7">select</a> (double posx, double posy)</td></tr>
+<tr class="memitem:afafd1c893bd3a5f1e4ba5c27cdf9e10f" id="r_afafd1c893bd3a5f1e4ba5c27cdf9e10f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afafd1c893bd3a5f1e4ba5c27cdf9e10f">selectArea</a> (int xmin, int ymin, int xmax, int ymax)</td></tr>
+<tr class="memdesc:afafd1c893bd3a5f1e4ba5c27cdf9e10f"><td class="mdescLeft">&#160;</td><td class="mdescRight">几何框选：矩形区域内的几何元素（面/边/顶点/体）  <br /></td></tr>
 <tr class="memitem:accd6412ae019d8e33710f21e12e0a5a4" id="r_accd6412ae019d8e33710f21e12e0a5a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accd6412ae019d8e33710f21e12e0a5a4">setSelectMode</a> (<a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> select_mode)</td></tr>
 <tr class="memitem:aa6fb352ba1bf242a7de34ee69232f3c9" id="r_aa6fb352ba1bf242a7de34ee69232f3c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6fb352ba1bf242a7de34ee69232f3c9">clearSelection</a> ()</td></tr>
 <tr class="memitem:ac72461b0c47ec15d7a4c0efa56ea13e5" id="r_ac72461b0c47ec15d7a4c0efa56ea13e5"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac72461b0c47ec15d7a4c0efa56ea13e5">getSelection</a> ()</td></tr>
@@ -289,6 +291,40 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="afafd1c893bd3a5f1e4ba5c27cdf9e10f" name="afafd1c893bd3a5f1e4ba5c27cdf9e10f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afafd1c893bd3a5f1e4ba5c27cdf9e10f">&#9670;&#160;</a></span>selectArea()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometrySelectManager::selectArea </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>xmax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>几何框选：矩形区域内的几何元素（面/边/顶点/体） </p>
+<dl class="section note"><dt>注解</dt><dd>与网格框选一致，框选恒为替换——先清空，命中即本次新选择 </dd></dl>
 
 </div>
 </div>
