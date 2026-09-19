@@ -39,6 +39,12 @@ std::optional<GeometryActorSelectOp> GeometryActorManagerSelectOp::getSelectOp(I
     return GeometryActorSelectOp(actor);
 }
 
+std::vector<Index> GeometryActorManagerSelectOp::getAllComponentIds() const
+{
+    // 由 registerProps/unregisterProps 维护的已注册组件集合
+    return { registered_component_ids_.begin(), registered_component_ids_.end() };
+}
+
 std::optional<Index> GeometryActorManagerSelectOp::getComponentIdByShapeId(IVtk_IdType shape_id) const
 {
     auto it = shape_id_to_component_.find(shape_id);

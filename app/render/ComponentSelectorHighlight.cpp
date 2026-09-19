@@ -15,6 +15,11 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
+#include "MeshAreaPick.h"
+
+#include <set>
+#include <vtkDataObject.h>
+
 namespace {
 
 std::vector<Index>::const_iterator _find_component(Index component_id, const std::vector<Index>& selections)
@@ -103,6 +108,50 @@ void ComponentSelectorHighlight::select(double posx, double posy)
         selected_components_.erase(it);
     else
         selected_components_.push_back(*component_id);
+
+    updateHighlight();
+}
+
+void ComponentSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax)
+{
+    // 框选恒为替换：先清空，再选中本次框内的全部组件
+    clear();
+
+    std::vector<vtkActor*> targets;
+    targets.reserve(64);
+    for (Index comp_id : mesh_op_.getAllComponentIds()) {
+        auto select_op = mesh_op_.getSelectOp(comp_id);
+        if (!select_op || !select_op->isVisible())
+            continue;
+        for (vtkProp* p : { &select_op->getSolidActor(), &select_op->getFaceActor(), &select_op->getEdgeActor() })
+            if (auto* actor = vtkActor::SafeDownCast(p))
+                targets.push_back(actor);
+    }
+    for (Index comp_id : geom_op_.getAllComponentIds()) {
+        auto select_op = geom_op_.getSelectOp(comp_id);
+        if (!select_op || !select_op->isVisible())
+            continue;
+        if (auto* actor = vtkActor::SafeDownCast(&select_op->getPolyActor()))
+            targets.push_back(actor);
+    }
+
+    if (targets.empty())
+        return;
+
+    auto hits = area_pick::executeAreaPicks(renderer_, targets,
+        xmin, ymin, xmax, ymax, vtkDataObject::FIELD_ASSOCIATION_CELLS);
+
+    std::set<Index> hit_components;
+    for (const auto& [prop, ids] : hits) {
+        auto component_id = mesh_op_.getComponentId(prop);
+        if (!component_id)
+            component_id = geom_op_.getComponentId(prop);
+        if (component_id)
+            hit_components.insert(*component_id);
+    }
+
+    for (Index component_id : hit_components)
+        selected_components_.push_back(component_id);
 
     updateHighlight();
 }

@@ -27,6 +27,7 @@ public:
         GeometryActorManagerSelectOp& geom_op);
 
     void select(double posx, double posy);
+    void selectArea(int xmin, int ymin, int xmax, int ymax);
     void clear();
     void refreshHighlight();
     SelectionVtk get() const;

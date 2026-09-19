@@ -38,7 +38,10 @@ void SelectManager::select(double posx, double posy)
 
 void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
 {
-    // 组件框选后续再补；当前支持网格与几何
+    if (select_mode_ == SelectMode::Component) {
+        component_selector_->selectArea(xmin, ymin, xmax, ymax);
+        return;
+    }
     if (is_mesh_mode(select_mode_))
         mesh_->selectArea(xmin, ymin, xmax, ymax);
     else if (is_geom_mode(select_mode_))

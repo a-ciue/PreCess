@@ -26,8 +26,7 @@ public:
     ~SelectManager();
     void select(double posx, double posy);
     /**
-     * @brief 矩形框选入口（Ctrl+左键拖拽），目前仅转发给网格选择管理器；
-     *        几何/组件框选后续再补
+     * @brief 矩形框选入口（Ctrl+左键拖拽）：按当前选择模式转发给网格、几何或组件选择管理器。
      */
     void selectArea(int xmin, int ymin, int xmax, int ymax);
     void setSelectMode(const std::string& select_mode);
