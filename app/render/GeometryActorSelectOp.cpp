@@ -182,6 +182,39 @@ std::optional<Index> GeometryActorSelectOp::resolvePickedSubshape(IVtkTools_Shap
     return mapSubshapeToGeomId(geometry_actor_->occ_shape_, *geomIndex, wantType, out_sub_id, elemType);
 }
 
+std::vector<std::pair<IVtk_IdType, Index>> GeometryActorSelectOp::resolvePickedSubshapes(
+    IVtkTools_ShapePicker* picker, IVtk_IdType shapeId, SelectMode mode) const
+{
+    std::vector<std::pair<IVtk_IdType, Index>> out;
+    if (!picker)
+        return out;
+
+    TopAbs_ShapeEnum wantType;
+    if (mode == SelectMode::GeometryFace)
+        wantType = TopAbs_FACE;
+    else if (mode == SelectMode::GeometryEdge)
+        wantType = TopAbs_EDGE;
+    else if (mode == SelectMode::GeometryVertex)
+        wantType = TopAbs_VERTEX;
+    else
+        return out;
+
+    const GeometrySubshapeIndex* geomIndex = geometry_actor_->geometry_index_;
+    if (!geomIndex)
+        return out;
+
+    const NCollection_List<IVtk_IdType> subs = picker->GetPickedSubShapesIds(shapeId, true);
+    out.reserve(static_cast<size_t>(subs.Extent()));
+    for (const IVtk_IdType subId : subs) {
+        ElementEnum::Type elemType = ElementEnum::None;
+        if (auto geomId = mapSubshapeToGeomId(
+                geometry_actor_->occ_shape_, *geomIndex, wantType, subId, elemType)) {
+            out.emplace_back(subId, *geomId);
+        }
+    }
+    return out;
+}
+
 std::optional<std::array<double, 3>> GeometryActorSelectOp::vertexPoint(IVtk_IdType sub_id) const
 {
     const OccShapeHandle& occ = geometry_actor_->occ_shape_;
