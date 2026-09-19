@@ -84,6 +84,44 @@ if(NOT freetype_FOUND)
     endif()
 endif()
 
+# 可选内嵌 Python 运行环境依赖发现（python/ 据此定义目标，依赖缺失时自动降级
+# 桩实现，"不可用"是运行时状态）。
+option(PRECESS_BUILD_PYTHON
+    "构建 precess 真实 Python 绑定与内嵌解释器（OFF 或依赖缺失时 precess_runtime 自动降级为桩实现）" ON)
+set(PRECESS_PYTHON_PATH "" CACHE PATH
+    "构建所用 Python 解释器目录（可选；留空用系统 PATH 发现）")
+if(PRECESS_BUILD_PYTHON AND NOT EMSCRIPTEN)
+    # 解释器选择：默认由 FindPython 经系统 PATH 发现；经可选缓存变量指定时转交
+    # Python3_ROOT_DIR（平台命名差异由 FindPython 处理）
+    if(PRECESS_PYTHON_PATH)
+        set(Python3_ROOT_DIR "${PRECESS_PYTHON_PATH}" CACHE PATH
+            "FindPython 解释器发现根目录（经 PRECESS_PYTHON_PATH 指定）" FORCE)
+        unset(Python3_EXECUTABLE CACHE)
+    endif()
+    # Development.Embed（内嵌宿主需要）：须在 find_package(pybind11) 之前一并
+    # 请求——pybind11::embed 仅在 Python3::Python 目标已存在时才把 Python 链接
+    # 接口挂入自身，时序颠倒会导致宿主消费者缺库
+    find_package(Python3 COMPONENTS Interpreter Development.Module Development.Embed QUIET)
+    if(Python3_FOUND)
+        # pybind11 查找顺序：依赖包提供（CMAKE_PREFIX_PATH）→ 本机 pip 安装包
+        # （python -m pybind11 --cmakedir 定位）
+        find_package(pybind11 CONFIG QUIET)
+        if(NOT pybind11_FOUND)
+            execute_process(
+                COMMAND "${Python3_EXECUTABLE}" -m pybind11 --cmakedir
+                OUTPUT_VARIABLE _pybind11_dir
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_QUIET
+                RESULT_VARIABLE _pybind11_result
+            )
+            # pybind11 3.1 起 --cmakedir 对含空格的路径会输出带双引号的路径，
+            # 去引号后再交给 find_package，否则 HINTS 解析失败误判未找到
+            string(REPLACE "\"" "" _pybind11_dir "${_pybind11_dir}")
+            find_package(pybind11 CONFIG QUIET HINTS "${_pybind11_dir}")
+        endif()
+    endif()
+endif()
+
 find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick QuickControls2 Svg)
 message(STATUS "QT_VERSION: Qt${VTK_QT_VERSION}")
 qt_policy(SET QTP0001 NEW)
