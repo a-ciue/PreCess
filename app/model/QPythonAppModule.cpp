@@ -1,14 +1,14 @@
 /**
  * @file QPythonAppModule.cpp
- * @brief app 侧 Python 模块注册（precess_app）：pybind11 任意签名 def + QTimer 定时器表
+ * @brief app 侧 Python 子模块注册（precess.app）：pybind11 任意签名 def + QTimer 定时器表
  *
  * 注册逻辑全部在 app（真实现编入本文件，桩模式编入 QPythonAppModule_stub.cpp，
  * 由 CMake 按 precess_bindings 目标存在性二选一）：经 PyImport_AddModule 创建
- * app 专属可 import 模块 precess_app，本机函数以任意 C++ 签名经 pybind11 类型
- * 转换器暴露，脚本回调以 py::function 登记入定时器表。定时策略（QTimer 单发
- * 定时器表）、回调唤起与生命周期全由本文件管理：回调约定在 GUI 主线程执行
- * （解释器 GIL 归初始化线程，acquire 为无操作配对），异常全量格式化记日志
- * 消化；关停须先于解释器终结（py::object 先释放）。
+ * app 专属可 import 子模块 precess.app，本机函数以任意 C++ 签名经 pybind11
+ * 类型转换器暴露，脚本回调以 py::function 登记入定时器表。定时策略（QTimer
+ * 单发定时器表）、回调唤起与生命周期全由本文件管理：回调约定在 GUI 主线程
+ * 执行（解释器 GIL 归初始化线程，acquire 为无操作配对），异常全量格式化记
+ * 日志消化；关停须先于解释器终结（py::object 先释放）。
  *
  * Qt 与 pybind11 头同编译单元：Qt 的 slots/signals/emit 关键字宏会破坏 CPython
  * 的 PyType_Spec::slots 等声明，include 前取消、后还原（AGENTS.md §10）。
@@ -82,7 +82,7 @@ namespace {
         }
 
         /**
-         * @brief 登记脚本回调并安排单发定时器（precess_app.call_later 实现），返回调用 id
+         * @brief 登记脚本回调并安排单发定时器（precess.app.call_later 实现），返回调用 id
          *
          * 仅解释器线程（GUI 主线程）调用：脚本经 pybind 调入时 GIL 已被本线程持有
          */
@@ -101,7 +101,7 @@ namespace {
         }
 
         /**
-         * @brief 取消未触发回调（precess_app.cancel_call 实现），返回是否成功移除
+         * @brief 取消未触发回调（precess.app.cancel_call 实现），返回是否成功移除
          */
         bool cancel(long long id)
         {
@@ -131,7 +131,7 @@ namespace {
             try {
                 callback();
             } catch (const py::error_already_set& e) {
-                spdlog::error("precess_app 延时回调执行失败:\n{}", formatException(e));
+                spdlog::error("precess.app 延时回调执行失败:\n{}", formatException(e));
             }
         }
 
@@ -150,14 +150,22 @@ void registerAppModule(QObject* owner)
     timeout_table = std::make_unique<TimeoutTable>(owner);
     try {
         py::gil_scoped_acquire gil;
-        // PyImport_AddModule 创建模块并登记 sys.modules（import 经 sys.modules
-        // 命中）；返回借用引用必须 borrow。勿用 create_extension_module——那是
-        // 静态编译期扩展模块专用（走扩展缓存，运行期创建会在 import 时段错误）。
-        // 同进程重建运行时时会取回同名旧模块并覆盖注册
-        py::module_ module = py::reinterpret_borrow<py::module_>(PyImport_AddModule("precess_app"));
+        // precess.app 为 precess 的子模块。precess 是单 pyd 扩展模块、无
+        // __path__，导入器发现不了其下子模块：经 PyImport_AddModule 以完整名
+        // 创建并登记 sys.modules（import precess.app 走"先导父模块、再查
+        // sys.modules"的导入路径命中），再挂为父模块属性，from precess import
+        // app 与属性访问同指一个对象；__package__ 指向父模块补齐子模块语义。
+        // PyImport_AddModule 返回借用引用必须 borrow；勿用
+        // create_extension_module——那是静态编译期扩展模块专用（走扩展缓存，
+        // 运行期创建会在 import 时段错误）。同进程重建运行时时会取回同名旧
+        // 模块并覆盖注册
+        py::module_ precess = py::module_::import("precess");
+        py::module_ module = py::reinterpret_borrow<py::module_>(PyImport_AddModule("precess.app"));
+        module.attr("__package__") = "precess";
         module.attr("__doc__")
-            = "PreCess app 侧功能模块（GUI 宿主经 pybind11 注册，app 侧 Python 函数"
-              "统一收在本模块，后续新增函数对模块句柄继续 def 即可）";
+            = "PreCess app 侧功能子模块（GUI 宿主经 pybind11 注册，app 侧 Python 函数"
+              "统一收在本子模块，后续新增函数对模块句柄继续 def 即可）";
+        precess.attr("app") = module;
         // —— 延时回调：定时策略在 app，回调以 py::function 登记入定时器表 ——
         module.def("call_later", [](long long delay_ms, py::function callback) { return timeout_table->schedule(delay_ms, std::move(callback)); }, py::arg("delay_ms"), py::arg("callback"), "延时注册：登记 callback（无参回调），由 GUI 主线程延迟 delay_ms 毫秒后调用，"
                                                                                                                                                                                              "返回调用 id；回调里的异常经日志报告，不会中断宿主");
@@ -171,7 +179,7 @@ void registerAppModule(QObject* owner)
                     result += text;
                 return result; }, py::arg("text"), py::arg("times") = 1, "任意签名示例：把 text 重复 times 次返回");
     } catch (const py::error_already_set& e) {
-        spdlog::error("python_app: 注册 precess_app 模块失败: {}", e.what());
+        spdlog::error("python_app: 注册 precess.app 子模块失败: {}", e.what());
     }
 }
 

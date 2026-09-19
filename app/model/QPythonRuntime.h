@@ -23,7 +23,7 @@ class Runtime;
  *
  * 职责限于：QML 属性/信号桥接（available/availableChanged）、GUI 线程断言、
  * 字符串编解码（QString ↔ UTF-8）与日志。解释器就绪后经 python_app
- * （QPythonAppModule，app 侧 pybind11 注册逻辑）创建 app 专属模块 precess_app
+ * （QPythonAppModule，app 侧 pybind11 注册逻辑）创建 app 专属子模块 precess.app
  * 并注册任意签名本机函数——app 侧 Python 函数统一收在该模块，定时策略与
  * 生命周期亦由其管理。解释器生命周期、precess 模块导入、活会话注入
  * （precess.current）、控制台执行与输出捕获均在 python::Runtime。
@@ -50,7 +50,7 @@ public:
      */
     explicit QPythonRuntime(session::Session* session, QObject* parent = nullptr);
     /**
-     * @brief 析构：先关停 precess_app 定时器表（释放脚本回调），再终结解释器（经宿主）
+     * @brief 析构：先关停 precess.app 定时器表（释放脚本回调），再终结解释器（经宿主）
      */
     ~QPythonRuntime() override;
 

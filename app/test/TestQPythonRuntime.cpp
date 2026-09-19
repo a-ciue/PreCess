@@ -1,6 +1,6 @@
 /**
  * @file TestQPythonRuntime.cpp
- * @brief QPythonRuntime 主线程投递测试：precess_app.call_later 的延时回调经
+ * @brief QPythonRuntime 主线程投递测试：precess.app.call_later 的延时回调经
  *        QTimer 回到 GUI 线程执行
  *
  * 单进程只构造一个 QPythonRuntime（内嵌解释器 Initialize/Finalize 循环重入
@@ -42,8 +42,17 @@ TEST_CASE("QPythonRuntime dispatches deferred callbacks on the GUI thread")
         return;
     }
 
-    QVariantMap result = runtime.execute("import precess_app");
+    QVariantMap result = runtime.execute("import precess.app");
     REQUIRE(result["ok"].toBool());
+
+    // 子模块语义：属性访问与 from-import 同指一个模块对象
+    result = runtime.execute("import precess");
+    REQUIRE(result["ok"].toBool());
+    result = runtime.execute("from precess import app as app_mod");
+    REQUIRE(result["ok"].toBool());
+    result = runtime.execute("app_mod is precess.app");
+    REQUIRE(result["ok"].toBool());
+    CHECK(result["output"].toString().contains("True"));
 
     // 回调记录执行线程是否解释器主线程（初始化线程 ≡ GUI 线程）并置位标志
     result = runtime.execute("import threading");
@@ -59,8 +68,8 @@ TEST_CASE("QPythonRuntime dispatches deferred callbacks on the GUI thread")
     result = runtime.execute("on_main = False");
     REQUIRE(result["ok"].toBool());
 
-    // 1ms 延时投递：app 注册的 precess_app.call_later 经 QTimer 排入事件循环
-    result = runtime.execute("precess_app.call_later(1, _cb)");
+    // 1ms 延时投递：app 注册的 precess.app.call_later 经 QTimer 排入事件循环
+    result = runtime.execute("precess.app.call_later(1, _cb)");
     INFO(result["error"].toString().toStdString());
     REQUIRE(result["ok"].toBool());
 
@@ -80,16 +89,16 @@ TEST_CASE("QPythonRuntime dispatches deferred callbacks on the GUI thread")
     CHECK(thread_probe["output"].toString().contains("True"));
 
     // 任意签名通路：多参 + 默认值 + std::string 返回（pybind11 类型转换器）
-    result = runtime.execute("precess_app.echo('ab', 3)");
+    result = runtime.execute("precess.app.echo('ab', 3)");
     INFO(result["error"].toString().toStdString());
     REQUIRE(result["ok"].toBool());
     CHECK(result["output"].toString().contains("ababab"));
-    result = runtime.execute("precess_app.echo('x')");
+    result = runtime.execute("precess.app.echo('x')");
     REQUIRE(result["ok"].toBool());
     CHECK(result["output"].toString().contains("x"));
 
     // 回调异常在包内消化（记日志），事件循环与解释器不受影响
-    result = runtime.execute("precess_app.call_later(0, lambda: 1 / 0)");
+    result = runtime.execute("precess.app.call_later(0, lambda: 1 / 0)");
     REQUIRE(result["ok"].toBool());
     for (int i = 0; i < 50; ++i) {
         QCoreApplication::processEvents();
