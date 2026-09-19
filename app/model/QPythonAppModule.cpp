@@ -43,7 +43,7 @@
 
 namespace py = pybind11;
 
-namespace python_app {
+namespace python::app {
 
 namespace {
 
@@ -179,7 +179,7 @@ void registerAppModule(QObject* owner)
                     result += text;
                 return result; }, py::arg("text"), py::arg("times") = 1, "任意签名示例：把 text 重复 times 次返回");
     } catch (const py::error_already_set& e) {
-        spdlog::error("python_app: 注册 precess.app 子模块失败: {}", e.what());
+        spdlog::error("python::app: 注册 precess.app 子模块失败: {}", e.what());
     }
 }
 

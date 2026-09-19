@@ -61,7 +61,7 @@ QPythonRuntime::QPythonRuntime(session::Session* session, QObject* parent)
 QPythonRuntime::~QPythonRuntime()
 {
     // 先关停 precess.app 定时器表（释放脚本回调 py::object），再经 runtime_ 终结解释器
-    python_app::shutdownAppModule();
+    python::app::shutdownAppModule();
 }
 
 bool QPythonRuntime::isAvailable() const
@@ -81,7 +81,7 @@ void QPythonRuntime::initialize()
         return;
     runtime_->initialize();
     if (runtime_->isAvailable()) {
-        python_app::registerAppModule(this); // app 侧 pybind11 注册 precess.app 子模块
+        python::app::registerAppModule(this); // app 侧 pybind11 注册 precess.app 子模块
         spdlog::info("QPythonRuntime: Python 运行环境就绪，活动会话已注入 precess.current");
     } else
         spdlog::error("QPythonRuntime: {}", runtime_->lastError());

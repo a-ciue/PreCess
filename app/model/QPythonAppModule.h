@@ -11,7 +11,7 @@ class QObject;
  * 继续 def 即可（pybind11 全套类型转换器可用：任意参数个数/类型/返回值、
  * 多重重载、关键字参数与默认值）。
  */
-namespace python_app {
+namespace python::app {
 
 /**
  * @brief 创建 precess.app 子模块并注册 app 侧函数（须在解释器就绪后、GUI 主线程调用）
