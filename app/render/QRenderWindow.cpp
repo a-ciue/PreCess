@@ -438,6 +438,15 @@ void QRenderWindow::deleteModel(Index model_id)
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
             vtk->geometry_actor_manager_->deleteComponent(component_id);
+            component_model_ids_.erase(component_id);
+        }
+        // ModelRemoved 通知发出时模型层可能已返回不到 Component 列表，
+        // 再按保留的归属清理一次，避免遗留过期映射。
+        for (auto it = component_model_ids_.begin(); it != component_model_ids_.end();) {
+            if (it->second == model_id)
+                it = component_model_ids_.erase(it);
+            else
+                ++it;
         }
         // 各 Component 的 Actor 已随几何一起删除，干涉结果不需要再算；只把 Model 记录移除。
         loaded_model_ids_.erase(
@@ -454,9 +463,10 @@ void QRenderWindow::deleteComponent(Index component_id)
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
-        // 必须在本 Component 被删除之前确定归属，删除后反查会失效。
-        const Index model_id
-            = model_query_ ? model_query_->findModelIdByComponent(component_id) : -1;
+        // 移除通知发出时模型层映射已删除，使用装载时保留的归属。
+        const auto model_it = component_model_ids_.find(component_id);
+        const Index model_id = model_it == component_model_ids_.end() ? -1 : model_it->second;
+        component_model_ids_.erase(component_id);
 
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
@@ -464,7 +474,9 @@ void QRenderWindow::deleteComponent(Index component_id)
 
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->deleteComponent(component_id);
-            // 参与检查的几何变了：清掉该 Model 的缓存并重算。
+            // 类别关闭时也要作废摘要，否则再打开会误用删除前的结果。
+            if (model_id >= 0)
+                interfered_summaries_.erase(model_id);
             if (interference_enabled_ && model_id >= 0 && model_query_) {
                 interfered_summaries_[model_id]
                     = rebuildModelInterference(*vtk->geometry_actor_manager_, *model_query_,
@@ -509,6 +521,7 @@ void QRenderWindow::onModelChanged(Index model_id)
         auto component_ids = model_query_->getComponentIds(model_id);
 
         for (Index component_id : component_ids) {
+            component_model_ids_[component_id] = model_id;
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
                 vtk->mesh_actor_manager_->loadMesh(component_id, *mesh_data, vtk->renderer_);
@@ -554,6 +567,8 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         // 本 Component 归属的 Model，作废缓存与干涉重算都要用。
         const Index model_id = this->model_query_->findModelIdByComponent(component_id);
+        if (model_id >= 0)
+            component_model_ids_[component_id] = model_id;
 
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);

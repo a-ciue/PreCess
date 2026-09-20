@@ -92,8 +92,8 @@ private:
 
     vtkRenderer* renderer_ {};
     bool geometry_visible_ { true };
-    double small_edge_length_threshold_ { 1.0e-6 };
-    double small_face_area_threshold_ { 1.0e-12 };
+    double small_edge_length_threshold_ { 0.01 };
+    double small_face_area_threshold_ { 0.01 };
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> category_enabled_ {};
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> category_computed_ {};
     std::array<DiagnosticPipeline, kGeometryTopologyDiagnosticCategoryCount> pipelines_;

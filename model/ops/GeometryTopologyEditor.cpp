@@ -304,8 +304,10 @@ void appendFreeFormBounds(
         for (const auto& [column_low, column_high] : column_ranges) {
             if (row_low > row_high || column_low > column_high)
                 continue;
-            std::array<double, 3> minimum = { 1e300, 1e300, 1e300 };
-            std::array<double, 3> maximum = { -1e300, -1e300, -1e300 };
+            std::array<double, 3> minimum = { std::numeric_limits<double>::max(),
+                std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
+            std::array<double, 3> maximum = { std::numeric_limits<double>::lowest(),
+                std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
             for (int row = row_low; row <= row_high; ++row) {
                 for (int column = column_low; column <= column_high; ++column) {
                     const gp_Pnt& point = poles(row, column);
@@ -1398,10 +1400,9 @@ private:
                     // 全局面片扫描已证明两面相距超过容差：既不可能相交，也不可能同域重叠。
                     const bool swept_apart
                         = sweep_ != nullptr && !sweep_->needsExactTest(first, second);
-                    // 共享拓扑边的邻接面不可能发生内部穿插，先排除它们可以省掉代价不低的
-                    // 保守分离证明（facesIntersect 里本来就会做同样的排除）。
+                    // 共享拓扑边只能排除普通的相交判定，不能在这里跳过重复面判定：
+                    // 两张重复面可能复用同一组边界 Edge。facesIntersect 会自行排除正常邻接面。
                     separated = swept_apart
-                        || shareTopologicalEdge(faces_[first], faces_[second])
                         || facesSeparated(faces_[first], faces_[second], tolerance);
                 }
                 if (!separated) {
@@ -1737,7 +1738,6 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
             BRep_Builder builder;
             TopoDS_Compound compound;
             builder.MakeCompound(compound);
-            bool has_destination = false;
             for (TopoDS_Iterator it(raw_result); it.More(); it.Next()) {
                 const TopoDS_Shape& child = it.Value();
                 if (child.ShapeType() == TopAbs_VERTEX
@@ -1747,10 +1747,8 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
                 }
                 builder.Add(compound, child);
             }
-            if (needs_top_level_destination && !has_destination) {
+            if (needs_top_level_destination)
                 builder.Add(compound, destination);
-                has_destination = true;
-            }
             raw_result = compound;
         }
         TopoDS_Shape result = fixAndValidate(raw_result, "Collapsing the edge");

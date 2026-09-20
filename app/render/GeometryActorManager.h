@@ -44,7 +44,7 @@ private:
     vtkRenderer* renderer_;
     GeometryRenderStyle current_style_ { GeometryRenderStyle::SurfaceWithEdges };
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
-    double topology_diagnostic_small_edge_length_ { 1.0e-6 };
-    double topology_diagnostic_small_face_area_ { 1.0e-12 };
+    double topology_diagnostic_small_edge_length_ { 0.01 };
+    double topology_diagnostic_small_face_area_ { 0.01 };
 };
 #endif

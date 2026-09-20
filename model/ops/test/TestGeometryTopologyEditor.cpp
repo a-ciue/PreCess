@@ -18,6 +18,7 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
 #include <GeomConvert.hxx>
@@ -271,6 +272,29 @@ TEST_CASE("GeometryTopologyEditor groups geometrically duplicate faces")
     REQUIRE(result.duplicate_face_groups.size() == 1);
     REQUIRE(result.duplicate_face_groups.front().faces.size() == 2);
     REQUIRE(result.self_intersecting_face_pairs.empty());
+}
+
+TEST_CASE("GeometryTopologyEditor diagnoses duplicate faces sharing boundary edges")
+{
+    const TopoDS_Face first = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 5.0, CoordinatePlane::XY));
+    TopExp_Explorer wire(first, TopAbs_WIRE);
+    REQUIRE(wire.More());
+    const TopoDS_Face second = BRepBuilderAPI_MakeFace(TopoDS::Wire(wire.Current()));
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, first);
+    builder.Add(compound, second);
+
+    const GeometryTopologyDiagnosticResult result
+        = GeometryTopologyEditor::diagnoseTopology(
+            makeGeometryRoot(compound), 1.0e-6, 1.0e-12);
+
+    REQUIRE(result.duplicate_face_groups.size() == 1);
+    REQUIRE(result.duplicate_face_groups.front().faces.size() == 2);
+    REQUIRE(result.interfering_face_pairs.empty());
 }
 
 TEST_CASE("GeometryTopologyEditor diagnoses crossing faces")
