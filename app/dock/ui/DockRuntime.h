@@ -50,6 +50,13 @@ public:
     //! @brief 面板的 client item（可能为空）
     QQuickItem* panelContentItem(DockPanel* panel) const;
 
+    //! @brief 登记面板的宿主项（client 离开分组视图时的归属，保持在同一窗口场景图内）
+    void registerPanelHome(DockPanel* panel, QQuickItem* home_item);
+    //! @brief 注销面板的宿主项
+    void unregisterPanelHome(DockPanel* panel);
+    //! @brief 面板的宿主项（可能为空）
+    QQuickItem* panelHome(DockPanel* panel) const;
+
     //! @brief 取得（必要时创建）分组视图；所有权由本服务持有
     PanelGroupItem* panelGroupItem(PanelGroup* group);
     //! @brief 仅查询缓存中的分组视图（不创建），用于陈旧视图收口
@@ -67,6 +74,7 @@ private:
 
     QQmlEngine* engine_ = nullptr;
     QHash<DockPanel*, QQuickItem*> panel_contents_;
+    QHash<DockPanel*, QQuickItem*> panel_homes_;
     QHash<PanelGroup*, PanelGroupItem*> group_items_;
     DropZoneOverlay* overlay_ = nullptr;
 };

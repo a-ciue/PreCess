@@ -22,6 +22,7 @@ DockPanelItem::DockPanelItem(QQuickItem* parent)
 DockPanelItem::~DockPanelItem()
 {
     DockRuntime::instance().unregisterPanelContent(panel_);
+    DockRuntime::instance().unregisterPanelHome(panel_);
 }
 
 void DockPanelItem::setUniqueName(const QString& unique_name)
@@ -200,6 +201,8 @@ void DockPanelItem::componentComplete()
     panel_->setFeature(dock::DockPanel::Feature::Floatable, floatable_);
 
     DockRuntime::instance().registerPanelContent(panel_, panel_content_item_);
+    // client 离开分组视图时的归属宿主：同一窗口场景图内，避免渲染部件随视图销毁重建
+    DockRuntime::instance().registerPanelHome(panel_, this);
 
     connect(panel_, &dock::DockPanel::titleChanged, this, [this](const QString&) {
         Q_EMIT titleChanged();

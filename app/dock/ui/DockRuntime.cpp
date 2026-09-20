@@ -66,6 +66,22 @@ QQuickItem* DockRuntime::panelContentItem(DockPanel* panel) const
     return panel_contents_.value(panel, nullptr);
 }
 
+void DockRuntime::registerPanelHome(DockPanel* panel, QQuickItem* home_item)
+{
+    if (panel && home_item)
+        panel_homes_.insert(panel, home_item);
+}
+
+void DockRuntime::unregisterPanelHome(DockPanel* panel)
+{
+    panel_homes_.remove(panel);
+}
+
+QQuickItem* DockRuntime::panelHome(DockPanel* panel) const
+{
+    return panel_homes_.value(panel, nullptr);
+}
+
 PanelGroupItem* DockRuntime::panelGroupItem(PanelGroup* group)
 {
     if (!group)

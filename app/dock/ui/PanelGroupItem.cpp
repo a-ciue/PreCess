@@ -96,10 +96,13 @@ PanelGroupItem::~PanelGroupItem()
         drag_ = nullptr;
     }
 
-    // client item 不属于本视图，销毁前摘出以免被级联删除
+    // client item 不属于本视图，销毁前交还面板宿主（保持同一窗口场景图，
+    // 避免渲染部件随视图销毁而重建）
     if (shown_dock_) {
-        if (QQuickItem* client = DockRuntime::instance().panelContentItem(shown_dock_))
-            client->setParentItem(nullptr);
+        if (QQuickItem* client = DockRuntime::instance().panelContentItem(shown_dock_)) {
+            client->setVisible(false);
+            client->setParentItem(DockRuntime::instance().panelHome(shown_dock_));
+        }
     }
 
     // 从 DockRuntime 缓存中注销，避免悬空视图被再次取用

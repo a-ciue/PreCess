@@ -27,7 +27,13 @@ DockHostItem::DockHostItem(QQuickItem* parent)
 {
 }
 
-DockHostItem::~DockHostItem() = default;
+DockHostItem::~DockHostItem()
+{
+    if (host_ && host_->centralPanel()) {
+        DockRuntime::instance().unregisterPanelContent(host_->centralPanel());
+        DockRuntime::instance().unregisterPanelHome(host_->centralPanel());
+    }
+}
 
 void DockHostItem::setUniqueName(const QString& unique_name)
 {
@@ -114,6 +120,8 @@ void DockHostItem::loadCentralItem()
         return;
 
     DockRuntime::instance().registerPanelContent(host_->centralPanel(), item);
+    // 中央渲染部件的归属宿主：离开分组视图时保持在同一窗口场景图内（避免 VTK 场景重建）
+    DockRuntime::instance().registerPanelHome(host_->centralPanel(), this);
     central_view_ = std::make_unique<PanelContentView>(host_->centralPanel(), item);
     host_->setCentralContentView(central_view_.get());
 
